@@ -1,13 +1,23 @@
+import 'server-only';
+
+import type { OnlineShop } from '@nordcom/commerce-db';
+
+import { ShopifyApolloApiClient } from '@/api/shopify';
+import { StoreApi } from '@/api/store';
 import { cn } from '@/utils/tailwind';
 import Image from 'next/image';
 
-import type { StoreModel } from '@/models/StoreModel';
+import type { Locale } from '@/utils/locale';
 import type { HTMLProps } from 'react';
 
 export type AcceptedPaymentMethodsProps = {
-    store: StoreModel;
+    locale: Locale;
+    shop: OnlineShop;
 } & HTMLProps<HTMLDivElement>;
-export const AcceptedPaymentMethods = ({ store, className, ...props }: AcceptedPaymentMethodsProps) => {
+export const AcceptedPaymentMethods = async ({ shop, locale, className, ...props }: AcceptedPaymentMethodsProps) => {
+    const api = await ShopifyApolloApiClient({ shop, locale });
+    const store = await StoreApi({ api, locale });
+
     const methods = store.payment?.methods.map((i) => i.toLowerCase()) || [];
     const wallets = store.payment?.wallets.map((i) => i.toLowerCase()) || [];
     const items = [...methods, ...wallets];

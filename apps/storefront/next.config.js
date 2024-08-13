@@ -27,22 +27,22 @@ const config = {
     serverExternalPackages: ['@sentry/profiling-node', '@nordcom/commerce-db', 'mongoose'],
     devIndicators: {
         buildActivity: true,
-        buildActivityPosition: 'top-right',
         appIsrStatus: true
     },
     experimental: {
-        ppr: true,
         //caseSensitiveRoutes: true,
+        cssChunking: 'loose',
         instrumentationHook: isProduction,
         optimizeCss: true,
         optimizePackageImports: ['@apollo/client', '@nordcom/nordstar', '@shopify/hydrogen-react', 'react-icons'],
-        scrollRestoration: true,
-        serverSourceMaps: true,
-        webpackBuildWorker: true,
         parallelServerBuildTraces: true,
         parallelServerCompiles: true,
+        ppr: true,
         reactCompiler: true,
-        turbo: {}
+        scrollRestoration: true,
+        serverSourceMaps: true,
+        turbo: {},
+        webpackBuildWorker: true
     },
     images: {
         dangerouslyAllowSVG: true,

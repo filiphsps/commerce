@@ -5,7 +5,7 @@ import { Error } from '@nordcom/commerce-errors';
 
 import { PageApi } from '@/api/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { LocalesApi, StoreApi } from '@/api/store';
+import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { Locale, useTranslation } from '@/utils/locale';
 import { asText } from '@prismicio/client';
@@ -85,9 +85,7 @@ export default async function CartPage({ params: { domain, locale: localeData } 
         const locale = Locale.from(localeData);
 
         const shop = await Shop.findByDomain(domain);
-        const api = await ShopifyApolloApiClient({ shop, locale });
         const page = await PageApi({ shop, locale, handle: 'cart' });
-        const store = await StoreApi({ locale, api });
 
         const i18n = await getDictionary(locale);
         const { t } = useTranslation('common', i18n);
@@ -99,7 +97,6 @@ export default async function CartPage({ params: { domain, locale: localeData } 
                     locale={locale}
                     header={<Heading title={page?.title || t('cart')} subtitle={page?.description} />}
                     i18n={i18n}
-                    store={store}
                 />
 
                 <Breadcrumbs shop={shop} />

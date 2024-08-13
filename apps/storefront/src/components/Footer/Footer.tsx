@@ -55,25 +55,25 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
                         </address>
                     </div>
 
-                    {footer.blocks.map((block, index) => {
+                    {footer.body.map(({ primary: { title }, items }, index) => {
                         return (
                             <div
-                                key={`${block.title}-${index}`}
+                                key={`${title}-${index}`}
                                 className={cn(
                                     styles.block,
                                     'flex flex-col gap-2 empty:hidden md:items-end md:justify-end md:empty:flex'
                                 )}
                                 data-align="right"
                             >
-                                {block.title ? (
+                                {title ? (
                                     <div className={cn(styles.title, 'text-xl font-extrabold leading-tight')}>
-                                        {block.title}
+                                        {title}
                                     </div>
                                 ) : null}
 
-                                {block && block.items.length > 0 ? (
+                                {items.length > 0 ? (
                                     <div className="flex flex-wrap gap-2 *:after:font-extrabold *:after:opacity-75 *:after:content-[','] last:*:after:content-['.']">
-                                        {block?.items.map((item: any) => (
+                                        {items.map((item: any) => (
                                             <Link
                                                 key={item.handle}
                                                 href={item.handle || ''}
@@ -90,7 +90,7 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
                     })}
                 </div>
 
-                <FooterContent locale={locale} i18n={i18n} store={store} />
+                <FooterContent locale={locale} i18n={i18n} shop={shop} />
             </div>
         </footer>
     );

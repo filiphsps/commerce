@@ -41,7 +41,7 @@
                                 "config": {
                                     "label": "href",
                                     "placeholder": "",
-                                    "allowTargetBlank": false,
+                                    "allowTargetBlank": true,
                                     "select": null
                                 }
                             },

@@ -13,6 +13,40 @@
                     "label": "Address"
                 }
             },
+            "copyrights": {
+                "type": "StructuredText",
+                "config": {
+                    "label": "Copyrights",
+                    "placeholder": "© 2023-2024 Nordcom AB",
+                    "allowTargetBlank": true,
+                    "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+                }
+            },
+            "policy_links": {
+                "type": "Group",
+                "config": {
+                    "label": "Policy Links",
+                    "repeat": true,
+                    "fields": {
+                        "title": {
+                            "type": "Text",
+                            "config": {
+                                "label": "Title",
+                                "placeholder": ""
+                            }
+                        },
+                        "href": {
+                            "type": "Link",
+                            "config": {
+                                "label": "href",
+                                "placeholder": "",
+                                "allowTargetBlank": true,
+                                "select": null
+                            }
+                        }
+                    }
+                }
+            },
             "body": {
                 "type": "Slices",
                 "fieldset": "Slice Zone",

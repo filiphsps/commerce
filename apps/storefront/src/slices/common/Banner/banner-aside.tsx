@@ -36,18 +36,20 @@ export const BannerAside = ({ slice }: { slice: BannerSliceAside }): JSX.Element
                     <PrismicText data={slice.primary.content} />
                 </div>
                 <div className="flex w-full items-start justify-start gap-4 empty:hidden md:max-w-[600px]">
-                    {slice.items.map(({ type, target: href, title }, index) => {
-                        const target = asLink(href, { linkResolver });
+                    {slice.items.map(({ type, target: link, title }, index) => {
+                        const href = asLink(link, { linkResolver });
+                        const target: undefined | '_blank' = (href as any).target || undefined;
 
                         return (
                             <Link
-                                key={index}
+                                key={`${target}-${index}`}
                                 className={cn(
                                     'flex items-center gap-2 rounded-full bg-white px-4 py-2 font-semibold text-black drop-shadow-sm transition-colors hover:bg-black hover:text-white md:px-6 md:py-3 md:text-lg',
                                     type &&
                                         'bg-secondary text-secondary-foreground hover:bg-secondary-dark hover:text-secondary-foreground'
                                 )}
-                                href={target}
+                                href={href}
+                                target={target}
                             >
                                 <PrismicText data={title} />
                             </Link>

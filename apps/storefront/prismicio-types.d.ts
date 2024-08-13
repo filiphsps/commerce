@@ -327,6 +327,31 @@ export type CustomPageDocument<Lang extends string = string> = prismic.PrismicDo
 >;
 
 /**
+ * Item in *Footer → Policy Links*
+ */
+export interface FooterDocumentDataPolicyLinksItem {
+    /**
+     * Title field in *Footer → Policy Links*
+     *
+     * - **Field Type**: Text
+     * - **Placeholder**: *None*
+     * - **API ID Path**: footer.policy_links[].title
+     * - **Documentation**: https://prismic.io/docs/field#key-text
+     */
+    title: prismic.KeyTextField;
+
+    /**
+     * href field in *Footer → Policy Links*
+     *
+     * - **Field Type**: Link
+     * - **Placeholder**: *None*
+     * - **API ID Path**: footer.policy_links[].href
+     * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+     */
+    href: prismic.LinkField;
+}
+
+/**
  * Primary content in *Footer → Slice Zone → Block → Primary*
  */
 export interface FooterDocumentDataBodyBlockSlicePrimary {
@@ -391,6 +416,28 @@ interface FooterDocumentData {
      * - **Documentation**: https://prismic.io/docs/field#rich-text-title
      */
     address: prismic.RichTextField;
+
+    /**
+     * Copyrights field in *Footer*
+     *
+     * - **Field Type**: Rich Text
+     * - **Placeholder**: © 2023-2024 Nordcom AB
+     * - **API ID Path**: footer.copyrights
+     * - **Tab**: Main
+     * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+     */
+    copyrights: prismic.RichTextField;
+
+    /**
+     * Policy Links field in *Footer*
+     *
+     * - **Field Type**: Group
+     * - **Placeholder**: *None*
+     * - **API ID Path**: footer.policy_links[]
+     * - **Tab**: Main
+     * - **Documentation**: https://prismic.io/docs/field#group
+     */
+    policy_links: prismic.GroupField<Simplify<FooterDocumentDataPolicyLinksItem>>;
 
     /**
      * Slice Zone field in *Footer*
@@ -1880,6 +1927,7 @@ declare module '@prismicio/client' {
             CustomPageDocumentDataSlicesSlice,
             FooterDocument,
             FooterDocumentData,
+            FooterDocumentDataPolicyLinksItem,
             FooterDocumentDataBodyBlockSlicePrimary,
             FooterDocumentDataBodyBlockSliceItem,
             FooterDocumentDataBodySlice,

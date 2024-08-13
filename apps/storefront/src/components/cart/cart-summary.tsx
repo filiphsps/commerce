@@ -17,9 +17,6 @@ import Link from '@/components/link';
 import { useShop } from '@/components/shop/provider';
 import { Label } from '@/components/typography/label';
 
-import { AcceptedPaymentMethods } from '../informational/accepted-payment-methods';
-
-import type { StoreModel } from '@/models/StoreModel';
 import type { ReactNode } from 'react';
 
 // TODO: Configurable free shipping.
@@ -28,12 +25,11 @@ type CartSummaryProps = {
     shop: OnlineShop;
     onCheckout: any;
     i18n: LocaleDictionary;
-    children?: ReactNode;
 
-    /** @deprecated */
-    store: StoreModel;
+    children?: ReactNode;
+    paymentMethods?: ReactNode;
 };
-const CartSummary = ({ onCheckout, i18n, store, children }: CartSummaryProps) => {
+const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummaryProps) => {
     const { t } = useTranslation('cart', i18n);
     const { totalQuantity, lines, cost, note, discountCodes, cartReady } = useCart();
     const { currency } = useShop();
@@ -234,7 +230,7 @@ const CartSummary = ({ onCheckout, i18n, store, children }: CartSummaryProps) =>
             ) : null}
 
             <section className={cn(styles.section, styles['section-security'])}>
-                <AcceptedPaymentMethods store={store} />
+                {paymentMethods || null}
 
                 <div className={'text-sm leading-tight'}>
                     <FiLock className={'stroke mr-1 inline h-3 stroke-2'} />

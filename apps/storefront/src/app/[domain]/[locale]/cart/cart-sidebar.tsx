@@ -10,19 +10,24 @@ import { toast } from 'sonner';
 
 import { CartSummary } from '@/components/cart/cart-summary';
 
-import type { StoreModel } from '@/models/StoreModel';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
-import type { HTMLProps } from 'react';
+import type { HTMLProps, ReactNode } from 'react';
 
 export type CartSidebarProps = {
     shop: OnlineShop;
     locale: Locale;
     i18n: LocaleDictionary;
-
-    /** @deprecated */
-    store: StoreModel;
+    paymentMethods?: ReactNode;
 } & HTMLProps<HTMLDivElement>;
-export const CartSidebar = ({ shop, i18n, locale, store, className, children, ...props }: CartSidebarProps) => {
+export const CartSidebar = ({
+    shop,
+    i18n,
+    locale,
+    className,
+    children,
+    paymentMethods,
+    ...props
+}: CartSidebarProps) => {
     const cart = useCart();
     const trackable = useTrackable();
 
@@ -49,7 +54,7 @@ export const CartSidebar = ({ shop, i18n, locale, store, className, children, ..
                     }
                 }}
                 i18n={i18n}
-                store={store}
+                paymentMethods={paymentMethods}
             >
                 {children}
             </CartSummary>

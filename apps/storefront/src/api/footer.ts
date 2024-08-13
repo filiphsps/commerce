@@ -4,23 +4,23 @@ import { ApiError, NotFoundError } from '@nordcom/commerce-errors';
 import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
 
-import type { FooterModel } from '@/models/FooterModel';
+import type { FooterDocument } from '@/prismic/types';
 
-export const FooterApi = async ({ shop, locale }: { shop: OnlineShop; locale: Locale }): Promise<FooterModel> => {
+export async function FooterApi({
+    shop,
+    locale
+}: {
+    shop: OnlineShop;
+    locale: Locale;
+}): Promise<FooterDocument['data']> {
     const client = createClient({ shop, locale });
 
     try {
-        const res = await client.getSingle('footer', {
+        const res = await client.getSingle<FooterDocument>('footer', {
             lang: locale.code
         });
 
-        return {
-            address: res.data.address,
-            blocks: res.data.body.map((item: any) => ({
-                title: item.primary.title,
-                items: item.items
-            }))
-        };
+        return res.data;
     } catch (error: unknown) {
         if (ApiError.isNotFound(error)) {
             if (!Locale.isDefault(locale)) {
@@ -32,4 +32,4 @@ export const FooterApi = async ({ shop, locale }: { shop: OnlineShop; locale: Lo
 
         throw error;
     }
-};
+}

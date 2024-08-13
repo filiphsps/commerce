@@ -42,7 +42,7 @@
                                     "__TYPE__": "LinkContent",
                                     "value": {
                                         "__TYPE__": "ExternalLink",
-                                        "url": "https://prismic.io"
+                                        "url": "https://slicemachine.dev"
                                     }
                                 }
                             ],
@@ -181,8 +181,7 @@
                                     "__TYPE__": "LinkContent",
                                     "value": {
                                         "__TYPE__": "ExternalLink",
-                                        "url": "/test/",
-                                        "target": ""
+                                        "url": "https://slicemachine.dev"
                                     }
                                 }
                             ],
@@ -337,8 +336,7 @@
                                     "__TYPE__": "LinkContent",
                                     "value": {
                                         "__TYPE__": "ExternalLink",
-                                        "url": "/test/",
-                                        "target": ""
+                                        "url": "http://twitter.com"
                                     }
                                 }
                             ],
@@ -445,14 +443,8 @@
                                 {
                                     "__TYPE__": "LinkContent",
                                     "value": {
-                                        "__TYPE__": "ImageLink",
-                                        "id": "SDX4_TQcxGU",
-                                        "name": "sliced lemon fruit on blue surface",
-                                        "kind": "image",
-                                        "url": "https://images.unsplash.com/photo-1603824231744-517ef271df7e?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMzc0NjN8MHwxfHNlYXJjaHwzfHxjaXRydXMlMjBmcnVpdHxlbnwwfHx8fDE3MjE5MzYwMjZ8MA&ixlib=rb-4.0.3&q=85",
-                                        "size": "0",
-                                        "height": "2470",
-                                        "width": "3690"
+                                        "__TYPE__": "ExternalLink",
+                                        "url": "https://prismic.io"
                                     }
                                 }
                             ],
@@ -566,14 +558,8 @@
                                 {
                                     "__TYPE__": "LinkContent",
                                     "value": {
-                                        "__TYPE__": "ImageLink",
-                                        "id": "SDX4_TQcxGU",
-                                        "name": "sliced lemon fruit on blue surface",
-                                        "kind": "image",
-                                        "url": "https://images.unsplash.com/photo-1603824231744-517ef271df7e?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMzc0NjN8MHwxfHNlYXJjaHwzfHxjaXRydXMlMjBmcnVpdHxlbnwwfHx8fDE3MjE5MzYwMjZ8MA&ixlib=rb-4.0.3&q=85",
-                                        "size": "0",
-                                        "height": "2470",
-                                        "width": "3690"
+                                        "__TYPE__": "ExternalLink",
+                                        "url": "https://prismic.io"
                                     }
                                 }
                             ],
@@ -680,14 +666,8 @@
                                 {
                                     "__TYPE__": "LinkContent",
                                     "value": {
-                                        "__TYPE__": "ImageLink",
-                                        "id": "agP9RgnWZAY",
-                                        "name": "orange fruit on brown wooden table",
-                                        "kind": "image",
-                                        "url": "https://images.unsplash.com/photo-1610040855959-27944b04f12d?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMzc0NjN8MHwxfHNlYXJjaHw0fHxjaXRydXMlMjBmcnVpdHxlbnwwfHx8fDE3MjE5MzYwMjZ8MA&ixlib=rb-4.0.3&q=85",
-                                        "size": "0",
-                                        "height": "4114",
-                                        "width": "5143"
+                                        "__TYPE__": "ExternalLink",
+                                        "url": "https://slicemachine.dev"
                                     }
                                 }
                             ],

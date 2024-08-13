@@ -101,8 +101,7 @@ export const LocaleApi = async ({ api }: { api: AbstractApi }) => {
 
 /**
  * Get store details.
- *
- * @todo deprecate - This functionality will be moved into the {@link ShopApi} in the future.
+ * @deprecated - Use {@link ShopApi} instead, an alternative for payment methods and currencies will be added in the future.
  */
 export const StoreApi = async ({
     locale: _locale,
