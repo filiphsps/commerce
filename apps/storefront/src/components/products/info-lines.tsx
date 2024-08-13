@@ -67,7 +67,7 @@ export type InfoLinesProps = {
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 
 const InfoLines = async ({ product, i18n, locale, className, ...props }: InfoLinesProps) => {
-    if (!product || (await showProductInfoLines())) {
+    if (!product || !(await showProductInfoLines())) {
         return null;
     }
 
