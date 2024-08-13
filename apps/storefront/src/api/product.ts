@@ -38,9 +38,56 @@ export const createProductSearchParams = ({ product: { trackingParameters } }: {
 };
 
 export const isProductVegan = (product: Product): boolean => {
-    if (!product.tags) {
+    if (product.tags.length <= 0) {
         return false;
     }
 
-    return product.tags.map((tag) => tag.toLowerCase()).includes('vegan');
+    const type = productType(product);
+    if (!['confectionary', 'food', 'bags', 'clothing', 'sports'].includes(type)) {
+        return false;
+    }
+
+    return product.tags.map((tag) => tag.toLowerCase().trim()).includes('vegan');
+};
+
+export const isProductConfectionary = (product: Product): boolean => {
+    const type = product.productType.toLowerCase().trim();
+    const applicableTypes = [
+        'bakery',
+        'cake',
+        'candy',
+        'chocolate',
+        'confectionary',
+        'cookies',
+        'dessert',
+        'pastry',
+        'pie',
+        'snack',
+        'snacks',
+        'sweets'
+    ];
+
+    if (applicableTypes.some((t) => type.includes(t))) {
+        return true;
+    }
+
+    return false;
+};
+
+export type ProductType =
+    | 'confectionary'
+    | 'food'
+    | 'accessories'
+    | 'bags'
+    | 'jewelry'
+    | 'watches'
+    | 'clothing'
+    | 'sports'
+    | 'other';
+export const productType = (product: Product): ProductType => {
+    if (isProductConfectionary(product)) {
+        return 'confectionary';
+    }
+
+    return 'other';
 };

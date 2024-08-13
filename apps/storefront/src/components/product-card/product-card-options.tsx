@@ -2,10 +2,10 @@
 
 import styles from '@/components/product-card/product-card.module.scss';
 
+import { type Product, type ProductVariant } from '@/api/product';
 import { ConvertToLocalMeasurementSystem } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 
-import type { Product, ProductVariant } from '@/api/product';
 import type { Locale } from '@/utils/locale';
 
 export type ProductCardOptionsProps = {
@@ -17,12 +17,15 @@ export type ProductCardOptionsProps = {
 
 const ProductCardOptions = ({
     locale,
-    data: {
-        variants: { edges: variants }
-    },
+    data: product,
     selectedVariant,
     setSelectedVariant
 }: ProductCardOptionsProps) => {
+    const {
+        handle,
+        variants: { edges: variants }
+    } = product;
+
     if (
         !selectedVariant ||
         !variants ||
@@ -38,9 +41,15 @@ const ProductCardOptions = ({
     return (
         <div className={cn(styles.variants, 'mt-6 flex flex-wrap gap-2')}>
             {variants.map(({ node: variant }, index) => {
-                if (index >= 3) return null; //TODO: handle more than 3 variants on the card.
+                if (index >= 3) {
+                    return null; //TODO: handle more than 3 variants on the card.
+                }
 
                 let title = variant.title;
+                if (title.length > 10) {
+                    return null;
+                }
+
                 if (
                     variant.selectedOptions.length === 1 &&
                     variant.selectedOptions[0]!.name === 'Size' &&
@@ -56,20 +65,25 @@ const ProductCardOptions = ({
 
                 const isSelected = selectedVariant && selectedVariant.id === variant.id;
 
+                const Tag = isSelected ? 'div' : 'button';
                 return (
-                    <button
+                    <Tag
                         key={variant.id}
                         title={variant.selectedOptions.map((i) => `${i.name}: ${i.value}`).join(', ')}
-                        onClick={() => setSelectedVariant(variant)}
+                        onClick={() => {
+                            if (isSelected) return;
+                            setSelectedVariant(variant);
+                        }}
                         className={cn(
                             styles.variant,
-                            'hover:text-primary-foreground hover:bg-primary rounded-lg bg-white px-3 py-1 text-sm font-medium text-gray-600 transition-all hover:shadow-lg',
-                            isSelected && 'font-bold'
+                            'hover:border-primary select-none rounded-lg border-2 border-solid border-white bg-white px-3 py-1 text-sm font-medium text-gray-600 transition-all',
+                            isSelected && 'border-primary font-bold',
+                            !isSelected && 'cursor-pointer hover:shadow-lg'
                         )}
                         data-active={isSelected}
                     >
                         {title}
-                    </button>
+                    </Tag>
                 );
             })}
         </div>

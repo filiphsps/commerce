@@ -1,7 +1,5 @@
 'use client';
 
-import styles from '@/components/product-card/product-card.module.scss';
-
 import { useState } from 'react';
 
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
@@ -24,7 +22,7 @@ const ProductCardFooter = ({ data: product, i18n, locale }: ProductCardFooterPro
 
     return (
         <>
-            <div className={styles.body}>
+            <div className="flex h-full min-h-24 w-full grow flex-col pt-1">
                 <Pricing price={selectedVariant.price as any} />
 
                 <ProductCardOptions
@@ -33,9 +31,9 @@ const ProductCardFooter = ({ data: product, i18n, locale }: ProductCardFooterPro
                     selectedVariant={selectedVariant}
                     setSelectedVariant={(variant) => setSelectedVariant(() => variant)}
                 />
-            </div>
 
-            <ProductCardActions i18n={i18n} data={product} selectedVariant={selectedVariant} />
+                <ProductCardActions i18n={i18n} data={product} selectedVariant={selectedVariant} />
+            </div>
         </>
     );
 };

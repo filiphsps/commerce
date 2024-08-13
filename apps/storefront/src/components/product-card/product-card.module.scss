@@ -74,23 +74,6 @@
         width: 100%;
 
         text-align: left;
-
-        .image {
-            width: 100%;
-            height: 7rem;
-            padding: calc(var(--padding) * 1.75) var(--padding);
-
-            background-color: var(--color-bright);
-
-            object-fit: contain;
-            object-position: center;
-
-            //transition: $animation-duration ease-in-out transform;
-
-            @media (min-width: $breakpoint-mobile) {
-                height: 8rem;
-            }
-        }
     }
 
     .body {
@@ -117,8 +100,6 @@
             -webkit-appearance: none;
             appearance: none;
             display: inline-block;
-
-            cursor: pointer;
 
             &[data-active='true'] {
                 opacity: 1;

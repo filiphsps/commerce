@@ -47,14 +47,14 @@ const ProductCardActions = ({ i18n, data: product, selectedVariant }: ProductCar
         [linesUpdate, lines]
     );
 
-    const baseStyles = 'rounded-lg p-2 font-semibold overflow-clip h-10 mt-1';
+    const baseStyles = 'rounded-lg p-2 font-semibold overflow-clip *:h-10 mt-2 max-h-11';
 
     if (line) {
         return (
             <div
                 className={cn(
                     baseStyles,
-                    'flex border-2 border-solid border-gray-300 bg-white p-0 font-bold *:appearance-none *:text-center *:transition-colors'
+                    'flex h-full border-2 border-solid border-gray-300 bg-white p-0 font-bold *:appearance-none *:text-center *:transition-colors'
                 )}
             >
                 <button
@@ -69,7 +69,7 @@ const ProductCardActions = ({ i18n, data: product, selectedVariant }: ProductCar
                     type="number"
                     min="1"
                     disabled={!cartReady}
-                    className="h-full w-full disabled:opacity-25"
+                    className="h-max w-full disabled:opacity-25"
                     value={quantity}
                     onChange={({ target: { value } }) => setQuantity(Number.parseInt(value) || 0)}
                     onBlur={() => update(quantity)}
@@ -88,7 +88,10 @@ const ProductCardActions = ({ i18n, data: product, selectedVariant }: ProductCar
 
     return (
         <AddToCart
-            className={cn(baseStyles, 'bg-primary text-primary-foreground flex w-full items-center justify-center')}
+            className={cn(
+                baseStyles,
+                'bg-primary text-primary-foreground flex h-full w-full items-center justify-center'
+            )}
             quantity={1}
             data={product}
             variant={selectedVariant}

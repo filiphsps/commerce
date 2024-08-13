@@ -37,11 +37,27 @@
         "email": "E-post",
         "phone": "Telefon",
         "email-tooltip": "Skicka oss ett e-postmeddelande",
-        "phone-tooltip": "Ring oss"
+        "phone-tooltip": "Ring oss",
+        "wishlist": "Önskelista"
     },
     "product": {
-        "recommendations": "Komplettera upplevelsen med dessa populära tillägg",
-        "SKUs": "Artikelnummer",
-        "add-to-wishlist": "Lägg till i begäranslista"
+        "add-to-wishlist": "Lägg till i din önskelista",
+        "attributes": "Attributer",
+        "browse-all-products-by-brand": "Visa alla produkter av {0}",
+        "by": "av",
+        "dispatch-within-n-business-days": "Leverera inom {0} arbetsdagar",
+        "in-stock-and-available": "Tillgängligt i lager",
+        "in-stock": "Tillgängligt i lager",
+        "n-in-stock-and-available": "{0} tillgängligt i lager",
+        "new": "Ny",
+        "percentage-off": "{0}% OFF",
+        "recommendations": "Rekommendationer",
+        "save-n-per-item": "Spara {0} per artikel!",
+        "skus": "Artikelnummer",
+        "this-product-is-vegan": "Denna produkt är vegansk!",
+        "vegan": "Vegansk",
+        "what-a-deal": "Vilken deal!",
+        "you-may-also-like": "Du kanske också gilla",
+        "you-save": "Du sparar"
     }
 }

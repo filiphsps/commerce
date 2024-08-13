@@ -8,3 +8,11 @@ export const showSearchFilter = flag({
         return !!value ?? false;
     }
 });
+
+export const showProductInfoLines = flag({
+    key: 'search-product-info-lines',
+    async decide() {
+        const value = await get(this.key);
+        return !!value ?? false;
+    }
+});

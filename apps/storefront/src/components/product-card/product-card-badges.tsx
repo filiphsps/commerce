@@ -1,10 +1,10 @@
+import { isProductVegan, type Product } from '@/api/product';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import { useTranslation } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 
 import { AttributeIcon } from '../products/attribute-icon';
 
-import type { Product } from '@/api/product';
 import type { LocaleDictionary } from '@/utils/locale';
 
 export type ProductCardBadgesProps = {
@@ -13,7 +13,7 @@ export type ProductCardBadgesProps = {
 };
 
 const COMMON_BADGE_STYLES =
-    'flex  gap-1 rounded-2xl p-[0.4rem] px-2 text-xs font-semibold shadow-sm items-center justify-center uppercase';
+    'flex  gap-1 rounded-2xl p-[0.4rem] px-2 text-xs font-semibold shadow-sm items-center justify-center uppercase z-10';
 
 const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
     const selectedVariant = FirstAvailableVariant(product);
@@ -24,7 +24,7 @@ const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
     const isNewProduct =
         product.createdAt &&
         Math.abs(new Date(product.createdAt).getTime() - new Date().getTime()) / (24 * 60 * 60 * 1000) < 15; // TODO: Do this properly through a tag or similar.
-    const isVegan = product.tags.includes('Vegan');
+    const isVegan = isProductVegan(product);
     const isSale = !!selectedVariant.compareAtPrice?.amount;
 
     let discount = 0;

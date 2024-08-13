@@ -86,7 +86,7 @@ export const PageApi = async <T extends keyof PageTypeMapping | 'custom_page' = 
             lang: locale.code
         });
 
-        if (!page) {
+        if (!(page as any)) {
             throw new NotFoundError(`"Page" with the handle "${handle}"`);
         }
 

@@ -20,6 +20,18 @@ afterAll(() => {
 
 vi.mock('server-only', () => ({}));
 
+vi.mock('@vercel/flags', () => ({
+    unstable_flags: vi.fn().mockReturnValue(false)
+}));
+vi.mock('@vercel/edge-config', () => ({
+    get: vi.fn().mockResolvedValue(false)
+}));
+
+vi.mock('@/utils/flags', () => ({
+    showSearchFilter: vi.fn().mockResolvedValue(false),
+    showProductInfoLines: vi.fn().mockResolvedValue(false)
+}));
+
 // Mock the `build-config` module as it almost only contains tokens,
 // secrets, and other sensitive data (excluding the i18n config which
 // should be handled dynamically by the platform in the future).

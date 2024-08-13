@@ -15,7 +15,7 @@ const ProductCardTitle = ({ data: product, oneLine = false }: ProductCardTitlePr
         <>
             <Label
                 className={cn(
-                    'pt-2 text-sm leading-tight text-gray-700',
+                    'hover:text-primary pt-2 text-sm leading-tight text-gray-700 transition-colors',
                     oneLine && 'overflow-hidden text-ellipsis whitespace-nowrap'
                 )}
             >
@@ -23,7 +23,7 @@ const ProductCardTitle = ({ data: product, oneLine = false }: ProductCardTitlePr
             </Label>
             <div
                 className={cn(
-                    'pb-1 text-lg font-semibold leading-[1.15] text-black',
+                    'hover:text-primary pb-1 text-lg font-semibold leading-[1.1] text-black transition-colors',
                     oneLine && 'overflow-hidden text-ellipsis whitespace-nowrap'
                 )}
             >

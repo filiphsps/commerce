@@ -41,7 +41,13 @@ const RecommendedProducts = async ({ shop, locale, product, className }: Recomme
             )}
         >
             {recommended.map((product) => (
-                <ProductCard key={product.id} shop={shop} locale={locale} data={product} className={extraStyles.card} />
+                <ProductCard
+                    key={product.id}
+                    shop={shop}
+                    locale={locale}
+                    data={product}
+                    className={cn(extraStyles.card)}
+                />
             ))}
         </div>
     );

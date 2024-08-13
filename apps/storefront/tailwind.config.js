@@ -37,8 +37,8 @@ export default {
     future: {
         hoverOnlyWhenSupported: true
     },
-    corePlugins: {
+    /*corePlugins: {
         aspectRatio: false
-    },
-    plugins: [import('@tailwindcss/aspect-ratio'), import('@tailwindcss/typography')]
+    },*/
+    plugins: [/*import('@tailwindcss/aspect-ratio'),*/ import('@tailwindcss/typography')]
 };

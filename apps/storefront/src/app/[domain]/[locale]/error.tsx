@@ -1,7 +1,5 @@
 'use client';
 
-import styles from './error.module.scss';
-
 import { useEffect } from 'react';
 
 import { Button } from '@/components/actionable/button';
@@ -15,7 +13,7 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
 
     return (
         <>
-            <PageContent className={styles.header}>
+            <PageContent className="block">
                 <Heading
                     title={`Oh no! Something went wrong`}
                     subtitle={<Label>Internal server error</Label>}
@@ -24,7 +22,7 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
                 />
             </PageContent>
 
-            <div className={styles.content}>
+            <div className="flex w-full flex-col gap-4">
                 <Content>
                     <p>
                         Sorry, but an unexpected error occurred.
@@ -46,7 +44,9 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
                     </ul>
                 </Content>
 
-                <Button onClick={reset}>Reload page</Button>
+                <Button onClick={reset} className="h-10 w-36 min-w-fit">
+                    Reload page
+                </Button>
             </div>
         </>
     );

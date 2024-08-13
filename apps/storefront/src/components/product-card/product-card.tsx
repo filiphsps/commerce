@@ -1,9 +1,8 @@
 import 'server-only';
 
-import styles from '@/components/product-card/product-card.module.scss';
-
 import type { OnlineShop } from '@nordcom/commerce-db';
 
+import { type Product } from '@/api/product';
 import { getDictionary } from '@/utils/dictionary';
 import { cn } from '@/utils/tailwind';
 
@@ -12,7 +11,6 @@ import ProductCardFooter from '@/components/product-card/product-card-footer';
 import ProductCardHeader from '@/components/product-card/product-card-header';
 import ProductCardTitle from '@/components/product-card/product-card-title';
 
-import type { Product } from '@/api/product';
 import type { Locale } from '@/utils/locale';
 
 const DESCRIPTION_LENGTH = 160;
@@ -34,8 +32,7 @@ const ProductCard = async ({ shop, locale, data: product, priority, className, .
     return (
         <div
             className={cn(
-                styles.container,
-                'overflow-hidden rounded-xl border-2 border-solid border-gray-300 bg-gray-100 p-1 transition-shadow hover:shadow-xl md:p-2 2xl:max-w-56',
+                'group/card relative flex flex-col overflow-hidden rounded-xl border-2 border-solid border-gray-300 bg-gray-100 p-1 transition-shadow hover:shadow-xl md:p-2 2xl:max-w-56',
                 className
             )}
             title={description ? `${description}...` : undefined}
@@ -55,7 +52,9 @@ const ProductCard = async ({ shop, locale, data: product, priority, className, .
 };
 ProductCard.displayName = 'Nordcom.ProductCard';
 
-ProductCard.skeleton = () => <div className={styles.container} data-skeleton />;
+ProductCard.skeleton = () => (
+    <div className={'flex h-44 rounded-xl bg-gray-100 p-1 md:p-2 2xl:max-w-56'} data-skeleton />
+);
 (ProductCard.skeleton as any).displayName = 'Nordcom.ProductCard.Skeleton';
 
 export default ProductCard;

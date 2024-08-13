@@ -15,6 +15,7 @@ import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import { isValidHandle } from '@/utils/handle';
 import { Locale, useTranslation } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
+import { cn } from '@/utils/tailwind';
 import { TitleToHandle } from '@/utils/title-to-handle';
 import { asText } from '@prismicio/client';
 import { parseGid } from '@shopify/hydrogen-react';
@@ -130,7 +131,8 @@ export async function generateMetadata({
     }
 }
 
-const fallback = <div className="min-h-4 w-full rounded-lg bg-gray-300 p-4" data-skeleton />;
+const ROUNDED_BLOCK_STYLES =
+    'flex h-auto w-full flex-col items-stretch justify-start gap-6 overflow-clip rounded-lg bg-gray-100 p-3 md:justify-stretch lg:gap-8 lg:p-5 empty:hidden';
 
 export default async function ProductPage({
     params: { domain, locale: localeData, handle }
@@ -249,7 +251,7 @@ export default async function ProductPage({
 
                 <div className="flex flex-col gap-4 md:flex-row md:flex-nowrap">
                     <section className={'flex h-auto w-full md:w-1/2 md:shrink-0 lg:w-full lg:max-w-[52rem]'}>
-                        <Suspense fallback={fallback}>
+                        <Suspense>
                             <ProductGallery
                                 initialImageId={initialVariant.image?.id || product.images.edges[0]?.node.id}
                                 images={product.images.edges.map((edge) => edge.node)}
@@ -258,81 +260,93 @@ export default async function ProductPage({
                         </Suspense>
                     </section>
 
-                    <section className="flex flex-col gap-3">
-                        <div>
-                            <Suspense fallback={<div className="h-4 w-full" data-skeleton />}>
-                                <ProductSavings product={product} i18n={i18n} />
-                            </Suspense>
-                        </div>
-
-                        <div className="flex h-auto w-full flex-col items-stretch justify-start gap-6 overflow-clip rounded-lg bg-gray-100 p-3 md:justify-stretch lg:gap-8 lg:p-5">
-                            <div className="flex h-auto w-full flex-col justify-start gap-3 lg:gap-4 lg:p-0">
-                                <header className="flex flex-col gap-1">
-                                    <div className="flex items-center gap-1 pb-2 empty:hidden">
-                                        {isProductVegan(product) ? (
-                                            <div
-                                                className="flex items-center justify-center gap-1 rounded-2xl bg-green-500 p-[0.4rem] px-3 text-xs font-semibold uppercase leading-none text-white shadow-sm"
-                                                title={t('this-product-is-vegan')}
-                                                data-nosnippet={true}
-                                            >
-                                                <AttributeIcon data={'vegan'} className="text-lg" />
-                                                {t('vegan')}
-                                            </div>
-                                        ) : null}
-                                    </div>
-
-                                    <div className="flex w-full grow flex-wrap text-3xl font-bold leading-none lg:leading-[1.1]">
-                                        <TitleTag className="text-inherit">{title}</TitleTag>
-                                        &ndash; {product.productType}
-                                    </div>
-
-                                    <Link
-                                        className="hover:text-primary normal-case leading-[1.2] text-gray-600 transition-colors md:text-lg"
-                                        href={`/collections/${TitleToHandle(product.vendor)}`}
-                                        title={t('browse-all-products-by-brand', product.vendor)}
-                                    >
-                                        {t('by')} <span className="font-semibold">{product.vendor}</span>
-                                    </Link>
-                                </header>
-
-                                <div className="flex items-end justify-start gap-2 md:gap-3">
-                                    <Suspense fallback={fallback}>
-                                        <ProductPricing product={product} />
-                                    </Suspense>
-                                </div>
+                    <Suspense fallback={<section className="flex p-4" data-skeleton />}>
+                        <section className="flex flex-col gap-3">
+                            <div>
+                                <Suspense fallback={<div className="h-4 w-full" data-skeleton />}>
+                                    <ProductSavings product={product} i18n={i18n} />
+                                </Suspense>
                             </div>
 
-                            <Suspense fallback={fallback}>
-                                <ProductContent shop={shop} product={product} i18n={i18n}>
-                                    <InfoLines product={product} />
-                                </ProductContent>
-                            </Suspense>
+                            <div className={cn(ROUNDED_BLOCK_STYLES)}>
+                                <div className="flex h-auto w-full flex-col justify-start gap-3 lg:gap-4 lg:p-0">
+                                    <header className="flex flex-col gap-1 border-0 border-b-2 border-solid border-gray-300 pb-4">
+                                        <div className="flex items-center gap-1 pb-2 empty:hidden">
+                                            {isProductVegan(product) ? (
+                                                <div
+                                                    className="flex items-center justify-center gap-1 rounded-2xl bg-green-500 p-[0.4rem] px-3 text-xs font-semibold uppercase leading-none text-white shadow-sm"
+                                                    title={t('this-product-is-vegan')}
+                                                    data-nosnippet={true}
+                                                >
+                                                    <AttributeIcon data={'vegan'} className="text-lg" />
+                                                    {t('vegan')}
+                                                </div>
+                                            ) : null}
+                                        </div>
 
-                            <Suspense fallback={fallback}>
-                                <Content
-                                    dangerouslySetInnerHTML={{
-                                        __html: content
-                                    }}
-                                />
-                            </Suspense>
+                                        <div className="flex w-full grow flex-wrap whitespace-pre-wrap text-3xl font-bold leading-none lg:leading-[1.1]">
+                                            <TitleTag className="text-inherit">
+                                                {title} <span data-nosnippet={true}>&ndash; {product.productType}</span>
+                                            </TitleTag>
+                                        </div>
 
-                            <Suspense fallback={fallback}>
-                                <ImportantProductDetails locale={locale} data={product} />
-                            </Suspense>
+                                        <Link
+                                            className="hover:text-primary normal-case leading-[1.2] text-gray-600 transition-colors md:text-lg"
+                                            href={`/collections/${TitleToHandle(product.vendor)}`}
+                                            title={t('browse-all-products-by-brand', product.vendor)}
+                                        >
+                                            {t('by')} <span className="font-semibold">{product.vendor}</span>
+                                        </Link>
+                                    </header>
 
-                            <Suspense fallback={fallback}>
-                                <div className="flex flex-wrap gap-3 border-0 border-t-2 border-solid border-gray-300 pt-4 md:gap-4">
-                                    <ProductDetails locale={locale} data={product} />
+                                    <div className="flex items-end justify-start gap-2 md:gap-3">
+                                        <Suspense>
+                                            <ProductPricing product={product} />
+                                        </Suspense>
+                                    </div>
+                                </div>
+
+                                <Suspense>
+                                    <ProductContent product={product} i18n={i18n} />
+                                </Suspense>
+                            </div>
+
+                            <div className={cn(ROUNDED_BLOCK_STYLES)}>
+                                <Suspense>
+                                    <InfoLines product={product} i18n={i18n} locale={locale} />
+                                </Suspense>
+                            </div>
+
+                            <Suspense>
+                                <div className={cn(ROUNDED_BLOCK_STYLES)}>
+                                    <Content
+                                        dangerouslySetInnerHTML={{
+                                            __html: content
+                                        }}
+                                    />
+
+                                    <Suspense>
+                                        <ImportantProductDetails locale={locale} data={product} />
+                                    </Suspense>
+
+                                    <Suspense>
+                                        <div className="flex flex-wrap gap-3 border-0 border-t-2 border-solid border-gray-300 pt-4 md:gap-4">
+                                            <ProductDetails locale={locale} data={product} />
+                                        </div>
+                                    </Suspense>
                                 </div>
                             </Suspense>
-                        </div>
-                    </section>
+                        </section>
+                    </Suspense>
                 </div>
 
-                <section className="flex flex-col gap-2 rounded-lg bg-gray-100 py-4 md:py-5">
-                    <h3 className="center px-4 text-lg font-semibold leading-none md:px-5 md:text-xl">
-                        {t('recommendations')}
-                    </h3>
+                <section className="mt-2 flex flex-col gap-2 rounded-lg border-2 border-solid border-gray-100 py-4 md:py-5 lg:mt-6">
+                    <p
+                        className="block px-4 text-lg font-medium normal-case leading-none md:px-5 md:text-2xl"
+                        data-nosnippet={true}
+                    >
+                        {t('you-may-also-like')}
+                    </p>
 
                     <Suspense fallback={<RecommendedProducts.skeleton />}>
                         <RecommendedProducts shop={shop} locale={locale} product={product} className="px-4 md:px-5" />

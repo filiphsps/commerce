@@ -56,7 +56,7 @@ export async function generateStaticParams(): Promise<LayoutParams[]> {
         )
     )
         .flat(1)
-        .filter((_) => _);
+        .filter(Boolean);
 }
 
 export async function generateViewport({ params: { domain } }: { params: LayoutParams }): Promise<Viewport> {

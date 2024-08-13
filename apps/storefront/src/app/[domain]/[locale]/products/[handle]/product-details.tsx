@@ -1,5 +1,6 @@
 import 'server-only';
 
+import { isProductConfectionary, type Product } from '@/api/product';
 import { getDictionary } from '@/utils/dictionary';
 import { useTranslation } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
@@ -9,7 +10,6 @@ import { Alert } from '@/components/informational/alert';
 import { AttributeIcon } from '@/components/products/attribute-icon';
 import { Label } from '@/components/typography/label';
 
-import type { Product } from '@/api/product';
 import type { Locale } from '@/utils/locale';
 import type { ParsedMetafields } from '@shopify/hydrogen-react';
 
@@ -22,16 +22,21 @@ export type ProductDetailsProps = {
     locale: Locale;
     data: Product;
 };
-const ProductDetails = async ({
-    locale,
-    data: {
+const ProductDetails = async ({ locale, data: product }: ProductDetailsProps) => {
+    const i18n = await getDictionary(locale);
+    const { t } = useTranslation('product', i18n);
+
+    if (!isProductConfectionary(product)) {
+        return null;
+    }
+
+    const {
         ingredients,
         flavors,
         variants: { edges: variants }
-    }
-}: ProductDetailsProps) => {
-    //const parsedNutritionalContent = nutritionalContent ? parseMetafield(nutritionalContent) : null;
+    } = product;
 
+    //const parsedNutritionalContent = nutritionalContent ? parseMetafield(nutritionalContent) : null;
     const parsedIngredients = ingredients
         ? parseMetafield<ParsedMetafields['single_line_text_field']>(ingredients).parsedValue
         : null;
@@ -39,15 +44,12 @@ const ProductDetails = async ({
         ? parseMetafield<ParsedMetafields['list.single_line_text_field']>(flavors).parsedValue
         : null;
 
-    const i18n = await getDictionary(locale);
-    const { t } = useTranslation('product', i18n);
-
     return (
         <>
             {parsedFlavors ? (
                 <div className={cn(COMMON_STYLES, '')}>
                     <Label className={cn(LABEL_STYLES)}>{t('attributes')}</Label>
-                    <div className="flex h-full flex-wrap items-start gap-1">
+                    <div className="flex h-full flex-wrap items-start gap-2">
                         {parsedFlavors.length > 0
                             ? parsedFlavors.map((flavor) => (
                                   <div key={flavor} className={cn(CONTENT_STYLES)}>
@@ -65,9 +67,9 @@ const ProductDetails = async ({
             {variants.find(({ node: { sku, title } }) => !!sku && title !== 'Default Title') ? ( // TODO: Deal with the `Default Title` variant in a better way.
                 <div className={cn(COMMON_STYLES, 'md:max-w-64')}>
                     <Label className={cn(LABEL_STYLES, 'normal-case')}>{t('skus')}</Label>
-                    <div className="flex h-full flex-wrap items-start gap-1">
-                        {variants.map(({ node: { sku, title } }) => (
-                            <div key={sku} className={cn(CONTENT_STYLES, 'block')} title={`${sku} — ${title}`}>
+                    <div className="flex h-full flex-wrap items-start gap-2">
+                        {variants.map(({ node: { sku, title, id } }) => (
+                            <div key={id} className={cn(CONTENT_STYLES, 'block')} title={`${sku} — ${title}`}>
                                 {sku}
                             </div>
                         ))}
@@ -77,7 +79,7 @@ const ProductDetails = async ({
 
             {parsedIngredients ? (
                 <div className={cn(COMMON_STYLES, 'break-words')}>
-                    <Label className={cn(LABEL_STYLES)}>Ingredients</Label>
+                    <Label className={cn(LABEL_STYLES)}>{t('ingredients')}</Label>
                     <p className={cn('text-base leading-tight')}>{parsedIngredients}</p>
                 </div>
             ) : null}

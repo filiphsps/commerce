@@ -42,21 +42,30 @@
         "email": "Email",
         "phone": "Phone",
         "email-tooltip": "Send us an email",
-        "phone-tooltip": "Call us"
+        "phone-tooltip": "Call us",
+        "wishlist": "Wishlist"
     },
     "product": {
         "add-to-wishlist": "Add to Wishlist",
         "attributes": "Attributes",
         "browse-all-products-by-brand": "Browse all products by {0}",
         "by": "by",
+        "dispatch-within-n-business-days": "Dispatch within {0} business days",
+        "in-stock-and-available": "In stock and available",
+        "in-stock": "In stock",
+        "ingredients": "Ingredients",
+        "n-in-stock-and-available": "{0} in stock and available",
+        "n-in-stock": "{0} in stock",
         "new": "New",
+        "nutritional-content": "Nutritional Content",
         "percentage-off": "{0}% OFF",
-        "recommendations": "People with similar taste as you also loved these",
+        "recommendations": "Recommendations",
+        "save-n-per-item": "Save {0} per item!",
         "skus": "SKUs",
         "this-product-is-vegan": "This product is vegan!",
         "vegan": "Vegan",
         "what-a-deal": "What a deal!",
-        "you-save": "You save",
-        "save-n-per-item": "Save {0} per item!"
+        "you-may-also-like": "You may also like",
+        "you-save": "You save"
     }
 }

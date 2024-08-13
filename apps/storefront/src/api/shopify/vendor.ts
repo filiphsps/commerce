@@ -60,7 +60,7 @@ export const VendorsApi = async ({ api }: VendorsOptions): Promise<VendorModel[]
         `);
 
         // FIXME: Handle errors and missing data.
-        if (!data?.products.edges! || data.products.edges.length <= 0) {
+        if (!data || data.products.edges.length <= 0) {
             throw new NotFoundError('vendors');
         }
 

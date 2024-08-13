@@ -1,43 +1,84 @@
+import 'server-only';
+
 import { FiCheck } from 'react-icons/fi';
 
+import { showProductInfoLines } from '@/utils/flags';
+import { useTranslation } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 
 import { Label } from '@/components/typography/label';
 
 import type { Product } from '@/api/product';
+import type { Locale, LocaleDictionary } from '@/utils/locale';
 import type { HTMLProps } from 'react';
 
 export type StockStatusProps = {
     product?: Product;
-};
-const StockStatus = ({ product }: StockStatusProps) => {
-    if (!product || !product.availableForSale) return null;
-
-    // TODO: Proper i18n.
-    const available = `In stock and available`;
+    i18n: LocaleDictionary;
+} & Omit<HTMLProps<HTMLDivElement>, 'children'>;
+const StockStatus = ({ product, i18n, className, ...props }: StockStatusProps) => {
+    const { t } = useTranslation('product', i18n);
+    if (!product) {
+        return null;
+    }
 
     return (
         <section
-            className={cn('flex items-center justify-start gap-1 *:leading-none *:text-green-600')}
-            title={available}
+            className={cn('flex items-center justify-start gap-1 *:leading-none *:text-green-600', className)}
+            title={t('in-stock-and-available')}
+            {...props}
         >
             <FiCheck className="stroke-2 align-middle text-base" />
-            <Label className="text-base font-semibold normal-case">{available}</Label>
+            <Label className="text-base font-semibold normal-case">
+                {product.totalInventory ? t('n-in-stock', product.totalInventory.toString()) : t('in-stock')}
+            </Label>
         </section>
     );
 };
 StockStatus.displayName = 'Nordcom.Products.StockStatus';
 
-export type InfoLinesProps = {
+export type GetOrderByEstimateProps = {
     product?: Product;
+    i18n: LocaleDictionary;
+    locale: Locale;
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 
-const InfoLines = ({ product, className, ...props }: InfoLinesProps) => {
-    if (!product) return null;
+export const GetOrderByEstimate = ({ product, i18n, locale, className, ...props }: GetOrderByEstimateProps) => {
+    const { t } = useTranslation('product', i18n);
+    if (!product) {
+        return null;
+    }
+
+    const processingTimeInDays = 5; // TODO: Make this configurable.
 
     return (
-        <div className={cn('flex w-full select-none flex-col items-start gap-4', className)} {...props}>
-            <StockStatus product={product} />
+        <section className={cn('flex items-center justify-start gap-1', className)} {...props}>
+            <Label className="text-base font-semibold normal-case">
+                {t('dispatch-within-n-business-days', processingTimeInDays)}
+            </Label>
+        </section>
+    );
+};
+
+export type InfoLinesProps = {
+    product?: Product;
+    i18n: LocaleDictionary;
+    locale: Locale;
+} & Omit<HTMLProps<HTMLDivElement>, 'children'>;
+
+const InfoLines = async ({ product, i18n, locale, className, ...props }: InfoLinesProps) => {
+    if (!product || (await showProductInfoLines())) {
+        return null;
+    }
+
+    return (
+        <div className={cn('flex w-full select-none flex-col items-start gap-4 empty:hidden', className)} {...props}>
+            {product.availableForSale ? (
+                <>
+                    <StockStatus product={product} i18n={i18n} />
+                    <GetOrderByEstimate product={product} i18n={i18n} locale={locale} />
+                </>
+            ) : null}
         </div>
     );
 };

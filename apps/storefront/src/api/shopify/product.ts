@@ -105,6 +105,7 @@ export const PRODUCT_FRAGMENT = `
     productType
     tags
     trackingParameters
+    totalInventory
     seo {
         title
         description

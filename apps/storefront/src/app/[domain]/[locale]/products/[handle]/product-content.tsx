@@ -4,8 +4,6 @@ import styles from './page.module.scss';
 
 import { useMemo, useState } from 'react';
 
-import type { OnlineShop } from '@nordcom/commerce-db';
-
 import { type LocaleDictionary, useTranslation } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 import { Money, ProductProvider } from '@shopify/hydrogen-react';
@@ -16,15 +14,12 @@ import { QuantityProvider } from '@/components/products/quantity-provider';
 import type { PricingProps } from '@/components/typography/pricing';
 
 import type { Product } from '@/api/product';
-import type { ReactNode } from 'react';
 
 export type ProductContentProps = {
-    shop: OnlineShop;
     product: Product;
     i18n: LocaleDictionary;
-    children?: ReactNode;
 };
-export function ProductContent({ shop, product, i18n, children }: ProductContentProps) {
+export function ProductContent({ product, i18n }: ProductContentProps) {
     const searchParams = useSearchParams();
     const initialVariantId = useMemo(
         () => (searchParams.has('variant') ? `gid://shopify/ProductVariant/${searchParams.get('variant')}` : undefined),
@@ -36,9 +31,7 @@ export function ProductContent({ shop, product, i18n, children }: ProductContent
     return (
         <ProductProvider data={product as any} initialVariantId={initialVariantId}>
             <QuantityProvider quantity={quantity} setQuantity={setQuantity}>
-                <ProductActionsContainer i18n={i18n} className={styles.actions}>
-                    {children}
-                </ProductActionsContainer>
+                <ProductActionsContainer i18n={i18n} className={styles.actions} />
             </QuantityProvider>
         </ProductProvider>
     );
@@ -120,7 +113,7 @@ export function ProductSavings({ i18n, product, className }: ProductSavingsProps
         <>
             <div
                 className={cn(
-                    'bg-sale-stripes flex items-center justify-between gap-1 rounded-lg p-2 px-4 text-[0.82rem] font-semibold uppercase text-white md:px-5 md:text-sm',
+                    'bg-sale-stripes flex items-center justify-between gap-1 rounded-lg p-2 px-4 text-[0.82rem] font-semibold text-white md:px-5 md:text-sm',
                     className
                 )}
             >
@@ -128,6 +121,7 @@ export function ProductSavings({ i18n, product, className }: ProductSavingsProps
                     {t(
                         'save-n-per-item',
                         <Money
+                            key={savings}
                             data={{
                                 amount: savings.toString(),
                                 currencyCode: price.currencyCode
