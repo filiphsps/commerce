@@ -44,7 +44,11 @@ export const HeaderProvider = ({ children = null, loaderColor }: HeaderProviderP
                 document.body.setAttribute('data-scrolled', scrolled);
         };
         window.addEventListener('scroll', onScroll);
-        return () => window.removeEventListener('scroll', onScroll);
+        return () => {
+            try {
+                window.removeEventListener('scroll', onScroll);
+            } catch {}
+        };
     }, []);
 
     const [menu, setMenu] = useState<string | null>(null);
