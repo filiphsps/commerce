@@ -46,7 +46,7 @@ const ProductGallery = ({ initialImageId, images, className, ...props }: Product
         <section draggable={false} className={cn(className)} {...props}>
             <div className="sticky top-36 flex flex-col gap-2 lg:gap-4">
                 <div
-                    className="relative aspect-[4/3] rounded-lg border-2 border-solid border-gray-100 bg-white p-8 md:p-16"
+                    className="relative lg:aspect-[4/3] rounded-lg border-2 border-solid border-gray-100 bg-white p-8 md:p-16"
                     {...loadingProps}
                 >
                     {image ? (
