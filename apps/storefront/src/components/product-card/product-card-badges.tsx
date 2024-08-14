@@ -19,13 +19,12 @@ const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
     const selectedVariant = FirstAvailableVariant(product);
     const { t } = useTranslation('product', i18n);
 
-    if (!selectedVariant) return null;
+    if (!selectedVariant) {
+        return null;
+    }
 
-    const isNewProduct =
-        product.createdAt &&
-        Math.abs(new Date(product.createdAt).getTime() - new Date().getTime()) / (24 * 60 * 60 * 1000) < 15; // TODO: Do this properly through a tag or similar.
     const isVegan = isProductVegan(product);
-    const isSale = !!selectedVariant.compareAtPrice?.amount;
+    const isSale = typeof selectedVariant.compareAtPrice?.amount !== 'undefined';
 
     let discount = 0;
     if (isSale && selectedVariant) {
@@ -33,7 +32,6 @@ const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
         const current = Number.parseFloat(selectedVariant.price!.amount!);
         discount = Math.round((100 * (compare - current)) / compare);
     }
-    const shouldShowBadge = isNewProduct || isVegan;
 
     return (
         <>
@@ -44,22 +42,12 @@ const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
                     </div>
                 ) : null}
 
-                {shouldShowBadge ? (
-                    <>
-                        {isVegan && (
-                            <div className={cn(COMMON_BADGE_STYLES, 'bg-green-500 text-white')}>
-                                <AttributeIcon data={'vegan'} className="text-lg" />
-                                {t('vegan')}
-                            </div>
-                        )}
-
-                        {isNewProduct && (
-                            <div className={cn(COMMON_BADGE_STYLES, 'bg-gray-100 text-gray-700')} data-nosnippet={true}>
-                                {t('new')}
-                            </div>
-                        )}
-                    </>
-                ) : null}
+                {isVegan && (
+                    <div className={cn(COMMON_BADGE_STYLES, 'bg-green-500 text-white')}>
+                        <AttributeIcon data={'vegan'} className="text-lg" />
+                        {t('vegan')}
+                    </div>
+                )}
             </div>
         </>
     );

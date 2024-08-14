@@ -270,11 +270,11 @@ export default async function ProductPage({
 
                             <div className={cn(ROUNDED_BLOCK_STYLES)}>
                                 <div className="flex h-auto w-full flex-col justify-start gap-3 lg:gap-4 lg:p-0">
-                                    <header className="flex flex-col gap-1 border-0 border-b-2 border-solid border-gray-300 pb-4">
+                                    <header className="flex flex-col gap-1">
                                         <div className="flex items-center gap-1 pb-2 empty:hidden">
                                             {isProductVegan(product) ? (
                                                 <div
-                                                    className="flex items-center justify-center gap-1 rounded-2xl bg-green-500 p-[0.4rem] px-3 text-xs font-semibold uppercase leading-none text-white shadow-sm"
+                                                    className="flex items-center justify-center gap-1 rounded-2xl bg-green-500 p-[0.4rem] px-3 text-xs font-semibold uppercase leading-none text-white"
                                                     title={t('this-product-is-vegan')}
                                                     data-nosnippet={true}
                                                 >
