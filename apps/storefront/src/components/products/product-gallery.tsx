@@ -29,10 +29,14 @@ const ProductGallery = ({ initialImageId, images, className, ...props }: Product
     );
 
     useEffect(() => {
-        if (selected || !images) return;
+        if (selected || !images) {
+            return;
+        }
 
         const target = initialImageId ? images.find(({ id }) => id === initialImageId) : images[0];
-        if (!target) return;
+        if (!target) {
+            return;
+        }
 
         setImage(target);
     }, [, images, initialImageId]);
@@ -46,7 +50,7 @@ const ProductGallery = ({ initialImageId, images, className, ...props }: Product
         <section draggable={false} className={cn(className)} {...props}>
             <div className="sticky top-36 flex flex-col gap-2 lg:gap-4">
                 <div
-                    className="relative lg:aspect-[4/3] rounded-lg border-2 border-solid border-gray-100 bg-white p-8 md:p-16"
+                    className="relative rounded-lg border-2 border-solid border-gray-100 bg-white p-8 md:p-16 lg:aspect-[4/3]"
                     {...loadingProps}
                 >
                     {image ? (
@@ -58,7 +62,7 @@ const ProductGallery = ({ initialImageId, images, className, ...props }: Product
                             src={image.url!}
                             alt={image.altText!}
                             title={image.altText!}
-                            //width={500}
+                            width={500}
                             height={500}
                             sizes="(max-width: 920px) 90vw, 500px"
                             loading="eager"
@@ -92,7 +96,7 @@ const ProductGallery = ({ initialImageId, images, className, ...props }: Product
                                         aria-label={`Enlarge image #${index + 1}`}
                                         onClick={() => setImage(image)}
                                         className={cn(
-                                            'hover:border-primary h-full appearance-none rounded-lg border-2 border-solid border-gray-100 bg-white transition-all md:p-8 lg:aspect-square lg:h-full lg:w-auto'
+                                            'hover:border-primary flex h-full appearance-none items-center justify-center rounded-lg border-2 border-solid border-gray-100 bg-white transition-all md:p-8 lg:aspect-square lg:h-full lg:w-auto'
                                         )}
                                         {...loadingProps}
                                     >

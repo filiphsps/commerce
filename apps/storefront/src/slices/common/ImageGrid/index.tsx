@@ -27,7 +27,9 @@ const ImageGrid = ({ slice, index }: ImageGridProps): JSX.Element => {
             data-slice-variation={slice.variation}
         >
             {slice.items.map(({ href, title, image }) => {
-                if (!image || !image.url) return null;
+                if (!image.url) {
+                    return null;
+                }
 
                 return (
                     <Link key={href!} className={styles.item} href={href!} title={title!}>
