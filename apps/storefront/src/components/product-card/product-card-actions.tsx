@@ -47,7 +47,7 @@ const ProductCardActions = ({ i18n, data: product, selectedVariant }: ProductCar
         [linesUpdate, lines]
     );
 
-    const baseStyles = 'rounded-lg p-2 font-semibold overflow-clip *:h-10 mt-2 max-h-11';
+    const baseStyles = 'rounded-lg p-2 font-semibold overflow-clip *:h-10 mt-2 max-h-11 min-h-10';
 
     if (line) {
         return (
