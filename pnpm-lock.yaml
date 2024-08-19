@@ -599,8 +599,8 @@ importers:
         specifier: 0.1.1
         version: 0.1.1
       '@slicemachine/adapter-next':
-        specifier: 0.3.45
-        version: 0.3.45(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(next@15.0.0-canary.112(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-f1f288c-20240725)(react-dom@19.0.0-rc-68dbd84b-20240812(react@19.0.0-rc-68dbd84b-20240812))(react@19.0.0-rc-68dbd84b-20240812)(sass@1.77.8))(react@19.0.0-rc-68dbd84b-20240812)(uuid@9.0.1)
+        specifier: 0.3.46
+        version: 0.3.46(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(next@15.0.0-canary.112(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-f1f288c-20240725)(react-dom@19.0.0-rc-68dbd84b-20240812(react@19.0.0-rc-68dbd84b-20240812))(react@19.0.0-rc-68dbd84b-20240812)(sass@1.77.8))(react@19.0.0-rc-68dbd84b-20240812)(uuid@9.0.1)
       '@tailwindcss/aspect-ratio':
         specifier: 0.4.2
         version: 0.4.2(tailwindcss@3.4.10(ts-node@10.9.1(@types/node@16.18.11)(typescript@5.5.4)))
@@ -2289,8 +2289,8 @@ packages:
   '@sinclair/typebox@0.27.8':
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
 
-  '@slicemachine/adapter-next@0.3.45':
-    resolution: {integrity: sha512-BKjUWhdufMGnWszsVg5YxNeRCeRlFd0yW2QnVLiyyaZnVM3jh7zGEd8POEmCqK4Nu8uuN7MWcrK4eBxcc70IPQ==}
+  '@slicemachine/adapter-next@0.3.46':
+    resolution: {integrity: sha512-KsjNBvY0WcK4I4qKvI0xZM8Y1mqPMkxkUvRAhCnlksUunb07tFM8cn72SILv4u4UJr6KFK83e7dvc/ncJmKypQ==}
     engines: {node: '>=14.15.0'}
     peerDependencies:
       next: ^11 || ^12 || ^13 || ^14 || ^15.0.0-rc.0
@@ -2307,6 +2307,10 @@ packages:
 
   '@slicemachine/plugin-kit@0.4.45':
     resolution: {integrity: sha512-+im8M5bIqhfurUuP+bhFakivND7nFfqX0rekNpfncTSVELnCdrz7GgoNa54RtT+v0kzzT6JB08bTEgwuEINOHg==}
+    engines: {node: '>=14.15.0'}
+
+  '@slicemachine/plugin-kit@0.4.46':
+    resolution: {integrity: sha512-EUW5gt2a8ChAcFKZ8kGiDQhB+QVSfqwkjdfb8eAPvA6aGAcn5xRP6+oqZtNNl0s8P6qmdkSMaxabs0zjIndvXw==}
     engines: {node: '>=14.15.0'}
 
   '@sveltejs/kit@1.30.4':
@@ -9262,11 +9266,11 @@ snapshots:
 
   '@sinclair/typebox@0.27.8': {}
 
-  '@slicemachine/adapter-next@0.3.45(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(next@15.0.0-canary.112(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-f1f288c-20240725)(react-dom@19.0.0-rc-68dbd84b-20240812(react@19.0.0-rc-68dbd84b-20240812))(react@19.0.0-rc-68dbd84b-20240812)(sass@1.77.8))(react@19.0.0-rc-68dbd84b-20240812)(uuid@9.0.1)':
+  '@slicemachine/adapter-next@0.3.46(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(next@15.0.0-canary.112(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-f1f288c-20240725)(react-dom@19.0.0-rc-68dbd84b-20240812(react@19.0.0-rc-68dbd84b-20240812))(react@19.0.0-rc-68dbd84b-20240812)(sass@1.77.8))(react@19.0.0-rc-68dbd84b-20240812)(uuid@9.0.1)':
     dependencies:
       '@prismicio/simulator': 0.1.4
       '@prismicio/types-internal': 2.6.0(@types/uuid@9.0.8)(fp-ts@2.16.6)(io-ts-types@0.5.19(fp-ts@2.16.6)(io-ts@2.2.21(fp-ts@2.16.6))(monocle-ts@2.3.13(fp-ts@2.16.6))(newtype-ts@0.3.5(fp-ts@2.16.6)(monocle-ts@2.3.13(fp-ts@2.16.6))))(io-ts@2.2.21(fp-ts@2.16.6))(uuid@9.0.1)
-      '@slicemachine/plugin-kit': 0.4.45(@prismicio/types@0.2.9)
+      '@slicemachine/plugin-kit': 0.4.46(@prismicio/types@0.2.9)
       common-tags: 1.8.2
       fp-ts: 2.16.6
       io-ts: 2.2.21(fp-ts@2.16.6)
@@ -9318,6 +9322,22 @@ snapshots:
       - uuid
 
   '@slicemachine/plugin-kit@0.4.45(@prismicio/types@0.2.9)':
+    dependencies:
+      '@prismicio/client': 7.6.0
+      common-tags: 1.8.2
+      defu: 6.1.4
+      dotenv: 16.3.1
+      fp-ts: 2.16.6
+      fs-extra: 11.1.1
+      io-ts: 2.2.21(fp-ts@2.16.6)
+      io-ts-reporters: 2.0.1(fp-ts@2.16.6)(io-ts@2.2.21(fp-ts@2.16.6))
+      p-limit: 4.0.0
+      prettier: 3.3.3
+      prismic-ts-codegen: 0.1.21(@prismicio/client@7.6.0)(@prismicio/types@0.2.9)
+    transitivePeerDependencies:
+      - '@prismicio/types'
+
+  '@slicemachine/plugin-kit@0.4.46(@prismicio/types@0.2.9)':
     dependencies:
       '@prismicio/client': 7.6.0
       common-tags: 1.8.2
