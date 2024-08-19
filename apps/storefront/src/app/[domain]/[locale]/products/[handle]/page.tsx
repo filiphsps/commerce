@@ -235,7 +235,7 @@ export default async function ProductPage({
         };
 
         let title = product.title.trim();
-        if (title.endsWith(product.productType)) {
+        if (product.productType.length > 0 && title.endsWith(product.productType)) {
             title = title.slice(0, -product.productType.length).trim();
         }
 
@@ -250,7 +250,11 @@ export default async function ProductPage({
                 <Breadcrumbs shop={shop} title={`${product.vendor} ${product.title}`} />
 
                 <div className="flex flex-col gap-4 md:flex-row md:flex-nowrap">
-                    <section className={'flex h-auto w-full md:w-1/2 md:shrink-0 lg:w-full lg:max-w-[52rem]'}>
+                    <section
+                        className={
+                            'flex h-auto w-full md:w-1/2 md:shrink-0 lg:w-full lg:max-w-[42rem] xl:max-w-[52rem]'
+                        }
+                    >
                         <Suspense>
                             <ProductGallery
                                 initialImageId={initialVariant.image?.id || product.images.edges[0]?.node.id}
@@ -286,7 +290,10 @@ export default async function ProductPage({
 
                                         <div className="flex w-full grow flex-wrap whitespace-pre-wrap text-3xl font-bold leading-none lg:leading-[1.1]">
                                             <TitleTag className="text-inherit">
-                                                {title} <span data-nosnippet={true}>&ndash; {product.productType}</span>
+                                                {title}{' '}
+                                                {product.productType ? (
+                                                    <span data-nosnippet={true}>&ndash; {product.productType}</span>
+                                                ) : null}
                                             </TitleTag>
                                         </div>
 
@@ -330,7 +337,7 @@ export default async function ProductPage({
                                     </Suspense>
 
                                     <Suspense>
-                                        <div className="flex flex-wrap gap-3 border-0 border-t-2 border-solid border-gray-300 pt-4 md:gap-4">
+                                        <div className="flex flex-wrap gap-3 border-0 border-t-2 border-solid border-gray-300 pt-4 empty:hidden md:gap-4">
                                             <ProductDetails locale={locale} data={product} />
                                         </div>
                                     </Suspense>

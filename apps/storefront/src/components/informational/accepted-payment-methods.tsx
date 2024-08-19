@@ -41,6 +41,7 @@ export const AcceptedPaymentMethods = async ({ shop, locale, className, ...props
                     priority={false}
                     loading="lazy"
                     decoding="async"
+                    loader={undefined}
                 />
             ))}
 
