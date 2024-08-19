@@ -88,7 +88,7 @@
         "@happy-dom/global-registrator": "13.2.2",
         "@next/bundle-analyzer": "14.2.4",
         "@nordcom/prettier": "0.1.1",
-        "@slicemachine/adapter-next": "0.3.45",
+        "@slicemachine/adapter-next": "0.3.46",
         "@tailwindcss/typography": "0.5.14",
         "@tailwindcss/aspect-ratio": "0.4.2",
         "@testing-library/jest-dom": "6.4.8",
