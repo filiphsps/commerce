@@ -146,8 +146,8 @@ importers:
         specifier: 2024.4.0
         version: 2024.4.0(@types/react@18.2.75)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@shopify/shopify-api':
-        specifier: 11.2.0
-        version: 11.2.0
+        specifier: 11.3.0
+        version: 11.3.0
       '@vercel/analytics':
         specifier: 1.3.1
         version: 1.3.1(next@14.2.1(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(sass@1.77.8))(react@18.2.0)
@@ -2268,8 +2268,8 @@ packages:
     resolution: {integrity: sha512-Lln7vglzLK9KiYhl9ucQFVM7ArlpUM21xkDriBX8kVrqsoBsi+4vFIjf1wjhNPT0J/zHMjky7jiTnxVfdm+xXw==}
     engines: {node: '>=18.12.0'}
 
-  '@shopify/shopify-api@11.2.0':
-    resolution: {integrity: sha512-+MQme3Ca4JOLxAWJyXFWM7Ybt7EC7e8Mhgid2dGrVkl054FtwkrUyuY1al77o/Q0roQtTtEqz5EwjcFUggvCNg==}
+  '@shopify/shopify-api@11.3.0':
+    resolution: {integrity: sha512-bqREKbm+u4yUYy1JotToOlf9d2RcXgIV7THGuzMm9bAyW6ZOw2yKXhUuUibOA4NMHPJE0mHrEV3xTypmKfuCOw==}
 
   '@shopify/storefront-api-client@1.0.1':
     resolution: {integrity: sha512-cz9gp7aITrbNyTO8ULOHFQA5CuBtRqkc23RJW8iX2FticneGgksUg4Uwj5yQ+6u5BMWoEcLn9+B6TS799YOTcA==}
@@ -3300,6 +3300,9 @@ packages:
   buffer-crc32@0.2.13:
     resolution: {integrity: sha512-VO9Ht/+p3SN7SKWqcrgEzjGbRSJYTx+Q1pTQC0wrWqHx0vpJraQ6GtHx8tvcg1rlK1byhU5gccxgOgj7B0TDkQ==}
 
+  buffer-equal-constant-time@1.0.1:
+    resolution: {integrity: sha512-zRpUiDwd/xk6ADqPMATG8vc9VPrkck7T07OIx0gnjmJAnHnTVXNQG3vfvWNuiZIkwu9KrKdA1iJKfsfTVxE6NA==}
+
   buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
 
@@ -3775,6 +3778,9 @@ packages:
 
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
+
+  ecdsa-sig-formatter@1.0.11:
+    resolution: {integrity: sha512-nagl3RYrbNv6kQkeJIpt6NJZy8twLB/2vtz6yN9Z4vRKHN4/QZJIEbqohALSgwKdnksuY3k5Addp5lg8sVoVcQ==}
 
   edge-runtime@2.5.9:
     resolution: {integrity: sha512-pk+k0oK0PVXdlT4oRp4lwh+unuKB7Ng4iZ2HB+EZ7QCEQizX360Rp/F4aRpgpRgdP2ufB35N+1KppHmYjqIGSg==}
@@ -4876,8 +4882,8 @@ packages:
   isarray@2.0.5:
     resolution: {integrity: sha512-xHjhDr3cNBK0BzdUJSPXZntQUx/mwMS5Rw4A7lPJ90XGAO6ISP/ePDNuo0vhqOZU+UD5JoodwCAAoZQd3FeAKw==}
 
-  isbot@5.1.13:
-    resolution: {integrity: sha512-RXtBib4m9zChSb+187EpNQML7Z3u2i34zDdqcRFZnqSJs0xdh91xzJytc5apYVg+9Y4NGnUQ0AIeJvX9FAnCUw==}
+  isbot@5.1.17:
+    resolution: {integrity: sha512-/wch8pRKZE+aoVhRX/hYPY1C7dMCeeMyhkQLNLNlYAbGQn9bkvMB8fOUXNnk5I0m4vDYbBJ9ciVtkr9zfBJ7qA==}
     engines: {node: '>=18'}
 
   isexe@2.0.0:
@@ -4993,9 +4999,19 @@ packages:
   jsonfile@6.1.0:
     resolution: {integrity: sha512-5dgndWOriYSm5cnYaJNhalLNDKOqFwyDB/rr1E9ZsGciGvKPs8R2xYGCacuf3z6K1YKDz182fd+fY3cn3pMqXQ==}
 
+  jsonwebtoken@9.0.2:
+    resolution: {integrity: sha512-PRp66vJ865SSqOlgqS8hujT5U4AOgMfhrwYIuIhfKaoSCZcirrmASQr8CX7cUg+RMih+hgznrjp99o+W4pJLHQ==}
+    engines: {node: '>=12', npm: '>=6'}
+
   jsx-ast-utils@3.3.5:
     resolution: {integrity: sha512-ZZow9HBI5O6EPgSJLUb8n2NKgmVWTwCvHGwFuJlMjvLFqlGG6pjirPhtdsseaLZjSibD8eegzmYpUZwoIlj2cQ==}
     engines: {node: '>=4.0'}
+
+  jwa@1.4.1:
+    resolution: {integrity: sha512-qiLX/xhEEFKUAJ6FiBMbes3w9ATzyk5W7Hvzpa/SLYdxNtng+gcurvrI7TbACjIXlsJyr05/S1oUhZrc63evQA==}
+
+  jws@3.2.2:
+    resolution: {integrity: sha512-YHlZCB6lMTllWDtSPHz/ZXTsi8S00usEV6v1tjq8tOUZzw7DpSDWVXjXDre6ed1w/pd495ODpHZYSdkRTsa0HA==}
 
   kareem@2.6.3:
     resolution: {integrity: sha512-C3iHfuGUXK2u8/ipq9LfjFfXFxAZMQJJq7vLS45r3D9Y2xQ/m4S8zaR4zMLFWh9AsNPXmcFfUDhTEO8UIC/V6Q==}
@@ -5116,17 +5132,32 @@ packages:
   lodash.identity@2.3.0:
     resolution: {integrity: sha512-NYJ2r2cwy3tkx/saqbIZEX6oQUzjWTnGRu7d/zmBjMCZos3eHBxCpbvWFWSetv8jFVrptsp6EbWjzNgBKhUoOA==}
 
+  lodash.includes@4.3.0:
+    resolution: {integrity: sha512-W3Bx6mdkRTGtlJISOvVD/lbqjTlPPUDTMnlXZFnVwi9NKJ6tiAk6LVdlhZMm17VZisqhKcgzpO5Wz91PCt5b0w==}
+
+  lodash.isboolean@3.0.3:
+    resolution: {integrity: sha512-Bz5mupy2SVbPHURB98VAcw+aHh4vRV5IPNhILUCsOzRmsTmSQ17jIuqopAentWoehktxGd9e/hbIXq980/1QJg==}
+
   lodash.isequal@4.5.0:
     resolution: {integrity: sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==}
 
   lodash.isfunction@2.3.0:
     resolution: {integrity: sha512-X5lteBYlCrVO7Qc00fxP8W90fzRp6Ax9XcHANmU3OsZHdSyIVZ9ZlX5QTTpRq8aGY+9I5Rmd0UTzTIIyWPugEQ==}
 
+  lodash.isinteger@4.0.4:
+    resolution: {integrity: sha512-DBwtEWN2caHQ9/imiNeEA5ys1JoRtRfY3d7V9wkqtbycnAmTvRRmbHKDV4a0EYc678/dia0jrte4tjYwVBaZUA==}
+
+  lodash.isnumber@3.0.3:
+    resolution: {integrity: sha512-QYqzpfwO3/CWf3XP+Z+tkQsfaLL/EnUlXWVkIk5FUPc4sBdTehEqZONuyRt2P67PXAk+NXmTBcc97zw9t1FQrw==}
+
   lodash.isobject@2.3.0:
     resolution: {integrity: sha512-jo1pfV61C4TE8BfEzqaHj6EIKiSkFANJrB6yscwuCJMSRw5tbqjk4Gv7nJzk4Z6nFKobZjGZ8Qd41vmnwgeQqQ==}
 
   lodash.isplainobject@4.0.6:
     resolution: {integrity: sha512-oSXzaWypCMHkPC3NvBEaPHf0KsA5mvPrOPgQWDsbg8n7orZ290M0BmC/jgRZ4vcJ6DTAhjrsSYgdsW/F+MFOBA==}
+
+  lodash.isstring@4.0.1:
+    resolution: {integrity: sha512-0wJxfxH1wgO3GrbuP+dTTk7op+6L41QCXbGINEmD+ny/G/eCqGzxyCsh7159S+mgDDcoarnBw6PC1PS5+wUGgw==}
 
   lodash.keys@2.3.0:
     resolution: {integrity: sha512-c0UW0ffqMxSCtoVbmVt2lERJLkEqgoOn2ejPsWXzr0ZrqRbl3uruGgwHzhtqXxi6K/ei3Ey7zimOqSwXgzazPg==}
@@ -5136,6 +5167,9 @@ packages:
 
   lodash.noop@2.3.0:
     resolution: {integrity: sha512-NpSm8HRm1WkBBWHUveDukLF4Kfb5P5E3fjHc9Qre9A11nNubozLWD2wH3UBTZbu+KSuX8aSUvy9b+PUyEceJ8g==}
+
+  lodash.once@4.1.1:
+    resolution: {integrity: sha512-Sb487aTOCr9drQVL8pIxOzVhafOjZN9UU54hiN8PU3uAiSV7lx1yYNpbNmex2PK6dSJoNTSJUUswT651yww3Mg==}
 
   lodash.support@2.3.0:
     resolution: {integrity: sha512-etc7VWbB0U3Iya8ixj2xy4sDBN3jvPX7ODi8iXtn4KkkjNpdngrdc7Vlt5jub/Vgqx6/dWtp7Ml9awhCQPYKGQ==}
@@ -9232,14 +9266,16 @@ snapshots:
 
   '@shopify/network@3.3.0': {}
 
-  '@shopify/shopify-api@11.2.0':
+  '@shopify/shopify-api@11.3.0':
     dependencies:
       '@shopify/admin-api-client': 1.0.1
+      '@shopify/graphql-client': 1.1.0
       '@shopify/network': 3.3.0
       '@shopify/storefront-api-client': 1.0.1
       compare-versions: 6.1.1
-      isbot: 5.1.13
+      isbot: 5.1.17
       jose: 5.6.3
+      jsonwebtoken: 9.0.2
       node-fetch: 2.7.0
       tslib: 2.6.3
       uuid: 10.0.0
@@ -10760,6 +10796,8 @@ snapshots:
 
   buffer-crc32@0.2.13: {}
 
+  buffer-equal-constant-time@1.0.1: {}
+
   buffer-from@1.1.2: {}
 
   buffer@6.0.3:
@@ -11201,6 +11239,10 @@ snapshots:
   duplexer@0.1.2: {}
 
   eastasianwidth@0.2.0: {}
+
+  ecdsa-sig-formatter@1.0.11:
+    dependencies:
+      safe-buffer: 5.2.1
 
   edge-runtime@2.5.9:
     dependencies:
@@ -12507,7 +12549,7 @@ snapshots:
 
   isarray@2.0.5: {}
 
-  isbot@5.1.13: {}
+  isbot@5.1.17: {}
 
   isexe@2.0.0: {}
 
@@ -12630,12 +12672,36 @@ snapshots:
     optionalDependencies:
       graceful-fs: 4.2.11
 
+  jsonwebtoken@9.0.2:
+    dependencies:
+      jws: 3.2.2
+      lodash.includes: 4.3.0
+      lodash.isboolean: 3.0.3
+      lodash.isinteger: 4.0.4
+      lodash.isnumber: 3.0.3
+      lodash.isplainobject: 4.0.6
+      lodash.isstring: 4.0.1
+      lodash.once: 4.1.1
+      ms: 2.1.3
+      semver: 7.6.3
+
   jsx-ast-utils@3.3.5:
     dependencies:
       array-includes: 3.1.8
       array.prototype.flat: 1.3.2
       object.assign: 4.1.5
       object.values: 1.2.0
+
+  jwa@1.4.1:
+    dependencies:
+      buffer-equal-constant-time: 1.0.1
+      ecdsa-sig-formatter: 1.0.11
+      safe-buffer: 5.2.1
+
+  jws@3.2.2:
+    dependencies:
+      jwa: 1.4.1
+      safe-buffer: 5.2.1
 
   kareem@2.6.3: {}
 
@@ -12774,15 +12840,25 @@ snapshots:
 
   lodash.identity@2.3.0: {}
 
+  lodash.includes@4.3.0: {}
+
+  lodash.isboolean@3.0.3: {}
+
   lodash.isequal@4.5.0: {}
 
   lodash.isfunction@2.3.0: {}
+
+  lodash.isinteger@4.0.4: {}
+
+  lodash.isnumber@3.0.3: {}
 
   lodash.isobject@2.3.0:
     dependencies:
       lodash._objecttypes: 2.3.0
 
   lodash.isplainobject@4.0.6: {}
+
+  lodash.isstring@4.0.1: {}
 
   lodash.keys@2.3.0:
     dependencies:
@@ -12793,6 +12869,8 @@ snapshots:
   lodash.merge@4.6.2: {}
 
   lodash.noop@2.3.0: {}
+
+  lodash.once@4.1.1: {}
 
   lodash.support@2.3.0:
     dependencies:
