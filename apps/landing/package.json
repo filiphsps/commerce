@@ -83,7 +83,7 @@
         "use-context-selector": "2.0.0"
     },
     "devDependencies": {
-        "@happy-dom/global-registrator": "13.2.2",
+        "@happy-dom/global-registrator": "15.0.0",
         "@nordcom/prettier": "0.1.1",
         "@testing-library/react": "16.0.0",
         "@testing-library/jest-dom": "6.4.8",

@@ -42,7 +42,7 @@ importers:
         version: 4.3.1(vite@5.4.2(@types/node@20.12.7)(sass@1.77.8)(terser@5.31.1))
       '@vitest/coverage-v8':
         specifier: 1.5.0
-        version: 1.5.0(vitest@1.5.0(@edge-runtime/vm@3.2.0)(@types/node@20.12.7)(happy-dom@14.3.2)(sass@1.77.8)(terser@5.31.1))
+        version: 1.5.0(vitest@1.5.0(@edge-runtime/vm@3.2.0)(@types/node@20.12.7)(happy-dom@15.0.0)(sass@1.77.8)(terser@5.31.1))
       babel-plugin-module-resolver:
         specifier: 5.0.2
         version: 5.0.2
@@ -114,7 +114,7 @@ importers:
         version: 5.0.1(typescript@5.5.4)(vite@5.4.2(@types/node@20.12.7)(sass@1.77.8)(terser@5.31.1))
       vitest:
         specifier: 1.5.0
-        version: 1.5.0(@edge-runtime/vm@3.2.0)(@types/node@20.12.7)(happy-dom@14.3.2)(sass@1.77.8)(terser@5.31.1)
+        version: 1.5.0(@edge-runtime/vm@3.2.0)(@types/node@20.12.7)(happy-dom@15.0.0)(sass@1.77.8)(terser@5.31.1)
 
   apps/admin:
     dependencies:
@@ -228,8 +228,8 @@ importers:
         version: 2.0.0(react@18.2.0)(scheduler@0.25.0-rc-e684ca66ab-20240619)
     devDependencies:
       '@happy-dom/global-registrator':
-        specifier: 13.2.2
-        version: 13.2.2
+        specifier: 15.0.0
+        version: 15.0.0
       '@nordcom/prettier':
         specifier: 0.1.1
         version: 0.1.1
@@ -406,8 +406,8 @@ importers:
         version: 2.0.0(react@18.2.0)(scheduler@0.25.0-rc-e684ca66ab-20240619)
     devDependencies:
       '@happy-dom/global-registrator':
-        specifier: 13.2.2
-        version: 13.2.2
+        specifier: 15.0.0
+        version: 15.0.0
       '@nordcom/prettier':
         specifier: 0.1.1
         version: 0.1.1
@@ -590,8 +590,8 @@ importers:
         version: 36.0.0
     devDependencies:
       '@happy-dom/global-registrator':
-        specifier: 13.2.2
-        version: 13.2.2
+        specifier: 15.0.0
+        version: 15.0.0
       '@next/bundle-analyzer':
         specifier: 14.2.4
         version: 14.2.4
@@ -730,7 +730,7 @@ importers:
         version: 5.0.1(typescript@5.5.4)(vite@5.4.2(@types/node@20.12.7)(sass@1.77.8)(terser@5.31.1))
       vitest:
         specifier: 1.5.0
-        version: 1.5.0(@edge-runtime/vm@3.2.0)(@types/node@20.12.7)(happy-dom@14.3.2)(sass@1.77.8)(terser@5.31.1)
+        version: 1.5.0(@edge-runtime/vm@3.2.0)(@types/node@20.12.7)(happy-dom@15.0.0)(sass@1.77.8)(terser@5.31.1)
 
   packages/errors:
     devDependencies:
@@ -766,7 +766,7 @@ importers:
         version: 5.0.1(typescript@5.5.4)(vite@5.4.2(@types/node@20.14.9)(sass@1.77.8)(terser@5.31.1))
       vitest:
         specifier: 1.5.0
-        version: 1.5.0(@edge-runtime/vm@3.2.0)(@types/node@20.14.9)(happy-dom@14.3.2)(sass@1.77.8)(terser@5.31.1)
+        version: 1.5.0(@edge-runtime/vm@3.2.0)(@types/node@20.14.9)(happy-dom@15.0.0)(sass@1.77.8)(terser@5.31.1)
 
   packages/marketing-common:
     dependencies:
@@ -806,7 +806,7 @@ importers:
         version: 5.0.1(typescript@5.5.4)(vite@5.4.2(@types/node@20.14.9)(sass@1.77.8)(terser@5.31.1))
       vitest:
         specifier: 1.5.0
-        version: 1.5.0(@edge-runtime/vm@3.2.0)(@types/node@20.14.9)(happy-dom@14.3.2)(sass@1.77.8)(terser@5.31.1)
+        version: 1.5.0(@edge-runtime/vm@3.2.0)(@types/node@20.14.9)(happy-dom@15.0.0)(sass@1.77.8)(terser@5.31.1)
 
 packages:
 
@@ -1218,9 +1218,9 @@ packages:
   '@hapi/topo@5.1.0':
     resolution: {integrity: sha512-foQZKJig7Ob0BMAYBfcJk8d77QtOe7Wo4ox7ff1lQYoNNAb6jwcY1ncdoy2e9wQZzvNy7ODZCYJkK8kzmcAnAg==}
 
-  '@happy-dom/global-registrator@13.2.2':
-    resolution: {integrity: sha512-E/MW2YIKsGMzJMM/sMTJhYKHiuyp+7GIOoCfdemD240Ke81kg4+hssZQkT2jgO0bxx6xMkoxbOVBoQKfo2lBuw==}
-    engines: {node: '>=16.0.0'}
+  '@happy-dom/global-registrator@15.0.0':
+    resolution: {integrity: sha512-gTAQty3Wlo+VBC58FGQbnecJ+kSLP+gX9mN22zI2JkGCQxvBj0694dP57ANdfaN+uYcyJ2f1jhY8KU5OUlfO0w==}
+    engines: {node: '>=18.0.0'}
 
   '@humanwhocodes/config-array@0.11.14':
     resolution: {integrity: sha512-3T8LkOmg45BV5FICb15QQMsyUSWrQ8AygVfC7ZG32zOalnqrilm018ZVCw0eapXux8FtA33q8PSRSstjee3jSg==}
@@ -4542,13 +4542,13 @@ packages:
   h3@1.11.1:
     resolution: {integrity: sha512-AbaH6IDnZN6nmbnJOH72y3c5Wwh9P97soSVdGSBbcDACRdkC0FEWf25pzx4f/NuOCK6quHmW18yF2Wx+G4Zi1A==}
 
-  happy-dom@13.2.2:
-    resolution: {integrity: sha512-HHmwVpqFWwqOFcc+uYF5dH14avkZEsyDMOSmFNLxoRKnnST7L8+dUvjgrkWbKCf5f+J3ThJbvhQQ9zgRwTgkCQ==}
-    engines: {node: '>=16.0.0'}
-
   happy-dom@14.3.2:
     resolution: {integrity: sha512-3+e7CNot85v+Sv8LBHmZbWKo6KaHapTVHt/sOg+0PBDPYpGo/yF8qEZN1bjSVqrq/T6kU//RS3703mcIhidWHw==}
     engines: {node: '>=16.0.0'}
+
+  happy-dom@15.0.0:
+    resolution: {integrity: sha512-DsvANUcxxY20iCo3Yllm7dqwzPVPduGfVFxa7mONwMBLczFeQgkN0LpDir1kIY322JMh+hrcPV3aGLyHCESDlA==}
+    engines: {node: '>=18.0.0'}
 
   has-ansi@2.0.0:
     resolution: {integrity: sha512-C8vBJ8DwUCx19vhm7urhTuUsr4/IyP6l4VzNQDv+ryHQObW3TTTp9yB68WpYgRe2bbaGuZ/se74IqFeVnMnLZg==}
@@ -7900,9 +7900,9 @@ snapshots:
     dependencies:
       '@hapi/hoek': 9.3.0
 
-  '@happy-dom/global-registrator@13.2.2':
+  '@happy-dom/global-registrator@15.0.0':
     dependencies:
-      happy-dom: 13.2.2
+      happy-dom: 15.0.0
 
   '@humanwhocodes/config-array@0.11.14':
     dependencies:
@@ -10239,7 +10239,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/coverage-v8@1.5.0(vitest@1.5.0(@edge-runtime/vm@3.2.0)(@types/node@20.12.7)(happy-dom@14.3.2)(sass@1.77.8)(terser@5.31.1))':
+  '@vitest/coverage-v8@1.5.0(vitest@1.5.0(@edge-runtime/vm@3.2.0)(@types/node@20.12.7)(happy-dom@15.0.0)(sass@1.77.8)(terser@5.31.1))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3
@@ -10254,7 +10254,7 @@ snapshots:
       std-env: 3.7.0
       strip-literal: 2.1.0
       test-exclude: 6.0.0
-      vitest: 1.5.0(@edge-runtime/vm@3.2.0)(@types/node@20.12.7)(happy-dom@14.3.2)(sass@1.77.8)(terser@5.31.1)
+      vitest: 1.5.0(@edge-runtime/vm@3.2.0)(@types/node@20.12.7)(happy-dom@15.0.0)(sass@1.77.8)(terser@5.31.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -12236,13 +12236,13 @@ snapshots:
     transitivePeerDependencies:
       - uWebSockets.js
 
-  happy-dom@13.2.2:
+  happy-dom@14.3.2:
     dependencies:
       entities: 4.5.0
       webidl-conversions: 7.0.0
       whatwg-mimetype: 3.0.0
 
-  happy-dom@14.3.2:
+  happy-dom@15.0.0:
     dependencies:
       entities: 4.5.0
       webidl-conversions: 7.0.0
@@ -15128,7 +15128,7 @@ snapshots:
       - supports-color
       - terser
 
-  vitest@1.5.0(@edge-runtime/vm@3.2.0)(@types/node@20.12.7)(happy-dom@14.3.2)(sass@1.77.8)(terser@5.31.1):
+  vitest@1.5.0(@edge-runtime/vm@3.2.0)(@types/node@20.12.7)(happy-dom@15.0.0)(sass@1.77.8)(terser@5.31.1):
     dependencies:
       '@vitest/expect': 1.5.0
       '@vitest/runner': 1.5.0
@@ -15153,7 +15153,7 @@ snapshots:
     optionalDependencies:
       '@edge-runtime/vm': 3.2.0
       '@types/node': 20.12.7
-      happy-dom: 14.3.2
+      happy-dom: 15.0.0
     transitivePeerDependencies:
       - less
       - lightningcss
@@ -15190,6 +15190,42 @@ snapshots:
       '@edge-runtime/vm': 3.2.0
       '@types/node': 20.14.9
       happy-dom: 14.3.2
+    transitivePeerDependencies:
+      - less
+      - lightningcss
+      - sass
+      - sass-embedded
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+
+  vitest@1.5.0(@edge-runtime/vm@3.2.0)(@types/node@20.14.9)(happy-dom@15.0.0)(sass@1.77.8)(terser@5.31.1):
+    dependencies:
+      '@vitest/expect': 1.5.0
+      '@vitest/runner': 1.5.0
+      '@vitest/snapshot': 1.5.0
+      '@vitest/spy': 1.5.0
+      '@vitest/utils': 1.5.0
+      acorn-walk: 8.3.2
+      chai: 4.4.1
+      debug: 4.3.4
+      execa: 8.0.1
+      local-pkg: 0.5.0
+      magic-string: 0.30.10
+      pathe: 1.1.2
+      picocolors: 1.0.1
+      std-env: 3.7.0
+      strip-literal: 2.1.0
+      tinybench: 2.8.0
+      tinypool: 0.8.4
+      vite: 5.4.2(@types/node@20.14.9)(sass@1.77.8)(terser@5.31.1)
+      vite-node: 1.5.0(@types/node@20.14.9)(sass@1.77.8)(terser@5.31.1)
+      why-is-node-running: 2.2.2
+    optionalDependencies:
+      '@edge-runtime/vm': 3.2.0
+      '@types/node': 20.14.9
+      happy-dom: 15.0.0
     transitivePeerDependencies:
       - less
       - lightningcss
