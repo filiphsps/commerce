@@ -106,7 +106,7 @@
         "eslint-config-next": "14.2.1",
         "eslint": "8.57.0",
         "graphql": "16.9.0",
-        "happy-dom": "14.3.2",
+        "happy-dom": "15.0.0",
         "postcss": "8.4.41",
         "prettier": "3.3.3",
         "rimraf": "6.0.1",
