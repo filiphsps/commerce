@@ -34,7 +34,7 @@ export const CountriesApi = async ({ api }: { api: AbstractApi }): Promise<Count
     `);
 
     // FIXME: Handle errors or missing data.
-    return localData?.localization.availableCountries! || [];
+    return localData?.localization.availableCountries! || ['en-US']; // FIXMR: Handle tenant-specific default.
 };
 
 export const LocalesApi = async ({ api }: { api: AbstractApi }): Promise<Locale[]> => {

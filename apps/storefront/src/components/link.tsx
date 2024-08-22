@@ -35,7 +35,6 @@ const isInternal = (href: string, shop?: OnlineShop): boolean => {
     return false;
 };
 
-// FIXME: i18n provider?
 export default function Link({ locale, href, prefetch, ...props }: LinkProps) {
     const shop = useShop();
 

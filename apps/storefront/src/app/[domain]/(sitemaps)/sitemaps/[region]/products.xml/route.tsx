@@ -27,11 +27,6 @@ export async function GET(
     const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });
     const allLocales = await LocalesApi({ api });
 
-    // FIXME: Remove duplicate locales.
-    const locales = allLocales.filter(
-        ({ country, language }) => country?.toLowerCase() === region.toLowerCase() && language.toLowerCase() === 'en'
-    );
-
     let res,
         products: Product[] = [];
     while ((res = await ProductsPaginationApi({ api, limit: 75, after: res?.page_info.end_cursor }))) {
@@ -46,14 +41,7 @@ export async function GET(
                     loc: `https://${shop.domain}/${locale.code}/products/${product.handle}/`,
                     changefreq: 'daily',
                     lastmod: product.updatedAt,
-                    alternateRefs: [] /*locales
-                        .filter(({ code }) => code !== locale.code)
-                        .map(({ code }) => ({
-                            href: `https://${shop.domain}/${code}/products/${product.handle}/`,
-                            hreflang: code,
-                            hrefIsAbsolute: true
-                        }))*/, // FIXME: Deal with alternates.
-                    //priority: 0.9,
+                    alternateRefs: [],
                     trailingSlash: true
                 }) as ISitemapField
         )

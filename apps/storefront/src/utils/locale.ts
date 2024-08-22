@@ -52,8 +52,6 @@ export class Locale implements SerializableLocale {
 
     /**
      * The default locale.
-     *
-     * @todo TODO: This should be tenant configurable.
      */
     static get default(): Readonly<SerializableLocale> {
         // FIXME: Don't hardcode `en-US` as the fallback.
