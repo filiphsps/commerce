@@ -27,10 +27,12 @@ export const Alert = ({ children, severity, icon, className, ...props }: AlertPr
             {...props}
         >
             {icon === false ? null : (
-                <>{!icon ? <PiInfoBold className="block aspect-square w-36 text-2xl text-inherit md:w-48" /> : icon}</>
+                <>{!icon ? <PiInfoBold className="block aspect-square w-12 text-2xl text-inherit" /> : icon}</>
             )}
 
-            <Content className="leading-tight text-inherit">{children}</Content>
+            <Content className={cn('leading-tight text-inherit', icon && 'flex border-2 border-solid border-gray-300')}>
+                {children}
+            </Content>
         </div>
     );
 };
