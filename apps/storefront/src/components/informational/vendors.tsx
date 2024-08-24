@@ -21,6 +21,9 @@ const Vendors = async ({ shop, locale, className, ...props }: VendorsProps) => {
     const api = await ShopifyApolloApiClient({ shop, locale });
 
     const vendors = await VendorsApi({ api });
+    if (vendors.length <= 0) {
+        return null;
+    }
 
     return vendors.map((vendor: VendorModel) => {
         if (!vendor.handle) return null;
@@ -32,7 +35,7 @@ const Vendors = async ({ shop, locale, className, ...props }: VendorsProps) => {
                 href={`/collections/${vendor.handle}/`}
                 {...props}
                 className={cn(
-                    'bg-secondary-light hover:bg-primary hover:text-primary-foreground mr-2 flex items-center justify-center rounded-lg p-2 text-sm font-semibold transition-colors md:mr-0',
+                    'bg-secondary-light hover:bg-primary hover:text-primary-foreground mr-2 flex items-center justify-center rounded-lg p-2 text-center text-sm font-semibold transition-colors md:mr-0',
                     className
                 )}
             >
