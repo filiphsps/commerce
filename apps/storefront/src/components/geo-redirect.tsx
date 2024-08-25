@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useGeoLocation from 'react-ipgeolocation';
 
 import { Locale } from '@/utils/locale';
@@ -12,16 +12,34 @@ import Link from '@/components/link';
 
 import type { Country, LanguageCode } from '@shopify/hydrogen-react/storefront-api-types';
 
+const DISMISSED_KEY = 'geo-redirect-banner-dismissed';
+
 export type GeoRedirectProps = {
     countries: Country[];
     locale: Locale;
 };
 export function GeoRedirect({ countries, locale }: GeoRedirectProps) {
     const [closed, setClosed] = useState(false);
+    const [dismissed, setDismissed] = useState<number | null>(null);
     const pathname = `/${usePathname().split('/').slice(2).join('/')}`;
+
+    useEffect(() => {
+        const value = localStorage.getItem(DISMISSED_KEY)
+            ? Number.parseInt(localStorage.getItem(DISMISSED_KEY) as string)
+            : null;
+        setDismissed(value);
+
+        // FIXME: Make this configurable.
+        // Check if dismissed is more than 3 days ago.
+        if (value && value < Date.now() - 1000 * 60 * 60 * 24 * 3) {
+            localStorage.removeItem(DISMISSED_KEY);
+            setDismissed(null);
+        }
+    }, []);
 
     const location = useGeoLocation();
     if (
+        dismissed ||
         closed ||
         !location.country ||
         location.country === locale.country ||
@@ -77,7 +95,10 @@ export function GeoRedirect({ countries, locale }: GeoRedirectProps) {
                         Take me there!
                     </Button>
                     <Button
-                        onClick={() => setClosed(true)}
+                        onClick={() => {
+                            setClosed(true);
+                            localStorage.setItem(DISMISSED_KEY, Date.now().toString());
+                        }}
                         styled={false}
                         className="border-primary-foreground hover:bg-primary-foreground hover:text-primary flex items-center justify-center rounded-2xl border-2 border-solid px-4 py-1 font-normal text-inherit opacity-75 transition-colors lg:px-5 lg:py-2"
                         suppressHydrationWarning={true}

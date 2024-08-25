@@ -75,31 +75,33 @@ const ProductGallery = ({
         <section draggable={false} className={cn(className)} {...props}>
             <div className="sticky top-36 flex w-full flex-col gap-2 overflow-clip lg:gap-4">
                 <div
-                    className="relative overflow-hidden rounded-lg border-2 border-solid border-gray-100 bg-white p-8 py-12 md:p-16 lg:aspect-square"
+                    className="relative overflow-hidden rounded-lg border-2 border-solid border-gray-100 bg-white p-8 py-12 md:p-16"
                     {...loadingProps}
                 >
                     {image ? (
-                        <Image
-                            className={cn(
-                                'opacity-1 h-full min-h-32 w-full object-contain object-center transition-opacity duration-500 md:min-h-fit',
-                                loading && 'opacity-0 transition-none'
-                            )}
-                            src={image.url!}
-                            alt={image.altText!}
-                            title={image.altText!}
-                            width={500}
-                            height={500}
-                            sizes="(max-width: 920px) 80vw, 500px"
-                            loading="eager"
-                            decoding="async"
-                            onLoad={() => {
-                                setTimeout(() => setLoading(() => false), 250);
+                        <div className="] h-fit min-h-32 w-full overflow-hidden lg:aspect-[4/2.75] lg:h-full">
+                            <Image
+                                className={cn(
+                                    'opacity-1 h-fit w-full object-contain object-center transition-opacity duration-500 lg:h-full',
+                                    loading && 'opacity-0 transition-none'
+                                )}
+                                src={image.url!}
+                                alt={image.altText || product.title}
+                                title={image.altText!}
+                                width={500}
+                                height={500}
+                                sizes="(max-width: 920px) 75vw, 500px"
+                                loading="eager"
+                                decoding="async"
+                                onLoad={() => {
+                                    setTimeout(() => setLoading(() => false), 250);
 
-                                if (!next) return;
-                                setSelected(() => next);
-                                setNext(null);
-                            }}
-                        />
+                                    if (!next) return;
+                                    setSelected(() => next);
+                                    setNext(null);
+                                }}
+                            />
+                        </div>
                     ) : (
                         <div className="h-full min-h-32 w-full md:min-h-[36rem]" />
                     )}
@@ -180,7 +182,7 @@ const ProductGallery = ({
                                             )}
                                             style={{ transitionDelay: `${(index + 1) * 250}ms` }}
                                             src={image.url!}
-                                            alt={image.altText!}
+                                            alt={image.altText || `#${index + 1}`}
                                             title={image.altText!}
                                             width={175}
                                             height={175}

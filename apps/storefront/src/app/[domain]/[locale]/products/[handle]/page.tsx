@@ -269,7 +269,7 @@ export default async function ProductPage({
                     </section>
 
                     <Suspense fallback={<section className="flex p-4" data-skeleton />}>
-                        <section className="flex flex-col gap-3">
+                        <section className="flex w-full flex-col gap-3">
                             <div>
                                 <Suspense fallback={<div className="h-4 w-full" data-skeleton />}>
                                     <ProductSavings product={product} i18n={i18n} />

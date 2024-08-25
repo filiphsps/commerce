@@ -68,7 +68,7 @@ export async function InfoBar({ className, shop, locale, i18n, ...props }: InfoB
                 <div className={BLOCK_STYLES}>
                     <div className="hidden md:visible">{t('contact')}: </div>
                     <div className="flex gap-3 *:select-none">
-                        {email ? (
+                        {email && email.length > 0 ? (
                             <Link
                                 href={`mailto:${email}`}
                                 className={LINK_STYLES}
@@ -82,7 +82,7 @@ export async function InfoBar({ className, shop, locale, i18n, ...props }: InfoB
 
                         {email && phone ? divider : null}
 
-                        {phone ? (
+                        {phone && phone.length > 0 ? (
                             <Link
                                 href={`tel:${phone}`}
                                 className={LINK_STYLES}
