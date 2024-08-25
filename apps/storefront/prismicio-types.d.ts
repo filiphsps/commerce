@@ -1272,26 +1272,6 @@ export interface CollapsibleTextSliceDefaultPrimary {
      * - **Documentation**: https://prismic.io/docs/field#rich-text-title
      */
     text: prismic.RichTextField;
-
-    /**
-     * Accent field in *CollapsibleText → Default → Primary*
-     *
-     * - **Field Type**: Color
-     * - **Placeholder**: *None*
-     * - **API ID Path**: collapsible_text.default.primary.accent
-     * - **Documentation**: https://prismic.io/docs/field#color
-     */
-    accent: prismic.ColorField;
-
-    /**
-     * Accent Dark field in *CollapsibleText → Default → Primary*
-     *
-     * - **Field Type**: Color
-     * - **Placeholder**: *None*
-     * - **API ID Path**: collapsible_text.default.primary.accent_dark
-     * - **Documentation**: https://prismic.io/docs/field#color
-     */
-    accent_dark: prismic.ColorField;
 }
 
 /**

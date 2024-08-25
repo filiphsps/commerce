@@ -4,7 +4,8 @@ import styles from './collapsible-text.module.scss';
 
 import { FiChevronUp } from 'react-icons/fi';
 
-import PageContent from '@/components/page-content';
+import { cn } from '@/utils/tailwind';
+
 import { Content as ContentContainer } from '@/components/typography/content';
 import { PrismicText } from '@/components/typography/prismic-text';
 
@@ -21,27 +22,32 @@ export type CollapsibleTextProps = SliceComponentProps<Content.CollapsibleTextSl
  */
 const CollapsibleText = ({ slice }: CollapsibleTextProps): JSX.Element => {
     return (
-        <PageContent
-            as="section"
-            className={styles.container}
+        <details
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
-            style={{
-                '--background': slice.primary.accent || 'var(--color-block)',
-                '--background-dark': slice.primary.accent_dark || 'var(--color-block)',
-                '--foreground': 'var(--color-text-primary)'
-            }}
+            className={cn(
+                'group',
+                styles.details,
+                'w-full appearance-none rounded-lg border-2 border-solid border-gray-300 bg-gray-100 py-3 transition-all duration-150'
+            )}
         >
-            <details className={styles.details}>
-                <summary className={styles.summary}>
-                    <FiChevronUp className={styles.icon} /> {slice.primary.title}
-                </summary>
+            <summary
+                className={cn(
+                    styles.summary,
+                    'flex appearance-none items-center justify-start gap-2 border-0 border-solid border-gray-300 px-2 transition-all duration-150 group-open:mb-3 group-open:border-b-2 group-open:pb-3'
+                )}
+            >
+                <div className="flex h-8 w-12 items-center justify-center">
+                    <FiChevronUp className="h-full w-full py-1 transition-transform duration-150 group-open:rotate-180" />
+                </div>
 
-                <ContentContainer>
-                    <PrismicText data={slice.primary.text} />
-                </ContentContainer>
-            </details>
-        </PageContent>
+                <div className="text-base font-semibold leading-snug">{slice.primary.title}</div>
+            </summary>
+
+            <ContentContainer className="px-4 py-1">
+                <PrismicText data={slice.primary.text} />
+            </ContentContainer>
+        </details>
     );
 };
 CollapsibleText.skeleton = ({ slice }: { slice?: Content.CollectionSlice }) => {

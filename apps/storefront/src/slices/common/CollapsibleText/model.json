@@ -12,7 +12,13 @@
             "description": "Default",
             "imageUrl": "",
             "primary": {
-                "title": { "type": "Text", "config": { "label": "Title", "placeholder": "" } },
+                "title": {
+                    "type": "Text",
+                    "config": {
+                        "label": "Title",
+                        "placeholder": ""
+                    }
+                },
                 "text": {
                     "type": "StructuredText",
                     "config": {
@@ -21,11 +27,6 @@
                         "allowTargetBlank": true,
                         "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
                     }
-                },
-                "accent": { "type": "Color", "config": { "label": "Accent", "placeholder": "" } },
-                "accent_dark": {
-                    "type": "Color",
-                    "config": { "label": "Accent Dark", "placeholder": "" }
                 }
             },
             "items": {}
