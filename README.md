@@ -1,7 +1,8 @@
 # Nordcom Commerce
 
 [![Unit & Integration Testing](https://github.com/NordcomInc/sweetsideofsweden-frontend/actions/workflows/ci.yml/badge.svg)](https://github.com/NordcomInc/sweetsideofsweden-frontend/actions/workflows/ci.yml)
-[![WakaTime](https://wakatime.com/badge/github/NordcomInc/sweetsideofsweden-frontend.svg)](https://wakatime.com/badge/github/NordcomInc/sweetsideofsweden-frontend)
+[![codecov](https://codecov.io/gh/NordcomInc/sweetsideofsweden-frontend/graph/badge.svg?token=L6I8T166LD)](https://codecov.io/gh/NordcomInc/sweetsideofsweden-frontend)
+[![wakatime](https://wakatime.com/badge/github/NordcomInc/sweetsideofsweden-frontend.svg)](https://wakatime.com/badge/github/NordcomInc/sweetsideofsweden-frontend)
 
 Multi-tenenant headless e-commerce solution as a service.
 
@@ -13,7 +14,7 @@ Multi-tenenant headless e-commerce solution as a service.
 
 ## Information
 
--   SRC and/or SSR support (dependingnon route and components).
+-   SRC+PPC and/or SSR support (depending on specific route and components).
 -   In-depth testing support.
 -   Built with `TypeScript`.
 -   Always targeting `node` **LTS**.

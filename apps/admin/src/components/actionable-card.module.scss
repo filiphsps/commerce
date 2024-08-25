@@ -42,11 +42,6 @@
         }
 
         &:is(.actions, .footer) {
-            a,
-            button {
-                height: 1.25rem;
-            }
-
             & > * {
                 // Make first level child full-width
                 width: 100%;

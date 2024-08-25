@@ -9,6 +9,7 @@
         "bierner.markdown-preview-github-styles",
         "medo64.render-crlf",
         "wakatime.vscode-wakatime",
-        "esbenp.prettier-vscode"
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss"
     ]
 }
