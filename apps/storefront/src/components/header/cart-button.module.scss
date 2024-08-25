@@ -1,16 +1,12 @@
 @import 'globals';
 
 .container {
-    overflow: hidden;
     display: grid;
     grid-template-rows: 1fr;
     grid-template-columns: auto 1fr;
     gap: 0;
     justify-content: center;
     align-items: center;
-
-    height: 2.5rem;
-    padding: var(--block-padding-small) 0;
 
     font-weight: 400;
     line-height: 1;
@@ -36,17 +32,9 @@
     }
 
     &[data-items] {
-        border-radius: calc(var(--block-border-radius-large) * 2);
-
         &:not([data-items='0'], :disabled) {
             gap: var(--block-spacer);
-
-            padding: var(--block-padding-small) var(--block-padding-large);
             min-width: fit-content;
-
-            @media (min-width: $breakpoint-mobile) {
-                padding: var(--block-padding-small) calc(var(--block-padding-large) * 1.25);
-            }
 
             .quantity {
                 width: fit-content;

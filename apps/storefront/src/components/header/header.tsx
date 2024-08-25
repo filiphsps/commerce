@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { type HTMLProps } from 'react';
+import { FiSearch } from 'react-icons/fi';
 
 import { Shop } from '@nordcom/commerce-db';
 
@@ -32,7 +33,7 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
             {...props}
         >
             <section className="flex h-16 w-full flex-col items-center bg-white">
-                <header className="flex h-full w-full max-w-[var(--page-width)] items-center justify-start gap-4 px-3 md:px-3">
+                <header className="flex h-full w-full max-w-[var(--page-width)] items-center justify-start gap-4 overflow-hidden px-3 md:px-3">
                     <Link href={'/'} className="block h-full py-[0.75rem]">
                         {logo.src ? (
                             <Image
@@ -50,7 +51,11 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
                         ) : null}
                     </Link>
 
-                    <div className="flex grow items-center justify-end gap-2 md:gap-6 lg:gap-8">
+                    <div className="flex h-full grow items-center justify-end gap-4">
+                        <Link href="/search/" className="hover:text-primary *:md:text-lg">
+                            <FiSearch style={{ strokeWidth: 2.5 }} />
+                        </Link>
+
                         <CartButton i18n={i18n} locale={locale} />
                     </div>
                 </header>

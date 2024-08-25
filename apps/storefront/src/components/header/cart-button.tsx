@@ -25,9 +25,9 @@ const CartButton = ({ locale, i18n }: CartButtonProps) => {
             className={cn(
                 'group',
                 styles.container,
-                'bg-transparent text-black',
+                'overflow-clip bg-transparent text-black transition-all',
                 totalQuantity &&
-                    'bg-primary text-primary-foreground hover:bg-secondary hover:text-secondary-foreground shadow-sm transition-all duration-150 hover:shadow-lg'
+                    'bg-primary text-primary-foreground hover:bg-secondary hover:text-secondary-foreground hover:text-primary-foreground rounded-2xl px-3 py-2 shadow-sm transition-all duration-150 hover:shadow-lg'
             )}
             data-items={totalQuantity || 0}
             title={t('view-cart')}
