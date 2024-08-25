@@ -63,12 +63,20 @@ jobs:
               run: pnpm run test
 
             - name: 🦺 Report Coverage to GitHub
+              if: ${{ !cancelled() }}
               uses: davelosert/vitest-coverage-report-action@v2.3.1
 
             - name: 🦺 Codecov Coverage Reports
+              if: ${{ !cancelled() }}
               uses: codecov/codecov-action@v4
               env:
                   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+            - name: 🦺 Codecov Test Results
+              if: ${{ !cancelled() }}
+              uses: codecov/test-results-action@v1
+              with:
+                  token: ${{ secrets.CODECOV_TOKEN }}
 
     lint:
         name: 📋 Lint

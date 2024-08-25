@@ -3,7 +3,7 @@ import { defineConfig } from 'vitest/config';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const reporters = ['verbose'];
+const reporters = ['verbose', 'junit'];
 const extraReporters = !process.env.GITHUB_ACTIONS ? [] : ['github-actions'];
 const exclude = [
     '**/.next/**/*.*',
