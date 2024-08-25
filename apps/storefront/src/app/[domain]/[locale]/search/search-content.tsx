@@ -118,9 +118,11 @@ export default function SearchContent({
                         }
 
                         params.set('q', query);
-                    } else params.delete('q');
+                        setSearching(true);
+                    } else {
+                        params.delete('q');
+                    }
 
-                    setSearching(true);
                     replace(`${pathname}?${params.toString()}`, { scroll: true });
                 }}
             />

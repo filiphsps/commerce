@@ -5,7 +5,6 @@ import { UnknownCommerceProviderError, UnknownContentProviderError } from '@nord
 
 import { CartFragment } from '@/api/shopify/cart';
 import { createClient } from '@/utils/prismic';
-import { PrismicToolbar } from '@prismicio/react';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import { Toaster as ToasterProvider } from 'sonner';
 
@@ -58,7 +57,8 @@ const ContentProvider = ({
                 <PrismicRegistry client={createClient({ shop, locale })}>
                     {children}
 
-                    <PrismicToolbar repositoryName={shop.contentProvider.repositoryName} />
+                    {/* TODO: Enable this for Prismic storefronts. */}
+                    {/*<PrismicToolbar repositoryName={shop.contentProvider.repositoryName} />*/}
                 </PrismicRegistry>
             );
         }
