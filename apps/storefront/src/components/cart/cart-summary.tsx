@@ -19,6 +19,8 @@ import { Label } from '@/components/typography/label';
 
 import type { ReactNode } from 'react';
 
+const SUMMARY_LABEL_STYLES = 'font-normal text-sm capitalize';
+
 // TODO: Configurable free shipping.
 
 type CartSummaryProps = {
@@ -74,6 +76,10 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
     const promos =
         Number.parseFloat(cost?.subtotalAmount?.amount!) - Number.parseFloat(cost?.totalAmount?.amount!) || 0;
 
+    if (cartReady && (totalQuantity || 0) <= 0) {
+        return null;
+    }
+
     return (
         <div className={styles.container}>
             {children}
@@ -81,19 +87,19 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
             <section className={styles.section}>
                 <header className={styles.header}>
                     <Label>{t('order-summary')}</Label>
-                    <Label>
+                    <Label className="text-xs">
                         {totalQuantity} {Pluralize({ count: totalQuantity || 0, noun: 'item' })}
                     </Label>
                 </header>
 
                 <div className={styles.lines}>
                     <div className="flex items-center justify-between">
-                        <Label className="font-medium capitalize">{t('shipping')}</Label>
+                        <Label className={SUMMARY_LABEL_STYLES}>{t('shipping')}</Label>
                         <div className="text-base font-bold">{'TBD*'}</div>
                     </div>
 
                     <div className="flex items-center justify-between">
-                        <Label className="font-medium capitalize">{t('subtotal')}</Label>
+                        <Label className={SUMMARY_LABEL_STYLES}>{t('subtotal')}</Label>
                         {cost?.subtotalAmount ? (
                             <Money
                                 className="text-base font-bold"
@@ -115,7 +121,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                                     className={cn(styles.discounted, 'flex items-center justify-between')}
                                     title={`${salePercentage}% OFF`}
                                 >
-                                    <Label className="font-medium capitalize">{t('discount')}</Label>
+                                    <Label className={SUMMARY_LABEL_STYLES}>{t('discount')}</Label>
                                     {cartReady ? (
                                         <Money
                                             className={cn(styles.money, 'text-base font-bold')}
@@ -187,7 +193,9 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                         ) : null}
                     </div>
 
-                    <div className={'text-xs font-bold opacity-50'}>{`*${t('shipping-calculated-at-checkout')}`}</div>
+                    <div
+                        className={'text-xs font-semibold opacity-75'}
+                    >{`*${t('shipping-calculated-at-checkout')}`}</div>
                 </div>
             </section>
 

@@ -20,7 +20,7 @@ const CartLines = ({ shop, i18n }: CartContentProps) => {
 
     if (!cartReady) {
         return <CartLines.skeleton />;
-    } else if (!lines) {
+    } else if (!lines || lines.length <= 0) {
         return <Label>There are no items in your cart.</Label>;
     }
 

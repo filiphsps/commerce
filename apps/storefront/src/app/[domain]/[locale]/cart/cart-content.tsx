@@ -28,7 +28,7 @@ export default async function CartContent({ shop, locale, i18n, header }: CartCo
     return (
         <PageContent className={styles.container}>
             <section className={cn(styles.content, 'gap-4 lg:gap-8')}>
-                <div className="flex flex-col gap-4 border-0 border-b-2 border-solid border-gray-300 md:border-0">
+                <div className="flex flex-col gap-4">
                     <PrismicPage
                         shop={shop}
                         locale={locale}
