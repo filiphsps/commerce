@@ -15,6 +15,7 @@ import { notFound } from 'next/navigation';
 import { title } from 'process';
 
 import Breadcrumbs from '@/components/informational/breadcrumbs';
+import { JsonLd } from '@/components/json-ld';
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
 import { Label } from '@/components/typography/label';
@@ -199,7 +200,7 @@ export default async function ArticlePage({
                 <Breadcrumbs shop={shop} title={article.title} />
 
                 {/* Metadata */}
-                <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+                <JsonLd data={jsonLd} />
             </article>
         );
     } catch (error: unknown) {

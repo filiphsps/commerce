@@ -18,12 +18,12 @@ import { notFound } from 'next/navigation';
 
 import { AnalyticsProvider } from '@/components/analytics-provider';
 import { HeaderProvider } from '@/components/header/header-provider';
+import { JsonLd } from '@/components/json-ld';
 import ShopLayout from '@/components/layout/shop-layout';
 import PageContent from '@/components/page-content';
 import ProvidersRegistry from '@/components/providers-registry';
 
 import type { Metadata, Viewport } from 'next';
-import type { WebPage, WithContext } from 'schema-dts';
 
 export const runtime = 'nodejs';
 export const dynamic = 'auto';
@@ -120,21 +120,6 @@ export default async function RootLayout({
     children: ReactNode;
     params: LayoutParams;
 }) {
-    const jsonLd: WithContext<WebPage> = {
-        '@context': 'https://schema.org',
-        '@type': 'WebPage',
-        'potentialAction': [
-            {
-                '@type': 'SearchAction',
-                'target': {
-                    '@type': 'EntryPoint',
-                    'urlTemplate': `https://${domain}/search/?q={search_term_string}`
-                },
-                'query': 'required name=search_term_string'
-            }
-        ]
-    };
-
     try {
         const locale = Locale.from(localeData);
 
@@ -177,7 +162,21 @@ export default async function RootLayout({
                     </ProvidersRegistry>
 
                     {/* Metadata */}
-                    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+                    <JsonLd
+                        data={{
+                            '@context': 'http://schema.org',
+                            '@type': 'WebSite',
+                            'url': 'http://example.com/',
+                            'potentialAction': {
+                                '@type': 'SearchAction',
+                                'target': {
+                                    '@type': 'EntryPoint',
+                                    'urlTemplate': `https://${domain}/search/?q={query}`
+                                },
+                                'query': 'required'
+                            }
+                        }}
+                    />
                 </body>
             </html>
         );

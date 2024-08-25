@@ -22,6 +22,7 @@ import { parseGid } from '@shopify/hydrogen-react';
 import { notFound } from 'next/navigation';
 
 import Breadcrumbs from '@/components/informational/breadcrumbs';
+import { JsonLd } from '@/components/json-ld';
 import Link from '@/components/link';
 import { AttributeIcon } from '@/components/products/attribute-icon';
 import { InfoLines } from '@/components/products/info-lines';
@@ -361,7 +362,7 @@ export default async function ProductPage({
                 </section>
 
                 {/* Metadata */}
-                <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+                <JsonLd data={jsonLd} />
             </>
         );
     } catch (error: unknown) {

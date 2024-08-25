@@ -18,6 +18,7 @@ import { notFound } from 'next/navigation';
 
 import Pagination from '@/components/actionable/pagination';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
+import { JsonLd } from '@/components/json-ld';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import CollectionBlock from '@/components/products/collection-block';
@@ -25,6 +26,7 @@ import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
 
 import type { Metadata } from 'next';
+import type { Collection, WithContext } from 'schema-dts';
 
 // TODO: Figure out a better way to deal with query params.
 export const dynamic = 'force-dynamic';
@@ -146,6 +148,14 @@ export default async function CollectionPage({
 
         const subtitle = asText(page?.meta_description) || collection.seo.description || null;
 
+        const jsonLd: WithContext<Collection> = {
+            '@context': 'https://schema.org',
+            '@type': 'Collection',
+            'name': collection.title,
+            'description': collection.description,
+            'url': `https://${shop.domain}/${locale.code}/collections/${handle}/`
+        };
+
         // Filter any left-over legacy collection slices.
         const slices =
             page?.slices.filter(
@@ -201,18 +211,7 @@ export default async function CollectionPage({
                 </PageContent>
 
                 {/* Metadata */}
-                <script
-                    type="application/ld+json"
-                    dangerouslySetInnerHTML={{
-                        __html: JSON.stringify({
-                            '@context': 'https://schema.org',
-                            '@type': 'CollectionPage',
-                            'name': collection.title,
-                            'description': collection.description,
-                            'url': `https://${shop.domain}/${locale.code}/collections/${handle}/`
-                        })
-                    }}
-                />
+                <JsonLd data={jsonLd} />
             </>
         );
     } catch (error: unknown) {
