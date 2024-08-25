@@ -201,7 +201,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
 
             <section className={cn(styles.section, styles['section-actions'], 'mt-4')}>
                 <Button
-                    className={cn(styles.button, styles['checkout-button'], 'text-lg uppercase')}
+                    className={cn(styles.button, styles['checkout-button'], 'uppercase')}
                     disabled={!cartReady || (totalQuantity || 0) <= 0 || !lines}
                     onClick={onCheckout}
                 >

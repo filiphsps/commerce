@@ -35,7 +35,13 @@ export const CountriesApi = async ({ api }: { api: AbstractApi }): Promise<Count
 
     // FIXME: Handle errors or missing data.
     // FIXME: Handle tenant-specific default.
-    return ((localData as any)?.localization.availableCountries! || ['en-US']) as Localization['availableCountries'];
+    return ((localData as any)?.localization.availableCountries! || [
+        {
+            availableLanguages: [{ isoCode: 'EN', name: 'English' }],
+            isoCode: 'US',
+            name: 'United States'
+        }
+    ]) as Localization['availableCountries'];
 };
 
 export const LocalesApi = async ({ api }: { api: AbstractApi }): Promise<Locale[]> => {

@@ -36,11 +36,11 @@ export const NavigationApi = async ({
             children: item.items as any
         }));
     } catch (error: unknown) {
-        if (ApiError.isNotFound(error)) {
-            if (!Locale.isDefault(locale)) {
-                return NavigationApi({ shop, locale: Locale.default }); // Try again with default locale.
-            }
+        if (!Locale.isDefault(locale)) {
+            return NavigationApi({ shop, locale: Locale.default }); // Try again with default locale.
+        }
 
+        if (ApiError.isNotFound(error)) {
             throw new NotFoundError(`"Navigation" with the locale "${locale.code}"`);
         }
 
@@ -58,11 +58,11 @@ export const MenuApi = async ({ shop, locale }: { shop: OnlineShop; locale: Loca
 
         return menu.data;
     } catch (error: unknown) {
-        if (ApiError.isNotFound(error)) {
-            if (!Locale.isDefault(locale)) {
-                return MenuApi({ shop, locale: Locale.default }); // Try again with default locale.
-            }
+        if (!Locale.isDefault(locale)) {
+            return MenuApi({ shop, locale: Locale.default }); // Try again with default locale.
+        }
 
+        if (ApiError.isNotFound(error)) {
             throw new NotFoundError(`"Menu" with the locale "${locale.code}"`);
         }
 

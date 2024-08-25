@@ -44,7 +44,6 @@ const CommerceProvider = ({ shop, locale, children }: { shop: OnlineShop; locale
 
 const ContentProvider = ({
     shop,
-    domain,
     locale,
     children
 }: {
@@ -112,7 +111,6 @@ const ProvidersRegistry = ({
                                 }
                             }}
                         />
-
                         <Toolbars domain={domain} />
                     </CartProvider>
                 </ContentProvider>

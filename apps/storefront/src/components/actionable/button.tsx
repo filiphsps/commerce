@@ -22,7 +22,12 @@ export const Button = <T extends As>({
         <Tag
             draggable={false}
             {...props}
-            className={cn(styled && styles.container, styled && 'max-h-full hover:shadow-lg', className)}
+            className={cn(
+                styled && styles.container,
+                styled &&
+                    'bg-primary text-primary-foreground inline-flex max-h-full select-none appearance-none items-center justify-center gap-1 rounded-2xl px-4 py-2 text-sm font-semibold leading-tight *:text-inherit hover:shadow-lg',
+                className
+            )}
             suppressHydrationWarning={true}
         >
             {children}

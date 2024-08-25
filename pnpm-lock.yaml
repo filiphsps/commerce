@@ -564,6 +564,9 @@ importers:
       react-icons:
         specifier: 5.1.0
         version: 5.1.0(react@19.0.0-rc-b57d2823-20240822)
+      react-ipgeolocation:
+        specifier: 1.4.0
+        version: 1.4.0
       react-share:
         specifier: 5.1.0
         version: 5.1.0(react@19.0.0-rc-b57d2823-20240822)
@@ -6244,6 +6247,9 @@ packages:
     resolution: {integrity: sha512-D3zug1270S4hbSlIRJ0CUS97QE1yNNKDjzQe3HqY0aefp2CBn9VgzgES27sRR2gOvFK+0CNx/BW0ggOESp6fqQ==}
     peerDependencies:
       react: '*'
+
+  react-ipgeolocation@1.4.0:
+    resolution: {integrity: sha512-pZ+/wxDVsHW3lHoPRkyu8NDXuNhz7d+vgp4vILJxpkktM46A90c4l6AxeU5P0jxDVv6b92lWphX30ahZZJapvg==}
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
@@ -13906,6 +13912,8 @@ snapshots:
   react-icons@5.1.0(react@19.0.0-rc-b57d2823-20240822):
     dependencies:
       react: 19.0.0-rc-b57d2823-20240822
+
+  react-ipgeolocation@1.4.0: {}
 
   react-is@16.13.1: {}
 

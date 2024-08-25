@@ -47,7 +47,8 @@ export default function Link({ locale, href, prefetch, ...props }: LinkProps) {
     // Get the locale if it's not provided to us.
     try {
         locale = !!(locale as any) ? locale : (shop.locale as any) || (Locale.current as any) || Locale.default;
-    } catch {
+    } catch (error: unknown) {
+        console.error(error);
         locale = Locale.default;
     }
 
@@ -66,9 +67,12 @@ export default function Link({ locale, href, prefetch, ...props }: LinkProps) {
             href = commonValidations(href);
 
             // Check if locale is provided, if not add it.
-            if (!/\/[a-z]{2}-[A-Z]{2}\//.test(href)) return `/${locale!.code}${href}`;
-            // Otherwise return as-is.
-            else return href;
+            if (!/\/[a-z]{2}-[A-Z]{2}\//.test(href)) {
+                return `/${locale!.code}${href}`;
+            } else {
+                // Otherwise return as-is.
+                return href;
+            }
         }
 
         // Check if it's a special url (e.g. `tel:`, `mailto:`, etc)

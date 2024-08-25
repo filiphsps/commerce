@@ -8,7 +8,7 @@ import { Shop } from '@nordcom/commerce-db';
 import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
 
 import { ShopifyApiClient, ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
-import { LocaleApi, LocalesApi } from '@/api/store';
+import { CountriesApi, LocaleApi, LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { CssVariablesProvider, getBrandingColors } from '@/utils/css-variables';
 import { primaryFont } from '@/utils/fonts';
@@ -17,6 +17,7 @@ import { cn } from '@/utils/tailwind';
 import { notFound } from 'next/navigation';
 
 import { AnalyticsProvider } from '@/components/analytics-provider';
+import { GeoRedirect } from '@/components/geo-redirect';
 import { HeaderProvider } from '@/components/header/header-provider';
 import { JsonLd } from '@/components/json-ld';
 import ShopLayout from '@/components/layout/shop-layout';
@@ -130,6 +131,8 @@ export default async function RootLayout({
         const i18n = await getDictionary(locale);
         const localization = await LocaleApi({ api });
 
+        const countries = await CountriesApi({ api });
+
         return (
             <html
                 lang={locale.code}
@@ -157,6 +160,8 @@ export default async function RootLayout({
                                         {children}
                                     </PageContent>
                                 </ShopLayout>
+
+                                <GeoRedirect countries={countries} locale={locale} />
                             </HeaderProvider>
                         </AnalyticsProvider>
                     </ProvidersRegistry>

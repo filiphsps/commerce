@@ -3,13 +3,14 @@ import { byIso as countryLookup } from 'country-code-lookup';
 import Image from 'next/image';
 
 import type { Locale } from '@/utils/locale';
-import type { ComponentProps } from 'react';
+import type { ComponentProps, ReactNode } from 'react';
 
 export type LocaleFlagProps = {
     locale: Locale;
     alt?: string;
     withName?: boolean;
     nameClassName?: string;
+    suffix?: ReactNode;
 } & Omit<ComponentProps<typeof Image>, 'src' | 'aria-label' | 'alt'>;
 export const LocaleFlag = ({
     locale,
@@ -20,6 +21,7 @@ export const LocaleFlag = ({
     height,
     alt = locale.country,
     priority,
+    suffix = null,
     ...props
 }: LocaleFlagProps) => {
     let info: ReturnType<typeof countryLookup> | null = null;
@@ -44,7 +46,14 @@ export const LocaleFlag = ({
                 // TODO: Don't hardcode to some random github pages repo.
                 src={`https://purecatamphetamine.github.io/country-flag-icons/3x2/${locale.country}.svg`}
             />
-            {withName && info?.country ? <div className={nameClassName}>{info.country}</div> : null}
+            {withName && info?.country ? (
+                <div className={nameClassName}>
+                    {info.country}
+                    {suffix}
+                </div>
+            ) : (
+                <>{suffix}</>
+            )}
         </>
     );
 };
