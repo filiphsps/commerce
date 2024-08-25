@@ -18,7 +18,7 @@ const TITLE_COMMON_STYLES = 'text-xl leading-none py-2 font-semibold';
 type DropdownDefaultMenuProps = Pick<SliceComponentProps<Content.DropdownSlice>, 'slice'>;
 export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
     const { closeMenu } = useHeaderMenu();
-    const links = slice.primary.links || [];
+    const links: typeof slice.primary.links = (slice.primary.links as any) || [];
 
     // fixed top-28  group-data-[scrolled=false]/body:top-36
     return (
@@ -84,7 +84,7 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                         )}
                         onClick={() => closeMenu()}
                     >
-                        {background && image && image.url ? (
+                        {background && !!(image as any) && image.url ? (
                             <div
                                 className={cn(
                                     'text-primary-foreground relative h-full shrink-0 overflow-hidden',

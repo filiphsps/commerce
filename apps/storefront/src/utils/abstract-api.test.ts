@@ -9,7 +9,7 @@ import type { Locale } from '@/utils/locale';
 
 describe('utils', () => {
     vi.mock('@apollo/client', async () => ({
-        ...(await vi.importActual('@apollo/client')),
+        ...((await vi.importActual('@apollo/client')) as any),
         ApolloClient: vi.fn().mockReturnValue({
             query: vi.fn().mockResolvedValue({
                 data: {

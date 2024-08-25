@@ -19,7 +19,7 @@ export type ProductCardActionsProps = {
 };
 
 const ProductCardActions = ({ i18n, data: product, selectedVariant }: ProductCardActionsProps) => {
-    const { lines, linesUpdate, cartReady } = useCart();
+    const { lines, linesUpdate, cartReady, status } = useCart();
 
     const { t } = useTranslation('common', i18n);
     const line = (lines as CartLine[]).find(({ merchandise: { id } }) => id === selectedVariant.id) ?? null;
@@ -47,19 +47,22 @@ const ProductCardActions = ({ i18n, data: product, selectedVariant }: ProductCar
         [linesUpdate, lines]
     );
 
-    const baseStyles = 'rounded-lg p-2 font-semibold overflow-clip *:h-10 mt-2 max-h-11 min-h-10';
+    const baseStyles = 'rounded-lg p-2 font-semibold overflow-clip *:h-9 mt-2 h-10 min-h-10 max-h-10 grow';
+
+    const ready = cartReady && (status === 'idle' || status === 'uninitialized');
 
     if (line) {
         return (
             <div
                 className={cn(
                     baseStyles,
-                    'flex h-full border-2 border-solid border-gray-300 bg-white p-0 font-bold *:appearance-none *:text-center *:transition-colors'
+                    'flex border-2 border-solid border-gray-300 bg-white p-0 font-bold *:appearance-none *:text-center *:transition-colors',
+                    !ready && 'pointer-events-none cursor-not-allowed opacity-75 transition-all duration-150'
                 )}
             >
                 <button
                     title={t('decrease')}
-                    disabled={!cartReady || quantity < 1}
+                    disabled={!ready || quantity < 1}
                     className="active:bg-primary active:text-primary-foreground hover:bg-primary hover:text-primary-foreground w-14 text-xl disabled:cursor-not-allowed disabled:bg-transparent disabled:text-inherit disabled:opacity-25"
                     onClick={() => update(quantity - 1)}
                 >
@@ -68,7 +71,7 @@ const ProductCardActions = ({ i18n, data: product, selectedVariant }: ProductCar
                 <input
                     type="number"
                     min="1"
-                    disabled={!cartReady}
+                    disabled={!ready}
                     className="h-max w-full disabled:opacity-25"
                     value={quantity}
                     onChange={({ target: { value } }) => setQuantity(Number.parseInt(value) || 0)}
@@ -76,8 +79,8 @@ const ProductCardActions = ({ i18n, data: product, selectedVariant }: ProductCar
                 />
                 <button
                     title={t('increase')}
-                    disabled={!cartReady}
-                    className="active:bg-primary active:text-primary-foreground hover:bg-primary hover:text-primary-foreground w-14 text-xl"
+                    disabled={!ready}
+                    className="active:bg-primary active:text-primary-foreground hover:bg-primary hover:text-primary-foreground w-14 text-xl disabled:text-gray-300"
                     onClick={() => update(quantity + 1)}
                 >
                     +
@@ -88,13 +91,11 @@ const ProductCardActions = ({ i18n, data: product, selectedVariant }: ProductCar
 
     return (
         <AddToCart
-            className={cn(
-                baseStyles,
-                'bg-primary text-primary-foreground flex h-full w-full items-center justify-center'
-            )}
+            className={cn(baseStyles, 'bg-primary text-primary-foreground flex w-full items-center justify-center')}
             quantity={1}
             data={product}
             variant={selectedVariant}
+            disabled={!ready}
             i18n={i18n}
         />
     );

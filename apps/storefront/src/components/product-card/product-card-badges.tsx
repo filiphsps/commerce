@@ -27,7 +27,7 @@ const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
     const isSale = typeof selectedVariant.compareAtPrice?.amount !== 'undefined';
 
     let discount = 0;
-    if (isSale && selectedVariant) {
+    if (isSale) {
         const compare = Number.parseFloat(selectedVariant.compareAtPrice!.amount!);
         const current = Number.parseFloat(selectedVariant.price!.amount!);
         discount = Math.round((100 * (compare - current)) / compare);

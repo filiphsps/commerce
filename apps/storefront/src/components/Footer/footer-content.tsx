@@ -8,7 +8,7 @@ import { FooterApi } from '@/api/footer';
 import { useTranslation } from '@/utils/locale';
 import { linkResolver } from '@/utils/prismic';
 import { cn } from '@/utils/tailwind';
-import { asLink } from '@prismicio/client';
+import { asLink, asText } from '@prismicio/client';
 
 import { AcceptedPaymentMethods } from '@/components/informational/accepted-payment-methods';
 import { CurrentLocaleFlag } from '@/components/informational/current-locale-flag';
@@ -27,6 +27,8 @@ const FooterContent = async ({ locale, i18n, shop }: FooterContentProps) => {
     const footer = await FooterApi({ shop, locale });
 
     const { t } = useTranslation('common', i18n);
+
+    const hasCopyrights = asText(footer.copyrights).trim().length > 0;
 
     return (
         /* TODO: This should be configurable in prismic. */
@@ -57,7 +59,7 @@ const FooterContent = async ({ locale, i18n, shop }: FooterContentProps) => {
                     <CurrentLocaleFlag locale={locale} />
                 </Link>
 
-                {footer.copyrights ? (
+                {hasCopyrights ? (
                     <div className="flex gap-2 text-xs font-black uppercase lg:text-sm">
                         <PrismicText data={footer.copyrights} styled={false} />
                     </div>

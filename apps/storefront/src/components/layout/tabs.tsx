@@ -27,8 +27,10 @@ export type TabsProps = {
         children: ReactNode;
     }>;
 } & Omit<HTMLProps<HTMLDivElement>, 'children' | 'data'>;
-const Tabs = ({ as: Tag = 'div', data, className, ...props }: TabsProps) => {
-    if (!data || data.length <= 0) return null;
+const Tabs = ({ as: Tag = 'div', data = [], className, ...props }: TabsProps) => {
+    if (data.length <= 0) {
+        return null;
+    }
 
     return (
         <Tag {...props} className={`${styles.tabs}${className ? ` ${className}` : ''}`}>

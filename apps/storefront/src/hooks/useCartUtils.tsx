@@ -40,7 +40,9 @@ export const useCartUtils = ({ locale }: useCartUtilsProps): useCartUtilsResult 
 
     // Handle country code change
     useEffect(() => {
-        if (status !== 'idle' || !locale || buyerIdentity?.countryCode === locale.country) return;
+        if (status !== 'idle' || buyerIdentity?.countryCode === locale.country) {
+            return;
+        }
 
         buyerIdentityUpdate({
             countryCode: locale.country
@@ -49,10 +51,14 @@ export const useCartUtils = ({ locale }: useCartUtilsProps): useCartUtilsResult 
 
     // Discount codes in url
     useEffect(() => {
-        if (!locale || status !== 'idle') return;
+        if (status !== 'idle') {
+            return;
+        }
 
         const discount = query?.discount?.toString();
-        if (!discount) return;
+        if (!discount || discount.length <= 0) {
+            return;
+        }
 
         delete query.discount;
 

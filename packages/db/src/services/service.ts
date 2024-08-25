@@ -90,9 +90,13 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
         req = (await this.mutateQuery<Req>(req, args))();
 
         let res = await req.exec();
-        if (!res || res.length <= 0) throw new UnknownApiError('No data found');
+        if (((res as any) || []).length <= 0) {
+            throw new UnknownApiError('No data found');
+        }
 
-        if (id || (count && count === 1)) return res[0] as DocType;
+        if ((id as any) || (count && count === 1)) {
+            return res[0] as DocType;
+        }
         return res as DocType[];
     }
 
@@ -102,7 +106,10 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
         options?: QueryOptions<DocType> | null
     ): Promise<DocType> {
         const res = this.model.findById(id, projection, options);
-        if (!res) throw new UnknownApiError('No data found');
+        if (!(res as any)) {
+            throw new UnknownApiError('No data found');
+        }
+
         return res;
     }
 
@@ -112,7 +119,10 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
         options: QueryOptions<DocType> = { includeResultMetadata: true, lean: true }
     ): Promise<DocType> {
         const res = this.model.findOneAndUpdate(filter, update, options);
-        if (!res) throw new UnknownApiError('No data found');
+        if (!(res as any)) {
+            throw new UnknownApiError('No data found');
+        }
+
         return res;
     }
 }

@@ -3,7 +3,6 @@ import { NotFoundError } from '@nordcom/commerce-errors';
 import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductsPaginationApi } from '@/api/shopify/product';
-import { LocalesApi } from '@/api/store';
 import { Locale } from '@/utils/locale';
 import { getServerSideSitemap } from 'next-sitemap';
 
@@ -25,10 +24,10 @@ export async function GET(
     const locale = Locale.from(`en-${region}`);
     const apiConfig = await ShopifyApiConfig({ shop });
     const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });
-    const allLocales = await LocalesApi({ api });
 
-    let res,
-        products: Product[] = [];
+    let res: Awaited<ReturnType<typeof ProductsPaginationApi>> | null = null;
+    let products: Product[] = [];
+
     while ((res = await ProductsPaginationApi({ api, limit: 75, after: res?.page_info.end_cursor }))) {
         products.push(...res.products.map(({ node: product }) => product));
         if (!res.page_info.has_next_page) break;

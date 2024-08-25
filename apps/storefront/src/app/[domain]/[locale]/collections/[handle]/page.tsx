@@ -89,17 +89,17 @@ export async function generateMetadata({
                 description,
                 siteName: shop.name,
                 locale: locale.code,
-                images:
-                    (page?.meta_image && [
-                        {
-                            url: page.meta_image!.url as string,
-                            width: page.meta_image!.dimensions?.width || 0,
-                            height: page.meta_image!.dimensions?.height || 0,
-                            alt: page.meta_image!.alt || '',
-                            secureUrl: page.meta_image!.url as string
-                        }
-                    ]) ||
-                    undefined
+                images: page?.meta_image
+                    ? [
+                          {
+                              url: page.meta_image!.url as string,
+                              width: page.meta_image!.dimensions?.width || 0,
+                              height: page.meta_image!.dimensions?.height || 0,
+                              alt: page.meta_image!.alt || '',
+                              secureUrl: page.meta_image!.url as string
+                          }
+                      ]
+                    : undefined
             }
         };
     } catch (error: unknown) {
@@ -191,7 +191,7 @@ export default async function CollectionPage({
                     </section>
 
                     <section className={styles.content}>
-                        {page && slices && (slices.length || 0) > 0 ? (
+                        {page && ((slices as any) || []).length > 0 ? (
                             <PrismicPage
                                 shop={shop}
                                 locale={locale}

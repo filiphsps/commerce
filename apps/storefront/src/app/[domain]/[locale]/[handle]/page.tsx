@@ -80,7 +80,7 @@ export async function generateMetadata({
             title,
             description,
             robots: {
-                index: page.noindex === undefined ? true : !page.noindex
+                index: (page.noindex as any) === undefined ? true : !page.noindex
             },
             alternates: {
                 canonical: `https://${shop.domain}/${locale.code}${path}`,

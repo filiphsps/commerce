@@ -1,15 +1,6 @@
 @import 'globals';
 
 .container {
-    display: flex;
-    flex-direction: column;
-
-    height: 100%;
-
-    background-color: var(--color-block);
-
-    border-radius: var(--block-border-radius);
-
     @media (min-width: $breakpoint-mobile) {
         &.align-left {
             display: grid;
@@ -59,18 +50,6 @@
         object-fit: contain;
 
         background: var(--accent-primary);
-
-        @media (min-width: 765px) {
-            padding: var(--block-padding-large);
-
-            aspect-ratio: 4 / 3;
-        }
-
-        &.expand {
-            padding: 0;
-
-            object-fit: cover;
-        }
     }
 }
 

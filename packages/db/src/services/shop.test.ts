@@ -47,7 +47,7 @@ vi.mock('mongoose', async () => {
     };
 
     return {
-        ...((await vi.importActual('mongoose')) || {}),
+        ...(((await vi.importActual('mongoose')) as any) || {}),
         Model: MockModel,
         Document: {},
         ...values,
@@ -71,7 +71,8 @@ describe('services', () => {
             const filter = { name: 'Shop 1' };
             const findSpy = vi.spyOn(shopService, 'find');
 
-            const res = await shopService.findByCollaborator({ collaboratorId, filter });
+            // eslint-disable-next-line unused-imports/no-unused-vars
+            const _res = await shopService.findByCollaborator({ collaboratorId, filter });
 
             expect(findSpy).toHaveBeenCalledOnce();
         });

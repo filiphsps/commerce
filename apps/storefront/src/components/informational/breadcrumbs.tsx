@@ -22,7 +22,9 @@ const Breadcrumbs = ({ shop, title }: BreadcrumbsProps) => {
     const route = usePathname();
     const path = route.split('/').slice(2, -1);
 
-    if (!path || path.length <= 0) return null;
+    if (path.length <= 0) {
+        return null;
+    }
 
     const textStyles = 'text-sm md:text-xs leading-none';
     const blockStyles = 'gap-1 lg:gap-2';

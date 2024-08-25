@@ -28,7 +28,7 @@ export type CollectionContainerProps = {
 } & HTMLProps<HTMLDivElement>;
 
 const CollectionContainerHeader = ({ slice }: Omit<CollectionContainerProps, 'children'>) => {
-    if (!slice || !slice.primary || !slice.primary.handle) {
+    if (!(slice as any)?.primary?.handle) {
         return null;
     }
 
@@ -95,7 +95,7 @@ const CollectionContainer = async ({ slice, children, className }: CollectionCon
 };
 
 CollectionContainer.skeleton = ({ slice }: { slice?: Slice }) => {
-    if (!slice || !slice.primary) {
+    if (!slice || !(slice as any)?.primary) {
         return null;
     }
 

@@ -23,9 +23,11 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
 
         // TODO: const blogs = await BlogsApi({ api });
         const blog = await BlogApi({ api, handle: 'news' });
-        if (!blog) throw new NotFoundError(`"Blog" with the handle "${'news'}"`);
+        if (!(blog as any)) {
+            throw new NotFoundError(`"Blog" with the handle "${'news'}"`);
+        }
 
-        const articles = blog.articles.edges.map(({ node: article }) => article) || [];
+        const articles = blog.articles.edges.map(({ node: article }) => article);
         return getServerSideSitemap(
             locales
                 .map(({ code }) => {

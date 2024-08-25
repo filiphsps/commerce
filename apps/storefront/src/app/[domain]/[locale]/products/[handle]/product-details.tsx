@@ -37,10 +37,10 @@ const ProductDetails = async ({ locale, data: product }: ProductDetailsProps) =>
     } = product;
 
     //const parsedNutritionalContent = nutritionalContent ? parseMetafield(nutritionalContent) : null;
-    const parsedIngredients = ingredients
+    const parsedIngredients = !!(ingredients as any)
         ? parseMetafield<ParsedMetafields['single_line_text_field']>(ingredients).parsedValue
         : null;
-    const parsedFlavors = flavors
+    const parsedFlavors = !!(flavors as any)
         ? parseMetafield<ParsedMetafields['list.single_line_text_field']>(flavors).parsedValue
         : null;
 
@@ -88,7 +88,7 @@ const ProductDetails = async ({ locale, data: product }: ProductDetailsProps) =>
 };
 
 const ImportantProductDetails = async ({ data: { allergyInformation } }: ProductDetailsProps) => {
-    const parsedAllergyInformation = allergyInformation
+    const parsedAllergyInformation = !!(allergyInformation as any)
         ? parseMetafield<ParsedMetafields['multi_line_text_field']>(allergyInformation).parsedValue
         : null;
     return <>{parsedAllergyInformation ? <Alert severity={'warning'}>{parsedAllergyInformation}</Alert> : null}</>;

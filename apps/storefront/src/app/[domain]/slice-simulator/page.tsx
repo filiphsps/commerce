@@ -28,10 +28,12 @@ export default async function SliceSimulatorPage({
     // Get dictionary of strings for the current locale.
     const i18n = await getDictionary({ shop, locale });
 
+    const slices: ReturnType<typeof getSlices> = (getSlices(searchParams.state) as any) || [];
+
     return (
         <SliceSimulator background="unset">
             <SliceZone
-                slices={getSlices(searchParams.state) || []}
+                slices={slices}
                 components={components}
                 context={{
                     shop,

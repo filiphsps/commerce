@@ -15,8 +15,8 @@ interface CartLineProps {
     data: ShopifyCartLine;
 }
 const CartLine = ({ i18n, data: line }: CartLineProps) => {
-    const product: Required<Product> = line.merchandise.product! as any;
-    const variant: Required<ProductVariant> = line.merchandise! as any;
+    const product: Required<Product> | undefined = line.merchandise.product! as any;
+    const variant: Required<ProductVariant> | undefined = line.merchandise! as any;
     if (!product || !variant) {
         console.error(`Product or product variant not found for line ${line.id}`);
         return null;

@@ -43,7 +43,7 @@ export type GetOrderByEstimateProps = {
     locale: Locale;
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 
-export const GetOrderByEstimate = ({ product, i18n, locale, className, ...props }: GetOrderByEstimateProps) => {
+export const GetOrderByEstimate = ({ product, i18n, className, ...props }: GetOrderByEstimateProps) => {
     const { t } = useTranslation('product', i18n);
     if (!product) {
         return null;

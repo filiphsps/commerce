@@ -25,9 +25,7 @@ async function getErrorDocsContent({ slug }: { slug: string }) {
         const source = fs.readFileSync(filePath, 'utf-8');
         //const matterResult = matter(source);
         //const res = matterResult.data;
-        const content = (Markdoc.transform(Markdoc.parse(source), config) as Schema).children as Schema[];
-
-        return content || null;
+        return (Markdoc.transform(Markdoc.parse(source), config) as Schema).children || null;
     } catch {
         return null;
     }

@@ -161,7 +161,7 @@ const AddToCart = ({ children, className, i18n, quantity = 0, type, data, varian
             as="button"
             type={type || ('button' as const)}
             data-ready={ready || undefined}
-            data-success={(animation && 'true') || undefined}
+            data-success={!!(animation as any) ? 'true' : undefined}
             onClick={add}
             title={tCart('add-n-to-your-cart', quantity)}
             suppressHydrationWarning={true}

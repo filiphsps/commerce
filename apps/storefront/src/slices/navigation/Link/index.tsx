@@ -34,8 +34,9 @@ const LinkSlice = ({ slice, context: { isHeader = true, pathname } }: LinkProps)
         case 'highlighted':
             linkStyles = cn(
                 LINK_STYLES,
+                'px-3 py-0 md:px-3 h-8',
                 active && LINK_ACTIVE_STYLES,
-                'text-extrabold h-8 rounded-lg  bg-secondary-light px-3 py-0 text-secondary-foreground',
+                'text-extrabold rounded-lg  bg-secondary-light text-secondary-foreground',
                 active && 'bg-primary text-primary-foreground'
             );
             break;

@@ -19,7 +19,9 @@ interface VariantImageProps {
     priority?: boolean;
 }
 const VariantImage = memo(({ image, priority }: VariantImageProps) => {
-    if (!image) return null;
+    if (!image) {
+        return null;
+    }
 
     return (
         <Image
@@ -48,13 +50,17 @@ export type ProductCardImageProps = {
 
 const ProductCardHeader = ({ shop, data: product, priority = false, children, ...props }: ProductCardImageProps) => {
     const selectedVariant = FirstAvailableVariant(product);
-    if (!product || !selectedVariant) return null;
+    if (!product || !selectedVariant) {
+        return null;
+    }
 
-    const image = useMemo(
+    const image = useMemo<ShopifyImage | undefined>(
         () =>
             ((selectedVariant.image &&
                 product.images.edges.find((i) => i.node.id === selectedVariant.image!.id)?.node) ||
-                product.images.edges[0]?.node) as ShopifyImage | undefined,
+                product.featuredImage ||
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                product.images.edges.find((image) => image.node)?.node) as ShopifyImage | undefined,
         [product, selectedVariant]
     );
     if (!image) return null;

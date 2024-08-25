@@ -18,7 +18,9 @@ export type OverviewProps = SliceComponentProps<Content.TextBlockSlice>;
  * Component for "Overview" Slices.
  */
 const OverviewSlice = ({ slice }: OverviewProps) => {
-    if (!slice || !slice.items || slice.items.length <= 0) return null;
+    if (((slice as any)?.items?.length || 0) <= 0) {
+        return null;
+    }
 
     return (
         <PageContent
@@ -32,15 +34,15 @@ const OverviewSlice = ({ slice }: OverviewProps) => {
                     <Overview
                         key={index}
                         style={
-                            (item.accent &&
-                                ({
-                                    '--accent-primary': item.accent,
-                                    '--accent-primary-light':
-                                        'color-mix(in srgb, var(--accent-primary) 65%, var(--color-bright))',
-                                    '--accent-primary-dark':
-                                        'color-mix(in srgb, var(--accent-primary) 65%, var(--color-dark))'
-                                } as React.CSSProperties)) ||
-                            undefined
+                            !!(item.accent as any)
+                                ? ({
+                                      '--accent-primary': item.accent,
+                                      '--accent-primary-light':
+                                          'color-mix(in srgb, var(--accent-primary) 65%, var(--color-bright))',
+                                      '--accent-primary-dark':
+                                          'color-mix(in srgb, var(--accent-primary) 65%, var(--color-dark))'
+                                  } as React.CSSProperties)
+                                : undefined
                         }
                         layout={item.layout}
                         image={(item.image.url && (item.image as any)) || undefined}
@@ -55,8 +57,9 @@ const OverviewSlice = ({ slice }: OverviewProps) => {
 };
 
 OverviewSlice.skeleton = ({ slice }: { slice?: Content.CollectionSlice }) => {
-    if (!slice || !slice.items || slice.items.length <= 0) return null;
-
+    if (((slice as any)?.items?.length || 0) <= 0) {
+        return null;
+    }
     return <OverviewSlice {...({ slice } as any)} />;
 };
 

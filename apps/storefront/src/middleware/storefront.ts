@@ -43,8 +43,8 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     const params = newUrl.searchParams.toString();
     const search = params.length > 0 ? `?${params}` : '';
 
-    const isSpecialPath =
-        newUrl.pathname.match(FILE_TEST) ||
+    const isSpecialPath: boolean =
+        (newUrl.pathname.match(FILE_TEST) || []).length > 0 ||
         newUrl.pathname.includes('/api') ||
         newUrl.pathname.includes('/slice-simulator') ||
         newUrl.pathname.includes('/.well-known') ||
@@ -61,7 +61,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
 
     // Set the locale based on the user's accept-language header when no locale
     // is provided (e.g. we get a bare url/path like `/`).
-    if (!newUrl.pathname.match(LOCALE_TEST) && !isSpecialPath) {
+    if (!newUrl.pathname.match(LOCALE_TEST)) {
         let locale = req.cookies.get('localization')?.value || req.cookies.get('NEXT_LOCALE')?.value;
 
         if (!locale) {
@@ -77,8 +77,8 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
             }
 
             const userLang = resolveAcceptLanguage(acceptLanguageHeader ?? '', locales, 'en-US'); // FIXME: Tenant-configurable default locale.
+            locale = (userLang as any) || locales.at(0);
 
-            locale = userLang || locales.at(0);
             if (!locale) {
                 // TODO: find the correct country with another language if available as a fallback.
                 throw new Error(`No locale could be found for "${req.nextUrl.href}" and no default locale is set.`);
@@ -100,7 +100,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     // invalid back-links, a user manually messing up or another thousands
     // of possible reasons.
     const trailingLocales = newUrl.pathname.match(LOCALE_SLASH_TEST);
-    if (trailingLocales && trailingLocales.length > 1 && !isSpecialPath) {
+    if (trailingLocales && trailingLocales.length > 1) {
         for (const locale of trailingLocales.slice(1)) {
             newUrl.pathname = newUrl.pathname.replace(`${locale}`, '');
         }
@@ -113,7 +113,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
 
     // Make sure the path is lowercase, except for the locale of course.
     const withoutLocale = newUrl.pathname.split('/').slice(2).join('/');
-    if (withoutLocale.match(/[A-Z]/g) && !isSpecialPath) {
+    if (withoutLocale.match(/[A-Z]/g)) {
         newUrl.pathname = `/${newUrl.pathname.split('/')[1]}/${withoutLocale.toLowerCase()}/`;
     }
 
@@ -121,11 +121,9 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     newUrl = commonValidations(newUrl);
 
     // Validations that doesn't apply to api routes.
-    if (!isSpecialPath) {
-        // Make sure the url ends with a trailing slash.
-        if (!(newUrl.href.split('?')[0]!.endsWith('/') && newUrl.pathname.endsWith('/'))) {
-            newUrl.href = newUrl.href = `${newUrl.href.split('?')[0]}/${newUrl.search}`;
-        }
+    // Make sure the url ends with a trailing slash.
+    if (!(newUrl.href.split('?')[0]!.endsWith('/') && newUrl.pathname.endsWith('/'))) {
+        newUrl.href = newUrl.href = `${newUrl.href.split('?')[0]}/${newUrl.search}`;
     }
 
     // Redirect if `newURL` is different from `req.nextUrl`.

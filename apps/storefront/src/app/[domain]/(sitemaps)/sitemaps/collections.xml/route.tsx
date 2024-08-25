@@ -22,11 +22,15 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
         const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });
         const locales = await LocalesApi({ api });
 
-        let res,
-            collections: Collection[] = [];
+        let res: Awaited<ReturnType<typeof CollectionsPaginationApi>> | null = null;
+        let collections: Collection[] = [];
+
         while ((res = await CollectionsPaginationApi({ api, limit: 75, after: res?.page_info.end_cursor }))) {
             collections.push(...res.collections.map(({ node: collection }) => collection));
-            if (!res.page_info.has_next_page) break;
+
+            if (!res.page_info.has_next_page) {
+                break;
+            }
         }
 
         return getServerSideSitemap(

@@ -165,6 +165,14 @@ export const PRODUCT_FRAGMENT = `
             }
         }
     }
+
+    featuredImage {
+        id
+        altText
+        url
+        height
+        width
+    }
     images(first: 250) {
         edges {
             node {
@@ -396,8 +404,8 @@ export const ProductsApi = async ({
                 `,
                 {
                     limit,
-                    sorting: sorting || null,
-                    cursor: cursor || null
+                    sorting: (sorting as any) || null,
+                    cursor: (cursor as any) || null
                 },
                 {
                     tags: ['products']
@@ -495,9 +503,9 @@ export const ProductsPaginationApi = async ({
                 {
                     limit,
                     query: (vendor && `query:"vendor:${vendor}"`) || null,
-                    sorting: sorting || null,
-                    before: before || null,
-                    after: after || null
+                    sorting: (sorting as any) || null,
+                    before: (before as any) || null,
+                    after: (after as any) || null
                 },
                 {
                     tags: ['pagination.products'],
@@ -515,7 +523,7 @@ export const ProductsPaginationApi = async ({
                     has_next_page: page_info.hasNextPage,
                     has_prev_page: page_info.hasPreviousPage
                 },
-                products: data.products.edges || []
+                products: ((data.products.edges as any) || []) as ProductEdge[]
             });
         } catch (error: unknown) {
             console.error(error);

@@ -34,23 +34,22 @@ export const CountriesApi = async ({ api }: { api: AbstractApi }): Promise<Count
     `);
 
     // FIXME: Handle errors or missing data.
-    return localData?.localization.availableCountries! || ['en-US']; // FIXMR: Handle tenant-specific default.
+    // FIXME: Handle tenant-specific default.
+    return ((localData as any)?.localization.availableCountries! || ['en-US']) as Localization['availableCountries'];
 };
 
 export const LocalesApi = async ({ api }: { api: AbstractApi }): Promise<Locale[]> => {
     const countries = await CountriesApi({ api });
 
     const locales = countries.flatMap((country) =>
-        country.availableLanguages
-            .map((language) => {
-                try {
-                    return Locale.from({ language: language.isoCode, country: country.isoCode });
-                } catch {
-                    return Locale.default;
-                }
-            })
-            .filter((_) => _)
-    ) as Locale[];
+        country.availableLanguages.map((language) => {
+            try {
+                return Locale.from({ language: language.isoCode, country: country.isoCode });
+            } catch {
+                return Locale.default;
+            }
+        })
+    ) as Locale[] | undefined;
 
     if (!locales || locales.length <= 0) {
         throw new NoLocalesAvailableError();
@@ -62,7 +61,7 @@ export const LocalesApi = async ({ api }: { api: AbstractApi }): Promise<Locale[
 export const LocaleApi = async ({ api }: { api: AbstractApi }) => {
     const shop = api.shop();
 
-    if (shop.commerceProvider.type !== 'shopify') {
+    if ((shop.commerceProvider.type as string) !== 'shopify') {
         // TODO: Do this properly.
         return null;
     }

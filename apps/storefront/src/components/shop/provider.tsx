@@ -32,11 +32,8 @@ export interface ShopContextValue extends ShopProviderBase, ShopContextReturns {
 
 export const ShopContext = createContext<ShopContextValue | null>(null);
 
-export function ShopProvider({ children, shop, currency, locale }: ShopProviderProps) {
-    const value = useMemo(
-        () => ({ shop, currency: currency || 'USD', locale: locale || Locale.default }),
-        [shop.id, currency, locale]
-    );
+export function ShopProvider({ children, shop, currency = 'USD', locale = Locale.default }: ShopProviderProps) {
+    const value = useMemo(() => ({ shop, currency, locale }), [shop.id, currency, locale]);
 
     return <ShopContext.Provider value={value}>{children}</ShopContext.Provider>;
 }

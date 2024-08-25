@@ -11,24 +11,25 @@ import type { Locale } from '@/utils/locale';
 export type ProductCardOptionsProps = {
     locale: Locale;
     data: Product;
-    selectedVariant: ProductVariant;
+    selectedVariant?: ProductVariant | undefined;
     setSelectedVariant(variant: ProductVariant): void;
 };
 
 const ProductCardOptions = ({
     locale,
     data: product,
-    selectedVariant,
+    selectedVariant = undefined,
     setSelectedVariant
 }: ProductCardOptionsProps) => {
     const {
-        handle,
         variants: { edges: variants }
     } = product;
 
+    if (!selectedVariant || (!variants as any)) {
+        return null;
+    }
+
     if (
-        !selectedVariant ||
-        !variants ||
         variants.length <= 1 ||
         // If we only have two variants and the non-default one is out of stock, we don't need to show the variant selector.
         (variants.length === 2 &&
@@ -54,7 +55,7 @@ const ProductCardOptions = ({
                     variant.selectedOptions.length === 1 &&
                     variant.selectedOptions[0]!.name === 'Size' &&
                     variant.weight &&
-                    variant.weightUnit
+                    !!(variant as any).weightUnit
                 ) {
                     title = ConvertToLocalMeasurementSystem({
                         locale: locale,
@@ -63,7 +64,7 @@ const ProductCardOptions = ({
                     });
                 }
 
-                const isSelected = selectedVariant && selectedVariant.id === variant.id;
+                const isSelected = (selectedVariant as any)?.id === variant.id;
 
                 const Tag = isSelected ? 'div' : 'button';
                 return (
@@ -76,8 +77,8 @@ const ProductCardOptions = ({
                         }}
                         className={cn(
                             styles.variant,
-                            'hover:border-primary select-none rounded-lg border-2 border-solid border-white bg-white px-3 py-1 text-sm font-medium text-gray-600 transition-all',
-                            isSelected && 'border-primary font-bold',
+                            'hover:border-primary flex h-8 select-none items-center justify-center rounded-lg border-2 border-solid border-white bg-white px-3 py-0 text-sm font-semibold text-gray-600 transition-all',
+                            isSelected && 'border-primary text-primary',
                             !isSelected && 'cursor-pointer hover:shadow-lg'
                         )}
                         data-active={isSelected}

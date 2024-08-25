@@ -141,6 +141,7 @@ export default async function ShopSettingsDesignPage({ params: { id: shopId } }:
                         </Label>
 
                         <Card className={styles.grid}>
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img className={styles.preview} src={shop.icons?.favicon?.src!} alt="Favicon Preview" />
                             <Card className={styles.section} padding={false} borderless>
                                 <Input

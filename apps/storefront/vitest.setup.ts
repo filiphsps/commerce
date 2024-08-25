@@ -78,13 +78,13 @@ vi.mock('@/prismic', () => ({
 // Mock `next/navigation`.
 vi.mock('next/navigation', async () => {
     return {
-        ...((await vi.importActual('next/navigation')) || {}),
+        ...(((await vi.importActual('next/navigation')) as any) || {}),
         usePathname: vi.fn().mockReturnValue('/en-US/hello-testing-env')
     };
 });
 
 vi.mock('@shopify/hydrogen-react', async () => ({
-    ...((await vi.importActual('@shopify/hydrogen-react')) || {}),
+    ...(((await vi.importActual('@shopify/hydrogen-react')) as any) || {}),
     flattenConnection: vi.fn().mockImplementation((data) => data),
     createStorefrontClient: () => ({
         getStorefrontApiUrl: () => '',
@@ -97,7 +97,7 @@ vi.mock('@shopify/hydrogen-react', async () => ({
 
 vi.mock('react', async () => {
     return {
-        ...((await vi.importActual('react')) || {}),
+        ...(((await vi.importActual('react')) as any) || {}),
         cache: vi.fn().mockImplementation((func) => func)
     };
 });

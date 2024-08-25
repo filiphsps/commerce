@@ -39,7 +39,7 @@ export type SubTitleProps = {
     bold?: boolean;
 } & HTMLProps<HTMLDivElement>;
 export const SubTitle = ({ as, bold, className, key, ...props }: SubTitleProps) => {
-    if (as === null) {
+    if ((as as any) === null) {
         return <Fragment key={key} children={props.children} />;
     }
 

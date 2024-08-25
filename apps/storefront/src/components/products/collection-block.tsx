@@ -60,8 +60,10 @@ const CollectionBlock = async ({
     );
 
     // TODO: Add collection type.
-    const products: Product[] = collection.products.edges.map(({ node }) => node as any) || [];
-    if (!collection || !products || products.length <= 0) return null;
+    const products: Product[] = (collection as any)?.products?.edges?.map(({ node }: any) => node as any) || [];
+    if (products.length <= 0) {
+        return null;
+    }
 
     return (
         <section

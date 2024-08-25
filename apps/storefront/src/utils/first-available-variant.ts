@@ -10,26 +10,34 @@ import type { Product, ProductVariant } from '@/api/product';
  */
 export const FirstAvailableVariant = (product?: Product | null): ProductVariant | undefined => {
     // 1. Make sure we got a product passed to us.
-    if (!product || !product.variants) return undefined;
+    if (!product?.variants) {
+        return undefined;
+    }
 
-    const variants: ProductVariant[] | undefined = product.variants.edges
-        ? product.variants.edges.map(({ node: variant }) => variant)
-        : (product.variants as any);
+    const variants: ProductVariant[] =
+        ((product.variants.edges as any)
+            ? product.variants.edges.map(({ node: variant }) => variant)
+            : (product.variants as any)) || [];
 
-    if (!variants) throw new NotFoundError(`"product.variant"`);
+    if (variants.length <= 0) {
+        throw new NotFoundError(`"product.variant"`);
+    }
 
     // 2. Check if the last variant is available.
-    if (variants.at(-1)?.availableForSale)
+    if (variants.at(-1)?.availableForSale) {
         // 2.1. If it is, return it.
         return variants.at(-1)!;
+    }
     // 2.2. If it isn't, continue.
 
     // 3. Loop through the variants in reverse to get the more expensive variants first.
     for (let i = variants.length - 1; i >= 0; i--) {
-        const variant = variants[i];
+        const variant = variants[i] as (typeof variants)[number] | undefined;
 
         // 3.1. If the variant is not available, continue.
-        if (!variant || variant.availableForSale === false) continue;
+        if (!variant?.availableForSale) {
+            continue;
+        }
 
         // 3.2. If the variant is available, return it.
         return variant;

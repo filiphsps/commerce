@@ -49,7 +49,7 @@ describe('app', () => {
     // Mock `@shopify/hydrogen-react`.
     vi.mock('@shopify/hydrogen-react', async () => {
         return {
-            ...((await vi.importActual('@shopify/hydrogen-react')) || {}),
+            ...(((await vi.importActual('@shopify/hydrogen-react')) as any) || {}),
             flattenConnection: vi.fn().mockImplementation((data) => data),
             useProduct: vi.fn().mockReturnValue({
                 selectedVariant: {

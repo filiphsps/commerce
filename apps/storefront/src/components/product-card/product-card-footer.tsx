@@ -18,7 +18,9 @@ export type ProductCardFooterProps = {
 };
 const ProductCardFooter = ({ data: product, i18n, locale }: ProductCardFooterProps) => {
     const [selectedVariant, setSelectedVariant] = useState(FirstAvailableVariant(product)!);
-    if (!product) return null;
+    if (!product) {
+        return null;
+    }
 
     return (
         <>

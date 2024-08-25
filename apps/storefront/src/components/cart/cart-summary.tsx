@@ -17,6 +17,7 @@ import Link from '@/components/link';
 import { useShop } from '@/components/shop/provider';
 import { Label } from '@/components/typography/label';
 
+import type { CartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import type { ReactNode } from 'react';
 
 const SUMMARY_LABEL_STYLES = 'font-normal text-sm capitalize';
@@ -43,36 +44,35 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
         setShowNote(showNote);
     }, [note]);
 
-    const sale = lines
-        ? lines.reduce(
-              (sum, line) =>
-                  (line?.cost?.compareAtAmountPerQuantity &&
-                      sum +
-                          ((Number.parseFloat(line.cost.compareAtAmountPerQuantity.amount!) || 0) *
-                              (line.quantity || 0) -
-                              Number.parseFloat(line.cost.totalAmount?.amount!))) ||
-                  sum,
-              0
-          ) || 0
-        : 0;
-    const totalSale = lines
-        ? sale +
-          (
-              lines.map((line) => {
-                  return (
-                      line?.discountAllocations?.reduce(
-                          (sum, line) =>
-                              (line?.discountedAmount?.amount &&
-                                  sum + Number.parseFloat(line.discountedAmount.amount!)) ||
-                              sum,
-                          0
-                      ) || 0
-                  );
-              }) || []
-          ).reduce((sum, line) => sum + line || sum, 0)
-        : 0;
-    const salePercentage = Math.round(((100 * sale) / Number.parseFloat(cost?.totalAmount?.amount || '0')) * 100) / 100;
+    const cartLines = ((lines as any) || []) as CartLine[];
 
+    const sale =
+        cartLines.reduce(
+            (sum, line) =>
+                (line.cost.compareAtAmountPerQuantity &&
+                    sum +
+                        ((Number.parseFloat(line.cost.compareAtAmountPerQuantity.amount!) || 0) * (line.quantity || 0) -
+                            Number.parseFloat(line.cost.totalAmount.amount!))) ||
+                sum,
+            0
+        ) || 0;
+    const totalSale =
+        sale +
+        cartLines
+            .map((line) => {
+                if (line.discountAllocations.length <= 0) {
+                    return 0;
+                }
+
+                return line.discountAllocations.reduce(
+                    (sum, line) =>
+                        (line.discountedAmount.amount && sum + Number.parseFloat(line.discountedAmount.amount!)) || sum,
+                    0
+                );
+            })
+            .reduce((sum, line) => sum + line || sum, 0);
+
+    const salePercentage = Math.round(((100 * sale) / Number.parseFloat(cost?.totalAmount?.amount || '0')) * 100) / 100;
     const promos =
         Number.parseFloat(cost?.subtotalAmount?.amount!) - Number.parseFloat(cost?.totalAmount?.amount!) || 0;
 

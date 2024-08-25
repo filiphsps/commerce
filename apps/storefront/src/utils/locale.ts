@@ -86,8 +86,8 @@ export class Locale implements SerializableLocale {
      * @param {Locale} locale - The locale
      * @returns {boolean} `true` if the locale is the default locale, otherwise `false`.
      */
-    static isDefault(locale: Locale): boolean {
-        return locale ? locale.code === Locale.default.code : false;
+    static isDefault(locale: Locale = Locale.default): boolean {
+        return locale.code === Locale.default.code;
     }
 
     /**
@@ -104,7 +104,7 @@ export class Locale implements SerializableLocale {
         if (typeof data === 'string') {
             const code = data.toUpperCase() as Uppercase<Code>;
 
-            if (!code || code.length < 2 || code.length > 5 || (code.length !== 2 && !code.includes('-'))) {
+            if (!(code as any) || code.length < 2 || code.length > 5 || (code.length !== 2 && !code.includes('-'))) {
                 throw new UnknownLocaleError(`Invalid locale: "${data}"`);
             }
 
@@ -115,10 +115,12 @@ export class Locale implements SerializableLocale {
             const [language, country] = code.split('-') as [LanguageCode, CountryCode?];
             return wrap(new Locale({ language, country }));
         } else {
-            if (!data) throw new UnknownLocaleError(`Invalid locale: "${data}"`);
+            if (!(data as any)) {
+                throw new UnknownLocaleError(`Invalid locale: "${data}"`);
+            }
 
             const { language, country } = data;
-            if (language.length !== 2 || (typeof country !== 'undefined' && language.length !== 2)) {
+            if ((language as any).length !== 2 || (!!country && (language as any).length !== 2)) {
                 throw new UnknownLocaleError(`Invalid locale: "${data}"`);
             }
 
@@ -215,7 +217,7 @@ export const useTranslation = (scope: LocaleDictionaryScope, dictionary?: Locale
         t: <T extends LocaleDictionaryKey, L extends TranslationLiteral[]>(key: T, ...literals: L): string => {
             const string: string = (dictionary as any)?.[scope]?.[key] || key;
 
-            if (!literals || literals.length === 0) {
+            if (((literals as any)?.length || 0) <= 0) {
                 return string as string;
             }
 

@@ -23,7 +23,7 @@ type SearchBarProps = {
     onSearch: (q: string) => void;
     disabled?: boolean;
 } & HTMLProps<HTMLDivElement>;
-export const SearchBar = ({ defaultValue, onSearch, disabled, className, locale, i18n, ...props }: SearchBarProps) => {
+export const SearchBar = ({ defaultValue, onSearch, disabled, className, i18n, ...props }: SearchBarProps) => {
     const { t } = useTranslation('common', i18n);
     const [value, setValue] = useState<string>(defaultValue ?? '');
 
@@ -92,7 +92,6 @@ export default function SearchContent({
     const { replace } = useRouter();
     const searchParams = useSearchParams();
     const pathname = usePathname();
-    const { t } = useTranslation('common', i18n);
 
     const commonStyles = 'rounded-lg border border-solid border-gray-300 p-4 lg:max-w-56 gap-1';
 
@@ -115,7 +114,7 @@ export default function SearchContent({
 
             {showFilters ? (
                 <section className="flex flex-wrap gap-4">
-                    {productFilters.map(({ id, label, type, values, presentation }) => (
+                    {productFilters.map(({ id, label, type, values /*, presentation*/ }) => (
                         <div key={id} className={cn(commonStyles, 'flex w-full flex-col')}>
                             <Label className="text-gray-500">{label}</Label>
                             {(() => {
@@ -126,8 +125,8 @@ export default function SearchContent({
                                     case 'LIST': {
                                         return (
                                             <div className={cn('flex flex-wrap gap-1')}>
-                                                {values.map(({ label, id, input, count }) => {
-                                                    const active = false;
+                                                {values.map(({ label, id, input /*, count */ }) => {
+                                                    const active = false as boolean;
 
                                                     return (
                                                         <button
@@ -172,8 +171,10 @@ export default function SearchContent({
                         vendor,
                         availableForSale
                     }) => {
-                        const image = featuredImage || images.edges.find((image) => image)?.node;
-                        const href = `/products/${handle}/${trackingParameters ? `?${trackingParameters}` : ''}`;
+                        const image: Product['images']['edges'][number]['node'] | undefined =
+                            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                            featuredImage ?? images.edges.find((image) => image.node)?.node;
+                        const href = `/products/${handle}/${!!(trackingParameters as any) ? `?${trackingParameters}` : ''}`;
 
                         return (
                             <Link

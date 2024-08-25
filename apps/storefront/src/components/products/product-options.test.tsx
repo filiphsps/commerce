@@ -36,7 +36,7 @@ describe.skip('components', () => {
     // Mock `@shopify/hydrogen-react`s `useProduct` hook and other
     // required functions to prevent `<ProductProvider>` error.
     vi.mock('@shopify/hydrogen-react', async () => ({
-        ...((await vi.importActual('@shopify/hydrogen-react')) || {}),
+        ...(((await vi.importActual('@shopify/hydrogen-react')) as any) || {}),
         flattenConnection: vi.fn().mockImplementation((data) => data),
         useProduct: () => ({
             options,
@@ -63,7 +63,7 @@ describe.skip('components', () => {
     }));
 
     vi.mock('next/link', async () => ({
-        ...((await vi.importActual('next/link')) || {}),
+        ...(((await vi.importActual('next/link')) as any) || {}),
         default: (props: any) => <a {...props} /> // eslint-disable-line
     }));
 

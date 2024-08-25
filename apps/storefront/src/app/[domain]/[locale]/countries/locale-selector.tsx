@@ -20,20 +20,20 @@ type LocaleSelectorProps = {
     countries: Country[];
     locale: Locale;
 };
-export default function LocaleSelector({ shop, countries, locale }: LocaleSelectorProps) {
+export default function LocaleSelector({ shop, countries = [], locale }: LocaleSelectorProps) {
     const localeRef = useRef<HTMLInputElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
 
-    const markets = (
-        countries.map((country) =>
+    const markets = countries
+        .map((country) =>
             country.availableLanguages.map((language) => ({
                 locale: `${language.isoCode.toLowerCase()}-${country.isoCode.toUpperCase()}`,
                 country: country.name,
                 language: language.name,
                 currency: country.currency.isoCode
             }))
-        ) || []
-    ).filter((i) => i && i.length > 0);
+        )
+        .filter((i) => ((i as any)?.length || 0) > 0);
 
     return (
         <div className={styles.list}>

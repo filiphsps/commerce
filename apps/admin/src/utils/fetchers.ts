@@ -62,34 +62,43 @@ export async function updateShop(userId: string, shopId: string, data: Partial<O
     }
 }
 
+// eslint-disable-next-line unused-imports/no-unused-vars
 export async function createShop(userId: string) {
     return {} as any;
 }
 
+// eslint-disable-next-line unused-imports/no-unused-vars
 export async function getCommerceProvider(userId: string, shopId: string) {
     return {} as any;
 }
+// eslint-disable-next-line unused-imports/no-unused-vars
 export async function updateCommerceProvider(userId: string, shopId: string, data: any) {
     return {} as any;
 }
 
+// eslint-disable-next-line unused-imports/no-unused-vars
 export async function getContentProvider(userId: string, shopId: string) {
     return {} as any;
 }
+// eslint-disable-next-line unused-imports/no-unused-vars
 export async function updateContentProvider(userId: string, shopId: string, data: any) {
     return {} as any;
 }
 
+// eslint-disable-next-line unused-imports/no-unused-vars
 export async function getCheckoutProvider(userId: string, shopId: string) {
     return {} as any;
 }
+// eslint-disable-next-line unused-imports/no-unused-vars
 export async function updateCheckoutProvider(userId: string, shopId: string, data: any) {
     return {} as any;
 }
 
+// eslint-disable-next-line unused-imports/no-unused-vars
 export async function getShopTheme(userId: string, shopId: string) {
     return {} as any;
 }
+// eslint-disable-next-line unused-imports/no-unused-vars
 export async function updateShopTheme(userId: string, shopId: string, data: any) {
     return {} as any;
 }

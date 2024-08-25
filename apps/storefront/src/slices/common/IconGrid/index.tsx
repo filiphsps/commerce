@@ -28,10 +28,11 @@ export type IconGridProps = SliceComponentProps<
  */
 const IconGrid = ({ slice, index: order }: IconGridProps) => {
     const background = slice.primary.background;
+    const sliceItems: IconGridProps['slice']['items'] = (slice as any).items || [];
 
     const items = useMemo(
         () =>
-            (slice.items || []).map(({ icon, title }, index) => {
+            sliceItems.map(({ icon, title }, index) => {
                 const priority = order < 2;
 
                 return (
@@ -63,10 +64,10 @@ const IconGrid = ({ slice, index: order }: IconGridProps) => {
                     </div>
                 );
             }),
-        [slice.items]
+        [sliceItems]
     );
 
-    if (!slice || items.length <= 0) {
+    if (!(slice as any) || items.length <= 0) {
         return null;
     }
 

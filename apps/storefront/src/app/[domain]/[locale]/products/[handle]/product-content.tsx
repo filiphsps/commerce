@@ -14,6 +14,7 @@ import { QuantityProvider } from '@/components/products/quantity-provider';
 import type { PricingProps } from '@/components/typography/pricing';
 
 import type { Product } from '@/api/product';
+import type { ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
 
 export type ProductContentProps = {
     product: Product;
@@ -57,7 +58,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
         return null;
     }
 
-    const price = variant.price;
+    const price = variant.price as ProductVariant['price'] | undefined;
     const compareAtPrice = variant.compareAtPrice;
 
     return (
@@ -96,12 +97,16 @@ export function ProductSavings({ i18n, product, className }: ProductSavingsProps
     );
     const { t } = useTranslation('product', i18n);
 
-    if (!variant || !product.availableForSale || !variant.price || !variant.compareAtPrice) {
+    if (!variant || !product.availableForSale) {
         return null;
     }
 
-    const price = variant.price;
+    const price = variant.price as ProductVariant['price'] | undefined;
     const compareAtPrice = variant.compareAtPrice;
+
+    if (!price || !compareAtPrice) {
+        return null;
+    }
 
     const totalAmount = Number.parseFloat(price.amount);
     const compareAtAmount = Number.parseFloat(compareAtPrice.amount);

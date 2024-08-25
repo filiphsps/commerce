@@ -23,7 +23,9 @@ export type PrismicTextProps = {
     bare?: boolean;
 };
 export const PrismicText = ({ data, styled = true, bare = false }: PrismicTextProps) => {
-    if (!data || data.length <= 0) return null;
+    if (data.length <= 0) {
+        return null;
+    }
 
     return (
         <PrismicRichText

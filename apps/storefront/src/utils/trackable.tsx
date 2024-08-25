@@ -397,11 +397,13 @@ function Trackable({ children }: TrackableProps) {
 
     // Page view.
     useEffect(() => {
-        if (!path || path === prevPath) return;
+        if (!path || path === prevPath) {
+            return;
+        }
 
         queueEvent('page_view', { path });
 
-        if (path.endsWith('/cart/') && cart) {
+        if (path.endsWith('/cart/') && !!(cart as any)) {
             queueEvent('view_cart', {
                 path,
                 gtm: {
@@ -431,7 +433,9 @@ function Trackable({ children }: TrackableProps) {
 
     // Send events.
     useEffect(() => {
-        if (!shop || !currency || !queue || queue.length <= 0) return;
+        if (((queue as any) || []).length <= 0) {
+            return;
+        }
 
         TrackableLogger(`Sending ${queue.length} event(s): ${queue.map(({ type }) => type).join(', ')}}`, queue);
 
@@ -491,7 +495,7 @@ export function useTrackable<T extends keyof TrackableContextValue>(
 ): TrackableContextValue | TrackableContextValue[T] {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const context = selector ? useContextSelector(TrackableContext, selector) : useContext(TrackableContext);
-    if (!context) {
+    if (!(context as any)) {
         throw new MissingContextProviderError('useTrackable', 'Trackable');
     }
 

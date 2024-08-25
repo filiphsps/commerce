@@ -1,12 +1,11 @@
-import styles from '@/components/typography/overview.module.scss';
-
+import { cn } from '@/utils/tailwind';
 import Image from 'next/image';
 
 import { Content } from '@/components/typography/content';
 
-import type { FunctionComponent } from 'react';
+import type { HTMLProps } from 'react';
 
-interface OverviewProps {
+export type OverviewProps = {
     body?: React.ReactNode;
     image?: {
         alt?: string;
@@ -18,36 +17,62 @@ interface OverviewProps {
     };
     imageStyle?: 'normal' | 'cover';
     layout?: 'left' | 'right' | 'center';
+} & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 
-    className?: string;
-    style?: React.CSSProperties;
-}
-export const Overview: FunctionComponent<OverviewProps> = ({ body, image, imageStyle, layout, className, style }) => {
-    if (!body) return null;
-
-    layout = layout || 'left';
-    if (!image) {
-        return (
-            <Content className={`${styles.content} ${styles.plain} ${styles[`align-${layout}`] || ''}`}>{body}</Content>
-        );
+export const Overview = ({
+    body,
+    image,
+    imageStyle = 'normal',
+    layout = 'left',
+    className,
+    ...props
+}: OverviewProps) => {
+    if (!body) {
+        return null;
     }
+
+    if (!image) {
+        return <Content>{body}</Content>;
+    }
+
+    const imageElement = (
+        <div
+            className={cn(
+                'bg-primary relative col-span-2 flex h-32 p-3 lg:h-auto',
+                layout === 'center' && 'h-32 lg:h-28',
+                imageStyle === 'cover' && 'p-0'
+            )}
+        >
+            <Image
+                className={cn('object-contain object-center', imageStyle === 'cover' && 'object-cover')}
+                src={image.url!}
+                alt={image.alt!}
+                sizes="(max-width: 1150px) 250px, 250px"
+                decoding="async"
+                fill
+            />
+        </div>
+    );
+
+    const contentElement = (
+        <div className="col-span-8 h-full w-full p-3 py-4 empty:hidden">
+            <Content>{body}</Content>
+        </div>
+    );
 
     return (
         <section
-            {...(style ? { style } : {})}
-            className={`${styles.container} ${styles[`align-${layout}`] || ''} ${className || ''}`}
+            className={cn(
+                'flex flex-col overflow-hidden rounded-lg bg-gray-100 empty:hidden lg:grid',
+                layout === 'left' && 'lg:grid-cols-10',
+                layout === 'right' && 'lg:grid-cols-10',
+                layout === 'center' && 'flex flex-col lg:flex',
+                className
+            )}
+            {...props}
         >
-            <Image
-                className={`${styles.image} ${imageStyle === 'cover' ? styles.expand : ''}`}
-                src={image.url!}
-                alt={image.alt!}
-                width={image.dimensions.width}
-                height={image.dimensions.height}
-                quality={70}
-                sizes="(max-width: 1150px) 250px, 250px"
-                decoding="async"
-            />
-            <Content className={styles.content}>{body}</Content>
+            {layout === 'right' ? contentElement : imageElement}
+            {layout === 'right' ? imageElement : contentElement}
         </section>
     );
 };
