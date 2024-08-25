@@ -38,13 +38,13 @@ export const Overview = ({
     const imageElement = (
         <div
             className={cn(
-                'bg-primary relative col-span-2 flex h-32 p-3 lg:h-auto',
+                'relative col-span-3 flex h-32 bg-[var(--accent-primary)] p-3 lg:h-auto',
                 layout === 'center' && 'h-32 lg:h-28',
                 imageStyle === 'cover' && 'p-0'
             )}
         >
             <Image
-                className={cn('object-contain object-center', imageStyle === 'cover' && 'object-cover')}
+                className={cn('h-full w-full object-contain object-center', imageStyle === 'cover' && 'object-cover')}
                 src={image.url!}
                 alt={image.alt!}
                 sizes="(max-width: 1150px) 250px, 250px"
@@ -56,7 +56,7 @@ export const Overview = ({
     );
 
     const contentElement = (
-        <div className="col-span-8 h-full w-full p-3 py-4 empty:hidden">
+        <div className="col-span-7 h-full w-full p-4 empty:hidden">
             <Content>{body}</Content>
         </div>
     );

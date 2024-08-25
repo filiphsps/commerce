@@ -33,6 +33,7 @@ import { Content } from '@/components/typography/content';
 import { ProductContent, ProductPricing, ProductSavings } from './product-content';
 import { ImportantProductDetails, ProductDetails } from './product-details';
 
+import PrismicPage from '@/components/prismic-page';
 import type { Metadata } from 'next';
 import type { Product, WithContext } from 'schema-dts';
 
@@ -153,6 +154,7 @@ export default async function ProductPage({
 
         // Do the actual API calls.
         const product = await ProductApi({ api, handle });
+        const page = await PageApi({ shop, locale, handle, type: 'product_page' });
 
         // Get dictionary of strings for the current locale.
         const i18n = await getDictionary({ shop, locale });
@@ -327,6 +329,19 @@ export default async function ProductPage({
                                     <InfoLines product={product} i18n={i18n} locale={locale} />
                                 </Suspense>
                             </div>
+
+                            <section className="empty:hidden">
+                                {(page?.slices || []).length > 0 ? (
+                                    <PrismicPage
+                                        shop={shop}
+                                        locale={locale}
+                                        page={page}
+                                        i18n={i18n}
+                                        handle={handle}
+                                        type={'product_page'}
+                                    />
+                                ) : null}
+                            </section>
 
                             <Suspense>
                                 <div className={cn(ROUNDED_BLOCK_STYLES)}>
