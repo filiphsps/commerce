@@ -1,3 +1,4 @@
+/* c8 ignore start */
 import { verifyAccess } from '@vercel/flags';
 import { NextResponse } from 'next/server';
 
@@ -13,6 +14,20 @@ export async function GET(request: NextRequest) {
             'search-filter': {
                 description: 'Controls if the search filter is visible',
                 options: [
+                    { value: false, label: 'Hidden' },
+                    { value: true, label: 'Visible' }
+                ]
+            },
+            'product-page-info-lines': {
+                description: 'Controls if the info lines are visible on the product page',
+                options: [
+                    { value: false, label: 'Hidden' },
+                    { value: true, label: 'Visible' }
+                ]
+            },
+            'header-search-bar': {
+                description: 'Controls if header search bar experiment is enabled',
+                options: [
                     { value: false, label: 'Off' },
                     { value: true, label: 'On' }
                 ]
@@ -20,3 +35,4 @@ export async function GET(request: NextRequest) {
         }
     });
 }
+/* c8 ignore stop */

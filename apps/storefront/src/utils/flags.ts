@@ -11,7 +11,15 @@ export const showSearchFilter = flag({
 });
 
 export const showProductInfoLines = flag({
-    key: 'search-product-info-lines',
+    key: 'product-page-info-lines',
+    async decide() {
+        const value = await get(this.key);
+        return !!value || false;
+    }
+});
+
+export const showHeaderSearchBar = flag({
+    key: 'header-search-bar',
     async decide() {
         const value = await get(this.key);
         return !!value || false;
