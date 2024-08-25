@@ -151,7 +151,7 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "[scss]": {
-        "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "prettier.prettierPath": "./node_modules/prettier",
     "tailwindCSS.classAttributes": ["class", "className", "ngClass", ".*Styles"],
@@ -159,5 +159,13 @@
         ["Styles \\=([^;]*);", "'([^']*)'"],
         ["Styles \\=([^;]*);", "\"([^\"]*)\""],
         ["Styles \\=([^;]*);", "\\`([^\\`]*)\\`"]
-    ]
+    ],
+    "tailwindCSS.includeLanguages": {
+        "html": "html",
+        "javascript": "javascript",
+        "css": "css"
+    },
+    "editor.quickSuggestions": {
+        "strings": true
+    }
 }
