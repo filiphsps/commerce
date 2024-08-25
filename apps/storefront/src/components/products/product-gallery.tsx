@@ -14,7 +14,7 @@ import type { Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-a
 import type { HTMLProps, ReactNode } from 'react';
 
 const SHARE_BUTTON_STYLES =
-    'z-10 flex h-7 w-7 appearance-none items-center justify-center rounded-full border border-solid border-gray-300 bg-white fill-primary stroke-primary object-cover object-center transition-colors hover:border-primary hover:text-primary md:h-8 md:w-8';
+    'z-10 flex h-8 w-8 appearance-none items-center justify-center rounded-full border border-solid border-gray-300 bg-white fill-primary stroke-primary object-cover object-center transition-colors hover:border-primary hover:text-primary md:h-9 md:w-9';
 
 export type ProductGalleryProps = {
     initialImageId?: string | null;
@@ -75,13 +75,13 @@ const ProductGallery = ({
         <section draggable={false} className={cn(className)} {...props}>
             <div className="sticky top-36 flex w-full flex-col gap-2 overflow-clip lg:gap-4">
                 <div
-                    className="relative overflow-hidden rounded-lg border-2 border-solid border-gray-100 bg-white p-8 md:aspect-[4/3] md:p-16"
+                    className="relative overflow-hidden rounded-lg border-2 border-solid border-gray-100 bg-white p-8 py-12 md:p-16 lg:aspect-square"
                     {...loadingProps}
                 >
                     {image ? (
                         <Image
                             className={cn(
-                                'opacity-1 h-full min-h-32 w-full object-contain object-center transition-opacity duration-500 md:min-h-[36rem]',
+                                'opacity-1 h-full min-h-32 w-full object-contain object-center transition-opacity duration-500 md:min-h-fit',
                                 loading && 'opacity-0 transition-none'
                             )}
                             src={image.url!}
@@ -105,7 +105,7 @@ const ProductGallery = ({
                     )}
 
                     <div className="absolute inset-x-2 top-2 flex flex-row-reverse items-start justify-between gap-2">
-                        <div className="flex flex-col gap-1">
+                        <div className="flex flex-col gap-2 md:gap-1">
                             <EmailShareButton
                                 key="email"
                                 url={pageUrl}

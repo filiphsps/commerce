@@ -1,5 +1,3 @@
-import styles from '@/components/actionable/button.module.scss';
-
 import type { As } from '@nordcom/nordstar';
 
 import { cn } from '@/utils/tailwind';
@@ -23,9 +21,8 @@ export const Button = <T extends As>({
             draggable={false}
             {...props}
             className={cn(
-                styled && styles.container,
                 styled &&
-                    'bg-primary text-primary-foreground inline-flex max-h-full select-none appearance-none items-center justify-center gap-1 rounded-2xl px-4 py-2 text-sm font-semibold leading-tight *:text-inherit hover:shadow-lg',
+                    'bg-primary text-primary-foreground inline-flex max-h-full cursor-pointer select-none appearance-none items-center justify-center gap-1 rounded-2xl px-4 py-2 text-sm font-semibold leading-tight transition-all duration-150 *:text-inherit hover:shadow-lg disabled:cursor-not-allowed disabled:shadow-none data-[success=true]:bg-green-500',
                 className
             )}
             suppressHydrationWarning={true}

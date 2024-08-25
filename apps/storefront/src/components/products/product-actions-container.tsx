@@ -56,7 +56,7 @@ export const ProductActionsContainer = ({ className, i18n, ...props }: ProductAc
             {/*<ProductQuantityBreaks />*/}
 
             <Suspense fallback={<AddToCart.skeleton />}>
-                <AddToCart className="h-12 lg:h-14" quantity={quantity} i18n={i18n} />
+                <AddToCart className="py-4 text-base" quantity={quantity} i18n={i18n} />
             </Suspense>
         </div>
     );

@@ -3,6 +3,7 @@ import { cn } from '@/utils/tailwind';
 import { asLink } from '@prismicio/client';
 import Image from 'next/image';
 
+import { Button } from '@/components/actionable/button';
 import Link from '@/components/link';
 import { PrismicText } from '@/components/typography/prismic-text';
 
@@ -43,7 +44,8 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
                         const target: undefined | '_blank' = (href as any).target || undefined;
 
                         return (
-                            <Link
+                            <Button
+                                as={Link}
                                 key={`${target}-${index}`}
                                 className={cn(
                                     'flex items-center gap-2 rounded-full bg-white px-4 py-2 font-semibold text-black drop-shadow-sm transition-colors hover:bg-black hover:text-white md:px-6 md:py-3 md:text-lg',
@@ -54,7 +56,7 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
                                 target={target}
                             >
                                 <PrismicText data={title} />
-                            </Link>
+                            </Button>
                         );
                     })}
                 </div>
