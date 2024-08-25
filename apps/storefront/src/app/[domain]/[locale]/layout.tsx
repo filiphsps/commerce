@@ -166,14 +166,15 @@ export default async function RootLayout({
                         data={{
                             '@context': 'http://schema.org',
                             '@type': 'WebSite',
-                            'url': 'http://example.com/',
+                            'url': `https://${shop.domain}/${locale.code}/`,
                             'potentialAction': {
                                 '@type': 'SearchAction',
                                 'target': {
                                     '@type': 'EntryPoint',
                                     'urlTemplate': `https://${domain}/search/?q={query}`
                                 },
-                                'query': 'required'
+                                'query': 'required',
+                                'query-input': 'required name=query'
                             }
                         }}
                     />
