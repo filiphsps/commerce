@@ -18,10 +18,9 @@ const config = {
     compress: true,
     transpilePackages: [],
     experimental: {
-        //nextScriptWorkers: true,
-        //ppr: true,
+        nextScriptWorkers: true,
+        ppr: true,
         caseSensitiveRoutes: true,
-        instrumentationHook: isProduction,
         optimizeCss: true,
         optimizePackageImports: ['@nordcom/nordstar', 'react-icons'],
         scrollRestoration: true,
