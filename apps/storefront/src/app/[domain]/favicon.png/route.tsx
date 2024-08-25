@@ -1,10 +1,10 @@
 import { Shop } from '@nordcom/commerce-db';
 import { NotFoundError } from '@nordcom/commerce-errors';
 
+import { BuildConfig } from '@/utils/build-config';
 import { ImageResponse } from 'next/og';
 import { type NextRequest, NextResponse } from 'next/server';
 
-import { BuildConfig } from '@/utils/build-config';
 import { validateSize } from './validate-size';
 
 export const dynamic = 'force-static';

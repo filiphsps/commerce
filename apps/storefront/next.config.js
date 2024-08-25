@@ -12,7 +12,7 @@ const withBundleAnalyzer = createWithBundleAnalyzer({
 });
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const isProduction = process.env.NODE_ENV !== 'development' ? true : false; // Deliberately using a ternary here for clarity.
+//const isProduction = process.env.NODE_ENV !== 'development' ? true : false; // Deliberately using a ternary here for clarity.
 
 /** @type {import('next').NextConfig} */
 const config = {
@@ -32,7 +32,6 @@ const config = {
     experimental: {
         //caseSensitiveRoutes: true,
         cssChunking: 'loose',
-        instrumentationHook: isProduction,
         optimizeCss: true,
         optimizePackageImports: ['@apollo/client', '@nordcom/nordstar', '@shopify/hydrogen-react', 'react-icons'],
         parallelServerBuildTraces: true,

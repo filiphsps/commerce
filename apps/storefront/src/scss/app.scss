@@ -210,3 +210,8 @@ hr {
     background: linear-gradient(to right, var(--color-block) 0%, var(--color-block-dark) 25%, var(--color-block) 50%);
     background-size: 200% 100%;
 }
+
+/* TODO: Don't hardcode this. */
+footer address a:hover {
+    text-decoration: underline;
+}

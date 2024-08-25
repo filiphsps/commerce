@@ -38,13 +38,18 @@ const FooterContent = async ({ locale, i18n, shop }: FooterContentProps) => {
 
                 {footer.policy_links.length > 0 ? (
                     <div className={styles['legal-and-copyrights']}>
-                        <div className="flex flex-wrap gap-4 gap-y-0 *:text-xs *:font-black *:uppercase *:lg:text-sm">
+                        <div className="flex flex-wrap justify-center gap-4 gap-y-1 *:text-xs *:font-black *:uppercase lg:justify-start *:lg:text-sm">
                             {footer.policy_links.map(({ title, href: link }, index) => {
                                 const href = asLink(link, { linkResolver });
                                 const target: undefined | '_blank' = (href as any).target || undefined;
 
                                 return (
-                                    <Link href={href} key={`${target}-${index}`} target={target}>
+                                    <Link
+                                        href={href}
+                                        key={`${target}-${index}`}
+                                        target={target}
+                                        className="hover:underline"
+                                    >
                                         {title}
                                     </Link>
                                 );

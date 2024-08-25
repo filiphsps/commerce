@@ -10,9 +10,9 @@ import { BuildConfig } from '@/utils/build-config';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { ShopifyPriceToNumber } from '@/utils/pricing';
 import {
+    AnalyticsEventName as ShopifyAnalyticsEventName,
     getClientBrowserParameters,
     sendShopifyAnalytics,
-    AnalyticsEventName as ShopifyAnalyticsEventName,
     ShopifySalesChannel,
     useCart,
     useShop as useShopify,

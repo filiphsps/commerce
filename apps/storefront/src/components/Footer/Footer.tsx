@@ -32,7 +32,7 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
 
         // TODO: Dynamic copyright copy and content.
         return (
-            <footer className={cn(styles.container, 'flex h-full min-h-96 w-full')}>
+            <footer className={cn(styles.container, 'flex h-full min-h-96 w-full pt-4 md:pt-8')}>
                 <div className={cn(styles.content, 'flex h-full flex-col items-stretch gap-4 md:gap-8')}>
                     <div className={cn(styles.blocks, 'gap-6', borderStyles)}>
                         <div className={cn(styles.block, borderStyles)}>
@@ -48,6 +48,7 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
                                     priority={false}
                                     loading="lazy"
                                     decoding="async"
+                                    draggable={false}
                                 />
                             ) : null}
 
@@ -73,13 +74,13 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
                                     ) : null}
 
                                     {items.length > 0 ? (
-                                        <div className="flex flex-wrap gap-2 *:after:font-extrabold *:after:opacity-75 *:after:content-[','] last:*:after:content-['.']">
+                                        <div className="flex flex-wrap gap-2 gap-y-3 *:after:font-extrabold *:after:opacity-75 *:after:content-[','] last:*:after:content-['.']">
                                             {items.map((item: any, index) => (
                                                 <Link
                                                     key={item.handle || index}
                                                     href={item.handle || ''}
                                                     target={item.handle?.startsWith('http') ? '_blank' : ''}
-                                                    className="text-sm leading-none"
+                                                    className="text-sm leading-none hover:underline"
                                                 >
                                                     {item.title}
                                                 </Link>

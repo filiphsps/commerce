@@ -35,7 +35,7 @@ const Vendors = async ({ shop, locale, className, ...props }: VendorsProps) => {
                 href={`/collections/${vendor.handle}/`}
                 {...props}
                 className={cn(
-                    'bg-secondary-light hover:bg-primary hover:text-primary-foreground mr-2 flex items-center justify-center rounded-lg p-2 px-3 text-center text-sm font-semibold transition-colors md:mr-0 md:px-2',
+                    'bg-secondary-light hover:bg-primary hover:text-primary-foreground mr-2 flex items-center justify-center rounded-lg p-2 px-3 text-center text-sm font-semibold leading-tight transition-colors md:mr-0 md:px-2',
                     className
                 )}
             >

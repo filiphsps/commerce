@@ -49,6 +49,7 @@ export const Overview = ({
                 alt={image.alt!}
                 sizes="(max-width: 1150px) 250px, 250px"
                 decoding="async"
+                draggable={false}
                 fill
             />
         </div>

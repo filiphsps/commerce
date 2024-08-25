@@ -27,7 +27,7 @@ const CartButton = ({ locale, i18n }: CartButtonProps) => {
                 styles.container,
                 'overflow-clip bg-transparent text-black transition-all',
                 totalQuantity &&
-                    'bg-primary text-primary-foreground hover:bg-secondary hover:text-secondary-foreground hover:text-primary-foreground rounded-2xl px-3 py-2 shadow-sm transition-all duration-150 hover:shadow-lg'
+                    'bg-primary text-primary-foreground hover:bg-secondary hover:text-secondary-foreground rounded-3xl px-4 py-3 shadow-sm transition-all duration-150 hover:shadow-lg'
             )}
             data-items={totalQuantity || 0}
             title={t('view-cart')}
@@ -40,7 +40,14 @@ const CartButton = ({ locale, i18n }: CartButtonProps) => {
                 {totalQuantity ? totalQuantity : null}
             </div>
 
-            <FiShoppingBag className={cn(styles.icon, 'group-hover:text-secondary-foreground')} />
+            <FiShoppingBag
+                className={cn(
+                    styles.icon,
+                    'group-hover:text-secondary-foreground text-xl transition-colors',
+                    !totalQuantity && 'group-hover:text-primary text-xl lg:text-2xl'
+                )}
+                style={{ strokeWidth: 2.5 }}
+            />
         </Link>
     );
 };

@@ -13,7 +13,7 @@ export type ProductCardBadgesProps = {
 };
 
 const COMMON_BADGE_STYLES =
-    'flex  gap-1 rounded-2xl p-[0.4rem] px-2 text-xs font-semibold shadow-sm items-center justify-center uppercase z-10';
+    'z-10 flex h-6 items-center justify-center gap-1 rounded-xl px-[0.65rem] text-[0.7rem] font-semibold uppercase shadow-sm';
 
 const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
     const selectedVariant = FirstAvailableVariant(product);
@@ -35,9 +35,16 @@ const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
 
     return (
         <>
-            <div className={cn('absolute inset-1 bottom-auto flex flex-wrap justify-between gap-1 empty:hidden')}>
+            <div
+                className={cn(
+                    'pointer-events-none absolute inset-1 bottom-auto flex flex-wrap justify-between gap-1 empty:hidden'
+                )}
+            >
                 {discount > 1 ? ( // Handle rounding-errors.
-                    <div className={cn(COMMON_BADGE_STYLES, 'bg-sale-stripes text-white')} data-nosnippet={true}>
+                    <div
+                        className={cn(COMMON_BADGE_STYLES, 'bg-sale-stripes font-bold text-white')}
+                        data-nosnippet={true}
+                    >
                         {t('percentage-off', discount)}
                     </div>
                 ) : null}

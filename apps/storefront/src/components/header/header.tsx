@@ -52,8 +52,8 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
                         ) : null}
                     </Link>
 
-                    <div className="flex h-full grow items-center justify-end gap-4" data-nosnippet={true}>
-                        <Link href="/search/" className="hover:text-primary" title={t('search')}>
+                    <div className="flex h-full grow items-center justify-end gap-4 lg:gap-6" data-nosnippet={true}>
+                        <Link href="/search/" className="hover:text-primary transition-colors" title={t('search')}>
                             <HiOutlineSearch className="text-xl lg:text-2xl" style={{ strokeWidth: 2.5 }} />
                         </Link>
 

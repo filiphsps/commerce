@@ -8,7 +8,9 @@ import { PrismicText } from '@/components/typography/prismic-text';
 
 import type { BannerSliceAside } from '@/prismic/types';
 
-export const BannerAside = ({ slice }: { slice: BannerSliceAside }): JSX.Element => {
+export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; index?: number }): JSX.Element => {
+    const priority = index < 2;
+
     const background = slice.primary.background;
     const image = slice.primary.image;
 
@@ -64,6 +66,10 @@ export const BannerAside = ({ slice }: { slice: BannerSliceAside }): JSX.Element
                 height={image.dimensions?.height!}
                 alt={image.alt || image.copyright || ''}
                 className="col-span-2 hidden h-full w-full object-cover object-center md:flex"
+                draggable={false}
+                loading={priority ? 'eager' : 'lazy'}
+                priority={priority}
+                decoding="async"
             />
         </section>
     );

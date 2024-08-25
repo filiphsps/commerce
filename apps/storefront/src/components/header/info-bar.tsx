@@ -15,7 +15,7 @@ import type { Locale, LocaleDictionary } from '@/utils/locale';
 import type { HTMLProps } from 'react';
 
 const BLOCK_STYLES = 'flex gap-2 *:text-sm *:leading-none';
-const LINK_STYLES = 'flex items-center justify-center gap-1 hover:underline';
+const LINK_STYLES = 'flex items-center justify-center gap-1 hover:underline hover:text-primary';
 
 type InfoBarProps = {
     shop: OnlineShop;
@@ -50,12 +50,18 @@ export async function InfoBar({ className, shop, locale, i18n, ...props }: InfoB
             >
                 <div className={BLOCK_STYLES}>
                     <Link
-                        className="flex items-center justify-center gap-1"
+                        className="group flex items-center justify-center gap-1"
                         href="/countries/"
                         title={t('language-and-region-settings')}
                         data-nosnippet={true}
                     >
-                        <LocaleFlag locale={locale} className="block h-3" withName={true} priority={true} />
+                        <LocaleFlag
+                            locale={locale}
+                            className="block h-3"
+                            nameClassName="group-hover:text-primary group-hover:underline"
+                            withName={true}
+                            priority={true}
+                        />
                     </Link>
                 </div>
 
@@ -69,7 +75,7 @@ export async function InfoBar({ className, shop, locale, i18n, ...props }: InfoB
                                 title={t('email-tooltip')}
                                 data-nosnippet={true}
                             >
-                                <FiMail className="h-3" style={{ strokeWidth: 2.5 }} />
+                                <FiMail className="h-4 text-lg" style={{ strokeWidth: 2.5 }} />
                                 {t('email')}
                             </Link>
                         ) : null}
@@ -83,7 +89,7 @@ export async function InfoBar({ className, shop, locale, i18n, ...props }: InfoB
                                 title={t('phone-tooltip')}
                                 data-nosnippet={true}
                             >
-                                <FiPhone className="h-3" style={{ strokeWidth: 2.5 }} />
+                                <FiPhone className="h-4 text-lg" style={{ strokeWidth: 2.5 }} />
                                 {t('phone')}
                             </Link>
                         ) : null}

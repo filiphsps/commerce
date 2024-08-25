@@ -48,15 +48,15 @@ const ProductGallery = ({ initialImageId, images, className, ...props }: Product
 
     return (
         <section draggable={false} className={cn(className)} {...props}>
-            <div className="sticky top-36 flex flex-col gap-2 lg:gap-4">
+            <div className="sticky top-36 flex w-full flex-col gap-2 overflow-clip lg:gap-4">
                 <div
-                    className="relative rounded-lg border-2 border-solid border-gray-100 bg-white p-8 md:p-16 lg:aspect-[4/3]"
+                    className="relative overflow-hidden rounded-lg border-2 border-solid border-gray-100 bg-white p-8 md:aspect-[4/3] md:p-16"
                     {...loadingProps}
                 >
                     {image ? (
                         <Image
                             className={cn(
-                                'opacity-1 h-full max-h-72 w-full object-contain object-center transition-opacity duration-500 md:max-h-[48rem] md:min-h-[36rem]',
+                                'opacity-1 h-full w-full object-contain object-center transition-opacity duration-500 md:min-h-[36rem]',
                                 loading && 'opacity-0 transition-none'
                             )}
                             src={image.url!}
@@ -64,7 +64,7 @@ const ProductGallery = ({ initialImageId, images, className, ...props }: Product
                             title={image.altText!}
                             width={500}
                             height={500}
-                            sizes="(max-width: 920px) 90vw, 500px"
+                            sizes="(max-width: 920px) 80vw, 500px"
                             loading="eager"
                             decoding="async"
                             onLoad={() => {
@@ -79,7 +79,7 @@ const ProductGallery = ({ initialImageId, images, className, ...props }: Product
                         <div className="h-full w-full" />
                     )}
                     {image?.altText ? (
-                        <div className="absolute bottom-2 left-2 rounded-lg bg-gray-100 p-1 px-2 text-sm font-semibold text-gray-500 opacity-80">
+                        <div className="absolute left-2 top-2 rounded-lg bg-gray-100 p-1 px-2 text-sm font-semibold text-gray-500 opacity-80">
                             {image.altText}
                         </div>
                     ) : null}
@@ -114,6 +114,7 @@ const ProductGallery = ({ initialImageId, images, className, ...props }: Product
                                             sizes="(max-width: 920px) 75px, 175px"
                                             loading="eager"
                                             decoding="async"
+                                            draggable={false}
                                         />
                                     </button>
                                 );

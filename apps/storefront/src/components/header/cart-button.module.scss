@@ -27,10 +27,6 @@
         text-align: left;
     }
 
-    svg {
-        stroke-width: 2.75;
-    }
-
     &[data-items] {
         &:not([data-items='0'], :disabled) {
             gap: var(--block-spacer);

@@ -69,7 +69,7 @@ const ProductCardHeader = ({ shop, data: product, priority = false, children, ..
     const href = `/products/${product.handle}/${createProductSearchParams({ product })}`;
 
     return (
-        <Link className="contents" href={href} title={title} {...props}>
+        <Link className="group/header contents" href={href} title={title} {...props}>
             <VariantImage image={{ ...image, altText: image.altText || title }} priority={priority} />
 
             {children}

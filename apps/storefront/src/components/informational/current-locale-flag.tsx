@@ -29,6 +29,7 @@ export const CurrentLocaleFlag = ({
             priority={false}
             loading="lazy"
             decoding="async"
+            draggable={false}
             // TODO: Don't hardcode to some random github pages repo.
             src={`https://purecatamphetamine.github.io/country-flag-icons/3x2/${locale.country}.svg`}
         />

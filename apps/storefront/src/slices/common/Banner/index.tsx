@@ -12,14 +12,14 @@ export type BannerProps = SliceComponentProps<PrismicContent.BannerSlice>;
 /**
  * Component for "Banner" Slices.
  */
-const Banner = ({ slice }: BannerProps): JSX.Element => {
+const Banner = ({ slice, ...props }: BannerProps): JSX.Element => {
     switch (slice.variation) {
         case 'default':
-            return <BannerDefault slice={slice} />;
+            return <BannerDefault slice={slice} {...props} />;
         case 'aside':
-            return <BannerAside slice={slice} />;
+            return <BannerAside slice={slice} {...props} />;
         default:
-            return <BannerDefault slice={slice} />;
+            return <BannerDefault slice={slice} {...props} />;
     }
 };
 
