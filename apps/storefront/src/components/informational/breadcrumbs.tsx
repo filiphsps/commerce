@@ -41,7 +41,7 @@ const Breadcrumbs = ({ shop, title }: BreadcrumbsProps) => {
                 itemType="https://schema.org/ListItem"
             >
                 <Link
-                    className={cn(styles.link, textStyles, 'rounded-lg px-1')}
+                    className={cn(styles.link, textStyles, 'rounded-lg')}
                     href="/"
                     itemType="https://schema.org/Thing"
                     itemProp="item"
@@ -65,7 +65,7 @@ const Breadcrumbs = ({ shop, title }: BreadcrumbsProps) => {
                     itemType="https://schema.org/ListItem"
                 >
                     <Link
-                        className={cn(styles.link, textStyles, 'rounded-lg px-1')}
+                        className={cn(styles.link, textStyles, 'rounded-lg')}
                         href={hrefs[index]!}
                         itemType="https://schema.org/Thing"
                         itemProp="item"
