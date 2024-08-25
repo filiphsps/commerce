@@ -45,6 +45,7 @@
         "**/.svn": true,
         "**/*.tsbuildinfo": true,
         "**/CVS": true,
+        "**/junit.xml": true,
         "**/node_modules": true,
         "**/Thumbs.db": true
     },

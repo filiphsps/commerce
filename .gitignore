@@ -6,6 +6,7 @@ node_modules/
 # testing
 coverage/
 apps/**/coverage/
+junit.xml
 
 # next.js
 .next
