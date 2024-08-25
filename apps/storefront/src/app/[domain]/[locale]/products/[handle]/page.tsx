@@ -260,7 +260,10 @@ export default async function ProductPage({
                             <ProductGallery
                                 initialImageId={initialVariant.image?.id || product.images.edges[0]?.node.id}
                                 images={product.images.edges.map((edge) => edge.node)}
+                                pageUrl={`https://${shop.domain}/${locale.code}/products/${handle}/`}
                                 className="h-full w-full"
+                                product={product}
+                                i18n={i18n}
                             />
                         </Suspense>
                     </section>

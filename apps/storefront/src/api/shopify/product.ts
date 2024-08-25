@@ -270,7 +270,7 @@ export const ProductApi = async ({ api, handle }: ProductOptions): Promise<Produ
         const product = data.product;
         return {
             ...product,
-            descriptionHtml: cleanShopifyHtml(product.descriptionHtml) || undefined
+            descriptionHtml: cleanShopifyHtml(product.descriptionHtml) || ''
         } as Product;
     } catch (error: unknown) {
         console.error(error);

@@ -38,7 +38,11 @@
         "phone": "Telefon",
         "email-tooltip": "Skicka oss ett e-postmeddelande",
         "phone-tooltip": "Ring oss",
-        "wishlist": "Önskelista"
+        "wishlist": "Önskelista",
+        "share": "Dela",
+        "share-on-facebook": "Dela på Facebook",
+        "share-on-x": "Dela på X (Twitter)",
+        "share-via-email": "Dela via E-post"
     },
     "product": {
         "add-to-wishlist": "Lägg till i din önskelista",

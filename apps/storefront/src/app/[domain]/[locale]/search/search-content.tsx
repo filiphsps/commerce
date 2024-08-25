@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { HiOutlineSearch } from 'react-icons/hi';
 
 import { type Locale, type LocaleDictionary, useTranslation } from '@/utils/locale';
@@ -92,8 +92,15 @@ export default function SearchContent({
     const { replace } = useRouter();
     const searchParams = useSearchParams();
     const pathname = usePathname();
+    const [searching, setSearching] = useState<boolean>(false);
+
+    useEffect(() => {
+        setSearching(false);
+    }, [searchParams]);
 
     const commonStyles = 'rounded-lg border border-solid border-gray-300 p-4 lg:max-w-56 gap-1';
+    const commonItemStyles =
+        'group/item h-28 overflow-clip rounded-lg border-2 border-solid border-gray-300 bg-gray-100 lg:h-36';
 
     return (
         <>
@@ -105,9 +112,15 @@ export default function SearchContent({
                     const query = q.trim();
 
                     const params = new URLSearchParams(searchParams);
-                    if (query) params.set('q', query);
-                    else params.delete('q');
+                    if (query) {
+                        if (params.get('q') === query) {
+                            return;
+                        }
 
+                        params.set('q', query);
+                    } else params.delete('q');
+
+                    setSearching(true);
                     replace(`${pathname}?${params.toString()}`, { scroll: true });
                 }}
             />
@@ -159,60 +172,72 @@ export default function SearchContent({
             ) : null}
 
             <section className="grid grid-cols-1 gap-2 md:grid-cols-3 lg:grid-cols-4">
-                {products.map(
-                    ({
-                        id,
-                        title,
-                        handle,
-                        images,
-                        featuredImage,
-                        trackingParameters,
-                        productType,
-                        vendor,
-                        availableForSale
-                    }) => {
-                        const image: Product['images']['edges'][number]['node'] | undefined =
-                            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                            featuredImage ?? images.edges.find((image) => image.node)?.node;
-                        const href = `/products/${handle}/${!!(trackingParameters as any) ? `?${trackingParameters}` : ''}`;
+                {searching === true ? (
+                    <>
+                        {new Array(6).fill(0).map((_, index) => (
+                            <div key={index} className={commonItemStyles} data-skeleton></div>
+                        ))}
+                    </>
+                ) : null}
 
-                        return (
-                            <Link
-                                href={href}
-                                key={id}
-                                className={cn(
-                                    'group/item flex h-28 gap-2 overflow-clip rounded-lg border-2 border-solid border-gray-300 bg-gray-100 transition-shadow hover:shadow-lg lg:h-36 lg:gap-4',
-                                    !availableForSale && 'border-gray-100 opacity-35 brightness-75'
-                                )}
-                            >
-                                <div className="flex aspect-square h-full w-auto shrink-0 grow-0 items-center justify-center overflow-hidden bg-white p-1">
-                                    {image ? (
-                                        <Image
-                                            className={'h-full w-full object-contain object-center'}
-                                            src={image.url!}
-                                            alt={image.altText!}
-                                            title={image.altText!}
-                                            width={image.width || 75}
-                                            height={image.height || 75}
-                                            sizes="(max-width: 920px) 90vw, 500px"
-                                            loading="eager"
-                                            decoding="async"
-                                        />
-                                    ) : null}
-                                </div>
+                {!searching
+                    ? products.map(
+                          ({
+                              id,
+                              title,
+                              handle,
+                              images,
+                              featuredImage,
+                              trackingParameters,
+                              productType,
+                              vendor,
+                              availableForSale
+                          }) => {
+                              const image: Product['images']['edges'][number]['node'] | undefined =
+                                  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                                  featuredImage ?? images.edges.find((image) => image.node)?.node;
+                              const href = `/products/${handle}/${!!(trackingParameters as any) ? `?${trackingParameters}` : ''}`;
 
-                                <div className="col-span-6 flex h-full w-full flex-col gap-1 py-2 pr-2 leading-tight lg:py-4">
-                                    <Label className="overflow-hidden text-ellipsis whitespace-nowrap text-sm leading-none opacity-75">
-                                        {vendor}
-                                    </Label>
-                                    <div className="font-medium leading-none">
-                                        {title} &mdash; {productType}
-                                    </div>
-                                </div>
-                            </Link>
-                        );
-                    }
-                )}
+                              return (
+                                  <Link
+                                      href={href}
+                                      key={id}
+                                      className={cn(
+                                          commonItemStyles,
+                                          'hover:text-primary flex gap-2 transition-shadow hover:shadow-lg lg:gap-4',
+                                          !availableForSale && 'border-gray-100 opacity-35 brightness-75'
+                                      )}
+                                  >
+                                      <div className="flex aspect-square h-full w-auto shrink-0 grow-0 items-center justify-center overflow-hidden bg-white p-2">
+                                          {image ? (
+                                              <Image
+                                                  className={'h-full w-full object-contain object-center'}
+                                                  src={image.url!}
+                                                  alt={image.altText!}
+                                                  title={image.altText!}
+                                                  width={image.width || 75}
+                                                  height={image.height || 75}
+                                                  sizes="(max-width: 920px) 90vw, 500px"
+                                                  loading="eager"
+                                                  decoding="async"
+                                              />
+                                          ) : null}
+                                      </div>
+
+                                      <div className="col-span-6 flex h-full w-full flex-col gap-1 py-2 pr-2 leading-tight lg:py-4">
+                                          <Label className="overflow-hidden text-ellipsis whitespace-nowrap text-sm leading-none opacity-75">
+                                              {vendor}
+                                          </Label>
+
+                                          <div className="font-medium leading-none">
+                                              {title} &mdash; {productType}
+                                          </div>
+                                      </div>
+                                  </Link>
+                              );
+                          }
+                      )
+                    : null}
             </section>
         </>
     );

@@ -31,7 +31,7 @@ export const dictionaries: Record<Lowercase<LanguageCode>, () => Promise<LocaleD
     el: () => new Promise((resolve) => resolve(stub)) as any /* TODO */,
     en: () => import('@/i18n/en.json').then((module) => module.default) as any,
     eo: () => new Promise((resolve) => resolve(stub)) as any /* TODO */,
-    es: () => new Promise((resolve) => resolve(stub)) as any /* TODO */,
+    es: () => import('@/i18n/es.json').then((module) => module.default) as any,
     et: () => new Promise((resolve) => resolve(stub)) as any /* TODO */,
     eu: () => new Promise((resolve) => resolve(stub)) as any /* TODO */,
     fa: () => new Promise((resolve) => resolve(stub)) as any /* TODO */,

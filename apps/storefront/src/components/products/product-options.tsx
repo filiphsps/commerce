@@ -115,7 +115,7 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
                                             // The user's locale might differ from ours.
                                             suppressHydrationWarning={true}
                                         >
-                                            {label || title}
+                                            {label || value}
                                         </Link>
                                     );
                                 })}

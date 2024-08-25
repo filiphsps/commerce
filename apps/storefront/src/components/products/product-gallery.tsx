@@ -1,21 +1,44 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { FiMail } from 'react-icons/fi';
+import { EmailShareButton, FacebookShareButton, TwitterShareButton } from 'react-share';
 
+import { useTranslation } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 import Image from 'next/image';
 
+import type { Product } from '@/api/product';
+import type { LocaleDictionary } from '@/utils/locale';
 import type { Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
-import type { HTMLProps } from 'react';
+import type { HTMLProps, ReactNode } from 'react';
+
+const SHARE_BUTTON_STYLES =
+    'z-10 flex h-7 w-7 appearance-none items-center justify-center rounded-full border border-solid border-gray-300 bg-white fill-primary stroke-primary object-cover object-center transition-colors hover:border-primary hover:text-primary md:h-8 md:w-8';
 
 export type ProductGalleryProps = {
     initialImageId?: string | null;
     images: ShopifyImage[] | null;
+    actions?: ReactNode | ReactNode[];
+    pageUrl: string;
+    i18n: LocaleDictionary;
+    product: Product;
 } & HTMLProps<HTMLDivElement>;
-const ProductGallery = ({ initialImageId, images, className, ...props }: ProductGalleryProps) => {
+const ProductGallery = ({
+    initialImageId,
+    images,
+    className,
+    actions,
+    pageUrl,
+    i18n,
+    product,
+    ...props
+}: ProductGalleryProps) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [selected, setSelected] = useState<ShopifyImage | null>(null);
     const [next, setNext] = useState<ShopifyImage | null>(null);
+
+    const { t } = useTranslation('common', i18n);
 
     const setImage = useCallback(
         (image: ShopifyImage) => {
@@ -46,6 +69,8 @@ const ProductGallery = ({ initialImageId, images, className, ...props }: Product
     const image = next || selected;
     const loadingProps = { ...(!image || loading ? { 'data-skeleton': true } : {}) };
 
+    const title = product.seo.title || `${product.vendor} ${product.title}`;
+
     return (
         <section draggable={false} className={cn(className)} {...props}>
             <div className="sticky top-36 flex w-full flex-col gap-2 overflow-clip lg:gap-4">
@@ -56,7 +81,7 @@ const ProductGallery = ({ initialImageId, images, className, ...props }: Product
                     {image ? (
                         <Image
                             className={cn(
-                                'opacity-1 h-full w-full object-contain object-center transition-opacity duration-500 md:min-h-[36rem]',
+                                'opacity-1 h-full min-h-32 w-full object-contain object-center transition-opacity duration-500 md:min-h-[36rem]',
                                 loading && 'opacity-0 transition-none'
                             )}
                             src={image.url!}
@@ -76,13 +101,61 @@ const ProductGallery = ({ initialImageId, images, className, ...props }: Product
                             }}
                         />
                     ) : (
-                        <div className="h-full w-full" />
+                        <div className="h-full min-h-32 w-full md:min-h-[36rem]" />
                     )}
-                    {image?.altText ? (
-                        <div className="absolute left-2 top-2 rounded-lg bg-gray-100 p-1 px-2 text-sm font-semibold text-gray-500 opacity-80">
-                            {image.altText}
+
+                    <div className="absolute inset-x-2 top-2 flex flex-row-reverse items-start justify-between gap-2">
+                        <div className="flex flex-col gap-1">
+                            <EmailShareButton
+                                key="email"
+                                url={pageUrl}
+                                className={SHARE_BUTTON_STYLES}
+                                resetButtonStyle={false}
+                                title={title}
+                                htmlTitle={t('share-via-email')}
+                            >
+                                <FiMail />
+                            </EmailShareButton>
+                            <FacebookShareButton
+                                key="facebook"
+                                url={pageUrl}
+                                className={SHARE_BUTTON_STYLES}
+                                resetButtonStyle={false}
+                                title={title}
+                                htmlTitle={t('share-on-facebook')}
+                            >
+                                <Image
+                                    src="/assets/icons/social/facebook-outline.svg"
+                                    alt="Facebook"
+                                    width={20}
+                                    height={20}
+                                />
+                            </FacebookShareButton>
+                            <TwitterShareButton
+                                key="twitter"
+                                url={pageUrl}
+                                className={SHARE_BUTTON_STYLES}
+                                resetButtonStyle={false}
+                                title={title}
+                                htmlTitle={t('share-on-x')}
+                            >
+                                <Image
+                                    src="/assets/icons/social/twitter-outline.svg"
+                                    alt="X (Twitter)"
+                                    width={20}
+                                    height={20}
+                                />
+                            </TwitterShareButton>
+
+                            {actions}
                         </div>
-                    ) : null}
+
+                        {image?.altText ? (
+                            <div className="rounded-lg bg-gray-100 p-1 px-2 text-sm font-semibold text-gray-500 opacity-80">
+                                {image.altText}
+                            </div>
+                        ) : null}
+                    </div>
                 </div>
 
                 {image && images.length > 1 ? (

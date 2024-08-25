@@ -43,7 +43,11 @@
         "phone": "Phone",
         "email-tooltip": "Send us an email",
         "phone-tooltip": "Call us",
-        "wishlist": "Wishlist"
+        "wishlist": "Wishlist",
+        "share": "Share",
+        "share-on-facebook": "Share on Facebook",
+        "share-on-x": "Share on X (Twitter)",
+        "share-via-email": "Share via Email"
     },
     "product": {
         "add-to-wishlist": "Add to Wishlist",
