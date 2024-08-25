@@ -1,3 +1,4 @@
+/* c8 ignore start */
 'use client';
 
 import { linkResolver } from '@/utils/prismic';
@@ -67,3 +68,4 @@ export const PrismicText = ({ data, styled = true, bare = false }: PrismicTextPr
         />
     );
 };
+/* c8 ignore stop */

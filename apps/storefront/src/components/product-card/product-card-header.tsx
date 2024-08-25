@@ -1,11 +1,10 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
-import { memo, useMemo } from 'react';
+import { useMemo } from 'react';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { createProductSearchParams, type Product } from '@/api/product';
-import { deepEqual } from '@/utils/deep-equal';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import Image from 'next/image';
 
@@ -18,7 +17,7 @@ interface VariantImageProps {
     image?: ShopifyImage;
     priority?: boolean;
 }
-const VariantImage = memo(({ image, priority }: VariantImageProps) => {
+const VariantImage = ({ image, priority }: VariantImageProps) => {
     if (!image) {
         return null;
     }
@@ -38,7 +37,7 @@ const VariantImage = memo(({ image, priority }: VariantImageProps) => {
             loading={priority ? 'eager' : 'lazy'}
         />
     );
-}, deepEqual);
+};
 VariantImage.displayName = 'Nordcom.ProductCard.Image.VariantImage';
 
 export type ProductCardImageProps = {

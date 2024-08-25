@@ -59,21 +59,13 @@ const ContentProvider = ({
                 <PrismicRegistry client={createClient({ shop, locale })}>
                     {children}
 
-                    <Toolbars domain={domain}>
-                        <PrismicToolbar repositoryName={shop.contentProvider.repositoryName} />
-                    </Toolbars>
+                    <PrismicToolbar repositoryName={shop.contentProvider.repositoryName} />
                 </PrismicRegistry>
             );
         }
         case 'shopify': {
             // TODO: Handle this.
-            return (
-                <>
-                    {children}
-
-                    <Toolbars domain={domain} />
-                </>
-            );
+            return <>{children}</>;
         }
         default: {
             throw new UnknownContentProviderError(shop.contentProvider);
@@ -120,6 +112,8 @@ const ProvidersRegistry = ({
                                 }
                             }}
                         />
+
+                        <Toolbars domain={domain} />
                     </CartProvider>
                 </ContentProvider>
             </CommerceProvider>

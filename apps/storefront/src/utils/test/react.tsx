@@ -3,7 +3,7 @@ import '@testing-library/jest-dom/vitest';
 
 import { Locale } from '@/utils/locale';
 import { Trackable } from '@/utils/trackable';
-import { queries, render, within } from '@testing-library/react';
+import { queries, queryHelpers, render, within } from '@testing-library/react';
 
 import { ShopProvider } from '@/components/shop/provider';
 
@@ -31,3 +31,5 @@ export * from '@testing-library/react';
 
 // override render method
 export { customRender as render, customScreen as screen, customWithin as within };
+
+export const queryBySliceType = queryHelpers.queryByAttribute.bind(null, 'data-slice-type');

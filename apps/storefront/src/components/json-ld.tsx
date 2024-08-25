@@ -2,6 +2,10 @@ export type JsonLdProps = {
     data: Object;
 };
 export function JsonLd({ data }: JsonLdProps) {
+    if (!(data as any)) {
+        return null;
+    }
+
     try {
         return (
             <script

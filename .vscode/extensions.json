@@ -10,6 +10,7 @@
         "medo64.render-crlf",
         "wakatime.vscode-wakatime",
         "esbenp.prettier-vscode",
-        "bradlc.vscode-tailwindcss"
+        "bradlc.vscode-tailwindcss",
+        "codecov.codecov"
     ]
 }

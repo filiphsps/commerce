@@ -141,6 +141,7 @@ const QuantitySelector = ({
                 onClick={decrease}
                 title={t('decrease')}
                 data-quantity-decrease
+                data-testid="quantity-decrease"
                 data-nosnippet={true}
             >
                 {'−'}
@@ -165,6 +166,7 @@ const QuantitySelector = ({
                 onChange={onChange}
                 suppressHydrationWarning={true}
                 data-quantity-input
+                data-testid="quantity-input"
                 data-nosnippet={true}
             />
 
@@ -177,6 +179,7 @@ const QuantitySelector = ({
                 onClick={increase}
                 title={t('increase')}
                 data-quantity-increase
+                data-testid="quantity-increase"
                 data-nosnippet={true}
             >
                 {'+'}

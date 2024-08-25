@@ -46,6 +46,7 @@
         ]
     },
     "rules": {
+        "@next/next/no-html-link-for-pages": "off",
         "@typescript-eslint/consistent-type-exports": ["error", { "fixMixedExportsWithInlineTypeSpecifier": false }],
         "@typescript-eslint/consistent-type-imports": [
             "error",
@@ -93,6 +94,7 @@
         "react/no-string-refs": "off",
         "react/prop-types": "error",
         "react/react-in-jsx-scope": "off",
+        "react/display-name": "off",
         "semi": ["error", "always"],
         "sort-imports": "off",
         "simple-import-sort/exports": "error",

@@ -32,7 +32,8 @@ export default defineProject({
             '**/dist/**/',
             '**/node_modules/**/*.*',
             '**/utils/test/**/*.*',
-            './src/error.ts'
+            './src/error.ts',
+            './src/index.ts'
         ],
 
         globals: true,
@@ -52,7 +53,8 @@ export default defineProject({
                 '**/utils/test/**/*.*',
                 '**/src/**/index.*',
                 '**/src/**/config/*.*',
-                './src/error.ts'
+                './src/error.ts',
+                './src/index.ts'
             ]
         }
     }
