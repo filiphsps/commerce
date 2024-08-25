@@ -85,10 +85,12 @@ const CollectionBlock = async ({
                     <Link
                         href={`/collections/${collection.handle}/`}
                         className={styles.viewAll}
-                        title="Browse all products" // TODO: i18n.
+                        // TODO: i18n.
                         // TODO: View all {products.length} {Pluralize({ count: products.length, noun: 'product' })}.
                     >
-                        View all of the products in this collection
+                        <div className="text-center">
+                            View all of the products in <b className="font-bold">{collection.title}</b>.
+                        </div>
                     </Link>
                 ) : null}
             </div>
