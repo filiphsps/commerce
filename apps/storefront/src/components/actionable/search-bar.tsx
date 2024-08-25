@@ -1,4 +1,4 @@
-import { FiSearch } from 'react-icons/fi';
+import { HiOutlineSearch } from 'react-icons/hi';
 
 import { cn } from '@/utils/tailwind';
 
@@ -29,7 +29,7 @@ export function SearchBar({ className, ...props }: SearchBarProps) {
                 />
 
                 <Button styled={false} className="px-3 hover:bg-red-500">
-                    <FiSearch style={{ strokeWidth: 2.5 }} />
+                    <HiOutlineSearch style={{ strokeWidth: 2.5 }} />
                 </Button>
             </div>
 

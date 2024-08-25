@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import { FiSearch } from 'react-icons/fi';
+import { HiOutlineSearch } from 'react-icons/hi';
 
 import { type Locale, type LocaleDictionary, useTranslation } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
@@ -68,7 +68,7 @@ export const SearchBar = ({ defaultValue, onSearch, disabled, className, locale,
                 disabled={disabled}
                 type="submit"
             >
-                <FiSearch className="text-2xl" style={{ strokeWidth: 2.5 }} />
+                <HiOutlineSearch className="text-xl lg:text-2xl" style={{ strokeWidth: 2.5 }} />
             </Button>
         </div>
     );

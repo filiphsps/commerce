@@ -1,4 +1,5 @@
-import { PiInfoBold } from 'react-icons/pi';
+import { BiCheckCircle, BiErrorCircle, BiInfoCircle } from 'react-icons/bi';
+import { PiWarningCircleBold } from 'react-icons/pi';
 
 import { cn } from '@/utils/tailwind';
 
@@ -6,12 +7,39 @@ import { Content } from '@/components/typography/content';
 
 import type { HTMLProps } from 'react';
 
+const ICON_STYLES = 'flex text-inherit';
+
 export type AlertProps = {
     severity: 'success' | 'info' | 'warning' | 'error' | 'callout';
     children: React.ReactNode;
     icon?: false | React.ReactNode;
 } & HTMLProps<HTMLDivElement>;
 export const Alert = ({ children, severity, icon, className, ...props }: AlertProps) => {
+    let iconElement: React.ReactNode | null = null;
+    if (typeof icon === 'undefined' || (typeof icon === 'boolean' && icon !== false)) {
+        switch (severity) {
+            case 'success':
+                iconElement = <BiCheckCircle className={ICON_STYLES} />;
+                break;
+
+            case 'warning':
+                iconElement = <PiWarningCircleBold className={ICON_STYLES} />;
+                break;
+            case 'error':
+                iconElement = <BiErrorCircle className={ICON_STYLES} />;
+                break;
+
+            case 'callout':
+                break;
+
+            case 'info':
+            default:
+                iconElement = <BiInfoCircle className={ICON_STYLES} />;
+        }
+    } else if (typeof icon !== 'boolean') {
+        iconElement = icon;
+    }
+
     return (
         <div
             className={cn(
@@ -26,13 +54,9 @@ export const Alert = ({ children, severity, icon, className, ...props }: AlertPr
             data-severity={severity}
             {...props}
         >
-            {icon === false ? null : (
-                <>{!icon ? <PiInfoBold className="block aspect-square w-12 text-2xl text-inherit" /> : icon}</>
-            )}
+            {iconElement ? <div className="aspect-square text-3xl">{iconElement}</div> : null}
 
-            <Content className={cn('leading-tight text-inherit', icon && 'flex border-2 border-solid border-gray-300')}>
-                {children}
-            </Content>
+            <Content className={cn('h-full leading-tight text-inherit')}>{children}</Content>
         </div>
     );
 };

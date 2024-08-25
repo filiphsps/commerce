@@ -1,19 +1,18 @@
 import 'server-only';
 
 import { type HTMLProps } from 'react';
-import { FiSearch } from 'react-icons/fi';
+import { HiOutlineSearch } from 'react-icons/hi';
 
 import { Shop } from '@nordcom/commerce-db';
 
 import { MenuApi } from '@/api/navigation';
+import { type Locale, type LocaleDictionary, useTranslation } from '@/utils/locale';
 import Image from 'next/image';
 
 import { CartButton } from '@/components/header/cart-button';
 import { HeaderMenu } from '@/components/header/header-menu';
 import { HeaderNavigation } from '@/components/header/header-navigation';
 import Link from '@/components/link';
-
-import type { Locale, LocaleDictionary } from '@/utils/locale';
 
 export type HeaderProps = {
     domain: string;
@@ -25,8 +24,10 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
 
     const menu = await MenuApi({ shop, locale });
     const slices = menu.slices;
-
     const { logo } = shop.design.header;
+
+    const { t } = useTranslation('common', i18n);
+
     return (
         <section
             className="sticky top-0 z-50 flex w-full flex-col items-center overscroll-contain shadow-none transition-shadow duration-150 group-data-[menu-open=true]/body:shadow-lg group-data-[scrolled=true]/body:shadow-lg md:max-h-[95dvh]"
@@ -51,9 +52,9 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
                         ) : null}
                     </Link>
 
-                    <div className="flex h-full grow items-center justify-end gap-4">
-                        <Link href="/search/" className="hover:text-primary *:md:text-lg">
-                            <FiSearch style={{ strokeWidth: 2.5 }} />
+                    <div className="flex h-full grow items-center justify-end gap-4" data-nosnippet={true}>
+                        <Link href="/search/" className="hover:text-primary" title={t('search')}>
+                            <HiOutlineSearch className="text-xl lg:text-2xl" style={{ strokeWidth: 2.5 }} />
                         </Link>
 
                         <CartButton i18n={i18n} locale={locale} />

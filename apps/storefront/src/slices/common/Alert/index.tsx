@@ -13,7 +13,8 @@ export type AlertProps = SliceComponentProps<Content.AlertSlice>;
  * Component for "Alert" Slices.
  */
 const Alert = ({ slice }: AlertProps): JSX.Element => {
-    const showIcon = slice.primary.show_icon === undefined || slice.primary.show_icon === true || false;
+    const showIcon = slice.primary.show_icon === true || false;
+
     return (
         <AlertComponent
             severity={slice.primary.severity}
