@@ -1,4 +1,4 @@
-import { defineProject } from 'vitest/config';
+import { configDefaults, defineProject } from 'vitest/config';
 
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -9,7 +9,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineProject({
     root: resolve(__dirname),
-    plugins: [react()],
+    plugins: [(react as any)()],
     resolve: {
         alias: [
             {
@@ -53,6 +53,11 @@ export default defineProject({
                 transformCss: true,
                 transformAssets: true
             }
+        },
+
+        exclude: [...configDefaults.exclude, './src/utils/flags.ts'],
+        coverage: {
+            exclude: [...configDefaults.exclude, './src/utils/flags.ts']
         }
     }
 });

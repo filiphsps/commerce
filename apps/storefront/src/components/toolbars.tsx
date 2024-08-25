@@ -1,9 +1,10 @@
+import { BuildConfig } from '@/utils/build-config';
 import { VercelToolbar } from '@vercel/toolbar/next';
 
 import type { ReactNode } from 'react';
 
 export const isPreviewEnvironment = (domain: string = '') => {
-    if (process.env.NODE_ENV === 'development') {
+    if (BuildConfig.environment === 'development') {
         return true;
     }
 

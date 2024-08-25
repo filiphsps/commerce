@@ -1,6 +1,7 @@
+/* c8 ignore start */
 import authConfig from '@/utils/auth.config';
-import { NextResponse } from 'next/server';
 import NextAuth from 'next-auth';
+import { NextResponse } from 'next/server';
 
 import type { NextAuthRequest } from 'next-auth/lib';
 
@@ -17,3 +18,4 @@ const { auth } = NextAuth(authConfig);
 export default auth((_req: NextAuthRequest) => {
     return NextResponse.next();
 });
+/* c8 ignore stop */

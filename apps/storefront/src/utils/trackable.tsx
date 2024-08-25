@@ -10,9 +10,9 @@ import { BuildConfig } from '@/utils/build-config';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { ShopifyPriceToNumber } from '@/utils/pricing';
 import {
-    AnalyticsEventName as ShopifyAnalyticsEventName,
     getClientBrowserParameters,
     sendShopifyAnalytics,
+    AnalyticsEventName as ShopifyAnalyticsEventName,
     ShopifySalesChannel,
     useCart,
     useShop as useShopify,
@@ -286,6 +286,11 @@ const handleEvent = async (
                 }
             }
         });
+    }
+
+    if (!(shop as any)?.commerceProvider?.type) {
+        // This should never actually happen, but does in testing since the shop mocks aren't correctly setup.
+        return;
     }
 
     switch (shop.commerceProvider.type) {

@@ -1,5 +1,7 @@
+import { BuildConfig } from '@/utils/build-config';
+
 export async function register() {
-    if (process.env.NODE_ENV === 'development') {
+    if (BuildConfig.environment === 'development') {
         return;
     }
 

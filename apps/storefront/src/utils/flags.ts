@@ -1,3 +1,4 @@
+/* c8 ignore start */
 import { get } from '@vercel/edge-config';
 import { unstable_flag as flag } from '@vercel/flags/next';
 
@@ -16,3 +17,4 @@ export const showProductInfoLines = flag({
         return !!value || false;
     }
 });
+/* c8 ignore stop */

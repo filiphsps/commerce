@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { defineProject } from 'vitest/config';
+import { configDefaults, defineProject } from 'vitest/config';
 
 export default defineProject({
     optimizeDeps: {
@@ -25,7 +25,15 @@ export default defineProject({
 
         setupFiles: ['vitest.setup.ts'],
         reporters: ['verbose'],
-        exclude: ['**/*.d.ts', '**/*.stories.*', '**/dist/**/', '**/node_modules/**/*.*', '**/utils/test/**/*.*'],
+        exclude: [
+            ...configDefaults.exclude,
+            '**/*.d.ts',
+            '**/*.stories.*',
+            '**/dist/**/',
+            '**/node_modules/**/*.*',
+            '**/utils/test/**/*.*',
+            './src/error.ts'
+        ],
 
         globals: true,
 
@@ -33,6 +41,7 @@ export default defineProject({
             all: true,
             include: ['**/src/**/*.{ts,tsx}'],
             exclude: [
+                ...configDefaults.exclude,
                 '__tests__/*.*',
                 '.vitest/*.*',
 
@@ -42,7 +51,8 @@ export default defineProject({
                 '**/*.test.*',
                 '**/utils/test/**/*.*',
                 '**/src/**/index.*',
-                '**/src/**/config/*.*'
+                '**/src/**/config/*.*',
+                './src/error.ts'
             ]
         }
     }

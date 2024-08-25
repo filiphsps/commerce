@@ -108,7 +108,7 @@ vi.mock('next/cache', async () => {
 });
 
 window.location = {
-    ...(window.location || {}),
+    ...((window.location as any) || {}),
     pathname: '/en-US/',
     host: 'staging.demo.nordcom.io',
     href: 'http://staging.demo.nordcom.io/en-US/',

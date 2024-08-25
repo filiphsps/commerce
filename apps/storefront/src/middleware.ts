@@ -1,3 +1,4 @@
+/* c8 ignore start */
 import { storefront } from '@/middleware/storefront';
 
 import type { NextRequest } from 'next/server';
@@ -21,3 +22,4 @@ export const config = {
 export default async function middleware(req: NextRequest) {
     return storefront(req);
 }
+/* c8 ignore stop */

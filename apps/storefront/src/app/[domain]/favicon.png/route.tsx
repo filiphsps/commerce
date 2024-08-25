@@ -4,6 +4,7 @@ import { NotFoundError } from '@nordcom/commerce-errors';
 import { ImageResponse } from 'next/og';
 import { type NextRequest, NextResponse } from 'next/server';
 
+import { BuildConfig } from '@/utils/build-config';
 import { validateSize } from './validate-size';
 
 export const dynamic = 'force-static';
@@ -13,7 +14,7 @@ export type FaviconRouteParams = {
     domain: string;
 };
 export async function GET(req: NextRequest, { params: { domain } }: { params: FaviconRouteParams }) {
-    if (process.env.NODE_ENV !== 'production') {
+    if (BuildConfig.environment !== 'production') {
         return NextResponse.json({
             status: 200
         });
