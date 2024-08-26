@@ -55,7 +55,7 @@ export const LocalesApi = async ({ api }: { api: AbstractApi }): Promise<Locale[
     const countries = await CountriesApi({ api });
 
     const locales = countries.flatMap((country) =>
-        (country.availableLanguages || []).map((language) => {
+        country.availableLanguages.map((language) => {
             try {
                 return Locale.from({ language: language.isoCode, country: country.isoCode });
             } catch {

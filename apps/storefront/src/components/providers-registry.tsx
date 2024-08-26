@@ -6,6 +6,7 @@ import type { OnlineShop } from '@nordcom/commerce-db';
 import { UnknownCommerceProviderError, UnknownContentProviderError } from '@nordcom/commerce-errors';
 
 import { CartFragment } from '@/api/shopify/cart';
+import { useCartUtils } from '@/hooks/useCartUtils';
 import { BuildConfig } from '@/utils/build-config';
 import { createClient } from '@/utils/prismic';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
@@ -16,7 +17,13 @@ import { ShopProvider } from '@/components/shop/provider';
 import { Toolbars } from '@/components/toolbars';
 
 import type { CurrencyCode, Locale } from '@/utils/locale';
-import type { ReactNode } from 'react';
+import { Suspense, type ReactNode } from 'react';
+
+const RequiredHooks = ({ locale, children = null }: { shop: OnlineShop; locale: Locale; children?: ReactNode }) => {
+    const {} = useCartUtils({ locale });
+
+    return children;
+};
 
 const CommerceProvider = ({ shop, locale, children }: { shop: OnlineShop; locale: Locale; children: ReactNode }) => {
     switch (shop.commerceProvider.type) {
@@ -101,6 +108,10 @@ const ProvidersRegistry = ({
                             countryCode={locale.country!}
                         >
                             <ErrorBoundary fallbackRender={() => null}>
+                                <Suspense fallback={null}>
+                                    <RequiredHooks shop={shop} locale={locale} />
+                                </Suspense>
+
                                 {children}
 
                                 {toolbars ? (

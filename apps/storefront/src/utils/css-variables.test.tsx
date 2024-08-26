@@ -37,8 +37,12 @@ describe('utils', () => {
                         ]
                     },
                     commerceProvider: {
-                        type: 'shopify' as const,
-                        domain: 'mock.shop' as const
+                        id: 'mock-shop-id',
+                        domains: 'staging.demo.nordcom.io',
+                        commerceProvider: {
+                            type: 'shopify' as const,
+                            domain: 'mock.shop' as const
+                        }
                     }
                 })
             }

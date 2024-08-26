@@ -26,9 +26,9 @@ const CartButton = ({ locale, i18n }: CartButtonProps) => {
             locale={locale}
             className={cn(
                 styles.container,
-                'duration-250 group overflow-clip rounded-none bg-red-200 bg-transparent p-0 text-base text-black transition-all',
+                'duration-250 group h-10 overflow-clip rounded-none bg-red-200 bg-transparent p-0 py-0 text-base text-black transition-all *:leading-snug',
                 totalQuantity &&
-                    'bg-primary text-primary-foreground fill-primary-foreground stroke-primary-foreground hover:bg-secondary hover:text-secondary-foreground rounded-3xl px-4 py-3 shadow-sm transition-all duration-150 hover:shadow-lg'
+                    'bg-primary text-primary-foreground fill-primary-foreground stroke-primary-foreground hover:bg-secondary hover:text-secondary-foreground rounded-3xl px-4 shadow-sm transition-all duration-150 hover:shadow-lg'
             )}
             data-items={totalQuantity || 0}
             title={t('view-cart')}
@@ -44,7 +44,7 @@ const CartButton = ({ locale, i18n }: CartButtonProps) => {
             <FiShoppingBag
                 className={cn(
                     styles.icon,
-                    'group-hover:text-secondary-foreground text-xl transition-colors',
+                    'group-hover:text-secondary-foreground text-base transition-colors',
                     !totalQuantity && 'group-hover:text-primary text-xl lg:text-2xl'
                 )}
                 style={{ strokeWidth: 2.5 }}

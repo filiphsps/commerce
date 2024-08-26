@@ -5,9 +5,10 @@ import { useEffect, useState } from 'react';
 import type { Error } from '@nordcom/commerce-errors';
 
 import { useCart } from '@shopify/hydrogen-react';
-import { useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import type { Locale } from '@/utils/locale';
+import type { CartDiscountCode } from '@shopify/hydrogen-react/storefront-api-types';
 
 // TODO: Implement discount code validation.
 const validateDiscountCode = (_code: string) => {
@@ -22,12 +23,11 @@ type useCartUtilsResult = {
     cartError: any | undefined;
 };
 export const useCartUtils = ({ locale }: useCartUtilsProps): useCartUtilsResult => {
-    if (typeof window === 'undefined') {
-        return { error: undefined, cartError: undefined };
-    }
-
     const [error, setError] = useState<Error | undefined>();
-    const query = useSearchParams() as any;
+    const router = useRouter();
+    const pathname = usePathname();
+    const query = useSearchParams();
+    const discount = query.get('discount')?.toString() || null;
 
     const {
         buyerIdentity,
@@ -51,23 +51,22 @@ export const useCartUtils = ({ locale }: useCartUtilsProps): useCartUtilsResult 
 
     // Discount codes in url
     useEffect(() => {
-        if (status !== 'idle') {
+        if (status !== 'idle' || discount === null || discount.length <= 0) {
             return;
         }
 
-        const discount = query?.discount?.toString();
-        if (!discount || discount.length <= 0) {
-            return;
-        }
-
-        delete query.discount;
-
-        // Notification?
-        // TODO: Implement notification here
+        const params = new URLSearchParams(query);
+        params.delete('discount');
+        router.replace(`${pathname}${params.size > 0 ? '?' : ''}${params.toString()}`, { scroll: false });
 
         // Check cart errors and validate that the code was actually valid.
         if (validateDiscountCode(discount)) {
-            discountCodesUpdate([...(discountCodes || []), discount]);
+            let codes = ((discountCodes || []) as CartDiscountCode[]).map(({ code }) => code);
+            if (!codes.some((code) => code === discount)) {
+                codes.push(discount);
+            }
+
+            discountCodesUpdate(codes);
         }
 
         if (cartError && error != cartError) {

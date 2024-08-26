@@ -11,7 +11,12 @@ import type { ReactElement, ReactNode } from 'react';
 
 const Providers = ({ children }: { children: ReactNode }) => {
     const shop = {
-        domain: 'example.com'
+        id: 'mock-shop-id',
+        domain: 'staging.demo.nordcom.io',
+        commerceProvider: {
+            type: 'shopify' as const,
+            domain: 'mock.shop' as const
+        }
     } as any;
 
     return (

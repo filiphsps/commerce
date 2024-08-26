@@ -43,7 +43,7 @@ describe('app', () => {
         useRouter: vi.fn().mockReturnValue({
             replace: vi.fn()
         }),
-        useSearchParams: vi.fn().mockReturnValue({ get: vi.fn().mockReturnValue('') })
+        useSearchParams: vi.fn().mockReturnValue(new URLSearchParams())
     }));
 
     // Mock `@shopify/hydrogen-react`.

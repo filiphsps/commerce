@@ -363,8 +363,9 @@ function Trackable({ children }: TrackableProps) {
 
     const checkoutDomain = shop.commerceProvider.domain;
     // Only use the domain, not the subdomain.
-    let cookieDomain = shop.domain.split('.').slice(-2).join('.') || shop.domain;
-    if (!cookieDomain.startsWith('.')) {
+    let cookieDomain: string | undefined =
+        (shop.domain as any)?.split('.').slice(-2).join('.') || shop.domain || undefined;
+    if (cookieDomain && !cookieDomain.startsWith('.')) {
         cookieDomain = `.${cookieDomain}`;
     }
 

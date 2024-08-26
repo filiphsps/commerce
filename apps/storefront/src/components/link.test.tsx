@@ -19,7 +19,7 @@ describe('components', () => {
                     status: 'idle'
                 }),
                 useShop: vi.fn().mockReturnValue({
-                    domain: 'example.com'
+                    domain: 'staging.demo.nordcom.io'
                 }),
                 useShopifyCookies: vi.fn().mockReturnValue({})
             };
@@ -27,7 +27,7 @@ describe('components', () => {
 
         vi.mock('@/utils/build-config', () => ({
             BuildConfig: {
-                domain: 'example.com',
+                domain: 'staging.demo.nordcom.io',
                 i18n: {
                     default: 'en-US'
                 }
@@ -66,9 +66,9 @@ describe('components', () => {
         });
 
         it('should remove the current domain from the `href`', () => {
-            vi.spyOn(window, 'location', 'get').mockReturnValue({ host: 'example.com' } as any);
-            window.location.host = 'example.com';
-            const href = `https://example.com/some/path`;
+            vi.spyOn(window, 'location', 'get').mockReturnValue({ host: 'staging.demo.nordcom.io' } as any);
+            window.location.host = 'staging.demo.nordcom.io';
+            const href = `https://staging.demo.nordcom.io/some/path`;
             const { container } = render(<Link href={href} />);
             const link = container.querySelector('a');
             expect(link?.getAttribute('href')).toBe('/en-US/some/path');

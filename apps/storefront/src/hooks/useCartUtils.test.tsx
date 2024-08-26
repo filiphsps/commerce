@@ -8,15 +8,6 @@ import { useSearchParams } from 'next/navigation';
 
 import type { Mock } from 'vitest';
 
-vi.mock('next/navigation', () => ({
-    useSearchParams: vi.fn()
-}));
-
-vi.mock('@shopify/hydrogen-react', () => ({
-    useCart: vi.fn(),
-    useShopifyCookies: vi.fn().mockReturnValue({})
-}));
-
 const USA = Locale.from('en-US')!;
 const GER = Locale.from('de-DE')!;
 

@@ -76,12 +76,14 @@ vi.mock('@/prismic', () => ({
 }));
 
 // Mock `next/navigation`.
-vi.mock('next/navigation', async () => {
-    return {
-        ...(((await vi.importActual('next/navigation')) as any) || {}),
-        usePathname: vi.fn().mockReturnValue('/en-US/hello-testing-env')
-    };
-});
+vi.mock('next/navigation', async () => ({
+    ...(((await vi.importActual('next/navigation')) as any) || {}),
+    usePathname: vi.fn().mockReturnValue(''),
+    useRouter: vi.fn().mockReturnValue({
+        replace: vi.fn()
+    }),
+    useSearchParams: vi.fn().mockReturnValue(new URLSearchParams())
+}));
 
 vi.mock('@shopify/hydrogen-react', async () => ({
     ...(((await vi.importActual('@shopify/hydrogen-react')) as any) || {}),
