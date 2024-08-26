@@ -257,20 +257,18 @@ export const ProductApi = async ({ api, handle }: ProductOptions): Promise<Produ
             }
         );
 
-        if (errors) {
-            throw new Error(`500: ${errors.map((e: any) => e.message).join('\n')}`);
+        if ((errors || []).length > 0) {
+            throw new UnknownApiError();
         } else if (!data?.product?.handle) {
             throw new NotFoundError(`"Product" with the handle "${handle}" on shop "${shop.id}"`);
-        } else if (data.product.handle !== handle) {
-            throw new Error(
-                `500: Product handle doesn't match requested handle ("${data.product.handle}" !== "${handle}")`
-            );
         }
 
-        const product = data.product;
+        const {
+            product: { descriptionHtml, ...product }
+        } = data;
         return {
             ...product,
-            descriptionHtml: cleanShopifyHtml(product.descriptionHtml) || ''
+            descriptionHtml: cleanShopifyHtml(descriptionHtml) || ''
         } as Product;
     } catch (error: unknown) {
         console.error(error);

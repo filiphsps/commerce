@@ -22,6 +22,18 @@ export class Error<T = unknown> extends BuiltinError {
         Object.setPrototypeOf(this, Error.prototype);
     }
 
+    public is(error: Error | unknown): boolean {
+        if (!(error instanceof Error)) {
+            return false;
+        }
+
+        return this.code === error.code;
+    }
+
+    public static isError(error: Error | unknown): boolean {
+        return error instanceof Error;
+    }
+
     public isNotFoundError(): boolean {
         return Error.isNotFound(this);
     }
@@ -56,7 +68,8 @@ export enum ApiErrorKind {
     API_IMAGE_OUT_OF_BOUNDS = 'API_IMAGE_OUT_OF_BOUNDS',
     API_NO_LOCALES_AVAILABLE = 'API_NO_LOCALES_AVAILABLE',
     API_INVALID_SHOPIFY_CUSTOMER_ACCOUNT_API_CONFIGURATION = 'API_INVALID_SHOPIFY_CUSTOMER_ACCOUNT_API_CONFIGURATION',
-    API_MISSING_ENVIRONMENT_VARIABLE = 'API_MISSING_ENVIRONMENT_VARIABLE'
+    API_MISSING_ENVIRONMENT_VARIABLE = 'API_MISSING_ENVIRONMENT_VARIABLE',
+    API_PROVIDER_FETCH_FAILED = 'API_PROVIDER_FETCH_FAILED'
 }
 
 export class ApiError extends Error<ApiErrorKind> {
@@ -163,6 +176,22 @@ export class MissingEnvironmentVariableError extends ApiError {
     details = 'Missing environment variable';
     description = `${!!this.cause ? 'the' : 'A'} required environment variable ${!!this.cause ? `"${this.cause}"` : ''} is missing`;
     code = ApiErrorKind.API_MISSING_ENVIRONMENT_VARIABLE;
+}
+
+export class ProviderFetchError extends ApiError {
+    statusCode = 500;
+    name = 'ProviderFetchError';
+    details = 'Failed to fetch from source';
+    description = 'Failed to fetch from source';
+    code = ApiErrorKind.API_PROVIDER_FETCH_FAILED;
+
+    constructor(sourceErrors?: any) {
+        super();
+
+        if (sourceErrors) {
+            this.cause = sourceErrors;
+        }
+    }
 }
 
 export type ApiErrorStatusCode = 400 | 405 | 429 | number;
@@ -299,6 +328,8 @@ export const getErrorFromCode = (
             return ImageOutOfBoundsError;
         case ApiErrorKind.API_NO_LOCALES_AVAILABLE:
             return NoLocalesAvailableError;
+        case ApiErrorKind.API_PROVIDER_FETCH_FAILED:
+            return ProviderFetchError;
     }
 
     // eslint-disable-next-line no-unreachable

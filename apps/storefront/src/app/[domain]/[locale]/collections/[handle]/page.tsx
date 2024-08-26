@@ -47,9 +47,11 @@ export async function generateMetadata({
     params: CollectionPageParams;
     searchParams: FilterParams;
 }): Promise<Metadata> {
-    try {
-        if (!isValidHandle(handle)) notFound();
+    if (!isValidHandle(handle)) {
+        notFound();
+    }
 
+    try {
         const locale = Locale.from(localeData);
 
         const shop = await Shop.findByDomain(domain);
@@ -118,9 +120,11 @@ export default async function CollectionPage({
     params: CollectionPageParams;
     searchParams: FilterParams;
 }) {
-    try {
-        if (!isValidHandle(handle)) notFound();
+    if (!isValidHandle(handle)) {
+        notFound();
+    }
 
+    try {
         // Creates a locale object from a locale code (e.g. `en-US`).
         const locale = Locale.from(localeData);
 

@@ -46,9 +46,11 @@ export async function generateMetadata({
 }: {
     params: CustomPageParams;
 }): Promise<Metadata> {
-    try {
-        if (!isValidHandle(handle)) notFound();
+    if (!isValidHandle(handle)) {
+        notFound();
+    }
 
+    try {
         const locale = Locale.from(localeData);
 
         const shop = await Shop.findByDomain(domain);
@@ -116,9 +118,11 @@ export default async function CustomPage({
 }: {
     params: CustomPageParams;
 }) {
-    try {
-        if (!isValidHandle(handle)) notFound();
+    if (!isValidHandle(handle)) {
+        notFound();
+    }
 
+    try {
         // Creates a locale object from a locale code (e.g. `en-US`).
         const locale = Locale.from(localeCode);
 

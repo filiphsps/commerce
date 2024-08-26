@@ -75,9 +75,11 @@ export async function generateMetadata({
 }: {
     params: ArticlePageParams;
 }): Promise<Metadata> {
-    try {
-        if (!isValidHandle(handle)) notFound();
+    if (!isValidHandle(handle)) {
+        notFound();
+    }
 
+    try {
         const shop = await Shop.findByDomain(domain);
         const locale = Locale.from(localeData);
 
@@ -124,9 +126,11 @@ export default async function ArticlePage({
 }: {
     params: ArticlePageParams;
 }) {
-    try {
-        if (!isValidHandle(handle)) notFound();
+    if (!isValidHandle(handle)) {
+        notFound();
+    }
 
+    try {
         const shop = await Shop.findByDomain(domain);
         const locale = Locale.from(localeData);
 

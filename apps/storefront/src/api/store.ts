@@ -13,7 +13,7 @@ import type { Client as PrismicClient } from '@prismicio/client';
 import type { Country, Localization, Shop as ShopifyStore } from '@shopify/hydrogen-react/storefront-api-types';
 
 export const CountriesApi = async ({ api }: { api: AbstractApi }): Promise<Country[]> => {
-    const { data: localData } = await api.query<{ localization: Localization }>(gql`
+    const { data: localData } = await api.query<Localization>(gql`
         query localization {
             localization {
                 availableCountries {
@@ -35,20 +35,27 @@ export const CountriesApi = async ({ api }: { api: AbstractApi }): Promise<Count
 
     // FIXME: Handle errors or missing data.
     // FIXME: Handle tenant-specific default.
-    return ((localData as any)?.localization.availableCountries! || [
-        {
-            availableLanguages: [{ isoCode: 'EN', name: 'English' }],
-            isoCode: 'US',
-            name: 'United States'
-        }
-    ]) as Localization['availableCountries'];
+    return (
+        (
+            ((localData as any)?.localization.availableCountries! || [
+                {
+                    availableLanguages: [{ isoCode: 'EN', name: 'English' }],
+                    isoCode: 'US',
+                    name: 'United States'
+                }
+            ]) as Country[]
+        )
+            // https://nordcom.sentry.io/share/issue/b0b9721ad1e54a88b779605737472230/
+            // `availableLanguages` shouldn't be nullable, but it sometimes is.
+            .map((data) => ({ ...data, availableLanguages: data.availableLanguages || [] }))
+    );
 };
 
 export const LocalesApi = async ({ api }: { api: AbstractApi }): Promise<Locale[]> => {
     const countries = await CountriesApi({ api });
 
     const locales = countries.flatMap((country) =>
-        country.availableLanguages.map((language) => {
+        (country.availableLanguages || []).map((language) => {
             try {
                 return Locale.from({ language: language.isoCode, country: country.isoCode });
             } catch {

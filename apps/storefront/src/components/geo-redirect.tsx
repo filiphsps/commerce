@@ -66,10 +66,7 @@ export function GeoRedirect({ countries, locale }: GeoRedirectProps) {
             <div className="mx-auto flex flex-col items-start justify-between gap-4 md:max-w-[var(--page-width)] md:flex-row md:items-center">
                 <div className="flex flex-wrap items-center gap-2 gap-y-0 text-lg font-medium leading-snug">
                     <div>Looks like you are located in</div>
-                    <div
-                        className="border-primary-foreground flex items-center gap-1 border-0 border-b-2 border-solid px-1 leading-none"
-                        suppressHydrationWarning={true}
-                    >
+                    <div className="flex items-center gap-1 leading-none" suppressHydrationWarning={true}>
                         <LocaleFlag
                             locale={targetLocale}
                             className="block h-4"

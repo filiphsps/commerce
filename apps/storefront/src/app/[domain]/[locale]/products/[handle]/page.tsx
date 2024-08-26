@@ -69,8 +69,11 @@ export async function generateMetadata({
 }: {
     params: ProductPageParams;
 }): Promise<Metadata> {
+    if (!isValidHandle(handle)) {
+        notFound();
+    }
+
     try {
-        if (!isValidHandle(handle)) notFound();
         const locale = Locale.from(localeData);
 
         // Fetch the current shop.
@@ -127,7 +130,14 @@ export async function generateMetadata({
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
             notFound();
-        }
+        } /*else if (Error.isError(error)) {
+            const statusCode = (error as Error).statusCode || -1;
+
+            switch (true) {
+                case statusCode >= 500 && statusCode < 600:
+                    notFound();
+            }
+        }*/
 
         throw error;
     }
@@ -141,9 +151,11 @@ export default async function ProductPage({
 }: {
     params: ProductPageParams;
 }) {
-    try {
-        if (!isValidHandle(handle)) notFound();
+    if (!isValidHandle(handle)) {
+        notFound();
+    }
 
+    try {
         // Creates a locale object from a locale code (e.g. `en-US`).
         const locale = Locale.from(localeData);
 

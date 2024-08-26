@@ -190,7 +190,7 @@ export const CollectionApi = async (
             }
         );
 
-        if (errors) {
+        if ((errors || []).length > 0) {
             throw new UnknownApiError();
         } else if (!data?.collection) {
             throw new NotFoundError(`"Collection" with the handle "${handle}" on shop "${shop.id}"`);
