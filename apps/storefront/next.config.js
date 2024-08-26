@@ -114,13 +114,25 @@ const config = {
         return process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
     },
 
-    webpack(config, context) {
+    webpack: (config, { webpack, isServer }) => {
         config.experiments = {
             ...config.experiments,
             topLevelAwait: true
         };
 
-        if (context.isServer) config.devtool = 'source-map';
+        config.plugins.push(
+            new webpack.DefinePlugin({
+                __SENTRY_DEBUG__: false,
+                __SENTRY_TRACING__: false,
+                __RRWEB_EXCLUDE_IFRAME__: true,
+                __RRWEB_EXCLUDE_SHADOW_DOM__: true,
+                __SENTRY_EXCLUDE_REPLAY_WORKER__: true
+            })
+        );
+
+        if (isServer) {
+            config.devtool = 'source-map';
+        }
         return config;
     },
 
@@ -133,8 +145,11 @@ export default withSentryConfig(withBundleAnalyzer(withVercelToolbar(config)), {
     project: 'commerce',
     authToken: process.env.SENTRY_AUTH_TOKEN,
     silent: !process.env.CI,
+    debug: process.env.NODE_ENV === 'development',
     widenClientFileUpload: true,
     hideSourceMaps: true,
     disableLogger: true,
-    automaticVercelMonitors: true
+    automaticVercelMonitors: true,
+    transpileClientSDK: false
+    //tunnelRoute: "/monitoring",
 });

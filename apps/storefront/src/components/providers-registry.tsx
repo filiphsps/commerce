@@ -1,5 +1,6 @@
 'use client';
 
+import { type ReactNode, Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
@@ -17,7 +18,6 @@ import { ShopProvider } from '@/components/shop/provider';
 import { Toolbars } from '@/components/toolbars';
 
 import type { CurrencyCode, Locale } from '@/utils/locale';
-import { Suspense, type ReactNode } from 'react';
 
 const RequiredHooks = ({ locale, children = null }: { shop: OnlineShop; locale: Locale; children?: ReactNode }) => {
     const {} = useCartUtils({ locale });
