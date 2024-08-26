@@ -8,12 +8,6 @@ import { useCart } from '@shopify/hydrogen-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import type { Locale } from '@/utils/locale';
-import type { CartDiscountCode } from '@shopify/hydrogen-react/storefront-api-types';
-
-// TODO: Implement discount code validation.
-const validateDiscountCode = (_code: string) => {
-    return true;
-};
 
 type useCartUtilsProps = {
     locale: Locale;
@@ -27,20 +21,19 @@ export const useCartUtils = ({ locale }: useCartUtilsProps): useCartUtilsResult 
     const router = useRouter();
     const pathname = usePathname();
     const query = useSearchParams();
-    const discount = query.get('discount')?.toString() || null;
 
     const {
         buyerIdentity,
         buyerIdentityUpdate,
-        discountCodes,
+        discountCodes = [],
         discountCodesUpdate,
-        status,
+        cartReady,
         error: cartError
     } = useCart();
 
     // Handle country code change
     useEffect(() => {
-        if (status !== 'idle' || buyerIdentity?.countryCode === locale.country) {
+        if (!cartReady || buyerIdentity?.countryCode === locale.country) {
             return;
         }
 
@@ -51,28 +44,30 @@ export const useCartUtils = ({ locale }: useCartUtilsProps): useCartUtilsResult 
 
     // Discount codes in url
     useEffect(() => {
-        if (status !== 'idle' || discount === null || discount.length <= 0) {
+        if (!cartReady || !query.has('discount')) {
             return;
         }
 
+        const discounts: string[] = ((query.getAll('discount') as any) || []).map((value: any) => value.toString());
+        if (discounts.length <= 0) {
+            return;
+        }
+
+        // TODO: Check cart errors and validate that the code was actually valid.
+        //discounts.every((discount) => validateDiscountCode(discount))
+
+        const codes = [...(discountCodes.map((discount) => discount?.code).filter(Boolean) as string[]), ...discounts];
+        discountCodesUpdate(codes);
+
+        // Only update the URL if the discount codes actually were applied.
         const params = new URLSearchParams(query);
         params.delete('discount');
         router.replace(`${pathname}${params.size > 0 ? '?' : ''}${params.toString()}`, { scroll: false });
 
-        // Check cart errors and validate that the code was actually valid.
-        if (validateDiscountCode(discount)) {
-            let codes = ((discountCodes || []) as CartDiscountCode[]).map(({ code }) => code);
-            if (!codes.some((code) => code === discount)) {
-                codes.push(discount);
-            }
-
-            discountCodesUpdate(codes);
-        }
-
         if (cartError && error != cartError) {
             setError(() => error);
         }
-    }, [query, status]);
+    }, [query, cartReady]);
 
     return { error, cartError };
 };

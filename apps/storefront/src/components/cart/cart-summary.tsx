@@ -17,7 +17,6 @@ import Link from '@/components/link';
 import { useShop } from '@/components/shop/provider';
 import { Label } from '@/components/typography/label';
 
-import type { CartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import type { ReactNode } from 'react';
 
 const SUMMARY_LABEL_STYLES = 'font-normal text-sm capitalize';
@@ -34,7 +33,7 @@ type CartSummaryProps = {
 };
 const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummaryProps) => {
     const { t } = useTranslation('cart', i18n);
-    const { totalQuantity, lines, cost, note, discountCodes, cartReady } = useCart();
+    const { totalQuantity, lines = [], cost, note, discountCodes = [], cartReady } = useCart();
     const { currency } = useShop();
     const [showNote, setShowNote] = useState(false);
 
@@ -43,30 +42,29 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
 
         setShowNote(showNote);
     }, [note]);
-
-    const cartLines = ((lines as any) || []) as CartLine[];
-
     const sale =
-        cartLines.reduce(
+        lines.reduce(
             (sum, line) =>
-                (line.cost.compareAtAmountPerQuantity &&
+                (line!.cost!.compareAtAmountPerQuantity &&
                     sum +
-                        ((Number.parseFloat(line.cost.compareAtAmountPerQuantity.amount!) || 0) * (line.quantity || 0) -
-                            Number.parseFloat(line.cost.totalAmount.amount!))) ||
+                        ((Number.parseFloat(line!.cost!.compareAtAmountPerQuantity.amount!) || 0) *
+                            (line!.quantity || 0) -
+                            Number.parseFloat(line!.cost!.totalAmount!.amount!))) ||
                 sum,
             0
         ) || 0;
     const totalSale =
         sale +
-        cartLines
+        lines
             .map((line) => {
-                if (line.discountAllocations.length <= 0) {
+                if (line!.discountAllocations!.length <= 0) {
                     return 0;
                 }
 
-                return line.discountAllocations.reduce(
+                return line!.discountAllocations!.reduce(
                     (sum, line) =>
-                        (line.discountedAmount.amount && sum + Number.parseFloat(line.discountedAmount.amount!)) || sum,
+                        (line!.discountedAmount!.amount && sum + Number.parseFloat(line!.discountedAmount!.amount!)) ||
+                        sum,
                     0
                 );
             })
@@ -134,7 +132,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                                 </div>
                             ) : null}
 
-                            {lines?.map((line, index) => {
+                            {lines.map((line, index) => {
                                 if (!line) return null;
 
                                 return line.discountAllocations?.map((discount) => {
@@ -164,7 +162,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
 
                     {promos ? (
                         <div className={`${styles['line-item']} ${styles.breakdown} ${styles.discounted}`}>
-                            <Label className={styles.label}>{t('promo-codes')}</Label>
+                            <Label className="text-xl font-bold capitalize">{t('promo-codes')}</Label>
                             {cartReady ? (
                                 <Money
                                     className={styles.money}
@@ -177,9 +175,9 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                         </div>
                     ) : null}
 
-                    <div className={cn(styles.totals, 'flex items-center justify-between')}>
-                        <Label className="text-xl font-bold capitalize">{t('estimated-total')}</Label>
-                        {cost?.totalAmount ? (
+                    {cost?.totalAmount ? (
+                        <div className={cn(styles.totals, 'flex items-center justify-between')}>
+                            <Label className="text-xl font-bold capitalize">{t('estimated-total')}</Label>
                             <Money
                                 className={styles.money}
                                 data={
@@ -190,8 +188,8 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                                     }
                                 }
                             />
-                        ) : null}
-                    </div>
+                        </div>
+                    ) : null}
 
                     <div
                         className={'text-xs font-semibold opacity-75'}
@@ -200,19 +198,13 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
             </section>
 
             <section className={cn(styles.section, styles['section-actions'], 'mt-4')}>
-                <Button disabled={!cartReady || (totalQuantity || 0) <= 0 || !lines} onClick={onCheckout}>
+                <Button className="h-10 py-0 md:h-14 md:text-base" disabled={!cartReady || !lines} onClick={onCheckout}>
                     <span>{t('continue-to-checkout')}</span>
                     <FiChevronRight className={styles.icon} />
                 </Button>
             </section>
 
-            {discountCodes && discountCodes.length > 0 ? (
-                <section className={styles.section}>
-                    <CartCoupons />
-                </section>
-            ) : null}
-
-            {lines && lines.length > 0 ? (
+            {lines.length > 0 ? (
                 <section className={`${styles.section} ${styles['section-actions']}`}>
                     <>
                         {cartReady ? (
@@ -226,10 +218,14 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                                 }))}
                                 channel="hydrogen"
                             />
-                        ) : (
-                            <Button className={cn(styles.button, styles['shop-button'])} disabled={true} />
-                        )}
+                        ) : null}
                     </>
+                </section>
+            ) : null}
+
+            {discountCodes.length > 0 ? (
+                <section className={styles.section}>
+                    <CartCoupons />
                 </section>
             ) : null}
 
@@ -240,14 +236,13 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                     <FiLock className={'stroke mr-1 inline h-3 stroke-2'} />
                     Safely complete your purchase through Nordcom AB&apos;s trusted partner&apos;s
                     <Link href="https://www.shopify.com/security/pci-compliant" rel="nofollow" target="_blank">
-                        {' '}
-                        PCI DSS compliant{' '}
+                        PCI DSS compliant
                     </Link>
                     checkout powered by Stripe and/or Shopify.
                 </div>
             </section>
 
-            {(totalQuantity || 0) > 0 ? (
+            {lines.length > 0 ? (
                 <section className={styles.section}>
                     <header className={styles.header}>
                         <Label>{t('label-cart-note')}</Label>

@@ -44,8 +44,9 @@ const config = {
         webpackBuildWorker: true
     },
     images: {
-        // FIXME: Use a proper domain.
-        path: 'https://cloudflare-image.filiph-sandstrom.workers.dev/',
+        // TODO: Use a proper domain.
+        // TODO: Re-introduce this once we properly cache and optimize images.
+        //path: 'https://cloudflare-image.filiph-sandstrom.workers.dev/',
         dangerouslyAllowSVG: true,
         remotePatterns: [
             {

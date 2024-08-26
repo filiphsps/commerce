@@ -1,50 +1,59 @@
-import styles from '@/components/cart/cart-coupons.module.scss';
+'use client';
 
-import { FiTag, FiX } from 'react-icons/fi';
+import { FiX } from 'react-icons/fi';
 
+import { cn } from '@/utils/tailwind';
 import { useCart } from '@shopify/hydrogen-react';
 
+import { Button } from '@/components/actionable/button';
 import { Label } from '@/components/typography/label';
 
 import type { CartDiscountCode } from '@shopify/hydrogen-react/storefront-api-types';
 
 const CartCoupons = ({}) => {
-    'use client';
+    const { discountCodes = [], discountCodesUpdate, cartReady } = useCart();
 
-    const { discountCodes, discountCodesUpdate, status } = useCart();
-
-    if ((status !== 'idle' && status !== 'updating') || !discountCodes?.length) return null;
+    if (!cartReady || discountCodes.length <= 0) {
+        return null;
+    }
 
     return (
-        <div className={styles.container}>
+        <section className="flex flex-col items-start justify-start gap-2">
             <Label>Active discounts</Label>
-            <div className={styles.coupons}>
-                {(discountCodes as CartDiscountCode[]).map(({ code }) =>
-                    code ? (
-                        <div key={code} className={styles.code}>
-                            <div className={styles.tag}>
-                                <FiTag className={styles.icon} />
-                            </div>
 
-                            <Label className={styles.label} as="label">
-                                {code}
-                            </Label>
+            <div className={cn('flex flex-wrap gap-2')}>
+                {(discountCodes as CartDiscountCode[]).map(({ code }) => (
+                    <div
+                        key={code}
+                        className="flex items-center justify-center gap-2 overflow-hidden rounded-full bg-white px-3 py-2"
+                    >
+                        {/*<FiTag className="" />*/}
 
-                            <button
-                                className={styles.action}
-                                type="button"
-                                title={`Remove promo code "${code}"`}
-                                onClick={() =>
-                                    discountCodesUpdate((discountCodes.filter((i) => i?.code !== code) as any) || [])
-                                }
-                            >
-                                <FiX className={styles.icon} />
-                            </button>
-                        </div>
-                    ) : null
-                )}
+                        <Label>{code}</Label>
+
+                        <Button
+                            styled={false}
+                            className="contents"
+                            type="button"
+                            title={`Remove promo code "${code}"`}
+                            onClick={() => {
+                                const codes = discountCodes
+                                    .map((discount) => discount?.code)
+                                    .filter(Boolean) as string[];
+
+                                // Return the discount codes except for the one we're removing.
+                                discountCodesUpdate(codes.filter((i) => i !== code));
+                            }}
+                        >
+                            <FiX
+                                className="h-4 text-lg transition-colors hover:fill-red-500 hover:stroke-red-500"
+                                style={{ strokeWidth: 2.5 }}
+                            />
+                        </Button>
+                    </div>
+                ))}
             </div>
-        </div>
+        </section>
     );
 };
 

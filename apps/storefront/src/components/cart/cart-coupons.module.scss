@@ -1,16 +1,6 @@
 @import 'globals';
 
 .container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--block-spacer);
-    align-items: center;
-    justify-content: space-between;
-
-    width: 100%;
-
-    transform: translateZ(0);
-
     .coupons {
         display: flex;
         flex-direction: row;
