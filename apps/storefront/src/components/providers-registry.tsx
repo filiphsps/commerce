@@ -77,13 +77,15 @@ const ProvidersRegistry = ({
     currency = 'USD',
     domain,
     locale,
-    children
+    children,
+    toolbars = true
 }: {
     shop: OnlineShop;
     domain: string;
     currency?: CurrencyCode;
     locale: Locale;
     children: ReactNode;
+    toolbars?: boolean;
 }) => {
     return (
         <ShopProvider shop={shop} currency={currency} locale={locale}>
@@ -96,22 +98,26 @@ const ProvidersRegistry = ({
                     >
                         {children}
 
-                        <ToasterProvider
-                            theme="dark"
-                            position="bottom-left"
-                            expand={true}
-                            duration={5000}
-                            gap={4}
-                            visibleToasts={2}
-                            pauseWhenPageIsHidden={true}
-                            toastOptions={{
-                                duration: 2500,
-                                classNames: {
-                                    toast: 'toast-notification'
-                                }
-                            }}
-                        />
-                        <Toolbars domain={domain} />
+                        {toolbars ? (
+                            <>
+                                <ToasterProvider
+                                    theme="dark"
+                                    position="bottom-left"
+                                    expand={true}
+                                    duration={5000}
+                                    gap={4}
+                                    visibleToasts={2}
+                                    pauseWhenPageIsHidden={true}
+                                    toastOptions={{
+                                        duration: 2500,
+                                        classNames: {
+                                            toast: 'toast-notification'
+                                        }
+                                    }}
+                                />
+                                <Toolbars domain={domain} />
+                            </>
+                        ) : null}
                     </CartProvider>
                 </ContentProvider>
             </CommerceProvider>

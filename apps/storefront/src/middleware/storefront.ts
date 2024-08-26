@@ -132,7 +132,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     }
 
     // Rewrite index to use the `homepage` handle.
-    if (newUrl.pathname.split('/')[2] === '' && !newUrl.pathname.includes('slice-simulator')) {
+    if (newUrl.pathname.split('/')[2] === '') {
         newUrl.pathname += `homepage/`;
     }
 

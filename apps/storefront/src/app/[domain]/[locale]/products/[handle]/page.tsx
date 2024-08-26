@@ -24,6 +24,7 @@ import { notFound } from 'next/navigation';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { JsonLd } from '@/components/json-ld';
 import Link from '@/components/link';
+import PrismicPage from '@/components/prismic-page';
 import { AttributeIcon } from '@/components/products/attribute-icon';
 import { InfoLines } from '@/components/products/info-lines';
 import { ProductGallery } from '@/components/products/product-gallery';
@@ -33,7 +34,6 @@ import { Content } from '@/components/typography/content';
 import { ProductContent, ProductPricing, ProductSavings } from './product-content';
 import { ImportantProductDetails, ProductDetails } from './product-details';
 
-import PrismicPage from '@/components/prismic-page';
 import type { Metadata } from 'next';
 import type { Product, WithContext } from 'schema-dts';
 
@@ -258,7 +258,7 @@ export default async function ProductPage({
                             'flex h-auto w-full md:w-1/2 md:shrink-0 lg:w-full lg:max-w-[42rem] xl:max-w-[52rem]'
                         }
                     >
-                        <Suspense>
+                        <Suspense fallback={null}>
                             <ProductGallery
                                 initialImageId={initialVariant.image?.id || product.images.edges[0]?.node.id}
                                 images={product.images.edges.map((edge) => edge.node)}
@@ -313,19 +313,19 @@ export default async function ProductPage({
                                     </header>
 
                                     <div className="flex items-end justify-start gap-2 md:gap-3">
-                                        <Suspense>
+                                        <Suspense fallback={null}>
                                             <ProductPricing product={product} />
                                         </Suspense>
                                     </div>
                                 </div>
 
-                                <Suspense>
+                                <Suspense fallback={null}>
                                     <ProductContent product={product} i18n={i18n} />
                                 </Suspense>
                             </div>
 
                             <div className={cn(ROUNDED_BLOCK_STYLES)}>
-                                <Suspense>
+                                <Suspense fallback={null}>
                                     <InfoLines product={product} i18n={i18n} locale={locale} />
                                 </Suspense>
                             </div>
@@ -343,7 +343,7 @@ export default async function ProductPage({
                                 ) : null}
                             </section>
 
-                            <Suspense>
+                            <Suspense fallback={null}>
                                 <div className={cn(ROUNDED_BLOCK_STYLES)}>
                                     <Content
                                         dangerouslySetInnerHTML={{
@@ -351,11 +351,11 @@ export default async function ProductPage({
                                         }}
                                     />
 
-                                    <Suspense>
+                                    <Suspense fallback={null}>
                                         <ImportantProductDetails locale={locale} data={product} />
                                     </Suspense>
 
-                                    <Suspense>
+                                    <Suspense fallback={null}>
                                         <div className="flex flex-wrap gap-3 border-0 border-t-2 border-solid border-gray-300 pt-4 empty:hidden md:gap-4">
                                             <ProductDetails locale={locale} data={product} />
                                         </div>

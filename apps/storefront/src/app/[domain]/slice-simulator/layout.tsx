@@ -1,8 +1,8 @@
 import 'server-only';
 
-import 'the-new-css-reset';
 import '@/styles/app.scss';
 import '@/styles/global.css';
+import 'the-new-css-reset';
 
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
@@ -51,20 +51,17 @@ export default async function RootLayout({
         const localization = await LocaleApi({ api });
 
         return (
-            <html
-                lang={locale.code}
-                className={cn(primaryFont.variable, 'overflow-x-hidden overscroll-x-none')}
-                suppressHydrationWarning={true}
-            >
+            <html lang={locale.code} className={cn(primaryFont.variable)} suppressHydrationWarning={true}>
                 <head suppressHydrationWarning={true}>
                     <CssVariablesProvider domain={domain} />
                 </head>
-                <body suppressHydrationWarning={true} className="group/body">
+                <body suppressHydrationWarning={true} className="group/body overflow-x-hidden overscroll-x-none">
                     <ProvidersRegistry
                         shop={shop}
                         currency={localization?.country.currency.isoCode}
                         locale={locale}
                         domain={domain}
+                        toolbars={false}
                     >
                         <AnalyticsProvider shop={shop}>
                             <HeaderProvider loaderColor="transparent">{children}</HeaderProvider>
