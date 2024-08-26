@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 
@@ -34,10 +35,10 @@ export const AnalyticsProvider = ({ shop, children }: AnalyticsProviderProps) =>
     }, []);
 
     return (
-        <>
+        <ErrorBoundary fallbackRender={() => null}>
             <Trackable>{children}</Trackable>
             <SpeedInsights debug={false} />
             {deferred}
-        </>
+        </ErrorBoundary>
     );
 };

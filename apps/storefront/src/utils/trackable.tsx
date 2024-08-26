@@ -87,7 +87,7 @@ export type AnalyticsEventData = {
 };
 
 /**
- * @see {@link https://shopify.dev/docs/api/hydrogen-react/2024-01/utilities/sendshopifyanalytics#analyticspagetype}
+ * @see {@link https://shopify.dev/docs/api/hydrogen-react/2024-07/utilities/sendshopifyanalytics#analyticspagetype}
  */
 export type ShopifyPageType =
     | 'article'
@@ -361,11 +361,15 @@ function Trackable({ children }: TrackableProps) {
     const prevPath = usePrevious(path);
     const { shop, currency, locale } = useShop();
 
+    const checkoutDomain = shop.commerceProvider.domain;
     // Only use the domain, not the subdomain.
-    const cookieDomain = shop.domain.split('.').slice(-2).join('.') || shop.domain;
+    let cookieDomain = shop.domain.split('.').slice(-2).join('.') || shop.domain;
+    if (!cookieDomain.startsWith('.')) {
+        cookieDomain = `.${cookieDomain}`;
+    }
 
     // TODO: Break these out into a separate hook, to support other providers.
-    useShopifyCookies({ hasUserConsent: true, domain: cookieDomain });
+    useShopifyCookies({ hasUserConsent: true, domain: cookieDomain, checkoutDomain });
     const shopify = useShopify();
 
     const cart = useCart();

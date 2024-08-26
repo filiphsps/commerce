@@ -1,9 +1,12 @@
 'use client';
 
+import { ErrorBoundary } from 'react-error-boundary';
+
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { UnknownCommerceProviderError, UnknownContentProviderError } from '@nordcom/commerce-errors';
 
 import { CartFragment } from '@/api/shopify/cart';
+import { BuildConfig } from '@/utils/build-config';
 import { createClient } from '@/utils/prismic';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import { Toaster as ToasterProvider } from 'sonner';
@@ -26,7 +29,7 @@ const CommerceProvider = ({ shop, locale, children }: { shop: OnlineShop; locale
                 <ShopifyProvider
                     storefrontId={shop.commerceProvider.storefrontId}
                     storeDomain={`https://${shop.commerceProvider.domain}`}
-                    storefrontApiVersion="2024-04"
+                    storefrontApiVersion={BuildConfig.shopify.api}
                     storefrontToken={shop.commerceProvider.authentication.publicToken}
                     countryIsoCode={locale.country!}
                     languageIsoCode={locale.language}
@@ -88,40 +91,44 @@ const ProvidersRegistry = ({
     toolbars?: boolean;
 }) => {
     return (
-        <ShopProvider shop={shop} currency={currency} locale={locale}>
-            <CommerceProvider shop={shop} locale={locale}>
-                <ContentProvider shop={shop} locale={locale} domain={domain}>
-                    <CartProvider
-                        cartFragment={CartFragment}
-                        languageCode={locale.language}
-                        countryCode={locale.country!}
-                    >
-                        {children}
+        <ErrorBoundary fallbackRender={() => null}>
+            <ShopProvider shop={shop} currency={currency} locale={locale}>
+                <CommerceProvider shop={shop} locale={locale}>
+                    <ContentProvider shop={shop} locale={locale} domain={domain}>
+                        <CartProvider
+                            cartFragment={CartFragment}
+                            languageCode={locale.language}
+                            countryCode={locale.country!}
+                        >
+                            <ErrorBoundary fallbackRender={() => null}>
+                                {children}
 
-                        {toolbars ? (
-                            <>
-                                <ToasterProvider
-                                    theme="dark"
-                                    position="bottom-left"
-                                    expand={true}
-                                    duration={5000}
-                                    gap={4}
-                                    visibleToasts={2}
-                                    pauseWhenPageIsHidden={true}
-                                    toastOptions={{
-                                        duration: 2500,
-                                        classNames: {
-                                            toast: 'toast-notification'
-                                        }
-                                    }}
-                                />
-                                <Toolbars domain={domain} />
-                            </>
-                        ) : null}
-                    </CartProvider>
-                </ContentProvider>
-            </CommerceProvider>
-        </ShopProvider>
+                                {toolbars ? (
+                                    <>
+                                        <ToasterProvider
+                                            theme="dark"
+                                            position="bottom-left"
+                                            expand={true}
+                                            duration={5000}
+                                            gap={4}
+                                            visibleToasts={2}
+                                            pauseWhenPageIsHidden={true}
+                                            toastOptions={{
+                                                duration: 2500,
+                                                classNames: {
+                                                    toast: 'toast-notification'
+                                                }
+                                            }}
+                                        />
+                                        <Toolbars domain={domain} />
+                                    </>
+                                ) : null}
+                            </ErrorBoundary>
+                        </CartProvider>
+                    </ContentProvider>
+                </CommerceProvider>
+            </ShopProvider>
+        </ErrorBoundary>
     );
 };
 export default ProvidersRegistry;

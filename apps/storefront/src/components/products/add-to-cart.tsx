@@ -97,20 +97,6 @@ const AddToCart = ({ children, className, i18n, quantity = 0, type, data, varian
             }
         });
 
-        // TODO: Move the toast to the provider.
-        // TODO: i18n.
-        toast.success(
-            <>
-                <p>
-                    Added{' '}
-                    <b>
-                        <span>{quantity}x</span> {selectedVariant!.title} - {product!.title}
-                    </b>{' '}
-                    to the cart!
-                </p>
-            </>
-        );
-
         clearTimeout(animation);
 
         if (children) return;

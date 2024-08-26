@@ -96,7 +96,7 @@ type CollectionOptions = ApiOptions &
  * @note We modify the descriptionHtml to remove all non-breaking spaces
  *       and replace them with normal spaces.
  *
- * @todo TODO: Support `id` as an alternative to `handle` {@link https://shopify.dev/docs/api/storefront/2024-01/queries/collection}.
+ * @todo TODO: Support `id` as an alternative to `handle` {@link https://shopify.dev/docs/api/storefront/2024-07/queries/collection}.
  *
  * @param {CollectionOptions} options - The options for the collection.
  * @param {AbstractApi} options.api - The API to use.

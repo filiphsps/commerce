@@ -47,7 +47,7 @@ export const CountriesApi = async ({ api }: { api: AbstractApi }): Promise<Count
         )
             // https://nordcom.sentry.io/share/issue/b0b9721ad1e54a88b779605737472230/
             // `availableLanguages` shouldn't be nullable, but it sometimes is.
-            .map((data) => ({ ...data, availableLanguages: data.availableLanguages || [] }))
+            .map((data) => ({ ...data, availableLanguages: data.availableLanguages || [] })) // eslint-disable-line @typescript-eslint/no-unnecessary-condition
     );
 };
 

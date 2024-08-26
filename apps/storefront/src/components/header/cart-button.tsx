@@ -8,6 +8,7 @@ import { type Locale, type LocaleDictionary, useTranslation } from '@/utils/loca
 import { cn } from '@/utils/tailwind';
 import { useCart } from '@shopify/hydrogen-react';
 
+import { Button } from '@/components/actionable/button';
 import Link from '@/components/link';
 
 export type CartButtonProps = {
@@ -19,15 +20,15 @@ const CartButton = ({ locale, i18n }: CartButtonProps) => {
     const { totalQuantity } = useCart();
 
     return (
-        <Link
+        <Button
+            as={Link}
             href="/cart/"
             locale={locale}
             className={cn(
-                'group',
                 styles.container,
-                'overflow-clip bg-transparent text-black transition-all',
+                'duration-250 group overflow-clip rounded-none bg-red-200 bg-transparent p-0 text-base text-black transition-all',
                 totalQuantity &&
-                    'bg-primary text-primary-foreground hover:bg-secondary hover:text-secondary-foreground rounded-3xl px-4 py-3 shadow-sm transition-all duration-150 hover:shadow-lg'
+                    'bg-primary text-primary-foreground fill-primary-foreground stroke-primary-foreground hover:bg-secondary hover:text-secondary-foreground rounded-3xl px-4 py-3 shadow-sm transition-all duration-150 hover:shadow-lg'
             )}
             data-items={totalQuantity || 0}
             title={t('view-cart')}
@@ -48,7 +49,7 @@ const CartButton = ({ locale, i18n }: CartButtonProps) => {
                 )}
                 style={{ strokeWidth: 2.5 }}
             />
-        </Link>
+        </Button>
     );
 };
 CartButton.displayName = 'Nordcom.Header.CartButton';

@@ -143,8 +143,8 @@ importers:
         specifier: 0.0.58
         version: 0.0.58(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@shopify/hydrogen-react':
-        specifier: 2024.4.0
-        version: 2024.4.0(@types/react@18.2.75)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: 2024.7.2
+        version: 2024.7.2(@types/react@18.2.75)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@shopify/shopify-api':
         specifier: 11.3.0
         version: 11.3.0
@@ -321,8 +321,8 @@ importers:
         specifier: 0.0.58
         version: 0.0.58(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@shopify/hydrogen-react':
-        specifier: 2024.4.0
-        version: 2024.4.0(@types/react@18.2.75)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: 2024.7.2
+        version: 2024.7.2(@types/react@18.2.75)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@vercel/analytics':
         specifier: 1.3.1
         version: 1.3.1(next@14.2.1(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(sass@1.77.8))(react@18.2.0)
@@ -505,8 +505,8 @@ importers:
         specifier: 8.26.0
         version: 8.26.0
       '@shopify/hydrogen-react':
-        specifier: 2024.4.0
-        version: 2024.4.0(@types/react@18.2.75)(react-dom@19.0.0-rc-b57d2823-20240822(react@19.0.0-rc-b57d2823-20240822))(react@19.0.0-rc-b57d2823-20240822)
+        specifier: 2024.7.2
+        version: 2024.7.2(@types/react@18.2.75)(react-dom@19.0.0-rc-b57d2823-20240822(react@19.0.0-rc-b57d2823-20240822))(react@19.0.0-rc-b57d2823-20240822)
       '@vercel/analytics':
         specifier: 1.3.1
         version: 1.3.1(next@15.0.0-canary.129(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-f1f288c-20240725)(react-dom@19.0.0-rc-b57d2823-20240822(react@19.0.0-rc-b57d2823-20240822))(react@19.0.0-rc-b57d2823-20240822)(sass@1.77.8))(react@19.0.0-rc-b57d2823-20240822)
@@ -561,6 +561,9 @@ importers:
       react-dom:
         specifier: 19.0.0-rc-b57d2823-20240822
         version: 19.0.0-rc-b57d2823-20240822(react@19.0.0-rc-b57d2823-20240822)
+      react-error-boundary:
+        specifier: 4.0.13
+        version: 4.0.13(react@19.0.0-rc-b57d2823-20240822)
       react-icons:
         specifier: 5.1.0
         version: 5.1.0(react@19.0.0-rc-b57d2823-20240822)
@@ -2272,8 +2275,8 @@ packages:
   '@shopify/graphql-client@1.1.0':
     resolution: {integrity: sha512-ZHEqNa5mTKa/dB6XH5F0Zdt2SAGOc9evRhJLoaI/DEftvuEaqZo4CRa4THONCZFwwgClW3WaoZBlqggILfYBuw==}
 
-  '@shopify/hydrogen-react@2024.4.0':
-    resolution: {integrity: sha512-CmOIftVO7DRdcs8dzU0DC6je8/lzM+YEuxRmmvlXSgrKvHTKEPToipUaZTHQi3DaZvThw06ZNjYQi5x2RGz57A==}
+  '@shopify/hydrogen-react@2024.7.2':
+    resolution: {integrity: sha512-5vtjKKL2gLxbOMh/33ZwPqODIkeKAzl4QYwgWpPZnB7hPJTltrIcQOZQGpbL0mY1ZZ9geXksZ/FEHBjRrzrrSQ==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^18.0.0
@@ -6243,6 +6246,11 @@ packages:
     peerDependencies:
       react: 19.0.0-rc-e684ca66ab-20240619
 
+  react-error-boundary@4.0.13:
+    resolution: {integrity: sha512-b6PwbdSv8XeOSYvjt8LpgpKrZ0yGdtZokYwkwV2wlcZbxgopHX/hgPl5VgpnoVOWd868n1hktM8Qm4b+02MiLQ==}
+    peerDependencies:
+      react: '>=16.13.1'
+
   react-icons@5.1.0:
     resolution: {integrity: sha512-D3zug1270S4hbSlIRJ0CUS97QE1yNNKDjzQe3HqY0aefp2CBn9VgzgES27sRR2gOvFK+0CNx/BW0ggOESp6fqQ==}
     peerDependencies:
@@ -9273,7 +9281,7 @@ snapshots:
 
   '@shopify/graphql-client@1.1.0': {}
 
-  '@shopify/hydrogen-react@2024.4.0(@types/react@18.2.75)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@shopify/hydrogen-react@2024.7.2(@types/react@18.2.75)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@google/model-viewer': 1.12.1
       '@xstate/fsm': 2.1.0
@@ -9287,7 +9295,7 @@ snapshots:
       - '@types/react'
       - xstate
 
-  '@shopify/hydrogen-react@2024.4.0(@types/react@18.2.75)(react-dom@19.0.0-rc-b57d2823-20240822(react@19.0.0-rc-b57d2823-20240822))(react@19.0.0-rc-b57d2823-20240822)':
+  '@shopify/hydrogen-react@2024.7.2(@types/react@18.2.75)(react-dom@19.0.0-rc-b57d2823-20240822(react@19.0.0-rc-b57d2823-20240822))(react@19.0.0-rc-b57d2823-20240822)':
     dependencies:
       '@google/model-viewer': 1.12.1
       '@xstate/fsm': 2.1.0
@@ -13904,6 +13912,11 @@ snapshots:
     dependencies:
       react: 19.0.0-rc-e684ca66ab-20240619
       scheduler: 0.25.0-rc-e684ca66ab-20240619
+
+  react-error-boundary@4.0.13(react@19.0.0-rc-b57d2823-20240822):
+    dependencies:
+      '@babel/runtime': 7.24.7
+      react: 19.0.0-rc-b57d2823-20240822
 
   react-icons@5.1.0(react@18.2.0):
     dependencies:

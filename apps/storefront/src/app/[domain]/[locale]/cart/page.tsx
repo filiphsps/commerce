@@ -92,14 +92,14 @@ export default async function CartPage({ params: { domain, locale: localeData } 
 
         return (
             <>
+                <Breadcrumbs shop={shop} />
+
                 <CartContent
                     shop={shop}
                     locale={locale}
                     header={<Heading title={page?.title || t('cart')} subtitle={page?.description} />}
                     i18n={i18n}
                 />
-
-                <Breadcrumbs shop={shop} />
             </>
         );
     } catch (error: unknown) {
