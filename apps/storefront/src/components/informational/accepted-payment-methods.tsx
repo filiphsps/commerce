@@ -43,6 +43,7 @@ export const AcceptedPaymentMethods = async ({ shop, locale, className, ...props
                     decoding="async"
                     loader={undefined}
                     draggable={false}
+                    unoptimized={true}
                 />
             ))}
 
@@ -61,6 +62,7 @@ export const AcceptedPaymentMethods = async ({ shop, locale, className, ...props
                     decoding="async"
                     loader={undefined}
                     draggable={false}
+                    unoptimized={true}
                 />
             ))}
         </div>

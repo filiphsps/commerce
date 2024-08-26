@@ -45,6 +45,7 @@ export const LocaleFlag = ({
                 decoding="async"
                 // TODO: Don't hardcode to some random github pages repo.
                 src={`https://purecatamphetamine.github.io/country-flag-icons/3x2/${locale.country}.svg`}
+                unoptimized={true}
             />
             {withName && info?.country ? (
                 <div className={nameClassName}>
