@@ -27,20 +27,19 @@ export const useCartUtils = ({ locale }: useCartUtilsProps): useCartUtilsResult 
     const router = useRouter();
     const pathname = usePathname();
     const query = useSearchParams();
-    const discount = query.get('discount')?.toString() || null;
 
     const {
         buyerIdentity,
         buyerIdentityUpdate,
         discountCodes,
         discountCodesUpdate,
-        status,
+        cartReady,
         error: cartError
     } = useCart();
 
     // Handle country code change
     useEffect(() => {
-        if (status !== 'idle' || buyerIdentity?.countryCode === locale.country) {
+        if (!cartReady || buyerIdentity?.countryCode === locale.country) {
             return;
         }
 
@@ -51,7 +50,20 @@ export const useCartUtils = ({ locale }: useCartUtilsProps): useCartUtilsResult 
 
     // Discount codes in url
     useEffect(() => {
-        if (status !== 'idle' || discount === null || discount.length <= 0) {
+        if (!cartReady) {
+            return;
+        }
+
+        let discounts: string[] | null = (query as any)?.get?.('discount') || null;
+        if (discounts !== null) {
+            if (typeof discounts === 'string') {
+                discounts = (discounts as string).split(',');
+            } else if (Array.isArray(discounts)) {
+                discounts = discounts.map((value) => value.toString());
+            }
+        }
+
+        if (discounts === null || discounts.length <= 0) {
             return;
         }
 
@@ -60,19 +72,17 @@ export const useCartUtils = ({ locale }: useCartUtilsProps): useCartUtilsResult 
         router.replace(`${pathname}${params.size > 0 ? '?' : ''}${params.toString()}`, { scroll: false });
 
         // Check cart errors and validate that the code was actually valid.
-        if (validateDiscountCode(discount)) {
-            let codes = ((discountCodes || []) as CartDiscountCode[]).map(({ code }) => code);
-            if (!codes.some((code) => code === discount)) {
-                codes.push(discount);
-            }
-
-            discountCodesUpdate(codes);
+        if (discounts.every((discount) => validateDiscountCode(discount))) {
+            discountCodesUpdate([
+                ...((discountCodes || []) as CartDiscountCode[]).map((discount) => discount.code).filter(Boolean),
+                ...discounts
+            ]);
         }
 
         if (cartError && error != cartError) {
             setError(() => error);
         }
-    }, [query, status]);
+    }, [query, cartReady]);
 
     return { error, cartError };
 };

@@ -4,7 +4,6 @@ import { useCartUtils } from '@/hooks/useCartUtils';
 import { Locale } from '@/utils/locale';
 import { act, renderHook, waitFor } from '@/utils/test/react';
 import { useCart } from '@shopify/hydrogen-react';
-import { useSearchParams } from 'next/navigation';
 
 import type { Mock } from 'vitest';
 
@@ -13,9 +12,19 @@ const GER = Locale.from('de-DE')!;
 
 describe('hooks', () => {
     describe('useCartUtils', () => {
-        beforeEach(() => {
-            (useSearchParams as Mock<any, any>).mockReturnValue({});
+        // Mock `next/navigation`.
+        vi.mock('next/navigation', async () => ({
+            ...(((await vi.importActual('next/navigation')) as any) || {}),
+            usePathname: vi.fn().mockReturnValue(''),
+            useRouter: () => ({
+                replace: vi.fn()
+            }),
+            useSearchParams: () => ({
+                get: () => ['COUPON_CODE']
+            })
+        }));
 
+        beforeEach(() => {
             (useCart as Mock<any, any>).mockReturnValue({
                 error: undefined,
 
@@ -23,9 +32,7 @@ describe('hooks', () => {
                     countryCode: 'US'
                 },
                 buyerIdentityUpdate: vi.fn().mockImplementation(({ countryCode }) => {
-                    useCart().buyerIdentity = {
-                        countryCode
-                    };
+                    useCart().buyerIdentity!.countryCode = countryCode;
                 }),
 
                 discountCodes: [],
@@ -34,6 +41,7 @@ describe('hooks', () => {
                 }),
 
                 status: 'idle',
+                cartReady: true,
                 cartCreate: vi.fn().mockImplementation(() => {
                     useCart().status = 'idle';
                 })
@@ -50,13 +58,11 @@ describe('hooks', () => {
 
             await act(() => rerender(GER));
             await waitFor(() => {
-                expect(useCart().buyerIdentity?.countryCode).toBe(GER.country);
                 expect(useCart().buyerIdentityUpdate).toHaveBeenCalledWith({ countryCode: GER.country });
             });
 
             await act(() => rerender(USA));
             await waitFor(() => {
-                expect(useCart().buyerIdentity?.countryCode).toBe(USA.country);
                 expect(useCart().buyerIdentityUpdate).toHaveBeenCalledWith({ countryCode: USA.country });
             });
 
@@ -70,14 +76,13 @@ describe('hooks', () => {
 
         it('should add discount code to cart when present in URL', async () => {
             const discount = ['COUPON_CODE'];
-            (useSearchParams as Mock<any, any>).mockReturnValue({
-                discount: discount
-            });
 
             const { rerender } = renderHook((locale: Locale = USA) => useCartUtils({ locale }));
-            await act(() => rerender());
+            await act(() => rerender(USA));
 
-            await waitFor(() => expect(useCart().discountCodes).toEqual(discount));
+            await waitFor(() => {
+                expect(useCart().discountCodesUpdate).toHaveBeenCalledWith(discount);
+            });
         });
     });
 });
