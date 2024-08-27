@@ -45,8 +45,7 @@ const config = {
     },
     images: {
         // TODO: Use a proper domain.
-        // TODO: Re-introduce this once we properly cache and optimize images.
-        //path: 'https://cloudflare-image.filiph-sandstrom.workers.dev/',
+        path: 'https://cloudflare-image.filiph-sandstrom.workers.dev/',
         dangerouslyAllowSVG: true,
         remotePatterns: [
             {
