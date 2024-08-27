@@ -44,8 +44,7 @@ const config = {
         webpackBuildWorker: true
     },
     images: {
-        // TODO: Use a proper domain.
-        path: 'https://cloudflare-image.filiph-sandstrom.workers.dev/',
+        path: 'https://cloudflare-image.nordcom.workers.dev/',
         dangerouslyAllowSVG: true,
         remotePatterns: [
             {
