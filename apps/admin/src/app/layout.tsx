@@ -1,7 +1,8 @@
 import '@/styles/app.scss';
 
+import { primaryFont } from '@/utils/fonts';
+import { cn } from '@/utils/tailwind';
 import { GeistMono } from 'geist/font/mono';
-import { Montserrat } from 'next/font/google';
 
 import { Providers } from '@/components/providers';
 
@@ -29,32 +30,21 @@ export const metadata: Metadata = {
         apple: ['/favicon.png']
     },
     robots: {
-        follow: true,
-        index: true
+        follow: false,
+        index: false
     },
     referrer: 'origin',
     formatDetection: {
         email: false,
         address: false,
         telephone: false
-    },
-    openGraph: {
-        siteName: 'Nordcom Commerce',
-        locale: 'en-US'
     }
 };
 
-const primaryFont = Montserrat({
-    weight: 'variable',
-    subsets: ['latin'],
-    display: 'swap',
-    variable: '--font-primary',
-    preload: true
-});
-
 export default async function RootLayout({ children }: { children: ReactNode }) {
     return (
-        <html lang="en" className={`${primaryFont.variable} ${GeistMono.variable}`}>
+        <html lang="en" className={cn(primaryFont.className, primaryFont.variable, GeistMono.variable)}>
+            <head />
             <body>
                 <Providers>{children}</Providers>
             </body>

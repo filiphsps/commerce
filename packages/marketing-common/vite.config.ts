@@ -12,11 +12,18 @@ const name = '@nordcom/commerce-marketing-common';
 export default mergeConfig(
     base,
     defineConfig({
+        optimizeDeps: {
+            external: ['mongoose', 'mongodb'],
+            esbuildOptions: {
+                target: 'esnext'
+            }
+        },
         root: resolve(__dirname),
         build: {
+            target: 'esnext',
             rollupOptions: {
                 output: {
-                    name
+                    name: name
                 }
             }
         },

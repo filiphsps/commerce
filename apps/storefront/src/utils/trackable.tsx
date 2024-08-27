@@ -10,9 +10,9 @@ import { BuildConfig } from '@/utils/build-config';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { ShopifyPriceToNumber } from '@/utils/pricing';
 import {
+    AnalyticsEventName as ShopifyAnalyticsEventName,
     getClientBrowserParameters,
     sendShopifyAnalytics,
-    AnalyticsEventName as ShopifyAnalyticsEventName,
     ShopifySalesChannel,
     useCart,
     useShop as useShopify,
@@ -158,6 +158,7 @@ export type AnalyticsEventActionProps = {
     locale: Locale;
     shopify: ShopifyContextValue;
     cart: CartWithActions;
+    silent?: boolean;
 };
 
 const shopifyEventHandler = async (
@@ -264,10 +265,10 @@ const shopifyEventHandler = async (
 const handleEvent = async (
     event: AnalyticsEventType,
     data: AnalyticsEventData,
-    { shop, currency, locale, shopify, cart }: AnalyticsEventActionProps
+    { shop, currency, locale, shopify, cart, silent = false }: AnalyticsEventActionProps
 ) => {
     if (!window.dataLayer) {
-        if (BuildConfig.environment === 'development') {
+        if (!silent && BuildConfig.environment === 'development') {
             TrackableLogger('window.dataLayer not found, creating it.', data, 'analytics');
         }
 
@@ -324,7 +325,9 @@ const handleEvent = async (
             ...(data.gtm || {})
         });
     } catch (error: any) {
-        TrackableLogger(`Error sending "${event}" event: ${error?.message || error}`, 'analytics');
+        if (!silent) {
+            TrackableLogger(`Error sending "${event}" event: ${error?.message || error}`, 'analytics');
+        }
     }
 
     if (typeof data.gtm?.ecommerce !== 'undefined') {
@@ -382,15 +385,15 @@ function Trackable({ children }: TrackableProps) {
         {
             type: AnalyticsEventType;
             event: AnalyticsEventData;
+            config?: AnalyticsEventConfig;
         }[]
     >([]);
 
     const queueEvent = useCallback(
         (type: AnalyticsEventType, event: AnalyticsEventData, config?: AnalyticsEventConfig) => {
             setQueue((queue) => {
-                // Don't add duplicate events. This is a very naive implementation.
-                const eventHash = JSON.stringify({ type, event });
-                return [...queue, { type, event }];
+                // FIXME: Don't add duplicate events. This is a very naive implementation.
+                return [...queue, { type, event, config }];
             });
         },
         [queue, setQueue]
@@ -426,37 +429,44 @@ function Trackable({ children }: TrackableProps) {
         if (!path || path === prevPath) {
             return;
         }
+
         if (path.endsWith('/cart/') && !!(cart as any)) {
-            queueEvent('page_view', {
-                path,
-                gtm: {
-                    ecommerce: {
-                        currency: cart.cost?.totalAmount?.currencyCode!,
-                        value: ShopifyPriceToNumber(undefined, cart.cost?.totalAmount?.amount!),
-                        items: ((cart.lines || []).filter((_) => _) as CartLine[]).map((line) => ({
-                            item_id: ProductToMerchantsCenterId({
-                                locale,
-                                product: {
-                                    productGid: line.merchandise.product.id!,
-                                    variantGid: line.merchandise.id!
-                                }
-                            }),
-                            item_name: line.merchandise.product.title,
-                            item_variant: line.merchandise.title,
-                            item_brand: line.merchandise.product.vendor,
-                            currency: line.merchandise.price.currencyCode,
-                            price: ShopifyPriceToNumber(undefined, line.merchandise.price.amount!),
-                            quantity: line.quantity
-                        }))
+            queueEvent(
+                'page_view',
+                {
+                    path,
+                    gtm: {
+                        ecommerce: {
+                            currency: cart.cost?.totalAmount?.currencyCode!,
+                            value: ShopifyPriceToNumber(undefined, cart.cost?.totalAmount?.amount!),
+                            items: ((cart.lines || []).filter((_) => _) as CartLine[]).map((line) => ({
+                                item_id: ProductToMerchantsCenterId({
+                                    locale,
+                                    product: {
+                                        productGid: line.merchandise.product.id!,
+                                        variantGid: line.merchandise.id!
+                                    }
+                                }),
+                                item_name: line.merchandise.product.title,
+                                item_variant: line.merchandise.title,
+                                item_brand: line.merchandise.product.vendor,
+                                currency: line.merchandise.price.currencyCode,
+                                price: ShopifyPriceToNumber(undefined, line.merchandise.price.amount!),
+                                quantity: line.quantity
+                            }))
+                        }
                     }
+                },
+                {
+                    silent: true
                 }
-            });
+            );
         }
     }, [path, prevPath]);
 
     // Send events.
     useEffect(() => {
-        if (((queue as any) || []).length <= 0) {
+        if (queue.length <= 0) {
             return;
         }
 
@@ -470,14 +480,14 @@ function Trackable({ children }: TrackableProps) {
 
         // Flush the queue.
         Promise.allSettled(
-            events.map(({ type, event }) => {
+            events.map(({ type, event, config }) => {
                 return handleEvent(
                     type,
                     {
                         ...event,
                         path: event.path || path
                     },
-                    { shop, currency, locale, shopify, cart }
+                    { shop, currency, locale, shopify, cart, ...config }
                 );
             })
         ).then((results) => {

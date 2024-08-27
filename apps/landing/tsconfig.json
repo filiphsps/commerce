@@ -8,12 +8,25 @@
         "jsx": "preserve",
         "jsxImportSource": "react",
         "paths": {
-            "@/api/*": ["src/api/*"],
+            // Storefront.
+            "@/middleware/*": ["src/middleware/*"],
             "@/components/*": ["src/components/*"],
             "@/markdoc": ["src/markdoc/index.ts"],
             "@/markdoc/*": ["src/markdoc/*"],
-            "@/styles/*": ["src/scss/*"],
+            "@/hooks/*": ["src/hooks/*"],
+            "@/api/*": ["src/api/*"],
+            "@/auth": ["src/utils/auth.ts"],
+            "@/models/*": ["src/models/*"],
             "@/utils/*": ["src/utils/*"],
+            "@/styles/*": ["src/scss/*"],
+            // i18n.
+            "@/i18n/*": ["src/locales/*"],
+            "@/i18n/dictionary": ["src/utils/dictionary.ts"],
+            // Prismic.
+            "@/slices/*": ["src/slices/*"],
+            "@/slices/navigation": ["src/slices/navigation/index.ts"],
+            "@/slices": ["src/slices/index"],
+            "@/prismic/types": ["prismicio-types.d.ts"],
             // Assets.
             "@/static/*": ["public/*"]
         },
@@ -27,9 +40,10 @@
         "noEmit": true,
         "resolveJsonModule": true,
         "skipLibCheck": true,
-        "strict": true
+        "strict": true,
+        "target": "ES2017"
     },
     "exclude": ["node_modules"],
-    "include": ["next-env.d.ts", "src/**/*.ts", "src/**/*.tsx", ".next/types/**/*.ts", "next.config.mjs"],
+    "include": ["next-env.d.ts", "src/**/*.ts", "src/**/.well-known/**/*.ts", "src/**/*.tsx", ".next/types/**/*.ts"],
     "references": [{ "path": "../../tsconfig.json" }]
 }

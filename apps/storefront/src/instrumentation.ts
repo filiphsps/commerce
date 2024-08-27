@@ -1,7 +1,8 @@
+/* c8 ignore start */
 import { BuildConfig } from '@/utils/build-config';
 
 export async function register() {
-    if (BuildConfig.environment === 'development') {
+    if (BuildConfig.environment !== 'production') {
         return;
     }
 
@@ -16,3 +17,4 @@ export async function register() {
         await import('../sentry.edge.config');
     }
 }
+/* c8 ignore stop */

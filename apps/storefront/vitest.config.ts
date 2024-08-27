@@ -9,7 +9,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineProject({
     root: resolve(__dirname),
-    plugins: [(react as any)()],
+    plugins: [react() as any],
     resolve: {
         alias: [
             {

@@ -2,18 +2,19 @@ import 'server-only';
 
 import styles from './page.module.scss';
 
+import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 import { Card, Details, Heading } from '@nordcom/nordstar';
 
 import { auth } from '@/auth';
-import { getShop } from '@/utils/fetchers';
+import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 
 import type { Metadata } from 'next';
 
 export type ShopPageProps = {
     params: {
-        id: string;
+        domain: string;
     };
 };
 
@@ -21,24 +22,28 @@ export const metadata: Metadata = {
     title: 'Overview'
 };
 
-export default async function ShopPage({ params: { id: shopId } }: ShopPageProps) {
+export default async function ShopPage({ params: { domain } }: ShopPageProps) {
     try {
         const session = await auth();
         if (!session?.user) {
             redirect('/auth/login/');
         }
 
-        const shop = await getShop(session.user.id!, shopId);
-        const code = JSON.stringify(shop.toObject(), null, 2);
+        const shop = await Shop.findByDomain(domain, { convert: true });
+        const code = JSON.stringify(shop, null, 4);
 
         return (
             <>
                 <header>
                     <Heading level="h1">{shop.name}</Heading>
                     <Heading level="h4" as="h2">
-                        Overview - {shop.domain}
+                        Overview,{' '}
+                        <Link href={`https://${shop.domain}`} target="_blank" rel="noreferrer">
+                            {shop.domain}
+                        </Link>
                     </Heading>
                 </header>
+
                 <Card className={styles.container}>
                     {/* Dropdown */}
                     <Details label="Raw Shop" className={styles.details}>

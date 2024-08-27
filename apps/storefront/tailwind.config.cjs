@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
     content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
     theme: {
         extend: {
@@ -37,8 +37,8 @@ export default {
     future: {
         hoverOnlyWhenSupported: true
     },
-    /*corePlugins: {
+    corePlugins: {
         aspectRatio: false
-    },*/
-    plugins: [/*import('@tailwindcss/aspect-ratio'),*/ import('@tailwindcss/typography')]
+    },
+    plugins: [require('@tailwindcss/typography'), require('@tailwindcss/forms'), require('@tailwindcss/aspect-ratio')]
 };

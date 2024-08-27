@@ -11,7 +11,6 @@ const config = {
     generateEtags: true,
     reactStrictMode: true,
     trailingSlash: false, // FIXME: https://github.com/nextauthjs/next-auth/issues/10127
-    swcMinify: true,
     productionBrowserSourceMaps: true,
     compress: true,
     skipTrailingSlashRedirect: false,
@@ -22,9 +21,8 @@ const config = {
         //ppr: true,
         caseSensitiveRoutes: true,
         optimizeCss: true,
-        optimizePackageImports: ['react-icons'],
+        optimizePackageImports: ['react-icons', '@nordcom/nordstar'],
         scrollRestoration: true,
-        serverComponentsExternalPackages: [],
         serverSourceMaps: true,
         serverMinification: true,
         taint: true,
@@ -33,6 +31,9 @@ const config = {
     },
     images: {
         dangerouslyAllowSVG: true,
+        //path: 'https://cloudflare-image.nordcom.workers.dev', // Shopify images fails when using .nordcom.io domain.
+        //minimumCacheTTL: 60,
+        contentDispositionType: 'inline',
         remotePatterns: [
             {
                 protocol: 'https',

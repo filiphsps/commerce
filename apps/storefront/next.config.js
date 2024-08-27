@@ -97,20 +97,6 @@ const config = {
         GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA || 'unknown'
     },
 
-    async headers() {
-        return [
-            {
-                source: '/:path*',
-                headers: [
-                    {
-                        key: 'Document-Policy',
-                        value: 'js-profiling'
-                    }
-                ]
-            }
-        ];
-    },
-
     async generateBuildId() {
         if (process.env.NODE_ENV === 'development') return 'dev';
         return process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
