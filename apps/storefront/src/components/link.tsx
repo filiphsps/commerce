@@ -84,5 +84,5 @@ export default function Link({ locale, href, prefetch, ...props }: LinkProps) {
         return new URL(href);
     })(href, shop.shop);
 
-    return <BaseLink prefetch={prefetch || false} {...props} href={url} suppressHydrationWarning={true} />;
+    return <BaseLink prefetch={prefetch || false} {...props} href={url} />;
 }

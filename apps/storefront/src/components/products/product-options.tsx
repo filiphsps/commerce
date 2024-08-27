@@ -49,19 +49,11 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
                 (option, index) =>
                     option?.values ? (
                         <Fragment key={`${option.name}_option`}>
-                            <Label
-                                className="h-fit text-gray-600"
-                                data-options={option.values.length}
-                                suppressHydrationWarning={true}
-                            >
+                            <Label className="h-fit text-gray-600" data-options={option.values.length}>
                                 {option.name}
                             </Label>
 
-                            <div
-                                className={cn(styles.options)}
-                                data-options={option.values.length}
-                                suppressHydrationWarning={true}
-                            >
+                            <div className={cn(styles.options)} data-options={option.values.length}>
                                 {option.values.map((value) => {
                                     if (!value || !variants) return null;
 
@@ -112,8 +104,6 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
                                             replace={true}
                                             shallow={true}
                                             prefetch={false}
-                                            // The user's locale might differ from ours.
-                                            suppressHydrationWarning={true}
                                         >
                                             {label || value}
                                         </Link>

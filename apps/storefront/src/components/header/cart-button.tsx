@@ -32,12 +32,8 @@ const CartButton = ({ locale, i18n }: CartButtonProps) => {
             )}
             data-items={totalQuantity || 0}
             title={t('view-cart')}
-            suppressHydrationWarning={true}
         >
-            <div
-                className={cn(styles.quantity, 'group-hover:text-secondary-foreground')}
-                suppressHydrationWarning={true}
-            >
+            <div className={cn(styles.quantity, 'group-hover:text-secondary-foreground')}>
                 {totalQuantity ? totalQuantity : null}
             </div>
 

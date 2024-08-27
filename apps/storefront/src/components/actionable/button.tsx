@@ -25,7 +25,6 @@ export const Button = <T extends As>({
                     'bg-primary text-primary-foreground inline-flex max-h-full cursor-pointer select-none appearance-none items-center justify-center gap-1 rounded-2xl px-4 py-2 text-sm font-semibold leading-tight transition-all duration-150 *:text-inherit hover:shadow-lg disabled:cursor-not-allowed disabled:shadow-none data-[success=true]:bg-green-500',
                 className
             )}
-            suppressHydrationWarning={true}
         >
             {children}
         </Tag>

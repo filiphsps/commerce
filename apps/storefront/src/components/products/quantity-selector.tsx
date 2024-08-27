@@ -164,7 +164,6 @@ const QuantitySelector = ({
                 onBlur={onBlur}
                 onKeyDown={onKeyDown}
                 onChange={onChange}
-                suppressHydrationWarning={true}
                 data-quantity-input
                 data-testid="quantity-input"
                 data-nosnippet={true}

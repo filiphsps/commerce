@@ -40,7 +40,7 @@ const CssVariablesProvider = async ({ domain }: { domain: string }) => {
 
     // TODO: Background and foreground colors.
     return (
-        <style suppressHydrationWarning={true}>{`
+        <style>{`
         :root {
             --color-background: #fefefe;
             --color-foreground: #101418;

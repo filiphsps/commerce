@@ -27,7 +27,8 @@ const config = {
     serverExternalPackages: ['@sentry/profiling-node', '@nordcom/commerce-db', 'mongoose'],
     devIndicators: {
         buildActivity: true,
-        appIsrStatus: true
+        appIsrStatus: true,
+        buildActivityPosition: 'top-left'
     },
     experimental: {
         //caseSensitiveRoutes: true,

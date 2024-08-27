@@ -25,7 +25,6 @@ const Pricing = ({ price, compareAtPrice, wrapperFallback = false }: PricingProp
                     data-pricing
                     as={'div'}
                     className={cn(styles.price, styles.current, compareAtPrice && 'font-extrabold text-red-500')}
-                    suppressHydrationWarning={true}
                 />
             ) : null}
             {compareAtPrice ? (
@@ -34,7 +33,6 @@ const Pricing = ({ price, compareAtPrice, wrapperFallback = false }: PricingProp
                     data-previous-pricing
                     as={'s'}
                     className={cn(styles.price, styles.previous, styles.dah)}
-                    suppressHydrationWarning={true}
                 />
             ) : null}
         </As>

@@ -19,7 +19,6 @@ export const components = {
                     data-language={language}
                     children={content}
                     className={`language-${language}`}
-                    suppressHydrationWarning={true}
                 />
             </pre>
         </Card>

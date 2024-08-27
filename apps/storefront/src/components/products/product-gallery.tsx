@@ -79,7 +79,7 @@ const ProductGallery = ({
                     {...loadingProps}
                 >
                     {image ? (
-                        <div className="] h-fit min-h-32 w-full overflow-hidden lg:aspect-[4/2.75] lg:h-full">
+                        <div className="] h-fit min-h-32 w-full overflow-hidden md:aspect-[3/2.75] lg:aspect-[4/2.75] lg:h-full">
                             <Image
                                 className={cn(
                                     'opacity-1 h-fit w-full object-contain object-center transition-opacity duration-500 lg:h-full',

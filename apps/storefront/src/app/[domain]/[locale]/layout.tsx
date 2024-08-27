@@ -136,37 +136,34 @@ export default async function RootLayout({
         const countries = await CountriesApi({ api });
 
         return (
-            <html
-                lang={locale.code}
-                className={cn(primaryFont.variable, 'overscroll-x-none')}
-                // A bunch of extensions add classes to the `html` element.
-                suppressHydrationWarning={true}
-            >
-                <head suppressHydrationWarning={true}>
+            <html lang={locale.code} className={cn(primaryFont.variable, 'overscroll-x-none')}>
+                <head>
                     <Suspense fallback={null}>
                         <CssVariablesProvider domain={domain} />
                     </Suspense>
                 </head>
 
-                <body suppressHydrationWarning={true} className="group/body overflow-x-hidden overscroll-x-none">
-                    <ProvidersRegistry
-                        shop={shop}
-                        currency={localization?.country.currency.isoCode}
-                        locale={locale}
-                        domain={domain}
-                    >
-                        <AnalyticsProvider shop={shop}>
-                            <HeaderProvider loaderColor={branding?.primary.color || ''}>
-                                <ShopLayout shop={shop} locale={locale} i18n={i18n}>
-                                    <PageContent as="main" primary={true}>
-                                        {children}
-                                    </PageContent>
-                                </ShopLayout>
+                <body className="group/body overflow-x-hidden overscroll-x-none">
+                    <Suspense fallback={<ShopLayout.skeleton />}>
+                        <ProvidersRegistry
+                            shop={shop}
+                            currency={localization?.country.currency.isoCode}
+                            locale={locale}
+                            domain={domain}
+                        >
+                            <AnalyticsProvider shop={shop}>
+                                <HeaderProvider loaderColor={branding?.primary.color || ''}>
+                                    <ShopLayout shop={shop} locale={locale} i18n={i18n}>
+                                        <PageContent as="main" primary={true}>
+                                            {children}
+                                        </PageContent>
+                                    </ShopLayout>
 
-                                <GeoRedirect countries={countries} locale={locale} />
-                            </HeaderProvider>
-                        </AnalyticsProvider>
-                    </ProvidersRegistry>
+                                    <GeoRedirect countries={countries} locale={locale} />
+                                </HeaderProvider>
+                            </AnalyticsProvider>
+                        </ProvidersRegistry>
+                    </Suspense>
 
                     {/* Metadata */}
                     <JsonLd

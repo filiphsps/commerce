@@ -40,7 +40,9 @@ const AddToCart = ({ children, className, i18n, quantity = 0, type, data, varian
     const { locale } = useShop();
 
     const queueEvent = useTrackable((context) => context.queueEvent);
-    if (typeof queueEvent !== 'function') throw new TodoError('queueEvent is not a function');
+    if (typeof queueEvent !== 'function') {
+        throw new TodoError('queueEvent is not a function');
+    }
 
     const { t } = useTranslation('common', i18n);
     const { t: tCart } = useTranslation('cart', i18n);
@@ -150,7 +152,6 @@ const AddToCart = ({ children, className, i18n, quantity = 0, type, data, varian
             data-success={!!(animation as any) ? 'true' : undefined}
             onClick={add}
             title={tCart('add-n-to-your-cart', quantity)}
-            suppressHydrationWarning={true}
             data-nosnippet={true}
         >
             {children || label}

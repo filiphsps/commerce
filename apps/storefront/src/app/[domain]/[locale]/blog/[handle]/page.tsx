@@ -195,11 +195,7 @@ export default async function ArticlePage({
                     ) : null}
                 </div>
 
-                <Content
-                    className={styles.content}
-                    dangerouslySetInnerHTML={{ __html: article.contentHtml || '' }}
-                    suppressHydrationWarning={true}
-                />
+                <Content className={styles.content} dangerouslySetInnerHTML={{ __html: article.contentHtml || '' }} />
 
                 <Breadcrumbs shop={shop} title={article.title} />
 

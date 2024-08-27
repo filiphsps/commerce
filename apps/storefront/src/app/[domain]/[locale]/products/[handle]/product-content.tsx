@@ -67,15 +67,10 @@ export function ProductPricing({ product }: ProductPricingProps) {
                 <Money
                     data={price}
                     className={cn('text-3xl font-bold md:text-4xl', compareAtPrice && 'font-black text-red-500')}
-                    suppressHydrationWarning={true}
                 />
             ) : null}
             {compareAtPrice ? (
-                <Money
-                    data={compareAtPrice}
-                    className="text-xl font-medium text-gray-500 line-through md:text-2xl"
-                    suppressHydrationWarning={true}
-                />
+                <Money data={compareAtPrice} className="text-xl font-medium text-gray-500 line-through md:text-2xl" />
             ) : null}
         </>
     );

@@ -290,12 +290,8 @@ export const StoreApi = async ({
             }
         };
     } catch (error: unknown) {
-        if (Error.isNotFound(error) && !Locale.isDefault(locale)) {
-            return await StoreApi({
-                locale: Locale.default,
-                client: _client,
-                api
-            });
+        if (Error.isNotFound(error)) {
+            notFound();
         }
 
         throw error;

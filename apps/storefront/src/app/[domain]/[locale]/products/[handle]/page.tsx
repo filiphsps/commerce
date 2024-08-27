@@ -378,7 +378,7 @@ export default async function ProductPage({
                     </Suspense>
                 </div>
 
-                <section className="mt-2 flex flex-col gap-2 rounded-lg border-2 border-solid border-gray-100 py-4 md:py-5 lg:mt-6">
+                <section className="mt-2 flex flex-col gap-2 rounded-lg border-2 border-solid border-gray-100 py-4 md:w-full md:py-5 lg:mt-6">
                     <p
                         className="block px-4 text-lg font-medium normal-case leading-none md:px-5 md:text-2xl"
                         data-nosnippet={true}

@@ -51,11 +51,11 @@ export default async function RootLayout({
         const localization = await LocaleApi({ api });
 
         return (
-            <html lang={locale.code} className={cn(primaryFont.variable)} suppressHydrationWarning={true}>
-                <head suppressHydrationWarning={true}>
+            <html lang={locale.code} className={cn(primaryFont.variable)}>
+                <head>
                     <CssVariablesProvider domain={domain} />
                 </head>
-                <body suppressHydrationWarning={true} className="group/body overflow-x-hidden overscroll-x-none">
+                <body className="group/body overflow-x-hidden overscroll-x-none">
                     <ProvidersRegistry
                         shop={shop}
                         currency={localization?.country.currency.isoCode}

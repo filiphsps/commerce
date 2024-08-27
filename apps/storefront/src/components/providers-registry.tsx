@@ -17,6 +17,8 @@ import { PrismicRegistry } from '@/components/prismic-registry';
 import { ShopProvider } from '@/components/shop/provider';
 import { Toolbars } from '@/components/toolbars';
 
+import { LiveChatProvider } from './live-chat-provider';
+
 import type { CurrencyCode, Locale } from '@/utils/locale';
 
 const RequiredHooks = ({ locale, children = null }: { shop: OnlineShop; locale: Locale; children?: ReactNode }) => {
@@ -112,10 +114,12 @@ const ProvidersRegistry = ({
                                     <RequiredHooks shop={shop} locale={locale} />
                                 </Suspense>
 
-                                {children}
+                                <LiveChatProvider shop={shop} locale={locale}>
+                                    {children}
+                                </LiveChatProvider>
 
                                 {toolbars ? (
-                                    <>
+                                    <Suspense fallback={null}>
                                         <ToasterProvider
                                             theme="dark"
                                             position="bottom-left"
@@ -132,7 +136,7 @@ const ProvidersRegistry = ({
                                             }}
                                         />
                                         <Toolbars domain={domain} />
-                                    </>
+                                    </Suspense>
                                 ) : null}
                             </ErrorBoundary>
                         </CartProvider>

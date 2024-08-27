@@ -58,11 +58,9 @@ const FreeShippingProgress = ({ i18n, ...props }: FreeShippingProgressProps) => 
     return (
         <section {...props} className={`${styles.container} ${freeShipping ? styles.success : ''}`}>
             {freeShipping ? (
-                <Label className={styles.label} suppressHydrationWarning={true}>
-                    {t('free-shipping-on-this-order')}
-                </Label>
+                <Label className={styles.label}>{t('free-shipping-on-this-order')}</Label>
             ) : (
-                <Label className={styles.label} suppressHydrationWarning={true}>
+                <Label className={styles.label}>
                     {t('away-from-free-shipping', ready ? parsedAmountLeft.localizedString : '...')}
                 </Label>
             )}
@@ -72,7 +70,6 @@ const FreeShippingProgress = ({ i18n, ...props }: FreeShippingProgressProps) => 
                     style={{
                         width: `${progress}%`
                     }}
-                    suppressHydrationWarning={true}
                 />
             </div>
         </section>

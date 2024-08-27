@@ -10,9 +10,9 @@ import { BuildConfig } from '@/utils/build-config';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { ShopifyPriceToNumber } from '@/utils/pricing';
 import {
-    AnalyticsEventName as ShopifyAnalyticsEventName,
     getClientBrowserParameters,
     sendShopifyAnalytics,
+    AnalyticsEventName as ShopifyAnalyticsEventName,
     ShopifySalesChannel,
     useCart,
     useShop as useShopify,
@@ -84,6 +84,9 @@ export type AnalyticsEventData = {
             }[];
         };
     };
+};
+export type AnalyticsEventConfig = {
+    silent?: boolean;
 };
 
 /**
@@ -383,17 +386,12 @@ function Trackable({ children }: TrackableProps) {
     >([]);
 
     const queueEvent = useCallback(
-        (type: AnalyticsEventType, event: AnalyticsEventData) => {
+        (type: AnalyticsEventType, event: AnalyticsEventData, config?: AnalyticsEventConfig) => {
             setQueue((queue) => {
                 // Don't add duplicate events. This is a very naive implementation.
                 const eventHash = JSON.stringify({ type, event });
-                if (JSON.stringify(queue.at(-1)) === eventHash || JSON.stringify(queue.at(-2)) === eventHash) {
-                    return queue;
-                }
-
                 return [...queue, { type, event }];
             });
-            return;
         },
         [queue, setQueue]
     );
@@ -405,16 +403,31 @@ function Trackable({ children }: TrackableProps) {
         [handleEvent, { shop, currency, locale, shopify, cart }]
     )!;
 
+    // Web vitals.
+    /*useReportWebVitals(({ id, value, name, label }) => {
+        queueEvent(
+            'web_vital',
+            {
+                gtm: {
+                    category: label === 'web-vital' ? 'Web Vitals' : 'Next.js custom metric',
+                    action: name,
+                    value: Math.round(name === 'CLS' ? value * 1000 : value),
+                    label: id,
+                    // avoids affecting bounce rate.
+                    non_interaction: true
+                }
+            },
+            {}
+        );
+    });*/
+
     // Page view.
     useEffect(() => {
         if (!path || path === prevPath) {
             return;
         }
-
-        queueEvent('page_view', { path });
-
         if (path.endsWith('/cart/') && !!(cart as any)) {
-            queueEvent('view_cart', {
+            queueEvent('page_view', {
                 path,
                 gtm: {
                     ecommerce: {

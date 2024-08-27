@@ -1,3 +1,5 @@
+import { ErrorBoundary } from 'react-error-boundary';
+
 import { BuildConfig } from '@/utils/build-config';
 import { VercelToolbar } from '@vercel/toolbar/next';
 
@@ -22,7 +24,10 @@ export function Toolbars({ children, domain }: { children?: ReactNode; domain: s
 
     return (
         <>
-            <VercelToolbar />
+            <ErrorBoundary fallbackRender={() => null}>
+                <VercelToolbar />
+            </ErrorBoundary>
+
             {children}
         </>
     );

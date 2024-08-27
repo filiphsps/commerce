@@ -63,31 +63,28 @@ export function GeoRedirect({ countries, locale }: GeoRedirectProps) {
 
     return (
         <div className="bg-primary text-primary-foreground sticky inset-x-0 bottom-0 z-50 w-full border-0 border-t-2 border-solid border-gray-700 p-4 shadow-2xl transition-all lg:px-6">
-            <div className="mx-auto flex flex-col items-start justify-between gap-4 md:max-w-[var(--page-width)] md:flex-row md:items-center">
-                <div className="flex flex-wrap items-center gap-2 gap-y-0 text-lg font-medium leading-snug">
+            <div className="mx-auto flex flex-col items-start justify-between gap-5 md:max-w-[var(--page-width)] lg:px-2">
+                <div className="flex flex-wrap items-center gap-2 gap-y-0 text-xl font-normal leading-tight">
                     <div>Looks like you are located in</div>
-                    <div className="flex items-center gap-1 leading-none" suppressHydrationWarning={true}>
+                    <div className="flex items-center gap-1 leading-none">
                         <LocaleFlag
                             locale={targetLocale}
                             className="block h-4"
-                            nameClassName="group-hover:text-primary group-hover:underline font-semibold"
+                            nameClassName="group-hover:text-primary group-hover:underline font-bold"
                             withName={true}
                             priority={true}
                             suffix={'.'}
-                            suppressHydrationWarning={true}
                         />
                     </div>
                     <div>Would you like to visit you country&apos;s local store instead?</div>
                 </div>
 
-                <div className="flex flex-wrap gap-4 gap-y-2 font-semibold">
+                <div className="flex flex-wrap justify-start gap-4 gap-y-2 font-semibold">
                     <Button
                         as={Link}
                         href={pathname}
                         locale={targetLocale}
-                        styled={false}
-                        className="bg-primary-foreground text-primary hover:bg-primary-light hover:text-primary-foreground flex items-center justify-center rounded-2xl px-4 py-1 transition-colors lg:px-5 lg:py-2"
-                        suppressHydrationWarning={true}
+                        className="bg-primary-foreground text-primary hover:bg-primary-light hover:text-primary-foreground flex items-center justify-center text-lg transition-colors"
                     >
                         Take me there!
                     </Button>
@@ -96,9 +93,7 @@ export function GeoRedirect({ countries, locale }: GeoRedirectProps) {
                             setClosed(true);
                             localStorage.setItem(DISMISSED_KEY, Date.now().toString());
                         }}
-                        styled={false}
-                        className="border-primary-foreground hover:bg-primary-foreground hover:text-primary flex items-center justify-center rounded-2xl border-2 border-solid px-4 py-1 font-normal text-inherit opacity-75 transition-colors lg:px-5 lg:py-2"
-                        suppressHydrationWarning={true}
+                        className="border-primary-foreground hover:bg-primary-foreground hover:text-primary flex items-center justify-center border-2 border-solid text-lg font-normal text-inherit transition-colors"
                     >
                         Stay here
                     </Button>

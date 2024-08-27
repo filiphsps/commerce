@@ -16,6 +16,7 @@ export type ShopTheme = {
 
 export interface ShopBase extends BaseDocument {
     name: string;
+    description?: string;
     domain: string;
     alternativeDomains?: string[];
     design: {
@@ -77,6 +78,7 @@ export interface ShopBase extends BaseDocument {
 
     thirdParty?: {
         googleTagManager?: string;
+        intercom?: string;
     };
 }
 
@@ -89,6 +91,10 @@ export const ShopSchema = new Schema<ShopBase>(
         name: {
             type: Schema.Types.String,
             required: true
+        },
+        description: {
+            type: Schema.Types.String,
+            required: false
         },
 
         domain: {
@@ -246,6 +252,10 @@ export const ShopSchema = new Schema<ShopBase>(
 
         thirdParty: {
             googleTagManager: {
+                type: Schema.Types.String,
+                required: false
+            },
+            intercom: {
                 type: Schema.Types.String,
                 required: false
             }

@@ -56,7 +56,7 @@ export const Overview = ({
     );
 
     const contentElement = (
-        <div className="col-span-7 h-full w-full p-4 empty:hidden">
+        <div className="col-span-7 h-full w-full px-3 py-2 empty:hidden md:px-5 md:py-4">
             <Content>{body}</Content>
         </div>
     );
