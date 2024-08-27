@@ -85,7 +85,7 @@
         "tailwind-merge": "2.5.2",
         "the-new-css-reset": "1.11.3",
         "use-context-selector": "2.0.0",
-        "vercel": "37.1.1"
+        "vercel": "37.1.2"
     },
     "devDependencies": {
         "@happy-dom/global-registrator": "15.0.0",
