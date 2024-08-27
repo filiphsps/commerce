@@ -595,8 +595,8 @@ importers:
         specifier: 2.0.0
         version: 2.0.0(react@19.0.0-rc-b57d2823-20240822)(scheduler@0.25.0-rc-e684ca66ab-20240619)
       vercel:
-        specifier: 37.1.1
-        version: 37.1.1
+        specifier: 37.1.2
+        version: 37.1.2
     devDependencies:
       '@happy-dom/global-registrator':
         specifier: 15.0.0
@@ -7189,8 +7189,8 @@ packages:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
 
-  vercel@37.1.1:
-    resolution: {integrity: sha512-QgdbZBCGQMl5utxR4KVsPaXDiexstV9yPTGXGna0cJD4kHOLURQoCsY0FnnmH5u+wPED65jqIITOUTbROKz2lQ==}
+  vercel@37.1.2:
+    resolution: {integrity: sha512-GhkaAwOhoy0xk+rkA/43cGSDuIMMzG71Gw1RZGsf5R1r//3BUqIyYqR5enQSw6php8wp2+HwTALyl31p+cJ4jw==}
     engines: {node: '>= 16'}
     hasBin: true
 
@@ -14966,7 +14966,7 @@ snapshots:
 
   vary@1.1.2: {}
 
-  vercel@37.1.1:
+  vercel@37.1.2:
     dependencies:
       '@vercel/build-utils': 8.3.7
       '@vercel/fun': 1.1.0
