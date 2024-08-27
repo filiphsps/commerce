@@ -37,6 +37,8 @@ export type LayoutParams = { domain: string; locale: string };
 export async function generateStaticParams(): Promise<LayoutParams[]> {
     const shops = await Shop.findAll();
 
+    // const codes = await generatePermutations(precomputeFlags);
+
     return (
         await Promise.all(
             shops.map(async ({ domain }) => {

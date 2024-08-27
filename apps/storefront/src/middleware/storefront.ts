@@ -23,14 +23,8 @@ export const getHostname = async (req: NextRequest): Promise<string> => {
         return 'staging.swedish-candy-store.com';
     }
 
-    try {
-        const shop = await findShopByDomainOverHttp(hostname);
-        return shop.domain;
-    } catch (error: unknown) {
-        console.error(error);
-
-        return hostname;
-    }
+    const shop = await findShopByDomainOverHttp(hostname);
+    return shop.domain;
 };
 
 const FILE_TEST = /\.[a-zA-Z]{2,6}$/gi;
@@ -38,8 +32,18 @@ const LOCALE_TEST = /\/([a-zA-Z]{2}-[a-zA-Z]{2})/g;
 const LOCALE_SLASH_TEST = /\/([a-zA-Z]{2}-[a-zA-Z]{2})\//g;
 
 export const storefront = async (req: NextRequest): Promise<NextResponse> => {
-    const hostname = await getHostname(req);
     let newUrl = req.nextUrl.clone();
+
+    let hostname: string;
+    try {
+        hostname = await getHostname(req);
+    } catch (error: unknown) {
+        console.error(error);
+
+        // TODO Handle other errors.
+        return NextResponse.rewrite('https://shops.nordcom.io/status/unknown-shop-error/');
+    }
+
     const params = newUrl.searchParams.toString();
     const search = params.length > 0 ? `?${params}` : '';
 

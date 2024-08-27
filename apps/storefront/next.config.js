@@ -33,7 +33,7 @@ const config = {
         //caseSensitiveRoutes: true,
         cssChunking: 'loose',
         optimizeCss: true,
-        optimizePackageImports: ['@apollo/client', '@nordcom/nordstar', '@shopify/hydrogen-react', 'react-icons'],
+        optimizePackageImports: ['@apollo/client', '@shopify/hydrogen-react', 'react-icons'],
         parallelServerBuildTraces: true,
         parallelServerCompiles: true,
         ppr: true,
@@ -44,8 +44,10 @@ const config = {
         webpackBuildWorker: true
     },
     images: {
-        path: 'https://cloudflare-image.nordcom.workers.dev/',
         dangerouslyAllowSVG: true,
+        //path: 'https://cloudflare-image.nordcom.workers.dev', // Shopify images fails when using .nordcom.io domain.
+        //minimumCacheTTL: 60,
+        contentDispositionType: 'inline',
         remotePatterns: [
             {
                 protocol: 'https',

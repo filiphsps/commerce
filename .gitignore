@@ -13,6 +13,7 @@ junit.xml
 next.lock/
 out/
 dist/
+/apps/certificates/
 
 # production
 build/
