@@ -15,7 +15,7 @@ export const config = {
 
 const { auth } = NextAuth(authConfig);
 
-export default auth((_req: NextAuthRequest) => {
+export default auth((req: NextAuthRequest) => {
     return NextResponse.next();
 });
 /* c8 ignore stop */

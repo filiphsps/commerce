@@ -21,21 +21,24 @@ const config = {
     transpilePackages: [],
     assetPrefix: vercelUrl ? `https://${vercelUrl}` : undefined,
     experimental: {
-        //nextScriptWorkers: true,
-        //ppr: true,
-        caseSensitiveRoutes: true,
+        //caseSensitiveRoutes: true,
+        cssChunking: 'loose',
         optimizeCss: true,
         optimizePackageImports: ['react-icons'],
+        parallelServerBuildTraces: true,
+        parallelServerCompiles: true,
+        ppr: true,
+        reactCompiler: true,
         scrollRestoration: true,
-        serverComponentsExternalPackages: [],
         serverSourceMaps: true,
-        serverMinification: true,
-        taint: true,
-        webpackBuildWorker: true,
-        parallelServerBuildTraces: true
+        turbo: {},
+        webpackBuildWorker: true
     },
     images: {
         dangerouslyAllowSVG: true,
+        //path: 'https://cloudflare-image.nordcom.workers.dev', // Shopify images fails when using .nordcom.io domain.
+        //minimumCacheTTL: 60,
+        contentDispositionType: 'inline',
         remotePatterns: [
             {
                 protocol: 'https',

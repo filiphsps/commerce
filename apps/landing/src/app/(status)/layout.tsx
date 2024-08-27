@@ -2,9 +2,9 @@ import 'the-new-css-reset';
 import '@/styles/app.scss';
 import '@/styles/global.css';
 
+import { primaryFont } from '@/utils/fonts';
 import { cn } from '@/utils/tailwind';
 import { GeistMono } from 'geist/font/mono';
-import { Montserrat } from 'next/font/google';
 
 import { Providers } from '@/components/providers';
 
@@ -19,18 +19,18 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-    robots: {
-        follow: false,
-        index: false
-    },
     title: {
         default: 'Headless Commerce as a Service',
         template: `%s · Nordcom Commerce`
     },
     icons: {
-        icon: ['/favicon.png'],
+        icon: ['/favicon.png', '/favicon.ico'],
         shortcut: ['/favicon.png'],
         apple: ['/apple-icon.png']
+    },
+    robots: {
+        follow: false,
+        index: false
     },
     referrer: 'origin',
     formatDetection: {
@@ -40,17 +40,10 @@ export const metadata: Metadata = {
     }
 };
 
-const primaryFont = Montserrat({
-    weight: 'variable',
-    subsets: ['latin'],
-    display: 'swap',
-    variable: '--font-primary',
-    preload: true
-});
-
 export default async function RootLayout({ children }: { children: ReactNode }) {
     return (
         <html lang="en" className={cn(primaryFont.variable, GeistMono.variable)}>
+            <head />
             <body>
                 <Providers>
                     <div className="p-4 md:p-8">{children}</div>

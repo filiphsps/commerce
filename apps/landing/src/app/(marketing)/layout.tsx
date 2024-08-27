@@ -3,6 +3,7 @@ import styles from './layout.module.scss';
 
 import { View } from '@nordcom/nordstar';
 
+import { cn } from '@/utils/tailwind';
 import { GeistMono } from 'geist/font/mono';
 import { Montserrat } from 'next/font/google';
 
@@ -57,7 +58,8 @@ const primaryFont = Montserrat({
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
     return (
-        <html lang="en" className={`${primaryFont.variable} ${GeistMono.variable}`}>
+        <html lang="en" className={cn(primaryFont.variable, GeistMono.variable)}>
+            <head />
             <body>
                 <Providers>
                     <Header />
