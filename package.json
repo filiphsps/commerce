@@ -83,7 +83,7 @@
         "prettier-eslint": "16.3.0",
         "prettier-plugin-tailwindcss": "0.6.6",
         "turbo": "2.0.14",
-        "turbo-ignore": "2.0.14",
+        "turbo-ignore": "2.1.0",
         "typescript": "5.5.4",
         "vite": "5.4.2",
         "vite-plugin-dts": "3.8.3",
