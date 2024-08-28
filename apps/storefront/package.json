@@ -93,7 +93,7 @@
         "@next/bundle-analyzer": "15.0.0-canary.131",
         "@nordcom/prettier": "0.1.1",
         "@slicemachine/adapter-next": "0.3.47",
-        "@tailwindcss/typography": "0.5.14",
+        "@tailwindcss/typography": "0.5.15",
         "@tailwindcss/aspect-ratio": "0.4.2",
         "@testing-library/jest-dom": "6.5.0",
         "@testing-library/react": "16.0.0",
