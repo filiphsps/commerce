@@ -1,4 +1,4 @@
-import styles from '@/components/typography/content.module.scss';
+import { cn } from '@/utils/tailwind';
 
 import type { ElementType, HTMLProps, ReactNode } from 'react';
 
@@ -10,7 +10,7 @@ export const Content = ({ children, as, className, ...props }: ContentProps) => 
     const AsComponent = as || 'div';
 
     return (
-        <AsComponent {...props} className={`${styles.container} ${className || ''}`}>
+        <AsComponent {...props} className={cn('prose', className)}>
             {children}
         </AsComponent>
     );

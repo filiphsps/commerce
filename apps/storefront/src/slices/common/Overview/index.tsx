@@ -47,7 +47,7 @@ const OverviewSlice = ({ slice }: OverviewProps) => {
                         layout={item.layout}
                         image={(item.image.url && (item.image as any)) || undefined}
                         imageStyle={item.image_style}
-                        body={<PrismicText data={item.text} />}
+                        body={<PrismicText data={item.text} styled={false} />}
                         data-layout={item.layout}
                     />
                 );

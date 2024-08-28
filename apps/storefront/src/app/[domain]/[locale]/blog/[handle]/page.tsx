@@ -10,7 +10,6 @@ import { BlogArticleApi } from '@/api/shopify/blog';
 import { LocalesApi } from '@/api/store';
 import { isValidHandle } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
-import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { title } from 'process';
 
@@ -179,23 +178,9 @@ export default async function ArticlePage({
                             </Label>
                         }
                     />
-
-                    {article.image ? (
-                        <Image
-                            className={styles.banner}
-                            src={article.image.url}
-                            alt={article.image.altText!}
-                            width={350}
-                            height={100}
-                            sizes="(max-width: 950px) 200px, 350px"
-                            priority={true}
-                            loading="eager"
-                            decoding="async"
-                        />
-                    ) : null}
                 </div>
 
-                <Content className={styles.content} dangerouslySetInnerHTML={{ __html: article.contentHtml || '' }} />
+                <Content dangerouslySetInnerHTML={{ __html: article.contentHtml || '' }} />
 
                 <Breadcrumbs shop={shop} title={article.title} />
 

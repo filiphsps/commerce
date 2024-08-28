@@ -5,8 +5,6 @@
     grid-template-areas: 'banner' 'title' 'date';
     grid-template-rows: 1fr;
 
-    width: $breakpoint-mobile;
-    max-width: 100%;
     margin: 0 auto;
     padding-bottom: var(--block-padding);
 
@@ -16,9 +14,6 @@
 
     h1 {
         grid-area: title;
-
-        line-height: normal;
-        line-height: 1;
         margin-bottom: var(--block-spacer);
 
         @media (min-width: $breakpoint-mobile) {
@@ -59,21 +54,5 @@
             height: 11rem;
             margin: 0;
         }
-    }
-}
-
-.content {
-    width: $breakpoint-mobile;
-    max-width: 100%;
-    margin: 0 auto;
-
-    font-size: 16px;
-
-    p {
-        font-size: 1.15em;
-    }
-
-    img {
-        margin-bottom: 0;
     }
 }
