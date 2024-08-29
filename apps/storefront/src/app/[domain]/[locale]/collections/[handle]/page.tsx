@@ -166,9 +166,14 @@ export default async function CollectionPage({
                 ({ slice_type, variation }) => !(slice_type === 'collection' && (variation as any) === 'full')
             ) || [];
 
+        // TODO: Create a proper `shopify-html-parser` to convert the HTML to React components.
+        const content = (collection.descriptionHtml as any) || '';
+
         return (
             <>
-                <Breadcrumbs shop={shop} title={collection.title} />
+                <Suspense fallback={<Breadcrumbs.skeleton />}>
+                    <Breadcrumbs shop={shop} locale={locale} title={collection.title} />
+                </Suspense>
 
                 <PageContent className={styles.container}>
                     <Heading
@@ -208,8 +213,8 @@ export default async function CollectionPage({
                     </section>
 
                     {collection.descriptionHtml ? (
-                        <section>
-                            <Content dangerouslySetInnerHTML={{ __html: collection.descriptionHtml }} />
+                        <section className="empty:hidden">
+                            <Content dangerouslySetInnerHTML={{ __html: content }} />
                         </section>
                     ) : null}
                 </PageContent>

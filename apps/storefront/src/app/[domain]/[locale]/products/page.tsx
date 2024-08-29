@@ -121,7 +121,9 @@ export default async function ProductsPage({ params: { domain, locale: localeDat
                     <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
                 </Suspense>
 
-                <Breadcrumbs shop={shop} title={t('products')} />
+                <Suspense fallback={<Breadcrumbs.skeleton />}>
+                    <Breadcrumbs shop={shop} locale={locale} title={t('products')} />
+                </Suspense>
             </>
         );
     } catch (error: unknown) {

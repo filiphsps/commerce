@@ -1,5 +1,7 @@
 import 'server-only';
 
+import { Suspense } from 'react';
+
 import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { type Product } from '@/api/product';
@@ -45,11 +47,15 @@ const ProductCard = async ({ shop, locale, data: product, priority, className, .
             {/*<ProductCardQuickActions data={product} locale={locale} i18n={i18n} />*/}
             <ProductCardBadges data={product} i18n={i18n} />
 
-            <ProductCardHeader shop={shop} data={product} priority={priority}>
-                <ProductCardTitle data={product} />
-            </ProductCardHeader>
+            <Suspense fallback={<div className="contents" />}>
+                <ProductCardHeader shop={shop} data={product} priority={priority}>
+                    <ProductCardTitle data={product} />
+                </ProductCardHeader>
+            </Suspense>
 
-            <ProductCardFooter data={product} locale={locale} i18n={i18n} />
+            <Suspense fallback={<div className="flex h-full min-h-24 w-full grow flex-col pt-1" data-skeleton />}>
+                <ProductCardFooter data={product} locale={locale} i18n={i18n} />
+            </Suspense>
         </div>
     );
 };

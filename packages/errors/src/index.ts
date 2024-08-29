@@ -34,11 +34,11 @@ export class Error<T = unknown> extends BuiltinError {
         return error instanceof Error;
     }
 
-    public isNotFoundError(): boolean {
-        return Error.isNotFound(this);
-    }
-
     public static isNotFound(error: Error | unknown): boolean {
+        if (!error) {
+            return false;
+        }
+
         switch (true) {
             case error instanceof NotFoundError:
                 return true;
@@ -48,10 +48,9 @@ export class Error<T = unknown> extends BuiltinError {
                 break;
         }
 
-        return (
-            (error as any).statusCode === 404 ||
-            ['No documents', '404:'].some((e) => (((error as any)?.message as string) || '').includes(e))
-        );
+        if ((error as any).statusCode === 404) return true;
+
+        return ['No documents', '404:'].some((e) => (((error as any)?.message as string) || '').includes(e));
     }
 }
 
@@ -79,11 +78,15 @@ export class ApiError extends Error<ApiErrorKind> {
     description = 'An unknown error occurred';
     code = ApiErrorKind.API_UNKNOWN_ERROR;
 
-    constructor(cause?: string) {
+    constructor(cause?: string, statusCode?: number) {
         super();
 
         if (cause) {
             this.cause = cause;
+        }
+
+        if (statusCode) {
+            this.statusCode = statusCode;
         }
     }
 }

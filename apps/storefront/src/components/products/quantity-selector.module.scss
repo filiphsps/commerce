@@ -79,31 +79,10 @@
     }
 
     .button {
-        height: 100%;
-        width: 3rem;
-
-        line-height: normal;
-        font-weight: 700;
-        font-size: 1rem;
-
-        @media (min-width: $breakpoint-mobile) {
-            font-size: 1rem;
-        }
-
-        &:is(:hover, :active):not(:disabled) {
-            cursor: pointer;
-        }
-
         &:is(:active):not(:disabled) {
             transition: 50ms ease-in-out background-color;
             color: var(--accent-primary-text);
             background-color: var(--accent-primary-light);
-        }
-
-        @media (pointer: fine) {
-            &:is(:hover):not(:disabled, :active) {
-                background-color: var(--color-block);
-            }
         }
     }
 }

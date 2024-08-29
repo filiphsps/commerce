@@ -23,20 +23,18 @@ const ProductCardFooter = ({ data: product, i18n, locale }: ProductCardFooterPro
     }
 
     return (
-        <>
-            <div className="flex h-full min-h-24 w-full grow flex-col pt-1">
-                <Pricing price={selectedVariant.price as any} />
+        <div className="flex h-full min-h-24 w-full grow flex-col pt-1">
+            <Pricing price={selectedVariant.price as any} />
 
-                <ProductCardOptions
-                    locale={locale}
-                    data={product}
-                    selectedVariant={selectedVariant}
-                    setSelectedVariant={(variant) => setSelectedVariant(() => variant)}
-                />
+            <ProductCardOptions
+                locale={locale}
+                data={product}
+                selectedVariant={selectedVariant}
+                setSelectedVariant={(variant) => setSelectedVariant(() => variant)}
+            />
 
-                <ProductCardActions i18n={i18n} data={product} selectedVariant={selectedVariant} />
-            </div>
-        </>
+            <ProductCardActions i18n={i18n} data={product} selectedVariant={selectedVariant} />
+        </div>
     );
 };
 

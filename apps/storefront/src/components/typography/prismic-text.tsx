@@ -1,6 +1,8 @@
 /* c8 ignore start */
 'use client';
 
+import { Suspense } from 'react';
+
 import { linkResolver } from '@/utils/prismic';
 import { cn } from '@/utils/tailwind';
 import { PrismicRichText } from '@prismicio/react';
@@ -29,43 +31,51 @@ export const PrismicText = ({ data, styled = true, bare = false }: PrismicTextPr
     }
 
     return (
-        <PrismicRichText
-            field={data}
-            linkResolver={linkResolver}
-            internalLinkComponent={Link}
-            externalLinkComponent={Link}
-            components={{
-                paragraph: ({ children }) =>
-                    bare ? (
-                        <>{children}</>
-                    ) : (
-                        <p className={cn(styled && 'block text-base leading-snug md:text-lg md:leading-tight')}>
-                            {children}
-                        </p>
-                    ),
-                heading1: ({ children }) =>
-                    bare ? (
-                        <>{children}</>
-                    ) : (
-                        <h1 className={cn(styled && 'text-2xl font-semibold leading-none md:text-4xl')}>{children}</h1>
-                    ),
-                heading2: ({ children }) =>
-                    bare ? (
-                        <>{children}</>
-                    ) : (
-                        <h2 className={cn(styled && 'text-xl font-semibold leading-tight md:text-2xl')}>{children}</h2>
-                    ),
-                heading3: ({ children }) =>
-                    bare ? (
-                        <>{children}</>
-                    ) : (
-                        <h3 className={cn(styled && 'text-lg font-semibold leading-tight md:text-xl')}>{children}</h3>
-                    ),
-                strong: ({ children }) => <strong className="font-extrabold">{children}</strong>,
-                listItem: ({ children }) => <li className="list-disc">{children}</li>,
-                oListItem: ({ children }) => <li className="list-decimal">{children}</li>
-            }}
-        />
+        <Suspense fallback={null}>
+            <PrismicRichText
+                field={data}
+                linkResolver={linkResolver}
+                internalLinkComponent={Link}
+                externalLinkComponent={Link}
+                components={{
+                    paragraph: ({ children }) =>
+                        bare ? (
+                            <>{children}</>
+                        ) : (
+                            <p className={cn(styled && 'block text-base leading-snug md:text-lg md:leading-tight')}>
+                                {children}
+                            </p>
+                        ),
+                    heading1: ({ children }) =>
+                        bare ? (
+                            <>{children}</>
+                        ) : (
+                            <h1 className={cn(styled && 'text-2xl font-semibold leading-none md:text-4xl')}>
+                                {children}
+                            </h1>
+                        ),
+                    heading2: ({ children }) =>
+                        bare ? (
+                            <>{children}</>
+                        ) : (
+                            <h2 className={cn(styled && 'text-xl font-semibold leading-tight md:text-2xl')}>
+                                {children}
+                            </h2>
+                        ),
+                    heading3: ({ children }) =>
+                        bare ? (
+                            <>{children}</>
+                        ) : (
+                            <h3 className={cn(styled && 'text-lg font-semibold leading-tight md:text-xl')}>
+                                {children}
+                            </h3>
+                        ),
+                    strong: ({ children }) => <strong className="font-extrabold">{children}</strong>,
+                    listItem: ({ children }) => <li className="list-disc">{children}</li>,
+                    oListItem: ({ children }) => <li className="list-decimal">{children}</li>
+                }}
+            />
+        </Suspense>
     );
 };
 /* c8 ignore stop */

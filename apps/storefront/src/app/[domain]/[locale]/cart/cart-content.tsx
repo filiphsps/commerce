@@ -1,6 +1,6 @@
 import styles from './cart-content.module.scss';
 
-import { type ReactNode } from 'react';
+import { type ReactNode, Suspense } from 'react';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 
@@ -41,26 +41,30 @@ export default async function CartContent({ shop, locale, i18n, header, paymentM
                     <div className={styles.lines}>
                         {header}
 
-                        <CartLines shop={shop} i18n={i18n} />
+                        <Suspense fallback={<CartLines.skeleton />}>
+                            <CartLines i18n={i18n} />
+                        </Suspense>
                     </div>
                 </div>
 
-                <CartSidebar
-                    shop={shop}
-                    locale={locale}
-                    i18n={i18n}
-                    className={styles.sidebar}
-                    paymentMethods={paymentMethods}
-                >
-                    <PrismicPage
+                <Suspense fallback={<aside className={cn(styles.sidebar, 'h-32')} data-skeleton />}>
+                    <CartSidebar
                         shop={shop}
                         locale={locale}
-                        slices={page?.sidebar_slices}
                         i18n={i18n}
-                        handle={'cart'}
-                        type={'cart_page'}
-                    />
-                </CartSidebar>
+                        className={styles.sidebar}
+                        paymentMethods={paymentMethods}
+                    >
+                        <PrismicPage
+                            shop={shop}
+                            locale={locale}
+                            slices={page?.sidebar_slices}
+                            i18n={i18n}
+                            handle={'cart'}
+                            type={'cart_page'}
+                        />
+                    </CartSidebar>
+                </Suspense>
             </section>
 
             <PrismicPage

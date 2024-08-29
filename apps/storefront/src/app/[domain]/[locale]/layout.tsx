@@ -159,7 +159,9 @@ export default async function RootLayout({
                                         </PageContent>
                                     </ShopLayout>
 
-                                    <GeoRedirect countries={countries} locale={locale} />
+                                    <Suspense fallback={null}>
+                                        <GeoRedirect countries={countries} locale={locale} />
+                                    </Suspense>
                                 </HeaderProvider>
                             </AnalyticsProvider>
                         </ProvidersRegistry>

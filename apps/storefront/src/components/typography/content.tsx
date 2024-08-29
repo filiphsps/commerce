@@ -10,7 +10,7 @@ export const Content = ({ children, as, className, ...props }: ContentProps) => 
     const AsComponent = as || 'div';
 
     return (
-        <AsComponent {...props} className={cn('prose', className)}>
+        <AsComponent {...props} className={cn('prose empty:hidden', className)}>
             {children}
         </AsComponent>
     );

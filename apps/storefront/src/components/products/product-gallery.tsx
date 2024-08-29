@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { Suspense, useCallback, useEffect, useState } from 'react';
 import { FiMail } from 'react-icons/fi';
 import { EmailShareButton, FacebookShareButton, TwitterShareButton } from 'react-share';
 
@@ -107,50 +107,52 @@ const ProductGallery = ({
                     )}
 
                     <div className="absolute inset-x-2 top-2 flex flex-row-reverse items-start justify-between gap-2">
-                        <div className="flex flex-col gap-2 md:gap-1">
-                            <EmailShareButton
-                                key="email"
-                                url={pageUrl}
-                                className={SHARE_BUTTON_STYLES}
-                                resetButtonStyle={false}
-                                title={title}
-                                htmlTitle={t('share-via-email')}
-                            >
-                                <FiMail />
-                            </EmailShareButton>
-                            <FacebookShareButton
-                                key="facebook"
-                                url={pageUrl}
-                                className={SHARE_BUTTON_STYLES}
-                                resetButtonStyle={false}
-                                title={title}
-                                htmlTitle={t('share-on-facebook')}
-                            >
-                                <Image
-                                    src="/assets/icons/social/facebook-outline.svg"
-                                    alt="Facebook"
-                                    width={20}
-                                    height={20}
-                                />
-                            </FacebookShareButton>
-                            <TwitterShareButton
-                                key="twitter"
-                                url={pageUrl}
-                                className={SHARE_BUTTON_STYLES}
-                                resetButtonStyle={false}
-                                title={title}
-                                htmlTitle={t('share-on-x')}
-                            >
-                                <Image
-                                    src="/assets/icons/social/twitter-outline.svg"
-                                    alt="X (Twitter)"
-                                    width={20}
-                                    height={20}
-                                />
-                            </TwitterShareButton>
+                        <Suspense fallback={null}>
+                            <div className="flex flex-col gap-2 empty:hidden md:gap-1">
+                                <EmailShareButton
+                                    key="email"
+                                    url={pageUrl}
+                                    className={SHARE_BUTTON_STYLES}
+                                    resetButtonStyle={false}
+                                    title={title}
+                                    htmlTitle={t('share-via-email')}
+                                >
+                                    <FiMail />
+                                </EmailShareButton>
+                                <FacebookShareButton
+                                    key="facebook"
+                                    url={pageUrl}
+                                    className={SHARE_BUTTON_STYLES}
+                                    resetButtonStyle={false}
+                                    title={title}
+                                    htmlTitle={t('share-on-facebook')}
+                                >
+                                    <Image
+                                        src="/assets/icons/social/facebook-outline.svg"
+                                        alt="Facebook"
+                                        width={20}
+                                        height={20}
+                                    />
+                                </FacebookShareButton>
+                                <TwitterShareButton
+                                    key="twitter"
+                                    url={pageUrl}
+                                    className={SHARE_BUTTON_STYLES}
+                                    resetButtonStyle={false}
+                                    title={title}
+                                    htmlTitle={t('share-on-x')}
+                                >
+                                    <Image
+                                        src="/assets/icons/social/twitter-outline.svg"
+                                        alt="X (Twitter)"
+                                        width={20}
+                                        height={20}
+                                    />
+                                </TwitterShareButton>
 
-                            {actions}
-                        </div>
+                                {actions}
+                            </div>
+                        </Suspense>
 
                         {image?.altText ? (
                             <div className="rounded-lg bg-gray-100 p-1 px-2 text-sm font-semibold text-gray-500 opacity-80">

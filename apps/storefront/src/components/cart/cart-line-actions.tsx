@@ -1,12 +1,9 @@
 'use client';
 
-import styles from '@/components/cart/cart-line.module.scss';
-
 import { useCallback } from 'react';
 import { CgTrash } from 'react-icons/cg';
 
 import { type LocaleDictionary, useTranslation } from '@/utils/locale';
-import { cn } from '@/utils/tailwind';
 import { useCart } from '@shopify/hydrogen-react';
 
 import { QuantitySelector } from '@/components/products/quantity-selector';
@@ -49,7 +46,7 @@ const CartLineQuantityAction = ({ i18n, data: line }: CartLineProps) => {
 
     return (
         <QuantitySelector
-            className={cn(styles.quantity, 'max-w-48')}
+            className="max-w-48 bg-gray-100"
             i18n={i18n}
             disabled={!cartReady}
             value={line.quantity}

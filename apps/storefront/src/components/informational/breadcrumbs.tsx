@@ -11,14 +11,17 @@ import { cn } from '@/utils/tailwind';
 import { usePathname } from 'next/navigation';
 
 import Link from '@/components/link';
-import { useShop } from '@/components/shop/provider';
+
+import type { Locale } from '@/utils/locale';
+
+const SHARED_STYLES = 'rounded-lg p-2';
 
 type BreadcrumbsProps = {
     shop: OnlineShop;
+    locale: Locale;
     title?: string;
 };
-const Breadcrumbs = ({ shop, title }: BreadcrumbsProps) => {
-    const { locale } = useShop();
+const Breadcrumbs = ({ shop, locale, title }: BreadcrumbsProps) => {
     const route = usePathname();
     const path = route.split('/').slice(2, -1);
 
@@ -32,7 +35,7 @@ const Breadcrumbs = ({ shop, title }: BreadcrumbsProps) => {
     const hrefs = path.map((_, index) => `/${path.slice(0, index + 1).join('/')}`);
     return (
         <section
-            className={cn(styles.breadcrumbs, overflowStyles.container, blockStyles, 'rounded-lg p-2')}
+            className={cn(styles.breadcrumbs, overflowStyles.container, blockStyles, SHARED_STYLES)}
             itemScope
             itemType="https://schema.org/BreadcrumbList"
         >
@@ -82,5 +85,9 @@ const Breadcrumbs = ({ shop, title }: BreadcrumbsProps) => {
         </section>
     );
 };
+
+Breadcrumbs.skeleton = ({}) => (
+    <section className={cn(styles.breadcrumbs, overflowStyles.container, SHARED_STYLES)} data-skeleton></section>
+);
 
 export default Breadcrumbs;

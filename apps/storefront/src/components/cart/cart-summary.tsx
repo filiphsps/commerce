@@ -79,10 +79,10 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
     }
 
     return (
-        <div className={styles.container}>
+        <div className={cn(styles.container, 'sticky top-32 flex flex-col gap-4')}>
             {children}
 
-            <section className={styles.section}>
+            <section className={cn(styles.section, 'gap-2')}>
                 <header className={styles.header}>
                     <Label>{t('order-summary')}</Label>
                     <Label className="text-xs">
@@ -197,53 +197,56 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                 </div>
             </section>
 
-            <section className={cn(styles.section, styles['section-actions'], 'mt-4')}>
-                <Button className="h-10 py-0 md:h-14 md:text-base" disabled={!cartReady || !lines} onClick={onCheckout}>
+            <section className={cn(styles.section, styles['section-actions'], 'gap-2')}>
+                <Button
+                    className="h-10 py-0 md:h-14 md:text-base lg:text-lg"
+                    disabled={!cartReady || !lines}
+                    onClick={onCheckout}
+                >
                     <span>{t('continue-to-checkout')}</span>
                     <FiChevronRight className={styles.icon} />
                 </Button>
+
+                {cartReady && lines.length > 0 ? (
+                    <ShopPayButton
+                        // TODO: Only show this if we're using Shopify.
+                        width="100%"
+                        className={cn(styles.button, styles['shop-button'], 'rounded-xl')}
+                        variantIdsAndQuantities={lines.map(({ quantity, merchandise: { id } }: any) => ({
+                            quantity,
+                            id
+                        }))}
+                        channel="hydrogen"
+                    />
+                ) : null}
             </section>
 
-            {lines.length > 0 ? (
-                <section className={`${styles.section} ${styles['section-actions']}`}>
-                    <>
-                        {cartReady ? (
-                            <ShopPayButton
-                                // TODO: Only show this if we're using Shopify.
-                                width="100%"
-                                className={cn(styles.button, styles['shop-button'])}
-                                variantIdsAndQuantities={lines.map(({ quantity, merchandise: { id } }: any) => ({
-                                    quantity,
-                                    id
-                                }))}
-                                channel="hydrogen"
-                            />
-                        ) : null}
-                    </>
-                </section>
-            ) : null}
-
-            {discountCodes.length > 0 ? (
-                <section className={styles.section}>
-                    <CartCoupons />
-                </section>
-            ) : null}
-
-            <section className={cn(styles.section, styles['section-security'])}>
+            <section className={cn(styles.section, styles['section-security'], 'gap-2')}>
                 {paymentMethods || null}
 
-                <div className={'text-sm leading-tight'}>
-                    <FiLock className={'stroke mr-1 inline h-3 stroke-2'} />
+                <div className={'text-sm leading-snug'}>
+                    <FiLock className={'stroke -mt-1 mr-1 inline h-3 stroke-2'} />
                     Safely complete your purchase through Nordcom AB&apos;s trusted partner&apos;s
-                    <Link href="https://www.shopify.com/security/pci-compliant" rel="nofollow" target="_blank">
+                    <Link
+                        href="https://www.shopify.com/security/pci-compliant"
+                        rel="nofollow"
+                        target="_blank"
+                        className="px-1 underline"
+                    >
                         PCI DSS compliant
                     </Link>
                     checkout powered by Stripe and/or Shopify.
                 </div>
             </section>
 
+            {discountCodes.length > 0 ? (
+                <section className={cn(styles.section, 'gap-2')}>
+                    <CartCoupons />
+                </section>
+            ) : null}
+
             {lines.length > 0 ? (
-                <section className={styles.section}>
+                <section className={cn(styles.section, 'gap-2')}>
                     <header className={styles.header}>
                         <Label>{t('label-cart-note')}</Label>
                     </header>

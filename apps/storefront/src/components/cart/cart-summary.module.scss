@@ -6,12 +6,6 @@
 }
 
 .container {
-    top: 8rem;
-    position: sticky;
-    display: flex;
-    flex-direction: column;
-    gap: var(--block-spacer);
-
     .lines {
         --discount-prefix: '-';
 
@@ -36,19 +30,10 @@
         }
     }
 
-    .button {
-        --button-height: 3.75rem;
-
-        overflow: hidden;
-
-        height: var(--button-height);
-    }
     .shop-button {
-        --button-height: 3.25rem;
-        --shop-pay-button-height: var(--button-height);
+        --shop-pay-button-height: 3rem;
 
         overflow: hidden;
-        border-radius: var(--block-border-radius);
     }
     .checkout-button {
         display: flex;
@@ -91,7 +76,6 @@
 .section {
     display: flex;
     flex-direction: column;
-    gap: var(--block-spacer);
     padding: var(--block-padding-large);
     border-radius: var(--block-border-radius);
     background-color: var(--color-block);

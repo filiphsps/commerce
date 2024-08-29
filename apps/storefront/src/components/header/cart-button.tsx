@@ -26,21 +26,28 @@ const CartButton = ({ locale, i18n }: CartButtonProps) => {
             locale={locale}
             className={cn(
                 styles.container,
-                'duration-250 group h-10 overflow-clip rounded-none bg-red-200 bg-transparent p-0 py-0 text-base text-black transition-all *:leading-snug',
+                'duration-250 group h-10 overflow-clip rounded-none bg-transparent p-0 py-0 transition-all *:leading-snug',
                 totalQuantity &&
-                    'bg-primary text-primary-foreground fill-primary-foreground stroke-primary-foreground hover:bg-secondary hover:text-secondary-foreground rounded-3xl px-4 shadow-sm transition-all duration-150 hover:shadow-lg'
+                    'bg-primary text-primary-foreground fill-primary-foreground stroke-primary-foreground rounded-3xl px-4 shadow-sm transition-all',
+                !totalQuantity && 'text-base text-black'
             )}
             data-items={totalQuantity || 0}
             title={t('view-cart')}
         >
-            <div className={cn(styles.quantity, 'group-hover:text-secondary-foreground')}>
+            <div
+                className={cn(
+                    styles.quantity,
+                    'text-left text-base font-extrabold transition-all',
+                    !totalQuantity && 'w-0'
+                )}
+            >
                 {totalQuantity ? totalQuantity : null}
             </div>
 
             <FiShoppingBag
                 className={cn(
                     styles.icon,
-                    'group-hover:text-secondary-foreground text-base transition-colors',
+                    'text-base transition-all',
                     !totalQuantity && 'group-hover:text-primary text-xl lg:text-2xl'
                 )}
                 style={{ strokeWidth: 2.5 }}

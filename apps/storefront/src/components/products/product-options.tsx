@@ -83,6 +83,7 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
                                     return (
                                         <Link
                                             key={`${option.name}_${value}`}
+                                            role="option"
                                             aria-disabled={!inStock}
                                             aria-selected={isSelected}
                                             title={title}

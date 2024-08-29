@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { type HTMLProps } from 'react';
+import { type HTMLProps, Suspense } from 'react';
 import { HiOutlineSearch } from 'react-icons/hi';
 
 import { Shop } from '@nordcom/commerce-db';
@@ -63,10 +63,14 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
             </section>
 
             <section className="flex w-full flex-col items-center justify-center gap-0 border-0 border-b border-t border-solid border-gray-300 bg-white text-black group-data-[menu-open=true]/body:border-b-gray-100 md:px-2 lg:px-2">
-                <HeaderNavigation slices={slices} />
+                <Suspense fallback={null}>
+                    <HeaderNavigation slices={slices} />
+                </Suspense>
             </section>
 
-            <HeaderMenu slices={slices} />
+            <Suspense fallback={<div className="h-0 w-full border-0" />}>
+                <HeaderMenu slices={slices} />
+            </Suspense>
         </section>
     );
 };

@@ -144,7 +144,7 @@ export async function generateMetadata({
 }
 
 const ROUNDED_BLOCK_STYLES =
-    'flex h-auto w-full flex-col items-stretch justify-start gap-6 overflow-clip rounded-lg bg-gray-100 p-3 md:justify-stretch lg:gap-8 lg:p-5 empty:hidden';
+    'flex h-auto w-full flex-col items-stretch justify-start gap-6 overflow-clip rounded-lg bg-gray-100 p-3 md:justify-stretch lg:gap-8 lg:p-5 lg:px-4 empty:hidden';
 
 export default async function ProductPage({
     params: { domain, locale: localeData, handle }
@@ -262,7 +262,9 @@ export default async function ProductPage({
 
         return (
             <>
-                <Breadcrumbs shop={shop} title={`${product.vendor} ${product.title}`} />
+                <Suspense fallback={<Breadcrumbs.skeleton />}>
+                    <Breadcrumbs shop={shop} locale={locale} title={`${product.vendor} ${product.title}`} />
+                </Suspense>
 
                 <div className="flex flex-col gap-4 md:flex-row md:flex-nowrap">
                     <section

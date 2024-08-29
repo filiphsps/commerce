@@ -21,10 +21,6 @@
 
     .quantity {
         width: 0;
-
-        font-weight: 800;
-        font-size: 1rem;
-        text-align: left;
     }
 
     &[data-items] {
@@ -35,10 +31,6 @@
             .quantity {
                 width: fit-content;
                 padding: 0.15rem 0 0 0.15rem;
-            }
-
-            &:is(:active, :focus) {
-                background-color: var(--color-bright);
             }
         }
     }

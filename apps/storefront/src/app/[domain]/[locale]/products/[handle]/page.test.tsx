@@ -29,13 +29,9 @@ describe('app', () => {
         };
     });
     vi.mock('@/api/store', () => ({
-        StoreApi: vi.fn().mockResolvedValue({
-            i18n: {
-                locales: ['en-US', 'de-DE', 'en-GB']
-            }
-        }),
         useShop: vi.fn().mockReturnValue({}),
-        LocalesApi: vi.fn().mockResolvedValue([])
+        LocalesApi: vi.fn().mockResolvedValue([]),
+        ShopPaymentSettingsApi: vi.fn().mockReturnValue({})
     }));
 
     vi.mock('next/navigation', () => ({

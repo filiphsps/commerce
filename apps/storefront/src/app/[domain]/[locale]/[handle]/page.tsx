@@ -1,5 +1,7 @@
 import 'server-only';
 
+import { Suspense } from 'react';
+
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 
@@ -135,7 +137,14 @@ export default async function CustomPage({
         // Get dictionary of strings for the current locale.
         const i18n = await getDictionary({ shop, locale });
 
-        const breadcrumbs = handle !== 'homepage' && page.title ? <Breadcrumbs shop={shop} title={page.title} /> : null;
+        const breadcrumbs =
+            handle !== 'homepage' && page.title ? (
+                <>
+                    <Suspense fallback={<Breadcrumbs.skeleton />}>
+                        <Breadcrumbs shop={shop} locale={locale} title={page.title} />
+                    </Suspense>
+                </>
+            ) : null;
 
         return (
             <>

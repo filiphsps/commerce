@@ -2,6 +2,8 @@ import 'server-only';
 
 import styles from './page.module.scss';
 
+import { Suspense } from 'react';
+
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 
@@ -182,7 +184,9 @@ export default async function ArticlePage({
 
                 <Content dangerouslySetInnerHTML={{ __html: article.contentHtml || '' }} />
 
-                <Breadcrumbs shop={shop} title={article.title} />
+                <Suspense fallback={<Breadcrumbs.skeleton />}>
+                    <Breadcrumbs shop={shop} locale={locale} title={article.title} />
+                </Suspense>
 
                 {/* Metadata */}
                 <JsonLd data={jsonLd} />

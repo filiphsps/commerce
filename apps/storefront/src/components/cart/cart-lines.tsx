@@ -2,8 +2,6 @@
 
 import { Suspense } from 'react';
 
-import type { OnlineShop } from '@nordcom/commerce-db';
-
 import { useCart } from '@shopify/hydrogen-react';
 
 import { CartLine } from '@/components/cart/cart-line';
@@ -12,25 +10,24 @@ import { Label } from '@/components/typography/label';
 import type { LocaleDictionary } from '@/utils/locale';
 
 type CartContentProps = {
-    shop: OnlineShop;
     i18n: LocaleDictionary;
 };
-const CartLines = ({ shop, i18n }: CartContentProps) => {
+const CartLines = ({ i18n }: CartContentProps) => {
     const { cartReady, lines } = useCart();
 
     if (!cartReady) {
         return <CartLines.skeleton />;
-    } else if (!lines || lines.length <= 0) {
+    } else if ((lines || []).length <= 0) {
         return <Label>There are no items in your cart.</Label>;
     }
 
     return (
-        <div className="flex w-full flex-col gap-2">
-            {lines.map((item) => {
+        <div className="flex w-full flex-col gap-2 empty:hidden">
+            {lines?.map((item) => {
                 if (!item) return null;
 
                 return (
-                    <Suspense key={`${shop.id}.cart.lines.${item.id}`} fallback={<CartLine.skeleton />}>
+                    <Suspense fallback={<CartLine.skeleton />} key={item.id}>
                         <CartLine i18n={i18n} data={item as any} />
                     </Suspense>
                 );
