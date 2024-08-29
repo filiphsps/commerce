@@ -27,7 +27,7 @@ export default async function middleware(req: NextRequest) {
         .split('/') // Split into an array of path segments.
         .filter((_) => _.length > 0); // Remove empty segments.
 
-    if (segments.length >= 2 && segments[1] === 'admin') {
+    if (segments[0] === 'admin') {
         return admin(req);
     }
 
