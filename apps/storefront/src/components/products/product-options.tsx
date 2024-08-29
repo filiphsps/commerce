@@ -52,7 +52,7 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
                                 {option.name}
                             </Label>
 
-                            <div className={cn(styles.options)} data-options={option.values.length}>
+                            <div role="options" className={cn(styles.options)} data-options={option.values.length}>
                                 {option.values.map((value) => {
                                     if (!value || !variants) return null;
 
