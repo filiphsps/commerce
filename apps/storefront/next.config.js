@@ -27,8 +27,7 @@ const config = {
     serverExternalPackages: ['@sentry/profiling-node', '@nordcom/commerce-db', 'mongoose'],
     devIndicators: {
         buildActivity: true,
-        appIsrStatus: true,
-        buildActivityPosition: 'top-left'
+        appIsrStatus: true
     },
     experimental: {
         //caseSensitiveRoutes: true,
@@ -42,6 +41,7 @@ const config = {
         scrollRestoration: true,
         serverSourceMaps: true,
         turbo: {},
+        taint: true,
         webpackBuildWorker: true
     },
     images: {
@@ -92,9 +92,17 @@ const config = {
         ENVIRONMENT: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
         GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA || 'unknown'
     },
-    serverRuntimeConfig: {
-        ENVIRONMENT: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
-        GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA || 'unknown'
+
+    async headers() {
+        return ['/', '/:path*'].map((source) => ({
+            source,
+            headers: [
+                {
+                    key: 'X-Powered-By',
+                    value: 'Nordcom Commerce (shops.nordcom.io)'
+                }
+            ]
+        }));
     },
 
     async generateBuildId() {

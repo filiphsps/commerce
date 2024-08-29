@@ -59,8 +59,6 @@ type ShopifyApiOptions = {
 };
 
 export const ShopifyApolloApiClient = async ({ shop, locale = Locale.default, apiConfig }: ShopifyApiOptions) => {
-    'use server';
-
     // TODO: Support public headers too.
     const config = (apiConfig || (await ShopifyApiConfig({ shop }))).private();
 
@@ -75,8 +73,6 @@ export const ShopifyApolloApiClient = async ({ shop, locale = Locale.default, ap
  * Shopify API client using the fetch API instead of Apollo.
  */
 export const ShopifyApiClient = async ({ shop, locale = Locale.default, apiConfig }: ShopifyApiOptions) => {
-    'use server';
-
     // TODO: Support public headers too.
     const config = (apiConfig || (await ShopifyApiConfig({ shop }))).private();
 

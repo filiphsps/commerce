@@ -4,9 +4,14 @@ import { fileURLToPath } from 'node:url';
 import withMarkdoc from '@markdoc/next.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const isProduction = process.env.NODE_ENV !== 'development' ? true : false; // Deliberately using a ternary here for clarity.
 
-const vercelUrl = process.env.VERCEL_URL || null;
+export function getBaseUrl() {
+    if (process.env.VERCEL_ENV === 'production') {
+        return 'https://shops.nordcom.io';
+    }
+
+    return process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined;
+}
 
 /** @type {import('next').NextConfig} */
 const config = {
@@ -19,12 +24,12 @@ const config = {
     productionBrowserSourceMaps: true,
     compress: true,
     transpilePackages: [],
-    assetPrefix: vercelUrl ? `https://${vercelUrl}` : undefined,
+    assetPrefix: getBaseUrl(),
     experimental: {
         //caseSensitiveRoutes: true,
         cssChunking: 'loose',
         optimizeCss: true,
-        optimizePackageImports: ['react-icons'],
+        optimizePackageImports: ['react-icons', '@nordcom/nordstar'],
         parallelServerBuildTraces: true,
         parallelServerCompiles: true,
         ppr: true,
@@ -32,6 +37,7 @@ const config = {
         scrollRestoration: true,
         serverSourceMaps: true,
         turbo: {},
+        taint: true,
         webpackBuildWorker: true
     },
     images: {
@@ -82,21 +88,31 @@ const config = {
         ENVIRONMENT: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
         GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA || 'unknown'
     },
-    serverRuntimeConfig: {
-        ENVIRONMENT: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
-        GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA || 'unknown'
-    },
 
     async generateBuildId() {
         if (process.env.NODE_ENV === 'development') return 'dev';
         return process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
     },
 
-    webpack(config) {
+    webpack: (config, { webpack, isServer }) => {
         config.experiments = {
             ...config.experiments,
             topLevelAwait: true
         };
+
+        config.plugins.push(
+            new webpack.DefinePlugin({
+                __SENTRY_DEBUG__: false,
+                __SENTRY_TRACING__: false,
+                __RRWEB_EXCLUDE_IFRAME__: true,
+                __RRWEB_EXCLUDE_SHADOW_DOM__: true,
+                __SENTRY_EXCLUDE_REPLAY_WORKER__: true
+            })
+        );
+
+        if (isServer) {
+            config.devtool = 'source-map';
+        }
         return config;
     },
 
