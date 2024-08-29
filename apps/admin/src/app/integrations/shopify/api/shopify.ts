@@ -16,7 +16,7 @@ export const shopifyAdminApi = shopifyApi({
         'read_own_subscription_contracts',
         'write_own_subscription_contracts'
     ],
-    hostName: process.env.NODE_ENV === 'development' ? 'shops.nordcom.io.localhost:3000' : 'shops.nordcom.io',
+    hostName: process.env.NODE_ENV === 'development' ? 'localhost:3000' : 'admin.shops.nordcom.io',
     isEmbeddedApp: true,
     apiVersion: ApiVersion.October23
 });
