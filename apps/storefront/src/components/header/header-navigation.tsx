@@ -1,7 +1,5 @@
 'use client';
 
-import styles from '@/styles/horizontal-overflow-scroll.module.scss';
-
 import { components as menuSlices } from '@/slices/navigation';
 import { cn } from '@/utils/tailwind';
 import { SliceZone } from '@prismicio/react';
@@ -25,8 +23,7 @@ export const HeaderNavigation = ({ slices = [], className, ...props }: HeaderNav
     return (
         <nav
             className={cn(
-                'flex w-full grow items-center justify-start gap-5 overflow-x-auto px-3 md:max-w-[var(--page-width)] md:flex-row md:overflow-hidden md:px-1 lg:gap-6 lg:px-3',
-                styles.container,
+                'overflow-x-shadow flex w-full grow items-center justify-start gap-5 overflow-x-auto px-3 md:max-w-[var(--page-width)] md:flex-row md:overflow-hidden md:px-1 lg:gap-6 lg:px-3',
                 className
             )}
             {...props}

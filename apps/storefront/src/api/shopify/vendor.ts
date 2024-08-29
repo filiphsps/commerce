@@ -30,10 +30,12 @@ export const Convertor = (
     });
 
     // Remove duplicates and create a proper object
-    return Array.from(new Set(vendors)).map((vendor) => ({
-        title: vendor,
-        handle: TitleToHandle(vendor)
-    }));
+    return (
+        Array.from(new Set(vendors)).map((vendor) => ({
+            title: vendor,
+            handle: TitleToHandle(vendor)
+        })) as any
+    ).filter((_: VendorModel) => _);
 };
 
 type VendorsOptions = { api: AbstractApi };

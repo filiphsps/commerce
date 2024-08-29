@@ -16,7 +16,7 @@ import type { ParsedMetafields } from '@shopify/hydrogen-react';
 const COMMON_STYLES = 'md:gap3 flex grow flex-col items-start justify-between gap-2 rounded-lg bg-white p-4';
 const LABEL_STYLES = 'leading-none';
 const CONTENT_STYLES =
-    'flex items-start justify-center rounded-lg bg-gray-100 p-1 px-2 text-base font-semibold leading-tight hyphens-auto h-min gap-1';
+    'flex items-center justify-center rounded-lg bg-gray-100 p-1 px-2 text-sm font-semibold leading-tight hyphens-auto h-min gap-1';
 
 export type ProductDetailsProps = {
     locale: Locale;
@@ -54,7 +54,7 @@ const ProductDetails = async ({ locale, data: product }: ProductDetailsProps) =>
                             ? parsedFlavors.map((flavor) => (
                                   <div key={flavor} className={cn(CONTENT_STYLES)}>
                                       {/* TODO: Evolve `AttributeIcon` to `AttributeBadge`. */}
-                                      <AttributeIcon data={flavor} className="stroke-current" />
+                                      <AttributeIcon data={flavor} className="h-4 stroke-current" />
 
                                       {flavor}
                                   </div>

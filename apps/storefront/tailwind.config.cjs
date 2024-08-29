@@ -32,7 +32,8 @@ module.exports = {
             backgroundImage: {
                 'sale-stripes':
                     'repeating-linear-gradient(-45deg, #DC2626 0px, #DC2626 1rem, #CB2424 1rem, #CB2424 2rem)'
-            }
+            },
+            animation: {}
         }
     },
     future: {

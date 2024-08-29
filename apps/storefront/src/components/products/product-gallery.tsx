@@ -75,14 +75,14 @@ const ProductGallery = ({
         <section draggable={false} className={cn(className)} {...props}>
             <div className="sticky top-36 flex w-full flex-col gap-2 overflow-clip lg:gap-4">
                 <div
-                    className="relative overflow-hidden rounded-lg border-2 border-solid border-gray-100 bg-white p-8 py-12 md:p-16"
+                    className="relative overflow-hidden rounded-lg border-2 border-solid border-gray-100 bg-white p-8 py-12 md:h-full md:p-16"
                     {...loadingProps}
                 >
                     {image ? (
-                        <div className="] h-fit min-h-32 w-full overflow-hidden md:aspect-[3/2.75] lg:aspect-[4/2.75] lg:h-full">
+                        <div className="h-fit min-h-32 w-full overflow-hidden md:h-full md:max-h-[30rem]">
                             <Image
                                 className={cn(
-                                    'opacity-1 h-fit w-full object-contain object-center transition-opacity duration-500 lg:h-full',
+                                    'opacity-1 h-fit w-full object-contain object-center transition-opacity duration-500 md:h-full md:max-h-[30rem]',
                                     loading && 'opacity-0 transition-none'
                                 )}
                                 src={image.url!}
@@ -106,7 +106,12 @@ const ProductGallery = ({
                         <div className="h-full min-h-32 w-full md:min-h-[36rem]" />
                     )}
 
-                    <div className="absolute inset-x-2 top-2 flex flex-row-reverse items-start justify-between gap-2">
+                    <div
+                        className={cn(
+                            'absolute inset-x-2 top-2 flex flex-row-reverse items-start justify-between gap-2',
+                            'hidden md:flex'
+                        )}
+                    >
                         <Suspense>
                             <div className="flex flex-col gap-2 empty:hidden md:gap-1">
                                 <EmailShareButton

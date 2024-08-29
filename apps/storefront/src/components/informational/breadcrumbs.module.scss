@@ -1,23 +1,10 @@
 @import 'globals';
 
 .breadcrumbs {
-    display: flex;
     overflow: hidden;
     overflow-x: auto;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    align-items: center;
 
-    background-color: var(--color-block);
-    color: var(--color-dark);
-
-    white-space: nowrap;
-    overscroll-behavior-x: contain;
     -webkit-overflow-scrolling: touch;
-    list-style-type: none;
-
-    line-height: normal;
-    font-weight: 600;
 
     .item {
         display: flex;

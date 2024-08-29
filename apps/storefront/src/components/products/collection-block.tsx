@@ -1,7 +1,6 @@
 import 'server-only';
 
 import styles from '@/components/products/collection-block.module.scss';
-import overflowStyles from '@/styles/horizontal-overflow-scroll.module.scss';
 
 import { type HTMLProps, Suspense } from 'react';
 
@@ -70,7 +69,8 @@ const CollectionBlock = async ({
             {...props}
             className={cn(
                 styles.container,
-                isHorizontal && `${styles.horizontal} ${overflowStyles.container}`,
+                isHorizontal && styles.horizontal,
+                isHorizontal && 'overflow-x-shadow',
                 className
             )}
         >

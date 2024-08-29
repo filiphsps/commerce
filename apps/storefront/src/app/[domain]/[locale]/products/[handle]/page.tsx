@@ -270,10 +270,10 @@ export default async function ProductPage({
                 <div className="flex flex-col gap-4 md:flex-row md:flex-nowrap">
                     <section
                         className={
-                            'flex h-auto w-full md:w-1/2 md:shrink-0 lg:w-full lg:max-w-[42rem] xl:max-w-[52rem]'
+                            'flex h-auto w-full flex-col gap-4 md:w-1/2 md:shrink-0 lg:w-full lg:max-w-[40rem] xl:max-w-[54rem]'
                         }
                     >
-                        <Suspense fallback={<div className="h-32 w-full" data-skeleton />}>
+                        <Suspense fallback={<div className="h-32 w-full lg:h-[30rem]" data-skeleton />}>
                             <ProductGallery
                                 initialImageId={initialVariant.image?.id || product.images.edges[0]?.node.id}
                                 images={product.images.edges.map((edge) => edge.node)}
@@ -356,23 +356,23 @@ export default async function ProductPage({
                                 ) : null}
                             </section>
 
-                            <Suspense>
+                            <Suspense fallback={<div className={cn(ROUNDED_BLOCK_STYLES, 'h-32')} data-skeleton />}>
                                 <div className={cn(ROUNDED_BLOCK_STYLES)}>
                                     <Content
                                         dangerouslySetInnerHTML={{
                                             __html: content
                                         }}
                                     />
+                                </div>
+                            </Suspense>
 
-                                    <Suspense>
-                                        <ImportantProductDetails locale={locale} data={product} />
-                                    </Suspense>
+                            <Suspense fallback={<div className={cn(ROUNDED_BLOCK_STYLES, 'h-16')} data-skeleton />}>
+                                <div className={cn(ROUNDED_BLOCK_STYLES)}>
+                                    <ImportantProductDetails locale={locale} data={product} />
 
-                                    <Suspense>
-                                        <div className="flex flex-wrap gap-3 border-0 border-t-2 border-solid border-gray-300 pt-4 empty:hidden md:gap-4">
-                                            <ProductDetails locale={locale} data={product} />
-                                        </div>
-                                    </Suspense>
+                                    <div className="flex flex-wrap gap-3 empty:hidden md:gap-4">
+                                        <ProductDetails locale={locale} data={product} />
+                                    </div>
                                 </div>
                             </Suspense>
                         </section>
@@ -388,7 +388,12 @@ export default async function ProductPage({
                     </p>
 
                     <Suspense fallback={<RecommendedProducts.skeleton />}>
-                        <RecommendedProducts shop={shop} locale={locale} product={product} className="px-4 md:px-5" />
+                        <RecommendedProducts
+                            shop={shop}
+                            locale={locale}
+                            product={product}
+                            className="-my-2 px-4 py-2 md:px-5"
+                        />
                     </Suspense>
                 </section>
 

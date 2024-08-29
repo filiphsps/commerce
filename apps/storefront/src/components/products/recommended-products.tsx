@@ -3,7 +3,6 @@ import 'server-only';
 
 import styles from '@/components/products/collection-block.module.scss';
 import extraStyles from '@/components/products/recommended-products.module.scss';
-import overflowStyles from '@/styles/horizontal-overflow-scroll.module.scss';
 
 import { Suspense } from 'react';
 
@@ -39,7 +38,7 @@ const RecommendedProducts = async ({ shop, locale, product, className }: Recomme
                 styles.container,
                 styles.content,
                 styles.horizontal,
-                overflowStyles.container,
+                'overflow-x-shadow',
                 extraStyles.container,
                 className
             )}

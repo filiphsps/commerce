@@ -29,10 +29,6 @@ export default defineProject({
                 replacement: resolve(__dirname, './src/slices/navigation')
             },
             {
-                find: '@/styles/horizontal-overflow-scroll.module.scss',
-                replacement: resolve(__dirname, './src/scss/horizontal-overflow-scroll.module.scss')
-            },
-            {
                 find: '@',
                 replacement: resolve(__dirname, './src')
             }

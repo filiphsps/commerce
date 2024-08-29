@@ -1,7 +1,6 @@
 'use client';
 
 import styles from '@/components/informational/breadcrumbs.module.scss';
-import overflowStyles from '@/styles/horizontal-overflow-scroll.module.scss';
 
 import { FiChevronRight } from 'react-icons/fi';
 
@@ -12,8 +11,6 @@ import Link from '@/components/link';
 import { useShop } from '@/components/shop/provider';
 
 import type { Locale } from '@/utils/locale';
-
-const SHARED_STYLES = 'rounded-lg p-2 max-w-full md:w-full md:px-4';
 
 type BreadcrumbsProps = {
     locale: Locale;
@@ -28,13 +25,17 @@ const Breadcrumbs = ({ locale, title }: BreadcrumbsProps) => {
         return null;
     }
 
-    const textStyles = 'text-sm md:text-xs leading-none';
-    const blockStyles = 'gap-1 lg:gap-2 w-fit';
+    const textStyles = 'text-sm leading-none';
+    const blockStyles = 'gap-1';
 
     const hrefs = path.map((_, index) => `/${path.slice(0, index + 1).join('/')}`);
     return (
         <section
-            className={cn(styles.breadcrumbs, overflowStyles.container, blockStyles, SHARED_STYLES)}
+            className={cn(
+                styles.breadcrumbs,
+                'overflow-x-shadow flex w-full max-w-full list-none flex-nowrap items-center justify-start overflow-hidden overflow-x-auto overscroll-x-contain whitespace-nowrap rounded-lg bg-gray-100 p-2 px-3 font-semibold text-gray-500',
+                blockStyles
+            )}
             itemScope
             itemType="https://schema.org/BreadcrumbList"
         >

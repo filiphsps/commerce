@@ -29,7 +29,7 @@ const CartButton = ({ locale, i18n }: CartButtonProps) => {
                 'duration-250 group h-10 overflow-clip rounded-none bg-transparent p-0 py-0 transition-all *:leading-snug',
                 totalQuantity &&
                     'bg-primary text-primary-foreground fill-primary-foreground stroke-primary-foreground rounded-3xl px-4 shadow-sm transition-all',
-                !totalQuantity && 'text-base text-black'
+                !totalQuantity && 'text-base text-black hover:shadow-none'
             )}
             data-items={totalQuantity || 0}
             title={t('view-cart')}
