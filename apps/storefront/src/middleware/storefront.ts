@@ -49,9 +49,8 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
 
     const isSpecialPath: boolean =
         (newUrl.pathname.match(FILE_TEST) || []).length > 0 ||
-        newUrl.pathname.includes('/api') ||
+        newUrl.pathname.includes('/api/') ||
         newUrl.pathname.includes('/slice-simulator') ||
-        newUrl.pathname.includes('/.well-known') ||
         false;
 
     // API.
