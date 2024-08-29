@@ -19,7 +19,8 @@
         "shipping": "Shipping",
         "subtotal": "Subtotal",
         "view-cart": "View your shopping cart",
-        "remove-from-cart": "Remove {0} from the cart"
+        "remove-from-cart": "Remove {0} from the cart",
+        "clear-cart": "Clear cart"
     },
     "common": {
         "add-to-cart": "Add to Cart",

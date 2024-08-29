@@ -2,34 +2,49 @@
 
 import { Suspense } from 'react';
 
+import { type LocaleDictionary, useTranslation } from '@/utils/locale';
 import { useCart } from '@shopify/hydrogen-react';
 
+import { Button } from '@/components/actionable/button';
 import { CartLine } from '@/components/cart/cart-line';
 import { Label } from '@/components/typography/label';
-
-import type { LocaleDictionary } from '@/utils/locale';
 
 type CartContentProps = {
     i18n: LocaleDictionary;
 };
 const CartLines = ({ i18n }: CartContentProps) => {
-    const { cartReady, lines } = useCart();
+    const { cartReady, lines = [], linesRemove } = useCart();
+
+    const { t } = useTranslation('cart', i18n);
 
     if (!cartReady) {
         return <CartLines.skeleton />;
-    } else if ((lines || []).length <= 0) {
+    } else if (lines.length <= 0) {
         return <Label>There are no items in your cart.</Label>;
     }
 
     return (
         <div className="flex w-full flex-col gap-2 empty:hidden">
-            {lines?.map((item) => {
+            <div className="flex w-full select-none flex-row-reverse items-center justify-between">
+                <Button
+                    as={Label}
+                    className="inline-flex cursor-pointer text-xs hover:text-red-500"
+                    styled={false}
+                    onClick={() => linesRemove(lines.map((line) => line?.id).filter((_) => _) as string[])}
+                >
+                    {t('clear-cart')}
+                </Button>
+            </div>
+
+            {lines.map((item) => {
                 if (!item) return null;
 
                 return (
-                    <Suspense fallback={<CartLine.skeleton />} key={item.id}>
-                        <CartLine i18n={i18n} data={item as any} />
-                    </Suspense>
+                    <>
+                        <Suspense fallback={<CartLine.skeleton />} key={item.id}>
+                            <CartLine i18n={i18n} data={item as any} />
+                        </Suspense>
+                    </>
                 );
             })}
         </div>

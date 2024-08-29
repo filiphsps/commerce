@@ -36,7 +36,9 @@ export async function generateStaticParams({
 
     const shop = await findShopByDomainOverHttp(domain);
     const pages = await PagesApi({ shop, locale });
-    if (!pages) return [];
+    if (!pages) {
+        return [];
+    }
 
     return pages.map(({ uid }) => ({
         handle: uid!

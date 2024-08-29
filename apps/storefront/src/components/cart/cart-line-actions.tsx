@@ -75,7 +75,7 @@ const CartLineRemoveAction = ({ i18n, data: line }: CartLineProps) => {
             onClick={() => linesRemove([line.id])}
             styled={false}
         >
-            <CgTrash className="py-2 text-2xl hover:text-red-600" />
+            <CgTrash className="py-2 text-2xl hover:text-red-500" />
         </Button>
     );
 };

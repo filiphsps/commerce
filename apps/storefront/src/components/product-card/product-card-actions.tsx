@@ -57,8 +57,8 @@ const ProductCardActions = ({ i18n, data: product, selectedVariant }: ProductCar
                 <div
                     className={cn(
                         baseStyles,
-                        'flex border-2 border-solid border-gray-300 bg-white p-0 font-bold *:appearance-none *:text-center *:transition-colors',
-                        !cartReady && 'pointer-events-none cursor-not-allowed opacity-75 transition-all duration-150'
+                        'flex border-2 border-solid border-gray-300 bg-white p-0 font-bold transition-colors *:appearance-none *:text-center *:transition-colors',
+                        !cartReady && 'pointer-events-none cursor-not-allowed opacity-75 duration-150'
                     )}
                 >
                     <Button

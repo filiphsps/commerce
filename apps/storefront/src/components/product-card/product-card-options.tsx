@@ -22,10 +22,10 @@ const ProductCardOptions = ({
     setSelectedVariant
 }: ProductCardOptionsProps) => {
     const {
-        variants: { edges: variants }
+        variants: { edges: variants = [] }
     } = product;
 
-    if (!selectedVariant || ((variants as any) || []).length <= 0) {
+    if (!selectedVariant || variants.length <= 0) {
         return null;
     }
 

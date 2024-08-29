@@ -13,7 +13,7 @@ import { useShop } from '@/components/shop/provider';
 
 import type { Locale } from '@/utils/locale';
 
-const SHARED_STYLES = 'rounded-lg p-2';
+const SHARED_STYLES = 'rounded-lg p-2 max-w-full md:w-full md:px-4';
 
 type BreadcrumbsProps = {
     locale: Locale;
@@ -29,7 +29,7 @@ const Breadcrumbs = ({ locale, title }: BreadcrumbsProps) => {
     }
 
     const textStyles = 'text-sm md:text-xs leading-none';
-    const blockStyles = 'gap-1 lg:gap-2';
+    const blockStyles = 'gap-1 lg:gap-2 w-fit';
 
     const hrefs = path.map((_, index) => `/${path.slice(0, index + 1).join('/')}`);
     return (
