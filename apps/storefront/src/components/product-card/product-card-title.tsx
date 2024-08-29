@@ -23,7 +23,7 @@ const ProductCardTitle = ({ data: product, oneLine = false }: ProductCardTitlePr
             </Label>
             <div
                 className={cn(
-                    'group-hover/header:text-primary pb-1 text-lg font-semibold leading-tight text-black transition-colors',
+                    'group-hover/header:text-primary text-lg font-semibold leading-tight text-black transition-colors',
                     oneLine && 'overflow-hidden text-ellipsis whitespace-nowrap'
                 )}
             >

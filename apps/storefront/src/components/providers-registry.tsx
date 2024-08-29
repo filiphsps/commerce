@@ -110,7 +110,7 @@ const ProvidersRegistry = ({
                             countryCode={locale.country!}
                         >
                             <ErrorBoundary fallbackRender={() => null}>
-                                <Suspense fallback={null}>
+                                <Suspense>
                                     <RequiredHooks shop={shop} locale={locale} />
                                 </Suspense>
 
@@ -119,7 +119,7 @@ const ProvidersRegistry = ({
                                 </LiveChatProvider>
 
                                 {toolbars ? (
-                                    <Suspense fallback={null}>
+                                    <Suspense>
                                         <ToasterProvider
                                             theme="dark"
                                             position="bottom-left"

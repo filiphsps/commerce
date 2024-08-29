@@ -171,7 +171,7 @@ export default async function CollectionPage({
 
         return (
             <>
-                <Suspense fallback={null}>
+                <Suspense>
                     <Breadcrumbs shop={shop} locale={locale} title={collection.title} />
                 </Suspense>
 
@@ -194,23 +194,23 @@ export default async function CollectionPage({
                     </section>
 
                     <section className={styles.collection}>
-                        <Suspense fallback={null}>
+                        <Suspense>
                             <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
                         </Suspense>
                     </section>
 
-                    <section className={styles.content}>
-                        {page && ((slices as any) || []).length > 0 ? (
+                    {slices.length > 0 ? (
+                        <section className={styles.content}>
                             <PrismicPage
                                 shop={shop}
                                 locale={locale}
-                                page={{ ...page, slices } as any}
+                                slices={slices as any}
                                 i18n={i18n}
                                 handle={handle}
                                 type={'collection_page'}
                             />
-                        ) : null}
-                    </section>
+                        </section>
+                    ) : null}
 
                     {collection.descriptionHtml ? (
                         <section className="empty:hidden">

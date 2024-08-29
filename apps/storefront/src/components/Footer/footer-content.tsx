@@ -36,7 +36,7 @@ const FooterContent = async ({ locale, i18n, shop }: FooterContentProps) => {
         /* TODO: This should be configurable in prismic. */
         <div className={cn(styles.legal, 'h-full w-full gap-8 pt-6 md:gap-4 lg:pt-12')}>
             <div className="flex flex-col items-center justify-end gap-2 md:items-start">
-                <Suspense fallback={null}>
+                <Suspense>
                     <AcceptedPaymentMethods shop={shop} locale={locale} />
                 </Suspense>
 
@@ -65,7 +65,9 @@ const FooterContent = async ({ locale, i18n, shop }: FooterContentProps) => {
 
             <div className="flex flex-col items-center justify-end gap-2 md:items-end">
                 <Link className="block h-8" href="/countries/" title={t('language-and-region-settings')}>
-                    <CurrentLocaleFlag locale={locale} />
+                    <Suspense>
+                        <CurrentLocaleFlag locale={locale} />
+                    </Suspense>
                 </Link>
 
                 {hasCopyrights ? (

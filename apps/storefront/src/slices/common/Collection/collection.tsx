@@ -2,6 +2,7 @@ import 'server-only';
 
 import styles from './collection.module.scss';
 
+import { type HTMLProps } from 'react';
 import { FiChevronRight } from 'react-icons/fi';
 
 import { cn } from '@/utils/tailwind';
@@ -15,7 +16,6 @@ import { Title } from '@/components/typography/heading';
 import { PrismicText } from '@/components/typography/prismic-text';
 
 import type { CollectionSliceDefault } from '@/prismic/types';
-import type { HTMLProps } from 'react';
 
 type Slice = {
     slice_type: 'collection';

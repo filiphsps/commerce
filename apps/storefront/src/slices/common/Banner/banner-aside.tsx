@@ -40,9 +40,7 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
                     }}
                 >
                     <Content className="*:text-primary-foreground prose-headings:mt-0">
-                        <Suspense fallback={null}>
-                            <PrismicText data={slice.primary.content} styled={false} />
-                        </Suspense>
+                        <PrismicText data={slice.primary.content} styled={false} />
                     </Content>
                 </div>
                 <div className="flex w-full items-start justify-start gap-4 empty:hidden md:max-w-[600px]">
@@ -62,7 +60,7 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
                                 href={href}
                                 target={target}
                             >
-                                <Suspense fallback={null}>
+                                <Suspense>
                                     <PrismicText data={title} styled={false} />
                                 </Suspense>
                             </Button>

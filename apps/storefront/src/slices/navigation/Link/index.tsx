@@ -32,16 +32,17 @@ const LinkSlice = ({ slice, context: { isHeader = true, pathname } }: LinkProps)
     let linkStyles = '';
     switch (variant as any) {
         case 'highlighted':
-            linkStyles = cn(
-                LINK_STYLES,
-                'px-3 py-0 md:px-3 h-8',
-                active && LINK_ACTIVE_STYLES,
-                'text-extrabold rounded-lg  bg-secondary-light text-secondary-foreground',
-                active && 'bg-primary text-primary-foreground'
-            );
+            linkStyles =
+                cn(
+                    LINK_STYLES,
+                    'px-3 py-0 md:px-3 h-8',
+                    active && LINK_ACTIVE_STYLES,
+                    'text-extrabold rounded-lg bg-secondary-light text-secondary-foreground',
+                    active && 'bg-primary text-primary-foreground'
+                ) || '';
             break;
         default:
-            linkStyles = cn(LINK_STYLES, active && LINK_ACTIVE_STYLES);
+            linkStyles = cn(LINK_STYLES, active && LINK_ACTIVE_STYLES) || '';
             break;
     }
 

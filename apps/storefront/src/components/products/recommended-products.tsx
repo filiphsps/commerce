@@ -5,6 +5,8 @@ import styles from '@/components/products/collection-block.module.scss';
 import extraStyles from '@/components/products/recommended-products.module.scss';
 import overflowStyles from '@/styles/horizontal-overflow-scroll.module.scss';
 
+import { Suspense } from 'react';
+
 import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { ShopifyApolloApiClient } from '@/api/shopify';
@@ -41,13 +43,9 @@ const RecommendedProducts = async ({ shop, locale, product, className }: Recomme
             )}
         >
             {recommended.map((product) => (
-                <ProductCard
-                    key={product.id}
-                    shop={shop}
-                    locale={locale}
-                    data={product}
-                    className={cn(extraStyles.card)}
-                />
+                <Suspense key={product.id} fallback={<ProductCard.skeleton />}>
+                    <ProductCard shop={shop} locale={locale} data={product} className={cn(extraStyles.card)} />
+                </Suspense>
             ))}
         </div>
     );

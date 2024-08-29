@@ -1,5 +1,7 @@
 'use client';
 
+import { type HTMLProps } from 'react';
+
 import { components as menuSlices } from '@/slices/navigation';
 import { cn } from '@/utils/tailwind';
 import { SliceZone } from '@prismicio/react';
@@ -8,7 +10,6 @@ import { usePathname } from 'next/navigation';
 import { useHeaderMenu } from '@/components/header/header-provider';
 
 import type { MenuDocumentData } from '@/prismic/types';
-import type { HTMLProps } from 'react';
 
 export const SHARED_STYLES =
     'flex max-h-[calc(100dvh-10rem)] w-full flex-col items-center justify-start overflow-y-auto overscroll-contain border-0 border-b border-solid border-gray-300 bg-gray-100 group-data-[scrolled=true]/body:max-h-[calc(100dvh-7rem)] group-data-[menu-open=false]/body:overflow-y-hidden transition-all';
@@ -20,7 +21,9 @@ export const HeaderMenu = ({ slices, className, ...props }: HeaderMenuProps) => 
     const pathname = usePathname();
 
     const { menu } = useHeaderMenu();
-    if (!menu) return <div className={cn(SHARED_STYLES, 'h-0 border-0', className)} {...props} />;
+    if (!menu) {
+        return <div className={cn(SHARED_STYLES, 'h-0 border-0', className)} {...props} />;
+    }
 
     return (
         <div className={cn(SHARED_STYLES, className)} {...props}>

@@ -1,5 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
+import { Suspense } from 'react';
+
 import { Shop } from '@nordcom/commerce-db';
 import { Error, UnknownLocaleError } from '@nordcom/commerce-errors';
 
@@ -129,7 +131,9 @@ export default async function CountriesPage({
                             redirect(`/${locale}/`);
                         }}
                     >
-                        <LocaleSelector shop={shop} countries={countries} locale={locale} />
+                        <Suspense>
+                            <LocaleSelector shop={shop} countries={countries} locale={locale} />
+                        </Suspense>
                     </form>
                 </PageContent>
 

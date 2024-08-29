@@ -131,7 +131,7 @@ export default async function SearchPage({
                     />
                 ) : null}
 
-                <Suspense fallback={null}>
+                <Suspense>
                     <SearchContent
                         locale={locale}
                         i18n={i18n}

@@ -6,7 +6,7 @@ export type ProductsContentContentProps = {};
 export default function ProductsContent({}: ProductsContentContentProps) {
     return (
         <>
-            <Suspense fallback={null}>
+            <Suspense>
                 <Pagination knownFirstPage={0} knownLastPage={0} morePagesAfterKnownLastPage={false} />
             </Suspense>
         </>

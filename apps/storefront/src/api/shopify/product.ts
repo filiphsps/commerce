@@ -308,7 +308,7 @@ export const ProductsPaginationCountApi = async ({
             `,
             {
                 ...extractLimitLikeFilters(filters),
-                ...(({ sorting = 'BEST_SELLING', after = null }) => ({
+                ...(({ sorting = 'BEST_SELLING' }) => ({
                     sorting: sorting,
                     //before: before,
                     after: after

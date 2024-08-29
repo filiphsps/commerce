@@ -138,7 +138,7 @@ export default async function RootLayout({
         return (
             <html lang={locale.code} className={cn(primaryFont.variable, 'overscroll-x-none')}>
                 <head>
-                    <Suspense fallback={null}>
+                    <Suspense>
                         <CssVariablesProvider domain={domain} />
                     </Suspense>
                 </head>
@@ -159,7 +159,7 @@ export default async function RootLayout({
                                         </PageContent>
                                     </ShopLayout>
 
-                                    <Suspense fallback={null}>
+                                    <Suspense>
                                         <GeoRedirect countries={countries} locale={locale} />
                                     </Suspense>
                                 </HeaderProvider>

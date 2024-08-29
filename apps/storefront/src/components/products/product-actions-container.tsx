@@ -49,7 +49,7 @@ export const ProductActionsContainer = ({ className, i18n, ...props }: ProductAc
                     />
                 </div>
 
-                <Suspense fallback={null}>
+                <Suspense fallback={<div className="flex" data-skeleton />}>
                     <ProductOptions />
                 </Suspense>
             </div>

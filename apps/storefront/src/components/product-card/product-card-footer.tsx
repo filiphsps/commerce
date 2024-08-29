@@ -23,8 +23,8 @@ const ProductCardFooter = ({ data: product, i18n, locale }: ProductCardFooterPro
     }
 
     return (
-        <div className="flex h-full min-h-24 w-full grow flex-col pt-1">
-            <Pricing price={selectedVariant.price as any} />
+        <div className="flex h-full min-h-24 w-full grow flex-col pt-2">
+            <Pricing price={selectedVariant.price} />
 
             <ProductCardOptions
                 locale={locale}

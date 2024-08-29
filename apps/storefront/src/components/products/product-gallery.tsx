@@ -107,7 +107,7 @@ const ProductGallery = ({
                     )}
 
                     <div className="absolute inset-x-2 top-2 flex flex-row-reverse items-start justify-between gap-2">
-                        <Suspense fallback={null}>
+                        <Suspense>
                             <div className="flex flex-col gap-2 empty:hidden md:gap-1">
                                 <EmailShareButton
                                     key="email"

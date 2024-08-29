@@ -31,7 +31,7 @@ export const PrismicText = ({ data, styled = true, bare = false }: PrismicTextPr
     }
 
     return (
-        <Suspense fallback={null}>
+        <Suspense>
             <PrismicRichText
                 field={data}
                 linkResolver={linkResolver}

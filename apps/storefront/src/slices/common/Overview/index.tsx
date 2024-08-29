@@ -1,7 +1,5 @@
 import 'server-only';
 
-import { Suspense } from 'react';
-
 import PageContent from '@/components/page-content';
 import { Overview } from '@/components/typography/Overview';
 import { PrismicText } from '@/components/typography/prismic-text';
@@ -18,7 +16,7 @@ export type OverviewProps = SliceComponentProps<Content.TextBlockSlice>;
  * Component for "Overview" Slices.
  */
 const OverviewSlice = ({ slice }: OverviewProps) => {
-    if (((slice as any)?.items || []).length < 0) {
+    if (((slice as any)?.items || []).length <= 0) {
         return null;
     }
 
@@ -36,11 +34,7 @@ const OverviewSlice = ({ slice }: OverviewProps) => {
                         layout={item.layout}
                         image={(item.image.url && (item.image as any)) || undefined}
                         imageStyle={item.image_style}
-                        body={
-                            <Suspense fallback={null}>
-                                <PrismicText data={item.text} styled={false} />
-                            </Suspense>
-                        }
+                        body={<PrismicText data={item.text} styled={false} />}
                         data-layout={item.layout}
                     />
                 );
@@ -50,7 +44,7 @@ const OverviewSlice = ({ slice }: OverviewProps) => {
 };
 
 OverviewSlice.skeleton = ({ slice }: { slice?: Content.CollectionSlice }) => {
-    if (!slice || ((slice.items as any) || []).length < 0) {
+    if (!slice || ((slice.items as any) || []).length <= 0) {
         return null;
     }
     return <OverviewSlice {...({ slice } as any)} />;

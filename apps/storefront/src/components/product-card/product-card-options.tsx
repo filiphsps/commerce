@@ -25,7 +25,7 @@ const ProductCardOptions = ({
         variants: { edges: variants }
     } = product;
 
-    if (!selectedVariant || (!variants as any)) {
+    if (!selectedVariant || ((variants as any) || []).length <= 0) {
         return null;
     }
 

@@ -1,5 +1,6 @@
 import styles from '@/components/typography/pricing.module.scss';
 
+import { Suspense } from 'react';
 import { Fragment } from 'react/jsx-runtime';
 
 import { cn } from '@/utils/tailwind';
@@ -19,21 +20,25 @@ const Pricing = ({ price, compareAtPrice, wrapperFallback = false }: PricingProp
     return (
         <As>
             {price ? (
-                <Money
-                    data={price}
-                    data-sale={compareAtPrice ? true : undefined}
-                    data-pricing
-                    as={'div'}
-                    className={cn(styles.price, styles.current, compareAtPrice && 'font-extrabold text-red-500')}
-                />
+                <Suspense>
+                    <Money
+                        data={price}
+                        data-sale={compareAtPrice ? true : undefined}
+                        data-pricing
+                        as={'div'}
+                        className={cn(styles.price, styles.current, compareAtPrice && 'font-extrabold text-red-500')}
+                    />
+                </Suspense>
             ) : null}
             {compareAtPrice ? (
-                <Money
-                    data={compareAtPrice}
-                    data-previous-pricing
-                    as={'s'}
-                    className={cn(styles.price, styles.previous, styles.dah)}
-                />
+                <Suspense>
+                    <Money
+                        data={compareAtPrice}
+                        data-previous-pricing
+                        as={'s'}
+                        className={cn(styles.price, styles.previous, styles.dah)}
+                    />
+                </Suspense>
             ) : null}
         </As>
     );

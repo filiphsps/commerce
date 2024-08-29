@@ -116,12 +116,12 @@ export default async function ProductsPage({ params: { domain, locale: localeDat
             <>
                 <Heading title={page?.title || t('products')} subtitle={page?.description} />
 
-                <Suspense fallback={null}>
+                <Suspense>
                     <ProductsContent />
                     <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
                 </Suspense>
 
-                <Suspense fallback={null}>
+                <Suspense>
                     <Breadcrumbs shop={shop} locale={locale} title={t('products')} />
                 </Suspense>
             </>

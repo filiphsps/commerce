@@ -34,15 +34,15 @@ function PrismicPage<T extends PageType = 'custom_page'>({
     if (!page && !slices) return null;
 
     return (
-        <Suspense fallback={<PrismicPage.skeleton page={page} slices={slices} shop={shop} />}>
-            <section className={cn('flex flex-col gap-6 empty:hidden lg:gap-8', className)}>
+        <section className={cn('flex flex-col gap-6 empty:hidden lg:gap-8', className)}>
+            <Suspense fallback={<PrismicPage.skeleton page={page} slices={slices} shop={shop} />}>
                 <SliceZone
                     slices={page?.slices || slices || []}
                     components={components}
                     context={{ shop, i18n, locale, type, uid: handle, handle }}
                 />
-            </section>
-        </Suspense>
+            </Suspense>
+        </section>
     );
 }
 PrismicPage.displayName = 'Nordcom.PrismicPage';

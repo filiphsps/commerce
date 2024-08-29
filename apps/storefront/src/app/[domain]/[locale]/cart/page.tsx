@@ -95,18 +95,18 @@ export default async function CartPage({ params: { domain, locale: localeData } 
 
         return (
             <>
-                <Suspense fallback={null}>
+                <Suspense>
                     <Breadcrumbs shop={shop} locale={locale} />
                 </Suspense>
 
-                <Suspense fallback={null}>
+                <Suspense>
                     <CartContent
                         shop={shop}
                         locale={locale}
                         header={<Heading title={page?.title || t('cart')} subtitle={page?.description} />}
                         i18n={i18n}
                         paymentMethods={
-                            <Suspense fallback={null}>
+                            <Suspense>
                                 <AcceptedPaymentMethods shop={shop} locale={locale} />
                             </Suspense>
                         }
