@@ -70,7 +70,6 @@ export const LocalesApi = async ({ api }: { api: AbstractApi }): Promise<Locale[
 
 export const LocaleApi = async ({ api }: { api: AbstractApi }) => {
     const shop = api.shop();
-
     if ((shop.commerceProvider.type as string) !== 'shopify') {
         // TODO: Do this properly.
         return null;
@@ -108,28 +107,6 @@ export const LocaleApi = async ({ api }: { api: AbstractApi }) => {
     }
 };
 
-export const CurrentLocaleApi = async ({ api }: { api: AbstractApi }) => {
-    const { data } = await api.query<{ localization: Localization }>(gql`
-        query localization {
-            localization {
-                country {
-                    currency {
-                        isoCode
-                        name
-                        symbol
-                    }
-                    isoCode
-                    name
-                    unitSystem
-                }
-            }
-        }
-    `);
-
-    // FIXME: Handle errors or missing data.
-    return data?.localization.country;
-};
-
 export const ShopPaymentSettingsApi = async ({
     api
 }: {
@@ -138,6 +115,12 @@ export const ShopPaymentSettingsApi = async ({
     PaymentSettings,
     'acceptedCardBrands' | 'enabledPresentmentCurrencies' | 'supportedDigitalWallets'
 > | null> => {
+    const shop = api.shop();
+    if ((shop.commerceProvider.type as string) !== 'shopify') {
+        // TODO: Do this properly.
+        return null;
+    }
+
     const { data, errors } = await api.query<{ paymentSettings: PaymentSettings }>(gql`
         query shop {
             shop {
@@ -151,7 +134,7 @@ export const ShopPaymentSettingsApi = async ({
     `);
 
     // TODO: Handle errors properly.
-    if (errors) {
+    if ((errors || []).length > 0) {
         console.error(errors);
         return null;
     }
@@ -160,5 +143,5 @@ export const ShopPaymentSettingsApi = async ({
         return null;
     }
 
-    return data.paymentSettings || null;
+    return data.paymentSettings;
 };

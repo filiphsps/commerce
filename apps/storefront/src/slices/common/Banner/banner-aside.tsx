@@ -1,3 +1,5 @@
+import { Suspense } from 'react';
+
 import { linkResolver } from '@/utils/prismic';
 import { cn } from '@/utils/tailwind';
 import { asLink } from '@prismicio/client';
@@ -5,6 +7,7 @@ import Image from 'next/image';
 
 import { Button } from '@/components/actionable/button';
 import Link from '@/components/link';
+import { Content } from '@/components/typography/content';
 import { PrismicText } from '@/components/typography/prismic-text';
 
 import type { BannerSliceAside } from '@/prismic/types';
@@ -28,7 +31,7 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
             }}
             data-slice-variation={slice.variation}
         >
-            <div className="col-span-4 flex h-full w-full flex-col items-start justify-center gap-4 p-4 md:p-8">
+            <div className="col-span-4 flex h-full w-full flex-col items-start justify-center gap-4 p-4 md:p-8 lg:gap-6">
                 <div
                     className="flex flex-col items-start justify-center gap-1 text-left drop-shadow-sm md:max-w-[600px]"
                     style={{
@@ -36,7 +39,11 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
                         textShadow: background.url ? '1px 1px 10px #000' : undefined
                     }}
                 >
-                    <PrismicText data={slice.primary.content} />
+                    <Content className="*:text-primary-foreground prose-headings:mt-0">
+                        <Suspense fallback={null}>
+                            <PrismicText data={slice.primary.content} styled={false} />
+                        </Suspense>
+                    </Content>
                 </div>
                 <div className="flex w-full items-start justify-start gap-4 empty:hidden md:max-w-[600px]">
                     {slice.items.map(({ type, target: link, title }, index) => {
@@ -48,14 +55,16 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
                                 as={Link}
                                 key={`${target}-${index}`}
                                 className={cn(
-                                    'flex items-center gap-2 rounded-full bg-white px-4 py-2 font-semibold text-black drop-shadow-sm transition-colors hover:bg-black hover:text-white md:px-6 md:py-3 md:text-lg',
+                                    'bg-white text-base text-black hover:bg-black hover:text-white',
                                     type &&
                                         'bg-secondary text-secondary-foreground hover:bg-secondary-dark hover:text-secondary-foreground'
                                 )}
                                 href={href}
                                 target={target}
                             >
-                                <PrismicText data={title} />
+                                <Suspense fallback={null}>
+                                    <PrismicText data={title} styled={false} />
+                                </Suspense>
                             </Button>
                         );
                     })}

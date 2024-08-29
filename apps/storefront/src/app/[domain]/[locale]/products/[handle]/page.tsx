@@ -308,7 +308,7 @@ export default async function ProductPage({
                                             ) : null}
                                         </div>
 
-                                        <div className="flex w-full grow flex-wrap whitespace-pre-wrap text-3xl font-bold leading-none lg:leading-[1.1]">
+                                        <div className="flex w-full grow flex-wrap whitespace-pre-wrap text-3xl font-bold leading-tight">
                                             <TitleTag className="text-inherit">
                                                 {title}{' '}
                                                 {product.productType ? (
@@ -318,7 +318,7 @@ export default async function ProductPage({
                                         </div>
 
                                         <Link
-                                            className="hover:text-primary normal-case leading-[1.2] text-gray-600 transition-colors md:text-lg"
+                                            className="hover:text-primary normal-case leading-tight text-gray-600 transition-colors md:text-lg"
                                             href={`/collections/${TitleToHandle(product.vendor)}`}
                                             title={t('browse-all-products-by-brand', product.vendor)}
                                         >

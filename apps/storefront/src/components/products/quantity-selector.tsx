@@ -54,7 +54,7 @@ const QuantitySelector = ({
     ...props
 }: QuantitySelectorProps) => {
     const { t } = useTranslation('common', i18n);
-    const [quantityValue, setQuantityValue] = useState('1');
+    const [quantityValue, setQuantityValue] = useState(quantity.toString() || '1');
 
     const { cartReady } = useCart();
     disabled = disabled || !cartReady;
@@ -165,7 +165,7 @@ const QuantitySelector = ({
                 max={999}
                 step={1}
                 pattern="[0-9]"
-                className={cn(styles.input, '')}
+                className={cn(styles.input, 'appearance-none outline-none')}
                 disabled={disabled}
                 value={quantityValue}
                 placeholder={t('quantity')}

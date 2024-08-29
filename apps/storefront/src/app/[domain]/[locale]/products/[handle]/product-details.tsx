@@ -80,7 +80,7 @@ const ProductDetails = async ({ locale, data: product }: ProductDetailsProps) =>
             {parsedIngredients ? (
                 <div className={cn(COMMON_STYLES, 'break-words')}>
                     <Label className={cn(LABEL_STYLES)}>{t('ingredients')}</Label>
-                    <p className={cn('text-base leading-tight')}>{parsedIngredients}</p>
+                    <p className={cn('text-sm leading-snug')}>{parsedIngredients}</p>
                 </div>
             ) : null}
         </>
