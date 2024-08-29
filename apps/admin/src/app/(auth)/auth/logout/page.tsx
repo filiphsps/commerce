@@ -1,5 +1,3 @@
-import styles from './page.module.scss';
-
 import { Heading } from '@nordcom/nordstar';
 
 import { LogoutAction } from './logout-action';
@@ -14,7 +12,7 @@ export const metadata: Metadata = {
 
 export default async function IndexAdminPage({}: { params: IndexAdminPageParams }) {
     return (
-        <section className={`${styles.container}`}>
+        <section className="">
             <Heading level="h1">Logging out...</Heading>
 
             <LogoutAction />

@@ -7,17 +7,8 @@ export const ADMIN_HOSTNAME = 'admin.shops.nordcom.io';
 
 export const admin = async (req: NextRequest): Promise<NextResponse> => {
     const url = req.nextUrl.clone();
-    const newUrl = url.clone();
+    const hostname = url.hostname;
 
-    // Remove the admin prefix.
-    newUrl.pathname = url.pathname.replace('/admin', '');
-    newUrl.hostname = ADMIN_HOSTNAME;
-
-    const headers = new Headers();
-    headers.set('x-nordcom-shop', url.hostname);
-
-    return NextResponse.rewrite(newUrl, {
-        request: { headers }
-    });
+    return NextResponse.redirect(`https://${ADMIN_HOSTNAME}/${hostname}/`);
 };
 /* c8 ignore end */

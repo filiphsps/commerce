@@ -1,4 +1,6 @@
+import 'the-new-css-reset';
 import '@/styles/app.scss';
+import '@/styles/global.css';
 import styles from './layout.module.scss';
 
 import { View } from '@nordcom/nordstar';

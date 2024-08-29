@@ -1,4 +1,5 @@
-import '@/styles/app.scss';
+import 'the-new-css-reset';
+import '@/styles/global.css';
 
 import { primaryFont } from '@/utils/fonts';
 import { cn } from '@/utils/tailwind';

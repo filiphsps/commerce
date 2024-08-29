@@ -68,29 +68,11 @@ export async function createShop(userId: string) {
 }
 
 // eslint-disable-next-line unused-imports/no-unused-vars
-export async function getCommerceProvider(userId: string, shopId: string) {
+export async function updateCommerceProvider(domain: string, data: Partial<OnlineShop['commerceProvider']>) {
     return {} as any;
 }
 // eslint-disable-next-line unused-imports/no-unused-vars
-export async function updateCommerceProvider(userId: string, shopId: string, data: any) {
-    return {} as any;
-}
-
-// eslint-disable-next-line unused-imports/no-unused-vars
-export async function getContentProvider(userId: string, shopId: string) {
-    return {} as any;
-}
-// eslint-disable-next-line unused-imports/no-unused-vars
-export async function updateContentProvider(userId: string, shopId: string, data: any) {
-    return {} as any;
-}
-
-// eslint-disable-next-line unused-imports/no-unused-vars
-export async function getCheckoutProvider(userId: string, shopId: string) {
-    return {} as any;
-}
-// eslint-disable-next-line unused-imports/no-unused-vars
-export async function updateCheckoutProvider(userId: string, shopId: string, data: any) {
+export async function updateContentProvider(domain: string, data: Partial<OnlineShop['contentProvider']>) {
     return {} as any;
 }
 

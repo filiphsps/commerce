@@ -1,13 +1,6 @@
-import styles from './page.module.scss';
-
-import { Heading, Label } from '@nordcom/nordstar';
-
 import { auth } from '@/auth';
-import Image from 'next/image';
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-import ActionableCard from '@/components/actionable-card';
 import LoginButton from '@/components/login-button';
 
 import type { Metadata } from 'next';
@@ -25,26 +18,8 @@ export default async function IndexAdminPage({}: { params: IndexAdminPageParams 
     }
 
     return (
-        <ActionableCard
-            header={
-                <Link href="/" title="Nordcom Commerce">
-                    <Image
-                        src="https://shops.nordcom.io/logo.svg"
-                        alt="Nordcom AB's Logo"
-                        height={75}
-                        width={150}
-                        draggable={false}
-                        decoding="async"
-                        priority={true}
-                        loader={undefined}
-                    />
-                </Link>
-            }
-            actions={<LoginButton provider="github" className={styles.button} />}
-            footer={<Label>Nordcom Commerce is currently invite only</Label>}
-        >
-            <Label as="div">Welcome Back</Label>
-            <Heading level="h1">Login</Heading>
-        </ActionableCard>
+        <div>
+            <LoginButton provider="github" className="" />
+        </div>
     );
 }

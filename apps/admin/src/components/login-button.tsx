@@ -1,13 +1,12 @@
 'use client';
 
-import styles from '@/components/login-button.module.scss';
-
 import { useEffect, useState } from 'react';
 
 import { UnknownApiError } from '@nordcom/commerce-errors';
 import { Button } from '@nordcom/nordstar';
 
 import GithubLight from '@/static/icons/light/github.svg';
+import { cn } from '@/utils/tailwind';
 import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
@@ -49,7 +48,7 @@ export default function LoginButton({ provider = 'github', className, ...props }
     switch (provider) {
         case 'github': {
             layout = 'Login with GitHub';
-            icon = <Image className={styles['provider-logo']} src={GithubLight} alt="GitHub" />;
+            icon = <Image className="" src={GithubLight} alt="GitHub" />;
             break;
         }
         default: {
@@ -82,7 +81,7 @@ export default function LoginButton({ provider = 'github', className, ...props }
             type="button"
             as="button"
             disabled={loading}
-            className={`${styles.container} ${loading ? styles.loading : ''} ${className || ''}`}
+            className={cn(loading && 'cursor-not-allowed opacity-50', className)}
             icon={icon}
         >
             {!loading ? layout : <p>Loading...</p>}

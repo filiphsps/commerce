@@ -1,14 +1,10 @@
-import styles from './page.module.scss';
+import { Accented, Button, Heading, Label } from '@nordcom/nordstar';
 
-import { Accented, Button, Heading, Label, View } from '@nordcom/nordstar';
-
-import { auth, signOut } from '@/auth';
+import { auth } from '@/auth';
 import { getShopsForUser } from '@/utils/fetchers';
 import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-
-import ActionableCard from '@/components/actionable-card';
 
 import type { Metadata } from 'next';
 
@@ -35,49 +31,31 @@ export default async function Overview() {
     ));
 
     return (
-        <div className={styles.container}>
-            <View className={styles.content}>
-                <ActionableCard
-                    header={
-                        <Link href="/" title="Nordcom Commerce">
-                            <Image
-                                src="https://shops.nordcom.io/logo.svg"
-                                alt="Nordcom AB's Logo"
-                                height={75}
-                                width={150}
-                                draggable={false}
-                                decoding="async"
-                                priority={true}
-                                loader={undefined}
-                            />
-                        </Link>
-                    }
-                    headerAction={
-                        <Button
-                            variant="outline"
-                            onClick={async () => {
-                                'use server';
+        <div className="">
+            <Link href="/" title="Nordcom Commerce">
+                <Image
+                    src="https://shops.nordcom.io/logo.svg"
+                    alt="Nordcom AB's Logo"
+                    height={75}
+                    width={150}
+                    draggable={false}
+                    decoding="async"
+                    priority={true}
+                    loader={undefined}
+                />
+            </Link>
 
-                                signOut({ redirectTo: '/' });
-                            }}
-                        >
-                            Logout
-                        </Button>
-                    }
-                    actions={shopsActions.length >= 1 ? shopsActions : null}
-                    footer={
-                        <Button variant="solid" color="primary" disabled>
-                            Connect a new Shop
-                        </Button>
-                    }
-                >
-                    <Label as="div">
-                        Hi <Accented>{firstName || 'there'}</Accented> {lastName || ''}
-                    </Label>
+            <Label as="div">
+                Hi <Accented>{firstName || 'there'}</Accented> {lastName || ''}
+            </Label>
 
-                    <Heading level="h1">Choose a Shop</Heading>
-                </ActionableCard>
-            </View>
+            <Heading level="h1">Choose a Shop</Heading>
+
+            {shopsActions}
+
+            <Button variant="solid" color="primary" disabled>
+                Connect a new Shop
+            </Button>
         </div>
     );
 }

@@ -1,7 +1,5 @@
 import 'server-only';
 
-import styles from './page.module.scss';
-
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 import { Card, Details, Heading } from '@nordcom/nordstar';
@@ -19,7 +17,7 @@ export type ShopPageProps = {
 };
 
 export const metadata: Metadata = {
-    title: 'Overview'
+    title: 'Home'
 };
 
 export default async function ShopPage({ params: { domain } }: ShopPageProps) {
@@ -44,9 +42,9 @@ export default async function ShopPage({ params: { domain } }: ShopPageProps) {
                     </Heading>
                 </header>
 
-                <Card className={styles.container}>
+                <Card>
                     {/* Dropdown */}
-                    <Details label="Raw Shop" className={styles.details}>
+                    <Details label="Raw Shop">
                         <code>{code}</code>
                     </Details>
                 </Card>
