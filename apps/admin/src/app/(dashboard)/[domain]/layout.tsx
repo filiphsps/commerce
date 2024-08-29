@@ -4,10 +4,10 @@ import styles from './layout.module.scss';
 
 import { BiBook, BiCreditCardFront, BiHomeAlt, BiImage, BiRocket, BiStats, BiWrench } from 'react-icons/bi';
 
+import { Shop } from '@nordcom/commerce-db';
 import { Button, Card, Heading, Label, View } from '@nordcom/nordstar';
 
 import { auth } from '@/auth';
-import { getShop } from '@/utils/fetchers';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 
@@ -20,17 +20,17 @@ import type { ReactNode } from 'react';
 export type ShopLayoutProps = {
     children: ReactNode;
     params: {
-        id: string;
+        domain: string;
     };
 };
 
-export async function generateMetadata({ params: { id: shopId } }: ShopLayoutProps): Promise<Metadata> {
+export async function generateMetadata({ params: { domain } }: ShopLayoutProps): Promise<Metadata> {
     const session = await auth();
     if (!session?.user) {
         redirect('/auth/login/');
     }
 
-    const shop = await getShop(session.user.id!, shopId);
+    const shop = await Shop.findByDomain(domain, { convert: true });
     if (!shop) {
         notFound();
     }
@@ -47,22 +47,22 @@ export async function generateMetadata({ params: { id: shopId } }: ShopLayoutPro
     };
 }
 
-export default async function ShopLayout({ children, params: { id: shopId } }: ShopLayoutProps) {
+export default async function ShopLayout({ children, params: { domain } }: ShopLayoutProps) {
     const session = await auth();
     if (!session?.user) {
         redirect('/auth/login/');
     }
 
-    const shop = await getShop(session.user.id!, shopId);
+    const shop = await Shop.findByDomain(domain, { convert: true });
     if (!shop) {
         notFound();
     }
 
-    const basePath = `/${shopId}`;
+    const basePath = `/${shop.domain}`;
 
     return (
         <div className={styles.container}>
-            <Header shopId={shopId} />
+            <Header shop={shop} />
 
             <View className={styles.content}>
                 <div className={styles['split-view']}>
