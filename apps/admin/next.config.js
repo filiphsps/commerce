@@ -4,6 +4,8 @@ import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const isProduction = process.env.NODE_ENV !== 'development' ? true : false; // Deliberately using a ternary here for clarity.
 
+const vercelUrl = process.env.VERCEL_URL || null;
+
 /** @type {import('next').NextConfig} */
 const config = {
     pageExtensions: ['ts', 'tsx'],
@@ -16,6 +18,7 @@ const config = {
     skipTrailingSlashRedirect: false,
     trailingSlash: true,
     transpilePackages: [],
+    assetPrefix: vercelUrl ? `https://${vercelUrl}` : undefined,
     experimental: {
         //nextScriptWorkers: true,
         //ppr: true,
