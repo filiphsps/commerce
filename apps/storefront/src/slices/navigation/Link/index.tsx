@@ -10,7 +10,9 @@ import { PrismicText } from '@/components/typography/prismic-text';
 export type LinkProps = {} & SliceComponentProps<Content.LinkSlice, { isHeader: boolean; pathname: string }>;
 const LinkSlice = ({ slice, context: { isHeader = true, pathname } }: LinkProps) => {
     // Don't render the link slice as a standalone menu.
-    if (!isHeader) return null;
+    if (!isHeader) {
+        return null;
+    }
 
     const link = slice.primary.href;
     const title = slice.primary.title;
@@ -29,20 +31,19 @@ const LinkSlice = ({ slice, context: { isHeader = true, pathname } }: LinkProps)
         active = pathname.split('/').length === 3;
     }
 
-    let linkStyles = '';
+    let linkStyles: string | undefined;
     switch (variant as any) {
         case 'highlighted':
-            linkStyles =
-                cn(
-                    LINK_STYLES,
-                    'px-3 py-0 md:px-3 h-8',
-                    active && LINK_ACTIVE_STYLES,
-                    'text-extrabold rounded-lg bg-secondary-light text-secondary-foreground',
-                    active && 'bg-primary text-primary-foreground'
-                ) || '';
+            linkStyles = cn(
+                LINK_STYLES,
+                'px-3 py-0 md:px-3 h-8',
+                active && LINK_ACTIVE_STYLES,
+                'text-extrabold rounded-lg bg-secondary-light text-secondary-foreground',
+                active && 'bg-primary text-primary-foreground'
+            );
             break;
         default:
-            linkStyles = cn(LINK_STYLES, active && LINK_ACTIVE_STYLES) || '';
+            linkStyles = cn(LINK_STYLES, active && LINK_ACTIVE_STYLES);
             break;
     }
 

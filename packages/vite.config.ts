@@ -32,7 +32,7 @@ export default mergeConfig(
         build: {
             copyPublicDir: false,
             emptyOutDir: true,
-            minify: false,
+            minify: 'esbuild',
             outDir: 'dist',
             sourcemap: true,
             target: 'esnext',

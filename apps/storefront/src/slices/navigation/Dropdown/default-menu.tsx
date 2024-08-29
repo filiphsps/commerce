@@ -20,7 +20,6 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
     const { closeMenu } = useHeaderMenu();
     const links: typeof slice.primary.links = (slice.primary.links as any) || [];
 
-    // fixed top-28  group-data-[scrolled=false]/body:top-36
     return (
         <nav
             className={cn(

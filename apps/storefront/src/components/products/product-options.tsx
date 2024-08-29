@@ -52,7 +52,7 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
                                 {option.name}
                             </Label>
 
-                            <div role="options" className={cn(styles.options)} data-options={option.values.length}>
+                            <div className={cn(styles.options)} data-options={option.values.length}>
                                 {option.values.map((value) => {
                                     if (!value || !variants) return null;
 
@@ -82,9 +82,6 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
                                     return (
                                         <Link
                                             key={`${option.name}_${value}`}
-                                            role="option"
-                                            aria-disabled={!inStock}
-                                            aria-selected={isSelected}
                                             title={title}
                                             className={cn(
                                                 styles.option,
