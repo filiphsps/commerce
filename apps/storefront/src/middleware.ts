@@ -1,4 +1,5 @@
 /* c8 ignore start */
+import { admin } from '@/middleware/admin';
 import { storefront } from '@/middleware/storefront';
 
 import type { NextRequest } from 'next/server';
@@ -20,6 +21,17 @@ export const config = {
 };
 
 export default async function middleware(req: NextRequest) {
+    const url = req.nextUrl.clone();
+    const pathname = url.pathname;
+    const segments = pathname
+        .split('/') // Split into an array of path segments.
+        .filter((_) => _.length > 0); // Remove empty segments.
+
+    if (segments.length >= 2 && segments[1] === 'admin') {
+        return admin(req);
+    }
+
+    // Fallback to the storefront.
     return storefront(req);
 }
 /* c8 ignore stop */
