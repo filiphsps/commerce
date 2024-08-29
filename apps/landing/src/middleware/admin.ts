@@ -12,8 +12,6 @@ export const admin = async (req: NextRequest): Promise<NextResponse> => {
 
     // Remove the admin prefix.
     url.pathname = url.pathname.replace('/admin', '');
-    // TODO: Redirect if the domain in the pathname doesn't match the primary domain.
-    url.pathname = `/${hostname}/${url.pathname}`;
 
     url.hostname = ADMIN_HOSTNAME;
     headers.set('x-nordcom-shop', hostname);
