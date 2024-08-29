@@ -104,7 +104,7 @@ export default async function ShopLayout({ children, params: { domain } }: ShopL
                 <CardFooter>
                     <div className="flex w-full flex-col justify-start gap-3">
                         <Button className="w-full" asChild>
-                            <Link href="/new/">Connect Shop</Link>
+                            <Link href="/new/">Connect a new Shop</Link>
                         </Button>
                     </div>
                 </CardFooter>
