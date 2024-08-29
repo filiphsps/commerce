@@ -12,7 +12,7 @@ export const GET = async (req: NextRequest, _context: any) => {
     try {
         const res = await shopifyAdminApi.auth.begin({
             shop: shopifyAdminApi.utils.sanitizeShop(searchParams.get('shop') as string, true)!,
-            callbackPath: '/integrations/shopify/',
+            callbackPath: '/integrations/shopify/api/',
             isOnline: false,
             rawRequest: req
         });
