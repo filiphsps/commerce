@@ -1,15 +1,25 @@
 @import 'globals';
 @import 'text';
 
+:root {
+    --fallback-font: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, Cantarell,
+        'Helvetica Neue', sans-serif;
+    --color-success: #04e762;
+}
+
+html {
+    font-family: var(--font-primary, var(--fallback-font));
+}
+
 html,
 body {
-    max-width: 100%;
     padding: 0;
     margin: 0;
 }
 
 body {
     width: 100%;
+    max-width: 100vw;
 
     background: #000000;
     color: #fefefe;
@@ -21,10 +31,6 @@ body {
         font-family: inherit;
         font-size: 1rem;
     }
-}
-
-:root {
-    --color-success: #04e762;
 }
 
 input,
