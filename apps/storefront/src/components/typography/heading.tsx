@@ -4,10 +4,10 @@ import type { As } from '@nordcom/nordstar';
 
 import { cn } from '@/utils/tailwind';
 
-import type { ComponentProps, CSSProperties, HTMLProps, ReactNode } from 'react';
+import type { ComponentProps, CSSProperties, ElementType, HTMLProps, ReactNode } from 'react';
 
 export type TitleProps<T extends As> = {
-    as?: As;
+    as?: ElementType;
     children?: ReactNode;
     bold?: boolean;
 } & ComponentProps<T>;
@@ -35,7 +35,7 @@ export const Title = <T extends As>({ as: Tag = 'h1' as T, bold, className, key,
 
 export type SubTitleProps = {
     children?: ReactNode;
-    as?: As | null;
+    as?: ElementType | null;
     bold?: boolean;
 } & HTMLProps<HTMLDivElement>;
 export const SubTitle = ({ as, bold, className, key, ...props }: SubTitleProps) => {
@@ -66,11 +66,11 @@ type HeadingProps = {
     subtitle?: ReactNode;
     reverse?: boolean;
     bold?: boolean;
-    titleAs?: As | null;
+    titleAs?: ElementType | null;
     titleStyle?: CSSProperties;
     titleClassName?: string;
     titleProps?: ComponentProps<any>;
-    subtitleAs?: As | null;
+    subtitleAs?: ElementType | null;
     subtitleStyle?: CSSProperties;
     subtitleClassName?: string;
 };

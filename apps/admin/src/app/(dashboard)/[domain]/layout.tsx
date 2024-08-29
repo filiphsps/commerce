@@ -6,6 +6,8 @@ import { Error } from '@nordcom/commerce-errors';
 import { auth } from '@/auth';
 import { notFound, redirect } from 'next/navigation';
 
+import { Header } from '@/components/header';
+
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
@@ -49,5 +51,19 @@ export default async function ShopLayout({ children, params: { domain } }: ShopL
         redirect('/auth/login/');
     }
 
-    return <main className="min-h-screen">{children}</main>;
+    return (
+        <div className="flex min-h-screen w-full flex-col">
+            <Header />
+
+            <div className="flex h-full w-full grow flex-col-reverse items-stretch justify-stretch gap-2 md:flex-row">
+                <aside className="block h-full w-full max-w-full p-4 md:w-64">
+                    <nav>nav</nav>
+                </aside>
+
+                <main className="flex min-h-full w-full grow flex-col justify-stretch gap-4 border-0 border-b border-solid border-gray-300 p-4 md:h-screen md:max-h-[calc(100vh-4rem)] md:overflow-y-scroll md:overscroll-y-auto md:border-b-0 md:border-l">
+                    {children}
+                </main>
+            </div>
+        </div>
+    );
 }

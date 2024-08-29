@@ -45,7 +45,7 @@ export default async function ShopPage({ params: { domain } }: ShopPageProps) {
                 <Card>
                     {/* Dropdown */}
                     <Details label="Raw Shop">
-                        <code>{code}</code>
+                        <code className="whitespace-pre-wrap">{code}</code>
                     </Details>
                 </Card>
             </>

@@ -1,17 +1,15 @@
 import styles from '@/components/actionable/input.module.scss';
 
-import type { As } from '@nordcom/nordstar';
-
 import { cn } from '@/utils/tailwind';
 
 import type { ComponentProps, ElementType, ReactNode } from 'react';
 
-export type InputProps<T extends As> = {
-    as?: As;
+export type InputProps<T extends ElementType> = {
+    as?: ElementType;
 
     children: ReactNode;
 } & ComponentProps<T>;
-const Input = <T extends As = ElementType<'input'>>({
+const Input = <T extends ElementType = ElementType<'input'>>({
     as: Tag = 'input' as T,
     children,
     className,
@@ -25,12 +23,12 @@ const Input = <T extends As = ElementType<'input'>>({
 };
 Input.displayName = 'Nordcom.Input';
 
-export type MultilineInputProps<T extends As> = {
-    as?: As;
+export type MultilineInputProps<T extends ElementType> = {
+    as?: ElementType;
 
     children: ReactNode;
 } & ComponentProps<T>;
-const MultilineInput = <T extends As>({
+const MultilineInput = <T extends ElementType>({
     as: Tag = 'textarea' as T,
     children,
     className,

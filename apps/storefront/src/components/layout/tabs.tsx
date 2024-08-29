@@ -1,13 +1,13 @@
 import styles from '@/components/layout/tabs.module.scss';
 
-import { Fragment, type HTMLProps, type ReactNode } from 'react';
-
-import type { As } from '@nordcom/nordstar';
+import { Fragment } from 'react';
 
 import { Label } from '@/components/typography/label';
 
+import type { ElementType, HTMLProps, ReactNode } from 'react';
+
 export type TabProps = {
-    as?: As;
+    as?: ElementType;
     children: ReactNode;
 } & HTMLProps<HTMLDivElement>;
 const Tab = ({ as: Tag = 'div', children, className, ...props }: TabProps) => {
@@ -20,7 +20,7 @@ const Tab = ({ as: Tag = 'div', children, className, ...props }: TabProps) => {
 Tab.displayName = 'Nordcom.Layout.Tab';
 
 export type TabsProps = {
-    as?: As;
+    as?: ElementType;
     data: Array<{
         id: string;
         label: string;

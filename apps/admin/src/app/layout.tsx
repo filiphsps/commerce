@@ -1,5 +1,5 @@
 import 'the-new-css-reset';
-import '@/styles/global.css';
+import './globals.css';
 
 import { primaryFont } from '@/utils/fonts';
 import { cn } from '@/utils/tailwind';
@@ -46,7 +46,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     return (
         <html lang="en" className={cn(primaryFont.className, primaryFont.variable, GeistMono.variable)}>
             <head />
-            <body>
+            <body className="group/body overflow-x-hidden overscroll-x-none md:overscroll-none">
                 <Providers>{children}</Providers>
             </body>
         </html>

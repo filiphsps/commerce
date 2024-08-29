@@ -2,10 +2,10 @@ import type { As } from '@nordcom/nordstar';
 
 import { cn } from '@/utils/tailwind';
 
-import type { ComponentProps, ReactNode } from 'react';
+import type { ComponentProps, ElementType, ReactNode } from 'react';
 
 export type ButtonProps<T extends As> = {
-    as?: As;
+    as?: ElementType;
     children: ReactNode;
     styled?: boolean;
 } & ComponentProps<T>;
