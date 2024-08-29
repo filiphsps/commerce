@@ -2,8 +2,8 @@ import 'server-only';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 
-import { ShopifyApolloApiClient } from '@/api/shopify';
-import { StoreApi } from '@/api/store';
+import { ShopifyApiClient } from '@/api/shopify';
+import { ShopPaymentSettingsApi } from '@/api/store';
 import { cn } from '@/utils/tailwind';
 import Image from 'next/image';
 
@@ -15,22 +15,23 @@ export type AcceptedPaymentMethodsProps = {
     shop: OnlineShop;
 } & HTMLProps<HTMLDivElement>;
 export const AcceptedPaymentMethods = async ({ shop, locale, className, ...props }: AcceptedPaymentMethodsProps) => {
-    const api = await ShopifyApolloApiClient({ shop, locale });
-    const store = await StoreApi({ api, locale });
+    const api = await ShopifyApiClient({ shop, locale });
+    const paymentSettings = await ShopPaymentSettingsApi({ api });
+    if (!paymentSettings) {
+        return null;
+    }
 
-    const methods = store.payment?.methods.map((i) => i.toLowerCase()) || [];
-    const wallets = store.payment?.wallets.map((i) => i.toLowerCase()) || [];
-    const items = [...methods, ...wallets];
-
-    if (!items.length) {
+    const methods = paymentSettings.acceptedCardBrands.map((i) => i.toLowerCase()) || [];
+    const wallets = paymentSettings.supportedDigitalWallets.map((i) => i.toLowerCase()) || [];
+    if ([...methods, ...wallets].length <= 0) {
         return null;
     }
 
     return (
-        <div {...props} className={cn(className, 'flex flex-wrap items-center justify-center gap-1')}>
+        <div {...props} className={cn(className, 'empty:*: flex flex-wrap items-center justify-center gap-1')}>
             {methods.map((method) => (
                 <Image
-                    key={method}
+                    key={`method_${method}`}
                     className={'h-8 w-10 object-contain object-center'}
                     src={`/assets/payments/${method}.svg`}
                     alt={method}
@@ -49,7 +50,7 @@ export const AcceptedPaymentMethods = async ({ shop, locale, className, ...props
 
             {wallets.map((method) => (
                 <Image
-                    key={method}
+                    key={`wallet_${method}`}
                     className={'h-8 w-10 object-contain object-center'}
                     src={`/assets/payments/${method}.svg`}
                     alt={method}

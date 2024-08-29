@@ -8,7 +8,6 @@ import { PageApi } from '@/api/page';
 import { cn } from '@/utils/tailwind';
 
 import { CartLines } from '@/components/cart/cart-lines';
-import { AcceptedPaymentMethods } from '@/components/informational/accepted-payment-methods';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 
@@ -21,8 +20,9 @@ export type CartContentProps = {
     locale: Locale;
     i18n: LocaleDictionary;
     header: ReactNode;
+    paymentMethods?: ReactNode;
 };
-export default async function CartContent({ shop, locale, i18n, header }: CartContentProps) {
+export default async function CartContent({ shop, locale, i18n, header, paymentMethods = null }: CartContentProps) {
     const page = await PageApi({ shop, locale, handle: 'cart', type: 'cart_page' });
 
     return (
@@ -50,7 +50,7 @@ export default async function CartContent({ shop, locale, i18n, header }: CartCo
                     locale={locale}
                     i18n={i18n}
                     className={styles.sidebar}
-                    paymentMethods={<AcceptedPaymentMethods shop={shop} locale={locale} />}
+                    paymentMethods={paymentMethods}
                 >
                     <PrismicPage
                         shop={shop}

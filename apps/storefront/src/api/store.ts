@@ -10,7 +10,12 @@ import type { StoreModel } from '@/models/StoreModel';
 import type { StoreDocument } from '@/prismic/types';
 import type { AbstractApi } from '@/utils/abstract-api';
 import type { Client as PrismicClient } from '@prismicio/client';
-import type { Country, Localization, Shop as ShopifyStore } from '@shopify/hydrogen-react/storefront-api-types';
+import type {
+    Country,
+    Localization,
+    PaymentSettings,
+    Shop as ShopifyStore
+} from '@shopify/hydrogen-react/storefront-api-types';
 
 export const CountriesApi = async ({ api }: { api: AbstractApi }): Promise<Country[]> => {
     const { data: localData } = await api.query<Localization>(gql`
@@ -318,4 +323,21 @@ export const CurrentLocaleApi = async ({ api }: { api: AbstractApi }) => {
 
     // FIXME: Handle errors or missing data.
     return data?.localization.country;
+};
+
+export const ShopPaymentSettingsApi = async ({ api }: { api: AbstractApi }): Promise<PaymentSettings | null> => {
+    const { data } = await api.query<{ paymentSettings: PaymentSettings }>(gql`
+        query shop {
+            shop {
+                paymentSettings {
+                    acceptedCardBrands
+                    enabledPresentmentCurrencies
+                    supportedDigitalWallets
+                }
+            }
+        }
+    `);
+
+    // FIXME: Handle errors or missing data.
+    return data?.paymentSettings || null;
 };

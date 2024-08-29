@@ -1,5 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
+import { Suspense } from 'react';
+
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 
@@ -11,6 +13,7 @@ import { Locale, useTranslation } from '@/utils/locale';
 import { asText } from '@prismicio/client';
 import { notFound } from 'next/navigation';
 
+import { AcceptedPaymentMethods } from '@/components/informational/accepted-payment-methods';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import Heading from '@/components/typography/heading';
 
@@ -30,7 +33,7 @@ export async function generateMetadata({
         const shop = await Shop.findByDomain(domain);
         const api = await ShopifyApolloApiClient({ shop, locale });
 
-        const page = await PageApi({ shop, locale, handle: 'cart', type: 'custom_page' } as any);
+        const page = await PageApi({ shop, locale, handle: 'cart' });
         const locales = await LocalesApi({ api });
 
         const i18n = await getDictionary(locale);
@@ -99,6 +102,11 @@ export default async function CartPage({ params: { domain, locale: localeData } 
                     locale={locale}
                     header={<Heading title={page?.title || t('cart')} subtitle={page?.description} />}
                     i18n={i18n}
+                    paymentMethods={
+                        <Suspense fallback={null}>
+                            <AcceptedPaymentMethods shop={shop} locale={locale} />
+                        </Suspense>
+                    }
                 />
             </>
         );
