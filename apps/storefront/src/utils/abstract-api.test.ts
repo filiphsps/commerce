@@ -75,7 +75,7 @@ describe('utils', () => {
 
             const tags = ['tag1', 'tag2'];
 
-            const expectedCacheTags = ['id', 'domain', 'domain.en-US', 'domain.en-US.tag1', 'domain.en-US.tag2'];
+            const expectedCacheTags = ['shopify', 'shopify.id', 'domain', 'en-US', 'tag1', 'tag2'];
 
             const cacheTags = buildCacheTagArray(shop, locale, tags);
 

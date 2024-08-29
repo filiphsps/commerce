@@ -41,7 +41,9 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         console.error(error);
 
         // TODO Handle other errors.
-        return NextResponse.rewrite('https://shops.nordcom.io/status/unknown-shop-error/');
+        return NextResponse.rewrite('https://shops.nordcom.io/status/unknown-shop-error/', {
+            status: 404
+        });
     }
 
     const params = newUrl.searchParams.toString();

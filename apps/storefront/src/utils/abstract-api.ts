@@ -5,7 +5,7 @@ import { DocumentTransform } from '@apollo/client';
 import { visit } from 'graphql';
 
 import type { Locale } from '@/utils/locale';
-import type { ApolloClient, FetchPolicy, TypedDocumentNode } from '@apollo/client';
+import type { ApolloClient, TypedDocumentNode } from '@apollo/client';
 
 export type OmitTypeName<T> = Omit<T, '__typename'>;
 
@@ -18,7 +18,7 @@ export type AbstractApi<Q = any> = {
         query: Q,
         variables?: Record<string, string | number | boolean | object | Array<string | number | object> | null>,
         options?: {
-            fetchPolicy?: FetchPolicy;
+            fetchPolicy?: RequestCache;
             tags?: string[];
             revalidate?: number;
         }
@@ -33,15 +33,14 @@ export type AbstractApiBuilder<K, Q> = ({
     api: K;
     locale: Locale;
     shop: OnlineShop;
-    fetchPolicy?: FetchPolicy;
+    fetchPolicy?: RequestCache;
 }) => AbstractApi<Q>;
 
 export type AbstractShopifyApolloApiBuilder<Q> = AbstractApiBuilder<ApolloClient<any>, Q>;
 
 export function buildCacheTagArray(shop: OnlineShop, locale: Locale, tags: string[]) {
-    const prefix = `${shop.domain}.${locale.code}`;
-
-    return [shop.id, shop.domain, prefix, ...tags.map((tag) => `${prefix}.${tag}`)];
+    // TODO: change `shopify` tag based on the api we're using.
+    return ['shopify', `shopify.${shop.id}`, shop.domain, locale.code, ...tags];
 }
 
 /**
@@ -67,12 +66,12 @@ export const ApiBuilder: AbstractShopifyApolloApiBuilder<TypedDocumentNode<any, 
     query: async (query, variables = {}, { tags = [], revalidate = undefined, fetchPolicy = undefined } = {}) => {
         const { data, errors, error } = await api.query({
             query,
-            fetchPolicy,
+            //fetchPolicy,
             context: {
                 fetchOptions: {
                     cache: fetchPolicy,
                     next: {
-                        revalidate,
+                        revalidate: revalidate ?? 60 * 60 * 24, // 24 hours.
                         tags: buildCacheTagArray(shop, locale, tags)
                     }
                 }

@@ -41,7 +41,7 @@ export default async function CartContent({ shop, locale, i18n, header, paymentM
                     <div className={styles.lines}>
                         {header}
 
-                        <Suspense fallback={<CartLines.skeleton />}>
+                        <Suspense fallback={null}>
                             <CartLines i18n={i18n} />
                         </Suspense>
                     </div>

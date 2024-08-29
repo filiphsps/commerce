@@ -6,6 +6,7 @@ import { CgTrash } from 'react-icons/cg';
 import { type LocaleDictionary, useTranslation } from '@/utils/locale';
 import { useCart } from '@shopify/hydrogen-react';
 
+import { Button } from '@/components/actionable/button';
 import { QuantitySelector } from '@/components/products/quantity-selector';
 
 import type { Product, ProductVariant } from '@/api/product';
@@ -17,7 +18,7 @@ interface CartLineProps {
 }
 
 const CartLineQuantityAction = ({ i18n, data: line }: CartLineProps) => {
-    const { linesRemove, linesUpdate, cartReady } = useCart();
+    const { linesRemove, linesUpdate } = useCart();
 
     const update = useCallback(
         (value: number) => {
@@ -48,7 +49,6 @@ const CartLineQuantityAction = ({ i18n, data: line }: CartLineProps) => {
         <QuantitySelector
             className="max-w-48 bg-gray-100"
             i18n={i18n}
-            disabled={!cartReady}
             value={line.quantity}
             update={update}
             allowDecreaseToZero={true}
@@ -57,7 +57,7 @@ const CartLineQuantityAction = ({ i18n, data: line }: CartLineProps) => {
 };
 
 const CartLineRemoveAction = ({ i18n, data: line }: CartLineProps) => {
-    const { linesRemove, cartReady } = useCart();
+    const { linesRemove } = useCart();
 
     const { t } = useTranslation('cart', i18n);
 
@@ -69,15 +69,14 @@ const CartLineRemoveAction = ({ i18n, data: line }: CartLineProps) => {
     }
 
     return (
-        <button
-            aria-disabled={!cartReady}
-            disabled={!cartReady}
+        <Button
             className={'appearance-none'}
             title={t('remove-from-cart', `${product.vendor} ${product.title} - ${variant.title}`)}
-            onClick={() => linesRemove([line.id!])}
+            onClick={() => linesRemove([line.id])}
+            styled={false}
         >
             <CgTrash className="py-2 text-2xl hover:text-red-600" />
-        </button>
+        </Button>
     );
 };
 

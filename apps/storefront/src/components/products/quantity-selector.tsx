@@ -183,7 +183,7 @@ const QuantitySelector = ({
                 type="button"
                 className={cn(
                     styles.button,
-                    'bg-gray-10 h-full w-11 rounded-none leading-none text-black',
+                    'h-full w-11 rounded-none bg-gray-100 leading-none text-black',
                     buttonClassName
                 )}
                 disabled={disabled}

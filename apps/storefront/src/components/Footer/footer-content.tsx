@@ -2,6 +2,8 @@ import 'server-only';
 
 import styles from '@/components/Footer/footer.module.scss';
 
+import { Suspense } from 'react';
+
 import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { FooterApi } from '@/api/footer';
@@ -34,7 +36,9 @@ const FooterContent = async ({ locale, i18n, shop }: FooterContentProps) => {
         /* TODO: This should be configurable in prismic. */
         <div className={cn(styles.legal, 'h-full w-full gap-8 pt-6 md:gap-4 lg:pt-12')}>
             <div className="flex flex-col items-center justify-end gap-2 md:items-start">
-                <AcceptedPaymentMethods shop={shop} locale={locale} />
+                <Suspense fallback={null}>
+                    <AcceptedPaymentMethods shop={shop} locale={locale} />
+                </Suspense>
 
                 {footer.policy_links.length > 0 ? (
                     <div className={styles['legal-and-copyrights']}>

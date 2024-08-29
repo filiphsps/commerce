@@ -26,6 +26,8 @@ const revalidate = async (req: NextRequest, { domain }: RevalidateApiRouteParams
                 const data = await req.json();
                 console.warn(JSON.stringify({ ...data }, null, 4));
 
+                revalidateTag('shopify');
+
                 return NextResponse.json(
                     {
                         status: 200,
@@ -44,13 +46,16 @@ const revalidate = async (req: NextRequest, { domain }: RevalidateApiRouteParams
                 // FIXME: This is incorrect, prismic also uses POST.
                 console.debug(`Revalidated prismic for shop with id ${shop.id}`);
 
+                revalidateTag('prismic');
+
                 return NextResponse.json(
                     {
                         status: 200,
                         data: {
                             revalidated: true,
                             tags: [`prismic.${shop.id}`],
-                            paths: [domain]
+                            paths: [],
+                            domains: [domain]
                         },
                         errors: null
                     },

@@ -110,7 +110,6 @@ export const CollectionApi = async (
 ): Promise<Collection> => {
     if (!handle) throw new Error('400: Invalid handle');
     const shop = api.shop();
-    const locale = api.locale();
 
     const filters = 'filters' in props ? props.filters : /** @deprecated */ (props as CollectionFilters);
     const filtersTag = JSON.stringify(filters, null, 0);
@@ -120,62 +119,62 @@ export const CollectionApi = async (
             collection: QueryRoot['collection'];
         }>(
             gql`
-                    query collection(
-                        $handle: String!
-                        $first: Int
-                        $last: Int
-                        $sorting: ProductCollectionSortKeys
-                        $before: String
-                        $after: String
-                    ) {
-                        collection(handle: $handle) {
+                query collection(
+                    $handle: String!
+                    $first: Int
+                    $last: Int
+                    $sorting: ProductCollectionSortKeys
+                    $before: String
+                    $after: String
+                ) {
+                    collection(handle: $handle) {
+                        id
+                        handle
+                        title
+                        description
+                        descriptionHtml
+                        image {
                             id
-                            handle
+                            altText
+                            url
+                            height
+                            width
+                        }
+                        seo {
                             title
                             description
-                            descriptionHtml
-                            image {
-                                id
-                                altText
-                                url
-                                height
-                                width
-                            }
-                            seo {
-                                title
-                                description
-                            }
-                            products(
-                                first: $first
-                                last: $last
-                                sortKey: $sorting
-                                before: $before
-                                after: $after
-                            ) {
-                                edges {
-                                    node {
-                                        ${PRODUCT_FRAGMENT_MINIMAL}
-                                    }
-                                }
-                                pageInfo {
-                                    startCursor
-                                    endCursor
-                                    hasNextPage
-                                    hasPreviousPage
+                        }
+                        products(
+                            first: $first
+                            last: $last
+                            sortKey: $sorting
+                            before: $before
+                            after: $after
+                        ) {
+                            edges {
+                                node {
+                                    ${PRODUCT_FRAGMENT_MINIMAL}
                                 }
                             }
-                            keywords: metafield(namespace: "store", key: "keywords") {
-                                value
-                            }
-                            isBrand: metafield(namespace: "store", key: "is_brand") {
-                                value
-                            }
-                            shortDescription: metafield(namespace: "store", key: "short_description") {
-                                value
+                            pageInfo {
+                                startCursor
+                                endCursor
+                                hasNextPage
+                                hasPreviousPage
                             }
                         }
+                        keywords: metafield(namespace: "store", key: "keywords") {
+                            value
+                        }
+                        isBrand: metafield(namespace: "store", key: "is_brand") {
+                            value
+                        }
+                        shortDescription: metafield(namespace: "store", key: "short_description") {
+                            value
+                        }
                     }
-                `,
+                }
+            `,
             {
                 handle: handle,
                 ...extractLimitLikeFilters(filters),
@@ -186,7 +185,7 @@ export const CollectionApi = async (
                 }))(filters)
             },
             {
-                tags: [shop.id, locale.code, `collection`, handle, filtersTag]
+                tags: ['collection', handle, ...(filtersTag ? [filtersTag] : [])]
             }
         );
 
@@ -216,9 +215,6 @@ export const CollectionPaginationCountApi = async ({
     cursors: string[];
 }> => {
     if (!handle) throw new Error('400: Invalid handle');
-    const shop = api.shop();
-    const locale = api.locale();
-
     const filters = 'filters' in props ? props.filters : /** @deprecated */ (props as CollectionFilters);
     const filtersTag = JSON.stringify(filters, null, 0);
 
@@ -260,8 +256,7 @@ export const CollectionPaginationCountApi = async ({
                 }))(filters)
             },
             {
-                fetchPolicy: 'no-cache',
-                tags: [shop.id, locale.code, `collection`, 'pagination', 'count', handle, filtersTag, `pos=${count}`]
+                tags: ['collection', handle, 'pagination', 'count', ...(filtersTag ? [filtersTag] : [])]
             }
         );
 
@@ -444,7 +439,7 @@ export const CollectionsPaginationApi = async ({
                     }))(filters)
                 },
                 {
-                    tags: [`pagination.collections`]
+                    tags: ['collections', 'pagination']
                 }
             );
 

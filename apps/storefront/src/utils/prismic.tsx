@@ -1,10 +1,9 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { InvalidShopError } from '@nordcom/commerce-errors';
 
+import { Locale } from '@/utils/locale';
 import * as prismic from '@prismicio/client';
-import { enableAutoPreviews } from '@prismicio/next';
 
-import type { Locale } from '@/utils/locale';
 import type { Client, ClientConfig, LinkResolverFunction } from '@prismicio/client';
 
 type CreateClientOptions = {
@@ -12,7 +11,7 @@ type CreateClientOptions = {
     locale: Locale;
 } & ClientConfig;
 
-export const createClient = ({ shop, locale, ...config }: CreateClientOptions): Client => {
+export const createClient = ({ shop, locale = Locale.default, ...config }: CreateClientOptions): Client => {
     const contentProvider = shop.contentProvider;
     if (!(contentProvider as any)) {
         throw new InvalidShopError("Shop doesn't have a content provider.");
@@ -27,18 +26,18 @@ export const createClient = ({ shop, locale, ...config }: CreateClientOptions): 
         accessToken,
         routes,
         defaultParams: {
-            lang: locale.code
+            lang: locale.code.toLowerCase()
         },
         fetchOptions: {
             next: {
-                revalidate: 60 * 60 * 24, // 24 hours
-                tags: [shop.id, shop.domain, 'prismic']
+                revalidate: 60 * 60 * 24, // 24 hours.
+                tags: ['prismic', `prismic.${shop.id}`, shop.domain, locale.code]
             }
         },
         ...config
     });
 
-    enableAutoPreviews({ client });
+    // enableAutoPreviews({ client });
 
     return client;
 };
@@ -91,7 +90,7 @@ export const routes: ClientConfig['routes'] = [
         path: '/:lang/search/'
     },
     {
-        type: 'custom_page',
+        type: 'cart_page',
         uid: 'cart',
         path: '/:lang/cart/'
     },

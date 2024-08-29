@@ -95,21 +95,23 @@ export default async function CartPage({ params: { domain, locale: localeData } 
 
         return (
             <>
-                <Suspense fallback={<Breadcrumbs.skeleton />}>
+                <Suspense fallback={null}>
                     <Breadcrumbs shop={shop} locale={locale} />
                 </Suspense>
 
-                <CartContent
-                    shop={shop}
-                    locale={locale}
-                    header={<Heading title={page?.title || t('cart')} subtitle={page?.description} />}
-                    i18n={i18n}
-                    paymentMethods={
-                        <Suspense fallback={null}>
-                            <AcceptedPaymentMethods shop={shop} locale={locale} />
-                        </Suspense>
-                    }
-                />
+                <Suspense fallback={null}>
+                    <CartContent
+                        shop={shop}
+                        locale={locale}
+                        header={<Heading title={page?.title || t('cart')} subtitle={page?.description} />}
+                        i18n={i18n}
+                        paymentMethods={
+                            <Suspense fallback={null}>
+                                <AcceptedPaymentMethods shop={shop} locale={locale} />
+                            </Suspense>
+                        }
+                    />
+                </Suspense>
             </>
         );
     } catch (error: unknown) {

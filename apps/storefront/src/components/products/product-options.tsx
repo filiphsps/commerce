@@ -1,6 +1,5 @@
 'use client';
 
-import actionsStyles from '@/components/products/product-actions-container.module.scss';
 import styles from '@/components/products/product-options.module.scss';
 
 import { Fragment, type HTMLProps } from 'react';
@@ -120,8 +119,3 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
     );
 };
 ProductOptions.displayName = 'Nordcom.Products.Options';
-
-export const ProductOptionsSkeleton = () => {
-    return <div className={actionsStyles['product-options']} />;
-};
-ProductOptionsSkeleton.displayName = 'Nordcom.Products.Options.Skeleton';

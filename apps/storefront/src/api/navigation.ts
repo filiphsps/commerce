@@ -26,9 +26,7 @@ export const NavigationApi = async ({
     const client = createClient({ shop, locale });
 
     try {
-        const navigation = await client.getSingle<NavigationDocument>('navigation', {
-            lang: locale.code.toLowerCase()
-        });
+        const navigation = await client.getSingle<NavigationDocument>('navigation');
 
         return navigation.data.body.map((item) => ({
             title: item.primary.title!,
@@ -52,9 +50,7 @@ export const MenuApi = async ({ shop, locale }: { shop: OnlineShop; locale: Loca
     const client = createClient({ shop, locale });
 
     try {
-        const menu = await client.getSingle<MenuDocument>('menu', {
-            lang: locale.code.toLowerCase()
-        });
+        const menu = await client.getSingle<MenuDocument>('menu');
 
         return menu.data;
     } catch (error: unknown) {

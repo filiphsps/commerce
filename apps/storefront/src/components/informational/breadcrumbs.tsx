@@ -86,8 +86,4 @@ const Breadcrumbs = ({ shop, locale, title }: BreadcrumbsProps) => {
     );
 };
 
-Breadcrumbs.skeleton = ({}) => (
-    <section className={cn(styles.breadcrumbs, overflowStyles.container, SHARED_STYLES)} data-skeleton></section>
-);
-
 export default Breadcrumbs;

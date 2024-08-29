@@ -140,7 +140,7 @@ export default async function CustomPage({
         const breadcrumbs =
             handle !== 'homepage' && page.title ? (
                 <>
-                    <Suspense fallback={<Breadcrumbs.skeleton />}>
+                    <Suspense fallback={null}>
                         <Breadcrumbs shop={shop} locale={locale} title={page.title} />
                     </Suspense>
                 </>

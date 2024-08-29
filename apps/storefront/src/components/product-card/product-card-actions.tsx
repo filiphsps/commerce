@@ -6,6 +6,8 @@ import { type LocaleDictionary, useTranslation } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 import { useCart } from '@shopify/hydrogen-react';
 
+import { Button } from '@/components/actionable/button';
+
 import AddToCart from '../products/add-to-cart';
 
 import type { Product, ProductVariant } from '@/api/product';
@@ -58,14 +60,15 @@ const ProductCardActions = ({ i18n, data: product, selectedVariant }: ProductCar
                     !cartReady && 'pointer-events-none cursor-not-allowed opacity-75 transition-all duration-150'
                 )}
             >
-                <button
+                <Button
                     title={t('decrease')}
                     disabled={!cartReady || quantity < 1}
                     className="active:bg-primary active:text-primary-foreground hover:bg-primary hover:text-primary-foreground w-14 text-xl disabled:cursor-not-allowed disabled:bg-transparent disabled:text-inherit disabled:opacity-25"
                     onClick={() => update(quantity - 1)}
+                    styled={false}
                 >
                     -
-                </button>
+                </Button>
                 <input
                     type="number"
                     min="1"
@@ -75,14 +78,15 @@ const ProductCardActions = ({ i18n, data: product, selectedVariant }: ProductCar
                     onChange={({ target: { value } }) => setQuantity(Number.parseInt(value) || 0)}
                     onBlur={() => update(quantity)}
                 />
-                <button
+                <Button
                     title={t('increase')}
                     disabled={!cartReady}
                     className="active:bg-primary active:text-primary-foreground hover:bg-primary hover:text-primary-foreground w-14 text-xl disabled:text-gray-300"
                     onClick={() => update(quantity + 1)}
+                    styled={false}
                 >
                     +
-                </button>
+                </Button>
             </div>
         );
     }

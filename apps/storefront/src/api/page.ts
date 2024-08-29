@@ -24,9 +24,7 @@ export const PagesApi = async ({
     try {
         const client = createClient({ shop, locale });
 
-        const pages = await client.getAllByType('custom_page', {
-            lang: locale.code
-        });
+        const pages = await client.getAllByType('custom_page');
 
         return pages.filter(({ uid }) => !exclude.includes(uid!));
     } catch (error) {
@@ -82,9 +80,7 @@ export const PageApi = async <T extends keyof PageTypeMapping | 'custom_page' = 
     try {
         const client = createClient({ shop, locale });
 
-        const { data: page } = await client.getByUID<NarrowedPageType<T>>(type, handle, {
-            lang: locale.code
-        });
+        const { data: page } = await client.getByUID<NarrowedPageType<T>>(type, handle);
 
         if (!(page as any)) {
             throw new NotFoundError(`"Page" with the handle "${handle}"`);

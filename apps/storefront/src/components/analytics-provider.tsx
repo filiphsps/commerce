@@ -36,6 +36,7 @@ export const AnalyticsProvider = ({ shop, children }: AnalyticsProviderProps) =>
         <ErrorBoundary fallbackRender={() => null}>
             <Trackable>{children}</Trackable>
             <SpeedInsights debug={false} />
+
             {deferred}
         </ErrorBoundary>
     );

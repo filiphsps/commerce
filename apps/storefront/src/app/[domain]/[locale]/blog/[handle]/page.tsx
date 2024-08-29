@@ -184,7 +184,7 @@ export default async function ArticlePage({
 
                 <Content dangerouslySetInnerHTML={{ __html: article.contentHtml || '' }} />
 
-                <Suspense fallback={<Breadcrumbs.skeleton />}>
+                <Suspense fallback={null}>
                     <Breadcrumbs shop={shop} locale={locale} title={article.title} />
                 </Suspense>
 

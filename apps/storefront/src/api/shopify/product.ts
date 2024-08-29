@@ -286,6 +286,8 @@ export const ProductsPaginationCountApi = async ({
     cursors: string[];
 }> => {
     const countProducts = async (count: number = 0, cursors: string[] = [], after: string | null = null) => {
+        const filtersTag = JSON.stringify(filters, null, 0);
+
         const { data, errors } = await api.query<{
             products: QueryRoot['products'];
         }>(
@@ -306,14 +308,14 @@ export const ProductsPaginationCountApi = async ({
             `,
             {
                 ...extractLimitLikeFilters(filters),
-                ...(({ sorting = 'BEST_SELLING' }) => ({
+                ...(({ sorting = 'BEST_SELLING', before = null, after = null }) => ({
                     sorting: sorting,
+                    before: before,
                     after: after
                 }))(filters)
             },
             {
-                fetchPolicy: 'no-cache',
-                tags: [`products`, 'pagination', `pos=${count}`]
+                tags: [`products`, 'pagination', ...(filtersTag ? [filtersTag] : [])]
             }
         );
 
@@ -506,8 +508,7 @@ export const ProductsPaginationApi = async ({
                     after: (after as any) || null
                 },
                 {
-                    tags: ['pagination.products'],
-                    fetchPolicy: 'no-cache'
+                    tags: ['products', 'pagination']
                 }
             );
 

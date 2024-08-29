@@ -262,7 +262,7 @@ export default async function ProductPage({
 
         return (
             <>
-                <Suspense fallback={<Breadcrumbs.skeleton />}>
+                <Suspense fallback={null}>
                     <Breadcrumbs shop={shop} locale={locale} title={`${product.vendor} ${product.title}`} />
                 </Suspense>
 

@@ -6,6 +6,7 @@ import { primaryFont } from '@/utils/fonts';
 import { cn } from '@/utils/tailwind';
 import { GeistMono } from 'geist/font/mono';
 
+import Footer from '@/components/footer';
 import { Providers } from '@/components/providers';
 
 import type { Metadata, Viewport } from 'next';
@@ -47,6 +48,8 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             <body>
                 <Providers>
                     <div className="p-4 md:p-8">{children}</div>
+
+                    <Footer />
                 </Providers>
             </body>
         </html>

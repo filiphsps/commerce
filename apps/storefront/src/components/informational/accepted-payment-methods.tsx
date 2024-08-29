@@ -21,8 +21,8 @@ export const AcceptedPaymentMethods = async ({ shop, locale, className, ...props
         return null;
     }
 
-    const methods = paymentSettings.acceptedCardBrands.map((i) => i.toLowerCase()) || [];
-    const wallets = paymentSettings.supportedDigitalWallets.map((i) => i.toLowerCase()) || [];
+    const methods = paymentSettings.acceptedCardBrands.map((i) => i.toLowerCase());
+    const wallets = paymentSettings.supportedDigitalWallets.map((i) => i.toLowerCase());
     if ([...methods, ...wallets].length <= 0) {
         return null;
     }

@@ -171,7 +171,7 @@ export default async function CollectionPage({
 
         return (
             <>
-                <Suspense fallback={<Breadcrumbs.skeleton />}>
+                <Suspense fallback={null}>
                     <Breadcrumbs shop={shop} locale={locale} title={collection.title} />
                 </Suspense>
 

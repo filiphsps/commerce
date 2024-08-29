@@ -16,9 +16,7 @@ export async function FooterApi({
     const client = createClient({ shop, locale });
 
     try {
-        const res = await client.getSingle<FooterDocument>('footer', {
-            lang: locale.code
-        });
+        const res = await client.getSingle<FooterDocument>('footer');
 
         return res.data;
     } catch (error: unknown) {

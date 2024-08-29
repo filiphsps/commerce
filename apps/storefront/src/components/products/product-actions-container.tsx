@@ -7,7 +7,7 @@ import { cn } from '@/utils/tailwind';
 import { useProduct } from '@shopify/hydrogen-react';
 
 import AddToCart from '@/components/products/add-to-cart';
-import { ProductOptions, ProductOptionsSkeleton } from '@/components/products/product-options';
+import { ProductOptions } from '@/components/products/product-options';
 import { QuantitySelector } from '@/components/products/quantity-selector';
 import { Label } from '@/components/typography/label';
 
@@ -49,7 +49,7 @@ export const ProductActionsContainer = ({ className, i18n, ...props }: ProductAc
                     />
                 </div>
 
-                <Suspense fallback={<ProductOptionsSkeleton />}>
+                <Suspense fallback={null}>
                     <ProductOptions />
                 </Suspense>
             </div>

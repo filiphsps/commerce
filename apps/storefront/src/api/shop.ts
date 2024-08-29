@@ -30,10 +30,8 @@ export const findShopByDomainOverHttp = async (domain: string): Promise<OnlineSh
                 ]
             }
         }),
-
-        cache: 'force-cache',
         next: {
-            revalidate: 60 * 30, // 30 minutes.
+            revalidate: 60 * 60 * 24, // 24 hours.
             tags: [domain]
         }
     });
