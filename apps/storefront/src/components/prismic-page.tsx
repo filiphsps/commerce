@@ -71,7 +71,7 @@ PrismicPage.skeleton = <T extends PageType = 'custom_page'>({
                     return <Slice.skeleton key={slice.id} slice={slice} data-skeleton />;
                 }
 
-                return <Slice key={slice.id} slice={slice} context={{ shop }} />;
+                return <Slice key={slice.id} slice={slice} context={{ shop: undefined }} />;
             })}
         </>
     );

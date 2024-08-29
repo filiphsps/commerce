@@ -18,7 +18,7 @@ describe('components', () => {
         });
 
         it('should render', () => {
-            const wrapper = render(<Breadcrumbs shop={{ name: 'Mock Store' } as any} locale={Locale.default} />);
+            const wrapper = render(<Breadcrumbs locale={Locale.default} />);
 
             expect(() => wrapper.unmount()).not.toThrow();
         });

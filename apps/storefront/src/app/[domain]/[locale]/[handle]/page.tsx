@@ -141,7 +141,7 @@ export default async function CustomPage({
             handle !== 'homepage' && page.title ? (
                 <>
                     <Suspense>
-                        <Breadcrumbs shop={shop} locale={locale} title={page.title} />
+                        <Breadcrumbs locale={locale} title={page.title} />
                     </Suspense>
                 </>
             ) : null;

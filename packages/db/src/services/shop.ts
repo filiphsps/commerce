@@ -71,6 +71,22 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
             depopulate: true
         });
 
+        if (!sensitiveData) {
+            return {
+                ...res,
+                commerceProvider: {
+                    ...res.commerceProvider,
+                    authentication: {
+                        publicToken: res.commerceProvider.authentication.publicToken
+                    }
+                },
+                contentProvider: {
+                    ...res.contentProvider,
+                    authentication: {}
+                }
+            } as any;
+        }
+
         return res;
     }
 

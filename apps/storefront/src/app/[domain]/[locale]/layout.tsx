@@ -42,7 +42,7 @@ export async function generateStaticParams(): Promise<LayoutParams[]> {
     return (
         await Promise.all(
             shops.map(async ({ domain }) => {
-                const shop = await Shop.findByDomain(domain);
+                const shop = await Shop.findByDomain(domain, { sensitiveData: true });
                 if (shop.domain.includes('demo')) {
                     return null as any as LayoutParams;
                 }

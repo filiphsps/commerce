@@ -122,7 +122,7 @@ export default async function ProductsPage({ params: { domain, locale: localeDat
                 </Suspense>
 
                 <Suspense>
-                    <Breadcrumbs shop={shop} locale={locale} title={t('products')} />
+                    <Breadcrumbs locale={locale} title={t('products')} />
                 </Suspense>
             </>
         );

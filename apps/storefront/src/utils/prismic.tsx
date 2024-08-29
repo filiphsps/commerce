@@ -12,15 +12,15 @@ type CreateClientOptions = {
 } & ClientConfig;
 
 export const createClient = ({ shop, locale = Locale.default, ...config }: CreateClientOptions): Client => {
-    const contentProvider = shop.contentProvider;
+    const contentProvider = shop.contentProvider as Partial<typeof shop.contentProvider>;
     if (!(contentProvider as any)) {
         throw new InvalidShopError("Shop doesn't have a content provider.");
     } else if (contentProvider.type !== 'prismic') {
         throw new InvalidShopError("Prismic isn't configured for this shop.");
     }
 
-    const repository = contentProvider.repository || contentProvider.repositoryName;
-    const accessToken = contentProvider.authentication.token || undefined;
+    const repository = (contentProvider.repository || contentProvider.repositoryName)!;
+    const accessToken = contentProvider.authentication?.token || undefined;
 
     const client = prismic.createClient(repository, {
         accessToken,

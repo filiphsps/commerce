@@ -263,7 +263,7 @@ export default async function ProductPage({
         return (
             <>
                 <Suspense>
-                    <Breadcrumbs shop={shop} locale={locale} title={`${product.vendor} ${product.title}`} />
+                    <Breadcrumbs locale={locale} title={`${product.vendor} ${product.title}`} />
                 </Suspense>
 
                 <div className="flex flex-col gap-4 md:flex-row md:flex-nowrap">

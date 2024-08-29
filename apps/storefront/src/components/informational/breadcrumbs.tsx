@@ -5,23 +5,22 @@ import overflowStyles from '@/styles/horizontal-overflow-scroll.module.scss';
 
 import { FiChevronRight } from 'react-icons/fi';
 
-import type { OnlineShop } from '@nordcom/commerce-db';
-
 import { cn } from '@/utils/tailwind';
 import { usePathname } from 'next/navigation';
 
 import Link from '@/components/link';
+import { useShop } from '@/components/shop/provider';
 
 import type { Locale } from '@/utils/locale';
 
 const SHARED_STYLES = 'rounded-lg p-2';
 
 type BreadcrumbsProps = {
-    shop: OnlineShop;
     locale: Locale;
     title?: string;
 };
-const Breadcrumbs = ({ shop, locale, title }: BreadcrumbsProps) => {
+const Breadcrumbs = ({ locale, title }: BreadcrumbsProps) => {
+    const { shop } = useShop();
     const route = usePathname();
     const path = route.split('/').slice(2, -1);
 

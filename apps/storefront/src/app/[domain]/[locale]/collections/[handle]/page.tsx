@@ -172,7 +172,7 @@ export default async function CollectionPage({
         return (
             <>
                 <Suspense>
-                    <Breadcrumbs shop={shop} locale={locale} title={collection.title} />
+                    <Breadcrumbs locale={locale} title={collection.title} />
                 </Suspense>
 
                 <PageContent className={styles.container}>

@@ -96,7 +96,7 @@ export default async function CartPage({ params: { domain, locale: localeData } 
         return (
             <>
                 <Suspense>
-                    <Breadcrumbs shop={shop} locale={locale} />
+                    <Breadcrumbs locale={locale} />
                 </Suspense>
 
                 <Suspense>
