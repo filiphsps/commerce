@@ -2,7 +2,7 @@ import 'server-only';
 
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
-import { Card, Details, Heading } from '@nordcom/nordstar';
+import { Details, Heading } from '@nordcom/nordstar';
 
 import { auth } from '@/auth';
 import Link from 'next/link';
@@ -32,22 +32,17 @@ export default async function ShopPage({ params: { domain } }: ShopPageProps) {
 
         return (
             <>
-                <header>
-                    <Heading level="h1">{shop.name}</Heading>
-                    <Heading level="h4" as="h2">
-                        Overview,{' '}
-                        <Link href={`https://${shop.domain}`} target="_blank" rel="noreferrer">
-                            {shop.domain}
-                        </Link>
-                    </Heading>
-                </header>
+                <Heading level="h1">{shop.name}</Heading>
+                <Heading level="h4" as="h2">
+                    <Link href={`https://${shop.domain}`} target="_blank" rel="noreferrer">
+                        {shop.domain}
+                    </Link>
+                </Heading>
 
-                <Card>
-                    {/* Dropdown */}
-                    <Details label="Raw Shop">
-                        <code className="whitespace-pre-wrap">{code}</code>
-                    </Details>
-                </Card>
+                {/* Dropdown */}
+                <Details label="Raw Shop">
+                    <code className="whitespace-pre-wrap">{code}</code>
+                </Details>
             </>
         );
     } catch (error: unknown) {

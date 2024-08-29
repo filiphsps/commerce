@@ -46,7 +46,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     return (
         <html lang="en" className={cn(primaryFont.className, primaryFont.variable, GeistMono.variable)}>
             <head />
-            <body className="group/body overflow-x-hidden overscroll-x-none md:overscroll-none">
+            <body className="group/body overflow-x-hidden overscroll-x-none">
                 <Providers>{children}</Providers>
             </body>
         </html>

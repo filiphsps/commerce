@@ -54,7 +54,6 @@ export const SearchBar = ({ defaultValue, onSearch, disabled, className, i18n, .
                 spellCheck={true}
                 /* TODO: Make this copy configurable. */
                 placeholder="Search for products, brands, categories, collections, and more..."
-                disabled={disabled}
             />
 
             <Button
