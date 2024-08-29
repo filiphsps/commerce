@@ -63,6 +63,7 @@ export interface ShopBase extends BaseDocument {
         authentication: {
             token: string;
             publicToken: string;
+            domain?: string;
         };
         storefrontId: string;
         domain: string;

@@ -45,7 +45,8 @@ export default async function RootLayout({
     const locale = Locale.default;
 
     try {
-        const shop = await Shop.findByDomain(domain);
+        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+        const publicShop = await Shop.findByDomain(domain);
 
         const api = await ShopifyApolloApiClient({ shop, locale });
         const localization = await LocaleApi({ api });
@@ -57,13 +58,13 @@ export default async function RootLayout({
                 </head>
                 <body className="group/body overflow-x-hidden overscroll-x-none">
                     <ProvidersRegistry
-                        shop={shop}
+                        shop={publicShop}
                         currency={localization?.country.currency.isoCode}
                         locale={locale}
                         domain={domain}
                         toolbars={false}
                     >
-                        <AnalyticsProvider shop={shop}>
+                        <AnalyticsProvider shop={publicShop}>
                             <HeaderProvider loaderColor="transparent">{children}</HeaderProvider>
                         </AnalyticsProvider>
                     </ProvidersRegistry>

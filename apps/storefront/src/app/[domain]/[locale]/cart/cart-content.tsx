@@ -1,3 +1,5 @@
+import 'server-only';
+
 import styles from './cart-content.module.scss';
 
 import { type ReactNode, Suspense } from 'react';
@@ -48,13 +50,7 @@ export default async function CartContent({ shop, locale, i18n, header, paymentM
                 </div>
 
                 <Suspense fallback={<aside className={cn(styles.sidebar, 'h-32')} data-skeleton />}>
-                    <CartSidebar
-                        shop={shop}
-                        locale={locale}
-                        i18n={i18n}
-                        className={styles.sidebar}
-                        paymentMethods={paymentMethods}
-                    >
+                    <CartSidebar locale={locale} i18n={i18n} className={styles.sidebar} paymentMethods={paymentMethods}>
                         <PrismicPage
                             shop={shop}
                             locale={locale}

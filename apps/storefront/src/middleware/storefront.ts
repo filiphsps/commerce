@@ -1,5 +1,5 @@
 import { findShopByDomainOverHttp } from '@/api/shop';
-import { ShopifyApiClient, ShopifyApiConfig } from '@/api/shopify';
+import { ShopifyApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { commonValidations } from '@/middleware/common-validations';
 import { NextResponse } from 'next/server';
@@ -71,9 +71,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
 
         if (!locale) {
             const shop = await findShopByDomainOverHttp(hostname);
-
-            const apiConfig = await ShopifyApiConfig({ shop });
-            const api = await ShopifyApiClient({ shop, apiConfig });
+            const api = await ShopifyApiClient({ shop });
             const locales = (await LocalesApi({ api })).map((locale) => locale.code);
 
             const acceptLanguageHeader = req.headers.get('accept-language') || req.headers.get('Accept-Language');

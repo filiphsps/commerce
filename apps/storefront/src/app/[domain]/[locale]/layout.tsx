@@ -7,7 +7,7 @@ import { type ReactNode, Suspense } from 'react';
 import { Shop } from '@nordcom/commerce-db';
 import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
 
-import { ShopifyApiClient, ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
+import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
 import { CountriesApi, LocaleApi, LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { CssVariablesProvider, getBrandingColors } from '@/utils/css-variables';
@@ -46,9 +46,7 @@ export async function generateStaticParams(): Promise<LayoutParams[]> {
                 if (shop.domain.includes('demo')) {
                     return null as any as LayoutParams;
                 }
-
-                const apiConfig = await ShopifyApiConfig({ shop });
-                const api = await ShopifyApiClient({ shop, apiConfig });
+                const api = await ShopifyApiClient({ shop });
                 const locales = await LocalesApi({ api });
 
                 return locales.map(({ code }) => ({
@@ -80,7 +78,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
     try {
         const locale = Locale.from(localeData);
-        const shop = await Shop.findByDomain(domain);
+        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
 
         return {
             metadataBase: new URL(`https://${shop.domain}/${locale.code}/`),
@@ -126,7 +124,8 @@ export default async function RootLayout({
     try {
         const locale = Locale.from(localeData);
 
-        const shop = await Shop.findByDomain(domain);
+        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+        const publicShop = await Shop.findByDomain(domain);
         const api = await ShopifyApolloApiClient({ shop, locale });
 
         const branding = await getBrandingColors(domain);
@@ -146,12 +145,12 @@ export default async function RootLayout({
                 <body className="group/body overflow-x-hidden overscroll-x-none">
                     <Suspense fallback={<ShopLayout.skeleton />}>
                         <ProvidersRegistry
-                            shop={shop}
+                            shop={publicShop}
                             currency={localization?.country.currency.isoCode}
                             locale={locale}
                             domain={domain}
                         >
-                            <AnalyticsProvider shop={shop}>
+                            <AnalyticsProvider shop={publicShop}>
                                 <HeaderProvider loaderColor={branding?.primary.color || ''}>
                                     <ShopLayout shop={shop} locale={locale} i18n={i18n}>
                                         <PageContent as="main" primary={true}>

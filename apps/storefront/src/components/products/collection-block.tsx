@@ -5,7 +5,7 @@ import overflowStyles from '@/styles/horizontal-overflow-scroll.module.scss';
 
 import { type HTMLProps, Suspense } from 'react';
 
-import type { OnlineShop } from '@nordcom/commerce-db';
+import { type OnlineShop } from '@nordcom/commerce-db';
 
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CollectionApi } from '@/api/shopify/collection';

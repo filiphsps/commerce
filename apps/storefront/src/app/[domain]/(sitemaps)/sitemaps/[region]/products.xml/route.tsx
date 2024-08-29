@@ -1,7 +1,7 @@
 import { NotFoundError } from '@nordcom/commerce-errors';
 
 import { findShopByDomainOverHttp } from '@/api/shop';
-import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
+import { ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductsPaginationApi } from '@/api/shopify/product';
 import { Locale } from '@/utils/locale';
 import { getServerSideSitemap } from 'next-sitemap';
@@ -20,10 +20,10 @@ export async function GET(
         throw new NotFoundError(`"Region" with the handle "${regionData}"`);
     }
 
-    const shop = await findShopByDomainOverHttp(domain);
     const locale = Locale.from(`en-${region}`);
-    const apiConfig = await ShopifyApiConfig({ shop });
-    const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });
+
+    const shop = await findShopByDomainOverHttp(domain);
+    const api = await ShopifyApolloApiClient({ shop, locale });
 
     let res: Awaited<ReturnType<typeof ProductsPaginationApi>> | null = null;
     let products: Product[] = [];

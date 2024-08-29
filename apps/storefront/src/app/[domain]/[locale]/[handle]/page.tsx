@@ -55,12 +55,14 @@ export async function generateMetadata({
     try {
         const locale = Locale.from(localeData);
 
-        const shop = await Shop.findByDomain(domain);
+        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
         // Setup the AbstractApi client.
         const api = await ShopifyApolloApiClient({ shop, locale });
         // Do the actual API calls.
         const page = await PageApi({ shop, locale, handle });
-        if (!page) notFound();
+        if (!page) {
+            notFound();
+        }
 
         const locales = await LocalesApi({ api });
 
@@ -129,10 +131,12 @@ export default async function CustomPage({
         const locale = Locale.from(localeCode);
 
         // Fetch the current shop.
-        const shop = await Shop.findByDomain(domain);
+        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
 
         const page = await PageApi({ shop, locale, handle } as any);
-        if (!page) notFound(); // TODO: Return proper error.
+        if (!page) {
+            notFound(); // TODO: Return proper error.
+        }
 
         // Get dictionary of strings for the current locale.
         const i18n = await getDictionary({ shop, locale });

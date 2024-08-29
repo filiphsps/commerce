@@ -30,7 +30,7 @@ export async function generateMetadata({
     try {
         const locale = Locale.from(localeData);
 
-        const shop = await Shop.findByDomain(domain);
+        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
         const api = await ShopifyApolloApiClient({ shop, locale });
 
         const page = await PageApi({ shop, locale, handle: 'cart' });

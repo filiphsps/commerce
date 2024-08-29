@@ -77,7 +77,7 @@ export async function generateMetadata({
         const locale = Locale.from(localeData);
 
         // Fetch the current shop.
-        const shop = await Shop.findByDomain(domain);
+        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
 
         // Setup the AbstractApi client.
         const api = await ShopifyApiClient({ shop, locale });
@@ -160,7 +160,8 @@ export default async function ProductPage({
         const locale = Locale.from(localeData);
 
         // Fetch the current shop.
-        const shop = await Shop.findByDomain(domain);
+        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+
         // Setup the AbstractApi client.
         const api = await ShopifyApolloApiClient({ shop, locale });
 
@@ -272,7 +273,7 @@ export default async function ProductPage({
                             'flex h-auto w-full md:w-1/2 md:shrink-0 lg:w-full lg:max-w-[42rem] xl:max-w-[52rem]'
                         }
                     >
-                        <Suspense>
+                        <Suspense fallback={<div className="h-32 w-full" data-skeleton />}>
                             <ProductGallery
                                 initialImageId={initialVariant.image?.id || product.images.edges[0]?.node.id}
                                 images={product.images.edges.map((edge) => edge.node)}
@@ -284,13 +285,11 @@ export default async function ProductPage({
                         </Suspense>
                     </section>
 
-                    <Suspense fallback={<section className="flex p-4" data-skeleton />}>
+                    <Suspense fallback={<section className="flex w-full p-4" data-skeleton />}>
                         <section className="flex w-full flex-col gap-3">
-                            <div>
-                                <Suspense fallback={<div className="h-4 w-full" data-skeleton />}>
-                                    <ProductSavings product={product} i18n={i18n} />
-                                </Suspense>
-                            </div>
+                            <Suspense fallback={<div className="h-4 w-full" data-skeleton />}>
+                                <ProductSavings product={product} i18n={i18n} />
+                            </Suspense>
 
                             <div className={cn(ROUNDED_BLOCK_STYLES)}>
                                 <div className="flex h-auto w-full flex-col justify-start gap-3 lg:gap-4 lg:p-0">
@@ -326,7 +325,7 @@ export default async function ProductPage({
                                         </Link>
                                     </header>
 
-                                    <div className="flex items-end justify-start gap-2 md:gap-3">
+                                    <div className="flex items-end justify-start gap-2 empty:hidden md:gap-3">
                                         <Suspense>
                                             <ProductPricing product={product} />
                                         </Suspense>

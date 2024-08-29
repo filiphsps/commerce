@@ -81,7 +81,7 @@ export async function generateMetadata({
     }
 
     try {
-        const shop = await Shop.findByDomain(domain);
+        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
         const locale = Locale.from(localeData);
 
         const api = await ShopifyApolloApiClient({ shop, locale });
@@ -132,7 +132,7 @@ export default async function ArticlePage({
     }
 
     try {
-        const shop = await Shop.findByDomain(domain);
+        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
         const locale = Locale.from(localeData);
 
         const api = await ShopifyApolloApiClient({ shop, locale });

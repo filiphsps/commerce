@@ -7,7 +7,7 @@ import overflowStyles from '@/styles/horizontal-overflow-scroll.module.scss';
 
 import { Suspense } from 'react';
 
-import type { OnlineShop } from '@nordcom/commerce-db';
+import { type OnlineShop } from '@nordcom/commerce-db';
 
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { RecommendationApi } from '@/api/shopify/recommendation';
@@ -26,7 +26,9 @@ export type RecommendedProductsProps = {
     className?: string;
 };
 const RecommendedProducts = async ({ shop, locale, product, className }: RecommendedProductsProps) => {
-    if (!product) return null;
+    if (!product) {
+        return null;
+    }
 
     const api = await ShopifyApolloApiClient({ shop, locale });
     const recommended = await RecommendationApi({ api, id: product.id });

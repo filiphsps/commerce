@@ -24,7 +24,7 @@ export async function generateMetadata({
     params: BlogPageParams;
 }): Promise<Metadata> {
     try {
-        const shop = await Shop.findByDomain(domain);
+        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
         const locale = Locale.from(localeData);
 
         const api = await ShopifyApolloApiClient({ shop, locale });
@@ -82,10 +82,11 @@ export async function generateMetadata({
 
 export default async function BlogPage({ params: { domain, locale: localeData } }: { params: BlogPageParams }) {
     try {
-        const shop = await Shop.findByDomain(domain);
+        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
         const locale = Locale.from(localeData);
 
         const api = await ShopifyApolloApiClient({ shop, locale });
+
         const page = await PageApi({ shop, locale, handle: 'blog' });
         const blog = await BlogApi({ api, handle: 'news' });
 
@@ -99,7 +100,7 @@ export default async function BlogPage({ params: { domain, locale: localeData } 
                     subtitle={page?.description || blog.seo?.description}
                 />
 
-                <BlogContent blog={blog} shop={shop} locale={locale} i18n={i18n} />
+                <BlogContent blog={blog} locale={locale} i18n={i18n} />
 
                 {page?.slices && page.slices.length > 0 && (
                     <PrismicPage

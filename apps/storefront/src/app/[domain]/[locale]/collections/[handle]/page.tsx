@@ -54,7 +54,7 @@ export async function generateMetadata({
     try {
         const locale = Locale.from(localeData);
 
-        const shop = await Shop.findByDomain(domain);
+        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
         const api = await ShopifyApolloApiClient({ shop, locale });
 
         const collection = await CollectionApi({ api, handle, first: 16, after: null }, cache); // TODO: this.
@@ -134,7 +134,7 @@ export default async function CollectionPage({
         };
 
         // Fetch the current shop.
-        const shop = await Shop.findByDomain(domain);
+        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
 
         // Setup the AbstractApi client.
         const api = await ShopifyApolloApiClient({ shop, locale });

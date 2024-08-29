@@ -35,7 +35,7 @@ export async function generateMetadata({
     try {
         const locale = Locale.from(localeData);
 
-        const shop = await Shop.findByDomain(domain);
+        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
         const api = await ShopifyApolloApiClient({ shop, locale });
 
         const page = await PageApi({ shop, locale, handle: 'products' });
@@ -94,7 +94,7 @@ export default async function ProductsPage({ params: { domain, locale: localeDat
         const locale = Locale.from(localeData);
 
         // Fetch the current shop.
-        const shop = await Shop.findByDomain(domain);
+        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
 
         // Setup the AbstractApi client.
         const api = await ShopifyApolloApiClient({ shop, locale });
@@ -118,6 +118,9 @@ export default async function ProductsPage({ params: { domain, locale: localeDat
 
                 <Suspense>
                     <ProductsContent />
+                </Suspense>
+
+                <Suspense>
                     <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
                 </Suspense>
 

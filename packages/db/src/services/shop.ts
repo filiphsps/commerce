@@ -72,11 +72,14 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
         });
 
         if (!sensitiveData) {
+            delete (res as any)._id;
+
             return {
                 ...res,
                 commerceProvider: {
                     ...res.commerceProvider,
                     authentication: {
+                        domain: res.commerceProvider.authentication.domain,
                         publicToken: res.commerceProvider.authentication.publicToken
                     }
                 },

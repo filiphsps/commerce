@@ -50,8 +50,6 @@ export const findShopByDomainOverHttp = async (domain: string): Promise<OnlineSh
     }
 
     let shop = { ...document, id: document._id };
-    delete shop._id;
-
     return shop as OnlineShop;
 };
 

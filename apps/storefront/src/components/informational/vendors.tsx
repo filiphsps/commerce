@@ -1,6 +1,6 @@
 import 'server-only';
 
-import type { OnlineShop } from '@nordcom/commerce-db';
+import { type OnlineShop } from '@nordcom/commerce-db';
 
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { VendorsApi } from '@/api/shopify/vendor';

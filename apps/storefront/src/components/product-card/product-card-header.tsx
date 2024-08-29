@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import 'server-only';
 
 import { useMemo } from 'react';
 

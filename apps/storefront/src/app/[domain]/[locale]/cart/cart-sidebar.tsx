@@ -1,7 +1,5 @@
 'use client';
 
-import type { OnlineShop } from '@nordcom/commerce-db';
-
 import { Checkout } from '@/utils/checkout';
 import { cn } from '@/utils/tailwind';
 import { useTrackable } from '@/utils/trackable';
@@ -9,25 +7,18 @@ import { useCart } from '@shopify/hydrogen-react';
 import { toast } from 'sonner';
 
 import { CartSummary } from '@/components/cart/cart-summary';
+import { useShop } from '@/components/shop/provider';
 
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import type { HTMLProps, ReactNode } from 'react';
 
 export type CartSidebarProps = {
-    shop: OnlineShop;
     locale: Locale;
     i18n: LocaleDictionary;
     paymentMethods?: ReactNode;
 } & HTMLProps<HTMLDivElement>;
-export const CartSidebar = ({
-    shop,
-    i18n,
-    locale,
-    className,
-    children,
-    paymentMethods,
-    ...props
-}: CartSidebarProps) => {
+export const CartSidebar = ({ i18n, locale, className, children, paymentMethods, ...props }: CartSidebarProps) => {
+    const { shop } = useShop();
     const cart = useCart();
     const trackable = useTrackable();
 

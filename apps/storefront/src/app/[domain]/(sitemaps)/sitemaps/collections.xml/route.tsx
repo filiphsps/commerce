@@ -1,7 +1,7 @@
 import { Error, UnknownApiError } from '@nordcom/commerce-errors';
 
 import { findShopByDomainOverHttp } from '@/api/shop';
-import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
+import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CollectionsPaginationApi } from '@/api/shopify/collection';
 import { LocalesApi } from '@/api/store';
 import { Locale } from '@/utils/locale';
@@ -16,10 +16,10 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(_: NextRequest, { params: { domain } }: { params: DynamicSitemapRouteParams }) {
     try {
-        const shop = await findShopByDomainOverHttp(domain);
         const locale = Locale.default;
-        const apiConfig = await ShopifyApiConfig({ shop });
-        const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });
+
+        const shop = await findShopByDomainOverHttp(domain);
+        const api = await ShopifyApolloApiClient({ shop, locale });
         const locales = await LocalesApi({ api });
 
         let res: Awaited<ReturnType<typeof CollectionsPaginationApi>> | null = null;

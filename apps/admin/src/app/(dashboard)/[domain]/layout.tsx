@@ -45,7 +45,7 @@ export async function generateMetadata({ params: { domain } }: ShopLayoutProps):
     }
 }
 
-export default async function ShopLayout({ children, params: { domain } }: ShopLayoutProps) {
+export default async function ShopLayout({ children, params: { domain: _domain } }: ShopLayoutProps) {
     const session = await auth();
     if (!session?.user) {
         redirect('/auth/login/');

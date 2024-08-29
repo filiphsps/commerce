@@ -1,6 +1,6 @@
 import { PagesApi } from '@/api/page';
 import { findShopByDomainOverHttp } from '@/api/shop';
-import { ShopifyApiClient, ShopifyApiConfig } from '@/api/shopify';
+import { ShopifyApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { Locale } from '@/utils/locale';
 import { getServerSideSitemap } from 'next-sitemap';
@@ -12,8 +12,7 @@ import type { ISitemapField } from 'next-sitemap';
 export async function GET(_: NextRequest, { params: { domain } }: { params: DynamicSitemapRouteParams }) {
     const shop = await findShopByDomainOverHttp(domain);
     const locale = Locale.default;
-    const apiConfig = await ShopifyApiConfig({ shop });
-    const api = await ShopifyApiClient({ shop, locale, apiConfig });
+    const api = await ShopifyApiClient({ shop, locale });
     const locales = await LocalesApi({ api });
 
     const pages = ((await PagesApi({ shop, locale, exclude: [] })) || [])

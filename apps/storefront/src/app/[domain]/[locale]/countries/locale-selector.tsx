@@ -4,23 +4,22 @@ import styles from './countries.module.scss';
 
 import { useRef } from 'react';
 
-import type { OnlineShop } from '@nordcom/commerce-db';
-
 import { Locale } from '@/utils/locale';
 import { byIso as countryLookup } from 'country-code-lookup';
 import Image from 'next/image';
 
 import Link from '@/components/link';
+import { useShop } from '@/components/shop/provider';
 import { Label } from '@/components/typography/label';
 
 import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
 
 type LocaleSelectorProps = {
-    shop: OnlineShop;
     countries: Country[];
     locale: Locale;
 };
-export default function LocaleSelector({ shop, countries = [], locale }: LocaleSelectorProps) {
+export default function LocaleSelector({ countries = [], locale }: LocaleSelectorProps) {
+    const { shop } = useShop();
     const localeRef = useRef<HTMLInputElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
 

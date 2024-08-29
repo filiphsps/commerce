@@ -24,7 +24,7 @@ export default async function BlogLayout({
     params: BlogLayoutParams;
 }) {
     try {
-        const shop = await Shop.findByDomain(domain);
+        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
         const locale = Locale.from(localeData);
 
         const api = await ShopifyApolloApiClient({ shop, locale });

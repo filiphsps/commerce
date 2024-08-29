@@ -20,12 +20,12 @@ export const ShopifyApiConfig = async ({
     private: () => ApiConfig;
 }> => {
     const { commerceProvider } = await findShopByDomainOverHttp(domain);
-    if (!commerceProvider.domain) throw new UnknownCommerceProviderError();
+    if (!(commerceProvider as any)) throw new UnknownCommerceProviderError();
 
     const api = createStorefrontClient({
         publicStorefrontToken: commerceProvider.authentication.publicToken,
         privateStorefrontToken: commerceProvider.authentication.token || undefined,
-        storeDomain: commerceProvider.domain,
+        storeDomain: (commerceProvider as any)?.domain || undefined,
         contentType: 'json'
     });
 

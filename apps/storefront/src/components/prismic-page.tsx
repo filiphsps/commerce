@@ -31,7 +31,9 @@ function PrismicPage<T extends PageType = 'custom_page'>({
     type = 'custom_page' as T,
     className
 }: PageParams<T>) {
-    if (!page && !slices) return null;
+    if (!page && !slices) {
+        return null;
+    }
 
     return (
         <section className={cn('flex flex-col gap-6 empty:hidden lg:gap-8', className)}>
@@ -39,7 +41,18 @@ function PrismicPage<T extends PageType = 'custom_page'>({
                 <SliceZone
                     slices={page?.slices || slices || []}
                     components={components}
-                    context={{ shop, i18n, locale, type, uid: handle, handle }}
+                    context={{
+                        shop: {
+                            ...shop,
+                            commerceProvider: {},
+                            contentProvider: {}
+                        },
+                        i18n,
+                        locale,
+                        type,
+                        uid: handle,
+                        handle
+                    }}
                 />
             </Suspense>
         </section>
@@ -71,7 +84,13 @@ PrismicPage.skeleton = <T extends PageType = 'custom_page'>({
                     return <Slice.skeleton key={slice.id} slice={slice} data-skeleton />;
                 }
 
-                return <Slice key={slice.id} slice={slice} context={{ shop: undefined }} />;
+                return (
+                    <Slice
+                        key={slice.id}
+                        slice={slice}
+                        context={{ shop: { ...shop, commerceProvider: {}, contentProvider: {} } }}
+                    />
+                );
             })}
         </>
     );

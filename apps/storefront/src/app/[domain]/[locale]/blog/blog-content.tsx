@@ -1,6 +1,6 @@
-import styles from './blog-content.module.scss';
+import 'server-only';
 
-import type { OnlineShop } from '@nordcom/commerce-db';
+import styles from './blog-content.module.scss';
 
 import { Button } from '@/components/actionable/button';
 import Link from '@/components/link';
@@ -10,12 +10,11 @@ import type { Locale, LocaleDictionary } from '@/utils/locale';
 import type { Blog } from '@shopify/hydrogen-react/storefront-api-types';
 
 type BlogContentProps = {
-    shop: OnlineShop;
     locale: Locale;
     i18n: LocaleDictionary;
     blog: Blog;
 };
-export default async function BlogContent({ shop, locale, blog }: BlogContentProps) {
+export default async function BlogContent({ locale, blog }: BlogContentProps) {
     return (
         <div className={styles.articles}>
             {blog.articles.edges.map(({ node: article }) => {
@@ -37,7 +36,7 @@ export default async function BlogContent({ shop, locale, blog }: BlogContentPro
                         </header>
 
                         <div className={styles.title}>
-                            <Link key={article.id} href={href} shop={shop} locale={locale}>
+                            <Link key={article.id} href={href} locale={locale}>
                                 {article.title}
                             </Link>
                         </div>
