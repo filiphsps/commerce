@@ -18,9 +18,7 @@ export default {
                     email: email || login,
                     image: avatar_url
                 };
-            },
-
-            redirectProxyUrl: NEXTAUTH_URL ? `https://admin.shops.nordcom/api/auth` : undefined
+            }
         })
     ],
     cookies: {
