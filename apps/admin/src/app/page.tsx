@@ -29,7 +29,7 @@ export default async function Overview() {
     const lastName = user.name?.split(' ').slice(1).join(' ') || null;
 
     const shopsActions = shops.map((shop) => (
-        <Button key={shop.id} variant="solid" as={Link} href={`/${shop.id}/`}>
+        <Button key={shop.id} variant="solid" as={Link} href={`/${shop.domain}/`}>
             {shop.name}
         </Button>
     ));
