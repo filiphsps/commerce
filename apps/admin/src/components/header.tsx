@@ -1,10 +1,10 @@
 import styles from '@/components/header.module.scss';
 
+import type { OnlineShop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 import { Card, Header as NordstarHeader, Label } from '@nordcom/nordstar';
 
 import { auth } from '@/auth';
-import { getShop } from '@/utils/fetchers';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
@@ -12,18 +12,13 @@ import { notFound, redirect } from 'next/navigation';
 import type { HTMLProps } from 'react';
 
 export type HeaderProps = {
-    shopId: string;
+    shop: OnlineShop;
 } & Omit<HTMLProps<HTMLDivElement>, 'children' | 'color'>;
-export default async function Header({ shopId, className, ...props }: HeaderProps) {
+export default async function Header({ shop, className, ...props }: HeaderProps) {
     try {
         const session = await auth();
         if (!session?.user) {
             redirect('/auth/login/');
-        }
-
-        const shop = await getShop(session.user.id!, shopId);
-        if (!shop) {
-            notFound();
         }
 
         return (
