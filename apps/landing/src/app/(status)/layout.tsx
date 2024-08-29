@@ -47,7 +47,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             <head />
             <body>
                 <Providers>
-                    <div className="p-4 md:p-8">{children}</div>
+                    <div className="min-h-[calc(100vh-4rem)] p-4 md:p-8">{children}</div>
 
                     <Footer />
                 </Providers>

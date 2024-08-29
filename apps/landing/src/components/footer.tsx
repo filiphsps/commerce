@@ -25,7 +25,11 @@ export default function Footer({ className, ...props }: FooterProps) {
                             />
                         </section>
                         <section className={styles.section}>
-                            <Link href="/changelog/" prefetch={false} className={styles['git-ref']}>
+                            <Link
+                                href="https://shops.nordcom.io/changelog/"
+                                prefetch={false}
+                                className={styles['git-ref']}
+                            >
                                 {(process.env.GIT_COMMIT_SHA || '').slice(0, 7)}
                             </Link>
                         </section>
