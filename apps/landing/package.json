@@ -104,7 +104,7 @@
         "eslint-config-next": "15.0.0-canary.131",
         "eslint": "8.57.0",
         "graphql": "16.9.0",
-        "happy-dom": "15.4.2",
+        "happy-dom": "15.6.0",
         "postcss": "8.4.41",
         "prettier": "3.3.3",
         "rimraf": "6.0.1",
