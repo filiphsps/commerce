@@ -13,13 +13,15 @@ type CartContentProps = {
     i18n: LocaleDictionary;
 };
 const CartLines = ({ i18n }: CartContentProps) => {
-    const { cartReady, lines = [], linesRemove } = useCart();
-
     const { t } = useTranslation('cart', i18n);
+
+    const { cartReady, lines = [], linesRemove } = useCart();
 
     if (!cartReady) {
         return <CartLines.skeleton />;
-    } else if (lines.length <= 0) {
+    }
+
+    if (cartReady && lines.length <= 0) {
         return <Label>There are no items in your cart.</Label>;
     }
 

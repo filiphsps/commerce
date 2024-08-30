@@ -29,12 +29,15 @@ export const LiveChatProvider = ({
 
     const primaryColor = accents.find(({ type }) => type === 'primary');
     return (
-        <LiveChatLoaderProvider providerKey={intercom} provider="intercom">
+        <>
             {children}
 
             {intercom ? (
                 <>
-                    <Intercom color={primaryColor?.color} />
+                    <LiveChatLoaderProvider providerKey={intercom} provider="intercom" idlePeriod={1500}>
+                        <Intercom color={primaryColor?.color} />
+                    </LiveChatLoaderProvider>
+
                     <Script
                         id="live-chat-intercom"
                         type="text/javascript"
@@ -51,6 +54,6 @@ export const LiveChatProvider = ({
                     />
                 </>
             ) : null}
-        </LiveChatLoaderProvider>
+        </>
     );
 };
