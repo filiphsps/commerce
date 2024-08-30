@@ -38,7 +38,7 @@ const RecommendedProducts = async ({ shop, locale, product, className }: Recomme
                 styles.container,
                 styles.content,
                 styles.horizontal,
-                'overflow-x-shadow',
+                'overflow-x-shadow overscroll-x-auto',
                 extraStyles.container,
                 className
             )}

@@ -26,8 +26,7 @@ export default async function ShopProductsPagePage({ params: { domain } }: ShopP
     }
 
     try {
-        const shop = await Shop.findByDomain(domain, { convert: true });
-        const code = JSON.stringify(shop, null, 4);
+        const _shop = await Shop.findByDomain(domain, { convert: true });
 
         return (
             <>

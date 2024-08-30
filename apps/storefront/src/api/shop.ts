@@ -1,6 +1,9 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { UnknownShopDomainError } from '@nordcom/commerce-errors';
 
+export type HexColor = `#${string}`;
+export type Color = HexColor;
+
 export type Image = {
     src: string;
     width: number;

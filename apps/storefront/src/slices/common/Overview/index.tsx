@@ -1,7 +1,7 @@
 import 'server-only';
 
 import PageContent from '@/components/page-content';
-import { Overview } from '@/components/typography/Overview';
+import { Overview } from '@/components/typography/overview';
 import { PrismicText } from '@/components/typography/prismic-text';
 
 import type { Content } from '@prismicio/client';
@@ -35,7 +35,7 @@ const OverviewSlice = ({ slice }: OverviewProps) => {
                         image={(item.image.url && (item.image as any)) || undefined}
                         imageStyle={item.image_style}
                         body={<PrismicText data={item.text} styled={false} />}
-                        data-layout={item.layout}
+                        accent={item.accent || undefined}
                     />
                 );
             })}

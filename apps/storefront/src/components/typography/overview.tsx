@@ -3,6 +3,7 @@ import Image from 'next/image';
 
 import { Content } from '@/components/typography/content';
 
+import type { Color } from '@/api/shop';
 import type { HTMLProps } from 'react';
 
 export type OverviewProps = {
@@ -17,6 +18,7 @@ export type OverviewProps = {
     };
     imageStyle?: 'normal' | 'cover';
     layout?: 'left' | 'right' | 'center';
+    accent?: Color;
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 
 export const Overview = ({
@@ -24,6 +26,7 @@ export const Overview = ({
     image,
     imageStyle = 'normal',
     layout = 'left',
+    accent,
     className,
     ...props
 }: OverviewProps) => {
@@ -32,11 +35,16 @@ export const Overview = ({
     }
 
     if (!image) {
-        return <Content>{body}</Content>;
+        return <Content className="max-w-none">{body}</Content>;
     }
 
     const imageElement = (
         <div
+            style={{
+                ...(accent && {
+                    '--accent-primary': accent
+                })
+            }}
             className={cn(
                 'relative col-span-3 flex h-32 bg-[var(--accent-primary)] p-3 lg:h-auto',
                 layout === 'center' && 'h-32 lg:h-28',
