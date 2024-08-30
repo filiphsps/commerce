@@ -29,7 +29,7 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
 
     // TODO: Dynamic copyright copy and content.
     return (
-        <footer className={cn(styles.container, 'flex h-full min-h-96 w-full pt-4 md:pt-8')}>
+        <footer className={cn(styles.container, 'flex h-full w-full px-2 pt-2 md:px-3')}>
             <div className={cn(styles.content, 'flex h-full flex-col items-stretch gap-4 md:gap-8')}>
                 <div className={cn(styles.blocks, 'gap-6', borderStyles)}>
                     <div className={cn(styles.block, borderStyles)}>

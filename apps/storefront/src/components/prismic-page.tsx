@@ -5,7 +5,6 @@ import { Suspense } from 'react';
 import type { OnlineShop, Optional } from '@nordcom/commerce-db';
 
 import { components } from '@/slices';
-import { cn } from '@/utils/tailwind';
 import { SliceZone } from '@prismicio/react';
 
 import type { PageData, PageType } from '@/api/page';
@@ -36,26 +35,24 @@ function PrismicPage<T extends PageType = 'custom_page'>({
     }
 
     return (
-        <section className={cn('flex flex-col gap-6 empty:hidden lg:gap-8', className)}>
-            <Suspense fallback={<PrismicPage.skeleton page={page} slices={slices} shop={shop} />}>
-                <SliceZone
-                    slices={page?.slices || slices || []}
-                    components={components}
-                    context={{
-                        shop: {
-                            ...shop,
-                            commerceProvider: {},
-                            contentProvider: {}
-                        },
-                        i18n,
-                        locale,
-                        type,
-                        uid: handle,
-                        handle
-                    }}
-                />
-            </Suspense>
-        </section>
+        <Suspense fallback={<PrismicPage.skeleton page={page} slices={slices} shop={shop} />}>
+            <SliceZone
+                slices={page?.slices || slices || []}
+                components={components}
+                context={{
+                    shop: {
+                        ...shop,
+                        commerceProvider: {},
+                        contentProvider: {}
+                    },
+                    i18n,
+                    locale,
+                    type,
+                    uid: handle,
+                    handle
+                }}
+            />
+        </Suspense>
     );
 }
 PrismicPage.displayName = 'Nordcom.PrismicPage';

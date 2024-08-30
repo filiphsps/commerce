@@ -21,9 +21,9 @@ const PageContent = ({ as: Tag = 'div', primary, className, ...props }: PageCont
             {...props}
             className={cn(
                 styles.container,
-                'mx-auto flex w-full max-w-[var(--page-width)] flex-col gap-4 text-base',
+                'mx-auto flex w-full max-w-[var(--page-width)] flex-col gap-2 text-base empty:hidden md:gap-4',
                 primary && styles.primary,
-                primary && 'gap-6 p-4',
+                primary && 'gap-4 p-2 md:p-3',
                 className
             )}
         />

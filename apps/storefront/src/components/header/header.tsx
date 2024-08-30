@@ -34,7 +34,7 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
             {...props}
         >
             <section className="flex h-16 w-full flex-col items-center bg-white">
-                <header className="flex h-full w-full max-w-[var(--page-width)] items-center justify-start gap-4 overflow-hidden px-3 md:px-3">
+                <header className="flex h-full w-full max-w-[var(--page-width)] items-center justify-start gap-4 overflow-hidden px-2 md:px-3">
                     <Link href={'/'} className="block h-full py-[0.75rem]">
                         {logo.src ? (
                             <Image
@@ -62,7 +62,7 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
                 </header>
             </section>
 
-            <section className="flex w-full flex-col items-center justify-center gap-0 border-0 border-b border-t border-solid border-gray-300 bg-white text-black group-data-[menu-open=true]/body:border-b-gray-100 md:px-2 lg:px-2">
+            <section className="flex w-full flex-col items-center justify-center gap-0 border-0 border-b border-t border-solid border-gray-300 bg-white px-2 text-black group-data-[menu-open=true]/body:border-b-gray-100 md:px-3">
                 <Suspense>
                     <HeaderNavigation slices={slices} />
                 </Suspense>
