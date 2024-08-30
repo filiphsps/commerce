@@ -28,9 +28,9 @@ const Vendors = async ({ shop, locale, className, ...props }: VendorsProps) => {
     return vendors.map((vendor: VendorModel) => (
         <Link
             key={vendor.handle}
+            {...props}
             // TODO: Figure out if we should link to the collection or a filtered product list.
             href={`/collections/${vendor.handle}/`}
-            {...props}
             className={cn(
                 'bg-secondary-light hover:bg-primary hover:text-primary-foreground flex items-center justify-center whitespace-nowrap rounded-lg p-2 px-3 text-center text-sm font-semibold leading-tight transition-colors md:mr-0 md:whitespace-normal md:px-3',
                 className

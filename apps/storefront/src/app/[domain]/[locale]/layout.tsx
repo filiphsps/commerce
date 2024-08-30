@@ -66,7 +66,7 @@ export async function generateViewport({ params: { domain } }: { params: LayoutP
     return {
         width: 'device-width',
         initialScale: 1,
-        interactiveWidget: 'resizes-visual',
+        interactiveWidget: 'resizes-content',
         themeColor: branding?.secondary.color
     };
 }
