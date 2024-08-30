@@ -11,10 +11,10 @@ module.exports = {
                 '2xl': '1400px'
             }
         },
-        fontFamily: 'var(--font-primary, var(--fallback-font))',
+        fontFamily: 'var(--font-primary, var(--font-fallback))',
         extend: {
             fontFamily: {
-                sans: ['var(--font-primary, var(--fallback-font))', 'sans-serif'],
+                sans: ['var(--font-primary, var(--font-fallback))', 'sans-serif'],
                 mono: ['var(--font-geist-mono)', 'monospace']
             },
             colors: {

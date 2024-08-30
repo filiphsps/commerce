@@ -307,7 +307,7 @@ export default async function ProductPage({
                                             ) : null}
                                         </div>
 
-                                        <div className="flex w-full grow flex-wrap whitespace-pre-wrap text-3xl font-bold leading-tight">
+                                        <div className="flex w-full grow flex-wrap whitespace-pre-wrap text-3xl font-extrabold leading-tight">
                                             <TitleTag className="text-inherit">
                                                 {title}{' '}
                                                 {product.productType ? (

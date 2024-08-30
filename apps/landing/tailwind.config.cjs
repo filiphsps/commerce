@@ -2,10 +2,10 @@
 module.exports = {
     content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
     theme: {
-        fontFamily: 'var(--font-primary, var(--fallback-font))',
+        fontFamily: ['var(--font-primary, var(--font-fallback))', 'sans-serif'],
         extend: {
             fontFamily: {
-                sans: ['var(--font-primary, var(--fallback-font))', 'sans-serif'],
+                sans: ['var(--font-primary, var(--font-fallback))', 'sans-serif'],
                 mono: ['var(--font-geist-mono)', 'monospace']
             },
             colors: {},

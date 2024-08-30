@@ -20,7 +20,8 @@
         "subtotal": "Subtotal",
         "view-cart": "View your shopping cart",
         "remove-from-cart": "Remove {0} from the cart",
-        "clear-cart": "Clear cart"
+        "clear-cart": "Clear cart",
+        "n-items": "{0} item(s)"
     },
     "common": {
         "add-to-cart": "Add to Cart",

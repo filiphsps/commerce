@@ -3,8 +3,20 @@
 @tailwind utilities;
 
 @layer base {
+    :root {
+        --font-fallback: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, Cantarell,
+            'Helvetica Neue', sans-serif;
+    }
+
     html {
         @apply font-sans;
+        font-feature-settings:
+            'rlig' 1,
+            'calt' 1;
+    }
+
+    body {
+        @apply min-h-screen;
     }
 }
 

@@ -2,13 +2,13 @@
 @import 'text';
 
 :root {
-    --fallback-font: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, Cantarell,
+    --font-fallback: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, Cantarell,
         'Helvetica Neue', sans-serif;
     --color-success: #04e762;
 }
 
 html {
-    font-family: var(--font-primary, var(--fallback-font));
+    font-family: var(--font-primary, var(--font-fallback));
 }
 
 html,

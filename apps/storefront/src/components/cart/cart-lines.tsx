@@ -25,7 +25,7 @@ const CartLines = ({ i18n }: CartContentProps) => {
 
     return (
         <div className="flex w-full flex-col gap-2 empty:hidden">
-            <div className="flex w-full select-none flex-row-reverse items-center justify-between">
+            <div className="-mt-4 flex h-2 w-full select-none flex-row-reverse items-center justify-between pb-3">
                 <Button
                     as={Label}
                     className="inline-flex cursor-pointer text-xs hover:text-red-500"

@@ -135,7 +135,7 @@ export default async function RootLayout({
         const countries = await CountriesApi({ api });
 
         return (
-            <html lang={locale.code} className={cn(primaryFont.variable, 'overscroll-x-none')}>
+            <html lang={locale.code} className={cn(primaryFont.className, primaryFont.variable, 'overscroll-x-none')}>
                 <head>
                     <Suspense>
                         <CssVariablesProvider domain={domain} />
