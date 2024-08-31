@@ -105,7 +105,7 @@
         "eslint": "8.57.0",
         "graphql": "16.9.0",
         "happy-dom": "15.7.2",
-        "postcss": "8.4.41",
+        "postcss": "8.4.42",
         "prettier": "3.3.3",
         "rimraf": "6.0.1",
         "server-only": "0.0.1",
