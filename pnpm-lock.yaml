@@ -306,8 +306,8 @@ importers:
         specifier: 16.9.0
         version: 16.9.0
       happy-dom:
-        specifier: 15.7.0
-        version: 15.7.0
+        specifier: 15.7.2
+        version: 15.7.2
       postcss:
         specifier: 8.4.41
         version: 8.4.41
@@ -328,7 +328,7 @@ importers:
         version: 5.5.4
       vitest:
         specifier: 1.5.0
-        version: 1.5.0(@edge-runtime/vm@3.2.0)(@types/node@20.14.9)(happy-dom@15.7.0)(sass@1.77.8)(terser@5.31.1)
+        version: 1.5.0(@edge-runtime/vm@3.2.0)(@types/node@20.14.9)(happy-dom@15.7.2)(sass@1.77.8)(terser@5.31.1)
 
   apps/landing:
     dependencies:
@@ -508,8 +508,8 @@ importers:
         specifier: 16.9.0
         version: 16.9.0
       happy-dom:
-        specifier: 15.7.0
-        version: 15.7.0
+        specifier: 15.7.2
+        version: 15.7.2
       postcss:
         specifier: 8.4.41
         version: 8.4.41
@@ -530,7 +530,7 @@ importers:
         version: 5.5.4
       vitest:
         specifier: 1.5.0
-        version: 1.5.0(@edge-runtime/vm@3.2.0)(@types/node@20.14.9)(happy-dom@15.7.0)(sass@1.77.8)(terser@5.31.1)
+        version: 1.5.0(@edge-runtime/vm@3.2.0)(@types/node@20.14.9)(happy-dom@15.7.2)(sass@1.77.8)(terser@5.31.1)
 
   apps/storefront:
     dependencies:
@@ -728,8 +728,8 @@ importers:
         specifier: 16.9.0
         version: 16.9.0
       happy-dom:
-        specifier: 15.7.0
-        version: 15.7.0
+        specifier: 15.7.2
+        version: 15.7.2
       postcss:
         specifier: 8.4.41
         version: 8.4.41
@@ -756,7 +756,7 @@ importers:
         version: 5.5.4
       vitest:
         specifier: 1.5.0
-        version: 1.5.0(@edge-runtime/vm@3.2.0)(@types/node@16.18.11)(happy-dom@15.7.0)(sass@1.77.8)(terser@5.31.1)
+        version: 1.5.0(@edge-runtime/vm@3.2.0)(@types/node@16.18.11)(happy-dom@15.7.2)(sass@1.77.8)(terser@5.31.1)
 
   packages/db:
     dependencies:
@@ -4796,10 +4796,6 @@ packages:
 
   h3@1.11.1:
     resolution: {integrity: sha512-AbaH6IDnZN6nmbnJOH72y3c5Wwh9P97soSVdGSBbcDACRdkC0FEWf25pzx4f/NuOCK6quHmW18yF2Wx+G4Zi1A==}
-
-  happy-dom@15.7.0:
-    resolution: {integrity: sha512-tH48xarc37FLrtpNWuA89xw4IS1dxNrfzI8ehiafkj3kM3JSCMknuigKv2unDPRzd2C9Hv7ZDPkqPiBCvIz2Dg==}
-    engines: {node: '>=18.0.0'}
 
   happy-dom@15.7.2:
     resolution: {integrity: sha512-ZU4a27Sj+J7fgd+Kx3PVZ5NbANQxQS4gGZ1SaNMA4zvSDB5ZNkXg4UHLCkMko0fogg9XowI4f51p5FzgDfhVeQ==}
@@ -12432,12 +12428,6 @@ snapshots:
     transitivePeerDependencies:
       - uWebSockets.js
 
-  happy-dom@15.7.0:
-    dependencies:
-      entities: 4.5.0
-      webidl-conversions: 7.0.0
-      whatwg-mimetype: 3.0.0
-
   happy-dom@15.7.2:
     dependencies:
       entities: 4.5.0
@@ -15264,7 +15254,7 @@ snapshots:
       vite: 5.4.2(@types/node@20.14.9)(sass@1.77.8)(terser@5.31.1)
     optional: true
 
-  vitest@1.5.0(@edge-runtime/vm@3.2.0)(@types/node@16.18.11)(happy-dom@15.7.0)(sass@1.77.8)(terser@5.31.1):
+  vitest@1.5.0(@edge-runtime/vm@3.2.0)(@types/node@16.18.11)(happy-dom@15.7.2)(sass@1.77.8)(terser@5.31.1):
     dependencies:
       '@vitest/expect': 1.5.0
       '@vitest/runner': 1.5.0
@@ -15289,7 +15279,7 @@ snapshots:
     optionalDependencies:
       '@edge-runtime/vm': 3.2.0
       '@types/node': 16.18.11
-      happy-dom: 15.7.0
+      happy-dom: 15.7.2
     transitivePeerDependencies:
       - less
       - lightningcss
@@ -15326,42 +15316,6 @@ snapshots:
       '@edge-runtime/vm': 3.2.0
       '@types/node': 20.12.7
       happy-dom: 15.7.2
-    transitivePeerDependencies:
-      - less
-      - lightningcss
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-
-  vitest@1.5.0(@edge-runtime/vm@3.2.0)(@types/node@20.14.9)(happy-dom@15.7.0)(sass@1.77.8)(terser@5.31.1):
-    dependencies:
-      '@vitest/expect': 1.5.0
-      '@vitest/runner': 1.5.0
-      '@vitest/snapshot': 1.5.0
-      '@vitest/spy': 1.5.0
-      '@vitest/utils': 1.5.0
-      acorn-walk: 8.3.2
-      chai: 4.4.1
-      debug: 4.3.4
-      execa: 8.0.1
-      local-pkg: 0.5.0
-      magic-string: 0.30.10
-      pathe: 1.1.2
-      picocolors: 1.0.1
-      std-env: 3.7.0
-      strip-literal: 2.1.0
-      tinybench: 2.8.0
-      tinypool: 0.8.4
-      vite: 5.4.2(@types/node@20.14.9)(sass@1.77.8)(terser@5.31.1)
-      vite-node: 1.5.0(@types/node@20.14.9)(sass@1.77.8)(terser@5.31.1)
-      why-is-node-running: 2.2.2
-    optionalDependencies:
-      '@edge-runtime/vm': 3.2.0
-      '@types/node': 20.14.9
-      happy-dom: 15.7.0
     transitivePeerDependencies:
       - less
       - lightningcss
