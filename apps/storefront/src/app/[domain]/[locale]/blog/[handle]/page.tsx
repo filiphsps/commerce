@@ -183,9 +183,7 @@ export default async function ArticlePage({
                     />
                 </div>
 
-                <Content>
-                    <span dangerouslySetInnerHTML={{ __html: article.contentHtml || '' }} className="contents" />
-                </Content>
+                <Content html={article.contentHtml} />
 
                 <Suspense fallback={<BreadcrumbsSkeleton />}>
                     <Breadcrumbs locale={locale} title={article.title} />
