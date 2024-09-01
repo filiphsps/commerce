@@ -1,9 +1,5 @@
 import 'server-only';
 
-import styles from './page.module.scss';
-
-import { Suspense } from 'react';
-
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 
@@ -15,8 +11,6 @@ import { Locale } from '@/utils/locale';
 import { notFound } from 'next/navigation';
 import { title } from 'process';
 
-import Breadcrumbs from '@/components/informational/breadcrumbs';
-import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import { JsonLd } from '@/components/json-ld';
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
@@ -165,29 +159,31 @@ export default async function ArticlePage({
             }
         };
 
+        const publishedAt = new Date(article.publishedAt).toLocaleDateString(locale as any, {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
         return (
-            <article>
-                <div className={styles.header}>
+            <article className="flex flex-col gap-6">
+                <div className="prose flex flex-col gap-2">
+                    <Label
+                        as="div"
+                        className="text-sm font-semibold leading-snug text-gray-600"
+                        suppressHydrationWarning={true}
+                    >
+                        {publishedAt}
+                    </Label>
+
                     <Heading
+                        titleClassName="text-3xl lg:text-4xl font-semibold leading-tight text-pretty"
                         title={article.title}
-                        subtitle={
-                            <Label className={styles.date}>
-                                {new Date(article.publishedAt).toLocaleDateString(locale as any, {
-                                    weekday: undefined,
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric'
-                                })}
-                            </Label>
-                        }
                     />
                 </div>
 
                 <Content html={article.contentHtml} />
-
-                <Suspense fallback={<BreadcrumbsSkeleton />}>
-                    <Breadcrumbs locale={locale} title={article.title} />
-                </Suspense>
 
                 {/* Metadata */}
                 <JsonLd data={jsonLd} />

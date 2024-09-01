@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { type HTMLProps, type ReactNode } from 'react';
+import { type HTMLProps, type ReactNode, Suspense } from 'react';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 
@@ -20,12 +20,20 @@ export type ShopLayoutProps = {
 const ShopLayout = async ({ shop, locale, i18n, children }: ShopLayoutProps) => {
     return (
         <>
-            <InfoBar locale={locale} i18n={i18n} shop={shop} />
-            <Header domain={shop.domain} locale={locale} i18n={i18n} />
+            <Suspense>
+                <InfoBar locale={locale} i18n={i18n} shop={shop} />
+            </Suspense>
+            <Suspense fallback={<Header.skeleton />}>
+                <Header domain={shop.domain} locale={locale} i18n={i18n} />
+            </Suspense>
 
-            {children}
+            <Suspense fallback={<PageContent as="main" primary={true} className="min-h-[100vh-10rem]" />}>
+                {children}
+            </Suspense>
 
-            <Footer shop={shop} locale={locale} i18n={i18n} />
+            <Suspense fallback={<Footer.skeleton />}>
+                <Footer shop={shop} locale={locale} i18n={i18n} />
+            </Suspense>
         </>
     );
 };
@@ -33,7 +41,7 @@ const ShopLayout = async ({ shop, locale, i18n, children }: ShopLayoutProps) => 
 ShopLayout.skeleton = () => (
     <>
         <Header.skeleton />
-        <PageContent />
+        <PageContent as="main" primary={true} />
         <Footer.skeleton />
     </>
 );

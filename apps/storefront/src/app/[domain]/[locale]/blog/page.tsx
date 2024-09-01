@@ -10,6 +10,7 @@ import { Locale, useTranslation } from '@/utils/locale';
 import { asText } from '@prismicio/client';
 import { notFound } from 'next/navigation';
 
+import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
 
@@ -94,7 +95,7 @@ export default async function BlogPage({ params: { domain, locale: localeData } 
         const { t } = useTranslation('common', i18n);
 
         return (
-            <>
+            <PageContent>
                 <Heading
                     title={page?.title || blog.title || t('blog')}
                     subtitle={page?.description || blog.seo?.description}
@@ -112,7 +113,7 @@ export default async function BlogPage({ params: { domain, locale: localeData } 
                         type={'custom_page'}
                     />
                 )}
-            </>
+            </PageContent>
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {

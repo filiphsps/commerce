@@ -137,34 +137,32 @@ export default async function RootLayout({
         return (
             <html lang={locale.code} className={cn(primaryFont.className, primaryFont.variable, 'overscroll-x-none')}>
                 <head>
-                    <Suspense>
-                        <CssVariablesProvider domain={domain} />
-                    </Suspense>
+                    <CssVariablesProvider domain={domain} />
                 </head>
 
                 <body className="group/body overflow-x-hidden overscroll-x-none">
-                    <Suspense fallback={<ShopLayout.skeleton />}>
-                        <ProvidersRegistry
-                            shop={publicShop}
-                            currency={localization?.country.currency.isoCode}
-                            locale={locale}
-                            domain={domain}
-                        >
-                            <AnalyticsProvider shop={publicShop}>
-                                <HeaderProvider loaderColor={branding?.primary.color || ''}>
+                    <ProvidersRegistry
+                        shop={publicShop}
+                        currency={localization?.country.currency.isoCode}
+                        locale={locale}
+                        domain={domain}
+                    >
+                        <AnalyticsProvider shop={publicShop}>
+                            <HeaderProvider loaderColor={branding?.primary.color || ''}>
+                                <Suspense fallback={<ShopLayout.skeleton />}>
                                     <ShopLayout shop={shop} locale={locale} i18n={i18n}>
                                         <PageContent as="main" primary={true}>
                                             {children}
                                         </PageContent>
                                     </ShopLayout>
+                                </Suspense>
 
-                                    <Suspense>
-                                        <GeoRedirect countries={countries} locale={locale} />
-                                    </Suspense>
-                                </HeaderProvider>
-                            </AnalyticsProvider>
-                        </ProvidersRegistry>
-                    </Suspense>
+                                <Suspense>
+                                    <GeoRedirect countries={countries} locale={locale} />
+                                </Suspense>
+                            </HeaderProvider>
+                        </AnalyticsProvider>
+                    </ProvidersRegistry>
 
                     {/* Metadata */}
                     <JsonLd

@@ -193,11 +193,6 @@ a:is([href]):where([href=''], [href='#']) {
     cursor: pointer;
 }
 
-hr {
-    background: var(--color-block-dark);
-    height: calc(var(--block-border-width) / 1.25);
-}
-
 [data-skeleton] {
     animation: shimmer 2s linear infinite;
     background: linear-gradient(to right, var(--color-block) 0%, var(--color-block-dark) 25%, var(--color-block) 50%);

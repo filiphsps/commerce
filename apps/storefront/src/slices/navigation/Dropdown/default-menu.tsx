@@ -24,7 +24,7 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
         <nav
             className={cn(
                 MENU_COMMON_STYLES,
-                'flex flex-col gap-2 md:grid md:auto-rows-max md:grid-cols-2 lg:grid-cols-3 lg:gap-3 xl:grid-cols-4'
+                'flex flex-col gap-3 md:grid md:auto-rows-max md:grid-cols-2 lg:grid-cols-3 lg:gap-2 xl:grid-cols-4'
             )}
         >
             {links.map((item, index) => {
@@ -114,9 +114,11 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                                         TITLE_COMMON_STYLES
                                     )}
                                     style={{
-                                        textShadow: !background_color
-                                            ? `1px 1px ${gradientStyles ? '8px' : '1px'} #000`
-                                            : undefined
+                                        WebkitTextStroke: '.15rem rgba(0,0,0,.25)',
+                                        paintOrder: 'stroke fill',
+                                        ...(!background_color && {
+                                            textShadow: `1px 1px {gradientStyles ? '8px' : '1px'} #000`
+                                        })
                                     }}
                                 >
                                     <PrismicText data={title} styled={false} bare={true} />

@@ -142,7 +142,6 @@ const AddToCart = ({ children, className, i18n, quantity = 0, type, data, varian
     return (
         <Button
             aria-disabled={disabled || undefined}
-            aria-label={tCart('add-n-to-your-cart', quantity)}
             {...props}
             className={cn(className)}
             disabled={disabled || undefined}

@@ -4,7 +4,7 @@ import { cn } from '@/utils/tailwind';
 
 export type ContentProps = {
     children?: ReactNode;
-    html?: string;
+    html?: string | null;
     as?: ElementType;
 } & HTMLProps<HTMLDivElement>;
 export const Content = ({ children, as, className, html, ...props }: ContentProps) => {
@@ -15,7 +15,7 @@ export const Content = ({ children, as, className, html, ...props }: ContentProp
             <AsComponent
                 {...props}
                 className={cn(
-                    'prose prose-strong:font-extrabold prose-headings:text-inherit prose-a:text-inherit prose-a:no-underline prose-a:hover:underline text-current *:text-inherit empty:hidden',
+                    'prose prose-strong:font-extrabold prose-headings:text-inherit prose-a:text-inherit prose-a:no-underline prose-a:hover:underline prose-headings:text-pretty text-current *:text-inherit empty:hidden',
                     className
                 )}
                 {...(html ? { dangerouslySetInnerHTML: { __html: html } } : { children })}

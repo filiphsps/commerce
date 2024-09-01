@@ -62,7 +62,7 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
                 </header>
             </section>
 
-            <section className="flex w-full flex-col items-center justify-center gap-0 border-0 border-b border-t border-solid border-gray-300 bg-white text-black group-data-[menu-open=true]/body:border-b-gray-100 md:px-3">
+            <section className="flex w-full flex-col items-center justify-center gap-0 border-0 border-b border-t border-solid border-gray-300 bg-white text-black group-data-[menu-open=true]/body:border-b-gray-100">
                 <Suspense>
                     <HeaderNavigation slices={slices} />
                 </Suspense>
@@ -76,7 +76,15 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
 };
 
 // TODO: Skeleton.
-HeaderComponent.skeleton = () => <section data-skeleton></section>;
+HeaderComponent.skeleton = () => (
+    <section
+        className="sticky top-0 z-50 flex flex-col items-center shadow-none group-data-[scrolled=true]/body:shadow-lg"
+        data-skeleton
+    >
+        <section className="h-16"></section>
+        <section className="h-16"></section>
+    </section>
+);
 
 HeaderComponent.displayName = 'Nordcom.Header';
 export default HeaderComponent;

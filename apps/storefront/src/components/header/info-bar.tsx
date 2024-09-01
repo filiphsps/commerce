@@ -44,20 +44,20 @@ export async function InfoBar({ className, shop, locale, i18n, ...props }: InfoB
             <section
                 {...props}
                 className={cn(
-                    'mx-auto flex h-8 w-full max-w-[var(--page-width)] items-center justify-between gap-1 px-3 py-1 md:py-2 xl:px-4',
+                    'mx-auto flex h-8 w-full max-w-[var(--page-width)] items-center justify-between gap-1 px-3 py-1 md:px-3',
                     className
                 )}
             >
                 <div className={BLOCK_STYLES}>
                     <Link
-                        className="group flex items-center justify-center gap-1"
+                        className="group flex items-center justify-start gap-1"
                         href="/countries/"
                         title={t('language-and-region-settings')}
                         data-nosnippet={true}
                     >
                         <LocaleFlag
                             locale={locale}
-                            className="block h-3"
+                            className="block h-3 object-left"
                             nameClassName="group-hover:text-primary group-hover:underline"
                             withName={true}
                             priority={true}
