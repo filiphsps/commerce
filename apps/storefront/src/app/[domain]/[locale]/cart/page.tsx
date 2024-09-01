@@ -15,6 +15,7 @@ import { notFound } from 'next/navigation';
 
 import { AcceptedPaymentMethods } from '@/components/informational/accepted-payment-methods';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
+import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import Heading from '@/components/typography/heading';
 
 import CartContent from './cart-content';
@@ -95,7 +96,7 @@ export default async function CartPage({ params: { domain, locale: localeData } 
 
         return (
             <>
-                <Suspense>
+                <Suspense fallback={<BreadcrumbsSkeleton />}>
                     <Breadcrumbs locale={locale} />
                 </Suspense>
 

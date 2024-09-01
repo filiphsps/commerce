@@ -264,9 +264,8 @@ export default async function ProductPage({
 
         return (
             <>
-                <Suspense>
+                <Suspense fallback={<BreadcrumbsSkeleton />}>
                     <Breadcrumbs locale={locale} title={`${product.vendor} ${product.title}`} />
-                    <BreadcrumbsSkeleton />
                 </Suspense>
 
                 <div className="flex flex-col gap-4 md:flex-row md:flex-nowrap">

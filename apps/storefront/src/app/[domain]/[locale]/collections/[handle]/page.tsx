@@ -18,6 +18,7 @@ import { notFound } from 'next/navigation';
 
 import Pagination from '@/components/actionable/pagination';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
+import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import { JsonLd } from '@/components/json-ld';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
@@ -171,7 +172,7 @@ export default async function CollectionPage({
 
         return (
             <>
-                <Suspense>
+                <Suspense fallback={<BreadcrumbsSkeleton />}>
                     <Breadcrumbs locale={locale} title={collection.title} />
                 </Suspense>
 

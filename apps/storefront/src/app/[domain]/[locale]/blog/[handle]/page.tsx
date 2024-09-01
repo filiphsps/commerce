@@ -16,6 +16,7 @@ import { notFound } from 'next/navigation';
 import { title } from 'process';
 
 import Breadcrumbs from '@/components/informational/breadcrumbs';
+import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import { JsonLd } from '@/components/json-ld';
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
@@ -186,7 +187,7 @@ export default async function ArticlePage({
                     <span dangerouslySetInnerHTML={{ __html: article.contentHtml || '' }} className="contents" />
                 </Content>
 
-                <Suspense>
+                <Suspense fallback={<BreadcrumbsSkeleton />}>
                     <Breadcrumbs locale={locale} title={article.title} />
                 </Suspense>
 

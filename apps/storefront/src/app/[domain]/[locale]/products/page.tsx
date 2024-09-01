@@ -16,6 +16,7 @@ import { notFound, redirect, RedirectType } from 'next/navigation';
 
 import Pagination from '@/components/actionable/pagination';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
+import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import Heading from '@/components/typography/heading';
 
 import ProductsContent from './products-content';
@@ -124,7 +125,7 @@ export default async function ProductsPage({ params: { domain, locale: localeDat
                     <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
                 </Suspense>
 
-                <Suspense>
+                <Suspense fallback={<BreadcrumbsSkeleton />}>
                     <Breadcrumbs locale={locale} title={t('products')} />
                 </Suspense>
             </>

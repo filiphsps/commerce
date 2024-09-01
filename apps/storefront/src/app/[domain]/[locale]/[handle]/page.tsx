@@ -16,6 +16,7 @@ import { asText } from '@prismicio/client';
 import { notFound } from 'next/navigation';
 
 import Breadcrumbs from '@/components/informational/breadcrumbs';
+import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import PrismicPage from '@/components/prismic-page';
 
 import type { Metadata } from 'next';
@@ -145,11 +146,9 @@ export default async function CustomPage({
 
         const breadcrumbs =
             handle !== 'homepage' && page.title ? (
-                <>
-                    <Suspense>
-                        <Breadcrumbs locale={locale} title={page.title} />
-                    </Suspense>
-                </>
+                <Suspense fallback={<BreadcrumbsSkeleton />}>
+                    <Breadcrumbs locale={locale} title={page.title} />
+                </Suspense>
             ) : null;
 
         return (
