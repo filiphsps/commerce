@@ -18,10 +18,8 @@ export const BannerDefault = ({ slice }: { slice: BannerSliceDefault }): JSX.Ele
             data-slice-variation={slice.variation}
         >
             <div className="flex h-full w-full flex-col items-center justify-center text-center empty:hidden">
-                <Content className="*:text-primary-foreground lg:prose-lg max-w-none">
-                    <Suspense>
-                        <PrismicText data={slice.primary.content} styled={false} />
-                    </Suspense>
+                <Content className="lg:prose-lg max-w-none">
+                    <PrismicText data={slice.primary.content} styled={false} />
                 </Content>
             </div>
 

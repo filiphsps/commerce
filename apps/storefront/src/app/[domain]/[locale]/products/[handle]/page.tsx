@@ -22,6 +22,7 @@ import { parseGid } from '@shopify/hydrogen-react';
 import { notFound } from 'next/navigation';
 
 import Breadcrumbs from '@/components/informational/breadcrumbs';
+import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import { JsonLd } from '@/components/json-ld';
 import Link from '@/components/link';
 import PrismicPage from '@/components/prismic-page';
@@ -265,6 +266,7 @@ export default async function ProductPage({
             <>
                 <Suspense>
                     <Breadcrumbs locale={locale} title={`${product.vendor} ${product.title}`} />
+                    <BreadcrumbsSkeleton />
                 </Suspense>
 
                 <div className="flex flex-col gap-4 md:flex-row md:flex-nowrap">

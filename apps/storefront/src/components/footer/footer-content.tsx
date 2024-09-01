@@ -1,6 +1,6 @@
 import 'server-only';
 
-import styles from '@/components/Footer/footer.module.scss';
+import styles from '@/components/footer/footer.module.scss';
 
 import { Suspense } from 'react';
 

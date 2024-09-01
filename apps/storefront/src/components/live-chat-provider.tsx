@@ -5,7 +5,6 @@ import { Intercom, LiveChatLoaderProvider } from 'react-live-chat-loader';
 import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { BuildConfig } from '@/utils/build-config';
-import Script from 'next/script';
 
 import type { Locale } from '@/utils/locale';
 import type { ReactNode } from 'react';
@@ -38,11 +37,11 @@ export const LiveChatProvider = ({
                         <Intercom color={primaryColor?.color} />
                     </LiveChatLoaderProvider>
 
-                    <Script
+                    <script
                         id="live-chat-intercom"
                         type="text/javascript"
-                        strategy="afterInteractive"
-                        dangerouslySetInnerHTML={{
+                        //strategy="afterInteractive"
+                        /*dangerouslySetInnerHTML={{
                             __html: `window.intercomSettings = ${JSON.stringify({
                                 api_base: 'https://api-iam.intercom.io',
                                 app_id: intercom,
@@ -50,10 +49,12 @@ export const LiveChatProvider = ({
                                 background_color: primaryColor?.color,
                                 hide_default_launcher: false
                             })};`
-                        }}
+                        }}*/
                     />
                 </>
-            ) : null}
+            ) : (
+                <div>hello</div>
+            )}
         </>
     );
 };

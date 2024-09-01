@@ -214,7 +214,7 @@ export default async function CollectionPage({
 
                     {collection.descriptionHtml ? (
                         <section className="empty:hidden">
-                            <Content dangerouslySetInnerHTML={{ __html: content }} />
+                            <Content dangerouslySetInnerHTML={{ __html: content || '' }} />
                         </section>
                     ) : null}
                 </PageContent>

@@ -18,7 +18,6 @@ type PageParams<T extends PageType> = {
     slices?: PageData<T>['slices'];
     handle: string;
     type?: T;
-    className?: string;
 };
 function PrismicPage<T extends PageType = 'custom_page'>({
     shop,
@@ -27,8 +26,7 @@ function PrismicPage<T extends PageType = 'custom_page'>({
     page,
     slices,
     handle,
-    type = 'custom_page' as T,
-    className
+    type = 'custom_page' as T
 }: PageParams<T>) {
     if (!page && !slices) {
         return null;

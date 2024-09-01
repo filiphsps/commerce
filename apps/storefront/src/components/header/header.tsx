@@ -62,7 +62,7 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
                 </header>
             </section>
 
-            <section className="flex w-full flex-col items-center justify-center gap-0 border-0 border-b border-t border-solid border-gray-300 bg-white px-2 text-black group-data-[menu-open=true]/body:border-b-gray-100 md:px-3">
+            <section className="flex w-full flex-col items-center justify-center gap-0 border-0 border-b border-t border-solid border-gray-300 bg-white text-black group-data-[menu-open=true]/body:border-b-gray-100 md:px-3">
                 <Suspense>
                     <HeaderNavigation slices={slices} />
                 </Suspense>

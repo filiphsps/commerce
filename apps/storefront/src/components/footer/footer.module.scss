@@ -1,105 +1,95 @@
 @import 'globals';
 
-.container {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    width: 100%;
-    background: var(--accent-primary-dark);
-    color: var(--accent-primary-text);
+.content {
+    width: var(--page-width);
+    max-width: 100%;
 
-    .content {
-        width: var(--page-width);
-        max-width: 100%;
-        padding: var(--block-padding-large);
+    .blocks {
+        display: grid;
+        grid-template-columns: 1fr;
+        justify-content: space-between;
+        align-items: start;
+        text-align: left;
+        width: 100%;
+        height: 100%;
 
-        .blocks {
-            display: grid;
-            grid-template-columns: 1fr;
-            justify-content: space-between;
-            align-items: start;
-            text-align: left;
+        @media (min-width: $breakpoint-mobile) {
+            display: flex;
+        }
+
+        .block {
+            grid-auto-rows: auto;
+            flex-direction: column;
+            flex-grow: 1;
             width: 100%;
             height: 100%;
 
-            @media (min-width: $breakpoint-mobile) {
-                display: flex;
+            @media (max-width: $breakpoint-mobile) {
+                &:empty {
+                    display: none !important;
+                }
             }
 
-            .block {
-                grid-auto-rows: auto;
-                flex-direction: column;
-                flex-grow: 1;
+            .logo {
+                position: relative;
+                display: block;
+
+                margin: 0 auto var(--block-padding) auto;
+                height: 4rem;
                 width: 100%;
-                height: 100%;
+                min-width: 15rem;
 
-                @media (max-width: $breakpoint-mobile) {
-                    &:empty {
-                        display: none !important;
-                    }
-                }
+                object-fit: contain;
+                object-position: left;
 
-                .logo {
-                    position: relative;
-                    display: block;
-
-                    margin: 0 auto var(--block-padding) auto;
-                    height: 4rem;
-                    width: 100%;
-                    min-width: 15rem;
-
-                    object-fit: contain;
-                    object-position: left;
-
-                    filter: grayscale(100%) brightness(0) invert(1);
-
-                    @media (min-width: $breakpoint-mobile) {
-                        height: 6rem;
-
-                        object-position: left;
-                    }
-                }
-
-                a {
-                    display: block;
-                }
+                filter: grayscale(100%) brightness(0) invert(1);
 
                 @media (min-width: $breakpoint-mobile) {
-                    align-items: flex-start;
-                    justify-content: flex-start;
+                    height: 6rem;
+
+                    object-position: left;
                 }
             }
-        }
 
-        .flag,
-        .social-icon {
-            overflow: hidden;
-            height: 2.75rem;
-            width: auto;
-
-            img {
-                height: 100%;
-                width: 100%;
-                object-fit: contain;
-                object-position: start;
+            a {
+                display: block;
             }
-        }
-
-        .flag {
-            aspect-ratio: 2 / 1;
-        }
-
-        .social-icon {
-            aspect-ratio: 1 / 1;
-        }
-
-        .legal {
-            display: grid;
-            grid-template-columns: 1fr;
 
             @media (min-width: $breakpoint-mobile) {
-                grid-template-columns: 1fr 1fr;
+                align-items: flex-start;
+                justify-content: flex-start;
             }
+        }
+    }
+
+    .flag,
+    .social-icon {
+        overflow: hidden;
+        height: 2.75rem;
+        width: auto;
+
+        img {
+            height: 100%;
+            width: 100%;
+            object-fit: contain;
+            object-position: start;
+        }
+    }
+
+    .flag {
+        aspect-ratio: 2 / 1;
+    }
+
+    .social-icon {
+        aspect-ratio: 1 / 1;
+    }
+
+    .legal {
+        display: grid;
+        grid-template-columns: 1fr;
+
+        @media (min-width: $breakpoint-mobile) {
+            grid-template-columns: 1fr 1fr;
         }
     }
 }

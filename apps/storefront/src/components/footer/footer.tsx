@@ -1,6 +1,6 @@
 import 'server-only';
 
-import styles from '@/components/Footer/footer.module.scss';
+import styles from '@/components/footer/footer.module.scss';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 
@@ -8,9 +8,11 @@ import { FooterApi } from '@/api/footer';
 import { cn } from '@/utils/tailwind';
 import Image from 'next/image';
 
-import FooterContent from '@/components/Footer/footer-content';
+import FooterContent from '@/components/footer/footer-content';
 import Link from '@/components/link';
 import { PrismicText } from '@/components/typography/prismic-text';
+
+import { Content } from '../typography/content';
 
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 
@@ -25,12 +27,12 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
     // TODO: This should be `design.footer`.
     const logo = shop.design.header.logo;
 
-    const borderStyles = 'border-0 border-b-4 border-solid border-primary-light pb-8 lg:border-0 lg:pb-0';
+    const borderStyles = 'border-0 border-b-4 border-solid border-primary-dark pb-6 lg:border-0 lg:pb-0';
 
     // TODO: Dynamic copyright copy and content.
     return (
-        <footer className={cn(styles.container, 'flex h-full w-full px-2 pt-2 md:px-3')}>
-            <div className={cn(styles.content, 'flex h-full flex-col items-stretch gap-4 md:gap-8')}>
+        <footer className="bg-primary text-primary-foreground flex h-full w-full items-center justify-around p-2 pt-8 md:p-3 md:pt-6">
+            <div className={cn(styles.content, 'flex h-full flex-col items-stretch gap-4 md:gap-8 2xl:px-3')}>
                 <div className={cn(styles.blocks, 'gap-6', borderStyles)}>
                     <div className={cn(styles.block, borderStyles)}>
                         {logo.src ? (
@@ -49,9 +51,9 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
                             />
                         ) : null}
 
-                        <address className="text-sm font-medium leading-snug">
+                        <Content as="address" className="prose-sm font-medium">
                             <PrismicText data={footer.address} styled={false} />
-                        </address>
+                        </Content>
                     </div>
 
                     {footer.body.map(({ primary: { title }, items }, index) => {

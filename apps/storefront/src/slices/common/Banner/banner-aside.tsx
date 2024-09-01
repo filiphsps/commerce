@@ -39,7 +39,7 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
                         textShadow: background.url ? '1px 1px 10px #000' : undefined
                     }}
                 >
-                    <Content className="*:text-primary-foreground prose-headings:mt-0">
+                    <Content className="prose-headings:mt-0 max-w-none">
                         <Suspense>
                             <PrismicText data={slice.primary.content} styled={false} />
                         </Suspense>

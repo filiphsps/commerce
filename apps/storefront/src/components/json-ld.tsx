@@ -13,10 +13,12 @@ export function JsonLd({ data }: JsonLdProps) {
         return (
             <script
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{
+                /*dangerouslySetInnerHTML={{
                     __html: JSON.stringify(data)
-                }}
-            />
+                }}*/
+            >
+                {JSON.stringify(data)}
+            </script>
         );
     } catch (error: unknown) {
         console.error(error);

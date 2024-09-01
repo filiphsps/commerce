@@ -56,7 +56,7 @@ export const Alert = ({ children, severity, icon, className, ...props }: AlertPr
         >
             {iconElement ? <div className="aspect-square text-3xl">{iconElement}</div> : null}
 
-            <Content className={cn('h-full leading-tight text-inherit')}>{children}</Content>
+            <Content className="h-full">{children}</Content>
         </div>
     );
 };
