@@ -25,6 +25,7 @@ import PageContent from '@/components/page-content';
 import ProvidersRegistry from '@/components/providers-registry';
 
 import type { Metadata, Viewport } from 'next';
+import type { OnlineStore, WithContext } from 'schema-dts';
 
 export const runtime = 'nodejs';
 export const dynamic = 'auto';
@@ -46,6 +47,7 @@ export async function generateStaticParams(): Promise<LayoutParams[]> {
                 if (shop.domain.includes('demo')) {
                     return null as any as LayoutParams;
                 }
+
                 const api = await ShopifyApiClient({ shop });
                 const locales = await LocalesApi({ api });
 
@@ -78,7 +80,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
     try {
         const locale = Locale.from(localeData);
-        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+        const shop = await Shop.findByDomain(domain);
 
         return {
             metadataBase: new URL(`https://${shop.domain}/${locale.code}/`),
@@ -128,15 +130,25 @@ export default async function RootLayout({
     try {
         const locale = Locale.from(localeData);
 
-        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-        const publicShop = await Shop.findByDomain(domain);
+        const [shop, publicShop] = await Promise.all([
+            Shop.findByDomain(domain, { sensitiveData: true }),
+            Shop.findByDomain(domain)
+        ]);
+
         const api = await ShopifyApolloApiClient({ shop, locale });
+        const [localization, countries] = await Promise.all([LocaleApi({ api }), CountriesApi({ api })]);
 
         const branding = await getBrandingColors(domain);
         const i18n = await getDictionary(locale);
-        const localization = await LocaleApi({ api });
 
-        const countries = await CountriesApi({ api });
+        // TODO: Add more data.
+        const jsonLd: WithContext<OnlineStore> = {
+            '@context': 'https://schema.org',
+            '@type': 'OnlineStore',
+            'name': shop.name,
+            'url': `https://${shop.domain}/${locale.code}/`,
+            'logo': shop.icons?.favicon?.src
+        };
 
         return (
             <html lang={locale.code} className={cn(primaryFont.className, primaryFont.variable, 'overscroll-x-none')}>
@@ -186,6 +198,7 @@ export default async function RootLayout({
                             }
                         }}
                     />
+                    <JsonLd data={jsonLd} />
                 </body>
             </html>
         );

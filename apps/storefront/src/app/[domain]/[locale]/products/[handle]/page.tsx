@@ -2,6 +2,7 @@ import 'server-only';
 
 import { Suspense } from 'react';
 
+import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 
@@ -35,6 +36,7 @@ import { Content } from '@/components/typography/content';
 import { ProductContent, ProductPricing, ProductSavings } from './product-content';
 import { ImportantProductDetails, ProductDetails } from './product-details';
 
+import type { LocaleDictionary } from '@/utils/locale';
 import type { Metadata } from 'next';
 import type { Product, WithContext } from 'schema-dts';
 
@@ -84,9 +86,11 @@ export async function generateMetadata({
         const api = await ShopifyApiClient({ shop, locale });
 
         // Do the actual API calls.
-        const product = await ProductApi({ api, handle });
-        const page = await PageApi({ shop, locale, handle, type: 'product_page' });
-        const locales = await LocalesApi({ api });
+        const [product, page, locales] = await Promise.all([
+            ProductApi({ api, handle }),
+            PageApi({ shop, locale, handle, type: 'product_page' }),
+            LocalesApi({ api })
+        ]);
 
         const title = page?.meta_title || product.seo.title || `${product.vendor} ${product.title}`;
         const description = asText(page?.meta_description) || product.seo.description || product.description;
@@ -147,6 +151,35 @@ export async function generateMetadata({
 const ROUNDED_BLOCK_STYLES =
     'flex h-auto w-full flex-col items-stretch justify-start gap-6 overflow-clip rounded-lg bg-gray-100 p-3 md:justify-stretch lg:gap-8 lg:p-5 lg:px-4 empty:hidden';
 
+async function ProductPageSlices({
+    shop,
+    locale,
+    i18n,
+    handle
+}: {
+    shop: OnlineShop;
+    locale: Locale;
+    i18n: LocaleDictionary;
+    handle: string;
+}) {
+    const page = await PageApi({ shop, locale, handle, type: 'product_page' });
+
+    return (
+        <section className="empty:hidden">
+            {(page?.slices || []).length > 0 ? (
+                <PrismicPage
+                    shop={shop}
+                    locale={locale}
+                    page={page}
+                    i18n={i18n}
+                    handle={handle}
+                    type={'product_page'}
+                />
+            ) : null}
+        </section>
+    );
+}
+
 export default async function ProductPage({
     params: { domain, locale: localeData, handle }
 }: {
@@ -168,7 +201,6 @@ export default async function ProductPage({
 
         // Do the actual API calls.
         const product = await ProductApi({ api, handle });
-        const page = await PageApi({ shop, locale, handle, type: 'product_page' });
 
         // Get dictionary of strings for the current locale.
         const i18n = await getDictionary({ shop, locale });
@@ -185,7 +217,10 @@ export default async function ProductPage({
             '@type': 'Product',
             'url': `https://${shop.domain}/${locale.code}/products/${handle}/`,
             'name': `${product.vendor} ${product.title}`,
-            'brand': product.vendor,
+            'brand': {
+                '@type': 'Brand',
+                'name': product.vendor
+            },
             'image': initialVariant.image?.url || product.images.edges[0]?.node.url,
             'description': product.description || '',
             'offers': product.variants.edges.map(({ node: variant }) => ({
@@ -344,18 +379,9 @@ export default async function ProductPage({
                                 </Suspense>
                             </div>
 
-                            <section className="empty:hidden">
-                                {(page?.slices || []).length > 0 ? (
-                                    <PrismicPage
-                                        shop={shop}
-                                        locale={locale}
-                                        page={page}
-                                        i18n={i18n}
-                                        handle={handle}
-                                        type={'product_page'}
-                                    />
-                                ) : null}
-                            </section>
+                            <Suspense fallback={<div className={cn(ROUNDED_BLOCK_STYLES, 'h-32')} data-skeleton />}>
+                                <ProductPageSlices shop={shop} locale={locale} i18n={i18n} handle={handle} />
+                            </Suspense>
 
                             <Suspense fallback={<div className={cn(ROUNDED_BLOCK_STYLES, 'h-32')} data-skeleton />}>
                                 <div className={cn(ROUNDED_BLOCK_STYLES)}>

@@ -19,7 +19,7 @@ type PageParams<T extends PageType> = {
     handle: string;
     type?: T;
 };
-function PrismicPage<T extends PageType = 'custom_page'>({
+async function PrismicPage<T extends PageType = 'custom_page'>({
     shop,
     locale,
     i18n,
@@ -57,7 +57,7 @@ PrismicPage.displayName = 'Nordcom.PrismicPage';
 
 // TODO: Add a skeleton with a shimmer animation.
 // TODO: Add {slice}.skeleton components as children.
-PrismicPage.skeleton = <T extends PageType = 'custom_page'>({
+PrismicPage.skeleton = async <T extends PageType = 'custom_page'>({
     page,
     slices,
     shop

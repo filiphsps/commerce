@@ -59,15 +59,12 @@ export async function generateMetadata({
         const locale = Locale.from(localeData);
 
         const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-        // Setup the AbstractApi client.
         const api = await ShopifyApolloApiClient({ shop, locale });
-        // Do the actual API calls.
-        const page = await PageApi({ shop, locale, handle });
+
+        const [page, locales] = await Promise.all([PageApi({ shop, locale, handle }), LocalesApi({ api })]);
         if (!page) {
             notFound();
         }
-
-        const locales = await LocalesApi({ api });
 
         // If the page is the homepage we shouldn't add the handle to path.
         // TODO: Deal with this in a better way.
