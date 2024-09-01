@@ -103,6 +103,10 @@ export async function generateMetadata({
                 email: false,
                 address: false,
                 telephone: false
+            },
+            openGraph: {
+                siteName: shop.name,
+                locale: locale.code
             }
         };
     } catch (error: unknown) {
@@ -170,6 +174,7 @@ export default async function RootLayout({
                             '@context': 'http://schema.org',
                             '@type': 'WebSite',
                             'url': `https://${shop.domain}/${locale.code}/`,
+                            'name': shop.name,
                             'potentialAction': {
                                 '@type': 'SearchAction',
                                 'target': {
