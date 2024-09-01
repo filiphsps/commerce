@@ -8,6 +8,10 @@ export type ContentProps = {
     as?: ElementType;
 } & HTMLProps<HTMLDivElement>;
 export const Content = ({ children, as, className, html, ...props }: ContentProps) => {
+    if (!html && !children) {
+        return null;
+    }
+
     const AsComponent = as || 'div';
 
     return (

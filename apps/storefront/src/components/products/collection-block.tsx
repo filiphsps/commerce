@@ -67,12 +67,7 @@ const CollectionBlock = async ({
     return (
         <section
             {...props}
-            className={cn(
-                styles.container,
-                isHorizontal && styles.horizontal,
-                isHorizontal && 'overflow-x-shadow',
-                className
-            )}
+            className={cn(styles.container, isHorizontal && cn(styles.horizontal, 'overflow-x-shadow'), className)}
         >
             <div className={styles.content}>
                 {products.map((product, index) => (
@@ -99,15 +94,15 @@ const CollectionBlock = async ({
 };
 CollectionBlock.displayName = 'Nordcom.Products.CollectionBlock';
 
-CollectionBlock.skeleton = ({ isHorizontal }: Pick<CollectionBlockProps, 'isHorizontal'>) => (
+CollectionBlock.skeleton = ({
+    isHorizontal,
+    length = 6
+}: { length: number } & Pick<CollectionBlockProps, 'isHorizontal'>) => (
     <section className={cn(styles.container, isHorizontal && styles.horizontal)}>
         <div className={styles.content}>
-            <ProductCard.skeleton />
-            <ProductCard.skeleton />
-            <ProductCard.skeleton />
-            <ProductCard.skeleton />
-            <ProductCard.skeleton />
-            <ProductCard.skeleton />
+            {Array.from({ length }).map((_, index) => (
+                <ProductCard.skeleton key={index} />
+            ))}
         </div>
     </section>
 );

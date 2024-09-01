@@ -26,6 +26,7 @@ import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import { JsonLd } from '@/components/json-ld';
 import Link from '@/components/link';
+import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import { AttributeIcon } from '@/components/products/attribute-icon';
 import { InfoLines } from '@/components/products/info-lines';
@@ -303,7 +304,7 @@ export default async function ProductPage({
                     <Breadcrumbs locale={locale} title={`${product.vendor} ${product.title}`} />
                 </Suspense>
 
-                <div className="flex flex-col gap-4 md:flex-row md:flex-nowrap">
+                <PageContent className="flex flex-col gap-4 md:flex-row md:flex-nowrap">
                     <section
                         className={
                             'flex h-auto w-full flex-col gap-4 md:w-1/2 md:shrink-0 lg:w-full lg:max-w-[40rem] xl:max-w-[54rem]'
@@ -361,11 +362,11 @@ export default async function ProductPage({
                                         </Link>
                                     </header>
 
-                                    <div className="flex items-end justify-start gap-2 empty:hidden md:gap-3">
-                                        <Suspense>
+                                    <Suspense>
+                                        <div className="flex items-end justify-start gap-2 empty:hidden md:gap-3">
                                             <ProductPricing product={product} />
-                                        </Suspense>
-                                    </div>
+                                        </div>
+                                    </Suspense>
                                 </div>
 
                                 <Suspense>
@@ -373,11 +374,11 @@ export default async function ProductPage({
                                 </Suspense>
                             </div>
 
-                            <div className={cn(ROUNDED_BLOCK_STYLES)}>
-                                <Suspense>
+                            <Suspense>
+                                <div className={cn(ROUNDED_BLOCK_STYLES)}>
                                     <InfoLines product={product} i18n={i18n} locale={locale} />
-                                </Suspense>
-                            </div>
+                                </div>
+                            </Suspense>
 
                             <Suspense fallback={<div className={cn(ROUNDED_BLOCK_STYLES, 'h-32')} data-skeleton />}>
                                 <ProductPageSlices shop={shop} locale={locale} i18n={i18n} handle={handle} />
@@ -400,7 +401,7 @@ export default async function ProductPage({
                             </Suspense>
                         </section>
                     </Suspense>
-                </div>
+                </PageContent>
 
                 <section className="mt-2 flex flex-col gap-2 rounded-lg border-2 border-solid border-gray-100 py-4 md:w-full md:py-5 lg:mt-6">
                     <p
