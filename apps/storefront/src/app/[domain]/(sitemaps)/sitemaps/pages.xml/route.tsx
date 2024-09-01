@@ -3,6 +3,7 @@ import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { Locale } from '@/utils/locale';
+import { convertPrismicDateToISO } from '@/utils/prismic-date';
 import { getServerSideSitemap } from 'next-sitemap';
 
 import type { DynamicSitemapRouteParams } from '../../sitemap.xml/route';
@@ -30,7 +31,7 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
                         ({
                             loc: `https://${shop.domain}/${code}/${page.url}`, // Trailing slash is already added.
                             changefreq: 'monthly',
-                            lastmod: page.last_publication_date,
+                            lastmod: convertPrismicDateToISO(page.last_publication_date),
                             alternateRefs: locales
                                 .filter(({ code: c }) => code !== c)
                                 .map(({ code }) => ({
