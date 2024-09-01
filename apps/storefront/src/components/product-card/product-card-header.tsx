@@ -25,7 +25,7 @@ const VariantImage = ({ image, priority }: VariantImageProps) => {
 
     return (
         <Image
-            className="h-32 max-h-32 min-h-32 w-full rounded-lg bg-white object-contain object-center p-2 py-3"
+            className="aspect-3/2 h-max w-full rounded-lg bg-white object-contain object-center p-2 py-3"
             src={image.url}
             alt={image.altText!}
             title={image.altText!}

@@ -1,15 +1,15 @@
 import { describe, expect, it } from 'vitest';
 
-import { Pluralize } from '@/utils/pluralize';
+import { pluralize } from '@/utils/pluralize';
 
 describe('utils', () => {
-    describe('Pluralize', () => {
+    describe('pluralize', () => {
         it(`should pluralize the noun when count is greater than 1`, () => {
             const count = 2;
             const noun = 'apple';
             const suffix = 's';
 
-            const result = Pluralize({ count, noun, suffix });
+            const result = pluralize({ count, noun, suffix });
 
             expect(result).toBe('apples');
             //expect(result).toMatchSnapshot();
@@ -20,7 +20,7 @@ describe('utils', () => {
             const noun = 'apple';
             const suffix = 's';
 
-            const result = Pluralize({ count, noun, suffix });
+            const result = pluralize({ count, noun, suffix });
 
             expect(result).toBe('apple');
             //expect(result).toMatchSnapshot();
@@ -31,7 +31,7 @@ describe('utils', () => {
             const noun = 'child';
             const suffix = 'ren';
 
-            const result = Pluralize({ count, noun, suffix });
+            const result = pluralize({ count, noun, suffix });
 
             expect(result).toBe('children');
             //expect(result).toMatchSnapshot();
@@ -42,7 +42,7 @@ describe('utils', () => {
             const noun = 'child';
             const suffix = 'ren';
 
-            const result = Pluralize({ count, noun, suffix });
+            const result = pluralize({ count, noun, suffix });
 
             expect(result).toBe('child');
             //expect(result).toMatchSnapshot();

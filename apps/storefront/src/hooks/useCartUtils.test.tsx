@@ -20,8 +20,8 @@ describe('hooks', () => {
                 replace: vi.fn()
             }),
             useSearchParams: () => ({
-                get: () => 'COUPON_CODE',
-                getAll: () => ['COUPON_CODE'],
+                get: () => 'coupon_code',
+                getAll: () => ['coupon_code'],
                 has: () => true
             })
         }));
@@ -77,7 +77,7 @@ describe('hooks', () => {
         });
 
         it('should add discount code to cart when present in URL', async () => {
-            const discount = ['COUPON_CODE'];
+            const discount = ['coupon_code'];
 
             const { rerender } = renderHook((locale: Locale = USA) => useCartUtils({ locale }));
             await act(() => rerender(USA));

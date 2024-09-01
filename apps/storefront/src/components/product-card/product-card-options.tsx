@@ -38,7 +38,7 @@ const ProductCardOptions = ({
 
     // TODO: Use options rather than variants.
     return (
-        <div className="mt-6 inline-flex h-fit w-full flex-wrap items-end justify-start gap-1 empty:hidden">
+        <div className="mt-1 inline-flex h-fit w-full shrink flex-wrap items-end justify-start gap-1">
             {variants.map(({ node: variant }, index) => {
                 if (index >= 3) {
                     return null; //TODO: handle more than 3 variants on the card.
@@ -79,6 +79,7 @@ const ProductCardOptions = ({
                             !isSelected && 'cursor-pointer hover:shadow-lg'
                         )}
                         data-active={isSelected}
+                        suppressHydrationWarning={true}
                     >
                         {title}
                     </Tag>

@@ -15,9 +15,9 @@ type CartContentProps = {
 const CartLines = ({ i18n }: CartContentProps) => {
     const { t } = useTranslation('cart', i18n);
 
-    const { cartReady, lines = [], linesRemove } = useCart();
+    const { cartReady, lines, linesRemove } = useCart();
 
-    if (!cartReady) {
+    if (!cartReady || typeof lines === 'undefined') {
         return <CartLines.skeleton />;
     }
 
@@ -29,7 +29,7 @@ const CartLines = ({ i18n }: CartContentProps) => {
         <div className="flex w-full flex-col gap-2 empty:hidden">
             <div className="-mt-4 flex h-2 w-full select-none flex-row-reverse items-center justify-between pb-3">
                 <Button
-                    as={Label}
+                    as={Label as any}
                     className="inline-flex cursor-pointer text-xs hover:text-red-500"
                     styled={false}
                     onClick={() => linesRemove(lines.map((line) => line?.id).filter((_) => _) as string[])}
@@ -42,11 +42,9 @@ const CartLines = ({ i18n }: CartContentProps) => {
                 if (!item) return null;
 
                 return (
-                    <>
-                        <Suspense fallback={<CartLine.skeleton />} key={item.id}>
-                            <CartLine i18n={i18n} data={item as any} />
-                        </Suspense>
-                    </>
+                    <Suspense fallback={<CartLine.skeleton />} key={item.id}>
+                        <CartLine i18n={i18n} data={item as any} />
+                    </Suspense>
                 );
             })}
         </div>

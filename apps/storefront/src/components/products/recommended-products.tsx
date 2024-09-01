@@ -1,9 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import 'server-only';
 
-import styles from '@/components/products/collection-block.module.scss';
-import extraStyles from '@/components/products/recommended-products.module.scss';
-
 import { Suspense } from 'react';
 
 import { type OnlineShop } from '@nordcom/commerce-db';
@@ -35,17 +32,13 @@ const RecommendedProducts = async ({ shop, locale, product, className }: Recomme
     return (
         <div
             className={cn(
-                styles.container,
-                styles.content,
-                styles.horizontal,
-                'overflow-x-shadow overscroll-x-auto',
-                extraStyles.container,
+                'overflow-x-shadow grid w-full auto-cols-[minmax(12rem,1fr)] grid-flow-col grid-cols-[repeat(auto-fit,minmax(12rem,1fr))] grid-rows-1 gap-2 overscroll-x-auto sm:auto-cols-[minmax(14rem,1fr)] sm:grid-cols-[repeat(auto-fill,minmax(14rem,1fr))]',
                 className
             )}
         >
             {recommended.map((product) => (
                 <Suspense key={product.id} fallback={<ProductCard.skeleton />}>
-                    <ProductCard shop={shop} locale={locale} data={product} className={cn(extraStyles.card)} />
+                    <ProductCard shop={shop} locale={locale} data={product} className="" />
                 </Suspense>
             ))}
         </div>
@@ -54,7 +47,7 @@ const RecommendedProducts = async ({ shop, locale, product, className }: Recomme
 RecommendedProducts.displayName = 'Nordcom.Products.RecommendedProducts';
 
 RecommendedProducts.skeleton = () => {
-    return <section className={`${styles.container} ${styles.horizontal} ${extraStyles.container}`} />;
+    return <section className="" />;
 };
 (RecommendedProducts.skeleton as any).displayName = 'Nordcom.Products.RecommendedProducts.Skeleton';
 

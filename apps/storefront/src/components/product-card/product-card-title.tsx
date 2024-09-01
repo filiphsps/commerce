@@ -16,7 +16,7 @@ const ProductCardTitle = ({ data: product, classHame }: ProductCardTitleProps) =
             <Label
                 as={'div'}
                 className={cn(
-                    'group-hover/header:text-primary pt-2 text-base font-medium normal-case leading-tight text-gray-500 transition-colors',
+                    'group-hover/header:text-primary pb-1 pt-2 text-sm font-medium normal-case leading-none text-gray-500 transition-colors',
                     classHame
                 )}
             >
@@ -24,7 +24,7 @@ const ProductCardTitle = ({ data: product, classHame }: ProductCardTitleProps) =
             </Label>
             <div
                 className={cn(
-                    'group-hover/header:text-primary transition-color block text-xl font-bold leading-tight text-current',
+                    'group-hover/header:text-primary transition-color text- block text-[1.20rem] font-bold leading-6 text-current',
                     classHame
                 )}
             >

@@ -28,10 +28,10 @@ const ProductCardContent = ({ data: product, locale, i18n, children }: ProductCa
     const onSale = compareAtPrice ? compareAtPrice.amount !== price.amount : false;
 
     return (
-        <div className="flex h-full min-h-24 w-full grow flex-col pt-1">
-            <div className="flex grow flex-col justify-start">
-                <div className="flex flex-nowrap items-center justify-start gap-1">
-                    <Pricing price={price} className={cn(onSale && 'font-extrabold text-red-600')} />
+        <div className="flex h-full min-h-24 w-full grow flex-col pt-1" suppressHydrationWarning={true}>
+            <div className="flex grow flex-col justify-end">
+                <div className="flex flex-wrap-reverse items-center justify-start gap-1">
+                    <Pricing price={price} className={cn('text-xl', onSale && 'font-extrabold text-red-600')} />
 
                     {onSale ? (
                         <Pricing

@@ -23,7 +23,7 @@ const PageContent = ({ as: Tag = 'div', primary, className, ...props }: PageCont
                 styles.container,
                 'mx-auto flex w-full max-w-[var(--page-width)] flex-col gap-2 text-base empty:hidden md:gap-4',
                 primary && styles.primary,
-                primary && 'gap-4 p-2 md:p-3',
+                primary && 'gap-4 p-2 md:p-3 [&>*]:-mb-2',
                 className
             )}
         />

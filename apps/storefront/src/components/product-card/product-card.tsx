@@ -15,7 +15,8 @@ import ProductCardTitle from '@/components/product-card/product-card-title';
 
 import type { Locale } from '@/utils/locale';
 
-const CARD_STYLES = 'group/card relative overflow-hidden rounded-xl p-1 flex flex-col min-h-[18rem] bg-gray-100';
+const CARD_STYLES =
+    'group/card relative overflow-hidden rounded-xl p-1 flex flex-col lg:min-h-[22rem] min-h-[20rem] bg-gray-100 borde2 border-solid border-gray-200 transition-shadow hover:shadow-xl';
 
 const DESCRIPTION_LENGTH = 160;
 
@@ -24,27 +25,26 @@ export type ProductCardProps = {
     locale: Locale;
 
     // TODO: Use satisfied.
-    data: Product;
+    data?: Product;
     priority?: boolean;
-
     className?: string;
 };
 const ProductCard = async ({ shop, locale, data: product, priority, className, ...props }: ProductCardProps) => {
     const i18n = await getDictionary({ shop, locale });
+
+    if (!product) {
+        return null;
+    }
+
     const description = (product.seo.description || product.description || '').slice(0, DESCRIPTION_LENGTH).trimEnd();
+    const available = product.availableForSale;
 
     return (
         <div
-            className={cn(
-                CARD_STYLES,
-                'border-2 border-solid border-gray-200 transition-shadow hover:shadow-xl',
-                className
-            )}
-            title={description ? `${description}...` : undefined}
-            data-available={product.availableForSale}
+            className={cn(CARD_STYLES, 'transition-shadow hover:drop-shadow', '', className)}
+            title={available ? `${description}...` : ''}
             {...props}
         >
-            {/*<ProductCardQuickActions data={product} locale={locale} i18n={i18n} />*/}
             <ProductCardBadges data={product} i18n={i18n} />
 
             <Suspense>

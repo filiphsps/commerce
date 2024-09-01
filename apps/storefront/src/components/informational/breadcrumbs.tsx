@@ -34,7 +34,7 @@ const Breadcrumbs = ({ locale, title }: BreadcrumbsProps) => {
         <section
             className={cn(
                 styles.breadcrumbs,
-                'overflow-x-shadow flex w-full max-w-full list-none flex-nowrap items-center justify-start gap-2 overflow-hidden overflow-x-auto overscroll-x-contain whitespace-nowrap rounded-lg font-medium leading-none text-gray-700 md:gap-3'
+                '-mx-2 flex w-screen list-none flex-nowrap items-center justify-start gap-2 overflow-hidden overflow-x-auto overscroll-x-contain whitespace-nowrap rounded-lg px-2 font-medium leading-none text-gray-700 md:-mx-0 md:w-full md:max-w-full md:gap-3 md:px-0'
             )}
             itemScope
             itemType="https://schema.org/BreadcrumbList"

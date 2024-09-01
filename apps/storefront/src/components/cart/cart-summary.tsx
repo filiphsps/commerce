@@ -6,7 +6,7 @@ import { FiChevronRight, FiLock } from 'react-icons/fi';
 import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { type LocaleDictionary, useTranslation } from '@/utils/locale';
-import { Pluralize } from '@/utils/pluralize';
+import { pluralize } from '@/utils/pluralize';
 import { cn } from '@/utils/tailwind';
 import { Money, ShopPayButton, useCart } from '@shopify/hydrogen-react';
 
@@ -86,7 +86,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                 <header className={styles.header}>
                     <Label>{t('order-summary')}</Label>
                     <Label className="text-xs">
-                        {totalQuantity} {Pluralize({ count: totalQuantity || 0, noun: 'item' })}
+                        {totalQuantity} {pluralize({ count: totalQuantity || 0, noun: 'item' })}
                     </Label>
                 </header>
 

@@ -178,7 +178,7 @@ export default async function CollectionPage({
 
                 <Heading title={collection.seo.title ?? collection.title} />
 
-                <div className="grid grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] gap-2">
+                <div className="grid grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] gap-2 lg:grid-cols-[repeat(auto-fill,minmax(14rem,1fr))]">
                     <Suspense
                         key={JSON.stringify(searchParams)}
                         fallback={<CollectionBlock.skeleton length={PRODUCTS_PER_PAGE} bare={true} />}

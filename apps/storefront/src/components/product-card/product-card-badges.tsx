@@ -13,7 +13,7 @@ export type ProductCardBadgesProps = {
 };
 
 const COMMON_BADGE_STYLES =
-    'z-10 flex h-6 items-center justify-center gap-1 rounded-xl px-[0.6rem] text-[0.65rem] font-semibold uppercase shadow-sm';
+    'z-10 flex h-7 items-center justify-center gap-1 rounded-xl px-[0.7rem] text-[0.65rem] font-semibold uppercase';
 
 const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
     const selectedVariant = FirstAvailableVariant(product);

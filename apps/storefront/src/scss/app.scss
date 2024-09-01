@@ -91,39 +91,6 @@ body {
     -webkit-text-size-adjust: auto;
     text-size-adjust: auto;
 
-    [data-sonner-toaster] .toast-notification:is([data-styled]) {
-        padding: var(--block-padding-large);
-
-        font-family: var(--font-primary);
-        font-weight: 500;
-        line-height: normal;
-
-        background-color: var(--color-accent-primary);
-
-        border-width: var(--block-border-width);
-        border-color: var(--color-accent-primary-dark);
-        border-radius: var(--block-border-radius);
-
-        strong,
-        b {
-            font-weight: 700;
-        }
-
-        p {
-            font-size: inherit;
-            font-weight: inherit;
-        }
-
-        &[data-type='error'] {
-            background-color: var(--color-danger);
-            border-color: var(--color-danger-dark);
-        }
-
-        [data-icon] {
-            width: 1rem;
-        }
-    }
-
     a:is([href]):where([href=''], [href='#']) {
         cursor: default;
     }

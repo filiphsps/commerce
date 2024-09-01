@@ -146,7 +146,7 @@ const AddToCart = ({ children, className, i18n, quantity = 0, type, data, varian
             className={cn(className)}
             disabled={disabled || undefined}
             as="button"
-            type={type || ('button' as const)}
+            type={(type as any) || ('button' as const)}
             data-ready={ready || undefined}
             data-success={!!(animation as any) ? 'true' : undefined}
             onClick={add}
