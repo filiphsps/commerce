@@ -18,14 +18,14 @@ const LinkSlice = ({ slice, context: { isHeader = true, pathname } }: LinkProps)
     const title = slice.primary.title;
     const variant = slice.variation;
 
-    let target = asLink(link, { linkResolver });
+    let target: string = asLink(link, { linkResolver });
     // Make sure the target ends with a slash.
     // TODO: This should be a utility function that wraps `asLink`.
-    if (target && target.length > 1 && !target.endsWith('/')) {
+    if ((target as any) && target.length > 1 && !target.endsWith('/')) {
         target = `${target}/`;
     }
 
-    let active = target ? pathname.toLowerCase().endsWith(target.toLowerCase()) : false;
+    let active = target ? pathname.toLowerCase().includes(target.toLowerCase()) : false;
     // Handle homepage.
     if (active && target === '/') {
         active = pathname.split('/').length === 3;
