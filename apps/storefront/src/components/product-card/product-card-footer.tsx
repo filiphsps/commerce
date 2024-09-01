@@ -1,40 +1,34 @@
 'use client';
 
-import { useState } from 'react';
-
-import { FirstAvailableVariant } from '@/utils/first-available-variant';
-
 import ProductCardActions from '@/components/product-card/product-card-actions';
 import ProductCardOptions from '@/components/product-card/product-card-options';
-import Pricing from '@/components/typography/pricing';
 
-import type { Product } from '@/api/product';
+import type { Product, ProductVariant } from '@/api/product';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 
 export type ProductCardFooterProps = {
     data?: Product;
+    selected?: ProductVariant;
+    setSelected: (variant: () => ProductVariant) => void;
     locale: Locale;
     i18n: LocaleDictionary;
 };
-const ProductCardFooter = ({ data: product, i18n, locale }: ProductCardFooterProps) => {
-    const [selectedVariant, setSelectedVariant] = useState(FirstAvailableVariant(product)!);
+const ProductCardFooter = ({ data: product, selected, setSelected, i18n, locale }: ProductCardFooterProps) => {
     if (!product) {
         return null;
     }
 
     return (
-        <div className="flex h-full min-h-24 w-full grow flex-col pt-2">
-            <Pricing price={selectedVariant.price} />
-
+        <>
             <ProductCardOptions
                 locale={locale}
                 data={product}
-                selectedVariant={selectedVariant}
-                setSelectedVariant={(variant) => setSelectedVariant(() => variant)}
+                selectedVariant={selected}
+                setSelectedVariant={(variant) => setSelected(() => variant)}
             />
 
-            <ProductCardActions i18n={i18n} data={product} selectedVariant={selectedVariant} />
-        </div>
+            {selected ? <ProductCardActions i18n={i18n} data={product} selectedVariant={selected} /> : null}
+        </>
     );
 };
 

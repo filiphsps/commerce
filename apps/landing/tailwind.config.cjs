@@ -22,8 +22,5 @@ module.exports = {
     future: {
         hoverOnlyWhenSupported: true
     },
-    corePlugins: {
-        aspectRatio: false
-    },
-    plugins: [require('@tailwindcss/typography'), require('@tailwindcss/forms'), require('@tailwindcss/aspect-ratio')]
+    plugins: [require('@tailwindcss/typography'), require('@tailwindcss/forms')]
 };

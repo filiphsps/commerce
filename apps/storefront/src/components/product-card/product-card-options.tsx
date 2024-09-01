@@ -1,7 +1,5 @@
 'use client';
 
-import styles from '@/components/product-card/product-card.module.scss';
-
 import { type Product, type ProductVariant } from '@/api/product';
 import { ConvertToLocalMeasurementSystem } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
@@ -40,7 +38,7 @@ const ProductCardOptions = ({
 
     // TODO: Use options rather than variants.
     return (
-        <div className={cn(styles.variants, 'mt-6 flex flex-wrap gap-2')}>
+        <div className="mt-6 inline-flex h-fit w-full flex-wrap items-end justify-start gap-1 empty:hidden">
             {variants.map(({ node: variant }, index) => {
                 if (index >= 3) {
                     return null; //TODO: handle more than 3 variants on the card.
@@ -76,7 +74,6 @@ const ProductCardOptions = ({
                             setSelectedVariant(variant);
                         }}
                         className={cn(
-                            styles.variant,
                             'hover:border-primary flex h-8 select-none items-center justify-center rounded-lg border-2 border-solid border-white bg-white px-3 py-0 text-sm font-semibold text-gray-600 transition-all',
                             isSelected && 'border-primary text-primary',
                             !isSelected && 'cursor-pointer hover:shadow-lg'

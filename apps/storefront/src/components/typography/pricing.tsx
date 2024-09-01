@@ -1,47 +1,28 @@
-import styles from '@/components/typography/pricing.module.scss';
-
 import { Suspense } from 'react';
-import { Fragment } from 'react/jsx-runtime';
 
 import { cn } from '@/utils/tailwind';
 import { Money } from '@shopify/hydrogen-react';
 
 import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
+import type { ComponentProps, ElementType, HTMLProps } from 'react';
 
 export type PricingProps = {
     price?: MoneyV2 | null;
-    compareAtPrice?: MoneyV2 | null;
-
-    wrapperFallback?: boolean;
-};
-const Pricing = ({ price, compareAtPrice, wrapperFallback = false }: PricingProps) => {
-    const As = compareAtPrice && wrapperFallback ? 'div' : Fragment;
+    as?: ElementType;
+} & Omit<ComponentProps<typeof Money> & HTMLProps<HTMLDivElement>, 'children' | 'data' | 'as'>;
+export const Pricing = ({ price, as: Tag = 'div', className, ...props }: PricingProps) => {
+    if (!price) {
+        return null;
+    }
 
     return (
-        <As>
-            {price ? (
-                <Suspense>
-                    <Money
-                        data={price}
-                        data-sale={compareAtPrice ? true : undefined}
-                        data-pricing
-                        as={'div'}
-                        className={cn(styles.price, styles.current, compareAtPrice && 'font-extrabold text-red-500')}
-                    />
-                </Suspense>
-            ) : null}
-            {compareAtPrice ? (
-                <Suspense>
-                    <Money
-                        data={compareAtPrice}
-                        data-previous-pricing
-                        as={'s'}
-                        className={cn(styles.price, styles.previous, styles.dah)}
-                    />
-                </Suspense>
-            ) : null}
-        </As>
+        <Suspense fallback={<Tag data-skeleton>20</Tag>}>
+            <Money
+                as={Tag}
+                {...props}
+                data={price}
+                className={cn('text-lg font-bold proportional-nums leading-none', className)}
+            />
+        </Suspense>
     );
 };
-
-export default Pricing;

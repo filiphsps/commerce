@@ -2,13 +2,12 @@
 
 import { useCallback, useEffect, useState } from 'react';
 
-import { type LocaleDictionary, useTranslation } from '@/utils/locale';
+import { type LocaleDictionary } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 import { useCart } from '@shopify/hydrogen-react';
 
-import { Button } from '@/components/actionable/button';
-
-import AddToCart from '../products/add-to-cart';
+import AddToCart from '@/components/products/add-to-cart';
+import { QuantitySelector } from '@/components/products/quantity-selector';
 
 import type { Product, ProductVariant } from '@/api/product';
 import type { CartLine } from '@shopify/hydrogen-react/storefront-api-types';
@@ -23,7 +22,6 @@ export type ProductCardActionsProps = {
 const ProductCardActions = ({ i18n, data: product, selectedVariant }: ProductCardActionsProps) => {
     const { lines, linesUpdate, cartReady } = useCart();
 
-    const { t } = useTranslation('common', i18n);
     const line = (lines as CartLine[]).find(({ merchandise: { id } }) => id === selectedVariant.id) ?? null;
 
     const [quantity, setQuantity] = useState<number>(1);
@@ -46,49 +44,21 @@ const ProductCardActions = ({ i18n, data: product, selectedVariant }: ProductCar
                 }
             ]);
         },
-        [linesUpdate, lines]
+        [linesUpdate, lines, cartReady]
     );
 
-    const baseStyles = 'p-2 font-semibold overflow-clip *:h-9 mt-2 h-10 min-h-10 max-h-10 grow rounded-xl';
-
+    const baseStyles = 'font-semibold overflow-clip *:h-9 mt-2 h-10 min-h-10 max-h-10 grow rounded-lg';
     if (line) {
         return (
             <>
-                <div
-                    className={cn(
-                        baseStyles,
-                        'flex border-2 border-solid border-gray-300 bg-white p-0 font-bold transition-colors *:appearance-none *:text-center *:transition-colors',
-                        !cartReady && 'pointer-events-none cursor-not-allowed opacity-75 duration-150'
-                    )}
-                >
-                    <Button
-                        title={t('decrease')}
-                        disabled={!cartReady || quantity < 1}
-                        className="active:bg-primary active:text-primary-foreground hover:bg-primary hover:text-primary-foreground w-14 text-xl disabled:cursor-not-allowed disabled:bg-transparent disabled:text-inherit disabled:opacity-25"
-                        onClick={() => update(quantity - 1)}
-                        styled={false}
-                    >
-                        -
-                    </Button>
-                    <input
-                        type="number"
-                        min="1"
-                        disabled={!cartReady}
-                        className="h-max w-full appearance-none border-none outline-none disabled:opacity-25"
-                        value={quantity}
-                        onChange={({ target: { value } }) => setQuantity(Number.parseInt(value) || 0)}
-                        onBlur={() => update(quantity)}
-                    />
-                    <Button
-                        title={t('increase')}
-                        disabled={!cartReady}
-                        className="active:bg-primary active:text-primary-foreground hover:bg-primary hover:text-primary-foreground w-14 text-xl disabled:text-gray-300"
-                        onClick={() => update(quantity + 1)}
-                        styled={false}
-                    >
-                        +
-                    </Button>
-                </div>
+                <QuantitySelector
+                    disabled={!cartReady}
+                    className={cn(baseStyles, 'bg-white')}
+                    i18n={i18n}
+                    value={quantity}
+                    update={update}
+                    allowDecreaseToZero={true}
+                />
             </>
         );
     }

@@ -1,24 +1,25 @@
-import styles from '@/components/actionable/input.module.scss';
-
 import { cn } from '@/utils/tailwind';
 
-import type { ComponentProps, ElementType, ReactNode } from 'react';
+import type { ComponentProps, ElementType, HTMLProps, ReactNode, RefObject } from 'react';
 
 export type InputProps<T extends ElementType> = {
     as?: ElementType;
-
-    children: ReactNode;
-} & ComponentProps<T>;
+    ref?: RefObject<HTMLInputElement | any>;
+} & HTMLProps<HTMLInputElement> &
+    ComponentProps<T>;
 const Input = <T extends ElementType = ElementType<'input'>>({
     as: Tag = 'input' as T,
-    children,
+    ref,
     className,
     ...props
 }: InputProps<T>) => {
     return (
-        <Tag draggable={false} {...props} className={`${styles.input}${className ? ` ${className}` : ''}`}>
-            {children}
-        </Tag>
+        <Tag
+            ref={ref}
+            {...props}
+            draggable={false}
+            className={cn('w-full appearance-none rounded-lg focus:outline-none focus:ring-0', className)}
+        />
     );
 };
 Input.displayName = 'Nordcom.Input';
@@ -39,8 +40,7 @@ const MultilineInput = <T extends ElementType>({
             draggable={false}
             {...props}
             className={cn(
-                styles.textarea,
-                'border-primary outline-primary w-full resize-none appearance-none rounded-md bg-white p-2 text-xs outline outline-0 focus:outline-2',
+                'border-primary w-full resize-none appearance-none rounded-md bg-white p-2 text-xs focus:outline-none focus:ring-0',
                 className
             )}
         >

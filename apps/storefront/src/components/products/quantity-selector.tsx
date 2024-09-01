@@ -1,7 +1,5 @@
 'use client';
 
-import styles from '@/components/products/quantity-selector.module.scss';
-
 import { type HTMLProps, useCallback, useEffect, useRef, useState } from 'react';
 
 import { useTranslation } from '@/utils/locale';
@@ -9,6 +7,7 @@ import { cn } from '@/utils/tailwind';
 import { useCart } from '@shopify/hydrogen-react';
 
 import { Button } from '@/components/actionable/button';
+import { Input } from '@/components/actionable/input';
 
 import type { LocaleDictionary } from '@/utils/locale';
 import type { ChangeEvent, KeyboardEventHandler } from 'react';
@@ -131,8 +130,8 @@ const QuantitySelector = ({
         <section
             {...props}
             className={cn(
-                styles.container,
-                'hover:border-primary rounded-xl border-2 border-solid border-gray-300 bg-white',
+                //styles.container,
+                'hover:border-primary flex max-h-fit w-full overflow-hidden rounded-lg border-2 border-solid border-white bg-white p-0 leading-none transition-colors *:appearance-none *:text-center *:text-lg *:leading-none *:transition-colors',
                 className
             )}
         >
@@ -141,8 +140,7 @@ const QuantitySelector = ({
                 aria-label={t('decrease')}
                 type="button"
                 className={cn(
-                    styles.button,
-                    'h-full w-11 rounded-none bg-gray-100 leading-none text-black',
+                    'hover:bg-primary hover:text-primary-foreground aspect-square h-full appearance-none rounded-none bg-transparent p-2 text-current',
                     buttonClassName
                 )}
                 disabled={decreaseDisabled}
@@ -151,11 +149,12 @@ const QuantitySelector = ({
                 data-quantity-decrease
                 data-testid="quantity-decrease"
                 data-nosnippet={true}
+                styled={false}
             >
                 {'−'}
             </Button>
 
-            <input
+            <Input
                 aria-disabled={disabled}
                 aria-label={t('quantity')}
                 ref={inputRef}
@@ -165,7 +164,9 @@ const QuantitySelector = ({
                 max={999}
                 step={1}
                 pattern="[0-9]"
-                className={cn(styles.input, 'appearance-none outline-none')}
+                className={cn(
+                    'w-full grow appearance-none border-none bg-transparent text-sm font-bold outline-none focus:outline-none focus:ring-0'
+                )}
                 disabled={disabled}
                 value={quantityValue}
                 placeholder={t('quantity')}
@@ -182,8 +183,7 @@ const QuantitySelector = ({
                 aria-label={t('increase')}
                 type="button"
                 className={cn(
-                    styles.button,
-                    'h-full w-11 rounded-none bg-gray-100 leading-none text-black',
+                    'hover:bg-primary hover:text-primary-foreground aspect-square h-full appearance-none rounded-none bg-transparent p-2 text-current',
                     buttonClassName
                 )}
                 disabled={disabled}
@@ -192,6 +192,7 @@ const QuantitySelector = ({
                 data-quantity-increase
                 data-testid="quantity-increase"
                 data-nosnippet={true}
+                styled={false}
             >
                 {'+'}
             </Button>

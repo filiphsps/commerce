@@ -2,7 +2,7 @@
 
 import styles from '@/components/informational/breadcrumbs.module.scss';
 
-import { FiChevronRight } from 'react-icons/fi';
+import { Fragment } from 'react/jsx-runtime';
 
 import { cn } from '@/utils/tailwind';
 import { usePathname } from 'next/navigation';
@@ -25,62 +25,51 @@ const Breadcrumbs = ({ locale, title }: BreadcrumbsProps) => {
         return null;
     }
 
-    const textStyles = 'text-sm leading-none';
-    const blockStyles = 'gap-1';
+    const itemStyles = 'inline-flex justify-center items-center';
+    const linkStyles = 'text-sm capitalize hover:text-primary leading-none';
+    const iconStyles = 'text-gray-300 text-lg font-normal';
 
     const hrefs = path.map((_, index) => `/${path.slice(0, index + 1).join('/')}`);
     return (
         <section
             className={cn(
                 styles.breadcrumbs,
-                'overflow-x-shadow flex h-8 w-full max-w-full list-none flex-nowrap items-center justify-start overflow-hidden overflow-x-auto overscroll-x-contain whitespace-nowrap rounded-lg bg-gray-100 p-2 px-3 font-semibold text-gray-500',
-                blockStyles
+                'overflow-x-shadow flex w-full max-w-full list-none flex-nowrap items-center justify-start gap-2 overflow-hidden overflow-x-auto overscroll-x-contain whitespace-nowrap rounded-lg font-medium leading-none text-gray-700 md:gap-3'
             )}
             itemScope
             itemType="https://schema.org/BreadcrumbList"
         >
-            <div
-                className={cn(styles.item, blockStyles)}
-                itemProp="itemListElement"
-                itemScope
-                itemType="https://schema.org/ListItem"
-            >
-                <Link
-                    className={cn(styles.link, textStyles, 'rounded-lg')}
-                    href="/"
-                    itemType="https://schema.org/Thing"
-                    itemProp="item"
-                >
+            <div className={itemStyles} itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+                <Link className={linkStyles} href="/" itemType="https://schema.org/Thing" itemProp="item">
                     <span itemProp="name">
                         {shop.name}
                         {locale.country ? ` (${locale.country.toUpperCase()})` : ''}
                     </span>
                 </Link>
                 <meta itemProp="position" content="1" />
-
-                <FiChevronRight className={styles.icon} />
             </div>
+            <span className={iconStyles}>/</span>
 
             {path.map((entry, index) => (
-                <div
-                    key={entry}
-                    className={cn(styles.item, textStyles, blockStyles)}
-                    itemProp="itemListElement"
-                    itemScope
-                    itemType="https://schema.org/ListItem"
-                >
-                    <Link
-                        className={cn(styles.link, textStyles, 'rounded-lg')}
-                        href={hrefs[index]!}
-                        itemType="https://schema.org/Thing"
-                        itemProp="item"
+                <Fragment key={entry}>
+                    <div
+                        className={itemStyles}
+                        itemProp="itemListElement"
+                        itemScope
+                        itemType="https://schema.org/ListItem"
                     >
-                        <span itemProp="name">{index === path.length - 1 ? title || entry : entry}</span>
-                    </Link>
-                    <meta itemProp="position" content={`${index + 2}`} />
-
-                    {index + 1 < path.length ? <FiChevronRight className={styles.icon} /> : null}
-                </div>
+                        <Link
+                            className={linkStyles}
+                            href={hrefs[index]!}
+                            itemType="https://schema.org/Thing"
+                            itemProp="item"
+                        >
+                            <span itemProp="name">{index === path.length - 1 ? title || entry : entry}</span>
+                        </Link>
+                        <meta itemProp="position" content={`${index + 2}`} />
+                    </div>
+                    {index + 1 < path.length ? <span className={iconStyles}>/</span> : null}
+                </Fragment>
             ))}
         </section>
     );

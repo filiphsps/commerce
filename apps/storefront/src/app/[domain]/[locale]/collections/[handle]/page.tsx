@@ -1,7 +1,6 @@
-import styles from './page.module.scss';
-
 import { Suspense } from 'react';
 
+import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 
@@ -13,7 +12,6 @@ import { getDictionary } from '@/i18n/dictionary';
 import { isValidHandle } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
 import { asText } from '@prismicio/client';
-import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 
 import Pagination from '@/components/actionable/pagination';
@@ -26,6 +24,9 @@ import CollectionBlock from '@/components/products/collection-block';
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
 
+import { CollectionContent, PRODUCTS_PER_PAGE } from './collection-content';
+
+import type { LocaleDictionary } from '@/utils/locale';
 import type { Metadata } from 'next';
 import type { Collection, WithContext } from 'schema-dts';
 
@@ -33,20 +34,13 @@ import type { Collection, WithContext } from 'schema-dts';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-// TODO: Make this dynamic, preferably a configurable default value and then a query param override.
-const PRODUCTS_PER_PAGE = 16 as const;
-
-type FilterParams = {
-    page?: string;
-};
-
 export type CollectionPageParams = { domain: string; locale: string; handle: string };
 export async function generateMetadata({
     params: { domain, locale: localeData, handle },
-    searchParams: { page: pageParam }
+    searchParams
 }: {
     params: CollectionPageParams;
-    searchParams: FilterParams;
+    searchParams: { [key: string]: string | string[] | undefined };
 }): Promise<Metadata> {
     if (!isValidHandle(handle)) {
         notFound();
@@ -58,12 +52,15 @@ export async function generateMetadata({
         const shop = await Shop.findByDomain(domain, { sensitiveData: true });
         const api = await ShopifyApolloApiClient({ shop, locale });
 
-        const collection = await CollectionApi({ api, handle, first: 16, after: null }, cache); // TODO: this.
+        const collection = await CollectionApi({ api, handle, first: 1, after: null }); // TODO: this.
         const page = await PageApi({ shop, locale, handle, type: 'collection_page' });
         const locales = await LocalesApi({ api });
 
+        const currentPage = Number.parseInt(searchParams.page?.toString() || '1');
+        const search = currentPage > 1 ? `?page=${currentPage}` : '';
+
         // TODO: i18n.
-        const title = `${page?.meta_title || collection.seo.title || collection.title}${pageParam ? ` -  Page ${pageParam}` : ''}`;
+        const title = `${page?.meta_title || collection.seo.title || collection.title}${currentPage > 1 ? ` -  Page ${currentPage}` : ''}`;
         const description: string | undefined =
             asText(page?.meta_description) ||
             collection.seo.description ||
@@ -72,15 +69,12 @@ export async function generateMetadata({
         return {
             title,
             description,
-            robots: {
-                index: pageParam && Number.parseInt(pageParam) > 1 ? false : true
-            },
             alternates: {
-                canonical: `https://${shop.domain}/${locale.code}/collections/${handle}/`,
+                canonical: `https://${shop.domain}/${locale.code}/collections/${handle}/${search}`,
                 languages: locales.reduce(
                     (prev, { code }) => ({
                         ...prev,
-                        [code]: `https://${shop.domain}/${code}/collections/${handle}/`
+                        [code]: `https://${shop.domain}/${code}/collections/${handle}/${search}`
                     }),
                     {}
                 )
@@ -114,12 +108,35 @@ export async function generateMetadata({
     }
 }
 
+async function CollectionPageSlices({
+    shop,
+    locale,
+    i18n,
+    handle
+}: {
+    shop: OnlineShop;
+    locale: Locale;
+    i18n: LocaleDictionary;
+    handle: string;
+}) {
+    const page = await PageApi({ shop, locale, handle, type: 'collection_page' });
+    if (!page || page.slices.length <= 0) {
+        return null;
+    }
+
+    return (
+        <PageContent>
+            <PrismicPage shop={shop} locale={locale} page={page} i18n={i18n} handle={handle} type={'collection_page'} />
+        </PageContent>
+    );
+}
+
 export default async function CollectionPage({
     params: { domain, locale: localeData, handle },
     searchParams
 }: {
     params: CollectionPageParams;
-    searchParams: FilterParams;
+    searchParams: { [key: string]: string | string[] | undefined };
 }) {
     if (!isValidHandle(handle)) {
         notFound();
@@ -129,29 +146,21 @@ export default async function CollectionPage({
         // Creates a locale object from a locale code (e.g. `en-US`).
         const locale = Locale.from(localeData);
 
-        if (searchParams.page && isNaN(parseInt(searchParams.page))) notFound();
-        const query = {
-            page: searchParams.page ? Number.parseInt(searchParams.page) : 1
-        };
-
         // Fetch the current shop.
         const shop = await Shop.findByDomain(domain, { sensitiveData: true });
 
         // Setup the AbstractApi client.
+
         const api = await ShopifyApolloApiClient({ shop, locale });
 
-        // Deal with pagination before fetching the collection.
-        const pagesInfo = await CollectionPaginationCountApi({ api, handle, filters: { first: PRODUCTS_PER_PAGE } });
-        const after = pagesInfo.cursors[query.page - 2];
-
         // Do the actual API calls.
-        const collection = await CollectionApi({ api, handle, filters: { first: PRODUCTS_PER_PAGE, after } }, cache);
-        const page = await PageApi({ shop, locale, handle, type: 'collection_page' });
+        const [collection, pagesInfo] = await Promise.all([
+            CollectionApi({ api, handle, limit: 0 }),
+            CollectionPaginationCountApi({ api, handle, filters: { first: PRODUCTS_PER_PAGE } })
+        ]);
 
         // Get dictionary of strings for the current locale.
         const i18n = await getDictionary(locale);
-
-        const subtitle = asText(page?.meta_description) || collection.seo.description || null;
 
         const jsonLd: WithContext<Collection> = {
             '@context': 'https://schema.org',
@@ -161,64 +170,40 @@ export default async function CollectionPage({
             'url': `https://${shop.domain}/${locale.code}/collections/${handle}/`
         };
 
-        // Filter any left-over legacy collection slices.
-        const slices =
-            page?.slices.filter(
-                ({ slice_type, variation }) => !(slice_type === 'collection' && (variation as any) === 'full')
-            ) || [];
-
-        // TODO: Create a proper `shopify-html-parser` to convert the HTML to React components.
-        const content = (collection.descriptionHtml as any) || '';
-
         return (
             <>
                 <Suspense fallback={<BreadcrumbsSkeleton />}>
                     <Breadcrumbs locale={locale} title={collection.title} />
                 </Suspense>
 
-                <PageContent className={styles.container}>
-                    <Heading
-                        title={page?.meta_title || collection.seo.title || collection.title}
-                        subtitleAs={null}
-                        subtitle={subtitle ? <Content html={subtitle} /> : null}
-                    />
+                <Heading title={collection.seo.title ?? collection.title} />
 
-                    <section className={styles.collection}>
-                        <Suspense fallback={<CollectionBlock.skeleton />}>
-                            <CollectionBlock
-                                shop={shop}
-                                locale={locale}
-                                handle={handle}
-                                filters={{ first: PRODUCTS_PER_PAGE, after }}
-                            />
-                        </Suspense>
-                    </section>
+                <div className="grid grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] gap-2">
+                    <Suspense
+                        key={JSON.stringify(searchParams)}
+                        fallback={<CollectionBlock.skeleton length={PRODUCTS_PER_PAGE} bare={true} />}
+                    >
+                        <CollectionContent
+                            shop={shop}
+                            locale={locale}
+                            searchParams={searchParams}
+                            handle={handle}
+                            cursors={pagesInfo.cursors}
+                        />
+                    </Suspense>
+                </div>
 
-                    <section className={styles.collection}>
-                        <Suspense>
-                            <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
-                        </Suspense>
-                    </section>
+                <section className="flex w-full items-center justify-center">
+                    <Suspense>
+                        <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
+                    </Suspense>
+                </section>
 
-                    {slices.length > 0 ? (
-                        <section className={styles.content}>
-                            <PrismicPage
-                                shop={shop}
-                                locale={locale}
-                                slices={slices as any}
-                                i18n={i18n}
-                                handle={handle}
-                                type={'collection_page'}
-                            />
-                        </section>
-                    ) : null}
+                <Suspense fallback={<section className="w-full bg-gray-100 p-4" data-skeleton />}>
+                    <CollectionPageSlices shop={shop} locale={locale} i18n={i18n} handle={handle} />
+                </Suspense>
 
-                    {collection.descriptionHtml ? (
-                        <section className="empty:hidden">
-                            <Content html={content} />
-                        </section>
-                    ) : null}
-                </PageContent>
+                <Content html={collection.descriptionHtml} />
 
                 {/* Metadata */}
                 <JsonLd data={jsonLd} />

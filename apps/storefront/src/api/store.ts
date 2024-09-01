@@ -121,7 +121,7 @@ export const ShopPaymentSettingsApi = async ({
         return null;
     }
 
-    const { data, errors } = await api.query<{ paymentSettings: PaymentSettings }>(gql`
+    const { data, errors } = await api.query<{ shop: { paymentSettings: PaymentSettings } }>(gql`
         query shop {
             shop {
                 paymentSettings {
@@ -139,9 +139,9 @@ export const ShopPaymentSettingsApi = async ({
         return null;
     }
 
-    if (!data) {
+    if (!data?.shop) {
         return null;
     }
 
-    return data.paymentSettings;
+    return data.shop.paymentSettings;
 };

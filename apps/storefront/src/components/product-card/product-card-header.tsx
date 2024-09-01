@@ -25,13 +25,13 @@ const VariantImage = ({ image, priority }: VariantImageProps) => {
 
     return (
         <Image
-            className="h-32 max-h-32 min-h-32 w-full rounded-lg bg-white object-contain object-center p-2"
+            className="h-32 max-h-32 min-h-32 w-full rounded-lg bg-white object-contain object-center p-2 py-3"
             src={image.url}
             alt={image.altText!}
             title={image.altText!}
             height={image.height || 100}
             width={image.width || 100}
-            sizes="(max-width: 950px) 75px, 185px"
+            sizes="(max-width: 950px) 80vw, 185px"
             decoding="async"
             draggable={false}
             loading={priority ? 'eager' : 'lazy'}

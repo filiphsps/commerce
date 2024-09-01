@@ -130,7 +130,7 @@ export default function SearchContent({
                 <section className="flex flex-wrap gap-4 empty:hidden">
                     {productFilters.map(({ id, label, type, values /*, presentation*/ }) => (
                         <div key={id} className={cn(commonStyles, 'flex w-full flex-col')}>
-                            <Label className="text-gray-500">{label}</Label>
+                            <Label className="text-gray-600">{label}</Label>
                             {(() => {
                                 switch (type) {
                                     case 'BOOLEAN': {

@@ -31,6 +31,7 @@ export type CollectionBlockProps = {
     filters?: any;
     showViewAll?: boolean;
     priority?: boolean;
+    bare?: boolean;
 } & CollectionBlockCommonProps &
     HTMLProps<HTMLDivElement>;
 const CollectionBlock = async ({
@@ -42,6 +43,7 @@ const CollectionBlock = async ({
     isHorizontal,
     showViewAll,
     priority,
+    bare = false,
     className,
     ...props
 }: CollectionBlockProps) => {
@@ -64,17 +66,23 @@ const CollectionBlock = async ({
         return null;
     }
 
+    const productCards = products.map((product, index) => (
+        <Suspense key={product.id} fallback={<ProductCard.skeleton />}>
+            <ProductCard shop={shop} locale={locale} data={product} priority={priority && index < 2} />
+        </Suspense>
+    ));
+
+    if (bare) {
+        return <>{productCards}</>;
+    }
+
     return (
         <section
             {...props}
             className={cn(styles.container, isHorizontal && cn(styles.horizontal, 'overflow-x-shadow'), className)}
         >
             <div className={styles.content}>
-                {products.map((product, index) => (
-                    <Suspense key={product.id} fallback={<ProductCard.skeleton />}>
-                        <ProductCard shop={shop} locale={locale} data={product} priority={priority && index < 2} />
-                    </Suspense>
-                ))}
+                {productCards}
 
                 {showViewAll ? (
                     <Link
@@ -95,17 +103,26 @@ const CollectionBlock = async ({
 CollectionBlock.displayName = 'Nordcom.Products.CollectionBlock';
 
 CollectionBlock.skeleton = ({
-    isHorizontal,
+    isHorizontal = false,
+    bare = false,
     length = 6
-}: { length: number } & Pick<CollectionBlockProps, 'isHorizontal'>) => (
-    <section className={cn(styles.container, isHorizontal && styles.horizontal)}>
-        <div className={styles.content}>
-            {Array.from({ length }).map((_, index) => (
-                <ProductCard.skeleton key={index} />
-            ))}
-        </div>
-    </section>
-);
+}: {
+    length?: number;
+    isHorizontal?: boolean;
+    bare?: boolean;
+}) => {
+    const cards = Array.from({ length }).map((_, index) => <ProductCard.skeleton key={index} />);
+
+    if (bare) {
+        return <>{cards}</>;
+    }
+
+    return (
+        <section className={cn(styles.container, isHorizontal && styles.horizontal)}>
+            <div className={styles.content}>{cards}</div>
+        </section>
+    );
+};
 
 CollectionBlock.displayName = 'Nordcom.Products.CollectionBlock';
 export default CollectionBlock;

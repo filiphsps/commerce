@@ -8,7 +8,7 @@
         "Main": {
             "uid": {
                 "config": {
-                    "label": "UID",
+                    "label": "handle",
                     "placeholder": "collection-handle"
                 },
                 "type": "UID"

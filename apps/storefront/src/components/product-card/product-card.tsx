@@ -9,13 +9,13 @@ import { getDictionary } from '@/utils/dictionary';
 import { cn } from '@/utils/tailwind';
 
 import ProductCardBadges from '@/components/product-card/product-card-badges';
-import ProductCardFooter from '@/components/product-card/product-card-footer';
+import ProductCardContent from '@/components/product-card/product-card-content';
 import ProductCardHeader from '@/components/product-card/product-card-header';
 import ProductCardTitle from '@/components/product-card/product-card-title';
 
 import type { Locale } from '@/utils/locale';
 
-const CARD_STYLES = 'group/card relative overflow-hidden rounded-xl p-1 md:p-2 2xl:max-w-56 flex flex-col';
+const CARD_STYLES = 'group/card relative overflow-hidden rounded-xl p-1 flex flex-col min-h-[18rem] bg-gray-100';
 
 const DESCRIPTION_LENGTH = 160;
 
@@ -37,7 +37,7 @@ const ProductCard = async ({ shop, locale, data: product, priority, className, .
         <div
             className={cn(
                 CARD_STYLES,
-                'border-2 border-solid border-gray-300 bg-gray-100 transition-shadow hover:shadow-xl',
+                'border-2 border-solid border-gray-200 transition-shadow hover:shadow-xl',
                 className
             )}
             title={description ? `${description}...` : undefined}
@@ -47,21 +47,21 @@ const ProductCard = async ({ shop, locale, data: product, priority, className, .
             {/*<ProductCardQuickActions data={product} locale={locale} i18n={i18n} />*/}
             <ProductCardBadges data={product} i18n={i18n} />
 
-            <Suspense fallback={<div className="contents" />}>
+            <Suspense>
                 <ProductCardHeader shop={shop} data={product} priority={priority}>
                     <ProductCardTitle data={product} />
                 </ProductCardHeader>
             </Suspense>
 
-            <Suspense fallback={<div className="flex h-full min-h-24 w-full grow flex-col pt-1" data-skeleton />}>
-                <ProductCardFooter data={product} locale={locale} i18n={i18n} />
+            <Suspense>
+                <ProductCardContent locale={locale} i18n={i18n} data={product} />
             </Suspense>
         </div>
     );
 };
 ProductCard.displayName = 'Nordcom.ProductCard';
 
-ProductCard.skeleton = () => <div className={cn(CARD_STYLES, 'flex h-64 bg-gray-100 md:h-96')} data-skeleton />;
+ProductCard.skeleton = () => <div className={CARD_STYLES} data-skeleton />;
 (ProductCard.skeleton as any).displayName = 'Nordcom.ProductCard.Skeleton';
 
 export default ProductCard;
