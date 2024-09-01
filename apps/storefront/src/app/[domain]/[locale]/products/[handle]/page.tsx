@@ -360,11 +360,9 @@ export default async function ProductPage({
 
                             <Suspense fallback={<div className={cn(ROUNDED_BLOCK_STYLES, 'h-32')} data-skeleton />}>
                                 <div className={cn(ROUNDED_BLOCK_STYLES)}>
-                                    <Content
-                                        dangerouslySetInnerHTML={{
-                                            __html: content
-                                        }}
-                                    />
+                                    <Content>
+                                        <span dangerouslySetInnerHTML={{ __html: content }} className="contents" />
+                                    </Content>
                                 </div>
                             </Suspense>
 

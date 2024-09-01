@@ -179,7 +179,13 @@ export default async function CollectionPage({
                     <Heading
                         title={page?.meta_title || collection.seo.title || collection.title}
                         subtitleAs={null}
-                        subtitle={subtitle ? <Content dangerouslySetInnerHTML={{ __html: subtitle }} /> : null}
+                        subtitle={
+                            subtitle ? (
+                                <Content>
+                                    <span dangerouslySetInnerHTML={{ __html: subtitle }} className="contents" />
+                                </Content>
+                            ) : null
+                        }
                     />
 
                     <section className={styles.collection}>
@@ -214,7 +220,9 @@ export default async function CollectionPage({
 
                     {collection.descriptionHtml ? (
                         <section className="empty:hidden">
-                            <Content dangerouslySetInnerHTML={{ __html: content || '' }} />
+                            <Content>
+                                <span dangerouslySetInnerHTML={{ __html: content || '' }} className="contents" />
+                            </Content>
                         </section>
                     ) : null}
                 </PageContent>

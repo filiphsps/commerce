@@ -41,16 +41,15 @@ export const LiveChatProvider = ({
                         id="live-chat-intercom"
                         type="text/javascript"
                         //strategy="afterInteractive"
-                        /*dangerouslySetInnerHTML={{
-                            __html: `window.intercomSettings = ${JSON.stringify({
-                                api_base: 'https://api-iam.intercom.io',
-                                app_id: intercom,
-                                action_color: primaryColor?.color,
-                                background_color: primaryColor?.color,
-                                hide_default_launcher: false
-                            })};`
-                        }}*/
-                    />
+                    >
+                        {`window.intercomSettings = ${JSON.stringify({
+                            api_base: 'https://api-iam.intercom.io',
+                            app_id: intercom,
+                            action_color: primaryColor?.color,
+                            background_color: primaryColor?.color,
+                            hide_default_launcher: false
+                        })};`}
+                    </script>
                 </>
             ) : (
                 <div>hello</div>

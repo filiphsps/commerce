@@ -31,7 +31,7 @@ export const createClient = ({ shop, locale = Locale.default, ...config }: Creat
         fetchOptions: {
             next: {
                 revalidate: 60 * 60 * 24, // 24 hours.
-                tags: ['prismic', `prismic.${shop.id}`, shop.domain, locale.code]
+                tags: ['prismic', `prismic.${shop.id}`, shop.domain]
             }
         },
         ...config

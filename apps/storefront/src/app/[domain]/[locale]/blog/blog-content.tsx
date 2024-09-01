@@ -41,7 +41,12 @@ export default async function BlogContent({ locale, blog }: BlogContentProps) {
                             </Link>
                         </div>
 
-                        <Content dangerouslySetInnerHTML={{ __html: article.excerptHtml || '' }} />
+                        <Content>
+                            <span
+                                dangerouslySetInnerHTML={{ __html: article.excerptHtml || '' }}
+                                className="contents"
+                            />
+                        </Content>
 
                         <section className={styles.actions}>
                             <Button className={styles.action} as={Link} href={href} locale={locale}>
