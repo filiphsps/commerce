@@ -68,6 +68,92 @@ export type ArticlePageDocument<Lang extends string = string> = prismic.PrismicD
     Lang
 >;
 
+/**
+ * Item in *Business Data → Social Profiles*
+ */
+export interface BusinessDataDocumentDataSocialProfilesItem {
+    /**
+     * href field in *Business Data → Social Profiles*
+     *
+     * - **Field Type**: Text
+     * - **Placeholder**: *None*
+     * - **API ID Path**: business_data.social_profiles[].href
+     * - **Documentation**: https://prismic.io/docs/field#key-text
+     */
+    href: prismic.KeyTextField;
+}
+
+/**
+ * Content for Business Data documents
+ */
+interface BusinessDataDocumentData {
+    /**
+     * Telephone field in *Business Data*
+     *
+     * - **Field Type**: Text
+     * - **Placeholder**: *None*
+     * - **API ID Path**: business_data.telephone
+     * - **Tab**: Basics
+     * - **Documentation**: https://prismic.io/docs/field#key-text
+     */
+    telephone: prismic.KeyTextField;
+
+    /**
+     * Email field in *Business Data*
+     *
+     * - **Field Type**: Text
+     * - **Placeholder**: *None*
+     * - **API ID Path**: business_data.email
+     * - **Tab**: Basics
+     * - **Documentation**: https://prismic.io/docs/field#key-text
+     */
+    email: prismic.KeyTextField /**
+     * Social Profiles field in *Business Data*
+     *
+     * - **Field Type**: Group
+     * - **Placeholder**: *None*
+     * - **API ID Path**: business_data.social_profiles[]
+     * - **Tab**: Social
+     * - **Documentation**: https://prismic.io/docs/field#group
+     */;
+    social_profiles: prismic.GroupField<Simplify<BusinessDataDocumentDataSocialProfilesItem>> /**
+     * Tax Number field in *Business Data*
+     *
+     * - **Field Type**: Text
+     * - **Placeholder**: *None*
+     * - **API ID Path**: business_data.tax_number
+     * - **Tab**: Legal
+     * - **Documentation**: https://prismic.io/docs/field#key-text
+     */;
+    tax_number: prismic.KeyTextField;
+
+    /**
+     * VAT Number field in *Business Data*
+     *
+     * - **Field Type**: Text
+     * - **Placeholder**: *None*
+     * - **API ID Path**: business_data.vat_number
+     * - **Tab**: Legal
+     * - **Documentation**: https://prismic.io/docs/field#key-text
+     */
+    vat_number: prismic.KeyTextField;
+}
+
+/**
+ * Business Data document from Prismic
+ *
+ * - **API ID**: `business_data`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/custom-types
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type BusinessDataDocument<Lang extends string = string> = prismic.PrismicDocumentWithoutUID<
+    Simplify<BusinessDataDocumentData>,
+    'business_data',
+    Lang
+>;
+
 type CartPageDocumentDataSlicesSlice = AlertSlice;
 
 type CartPageDocumentDataSidebarSlicesSlice = AlertSlice;
@@ -630,11 +716,11 @@ export type MenuDocument<Lang extends string = string> = prismic.PrismicDocument
 type MenuItemDocumentDataSlicesSlice = never;
 
 /**
- * Content for MenuItem documents
+ * Content for Menu Item documents
  */
 interface MenuItemDocumentData {
     /**
-     * Title field in *MenuItem*
+     * Title field in *Menu Item*
      *
      * - **Field Type**: Rich Text
      * - **Placeholder**: The name/title of the menu
@@ -645,7 +731,7 @@ interface MenuItemDocumentData {
     title: prismic.RichTextField;
 
     /**
-     * Slice Zone field in *MenuItem*
+     * Slice Zone field in *Menu Item*
      *
      * - **Field Type**: Slice Zone
      * - **Placeholder**: *None*
@@ -657,7 +743,7 @@ interface MenuItemDocumentData {
 }
 
 /**
- * MenuItem document from Prismic
+ * Menu Item document from Prismic
  *
  * - **API ID**: `menu_item`
  * - **Repeatable**: `true`
@@ -1006,6 +1092,7 @@ export type StoreDocument<Lang extends string = string> = prismic.PrismicDocumen
 
 export type AllDocumentTypes =
     | ArticlePageDocument
+    | BusinessDataDocument
     | CartPageDocument
     | CollectionPageDocument
     | CustomPageDocument
@@ -1928,6 +2015,9 @@ declare module '@prismicio/client' {
             ArticlePageDocument,
             ArticlePageDocumentData,
             ArticlePageDocumentDataSlicesSlice,
+            BusinessDataDocument,
+            BusinessDataDocumentData,
+            BusinessDataDocumentDataSocialProfilesItem,
             CartPageDocument,
             CartPageDocumentData,
             CartPageDocumentDataSlicesSlice,

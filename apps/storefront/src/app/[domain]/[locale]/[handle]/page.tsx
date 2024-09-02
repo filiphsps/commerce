@@ -2,13 +2,14 @@ import 'server-only';
 
 import { Suspense } from 'react';
 
+import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 
 import { PageApi, PagesApi } from '@/api/page';
 import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { LocalesApi } from '@/api/store';
+import { BusinessDataApi, LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { isValidHandle } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
@@ -17,9 +18,11 @@ import { notFound } from 'next/navigation';
 
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
+import { JsonLd } from '@/components/json-ld';
 import PrismicPage from '@/components/prismic-page';
 
 import type { Metadata } from 'next';
+import type { OnlineStore, WithContext } from 'schema-dts';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-static';
@@ -117,6 +120,30 @@ export async function generateMetadata({
     }
 }
 
+async function OnlineStoreJsonLd({ shop, locale }: { shop: OnlineShop; locale: Locale }) {
+    try {
+        const businessData = await BusinessDataApi({ shop, locale });
+
+        // TODO: Add more data.
+        const jsonLd: WithContext<OnlineStore> = {
+            '@context': 'https://schema.org',
+            '@type': 'OnlineStore',
+            'name': shop.name,
+            'url': `https://${shop.domain}/${locale.code}/`,
+            'logo': shop.icons?.favicon?.src,
+            'telephone': businessData.telephone || undefined,
+            'email': businessData.email || undefined,
+            'sameAs': (businessData.social_profiles || []).map(({ href }) => href as string) || [],
+            'taxID': businessData.tax_number || undefined,
+            'vatID': businessData.vat_number || undefined
+        };
+
+        return <JsonLd data={jsonLd} />;
+    } catch {
+        return null;
+    }
+}
+
 export default async function CustomPage({
     params: { domain, locale: localeCode, handle }
 }: {
@@ -155,6 +182,13 @@ export default async function CustomPage({
                 {breadcrumbs}
 
                 <PrismicPage shop={shop} locale={locale} page={page} i18n={i18n} handle={handle} />
+
+                {/* Metadata */}
+                {handle === 'homepage' ? (
+                    <Suspense>
+                        <OnlineStoreJsonLd shop={shop} locale={locale} />
+                    </Suspense>
+                ) : null}
             </>
         );
     } catch (error: unknown) {

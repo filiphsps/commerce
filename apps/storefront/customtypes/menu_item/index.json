@@ -1,6 +1,6 @@
 {
     "id": "menu_item",
-    "label": "MenuItem",
+    "label": "Menu Item",
     "format": "custom",
     "repeatable": true,
     "status": true,

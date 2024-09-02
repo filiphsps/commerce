@@ -75,7 +75,9 @@ export const PageApi = async <T extends keyof PageTypeMapping | 'custom_page' = 
     type = 'custom_page',
     handle
 }: PageApiProps & { type?: T | 'custom_page' }): Promise<NarrowedPageType<T>['data'] | null> => {
-    if (!(shop as any)) throw new UnknownShopDomainError();
+    if (!(shop as any)) {
+        throw new UnknownShopDomainError();
+    }
 
     try {
         const client = createClient({ shop, locale });

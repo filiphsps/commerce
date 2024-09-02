@@ -25,7 +25,6 @@ import PageContent from '@/components/page-content';
 import ProvidersRegistry from '@/components/providers-registry';
 
 import type { Metadata, Viewport } from 'next';
-import type { OnlineStore, WithContext } from 'schema-dts';
 
 export const runtime = 'nodejs';
 export const dynamic = 'auto';
@@ -141,15 +140,6 @@ export default async function RootLayout({
         const branding = await getBrandingColors(domain);
         const i18n = await getDictionary(locale);
 
-        // TODO: Add more data.
-        const jsonLd: WithContext<OnlineStore> = {
-            '@context': 'https://schema.org',
-            '@type': 'OnlineStore',
-            'name': shop.name,
-            'url': `https://${shop.domain}/${locale.code}/`,
-            'logo': shop.icons?.favicon?.src
-        };
-
         return (
             <html lang={locale.code} className={cn(primaryFont.className, primaryFont.variable, 'overscroll-x-none')}>
                 <head>
@@ -198,7 +188,6 @@ export default async function RootLayout({
                             }
                         }}
                     />
-                    <JsonLd data={jsonLd} />
                 </body>
             </html>
         );

@@ -1,8 +1,11 @@
-import { NoLocalesAvailableError, UnknownApiError } from '@nordcom/commerce-errors';
+import type { OnlineShop } from '@nordcom/commerce-db';
+import { Error, NoLocalesAvailableError, NotFoundError, UnknownApiError } from '@nordcom/commerce-errors';
 
 import { Locale } from '@/utils/locale';
+import { createClient } from '@/utils/prismic';
 import { gql } from '@apollo/client';
 
+import type { BusinessDataDocument, BusinessDataDocumentData, Simplify } from '@/prismic/types';
 import type { AbstractApi } from '@/utils/abstract-api';
 import type { Country, Localization, PaymentSettings } from '@shopify/hydrogen-react/storefront-api-types';
 
@@ -144,4 +147,32 @@ export const ShopPaymentSettingsApi = async ({
     }
 
     return data.shop.paymentSettings;
+};
+
+export const BusinessDataApi = async ({
+    shop,
+    locale
+}: {
+    shop: OnlineShop;
+    locale: Locale;
+}): Promise<Simplify<BusinessDataDocumentData>> => {
+    const client = createClient({ shop, locale });
+
+    try {
+        const { data } = await client.getSingle<BusinessDataDocument>('business_data');
+
+        return data;
+    } catch (error) {
+        if (Error.isNotFound(error)) {
+            if (!Locale.isDefault(locale)) {
+                return await BusinessDataApi({ shop, locale: Locale.default }); // Try again with default locale.
+            }
+
+            throw new NotFoundError(`"BusinessData" with the locale "${locale.code}"`);
+        }
+
+        // TODO: Deal with errors properly.
+        console.error(error);
+        throw error;
+    }
 };

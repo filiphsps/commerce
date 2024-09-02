@@ -1,0 +1,59 @@
+{
+    "format": "custom",
+    "id": "business_data",
+    "label": "Business Data",
+    "repeatable": false,
+    "status": true,
+    "json": {
+        "Basics": {
+            "telephone": {
+                "type": "Text",
+                "config": {
+                    "label": "Telephone",
+                    "placeholder": ""
+                }
+            },
+            "email": {
+                "type": "Text",
+                "config": {
+                    "label": "Email",
+                    "placeholder": ""
+                }
+            }
+        },
+        "Social": {
+            "social_profiles": {
+                "type": "Group",
+                "config": {
+                    "label": "Social Profiles",
+                    "repeat": true,
+                    "fields": {
+                        "href": {
+                            "type": "Text",
+                            "config": {
+                                "label": "href",
+                                "placeholder": ""
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "Legal": {
+            "tax_number": {
+                "type": "Text",
+                "config": {
+                    "label": "Tax Number",
+                    "placeholder": ""
+                }
+            },
+            "vat_number": {
+                "type": "Text",
+                "config": {
+                    "label": "VAT Number",
+                    "placeholder": ""
+                }
+            }
+        }
+    }
+}
