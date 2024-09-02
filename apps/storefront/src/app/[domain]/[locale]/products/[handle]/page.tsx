@@ -15,18 +15,15 @@ import { getDictionary } from '@/i18n/dictionary';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import { isValidHandle } from '@/utils/handle';
 import { Locale, useTranslation } from '@/utils/locale';
-import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { cn } from '@/utils/tailwind';
 import { TitleToHandle } from '@/utils/title-to-handle';
 import { asText } from '@prismicio/client';
-import { parseGid } from '@shopify/hydrogen-react';
 import { notFound } from 'next/navigation';
 
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import { JsonLd } from '@/components/json-ld';
 import Link from '@/components/link';
-import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import { AttributeIcon } from '@/components/products/attribute-icon';
 import { InfoLines } from '@/components/products/info-lines';
@@ -37,9 +34,12 @@ import { Content } from '@/components/typography/content';
 import { ProductContent, ProductPricing, ProductSavings } from './product-content';
 import { ImportantProductDetails, ProductDetails } from './product-details';
 
+import PageContent from '@/components/page-content';
 import type { LocaleDictionary } from '@/utils/locale';
+import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
+import { parseGid } from '@shopify/hydrogen-react';
 import type { Metadata } from 'next';
-import type { Product, WithContext } from 'schema-dts';
+import type { ProductGroup, WithContext } from 'schema-dts';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-static';
@@ -213,24 +213,23 @@ export default async function ProductPage({
         // TODO: Create a proper `shopify-html-parser` to convert the HTML to React components.
         const content = product.descriptionHtml || '';
 
-        const jsonLd: WithContext<Product> = {
+        const jsonLd: WithContext<ProductGroup> = {
             '@context': 'https://schema.org',
-            '@type': 'Product',
+            '@type': 'ProductGroup',
+            'name': product.title,
+            'description': product.description || '',
             'url': `https://${shop.domain}/${locale.code}/products/${handle}/`,
-            'name': `${product.vendor} ${product.title}`,
             'brand': {
                 '@type': 'Brand',
                 'name': product.vendor
             },
-            'image': initialVariant.image?.url || product.images.edges[0]?.node.url,
-            'description': product.description || '',
-            'offers': product.variants.edges.map(({ node: variant }) => ({
-                '@type': 'Offer',
-                'itemCondition': 'https://schema.org/NewCondition',
-                'availability': variant.availableForSale ? 'https://schema.org/InStock' : 'https://schema.org/SoldOut',
-                'url': `https://${shop.domain}/${locale.code}/products/${product.handle}/?variant=${
-                    parseGid(variant.id).id
-                }`,
+            'productGroupID': parseGid(product.id).resourceId!,
+            'variesBy': [], // TODO: Support this.
+            'hasVariant': product.variants.edges.map(({ node: variant }) => ({
+                '@type': 'Product',
+                'name': `${product.title} ${variant.title}`,
+                'description': product.description || '',
+                'image': variant.image?.url || product.images.edges[0]?.node.url,
 
                 'sku': ProductToMerchantsCenterId({
                     locale: locale,
@@ -241,47 +240,22 @@ export default async function ProductPage({
                 }),
                 'mpn': variant.barcode || variant.sku || undefined,
 
-                'priceSpecification': {
-                    '@type': 'PriceSpecification',
-                    'price': Number.parseFloat(variant.price.amount),
-                    'priceCurrency': variant.price.currencyCode
-                },
+                'offers': {
+                    '@type': 'Offer',
+                    'url': `https://${shop.domain}/${locale.code}/products/${product.handle}/?variant=${
+                        parseGid(variant.id).id
+                    }`,
+                    'itemCondition': 'https://schema.org/NewCondition',
+                    'availability': variant.availableForSale
+                        ? 'https://schema.org/InStock'
+                        : 'https://schema.org/SoldOut',
 
-                // TODO: Make all of the following configurable.
-                'priceValidUntil': `${new Date().getFullYear() + 1}-12-31`,
-                'hasMerchantReturnPolicy': {
-                    '@type': 'MerchantReturnPolicy',
-                    'applicableCountry': locale.country,
-                    'returnPolicyCategory': 'https://schema.org/MerchantReturnNotPermitted'
-                },
-                'shippingDetails': {
-                    '@type': 'OfferShippingDetails',
-                    'shippingRate': {
-                        '@type': 'MonetaryAmount',
-                        'maxValue': 25,
-                        'minValue': 0,
-                        'currency': variant.price.currencyCode!
-                    },
-                    'shippingDestination': [
-                        {
-                            '@type': 'DefinedRegion',
-                            'addressCountry': locale.country
-                        }
-                    ],
-                    'deliveryTime': {
-                        '@type': 'ShippingDeliveryTime',
-                        'handlingTime': {
-                            '@type': 'QuantitativeValue',
-                            'minValue': 0,
-                            'maxValue': 3,
-                            'unitCode': 'DAY'
-                        },
-                        'transitTime': {
-                            '@type': 'QuantitativeValue',
-                            'minValue': 2,
-                            'maxValue': 14,
-                            'unitCode': 'DAY'
-                        }
+                    'price': Number.parseFloat(variant.price.amount),
+                    'priceCurrency': variant.price.currencyCode,
+                    'priceSpecification': {
+                        '@type': 'PriceSpecification',
+                        'price': Number.parseFloat(variant.price.amount),
+                        'priceCurrency': variant.price.currencyCode
                     }
                 }
             }))
@@ -306,13 +280,9 @@ export default async function ProductPage({
                     </div>
                 </Suspense>
 
-                <PageContent className="flex flex-col gap-4 md:flex-row md:flex-nowrap">
-                    <section
-                        className={
-                            'flex h-auto w-full flex-col gap-4 md:w-3/5 md:shrink-0 lg:w-full lg:max-w-[42rem] xl:max-w-[50rem] 2xl:max-w-[60rem]'
-                        }
-                    >
-                        <Suspense fallback={<div className="h-32 w-full lg:h-[30rem]" data-skeleton />}>
+                <PageContent className="overflow flex max-w-full flex-col gap-4 md:flex-row md:flex-nowrap">
+                    <Suspense fallback={<section className="w-full" />}>
+                        <section className={'flex h-auto w-full grow flex-col gap-4'}>
                             <ProductGallery
                                 initialImageId={initialVariant.image?.id || product.images.edges[0]?.node.id}
                                 images={product.images.edges.map((edge) => edge.node)}
@@ -321,11 +291,11 @@ export default async function ProductPage({
                                 product={product}
                                 i18n={i18n}
                             />
-                        </Suspense>
-                    </section>
+                        </section>
+                    </Suspense>
 
-                    <Suspense fallback={<section className="flex w-full p-4" data-skeleton />}>
-                        <section className="flex w-full flex-col gap-3">
+                    <Suspense fallback={<section className="w-full xl:max-w-[38rem]" />}>
+                        <section className="flex w-full flex-col gap-3 xl:max-w-[38rem]">
                             <Suspense fallback={<div className="h-4 w-full" data-skeleton />}>
                                 <ProductSavings product={product} i18n={i18n} />
                             </Suspense>

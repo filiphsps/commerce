@@ -27,6 +27,7 @@ export const PRODUCT_FRAGMENT_MINIMAL = `
     tags
     trackingParameters
     seo {
+        title
         description
     }
     priceRange {
@@ -56,6 +57,7 @@ export const PRODUCT_FRAGMENT_MINIMAL = `
             node {
                 id
                 title
+                barcode
                 price {
                     amount
                     currencyCode
@@ -71,6 +73,10 @@ export const PRODUCT_FRAGMENT_MINIMAL = `
                 weightUnit
                 image {
                     id
+                    altText
+                    url
+                    height
+                    width
                 }
                 selectedOptions {
                     name
@@ -78,6 +84,13 @@ export const PRODUCT_FRAGMENT_MINIMAL = `
                 }
             }
         }
+    }
+    featuredImage {
+        id
+        altText
+        url
+        height
+        width
     }
     images(first: 5) {
         edges {
@@ -157,6 +170,10 @@ export const PRODUCT_FRAGMENT = `
                 weightUnit
                 image {
                     id
+                    altText
+                    url
+                    height
+                    width
                 }
                 selectedOptions {
                     name
@@ -165,7 +182,6 @@ export const PRODUCT_FRAGMENT = `
             }
         }
     }
-
     featuredImage {
         id
         altText
