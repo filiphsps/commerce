@@ -301,7 +301,7 @@ export default async function ProductPage({
         return (
             <>
                 <Suspense fallback={<BreadcrumbsSkeleton />}>
-                    <div className="-mb-[1.75rem] md:-mb-[2.25rem]">
+                    <div className="-mb-[1.75rem] empty:hidden md:-mb-[2.25rem]">
                         <Breadcrumbs locale={locale} title={`${product.vendor} ${product.title}`} />
                     </div>
                 </Suspense>
@@ -309,7 +309,7 @@ export default async function ProductPage({
                 <PageContent className="flex flex-col gap-4 md:flex-row md:flex-nowrap">
                     <section
                         className={
-                            'flex h-auto w-full flex-col gap-4 md:w-1/2 md:shrink-0 lg:w-full lg:max-w-[40rem] xl:max-w-[54rem]'
+                            'flex h-auto w-full flex-col gap-4 md:w-3/5 md:shrink-0 lg:w-full lg:max-w-[42rem] xl:max-w-[50rem] 2xl:max-w-[60rem]'
                         }
                     >
                         <Suspense fallback={<div className="h-32 w-full lg:h-[30rem]" data-skeleton />}>

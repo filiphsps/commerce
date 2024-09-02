@@ -8,7 +8,8 @@ import type {
     CartPageDocument,
     CollectionPageDocument,
     CustomPageDocument,
-    ProductPageDocument
+    ProductPageDocument,
+    Simplify
 } from '@/prismic/types';
 import type { PrismicDocument } from '@prismicio/client';
 
@@ -74,7 +75,7 @@ export const PageApi = async <T extends keyof PageTypeMapping | 'custom_page' = 
     locale,
     type = 'custom_page',
     handle
-}: PageApiProps & { type?: T | 'custom_page' }): Promise<NarrowedPageType<T>['data'] | null> => {
+}: PageApiProps & { type?: T | 'custom_page' }): Promise<Simplify<NarrowedPageType<T>['data']> | null> => {
     if (!(shop as any)) {
         throw new UnknownShopDomainError();
     }

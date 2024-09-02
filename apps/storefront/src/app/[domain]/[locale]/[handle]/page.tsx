@@ -133,13 +133,14 @@ async function OnlineStoreJsonLd({ shop, locale }: { shop: OnlineShop; locale: L
             'logo': shop.icons?.favicon?.src,
             'telephone': businessData.telephone || undefined,
             'email': businessData.email || undefined,
-            'sameAs': (businessData.social_profiles || []).map(({ href }) => href as string) || [],
+            'sameAs': businessData.social_profiles.map(({ href }) => href as string) || [],
             'taxID': businessData.tax_number || undefined,
             'vatID': businessData.vat_number || undefined
         };
 
         return <JsonLd data={jsonLd} />;
-    } catch {
+    } catch (error: unknown) {
+        console.error(error);
         return null;
     }
 }
@@ -171,7 +172,7 @@ export default async function CustomPage({
         const breadcrumbs =
             handle !== 'homepage' && page.title ? (
                 <Suspense fallback={<BreadcrumbsSkeleton />}>
-                    <div className="-mb-[1.75rem] md:-mb-[2.25rem]">
+                    <div className="-mb-[1.75rem] empty:hidden md:-mb-[2.25rem]">
                         <Breadcrumbs locale={locale} title={page.title} />
                     </div>
                 </Suspense>

@@ -117,6 +117,17 @@ interface BusinessDataDocumentData {
      * - **Documentation**: https://prismic.io/docs/field#group
      */;
     social_profiles: prismic.GroupField<Simplify<BusinessDataDocumentDataSocialProfilesItem>> /**
+     * Legal Name field in *Business Data*
+     *
+     * - **Field Type**: Text
+     * - **Placeholder**: *None*
+     * - **API ID Path**: business_data.legal_name
+     * - **Tab**: Legal
+     * - **Documentation**: https://prismic.io/docs/field#key-text
+     */;
+    legal_name: prismic.KeyTextField;
+
+    /**
      * Tax Number field in *Business Data*
      *
      * - **Field Type**: Text
@@ -124,7 +135,7 @@ interface BusinessDataDocumentData {
      * - **API ID Path**: business_data.tax_number
      * - **Tab**: Legal
      * - **Documentation**: https://prismic.io/docs/field#key-text
-     */;
+     */
     tax_number: prismic.KeyTextField;
 
     /**

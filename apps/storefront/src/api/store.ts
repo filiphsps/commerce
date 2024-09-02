@@ -159,9 +159,8 @@ export const BusinessDataApi = async ({
     const client = createClient({ shop, locale });
 
     try {
-        const { data } = await client.getSingle<BusinessDataDocument>('business_data');
-
-        return data;
+        const res = await client.getSingle<BusinessDataDocument>('business_data');
+        return res.data;
     } catch (error) {
         if (Error.isNotFound(error)) {
             if (!Locale.isDefault(locale)) {

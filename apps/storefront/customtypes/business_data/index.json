@@ -40,6 +40,13 @@
             }
         },
         "Legal": {
+            "legal_name": {
+                "type": "Text",
+                "config": {
+                    "label": "Legal Name",
+                    "placeholder": ""
+                }
+            },
             "tax_number": {
                 "type": "Text",
                 "config": {
