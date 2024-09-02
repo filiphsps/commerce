@@ -15,8 +15,9 @@ import type { Locale } from '@/utils/locale';
 type BreadcrumbsProps = {
     locale: Locale;
     title?: string;
+    className?: string;
 };
-const Breadcrumbs = ({ locale, title }: BreadcrumbsProps) => {
+const Breadcrumbs = ({ locale, title, className }: BreadcrumbsProps) => {
     const { shop } = useShop();
     const route = usePathname();
     const path = route.split('/').slice(2, -1);
@@ -30,11 +31,30 @@ const Breadcrumbs = ({ locale, title }: BreadcrumbsProps) => {
     const iconStyles = 'text-gray-300 text-lg font-normal';
 
     const hrefs = path.map((_, index) => `/${path.slice(0, index + 1).join('/')}`);
+
+    /*const jsonLd: WithContext<BreadcrumbList> = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        'itemListElement': path.map((entry, index) => ({
+            '@type': 'ListItem',
+            'position': index + 1,
+            ...(index === path.length - 1
+                ? {
+                      name: title || entry
+                  }
+                : {
+                      name: entry,
+                      item: `https://${shop.domain}/${locale.code}${hrefs[index]!}`
+                  })
+        }))
+    };*/
+
     return (
         <section
             className={cn(
                 styles.breadcrumbs,
-                '-mx-2 flex w-screen list-none flex-nowrap items-center justify-start gap-2 overflow-hidden overflow-x-auto overscroll-x-contain whitespace-nowrap rounded-lg px-2 font-medium leading-none text-gray-700 md:-mx-0 md:w-full md:max-w-full md:gap-3 md:px-0'
+                '-mx-2 flex w-screen list-none flex-nowrap items-center justify-start gap-2 overflow-hidden overflow-x-auto overscroll-x-contain whitespace-nowrap rounded-lg px-2 font-medium leading-none text-gray-700 md:-mx-0 md:w-full md:max-w-full md:gap-3 md:px-0',
+                className
             )}
             itemScope
             itemType="https://schema.org/BreadcrumbList"

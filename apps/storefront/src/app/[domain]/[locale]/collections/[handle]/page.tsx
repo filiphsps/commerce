@@ -173,25 +173,29 @@ export default async function CollectionPage({
         return (
             <>
                 <Suspense fallback={<BreadcrumbsSkeleton />}>
-                    <Breadcrumbs locale={locale} title={collection.title} />
+                    <div className="-mb-[1.75rem] md:-mb-[2.25rem]">
+                        <Breadcrumbs locale={locale} title={collection.title} />
+                    </div>
                 </Suspense>
 
-                <Heading title={collection.seo.title ?? collection.title} />
+                <section className="flex flex-col gap-2">
+                    <Heading title={collection.seo.title ?? collection.title} />
 
-                <div className="grid grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] gap-2 lg:grid-cols-[repeat(auto-fill,minmax(14rem,1fr))]">
-                    <Suspense
-                        key={JSON.stringify(searchParams)}
-                        fallback={<CollectionBlock.skeleton length={PRODUCTS_PER_PAGE} bare={true} />}
-                    >
-                        <CollectionContent
-                            shop={shop}
-                            locale={locale}
-                            searchParams={searchParams}
-                            handle={handle}
-                            cursors={pagesInfo.cursors}
-                        />
-                    </Suspense>
-                </div>
+                    <div className="grid grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] gap-2 lg:grid-cols-[repeat(auto-fill,minmax(14rem,1fr))]">
+                        <Suspense
+                            key={JSON.stringify(searchParams)}
+                            fallback={<CollectionBlock.skeleton length={PRODUCTS_PER_PAGE} bare={true} />}
+                        >
+                            <CollectionContent
+                                shop={shop}
+                                locale={locale}
+                                searchParams={searchParams}
+                                handle={handle}
+                                cursors={pagesInfo.cursors}
+                            />
+                        </Suspense>
+                    </div>
+                </section>
 
                 <section className="flex w-full items-center justify-center">
                     <Suspense>

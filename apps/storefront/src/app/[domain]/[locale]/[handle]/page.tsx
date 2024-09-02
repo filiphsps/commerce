@@ -144,13 +144,16 @@ export default async function CustomPage({
         const breadcrumbs =
             handle !== 'homepage' && page.title ? (
                 <Suspense fallback={<BreadcrumbsSkeleton />}>
-                    <Breadcrumbs locale={locale} title={page.title} />
+                    <div className="-mb-[1.75rem] md:-mb-[2.25rem]">
+                        <Breadcrumbs locale={locale} title={page.title} />
+                    </div>
                 </Suspense>
             ) : null;
 
         return (
             <>
                 {breadcrumbs}
+
                 <PrismicPage shop={shop} locale={locale} page={page} i18n={i18n} handle={handle} />
             </>
         );

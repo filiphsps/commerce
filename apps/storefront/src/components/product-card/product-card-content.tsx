@@ -36,7 +36,7 @@ const ProductCardContent = ({ data: product, locale, i18n, children }: ProductCa
                     {onSale ? (
                         <Pricing
                             price={compareAtPrice}
-                            className="text-xs font-medium leading-none text-gray-400 line-through"
+                            className="text-sm font-medium leading-none text-gray-400 line-through"
                         />
                     ) : null}
                 </div>

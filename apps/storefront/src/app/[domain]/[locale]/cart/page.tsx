@@ -97,7 +97,9 @@ export default async function CartPage({ params: { domain, locale: localeData } 
         return (
             <>
                 <Suspense fallback={<BreadcrumbsSkeleton />}>
-                    <Breadcrumbs locale={locale} />
+                    <div className="-mb-[1.75rem] md:-mb-[2.25rem]">
+                        <Breadcrumbs locale={locale} />
+                    </div>
                 </Suspense>
 
                 <Suspense>

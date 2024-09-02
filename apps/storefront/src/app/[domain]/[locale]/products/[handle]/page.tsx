@@ -301,7 +301,9 @@ export default async function ProductPage({
         return (
             <>
                 <Suspense fallback={<BreadcrumbsSkeleton />}>
-                    <Breadcrumbs locale={locale} title={`${product.vendor} ${product.title}`} />
+                    <div className="-mb-[1.75rem] md:-mb-[2.25rem]">
+                        <Breadcrumbs locale={locale} title={`${product.vendor} ${product.title}`} />
+                    </div>
                 </Suspense>
 
                 <PageContent className="flex flex-col gap-4 md:flex-row md:flex-nowrap">

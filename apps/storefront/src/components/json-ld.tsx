@@ -1,5 +1,3 @@
-import 'server-only';
-
 export type JsonLdProps = {
     data: Object;
 };
@@ -10,16 +8,7 @@ export function JsonLd({ data }: JsonLdProps) {
     }
 
     try {
-        return (
-            <script
-                type="application/ld+json"
-                /*dangerouslySetInnerHTML={{
-                    __html: JSON.stringify(data)
-                }}*/
-            >
-                {JSON.stringify(data)}
-            </script>
-        );
+        return <script type="application/ld+json">{JSON.stringify(data, null, 4)}</script>;
     } catch (error: unknown) {
         console.error(error);
         return null;
