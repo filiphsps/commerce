@@ -19,7 +19,7 @@ import { Label } from '@/components/typography/label';
 
 import type { ReactNode } from 'react';
 
-const SUMMARY_LABEL_STYLES = 'font-normal text-sm capitalize';
+const SUMMARY_LABEL_STYLES = 'font-medium text-sm capitalize text-gray-600';
 
 // TODO: Configurable free shipping.
 
@@ -161,14 +161,14 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                     ) : null}
 
                     {promos ? (
-                        <div className={`${styles['line-item']} ${styles.breakdown} ${styles.discounted}`}>
-                            <Label className="text-xl font-bold capitalize">{t('promo-codes')}</Label>
+                        <div className={cn(styles.discounted, 'flex items-center justify-between')}>
+                            <Label className={SUMMARY_LABEL_STYLES}>{t('promo-codes')}</Label>
                             {cartReady ? (
                                 <Money
-                                    className={styles.money}
+                                    className={cn(styles.money, 'text-base font-bold')}
                                     data={{
                                         currencyCode: cost?.totalAmount?.currencyCode,
-                                        amount: promos.toString().replace('-', '')
+                                        amount: promos.toString()
                                     }}
                                 />
                             ) : null}
@@ -239,7 +239,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                 </div>
             </section>
 
-            {discountCodes.length > 0 ? (
+            {cartReady && discountCodes.length > 0 ? (
                 <section className={cn(styles.section, 'gap-2')}>
                     <CartCoupons />
                 </section>

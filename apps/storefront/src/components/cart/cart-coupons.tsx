@@ -1,6 +1,6 @@
 'use client';
 
-import { FiX } from 'react-icons/fi';
+import { FiTag, FiX } from 'react-icons/fi';
 
 import { cn } from '@/utils/tailwind';
 import { useCart } from '@shopify/hydrogen-react';
@@ -25,9 +25,9 @@ const CartCoupons = ({}) => {
                 {(discountCodes as CartDiscountCode[]).map(({ code }) => (
                     <div
                         key={code}
-                        className="flex items-center justify-center gap-2 overflow-hidden rounded-full bg-white px-3 py-2"
+                        className="flex items-center justify-center gap-2 overflow-hidden rounded-xl bg-white px-3 py-2"
                     >
-                        {/*<FiTag className="" />*/}
+                        <FiTag className="" />
 
                         <Label>{code}</Label>
 

@@ -18,7 +18,11 @@ const Input = <T extends ElementType = ElementType<'input'>>({
             ref={ref}
             {...props}
             draggable={false}
-            className={cn('w-full appearance-none rounded-lg focus:outline-none focus:ring-0', className)}
+            className={cn(
+                'w-full appearance-none rounded-lg focus:outline-none focus:ring-0',
+                props.disabled && 'pointer-events-none cursor-not-allowed',
+                className
+            )}
         />
     );
 };

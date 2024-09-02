@@ -66,13 +66,18 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
             {image}
 
             <div className="flex w-full flex-row gap-2">
-                <div className="flex w-full flex-col gap-2 gap-y-4">
+                <div className="flex w-full flex-col gap-2 gap-y-1">
                     <Link
                         href={`/products/${line.merchandise.product.handle}?variant=${parseGid(line.merchandise.id).id}`}
                         className="flex w-full flex-col"
                     >
-                        <Label>{product.vendor}</Label>
-                        <div className="text-lg font-semibold leading-tight">
+                        <Label
+                            as={'div'}
+                            className="group-hover/header:text-primary pb-1 pt-2 text-[.95rem] font-medium normal-case leading-none text-gray-600 transition-colors"
+                        >
+                            {product.vendor}
+                        </Label>
+                        <div className="group-hover/header:text-primary transition-color text-[1.20rem] font-bold leading-6 text-current">
                             {product.title} <span className="text-sm">({variant.title})</span>
                         </div>
                     </Link>

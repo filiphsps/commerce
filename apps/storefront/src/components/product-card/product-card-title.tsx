@@ -8,24 +8,24 @@ import type { Product } from '@/api/product';
 
 export type ProductCardTitleProps = {
     data: Product;
-    classHame?: string;
+    className?: string;
 };
-const ProductCardTitle = ({ data: product, classHame }: ProductCardTitleProps) => {
+const ProductCardTitle = ({ data: product, className }: ProductCardTitleProps) => {
     return (
         <>
             <Label
                 as={'div'}
                 className={cn(
-                    'group-hover/header:text-primary pb-1 pt-2 text-sm font-medium normal-case leading-none text-gray-500 transition-colors',
-                    classHame
+                    'group-hover/header:text-primary pb-1 pt-2 text-[.95rem] font-medium normal-case leading-none text-gray-500 transition-colors',
+                    className
                 )}
             >
                 {product.vendor}
             </Label>
             <div
                 className={cn(
-                    'group-hover/header:text-primary transition-color text- block text-[1.20rem] font-bold leading-6 text-current',
-                    classHame
+                    'group-hover/header:text-primary transition-color text-[1.20rem] font-bold leading-6 text-current',
+                    className
                 )}
             >
                 {product.title}

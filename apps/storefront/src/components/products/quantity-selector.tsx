@@ -47,7 +47,7 @@ const QuantitySelector = ({
     i18n,
     value: quantity = 0,
     update,
-    disabled,
+    disabled: isDisabled,
     allowDecreaseToZero = false,
     buttonClassName = '',
     ...props
@@ -55,8 +55,7 @@ const QuantitySelector = ({
     const { t } = useTranslation('common', i18n);
     const [quantityValue, setQuantityValue] = useState(quantity.toString() || '1');
 
-    const { cartReady } = useCart();
-    disabled = disabled || !cartReady;
+    const { cartReady, status } = useCart();
 
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -124,6 +123,7 @@ const QuantitySelector = ({
         setQuantityValue(quantity.toString());
     }, [quantity]);
 
+    const disabled = isDisabled || (status !== 'idle' && status !== 'uninitialized') || !cartReady;
     const decreaseDisabled = disabled || (allowDecreaseToZero ? quantity <= 0 : quantity <= 1);
 
     return (
@@ -131,7 +131,8 @@ const QuantitySelector = ({
             {...props}
             className={cn(
                 //styles.container,
-                'hover:border-primary flex max-h-fit w-full overflow-hidden rounded-lg border-2 border-solid border-white bg-white p-0 leading-none transition-colors *:appearance-none *:text-center *:text-lg *:leading-none *:transition-colors',
+                'flex max-h-fit w-full overflow-hidden rounded-lg border-2 border-solid border-white bg-white p-0 leading-none opacity-50 transition-colors *:appearance-none *:text-center *:text-lg *:leading-none *:transition-colors',
+                !disabled && 'hover:border-primary opacity-100',
                 className
             )}
         >
@@ -140,7 +141,8 @@ const QuantitySelector = ({
                 aria-label={t('decrease')}
                 type="button"
                 className={cn(
-                    'hover:bg-primary hover:text-primary-foreground aspect-square h-full appearance-none rounded-none bg-transparent p-2 text-current',
+                    'aspect-square h-full select-none appearance-none rounded-none bg-transparent p-2 text-current',
+                    !disabled && 'hover:bg-primary hover:text-primary-foreground cursor-pointer',
                     buttonClassName
                 )}
                 disabled={decreaseDisabled}
@@ -183,7 +185,8 @@ const QuantitySelector = ({
                 aria-label={t('increase')}
                 type="button"
                 className={cn(
-                    'hover:bg-primary hover:text-primary-foreground aspect-square h-full appearance-none rounded-none bg-transparent p-2 text-current',
+                    'aspect-square h-full select-none appearance-none rounded-none bg-transparent p-2 text-current',
+                    !disabled && 'hover:bg-primary hover:text-primary-foreground cursor-pointer',
                     buttonClassName
                 )}
                 disabled={disabled}
