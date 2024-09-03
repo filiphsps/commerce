@@ -31,11 +31,7 @@ const Breadcrumbs = ({ locale, title, className }: BreadcrumbsProps) => {
     const linkStyles = 'text-sm capitalize hover:text-primary leading-none';
     const iconStyles = 'text-gray-300 text-lg font-normal';
 
-    const hrefs = path.map((_, index) => `/${path.slice(0, index + 1).join('/')}`);
-
-    if (hrefs.length < 2) {
-        return null;
-    }
+    const hrefs = path.map((_) => `/${path.slice(0, -1).join('/')}`);
 
     const jsonLd: WithContext<BreadcrumbList> = {
         '@context': 'https://schema.org',
@@ -86,7 +82,7 @@ const Breadcrumbs = ({ locale, title, className }: BreadcrumbsProps) => {
                             itemType="https://schema.org/ListItem"
                         >
                             <Link
-                                className={linkStyles}
+                                className={cn(linkStyles, index === path.length - 1 && 'font-bold text-gray-500')}
                                 href={hrefs[index]!}
                                 itemType="https://schema.org/Thing"
                                 itemProp="item"
