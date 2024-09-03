@@ -1,10 +1,11 @@
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
-import { Money, parseGid } from '@shopify/hydrogen-react';
+import { parseGid } from '@shopify/hydrogen-react';
 import Image from 'next/image';
 
 import { CartLineQuantityAction, CartLineRemoveAction } from '@/components/cart/cart-line-actions';
 import Link from '@/components/link';
+import { Price } from '@/components/products/price';
 import { Label } from '@/components/typography/label';
 
 import type { Product, ProductVariant } from '@/api/product';
@@ -43,7 +44,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
 
     const pricing = (
         <>
-            <Money
+            <Price
                 className={cn('text-xl font-bold leading-tight', discount && 'font-extrabold text-red-500')}
                 data={{
                     amount: (safeParseFloat(0, variant.price.amount) * line.quantity).toString(),
@@ -51,7 +52,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                 }}
             />
             {variant.compareAtPrice ? (
-                <Money
+                <Price
                     className="text-sm leading-tight text-gray-500 line-through"
                     data={{
                         amount: (safeParseFloat(0, variant.compareAtPrice.amount) * line.quantity).toString(),

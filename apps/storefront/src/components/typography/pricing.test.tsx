@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { render, screen } from '@/utils/test/react';
 
@@ -14,15 +14,28 @@ describe('components', () => {
         };
 
         it('renders without crashing', async () => {
-            const { unmount } = render(<Pricing />);
-
-            expect(() => unmount()).not.toThrow();
+            expect(() => render(<Pricing />).unmount()).not.toThrow();
         });
 
         it('renders the price', () => {
-            render(<Pricing price={price} />);
-            const priceElement = screen.getByText('$10.00');
-            expect(priceElement).toBeDefined();
+            const { container } = render(<Pricing price={price} />);
+
+            expect(container.textContent).toBe('$10.00');
+            expect(screen.getByText('$10.00')).toBeDefined();
+        });
+
+        it("doesn't render the price when no price is supplied", () => {
+            const warnSpy = vi.spyOn(console, 'warn');
+            const { container } = render(<Pricing />);
+
+            expect(container.textContent).toBe('');
+            expect(warnSpy).toHaveBeenCalled();
+        });
+
+        it('renders the price with a custom tag', () => {
+            const { container } = render(<Pricing price={price} as="span" />);
+
+            expect(container.querySelector('span')).toBeDefined();
         });
     });
 });

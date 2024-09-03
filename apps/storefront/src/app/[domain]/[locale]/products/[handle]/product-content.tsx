@@ -7,9 +7,10 @@ import { useMemo, useState } from 'react';
 import { type LocaleDictionary, useTranslation } from '@/utils/locale';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
-import { Money, ProductProvider } from '@shopify/hydrogen-react';
+import { ProductProvider } from '@shopify/hydrogen-react';
 import { useSearchParams } from 'next/navigation';
 
+import { Price } from '@/components/products/price';
 import { ProductActionsContainer } from '@/components/products/product-actions-container';
 import { QuantityProvider } from '@/components/products/quantity-provider';
 import type { PricingProps } from '@/components/typography/pricing';
@@ -65,13 +66,13 @@ export function ProductPricing({ product }: ProductPricingProps) {
     return (
         <>
             {price ? (
-                <Money
+                <Price
                     data={price}
                     className={cn('text-3xl font-bold md:text-4xl', compareAtPrice && 'font-black text-red-500')}
                 />
             ) : null}
             {compareAtPrice ? (
-                <Money data={compareAtPrice} className="text-xl font-medium text-gray-500 line-through md:text-2xl" />
+                <Price data={compareAtPrice} className="text-xl font-medium text-gray-500 line-through md:text-2xl" />
             ) : null}
         </>
     );
@@ -121,7 +122,7 @@ export function ProductSavings({ i18n, product, className }: ProductSavingsProps
                 <div className="flex items-center gap-1">
                     {t(
                         'save-n-per-item',
-                        <Money
+                        <Price
                             key={savings}
                             data={{
                                 amount: savings.toString(),

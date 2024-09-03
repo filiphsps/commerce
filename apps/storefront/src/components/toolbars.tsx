@@ -10,8 +10,12 @@ export const isPreviewEnvironment = (domain: string = '') => {
         return true;
     }
 
-    const hn = domain.toLowerCase();
-    return hn.startsWith('staging.') || hn.startsWith('preview.') || hn.includes('localhost') || false;
+    const hostname = domain.toLowerCase();
+    return (
+        ['staging', 'preview', 'beta'].some((sub) => hostname.startsWith(`${sub}.`)) ||
+        hostname.includes('localhost') ||
+        false
+    );
 };
 
 /**

@@ -1,8 +1,7 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
-
-import { safeParseFloat } from './pricing';
+import { safeParseFloat } from '@/utils/pricing';
 
 import type { Locale } from '@/utils/locale';
 import type { TrackableContextValue } from '@/utils/trackable';

@@ -9,12 +9,13 @@ import { type LocaleDictionary, useTranslation } from '@/utils/locale';
 import { pluralize } from '@/utils/pluralize';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
-import { Money, ShopPayButton, useCart } from '@shopify/hydrogen-react';
+import { ShopPayButton, useCart } from '@shopify/hydrogen-react';
 
 import { Button } from '@/components/actionable/button';
 import { CartCoupons } from '@/components/cart/cart-coupons';
 import { CartNote } from '@/components/cart/cart-note';
 import Link from '@/components/link';
+import { Price } from '@/components/products/price';
 import { useShop } from '@/components/shop/provider';
 import { Label } from '@/components/typography/label';
 
@@ -98,7 +99,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                     <div className="flex items-center justify-between">
                         <Label className={SUMMARY_LABEL_STYLES}>{t('subtotal')}</Label>
                         {cost?.subtotalAmount ? (
-                            <Money
+                            <Price
                                 className="text-base font-bold"
                                 data={{
                                     currencyCode: cost.subtotalAmount.currencyCode,
@@ -120,7 +121,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                                 >
                                     <Label className={SUMMARY_LABEL_STYLES}>{t('discount')}</Label>
                                     {cartReady ? (
-                                        <Money
+                                        <Price
                                             className={cn(styles.money, 'text-base font-bold')}
                                             data={{
                                                 currencyCode: cost?.totalAmount?.currencyCode,
@@ -145,7 +146,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                                             <div className={styles.label}>
                                                 {index <= 0 ? t('automatic-discount') : null}
                                             </div>
-                                            <Money
+                                            <Price
                                                 className={styles.money}
                                                 data={{
                                                     currencyCode: cost?.totalAmount?.currencyCode,
@@ -163,7 +164,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                         <div className={cn(styles.discounted, 'flex items-center justify-between')}>
                             <Label className={SUMMARY_LABEL_STYLES}>{t('promo-codes')}</Label>
                             {cartReady ? (
-                                <Money
+                                <Price
                                     className={cn(styles.money, 'text-base font-bold')}
                                     data={{
                                         currencyCode: cost?.totalAmount?.currencyCode,
@@ -177,7 +178,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                     {cost?.totalAmount ? (
                         <div className={cn(styles.totals, 'flex items-center justify-between')}>
                             <Label className="text-xl font-bold capitalize">{t('estimated-total')}</Label>
-                            <Money
+                            <Price
                                 className={styles.money}
                                 data={
                                     cost.totalAmountEstimated ??

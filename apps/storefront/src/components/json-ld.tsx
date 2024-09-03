@@ -8,7 +8,7 @@ export function JsonLd({ data }: JsonLdProps) {
     }
 
     try {
-        return <script type="application/ld+json">{JSON.stringify(data, null, 4)}</script>;
+        return <script type="application/ld+json">{JSON.stringify(data)}</script>;
     } catch (error: unknown) {
         console.error(error);
         return null;

@@ -2,9 +2,8 @@ import { describe, expect, it, vi } from 'vitest';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 
+import { CollectionApi, CollectionsApi, CollectionsPaginationApi } from '@/api/shopify/collection';
 import { Locale } from '@/utils/locale';
-
-import { CollectionApi, CollectionsApi, CollectionsPaginationApi } from './collection';
 
 import type { AbstractApi } from '@/utils/abstract-api';
 

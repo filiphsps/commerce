@@ -4,7 +4,7 @@ import { type HTMLProps, type ReactNode, Suspense } from 'react';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 
-import Footer from '@/components/footer';
+import Footer from '@/components/footer/footer';
 import Header from '@/components/header/header';
 import { InfoBar } from '@/components/header/info-bar';
 import PageContent from '@/components/page-content';

@@ -1,6 +1,6 @@
 'use client';
 
-import { type HTMLProps, useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useTranslation } from '@/utils/locale';
 import { safeParseFloat } from '@/utils/pricing';
@@ -11,6 +11,7 @@ import { Button } from '@/components/actionable/button';
 import { Input } from '@/components/actionable/input';
 
 import type { LocaleDictionary } from '@/utils/locale';
+import type { HTMLProps } from 'react';
 import type { ChangeEvent, KeyboardEventHandler } from 'react';
 
 export const QuantityInputFilter = (value?: string, prev?: string): string => {
@@ -136,7 +137,6 @@ const QuantitySelector = ({
         <section
             {...props}
             className={cn(
-                //styles.container,
                 'flex max-h-fit w-full overflow-hidden rounded-lg border-2 border-solid border-white bg-white p-0 leading-none opacity-50 transition-colors *:appearance-none *:text-center *:text-lg *:leading-none *:transition-colors',
                 !disabled && 'hover:border-primary opacity-100',
                 className

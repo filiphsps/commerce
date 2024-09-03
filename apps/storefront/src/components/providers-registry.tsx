@@ -13,11 +13,10 @@ import { createClient } from '@/utils/prismic';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import { Toaster as ToasterProvider } from 'sonner';
 
+import { LiveChatProvider } from '@/components/live-chat-provider';
 import { PrismicRegistry } from '@/components/prismic-registry';
 import { ShopProvider } from '@/components/shop/provider';
 import { Toolbars } from '@/components/toolbars';
-
-import { LiveChatProvider } from './live-chat-provider';
 
 import type { CurrencyCode, Locale } from '@/utils/locale';
 

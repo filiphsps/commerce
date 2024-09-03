@@ -3,16 +3,16 @@ import 'server-only';
 
 import { Suspense } from 'react';
 
-import { type OnlineShop } from '@nordcom/commerce-db';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { RecommendationApi } from '@/api/shopify/recommendation';
-import { type Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 
 import ProductCard from '@/components/product-card/product-card';
 
 import type { Product } from '@/api/product';
+import type { Locale } from '@/utils/locale';
 
 export type RecommendedProductsProps = {
     shop: OnlineShop;
