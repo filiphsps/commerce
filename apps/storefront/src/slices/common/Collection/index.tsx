@@ -11,6 +11,7 @@ import CollectionContainer from '@/slices/common/Collection/collection';
 import CollectionBlock from '@/components/products/collection-block';
 
 import type { Locale, LocaleDictionary } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
 import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
 
@@ -43,7 +44,7 @@ const CollectionSlice = async ({ slice, index, context: { shop, locale } }: Coll
     const showViewAll = slice.primary.show_view_all_card;
 
     return (
-        <CollectionContainer slice={slice} className={fullWidth ? styles.full : undefined}>
+        <CollectionContainer slice={slice} className={cn('w-full', fullWidth && styles.full)}>
             <Suspense fallback={<CollectionBlock.skeleton isHorizontal={horizontal} />}>
                 <CollectionBlock
                     shop={shop}
