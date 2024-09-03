@@ -46,8 +46,8 @@ const config = {
     },
     images: {
         dangerouslyAllowSVG: true,
-        //path: 'https://cloudflare-image.nordcom.workers.dev', // Shopify images fails when using .nordcom.io domain.
-        //minimumCacheTTL: 60,
+        path: 'https://cloudflare-image.nordcom.workers.dev', // Shopify images fails when using .nordcom.io domain.
+        minimumCacheTTL: 60,
         contentDispositionType: 'inline',
         remotePatterns: [
             {

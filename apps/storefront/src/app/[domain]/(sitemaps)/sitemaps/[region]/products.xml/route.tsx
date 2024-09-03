@@ -11,6 +11,9 @@ import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import type { NextRequest } from 'next/server';
 import type { ISitemapField } from 'next-sitemap';
 
+export const dynamic = 'force-static';
+export const revalidate = false;
+
 export async function GET(
     _: NextRequest,
     { params: { domain, region: regionData } }: { params: DynamicSitemapRouteParams & { region: string } }

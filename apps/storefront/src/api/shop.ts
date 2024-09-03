@@ -33,8 +33,9 @@ export const findShopByDomainOverHttp = async (domain: string): Promise<OnlineSh
                 ]
             }
         }),
+        cache: 'no-cache',
         next: {
-            revalidate: 60 * 60 * 24, // 24 hours.
+            revalidate: undefined,
             tags: [domain]
         }
     });

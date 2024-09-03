@@ -27,13 +27,11 @@ export type AbstractApi<Q = any> = {
 export type AbstractApiBuilder<K, Q> = ({
     api,
     locale,
-    shop,
-    fetchPolicy
+    shop
 }: {
     api: K;
     locale: Locale;
     shop: OnlineShop;
-    fetchPolicy?: RequestCache;
 }) => AbstractApi<Q>;
 
 export type AbstractShopifyApolloApiBuilder<Q> = AbstractApiBuilder<ApolloClient<any>, Q>;
@@ -52,15 +50,9 @@ export function buildCacheTagArray(shop: OnlineShop, locale: Locale, tags: strin
  * @param {ApolloClient<any>} options.api - The Apollo client to use.
  * @param {Locale} options.locale - The locale to use.
  * @param {OnlineShop} options.shop - The locale to use.
- * @param {FetchPolicy | undefined} options.fetchPolicy - The fetch policy to use.
  * @returns {AbstractApiBuilder} The AbstractApiBuilder.
  */
-export const ApiBuilder: AbstractShopifyApolloApiBuilder<TypedDocumentNode<any, any>> = ({
-    api,
-    locale,
-    shop,
-    fetchPolicy = undefined
-}) => ({
+export const ApiBuilder: AbstractShopifyApolloApiBuilder<TypedDocumentNode<any, any>> = ({ api, locale, shop }) => ({
     locale: () => locale,
     shop: () => shop,
     query: async (query, variables = {}, { tags = [], revalidate = undefined, fetchPolicy = undefined } = {}) => {
@@ -69,9 +61,9 @@ export const ApiBuilder: AbstractShopifyApolloApiBuilder<TypedDocumentNode<any, 
             //fetchPolicy,
             context: {
                 fetchOptions: {
-                    cache: fetchPolicy,
+                    cache: fetchPolicy ?? 'no-cache',
                     next: {
-                        revalidate: revalidate ?? 60 * 60 * 24, // 24 hours.
+                        revalidate: revalidate ?? undefined,
                         tags: buildCacheTagArray(shop, locale, tags)
                     }
                 }

@@ -4,6 +4,9 @@ import { findShopByDomainOverHttp } from '@/api/shop';
 import { ImageResponse } from 'next/og';
 import { type NextRequest, NextResponse } from 'next/server';
 
+export const dynamic = 'force-static';
+export const revalidate = false;
+
 export type AppleIconRouteParams = {
     domain: string;
 };

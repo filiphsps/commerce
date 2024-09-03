@@ -3,6 +3,9 @@ import { getServerSideSitemapIndex } from 'next-sitemap';
 
 import type { NextRequest } from 'next/server';
 
+export const dynamic = 'force-static';
+export const revalidate = false;
+
 export type DynamicSitemapRouteParams = {
     domain: string;
 };

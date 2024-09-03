@@ -12,7 +12,7 @@ import { Label } from '@/components/typography/label';
 
 import type { ReactNode } from 'react';
 
-export const revalidate = 28800; // 8 hours.
+export const revalidate = 86_400; // 24 hours.
 
 export type BlogLayoutParams = { domain: string; locale: string };
 export default async function BlogLayout({

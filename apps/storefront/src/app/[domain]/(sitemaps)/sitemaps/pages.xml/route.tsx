@@ -10,6 +10,9 @@ import type { DynamicSitemapRouteParams } from '../../sitemap.xml/route';
 import type { NextRequest } from 'next/server';
 import type { ISitemapField } from 'next-sitemap';
 
+export const dynamic = 'force-static';
+export const revalidate = false;
+
 export async function GET(_: NextRequest, { params: { domain } }: { params: DynamicSitemapRouteParams }) {
     const shop = await findShopByDomainOverHttp(domain);
     const locale = Locale.default;

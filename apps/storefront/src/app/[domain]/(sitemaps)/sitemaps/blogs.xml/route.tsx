@@ -11,7 +11,8 @@ import { getServerSideSitemap } from 'next-sitemap';
 import type { DynamicSitemapRouteParams } from '../../sitemap.xml/route';
 import type { ISitemapField } from 'next-sitemap';
 
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-static';
+export const revalidate = false;
 
 export async function GET(_: NextRequest, { params: { domain } }: { params: DynamicSitemapRouteParams }) {
     try {

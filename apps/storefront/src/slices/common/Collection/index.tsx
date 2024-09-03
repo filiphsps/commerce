@@ -7,11 +7,11 @@ import { Suspense } from 'react';
 import type { OnlineShop } from '@nordcom/commerce-db';
 
 import CollectionContainer from '@/slices/common/Collection/collection';
+import { cn } from '@/utils/tailwind';
 
 import CollectionBlock from '@/components/products/collection-block';
 
 import type { Locale, LocaleDictionary } from '@/utils/locale';
-import { cn } from '@/utils/tailwind';
 import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
 
