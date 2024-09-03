@@ -311,6 +311,8 @@ export const getErrorFromCode = (
             return TypeError;
         case GenericErrorKind.MISSING_CONTEXT_PROVIDER:
             return MissingContextProviderError as any;
+        case GenericErrorKind.NOT_CONNECTED_TO_DATABASE:
+            return NotConnectedToDatabase;
 
         // Api Errors.
         case ApiErrorKind.API_UNKNOWN_ERROR:
@@ -321,6 +323,8 @@ export const getErrorFromCode = (
             return UnknownCommerceProviderError;
         case ApiErrorKind.API_UNKNOWN_LOCALE:
             return UnknownLocaleError;
+        case ApiErrorKind.API_INVALID_SHOP:
+            return InvalidShopError;
         case ApiErrorKind.API_TOO_MANY_REQUESTS:
             return TooManyRequestsError;
         case ApiErrorKind.API_METHOD_NOT_ALLOWED:
@@ -331,6 +335,10 @@ export const getErrorFromCode = (
             return ImageOutOfBoundsError;
         case ApiErrorKind.API_NO_LOCALES_AVAILABLE:
             return NoLocalesAvailableError;
+        case ApiErrorKind.API_INVALID_SHOPIFY_CUSTOMER_ACCOUNT_API_CONFIGURATION:
+            return InvalidShopifyCustomerAccountsApiConfiguration;
+        case ApiErrorKind.API_MISSING_ENVIRONMENT_VARIABLE:
+            return MissingEnvironmentVariableError;
         case ApiErrorKind.API_PROVIDER_FETCH_FAILED:
             return ProviderFetchError;
     }

@@ -1,5 +1,7 @@
+import 'server-only';
+
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { UnknownShopDomainError } from '@nordcom/commerce-errors';
+import { MissingEnvironmentVariableError, UnknownShopDomainError } from '@nordcom/commerce-errors';
 
 export type HexColor = `#${string}`;
 export type Color = HexColor;
@@ -13,6 +15,10 @@ export type Image = {
 };
 
 export const findShopByDomainOverHttp = async (domain: string): Promise<OnlineShop> => {
+    if (!process.env.MONGODB_DATA_API_TOKEN) {
+        throw new MissingEnvironmentVariableError('MONGODB_DATA_API_TOKEN');
+    }
+
     const data = await fetch(`${process.env.MONGODB_DATA_API_URI}/action/findOne`, {
         headers: {
             'Content-Type': 'application/json',
