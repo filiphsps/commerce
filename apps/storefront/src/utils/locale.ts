@@ -1,11 +1,10 @@
 import React from 'react';
 
-import { TodoError, UnknownLocaleError } from '@nordcom/commerce-errors';
+import { UnknownLocaleError } from '@nordcom/commerce-errors';
 
 import ConvertUnits from 'convert-units';
 
 import type english from '@/i18n/en.json';
-import type { StoreModel } from '@/models/StoreModel';
 import type { CountryCode, CurrencyCode, LanguageCode, WeightUnit } from '@shopify/hydrogen-react/storefront-api-types';
 import type { ReactNode } from 'react';
 
@@ -128,65 +127,6 @@ export class Locale implements SerializableLocale {
         }
     }
 }
-
-/**
- * Converts a locale string to a `CountryCode`.
- *
- * @deprecated Use {@link Locale.from} instead.
- *
- * @param {string} locale - The `ISO 639-1` + `ISO 3166-1 Alpha-2` or pure `ISO 639-1` locale string.
- * @returns {CountryCode} `CountryCode` string.
- */
-export const NextLocaleToCountry = (locale?: string): CountryCode => {
-    return (locale ? Locale.from(locale) : Locale.default).country || ('US' as const);
-};
-
-/**
- * Converts a locale string to a `LanguageCode`.
- *
- * @deprecated Use {@link Locale.from} instead.
- *
- * @param {string} locale - The `ISO 639-1` + `ISO 3166-1 Alpha-2` or pure `ISO 639-1` locale string.
- * @returns {LanguageCode} `LanguageCode` string.
- */
-export const NextLocaleToLanguage = (locale?: string): LanguageCode => {
-    return (locale ? Locale.from(locale) : Locale.default).language;
-};
-
-/**
- * Converts a locale string to a `CurrencyCode`.
- *
- * @param {string} locale - The `ISO 639-1` + `ISO 3166-1 Alpha-2` or pure `ISO 639-1` locale string.
- * @returns {CurrencyCode} `CurrencyCode` string.
- */
-export const NextLocaleToCurrency = ({ country, store }: { country: CountryCode; store: StoreModel }): CurrencyCode =>
-    (store.payment?.countries?.find(({ isoCode }) => isoCode === country)?.currency.isoCode! || 'USD') as CurrencyCode;
-
-/**
- * Converts a locale string to a Locale.
- *
- * @note If the locale is invalid, the default locale will be used.
- *       the default locale is defined in `Config.i18n.default` and
- *       is not tenant configurable at the moment.
- *
- * @deprecated Use {@link Locale.from} instead.
- *
- * @param {string} code - The `ISO 639-1` + `ISO 3166-1 Alpha-2` or pure `ISO 639-1` locale string.
- * @returns {Locale} `Locale` object.
- */
-export const NextLocaleToLocale = (code: string): Locale | null => {
-    // Legacy handling.
-    if (!code || code.length < 2 || code.length > 5 || (code.length > 2 && !code.includes('-'))) {
-        return null;
-    }
-
-    // Legacy handling.
-    if (code.length === 2) {
-        throw new TodoError();
-    }
-
-    return Locale.from(code);
-};
 
 export type DeepKeys<T> = T extends object
     ? {

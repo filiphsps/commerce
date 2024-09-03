@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { NextLocaleToLocale } from '@/utils/locale';
+import { Locale } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 
 describe('utils', () => {
@@ -11,7 +11,7 @@ describe('utils', () => {
                 variantGid: 'gid://shopify/ProductVariant/456'
             } as any;
 
-            const locale = NextLocaleToLocale('en-US')!;
+            const locale = Locale.from('en-US')!;
 
             const merchantsCenterId = ProductToMerchantsCenterId({
                 locale,
@@ -28,7 +28,7 @@ describe('utils', () => {
                 variantGid: 'gid://shopify/ProductVariant/456'
             } as any;
 
-            const locale = NextLocaleToLocale('fr-CA')!;
+            const locale = Locale.from('fr-CA')!;
 
             const merchantsCenterId = ProductToMerchantsCenterId({
                 locale,
