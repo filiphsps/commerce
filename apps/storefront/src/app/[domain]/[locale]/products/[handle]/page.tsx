@@ -15,15 +15,18 @@ import { getDictionary } from '@/i18n/dictionary';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import { isValidHandle } from '@/utils/handle';
 import { Locale, useTranslation } from '@/utils/locale';
+import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { cn } from '@/utils/tailwind';
 import { TitleToHandle } from '@/utils/title-to-handle';
 import { asText } from '@prismicio/client';
+import { parseGid } from '@shopify/hydrogen-react';
 import { notFound } from 'next/navigation';
 
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import { JsonLd } from '@/components/json-ld';
 import Link from '@/components/link';
+import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import { AttributeIcon } from '@/components/products/attribute-icon';
 import { InfoLines } from '@/components/products/info-lines';
@@ -34,10 +37,7 @@ import { Content } from '@/components/typography/content';
 import { ProductContent, ProductPricing, ProductSavings } from './product-content';
 import { ImportantProductDetails, ProductDetails } from './product-details';
 
-import PageContent from '@/components/page-content';
 import type { LocaleDictionary } from '@/utils/locale';
-import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
-import { parseGid } from '@shopify/hydrogen-react';
 import type { Metadata } from 'next';
 import type { ProductGroup, WithContext } from 'schema-dts';
 

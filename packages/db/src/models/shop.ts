@@ -80,6 +80,12 @@ export interface ShopBase extends BaseDocument {
         }
     ];
 
+    integrations?: {
+        judgeme?: {
+            publicToken: string;
+        };
+    };
+
     thirdParty?: {
         googleTagManager?: string;
         intercom?: string;
@@ -252,6 +258,21 @@ export const ShopSchema = new Schema<ShopBase>(
             ],
             required: true,
             default: []
+        },
+
+        integrations: {
+            type: {
+                judgme: {
+                    type: {
+                        publicToken: {
+                            type: Schema.Types.String,
+                            required: true
+                        }
+                    },
+                    required: false
+                }
+            },
+            required: false
         },
 
         thirdParty: {
