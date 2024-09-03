@@ -1,7 +1,5 @@
 import 'server-only';
 
-import styles from './collapsible-text.module.scss';
-
 import { FiChevronUp } from 'react-icons/fi';
 
 import { cn } from '@/utils/tailwind';
@@ -26,14 +24,11 @@ const CollapsibleText = ({ slice }: CollapsibleTextProps): JSX.Element => {
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
             className={cn(
-                'group',
-                styles.details,
-                'w-full appearance-none rounded-lg border-2 border-solid border-gray-300 bg-gray-100 py-3 transition-all duration-150'
+                'group w-full select-none appearance-none rounded-lg border-2 border-solid border-gray-300 bg-gray-100 py-3 transition-all duration-150'
             )}
         >
             <summary
                 className={cn(
-                    styles.summary,
                     'flex cursor-pointer appearance-none items-center justify-start gap-2 border-0 border-solid border-gray-300 px-2 transition-all duration-150 group-open:mb-3 group-open:border-b-2 group-open:pb-3'
                 )}
             >
@@ -50,11 +45,9 @@ const CollapsibleText = ({ slice }: CollapsibleTextProps): JSX.Element => {
         </details>
     );
 };
-CollapsibleText.skeleton = ({ slice }: { slice?: Content.CollectionSlice }) => {
-    if (!slice || slice.items.length <= 0) return null;
-
-    return <CollapsibleText {...({ slice } as any)} />;
-};
+CollapsibleText.skeleton = ({ slice }: { slice?: Content.CollectionSlice }) => (
+    <CollapsibleText {...({ slice } as any)} />
+);
 
 CollapsibleText.displayName = 'Nordcom.Slices.CollapsibleText';
 export default CollapsibleText;

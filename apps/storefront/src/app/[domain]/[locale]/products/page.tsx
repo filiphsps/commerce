@@ -23,9 +23,10 @@ import ProductsContent from './products-content';
 
 import type { Metadata } from 'next';
 
-// TODO: Figure out a better way to deal with query params.
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const runtime = 'nodejs';
+export const dynamic = 'force-static'; // TODO: Figure out a better way to deal with query params.
+export const dynamicParams = true;
+export const revalidate = false;
 
 export type ProductsPageParams = { domain: string; locale: string };
 export async function generateMetadata({

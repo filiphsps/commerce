@@ -4,6 +4,9 @@ import { findShopByDomainOverHttp } from '@/api/shop';
 import { revalidateTag } from 'next/cache';
 import { type NextRequest, NextResponse } from 'next/server';
 
+export const runtime = 'experimental-edge';
+export const dynamic = 'force-dynamic';
+
 const headers = { 'Cache-Control': 'no-store' };
 
 export type RevalidateApiRouteParams = {

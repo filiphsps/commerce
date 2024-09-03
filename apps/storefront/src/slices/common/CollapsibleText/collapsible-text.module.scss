@@ -1,9 +1,0 @@
-@import 'globals';
-
-.details {
-    &:is([open]) .summary {
-        .icon {
-            rotate: 180deg;
-        }
-    }
-}

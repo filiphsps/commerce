@@ -20,7 +20,9 @@ export const ShopifyApiConfig = async ({
     private: () => ApiConfig;
 }> => {
     const { commerceProvider } = await findShopByDomainOverHttp(domain);
-    if (!(commerceProvider as any)) throw new UnknownCommerceProviderError();
+    if ((commerceProvider as any)?.type !== 'shopify') {
+        throw new UnknownCommerceProviderError();
+    }
 
     const api = createStorefrontClient({
         publicStorefrontToken: commerceProvider.authentication.publicToken,
@@ -59,8 +61,18 @@ type ShopifyApiOptions = {
 };
 
 export const ShopifyApolloApiClient = async ({ shop, locale = Locale.default, apiConfig }: ShopifyApiOptions) => {
-    // TODO: Support public headers too.
-    const config = (apiConfig || (await ShopifyApiConfig({ shop }))).private();
+    const configBuilder = apiConfig || (await ShopifyApiConfig({ shop }));
+
+    let config: ApiConfig | null = null;
+    try {
+        config = configBuilder.private();
+    } catch {}
+
+    if (!config) {
+        // Fallback to public headers.
+        config = configBuilder.public();
+        console.warn('Falling back to public headers for Shopify API client.');
+    }
 
     return ApiBuilder({
         shop,

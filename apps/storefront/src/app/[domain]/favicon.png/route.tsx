@@ -1,6 +1,6 @@
-import { Shop } from '@nordcom/commerce-db';
 import { NotFoundError } from '@nordcom/commerce-errors';
 
+import { findShopByDomainOverHttp } from '@/api/shop';
 import { BuildConfig } from '@/utils/build-config';
 import { safeParseFloat } from '@/utils/pricing';
 import { ImageResponse } from 'next/og';
@@ -51,7 +51,7 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Fa
     try {
         let src!: string;
 
-        const shop = await Shop.findByDomain(domain);
+        const shop = await findShopByDomainOverHttp(domain);
         if (shop.icons?.favicon?.src) {
             src = shop.icons.favicon.src;
         } else {

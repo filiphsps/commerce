@@ -5,6 +5,9 @@ import { redirectToPreviewURL } from '@prismicio/next';
 import { draftMode } from 'next/headers';
 import { type NextRequest, NextResponse } from 'next/server';
 
+export const runtime = 'experimental-edge';
+export const dynamic = 'force-dynamic';
+
 export type PreviewApiRouteParams = {
     domain: string;
 };

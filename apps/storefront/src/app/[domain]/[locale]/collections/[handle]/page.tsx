@@ -30,9 +30,10 @@ import type { LocaleDictionary } from '@/utils/locale';
 import type { Metadata } from 'next';
 import type { Collection, WithContext } from 'schema-dts';
 
-// TODO: Figure out a better way to deal with query params.
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const runtime = 'nodejs';
+export const dynamic = 'force-static'; // TODO: Figure out a better way to deal with query params.
+export const dynamicParams = true;
+export const revalidate = false;
 
 export type CollectionPageParams = { domain: string; locale: string; handle: string };
 export async function generateMetadata({

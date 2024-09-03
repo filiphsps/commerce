@@ -22,9 +22,9 @@ import SearchContent from './search-content';
 
 import type { Metadata } from 'next';
 
-// TODO: Figure out a better way to deal with query params.
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const runtime = 'nodejs';
+export const dynamic = 'force-static'; // TODO: Figure out a better way to deal with query params.
+export const revalidate = false;
 
 export type SearchPageParams = { domain: string; locale: string };
 export async function generateMetadata({
