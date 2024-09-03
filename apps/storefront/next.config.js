@@ -132,6 +132,12 @@ const config = {
         return config;
     },
 
+    logging: {
+        fetches: {
+            fullUrl: true
+        }
+    },
+
     // We handle all redirects at the edge.
     skipTrailingSlashRedirect: true
 };
