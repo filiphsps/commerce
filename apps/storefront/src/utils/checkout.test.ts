@@ -80,7 +80,7 @@ describe('utils', () => {
             commerceProvider: {
                 type: 'shopify' as const,
                 id: 'shopid',
-                domain: 'checkout.sweetsideofsweden.com',
+                domain: 'checkout.swedish-candy-store.com',
                 storefrontId: 'Storefront Id',
                 authentication: {
                     token: null,

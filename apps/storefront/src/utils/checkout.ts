@@ -10,11 +10,11 @@ import type { CartWithActions } from '@shopify/hydrogen-react';
 import type { CartLine } from '@shopify/hydrogen-react/storefront-api-types';
 
 // Const hacky workaround for ga4 cross-domain
-// Ugly hack taken from StackOverflow
+// taken from StackOverflow
 export const getCrossDomainLinkerParameter = () => {
     // create form element, give it an action, make it hidden and prevent the submit event
     const formNode = document.createElement('form') as any;
-    formNode.action = 'https://opensource.sweetsideofsweden.com';
+    formNode.action = 'https://checkout.swedish-candy-store.com'; // TODO: This should be dependant on the tenant.
     formNode.style.opacity = '0';
     formNode.addEventListener('submit', (event: any) => {
         event.preventDefault();
@@ -34,7 +34,9 @@ export const getCrossDomainLinkerParameter = () => {
     // check for the input[name=_gl] hidden input in the form (if decoration worked)
     const _glNode = formNode.querySelector('input[name="_gl"]') as any;
 
-    if (_glNode) return _glNode.value as string;
+    if (_glNode) {
+        return _glNode.value as string;
+    }
     return null; // TODO: Maybe throw an error here.
 };
 
@@ -49,12 +51,15 @@ export const Checkout = async ({
     cart: CartWithActions;
     trackable: TrackableContextValue;
 }) => {
-    if (!cart.totalQuantity || cart.totalQuantity <= 0 || !cart.lines) throw new Error('Cart is empty!');
-    else if (!cart.checkoutUrl) throw new Error('Cart is missing checkoutUrl');
+    if (!cart.totalQuantity || cart.totalQuantity <= 0 || !cart.lines) {
+        throw new Error('Cart is empty!');
+    } else if (!cart.checkoutUrl) {
+        throw new Error('Cart is missing checkoutUrl');
+    }
 
     let url = cart.checkoutUrl;
     if ((shop.commerceProvider.type as string) === 'shopify') {
-        url = url.replace(/[A-Za-z0-9\-\_]+.\.myshopify\.com/, `${shop.commerceProvider.domain}`);
+        url = url.replace(/[A-Za-z0-9\-\_]+.\.myshopify\.com/, shop.commerceProvider.domain);
     }
 
     try {
