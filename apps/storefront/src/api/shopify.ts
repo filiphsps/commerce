@@ -8,6 +8,7 @@ import { findShopByDomainOverHttp } from '@/api/shop';
 import { ApiBuilder } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
 import { createStorefrontClient } from '@shopify/hydrogen-react';
+import { headers } from 'next/headers';
 
 import type { ApiConfig } from '@/api/client';
 
@@ -31,18 +32,19 @@ export const ShopifyApiConfig = async ({
         contentType: 'json'
     });
 
-    // TODO: Find a way to get the buyer IP.
+    /**
+     * @todo TODO: Should probably find a better way since this forces routes into dynamic
+     * rendering unless dynamic has been set to`force-static`.
+     */
     let buyerIp: string | undefined = undefined;
-    /*try {
+    try {
         buyerIp = headers().get('x-forwarded-for') || undefined;
-    } catch (error) {
-        console.error(error);
-    }*/
+    } catch {}
 
     return {
         public: () => ({
             uri: api.getStorefrontApiUrl(),
-            headers: api.getPublicTokenHeaders()
+            headers: api.getPublicTokenHeaders({})
         }),
         private: () => ({
             uri: api.getStorefrontApiUrl(),
