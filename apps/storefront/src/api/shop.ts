@@ -78,7 +78,12 @@ export const findShopsByDomainOverHttp = async (): Promise<OnlineShop> => {
                     database: 'test',
                     dataSource: 'Commerce',
                     filter: {}
-                })
+                }),
+                cache: 'no-cache',
+                next: {
+                    revalidate: undefined,
+                    tags: ['domains']
+                }
             })
         ).json()
     ).document as OnlineShop;

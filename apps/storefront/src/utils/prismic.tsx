@@ -29,7 +29,6 @@ export const createClient = ({ shop, locale = Locale.default, ...config }: Creat
             lang: locale.code.toLowerCase()
         },
         fetchOptions: {
-            cache: 'force-cache',
             next: {
                 revalidate: 86_400, // 24 hours.
                 tags: ['prismic', `prismic.${shop.id}`, shop.domain]
