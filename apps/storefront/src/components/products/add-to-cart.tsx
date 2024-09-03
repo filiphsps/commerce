@@ -9,7 +9,7 @@ import { TodoError } from '@nordcom/commerce-errors';
 
 import { useTranslation } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
-import { ShopifyPriceToNumber } from '@/utils/pricing';
+import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 import { useTrackable } from '@/utils/trackable';
 import { useCart, useProduct } from '@shopify/hydrogen-react';
@@ -73,7 +73,7 @@ const AddToCart = ({ children, className, i18n, quantity = 0, type, data, varian
             gtm: {
                 ecommerce: {
                     currency: selectedVariant.price?.currencyCode!,
-                    value: ShopifyPriceToNumber(0, selectedVariant.price?.amount) * quantity,
+                    value: safeParseFloat(0, selectedVariant.price?.amount) * quantity,
                     items: [
                         {
                             item_id: ProductToMerchantsCenterId({
@@ -91,7 +91,7 @@ const AddToCart = ({ children, className, i18n, quantity = 0, type, data, varian
                             variant_id: selectedVariant.id,
                             sku: selectedVariant.sku || undefined,
                             currency: selectedVariant.price?.currencyCode!,
-                            price: ShopifyPriceToNumber(undefined, selectedVariant.price?.amount!),
+                            price: safeParseFloat(undefined, selectedVariant.price?.amount!),
                             quantity
                         }
                     ]

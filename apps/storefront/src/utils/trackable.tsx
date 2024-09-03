@@ -8,7 +8,7 @@ import { MissingContextProviderError } from '@nordcom/commerce-errors';
 import { usePrevious } from '@/hooks/usePrevious';
 import { BuildConfig } from '@/utils/build-config';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
-import { ShopifyPriceToNumber } from '@/utils/pricing';
+import { safeParseFloat } from '@/utils/pricing';
 import {
     AnalyticsEventName as ShopifyAnalyticsEventName,
     getClientBrowserParameters,
@@ -438,7 +438,7 @@ function Trackable({ children }: TrackableProps) {
                     gtm: {
                         ecommerce: {
                             currency: cart.cost?.totalAmount?.currencyCode!,
-                            value: ShopifyPriceToNumber(undefined, cart.cost?.totalAmount?.amount!),
+                            value: safeParseFloat(undefined, cart.cost?.totalAmount?.amount!),
                             items: ((cart.lines || []).filter((_) => _) as CartLine[]).map((line) => ({
                                 item_id: ProductToMerchantsCenterId({
                                     locale,
@@ -451,7 +451,7 @@ function Trackable({ children }: TrackableProps) {
                                 item_variant: line.merchandise.title,
                                 item_brand: line.merchandise.product.vendor,
                                 currency: line.merchandise.price.currencyCode,
-                                price: ShopifyPriceToNumber(undefined, line.merchandise.price.amount!),
+                                price: safeParseFloat(undefined, line.merchandise.price.amount!),
                                 quantity: line.quantity
                             }))
                         }

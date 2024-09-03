@@ -2,6 +2,7 @@ import { Shop } from '@nordcom/commerce-db';
 import { NotFoundError } from '@nordcom/commerce-errors';
 
 import { BuildConfig } from '@/utils/build-config';
+import { safeParseFloat } from '@/utils/pricing';
 import { ImageResponse } from 'next/og';
 import { type NextRequest, NextResponse } from 'next/server';
 
@@ -21,8 +22,8 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Fa
     }
 
     const url = new URL(req.url);
-    let width = url.searchParams.get('width') ? Number.parseFloat(url.searchParams.get('width')!) : null;
-    let height = url.searchParams.get('height') ? Number.parseFloat(url.searchParams.get('height')!) : null;
+    let width = safeParseFloat(null, url.searchParams.get('width'));
+    let height = safeParseFloat(null, url.searchParams.get('height'));
 
     const errors = [...(await validateSize({ width, height }))];
 

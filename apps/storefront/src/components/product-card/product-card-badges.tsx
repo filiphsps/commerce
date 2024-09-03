@@ -1,6 +1,7 @@
 import { isProductVegan, type Product } from '@/api/product';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import { useTranslation } from '@/utils/locale';
+import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 
 import { AttributeIcon } from '../products/attribute-icon';
@@ -28,8 +29,8 @@ const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
 
     let discount = 0;
     if (isSale) {
-        const compare = Number.parseFloat(selectedVariant.compareAtPrice!.amount!);
-        const current = Number.parseFloat(selectedVariant.price!.amount!);
+        const compare = safeParseFloat(0, selectedVariant.compareAtPrice?.amount);
+        const current = safeParseFloat(0, selectedVariant.price.amount);
         discount = Math.round((100 * (compare - current)) / compare);
     }
 

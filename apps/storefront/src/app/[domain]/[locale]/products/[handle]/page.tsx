@@ -16,6 +16,7 @@ import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import { isValidHandle } from '@/utils/handle';
 import { Locale, useTranslation } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
+import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 import { TitleToHandle } from '@/utils/title-to-handle';
 import { asText } from '@prismicio/client';
@@ -250,11 +251,11 @@ export default async function ProductPage({
                         ? 'https://schema.org/InStock'
                         : 'https://schema.org/SoldOut',
 
-                    'price': Number.parseFloat(variant.price.amount),
+                    'price': safeParseFloat(undefined, variant.price.amount),
                     'priceCurrency': variant.price.currencyCode,
                     'priceSpecification': {
                         '@type': 'PriceSpecification',
-                        'price': Number.parseFloat(variant.price.amount),
+                        'price': safeParseFloat(undefined, variant.price.amount),
                         'priceCurrency': variant.price.currencyCode
                     }
                 }

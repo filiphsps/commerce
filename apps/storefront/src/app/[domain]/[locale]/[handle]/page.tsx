@@ -133,7 +133,7 @@ async function OnlineStoreJsonLd({ shop, locale }: { shop: OnlineShop; locale: L
             'logo': shop.icons?.favicon?.src,
             'telephone': businessData.telephone || undefined,
             'email': businessData.email || undefined,
-            'sameAs': businessData.social_profiles.map(({ href }) => href as string) || [],
+            'sameAs': (businessData.social_profiles || []).map(({ href }) => href as string), // eslint-disable-line  @typescript-eslint/no-unnecessary-condition
             'taxID': businessData.tax_number || undefined,
             'vatID': businessData.vat_number || undefined
         };

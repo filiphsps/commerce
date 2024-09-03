@@ -5,6 +5,7 @@ import styles from './page.module.scss';
 import { useMemo, useState } from 'react';
 
 import { type LocaleDictionary, useTranslation } from '@/utils/locale';
+import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 import { Money, ProductProvider } from '@shopify/hydrogen-react';
 import { useSearchParams } from 'next/navigation';
@@ -103,8 +104,8 @@ export function ProductSavings({ i18n, product, className }: ProductSavingsProps
         return null;
     }
 
-    const totalAmount = Number.parseFloat(price.amount);
-    const compareAtAmount = Number.parseFloat(compareAtPrice.amount);
+    const totalAmount = safeParseFloat(0, price.amount);
+    const compareAtAmount = safeParseFloat(0, compareAtPrice.amount);
 
     const savings = compareAtAmount - totalAmount;
     const discount = Math.round((100 * (compareAtAmount - totalAmount)) / Math.max(1, compareAtAmount));

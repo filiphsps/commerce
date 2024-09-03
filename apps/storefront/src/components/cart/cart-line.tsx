@@ -1,3 +1,4 @@
+import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 import { Money, parseGid } from '@shopify/hydrogen-react';
 import Image from 'next/image';
@@ -24,8 +25,8 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
 
     let discount = 0;
     if (variant.compareAtPrice?.amount) {
-        const compare = Number.parseFloat(variant.compareAtPrice!.amount || '0');
-        const current = Number.parseFloat(variant.price!.amount || '0');
+        const compare = safeParseFloat(0, variant.compareAtPrice.amount);
+        const current = safeParseFloat(0, variant.price.amount);
         discount = Math.round((100 * (compare - current)) / compare) || 0;
     }
 
@@ -45,7 +46,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
             <Money
                 className={cn('text-xl font-bold leading-tight', discount && 'font-extrabold text-red-500')}
                 data={{
-                    amount: (Number.parseFloat(variant.price.amount) * line.quantity).toString(),
+                    amount: (safeParseFloat(0, variant.price.amount) * line.quantity).toString(),
                     currencyCode: variant.price.currencyCode
                 }}
             />
@@ -53,7 +54,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                 <Money
                     className="text-sm leading-tight text-gray-500 line-through"
                     data={{
-                        amount: (Number.parseFloat(variant.compareAtPrice.amount) * line.quantity).toString(),
+                        amount: (safeParseFloat(0, variant.compareAtPrice.amount) * line.quantity).toString(),
                         currencyCode: variant.compareAtPrice.currencyCode
                     }}
                 />

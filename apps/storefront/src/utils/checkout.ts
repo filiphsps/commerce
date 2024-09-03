@@ -2,6 +2,8 @@ import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 
+import { safeParseFloat } from './pricing';
+
 import type { Locale } from '@/utils/locale';
 import type { TrackableContextValue } from '@/utils/trackable';
 import type { CartWithActions } from '@shopify/hydrogen-react';
@@ -61,7 +63,7 @@ export const Checkout = async ({
             gtm: {
                 ecommerce: {
                     currency: cart.cost?.totalAmount?.currencyCode!,
-                    value: Number.parseFloat(cart.cost?.totalAmount?.amount!),
+                    value: safeParseFloat(undefined, cart.cost?.totalAmount?.amount),
                     items: (cart.lines.filter((_) => _) as CartLine[]).map((line) => ({
                         item_id: ProductToMerchantsCenterId({
                             locale: locale,
@@ -78,7 +80,7 @@ export const Checkout = async ({
                         product_id: line.merchandise!.product!.id,
                         variant_id: line.merchandise!.id,
                         currency: line.merchandise.price.currencyCode!,
-                        price: Number.parseFloat(line.merchandise.price.amount!) || undefined,
+                        price: safeParseFloat(undefined, line.merchandise.price.amount),
                         quantity: line.quantity
                     }))
                 }

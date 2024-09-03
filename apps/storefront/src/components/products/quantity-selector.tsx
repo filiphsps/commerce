@@ -3,6 +3,7 @@
 import { type HTMLProps, useCallback, useEffect, useRef, useState } from 'react';
 
 import { useTranslation } from '@/utils/locale';
+import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 import { useCart } from '@shopify/hydrogen-react';
 
@@ -23,7 +24,7 @@ export const QuantityInputFilter = (value?: string, prev?: string): string => {
     // Remove non-numeric characters.
     value = value.replaceAll(/[^\d]/g, '').replace(/^0+/, '');
 
-    let quantity = Number.parseFloat(value) || 0;
+    let quantity = safeParseFloat(0, value);
     if (quantity < 0) {
         quantity = 0;
     } else if (quantity > 999) {
@@ -61,14 +62,19 @@ const QuantitySelector = ({
 
     const updateQuantity = useCallback(
         (value: string | number) => {
-            if (typeof value === 'string' && value === '') return;
-            else if (value === quantity) return;
+            if ((typeof value === 'string' && value === '') || value === quantity) {
+                return;
+            }
 
-            const parsedQuantity = Number.parseFloat(QuantityInputFilter(value.toString()));
+            const parsedQuantity = safeParseFloat(null, QuantityInputFilter(value.toString()));
+            if (parsedQuantity === null) {
+                // TODO: Should we show an error?
+                return;
+            }
 
             update(parsedQuantity);
         },
-        [update, quantity]
+        [update, quantity, quantityValue]
     );
     const decrease = useCallback(() => {
         if (allowDecreaseToZero ? quantity <= 0 : quantity <= 1) {
@@ -88,7 +94,7 @@ const QuantitySelector = ({
         }
 
         // Handle invalid values.
-        if (!allowDecreaseToZero && Number.parseFloat(quantityValue) <= 0) {
+        if (!allowDecreaseToZero && safeParseFloat(0, quantityValue) <= 0) {
             setQuantityValue('1');
             return;
         }

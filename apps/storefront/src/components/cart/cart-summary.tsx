@@ -7,6 +7,7 @@ import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { type LocaleDictionary, useTranslation } from '@/utils/locale';
 import { pluralize } from '@/utils/pluralize';
+import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 import { Money, ShopPayButton, useCart } from '@shopify/hydrogen-react';
 
@@ -47,9 +48,8 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
             (sum, line) =>
                 (line!.cost!.compareAtAmountPerQuantity &&
                     sum +
-                        ((Number.parseFloat(line!.cost!.compareAtAmountPerQuantity.amount!) || 0) *
-                            (line!.quantity || 0) -
-                            Number.parseFloat(line!.cost!.totalAmount!.amount!))) ||
+                        (safeParseFloat(0, line?.cost?.compareAtAmountPerQuantity?.amount) * (line!.quantity || 0) -
+                            safeParseFloat(0, line?.cost?.totalAmount?.amount))) ||
                 sum,
             0
         ) || 0;
@@ -63,16 +63,15 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
 
                 return line!.discountAllocations!.reduce(
                     (sum, line) =>
-                        (line!.discountedAmount!.amount && sum + Number.parseFloat(line!.discountedAmount!.amount!)) ||
+                        (line!.discountedAmount!.amount && sum + safeParseFloat(0, line?.discountedAmount?.amount)) ||
                         sum,
                     0
                 );
             })
             .reduce((sum, line) => sum + line || sum, 0);
 
-    const salePercentage = Math.round(((100 * sale) / Number.parseFloat(cost?.totalAmount?.amount || '0')) * 100) / 100;
-    const promos =
-        Number.parseFloat(cost?.subtotalAmount?.amount!) - Number.parseFloat(cost?.totalAmount?.amount!) || 0;
+    const salePercentage = Math.round(((100 * sale) / safeParseFloat(0, cost?.totalAmount?.amount)) * 100) / 100;
+    const promos = safeParseFloat(0, cost?.subtotalAmount?.amount) - safeParseFloat(0, cost?.totalAmount?.amount) || 0;
 
     if (cartReady && (totalQuantity || 0) <= 0) {
         return null;
@@ -105,7 +104,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                                     currencyCode: cost.subtotalAmount.currencyCode,
                                     amount:
                                         (totalSale &&
-                                            (Number.parseFloat(cost.subtotalAmount.amount!) + totalSale).toString()) ||
+                                            (safeParseFloat(0, cost.subtotalAmount.amount) + totalSale).toString()) ||
                                         cost.subtotalAmount.amount
                                 }}
                             />
