@@ -41,7 +41,7 @@ const ProductCard = async ({ shop, locale, data: product, priority, className, .
 
     return (
         <div
-            className={cn(CARD_STYLES, 'transition-shadow hover:drop-shadow', '', className)}
+            className={cn(CARD_STYLES, 'transition-shadow hover:drop-shadow', className)}
             title={available ? `${description}...` : ''}
             {...props}
         >
