@@ -49,7 +49,7 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
     limit,
     filters = undefined,
     isHorizontal,
-    showViewAll,
+    showViewAll = true,
     priority,
 
     bare = false,
@@ -97,10 +97,13 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
             {children}
             {productCards.length > 0 ? productCards : null}
 
-            {!(!collection || !showViewAll) ? (
+            {collection && showViewAll ? (
                 <Link
                     href={`/collections/${collection.handle}/`}
-                    className={cn(CARD_STYLES, 'bg-primary text-primary-foreground hover:brightness-75')}
+                    className={cn(
+                        CARD_STYLES,
+                        'bg-primary text-primary-foreground flex items-center justify-center hover:brightness-75'
+                    )}
                     // TODO: i18n.
                     // TODO: View all {products.length} {Pluralize({ count: products.length, noun: 'product' })}.
                 >
