@@ -38,6 +38,8 @@ export async function CollectionContent({
                 locale={locale}
                 handle={handle}
                 filters={{ first: PRODUCTS_PER_PAGE, after }}
+                showViewAll={false}
+                priority={true}
             />
         </Suspense>
     );
