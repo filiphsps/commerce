@@ -25,6 +25,10 @@ export function GeoRedirect({ countries, locale }: GeoRedirectProps) {
     const pathname = `/${usePathname().split('/').slice(2).join('/')}`;
 
     useEffect(() => {
+        if (!(localStorage as any)) {
+            return;
+        }
+
         const value = localStorage.getItem(DISMISSED_KEY)
             ? Number.parseInt(localStorage.getItem(DISMISSED_KEY) as string)
             : null;
