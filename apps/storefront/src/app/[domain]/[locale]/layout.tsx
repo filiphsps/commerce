@@ -7,6 +7,7 @@ import { type ReactNode, Suspense } from 'react';
 import { Shop } from '@nordcom/commerce-db';
 import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
 
+import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
 import { CountriesApi, LocaleApi, LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
@@ -42,18 +43,23 @@ export async function generateStaticParams(): Promise<LayoutParams[]> {
     return (
         await Promise.all(
             shops.map(async ({ domain }) => {
-                const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-                if (shop.domain.includes('demo')) {
-                    return null as any as LayoutParams;
+                try {
+                    const shop = await findShopByDomainOverHttp(domain);
+                    if (shop.domain.includes('demo')) {
+                        return null as any as LayoutParams;
+                    }
+
+                    const api = await ShopifyApiClient({ shop });
+                    const locales = await LocalesApi({ api });
+
+                    return locales.map(({ code }) => ({
+                        domain: shop.domain,
+                        locale: code
+                    }));
+                } catch (error: unknown) {
+                    console.error(error);
+                    return [];
                 }
-
-                const api = await ShopifyApiClient({ shop });
-                const locales = await LocalesApi({ api });
-
-                return locales.map(({ code }) => ({
-                    domain: shop.domain,
-                    locale: code
-                }));
             })
         )
     )

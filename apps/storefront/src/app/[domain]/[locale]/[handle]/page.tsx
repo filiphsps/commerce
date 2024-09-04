@@ -36,17 +36,22 @@ export async function generateStaticParams({
 }: {
     params: Omit<CustomPageParams, 'handle'>;
 }): Promise<Omit<CustomPageParams, 'domain' | 'locale'>[]> {
-    const locale = Locale.from(localeData);
+    try {
+        const locale = Locale.from(localeData);
 
-    const shop = await findShopByDomainOverHttp(domain);
-    const pages = await PagesApi({ shop, locale });
-    if (!pages) {
+        const shop = await findShopByDomainOverHttp(domain);
+        const pages = await PagesApi({ shop, locale });
+        if (!pages) {
+            return [];
+        }
+
+        return pages.map(({ uid }) => ({
+            handle: uid!
+        }));
+    } catch (error: unknown) {
+        console.error(error);
         return [];
     }
-
-    return pages.map(({ uid }) => ({
-        handle: uid!
-    }));
 }
 
 export async function generateMetadata({

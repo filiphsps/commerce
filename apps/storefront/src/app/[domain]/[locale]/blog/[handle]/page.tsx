@@ -24,47 +24,6 @@ export const dynamic = 'force-static';
 export const dynamicParams = true;
 export const revalidate = false;
 
-/*export async function generateStaticParams() {
-    const locale = Locale.default;
-    const shops = await Shop.findAll();
-
-    const pages = (
-        await Promise.all(
-            shops
-                .map(async (shop) => {
-                    try {
-                        const api = await ShopifyApiClient({ shop, locale });
-                        const locales = await LocalesApi({ api });
-
-                        return await Promise.all(
-                            locales
-                                .map(async (locale) => {
-                                    try {
-                                        const api = await ShopifyApiClient({ shop, locale });
-                                        const blog = await BlogApi({ api, handle: 'news' });
-
-                                        return blog.articles.edges.map(({ node: { handle } }) => ({
-                                            domain: shop.domain,
-                                            locale: locale.code,
-                                            handle
-                                        }));
-                                    } catch {
-                                        return null;
-                                    }
-                                })
-                                .filter((_) => _)
-                        );
-                    } catch {
-                        return null;
-                    }
-                })
-                .filter((_) => _)
-        )
-    ).flat(2);
-
-    return pages;
-}*/
-
 export type ArticlePageParams = { domain: string; locale: string; handle: string };
 export async function generateMetadata({
     params: { domain, locale: localeData, handle }
