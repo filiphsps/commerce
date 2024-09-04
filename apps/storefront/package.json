@@ -92,7 +92,7 @@
         "@happy-dom/global-registrator": "15.7.3",
         "@next/bundle-analyzer": "15.0.0-canary.139",
         "@nordcom/prettier": "0.1.1",
-        "@slicemachine/adapter-next": "0.3.48",
+        "@slicemachine/adapter-next": "0.3.49",
         "@tailwindcss/typography": "0.5.15",
         "@testing-library/jest-dom": "6.5.0",
         "@testing-library/react": "16.0.1",
