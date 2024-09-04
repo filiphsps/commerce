@@ -105,7 +105,14 @@ export const ShopifyApiClient = async ({ shop, locale = Locale.default, apiConfi
                     }),
 
                     // This handles cache, next options, etc.
-                    ...(fetchOptions ? { fetchOptions } : { cache: 'no-cache' })
+                    ...(fetchOptions
+                        ? { fetchOptions }
+                        : {
+                              fetchOptions: {
+                                  revalidate: 28_800, // 8hrs.
+                                  tags: ['shopify', `shopify.${shop.id}`, shop.domain]
+                              }
+                          })
 
                     // TODO: context, e.g. locale
                 });

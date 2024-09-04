@@ -190,7 +190,7 @@ export default async function CollectionPage({
 
                             <Suspense
                                 key={JSON.stringify(searchParams)}
-                                fallback={<CollectionBlock.skeleton length={PRODUCTS_PER_PAGE} bare={true} />}
+                                fallback={<CollectionBlock.skeleton length={PRODUCTS_PER_PAGE} />}
                             >
                                 <CollectionContent
                                     shop={shop}

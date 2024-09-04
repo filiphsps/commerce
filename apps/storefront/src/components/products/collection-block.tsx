@@ -1,7 +1,5 @@
 import 'server-only';
 
-import styles from '@/components/products/collection-block.module.scss';
-
 import { Suspense } from 'react';
 
 import { type OnlineShop } from '@nordcom/commerce-db';
@@ -87,7 +85,6 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
     return (
         <Tag
             {...props}
-            data-orientation={isHorizontal ? 'horizontal' : 'vertical'}
             className={cn(
                 'grid w-full gap-2',
                 !isHorizontal &&
@@ -133,9 +130,17 @@ CollectionBlock.skeleton = ({
     }
 
     return (
-        <section className={cn(styles.container, isHorizontal && styles.horizontal)}>
-            <div className={styles.content}>{cards}</div>
-        </section>
+        <div
+            className={cn(
+                'grid w-full gap-2',
+                !isHorizontal &&
+                    'grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] md:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] xl:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))]',
+                isHorizontal &&
+                    'overflow-x-shadow auto-cols-[minmax(12rem,1fr)] grid-flow-col grid-cols-[repeat(auto-fit,minmax(12rem,1fr))] grid-rows-1 overscroll-x-auto'
+            )}
+        >
+            {cards}
+        </div>
     );
 };
 
