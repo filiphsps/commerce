@@ -5,8 +5,9 @@ import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 
 import { PageApi } from '@/api/page';
+import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { CollectionApi, CollectionPaginationCountApi } from '@/api/shopify/collection';
+import { CollectionApi, CollectionPaginationCountApi, CollectionsApi } from '@/api/shopify/collection';
 import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { isValidHandle } from '@/utils/handle';
@@ -36,6 +37,28 @@ export const dynamicParams = true;
 export const revalidate = false;
 
 export type CollectionPageParams = { domain: string; locale: string; handle: string };
+
+export async function generateStaticParams({
+    params: { domain, locale: localeData }
+}: {
+    params: Omit<CollectionPageParams, 'handle'>;
+}): Promise<Omit<CollectionPageParams, 'domain' | 'locale'>[]> {
+    try {
+        const locale = Locale.from(localeData);
+
+        const shop = await findShopByDomainOverHttp(domain);
+        const api = await ShopifyApolloApiClient({ shop, locale });
+        const collections = await CollectionsApi({ api });
+
+        return collections.map(({ handle }) => ({
+            handle
+        }));
+    } catch (error: unknown) {
+        console.error(error);
+        return [];
+    }
+}
+
 export async function generateMetadata({
     params: { domain, locale: localeData, handle },
     searchParams
