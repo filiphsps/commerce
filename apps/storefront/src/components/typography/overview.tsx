@@ -46,19 +46,24 @@ export const Overview = ({
                 })
             }}
             className={cn(
-                'relative col-span-3 flex h-32 bg-[var(--accent-primary)] p-3 lg:h-auto',
+                'relative z-0 col-span-3 flex h-32 overflow-hidden bg-[var(--accent-primary)] p-3 lg:h-auto',
                 layout === 'center' && 'h-32 lg:h-28',
                 imageStyle === 'cover' && 'p-0'
             )}
         >
             <Image
-                className={cn('h-full w-full object-contain object-center', imageStyle === 'cover' && 'object-cover')}
-                src={image.url!}
+                className={cn(
+                    'absolute inset-0 z-[1] h-full w-full object-contain object-center',
+                    imageStyle === 'cover' && 'object-cover'
+                )}
+                src={image.url}
                 alt={image.alt!}
+                width={image.dimensions.width}
+                height={image.dimensions.height}
                 sizes="(max-width: 1150px) 250px, 250px"
                 decoding="async"
+                loading="lazy"
                 draggable={false}
-                fill
             />
         </div>
     );
