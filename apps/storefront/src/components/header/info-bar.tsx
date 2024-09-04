@@ -37,7 +37,7 @@ export async function InfoBar({ className, shop, locale, i18n, ...props }: InfoB
 
     return (
         <section
-            className="flex w-full grow flex-col items-center justify-center bg-gray-100 text-black"
+            className="flex h-8 w-full flex-col items-center justify-center bg-gray-100 text-black"
             data-nosnippet={true}
             {...props}
         >

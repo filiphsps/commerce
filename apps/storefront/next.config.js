@@ -51,13 +51,13 @@ const config = {
         pprFallbacks: true,
         reactCompiler: true,
         scrollRestoration: true,
-        serverComponentsHmrCache: false,
+        serverComponentsHmrCache: true,
         serverSourceMaps: true,
         staleTimes: { dynamic: 30, static: 180 },
         taint: true,
         turbo: {},
         typedEnv: true,
-        useEarlyImport: true,
+        //useEarlyImport: true,
         webpackBuildWorker: true
     },
     images: {

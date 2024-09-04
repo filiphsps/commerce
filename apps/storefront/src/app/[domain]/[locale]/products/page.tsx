@@ -24,7 +24,7 @@ import ProductsContent from './products-content';
 import type { Metadata } from 'next';
 
 export const runtime = 'nodejs';
-export const dynamic = 'force-static'; // TODO: Figure out a better way to deal with query params.
+export const dynamic = 'force-dynamic'; // TODO: Figure out a better way to deal with query params.
 export const dynamicParams = true;
 export const revalidate = false;
 
