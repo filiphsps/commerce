@@ -105,7 +105,7 @@ export const ShopifyApiClient = async ({ shop, locale = Locale.default, apiConfi
                     }),
 
                     // This handles cache, next options, etc.
-                    ...(fetchOptions ? { fetchOptions } : {})
+                    ...(fetchOptions ? { fetchOptions } : { cache: 'no-cache' })
 
                     // TODO: context, e.g. locale
                 });
