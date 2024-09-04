@@ -35,7 +35,7 @@ yarn-error.log*
 # deployment
 .sentryclirc
 .vercel
-.env
+.env*
 !.env.example
 
 # typescript

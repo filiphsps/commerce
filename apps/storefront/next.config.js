@@ -5,6 +5,8 @@ import createWithBundleAnalyzer from '@next/bundle-analyzer';
 import { withSentryConfig } from '@sentry/nextjs';
 import createVercelToolbar from '@vercel/toolbar/plugins/next';
 
+import { createRequire } from 'node:module';
+
 const withVercelToolbar = createVercelToolbar();
 
 const withBundleAnalyzer = createWithBundleAnalyzer({
@@ -16,6 +18,9 @@ const isDev = process.env.NODE_ENV === 'development';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const environment = process.env.VERCEL_ENV || process.env.NODE_ENV || 'development';
 
+const data_cache_url = !isDev ? process.env.DATA_CACHE_REDIS_URL : undefined;
+const require = createRequire(import.meta.url);
+
 /** @type {import('next').NextConfig} */
 const config = {
     logging: isDev
@@ -25,6 +30,7 @@ const config = {
               }
           }
         : false,
+    cacheHandler: data_cache_url ? require.resolve('./data-cache-handler.mjs') : undefined,
     pageExtensions: ['ts', 'tsx'],
     poweredByHeader: false,
     generateEtags: true,
