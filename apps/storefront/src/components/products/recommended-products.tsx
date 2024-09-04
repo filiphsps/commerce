@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import 'server-only';
 
 import { Suspense } from 'react';

@@ -40,6 +40,7 @@ const CartButton = ({ locale, i18n }: CartButtonProps) => {
                     'text-left text-base font-extrabold transition-all',
                     !totalQuantity && 'w-0'
                 )}
+                suppressHydrationWarning={true}
             >
                 {totalQuantity ? totalQuantity : null}
             </div>
@@ -51,6 +52,7 @@ const CartButton = ({ locale, i18n }: CartButtonProps) => {
                     !totalQuantity && 'group-hover:text-primary text-xl lg:text-2xl'
                 )}
                 style={{ strokeWidth: 2.5 }}
+                suppressHydrationWarning={true}
             />
         </Button>
     );

@@ -35,7 +35,7 @@ const CartLineQuantityAction = ({ i18n, data: line }: CartLineProps) => {
                 }
             ]);
         },
-        [, line]
+        [line]
     );
 
     const product: Required<Product> | undefined = line.merchandise.product as any;

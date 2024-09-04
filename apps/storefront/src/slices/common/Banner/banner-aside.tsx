@@ -17,6 +17,7 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
 
     const background = slice.primary.background;
     const image = slice.primary.image;
+    const imageAlt = image.alt ?? image.copyright;
 
     const textColor = slice.primary.text_color;
 
@@ -72,10 +73,11 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
             </div>
 
             <Image
+                role={imageAlt ? undefined : 'presentation'}
                 src={image.url!}
                 width={image.dimensions?.width!}
                 height={image.dimensions?.height!}
-                alt={image.alt || image.copyright || ''}
+                alt={imageAlt ?? ''}
                 className="col-span-2 hidden h-full w-full object-cover object-center md:flex"
                 draggable={false}
                 loading={priority ? 'eager' : 'lazy'}

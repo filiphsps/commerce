@@ -31,6 +31,7 @@ export async function GET(
     let res: Awaited<ReturnType<typeof ProductsPaginationApi>> | null = null;
     let products: Product[] = [];
 
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     while ((res = await ProductsPaginationApi({ api, limit: 75, after: res?.page_info.end_cursor }))) {
         products.push(...res.products.map(({ node: product }) => product));
         if (!res.page_info.has_next_page) break;

@@ -10,7 +10,7 @@ import { BuildConfig } from '@/utils/build-config';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { safeParseFloat } from '@/utils/pricing';
 import {
-    AnalyticsEventName as ShopifyAnalyticsEventName,
+    AnalyticsEventName as AnalyticsShopifyEventName,
     getClientBrowserParameters,
     sendShopifyAnalytics,
     ShopifySalesChannel,
@@ -231,28 +231,28 @@ const shopifyEventHandler = async (
     // FIXME: We can't actually capture the error here. Make a PR upstream to fix this.
     try {
         switch (event.toUpperCase()) {
-            case ShopifyAnalyticsEventName.PAGE_VIEW: {
+            case AnalyticsShopifyEventName.PAGE_VIEW: {
                 const data = {
-                    eventName: ShopifyAnalyticsEventName.PAGE_VIEW,
+                    eventName: AnalyticsShopifyEventName.PAGE_VIEW,
                     payload: {
                         ...sharedPayload
                     }
                 };
 
-                TrackableLogger(`Event "${ShopifyAnalyticsEventName.PAGE_VIEW}"`, data, 'shopify');
+                TrackableLogger(`Event "${AnalyticsShopifyEventName.PAGE_VIEW}"`, data, 'shopify');
                 await sendShopifyAnalytics(data, commerce.domain);
                 break;
             }
-            case ShopifyAnalyticsEventName.ADD_TO_CART: {
+            case AnalyticsShopifyEventName.ADD_TO_CART: {
                 const data = {
-                    eventName: ShopifyAnalyticsEventName.ADD_TO_CART,
+                    eventName: AnalyticsShopifyEventName.ADD_TO_CART,
                     payload: {
                         cartId: cart.id,
                         ...sharedPayload
                     }
                 };
 
-                TrackableLogger(`Event "${ShopifyAnalyticsEventName.ADD_TO_CART}"`, data, 'shopify');
+                TrackableLogger(`Event "${AnalyticsShopifyEventName.ADD_TO_CART}"`, data, 'shopify');
                 await sendShopifyAnalytics(data, commerce.domain);
                 break;
             }
@@ -362,7 +362,7 @@ export const TrackableContext = createContext<TrackableContextValue>({} as Track
 export type TrackableProps = {
     children: ReactNode;
 };
-function Trackable({ children }: TrackableProps) {
+export function Trackable({ children }: TrackableProps) {
     const path = usePathname();
     const prevPath = usePrevious(path);
     const { shop, currency, locale } = useShop();
@@ -403,12 +403,12 @@ function Trackable({ children }: TrackableProps) {
         debounce(async (type: AnalyticsEventType, event: AnalyticsEventData) => {
             await handleEvent(type, event, { shop, currency, locale, shopify, cart });
         }, 500),
-        [handleEvent, { shop, currency, locale, shopify, cart }]
+        [handleEvent, shop, currency, locale, shopify, cart]
     )!;
 
     // Web vitals.
-    /*useReportWebVitals(({ id, value, name, label }) => {
-        queueEvent(
+    /*useReportWebVitals(({ id, value, name, label })  => {
+        queueEvent(g
             'web_vital',
             {
                 gtm: {
@@ -512,6 +512,7 @@ function Trackable({ children }: TrackableProps) {
         [store, children]
     );
 }
+Trackable.displayName = 'Nordcom.Trackable';
 
 type SelectorFn<T extends keyof TrackableContextValue> = (context: TrackableContextValue) => TrackableContextValue[T];
 
@@ -534,6 +535,3 @@ export function useTrackable<T extends keyof TrackableContextValue>(
 
     return context;
 }
-
-Trackable.displayName = 'Nordcom.Trackable';
-export { Trackable };

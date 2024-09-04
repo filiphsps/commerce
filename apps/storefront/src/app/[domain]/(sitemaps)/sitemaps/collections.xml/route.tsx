@@ -26,6 +26,7 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
         let res: Awaited<ReturnType<typeof CollectionsPaginationApi>> | null = null;
         let collections: Collection[] = [];
 
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         while ((res = await CollectionsPaginationApi({ api, limit: 75, after: res?.page_info.end_cursor }))) {
             collections.push(...res.collections.map(({ node: collection }) => collection));
 

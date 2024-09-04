@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-
 import { useEffect, useState } from 'react';
 
 import type { Error } from '@nordcom/commerce-errors';

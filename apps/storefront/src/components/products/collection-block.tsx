@@ -9,7 +9,6 @@ import { type OnlineShop } from '@nordcom/commerce-db';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CollectionApi } from '@/api/shopify/collection';
 import { cn } from '@/utils/tailwind';
-import { unstable_cache as cache } from 'next/cache';
 
 import Link from '@/components/link';
 import ProductCard from '@/components/product-card/product-card';
@@ -49,16 +48,13 @@ const CollectionBlock = async ({
 }: CollectionBlockProps) => {
     const api = await ShopifyApolloApiClient({ shop, locale });
 
-    const collection = await CollectionApi(
-        {
-            api,
-            handle,
-            // TODO: Pagination for the full variation.
-            first: limit,
-            ...filters
-        },
-        cache
-    );
+    const collection = await CollectionApi({
+        api,
+        handle,
+        // TODO: Pagination for the full variation.
+        first: limit,
+        ...filters
+    });
 
     // TODO: Add collection type.
     const products: Product[] = (collection as any)?.products?.edges?.map(({ node }: any) => node as any) || [];

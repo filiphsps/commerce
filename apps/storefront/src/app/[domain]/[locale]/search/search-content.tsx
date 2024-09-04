@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { HiOutlineSearch } from 'react-icons/hi';
 
+//import type { Product, ProductFilters } from '@/api/product';
+import { createProductSearchParams, type Product, type ProductFilters } from '@/api/product';
 import { type Locale, type LocaleDictionary, useTranslation } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 import Image from 'next/image';
@@ -12,8 +14,6 @@ import { Button } from '@/components/actionable/button';
 import Link from '@/components/link';
 import { Label } from '@/components/typography/label';
 
-//import type { Product, ProductFilters } from '@/api/product';
-import type { Product, ProductFilters } from '@/api/product';
 import type { HTMLProps } from 'react';
 
 type SearchBarProps = {
@@ -195,8 +195,10 @@ export default function SearchContent({
                     }) => {
                         const image: Product['images']['edges'][number]['node'] | undefined =
                             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                            featuredImage ?? images.edges.find((image) => image.node)?.node;
-                        const href = `/products/${handle}/${!!(trackingParameters as any) ? `?${trackingParameters}` : ''}`;
+                            featuredImage ?? images.edges.at(0)?.node;
+
+                        const params = createProductSearchParams({ product: { trackingParameters } });
+                        const href = `/products/${handle}/${params ? `?${params}` : ''}`;
 
                         return (
                             <Link
@@ -211,7 +213,7 @@ export default function SearchContent({
                                 <div className="flex aspect-square h-full w-auto shrink-0 grow-0 items-center justify-center overflow-hidden bg-white p-2">
                                     {image ? (
                                         <Image
-                                            className={'h-full w-full object-contain object-center'}
+                                            className={'aspect-square h-full object-contain object-center'}
                                             src={image.url!}
                                             alt={image.altText!}
                                             title={image.altText!}
@@ -220,6 +222,7 @@ export default function SearchContent({
                                             sizes="(max-width: 920px) 90vw, 500px"
                                             loading="eager"
                                             decoding="async"
+                                            draggable={false}
                                         />
                                     ) : null}
                                 </div>

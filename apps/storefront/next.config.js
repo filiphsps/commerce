@@ -11,11 +11,20 @@ const withBundleAnalyzer = createWithBundleAnalyzer({
     enabled: process.env.ANALYZE === 'true'
 });
 
+const isDev = process.env.NODE_ENV === 'development';
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
-//const isProduction = process.env.NODE_ENV !== 'development' ? true : false; // Deliberately using a ternary here for clarity.
+const environment = process.env.VERCEL_ENV || process.env.NODE_ENV || 'development';
 
 /** @type {import('next').NextConfig} */
 const config = {
+    logging: isDev
+        ? {
+              fetches: {
+                  fullUrl: true
+              }
+          }
+        : false,
     pageExtensions: ['ts', 'tsx'],
     poweredByHeader: false,
     generateEtags: true,
@@ -30,18 +39,25 @@ const config = {
         appIsrStatus: true
     },
     experimental: {
+        after: true,
         //caseSensitiveRoutes: true,
+        appNavFailHandling: true,
         cssChunking: 'loose',
         optimizeCss: true,
         optimizePackageImports: ['@apollo/client', '@shopify/hydrogen-react', 'react-icons'],
         parallelServerBuildTraces: true,
         parallelServerCompiles: true,
         ppr: true,
+        pprFallbacks: true,
         reactCompiler: true,
         scrollRestoration: true,
+        serverComponentsHmrCache: false,
         serverSourceMaps: true,
-        turbo: {},
+        staleTimes: { dynamic: 30, static: 180 },
         taint: true,
+        turbo: {},
+        typedEnv: true,
+        useEarlyImport: true,
         webpackBuildWorker: true
     },
     images: {
@@ -89,7 +105,7 @@ const config = {
     },
 
     env: {
-        ENVIRONMENT: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
+        ENVIRONMENT: environment,
         GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA || 'unknown'
     },
 
@@ -140,12 +156,20 @@ export default withSentryConfig(withBundleAnalyzer(withVercelToolbar(config)), {
     org: 'nordcom',
     project: 'commerce',
     authToken: process.env.SENTRY_AUTH_TOKEN,
-    silent: !process.env.CI,
-    debug: process.env.NODE_ENV === 'development',
+    silent: true,
+    debug: isDev,
     widenClientFileUpload: true,
     hideSourceMaps: true,
     disableLogger: true,
     automaticVercelMonitors: true,
-    transpileClientSDK: false
-    //tunnelRoute: "/monitoring",
+    transpileClientSDK: false,
+    unstable_sentryWebpackPluginOptions: {
+        bundleSizeOptimizations: {
+            excludeDebugStatements: true,
+            excludePerformanceMonitoring: true,
+            excludeReplayShadowDom: true,
+            excludeReplayIframe: true,
+            excludeReplayWorker: true
+        }
+    }
 });

@@ -1,5 +1,5 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { ApiError, NotFoundError } from '@nordcom/commerce-errors';
+import { Error, NotFoundError } from '@nordcom/commerce-errors';
 
 import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
@@ -19,15 +19,17 @@ export async function FooterApi({
         const res = await client.getSingle<FooterDocument>('footer');
 
         return res.data;
-    } catch (error: unknown) {
-        if (ApiError.isNotFound(error)) {
+    } catch (error) {
+        if (Error.isNotFound(error)) {
             if (!Locale.isDefault(locale)) {
-                return FooterApi({ shop, locale: Locale.default });
+                return await FooterApi({ shop, locale: Locale.default }); // Try again with default locale.
             }
 
             throw new NotFoundError(`"Footer" with the locale "${locale.code}"`);
         }
 
+        // TODO: Deal with errors properly.
+        console.error(error);
         throw error;
     }
 }

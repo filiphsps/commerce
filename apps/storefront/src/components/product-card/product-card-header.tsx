@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import 'server-only';
 
 import { useMemo } from 'react';
@@ -27,7 +26,7 @@ const VariantImage = ({ image, priority }: VariantImageProps) => {
         <Image
             className="aspect-3/2 h-max w-full rounded-lg bg-white object-contain object-center p-2 py-3"
             src={image.url}
-            alt={image.altText!}
+            alt={image.altText ?? ``}
             title={image.altText!}
             height={image.height || 100}
             width={image.width || 100}
@@ -49,27 +48,45 @@ export type ProductCardImageProps = {
 
 const ProductCardHeader = ({ shop, data: product, priority = false, children, ...props }: ProductCardImageProps) => {
     const selectedVariant = FirstAvailableVariant(product);
-    if (!product || !selectedVariant) {
+    const image = useMemo<ShopifyImage | undefined>(() => {
+        if (!product || !selectedVariant) {
+            return undefined;
+        }
+
+        // 1. Check if the variant has an image defined.
+        if (selectedVariant.image) {
+            if (selectedVariant.image.url) {
+                return selectedVariant.image;
+            }
+
+            const image = product.images.edges.find((i) => i.node.id === selectedVariant.image!.id)?.node;
+            if (image) {
+                return image;
+            }
+        }
+
+        // 2. If not, check if the product has a featured image.
+        if (product.featuredImage?.url) {
+            return product.featuredImage;
+        }
+
+        // 3. If not, try to get the first image from the product.
+        // 3.1. Otherwise when the product has no images, return undefined.
+        return product.images.edges.at(0)?.node;
+    }, [product, selectedVariant]);
+
+    if (!product || !selectedVariant || !image) {
         return null;
     }
 
-    const image = useMemo<ShopifyImage | undefined>(
-        () =>
-            ((selectedVariant.image &&
-                product.images.edges.find((i) => i.node.id === selectedVariant.image!.id)?.node) ||
-                product.featuredImage ||
-                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                product.images.edges.find((image) => image.node)?.node) as ShopifyImage | undefined,
-        [product, selectedVariant]
-    );
-    if (!image) return null;
+    const title = `${product.vendor} ${product.title}`;
 
-    const title = `${product.vendor} ${product.title} by ${shop.name}`;
-    const href = `/products/${product.handle}/${createProductSearchParams({ product })}`;
+    const params = createProductSearchParams({ product });
+    const href = `/products/${product.handle}/${params ? `?${params}` : ''}`;
 
     return (
         <Link className="group/header contents" href={href} title={title} prefetch={priority} {...props}>
-            <VariantImage image={{ ...image, altText: image.altText || title }} priority={priority} />
+            <VariantImage image={{ ...image, altText: image.altText ?? title }} priority={priority} />
 
             {children}
         </Link>

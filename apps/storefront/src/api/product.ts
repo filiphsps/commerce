@@ -31,10 +31,15 @@ export type Product = ShopifyProduct & {
 
 export type ProductFilters = SearchResultItemConnection['productFilters'];
 
-export const createProductSearchParams = ({ product: { trackingParameters } }: { product: Product }): string => {
-    // TODO: Hotlink to non-default variants.
-    const params = new URLSearchParams(trackingParameters || '');
-    return params.toString();
+export const createProductSearchParams = ({
+    product: { trackingParameters }
+}: {
+    product: Partial<Product>;
+}): string => {
+    if (!trackingParameters) {
+        return '';
+    }
+    return new URLSearchParams(trackingParameters ?? '').toString();
 };
 
 export const isProductVegan = (product: Product): boolean => {

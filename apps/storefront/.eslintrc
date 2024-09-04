@@ -1,14 +1,19 @@
 {
+    "$schema": "https://json.schemastore.org/eslintrc.json",
     "extends": ["next/core-web-vitals", "../../.eslintrc"],
     "ignorePatterns": ["!**/*"],
     "overrides": [
         {
+            "plugins": ["eslint-plugin-react-compiler"],
             "files": ["*.ts", "*.tsx"],
             "parserOptions": {
                 "project": ["./tsconfig.json", "./tsconfig.test.json"],
                 "ecmaFeatures": {
                     "jsx": true
                 }
+            },
+            "rules": {
+                "react-compiler/react-compiler": "warn"
             }
         }
     ],
