@@ -5,6 +5,7 @@ import { commonValidations } from '@/middleware/common-validations';
 import { NextResponse } from 'next/server';
 import { resolveAcceptLanguage } from 'resolve-accept-language';
 
+import type { Code } from '@/utils/locale';
 import type { NextRequest } from 'next/server';
 
 export const getHostname = async (req: NextRequest): Promise<string> => {
@@ -74,22 +75,30 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
             const api = await ShopifyApiClient({ shop });
             const locales = (await LocalesApi({ api })).map((locale) => locale.code);
 
-            const acceptLanguageHeader = req.headers.get('accept-language') || req.headers.get('Accept-Language');
+            const acceptLanguageHeader =
+                req.headers.get('accept-language') ??
+                req.headers.get('Accept-Language') ??
+                (typeof req.geo?.country !== 'undefined' ? `en-${req.geo.country}` : undefined); // TODO: Use correct language for the country.
             if (!acceptLanguageHeader) {
                 console.warn(`Invalid or missing "accept-language" header.`, req);
             }
 
-            const userLang = resolveAcceptLanguage(acceptLanguageHeader ?? '', locales, 'en-US'); // FIXME: Tenant-configurable default locale.
-            locale = (userLang as any) || locales.at(0);
+            const defaultLocale = (shop.i18n?.defaultLocale ?? 'en-US') as Code;
+            const userLang = resolveAcceptLanguage(acceptLanguageHeader ?? '', locales, defaultLocale, {
+                matchCountry: true
+            });
 
+            locale = userLang as string;
             if (!locale) {
+                // TODO: this can never actually happen, but when we handle i18n properly it will.
                 // TODO: find the correct country with another language if available as a fallback.
                 throw new Error(`No locale could be found for "${req.nextUrl.href}" and no default locale is set.`);
             }
-        }
 
-        // Set locale cookie.
-        req.cookies.set('localization', locale);
+            // Set locale cookies.
+            req.cookies.set('localization', locale);
+            req.cookies.set('NEXT_LOCALE', locale);
+        }
 
         // In a perfect world we'd just set `newUrl.locale` here but
         // since we want to support fully dynamic locales we need to

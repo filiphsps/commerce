@@ -20,8 +20,14 @@ export const CommerceProviders = ['prismic', 'shopify'] as const;
 export interface ShopBase extends BaseDocument {
     name: string;
     description?: string;
+
     domain: string;
     alternativeDomains?: string[];
+
+    i18n?: {
+        defaultLocale: string;
+    };
+
     design: {
         header: {
             logo: {
@@ -118,6 +124,20 @@ export const ShopSchema = new Schema<ShopBase>(
                 default: []
             }
         ],
+
+        i18n: {
+            type: {
+                defaultLocale: {
+                    type: Schema.Types.String,
+                    required: true,
+                    default: 'en-US'
+                }
+            },
+            required: true,
+            default: {
+                defaultLocale: 'en-US'
+            }
+        },
 
         design: {
             header: {
