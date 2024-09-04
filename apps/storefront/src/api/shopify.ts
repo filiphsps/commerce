@@ -79,7 +79,7 @@ export const ShopifyApolloApiClient = async ({ shop, locale = Locale.default, ap
     return ApiBuilder({
         shop,
         locale,
-        api: createApolloClient(config)
+        api: createApolloClient(config, shop)
     });
 };
 

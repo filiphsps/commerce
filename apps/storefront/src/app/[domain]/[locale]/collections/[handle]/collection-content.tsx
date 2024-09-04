@@ -32,10 +32,7 @@ export async function CollectionContent({
     const after = cursors[page - 2];
 
     return (
-        <Suspense
-            key={JSON.stringify(searchParams)}
-            fallback={<CollectionBlock.skeleton length={PRODUCTS_PER_PAGE} bare={true} />}
-        >
+        <Suspense key={JSON.stringify(searchParams)} fallback={<CollectionBlock.skeleton length={PRODUCTS_PER_PAGE} />}>
             <CollectionBlock
                 shop={shop}
                 locale={locale}

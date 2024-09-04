@@ -31,6 +31,7 @@ const config = {
           }
         : false,
     cacheHandler: data_cache_url ? require.resolve('./data-cache-handler.mjs') : undefined,
+    cacheMaxMemorySize: data_cache_url ? 0 : undefined,
     pageExtensions: ['ts', 'tsx'],
     poweredByHeader: false,
     generateEtags: true,

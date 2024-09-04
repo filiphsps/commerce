@@ -2,24 +2,25 @@ import 'server-only';
 
 import { shopifyContextTransform } from '@/utils/abstract-api';
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
+import { OnlineShop } from '@nordcom/commerce-db';
 
 export type ApiConfig = {
     uri: string;
     headers: Record<string, string>;
 };
 
-export const createApolloClient = ({ uri, headers }: ApiConfig) => {
+export const createApolloClient = ({ uri, headers }: ApiConfig, shop: OnlineShop) => {
     return new ApolloClient({
         name: 'nordcom-headless-client',
-        queryDeduplication: false,
+        queryDeduplication: true,
         ssrMode: false,
         link: new HttpLink({
             uri,
             headers,
             fetchOptions: {
                 next: {
-                    revalidate: 3600,
-                    tags: ['shopify']
+                    revalidate: 28_800,
+                    tags: ['shopify', `shopify.${shop.id}`, shop.domain]
                 }
             }
         }),
