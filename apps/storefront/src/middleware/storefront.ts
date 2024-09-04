@@ -21,12 +21,20 @@ export const getHostname = async (req: NextRequest): Promise<string> => {
         hostname.includes('vercel.app') ||
         hostname.includes('app.github.dev')
     ) {
-        return 'staging.swedish-candy-store.com';
+        hostname = 'swedish-candy-store.com';
     }
 
-    const shop = await findShopByDomainOverHttp(hostname);
-    return shop.domain;
+    return (await findShopByDomainOverHttp(hostname)).domain;
 };
+
+async function setCookies(res: NextResponse, cookies: string[][] = []): Promise<NextResponse> {
+    if (cookies.length <= 0) {
+        return res;
+    }
+
+    cookies.forEach(([key, value]) => res.cookies.set(key, value));
+    return res;
+}
 
 const FILE_TEST = /\.[a-zA-Z]{2,6}$/gi;
 const LOCALE_TEST = /\/([a-zA-Z]{2}-[a-zA-Z]{2})/g;
@@ -34,6 +42,7 @@ const LOCALE_SLASH_TEST = /\/([a-zA-Z]{2}-[a-zA-Z]{2})\//g;
 
 export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     let newUrl = req.nextUrl.clone();
+    let cookies: string[][] = [];
 
     let hostname: string;
     try {
@@ -47,11 +56,11 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         });
     }
 
-    const params = newUrl.searchParams.toString();
-    const search = params.length > 0 ? `?${params}` : '';
+    const searchParams = newUrl.searchParams.toString();
+    const search = searchParams.length > 0 ? `?${searchParams}` : '';
 
     const isSpecialPath: boolean =
-        (newUrl.pathname.match(FILE_TEST) || []).length > 0 ||
+        !!newUrl.pathname.match(FILE_TEST) ||
         newUrl.pathname.includes('/api/') ||
         newUrl.pathname.includes('/slice-simulator') ||
         false;
@@ -96,8 +105,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
             }
 
             // Set locale cookies.
-            req.cookies.set('localization', locale);
-            req.cookies.set('NEXT_LOCALE', locale);
+            cookies.push(['localization', locale], ['NEXT_LOCALE', locale]);
         }
 
         // In a perfect world we'd just set `newUrl.locale` here but
@@ -140,7 +148,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
 
     // Redirect if `newURL` is different from `req.nextUrl`.
     if (newUrl.href !== req.nextUrl.href) {
-        return NextResponse.redirect(newUrl, { status: 301 });
+        return setCookies(NextResponse.redirect(newUrl, { status: 302 }), cookies);
     }
 
     // Rewrite index to use the `homepage` handle.
@@ -149,5 +157,5 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     }
 
     const target = `${newUrl.origin}/${hostname}${newUrl.pathname}${search}`;
-    return NextResponse.rewrite(new URL(target, req.url));
+    return setCookies(NextResponse.rewrite(new URL(target, req.url)), cookies);
 };

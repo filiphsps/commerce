@@ -10,7 +10,7 @@ export const revalidate = false;
 export type AppleIconRouteParams = {
     domain: string;
 };
-export async function GET(req: NextRequest, { params: { domain } }: { params: AppleIconRouteParams }) {
+export async function GET({}: NextRequest, { params: { domain } }: { params: AppleIconRouteParams }) {
     let width = 512;
     let height = 512;
 

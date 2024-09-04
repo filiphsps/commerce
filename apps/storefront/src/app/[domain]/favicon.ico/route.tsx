@@ -10,6 +10,7 @@ export type FaviconRouteParams = {
 // TODO: Convert the png favicon to a proper ico instead of redirecting to the png.
 export const GET = async (req: NextRequest, {}: FaviconRouteParams) => {
     let newUrl = req.nextUrl.clone();
-    newUrl.pathname = newUrl.pathname.replace('/favicon.ico', '/favicon.png');
-    return NextResponse.redirect(newUrl);
+    newUrl.pathname = newUrl.pathname.replace('.ico', '.png');
+
+    return NextResponse.redirect(newUrl, { status: 302 });
 };

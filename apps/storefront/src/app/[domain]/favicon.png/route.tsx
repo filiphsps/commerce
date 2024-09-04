@@ -9,6 +9,7 @@ import { type NextRequest, NextResponse } from 'next/server';
 import { validateSize } from './validate-size';
 
 export const dynamic = 'force-static';
+export const dynamicParams = true;
 export const revalidate = false;
 
 export type FaviconRouteParams = {
@@ -21,9 +22,9 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Fa
         });
     }
 
-    const url = new URL(req.url);
-    let width = safeParseFloat(null, url.searchParams.get('width'));
-    let height = safeParseFloat(null, url.searchParams.get('height'));
+    const searchParams = req.nextUrl.searchParams;
+    let width = safeParseFloat(null, searchParams.get('width') ?? searchParams.get('w'));
+    let height = safeParseFloat(null, searchParams.get('height') ?? searchParams.get('h'));
 
     const errors = [...(await validateSize({ width, height }))];
 
