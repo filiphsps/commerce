@@ -182,20 +182,18 @@ export default async function CollectionPage({
                 <section className="flex flex-col gap-2">
                     <Heading title={collection.seo.title ?? collection.title} />
 
-                    <div className="grid grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] gap-2 lg:grid-cols-[repeat(auto-fill,minmax(14rem,1fr))]">
-                        <Suspense
-                            key={JSON.stringify(searchParams)}
-                            fallback={<CollectionBlock.skeleton length={PRODUCTS_PER_PAGE} bare={true} />}
-                        >
-                            <CollectionContent
-                                shop={shop}
-                                locale={locale}
-                                searchParams={searchParams}
-                                handle={handle}
-                                cursors={pagesInfo.cursors}
-                            />
-                        </Suspense>
-                    </div>
+                    <Suspense
+                        key={JSON.stringify(searchParams)}
+                        fallback={<CollectionBlock.skeleton length={PRODUCTS_PER_PAGE} bare={true} />}
+                    >
+                        <CollectionContent
+                            shop={shop}
+                            locale={locale}
+                            searchParams={searchParams}
+                            handle={handle}
+                            cursors={pagesInfo.cursors}
+                        />
+                    </Suspense>
                 </section>
 
                 <section className="flex w-full items-center justify-center">

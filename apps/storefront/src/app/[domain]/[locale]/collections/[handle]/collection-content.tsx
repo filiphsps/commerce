@@ -41,7 +41,6 @@ export async function CollectionContent({
                 locale={locale}
                 handle={handle}
                 filters={{ first: PRODUCTS_PER_PAGE, after }}
-                bare={true}
             />
         </Suspense>
     );

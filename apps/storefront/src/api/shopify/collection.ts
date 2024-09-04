@@ -18,7 +18,7 @@ type GenericCollectionFilters = {
     after?: Nullable<string>;
     before?: Nullable<string>;
 };
-type CollectionFilters = {
+export type CollectionFilters = {
     sorting?: Nullable<ProductCollectionSortKeys>;
 } & GenericCollectionFilters &
     LimitFilters;

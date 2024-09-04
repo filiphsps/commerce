@@ -2,7 +2,7 @@ import 'server-only';
 
 import styles from '@/components/products/collection-block.module.scss';
 
-import { type HTMLProps, Suspense } from 'react';
+import { Suspense } from 'react';
 
 import { type OnlineShop } from '@nordcom/commerce-db';
 
@@ -14,40 +14,52 @@ import Link from '@/components/link';
 import ProductCard from '@/components/product-card/product-card';
 
 import type { Product } from '@/api/product';
+import type { CollectionFilters } from '@/api/shopify/collection';
 import type { Locale } from '@/utils/locale';
+import type { ComponentPropsWithoutRef, ElementType, ReactNode } from 'react';
 
-export type CollectionBlockCommonProps = {
-    isHorizontal?: boolean;
-} & HTMLProps<HTMLDivElement>;
+export type CollectionBlockBase<ComponentGeneric extends ElementType> = {
+    as?: ComponentGeneric;
+    children?: ReactNode;
+    className?: string;
 
-export type CollectionBlockProps = {
     shop: OnlineShop;
     locale: Locale;
-
     handle: string;
-
     limit?: number;
-    filters?: any;
+    filters?: CollectionFilters;
+    isHorizontal?: boolean;
     showViewAll?: boolean;
     priority?: boolean;
+
     bare?: boolean;
-} & CollectionBlockCommonProps &
-    HTMLProps<HTMLDivElement>;
-const CollectionBlock = async ({
+};
+
+export type CollectionBlockProps<ComponentGeneric extends ElementType> = CollectionBlockBase<ComponentGeneric> &
+    (ComponentGeneric extends keyof React.JSX.IntrinsicElements
+        ? Omit<ComponentPropsWithoutRef<ComponentGeneric>, keyof CollectionBlockBase<ComponentGeneric>>
+        : ComponentPropsWithoutRef<ComponentGeneric>);
+
+const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
+    as,
+    children = null,
+    className,
+
     shop,
     locale,
     handle,
     limit,
-    filters,
+    filters = undefined,
     isHorizontal,
     showViewAll,
     priority,
-    bare = false,
-    className,
-    ...props
-}: CollectionBlockProps) => {
-    const api = await ShopifyApolloApiClient({ shop, locale });
 
+    bare = false,
+    ...props
+}: CollectionBlockProps<ComponentGeneric>) => {
+    const Tag = as ?? 'div';
+
+    const api = await ShopifyApolloApiClient({ shop, locale });
     const collection = await CollectionApi({
         api,
         handle,
@@ -73,27 +85,33 @@ const CollectionBlock = async ({
     }
 
     return (
-        <section
+        <Tag
             {...props}
-            className={cn(styles.container, isHorizontal && cn(styles.horizontal, 'overflow-x-shadow'), className)}
+            data-orientation={isHorizontal ? 'horizontal' : 'vertical'}
+            className={cn(
+                !isHorizontal &&
+                    'grid w-full grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] gap-2 md:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] xl:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))]',
+                isHorizontal &&
+                    'overflow-x-shadow grid w-full auto-cols-[minmax(12rem,1fr)] grid-flow-col grid-cols-[repeat(auto-fit,minmax(12rem,1fr))] grid-rows-1 gap-2 overscroll-x-auto sm:auto-cols-[minmax(14rem,1fr)] sm:grid-cols-[repeat(auto-fill,minmax(14rem,1fr))]',
+                className
+            )}
         >
-            <div className={styles.content}>
-                {productCards}
+            {children}
+            {productCards}
 
-                {showViewAll ? (
-                    <Link
-                        href={`/collections/${collection.handle}/`}
-                        className={styles.viewAll}
-                        // TODO: i18n.
-                        // TODO: View all {products.length} {Pluralize({ count: products.length, noun: 'product' })}.
-                    >
-                        <div className="text-center">
-                            View all of the products in <b className="font-bold">{collection.title}</b>.
-                        </div>
-                    </Link>
-                ) : null}
-            </div>
-        </section>
+            {showViewAll ? (
+                <Link
+                    href={`/collections/${collection.handle}/`}
+                    className={styles.viewAll}
+                    // TODO: i18n.
+                    // TODO: View all {products.length} {Pluralize({ count: products.length, noun: 'product' })}.
+                >
+                    <div className="text-center">
+                        View all of the products in <b className="font-bold">{collection.title}</b>.
+                    </div>
+                </Link>
+            ) : null}
+        </Tag>
     );
 };
 CollectionBlock.displayName = 'Nordcom.Products.CollectionBlock';
