@@ -9,14 +9,18 @@
         "**/vite.config.ts",
         "package.json",
         "**/package.json",
-        ".env"
+        ".env",
+        "**/.env",
+        "*.env",
+        "**/*.env"
     ],
     "tasks": {
         "build": {
             "cache": true,
+            "outputLogs": "new-only",
             "dependsOn": ["^build"],
-            "outputs": ["**/.next/**", "!*/**/.next/cache/**", "!*/**/coverage/**", "dist/**"],
-            "inputs": ["$TURBO_DEFAULT$", ".env.production.local", ".env.local", ".env.production", ".env"]
+            "outputs": [".next/**", "!.next/cache/**", "dist/**"],
+            "inputs": ["$TURBO_DEFAULT$", "!README.md", ".env.production.local", ".env.local", ".env.production", ".env"]
         },
         "clean": {
             "cache": false
