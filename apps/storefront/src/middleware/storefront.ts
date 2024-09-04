@@ -56,9 +56,6 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         });
     }
 
-    const searchParams = newUrl.searchParams.toString();
-    const search = searchParams.length > 0 ? `?${searchParams}` : '';
-
     const isSpecialPath: boolean =
         !!newUrl.pathname.match(FILE_TEST) ||
         newUrl.pathname.includes('/api/') ||
@@ -68,7 +65,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     // API.
     if (isSpecialPath) {
         // Do not mess with status or headers here.
-        newUrl.pathname = `${hostname}${newUrl.pathname}${search}`;
+        newUrl.pathname = `${hostname}${newUrl.pathname}`;
         return NextResponse.rewrite(newUrl);
 
         // TODO: Handle Handle tenant-specific files/assets.
@@ -156,6 +153,6 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         newUrl.pathname += `homepage/`;
     }
 
-    const target = `${newUrl.origin}/${hostname}${newUrl.pathname}${search}`;
+    const target = `${newUrl.origin}/${hostname}${newUrl.pathname}`;
     return setCookies(NextResponse.rewrite(new URL(target, req.url)), cookies);
 };
