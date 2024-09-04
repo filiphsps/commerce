@@ -11,7 +11,7 @@ import { CollectionApi } from '@/api/shopify/collection';
 import { cn } from '@/utils/tailwind';
 
 import Link from '@/components/link';
-import ProductCard from '@/components/product-card/product-card';
+import ProductCard, { CARD_STYLES } from '@/components/product-card/product-card';
 
 import type { Product } from '@/api/product';
 import type { CollectionFilters } from '@/api/shopify/collection';
@@ -25,7 +25,7 @@ export type CollectionBlockBase<ComponentGeneric extends ElementType> = {
 
     shop: OnlineShop;
     locale: Locale;
-    handle: string;
+    handle?: string;
     limit?: number;
     filters?: CollectionFilters;
     isHorizontal?: boolean;
@@ -59,18 +59,18 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
 }: CollectionBlockProps<ComponentGeneric>) => {
     const Tag = as ?? 'div';
 
-    const api = await ShopifyApolloApiClient({ shop, locale });
-    const collection = await CollectionApi({
-        api,
-        handle,
-        // TODO: Pagination for the full variation.
-        first: limit,
-        ...filters
-    });
+    const collection = handle
+        ? await CollectionApi({
+              api: await ShopifyApolloApiClient({ shop, locale }),
+              handle,
+              // TODO: Pagination for the full variation.
+              first: limit,
+              ...filters
+          })
+        : null;
 
-    // TODO: Add collection type.
-    const products: Product[] = (collection as any)?.products?.edges?.map(({ node }: any) => node as any) || [];
-    if (products.length <= 0) {
+    const products = (collection?.products.edges || []).map(({ node: product }) => product) as Product[];
+    if (products.length <= 0 && !children) {
         return null;
     }
 
@@ -89,20 +89,21 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
             {...props}
             data-orientation={isHorizontal ? 'horizontal' : 'vertical'}
             className={cn(
+                'grid w-full gap-2',
                 !isHorizontal &&
-                    'grid w-full grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] gap-2 md:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] xl:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))]',
+                    'grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] md:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] xl:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))]',
                 isHorizontal &&
-                    'overflow-x-shadow grid w-full auto-cols-[minmax(12rem,1fr)] grid-flow-col grid-cols-[repeat(auto-fit,minmax(12rem,1fr))] grid-rows-1 gap-2 overscroll-x-auto sm:auto-cols-[minmax(14rem,1fr)] sm:grid-cols-[repeat(auto-fill,minmax(14rem,1fr))]',
+                    'overflow-x-shadow auto-cols-[minmax(12rem,1fr)] grid-flow-col grid-cols-[repeat(auto-fit,minmax(12rem,1fr))] grid-rows-1 overscroll-x-auto',
                 className
             )}
         >
             {children}
-            {productCards}
+            {productCards.length > 0 ? productCards : null}
 
-            {showViewAll ? (
+            {!(!collection || !showViewAll) ? (
                 <Link
                     href={`/collections/${collection.handle}/`}
-                    className={styles.viewAll}
+                    className={cn(CARD_STYLES, 'bg-primary text-primary-foreground hover:brightness-75')}
                     // TODO: i18n.
                     // TODO: View all {products.length} {Pluralize({ count: products.length, noun: 'product' })}.
                 >

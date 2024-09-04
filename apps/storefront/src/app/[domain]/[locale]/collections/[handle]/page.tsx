@@ -53,9 +53,11 @@ export async function generateMetadata({
         const shop = await Shop.findByDomain(domain, { sensitiveData: true });
         const api = await ShopifyApolloApiClient({ shop, locale });
 
-        const collection = await CollectionApi({ api, handle, first: 1, after: null }); // TODO: this.
-        const page = await PageApi({ shop, locale, handle, type: 'collection_page' });
-        const locales = await LocalesApi({ api });
+        const [collection, page, locales] = await Promise.all([
+            CollectionApi({ api, handle, first: 1, after: null }),
+            PageApi({ shop, locale, handle, type: 'collection_page' }),
+            LocalesApi({ api })
+        ]);
 
         const currentPage = Number.parseInt(searchParams.page?.toString() || '1');
         const search = currentPage > 1 ? `?page=${currentPage}` : '';
@@ -156,9 +158,11 @@ export default async function CollectionPage({
 
         // Do the actual API calls.
         const [collection, pagesInfo] = await Promise.all([
-            CollectionApi({ api, handle, limit: 0 }),
+            CollectionApi({ api, handle, first: 1, after: null }),
             CollectionPaginationCountApi({ api, handle, filters: { first: PRODUCTS_PER_PAGE } })
         ]);
+
+        const empty = collection.products.edges.length <= 0;
 
         // Get dictionary of strings for the current locale.
         const i18n = await getDictionary(locale);
@@ -179,28 +183,32 @@ export default async function CollectionPage({
                     </div>
                 </Suspense>
 
-                <section className="flex flex-col gap-2">
-                    <Heading title={collection.seo.title ?? collection.title} />
+                {!empty ? (
+                    <>
+                        <section className="flex flex-col gap-2">
+                            <Heading title={collection.seo.title ?? collection.title} />
 
-                    <Suspense
-                        key={JSON.stringify(searchParams)}
-                        fallback={<CollectionBlock.skeleton length={PRODUCTS_PER_PAGE} bare={true} />}
-                    >
-                        <CollectionContent
-                            shop={shop}
-                            locale={locale}
-                            searchParams={searchParams}
-                            handle={handle}
-                            cursors={pagesInfo.cursors}
-                        />
-                    </Suspense>
-                </section>
+                            <Suspense
+                                key={JSON.stringify(searchParams)}
+                                fallback={<CollectionBlock.skeleton length={PRODUCTS_PER_PAGE} bare={true} />}
+                            >
+                                <CollectionContent
+                                    shop={shop}
+                                    locale={locale}
+                                    searchParams={searchParams}
+                                    handle={handle}
+                                    cursors={pagesInfo.cursors}
+                                />
+                            </Suspense>
+                        </section>
 
-                <section className="flex w-full items-center justify-center">
-                    <Suspense>
-                        <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
-                    </Suspense>
-                </section>
+                        <section className="flex w-full items-center justify-center">
+                            <Suspense>
+                                <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
+                            </Suspense>
+                        </section>
+                    </>
+                ) : null}
 
                 <Suspense fallback={<section className="w-full bg-gray-100 p-4" data-skeleton />}>
                     <CollectionPageSlices shop={shop} locale={locale} i18n={i18n} handle={handle} />

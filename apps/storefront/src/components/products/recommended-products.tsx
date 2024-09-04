@@ -6,9 +6,10 @@ import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { RecommendationApi } from '@/api/shopify/recommendation';
-import { cn } from '@/utils/tailwind';
 
 import ProductCard from '@/components/product-card/product-card';
+
+import CollectionBlock from './collection-block';
 
 import type { Product } from '@/api/product';
 import type { Locale } from '@/utils/locale';
@@ -29,18 +30,13 @@ const RecommendedProducts = async ({ shop, locale, product, className }: Recomme
     const recommended = await RecommendationApi({ api, id: product.id });
 
     return (
-        <div
-            className={cn(
-                'overflow-x-shadow grid w-full auto-cols-[minmax(12rem,1fr)] grid-flow-col grid-cols-[repeat(auto-fit,minmax(12rem,1fr))] grid-rows-1 gap-2 overscroll-x-auto sm:auto-cols-[minmax(14rem,1fr)] sm:grid-cols-[repeat(auto-fill,minmax(14rem,1fr))]',
-                className
-            )}
-        >
+        <CollectionBlock shop={shop} locale={locale} className={className}>
             {recommended.map((product) => (
                 <Suspense key={product.id} fallback={<ProductCard.skeleton />}>
                     <ProductCard shop={shop} locale={locale} data={product} className="" />
                 </Suspense>
             ))}
-        </div>
+        </CollectionBlock>
     );
 };
 RecommendedProducts.displayName = 'Nordcom.Products.RecommendedProducts';
