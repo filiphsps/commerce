@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
-import { Card } from '@/components/layout/card';
 import { render, screen } from '@/utils/test/react';
+
+import { Card } from '@/components/layout/card';
 
 describe('components', () => {
     describe('Card', () => {

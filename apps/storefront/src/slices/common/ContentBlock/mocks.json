@@ -1,0 +1,47 @@
+[
+    {
+        "__TYPE__": "SharedSliceContent",
+        "variation": "default",
+        "primary": {
+            "text": {
+                "__TYPE__": "StructuredTextContent",
+                "value": [
+                    {
+                        "type": "paragraph",
+                        "content": {
+                            "text": "Ea aliqua Lorem laboris dolor dolor ex consectetur."
+                        }
+                    }
+                ]
+            }
+        },
+        "items": []
+    },
+    {
+        "__TYPE__": "SharedSliceContent",
+        "variation": "card",
+        "primary": {
+            "text": {
+                "__TYPE__": "StructuredTextContent",
+                "value": [
+                    {
+                        "type": "paragraph",
+                        "content": {
+                            "text": "Velit proident laboris do consequat sunt quis Lorem deserunt officia. Ea tempor aute pariatur laborum non reprehenderit magna excepteur ut eiusmod in."
+                        }
+                    }
+                ]
+            },
+            "border": {
+                "__TYPE__": "BooleanContent",
+                "value": true
+            }
+        },
+        "items": [
+            {
+                "__TYPE__": "GroupItemContent",
+                "value": []
+            }
+        ]
+    }
+]

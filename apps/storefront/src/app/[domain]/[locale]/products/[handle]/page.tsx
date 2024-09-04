@@ -26,6 +26,7 @@ import { notFound } from 'next/navigation';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import { JsonLd } from '@/components/json-ld';
+import { Card } from '@/components/layout/card';
 import Link from '@/components/link';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
@@ -137,21 +138,14 @@ export async function generateMetadata({
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
             notFound();
-        } /*else if (Error.isError(error)) {
-            const statusCode = (error as Error).statusCode || -1;
-
-            switch (true) {
-                case statusCode >= 500 && statusCode < 600:
-                    notFound();
-            }
-        }*/
+        }
 
         throw error;
     }
 }
 
-const ROUNDED_BLOCK_STYLES =
-    'flex h-auto w-full flex-col items-stretch justify-start gap-6 overflow-clip rounded-lg bg-gray-100 p-3 md:justify-stretch lg:gap-8 lg:p-5 lg:px-4 empty:hidden';
+const BLOCK_STYLES =
+    'flex h-auto w-full flex-col items-stretch justify-start gap-6 overflow-clip rounded-lg md:justify-stretch lg:gap-8 empty:hidden';
 
 async function ProductPageSlices({
     shop,
@@ -281,7 +275,7 @@ export default async function ProductPage({
                     </div>
                 </Suspense>
 
-                <PageContent className="overflow flex max-w-full flex-col gap-4 md:flex-row md:flex-nowrap">
+                <PageContent className="overflow flex max-w-full flex-col gap-4 px-0 md:flex-row md:flex-nowrap">
                     <Suspense fallback={<section className="w-full" />}>
                         <section className={'flex h-auto w-full grow flex-col gap-4'}>
                             <ProductGallery
@@ -301,7 +295,7 @@ export default async function ProductPage({
                                 <ProductSavings product={product} i18n={i18n} />
                             </Suspense>
 
-                            <div className={cn(ROUNDED_BLOCK_STYLES)}>
+                            <Card className={cn(BLOCK_STYLES)}>
                                 <div className="flex h-auto w-full flex-col justify-start gap-3 lg:gap-4 lg:p-0">
                                     <header className="flex flex-col gap-1">
                                         <div className="flex items-center gap-1 pb-2 empty:hidden">
@@ -345,42 +339,39 @@ export default async function ProductPage({
                                 <Suspense>
                                     <ProductContent product={product} i18n={i18n} />
                                 </Suspense>
-                            </div>
+                            </Card>
 
                             <Suspense>
-                                <div className={cn(ROUNDED_BLOCK_STYLES)}>
+                                <Card className={cn(BLOCK_STYLES)}>
                                     <InfoLines product={product} i18n={i18n} locale={locale} />
-                                </div>
+                                </Card>
                             </Suspense>
 
-                            <Suspense fallback={<div className={cn(ROUNDED_BLOCK_STYLES, 'h-32')} data-skeleton />}>
+                            <Suspense fallback={<Card className={cn(BLOCK_STYLES, 'h-32')} data-skeleton />}>
                                 <ProductPageSlices shop={shop} locale={locale} i18n={i18n} handle={handle} />
                             </Suspense>
 
-                            <Suspense fallback={<div className={cn(ROUNDED_BLOCK_STYLES, 'h-32')} data-skeleton />}>
-                                <div className={cn(ROUNDED_BLOCK_STYLES)}>
+                            <Suspense fallback={<Card className={cn(BLOCK_STYLES, 'h-32')} data-skeleton />}>
+                                <Card className={cn(BLOCK_STYLES)}>
                                     <Content html={content} />
-                                </div>
+                                </Card>
                             </Suspense>
 
-                            <Suspense fallback={<div className={cn(ROUNDED_BLOCK_STYLES, 'h-16')} data-skeleton />}>
-                                <div className={cn(ROUNDED_BLOCK_STYLES)}>
+                            <Suspense fallback={<Card className={cn(BLOCK_STYLES, 'h-16')} data-skeleton />}>
+                                <Card className={cn(BLOCK_STYLES)}>
                                     <ImportantProductDetails locale={locale} data={product} />
 
                                     <div className="flex flex-wrap gap-3 empty:hidden md:gap-4">
                                         <ProductDetails locale={locale} data={product} />
                                     </div>
-                                </div>
+                                </Card>
                             </Suspense>
                         </section>
                     </Suspense>
                 </PageContent>
 
-                <section className="mt-2 flex flex-col gap-2 rounded-lg border-2 border-solid border-gray-100 py-4 md:w-full md:py-5 lg:mt-6">
-                    <p
-                        className="block px-4 text-lg font-medium normal-case leading-none md:px-5 md:text-2xl"
-                        data-nosnippet={true}
-                    >
+                <Card border className="mt-2 flex w-full flex-col gap-3 px-0 lg:mt-6">
+                    <p className="block px-3 text-xl font-extrabold leading-tight" data-nosnippet={true}>
                         {t('you-may-also-like')}
                     </p>
 
@@ -389,10 +380,10 @@ export default async function ProductPage({
                             shop={shop}
                             locale={locale}
                             product={product}
-                            className="-my-2 px-4 py-2 md:px-5"
+                            className="-my-2 w-full px-3"
                         />
                     </Suspense>
-                </section>
+                </Card>
 
                 {/* Metadata */}
                 <JsonLd data={jsonLd} />

@@ -40,6 +40,9 @@
                 "fieldset": "Slice Zone",
                 "config": {
                     "choices": {
+                        "content_block": {
+                            "type": "SharedSlice"
+                        },
                         "collection": {
                             "type": "SharedSlice"
                         },

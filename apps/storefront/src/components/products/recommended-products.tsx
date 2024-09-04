@@ -30,7 +30,7 @@ const RecommendedProducts = async ({ shop, locale, product, className }: Recomme
     const recommended = await RecommendationApi({ api, id: product.id });
 
     return (
-        <CollectionBlock shop={shop} locale={locale} className={className}>
+        <CollectionBlock shop={shop} locale={locale} className={className} isHorizontal={true}>
             {recommended.map((product) => (
                 <Suspense key={product.id} fallback={<ProductCard.skeleton />}>
                     <ProductCard shop={shop} locale={locale} data={product} className="" />

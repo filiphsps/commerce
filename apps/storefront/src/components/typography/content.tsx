@@ -1,13 +1,28 @@
-import { type ElementType, type HTMLProps, type ReactNode, Suspense } from 'react';
+import { type ElementType, type ReactNode, Suspense } from 'react';
 
 import { cn } from '@/utils/tailwind';
 
-export type ContentProps = {
+import type { ComponentPropsWithoutRef } from 'react';
+
+export type ContentPropsBase<ComponentGeneric extends ElementType> = {
+    as?: ComponentGeneric;
+    className?: string;
     children?: ReactNode;
     html?: string | null;
-    as?: ElementType;
-} & HTMLProps<HTMLDivElement>;
-export const Content = ({ children, as, className, html, ...props }: ContentProps) => {
+};
+
+export type ContentProps<ComponentGeneric extends ElementType> = ContentPropsBase<ComponentGeneric> &
+    (ComponentGeneric extends keyof React.JSX.IntrinsicElements
+        ? Omit<ComponentPropsWithoutRef<ComponentGeneric>, keyof ContentPropsBase<ComponentGeneric>>
+        : ComponentPropsWithoutRef<ComponentGeneric>);
+
+export const Content = <ComponentGeneric extends ElementType = 'div'>({
+    children,
+    as,
+    className,
+    html,
+    ...props
+}: ContentProps<ComponentGeneric>) => {
     if (!html && !children) {
         return null;
     }

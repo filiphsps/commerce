@@ -1,5 +1,6 @@
 import { cn } from '@/utils/tailwind';
-import { ComponentPropsWithoutRef, ElementType, ReactNode } from 'react';
+
+import type { ComponentPropsWithoutRef, ElementType, ReactNode } from 'react';
 
 export type CardPropsBase<ComponentGeneric extends ElementType> = {
     as?: ComponentGeneric;

@@ -29,21 +29,24 @@ export default async function SliceSimulatorPage({
     const i18n = await getDictionary({ shop, locale });
 
     return (
-        <SliceSimulator>
-            <SliceZone
-                slices={getSlices(searchParams.state)}
-                components={components}
-                context={{
-                    shop,
-                    i18n,
-                    locale,
-                    type: 'custom_page',
-                    uid: 'homepage',
-                    handle: 'homepage',
-                    pathname: '/hello-world/',
-                    menu: '__SLICE_MACHINE_TEST__'
-                }}
-            />
-        </SliceSimulator>
+        <>
+            <SliceSimulator>
+                <SliceZone
+                    slices={getSlices(searchParams.state)}
+                    components={components}
+                    context={{
+                        shop,
+                        i18n,
+                        locale,
+                        type: 'custom_page',
+                        uid: 'homepage',
+                        handle: 'homepage',
+                        pathname: '/hello-world/',
+                        menu: '__SLICE_MACHINE_TEST__'
+                    }}
+                />
+            </SliceSimulator>
+            hello world
+        </>
     );
 }

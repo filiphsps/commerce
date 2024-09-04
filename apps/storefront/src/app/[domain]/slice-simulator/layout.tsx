@@ -56,6 +56,7 @@ export default async function RootLayout({
                 <head>
                     <CssVariablesProvider domain={domain} />
                 </head>
+
                 <body className="group/body overflow-x-hidden overscroll-x-none">
                     <ProvidersRegistry
                         shop={publicShop}
@@ -72,6 +73,7 @@ export default async function RootLayout({
             </html>
         );
     } catch (error: unknown) {
+        console.error(error);
         if (Error.isNotFound(error)) {
             notFound();
         }

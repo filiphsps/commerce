@@ -294,6 +294,7 @@ export type CollectionPageDocument<Lang extends string = string> = prismic.Prism
 >;
 
 type CustomPageDocumentDataSlicesSlice =
+    | ContentBlockSlice
     | CollectionSlice
     | ImageGridSlice
     | TextBlockSlice
@@ -1516,6 +1517,83 @@ type CollectionSliceVariation = CollectionSliceDefault;
 export type CollectionSlice = prismic.SharedSlice<'collection', CollectionSliceVariation>;
 
 /**
+ * Primary content in *ContentBlock → Default → Primary*
+ */
+export interface ContentBlockSliceDefaultPrimary {
+    /**
+     * Text field in *ContentBlock → Default → Primary*
+     *
+     * - **Field Type**: Rich Text
+     * - **Placeholder**: *None*
+     * - **API ID Path**: content_block.default.primary.text
+     * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+     */
+    text: prismic.RichTextField;
+}
+
+/**
+ * Default variation for ContentBlock Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type ContentBlockSliceDefault = prismic.SharedSliceVariation<
+    'default',
+    Simplify<ContentBlockSliceDefaultPrimary>,
+    never
+>;
+
+/**
+ * Primary content in *ContentBlock → Card → Primary*
+ */
+export interface ContentBlockSliceCardPrimary {
+    /**
+     * Text field in *ContentBlock → Card → Primary*
+     *
+     * - **Field Type**: Rich Text
+     * - **Placeholder**: *None*
+     * - **API ID Path**: content_block.card.primary.text
+     * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+     */
+    text: prismic.RichTextField;
+
+    /**
+     * Border field in *ContentBlock → Card → Primary*
+     *
+     * - **Field Type**: Boolean
+     * - **Placeholder**: *None*
+     * - **Default Value**: false
+     * - **API ID Path**: content_block.card.primary.border
+     * - **Documentation**: https://prismic.io/docs/field#boolean
+     */
+    border: prismic.BooleanField;
+}
+
+/**
+ * Card variation for ContentBlock Slice
+ *
+ * - **API ID**: `card`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type ContentBlockSliceCard = prismic.SharedSliceVariation<'card', Simplify<ContentBlockSliceCardPrimary>, never>;
+
+/**
+ * Slice variation for *ContentBlock*
+ */
+type ContentBlockSliceVariation = ContentBlockSliceDefault | ContentBlockSliceCard;
+
+/**
+ * ContentBlock Shared Slice
+ *
+ * - **API ID**: `content_block`
+ * - **Description**: ContentBlock
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type ContentBlockSlice = prismic.SharedSlice<'content_block', ContentBlockSliceVariation>;
+
+/**
  * Primary content in *IconGrid → Default → Primary*
  */
 export interface IconGridSliceDefaultPrimary {
@@ -2089,6 +2167,12 @@ declare module '@prismicio/client' {
             CollectionSliceDefaultPrimary,
             CollectionSliceVariation,
             CollectionSliceDefault,
+            ContentBlockSlice,
+            ContentBlockSliceDefaultPrimary,
+            ContentBlockSliceCardPrimary,
+            ContentBlockSliceVariation,
+            ContentBlockSliceDefault,
+            ContentBlockSliceCard,
             IconGridSlice,
             IconGridSliceDefaultPrimary,
             IconGridSliceDefaultItem,
