@@ -1,7 +1,5 @@
 import 'server-only';
 
-import styles from '@/components/footer/footer.module.scss';
-
 import { Suspense } from 'react';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
@@ -9,7 +7,6 @@ import type { OnlineShop } from '@nordcom/commerce-db';
 import { FooterApi } from '@/api/footer';
 import { useTranslation } from '@/utils/locale';
 import { linkResolver } from '@/utils/prismic';
-import { cn } from '@/utils/tailwind';
 import { asLink, asText } from '@prismicio/client';
 
 import { AcceptedPaymentMethods } from '@/components/informational/accepted-payment-methods';
@@ -34,14 +31,14 @@ const FooterContent = async ({ locale, i18n, shop }: FooterContentProps) => {
 
     return (
         /* TODO: This should be configurable in prismic. */
-        <div className={cn(styles.legal, 'h-full w-full gap-8 pt-6 md:gap-4 lg:pt-12')}>
+        <div className="grid h-full w-full grid-cols-1 gap-8 overflow-hidden pt-6 md:grid-cols-2 md:gap-4 lg:pt-12">
             <div className="flex flex-col items-center justify-end gap-2 md:items-start">
                 <Suspense>
                     <AcceptedPaymentMethods shop={shop} locale={locale} />
                 </Suspense>
 
                 {footer.policy_links.length > 0 ? (
-                    <div className={styles['legal-and-copyrights']}>
+                    <div className="flex flex-wrap items-center justify-self-end md:items-end">
                         <div className="flex flex-wrap justify-center gap-4 gap-y-1 *:text-xs *:font-black *:uppercase lg:justify-start *:lg:text-sm">
                             {footer.policy_links.map(({ title, href: link }, index) => {
                                 const href = asLink(link, { linkResolver });
@@ -52,7 +49,7 @@ const FooterContent = async ({ locale, i18n, shop }: FooterContentProps) => {
                                         href={href}
                                         key={`${target}-${index}`}
                                         target={target}
-                                        className="hover:underline"
+                                        className="whitespace-nowrap hover:underline"
                                     >
                                         {title}
                                     </Link>

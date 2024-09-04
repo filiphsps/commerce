@@ -10,6 +10,8 @@ import Image from 'next/image';
 import type { Locale } from '@/utils/locale';
 import type { HTMLProps } from 'react';
 
+const CARD_STYLES = 'aspect-[16_10] h-fit w-10 object-fill object-center';
+
 export type AcceptedPaymentMethodsProps = {
     locale: Locale;
     shop: OnlineShop;
@@ -28,16 +30,22 @@ export const AcceptedPaymentMethods = async ({ shop, locale, className, ...props
     }
 
     return (
-        <div {...props} className={cn(className, 'empty:*: flex flex-wrap items-center justify-center gap-1')}>
+        <div
+            {...props}
+            className={cn(
+                className,
+                'flex flex-wrap items-center justify-center gap-1 overflow-hidden empty:hidden md:gap-2'
+            )}
+        >
             {methods.map((method) => (
                 <Image
                     key={`method_${method}`}
-                    className={'h-8 w-10 object-contain object-center'}
+                    className={CARD_STYLES}
                     src={`/assets/payments/${method}.svg`}
                     alt={method}
-                    height={15}
-                    width={35}
-                    sizes="35px"
+                    height={24}
+                    width={38}
+                    sizes="38px"
                     title={method.replaceAll('_', ' ')}
                     priority={false}
                     loading="lazy"
@@ -51,12 +59,12 @@ export const AcceptedPaymentMethods = async ({ shop, locale, className, ...props
             {wallets.map((method) => (
                 <Image
                     key={`wallet_${method}`}
-                    className={'h-8 w-10 object-contain object-center'}
+                    className={CARD_STYLES}
                     src={`/assets/payments/${method}.svg`}
                     alt={method}
-                    height={15}
-                    width={35}
-                    sizes="35px"
+                    height={24}
+                    width={38}
+                    sizes="38px"
                     title={method.replaceAll('_', ' ')}
                     priority={false}
                     loading="lazy"

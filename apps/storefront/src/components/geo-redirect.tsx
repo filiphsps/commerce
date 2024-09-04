@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { FiX } from 'react-icons/fi';
 import useGeoLocation from 'react-ipgeolocation';
 
 import { Locale } from '@/utils/locale';
@@ -62,9 +63,9 @@ export function GeoRedirect({ countries, locale }: GeoRedirectProps) {
     const targetLocale = Locale.from({ language: targetLanguage as LanguageCode, country: targetCountry.isoCode });
 
     return (
-        <div className="bg-primary text-primary-foreground sticky inset-x-0 bottom-0 z-50 w-full border-0 border-t-2 border-solid border-gray-700 p-4 shadow-2xl transition-all lg:px-6">
-            <div className="mx-auto flex flex-col items-start justify-between gap-5 md:max-w-[var(--page-width)] lg:px-2">
-                <div className="flex flex-wrap items-center gap-2 gap-y-0 text-xl font-normal leading-tight">
+        <div className="sticky inset-x-0 bottom-0 z-50 w-full border-0 border-t-2 border-solid border-gray-700 bg-white px-2 text-black shadow-2xl transition-all md:px-2 lg:py-4 2xl:px-0">
+            <div className="relative mx-auto flex w-full flex-col items-start justify-between gap-4 py-2 pt-4 md:max-w-[var(--page-width)] md:px-2 md:py-4 lg:gap-4">
+                <div className="flex w-full flex-wrap items-center gap-x-2 gap-y-0 pr-11 text-lg font-normal leading-tight md:pr-0 md:text-xl lg:gap-x-3">
                     <div>Looks like you are located in</div>
                     <div className="flex items-center gap-1 leading-none">
                         <LocaleFlag
@@ -79,12 +80,12 @@ export function GeoRedirect({ countries, locale }: GeoRedirectProps) {
                     <div>Would you like to visit you country&apos;s local store instead?</div>
                 </div>
 
-                <div className="flex flex-wrap justify-start gap-4 gap-y-2 font-semibold">
+                <div className="flex w-full flex-wrap justify-start gap-x-2 gap-y-2 pr-16 font-semibold md:gap-x-4 md:pr-0 lg:gap-x-6">
                     <Button
                         as={Link}
                         href={pathname}
                         locale={targetLocale}
-                        className="bg-primary-foreground text-primary hover:bg-primary-light hover:text-primary-foreground flex items-center justify-center text-lg transition-colors"
+                        className="border-primary flex items-center justify-center text-lg transition-colors"
                     >
                         Take me there!
                     </Button>
@@ -93,11 +94,21 @@ export function GeoRedirect({ countries, locale }: GeoRedirectProps) {
                             setClosed(true);
                             localStorage.setItem(DISMISSED_KEY, Date.now().toString());
                         }}
-                        className="border-primary-foreground hover:bg-primary-foreground hover:text-primary flex items-center justify-center border-2 border-solid text-lg font-normal text-inherit transition-colors"
+                        styled={false}
+                        className="hover:text-primary text-lg transition-colors"
                     >
                         Stay here
                     </Button>
                 </div>
+
+                <Button
+                    title={'Close'}
+                    onClick={() => setClosed(true)}
+                    className="absolute right-0 top-4 flex h-10 w-10 items-start justify-end text-lg text-current opacity-70 invert-[20%] transition-all hover:opacity-100 hover:invert-0 2xl:right-2"
+                    styled={false}
+                >
+                    <FiX className="block size-6 md:size-6" />
+                </Button>
             </div>
         </div>
     );

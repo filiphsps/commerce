@@ -110,21 +110,29 @@ export const ShopifyApiClient = async ({ shop, locale = Locale.default, apiConfi
                     // TODO: context, e.g. locale
                 });
 
-                const body = await response.json();
+                try {
+                    const body = await response.json();
 
-                if (body.errors) {
+                    if (body.errors) {
+                        return {
+                            loading: false,
+                            errors: body.errors,
+                            data: body
+                        };
+                    }
+
                     return {
                         loading: false,
-                        errors: body.errors,
-                        data: body
+                        data: body.data,
+                        errors: null
+                    } as any;
+                } catch (error: unknown) {
+                    return {
+                        loading: false,
+                        errors: [error],
+                        data: null
                     };
                 }
-
-                return {
-                    loading: false,
-                    data: body.data,
-                    errors: null
-                } as any;
             }
         } as any
     });

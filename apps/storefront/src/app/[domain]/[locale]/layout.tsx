@@ -157,9 +157,7 @@ export default async function RootLayout({
                             <HeaderProvider loaderColor={branding?.primary.color || ''}>
                                 <Suspense fallback={<ShopLayout.skeleton />}>
                                     <ShopLayout shop={shop} locale={locale} i18n={i18n}>
-                                        <PageContent as="main" primary={true}>
-                                            {children}
-                                        </PageContent>
+                                        <PageContent primary={true}>{children}</PageContent>
                                     </ShopLayout>
                                 </Suspense>
 

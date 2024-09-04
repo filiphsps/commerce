@@ -19,7 +19,7 @@ export type ShopLayoutProps = {
 } & Omit<HTMLProps<HTMLDivElement>, 'data' | 'className'>;
 const ShopLayout = async ({ shop, locale, i18n, children }: ShopLayoutProps) => {
     return (
-        <>
+        <main className="grid min-h-screen grid-cols-[100%] grid-rows-[auto_auto_1fr_auto] [grid-template-areas:'info-bar''header''content''footer']">
             <Suspense>
                 <InfoBar locale={locale} i18n={i18n} shop={shop} />
             </Suspense>
@@ -27,14 +27,12 @@ const ShopLayout = async ({ shop, locale, i18n, children }: ShopLayoutProps) => 
                 <Header domain={shop.domain} locale={locale} i18n={i18n} />
             </Suspense>
 
-            <Suspense fallback={<PageContent as="main" primary={true} className="min-h-[100vh-10rem]" />}>
-                {children}
-            </Suspense>
+            <Suspense fallback={<PageContent primary={true} />}>{children}</Suspense>
 
             <Suspense fallback={<Footer.skeleton />}>
                 <Footer shop={shop} locale={locale} i18n={i18n} />
             </Suspense>
-        </>
+        </main>
     );
 };
 
