@@ -1680,6 +1680,17 @@ export interface ContentBlockSliceDefaultPrimary {
      * - **Documentation**: https://prismic.io/docs/field#rich-text-title
      */
     text: prismic.RichTextField;
+
+    /**
+     * Width field in *ContentBlock → Default → Primary*
+     *
+     * - **Field Type**: Boolean
+     * - **Placeholder**: *None*
+     * - **Default Value**: false
+     * - **API ID Path**: content_block.default.primary.width
+     * - **Documentation**: https://prismic.io/docs/field#boolean
+     */
+    width: prismic.BooleanField;
 }
 
 /**
@@ -1719,6 +1730,17 @@ export interface ContentBlockSliceCardPrimary {
      * - **Documentation**: https://prismic.io/docs/field#boolean
      */
     border: prismic.BooleanField;
+
+    /**
+     * Width field in *ContentBlock → Card → Primary*
+     *
+     * - **Field Type**: Boolean
+     * - **Placeholder**: *None*
+     * - **Default Value**: false
+     * - **API ID Path**: content_block.card.primary.width
+     * - **Documentation**: https://prismic.io/docs/field#boolean
+     */
+    width: prismic.BooleanField;
 }
 
 /**

@@ -20,6 +20,15 @@
                         "allowTargetBlank": true,
                         "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
                     }
+                },
+                "width": {
+                    "type": "Boolean",
+                    "config": {
+                        "label": "Width",
+                        "placeholder_false": "narrow",
+                        "placeholder_true": "wide",
+                        "default_value": false
+                    }
                 }
             },
             "items": {}
@@ -47,6 +56,15 @@
                         "label": "Border",
                         "placeholder_false": "background",
                         "placeholder_true": "border",
+                        "default_value": false
+                    }
+                },
+                "width": {
+                    "type": "Boolean",
+                    "config": {
+                        "label": "Width",
+                        "placeholder_false": "narrow",
+                        "placeholder_true": "wide",
                         "default_value": false
                     }
                 }

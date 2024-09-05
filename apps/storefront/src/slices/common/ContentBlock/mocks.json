@@ -13,6 +13,10 @@
                         }
                     }
                 ]
+            },
+            "width": {
+                "__TYPE__": "BooleanContent",
+                "value": false
             }
         },
         "items": []
@@ -25,16 +29,100 @@
                 "__TYPE__": "StructuredTextContent",
                 "value": [
                     {
+                        "type": "heading1",
+                        "content": {
+                            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                            "spans": []
+                        },
+                        "direction": "ltr"
+                    },
+                    {
                         "type": "paragraph",
                         "content": {
-                            "text": "Velit proident laboris do consequat sunt quis Lorem deserunt officia. Ea tempor aute pariatur laborum non reprehenderit magna excepteur ut eiusmod in."
-                        }
+                            "text": "Curabitur feugiat malesuada justo, quis fermentum nisi volutpat et. Nam lorem odio, tempor quis nunc vel, ultricies blandit velit. Ut maximus ligula ut nulla facilisis, vel blandit lorem congue. Nullam fermentum orci et vehicula auctor. Ut lobortis ut ex sit amet gravida. Cras varius, ligula quis lobortis feugiat, mi urna gravida odio, sed commodo elit purus quis magna.",
+                            "spans": [
+                                {
+                                    "type": "em",
+                                    "start": 134,
+                                    "end": 141
+                                }
+                            ]
+                        },
+                        "direction": "ltr"
+                    },
+                    {
+                        "type": "heading2",
+                        "content": {
+                            "text": "Nam elementum elementum nunc non ornare. ",
+                            "spans": []
+                        },
+                        "direction": "ltr"
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": {
+                            "text": "Integer orci urna, porta ut egestas sodales, scelerisque id neque.",
+                            "spans": []
+                        },
+                        "direction": "ltr"
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": {
+                            "text": "Maecenas gravida, lorem ac tincidunt finibus, lectus velit commodo nisl, vel lobortis orci erat in enim. Quisque elit elit, sollicitudin vel sagittis eget, accumsan vitae sem. Sed in dolor sed dui vehicula pretium non at arcu.",
+                            "spans": []
+                        },
+                        "direction": "ltr"
+                    },
+                    {
+                        "type": "heading3",
+                        "content": {
+                            "text": "Ut accumsan elit ac mi sollicitudin consequat.",
+                            "spans": []
+                        },
+                        "direction": "ltr"
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": {
+                            "text": "Proin maximus, magna volutpat pretium congue, sapien dui euismod turpis, ut sollicitudin felis massa at augue. Sed euismod sem non eros commodo euismod ac non nibh. Duis sagittis mi sit amet vestibulum laoreet. Aliquam tincidunt sem turpis, in condimentum est rhoncus dignissim. Praesent blandit mollis volutpat.",
+                            "spans": []
+                        },
+                        "direction": "ltr"
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": {
+                            "text": "Phasellus malesuada laoreet nibh nec fermentum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris quis elementum ex, nec sodales eros. Sed facilisis, sem at lacinia aliquam, dui sapien tempus nisi, ac volutpat lacus erat vitae enim. Integer pellentesque metus sed ante faucibus semper.",
+                            "spans": []
+                        },
+                        "direction": "ltr"
+                    },
+                    {
+                        "type": "heading2",
+                        "content": {
+                            "text": "Cras consectetur diam eu dictum placerat.",
+                            "spans": []
+                        },
+                        "direction": "ltr"
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": {
+                            "text": "Nunc et sem nec elit sodales tempus eu et ipsum. Donec convallis, orci vel fringilla feugiat, urna mauris ornare massa, cursus porta orci erat vel ipsum. Etiam luctus consequat eros, ac aliquam ex mattis et. Donec elementum eget arcu eu feugiat. Praesent vel justo sit amet quam laoreet molestie quis vitae mi. Vivamus finibus, ipsum in fermentum consectetur, tortor ipsum semper justo, et vulputate ex eros vitae neque. Nam in mi at mauris cursus finibus. Maecenas ut faucibus augue. Maecenas eu ex est.",
+                            "spans": []
+                        },
+                        "direction": "ltr"
                     }
                 ]
             },
             "border": {
                 "__TYPE__": "BooleanContent",
                 "value": true
+            },
+            "width": {
+                "__TYPE__": "BooleanContent",
+                "value": false
             }
         },
         "items": [

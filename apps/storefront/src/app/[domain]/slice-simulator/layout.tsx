@@ -17,6 +17,7 @@ import { notFound } from 'next/navigation';
 
 import { AnalyticsProvider } from '@/components/analytics-provider';
 import { HeaderProvider } from '@/components/header/header-provider';
+import PageContent from '@/components/page-content';
 import ProvidersRegistry from '@/components/providers-registry';
 
 import type { Metadata } from 'next';
@@ -66,7 +67,9 @@ export default async function RootLayout({
                         toolbars={false}
                     >
                         <AnalyticsProvider shop={publicShop}>
-                            <HeaderProvider loaderColor="transparent">{children}</HeaderProvider>
+                            <HeaderProvider loaderColor="transparent">
+                                <PageContent primary>{children}</PageContent>
+                            </HeaderProvider>
                         </AnalyticsProvider>
                     </ProvidersRegistry>
                 </body>
