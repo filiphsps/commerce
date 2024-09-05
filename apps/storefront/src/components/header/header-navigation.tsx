@@ -23,7 +23,7 @@ export const HeaderNavigation = ({ slices = [], className, ...props }: HeaderNav
     return (
         <nav
             className={cn(
-                'overflow-x-shadow flex w-full grow items-center justify-start gap-5 overflow-x-auto px-2 md:max-w-[var(--page-width)] md:flex-row md:overflow-hidden md:px-3',
+                'overflow-x-shadow flex w-full grow items-center justify-start gap-5 overflow-x-auto px-2 md:max-w-[var(--page-width)] md:flex-row md:overflow-hidden md:px-3 lg:gap-6',
                 className
             )}
             {...props}

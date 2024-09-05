@@ -860,108 +860,6 @@ export type MenuItemDocument<Lang extends string = string> = prismic.PrismicDocu
     Lang
 >;
 
-/**
- * Primary content in *Navigation → Slice Zone → Link → Primary*
- */
-export interface NavigationDocumentDataBodyLinkSlicePrimary {
-    /**
-     * Title field in *Navigation → Slice Zone → Link → Primary*
-     *
-     * - **Field Type**: Text
-     * - **Placeholder**: *None*
-     * - **API ID Path**: navigation.body[].link.primary.title
-     * - **Documentation**: https://prismic.io/docs/field#key-text
-     */
-    title: prismic.KeyTextField;
-
-    /**
-     * Handle field in *Navigation → Slice Zone → Link → Primary*
-     *
-     * - **Field Type**: Text
-     * - **Placeholder**: *None*
-     * - **API ID Path**: navigation.body[].link.primary.handle
-     * - **Documentation**: https://prismic.io/docs/field#key-text
-     */
-    handle: prismic.KeyTextField;
-}
-
-/**
- * Item content in *Navigation → Slice Zone → Link → Items*
- */
-export interface NavigationDocumentDataBodyLinkSliceItem {
-    /**
-     * Title field in *Navigation → Slice Zone → Link → Items*
-     *
-     * - **Field Type**: Text
-     * - **Placeholder**: *None*
-     * - **API ID Path**: navigation.body[].link.items.title
-     * - **Documentation**: https://prismic.io/docs/field#key-text
-     */
-    title: prismic.KeyTextField;
-
-    /**
-     * Description field in *Navigation → Slice Zone → Link → Items*
-     *
-     * - **Field Type**: Text
-     * - **Placeholder**: *None*
-     * - **API ID Path**: navigation.body[].link.items.description
-     * - **Documentation**: https://prismic.io/docs/field#key-text
-     */
-    description: prismic.KeyTextField;
-
-    /**
-     * Handle field in *Navigation → Slice Zone → Link → Items*
-     *
-     * - **Field Type**: Text
-     * - **Placeholder**: *None*
-     * - **API ID Path**: navigation.body[].link.items.handle
-     * - **Documentation**: https://prismic.io/docs/field#key-text
-     */
-    handle: prismic.KeyTextField;
-}
-
-/**
- * Slice for *Navigation → Slice Zone*
- */
-export type NavigationDocumentDataBodyLinkSlice = prismic.Slice<
-    'link',
-    Simplify<NavigationDocumentDataBodyLinkSlicePrimary>,
-    Simplify<NavigationDocumentDataBodyLinkSliceItem>
->;
-
-type NavigationDocumentDataBodySlice = NavigationDocumentDataBodyLinkSlice;
-
-/**
- * Content for Navigation documents
- */
-interface NavigationDocumentData {
-    /**
-     * Slice Zone field in *Navigation*
-     *
-     * - **Field Type**: Slice Zone
-     * - **Placeholder**: *None*
-     * - **API ID Path**: navigation.body[]
-     * - **Tab**: Main
-     * - **Documentation**: https://prismic.io/docs/field#slices
-     */
-    body: prismic.SliceZone<NavigationDocumentDataBodySlice>;
-}
-
-/**
- * Navigation document from Prismic
- *
- * - **API ID**: `navigation`
- * - **Repeatable**: `false`
- * - **Documentation**: https://prismic.io/docs/custom-types
- *
- * @typeParam Lang - Language API ID of the document.
- */
-export type NavigationDocument<Lang extends string = string> = prismic.PrismicDocumentWithoutUID<
-    Simplify<NavigationDocumentData>,
-    'navigation',
-    Lang
->;
-
 type ProductPageDocumentDataSlicesSlice =
     | ContentBlockSlice
     | ColumnsSlice
@@ -1210,7 +1108,6 @@ export type AllDocumentTypes =
     | HeadDocument
     | MenuDocument
     | MenuItemDocument
-    | NavigationDocument
     | ProductPageDocument
     | StoreDocument;
 
@@ -2310,11 +2207,6 @@ declare module '@prismicio/client' {
             MenuItemDocument,
             MenuItemDocumentData,
             MenuItemDocumentDataSlicesSlice,
-            NavigationDocument,
-            NavigationDocumentData,
-            NavigationDocumentDataBodyLinkSlicePrimary,
-            NavigationDocumentDataBodyLinkSliceItem,
-            NavigationDocumentDataBodySlice,
             ProductPageDocument,
             ProductPageDocumentData,
             ProductPageDocumentDataSlicesSlice,
