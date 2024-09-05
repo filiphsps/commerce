@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Link from '@/components/link';
 import PageContent from '@/components/page-content';
 
+import { cn } from '@/utils/tailwind';
 import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
 
@@ -22,7 +23,7 @@ const ImageGrid = ({ slice, index }: ImageGridProps): JSX.Element => {
     return (
         <PageContent
             as="section"
-            className={styles.container}
+            className={cn(styles.container, 'empty:hidden')}
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
         >
