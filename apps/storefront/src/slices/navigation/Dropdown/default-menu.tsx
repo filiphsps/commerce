@@ -10,7 +10,7 @@ import { PrismicText } from '@/components/typography/prismic-text';
 import type { DropdownSliceDefaultPrimaryLinksItem, Simplify } from '@/prismic/types';
 import type { SliceComponentProps } from '@prismicio/react';
 
-const MENU_COMMON_STYLES = 'h-full w-full max-w-[var(--page-width)] px-3 py-4 md:px-4 2xl:px-3';
+const MENU_COMMON_STYLES = 'h-full w-full max-w-[var(--page-width)] px-3 py-4 md:px-4 2xl:px-3 overflow-x-auto ';
 const MENU_ITEM_COMMON_STYLES =
     'group/item hover:border-primary hover:text-primary flex h-full grow overflow-hidden rounded-lg border border-solid border-gray-300 bg-white transition-colors duration-75';
 const TITLE_COMMON_STYLES = 'text-xl leading-none py-2 font-semibold';
@@ -24,7 +24,7 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
         <nav
             className={cn(
                 MENU_COMMON_STYLES,
-                'flex flex-col gap-3 md:grid md:auto-rows-max md:grid-cols-2 lg:grid-cols-3 lg:gap-2 xl:grid-cols-4'
+                'z-10 flex max-h-[calc(100vh-10rem)] flex-col gap-3 md:grid md:max-h-none md:auto-rows-max md:grid-cols-2 lg:grid-cols-3 lg:gap-2 xl:grid-cols-4'
             )}
         >
             {links.map((item, index) => {
@@ -78,7 +78,8 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                         href={target}
                         className={cn(
                             MENU_ITEM_COMMON_STYLES,
-                            background && 'grid grid-cols-1 grid-rows-1 items-center justify-start xl:grid-rows-1',
+                            background &&
+                                'grid min-h-min grid-cols-1 grid-rows-1 items-center justify-start xl:grid-rows-1',
                             description && background && 'grid-rows-[4.25rem_1fr] xl:grid-rows-[4.25rem_1fr]'
                         )}
                         onClick={() => closeMenu()}

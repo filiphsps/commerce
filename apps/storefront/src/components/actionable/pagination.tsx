@@ -58,7 +58,7 @@ const Pagination = ({
         }
 
         items.push(
-            <Link key={url} className={styles.item} href={url}>
+            <Link key={url} className={styles.item} href={url} prefetch={false}>
                 {i}
             </Link>
         );
@@ -84,7 +84,7 @@ const Pagination = ({
     return (
         <nav role="navigation" aria-label="pagination" className={cn(styles.container, 'overflow-x-shadow')}>
             {currentPage !== 1 ? (
-                <Link className={styles.action} href={previousHref}>
+                <Link className={styles.action} href={previousHref} prefetch={false}>
                     <FiChevronLeft />
                     Prev
                 </Link>
@@ -101,7 +101,7 @@ const Pagination = ({
             </div>
 
             {currentPage !== knownLastPage ? (
-                <Link className={styles.action} href={nextHref}>
+                <Link className={styles.action} href={nextHref} prefetch={false}>
                     Next
                     <FiChevronRight />
                 </Link>

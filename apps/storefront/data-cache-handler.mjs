@@ -40,6 +40,7 @@ CacheHandler.onCreation(async () => {
                 client,
                 timeoutMs: 1000,
                 keyExpirationStrategy: 'EXAT',
+                keyPrefix: process.env.VERCEL_GIT_COMMIT_SHA,
                 sharedTagsKey: undefined,
                 revalidateTagQuerySize: 100
             })

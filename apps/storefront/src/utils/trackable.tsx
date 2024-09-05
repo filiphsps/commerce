@@ -33,8 +33,6 @@ import type { ReactNode } from 'react';
 
 // FIXME: Create or use a proper logging solution.
 const TrackableLogger = (message: string, data?: any, service?: string) => {
-    //if (!isPreviewEnvironment()) return;
-
     console.debug(`[nordcom-commerce]${!!service ? `[${service}]` : ''}: ${message}`, data || undefined);
 };
 

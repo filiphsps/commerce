@@ -24,6 +24,7 @@ import type { Metadata } from 'next';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+export const dynamicParams = true;
 export const revalidate = false;
 
 export type SearchPageParams = { domain: string; locale: string };
@@ -123,7 +124,7 @@ export default async function SearchPage({
                     <PrismicPage shop={shop} locale={locale} page={page} handle={'search'} type={'custom_page'} />
                 ) : null}
 
-                <Suspense>
+                <Suspense key={JSON.stringify(searchParams)}>
                     <SearchContent
                         locale={locale}
                         i18n={i18n}

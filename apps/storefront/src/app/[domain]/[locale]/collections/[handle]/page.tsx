@@ -77,7 +77,7 @@ export async function generateMetadata({
         const api = await ShopifyApolloApiClient({ shop, locale });
 
         const [collection, page, locales] = await Promise.all([
-            CollectionApi({ api, handle, first: 1, after: null }),
+            CollectionApi({ api, handle, limit: 1 }),
             PageApi({ shop, locale, handle, type: 'collection_page' }),
             LocalesApi({ api })
         ]);
@@ -181,7 +181,7 @@ export default async function CollectionPage({
 
         // Do the actual API calls.
         const [collection, pagesInfo] = await Promise.all([
-            CollectionApi({ api, handle, first: 1, after: null }),
+            CollectionApi({ api, handle, limit: 1 }),
             CollectionPaginationCountApi({ api, handle, filters: { first: PRODUCTS_PER_PAGE } })
         ]);
 

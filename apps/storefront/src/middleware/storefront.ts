@@ -153,6 +153,6 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         newUrl.pathname += `homepage/`;
     }
 
-    const target = `${newUrl.origin}/${hostname}${newUrl.pathname}`;
+    const target = `${newUrl.origin}/${hostname}${newUrl.pathname}${newUrl.searchParams.size > 0 ? '?' : ''}${newUrl.searchParams.toString()}`;
     return setCookies(NextResponse.rewrite(new URL(target, req.url)), cookies);
 };

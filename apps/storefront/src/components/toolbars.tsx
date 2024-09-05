@@ -22,10 +22,6 @@ export const isPreviewEnvironment = (domain: string = '') => {
  * Injects toolbars on development environments and staging builds.
  */
 export function Toolbars({ children, domain }: { children?: ReactNode; domain: string }) {
-    if (!isPreviewEnvironment(domain)) {
-        return null;
-    }
-
     return (
         <>
             <ErrorBoundary fallbackRender={() => null}>
