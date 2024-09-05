@@ -4,7 +4,18 @@ import type * as prismic from '@prismicio/client';
 
 type Simplify<T> = { [KeyType in keyof T]: T[KeyType] };
 
-type ArticlePageDocumentDataSlicesSlice = AlertSlice | VendorsSlice;
+type ArticlePageDocumentDataSlicesSlice =
+    | ColumnsSlice
+    | ContentBlockSlice
+    | BannerSlice
+    | CollapsibleTextSlice
+    | IconGridSlice
+    | TitleSlice
+    | TextBlockSlice
+    | ImageGridSlice
+    | CollectionSlice
+    | AlertSlice
+    | VendorsSlice;
 
 /**
  * Content for Article documents
@@ -165,11 +176,44 @@ export type BusinessDataDocument<Lang extends string = string> = prismic.Prismic
     Lang
 >;
 
-type CartPageDocumentDataSlicesSlice = AlertSlice;
+type CartPageDocumentDataSlicesSlice =
+    | IconGridSlice
+    | VendorsSlice
+    | ColumnsSlice
+    | CollectionSlice
+    | ImageGridSlice
+    | TextBlockSlice
+    | CollapsibleTextSlice
+    | TitleSlice
+    | BannerSlice
+    | ContentBlockSlice
+    | AlertSlice;
 
-type CartPageDocumentDataSidebarSlicesSlice = AlertSlice;
+type CartPageDocumentDataSidebarSlicesSlice =
+    | IconGridSlice
+    | ColumnsSlice
+    | CollectionSlice
+    | ImageGridSlice
+    | VendorsSlice
+    | TextBlockSlice
+    | BannerSlice
+    | TitleSlice
+    | CollapsibleTextSlice
+    | ContentBlockSlice
+    | AlertSlice;
 
-type CartPageDocumentDataBottomSlicesSlice = AlertSlice;
+type CartPageDocumentDataBottomSlicesSlice =
+    | VendorsSlice
+    | ColumnsSlice
+    | CollectionSlice
+    | ImageGridSlice
+    | TextBlockSlice
+    | TitleSlice
+    | IconGridSlice
+    | CollapsibleTextSlice
+    | BannerSlice
+    | ContentBlockSlice
+    | AlertSlice;
 
 /**
  * Content for Cart documents
@@ -221,6 +265,8 @@ export type CartPageDocument<Lang extends string = string> = prismic.PrismicDocu
 >;
 
 type CollectionPageDocumentDataSlicesSlice =
+    | ContentBlockSlice
+    | ColumnsSlice
     | TitleSlice
     | AlertSlice
     | VendorsSlice
@@ -293,7 +339,52 @@ export type CollectionPageDocument<Lang extends string = string> = prismic.Prism
     Lang
 >;
 
+type ColumnDocumentDataSlicesSlice =
+    | ColumnsSlice
+    | CollectionSlice
+    | VendorsSlice
+    | TextBlockSlice
+    | TitleSlice
+    | ImageGridSlice
+    | IconGridSlice
+    | CollapsibleTextSlice
+    | BannerSlice
+    | AlertSlice
+    | ContentBlockSlice;
+
+/**
+ * Content for Column documents
+ */
+interface ColumnDocumentData {
+    /**
+     * Slice Zone field in *Column*
+     *
+     * - **Field Type**: Slice Zone
+     * - **Placeholder**: *None*
+     * - **API ID Path**: column.slices[]
+     * - **Tab**: Main
+     * - **Documentation**: https://prismic.io/docs/field#slices
+     */
+    slices: prismic.SliceZone<ColumnDocumentDataSlicesSlice>;
+}
+
+/**
+ * Column document from Prismic
+ *
+ * - **API ID**: `column`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/custom-types
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type ColumnDocument<Lang extends string = string> = prismic.PrismicDocumentWithUID<
+    Simplify<ColumnDocumentData>,
+    'column',
+    Lang
+>;
+
 type CustomPageDocumentDataSlicesSlice =
+    | ColumnsSlice
     | ContentBlockSlice
     | CollectionSlice
     | ImageGridSlice
@@ -872,6 +963,8 @@ export type NavigationDocument<Lang extends string = string> = prismic.PrismicDo
 >;
 
 type ProductPageDocumentDataSlicesSlice =
+    | ContentBlockSlice
+    | ColumnsSlice
     | TextBlockSlice
     | VendorsSlice
     | ImageGridSlice
@@ -883,6 +976,10 @@ type ProductPageDocumentDataSlicesSlice =
     | BannerSlice;
 
 type ProductPageDocumentDataSlices2Slice =
+    | ContentBlockSlice
+    | ColumnsSlice
+    | BannerSlice
+    | AlertSlice
     | CollectionSlice
     | TextBlockSlice
     | ImageGridSlice
@@ -1107,6 +1204,7 @@ export type AllDocumentTypes =
     | BusinessDataDocument
     | CartPageDocument
     | CollectionPageDocument
+    | ColumnDocument
     | CustomPageDocument
     | FooterDocument
     | HeadDocument
@@ -1515,6 +1613,59 @@ type CollectionSliceVariation = CollectionSliceDefault;
  * - **Documentation**: https://prismic.io/docs/slice
  */
 export type CollectionSlice = prismic.SharedSlice<'collection', CollectionSliceVariation>;
+
+/**
+ * Item in *Columns → Default → Primary → Items*
+ */
+export interface ColumnsSliceDefaultPrimaryChildrenItem {
+    /**
+     * Column field in *Columns → Default → Primary → Items*
+     *
+     * - **Field Type**: Content Relationship
+     * - **Placeholder**: *None*
+     * - **API ID Path**: columns.default.primary.children[].column
+     * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+     */
+    column: prismic.ContentRelationshipField<'column'>;
+}
+
+/**
+ * Primary content in *Columns → Default → Primary*
+ */
+export interface ColumnsSliceDefaultPrimary {
+    /**
+     * Items field in *Columns → Default → Primary*
+     *
+     * - **Field Type**: Group
+     * - **Placeholder**: *None*
+     * - **API ID Path**: columns.default.primary.children[]
+     * - **Documentation**: https://prismic.io/docs/field#group
+     */
+    children: prismic.GroupField<Simplify<ColumnsSliceDefaultPrimaryChildrenItem>>;
+}
+
+/**
+ * Default variation for Columns Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type ColumnsSliceDefault = prismic.SharedSliceVariation<'default', Simplify<ColumnsSliceDefaultPrimary>, never>;
+
+/**
+ * Slice variation for *Columns*
+ */
+type ColumnsSliceVariation = ColumnsSliceDefault;
+
+/**
+ * Columns Shared Slice
+ *
+ * - **API ID**: `columns`
+ * - **Description**: Columns
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type ColumnsSlice = prismic.SharedSlice<'columns', ColumnsSliceVariation>;
 
 /**
  * Primary content in *ContentBlock → Default → Primary*
@@ -2115,6 +2266,9 @@ declare module '@prismicio/client' {
             CollectionPageDocument,
             CollectionPageDocumentData,
             CollectionPageDocumentDataSlicesSlice,
+            ColumnDocument,
+            ColumnDocumentData,
+            ColumnDocumentDataSlicesSlice,
             CustomPageDocument,
             CustomPageDocumentData,
             CustomPageDocumentDataSlicesSlice,
@@ -2167,6 +2321,11 @@ declare module '@prismicio/client' {
             CollectionSliceDefaultPrimary,
             CollectionSliceVariation,
             CollectionSliceDefault,
+            ColumnsSlice,
+            ColumnsSliceDefaultPrimaryChildrenItem,
+            ColumnsSliceDefaultPrimary,
+            ColumnsSliceVariation,
+            ColumnsSliceDefault,
             ContentBlockSlice,
             ContentBlockSliceDefaultPrimary,
             ContentBlockSliceCardPrimary,

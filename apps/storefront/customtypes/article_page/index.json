@@ -17,6 +17,33 @@
                 "fieldset": "Slice Zone",
                 "config": {
                     "choices": {
+                        "columns": {
+                            "type": "SharedSlice"
+                        },
+                        "content_block": {
+                            "type": "SharedSlice"
+                        },
+                        "banner": {
+                            "type": "SharedSlice"
+                        },
+                        "collapsible_text": {
+                            "type": "SharedSlice"
+                        },
+                        "icon_grid": {
+                            "type": "SharedSlice"
+                        },
+                        "title": {
+                            "type": "SharedSlice"
+                        },
+                        "text_block": {
+                            "type": "SharedSlice"
+                        },
+                        "image_grid": {
+                            "type": "SharedSlice"
+                        },
+                        "collection": {
+                            "type": "SharedSlice"
+                        },
                         "alert": {
                             "type": "SharedSlice"
                         },

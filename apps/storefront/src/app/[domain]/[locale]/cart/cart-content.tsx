@@ -31,14 +31,7 @@ export default async function CartContent({ shop, locale, i18n, header, paymentM
         <PageContent className={styles.container}>
             <section className={cn(styles.content, 'gap-4 lg:gap-8')}>
                 <div className="flex flex-col gap-4">
-                    <PrismicPage
-                        shop={shop}
-                        locale={locale}
-                        slices={page?.slices}
-                        i18n={i18n}
-                        handle={'cart'}
-                        type={'cart_page'}
-                    />
+                    <PrismicPage shop={shop} locale={locale} slices={page?.slices} handle={'cart'} type={'cart_page'} />
 
                     <div className={styles.lines}>
                         {header}
@@ -55,7 +48,6 @@ export default async function CartContent({ shop, locale, i18n, header, paymentM
                             shop={shop}
                             locale={locale}
                             slices={page?.sidebar_slices}
-                            i18n={i18n}
                             handle={'cart'}
                             type={'cart_page'}
                         />
@@ -63,14 +55,7 @@ export default async function CartContent({ shop, locale, i18n, header, paymentM
                 </Suspense>
             </section>
 
-            <PrismicPage
-                shop={shop}
-                locale={locale}
-                slices={page?.bottom_slices}
-                i18n={i18n}
-                handle={'cart'}
-                type={'cart_page'}
-            />
+            <PrismicPage shop={shop} locale={locale} slices={page?.bottom_slices} handle={'cart'} type={'cart_page'} />
         </PageContent>
     );
 }

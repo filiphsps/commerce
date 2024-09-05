@@ -4,6 +4,7 @@ import Alert from './Alert';
 import Banner from './Banner';
 import CollapsibleText from './CollapsibleText';
 import Collection from './Collection';
+import Columns from './Columns';
 import ContentBlock from './ContentBlock';
 import IconGrid from './IconGrid';
 import ImageGrid from './ImageGrid';
@@ -16,6 +17,7 @@ export const components = {
     banner: Banner,
     collapsible_text: CollapsibleText,
     collection: Collection,
+    columns: Columns,
     content_block: ContentBlock,
     icon_grid: IconGrid,
     image_grid: ImageGrid,

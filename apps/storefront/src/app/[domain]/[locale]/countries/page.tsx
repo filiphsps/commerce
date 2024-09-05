@@ -139,14 +139,7 @@ export default async function CountriesPage({
                 </PageContent>
 
                 {page?.slices && page.slices.length > 0 ? (
-                    <PrismicPage
-                        shop={shop}
-                        locale={locale}
-                        page={page}
-                        i18n={i18n}
-                        handle={'countries'}
-                        type={'custom_page'}
-                    />
+                    <PrismicPage shop={shop} locale={locale} page={page} handle={'countries'} type={'custom_page'} />
                 ) : null}
             </>
         );

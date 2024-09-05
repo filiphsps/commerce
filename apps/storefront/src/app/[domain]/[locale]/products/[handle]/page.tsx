@@ -163,14 +163,7 @@ async function ProductPageSlices({
     return (
         <section className="empty:hidden">
             {(page?.slices || []).length > 0 ? (
-                <PrismicPage
-                    shop={shop}
-                    locale={locale}
-                    page={page}
-                    i18n={i18n}
-                    handle={handle}
-                    type={'product_page'}
-                />
+                <PrismicPage shop={shop} locale={locale} page={page} handle={handle} type={'product_page'} />
             ) : null}
         </section>
     );

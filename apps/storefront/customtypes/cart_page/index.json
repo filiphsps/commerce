@@ -18,6 +18,36 @@
                 "fieldset": "Slice Zone",
                 "config": {
                     "choices": {
+                        "icon_grid": {
+                            "type": "SharedSlice"
+                        },
+                        "vendors": {
+                            "type": "SharedSlice"
+                        },
+                        "columns": {
+                            "type": "SharedSlice"
+                        },
+                        "collection": {
+                            "type": "SharedSlice"
+                        },
+                        "image_grid": {
+                            "type": "SharedSlice"
+                        },
+                        "text_block": {
+                            "type": "SharedSlice"
+                        },
+                        "collapsible_text": {
+                            "type": "SharedSlice"
+                        },
+                        "title": {
+                            "type": "SharedSlice"
+                        },
+                        "banner": {
+                            "type": "SharedSlice"
+                        },
+                        "content_block": {
+                            "type": "SharedSlice"
+                        },
                         "alert": {
                             "type": "SharedSlice"
                         }
@@ -31,6 +61,36 @@
                 "fieldset": "Slice Zone",
                 "config": {
                     "choices": {
+                        "icon_grid": {
+                            "type": "SharedSlice"
+                        },
+                        "columns": {
+                            "type": "SharedSlice"
+                        },
+                        "collection": {
+                            "type": "SharedSlice"
+                        },
+                        "image_grid": {
+                            "type": "SharedSlice"
+                        },
+                        "vendors": {
+                            "type": "SharedSlice"
+                        },
+                        "text_block": {
+                            "type": "SharedSlice"
+                        },
+                        "banner": {
+                            "type": "SharedSlice"
+                        },
+                        "title": {
+                            "type": "SharedSlice"
+                        },
+                        "collapsible_text": {
+                            "type": "SharedSlice"
+                        },
+                        "content_block": {
+                            "type": "SharedSlice"
+                        },
                         "alert": {
                             "type": "SharedSlice"
                         }
@@ -44,6 +104,36 @@
                 "fieldset": "Slice Zone",
                 "config": {
                     "choices": {
+                        "vendors": {
+                            "type": "SharedSlice"
+                        },
+                        "columns": {
+                            "type": "SharedSlice"
+                        },
+                        "collection": {
+                            "type": "SharedSlice"
+                        },
+                        "image_grid": {
+                            "type": "SharedSlice"
+                        },
+                        "text_block": {
+                            "type": "SharedSlice"
+                        },
+                        "title": {
+                            "type": "SharedSlice"
+                        },
+                        "icon_grid": {
+                            "type": "SharedSlice"
+                        },
+                        "collapsible_text": {
+                            "type": "SharedSlice"
+                        },
+                        "banner": {
+                            "type": "SharedSlice"
+                        },
+                        "content_block": {
+                            "type": "SharedSlice"
+                        },
                         "alert": {
                             "type": "SharedSlice"
                         }

@@ -152,7 +152,7 @@ async function CollectionPageSlices({
 
     return (
         <PageContent>
-            <PrismicPage shop={shop} locale={locale} page={page} i18n={i18n} handle={handle} type={'collection_page'} />
+            <PrismicPage shop={shop} locale={locale} page={page} handle={handle} type={'collection_page'} />
         </PageContent>
     );
 }

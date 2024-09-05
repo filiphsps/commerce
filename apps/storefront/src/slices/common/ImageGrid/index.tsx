@@ -2,12 +2,12 @@ import 'server-only';
 
 import styles from './image-grid.module.scss';
 
+import { cn } from '@/utils/tailwind';
 import Image from 'next/image';
 
 import Link from '@/components/link';
 import PageContent from '@/components/page-content';
 
-import { cn } from '@/utils/tailwind';
 import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
 

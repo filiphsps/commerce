@@ -10,7 +10,12 @@ const DefaultContentBlock = (props: ContentBlockProps): JSX.Element => {
         primary: { text }
     } = props.slice as Slices.ContentBlockSliceDefault;
     return (
-        <Content className="w-full" as="section">
+        <Content
+            data-slice-type={props.slice.slice_type}
+            data-slice-variation={props.slice.variation}
+            className="w-full min-w-full"
+            as="section"
+        >
             <PrismicText data={text} />
         </Content>
     );
@@ -22,7 +27,13 @@ const CardContentBlock = (props: ContentBlockProps): JSX.Element => {
     } = props.slice as Slices.ContentBlockSliceCard;
 
     return (
-        <Content className="w-full" as={Card} border={border}>
+        <Content
+            data-slice-type={props.slice.slice_type}
+            data-slice-variation={props.slice.variation}
+            className="w-full min-w-full"
+            as={Card}
+            border={border}
+        >
             <PrismicText data={text} />
         </Content>
     );

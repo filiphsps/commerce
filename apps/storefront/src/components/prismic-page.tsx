@@ -5,24 +5,23 @@ import { Suspense } from 'react';
 import type { OnlineShop, Optional } from '@nordcom/commerce-db';
 
 import { components } from '@/slices';
+import { getDictionary } from '@/utils/dictionary';
 import { SliceZone } from '@prismicio/react';
 
 import type { PageData, PageType } from '@/api/page';
-import type { Locale, LocaleDictionary } from '@/utils/locale';
+import type { Locale } from '@/utils/locale';
 
 type PageParams<T extends PageType> = {
     shop: OnlineShop;
     locale: Locale;
-    i18n: LocaleDictionary;
     page?: PageData<T> | null;
-    slices?: PageData<T>['slices'];
+    slices?: any[];
     handle: string;
     type?: T;
 };
 async function PrismicPage<T extends PageType = 'custom_page'>({
     shop,
     locale,
-    i18n,
     page,
     slices,
     handle,
@@ -31,6 +30,8 @@ async function PrismicPage<T extends PageType = 'custom_page'>({
     if (!page && !slices) {
         return null;
     }
+
+    const i18n = await getDictionary({ shop, locale });
 
     return (
         <Suspense fallback={<PrismicPage.skeleton page={page} slices={slices} shop={shop} />}>
@@ -64,16 +65,20 @@ PrismicPage.skeleton = async <T extends PageType = 'custom_page'>({
 }: Optional<Pick<PageParams<T>, 'page' | 'slices' | 'shop'>> = {}) => {
     if (!page && !slices) return <div />;
 
-    const items = page?.slices || slices || [];
+    const items = (page?.slices as typeof slices) || slices || [];
     if (items.length <= 0) return <div />;
 
     return (
         <>
-            {items.map((slice) => {
-                if (!(slice as any)?.slice_type) return null;
+            {items.map((slice: Partial<(typeof items)[0]>) => {
+                if (slice.slice_type === undefined) {
+                    return null;
+                }
 
-                const Slice = components[slice.slice_type] as any;
-                if (!Slice) return null;
+                const Slice = components[slice.slice_type as keyof typeof components] as any;
+                if (!Slice) {
+                    return null;
+                }
 
                 if (Slice.skeleton) {
                     return <Slice.skeleton key={slice.id} slice={slice} data-skeleton />;

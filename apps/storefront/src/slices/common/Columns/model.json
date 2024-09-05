@@ -1,0 +1,36 @@
+{
+    "id": "columns",
+    "type": "SharedSlice",
+    "name": "Columns",
+    "description": "Columns",
+    "variations": [
+        {
+            "id": "default",
+            "name": "Default",
+            "docURL": "...",
+            "version": "initial",
+            "description": "Default",
+            "imageUrl": "",
+            "primary": {
+                "children": {
+                    "type": "Group",
+                    "config": {
+                        "label": "Items",
+                        "repeat": true,
+                        "fields": {
+                            "column": {
+                                "type": "Link",
+                                "config": {
+                                    "label": "Column",
+                                    "select": "document",
+                                    "customtypes": ["column"]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "items": {}
+        }
+    ]
+}

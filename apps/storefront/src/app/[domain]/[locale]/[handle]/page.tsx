@@ -187,7 +187,7 @@ export default async function CustomPage({
             <>
                 {breadcrumbs}
 
-                <PrismicPage shop={shop} locale={locale} page={page} i18n={i18n} handle={handle} />
+                <PrismicPage shop={shop} locale={locale} page={page} handle={handle} />
 
                 {/* Metadata */}
                 {handle === 'homepage' ? (
