@@ -104,14 +104,7 @@ export default async function BlogPage({ params: { domain, locale: localeData } 
                 <BlogContent blog={blog} locale={locale} i18n={i18n} />
 
                 {page?.slices && page.slices.length > 0 && (
-                    <PrismicPage
-                        shop={shop}
-                        locale={locale}
-                        page={page}
-                        handle={'blog'}
-                        i18n={i18n}
-                        type={'custom_page'}
-                    />
+                    <PrismicPage shop={shop} locale={locale} page={page} handle={'blog'} type={'custom_page'} />
                 )}
             </PageContent>
         );

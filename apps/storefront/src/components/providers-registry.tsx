@@ -113,12 +113,12 @@ const ProvidersRegistry = ({
                                     <RequiredHooks shop={shop} locale={locale} />
                                 </Suspense>
 
-                                <LiveChatProvider shop={shop} locale={locale}>
-                                    {children}
-                                </LiveChatProvider>
-
                                 {toolbars ? (
                                     <Suspense>
+                                        <LiveChatProvider shop={shop} locale={locale}>
+                                            {children}
+                                        </LiveChatProvider>
+
                                         <ToasterProvider
                                             theme="dark"
                                             position="bottom-left"

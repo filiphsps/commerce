@@ -120,14 +120,7 @@ export default async function SearchPage({
                 <Heading title={page?.title || t('search')} subtitle={page?.description} />
 
                 {page?.slices && page.slices.length > 0 ? (
-                    <PrismicPage
-                        shop={shop}
-                        locale={locale}
-                        page={page}
-                        i18n={i18n}
-                        handle={'search'}
-                        type={'custom_page'}
-                    />
+                    <PrismicPage shop={shop} locale={locale} page={page} handle={'search'} type={'custom_page'} />
                 ) : null}
 
                 <Suspense>
