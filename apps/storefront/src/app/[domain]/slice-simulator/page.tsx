@@ -46,7 +46,6 @@ export default async function SliceSimulatorPage({
                     }}
                 />
             </SliceSimulator>
-            hello world
         </>
     );
 }
