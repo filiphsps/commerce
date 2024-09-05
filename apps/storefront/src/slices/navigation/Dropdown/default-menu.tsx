@@ -12,7 +12,7 @@ import type { SliceComponentProps } from '@prismicio/react';
 
 const MENU_COMMON_STYLES = 'h-full w-full max-w-[var(--page-width)] px-3 py-4 md:px-4 2xl:px-3 overflow-x-auto ';
 const MENU_ITEM_COMMON_STYLES =
-    'group/item hover:border-primary hover:text-primary flex h-full grow overflow-hidden rounded-lg border border-solid border-gray-300 bg-white transition-colors duration-75';
+    'group/item hover:border-primary hover:text-primary flex h-full grow shrink-0 overflow-hidden rounded-lg border border-solid border-gray-300 bg-white transition-colors duration-75';
 const TITLE_COMMON_STYLES = 'text-xl leading-none py-2 font-semibold';
 
 type DropdownDefaultMenuProps = Pick<SliceComponentProps<Content.DropdownSlice>, 'slice'>;
@@ -24,7 +24,7 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
         <nav
             className={cn(
                 MENU_COMMON_STYLES,
-                'z-10 flex max-h-[calc(100vh-10rem)] flex-col gap-3 md:grid md:max-h-none md:auto-rows-max md:grid-cols-2 lg:grid-cols-3 lg:gap-2 xl:grid-cols-4'
+                'z-10 flex flex-col gap-3 md:grid md:max-h-none md:auto-rows-max md:grid-cols-2 lg:grid-cols-3 lg:gap-2 xl:grid-cols-4'
             )}
         >
             {links.map((item, index) => {
@@ -99,7 +99,7 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                                     height={image.dimensions.height}
                                     quality={80}
                                     className={cn(
-                                        'pointer-events-none h-full w-full object-cover',
+                                        'pointer-events-none h-full min-h-fit w-full object-cover',
                                         imagePositionStyles
                                     )}
                                     draggable={false}
