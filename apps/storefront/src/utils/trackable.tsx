@@ -24,7 +24,6 @@ import { usePathname } from 'next/navigation';
 import { createContext, useContext, useContextSelector } from 'use-context-selector';
 
 import { useShop } from '@/components/shop/provider';
-import { isPreviewEnvironment } from '@/components/toolbars';
 
 import type { CurrencyCode, Locale } from '@/utils/locale';
 import type { CartWithActions, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
@@ -34,7 +33,7 @@ import type { ReactNode } from 'react';
 
 // FIXME: Create or use a proper logging solution.
 const TrackableLogger = (message: string, data?: any, service?: string) => {
-    if (!isPreviewEnvironment()) return;
+    //if (!isPreviewEnvironment()) return;
 
     console.debug(`[nordcom-commerce]${!!service ? `[${service}]` : ''}: ${message}`, data || undefined);
 };
@@ -385,15 +384,14 @@ export function Trackable({ children }: TrackableProps) {
         {
             type: AnalyticsEventType;
             event: AnalyticsEventData;
-            config?: AnalyticsEventConfig;
         }[]
     >([]);
 
     const queueEvent = useCallback(
-        (type: AnalyticsEventType, event: AnalyticsEventData, config?: AnalyticsEventConfig) => {
+        (type: AnalyticsEventType, event: AnalyticsEventData) => {
             setQueue((queue) => {
                 // FIXME: Don't add duplicate events. This is a very naive implementation.
-                return [...queue, { type, event, config }];
+                return [...queue, { type, event }];
             });
         },
         [queue, setQueue]
@@ -430,38 +428,30 @@ export function Trackable({ children }: TrackableProps) {
             return;
         }
 
-        if (path.endsWith('/cart/') && !!(cart as any)) {
-            queueEvent(
-                'page_view',
-                {
-                    path,
-                    gtm: {
-                        ecommerce: {
-                            currency: cart.cost?.totalAmount?.currencyCode!,
-                            value: safeParseFloat(undefined, cart.cost?.totalAmount?.amount!),
-                            items: ((cart.lines || []).filter((_) => _) as CartLine[]).map((line) => ({
-                                item_id: ProductToMerchantsCenterId({
-                                    locale,
-                                    product: {
-                                        productGid: line.merchandise.product.id!,
-                                        variantGid: line.merchandise.id!
-                                    }
-                                }),
-                                item_name: line.merchandise.product.title,
-                                item_variant: line.merchandise.title,
-                                item_brand: line.merchandise.product.vendor,
-                                currency: line.merchandise.price.currencyCode,
-                                price: safeParseFloat(undefined, line.merchandise.price.amount!),
-                                quantity: line.quantity
-                            }))
-                        }
-                    }
-                },
-                {
-                    silent: true
+        queueEvent('page_view', {
+            path,
+            gtm: {
+                ecommerce: {
+                    currency: cart.cost?.totalAmount?.currencyCode!,
+                    value: safeParseFloat(undefined, cart.cost?.totalAmount?.amount!),
+                    items: ((cart.lines || []).filter((_) => _) as CartLine[]).map((line) => ({
+                        item_id: ProductToMerchantsCenterId({
+                            locale,
+                            product: {
+                                productGid: line.merchandise.product.id!,
+                                variantGid: line.merchandise.id!
+                            }
+                        }),
+                        item_name: line.merchandise.product.title,
+                        item_variant: line.merchandise.title,
+                        item_brand: line.merchandise.product.vendor,
+                        currency: line.merchandise.price.currencyCode,
+                        price: safeParseFloat(undefined, line.merchandise.price.amount!),
+                        quantity: line.quantity
+                    }))
                 }
-            );
-        }
+            }
+        });
     }, [path, prevPath]);
 
     // Send events.
@@ -480,14 +470,14 @@ export function Trackable({ children }: TrackableProps) {
 
         // Flush the queue.
         Promise.allSettled(
-            events.map(({ type, event, config }) => {
+            events.map(({ type, event }) => {
                 return handleEvent(
                     type,
                     {
                         ...event,
                         path: event.path || path
                     },
-                    { shop, currency, locale, shopify, cart, ...config }
+                    { shop, currency, locale, shopify, cart }
                 );
             })
         ).then((results) => {
