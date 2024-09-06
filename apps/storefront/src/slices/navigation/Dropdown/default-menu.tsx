@@ -78,9 +78,9 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                         href={target}
                         className={cn(
                             MENU_ITEM_COMMON_STYLES,
-                            background &&
-                                'grid min-h-min grid-cols-1 grid-rows-1 items-center justify-start xl:grid-rows-1',
-                            description && background && 'grid-rows-[4.25rem_1fr] xl:grid-rows-[4.25rem_1fr]'
+                            background && 'grid grid-cols-1 grid-rows-1 items-center justify-start xl:grid-rows-1',
+                            description && background && 'grid-rows-[4.25rem_1fr] xl:grid-rows-[4.25rem_1fr]',
+                            'h-auto'
                         )}
                         onClick={() => closeMenu()}
                     >
@@ -99,7 +99,7 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                                     height={image.dimensions.height}
                                     quality={80}
                                     className={cn(
-                                        'pointer-events-none h-full min-h-fit w-full object-cover',
+                                        'pointer-events-none h-full w-full object-cover',
                                         imagePositionStyles
                                     )}
                                     draggable={false}
@@ -110,9 +110,10 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
 
                                 <div
                                     className={cn(
-                                        'absolute inset-0 flex h-full w-full items-end justify-start p-2 text-white',
+                                        'absolute inset-0 flex w-full items-end justify-start p-2 text-white',
                                         gradientStyles,
-                                        TITLE_COMMON_STYLES
+                                        TITLE_COMMON_STYLES,
+                                        'h-auto'
                                     )}
                                     style={{
                                         WebkitTextStroke: '.15rem rgba(0,0,0,.25)',
@@ -127,7 +128,7 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                             </div>
                         ) : null}
 
-                        <div className={cn('h-full p-2 pt-2 text-gray-600 empty:hidden group-hover/item:text-inherit')}>
+                        <div className={cn('h-auto p-2 pt-2 text-gray-600 empty:hidden group-hover/item:text-inherit')}>
                             {!background ? (
                                 <div className={cn(TITLE_COMMON_STYLES, 'pt-1')}>
                                     <PrismicText data={title} styled={false} bare={true} />
