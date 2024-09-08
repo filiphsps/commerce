@@ -66,7 +66,7 @@
         "@vitejs/plugin-react": "4.3.1",
         "@vitest/coverage-v8": "1.5.0",
         "babel-plugin-module-resolver": "5.0.2",
-        "concurrently": "8.2.2",
+        "concurrently": "9.0.0",
         "dotenv-cli": "7.4.2",
         "eslint-config-prettier": "9.1.0",
         "eslint-plugin-jsdoc": "50.2.2",
