@@ -98,7 +98,7 @@
         "@types/react-dom": "18.2.24",
         "@types/react": "18.2.75",
         "autoprefixer": "10.4.20",
-        "concurrently": "8.2.2",
+        "concurrently": "9.0.0",
         "critters": "0.0.24",
         "eslint-config-next": "15.0.0-canary.131",
         "eslint": "8.57.0",
