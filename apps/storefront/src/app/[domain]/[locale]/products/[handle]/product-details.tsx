@@ -1,22 +1,53 @@
 import 'server-only';
 
+import { Suspense } from 'react';
+
 import { isProductConfectionary, type Product } from '@/api/product';
 import { getDictionary } from '@/utils/dictionary';
 import { useTranslation } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 import { parseMetafield } from '@shopify/hydrogen-react';
 
-import { Alert } from '@/components/informational/alert';
+import { Card } from '@/components/layout/card';
 import { AttributeIcon } from '@/components/products/attribute-icon';
 import { Label } from '@/components/typography/label';
 
 import type { Locale } from '@/utils/locale';
 import type { ParsedMetafields } from '@shopify/hydrogen-react';
 
-const COMMON_STYLES = 'md:gap3 flex grow flex-col items-start justify-between gap-2 rounded-lg bg-white p-4';
+const COMMON_STYLES = 'md:gap3 flex grow flex-col items-start justify-between gap-2 empty:hidden';
 const LABEL_STYLES = 'leading-none';
 const CONTENT_STYLES =
     'flex items-center justify-center rounded-lg bg-gray-100 p-1 px-2 text-sm font-semibold leading-tight hyphens-auto h-min gap-1';
+
+export type ProductIngredientsProps = {
+    locale: Locale;
+    data: Product;
+};
+export async function ProductIngredients({ locale, data: product }: ProductIngredientsProps) {
+    const i18n = await getDictionary(locale);
+    const { t } = useTranslation('product', i18n);
+
+    const { ingredients } = product;
+    if (!ingredients) {
+        return null;
+    }
+
+    const parsedIngredients = !!ingredients
+        ? parseMetafield<ParsedMetafields['single_line_text_field']>(ingredients).parsedValue
+        : null;
+
+    if (!parsedIngredients) {
+        return null;
+    }
+
+    return (
+        <Card className={cn(COMMON_STYLES, '')} border={true}>
+            <Label className={cn(LABEL_STYLES)}>{t('ingredients')}</Label>
+            <p className={cn('text-sm font-medium leading-snug')}>{parsedIngredients}</p>
+        </Card>
+    );
+}
 
 export type ProductDetailsProps = {
     locale: Locale;
@@ -31,23 +62,28 @@ const ProductDetails = async ({ locale, data: product }: ProductDetailsProps) =>
     }
 
     const {
-        ingredients,
         flavors,
+        allergen,
         variants: { edges: variants }
     } = product;
 
     //const parsedNutritionalContent = nutritionalContent ? parseMetafield(nutritionalContent) : null;
-    const parsedIngredients = !!(ingredients as any)
-        ? parseMetafield<ParsedMetafields['single_line_text_field']>(ingredients).parsedValue
-        : null;
     const parsedFlavors = !!(flavors as any)
         ? parseMetafield<ParsedMetafields['list.single_line_text_field']>(flavors).parsedValue
         : null;
 
+    if (allergen) {
+        console.debug(`Product ${product.id} has allergen`, allergen);
+    }
+
     return (
         <>
+            <Suspense fallback={<div className="h-12 w-full" data-skeleton />}>
+                <ProductIngredients locale={locale} data={product} />
+            </Suspense>
+
             {parsedFlavors ? (
-                <div className={cn(COMMON_STYLES, '')}>
+                <Card className={cn(COMMON_STYLES, '')} border={true}>
                     <Label className={cn(LABEL_STYLES)}>{t('attributes')}</Label>
                     <div className="flex h-full flex-wrap items-start gap-2">
                         {parsedFlavors.length > 0
@@ -61,39 +97,33 @@ const ProductDetails = async ({ locale, data: product }: ProductDetailsProps) =>
                               ))
                             : null}
                     </div>
-                </div>
+                </Card>
             ) : null}
 
             {variants.find(({ node: { sku, title } }) => !!sku && title !== 'Default Title') ? ( // TODO: Deal with the `Default Title` variant in a better way.
-                <div className={cn(COMMON_STYLES, 'md:max-w-64')}>
-                    <Label className={cn(LABEL_STYLES, 'normal-case')}>{t('skus')}</Label>
-                    <div className="flex h-full flex-wrap items-start gap-2">
-                        {variants.map(({ node: { sku, title, id } }) => (
-                            <div key={id} className={cn(CONTENT_STYLES, 'block')} title={`${sku} — ${title}`}>
-                                {sku}
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            ) : null}
+                <>
+                    {variants.map(({ node: { sku, barcode, title, id } }) => (
+                        <Card key={id} className={cn(COMMON_STYLES, 'flex flex-col gap-2')} border={true}>
+                            <Label className={cn(LABEL_STYLES, '')}>{title}</Label>
 
-            {parsedIngredients ? (
-                <div className={cn(COMMON_STYLES, 'break-words')}>
-                    <Label className={cn(LABEL_STYLES)}>{t('ingredients')}</Label>
-                    <p className={cn('text-sm leading-snug')}>{parsedIngredients}</p>
-                </div>
+                            <div className="flex flex-col items-start gap-1">
+                                <div className="flex gap-1 text-sm font-medium leading-none">
+                                    <Label className="font-bold leading-none">{t('sku')}:</Label>
+                                    <p>{sku}</p>
+                                </div>
+
+                                <div className="flex gap-1 text-sm font-medium leading-none">
+                                    <Label className="font-bold leading-none">{t('barcode')}:</Label>
+                                    <p>{barcode}</p>
+                                </div>
+                            </div>
+                        </Card>
+                    ))}
+                </>
             ) : null}
         </>
     );
 };
-
-const ImportantProductDetails = async ({ data: { allergyInformation } }: ProductDetailsProps) => {
-    const parsedAllergyInformation = !!(allergyInformation as any)
-        ? parseMetafield<ParsedMetafields['multi_line_text_field']>(allergyInformation).parsedValue
-        : null;
-    return <>{parsedAllergyInformation ? <Alert severity={'warning'}>{parsedAllergyInformation}</Alert> : null}</>;
-};
-
-ImportantProductDetails.displayName = 'Nordcom.Product.ProductDetails';
 ProductDetails.displayName = 'Nordcom.Product.ProductDetails';
-export { ImportantProductDetails, ProductDetails };
+
+export { ProductDetails };

@@ -28,6 +28,19 @@ export const createApolloClient = ({ uri, headers }: ApiConfig, shop: OnlineShop
         cache: new InMemoryCache({
             canonizeResults: true,
             addTypename: true
+
+            // FIXME: Implement this.
+            /*typePolicies: {
+                Query: {
+                    fields: {
+                        Localization: {
+                            merge(existing = [], incoming: any) {
+                                return { ...existing, ...incoming };
+                            }
+                        }
+                    }
+                }
+            }*/
         }),
         documentTransform: shopifyContextTransform,
         defaultOptions: {

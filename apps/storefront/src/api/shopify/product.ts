@@ -215,13 +215,6 @@ export const PRODUCT_FRAGMENT = `
         value
         type
     }
-    allergyInformation: metafield(namespace: "store", key: "allergy_information") {
-        id
-        namespace
-
-        value
-        type
-    }
 
     ingredients: metafield(namespace: "store", key: "ingredients") {
         id
@@ -231,6 +224,14 @@ export const PRODUCT_FRAGMENT = `
         type
     }
     flavors: metafield(namespace: "store", key: "flavors") {
+        id
+        namespace
+
+        value
+        type
+    }
+
+    allergen: metafield(namespace: "shopify", key: "allergen-information") {
         id
         namespace
 

@@ -37,10 +37,12 @@ import { RecommendedProducts } from '@/components/products/recommended-products'
 import { Content } from '@/components/typography/content';
 
 import { ProductContent, ProductPricing, ProductSavings } from './product-content';
-import { ImportantProductDetails, ProductDetails } from './product-details';
+import { ProductDetails } from './product-details';
 
+import type { Product } from '@/api/product';
 import type { LocaleDictionary } from '@/utils/locale';
 import type { Metadata } from 'next';
+import type { ReactNode } from 'react';
 import type { ProductGroup, WithContext } from 'schema-dts';
 
 export const runtime = 'nodejs';
@@ -143,12 +145,11 @@ export async function generateMetadata({
 }
 
 const BLOCK_STYLES =
-    'flex h-auto w-full flex-col items-stretch justify-start gap-6 overflow-clip rounded-lg md:justify-stretch lg:gap-8 empty:hidden';
+    'flex h-auto w-full flex-col items-stretch justify-start gap-8 overflow-clip rounded-lg md:justify-stretch lg:gap-8 empty:hidden';
 
 async function ProductPageSlices({
     shop,
     locale,
-    i18n,
     handle
 }: {
     shop: OnlineShop;
@@ -165,6 +166,32 @@ async function ProductPageSlices({
             ) : null}
         </section>
     );
+}
+
+async function Badges({ product, i18n }: { product: Product; i18n: LocaleDictionary }) {
+    const badges: ReactNode[] = [];
+
+    const { t } = useTranslation('product', i18n);
+
+    if (isProductVegan(product)) {
+        badges.push(
+            <div
+                key={'badge-attribute-vegan'}
+                className="flex items-center justify-center gap-1 rounded-2xl bg-green-500 p-[0.4rem] px-3 text-xs font-semibold uppercase leading-none text-white"
+                title={t('this-product-is-vegan')}
+                data-nosnippet={true}
+            >
+                <AttributeIcon data={'vegan'} className="text-lg" />
+                {t('vegan')}
+            </div>
+        );
+    }
+
+    if (badges.length <= 0) {
+        return null;
+    }
+
+    return <div className="flex items-center gap-1 empty:hidden">{badges}</div>;
 }
 
 export default async function ProductPage({
@@ -288,20 +315,11 @@ export default async function ProductPage({
 
                             <Card className={cn(BLOCK_STYLES)}>
                                 <div className="flex h-auto w-full flex-col justify-start gap-3 lg:gap-4 lg:p-0">
-                                    <header className="flex flex-col gap-1">
-                                        <div className="flex items-center gap-1 pb-2 empty:hidden">
-                                            {isProductVegan(product) ? (
-                                                <div
-                                                    className="flex items-center justify-center gap-1 rounded-2xl bg-green-500 p-[0.4rem] px-3 text-xs font-semibold uppercase leading-none text-white"
-                                                    title={t('this-product-is-vegan')}
-                                                    data-nosnippet={true}
-                                                >
-                                                    <AttributeIcon data={'vegan'} className="text-lg" />
-                                                    {t('vegan')}
-                                                </div>
-                                            ) : null}
-                                        </div>
+                                    <Suspense fallback={<div className="h-4 w-full" data-skeleton />}>
+                                        <Badges product={product} i18n={i18n} />
+                                    </Suspense>
 
+                                    <header className="flex flex-col gap-0">
                                         <div className="flex w-full grow flex-wrap whitespace-pre-wrap text-3xl font-extrabold leading-tight">
                                             <TitleTag className="text-inherit">
                                                 {title}{' '}
@@ -342,26 +360,22 @@ export default async function ProductPage({
                                 <ProductPageSlices shop={shop} locale={locale} i18n={i18n} handle={handle} />
                             </Suspense>
 
-                            <Suspense fallback={<Card className={cn(BLOCK_STYLES, 'h-32')} data-skeleton />}>
-                                <Card className={cn(BLOCK_STYLES)}>
+                            <Card className={cn(BLOCK_STYLES)}>
+                                <Suspense fallback={<div className="h-12 w-full" data-skeleton />}>
                                     <Content html={content} />
-                                </Card>
-                            </Suspense>
+                                </Suspense>
+                            </Card>
 
-                            <Suspense fallback={<Card className={cn(BLOCK_STYLES, 'h-16')} data-skeleton />}>
-                                <Card className={cn(BLOCK_STYLES)}>
-                                    <ImportantProductDetails locale={locale} data={product} />
-
-                                    <div className="flex flex-wrap gap-3 empty:hidden md:gap-4">
-                                        <ProductDetails locale={locale} data={product} />
-                                    </div>
-                                </Card>
+                            <Suspense fallback={<div className="h-12 w-full" data-skeleton />}>
+                                <div className="flex flex-wrap gap-2 empty:hidden">
+                                    <ProductDetails data={product} locale={locale} />
+                                </div>
                             </Suspense>
                         </section>
                     </Suspense>
                 </PageContent>
 
-                <Card border className="mt-2 flex w-full flex-col gap-3 px-0 lg:mt-6">
+                <Card className="mt-2 flex w-full flex-col gap-3 px-0 lg:mt-6" border={true}>
                     <p className="block px-3 text-xl font-extrabold leading-tight" data-nosnippet={true}>
                         {t('you-may-also-like')}
                     </p>
