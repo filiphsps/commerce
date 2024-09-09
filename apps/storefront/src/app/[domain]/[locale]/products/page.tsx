@@ -10,6 +10,7 @@ import { ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductsPaginationCountApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
+import { enableProductsPage } from '@/utils/flags';
 import { Locale, useTranslation } from '@/utils/locale';
 import { asText } from '@prismicio/client';
 import { notFound, redirect, RedirectType } from 'next/navigation';
@@ -95,6 +96,10 @@ export default async function ProductsPage({ params: { domain, locale: localeDat
         // Creates a locale object from a locale code (e.g. `en-US`).
         const locale = Locale.from(localeData);
 
+        if (!(await enableProductsPage())) {
+            redirect(`/${locale.code}/`, RedirectType.replace);
+        }
+
         // Fetch the current shop.
         const shop = await Shop.findByDomain(domain, { sensitiveData: true });
 
@@ -112,10 +117,14 @@ export default async function ProductsPage({ params: { domain, locale: localeDat
         const i18n = await getDictionary(locale);
         const { t } = useTranslation('common', i18n);
 
-        redirect(`/${locale.code}/`, RedirectType.replace);
-
         return (
             <>
+                <Suspense fallback={<BreadcrumbsSkeleton />}>
+                    <div className="-mb-[1.5rem] empty:hidden md:-mb-[2.25rem]">
+                        <Breadcrumbs locale={locale} title={t('products')} />
+                    </div>
+                </Suspense>
+
                 <Heading title={page?.title || t('products')} subtitle={page?.description} />
 
                 <Suspense>
@@ -124,10 +133,6 @@ export default async function ProductsPage({ params: { domain, locale: localeDat
 
                 <Suspense>
                     <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
-                </Suspense>
-
-                <Suspense fallback={<BreadcrumbsSkeleton />}>
-                    <Breadcrumbs locale={locale} title={t('products')} />
                 </Suspense>
             </>
         );

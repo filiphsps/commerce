@@ -14,8 +14,8 @@ import { asText } from '@prismicio/client';
 import { cookies } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
 
+import PrismicPage from '@/components/cms/prismic-page';
 import PageContent from '@/components/page-content';
-import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
 
 import LocaleSelector from './locale-selector';

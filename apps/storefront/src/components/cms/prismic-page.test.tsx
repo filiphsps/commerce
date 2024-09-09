@@ -1,6 +1,6 @@
 import { describe, it, vi } from 'vitest';
 
-//import PrismicPage from '@/components/prismic-page';
+//import PrismicPage from '@/components/cms/prismic-page';
 //import { render } from '@/utils/test/react';
 
 describe('components', () => {

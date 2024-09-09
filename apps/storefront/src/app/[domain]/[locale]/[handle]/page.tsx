@@ -16,10 +16,10 @@ import { Locale } from '@/utils/locale';
 import { asText } from '@prismicio/client';
 import { notFound } from 'next/navigation';
 
+import PrismicPage from '@/components/cms/prismic-page';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import { JsonLd } from '@/components/json-ld';
-import PrismicPage from '@/components/prismic-page';
 
 import type { Metadata } from 'next';
 import type { OnlineStore, WithContext } from 'schema-dts';

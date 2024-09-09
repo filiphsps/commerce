@@ -10,8 +10,8 @@ import { PageApi } from '@/api/page';
 import { cn } from '@/utils/tailwind';
 
 import { CartLines } from '@/components/cart/cart-lines';
+import PrismicPage from '@/components/cms/prismic-page';
 import PageContent from '@/components/page-content';
-import PrismicPage from '@/components/prismic-page';
 
 import { CartSidebar } from './cart-sidebar';
 

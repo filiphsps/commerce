@@ -36,6 +36,13 @@ export async function GET(request: NextRequest) {
                     { value: false, label: 'Off' },
                     { value: true, label: 'On' }
                 ]
+            },
+            'products-page': {
+                description: 'Controls if the products page (`/products/`) is enabled',
+                options: [
+                    { value: false, label: 'Disabled' },
+                    { value: true, label: 'Enabled' }
+                ]
             }
         }
     });

@@ -23,13 +23,13 @@ import { asText } from '@prismicio/client';
 import { parseGid } from '@shopify/hydrogen-react';
 import { notFound } from 'next/navigation';
 
+import PrismicPage from '@/components/cms/prismic-page';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import { JsonLd } from '@/components/json-ld';
 import { Card } from '@/components/layout/card';
 import Link from '@/components/link';
 import PageContent from '@/components/page-content';
-import PrismicPage from '@/components/prismic-page';
 import { AttributeIcon } from '@/components/products/attribute-icon';
 import { InfoLines } from '@/components/products/info-lines';
 import { ProductGallery } from '@/components/products/product-gallery';

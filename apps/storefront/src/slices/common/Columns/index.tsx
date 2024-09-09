@@ -3,7 +3,7 @@ import { Shop } from '@nordcom/commerce-db';
 
 import { createClient } from '@/utils/prismic';
 
-import PrismicPage from '@/components/prismic-page';
+import PrismicPage from '@/components/cms/prismic-page';
 
 import type { ColumnDocument } from '@/prismic/types';
 import type { Locale } from '@/utils/locale';

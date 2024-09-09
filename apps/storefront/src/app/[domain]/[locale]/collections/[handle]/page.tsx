@@ -16,11 +16,11 @@ import { asText } from '@prismicio/client';
 import { notFound } from 'next/navigation';
 
 import Pagination from '@/components/actionable/pagination';
+import PrismicPage from '@/components/cms/prismic-page';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import { JsonLd } from '@/components/json-ld';
 import PageContent from '@/components/page-content';
-import PrismicPage from '@/components/prismic-page';
 import CollectionBlock from '@/components/products/collection-block';
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';

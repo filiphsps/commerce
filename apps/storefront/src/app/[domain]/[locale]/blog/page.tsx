@@ -10,8 +10,8 @@ import { Locale, useTranslation } from '@/utils/locale';
 import { asText } from '@prismicio/client';
 import { notFound } from 'next/navigation';
 
+import PrismicPage from '@/components/cms/prismic-page';
 import PageContent from '@/components/page-content';
-import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
 
 import BlogContent from './blog-content';
