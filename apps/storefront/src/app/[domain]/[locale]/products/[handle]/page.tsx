@@ -256,7 +256,7 @@ export default async function ProductPage({
 
         // If the product description contains a <h1> tag, replace our h1 with a div to avoid multiple h1s.
         let TitleTag: any = 'h1';
-        if (content.length < 5 && content.includes('<h1')) {
+        if (content.includes('<h1')) {
             TitleTag = 'div';
         }
 
