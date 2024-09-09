@@ -49,6 +49,30 @@ export async function ProductIngredients({ locale, data: product }: ProductIngre
     );
 }
 
+export type ProductOriginalNameProps = {
+    locale: Locale;
+    data: Product;
+};
+export async function ProductOriginalName({ locale, data: product }: ProductOriginalNameProps) {
+    const i18n = await getDictionary(locale);
+    const { t } = useTranslation('product', i18n);
+
+    const { originalName } = product;
+    if (!originalName) {
+        return null;
+    }
+
+    const parsedName = !!originalName
+        ? parseMetafield<ParsedMetafields['single_line_text_field']>(originalName).parsedValue
+        : null;
+
+    if (!parsedName) {
+        return null;
+    }
+
+    return <p className="text-sm font-medium italic">&ldquo;{parsedName}&rdquo;</p>;
+}
+
 export type ProductDetailsProps = {
     locale: Locale;
     data: Product;

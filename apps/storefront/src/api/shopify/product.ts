@@ -200,12 +200,13 @@ export const PRODUCT_FRAGMENT = `
             }
         }
     }
-    originalName: metafield(namespace: "store", key: "original-name") {
-        value
-    }
 
-    keywords: metafield(namespace: "store", key: "keywords") {
+    originalName: metafield(namespace: "store", key: "original-name") {
+        id
+        namespace
+
         value
+        type
     }
 
     nutritionalContent: metafield(namespace: "store", key: "nutritional_content") {

@@ -37,7 +37,7 @@ import { RecommendedProducts } from '@/components/products/recommended-products'
 import { Content } from '@/components/typography/content';
 
 import { ProductContent, ProductPricing, ProductSavings } from './product-content';
-import { ProductDetails } from './product-details';
+import { ProductDetails, ProductOriginalName } from './product-details';
 
 import type { Product } from '@/api/product';
 import type { LocaleDictionary } from '@/utils/locale';
@@ -372,9 +372,13 @@ export default async function ProductPage({
                                 <ProductPageSlices shop={shop} locale={locale} i18n={i18n} handle={handle} />
                             </Suspense>
 
-                            <Card className={cn(BLOCK_STYLES)}>
+                            <Card className={cn(BLOCK_STYLES, 'gap-0 lg:gap-0')}>
                                 <Suspense fallback={<div className="h-12 w-full" data-skeleton />}>
                                     <Content html={content} />
+                                </Suspense>
+
+                                <Suspense>
+                                    <ProductOriginalName data={product} locale={locale} />
                                 </Suspense>
                             </Card>
 

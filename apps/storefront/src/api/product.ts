@@ -20,7 +20,7 @@ export type Product = ShopifyProduct & {
         pageInfo: PageInfo;
     };
 
-    keywords: Metafield;
+    originalName: Metafield;
 
     nutritionalContent: Metafield;
 
