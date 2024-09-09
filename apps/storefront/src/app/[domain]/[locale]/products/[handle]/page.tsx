@@ -2,7 +2,6 @@ import 'server-only';
 
 import { Suspense } from 'react';
 
-import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 
@@ -23,7 +22,7 @@ import { asText } from '@prismicio/client';
 import { parseGid } from '@shopify/hydrogen-react';
 import { notFound } from 'next/navigation';
 
-import PrismicPage from '@/components/cms/prismic-page';
+import { CMSContent } from '@/components/cms/cms-content';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import { JsonLd } from '@/components/json-ld';
@@ -156,27 +155,6 @@ export async function generateMetadata({
 
 const BLOCK_STYLES =
     'flex h-auto w-full flex-col items-stretch justify-start gap-8 overflow-clip rounded-lg md:justify-stretch lg:gap-8 empty:hidden';
-
-async function ProductPageSlices({
-    shop,
-    locale,
-    handle
-}: {
-    shop: OnlineShop;
-    locale: Locale;
-    i18n: LocaleDictionary;
-    handle: string;
-}) {
-    const page = await PageApi({ shop, locale, handle, type: 'product_page' });
-
-    return (
-        <section className="empty:hidden">
-            {(page?.slices || []).length > 0 ? (
-                <PrismicPage shop={shop} locale={locale} page={page} handle={handle} type={'product_page'} />
-            ) : null}
-        </section>
-    );
-}
 
 async function Badges({ product, i18n }: { product: Product; i18n: LocaleDictionary }) {
     const badges: ReactNode[] = [];
@@ -369,7 +347,9 @@ export default async function ProductPage({
                             </Suspense>
 
                             <Suspense fallback={<Card className={cn(BLOCK_STYLES, 'h-32')} data-skeleton />}>
-                                <ProductPageSlices shop={shop} locale={locale} i18n={i18n} handle={handle} />
+                                <section className="empty:hidden">
+                                    <CMSContent shop={shop} locale={locale} handle={handle} type={'product_page'} />
+                                </section>
                             </Suspense>
 
                             <Card className={cn(BLOCK_STYLES, 'gap-0 lg:gap-0')}>

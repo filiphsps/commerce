@@ -10,13 +10,12 @@ import { PageApi, PagesApi } from '@/api/page';
 import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { BusinessDataApi, LocalesApi } from '@/api/store';
-import { getDictionary } from '@/i18n/dictionary';
 import { isValidHandle } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
 import { asText } from '@prismicio/client';
 import { notFound } from 'next/navigation';
 
-import PrismicPage from '@/components/cms/prismic-page';
+import { CMSContent } from '@/components/cms/cms-content';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import { JsonLd } from '@/components/json-ld';
@@ -171,9 +170,6 @@ export default async function CustomPage({
             notFound(); // TODO: Return proper error.
         }
 
-        // Get dictionary of strings for the current locale.
-        const i18n = await getDictionary({ shop, locale });
-
         const breadcrumbs =
             handle !== 'homepage' && page.title ? (
                 <Suspense fallback={<BreadcrumbsSkeleton />}>
@@ -187,7 +183,7 @@ export default async function CustomPage({
             <>
                 {breadcrumbs}
 
-                <PrismicPage shop={shop} locale={locale} page={page} handle={handle} />
+                <CMSContent shop={shop} locale={locale} handle={handle} />
 
                 {/* Metadata */}
                 {handle === 'homepage' ? (

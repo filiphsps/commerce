@@ -2,6 +2,7 @@
 
 import { Suspense } from 'react';
 
+import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 
@@ -91,6 +92,20 @@ export async function generateMetadata({
     }
 }
 
+async function ProductsPagination({ shop, locale }: { shop: OnlineShop; locale: Locale }) {
+    // Setup the AbstractApi client.
+    const api = await ShopifyApolloApiClient({ shop, locale });
+
+    // Deal with pagination before fetching the collection.
+    const pagesInfo = await ProductsPaginationCountApi({ api, filters: {} });
+
+    return (
+        <>
+            <Pagination knownFirstPage={0} knownLastPage={0} morePagesAfterKnownLastPage={false} />
+        </>
+    );
+}
+
 export default async function ProductsPage({ params: { domain, locale: localeData } }: { params: ProductsPageParams }) {
     try {
         // Creates a locale object from a locale code (e.g. `en-US`).
@@ -102,12 +117,6 @@ export default async function ProductsPage({ params: { domain, locale: localeDat
 
         // Fetch the current shop.
         const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-
-        // Setup the AbstractApi client.
-        const api = await ShopifyApolloApiClient({ shop, locale });
-
-        // Deal with pagination before fetching the collection.
-        const pagesInfo = await ProductsPaginationCountApi({ api, filters: {} });
 
         // Do the actual API calls.
         //const products = await ProductsApi({ api, filters, cache);
@@ -125,14 +134,18 @@ export default async function ProductsPage({ params: { domain, locale: localeDat
                     </div>
                 </Suspense>
 
-                <Heading title={page?.title || t('products')} subtitle={page?.description} />
+                <Heading
+                    title={page?.title || t('products')}
+                    subtitle={page?.description}
+                    titleClassName="capitalize"
+                />
 
                 <Suspense>
                     <ProductsContent />
                 </Suspense>
 
-                <Suspense>
-                    <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
+                <Suspense fallback={<div className="h-14 w-full" data-skeleton />}>
+                    <ProductsPagination shop={shop} locale={locale} />
                 </Suspense>
             </>
         );

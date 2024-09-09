@@ -64,10 +64,14 @@ PrismicPage.skeleton = async <T extends PageType = 'custom_page'>({
     slices,
     shop
 }: Optional<Pick<PageParams<T>, 'page' | 'slices' | 'shop'>> = {}) => {
-    if (!page && !slices) return <div />;
+    if (!page && !slices) {
+        return null;
+    }
 
     const items = (page?.slices as typeof slices) || slices || [];
-    if (items.length <= 0) return <div />;
+    if (items.length <= 0) {
+        return null;
+    }
 
     return (
         <>

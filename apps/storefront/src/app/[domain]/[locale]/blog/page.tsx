@@ -10,7 +10,7 @@ import { Locale, useTranslation } from '@/utils/locale';
 import { asText } from '@prismicio/client';
 import { notFound } from 'next/navigation';
 
-import PrismicPage from '@/components/cms/prismic-page';
+import { CMSContent } from '@/components/cms/cms-content';
 import PageContent from '@/components/page-content';
 import Heading from '@/components/typography/heading';
 
@@ -103,9 +103,7 @@ export default async function BlogPage({ params: { domain, locale: localeData } 
 
                 <BlogContent blog={blog} locale={locale} i18n={i18n} />
 
-                {page?.slices && page.slices.length > 0 && (
-                    <PrismicPage shop={shop} locale={locale} page={page} handle={'blog'} type={'custom_page'} />
-                )}
+                {page?.slices && page.slices.length > 0 && <CMSContent shop={shop} locale={locale} handle={'blog'} />}
             </PageContent>
         );
     } catch (error: unknown) {
