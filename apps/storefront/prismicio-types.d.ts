@@ -629,6 +629,17 @@ interface FooterDocumentData {
     policy_links: prismic.GroupField<Simplify<FooterDocumentDataPolicyLinksItem>>;
 
     /**
+     * Custom HTML field in *Footer*
+     *
+     * - **Field Type**: Text
+     * - **Placeholder**: <div>hello world!</div>
+     * - **API ID Path**: footer.custom_html
+     * - **Tab**: Main
+     * - **Documentation**: https://prismic.io/docs/field#key-text
+     */
+    custom_html: prismic.KeyTextField;
+
+    /**
      * Slice Zone field in *Footer*
      *
      * - **Field Type**: Slice Zone

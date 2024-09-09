@@ -47,6 +47,13 @@
                     }
                 }
             },
+            "custom_html": {
+                "type": "Text",
+                "config": {
+                    "label": "Custom HTML",
+                    "placeholder": "<div>hello world!</div>"
+                }
+            },
             "body": {
                 "type": "Slices",
                 "fieldset": "Slice Zone",

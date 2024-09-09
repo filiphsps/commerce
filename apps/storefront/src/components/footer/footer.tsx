@@ -33,7 +33,7 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
     return (
         <footer className="bg-primary text-primary-foreground flex h-full max-h-max w-full items-center justify-around self-end overflow-hidden p-2 pt-8 [grid-area:footer] md:p-3 md:pt-6">
             <div className={cn(styles.content, 'flex h-full flex-col items-stretch gap-4 md:gap-8 2xl:px-3')}>
-                <div className={cn(styles.blocks, 'gap-6', borderStyles)}>
+                <div className={cn(styles.blocks, 'gap-6 pb-6 lg:pb-12', borderStyles)}>
                     <div className={cn(styles.block, borderStyles)}>
                         {logo.src ? (
                             <Image
@@ -54,6 +54,10 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
                         <Content as="address" className="prose-sm font-medium">
                             <PrismicText data={footer.address} styled={false} />
                         </Content>
+
+                        {footer.custom_html ? (
+                            <div className="w-full" dangerouslySetInnerHTML={{ __html: footer.custom_html }} />
+                        ) : null}
                     </div>
 
                     {footer.body.map(({ primary: { title }, items }, index) => {
