@@ -11,8 +11,7 @@ import { Button } from '@/components/actionable/button';
 import { Input } from '@/components/actionable/input';
 
 import type { LocaleDictionary } from '@/utils/locale';
-import type { HTMLProps } from 'react';
-import type { ChangeEvent, KeyboardEventHandler } from 'react';
+import type { ChangeEvent, HTMLProps, KeyboardEventHandler } from 'react';
 
 export const QuantityInputFilter = (value?: string, prev?: string): string => {
     // FRO-58: Only allow numbers
@@ -42,6 +41,7 @@ export type QuantitySelectorProps = {
     disabled?: boolean;
     allowDecreaseToZero?: boolean;
     buttonClassName?: string;
+    inputClassName?: string;
 } & HTMLProps<HTMLDivElement>;
 
 const QuantitySelector = ({
@@ -52,6 +52,7 @@ const QuantitySelector = ({
     disabled: isDisabled,
     allowDecreaseToZero = false,
     buttonClassName = '',
+    inputClassName = '',
     ...props
 }: QuantitySelectorProps) => {
     const { t } = useTranslation('common', i18n);
@@ -147,7 +148,7 @@ const QuantitySelector = ({
                 aria-label={t('decrease')}
                 type="button"
                 className={cn(
-                    'aspect-square h-full select-none appearance-none rounded-none bg-transparent p-2 text-current',
+                    'aspect-[3/4] h-full select-none appearance-none rounded-none bg-transparent p-2 font-bold text-current',
                     !disabled && 'hover:bg-primary hover:text-primary-foreground cursor-pointer',
                     buttonClassName
                 )}
@@ -159,7 +160,7 @@ const QuantitySelector = ({
                 data-nosnippet={true}
                 styled={false}
             >
-                {'−'}
+                &ndash;
             </Button>
 
             <Input
@@ -173,7 +174,8 @@ const QuantitySelector = ({
                 step={1}
                 pattern="[0-9]"
                 className={cn(
-                    'w-full grow appearance-none border-none bg-transparent text-sm font-bold outline-none focus:outline-none focus:ring-0'
+                    'w-full grow appearance-none border-none bg-transparent text-sm font-bold outline-none focus:outline-none focus:ring-0',
+                    inputClassName
                 )}
                 disabled={disabled}
                 value={quantityValue}
@@ -191,7 +193,7 @@ const QuantitySelector = ({
                 aria-label={t('increase')}
                 type="button"
                 className={cn(
-                    'aspect-square h-full select-none appearance-none rounded-none bg-transparent p-2 text-current',
+                    'aspect-[3/4] h-full select-none appearance-none rounded-none bg-transparent p-2 font-bold text-current',
                     !disabled && 'hover:bg-primary hover:text-primary-foreground cursor-pointer',
                     buttonClassName
                 )}

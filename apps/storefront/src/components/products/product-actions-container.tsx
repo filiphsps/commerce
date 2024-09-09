@@ -45,7 +45,8 @@ export const ProductActionsContainer = ({ className, i18n, ...props }: ProductAc
                         i18n={i18n}
                         style={{ gridArea: 'quantity' }}
                         className="h-12 bg-white"
-                        buttonClassName="disabled:opacity-0 bg-white"
+                        buttonClassName="disabled:opacity-0 bg-white h-12"
+                        inputClassName="h-12"
                     />
                 </div>
 
