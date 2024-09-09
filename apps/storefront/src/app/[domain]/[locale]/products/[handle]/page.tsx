@@ -62,7 +62,7 @@ export async function generateStaticParams({
     const shop = await Shop.findByDomain(domain);
     const api = await ShopifyApiClient({ shop, locale });
 
-    const limit = 50; // Artificially limit the number of products to 50 to avoid overloading the API.
+    const limit = 10; // Artificially limit the number of products to avoid overloading the API.
     const { products } = await ProductsApi({ api, limit, sorting: 'BEST_SELLING' });
 
     return products.map(({ node: { handle } }) => ({
