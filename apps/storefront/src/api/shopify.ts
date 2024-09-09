@@ -33,13 +33,17 @@ export const ShopifyApiConfig = async ({
     });
 
     /**
-     * @todo TODO: Should probably find a better way since this forces routes into dynamic
-     * rendering unless dynamic has been set to`force-static`.
+     * @todo TODO: Should probably find a better way since this forces routes into
+     * dynamic rendering unless dynamic has been set to `force-static`.
      */
     let buyerIp: string | undefined = undefined;
     try {
-        buyerIp = headers().get('x-forwarded-for') || undefined;
-    } catch {}
+        const forwarded = headers().get('x-forwarded-for') || undefined;
+        if (forwarded) {
+            console.info('Using forwarded IP address for Shopify API client.', forwarded);
+            buyerIp = forwarded;
+        }
+    } catch {} // Discard errors.
 
     return {
         public: () => ({
