@@ -28,6 +28,7 @@ async function PrismicPage<T extends PageType = 'custom_page'>({
     type = 'custom_page' as T
 }: PageParams<T>) {
     if (!page && !slices) {
+        console.warn(`No page or slices provided for "${handle}"`);
         return null;
     }
 
