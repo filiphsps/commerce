@@ -73,9 +73,9 @@ const ProductGallery = ({
 
     return (
         <section draggable={false} className={cn(className)} {...props}>
-            <div className="sticky top-36 flex w-full flex-col gap-2 overflow-clip lg:gap-4">
+            <div className="flex w-full gap-2 overflow-clip md:sticky md:top-36 md:flex-col lg:gap-4">
                 <div
-                    className="relative overflow-hidden rounded-lg border-2 border-solid border-gray-100 bg-white p-8 py-12 md:h-full md:p-16"
+                    className="relative w-full grow overflow-hidden rounded-lg border-2 border-solid border-gray-100 bg-white p-8 py-12 md:h-full md:p-16"
                     {...loadingProps}
                 >
                     {image ? (
@@ -168,7 +168,7 @@ const ProductGallery = ({
                 </div>
 
                 {image && images.length > 1 ? (
-                    <aside className="grid grid-cols-4 gap-2 overflow-hidden lg:h-fit">
+                    <aside className="flex grid-cols-4 flex-col gap-2 overflow-hidden md:grid lg:h-fit">
                         {images
                             .filter(({ id }) => image.id !== id)
                             .map((image, index) => {
@@ -178,7 +178,7 @@ const ProductGallery = ({
                                         aria-label={`Enlarge image #${index + 1}`}
                                         onClick={() => setImage(image)}
                                         className={cn(
-                                            'hover:border-primary flex h-full appearance-none items-center justify-center rounded-lg border-2 border-solid border-gray-100 bg-white transition-all md:p-8 lg:aspect-square lg:h-full lg:w-auto'
+                                            'hover:border-primary flex appearance-none items-center justify-center rounded-lg border-2 border-solid border-gray-100 bg-white p-1 transition-all md:h-full md:p-8 lg:aspect-square lg:h-full lg:w-auto'
                                         )}
                                         {...loadingProps}
                                     >
