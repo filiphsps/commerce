@@ -57,17 +57,27 @@ export async function generateStaticParams({
 }: {
     params: Omit<ProductPageParams, 'handle'>;
 }): Promise<Omit<ProductPageParams, 'domain' | 'locale'>[]> {
-    const locale = Locale.from(localeData);
+    /** @note Limit pre-rendering when not in production. */
+    if (process.env.VERCEL_ENV !== 'production') {
+        return [];
+    }
 
-    const shop = await Shop.findByDomain(domain);
-    const api = await ShopifyApiClient({ shop, locale });
+    try {
+        const locale = Locale.from(localeData);
 
-    const limit = 10; // Artificially limit the number of products to avoid overloading the API.
-    const { products } = await ProductsApi({ api, limit, sorting: 'BEST_SELLING' });
+        const shop = await Shop.findByDomain(domain);
+        const api = await ShopifyApiClient({ shop, locale });
 
-    return products.map(({ node: { handle } }) => ({
-        handle
-    }));
+        const limit = 10; // Artificially limit the number of products to avoid overloading the API.
+        const { products } = await ProductsApi({ api, limit, sorting: 'BEST_SELLING' });
+
+        return products.map(({ node: { handle } }) => ({
+            handle
+        }));
+    } catch (error: unknown) {
+        console.error(error);
+        return [];
+    }
 }
 
 export async function generateMetadata({

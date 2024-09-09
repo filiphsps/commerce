@@ -43,6 +43,11 @@ export async function generateStaticParams({
 }: {
     params: Omit<CollectionPageParams, 'handle'>;
 }): Promise<Omit<CollectionPageParams, 'domain' | 'locale'>[]> {
+    /** @note Limit pre-rendering when not in production. */
+    if (process.env.VERCEL_ENV !== 'production') {
+        return [];
+    }
+
     try {
         const locale = Locale.from(localeData);
 

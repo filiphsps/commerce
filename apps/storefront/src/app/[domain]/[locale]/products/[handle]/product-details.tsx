@@ -63,7 +63,7 @@ const ProductDetails = async ({ locale, data: product }: ProductDetailsProps) =>
 
     const {
         flavors,
-        allergen,
+        // allergen,
         variants: { edges: variants }
     } = product;
 
@@ -71,10 +71,6 @@ const ProductDetails = async ({ locale, data: product }: ProductDetailsProps) =>
     const parsedFlavors = !!(flavors as any)
         ? parseMetafield<ParsedMetafields['list.single_line_text_field']>(flavors).parsedValue
         : null;
-
-    if (allergen) {
-        console.debug(`Product ${product.id} has allergen`, allergen);
-    }
 
     return (
         <>

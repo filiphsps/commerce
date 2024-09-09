@@ -49,6 +49,16 @@ export async function generateStaticParams(): Promise<LayoutParams[]> {
                         return null as any as LayoutParams;
                     }
 
+                    /** @note Limit pre-rendering when not in production. */
+                    if (process.env.VERCEL_ENV !== 'production') {
+                        return [
+                            {
+                                domain: shop.domain,
+                                locale: 'en-US'
+                            }
+                        ];
+                    }
+
                     const api = await ShopifyApiClient({ shop });
                     const locales = await LocalesApi({ api });
 
