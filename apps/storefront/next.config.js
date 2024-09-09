@@ -1,17 +1,12 @@
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import createWithBundleAnalyzer from '@next/bundle-analyzer';
 import { withSentryConfig } from '@sentry/nextjs';
 import createVercelToolbar from '@vercel/toolbar/plugins/next';
 
 import { createRequire } from 'node:module';
 
 const withVercelToolbar = createVercelToolbar();
-
-const withBundleAnalyzer = createWithBundleAnalyzer({
-    enabled: process.env.ANALYZE === 'true'
-});
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -152,7 +147,7 @@ const config = {
     skipTrailingSlashRedirect: true
 };
 
-export default withSentryConfig(withBundleAnalyzer(withVercelToolbar(config)), {
+export default withSentryConfig(withVercelToolbar(config), {
     org: 'nordcom',
     project: 'commerce',
     authToken: process.env.SENTRY_AUTH_TOKEN,
