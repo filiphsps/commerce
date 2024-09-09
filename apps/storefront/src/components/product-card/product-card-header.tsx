@@ -30,9 +30,10 @@ const VariantImage = ({ image, priority }: VariantImageProps) => {
             title={image.altText!}
             height={image.height || 100}
             width={image.width || 100}
-            sizes="(max-width: 950px) 80vw, 185px"
+            sizes="(max-width: 950px) 120px, 185px"
             decoding="async"
             draggable={false}
+            quality={80}
             loading={priority ? 'eager' : 'lazy'}
         />
     );
