@@ -74,7 +74,7 @@ export const PRODUCT_FRAGMENT_MINIMAL = `
                 image {
                     id
                     altText
-                    url
+                    url(transform: { preferredContentType: WEBP })
                     height
                     width
                 }
@@ -88,7 +88,7 @@ export const PRODUCT_FRAGMENT_MINIMAL = `
     featuredImage {
         id
         altText
-        url
+        url(transform: { preferredContentType: WEBP })
         height
         width
     }
@@ -97,7 +97,7 @@ export const PRODUCT_FRAGMENT_MINIMAL = `
             node {
                 id
                 altText
-                url
+                url(transform: { preferredContentType: WEBP })
                 height
                 width
             }
@@ -171,7 +171,7 @@ export const PRODUCT_FRAGMENT = `
                 image {
                     id
                     altText
-                    url
+                    url(transform: { preferredContentType: WEBP })
                     height
                     width
                 }
@@ -185,7 +185,7 @@ export const PRODUCT_FRAGMENT = `
     featuredImage {
         id
         altText
-        url
+        url(transform: { preferredContentType: WEBP })
         height
         width
     }
@@ -194,7 +194,7 @@ export const PRODUCT_FRAGMENT = `
             node {
                 id
                 altText
-                url
+                url(transform: { preferredContentType: WEBP })
                 height
                 width
             }
