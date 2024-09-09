@@ -9,7 +9,7 @@ import { Error } from '@nordcom/commerce-errors';
 import { PageApi } from '@/api/page';
 import { isProductVegan } from '@/api/product';
 import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
-import { ProductApi } from '@/api/shopify/product';
+import { ProductApi, ProductsApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
@@ -50,24 +50,22 @@ export const revalidate = false;
 
 export type ProductPageParams = { domain: string; locale: string; handle: string };
 
-export async function generateStaticParams(
-    {
-        //params: { domain, locale: localeData }
-    }: {
-        params: Omit<ProductPageParams, 'handle'>;
-    }
-): Promise<Omit<ProductPageParams, 'domain' | 'locale'>[]> {
-    /*const locale = Locale.from(localeData);
+export async function generateStaticParams({
+    params: { domain, locale: localeData }
+}: {
+    params: Omit<ProductPageParams, 'handle'>;
+}): Promise<Omit<ProductPageParams, 'domain' | 'locale'>[]> {
+    const locale = Locale.from(localeData);
 
     const shop = await Shop.findByDomain(domain);
     const api = await ShopifyApiClient({ shop, locale });
-    const { products } = await ProductsApi({ api });
+
+    const limit = 50; // Artificially limit the number of products to 50 to avoid overloading the API.
+    const { products } = await ProductsApi({ api, limit, sorting: 'BEST_SELLING' });
 
     return products.map(({ node: { handle } }) => ({
         handle
-    }));*/
-
-    return [];
+    }));
 }
 
 export async function generateMetadata({
