@@ -138,7 +138,7 @@ const QuantitySelector = ({
         <section
             {...props}
             className={cn(
-                'flex max-h-fit w-full overflow-hidden rounded-lg border-2 border-solid border-white bg-white p-0 leading-none opacity-50 transition-colors *:appearance-none *:text-center *:text-lg *:leading-none *:transition-colors',
+                'flex min-h-fit w-full overflow-hidden rounded-lg border-2 border-solid border-white bg-white p-0 leading-none opacity-50 transition-colors *:appearance-none *:text-center *:text-lg *:leading-none *:transition-colors',
                 !disabled && 'hover:border-primary opacity-100',
                 className
             )}
@@ -174,7 +174,7 @@ const QuantitySelector = ({
                 step={1}
                 pattern="[0-9]"
                 className={cn(
-                    'w-full grow appearance-none border-none bg-transparent text-sm font-bold outline-none focus:outline-none focus:ring-0',
+                    'h-full w-full grow appearance-none border-none bg-transparent text-sm font-bold outline-none focus:outline-none focus:ring-0',
                     inputClassName
                 )}
                 disabled={disabled}

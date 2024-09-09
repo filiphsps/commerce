@@ -319,30 +319,32 @@ export default async function ProductPage({
                                         <Badges product={product} i18n={i18n} />
                                     </Suspense>
 
-                                    <header className="flex flex-col gap-0">
-                                        <div className="flex w-full grow flex-wrap whitespace-pre-wrap text-3xl font-extrabold leading-tight">
-                                            <TitleTag className="text-inherit">
-                                                {title}{' '}
-                                                {product.productType ? (
-                                                    <span data-nosnippet={true}>&ndash; {product.productType}</span>
-                                                ) : null}
-                                            </TitleTag>
+                                    <header className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between md:gap-1">
+                                        <div className="flex grow flex-col gap-0">
+                                            <div className="flex w-full grow flex-wrap whitespace-pre-wrap text-3xl font-extrabold leading-tight">
+                                                <TitleTag className="text-inherit">
+                                                    {title}{' '}
+                                                    {product.productType ? (
+                                                        <span data-nosnippet={true}>&ndash; {product.productType}</span>
+                                                    ) : null}
+                                                </TitleTag>
+                                            </div>
+
+                                            <Link
+                                                className="hover:text-primary normal-case leading-tight text-gray-600 transition-colors md:text-lg"
+                                                href={`/collections/${TitleToHandle(product.vendor)}`}
+                                                title={t('browse-all-products-by-brand', product.vendor)}
+                                            >
+                                                {t('by')} <span className="font-semibold">{product.vendor}</span>
+                                            </Link>
                                         </div>
 
-                                        <Link
-                                            className="hover:text-primary normal-case leading-tight text-gray-600 transition-colors md:text-lg"
-                                            href={`/collections/${TitleToHandle(product.vendor)}`}
-                                            title={t('browse-all-products-by-brand', product.vendor)}
-                                        >
-                                            {t('by')} <span className="font-semibold">{product.vendor}</span>
-                                        </Link>
+                                        <Suspense>
+                                            <div className="flex items-end justify-start gap-2 empty:hidden md:gap-3">
+                                                <ProductPricing product={product} />
+                                            </div>
+                                        </Suspense>
                                     </header>
-
-                                    <Suspense>
-                                        <div className="flex items-end justify-start gap-2 empty:hidden md:gap-3">
-                                            <ProductPricing product={product} />
-                                        </div>
-                                    </Suspense>
                                 </div>
 
                                 <Suspense>

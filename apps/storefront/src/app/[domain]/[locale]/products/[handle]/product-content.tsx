@@ -68,7 +68,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
             {price ? (
                 <Price
                     data={price}
-                    className={cn('text-3xl font-bold md:text-4xl', compareAtPrice && 'font-black text-red-500')}
+                    className={cn('text-2xl font-bold md:text-3xl', compareAtPrice && 'font-black text-red-500')}
                 />
             ) : null}
             {compareAtPrice ? (
@@ -100,7 +100,6 @@ export function ProductSavings({ i18n, product, className }: ProductSavingsProps
 
     const price = variant.price as ProductVariant['price'] | undefined;
     const compareAtPrice = variant.compareAtPrice;
-
     if (!price || !compareAtPrice) {
         return null;
     }
@@ -109,6 +108,11 @@ export function ProductSavings({ i18n, product, className }: ProductSavingsProps
     const compareAtAmount = safeParseFloat(0, compareAtPrice.amount);
 
     const savings = compareAtAmount - totalAmount;
+    if (savings < 0) {
+        console.error(`Savings for product ${product.id} is negative.`, savings);
+        return null;
+    }
+
     const discount = Math.round((100 * (compareAtAmount - totalAmount)) / Math.max(1, compareAtAmount));
 
     return (
