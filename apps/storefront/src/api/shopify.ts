@@ -40,7 +40,7 @@ export const ShopifyApiConfig = async ({
     try {
         const forwarded = headers().get('x-forwarded-for') || undefined;
         if (forwarded) {
-            console.info('Using forwarded IP address for Shopify API client.', forwarded);
+            console.debug('Using forwarded IP address for Shopify API client.', forwarded);
             buyerIp = forwarded;
         }
     } catch {} // Discard errors.

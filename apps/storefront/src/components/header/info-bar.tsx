@@ -44,7 +44,7 @@ export async function InfoBar({ className, shop, locale, i18n, ...props }: InfoB
             <section
                 {...props}
                 className={cn(
-                    'mx-auto flex h-8 w-full max-w-[var(--page-width)] items-center justify-between gap-1 px-3 py-1 md:px-3',
+                    'mx-auto flex h-8 w-full max-w-[var(--page-width)] items-center justify-between gap-1 px-2 py-1 md:px-3',
                     className
                 )}
             >
