@@ -8,8 +8,17 @@ import { resolveAcceptLanguage } from 'resolve-accept-language';
 import type { Code } from '@/utils/locale';
 import type { NextRequest } from 'next/server';
 
-export const getHostname = async (req: NextRequest): Promise<string> => {
+function hostnameFromRequest(req: NextRequest): string {
     let hostname = (req.headers.get('host')?.replace('.localhost', '') || req.nextUrl.host || '').toLowerCase();
+
+    // Remove port from hostname.
+    hostname = hostname ? hostname.split(':')[0]! : '';
+
+    return hostname;
+}
+
+export const getHostname = async (req: NextRequest): Promise<string> => {
+    let hostname = hostnameFromRequest(req);
 
     // Remove port from hostname.
     hostname = hostname ? hostname.split(':')[0]! : '';
@@ -53,6 +62,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         newUrl.hostname = 'shops.nordcom.io';
         newUrl.protocol = 'https';
         newUrl.port = '443';
+        newUrl.searchParams.set('shop', hostnameFromRequest(req));
 
         // Check if we're requesting a file, if so, let it pass.
         if (FILE_TEST.test(newUrl.pathname)) {
