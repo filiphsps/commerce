@@ -50,8 +50,18 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     } catch (error: unknown) {
         console.error(error);
 
+        newUrl.hostname = 'shops.nordcom.io';
+        newUrl.protocol = 'https';
+        newUrl.port = '443';
+
+        // Check if we're requesting a file, if so, let it pass.
+        if (FILE_TEST.test(newUrl.pathname)) {
+            return NextResponse.rewrite(newUrl);
+        }
+
         // TODO Handle other errors.
-        return NextResponse.rewrite('https://shops.nordcom.io/status/unknown-shop-error/', {
+        newUrl.pathname = '/status/unknown-shop-error/';
+        return NextResponse.rewrite(newUrl, {
             status: 404
         });
     }
