@@ -31,6 +31,7 @@ import Link from '@/components/link';
 import PageContent from '@/components/page-content';
 import { AttributeIcon } from '@/components/products/attribute-icon';
 import { InfoLines } from '@/components/products/info-lines';
+import { ProductCategory } from '@/components/products/product-category';
 import { ProductGallery } from '@/components/products/product-gallery';
 import { RecommendedProducts } from '@/components/products/recommended-products';
 import { Content } from '@/components/typography/content';
@@ -263,8 +264,18 @@ export default async function ProductPage({
         };
 
         let title = product.title.trim();
-        if (product.productType.length > 0 && title.endsWith(product.productType)) {
+        if (product.productType.length > 0 && title.toLowerCase().endsWith(product.productType.toLowerCase())) {
             title = title.slice(0, -product.productType.length).trim();
+        }
+
+        let productTypeElement = null;
+        if (product.productType) {
+            productTypeElement = (
+                <span data-nosnippet={true} className="contents leading-none text-gray-700">
+                    {' '}
+                    &ndash; <ProductCategory shop={shop} locale={locale} product={product} />
+                </span>
+            );
         }
 
         // If the product description contains a <h1> tag, replace our h1 with a div to avoid multiple h1s.
@@ -311,10 +322,8 @@ export default async function ProductPage({
                                         <div className="flex grow flex-col gap-0">
                                             <div className="flex w-full grow flex-wrap whitespace-pre-wrap text-3xl font-extrabold leading-tight">
                                                 <TitleTag className="text-inherit">
-                                                    {title}{' '}
-                                                    {product.productType ? (
-                                                        <span data-nosnippet={true}>&ndash; {product.productType}</span>
-                                                    ) : null}
+                                                    {title}
+                                                    {productTypeElement}
                                                 </TitleTag>
                                             </div>
 

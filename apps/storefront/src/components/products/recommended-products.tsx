@@ -33,7 +33,7 @@ const RecommendedProducts = async ({ shop, locale, product, className }: Recomme
         <CollectionBlock shop={shop} locale={locale} className={className} isHorizontal={true}>
             {recommended.map((product) => (
                 <Suspense key={product.id} fallback={<ProductCard.skeleton />}>
-                    <ProductCard shop={shop} locale={locale} data={product} className="" />
+                    <ProductCard shop={shop} locale={locale} data={product} priority={false} />
                 </Suspense>
             ))}
         </CollectionBlock>

@@ -1,8 +1,16 @@
 import type { Identifiable, LimitFilters, Nullable } from '@nordcom/commerce-db';
-import { NotFoundError, TodoError, UnknownApiError, UnreachableError } from '@nordcom/commerce-errors';
+import {
+    Error,
+    InvalidHandleError,
+    NotFoundError,
+    TodoError,
+    UnknownApiError,
+    UnreachableError
+} from '@nordcom/commerce-errors';
 
 import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
 import { cleanShopifyHtml } from '@/utils/abstract-api';
+import { isValidHandle } from '@/utils/handle';
 import { gql } from '@apollo/client';
 
 import type { AbstractApi, ApiOptions } from '@/utils/abstract-api';
@@ -108,7 +116,10 @@ export const CollectionApi = async (
     { api, handle, ...props }: CollectionOptions,
     _cache?: any
 ): Promise<Collection> => {
-    if (!handle) throw new Error('400: Invalid handle');
+    if (!isValidHandle(handle)) {
+        throw new InvalidHandleError(handle);
+    }
+
     const shop = api.shop();
 
     const filters = 'filters' in props ? props.filters : /** @deprecated */ (props as CollectionFilters);
@@ -200,6 +211,10 @@ export const CollectionApi = async (
             descriptionHtml: cleanShopifyHtml(data.collection.descriptionHtml) || ''
         };
     } catch (error: unknown) {
+        if (Error.isNotFound(error)) {
+            throw error;
+        }
+
         console.error(error);
         throw error;
     }
@@ -214,7 +229,10 @@ export const CollectionPaginationCountApi = async ({
     products: number;
     cursors: string[];
 }> => {
-    if (!handle) throw new Error('400: Invalid handle');
+    if (!isValidHandle(handle)) {
+        throw new InvalidHandleError(handle);
+    }
+
     const filters = 'filters' in props ? props.filters : /** @deprecated */ (props as CollectionFilters);
     const filtersTag = JSON.stringify(filters, null, 0);
 
@@ -339,8 +357,11 @@ export const CollectionsApi = async (
             }
         `);
 
-        if (errors) return reject(new Error(`500: ${errors.map((e: any) => e.message).join('\n')}`));
-        else if (!data?.collections) return reject(new Error(`404: No collections could be found`));
+        if (errors) {
+            return reject(new Error(`500: ${errors.map((e: any) => e.message).join('\n')}`));
+        } else if (!data?.collections) {
+            return reject(new Error(`404: No collections could be found`));
+        }
 
         return resolve(
             data.collections.edges.map(({ node: { id, handle, products } }) => ({
@@ -444,7 +465,9 @@ export const CollectionsPaginationApi = async ({
             );
 
             const page_info = data?.collections.pageInfo;
-            if (!page_info) return reject(new Error(`500: Something went wrong on our end`));
+            if (!page_info) {
+                return reject(new Error(`500: Something went wrong on our end`));
+            }
 
             return resolve({
                 collections: data.collections.edges,

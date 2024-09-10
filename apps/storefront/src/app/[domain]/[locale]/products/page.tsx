@@ -101,7 +101,7 @@ async function ProductsPagination({ shop, locale }: { shop: OnlineShop; locale: 
 
     return (
         <>
-            <Pagination knownFirstPage={0} knownLastPage={0} morePagesAfterKnownLastPage={false} />
+            <Pagination knownFirstPage={0} knownLastPage={pagesInfo.pages} morePagesAfterKnownLastPage={false} />
         </>
     );
 }

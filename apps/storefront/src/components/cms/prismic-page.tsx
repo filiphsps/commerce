@@ -22,13 +22,16 @@ type PageParams<T extends PageType> = {
 async function PrismicPage<T extends PageType = 'custom_page'>({
     shop,
     locale,
-    page,
-    slices,
+    page = undefined,
+    slices = undefined,
     handle,
     type = 'custom_page' as T
 }: PageParams<T>) {
-    if (!page && !slices) {
+    if (typeof page === 'undefined' && typeof slices === 'undefined') {
         console.warn(`No page or slices provided for "${handle}"`);
+    }
+
+    if ((!page || page.slices.length <= 0) && (!slices || slices.length <= 0)) {
         return null;
     }
 
@@ -64,7 +67,7 @@ PrismicPage.skeleton = async <T extends PageType = 'custom_page'>({
     slices,
     shop
 }: Optional<Pick<PageParams<T>, 'page' | 'slices' | 'shop'>> = {}) => {
-    if (!page && !slices) {
+    if ((!page || page.slices.length <= 0) && (!slices || slices.length <= 0)) {
         return null;
     }
 

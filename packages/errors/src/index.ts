@@ -9,8 +9,9 @@ export class Error<T = unknown> extends BuiltinError {
     // Defined in the constructor using `Object.defineProperty`.
     public readonly help!: string;
 
-    public constructor() {
-        super(...arguments);
+    public constructor(message?: string) {
+        const args = [...arguments].splice(0, 1);
+        super(message, ...args);
 
         Object.defineProperty(this, 'help', {
             get: function () {
@@ -61,6 +62,7 @@ export enum ApiErrorKind {
     API_UNKNOWN_CONTENT_PROVIDER = 'API_UNKNOWN_CONTENT_PROVIDER',
     API_UNKNOWN_LOCALE = 'API_UNKNOWN_LOCALE',
     API_INVALID_SHOP = 'API_INVALID_SHOP',
+    API_INVALID_HANDLE = 'API_INVALID_HANDLE',
     API_TOO_MANY_REQUESTS = 'API_TOO_MANY_REQUESTS',
     API_METHOD_NOT_ALLOWED = 'API_IMAGE_NO_FRACTIONAL',
     API_IMAGE_NO_FRACTIONAL = 'API_ICON_WIDTH_NO_FRACTIONAL',
@@ -126,6 +128,21 @@ export class InvalidShopError extends ApiError {
     details = 'Invalid shop';
     description = 'The current shop is invalid';
     code = ApiErrorKind.API_INVALID_SHOP;
+}
+export class InvalidHandleError extends ApiError {
+    statusCode = 400;
+    name = 'InvalidHandleError';
+    details = 'Invalid handle';
+    description = 'The handle is invalid';
+    code = ApiErrorKind.API_INVALID_HANDLE;
+
+    constructor(handle?: string) {
+        super();
+
+        if (handle) {
+            this.cause = this.description.replace('handle', `handle "${handle}"`);
+        }
+    }
 }
 
 export class TooManyRequestsError extends ApiError {
@@ -321,10 +338,14 @@ export const getErrorFromCode = (
             return UnknownShopDomainError;
         case ApiErrorKind.API_UNKNOWN_COMMERCE_PROVIDER:
             return UnknownCommerceProviderError;
+        case ApiErrorKind.API_UNKNOWN_CONTENT_PROVIDER:
+            return UnknownContentProviderError;
         case ApiErrorKind.API_UNKNOWN_LOCALE:
             return UnknownLocaleError;
         case ApiErrorKind.API_INVALID_SHOP:
             return InvalidShopError;
+        case ApiErrorKind.API_INVALID_HANDLE:
+            return InvalidHandleError;
         case ApiErrorKind.API_TOO_MANY_REQUESTS:
             return TooManyRequestsError;
         case ApiErrorKind.API_METHOD_NOT_ALLOWED:

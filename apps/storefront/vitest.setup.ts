@@ -97,12 +97,14 @@ vi.mock('@shopify/hydrogen-react', async () => ({
     useShopifyCookies: vi.fn().mockReturnValue({})
 }));
 
-vi.mock('react', async () => {
+vi.mock('react', async (importActual) => {
     return {
-        ...(((await vi.importActual('react')) as any) || {}),
-        cache: vi.fn().mockImplementation((func) => func)
+        ...(((await importActual()) as any) || {}),
+        cache: vi.fn().mockImplementation((func) => func),
+        Suspense: vi.fn().mockImplementation(({ children }: any) => children)
     };
 });
+
 vi.mock('next/cache', async () => {
     return {
         unstable_cache: vi.fn().mockImplementation((func) => func)

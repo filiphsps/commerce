@@ -11,12 +11,30 @@ export type ProductCardTitleProps = {
     className?: string;
 };
 const ProductCardTitle = ({ data: product, className }: ProductCardTitleProps) => {
+    let title = product.title.trim();
+    if (product.productType.length > 0 && title.toLowerCase().endsWith(product.productType.toLowerCase())) {
+        title = title.slice(0, -product.productType.length).trim();
+    }
+
+    let productTypeElement = null;
+    if (product.productType) {
+        productTypeElement = (
+            <span
+                data-nosnippet={true}
+                className="contents text-lg font-semibold leading-none text-gray-700 group-hover/header:text-inherit"
+            >
+                {' '}
+                &ndash; {product.productType}
+            </span>
+        );
+    }
+
     return (
         <>
             <Label
                 as={'div'}
                 className={cn(
-                    'group-hover/header:text-primary pb-1 pt-2 text-[.95rem] font-medium normal-case leading-none text-gray-500 transition-colors',
+                    'group-hover/header:text-primary pb-2 pt-3 text-base font-semibold normal-case leading-none text-gray-500 transition-colors duration-75',
                     className
                 )}
             >
@@ -24,11 +42,12 @@ const ProductCardTitle = ({ data: product, className }: ProductCardTitleProps) =
             </Label>
             <div
                 className={cn(
-                    'group-hover/header:text-primary transition-color text-[1.20rem] font-bold leading-6 text-current',
+                    'group-hover/header:text-primary transition-color flex grow items-start justify-start gap-0 text-[1.18rem] font-bold leading-tight text-current duration-75',
                     className
                 )}
             >
-                {product.title}
+                {title}
+                {productTypeElement}
             </div>
         </>
     );
