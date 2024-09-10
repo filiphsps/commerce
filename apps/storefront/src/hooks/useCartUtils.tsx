@@ -7,15 +7,24 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import type { Locale } from '@/utils/locale';
 
-type useCartUtilsProps = {
+/**
+ * Cart-related hacks and utilities.
+ * This hook handles `/?discount={code}` parameters and cart creation timeouts.
+ *
+ * @param {object} options - The options.
+ * @param {Locale} options.locale - The locale.
+ * @returns {{ error: Error | undefined; cartError: any | undefined; }} potential errors.
+ */
+export const useCartUtils = ({
+    locale
+}: {
     locale: Locale;
-};
-type useCartUtilsResult = {
+}): {
     error: Error | undefined;
     cartError: any | undefined;
-};
-export const useCartUtils = ({ locale }: useCartUtilsProps): useCartUtilsResult => {
+} => {
     const [error, setError] = useState<Error | undefined>();
+    const [createTimeout, setCreateTimeout] = useState<ReturnType<typeof setInterval> | undefined>();
     const router = useRouter();
     const pathname = usePathname();
     const query = useSearchParams();
@@ -27,8 +36,41 @@ export const useCartUtils = ({ locale }: useCartUtilsProps): useCartUtilsResult 
         discountCodes,
         discountCodesUpdate,
         cartReady,
-        error: cartError
+        error: cartError,
+        cartCreate
     } = useCart();
+
+    // Handle uninitialized carts and cart creation timeout.
+    useEffect(() => {
+        const onTimeout = () => {
+            if (['interactive', 'complete'].includes(document.readyState)) {
+                setCreateTimeout(() => {
+                    clearInterval(createTimeout);
+                    return setTimeout(onTimeout, 5000);
+                });
+                return;
+            }
+
+            if (status !== 'uninitialized') {
+                return;
+            }
+
+            console.warn('Cart failed to initialize or does not exist, creating a new cart...');
+            cartCreate({
+                buyerIdentity: {
+                    countryCode: locale.country
+                }
+            });
+        };
+
+        setCreateTimeout(setTimeout(onTimeout, 5000));
+
+        return () =>
+            setCreateTimeout(() => {
+                clearInterval(createTimeout);
+                return undefined;
+            });
+    }, [status]);
 
     // Handle country code change
     useEffect(() => {
