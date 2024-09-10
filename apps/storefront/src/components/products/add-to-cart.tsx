@@ -86,7 +86,7 @@ const AddToCart = ({ children, className, i18n, quantity = 0, type, data, varian
                             item_name: product.title,
                             item_variant: selectedVariant.title,
                             item_brand: product.vendor,
-                            item_category: product.productType,
+                            item_category: product.productType || undefined,
                             product_id: product.id,
                             variant_id: selectedVariant.id,
                             sku: selectedVariant.sku || undefined,

@@ -229,7 +229,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
             </section>
 
             {BuildConfig.environment === 'development' ? (
-                <section className={cn(styles.section, 'gap-2')}>
+                <section className={cn(styles.section, 'gap-2 empty:hidden')}>
                     {lines &&
                         lines
                             .filter(Boolean)

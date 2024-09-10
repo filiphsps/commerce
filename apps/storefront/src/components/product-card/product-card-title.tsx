@@ -12,7 +12,11 @@ export type ProductCardTitleProps = {
 };
 const ProductCardTitle = ({ data: product, className }: ProductCardTitleProps) => {
     let title = product.title.trim();
-    if (product.productType.length > 0 && title.toLowerCase().endsWith(product.productType.toLowerCase())) {
+    if (
+        product.productType &&
+        product.productType.length > 0 &&
+        title.toLowerCase().endsWith(product.productType.toLowerCase())
+    ) {
         title = title.slice(0, -product.productType.length).trim();
     }
 
