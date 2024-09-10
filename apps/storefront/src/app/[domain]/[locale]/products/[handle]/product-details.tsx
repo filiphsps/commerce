@@ -15,16 +15,17 @@ import { Label } from '@/components/typography/label';
 import type { Locale } from '@/utils/locale';
 import type { ParsedMetafields } from '@shopify/hydrogen-react';
 
-const COMMON_STYLES = 'md:gap3 flex grow flex-col items-start justify-between gap-2 empty:hidden';
-const LABEL_STYLES = 'leading-none';
+const COMMON_STYLES = 'md:gap-2 flex grow flex-col items-stretch justify-start gap-1 empty:hidden';
+const LABEL_STYLES = 'leading-none text-base';
 const CONTENT_STYLES =
     'flex items-center justify-center rounded-lg bg-gray-100 p-1 px-2 text-sm font-semibold leading-tight hyphens-auto h-min gap-1';
 
 export type ProductIngredientsProps = {
     locale: Locale;
     data: Product;
+    className?: string;
 };
-export async function ProductIngredients({ locale, data: product }: ProductIngredientsProps) {
+export async function ProductIngredients({ locale, data: product, className = '' }: ProductIngredientsProps) {
     const i18n = await getDictionary(locale);
     const { t } = useTranslation('product', i18n);
 
@@ -42,7 +43,7 @@ export async function ProductIngredients({ locale, data: product }: ProductIngre
     }
 
     return (
-        <Card className={cn(COMMON_STYLES, '')} border={true}>
+        <Card className={cn(COMMON_STYLES, className)} border={true}>
             <Label className={cn(LABEL_STYLES)}>{t('ingredients')}</Label>
             <p className={cn('text-sm font-medium leading-snug')}>{parsedIngredients}</p>
         </Card>
@@ -96,10 +97,34 @@ const ProductDetails = async ({ locale, data: product }: ProductDetailsProps) =>
         ? parseMetafield<ParsedMetafields['list.single_line_text_field']>(flavors).parsedValue
         : null;
 
+    const variantDetails = variants.find(({ node: { sku, title } }) => !!sku && title !== 'Default Title') // TODO: Deal with the `Default Title` variant in a better way.
+        ? variants.map(({ node: { sku, barcode, title, id } }) => (
+              <Card key={id} className={cn(COMMON_STYLES, 'flex flex-col gap-2')} border={true}>
+                  <Label className={cn(LABEL_STYLES, '')}>{title}</Label>
+
+                  <div className="flex flex-col flex-wrap items-start gap-1">
+                      <div className="flex gap-1 text-sm font-medium leading-none *:text-sm *:leading-none">
+                          <Label className="font-bold">{t('sku')}:</Label>
+                          <p>{sku}</p>
+                      </div>
+
+                      <div className="flex gap-1 text-sm font-medium leading-none *:text-sm *:leading-none">
+                          <Label className="font-bold">{t('barcode')}:</Label>
+                          <p>{barcode}</p>
+                      </div>
+                  </div>
+              </Card>
+          ))
+        : null;
+
     return (
         <>
             <Suspense fallback={<div className="h-12 w-full" data-skeleton />}>
-                <ProductIngredients locale={locale} data={product} />
+                <ProductIngredients
+                    locale={locale}
+                    data={product}
+                    className={cn((variantDetails || []).length === 1 && 'xl:max-w-96')}
+                />
             </Suspense>
 
             {parsedFlavors ? (
@@ -120,27 +145,7 @@ const ProductDetails = async ({ locale, data: product }: ProductDetailsProps) =>
                 </Card>
             ) : null}
 
-            {variants.find(({ node: { sku, title } }) => !!sku && title !== 'Default Title') ? ( // TODO: Deal with the `Default Title` variant in a better way.
-                <>
-                    {variants.map(({ node: { sku, barcode, title, id } }) => (
-                        <Card key={id} className={cn(COMMON_STYLES, 'flex flex-col gap-2')} border={true}>
-                            <Label className={cn(LABEL_STYLES, '')}>{title}</Label>
-
-                            <div className="flex flex-col items-start gap-1">
-                                <div className="flex gap-1 text-sm font-medium leading-none">
-                                    <Label className="font-bold leading-none">{t('sku')}:</Label>
-                                    <p>{sku}</p>
-                                </div>
-
-                                <div className="flex gap-1 text-sm font-medium leading-none">
-                                    <Label className="font-bold leading-none">{t('barcode')}:</Label>
-                                    <p>{barcode}</p>
-                                </div>
-                            </div>
-                        </Card>
-                    ))}
-                </>
-            ) : null}
+            {variantDetails}
         </>
     );
 };

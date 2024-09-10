@@ -27,7 +27,6 @@ import Heading from '@/components/typography/heading';
 
 import { CollectionContent, PRODUCTS_PER_PAGE } from './collection-content';
 
-import type { LocaleDictionary } from '@/utils/locale';
 import type { Metadata } from 'next';
 import type { Collection, WithContext } from 'schema-dts';
 
@@ -139,17 +138,7 @@ export async function generateMetadata({
     }
 }
 
-async function CollectionPageSlices({
-    shop,
-    locale,
-    i18n,
-    handle
-}: {
-    shop: OnlineShop;
-    locale: Locale;
-    i18n: LocaleDictionary;
-    handle: string;
-}) {
+async function CollectionPageSlices({ shop, locale, handle }: { shop: OnlineShop; locale: Locale; handle: string }) {
     const page = await PageApi({ shop, locale, handle, type: 'collection_page' });
     if (!page || page.slices.length <= 0) {
         return null;
@@ -239,7 +228,7 @@ export default async function CollectionPage({
                 ) : null}
 
                 <Suspense fallback={<section className="w-full bg-gray-100 p-4" data-skeleton />}>
-                    <CollectionPageSlices shop={shop} locale={locale} i18n={i18n} handle={handle} />
+                    <CollectionPageSlices shop={shop} locale={locale} handle={handle} />
                 </Suspense>
 
                 <Content html={collection.descriptionHtml} />

@@ -47,7 +47,7 @@ export type ProductCardImageProps = {
     children?: ReactNode;
 };
 
-const ProductCardHeader = ({ shop, data: product, priority = false, children, ...props }: ProductCardImageProps) => {
+const ProductCardHeader = ({ data: product, priority = false, children, ...props }: ProductCardImageProps) => {
     const selectedVariant = FirstAvailableVariant(product);
     const image = useMemo<ShopifyImage | undefined>(() => {
         if (!product || !selectedVariant) {

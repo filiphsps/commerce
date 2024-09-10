@@ -34,15 +34,16 @@ const ProductCardTitle = ({ data: product, className }: ProductCardTitleProps) =
             <Label
                 as={'div'}
                 className={cn(
-                    'group-hover/header:text-primary pb-2 pt-3 text-base font-semibold normal-case leading-none text-gray-500 transition-colors duration-75',
+                    'group-hover/header:text-primary pb-1 pt-2 text-[0.9rem] font-medium normal-case leading-none text-gray-500 transition-colors duration-75',
                     className
                 )}
             >
                 {product.vendor}
             </Label>
+
             <div
                 className={cn(
-                    'group-hover/header:text-primary transition-color flex grow items-start justify-start gap-0 text-[1.18rem] font-bold leading-tight text-current duration-75',
+                    'group-hover/header:text-primary transition-color flex grow items-start justify-start gap-0 pr-1 text-[1.15rem] font-bold leading-tight text-current duration-75',
                     className
                 )}
             >
