@@ -14,9 +14,9 @@
     ],
     "scripts": {
         "dev": "dotenv -c -- turbo run dev --env-mode=loose",
-        "dev:admin": "dotenv -c -- turbo run dev --filter='./apps/admin' --env-mode=loose",
-        "dev:landing": "dotenv -c -- turbo run dev --filter='./apps/landing' --env-mode=loose",
-        "dev:storefront": "dotenv -c -- turbo run dev --filter='./apps/storefront' --env-mode=loose",
+        "dev:admin": "dotenv -c -- turbo run dev --filter=./apps/admin --env-mode=loose",
+        "dev:landing": "dotenv -c -- turbo run dev --filter=./apps/landing --env-mode=loose",
+        "dev:storefront": "dotenv -c -- turbo run dev --filter=./apps/storefront --env-mode=loose",
         "build": "dotenv -c -- turbo run build --env-mode=loose --remote-cache-timeout=60",
         "build:packages": "turbo run build --filter='./packages/*' --env-mode=loose --remote-cache-timeout=60",
         "clean": "turbo run clean",
