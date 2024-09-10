@@ -777,8 +777,8 @@ importers:
         version: 8.3.1
     devDependencies:
       '@codecov/vite-plugin':
-        specifier: 1.0.0
-        version: 1.0.0(vite@5.4.3(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1))
+        specifier: 1.0.1
+        version: 1.0.1(vite@5.4.3(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1))
       '@nordcom/prettier':
         specifier: 0.1.1
         version: 0.1.1
@@ -819,8 +819,8 @@ importers:
   packages/errors:
     devDependencies:
       '@codecov/vite-plugin':
-        specifier: 1.0.0
-        version: 1.0.0(vite@5.4.3(@types/node@20.14.9)(sass@1.78.0)(terser@5.31.1))
+        specifier: 1.0.1
+        version: 1.0.1(vite@5.4.3(@types/node@20.14.9)(sass@1.78.0)(terser@5.31.1))
       '@nordcom/prettier':
         specifier: 0.1.1
         version: 0.1.1
@@ -859,8 +859,8 @@ importers:
         version: 0.0.60(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
     devDependencies:
       '@codecov/vite-plugin':
-        specifier: 1.0.0
-        version: 1.0.0(vite@5.4.3(@types/node@20.14.9)(sass@1.78.0)(terser@5.31.1))
+        specifier: 1.0.1
+        version: 1.0.1(vite@5.4.3(@types/node@20.14.9)(sass@1.78.0)(terser@5.31.1))
       '@nordcom/prettier':
         specifier: 0.1.1
         version: 0.1.1
@@ -1145,12 +1145,12 @@ packages:
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
 
-  '@codecov/bundler-plugin-core@1.0.0':
-    resolution: {integrity: sha512-RIhOBa2cQ8rn2az3BaOVIIJHNbOkqOfIxW+NPgjFB3fuNQiYjLDC9X6nExlzo03ntu01Ph/5FF01NPrCvtd5lw==}
+  '@codecov/bundler-plugin-core@1.0.1':
+    resolution: {integrity: sha512-Uo150Qb2s/mMqqfZMdh6rC1+Cp+bCij5DAB6LqWNI6J9dGbimeNvpU1+jdQ6vlMJOiz5w5jAOhtgZvFNrc8jUw==}
     engines: {node: '>=18.0.0'}
 
-  '@codecov/vite-plugin@1.0.0':
-    resolution: {integrity: sha512-zuCw1sMEpPsc/zrTgFvXQa0SnU9gMrihhzBtPv7KI/YxYzO4WEAUfTQQyaeCNArY8k3M0IYdrz1CpoMouJLAWQ==}
+  '@codecov/vite-plugin@1.0.1':
+    resolution: {integrity: sha512-osNbc7h3MAEh508Ma6iEK2R2Ux1m8BbBnG8Q9XvLbpgQJWe4F1r6M35pvn57kmdHd1sdA/4x55Jzhvzi673CYg==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       vite: 4.x || 5.x
@@ -8122,7 +8122,7 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
-  '@codecov/bundler-plugin-core@1.0.0':
+  '@codecov/bundler-plugin-core@1.0.1':
     dependencies:
       '@actions/core': 1.10.1
       '@actions/github': 6.0.0
@@ -8131,15 +8131,15 @@ snapshots:
       unplugin: 1.10.1
       zod: 3.23.8
 
-  '@codecov/vite-plugin@1.0.0(vite@5.4.3(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1))':
+  '@codecov/vite-plugin@1.0.1(vite@5.4.3(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1))':
     dependencies:
-      '@codecov/bundler-plugin-core': 1.0.0
+      '@codecov/bundler-plugin-core': 1.0.1
       unplugin: 1.10.1
       vite: 5.4.3(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1)
 
-  '@codecov/vite-plugin@1.0.0(vite@5.4.3(@types/node@20.14.9)(sass@1.78.0)(terser@5.31.1))':
+  '@codecov/vite-plugin@1.0.1(vite@5.4.3(@types/node@20.14.9)(sass@1.78.0)(terser@5.31.1))':
     dependencies:
-      '@codecov/bundler-plugin-core': 1.0.0
+      '@codecov/bundler-plugin-core': 1.0.1
       unplugin: 1.10.1
       vite: 5.4.3(@types/node@20.14.9)(sass@1.78.0)(terser@5.31.1)
 
@@ -11960,7 +11960,7 @@ snapshots:
       eslint: 8.57.0
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.6.2))(eslint@8.57.0))(eslint@8.57.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.6.2))(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
       eslint-plugin-jsx-a11y: 6.10.0(eslint@8.57.0)
       eslint-plugin-react: 7.35.2(eslint@8.57.0)
       eslint-plugin-react-hooks: 4.6.0(eslint@8.57.0)
@@ -11988,7 +11988,7 @@ snapshots:
       enhanced-resolve: 5.17.0
       eslint: 8.57.0
       eslint-module-utils: 2.8.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.6.2))(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.6.2))(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
       fast-glob: 3.3.2
       get-tsconfig: 4.7.5
       is-core-module: 2.14.0
@@ -12010,7 +12010,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.6.2))(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0):
+  eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0):
     dependencies:
       array-includes: 3.1.8
       array.prototype.findlastindex: 1.2.5
