@@ -143,6 +143,7 @@ const QuantitySelector = ({
                 !disabled && 'hover:border-primary opacity-100',
                 className
             )}
+            suppressHydrationWarning={true}
         >
             <Button
                 suppressHydrationWarning={true}
