@@ -54,9 +54,9 @@ export type ProductOriginalNameProps = {
     locale: Locale;
     data: Product;
 };
-export async function ProductOriginalName({ locale, data: product }: ProductOriginalNameProps) {
-    const i18n = await getDictionary(locale);
-    const { t } = useTranslation('product', i18n);
+export async function ProductOriginalName({ data: product }: ProductOriginalNameProps) {
+    //const i18n = await getDictionary(locale);
+    //const { t } = useTranslation('product', i18n);
 
     const { originalName } = product;
     if (!originalName) {
@@ -71,14 +71,14 @@ export async function ProductOriginalName({ locale, data: product }: ProductOrig
         return null;
     }
 
-    return <p className="text-sm font-medium italic">&ldquo;{parsedName}&rdquo;</p>;
+    return <p className="text-base font-medium italic">&ldquo;{parsedName}&rdquo;</p>;
 }
 
 export type ProductDetailsProps = {
     locale: Locale;
     data: Product;
 };
-const ProductDetails = async ({ locale, data: product }: ProductDetailsProps) => {
+export async function ProductDetails({ locale, data: product }: ProductDetailsProps) {
     const i18n = await getDictionary(locale);
     const { t } = useTranslation('product', i18n);
 
@@ -93,7 +93,7 @@ const ProductDetails = async ({ locale, data: product }: ProductDetailsProps) =>
     } = product;
 
     //const parsedNutritionalContent = nutritionalContent ? parseMetafield(nutritionalContent) : null;
-    const parsedFlavors = !!(flavors as any)
+    const parsedFlavors = !!flavors
         ? parseMetafield<ParsedMetafields['list.single_line_text_field']>(flavors).parsedValue
         : null;
 
@@ -148,7 +148,5 @@ const ProductDetails = async ({ locale, data: product }: ProductDetailsProps) =>
             {variantDetails}
         </>
     );
-};
+}
 ProductDetails.displayName = 'Nordcom.Product.ProductDetails';
-
-export { ProductDetails };

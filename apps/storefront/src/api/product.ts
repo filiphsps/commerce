@@ -22,15 +22,13 @@ export type Product = ShopifyProduct & {
         pageInfo: PageInfo;
     };
 
-    originalName: Metafield;
-
-    nutritionalContent: Metafield;
-
+    originalName?: Metafield | undefined | null;
+    nutritionalContent?: Metafield | undefined | null;
     ingredients?: Metafield | undefined | null;
-    flavors: Metafield;
+    flavors?: Metafield | undefined | null;
 
     // Built-in metafields.
-    allergen: Metafield;
+    allergen?: Metafield | undefined | null;
 } & OmitTypeName<Omit<ShopifyProduct, 'descriptionHtml' | 'variants'>>;
 
 export type ProductFilters = SearchResultItemConnection['productFilters'];

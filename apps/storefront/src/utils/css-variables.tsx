@@ -1,19 +1,20 @@
-import { Shop } from '@nordcom/commerce-db';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
+import { findShopByDomainOverHttp } from '@/api/shop';
 import { colord, extend } from 'colord';
 import a11yPlugin from 'colord/plugins/a11y';
 
 extend([a11yPlugin]);
 
 // TODO: Generalize this
-export const getBrandingColors = async (domain: string) => {
+export const getBrandingColors = async ({ domain, shop }: { domain: string; shop?: OnlineShop }) => {
     try {
-        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-        if (shop.design.accents.length <= 0) {
+        const {
+            design: { accents }
+        } = shop || (await findShopByDomainOverHttp(domain));
+        if (accents.length <= 0) {
             return null;
         }
-
-        const accents = shop.design.accents;
 
         // TODO: Deal with variants.
         const primary = accents
@@ -32,8 +33,8 @@ export const getBrandingColors = async (domain: string) => {
     }
 };
 
-const CssVariablesProvider = async ({ domain }: { domain: string }) => {
-    const branding = await getBrandingColors(domain);
+const CssVariablesProvider = async ({ domain, shop }: { domain: string; shop?: OnlineShop }) => {
+    const branding = await getBrandingColors({ domain, shop });
     if (!branding) {
         return null;
     }

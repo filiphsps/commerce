@@ -17,6 +17,10 @@ export type AttributeIconProps = {
  * @returns {ReactNode} The icon.
  */
 export function AttributeIcon({ data = '', className, style = {}, ...props }: AttributeIconProps) {
+    if (!data) {
+        return null;
+    }
+
     let Tag = null;
 
     // TODO: Let tenants define their own flavor icons.
@@ -64,7 +68,10 @@ export function AttributeIcon({ data = '', className, style = {}, ...props }: At
             break;
     }
 
-    if (!Tag) return null;
+    if (!Tag) {
+        return null;
+    }
+
     return (
         <Tag
             data-nosnippet={true}

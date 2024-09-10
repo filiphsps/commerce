@@ -62,6 +62,29 @@ vi.mock('@nordcom/commerce-db', () => ({
         })
     }
 }));
+vi.mock('@/api/shop', async (importActual) => {
+    return {
+        ...(((await importActual()) as any) || {}),
+        findShopByDomainOverHttp: vi.fn().mockResolvedValue({
+            id: 'mock-shop-id',
+            domain: 'staging.demo.nordcom.io',
+            design: {
+                accents: [
+                    {
+                        type: 'primary',
+                        color: '#00ff00',
+                        foreground: '#000000'
+                    },
+                    {
+                        type: 'secondary',
+                        color: '#0000ff',
+                        foreground: '#ffffff'
+                    }
+                ]
+            }
+        })
+    };
+});
 
 // Mock the `prismic` module as it requires a valid Prismic repository,
 // which we don't have in our tests. It's up to prismic to test their
@@ -92,7 +115,9 @@ vi.mock('@shopify/hydrogen-react', async () => ({
         getStorefrontApiUrl: () => '',
         getPublicTokenHeaders: () => ({})
     }),
-    useCart: vi.fn().mockReturnValue({}),
+    useCart: vi.fn().mockReturnValue({
+        status: 'idle'
+    }),
     useShop: vi.fn().mockReturnValue({}),
     useShopifyCookies: vi.fn().mockReturnValue({})
 }));

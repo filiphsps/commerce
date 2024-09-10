@@ -71,6 +71,8 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
         </>
     );
 
+    const isExpandedProduct = !(variant.title === 'Default Title');
+
     return (
         <div
             className={cn(
@@ -99,7 +101,8 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                         </Label>
 
                         <div className="group-hover/header:text-primary transition-color text-[1.18rem] font-bold leading-tight text-current md:text-lg">
-                            {product.title} <span className="text-sm">({variant.title})</span>
+                            {product.title}
+                            {isExpandedProduct ? <span className="text-sm"> ({variant.title})</span> : null}
                         </div>
                     </Link>
 

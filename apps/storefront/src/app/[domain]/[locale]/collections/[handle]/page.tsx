@@ -9,7 +9,6 @@ import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CollectionApi, CollectionPaginationCountApi, CollectionsApi } from '@/api/shopify/collection';
 import { LocalesApi } from '@/api/store';
-import { getDictionary } from '@/i18n/dictionary';
 import { isValidHandle } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
 import { asText } from '@prismicio/client';
@@ -180,9 +179,6 @@ export default async function CollectionPage({
         ]);
 
         const empty = collection.products.edges.length <= 0;
-
-        // Get dictionary of strings for the current locale.
-        const i18n = await getDictionary(locale);
 
         const jsonLd: WithContext<Collection> = {
             '@context': 'https://schema.org',

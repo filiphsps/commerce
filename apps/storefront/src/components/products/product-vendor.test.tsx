@@ -32,7 +32,7 @@ describe('components', () => {
         }));
 
         it('renders without errors', async () => {
-            const { container, unmount } = render(
+            const { unmount } = render(
                 await ProductVendor({
                     shop: {} as any,
                     locale: Locale.default,

@@ -78,7 +78,7 @@ export async function generateStaticParams(): Promise<LayoutParams[]> {
 }
 
 export async function generateViewport({ params: { domain } }: { params: LayoutParams }): Promise<Viewport> {
-    const branding = await getBrandingColors(domain);
+    const branding = await getBrandingColors({ domain });
 
     return {
         width: 'device-width',
@@ -153,7 +153,7 @@ export default async function RootLayout({
         const api = await ShopifyApolloApiClient({ shop, locale });
         const [localization, countries] = await Promise.all([LocaleApi({ api }), CountriesApi({ api })]);
 
-        const branding = await getBrandingColors(domain);
+        const branding = await getBrandingColors({ domain, shop });
         const i18n = await getDictionary(locale);
 
         return (
