@@ -15,7 +15,7 @@ import type {
     QueryRoot
 } from '@shopify/hydrogen-react/storefront-api-types';
 
-export const PRODUCT_FRAGMENT_MINIMAL = `
+export const PRODUCT_FRAGMENT_MINIMAL_NO_VARIANTS = /* GraphQL */ `
     id
     handle
     availableForSale
@@ -40,6 +40,11 @@ export const PRODUCT_FRAGMENT_MINIMAL = `
             currencyCode
         }
     }
+`;
+
+export const PRODUCT_FRAGMENT_MINIMAL = /* GraphQL */ `
+    ${PRODUCT_FRAGMENT_MINIMAL_NO_VARIANTS}
+
     options(first: 3) {
         id
         name
@@ -105,7 +110,7 @@ export const PRODUCT_FRAGMENT_MINIMAL = `
     }
 `;
 
-export const PRODUCT_FRAGMENT = `
+export const PRODUCT_FRAGMENT = /* GraphQL */ `
     id
     handle
     availableForSale

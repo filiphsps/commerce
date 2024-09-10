@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-
 import { Suspense } from 'react';
 
 import { Shop } from '@nordcom/commerce-db';
@@ -29,16 +27,16 @@ export async function generateMetadata({
     params: CartPageParams;
 }): Promise<Metadata> {
     try {
-        const locale = Locale.from(localeData);
-
         const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+
+        const locale = Locale.from(localeData);
         const api = await ShopifyApolloApiClient({ shop, locale });
 
         const page = await PageApi({ shop, locale, handle: 'cart' });
         const locales = await LocalesApi({ api });
 
         const i18n = await getDictionary(locale);
-        const { t } = useTranslation('common', i18n);
+        const { t } = useTranslation('common', i18n); // eslint-disable-line react-hooks/rules-of-hooks
 
         const title = page?.meta_title || page?.title || t('cart');
         const description: string | undefined = asText(page?.meta_description) || page?.description || undefined;

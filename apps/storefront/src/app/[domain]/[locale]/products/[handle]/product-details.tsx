@@ -34,10 +34,7 @@ export async function ProductIngredients({ locale, data: product, className = ''
         return null;
     }
 
-    const parsedIngredients = !!ingredients
-        ? parseMetafield<ParsedMetafields['single_line_text_field']>(ingredients).parsedValue
-        : null;
-
+    const parsedIngredients = parseMetafield<ParsedMetafields['single_line_text_field']>(ingredients).parsedValue;
     if (!parsedIngredients) {
         return null;
     }
@@ -63,10 +60,7 @@ export async function ProductOriginalName({ data: product }: ProductOriginalName
         return null;
     }
 
-    const parsedName = !!originalName
-        ? parseMetafield<ParsedMetafields['single_line_text_field']>(originalName).parsedValue
-        : null;
-
+    const parsedName = parseMetafield<ParsedMetafields['single_line_text_field']>(originalName).parsedValue;
     if (!parsedName) {
         return null;
     }

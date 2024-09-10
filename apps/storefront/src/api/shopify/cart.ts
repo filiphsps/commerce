@@ -1,3 +1,5 @@
+import { PRODUCT_FRAGMENT_MINIMAL_NO_VARIANTS } from '@/api/shopify/product';
+
 export const CartFragment = /* GraphQL */ `
     fragment CartFragment on Cart {
         id
@@ -60,10 +62,7 @@ export const CartFragment = /* GraphQL */ `
                                 ...ImageFragment
                             }
                             product {
-                                handle
-                                title
-                                id
-                                vendor
+                                ...ProductFragment
                             }
                             selectedOptions {
                                 name
@@ -109,5 +108,8 @@ export const CartFragment = /* GraphQL */ `
         altText
         width
         height
+    }
+    fragment ProductFragment on Product {
+        ${PRODUCT_FRAGMENT_MINIMAL_NO_VARIANTS}
     }
 `;

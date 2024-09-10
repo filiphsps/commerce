@@ -5,6 +5,7 @@ import { FiChevronRight, FiLock } from 'react-icons/fi';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 
+import { BuildConfig } from '@/utils/build-config';
 import { type LocaleDictionary, useTranslation } from '@/utils/locale';
 import { pluralize } from '@/utils/pluralize';
 import { safeParseFloat } from '@/utils/pricing';
@@ -19,9 +20,12 @@ import { Price } from '@/components/products/price';
 import { useShop } from '@/components/shop/provider';
 import { Label } from '@/components/typography/label';
 
+import type { CartAutomaticDiscountAllocation, CartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import type { ReactNode } from 'react';
 
-const SUMMARY_LABEL_STYLES = 'font-medium text-sm capitalize text-gray-600';
+const SUMMARY_LABEL_STYLES = 'font-medium text-sm capitalize text-gray-600 leading-none';
+const PRICE_STYLES = 'text-sm font-bold';
+const PRICE_DISCOUNT_STYLES = 'bg-green-200 text-green-900 rounded-lg px-1 -mx-1';
 
 // TODO: Configurable free shipping.
 
@@ -35,7 +39,7 @@ type CartSummaryProps = {
 };
 const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummaryProps) => {
     const { t } = useTranslation('cart', i18n);
-    const { totalQuantity, lines = [], cost, note, discountCodes = [], cartReady } = useCart();
+    const { totalQuantity, lines, cost, note, discountCodes = [], cartReady } = useCart();
     const { currency } = useShop();
     const [showNote, setShowNote] = useState(false);
 
@@ -45,18 +49,20 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
         setShowNote(showNote);
     }, [note]);
     const sale =
-        lines.reduce(
-            (sum, line) =>
-                (line!.cost!.compareAtAmountPerQuantity &&
-                    sum +
-                        (safeParseFloat(0, line?.cost?.compareAtAmountPerQuantity?.amount) * (line!.quantity || 0) -
-                            safeParseFloat(0, line?.cost?.totalAmount?.amount))) ||
-                sum,
-            0
-        ) || 0;
+        (lines &&
+            lines.reduce(
+                (sum, line) =>
+                    (line!.cost!.compareAtAmountPerQuantity &&
+                        sum +
+                            (safeParseFloat(0, line?.cost?.compareAtAmountPerQuantity?.amount) * (line!.quantity || 0) -
+                                safeParseFloat(0, line?.cost?.totalAmount?.amount))) ||
+                    sum,
+                0
+            )) ||
+        0;
     const totalSale =
         sale +
-        lines
+        (lines || [])
             .map((line) => {
                 if (line!.discountAllocations!.length <= 0) {
                     return 0;
@@ -82,7 +88,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
         <div className={cn(styles.container, 'sticky top-32 flex flex-col gap-4')}>
             {children}
 
-            <section className={cn(styles.section, 'gap-2')}>
+            <section className={cn(styles.section, 'gap-1')}>
                 <header className={styles.header}>
                     <Label>{t('order-summary')}</Label>
                     <Label className="text-xs">
@@ -90,17 +96,17 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                     </Label>
                 </header>
 
-                <div className={styles.lines}>
+                <div className={cn(styles.lines, 'gap-1')}>
                     <div className="flex items-center justify-between">
                         <Label className={SUMMARY_LABEL_STYLES}>{t('shipping')}</Label>
-                        <div className="text-base font-bold">{'TBD*'}</div>
+                        <div className={PRICE_STYLES}>{'TBD*'}</div>
                     </div>
 
                     <div className="flex items-center justify-between">
                         <Label className={SUMMARY_LABEL_STYLES}>{t('subtotal')}</Label>
                         {cost?.subtotalAmount ? (
                             <Price
-                                className="text-base font-bold"
+                                className={PRICE_STYLES}
                                 data={{
                                     currencyCode: cost.subtotalAmount.currencyCode,
                                     amount:
@@ -122,7 +128,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                                     <Label className={SUMMARY_LABEL_STYLES}>{t('discount')}</Label>
                                     {cartReady ? (
                                         <Price
-                                            className={cn(styles.money, 'text-base font-bold')}
+                                            className={cn(PRICE_STYLES, PRICE_DISCOUNT_STYLES)}
                                             data={{
                                                 currencyCode: cost?.totalAmount?.currencyCode,
                                                 amount: sale.toString()
@@ -132,31 +138,56 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                                 </div>
                             ) : null}
 
-                            {lines.map((line, index) => {
-                                if (!line) return null;
+                            {lines && lines.flatMap((line) => line?.discountAllocations).length > 0 ? (
+                                <div className="flex flex-col gap-1 pt-4">
+                                    <Label className="text-xs leading-none text-gray-700">
+                                        {t('automatic-discounts')}
+                                    </Label>
 
-                                return line.discountAllocations?.map((discount) => {
-                                    if (!discount?.discountedAmount) return null;
+                                    <div className="flex flex-col gap-2">
+                                        {lines.map((line) => {
+                                            if (!line) {
+                                                return null;
+                                            }
 
-                                    return (
-                                        <div
-                                            className={`${styles['line-item']} ${styles.breakdown} ${styles.discounted}`}
-                                            key={`${line.id}-${discount.discountedAmount.amount}`}
-                                        >
-                                            <div className={styles.label}>
-                                                {index <= 0 ? t('automatic-discount') : null}
-                                            </div>
-                                            <Price
-                                                className={styles.money}
-                                                data={{
-                                                    currencyCode: cost?.totalAmount?.currencyCode,
-                                                    amount: discount.discountedAmount.amount
-                                                }}
-                                            />
-                                        </div>
-                                    );
-                                });
-                            })}
+                                            return line.discountAllocations?.map((discount) => {
+                                                if (!discount?.discountedAmount) {
+                                                    return null;
+                                                }
+
+                                                const discountAmount = safeParseFloat(
+                                                    0,
+                                                    discount.discountedAmount.amount
+                                                );
+                                                const title = (discount as any).title || t('automatic-discounts');
+
+                                                if (discountAmount <= 0) {
+                                                    return null;
+                                                }
+
+                                                return (
+                                                    <div
+                                                        className={cn(
+                                                            styles.discounted,
+                                                            'flex items-center justify-between'
+                                                        )}
+                                                        key={`${line.id}-${discount.discountedAmount.amount}`}
+                                                    >
+                                                        <Label className={SUMMARY_LABEL_STYLES}>{title}</Label>
+                                                        <Price
+                                                            className={cn(PRICE_STYLES, PRICE_DISCOUNT_STYLES)}
+                                                            data={{
+                                                                currencyCode: cost?.totalAmount?.currencyCode,
+                                                                amount: discount.discountedAmount.amount
+                                                            }}
+                                                        />
+                                                    </div>
+                                                );
+                                            });
+                                        })}
+                                    </div>
+                                </div>
+                            ) : null}
                         </>
                     ) : null}
 
@@ -165,7 +196,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                             <Label className={SUMMARY_LABEL_STYLES}>{t('promo-codes')}</Label>
                             {cartReady ? (
                                 <Price
-                                    className={cn(styles.money, 'text-base font-bold')}
+                                    className={cn(PRICE_STYLES, PRICE_DISCOUNT_STYLES)}
                                     data={{
                                         currencyCode: cost?.totalAmount?.currencyCode,
                                         amount: promos.toString()
@@ -176,10 +207,10 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                     ) : null}
 
                     {cost?.totalAmount ? (
-                        <div className={cn(styles.totals, 'flex items-center justify-between')}>
+                        <div className={cn(styles.totals, 'flex items-center justify-between pt-1')}>
                             <Label className="text-xl font-bold capitalize">{t('estimated-total')}</Label>
                             <Price
-                                className={styles.money}
+                                className={PRICE_STYLES}
                                 data={
                                     cost.totalAmountEstimated ??
                                     (cost.totalAmount as any) ?? {
@@ -197,6 +228,71 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                 </div>
             </section>
 
+            {BuildConfig.environment === 'development' ? (
+                <section className={cn(styles.section, 'gap-2')}>
+                    {lines &&
+                        lines
+                            .filter(Boolean)
+                            .map((line) => line as CartLine)
+                            .map(({ id, merchandise: { product, ...variant }, discountAllocations }) => {
+                                const discountLineElements = discountAllocations
+                                    .map((discount, index) => {
+                                        const { discountedAmount } = discount;
+                                        const amount = safeParseFloat(0, discountedAmount.amount);
+
+                                        if (amount <= 0) {
+                                            return null;
+                                        }
+
+                                        if (Object.hasOwn(discount, 'title')) {
+                                            const { title } = discount as CartAutomaticDiscountAllocation;
+                                            return (
+                                                <div key={index} className="flex items-center justify-between">
+                                                    <Label>{title}</Label>
+                                                    <Price data={discountedAmount} className="text-sm font-bold" />
+                                                </div>
+                                            );
+                                        }
+
+                                        return (
+                                            <div key={index} className="flex items-center justify-between">
+                                                <Label>discount</Label>
+                                                <Price data={discountedAmount} className="text-sm font-bold" />
+                                            </div>
+                                        );
+                                    })
+                                    .filter(Boolean);
+
+                                if (!discountLineElements.length) {
+                                    return null;
+                                }
+
+                                const { vendor, title, productType } = product;
+
+                                return (
+                                    <div key={id} className="flex flex-col">
+                                        <Label className="flex gap-1 normal-case">
+                                            <span>
+                                                {vendor} {title}
+                                            </span>
+                                            &ndash;
+                                            <span className="font-bold">
+                                                {[
+                                                    ...(productType ? [productType] : []),
+                                                    ...variant.selectedOptions.map(
+                                                        ({ name, value }) => `${name}: ${value}`
+                                                    )
+                                                ].join(', ')}
+                                            </span>
+                                        </Label>
+
+                                        <div className="flex flex-col">{discountLineElements}</div>
+                                    </div>
+                                );
+                            })}
+                </section>
+            ) : null}
+
             <section className={cn(styles.section, styles['section-actions'], 'gap-2')}>
                 <Button
                     className="h-10 py-0 md:h-14 md:text-base lg:text-lg"
@@ -207,7 +303,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                     <FiChevronRight className={styles.icon} />
                 </Button>
 
-                {cartReady && lines.length > 0 ? (
+                {cartReady && lines && lines.length > 0 ? (
                     <ShopPayButton
                         // TODO: Only show this if we're using Shopify.
                         width="100%"
@@ -245,7 +341,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                 </section>
             ) : null}
 
-            {lines.length > 0 ? (
+            {lines && lines.length > 0 ? (
                 <section className={cn(styles.section, 'gap-2')}>
                     <header className={styles.header}>
                         <Label>{t('label-cart-note')}</Label>

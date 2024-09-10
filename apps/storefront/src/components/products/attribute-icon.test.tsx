@@ -22,6 +22,7 @@ describe('components', () => {
 
             expect(container.textContent).toBe('');
             expect(container.childElementCount).toBe(0);
+            expect(unmount).not.toThrow();
         });
 
         it('renders the attribute icon with a class', () => {

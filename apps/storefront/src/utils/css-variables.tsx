@@ -21,7 +21,7 @@ export const getBrandingColors = async ({ domain, shop }: { domain: string; shop
 
         if (accents.length <= 0) {
             try {
-                if (commerceProvider.type === 'shopify') {
+                if ((commerceProvider.type as string) === 'shopify') {
                     const api = await ShopifyApiClient({ shop, locale: Locale.default });
                     const brand = await BrandApi({ api });
 

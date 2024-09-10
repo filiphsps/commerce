@@ -13,7 +13,8 @@ type CartContentProps = {
     i18n: LocaleDictionary;
 };
 const CartLines = ({ i18n }: CartContentProps) => {
-    const { t } = useTranslation('cart', i18n);
+    const { t } = useTranslation('common', i18n);
+    const { t: tCart } = useTranslation('cart', i18n);
 
     const { cartReady, lines, linesRemove } = useCart();
 
@@ -26,7 +27,7 @@ const CartLines = ({ i18n }: CartContentProps) => {
     }
 
     return (
-        <div className="flex w-full flex-col gap-2 empty:hidden">
+        <div className="flex w-full flex-col gap-2">
             <div className="-mt-4 flex h-2 w-full select-none flex-row-reverse items-center justify-between pb-3">
                 <Button
                     as={Label as any}
@@ -34,19 +35,38 @@ const CartLines = ({ i18n }: CartContentProps) => {
                     styled={false}
                     onClick={() => linesRemove(lines.map((line) => line?.id).filter((_) => _) as string[])}
                 >
-                    {t('clear-cart')}
+                    {tCart('clear-cart')}
                 </Button>
             </div>
 
-            {lines.map((item) => {
-                if (!item) return null;
+            <div className="flex h-full w-full flex-col empty:hidden">
+                <header className="text-gray-00 grid grid-cols-[8rem_1fr] grid-rows-[1fr] items-end gap-3 py-1">
+                    <div>
+                        <Label className="text-inherit">{t('product')}</Label>
+                    </div>
+                    <div className="grid h-full w-full grid-cols-[7fr_3fr_4fr] grid-rows-[1fr] items-start gap-3">
+                        <div />
+                        <div className="flex h-full w-full flex-col items-center">
+                            <Label className="text-inherit">{t('quantity')}</Label>
+                        </div>
+                        <div className="flex h-full w-full flex-col items-end">
+                            <Label className="text-inherit">{t('price')}</Label>
+                        </div>
+                    </div>
+                </header>
 
-                return (
-                    <Suspense fallback={<CartLine.skeleton />} key={item.id}>
-                        <CartLine i18n={i18n} data={item as any} />
-                    </Suspense>
-                );
-            })}
+                {lines.map((item) => {
+                    if (!item) {
+                        return null;
+                    }
+
+                    return (
+                        <Suspense fallback={<CartLine.skeleton />} key={item.id}>
+                            <CartLine i18n={i18n} data={item as any} />
+                        </Suspense>
+                    );
+                })}
+            </div>
         </div>
     );
 };

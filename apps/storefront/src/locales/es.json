@@ -19,7 +19,7 @@
         "shipping": "Envío",
         "subtotal": "Subtotal",
         "view-cart": "Ver tu carrito de compras",
-        "remove-from-cart": "Eliminar {0} del carrito"
+        "remove-n-from-cart": "Eliminar {0} del carrito"
     },
     "common": {
         "add-to-cart": "Agregar al carrito",

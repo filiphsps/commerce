@@ -1,21 +1,35 @@
 import { cn } from '@/utils/tailwind';
 
-import type { ElementType, HTMLProps, ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, ElementType, ReactNode } from 'react';
 
-export type LabelProps = {
+export type LabelPropsBase<ComponentGeneric extends ElementType> = {
+    as?: ComponentGeneric;
+    styled?: boolean;
     children?: ReactNode;
-    as?: ElementType;
-} & HTMLProps<HTMLLabelElement>;
-export const Label = ({ children, as, className, ...props }: LabelProps) => {
+    className?: string;
+    disabled?: boolean;
+};
+
+export type LabelProps<ComponentGeneric extends ElementType> = LabelPropsBase<ComponentGeneric> &
+    (ComponentGeneric extends keyof React.JSX.IntrinsicElements
+        ? Omit<ComponentPropsWithoutRef<ComponentGeneric>, keyof LabelPropsBase<ComponentGeneric>>
+        : ComponentPropsWithoutRef<ComponentGeneric>);
+
+export const Label = <ComponentGeneric extends ElementType = 'p'>({
+    children,
+    as,
+    className,
+    ...props
+}: LabelProps<ComponentGeneric>) => {
     if (!children) {
         return null;
     }
 
-    const AsComponent = as || 'label';
+    const Tag = as ?? 'p';
 
     return (
-        <AsComponent {...props} className={cn('block text-sm font-extrabold uppercase leading-tight', className)}>
+        <Tag {...props} className={cn('block text-sm font-extrabold uppercase leading-tight', className)}>
             {children}
-        </AsComponent>
+        </Tag>
     );
 };

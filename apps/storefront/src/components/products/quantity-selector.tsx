@@ -13,6 +13,8 @@ import { Input } from '@/components/actionable/input';
 import type { LocaleDictionary } from '@/utils/locale';
 import type { ChangeEvent, HTMLProps, KeyboardEventHandler } from 'react';
 
+const MAX_QUANTITY = 199_999; // TODO: Per-tenant configuration.
+
 export const QuantityInputFilter = (value?: string, prev?: string): string => {
     // FRO-58: Only allow numbers
     if (value && (/^[^\d()]*$/.test(value) || value.includes('.'))) return prev ?? '';
@@ -27,8 +29,8 @@ export const QuantityInputFilter = (value?: string, prev?: string): string => {
     let quantity = safeParseFloat(0, value);
     if (quantity < 0) {
         quantity = 0;
-    } else if (quantity > 999) {
-        quantity = 999;
+    } else if (quantity > MAX_QUANTITY) {
+        quantity = MAX_QUANTITY;
     }
 
     return quantity.toString(10).split('.')[0];
@@ -174,7 +176,7 @@ const QuantitySelector = ({
                 type="number"
                 title={t('quantity')}
                 min={1}
-                max={999}
+                max={MAX_QUANTITY}
                 step={1}
                 pattern="[0-9]"
                 className={cn(
