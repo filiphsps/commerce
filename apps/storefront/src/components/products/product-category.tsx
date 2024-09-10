@@ -25,7 +25,7 @@ export async function ProductCategory({ shop, locale, product: { productType } }
 
     try {
         const api = await ShopifyApiClient({ shop, locale });
-        const collection = await CollectionApi({ handle: type, api });
+        const collection = await CollectionApi({ handle: type, api, first: 1 });
         return (
             <Link className="hover:text-primary" href={`/collections/${collection.handle}/`}>
                 {typeTextElement}

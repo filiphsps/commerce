@@ -17,7 +17,6 @@ import { Locale, useTranslation } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
-import { TitleToHandle } from '@/utils/title-to-handle';
 import { asText } from '@prismicio/client';
 import { parseGid } from '@shopify/hydrogen-react';
 import { notFound } from 'next/navigation';
@@ -27,12 +26,12 @@ import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import { JsonLd } from '@/components/json-ld';
 import { Card } from '@/components/layout/card';
-import Link from '@/components/link';
 import PageContent from '@/components/page-content';
 import { AttributeIcon } from '@/components/products/attribute-icon';
 import { InfoLines } from '@/components/products/info-lines';
 import { ProductCategory } from '@/components/products/product-category';
 import { ProductGallery } from '@/components/products/product-gallery';
+import { ProductVendor } from '@/components/products/product-vendor';
 import { RecommendedProducts } from '@/components/products/recommended-products';
 import { Content } from '@/components/typography/content';
 
@@ -323,17 +322,20 @@ export default async function ProductPage({
                                             <div className="flex w-full grow flex-wrap whitespace-pre-wrap text-3xl font-extrabold leading-tight">
                                                 <TitleTag className="text-inherit">
                                                     {title}
-                                                    {productTypeElement}
+                                                    <Suspense>{productTypeElement}</Suspense>
                                                 </TitleTag>
                                             </div>
 
-                                            <Link
-                                                className="hover:text-primary normal-case leading-tight text-gray-600 transition-colors md:text-lg"
-                                                href={`/collections/${TitleToHandle(product.vendor)}`}
-                                                title={t('browse-all-products-by-brand', product.vendor)}
-                                            >
-                                                {t('by')} <span className="font-semibold">{product.vendor}</span>
-                                            </Link>
+                                            <Suspense fallback={<div className="h-4 w-36" data-skeleton />}>
+                                                <ProductVendor
+                                                    shop={shop}
+                                                    locale={locale}
+                                                    product={product}
+                                                    className="font-semibold normal-case leading-tight text-gray-600 transition-colors md:text-lg"
+                                                    title={t('browse-all-products-by-brand', product.vendor)}
+                                                    prefix={<span className="font-normal">{t('by')} </span>}
+                                                />
+                                            </Suspense>
                                         </div>
 
                                         <Suspense>
