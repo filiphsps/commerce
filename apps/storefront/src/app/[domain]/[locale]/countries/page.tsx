@@ -12,7 +12,7 @@ import { getDictionary } from '@/i18n/dictionary';
 import { Locale, useTranslation } from '@/utils/locale';
 import { asText } from '@prismicio/client';
 import { cookies } from 'next/headers';
-import { notFound, redirect } from 'next/navigation';
+import { notFound, redirect, unstable_rethrow } from 'next/navigation';
 
 import PrismicPage from '@/components/cms/prismic-page';
 import PageContent from '@/components/page-content';
@@ -82,6 +82,7 @@ export async function generateMetadata({
         }
 
         console.error(error);
+        unstable_rethrow(error);
         throw error;
     }
 }
@@ -150,6 +151,7 @@ export default async function CountriesPage({
         }
 
         console.error(error);
+        unstable_rethrow(error);
         throw error;
     }
 }

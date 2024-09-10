@@ -9,7 +9,7 @@ import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { Locale, useTranslation } from '@/utils/locale';
 import { asText } from '@prismicio/client';
-import { notFound } from 'next/navigation';
+import { notFound, unstable_rethrow } from 'next/navigation';
 
 import { AcceptedPaymentMethods } from '@/components/informational/accepted-payment-methods';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
@@ -79,6 +79,7 @@ export async function generateMetadata({
         }
 
         console.error(error);
+        unstable_rethrow(error);
         throw error;
     }
 }
@@ -122,6 +123,7 @@ export default async function CartPage({ params: { domain, locale: localeData } 
         }
 
         console.error(error);
+        unstable_rethrow(error);
         throw error;
     }
 }

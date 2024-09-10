@@ -13,7 +13,7 @@ import { isValidHandle } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
 import { checkAndHandleRedirect } from '@/utils/redirect';
 import { asText } from '@prismicio/client';
-import { notFound } from 'next/navigation';
+import { notFound, unstable_rethrow } from 'next/navigation';
 
 import Pagination from '@/components/actionable/pagination';
 import PrismicPage from '@/components/cms/prismic-page';
@@ -136,6 +136,7 @@ export async function generateMetadata({
         }
 
         console.error(error);
+        unstable_rethrow(error);
         throw error;
     }
 }
@@ -243,6 +244,7 @@ export default async function CollectionPage({
         }
 
         console.error(error);
+        unstable_rethrow(error);
         throw error;
     }
 }

@@ -13,7 +13,7 @@ import { getDictionary } from '@/i18n/dictionary';
 import { showSearchFilter } from '@/utils/flags';
 import { Locale, useTranslation } from '@/utils/locale';
 import { asText } from '@prismicio/client';
-import { notFound } from 'next/navigation';
+import { notFound, unstable_rethrow } from 'next/navigation';
 
 import PrismicPage from '@/components/cms/prismic-page';
 import Heading from '@/components/typography/heading';
@@ -86,6 +86,7 @@ export async function generateMetadata({
         }
 
         console.error(error);
+        unstable_rethrow(error);
         throw error;
     }
 }
@@ -144,6 +145,7 @@ export default async function SearchPage({
         }
 
         console.error(error);
+        unstable_rethrow(error);
         throw error;
     }
 }

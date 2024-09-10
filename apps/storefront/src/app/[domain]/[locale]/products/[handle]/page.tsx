@@ -21,7 +21,7 @@ import { checkAndHandleRedirect } from '@/utils/redirect';
 import { cn } from '@/utils/tailwind';
 import { asText } from '@prismicio/client';
 import { parseGid } from '@shopify/hydrogen-react';
-import { notFound } from 'next/navigation';
+import { notFound, unstable_rethrow } from 'next/navigation';
 
 import { CMSContent } from '@/components/cms/cms-content';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
@@ -156,6 +156,7 @@ export async function generateMetadata({
         }
 
         console.error(error);
+        unstable_rethrow(error);
         throw error;
     }
 }
@@ -419,6 +420,7 @@ export default async function ProductPage({
         }
 
         console.error(error);
+        unstable_rethrow(error);
         throw error;
     }
 }

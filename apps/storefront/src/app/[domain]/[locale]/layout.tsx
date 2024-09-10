@@ -15,7 +15,7 @@ import { CssVariablesProvider, getBrandingColors } from '@/utils/css-variables';
 import { primaryFont } from '@/utils/fonts';
 import { Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
-import { notFound } from 'next/navigation';
+import { notFound, unstable_rethrow } from 'next/navigation';
 
 import { AnalyticsProvider } from '@/components/analytics-provider';
 import { GeoRedirect } from '@/components/geo-redirect';
@@ -131,6 +131,8 @@ export async function generateMetadata({
             notFound();
         }
 
+        console.error(error);
+        unstable_rethrow(error);
         throw error;
     }
 }
@@ -210,6 +212,8 @@ export default async function RootLayout({
             notFound();
         }
 
+        console.error(error);
+        unstable_rethrow(error);
         throw error;
     }
 }

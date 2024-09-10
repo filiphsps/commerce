@@ -14,7 +14,7 @@ import { getDictionary } from '@/i18n/dictionary';
 import { enableProductsPage } from '@/utils/flags';
 import { Locale, useTranslation } from '@/utils/locale';
 import { asText } from '@prismicio/client';
-import { notFound, redirect, RedirectType } from 'next/navigation';
+import { notFound, redirect, RedirectType, unstable_rethrow } from 'next/navigation';
 
 import Pagination from '@/components/actionable/pagination';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
@@ -89,6 +89,7 @@ export async function generateMetadata({
         }
 
         console.error(error);
+        unstable_rethrow(error);
         throw error;
     }
 }
@@ -156,6 +157,7 @@ export default async function ProductsPage({ params: { domain, locale: localeDat
         }
 
         console.error(error);
+        unstable_rethrow(error);
         throw error;
     }
 }

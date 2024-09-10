@@ -13,7 +13,7 @@ import { BusinessDataApi, LocalesApi } from '@/api/store';
 import { isValidHandle } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
 import { asText } from '@prismicio/client';
-import { notFound } from 'next/navigation';
+import { notFound, unstable_rethrow } from 'next/navigation';
 
 import { CMSContent } from '@/components/cms/cms-content';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
@@ -121,6 +121,7 @@ export async function generateMetadata({
         }
 
         console.error(error);
+        unstable_rethrow(error);
         throw error;
     }
 }
@@ -200,6 +201,7 @@ export default async function CustomPage({
         }
 
         console.error(error);
+        unstable_rethrow(error);
         throw error;
     }
 }

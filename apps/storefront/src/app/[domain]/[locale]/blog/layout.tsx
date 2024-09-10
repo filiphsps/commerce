@@ -5,7 +5,7 @@ import { ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi } from '@/api/shopify/blog';
 import { Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
-import { notFound } from 'next/navigation';
+import { notFound, unstable_rethrow } from 'next/navigation';
 
 import Link from '@/components/link';
 import { Label } from '@/components/typography/label';
@@ -76,6 +76,8 @@ export default async function BlogLayout({
             notFound();
         }
 
+        console.error(error);
+        unstable_rethrow(error);
         throw error;
     }
 }
