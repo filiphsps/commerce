@@ -101,7 +101,6 @@ const AddToCart = ({ children, className, i18n, quantity = 0, type, data, varian
 
         clearTimeout(animation);
 
-        if (children) return;
         setAnimation(
             setTimeout(() => {
                 clearTimeout(animation);
