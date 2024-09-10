@@ -74,19 +74,50 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
         if (!sensitiveData) {
             delete (res as any)._id;
 
+            let commerceProvider = {};
+            switch (res.commerceProvider.type) {
+                case 'shopify': {
+                    commerceProvider = {
+                        ...res.commerceProvider,
+                        authentication: {
+                            domain: res.commerceProvider.authentication.domain,
+                            publicToken: res.commerceProvider.authentication.publicToken
+                        }
+                    };
+                    break;
+                }
+                case 'stripe': {
+                    commerceProvider = {
+                        ...res.commerceProvider,
+                        authentication: {}
+                    };
+                    break;
+                }
+            }
+
+            let contentProvider = {};
+            switch (res.contentProvider.type) {
+                case 'prismic': {
+                    contentProvider = {
+                        ...res.contentProvider,
+                        authentication: {}
+                    };
+                    break;
+                }
+                case 'builder.io': {
+                    contentProvider = {
+                        ...res.contentProvider,
+                        authentication: {
+                            publicToken: res.contentProvider.authentication.publicToken
+                        }
+                    };
+                }
+            }
+
             return {
                 ...res,
-                commerceProvider: {
-                    ...res.commerceProvider,
-                    authentication: {
-                        domain: res.commerceProvider.authentication.domain,
-                        publicToken: res.commerceProvider.authentication.publicToken
-                    }
-                },
-                contentProvider: {
-                    ...res.contentProvider,
-                    authentication: {}
-                }
+                commerceProvider,
+                contentProvider
             } as any;
         }
 

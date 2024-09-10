@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import type { Nullable, OnlineShop } from '@nordcom/commerce-db';
-import { MissingContextProviderError } from '@nordcom/commerce-errors';
+import { MissingContextProviderError, UnknownCommerceProviderError } from '@nordcom/commerce-errors';
 
 import { usePrevious } from '@/hooks/usePrevious';
 import { BuildConfig } from '@/utils/build-config';
@@ -357,7 +357,11 @@ export type TrackableProps = {
 export function Trackable({ children }: TrackableProps) {
     const path = usePathname();
     const prevPath = usePrevious(path);
+
     const { shop, currency, locale } = useShop();
+    if (shop.commerceProvider.type !== 'shopify') {
+        throw new UnknownCommerceProviderError(shop.commerceProvider.type);
+    }
 
     const checkoutDomain = shop.commerceProvider.domain;
     // Only use the domain, not the subdomain.

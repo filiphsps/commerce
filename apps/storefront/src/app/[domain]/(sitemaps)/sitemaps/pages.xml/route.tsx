@@ -6,9 +6,9 @@ import { Locale } from '@/utils/locale';
 import { convertPrismicDateToISO } from '@/utils/prismic-date';
 import { getServerSideSitemap } from 'next-sitemap';
 
-import type { DynamicSitemapRouteParams } from '../../sitemap.xml/route';
-import type { NextRequest } from 'next/server';
 import type { ISitemapField } from 'next-sitemap';
+import type { NextRequest } from 'next/server';
+import type { DynamicSitemapRouteParams } from '../../sitemap.xml/route';
 
 export const dynamic = 'force-static';
 export const revalidate = false;
@@ -19,7 +19,7 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
     const api = await ShopifyApiClient({ shop, locale });
     const locales = await LocalesApi({ api });
 
-    const pages = ((await PagesApi({ shop, locale, exclude: [] })) || [])
+    const pages = ((await PagesApi({ shop, locale })) || [])
         .filter(({ url }) => url)
         .map(({ url, ...page }) => ({
             ...page,

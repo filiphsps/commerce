@@ -8,7 +8,7 @@ import { components } from '@/slices';
 import { getDictionary } from '@/utils/dictionary';
 import { SliceZone } from '@prismicio/react';
 
-import type { PageData, PageType } from '@/api/page';
+import type { PageData, PageType } from '@/api/prismic/page';
 import type { Locale } from '@/utils/locale';
 
 type PageParams<T extends PageType> = {

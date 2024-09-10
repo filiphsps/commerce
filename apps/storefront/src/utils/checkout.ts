@@ -57,7 +57,7 @@ export const Checkout = async ({
     }
 
     let url = cart.checkoutUrl;
-    if ((shop.commerceProvider.type as string) === 'shopify') {
+    if (shop.commerceProvider.type === 'shopify') {
         url = url.replace(/[A-Za-z0-9\-\_]+.\.myshopify\.com/, shop.commerceProvider.domain);
     }
 

@@ -21,8 +21,8 @@ export const ShopifyApiConfig = async ({
     private: () => ApiConfig;
 }> => {
     const { commerceProvider } = await findShopByDomainOverHttp(domain);
-    if ((commerceProvider as any)?.type !== 'shopify') {
-        throw new UnknownCommerceProviderError();
+    if (commerceProvider.type !== 'shopify') {
+        throw new UnknownCommerceProviderError(commerceProvider.type);
     }
 
     const api = createStorefrontClient({

@@ -39,7 +39,7 @@ export async function generateMetadata({
         const shop = await Shop.findByDomain(domain, { sensitiveData: true });
         const api = await ShopifyApolloApiClient({ shop, locale });
 
-        const page = await PageApi({ shop, locale, handle: 'search', type: 'custom_page' });
+        const page = await PageApi({ shop, locale, handle: 'search' });
         const locales = await LocalesApi({ api });
 
         const i18n = await getDictionary(locale);
@@ -106,7 +106,7 @@ export default async function SearchPage({
         const locale = Locale.from(localeData);
 
         const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-        const page = await PageApi({ shop, locale, handle: 'search', type: 'custom_page' });
+        const page = await PageApi({ shop, locale, handle: 'search' });
 
         const i18n = await getDictionary(locale);
         const { t } = useTranslation('common', i18n);

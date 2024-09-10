@@ -47,7 +47,7 @@ const CommerceProvider = ({ shop, locale, children }: { shop: OnlineShop; locale
             );
         }
         default: {
-            throw new UnknownCommerceProviderError();
+            throw new UnknownCommerceProviderError(shop.commerceProvider.type);
         }
     }
 };
@@ -78,7 +78,7 @@ const ContentProvider = ({
             return <>{children}</>;
         }
         default: {
-            throw new UnknownContentProviderError(shop.contentProvider);
+            throw new UnknownContentProviderError(shop.contentProvider.type);
         }
     }
 };

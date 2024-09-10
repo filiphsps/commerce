@@ -28,7 +28,7 @@ export const dynamic = 'force-static';
 export const dynamicParams = true;
 export const revalidate = false;
 
-export type CustomPageParams = { domain: string; locale: string; handle: string };
+export type CustomPageParams = { domain: string; locale: string; slug: string[] };
 
 export async function generateStaticParams({
     params: { domain, locale: localeData }
@@ -45,7 +45,7 @@ export async function generateStaticParams({
         }
 
         return pages.map(({ uid }) => ({
-            handle: uid!
+            slug: [uid!] // TODO: Handle nested paths.
         }));
     } catch (error: unknown) {
         console.error(error);
@@ -54,10 +54,11 @@ export async function generateStaticParams({
 }
 
 export async function generateMetadata({
-    params: { domain, locale: localeData, handle }
+    params: { domain, locale: localeData, slug }
 }: {
     params: CustomPageParams;
 }): Promise<Metadata> {
+    const handle = slug.join('/');
     if (!isValidHandle(handle)) {
         notFound();
     }
@@ -152,10 +153,11 @@ async function OnlineStoreJsonLd({ shop, locale }: { shop: OnlineShop; locale: L
 }
 
 export default async function CustomPage({
-    params: { domain, locale: localeCode, handle }
+    params: { domain, locale: localeCode, slug }
 }: {
     params: CustomPageParams;
 }) {
+    const handle = slug.join('/');
     if (!isValidHandle(handle)) {
         notFound();
     }

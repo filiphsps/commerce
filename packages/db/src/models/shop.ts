@@ -14,8 +14,8 @@ export type ShopTheme = {
     };
 };
 
-export const ContentProviders = ['prismic', 'shopify'] as const;
-export const CommerceProviders = ['prismic', 'shopify'] as const;
+export const ContentProviders = ['prismic', 'shopify', 'builder.io'] as const;
+export const CommerceProviders = ['shopify', 'stripe'] as const;
 
 export interface ShopBase extends BaseDocument {
     name: string;
@@ -63,18 +63,30 @@ export interface ShopBase extends BaseDocument {
           }
         | {
               type: 'shopify';
+          }
+        | {
+              type: 'builder.io';
+              authentication: {
+                  token: string;
+                  publicToken: string;
+              };
           };
-    commerceProvider: {
-        type: 'shopify';
-        authentication: {
-            token: string;
-            publicToken: string;
-            domain?: string;
-        };
-        storefrontId: string;
-        domain: string;
-        id: string;
-    };
+    commerceProvider:
+        | {
+              type: 'shopify';
+              authentication: {
+                  token: string;
+                  publicToken: string;
+                  domain?: string;
+              };
+              storefrontId: string;
+              domain: string;
+              id: string;
+          }
+        | {
+              type: 'stripe';
+              authentication: {};
+          };
 
     collaborators: [
         {
