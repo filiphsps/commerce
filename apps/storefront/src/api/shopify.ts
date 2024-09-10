@@ -53,7 +53,7 @@ export const ShopifyApiConfig = async ({
         private: () => ({
             uri: api.getStorefrontApiUrl(),
             headers: api.getPrivateTokenHeaders({
-                buyerIp
+                buyerIp: buyerIp || '::1' // FIXME: Ugly hack to silence warnings.
             })
         })
     };
