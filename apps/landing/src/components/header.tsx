@@ -3,6 +3,7 @@ import styles from '@/components/header.module.scss';
 import { Button, Header as NordstarHeader } from '@nordcom/nordstar';
 
 import logo from '@/static/logo.svg';
+import { cn } from '@/utils/tailwind';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -11,7 +12,7 @@ import type { HTMLProps } from 'react';
 export type HeaderProps = {} & Omit<HTMLProps<HTMLDivElement>, 'children' | 'color'>;
 export default async function Header({ className, ...props }: HeaderProps) {
     return (
-        <NordstarHeader {...props} className={`${styles.header} ${className || ''}`}>
+        <NordstarHeader {...props} className={cn(styles.header, '[grid-area:header]', className)}>
             <NordstarHeader.Logo>
                 <Link href="/" title="Nordcom Commerce" className={styles['logo-wrapper']}>
                     <Image
