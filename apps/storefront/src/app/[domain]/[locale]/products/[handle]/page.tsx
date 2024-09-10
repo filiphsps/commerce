@@ -7,8 +7,10 @@ import { Error } from '@nordcom/commerce-errors';
 
 import { PageApi } from '@/api/page';
 import { isProductVegan } from '@/api/product';
+import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductApi, ProductsApi } from '@/api/shopify/product';
+import { RedirectProductApi } from '@/api/shopify/redirects';
 import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
@@ -19,7 +21,7 @@ import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 import { asText } from '@prismicio/client';
 import { parseGid } from '@shopify/hydrogen-react';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 
 import { CMSContent } from '@/components/cms/cms-content';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
@@ -64,10 +66,10 @@ export async function generateStaticParams({
     try {
         const locale = Locale.from(localeData);
 
-        const shop = await Shop.findByDomain(domain);
+        const shop = await findShopByDomainOverHttp(domain);
         const api = await ShopifyApiClient({ shop, locale });
 
-        const limit = 10; // Artificially limit the number of products to avoid overloading the API.
+        const limit = 10; // Artificially limit the number of items to avoid rate limiting and long build times.
         const { products } = await ProductsApi({ api, limit, sorting: 'BEST_SELLING' });
 
         return products.map(({ node: { handle } }) => ({
@@ -77,6 +79,19 @@ export async function generateStaticParams({
         console.error(error);
         return [];
     }
+}
+
+/** @todo TODO: Should this be done in the middleware? */
+async function checkAndHandleRedirect({ domain, locale, handle }: { domain: string; locale: Locale; handle: string }) {
+    const shop = await findShopByDomainOverHttp(domain);
+    const api = await ShopifyApiClient({ shop, locale });
+
+    const target = await RedirectProductApi({ api, handle });
+    if (!target) {
+        return;
+    }
+
+    redirect(target);
 }
 
 export async function generateMetadata({
@@ -146,6 +161,7 @@ export async function generateMetadata({
         };
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
+            await checkAndHandleRedirect({ domain, locale: Locale.from(localeData), handle });
             notFound();
         }
 
@@ -407,6 +423,7 @@ export default async function ProductPage({
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
+            await checkAndHandleRedirect({ domain, locale: Locale.from(localeData), handle });
             notFound();
         }
 
