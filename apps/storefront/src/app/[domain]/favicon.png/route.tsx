@@ -16,12 +16,6 @@ export type FaviconRouteParams = {
     domain: string;
 };
 export async function GET(req: NextRequest, { params: { domain } }: { params: FaviconRouteParams }) {
-    if (BuildConfig.environment !== 'production') {
-        return NextResponse.json({
-            status: 200
-        });
-    }
-
     const searchParams = req.nextUrl.searchParams;
     let width = safeParseFloat(null, searchParams.get('width') ?? searchParams.get('w'));
     let height = safeParseFloat(null, searchParams.get('height') ?? searchParams.get('h'));
@@ -57,6 +51,10 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Fa
             src = shop.icons.favicon.src;
         } else {
             throw new NotFoundError('favicon.png');
+        }
+
+        if (BuildConfig.environment !== 'production') {
+            return NextResponse.redirect(src, 307);
         }
 
         /** @see {@link https://vercel.com/docs/functions/edge-functions/og-image-generation/og-image-examples#using-an-external-dynamic-image} */

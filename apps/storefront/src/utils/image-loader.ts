@@ -2,7 +2,7 @@ import { BuildConfig } from '@/utils/build-config';
 
 import type { ImageLoader as ImageLoaderType } from 'next/image';
 
-const normalizeSrc = (src: string) => {
+const normalizeSrc = (src: string = '') => {
     return src.startsWith('/') ? src.slice(1) : src;
 };
 

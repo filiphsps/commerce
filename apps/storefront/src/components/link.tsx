@@ -20,6 +20,12 @@ export type LinkProps = {
 } & Omit<ComponentProps<typeof BaseLink>, 'locale'>;
 
 const isInternal = (href: string, shop?: OnlineShop): boolean => {
+    if (href === '') {
+        return true;
+    } else if (!href) {
+        return false;
+    }
+
     // If the url starts with `/` we're obviously requesting an internal path.
     if (href.startsWith('/')) {
         return true;

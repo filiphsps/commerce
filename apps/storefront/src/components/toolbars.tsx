@@ -6,7 +6,7 @@ import { VercelToolbar } from '@vercel/toolbar/next';
 import type { ReactNode } from 'react';
 
 export const isPreviewEnvironment = (domain: string = '') => {
-    if (BuildConfig.environment === 'development') {
+    if (['development', 'test'].includes(BuildConfig.environment)) {
         return true;
     }
 
@@ -21,12 +21,14 @@ export const isPreviewEnvironment = (domain: string = '') => {
 /**
  * Injects toolbars on development environments and staging builds.
  */
-export function Toolbars({ children }: { children?: ReactNode; domain: string }) {
+export function Toolbars({ children, domain }: { children?: ReactNode; domain: string }) {
     return (
         <>
-            <ErrorBoundary fallbackRender={() => null}>
-                <VercelToolbar />
-            </ErrorBoundary>
+            {isPreviewEnvironment(domain) ? (
+                <ErrorBoundary fallbackRender={() => null}>
+                    <VercelToolbar />
+                </ErrorBoundary>
+            ) : null}
 
             {children}
         </>

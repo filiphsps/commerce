@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { Suspense } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 
 import type { OnlineShop, Optional } from '@nordcom/commerce-db';
 
@@ -77,7 +78,7 @@ PrismicPage.skeleton = async <T extends PageType = 'custom_page'>({
     }
 
     return (
-        <>
+        <ErrorBoundary fallbackRender={() => null}>
             {items.map((slice: Partial<(typeof items)[0]>) => {
                 if (slice.slice_type === undefined) {
                     return null;
@@ -100,7 +101,7 @@ PrismicPage.skeleton = async <T extends PageType = 'custom_page'>({
                     />
                 );
             })}
-        </>
+        </ErrorBoundary>
     );
 };
 (PrismicPage.skeleton as any).displayName = 'Nordcom.PrismicPage.Skeleton';
