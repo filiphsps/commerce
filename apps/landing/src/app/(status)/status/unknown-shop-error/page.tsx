@@ -1,9 +1,6 @@
-'use client';
-
 import { Heading } from '@nordcom/nordstar';
 
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
 
 import type { Metadata } from 'next';
 
@@ -13,10 +10,7 @@ export const metadata: Metadata = {
     title: 'Unknown or Invalid Shop'
 };
 
-export default function StatusPage() {
-    const searchParams = useSearchParams();
-    const shop = searchParams.get('shop');
-
+export default function StatusPage({ searchParams: { shop } }: { searchParams: { shop: string | undefined } }) {
     const mailTitle = `${shop ? `[${shop}] ` : ''}Unknown or Invalid Shop`;
     const mailBody = `\n\n\n\n**timestamp: ${new Date().toISOString()}**`;
 
