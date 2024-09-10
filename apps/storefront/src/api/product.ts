@@ -11,8 +11,8 @@ export type ProductVariant = {
     metafields: ShopifyVariant['metafields'] | undefined;
 } & OmitTypeName<Omit<ShopifyVariant, 'compareAtPriceV2' | 'priceV2' | 'metafields'>>;
 
-export type Product = ShopifyProduct & {
-    productType: string | null;
+export type Product = {
+    productType?: string | null;
     descriptionHtml: string;
 
     variants: {
@@ -29,7 +29,7 @@ export type Product = ShopifyProduct & {
 
     // Built-in metafields.
     allergen?: Metafield | undefined | null;
-} & OmitTypeName<Omit<ShopifyProduct, 'descriptionHtml' | 'variants'>>;
+} & OmitTypeName<Omit<ShopifyProduct, 'productType' | 'descriptionHtml' | 'variants'>>;
 
 export type ProductFilters = SearchResultItemConnection['productFilters'];
 
@@ -59,6 +59,10 @@ export const isProductVegan = (product: Product): boolean => {
 };
 
 export const isProductConfectionary = (product: Product): boolean => {
+    if (!product.productType) {
+        return false;
+    }
+
     const type = product.productType.toLowerCase().trim();
     const applicableTypes = [
         'bakery',

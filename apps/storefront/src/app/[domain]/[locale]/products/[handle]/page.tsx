@@ -263,7 +263,11 @@ export default async function ProductPage({
         };
 
         let title = product.title.trim();
-        if (product.productType.length > 0 && title.toLowerCase().endsWith(product.productType.toLowerCase())) {
+        if (
+            product.productType &&
+            product.productType.length > 0 &&
+            title.toLowerCase().endsWith(product.productType.toLowerCase())
+        ) {
             title = title.slice(0, -product.productType.length).trim();
         }
 
