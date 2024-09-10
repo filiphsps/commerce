@@ -1,6 +1,12 @@
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import createVercelToolbar from '@vercel/toolbar/plugins/next';
+
+const withVercelToolbar = createVercelToolbar();
+
+const isDev = process.env.NODE_ENV === 'development';
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export function getBaseUrl() {
@@ -102,30 +108,32 @@ const config = {
         return process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
     },
 
-    webpack: (config, { webpack, isServer }) => {
-        config.experiments = {
-            ...config.experiments,
-            topLevelAwait: true
-        };
+    webpack: !isDev
+        ? (config, { webpack, isServer }) => {
+              config.experiments = {
+                  ...config.experiments,
+                  topLevelAwait: true
+              };
 
-        config.plugins.push(
-            new webpack.DefinePlugin({
-                __SENTRY_DEBUG__: false,
-                __SENTRY_TRACING__: false,
-                __RRWEB_EXCLUDE_IFRAME__: true,
-                __RRWEB_EXCLUDE_SHADOW_DOM__: true,
-                __SENTRY_EXCLUDE_REPLAY_WORKER__: true
-            })
-        );
+              config.plugins.push(
+                  new webpack.DefinePlugin({
+                      __SENTRY_DEBUG__: false,
+                      __SENTRY_TRACING__: false,
+                      __RRWEB_EXCLUDE_IFRAME__: true,
+                      __RRWEB_EXCLUDE_SHADOW_DOM__: true,
+                      __SENTRY_EXCLUDE_REPLAY_WORKER__: true
+                  })
+              );
 
-        if (isServer) {
-            config.devtool = 'source-map';
-        }
-        return config;
-    },
+              if (isServer) {
+                  config.devtool = 'source-map';
+              }
+              return config;
+          }
+        : undefined,
 
     // We handle all redirects at the edge.
     skipTrailingSlashRedirect: true
 };
 
-export default config;
+export default withVercelToolbar(config);
