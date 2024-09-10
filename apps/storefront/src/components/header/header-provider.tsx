@@ -74,7 +74,7 @@ export const HeaderProvider = ({ children = null, loaderColor }: HeaderProviderP
         <HeaderContext.Provider value={value}>
             {children}
 
-            <NextTopLoader color={loaderColor} showSpinner={true} crawl={true} />
+            <NextTopLoader color={loaderColor} height={8} showSpinner={true} crawl={true} zIndex={9999} />
         </HeaderContext.Provider>
     );
 };

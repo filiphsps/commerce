@@ -18,6 +18,14 @@
     body {
         @apply min-h-screen;
     }
+
+    #nprogress {
+        @apply pointer-events-none;
+    }
+
+    #nprogres .bar {
+        @apply shadow-lg;
+    }
 }
 
 @layer utilities {

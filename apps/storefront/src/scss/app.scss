@@ -125,20 +125,6 @@ input[type='search']::-webkit-search-results-decoration {
     appearance: none;
 }
 
-#nprogress {
-    pointer-events: none;
-
-    .bar {
-        background: var(--accent-primary-light);
-        position: fixed;
-        z-index: 1000;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: var(--block-spacer-huge) !important;
-    }
-}
-
 svg {
     font-size: inherit;
     height: 100%;
