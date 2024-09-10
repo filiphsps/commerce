@@ -165,78 +165,22 @@ export default async function CollectionPage({
         notFound();
     }
 
+    // Creates a locale object from a locale code (e.g. `en-US`).
+    const locale = Locale.from(localeData);
+
+    // Fetch the current shop.
+    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+
+    // Setup the AbstractApi client.
+    const api = await ShopifyApolloApiClient({ shop, locale });
+
+    let collection: Awaited<ReturnType<typeof CollectionApi>>,
+        pagesInfo: Awaited<ReturnType<typeof CollectionPaginationCountApi>>;
+
     try {
-        // Creates a locale object from a locale code (e.g. `en-US`).
-        const locale = Locale.from(localeData);
-
-        // Fetch the current shop.
-        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-
-        // Setup the AbstractApi client.
-
-        const api = await ShopifyApolloApiClient({ shop, locale });
-
         // Do the actual API calls.
-        const [collection, pagesInfo] = await Promise.all([
-            CollectionApi({ api, handle, limit: 1 }),
-            CollectionPaginationCountApi({ api, handle, filters: { first: PRODUCTS_PER_PAGE } })
-        ]);
-
-        const empty = collection.products.edges.length <= 0;
-
-        const jsonLd: WithContext<Collection> = {
-            '@context': 'https://schema.org',
-            '@type': 'Collection',
-            'name': collection.title,
-            'description': collection.description,
-            'url': `https://${shop.domain}/${locale.code}/collections/${handle}/`
-        };
-
-        return (
-            <>
-                <Suspense fallback={<BreadcrumbsSkeleton />}>
-                    <div className="-mb-[1.5rem] empty:hidden md:-mb-[2.25rem]">
-                        <Breadcrumbs locale={locale} title={collection.title} />
-                    </div>
-                </Suspense>
-
-                {!empty ? (
-                    <>
-                        <section className="flex flex-col gap-2">
-                            <Heading title={collection.seo.title ?? collection.title} />
-
-                            <Suspense
-                                key={JSON.stringify(searchParams)}
-                                fallback={<CollectionBlock.skeleton length={PRODUCTS_PER_PAGE} />}
-                            >
-                                <CollectionContent
-                                    shop={shop}
-                                    locale={locale}
-                                    searchParams={searchParams}
-                                    handle={handle}
-                                    cursors={pagesInfo.cursors}
-                                />
-                            </Suspense>
-                        </section>
-
-                        <section className="flex w-full items-center justify-center">
-                            <Suspense>
-                                <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
-                            </Suspense>
-                        </section>
-                    </>
-                ) : null}
-
-                <Suspense fallback={<section className="w-full bg-gray-100 p-4" data-skeleton />}>
-                    <CollectionPageSlices shop={shop} locale={locale} handle={handle} />
-                </Suspense>
-
-                <Content html={collection.descriptionHtml} />
-
-                {/* Metadata */}
-                <JsonLd data={jsonLd} />
-            </>
-        );
+        collection = await CollectionApi({ api, handle, limit: 1 });
+        pagesInfo = await CollectionPaginationCountApi({ api, handle, filters: { first: PRODUCTS_PER_PAGE } });
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
             await checkAndHandleRedirect({ domain, locale: Locale.from(localeData), path: `/collections/${handle}` });
@@ -247,4 +191,60 @@ export default async function CollectionPage({
         unstable_rethrow(error);
         throw error;
     }
+
+    const empty = collection.products.edges.length <= 0;
+
+    const jsonLd: WithContext<Collection> = {
+        '@context': 'https://schema.org',
+        '@type': 'Collection',
+        'name': collection.title,
+        'description': collection.description,
+        'url': `https://${shop.domain}/${locale.code}/collections/${handle}/`
+    };
+
+    return (
+        <>
+            <Suspense fallback={<BreadcrumbsSkeleton />}>
+                <div className="-mb-[1.5rem] empty:hidden md:-mb-[2.25rem]">
+                    <Breadcrumbs locale={locale} title={collection.title} />
+                </div>
+            </Suspense>
+
+            {!empty ? (
+                <>
+                    <section className="flex flex-col gap-2">
+                        <Heading title={collection.seo.title ?? collection.title} />
+
+                        <Suspense
+                            key={JSON.stringify(searchParams)}
+                            fallback={<CollectionBlock.skeleton length={PRODUCTS_PER_PAGE} />}
+                        >
+                            <CollectionContent
+                                shop={shop}
+                                locale={locale}
+                                searchParams={searchParams}
+                                handle={handle}
+                                cursors={pagesInfo.cursors}
+                            />
+                        </Suspense>
+                    </section>
+
+                    <section className="flex w-full items-center justify-center">
+                        <Suspense>
+                            <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
+                        </Suspense>
+                    </section>
+                </>
+            ) : null}
+
+            <Suspense fallback={<section className="w-full bg-gray-100 p-4" data-skeleton />}>
+                <CollectionPageSlices shop={shop} locale={locale} handle={handle} />
+            </Suspense>
+
+            <Content html={collection.descriptionHtml} />
+
+            {/* Metadata */}
+            <JsonLd data={jsonLd} />
+        </>
+    );
 }
