@@ -18,12 +18,12 @@ export const GET = async (req: NextRequest, _context: any) => {
         });
 
         return res;
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error(error);
 
         return NextResponse.json(
             {
-                errors: [new UnknownApiError(error.message)]
+                errors: [new UnknownApiError((error as any)?.message)]
             },
             {
                 status: 500

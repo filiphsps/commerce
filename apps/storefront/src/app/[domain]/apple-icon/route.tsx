@@ -35,7 +35,7 @@ export async function GET({}: NextRequest, { params: { domain } }: { params: App
                 height
             }
         );
-    } catch (error) {
+    } catch (error: unknown) {
         console.error(error);
 
         return NextResponse.json(

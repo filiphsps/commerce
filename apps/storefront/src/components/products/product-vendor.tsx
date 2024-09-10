@@ -50,8 +50,9 @@ export async function ProductVendor({
                 {vendorTextElement}
             </Link>
         );
-    } catch (error) {
+    } catch (error: unknown) {
         console.error(error);
+
         return (
             <div {...(props as any)} title={undefined} className={cn(className)}>
                 {vendorTextElement}

@@ -70,7 +70,7 @@ export const SearchApi = async ({
                 products,
                 productFilters
             });
-        } catch (error) {
+        } catch (error: unknown) {
             console.error(error);
             return reject(error);
         }

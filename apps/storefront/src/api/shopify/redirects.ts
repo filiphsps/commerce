@@ -77,7 +77,7 @@ export const RedirectsApi = async ({
                 return resolve(await RedirectsApi({ client, cursor, redirects }));
 
             return resolve(Convertor(redirects));
-        } catch (error) {
+        } catch (error: unknown) {
             console.error(error);
             return reject(error);
         }
@@ -104,7 +104,7 @@ export const RedirectApi = async ({ client, path }: { client: AbstractApi; path:
                 return resolve(redirect.target);
             }
             return resolve(null);
-        } catch (error) {
+        } catch (error: unknown) {
             return reject(error);
         }
     });

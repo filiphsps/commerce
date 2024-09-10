@@ -69,7 +69,7 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Fa
                 fonts: []
             }
         );
-    } catch (error) {
+    } catch (error: unknown) {
         console.error(error);
 
         return NextResponse.json(

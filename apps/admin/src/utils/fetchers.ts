@@ -54,10 +54,10 @@ export async function updateShop(userId: string, shopId: string, data: Partial<O
         await shop.save();
         await revalidateAll(userId, shopId, shop.domain);
         return shop;
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error(error);
         return {
-            error: error.message
+            error: (error as any)?.message
         };
     }
 }

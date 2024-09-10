@@ -28,7 +28,7 @@ export const PagesApi = async ({
         const pages = await client.getAllByType('custom_page');
 
         return pages.filter(({ uid }) => !exclude.includes(uid!));
-    } catch (error) {
+    } catch (error: unknown) {
         if (Error.isNotFound(error)) {
             if (!Locale.isDefault(locale)) {
                 return await PagesApi({ shop, locale: Locale.default }); // Try again with default locale.
@@ -90,7 +90,7 @@ export const PageApi = async <T extends keyof PageTypeMapping | 'custom_page' = 
         }
 
         return page;
-    } catch (error) {
+    } catch (error: unknown) {
         if (Error.isNotFound(error)) {
             if (!Locale.isDefault(locale)) {
                 return await PageApi({ shop, locale: Locale.default, type, handle }); // Try again with default locale.

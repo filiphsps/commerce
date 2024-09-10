@@ -161,7 +161,7 @@ export const BusinessDataApi = async ({
     try {
         const res = await client.getSingle<BusinessDataDocument>('business_data');
         return res.data;
-    } catch (error) {
+    } catch (error: unknown) {
         if (Error.isNotFound(error)) {
             if (!Locale.isDefault(locale)) {
                 return await BusinessDataApi({ shop, locale: Locale.default }); // Try again with default locale.

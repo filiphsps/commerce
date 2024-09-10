@@ -29,7 +29,7 @@ export const RecommendationApi = async ({ api, id }: { api: AbstractApi; id: str
                 return reject(new Error(`404: No recommendations found for "Product" with id "${id}"`));
 
             return resolve(/*flattenConnection(*/ data.productRecommendations /*)*/);
-        } catch (error) {
+        } catch (error: unknown) {
             console.error(error);
             return reject(error);
         }

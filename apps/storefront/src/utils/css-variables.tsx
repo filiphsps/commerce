@@ -1,6 +1,9 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { findShopByDomainOverHttp } from '@/api/shop';
+import { ShopifyApiClient } from '@/api/shopify';
+import { BrandApi } from '@/api/shopify/brand';
+import { Locale } from '@/utils/locale';
 import { colord, extend } from 'colord';
 import a11yPlugin from 'colord/plugins/a11y';
 
@@ -9,9 +12,42 @@ extend([a11yPlugin]);
 // TODO: Generalize this
 export const getBrandingColors = async ({ domain, shop }: { domain: string; shop?: OnlineShop }) => {
     try {
+        shop = shop || (await findShopByDomainOverHttp(domain));
+
         const {
-            design: { accents }
-        } = shop || (await findShopByDomainOverHttp(domain));
+            design: { accents },
+            commerceProvider
+        } = shop;
+
+        if (accents.length <= 0) {
+            try {
+                if (commerceProvider.type === 'shopify') {
+                    const api = await ShopifyApiClient({ shop, locale: Locale.default });
+                    const brand = await BrandApi({ api });
+
+                    const primary = brand.colors.primary[0];
+                    const secondary = brand.colors.secondary[0];
+
+                    if (primary.background && secondary.background) {
+                        return {
+                            primary: {
+                                type: 'primary',
+                                color: primary.background!,
+                                foreground: primary.foreground! || '#000000'
+                            },
+                            secondary: {
+                                type: 'secondary',
+                                color: secondary.background!,
+                                foreground: secondary.foreground! || '#000000'
+                            }
+                        };
+                    }
+                }
+            } catch (error: unknown) {
+                console.error(error);
+            }
+        }
+
         if (accents.length <= 0) {
             return null;
         }

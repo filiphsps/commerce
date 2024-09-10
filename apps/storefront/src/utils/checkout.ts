@@ -90,7 +90,7 @@ export const Checkout = async ({
                 }
             }
         });
-    } catch (error) {
+    } catch (error: unknown) {
         console.error(error);
     }
 

@@ -39,9 +39,9 @@ export const CartSidebar = ({ i18n, locale, className, children, paymentMethods,
                             cart,
                             trackable
                         });
-                    } catch (error: any) {
+                    } catch (error: unknown) {
                         console.error(error);
-                        toast.error(error.message);
+                        toast.error((error as any)?.message);
                     }
                 }}
                 i18n={i18n}

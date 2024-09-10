@@ -19,7 +19,7 @@ export async function FooterApi({
         const res = await client.getSingle<FooterDocument>('footer');
 
         return res.data;
-    } catch (error) {
+    } catch (error: unknown) {
         if (Error.isNotFound(error)) {
             if (!Locale.isDefault(locale)) {
                 return await FooterApi({ shop, locale: Locale.default }); // Try again with default locale.

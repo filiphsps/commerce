@@ -82,9 +82,7 @@ export type AnalyticsEventData = {
         };
     };
 };
-export type AnalyticsEventConfig = {
-    silent?: boolean;
-};
+export type AnalyticsEventConfig = {};
 
 /**
  * @see {@link https://shopify.dev/docs/api/hydrogen-react/2024-07/utilities/sendshopifyanalytics#analyticspagetype}
@@ -155,7 +153,6 @@ export type AnalyticsEventActionProps = {
     locale: Locale;
     shopify: ShopifyContextValue;
     cart: CartWithActions;
-    silent?: boolean;
 };
 
 const shopifyEventHandler = async (
@@ -262,10 +259,10 @@ const shopifyEventHandler = async (
 const handleEvent = async (
     event: AnalyticsEventType,
     data: AnalyticsEventData,
-    { shop, currency, locale, shopify, cart, silent = false }: AnalyticsEventActionProps
+    { shop, currency, locale, shopify, cart }: AnalyticsEventActionProps
 ) => {
     if (!window.dataLayer) {
-        if (!silent && BuildConfig.environment === 'development') {
+        if (BuildConfig.environment === 'development') {
             TrackableLogger('window.dataLayer not found, creating it.', data, 'analytics');
         }
 
@@ -321,10 +318,8 @@ const handleEvent = async (
             ...additionalData,
             ...(data.gtm || {})
         });
-    } catch (error: any) {
-        if (!silent) {
-            TrackableLogger(`Error sending "${event}" event: ${error?.message || error}`, 'analytics');
-        }
+    } catch (error: unknown) {
+        TrackableLogger(`Error sending "${event}" event: ${(error as any)?.message || error}`, 'analytics');
     }
 
     if (typeof data.gtm?.ecommerce !== 'undefined') {

@@ -337,12 +337,14 @@ export const ProductsPaginationCountApi = async ({
             }
         );
 
-        if (errors) throw new UnknownApiError();
-        else if (!data?.products.edges || data.products.edges.length <= 0)
+        if (errors) {
+            throw new UnknownApiError();
+        } else if (!data?.products.edges || data.products.edges.length <= 0) {
             return {
                 count,
                 cursors
             };
+        }
 
         const cursor = data.products.edges.at(-1)!.cursor;
         if (data.products.pageInfo.hasNextPage) {
@@ -444,7 +446,7 @@ export const ProductsApi = async ({
                     previous: data.products.pageInfo.hasPreviousPage
                 }
             });
-        } catch (error) {
+        } catch (error: unknown) {
             console.error(error);
             return reject(error);
         }
