@@ -11,6 +11,14 @@ export async function register() {
 
     if (process.env.NEXT_RUNTIME === 'nodejs') {
         await import('../sentry.server.config');
+
+        try {
+            const { registerInitialCache } = await import('@neshca/cache-handler/instrumentation');
+            const CacheHandler = (await import('../data-cache-handler.mjs')).default;
+            await registerInitialCache(CacheHandler);
+        } catch (error: unknown) {
+            console.error(error);
+        }
     }
 
     if (process.env.NEXT_RUNTIME === 'edge') {
