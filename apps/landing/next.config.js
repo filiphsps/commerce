@@ -26,17 +26,25 @@ const config = {
     transpilePackages: [],
     assetPrefix: getBaseUrl(),
     experimental: {
+        after: true,
         //caseSensitiveRoutes: true,
+        appNavFailHandling: true,
         cssChunking: 'loose',
         optimizeCss: true,
-        optimizePackageImports: ['react-icons', '@nordcom/nordstar'],
+        optimizePackageImports: ['@apollo/client', '@shopify/hydrogen-react', 'react-icons', '@nordcom/nordstar'],
         parallelServerBuildTraces: true,
         parallelServerCompiles: true,
         ppr: true,
+        pprFallbacks: true,
         reactCompiler: true,
         scrollRestoration: true,
+        serverComponentsHmrCache: true,
         serverSourceMaps: true,
-        turbo: {},
+        staleTimes: { dynamic: 30, static: 180 },
+        taint: true,
+        turbo: {
+            root: __dirname
+        },
         taint: true,
         webpackBuildWorker: true
     },

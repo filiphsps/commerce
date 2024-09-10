@@ -38,8 +38,6 @@ export async function ProductVendor({
     );
     const vendor = TitleToHandle(productVendor.toLowerCase().trim());
 
-    console.log(vendor);
-
     try {
         const api = await ShopifyApiClient({ shop, locale });
         const collection = await CollectionApi({ handle: vendor, api, first: 1 });

@@ -39,7 +39,7 @@ const config = {
         appNavFailHandling: true,
         cssChunking: 'loose',
         optimizeCss: true,
-        optimizePackageImports: ['@apollo/client', '@shopify/hydrogen-react', 'react-icons'],
+        optimizePackageImports: ['@apollo/client', '@shopify/hydrogen-react', 'react-icons', '@nordcom/nordstar'],
         parallelServerBuildTraces: true,
         parallelServerCompiles: true,
         ppr: true,
@@ -50,7 +50,9 @@ const config = {
         serverSourceMaps: true,
         staleTimes: { dynamic: 30, static: 180 },
         taint: true,
-        turbo: {},
+        turbo: {
+            root: __dirname
+        },
         typedEnv: true,
         //useEarlyImport: true,
         webpackBuildWorker: true
