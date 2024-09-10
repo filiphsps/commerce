@@ -12,7 +12,9 @@ export type ProductVariant = {
 } & OmitTypeName<Omit<ShopifyVariant, 'compareAtPriceV2' | 'priceV2' | 'metafields'>>;
 
 export type Product = ShopifyProduct & {
-    descriptionHtml: string | undefined;
+    productType: string | null;
+    descriptionHtml: string;
+
     variants: {
         edges: Array<{
             node: ProductVariant;
@@ -41,7 +43,8 @@ export const createProductSearchParams = ({
     if (!trackingParameters) {
         return '';
     }
-    return new URLSearchParams(trackingParameters ?? '').toString();
+
+    return new URLSearchParams(trackingParameters).toString();
 };
 
 export const isProductVegan = (product: Product): boolean => {

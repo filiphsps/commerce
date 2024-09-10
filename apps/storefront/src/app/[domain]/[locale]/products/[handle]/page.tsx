@@ -203,6 +203,7 @@ export default async function ProductPage({
 
         // Do the actual API calls.
         const product = await ProductApi({ api, handle });
+        const { descriptionHtml: content } = product;
 
         // Get dictionary of strings for the current locale.
         const i18n = await getDictionary({ shop, locale });
@@ -212,7 +213,6 @@ export default async function ProductPage({
         if (!initialVariant) notFound();
 
         // TODO: Create a proper `shopify-html-parser` to convert the HTML to React components.
-        const content = product.descriptionHtml || '';
 
         const jsonLd: WithContext<ProductGroup> = {
             '@context': 'https://schema.org',

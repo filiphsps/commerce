@@ -27,20 +27,52 @@ export const createApolloClient = ({ uri, headers }: ApiConfig, shop: OnlineShop
         }),
         cache: new InMemoryCache({
             canonizeResults: true,
-            addTypename: true
+            addTypename: true,
 
-            // FIXME: Implement this.
-            /*typePolicies: {
+            // TODO: Validate that this is correct.
+            typePolicies: {
+                Product: {
+                    fields: {
+                        productType: {
+                            read(value) {
+                                if (!value || value.length <= 0) {
+                                    return null;
+                                }
+
+                                return value.trim();
+                            }
+                        },
+                        descriptionHtml: {
+                            read(value) {
+                                if (!value || value.length <= 0) {
+                                    return '';
+                                }
+
+                                // Clean up the HTML.
+                                return value
+                                    .replaceAll('\n', '')
+                                    .replaceAll('<meta charset="UTF-8">', '')
+                                    .replaceAll(/data-[a-zA-Z0-9-]+="[^"]+"/g, '') // Remove all data-attributes.
+                                    .trim();
+                            }
+                        },
+                        trackingParameters: {
+                            read(value) {
+                                return value || '';
+                            }
+                        }
+                    }
+                },
                 Query: {
                     fields: {
-                        Localization: {
-                            merge(existing = [], incoming: any) {
-                                return { ...existing, ...incoming };
+                        localization: {
+                            merge(existing, incoming, { mergeObjects }) {
+                                return mergeObjects(existing, incoming);
                             }
                         }
                     }
                 }
-            }*/
+            }
         }),
         documentTransform: shopifyContextTransform,
         defaultOptions: {
