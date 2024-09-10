@@ -70,12 +70,12 @@ const CartLineRemoveAction = ({ i18n, data: line }: CartLineProps) => {
 
     return (
         <Button
-            className={'appearance-none'}
+            className="hover:text-red-500"
             title={t('remove-from-cart', `${product.vendor} ${product.title} - ${variant.title}`)}
             onClick={() => linesRemove([line.id])}
             styled={false}
         >
-            <CgTrash className="py-2 text-2xl hover:text-red-500" />
+            <CgTrash className="py-2 text-2xl text-inherit" />
         </Button>
     );
 };

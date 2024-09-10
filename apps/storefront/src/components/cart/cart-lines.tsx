@@ -30,7 +30,7 @@ const CartLines = ({ i18n }: CartContentProps) => {
             <div className="-mt-4 flex h-2 w-full select-none flex-row-reverse items-center justify-between pb-3">
                 <Button
                     as={Label as any}
-                    className="inline-flex cursor-pointer text-xs hover:text-red-500"
+                    className="inline-flex cursor-pointer text-xs text-gray-600 hover:text-red-500"
                     styled={false}
                     onClick={() => linesRemove(lines.map((line) => line?.id).filter((_) => _) as string[])}
                 >

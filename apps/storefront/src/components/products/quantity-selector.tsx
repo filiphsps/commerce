@@ -59,6 +59,7 @@ const QuantitySelector = ({
     const [quantityValue, setQuantityValue] = useState(quantity.toString() || '1');
 
     const { cartReady, status } = useCart();
+    const ready = cartReady && status !== 'updating';
 
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -131,7 +132,7 @@ const QuantitySelector = ({
         setQuantityValue(quantity.toString());
     }, [quantity]);
 
-    const disabled = isDisabled || (status !== 'idle' && status !== 'uninitialized') || !cartReady;
+    const disabled = isDisabled || !ready;
     const decreaseDisabled = disabled || (allowDecreaseToZero ? quantity <= 0 : quantity <= 1);
 
     return (
@@ -144,6 +145,7 @@ const QuantitySelector = ({
             )}
         >
             <Button
+                suppressHydrationWarning={true}
                 aria-disabled={decreaseDisabled}
                 aria-label={t('decrease')}
                 type="button"
@@ -164,6 +166,7 @@ const QuantitySelector = ({
             </Button>
 
             <Input
+                suppressHydrationWarning={true}
                 aria-disabled={disabled}
                 aria-label={t('quantity')}
                 ref={inputRef}
@@ -189,6 +192,7 @@ const QuantitySelector = ({
             />
 
             <Button
+                suppressHydrationWarning={true}
                 aria-disabled={disabled}
                 aria-label={t('increase')}
                 type="button"

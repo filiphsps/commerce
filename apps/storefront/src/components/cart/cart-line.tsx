@@ -1,9 +1,10 @@
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
-import { parseGid } from '@shopify/hydrogen-react';
+import { parseGid, useCart } from '@shopify/hydrogen-react';
 import Image from 'next/image';
 
 import { CartLineQuantityAction, CartLineRemoveAction } from '@/components/cart/cart-line-actions';
+import { Card } from '@/components/layout/card';
 import Link from '@/components/link';
 import { Price } from '@/components/products/price';
 import { Label } from '@/components/typography/label';
@@ -17,6 +18,9 @@ interface CartLineProps {
     data: ShopifyCartLine;
 }
 const CartLine = ({ i18n, data: line }: CartLineProps) => {
+    const { cartReady, status } = useCart();
+    const ready = cartReady && status !== 'updating';
+
     const product: Required<Product> | undefined = line.merchandise.product! as any;
     const variant: Required<ProductVariant> | undefined = line.merchandise! as any;
     if (!product || !variant) {
@@ -33,11 +37,15 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
 
     const image = variant.image ? (
         <Image
-            alt={variant.image.altText || variant.title}
-            className="block h-24 w-20 flex-shrink-0 rounded-lg bg-white object-contain object-center"
+            className="block h-full w-full object-contain object-center"
             src={variant.image.url}
-            width={45}
-            height={45}
+            alt={variant.image.altText || variant.title}
+            width={85}
+            height={85}
+            sizes="(max-width: 920px) 90vw, 500px"
+            priority={false}
+            loading="lazy"
+            decoding="async"
             draggable={false}
         />
     ) : null;
@@ -64,22 +72,33 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
     );
 
     return (
-        <div className="flex w-full gap-2 border-0 border-t-2 border-solid border-gray-300 py-2 md:gap-4">
-            {image}
+        <div
+            className={cn(
+                'flex w-full gap-2 border-0 border-t-2 border-solid border-gray-100 py-2 transition-opacity md:gap-4',
+                !ready && 'cursor-not-allowed opacity-50 *:pointer-events-none'
+            )}
+        >
+            <Card
+                className="h-full w-20 flex-shrink-0 border-0 bg-white p-0 md:w-24 md:overflow-hidden md:border-2 md:p-2"
+                border={true}
+            >
+                {image}
+            </Card>
 
             <div className="flex w-full flex-row gap-2">
                 <div className="flex w-full flex-col gap-2 gap-y-1">
                     <Link
                         href={`/products/${line.merchandise.product.handle}?variant=${parseGid(line.merchandise.id).id}`}
-                        className="flex w-full flex-col"
+                        className="group/header flex w-full flex-col"
                     >
                         <Label
                             as={'div'}
-                            className="group-hover/header:text-primary pb-1 pt-2 text-[.95rem] font-medium normal-case leading-none text-gray-600 transition-colors"
+                            className="group-hover/header:text-primary pb-1 pt-2 text-[0.9rem] font-medium normal-case leading-none text-gray-500 transition-colors"
                         >
                             {product.vendor}
                         </Label>
-                        <div className="group-hover/header:text-primary transition-color text-[1.20rem] font-bold leading-6 text-current">
+
+                        <div className="group-hover/header:text-primary transition-color text-[1.18rem] font-bold leading-tight text-current md:text-lg">
                             {product.title} <span className="text-sm">({variant.title})</span>
                         </div>
                     </Link>
@@ -99,7 +118,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
 
 CartLine.skeleton = () => (
     <section
-        className="flex w-full flex-nowrap gap-2 border-0 border-b-2 border-solid border-gray-200 pb-2"
+        className="flex w-full flex-nowrap gap-2 border-0 border-b-2 border-solid border-gray-100 pb-2"
         data-skeleton
     ></section>
 );
