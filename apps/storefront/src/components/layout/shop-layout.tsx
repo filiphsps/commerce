@@ -37,11 +37,13 @@ const ShopLayout = async ({ shop, locale, i18n, children }: ShopLayoutProps) => 
 };
 
 ShopLayout.skeleton = () => (
-    <>
+    <main className="grid min-h-screen grid-cols-[100%] grid-rows-[auto_auto_1fr_auto] [grid-template-areas:'info-bar''header''content''footer']">
         <Header.skeleton />
+
         <PageContent as="main" primary={true} />
+
         <Footer.skeleton />
-    </>
+    </main>
 );
 
 ShopLayout.displayName = 'Nordcom.Layout.ShopLayout';

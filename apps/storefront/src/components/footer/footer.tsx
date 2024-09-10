@@ -102,7 +102,7 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
 };
 
 Footer.skeleton = () => (
-    <footer className={styles.container} data-skeleton>
+    <footer className={cn(styles.container, '[grid-area:footer]')} data-skeleton>
         <div className={styles.content}>
             <div className={styles.blocks}>
                 <div className={styles.block}>

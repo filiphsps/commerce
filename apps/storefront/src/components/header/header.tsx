@@ -62,7 +62,7 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
                 </header>
             </section>
 
-            <section className="flex w-full flex-col items-center justify-center gap-0 border-0 border-b border-t border-solid border-gray-300 bg-white text-black group-data-[menu-open=true]/body:border-b-gray-100">
+            <section className="flex h-12 w-full flex-col items-center justify-center gap-0 border-0 border-b border-t border-solid border-gray-300 bg-white text-black group-data-[menu-open=true]/body:border-b-gray-100">
                 <Suspense>
                     <HeaderNavigation slices={slices} />
                 </Suspense>
@@ -77,12 +77,28 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
 
 // TODO: Skeleton.
 HeaderComponent.skeleton = () => (
-    <section
-        className="sticky top-0 z-50 flex flex-col items-center shadow-none group-data-[scrolled=true]/body:shadow-lg"
-        data-skeleton
-    >
-        <section className="h-16"></section>
-        <section className="h-16"></section>
+    <section className="sticky top-0 z-50 flex w-full flex-col items-center overscroll-contain shadow-none transition-shadow duration-150 [grid-area:header] group-data-[scrolled=true]/body:shadow-lg md:max-h-[95dvh]">
+        <section className="flex h-16 w-full flex-col items-center bg-white">
+            <header className="overflow-x-shadow flex h-full w-full max-w-[var(--page-width)] items-center justify-start gap-4 px-2 md:px-3">
+                <Link href={'/'} className="h-full w-32 py-2">
+                    <div className="h-full w-full rounded-lg" data-skeleton />
+                </Link>
+
+                <div className="flex h-full grow items-center justify-end gap-4 py-3 lg:gap-6">
+                    <div className="aspect-square h-[calc(100%-0.5rem)] rounded-full" data-skeleton />
+                    <div className="aspect-square h-full w-20 rounded-3xl" data-skeleton />
+                </div>
+            </header>
+        </section>
+        <section className="flex h-12 w-full flex-col items-center justify-center gap-0 border-0 border-b border-t border-solid border-gray-300 bg-white text-black">
+            <nav className="overflow-x-shadow flex w-full grow items-center justify-start gap-5 overflow-x-auto whitespace-nowrap px-2 py-[0.65rem] md:max-w-[var(--page-width)] md:flex-row md:overflow-hidden md:px-3 lg:gap-6">
+                <div className="h-full w-14 rounded-lg" data-skeleton />
+                <div className="h-full w-12 rounded-lg" data-skeleton />
+                <div className="h-full w-28 rounded-lg" data-skeleton />
+                <div className="h-full w-16 rounded-lg" data-skeleton />
+                <div className="h-full w-14 rounded-lg" data-skeleton />
+            </nav>
+        </section>
     </section>
 );
 
