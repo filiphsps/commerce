@@ -161,9 +161,31 @@ a:is([href]):where([href=''], [href='#']) {
 }
 
 [data-skeleton] {
-    animation: shimmer 2s linear infinite;
-    background: linear-gradient(to right, var(--color-block) 0%, var(--color-block-dark) 25%, var(--color-block) 50%);
-    background-size: 200% 100%;
+    position: relative;
+    overflow: hidden;
+    background-color: #f3f4f6;
+
+    &::before {
+        z-index: 1;
+        content: '';
+        position: absolute;
+        inset: 0;
+        border: 1px solid #e5e7eb;
+
+        border-radius: inherit;
+    }
+
+    &::after {
+        z-index: 0;
+        content: '';
+        position: absolute;
+        inset: 0;
+        transform: translateX(-100%);
+        background-image: linear-gradient(to right, #f3f4f6 0%, #d1d5db 25%, #f3f4f6 50%);
+        animation: shimmer 5s infinite;
+
+        border-radius: inherit;
+    }
 }
 
 /* TODO: Don't hardcode this. */
