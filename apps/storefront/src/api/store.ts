@@ -170,8 +170,6 @@ export const BusinessDataApi = async ({
             throw new NotFoundError(`"BusinessData" with the locale "${locale.code}"`);
         }
 
-        // TODO: Deal with errors properly.
-        console.error(error);
         throw error;
     }
 };

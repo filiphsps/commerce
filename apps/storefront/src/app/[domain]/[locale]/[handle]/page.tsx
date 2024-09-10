@@ -120,6 +120,7 @@ export async function generateMetadata({
             notFound();
         }
 
+        console.error(error);
         throw error;
     }
 }
@@ -198,6 +199,7 @@ export default async function CustomPage({
             notFound();
         }
 
+        console.error(error);
         throw error;
     }
 }

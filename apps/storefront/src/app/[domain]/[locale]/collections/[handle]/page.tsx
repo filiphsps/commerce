@@ -135,6 +135,7 @@ export async function generateMetadata({
             notFound();
         }
 
+        console.error(error);
         throw error;
     }
 }
@@ -241,6 +242,7 @@ export default async function CollectionPage({
             notFound();
         }
 
+        console.error(error);
         throw error;
     }
 }

@@ -88,6 +88,7 @@ export async function generateMetadata({
             notFound();
         }
 
+        console.error(error);
         throw error;
     }
 }
@@ -154,6 +155,7 @@ export default async function ProductsPage({ params: { domain, locale: localeDat
             notFound();
         }
 
+        console.error(error);
         throw error;
     }
 }

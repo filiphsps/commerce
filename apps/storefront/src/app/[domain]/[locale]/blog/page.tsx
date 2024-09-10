@@ -77,6 +77,7 @@ export async function generateMetadata({
             notFound();
         }
 
+        console.error(error);
         throw error;
     }
 }
@@ -111,6 +112,7 @@ export default async function BlogPage({ params: { domain, locale: localeData } 
             notFound();
         }
 
+        console.error(error);
         throw error;
     }
 }

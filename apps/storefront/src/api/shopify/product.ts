@@ -1,5 +1,5 @@
 import type { Identifiable, LimitFilters, Nullable } from '@nordcom/commerce-db';
-import { NotFoundError, UnknownApiError } from '@nordcom/commerce-errors';
+import { Error, NotFoundError, UnknownApiError } from '@nordcom/commerce-errors';
 
 import { extractLimitLikeFilters } from '@/api/shopify/collection';
 import { cleanShopifyHtml } from '@/utils/abstract-api';
@@ -371,7 +371,6 @@ export const ProductsPaginationCountApi = async ({
             products
         };
     } catch (error: unknown) {
-        console.error(error);
         throw error;
     }
 };
@@ -447,7 +446,6 @@ export const ProductsApi = async ({
                 }
             });
         } catch (error: unknown) {
-            console.error(error);
             return reject(error);
         }
     });
@@ -545,7 +543,6 @@ export const ProductsPaginationApi = async ({
                 products: ((data.products.edges as any) || []) as ProductEdge[]
             });
         } catch (error: unknown) {
-            console.error(error);
             return reject(error);
         }
     });

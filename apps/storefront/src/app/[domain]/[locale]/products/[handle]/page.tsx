@@ -76,7 +76,10 @@ export async function generateStaticParams({
             handle
         }));
     } catch (error: unknown) {
-        console.error(error);
+        if (!Error.isNotFound(error)) {
+            console.error(error);
+        }
+
         return [];
     }
 }
@@ -152,6 +155,7 @@ export async function generateMetadata({
             notFound();
         }
 
+        console.error(error);
         throw error;
     }
 }
@@ -414,6 +418,7 @@ export default async function ProductPage({
             notFound();
         }
 
+        console.error(error);
         throw error;
     }
 }

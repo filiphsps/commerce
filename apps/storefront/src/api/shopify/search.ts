@@ -71,7 +71,6 @@ export const SearchApi = async ({
                 productFilters
             });
         } catch (error: unknown) {
-            console.error(error);
             return reject(error);
         }
     });

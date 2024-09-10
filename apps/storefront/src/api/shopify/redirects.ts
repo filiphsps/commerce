@@ -73,8 +73,6 @@ export const RedirectsApi = async ({
 
         return redirects;
     } catch (error: unknown) {
-        console.error(error);
-
         throw error;
     }
 };
@@ -89,6 +87,9 @@ export const RedirectsApi = async ({
  */
 export const RedirectApi = async ({ api, path }: { api: AbstractApi; path: string }): Promise<string | null> => {
     path = path.toLowerCase();
+    if (path.endsWith('/')) {
+        path = path.slice(0, -1);
+    }
 
     // Let's first check if we can query the redirects directly.
     const { data, errors } = await api.query<{ urlRedirects: UrlRedirectConnection }>(

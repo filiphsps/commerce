@@ -38,7 +38,7 @@ export const PagesApi = async ({
         }
 
         // TODO: Deal with errors properly.
-        // console.error(error);
+        console.error(error);
         return null;
     }
 };
@@ -100,7 +100,7 @@ export const PageApi = async <T extends keyof PageTypeMapping | 'custom_page' = 
         }
 
         // TODO: Deal with errors properly.
-        // console.error(error);
+        console.error(error);
         return null;
     }
 };

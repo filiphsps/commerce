@@ -71,7 +71,6 @@ export const BlogApi = async ({
 
             return resolve(data.blogByHandle);
         } catch (error: unknown) {
-            console.error(error);
             return reject(error);
         }
     });
@@ -142,7 +141,6 @@ export const BlogArticleApi = async ({
                 contentHtml: data.blogByHandle.articleByHandle.contentHtml.replace(/data-mce-fragment="1"/gi, '')
             });
         } catch (error: unknown) {
-            console.error(error);
             return reject(error);
         }
     });

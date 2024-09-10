@@ -85,6 +85,7 @@ export async function generateMetadata({
             notFound();
         }
 
+        console.error(error);
         throw error;
     }
 }
@@ -142,6 +143,7 @@ export default async function SearchPage({
             notFound();
         }
 
+        console.error(error);
         throw error;
     }
 }

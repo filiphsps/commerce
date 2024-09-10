@@ -68,17 +68,6 @@ export const VendorsApi = async ({ api }: VendorsOptions): Promise<VendorModel[]
 
         return Convertor(data.products.edges!);
     } catch (error: unknown) {
-        console.error(error);
         throw error;
     }
-};
-
-/**
- * Preload to speed up api calls.
- *
- * @see {@link https://nextjs.org/docs/app/building-your-application/data-fetching/patterns#preloading-data}
- * @todo Generalize this for all API helpers.
- */
-VendorsApi.preload = (data: VendorsOptions) => {
-    void VendorsApi(data);
 };

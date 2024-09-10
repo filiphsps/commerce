@@ -30,7 +30,6 @@ export const RecommendationApi = async ({ api, id }: { api: AbstractApi; id: str
 
             return resolve(/*flattenConnection(*/ data.productRecommendations /*)*/);
         } catch (error: unknown) {
-            console.error(error);
             return reject(error);
         }
     });

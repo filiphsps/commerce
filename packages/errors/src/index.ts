@@ -49,7 +49,9 @@ export class Error<T = unknown> extends BuiltinError {
                 break;
         }
 
-        if ((error as any).statusCode === 404) return true;
+        if ((error as any).statusCode === 404) {
+            return true;
+        }
 
         return ['No documents', '404:'].some((e) => (((error as any)?.message as string) || '').includes(e));
     }
@@ -366,11 +368,4 @@ export const getErrorFromCode = (
 
     // eslint-disable-next-line no-unreachable
     return null;
-};
-
-/**
- * @deprecated Use {@link Error.isNotFound} instead.
- */
-export const isNotFoundError = (error: Error | unknown): boolean => {
-    return Error.isNotFound(error);
 };

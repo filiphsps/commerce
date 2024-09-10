@@ -211,11 +211,6 @@ export const CollectionApi = async (
             descriptionHtml: cleanShopifyHtml(data.collection.descriptionHtml) || ''
         };
     } catch (error: unknown) {
-        if (Error.isNotFound(error)) {
-            throw error;
-        }
-
-        console.error(error);
         throw error;
     }
 };
@@ -310,7 +305,6 @@ export const CollectionPaginationCountApi = async ({
             products
         };
     } catch (error: unknown) {
-        console.error(error);
         throw error;
     }
 };
@@ -479,7 +473,6 @@ export const CollectionsPaginationApi = async ({
                 }
             });
         } catch (error: unknown) {
-            console.error(error);
             return reject(error);
         }
     });

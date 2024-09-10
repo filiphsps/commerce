@@ -81,6 +81,7 @@ export async function generateMetadata({
             notFound();
         }
 
+        console.error(error);
         throw error;
     }
 }
@@ -148,6 +149,7 @@ export default async function CountriesPage({
             notFound();
         }
 
+        console.error(error);
         throw error;
     }
 }
