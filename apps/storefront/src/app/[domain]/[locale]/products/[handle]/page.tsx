@@ -10,7 +10,6 @@ import { isProductVegan } from '@/api/product';
 import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductApi, ProductsApi } from '@/api/shopify/product';
-import { RedirectProductApi } from '@/api/shopify/redirects';
 import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
@@ -18,10 +17,11 @@ import { isValidHandle } from '@/utils/handle';
 import { Locale, useTranslation } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { safeParseFloat } from '@/utils/pricing';
+import { checkAndHandleRedirect } from '@/utils/redirect';
 import { cn } from '@/utils/tailwind';
 import { asText } from '@prismicio/client';
 import { parseGid } from '@shopify/hydrogen-react';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 
 import { CMSContent } from '@/components/cms/cms-content';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
@@ -79,19 +79,6 @@ export async function generateStaticParams({
         console.error(error);
         return [];
     }
-}
-
-/** @todo TODO: Should this be done in the middleware? */
-async function checkAndHandleRedirect({ domain, locale, handle }: { domain: string; locale: Locale; handle: string }) {
-    const shop = await findShopByDomainOverHttp(domain);
-    const api = await ShopifyApiClient({ shop, locale });
-
-    const target = await RedirectProductApi({ api, handle });
-    if (!target) {
-        return;
-    }
-
-    redirect(target);
 }
 
 export async function generateMetadata({
@@ -161,7 +148,7 @@ export async function generateMetadata({
         };
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
-            await checkAndHandleRedirect({ domain, locale: Locale.from(localeData), handle });
+            await checkAndHandleRedirect({ domain, locale: Locale.from(localeData), path: `/products/${handle}` });
             notFound();
         }
 
@@ -423,7 +410,7 @@ export default async function ProductPage({
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
-            await checkAndHandleRedirect({ domain, locale: Locale.from(localeData), handle });
+            await checkAndHandleRedirect({ domain, locale: Locale.from(localeData), path: `/products/${handle}` });
             notFound();
         }
 

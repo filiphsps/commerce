@@ -30,8 +30,8 @@ export const ProductActionsContainer = ({ className, i18n, ...props }: ProductAc
 
     return (
         <div className="flex flex-col gap-2">
-            <div {...props} className={cn('flex flex-wrap gap-2', className)}>
-                <div className="flex flex-col gap-1">
+            <div {...props} className={cn('flex flex-wrap gap-2', className)} suppressHydrationWarning={true}>
+                <div className="flex flex-col gap-1" suppressHydrationWarning={true}>
                     <Label className="text-gray-600" style={{ gridArea: 'quantity-label' }}>
                         {t('quantity')}
                     </Label>

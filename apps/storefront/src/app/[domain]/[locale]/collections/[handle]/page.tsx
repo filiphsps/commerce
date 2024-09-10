@@ -6,14 +6,14 @@ import { Error } from '@nordcom/commerce-errors';
 
 import { PageApi } from '@/api/page';
 import { findShopByDomainOverHttp } from '@/api/shop';
-import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
+import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CollectionApi, CollectionPaginationCountApi, CollectionsApi } from '@/api/shopify/collection';
-import { RedirectCollectionApi } from '@/api/shopify/redirects';
 import { LocalesApi } from '@/api/store';
 import { isValidHandle } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
+import { checkAndHandleRedirect } from '@/utils/redirect';
 import { asText } from '@prismicio/client';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 
 import Pagination from '@/components/actionable/pagination';
 import PrismicPage from '@/components/cms/prismic-page';
@@ -61,19 +61,6 @@ export async function generateStaticParams({
         console.error(error);
         return [];
     }
-}
-
-/** @todo TODO: Should this be done in the middleware? */
-async function checkAndHandleRedirect({ domain, locale, handle }: { domain: string; locale: Locale; handle: string }) {
-    const shop = await findShopByDomainOverHttp(domain);
-    const api = await ShopifyApiClient({ shop, locale });
-
-    const target = await RedirectCollectionApi({ api, handle });
-    if (!target) {
-        return;
-    }
-
-    redirect(target);
 }
 
 export async function generateMetadata({
@@ -144,7 +131,7 @@ export async function generateMetadata({
         };
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
-            await checkAndHandleRedirect({ domain, locale: Locale.from(localeData), handle });
+            await checkAndHandleRedirect({ domain, locale: Locale.from(localeData), path: `/collections/${handle}` });
             notFound();
         }
 
@@ -250,7 +237,7 @@ export default async function CollectionPage({
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
-            await checkAndHandleRedirect({ domain, locale: Locale.from(localeData), handle });
+            await checkAndHandleRedirect({ domain, locale: Locale.from(localeData), path: `/collections/${handle}` });
             notFound();
         }
 

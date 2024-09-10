@@ -1,28 +1,10 @@
-import { gql } from '@apollo/client';
+import { NotFoundError, UnknownApiError } from '@nordcom/commerce-errors';
 
-import type { RedirectModel } from '@/models/RedirectModel';
+import { gql } from '@apollo/client';
+import { flattenConnection } from '@shopify/hydrogen-react';
+
 import type { AbstractApi } from '@/utils/abstract-api';
 import type { UrlRedirect, UrlRedirectConnection } from '@shopify/hydrogen-react/storefront-api-types';
-
-/**
- * Convert the Shopify redirect list to a list of redirects.
- * TODO: Remove this and use the standard layout.
- *
- * @param {Array<{ node: any }>} redirects - The list of redirects.
- * @returns {RedirectModel[]} - The list of redirects.
- */
-export const Convertor = (redirects: UrlRedirect[]): Array<RedirectModel> => {
-    let entries: any[] = [];
-    redirects.forEach((redirect) => {
-        entries.push(redirect);
-    });
-
-    // Remove duplicates and create a proper object
-    return Array.from(new Set(entries)).map((redirect) => ({
-        path: redirect.path,
-        target: redirect.target
-    }));
-};
 
 /**
  * Get all redirects from Shopify.
@@ -41,52 +23,60 @@ export const RedirectsApi = async ({
     api: AbstractApi;
     cursor?: string;
     redirects?: UrlRedirect[];
-}): Promise<RedirectModel[]> => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const { data, errors } = await api.query<{ urlRedirects: UrlRedirectConnection }>(
-                gql`
-                    query urlRedirects($limit: Int!) {
-                        urlRedirects(first: $limit ${(cursor && `, after: "${cursor}"`) || ''}) {
-                            edges {
-                                cursor
-                                node {
-                                    path
-                                    target
-                                }
-                            }
-                            pageInfo {
-                                hasNextPage
+}): Promise<UrlRedirect[]> => {
+    try {
+        const { data, errors } = await api.query<{ urlRedirects: UrlRedirectConnection }>(
+            gql`
+                query urlRedirects($limit: Int!, $after: String) {
+                    urlRedirects(first: $limit, after: $after) {
+                        edges {
+                            cursor
+                            node {
+                                path
+                                target
                             }
                         }
+                        pageInfo {
+                            hasNextPage
+                        }
                     }
-                `,
-                {
-                    limit: 250
                 }
-            );
-
-            if (errors) {
-                return reject(new Error(`500: ${errors.map((e: any) => e.message).join('\n')}`));
-            } else if (!data?.urlRedirects.edges && redirects.length <= 0) {
-                return reject(new Error(`404: No redirects could be found`));
+            `,
+            {
+                limit: 250,
+                after: cursor || null
             }
+        );
 
-            if (data) {
-                cursor = data.urlRedirects.edges.at(-1)!.cursor;
-                redirects.push(...data.urlRedirects.edges.map((edge) => edge.node));
-            }
+        const urlRedirects = data ? flattenConnection(data.urlRedirects) : null;
 
-            if (data?.urlRedirects.pageInfo.hasNextPage) {
-                return resolve(await RedirectsApi({ api, cursor, redirects }));
-            }
-
-            return resolve(Convertor(redirects));
-        } catch (error: unknown) {
-            console.error(error);
-            return reject(error);
+        if (errors) {
+            throw new UnknownApiError(errors.map((e) => e.message).join(', '));
+        } else if ((!urlRedirects || urlRedirects.length <= 0) && redirects.length <= 0) {
+            throw new NotFoundError('"Redirects"');
         }
-    });
+
+        if (data && urlRedirects) {
+            cursor = data.urlRedirects.edges.at(-1)!.cursor;
+            redirects.push(
+                ...urlRedirects.map(({ id, path, target }) => ({
+                    id,
+                    path: path.toLowerCase(),
+                    target: target.toLowerCase()
+                }))
+            );
+        }
+
+        if (data?.urlRedirects.pageInfo.hasNextPage) {
+            return RedirectsApi({ api, cursor, redirects });
+        }
+
+        return redirects;
+    } catch (error: unknown) {
+        console.error(error);
+
+        throw error;
+    }
 };
 
 /**
@@ -98,25 +88,48 @@ export const RedirectsApi = async ({
  * @returns {Promise<string | null>} The redirect target.
  */
 export const RedirectApi = async ({ api, path }: { api: AbstractApi; path: string }): Promise<string | null> => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const redirects = await RedirectsApi({ api });
+    path = path.toLowerCase();
 
-            for (let i = 0; i < redirects.length; i++) {
-                const redirect = redirects[i];
-
-                if (redirect.path !== path) continue;
-
-                return resolve(redirect.target);
+    // Let's first check if we can query the redirects directly.
+    const { data, errors } = await api.query<{ urlRedirects: UrlRedirectConnection }>(
+        gql`
+            query urlRedirects($limit: Int!, $query: String) {
+                urlRedirects(first: $limit, query: $query) {
+                    edges {
+                        cursor
+                        node {
+                            path
+                            target
+                        }
+                    }
+                    pageInfo {
+                        hasNextPage
+                    }
+                }
             }
-            return resolve(null);
-        } catch (error: unknown) {
-            return reject(error);
+        `,
+        {
+            limit: 1,
+            query: `path:${path}*`
         }
-    });
+    );
+
+    if (!errors && data && data.urlRedirects.edges.length > 0) {
+        const redirect = flattenConnection(data.urlRedirects)[0];
+        if (redirect) {
+            return redirect.target;
+        }
+    }
+
+    try {
+        const redirects = await RedirectsApi({ api });
+        return redirects.find((redirect) => redirect.path === path)?.target || null;
+    } catch (error: unknown) {
+        throw error;
+    }
 };
 
 export const RedirectProductApi = async ({ api, handle }: { api: AbstractApi; handle: string }) =>
-    RedirectApi({ path: `/products/${handle}`, api }) as Promise<`/products/${string}` | null>;
+    RedirectApi({ path: `/products/${handle}`, api });
 export const RedirectCollectionApi = async ({ api, handle }: { api: AbstractApi; handle: string }) =>
-    RedirectApi({ path: `/collections/${handle}`, api }) as Promise<`/collections/${string}` | null>;
+    RedirectApi({ path: `/collections/${handle}`, api });
