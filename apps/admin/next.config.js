@@ -48,7 +48,7 @@ const config = {
         staleTimes: { dynamic: 30, static: 180 },
         taint: true,
         turbo: {
-            root: __dirname
+            root: path.resolve(__dirname, '../..')
         },
         taint: true,
         webpackBuildWorker: true
@@ -99,7 +99,7 @@ const config = {
 
     env: {
         ENVIRONMENT: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
-        GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA || 'unknown',
+        GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA,
         AUTH_URL: process.env.AUTH_URL
     },
 

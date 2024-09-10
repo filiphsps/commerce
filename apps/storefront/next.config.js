@@ -103,7 +103,7 @@ const config = {
 
     env: {
         ENVIRONMENT: environment,
-        GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA || 'unknown'
+        GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA
     },
 
     async headers() {

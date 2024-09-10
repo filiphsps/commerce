@@ -1,3 +1,4 @@
+import { execSync } from 'node:child_process';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -7,6 +8,12 @@ import createVercelToolbar from '@vercel/toolbar/plugins/next';
 const withVercelToolbar = createVercelToolbar();
 
 const isDev = process.env.NODE_ENV === 'development';
+let gitSHA = process.env.GIT_COMMIT_SHA;
+if (!gitSHA) {
+    try {
+        gitSHA = execSync('git rev-parse HEAD').toString().trim();
+    } catch {}
+}
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -48,7 +55,7 @@ const config = {
         staleTimes: { dynamic: 30, static: 180 },
         taint: true,
         turbo: {
-            root: __dirname
+            root: path.resolve(__dirname, '../..')
         },
         taint: true,
         webpackBuildWorker: true
@@ -56,7 +63,7 @@ const config = {
     images: {
         dangerouslyAllowSVG: true,
         //path: 'https://cloudflare-image.nordcom.workers.dev', // Shopify images fails when using .nordcom.io domain.
-        //minimumCacheTTL: 60,
+        minimumCacheTTL: 60,
         contentDispositionType: 'inline',
         remotePatterns: [
             {
@@ -99,11 +106,14 @@ const config = {
 
     env: {
         ENVIRONMENT: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
-        GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA || 'unknown'
+        GIT_COMMIT_SHA: gitSHA
     },
 
     async generateBuildId() {
-        if (process.env.NODE_ENV === 'development') return 'dev';
+        if (process.env.NODE_ENV === 'development') {
+            return 'dev';
+        }
+
         return process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
     },
 
