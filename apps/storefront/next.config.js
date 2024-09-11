@@ -8,7 +8,7 @@ import { createRequire } from 'node:module';
 
 const withVercelToolbar = createVercelToolbar();
 
-const isDev = false; //process.env.NODE_ENV === 'development';
+const isDev = process.env.NODE_ENV === 'development';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const environment = process.env.VERCEL_ENV || process.env.NODE_ENV || 'development';

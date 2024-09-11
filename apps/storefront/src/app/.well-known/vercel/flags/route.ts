@@ -43,13 +43,6 @@ export async function GET(request: NextRequest) {
                     { value: false, label: 'Disabled' },
                     { value: true, label: 'Enabled' }
                 ]
-            },
-            'pre-render-all-locales': {
-                description: 'Pre-render all locales.',
-                options: [
-                    { value: false, label: 'Off' },
-                    { value: true, label: 'On' }
-                ]
             }
         }
     });

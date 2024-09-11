@@ -1,6 +1,6 @@
-import 'the-new-css-reset';
 import '@/styles/app.scss';
 import '@/styles/global.css';
+import 'the-new-css-reset';
 
 import { type ReactNode, Suspense } from 'react';
 
@@ -8,11 +8,10 @@ import { Shop } from '@nordcom/commerce-db';
 import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
 
 import { findShopByDomainOverHttp } from '@/api/shop';
-import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
-import { CountriesApi, LocaleApi, LocalesApi } from '@/api/store';
+import { ShopifyApolloApiClient } from '@/api/shopify';
+import { CountriesApi, LocaleApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { CssVariablesProvider, getBrandingColors } from '@/utils/css-variables';
-import { preRenderAllLocales } from '@/utils/flags';
 import { primaryFont } from '@/utils/fonts';
 import { Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
@@ -51,31 +50,22 @@ export async function generateStaticParams(): Promise<LayoutParams[]> {
                     }
 
                     /** @note Limit pre-rendering when not in production. */
-                    if (process.env.VERCEL_ENV !== 'production') {
-                        return [
-                            {
-                                domain: shop.domain,
-                                locale: 'en-US'
-                            }
-                        ];
-                    }
+                    //if (process.env.VERCEL_ENV !== 'production') {
+                    return [
+                        {
+                            domain: shop.domain,
+                            locale: 'en-US'
+                        }
+                    ];
+                    //}
 
-                    const api = await ShopifyApiClient({ shop });
+                    /*const api = await ShopifyApiClient({ shop });
                     const locales = await LocalesApi({ api });
 
-                    if (await preRenderAllLocales()) {
-                        return locales.map(({ code }) => ({
-                            domain: shop.domain,
-                            locale: code
-                        }));
-                    }
-
-                    return [Locale.from('en-US'), Locale.from('en-GB'), Locale.from('en-CA'), Locale.from('de-DE')].map(
-                        ({ code }) => ({
-                            domain: shop.domain,
-                            locale: code
-                        })
-                    );
+                    return locales.map(({ code }) => ({
+                        domain: shop.domain,
+                        locale: code
+                    }));*/
                 } catch (error: unknown) {
                     console.error(error);
                     return [];
