@@ -9,7 +9,7 @@ import { PageApi } from '@/api/page';
 import { isProductVegan } from '@/api/product';
 import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
-import { ProductApi, ProductsPaginationApi } from '@/api/shopify/product';
+import { ProductApi, ProductsApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
@@ -65,22 +65,12 @@ export async function generateStaticParams({
 
     try {
         const locale = Locale.from(localeData);
-
         const shop = await findShopByDomainOverHttp(domain);
         const api = await ShopifyApiClient({ shop, locale });
 
-        let res: Awaited<ReturnType<typeof ProductsPaginationApi>> | null = null;
-        let products: Product[] = [];
+        const { products } = await ProductsApi({ api, limit: 50, sorting: 'BEST_SELLING' });
 
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        while ((res = await ProductsPaginationApi({ api, limit: 75, after: res?.page_info.end_cursor }))) {
-            products.push(...res.products.map(({ node: product }) => product));
-            if (!res.page_info.has_next_page) break;
-        }
-
-        return products.map(({ handle }) => ({
-            handle
-        }));
+        return products.map(({ node: { handle } }) => ({ handle }));
     } catch (error: unknown) {
         console.error(error);
         return [];
