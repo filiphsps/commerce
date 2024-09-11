@@ -39,7 +39,6 @@ export const findShopByDomainOverHttp = async (domain: string): Promise<OnlineSh
                 ]
             }
         }),
-        cache: 'no-cache',
         next: {
             revalidate: 28_800, // 8hrs.
             tags: [domain]
@@ -79,7 +78,6 @@ export const findShopsByDomainOverHttp = async (): Promise<OnlineShop> => {
                     dataSource: 'Commerce',
                     filter: {}
                 }),
-                cache: 'no-cache',
                 next: {
                     revalidate: 86_400, // 24hrs.
                     tags: ['domains']

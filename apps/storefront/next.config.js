@@ -54,7 +54,7 @@ const config = {
             root: path.resolve(__dirname, '../..')
         },
         typedEnv: true,
-        useLightningcss: true,
+        //useLightningcss: true,
         //useEarlyImport: true,
         webpackBuildWorker: true
     },
