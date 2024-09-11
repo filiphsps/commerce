@@ -1,15 +1,11 @@
-import 'server-only';
-
 import { useMemo } from 'react';
 
-import type { OnlineShop } from '@nordcom/commerce-db';
-
 import { createProductSearchParams, type Product } from '@/api/product';
-import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import Image from 'next/image';
 
 import Link from '@/components/link';
 
+import type { ProductVariant } from '@/api/product';
 import type { Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
 import type { ReactNode } from 'react';
 
@@ -41,14 +37,19 @@ const VariantImage = ({ image, priority }: VariantImageProps) => {
 VariantImage.displayName = 'Nordcom.ProductCard.Image.VariantImage';
 
 export type ProductCardImageProps = {
-    shop: OnlineShop;
     data?: Product;
+    selectedVariant?: ProductVariant;
     priority?: boolean;
     children?: ReactNode;
 };
 
-const ProductCardHeader = ({ data: product, priority = false, children, ...props }: ProductCardImageProps) => {
-    const selectedVariant = FirstAvailableVariant(product);
+const ProductCardHeader = ({
+    data: product,
+    selectedVariant = undefined,
+    priority = false,
+    children,
+    ...props
+}: ProductCardImageProps) => {
     const image = useMemo<ShopifyImage | undefined>(() => {
         if (!product || !selectedVariant) {
             return undefined;

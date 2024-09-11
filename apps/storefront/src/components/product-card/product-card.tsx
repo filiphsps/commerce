@@ -10,7 +10,6 @@ import { cn } from '@/utils/tailwind';
 
 import ProductCardBadges from '@/components/product-card/product-card-badges';
 import ProductCardContent from '@/components/product-card/product-card-content';
-import ProductCardHeader from '@/components/product-card/product-card-header';
 import ProductCardTitle from '@/components/product-card/product-card-title';
 
 import type { Locale } from '@/utils/locale';
@@ -30,11 +29,11 @@ export type ProductCardProps = {
     className?: string;
 };
 const ProductCard = async ({ shop, locale, data: product, priority, className, ...props }: ProductCardProps) => {
-    const i18n = await getDictionary({ shop, locale });
-
     if (!product) {
         return null;
     }
+
+    const i18n = await getDictionary({ shop, locale });
 
     const description = (product.seo.description || product.description || '').slice(0, DESCRIPTION_LENGTH).trimEnd();
     const available = product.availableForSale;
@@ -48,13 +47,9 @@ const ProductCard = async ({ shop, locale, data: product, priority, className, .
             <ProductCardBadges data={product} i18n={i18n} />
 
             <Suspense>
-                <ProductCardHeader shop={shop} data={product} priority={priority}>
+                <ProductCardContent locale={locale} i18n={i18n} data={product}>
                     <ProductCardTitle data={product} />
-                </ProductCardHeader>
-            </Suspense>
-
-            <Suspense>
-                <ProductCardContent locale={locale} i18n={i18n} data={product} />
+                </ProductCardContent>
             </Suspense>
         </div>
     );

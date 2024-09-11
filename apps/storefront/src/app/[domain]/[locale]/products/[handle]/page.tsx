@@ -369,7 +369,7 @@ export default async function ProductPage({
                                 </Card>
                             </Suspense>
 
-                            <Suspense fallback={<Card className={cn(BLOCK_STYLES, 'h-32')} data-skeleton />}>
+                            <Suspense fallback={<Card className={cn(BLOCK_STYLES, 'h-32 rounded-lg')} data-skeleton />}>
                                 <section className="empty:hidden">
                                     <CMSContent shop={shop} locale={locale} handle={handle} type={'product_page'} />
                                 </section>

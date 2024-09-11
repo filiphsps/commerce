@@ -67,7 +67,8 @@ const ProductGallery = ({
     if (!images || images.length <= 0) return null;
 
     const image = next || selected;
-    const loadingProps = { ...(!image || loading ? { 'data-skeleton': true } : {}) };
+    const isLoading = loading || !image;
+    const loadingProps = { ...(isLoading ? { 'data-skeleton': true } : {}) };
 
     const title = product.seo.title || `${product.vendor} ${product.title}`;
 
@@ -75,7 +76,10 @@ const ProductGallery = ({
         <section draggable={false} className={cn(className)} {...props}>
             <div className="flex w-full gap-2 overflow-clip md:sticky md:top-36 md:flex-col lg:gap-4">
                 <div
-                    className="relative w-full grow overflow-hidden rounded-lg border-2 border-solid border-gray-100 bg-white p-8 py-12 md:h-full md:p-16"
+                    className={cn(
+                        'relative w-full grow overflow-hidden rounded-lg border-2 border-solid border-gray-100 bg-white p-8 py-12 md:h-full md:p-16',
+                        isLoading && 'bg-gray-100'
+                    )}
                     {...loadingProps}
                 >
                     {image ? (
@@ -83,7 +87,7 @@ const ProductGallery = ({
                             <Image
                                 className={cn(
                                     'opacity-1 h-fit w-full object-contain object-center transition-opacity duration-500 md:h-full md:max-h-[30rem]',
-                                    loading && 'opacity-0 transition-none'
+                                    isLoading && 'opacity-0 transition-none'
                                 )}
                                 src={image.url!}
                                 alt={image.altText || product.title}
@@ -96,7 +100,10 @@ const ProductGallery = ({
                                 onLoad={() => {
                                     setTimeout(() => setLoading(() => false), 250);
 
-                                    if (!next) return;
+                                    if (!next) {
+                                        return;
+                                    }
+
                                     setSelected(() => next);
                                     setNext(null);
                                 }}
@@ -106,65 +113,67 @@ const ProductGallery = ({
                         <div className="h-full min-h-32 w-full md:min-h-[36rem]" />
                     )}
 
-                    <div
-                        className={cn(
-                            'absolute inset-x-2 top-2 flex flex-row-reverse items-start justify-between gap-2',
-                            'hidden md:flex'
-                        )}
-                    >
-                        <Suspense>
-                            <div className="flex flex-col gap-2 empty:hidden md:gap-1">
-                                <EmailShareButton
-                                    key="email"
-                                    url={pageUrl}
-                                    className={SHARE_BUTTON_STYLES}
-                                    resetButtonStyle={false}
-                                    title={title}
-                                    htmlTitle={t('share-via-email')}
-                                >
-                                    <FiMail />
-                                </EmailShareButton>
-                                <FacebookShareButton
-                                    key="facebook"
-                                    url={pageUrl}
-                                    className={SHARE_BUTTON_STYLES}
-                                    resetButtonStyle={false}
-                                    title={title}
-                                    htmlTitle={t('share-on-facebook')}
-                                >
-                                    <Image
-                                        src="/assets/icons/social/facebook-outline.svg"
-                                        alt="Facebook"
-                                        width={20}
-                                        height={20}
-                                    />
-                                </FacebookShareButton>
-                                <TwitterShareButton
-                                    key="twitter"
-                                    url={pageUrl}
-                                    className={SHARE_BUTTON_STYLES}
-                                    resetButtonStyle={false}
-                                    title={title}
-                                    htmlTitle={t('share-on-x')}
-                                >
-                                    <Image
-                                        src="/assets/icons/social/twitter-outline.svg"
-                                        alt="X (Twitter)"
-                                        width={20}
-                                        height={20}
-                                    />
-                                </TwitterShareButton>
+                    {!isLoading ? (
+                        <div
+                            className={cn(
+                                'absolute inset-x-2 top-2 flex flex-row-reverse items-start justify-between gap-2',
+                                'hidden md:flex'
+                            )}
+                        >
+                            <Suspense>
+                                <div className="flex flex-col gap-2 empty:hidden md:gap-1">
+                                    <EmailShareButton
+                                        key="email"
+                                        url={pageUrl}
+                                        className={SHARE_BUTTON_STYLES}
+                                        resetButtonStyle={false}
+                                        title={title}
+                                        htmlTitle={t('share-via-email')}
+                                    >
+                                        <FiMail />
+                                    </EmailShareButton>
+                                    <FacebookShareButton
+                                        key="facebook"
+                                        url={pageUrl}
+                                        className={SHARE_BUTTON_STYLES}
+                                        resetButtonStyle={false}
+                                        title={title}
+                                        htmlTitle={t('share-on-facebook')}
+                                    >
+                                        <Image
+                                            src="/assets/icons/social/facebook-outline.svg"
+                                            alt="Facebook"
+                                            width={20}
+                                            height={20}
+                                        />
+                                    </FacebookShareButton>
+                                    <TwitterShareButton
+                                        key="twitter"
+                                        url={pageUrl}
+                                        className={SHARE_BUTTON_STYLES}
+                                        resetButtonStyle={false}
+                                        title={title}
+                                        htmlTitle={t('share-on-x')}
+                                    >
+                                        <Image
+                                            src="/assets/icons/social/twitter-outline.svg"
+                                            alt="X (Twitter)"
+                                            width={20}
+                                            height={20}
+                                        />
+                                    </TwitterShareButton>
 
-                                {actions}
-                            </div>
-                        </Suspense>
+                                    {actions}
+                                </div>
+                            </Suspense>
 
-                        {image?.altText ? (
-                            <div className="rounded-lg bg-gray-100 p-1 px-2 text-sm font-semibold text-gray-500 opacity-80">
-                                {image.altText}
-                            </div>
-                        ) : null}
-                    </div>
+                            {image.altText ? (
+                                <div className="rounded-lg bg-gray-100 p-1 px-2 text-sm font-semibold text-gray-500 opacity-80">
+                                    {image.altText}
+                                </div>
+                            ) : null}
+                        </div>
+                    ) : null}
                 </div>
 
                 {image && images.length > 1 ? (
@@ -178,14 +187,15 @@ const ProductGallery = ({
                                         aria-label={`Enlarge image #${index + 1}`}
                                         onClick={() => setImage(image)}
                                         className={cn(
-                                            'hover:border-primary flex appearance-none items-center justify-center rounded-lg border-2 border-solid border-gray-100 bg-white p-1 transition-all md:h-full md:p-8 lg:aspect-square lg:h-full lg:w-auto'
+                                            'hover:border-primary flex appearance-none items-center justify-center rounded-lg border-2 border-solid border-gray-100 bg-white p-1 transition-all md:h-full md:p-8 lg:aspect-square lg:h-full lg:w-auto',
+                                            isLoading && 'bg-gray-100'
                                         )}
                                         {...loadingProps}
                                     >
                                         <Image
                                             className={cn(
                                                 'h-14 w-14 object-contain object-center transition-opacity duration-500 md:aspect-square md:h-full md:w-full',
-                                                loading && 'opacity-0 transition-none'
+                                                isLoading && 'opacity-0 transition-none'
                                             )}
                                             style={{ transitionDelay: `${(index + 1) * 250}ms` }}
                                             src={image.url!}
