@@ -181,7 +181,9 @@ const shopifyEventHandler = async (
         resourceId: (() => {
             switch (pageType) {
                 case 'product': {
-                    if (!products[0]) return undefined;
+                    if (!products[0].product_id) {
+                        return undefined;
+                    }
 
                     return `gid://shopify/Product/${products[0].product_id}`;
                 }
@@ -193,6 +195,11 @@ const shopifyEventHandler = async (
         pageType
     };
 
+    let path = data.path || '';
+    if (path.startsWith(`/${locale.code}/`)) {
+        path = path.slice(locale.code.length + 1);
+    }
+
     const sharedPayload: ShopifyPageViewPayload = {
         shopifySalesChannel: ShopifySalesChannel.hydrogen,
         shopId: `gid://shopify/Shop/${commerce.id.toString()}`,
@@ -202,7 +209,7 @@ const shopifyEventHandler = async (
         hasUserConsent: true, // TODO: Cookie consent.
         ...getClientBrowserParameters(),
         ...pageAnalytics,
-        path: (data.path || '').replace(/^\/[a-z]{2}-[a-z]{2}\//, ''),
+        path,
         //navigationType: 'navigate', // TODO: do this properly.
 
         totalValue: value,
@@ -220,7 +227,9 @@ const shopifyEventHandler = async (
     };
 
     const ua = (sharedPayload.userAgent || navigator.userAgent).toLowerCase();
-    if (ua.includes('googlebot') || ua.includes('lighthouse')) return;
+    if (ua.includes('googlebot') || ua.includes('lighthouse')) {
+        return;
+    }
 
     // FIXME: We can't actually capture the error here. Make a PR upstream to fix this.
     try {
