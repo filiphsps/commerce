@@ -134,9 +134,12 @@ const ProvidersRegistry = ({
                                                 }
                                             }}
                                         />
+
                                         <Toolbars domain={domain} />
                                     </Suspense>
-                                ) : null}
+                                ) : (
+                                    children
+                                )}
                             </ErrorBoundary>
                         </CartProvider>
                     </ContentProvider>

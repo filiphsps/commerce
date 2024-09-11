@@ -1,7 +1,6 @@
 import 'server-only';
 
-import { Shop } from '@nordcom/commerce-db';
-
+import { findShopByDomainOverHttp } from '@/api/shop';
 import { components } from '@/slices';
 import { getDictionary } from '@/utils/dictionary';
 import { Locale } from '@/utils/locale';
@@ -23,7 +22,7 @@ export default async function SliceSimulatorPage({
     const locale = Locale.default;
 
     // Fetch the current shop.
-    const shop = await Shop.findByDomain(domain);
+    const shop = await findShopByDomainOverHttp(domain);
 
     // Get dictionary of strings for the current locale.
     const i18n = await getDictionary({ shop, locale });
@@ -34,7 +33,11 @@ export default async function SliceSimulatorPage({
                 slices={getSlices(searchParams.state)}
                 components={components}
                 context={{
-                    shop,
+                    shop: {
+                        ...shop,
+                        commerceProvider: {},
+                        contentProvider: {}
+                    },
                     i18n,
                     locale,
                     type: 'custom_page',
