@@ -11,11 +11,14 @@ export const isPreviewEnvironment = (domain: string = '') => {
     }
 
     const hostname = domain.toLowerCase();
-    return (
+    if (
         ['staging', 'preview', 'beta'].some((sub) => hostname.startsWith(`${sub}.`)) ||
-        hostname.includes('localhost') ||
-        false
-    );
+        hostname.includes('localhost')
+    ) {
+        return true;
+    }
+
+    return false;
 };
 
 /**

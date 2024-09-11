@@ -1,8 +1,7 @@
 import { exitPreview } from '@prismicio/next';
-
-export const runtime = 'experimental-edge';
-export const dynamic = 'force-dynamic';
+import { draftMode } from 'next/headers';
 
 export async function GET() {
+    draftMode().disable();
     return await exitPreview();
 }

@@ -3,7 +3,9 @@ import { fileURLToPath } from 'node:url';
 
 import createVercelToolbar from '@vercel/toolbar/plugins/next';
 
-const withVercelToolbar = createVercelToolbar();
+const withVercelToolbar = createVercelToolbar({
+    devServerPort: 1337
+});
 
 const isDev = process.env.NODE_ENV === 'development';
 

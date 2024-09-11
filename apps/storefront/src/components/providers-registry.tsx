@@ -10,6 +10,7 @@ import { CartFragment } from '@/api/shopify/cart';
 import { useCartUtils } from '@/hooks/useCartUtils';
 import { BuildConfig } from '@/utils/build-config';
 import { createClient } from '@/utils/prismic';
+import { PrismicPreview } from '@prismicio/next';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import { Toaster as ToasterProvider } from 'sonner';
 
@@ -68,8 +69,7 @@ const ContentProvider = ({
                 <PrismicRegistry client={createClient({ shop, locale })}>
                     {children}
 
-                    {/* TODO: Enable this for Prismic storefronts. */}
-                    {/*<PrismicToolbar repositoryName={shop.contentProvider.repositoryName} />*/}
+                    <PrismicPreview repositoryName={shop.contentProvider.repositoryName} />
                 </PrismicRegistry>
             );
         }
