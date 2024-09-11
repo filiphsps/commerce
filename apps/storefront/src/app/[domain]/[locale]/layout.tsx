@@ -4,6 +4,7 @@ import '@/styles/global.css';
 
 import { type ReactNode, Suspense } from 'react';
 
+import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
 import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
 
@@ -93,39 +94,11 @@ export async function generateMetadata({
 }: {
     params: LayoutParams;
 }): Promise<Metadata> {
-    try {
-        const locale = Locale.from(localeData);
-        const shop = await Shop.findByDomain(domain);
+    const locale = Locale.from(localeData);
+    let shop: OnlineShop;
 
-        return {
-            metadataBase: new URL(`https://${shop.domain}/${locale.code}/`),
-            title: {
-                absolute: `${shop.name} ${locale.country!}`.trim()
-                // Allow tenants to customize this.
-                // For example allow them to use other separators
-                // like `·`, `—` etc.
-                // template: `%s - ${shop.name} ${locale.country!}`
-            },
-            icons: {
-                icon: ['/favicon.png'],
-                shortcut: ['/favicon.png'],
-                apple: ['/apple-icon.png']
-            },
-            robots: {
-                follow: true,
-                index: true
-            },
-            referrer: 'origin',
-            formatDetection: {
-                email: false,
-                address: false,
-                telephone: false
-            },
-            openGraph: {
-                siteName: shop.name,
-                locale: locale.code
-            }
-        };
+    try {
+        shop = await Shop.findByDomain(domain, { sensitiveData: true });
     } catch (error: unknown) {
         if (Error.isNotFound(error) || error instanceof UnknownShopDomainError) {
             notFound();
@@ -135,6 +108,36 @@ export async function generateMetadata({
         unstable_rethrow(error);
         throw error;
     }
+
+    return {
+        metadataBase: new URL(`https://${shop.domain}/${locale.code}/`),
+        title: {
+            absolute: `${shop.name} ${locale.country!}`.trim()
+            // Allow tenants to customize this.
+            // For example allow them to use other separators
+            // like `·`, `—` etc.
+            // template: `%s - ${shop.name} ${locale.country!}`
+        },
+        icons: {
+            icon: ['/favicon.png'],
+            shortcut: ['/favicon.png'],
+            apple: ['/apple-icon.png']
+        },
+        robots: {
+            follow: true,
+            index: true
+        },
+        referrer: 'origin',
+        formatDetection: {
+            email: false,
+            address: false,
+            telephone: false
+        },
+        openGraph: {
+            siteName: shop.name,
+            locale: locale.code
+        }
+    };
 }
 
 export default async function RootLayout({
@@ -144,71 +147,14 @@ export default async function RootLayout({
     children: ReactNode;
     params: LayoutParams;
 }) {
+    const locale = Locale.from(localeData);
+    let shop: OnlineShop, publicShop: OnlineShop;
+
     try {
-        const locale = Locale.from(localeData);
-
-        const [shop, publicShop] = await Promise.all([
-            Shop.findByDomain(domain, { sensitiveData: true }),
-            Shop.findByDomain(domain)
-        ]);
-
-        const api = await ShopifyApolloApiClient({ shop, locale });
-        const [localization, countries] = await Promise.all([LocaleApi({ api }), CountriesApi({ api })]);
-
-        const branding = await getBrandingColors({ domain, shop });
-        const i18n = await getDictionary(locale);
-
-        return (
-            <html lang={locale.code} className={cn(primaryFont.className, primaryFont.variable, 'overscroll-x-none')}>
-                <head>
-                    <CssVariablesProvider domain={domain} />
-                </head>
-
-                <body className="group/body overflow-x-hidden overscroll-x-none">
-                    <ProvidersRegistry
-                        shop={publicShop}
-                        currency={localization?.country.currency.isoCode}
-                        locale={locale}
-                        domain={domain}
-                    >
-                        <AnalyticsProvider shop={publicShop}>
-                            <HeaderProvider loaderColor={branding?.primary.color || ''}>
-                                <Suspense fallback={<ShopLayout.skeleton />}>
-                                    <ShopLayout shop={shop} locale={locale} i18n={i18n}>
-                                        <PageContent primary={true}>{children}</PageContent>
-                                    </ShopLayout>
-                                </Suspense>
-
-                                <Suspense>
-                                    <GeoRedirect countries={countries} locale={locale} />
-                                </Suspense>
-                            </HeaderProvider>
-                        </AnalyticsProvider>
-                    </ProvidersRegistry>
-
-                    {/* Metadata */}
-                    <JsonLd
-                        data={{
-                            '@context': 'http://schema.org',
-                            '@type': 'WebSite',
-                            'url': `https://${shop.domain}/${locale.code}/`,
-                            'name': shop.name,
-                            'potentialAction': {
-                                '@type': 'SearchAction',
-                                'target': {
-                                    '@type': 'EntryPoint',
-                                    'urlTemplate': `https://${domain}/search/?q={query}`
-                                },
-                                'query': 'required',
-                                'query-input': 'required name=query'
-                            }
-                        }}
-                    />
-                </body>
-            </html>
-        );
+        shop = await Shop.findByDomain(domain, { sensitiveData: true });
+        publicShop = await Shop.findByDomain(domain);
     } catch (error: unknown) {
-        if (Error.isNotFound(error)) {
+        if (Error.isNotFound(error) || error instanceof UnknownShopDomainError) {
             notFound();
         }
 
@@ -216,4 +162,60 @@ export default async function RootLayout({
         unstable_rethrow(error);
         throw error;
     }
+
+    const api = await ShopifyApolloApiClient({ shop, locale });
+    const [localization, countries] = await Promise.all([LocaleApi({ api }), CountriesApi({ api })]);
+
+    const branding = await getBrandingColors({ domain, shop });
+    const i18n = await getDictionary(locale);
+
+    return (
+        <html lang={locale.code} className={cn(primaryFont.className, primaryFont.variable, 'overscroll-x-none')}>
+            <head>
+                <CssVariablesProvider domain={domain} />
+            </head>
+
+            <body className="group/body overflow-x-hidden overscroll-x-none">
+                <ProvidersRegistry
+                    shop={publicShop}
+                    currency={localization?.country.currency.isoCode}
+                    locale={locale}
+                    domain={domain}
+                >
+                    <AnalyticsProvider shop={publicShop}>
+                        <HeaderProvider loaderColor={branding?.primary.color || ''}>
+                            <Suspense fallback={<ShopLayout.skeleton />}>
+                                <ShopLayout shop={shop} locale={locale} i18n={i18n}>
+                                    <PageContent primary={true}>{children}</PageContent>
+                                </ShopLayout>
+                            </Suspense>
+
+                            <Suspense>
+                                <GeoRedirect countries={countries} locale={locale} />
+                            </Suspense>
+                        </HeaderProvider>
+                    </AnalyticsProvider>
+                </ProvidersRegistry>
+
+                {/* Metadata */}
+                <JsonLd
+                    data={{
+                        '@context': 'http://schema.org',
+                        '@type': 'WebSite',
+                        'url': `https://${shop.domain}/${locale.code}/`,
+                        'name': shop.name,
+                        'potentialAction': {
+                            '@type': 'SearchAction',
+                            'target': {
+                                '@type': 'EntryPoint',
+                                'urlTemplate': `https://${domain}/search/?q={query}`
+                            },
+                            'query': 'required',
+                            'query-input': 'required name=query'
+                        }
+                    }}
+                />
+            </body>
+        </html>
+    );
 }

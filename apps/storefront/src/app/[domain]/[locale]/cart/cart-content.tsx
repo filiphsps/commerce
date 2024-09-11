@@ -33,7 +33,7 @@ export default async function CartContent({ shop, locale, i18n, header, paymentM
                 <div className="flex flex-col gap-4">
                     <PrismicPage shop={shop} locale={locale} slices={page?.slices} handle={'cart'} type={'cart_page'} />
 
-                    <div className={styles.lines}>
+                    <div className={styles.lines} suppressHydrationWarning={true}>
                         {header}
 
                         <Suspense>
