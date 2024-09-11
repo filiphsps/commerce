@@ -12,6 +12,7 @@ import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
 import { CountriesApi, LocaleApi, LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { CssVariablesProvider, getBrandingColors } from '@/utils/css-variables';
+import { preRenderAllLocales } from '@/utils/flags';
 import { primaryFont } from '@/utils/fonts';
 import { Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
@@ -62,10 +63,19 @@ export async function generateStaticParams(): Promise<LayoutParams[]> {
                     const api = await ShopifyApiClient({ shop });
                     const locales = await LocalesApi({ api });
 
-                    return locales.map(({ code }) => ({
-                        domain: shop.domain,
-                        locale: code
-                    }));
+                    if (await preRenderAllLocales()) {
+                        return locales.map(({ code }) => ({
+                            domain: shop.domain,
+                            locale: code
+                        }));
+                    }
+
+                    return [Locale.from('en-US'), Locale.from('en-GB'), Locale.from('en-CA'), Locale.from('de-DE')].map(
+                        ({ code }) => ({
+                            domain: shop.domain,
+                            locale: code
+                        })
+                    );
                 } catch (error: unknown) {
                     console.error(error);
                     return [];

@@ -64,81 +64,82 @@ export async function generateStaticParams({
 }
 
 export async function generateMetadata({
-    params: { domain, locale: localeData, handle },
-    searchParams
+    params: { domain, locale: localeData, handle }
 }: {
     params: CollectionPageParams;
-    searchParams: { [key: string]: string | string[] | undefined };
 }): Promise<Metadata> {
     if (!isValidHandle(handle)) {
         notFound();
     }
 
+    const locale = Locale.from(localeData);
+
+    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    const api = await ShopifyApolloApiClient({ shop, locale });
+
+    let collection: Awaited<ReturnType<typeof CollectionApi>>,
+        pagesInfo: Awaited<ReturnType<typeof CollectionPaginationCountApi>>,
+        page: Awaited<ReturnType<typeof PageApi>>;
+
     try {
-        const locale = Locale.from(localeData);
-
-        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-        const api = await ShopifyApolloApiClient({ shop, locale });
-
-        const [collection, page, locales] = await Promise.all([
-            CollectionApi({ api, handle, limit: 1 }),
-            PageApi({ shop, locale, handle, type: 'collection_page' }),
-            LocalesApi({ api })
-        ]);
-
-        const currentPage = Number.parseInt(searchParams.page?.toString() || '1');
-        const search = currentPage > 1 ? `?page=${currentPage}` : '';
-
-        // TODO: i18n.
-        const title = `${page?.meta_title || collection.seo.title || collection.title}${currentPage > 1 ? ` -  Page ${currentPage}` : ''}`;
-        const description: string | undefined =
-            asText(page?.meta_description) ||
-            collection.seo.description ||
-            collection.description.substring(0, 150) ||
-            undefined;
-        return {
-            title,
-            description,
-            alternates: {
-                canonical: `https://${shop.domain}/${locale.code}/collections/${handle}/${search}`,
-                languages: locales.reduce(
-                    (prev, { code }) => ({
-                        ...prev,
-                        [code]: `https://${shop.domain}/${code}/collections/${handle}/${search}`
-                    }),
-                    {}
-                )
-            },
-            openGraph: {
-                url: `/collections/${handle}/`,
-                type: 'website',
-                title,
-                description,
-                siteName: shop.name,
-                locale: locale.code,
-                images: page?.meta_image
-                    ? [
-                          {
-                              url: page.meta_image!.url as string,
-                              width: page.meta_image!.dimensions?.width || 0,
-                              height: page.meta_image!.dimensions?.height || 0,
-                              alt: page.meta_image!.alt || '',
-                              secureUrl: page.meta_image!.url as string
-                          }
-                      ]
-                    : undefined
-            }
-        };
+        // Do the actual API calls.
+        collection = await CollectionApi({ api, handle, limit: 1 });
+        pagesInfo = await CollectionPaginationCountApi({ api, handle, filters: { first: PRODUCTS_PER_PAGE } });
+        page = await PageApi({ shop, locale, handle, type: 'collection_page' });
     } catch (error: unknown) {
+        unstable_rethrow(error);
+
         if (Error.isNotFound(error)) {
             await checkAndHandleRedirect({ domain, locale: Locale.from(localeData), path: `/collections/${handle}` });
             notFound();
         }
 
         console.error(error);
-        unstable_rethrow(error);
         throw error;
     }
+
+    const locales = await LocalesApi({ api });
+
+    // TODO: i18n.
+    const title = page?.meta_title || collection.seo.title || collection.title;
+    const description: string | undefined =
+        asText(page?.meta_description) ||
+        collection.seo.description ||
+        collection.description.substring(0, 150) ||
+        undefined;
+    return {
+        title,
+        description,
+        alternates: {
+            canonical: `https://${shop.domain}/${locale.code}/collections/${handle}/`,
+            languages: locales.reduce(
+                (prev, { code }) => ({
+                    ...prev,
+                    [code]: `https://${shop.domain}/${code}/collections/${handle}/`
+                }),
+                {}
+            )
+        },
+        openGraph: {
+            url: `/collections/${handle}/`,
+            type: 'website',
+            title,
+            description,
+            siteName: shop.name,
+            locale: locale.code,
+            images: page?.meta_image
+                ? [
+                      {
+                          url: page.meta_image!.url as string,
+                          width: page.meta_image!.dimensions?.width || 0,
+                          height: page.meta_image!.dimensions?.height || 0,
+                          alt: page.meta_image!.alt || '',
+                          secureUrl: page.meta_image!.url as string
+                      }
+                  ]
+                : undefined
+        }
+    };
 }
 
 async function CollectionPageSlices({ shop, locale, handle }: { shop: OnlineShop; locale: Locale; handle: string }) {
@@ -182,13 +183,14 @@ export default async function CollectionPage({
         collection = await CollectionApi({ api, handle, limit: 1 });
         pagesInfo = await CollectionPaginationCountApi({ api, handle, filters: { first: PRODUCTS_PER_PAGE } });
     } catch (error: unknown) {
+        unstable_rethrow(error);
+
         if (Error.isNotFound(error)) {
             await checkAndHandleRedirect({ domain, locale: Locale.from(localeData), path: `/collections/${handle}` });
             notFound();
         }
 
         console.error(error);
-        unstable_rethrow(error);
         throw error;
     }
 

@@ -42,4 +42,14 @@ export const enableProductsPage = flag<boolean>({
         return !!value || false;
     }
 });
+
+export const preRenderAllLocales = flag<boolean>({
+    key: 'pre-render-all-locales',
+    description: 'Pre-render all locales.',
+    defaultValue: false,
+    async decide() {
+        const value = await get(this.key);
+        return !!value || false;
+    }
+});
 /* c8 ignore stop */

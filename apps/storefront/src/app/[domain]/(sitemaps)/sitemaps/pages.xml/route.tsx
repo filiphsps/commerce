@@ -6,9 +6,9 @@ import { Locale } from '@/utils/locale';
 import { convertPrismicDateToISO } from '@/utils/prismic-date';
 import { getServerSideSitemap } from 'next-sitemap';
 
-import type { ISitemapField } from 'next-sitemap';
-import type { NextRequest } from 'next/server';
 import type { DynamicSitemapRouteParams } from '../../sitemap.xml/route';
+import type { NextRequest } from 'next/server';
+import type { ISitemapField } from 'next-sitemap';
 
 export const dynamic = 'force-static';
 export const revalidate = false;
