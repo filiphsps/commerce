@@ -41,7 +41,7 @@ export const findShopByDomainOverHttp = async (domain: string): Promise<OnlineSh
         }),
         cache: 'no-cache',
         next: {
-            revalidate: undefined,
+            revalidate: 28_800, // 8hrs.
             tags: [domain]
         }
     });
@@ -81,7 +81,7 @@ export const findShopsByDomainOverHttp = async (): Promise<OnlineShop> => {
                 }),
                 cache: 'no-cache',
                 next: {
-                    revalidate: undefined,
+                    revalidate: 86_400, // 24hrs.
                     tags: ['domains']
                 }
             })
