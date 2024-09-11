@@ -13,6 +13,8 @@
             "@/components/*": ["src/components/*"],
             "@/hooks/*": ["src/hooks/*"],
             "@/api/*": ["src/api/*"],
+            "@/auth": ["src/auth/auth.ts"],
+            "@/auth/*": ["src/auth/*"],
             "@/models/*": ["src/models/*"],
             "@/utils/*": ["src/utils/*"],
             "@/styles/*": ["src/scss/*"],

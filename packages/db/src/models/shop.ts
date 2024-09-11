@@ -71,6 +71,7 @@ export interface ShopBase extends BaseDocument {
                   publicToken: string;
               };
           };
+
     commerceProvider:
         | {
               type: 'shopify';
@@ -78,6 +79,12 @@ export interface ShopBase extends BaseDocument {
                   token: string;
                   publicToken: string;
                   domain?: string;
+
+                  customers?: {
+                      id: string;
+                      clientId: string;
+                      clientSecret: string;
+                  };
               };
               storefrontId: string;
               domain: string;
@@ -256,6 +263,24 @@ export const ShopSchema = new Schema<ShopBase>(
                 },
                 publicToken: {
                     type: Schema.Types.String,
+                    required: false
+                },
+
+                customers: {
+                    type: {
+                        id: {
+                            type: Schema.Types.String,
+                            required: true
+                        },
+                        clientId: {
+                            type: Schema.Types.String,
+                            required: true
+                        },
+                        clientSecret: {
+                            type: Schema.Types.String,
+                            required: true
+                        }
+                    },
                     required: false
                 }
             },

@@ -549,6 +549,9 @@ importers:
       '@apollo/experimental-nextjs-app-support':
         specifier: 0.11.3
         version: 0.11.3(@apollo/client@3.11.8(@types/react@18.2.75)(graphql@16.9.0)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910))(next@15.0.0-canary.149(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react@19.0.0-rc-3dfd5d9e-20240910)
+      '@auth/core':
+        specifier: 0.34.2
+        version: 0.34.2
       '@neshca/cache-handler':
         specifier: 1.7.0
         version: 1.7.0(next@15.0.0-canary.149(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(redis@4.7.0)
@@ -624,6 +627,9 @@ importers:
       next:
         specifier: 15.0.0-canary.149
         version: 15.0.0-canary.149(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0)
+      next-auth:
+        specifier: 5.0.0-beta.20
+        version: 5.0.0-beta.20(next@15.0.0-canary.149(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react@19.0.0-rc-3dfd5d9e-20240910)
       next-sitemap:
         specifier: 4.2.3
         version: 4.2.3(next@15.0.0-canary.149(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))
