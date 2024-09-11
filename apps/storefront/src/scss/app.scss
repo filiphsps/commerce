@@ -178,3 +178,7 @@ a:is([href]):where([href=''], [href='#']) {
 footer address a:hover {
     text-decoration: underline;
 }
+
+#bloggy--article {
+    max-width: unset !important;
+}

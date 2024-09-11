@@ -128,8 +128,8 @@ export default async function ArticlePage({
         });
 
         return (
-            <article className="flex flex-col gap-6">
-                <div className="prose flex flex-col gap-2">
+            <article className="prose flex flex-col gap-6 md:max-w-[800px]">
+                <div className="flex flex-col gap-2">
                     <Label
                         as="div"
                         className="text-sm font-semibold leading-snug text-gray-600"
@@ -144,7 +144,7 @@ export default async function ArticlePage({
                     />
                 </div>
 
-                <Content html={article.contentHtml} />
+                <Content className="max-w-none" html={article.contentHtml} />
 
                 {/* Metadata */}
                 <JsonLd data={jsonLd} />
