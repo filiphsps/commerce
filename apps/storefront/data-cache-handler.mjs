@@ -2,13 +2,12 @@ import { CacheHandler } from '@neshca/cache-handler';
 import createLruHandler from '@neshca/cache-handler/local-lru';
 import createRedisHandler from '@neshca/cache-handler/redis-strings';
 
-import { createClient } from 'redis';
+import Redis from 'ioredis';
 
 /** @type {string | undefined} */
 const data_cache_url = process.env.DATA_CACHE_REDIS_URL;
 
-/** @type {import("redis").RedisClientType | null} */
-const client = createClient({ url: data_cache_url });
+const client = new Redis(data_cache_url, { lazyConnect: true });
 client.on('connect', () => console.info('Redis client connected.'));
 client.on('error', (error) => console.error('Redis error', error));
 client.on('reconnecting', () => console.warn('Redis client reconnecting...'));
@@ -27,7 +26,7 @@ CacheHandler.onCreation(async () => {
         } catch {}
     }
 
-    if (!client?.isReady) {
+    if (client.status === 'close' || client.status === 'end') {
         console.warn('Falling back to LRU handler because Redis client is not available.');
         return {
             handlers: [createLruHandler()]
@@ -40,8 +39,6 @@ CacheHandler.onCreation(async () => {
                 client,
                 timeoutMs: 1000,
                 keyExpirationStrategy: 'EXAT',
-                keyPrefix: process.env.VERCEL_GIT_COMMIT_SHA,
-                sharedTagsKey: undefined,
                 revalidateTagQuerySize: 100
             })
         ]
