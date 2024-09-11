@@ -3,6 +3,7 @@ import { InvalidShopError } from '@nordcom/commerce-errors';
 
 import { Locale } from '@/utils/locale';
 import * as prismic from '@prismicio/client';
+import { enableAutoPreviews } from '@prismicio/next';
 
 import type { Client, ClientConfig, LinkResolverFunction } from '@prismicio/client';
 
@@ -26,20 +27,18 @@ export const createClient = ({ shop, locale = Locale.default, ...config }: Creat
         accessToken,
         routes,
         defaultParams: {
-            lang: locale.code.toLowerCase()
+            lang: locale.code
         },
         fetchOptions: {
-            //cache: 'force-cache',
             next: {
                 revalidate: 28_800, // 8hrs.
-                tags: ['prismic', `prismic.${shop.id}`, shop.domain]
+                tags: ['prismic', `prismic.${shop.id}`, shop.domain, locale.code]
             }
         },
         ...config
     });
 
-    // enableAutoPreviews({ client });
-
+    enableAutoPreviews({ client });
     return client;
 };
 

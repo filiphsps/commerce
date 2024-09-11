@@ -9,7 +9,6 @@ import { Locale, useTranslation } from '@/utils/locale';
 import { asText } from '@prismicio/client';
 
 import { CMSContent } from '@/components/cms/cms-content';
-import PageContent from '@/components/page-content';
 import Heading from '@/components/typography/heading';
 
 import BlogContent from './blog-content';
@@ -84,7 +83,7 @@ export default async function BlogPage({ params: { domain, locale: localeData } 
     const { t } = useTranslation('common', i18n);
 
     return (
-        <PageContent>
+        <>
             <Heading
                 title={page?.title || blog.title || t('blog')}
                 subtitle={page?.description || blog.seo?.description}
@@ -93,6 +92,6 @@ export default async function BlogPage({ params: { domain, locale: localeData } 
             <BlogContent blog={blog} locale={locale} i18n={i18n} />
 
             {page?.slices && page.slices.length > 0 && <CMSContent shop={shop} locale={locale} handle={'blog'} />}
-        </PageContent>
+        </>
     );
 }

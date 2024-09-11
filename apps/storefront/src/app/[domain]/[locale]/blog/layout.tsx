@@ -36,7 +36,7 @@ export default async function BlogLayout({
 
         return (
             <div className="flex h-full w-full flex-col gap-3 md:grid md:grid-cols-[1fr_auto] md:gap-6">
-                {children}
+                <section>{children}</section>
 
                 <aside className={cn('mt-4 flex h-min flex-col gap-3 md:sticky md:top-32 md:mt-0 md:w-72 md:gap-6')}>
                     <section className="flex flex-col gap-2">

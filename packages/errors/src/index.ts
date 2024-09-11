@@ -53,7 +53,12 @@ export class Error<T = unknown> extends BuiltinError {
             return true;
         }
 
-        return ['No documents', '404:'].some((e) => (((error as any)?.message as string) || '').includes(e));
+        const message = (error as any)?.message as string | undefined;
+        if (!message) {
+            return false;
+        }
+
+        return ['No documents were returned', '404:'].some((str) => message.toLowerCase().includes(str.toLowerCase()));
     }
 }
 
