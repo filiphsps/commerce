@@ -8,23 +8,16 @@ import Redis from 'ioredis';
 const data_cache_url = process.env.DATA_CACHE_REDIS_URL;
 
 const client = new Redis(data_cache_url, { lazyConnect: true });
-client.on('connect', () => console.info('Redis client connected.'));
+client.on('connect', () => console.debug('Redis client connected.'));
 client.on('error', (error) => console.error('Redis error', error));
 client.on('reconnecting', () => console.warn('Redis client reconnecting...'));
-client.on('end', () => console.info('Redis client disconnected.'));
+client.on('end', () => console.debug('Redis client disconnected.'));
 
 CacheHandler.onCreation(async () => {
     try {
-        console.info('Connecting Redis client...');
+        console.debug('Connecting Redis client...');
         await client.connect();
-    } catch (error) {
-        console.error('redis', error);
-
-        try {
-            console.warn(disconnecting);
-            client.disconnect();
-        } catch {}
-    }
+    } catch {}
 
     if (client.status === 'close' || client.status === 'end') {
         console.warn('Falling back to LRU handler because Redis client is not available.');
