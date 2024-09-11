@@ -14,25 +14,21 @@ function hostnameFromRequest(req: NextRequest): string {
     // Remove port from hostname.
     hostname = hostname ? hostname.split(':')[0]! : '';
 
-    return hostname;
-}
-
-export const getHostname = async (req: NextRequest): Promise<string> => {
-    let hostname = hostnameFromRequest(req);
-
-    // Remove port from hostname.
-    hostname = hostname ? hostname.split(':')[0]! : '';
-
     // Deal with development server and Vercel's preview URLs.
     if (
         !hostname ||
         hostname === 'localhost' ||
-        hostname.includes('vercel.app') ||
+        hostname.includes('.vercel.app') ||
         hostname.includes('app.github.dev')
     ) {
         hostname = 'swedish-candy-store.com';
     }
 
+    return hostname;
+}
+
+export const getHostname = async (req: NextRequest): Promise<string> => {
+    const hostname = hostnameFromRequest(req);
     return (await findShopByDomainOverHttp(hostname)).domain;
 };
 

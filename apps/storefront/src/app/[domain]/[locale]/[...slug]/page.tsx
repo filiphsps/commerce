@@ -33,7 +33,7 @@ export type CustomPageParams = { domain: string; locale: string; slug: string[] 
 export async function generateStaticParams({
     params: { domain, locale: localeData }
 }: {
-    params: Omit<CustomPageParams, 'handle'>;
+    params: Omit<CustomPageParams, 'slug'>;
 }): Promise<Omit<CustomPageParams, 'domain' | 'locale'>[]> {
     try {
         const locale = Locale.from(localeData);
@@ -69,10 +69,12 @@ export async function generateMetadata({
         const shop = await Shop.findByDomain(domain, { sensitiveData: true });
         const api = await ShopifyApolloApiClient({ shop, locale });
 
-        const [page, locales] = await Promise.all([PageApi({ shop, locale, handle }), LocalesApi({ api })]);
+        const page = await PageApi({ shop, locale, handle });
         if (!page) {
             notFound();
         }
+
+        const locales = await LocalesApi({ api });
 
         // If the page is the homepage we shouldn't add the handle to path.
         // TODO: Deal with this in a better way.
@@ -169,7 +171,7 @@ export default async function CustomPage({
         // Fetch the current shop.
         const shop = await Shop.findByDomain(domain, { sensitiveData: true });
 
-        const page = await PageApi({ shop, locale, handle } as any);
+        const page = await PageApi({ shop, locale, handle });
         if (!page) {
             notFound(); // TODO: Return proper error.
         }
