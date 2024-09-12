@@ -47,8 +47,8 @@ importers:
         specifier: 5.0.2
         version: 5.0.2
       concurrently:
-        specifier: 9.0.0
-        version: 9.0.0
+        specifier: 9.0.1
+        version: 9.0.1
       dotenv-cli:
         specifier: 7.4.2
         version: 7.4.2
@@ -297,8 +297,8 @@ importers:
         specifier: 0.0.0-experimental-2bc6fec-20240910
         version: 0.0.0-experimental-2bc6fec-20240910
       concurrently:
-        specifier: 9.0.0
-        version: 9.0.0
+        specifier: 9.0.1
+        version: 9.0.1
       critters:
         specifier: 0.0.24
         version: 0.0.24
@@ -502,8 +502,8 @@ importers:
         specifier: 0.0.0-experimental-2bc6fec-20240910
         version: 0.0.0-experimental-2bc6fec-20240910
       concurrently:
-        specifier: 9.0.0
-        version: 9.0.0
+        specifier: 9.0.1
+        version: 9.0.1
       critters:
         specifier: 0.0.24
         version: 0.0.24
@@ -728,8 +728,8 @@ importers:
         specifier: 0.0.0-experimental-2bc6fec-20240910
         version: 0.0.0-experimental-2bc6fec-20240910
       concurrently:
-        specifier: 9.0.0
-        version: 9.0.0
+        specifier: 9.0.1
+        version: 9.0.1
       critters:
         specifier: 0.0.24
         version: 0.0.24
@@ -792,8 +792,8 @@ importers:
         specifier: 20.12.7
         version: 20.12.7
       concurrently:
-        specifier: 9.0.0
-        version: 9.0.0
+        specifier: 9.0.1
+        version: 9.0.1
       eslint:
         specifier: 8.57.0
         version: 8.57.0
@@ -831,8 +831,8 @@ importers:
         specifier: 0.1.1
         version: 0.1.1
       concurrently:
-        specifier: 9.0.0
-        version: 9.0.0
+        specifier: 9.0.1
+        version: 9.0.1
       eslint:
         specifier: 8.57.0
         version: 8.57.0
@@ -871,8 +871,8 @@ importers:
         specifier: 0.1.1
         version: 0.1.1
       concurrently:
-        specifier: 9.0.0
-        version: 9.0.0
+        specifier: 9.0.1
+        version: 9.0.1
       eslint:
         specifier: 8.57.0
         version: 8.57.0
@@ -3817,8 +3817,8 @@ packages:
   concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
-  concurrently@9.0.0:
-    resolution: {integrity: sha512-iAxbsDeUkn8E/4+QalT7T3WvlyTfmsoez+19lbbcsxZdOEMfBukd8LA30KYez2UR5xkKFzbcqXIZy5RisCbaxw==}
+  concurrently@9.0.1:
+    resolution: {integrity: sha512-wYKvCd/f54sTXJMSfV6Ln/B8UrfLBKOYa+lzc6CHay3Qek+LorVSBdMVfyewFhRbH0Rbabsk4D+3PL/VjQ5gzg==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -11453,7 +11453,7 @@ snapshots:
 
   concat-map@0.0.1: {}
 
-  concurrently@9.0.0:
+  concurrently@9.0.1:
     dependencies:
       chalk: 4.1.2
       lodash: 4.17.21
