@@ -63,7 +63,6 @@ export const Checkout = async ({
 
     try {
         trackable.postEvent('begin_checkout', {
-            path: `/${locale.code}/checkout/`,
             gtm: {
                 ecommerce: {
                     currency: cart.cost?.totalAmount?.currencyCode!,
@@ -79,7 +78,7 @@ export const Checkout = async ({
                         item_name: line.merchandise.product.title,
                         item_variant: line.merchandise.title,
                         item_brand: line.merchandise.product.vendor,
-                        item_category: line.merchandise.product.productType,
+                        item_category: line.merchandise.product.productType || undefined,
                         sku: line.merchandise.sku || undefined,
                         product_id: line.merchandise!.product!.id,
                         variant_id: line.merchandise!.id,

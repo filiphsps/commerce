@@ -1,8 +1,6 @@
 'use client';
 
 import { Checkout } from '@/utils/checkout';
-import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
-import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 import { useTrackable } from '@/utils/trackable';
 import { useCart } from '@shopify/hydrogen-react';
@@ -45,52 +43,6 @@ export const CartSidebar = ({ i18n, locale, className, children, paymentMethods,
                     }
 
                     try {
-                        queueEvent('begin_checkout', {
-                            gtm: {
-                                ecommerce: {
-                                    currency: cost.totalAmount.currencyCode,
-                                    value: safeParseFloat(0, cost.totalAmount.amount),
-                                    items: lines
-                                        .map((_) => _ as Required<NonNullable<typeof _>>)
-                                        .map((line) => {
-                                            if (!line) {
-                                                return null;
-                                            }
-
-                                            const { merchandise, quantity } = line;
-                                            if (!merchandise) {
-                                                return null;
-                                            }
-
-                                            const { product, price } = merchandise;
-                                            if (!product) {
-                                                return null;
-                                            }
-
-                                            return {
-                                                item_id: ProductToMerchantsCenterId({
-                                                    locale,
-                                                    product: {
-                                                        productGid: product.id!,
-                                                        variantGid: merchandise.id!
-                                                    }
-                                                }),
-                                                item_name: product.title,
-                                                item_variant: merchandise.title,
-                                                item_brand: product.vendor,
-                                                item_category: product.productType || undefined,
-                                                sku: merchandise.sku || undefined,
-                                                currency: price.currencyCode,
-                                                price: safeParseFloat(undefined, price.amount!),
-                                                quantity: quantity
-                                            };
-                                        })
-                                        .filter(Boolean)
-                                        .map((_) => _ as Required<NonNullable<typeof _>>)
-                                }
-                            }
-                        });
-
                         await Checkout({
                             shop,
                             locale,
