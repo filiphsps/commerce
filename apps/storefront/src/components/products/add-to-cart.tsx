@@ -5,8 +5,6 @@ import styles from '@/components/products/add-to-cart.module.scss';
 
 import { type HTMLProps, useCallback, useEffect, useState } from 'react';
 
-import { TodoError } from '@nordcom/commerce-errors';
-
 import { useTranslation } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { safeParseFloat } from '@/utils/pricing';
@@ -39,14 +37,11 @@ export type AddToCartProps = {
 const AddToCart = ({ children, className, i18n, quantity = 0, type, data, variant, ...props }: AddToCartProps) => {
     const { locale } = useShop();
 
-    const queueEvent = useTrackable((context) => context.queueEvent);
-    if (typeof queueEvent !== 'function') {
-        throw new TodoError('queueEvent is not a function');
-    }
-
     const { t } = useTranslation('common', i18n);
     const { t: tCart } = useTranslation('cart', i18n);
     const path = usePathname();
+
+    const { queueEvent } = useTrackable();
 
     const [animation, setAnimation] = useState<NodeJS.Timeout | undefined>();
     // This is a bit of a hack, but it works.

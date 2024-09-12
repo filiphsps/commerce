@@ -250,7 +250,7 @@ export default async function ProductPage({
             'ratingValue': rating?.value || 5,
             'bestRating': rating?.scale_max || 5.0,
             'worstRating': rating?.scale_min || 1.0,
-            'ratingCount': ratingCount || 0
+            'ratingCount': ratingCount || 1 // TODO: Should be zero instead of one for the fallback, but that errors.
         },
         'variesBy': [
             //...(product.options.some(({ name }) => name.toLowerCase() === 'size') ? ['https://schema.org/size'] : []),

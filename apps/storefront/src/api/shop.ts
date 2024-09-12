@@ -1,7 +1,7 @@
 import 'server-only';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { MissingEnvironmentVariableError, UnknownShopDomainError } from '@nordcom/commerce-errors';
+import { GenericError, MissingEnvironmentVariableError, UnknownShopDomainError } from '@nordcom/commerce-errors';
 
 export type HexColor = `#${string}`;
 export type Color = HexColor;
@@ -44,22 +44,28 @@ export const findShopByDomainOverHttp = async (domain: string): Promise<OnlineSh
             tags: [domain]
         }
     });
-
-    if (data.status !== 200) {
-        if (data.status >= 400 && data.status < 500) {
-            throw new UnknownShopDomainError();
-        }
-
+    if (!data || (data.status >= 400 && data.status < 500)) {
         throw new UnknownShopDomainError(data.statusText, data.status);
+    } else if (data.status !== 200) {
+        throw new GenericError(data.statusText);
     }
 
-    const { document } = await data.json();
-    if (!document) {
+    let shop: (OnlineShop & { _id: string }) | null = null;
+    try {
+        shop = (await data.json())?.document;
+    } catch {}
+    if (!shop) {
         throw new UnknownShopDomainError();
     }
 
-    let shop = { ...document, id: document._id };
-    return shop as OnlineShop;
+    const corrected = {
+        ...shop,
+        id: shop.id || shop._id,
+        _id: undefined
+    };
+    delete corrected._id;
+
+    return corrected as OnlineShop;
 };
 
 export const findShopsByDomainOverHttp = async (): Promise<OnlineShop> => {
