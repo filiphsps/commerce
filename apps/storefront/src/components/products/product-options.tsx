@@ -42,6 +42,8 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
             option?.values && !(option.values.length === 1 && option.values[0]!.toLowerCase() === 'default title')
     );
 
+    const onlyOneOption = options && options.length === 1 && options[0]?.values && options[0].values.length === 1;
+
     return (
         <div {...props} className={cn('flex flex-col gap-1', className)}>
             {options?.map(
@@ -62,7 +64,7 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
                                     );
 
                                     let href = `/products/${handle}/`;
-                                    if (matchingVariant?.id) {
+                                    if (!onlyOneOption && matchingVariant?.id) {
                                         href = `${href}?variant=${parseGid(matchingVariant.id).id}`;
                                     }
 

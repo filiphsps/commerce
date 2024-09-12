@@ -19,11 +19,17 @@ export const ProductToMerchantsCenterId = ({
     locale: Locale;
     product: {
         productGid: string;
-        variantGid: string;
+        variantGid?: string;
     };
 }) => {
     const productId = parseGid(product.productGid).resourceId;
-    const variantId = parseGid(product.variantGid).resourceId;
 
-    return `shopify_${locale.country?.toUpperCase()}_${productId}_${variantId}`;
+    const id = `shopify_${locale.country?.toUpperCase()}_${productId}`;
+
+    if (!product.variantGid) {
+        return id;
+    }
+
+    const variantId = parseGid(product.variantGid).resourceId;
+    return `${id}_${variantId}`;
 };

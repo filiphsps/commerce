@@ -244,7 +244,14 @@ export default async function ProductPage({
             '@type': 'Brand',
             'name': product.vendor
         },
-        'productGroupID': parseGid(product.id).resourceId!,
+        'productGroupID': ProductToMerchantsCenterId({ locale, product: { productGid: product.id } }),
+        'aggregateRating': {
+            '@type': 'AggregateRating',
+            'ratingValue': rating?.value || 5,
+            'bestRating': rating?.scale_max || 5.0,
+            'worstRating': rating?.scale_min || 1.0,
+            'ratingCount': ratingCount || 0
+        },
         'variesBy': [
             //...(product.options.some(({ name }) => name.toLowerCase() === 'size') ? ['https://schema.org/size'] : []),
             //...(product.options.some(({ name }) => name.toLowerCase() === 'color') ? ['https://schema.org/color'] : [])
@@ -265,14 +272,6 @@ export default async function ProductPage({
             }),
             'mpn': variant.barcode || variant.sku || undefined,
 
-            'aggregateRating': {
-                '@type': 'AggregateRating',
-                'ratingValue': rating?.value || 5,
-                'bestRating': rating?.scale_max || 5.0,
-                'worstRating': rating?.scale_min || 1.0,
-                'ratingCount': ratingCount || 0
-            },
-
             'offers': {
                 '@type': 'Offer',
                 'url': `https://${shop.domain}/${locale.code}/products/${product.handle}/?variant=${
@@ -282,11 +281,11 @@ export default async function ProductPage({
                 'availability': variant.availableForSale ? 'https://schema.org/InStock' : 'https://schema.org/SoldOut',
                 'price': safeParseFloat(undefined, variant.price.amount),
                 'priceCurrency': variant.price.currencyCode,
-                'priceSpecification': {
-                    '@type': 'PriceSpecification',
-                    'price': safeParseFloat(undefined, variant.price.amount),
-                    'priceCurrency': variant.price.currencyCode
-                }
+                'priceValidUntil': new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                })
             }
         }))
     };
