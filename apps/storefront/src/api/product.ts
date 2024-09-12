@@ -29,6 +29,8 @@ export type Product = {
 
     // Built-in metafields.
     allergen?: Metafield | undefined | null;
+    rating?: Metafield | undefined | null;
+    ratingCount?: Metafield | undefined | null;
 } & OmitTypeName<Omit<ShopifyProduct, 'productType' | 'descriptionHtml' | 'variants' | 'ingredients' | 'originalName'>>;
 
 export type ProductFilters = SearchResultItemConnection['productFilters'];

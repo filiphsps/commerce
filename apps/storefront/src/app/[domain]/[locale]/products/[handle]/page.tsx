@@ -21,7 +21,7 @@ import { checkAndHandleRedirect } from '@/utils/redirect';
 import { cn } from '@/utils/tailwind';
 import { AnalyticsEventTrigger } from '@/utils/trackable';
 import { asText } from '@prismicio/client';
-import { parseGid } from '@shopify/hydrogen-react';
+import { parseGid, parseMetafield } from '@shopify/hydrogen-react';
 import { notFound, unstable_rethrow } from 'next/navigation';
 
 import { CMSContent } from '@/components/cms/cms-content';
@@ -43,6 +43,7 @@ import { ProductDetails, ProductOriginalName } from './product-details';
 
 import type { Product } from '@/api/product';
 import type { LocaleDictionary } from '@/utils/locale';
+import type { ParsedMetafields } from '@shopify/hydrogen-react';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import type { ProductGroup, WithContext } from 'schema-dts';
@@ -228,6 +229,11 @@ export default async function ProductPage({
 
     // TODO: Create a proper `shopify-html-parser` to convert the HTML to React components.
 
+    const rating = product.rating ? parseMetafield<ParsedMetafields['rating']>(product.rating).parsedValue : null;
+    const ratingCount = product.ratingCount
+        ? parseMetafield<ParsedMetafields['number_integer']>(product.ratingCount).parsedValue
+        : null;
+
     const jsonLd: WithContext<ProductGroup> = {
         '@context': 'https://schema.org',
         '@type': 'ProductGroup',
@@ -239,10 +245,14 @@ export default async function ProductPage({
             'name': product.vendor
         },
         'productGroupID': parseGid(product.id).resourceId!,
-        'variesBy': [], // TODO: Support this.
+        'variesBy': [
+            //...(product.options.some(({ name }) => name.toLowerCase() === 'size') ? ['https://schema.org/size'] : []),
+            //...(product.options.some(({ name }) => name.toLowerCase() === 'color') ? ['https://schema.org/color'] : [])
+        ],
         'hasVariant': product.variants.edges.map(({ node: variant }) => ({
             '@type': 'Product',
             'name': `${product.title} ${variant.title}`,
+            'category': product.productType || undefined,
             'description': product.description || '',
             'image': variant.image?.url || product.images.edges[0]?.node.url,
 
@@ -255,6 +265,14 @@ export default async function ProductPage({
             }),
             'mpn': variant.barcode || variant.sku || undefined,
 
+            'aggregateRating': {
+                '@type': 'AggregateRating',
+                'ratingValue': rating?.value || 5,
+                'bestRating': rating?.scale_max || 5.0,
+                'worstRating': rating?.scale_min || 1.0,
+                'ratingCount': ratingCount || 0
+            },
+
             'offers': {
                 '@type': 'Offer',
                 'url': `https://${shop.domain}/${locale.code}/products/${product.handle}/?variant=${
@@ -262,7 +280,6 @@ export default async function ProductPage({
                 }`,
                 'itemCondition': 'https://schema.org/NewCondition',
                 'availability': variant.availableForSale ? 'https://schema.org/InStock' : 'https://schema.org/SoldOut',
-
                 'price': safeParseFloat(undefined, variant.price.amount),
                 'priceCurrency': variant.price.currencyCode,
                 'priceSpecification': {

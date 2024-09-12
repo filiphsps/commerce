@@ -209,7 +209,6 @@ export const PRODUCT_FRAGMENT = /* GraphQL */ `
     originalName: metafield(namespace: "store", key: "original-name") {
         id
         namespace
-
         value
         type
     }
@@ -217,7 +216,6 @@ export const PRODUCT_FRAGMENT = /* GraphQL */ `
     nutritionalContent: metafield(namespace: "store", key: "nutritional_content") {
         id
         namespace
-
         value
         type
     }
@@ -225,14 +223,12 @@ export const PRODUCT_FRAGMENT = /* GraphQL */ `
     ingredients: metafield(namespace: "store", key: "ingredients") {
         id
         namespace
-
         value
         type
     }
     flavors: metafield(namespace: "store", key: "flavors") {
         id
         namespace
-
         value
         type
     }
@@ -240,7 +236,18 @@ export const PRODUCT_FRAGMENT = /* GraphQL */ `
     allergen: metafield(namespace: "shopify", key: "allergen-information") {
         id
         namespace
-
+        value
+        type
+    }
+    rating: metafield(namespace: "reviews", key: "rating") {
+        id
+        namespace
+        value
+        type
+    }
+    ratingCount: metafield(namespace: "reviews", key: "rating_count") {
+        id
+        namespace
         value
         type
     }
