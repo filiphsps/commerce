@@ -17,10 +17,15 @@ export async function checkAndHandleRedirect({
     locale: Locale;
     path: string;
 }) {
-    const shop = await findShopByDomainOverHttp(domain);
-    const api = await ShopifyApiClient({ shop, locale });
+    let target: string | null = null;
 
-    const target = await RedirectApi({ api, path });
+    try {
+        const shop = await findShopByDomainOverHttp(domain);
+        const api = await ShopifyApiClient({ shop, locale });
+
+        target = await RedirectApi({ api, path });
+    } catch {}
+
     if (!target) {
         return;
     }

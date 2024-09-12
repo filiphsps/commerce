@@ -8,6 +8,7 @@ import {
 } from '@nordcom/commerce-errors';
 
 import ShopifyProvider from '@/auth/shopify-provider';
+import { BuildConfig } from '@/utils/build-config';
 import NextAuth from 'next-auth';
 
 import type { NextAuthConfig } from 'next-auth';
@@ -37,16 +38,19 @@ export async function getAuthOptions({ shop }: { shop?: OnlineShop }): Promise<N
     const domain = `${hostParts.at(-2)}.${hostParts.at(-1)}`;
 
     return {
-        providers: [
-            ShopifyProvider(
-                {
-                    clientId: customers.clientId,
-                    clientSecret: customers.clientSecret
-                },
-                customers,
-                shop
-            ) as any
-        ],
+        providers:
+            BuildConfig.environment === 'development'
+                ? [
+                      ShopifyProvider(
+                          {
+                              clientId: customers.clientId,
+                              clientSecret: customers.clientSecret
+                          },
+                          customers,
+                          shop
+                      ) as any
+                  ]
+                : [],
         pages: {
             signIn: `/account/login/`,
             signOut: `/account/logout/`,

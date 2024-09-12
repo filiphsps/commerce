@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { Suspense } from 'react';
+import { Fragment, Suspense } from 'react';
 
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
@@ -19,6 +19,7 @@ import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { safeParseFloat } from '@/utils/pricing';
 import { checkAndHandleRedirect } from '@/utils/redirect';
 import { cn } from '@/utils/tailwind';
+import { AnalyticsEventTrigger } from '@/utils/trackable';
 import { asText } from '@prismicio/client';
 import { parseGid } from '@shopify/hydrogen-react';
 import { notFound, unstable_rethrow } from 'next/navigation';
@@ -68,7 +69,7 @@ export async function generateStaticParams({
         const shop = await findShopByDomainOverHttp(domain);
         const api = await ShopifyApiClient({ shop, locale });
 
-        const { products } = await ProductsApi({ api, limit: 50, sorting: 'BEST_SELLING' });
+        const { products } = await ProductsApi({ api });
 
         return products.map(({ node: { handle } }) => ({ handle }));
     } catch (error: unknown) {
@@ -86,62 +87,17 @@ export async function generateMetadata({
         notFound();
     }
 
+    const locale = Locale.from(localeData);
+
+    // Fetch the current shop.
+    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+
+    // Setup the AbstractApi client.
+    const api = await ShopifyApiClient({ shop, locale });
+
+    let product: Awaited<ReturnType<typeof ProductApi>>;
     try {
-        const locale = Locale.from(localeData);
-
-        // Fetch the current shop.
-        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-
-        // Setup the AbstractApi client.
-        const api = await ShopifyApiClient({ shop, locale });
-
-        // Do the actual API calls.
-        const [product, page, locales] = await Promise.all([
-            ProductApi({ api, handle }),
-            PageApi({ shop, locale, handle, type: 'product_page' }),
-            LocalesApi({ api })
-        ]);
-
-        const title = page?.meta_title || product.seo.title || `${product.vendor} ${product.title}`;
-        const description = asText(page?.meta_description) || product.seo.description || product.description;
-        return {
-            title,
-            description,
-            alternates: {
-                canonical: `https://${shop.domain}/${locale.code}/products/${handle}/`,
-                languages: locales.reduce(
-                    (prev, { code }) => ({
-                        ...prev,
-                        [code]: `https://${shop.domain}/${code}/products/${handle}/`
-                    }),
-                    {}
-                )
-            },
-            openGraph: {
-                url: `/products/${handle}/`,
-                type: 'website',
-                title,
-                description,
-                siteName: shop.name,
-                locale: locale.code,
-                images: [
-                    ...(page?.meta_image.dimensions
-                        ? [
-                              {
-                                  url: page.meta_image.url!,
-                                  width: page.meta_image.dimensions.width!,
-                                  height: page.meta_image.dimensions.height!
-                              }
-                          ]
-                        : []),
-                    ...product.images.edges.map(({ node }) => ({
-                        url: node.url,
-                        width: node.width!,
-                        height: node.height!
-                    }))
-                ]
-            }
-        };
+        product = await ProductApi({ api, handle });
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
             await checkAndHandleRedirect({ domain, locale: Locale.from(localeData), path: `/products/${handle}` });
@@ -152,6 +108,50 @@ export async function generateMetadata({
         unstable_rethrow(error);
         throw error;
     }
+
+    const page = await PageApi({ shop, locale, handle, type: 'product_page' });
+    const locales = await LocalesApi({ api });
+
+    const title = page?.meta_title || product.seo.title || `${product.vendor} ${product.title}`;
+    const description = asText(page?.meta_description) || product.seo.description || product.description;
+    return {
+        title,
+        description,
+        alternates: {
+            canonical: `https://${shop.domain}/${locale.code}/products/${handle}/`,
+            languages: locales.reduce(
+                (prev, { code }) => ({
+                    ...prev,
+                    [code]: `https://${shop.domain}/${code}/products/${handle}/`
+                }),
+                {}
+            )
+        },
+        openGraph: {
+            url: `/products/${handle}/`,
+            type: 'website',
+            title,
+            description,
+            siteName: shop.name,
+            locale: locale.code,
+            images: [
+                ...(page?.meta_image.dimensions
+                    ? [
+                          {
+                              url: page.meta_image.url!,
+                              width: page.meta_image.dimensions.width!,
+                              height: page.meta_image.dimensions.height!
+                          }
+                      ]
+                    : []),
+                ...product.images.edges.map(({ node }) => ({
+                    url: node.url,
+                    width: node.width!,
+                    height: node.height!
+                }))
+            ]
+        }
+    };
 }
 
 const BLOCK_STYLES =
@@ -192,220 +192,18 @@ export default async function ProductPage({
         notFound();
     }
 
+    // Creates a locale object from a locale code (e.g. `en-US`).
+    const locale = Locale.from(localeData);
+
+    // Fetch the current shop.
+    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+
+    // Setup the AbstractApi client.
+    const api = await ShopifyApolloApiClient({ shop, locale });
+
+    let product: Awaited<ReturnType<typeof ProductApi>>;
     try {
-        // Creates a locale object from a locale code (e.g. `en-US`).
-        const locale = Locale.from(localeData);
-
-        // Fetch the current shop.
-        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-
-        // Setup the AbstractApi client.
-        const api = await ShopifyApolloApiClient({ shop, locale });
-
-        // Do the actual API calls.
-        const product = await ProductApi({ api, handle });
-        const { descriptionHtml: content } = product;
-
-        // Get dictionary of strings for the current locale.
-        const i18n = await getDictionary({ shop, locale });
-        const { t } = useTranslation('product', i18n);
-
-        const initialVariant = FirstAvailableVariant(product);
-        if (!initialVariant) notFound();
-
-        // TODO: Create a proper `shopify-html-parser` to convert the HTML to React components.
-
-        const jsonLd: WithContext<ProductGroup> = {
-            '@context': 'https://schema.org',
-            '@type': 'ProductGroup',
-            'name': product.title,
-            'description': product.description || '',
-            'url': `https://${shop.domain}/${locale.code}/products/${handle}/`,
-            'brand': {
-                '@type': 'Brand',
-                'name': product.vendor
-            },
-            'productGroupID': parseGid(product.id).resourceId!,
-            'variesBy': [], // TODO: Support this.
-            'hasVariant': product.variants.edges.map(({ node: variant }) => ({
-                '@type': 'Product',
-                'name': `${product.title} ${variant.title}`,
-                'description': product.description || '',
-                'image': variant.image?.url || product.images.edges[0]?.node.url,
-
-                'sku': ProductToMerchantsCenterId({
-                    locale: locale,
-                    product: {
-                        productGid: product!.id,
-                        variantGid: variant!.id
-                    } as any
-                }),
-                'mpn': variant.barcode || variant.sku || undefined,
-
-                'offers': {
-                    '@type': 'Offer',
-                    'url': `https://${shop.domain}/${locale.code}/products/${product.handle}/?variant=${
-                        parseGid(variant.id).id
-                    }`,
-                    'itemCondition': 'https://schema.org/NewCondition',
-                    'availability': variant.availableForSale
-                        ? 'https://schema.org/InStock'
-                        : 'https://schema.org/SoldOut',
-
-                    'price': safeParseFloat(undefined, variant.price.amount),
-                    'priceCurrency': variant.price.currencyCode,
-                    'priceSpecification': {
-                        '@type': 'PriceSpecification',
-                        'price': safeParseFloat(undefined, variant.price.amount),
-                        'priceCurrency': variant.price.currencyCode
-                    }
-                }
-            }))
-        };
-
-        let title = product.title.trim();
-        if (
-            product.productType &&
-            product.productType.length > 0 &&
-            title.toLowerCase().endsWith(product.productType.toLowerCase())
-        ) {
-            title = title.slice(0, -product.productType.length).trim();
-        }
-
-        let productTypeElement = null;
-        if (product.productType) {
-            productTypeElement = (
-                <span data-nosnippet={true} className="contents leading-none text-gray-700">
-                    {' '}
-                    &ndash; <ProductCategory shop={shop} locale={locale} product={product} />
-                </span>
-            );
-        }
-
-        // If the product description contains a <h1> tag, replace our h1 with a div to avoid multiple h1s.
-        let TitleTag: any = 'h1';
-        if (content.includes('<h1')) {
-            TitleTag = 'div';
-        }
-
-        return (
-            <>
-                <Suspense fallback={<BreadcrumbsSkeleton />}>
-                    <div className="-mb-[1.5rem] empty:hidden md:-mb-[2.25rem]">
-                        <Breadcrumbs locale={locale} title={`${product.vendor} ${product.title}`} />
-                    </div>
-                </Suspense>
-
-                <PageContent className="overflow flex max-w-full flex-col gap-4 px-0 md:flex-row md:flex-nowrap">
-                    <Suspense fallback={<section className="w-full" />}>
-                        <section className={'flex h-auto w-full grow flex-col gap-4'}>
-                            <ProductGallery
-                                initialImageId={initialVariant.image?.id || product.images.edges[0]?.node.id}
-                                images={product.images.edges.map((edge) => edge.node)}
-                                pageUrl={`https://${shop.domain}/${locale.code}/products/${handle}/`}
-                                className="h-full w-full"
-                                product={product}
-                                i18n={i18n}
-                            />
-                        </section>
-                    </Suspense>
-
-                    <Suspense fallback={<section className="w-full xl:max-w-[38rem]" />}>
-                        <section className="flex w-full flex-col gap-3 xl:max-w-[38rem]">
-                            <Suspense fallback={<div className="h-4 w-full" data-skeleton />}>
-                                <ProductSavings product={product} i18n={i18n} />
-                            </Suspense>
-
-                            <Card className={cn(BLOCK_STYLES)}>
-                                <div className="flex h-auto w-full flex-col justify-start gap-3 lg:gap-4 lg:p-0">
-                                    <Suspense fallback={<div className="h-4 w-full" data-skeleton />}>
-                                        <Badges product={product} i18n={i18n} />
-                                    </Suspense>
-
-                                    <header className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between md:gap-1">
-                                        <div className="flex grow flex-col gap-0">
-                                            <div className="flex w-full grow flex-wrap whitespace-pre-wrap text-3xl font-extrabold leading-tight">
-                                                <TitleTag className="text-inherit">
-                                                    {title}
-                                                    <Suspense>{productTypeElement}</Suspense>
-                                                </TitleTag>
-                                            </div>
-
-                                            <Suspense fallback={<div className="h-4 w-36" data-skeleton />}>
-                                                <ProductVendor
-                                                    shop={shop}
-                                                    locale={locale}
-                                                    product={product}
-                                                    className="font-semibold normal-case leading-tight text-gray-600 transition-colors md:text-lg"
-                                                    title={t('browse-all-products-by-brand', product.vendor)}
-                                                    prefix={<span className="font-normal">{t('by')} </span>}
-                                                />
-                                            </Suspense>
-                                        </div>
-
-                                        <Suspense>
-                                            <div className="flex items-end justify-start gap-2 empty:hidden md:gap-3">
-                                                <ProductPricing product={product} />
-                                            </div>
-                                        </Suspense>
-                                    </header>
-                                </div>
-
-                                <Suspense>
-                                    <ProductContent product={product} i18n={i18n} />
-                                </Suspense>
-                            </Card>
-
-                            <Suspense>
-                                <Card className={cn(BLOCK_STYLES)}>
-                                    <InfoLines product={product} i18n={i18n} locale={locale} />
-                                </Card>
-                            </Suspense>
-
-                            <Suspense fallback={<Card className={cn(BLOCK_STYLES, 'h-32 rounded-lg')} data-skeleton />}>
-                                <section className="empty:hidden">
-                                    <CMSContent shop={shop} locale={locale} handle={handle} type={'product_page'} />
-                                </section>
-                            </Suspense>
-
-                            <Card className={cn(BLOCK_STYLES, 'gap-0 lg:gap-0')}>
-                                <Suspense fallback={<div className="h-12 w-full" data-skeleton />}>
-                                    <Content html={content} />
-                                </Suspense>
-
-                                <Suspense>
-                                    <ProductOriginalName data={product} locale={locale} />
-                                </Suspense>
-                            </Card>
-
-                            <Suspense fallback={<div className="h-12 w-full" data-skeleton />}>
-                                <div className="flex flex-wrap gap-2 empty:hidden">
-                                    <ProductDetails data={product} locale={locale} />
-                                </div>
-                            </Suspense>
-                        </section>
-                    </Suspense>
-                </PageContent>
-
-                <Card className="mt-2 flex w-full flex-col gap-3 px-0 lg:mt-6" border={true}>
-                    <p className="block px-3 text-xl font-extrabold leading-tight" data-nosnippet={true}>
-                        {t('you-may-also-like')}
-                    </p>
-
-                    <Suspense fallback={<RecommendedProducts.skeleton />}>
-                        <RecommendedProducts
-                            shop={shop}
-                            locale={locale}
-                            product={product}
-                            className="-my-2 w-full px-3"
-                        />
-                    </Suspense>
-                </Card>
-
-                {/* Metadata */}
-                <JsonLd data={jsonLd} />
-            </>
-        );
+        product = await ProductApi({ api, handle });
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
             await checkAndHandleRedirect({ domain, locale: Locale.from(localeData), path: `/products/${handle}` });
@@ -416,4 +214,237 @@ export default async function ProductPage({
         unstable_rethrow(error);
         throw error;
     }
+
+    const { descriptionHtml: content } = product;
+
+    // Get dictionary of strings for the current locale.
+    const i18n = await getDictionary({ shop, locale });
+    const { t } = useTranslation('product', i18n);
+
+    const initialVariant = FirstAvailableVariant(product);
+    if (!initialVariant) {
+        notFound();
+    }
+
+    // TODO: Create a proper `shopify-html-parser` to convert the HTML to React components.
+
+    const jsonLd: WithContext<ProductGroup> = {
+        '@context': 'https://schema.org',
+        '@type': 'ProductGroup',
+        'name': product.title,
+        'description': product.description || '',
+        'url': `https://${shop.domain}/${locale.code}/products/${handle}/`,
+        'brand': {
+            '@type': 'Brand',
+            'name': product.vendor
+        },
+        'productGroupID': parseGid(product.id).resourceId!,
+        'variesBy': [], // TODO: Support this.
+        'hasVariant': product.variants.edges.map(({ node: variant }) => ({
+            '@type': 'Product',
+            'name': `${product.title} ${variant.title}`,
+            'description': product.description || '',
+            'image': variant.image?.url || product.images.edges[0]?.node.url,
+
+            'sku': ProductToMerchantsCenterId({
+                locale: locale,
+                product: {
+                    productGid: product!.id,
+                    variantGid: variant!.id
+                } as any
+            }),
+            'mpn': variant.barcode || variant.sku || undefined,
+
+            'offers': {
+                '@type': 'Offer',
+                'url': `https://${shop.domain}/${locale.code}/products/${product.handle}/?variant=${
+                    parseGid(variant.id).id
+                }`,
+                'itemCondition': 'https://schema.org/NewCondition',
+                'availability': variant.availableForSale ? 'https://schema.org/InStock' : 'https://schema.org/SoldOut',
+
+                'price': safeParseFloat(undefined, variant.price.amount),
+                'priceCurrency': variant.price.currencyCode,
+                'priceSpecification': {
+                    '@type': 'PriceSpecification',
+                    'price': safeParseFloat(undefined, variant.price.amount),
+                    'priceCurrency': variant.price.currencyCode
+                }
+            }
+        }))
+    };
+
+    let title = product.title.trim();
+    if (
+        product.productType &&
+        product.productType.length > 0 &&
+        title.toLowerCase().endsWith(product.productType.toLowerCase())
+    ) {
+        title = title.slice(0, -product.productType.length).trim();
+    }
+
+    let productTypeElement = null;
+    if (product.productType) {
+        productTypeElement = (
+            <span data-nosnippet={true} className="contents leading-none text-gray-700">
+                {' '}
+                &ndash; <ProductCategory shop={shop} locale={locale} product={product} />
+            </span>
+        );
+    }
+
+    // If the product description contains a <h1> tag, replace our h1 with a div to avoid multiple h1s.
+    let TitleTag: any = 'h1';
+    if (content.includes('<h1')) {
+        TitleTag = 'div';
+    }
+
+    return (
+        <>
+            <Suspense fallback={<Fragment />}>
+                <AnalyticsEventTrigger
+                    event="view_item"
+                    data={{
+                        gtm: {
+                            ecommerce: {
+                                currency: initialVariant.price.currencyCode,
+                                value: safeParseFloat(undefined, initialVariant.price.amount),
+                                items: [
+                                    {
+                                        item_id: ProductToMerchantsCenterId({
+                                            locale,
+                                            product: {
+                                                productGid: product.id,
+                                                variantGid: initialVariant.id
+                                            }
+                                        }),
+                                        item_name: product.title,
+                                        item_brand: product.vendor,
+                                        item_category: product.productType || undefined,
+
+                                        item_variant: initialVariant.title,
+                                        product_id: product.id,
+                                        variant_id: initialVariant.id,
+                                        sku: initialVariant.sku || undefined,
+                                        currency: initialVariant.price.currencyCode,
+                                        price: safeParseFloat(undefined, initialVariant.price.amount!)
+                                    }
+                                ]
+                            }
+                        }
+                    }}
+                />
+            </Suspense>
+
+            <Suspense fallback={<BreadcrumbsSkeleton />}>
+                <div className="-mb-[1.5rem] empty:hidden md:-mb-[2.25rem]">
+                    <Breadcrumbs locale={locale} title={`${product.vendor} ${product.title}`} />
+                </div>
+            </Suspense>
+
+            <PageContent className="overflow flex max-w-full flex-col gap-4 px-0 md:flex-row md:flex-nowrap">
+                <Suspense fallback={<section className="w-full" />}>
+                    <section className={'flex h-auto w-full grow flex-col gap-4'}>
+                        <ProductGallery
+                            initialImageId={initialVariant.image?.id || product.images.edges[0]?.node.id}
+                            images={product.images.edges.map((edge) => edge.node)}
+                            pageUrl={`https://${shop.domain}/${locale.code}/products/${handle}/`}
+                            className="h-full w-full"
+                            product={product}
+                            i18n={i18n}
+                        />
+                    </section>
+                </Suspense>
+
+                <Suspense fallback={<section className="w-full xl:max-w-[38rem]" />}>
+                    <section className="flex w-full max-w-full flex-col gap-3 xl:w-[38rem]">
+                        <Suspense fallback={<div className="h-4 w-full" data-skeleton />}>
+                            <ProductSavings product={product} i18n={i18n} />
+                        </Suspense>
+
+                        <Card className={cn(BLOCK_STYLES)}>
+                            <div className="flex h-auto w-full flex-col justify-start gap-3 lg:gap-4 lg:p-0">
+                                <Suspense fallback={<div className="h-4 w-full" data-skeleton />}>
+                                    <Badges product={product} i18n={i18n} />
+                                </Suspense>
+
+                                <header className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between md:gap-1">
+                                    <div className="flex grow flex-col gap-0">
+                                        <div className="flex w-full grow flex-wrap whitespace-pre-wrap text-3xl font-extrabold leading-tight">
+                                            <TitleTag className="text-inherit">
+                                                {title}
+                                                <Suspense>{productTypeElement}</Suspense>
+                                            </TitleTag>
+                                        </div>
+
+                                        <Suspense fallback={<div className="h-4 w-36" data-skeleton />}>
+                                            <ProductVendor
+                                                shop={shop}
+                                                locale={locale}
+                                                product={product}
+                                                className="font-semibold normal-case leading-tight text-gray-600 transition-colors md:text-lg"
+                                                title={t('browse-all-products-by-brand', product.vendor)}
+                                                prefix={<span className="font-normal">{t('by')} </span>}
+                                            />
+                                        </Suspense>
+                                    </div>
+
+                                    <Suspense>
+                                        <div className="flex items-end justify-start gap-2 empty:hidden md:gap-3">
+                                            <ProductPricing product={product} />
+                                        </div>
+                                    </Suspense>
+                                </header>
+                            </div>
+
+                            <Suspense>
+                                <ProductContent product={product} i18n={i18n} />
+                            </Suspense>
+                        </Card>
+
+                        <Suspense>
+                            <Card className={cn(BLOCK_STYLES)}>
+                                <InfoLines product={product} i18n={i18n} locale={locale} />
+                            </Card>
+                        </Suspense>
+
+                        <Suspense fallback={<Card className={cn(BLOCK_STYLES, 'h-32 rounded-lg')} data-skeleton />}>
+                            <section className="w-full max-w-full empty:hidden">
+                                <CMSContent shop={shop} locale={locale} handle={handle} type={'product_page'} />
+                            </section>
+                        </Suspense>
+
+                        <Card className={cn(BLOCK_STYLES, 'gap-0 lg:gap-0')}>
+                            <Suspense fallback={<div className="h-12 w-full" data-skeleton />}>
+                                <Content html={content} />
+                            </Suspense>
+
+                            <Suspense>
+                                <ProductOriginalName data={product} locale={locale} />
+                            </Suspense>
+                        </Card>
+
+                        <Suspense fallback={<div className="h-12 w-full" data-skeleton />}>
+                            <div className="flex flex-wrap gap-2 empty:hidden">
+                                <ProductDetails data={product} locale={locale} />
+                            </div>
+                        </Suspense>
+                    </section>
+                </Suspense>
+            </PageContent>
+
+            <Card className="mt-2 flex w-full flex-col gap-3 px-0 lg:mt-6" border={true}>
+                <p className="block px-3 text-xl font-extrabold leading-tight" data-nosnippet={true}>
+                    {t('you-may-also-like')}
+                </p>
+
+                <Suspense fallback={<RecommendedProducts.skeleton />}>
+                    <RecommendedProducts shop={shop} locale={locale} product={product} className="-my-2 w-full px-3" />
+                </Suspense>
+            </Card>
+
+            {/* Metadata */}
+            <JsonLd data={jsonLd} />
+        </>
+    );
 }

@@ -46,7 +46,7 @@ export const Overview = ({
                 })
             }}
             className={cn(
-                'relative z-0 col-span-3 flex h-32 overflow-hidden bg-[var(--accent-primary)] p-3 lg:h-auto',
+                'relative z-0 col-span-3 flex h-32 w-full overflow-hidden bg-[var(--accent-primary)] p-3 lg:h-auto',
                 layout === 'center' && 'h-32 lg:h-28',
                 imageStyle === 'cover' && 'p-0'
             )}
@@ -70,8 +70,8 @@ export const Overview = ({
     );
 
     const contentElement = (
-        <div className="col-span-7 h-full w-full px-3 py-2 empty:hidden md:px-5 md:py-4">
-            <Content className="max-w-none">{body}</Content>
+        <div className="col-span-7 h-full px-3 py-2 empty:hidden md:px-5 md:py-4">
+            <Content className="max-w-full">{body}</Content>
         </div>
     );
 

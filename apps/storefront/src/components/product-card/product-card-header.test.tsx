@@ -23,7 +23,7 @@ describe('components', () => {
             });
 
             it('renders without crashing when no image is supplied', () => {
-                expect(() => render(<ProductCardHeader shop={{} as any} />)).not.toThrow();
+                expect(() => render(<ProductCardHeader />)).not.toThrow();
             });
         });
     });

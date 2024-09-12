@@ -2,17 +2,17 @@
 
 import { Suspense, useState } from 'react';
 
+import { BuildConfig } from '@/utils/build-config';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import { cn } from '@/utils/tailwind';
+import { parseGid } from '@shopify/hydrogen-react';
 
 import ProductCardFooter from '@/components/product-card/product-card-footer';
 import ProductCardHeader from '@/components/product-card/product-card-header';
 import { Pricing } from '@/components/typography/pricing';
 
 import type { Product } from '@/api/product';
-import { BuildConfig } from '@/utils/build-config';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
-import { parseGid } from '@shopify/hydrogen-react';
 import type { ReactNode } from 'react';
 
 export type ProductCardFooterProps = {

@@ -65,6 +65,7 @@ export type AnalyticsEventData = {
         [key: string]: any;
         ecommerce?: {
             [key: string]: any;
+            currency?: string;
             value?: number;
             items?: {
                 item_id: string;
@@ -151,14 +152,13 @@ export type AnalyticsEventActionProps = {
     shop: OnlineShop;
     currency: CurrencyCode;
     locale: Locale;
-    shopify: ShopifyContextValue;
     cart: CartWithActions;
 };
 
 const shopifyEventHandler = async (
     event: AnalyticsEventType,
     data: AnalyticsEventData,
-    { shop, currency, locale, shopify, cart }: AnalyticsEventActionProps
+    { shop, currency, locale, shopify, cart }: AnalyticsEventActionProps & { shopify: ShopifyContextValue }
 ) => {
     // Shopify only supports a subset of events.
     if (event !== 'page_view' && event !== 'add_to_cart') {
@@ -181,7 +181,7 @@ const shopifyEventHandler = async (
         resourceId: (() => {
             switch (pageType) {
                 case 'product': {
-                    if (!products[0].product_id) {
+                    if (!(products[0]?.product_id as any)) {
                         return undefined;
                     }
 
@@ -213,7 +213,7 @@ const shopifyEventHandler = async (
         //navigationType: 'navigate', // TODO: do this properly.
 
         totalValue: value,
-        products: products.map((line) => ({
+        products: products.filter(Boolean).map((line) => ({
             productGid: line.product_id!,
             variantGid: line.variant_id!,
             name: line.item_name!,
@@ -265,18 +265,40 @@ const shopifyEventHandler = async (
     }
 };
 
+/**
+ * @see {@link https://developers.klaviyo.com/en/v1-2/docs/integrate-with-a-shopify-hydrogen-store#enable-onsite-tracking}
+ */
+const klaviyoEventHandler = async (
+    event: AnalyticsEventType,
+    data: AnalyticsEventData,
+    { shop, currency, locale, cart }: AnalyticsEventActionProps
+) => {
+    window._learnq = window._learnq || [];
+
+    // TODO: Implement this.
+    switch (event) {
+        case 'view_item': {
+            window._learnq.push(['track', 'Viewed Product', {}]);
+            break;
+        }
+
+        case 'add_to_cart': {
+            window._learnq.push(['track', 'Added to Cart', {}]);
+            break;
+        }
+
+        default: {
+            break;
+        }
+    }
+};
+
 const handleEvent = async (
     event: AnalyticsEventType,
     data: AnalyticsEventData,
-    { shop, currency, locale, shopify, cart }: AnalyticsEventActionProps
+    { shop, currency, locale, shopify, cart }: AnalyticsEventActionProps & { shopify: ShopifyContextValue }
 ) => {
-    if (!window.dataLayer) {
-        if (BuildConfig.environment === 'development') {
-            TrackableLogger('window.dataLayer not found, creating it.', data, 'analytics');
-        }
-
-        window.dataLayer = [];
-    }
+    window.dataLayer = window.dataLayer || [];
 
     if (window.dataLayer.length <= 0) {
         // FIXME: Actually get the consent status.
@@ -295,8 +317,13 @@ const handleEvent = async (
         });
     }
 
+    // Don't actually send events in development.
+    if (BuildConfig.environment === 'development') {
+        return;
+    }
+
+    // This should never actually happen, but does in testing since the shop mocks aren't correctly setup.
     if (!(shop as any)?.commerceProvider?.type) {
-        // This should never actually happen, but does in testing since the shop mocks aren't correctly setup.
         return;
     }
 
@@ -306,10 +333,7 @@ const handleEvent = async (
         }
     }
 
-    if (BuildConfig.environment === 'development') {
-        // Don't actually send events in development.
-        return;
-    }
+    await klaviyoEventHandler(event, data, { shop, currency, locale, cart });
 
     let additionalData = {};
     switch (event) {
@@ -530,4 +554,15 @@ export function useTrackable<T extends keyof TrackableContextValue>(
     }
 
     return context;
+}
+
+export function AnalyticsEventTrigger({ event, data }: { event: AnalyticsEventType; data: AnalyticsEventData }) {
+    const path = usePathname();
+    const { queueEvent } = useTrackable();
+
+    useEffect(() => {
+        queueEvent(event, { path, ...data });
+    }, []);
+
+    return <></>;
 }

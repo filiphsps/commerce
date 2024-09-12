@@ -33,7 +33,7 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
 
     return (
         <>
-            {header?.slices?.map((slice, index) => (
+            {header?.slices.map((slice, index) => (
                 <CustomHTML
                     key={slice.id}
                     {...{

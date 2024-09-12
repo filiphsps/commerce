@@ -1,6 +1,5 @@
 import 'server-only';
 
-import PageContent from '@/components/page-content';
 import { Overview } from '@/components/typography/overview';
 import { PrismicText } from '@/components/typography/prismic-text';
 
@@ -21,12 +20,7 @@ const OverviewSlice = ({ slice }: OverviewProps) => {
     }
 
     return (
-        <PageContent
-            as="section"
-            className="m-0 w-full gap-4 p-0"
-            data-slice-type={slice.slice_type}
-            data-slice-variation={slice.variation}
-        >
+        <div className="m-0 w-full gap-4 p-0" data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
             {slice.items.map((item, index) => {
                 return (
                     <Overview
@@ -39,7 +33,7 @@ const OverviewSlice = ({ slice }: OverviewProps) => {
                     />
                 );
             })}
-        </PageContent>
+        </div>
     );
 };
 

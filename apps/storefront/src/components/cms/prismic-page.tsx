@@ -49,7 +49,8 @@ async function PrismicPage<T extends PageType = 'custom_page'>({
                         contentProvider: {}
                     },
                     i18n,
-                    locale
+                    locale,
+                    type
                 }}
             />
         </Suspense>
