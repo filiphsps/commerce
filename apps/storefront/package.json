@@ -93,7 +93,7 @@
         "vercel": "37.3.0"
     },
     "devDependencies": {
-        "@happy-dom/global-registrator": "15.7.3",
+        "@happy-dom/global-registrator": "15.7.4",
         "@nordcom/prettier": "0.1.1",
         "@slicemachine/adapter-next": "0.3.49",
         "@tailwindcss/typography": "0.5.15",
