@@ -10,7 +10,9 @@ import ProductCardHeader from '@/components/product-card/product-card-header';
 import { Pricing } from '@/components/typography/pricing';
 
 import type { Product } from '@/api/product';
+import { BuildConfig } from '@/utils/build-config';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
+import { parseGid } from '@shopify/hydrogen-react';
 import type { ReactNode } from 'react';
 
 export type ProductCardFooterProps = {
@@ -40,6 +42,14 @@ const ProductCardContent = ({ data: product, priority, locale, i18n, children }:
             </Suspense>
 
             <div className="flex h-full min-h-24 w-full grow flex-col pt-1" suppressHydrationWarning={true}>
+                {BuildConfig.environment === 'development' ? (
+                    <div
+                        className="jdgm-widget jdgm-preview-badge leading-relaxed"
+                        data-id={parseGid(product.id).id}
+                        suppressHydrationWarning={true}
+                    ></div>
+                ) : null}
+
                 <div className="flex grow flex-col justify-end">
                     <div className="flex flex-wrap-reverse items-center justify-start gap-1">
                         <Pricing price={price} className={cn('text-xl', onSale && 'font-extrabold text-red-600')} />

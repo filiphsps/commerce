@@ -1,0 +1,14 @@
+[
+    {
+        "__TYPE__": "SharedSliceContent",
+        "variation": "default",
+        "primary": {
+            "html": {
+                "__TYPE__": "FieldContent",
+                "value": "review",
+                "type": "Text"
+            }
+        },
+        "items": []
+    }
+]

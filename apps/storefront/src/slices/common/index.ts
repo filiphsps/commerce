@@ -6,6 +6,7 @@ import CollapsibleText from './CollapsibleText';
 import Collection from './Collection';
 import Columns from './Columns';
 import ContentBlock from './ContentBlock';
+import CustomHTML from './CustomHTML';
 import IconGrid from './IconGrid';
 import ImageGrid from './ImageGrid';
 import Overview from './Overview';
@@ -19,6 +20,7 @@ export const components = {
     collection: Collection,
     columns: Columns,
     content_block: ContentBlock,
+    custom_html: CustomHTML,
     icon_grid: IconGrid,
     image_grid: ImageGrid,
     text_block: Overview,

@@ -1,10 +1,10 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { ApiError, NotFoundError } from '@nordcom/commerce-errors';
+import { Error, NotFoundError } from '@nordcom/commerce-errors';
 
 import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
 
-import type { MenuDocument, MenuDocumentData } from '@/prismic/types';
+import type { HeaderDocument, HeaderDocumentData, MenuDocument, MenuDocumentData } from '@/prismic/types';
 
 export type NavigationItem = {
     title: string;
@@ -28,10 +28,32 @@ export const MenuApi = async ({ shop, locale }: { shop: OnlineShop; locale: Loca
             return MenuApi({ shop, locale: Locale.default }); // Try again with default locale.
         }
 
-        if (ApiError.isNotFound(error)) {
+        if (Error.isNotFound(error)) {
             throw new NotFoundError(`"Menu" with the locale "${locale.code}"`);
         }
 
         throw error;
     }
 };
+
+export async function HeaderApi({
+    shop,
+    locale
+}: {
+    shop: OnlineShop;
+    locale: Locale;
+}): Promise<HeaderDocumentData | null> {
+    const client = createClient({ shop, locale });
+
+    try {
+        const header = await client.getSingle<HeaderDocument>('header');
+
+        return header.data;
+    } catch (error: unknown) {
+        if (Error.isNotFound(error) && !Locale.isDefault(locale)) {
+            return await HeaderApi({ shop, locale: Locale.default }); // Try again with default locale.
+        }
+
+        return null;
+    }
+}

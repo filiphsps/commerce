@@ -26,20 +26,14 @@
                     "placeholder": ""
                 }
             },
-            "enable_header": {
-                "type": "Boolean",
-                "config": {
-                    "label": "Show built-in header",
-                    "placeholder_false": "false",
-                    "placeholder_true": "true",
-                    "default_value": true
-                }
-            },
             "slices": {
                 "type": "Slices",
                 "fieldset": "Slice Zone",
                 "config": {
                     "choices": {
+                        "custom_html": {
+                            "type": "SharedSlice"
+                        },
                         "columns": {
                             "type": "SharedSlice"
                         },

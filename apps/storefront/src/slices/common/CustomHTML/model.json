@@ -1,0 +1,26 @@
+{
+    "id": "custom_html",
+    "type": "SharedSlice",
+    "name": "CustomHTML",
+    "description": "CustomHTML",
+    "variations": [
+        {
+            "id": "default",
+            "name": "Default",
+            "docURL": "...",
+            "version": "initial",
+            "description": "Default",
+            "imageUrl": "",
+            "primary": {
+                "html": {
+                    "type": "Text",
+                    "config": {
+                        "label": "HTML",
+                        "placeholder": ""
+                    }
+                }
+            },
+            "items": {}
+        }
+    ]
+}

@@ -384,6 +384,7 @@ export type ColumnDocument<Lang extends string = string> = prismic.PrismicDocume
 >;
 
 type CustomPageDocumentDataSlicesSlice =
+    | CustomHtmlSlice
     | ColumnsSlice
     | ContentBlockSlice
     | CollectionSlice
@@ -421,18 +422,6 @@ interface CustomPageDocumentData {
      * - **Documentation**: https://prismic.io/docs/field#key-text
      */
     description: prismic.KeyTextField;
-
-    /**
-     * Show built-in header field in *Page*
-     *
-     * - **Field Type**: Boolean
-     * - **Placeholder**: *None*
-     * - **Default Value**: true
-     * - **API ID Path**: custom_page.enable_header
-     * - **Tab**: Main
-     * - **Documentation**: https://prismic.io/docs/field#boolean
-     */
-    enable_header: prismic.BooleanField;
 
     /**
      * Slice Zone field in *Page*
@@ -666,97 +655,36 @@ export type FooterDocument<Lang extends string = string> = prismic.PrismicDocume
     Lang
 >;
 
-/**
- * Item in *Header → Announcements*
- */
-export interface HeadDocumentDataAnnouncementsItem {
-    /**
-     * Location field in *Header → Announcements*
-     *
-     * - **Field Type**: Select
-     * - **Placeholder**: *None*
-     * - **Default Value**: above
-     * - **API ID Path**: head.announcements[].location
-     * - **Documentation**: https://prismic.io/docs/field#select
-     */
-    location: prismic.SelectField<'above' | 'bellow', 'filled'>;
-
-    /**
-     * Background Color field in *Header → Announcements*
-     *
-     * - **Field Type**: Select
-     * - **Placeholder**: *None*
-     * - **Default Value**: secondary
-     * - **API ID Path**: head.announcements[].background_color
-     * - **Documentation**: https://prismic.io/docs/field#select
-     */
-    background_color: prismic.SelectField<'secondary' | 'primary', 'filled'>;
-
-    /**
-     * Content field in *Header → Announcements*
-     *
-     * - **Field Type**: Rich Text
-     * - **Placeholder**: Free shipping on orders above $75
-     * - **API ID Path**: head.announcements[].content
-     * - **Documentation**: https://prismic.io/docs/field#rich-text-title
-     */
-    content: prismic.RichTextField;
-}
-
-/**
- * Item in *Header → Navigation*
- */
-export interface HeadDocumentDataNavigationItem {
-    /**
-     * Menu field in *Header → Navigation*
-     *
-     * - **Field Type**: Content Relationship
-     * - **Placeholder**: *None*
-     * - **API ID Path**: head.navigation[].menu
-     * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
-     */
-    menu: prismic.ContentRelationshipField<'menu_item'>;
-}
+type HeaderDocumentDataSlicesSlice = CustomHtmlSlice;
 
 /**
  * Content for Header documents
  */
-interface HeadDocumentData {
+interface HeaderDocumentData {
     /**
-     * Announcements field in *Header*
+     * Slice Zone field in *Header*
      *
-     * - **Field Type**: Group
+     * - **Field Type**: Slice Zone
      * - **Placeholder**: *None*
-     * - **API ID Path**: head.announcements[]
+     * - **API ID Path**: header.slices[]
      * - **Tab**: Main
-     * - **Documentation**: https://prismic.io/docs/field#group
+     * - **Documentation**: https://prismic.io/docs/field#slices
      */
-    announcements: prismic.GroupField<Simplify<HeadDocumentDataAnnouncementsItem>>;
-
-    /**
-     * Navigation field in *Header*
-     *
-     * - **Field Type**: Group
-     * - **Placeholder**: *None*
-     * - **API ID Path**: head.navigation[]
-     * - **Tab**: Main
-     * - **Documentation**: https://prismic.io/docs/field#group
-     */
-    navigation: prismic.GroupField<Simplify<HeadDocumentDataNavigationItem>>;
+    slices: prismic.SliceZone<HeaderDocumentDataSlicesSlice>;
 }
 
 /**
  * Header document from Prismic
  *
- * - **API ID**: `head`
+ * - **API ID**: `header`
  * - **Repeatable**: `false`
  * - **Documentation**: https://prismic.io/docs/custom-types
  *
  * @typeParam Lang - Language API ID of the document.
  */
-export type HeadDocument<Lang extends string = string> = prismic.PrismicDocumentWithoutUID<
-    Simplify<HeadDocumentData>,
-    'head',
+export type HeaderDocument<Lang extends string = string> = prismic.PrismicDocumentWithoutUID<
+    Simplify<HeaderDocumentData>,
+    'header',
     Lang
 >;
 
@@ -1116,7 +1044,7 @@ export type AllDocumentTypes =
     | ColumnDocument
     | CustomPageDocument
     | FooterDocument
-    | HeadDocument
+    | HeaderDocument
     | MenuDocument
     | MenuItemDocument
     | ProductPageDocument
@@ -1675,6 +1603,48 @@ type ContentBlockSliceVariation = ContentBlockSliceDefault | ContentBlockSliceCa
 export type ContentBlockSlice = prismic.SharedSlice<'content_block', ContentBlockSliceVariation>;
 
 /**
+ * Primary content in *CustomHTML → Default → Primary*
+ */
+export interface CustomHtmlSliceDefaultPrimary {
+    /**
+     * HTML field in *CustomHTML → Default → Primary*
+     *
+     * - **Field Type**: Text
+     * - **Placeholder**: *None*
+     * - **API ID Path**: custom_html.default.primary.html
+     * - **Documentation**: https://prismic.io/docs/field#key-text
+     */
+    html: prismic.KeyTextField;
+}
+
+/**
+ * Default variation for CustomHTML Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type CustomHtmlSliceDefault = prismic.SharedSliceVariation<
+    'default',
+    Simplify<CustomHtmlSliceDefaultPrimary>,
+    never
+>;
+
+/**
+ * Slice variation for *CustomHTML*
+ */
+type CustomHtmlSliceVariation = CustomHtmlSliceDefault;
+
+/**
+ * CustomHTML Shared Slice
+ *
+ * - **API ID**: `custom_html`
+ * - **Description**: CustomHTML
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type CustomHtmlSlice = prismic.SharedSlice<'custom_html', CustomHtmlSliceVariation>;
+
+/**
  * Primary content in *IconGrid → Default → Primary*
  */
 export interface IconGridSliceDefaultPrimary {
@@ -2208,10 +2178,9 @@ declare module '@prismicio/client' {
             FooterDocumentDataBodyBlockSlicePrimary,
             FooterDocumentDataBodyBlockSliceItem,
             FooterDocumentDataBodySlice,
-            HeadDocument,
-            HeadDocumentData,
-            HeadDocumentDataAnnouncementsItem,
-            HeadDocumentDataNavigationItem,
+            HeaderDocument,
+            HeaderDocumentData,
+            HeaderDocumentDataSlicesSlice,
             MenuDocument,
             MenuDocumentData,
             MenuDocumentDataSlicesSlice,
@@ -2257,6 +2226,10 @@ declare module '@prismicio/client' {
             ContentBlockSliceVariation,
             ContentBlockSliceDefault,
             ContentBlockSliceCard,
+            CustomHtmlSlice,
+            CustomHtmlSliceDefaultPrimary,
+            CustomHtmlSliceVariation,
+            CustomHtmlSliceDefault,
             IconGridSlice,
             IconGridSliceDefaultPrimary,
             IconGridSliceDefaultItem,
