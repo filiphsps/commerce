@@ -156,6 +156,7 @@ export type AnalyticsEventActionProps = {
     cart: CartWithActions;
 };
 
+/* eslint-disable react-hooks/rules-of-hooks */
 const shopifyEventHandler = async (
     event: AnalyticsEventType,
     data: AnalyticsEventData,
@@ -392,6 +393,11 @@ export type TrackableProps = {
     children: ReactNode;
 };
 export function Trackable({ children }: TrackableProps) {
+    // FRO-137: Don't send analytics events if the `VercelToolbar` is injected.
+    if ((localStorage as any)?.removeItem('__vercel_toolbar_injector')) {
+        return null;
+    }
+
     const path = usePathname();
     const prevPath = usePrevious(path);
 
