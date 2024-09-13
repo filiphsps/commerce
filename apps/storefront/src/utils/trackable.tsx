@@ -51,6 +51,7 @@ export type AnalyticsEventType =
     | 'remove_from_cart'
     | 'begin_checkout'
     | 'purchase'
+    | 'purchase'
     | 'refund'
     | 'search'
     | 'login'
@@ -299,7 +300,6 @@ const handleEvent = async (
     { shop, currency, locale, shopify, cart }: AnalyticsEventActionProps & { shopify: ShopifyContextValue }
 ) => {
     window.dataLayer = window.dataLayer || [];
-
     if (window.dataLayer.length <= 0) {
         // FIXME: Actually get the consent status.
         window.dataLayer.push({
@@ -325,6 +325,10 @@ const handleEvent = async (
     // This should never actually happen, but does in testing since the shop mocks aren't correctly setup.
     if (!(shop as any)?.commerceProvider?.type) {
         return;
+    }
+
+    if (data.path && data.gtm?.ecommerce && !data.gtm.ecommerce.ecomm_pagetype) {
+        data.gtm.ecommerce.ecomm_pagetype = pathToShopifyPageType(data.path);
     }
 
     switch (shop.commerceProvider.type) {

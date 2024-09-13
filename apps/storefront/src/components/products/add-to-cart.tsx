@@ -41,7 +41,7 @@ const AddToCart = ({ children, className, i18n, quantity = 0, type, data, varian
     const { t: tCart } = useTranslation('cart', i18n);
     const path = usePathname();
 
-    const { queueEvent } = useTrackable();
+    const { postEvent } = useTrackable();
 
     const [animation, setAnimation] = useState<NodeJS.Timeout | undefined>();
     // This is a bit of a hack, but it works.
@@ -63,7 +63,7 @@ const AddToCart = ({ children, className, i18n, quantity = 0, type, data, varian
             }
         ]);
 
-        queueEvent('add_to_cart', {
+        postEvent('add_to_cart', {
             path,
             gtm: {
                 ecommerce: {
