@@ -30,7 +30,7 @@ export const AnalyticsProvider = ({ shop, children }: AnalyticsProviderProps) =>
     useEffect(() => {
         const timeout = setTimeout(() => {
             setDeferred(trackers);
-        }, 3500);
+        }, 250);
 
         return () => clearTimeout(timeout);
     }, []);
