@@ -1,4 +1,48 @@
-export type ProductsContentContentProps = {};
-export default async function ProductsContent({}: ProductsContentContentProps) {
-    return <></>;
+import { Shop } from '@nordcom/commerce-db';
+
+import { ShopifyApolloApiClient } from '@/api/shopify';
+import { ProductsPaginationApi, ProductsPaginationCountApi } from '@/api/shopify/product';
+import { cn } from '@/utils/tailwind';
+
+import ProductCard from '@/components/product-card/product-card';
+
+import type { ProductSorting } from '@/api/product';
+import type { Locale } from '@/utils/locale';
+
+type SearchParams = {
+    page?: string;
+    vendor?: string;
+    sorting?: ProductSorting;
+};
+
+export type ProductsContentContentProps = {
+    domain: string;
+    locale: Locale;
+    searchParams?: SearchParams;
+};
+export default async function ProductsContent({ domain, locale, searchParams = {} }: ProductsContentContentProps) {
+    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    const api = await ShopifyApolloApiClient({ shop, locale });
+
+    const page = searchParams.page ? Number.parseInt(searchParams.page, 10) : 1;
+    const limit = 35; // TODO.
+    const vendor = searchParams.vendor || undefined;
+    const sorting: ProductSorting = searchParams.sorting || 'RELEVANCE';
+
+    const { cursors } = await ProductsPaginationCountApi({ api, filters: { first: limit } });
+    const after = page > 1 ? cursors[page - 2] : undefined; // TODO: this should be a cursor if we have passed page 1.
+
+    const { products } = await ProductsPaginationApi({ api, limit, vendor, sorting, after });
+
+    return (
+        <section
+            className={cn(
+                'grid w-full grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] gap-2 md:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] xl:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))]'
+            )}
+        >
+            {products.map(({ node: product }) => (
+                <ProductCard key={product.id} shop={shop} locale={locale} data={product} />
+            ))}
+        </section>
+    );
 }

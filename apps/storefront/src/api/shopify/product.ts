@@ -308,21 +308,21 @@ export const ProductApi = async ({ api, handle }: ProductOptions): Promise<Produ
 
 export const ProductsPaginationCountApi = async ({
     api,
-    filters
-    //...props
+    ...props
 }: ProductsOptions): Promise<{
     pages: number;
     products: number;
     cursors: string[];
 }> => {
-    const countProducts = async (count: number = 0, cursors: string[] = [], after: string | null = null) => {
-        const filtersTag = JSON.stringify(filters, null, 0);
+    const filters = 'filters' in props ? props.filters : /** @deprecated */ (props as ProductsFilters);
+    const filtersTag = JSON.stringify(filters, null, 0);
 
+    const countProducts = async (count: number = 0, cursors: string[] = [], after: string | null = null) => {
         const { data, errors } = await api.query<{
             products: QueryRoot['products'];
         }>(
             gql`
-                query products($first: Int, $sorting: ProductSortKeys, $before: String, $after: String) {
+                query products($first: Int, $sorting: ProductSorting, $before: String, $after: String) {
                     products(first: $first, sortKey: $sorting, before: $before, after: $after) {
                         edges {
                             cursor
@@ -338,25 +338,22 @@ export const ProductsPaginationCountApi = async ({
             `,
             {
                 ...extractLimitLikeFilters(filters),
-                ...(({ sorting = 'BEST_SELLING' }) => ({
+                ...(({ sorting = 'RELEVANCE' }) => ({
                     sorting: sorting,
-                    //before: before,
                     after: after
                 }))(filters)
             },
             {
-                tags: [`products`, 'pagination', ...(filtersTag ? [filtersTag] : [])]
+                tags: ['products', 'pagination', 'count', ...(filtersTag ? [filtersTag] : [])]
             }
         );
 
-        if (errors) {
-            throw new UnknownApiError();
-        } else if (!data?.products.edges || data.products.edges.length <= 0) {
+        if (errors) throw new UnknownApiError();
+        else if (!data?.products.edges || data.products.edges.length <= 0)
             return {
                 count,
                 cursors
             };
-        }
 
         const cursor = data.products.edges.at(-1)!.cursor;
         if (data.products.pageInfo.hasNextPage) {
@@ -500,6 +497,11 @@ export const ProductsPaginationApi = async ({
 }> => {
     return new Promise(async (resolve, reject) => {
         try {
+            const filter = {
+                query: (vendor && `query:"vendor:${vendor}"`) || null,
+                sorting: (sorting as any) || null
+            };
+
             const { data } = await api.query<{ products: ProductConnection }>(
                 gql`
                     fragment ProductFragment on Product {
@@ -532,13 +534,12 @@ export const ProductsPaginationApi = async ({
                 `,
                 {
                     limit,
-                    query: (vendor && `query:"vendor:${vendor}"`) || null,
-                    sorting: (sorting as any) || null,
                     before: (before as any) || null,
-                    after: (after as any) || null
+                    after: (after as any) || null,
+                    ...filter
                 },
                 {
-                    tags: ['products', 'pagination']
+                    ...(Object.keys(filter).length > 0 ? { fetchPolicy: 'no-cache' } : {})
                 }
             );
 

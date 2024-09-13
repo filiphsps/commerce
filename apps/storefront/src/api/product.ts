@@ -3,6 +3,7 @@ import type {
     Metafield,
     PageInfo,
     Product as ShopifyProduct,
+    ProductSortKeys,
     ProductVariant as ShopifyVariant,
     SearchResultItemConnection
 } from '@shopify/hydrogen-react/storefront-api-types';
@@ -105,3 +106,5 @@ export const productType = (product: Product): ProductType => {
 
     return 'other';
 };
+
+export type ProductSorting = ProductSortKeys;

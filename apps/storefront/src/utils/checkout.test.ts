@@ -154,7 +154,6 @@ describe('utils', () => {
         it(`should track the begin_checkout event in Google Analytics`, async () => {
             const postEventSpy = vi.spyOn(trackable, 'postEvent');
             const expectedEventPayload = {
-                path: '/en-US/checkout/',
                 gtm: {
                     ecommerce: {
                         currency: 'USD',

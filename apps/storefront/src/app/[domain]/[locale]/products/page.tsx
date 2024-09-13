@@ -97,7 +97,13 @@ async function ProductsPagination({ shop, locale }: { shop: OnlineShop; locale: 
     );
 }
 
-export default async function ProductsPage({ params: { domain, locale: localeData } }: { params: ProductsPageParams }) {
+export default async function ProductsPage({
+    params: { domain, locale: localeData },
+    searchParams
+}: {
+    params: ProductsPageParams;
+    searchParams: any;
+}) {
     // Creates a locale object from a locale code (e.g. `en-US`).
     const locale = Locale.from(localeData);
 
@@ -126,9 +132,7 @@ export default async function ProductsPage({ params: { domain, locale: localeDat
 
             <Heading title={page?.title || t('products')} subtitle={page?.description} titleClassName="capitalize" />
 
-            <Suspense>
-                <ProductsContent />
-            </Suspense>
+            <ProductsContent domain={domain} locale={locale} searchParams={searchParams} />
 
             <Suspense fallback={<div className="h-14 w-full" data-skeleton />}>
                 <ProductsPagination shop={shop} locale={locale} />
