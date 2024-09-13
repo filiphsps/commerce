@@ -63,7 +63,7 @@
         "@vercel/flags": "2.6.0",
         "@vercel/otel": "1.8.1",
         "@vercel/speed-insights": "1.0.5",
-        "@vercel/toolbar": "0.1.19",
+        "@vercel/toolbar": "0.1.20",
         "clsx": "2.1.1",
         "colord": "2.9.3",
         "convert-units": "2.3.4",
