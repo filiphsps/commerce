@@ -318,6 +318,10 @@ const handleEvent = async (
         });
     }
 
+    // FRO-137: Don't send analytics events if the `VercelToolbar` is injected.
+    if ((localStorage as any)?.removeItem('__vercel_toolbar_injector')) {
+        return null;
+    }
     // Don't actually send events in development.
     if (BuildConfig.environment === 'development') {
         return;
@@ -393,11 +397,6 @@ export type TrackableProps = {
     children: ReactNode;
 };
 export function Trackable({ children }: TrackableProps) {
-    // FRO-137: Don't send analytics events if the `VercelToolbar` is injected.
-    if ((localStorage as any)?.removeItem('__vercel_toolbar_injector')) {
-        return null;
-    }
-
     const path = usePathname();
     const prevPath = usePrevious(path);
 
@@ -557,7 +556,6 @@ export function useTrackable<T extends keyof TrackableContextValue>(selector: Se
 export function useTrackable<T extends keyof TrackableContextValue>(
     selector?: SelectorFn<T>
 ): TrackableContextValue | TrackableContextValue[T] {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const context = selector ? useContextSelector(TrackableContext, selector) : useContext(TrackableContext);
     if (!(context as any)) {
         throw new MissingContextProviderError('useTrackable', 'Trackable');

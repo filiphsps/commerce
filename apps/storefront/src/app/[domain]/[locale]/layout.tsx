@@ -1,6 +1,6 @@
-import 'the-new-css-reset';
 import '@/styles/app.scss';
 import '@/styles/global.css';
+import 'the-new-css-reset';
 
 import { type ReactNode, Suspense } from 'react';
 
@@ -50,15 +50,12 @@ export async function generateStaticParams(): Promise<LayoutParams[]> {
                         return null as any as LayoutParams;
                     }
 
-                    /** @note Limit pre-rendering when not in production. */
-                    //if (process.env.VERCEL_ENV !== 'production') {
                     return [
                         {
                             domain: shop.domain,
                             locale: 'en-US'
                         }
                     ];
-                    //}
 
                     /*const api = await ShopifyApiClient({ shop });
                     const locales = await LocalesApi({ api });
