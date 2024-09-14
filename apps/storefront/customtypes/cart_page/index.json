@@ -55,6 +55,49 @@
                 }
             }
         },
+        "SEO & Metadata": {
+            "meta_image": {
+                "config": {
+                    "constraint": {
+                        "height": 1260,
+                        "width": 2400
+                    },
+                    "label": "Meta Image",
+                    "thumbnails": []
+                },
+                "type": "Image"
+            },
+            "meta_title": {
+                "config": {
+                    "label": "Meta Title",
+                    "placeholder": "A title of the page used for social media and search engines"
+                },
+                "type": "Text"
+            },
+            "meta_description": {
+                "config": {
+                    "label": "Meta Description",
+                    "placeholder": "A brief summary of the page"
+                },
+                "type": "StructuredText"
+            },
+            "keywords": {
+                "type": "Text",
+                "config": {
+                    "label": "Keywords",
+                    "placeholder": ""
+                }
+            },
+            "noindex": {
+                "type": "Boolean",
+                "config": {
+                    "label": "noindex",
+                    "placeholder_false": "false",
+                    "placeholder_true": "true",
+                    "default_value": false
+                }
+            }
+        },
         "Sidebar": {
             "sidebar_slices": {
                 "type": "Slices",

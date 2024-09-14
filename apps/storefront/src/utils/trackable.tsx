@@ -318,10 +318,6 @@ const handleEvent = async (
         });
     }
 
-    // FRO-137: Don't send analytics events if the `VercelToolbar` is injected.
-    if ((localStorage as any)?.removeItem('__vercel_toolbar_injector')) {
-        return null;
-    }
     // Don't actually send events in development.
     if (BuildConfig.environment === 'development') {
         return;

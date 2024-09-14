@@ -5,7 +5,7 @@ import { Fragment, Suspense } from 'react';
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 
-import { PageApi } from '@/api/page';
+import { PageApi } from '@/api/prismic/page';
 import { isProductVegan } from '@/api/product';
 import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
@@ -96,7 +96,7 @@ export async function generateMetadata({
     // Setup the AbstractApi client.
     const api = await ShopifyApiClient({ shop, locale });
 
-    let product: Awaited<ReturnType<typeof ProductApi>>;
+    let product: Awaited<ReturnType<typeof ProductApi>> | null = null;
     try {
         product = await ProductApi({ api, handle });
     } catch (error: unknown) {
@@ -110,11 +110,20 @@ export async function generateMetadata({
         throw error;
     }
 
-    const page = await PageApi({ shop, locale, handle, type: 'product_page' });
+    let page: Awaited<ReturnType<typeof PageApi<'product_page'>>> | undefined = null;
+    try {
+        page = await PageApi({ shop, locale, handle, type: 'product_page' });
+    } catch {}
+
     const locales = await LocalesApi({ api });
 
     const title = page?.meta_title || product.seo.title || `${product.vendor} ${product.title}`;
-    const description = asText(page?.meta_description) || product.seo.description || product.description;
+    page;
+    const description =
+        (page?.meta_description ? asText(page.meta_description) : undefined) ||
+        product.seo.description ||
+        product.description;
+
     return {
         title,
         description,
@@ -129,28 +138,21 @@ export async function generateMetadata({
             )
         },
         openGraph: {
-            url: `/products/${handle}/`,
-            type: 'website',
             title,
             description,
             siteName: shop.name,
             locale: locale.code,
-            images: [
-                ...(page?.meta_image.dimensions
-                    ? [
-                          {
-                              url: page.meta_image.url!,
-                              width: page.meta_image.dimensions.width!,
-                              height: page.meta_image.dimensions.height!
-                          }
-                      ]
-                    : []),
-                ...product.images.edges.map(({ node }) => ({
-                    url: node.url,
-                    width: node.width!,
-                    height: node.height!
-                }))
-            ]
+            images: page?.meta_image
+                ? [
+                      {
+                          url: page.meta_image!.url as string,
+                          width: page.meta_image!.dimensions?.width || 0,
+                          height: page.meta_image!.dimensions?.height || 0,
+                          alt: page.meta_image!.alt || '',
+                          secureUrl: page.meta_image!.url as string
+                      }
+                  ]
+                : undefined
         }
     };
 }
@@ -202,7 +204,7 @@ export default async function ProductPage({
     // Setup the AbstractApi client.
     const api = await ShopifyApolloApiClient({ shop, locale });
 
-    let product: Awaited<ReturnType<typeof ProductApi>>;
+    let product: Awaited<ReturnType<typeof ProductApi>> | null = null;
     try {
         product = await ProductApi({ api, handle });
     } catch (error: unknown) {
@@ -373,7 +375,7 @@ export default async function ProductPage({
                 </Suspense>
 
                 <Suspense fallback={<section className="w-full xl:max-w-[38rem]" />}>
-                    <section className="flex w-full max-w-full flex-col gap-3 xl:w-[38rem]">
+                    <section className="mi-nw-[38rem] flex w-full max-w-full flex-col gap-2 2xl:w-auto">
                         <Suspense fallback={<div className="h-4 w-full" data-skeleton />}>
                             <ProductSavings product={product} i18n={i18n} />
                         </Suspense>

@@ -55,13 +55,6 @@
             }
         },
         "SEO & Metadata": {
-            "meta_description": {
-                "config": {
-                    "label": "Meta Description",
-                    "placeholder": "A brief summary of the page"
-                },
-                "type": "StructuredText"
-            },
             "meta_image": {
                 "config": {
                     "constraint": {
@@ -79,6 +72,29 @@
                     "placeholder": "A title of the page used for social media and search engines"
                 },
                 "type": "Text"
+            },
+            "meta_description": {
+                "config": {
+                    "label": "Meta Description",
+                    "placeholder": "A brief summary of the page"
+                },
+                "type": "StructuredText"
+            },
+            "keywords": {
+                "type": "Text",
+                "config": {
+                    "label": "Keywords",
+                    "placeholder": ""
+                }
+            },
+            "noindex": {
+                "type": "Boolean",
+                "config": {
+                    "label": "noindex",
+                    "placeholder_false": "false",
+                    "placeholder_true": "true",
+                    "default_value": false
+                }
             }
         },
         "Secondary": {

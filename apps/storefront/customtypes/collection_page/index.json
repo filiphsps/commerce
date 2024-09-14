@@ -56,6 +56,17 @@
             }
         },
         "SEO & Metadata": {
+            "meta_image": {
+                "config": {
+                    "constraint": {
+                        "height": 1260,
+                        "width": 2400
+                    },
+                    "label": "Meta Image",
+                    "thumbnails": []
+                },
+                "type": "Image"
+            },
             "meta_title": {
                 "config": {
                     "label": "Meta Title",
@@ -70,16 +81,21 @@
                 },
                 "type": "StructuredText"
             },
-            "meta_image": {
+            "keywords": {
+                "type": "Text",
                 "config": {
-                    "constraint": {
-                        "height": 1260,
-                        "width": 2400
-                    },
-                    "label": "Meta Image",
-                    "thumbnails": []
-                },
-                "type": "Image"
+                    "label": "Keywords",
+                    "placeholder": ""
+                }
+            },
+            "noindex": {
+                "type": "Boolean",
+                "config": {
+                    "label": "noindex",
+                    "placeholder_false": "false",
+                    "placeholder_true": "true",
+                    "default_value": false
+                }
             }
         }
     }

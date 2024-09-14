@@ -31,17 +31,6 @@ interface ArticlePageDocumentData {
      * - **Documentation**: https://prismic.io/docs/field#slices
      */
     slices: prismic.SliceZone<ArticlePageDocumentDataSlicesSlice> /**
-     * Meta Description field in *Article*
-     *
-     * - **Field Type**: Text
-     * - **Placeholder**: A brief summary of the page
-     * - **API ID Path**: article_page.meta_description
-     * - **Tab**: SEO & Metadata
-     * - **Documentation**: https://prismic.io/docs/field#key-text
-     */;
-    meta_description: prismic.KeyTextField;
-
-    /**
      * Meta Image field in *Article*
      *
      * - **Field Type**: Image
@@ -49,7 +38,7 @@ interface ArticlePageDocumentData {
      * - **API ID Path**: article_page.meta_image
      * - **Tab**: SEO & Metadata
      * - **Documentation**: https://prismic.io/docs/field#image
-     */
+     */;
     meta_image: prismic.ImageField<never>;
 
     /**
@@ -62,6 +51,40 @@ interface ArticlePageDocumentData {
      * - **Documentation**: https://prismic.io/docs/field#key-text
      */
     meta_title: prismic.KeyTextField;
+
+    /**
+     * Meta Description field in *Article*
+     *
+     * - **Field Type**: Rich Text
+     * - **Placeholder**: A brief summary of the page
+     * - **API ID Path**: article_page.meta_description
+     * - **Tab**: SEO & Metadata
+     * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+     */
+    meta_description: prismic.RichTextField;
+
+    /**
+     * Keywords field in *Article*
+     *
+     * - **Field Type**: Text
+     * - **Placeholder**: *None*
+     * - **API ID Path**: article_page.keywords
+     * - **Tab**: SEO & Metadata
+     * - **Documentation**: https://prismic.io/docs/field#key-text
+     */
+    keywords: prismic.KeyTextField;
+
+    /**
+     * noindex field in *Article*
+     *
+     * - **Field Type**: Boolean
+     * - **Placeholder**: *None*
+     * - **Default Value**: false
+     * - **API ID Path**: article_page.noindex
+     * - **Tab**: SEO & Metadata
+     * - **Documentation**: https://prismic.io/docs/field#boolean
+     */
+    noindex: prismic.BooleanField;
 }
 
 /**
@@ -229,6 +252,60 @@ interface CartPageDocumentData {
      * - **Documentation**: https://prismic.io/docs/field#slices
      */
     slices: prismic.SliceZone<CartPageDocumentDataSlicesSlice> /**
+     * Meta Image field in *Cart*
+     *
+     * - **Field Type**: Image
+     * - **Placeholder**: *None*
+     * - **API ID Path**: cart_page.meta_image
+     * - **Tab**: SEO & Metadata
+     * - **Documentation**: https://prismic.io/docs/field#image
+     */;
+    meta_image: prismic.ImageField<never>;
+
+    /**
+     * Meta Title field in *Cart*
+     *
+     * - **Field Type**: Text
+     * - **Placeholder**: A title of the page used for social media and search engines
+     * - **API ID Path**: cart_page.meta_title
+     * - **Tab**: SEO & Metadata
+     * - **Documentation**: https://prismic.io/docs/field#key-text
+     */
+    meta_title: prismic.KeyTextField;
+
+    /**
+     * Meta Description field in *Cart*
+     *
+     * - **Field Type**: Rich Text
+     * - **Placeholder**: A brief summary of the page
+     * - **API ID Path**: cart_page.meta_description
+     * - **Tab**: SEO & Metadata
+     * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+     */
+    meta_description: prismic.RichTextField;
+
+    /**
+     * Keywords field in *Cart*
+     *
+     * - **Field Type**: Text
+     * - **Placeholder**: *None*
+     * - **API ID Path**: cart_page.keywords
+     * - **Tab**: SEO & Metadata
+     * - **Documentation**: https://prismic.io/docs/field#key-text
+     */
+    keywords: prismic.KeyTextField;
+
+    /**
+     * noindex field in *Cart*
+     *
+     * - **Field Type**: Boolean
+     * - **Placeholder**: *None*
+     * - **Default Value**: false
+     * - **API ID Path**: cart_page.noindex
+     * - **Tab**: SEO & Metadata
+     * - **Documentation**: https://prismic.io/docs/field#boolean
+     */
+    noindex: prismic.BooleanField /**
      * Slice Zone field in *Cart*
      *
      * - **Field Type**: Slice Zone
@@ -291,6 +368,17 @@ interface CollectionPageDocumentData {
      * - **Documentation**: https://prismic.io/docs/field#slices
      */
     slices: prismic.SliceZone<CollectionPageDocumentDataSlicesSlice> /**
+     * Meta Image field in *Collection*
+     *
+     * - **Field Type**: Image
+     * - **Placeholder**: *None*
+     * - **API ID Path**: collection_page.meta_image
+     * - **Tab**: SEO & Metadata
+     * - **Documentation**: https://prismic.io/docs/field#image
+     */;
+    meta_image: prismic.ImageField<never>;
+
+    /**
      * Meta Title field in *Collection*
      *
      * - **Field Type**: Text
@@ -298,7 +386,7 @@ interface CollectionPageDocumentData {
      * - **API ID Path**: collection_page.meta_title
      * - **Tab**: SEO & Metadata
      * - **Documentation**: https://prismic.io/docs/field#key-text
-     */;
+     */
     meta_title: prismic.KeyTextField;
 
     /**
@@ -313,15 +401,27 @@ interface CollectionPageDocumentData {
     meta_description: prismic.RichTextField;
 
     /**
-     * Meta Image field in *Collection*
+     * Keywords field in *Collection*
      *
-     * - **Field Type**: Image
+     * - **Field Type**: Text
      * - **Placeholder**: *None*
-     * - **API ID Path**: collection_page.meta_image
+     * - **API ID Path**: collection_page.keywords
      * - **Tab**: SEO & Metadata
-     * - **Documentation**: https://prismic.io/docs/field#image
+     * - **Documentation**: https://prismic.io/docs/field#key-text
      */
-    meta_image: prismic.ImageField<never>;
+    keywords: prismic.KeyTextField;
+
+    /**
+     * noindex field in *Collection*
+     *
+     * - **Field Type**: Boolean
+     * - **Placeholder**: *None*
+     * - **Default Value**: false
+     * - **API ID Path**: collection_page.noindex
+     * - **Tab**: SEO & Metadata
+     * - **Documentation**: https://prismic.io/docs/field#boolean
+     */
+    noindex: prismic.BooleanField;
 }
 
 /**
@@ -433,17 +533,6 @@ interface CustomPageDocumentData {
      * - **Documentation**: https://prismic.io/docs/field#slices
      */
     slices: prismic.SliceZone<CustomPageDocumentDataSlicesSlice> /**
-     * Meta Description field in *Page*
-     *
-     * - **Field Type**: Rich Text
-     * - **Placeholder**: A brief summary of the page
-     * - **API ID Path**: custom_page.meta_description
-     * - **Tab**: SEO & Metadata
-     * - **Documentation**: https://prismic.io/docs/field#rich-text-title
-     */;
-    meta_description: prismic.RichTextField;
-
-    /**
      * Meta Image field in *Page*
      *
      * - **Field Type**: Image
@@ -451,7 +540,7 @@ interface CustomPageDocumentData {
      * - **API ID Path**: custom_page.meta_image
      * - **Tab**: SEO & Metadata
      * - **Documentation**: https://prismic.io/docs/field#image
-     */
+     */;
     meta_image: prismic.ImageField<never>;
 
     /**
@@ -464,6 +553,17 @@ interface CustomPageDocumentData {
      * - **Documentation**: https://prismic.io/docs/field#key-text
      */
     meta_title: prismic.KeyTextField;
+
+    /**
+     * Meta Description field in *Page*
+     *
+     * - **Field Type**: Rich Text
+     * - **Placeholder**: A brief summary of the page
+     * - **API ID Path**: custom_page.meta_description
+     * - **Tab**: SEO & Metadata
+     * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+     */
+    meta_description: prismic.RichTextField;
 
     /**
      * Keywords field in *Page*
@@ -838,17 +938,6 @@ interface ProductPageDocumentData {
      * - **Documentation**: https://prismic.io/docs/field#slices
      */
     slices: prismic.SliceZone<ProductPageDocumentDataSlicesSlice> /**
-     * Meta Description field in *Product*
-     *
-     * - **Field Type**: Rich Text
-     * - **Placeholder**: A brief summary of the page
-     * - **API ID Path**: product_page.meta_description
-     * - **Tab**: SEO & Metadata
-     * - **Documentation**: https://prismic.io/docs/field#rich-text-title
-     */;
-    meta_description: prismic.RichTextField;
-
-    /**
      * Meta Image field in *Product*
      *
      * - **Field Type**: Image
@@ -856,7 +945,7 @@ interface ProductPageDocumentData {
      * - **API ID Path**: product_page.meta_image
      * - **Tab**: SEO & Metadata
      * - **Documentation**: https://prismic.io/docs/field#image
-     */
+     */;
     meta_image: prismic.ImageField<never>;
 
     /**
@@ -868,7 +957,41 @@ interface ProductPageDocumentData {
      * - **Tab**: SEO & Metadata
      * - **Documentation**: https://prismic.io/docs/field#key-text
      */
-    meta_title: prismic.KeyTextField /**
+    meta_title: prismic.KeyTextField;
+
+    /**
+     * Meta Description field in *Product*
+     *
+     * - **Field Type**: Rich Text
+     * - **Placeholder**: A brief summary of the page
+     * - **API ID Path**: product_page.meta_description
+     * - **Tab**: SEO & Metadata
+     * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+     */
+    meta_description: prismic.RichTextField;
+
+    /**
+     * Keywords field in *Product*
+     *
+     * - **Field Type**: Text
+     * - **Placeholder**: *None*
+     * - **API ID Path**: product_page.keywords
+     * - **Tab**: SEO & Metadata
+     * - **Documentation**: https://prismic.io/docs/field#key-text
+     */
+    keywords: prismic.KeyTextField;
+
+    /**
+     * noindex field in *Product*
+     *
+     * - **Field Type**: Boolean
+     * - **Placeholder**: *None*
+     * - **Default Value**: false
+     * - **API ID Path**: product_page.noindex
+     * - **Tab**: SEO & Metadata
+     * - **Documentation**: https://prismic.io/docs/field#boolean
+     */
+    noindex: prismic.BooleanField /**
      * Slice Zone field in *Product*
      *
      * - **Field Type**: Slice Zone
