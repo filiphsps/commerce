@@ -14,6 +14,7 @@ import { capitalize, Locale, useTranslation } from '@/utils/locale';
 import { asText } from '@prismicio/client';
 
 import PrismicPage from '@/components/cms/prismic-page';
+import PageContent from '@/components/page-content';
 import Heading from '@/components/typography/heading';
 
 import SearchContent from './search-content';
@@ -113,17 +114,19 @@ export default async function SearchPage({
                 <PrismicPage shop={shop} locale={locale} page={page} handle={'search'} type={'custom_page'} />
             ) : null}
 
-            <Suspense key={JSON.stringify(searchParams)}>
-                <SearchContent
-                    locale={locale}
-                    i18n={i18n}
-                    showFilters={await showSearchFilter()}
-                    data={{
-                        products,
-                        productFilters
-                    }}
-                />
-            </Suspense>
+            <PageContent>
+                <Suspense key={JSON.stringify(searchParams)}>
+                    <SearchContent
+                        locale={locale}
+                        i18n={i18n}
+                        showFilters={await showSearchFilter()}
+                        data={{
+                            products,
+                            productFilters
+                        }}
+                    />
+                </Suspense>
+            </PageContent>
         </>
     );
 }

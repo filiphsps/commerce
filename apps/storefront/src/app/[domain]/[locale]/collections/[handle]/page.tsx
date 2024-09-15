@@ -77,14 +77,11 @@ export async function generateMetadata({
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const api = await ShopifyApolloApiClient({ shop, locale });
 
-    let collection: Awaited<ReturnType<typeof CollectionApi>>,
-        pagesInfo: Awaited<ReturnType<typeof CollectionPaginationCountApi>>,
-        page: Awaited<ReturnType<typeof PageApi>>;
+    let collection: Awaited<ReturnType<typeof CollectionApi>>, page: Awaited<ReturnType<typeof PageApi>>;
 
     try {
         // Do the actual API calls.
         collection = await CollectionApi({ api, handle, limit: 1 });
-        pagesInfo = await CollectionPaginationCountApi({ api, handle, filters: { first: PRODUCTS_PER_PAGE } });
         page = await PageApi({ shop, locale, handle, type: 'collection_page' });
     } catch (error: unknown) {
         unstable_rethrow(error);

@@ -272,8 +272,8 @@ const shopifyEventHandler = async (
  */
 const klaviyoEventHandler = async (
     event: AnalyticsEventType,
-    data: AnalyticsEventData,
-    { shop, currency, locale, cart }: AnalyticsEventActionProps
+    data: AnalyticsEventData, // eslint-disable-line unused-imports/no-unused-vars
+    { shop, currency, locale, cart }: AnalyticsEventActionProps // eslint-disable-line unused-imports/no-unused-vars
 ) => {
     window._learnq = window._learnq || [];
 

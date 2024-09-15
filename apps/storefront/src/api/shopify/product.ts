@@ -483,7 +483,7 @@ export const ProductsApi = async ({
  */
 export const ProductsPaginationApi = async ({
     api,
-    filters: { limit = 35, sorting = 'BEST_SELLING', available_for_sale = true, reverse, vendor, before, after }
+    filters: { limit = 35, sorting = 'BEST_SELLING', available_for_sale, reverse, vendor, before, after }
 }: {
     api: AbstractApi;
     filters: {
@@ -583,7 +583,7 @@ export const ProductsPaginationApi = async ({
 
             const page_info = data?.products.pageInfo;
             if (!page_info) {
-                return reject(new Error(`500: Something went wrong on our end`));
+                return reject(new ApiError("Shopify API didn't return a page info object"));
             }
 
             return resolve({

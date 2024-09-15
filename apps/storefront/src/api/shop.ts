@@ -44,7 +44,7 @@ export const findShopByDomainOverHttp = async (domain: string): Promise<OnlineSh
             tags: [domain]
         }
     });
-    if (!data || (data.status >= 400 && data.status < 500)) {
+    if (!(data as any) || (data.status >= 400 && data.status < 500)) {
         throw new UnknownShopDomainError(data.statusText, data.status);
     } else if (data.status !== 200) {
         throw new GenericError(data.statusText);

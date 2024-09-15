@@ -34,7 +34,7 @@ const ShopifyProvider = (
     customers: { id: string; clientId: string; clientSecret: string },
     shop: OnlineShop
 ): OAuthConfig<ShopifyCustomer> => {
-    if (!customers) {
+    if (!(customers as any)) {
         throw new InvalidShopifyCustomerAccountsApiConfiguration();
     }
 

@@ -98,7 +98,6 @@ export default function SearchContent({
         setSearching(false);
     }, [searchParams]);
 
-    const commonStyles = 'rounded-lg border border-solid border-gray-300 p-4 lg:max-w-56 gap-1';
     const commonItemStyles =
         'group/item h-28 overflow-clip rounded-lg border-2 border-solid border-gray-300 bg-gray-100 lg:h-36';
 
@@ -112,6 +111,7 @@ export default function SearchContent({
                     const query = q.trim();
 
                     const params = new URLSearchParams(searchParams);
+
                     if (query) {
                         if (params.get('q') === query) {
                             return;
@@ -122,6 +122,14 @@ export default function SearchContent({
                     } else {
                         params.delete('q');
                     }
+
+                    params.forEach((_value, key) => {
+                        if (key === 'q') {
+                            return;
+                        }
+
+                        params.delete(key);
+                    });
 
                     replace(`${pathname}?${params.toString()}`, { scroll: true });
                 }}

@@ -117,7 +117,7 @@ export const RedirectApi = async ({ api, path }: { api: AbstractApi; path: strin
 
     if (!errors && data && data.urlRedirects.edges.length > 0) {
         const redirect = flattenConnection(data.urlRedirects)[0];
-        if (redirect) {
+        if ((redirect as any) && redirect.target) {
             return redirect.target;
         }
     }

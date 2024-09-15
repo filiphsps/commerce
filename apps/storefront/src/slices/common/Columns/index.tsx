@@ -35,7 +35,7 @@ const Columns = async ({ slice, context: { shop, locale } }: ColumnsProps) => {
                     // FIXME: This should be in an API helper.
                     try {
                         const { data } = await client.getByUID<ColumnDocument>(type as any, uid);
-                        if (!data) {
+                        if (!(data as any)) {
                             throw new NotFoundError(`"Columns" with the uid "${uid}"`);
                         }
 
@@ -44,7 +44,7 @@ const Columns = async ({ slice, context: { shop, locale } }: ColumnsProps) => {
                         if (Error.isNotFound(error) && !Locale.isDefault(locale)) {
                             const client = createClient({ shop: sensitiveShop, locale: Locale.default });
                             const { data } = await client.getByUID<ColumnDocument>(type as any, uid);
-                            if (!data) {
+                            if (!(data as any)) {
                                 throw new NotFoundError(`"Columns" with the uid "${uid}"`);
                             }
 

@@ -22,7 +22,7 @@ export const CartSidebar = ({ i18n, locale, className, children, paymentMethods,
     const { shop } = useShop();
 
     const cart = useCart();
-    const { status, cost } = cart;
+    const { status = 'fetching', cost } = cart;
     const lines = (cart.lines || []).filter(Boolean) as Array<CartLine | ComponentizableCartLine>;
 
     const { queueEvent, postEvent } = useTrackable();
@@ -38,7 +38,7 @@ export const CartSidebar = ({ i18n, locale, className, children, paymentMethods,
                         return;
                     }
 
-                    if (!cost?.totalAmount || !lines) {
+                    if (!cost?.totalAmount || lines.length <= 0) {
                         return;
                     }
 
