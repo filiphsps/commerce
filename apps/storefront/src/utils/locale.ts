@@ -219,8 +219,10 @@ export const ConvertToLocalMeasurementSystem = ({
 
     if (unit !== targetUnit) weight = ConvertUnits(weight).from(unit).to(targetUnit);
 
-    let res = ((Math.round(weight) * 100) / 100).toFixed(metric ? 0 : 2).toString();
-    if (res.endsWith('.00')) res = res.slice(0, -3);
+    let res = ((Math.round(weight) * 100) / 100).toFixed(2).toString();
+    if (res.endsWith('.00')) {
+        res = res.slice(0, -3);
+    }
 
     return `${res}${targetUnit}`;
 };
