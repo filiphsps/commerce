@@ -159,13 +159,18 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         newUrl.href = newUrl.href = `${newUrl.href.split('?')[0]}/${newUrl.search}`;
     }
 
+    // Remove `/pages/` from the pathname if it's the second part of the path.
+    if (newUrl.pathname.substring(1).split('/')[1] === 'pages') {
+        newUrl.pathname = newUrl.pathname.replace('/pages/', '/');
+    }
+
     // Redirect if `newURL` is different from `req.nextUrl`.
     if (newUrl.href !== req.nextUrl.href) {
         return setCookies(NextResponse.redirect(newUrl, { status: 302 }), cookies);
     }
 
     // Rewrite index to use the `homepage` handle.
-    if (newUrl.pathname.split('/')[2] === '') {
+    if (newUrl.pathname.substring(1).split('/')[1] === '') {
         newUrl.pathname += `homepage/`;
     }
 
