@@ -21,10 +21,10 @@
         "build:packages": "turbo run build --filter=./packages/* --env-mode=loose --remote-cache-timeout=60",
         "clean": "turbo run clean",
         "lint": "turbo run lint",
-        "prettier": "prettier **/src/**/*.{ts,tsx,scss} --check",
+        "prettier": "prettier **/src/**/*.{ts,tsx} --check",
         "format": "concurrently pnpm:format:* && turbo run format && turbo run fix:lint",
-        "format:eslint": "eslint --fix **/src/**/*.{ts,tsx,mjs}",
-        "format:prettier": "prettier --write **/src/**/*.{ts,tsx,mjs,scss,json}",
+        "format:eslint": "eslint --fix **/src/**/*.{ts,tsx}",
+        "format:prettier": "prettier --write **/src/**/*.{ts,tsx,scss,json}",
         "typecheck": "turbo run typecheck",
         "test": "dotenv -c -e . -- vitest run --coverage",
         "slicemachine": "turbo run slicemachine --env-mode=loose"

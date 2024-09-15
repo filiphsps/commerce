@@ -65,7 +65,10 @@ export async function generateStaticParams(): Promise<LayoutParams[]> {
                         locale: code
                     }));*/
                 } catch (error: unknown) {
-                    console.error(error);
+                    if (!Error.isNotFound(error)) {
+                        console.error(error);
+                    }
+
                     return [];
                 }
             })
@@ -91,6 +94,10 @@ export async function generateMetadata({
 }: {
     params: LayoutParams;
 }): Promise<Metadata> {
+    if (!localeData) {
+        notFound();
+    }
+
     const locale = Locale.from(localeData);
     let shop: OnlineShop;
 
@@ -144,6 +151,10 @@ export default async function RootLayout({
     children: ReactNode;
     params: LayoutParams;
 }) {
+    if (!localeData) {
+        notFound(); // TODO: This should show an Invalid configuration status page.
+    }
+
     const locale = Locale.from(localeData);
     let shop: OnlineShop, publicShop: OnlineShop;
 

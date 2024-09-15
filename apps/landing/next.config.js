@@ -1,3 +1,5 @@
+import 'dotenv/config';
+
 import { execSync } from 'node:child_process';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';

@@ -47,7 +47,7 @@ const ProductCard = async ({ shop, locale, data: product, priority, className, .
             <ProductCardBadges data={product} i18n={i18n} />
 
             <Suspense>
-                <ProductCardContent locale={locale} i18n={i18n} data={product}>
+                <ProductCardContent locale={locale} i18n={i18n} data={product} priority={priority}>
                     <ProductCardTitle data={product} />
                 </ProductCardContent>
             </Suspense>
