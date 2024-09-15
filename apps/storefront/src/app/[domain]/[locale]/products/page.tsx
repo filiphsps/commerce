@@ -2,12 +2,10 @@
 
 import { Suspense } from 'react';
 
-import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
 
 import { PageApi } from '@/api/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { ProductsPaginationCountApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { enableProductsPage } from '@/utils/flags';
@@ -15,7 +13,6 @@ import { Locale, useTranslation } from '@/utils/locale';
 import { asText } from '@prismicio/client';
 import { redirect, RedirectType } from 'next/navigation';
 
-import Pagination from '@/components/actionable/pagination';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import Heading from '@/components/typography/heading';
@@ -83,20 +80,6 @@ export async function generateMetadata({
     };
 }
 
-async function ProductsPagination({ shop, locale }: { shop: OnlineShop; locale: Locale }) {
-    // Setup the AbstractApi client.
-    const api = await ShopifyApolloApiClient({ shop, locale });
-
-    // Deal with pagination before fetching the collection.
-    const pagesInfo = await ProductsPaginationCountApi({ api, filters: {} });
-
-    return (
-        <>
-            <Pagination knownFirstPage={0} knownLastPage={pagesInfo.pages} morePagesAfterKnownLastPage={false} />
-        </>
-    );
-}
-
 export default async function ProductsPage({
     params: { domain, locale: localeData },
     searchParams
@@ -133,10 +116,6 @@ export default async function ProductsPage({
             <Heading title={page?.title || t('products')} subtitle={page?.description} titleClassName="capitalize" />
 
             <ProductsContent domain={domain} locale={locale} searchParams={searchParams} />
-
-            <Suspense fallback={<div className="h-14 w-full" data-skeleton />}>
-                <ProductsPagination shop={shop} locale={locale} />
-            </Suspense>
         </>
     );
 }

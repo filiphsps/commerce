@@ -322,7 +322,7 @@ export const ProductsPaginationCountApi = async ({
             products: QueryRoot['products'];
         }>(
             gql`
-                query products($first: Int, $sorting: ProductSorting, $before: String, $after: String) {
+                query products($first: Int, $sorting: ProductSortKeys, $before: String, $after: String) {
                     products(first: $first, sortKey: $sorting, before: $before, after: $after) {
                         edges {
                             cursor
@@ -348,12 +348,14 @@ export const ProductsPaginationCountApi = async ({
             }
         );
 
-        if (errors) throw new UnknownApiError();
-        else if (!data?.products.edges || data.products.edges.length <= 0)
+        if (errors) {
+            throw new UnknownApiError(errors.map((e: any) => e.message).join('\n'));
+        } else if (!data?.products.edges || data.products.edges.length <= 0) {
             return {
                 count,
                 cursors
             };
+        }
 
         const cursor = data.products.edges.at(-1)!.cursor;
         if (data.products.pageInfo.hasNextPage) {

@@ -18,8 +18,8 @@ export type PaginationProps = ComponentProps<'nav'> & {
     morePagesAfterKnownLastPage?: boolean;
 };
 const Pagination = ({
-    knownFirstPage = 0,
-    knownLastPage = 0,
+    knownFirstPage = 1,
+    knownLastPage = 1,
     morePagesAfterKnownLastPage = false
 }: PaginationProps) => {
     const pathname = usePathname();

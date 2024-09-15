@@ -273,12 +273,14 @@ export const CollectionPaginationCountApi = async ({
             }
         );
 
-        if (errors) throw new UnknownApiError();
-        else if (!data?.collection?.products.edges || data.collection.products.edges.length <= 0)
+        if (errors) {
+            throw new UnknownApiError(errors.map((e: any) => e.message).join('\n'));
+        } else if (!data?.collection?.products.edges || data.collection.products.edges.length <= 0) {
             return {
                 count,
                 cursors
             };
+        }
 
         const cursor = data.collection.products.edges.at(-1)!.cursor;
         if (data.collection.products.pageInfo.hasNextPage) {

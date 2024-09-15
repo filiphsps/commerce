@@ -4,6 +4,7 @@ import { ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductsPaginationApi, ProductsPaginationCountApi } from '@/api/shopify/product';
 import { cn } from '@/utils/tailwind';
 
+import Pagination from '@/components/actionable/pagination';
 import ProductCard from '@/components/product-card/product-card';
 
 import type { ProductSorting } from '@/api/product';
@@ -12,7 +13,7 @@ import type { Locale } from '@/utils/locale';
 type SearchParams = {
     page?: string;
     vendor?: string;
-    sorting?: ProductSorting;
+    sorting?: string;
 };
 
 export type ProductsContentContentProps = {
@@ -27,22 +28,26 @@ export default async function ProductsContent({ domain, locale, searchParams = {
     const page = searchParams.page ? Number.parseInt(searchParams.page, 10) : 1;
     const limit = 35; // TODO.
     const vendor = searchParams.vendor || undefined;
-    const sorting: ProductSorting = searchParams.sorting || 'RELEVANCE';
+    const sorting = (searchParams.sorting?.toUpperCase() || 'BEST_SELLING') as ProductSorting;
 
-    const { cursors } = await ProductsPaginationCountApi({ api, filters: { first: limit } });
+    const { cursors, pages } = await ProductsPaginationCountApi({ api, filters: { first: limit } });
     const after = page > 1 ? cursors[page - 2] : undefined; // TODO: this should be a cursor if we have passed page 1.
 
     const { products } = await ProductsPaginationApi({ api, limit, vendor, sorting, after });
 
     return (
-        <section
-            className={cn(
-                'grid w-full grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] gap-2 md:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] xl:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))]'
-            )}
-        >
-            {products.map(({ node: product }) => (
-                <ProductCard key={product.id} shop={shop} locale={locale} data={product} />
-            ))}
-        </section>
+        <>
+            <section
+                className={cn(
+                    'grid w-full grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] gap-2 md:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] xl:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))]'
+                )}
+            >
+                {products.map(({ node: product }) => (
+                    <ProductCard key={product.id} shop={shop} locale={locale} data={product} />
+                ))}
+            </section>
+
+            <Pagination knownFirstPage={1} knownLastPage={pages} morePagesAfterKnownLastPage={false} />
+        </>
     );
 }
