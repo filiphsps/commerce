@@ -1,8 +1,8 @@
+import 'the-new-css-reset';
 import '@/styles/app.scss';
 import '@/styles/global.css';
-import 'the-new-css-reset';
 
-import { type ReactNode, Suspense } from 'react';
+import { Fragment, Suspense } from 'react';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
@@ -27,6 +27,7 @@ import PageContent from '@/components/page-content';
 import ProvidersRegistry from '@/components/providers-registry';
 
 import type { Metadata, Viewport } from 'next';
+import type { ReactNode } from 'react';
 
 export const runtime = 'nodejs';
 export const dynamic = 'auto';
@@ -191,14 +192,14 @@ export default async function RootLayout({
                     domain={domain}
                 >
                     <AnalyticsProvider shop={publicShop}>
-                        <HeaderProvider loaderColor={branding?.primary.color || ''}>
+                        <HeaderProvider loaderColor={branding?.primary.color}>
                             <Suspense fallback={<ShopLayout.skeleton />}>
                                 <ShopLayout shop={shop} locale={locale} i18n={i18n}>
                                     <PageContent primary={true}>{children}</PageContent>
                                 </ShopLayout>
                             </Suspense>
 
-                            <Suspense>
+                            <Suspense fallback={<Fragment />}>
                                 <GeoRedirect countries={countries} locale={locale} />
                             </Suspense>
                         </HeaderProvider>

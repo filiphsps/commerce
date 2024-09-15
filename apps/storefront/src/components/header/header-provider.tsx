@@ -24,7 +24,7 @@ export const HeaderContext = createContext<HeaderContextValue | null>(null);
 
 export type HeaderProviderProps = {
     children?: ReactNode;
-    loaderColor: string;
+    loaderColor?: string;
 };
 export const HeaderProvider = ({ children = null, loaderColor }: HeaderProviderProps) => {
     const pathname = usePathname();
