@@ -67,7 +67,7 @@ export function GeoRedirect({ countries, locale }: GeoRedirectProps) {
     const targetLocale = Locale.from({ language: targetLanguage as LanguageCode, country: targetCountry.isoCode });
 
     return (
-        <div className="sticky inset-x-0 bottom-0 z-50 w-full border-0 border-t-2 border-solid border-gray-700 bg-white px-2 text-black shadow-2xl transition-all md:px-2 lg:py-4 2xl:px-0">
+        <div className="sticky inset-x-0 bottom-0 z-50 w-full border-0 border-b-2 border-solid border-gray-300 bg-white px-2 text-black transition-all md:px-2 lg:py-4 2xl:px-0">
             <div className="relative mx-auto flex w-full flex-col items-start justify-between gap-4 py-2 pt-4 md:max-w-[var(--page-width)] md:px-2 md:py-4 lg:gap-4">
                 <div className="flex w-full flex-wrap items-center gap-x-2 gap-y-0 pr-11 text-lg font-normal leading-tight md:pr-0 md:text-xl lg:gap-x-3">
                     <div>Looks like you are located in</div>

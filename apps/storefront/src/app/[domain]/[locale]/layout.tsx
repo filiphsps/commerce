@@ -1,6 +1,6 @@
-import 'the-new-css-reset';
 import '@/styles/app.scss';
 import '@/styles/global.css';
+import 'the-new-css-reset';
 
 import { Fragment, Suspense } from 'react';
 
@@ -193,14 +193,14 @@ export default async function RootLayout({
                 >
                     <AnalyticsProvider shop={publicShop}>
                         <HeaderProvider loaderColor={branding?.primary.color}>
+                            <Suspense fallback={<Fragment />}>
+                                <GeoRedirect countries={countries} locale={locale} />
+                            </Suspense>
+
                             <Suspense fallback={<ShopLayout.skeleton />}>
                                 <ShopLayout shop={shop} locale={locale} i18n={i18n}>
                                     <PageContent primary={true}>{children}</PageContent>
                                 </ShopLayout>
-                            </Suspense>
-
-                            <Suspense fallback={<Fragment />}>
-                                <GeoRedirect countries={countries} locale={locale} />
                             </Suspense>
                         </HeaderProvider>
                     </AnalyticsProvider>

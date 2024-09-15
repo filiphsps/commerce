@@ -18,7 +18,9 @@ export const SearchApi = async ({
     productFilters: ProductFilters;
 }> => {
     return new Promise(async (resolve, reject) => {
-        if (!query) return resolve({ products: [], productFilters: [] });
+        if (!query) {
+            return resolve({ products: [], productFilters: [] });
+        }
 
         const search = async ({ type }: { type: 'PRODUCT' }) => {
             const { data } = await client.query<{ search: SearchResultItemConnection }>(
