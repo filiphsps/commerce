@@ -72,6 +72,9 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         });
     }
 
+    // Sort the search params to improve caching.
+    newUrl.searchParams.sort();
+
     const isSpecialPath: boolean =
         !!newUrl.pathname.match(FILE_TEST) ||
         newUrl.pathname.includes('/api/') ||
