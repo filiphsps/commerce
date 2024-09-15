@@ -182,6 +182,19 @@ export const useTranslation = (scope: LocaleDictionaryScope, dictionary?: Locale
     };
 };
 
+/**
+ * Checks if the option name is a size option.
+ * @param {string} name - The name of the option.
+ * @returns {boolean} `true` if the option is a size option, otherwise `false`.
+ */
+export const isSizeOption = (name: string): boolean =>
+    [
+        'size', // English.
+        'tamaño', // Spanish.
+        'größe', // German.
+        'storlek' // Swedish, Norwegian, Danish.
+    ].includes(name.toLowerCase());
+
 export const ConvertToLocalMeasurementSystem = ({
     locale,
     weight,
@@ -217,7 +230,9 @@ export const ConvertToLocalMeasurementSystem = ({
     // TODO: Do this properly.
     const targetUnit = metric ? 'g' : 'oz';
 
-    if (unit !== targetUnit) weight = ConvertUnits(weight).from(unit).to(targetUnit);
+    if (unit !== targetUnit) {
+        weight = ConvertUnits(weight).from(unit).to(targetUnit);
+    }
 
     let res = ((Math.round(weight) * 100) / 100).toFixed(2).toString();
     if (res.endsWith('.00')) {
