@@ -98,7 +98,6 @@ export default async function ProductsPage({
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
 
     // Do the actual API calls.
-    //const products = await ProductsApi({ api, filters, cache);
     const page = await PageApi({ shop, locale, handle: 'products' });
 
     // Get dictionary of strings for the current locale.

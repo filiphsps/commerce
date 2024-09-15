@@ -1,5 +1,6 @@
 import type { Identifiable, LimitFilters, Nullable } from '@nordcom/commerce-db';
 import {
+    ApiError,
     Error,
     InvalidHandleError,
     NotFoundError,
@@ -274,7 +275,7 @@ export const CollectionPaginationCountApi = async ({
         );
 
         if (errors) {
-            throw new UnknownApiError(errors.map((e: any) => e.message).join('\n'));
+            throw new ApiError(errors.map((e: any) => e.message).join('\n'));
         } else if (!data?.collection?.products.edges || data.collection.products.edges.length <= 0) {
             return {
                 count,
@@ -353,8 +354,8 @@ export const CollectionsApi = async (
             }
         `);
 
-        if (errors) {
-            return reject(new Error(`500: ${errors.map((e: any) => e.message).join('\n')}`));
+        if (errors && errors.length > 0) {
+            return reject(new ApiError(errors.map((e: any) => e.message).join('\n')));
         } else if (!data?.collections) {
             return reject(new Error(`404: No collections could be found`));
         }

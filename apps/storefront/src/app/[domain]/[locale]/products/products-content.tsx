@@ -31,7 +31,7 @@ export default async function ProductsContent({ domain, locale, searchParams = {
     const sorting = (searchParams.sorting?.toUpperCase() || 'BEST_SELLING') as ProductSorting;
 
     const { cursors, pages } = await ProductsPaginationCountApi({ api, filters: { first: limit } });
-    const after = page > 1 ? cursors[page - 2] : undefined; // TODO: this should be a cursor if we have passed page 1.
+    const after = page > 1 ? cursors[page - 1] : undefined;
 
     const { products } = await ProductsPaginationApi({ api, limit, vendor, sorting, after });
 

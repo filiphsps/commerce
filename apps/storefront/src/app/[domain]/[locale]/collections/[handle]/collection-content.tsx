@@ -11,25 +11,29 @@ import type { Locale } from '@/utils/locale';
 // TODO: Make this dynamic, preferably a configurable default value and then a query param override.
 export const PRODUCTS_PER_PAGE = 21 as const;
 
+type SearchParams = {
+    page?: string;
+};
+
 export async function CollectionContent({
     shop,
     locale,
     handle,
-    searchParams,
+    searchParams = {},
     cursors
 }: {
     shop: OnlineShop;
     locale: Locale;
     handle: string;
-    searchParams: { [key: string]: string | string[] | undefined };
+    searchParams?: SearchParams;
     cursors: string[];
 }) {
     if (typeof searchParams.page !== 'undefined' && isNaN(Number.parseInt(searchParams.page.toString()))) {
         notFound();
     }
 
-    const page = Number.parseInt(searchParams.page?.toString() || '1');
-    const after = cursors[page - 2];
+    const page = searchParams.page ? Number.parseInt(searchParams.page, 10) : 1;
+    const after = page > 1 ? cursors[page - 1] : undefined;
 
     return (
         <Suspense key={JSON.stringify(searchParams)} fallback={<CollectionBlock.skeleton length={PRODUCTS_PER_PAGE} />}>

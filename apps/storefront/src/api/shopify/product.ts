@@ -1,5 +1,5 @@
 import type { Identifiable, LimitFilters, Nullable } from '@nordcom/commerce-db';
-import { Error, NotFoundError, UnknownApiError } from '@nordcom/commerce-errors';
+import { ApiError, Error, NotFoundError, UnknownApiError } from '@nordcom/commerce-errors';
 
 import { extractLimitLikeFilters } from '@/api/shopify/collection';
 import { cleanShopifyHtml } from '@/utils/abstract-api';
@@ -8,6 +8,7 @@ import { gql } from '@apollo/client';
 import type { Product } from '@/api/product';
 import type { AbstractApi, ApiOptions } from '@/utils/abstract-api';
 import type {
+    Filter,
     Maybe,
     ProductConnection,
     ProductEdge,
@@ -331,7 +332,10 @@ export const ProductsPaginationCountApi = async ({
                             }
                         }
                         pageInfo {
+                            endCursor
                             hasNextPage
+                            hasPreviousPage
+                            startCursor
                         }
                     }
                 }
@@ -496,6 +500,7 @@ export const ProductsPaginationApi = async ({
         has_prev_page: boolean;
     };
     products: ProductEdge[];
+    filters: Filter[];
 }> => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -504,7 +509,7 @@ export const ProductsPaginationApi = async ({
                 sorting: (sorting as any) || null
             };
 
-            const { data } = await api.query<{ products: ProductConnection }>(
+            const { data, errors } = await api.query<{ products: ProductConnection }>(
                 gql`
                     fragment ProductFragment on Product {
                         ${PRODUCT_FRAGMENT}
@@ -531,6 +536,21 @@ export const ProductsPaginationApi = async ({
                                 hasNextPage
                                 hasPreviousPage
                             }
+                            filters {
+                                id
+                                label
+                                presentation
+                                type
+                                values {
+                                    count
+                                    id
+                                    input
+                                    label
+                                    swatch {
+                                        color
+                                    }
+                                }
+                            }
                         }
                     }
                 `,
@@ -545,8 +565,14 @@ export const ProductsPaginationApi = async ({
                 }
             );
 
+            if (errors && errors.length > 0) {
+                throw new ApiError(errors.map((e: any) => e.message).join('\n'));
+            }
+
             const page_info = data?.products.pageInfo;
-            if (!page_info) return reject(new Error(`500: Something went wrong on our end`));
+            if (!page_info) {
+                return reject(new Error(`500: Something went wrong on our end`));
+            }
 
             return resolve({
                 page_info: {
@@ -555,7 +581,8 @@ export const ProductsPaginationApi = async ({
                     has_next_page: page_info.hasNextPage,
                     has_prev_page: page_info.hasPreviousPage
                 },
-                products: ((data.products.edges as any) || []) as ProductEdge[]
+                products: ((data.products.edges as any) || []) as ProductEdge[],
+                filters: data.products.filters
             });
         } catch (error: unknown) {
             return reject(error);

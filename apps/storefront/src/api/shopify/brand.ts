@@ -1,4 +1,4 @@
-import { NotFoundError, UnknownApiError } from '@nordcom/commerce-errors';
+import { ApiError, NotFoundError } from '@nordcom/commerce-errors';
 
 import { gql } from '@apollo/client';
 
@@ -57,8 +57,8 @@ export const BrandApi = async ({ api }: { api: AbstractApi }) => {
         }
     `);
 
-    if (errors) {
-        throw new UnknownApiError(errors.map((e) => e.message).join(', '));
+    if (errors && errors.length > 0) {
+        throw new ApiError(errors.map((e) => e.message).join(', '));
     }
 
     if (!data) {

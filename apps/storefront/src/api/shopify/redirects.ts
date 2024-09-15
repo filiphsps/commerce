@@ -1,4 +1,4 @@
-import { NotFoundError, UnknownApiError } from '@nordcom/commerce-errors';
+import { ApiError, NotFoundError } from '@nordcom/commerce-errors';
 
 import { gql } from '@apollo/client';
 import { flattenConnection } from '@shopify/hydrogen-react';
@@ -51,7 +51,7 @@ export const RedirectsApi = async ({
         const urlRedirects = data ? flattenConnection(data.urlRedirects) : null;
 
         if (errors) {
-            throw new UnknownApiError(errors.map((e) => e.message).join(', '));
+            throw new ApiError(errors.map((e) => e.message).join(', '));
         } else if ((!urlRedirects || urlRedirects.length <= 0) && redirects.length <= 0) {
             throw new NotFoundError('"Redirects"');
         }
