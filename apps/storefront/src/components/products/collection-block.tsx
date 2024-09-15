@@ -120,7 +120,7 @@ CollectionBlock.displayName = 'Nordcom.Products.CollectionBlock';
 CollectionBlock.skeleton = ({
     isHorizontal = false,
     bare = false,
-    length = 6
+    length = 7
 }: {
     length?: number;
     isHorizontal?: boolean;
