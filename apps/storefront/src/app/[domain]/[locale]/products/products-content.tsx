@@ -4,6 +4,7 @@ import { ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductsPaginationApi, ProductsPaginationCountApi } from '@/api/shopify/product';
 import { cn } from '@/utils/tailwind';
 
+import { Filters } from '@/components/actionable/filters';
 import Pagination from '@/components/actionable/pagination';
 import ProductCard from '@/components/product-card/product-card';
 
@@ -33,10 +34,16 @@ export default async function ProductsContent({ domain, locale, searchParams = {
     const { cursors, pages } = await ProductsPaginationCountApi({ api, filters: { first: limit } });
     const after = page > 1 ? cursors[page - 1] : undefined;
 
-    const { products } = await ProductsPaginationApi({ api, limit, vendor, sorting, after });
+    const { products, filters } = await ProductsPaginationApi({ api, filters: { limit, vendor, sorting, after } });
+
+    const pagination = <Pagination knownFirstPage={1} knownLastPage={pages} morePagesAfterKnownLastPage={false} />;
 
     return (
         <>
+            {pagination}
+
+            <Filters filters={filters} />
+
             <section
                 className={cn(
                     'grid w-full grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] gap-2 md:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] xl:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))]'
@@ -47,7 +54,7 @@ export default async function ProductsContent({ domain, locale, searchParams = {
                 ))}
             </section>
 
-            <Pagination knownFirstPage={1} knownLastPage={pages} morePagesAfterKnownLastPage={false} />
+            {pagination}
         </>
     );
 }

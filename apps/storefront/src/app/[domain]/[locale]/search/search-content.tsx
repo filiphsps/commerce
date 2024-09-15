@@ -11,6 +11,7 @@ import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { Button } from '@/components/actionable/button';
+import { Filters } from '@/components/actionable/filters';
 import Link from '@/components/link';
 import { Label } from '@/components/typography/label';
 
@@ -126,51 +127,7 @@ export default function SearchContent({
                 }}
             />
 
-            {showFilters ? (
-                <section className="flex flex-wrap gap-4 empty:hidden">
-                    {productFilters.map(({ id, label, type, values /*, presentation*/ }) => (
-                        <div key={id} className={cn(commonStyles, 'flex w-full flex-col')}>
-                            <Label className="text-gray-600">{label}</Label>
-                            {(() => {
-                                switch (type) {
-                                    case 'BOOLEAN': {
-                                        return <div className={cn('')}>BOOLEAN</div>;
-                                    }
-                                    case 'LIST': {
-                                        return (
-                                            <div className={cn('flex flex-wrap gap-1')}>
-                                                {values.map(({ label, id, input /*, count */ }) => {
-                                                    const active = false as boolean;
-
-                                                    return (
-                                                        <button
-                                                            key={id}
-                                                            data-value={JSON.stringify(input)}
-                                                            className={cn(
-                                                                'appearance-none rounded-xl border-2 border-solid border-gray-300 px-2 py-1 text-sm font-semibold leading-none text-gray-500 transition-colors hover:border-black hover:text-black',
-                                                                active &&
-                                                                    'bg-primary text-primary-foreground border-primary-dark'
-                                                            )}
-                                                        >
-                                                            {label}
-                                                        </button>
-                                                    );
-                                                })}
-                                            </div>
-                                        );
-                                    }
-                                    case 'PRICE_RANGE': {
-                                        return <div className={cn('')}>PRICE_RANGE</div>;
-                                    }
-                                }
-
-                                return null;
-                            })()}
-                            <div></div>
-                        </div>
-                    ))}
-                </section>
-            ) : null}
+            {showFilters ? <Filters filters={productFilters} /> : null}
 
             <section className="grid grid-cols-1 gap-2 empty:hidden md:grid-cols-3 lg:grid-cols-4">
                 {searching === true ? (

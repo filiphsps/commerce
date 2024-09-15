@@ -81,7 +81,7 @@ export enum ApiErrorKind {
 }
 
 export class ApiError extends Error<ApiErrorKind> {
-    statusCode = 400;
+    statusCode = 500;
     name = 'ApiError';
     details = 'Unknown Error';
     description = 'An unknown error occurred';

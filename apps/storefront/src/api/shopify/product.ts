@@ -342,7 +342,7 @@ export const ProductsPaginationCountApi = async ({
             `,
             {
                 ...extractLimitLikeFilters(filters),
-                ...(({ sorting = 'RELEVANCE' }) => ({
+                ...(({ sorting = 'BEST_SELLING' }) => ({
                     sorting: sorting,
                     after: after
                 }))(filters)
@@ -379,7 +379,7 @@ export const ProductsPaginationCountApi = async ({
         const { count: products, cursors } = await countProducts(0);
 
         const perPage = ((extractLimitLikeFilters(filters) as any)?.first || 30) as number;
-        const pages = Math.ceil(products / perPage);
+        const pages = Math.ceil(products / perPage) - 1; // Subtract 1 because we're using `after` cursors.
         return {
             pages,
             cursors: cursors.reverse(),
@@ -471,27 +471,30 @@ export const ProductsApi = async ({
  *
  * @param {object} options - The options.
  * @param {AbstractApi} options.api - The AbstractApi to use.
- * @param {number} [options.limit=35] - The limit of products to fetch.
- * @param {ProductSortKeys} [options.sorting='BEST_SELLING'] - The sorting to use.
- * @param {string} [options.vendor] - The vendor to use.
- * @param {string} [options.before] - The cursor to use for pagination.
- * @param {string} [options.after] - The cursor to use for pagination.
+ * @param {object} options.filters - The AbstractApi to use.
+ * @param {number} [options.filters.limit=35] - The limit of products to fetch.
+ * @param {ProductSortKeys} [options.filters.sorting='BEST_SELLING'] - The sorting to use.
+ * @param {boolean} [options.filters.available_for_sale=true] - Whether to include available for sale products, set to `undefined` to disable.
+ * @param {boolean} [options.filters.reverse] - Whether to reverse the order of the products.
+ * @param {string} [options.filters.vendor] - The vendor to use.
+ * @param {string} [options.filters.before] - The cursor to use for pagination.
+ * @param {string} [options.filters.after] - The cursor to use for pagination.
  * @returns {Promise<ProductEdge[]>} The products.
  */
 export const ProductsPaginationApi = async ({
     api,
-    limit = 35,
-    sorting = 'BEST_SELLING',
-    vendor,
-    before,
-    after
+    filters: { limit = 35, sorting = 'BEST_SELLING', available_for_sale = true, reverse, vendor, before, after }
 }: {
     api: AbstractApi;
-    limit?: number;
-    vendor?: string;
-    sorting?: ProductSortKeys;
-    before?: string | null;
-    after?: string | null;
+    filters: {
+        limit?: number;
+        vendor?: string;
+        sorting?: ProductSortKeys;
+        available_for_sale?: boolean;
+        reverse?: boolean;
+        before?: string | null;
+        after?: string | null;
+    };
 }): Promise<{
     page_info: {
         start_cursor: string | null;
@@ -504,9 +507,18 @@ export const ProductsPaginationApi = async ({
 }> => {
     return new Promise(async (resolve, reject) => {
         try {
+            let queryEntries = [];
+            if (available_for_sale !== undefined) {
+                queryEntries.push(`available_for_sale:${available_for_sale ? 'true' : 'false'}`);
+            }
+            if (vendor) {
+                queryEntries.push(`vendor:"${vendor}"`);
+            }
+
             const filter = {
-                query: (vendor && `query:"vendor:${vendor}"`) || null,
-                sorting: (sorting as any) || null
+                query: queryEntries.length > 0 ? queryEntries.join(' AND ') : null,
+                sorting: (sorting as any) || null,
+                reverse: typeof reverse !== 'undefined' ? (reverse ? 'true' : 'false') : null
             };
 
             const { data, errors } = await api.query<{ products: ProductConnection }>(

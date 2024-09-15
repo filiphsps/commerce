@@ -32,9 +32,11 @@ export async function GET(
     let products: Product[] = [];
 
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    while ((res = await ProductsPaginationApi({ api, limit: 75, after: res?.page_info.end_cursor }))) {
+    while ((res = await ProductsPaginationApi({ api, filters: { limit: 75, after: res?.page_info.end_cursor } }))) {
         products.push(...res.products.map(({ node: product }) => product));
-        if (!res.page_info.has_next_page) break;
+        if (!res.page_info.has_next_page) {
+            break;
+        }
     }
 
     return getServerSideSitemap(

@@ -15,6 +15,7 @@ import { redirect, RedirectType } from 'next/navigation';
 
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
+import PageContent from '@/components/page-content';
 import Heading from '@/components/typography/heading';
 
 import ProductsContent from './products-content';
@@ -112,9 +113,15 @@ export default async function ProductsPage({
                 </div>
             </Suspense>
 
-            <Heading title={page?.title || t('products')} subtitle={page?.description} titleClassName="capitalize" />
+            <PageContent>
+                <Heading
+                    title={page?.title || t('products')}
+                    subtitle={page?.description}
+                    titleClassName="capitalize"
+                />
 
-            <ProductsContent domain={domain} locale={locale} searchParams={searchParams} />
+                <ProductsContent domain={domain} locale={locale} searchParams={searchParams} />
+            </PageContent>
         </>
     );
 }
