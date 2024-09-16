@@ -409,8 +409,11 @@ export function Trackable({ children }: TrackableProps) {
         cookieDomain = `.${cookieDomain}`;
     }
 
-    // TODO: Break these out into a separate hook, to support other providers.
-    useShopifyCookies({ hasUserConsent: true, domain: cookieDomain, checkoutDomain });
+    if (BuildConfig.environment === 'production') {
+        // TODO: Break these out into a separate hook, to support other providers.
+        useShopifyCookies({ hasUserConsent: true, domain: cookieDomain, checkoutDomain });
+    }
+
     const shopify = useShopify();
 
     const cart = useCart();

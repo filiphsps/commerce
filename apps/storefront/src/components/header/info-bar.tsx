@@ -5,7 +5,7 @@ import { FiMail, FiPhone } from 'react-icons/fi';
 import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { MenuApi } from '@/api/navigation';
-import { useTranslation } from '@/utils/locale';
+import { capitalize, useTranslation } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 
 import { LocaleFlag } from '@/components/informational/locale-flag';
@@ -50,7 +50,7 @@ export async function InfoBar({ className, shop, locale, i18n, ...props }: InfoB
             >
                 <div className={BLOCK_STYLES}>
                     <Link
-                        className="group flex items-center justify-start gap-1"
+                        className="group flex select-none items-center justify-start gap-1 *:select-none"
                         href="/countries/"
                         title={t('language-and-region-settings')}
                         data-nosnippet={true}
@@ -76,7 +76,7 @@ export async function InfoBar({ className, shop, locale, i18n, ...props }: InfoB
                                 data-nosnippet={true}
                             >
                                 <FiMail className="h-4 text-lg" style={{ strokeWidth: 2.5 }} />
-                                {t('email')}
+                                {capitalize(t('email'))}
                             </Link>
                         ) : null}
 
@@ -90,7 +90,7 @@ export async function InfoBar({ className, shop, locale, i18n, ...props }: InfoB
                                 data-nosnippet={true}
                             >
                                 <FiPhone className="h-4 text-lg" style={{ strokeWidth: 2.5 }} />
-                                {t('phone')}
+                                {capitalize(t('phone'))}
                             </Link>
                         ) : null}
                     </div>
