@@ -1,8 +1,8 @@
-import { Suspense } from 'react';
+import { Fragment, Suspense } from 'react';
 
 import { Shop } from '@nordcom/commerce-db';
 
-import { PageApi } from '@/api/page';
+import { PageApi } from '@/api/prismic/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
@@ -29,14 +29,18 @@ export async function generateMetadata({
     const locale = Locale.from(localeData);
     const api = await ShopifyApolloApiClient({ shop, locale });
 
-    const page = await PageApi({ shop, locale, handle: 'cart' });
+    let page: Awaited<ReturnType<typeof PageApi<'cart_page'>>> | null = null;
+    try {
+        page = await PageApi({ shop, locale, handle: 'cart', type: 'cart_page' });
+    } catch {}
+
     const locales = await LocalesApi({ api });
 
     const i18n = await getDictionary(locale);
     const { t } = useTranslation('common', i18n); // eslint-disable-line react-hooks/rules-of-hooks
 
-    const title = page?.meta_title || page?.title || capitalize(t('cart'));
-    const description: string | undefined = asText(page?.meta_description) || page?.description || undefined;
+    const title = page?.meta_title || capitalize(t('cart'));
+    const description: string | undefined = asText(page?.meta_description) || undefined;
     return {
         title,
         description,
@@ -76,7 +80,11 @@ export default async function CartPage({ params: { domain, locale: localeData } 
     const locale = Locale.from(localeData);
 
     const shop = await Shop.findByDomain(domain);
-    const page = await PageApi({ shop, locale, handle: 'cart' });
+
+    let page: Awaited<ReturnType<typeof PageApi<'cart_page'>>> = null;
+    try {
+        page = await PageApi({ shop, locale, handle: 'cart', type: 'cart_page' });
+    } catch {}
 
     const i18n = await getDictionary(locale);
     const { t } = useTranslation('common', i18n);
@@ -93,10 +101,10 @@ export default async function CartPage({ params: { domain, locale: localeData } 
                 <CartContent
                     shop={shop}
                     locale={locale}
-                    header={<Heading title={page?.title || t('cart')} subtitle={page?.description} />}
+                    header={<Heading title={capitalize(t('cart'))} />}
                     i18n={i18n}
                     paymentMethods={
-                        <Suspense>
+                        <Suspense fallback={<Fragment />}>
                             <AcceptedPaymentMethods shop={shop} locale={locale} />
                         </Suspense>
                     }
