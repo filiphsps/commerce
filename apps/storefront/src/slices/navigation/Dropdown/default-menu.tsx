@@ -94,7 +94,7 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                             >
                                 <Image
                                     src={image.url}
-                                    alt={image.alt || `© ${image.copyright}` || ''}
+                                    alt={image.alt || image.copyright ? `© ${image.copyright}` : ''}
                                     width={image.dimensions.width}
                                     height={image.dimensions.height}
                                     quality={80}

@@ -52,7 +52,7 @@ export const Overview = ({
             )}
         >
             <Image
-                role="presentation"
+                role={image.alt ? undefined : 'presentation'}
                 className={cn(
                     'absolute inset-0 z-[1] h-full w-full object-contain object-center',
                     imageStyle === 'cover' && 'object-cover'

@@ -1,5 +1,7 @@
 'use client';
 
+import { Fragment, Suspense } from 'react';
+
 import ProductCardActions from '@/components/product-card/product-card-actions';
 import ProductCardOptions from '@/components/product-card/product-card-options';
 
@@ -27,7 +29,11 @@ const ProductCardFooter = ({ data: product, selected, setSelected, i18n, locale 
                 setSelectedVariant={(variant) => setSelected(() => variant)}
             />
 
-            {selected ? <ProductCardActions i18n={i18n} data={product} selectedVariant={selected} /> : null}
+            {selected ? (
+                <Suspense fallback={<Fragment />}>
+                    <ProductCardActions i18n={i18n} data={product} selectedVariant={selected} />
+                </Suspense>
+            ) : null}
         </>
     );
 };

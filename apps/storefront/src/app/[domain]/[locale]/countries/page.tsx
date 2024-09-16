@@ -12,7 +12,7 @@ import { getDictionary } from '@/i18n/dictionary';
 import { capitalize, Locale, useTranslation } from '@/utils/locale';
 import { asText } from '@prismicio/client';
 import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
+import { redirect, RedirectType } from 'next/navigation';
 
 import PrismicPage from '@/components/cms/prismic-page';
 import PageContent from '@/components/page-content';
@@ -97,7 +97,7 @@ export default async function CountriesPage({
     return (
         <>
             <PageContent>
-                <Heading title={page?.title || t('countries')} subtitle={page?.description} />
+                <Heading title={page?.title || capitalize(t('countries'))} subtitle={page?.description} />
 
                 <form
                     action={async (formData: FormData) => {
@@ -114,13 +114,14 @@ export default async function CountriesPage({
                         try {
                             const { code } = Locale.from(locale);
                             cookies().set('localization', code);
+                            cookies().set('NEXT_LOCALE', code);
                         } catch (error: unknown) {
                             throw error; // TODO: Proper nordcom error.
                         }
 
                         // Needs to happen outside of the try and catch block.
                         // See https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations#redirecting.
-                        redirect(`/${locale}/`);
+                        redirect(`/${locale}/`, RedirectType.push);
                     }}
                     suppressHydrationWarning={true}
                 >

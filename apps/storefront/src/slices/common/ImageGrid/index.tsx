@@ -35,6 +35,7 @@ const ImageGrid = ({ slice, index }: ImageGridProps): JSX.Element => {
                 return (
                     <Link key={href!} className={styles.item} href={href!} title={title!}>
                         <Image
+                            role={image.alt ? undefined : 'presentation'}
                             src={image.url!}
                             alt={image.alt!}
                             width={300}

@@ -9,7 +9,8 @@ import type { OnlineShop } from '@nordcom/commerce-db';
 import { getDictionary } from '@/utils/dictionary';
 import { capitalize, Locale, useTranslation } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
-import { usePathname } from 'next/navigation';
+import { setCookie } from 'cookies-next';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 import { Button } from '@/components/actionable/button';
 import { LocaleCountryName, LocaleFlag } from '@/components/informational/locale-flag';
@@ -33,7 +34,9 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
     const [userAgent, setUserAgent] = useState<string | undefined>();
     const [i18n, setI18n] = useState<LocaleDictionary | undefined>();
     const [dismissed, setDismissed] = useState<number | null>(null);
+
     const pathname = `/${usePathname().split('/').slice(2).join('/')}`;
+    const searchParams = new URLSearchParams(useSearchParams());
 
     useEffect(() => {
         setNavigatorLanguage((navigator.language.split('-').at(0) || 'en').toLowerCase());
@@ -163,7 +166,11 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
 
                     <Button
                         as={Link}
-                        href={pathname}
+                        onClick={() => {
+                            setCookie('localization', targetLocale.code);
+                            setCookie('NEXT_LOCALE', targetLocale.code);
+                        }}
+                        href={`${pathname}${searchParams.size > 0 ? `?${searchParams.toString()}` : ''}`}
                         locale={targetLocale}
                         className="border-primary flex h-10 items-center justify-center rounded-lg px-4 py-2 text-base shadow transition-colors"
                     >

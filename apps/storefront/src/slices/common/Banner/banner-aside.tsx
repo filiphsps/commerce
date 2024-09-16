@@ -17,7 +17,7 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
 
     const background = slice.primary.background;
     const image = slice.primary.image;
-    const imageAlt = image.alt ?? image.copyright;
+    const imageAlt = image.alt || image.copyright || undefined;
 
     const textColor = slice.primary.text_color;
 
@@ -77,7 +77,7 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
                 src={image.url!}
                 width={image.dimensions?.width!}
                 height={image.dimensions?.height!}
-                alt={imageAlt ?? ''}
+                alt={imageAlt!}
                 className="col-span-2 hidden h-full w-full object-cover object-center md:flex"
                 draggable={false}
                 loading={priority ? 'eager' : 'lazy'}

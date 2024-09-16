@@ -47,10 +47,11 @@ const IconGrid = ({ slice, index: order }: IconGridProps) => {
                     >
                         {icon.url ? (
                             <Image
+                                role={icon.alt ? undefined : 'presentation'}
                                 className="h-8 w-8 select-none object-contain object-center md:h-6 md:w-6"
                                 style={{ strokeWidth: 2.5 }}
                                 src={icon.url}
-                                alt={icon.alt || ''}
+                                alt={icon.alt!}
                                 width={35}
                                 height={35}
                                 quality={75}
