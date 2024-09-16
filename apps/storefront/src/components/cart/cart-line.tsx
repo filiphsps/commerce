@@ -108,7 +108,9 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                     <div className="leading-normal">
                         {[
                             ...(productType ? [productType] : []),
-                            ...variant.selectedOptions.map(({ name, value }) => `${name}: ${value}`)
+                            ...variant.selectedOptions
+                                .map(({ name, value }) => `${name}: ${value}`)
+                                .filter((_) => _ !== 'Title: Default Title')
                         ].join(', ')}
                     </div>
 
