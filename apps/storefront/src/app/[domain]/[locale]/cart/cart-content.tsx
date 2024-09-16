@@ -6,7 +6,7 @@ import { type ReactNode, Suspense } from 'react';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 
-import { PageApi } from '@/api/page';
+import { PageApi } from '@/api/prismic/page';
 import { cn } from '@/utils/tailwind';
 
 import { CartLines } from '@/components/cart/cart-lines';
@@ -25,7 +25,10 @@ export type CartContentProps = {
     paymentMethods?: ReactNode;
 };
 export default async function CartContent({ shop, locale, i18n, header, paymentMethods = null }: CartContentProps) {
-    const page = await PageApi({ shop, locale, handle: 'cart', type: 'cart_page' });
+    let page: Awaited<ReturnType<typeof PageApi<'cart_page'>>> = null;
+    try {
+        page = await PageApi({ shop, locale, handle: 'cart', type: 'cart_page' });
+    } catch {}
 
     return (
         <PageContent className={styles.container}>
