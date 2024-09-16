@@ -38,7 +38,11 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
     let discount = 0;
     if (variant.compareAtPrice?.amount) {
         const compare = safeParseFloat(0, variant.compareAtPrice.amount);
-        const current = safeParseFloat(0, variant.price.amount);
+        const current = safeParseFloat(0, line.cost.totalAmount.amount);
+        discount = Math.round((100 * (compare - current)) / compare) || 0;
+    } else {
+        const compare = safeParseFloat(0, variant.price.amount);
+        const current = safeParseFloat(0, line.cost.totalAmount.amount);
         discount = Math.round((100 * (compare - current)) / compare) || 0;
     }
 
@@ -59,12 +63,14 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
 
     const pricing = (
         <>
-            {variant.compareAtPrice ? (
+            {discount ? (
                 <Price
                     className="text-base font-medium leading-tight text-gray-500 line-through"
                     data={{
-                        amount: (safeParseFloat(0, variant.compareAtPrice.amount) * line.quantity).toString(),
-                        currencyCode: variant.compareAtPrice.currencyCode
+                        amount: (
+                            safeParseFloat(0, variant.compareAtPrice?.amount, variant.price.amount) * line.quantity
+                        ).toString(),
+                        currencyCode: variant.price.currencyCode
                     }}
                 />
             ) : null}

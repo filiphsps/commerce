@@ -43,6 +43,13 @@ export async function GET(request: NextRequest) {
                     { value: false, label: 'Disabled' },
                     { value: true, label: 'Enabled' }
                 ]
+            },
+            'product-page-quantity-breaks': {
+                description: 'Controls if the product page should show quantity breaks',
+                options: [
+                    { value: false, label: 'Hidden' },
+                    { value: true, label: 'Visible' }
+                ]
             }
         }
     });
