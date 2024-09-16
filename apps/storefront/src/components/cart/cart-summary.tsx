@@ -206,14 +206,14 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                         </div>
                     ) : null}
 
-                    {cost?.totalAmount ? (
+                    {cost ? (
                         <div className={cn(styles.totals, 'flex items-center justify-between pt-1')}>
                             <Label className="text-xl font-bold capitalize">{t('estimated-total')}</Label>
                             <Price
                                 className={PRICE_STYLES}
                                 data={
-                                    cost.totalAmountEstimated ??
-                                    (cost.totalAmount as any) ?? {
+                                    cost?.checkoutChargeAmount ||
+                                    (cost?.totalAmount as any) || {
                                         currencyCode: currency,
                                         amount: 0
                                     }
