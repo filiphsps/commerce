@@ -33,7 +33,7 @@ export async function CollectionContent({
     }
 
     const page = searchParams.page ? Number.parseInt(searchParams.page, 10) : 1;
-    const after = page > 1 ? cursors[page - 1] : undefined;
+    const after = page > 1 ? cursors[page - 2] : undefined;
 
     return (
         <Suspense key={JSON.stringify(searchParams)} fallback={<CollectionBlock.skeleton length={PRODUCTS_PER_PAGE} />}>

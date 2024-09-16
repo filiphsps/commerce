@@ -47,6 +47,10 @@ const ProductCardActions = ({ i18n, data: product, selectedVariant }: ProductCar
         [linesUpdate, lines, cartReady]
     );
 
+    if (cartReady === undefined) {
+        return null;
+    }
+
     const baseStyles = 'font-semibold overflow-clip *:h-9 mt-2 h-10 min-h-10 max-h-10 grow rounded-lg';
     if (line) {
         return (
