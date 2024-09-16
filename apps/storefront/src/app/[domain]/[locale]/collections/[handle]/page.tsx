@@ -15,7 +15,7 @@ import { checkAndHandleRedirect } from '@/utils/redirect';
 import { asText } from '@prismicio/client';
 import { notFound, unstable_rethrow } from 'next/navigation';
 
-import Pagination from '@/components/actionable/pagination';
+import { Pagination } from '@/components/actionable/pagination';
 import PrismicPage from '@/components/cms/prismic-page';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
@@ -203,7 +203,7 @@ export default async function CollectionPage({
 
     return (
         <>
-            <Suspense fallback={<BreadcrumbsSkeleton />}>
+            <Suspense key={`collections.${handle}.breadcrumbs`} fallback={<BreadcrumbsSkeleton />}>
                 <div className="-mb-[1.5rem] empty:hidden md:-mb-[2.25rem]">
                     <Breadcrumbs locale={locale} title={collection.title} />
                 </div>
@@ -236,7 +236,10 @@ export default async function CollectionPage({
                 </>
             ) : null}
 
-            <Suspense fallback={<section className="w-full bg-gray-100 p-4" data-skeleton />}>
+            <Suspense
+                key={`collections.${handle}.slices`}
+                fallback={<section className="w-full bg-gray-100 p-4" data-skeleton />}
+            >
                 <CollectionPageSlices shop={shop} locale={locale} handle={handle} />
             </Suspense>
 

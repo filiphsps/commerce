@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { type HTMLProps, type ReactNode, Suspense } from 'react';
+import { Fragment, type HTMLProps, type ReactNode, Suspense } from 'react';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 
@@ -20,16 +20,18 @@ export type ShopLayoutProps = {
 const ShopLayout = async ({ shop, locale, i18n, children }: ShopLayoutProps) => {
     return (
         <main className="grid min-h-screen grid-cols-[100%] grid-rows-[auto_auto_1fr_auto] [grid-template-areas:'info-bar''header''content''footer']">
-            <Suspense>
+            <Suspense key="layout.info-bar" fallback={<Fragment />}>
                 <InfoBar locale={locale} i18n={i18n} shop={shop} />
             </Suspense>
-            <Suspense fallback={<Header.skeleton />}>
+            <Suspense key="layout.header" fallback={<Header.skeleton />}>
                 <Header domain={shop.domain} locale={locale} i18n={i18n} />
             </Suspense>
 
-            <Suspense fallback={<PageContent primary={true} />}>{children}</Suspense>
+            <Suspense key="layout.main" fallback={<PageContent as="section" primary={true} />}>
+                {children}
+            </Suspense>
 
-            <Suspense fallback={<Footer.skeleton />}>
+            <Suspense key="layout.footer" fallback={<Footer.skeleton />}>
                 <Footer shop={shop} locale={locale} i18n={i18n} />
             </Suspense>
         </main>
@@ -40,7 +42,7 @@ ShopLayout.skeleton = () => (
     <main className="grid min-h-screen grid-cols-[100%] grid-rows-[auto_auto_1fr_auto] [grid-template-areas:'info-bar''header''content''footer']">
         <Header.skeleton />
 
-        <PageContent as="main" primary={true} />
+        <PageContent as="section" primary={true} />
 
         <Footer.skeleton />
     </main>

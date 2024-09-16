@@ -107,7 +107,7 @@ export default async function ProductsPage({
 
     return (
         <>
-            <Suspense fallback={<BreadcrumbsSkeleton />}>
+            <Suspense key={`products.breadcrumbs`} fallback={<BreadcrumbsSkeleton />}>
                 <div className="-mb-[1.5rem] empty:hidden md:-mb-[2.25rem]">
                     <Breadcrumbs locale={locale} title={t('products')} />
                 </div>

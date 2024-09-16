@@ -77,4 +77,12 @@ const FooterContent = async ({ locale, i18n, shop }: FooterContentProps) => {
     );
 };
 
+FooterContent.skeleton = () => (
+    <div className="grid h-full w-full grid-cols-1 gap-8 overflow-hidden md:grid-cols-2 md:gap-4">
+        <div></div>
+        <div></div>
+    </div>
+);
+
+FooterContent.displayName = 'Nordcom.Footer.Content';
 export default FooterContent;

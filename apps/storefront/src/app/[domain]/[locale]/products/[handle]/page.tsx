@@ -319,7 +319,7 @@ export default async function ProductPage({
 
     return (
         <>
-            <Suspense fallback={<Fragment />}>
+            <Suspense key={`products.${handle}.analytics-event-trigger`} fallback={<Fragment />}>
                 <AnalyticsEventTrigger
                     event="view_item"
                     data={{
@@ -354,14 +354,14 @@ export default async function ProductPage({
                 />
             </Suspense>
 
-            <Suspense fallback={<BreadcrumbsSkeleton />}>
+            <Suspense key={`products.${handle}.breadcrumbs`} fallback={<BreadcrumbsSkeleton />}>
                 <div className="-mb-[1.5rem] empty:hidden md:-mb-[2.25rem]">
                     <Breadcrumbs locale={locale} title={`${product.vendor} ${product.title}`} />
                 </div>
             </Suspense>
 
             <PageContent className="overflow flex max-w-full flex-col gap-4 px-0 md:flex-row md:flex-nowrap">
-                <Suspense fallback={<section className="w-full" />}>
+                <Suspense key={`products.${handle}.gallery`} fallback={<section className="w-full" />}>
                     <section className={'flex h-auto w-full grow flex-col gap-4'}>
                         <ProductGallery
                             initialImageId={initialVariant.image?.id || product.images.edges[0]?.node.id}
@@ -374,15 +374,21 @@ export default async function ProductPage({
                     </section>
                 </Suspense>
 
-                <Suspense fallback={<section className="w-full xl:max-w-[38rem]" />}>
-                    <section className="mi-nw-[38rem] flex w-full max-w-full flex-col gap-2 2xl:w-auto">
-                        <Suspense fallback={<div className="h-4 w-full" data-skeleton />}>
+                <Suspense key={`products.${handle}.details`} fallback={<section className="w-full xl:max-w-[38rem]" />}>
+                    <section className="flex w-full min-w-[38rem] max-w-full flex-col gap-2 2xl:w-auto">
+                        <Suspense
+                            key={`products.${handle}.details.savings`}
+                            fallback={<div className="h-4 w-full" data-skeleton />}
+                        >
                             <ProductSavings product={product} i18n={i18n} />
                         </Suspense>
 
                         <Card className={cn(BLOCK_STYLES)}>
                             <div className="flex h-auto w-full flex-col justify-start gap-3 lg:gap-4 lg:p-0">
-                                <Suspense fallback={<div className="h-4 w-full" data-skeleton />}>
+                                <Suspense
+                                    key={`products.${handle}.details.badges`}
+                                    fallback={<div className="h-4 w-full" data-skeleton />}
+                                >
                                     <Badges product={product} i18n={i18n} />
                                 </Suspense>
 
@@ -407,7 +413,10 @@ export default async function ProductPage({
                                         </Suspense>
                                     </div>
 
-                                    <Suspense>
+                                    <Suspense
+                                        key={`products.${handle}.details.pricing`}
+                                        fallback={<div className="h-4 w-24" data-skeleton />}
+                                    >
                                         <div className="flex items-end justify-start gap-2 empty:hidden md:gap-3">
                                             <ProductPricing product={product} />
                                         </div>
@@ -415,7 +424,10 @@ export default async function ProductPage({
                                 </header>
                             </div>
 
-                            <Suspense>
+                            <Suspense
+                                key={`products.${handle}.details.content`}
+                                fallback={<div className="h-4 w-full" data-skeleton />}
+                            >
                                 <ProductContent product={product} i18n={i18n} />
                             </Suspense>
                         </Card>
@@ -456,7 +468,7 @@ export default async function ProductPage({
                     {t('you-may-also-like')}
                 </p>
 
-                <Suspense fallback={<RecommendedProducts.skeleton />}>
+                <Suspense key={`products.${handle}.recommended-products`} fallback={<RecommendedProducts.skeleton />}>
                     <RecommendedProducts shop={shop} locale={locale} product={product} className="-my-2 w-full px-3" />
                 </Suspense>
             </Card>

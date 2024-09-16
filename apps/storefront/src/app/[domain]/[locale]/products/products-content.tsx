@@ -5,7 +5,7 @@ import { ProductsPaginationApi, ProductsPaginationCountApi } from '@/api/shopify
 import { cn } from '@/utils/tailwind';
 
 import { Filters } from '@/components/actionable/filters';
-import Pagination from '@/components/actionable/pagination';
+import { Pagination } from '@/components/actionable/pagination';
 import ProductCard from '@/components/product-card/product-card';
 
 import type { ProductSorting } from '@/api/product';

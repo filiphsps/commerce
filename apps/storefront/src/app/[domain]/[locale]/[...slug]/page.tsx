@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { Suspense } from 'react';
+import { Fragment, Suspense } from 'react';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
@@ -178,7 +178,7 @@ export default async function CustomPage({
 
         const breadcrumbs =
             handle !== 'homepage' && page.title ? (
-                <Suspense fallback={<BreadcrumbsSkeleton />}>
+                <Suspense key={`pages.${handle}.breadcrumbs`} fallback={<BreadcrumbsSkeleton />}>
                     <div className="-mb-[1.5rem] empty:hidden md:-mb-[2.25rem]">
                         <Breadcrumbs locale={locale} title={page.title} />
                     </div>
@@ -193,7 +193,7 @@ export default async function CustomPage({
 
                 {/* Metadata */}
                 {handle === 'homepage' ? (
-                    <Suspense>
+                    <Suspense key={`pages.${handle}.jsonld.online-store`} fallback={<Fragment />}>
                         <OnlineStoreJsonLd shop={shop} locale={locale} />
                     </Suspense>
                 ) : null}

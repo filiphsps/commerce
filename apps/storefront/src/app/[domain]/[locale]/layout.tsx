@@ -196,9 +196,11 @@ export default async function RootLayout({
                                 <GeoRedirect shop={publicShop} countries={countries} locale={locale} i18n={i18n} />
                             </Suspense>
 
-                            <Suspense fallback={<ShopLayout.skeleton />}>
+                            <Suspense key="layout" fallback={<ShopLayout.skeleton />}>
                                 <ShopLayout shop={shop} locale={locale} i18n={i18n}>
-                                    <PageContent primary={true}>{children}</PageContent>
+                                    <PageContent as="section" primary={true}>
+                                        {children}
+                                    </PageContent>
                                 </ShopLayout>
                             </Suspense>
                         </HeaderProvider>
