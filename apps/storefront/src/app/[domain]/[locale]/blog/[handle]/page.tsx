@@ -8,7 +8,7 @@ import { BlogArticleApi } from '@/api/shopify/blog';
 import { LocalesApi } from '@/api/store';
 import { isValidHandle } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
-import { notFound, unstable_rethrow } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { title } from 'process';
 
 import { JsonLd } from '@/components/json-ld';
@@ -16,7 +16,6 @@ import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
 import { Label } from '@/components/typography/label';
 
-import type { Article } from '@shopify/hydrogen-react/storefront-api-types';
 import type { Metadata } from 'next';
 import type { Article as LdArticle, WithContext } from 'schema-dts';
 
@@ -40,18 +39,16 @@ export async function generateMetadata({
 
     const api = await ShopifyApolloApiClient({ shop, locale });
 
-    let article: Article;
-    try {
-        article = await BlogArticleApi({ api, blogHandle: 'news', handle });
-    } catch (error: unknown) {
-        if (Error.isNotFound(error)) {
+    const [article, articleError] = await BlogArticleApi({ api, blogHandle: 'news', handle });
+    if (articleError) {
+        if (Error.isNotFound(articleError)) {
             notFound();
         }
 
-        console.error(error);
-        unstable_rethrow(error);
-        throw error;
+        console.error(articleError);
+        throw articleError;
     }
+
     const locales = await LocalesApi({ api });
 
     const title = article.seo?.title || article.title;
@@ -95,17 +92,14 @@ export default async function ArticlePage({
 
     const api = await ShopifyApolloApiClient({ shop, locale });
 
-    let article: Article;
-    try {
-        article = await BlogArticleApi({ api, blogHandle: 'news', handle });
-    } catch (error: unknown) {
-        if (Error.isNotFound(error)) {
+    const [article, articleError] = await BlogArticleApi({ api, blogHandle: 'news', handle });
+    if (articleError) {
+        if (Error.isNotFound(articleError)) {
             notFound();
         }
 
-        console.error(error);
-        unstable_rethrow(error);
-        throw error;
+        console.error(articleError);
+        throw articleError;
     }
 
     const jsonLd: WithContext<LdArticle> = {

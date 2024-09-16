@@ -1,4 +1,5 @@
 import { Shop } from '@nordcom/commerce-db';
+import { Error } from '@nordcom/commerce-errors';
 
 import { PageApi } from '@/api/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
@@ -7,6 +8,7 @@ import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { Locale, useTranslation } from '@/utils/locale';
 import { asText } from '@prismicio/client';
+import { notFound } from 'next/navigation';
 
 import { CMSContent } from '@/components/cms/cms-content';
 import Heading from '@/components/typography/heading';
@@ -26,7 +28,17 @@ export async function generateMetadata({
 
     const api = await ShopifyApolloApiClient({ shop, locale });
     const page = await PageApi({ shop, locale, handle: 'blog' });
-    const blog = await BlogApi({ api, handle: 'news' });
+
+    const [blog, blogError] = await BlogApi({ api, handle: 'news' });
+    if (blogError) {
+        if (Error.isNotFound(blogError)) {
+            notFound();
+        }
+
+        console.error(blogError);
+        throw blogError;
+    }
+
     const locales = await LocalesApi({ api });
 
     const i18n = await getDictionary(locale);
@@ -75,9 +87,17 @@ export default async function BlogPage({ params: { domain, locale: localeData } 
     const locale = Locale.from(localeData);
 
     const api = await ShopifyApolloApiClient({ shop, locale });
-
     const page = await PageApi({ shop, locale, handle: 'blog' });
-    const blog = await BlogApi({ api, handle: 'news' });
+
+    const [blog, blogError] = await BlogApi({ api, handle: 'news' });
+    if (blogError) {
+        if (Error.isNotFound(blogError)) {
+            notFound();
+        }
+
+        console.error(blogError);
+        throw blogError;
+    }
 
     const i18n = await getDictionary(locale);
     const { t } = useTranslation('common', i18n);

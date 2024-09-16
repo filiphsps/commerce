@@ -5,12 +5,11 @@ import { ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi } from '@/api/shopify/blog';
 import { Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
-import { notFound, unstable_rethrow } from 'next/navigation';
+import { notFound } from 'next/navigation';
 
 import Link from '@/components/link';
 import { Label } from '@/components/typography/label';
 
-import type { Article } from '@shopify/hydrogen-react/storefront-api-types';
 import type { ReactNode } from 'react';
 
 export const runtime = 'nodejs';
@@ -30,23 +29,24 @@ export default async function BlogLayout({
 
     const api = await ShopifyApolloApiClient({ shop, locale });
 
-    let latest: Article[] = [],
-        popular: Article[] = [];
-    try {
-        latest = (await BlogApi({ api, handle: 'news', limit: 5, sorting: 'PUBLISHED_AT' })).articles.edges.map(
-            ({ node: article }) => article
-        );
-        popular = (await BlogApi({ api, handle: 'news', limit: 5, sorting: 'RELEVANCE' })).articles.edges.map(
-            ({ node: article }) => article
-        );
-    } catch (error: unknown) {
-        if (Error.isNotFound(error)) {
+    const [latest, latestError] = await BlogApi({ api, handle: 'news' });
+    if (latestError) {
+        if (Error.isNotFound(latestError)) {
             notFound();
         }
 
-        console.error(error);
-        unstable_rethrow(error);
-        throw error;
+        console.error(latestError);
+        throw latestError;
+    }
+
+    const [popular, popularError] = await BlogApi({ api, handle: 'news' });
+    if (popularError) {
+        if (Error.isNotFound(popularError)) {
+            notFound();
+        }
+
+        console.error(popularError);
+        throw popularError;
     }
 
     return (
@@ -58,30 +58,34 @@ export default async function BlogLayout({
                     <Label as="div" className="text-base leading-none">
                         Latest Articles
                     </Label>
-                    {latest.map(({ id, handle, title }) => (
-                        <Link
-                            key={id}
-                            href={`/blog/${handle}/`}
-                            className="hover:text-primary block text-sm font-medium text-gray-600"
-                        >
-                            {title}
-                        </Link>
-                    ))}
+                    {latest.articles.edges
+                        .map(({ node: article }) => article)
+                        .map(({ id, handle, title }) => (
+                            <Link
+                                key={id}
+                                href={`/blog/${handle}/`}
+                                className="hover:text-primary block text-sm font-medium text-gray-600"
+                            >
+                                {title}
+                            </Link>
+                        ))}
                 </section>
 
                 <section className="flex flex-col gap-2">
                     <Label as="div" className="text-base leading-none">
                         Popular Posts
                     </Label>
-                    {popular.map(({ id, handle, title }) => (
-                        <Link
-                            key={id}
-                            href={`/blog/${handle}/`}
-                            className="hover:text-primary block text-sm font-medium text-gray-600"
-                        >
-                            {title}
-                        </Link>
-                    ))}
+                    {popular.articles.edges
+                        .map(({ node: article }) => article)
+                        .map(({ id, handle, title }) => (
+                            <Link
+                                key={id}
+                                href={`/blog/${handle}/`}
+                                className="hover:text-primary block text-sm font-medium text-gray-600"
+                            >
+                                {title}
+                            </Link>
+                        ))}
                 </section>
             </aside>
         </div>

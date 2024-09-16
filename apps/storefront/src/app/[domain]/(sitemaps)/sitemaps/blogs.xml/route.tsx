@@ -1,15 +1,16 @@
-import { Error, NotFoundError, TodoError } from '@nordcom/commerce-errors';
+import { Error, TodoError } from '@nordcom/commerce-errors';
 
 import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi } from '@/api/shopify/blog';
 import { LocalesApi } from '@/api/store';
 import { Locale } from '@/utils/locale';
-import { type NextRequest, NextResponse } from 'next/server';
 import { getServerSideSitemap } from 'next-sitemap';
+import { notFound } from 'next/navigation';
+import { type NextRequest, NextResponse } from 'next/server';
 
-import type { DynamicSitemapRouteParams } from '../../sitemap.xml/route';
 import type { ISitemapField } from 'next-sitemap';
+import type { DynamicSitemapRouteParams } from '../../sitemap.xml/route';
 
 export const dynamic = 'force-static';
 export const revalidate = false;
@@ -20,13 +21,18 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
 
         const shop = await findShopByDomainOverHttp(domain);
         const api = await ShopifyApolloApiClient({ shop, locale });
-        const locales = await LocalesApi({ api });
 
-        // TODO: const blogs = await BlogsApi({ api });
-        const blog = await BlogApi({ api, handle: 'news' });
-        if (!(blog as any)) {
-            throw new NotFoundError(`"Blog" with the handle "${'news'}"`);
+        const [blog, blogError] = await BlogApi({ api, handle: 'news' });
+        if (blogError) {
+            if (Error.isNotFound(blogError)) {
+                notFound();
+            }
+
+            console.error(blogError);
+            throw blogError;
         }
+
+        const locales = await LocalesApi({ api });
 
         const articles = blog.articles.edges.map(({ node: article }) => article);
         return getServerSideSitemap(
