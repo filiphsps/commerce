@@ -47,6 +47,7 @@ export const LocaleFlag = ({
                 src={`https://purecatamphetamine.github.io/country-flag-icons/3x2/${locale.country}.svg`}
                 unoptimized={true}
             />
+
             {withName && info?.country ? (
                 <div className={nameClassName}>
                     {info.country}
@@ -58,3 +59,19 @@ export const LocaleFlag = ({
         </>
     );
 };
+
+export type LocaleCountryNameProps = {
+    locale: Locale;
+};
+export function LocaleCountryName({ locale }: LocaleCountryNameProps) {
+    let info: ReturnType<typeof countryLookup> | null = null;
+    try {
+        info = countryLookup(locale.country!);
+    } catch {}
+
+    if (!info) {
+        return null;
+    }
+
+    return info.country;
+}

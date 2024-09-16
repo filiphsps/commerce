@@ -1,16 +1,21 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { FiX } from 'react-icons/fi';
+import { FiCheck, FiChevronDown, FiX } from 'react-icons/fi';
 import useGeoLocation from 'react-ipgeolocation';
 
-import { Locale } from '@/utils/locale';
+import type { OnlineShop } from '@nordcom/commerce-db';
+
+import { getDictionary } from '@/utils/dictionary';
+import { capitalize, Locale, useTranslation } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
 import { usePathname } from 'next/navigation';
 
 import { Button } from '@/components/actionable/button';
-import { LocaleFlag } from '@/components/informational/locale-flag';
+import { LocaleCountryName, LocaleFlag } from '@/components/informational/locale-flag';
 import Link from '@/components/link';
 
+import type { LocaleDictionary } from '@/utils/locale';
 import type { Country, LanguageCode } from '@shopify/hydrogen-react/storefront-api-types';
 
 const DISMISSED_KEY = 'geo-redirect-banner-dismissed';
@@ -18,9 +23,13 @@ const DISMISSED_KEY = 'geo-redirect-banner-dismissed';
 export type GeoRedirectProps = {
     countries: Country[];
     locale: Locale;
+    shop: OnlineShop;
+    i18n: LocaleDictionary;
 };
-export function GeoRedirect({ countries, locale }: GeoRedirectProps) {
+export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoRedirectProps) {
     const [closed, setClosed] = useState(false);
+    const [dropdownActive, setDropdownActive] = useState(false);
+    const [i18n, setI18n] = useState<LocaleDictionary | undefined>();
     const [dismissed, setDismissed] = useState<number | null>(null);
     const pathname = `/${usePathname().split('/').slice(2).join('/')}`;
 
@@ -42,73 +51,125 @@ export function GeoRedirect({ countries, locale }: GeoRedirectProps) {
         }
     }, []);
 
+    useEffect(() => {
+        setDropdownActive(false);
+    }, [pathname]);
+
+    const { t } = useTranslation('common', i18n || defaultI18n);
+
     const location = useGeoLocation();
+    const navigatorLanguage = (navigator.language.split('-').at(0) || 'en').toLowerCase();
+
+    const targetCountry =
+        location.country !== undefined
+            ? countries.find(({ isoCode }) => isoCode.toLowerCase() === location.country!.toLowerCase())
+            : null;
+
+    const targetLanguage = targetCountry
+        ? (
+              targetCountry.availableLanguages.find(({ isoCode }) => isoCode.toLowerCase() === navigatorLanguage) ||
+              targetCountry.availableLanguages[0]
+          ).isoCode.toLowerCase()
+        : null;
+
+    const targetLocale =
+        targetCountry && targetLanguage
+            ? Locale.from({ language: targetLanguage as LanguageCode, country: targetCountry.isoCode })
+            : null;
+
+    // Update dictionary if the predicted locale is different.
+    useEffect(() => {
+        if (!location.country || i18n !== undefined || !targetLocale) {
+            return;
+        }
+
+        getDictionary({ shop, locale: targetLocale }).then(setI18n);
+    }, [location, i18n, targetLocale]);
+
     if (
         dismissed ||
         closed ||
         !location.country ||
         location.country === locale.country ||
+        !targetLocale ||
         /bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent)
     ) {
         return null;
     }
 
-    const targetCountry = countries.find(({ isoCode }) => isoCode.toLowerCase() === location.country!.toLowerCase());
-    if (!targetCountry) {
-        return null;
-    }
-
-    const targetLanguage = (
-        targetCountry.availableLanguages.find(
-            ({ isoCode }) => isoCode.toLowerCase() === (navigator.language.split('-').at(0) || 'en').toLowerCase()
-        ) || targetCountry.availableLanguages[0]
-    ).isoCode.toLowerCase();
-
-    const targetLocale = Locale.from({ language: targetLanguage as LanguageCode, country: targetCountry.isoCode });
-
     return (
-        <div className="sticky inset-x-0 bottom-0 z-50 w-full border-0 border-b-2 border-solid border-gray-300 bg-white px-2 text-black transition-all md:px-2 lg:py-4 2xl:px-0">
-            <div className="relative mx-auto flex w-full flex-col items-start justify-between gap-4 py-2 pt-4 md:max-w-[var(--page-width)] md:px-2 md:py-4 lg:gap-4">
-                <div className="flex w-full flex-wrap items-center gap-x-2 gap-y-0 pr-11 text-lg font-normal leading-tight md:pr-0 md:text-xl lg:gap-x-3">
-                    <div>Looks like you are located in</div>
-                    <div className="flex items-center gap-1 leading-none">
-                        <LocaleFlag
-                            locale={targetLocale}
-                            className="block h-4"
-                            nameClassName="group-hover:text-primary group-hover:underline font-bold"
-                            withName={true}
-                            priority={true}
-                            suffix={'.'}
-                        />
+        <div className="sticky inset-x-0 bottom-0 z-50 w-full border-0 border-b-2 border-solid border-gray-300 bg-gray-100 px-2 py-3 text-black transition-all md:px-2">
+            <div className="relative mx-auto flex w-full flex-col items-start justify-between gap-3 py-2 pt-4 md:grid md:max-w-[var(--page-width)] md:grid-cols-[1fr_auto] md:items-center md:gap-4 md:px-3 md:pr-12">
+                <div className="flex w-full select-none flex-wrap items-center gap-x-2 gap-y-0 pr-11 text-sm font-normal leading-tight md:pr-0 md:text-base lg:gap-x-3">
+                    <div data-nosnippet={true}>
+                        {t(
+                            'geo-redirect-message',
+                            <span className="font-semibold">
+                                <LocaleCountryName locale={targetLocale} />
+                            </span>
+                        )}
                     </div>
-                    <div>Would you like to visit you country&apos;s local store instead?</div>
                 </div>
 
-                <div className="flex w-full flex-wrap justify-start gap-x-2 gap-y-2 pr-16 font-semibold md:gap-x-4 md:pr-0 lg:gap-x-6">
+                <div className="flex w-full grow gap-3 md:w-96">
+                    <div
+                        className={cn(
+                            'relative flex h-10 w-full cursor-pointer select-none flex-col gap-0 rounded-lg border-2 border-solid border-white bg-white shadow',
+                            dropdownActive && 'border-primary rounded-b-none border-b-0',
+                            !dropdownActive && 'hover:border-gray-300'
+                        )}
+                    >
+                        <button
+                            className={cn(
+                                'flex h-10 w-full grow select-none appearance-none items-center justify-start gap-3 rounded-lg p-2 text-base leading-none *:select-none',
+                                dropdownActive && 'hover:border-primary'
+                            )}
+                            onClick={() => setDropdownActive(!dropdownActive)}
+                        >
+                            <div className="w-5">
+                                <FiCheck className="h-4 stroke-1 text-2xl text-inherit" />
+                            </div>
+                            <div className="flex gap-1 text-inherit">
+                                <LocaleFlag
+                                    locale={targetLocale}
+                                    className="block h-4"
+                                    nameClassName="group-hover:text-primary group-hover:underline leading-none h-4"
+                                    withName={true}
+                                    priority={true}
+                                />
+                            </div>
+                            <div className="flex h-4 w-full items-end justify-end leading-none text-inherit">
+                                <FiChevronDown className="stroke-1 text-2xl text-inherit" />
+                            </div>
+                        </button>
+
+                        <Link
+                            href="/countries/"
+                            className={cn(
+                                'absolute inset-x-0 -left-[2px] top-9 flex h-10 w-[calc(100%+4px)] select-none gap-3 rounded-b-lg bg-white p-2 text-base *:select-none hover:bg-gray-100',
+                                dropdownActive && 'border-primary border-2 border-t-0 border-solid shadow-xl',
+                                !dropdownActive && 'hidden'
+                            )}
+                        >
+                            <div className="w-5"></div>
+                            <div>Another country or region</div>
+                        </Link>
+                    </div>
+
                     <Button
                         as={Link}
                         href={pathname}
                         locale={targetLocale}
-                        className="border-primary flex items-center justify-center text-lg transition-colors"
+                        className="border-primary flex h-10 items-center justify-center rounded-lg px-4 py-2 text-base shadow transition-colors"
                     >
-                        Take me there!
-                    </Button>
-                    <Button
-                        onClick={() => {
-                            setClosed(true);
-                            localStorage.setItem(DISMISSED_KEY, Date.now().toString());
-                        }}
-                        styled={false}
-                        className="hover:text-primary text-lg transition-colors"
-                    >
-                        Stay here
+                        {capitalize(t('continue'))}
                     </Button>
                 </div>
 
                 <Button
                     title={'Close'}
                     onClick={() => setClosed(true)}
-                    className="absolute right-0 top-4 flex h-10 w-10 items-start justify-end text-lg text-current opacity-70 invert-[20%] transition-all hover:opacity-100 hover:invert-0 2xl:right-2"
+                    className="absolute right-0 top-4 flex h-10 w-10 items-start justify-end text-lg text-current opacity-70 invert-[20%] transition-all hover:opacity-100 hover:invert-0 md:items-center 2xl:right-2"
                     styled={false}
                 >
                     <FiX className="block size-6 md:size-6" />

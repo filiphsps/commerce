@@ -122,6 +122,7 @@ export default async function CountriesPage({
                         // See https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations#redirecting.
                         redirect(`/${locale}/`);
                     }}
+                    suppressHydrationWarning={true}
                 >
                     <Suspense>
                         <LocaleSelector countries={countries} locale={locale} />

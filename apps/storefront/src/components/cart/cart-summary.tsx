@@ -321,7 +321,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                 {paymentMethods || null}
 
                 <div className={'text-sm leading-snug'}>
-                    <FiLock className={'stroke -mt-1 mr-1 inline h-3 stroke-2'} />
+                    <FiLock className="stroke -mt-1 mr-1 inline h-3 stroke-2" />
                     Safely complete your purchase through Nordcom AB&apos;s trusted partner&apos;s
                     <Link
                         href="https://www.shopify.com/security/pci-compliant"
