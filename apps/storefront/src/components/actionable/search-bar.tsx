@@ -40,3 +40,4 @@ export function SearchBar({ className, ...props }: SearchBarProps) {
         </div>
     );
 }
+SearchBar.displayName = 'Nordcom.Actionable.SearchBar';

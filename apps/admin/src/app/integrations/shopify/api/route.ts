@@ -1,4 +1,4 @@
-import { UnknownApiError } from '@nordcom/commerce-errors';
+import { ProviderFetchError } from '@nordcom/commerce-errors';
 
 import { NextResponse } from 'next/server';
 
@@ -23,7 +23,7 @@ export const GET = async (req: NextRequest, _context: any) => {
 
         return NextResponse.json(
             {
-                errors: [new UnknownApiError((error as any)?.message)]
+                errors: [new ProviderFetchError((error as any)?.message)]
             },
             {
                 status: 500

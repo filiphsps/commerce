@@ -17,11 +17,11 @@ export type PaginationProps = ComponentProps<'nav'> & {
     knownLastPage?: number;
     morePagesAfterKnownLastPage?: boolean;
 };
-const Pagination = ({
+export function Pagination({
     knownFirstPage = 1,
     knownLastPage = 1,
     morePagesAfterKnownLastPage = false
-}: PaginationProps) => {
+}: PaginationProps) {
     const pathname = usePathname();
     const searchParams = useSearchParams();
 
@@ -108,7 +108,5 @@ const Pagination = ({
             ) : null}
         </nav>
     );
-};
-
-Pagination.displayName = 'Nordcom.Pagination';
-export default Pagination;
+}
+Pagination.displayName = 'Nordcom.Actionable.Pagination';

@@ -221,22 +221,6 @@ export class ProviderFetchError extends ApiError {
     }
 }
 
-export type ApiErrorStatusCode = 400 | 405 | 429 | number;
-export const getErrorFromStatusCode = (statusCode: ApiErrorStatusCode) => {
-    switch (statusCode) {
-        case 400:
-            return ApiError;
-        case 404:
-            return NotFoundError;
-        case 405:
-            return MethodNotAllowedError;
-        case 429:
-            return TooManyRequestsError;
-    }
-
-    return ApiError;
-};
-
 export enum GenericErrorKind {
     GENERIC_UNKNOWN_ERROR = 'GENERIC_UNKNOWN_ERROR',
     GENERIC_TODO = 'GENERIC_TODO',

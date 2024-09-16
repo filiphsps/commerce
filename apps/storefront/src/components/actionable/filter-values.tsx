@@ -9,9 +9,13 @@ import type { Filter } from '@shopify/hydrogen-react/storefront-api-types';
 
 export function FilterValues({ id: filterId, type, values }: Pick<Filter, 'type' | 'values' | 'id'>) {
     const pathname = usePathname();
+    const baseUrl = `${pathname}`;
+
     const searchParams = new URLSearchParams(useSearchParams());
 
-    const baseUrl = `${pathname}`;
+    if (values.length <= 0) {
+        return null;
+    }
 
     switch (type) {
         case 'BOOLEAN': {
@@ -56,3 +60,4 @@ export function FilterValues({ id: filterId, type, values }: Pick<Filter, 'type'
         }
     }
 }
+FilterValues.displayName = 'Nordcom.Actionable.Filters.FilterValues';

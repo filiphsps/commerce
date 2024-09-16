@@ -4,8 +4,8 @@ import {
     Error,
     InvalidHandleError,
     NotFoundError,
+    ProviderFetchError,
     TodoError,
-    UnknownApiError,
     UnreachableError
 } from '@nordcom/commerce-errors';
 
@@ -201,8 +201,8 @@ export const CollectionApi = async (
             }
         );
 
-        if ((errors || []).length > 0) {
-            throw new UnknownApiError();
+        if (errors && errors.length > 0) {
+            throw new ProviderFetchError(errors.map((e: any) => e.message).join('\n'));
         } else if (!data?.collection) {
             throw new NotFoundError(`"Collection" with the handle "${handle}" on shop "${shop.id}"`);
         }

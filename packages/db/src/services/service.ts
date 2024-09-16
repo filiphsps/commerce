@@ -1,4 +1,4 @@
-import { UnknownApiError } from '@nordcom/commerce-errors';
+import { TodoError } from '@nordcom/commerce-errors';
 
 import { db } from '../db';
 
@@ -91,7 +91,7 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
 
         let res = await req.exec();
         if (((res as any) || []).length <= 0) {
-            throw new UnknownApiError('No data found');
+            throw new TodoError('No data found');
         }
 
         if ((id as any) || (count && count === 1)) {
@@ -107,7 +107,7 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
     ): Promise<DocType> {
         const res = this.model.findById(id, projection, options);
         if (!(res as any)) {
-            throw new UnknownApiError('No data found');
+            throw new TodoError('No data found');
         }
 
         return res;
@@ -120,7 +120,7 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
     ): Promise<DocType> {
         const res = this.model.findOneAndUpdate(filter, update, options);
         if (!(res as any)) {
-            throw new UnknownApiError('No data found');
+            throw new TodoError('No data found');
         }
 
         return res;

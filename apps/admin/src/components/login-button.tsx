@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-import { UnknownApiError } from '@nordcom/commerce-errors';
+import { TodoError } from '@nordcom/commerce-errors';
 import { Button } from '@nordcom/nordstar';
 
 import GithubLight from '@/static/icons/light/github.svg';
@@ -52,7 +52,7 @@ export default function LoginButton({ provider = 'github', className, ...props }
             break;
         }
         default: {
-            throw new UnknownApiError();
+            throw new TodoError();
         }
     }
 
@@ -74,7 +74,7 @@ export default function LoginButton({ provider = 'github', className, ...props }
                         break;
                     }
                     default: {
-                        throw new UnknownApiError();
+                        throw new TodoError();
                     }
                 }
             }}

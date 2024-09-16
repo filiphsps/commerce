@@ -1,4 +1,4 @@
-import { Error, MethodNotAllowedError, UnknownApiError } from '@nordcom/commerce-errors';
+import { Error, MethodNotAllowedError, TodoError } from '@nordcom/commerce-errors';
 
 import { findShopByDomainOverHttp } from '@/api/shop';
 import { revalidateTag } from 'next/cache';
@@ -84,7 +84,7 @@ const revalidate = async (req: NextRequest, { domain }: RevalidateApiRouteParams
             }
         }
 
-        const ex = new UnknownApiError();
+        const ex = new TodoError();
         return NextResponse.json(
             {
                 status: ex.statusCode,

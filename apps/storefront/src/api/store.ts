@@ -1,5 +1,5 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { Error, NoLocalesAvailableError, NotFoundError, UnknownApiError } from '@nordcom/commerce-errors';
+import { Error, NoLocalesAvailableError, NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
 
 import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
@@ -106,7 +106,7 @@ export const LocaleApi = async ({ api }: { api: AbstractApi }) => {
 
         return data?.localization!;
     } catch (error: unknown) {
-        throw new UnknownApiError((error as any)?.message);
+        throw new ProviderFetchError((error as any)?.message);
     }
 };
 

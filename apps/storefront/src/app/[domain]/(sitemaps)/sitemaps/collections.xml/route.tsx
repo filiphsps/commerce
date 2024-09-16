@@ -1,4 +1,4 @@
-import { Error, UnknownApiError } from '@nordcom/commerce-errors';
+import { Error, TodoError } from '@nordcom/commerce-errors';
 
 import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
@@ -72,7 +72,7 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
                 );
         }
 
-        const ex = new UnknownApiError();
+        const ex = new TodoError();
         return NextResponse.json(
             {
                 status: ex.statusCode,

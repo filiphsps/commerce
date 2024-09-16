@@ -38,3 +38,4 @@ export const Button = <ComponentGeneric extends ElementType = 'button'>({
         />
     );
 };
+Button.displayName = 'Nordcom.Actionable.Button';

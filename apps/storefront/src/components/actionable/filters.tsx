@@ -36,3 +36,4 @@ export function Filters({ filters, className, ...props }: FiltersProps) {
         </section>
     );
 }
+Filters.displayName = 'Nordcom.Actionable.Filters';
