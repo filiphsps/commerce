@@ -72,6 +72,12 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         });
     }
 
+    // TODO: Do we need to account for the rewrite/reverse proxy?
+    if (newUrl.pathname.startsWith(`/${hostname}/`)) {
+        newUrl.pathname = newUrl.pathname.replace(`/${hostname}/`, `/`);
+        return NextResponse.redirect(newUrl, { status: 301 });
+    }
+
     // Sort the search params to improve caching.
     newUrl.searchParams.sort();
 
@@ -169,7 +175,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
 
     // Redirect if `newURL` is different from `req.nextUrl`.
     if (newUrl.href !== req.nextUrl.href) {
-        return setCookies(NextResponse.redirect(newUrl, { status: 302 }), cookies);
+        return setCookies(NextResponse.redirect(newUrl, { status: 301 }), cookies);
     }
 
     // Rewrite index to use the `homepage` handle.
@@ -178,5 +184,14 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     }
 
     const target = `${newUrl.origin}/${hostname}${newUrl.pathname}${newUrl.searchParams.size > 0 ? '?' : ''}${newUrl.searchParams.toString()}`;
-    return setCookies(NextResponse.rewrite(new URL(target, req.url)), cookies);
+
+    const headers = new Headers(req.headers);
+    headers.set('x-service', 'nordcom-commerce');
+
+    return setCookies(
+        NextResponse.rewrite(new URL(target, req.url), {
+            headers: headers
+        }),
+        cookies
+    );
 };
