@@ -24,7 +24,6 @@ export const useCartUtils = ({
     cartError: any | undefined;
 } => {
     const [error, setError] = useState<Error | undefined>();
-    const [createTimeout, setCreateTimeout] = useState<ReturnType<typeof setInterval> | undefined>();
     const router = useRouter();
     const pathname = usePathname();
     const query = useSearchParams();
@@ -36,41 +35,8 @@ export const useCartUtils = ({
         discountCodes,
         discountCodesUpdate,
         cartReady,
-        error: cartError,
-        cartCreate
+        error: cartError
     } = useCart();
-
-    // Handle uninitialized carts and cart creation timeout.
-    useEffect(() => {
-        const onTimeout = () => {
-            if (['interactive', 'complete'].includes(document.readyState)) {
-                setCreateTimeout(() => {
-                    clearInterval(createTimeout);
-                    return setTimeout(onTimeout, 5000);
-                });
-                return;
-            }
-
-            if (status !== 'uninitialized') {
-                return;
-            }
-
-            console.warn('Cart failed to initialize or does not exist, creating a new cart...');
-            cartCreate({
-                buyerIdentity: {
-                    countryCode: locale.country
-                }
-            });
-        };
-
-        setCreateTimeout(setTimeout(onTimeout, 5000));
-
-        return () =>
-            setCreateTimeout(() => {
-                clearInterval(createTimeout);
-                return undefined;
-            });
-    }, [status]);
 
     // Handle country code change
     useEffect(() => {

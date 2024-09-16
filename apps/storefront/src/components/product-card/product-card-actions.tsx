@@ -71,8 +71,10 @@ const ProductCardActions = ({ i18n, data: product, selectedVariant }: ProductCar
         <AddToCart
             className={cn(baseStyles, 'bg-primary text-primary-foreground flex w-full items-center justify-center')}
             quantity={1}
-            data={product}
-            variant={selectedVariant}
+            data={{
+                product,
+                selectedVariant
+            }}
             disabled={!cartReady}
             i18n={i18n}
         />

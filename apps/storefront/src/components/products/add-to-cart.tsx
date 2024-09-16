@@ -1,8 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 'use client';
 
-import styles from '@/components/products/add-to-cart.module.scss';
-
 import { type HTMLProps, useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from '@/utils/locale';
@@ -10,7 +8,7 @@ import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 import { useTrackable } from '@/utils/trackable';
-import { useCart, useProduct } from '@shopify/hydrogen-react';
+import { useCart } from '@shopify/hydrogen-react';
 import { usePathname } from 'next/navigation';
 import { toast } from 'sonner';
 
@@ -20,21 +18,27 @@ import { useShop } from '@/components/shop/provider';
 import type { Product, ProductVariant } from '@/api/product';
 import type { LocaleDictionary } from '@/utils/locale';
 
-const AddToCartSkeleton = () => {
-    return <Button disabled={true} className={styles['add-to-cart']} />;
-};
-AddToCartSkeleton.displayName = 'Nordcom.Products.AddToCart.Skeleton';
-
 export type AddToCartProps = {
     i18n: LocaleDictionary;
+    disabled?: boolean;
     quantity: number;
-
-    data?: Product;
-    variant?: ProductVariant;
+    data: {
+        product?: Product;
+        selectedVariant?: ProductVariant;
+    };
 } & Omit<HTMLProps<HTMLButtonElement>, 'data'>;
 
 // eslint-disable-next-line unused-imports/no-unused-vars
-const AddToCart = ({ children, className, i18n, quantity = 0, type, data, variant, ...props }: AddToCartProps) => {
+export function AddToCart({
+    i18n,
+    disabled: isDisabled = false,
+    quantity = 0,
+    data: { product, selectedVariant } = {},
+    children,
+    className,
+    type,
+    ...props
+}: AddToCartProps) {
     const { locale } = useShop();
 
     const { t } = useTranslation('common', i18n);
@@ -45,9 +49,9 @@ const AddToCart = ({ children, className, i18n, quantity = 0, type, data, varian
 
     const [animation, setAnimation] = useState<NodeJS.Timeout | undefined>();
     // This is a bit of a hack, but it works.
-    const { selectedVariant, product } = data ? { selectedVariant: variant, product: data } : useProduct();
-    const { cartReady, linesAdd, status } = useCart();
-    const ready = cartReady && status !== 'updating';
+    const { cartReady, linesAdd, status = 'fetching' } = useCart();
+
+    const ready = selectedVariant?.availableForSale && cartReady && !['updating'].includes(status);
 
     const add = useCallback(() => {
         if (!ready || !product || !selectedVariant) {
@@ -67,8 +71,8 @@ const AddToCart = ({ children, className, i18n, quantity = 0, type, data, varian
             path,
             gtm: {
                 ecommerce: {
-                    currency: selectedVariant.price?.currencyCode!,
-                    value: safeParseFloat(0, selectedVariant.price?.amount) * quantity,
+                    currency: selectedVariant.price.currencyCode!,
+                    value: safeParseFloat(0, selectedVariant.price.amount) * quantity,
                     items: [
                         {
                             item_id: ProductToMerchantsCenterId({
@@ -85,8 +89,8 @@ const AddToCart = ({ children, className, i18n, quantity = 0, type, data, varian
                             product_id: product.id,
                             variant_id: selectedVariant.id,
                             sku: selectedVariant.sku || undefined,
-                            currency: selectedVariant.price?.currencyCode!,
-                            price: safeParseFloat(undefined, selectedVariant.price?.amount!),
+                            currency: selectedVariant.price.currencyCode!,
+                            price: safeParseFloat(undefined, selectedVariant.price.amount!),
                             quantity
                         }
                     ]
@@ -131,7 +135,7 @@ const AddToCart = ({ children, className, i18n, quantity = 0, type, data, varian
         }
     }, [animation, selectedVariant]);
 
-    const disabled = !ready || !selectedVariant?.availableForSale || !quantity;
+    const disabled = isDisabled || !ready || quantity <= 0;
 
     return (
         <Button
@@ -150,8 +154,12 @@ const AddToCart = ({ children, className, i18n, quantity = 0, type, data, varian
             {children || label}
         </Button>
     );
-};
-
+}
 AddToCart.displayName = 'Nordcom.Products.AddToCart';
-AddToCart.skeleton = AddToCartSkeleton;
+
+AddToCart.skeleton = function AddToCartSkeleton({}: {}) {
+    return <Button aria-disabled={true} disabled={true} as="button" />;
+};
+(AddToCart.skeleton as any).displayName = 'Nordcom.Products.AddToCart.Skeleton';
+
 export default AddToCart;

@@ -42,8 +42,29 @@
         "phone-tooltip": "Ring oss"
     },
     "product": {
-        "recommendations": "Andre kunder liker også disse produktene sammen",
-        "SKUs": "Artikkelnummer",
-        "add-to-wishlist": "Legg til i ønskeliste"
+        "add-to-wishlist": "Legg til i ønskelisten",
+        "attributes": "Egenskaper",
+        "barcode": "Strekkode",
+        "browse-all-products-by-brand": "Bla gjennom alle produkter av {0}",
+        "by": "av",
+        "dispatch-within-n-business-days": "Send inn innen {0} virkedager",
+        "in-stock-and-available": "I lager og tilgjengelig",
+        "in-stock": "I lager",
+        "ingredients": "Ingredienser",
+        "n-in-stock-and-available": "{0} i lager og tilgjengelig",
+        "n-in-stock": "{0} i lager",
+        "new": "Ny",
+        "nutritional-content": "Ekstra nyttig innhold",
+        "percentage-off": "{0}% AVTALE",
+        "recommendations": "Anbefalinger",
+        "save-n-per-item": "Spare {0} per vare!",
+        "save-n-percent": "Spare {0}%",
+        "sku": "SKU",
+        "skus": "SKUs",
+        "this-product-is-vegan": "Dette produktet er vegansk!",
+        "vegan": "Vegansk",
+        "what-a-deal": "Hva er dette?",
+        "you-may-also-like": "Du kanskje også liker",
+        "you-save": "Du sparer"
     }
 }

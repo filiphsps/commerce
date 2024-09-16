@@ -40,9 +40,9 @@ export async function ProductIngredients({ locale, data: product, className = ''
     }
 
     return (
-        <Card className={cn(COMMON_STYLES, className)} border={true}>
+        <Card className={cn(COMMON_STYLES, 'w-min', className)} border={true}>
             <Label className={cn(LABEL_STYLES)}>{t('ingredients')}</Label>
-            <p className={cn('text-sm font-medium leading-snug')}>{parsedIngredients}</p>
+            <p className={cn('whitespace-pre-wrap text-sm font-medium leading-snug')}>{parsedIngredients}</p>
         </Card>
     );
 }
@@ -114,11 +114,7 @@ export async function ProductDetails({ locale, data: product }: ProductDetailsPr
     return (
         <>
             <Suspense fallback={<div className="h-12 w-full" data-skeleton />}>
-                <ProductIngredients
-                    locale={locale}
-                    data={product}
-                    className={cn((variantDetails || []).length === 1 && 'xl:max-w-96')}
-                />
+                <ProductIngredients locale={locale} data={product} />
             </Suspense>
 
             {parsedFlavors ? (

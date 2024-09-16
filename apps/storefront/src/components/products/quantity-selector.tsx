@@ -51,7 +51,7 @@ const QuantitySelector = ({
     i18n,
     value: quantity = 0,
     update,
-    disabled: isDisabled,
+    disabled: isDisabled = false,
     allowDecreaseToZero = false,
     buttonClassName = '',
     inputClassName = '',
@@ -61,7 +61,7 @@ const QuantitySelector = ({
     const [quantityValue, setQuantityValue] = useState(quantity.toString() || '1');
 
     const { cartReady, status } = useCart();
-    const ready = cartReady && status !== 'updating';
+    const ready = cartReady && !['updating'].includes(status);
 
     const inputRef = useRef<HTMLInputElement>(null);
 

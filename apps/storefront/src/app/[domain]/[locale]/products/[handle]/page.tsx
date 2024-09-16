@@ -13,6 +13,7 @@ import { ProductApi, ProductsApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
+import { showProductQuantityBreaks } from '@/utils/flags';
 import { isValidHandle } from '@/utils/handle';
 import { Locale, useTranslation } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
@@ -49,7 +50,7 @@ import type { ReactNode } from 'react';
 import type { ProductGroup, WithContext } from 'schema-dts';
 
 export const runtime = 'nodejs';
-export const dynamic = 'force-static'; // TODO: Figure out a better way to deal with query params.
+export const dynamic = 'auto';
 export const dynamicParams = true;
 export const revalidate = false;
 
@@ -184,6 +185,10 @@ async function Badges({ product, i18n }: { product: Product; i18n: LocaleDiction
     }
 
     return <div className="flex items-center gap-1 empty:hidden">{badges}</div>;
+}
+
+async function ProductContentWrapper({ i18n, product }: { i18n: LocaleDictionary; product: Product }) {
+    return <ProductContent product={product} i18n={i18n} showQuantityBreaks={await showProductQuantityBreaks()} />;
 }
 
 export default async function ProductPage({
@@ -428,7 +433,7 @@ export default async function ProductPage({
                                 key={`products.${handle}.details.content`}
                                 fallback={<div className="h-4 w-full" data-skeleton />}
                             >
-                                <ProductContent product={product} i18n={i18n} />
+                                <ProductContentWrapper i18n={i18n} product={product} />
                             </Suspense>
                         </Card>
 

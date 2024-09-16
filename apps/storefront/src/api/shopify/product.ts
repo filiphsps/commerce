@@ -185,6 +185,32 @@ export const PRODUCT_FRAGMENT = /* GraphQL */ `
                     name
                     value
                 }
+
+                quantityBreaks: metafield(namespace: "nordcom-commerce", key: "quantity_breaks") {
+                    id
+                    namespace
+                    reference {
+                        ... on Metaobject {
+                            handle
+                            steps: field(key: "steps") {
+                                references(first: 25) {
+                                    edges {
+                                        node {
+                                            ... on Metaobject {
+                                                minimumQuantity: field(key: "minimum_quantity") {
+                                                    value
+                                                }
+                                                value: field(key: "value") {
+                                                    value
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }

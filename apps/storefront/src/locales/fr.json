@@ -53,8 +53,29 @@
         "wishlist": "Liste des souhaits"
     },
     "product": {
+        "add-to-wishlist": "Ajouter à la liste des souhaits",
+        "attributes": "Attributs",
+        "barcode": "Code de barres",
+        "browse-all-products-by-brand": "Explorer tous les produits par {0}",
+        "by": "par",
+        "dispatch-within-n-business-days": "Envoi dans les {0} jours ouvrables",
+        "in-stock-and-available": "En stock et disponible",
+        "in-stock": "En stock",
+        "ingredients": "Ingrédients",
+        "n-in-stock-and-available": "{0} en stock et disponible",
+        "n-in-stock": "{0} en stock",
+        "new": "Nouveau",
+        "nutritional-content": "Contenu nutritif",
+        "percentage-off": "{0}% OFF",
         "recommendations": "D'autres clients ont également apprécié ces produits ensemble",
-        "SKUs": "SKUs",
-        "add-to-wishlist": "Ajouter à la liste des souhaits"
+        "save-n-per-item": "{0} par article !",
+        "save-n-percent": "Save {0}%",
+        "sku": "SKU",
+        "skus": "SKUs",
+        "this-product-is-vegan": "Ce produit est végétalien !",
+        "vegan": "Végétalien",
+        "what-a-deal": "Quoi de mieux ?",
+        "you-may-also-like": "Vous pourriez aussi aimer",
+        "you-save": "Vous économisez"
     }
 }

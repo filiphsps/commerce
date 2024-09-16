@@ -10,6 +10,31 @@ import type {
 
 export type ProductVariant = {
     metafields: ShopifyVariant['metafields'] | undefined;
+
+    quantityBreaks?:
+        | {
+              id: string;
+              namespace: string;
+              reference: {
+                  handle: string;
+                  steps: {
+                      references: {
+                          edges: {
+                              node: {
+                                  minimumQuantity: {
+                                      value: string;
+                                  };
+                                  value: {
+                                      value: string;
+                                  };
+                              };
+                          }[];
+                      };
+                  };
+              };
+          }
+        | undefined
+        | null;
 } & OmitTypeName<Omit<ShopifyVariant, 'compareAtPriceV2' | 'priceV2' | 'metafields'>>;
 
 export type Product = {
@@ -108,3 +133,21 @@ export const productType = (product: Product): ProductType => {
 };
 
 export type ProductSorting = ProductSortKeys;
+
+export function transformQuantityBreaks(quantityBreaks: ProductVariant['quantityBreaks']) {
+    if (!quantityBreaks) {
+        return null;
+    }
+
+    try {
+        const { reference } = quantityBreaks;
+        const { steps } = reference;
+        return steps.references.edges.map(({ node: { minimumQuantity, value } }) => ({
+            minimumQuantity: Number.parseInt(minimumQuantity.value),
+            value: Number.parseFloat(value.value)
+        }));
+    } catch {
+        // TODO: Handle errors properly.
+        return null;
+    }
+}
