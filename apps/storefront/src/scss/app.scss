@@ -182,4 +182,14 @@ footer address a:hover {
 
 #bloggy--article {
     max-width: unset !important;
+
+    .bggle_line {
+        width: 100% !important;
+    }
+
+    @media (max-width: 950px) {
+        .bggl-recipe-infos {
+            max-width: 100% !important;
+        }
+    }
 }

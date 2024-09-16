@@ -83,7 +83,7 @@ export default async function BlogPage({ params: { domain, locale: localeData } 
     const { t } = useTranslation('common', i18n);
 
     return (
-        <>
+        <section className="flex flex-col gap-2">
             <Heading
                 title={page?.title || blog.title || t('blog')}
                 subtitle={page?.description || blog.seo?.description}
@@ -92,6 +92,6 @@ export default async function BlogPage({ params: { domain, locale: localeData } 
             <BlogContent blog={blog} locale={locale} i18n={i18n} />
 
             {page?.slices && page.slices.length > 0 && <CMSContent shop={shop} locale={locale} handle={'blog'} />}
-        </>
+        </section>
     );
 }

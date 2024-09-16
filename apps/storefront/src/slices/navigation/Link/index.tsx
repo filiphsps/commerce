@@ -1,14 +1,21 @@
+'use client';
+
 import { linkResolver } from '@/utils/prismic';
 import { cn } from '@/utils/tailwind';
 import { asLink, type Content } from '@prismicio/client';
 import { type SliceComponentProps } from '@prismicio/react';
+import { usePathname } from 'next/navigation';
 
 import { LINK_ACTIVE_STYLES, LINK_STYLES } from '@/components/header/header-navigation';
 import Link from '@/components/link';
+import { useShop } from '@/components/shop/provider';
 import { PrismicText } from '@/components/typography/prismic-text';
 
-export type LinkProps = {} & SliceComponentProps<Content.LinkSlice, { isHeader: boolean; pathname: string }>;
-const LinkSlice = ({ slice, context: { isHeader = true, pathname } }: LinkProps) => {
+export type LinkProps = {} & SliceComponentProps<Content.LinkSlice, { isHeader: boolean }>;
+const LinkSlice = ({ slice, context: { isHeader = true } }: LinkProps) => {
+    const { locale } = useShop();
+    const pathname = usePathname().slice(1).split('/').slice(1).join('/') || `/${locale.code}/`;
+
     // Don't render the link slice as a standalone menu.
     if (!isHeader) {
         return null;
@@ -25,11 +32,7 @@ const LinkSlice = ({ slice, context: { isHeader = true, pathname } }: LinkProps)
         target = `${target}/`;
     }
 
-    let active = target ? pathname.toLowerCase().includes(target.toLowerCase()) : false;
-    // Handle homepage.
-    if (active && target === '/') {
-        active = pathname.split('/').length === 3;
-    }
+    let active = target ? target.toLowerCase().endsWith(pathname.toLowerCase()) : false;
 
     let linkStyles: string | undefined;
     switch (variant as any) {

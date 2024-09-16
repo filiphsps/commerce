@@ -1,8 +1,9 @@
 import 'server-only';
 
-import { type Locale, type LocaleDictionary, useTranslation } from '@/utils/locale';
+import { capitalize, type Locale, type LocaleDictionary, useTranslation } from '@/utils/locale';
 
 import { Button } from '@/components/actionable/button';
+import { Card } from '@/components/layout/card';
 import Link from '@/components/link';
 import { Content } from '@/components/typography/content';
 
@@ -17,7 +18,7 @@ export default async function BlogContent({ locale, i18n, blog }: BlogContentPro
     const { t } = useTranslation('common', i18n);
 
     return (
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-3">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-3">
             {blog.articles.edges.map(({ node: article }) => {
                 const href = `/blog/${article.handle}/`;
 
@@ -34,13 +35,18 @@ export default async function BlogContent({ locale, i18n, blog }: BlogContentPro
                     .join('');
 
                 return (
-                    <article
-                        key={article.id}
-                        className="flex flex-col gap-2 rounded-lg border-2 border-solid border-gray-300 p-2 md:p-3"
-                    >
-                        <header className="flex w-full items-center justify-between leading-none">
+                    <Card key={article.id} as="article" className="flex flex-col gap-2" border={true}>
+                        {article.image?.url ? (
                             <div
-                                className="text-sm font-semibold leading-none text-gray-600"
+                                role="presentation"
+                                className="bg-gray h-24 w-full rounded-lg bg-cover bg-center bg-no-repeat object-cover object-center"
+                                style={{ backgroundImage: `url('${article.image.url}')` }}
+                            />
+                        ) : null}
+
+                        <header className="flex h-4 w-full items-start justify-between overflow-visible leading-none">
+                            <div
+                                className="text-sm font-semibold leading-none text-gray-500"
                                 suppressHydrationWarning={true}
                             >
                                 {publishedAt}
@@ -60,7 +66,7 @@ export default async function BlogContent({ locale, i18n, blog }: BlogContentPro
                             key={article.id}
                             href={href}
                             locale={locale}
-                            className="hover:text-primary block w-full text-pretty text-xl font-semibold"
+                            className="hover:text-primary block w-full text-pretty pr-7 text-xl font-semibold"
                         >
                             {article.title}
                         </Link>
@@ -68,9 +74,9 @@ export default async function BlogContent({ locale, i18n, blog }: BlogContentPro
                         <Content className="grow" html={article.excerptHtml} />
 
                         <Button className="py-3 capitalize leading-tight" as={Link} href={href} locale={locale}>
-                            {t('continue-reading')}
+                            {capitalize(t('continue-reading'))}
                         </Button>
-                    </article>
+                    </Card>
                 );
             })}
         </div>

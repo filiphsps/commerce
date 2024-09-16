@@ -85,7 +85,7 @@ export async function generateViewport({ params: { domain } }: { params: LayoutP
         width: 'device-width',
         initialScale: 1,
         interactiveWidget: 'resizes-content',
-        themeColor: branding?.secondary.color
+        themeColor: branding?.primary.color
     };
 }
 

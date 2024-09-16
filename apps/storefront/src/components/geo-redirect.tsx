@@ -104,7 +104,7 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
                     <div data-nosnippet={true}>
                         {t(
                             'geo-redirect-message',
-                            <span className="font-semibold">
+                            <span className="font-semibold" key={targetLocale.code}>
                                 <LocaleCountryName locale={targetLocale} />
                             </span>
                         )}

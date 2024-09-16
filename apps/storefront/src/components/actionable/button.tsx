@@ -26,7 +26,6 @@ export const Button = <ComponentGeneric extends ElementType = 'button'>({
     return (
         <Tag
             {...props}
-            suppressHydrationWarning={true}
             className={cn(
                 'transition-color appearance-none duration-150',
                 styled &&
@@ -34,6 +33,8 @@ export const Button = <ComponentGeneric extends ElementType = 'button'>({
                 props.disabled && 'pointer-events-none cursor-not-allowed',
                 className
             )}
+            suppressHydrationWarning={true}
+            data-nosnippet={true}
         />
     );
 };

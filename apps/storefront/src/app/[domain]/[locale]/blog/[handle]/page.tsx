@@ -129,7 +129,7 @@ export default async function ArticlePage({
 
         return (
             <article className="prose flex flex-col gap-6 md:max-w-[800px]">
-                <div className="flex flex-col gap-2">
+                <header className="flex flex-col gap-2">
                     <Label
                         as="div"
                         className="text-sm font-semibold leading-snug text-gray-600"
@@ -139,10 +139,18 @@ export default async function ArticlePage({
                     </Label>
 
                     <Heading
-                        titleClassName="text-3xl lg:text-4xl font-semibold leading-tight text-pretty"
+                        titleClassName="text-3xl lg:text-4xl font-semibold leading-tight text-pretty text-black mb-0"
                         title={article.title}
                     />
-                </div>
+                </header>
+
+                {article.image?.url ? (
+                    <div
+                        role="presentation"
+                        className="bg-gray h-32 w-full bg-cover bg-center bg-no-repeat object-cover object-center"
+                        style={{ backgroundImage: `url('${article.image.url}')` }}
+                    />
+                ) : null}
 
                 <Content className="max-w-none" html={article.contentHtml} />
 

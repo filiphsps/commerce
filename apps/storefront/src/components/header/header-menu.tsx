@@ -5,7 +5,6 @@ import { type HTMLProps } from 'react';
 import { components as menuSlices } from '@/slices/navigation';
 import { cn } from '@/utils/tailwind';
 import { SliceZone } from '@prismicio/react';
-import { usePathname } from 'next/navigation';
 
 import { useHeaderMenu } from '@/components/header/header-provider';
 
@@ -18,8 +17,6 @@ type HeaderMenuProps = {
     slices: MenuDocumentData['slices'];
 } & HTMLProps<HTMLDivElement>;
 export const HeaderMenu = ({ slices, className, ...props }: HeaderMenuProps) => {
-    const pathname = usePathname();
-
     const { menu } = useHeaderMenu();
     if (!menu) {
         return <div className={cn(SHARED_STYLES, 'h-0 border-0', className)} {...props} />;
@@ -27,7 +24,7 @@ export const HeaderMenu = ({ slices, className, ...props }: HeaderMenuProps) => 
 
     return (
         <div className={cn(SHARED_STYLES, className)} {...props}>
-            <SliceZone slices={slices} components={menuSlices} context={{ isHeader: false, pathname, menu }} />
+            <SliceZone slices={slices} components={menuSlices} context={{ isHeader: false, menu }} />
         </div>
     );
 };

@@ -18,7 +18,7 @@ const PageContent = ({ as: Tag = 'div', primary, className, ...props }: PageCont
         <Tag
             {...props}
             className={cn(
-                'mx-auto flex w-screen max-w-full flex-col gap-2 text-base empty:hidden md:w-[var(--page-width)] md:gap-4',
+                'mx-auto flex w-screen max-w-full flex-col gap-2 text-base empty:hidden md:w-[var(--page-width)] md:max-w-full md:gap-4',
                 primary && 'min-h-[calc(100vh-10rem)] gap-8 p-2 [grid-area:content] md:gap-12 md:p-3',
                 className
             )}
