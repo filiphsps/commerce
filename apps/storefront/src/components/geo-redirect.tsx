@@ -29,11 +29,16 @@ export type GeoRedirectProps = {
 export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoRedirectProps) {
     const [closed, setClosed] = useState(false);
     const [dropdownActive, setDropdownActive] = useState(false);
+    const [navigatorLanguage, setNavigatorLanguage] = useState<string | undefined>();
+    const [userAgent, setUserAgent] = useState<string | undefined>();
     const [i18n, setI18n] = useState<LocaleDictionary | undefined>();
     const [dismissed, setDismissed] = useState<number | null>(null);
     const pathname = `/${usePathname().split('/').slice(2).join('/')}`;
 
     useEffect(() => {
+        setNavigatorLanguage((navigator.language.split('-').at(0) || 'en').toLowerCase());
+        setUserAgent(navigator.userAgent);
+
         if (!(localStorage as any)) {
             return;
         }
@@ -58,7 +63,6 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
     const { t } = useTranslation('common', i18n || defaultI18n);
 
     const location = useGeoLocation();
-    const navigatorLanguage = ((navigator as Navigator | undefined)?.language.split('-').at(0) || 'en').toLowerCase();
 
     const targetCountry =
         location.country !== undefined
@@ -79,12 +83,12 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
 
     // Update dictionary if the predicted locale is different.
     useEffect(() => {
-        if (!location.country || i18n !== undefined || !targetLocale) {
+        if (!location.country || i18n !== undefined || !targetLocale || !navigatorLanguage) {
             return;
         }
 
         getDictionary({ shop, locale: targetLocale }).then(setI18n);
-    }, [location, i18n, targetLocale]);
+    }, [location, i18n, targetLocale, navigatorLanguage]);
 
     if (
         dismissed ||
@@ -92,7 +96,8 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
         !location.country ||
         location.country === locale.country ||
         !targetLocale ||
-        /bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent)
+        !userAgent ||
+        /bot|googlebot|crawler|spider|robot|crawling/i.test(userAgent)
     ) {
         return null;
     }
