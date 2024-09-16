@@ -8,8 +8,8 @@ import { Shop } from '@nordcom/commerce-db';
 import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
 
 import { findShopByDomainOverHttp } from '@/api/shop';
-import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
-import { CountriesApi, LocaleApi, LocalesApi } from '@/api/store';
+import { ShopifyApolloApiClient } from '@/api/shopify';
+import { CountriesApi, LocaleApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { CssVariablesProvider, getBrandingColors } from '@/utils/css-variables';
 import { primaryFont } from '@/utils/fonts';
@@ -55,7 +55,22 @@ export async function generateStaticParams(): Promise<LayoutParams[]> {
                         return null as any as LayoutParams;
                     }
 
-                    try {
+                    return [
+                        {
+                            domain: shop.domain,
+                            locale: Locale.from('en-US').code
+                        },
+                        {
+                            domain: shop.domain,
+                            locale: Locale.from('en-CA').code
+                        },
+                        {
+                            domain: shop.domain,
+                            locale: Locale.from('en-GB').code
+                        }
+                    ];
+
+                    /*try {
                         const api = await ShopifyApiClient({ shop });
                         const locales = await LocalesApi({ api });
 
@@ -65,7 +80,7 @@ export async function generateStaticParams(): Promise<LayoutParams[]> {
                         }));
                     } catch {
                         return [];
-                    }
+                    }*/
                 } catch (error: unknown) {
                     if (!Error.isNotFound(error)) {
                         console.error(error);

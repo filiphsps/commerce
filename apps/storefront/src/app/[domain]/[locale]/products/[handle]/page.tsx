@@ -70,7 +70,7 @@ export async function generateStaticParams({
         const shop = await findShopByDomainOverHttp(domain);
         const api = await ShopifyApiClient({ shop, locale });
 
-        const { products } = await ProductsApi({ api });
+        const { products } = await ProductsApi({ api, limit: 5 });
 
         return products.map(({ node: { handle } }) => ({ handle }));
     } catch (error: unknown) {
