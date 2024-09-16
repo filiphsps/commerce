@@ -109,7 +109,7 @@
         "critters": "0.0.24",
         "dotenv": "16.4.5",
         "eslint-config-next": "15.0.0-canary.150",
-        "eslint": "8.57.0",
+        "eslint": "8.57.1",
         "graphql": "16.9.0",
         "happy-dom": "15.7.4",
         "postcss": "8.4.47",
