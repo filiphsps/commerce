@@ -67,6 +67,7 @@ export const ProductActionsContainer = ({ className, i18n, ...props }: ProductAc
 
             <Suspense fallback={<AddToCart.skeleton />}>
                 <AddToCart
+                    redirect={true}
                     className="py-3 text-base lg:py-4 lg:text-lg"
                     quantity={quantity}
                     i18n={i18n}

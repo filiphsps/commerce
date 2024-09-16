@@ -9,7 +9,7 @@ import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 import { useTrackable } from '@/utils/trackable';
 import { useCart } from '@shopify/hydrogen-react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/actionable/button';
@@ -20,6 +20,7 @@ import type { LocaleDictionary } from '@/utils/locale';
 
 export type AddToCartProps = {
     i18n: LocaleDictionary;
+    redirect?: boolean;
     disabled?: boolean;
     quantity: number;
     data: {
@@ -31,6 +32,7 @@ export type AddToCartProps = {
 // eslint-disable-next-line unused-imports/no-unused-vars
 export function AddToCart({
     i18n,
+    redirect = false,
     disabled: isDisabled = false,
     quantity = 0,
     data: { product, selectedVariant } = {},
@@ -44,6 +46,7 @@ export function AddToCart({
     const { t } = useTranslation('common', i18n);
     const { t: tCart } = useTranslation('cart', i18n);
     const path = usePathname();
+    const router = useRouter();
 
     const { postEvent } = useTrackable();
 
@@ -106,6 +109,10 @@ export function AddToCart({
                 setAnimation(() => undefined);
             }, 3000)
         );
+
+        if (redirect) {
+            router.push('/cart/');
+        }
     }, [linesAdd, selectedVariant, quantity, ready]);
 
     const [label, setLabel] = useState<string>(t('add-to-cart'));
