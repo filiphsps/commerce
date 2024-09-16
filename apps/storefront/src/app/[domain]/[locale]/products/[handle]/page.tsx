@@ -374,8 +374,8 @@ export default async function ProductPage({
                     </section>
                 </Suspense>
 
-                <Suspense key={`products.${handle}.details`} fallback={<section className="w-full xl:max-w-[38rem]" />}>
-                    <section className="flex w-full min-w-[38rem] max-w-full flex-col gap-2 2xl:w-auto">
+                <Suspense key={`products.${handle}.details`} fallback={<section className="w-full lg:max-w-[38rem]" />}>
+                    <section className="flex w-full max-w-full flex-col gap-2 2xl:w-auto">
                         <Suspense
                             key={`products.${handle}.details.savings`}
                             fallback={<div className="h-4 w-full" data-skeleton />}
