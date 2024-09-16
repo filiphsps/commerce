@@ -61,7 +61,7 @@ export async function generateStaticParams({
     params: Omit<ProductPageParams, 'handle'>;
 }): Promise<Omit<ProductPageParams, 'domain' | 'locale'>[]> {
     /** @note Limit pre-rendering when not in production. */
-    if (process.env.VERCEL_ENV === 'production') {
+    if (process.env.VERCEL_ENV !== 'production') {
         return [];
     }
 

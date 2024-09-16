@@ -212,8 +212,8 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                             <Price
                                 className={PRICE_STYLES}
                                 data={
-                                    cost?.checkoutChargeAmount ||
-                                    (cost?.totalAmount as any) || {
+                                    cost.checkoutChargeAmount ||
+                                    (cost.totalAmount as any) || {
                                         currencyCode: currency,
                                         amount: 0
                                     }

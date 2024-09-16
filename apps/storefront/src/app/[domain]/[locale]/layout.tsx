@@ -8,8 +8,8 @@ import { Shop } from '@nordcom/commerce-db';
 import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
 
 import { findShopByDomainOverHttp } from '@/api/shop';
-import { ShopifyApolloApiClient } from '@/api/shopify';
-import { CountriesApi, LocaleApi } from '@/api/store';
+import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
+import { CountriesApi, LocaleApi, LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { CssVariablesProvider, getBrandingColors } from '@/utils/css-variables';
 import { primaryFont } from '@/utils/fonts';
@@ -37,6 +37,11 @@ export const preferredRegion = 'home';
 export type LayoutParams = { domain: string; locale: string };
 
 export async function generateStaticParams(): Promise<LayoutParams[]> {
+    /** @note Limit pre-rendering when not in production. */
+    if (process.env.VERCEL_ENV !== 'production') {
+        return [];
+    }
+
     const shops = await Shop.findAll();
 
     // const codes = await generatePermutations(precomputeFlags);
@@ -50,20 +55,17 @@ export async function generateStaticParams(): Promise<LayoutParams[]> {
                         return null as any as LayoutParams;
                     }
 
-                    return [
-                        {
+                    try {
+                        const api = await ShopifyApiClient({ shop });
+                        const locales = await LocalesApi({ api });
+
+                        return locales.map(({ code }) => ({
                             domain: shop.domain,
-                            locale: 'en-US'
-                        }
-                    ];
-
-                    /*const api = await ShopifyApiClient({ shop });
-                    const locales = await LocalesApi({ api });
-
-                    return locales.map(({ code }) => ({
-                        domain: shop.domain,
-                        locale: code
-                    }));*/
+                            locale: code
+                        }));
+                    } catch {
+                        return [];
+                    }
                 } catch (error: unknown) {
                     if (!Error.isNotFound(error)) {
                         console.error(error);
