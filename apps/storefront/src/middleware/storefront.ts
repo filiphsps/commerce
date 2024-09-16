@@ -96,6 +96,11 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         // TODO: Handle Handle tenant-specific files/assets.
     }
 
+    // TODO: handle these properly.
+    if (newUrl.pathname.startsWith('/en-EU/')) {
+        newUrl.pathname = newUrl.pathname.replace('/en-EU/', '/');
+    }
+
     // Set the locale based on the user's accept-language header when no locale
     // is provided (e.g. we get a bare url/path like `/`).
     if (!newUrl.pathname.match(LOCALE_TEST)) {
