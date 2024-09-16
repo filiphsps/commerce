@@ -52,8 +52,8 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
         setDismissed(value);
 
         // FIXME: Make this configurable.
-        // Check if dismissed is more than 3 days ago.
-        if (value && value < Date.now() - 1000 * 60 * 60 * 24 * 3) {
+        // Check if dismissed is more than 1 days ago.
+        if (value && value < Date.now() - 1000 * 60 * 60 * 24 * 1) {
             localStorage.removeItem(DISMISSED_KEY);
             setDismissed(null);
         }
@@ -180,7 +180,10 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
 
                 <Button
                     title={'Close'}
-                    onClick={() => setClosed(true)}
+                    onClick={() => {
+                        localStorage.setItem(DISMISSED_KEY, Date.now().toString());
+                        setClosed(true);
+                    }}
                     className="absolute right-0 top-4 flex h-10 w-10 items-start justify-end text-lg text-current opacity-70 invert-[20%] transition-all hover:opacity-100 hover:invert-0 md:items-center 2xl:right-2"
                     styled={false}
                 >
