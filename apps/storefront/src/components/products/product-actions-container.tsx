@@ -19,15 +19,9 @@ import type { HTMLProps } from 'react';
 
 export type ProductActionsContainerProps = {
     i18n: LocaleDictionary;
-    showQuantityBreaks?: boolean;
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 
-export const ProductActionsContainer = ({
-    className,
-    i18n,
-    showQuantityBreaks = false,
-    ...props
-}: ProductActionsContainerProps) => {
+export const ProductActionsContainer = ({ className, i18n, ...props }: ProductActionsContainerProps) => {
     const { t } = useTranslation('common', i18n);
     const { quantity, setQuantity } = useQuantity();
 
@@ -67,7 +61,9 @@ export const ProductActionsContainer = ({
                 </Suspense>
             </div>
 
-            <Suspense>{showQuantityBreaks ? <ProductQuantityBreaks i18n={i18n} /> : null}</Suspense>
+            <Suspense>
+                <ProductQuantityBreaks i18n={i18n} />
+            </Suspense>
 
             <Suspense fallback={<AddToCart.skeleton />}>
                 <AddToCart

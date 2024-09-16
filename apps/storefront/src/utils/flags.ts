@@ -20,15 +20,6 @@ export const showProductInfoLines = flag<boolean>({
     }
 });
 
-export const showProductQuantityBreaks = flag<boolean>({
-    key: 'product-page-quantity-breaks',
-    defaultValue: false,
-    async decide() {
-        const value = await get(this.key);
-        return !!value || false;
-    }
-});
-
 export const showHeaderSearchBar = flag<boolean>({
     key: 'header-search-bar',
     defaultValue: false,

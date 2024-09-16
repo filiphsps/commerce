@@ -20,10 +20,9 @@ import type { ProductVariant } from '@shopify/hydrogen-react/storefront-api-type
 
 export type ProductContentProps = {
     product: Product;
-    showQuantityBreaks?: boolean;
     i18n: LocaleDictionary;
 };
-export function ProductContent({ product, showQuantityBreaks, i18n }: ProductContentProps) {
+export function ProductContent({ product, i18n }: ProductContentProps) {
     const searchParams = useSearchParams();
     const initialVariantId = useMemo(
         () => (searchParams.has('variant') ? `gid://shopify/ProductVariant/${searchParams.get('variant')}` : undefined),
@@ -35,11 +34,7 @@ export function ProductContent({ product, showQuantityBreaks, i18n }: ProductCon
     return (
         <ProductProvider data={product as any} initialVariantId={initialVariantId}>
             <QuantityProvider quantity={quantity} setQuantity={setQuantity}>
-                <ProductActionsContainer
-                    i18n={i18n}
-                    className={styles.actions}
-                    showQuantityBreaks={showQuantityBreaks}
-                />
+                <ProductActionsContainer i18n={i18n} className={styles.actions} />
             </QuantityProvider>
         </ProductProvider>
     );

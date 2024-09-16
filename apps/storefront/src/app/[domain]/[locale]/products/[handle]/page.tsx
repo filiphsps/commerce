@@ -13,7 +13,6 @@ import { ProductApi, ProductsApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
-import { showProductQuantityBreaks } from '@/utils/flags';
 import { isValidHandle } from '@/utils/handle';
 import { Locale, useTranslation } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
@@ -185,10 +184,6 @@ async function Badges({ product, i18n }: { product: Product; i18n: LocaleDiction
     }
 
     return <div className="flex items-center gap-1 empty:hidden">{badges}</div>;
-}
-
-async function ProductContentWrapper({ i18n, product }: { i18n: LocaleDictionary; product: Product }) {
-    return <ProductContent product={product} i18n={i18n} showQuantityBreaks={await showProductQuantityBreaks()} />;
 }
 
 export default async function ProductPage({
@@ -433,7 +428,7 @@ export default async function ProductPage({
                                 key={`products.${handle}.details.content`}
                                 fallback={<div className="h-4 w-full" data-skeleton />}
                             >
-                                <ProductContentWrapper i18n={i18n} product={product} />
+                                <ProductContent product={product} i18n={i18n} />
                             </Suspense>
                         </Card>
 
