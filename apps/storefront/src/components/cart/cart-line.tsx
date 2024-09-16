@@ -9,6 +9,7 @@ import Image from 'next/image';
 
 import { Button } from '@/components/actionable/button';
 import { Card } from '@/components/layout/card';
+import Link from '@/components/link';
 import { Price } from '@/components/products/price';
 import { QuantitySelector } from '@/components/products/quantity-selector';
 import { Label } from '@/components/typography/label';
@@ -78,7 +79,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
     const discounts = line.discountAllocations;
 
     const { quantity } = line;
-    const { vendor, title, productType } = product;
+    const { vendor, title, productType, handle } = product;
 
     return (
         <section
@@ -96,9 +97,13 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
 
             <div className="contents h-fit w-full flex-wrap items-start gap-3 md:relative md:grid md:h-full md:grid-cols-[7fr_3fr_4fr] md:grid-rows-[1fr] md:py-2">
                 <header className="flex w-[calc(100%-7rem)] flex-col gap-1 pl-4 md:w-full md:pl-0">
-                    <div className="text-lg font-bold leading-none">
+                    <Link
+                        href={`/products/${handle}`}
+                        prefetch={false}
+                        className="hover:text-primary text-lg font-bold leading-none transition-colors"
+                    >
                         <span>{vendor}</span> {title}
-                    </div>
+                    </Link>
 
                     <div className="leading-normal">
                         {[
