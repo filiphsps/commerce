@@ -25,11 +25,16 @@ const LinkSlice = ({ slice, context: { isHeader = true } }: LinkProps) => {
     const title = slice.primary.title;
     const variant = slice.variation;
 
-    let target: string = asLink(link, { linkResolver });
-    // Make sure the target ends with a slash.
-    // TODO: This should be a utility function that wraps `asLink`.
-    if ((target as any) && target.length > 1 && !target.endsWith('/')) {
-        target = `${target}/`;
+    const resolvedPrismicLink = asLink(link, { linkResolver });
+    let target = `/${locale.code}/`;
+    if (resolvedPrismicLink.startsWith('/')) {
+        target += resolvedPrismicLink.slice(1);
+
+        // Make sure the target ends with a slash.
+        // TODO: Maybe this should be a utility function that wraps `asLink`?
+        if (!target.endsWith('/')) {
+            target = `${target}/`;
+        }
     }
 
     let active = target ? target.toLowerCase().endsWith(pathname.toLowerCase()) : false;
