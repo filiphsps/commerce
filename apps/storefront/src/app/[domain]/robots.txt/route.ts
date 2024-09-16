@@ -80,7 +80,7 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Robo
             rules: [
                 {
                     userAgent: '*',
-                    disallow: ['/storefront/', '/slice-machine/', '/cdn-cgi/']
+                    disallow: ['/storefront/', '/admin/', '/slice-machine/', '/cdn-cgi/', '/_next/static/']
                 }
             ],
             sitemap: [`https://${shop.domain}/sitemap.xml`]
