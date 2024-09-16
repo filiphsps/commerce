@@ -44,7 +44,7 @@ const isInternal = (href: string, shop?: OnlineShop): boolean => {
 export default function Link({ locale, href, prefetch, ...props }: LinkProps) {
     const shop = useShop();
 
-    if (!href || typeof href !== 'string') {
+    if (typeof href !== 'string') {
         // TODO: Deal with `URL` as `href`.
         console.error(new TypeError(`Link's \`href\` must be of type string. Received \`${typeof href}\` instead.`));
         return null;

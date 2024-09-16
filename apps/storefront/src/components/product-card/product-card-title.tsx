@@ -1,5 +1,7 @@
 import 'server-only';
 
+import type { OnlineShop } from '@nordcom/commerce-db';
+
 import { cn } from '@/utils/tailwind';
 
 import { Label } from '@/components/typography/label';
@@ -7,10 +9,11 @@ import { Label } from '@/components/typography/label';
 import type { Product } from '@/api/product';
 
 export type ProductCardTitleProps = {
+    shop: OnlineShop;
     data: Product;
     className?: string;
 };
-const ProductCardTitle = ({ data: product, className }: ProductCardTitleProps) => {
+const ProductCardTitle = ({ shop, data: product, className }: ProductCardTitleProps) => {
     let title = product.title.trim();
     if (
         product.productType &&
@@ -33,17 +36,23 @@ const ProductCardTitle = ({ data: product, className }: ProductCardTitleProps) =
         );
     }
 
+    const showVendor = product.vendor !== shop.name;
+
     return (
         <>
-            <Label
-                as={'div'}
-                className={cn(
-                    'group-hover/header:text-primary pb-1 pt-2 text-[0.9rem] font-medium normal-case leading-none text-gray-500 transition-colors duration-75',
-                    className
-                )}
-            >
-                {product.vendor}
-            </Label>
+            {showVendor ? (
+                <Label
+                    as={'div'}
+                    className={cn(
+                        'group-hover/header:text-primary pb-1 pt-2 text-[0.9rem] font-medium normal-case leading-none text-gray-500 transition-colors duration-75',
+                        className
+                    )}
+                >
+                    {product.vendor}
+                </Label>
+            ) : (
+                <div className="h-2 w-full" />
+            )}
 
             <div
                 className={cn(

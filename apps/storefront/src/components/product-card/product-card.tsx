@@ -37,10 +37,16 @@ const ProductCard = async ({ shop, locale, data: product, priority, className, .
 
     const description = (product.seo.description || product.description || '').slice(0, DESCRIPTION_LENGTH).trimEnd();
     const available = product.availableForSale;
+    const isFreeShipping = available && product.tags.includes('Free Shipping');
 
     return (
         <div
-            className={cn(CARD_STYLES, 'transition-shadow hover:drop-shadow', className)}
+            className={cn(
+                CARD_STYLES,
+                'transition-shadow hover:drop-shadow',
+                isFreeShipping && 'border-primary shadow',
+                className
+            )}
             title={available ? `${description}...` : ''}
             {...props}
         >
@@ -48,7 +54,7 @@ const ProductCard = async ({ shop, locale, data: product, priority, className, .
 
             <Suspense>
                 <ProductCardContent locale={locale} i18n={i18n} data={product} priority={priority}>
-                    <ProductCardTitle data={product} />
+                    <ProductCardTitle shop={shop} data={product} />
                 </ProductCardContent>
             </Suspense>
         </div>

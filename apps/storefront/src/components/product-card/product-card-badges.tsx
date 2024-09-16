@@ -1,6 +1,8 @@
+import { FiBox } from 'react-icons/fi';
+
 import { isProductVegan, type Product } from '@/api/product';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
-import { useTranslation } from '@/utils/locale';
+import { capitalize, useTranslation } from '@/utils/locale';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 
@@ -22,6 +24,23 @@ const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
 
     if (!selectedVariant) {
         return null;
+    }
+
+    const isFreeShipping = product.tags.includes('Free Shipping');
+    if (isFreeShipping) {
+        return (
+            <div className="pointer-events-none absolute inset-0 flex h-full flex-wrap justify-start">
+                <div
+                    className={cn(
+                        COMMON_BADGE_STYLES,
+                        'bg-primary text-primary-foreground -mt-1 h-8 rounded-l-none rounded-t-none text-xs normal-case leading-none'
+                    )}
+                >
+                    <FiBox className="text-sm leading-none" />
+                    {capitalize(t('free-shipping'))}
+                </div>
+            </div>
+        );
     }
 
     const isVegan = isProductVegan(product);
