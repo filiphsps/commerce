@@ -36,7 +36,7 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
     const [dismissed, setDismissed] = useState<number | null>(null);
 
     const pathname = `/${usePathname().split('/').slice(2).join('/')}`;
-    const searchParams = new URLSearchParams(useSearchParams());
+    const searchParams = useSearchParams();
 
     useEffect(() => {
         setNavigatorLanguage((navigator.language.split('-').at(0) || 'en').toLowerCase());

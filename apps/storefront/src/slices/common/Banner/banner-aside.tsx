@@ -24,7 +24,7 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
     return (
         <section
             className={cn(
-                'bg-primary text-primary-foreground flex grid-flow-col justify-between gap-2 rounded-lg md:grid md:min-h-36 md:grid-cols-6',
+                'bg-primary text-primary-foreground flex grid-flow-col justify-between gap-2 rounded-lg md:grid md:grid-cols-6',
                 background.url && 'bg-cover bg-center bg-no-repeat text-black'
             )}
             style={{
@@ -32,15 +32,15 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
             }}
             data-slice-variation={slice.variation}
         >
-            <div className="col-span-4 flex h-full w-full flex-col items-start justify-center gap-4 p-4 md:p-8 lg:gap-6">
+            <div className="col-span-4 flex h-full w-full flex-col items-start justify-center gap-4 p-4 md:px-6 lg:gap-6">
                 <div
-                    className="flex flex-col items-start justify-center gap-1 text-left drop-shadow-sm md:max-w-[600px]"
+                    className="flex flex-col items-start justify-center gap-1 text-left"
                     style={{
                         color: textColor ?? undefined,
                         textShadow: background.url ? '1px 1px 10px #000' : undefined
                     }}
                 >
-                    <Content className="prose-headings:mt-0 max-w-none">
+                    <Content className="prose-headings:mt-0">
                         <Suspense>
                             <PrismicText data={slice.primary.content} styled={false} />
                         </Suspense>

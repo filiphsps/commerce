@@ -1,4 +1,4 @@
-import { type HTMLProps, Suspense } from 'react';
+import { Suspense } from 'react';
 
 import { cn } from '@/utils/tailwind';
 
@@ -7,6 +7,7 @@ import { Card } from '@/components/layout/card';
 import { Label } from '@/components/typography/label';
 
 import type { Filter } from '@shopify/hydrogen-react/storefront-api-types';
+import type { HTMLProps } from 'react';
 
 export type FiltersProps = {
     filters: Filter[];
@@ -17,7 +18,7 @@ export function Filters({ filters, className, ...props }: FiltersProps) {
     }
 
     return (
-        <section {...props} className={cn('flex gap-3 md:gap-4', className)}>
+        <section {...props} className={cn('flex flex-wrap gap-3 md:gap-4', className)}>
             {filters.map(({ id, label, type, values }) => {
                 return (
                     <Card key={id} className="flex flex-col gap-2" border={true}>
@@ -25,11 +26,11 @@ export function Filters({ filters, className, ...props }: FiltersProps) {
                             {label}
                         </Label>
 
-                        <div className="flex flex-wrap gap-1">
-                            <Suspense fallback={<div>todo</div>}>
+                        <Suspense fallback={<div data-skeleton />}>
+                            <div className="flex flex-wrap gap-1">
                                 <FilterValues id={id} type={type} values={values} />
-                            </Suspense>
-                        </div>
+                            </div>
+                        </Suspense>
                     </Card>
                 );
             })}

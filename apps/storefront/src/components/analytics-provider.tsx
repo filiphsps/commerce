@@ -18,13 +18,13 @@ export type AnalyticsProviderProps = {
     children: ReactNode;
 };
 export const AnalyticsProvider = ({ shop, children }: AnalyticsProviderProps) => {
-    const mode = BuildConfig.environment !== 'test' ? BuildConfig.environment : 'auto';
+    const vercelAnalyticsMode = BuildConfig.environment !== 'test' ? BuildConfig.environment : 'auto';
 
     const [deferred, setDeferred] = useState<ReactNode>(null);
     const trackers = () => (
         <>
             {shop.thirdParty?.googleTagManager ? <GoogleTagManager gtmId={shop.thirdParty!.googleTagManager!} /> : null}
-            <VercelAnalytics mode={mode} debug={mode === 'development'} />
+            <VercelAnalytics mode={vercelAnalyticsMode} debug={vercelAnalyticsMode === 'development'} />
         </>
     );
     useEffect(() => {

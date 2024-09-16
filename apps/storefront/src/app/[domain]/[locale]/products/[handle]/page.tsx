@@ -384,7 +384,7 @@ export default async function ProductPage({
                         </Suspense>
 
                         <Card className={cn(BLOCK_STYLES)}>
-                            <div className="flex h-auto w-full flex-col justify-start gap-3 lg:gap-4 lg:p-0">
+                            <div className="flex h-auto w-full flex-col justify-start gap-3">
                                 <Suspense
                                     key={`products.${handle}.details.badges`}
                                     fallback={<div className="h-4 w-full" data-skeleton />}
@@ -392,7 +392,7 @@ export default async function ProductPage({
                                     <Badges product={product} i18n={i18n} />
                                 </Suspense>
 
-                                <header className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between md:gap-1">
+                                <header className="flex flex-col gap-3">
                                     <div className="flex grow flex-col gap-0">
                                         <div className="flex w-full grow flex-wrap whitespace-pre-wrap text-3xl font-extrabold leading-tight">
                                             <TitleTag className="text-inherit">
@@ -417,7 +417,7 @@ export default async function ProductPage({
                                         key={`products.${handle}.details.pricing`}
                                         fallback={<div className="h-4 w-24" data-skeleton />}
                                     >
-                                        <div className="flex items-end justify-start gap-2 empty:hidden md:gap-3">
+                                        <div className="flex items-center justify-start gap-2 empty:hidden">
                                             <ProductPricing product={product} />
                                         </div>
                                     </Suspense>
@@ -444,7 +444,7 @@ export default async function ProductPage({
                             </section>
                         </Suspense>
 
-                        <Card className={cn(BLOCK_STYLES, 'gap-0 lg:gap-0')}>
+                        <Card className={cn(BLOCK_STYLES, 'gap-0 lg:gap-0')} border={true}>
                             <Suspense fallback={<div className="h-12 w-full" data-skeleton />}>
                                 <Content html={content} />
                             </Suspense>
