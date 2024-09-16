@@ -228,7 +228,7 @@ const shopifyEventHandler = async (
         }))
     };
 
-    const ua = (sharedPayload.userAgent || navigator.userAgent).toLowerCase();
+    const ua = (sharedPayload.userAgent || (navigator as Navigator | undefined)?.userAgent || '').toLowerCase();
     if (ua.includes('googlebot') || ua.includes('lighthouse')) {
         return;
     }
