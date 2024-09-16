@@ -18,6 +18,8 @@ import CartContent from './cart-content';
 
 import type { Metadata } from 'next';
 
+export const dynamic = 'force-dynamic';
+
 export type CartPageParams = { domain: string; locale: string };
 export async function generateMetadata({
     params: { domain, locale: localeData }

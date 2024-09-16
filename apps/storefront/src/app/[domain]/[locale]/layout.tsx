@@ -59,14 +59,6 @@ export async function generateStaticParams(): Promise<LayoutParams[]> {
                         {
                             domain: shop.domain,
                             locale: Locale.from('en-US').code
-                        },
-                        {
-                            domain: shop.domain,
-                            locale: Locale.from('en-CA').code
-                        },
-                        {
-                            domain: shop.domain,
-                            locale: Locale.from('en-GB').code
                         }
                     ];
 

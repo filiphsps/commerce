@@ -51,13 +51,6 @@ export const PRODUCT_FRAGMENT_MINIMAL = /* GraphQL */ `
         name
         values
     }
-    sellingPlanGroups(first: 3) {
-        edges {
-            node {
-                name
-            }
-        }
-    }
     variants(first: 3) {
         edges {
             node {
@@ -143,18 +136,6 @@ export const PRODUCT_FRAGMENT = /* GraphQL */ `
         id
         name
         values
-    }
-    sellingPlanGroups(first: 250) {
-        edges {
-            node {
-                appName
-                name
-                options {
-                    name,
-                    values
-                }
-            }
-        }
     }
     variants(first: 250) {
         edges {

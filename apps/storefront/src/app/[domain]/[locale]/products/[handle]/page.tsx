@@ -49,7 +49,7 @@ import type { ReactNode } from 'react';
 import type { ProductGroup, WithContext } from 'schema-dts';
 
 export const runtime = 'nodejs';
-export const dynamic = 'auto';
+export const dynamic = 'force-static';
 export const dynamicParams = true;
 export const revalidate = false;
 
