@@ -8,7 +8,7 @@ import type { NextRequest } from 'next/server';
 export const runtime = 'experimental-edge';
 export const config = {
     matcher: [
-        '/((?!_next|_static|_vercel|instrumentation|assets).*)',
+        '/((?!_next|_static|_vercel|instrumentation|assets|__nextjs_original-stack-frame).*)',
 
         // Handle assets we generate dynamically per-tenant.
         '/:path*/favicon:type*',

@@ -170,11 +170,15 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "prettier.prettierPath": "./node_modules/prettier",
-    "tailwindCSS.classAttributes": ["class", "className", "ngClass", ".*Styles"],
+
+    "tailwindCSS.classAttributes": ["class", "className", ".*ClassName", "ngClass", ".*Styles"],
     "tailwindCSS.experimental.classRegex": [
-        ["Styles \\=([^;]*);", "'([^']*)'"],
-        ["Styles \\=([^;]*);", "\"([^\"]*)\""],
-        ["Styles \\=([^;]*);", "\\`([^\\`]*)\\`"]
+        "[a-zA-Z]*ClassName='([^']+)'",
+        "[a-zA-Z]*ClassName=\"([^\"]+)\"",
+        "[a-zA-Z]*ClassName={`([^`]+)`}",
+        ["Styles\\s*=\\s*([^;]*);", "'([^']*)'"],
+        ["Styles\\s*=\\s*([^;]*);", "\"([^\"]*)\""],
+        ["Styles\\s*=\\s*([^;]*);", "\\`([^\\`]*)\\`"]
     ],
     "tailwindCSS.includeLanguages": {
         "html": "html",

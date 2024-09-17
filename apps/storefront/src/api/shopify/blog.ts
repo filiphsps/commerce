@@ -1,12 +1,55 @@
-import type { Error } from '@nordcom/commerce-errors';
 import { NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
 
 import { gql } from '@apollo/client';
+import { flattenConnection } from '@shopify/hydrogen-react';
 
-import type { AbstractApi } from '@/utils/abstract-api';
-import type { Article, ArticleSortKeys, Blog } from '@shopify/hydrogen-react/storefront-api-types';
+import type { Blog } from '@/api/blog';
+import type { AbstractApi, ApiReturn } from '@/utils/abstract-api';
+import type { Article, ArticleSortKeys, BlogConnection } from '@shopify/hydrogen-react/storefront-api-types';
 
-export const BlogApi = async ({
+export async function BlogsApi({ api }: { api: AbstractApi }): Promise<ApiReturn<Blog[]>> {
+    const { data, errors } = await api.query<{ blogs: BlogConnection }>(
+        gql`
+            query blogs($first: Int!) {
+                blogs(first: $first) {
+                    edges {
+                        node {
+                            id
+                            handle
+
+                            title
+                            seo {
+                                title
+                                description
+                            }
+
+                            authors {
+                                name
+                                email
+                                bio
+                            }
+                        }
+                    }
+                }
+            }
+        `,
+        {
+            first: 250
+        }
+    );
+
+    if (errors && errors.length > 0) {
+        return [undefined, new ProviderFetchError(errors.map((e: any) => e.message).join('\n'))];
+    }
+
+    if (!data || data.blogs.edges.length <= 0) {
+        return [undefined, new NotFoundError(`"Blogs" cannot be found`)];
+    }
+
+    return [flattenConnection(data.blogs), undefined];
+}
+
+export async function BlogApi({
     api,
     handle = 'news',
     limit = 30,
@@ -18,8 +61,8 @@ export const BlogApi = async ({
     limit?: number;
     sorting?: ArticleSortKeys;
     reverseSorting?: boolean;
-}): Promise<[Blog, null] | [null, Error]> => {
-    const { data, errors } = await api.query<{ blogByHandle: Blog }>(
+}): Promise<ApiReturn<Blog>> {
+    const { data, errors } = await api.query<{ blogByHandle: Blog & { description?: { value: string } } }>(
         gql`
             query blog($handle: String!, $first: Int!, $sorting: ArticleSortKeys!, $reverseSorting: Boolean!) {
                 blogByHandle(handle: $handle) {
@@ -27,6 +70,10 @@ export const BlogApi = async ({
                     handle
 
                     title
+                    description: metafield(namespace: "nordcom-commerce", key: "description") {
+                        value
+                    }
+
                     seo {
                         title
                         description
@@ -67,17 +114,23 @@ export const BlogApi = async ({
     );
 
     if (errors && errors.length > 0) {
-        return [null, new ProviderFetchError(errors.map((e: any) => e.message).join('\n'))];
+        return [undefined, new ProviderFetchError(errors.map((e: any) => e.message).join('\n'))];
     }
 
     if (!data?.blogByHandle) {
-        return [null, new NotFoundError(`"Blog" with handle "${handle}" cannot be found`)];
+        return [undefined, new NotFoundError(`"Blog" with handle "${handle}" cannot be found`)];
     }
 
-    return [data.blogByHandle, null];
-};
+    return [
+        {
+            ...data.blogByHandle,
+            description: data.blogByHandle.description?.value
+        },
+        undefined
+    ];
+}
 
-export const BlogArticleApi = async ({
+export async function BlogArticleApi({
     api,
     blogHandle = 'news',
     handle
@@ -85,7 +138,7 @@ export const BlogArticleApi = async ({
     api: AbstractApi;
     blogHandle?: string;
     handle: string;
-}): Promise<[Article, null] | [null, Error]> => {
+}): Promise<ApiReturn<Article>> {
     const { data, errors } = await api.query<{ blogByHandle: Blog }>(
         gql`
             query article($blogHandle: String!, $handle: String!) {
@@ -114,10 +167,16 @@ export const BlogArticleApi = async ({
                         }
 
                         authorV2 {
+                            name
                             firstName
                             lastName
                             email
                             bio
+                        }
+
+                        blog {
+                            title
+                            handle
                         }
                     }
                 }
@@ -130,13 +189,13 @@ export const BlogArticleApi = async ({
     );
 
     if (errors && errors.length > 0) {
-        return [null, new ProviderFetchError(errors.map((e: any) => e.message).join('\n'))];
+        return [undefined, new ProviderFetchError(errors.map((e: any) => e.message).join('\n'))];
     }
 
     if (!data?.blogByHandle) {
-        return [null, new NotFoundError(`"Blog" with handle "${blogHandle}" cannot be found`)];
+        return [undefined, new NotFoundError(`"Blog" with handle "${blogHandle}" cannot be found`)];
     } else if (!data.blogByHandle.articleByHandle) {
-        return [null, new NotFoundError(`"articleByHandle" for blog "${handle}" cannot be found`)];
+        return [undefined, new NotFoundError(`"articleByHandle" for blog "${handle}" cannot be found`)];
     }
 
     return [
@@ -144,6 +203,6 @@ export const BlogArticleApi = async ({
             ...data.blogByHandle.articleByHandle,
             contentHtml: data.blogByHandle.articleByHandle.contentHtml.replace(/data-mce-fragment="1"/gi, '')
         },
-        null
+        undefined
     ];
-};
+}

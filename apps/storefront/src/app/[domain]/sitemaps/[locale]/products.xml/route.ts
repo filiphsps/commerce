@@ -1,29 +1,27 @@
-import { NotFoundError } from '@nordcom/commerce-errors';
-
 import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductsPaginationApi } from '@/api/shopify/product';
 import { Locale } from '@/utils/locale';
 import { getServerSideSitemap } from 'next-sitemap';
+import { notFound } from 'next/navigation';
 
-import type { DynamicSitemapRouteParams } from '../../../sitemap.xml/route';
 import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
-import type { NextRequest } from 'next/server';
 import type { ISitemapField } from 'next-sitemap';
+import type { NextRequest } from 'next/server';
+import type { DynamicSitemapRouteParams } from '../../../sitemap.xml/route';
 
 export const dynamic = 'force-static';
 export const revalidate = false;
 
 export async function GET(
     _: NextRequest,
-    { params: { domain, region: regionData } }: { params: DynamicSitemapRouteParams & { region: string } }
+    { params: { domain, locale: localeData } }: { params: DynamicSitemapRouteParams & { locale: string } }
 ) {
-    const region = regionData.split('-').at(-1)?.split('.').at(0);
-    if (!region) {
-        throw new NotFoundError(`"Region" with the handle "${regionData}"`);
+    if (!localeData) {
+        notFound();
     }
 
-    const locale = Locale.from(`en-${region}`);
+    const locale = Locale.from(localeData);
 
     const shop = await findShopByDomainOverHttp(domain);
     const api = await ShopifyApolloApiClient({ shop, locale });

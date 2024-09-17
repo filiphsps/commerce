@@ -17,10 +17,12 @@ CacheHandler.onCreation(async (context) => {
     }
     await client.connect();
 
+    const prefix = process.env.GIT_HASH || '';
+
     // Define a key for shared tags.
     // You'll see how to use it later in the `revalidateTag` method
     const sharedTagsKey = '_sharedTags_';
-    const revalidatedTagsKey = `__revalidated_tags__`;
+    const revalidatedTagsKey = `${prefix}__revalidated_tags__`;
 
     const redisHandler = {
         // Give the handler a name.
@@ -159,8 +161,8 @@ CacheHandler.onCreation(async (context) => {
     return {
         handlers: [redisHandler, createLruHandler()],
         ttl: {
-            defaultStaleAge: 3600,
-            estimateExpireAge: (staleAge) => staleAge * 2
+            defaultStaleAge: 1800,
+            estimateExpireAge: (staleAge) => staleAge * 1.5
         }
     };
 });

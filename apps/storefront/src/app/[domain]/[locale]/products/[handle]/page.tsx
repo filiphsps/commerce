@@ -138,6 +138,7 @@ export async function generateMetadata({
             )
         },
         openGraph: {
+            url: `/products/${handle}/`,
             title,
             description,
             siteName: shop.name,

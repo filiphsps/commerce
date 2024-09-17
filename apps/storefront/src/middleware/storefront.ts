@@ -111,10 +111,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
             const api = await ShopifyApiClient({ shop });
             const locales = (await LocalesApi({ api })).map((locale) => locale.code);
 
-            const acceptLanguageHeader =
-                req.headers.get('accept-language') ??
-                req.headers.get('Accept-Language') ??
-                (typeof req.geo?.country !== 'undefined' ? `en-${req.geo.country}` : undefined); // TODO: Use correct language for the country.
+            const acceptLanguageHeader = req.headers.get('accept-language');
             if (!acceptLanguageHeader) {
                 console.warn(`Invalid or missing "accept-language" header.`, req);
             }
@@ -174,8 +171,13 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     }
 
     // Remove `/pages/` from the pathname if it's the second part of the path.
-    if (newUrl.pathname.substring(1).split('/')[1] === 'pages') {
+    if (newUrl.pathname.includes('/pages/')) {
         newUrl.pathname = newUrl.pathname.replace('/pages/', '/');
+    }
+
+    // Update legacy blog path.
+    if (newUrl.pathname.includes('/blog/')) {
+        newUrl.pathname = newUrl.pathname.replace('/blog/', '/blogs/news/');
     }
 
     // Redirect if `newURL` is different from `req.nextUrl`.
@@ -189,14 +191,5 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     }
 
     const target = `${newUrl.origin}/${hostname}${newUrl.pathname}${newUrl.searchParams.size > 0 ? '?' : ''}${newUrl.searchParams.toString()}`;
-
-    const headers = new Headers(req.headers);
-    headers.set('x-service', 'nordcom-commerce');
-
-    return setCookies(
-        NextResponse.rewrite(new URL(target, req.url), {
-            headers: headers
-        }),
-        cookies
-    );
+    return setCookies(NextResponse.rewrite(new URL(target, req.url)), cookies);
 };

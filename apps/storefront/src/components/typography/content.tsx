@@ -23,7 +23,7 @@ export const Content = <ComponentGeneric extends ElementType = 'div'>({
     html,
     ...props
 }: ContentProps<ComponentGeneric>) => {
-    if (!html && !children) {
+    if (!html && !children && !as) {
         return null;
     }
 
@@ -33,11 +33,11 @@ export const Content = <ComponentGeneric extends ElementType = 'div'>({
         <Suspense>
             <AsComponent
                 {...props}
+                {...(html ? { dangerouslySetInnerHTML: { __html: html } } : {})}
                 className={cn(
                     'prose prose-strong:font-extrabold prose-headings:text-inherit prose-a:text-inherit prose-a:no-underline prose-a:hover:underline prose-headings:text-pretty text-current *:text-inherit empty:hidden',
                     className
                 )}
-                {...(html ? { dangerouslySetInnerHTML: { __html: html } } : { children })}
             />
         </Suspense>
     );

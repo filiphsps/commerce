@@ -4,7 +4,7 @@ import type { As } from '@nordcom/nordstar';
 
 import { cn } from '@/utils/tailwind';
 
-import type { ComponentProps, CSSProperties, ElementType, HTMLProps, ReactNode } from 'react';
+import type { ComponentProps, CSSProperties, ElementType, FunctionComponent, HTMLProps, ReactNode } from 'react';
 
 export type TitleProps<T extends As> = {
     as?: ElementType;
@@ -23,7 +23,7 @@ export const Title = <T extends As>({ as: Tag = 'h1' as T, bold, className, key,
             key={key}
             {...props}
             className={cn(
-                'text-3xl font-medium leading-snug',
+                'text-3xl font-medium leading-snug md:text-4xl',
                 props.href && 'hover:text-primary focus:text-primary cursor-pointer',
                 bold && 'text-primary font-bold',
                 props.href && bold && 'hover:underline focus:underline',
@@ -51,7 +51,7 @@ export const SubTitle = ({ as, bold, className, key, ...props }: SubTitleProps) 
             key={key}
             {...props}
             className={cn(
-                'text-sm',
+                'text-lg text-gray-500 md:text-xl',
                 props.href && 'hover:text-primary focus:text-primary cursor-pointer',
                 bold && 'font-extrabold',
                 props.href && bold && 'hover:underline focus:underline',
@@ -61,50 +61,94 @@ export const SubTitle = ({ as, bold, className, key, ...props }: SubTitleProps) 
     );
 };
 
-type HeadingProps = {
-    title: ReactNode;
-    subtitle?: ReactNode;
-    reverse?: boolean;
-    bold?: boolean;
+type TitlePropFields = {
+    title?: ReactNode;
     titleAs?: ElementType | null;
     titleStyle?: CSSProperties;
     titleClassName?: string;
     titleProps?: ComponentProps<any>;
+};
+type SubPropFields = {
+    subtitle?: ReactNode;
     subtitleAs?: ElementType | null;
     subtitleStyle?: CSSProperties;
     subtitleClassName?: string;
 };
-const Heading = ({
-    title,
-    subtitle,
-    reverse,
-    bold,
-    titleAs,
-    titleStyle,
-    titleClassName,
-    titleProps,
-    subtitleAs,
-    subtitleStyle,
-    subtitleClassName
-}: HeadingProps) => {
-    const titleComponent = (
-        <Title bold={bold} as={titleAs as any} style={titleStyle} className={titleClassName} {...(titleProps || {})}>
-            {title}
-        </Title>
+
+type HeadingProps = {
+    bold?: boolean;
+} & (
+    | (TitlePropFields &
+          SubPropFields & {
+              wrapper?: FunctionComponent<{ children: ReactNode | undefined } & any>;
+              reverse?: boolean;
+          })
+    | TitlePropFields
+    | SubPropFields
+);
+
+const Heading = ({ bold, ...props }: HeadingProps) => {
+    let titleElement: ReactNode | null = null;
+    if ('title' in props) {
+        const { title, titleAs, titleStyle, titleClassName, titleProps } = props;
+        titleElement = (
+            <Title
+                bold={bold}
+                as={titleAs as any}
+                style={titleStyle}
+                className={titleClassName}
+                {...(titleProps || {})}
+            >
+                {title}
+            </Title>
+        );
+
+        if (!('title' in props)) {
+            return titleElement;
+        }
+    }
+
+    let subtitleElement: ReactNode | null = null;
+    if ('subtitle' in props) {
+        const { subtitle, subtitleAs, subtitleStyle, subtitleClassName } = props;
+        subtitleElement = (
+            <SubTitle bold={bold} as={subtitleAs as any} style={subtitleStyle} className={subtitleClassName}>
+                {subtitle}
+            </SubTitle>
+        );
+
+        if (!('title' in props)) {
+            return subtitleElement;
+        }
+    }
+
+    if ((!titleElement && !subtitleElement) || !('title' in props && 'subtitle' in props)) {
+        return null;
+    }
+
+    const { reverse, wrapper: Wrapper } = props;
+    const headingSet = (
+        <Fragment
+            children={
+                !reverse ? (
+                    <>
+                        {titleElement}
+                        {subtitleElement}
+                    </>
+                ) : (
+                    <>
+                        {subtitleElement}
+                        {titleElement}
+                    </>
+                )
+            }
+        />
     );
 
-    const subtitleComponent = subtitle ? (
-        <SubTitle bold={bold} as={subtitleAs as any} style={subtitleStyle} className={subtitleClassName}>
-            {subtitle}
-        </SubTitle>
-    ) : null;
-
-    return (
-        <>
-            {!reverse ? titleComponent : subtitleComponent}
-            {reverse ? titleComponent : subtitleComponent}
-        </>
-    );
+    if (Wrapper) {
+        return <Wrapper children={headingSet} />;
+    }
+    return <div className="flex flex-col gap-1">{headingSet}</div>;
 };
 
 export default Heading;

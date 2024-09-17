@@ -4,19 +4,30 @@ import { LocalesApi } from '@/api/store';
 import { Locale } from '@/utils/locale';
 import { getServerSideSitemapIndex } from 'next-sitemap';
 
-import type { DynamicSitemapRouteParams } from '../../sitemap.xml/route';
 import type { NextRequest } from 'next/server';
 
 export const dynamic = 'force-static';
 export const revalidate = false;
 
+export type DynamicSitemapRouteParams = {
+    domain: string;
+};
 export async function GET(_: NextRequest, { params: { domain } }: { params: DynamicSitemapRouteParams }) {
-    const shop = await findShopByDomainOverHttp(domain);
     const locale = Locale.default;
+
+    const shop = await findShopByDomainOverHttp(domain);
     const api = await ShopifyApolloApiClient({ shop, locale });
+
     const locales = await LocalesApi({ api });
 
-    return getServerSideSitemapIndex(
-        locales.map(({ country }) => `https://${shop.domain}/sitemaps/${country!.toLowerCase()}/products.xml`)
-    );
+    const href = `https://${shop.domain}/sitemaps`;
+
+    return getServerSideSitemapIndex([
+        `${href}/pages.xml`,
+        `${href}/collections.xml`,
+        ...locales.flatMap(({ code }) => [
+            `${href}/${code}/products.xml`,
+            `${href}/${code}/blogs.xml` // TODO:
+        ])
+    ]);
 }
