@@ -17,7 +17,6 @@ export type ContentProps<ComponentGeneric extends ElementType> = ContentPropsBas
         : ComponentPropsWithoutRef<ComponentGeneric>);
 
 export const Content = <ComponentGeneric extends ElementType = 'div'>({
-    children,
     as,
     className,
     html,
