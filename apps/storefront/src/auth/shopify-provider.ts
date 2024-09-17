@@ -3,7 +3,14 @@ import type { OnlineShop } from '@nordcom/commerce-db';
 import type { TokenSet } from '@auth/core/types';
 import type { OIDCConfig, OIDCUserConfig } from 'next-auth/providers';
 
-export const SHOPIFY_CUSTOMER_ACCOUNT_ACCESS_TOKEN_COOKIE = 'SHOPIFY_ACCOUNT_ACCESS_TOKEN';
+const GET_CUSTOMER_FOR_SESSION = /* GraphQL */ `
+    query getCustomerForSession {
+        customer {
+            displayName
+            imageUrl
+        }
+    }
+`;
 
 type UntypedValue = any;
 export interface ShopifyProfile extends Record<string, UntypedValue> {
@@ -70,8 +77,7 @@ function ShopifyProvider<P extends ShopifyProfile = ShopifyProfile>(
     const endpointBase = `https://shopify.com/${shopId}/auth/oauth`;
     const issuer = `https://customer.login.shopify.com`;
     const callbackUrl = `https://${shop.domain}/api/auth/callback/shopify/`;
-
-    const authorizationHeader = btoa(`${clientId}:${clientSecret}`);
+    const graphqlUrl = `https://shopify.com/${shopId}/account/customer/api/2024-07/graphql`;
 
     return {
         id: 'shopify',
@@ -101,29 +107,6 @@ function ShopifyProvider<P extends ShopifyProfile = ShopifyProfile>(
                 redirect_uri: callbackUrl,
                 client_secret: clientSecret!
             },
-            /*async request(context: any) {
-                try {
-                    const response = await fetch(`${endpointBase}/token`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                            'Authorization': `Basic ${authorizationHeader}`
-                        },
-                        body: new URLSearchParams({
-                            grant_type: 'authorization_code',
-                            client_id: clientId,
-                            redirect_uri: callbackUrl,
-                            code: context.params.code || '',
-                            client_secret: clientSecret!,
-                            code_verifier: context.checks.code_verifier || ''
-                        })
-                    });
-                    const body = await response.json();
-                    return { tokens: body };
-                } catch (err: any) {
-                    throw new Error(err);
-                }
-            },*/
             /**
              * This function gets the `id_token` from the response and conforms it so
              * that it passes validation by adding/modifying the necessary claims.
@@ -168,6 +151,42 @@ function ShopifyProvider<P extends ShopifyProfile = ShopifyProfile>(
         },
         idToken: true,
         checks: ['pkce', 'state'],
+        async profile(profile, tokens) {
+            const customer = tokens.access_token
+                ? await fetch(graphqlUrl, {
+                      method: 'POST',
+                      headers: {
+                          'Content-Type': 'application/json',
+                          'Authorization': tokens.access_token
+                      },
+                      body: JSON.stringify({
+                          operationName: 'SomeQuery',
+                          query: GET_CUSTOMER_FOR_SESSION,
+                          variables: {}
+                      })
+                  })
+                      .then(
+                          (res) =>
+                              res.json() as Promise<{
+                                  data: {
+                                      customer: {
+                                          displayName: string;
+                                          imageUrl: string | null;
+                                      };
+                                  };
+                              }>
+                      )
+                      .then((res) => res.data.customer)
+                : null;
+
+            return {
+                id: profile.sub,
+                email: profile.email,
+                emailVerified: profile.email_verified ? new Date() : null,
+                image: customer?.imageUrl,
+                name: customer?.displayName
+            };
+        },
         // @ts-expect-error: options not picked up, but they are defined in `OIDCConfig`
         options
     } satisfies ShopifyConfig<P>;
