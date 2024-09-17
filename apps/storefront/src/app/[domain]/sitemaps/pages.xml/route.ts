@@ -32,16 +32,9 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
                 return pages.map(
                     (page) =>
                         ({
-                            loc: `https://${shop.domain}/${code}/${page.url}`, // Trailing slash is already added.
-                            changefreq: 'monthly',
+                            loc: `https://${shop.domain}/${code}/${page.url}${page.url && !page.url.endsWith('/') ? '/' : ''}`,
+                            changefreq: 'weekly',
                             lastmod: convertPrismicDateToISO(page.last_publication_date),
-                            alternateRefs: locales
-                                .filter(({ code: c }) => code !== c)
-                                .map(({ code }) => ({
-                                    href: `https://${shop.domain}/${code}/${page.url}`,
-                                    hreflang: code,
-                                    hrefIsAbsolute: true
-                                })),
                             //priority: 0.9,
                             trailingSlash: true
                         }) as ISitemapField

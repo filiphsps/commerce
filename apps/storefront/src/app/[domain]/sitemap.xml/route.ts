@@ -24,10 +24,10 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
 
     return getServerSideSitemapIndex([
         `${href}/pages.xml`,
-        `${href}/collections.xml`,
         ...locales.flatMap(({ code }) => [
             `${href}/${code}/products.xml`,
-            `${href}/${code}/blogs.xml` // TODO:
+            `${href}/${code}/collections.xml`,
+            `${href}/${code}/blogs.xml`
         ])
     ]);
 }

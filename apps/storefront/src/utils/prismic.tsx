@@ -55,7 +55,7 @@ export const linkResolver: LinkResolverFunction<any> = (doc) => {
         else if (doc.uid === 'countries') return `/countries/`;
         else if (doc.uid === 'search') return `/search/`;
         else if (doc.uid === 'cart') return `/cart/`;
-        else if (doc.uid === 'blog') return `/blog/`;
+        else if (doc.uid === 'blogs') return `/blogs/`;
         // TODO: Handle pages with multi-level paths.
         else if (doc.uid) return `/${doc.uid}/`;
     } else if (doc.type === 'product_page') {
@@ -63,7 +63,7 @@ export const linkResolver: LinkResolverFunction<any> = (doc) => {
     } else if (doc.type === 'collection_page') {
         return `/collections/${doc.uid}/`;
     } else if (doc.type === 'article_page') {
-        return `/blog/${doc.uid}/`;
+        return `/blogs/news/${doc.uid}/`;
     } else if (doc.type === 'cart_page') {
         return `/cart/`;
     }
@@ -108,12 +108,12 @@ export const routes: ClientConfig['routes'] = [
     },
     {
         type: 'custom_page',
-        uid: 'blog',
-        path: '/:lang/blog/'
+        uid: 'blogs',
+        path: '/:lang/blogs/news/'
     },
     {
         type: 'custom_page',
-        path: '/:lang/blog/:uid/'
+        path: '/:lang/blogs/news/:uid/'
     },
     {
         type: 'custom_page',

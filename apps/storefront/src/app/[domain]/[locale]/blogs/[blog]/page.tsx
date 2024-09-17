@@ -176,15 +176,16 @@ export default async function BlogPage({
                             day: 'numeric'
                         });
 
-                        const href = `/blog/${blogHandle}/${handle}/`;
-
                         return (
                             <Card
                                 key={id}
                                 className="flex h-full w-full flex-col items-stretch justify-between gap-3 p-2"
                                 border={true}
                             >
-                                <Link href={href} className="group/header flex flex-col gap-2">
+                                <Link
+                                    href={`/blogs/${blogHandle}/${handle}`}
+                                    className="group/header flex flex-col gap-2"
+                                >
                                     {image?.url ? (
                                         <Image
                                             className="transition-color aspect-[16/7] rounded-lg bg-gray-100 object-cover object-center group-hover/header:brightness-75"
