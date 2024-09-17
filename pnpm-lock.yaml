@@ -123,16 +123,16 @@ importers:
     dependencies:
       '@apollo/client':
         specifier: 3.11.8
-        version: 3.11.8(@types/react@18.2.75)(graphql@16.9.0)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 3.11.8(@types/react@18.2.75)(graphql@16.9.0)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
       '@apollo/experimental-nextjs-app-support':
         specifier: 0.11.3
-        version: 0.11.3(@apollo/client@3.11.8(@types/react@18.2.75)(graphql@16.9.0)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910))(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 0.11.3(@apollo/client@3.11.8(@types/react@18.2.75)(graphql@16.9.0)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916))(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916)
       '@auth/core':
         specifier: 0.35.0
         version: 0.35.0
       '@next/third-parties':
         specifier: 14.2.9
-        version: 14.2.9(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 14.2.9(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916)
       '@nordcom/commerce-db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -144,37 +144,37 @@ importers:
         version: link:../../packages/marketing-common
       '@nordcom/nordstar':
         specifier: 0.0.60
-        version: 0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
       '@radix-ui/react-avatar':
         specifier: 1.1.0
-        version: 1.1.0(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 1.1.0(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
       '@radix-ui/react-scroll-area':
         specifier: 1.1.0
-        version: 1.1.0(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 1.1.0(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
       '@radix-ui/react-separator':
         specifier: 1.1.0
-        version: 1.1.0(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 1.1.0(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
       '@radix-ui/react-slot':
         specifier: 1.1.0
-        version: 1.1.0(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 1.1.0(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916)
       '@shopify/hydrogen-react':
         specifier: 2024.7.2
-        version: 2024.7.2(@types/react@18.2.75)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 2024.7.2(@types/react@18.2.75)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
       '@shopify/shopify-api':
         specifier: 11.4.0
         version: 11.4.0
       '@vercel/analytics':
         specifier: 1.3.1
-        version: 1.3.1(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 1.3.1(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916)
       '@vercel/otel':
         specifier: 1.8.1
         version: 1.8.1(@opentelemetry/api-logs@0.52.1)(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.52.1(@opentelemetry/api@1.9.0))(@opentelemetry/resources@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.46.0(@opentelemetry/api-logs@0.52.1)(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.25.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.1(@opentelemetry/api@1.9.0))
       '@vercel/speed-insights':
         specifier: 1.0.5
-        version: 1.0.5(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(sass@1.78.0)(typescript@5.6.2)(vite@5.4.6(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1))
+        version: 1.0.5(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(sass@1.78.0)(typescript@5.6.2)(vite@5.4.6(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1))
       '@vercel/toolbar':
         specifier: 0.1.20
-        version: 0.1.20(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react@19.0.0-rc-3dfd5d9e-20240910)(vite@5.4.6(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1))
+        version: 0.1.20(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916)(vite@5.4.6(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1))
       accept-language-parser:
         specifier: 1.5.0
         version: 1.5.0
@@ -192,7 +192,7 @@ importers:
         version: 2.3.4
       geist:
         specifier: 1.3.1
-        version: 1.3.1(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))
+        version: 1.3.1(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))
       graphql-tag:
         specifier: 2.12.6
         version: 2.12.6(graphql@16.9.0)
@@ -204,25 +204,25 @@ importers:
         version: 4.0.8
       lucide-react:
         specifier: 0.441.0
-        version: 0.441.0(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 0.441.0(react@19.0.0-rc-f2df5694-20240916)
       mongoose:
         specifier: 8.3.1
         version: 8.3.1
       next:
         specifier: 15.0.0-canary.157
-        version: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0)
+        version: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0)
       next-auth:
         specifier: 5.0.0-beta.21
-        version: 5.0.0-beta.21(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 5.0.0-beta.21(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916)
       next-seo:
         specifier: 6.6.0
-        version: 6.6.0(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 6.6.0(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
       next-sitemap:
         specifier: 4.2.3
-        version: 4.2.3(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))
+        version: 4.2.3(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))
       nextjs-toploader:
         specifier: 3.6.15
-        version: 3.6.15(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 3.6.15(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
       nprogress:
         specifier: 0.2.0
         version: 0.2.0
@@ -230,20 +230,20 @@ importers:
         specifier: 2.1.8
         version: 2.1.8
       react:
-        specifier: 19.0.0-rc-3dfd5d9e-20240910
-        version: 19.0.0-rc-3dfd5d9e-20240910
+        specifier: 19.0.0-rc-f2df5694-20240916
+        version: 19.0.0-rc-f2df5694-20240916
       react-dom:
-        specifier: 19.0.0-rc-3dfd5d9e-20240910
-        version: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
+        specifier: 19.0.0-rc-f2df5694-20240916
+        version: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
       react-icons:
         specifier: 5.1.0
-        version: 5.1.0(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 5.1.0(react@19.0.0-rc-f2df5694-20240916)
       sharp:
         specifier: 0.33.5
         version: 0.33.5
       sonner:
         specifier: 1.5.0
-        version: 1.5.0(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 1.5.0(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
       tailwind-merge:
         specifier: 2.5.2
         version: 2.5.2
@@ -255,7 +255,7 @@ importers:
         version: 1.11.3
       use-context-selector:
         specifier: 2.0.0
-        version: 2.0.0(react@19.0.0-rc-3dfd5d9e-20240910)(scheduler@0.25.0-rc-f65ac7bd-20240826)
+        version: 2.0.0(react@19.0.0-rc-f2df5694-20240916)(scheduler@0.25.0-rc-f65ac7bd-20240826)
     devDependencies:
       '@happy-dom/global-registrator':
         specifier: 15.7.4
@@ -274,7 +274,7 @@ importers:
         version: 6.5.0
       '@testing-library/react':
         specifier: 16.0.1
-        version: 16.0.1(@testing-library/dom@10.1.0)(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 16.0.1(@testing-library/dom@10.1.0)(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
       '@types/accept-language-parser':
         specifier: 1.5.6
         version: 1.5.6
@@ -346,19 +346,19 @@ importers:
     dependencies:
       '@apollo/client':
         specifier: 3.11.8
-        version: 3.11.8(@types/react@18.2.75)(graphql@16.9.0)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 3.11.8(@types/react@18.2.75)(graphql@16.9.0)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
       '@apollo/experimental-nextjs-app-support':
         specifier: 0.11.3
-        version: 0.11.3(@apollo/client@3.11.8(@types/react@18.2.75)(graphql@16.9.0)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910))(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 0.11.3(@apollo/client@3.11.8(@types/react@18.2.75)(graphql@16.9.0)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916))(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916)
       '@markdoc/markdoc':
         specifier: 0.4.0
-        version: 0.4.0(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 0.4.0(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916)
       '@markdoc/next.js':
         specifier: 0.3.7
-        version: 0.3.7(@markdoc/markdoc@0.4.0(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910))(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 0.3.7(@markdoc/markdoc@0.4.0(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916))(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916)
       '@next/third-parties':
         specifier: 14.2.9
-        version: 14.2.9(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 14.2.9(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916)
       '@nordcom/commerce-db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -370,22 +370,22 @@ importers:
         version: link:../../packages/marketing-common
       '@nordcom/nordstar':
         specifier: 0.0.60
-        version: 0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
       '@shopify/hydrogen-react':
         specifier: 2024.7.2
-        version: 2024.7.2(@types/react@18.2.75)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 2024.7.2(@types/react@18.2.75)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
       '@vercel/analytics':
         specifier: 1.3.1
-        version: 1.3.1(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 1.3.1(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916)
       '@vercel/otel':
         specifier: 1.8.1
         version: 1.8.1(@opentelemetry/api-logs@0.52.1)(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.52.1(@opentelemetry/api@1.9.0))(@opentelemetry/resources@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.46.0(@opentelemetry/api-logs@0.52.1)(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.25.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.1(@opentelemetry/api@1.9.0))
       '@vercel/speed-insights':
         specifier: 1.0.5
-        version: 1.0.5(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(sass@1.78.0)(typescript@5.6.2)(vite@5.4.6(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1))
+        version: 1.0.5(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(sass@1.78.0)(typescript@5.6.2)(vite@5.4.6(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1))
       '@vercel/toolbar':
         specifier: 0.1.20
-        version: 0.1.20(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react@19.0.0-rc-3dfd5d9e-20240910)(vite@5.4.6(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1))
+        version: 0.1.20(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916)(vite@5.4.6(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1))
       accept-language-parser:
         specifier: 1.5.0
         version: 1.5.0
@@ -400,7 +400,7 @@ importers:
         version: 2.3.4
       geist:
         specifier: 1.3.1
-        version: 1.3.1(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))
+        version: 1.3.1(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))
       glob:
         specifier: 11.0.0
         version: 11.0.0
@@ -418,19 +418,19 @@ importers:
         version: 4.0.8
       next:
         specifier: 15.0.0-canary.157
-        version: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0)
+        version: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0)
       next-auth:
         specifier: 4.24.7
-        version: 4.24.7(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 4.24.7(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
       next-seo:
         specifier: 6.6.0
-        version: 6.6.0(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 6.6.0(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
       next-sitemap:
         specifier: 4.2.3
-        version: 4.2.3(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))
+        version: 4.2.3(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))
       nextjs-toploader:
         specifier: 3.6.15
-        version: 3.6.15(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 3.6.15(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
       nprogress:
         specifier: 0.2.0
         version: 0.2.0
@@ -438,14 +438,14 @@ importers:
         specifier: 2.1.8
         version: 2.1.8
       react:
-        specifier: 19.0.0-rc-3dfd5d9e-20240910
-        version: 19.0.0-rc-3dfd5d9e-20240910
+        specifier: 19.0.0-rc-f2df5694-20240916
+        version: 19.0.0-rc-f2df5694-20240916
       react-dom:
-        specifier: 19.0.0-rc-3dfd5d9e-20240910
-        version: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
+        specifier: 19.0.0-rc-f2df5694-20240916
+        version: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
       react-icons:
         specifier: 5.1.0
-        version: 5.1.0(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 5.1.0(react@19.0.0-rc-f2df5694-20240916)
       sass:
         specifier: 1.78.0
         version: 1.78.0
@@ -454,7 +454,7 @@ importers:
         version: 0.33.5
       sonner:
         specifier: 1.5.0
-        version: 1.5.0(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 1.5.0(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
       tailwind-merge:
         specifier: 2.5.2
         version: 2.5.2
@@ -463,7 +463,7 @@ importers:
         version: 1.11.3
       use-context-selector:
         specifier: 2.0.0
-        version: 2.0.0(react@19.0.0-rc-3dfd5d9e-20240910)(scheduler@0.25.0-rc-f65ac7bd-20240826)
+        version: 2.0.0(react@19.0.0-rc-f2df5694-20240916)(scheduler@0.25.0-rc-f65ac7bd-20240826)
     devDependencies:
       '@happy-dom/global-registrator':
         specifier: 15.7.4
@@ -482,7 +482,7 @@ importers:
         version: 6.5.0
       '@testing-library/react':
         specifier: 16.0.1
-        version: 16.0.1(@testing-library/dom@10.1.0)(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 16.0.1(@testing-library/dom@10.1.0)(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
       '@types/accept-language-parser':
         specifier: 1.5.6
         version: 1.5.6
@@ -557,19 +557,19 @@ importers:
     dependencies:
       '@apollo/client':
         specifier: 3.11.8
-        version: 3.11.8(@types/react@18.2.75)(graphql@16.9.0)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 3.11.8(@types/react@18.2.75)(graphql@16.9.0)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
       '@apollo/experimental-nextjs-app-support':
         specifier: 0.11.3
-        version: 0.11.3(@apollo/client@3.11.8(@types/react@18.2.75)(graphql@16.9.0)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910))(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 0.11.3(@apollo/client@3.11.8(@types/react@18.2.75)(graphql@16.9.0)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916))(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916)
       '@auth/core':
         specifier: 0.35.0
         version: 0.35.0
       '@neshca/cache-handler':
         specifier: 1.7.1
-        version: 1.7.1(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(redis@4.7.0)
+        version: 1.7.1(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(redis@4.7.0)
       '@next/third-parties':
         specifier: 14.2.9
-        version: 14.2.9(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 14.2.9(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916)
       '@nordcom/commerce-db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -578,43 +578,43 @@ importers:
         version: link:../../packages/errors
       '@nordcom/nordstar':
         specifier: 0.0.60
-        version: 0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
       '@prismicio/client':
         specifier: 7.4.1
         version: 7.4.1
       '@prismicio/next':
         specifier: 1.6.0
-        version: 1.6.0(@prismicio/client@7.4.1)(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 1.6.0(@prismicio/client@7.4.1)(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916)
       '@prismicio/react':
         specifier: 2.8.0
-        version: 2.8.0(@prismicio/client@7.4.1)(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 2.8.0(@prismicio/client@7.4.1)(react@19.0.0-rc-f2df5694-20240916)
       '@sentry/nextjs':
         specifier: 8.28.0
-        version: 8.28.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.52.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.1(@opentelemetry/api@1.9.0))(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react@19.0.0-rc-3dfd5d9e-20240910)(webpack@5.92.1)
+        version: 8.28.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.52.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.1(@opentelemetry/api@1.9.0))(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916)(webpack@5.92.1)
       '@sentry/profiling-node':
         specifier: 8.28.0
         version: 8.28.0
       '@shopify/hydrogen-react':
         specifier: 2024.7.2
-        version: 2024.7.2(@types/react@18.2.75)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 2024.7.2(@types/react@18.2.75)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
       '@vercel/analytics':
         specifier: 1.3.1
-        version: 1.3.1(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 1.3.1(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916)
       '@vercel/edge-config':
         specifier: 1.3.0
         version: 1.3.0(@opentelemetry/api@1.9.0)
       '@vercel/flags':
         specifier: 2.6.0
-        version: 2.6.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@5.4.6(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1)))(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 2.6.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@5.4.6(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1)))(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
       '@vercel/otel':
         specifier: 1.8.1
         version: 1.8.1(@opentelemetry/api-logs@0.52.1)(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.52.1(@opentelemetry/api@1.9.0))(@opentelemetry/resources@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.46.0(@opentelemetry/api-logs@0.52.1)(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.25.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.1(@opentelemetry/api@1.9.0))
       '@vercel/speed-insights':
         specifier: 1.0.5
-        version: 1.0.5(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(sass@1.78.0)(typescript@5.6.2)(vite@5.4.6(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1))
+        version: 1.0.5(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(sass@1.78.0)(typescript@5.6.2)(vite@5.4.6(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1))
       '@vercel/toolbar':
         specifier: 0.1.20
-        version: 0.1.20(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react@19.0.0-rc-3dfd5d9e-20240910)(vite@5.4.6(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1))
+        version: 0.1.20(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916)(vite@5.4.6(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1))
       clsx:
         specifier: 2.1.1
         version: 2.1.1
@@ -644,40 +644,40 @@ importers:
         version: 8.3.1
       next:
         specifier: 15.0.0-canary.157
-        version: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0)
+        version: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0)
       next-auth:
         specifier: 5.0.0-beta.21
-        version: 5.0.0-beta.21(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 5.0.0-beta.21(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916)
       next-sitemap:
         specifier: 4.2.3
-        version: 4.2.3(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))
+        version: 4.2.3(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))
       nextjs-toploader:
         specifier: 3.6.15
-        version: 3.6.15(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 3.6.15(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
       nprogress:
         specifier: 0.2.0
         version: 0.2.0
       react:
-        specifier: 19.0.0-rc-3dfd5d9e-20240910
-        version: 19.0.0-rc-3dfd5d9e-20240910
+        specifier: 19.0.0-rc-f2df5694-20240916
+        version: 19.0.0-rc-f2df5694-20240916
       react-dom:
-        specifier: 19.0.0-rc-3dfd5d9e-20240910
-        version: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
+        specifier: 19.0.0-rc-f2df5694-20240916
+        version: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
       react-error-boundary:
         specifier: 4.0.13
-        version: 4.0.13(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 4.0.13(react@19.0.0-rc-f2df5694-20240916)
       react-icons:
         specifier: 5.1.0
-        version: 5.1.0(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 5.1.0(react@19.0.0-rc-f2df5694-20240916)
       react-ipgeolocation:
         specifier: 1.4.0
         version: 1.4.0
       react-live-chat-loader:
         specifier: 2.9.2
-        version: 2.9.2(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 2.9.2(react@19.0.0-rc-f2df5694-20240916)
       react-share:
         specifier: 5.1.0
-        version: 5.1.0(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 5.1.0(react@19.0.0-rc-f2df5694-20240916)
       resolve-accept-language:
         specifier: 3.1.7
         version: 3.1.7
@@ -689,7 +689,7 @@ importers:
         version: 0.33.5
       sonner:
         specifier: 1.5.0
-        version: 1.5.0(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 1.5.0(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
       tailwind-merge:
         specifier: 2.5.2
         version: 2.5.2
@@ -698,7 +698,7 @@ importers:
         version: 1.11.3
       use-context-selector:
         specifier: 2.0.0
-        version: 2.0.0(react@19.0.0-rc-3dfd5d9e-20240910)(scheduler@0.25.0-rc-f65ac7bd-20240826)
+        version: 2.0.0(react@19.0.0-rc-f2df5694-20240916)(scheduler@0.25.0-rc-f65ac7bd-20240826)
       vercel:
         specifier: 37.3.0
         version: 37.3.0
@@ -711,7 +711,7 @@ importers:
         version: 0.1.1
       '@slicemachine/adapter-next':
         specifier: 0.3.49
-        version: 0.3.49(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react@19.0.0-rc-3dfd5d9e-20240910)(uuid@9.0.1)
+        version: 0.3.49(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916)(uuid@9.0.1)
       '@tailwindcss/typography':
         specifier: 0.5.15
         version: 0.5.15(tailwindcss@3.4.11(ts-node@10.9.1(@types/node@20.12.7)(typescript@5.6.2)))
@@ -720,7 +720,7 @@ importers:
         version: 6.5.0
       '@testing-library/react':
         specifier: 16.0.1
-        version: 16.0.1(@testing-library/dom@10.1.0)(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
+        version: 16.0.1(@testing-library/dom@10.1.0)(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
       '@types/accept-language-parser':
         specifier: 1.5.6
         version: 1.5.6
@@ -749,8 +749,8 @@ importers:
         specifier: 10.4.20
         version: 10.4.20(postcss@8.4.47)
       babel-plugin-react-compiler:
-        specifier: 0.0.0-experimental-2bc6fec-20240910
-        version: 0.0.0-experimental-2bc6fec-20240910
+        specifier: 0.0.0-experimental-23b8160-20240916
+        version: 0.0.0-experimental-23b8160-20240916
       concurrently:
         specifier: 9.0.1
         version: 9.0.1
@@ -789,7 +789,7 @@ importers:
         version: 0.0.1
       slice-machine-ui:
         specifier: 2.7.1
-        version: 2.7.1(@prismicio/types@0.2.9)(@types/express@4.17.21)(@types/react-dom@18.2.24)(@types/react@18.2.75)(@types/uuid@9.0.8)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(uuid@9.0.1)
+        version: 2.7.1(@prismicio/types@0.2.9)(@types/express@4.17.21)(@types/react-dom@18.2.24)(@types/react@18.2.75)(@types/uuid@9.0.8)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(uuid@9.0.1)
       tailwindcss:
         specifier: 3.4.11
         version: 3.4.11(ts-node@10.9.1(@types/node@20.12.7)(typescript@5.6.2))
@@ -3617,6 +3617,9 @@ packages:
 
   babel-plugin-module-resolver@5.0.2:
     resolution: {integrity: sha512-9KtaCazHee2xc0ibfqsDeamwDps6FZNo5S0Q81dUqEuFzVwPhcT4J5jOqIVvgCA3Q/wO9hKYxN/Ds3tIsp5ygg==}
+
+  babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916:
+    resolution: {integrity: sha512-Ou/Jo2dxmTEYOsvsYzykhLMsDDcH+ol8zp5ZzudzQAEia08aqa7lzJf9CC0nh2paPmk1tv7uWlflZYB+PMzljw==}
 
   babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910:
     resolution: {integrity: sha512-ktoe5CVIGdUyos1SprZiobQtx4IdNFsoUKaKf58e6NOlycNBNkDr8V/j1lmqPfwIp/dxQYIZpV04xwzpfFqFKw==}
@@ -6589,10 +6592,10 @@ packages:
   rc9@2.1.2:
     resolution: {integrity: sha512-btXCnMmRIBINM2LDZoEmOogIZU7Qe7zn4BpomSKZ/ykbLObuBdvG+mFq11DL6fjH1DRwHhrlgtYWG96bJiC7Cg==}
 
-  react-dom@19.0.0-rc-3dfd5d9e-20240910:
-    resolution: {integrity: sha512-QlgDCzD7Gk6aE+3xT1uGI2wR9dGdP8s5uVpvJTpXxe3Py37Mh4yCt07Gt6cVjtO3ChQlrAGHid9jqTKo4L+Luw==}
+  react-dom@19.0.0-rc-f2df5694-20240916:
+    resolution: {integrity: sha512-z5bmlgbhXEUNO902dKEuy61Lk/6E06ESsufiIdykddfyhggoRd/0GSZiUH12bGnwmzMnojICk2yI3yNpPIwpCw==}
     peerDependencies:
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      react: 19.0.0-rc-f2df5694-20240916
 
   react-dom@19.0.0-rc-f65ac7bd-20240826:
     resolution: {integrity: sha512-YVlFPDX0n/M/ygjVHh3X7nWA2eEZEm4DPTvEAzZDrvVAZ4NjfUGv+1MdAO/VoZUhUKlyHDwAPqyQMDYEq1BvAw==}
@@ -6639,8 +6642,8 @@ packages:
     resolution: {integrity: sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==}
     engines: {node: '>=0.10.0'}
 
-  react@19.0.0-rc-3dfd5d9e-20240910:
-    resolution: {integrity: sha512-BcW1XtpCkj6ueV++x9xWvlrkDkfYRiPaMni7ZUOeUZ+JodKodJdQp2D2r5u7P87eRZfsncBdyCd/4Hw8XEPGAg==}
+  react@19.0.0-rc-f2df5694-20240916:
+    resolution: {integrity: sha512-nGf0C1nmtK44uZVBGB1i320+oZpIL4YibvcDUpKQu/2wR/giIydwzVyx4mjsWRXbYDoyX240F04tHoYLTT2a2w==}
     engines: {node: '>=0.10.0'}
 
   react@19.0.0-rc-f65ac7bd-20240826:
@@ -6815,8 +6818,8 @@ packages:
     engines: {node: '>=14.0.0'}
     hasBin: true
 
-  scheduler@0.25.0-rc-3dfd5d9e-20240910:
-    resolution: {integrity: sha512-apup8MV/PiWvoaXk1pP/Gbmhg1lQoGYGs9w+o3hxwxl+xcwP5NSQsnedFEFgwRTHFeTwyJl7sPY/WDSnHSEgWw==}
+  scheduler@0.25.0-rc-f2df5694-20240916:
+    resolution: {integrity: sha512-Gn75L9/3lldtLjFYgpsweYP3726xP/cgr23dsD6UZlLHc6RbkPbWiChQOfNuq21r8qManuD8p9hAHpXvtlvvbQ==}
 
   scheduler@0.25.0-rc-f65ac7bd-20240826:
     resolution: {integrity: sha512-yv906BO1AcEczCZvDGC1oPet+ntOrWcOy8A/5GSRH4pq8ZXOsG2ieJDCEPt4tXppW4HbQaEZT2chVhj7+lr45Q==}
@@ -7892,13 +7895,13 @@ snapshots:
 
   '@antfu/ni@0.20.0': {}
 
-  '@apollo/client-react-streaming@0.11.3(@apollo/client@3.11.8(@types/react@18.2.75)(graphql@16.9.0)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@apollo/client-react-streaming@0.11.3(@apollo/client@3.11.8(@types/react@18.2.75)(graphql@16.9.0)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
-      '@apollo/client': 3.11.8(@types/react@18.2.75)(graphql@16.9.0)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      '@apollo/client': 3.11.8(@types/react@18.2.75)(graphql@16.9.0)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      react: 19.0.0-rc-f2df5694-20240916
       ts-invariant: 0.10.3
 
-  '@apollo/client@3.11.8(@types/react@18.2.75)(graphql@16.9.0)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@apollo/client@3.11.8(@types/react@18.2.75)(graphql@16.9.0)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
       '@graphql-typed-document-node/core': 3.2.0(graphql@16.9.0)
       '@wry/caches': 1.0.1
@@ -7909,24 +7912,31 @@ snapshots:
       hoist-non-react-statics: 3.3.2
       optimism: 0.18.0
       prop-types: 15.8.1
-      rehackt: 0.1.0(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910)
+      rehackt: 0.1.0(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916)
       response-iterator: 0.2.6
       symbol-observable: 4.0.0
       ts-invariant: 0.10.3
       tslib: 2.6.3
       zen-observable-ts: 1.2.5
     optionalDependencies:
-      react: 19.0.0-rc-3dfd5d9e-20240910
-      react-dom: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
+      react: 19.0.0-rc-f2df5694-20240916
+      react-dom: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
     transitivePeerDependencies:
       - '@types/react'
 
-  '@apollo/experimental-nextjs-app-support@0.11.3(@apollo/client@3.11.8(@types/react@18.2.75)(graphql@16.9.0)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910))(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@apollo/experimental-nextjs-app-support@0.11.3(@apollo/client@3.11.8(@types/react@18.2.75)(graphql@16.9.0)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916))(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
-      '@apollo/client': 3.11.8(@types/react@18.2.75)(graphql@16.9.0)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      '@apollo/client-react-streaming': 0.11.3(@apollo/client@3.11.8(@types/react@18.2.75)(graphql@16.9.0)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0)
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      '@apollo/client': 3.11.8(@types/react@18.2.75)(graphql@16.9.0)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      '@apollo/client-react-streaming': 0.11.3(@apollo/client@3.11.8(@types/react@18.2.75)(graphql@16.9.0)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0)
+      react: 19.0.0-rc-f2df5694-20240916
+
+  '@apollo/experimental-nextjs-app-support@0.11.3(@apollo/client@3.11.8(@types/react@18.2.75)(graphql@16.9.0)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916))(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916)':
+    dependencies:
+      '@apollo/client': 3.11.8(@types/react@18.2.75)(graphql@16.9.0)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      '@apollo/client-react-streaming': 0.11.3(@apollo/client@3.11.8(@types/react@18.2.75)(graphql@16.9.0)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0)
+      react: 19.0.0-rc-f2df5694-20240916
 
   '@auth/core@0.35.0':
     dependencies:
@@ -8528,18 +8538,18 @@ snapshots:
       - encoding
       - supports-color
 
-  '@markdoc/markdoc@0.4.0(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@markdoc/markdoc@0.4.0(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916)':
     optionalDependencies:
       '@types/markdown-it': 12.2.3
       '@types/react': 18.2.75
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      react: 19.0.0-rc-f2df5694-20240916
 
-  '@markdoc/next.js@0.3.7(@markdoc/markdoc@0.4.0(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910))(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@markdoc/next.js@0.3.7(@markdoc/markdoc@0.4.0(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916))(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
-      '@markdoc/markdoc': 0.4.0(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910)
+      '@markdoc/markdoc': 0.4.0(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916)
       js-yaml: 4.1.0
-      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0)
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0)
+      react: 19.0.0-rc-f2df5694-20240916
 
   '@microsoft/api-extractor-model@7.28.13(@types/node@20.12.7)':
     dependencies:
@@ -8608,11 +8618,11 @@ snapshots:
 
   '@msgpack/msgpack@2.8.0': {}
 
-  '@neshca/cache-handler@1.7.1(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(redis@4.7.0)':
+  '@neshca/cache-handler@1.7.1(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(redis@4.7.0)':
     dependencies:
       cluster-key-slot: 1.1.2
       lru-cache: 10.4.3
-      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0)
+      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0)
       redis: 4.7.0
 
   '@next/env@13.5.6': {}
@@ -8680,10 +8690,16 @@ snapshots:
   '@next/swc-win32-x64-msvc@15.0.0-canary.157':
     optional: true
 
-  '@next/third-parties@14.2.9(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@next/third-parties@14.2.9(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
-      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0)
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0)
+      react: 19.0.0-rc-f2df5694-20240916
+      third-party-capital: 1.0.20
+
+  '@next/third-parties@14.2.9(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916)':
+    dependencies:
+      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0)
+      react: 19.0.0-rc-f2df5694-20240916
       third-party-capital: 1.0.20
 
   '@nodelib/fs.scandir@2.1.5':
@@ -8698,11 +8714,11 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.17.1
 
-  '@nordcom/nordstar-accented@0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@nordcom/nordstar-accented@0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
-      '@nordcom/nordstar-system': 0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      react: 19.0.0-rc-3dfd5d9e-20240910
-      react-dom: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
+      '@nordcom/nordstar-system': 0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      react: 19.0.0-rc-f2df5694-20240916
+      react-dom: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
 
   '@nordcom/nordstar-accented@0.0.60(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
     dependencies:
@@ -8710,11 +8726,11 @@ snapshots:
       react: 19.0.0-rc-f65ac7bd-20240826
       react-dom: 19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826)
 
-  '@nordcom/nordstar-button@0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@nordcom/nordstar-button@0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
-      '@nordcom/nordstar-system': 0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      react: 19.0.0-rc-3dfd5d9e-20240910
-      react-dom: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
+      '@nordcom/nordstar-system': 0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      react: 19.0.0-rc-f2df5694-20240916
+      react-dom: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
 
   '@nordcom/nordstar-button@0.0.60(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
     dependencies:
@@ -8722,11 +8738,11 @@ snapshots:
       react: 19.0.0-rc-f65ac7bd-20240826
       react-dom: 19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826)
 
-  '@nordcom/nordstar-card@0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@nordcom/nordstar-card@0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
-      '@nordcom/nordstar-system': 0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      react: 19.0.0-rc-3dfd5d9e-20240910
-      react-dom: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
+      '@nordcom/nordstar-system': 0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      react: 19.0.0-rc-f2df5694-20240916
+      react-dom: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
 
   '@nordcom/nordstar-card@0.0.60(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
     dependencies:
@@ -8734,13 +8750,13 @@ snapshots:
       react: 19.0.0-rc-f65ac7bd-20240826
       react-dom: 19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826)
 
-  '@nordcom/nordstar-details@0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@nordcom/nordstar-details@0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
-      '@nordcom/nordstar-card': 0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      '@nordcom/nordstar-label': 0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      '@nordcom/nordstar-system': 0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      react: 19.0.0-rc-3dfd5d9e-20240910
-      react-dom: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
+      '@nordcom/nordstar-card': 0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      '@nordcom/nordstar-label': 0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      '@nordcom/nordstar-system': 0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      react: 19.0.0-rc-f2df5694-20240916
+      react-dom: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
 
   '@nordcom/nordstar-details@0.0.60(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
     dependencies:
@@ -8750,13 +8766,13 @@ snapshots:
       react: 19.0.0-rc-f65ac7bd-20240826
       react-dom: 19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826)
 
-  '@nordcom/nordstar-header@0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@nordcom/nordstar-header@0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
-      '@nordcom/nordstar-card': 0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      '@nordcom/nordstar-system': 0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      '@nordcom/nordstar-view': 0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      react: 19.0.0-rc-3dfd5d9e-20240910
-      react-dom: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
+      '@nordcom/nordstar-card': 0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      '@nordcom/nordstar-system': 0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      '@nordcom/nordstar-view': 0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      react: 19.0.0-rc-f2df5694-20240916
+      react-dom: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
 
   '@nordcom/nordstar-header@0.0.60(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
     dependencies:
@@ -8766,11 +8782,11 @@ snapshots:
       react: 19.0.0-rc-f65ac7bd-20240826
       react-dom: 19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826)
 
-  '@nordcom/nordstar-heading@0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@nordcom/nordstar-heading@0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
-      '@nordcom/nordstar-system': 0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      react: 19.0.0-rc-3dfd5d9e-20240910
-      react-dom: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
+      '@nordcom/nordstar-system': 0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      react: 19.0.0-rc-f2df5694-20240916
+      react-dom: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
 
   '@nordcom/nordstar-heading@0.0.60(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
     dependencies:
@@ -8778,11 +8794,11 @@ snapshots:
       react: 19.0.0-rc-f65ac7bd-20240826
       react-dom: 19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826)
 
-  '@nordcom/nordstar-input@0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@nordcom/nordstar-input@0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
-      '@nordcom/nordstar-system': 0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      react: 19.0.0-rc-3dfd5d9e-20240910
-      react-dom: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
+      '@nordcom/nordstar-system': 0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      react: 19.0.0-rc-f2df5694-20240916
+      react-dom: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
 
   '@nordcom/nordstar-input@0.0.60(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
     dependencies:
@@ -8790,11 +8806,11 @@ snapshots:
       react: 19.0.0-rc-f65ac7bd-20240826
       react-dom: 19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826)
 
-  '@nordcom/nordstar-label@0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@nordcom/nordstar-label@0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
-      '@nordcom/nordstar-system': 0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      react: 19.0.0-rc-3dfd5d9e-20240910
-      react-dom: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
+      '@nordcom/nordstar-system': 0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      react: 19.0.0-rc-f2df5694-20240916
+      react-dom: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
 
   '@nordcom/nordstar-label@0.0.60(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
     dependencies:
@@ -8802,11 +8818,11 @@ snapshots:
       react: 19.0.0-rc-f65ac7bd-20240826
       react-dom: 19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826)
 
-  '@nordcom/nordstar-system@0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@nordcom/nordstar-system@0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
       clsx: 2.1.1
-      react: 19.0.0-rc-3dfd5d9e-20240910
-      react-dom: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
+      react: 19.0.0-rc-f2df5694-20240916
+      react-dom: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
       the-new-css-reset: 1.11.3
 
   '@nordcom/nordstar-system@0.0.60(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
@@ -8816,11 +8832,11 @@ snapshots:
       react-dom: 19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826)
       the-new-css-reset: 1.11.3
 
-  '@nordcom/nordstar-view@0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@nordcom/nordstar-view@0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
-      '@nordcom/nordstar-system': 0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      react: 19.0.0-rc-3dfd5d9e-20240910
-      react-dom: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
+      '@nordcom/nordstar-system': 0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      react: 19.0.0-rc-f2df5694-20240916
+      react-dom: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
 
   '@nordcom/nordstar-view@0.0.60(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
     dependencies:
@@ -8828,20 +8844,20 @@ snapshots:
       react: 19.0.0-rc-f65ac7bd-20240826
       react-dom: 19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826)
 
-  '@nordcom/nordstar@0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@nordcom/nordstar@0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
-      '@nordcom/nordstar-accented': 0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      '@nordcom/nordstar-button': 0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      '@nordcom/nordstar-card': 0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      '@nordcom/nordstar-details': 0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      '@nordcom/nordstar-header': 0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      '@nordcom/nordstar-heading': 0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      '@nordcom/nordstar-input': 0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      '@nordcom/nordstar-label': 0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      '@nordcom/nordstar-system': 0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      '@nordcom/nordstar-view': 0.0.60(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      react: 19.0.0-rc-3dfd5d9e-20240910
-      react-dom: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
+      '@nordcom/nordstar-accented': 0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      '@nordcom/nordstar-button': 0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      '@nordcom/nordstar-card': 0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      '@nordcom/nordstar-details': 0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      '@nordcom/nordstar-header': 0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      '@nordcom/nordstar-heading': 0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      '@nordcom/nordstar-input': 0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      '@nordcom/nordstar-label': 0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      '@nordcom/nordstar-system': 0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      '@nordcom/nordstar-view': 0.0.60(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      react: 19.0.0-rc-f2df5694-20240916
+      react-dom: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
 
   '@nordcom/nordstar@0.0.60(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
     dependencies:
@@ -9223,20 +9239,20 @@ snapshots:
     transitivePeerDependencies:
       - '@types/uuid'
 
-  '@prismicio/next@1.6.0(@prismicio/client@7.4.1)(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@prismicio/next@1.6.0(@prismicio/client@7.4.1)(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
       '@formatjs/intl-localematcher': 0.5.4
       '@prismicio/client': 7.4.1
       imgix-url-builder: 0.0.4
       negotiator: 0.6.3
-      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0)
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0)
+      react: 19.0.0-rc-f2df5694-20240916
 
-  '@prismicio/react@2.8.0(@prismicio/client@7.4.1)(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@prismicio/react@2.8.0(@prismicio/client@7.4.1)(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
       '@prismicio/client': 7.4.1
       '@prismicio/richtext': 2.1.5
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      react: 19.0.0-rc-f2df5694-20240916
 
   '@prismicio/richtext@2.1.5':
     dependencies:
@@ -9265,131 +9281,131 @@ snapshots:
 
   '@radix-ui/primitive@1.1.0': {}
 
-  '@radix-ui/react-avatar@1.1.0(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@radix-ui/react-avatar@1.1.0(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
-      '@radix-ui/react-context': 1.1.0(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910)
-      '@radix-ui/react-primitive': 2.0.0(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      '@radix-ui/react-use-callback-ref': 1.1.0(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910)
-      '@radix-ui/react-use-layout-effect': 1.1.0(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910)
-      react: 19.0.0-rc-3dfd5d9e-20240910
-      react-dom: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
+      '@radix-ui/react-context': 1.1.0(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916)
+      '@radix-ui/react-primitive': 2.0.0(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      '@radix-ui/react-use-callback-ref': 1.1.0(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916)
+      '@radix-ui/react-use-layout-effect': 1.1.0(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916)
+      react: 19.0.0-rc-f2df5694-20240916
+      react-dom: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
     optionalDependencies:
       '@types/react': 18.2.75
       '@types/react-dom': 18.2.24
 
-  '@radix-ui/react-compose-refs@1.0.1(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@radix-ui/react-compose-refs@1.0.1(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
       '@babel/runtime': 7.24.7
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      react: 19.0.0-rc-f2df5694-20240916
     optionalDependencies:
       '@types/react': 18.2.75
 
-  '@radix-ui/react-compose-refs@1.1.0(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@radix-ui/react-compose-refs@1.1.0(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      react: 19.0.0-rc-f2df5694-20240916
     optionalDependencies:
       '@types/react': 18.2.75
 
-  '@radix-ui/react-context@1.1.0(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@radix-ui/react-context@1.1.0(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      react: 19.0.0-rc-f2df5694-20240916
     optionalDependencies:
       '@types/react': 18.2.75
 
-  '@radix-ui/react-direction@1.1.0(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@radix-ui/react-direction@1.1.0(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      react: 19.0.0-rc-f2df5694-20240916
     optionalDependencies:
       '@types/react': 18.2.75
 
-  '@radix-ui/react-presence@1.1.0(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@radix-ui/react-presence@1.1.0(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
-      '@radix-ui/react-compose-refs': 1.1.0(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910)
-      '@radix-ui/react-use-layout-effect': 1.1.0(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910)
-      react: 19.0.0-rc-3dfd5d9e-20240910
-      react-dom: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
+      '@radix-ui/react-compose-refs': 1.1.0(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916)
+      '@radix-ui/react-use-layout-effect': 1.1.0(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916)
+      react: 19.0.0-rc-f2df5694-20240916
+      react-dom: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
     optionalDependencies:
       '@types/react': 18.2.75
       '@types/react-dom': 18.2.24
 
-  '@radix-ui/react-primitive@1.0.3(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@radix-ui/react-primitive@1.0.3(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
       '@babel/runtime': 7.24.7
-      '@radix-ui/react-slot': 1.0.2(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910)
-      react: 19.0.0-rc-3dfd5d9e-20240910
-      react-dom: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
+      '@radix-ui/react-slot': 1.0.2(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916)
+      react: 19.0.0-rc-f2df5694-20240916
+      react-dom: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
     optionalDependencies:
       '@types/react': 18.2.75
       '@types/react-dom': 18.2.24
 
-  '@radix-ui/react-primitive@2.0.0(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@radix-ui/react-primitive@2.0.0(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
-      '@radix-ui/react-slot': 1.1.0(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910)
-      react: 19.0.0-rc-3dfd5d9e-20240910
-      react-dom: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
+      '@radix-ui/react-slot': 1.1.0(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916)
+      react: 19.0.0-rc-f2df5694-20240916
+      react-dom: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
     optionalDependencies:
       '@types/react': 18.2.75
       '@types/react-dom': 18.2.24
 
-  '@radix-ui/react-scroll-area@1.1.0(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@radix-ui/react-scroll-area@1.1.0(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
       '@radix-ui/number': 1.1.0
       '@radix-ui/primitive': 1.1.0
-      '@radix-ui/react-compose-refs': 1.1.0(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910)
-      '@radix-ui/react-context': 1.1.0(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910)
-      '@radix-ui/react-direction': 1.1.0(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910)
-      '@radix-ui/react-presence': 1.1.0(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      '@radix-ui/react-primitive': 2.0.0(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      '@radix-ui/react-use-callback-ref': 1.1.0(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910)
-      '@radix-ui/react-use-layout-effect': 1.1.0(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910)
-      react: 19.0.0-rc-3dfd5d9e-20240910
-      react-dom: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
+      '@radix-ui/react-compose-refs': 1.1.0(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916)
+      '@radix-ui/react-context': 1.1.0(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916)
+      '@radix-ui/react-direction': 1.1.0(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916)
+      '@radix-ui/react-presence': 1.1.0(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      '@radix-ui/react-primitive': 2.0.0(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      '@radix-ui/react-use-callback-ref': 1.1.0(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916)
+      '@radix-ui/react-use-layout-effect': 1.1.0(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916)
+      react: 19.0.0-rc-f2df5694-20240916
+      react-dom: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
     optionalDependencies:
       '@types/react': 18.2.75
       '@types/react-dom': 18.2.24
 
-  '@radix-ui/react-separator@1.1.0(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@radix-ui/react-separator@1.1.0(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
-      '@radix-ui/react-primitive': 2.0.0(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      react: 19.0.0-rc-3dfd5d9e-20240910
-      react-dom: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
+      '@radix-ui/react-primitive': 2.0.0(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      react: 19.0.0-rc-f2df5694-20240916
+      react-dom: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
     optionalDependencies:
       '@types/react': 18.2.75
       '@types/react-dom': 18.2.24
 
-  '@radix-ui/react-slot@1.0.2(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@radix-ui/react-slot@1.0.2(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
       '@babel/runtime': 7.24.7
-      '@radix-ui/react-compose-refs': 1.0.1(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910)
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      '@radix-ui/react-compose-refs': 1.0.1(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916)
+      react: 19.0.0-rc-f2df5694-20240916
     optionalDependencies:
       '@types/react': 18.2.75
 
-  '@radix-ui/react-slot@1.1.0(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@radix-ui/react-slot@1.1.0(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
-      '@radix-ui/react-compose-refs': 1.1.0(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910)
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      '@radix-ui/react-compose-refs': 1.1.0(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916)
+      react: 19.0.0-rc-f2df5694-20240916
     optionalDependencies:
       '@types/react': 18.2.75
 
-  '@radix-ui/react-use-callback-ref@1.1.0(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@radix-ui/react-use-callback-ref@1.1.0(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      react: 19.0.0-rc-f2df5694-20240916
     optionalDependencies:
       '@types/react': 18.2.75
 
-  '@radix-ui/react-use-layout-effect@1.1.0(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@radix-ui/react-use-layout-effect@1.1.0(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      react: 19.0.0-rc-f2df5694-20240916
     optionalDependencies:
       '@types/react': 18.2.75
 
-  '@radix-ui/react-visually-hidden@1.0.3(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@radix-ui/react-visually-hidden@1.0.3(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
       '@babel/runtime': 7.24.7
-      '@radix-ui/react-primitive': 1.0.3(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
-      react: 19.0.0-rc-3dfd5d9e-20240910
-      react-dom: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
+      '@radix-ui/react-primitive': 1.0.3(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
+      react: 19.0.0-rc-f2df5694-20240916
+      react-dom: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
     optionalDependencies:
       '@types/react': 18.2.75
       '@types/react-dom': 18.2.24
@@ -9689,7 +9705,7 @@ snapshots:
       '@sentry/types': 8.28.0
       '@sentry/utils': 8.28.0
 
-  '@sentry/nextjs@8.28.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.52.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.1(@opentelemetry/api@1.9.0))(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react@19.0.0-rc-3dfd5d9e-20240910)(webpack@5.92.1)':
+  '@sentry/nextjs@8.28.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.52.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.1(@opentelemetry/api@1.9.0))(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916)(webpack@5.92.1)':
     dependencies:
       '@opentelemetry/instrumentation-http': 0.52.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/semantic-conventions': 1.25.1
@@ -9697,13 +9713,13 @@ snapshots:
       '@sentry/core': 8.28.0
       '@sentry/node': 8.28.0
       '@sentry/opentelemetry': 8.28.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.52.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.25.1)
-      '@sentry/react': 8.28.0(react@19.0.0-rc-3dfd5d9e-20240910)
+      '@sentry/react': 8.28.0(react@19.0.0-rc-f2df5694-20240916)
       '@sentry/types': 8.28.0
       '@sentry/utils': 8.28.0
       '@sentry/vercel-edge': 8.28.0
       '@sentry/webpack-plugin': 2.22.3(webpack@5.92.1)
       chalk: 3.0.0
-      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0)
+      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0)
       resolve: 1.22.8
       rollup: 3.29.4
       stacktrace-parser: 0.1.10
@@ -9776,14 +9792,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sentry/react@8.28.0(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@sentry/react@8.28.0(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
       '@sentry/browser': 8.28.0
       '@sentry/core': 8.28.0
       '@sentry/types': 8.28.0
       '@sentry/utils': 8.28.0
       hoist-non-react-statics: 3.3.2
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      react: 19.0.0-rc-f2df5694-20240916
 
   '@sentry/types@8.28.0': {}
 
@@ -9813,14 +9829,14 @@ snapshots:
 
   '@shopify/graphql-client@1.2.0': {}
 
-  '@shopify/hydrogen-react@2024.7.2(@types/react@18.2.75)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@shopify/hydrogen-react@2024.7.2(@types/react@18.2.75)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
       '@google/model-viewer': 1.12.1
       '@xstate/fsm': 2.1.0
-      '@xstate/react': 3.2.2(@types/react@18.2.75)(@xstate/fsm@2.1.0)(react@19.0.0-rc-3dfd5d9e-20240910)
+      '@xstate/react': 3.2.2(@types/react@18.2.75)(@xstate/fsm@2.1.0)(react@19.0.0-rc-f2df5694-20240916)
       graphql: 16.9.0
-      react: 19.0.0-rc-3dfd5d9e-20240910
-      react-dom: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
+      react: 19.0.0-rc-f2df5694-20240916
+      react-dom: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
       type-fest: 4.18.3
       worktop: 0.7.3
     transitivePeerDependencies:
@@ -9861,7 +9877,7 @@ snapshots:
 
   '@sinclair/typebox@0.27.8': {}
 
-  '@slicemachine/adapter-next@0.3.49(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react@19.0.0-rc-3dfd5d9e-20240910)(uuid@9.0.1)':
+  '@slicemachine/adapter-next@0.3.49(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916)(uuid@9.0.1)':
     dependencies:
       '@prismicio/simulator': 0.1.4
       '@prismicio/types-internal': 2.6.0(@types/uuid@9.0.8)(fp-ts@2.16.6)(io-ts-types@0.5.19(fp-ts@2.16.6)(io-ts@2.2.21(fp-ts@2.16.6))(monocle-ts@2.3.13(fp-ts@2.16.6))(newtype-ts@0.3.5(fp-ts@2.16.6)(monocle-ts@2.3.13(fp-ts@2.16.6))))(io-ts@2.2.21(fp-ts@2.16.6))(uuid@9.0.1)
@@ -9873,9 +9889,9 @@ snapshots:
       lz-string: 1.5.0
       monocle-ts: 2.3.13(fp-ts@2.16.6)
       newtype-ts: 0.3.5(fp-ts@2.16.6)(monocle-ts@2.3.13(fp-ts@2.16.6))
-      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0)
+      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0)
       pascal-case: 3.1.2
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      react: 19.0.0-rc-f2df5694-20240916
     transitivePeerDependencies:
       - '@prismicio/types'
       - '@types/uuid'
@@ -10024,12 +10040,12 @@ snapshots:
       lodash: 4.17.21
       redent: 3.0.0
 
-  '@testing-library/react@16.0.1(@testing-library/dom@10.1.0)(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@testing-library/react@16.0.1(@testing-library/dom@10.1.0)(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
       '@babel/runtime': 7.24.7
       '@testing-library/dom': 10.1.0
-      react: 19.0.0-rc-3dfd5d9e-20240910
-      react-dom: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
+      react: 19.0.0-rc-f2df5694-20240916
+      react-dom: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
     optionalDependencies:
       '@types/react': 18.2.75
       '@types/react-dom': 18.2.24
@@ -10443,12 +10459,19 @@ snapshots:
 
   '@ungap/structured-clone@1.2.0': {}
 
-  '@vercel/analytics@1.3.1(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@vercel/analytics@1.3.1(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
       server-only: 0.0.1
     optionalDependencies:
-      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0)
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0)
+      react: 19.0.0-rc-f2df5694-20240916
+
+  '@vercel/analytics@1.3.1(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916)':
+    dependencies:
+      server-only: 0.0.1
+    optionalDependencies:
+      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0)
+      react: 19.0.0-rc-f2df5694-20240916
 
   '@vercel/build-utils@8.3.9': {}
 
@@ -10462,14 +10485,14 @@ snapshots:
 
   '@vercel/error-utils@2.0.2': {}
 
-  '@vercel/flags@2.6.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@5.4.6(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1)))(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@vercel/flags@2.6.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@5.4.6(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1)))(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
       jose: 5.2.1
     optionalDependencies:
       '@sveltejs/kit': 1.30.4(svelte@4.2.17)(vite@5.4.6(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1))
-      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0)
-      react: 19.0.0-rc-3dfd5d9e-20240910
-      react-dom: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
+      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0)
+      react: 19.0.0-rc-f2df5694-20240916
+      react-dom: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
 
   '@vercel/fun@1.1.0':
     dependencies:
@@ -10611,10 +10634,10 @@ snapshots:
 
   '@vercel/ruby@2.1.0': {}
 
-  '@vercel/speed-insights@1.0.5(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(sass@1.78.0)(typescript@5.6.2)(vite@5.4.6(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1))':
+  '@vercel/speed-insights@1.0.5(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(sass@1.78.0)(typescript@5.6.2)(vite@5.4.6(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1))':
     optionalDependencies:
       '@sveltejs/kit': 1.30.4(svelte@4.2.17)(vite@5.4.6(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1))
-      next: 14.2.1(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@18.3.1)(sass@1.78.0)
+      next: 14.2.1(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@18.3.1)(sass@1.78.0)
       react: 18.3.1
       svelte: 4.2.17
       vue: 3.4.27(typescript@5.6.2)
@@ -10643,7 +10666,7 @@ snapshots:
       json-schema-to-ts: 1.6.4
       ts-morph: 12.0.0
 
-  '@vercel/toolbar@0.1.20(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react@19.0.0-rc-3dfd5d9e-20240910)(vite@5.4.6(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1))':
+  '@vercel/toolbar@0.1.20(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916)(vite@5.4.6(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1))':
     dependencies:
       '@tinyhttp/app': 1.3.0
       chokidar: 3.6.0
@@ -10652,8 +10675,21 @@ snapshots:
       get-port: 5.1.1
       strip-ansi: 6.0.1
     optionalDependencies:
-      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0)
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0)
+      react: 19.0.0-rc-f2df5694-20240916
+      vite: 5.4.6(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1)
+
+  '@vercel/toolbar@0.1.20(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916)(vite@5.4.6(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1))':
+    dependencies:
+      '@tinyhttp/app': 1.3.0
+      chokidar: 3.6.0
+      execa: 5.1.1
+      find-up: 5.0.0
+      get-port: 5.1.1
+      strip-ansi: 6.0.1
+    optionalDependencies:
+      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0)
+      react: 19.0.0-rc-f2df5694-20240916
       vite: 5.4.6(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1)
 
   '@vitejs/plugin-react@4.3.1(vite@5.4.6(@types/node@20.12.7)(sass@1.78.0)(terser@5.31.1))':
@@ -10920,11 +10956,11 @@ snapshots:
 
   '@xstate/fsm@2.1.0': {}
 
-  '@xstate/react@3.2.2(@types/react@18.2.75)(@xstate/fsm@2.1.0)(react@19.0.0-rc-3dfd5d9e-20240910)':
+  '@xstate/react@3.2.2(@types/react@18.2.75)(@xstate/fsm@2.1.0)(react@19.0.0-rc-f2df5694-20240916)':
     dependencies:
-      react: 19.0.0-rc-3dfd5d9e-20240910
-      use-isomorphic-layout-effect: 1.1.2(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910)
-      use-sync-external-store: 1.2.2(react@19.0.0-rc-3dfd5d9e-20240910)
+      react: 19.0.0-rc-f2df5694-20240916
+      use-isomorphic-layout-effect: 1.1.2(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916)
+      use-sync-external-store: 1.2.2(react@19.0.0-rc-f2df5694-20240916)
     optionalDependencies:
       '@xstate/fsm': 2.1.0
     transitivePeerDependencies:
@@ -11156,6 +11192,16 @@ snapshots:
       pkg-up: 3.1.0
       reselect: 4.1.8
       resolve: 1.22.8
+
+  babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916:
+    dependencies:
+      '@babel/generator': 7.2.0
+      '@babel/types': 7.25.6
+      chalk: 4.1.2
+      invariant: 2.2.4
+      pretty-format: 24.9.0
+      zod: 3.23.8
+      zod-validation-error: 2.1.0(zod@3.23.8)
 
   babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910:
     dependencies:
@@ -11960,7 +12006,7 @@ snapshots:
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@8.0.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.1)(typescript@5.6.2))(eslint@8.57.1))(eslint@8.57.1)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@8.0.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.1)(typescript@5.6.2))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.1)
       eslint-plugin-jsx-a11y: 6.10.0(eslint@8.57.1)
       eslint-plugin-react: 7.36.1(eslint@8.57.1)
       eslint-plugin-react-hooks: 4.6.0(eslint@8.57.1)
@@ -11988,7 +12034,7 @@ snapshots:
       enhanced-resolve: 5.17.0
       eslint: 8.57.1
       eslint-module-utils: 2.8.1(@typescript-eslint/parser@8.0.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@8.0.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.1)(typescript@5.6.2))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@8.0.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.1)(typescript@5.6.2))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.1)
       fast-glob: 3.3.2
       get-tsconfig: 4.7.5
       is-core-module: 2.14.0
@@ -12010,7 +12056,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@8.0.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.1)(typescript@5.6.2))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
+  eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.1):
     dependencies:
       array-includes: 3.1.8
       array.prototype.findlastindex: 1.2.5
@@ -12499,9 +12545,9 @@ snapshots:
       strip-ansi: 6.0.1
       wide-align: 1.1.5
 
-  geist@1.3.1(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0)):
+  geist@1.3.1(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0)):
     dependencies:
-      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0)
+      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0)
 
   generic-pool@3.4.2: {}
 
@@ -13360,9 +13406,9 @@ snapshots:
     dependencies:
       yallist: 4.0.0
 
-  lucide-react@0.441.0(react@19.0.0-rc-3dfd5d9e-20240910):
+  lucide-react@0.441.0(react@19.0.0-rc-f2df5694-20240916):
     dependencies:
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      react: 19.0.0-rc-f2df5694-20240916
 
   lz-string@1.5.0: {}
 
@@ -13609,42 +13655,56 @@ snapshots:
       fp-ts: 2.16.6
       monocle-ts: 2.3.13(fp-ts@2.16.6)
 
-  next-auth@4.24.7(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910):
+  next-auth@4.24.7(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916):
     dependencies:
       '@babel/runtime': 7.24.6
       '@panva/hkdf': 1.1.1
       cookie: 0.5.0
       jose: 4.15.5
-      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0)
+      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0)
       oauth: 0.9.15
       openid-client: 5.6.5
       preact: 10.22.0
       preact-render-to-string: 5.2.6(preact@10.22.0)
-      react: 19.0.0-rc-3dfd5d9e-20240910
-      react-dom: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
+      react: 19.0.0-rc-f2df5694-20240916
+      react-dom: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
       uuid: 8.3.2
 
-  next-auth@5.0.0-beta.21(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react@19.0.0-rc-3dfd5d9e-20240910):
+  next-auth@5.0.0-beta.21(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916):
     dependencies:
       '@auth/core': 0.35.0
-      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0)
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0)
+      react: 19.0.0-rc-f2df5694-20240916
 
-  next-seo@6.6.0(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910):
+  next-auth@5.0.0-beta.21(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react@19.0.0-rc-f2df5694-20240916):
     dependencies:
-      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0)
-      react: 19.0.0-rc-3dfd5d9e-20240910
-      react-dom: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
+      '@auth/core': 0.35.0
+      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0)
+      react: 19.0.0-rc-f2df5694-20240916
 
-  next-sitemap@4.2.3(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0)):
+  next-seo@6.6.0(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916):
+    dependencies:
+      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0)
+      react: 19.0.0-rc-f2df5694-20240916
+      react-dom: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
+
+  next-sitemap@4.2.3(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0)):
     dependencies:
       '@corex/deepmerge': 4.0.43
       '@next/env': 13.5.6
       fast-glob: 3.3.2
       minimist: 1.2.8
-      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0)
+      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0)
 
-  next@14.2.1(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@18.3.1)(sass@1.78.0):
+  next-sitemap@4.2.3(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0)):
+    dependencies:
+      '@corex/deepmerge': 4.0.43
+      '@next/env': 13.5.6
+      fast-glob: 3.3.2
+      minimist: 1.2.8
+      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0)
+
+  next@14.2.1(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@18.3.1)(sass@1.78.0):
     dependencies:
       '@next/env': 14.2.1
       '@swc/helpers': 0.5.5
@@ -13653,7 +13713,7 @@ snapshots:
       graceful-fs: 4.2.11
       postcss: 8.4.31
       react: 18.3.1
-      react-dom: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
+      react-dom: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
       styled-jsx: 5.1.1(@babel/core@7.24.7)(react@18.3.1)
     optionalDependencies:
       '@next/swc-darwin-arm64': 14.2.1
@@ -13672,7 +13732,7 @@ snapshots:
       - babel-plugin-macros
     optional: true
 
-  next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0):
+  next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0):
     dependencies:
       '@next/env': 15.0.0-canary.157
       '@swc/counter': 0.1.3
@@ -13681,9 +13741,39 @@ snapshots:
       caniuse-lite: 1.0.30001646
       graceful-fs: 4.2.11
       postcss: 8.4.31
-      react: 19.0.0-rc-3dfd5d9e-20240910
-      react-dom: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
-      styled-jsx: 5.1.6(@babel/core@7.24.7)(react@19.0.0-rc-3dfd5d9e-20240910)
+      react: 19.0.0-rc-f2df5694-20240916
+      react-dom: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
+      styled-jsx: 5.1.6(@babel/core@7.24.7)(react@19.0.0-rc-f2df5694-20240916)
+    optionalDependencies:
+      '@next/swc-darwin-arm64': 15.0.0-canary.157
+      '@next/swc-darwin-x64': 15.0.0-canary.157
+      '@next/swc-linux-arm64-gnu': 15.0.0-canary.157
+      '@next/swc-linux-arm64-musl': 15.0.0-canary.157
+      '@next/swc-linux-x64-gnu': 15.0.0-canary.157
+      '@next/swc-linux-x64-musl': 15.0.0-canary.157
+      '@next/swc-win32-arm64-msvc': 15.0.0-canary.157
+      '@next/swc-win32-ia32-msvc': 15.0.0-canary.157
+      '@next/swc-win32-x64-msvc': 15.0.0-canary.157
+      '@opentelemetry/api': 1.9.0
+      babel-plugin-react-compiler: 0.0.0-experimental-23b8160-20240916
+      sass: 1.78.0
+      sharp: 0.33.5
+    transitivePeerDependencies:
+      - '@babel/core'
+      - babel-plugin-macros
+
+  next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0):
+    dependencies:
+      '@next/env': 15.0.0-canary.157
+      '@swc/counter': 0.1.3
+      '@swc/helpers': 0.5.13
+      busboy: 1.6.0
+      caniuse-lite: 1.0.30001646
+      graceful-fs: 4.2.11
+      postcss: 8.4.31
+      react: 19.0.0-rc-f2df5694-20240916
+      react-dom: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
+      styled-jsx: 5.1.6(@babel/core@7.24.7)(react@19.0.0-rc-f2df5694-20240916)
     optionalDependencies:
       '@next/swc-darwin-arm64': 15.0.0-canary.157
       '@next/swc-darwin-x64': 15.0.0-canary.157
@@ -13702,13 +13792,21 @@ snapshots:
       - '@babel/core'
       - babel-plugin-macros
 
-  nextjs-toploader@3.6.15(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0))(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910):
+  nextjs-toploader@3.6.15(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916):
     dependencies:
-      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(sass@1.78.0)
+      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0)
       nprogress: 0.2.0
       prop-types: 15.8.1
-      react: 19.0.0-rc-3dfd5d9e-20240910
-      react-dom: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
+      react: 19.0.0-rc-f2df5694-20240916
+      react-dom: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
+
+  nextjs-toploader@3.6.15(next@15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0))(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916):
+    dependencies:
+      next: 15.0.0-canary.157(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-2bc6fec-20240910)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(sass@1.78.0)
+      nprogress: 0.2.0
+      prop-types: 15.8.1
+      react: 19.0.0-rc-f2df5694-20240916
+      react-dom: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
 
   no-case@3.0.4:
     dependencies:
@@ -14244,24 +14342,24 @@ snapshots:
       defu: 6.1.4
       destr: 2.0.3
 
-  react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910):
+  react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916):
     dependencies:
-      react: 19.0.0-rc-3dfd5d9e-20240910
-      scheduler: 0.25.0-rc-3dfd5d9e-20240910
+      react: 19.0.0-rc-f2df5694-20240916
+      scheduler: 0.25.0-rc-f2df5694-20240916
 
   react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826):
     dependencies:
       react: 19.0.0-rc-f65ac7bd-20240826
       scheduler: 0.25.0-rc-f65ac7bd-20240826
 
-  react-error-boundary@4.0.13(react@19.0.0-rc-3dfd5d9e-20240910):
+  react-error-boundary@4.0.13(react@19.0.0-rc-f2df5694-20240916):
     dependencies:
       '@babel/runtime': 7.24.7
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      react: 19.0.0-rc-f2df5694-20240916
 
-  react-icons@5.1.0(react@19.0.0-rc-3dfd5d9e-20240910):
+  react-icons@5.1.0(react@19.0.0-rc-f2df5694-20240916):
     dependencies:
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      react: 19.0.0-rc-f2df5694-20240916
 
   react-ipgeolocation@1.4.0: {}
 
@@ -14271,17 +14369,17 @@ snapshots:
 
   react-is@18.3.1: {}
 
-  react-live-chat-loader@2.9.2(react@19.0.0-rc-3dfd5d9e-20240910):
+  react-live-chat-loader@2.9.2(react@19.0.0-rc-f2df5694-20240916):
     dependencies:
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      react: 19.0.0-rc-f2df5694-20240916
 
   react-refresh@0.14.2: {}
 
-  react-share@5.1.0(react@19.0.0-rc-3dfd5d9e-20240910):
+  react-share@5.1.0(react@19.0.0-rc-f2df5694-20240916):
     dependencies:
       classnames: 2.5.1
       jsonp: 0.2.1
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      react: 19.0.0-rc-f2df5694-20240916
     transitivePeerDependencies:
       - supports-color
 
@@ -14290,7 +14388,7 @@ snapshots:
       loose-envify: 1.4.0
     optional: true
 
-  react@19.0.0-rc-3dfd5d9e-20240910: {}
+  react@19.0.0-rc-f2df5694-20240916: {}
 
   react@19.0.0-rc-f65ac7bd-20240826: {}
 
@@ -14359,10 +14457,10 @@ snapshots:
 
   regexparam@2.0.2: {}
 
-  rehackt@0.1.0(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910):
+  rehackt@0.1.0(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916):
     optionalDependencies:
       '@types/react': 18.2.75
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      react: 19.0.0-rc-f2df5694-20240916
 
   require-directory@2.1.1: {}
 
@@ -14482,7 +14580,7 @@ snapshots:
       immutable: 4.3.6
       source-map-js: 1.2.0
 
-  scheduler@0.25.0-rc-3dfd5d9e-20240910: {}
+  scheduler@0.25.0-rc-f2df5694-20240916: {}
 
   scheduler@0.25.0-rc-f65ac7bd-20240826: {}
 
@@ -14641,9 +14739,9 @@ snapshots:
 
   slashes@3.0.12: {}
 
-  slice-machine-ui@2.7.1(@prismicio/types@0.2.9)(@types/express@4.17.21)(@types/react-dom@18.2.24)(@types/react@18.2.75)(@types/uuid@9.0.8)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)(uuid@9.0.1):
+  slice-machine-ui@2.7.1(@prismicio/types@0.2.9)(@types/express@4.17.21)(@types/react-dom@18.2.24)(@types/react@18.2.75)(@types/uuid@9.0.8)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)(uuid@9.0.1):
     dependencies:
-      '@radix-ui/react-visually-hidden': 1.0.3(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910)
+      '@radix-ui/react-visually-hidden': 1.0.3(@types/react-dom@18.2.24)(@types/react@18.2.75)(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916)
       '@slicemachine/manager': 0.20.5(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(uuid@9.0.1)
       start-slicemachine: 0.12.29(@prismicio/types@0.2.9)(@types/express@4.17.21)(@types/uuid@9.0.8)(uuid@9.0.1)
     transitivePeerDependencies:
@@ -14661,10 +14759,10 @@ snapshots:
       - uWebSockets.js
       - uuid
 
-  sonner@1.5.0(react-dom@19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910))(react@19.0.0-rc-3dfd5d9e-20240910):
+  sonner@1.5.0(react-dom@19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916))(react@19.0.0-rc-f2df5694-20240916):
     dependencies:
-      react: 19.0.0-rc-3dfd5d9e-20240910
-      react-dom: 19.0.0-rc-3dfd5d9e-20240910(react@19.0.0-rc-3dfd5d9e-20240910)
+      react: 19.0.0-rc-f2df5694-20240916
+      react-dom: 19.0.0-rc-f2df5694-20240916(react@19.0.0-rc-f2df5694-20240916)
 
   source-map-js@1.2.0: {}
 
@@ -14861,10 +14959,10 @@ snapshots:
       '@babel/core': 7.24.7
     optional: true
 
-  styled-jsx@5.1.6(@babel/core@7.24.7)(react@19.0.0-rc-3dfd5d9e-20240910):
+  styled-jsx@5.1.6(@babel/core@7.24.7)(react@19.0.0-rc-f2df5694-20240916):
     dependencies:
       client-only: 0.0.1
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      react: 19.0.0-rc-f2df5694-20240916
     optionalDependencies:
       '@babel/core': 7.24.7
 
@@ -15276,20 +15374,20 @@ snapshots:
     dependencies:
       punycode: 2.3.1
 
-  use-context-selector@2.0.0(react@19.0.0-rc-3dfd5d9e-20240910)(scheduler@0.25.0-rc-f65ac7bd-20240826):
+  use-context-selector@2.0.0(react@19.0.0-rc-f2df5694-20240916)(scheduler@0.25.0-rc-f65ac7bd-20240826):
     dependencies:
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      react: 19.0.0-rc-f2df5694-20240916
       scheduler: 0.25.0-rc-f65ac7bd-20240826
 
-  use-isomorphic-layout-effect@1.1.2(@types/react@18.2.75)(react@19.0.0-rc-3dfd5d9e-20240910):
+  use-isomorphic-layout-effect@1.1.2(@types/react@18.2.75)(react@19.0.0-rc-f2df5694-20240916):
     dependencies:
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      react: 19.0.0-rc-f2df5694-20240916
     optionalDependencies:
       '@types/react': 18.2.75
 
-  use-sync-external-store@1.2.2(react@19.0.0-rc-3dfd5d9e-20240910):
+  use-sync-external-store@1.2.2(react@19.0.0-rc-f2df5694-20240916):
     dependencies:
-      react: 19.0.0-rc-3dfd5d9e-20240910
+      react: 19.0.0-rc-f2df5694-20240916
 
   util-deprecate@1.0.2: {}
 

@@ -1,4 +1,4 @@
-import { type ElementType, type ReactNode, Suspense } from 'react';
+import { type ElementType, type ReactNode } from 'react';
 
 import { cn } from '@/utils/tailwind';
 
@@ -20,6 +20,7 @@ export const Content = <ComponentGeneric extends ElementType = 'div'>({
     as,
     className,
     html,
+    children,
     ...props
 }: ContentProps<ComponentGeneric>) => {
     if (!html && !children && !as) {
@@ -29,15 +30,13 @@ export const Content = <ComponentGeneric extends ElementType = 'div'>({
     const AsComponent = as || 'div';
 
     return (
-        <Suspense>
-            <AsComponent
-                {...props}
-                {...(html ? { dangerouslySetInnerHTML: { __html: html } } : {})}
-                className={cn(
-                    'prose prose-strong:font-extrabold prose-headings:text-inherit prose-a:text-inherit prose-a:no-underline prose-a:hover:underline prose-headings:text-pretty text-current *:text-inherit empty:hidden',
-                    className
-                )}
-            />
-        </Suspense>
+        <AsComponent
+            {...props}
+            className={cn(
+                'prose prose-strong:font-extrabold prose-headings:text-inherit prose-a:text-inherit prose-a:no-underline prose-a:hover:underline prose-headings:text-pretty text-current *:text-inherit empty:hidden',
+                className
+            )}
+            {...(html ? { dangerouslySetInnerHTML: { __html: html } } : { children })}
+        />
     );
 };

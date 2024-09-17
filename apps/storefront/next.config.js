@@ -30,7 +30,7 @@ const config = {
     productionBrowserSourceMaps: true,
     compress: true,
     transpilePackages: ['@shopify/hydrogen-react', '@prismicio/client', '@slicemachine/adapter-next'],
-    serverExternalPackages: ['@sentry/profiling-node', '@nordcom/commerce-db', 'mongoose'],
+    serverExternalPackages: ['crypto-js'],
     devIndicators: {
         buildActivity: true,
         appIsrStatus: true
