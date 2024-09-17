@@ -3,7 +3,7 @@ import 'server-only';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
 
-import { unstable_cache as cache, revalidateTag } from 'next/cache';
+import { revalidateTag, unstable_cache as cache } from 'next/cache';
 
 const revalidateAll = async (userId: string, shopId: string, domain: string) => {
     revalidateTag('admin');

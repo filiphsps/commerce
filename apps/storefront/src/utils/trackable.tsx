@@ -1,9 +1,9 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 
 import type { Nullable, OnlineShop } from '@nordcom/commerce-db';
-import { MissingContextProviderError, UnknownCommerceProviderError } from '@nordcom/commerce-errors';
+import { MissingContextProviderError, TodoError, UnknownCommerceProviderError } from '@nordcom/commerce-errors';
 
 import { usePrevious } from '@/hooks/usePrevious';
 import { BuildConfig } from '@/utils/build-config';
@@ -30,11 +30,6 @@ import type { CartWithActions, ShopifyPageViewPayload } from '@shopify/hydrogen-
 import type { ShopifyContextValue } from '@shopify/hydrogen-react/dist/types/ShopifyProvider';
 import type { CartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import type { ReactNode } from 'react';
-
-// FIXME: Create or use a proper logging solution.
-const TrackableLogger = (message: string, data?: any, service?: string) => {
-    console.debug(`[nordcom-commerce]${!!service ? `[${service}]` : ''}: ${message}`, data || undefined);
-};
 
 /**
  * Analytics events.
@@ -156,7 +151,6 @@ export type AnalyticsEventActionProps = {
     cart: CartWithActions;
 };
 
-/* eslint-disable react-hooks/rules-of-hooks */
 const shopifyEventHandler = async (
     event: AnalyticsEventType,
     data: AnalyticsEventData,
@@ -164,12 +158,11 @@ const shopifyEventHandler = async (
 ) => {
     // Shopify only supports a subset of events.
     if (event !== 'page_view' && event !== 'add_to_cart') {
-        return;
+        throw new TodoError();
         // TODO:.type shouldn't be considered a literal.
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     } else if (shop.commerceProvider.type !== 'shopify') {
-        console.error('shopifyEventHandler() called for non-Shopify shop.');
-        return;
+        throw new TodoError('shopifyEventHandler() called for non-Shopify shop.');
     }
 
     const commerce = shop.commerceProvider;
@@ -244,7 +237,6 @@ const shopifyEventHandler = async (
                     }
                 };
 
-                TrackableLogger(`Event "${AnalyticsShopifyEventName.PAGE_VIEW}"`, data, 'shopify');
                 await sendShopifyAnalytics(data, commerce.domain);
                 break;
             }
@@ -257,7 +249,6 @@ const shopifyEventHandler = async (
                     }
                 };
 
-                TrackableLogger(`Event "${AnalyticsShopifyEventName.ADD_TO_CART}"`, data, 'shopify');
                 await sendShopifyAnalytics(data, commerce.domain);
                 break;
             }
@@ -334,7 +325,9 @@ const handleEvent = async (
 
     switch (shop.commerceProvider.type) {
         case 'shopify': {
-            await shopifyEventHandler(event, data, { shop, currency, locale, shopify, cart });
+            try {
+                await shopifyEventHandler(event, data, { shop, currency, locale, shopify, cart });
+            } catch {} // TODO: Handle errors properly.
         }
     }
 
@@ -357,7 +350,7 @@ const handleEvent = async (
             ...(data.gtm || {})
         });
     } catch (error: unknown) {
-        TrackableLogger(`Error sending "${event}" event: ${(error as any)?.message || error}`, 'analytics');
+        console.error(`Error sending "${event}" event: ${(error as any)?.message || error}`);
     }
 
     if (typeof data.gtm?.ecommerce !== 'undefined') {
@@ -425,13 +418,14 @@ export function Trackable({ children }: TrackableProps) {
         cookieDomain = `.${cookieDomain}`;
     }
 
-    if (BuildConfig.environment === 'production') {
-        // TODO: Break these out into a separate hook, to support other providers.
-        useShopifyCookies({ hasUserConsent: true, domain: cookieDomain, checkoutDomain });
-    }
+    // TODO: Break these out into a separate hook, to support other providers.
+    useShopifyCookies(
+        BuildConfig.environment === 'production'
+            ? { hasUserConsent: true, domain: cookieDomain, checkoutDomain }
+            : undefined
+    );
 
     const shopify = useShopify();
-
     const cart = useCart();
 
     const [queue, setQueue] = useState<
@@ -456,12 +450,12 @@ export function Trackable({ children }: TrackableProps) {
     );
 
     const postEvent = useCallback(
-        debounce(async (type: AnalyticsEventType, event: AnalyticsEventData) => {
+        debounce((type: AnalyticsEventType, event: AnalyticsEventData) => {
             if (internalTraffic) {
-                return;
+                return undefined;
             }
 
-            await handleEvent(type, event, { shop, currency, locale, shopify, cart });
+            return handleEvent(type, event, { shop, currency, locale, shopify, cart });
         }, 500),
         [handleEvent, shop, currency, locale, shopify, cart]
     )!;
@@ -522,8 +516,6 @@ export function Trackable({ children }: TrackableProps) {
             return;
         }
 
-        TrackableLogger(`Sending ${queue.length} event(s): ${queue.map(({ type }) => type).join(', ')}}`, queue);
-
         // Clone the queue, as it may be modified while we are sending events.
         let events = [...queue];
 
@@ -560,7 +552,12 @@ export function Trackable({ children }: TrackableProps) {
     );
 
     return useMemo(
-        () => <TrackableContext.Provider value={store as TrackableContextValue}>{children}</TrackableContext.Provider>,
+        () =>
+            store ? (
+                <TrackableContext.Provider value={store as TrackableContextValue}>{children}</TrackableContext.Provider>
+            ) : (
+                children
+            ),
         [store, children]
     );
 }
@@ -579,12 +576,15 @@ export function useTrackable<T extends keyof TrackableContextValue>(selector: Se
 export function useTrackable<T extends keyof TrackableContextValue>(
     selector?: SelectorFn<T>
 ): TrackableContextValue | TrackableContextValue[T] {
-    const context = selector ? useContextSelector(TrackableContext, selector) : useContext(TrackableContext);
-    if (!(context as any)) {
+    const contextSelector = useContextSelector(TrackableContext, selector!);
+    const context = useContext(TrackableContext);
+
+    const res = selector ? contextSelector : context;
+    if (!(res as any)) {
         throw new MissingContextProviderError('useTrackable', 'Trackable');
     }
 
-    return context;
+    return res;
 }
 
 export function AnalyticsEventTrigger({ event, data }: { event: AnalyticsEventType; data: AnalyticsEventData }) {
@@ -595,5 +595,5 @@ export function AnalyticsEventTrigger({ event, data }: { event: AnalyticsEventTy
         queueEvent(event, { path, ...data });
     }, []);
 
-    return <></>;
+    return <Fragment />;
 }
