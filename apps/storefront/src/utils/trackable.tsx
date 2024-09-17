@@ -401,6 +401,22 @@ export function Trackable({ children }: TrackableProps) {
         throw new UnknownCommerceProviderError(shop.commerceProvider.type);
     }
 
+    const [internalTraffic, setIsInternalTraffic] = useState(false);
+    useEffect(() => {
+        if (!(window as any).localStorage) {
+            return;
+        }
+
+        // Use vercel toolbar to determine internal traffic.
+        // TODO: This should be some form of a utility function.
+        const value = localStorage.getItem('__vercel_toolbar');
+        if (value !== '1') {
+            return;
+        }
+
+        setIsInternalTraffic(true);
+    }, []);
+
     const checkoutDomain = shop.commerceProvider.domain;
     // Only use the domain, not the subdomain.
     let cookieDomain: string | undefined =
@@ -427,6 +443,10 @@ export function Trackable({ children }: TrackableProps) {
 
     const queueEvent = useCallback(
         (type: AnalyticsEventType, event: AnalyticsEventData) => {
+            if (internalTraffic) {
+                return;
+            }
+
             setQueue((queue) => {
                 // FIXME: Don't add duplicate events. This is a very naive implementation.
                 return [...queue, { type, event }];
@@ -437,6 +457,10 @@ export function Trackable({ children }: TrackableProps) {
 
     const postEvent = useCallback(
         debounce(async (type: AnalyticsEventType, event: AnalyticsEventData) => {
+            if (internalTraffic) {
+                return;
+            }
+
             await handleEvent(type, event, { shop, currency, locale, shopify, cart });
         }, 500),
         [handleEvent, shop, currency, locale, shopify, cart]
@@ -462,7 +486,7 @@ export function Trackable({ children }: TrackableProps) {
 
     // Page view.
     useEffect(() => {
-        if (!path || path === prevPath) {
+        if (!path || path === prevPath || internalTraffic) {
             return;
         }
 
@@ -494,7 +518,7 @@ export function Trackable({ children }: TrackableProps) {
 
     // Send events.
     useEffect(() => {
-        if (queue.length <= 0) {
+        if (queue.length <= 0 || internalTraffic) {
             return;
         }
 

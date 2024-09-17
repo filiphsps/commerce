@@ -1,6 +1,6 @@
 'use client';
 
-import { type ReactNode, Suspense } from 'react';
+import { Fragment, type ReactNode, Suspense, useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
@@ -17,7 +17,7 @@ import { Toaster as ToasterProvider } from 'sonner';
 import { LiveChatProvider } from '@/components/live-chat-provider';
 import { PrismicRegistry } from '@/components/prismic-registry';
 import { ShopProvider } from '@/components/shop/provider';
-import { Toolbars } from '@/components/toolbars';
+import { isPreviewEnvironment, Toolbars } from '@/components/toolbars';
 
 import type { CurrencyCode, Locale } from '@/utils/locale';
 
@@ -63,13 +63,31 @@ const ContentProvider = ({
     locale: Locale;
     children: ReactNode;
 }) => {
+    const [show, set] = useState(false);
+    useEffect(() => {
+        if (!(window as any).localStorage) {
+            return;
+        }
+
+        // Use vercel toolbar to determine internal traffic.
+        // TODO: This should be some form of a utility function.
+        const value = localStorage.getItem('__vercel_toolbar');
+        if (value !== '1') {
+            return;
+        }
+
+        set(true);
+    }, []);
+
     switch (shop.contentProvider.type) {
         case 'prismic': {
             return (
                 <PrismicRegistry client={createClient({ shop, locale })}>
                     {children}
 
-                    <PrismicPreview repositoryName={shop.contentProvider.repositoryName} />
+                    {isPreviewEnvironment('domain') || show ? (
+                        <PrismicPreview repositoryName={shop.contentProvider.repositoryName} />
+                    ) : null}
                 </PrismicRegistry>
             );
         }
@@ -109,12 +127,12 @@ const ProvidersRegistry = ({
                             countryCode={locale.country!}
                         >
                             <ErrorBoundary fallbackRender={() => null}>
-                                <Suspense>
+                                <Suspense fallback={<Fragment />}>
                                     <RequiredHooks shop={shop} locale={locale} />
                                 </Suspense>
 
                                 {toolbars ? (
-                                    <Suspense>
+                                    <Suspense fallback={children}>
                                         <LiveChatProvider shop={shop} locale={locale}>
                                             {children}
                                         </LiveChatProvider>
