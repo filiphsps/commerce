@@ -1,8 +1,9 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { Error, NotFoundError, UnknownShopDomainError } from '@nordcom/commerce-errors';
+import { Error, NotFoundError } from '@nordcom/commerce-errors';
 
 import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
+import { unstable_cache } from 'next/cache';
 
 import type {
     CartPageDocument,
@@ -24,24 +25,38 @@ export const PagesApi = async ({
 }): Promise<PrismicDocument[] | null> => {
     const client = createClient({ shop, locale });
 
-    try {
-        const pages = await client.getAllByType('custom_page');
+    return unstable_cache(
+        async () => {
+            try {
+                const pages = await client.getAllByType('custom_page');
 
-        return pages.filter(({ uid }) => !exclude.includes(uid!));
-    } catch (error: unknown) {
-        const locale = Locale.from(client.defaultParams?.lang!); // Actually used locale.
-        if (Error.isNotFound(error)) {
-            if (!Locale.isDefault(locale)) {
-                return await PagesApi({ shop, locale: Locale.default }); // Try again with default locale.
+                return pages.filter(({ uid }) => !exclude.includes(uid!));
+            } catch (error: unknown) {
+                const _locale = Locale.from(client.defaultParams?.lang!) || locale;
+
+                if (Error.isNotFound(error)) {
+                    if (!Locale.isDefault(_locale)) {
+                        return await PagesApi({ shop, locale: Locale.default }); // Try again with default locale.
+                    }
+
+                    return null;
+                }
+
+                // TODO: Deal with errors properly.
+                console.error(error);
+                return null;
             }
-
-            return null;
+        },
+        [
+            shop.domain,
+            Locale.default.code // TODO: This should be the actual locale, but we're calling prismic.io's API way too much.
+            /* locale.code */
+        ],
+        {
+            revalidate: 86_400, // 24hrs.
+            tags: ['prismic', shop.domain, locale.code]
         }
-
-        // TODO: Deal with errors properly.
-        console.error(error);
-        return null;
-    }
+    )();
 };
 
 export type PageType = 'collection_page' | 'product_page' | 'cart_page' | 'custom_page';
@@ -77,31 +92,41 @@ export const PageApi = async <T extends keyof PageTypeMapping | 'custom_page' = 
     type = 'custom_page',
     handle
 }: PageApiProps & { type?: T | 'custom_page' }): Promise<Simplify<NarrowedPageType<T>['data']> | null> => {
-    if (!(shop as any)) {
-        throw new UnknownShopDomainError();
-    }
-
     const client = createClient({ shop, locale });
 
-    try {
-        const { data: page } = await client.getByUID<NarrowedPageType<T>>(type, handle);
-        if (!(page as any)) {
-            throw new NotFoundError(`"Page" with the handle "${handle}"`);
-        }
+    return unstable_cache(
+        async (handle: string, type: T) => {
+            try {
+                const { data: page } = await client.getByUID<NarrowedPageType<T>>(type, handle);
+                if (!(page as any)) {
+                    throw new NotFoundError(`"Page" with the handle "${handle}"`);
+                }
 
-        return page;
-    } catch (error: unknown) {
-        const locale = Locale.from(client.defaultParams?.lang!); // Actually used locale.
-        if (Error.isNotFound(error)) {
-            if (!Locale.isDefault(locale)) {
-                return await PageApi({ shop, locale: Locale.default, type, handle }); // Try again with default locale.
+                return page;
+            } catch (error: unknown) {
+                const _locale = Locale.from(client.defaultParams?.lang!) || locale;
+
+                if (Error.isNotFound(error)) {
+                    if (!Locale.isDefault(_locale)) {
+                        return await PageApi({ shop, locale: Locale.default, type, handle }); // Try again with default locale.
+                    }
+
+                    return null;
+                }
+
+                // TODO: Deal with errors properly.
+                console.error(error);
+                return null;
             }
-
-            return null;
+        },
+        [
+            shop.domain,
+            Locale.default.code // TODO: This should be the actual locale, but we're calling prismic.io's API way too much.
+            /* locale.code */
+        ],
+        {
+            revalidate: 86_400, // 24hrs.
+            tags: ['prismic', shop.domain, locale.code, `page.${handle}`]
         }
-
-        // TODO: Deal with errors properly.
-        console.error(error);
-        return null;
-    }
+    )(handle, type as T);
 };

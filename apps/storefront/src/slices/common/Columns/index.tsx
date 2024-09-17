@@ -14,7 +14,7 @@ import type { SliceComponentProps } from '@prismicio/react';
 export type ColumnsProps = SliceComponentProps<Content.ColumnsSlice, { shop: OnlineShop; locale: Locale }>;
 const Columns = async ({ slice, context: { shop, locale } }: ColumnsProps) => {
     const sensitiveShop = await Shop.findByDomain(shop.domain, { sensitiveData: true });
-    const client = createClient({ shop: sensitiveShop, locale });
+    const client = createClient({ shop: sensitiveShop, locale, fetchOptions: { cache: 'force-cache' } });
 
     return (
         <section
@@ -42,7 +42,11 @@ const Columns = async ({ slice, context: { shop, locale } }: ColumnsProps) => {
                         return data;
                     } catch (error: unknown) {
                         if (Error.isNotFound(error) && !Locale.isDefault(locale)) {
-                            const client = createClient({ shop: sensitiveShop, locale: Locale.default });
+                            const client = createClient({
+                                shop: sensitiveShop,
+                                locale: Locale.default,
+                                fetchOptions: { cache: 'force-cache' }
+                            });
                             const { data } = await client.getByUID<ColumnDocument>(type as any, uid);
                             if (!(data as any)) {
                                 throw new NotFoundError(`"Columns" with the uid "${uid}"`);

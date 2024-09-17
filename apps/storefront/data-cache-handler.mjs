@@ -17,7 +17,7 @@ CacheHandler.onCreation(async (context) => {
         };
     }
 
-    const client = new Redis(data_cache_url, { lazyConnect: true });
+    const client = new Redis(DATA_CACHE_URL, { lazyConnect: true });
     client.on('error', (error) => console.error('[data-cache-handle/ioredis]', error));
     await client.connect();
 

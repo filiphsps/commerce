@@ -29,12 +29,6 @@ export async function getAuthOptions({ shop }: { shop?: OnlineShop }): Promise<N
         throw new InvalidShopifyCustomerAccountsApiConfiguration();
     }
 
-    const endpointBase = `https://shopify.com/${customers.id}/auth`;
-
-    const { hostname } = new URL(`https://${shop.domain}`);
-    const hostParts = hostname.split('.');
-    const domain = `${hostParts.at(-2)}.${hostParts.at(-1)}`;
-
     return {
         ...getAuthConfig({
             domain: shop.domain,

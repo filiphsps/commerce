@@ -1,7 +1,8 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
 
-import { NextAuthConfig } from 'next-auth';
 import ShopifyProvider from './shopify-provider';
+
+import type { NextAuthConfig } from 'next-auth';
 
 const VERCEL_DEPLOYMENT = process.env.VERCEL_URL;
 

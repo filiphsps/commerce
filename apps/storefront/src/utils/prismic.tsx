@@ -29,13 +29,13 @@ export const createClient = ({ shop, locale = Locale.default, ...config }: Creat
             //lang: locale.code // FIXME: We're making too many calls to the API.
             lang: Locale.default.code
         },
+        ...config,
         fetchOptions: {
-            cache: 'force-cache',
+            cache: config.fetchOptions?.cache || 'no-store',
             next: {
                 tags: ['prismic', `prismic.${shop.id}`, shop.domain /*, locale.code*/]
             }
-        },
-        ...config
+        }
     });
 
     //client.enableAutoPreviews();
