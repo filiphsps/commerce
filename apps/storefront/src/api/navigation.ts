@@ -24,6 +24,7 @@ export const MenuApi = async ({ shop, locale }: { shop: OnlineShop; locale: Loca
 
         return menu.data;
     } catch (error: unknown) {
+        const locale = Locale.from(client.defaultParams?.lang!); // Actually used locale.
         if (!Locale.isDefault(locale)) {
             return MenuApi({ shop, locale: Locale.default }); // Try again with default locale.
         }
@@ -50,6 +51,7 @@ export async function HeaderApi({
 
         return header.data;
     } catch (error: unknown) {
+        const locale = Locale.from(client.defaultParams?.lang!); // Actually used locale.
         if (Error.isNotFound(error) && !Locale.isDefault(locale)) {
             return await HeaderApi({ shop, locale: Locale.default }); // Try again with default locale.
         }

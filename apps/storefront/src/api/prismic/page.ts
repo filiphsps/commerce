@@ -22,13 +22,14 @@ export const PagesApi = async ({
     locale: Locale;
     exclude?: string[];
 }): Promise<PrismicDocument[] | null> => {
-    try {
-        const client = createClient({ shop, locale });
+    const client = createClient({ shop, locale });
 
+    try {
         const pages = await client.getAllByType('custom_page');
 
         return pages.filter(({ uid }) => !exclude.includes(uid!));
     } catch (error: unknown) {
+        const locale = Locale.from(client.defaultParams?.lang!); // Actually used locale.
         if (Error.isNotFound(error)) {
             if (!Locale.isDefault(locale)) {
                 return await PagesApi({ shop, locale: Locale.default }); // Try again with default locale.
@@ -80,9 +81,9 @@ export const PageApi = async <T extends keyof PageTypeMapping | 'custom_page' = 
         throw new UnknownShopDomainError();
     }
 
-    try {
-        const client = createClient({ shop, locale });
+    const client = createClient({ shop, locale });
 
+    try {
         const { data: page } = await client.getByUID<NarrowedPageType<T>>(type, handle);
         if (!(page as any)) {
             throw new NotFoundError(`"Page" with the handle "${handle}"`);
@@ -90,6 +91,7 @@ export const PageApi = async <T extends keyof PageTypeMapping | 'custom_page' = 
 
         return page;
     } catch (error: unknown) {
+        const locale = Locale.from(client.defaultParams?.lang!); // Actually used locale.
         if (Error.isNotFound(error)) {
             if (!Locale.isDefault(locale)) {
                 return await PageApi({ shop, locale: Locale.default, type, handle }); // Try again with default locale.

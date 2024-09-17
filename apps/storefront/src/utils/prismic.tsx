@@ -3,9 +3,6 @@ import { InvalidShopError } from '@nordcom/commerce-errors';
 
 import { Locale } from '@/utils/locale';
 import * as prismic from '@prismicio/client';
-import { enableAutoPreviews } from '@prismicio/next';
-
-import { BuildConfig } from './build-config';
 
 import type { Client, ClientConfig, LinkResolverFunction } from '@prismicio/client';
 
@@ -29,19 +26,20 @@ export const createClient = ({ shop, locale = Locale.default, ...config }: Creat
         accessToken,
         routes,
         defaultParams: {
-            lang: locale.code
+            //lang: locale.code // FIXME: We're making too many calls to the API.
+            lang: Locale.default.code
         },
         fetchOptions: {
-            cache: BuildConfig.environment === 'development' ? 'no-store' : 'force-cache',
+            cache: 'force-cache',
             next: {
-                tags: ['prismic', `prismic.${shop.id}`, shop.domain, locale.code]
+                tags: ['prismic', `prismic.${shop.id}`, shop.domain /*, locale.code*/]
             }
         },
         ...config
     });
 
-    client.enableAutoPreviews();
-    enableAutoPreviews({ client });
+    //client.enableAutoPreviews();
+    //enableAutoPreviews({ client });
 
     return client;
 };

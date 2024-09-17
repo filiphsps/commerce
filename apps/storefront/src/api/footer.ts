@@ -20,6 +20,7 @@ export async function FooterApi({
 
         return res.data;
     } catch (error: unknown) {
+        const locale = Locale.from(client.defaultParams?.lang!); // Actually used locale.
         if (Error.isNotFound(error)) {
             if (!Locale.isDefault(locale)) {
                 return await FooterApi({ shop, locale: Locale.default }); // Try again with default locale.
