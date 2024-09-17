@@ -3,6 +3,7 @@ import { TodoError } from '@nordcom/commerce-errors';
 
 import { PageApi as PrismicPageApi, PagesApi as PrismicPagesApi } from '@/api/prismic/page';
 
+import type { PageType } from '@/api/prismic/page';
 import type { Locale } from '@/utils/locale';
 
 export async function PagesApi({ shop, locale }: { shop: OnlineShop; locale: Locale }) {
@@ -29,7 +30,7 @@ export async function PageApi({
 }) {
     switch (shop.contentProvider.type) {
         case 'prismic':
-            return PrismicPageApi({ shop, locale, handle, type: type as any });
+            return PrismicPageApi({ shop, locale, handle, type: type as PageType });
     }
 
     throw new TodoError();

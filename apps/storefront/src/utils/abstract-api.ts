@@ -61,7 +61,7 @@ export const ApiBuilder: AbstractShopifyApolloApiBuilder<TypedDocumentNode<any, 
             //fetchPolicy,
             context: {
                 fetchOptions: {
-                    cache: fetchPolicy ?? 'no-cache',
+                    cache: fetchPolicy ?? 'no-store',
                     next: {
                         revalidate: revalidate ?? undefined,
                         tags: buildCacheTagArray(shop, locale, tags)

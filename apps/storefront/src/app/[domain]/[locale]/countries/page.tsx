@@ -5,7 +5,7 @@ import { Suspense } from 'react';
 import { Shop } from '@nordcom/commerce-db';
 import { UnknownLocaleError } from '@nordcom/commerce-errors';
 
-import { PageApi } from '@/api/page';
+import { PageApi } from '@/api/prismic/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CountriesApi, LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';

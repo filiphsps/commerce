@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 
 import { Shop } from '@nordcom/commerce-db';
 
-import { PageApi } from '@/api/page';
+import { PageApi } from '@/api/prismic/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';

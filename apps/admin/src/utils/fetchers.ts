@@ -3,7 +3,7 @@ import 'server-only';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
 
-import { revalidateTag, unstable_cache as cache } from 'next/cache';
+import { unstable_cache as cache, revalidateTag } from 'next/cache';
 
 const revalidateAll = async (userId: string, shopId: string, domain: string) => {
     revalidateTag('admin');
@@ -24,7 +24,7 @@ export async function getShopsForUser(userId: string, skipCache = isDevelopment)
 
     if (skipCache) return await action();
     return await cache(action, ['admin', userId, `admin.user.${userId}.shops`], {
-        revalidate: 120,
+        revalidate: 3_600,
         tags: ['admin', userId, `admin.user.${userId}.shops`]
     })();
 }
@@ -39,7 +39,7 @@ export async function getShop(userId: string, shopId: string, skipCache = isDeve
 
     if (skipCache) return await action();
     return await cache(action, ['admin', shopId, `admin.user.${userId}`, `admin.user.${userId}.shop.${shopId}`], {
-        revalidate: 120,
+        revalidate: 3_600,
         tags: ['admin', shopId, `admin.user.${userId}.shop.${shopId}`]
     })();
 }
