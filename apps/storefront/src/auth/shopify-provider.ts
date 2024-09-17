@@ -160,7 +160,7 @@ function ShopifyProvider<P extends ShopifyProfile = ShopifyProfile>(
                           'Authorization': tokens.access_token
                       },
                       body: JSON.stringify({
-                          operationName: 'SomeQuery',
+                          operationName: 'getCustomerForSession',
                           query: GET_CUSTOMER_FOR_SESSION,
                           variables: {}
                       })

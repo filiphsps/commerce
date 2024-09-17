@@ -1,8 +1,7 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
 
+import { NextAuthConfig } from 'next-auth';
 import ShopifyProvider from './shopify-provider';
-
-import type { NextAuthConfig } from 'next-auth';
 
 const VERCEL_DEPLOYMENT = process.env.VERCEL_URL;
 
@@ -22,18 +21,15 @@ export default ({
     ({
         providers: [ShopifyProvider(shopifyAuth, shop)],
         skipCSRFCheck: true as any, // TODO
-        session: {
-            strategy: 'jwt'
-        },
         cookies: {
             sessionToken: {
-                name: `${VERCEL_DEPLOYMENT ? '__Secure-' : ''}nordcom-commerce.store.session-token`,
+                name: `${VERCEL_DEPLOYMENT ? '__Secure-' : ''}NordcomCommerceSession`,
                 options: {
                     httpOnly: true,
                     sameSite: 'lax',
                     path: '/',
                     // When working on localhost, the cookie domain must be omitted entirely (https://stackoverflow.com/a/1188145)
-                    domain: !!VERCEL_DEPLOYMENT ? `.${domain}` : undefined,
+                    domain: !!VERCEL_DEPLOYMENT ? `.${domain.split('.').slice(-2).join('.')}` : undefined,
                     secure: !!VERCEL_DEPLOYMENT
                 }
             }

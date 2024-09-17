@@ -37,7 +37,7 @@ export async function getAuthOptions({ shop }: { shop?: OnlineShop }): Promise<N
 
     return {
         ...getAuthConfig({
-            domain,
+            domain: shop.domain,
             shop,
             shopifyAuth: {
                 shopId: customers.id,
@@ -51,33 +51,8 @@ export async function getAuthOptions({ shop }: { shop?: OnlineShop }): Promise<N
             verifyRequest: `/account/login/`,
             error: '/account/login/' // Error code passed in query string as ?error=
         },*/
-        callbacks: {
-            jwt({ token, account }: any /* TODO */) {
-                if (account) {
-                    token.id_token = account.id_token;
-                    token.expires_at = account.expires_at;
-                }
-
-                // XXX: force token invalidation if expired
-                const expiresAt = (token.expires_at as number | undefined) ?? 0;
-                if (Date.now() > expiresAt * 1000) {
-                    throw new Error('Session expired');
-                }
-
-                return token;
-            }
-        },
-        events: {
-            async signOut({ token }: any /* TODO */) {
-                // trigger sign out on Shopify
-                const signOutUrl = new URL(`${endpointBase}/account/logout`);
-                if (token.id_token) {
-                    signOutUrl.searchParams.append('id_token_hint', token.id_token as string);
-                }
-
-                await fetch(signOutUrl);
-            }
-        }
+        callbacks: {},
+        events: {}
     };
 }
 
