@@ -5,32 +5,41 @@ import createLruHandler from '@neshca/cache-handler/local-lru';
 import Redis from 'ioredis';
 
 /** @type {string | undefined} */
-const data_cache_url = process.env.DATA_CACHE_REDIS_URL || '';
+const DATA_CACHE_URL = process.env.DATA_CACHE_REDIS_URL || '';
+if (!DATA_CACHE_URL) {
+    console.warn('DATA_CACHE_URL is not set, disabling data cache.');
+}
 
 CacheHandler.onCreation(async (context) => {
-    const client = new Redis(data_cache_url, { lazyConnect: true });
-    client.on('error', (error) => console.error('ioredis', error));
-    if (context.dev) {
-        client.on('connect', () => console.debug('Redis client connected.'));
-        client.on('reconnecting', () => console.warn('Redis client reconnecting...'));
-        client.on('end', () => console.debug('Redis client disconnected.'));
+    if (context.dev || !DATA_CACHE_URL) {
+        return {
+            handlers: null
+        };
     }
-    await client.connect();
 
-    const prefix = process.env.GIT_HASH || '';
+    const client = new Redis(data_cache_url, { lazyConnect: true });
+    client.on('error', (error) => console.error('[data-cache-handle/ioredis]', error));
+    await client.connect();
 
     // Define a key for shared tags.
     // You'll see how to use it later in the `revalidateTag` method
     const sharedTagsKey = '_sharedTags_';
-    const revalidatedTagsKey = `${prefix}__revalidated_tags__`;
+    const revalidatedTagsKey = `__revalidated_tags__`;
 
+    /** @type {import('@neshca/cache-handler').CacheHandler} */
     const redisHandler = {
         // Give the handler a name.
         // It is useful for logging in debug mode.
         name: 'ioredis-strings',
         // We do not use try/catch blocks in the Handler methods.
         // CacheHandler will handle errors and use the next available Handler.
-        async get(key, { implicitTags }) {
+        async get(
+            key,
+            {
+                /** @type {string[]} */
+                implicitTags
+            }
+        ) {
             // Get the value from Redis.
             // We use the key prefix to avoid key collisions with other data in Redis.
             const result = await client.get(key);
@@ -41,6 +50,7 @@ CacheHandler.onCreation(async (context) => {
             }
 
             // Redis stores strings, so we need to parse the JSON.
+            /** @type {import('@neshca/cache-handler').CacheHandlerValue} */
             const cacheValue = JSON.parse(result);
 
             // If the cache value has no tags, return it early.
@@ -161,8 +171,8 @@ CacheHandler.onCreation(async (context) => {
     return {
         handlers: [redisHandler, createLruHandler()],
         ttl: {
-            defaultStaleAge: 1800,
-            estimateExpireAge: (staleAge) => staleAge * 1.5
+            defaultStaleAge: 3600,
+            estimateExpireAge: (staleAge) => staleAge
         }
     };
 });
