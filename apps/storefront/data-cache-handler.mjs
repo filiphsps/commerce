@@ -13,7 +13,7 @@ if (!DATA_CACHE_URL) {
 CacheHandler.onCreation(async (context) => {
     if (context.dev || !DATA_CACHE_URL) {
         return {
-            handlers: null
+            handlers: [createLruHandler()]
         };
     }
 
