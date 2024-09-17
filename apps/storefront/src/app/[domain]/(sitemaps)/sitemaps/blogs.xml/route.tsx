@@ -5,12 +5,12 @@ import { ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi } from '@/api/shopify/blog';
 import { LocalesApi } from '@/api/store';
 import { Locale } from '@/utils/locale';
-import { getServerSideSitemap } from 'next-sitemap';
 import { notFound } from 'next/navigation';
 import { type NextRequest, NextResponse } from 'next/server';
+import { getServerSideSitemap } from 'next-sitemap';
 
-import type { ISitemapField } from 'next-sitemap';
 import type { DynamicSitemapRouteParams } from '../../sitemap.xml/route';
+import type { ISitemapField } from 'next-sitemap';
 
 export const dynamic = 'force-static';
 export const revalidate = false;

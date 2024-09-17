@@ -202,3 +202,5 @@ export const shopifyContextTransform = new DocumentTransform((document) => {
     });
     return transformedDocument;
 });
+
+export type ApiReturn<T> = [T, undefined] | [undefined, Error];

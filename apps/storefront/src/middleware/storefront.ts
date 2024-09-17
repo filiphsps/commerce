@@ -178,6 +178,11 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         newUrl.pathname = newUrl.pathname.replace('/pages/', '/');
     }
 
+    // Update legacy blog path.
+    if (newUrl.pathname.substring(1).split('/')[1] === 'blog') {
+        newUrl.pathname = newUrl.pathname.replace('/blog/', '/blogs/news/');
+    }
+
     // Redirect if `newURL` is different from `req.nextUrl`.
     if (newUrl.href !== req.nextUrl.href) {
         return setCookies(NextResponse.redirect(newUrl, { status: 301 }), cookies);
