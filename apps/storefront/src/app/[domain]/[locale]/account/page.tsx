@@ -2,7 +2,6 @@ import { Shop } from '@nordcom/commerce-db';
 
 import { getAuthSession } from '@/auth';
 import { Locale } from '@/utils/locale';
-import { redirect } from 'next/navigation';
 
 import { Label } from '@/components/typography/label';
 
@@ -23,8 +22,8 @@ export default async function AccountPage({ params: { domain, locale: localeData
     const { auth } = await getAuthSession(shop);
 
     const session = await auth();
-    if (!session?.user) {
-        redirect('/account/login');
+    if (!session) {
+        return <div>TODO: Not logged in.</div>;
     }
 
     const _locale = Locale.from(localeData);
@@ -34,10 +33,10 @@ export default async function AccountPage({ params: { domain, locale: localeData
         <div>
             <h1>TODO: Logged in!</h1>
 
-            <Label as="div">{user.id}</Label>
-            <Label as="div">{user.name}</Label>
-            <Label as="div">{user.image}</Label>
-            <Label as="div">{user.email}</Label>
+            <Label as="div">{user?.id}</Label>
+            <Label as="div">{user?.name}</Label>
+            <Label as="div">{user?.image}</Label>
+            <Label as="div">{user?.email}</Label>
         </div>
     );
 }

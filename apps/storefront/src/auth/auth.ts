@@ -7,14 +7,13 @@ import {
     UnknownCommerceProviderError
 } from '@nordcom/commerce-errors';
 
-import ShopifyProvider from '@/auth/shopify-provider';
 import NextAuth from 'next-auth';
 
 import type { NextAuthConfig } from 'next-auth';
 
 export type { Provider as AuthProvider } from 'next-auth/providers';
 
-const VERCEL_DEPLOYMENT = process.env.VERCEL_URL;
+import getAuthConfig from './auth.config';
 
 export async function getAuthOptions({ shop }: { shop?: OnlineShop }): Promise<NextAuthConfig> {
     if (!shop) {
@@ -37,17 +36,15 @@ export async function getAuthOptions({ shop }: { shop?: OnlineShop }): Promise<N
     const domain = `${hostParts.at(-2)}.${hostParts.at(-1)}`;
 
     return {
-        providers: [
-            ShopifyProvider(
-                {
-                    shopId: customers.id,
-                    clientId: customers.clientId,
-                    clientSecret: customers.clientSecret
-                },
-                shop
-            )
-        ],
-        skipCSRFCheck: true as any,
+        ...getAuthConfig({
+            domain,
+            shop,
+            shopifyAuth: {
+                shopId: customers.id,
+                clientId: customers.clientId,
+                clientSecret: customers.clientSecret
+            }
+        }),
         /*pages: {
             signIn: `/account/login/`,
             signOut: `/account/logout/`,
@@ -80,21 +77,7 @@ export async function getAuthOptions({ shop }: { shop?: OnlineShop }): Promise<N
 
                 await fetch(signOutUrl);
             }
-        },
-        cookies: {
-            sessionToken: {
-                name: `${VERCEL_DEPLOYMENT ? '__Secure-' : ''}nordcom-commerce.store.session-token`,
-                options: {
-                    httpOnly: true,
-                    sameSite: 'lax',
-                    path: '/',
-                    // When working on localhost, the cookie domain must be omitted entirely (https://stackoverflow.com/a/1188145)
-                    domain: !!VERCEL_DEPLOYMENT ? `.${domain}` : undefined,
-                    secure: !!VERCEL_DEPLOYMENT
-                }
-            }
-        },
-        debug: false
+        }
     };
 }
 
