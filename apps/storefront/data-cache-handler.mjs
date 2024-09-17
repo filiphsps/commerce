@@ -68,7 +68,7 @@ CacheHandler.onCreation(async (context) => {
             }
 
             // Get the revalidation times for the tags.
-            const revalidationTimes = await client.hmget(revalidatedTagsKey, Array.from(combinedTags));
+            const revalidationTimes = await client.hmget(revalidatedTagsKey, ...Array.from(combinedTags));
 
             // Iterate over all revalidation times.
             for (const timeString of revalidationTimes) {
