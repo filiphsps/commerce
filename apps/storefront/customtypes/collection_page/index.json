@@ -18,6 +18,12 @@
                 "fieldset": "Slice Zone",
                 "config": {
                     "choices": {
+                        "original_content": {
+                            "type": "SharedSlice"
+                        },
+                        "custom_html": {
+                            "type": "SharedSlice"
+                        },
                         "content_block": {
                             "type": "SharedSlice"
                         },

@@ -9,6 +9,7 @@ import ContentBlock from './ContentBlock';
 import CustomHTML from './CustomHTML';
 import IconGrid from './IconGrid';
 import ImageGrid from './ImageGrid';
+import OriginalContent from './OriginalContent';
 import Overview from './Overview';
 import Title from './Title';
 import Vendors from './Vendors';
@@ -23,6 +24,7 @@ export const components = {
     custom_html: CustomHTML,
     icon_grid: IconGrid,
     image_grid: ImageGrid,
+    original_content: OriginalContent,
     text_block: Overview,
     title: Title,
     vendors: Vendors

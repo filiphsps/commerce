@@ -342,6 +342,8 @@ export type CartPageDocument<Lang extends string = string> = prismic.PrismicDocu
 >;
 
 type CollectionPageDocumentDataSlicesSlice =
+    | OriginalContentSlice
+    | CustomHTMLSlice
     | ContentBlockSlice
     | ColumnsSlice
     | TitleSlice
@@ -484,7 +486,7 @@ export type ColumnDocument<Lang extends string = string> = prismic.PrismicDocume
 >;
 
 type CustomPageDocumentDataSlicesSlice =
-    | CustomHtmlSlice
+    | CustomHTMLSlice
     | ColumnsSlice
     | ContentBlockSlice
     | CollectionSlice
@@ -755,7 +757,7 @@ export type FooterDocument<Lang extends string = string> = prismic.PrismicDocume
     Lang
 >;
 
-type HeaderDocumentDataSlicesSlice = CustomHtmlSlice;
+type HeaderDocumentDataSlicesSlice = CustomHTMLSlice;
 
 /**
  * Content for Header documents
@@ -1728,7 +1730,7 @@ export type ContentBlockSlice = prismic.SharedSlice<'content_block', ContentBloc
 /**
  * Primary content in *CustomHTML → Default → Primary*
  */
-export interface CustomHtmlSliceDefaultPrimary {
+export interface CustomHTMLSliceDefaultPrimary {
     /**
      * HTML field in *CustomHTML → Default → Primary*
      *
@@ -1747,16 +1749,16 @@ export interface CustomHtmlSliceDefaultPrimary {
  * - **Description**: Default
  * - **Documentation**: https://prismic.io/docs/slice
  */
-export type CustomHtmlSliceDefault = prismic.SharedSliceVariation<
+export type CustomHTMLSliceDefault = prismic.SharedSliceVariation<
     'default',
-    Simplify<CustomHtmlSliceDefaultPrimary>,
+    Simplify<CustomHTMLSliceDefaultPrimary>,
     never
 >;
 
 /**
  * Slice variation for *CustomHTML*
  */
-type CustomHtmlSliceVariation = CustomHtmlSliceDefault;
+type CustomHTMLSliceVariation = CustomHTMLSliceDefault;
 
 /**
  * CustomHTML Shared Slice
@@ -1765,7 +1767,7 @@ type CustomHtmlSliceVariation = CustomHtmlSliceDefault;
  * - **Description**: CustomHTML
  * - **Documentation**: https://prismic.io/docs/slice
  */
-export type CustomHtmlSlice = prismic.SharedSlice<'custom_html', CustomHtmlSliceVariation>;
+export type CustomHTMLSlice = prismic.SharedSlice<'custom_html', CustomHTMLSliceVariation>;
 
 /**
  * Primary content in *IconGrid → Default → Primary*
@@ -1896,6 +1898,29 @@ type ImageGridSliceVariation = ImageGridSliceDefault;
  * - **Documentation**: https://prismic.io/docs/slice
  */
 export type ImageGridSlice = prismic.SharedSlice<'image_grid', ImageGridSliceVariation>;
+
+/**
+ * Default variation for OriginalContent Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type OriginalContentSliceDefault = prismic.SharedSliceVariation<'default', Record<string, never>, never>;
+
+/**
+ * Slice variation for *OriginalContent*
+ */
+type OriginalContentSliceVariation = OriginalContentSliceDefault;
+
+/**
+ * OriginalContent Shared Slice
+ *
+ * - **API ID**: `original_content`
+ * - **Description**: OriginalContent
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type OriginalContentSlice = prismic.SharedSlice<'original_content', OriginalContentSliceVariation>;
 
 /**
  * Primary content in *Overview → Items*
@@ -2349,10 +2374,10 @@ declare module '@prismicio/client' {
             ContentBlockSliceVariation,
             ContentBlockSliceDefault,
             ContentBlockSliceCard,
-            CustomHtmlSlice,
-            CustomHtmlSliceDefaultPrimary,
-            CustomHtmlSliceVariation,
-            CustomHtmlSliceDefault,
+            CustomHTMLSlice,
+            CustomHTMLSliceDefaultPrimary,
+            CustomHTMLSliceVariation,
+            CustomHTMLSliceDefault,
             IconGridSlice,
             IconGridSliceDefaultPrimary,
             IconGridSliceDefaultItem,
@@ -2362,6 +2387,9 @@ declare module '@prismicio/client' {
             ImageGridSliceDefaultItem,
             ImageGridSliceVariation,
             ImageGridSliceDefault,
+            OriginalContentSlice,
+            OriginalContentSliceVariation,
+            OriginalContentSliceDefault,
             TextBlockSlice,
             TextBlockSliceDefaultItem,
             TextBlockSliceVariation,

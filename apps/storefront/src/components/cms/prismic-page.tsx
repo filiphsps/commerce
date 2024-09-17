@@ -10,12 +10,14 @@ import { SliceZone } from '@prismicio/react';
 
 import type { PageData, PageType } from '@/api/prismic/page';
 import type { Locale } from '@/utils/locale';
+import type { ReactNode } from 'react';
 
 type PageParams<T extends PageType> = {
     shop: OnlineShop;
     locale: Locale;
     page?: PageData<T> | null;
     slices?: any[];
+    pageContent?: ReactNode;
     handle: string;
     type?: T;
 };
@@ -24,6 +26,7 @@ async function PrismicPage<T extends PageType = 'custom_page'>({
     locale,
     page = undefined,
     slices = undefined,
+    pageContent = undefined,
     handle,
     type = 'custom_page' as T
 }: PageParams<T>) {
@@ -50,7 +53,8 @@ async function PrismicPage<T extends PageType = 'custom_page'>({
                     },
                     i18n,
                     locale,
-                    type
+                    type,
+                    pageContent
                 }}
             />
         </Suspense>

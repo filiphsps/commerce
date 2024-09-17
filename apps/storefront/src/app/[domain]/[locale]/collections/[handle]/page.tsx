@@ -4,7 +4,7 @@ import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 
-import { PageApi } from '@/api/page';
+import { PageApi } from '@/api/prismic/page';
 import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CollectionApi, CollectionPaginationCountApi, CollectionsApi } from '@/api/shopify/collection';
@@ -191,6 +191,8 @@ export default async function CollectionPage({
         throw error;
     }
 
+    const page = await PageApi({ shop, locale, handle, type: 'collection_page' });
+
     const empty = collection.products.edges.length <= 0;
 
     const jsonLd: WithContext<Collection> = {
@@ -201,14 +203,8 @@ export default async function CollectionPage({
         'url': `https://${shop.domain}/${locale.code}/collections/${handle}/`
     };
 
-    return (
+    const pageContent = (
         <>
-            <Suspense key={`collections.${handle}.breadcrumbs`} fallback={<BreadcrumbsSkeleton />}>
-                <div className="-mb-[1.5rem] empty:hidden md:-mb-[2.25rem]">
-                    <Breadcrumbs locale={locale} title={collection.title} />
-                </div>
-            </Suspense>
-
             {!empty ? (
                 <>
                     <section className="flex flex-col gap-2">
@@ -235,15 +231,34 @@ export default async function CollectionPage({
                     </section>
                 </>
             ) : null}
+            <Content html={collection.descriptionHtml} />
+        </>
+    );
 
-            <Suspense
-                key={`collections.${handle}.slices`}
-                fallback={<section className="w-full bg-gray-100 p-4" data-skeleton />}
-            >
-                <CollectionPageSlices shop={shop} locale={locale} handle={handle} />
+    return (
+        <>
+            <Suspense key={`collections.${handle}.breadcrumbs`} fallback={<BreadcrumbsSkeleton />}>
+                <div className="-mb-[1.5rem] empty:hidden md:-mb-[2.25rem]">
+                    <Breadcrumbs locale={locale} title={collection.title} />
+                </div>
             </Suspense>
 
-            <Content html={collection.descriptionHtml} />
+            {!page || page.slices.length <= 0 ? (
+                pageContent
+            ) : (
+                <>
+                    {!page.slices.some((slice) => slice.slice_type === 'original_content') ? pageContent : null}
+
+                    <PrismicPage
+                        shop={shop}
+                        locale={locale}
+                        pageContent={pageContent}
+                        page={page}
+                        handle={handle}
+                        type={'collection_page'}
+                    />
+                </>
+            )}
 
             {/* Metadata */}
             <JsonLd data={jsonLd} />
