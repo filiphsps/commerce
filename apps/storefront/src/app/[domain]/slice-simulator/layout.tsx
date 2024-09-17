@@ -66,7 +66,7 @@ export default async function RootLayout({
                         domain={domain}
                         toolbars={false}
                     >
-                        <AnalyticsProvider shop={publicShop}>
+                        <AnalyticsProvider shop={publicShop} dummy={true}>
                             <HeaderProvider loaderColor="transparent">
                                 <PageContent primary>{children}</PageContent>
                             </HeaderProvider>

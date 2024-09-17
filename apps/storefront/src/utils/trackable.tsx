@@ -384,8 +384,9 @@ export const TrackableContext = createContext<TrackableContextValue>({} as Track
 
 export type TrackableProps = {
     children: ReactNode;
+    dummy?: boolean;
 };
-export function Trackable({ children }: TrackableProps) {
+export function Trackable({ children, dummy = false }: TrackableProps) {
     const path = usePathname();
     const prevPath = usePrevious(path);
 
@@ -394,7 +395,7 @@ export function Trackable({ children }: TrackableProps) {
         throw new UnknownCommerceProviderError(shop.commerceProvider.type);
     }
 
-    const [internalTraffic, setIsInternalTraffic] = useState(false);
+    const [internalTraffic, setIsInternalTraffic] = useState(dummy ? true : false);
     useEffect(() => {
         if (!(window as any).localStorage) {
             return;

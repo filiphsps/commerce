@@ -16,8 +16,9 @@ import type { ReactNode } from 'react';
 export type AnalyticsProviderProps = {
     shop: OnlineShop;
     children: ReactNode;
+    dummy?: boolean;
 };
-export const AnalyticsProvider = ({ shop, children }: AnalyticsProviderProps) => {
+export const AnalyticsProvider = ({ shop, children, dummy }: AnalyticsProviderProps) => {
     const vercelAnalyticsMode = BuildConfig.environment !== 'test' ? BuildConfig.environment : 'auto';
 
     const [deferred, setDeferred] = useState<ReactNode>(null);
@@ -34,6 +35,10 @@ export const AnalyticsProvider = ({ shop, children }: AnalyticsProviderProps) =>
 
         return () => clearTimeout(timeout);
     }, []);
+
+    if (dummy) {
+        return <Trackable dummy={true}>{children}</Trackable>;
+    }
 
     return (
         <ErrorBoundary fallbackRender={() => null}>

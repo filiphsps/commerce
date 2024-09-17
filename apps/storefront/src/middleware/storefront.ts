@@ -1,3 +1,5 @@
+import { Error, NotFoundError, UnknownApiError } from '@nordcom/commerce-errors';
+
 import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
@@ -6,7 +8,6 @@ import { NextResponse } from 'next/server';
 import { resolveAcceptLanguage } from 'resolve-accept-language';
 
 import type { Code } from '@/utils/locale';
-import { Error, NotFoundError, UnknownApiError } from '@nordcom/commerce-errors';
 import type { NextRequest } from 'next/server';
 
 function hostnameFromRequest(req: NextRequest): string {
