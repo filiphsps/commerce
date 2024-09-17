@@ -28,142 +28,93 @@ CacheHandler.onCreation(async (context) => {
 
     /** @type {import('@neshca/cache-handler').CacheHandler} */
     const redisHandler = {
-        // Give the handler a name.
-        // It is useful for logging in debug mode.
         name: 'ioredis-strings',
-        // We do not use try/catch blocks in the Handler methods.
-        // CacheHandler will handle errors and use the next available Handler.
-        async get(
-            key,
-            {
-                /** @type {string[]} */
-                implicitTags
-            }
-        ) {
-            // Get the value from Redis.
-            // We use the key prefix to avoid key collisions with other data in Redis.
+        async get(key, { implicitTags }) {
+            // Fetch the cached value from Redis using the provided key
             const result = await client.get(key);
-
-            // If the key does not exist, return null.
             if (!result) {
-                return null;
+                return null; // Return null if no value is found
             }
 
-            // Redis stores strings, so we need to parse the JSON.
+            // Parse the cached value from JSON
             /** @type {import('@neshca/cache-handler').CacheHandlerValue} */
             const cacheValue = JSON.parse(result);
-
-            // If the cache value has no tags, return it early.
             if (!cacheValue) {
-                return null;
+                return null; // Return null if parsing fails
             }
 
-            // Get the set of explicit and implicit tags.
-            // implicitTags are available only on the `get` method.
+            // Combine the tags from the cached value and the implicit tags
             const combinedTags = new Set([...cacheValue.tags, ...implicitTags]);
-
-            // If there are no tags, return the cache value early.
             if (combinedTags.size === 0) {
-                return cacheValue;
+                return cacheValue; // Return the cached value if there are no tags to revalidate
             }
 
-            // Get the revalidation times for the tags.
+            // Fetch the revalidation times for the combined tags
             const revalidationTimes = await client.hmget(revalidatedTagsKey, ...Array.from(combinedTags));
-
-            // Iterate over all revalidation times.
             for (const timeString of revalidationTimes) {
-                // If the revalidation time is greater than the last modified time of the cache value,
+                // If any tag has been revalidated after the cached value was last modified, delete the cached value
                 if (timeString && Number.parseInt(timeString, 10) > cacheValue.lastModified) {
-                    // Delete the key from Redis.
-                    await client.unlink(key);
-
-                    // Return null to indicate cache miss.
+                    await client.del(key);
                     return null;
                 }
             }
 
-            // Return the cache value.
-            return cacheValue;
+            return cacheValue; // Return the cached value if it is still valid
         },
         async set(key, cacheHandlerValue) {
-            // Redis stores strings, so we need to stringify the JSON.
+            // Set the cached value in Redis
             const setOperation = client.set(key, JSON.stringify(cacheHandlerValue));
-
-            // If the cacheHandlerValue has a lifespan, set the automatic expiration.
-            // cacheHandlerValue.lifespan can be null if the value is the page from the Pages Router without getStaticPaths or with `fallback: false`
-            // so, we need to check if it exists before using it
+            // Set the expiration time if a lifespan is provided
             const expireOperation = cacheHandlerValue.lifespan
                 ? client.expireat(key, cacheHandlerValue.lifespan.expireAt)
                 : undefined;
-
-            // If the cache handler value has tags, set the tags.
-            // We store them separately to save time to retrieve them in the `revalidateTag` method.
+            // Set the tags associated with the cached value
             const setTagsOperation = cacheHandlerValue.tags.length
                 ? client.hset(sharedTagsKey, key, JSON.stringify(cacheHandlerValue.tags))
                 : undefined;
 
-            // Wait for all operations to complete.
-            await Promise.all([setOperation, expireOperation, setTagsOperation]);
+            // Wait for all operations to complete
+            await Promise.all([setOperation, expireOperation, setTagsOperation].filter(Boolean));
         },
         async revalidateTag(tag) {
-            // Check if the tag is implicit.
-            // Implicit tags are not stored in the cached values.
+            // If the tag is implicit, update its revalidation time
             if (isImplicitTag(tag)) {
-                // Mark the tag as revalidated at the current time.
                 await client.hset(revalidatedTagsKey, tag, Date.now());
             }
 
-            // Create a map to store the tags for each key.
             const tagsMap = new Map();
+            let cursor = '0';
 
-            // Cursor for the hScan operation.
-            let cursor = 0;
-
-            // Iterate over all keys in the shared tags.
+            // Scan through the shared tags in Redis
             do {
-                const remoteTagsPortion = await client.hscan(sharedTagsKey, cursor, 'COUNT', 100);
-
-                // Iterate over all keys in the portion.
-                for (const { field, value } of remoteTagsPortion.tuples) {
-                    // Parse the tags from the value.
+                const [newCursor, results] = await client.hscan(sharedTagsKey, cursor, 'COUNT', 100);
+                for (let i = 0; i < results.length; i += 2) {
+                    const field = results[i];
+                    const value = results[i + 1];
                     tagsMap.set(field, JSON.parse(value));
                 }
+                cursor = newCursor;
+            } while (cursor !== '0');
 
-                // Update the cursor for the next iteration.
-                cursor = remoteTagsPortion.cursor;
-
-                // If the cursor is 0, we have reached the end.
-            } while (cursor !== 0);
-
-            // Create an array of keys to delete.
             const keysToDelete = [];
-
-            // Create an array of tags to delete from the hash map.
             const tagsToDelete = [];
 
-            // Iterate over all keys and tags.
+            // Identify keys and tags to delete based on the revalidated tag
             for (const [key, tags] of tagsMap) {
-                // If the tags include the specified tag, add the key to the delete list.
                 if (tags.includes(tag)) {
-                    // Key must be prefixed because we use the key prefix in the set method.
                     keysToDelete.push(key);
-                    // Set an empty string as the value for the revalidated tag.
                     tagsToDelete.push(key);
                 }
             }
 
-            // If there are no keys to delete, return early.
             if (keysToDelete.length === 0) {
-                return;
+                return; // Return early if there are no keys to delete
             }
 
-            // Delete the keys from Redis.
-            const deleteKeysOperation = client.unlink(keysToDelete);
+            // Delete the identified keys and update the shared tags
+            const deleteKeysOperation = client.del(keysToDelete);
+            const updateTagsOperation = client.hdel(sharedTagsKey, ...tagsToDelete);
 
-            // Update the tags in Redis by deleting the revalidated tags.
-            const updateTagsOperation = client.hdel(sharedTagsKey, tagsToDelete);
-
-            // Wait for all operations to complete.
             await Promise.all([deleteKeysOperation, updateTagsOperation]);
         }
     };

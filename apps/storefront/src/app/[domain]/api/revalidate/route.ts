@@ -24,7 +24,7 @@ const revalidate = async (req: NextRequest, { domain }: RevalidateApiRouteParams
         switch (req.method) {
             case 'POST': {
                 // TODO: Validate API type and authenticity.
-                console.debug(`Revalidated shopify for shop with id ${shop.id}`);
+                console.warn(`Revalidated shopify for shop with id ${shop.id}`);
 
                 const data = await req.json();
                 console.warn(JSON.stringify({ ...data }, null, 4));
@@ -47,7 +47,7 @@ const revalidate = async (req: NextRequest, { domain }: RevalidateApiRouteParams
             }
             case 'GET': {
                 // FIXME: This is incorrect, prismic also uses POST.
-                console.debug(`Revalidated prismic for shop with id ${shop.id}`);
+                console.warn(`Revalidated prismic for shop with id ${shop.id}`);
 
                 revalidateTag('prismic');
 
