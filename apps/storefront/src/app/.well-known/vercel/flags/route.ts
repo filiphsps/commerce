@@ -43,6 +43,13 @@ export async function GET(request: NextRequest) {
                     { value: false, label: 'Disabled' },
                     { value: true, label: 'Enabled' }
                 ]
+            },
+            'accounts-functionality': {
+                description: 'Controls if the accounts functionality is enabled',
+                options: [
+                    { value: false, label: 'Disabled' },
+                    { value: true, label: 'Enabled' }
+                ]
             }
         }
     });

@@ -57,7 +57,7 @@ const config = {
         },
         typedEnv: true,
         //useLightningcss: true,
-        //useEarlyImport: true,
+        useEarlyImport: true,
         webpackBuildWorker: true
     },
     images: {

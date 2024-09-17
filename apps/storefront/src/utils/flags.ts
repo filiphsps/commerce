@@ -42,4 +42,18 @@ export const enableProductsPage = flag<boolean>({
         return !!value || false;
     }
 });
+
+export const enableAccountsFunctionality = flag<boolean>({
+    key: 'accounts-functionality',
+    description: 'Enable Accounts functionality',
+    defaultValue: false,
+    options: [
+        { label: 'Disabled', value: false },
+        { label: 'Enabled', value: true }
+    ],
+    async decide() {
+        const value = await get(this.key);
+        return !!value || false;
+    }
+});
 /* c8 ignore stop */

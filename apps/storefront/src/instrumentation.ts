@@ -1,7 +1,5 @@
 /* c8 ignore start */
 
-import { BuildConfig } from '@/utils/build-config';
-
 export async function register() {
     const { registerOTel } = await import('@vercel/otel');
     registerOTel('Nordcom Commerce');
@@ -10,10 +8,6 @@ export async function register() {
         const { registerInitialCache } = await import('@neshca/cache-handler/instrumentation');
         const CacheHandler = (await import('../data-cache-handler.mjs')).default;
         await registerInitialCache(CacheHandler, {});
-    }
-
-    if (BuildConfig.environment !== 'production') {
-        return;
     }
 
     if (process.env.NEXT_RUNTIME === 'nodejs') {
