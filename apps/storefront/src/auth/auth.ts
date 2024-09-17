@@ -40,13 +40,14 @@ export async function getAuthOptions({ shop }: { shop?: OnlineShop }): Promise<N
         providers: [
             ShopifyProvider(
                 {
+                    shopId: customers.id,
                     clientId: customers.clientId,
                     clientSecret: customers.clientSecret
                 },
-                customers,
                 shop
-            ) as any
+            )
         ],
+        skipCSRFCheck: true as any,
         /*pages: {
             signIn: `/account/login/`,
             signOut: `/account/logout/`,
