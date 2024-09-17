@@ -2,14 +2,13 @@ import { Shop } from '@nordcom/commerce-db';
 
 import { getAuthSession } from '@/auth';
 import { Locale } from '@/utils/locale';
+import { redirect } from 'next/navigation';
 
 import { Label } from '@/components/typography/label';
 
 import type { Metadata } from 'next';
-import { redirect } from 'next/navigation';
 
 export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic';
 
 export type LayoutParams = { domain: string; locale: string };
 
