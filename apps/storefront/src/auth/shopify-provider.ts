@@ -155,6 +155,7 @@ function ShopifyProvider<P extends ShopifyProfile = ShopifyProfile>(
             const customer = tokens.access_token
                 ? await fetch(graphqlUrl, {
                       method: 'POST',
+                      cache: 'no-store',
                       headers: {
                           'Content-Type': 'application/json',
                           'Authorization': tokens.access_token

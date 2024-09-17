@@ -9,7 +9,6 @@ import type { Code } from '@/utils/locale';
 import type { NextRequest } from 'next/server';
 
 //import NextAuth from 'next-auth';
-//import { getAuthOptions } from '@/auth';
 
 function hostnameFromRequest(req: NextRequest): string {
     let hostname = (req.headers.get('host')?.replace('.localhost', '') || req.nextUrl.host || '').toLowerCase();
@@ -198,8 +197,6 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     }
 
     const target = `${newUrl.origin}/${hostname}${newUrl.pathname}${newUrl.searchParams.size > 0 ? '?' : ''}${newUrl.searchParams.toString()}`;
-
-    //const { auth } = NextAuth(await getAuthOptions({ shop }));
 
     return setCookies(NextResponse.rewrite(new URL(target, req.url)), cookies);
 };

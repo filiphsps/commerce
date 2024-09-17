@@ -7,11 +7,9 @@ import type { NextAuthConfig } from 'next-auth';
 const VERCEL_DEPLOYMENT = process.env.VERCEL_URL;
 
 export default ({
-    domain,
     shop,
     shopifyAuth
 }: {
-    domain: string;
     shop: OnlineShop;
     shopifyAuth: {
         shopId: string;
@@ -30,7 +28,7 @@ export default ({
                     sameSite: 'lax',
                     path: '/',
                     // When working on localhost, the cookie domain must be omitted entirely (https://stackoverflow.com/a/1188145)
-                    domain: !!VERCEL_DEPLOYMENT ? `.${domain.split('.').slice(-2).join('.')}` : undefined,
+                    domain: !!VERCEL_DEPLOYMENT ? `.${shop.domain.split('.').slice(-2).join('.')}` : undefined,
                     secure: !!VERCEL_DEPLOYMENT
                 }
             }

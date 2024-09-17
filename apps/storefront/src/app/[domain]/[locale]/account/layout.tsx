@@ -7,7 +7,7 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
 export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic';
+export const dynamic = 'auto';
 export const revalidate = 0;
 
 export type LayoutParams = { domain: string; locale: string };
@@ -27,9 +27,7 @@ export default async function AccountLayout({
     params: LayoutParams;
 }) {
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-
-    const { auth } = await getAuthSession(shop);
-    const session = await auth();
+    const session = await getAuthSession(shop);
 
     return <SessionProvider session={session}>{children}</SessionProvider>;
 }

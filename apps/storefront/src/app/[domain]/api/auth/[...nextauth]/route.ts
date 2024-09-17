@@ -1,5 +1,5 @@
 import { findShopByDomainOverHttp } from '@/api/shop';
-import { getAuthSession } from '@/auth';
+import { getAuth } from '@/auth';
 
 import type { NextRequest } from 'next/server';
 
@@ -7,14 +7,18 @@ export const runtime = 'nodejs';
 
 export async function GET(req: NextRequest, { params: { domain } }: { params: { domain: string } }) {
     const shop = await findShopByDomainOverHttp(domain);
-    const auth = await getAuthSession(shop);
+    const {
+        handlers: { GET }
+    } = getAuth(shop);
 
-    return await auth.handlers.GET(req);
+    return await GET(req);
 }
 
 export async function POST(req: NextRequest, { params: { domain } }: { params: { domain: string } }) {
     const shop = await findShopByDomainOverHttp(domain);
-    const auth = await getAuthSession(shop);
+    const {
+        handlers: { POST }
+    } = getAuth(shop);
 
-    return await auth.handlers.POST(req);
+    return await POST(req);
 }

@@ -8,7 +8,7 @@ import { Label } from '@/components/typography/label';
 import type { Metadata } from 'next';
 
 export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic';
+export const dynamic = 'auto';
 export const revalidate = 0;
 
 export type LayoutParams = { domain: string; locale: string };
@@ -21,9 +21,8 @@ export async function generateMetadata({}: { params: LayoutParams }): Promise<Me
 
 export default async function AccountPage({ params: { domain, locale: localeData } }: { params: LayoutParams }) {
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-    const { auth } = await getAuthSession(shop);
 
-    const session = await auth();
+    const session = await getAuthSession(shop);
     if (!session) {
         return <div>TODO: Not logged in.</div>;
     }
@@ -37,8 +36,16 @@ export default async function AccountPage({ params: { domain, locale: localeData
 
             <Label as="div">{user?.id}</Label>
             <Label as="div">{user?.name}</Label>
-            <Label as="div">{user?.image}</Label>
             <Label as="div">{user?.email}</Label>
+            {user?.image ? (
+                <img
+                    src={user.image}
+                    alt={user.name || ''}
+                    height={100}
+                    width={100}
+                    className="rounded-full object-cover object-center"
+                />
+            ) : null}
         </div>
     );
 }

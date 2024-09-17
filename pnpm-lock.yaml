@@ -757,9 +757,6 @@ importers:
       concurrently:
         specifier: 9.0.1
         version: 9.0.1
-      critters:
-        specifier: 0.0.24
-        version: 0.0.24
       dotenv:
         specifier: 16.4.5
         version: 16.4.5
