@@ -21,7 +21,7 @@ import {
 import { track as vercelTrack } from '@vercel/analytics/react';
 import debounce from 'lodash.debounce';
 import { usePathname } from 'next/navigation';
-import { createContext, useContext, useContextSelector } from 'use-context-selector';
+import { createContext, useContext } from 'use-context-selector';
 
 import { useShop } from '@/components/shop/provider';
 
@@ -563,28 +563,19 @@ export function Trackable({ children }: TrackableProps) {
 }
 Trackable.displayName = 'Nordcom.Trackable';
 
-type SelectorFn<T extends keyof TrackableContextValue> = (context: TrackableContextValue) => TrackableContextValue[T];
-
 /**
  * Provides access to the {@link TrackableContext}.
  * Must be a descendant of {@link Trackable}.
  *
  * @returns {TrackableContextValue} The trackable context.
  */
-export function useTrackable(): TrackableContextValue;
-export function useTrackable<T extends keyof TrackableContextValue>(selector: SelectorFn<T>): TrackableContextValue[T];
-export function useTrackable<T extends keyof TrackableContextValue>(
-    selector?: SelectorFn<T>
-): TrackableContextValue | TrackableContextValue[T] {
-    const contextSelector = useContextSelector(TrackableContext, selector!);
+export function useTrackable(): TrackableContextValue {
     const context = useContext(TrackableContext);
-
-    const res = selector ? contextSelector : context;
-    if (!(res as any)) {
+    if (!(context as any)) {
         throw new MissingContextProviderError('useTrackable', 'Trackable');
     }
 
-    return res;
+    return context;
 }
 
 export function AnalyticsEventTrigger({ event, data }: { event: AnalyticsEventType; data: AnalyticsEventData }) {

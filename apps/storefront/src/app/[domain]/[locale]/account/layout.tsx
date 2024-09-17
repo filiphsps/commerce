@@ -7,7 +7,7 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
 export const runtime = 'nodejs';
-export const dynamic = 'auto';
+export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export type LayoutParams = { domain: string; locale: string };
