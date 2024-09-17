@@ -24,7 +24,7 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
     return (
         <section
             className={cn(
-                'bg-primary text-primary-foreground flex grid-flow-col justify-between gap-2 rounded-lg md:grid md:grid-cols-6',
+                'bg-primary text-primary-foreground relative flex grid-flow-col justify-between gap-2 overflow-hidden rounded-lg md:grid md:grid-cols-6',
                 background.url && 'bg-cover bg-center bg-no-repeat text-black'
             )}
             style={{
@@ -32,7 +32,7 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
             }}
             data-slice-variation={slice.variation}
         >
-            <div className="col-span-4 flex h-full w-full flex-col items-start justify-center gap-4 p-4 md:px-6 lg:gap-6">
+            <div className="z-10 col-span-4 mr-[6rem] flex h-full w-full flex-col items-start justify-center gap-4 p-4 md:m-0 md:px-6 lg:gap-6">
                 <div
                     className="flex flex-col items-start justify-center gap-1 text-left"
                     style={{
@@ -78,10 +78,11 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
                 width={image.dimensions?.width!}
                 height={image.dimensions?.height!}
                 alt={imageAlt!}
-                className="col-span-2 hidden h-full w-full object-cover object-center md:flex"
+                className="absolute -right-[calc(100%-8rem)] left-auto z-0 col-span-2 h-full w-full object-cover object-left md:relative md:inset-0 md:flex md:object-center"
                 draggable={false}
                 loading={priority ? 'eager' : 'lazy'}
                 priority={priority}
+                unoptimized={(image.url || '').includes('.gif')}
                 decoding="async"
             />
         </section>

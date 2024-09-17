@@ -6,9 +6,8 @@ import { NextResponse } from 'next/server';
 import { resolveAcceptLanguage } from 'resolve-accept-language';
 
 import type { Code } from '@/utils/locale';
+import { Error, NotFoundError, UnknownApiError } from '@nordcom/commerce-errors';
 import type { NextRequest } from 'next/server';
-
-//import NextAuth from 'next-auth';
 
 function hostnameFromRequest(req: NextRequest): string {
     let hostname = (req.headers.get('host')?.replace('.localhost', '') || req.nextUrl.host || '').toLowerCase();
@@ -31,7 +30,13 @@ function hostnameFromRequest(req: NextRequest): string {
 
 export const getHostname = async (req: NextRequest): Promise<string> => {
     const hostname = hostnameFromRequest(req);
-    return (await findShopByDomainOverHttp(hostname)).domain;
+    const domain = (await findShopByDomainOverHttp(hostname)).domain;
+
+    if (!domain) {
+        throw new NotFoundError(`"Shop" with the handle "${hostname}" cannot be found`);
+    }
+
+    return domain;
 };
 
 async function setCookies(res: NextResponse, cookies: string[][] = []): Promise<NextResponse> {
@@ -41,6 +46,30 @@ async function setCookies(res: NextResponse, cookies: string[][] = []): Promise<
 
     cookies.forEach(([key, value]) => res.cookies.set(key, value));
     return res;
+}
+
+async function handleCommerceError(req: NextRequest, error: Error) {
+    const hostname = hostnameFromRequest(req);
+
+    const newUrl = new URL(req.url);
+    newUrl.hostname = 'shops.nordcom.io';
+    newUrl.protocol = 'https';
+    newUrl.port = '443';
+    newUrl.searchParams.set('shop', hostname);
+
+    const headers = new Headers(req.headers);
+    headers.set('x-vercel-protection-bypass', process.env.VERCEL_AUTOMATION_BYPASS_SECRET || '');
+
+    if (Error.isNotFound(error)) {
+        newUrl.pathname = '/status/unknown-shop-error/';
+    }
+
+    return NextResponse.rewrite(newUrl, {
+        status: 404,
+        request: {
+            headers: headers
+        }
+    });
 }
 
 const FILE_TEST = /\.[a-zA-Z]{2,6}$/gi;
@@ -67,11 +96,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
             return NextResponse.rewrite(newUrl);
         }
 
-        // TODO Handle other errors.
-        newUrl.pathname = '/status/unknown-shop-error/';
-        return NextResponse.rewrite(newUrl, {
-            status: 404
-        });
+        return handleCommerceError(req, (error as undefined | Error) || new UnknownApiError());
     }
 
     // TODO: Do we need to account for the rewrite/reverse proxy?
