@@ -4,6 +4,7 @@ import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { commonValidations } from '@/middleware/common-validations';
+import { BuildConfig } from '@/utils/build-config';
 import { NextResponse } from 'next/server';
 import { resolveAcceptLanguage } from 'resolve-accept-language';
 
@@ -146,7 +147,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
             const locales = (await LocalesApi({ api })).map((locale) => locale.code);
 
             const acceptLanguageHeader = req.headers.get('accept-language');
-            if (!acceptLanguageHeader) {
+            if (!acceptLanguageHeader && BuildConfig.environment !== 'production') {
                 console.warn(`Invalid or missing "accept-language" header.`, req);
             }
 

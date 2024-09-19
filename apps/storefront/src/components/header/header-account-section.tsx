@@ -10,6 +10,7 @@ import { cn } from '@/utils/tailwind';
 
 import { LoginButton } from '@/components/actionable/login-button';
 import { Avatar } from '@/components/informational/avatar';
+import Link from '@/components/link';
 
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 
@@ -30,7 +31,9 @@ export async function HeaderAccountSection({ shop, locale, i18n, className, ...p
 
     return (
         <section className={cn('flex h-full items-center justify-end gap-1 empty:hidden', className)} {...props}>
-            <Avatar />
+            <Link href="/account/" className="hover:brightness-75 focus-visible:brightness-75">
+                <Avatar />
+            </Link>
         </section>
     );
 }

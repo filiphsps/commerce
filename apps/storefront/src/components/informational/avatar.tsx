@@ -20,7 +20,7 @@ export async function Avatar({ src, children, className, ...props }: AvatarProps
     );
 
     return (
-        <div {...props} className={cn('size-12 rounded-full bg-gray-100', className)}>
+        <div {...props} className={cn('size-12 overflow-hidden rounded-full bg-gray-100', className)}>
             {content}
         </div>
     );
