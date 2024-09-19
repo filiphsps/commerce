@@ -12,7 +12,7 @@ import type { SliceComponentProps } from '@prismicio/react';
 
 const MENU_COMMON_STYLES = 'h-full w-full max-w-[var(--page-width)] px-3 py-4 md:px-4 2xl:px-3 overflow-x-auto ';
 const MENU_ITEM_COMMON_STYLES =
-    'group/item hover:border-primary hover:text-primary flex h-full grow shrink-0 overflow-hidden rounded-lg border border-solid border-gray-300 bg-white transition-colors duration-75';
+    'group/item hover:border-primary focus-within:border-primary hover:text-primary focus-within:text-primary flex h-full grow shrink-0 overflow-hidden rounded-lg border border-solid border-gray-300 bg-white transition-colors duration-75';
 const TITLE_COMMON_STYLES = 'text-xl leading-none py-2 font-semibold';
 
 type DropdownDefaultMenuProps = Pick<SliceComponentProps<Content.DropdownSlice>, 'slice'>;
@@ -99,7 +99,7 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                                     height={image.dimensions.height}
                                     quality={80}
                                     className={cn(
-                                        'pointer-events-none h-full w-full object-cover',
+                                        'pointer-events-none h-full w-full object-cover group-focus-within/item:brightness-75 group-hover/item:brightness-75',
                                         imagePositionStyles
                                     )}
                                     draggable={false}
@@ -128,7 +128,11 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                             </div>
                         ) : null}
 
-                        <div className={cn('h-auto p-2 pt-2 text-gray-600 empty:hidden group-hover/item:text-inherit')}>
+                        <div
+                            className={cn(
+                                'flex h-full flex-col items-start justify-start p-2 pt-2 text-gray-600 empty:hidden group-focus-within/item:text-inherit group-hover/item:text-inherit'
+                            )}
+                        >
                             {!background ? (
                                 <div className={cn(TITLE_COMMON_STYLES, 'pt-1')}>
                                     <PrismicText data={title} styled={false} bare={true} />
