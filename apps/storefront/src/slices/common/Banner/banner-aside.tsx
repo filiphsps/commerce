@@ -56,9 +56,8 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
                                 as={Link}
                                 key={`${target}-${index}`}
                                 className={cn(
-                                    'bg-white px-3 text-base text-black shadow hover:bg-black hover:text-white',
-                                    type &&
-                                        'bg-secondary text-secondary-foreground hover:bg-secondary-dark hover:text-secondary-foreground'
+                                    'bg-white px-3 text-base text-black shadow',
+                                    type && 'bg-secondary text-secondary-foreground'
                                 )}
                                 href={href}
                                 target={target}

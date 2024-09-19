@@ -343,7 +343,7 @@ export type CartPageDocument<Lang extends string = string> = prismic.PrismicDocu
 
 type CollectionPageDocumentDataSlicesSlice =
     | OriginalContentSlice
-    | CustomHTMLSlice
+    | CustomHtmlSlice
     | ContentBlockSlice
     | ColumnsSlice
     | TitleSlice
@@ -486,7 +486,7 @@ export type ColumnDocument<Lang extends string = string> = prismic.PrismicDocume
 >;
 
 type CustomPageDocumentDataSlicesSlice =
-    | CustomHTMLSlice
+    | CustomHtmlSlice
     | ColumnsSlice
     | ContentBlockSlice
     | CollectionSlice
@@ -757,7 +757,7 @@ export type FooterDocument<Lang extends string = string> = prismic.PrismicDocume
     Lang
 >;
 
-type HeaderDocumentDataSlicesSlice = CustomHTMLSlice;
+type HeaderDocumentDataSlicesSlice = CustomHtmlSlice;
 
 /**
  * Content for Header documents
@@ -1730,7 +1730,7 @@ export type ContentBlockSlice = prismic.SharedSlice<'content_block', ContentBloc
 /**
  * Primary content in *CustomHTML → Default → Primary*
  */
-export interface CustomHTMLSliceDefaultPrimary {
+export interface CustomHtmlSliceDefaultPrimary {
     /**
      * HTML field in *CustomHTML → Default → Primary*
      *
@@ -1749,16 +1749,16 @@ export interface CustomHTMLSliceDefaultPrimary {
  * - **Description**: Default
  * - **Documentation**: https://prismic.io/docs/slice
  */
-export type CustomHTMLSliceDefault = prismic.SharedSliceVariation<
+export type CustomHtmlSliceDefault = prismic.SharedSliceVariation<
     'default',
-    Simplify<CustomHTMLSliceDefaultPrimary>,
+    Simplify<CustomHtmlSliceDefaultPrimary>,
     never
 >;
 
 /**
  * Slice variation for *CustomHTML*
  */
-type CustomHTMLSliceVariation = CustomHTMLSliceDefault;
+type CustomHtmlSliceVariation = CustomHtmlSliceDefault;
 
 /**
  * CustomHTML Shared Slice
@@ -1767,7 +1767,7 @@ type CustomHTMLSliceVariation = CustomHTMLSliceDefault;
  * - **Description**: CustomHTML
  * - **Documentation**: https://prismic.io/docs/slice
  */
-export type CustomHTMLSlice = prismic.SharedSlice<'custom_html', CustomHTMLSliceVariation>;
+export type CustomHtmlSlice = prismic.SharedSlice<'custom_html', CustomHtmlSliceVariation>;
 
 /**
  * Primary content in *IconGrid → Default → Primary*
@@ -1852,24 +1852,34 @@ export interface ImageGridSliceDefaultItem {
     image: prismic.ImageField<never>;
 
     /**
-     * Title field in *ImageGrid → Items*
-     *
-     * - **Field Type**: Text
-     * - **Placeholder**: *None*
-     * - **API ID Path**: image_grid.items[].title
-     * - **Documentation**: https://prismic.io/docs/field#key-text
-     */
-    title: prismic.KeyTextField;
-
-    /**
      * href field in *ImageGrid → Items*
      *
-     * - **Field Type**: Text
+     * - **Field Type**: Link
      * - **Placeholder**: *None*
      * - **API ID Path**: image_grid.items[].href
-     * - **Documentation**: https://prismic.io/docs/field#key-text
+     * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
      */
-    href: prismic.KeyTextField;
+    href: prismic.LinkField;
+
+    /**
+     * Title field in *ImageGrid → Items*
+     *
+     * - **Field Type**: Rich Text
+     * - **Placeholder**: *None*
+     * - **API ID Path**: image_grid.items[].title
+     * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+     */
+    title: prismic.RichTextField;
+
+    /**
+     * Description field in *ImageGrid → Items*
+     *
+     * - **Field Type**: Rich Text
+     * - **Placeholder**: *None*
+     * - **API ID Path**: image_grid.items[].description
+     * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+     */
+    description: prismic.RichTextField;
 }
 
 /**
@@ -2374,10 +2384,10 @@ declare module '@prismicio/client' {
             ContentBlockSliceVariation,
             ContentBlockSliceDefault,
             ContentBlockSliceCard,
-            CustomHTMLSlice,
-            CustomHTMLSliceDefaultPrimary,
-            CustomHTMLSliceVariation,
-            CustomHTMLSliceDefault,
+            CustomHtmlSlice,
+            CustomHtmlSliceDefaultPrimary,
+            CustomHtmlSliceVariation,
+            CustomHtmlSliceDefault,
             IconGridSlice,
             IconGridSliceDefaultPrimary,
             IconGridSliceDefaultItem,

@@ -102,12 +102,12 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
                     href={`/collections/${collection.handle}/`}
                     className={cn(
                         CARD_STYLES,
-                        'bg-primary text-primary-foreground flex items-center justify-center hover:brightness-75'
+                        'bg-primary text-primary-foreground hover:*:text-primary-foreground flex items-center justify-center p-3 transition-all hover:brightness-75 hover:transition-all'
                     )}
                     // TODO: i18n.
                     // TODO: View all {products.length} {Pluralize({ count: products.length, noun: 'product' })}.
                 >
-                    <div className="text-center">
+                    <div className="text-center text-inherit">
                         View all of the products in <b className="font-bold">{collection.title}</b>.
                     </div>
                 </Link>

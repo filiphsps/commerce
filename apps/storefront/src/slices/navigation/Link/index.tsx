@@ -37,16 +37,16 @@ const LinkSlice = ({ slice, context: { isHeader = true } }: LinkProps) => {
         }
     }
 
-    let active = target ? target.toLowerCase().endsWith(pathname.toLowerCase()) : false;
+    let active = target ? target.toLowerCase().endsWith(pathname.trim().toLowerCase()) : false;
 
     let linkStyles: string | undefined;
     switch (variant as any) {
         case 'highlighted':
             linkStyles = cn(
                 LINK_STYLES,
-                'px-3 py-0 md:px-3 h-8',
+                'px-3 py-0 md:px-3 h-8 hover:brightness-75 rounded-lg transition-all',
                 active && LINK_ACTIVE_STYLES,
-                'text-extrabold rounded-lg bg-secondary-light text-secondary-foreground',
+                'text-bold bg-secondary text-secondary-foreground',
                 active && 'bg-primary text-primary-foreground'
             );
             break;

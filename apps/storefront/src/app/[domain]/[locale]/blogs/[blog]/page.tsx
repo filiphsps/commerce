@@ -188,7 +188,7 @@ export default async function BlogPage({
                                 >
                                     {image?.url ? (
                                         <Image
-                                            className="transition-color aspect-[16/7] rounded-lg bg-gray-100 object-cover object-center group-hover/header:brightness-75"
+                                            className="aspect-[16/7] rounded-lg bg-gray-100 object-cover object-center transition-all group-hover/header:brightness-75"
                                             role={image.altText ? undefined : 'presentation'}
                                             src={image.url}
                                             alt={image.altText!}

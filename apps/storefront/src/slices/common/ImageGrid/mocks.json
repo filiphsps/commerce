@@ -36,17 +36,39 @@
                     [
                         "title",
                         {
-                            "__TYPE__": "FieldContent",
-                            "type": "Text",
-                            "value": "The first title"
+                            "__TYPE__": "StructuredTextContent",
+                            "value": [
+                                {
+                                    "type": "paragraph",
+                                    "content": {
+                                        "text": "Irure nulla exercitation ex ipsum Lorem cupidatat."
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    [
+                        "description",
+                        {
+                            "__TYPE__": "StructuredTextContent",
+                            "value": [
+                                {
+                                    "type": "paragraph",
+                                    "content": {
+                                        "text": "Reprehenderit pariatur reprehenderit nisi proident officia commodo culpa nulla excepteur."
+                                    }
+                                }
+                            ]
                         }
                     ],
                     [
                         "href",
                         {
-                            "__TYPE__": "FieldContent",
-                            "value": "threw",
-                            "type": "Text"
+                            "__TYPE__": "LinkContent",
+                            "value": {
+                                "__TYPE__": "ExternalLink",
+                                "url": "http://twitter.com"
+                            }
                         }
                     ]
                 ]
@@ -54,22 +76,6 @@
             {
                 "__TYPE__": "GroupItemContent",
                 "value": [
-                    [
-                        "href",
-                        {
-                            "__TYPE__": "FieldContent",
-                            "type": "Text",
-                            "value": "handle"
-                        }
-                    ],
-                    [
-                        "title",
-                        {
-                            "__TYPE__": "FieldContent",
-                            "type": "Text",
-                            "value": "Title number dos"
-                        }
-                    ],
                     [
                         "image",
                         {
@@ -95,28 +101,50 @@
                             "__TYPE__": "ImageContent",
                             "thumbnails": {}
                         }
+                    ],
+                    [
+                        "title",
+                        {
+                            "__TYPE__": "StructuredTextContent",
+                            "value": [
+                                {
+                                    "type": "paragraph",
+                                    "content": {
+                                        "text": "Excepteur laborum nostrud ea sint elit nulla."
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    [
+                        "description",
+                        {
+                            "__TYPE__": "StructuredTextContent",
+                            "value": [
+                                {
+                                    "type": "paragraph",
+                                    "content": {
+                                        "text": "Culpa in nostrud eu aute culpa deserunt commodo fugiat mollit aute cupidatat exercitation. Magna cillum sit cupidatat ut non pariatur dolor laborum proident."
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    [
+                        "href",
+                        {
+                            "__TYPE__": "LinkContent",
+                            "value": {
+                                "__TYPE__": "ExternalLink",
+                                "url": "https://prismic.io"
+                            }
+                        }
                     ]
                 ]
             },
             {
                 "__TYPE__": "GroupItemContent",
                 "value": [
-                    [
-                        "href",
-                        {
-                            "__TYPE__": "FieldContent",
-                            "type": "Text",
-                            "value": "tres"
-                        }
-                    ],
-                    [
-                        "title",
-                        {
-                            "__TYPE__": "FieldContent",
-                            "type": "Text",
-                            "value": "Hello freaking world!"
-                        }
-                    ],
                     [
                         "image",
                         {
@@ -141,6 +169,44 @@
                             "alt": null,
                             "__TYPE__": "ImageContent",
                             "thumbnails": {}
+                        }
+                    ],
+                    [
+                        "title",
+                        {
+                            "__TYPE__": "StructuredTextContent",
+                            "value": [
+                                {
+                                    "type": "paragraph",
+                                    "content": {
+                                        "text": "Culpa ea consequat aute ipsum occaecat do veniam pariatur elit anim laboris ut eiusmod laborum. Ex nulla commodo eu velit non velit occaecat exercitation."
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    [
+                        "description",
+                        {
+                            "__TYPE__": "StructuredTextContent",
+                            "value": [
+                                {
+                                    "type": "paragraph",
+                                    "content": {
+                                        "text": "Id eu elit ut deserunt occaecat nulla sint ea qui consequat do elit eu."
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    [
+                        "href",
+                        {
+                            "__TYPE__": "LinkContent",
+                            "value": {
+                                "__TYPE__": "ExternalLink",
+                                "url": "https://slicemachine.dev"
+                            }
                         }
                     ]
                 ]
