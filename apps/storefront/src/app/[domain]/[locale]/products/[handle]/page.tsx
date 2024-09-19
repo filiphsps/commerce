@@ -15,7 +15,7 @@ import { getDictionary } from '@/i18n/dictionary';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import { isValidHandle } from '@/utils/handle';
 import { getTranslations, Locale } from '@/utils/locale';
-import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
+import { productToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { safeParseFloat } from '@/utils/pricing';
 import { checkAndHandleRedirect } from '@/utils/redirect';
 import { cn } from '@/utils/tailwind';
@@ -247,7 +247,7 @@ export default async function ProductPage({
             '@type': 'Brand',
             'name': product.vendor
         },
-        'productGroupID': ProductToMerchantsCenterId({ locale, product: { productGid: product.id } }),
+        'productGroupID': productToMerchantsCenterId({ locale, product: { productGid: product.id } }),
         'aggregateRating': {
             '@type': 'AggregateRating',
             'ratingValue': rating?.value || 5,
@@ -266,7 +266,7 @@ export default async function ProductPage({
             'description': product.description || '',
             'image': variant.image?.url || product.images.edges[0]?.node.url,
 
-            'sku': ProductToMerchantsCenterId({
+            'sku': productToMerchantsCenterId({
                 locale: locale,
                 product: {
                     productGid: product!.id,
@@ -330,7 +330,7 @@ export default async function ProductPage({
                                 value: safeParseFloat(undefined, initialVariant.price.amount),
                                 items: [
                                     {
-                                        item_id: ProductToMerchantsCenterId({
+                                        item_id: productToMerchantsCenterId({
                                             locale,
                                             product: {
                                                 productGid: product.id,

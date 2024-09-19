@@ -1,4 +1,4 @@
-import { ApiError, NotFoundError } from '@nordcom/commerce-errors';
+import { NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
 
 import { gql } from '@apollo/client';
 import { flattenConnection } from '@shopify/hydrogen-react';
@@ -24,6 +24,8 @@ export const RedirectsApi = async ({
     cursor?: string;
     redirects?: UrlRedirect[];
 }): Promise<UrlRedirect[]> => {
+    const shop = api.shop();
+
     try {
         const { data, errors } = await api.query<{ urlRedirects: UrlRedirectConnection }>(
             gql`
@@ -50,10 +52,10 @@ export const RedirectsApi = async ({
 
         const urlRedirects = data ? flattenConnection(data.urlRedirects) : null;
 
-        if (errors) {
-            throw new ApiError(errors.map((e) => e.message).join(', '));
+        if (errors && errors.length > 0) {
+            throw new ProviderFetchError(errors);
         } else if ((!urlRedirects || urlRedirects.length <= 0) && redirects.length <= 0) {
-            throw new NotFoundError('"Redirects"');
+            throw new NotFoundError(`"Redirects" on shop "${shop.id}"`);
         }
 
         if (data && urlRedirects) {

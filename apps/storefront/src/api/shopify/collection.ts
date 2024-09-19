@@ -1,7 +1,5 @@
 import type { Identifiable, LimitFilters, Nullable } from '@nordcom/commerce-db';
 import {
-    ApiError,
-    Error,
     InvalidHandleError,
     NotFoundError,
     ProviderFetchError,
@@ -202,7 +200,7 @@ export const CollectionApi = async (
         );
 
         if (errors && errors.length > 0) {
-            throw new ProviderFetchError(errors.map((e: any) => e.message).join('\n'));
+            throw new ProviderFetchError(errors);
         } else if (!data?.collection) {
             throw new NotFoundError(`"Collection" with the handle "${handle}" on shop "${shop.id}"`);
         }
@@ -274,8 +272,8 @@ export const CollectionPaginationCountApi = async ({
             }
         );
 
-        if (errors) {
-            throw new ApiError(errors.map((e: any) => e.message).join('\n'));
+        if (errors && errors.length > 0) {
+            throw new ProviderFetchError(errors);
         } else if (!data?.collection?.products.edges || data.collection.products.edges.length <= 0) {
             return {
                 count,
@@ -355,9 +353,9 @@ export const CollectionsApi = async (
         `);
 
         if (errors && errors.length > 0) {
-            return reject(new ApiError(errors.map((e: any) => e.message).join('\n')));
+            return reject(new ProviderFetchError(errors));
         } else if (!data?.collections) {
-            return reject(new Error(`404: No collections could be found`));
+            return reject(new NotFoundError(`"Collections" cannot be found`));
         }
 
         return resolve(
@@ -393,6 +391,7 @@ export const CollectionsPaginationApi = async ({
     };
     collections: CollectionEdge[];
 }> => {
+    const shop = api.shop();
     const filters = 'filters' in props ? props.filters : /** @deprecated */ (props as CollectionsFilters);
 
     return new Promise(async (resolve, reject) => {
@@ -463,7 +462,7 @@ export const CollectionsPaginationApi = async ({
 
             const page_info = data?.collections.pageInfo;
             if (!page_info) {
-                return reject(new Error(`500: Something went wrong on our end`));
+                return reject(new ProviderFetchError(`"Collections.pageInfo" on shop "${shop.id}"`));
             }
 
             return resolve({

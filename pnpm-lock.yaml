@@ -260,6 +260,9 @@ importers:
         specifier: 2.0.0
         version: 2.0.0(react@19.0.0-rc-5dcb0097-20240918)(scheduler@0.25.0-rc-f65ac7bd-20240826)
     devDependencies:
+      '@builder.io/partytown':
+        specifier: 0.10.2
+        version: 0.10.2
       '@happy-dom/global-registrator':
         specifier: 15.7.4
         version: 15.7.4
@@ -706,6 +709,9 @@ importers:
         specifier: 37.3.0
         version: 37.3.0
     devDependencies:
+      '@builder.io/partytown':
+        specifier: 0.10.2
+        version: 0.10.2
       '@happy-dom/global-registrator':
         specifier: 15.7.4
         version: 15.7.4
@@ -1152,6 +1158,11 @@ packages:
 
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
+
+  '@builder.io/partytown@0.10.2':
+    resolution: {integrity: sha512-A9U+4PREWcS+CCYzKGIPovtGB/PBgnH/8oQyCE6Nr9drDJk6cMPpLQIEajpGPmG9tYF7N3FkRvhXm/AS9+0iKg==}
+    engines: {node: '>=18.0.0'}
+    hasBin: true
 
   '@codecov/bundler-plugin-core@1.1.0':
     resolution: {integrity: sha512-moetKC32uLQh09X3HNCsNzr+ZVdCoGE11eEH65wEuVb1P6p28W52EjhamrZcl76X1DkthETRPiw7DJQ9hyA+AA==}
@@ -8109,6 +8120,8 @@ snapshots:
       to-fast-properties: 2.0.0
 
   '@bcoe/v8-coverage@0.2.3': {}
+
+  '@builder.io/partytown@0.10.2': {}
 
   '@codecov/bundler-plugin-core@1.1.0':
     dependencies:

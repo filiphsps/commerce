@@ -6,6 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
         short_name: 'nordcom',
         description: 'Nordcom Commerce',
         display_override: ['standalone', 'fullscreen'],
+        scope: 'https://admin.shops.nordcom.io/',
         start_url: '/',
         display: 'standalone',
         background_color: '#000000',

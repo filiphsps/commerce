@@ -189,5 +189,8 @@
     },
     "editor.quickSuggestions": {
         "strings": true
-    }
+    },
+    "git.defaultBranchName": "master",
+    "git.autofetchPeriod": 30,
+    "git.similarityThreshold": 72
 }

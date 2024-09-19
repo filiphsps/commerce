@@ -91,10 +91,10 @@ export async function generateViewport({ params: { domain } }: { params: LayoutP
     const branding = await getBrandingColors({ domain });
 
     return {
-        width: 'device-width',
         initialScale: 1,
         interactiveWidget: 'resizes-content',
-        themeColor: branding?.primary.color
+        themeColor: branding?.primary.color,
+        width: 'device-width'
     };
 }
 

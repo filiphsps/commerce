@@ -28,7 +28,7 @@ describe('utils', () => {
         }));
 
         vi.mock('@/utils/merchants-center-id', () => ({
-            ProductToMerchantsCenterId: vi.fn(() => 'product-id')
+            productToMerchantsCenterId: vi.fn(() => 'product-id')
         }));
 
         const cart: CartWithActions = {
@@ -113,7 +113,7 @@ describe('utils', () => {
                 }
             } as any;
 
-            await expect(Checkout({ shop, locale, cart: emptyCart, trackable })).rejects.toThrow('Cart is empty!');
+            await expect(Checkout({ shop, locale, cart: emptyCart, trackable })).rejects.toThrow();
         });
 
         it(`should throw an error when cart is missing checkoutUrl`, async () => {
@@ -146,9 +146,7 @@ describe('utils', () => {
                 }
             } as any;
 
-            await expect(Checkout({ shop, locale, cart: cartWithoutCheckoutUrl, trackable })).rejects.toThrow(
-                'Cart is missing checkoutUrl'
-            );
+            await expect(Checkout({ shop, locale, cart: cartWithoutCheckoutUrl, trackable })).rejects.toThrow();
         });
 
         it(`should track the begin_checkout event in Google Analytics`, async () => {

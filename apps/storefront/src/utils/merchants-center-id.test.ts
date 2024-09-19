@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { Locale } from '@/utils/locale';
-import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
+import { productToMerchantsCenterId } from '@/utils/merchants-center-id';
 
 describe('utils', () => {
     describe('MerchantsCenterId', () => {
@@ -13,7 +13,7 @@ describe('utils', () => {
 
             const locale = Locale.from('en-US')!;
 
-            const merchantsCenterId = ProductToMerchantsCenterId({
+            const merchantsCenterId = productToMerchantsCenterId({
                 locale,
                 product
             });
@@ -30,7 +30,7 @@ describe('utils', () => {
 
             const locale = Locale.from('fr-CA')!;
 
-            const merchantsCenterId = ProductToMerchantsCenterId({
+            const merchantsCenterId = productToMerchantsCenterId({
                 locale,
                 product
             });

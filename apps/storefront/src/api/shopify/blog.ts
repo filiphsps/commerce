@@ -39,7 +39,7 @@ export async function BlogsApi({ api }: { api: AbstractApi }): Promise<ApiReturn
     );
 
     if (errors && errors.length > 0) {
-        return [undefined, new ProviderFetchError(errors.map((e: any) => e.message).join('\n'))];
+        return [undefined, new ProviderFetchError(errors)];
     }
 
     if (!data || data.blogs.edges.length <= 0) {
@@ -114,7 +114,7 @@ export async function BlogApi({
     );
 
     if (errors && errors.length > 0) {
-        return [undefined, new ProviderFetchError(errors.map((e: any) => e.message).join('\n'))];
+        return [undefined, new ProviderFetchError(errors)];
     }
 
     if (!data?.blogByHandle) {
@@ -139,6 +139,8 @@ export async function BlogArticleApi({
     blogHandle?: string;
     handle: string;
 }): Promise<ApiReturn<Article>> {
+    const shop = api.shop();
+
     const { data, errors } = await api.query<{ blogByHandle: Blog }>(
         gql`
             query article($blogHandle: String!, $handle: String!) {
@@ -189,13 +191,13 @@ export async function BlogArticleApi({
     );
 
     if (errors && errors.length > 0) {
-        return [undefined, new ProviderFetchError(errors.map((e: any) => e.message).join('\n'))];
+        return [undefined, new ProviderFetchError(errors)];
     }
 
     if (!data?.blogByHandle) {
-        return [undefined, new NotFoundError(`"Blog" with handle "${blogHandle}" cannot be found`)];
+        return [undefined, new NotFoundError(`"Blog" with handle "${blogHandle}" on shop "${shop.id}"`)];
     } else if (!data.blogByHandle.articleByHandle) {
-        return [undefined, new NotFoundError(`"articleByHandle" for blog "${handle}" cannot be found`)];
+        return [undefined, new NotFoundError(`"articleByHandle" for blog "${handle}" on shop "${shop.id}"`)];
     }
 
     return [

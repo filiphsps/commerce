@@ -1,4 +1,4 @@
-import { Error, NotFoundError, UnknownApiError } from '@nordcom/commerce-errors';
+import { Error, MissingEnvironmentVariableError, NotFoundError, UnknownError } from '@nordcom/commerce-errors';
 
 import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApiClient } from '@/api/shopify';
@@ -56,17 +56,23 @@ async function handleCommerceError(req: NextRequest, error: Error) {
     newUrl.hostname = 'shops.nordcom.io';
     newUrl.protocol = 'https';
     newUrl.port = '443';
+    newUrl.pathname = '/status/unknown-error/'; // Default error.
     newUrl.searchParams.set('shop', hostname);
 
     const headers = new Headers(req.headers);
-    headers.set('x-vercel-protection-bypass', process.env.VERCEL_AUTOMATION_BYPASS_SECRET || '');
+    headers.set('x-nordcom-shop', hostname);
+    if (process.env.VERCEL_AUTOMATION_BYPASS_SECRET) {
+        headers.set('x-vercel-protection-bypass', process.env.VERCEL_AUTOMATION_BYPASS_SECRET);
+    } else {
+        console.warn(new MissingEnvironmentVariableError('VERCEL_AUTOMATION_BYPASS_SECRET'));
+    }
 
     if (Error.isNotFound(error)) {
-        newUrl.pathname = '/status/unknown-shop-error/';
+        newUrl.pathname = '/status/unknown-shop/';
     }
 
     return NextResponse.rewrite(newUrl, {
-        status: 404,
+        status: error.statusCode || 500,
         request: {
             headers: headers
         }
@@ -97,7 +103,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
             return NextResponse.rewrite(newUrl);
         }
 
-        return handleCommerceError(req, (error as undefined | Error) || new UnknownApiError());
+        return handleCommerceError(req, (error as undefined | Error) || new UnknownError(error?.toString?.()));
     }
 
     // TODO: Do we need to account for the rewrite/reverse proxy?

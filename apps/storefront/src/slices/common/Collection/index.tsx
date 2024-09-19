@@ -5,6 +5,7 @@ import styles from './collection.module.scss';
 import { Suspense } from 'react';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
+import { InvalidSliceVariationError } from '@nordcom/commerce-errors';
 
 import CollectionContainer from '@/slices/common/Collection/collection';
 import { cn } from '@/utils/tailwind';
@@ -31,11 +32,8 @@ export type CollectionProps = SliceComponentProps<
  * Component for "Collection" Slices.
  */
 const CollectionSlice = async ({ slice, index, context: { shop, locale } }: CollectionProps) => {
-    // TODO: Remove this once we know there's no legacy data.
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (slice.variation !== 'default') {
-        console.warn(new Error(`500: Invalid variant: "${slice.variation}"`));
-        return null;
+    if ((slice.variation as string) !== 'default') {
+        throw new InvalidSliceVariationError(slice.variation);
     }
 
     const handle = slice.primary.handle as string;

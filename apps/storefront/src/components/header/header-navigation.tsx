@@ -40,7 +40,7 @@ export function HeaderNavigation({ shop, locale, i18n, slices = [], className, .
         </nav>
     );
 }
-HeaderNavigation.displayName = 'Nordcom.Header.HeaderNavigation.Skeleton';
+HeaderNavigation.displayName = 'Nordcom.Header.HeaderNavigation';
 
 function skeleton() {
     return (

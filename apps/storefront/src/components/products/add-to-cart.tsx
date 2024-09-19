@@ -4,7 +4,7 @@
 import { type HTMLProps, useCallback, useEffect, useState } from 'react';
 
 import { getTranslations } from '@/utils/locale';
-import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
+import { productToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 import { useTrackable } from '@/utils/trackable';
@@ -78,7 +78,7 @@ export function AddToCart({
                     value: safeParseFloat(0, selectedVariant.price.amount) * quantity,
                     items: [
                         {
-                            item_id: ProductToMerchantsCenterId({
+                            item_id: productToMerchantsCenterId({
                                 locale,
                                 product: {
                                     productGid: product!.id!,

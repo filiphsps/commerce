@@ -12,7 +12,7 @@ import type { Locale } from '@/utils/locale';
  * @param {string} [options.product.variantGid] - The Shopify GID of the variant.
  * @returns {string} A unique ID for the product in the Merchants Center.
  */
-export const ProductToMerchantsCenterId = ({
+export const productToMerchantsCenterId = ({
     locale,
     product
 }: {

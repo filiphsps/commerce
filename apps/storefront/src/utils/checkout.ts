@@ -1,6 +1,7 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
+import { InvalidCartError, UnknownCommerceProviderError } from '@nordcom/commerce-errors';
 
-import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
+import { productToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { safeParseFloat } from '@/utils/pricing';
 
 import type { Locale } from '@/utils/locale';
@@ -10,10 +11,10 @@ import type { CartLine } from '@shopify/hydrogen-react/storefront-api-types';
 
 // Const hacky workaround for ga4 cross-domain
 // taken from StackOverflow
-export const getCrossDomainLinkerParameter = () => {
+export const getCrossDomainLinkerParameter = (domain: string) => {
     // create form element, give it an action, make it hidden and prevent the submit event
     const formNode = document.createElement('form') as any;
-    formNode.action = 'https://checkout.swedish-candy-store.com'; // TODO: This should be dependant on the tenant.
+    formNode.action = `https://checkout.${domain}`; // TODO: This should be dependant on the tenant.
     formNode.style.opacity = '0';
     formNode.addEventListener('submit', (event: any) => {
         event.preventDefault();
@@ -36,7 +37,9 @@ export const getCrossDomainLinkerParameter = () => {
     if (_glNode) {
         return _glNode.value as string;
     }
-    return null; // TODO: Maybe throw an error here.
+
+    console.warn(`Could not find _gl input in checkout form with action "${formNode.action}"`);
+    return null;
 };
 
 export const Checkout = async ({
@@ -50,16 +53,19 @@ export const Checkout = async ({
     cart: CartWithActions;
     trackable: TrackableContextValue;
 }) => {
-    if (!cart.totalQuantity || cart.totalQuantity <= 0 || !cart.lines) {
-        throw new Error('Cart is empty!');
-    } else if (!cart.checkoutUrl) {
-        throw new Error('Cart is missing checkoutUrl');
+    if (shop.commerceProvider.type !== 'shopify') {
+        throw new UnknownCommerceProviderError();
     }
 
-    let url = cart.checkoutUrl;
-    if (shop.commerceProvider.type === 'shopify') {
-        url = url.replace(/[A-Za-z0-9\-\_]+.\.myshopify\.com/, shop.commerceProvider.domain);
+    if (typeof (cart as any) === 'undefined' || !(cart as any)) {
+        throw new InvalidCartError('Cart is undefined or null');
+    } else if (!cart.totalQuantity || cart.totalQuantity <= 0 || !cart.lines) {
+        throw new InvalidCartError('Cart is empty');
+    } else if (!cart.checkoutUrl) {
+        throw new InvalidCartError('Cart is missing checkoutUrl');
     }
+
+    const url = cart.checkoutUrl.replace(/[A-Za-z0-9\-\_]+.\.myshopify\.com/, shop.commerceProvider.domain);
 
     try {
         trackable.postEvent('begin_checkout', {
@@ -68,7 +74,7 @@ export const Checkout = async ({
                     currency: cart.cost?.totalAmount?.currencyCode!,
                     value: safeParseFloat(undefined, cart.cost?.totalAmount?.amount),
                     items: (cart.lines.filter((_) => _) as CartLine[]).map((line) => ({
-                        item_id: ProductToMerchantsCenterId({
+                        item_id: productToMerchantsCenterId({
                             locale: locale,
                             product: {
                                 productGid: line.merchandise!.product!.id,
@@ -93,7 +99,6 @@ export const Checkout = async ({
         console.error(error);
     }
 
-    const ga4 = getCrossDomainLinkerParameter();
-    const finalUrl = `${url}${ga4 ? `${url.includes('?') ? '&' : '?'}_gl=${ga4}` : ''}`;
-    window.location.href = finalUrl;
+    const ga4 = getCrossDomainLinkerParameter(shop.domain);
+    window.location.href = `${url}${ga4 ? `${url.includes('?') ? '&' : '?'}_gl=${ga4}` : ''}`;
 };

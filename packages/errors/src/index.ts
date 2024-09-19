@@ -9,6 +9,13 @@ export class Error<T = unknown> extends BuiltinError {
     // Defined in the constructor using `Object.defineProperty`.
     public readonly help!: string;
 
+    get [Symbol.toStringTag]() {
+        return this.name;
+    }
+    get [Symbol.for('nodejs.util.inspect.custom')]() {
+        return `${this.name}: <${JSON.stringify(this, null, 4)}>`;
+    }
+
     public constructor(message?: string) {
         const args = [...arguments].splice(0, 1);
         super(message, ...args);
@@ -36,20 +43,19 @@ export class Error<T = unknown> extends BuiltinError {
     }
 
     public static isNotFound(error: Error | unknown): boolean {
-        if (!error) {
+        if (typeof error === 'undefined' || error === null || typeof error !== 'object') {
             return false;
         }
 
         switch (true) {
             case error instanceof NotFoundError:
+            case error instanceof InvalidHandleError:
+            case error instanceof InvalidIDError:
+            case error instanceof UnknownLocaleError:
                 return true;
-
-            // TODO: Default should return false.
-            default:
-                break;
         }
 
-        if ((error as any).statusCode === 404) {
+        if ('statusCode' in error && error.statusCode === 404) {
             return true;
         }
 
@@ -58,7 +64,12 @@ export class Error<T = unknown> extends BuiltinError {
             return false;
         }
 
-        return ['No documents were returned', '404:'].some((str) => message.toLowerCase().includes(str.toLowerCase()));
+        const isPrismic404 = message.match(/no documents were returned/i);
+        if (isPrismic404) {
+            return true;
+        }
+
+        return false;
     }
 }
 
@@ -70,6 +81,9 @@ export enum ApiErrorKind {
     API_UNKNOWN_LOCALE = 'API_UNKNOWN_LOCALE',
     API_INVALID_SHOP = 'API_INVALID_SHOP',
     API_INVALID_HANDLE = 'API_INVALID_HANDLE',
+    API_INVALID_ID = 'API_INVALID_ID',
+    API_INVALID_SLICE_VARIATION = 'API_INVALID_SLICE_VARIATION',
+    API_INVALID_CART = 'API_INVALID_CART',
     API_TOO_MANY_REQUESTS = 'API_TOO_MANY_REQUESTS',
     API_METHOD_NOT_ALLOWED = 'API_IMAGE_NO_FRACTIONAL',
     API_IMAGE_NO_FRACTIONAL = 'API_ICON_WIDTH_NO_FRACTIONAL',
@@ -83,9 +97,8 @@ export enum ApiErrorKind {
 export class ApiError extends Error<ApiErrorKind> {
     statusCode = 500;
     name = 'ApiError';
-    details = 'Unknown Error';
-    description = 'An unknown error occurred';
-    code = ApiErrorKind.API_UNKNOWN_ERROR;
+    details = 'API Error';
+    description = 'An API error occurred';
 
     constructor(cause?: string, statusCode?: number) {
         super();
@@ -100,29 +113,33 @@ export class ApiError extends Error<ApiErrorKind> {
     }
 }
 
-export class UnknownApiError extends ApiError {
-    statusCode = 404;
-    name = 'UnknownApiError';
+export class UnknownError extends ApiError {
+    name = 'UnknownError';
+    details = 'Unknown Error';
+    description = 'An unknown error occurred';
+    code = ApiErrorKind.API_UNKNOWN_ERROR;
 }
-export class UnknownShopDomainError extends UnknownApiError {
+export class UnknownShopDomainError extends UnknownError {
+    statusCode = 404;
     name = 'UnknownShopDomainError';
     details = 'Unknown shop domain';
     description = 'Could not find a shop with the given domain';
     code = ApiErrorKind.API_UNKNOWN_SHOP_DOMAIN;
 }
-export class UnknownCommerceProviderError extends UnknownApiError {
+export class UnknownCommerceProviderError extends UnknownError {
     name = 'UnknownCommerceProviderError';
     details = 'Unknown commerce provider';
     description = 'Could not find a commerce provider with the given type';
     code = ApiErrorKind.API_UNKNOWN_COMMERCE_PROVIDER;
 }
-export class UnknownContentProviderError extends UnknownApiError {
+export class UnknownContentProviderError extends UnknownError {
     name = 'UnknownContentProviderError';
     details = 'Unknown content provider';
     description = 'Could not find a content provider with the given type';
     code = ApiErrorKind.API_UNKNOWN_CONTENT_PROVIDER;
 }
-export class UnknownLocaleError extends UnknownApiError {
+export class UnknownLocaleError extends UnknownError {
+    statusCode = 404;
     name = 'UnknownLocaleError';
     details = 'Unknown locale';
     description = 'Unsupported or invalid locale code was provided';
@@ -137,7 +154,7 @@ export class InvalidShopError extends ApiError {
     code = ApiErrorKind.API_INVALID_SHOP;
 }
 export class InvalidHandleError extends ApiError {
-    statusCode = 400;
+    statusCode = 404;
     name = 'InvalidHandleError';
     details = 'Invalid handle';
     description = 'The handle is invalid';
@@ -147,9 +164,52 @@ export class InvalidHandleError extends ApiError {
         super();
 
         if (handle) {
-            this.cause = this.description.replace('handle', `handle "${handle}"`);
+            this.description = this.description.replace('handle', `handle "${handle}"`);
         }
     }
+}
+export class InvalidIDError extends ApiError {
+    statusCode = 404;
+    name = 'InvalidIDError';
+    details = 'Invalid ID';
+    description = 'The ID is invalid';
+    code = ApiErrorKind.API_INVALID_ID;
+
+    constructor(id?: any) {
+        super();
+
+        if (typeof id !== undefined && id !== null) {
+            this.description = this.description.replace('ID', `ID "${id?.toString?.() || id}"`);
+        }
+    }
+}
+export class InvalidSliceVariationError extends ApiError {
+    statusCode = 404;
+    name = 'InvalidSliceVariationError';
+    details = 'Invalid slice variation';
+    description = 'The slice variation is invalid';
+    code = ApiErrorKind.API_INVALID_SLICE_VARIATION;
+
+    constructor(variation?: any, slice?: any) {
+        super();
+
+        if (typeof slice !== undefined && slice !== null) {
+            this.description = this.description.replace('slice', `slice "${slice?.toString?.() || slice}"`);
+        }
+        if (typeof variation !== undefined && variation !== null) {
+            this.description = this.description.replace(
+                'variation',
+                `variation "${variation?.toString?.() || variation}"`
+            );
+        }
+    }
+}
+export class InvalidCartError extends ApiError {
+    statusCode = 404;
+    name = 'InvalidCartError';
+    details = 'Invalid cart';
+    description = 'The cart is invalid';
+    code = ApiErrorKind.API_INVALID_CART;
 }
 
 export class TooManyRequestsError extends ApiError {
@@ -169,12 +229,14 @@ export class MethodNotAllowedError extends ApiError {
 }
 
 export class ImageNoFractionalError extends ApiError {
+    statusCode = 400;
     name = 'ImageNoFractionalError';
     details = 'Invalid width or height';
     description = '`width`/`height` must be an integer';
     code = ApiErrorKind.API_IMAGE_NO_FRACTIONAL;
 }
 export class ImageOutOfBoundsError extends ApiError {
+    statusCode = 400;
     name = 'ImageOutOfBoundsError';
     details = 'Width or height is out of bounds';
     description = '`width`/`height` must be between `1` and `1024` or `undefined`';
@@ -182,7 +244,7 @@ export class ImageOutOfBoundsError extends ApiError {
 }
 
 export class NoLocalesAvailableError extends ApiError {
-    statusCode = 404;
+    statusCode = 500;
     name = 'NoLocalesAvailableError';
     details = 'No locales available';
     description = 'No locales have been configured for the requested shop instance';
@@ -190,7 +252,7 @@ export class NoLocalesAvailableError extends ApiError {
 }
 
 export class InvalidShopifyCustomerAccountsApiConfiguration extends ApiError {
-    statusCode = 400;
+    statusCode = 500;
     name = 'InvalidShopifyCustomerAccountsApiConfiguration';
     details = 'Invalid Shopify Customer Account API configuration';
     description = 'The Shopify Customer Account API configuration is invalid';
@@ -212,12 +274,81 @@ export class ProviderFetchError extends ApiError {
     description = 'Failed to fetch from source';
     code = ApiErrorKind.API_PROVIDER_FETCH_FAILED;
 
+    static stringifyInput(input: any): string | null {
+        if (typeof input === 'undefined' || input === null) {
+            return null;
+        }
+        if (typeof input === 'function') {
+            console.warn('stringifyUnknownErrorInput() called with a function, returning null');
+            return null;
+        }
+
+        if (typeof input === 'string') {
+            return input;
+        }
+
+        if (typeof input === 'number') {
+            return input.toString();
+        }
+        if (typeof input === 'boolean') {
+            return input.toString();
+        }
+
+        if (Array.isArray(input)) {
+            return input
+                .map((error) => {
+                    if (typeof error === 'undefined' || error === null) {
+                        return typeof error;
+                    }
+
+                    if (typeof error === 'string') {
+                        return error;
+                    }
+
+                    if (typeof error === 'object') {
+                        if ('message' in error) {
+                            return error.message;
+                        }
+
+                        if ('status' in error) {
+                            if ('statusText' in error) {
+                                return `${error.status}: ${error.statusText}`;
+                            }
+
+                            return error.status;
+                        }
+                    }
+
+                    return JSON.stringify(error, null, 4);
+                })
+                .join('\n');
+        }
+
+        if (typeof input === 'object') {
+            if ('message' in input && 'name' in input) {
+                if ('toString' in input && typeof input.toString === 'function') {
+                    return input.toString();
+                }
+
+                return `${input.name}: ${input.message}`;
+            }
+
+            if ('status' in input) {
+                if ('statusText' in input) {
+                    return `${input.status}: ${input.statusText}`;
+                }
+
+                return input.status;
+            }
+        }
+
+        return null;
+    }
+
     constructor(sourceErrors?: any) {
         super();
 
-        if (sourceErrors) {
-            this.cause = sourceErrors;
-        }
+        this.cause = ProviderFetchError.stringifyInput(sourceErrors);
     }
 }
 
@@ -324,7 +455,7 @@ export const getErrorFromCode = (
 
         // Api Errors.
         case ApiErrorKind.API_UNKNOWN_ERROR:
-            return ApiError;
+            return UnknownError;
         case ApiErrorKind.API_UNKNOWN_SHOP_DOMAIN:
             return UnknownShopDomainError;
         case ApiErrorKind.API_UNKNOWN_COMMERCE_PROVIDER:
@@ -337,6 +468,12 @@ export const getErrorFromCode = (
             return InvalidShopError;
         case ApiErrorKind.API_INVALID_HANDLE:
             return InvalidHandleError;
+        case ApiErrorKind.API_INVALID_ID:
+            return InvalidIDError;
+        case ApiErrorKind.API_INVALID_SLICE_VARIATION:
+            return InvalidSliceVariationError;
+        case ApiErrorKind.API_INVALID_CART:
+            return InvalidCartError;
         case ApiErrorKind.API_TOO_MANY_REQUESTS:
             return TooManyRequestsError;
         case ApiErrorKind.API_METHOD_NOT_ALLOWED:

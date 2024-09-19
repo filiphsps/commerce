@@ -13,10 +13,10 @@ import type { ReactNode } from 'react';
 export const dynamic = 'force-dynamic';
 
 export const viewport: Viewport = {
-    themeColor: '#000000',
-    width: 'device-width',
     initialScale: 1,
-    interactiveWidget: 'resizes-visual'
+    interactiveWidget: 'resizes-content',
+    themeColor: '#ED1E79',
+    width: 'device-width'
 };
 
 export const metadata: Metadata = {

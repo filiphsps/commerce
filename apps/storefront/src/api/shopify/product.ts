@@ -298,7 +298,7 @@ export const ProductApi = async ({ api, handle }: ProductOptions): Promise<Produ
         );
 
         if (errors && errors.length > 0) {
-            throw new ProviderFetchError(errors.map((e: any) => e.message).join('\n'));
+            throw new ProviderFetchError(errors);
         } else if (!data?.product?.handle) {
             throw new NotFoundError(`"Product" with the handle "${handle}" on shop "${shop.id}"`);
         }
@@ -362,7 +362,7 @@ export const ProductsPaginationCountApi = async ({
         );
 
         if (errors) {
-            throw new ProviderFetchError(errors.map((e: any) => e.message).join('\n'));
+            throw new ProviderFetchError(errors);
         } else if (!data?.products.edges || data.products.edges.length <= 0) {
             return {
                 count,
@@ -457,7 +457,7 @@ export const ProductsApi = async ({
         );
 
         if (errors && errors.length > 0) {
-            throw new ProviderFetchError(errors.map((e: any) => e.message).join('\n'));
+            throw new ProviderFetchError(errors);
         } else if (!data?.products.edges || data.products.edges.length <= 0) {
             throw new NotFoundError(`"Product" on shop "${shop.id}"`);
         }
@@ -586,7 +586,7 @@ export const ProductsPaginationApi = async ({
         );
 
         if (errors && errors.length > 0) {
-            throw new ProviderFetchError(errors.map((e: any) => e.message).join('\n'));
+            throw new ProviderFetchError(errors);
         }
 
         const page_info = data?.products.pageInfo;
