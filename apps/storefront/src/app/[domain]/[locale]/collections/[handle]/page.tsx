@@ -203,42 +203,32 @@ export default async function CollectionPage({
         'url': `https://${shop.domain}/${locale.code}/collections/${handle}/`
     };
 
-    const hasSlices = page && page.slices.length > 0;
-    const pageContent = (
+    const pageContent = !empty ? (
         <>
-            {!empty ? (
-                <>
-                    <section className="flex flex-col gap-2">
-                        {!hasSlices ? (
-                            <>
-                                <Heading title={collection.title || collection.seo.title} />
-                                <Content className="prose" html={collection.descriptionHtml} />
-                            </>
-                        ) : null}
+            <Suspense
+                key={JSON.stringify(searchParams)}
+                fallback={<CollectionBlock.skeleton length={PRODUCTS_PER_PAGE} />}
+            >
+                <CollectionContent
+                    shop={shop}
+                    locale={locale}
+                    searchParams={searchParams}
+                    handle={handle}
+                    pagesInfo={pagesInfo}
+                />
+            </Suspense>
 
-                        <Suspense
-                            key={JSON.stringify(searchParams)}
-                            fallback={<CollectionBlock.skeleton length={PRODUCTS_PER_PAGE} />}
-                        >
-                            <CollectionContent
-                                shop={shop}
-                                locale={locale}
-                                searchParams={searchParams}
-                                handle={handle}
-                                pagesInfo={pagesInfo}
-                            />
-                        </Suspense>
-                    </section>
-
-                    <section className="flex w-full items-center justify-center">
-                        <Suspense>
-                            <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
-                        </Suspense>
-                    </section>
-                </>
-            ) : null}
+            <section className="flex w-full items-center justify-center empty:hidden">
+                <Suspense>
+                    <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
+                </Suspense>
+            </section>
         </>
-    );
+    ) : null;
+
+    const hasSlices = page ? page.slices.length > 0 : false;
+    const hasCustomPageContentPosition =
+        hasSlices && page ? page.slices.some((slice) => slice.slice_type === 'original_content') : false;
 
     return (
         <>
@@ -248,22 +238,34 @@ export default async function CollectionPage({
                 </div>
             </Suspense>
 
-            {!page || page.slices.length <= 0 ? (
-                pageContent
-            ) : (
-                <>
-                    {!page.slices.some((slice) => slice.slice_type === 'original_content') ? pageContent : null}
+            <PageContent as="section">
+                {!hasSlices || !hasCustomPageContentPosition ? (
+                    <>
+                        <Heading title={collection.title || collection.seo.title} />
+                        <Content
+                            className="prose max-w-none"
+                            html={collection.descriptionHtml || collection.seo.description}
+                        />
+                    </>
+                ) : null}
 
-                    <PrismicPage
-                        shop={shop}
-                        locale={locale}
-                        pageContent={pageContent}
-                        page={page}
-                        handle={handle}
-                        type={'collection_page'}
-                    />
-                </>
-            )}
+                {!page || page.slices.length <= 0 ? (
+                    pageContent
+                ) : (
+                    <>
+                        {!hasCustomPageContentPosition ? <>{pageContent}</> : null}
+
+                        <PrismicPage
+                            shop={shop}
+                            locale={locale}
+                            pageContent={pageContent}
+                            page={page}
+                            handle={handle}
+                            type={'collection_page'}
+                        />
+                    </>
+                )}
+            </PageContent>
 
             {/* Metadata */}
             <JsonLd data={jsonLd} />
