@@ -571,8 +571,8 @@ importers:
         specifier: 0.35.0
         version: 0.35.0
       '@neshca/cache-handler':
-        specifier: 1.7.2
-        version: 1.7.2(next@15.0.0-canary.159(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-5dcb0097-20240918(react@19.0.0-rc-5dcb0097-20240918))(react@19.0.0-rc-5dcb0097-20240918)(sass@1.78.0))(redis@4.7.0)
+        specifier: 1.7.3
+        version: 1.7.3(next@15.0.0-canary.159(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-5dcb0097-20240918(react@19.0.0-rc-5dcb0097-20240918))(react@19.0.0-rc-5dcb0097-20240918)(sass@1.78.0))(redis@4.7.0)
       '@next/third-parties':
         specifier: 14.2.9
         version: 14.2.9(next@15.0.0-canary.159(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-5dcb0097-20240918(react@19.0.0-rc-5dcb0097-20240918))(react@19.0.0-rc-5dcb0097-20240918)(sass@1.78.0))(react@19.0.0-rc-5dcb0097-20240918)
@@ -1608,8 +1608,8 @@ packages:
     resolution: {integrity: sha512-h9u4u/jiIRKbq25PM+zymTyW6bhTzELvOoUd+AvYriWOAKpLGnIamaET3pnHYoI5iYphAHBI4ayx0MehR+VVPQ==}
     engines: {node: '>= 10'}
 
-  '@neshca/cache-handler@1.7.2':
-    resolution: {integrity: sha512-S/UgZCNNGCljQhfIcoEWX7foeFgr8S07OC9KtV3OGAzQ088dRA4NQEwTbCE/Dyipvsg/j4Dz0TCM9ylSPtB/pg==}
+  '@neshca/cache-handler@1.7.3':
+    resolution: {integrity: sha512-jRLTO7pb/JRWvgGO8k+fB/tGhfTiY4N79N7auBi/p9E3G5JU8pUQWcdFfJirrODfxWwYghTPklwWx0J5WeR2sQ==}
     peerDependencies:
       next: '>=13.5.1'
       redis: '>=4.6'
@@ -8534,7 +8534,7 @@ snapshots:
 
   '@msgpack/msgpack@2.8.0': {}
 
-  '@neshca/cache-handler@1.7.2(next@15.0.0-canary.159(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-5dcb0097-20240918(react@19.0.0-rc-5dcb0097-20240918))(react@19.0.0-rc-5dcb0097-20240918)(sass@1.78.0))(redis@4.7.0)':
+  '@neshca/cache-handler@1.7.3(next@15.0.0-canary.159(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-5dcb0097-20240918(react@19.0.0-rc-5dcb0097-20240918))(react@19.0.0-rc-5dcb0097-20240918)(sass@1.78.0))(redis@4.7.0)':
     dependencies:
       cluster-key-slot: 1.1.2
       lru-cache: 10.4.3
