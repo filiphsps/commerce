@@ -17,6 +17,29 @@ export type ShopTheme = {
 export const ContentProviders = ['prismic', 'shopify', 'builder.io'] as const;
 export const CommerceProviders = ['shopify', 'stripe'] as const;
 
+export type ShopifyCommerceProvider = {
+    type: 'shopify';
+    authentication: {
+        token: string;
+        publicToken: string;
+        domain?: string;
+
+        customers?: {
+            id: string;
+            clientId: string;
+            clientSecret: string;
+        };
+    };
+    storefrontId: string;
+    domain: string;
+    id: string;
+};
+export type StripeCommerceProvider = {
+    type: 'stripe';
+    authentication: {};
+};
+export type CommerceProvider = ShopifyCommerceProvider | StripeCommerceProvider;
+
 export interface ShopBase extends BaseDocument {
     name: string;
     description?: string;
@@ -72,28 +95,7 @@ export interface ShopBase extends BaseDocument {
               };
           };
 
-    commerceProvider:
-        | {
-              type: 'shopify';
-              authentication: {
-                  token: string;
-                  publicToken: string;
-                  domain?: string;
-
-                  customers?: {
-                      id: string;
-                      clientId: string;
-                      clientSecret: string;
-                  };
-              };
-              storefrontId: string;
-              domain: string;
-              id: string;
-          }
-        | {
-              type: 'stripe';
-              authentication: {};
-          };
+    commerceProvider: CommerceProvider;
 
     collaborators: [
         {

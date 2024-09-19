@@ -56,7 +56,7 @@ const LinkSlice = ({ slice, context: { isHeader = true } }: LinkProps) => {
                     href={target}
                     className={cn(
                         LINK_STYLES,
-                        'h-8 rounded-lg px-3 py-0 transition-all hover:brightness-75 focus:brightness-75 md:px-3',
+                        'h-8 rounded-lg px-3 py-0 transition-all hover:brightness-75 focus-visible:brightness-75 md:px-3',
                         active && LINK_ACTIVE_STYLES,
                         'text-bold bg-secondary text-secondary-foreground',
                         active && 'bg-primary text-primary-foreground'

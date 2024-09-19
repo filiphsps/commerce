@@ -1,5 +1,7 @@
+import { experimental_taintUniqueValue } from 'react';
+
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { InvalidShopError } from '@nordcom/commerce-errors';
+import { InvalidContentProviderError, InvalidShopError } from '@nordcom/commerce-errors';
 
 import { Locale } from '@/utils/locale';
 import * as prismic from '@prismicio/client';
@@ -16,11 +18,17 @@ export const createClient = ({ shop, locale = Locale.default, ...config }: Creat
     if (!(contentProvider as any)) {
         throw new InvalidShopError("Shop doesn't have a content provider.");
     } else if (contentProvider.type !== 'prismic') {
-        throw new InvalidShopError("Prismic isn't configured for this shop.");
+        throw new InvalidContentProviderError(
+            `"contentProvider.type" is "${contentProvider.type}", expected "prismic"`
+        );
     }
 
     const repository = (contentProvider.repository || contentProvider.repositoryName)!;
     const accessToken = contentProvider.authentication?.token || undefined;
+
+    if (accessToken) {
+        experimental_taintUniqueValue('Do not pass private tokens to the client', globalThis, accessToken);
+    }
 
     const client = prismic.createClient(repository, {
         accessToken,

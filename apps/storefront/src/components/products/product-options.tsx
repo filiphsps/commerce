@@ -91,7 +91,7 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
                                                 !inStock && styles.disabled,
                                                 styles.clickable,
                                                 'h-12 bg-white text-sm shadow hover:border-gray-400',
-                                                !isSelected && inStock && 'cursor-pointer focus:border-gray-400'
+                                                !isSelected && inStock && 'cursor-pointer focus-visible:border-gray-400'
                                             )}
                                             onClick={() =>
                                                 setSelectedOptions({

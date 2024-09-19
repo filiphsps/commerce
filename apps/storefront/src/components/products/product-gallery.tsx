@@ -97,6 +97,7 @@ const ProductGallery = ({
                                 sizes="(max-width: 920px) 75vw, 500px"
                                 loading="eager"
                                 decoding="async"
+                                onLoadStart={() => setLoading(true)}
                                 onLoad={() => {
                                     setTimeout(() => setLoading(() => false), 250);
 

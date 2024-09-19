@@ -1,5 +1,7 @@
 import 'server-only';
 
+import { experimental_taintUniqueValue } from 'react';
+
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { UnknownCommerceProviderError } from '@nordcom/commerce-errors';
 
@@ -25,10 +27,23 @@ export const ShopifyApiConfig = async ({
         throw new UnknownCommerceProviderError(commerceProvider.type);
     }
 
+    experimental_taintUniqueValue(
+        'Do not pass private tokens to the client',
+        globalThis,
+        commerceProvider.authentication.token
+    );
+    if (commerceProvider.authentication.customers) {
+        experimental_taintUniqueValue(
+            'Do not pass private tokens to the client',
+            globalThis,
+            commerceProvider.authentication.customers.clientSecret
+        );
+    }
+
     const api = createStorefrontClient({
         publicStorefrontToken: commerceProvider.authentication.publicToken,
         privateStorefrontToken: commerceProvider.authentication.token || undefined,
-        storeDomain: (commerceProvider as any)?.domain || undefined,
+        storeDomain: commerceProvider.domain,
         contentType: 'json'
     });
 

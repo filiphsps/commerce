@@ -24,9 +24,9 @@ export const Title = <T extends As>({ as: Tag = 'h1' as T, bold, className, key,
             {...props}
             className={cn(
                 'text-3xl font-medium leading-snug md:text-4xl',
-                props.href && 'hover:text-primary focus:text-primary cursor-pointer',
+                props.href && 'hover:text-primary focus-visible:text-primary cursor-pointer',
                 bold && 'text-primary font-bold',
-                props.href && bold && 'hover:underline focus:underline',
+                props.href && bold && 'hover:underline focus-visible:underline',
                 className
             )}
         />
@@ -52,9 +52,9 @@ export const SubTitle = ({ as, bold, className, key, ...props }: SubTitleProps) 
             {...props}
             className={cn(
                 'text-lg text-gray-500 md:text-xl',
-                props.href && 'hover:text-primary focus:text-primary cursor-pointer',
+                props.href && 'hover:text-primary focus-visible:text-primary cursor-pointer',
                 bold && 'font-extrabold',
-                props.href && bold && 'hover:underline focus:underline',
+                props.href && bold && 'hover:underline focus-visible:underline',
                 className
             )}
         />
