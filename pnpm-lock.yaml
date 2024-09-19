@@ -113,8 +113,8 @@ importers:
         specifier: 5.4.6
         version: 5.4.6(@types/node@20.12.7)(sass@1.79.1)(terser@5.31.1)
       vite-plugin-dts:
-        specifier: 3.8.3
-        version: 3.8.3(@types/node@20.12.7)(rollup@4.21.0)(typescript@5.6.2)(vite@5.4.6(@types/node@20.12.7)(sass@1.79.1)(terser@5.31.1))
+        specifier: 3.9.1
+        version: 3.9.1(@types/node@20.12.7)(rollup@4.21.0)(typescript@5.6.2)(vite@5.4.6(@types/node@20.12.7)(sass@1.79.1)(terser@5.31.1))
       vite-tsconfig-paths:
         specifier: 5.0.1
         version: 5.0.1(typescript@5.6.2)(vite@5.4.6(@types/node@20.12.7)(sass@1.79.1)(terser@5.31.1))
@@ -846,8 +846,8 @@ importers:
         specifier: 5.4.6
         version: 5.4.6(@types/node@20.12.7)(sass@1.79.1)(terser@5.31.1)
       vite-plugin-dts:
-        specifier: 3.8.3
-        version: 3.8.3(@types/node@20.12.7)(rollup@4.21.0)(typescript@5.6.2)(vite@5.4.6(@types/node@20.12.7)(sass@1.79.1)(terser@5.31.1))
+        specifier: 3.9.1
+        version: 3.9.1(@types/node@20.12.7)(rollup@4.21.0)(typescript@5.6.2)(vite@5.4.6(@types/node@20.12.7)(sass@1.79.1)(terser@5.31.1))
       vite-tsconfig-paths:
         specifier: 5.0.1
         version: 5.0.1(typescript@5.6.2)(vite@5.4.6(@types/node@20.12.7)(sass@1.79.1)(terser@5.31.1))
@@ -882,8 +882,8 @@ importers:
         specifier: 5.4.6
         version: 5.4.6(@types/node@20.14.9)(sass@1.79.1)(terser@5.31.1)
       vite-plugin-dts:
-        specifier: 3.8.3
-        version: 3.8.3(@types/node@20.14.9)(rollup@4.21.0)(typescript@5.6.2)(vite@5.4.6(@types/node@20.14.9)(sass@1.79.1)(terser@5.31.1))
+        specifier: 3.9.1
+        version: 3.9.1(@types/node@20.14.9)(rollup@4.21.0)(typescript@5.6.2)(vite@5.4.6(@types/node@20.14.9)(sass@1.79.1)(terser@5.31.1))
       vite-tsconfig-paths:
         specifier: 5.0.1
         version: 5.0.1(typescript@5.6.2)(vite@5.4.6(@types/node@20.14.9)(sass@1.79.1)(terser@5.31.1))
@@ -922,8 +922,8 @@ importers:
         specifier: 5.4.6
         version: 5.4.6(@types/node@20.14.9)(sass@1.79.1)(terser@5.31.1)
       vite-plugin-dts:
-        specifier: 3.8.3
-        version: 3.8.3(@types/node@20.14.9)(rollup@4.21.0)(typescript@5.6.2)(vite@5.4.6(@types/node@20.14.9)(sass@1.79.1)(terser@5.31.1))
+        specifier: 3.9.1
+        version: 3.9.1(@types/node@20.14.9)(rollup@4.21.0)(typescript@5.6.2)(vite@5.4.6(@types/node@20.14.9)(sass@1.79.1)(terser@5.31.1))
       vite-tsconfig-paths:
         specifier: 5.0.1
         version: 5.0.1(typescript@5.6.2)(vite@5.4.6(@types/node@20.14.9)(sass@1.79.1)(terser@5.31.1))
@@ -7541,8 +7541,8 @@ packages:
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
 
-  vite-plugin-dts@3.8.3:
-    resolution: {integrity: sha512-yRHiRosQw7MXdOhmcrVI+kRiB8YEShbSxnADNteK4eZGdEoyOkMHihvO5XOAVlOq8ng9sIqu8vVefDK1zcj3qw==}
+  vite-plugin-dts@3.9.1:
+    resolution: {integrity: sha512-rVp2KM9Ue22NGWB8dNtWEr+KekN3rIgz1tWD050QnRGlriUCmaDwa7qA5zDEjbXg5lAXhYMSBJtx3q3hQIJZSg==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       typescript: '*'
@@ -15363,7 +15363,7 @@ snapshots:
       - supports-color
       - terser
 
-  vite-plugin-dts@3.8.3(@types/node@20.12.7)(rollup@4.21.0)(typescript@5.6.2)(vite@5.4.6(@types/node@20.12.7)(sass@1.79.1)(terser@5.31.1)):
+  vite-plugin-dts@3.9.1(@types/node@20.12.7)(rollup@4.21.0)(typescript@5.6.2)(vite@5.4.6(@types/node@20.12.7)(sass@1.79.1)(terser@5.31.1)):
     dependencies:
       '@microsoft/api-extractor': 7.43.0(@types/node@20.12.7)
       '@rollup/pluginutils': 5.1.0(rollup@4.21.0)
@@ -15380,7 +15380,7 @@ snapshots:
       - rollup
       - supports-color
 
-  vite-plugin-dts@3.8.3(@types/node@20.14.9)(rollup@4.21.0)(typescript@5.6.2)(vite@5.4.6(@types/node@20.14.9)(sass@1.79.1)(terser@5.31.1)):
+  vite-plugin-dts@3.9.1(@types/node@20.14.9)(rollup@4.21.0)(typescript@5.6.2)(vite@5.4.6(@types/node@20.14.9)(sass@1.79.1)(terser@5.31.1)):
     dependencies:
       '@microsoft/api-extractor': 7.43.0(@types/node@20.14.9)
       '@rollup/pluginutils': 5.1.0(rollup@4.21.0)
