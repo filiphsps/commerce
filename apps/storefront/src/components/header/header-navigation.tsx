@@ -16,7 +16,15 @@ type HeaderNavigationProps = {
     i18n: LocaleDictionary;
     slices: Slices;
 } & HTMLProps<HTMLDivElement>;
-export function HeaderNavigation({ shop, locale, i18n, slices = [], className, ...props }: HeaderNavigationProps) {
+export function HeaderNavigation({
+    shop,
+    locale,
+    i18n,
+    slices = [],
+    children,
+    className,
+    ...props
+}: HeaderNavigationProps) {
     return (
         <nav
             className={cn(
@@ -37,6 +45,8 @@ export function HeaderNavigation({ shop, locale, i18n, slices = [], className, .
                     }}
                 />
             </Suspense>
+
+            {children}
         </nav>
     );
 }

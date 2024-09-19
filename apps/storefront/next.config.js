@@ -1,6 +1,6 @@
 import 'dotenv/config';
 
-import path, { dirname } from 'node:path';
+import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { withSentryConfig } from '@sentry/nextjs';
@@ -12,7 +12,7 @@ const withVercelToolbar = createVercelToolbar();
 
 const isDev = process.env.NODE_ENV === 'development';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const environment = process.env.VERCEL_ENV || process.env.NODE_ENV || 'development';
 
 const data_cache_url = process.env.DATA_CACHE_REDIS_URL || undefined;
@@ -54,7 +54,7 @@ const config = {
         serverSourceMaps: true,
         staleTimes: { dynamic: 0, static: 180 },
         taint: true,
-        turbo: { root: path.resolve(__dirname, '../..') },
+        turbo: { root: path.resolve('../..') },
         typedEnv: true,
         useEarlyImport: true,
         webpackBuildWorker: true
@@ -100,7 +100,8 @@ const config = {
         ignoreDuringBuilds: true
     },
     typescript: {
-        ignoreBuildErrors: true
+        ignoreBuildErrors: true,
+        tsconfigPath: 'tsconfig.json'
     },
     sassOptions: {
         includePaths: [path.join(__dirname, 'src/scss'), path.join(__dirname, 'src')]
@@ -128,29 +129,31 @@ const config = {
         return process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
     },
 
-    webpack: !isDev
-        ? (config, { webpack, isServer }) => {
-              config.experiments = {
-                  ...config.experiments,
-                  topLevelAwait: true
-              };
+    webpack: (config, { webpack, isServer }) => {
+        config.experiments = {
+            ...config.experiments,
+            topLevelAwait: true
+        };
 
-              config.plugins.push(
-                  new webpack.DefinePlugin({
-                      __SENTRY_DEBUG__: false,
-                      __SENTRY_TRACING__: false,
-                      __RRWEB_EXCLUDE_IFRAME__: true,
-                      __RRWEB_EXCLUDE_SHADOW_DOM__: true,
-                      __SENTRY_EXCLUDE_REPLAY_WORKER__: true
-                  })
-              );
+        if (isDev) {
+            return config; // Return early in dev mode.
+        }
 
-              if (isServer) {
-                  config.devtool = 'source-map';
-              }
-              return config;
-          }
-        : undefined,
+        config.plugins.push(
+            new webpack.DefinePlugin({
+                __SENTRY_DEBUG__: false,
+                __SENTRY_TRACING__: false,
+                __RRWEB_EXCLUDE_IFRAME__: true,
+                __RRWEB_EXCLUDE_SHADOW_DOM__: true,
+                __SENTRY_EXCLUDE_REPLAY_WORKER__: true
+            })
+        );
+
+        if (isServer) {
+            config.devtool = 'source-map';
+        }
+        return config;
+    },
 
     // We handle all redirects at the edge.
     skipTrailingSlashRedirect: true

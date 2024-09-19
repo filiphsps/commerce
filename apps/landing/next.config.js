@@ -41,11 +41,13 @@ const config = {
     assetPrefix: getBaseUrl(),
     experimental: {
         after: true,
-        //caseSensitiveRoutes: true,
         appNavFailHandling: true,
         cssChunking: 'loose',
+        middlewarePrefetch: 'strict',
+        //nextScriptWorkers: true,
         optimizeCss: true,
         optimizePackageImports: ['@apollo/client', '@shopify/hydrogen-react', 'react-icons', '@nordcom/nordstar'],
+        optimizeServerReact: true,
         parallelServerBuildTraces: true,
         parallelServerCompiles: true,
         ppr: true,
@@ -54,12 +56,11 @@ const config = {
         scrollRestoration: true,
         serverComponentsHmrCache: true,
         serverSourceMaps: true,
-        staleTimes: { dynamic: 30, static: 180 },
+        staleTimes: { dynamic: 0, static: 180 },
         taint: true,
-        turbo: {
-            root: path.resolve(__dirname, '../..')
-        },
-        taint: true,
+        turbo: { root: path.resolve('../..') },
+        typedEnv: true,
+        useEarlyImport: true,
         webpackBuildWorker: true
     },
     images: {

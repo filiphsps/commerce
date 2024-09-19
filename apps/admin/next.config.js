@@ -53,7 +53,7 @@ const config = {
         serverSourceMaps: true,
         staleTimes: { dynamic: 0, static: 180 },
         taint: true,
-        turbo: { root: path.resolve(__dirname, '../..') },
+        turbo: { root: path.resolve('../..') },
         typedEnv: true,
         useEarlyImport: true,
         webpackBuildWorker: true

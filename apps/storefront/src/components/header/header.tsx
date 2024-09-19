@@ -15,13 +15,15 @@ import { HeaderMenu } from '@/components/header/header-menu';
 import { HeaderNavigation } from '@/components/header/header-navigation';
 import Link from '@/components/link';
 
+import { HeaderAccountSection } from './header-account-section';
+
 export type HeaderProps = {
     domain: string;
     locale: Locale;
     i18n: LocaleDictionary;
 } & Omit<HTMLProps<HTMLDivElement>, 'className'>;
 const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) => {
-    const shop = await Shop.findByDomain(domain);
+    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
 
     const header = await HeaderApi({ shop, locale });
 
@@ -87,11 +89,15 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
                         <div className="flex h-full grow items-center justify-end gap-4 lg:gap-6" data-nosnippet={true}>
                             <Link
                                 href="/search/"
-                                className="hover:text-primary focus:text-primary transition-colors"
+                                className="hover:text-primary focus-visible:text-primary transition-colors"
                                 title={t('search')}
                             >
                                 <HiOutlineSearch className="stroke-1 text-xl lg:text-2xl" />
                             </Link>
+
+                            <Suspense fallback={<HeaderAccountSection.skeleton />}>
+                                <HeaderAccountSection shop={shop} locale={locale} i18n={i18n} />
+                            </Suspense>
 
                             <CartButton i18n={i18n} locale={locale} />
                         </div>

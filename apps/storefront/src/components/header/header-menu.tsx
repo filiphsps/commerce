@@ -16,7 +16,7 @@ export const SHARED_STYLES =
 type HeaderMenuProps = {
     slices: MenuDocumentData['slices'];
 } & HTMLProps<HTMLDivElement>;
-export const HeaderMenu = ({ slices, className, ...props }: HeaderMenuProps) => {
+export const HeaderMenu = ({ slices, children, className, ...props }: HeaderMenuProps) => {
     const { menu } = useHeaderMenu();
     if (!menu) {
         return <div className={cn(SHARED_STYLES, 'h-0 border-0', className)} {...props} />;
@@ -25,6 +25,8 @@ export const HeaderMenu = ({ slices, className, ...props }: HeaderMenuProps) => 
     return (
         <div className={cn(SHARED_STYLES, className)} {...props}>
             <SliceZone slices={slices} components={menuSlices} context={{ isHeader: false, menu }} />
+
+            {children}
         </div>
     );
 };
