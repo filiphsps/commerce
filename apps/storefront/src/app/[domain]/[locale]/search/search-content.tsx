@@ -48,6 +48,10 @@ export const SearchBar = ({ defaultValue, onSearch, disabled, className, i18n, .
                 }}
                 onBlur={(e) => {
                     e.preventDefault();
+                    if (e.target.value.length <= 0) {
+                        return;
+                    }
+
                     performSearch();
                 }}
                 // eslint-disable-next-line jsx-a11y/no-autofocus

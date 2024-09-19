@@ -14,6 +14,8 @@ import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import { asText } from '@prismicio/client';
 
 import PrismicPage from '@/components/cms/prismic-page';
+import Breadcrumbs from '@/components/informational/breadcrumbs';
+import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import PageContent from '@/components/page-content';
 import Heading from '@/components/typography/heading';
 
@@ -108,14 +110,20 @@ export default async function SearchPage({
 
     return (
         <>
-            <Heading title={page?.title || t('search')} subtitle={page?.description} />
-
-            {page?.slices && page.slices.length > 0 ? (
-                <PrismicPage shop={shop} locale={locale} page={page} handle={'search'} type={'custom_page'} />
-            ) : null}
+            <Suspense key={`pages.search.breadcrumbs`} fallback={<BreadcrumbsSkeleton />}>
+                <div className="-mb-[1.5rem] empty:hidden md:-mb-[2.25rem]">
+                    <Breadcrumbs locale={locale} title={t('search')} />
+                </div>
+            </Suspense>
 
             <PageContent>
-                <Suspense key={JSON.stringify(searchParams)}>
+                <Heading title={page?.title} subtitle={page?.description} />
+
+                {page?.slices && page.slices.length > 0 ? (
+                    <PrismicPage shop={shop} locale={locale} page={page} handle={'search'} type={'custom_page'} />
+                ) : null}
+
+                <Suspense key={`pages.search.${JSON.stringify(searchParams)}`}>
                     <SearchContent
                         locale={locale}
                         i18n={i18n}

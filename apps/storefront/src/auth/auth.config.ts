@@ -1,12 +1,12 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
 
-import ShopifyProvider from './shopify-provider';
+import ShopifyProvider from '@/auth/shopify-provider';
 
 import type { NextAuthConfig } from 'next-auth';
 
 const VERCEL_DEPLOYMENT = process.env.VERCEL_URL;
 
-export default ({
+const config = ({
     shop,
     shopifyAuth
 }: {
@@ -16,8 +16,8 @@ export default ({
         clientId: string;
         clientSecret: string;
     };
-}) =>
-    ({
+}) => {
+    return {
         providers: [ShopifyProvider(shopifyAuth, shop)],
         skipCSRFCheck: true as any, // TODO
         cookies: {
@@ -35,4 +35,7 @@ export default ({
         },
         secret: process.env.AUTH_SECRET,
         debug: false
-    }) satisfies NextAuthConfig;
+    } satisfies NextAuthConfig;
+};
+
+export default config;

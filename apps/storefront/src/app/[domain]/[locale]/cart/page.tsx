@@ -80,20 +80,14 @@ export async function generateMetadata({
 
 export default async function CartPage({ params: { domain, locale: localeData } }: { params: CartPageParams }) {
     const locale = Locale.from(localeData);
-
     const shop = await Shop.findByDomain(domain);
-
-    let page: Awaited<ReturnType<typeof PageApi<'cart_page'>>> = null;
-    try {
-        page = await PageApi({ shop, locale, handle: 'cart', type: 'cart_page' });
-    } catch {}
 
     const i18n = await getDictionary(locale);
     const { t } = getTranslations('common', i18n);
 
     return (
         <>
-            <Suspense key={`layout.content.cart.breadcrumbs`} fallback={<BreadcrumbsSkeleton />}>
+            <Suspense key={`pages.cart.breadcrumbs`} fallback={<BreadcrumbsSkeleton />}>
                 <div className="-mb-[1.5rem] empty:hidden md:-mb-[2.25rem]">
                     <Breadcrumbs locale={locale} />
                 </div>

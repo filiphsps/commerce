@@ -19,7 +19,7 @@ export type HeaderAccountSectionProps = {
     locale: Locale;
     i18n: LocaleDictionary;
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
-export async function HeaderAccountSection({ shop, locale, i18n, className, ...props }: HeaderAccountSectionProps) {
+export async function HeaderAccountSection({ shop, i18n, className, ...props }: HeaderAccountSectionProps) {
     if (!(await enableAccountsFunctionality())) {
         return null;
     }
@@ -32,7 +32,7 @@ export async function HeaderAccountSection({ shop, locale, i18n, className, ...p
     return (
         <section className={cn('flex h-full items-center justify-end gap-1 empty:hidden', className)} {...props}>
             <Link href="/account/" className="hover:brightness-75 focus-visible:brightness-75">
-                <Avatar />
+                <Avatar src={session.user?.image || undefined} className="shadow" />
             </Link>
         </section>
     );
