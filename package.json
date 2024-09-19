@@ -27,6 +27,7 @@
         "format:prettier": "prettier --write **/src/**/*.{ts,tsx,scss,json}",
         "typecheck": "turbo run typecheck",
         "test": "dotenv -c -e . -- vitest run --coverage",
+        "test:watch": "dotenv -c -e . -- vitest watch",
         "slicemachine": "turbo run slicemachine --env-mode=loose"
     },
     "author": {
