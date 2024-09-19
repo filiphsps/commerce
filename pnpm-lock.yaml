@@ -170,8 +170,8 @@ importers:
         specifier: 1.3.1
         version: 1.3.1(next@15.0.0-canary.159(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-24ec0eb-20240918)(react-dom@19.0.0-rc-5dcb0097-20240918(react@19.0.0-rc-5dcb0097-20240918))(react@19.0.0-rc-5dcb0097-20240918)(sass@1.79.1))(react@19.0.0-rc-5dcb0097-20240918)
       '@vercel/otel':
-        specifier: 1.8.1
-        version: 1.8.1(@opentelemetry/api-logs@0.52.1)(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.52.1(@opentelemetry/api@1.9.0))(@opentelemetry/resources@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.46.0(@opentelemetry/api-logs@0.52.1)(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.25.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.1(@opentelemetry/api@1.9.0))
+        specifier: 1.10.0
+        version: 1.10.0(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.52.1(@opentelemetry/api@1.9.0))(@opentelemetry/resources@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.25.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.1(@opentelemetry/api@1.9.0))
       '@vercel/speed-insights':
         specifier: 1.0.5
         version: 1.0.5(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-5dcb0097-20240918(react@19.0.0-rc-5dcb0097-20240918))(sass@1.79.1)(typescript@5.6.2)(vite@5.4.6(@types/node@20.12.7)(sass@1.79.1)(terser@5.31.1))
@@ -384,8 +384,8 @@ importers:
         specifier: 1.3.1
         version: 1.3.1(next@15.0.0-canary.159(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-24ec0eb-20240918)(react-dom@19.0.0-rc-5dcb0097-20240918(react@19.0.0-rc-5dcb0097-20240918))(react@19.0.0-rc-5dcb0097-20240918)(sass@1.79.1))(react@19.0.0-rc-5dcb0097-20240918)
       '@vercel/otel':
-        specifier: 1.8.1
-        version: 1.8.1(@opentelemetry/api-logs@0.52.1)(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.52.1(@opentelemetry/api@1.9.0))(@opentelemetry/resources@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.46.0(@opentelemetry/api-logs@0.52.1)(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.25.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.1(@opentelemetry/api@1.9.0))
+        specifier: 1.10.0
+        version: 1.10.0(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.52.1(@opentelemetry/api@1.9.0))(@opentelemetry/resources@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.25.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.1(@opentelemetry/api@1.9.0))
       '@vercel/speed-insights':
         specifier: 1.0.5
         version: 1.0.5(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-5dcb0097-20240918(react@19.0.0-rc-5dcb0097-20240918))(sass@1.79.1)(typescript@5.6.2)(vite@5.4.6(@types/node@20.12.7)(sass@1.79.1)(terser@5.31.1))
@@ -613,8 +613,8 @@ importers:
         specifier: 2.6.0
         version: 2.6.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@5.4.6(@types/node@20.12.7)(sass@1.79.1)(terser@5.31.1)))(next@15.0.0-canary.159(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-23b8160-20240916)(react-dom@19.0.0-rc-5dcb0097-20240918(react@19.0.0-rc-5dcb0097-20240918))(react@19.0.0-rc-5dcb0097-20240918)(sass@1.79.1))(react-dom@19.0.0-rc-5dcb0097-20240918(react@19.0.0-rc-5dcb0097-20240918))(react@19.0.0-rc-5dcb0097-20240918)
       '@vercel/otel':
-        specifier: 1.8.1
-        version: 1.8.1(@opentelemetry/api-logs@0.52.1)(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.52.1(@opentelemetry/api@1.9.0))(@opentelemetry/resources@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.46.0(@opentelemetry/api-logs@0.52.1)(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.25.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.1(@opentelemetry/api@1.9.0))
+        specifier: 1.10.0
+        version: 1.10.0(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.52.1(@opentelemetry/api@1.9.0))(@opentelemetry/resources@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.25.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.1(@opentelemetry/api@1.9.0))
       '@vercel/speed-insights':
         specifier: 1.0.5
         version: 1.0.5(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-5dcb0097-20240918(react@19.0.0-rc-5dcb0097-20240918))(sass@1.79.1)(typescript@5.6.2)(vite@5.4.6(@types/node@20.12.7)(sass@1.79.1)(terser@5.31.1))
@@ -1883,12 +1883,6 @@ packages:
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
-  '@opentelemetry/core@1.19.0':
-    resolution: {integrity: sha512-w42AukJh3TP8R0IZZOVJVM/kMWu8g+lm4LzT70WtuKqhwq7KVhcDzZZuZinWZa6TtQCl7Smt2wolEYzpHabOgw==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': '>=1.0.0 <1.8.0'
-
   '@opentelemetry/core@1.25.0':
     resolution: {integrity: sha512-n0B3s8rrqGrasTgNkXLKXzN0fXo+6IYP7M5b7AMsrZM33f/y6DS6kJ0Btd7SespASWq8bgL3taLo0oe0vB52IQ==}
     engines: {node: '>=14'}
@@ -2013,12 +2007,6 @@ packages:
     resolution: {integrity: sha512-faYX1N0gpLhej/6nyp6bgRjzAKXn5GOEMYY7YhciSfCoITAktLUtQ36d24QEWNA1/WA1y6qQunCe0OhHRkVl9g==}
     engines: {node: '>=14'}
 
-  '@opentelemetry/resources@1.19.0':
-    resolution: {integrity: sha512-RgxvKuuMOf7nctOeOvpDjt2BpZvZGr9Y0vf7eGtY5XYZPkh2p7e2qub1S2IArdBMf9kEbz0SfycqCviOu9isqg==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': '>=1.0.0 <1.8.0'
-
   '@opentelemetry/resources@1.25.0':
     resolution: {integrity: sha512-iHjydPMYJ+Li1auveJCq2rp5U2h6Mhq8BidiyE0jfVlDTFyR1ny8AfJHfmFzJ/RAM8vT8L7T21kcmGybxZC7lQ==}
     engines: {node: '>=14'}
@@ -2031,13 +2019,6 @@ packages:
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
-  '@opentelemetry/sdk-logs@0.46.0':
-    resolution: {integrity: sha512-Knlyk4+G72uEzNh6GRN1Fhmrj+/rkATI5/lOrevN7zRDLgp4kfyZBGGoWk7w+qQjlYvwhIIdPVxlIcipivdZIg==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': '>=1.4.0 <1.8.0'
-      '@opentelemetry/api-logs': '>=0.39.1'
-
   '@opentelemetry/sdk-metrics@1.25.0':
     resolution: {integrity: sha512-IF+Sv4VHgBr/BPMKabl+GouJIhEqAOexCHgXVTISdz3q9P9H/uA8ScCF+22gitQ69aFtESbdYOV+Fen5+avQng==}
     engines: {node: '>=14'}
@@ -2049,10 +2030,6 @@ packages:
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
-
-  '@opentelemetry/semantic-conventions@1.19.0':
-    resolution: {integrity: sha512-14jRpC8f5c0gPSwoZ7SbEJni1PqI+AhAE8m1bMz6v+RPM4OlP1PT2UHBJj5Qh/ALLPjhVU/aZUK3YyjTUqqQVg==}
-    engines: {node: '>=14'}
 
   '@opentelemetry/semantic-conventions@1.25.0':
     resolution: {integrity: sha512-M+kkXKRAIAiAP6qYyesfrC5TOmDpDVtsxuGfPcqd9B/iBrac+E14jYwrgm0yZBUIbIP2OnqC3j+UgkXLm1vxUQ==}
@@ -3167,15 +3144,15 @@ packages:
   '@vercel/node@3.2.11':
     resolution: {integrity: sha512-mPXz4274IZWr4ARwQKfuuvY2rcB89dG9RAJSbvTmcYmLzZzzj9FfxQj9GbJHoNt+xW3Mm6H5PLGM2R/9nWqaKw==}
 
-  '@vercel/otel@1.8.1':
-    resolution: {integrity: sha512-jHcmxGmA6Tv948uxzMtuixRHwxWoSrcl27KzrZgQBfDM6h0Xf77yLPtZtazj1j9L/yTH8ooFoXxkVXpYDNQ77g==}
+  '@vercel/otel@1.10.0':
+    resolution: {integrity: sha512-bv1FXbFZlFbB89vyA2P9/kr6eZ42bMtXgqBJpgi+8yOrZU8rkg9wMi0TL//AgAf/qKtaryDm1sbCnkLHgCI3PQ==}
     engines: {node: '>=18'}
     peerDependencies:
       '@opentelemetry/api': ^1.7.0
-      '@opentelemetry/api-logs': ^0.46.0
-      '@opentelemetry/instrumentation': ^0.46.0
+      '@opentelemetry/api-logs': '>=0.46.0 && <1.0.0'
+      '@opentelemetry/instrumentation': '>=0.46.0 && <1.0.0'
       '@opentelemetry/resources': ^1.19.0
-      '@opentelemetry/sdk-logs': ^0.46.0
+      '@opentelemetry/sdk-logs': '>=0.46.0 && <1.0.0'
       '@opentelemetry/sdk-metrics': ^1.19.0
       '@opentelemetry/sdk-trace-base': ^1.19.0
 
@@ -8868,11 +8845,6 @@ snapshots:
     dependencies:
       '@opentelemetry/api': 1.9.0
 
-  '@opentelemetry/core@1.19.0(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/semantic-conventions': 1.19.0
-
   '@opentelemetry/core@1.25.0(@opentelemetry/api@1.9.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
@@ -9053,12 +9025,6 @@ snapshots:
 
   '@opentelemetry/redis-common@0.36.2': {}
 
-  '@opentelemetry/resources@1.19.0(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/core': 1.19.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.19.0
-
   '@opentelemetry/resources@1.25.0(@opentelemetry/api@1.9.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
@@ -9070,13 +9036,6 @@ snapshots:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/core': 1.25.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/semantic-conventions': 1.25.1
-
-  '@opentelemetry/sdk-logs@0.46.0(@opentelemetry/api-logs@0.52.1)(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/api-logs': 0.52.1
-      '@opentelemetry/core': 1.19.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/resources': 1.19.0(@opentelemetry/api@1.9.0)
 
   '@opentelemetry/sdk-metrics@1.25.0(@opentelemetry/api@1.9.0)':
     dependencies:
@@ -9091,8 +9050,6 @@ snapshots:
       '@opentelemetry/core': 1.25.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/resources': 1.25.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/semantic-conventions': 1.25.1
-
-  '@opentelemetry/semantic-conventions@1.19.0': {}
 
   '@opentelemetry/semantic-conventions@1.25.0': {}
 
@@ -10517,13 +10474,11 @@ snapshots:
       - encoding
       - supports-color
 
-  '@vercel/otel@1.8.1(@opentelemetry/api-logs@0.52.1)(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.52.1(@opentelemetry/api@1.9.0))(@opentelemetry/resources@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.46.0(@opentelemetry/api-logs@0.52.1)(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.25.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.1(@opentelemetry/api@1.9.0))':
+  '@vercel/otel@1.10.0(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.52.1(@opentelemetry/api@1.9.0))(@opentelemetry/resources@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.25.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.1(@opentelemetry/api@1.9.0))':
     dependencies:
       '@opentelemetry/api': 1.9.0
-      '@opentelemetry/api-logs': 0.52.1
       '@opentelemetry/instrumentation': 0.52.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/resources': 1.25.1(@opentelemetry/api@1.9.0)
-      '@opentelemetry/sdk-logs': 0.46.0(@opentelemetry/api-logs@0.52.1)(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-metrics': 1.25.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-trace-base': 1.25.1(@opentelemetry/api@1.9.0)
 
