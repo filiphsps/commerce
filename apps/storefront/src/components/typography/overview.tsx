@@ -1,6 +1,7 @@
 import { cn } from '@/utils/tailwind';
 import Image from 'next/image';
 
+import { Card } from '@/components/layout/card';
 import { Content } from '@/components/typography/content';
 
 import type { Color } from '@/api/shop';
@@ -70,9 +71,9 @@ export const Overview = ({
     );
 
     const contentElement = (
-        <div className="col-span-7 h-full px-3 py-2 empty:hidden md:px-5 md:py-4">
+        <Card className="col-span-7 py-4 md:h-full md:px-6">
             <Content className="max-w-full">{body}</Content>
-        </div>
+        </Card>
     );
 
     return (

@@ -42,7 +42,11 @@ export const PrismicText = ({ data, styled = true, bare = false }: PrismicTextPr
                         bare ? (
                             <>{children}</>
                         ) : (
-                            <p className={cn(styled && 'block text-base leading-snug md:text-lg md:leading-tight')}>
+                            <p
+                                className={cn(
+                                    styled && 'block text-base leading-snug empty:hidden md:text-lg md:leading-tight'
+                                )}
+                            >
                                 {children}
                             </p>
                         ),
@@ -50,7 +54,9 @@ export const PrismicText = ({ data, styled = true, bare = false }: PrismicTextPr
                         bare ? (
                             <>{children}</>
                         ) : (
-                            <h1 className={cn(styled && 'text-2xl font-semibold leading-none md:text-4xl')}>
+                            <h1
+                                className={cn(styled && 'text-2xl font-semibold leading-none empty:hidden md:text-4xl')}
+                            >
                                 {children}
                             </h1>
                         ),
@@ -58,7 +64,9 @@ export const PrismicText = ({ data, styled = true, bare = false }: PrismicTextPr
                         bare ? (
                             <>{children}</>
                         ) : (
-                            <h2 className={cn(styled && 'text-xl font-semibold leading-tight md:text-2xl')}>
+                            <h2
+                                className={cn(styled && 'text-xl font-semibold leading-tight empty:hidden md:text-2xl')}
+                            >
                                 {children}
                             </h2>
                         ),
@@ -66,7 +74,7 @@ export const PrismicText = ({ data, styled = true, bare = false }: PrismicTextPr
                         bare ? (
                             <>{children}</>
                         ) : (
-                            <h3 className={cn(styled && 'text-lg font-semibold leading-tight md:text-xl')}>
+                            <h3 className={cn(styled && 'text-lg font-semibold leading-tight empty:hidden md:text-xl')}>
                                 {children}
                             </h3>
                         ),

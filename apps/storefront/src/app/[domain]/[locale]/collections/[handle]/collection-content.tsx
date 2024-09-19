@@ -33,7 +33,7 @@ export async function CollectionContent({
     }
 
     const page = searchParams.page ? Number.parseInt(searchParams.page, 10) : 1;
-    if (page > pages) {
+    if (page > pages || page < 1) {
         notFound();
     }
 

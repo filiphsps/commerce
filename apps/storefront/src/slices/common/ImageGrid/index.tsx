@@ -25,7 +25,7 @@ const ImageGrid = ({ slice, index }: ImageGridProps) => {
 
     return (
         <section
-            className="grid grid-cols-1 gap-2 empty:hidden sm:grid-cols-2 md:grid-cols-3"
+            className="grid grid-cols-1 gap-2 empty:hidden sm:grid-cols-2 md:grid-cols-3 md:gap-3"
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
         >
@@ -53,21 +53,28 @@ const ImageGrid = ({ slice, index }: ImageGridProps) => {
                         href={href!}
                         target={target}
                     >
-                        <Image
-                            role={image.alt ? undefined : 'presentation'}
-                            src={image.url!}
-                            alt={image.alt!}
-                            width={300}
-                            height={200}
-                            quality={70}
-                            sizes="(max-width: 950px) 250px, 25vw"
-                            draggable={false}
-                            decoding="async"
-                            // If we're positioned high up in the page, we want to load the image
-                            // immediately. Otherwise, we can wait until the browser decides to.
-                            priority={index < 2}
-                            className="bg-primary w-full rounded-lg object-cover object-center shadow transition-all group-focus-within/item:brightness-75 group-hover/item:brightness-75"
-                        />
+                        <div
+                            className="bg-primary w-full overflow-clip rounded-lg shadow"
+                            style={{
+                                aspectRatio: `${(image.dimensions.width / image.dimensions.height).toFixed(2)} / 1`
+                            }}
+                        >
+                            <Image
+                                role={image.alt ? undefined : 'presentation'}
+                                src={image.url!}
+                                alt={image.alt!}
+                                width={300}
+                                height={200}
+                                quality={70}
+                                sizes="(max-width: 950px) 250px, 25vw"
+                                draggable={false}
+                                decoding="async"
+                                // If we're positioned high up in the page, we want to load the image
+                                // immediately. Otherwise, we can wait until the browser decides to.
+                                priority={index < 2}
+                                className="h-full w-full object-cover object-center transition-all group-focus-within/item:brightness-75 group-hover/item:scale-110 group-hover/item:brightness-75"
+                            />
+                        </div>
 
                         <div
                             className={cn(

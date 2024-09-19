@@ -6,7 +6,7 @@ import { HiOutlineSearch } from 'react-icons/hi';
 import { Shop } from '@nordcom/commerce-db';
 
 import { HeaderApi, MenuApi } from '@/api/navigation';
-import CustomHTML from '@/slices/common/CustomHTML';
+import CustomHTML from '@/slices/common/CustomHtml';
 import { getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
 import Image from 'next/image';
 
@@ -61,13 +61,13 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
             >
                 <section className="flex h-16 w-full flex-col items-center bg-white">
                     <header className="flex h-full w-full max-w-[var(--page-width)] items-center justify-start gap-4 overflow-hidden px-2 md:px-3">
-                        <div className="flex h-full py-2">
+                        <div className="flex h-16 py-1">
                             <Link
                                 href={'/'}
                                 style={{
                                     aspectRatio: `${(logo.width / logo.height).toFixed(2)} / 1`
                                 }}
-                                className="-ml-2 block h-full rounded-lg px-2 py-2 focus-within:bg-gray-100 hover:bg-gray-100"
+                                className="focus-visible::bg-gray-100 -ml-2 block h-full rounded-lg px-2 py-2 hover:bg-gray-100"
                             >
                                 {logo.src ? (
                                     <Image

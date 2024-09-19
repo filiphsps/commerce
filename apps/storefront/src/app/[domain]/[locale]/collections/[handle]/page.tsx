@@ -203,12 +203,18 @@ export default async function CollectionPage({
         'url': `https://${shop.domain}/${locale.code}/collections/${handle}/`
     };
 
+    const hasSlices = page && page.slices.length > 0;
     const pageContent = (
         <>
             {!empty ? (
                 <>
                     <section className="flex flex-col gap-2">
-                        <Heading title={collection.seo.title ?? collection.title} />
+                        {!hasSlices ? (
+                            <>
+                                <Heading title={collection.title || collection.seo.title} />
+                                <Content className="prose" html={collection.descriptionHtml} />
+                            </>
+                        ) : null}
 
                         <Suspense
                             key={JSON.stringify(searchParams)}
@@ -231,7 +237,6 @@ export default async function CollectionPage({
                     </section>
                 </>
             ) : null}
-            <Content html={collection.descriptionHtml} />
         </>
     );
 

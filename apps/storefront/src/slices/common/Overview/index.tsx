@@ -20,7 +20,11 @@ const OverviewSlice = ({ slice }: OverviewProps) => {
     }
 
     return (
-        <div className="m-0 w-full gap-4 p-0" data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
+        <section
+            className="m-0 flex w-full flex-col gap-3 p-0 md:gap-4"
+            data-slice-type={slice.slice_type}
+            data-slice-variation={slice.variation}
+        >
             {slice.items.map((item, index) => {
                 return (
                     <Overview
@@ -33,7 +37,7 @@ const OverviewSlice = ({ slice }: OverviewProps) => {
                     />
                 );
             })}
-        </div>
+        </section>
     );
 };
 

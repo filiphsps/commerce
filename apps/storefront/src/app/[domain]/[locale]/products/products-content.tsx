@@ -33,7 +33,7 @@ export default async function ProductsContent({ domain, locale, searchParams = {
     const sorting = (searchParams.sorting?.toUpperCase() || 'BEST_SELLING') as ProductSorting;
 
     const { cursors, pages } = await ProductsPaginationCountApi({ api, filters: { first: limit } });
-    if (page > pages) {
+    if (page > pages || page < 1) {
         notFound();
     }
 

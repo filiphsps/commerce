@@ -6,12 +6,11 @@ import CollapsibleText from './CollapsibleText';
 import Collection from './Collection';
 import Columns from './Columns';
 import ContentBlock from './ContentBlock';
-import CustomHTML from './CustomHTML';
+import CustomHtml from './CustomHtml';
 import IconGrid from './IconGrid';
 import ImageGrid from './ImageGrid';
 import OriginalContent from './OriginalContent';
 import Overview from './Overview';
-import Title from './Title';
 import Vendors from './Vendors';
 
 export const components = {
@@ -21,11 +20,10 @@ export const components = {
     collection: Collection,
     columns: Columns,
     content_block: ContentBlock,
-    custom_html: CustomHTML,
+    custom_html: CustomHtml,
     icon_grid: IconGrid,
     image_grid: ImageGrid,
     original_content: OriginalContent,
     text_block: Overview,
-    title: Title,
     vendors: Vendors
 };

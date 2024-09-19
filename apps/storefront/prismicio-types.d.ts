@@ -10,7 +10,6 @@ type ArticlePageDocumentDataSlicesSlice =
     | BannerSlice
     | CollapsibleTextSlice
     | IconGridSlice
-    | TitleSlice
     | TextBlockSlice
     | ImageGridSlice
     | CollectionSlice
@@ -207,7 +206,6 @@ type CartPageDocumentDataSlicesSlice =
     | ImageGridSlice
     | TextBlockSlice
     | CollapsibleTextSlice
-    | TitleSlice
     | BannerSlice
     | ContentBlockSlice
     | AlertSlice;
@@ -220,7 +218,6 @@ type CartPageDocumentDataSidebarSlicesSlice =
     | VendorsSlice
     | TextBlockSlice
     | BannerSlice
-    | TitleSlice
     | CollapsibleTextSlice
     | ContentBlockSlice
     | AlertSlice;
@@ -231,7 +228,6 @@ type CartPageDocumentDataBottomSlicesSlice =
     | CollectionSlice
     | ImageGridSlice
     | TextBlockSlice
-    | TitleSlice
     | IconGridSlice
     | CollapsibleTextSlice
     | BannerSlice
@@ -346,7 +342,6 @@ type CollectionPageDocumentDataSlicesSlice =
     | CustomHtmlSlice
     | ContentBlockSlice
     | ColumnsSlice
-    | TitleSlice
     | AlertSlice
     | VendorsSlice
     | CollectionSlice
@@ -446,7 +441,6 @@ type ColumnDocumentDataSlicesSlice =
     | CollectionSlice
     | VendorsSlice
     | TextBlockSlice
-    | TitleSlice
     | ImageGridSlice
     | IconGridSlice
     | CollapsibleTextSlice
@@ -496,8 +490,7 @@ type CustomPageDocumentDataSlicesSlice =
     | VendorsSlice
     | IconGridSlice
     | AlertSlice
-    | BannerSlice
-    | TitleSlice;
+    | BannerSlice;
 
 /**
  * Content for Page documents
@@ -910,7 +903,6 @@ type ProductPageDocumentDataSlicesSlice =
     | CollectionSlice
     | AlertSlice
     | IconGridSlice
-    | TitleSlice
     | CollapsibleTextSlice
     | BannerSlice;
 
@@ -2017,55 +2009,6 @@ type TextBlockSliceVariation = TextBlockSliceDefault;
 export type TextBlockSlice = prismic.SharedSlice<'text_block', TextBlockSliceVariation>;
 
 /**
- * Primary content in *Title → Default → Primary*
- */
-export interface TitleSliceDefaultPrimary {
-    /**
-     * Content field in *Title → Default → Primary*
-     *
-     * - **Field Type**: Rich Text
-     * - **Placeholder**: *None*
-     * - **API ID Path**: title.default.primary.content
-     * - **Documentation**: https://prismic.io/docs/field#rich-text-title
-     */
-    content: prismic.RichTextField;
-
-    /**
-     * Alignment field in *Title → Default → Primary*
-     *
-     * - **Field Type**: Select
-     * - **Placeholder**: *None*
-     * - **Default Value**: left
-     * - **API ID Path**: title.default.primary.alignment
-     * - **Documentation**: https://prismic.io/docs/field#select
-     */
-    alignment: prismic.SelectField<'left' | 'center' | 'right', 'filled'>;
-}
-
-/**
- * Default variation for Title Slice
- *
- * - **API ID**: `default`
- * - **Description**: Default
- * - **Documentation**: https://prismic.io/docs/slice
- */
-export type TitleSliceDefault = prismic.SharedSliceVariation<'default', Simplify<TitleSliceDefaultPrimary>, never>;
-
-/**
- * Slice variation for *Title*
- */
-type TitleSliceVariation = TitleSliceDefault;
-
-/**
- * Title Shared Slice
- *
- * - **API ID**: `title`
- * - **Description**: Title
- * - **Documentation**: https://prismic.io/docs/slice
- */
-export type TitleSlice = prismic.SharedSlice<'title', TitleSliceVariation>;
-
-/**
  * Default variation for Vendors Slice
  *
  * - **API ID**: `default`
@@ -2404,10 +2347,6 @@ declare module '@prismicio/client' {
             TextBlockSliceDefaultItem,
             TextBlockSliceVariation,
             TextBlockSliceDefault,
-            TitleSlice,
-            TitleSliceDefaultPrimary,
-            TitleSliceVariation,
-            TitleSliceDefault,
             VendorsSlice,
             VendorsSliceVariation,
             VendorsSliceDefault,

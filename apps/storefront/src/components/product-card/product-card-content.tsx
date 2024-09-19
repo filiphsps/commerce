@@ -53,7 +53,7 @@ const ProductCardContent = ({ data: product, priority, locale, i18n, children }:
                     </div>
                 </div>
 
-                <Suspense fallback={<div className="flex h-full min-h-24 w-full grow flex-col pt-1" data-skeleton />}>
+                <Suspense fallback={<div className="flex h-full min-h-24 w-full grow flex-col" data-skeleton />}>
                     <ProductCardFooter
                         data={product}
                         locale={locale}

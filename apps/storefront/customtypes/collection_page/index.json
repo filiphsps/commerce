@@ -30,9 +30,6 @@
                         "columns": {
                             "type": "SharedSlice"
                         },
-                        "title": {
-                            "type": "SharedSlice"
-                        },
                         "alert": {
                             "type": "SharedSlice"
                         },

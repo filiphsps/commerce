@@ -39,40 +39,43 @@ const CollectionContainerHeader = ({ slice }: Omit<CollectionContainerProps, 'ch
         return null;
     }
 
-    const alignment =
-        (slice.primary.alignment === 'left' && styles['align-left']) ||
-        (slice.primary.alignment === 'right' && styles['align-right']) ||
-        styles['align-center'];
-
     const title = hasTitle ? (
         <Title
+            data-align={slice.primary.alignment}
             as={Link}
             href={`/collections/${slice.primary.handle!}`}
-            // TODO: i18n.
-            title={`View all products in "${asText(slice.primary.title)}"`}
+            title={asText(slice.primary.title)}
             className={cn(
-                styles.title,
-                alignment,
-                'group flex items-center gap-1 text-xl font-bold leading-snug hover:underline lg:text-2xl'
+                'group flex items-center gap-1 text-xl font-bold leading-tight hover:underline focus-visible:underline lg:text-2xl',
+                'md:data-[align=left]:text-left md:data-[align=center]:text-center md:data-[align=right]:text-right'
             )}
         >
             <PrismicText data={slice.primary.title} styled={false} bare={true} />
-            <FiChevronRight
-                style={{ strokeWidth: 3.5 }}
-                className="text-3xl transition-transform group-hover:scale-125 md:text-xl"
-            />
+            <FiChevronRight className="stroke-2 text-3xl transition-transform group-hover:scale-110 md:text-xl" />
         </Title>
     ) : null;
 
     const body = hasBody ? (
-        <Content className={cn(styles.body, alignment, 'font-semibold')}>
+        <Content
+            data-align={slice.primary.alignment}
+            className={cn(
+                'max-w-none',
+                'md:data-[align=left]:text-left md:data-[align=center]:text-center md:data-[align=right]:text-right'
+            )}
+        >
             <PrismicText data={slice.primary.body} />
         </Content>
     ) : null;
 
     if (hasTitle && !hasBody) return title;
     return (
-        <header className="flex w-full flex-col gap-1">
+        <header
+            data-align={slice.primary.alignment}
+            className={cn(
+                'flex w-full flex-col gap-1',
+                'md:data-[align=left]:items-start md:data-[align=right]:items-end md:data-[align=center]:items-center'
+            )}
+        >
             {title}
             {body}
         </header>

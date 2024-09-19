@@ -15,7 +15,7 @@ const DefaultContentBlock = (props: ContentBlockProps): JSX.Element => {
         <Content
             data-slice-type={props.slice.slice_type}
             data-slice-variation={props.slice.variation}
-            className={cn('w-full', wide && 'min-w-full', !wide && 'mx-auto')}
+            className={cn('prose w-full', wide && 'min-w-full', !wide && 'mx-auto')}
             as="section"
         >
             <PrismicText data={text} />
@@ -32,7 +32,7 @@ const CardContentBlock = (props: ContentBlockProps): JSX.Element => {
         <Content
             data-slice-type={props.slice.slice_type}
             data-slice-variation={props.slice.variation}
-            className={cn('w-full', wide && 'min-w-full', !wide && 'mx-auto')}
+            className={cn('prose w-full', wide && 'min-w-full', !wide && 'mx-auto')}
             as={Card}
             border={border}
         >

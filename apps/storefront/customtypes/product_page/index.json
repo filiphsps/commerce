@@ -41,9 +41,6 @@
                         "icon_grid": {
                             "type": "SharedSlice"
                         },
-                        "title": {
-                            "type": "SharedSlice"
-                        },
                         "collapsible_text": {
                             "type": "SharedSlice"
                         },

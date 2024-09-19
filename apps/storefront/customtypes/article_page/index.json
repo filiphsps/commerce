@@ -32,9 +32,6 @@
                         "icon_grid": {
                             "type": "SharedSlice"
                         },
-                        "title": {
-                            "type": "SharedSlice"
-                        },
                         "text_block": {
                             "type": "SharedSlice"
                         },

@@ -90,7 +90,7 @@ const ProductCardHeader = ({
     const href = `/products/${product.handle}/${params ? `?${params}` : ''}`;
 
     return (
-        <Link className="group/header contents" href={href} title={title} prefetch={priority} {...props}>
+        <Link className="group/header contents" href={href} title={title} prefetch={priority} tabIndex={0} {...props}>
             <VariantImage image={{ ...image, altText: image.altText ?? title }} priority={priority} />
 
             {children}
