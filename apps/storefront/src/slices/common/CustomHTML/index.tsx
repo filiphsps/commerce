@@ -1,7 +1,7 @@
 import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
 
-export type CustomHTMLProps = SliceComponentProps<Content.CustomHTMLSlice>;
+export type CustomHTMLProps = SliceComponentProps<Content.CustomHtmlSlice>;
 export default function CustomHTML({ slice }: CustomHTMLProps) {
     return (
         <div
