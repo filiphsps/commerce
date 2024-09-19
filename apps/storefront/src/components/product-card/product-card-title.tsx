@@ -28,7 +28,7 @@ const ProductCardTitle = ({ shop, data: product, className }: ProductCardTitlePr
         productTypeElement = (
             <span
                 data-nosnippet={true}
-                className="contents text-lg font-semibold leading-none text-gray-700 group-hover/header:text-inherit"
+                className="group-hover/header:text-primary contents text-lg font-semibold leading-none text-gray-700"
             >
                 {' '}
                 &ndash; {product.productType}
@@ -44,7 +44,7 @@ const ProductCardTitle = ({ shop, data: product, className }: ProductCardTitlePr
                 <Label
                     as={'div'}
                     className={cn(
-                        'group-hover/header:text-primary pb-1 pt-2 text-[0.9rem] font-medium normal-case leading-none text-gray-500 transition-colors duration-75',
+                        'group-hover/header:text-primary pt-2 text-[0.9rem] font-medium normal-case leading-snug text-gray-500 transition-colors duration-75',
                         className
                     )}
                 >
