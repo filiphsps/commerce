@@ -86,7 +86,7 @@
         "react-share": "5.1.0",
         "react": "19.0.0-rc-5dcb0097-20240918",
         "resolve-accept-language": "3.1.7",
-        "sass": "1.78.0",
+        "sass": "1.79.1",
         "sharp": "0.33.5",
         "sonner": "1.5.0",
         "tailwind-merge": "2.5.2",
