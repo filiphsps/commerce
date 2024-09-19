@@ -26,6 +26,7 @@
         "n-items": "{0} item(s)"
     },
     "common": {
+        "account-dashboard": "account dashboard",
         "add-to-cart": "Add to Cart",
         "add": "Add",
         "added-to-cart": "Added!",
@@ -60,6 +61,7 @@
         "share-via-email": "Share via Email",
         "share": "Share",
         "size": "Size",
+        "n-min-read": "{0} min read",
         "wishlist": "Wishlist"
     },
     "product": {

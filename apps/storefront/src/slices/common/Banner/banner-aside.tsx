@@ -24,7 +24,7 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
     return (
         <section
             className={cn(
-                'bg-primary text-primary-foreground relative flex grid-flow-col justify-between gap-2 overflow-hidden rounded-lg md:grid md:grid-cols-6',
+                'bg-primary text-primary-foreground relative flex grid-flow-col justify-between gap-2 overflow-hidden overflow-x-clip rounded-lg md:grid md:grid-cols-6',
                 background.url && 'bg-cover bg-center bg-no-repeat text-black'
             )}
             style={{

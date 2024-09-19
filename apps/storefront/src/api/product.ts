@@ -79,7 +79,7 @@ export const isProductVegan = (product: Product): boolean => {
     }
 
     const type = productType(product);
-    if (type ? !['confectionary', 'food', 'bags', 'clothing', 'sports'].includes(type) : true) {
+    if (type ? !['confectionary', 'food', 'bags', 'clothing', 'sports'].includes(type) : false) {
         return false;
     }
 

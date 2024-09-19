@@ -168,7 +168,7 @@ export default async function CustomPage({
     const breadcrumbs =
         handle !== 'homepage' && page.title ? (
             <Suspense key={`pages.${handle}.breadcrumbs`} fallback={<BreadcrumbsSkeleton />}>
-                <div className="-mb-[1.5rem] empty:hidden md:-mb-[2.25rem]">
+                <div className="-mb-[1.25rem] empty:hidden md:-mb-[2.25rem]">
                     <Breadcrumbs locale={locale} title={page.title} />
                 </div>
             </Suspense>

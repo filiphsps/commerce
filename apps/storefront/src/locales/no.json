@@ -40,7 +40,8 @@
         "email": "E-post",
         "phone": "Telefon",
         "email-tooltip": "Send oss en e-post",
-        "phone-tooltip": "Ring oss"
+        "phone-tooltip": "Ring oss",
+        "n-min-read": "{0} min lesing"
     },
     "product": {
         "add-to-wishlist": "Legg til i ønskelisten",

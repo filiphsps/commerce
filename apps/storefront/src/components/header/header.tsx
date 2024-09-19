@@ -86,7 +86,7 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
                             </Link>
                         </div>
 
-                        <div className="flex h-full grow items-center justify-end gap-4 lg:gap-6" data-nosnippet={true}>
+                        <div className="flex h-full grow items-center justify-end gap-6" data-nosnippet={true}>
                             <Link
                                 href="/search/"
                                 className="hover:text-primary focus-visible:text-primary transition-colors"
@@ -104,7 +104,7 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
                     </header>
                 </section>
 
-                <section className="flex h-12 w-full flex-col items-center justify-center gap-0 border-0 border-b border-t border-solid border-gray-300 bg-white text-black group-data-[menu-open=true]/body:border-b-gray-100">
+                <section className="flex h-12 w-full flex-col items-center justify-center gap-0 border-0 border-b border-t border-solid border-gray-200 bg-white text-black group-data-[menu-open=true]/body:border-b-gray-100">
                     <Suspense key="layout.header.header-navigation" fallback={<HeaderNavigation.skeleton />}>
                         <HeaderNavigation shop={shop} i18n={i18n} locale={locale} slices={slices} />
                     </Suspense>

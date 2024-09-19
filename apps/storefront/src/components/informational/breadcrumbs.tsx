@@ -29,7 +29,7 @@ const Breadcrumbs = ({ locale, title, className }: BreadcrumbsProps) => {
 
     const itemStyles = 'inline-flex justify-center items-center';
     const linkStyles = 'text-sm capitalize hover:text-primary leading-none';
-    const iconStyles = 'text-gray-300 text-lg font-normal';
+    const iconStyles = 'text-gray-400 text-lg font-normal';
 
     const hrefs = path.map((_) => `/${path.slice(0, -1).join('/')}`);
 
@@ -82,7 +82,7 @@ const Breadcrumbs = ({ locale, title, className }: BreadcrumbsProps) => {
                             itemType="https://schema.org/ListItem"
                         >
                             <Link
-                                className={cn(linkStyles, index === path.length - 1 && 'font-semibold text-gray-500')}
+                                className={cn(linkStyles, index === path.length - 1 && 'font-semibold text-gray-700')}
                                 href={hrefs[index]!}
                                 itemType="https://schema.org/Thing"
                                 itemProp="item"

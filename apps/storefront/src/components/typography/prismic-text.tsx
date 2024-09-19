@@ -1,7 +1,7 @@
 /* c8 ignore start */
 'use client';
 
-import { Suspense } from 'react';
+import { Fragment, Suspense } from 'react';
 
 import { linkResolver } from '@/utils/prismic';
 import { cn } from '@/utils/tailwind';
@@ -31,7 +31,7 @@ export const PrismicText = ({ data, styled = true, bare = false }: PrismicTextPr
     }
 
     return (
-        <Suspense>
+        <Suspense fallback={<Fragment />}>
             <PrismicRichText
                 field={data}
                 linkResolver={linkResolver}

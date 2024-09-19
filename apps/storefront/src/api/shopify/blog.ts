@@ -151,6 +151,7 @@ export async function BlogArticleApi({
                         publishedAt
 
                         title
+                        content
                         contentHtml
                         excerpt
                         excerptHtml

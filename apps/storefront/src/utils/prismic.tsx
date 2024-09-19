@@ -13,7 +13,7 @@ type CreateClientOptions = {
     locale: Locale;
 } & ClientConfig;
 
-export const createClient = ({ shop, locale = Locale.default, ...config }: CreateClientOptions): Client => {
+export const createClient = ({ shop, /* locale = Locale.default,*/ ...config }: CreateClientOptions): Client => {
     const contentProvider = shop.contentProvider as Partial<typeof shop.contentProvider>;
     if (!(contentProvider as any)) {
         throw new InvalidShopError("Shop doesn't have a content provider.");
@@ -46,7 +46,6 @@ export const createClient = ({ shop, locale = Locale.default, ...config }: Creat
         }
     });
 
-    //client.enableAutoPreviews();
     //enableAutoPreviews({ client });
 
     return client;

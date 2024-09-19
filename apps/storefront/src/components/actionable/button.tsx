@@ -34,6 +34,7 @@ export const Button = <ComponentGeneric extends ElementType = 'button'>({
                 props.disabled && 'pointer-events-none cursor-not-allowed',
                 className
             )}
+            draggable={false}
             suppressHydrationWarning={true}
             data-nosnippet={true}
         />

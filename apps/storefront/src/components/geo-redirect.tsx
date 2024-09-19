@@ -122,7 +122,7 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
                 <div className="flex w-full grow gap-3 md:w-96">
                     <div
                         className={cn(
-                            'relative flex h-10 w-full cursor-pointer select-none flex-col gap-0 rounded-lg border-2 border-solid border-white bg-white shadow focus-within:border-gray-400',
+                            'focus-within:border-primary relative flex h-10 w-full cursor-pointer select-none flex-col gap-0 rounded-lg border-2 border-solid border-white bg-white shadow',
                             dropdownActive && 'border-primary rounded-b-none border-b-0',
                             !dropdownActive && 'hover:border-gray-400'
                         )}
@@ -184,7 +184,7 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
                         localStorage.setItem(DISMISSED_KEY, Date.now().toString());
                         setClosed(true);
                     }}
-                    className="absolute right-0 top-4 flex h-10 w-10 items-start justify-end text-lg text-current opacity-70 invert-[20%] transition-all hover:opacity-100 hover:invert-0 md:items-center 2xl:right-2"
+                    className="absolute right-0 top-4 flex h-10 w-10 items-start justify-end text-lg text-current opacity-70 invert-[20%] transition-all hover:opacity-100 hover:invert-0 focus-visible:invert-0 md:items-center 2xl:right-2"
                     styled={false}
                 >
                     <FiX className="block size-6 md:size-6" />

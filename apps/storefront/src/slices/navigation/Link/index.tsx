@@ -15,7 +15,7 @@ import type { SliceComponentProps } from '@prismicio/react';
 export const LINK_STYLES =
     'group/menu-item flex h-full cursor-pointer select-none flex-nowrap items-center justify-center text-nowrap border-0 border-b-2 border-t-2 border-solid border-transparent border-t-transparent bg-transparent my-4 font-medium leading-none transition-all md:my-3';
 export const LINK_BUBBLE_STYLES =
-    '-mx-2 rounded-lg px-2 py-2 group-hover/menu-item:bg-gray-100 group-focus-within/menu-item:bg-gray-100 text-inherit';
+    '-mx-2 rounded-lg px-2 py-2 group-hover/menu-item:bg-gray-100 group-focus-visible/menu-item:bg-gray-100 text-inherit';
 
 export const LINK_ACTIVE_MENU_STYLES = 'bg-gray-100 px-2 font-semibold text-primary  -mx-2';
 export const LINK_ACTIVE_STYLES = 'border-b-primary font-bold text-primary hover:text-primary';
@@ -23,7 +23,7 @@ export const LINK_ACTIVE_STYLES = 'border-b-primary font-bold text-primary hover
 export type LinkProps = {} & SliceComponentProps<Content.LinkSlice, { isHeader: boolean }>;
 const LinkSlice = ({ slice, context: { isHeader = true } }: LinkProps) => {
     const { locale } = useShop();
-    const pathname = usePathname().slice(1).split('/').slice(1).join('/') || `/${locale.code}/`;
+    const pathname = usePathname().slice(1).split('/').slice(1).join('/') || `/${locale.code}/`; // FIXME: This is really ugly.
 
     // Don't render the link slice as a standalone menu.
     if (!isHeader) {
@@ -58,7 +58,7 @@ const LinkSlice = ({ slice, context: { isHeader = true } }: LinkProps) => {
                         LINK_STYLES,
                         'h-8 rounded-lg px-3 py-0 transition-all hover:brightness-75 focus-visible:brightness-75 md:px-3',
                         active && LINK_ACTIVE_STYLES,
-                        'text-bold bg-secondary text-secondary-foreground',
+                        'text-bold bg-secondary-light text-secondary-foreground',
                         active && 'bg-primary text-primary-foreground'
                     )}
                     data-active={active}

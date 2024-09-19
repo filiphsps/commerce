@@ -9,11 +9,14 @@ import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi, BlogArticleApi } from '@/api/shopify/blog';
 import { LocalesApi } from '@/api/store';
+import { getDictionary } from '@/utils/dictionary';
 import { isValidHandle } from '@/utils/handle';
-import { Locale } from '@/utils/locale';
+import { getTranslations, Locale } from '@/utils/locale';
+import md5 from 'crypto-js/md5';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
+import { Avatar } from '@/components/informational/avatar';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import { JsonLd } from '@/components/json-ld';
@@ -147,7 +150,11 @@ export default async function ArticlePage({
         throw articleError;
     }
 
+    const i18n = await getDictionary({ shop, locale });
+    const { t } = getTranslations('common', i18n);
+
     const { title, image, contentHtml, content, authorV2: author, publishedAt, seo, excerpt, tags } = article;
+    const avatar = author ? `https://www.gravatar.com/avatar/${md5(author.email)}.jpg?s=45&d=blank` : null;
 
     const jsonLd: WithContext<LdArticle> = {
         '@context': 'https://schema.org',
@@ -182,19 +189,23 @@ export default async function ArticlePage({
         day: 'numeric'
     });
 
+    const wordCount = content.split(/\s+/).length;
+    const readingTime = Math.ceil(wordCount / 200);
+
     return (
         <>
             <Suspense key={`blog.${blogHandle}.${handle}.breadcrumbs`} fallback={<BreadcrumbsSkeleton />}>
-                <div className="-mb-[1.5rem] empty:hidden md:-mb-[2.25rem]">
+                <div className="-mb-[1.25rem] empty:hidden md:-mb-[2.25rem]">
                     <Breadcrumbs locale={locale} title={title} />
                 </div>
             </Suspense>
 
-            <header className="flex flex-col items-stretch justify-start gap-4">
-                <h1 className="text-2xl md:text-4xl">{title}</h1>
+            <header className="flex flex-col-reverse items-center justify-start gap-2 md:flex-col md:gap-3">
+                <h1 className="text-2xl font-semibold md:text-3xl 2xl:text-center">{title}</h1>
 
                 {image?.url ? (
                     <Image
+                        className="overflow-hidden rounded-lg shadow 2xl:max-w-[70vw]"
                         role={image.altText ? undefined : 'presentation'}
                         src={image.url}
                         alt={image.altText!}
@@ -208,21 +219,38 @@ export default async function ArticlePage({
                 ) : null}
             </header>
 
-            <section className="flex flex-col-reverse gap-6 md:grid md:grid-cols-[1fr_auto_1fr]">
-                <aside className="md:h-full"></aside>
+            <section className="flex flex-col-reverse gap-1 md:grid md:grid-cols-[1fr_auto_1fr] md:gap-6">
+                <aside className="w-full empty:hidden md:h-full empty:md:flex"></aside>
 
-                <article className="prone md:max-w-[1024px]">
-                    <Content html={contentHtml} />
+                <article className="prone md:max-w-[720px]">
+                    <div className="flex gap-2 pb-6 text-gray-500 *:text-sm *:font-semibold *:leading-tight md:pb-0">
+                        <Label className="text-inherit">{publishedAtString}</Label>
+                        {' • '}
+                        <Label className="text-inherit">{t('n-min-read', readingTime)}</Label>
+                    </div>
+
+                    <Content className="prone max-w-none" html={contentHtml} />
                 </article>
 
-                <aside className="md:h-full">
+                <aside className="w-full md:h-full">
                     {author ? (
-                        <section>
-                            <div className="text-sm font-bold leading-snug">by {author.name}</div>
-                            <Label as="div" className="text-sm font-normal normal-case leading-snug text-gray-700">
-                                {publishedAtString}
-                            </Label>
-                        </section>
+                        <div className="flex items-center justify-start gap-2">
+                            {avatar ? <Avatar name={author.name} src={avatar} className="size-6" /> : null}
+                            <div className="flex flex-col items-start justify-between">
+                                <Label
+                                    as="div"
+                                    className="text-base font-normal normal-case leading-none text-gray-600"
+                                >
+                                    {author.name}
+                                </Label>
+                                <Label
+                                    as="div"
+                                    className="text-sm font-semibold normal-case leading-none text-gray-500 empty:hidden"
+                                >
+                                    {author.bio}
+                                </Label>
+                            </div>
+                        </div>
                     ) : null}
                 </aside>
             </section>

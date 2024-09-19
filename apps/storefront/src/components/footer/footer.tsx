@@ -53,7 +53,7 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
                             />
                         ) : null}
 
-                        <Content as="address" className="prose-sm font-medium">
+                        <Content as="address" className="prose-sm prose-p:leading-snug font-medium">
                             <PrismicText data={footer.address} styled={false} />
                         </Content>
 
@@ -73,13 +73,15 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
                                 data-align="right"
                             >
                                 {title ? (
-                                    <div className={cn(styles.title, 'text-xl font-extrabold leading-tight')}>
+                                    <div
+                                        className={cn(styles.title, 'text-lg font-extrabold leading-tight md:text-xl')}
+                                    >
                                         {title}
                                     </div>
                                 ) : null}
 
                                 {items.length > 0 ? (
-                                    <div className="flex flex-wrap gap-2 gap-y-3 *:after:font-extrabold *:after:opacity-75 *:after:content-[','] last:*:after:content-['.']">
+                                    <div className="flex flex-wrap gap-2 *:after:font-extrabold *:after:opacity-75 *:after:content-[','] last:*:after:content-['.'] md:gap-y-1">
                                         {items
                                             .filter(({ title }) => title && title.length > 0)
                                             .map((item) => (
@@ -87,7 +89,7 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
                                                     key={`${item.handle}-${item.title}`}
                                                     href={item.handle || ''}
                                                     target={item.handle?.startsWith('http') ? '_blank' : ''}
-                                                    className="text-sm leading-none hover:underline"
+                                                    className="text-base leading-none hover:underline focus-visible:underline md:text-sm"
                                                 >
                                                     {item.title}
                                                 </Link>

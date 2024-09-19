@@ -16,6 +16,7 @@ import md5 from 'crypto-js/md5';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
+import { Avatar } from '@/components/informational/avatar';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import { Card } from '@/components/layout/card';
@@ -146,7 +147,7 @@ export default async function BlogPage({
     return (
         <>
             <Suspense key={`blog.${blogHandle}.breadcrumbs`} fallback={<BreadcrumbsSkeleton />}>
-                <div className="-mb-[1.5rem] empty:hidden md:-mb-[2.25rem]">
+                <div className="-mb-[1.25rem] empty:hidden md:-mb-[2.25rem]">
                     <Breadcrumbs locale={locale} title={title} />
                 </div>
             </Suspense>
@@ -175,11 +176,14 @@ export default async function BlogPage({
                             month: 'short',
                             day: 'numeric'
                         });
+                        const avatar = author
+                            ? `https://www.gravatar.com/avatar/${md5(author.email)}.jpg?s=25&d=blank`
+                            : null;
 
                         return (
                             <Card
                                 key={id}
-                                className="flex h-full w-full flex-col items-stretch justify-between gap-3 p-2"
+                                className="flex h-full w-full flex-col items-stretch justify-between gap-1 p-2 md:gap-3"
                                 border={true}
                             >
                                 <Link
@@ -188,7 +192,7 @@ export default async function BlogPage({
                                 >
                                     {image?.url ? (
                                         <Image
-                                            className="aspect-[16/7] rounded-lg bg-gray-100 object-cover object-center transition-all group-hover/header:brightness-75"
+                                            className="aspect-[16/7] rounded-lg bg-gray-100 object-cover object-center shadow transition-all group-hover/header:brightness-75 group-focus-visible/header:brightness-75"
                                             role={image.altText ? undefined : 'presentation'}
                                             src={image.url}
                                             alt={image.altText!}
@@ -200,15 +204,15 @@ export default async function BlogPage({
                                             draggable={false}
                                         />
                                     ) : (
-                                        <div className="transition-color aspect-[16/7] rounded-lg bg-gray-100 group-hover/header:brightness-75" />
+                                        <div className="transition-color aspect-[16/7] rounded-lg bg-gray-100 group-hover/header:brightness-75 group-focus-visible/header:brightness-75" />
                                     )}
 
-                                    <div className="group-hover/header:text-primary block text-xl font-semibold transition-colors">
+                                    <div className="group-focus-visible/header:text-primary group-hover/header:text-primary block text-xl font-semibold transition-colors">
                                         {title}
                                     </div>
                                 </Link>
 
-                                <div className="flex flex-col justify-stretch gap-3">
+                                <div className="flex flex-col justify-stretch gap-3 md:gap-4">
                                     <Content
                                         className="not-prose line-clamp-4 overflow-hidden leading-normal"
                                         html={excerptHtml}
@@ -217,16 +221,17 @@ export default async function BlogPage({
                                     <div className="flex items-center justify-between gap-2">
                                         {author ? (
                                             <div className="flex items-center justify-end gap-1">
-                                                <img
-                                                    role="presentation"
-                                                    width={25}
-                                                    height={25}
-                                                    src={`https://www.gravatar.com/avatar/${md5(author.email)}.jpg?s=25&d=blank`}
-                                                    className="-mb-1 -mt-1 size-4 rounded-full bg-gray-100 object-cover object-center"
-                                                />
+                                                {avatar ? (
+                                                    <Avatar
+                                                        name={author.name}
+                                                        src={avatar}
+                                                        className="-mb-1 -mt-1 size-4"
+                                                    />
+                                                ) : null}
+
                                                 <Label
                                                     as="div"
-                                                    className="text-sm font-normal normal-case leading-none text-gray-600"
+                                                    className="text-sm font-semibold normal-case leading-none text-gray-500"
                                                 >
                                                     {author.name}
                                                 </Label>
@@ -235,7 +240,7 @@ export default async function BlogPage({
 
                                         <Label
                                             as="div"
-                                            className="text-sm font-normal normal-case leading-none text-gray-600"
+                                            className="text-sm font-semibold normal-case leading-none text-gray-500"
                                         >
                                             {publishedAtString}
                                         </Label>

@@ -49,7 +49,7 @@ const FooterContent = async ({ locale, i18n, shop }: FooterContentProps) => {
                                         href={href}
                                         key={`${target}-${index}`}
                                         target={target}
-                                        className="whitespace-nowrap hover:underline"
+                                        className="whitespace-nowrap hover:brightness-75 focus-visible:underline"
                                     >
                                         {title}
                                     </Link>
@@ -60,7 +60,7 @@ const FooterContent = async ({ locale, i18n, shop }: FooterContentProps) => {
                 ) : null}
             </div>
 
-            <div className="flex flex-col items-center justify-end gap-2 md:items-end">
+            <div className="focus- flex flex-col items-center justify-end gap-2 md:items-end">
                 <Link className="block h-8" href="/countries/" title={t('language-and-region-settings')}>
                     <Suspense>
                         <CurrentLocaleFlag locale={locale} />
