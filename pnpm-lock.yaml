@@ -164,8 +164,8 @@ importers:
         specifier: 2024.7.2
         version: 2024.7.2(@types/react@18.2.75)(react-dom@19.0.0-rc-5dcb0097-20240918(react@19.0.0-rc-5dcb0097-20240918))(react@19.0.0-rc-5dcb0097-20240918)
       '@shopify/shopify-api':
-        specifier: 11.4.0
-        version: 11.4.0
+        specifier: 11.4.1
+        version: 11.4.1
       '@vercel/analytics':
         specifier: 1.3.1
         version: 1.3.1(next@15.0.0-canary.159(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-24ec0eb-20240918)(react-dom@19.0.0-rc-5dcb0097-20240918(react@19.0.0-rc-5dcb0097-20240918))(react@19.0.0-rc-5dcb0097-20240918)(sass@1.78.0))(react@19.0.0-rc-5dcb0097-20240918)
@@ -2650,8 +2650,8 @@ packages:
     resolution: {integrity: sha512-Lln7vglzLK9KiYhl9ucQFVM7ArlpUM21xkDriBX8kVrqsoBsi+4vFIjf1wjhNPT0J/zHMjky7jiTnxVfdm+xXw==}
     engines: {node: '>=18.12.0'}
 
-  '@shopify/shopify-api@11.4.0':
-    resolution: {integrity: sha512-nOzBAaJilHhXdmv/X0nfRtFLtOyKwakfw1ocjyjREWy3iIqGrQyu2AxayEcEjikIlRzI58plaplklLOUVdyBPA==}
+  '@shopify/shopify-api@11.4.1':
+    resolution: {integrity: sha512-q4cxAmBA6QNYymQMc0SxNyOqh1EsfLUZCLfg6g+iQs156Q+Np+rQqWz6ZaPkNzw8uSaWZNEIFm8VBIMZC+vR+Q==}
 
   '@shopify/storefront-api-client@1.0.2':
     resolution: {integrity: sha512-s8vYcZ9+FfM0GwQUlyzz2vJ1m8ss3V+2fum+SPUq02iUpZnpVVlgVkCNTfftrwctq7lCrj/R50sG7pAEDX1C1A==}
@@ -9761,7 +9761,7 @@ snapshots:
 
   '@shopify/network@3.3.0': {}
 
-  '@shopify/shopify-api@11.4.0':
+  '@shopify/shopify-api@11.4.1':
     dependencies:
       '@shopify/admin-api-client': 1.0.2
       '@shopify/graphql-client': 1.2.0
