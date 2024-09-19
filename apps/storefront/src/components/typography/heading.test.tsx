@@ -1,7 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import React from 'react';
-
 import { render } from '@/utils/test/react';
 
 import Heading from '@/components/typography/heading';
@@ -21,13 +19,38 @@ describe('components', () => {
         it('should render a title and subtitle', () => {
             const title = 'This is the title';
             const subtitle = 'This is the subtitle';
-            const { getByText, unmount } = render(<Heading title={title} subtitle={subtitle} />);
+            const { container, getByText, unmount } = render(<Heading title={title} subtitle={subtitle} />);
             expect(getByText(title).innerText).toBe(title);
             expect(getByText(subtitle).innerText).toBe(subtitle);
+            expect(container.firstChild).toHaveTextContent(title);
+            expect(container.lastChild).toHaveTextContent(subtitle);
             expect(() => unmount()).not.toThrow();
         });
 
-        it.todo('should render the title and subtitle in reverse order if reverse prop is true');
+        it('should render only the title if subtitle is not provided', () => {
+            const title = 'This is the title';
+            const { getByText, unmount } = render(<Heading title={title} />);
+            expect(getByText(title).innerText).toBe(title);
+            expect(() => render(<Heading subtitle={title} />)).not.toThrow();
+            expect(() => unmount()).not.toThrow();
+        });
+
+        it('should render only the subtitle if title is not provided', () => {
+            const subtitle = 'This is the subtitle';
+            const { getByText, unmount } = render(<Heading subtitle={subtitle} />);
+            expect(getByText(subtitle).innerText).toBe(subtitle);
+            expect(() => render(<Heading title={subtitle} />)).not.toThrow();
+            expect(() => unmount()).not.toThrow();
+        });
+
+        it('should render the title and subtitle in reverse order if reverse prop is true', () => {
+            const title = 'This is the title';
+            const subtitle = 'This is the subtitle';
+            const { container, unmount } = render(<Heading title={title} subtitle={subtitle} reverse={true} />);
+            expect(container.firstChild).toHaveTextContent(subtitle);
+            expect(container.lastChild).toHaveTextContent(title);
+            expect(() => unmount()).not.toThrow();
+        });
 
         it('should render the title and subtitle in bold if bold prop is true', () => {
             const title = 'This is the title';

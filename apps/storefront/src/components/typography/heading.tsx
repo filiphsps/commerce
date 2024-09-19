@@ -92,18 +92,12 @@ const Heading = ({ bold, ...props }: HeadingProps) => {
     if ('title' in props) {
         const { title, titleAs, titleStyle, titleClassName, titleProps } = props;
         titleElement = (
-            <Title
-                bold={bold}
-                as={titleAs as any}
-                style={titleStyle}
-                className={titleClassName}
-                {...(titleProps || {})}
-            >
+            <Title bold={bold} as={titleAs} style={titleStyle} className={titleClassName} {...(titleProps || {})}>
                 {title}
             </Title>
         );
 
-        if (!('title' in props)) {
+        if (!('subtitle' in props)) {
             return titleElement;
         }
     }
