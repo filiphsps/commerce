@@ -51,7 +51,7 @@ export async function InfoBar({ className, shop, locale, i18n, ...props }: InfoB
             >
                 <div className={BLOCK_STYLES}>
                     <Link
-                        className="group flex select-none items-center justify-start gap-1 *:select-none focus-within:underline"
+                        className="group flex select-none items-center justify-start gap-1 *:select-none"
                         href="/countries/"
                         title={t('language-and-region-settings')}
                         data-nosnippet={true}
@@ -59,7 +59,7 @@ export async function InfoBar({ className, shop, locale, i18n, ...props }: InfoB
                         <LocaleFlag
                             locale={locale}
                             className="block h-3 object-left"
-                            nameClassName="group-hover:text-primary group-hover:underline"
+                            nameClassName="group-focus-within:text-primary group-focus-within:underline group-hover:text-primary group-hover:underline"
                             withName={true}
                             priority={true}
                         />

@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { Fragment, type HTMLProps, Suspense } from 'react';
+import { type HTMLProps, Suspense } from 'react';
 import { HiOutlineSearch } from 'react-icons/hi';
 
 import { Shop } from '@nordcom/commerce-db';
@@ -59,26 +59,38 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
             >
                 <section className="flex h-16 w-full flex-col items-center bg-white">
                     <header className="flex h-full w-full max-w-[var(--page-width)] items-center justify-start gap-4 overflow-hidden px-2 md:px-3">
-                        <Link href={'/'} className="block h-full py-[0.75rem]">
-                            {logo.src ? (
-                                <Image
-                                    className="h-full object-contain object-left"
-                                    src={logo.src}
-                                    width={175}
-                                    height={50}
-                                    alt={logo.alt || `${shop.name}'s logo`}
-                                    sizes="(max-width: 1024px) 125px, 175px"
-                                    draggable={false}
-                                    priority={true}
-                                    loading="eager"
-                                    decoding="async"
-                                />
-                            ) : null}
-                        </Link>
+                        <div className="flex h-full py-2">
+                            <Link
+                                href={'/'}
+                                style={{
+                                    aspectRatio: `${(logo.width / logo.height).toFixed(2)} / 1`
+                                }}
+                                className="-ml-2 block h-full rounded-lg px-2 py-2 focus-within:bg-gray-100 hover:bg-gray-100"
+                            >
+                                {logo.src ? (
+                                    <Image
+                                        className="h-full w-full object-contain object-left"
+                                        src={logo.src}
+                                        width={logo.width || 125}
+                                        height={logo.height || 50}
+                                        alt={logo.alt || `${shop.name}'s logo`}
+                                        sizes="(max-width: 1024px) 125px, 175px"
+                                        draggable={false}
+                                        priority={true}
+                                        loading="eager"
+                                        decoding="async"
+                                    />
+                                ) : null}
+                            </Link>
+                        </div>
 
                         <div className="flex h-full grow items-center justify-end gap-4 lg:gap-6" data-nosnippet={true}>
-                            <Link href="/search/" className="hover:text-primary transition-colors" title={t('search')}>
-                                <HiOutlineSearch className="text-xl lg:text-2xl" style={{ strokeWidth: 2.5 }} />
+                            <Link
+                                href="/search/"
+                                className="hover:text-primary focus:text-primary transition-colors"
+                                title={t('search')}
+                            >
+                                <HiOutlineSearch className="stroke-1 text-xl lg:text-2xl" />
                             </Link>
 
                             <CartButton i18n={i18n} locale={locale} />
@@ -87,8 +99,8 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
                 </section>
 
                 <section className="flex h-12 w-full flex-col items-center justify-center gap-0 border-0 border-b border-t border-solid border-gray-300 bg-white text-black group-data-[menu-open=true]/body:border-b-gray-100">
-                    <Suspense key="layout.header.header-navigation" fallback={<Fragment />}>
-                        <HeaderNavigation slices={slices} />
+                    <Suspense key="layout.header.header-navigation" fallback={<HeaderNavigation.skeleton />}>
+                        <HeaderNavigation shop={shop} i18n={i18n} locale={locale} slices={slices} />
                     </Suspense>
                 </section>
 
@@ -115,13 +127,7 @@ HeaderComponent.skeleton = () => (
             </header>
         </section>
         <section className="flex h-12 w-full flex-col items-center justify-center gap-0 border-0 border-b border-t border-solid border-gray-300 bg-white text-black">
-            <nav className="overflow-x-shadow flex w-full grow items-center justify-start gap-5 overflow-x-auto whitespace-nowrap px-2 py-[0.65rem] md:max-w-[var(--page-width)] md:flex-row md:overflow-hidden md:px-3 lg:gap-6">
-                <div className="h-full w-14 rounded-lg" data-skeleton />
-                <div className="h-full w-12 rounded-lg" data-skeleton />
-                <div className="h-full w-28 rounded-lg" data-skeleton />
-                <div className="h-full w-16 rounded-lg" data-skeleton />
-                <div className="h-full w-14 rounded-lg" data-skeleton />
-            </nav>
+            <HeaderNavigation.skeleton />
         </section>
     </section>
 );

@@ -90,8 +90,8 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
                                                 isSelected && styles.selected,
                                                 !inStock && styles.disabled,
                                                 styles.clickable,
-                                                'h-12 bg-white text-sm shadow focus-within:border-gray-400 hover:border-gray-400',
-                                                !isSelected && inStock && 'cursor-pointer'
+                                                'h-12 bg-white text-sm shadow hover:border-gray-400',
+                                                !isSelected && inStock && 'cursor-pointer focus:border-gray-400'
                                             )}
                                             onClick={() =>
                                                 setSelectedOptions({

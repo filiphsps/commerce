@@ -18,11 +18,7 @@ export type CMSContentProps = {
 const Prismic = async ({ shop, locale, handle, type = 'custom_page' }: CMSContentProps) => {
     const page = await PageApi({ shop, locale, handle, type });
 
-    return (
-        <Suspense fallback={<PrismicPage.skeleton shop={shop} page={page as any} />}>
-            <PrismicPage shop={shop} locale={locale} handle={handle} page={page} type={type as any} />
-        </Suspense>
-    );
+    return <PrismicPage shop={shop} locale={locale} handle={handle} page={page} type={type as any} />;
 };
 
 export const CMSContent = async ({ shop, locale, handle, type }: CMSContentProps) => {

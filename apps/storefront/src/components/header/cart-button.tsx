@@ -48,10 +48,9 @@ const CartButton = ({ locale, i18n }: CartButtonProps) => {
             <FiShoppingBag
                 className={cn(
                     styles.icon,
-                    'text-base transition-all',
+                    'stroke-1 text-base transition-all',
                     !totalQuantity && 'group-hover:text-primary text-xl lg:text-2xl'
                 )}
-                style={{ strokeWidth: 2.5 }}
                 suppressHydrationWarning={true}
             />
         </Button>
