@@ -40,6 +40,7 @@ const config = {
         cssChunking: 'loose',
         middlewarePrefetch: 'strict',
         nextScriptWorkers: true,
+        optimizeCss: true,
         optimizePackageImports: ['@apollo/client', '@shopify/hydrogen-react', 'react-icons', '@nordcom/nordstar'],
         optimizeServerReact: true,
         parallelServerBuildTraces: true,
@@ -52,10 +53,9 @@ const config = {
         serverSourceMaps: true,
         staleTimes: { dynamic: 0, static: 180 },
         taint: true,
-        taint: true,
         turbo: { root: path.resolve(__dirname, '../..') },
         typedEnv: true,
-        typedRoutes: true,
+        useEarlyImport: true,
         webpackBuildWorker: true
     },
     images: {
