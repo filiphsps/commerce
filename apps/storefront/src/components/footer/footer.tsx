@@ -80,16 +80,18 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
 
                                 {items.length > 0 ? (
                                     <div className="flex flex-wrap gap-2 gap-y-3 *:after:font-extrabold *:after:opacity-75 *:after:content-[','] last:*:after:content-['.']">
-                                        {items.map((item) => (
-                                            <Link
-                                                key={`${item.handle}-${item.title}`}
-                                                href={item.handle || ''}
-                                                target={item.handle?.startsWith('http') ? '_blank' : ''}
-                                                className="text-sm leading-none hover:underline"
-                                            >
-                                                {item.title}
-                                            </Link>
-                                        ))}
+                                        {items
+                                            .filter(({ title }) => title && title.length > 0)
+                                            .map((item) => (
+                                                <Link
+                                                    key={`${item.handle}-${item.title}`}
+                                                    href={item.handle || ''}
+                                                    target={item.handle?.startsWith('http') ? '_blank' : ''}
+                                                    className="text-sm leading-none hover:underline"
+                                                >
+                                                    {item.title}
+                                                </Link>
+                                            ))}
                                     </div>
                                 ) : null}
                             </div>

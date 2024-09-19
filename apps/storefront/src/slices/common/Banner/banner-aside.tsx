@@ -32,7 +32,7 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
             }}
             data-slice-variation={slice.variation}
         >
-            <div className="z-10 col-span-4 mr-[6rem] flex h-full w-full flex-col items-start justify-center gap-4 p-4 md:m-0 md:px-6 lg:gap-6">
+            <div className="z-10 col-span-4 mr-[6rem] flex h-full w-full flex-col items-start justify-center gap-4 p-4 py-6 md:m-0 md:px-6 lg:gap-6">
                 <div
                     className="flex flex-col items-start justify-center gap-1 text-left"
                     style={{
@@ -56,7 +56,7 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
                                 as={Link}
                                 key={`${target}-${index}`}
                                 className={cn(
-                                    'bg-white text-base text-black shadow hover:bg-black hover:text-white',
+                                    'bg-white px-3 text-base text-black shadow hover:bg-black hover:text-white',
                                     type &&
                                         'bg-secondary text-secondary-foreground hover:bg-secondary-dark hover:text-secondary-foreground'
                                 )}
