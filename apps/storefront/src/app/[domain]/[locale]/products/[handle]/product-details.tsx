@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 
 import { isProductConfectionary, type Product } from '@/api/product';
 import { getDictionary } from '@/utils/dictionary';
-import { useTranslation } from '@/utils/locale';
+import { getTranslations } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 import { parseMetafield } from '@shopify/hydrogen-react';
 
@@ -27,7 +27,7 @@ export type ProductIngredientsProps = {
 };
 export async function ProductIngredients({ locale, data: product, className = '' }: ProductIngredientsProps) {
     const i18n = await getDictionary(locale);
-    const { t } = useTranslation('product', i18n);
+    const { t } = getTranslations('product', i18n);
 
     const { ingredients } = product;
     if (!ingredients) {
@@ -53,7 +53,7 @@ export type ProductOriginalNameProps = {
 };
 export async function ProductOriginalName({ data: product }: ProductOriginalNameProps) {
     //const i18n = await getDictionary(locale);
-    //const { t } = useTranslation('product', i18n);
+    //const { t } = getTranslations('product', i18n);
 
     const { originalName } = product;
     if (!originalName) {
@@ -74,7 +74,7 @@ export type ProductDetailsProps = {
 };
 export async function ProductDetails({ locale, data: product }: ProductDetailsProps) {
     const i18n = await getDictionary(locale);
-    const { t } = useTranslation('product', i18n);
+    const { t } = getTranslations('product', i18n);
 
     if (!isProductConfectionary(product)) {
         return null;

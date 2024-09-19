@@ -9,7 +9,7 @@ import { ShopifyApolloApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { enableProductsPage } from '@/utils/flags';
-import { capitalize, Locale, useTranslation } from '@/utils/locale';
+import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import { asText } from '@prismicio/client';
 import { redirect, RedirectType } from 'next/navigation';
 
@@ -42,7 +42,7 @@ export async function generateMetadata({
     const locales = await LocalesApi({ api });
 
     const i18n = await getDictionary(locale);
-    const { t } = useTranslation('common', i18n);
+    const { t } = getTranslations('common', i18n);
 
     const title = page?.meta_title || page?.title || capitalize(t('products'));
     const description = asText(page?.meta_description) || page?.description || undefined;
@@ -103,7 +103,7 @@ export default async function ProductsPage({
 
     // Get dictionary of strings for the current locale.
     const i18n = await getDictionary(locale);
-    const { t } = useTranslation('common', i18n);
+    const { t } = getTranslations('common', i18n);
 
     return (
         <>

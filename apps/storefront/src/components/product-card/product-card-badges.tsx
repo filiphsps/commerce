@@ -2,7 +2,7 @@ import { FiBox } from 'react-icons/fi';
 
 import { isProductVegan, type Product } from '@/api/product';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
-import { capitalize, useTranslation } from '@/utils/locale';
+import { capitalize, getTranslations } from '@/utils/locale';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 
@@ -16,11 +16,11 @@ export type ProductCardBadgesProps = {
 };
 
 export const COMMON_BADGE_STYLES =
-    'z-10 flex h-7 items-center justify-center gap-1 rounded-full px-[0.7rem] text-[0.65rem] font-semibold uppercase';
+    'z-10 flex h-7 items-center justify-center gap-1 rounded-full px-[0.7rem] text-[0.65rem] font-semibold uppercase shadow';
 
 const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
     const selectedVariant = FirstAvailableVariant(product);
-    const { t } = useTranslation('product', i18n);
+    const { t } = getTranslations('product', i18n);
 
     if (!selectedVariant) {
         return null;

@@ -6,7 +6,7 @@ import { FiChevronRight, FiLock } from 'react-icons/fi';
 import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { BuildConfig } from '@/utils/build-config';
-import { type LocaleDictionary, useTranslation } from '@/utils/locale';
+import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 import { pluralize } from '@/utils/pluralize';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
@@ -38,7 +38,7 @@ type CartSummaryProps = {
     paymentMethods?: ReactNode;
 };
 const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummaryProps) => {
-    const { t } = useTranslation('cart', i18n);
+    const { t } = getTranslations('cart', i18n);
     const { totalQuantity, lines, cost, note, discountCodes = [], cartReady } = useCart();
     const { currency } = useShop();
     const [showNote, setShowNote] = useState(false);

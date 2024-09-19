@@ -6,7 +6,7 @@ import { PageApi } from '@/api/prismic/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
-import { capitalize, Locale, useTranslation } from '@/utils/locale';
+import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import { asText } from '@prismicio/client';
 
 import { AcceptedPaymentMethods } from '@/components/informational/accepted-payment-methods';
@@ -39,7 +39,7 @@ export async function generateMetadata({
     const locales = await LocalesApi({ api });
 
     const i18n = await getDictionary(locale);
-    const { t } = useTranslation('common', i18n); // eslint-disable-line react-hooks/rules-of-hooks
+    const { t } = getTranslations('common', i18n); // eslint-disable-line react-hooks/rules-of-hooks
 
     const title = page?.meta_title || capitalize(t('cart'));
     const description: string | undefined = asText(page?.meta_description) || undefined;
@@ -89,7 +89,7 @@ export default async function CartPage({ params: { domain, locale: localeData } 
     } catch {}
 
     const i18n = await getDictionary(locale);
-    const { t } = useTranslation('common', i18n);
+    const { t } = getTranslations('common', i18n);
 
     return (
         <>

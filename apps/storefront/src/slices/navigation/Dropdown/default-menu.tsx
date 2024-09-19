@@ -116,7 +116,7 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                                         'h-auto'
                                     )}
                                     style={{
-                                        WebkitTextStroke: '.15rem rgba(0,0,0,.25)',
+                                        WebkitTextStroke: '.15rem rgba(0,0,0,.35)',
                                         paintOrder: 'stroke fill',
                                         ...(!background_color && {
                                             textShadow: `1px 1px {gradientStyles ? '8px' : '1px'} #000`

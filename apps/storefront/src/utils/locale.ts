@@ -151,7 +151,7 @@ type TranslationLiteral = string | number | boolean | ReactNode;
  * @param {LocaleDictionary} dictionary - The dictionary to use for the translation.
  * @returns {({ t: (key: string, ...literals: TranslationLiteral[]) => string })} The translation function.
  */
-export const useTranslation = (scope: LocaleDictionaryScope, dictionary?: LocaleDictionary) => {
+export const getTranslations = (scope: LocaleDictionaryScope, dictionary?: LocaleDictionary) => {
     return {
         // FIXME: Fix return type.
         t: <T extends LocaleDictionaryKey, L extends TranslationLiteral[]>(key: T, ...literals: L): string => {
@@ -195,7 +195,7 @@ export const isSizeOption = (name: string): boolean =>
         'storlek' // Swedish, Norwegian, Danish.
     ].includes(name.toLowerCase());
 
-export const ConvertToLocalMeasurementSystem = ({
+export const convertToLocalMeasurementSystem = ({
     locale,
     weight,
     weightUnit

@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 
-import { type LocaleDictionary, useTranslation } from '@/utils/locale';
+import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 import { useCart } from '@shopify/hydrogen-react';
 
 import { MultilineInput } from '@/components/actionable/input';
 
 const CartNote = ({ i18n }: { i18n: LocaleDictionary }) => {
-    const { t } = useTranslation('cart', i18n);
+    const { t } = getTranslations('cart', i18n);
     const { cartReady, note, noteUpdate } = useCart();
     const [text, setText] = useState('');
 

@@ -3,7 +3,7 @@
 
 import { type HTMLProps, useCallback, useEffect, useState } from 'react';
 
-import { useTranslation } from '@/utils/locale';
+import { getTranslations } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
@@ -43,8 +43,8 @@ export function AddToCart({
 }: AddToCartProps) {
     const { locale } = useShop();
 
-    const { t } = useTranslation('common', i18n);
-    const { t: tCart } = useTranslation('cart', i18n);
+    const { t } = getTranslations('common', i18n);
+    const { t: tCart } = getTranslations('cart', i18n);
     const path = usePathname();
     const router = useRouter();
 

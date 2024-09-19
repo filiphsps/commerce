@@ -5,7 +5,7 @@ import { FiMail, FiPhone } from 'react-icons/fi';
 import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { MenuApi } from '@/api/navigation';
-import { capitalize, useTranslation } from '@/utils/locale';
+import { capitalize, getTranslations } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 
 import { LocaleFlag } from '@/components/informational/locale-flag';
@@ -15,7 +15,8 @@ import type { Locale, LocaleDictionary } from '@/utils/locale';
 import type { HTMLProps } from 'react';
 
 const BLOCK_STYLES = 'flex gap-2 *:text-sm *:leading-none';
-const LINK_STYLES = 'flex items-center justify-center gap-1 hover:underline hover:text-primary';
+const LINK_STYLES =
+    'flex items-center justify-center gap-1 focus-within:text-primary focus-within:underline hover:text-primary hover:underline';
 
 type InfoBarProps = {
     shop: OnlineShop;
@@ -24,7 +25,7 @@ type InfoBarProps = {
 } & HTMLProps<HTMLDivElement>;
 export async function InfoBar({ className, shop, locale, i18n, ...props }: InfoBarProps) {
     const menu = await MenuApi({ shop, locale });
-    const { t } = useTranslation('common', i18n);
+    const { t } = getTranslations('common', i18n);
 
     if (menu.show_info_bar === false) {
         return null;
@@ -50,7 +51,7 @@ export async function InfoBar({ className, shop, locale, i18n, ...props }: InfoB
             >
                 <div className={BLOCK_STYLES}>
                     <Link
-                        className="group flex select-none items-center justify-start gap-1 *:select-none"
+                        className="group flex select-none items-center justify-start gap-1 *:select-none focus-within:underline"
                         href="/countries/"
                         title={t('language-and-region-settings')}
                         data-nosnippet={true}

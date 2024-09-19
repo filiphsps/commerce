@@ -2,7 +2,7 @@
 
 import { Suspense } from 'react';
 
-import { useTranslation } from '@/utils/locale';
+import { getTranslations } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 import { useProduct } from '@shopify/hydrogen-react';
 
@@ -22,7 +22,7 @@ export type ProductActionsContainerProps = {
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 
 export const ProductActionsContainer = ({ className, i18n, ...props }: ProductActionsContainerProps) => {
-    const { t } = useTranslation('common', i18n);
+    const { t } = getTranslations('common', i18n);
     const { quantity, setQuantity } = useQuantity();
 
     const { product, selectedVariant } = useProduct() as ReturnType<typeof useProduct> & {

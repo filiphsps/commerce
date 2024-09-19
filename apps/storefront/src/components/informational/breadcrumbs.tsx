@@ -82,7 +82,7 @@ const Breadcrumbs = ({ locale, title, className }: BreadcrumbsProps) => {
                             itemType="https://schema.org/ListItem"
                         >
                             <Link
-                                className={cn(linkStyles, index === path.length - 1 && 'font-bold text-gray-500')}
+                                className={cn(linkStyles, index === path.length - 1 && 'font-semibold text-gray-500')}
                                 href={hrefs[index]!}
                                 itemType="https://schema.org/Thing"
                                 itemProp="item"

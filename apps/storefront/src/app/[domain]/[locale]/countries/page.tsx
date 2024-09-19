@@ -9,7 +9,7 @@ import { PageApi } from '@/api/prismic/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CountriesApi, LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
-import { capitalize, Locale, useTranslation } from '@/utils/locale';
+import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import { asText } from '@prismicio/client';
 import { cookies } from 'next/headers';
 import { redirect, RedirectType } from 'next/navigation';
@@ -37,7 +37,7 @@ export async function generateMetadata({
     const locales = await LocalesApi({ api });
 
     const i18n = await getDictionary(locale);
-    const { t } = useTranslation('common', i18n);
+    const { t } = getTranslations('common', i18n);
 
     const title = page?.meta_title || page?.title || capitalize(t('countries'));
     const description: string | undefined =
@@ -92,7 +92,7 @@ export default async function CountriesPage({
     const page = await PageApi({ shop, locale, handle: 'countries' });
 
     const i18n = await getDictionary(locale);
-    const { t } = useTranslation('common', i18n);
+    const { t } = getTranslations('common', i18n);
 
     return (
         <>

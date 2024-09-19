@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { useTranslation } from '@/utils/locale';
+import { getTranslations } from '@/utils/locale';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 import { useCart } from '@shopify/hydrogen-react';
@@ -57,7 +57,7 @@ const QuantitySelector = ({
     inputClassName = '',
     ...props
 }: QuantitySelectorProps) => {
-    const { t } = useTranslation('common', i18n);
+    const { t } = getTranslations('common', i18n);
     const [quantityValue, setQuantityValue] = useState(quantity.toString() || '1');
 
     const { cartReady, status } = useCart();

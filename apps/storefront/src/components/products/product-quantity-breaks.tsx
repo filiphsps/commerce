@@ -1,7 +1,7 @@
 'use client';
 
 import { transformQuantityBreaks } from '@/api/product';
-import { capitalize, useTranslation } from '@/utils/locale';
+import { capitalize, getTranslations } from '@/utils/locale';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 import { useCart, useProduct } from '@shopify/hydrogen-react';
@@ -31,7 +31,7 @@ export function ProductQuantityBreaksItem({
     className = '',
     ...props
 }: ProductQuantityBreaksItemProps) {
-    const { t: tProduct } = useTranslation('product', i18n);
+    const { t: tProduct } = getTranslations('product', i18n);
 
     const { quantity, setQuantity } = useQuantity();
 
@@ -69,8 +69,8 @@ export function ProductQuantityBreaksItem({
             {...props}
             type="button"
             className={cn(
-                'flex h-16 items-center justify-between gap-2 rounded-xl border-2 border-solid border-white bg-white px-3 py-3 text-lg leading-none transition-colors hover:border-gray-700',
-                active && 'border-primary',
+                'flex h-16 items-center justify-between gap-2 rounded-xl border-2 border-solid border-white bg-white px-3 py-3 text-lg leading-none shadow transition-colors focus-within:border-gray-400 hover:border-gray-400',
+                active && 'border-primary text-primary',
                 className
             )}
             onClick={() => setQuantity(minQuantity)}

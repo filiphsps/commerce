@@ -2,7 +2,7 @@
 
 import { Suspense } from 'react';
 
-import { type LocaleDictionary, useTranslation } from '@/utils/locale';
+import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 import { useCart } from '@shopify/hydrogen-react';
 
 import { Button } from '@/components/actionable/button';
@@ -13,8 +13,8 @@ type CartContentProps = {
     i18n: LocaleDictionary;
 };
 const CartLines = ({ i18n }: CartContentProps) => {
-    const { t } = useTranslation('common', i18n);
-    const { t: tCart } = useTranslation('cart', i18n);
+    const { t } = getTranslations('common', i18n);
+    const { t: tCart } = getTranslations('cart', i18n);
 
     const { cartReady, lines, linesRemove } = useCart();
 

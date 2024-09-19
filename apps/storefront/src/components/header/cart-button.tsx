@@ -4,7 +4,7 @@ import styles from '@/components/header/cart-button.module.scss';
 
 import { FiShoppingBag } from 'react-icons/fi';
 
-import { type Locale, type LocaleDictionary, useTranslation } from '@/utils/locale';
+import { getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 import { useCart } from '@shopify/hydrogen-react';
 
@@ -16,7 +16,7 @@ export type CartButtonProps = {
     i18n: LocaleDictionary;
 };
 const CartButton = ({ locale, i18n }: CartButtonProps) => {
-    const { t } = useTranslation('cart', i18n);
+    const { t } = getTranslations('cart', i18n);
     const { totalQuantity } = useCart();
 
     return (

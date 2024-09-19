@@ -1,7 +1,7 @@
 'use client';
 
 import { type Product, type ProductVariant } from '@/api/product';
-import { ConvertToLocalMeasurementSystem, isSizeOption } from '@/utils/locale';
+import { convertToLocalMeasurementSystem, isSizeOption } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 
 import type { Locale } from '@/utils/locale';
@@ -55,7 +55,7 @@ const ProductCardOptions = ({
                     variant.weight &&
                     !!(variant as any).weightUnit
                 ) {
-                    title = ConvertToLocalMeasurementSystem({
+                    title = convertToLocalMeasurementSystem({
                         locale: locale,
                         weight: variant.weight,
                         weightUnit: variant.weightUnit

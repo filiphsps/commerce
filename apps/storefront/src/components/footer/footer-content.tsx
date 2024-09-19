@@ -5,7 +5,7 @@ import { Suspense } from 'react';
 import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { FooterApi } from '@/api/footer';
-import { useTranslation } from '@/utils/locale';
+import { getTranslations } from '@/utils/locale';
 import { linkResolver } from '@/utils/prismic';
 import { asLink, asText } from '@prismicio/client';
 
@@ -25,7 +25,7 @@ export type FooterContentProps = {
 const FooterContent = async ({ locale, i18n, shop }: FooterContentProps) => {
     const footer = await FooterApi({ shop, locale });
 
-    const { t } = useTranslation('common', i18n);
+    const { t } = getTranslations('common', i18n);
 
     const hasCopyrights = asText(footer.copyrights).trim().length > 0;
 

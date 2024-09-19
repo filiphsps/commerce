@@ -5,7 +5,7 @@ import { HiOutlineSearch } from 'react-icons/hi';
 
 //import type { Product, ProductFilters } from '@/api/product';
 import { createProductSearchParams, type Product, type ProductFilters } from '@/api/product';
-import { type Locale, type LocaleDictionary, useTranslation } from '@/utils/locale';
+import { getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -25,7 +25,7 @@ type SearchBarProps = {
     disabled?: boolean;
 } & HTMLProps<HTMLDivElement>;
 export const SearchBar = ({ defaultValue, onSearch, disabled, className, i18n, ...props }: SearchBarProps) => {
-    const { t } = useTranslation('common', i18n);
+    const { t } = getTranslations('common', i18n);
     const [value, setValue] = useState<string>(defaultValue ?? '');
 
     const performSearch = useCallback(() => {

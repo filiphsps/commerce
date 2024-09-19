@@ -4,7 +4,7 @@ import { Suspense, useCallback, useEffect, useState } from 'react';
 import { FiMail } from 'react-icons/fi';
 import { EmailShareButton, FacebookShareButton, TwitterShareButton } from 'react-share';
 
-import { useTranslation } from '@/utils/locale';
+import { getTranslations } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 import Image from 'next/image';
 
@@ -38,7 +38,7 @@ const ProductGallery = ({
     const [selected, setSelected] = useState<ShopifyImage | null>(null);
     const [next, setNext] = useState<ShopifyImage | null>(null);
 
-    const { t } = useTranslation('common', i18n);
+    const { t } = getTranslations('common', i18n);
 
     const setImage = useCallback(
         (image: ShopifyImage) => {

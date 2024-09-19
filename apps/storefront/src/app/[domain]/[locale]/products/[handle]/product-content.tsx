@@ -4,7 +4,7 @@ import styles from './page.module.scss';
 
 import { useMemo, useState } from 'react';
 
-import { type LocaleDictionary, useTranslation } from '@/utils/locale';
+import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 import { ProductProvider } from '@shopify/hydrogen-react';
@@ -92,7 +92,7 @@ export function ProductSavings({ i18n, product, className }: ProductSavingsProps
                 : product.variants.edges[0].node,
         [product, searchParams]
     );
-    const { t } = useTranslation('product', i18n);
+    const { t } = getTranslations('product', i18n);
 
     if (!variant || !product.availableForSale) {
         return null;

@@ -79,7 +79,7 @@ export const isProductVegan = (product: Product): boolean => {
     }
 
     const type = productType(product);
-    if (!['confectionary', 'food', 'bags', 'clothing', 'sports'].includes(type)) {
+    if (type ? !['confectionary', 'food', 'bags', 'clothing', 'sports'].includes(type) : true) {
         return false;
     }
 
@@ -124,12 +124,12 @@ export type ProductType =
     | 'clothing'
     | 'sports'
     | 'other';
-export const productType = (product: Product): ProductType => {
+export const productType = (product: Product): ProductType | null => {
     if (isProductConfectionary(product)) {
         return 'confectionary';
     }
 
-    return 'other';
+    return null;
 };
 
 export type ProductSorting = ProductSortKeys;

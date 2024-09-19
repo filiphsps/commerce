@@ -14,7 +14,7 @@ import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import { isValidHandle } from '@/utils/handle';
-import { Locale, useTranslation } from '@/utils/locale';
+import { getTranslations, Locale } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { safeParseFloat } from '@/utils/pricing';
 import { checkAndHandleRedirect } from '@/utils/redirect';
@@ -164,7 +164,7 @@ const BLOCK_STYLES =
 async function Badges({ product, i18n }: { product: Product; i18n: LocaleDictionary }) {
     const badges: ReactNode[] = [];
 
-    const { t } = useTranslation('product', i18n);
+    const { t } = getTranslations('product', i18n);
 
     if (isProductVegan(product)) {
         badges.push(
@@ -223,7 +223,7 @@ export default async function ProductPage({
 
     // Get dictionary of strings for the current locale.
     const i18n = await getDictionary({ shop, locale });
-    const { t } = useTranslation('product', i18n);
+    const { t } = getTranslations('product', i18n);
 
     const initialVariant = FirstAvailableVariant(product);
     if (!initialVariant) {

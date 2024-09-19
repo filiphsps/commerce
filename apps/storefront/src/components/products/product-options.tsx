@@ -4,7 +4,7 @@ import styles from '@/components/products/product-options.module.scss';
 
 import { Fragment, type HTMLProps } from 'react';
 
-import { ConvertToLocalMeasurementSystem, isSizeOption } from '@/utils/locale';
+import { convertToLocalMeasurementSystem, isSizeOption } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 import { parseGid, useProduct } from '@shopify/hydrogen-react';
 
@@ -74,7 +74,7 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
                                     const title = `${product.vendor} ${product.title} - ${matchingVariant?.title}`;
                                     const label =
                                         matchingVariant && option.name && isSizeOption(option.name)
-                                            ? ConvertToLocalMeasurementSystem({
+                                            ? convertToLocalMeasurementSystem({
                                                   locale,
                                                   weight: matchingVariant.weight!,
                                                   weightUnit: matchingVariant.weightUnit!
@@ -90,7 +90,8 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
                                                 isSelected && styles.selected,
                                                 !inStock && styles.disabled,
                                                 styles.clickable,
-                                                'h-12 bg-white text-sm'
+                                                'h-12 bg-white text-sm shadow focus-within:border-gray-400 hover:border-gray-400',
+                                                !isSelected && inStock && 'cursor-pointer'
                                             )}
                                             onClick={() =>
                                                 setSelectedOptions({

@@ -7,7 +7,7 @@ import useGeoLocation from 'react-ipgeolocation';
 import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { getDictionary } from '@/utils/dictionary';
-import { capitalize, Locale, useTranslation } from '@/utils/locale';
+import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 import { setCookie } from 'cookies-next';
 import { usePathname, useSearchParams } from 'next/navigation';
@@ -63,7 +63,7 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
         setDropdownActive(false);
     }, [pathname]);
 
-    const { t } = useTranslation('common', i18n || defaultI18n);
+    const { t } = getTranslations('common', i18n || defaultI18n);
 
     const location = useGeoLocation();
 
@@ -122,14 +122,14 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
                 <div className="flex w-full grow gap-3 md:w-96">
                     <div
                         className={cn(
-                            'relative flex h-10 w-full cursor-pointer select-none flex-col gap-0 rounded-lg border-2 border-solid border-white bg-white shadow',
+                            'relative flex h-10 w-full cursor-pointer select-none flex-col gap-0 rounded-lg border-2 border-solid border-white bg-white shadow focus-within:border-gray-400',
                             dropdownActive && 'border-primary rounded-b-none border-b-0',
-                            !dropdownActive && 'hover:border-gray-300'
+                            !dropdownActive && 'hover:border-gray-400'
                         )}
                     >
                         <button
                             className={cn(
-                                'flex h-10 w-full grow select-none appearance-none items-center justify-start gap-3 rounded-lg p-2 text-base leading-none *:select-none',
+                                'flex h-10 w-full grow cursor-pointer select-none appearance-none items-center justify-start gap-3 rounded-lg p-2 text-base leading-none *:select-none focus-within:bg-gray-100 hover:bg-gray-100',
                                 dropdownActive && 'hover:border-primary'
                             )}
                             onClick={() => setDropdownActive(!dropdownActive)}
@@ -154,13 +154,13 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
                         <Link
                             href="/countries/"
                             className={cn(
-                                'absolute inset-x-0 -left-[2px] top-9 flex h-10 w-[calc(100%+4px)] select-none gap-3 rounded-b-lg bg-white p-2 text-base *:select-none hover:bg-gray-100',
+                                'absolute inset-x-0 -left-[2px] top-9 flex h-10 w-[calc(100%+4px)] cursor-pointer select-none gap-3 rounded-b-lg bg-white p-2 text-base text-gray-600 *:select-none focus-within:bg-gray-100 focus-within:text-black hover:bg-gray-100 hover:text-black',
                                 dropdownActive && 'border-primary border-2 border-t-0 border-solid shadow-xl',
                                 !dropdownActive && 'hidden'
                             )}
                         >
                             <div className="w-5"></div>
-                            <div>Another country or region</div>
+                            <div className="text-inherit">Another country or region</div>
                         </Link>
                     </div>
 

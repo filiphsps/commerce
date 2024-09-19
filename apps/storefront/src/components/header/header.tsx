@@ -7,7 +7,7 @@ import { Shop } from '@nordcom/commerce-db';
 
 import { HeaderApi, MenuApi } from '@/api/navigation';
 import CustomHTML from '@/slices/common/CustomHTML';
-import { type Locale, type LocaleDictionary, useTranslation } from '@/utils/locale';
+import { getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
 import Image from 'next/image';
 
 import { CartButton } from '@/components/header/cart-button';
@@ -29,7 +29,7 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
     const slices = menu.slices;
 
     const { logo } = shop.design.header;
-    const { t } = useTranslation('common', i18n);
+    const { t } = getTranslations('common', i18n);
 
     return (
         <>

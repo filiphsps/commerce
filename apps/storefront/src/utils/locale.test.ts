@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
-import { useTranslation } from '@/utils/locale';
+import { getTranslations } from '@/utils/locale';
 
 describe('utils', () => {
     describe.todo('Locale');
-    describe.todo('ConvertToLocalMeasurementSystem');
+    describe.todo('convertToLocalMeasurementSystem');
 
-    describe('useTranslation', () => {
+    describe('getTranslations', () => {
         it('should return a translation function for a given scope and dictionary', () => {
             const dictionary = {
                 common: {
@@ -18,8 +18,8 @@ describe('utils', () => {
                 }
             } as any;
 
-            const { t: cartT }: any = useTranslation('cart', dictionary);
-            const { t: commonT }: any = useTranslation('common' as any, dictionary);
+            const { t: cartT }: any = getTranslations('cart', dictionary);
+            const { t: commonT }: any = getTranslations('common' as any, dictionary);
 
             expect(cartT('welcome')).toEqual('Welcome to the homepage');
             expect(commonT('hello')).toEqual('Hello');

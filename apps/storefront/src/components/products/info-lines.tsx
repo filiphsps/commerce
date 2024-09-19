@@ -3,7 +3,7 @@ import 'server-only';
 import { FiCheck } from 'react-icons/fi';
 
 import { showProductInfoLines } from '@/utils/flags';
-import { useTranslation } from '@/utils/locale';
+import { getTranslations } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 
 import { Label } from '@/components/typography/label';
@@ -17,7 +17,7 @@ export type StockStatusProps = {
     i18n: LocaleDictionary;
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 const StockStatus = ({ product, i18n, className, ...props }: StockStatusProps) => {
-    const { t } = useTranslation('product', i18n);
+    const { t } = getTranslations('product', i18n);
     if (!product) {
         return null;
     }
@@ -44,7 +44,7 @@ export type GetOrderByEstimateProps = {
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 
 export const GetOrderByEstimate = ({ product, i18n, className, ...props }: GetOrderByEstimateProps) => {
-    const { t } = useTranslation('product', i18n);
+    const { t } = getTranslations('product', i18n);
     if (!product) {
         return null;
     }

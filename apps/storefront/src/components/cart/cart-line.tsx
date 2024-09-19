@@ -1,7 +1,7 @@
 import { CgTrash } from 'react-icons/cg';
 import { FiTag } from 'react-icons/fi';
 
-import { type LocaleDictionary, useTranslation } from '@/utils/locale';
+import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 import { useCart } from '@shopify/hydrogen-react';
@@ -23,8 +23,8 @@ interface CartLineProps {
 }
 const CartLine = ({ i18n, data: line }: CartLineProps) => {
     const { cartReady, status, linesUpdate, linesRemove } = useCart();
-    const { t } = useTranslation('common', i18n);
-    const { t: tCart } = useTranslation('cart', i18n);
+    const { t } = getTranslations('common', i18n);
+    const { t: tCart } = getTranslations('cart', i18n);
 
     const ready = cartReady && status !== 'updating';
 

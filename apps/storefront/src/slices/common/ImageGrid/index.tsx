@@ -66,14 +66,14 @@ const ImageGrid = ({ slice, index }: ImageGridProps) => {
                             // If we're positioned high up in the page, we want to load the image
                             // immediately. Otherwise, we can wait until the browser decides to.
                             priority={index < 2}
-                            className="bg-primary w-full rounded-lg object-cover object-center shadow transition-all group-hover/item:brightness-75"
+                            className="bg-primary w-full rounded-lg object-cover object-center shadow transition-all group-focus-within/item:brightness-75 group-hover/item:brightness-75"
                         />
 
                         <div
                             className={cn(
                                 'empty:hidden',
                                 isInlineTitle &&
-                                    'absolute inset-auto bottom-3 right-3 ml-3 rounded-lg bg-gray-100/95 px-3 py-2 text-gray-700 shadow transition-all group-hover/item:brightness-75'
+                                    'absolute inset-auto bottom-3 right-3 ml-3 rounded-lg bg-gray-100/95 px-3 py-2 text-gray-700 shadow transition-all group-focus-within/item:brightness-75 group-hover/item:brightness-75'
                             )}
                         >
                             {titleText.length > 0 ? (
@@ -89,7 +89,7 @@ const ImageGrid = ({ slice, index }: ImageGridProps) => {
                                 </div>
                             ) : null}
                             {descriptionText.length > 0 ? (
-                                <div className="group-hover/item:text-primary text-sm leading-tight transition-colors">
+                                <div className="group-focus-within/item:text-primary group-hover/item:text-primary text-sm leading-tight transition-colors">
                                     <PrismicText data={description} />
                                 </div>
                             ) : null}
