@@ -1,5 +1,4 @@
-import { CgTrash } from 'react-icons/cg';
-import { FiTag } from 'react-icons/fi';
+import { FiTag, FiX } from 'react-icons/fi';
 
 import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 import { safeParseFloat } from '@/utils/pricing';
@@ -48,7 +47,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
 
     const image = variant.image ? (
         <Image
-            className="block h-full w-full object-contain object-center"
+            className="h-full w-full object-contain object-center"
             src={variant.image.url}
             alt={variant.image.altText || variant.title}
             width={85}
@@ -63,7 +62,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
 
     const pricing = (
         <>
-            {discount ? (
+            {discount > 0.1 ? (
                 <Price
                     className="text-base font-medium leading-tight text-gray-500 line-through"
                     data={{
@@ -76,7 +75,10 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
             ) : null}
 
             <Price
-                className={cn('text-xl font-bold leading-tight', discount && 'text-xl font-extrabold text-red-500')}
+                className={cn(
+                    'text-xl font-bold leading-tight',
+                    discount > 0.1 && 'text-xl font-extrabold text-red-500'
+                )}
                 data={line.cost.totalAmount}
             />
         </>
@@ -88,73 +90,73 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
     const { vendor, title, productType, handle } = product;
 
     return (
-        <section
+        <Card
             className={cn(
-                'flex h-full w-full flex-wrap border-0 border-b-2 border-solid border-gray-200 py-6 first-of-type:border-t-2 md:grid md:grid-cols-[8rem_1fr] md:grid-rows-[1fr] md:gap-3',
+                'relative flex gap-3 shadow',
                 !ready && 'cursor-not-allowed opacity-50 *:pointer-events-none'
             )}
         >
-            <Card
-                className="mb-8 aspect-[4/3] w-24 flex-shrink-0 overflow-hidden border-0 p-0 md:mb-0 md:aspect-square md:h-full md:w-full md:border-2 md:p-3"
-                border={true}
-            >
-                {image}
-            </Card>
+            <Card className="aspect-square h-32 w-auto overflow-hidden bg-white p-2 shadow">{image}</Card>
 
-            <div className="contents h-fit w-full flex-wrap items-start gap-3 md:relative md:grid md:h-full md:grid-cols-[7fr_3fr_4fr] md:grid-rows-[1fr] md:py-2">
-                <header className="flex w-[calc(100%-7rem)] flex-col gap-1 pl-4 md:w-full md:pl-0">
-                    <Link
-                        href={`/products/${handle}`}
-                        prefetch={false}
-                        className="hover:text-primary text-lg font-bold leading-none transition-colors"
-                    >
-                        <span>{vendor}</span> {title}
-                    </Link>
+            <div className="flex w-full flex-col items-start gap-3 md:flex-row">
+                <header className="flex h-full w-full flex-col items-start justify-between gap-1 md:py-2">
+                    <div>
+                        <Link
+                            href={`/products/${handle}`}
+                            prefetch={false}
+                            className="hover:text-primary focus-visible:text-primary text-lg font-bold leading-none transition-colors"
+                        >
+                            <span>{vendor}</span> {title}
+                        </Link>
 
-                    <div className="leading-normal">
-                        {[
-                            ...(productType ? [productType] : []),
-                            ...variant.selectedOptions
-                                .map(({ name, value }) => `${name}: ${value}`)
-                                .filter((_) => _ !== 'Title: Default Title')
-                        ].join(', ')}
-                    </div>
-
-                    <div className="flex items-center justify-start gap-1 gap-x-3 md:flex-col md:items-start md:pt-1">
-                        {discounts.length > 0 ? (
-                            <div className="w-fit py-1">
-                                <div className="flex w-full flex-wrap items-start justify-start gap-2">
-                                    {discounts.map((discount, index) => (
-                                        <div
-                                            key={`${line.id}-discount-${index}`}
-                                            className="flex items-center justify-center gap-1 rounded-xl bg-gray-100 p-1 px-2 text-xs font-semibold leading-none"
-                                        >
-                                            <FiTag className="text-inherit" />
-                                            <Label>{(discount as any).title || tCart('automatic-discount')}</Label>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        ) : null}
-
-                        <div className="flex w-fit gap-2">
-                            <Label
-                                as={Button}
-                                onClick={() => linesRemove([line.id!])}
-                                styled={false}
-                                className="flex items-center justify-center gap-1 text-sm hover:text-red-500 md:text-base"
-                            >
-                                <CgTrash className="text-sm text-inherit md:-mt-[.15rem] md:text-base" />
-                                {t('remove')}
-                            </Label>
+                        <div className="leading-normal">
+                            {[
+                                ...(productType ? [productType] : []),
+                                ...variant.selectedOptions
+                                    .map(({ name, value }) => `${name}: ${value}`)
+                                    .filter((_) => _ !== 'Title: Default Title')
+                            ].join(', ')}
                         </div>
+
+                        <div className="flex items-center justify-start gap-1 gap-x-3 md:flex-col md:items-start md:pt-1">
+                            {discounts.length > 0 ? (
+                                <div className="w-fit py-1">
+                                    <div className="flex w-full flex-wrap items-start justify-start gap-2">
+                                        {discounts.map((discount, index) => (
+                                            <div
+                                                key={`${line.id}-discount-${index}`}
+                                                className="flex items-center justify-center gap-1 rounded-xl bg-gray-100 p-1 px-2 text-xs font-semibold leading-none"
+                                            >
+                                                <FiTag className="text-inherit" />
+                                                <Label>{(discount as any).title || tCart('automatic-discount')}</Label>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ) : null}
+                        </div>
+                    </div>
+                    <div>
+                        <div className="flex flex-col items-start">{pricing}</div>
                     </div>
                 </header>
 
-                <div className="flex w-[calc(100%*2/3-.75rem)] flex-col items-start justify-center self-center pr-4 md:h-full md:w-full md:items-center md:justify-start md:gap-3 md:pr-0">
-                    <div className="h-12 w-full max-w-48 md:h-14 md:max-w-none">
+                <section className="flex h-full w-full flex-col items-end justify-end">
+                    <div className="absolute inset-auto right-3 top-3">
+                        <Label
+                            as={Button}
+                            onClick={() => linesRemove([line.id!])}
+                            styled={false}
+                            className="flex items-center justify-center gap-1 border-0 border-solid border-red-500 text-sm hover:text-red-500 focus-visible:border-b-2 focus-visible:text-red-500 md:text-base"
+                            title={t('remove')}
+                        >
+                            <FiX className="stroke-2 text-xl" />
+                        </Label>
+                    </div>
+
+                    <div className="h-12 w-full max-w-none md:w-full md:max-w-56">
                         <QuantitySelector
-                            className="h-full border-2 border-solid border-gray-100"
+                            className="h-full border-gray-200"
                             buttonClassName={cn(quantity > 999 && 'hidden')}
                             disabled={!ready}
                             i18n={i18n}
@@ -174,13 +176,9 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                             allowDecreaseToZero={true}
                         />
                     </div>
-                </div>
-
-                <div className="flex h-12 w-[calc(100%*1/3)] flex-col items-end justify-center text-right md:h-full md:w-full md:justify-start">
-                    <div className="flex flex-col items-end">{pricing}</div>
-                </div>
+                </section>
             </div>
-        </section>
+        </Card>
     );
 };
 

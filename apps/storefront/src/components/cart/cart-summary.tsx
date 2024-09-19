@@ -10,7 +10,7 @@ import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 import { pluralize } from '@/utils/pluralize';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
-import { ShopPayButton, useCart } from '@shopify/hydrogen-react';
+import { useCart } from '@shopify/hydrogen-react';
 
 import { Button } from '@/components/actionable/button';
 import { CartCoupons } from '@/components/cart/cart-coupons';
@@ -80,12 +80,16 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
     const salePercentage = Math.round(((100 * sale) / safeParseFloat(0, cost?.totalAmount?.amount)) * 100) / 100;
     const promos = safeParseFloat(0, cost?.subtotalAmount?.amount) - safeParseFloat(0, cost?.totalAmount?.amount) || 0;
 
-    if (cartReady && (totalQuantity || 0) <= 0) {
-        return null;
-    }
+    const noItems = !lines || lines.length <= 0 || !totalQuantity || totalQuantity <= 0;
 
     return (
-        <div className={cn(styles.container, 'sticky top-32 flex flex-col gap-4')}>
+        <div
+            className={cn(
+                styles.container,
+                'sticky top-32 flex flex-col gap-4',
+                !cartReady && 'pointer-events-none brightness-50'
+            )}
+        >
             {children}
 
             <section className={cn(styles.section, 'gap-1')}>
@@ -104,7 +108,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
 
                     <div className="flex items-center justify-between">
                         <Label className={SUMMARY_LABEL_STYLES}>{t('subtotal')}</Label>
-                        {cost?.subtotalAmount ? (
+                        {cost?.subtotalAmount && !noItems ? (
                             <Price
                                 className={PRICE_STYLES}
                                 data={{
@@ -115,7 +119,9 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                                         cost.subtotalAmount.amount
                                 }}
                             />
-                        ) : null}
+                        ) : (
+                            <div className={PRICE_STYLES}>...</div>
+                        )}
                     </div>
 
                     {totalSale ? (
@@ -191,7 +197,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                         </>
                     ) : null}
 
-                    {promos ? (
+                    {promos && !noItems ? (
                         <div className={cn(styles.discounted, 'flex items-center justify-between')}>
                             <Label className={SUMMARY_LABEL_STYLES}>{t('promo-codes')}</Label>
                             {cartReady ? (
@@ -206,9 +212,9 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                         </div>
                     ) : null}
 
-                    {cost ? (
-                        <div className={cn(styles.totals, 'flex items-center justify-between pt-1')}>
-                            <Label className="text-xl font-bold capitalize">{t('estimated-total')}</Label>
+                    <div className={cn(styles.totals, 'flex items-center justify-between pt-1')}>
+                        <Label className="text-xl font-bold capitalize">{t('estimated-total')}</Label>
+                        {cost && !noItems ? (
                             <Price
                                 className={PRICE_STYLES}
                                 data={
@@ -219,8 +225,10 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                                     }
                                 }
                             />
-                        </div>
-                    ) : null}
+                        ) : (
+                            <div className={PRICE_STYLES}>...</div>
+                        )}
+                    </div>
 
                     <div
                         className={'text-xs font-semibold opacity-75'}
@@ -296,25 +304,12 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
             <section className={cn(styles.section, styles['section-actions'], 'gap-2')}>
                 <Button
                     className="h-10 py-0 md:h-14 md:text-base lg:text-lg"
-                    disabled={!cartReady || !lines}
+                    disabled={!cartReady || noItems}
                     onClick={onCheckout}
                 >
                     <span>{t('continue-to-checkout')}</span>
                     <FiChevronRight className={styles.icon} />
                 </Button>
-
-                {cartReady && lines && lines.length > 0 ? (
-                    <ShopPayButton
-                        // TODO: Only show this if we're using Shopify.
-                        width="100%"
-                        className={cn(styles.button, styles['shop-button'], 'rounded-xl')}
-                        variantIdsAndQuantities={lines.map(({ quantity, merchandise: { id } }: any) => ({
-                            quantity,
-                            id
-                        }))}
-                        channel="hydrogen"
-                    />
-                ) : null}
             </section>
 
             <section className={cn(styles.section, styles['section-security'], 'gap-2')}>

@@ -19,7 +19,7 @@ const VariantImage = ({ image, priority }: VariantImageProps) => {
     }
 
     return (
-        <div className="aspect-3/2 h-max w-full rounded-lg bg-white">
+        <div className="aspect-3/2 h-max w-full rounded-lg bg-white drop-shadow">
             <Image
                 role="presentation"
                 className="h-full w-full transform-gpu object-contain object-center p-3 transition-transform group-hover/card:scale-110"

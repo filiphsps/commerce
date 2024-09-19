@@ -13,48 +13,34 @@ type CartContentProps = {
     i18n: LocaleDictionary;
 };
 const CartLines = ({ i18n }: CartContentProps) => {
-    const { t } = getTranslations('common', i18n);
     const { t: tCart } = getTranslations('cart', i18n);
 
-    const { cartReady, lines, linesRemove } = useCart();
+    const { cartReady, lines, linesRemove, totalQuantity } = useCart();
 
     if (!cartReady || typeof lines === 'undefined') {
         return <CartLines.skeleton />;
     }
 
-    if (lines.length <= 0) {
+    if (lines.length <= 0 || !totalQuantity || totalQuantity <= 0) {
         return <Label>There are no items in your cart.</Label>;
     }
 
     return (
         <div className="flex w-full flex-col gap-2">
             <div className="-mt-4 flex h-2 w-full select-none flex-row-reverse items-center justify-between pb-3">
-                <Button
-                    as={Label as any}
-                    className="inline-flex cursor-pointer text-xs text-gray-600 hover:text-red-500"
-                    styled={false}
-                    onClick={() => linesRemove(lines.map((line) => line?.id).filter((_) => _) as string[])}
-                >
-                    {tCart('clear-cart')}
-                </Button>
+                {
+                    <Button
+                        as={Label as any}
+                        className="inline-flex cursor-pointer text-xs text-gray-600 hover:text-red-500"
+                        styled={false}
+                        onClick={() => linesRemove(lines.map((line) => line?.id).filter((_) => _) as string[])}
+                    >
+                        {tCart('clear-cart')}
+                    </Button>
+                }
             </div>
 
-            <div className="flex h-full w-full flex-col empty:hidden">
-                <header className="text-gray-00 grid grid-cols-[8rem_1fr] grid-rows-[1fr] items-end gap-3 py-1">
-                    <div>
-                        <Label className="text-inherit">{t('product')}</Label>
-                    </div>
-                    <div className="grid h-full w-full grid-cols-[7fr_3fr_4fr] grid-rows-[1fr] items-start gap-3">
-                        <div />
-                        <div className="flex h-full w-full flex-col items-center">
-                            <Label className="text-inherit">{t('quantity')}</Label>
-                        </div>
-                        <div className="flex h-full w-full flex-col items-end">
-                            <Label className="text-inherit">{t('price')}</Label>
-                        </div>
-                    </div>
-                </header>
-
+            <section className="flex h-full w-full flex-col gap-3 empty:hidden md:gap-4">
                 {lines.map((item) => {
                     if (!item) {
                         return null;
@@ -66,7 +52,7 @@ const CartLines = ({ i18n }: CartContentProps) => {
                         </Suspense>
                     );
                 })}
-            </div>
+            </section>
         </div>
     );
 };

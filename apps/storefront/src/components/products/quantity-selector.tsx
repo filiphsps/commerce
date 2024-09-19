@@ -141,8 +141,8 @@ const QuantitySelector = ({
         <section
             {...props}
             className={cn(
-                'flex min-h-fit w-full overflow-hidden rounded-lg border-2 border-solid border-white bg-white p-0 leading-none opacity-50 shadow transition-colors *:appearance-none *:text-center *:text-lg *:leading-none *:transition-colors',
-                !disabled && 'hover:border-primary opacity-100 focus-within:border-gray-400',
+                'flex min-h-fit w-full overflow-hidden rounded-lg border border-solid border-white bg-white p-0 leading-none opacity-50 drop-shadow transition-colors *:appearance-none *:text-center *:text-lg *:leading-none *:transition-colors',
+                !disabled && 'hover:border-primary focus-visible::border-gray-300 opacity-100',
                 className
             )}
             suppressHydrationWarning={true}
@@ -155,7 +155,7 @@ const QuantitySelector = ({
                 className={cn(
                     'aspect-[3/4] h-full select-none appearance-none rounded-none bg-transparent p-2 font-bold text-current',
                     !disabled &&
-                        'hover:bg-primary focus:bg-primary hover:text-primary-foreground focus:text-primary-foreground cursor-pointer',
+                        'hover:bg-primary hover:text-primary-foreground focus-visible:bg-primary focus-visible:text-primary-foreground active:bg-primary active:text-primary-foreground cursor-pointer',
                     buttonClassName
                 )}
                 disabled={decreaseDisabled}
@@ -203,7 +203,7 @@ const QuantitySelector = ({
                 className={cn(
                     'aspect-[3/4] h-full select-none appearance-none rounded-none bg-transparent p-2 font-bold text-current',
                     !disabled &&
-                        'hover:bg-primary focus:bg-primary hover:text-primary-foreground focus:text-primary-foreground cursor-pointer',
+                        'hover:bg-primary hover:text-primary-foreground focus-visible:bg-primary focus-visible:text-primary-foreground active:bg-primary active:text-primary-foreground cursor-pointer',
                     buttonClassName
                 )}
                 disabled={disabled}

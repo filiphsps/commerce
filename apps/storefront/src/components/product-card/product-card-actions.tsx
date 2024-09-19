@@ -51,7 +51,7 @@ const ProductCardActions = ({ i18n, data: product, selectedVariant }: ProductCar
         return null;
     }
 
-    const baseStyles = 'font-semibold overflow-clip *:h-9 mt-2 h-10 min-h-10 max-h-10 grow rounded-lg';
+    const baseStyles = 'font-semibold overflow-hidden *:h-9 mt-2 h-10 min-h-10 max-h-10 grow rounded-lg drop-shadow';
     if (line) {
         return (
             <>
