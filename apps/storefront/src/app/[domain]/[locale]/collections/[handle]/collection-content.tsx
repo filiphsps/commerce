@@ -20,19 +20,23 @@ export async function CollectionContent({
     locale,
     handle,
     searchParams = {},
-    cursors
+    pagesInfo: { cursors, pages }
 }: {
     shop: OnlineShop;
     locale: Locale;
     handle: string;
     searchParams?: SearchParams;
-    cursors: string[];
+    pagesInfo: { cursors: string[]; pages: number; products: number };
 }) {
     if (typeof searchParams.page !== 'undefined' && isNaN(Number.parseInt(searchParams.page.toString()))) {
         notFound();
     }
 
     const page = searchParams.page ? Number.parseInt(searchParams.page, 10) : 1;
+    if (page > pages) {
+        notFound();
+    }
+
     const after = page > 1 ? cursors[page - 2] : undefined;
 
     return (

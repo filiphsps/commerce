@@ -3,6 +3,7 @@ import { Shop } from '@nordcom/commerce-db';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductsPaginationApi, ProductsPaginationCountApi } from '@/api/shopify/product';
 import { cn } from '@/utils/tailwind';
+import { notFound } from 'next/navigation';
 
 import { Filters } from '@/components/actionable/filters';
 import { Pagination } from '@/components/actionable/pagination';
@@ -32,6 +33,10 @@ export default async function ProductsContent({ domain, locale, searchParams = {
     const sorting = (searchParams.sorting?.toUpperCase() || 'BEST_SELLING') as ProductSorting;
 
     const { cursors, pages } = await ProductsPaginationCountApi({ api, filters: { first: limit } });
+    if (page > pages) {
+        notFound();
+    }
+
     const after = page > 1 ? cursors[page - 2] : undefined;
 
     const { products, filters } = await ProductsPaginationApi({ api, filters: { limit, vendor, sorting, after } });

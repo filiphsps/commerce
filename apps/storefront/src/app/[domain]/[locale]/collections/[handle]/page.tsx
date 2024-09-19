@@ -219,7 +219,7 @@ export default async function CollectionPage({
                                 locale={locale}
                                 searchParams={searchParams}
                                 handle={handle}
-                                cursors={pagesInfo.cursors}
+                                pagesInfo={pagesInfo}
                             />
                         </Suspense>
                     </section>
