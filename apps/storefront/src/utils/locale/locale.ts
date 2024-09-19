@@ -2,10 +2,8 @@ import React from 'react';
 
 import { UnknownLocaleError } from '@nordcom/commerce-errors';
 
-import ConvertUnits from 'convert-units';
-
 import type english from '@/i18n/en.json';
-import type { CountryCode, CurrencyCode, LanguageCode, WeightUnit } from '@shopify/hydrogen-react/storefront-api-types';
+import type { CountryCode, CurrencyCode, LanguageCode } from '@shopify/hydrogen-react/storefront-api-types';
 import type { ReactNode } from 'react';
 
 export type { CountryCode, CurrencyCode, LanguageCode };
@@ -195,56 +193,25 @@ export const isSizeOption = (name: string): boolean =>
         'storlek' // Swedish, Norwegian, Danish.
     ].includes(name.toLowerCase());
 
-export const convertToLocalMeasurementSystem = ({
-    locale,
-    weight,
-    weightUnit
-}: {
-    locale: Locale;
-    weight: number;
-    weightUnit: WeightUnit;
-}): string => {
-    const weightUnitToConvertUnits = (unit: WeightUnit) => {
-        switch (unit.toLowerCase()) {
-            case 'grams':
-                return 'g';
-            case 'kilograms':
-                return 'kg';
-            case 'ounces':
-                return 'oz';
-            case 'pounds':
-                return 'lb';
-
-            // TODO: Handle this; which should never possibly actually occur.
-            default: {
-                console.warn(`Unknown weight unit: ${unit}, defaulting to grams.`);
-                return 'g';
-            }
-        }
-    };
-    // TODO: Support more than just US here, because apparently there's a lot
-    //        more countries out there using imperial.
-    const metric = locale.country ? locale.country.toLowerCase() !== 'us' : true;
-    const unit = weightUnitToConvertUnits(weightUnit);
-
-    // TODO: Do this properly.
-    const targetUnit = metric ? 'g' : 'oz';
-
-    if (unit !== targetUnit) {
-        weight = ConvertUnits(weight).from(unit).to(targetUnit);
-    }
-
-    let res = ((Math.ceil((weight * 100) / 5) * 5) / 100).toFixed(2).toString();
-
-    if (res.includes('.') && res.endsWith('0')) {
-        res = res.slice(0, -1);
-    } else if (res.endsWith('.00')) {
-        res = res.slice(0, -3);
-    }
-
-    return `${res}${targetUnit}`;
+type CapitalizeOptions = {
+    everyWord?: boolean;
+    lowerCase?: boolean;
 };
+/**
+ *
+ * @param {string} string - The string to capitalize.
+ * @param {CapitalizeOptions} options - The options.
+ * @param {boolean} [options.everyWord=false] - Whether to capitalize every word in the string.
+ * @param {boolean} [options.lowerCase=true] - Whether to convert the rest of the string to lowercase.
+ * @returns {string} The capitalized string.
+ */
+export function capitalize(string: string, { everyWord = false, lowerCase = true }: CapitalizeOptions = {}): string {
+    if (everyWord) {
+        return string
+            .split(' ')
+            .map((word) => capitalize(word, { lowerCase }))
+            .join(' ');
+    }
 
-export function capitalize(str: string) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
+    return string.charAt(0).toUpperCase() + (lowerCase ? string.slice(1).toLowerCase() : string.slice(1));
 }

@@ -17,6 +17,7 @@
             "@/auth/*": ["src/auth/*"],
             "@/models/*": ["src/models/*"],
             "@/utils/*": ["src/utils/*"],
+            "@/utils/locale": ["src/utils/locale/index.ts"],
             "@/styles/*": ["src/scss/*"],
             // i18n.
             "@/i18n/*": ["src/locales/*"],
