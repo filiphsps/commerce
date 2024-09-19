@@ -104,7 +104,7 @@
         "@types/nprogress": "0.2.3",
         "@types/react-dom": "18.2.24",
         "@types/react": "18.2.75",
-        "babel-plugin-react-compiler": "0.0.0-experimental-2bc6fec-20240910",
+        "babel-plugin-react-compiler": "0.0.0-experimental-24ec0eb-20240918",
         "concurrently": "9.0.1",
         "critters": "0.0.24",
         "dotenv": "16.4.5",
