@@ -99,7 +99,7 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                                     height={image.dimensions.height}
                                     quality={80}
                                     className={cn(
-                                        'pointer-events-none h-full w-full object-cover group-focus-within/item:brightness-75 group-hover/item:brightness-75',
+                                        'pointer-events-none h-full w-full object-cover shadow group-focus-within/item:brightness-75 group-hover/item:brightness-75',
                                         imagePositionStyles
                                     )}
                                     draggable={false}
@@ -116,10 +116,10 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                                         'h-auto'
                                     )}
                                     style={{
-                                        WebkitTextStroke: '.15rem rgba(0,0,0,.35)',
+                                        WebkitTextStroke: '.15rem rgba(0,0,0,.3)',
                                         paintOrder: 'stroke fill',
                                         ...(!background_color && {
-                                            textShadow: `1px 1px {gradientStyles ? '8px' : '1px'} #000`
+                                            textShadow: `1px 1px {gradientStyles ? '8px' : '2px'} #000`
                                         })
                                     }}
                                 >

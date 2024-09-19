@@ -226,7 +226,7 @@ export default async function BlogPage({
                                                 />
                                                 <Label
                                                     as="div"
-                                                    className="text-sm font-normal normal-case leading-none text-gray-700"
+                                                    className="text-sm font-normal normal-case leading-none text-gray-600"
                                                 >
                                                     {author.name}
                                                 </Label>
@@ -235,7 +235,7 @@ export default async function BlogPage({
 
                                         <Label
                                             as="div"
-                                            className="text-sm font-normal normal-case leading-none text-gray-700"
+                                            className="text-sm font-normal normal-case leading-none text-gray-600"
                                         >
                                             {publishedAtString}
                                         </Label>

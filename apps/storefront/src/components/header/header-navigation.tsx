@@ -1,34 +1,57 @@
-'use client';
+import { Fragment, type HTMLProps, Suspense } from 'react';
+
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { components as menuSlices } from '@/slices/navigation';
 import { cn } from '@/utils/tailwind';
-import { SliceZone } from '@prismicio/react';
-import { usePathname } from 'next/navigation';
 
-import type { MenuDocumentData } from '@/prismic/types';
-import type { HTMLProps } from 'react';
+import type { Slices } from '@/components/cms/slice-zone';
+import { SliceZone } from '@/components/cms/slice-zone';
 
-export const LINK_STYLES =
-    'flex h-full cursor-pointer select-none flex-nowrap items-center justify-center text-nowrap border-0 border-b-2 border-t-2 border-solid border-transparent border-t-transparent bg-transparent py-4 md:py-3 font-medium leading-none text-gray-700 transition-all duration-150 *:duration-150 hover:underline focus:underline';
-
-export const LINK_ACTIVE_MENU_STYLES = 'bg-gray-100 px-2 font-semibold text-black  -mx-2';
-export const LINK_ACTIVE_STYLES = 'border-b-primary font-bold text-primary';
+import type { Locale, LocaleDictionary } from '@/utils/locale';
 
 type HeaderNavigationProps = {
-    slices: MenuDocumentData['slices'];
+    shop: OnlineShop;
+    locale: Locale;
+    i18n: LocaleDictionary;
+    slices: Slices;
 } & HTMLProps<HTMLDivElement>;
-export const HeaderNavigation = ({ slices = [], className, ...props }: HeaderNavigationProps) => {
-    const pathname = usePathname();
-
+export function HeaderNavigation({ shop, locale, i18n, slices = [], className, ...props }: HeaderNavigationProps) {
     return (
         <nav
             className={cn(
-                'overflow-x-shadow flex w-full grow items-center justify-start gap-5 overflow-x-auto whitespace-nowrap px-2 md:max-w-[var(--page-width)] md:flex-row md:overflow-hidden md:px-3 lg:gap-6',
+                'overflow-x-shadow flex w-full grow items-center justify-start gap-5 overflow-x-auto overflow-y-clip whitespace-nowrap px-2 md:max-w-[var(--page-width)] md:flex-row md:overflow-hidden md:px-3 lg:gap-6',
                 className
             )}
             {...props}
         >
-            <SliceZone slices={slices} components={menuSlices} context={{ isHeader: true, pathname }} />
+            <Suspense fallback={<Fragment />}>
+                <SliceZone
+                    shop={shop}
+                    locale={locale}
+                    i18n={i18n}
+                    data={slices}
+                    components={menuSlices}
+                    context={{
+                        isHeader: true
+                    }}
+                />
+            </Suspense>
         </nav>
     );
-};
+}
+HeaderNavigation.displayName = 'Nordcom.Header.HeaderNavigation.Skeleton';
+
+function skeleton() {
+    return (
+        <nav className="overflow-x-shadow flex w-full grow items-center justify-start gap-5 overflow-x-auto whitespace-nowrap px-2 py-[0.65rem] md:max-w-[var(--page-width)] md:flex-row md:overflow-hidden md:px-3 lg:gap-6">
+            <div className="h-full w-14 rounded-lg" data-skeleton />
+            <div className="h-full w-12 rounded-lg" data-skeleton />
+            <div className="h-full w-28 rounded-lg" data-skeleton />
+            <div className="h-full w-16 rounded-lg" data-skeleton />
+            <div className="h-full w-14 rounded-lg" data-skeleton />
+        </nav>
+    );
+}
+HeaderNavigation.skeleton = skeleton as typeof skeleton & { displayName: string };
+HeaderNavigation.skeleton.displayName = 'Nordcom.Header.HeaderNavigation.Skeleton';
