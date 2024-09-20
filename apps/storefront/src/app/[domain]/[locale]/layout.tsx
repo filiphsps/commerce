@@ -189,7 +189,9 @@ export default async function RootLayout({
     return (
         <html lang={locale.code} className={cn(primaryFont.className, primaryFont.variable, 'overscroll-x-none')}>
             <head>
-                <CssVariablesProvider domain={domain} />
+                <Suspense fallback={<Fragment />}>
+                    <CssVariablesProvider domain={domain} />
+                </Suspense>
             </head>
 
             <body className="group/body overflow-x-hidden overscroll-x-none">

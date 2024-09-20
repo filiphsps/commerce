@@ -3,6 +3,10 @@ import createLruHandler from '@neshca/cache-handler/local-lru';
 import createRedisHandler from '@neshca/cache-handler/redis-stack';
 import { createClient } from 'redis';
 
+if (!process.env.DATA_CACHE_REDIS_URL) {
+    console.error('DATA_CACHE_REDIS_URL is not set!');
+}
+
 CacheHandler.onCreation(async () => {
     let client;
 

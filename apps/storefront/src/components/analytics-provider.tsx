@@ -25,7 +25,7 @@ export const AnalyticsProvider = ({ shop, children, enableThirdParty = true }: A
     const [deferred, setDeferred] = useState<ReactNode>(null);
     const trackers = () => (
         <>
-            {shop.thirdParty?.googleTagManager ? <GoogleTagManager gtmId={shop.thirdParty!.googleTagManager!} /> : null}
+            {shop.thirdParty?.googleTagManager ? <GoogleTagManager gtmId={shop.thirdParty.googleTagManager!} /> : null}
             <VercelAnalytics mode={vercelAnalyticsMode} debug={vercelAnalyticsMode === 'development'} />
         </>
     );
@@ -35,25 +35,9 @@ export const AnalyticsProvider = ({ shop, children, enableThirdParty = true }: A
             return undefined;
         }
 
-        const { signal, abort } = new AbortController();
-        document.addEventListener(
-            'readystatechange',
-            (event) => {
-                const target = event.target as Document | null;
-                if (!target || target.readyState !== 'complete') {
-                    return;
-                }
-
-                // Add a small delay to improve our lighthouse score.
-                setTimeout(() => {
-                    setDeferred(trackers);
-                    abort('readyState changed to `complete`');
-                }, 100);
-            },
-            { signal }
-        );
-
-        return () => abort('useEffect cleanup');
+        setTimeout(() => {
+            setDeferred(trackers);
+        }, 2000);
     }, []);
 
     return (
