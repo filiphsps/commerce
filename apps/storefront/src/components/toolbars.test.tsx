@@ -1,20 +1,52 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
-import { isPreviewEnvironment } from '@/components/toolbars';
+import { render } from '@/utils/test/react';
+
+import { Toolbars } from '@/components/toolbars';
 
 describe('components', () => {
     describe('Toolbars', () => {
-        it('should return true for preview environments', () => {
-            expect(isPreviewEnvironment('staging.example.com')).toBe(true);
-            expect(isPreviewEnvironment('preview.example.com')).toBe(true);
-            expect(isPreviewEnvironment('beta.example.com')).toBe(true);
-            expect(isPreviewEnvironment('localhost')).toBe(true);
+        vi.mock('@vercel/toolbar/next', async () => {
+            return {
+                VercelToolbar: () => <div data-testid="toolbar" />
+            };
         });
 
-        it('should return false for non-preview environments', () => {
-            expect(isPreviewEnvironment('example.com')).toBe(false);
-            expect(isPreviewEnvironment('www.example.com')).toBe(false);
-            expect(isPreviewEnvironment('production.example.com')).toBe(false);
+        it('renders without crashing', async () => {
+            const { unmount } = render(<Toolbars domain={'staging.example.com'} />);
+            expect(() => unmount()).not.toThrow();
+        });
+
+        it('renders the toolbar', async () => {
+            const { getByTestId } = render(<Toolbars domain={'staging.example.com'} />);
+            expect(getByTestId('toolbar')).toBeDefined();
+        });
+
+        it('does not render the toolbar', async () => {
+            const { queryByTestId } = render(<Toolbars domain={'example.com'} />);
+            expect(queryByTestId('toolbar')).toBeNull();
+        });
+
+        it('renders children when toolbar is present', async () => {
+            const { getByText, getByTestId } = render(
+                <Toolbars domain={'staging.example.com'}>
+                    <div>Test</div>
+                </Toolbars>
+            );
+
+            expect(getByText('Test')).toBeDefined();
+            expect(getByTestId('toolbar')).toBeDefined();
+        });
+
+        it('does not render children when toolbar is not present', async () => {
+            const { queryByTestId, getByText } = render(
+                <Toolbars domain={'example.com'}>
+                    <div>Test</div>
+                </Toolbars>
+            );
+
+            expect(getByText('Test')).toBeDefined();
+            expect(queryByTestId('toolbar')).toBeNull();
         });
     });
 });

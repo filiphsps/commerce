@@ -7,6 +7,7 @@ import { MissingContextProviderError, TodoError, UnknownCommerceProviderError } 
 
 import { usePrevious } from '@/hooks/usePrevious';
 import { BuildConfig } from '@/utils/build-config';
+import { isCrawler } from '@/utils/is-crawler';
 import { productToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { safeParseFloat } from '@/utils/pricing';
 import {
@@ -221,8 +222,7 @@ const shopifyEventHandler = async (
         }))
     };
 
-    const ua = (sharedPayload.userAgent || (navigator as Navigator | undefined)?.userAgent || '').toLowerCase();
-    if (ua.includes('googlebot') || ua.includes('lighthouse')) {
+    if (isCrawler(sharedPayload.userAgent || window.navigator.userAgent)) {
         return;
     }
 

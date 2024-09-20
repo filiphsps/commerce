@@ -9,6 +9,7 @@ import { UnknownCommerceProviderError, UnknownContentProviderError } from '@nord
 import { CartFragment } from '@/api/shopify/cart';
 import { useCartUtils } from '@/hooks/useCartUtils';
 import { BuildConfig } from '@/utils/build-config';
+import { isPreviewEnv } from '@/utils/is-preview-env';
 import { createClient } from '@/utils/prismic';
 import { PrismicPreview } from '@prismicio/next';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
@@ -17,7 +18,7 @@ import { Toaster as ToasterProvider } from 'sonner';
 import { LiveChatProvider } from '@/components/live-chat-provider';
 import { PrismicRegistry } from '@/components/prismic-registry';
 import { ShopProvider } from '@/components/shop/provider';
-import { isPreviewEnvironment, Toolbars } from '@/components/toolbars';
+import { Toolbars } from '@/components/toolbars';
 
 import type { CurrencyCode, Locale } from '@/utils/locale';
 
@@ -63,7 +64,7 @@ const ContentProvider = ({
     locale: Locale;
     children: ReactNode;
 }) => {
-    const [show, set] = useState(false);
+    const [isInternalTraffic, setIsInternalTraffic] = useState(false);
     useEffect(() => {
         if (!(window as any).localStorage) {
             return;
@@ -72,11 +73,11 @@ const ContentProvider = ({
         // Use vercel toolbar to determine internal traffic.
         // TODO: This should be some form of a utility function.
         const value = localStorage.getItem('__vercel_toolbar');
-        if (value !== '1') {
+        if (value !== '1' || (!Number.isNaN(value) && Number.parseInt(value) >= 1)) {
             return;
         }
 
-        set(true);
+        setIsInternalTraffic(true);
     }, []);
 
     switch (shop.contentProvider.type) {
@@ -85,7 +86,7 @@ const ContentProvider = ({
                 <PrismicRegistry client={createClient({ shop, locale })}>
                     {children}
 
-                    {isPreviewEnvironment('domain') || show ? (
+                    {isPreviewEnv('domain') || isInternalTraffic ? (
                         <PrismicPreview repositoryName={shop.contentProvider.repositoryName} />
                     ) : null}
                 </PrismicRegistry>
