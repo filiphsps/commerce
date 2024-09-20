@@ -102,7 +102,7 @@ export default function StatusPage({ params: { code }, searchParams: { shop } }:
                 </p>
             </div>
 
-            <footer className="pt-6 text-sm font-semibold leading-snug text-gray-500">
+            <footer className="pt-6 text-sm font-semibold uppercase leading-snug text-gray-500">
                 {hostname}, {code.toUpperCase()}, {Date.now()}.
             </footer>
         </>

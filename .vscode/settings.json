@@ -173,14 +173,18 @@
     },
     "prettier.prettierPath": "./node_modules/prettier",
 
-    "tailwindCSS.classAttributes": ["class", "className", ".*ClassName", "ngClass", ".*Styles"],
+    "tailwindCSS.classAttributes": ["class", "className", ".*ClassName", ".*Styles"],
+    "tailwindCSS.lint.invalidVariant": "warning",
+    "tailwindCSS.colorDecorators": true,
     "tailwindCSS.experimental.classRegex": [
         "[a-zA-Z]*ClassName='([^']+)'",
         "[a-zA-Z]*ClassName=\"([^\"]+)\"",
         "[a-zA-Z]*ClassName={`([^`]+)`}",
         ["Styles\\s*=\\s*([^;]*);", "'([^']*)'"],
         ["Styles\\s*=\\s*([^;]*);", "\"([^\"]*)\""],
-        ["Styles\\s*=\\s*([^;]*);", "\\`([^\\`]*)\\`"]
+        ["Styles\\s*=\\s*([^;]*);", "\\`([^\\`]*)\\`"],
+        ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+        ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
     ],
     "tailwindCSS.includeLanguages": {
         "html": "html",

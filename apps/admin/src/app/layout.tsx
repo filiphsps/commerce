@@ -44,8 +44,8 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: ReactNode }) {
     return (
         <html lang="en" className={cn(primaryFont.className, primaryFont.variable, GeistMono.variable)}>
-            <head />
-            <body className="group/body overflow-x-hidden overscroll-x-none">
+            <head></head>
+            <body className="group/body grid min-h-screen grid-cols-[100%] grid-rows-1 overflow-x-hidden overscroll-x-none">
                 <Providers>{children}</Providers>
             </body>
         </html>

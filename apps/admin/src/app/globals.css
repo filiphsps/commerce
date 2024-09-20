@@ -7,14 +7,14 @@
         --font-fallback: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, Cantarell,
             'Helvetica Neue', sans-serif;
 
-        --background: 240 10% 3.9%;
-        --foreground: 0 0% 98%;
+        --background: 0 0% 0%;
+        --foreground: 0 0% 99.61%;
         --card: 240 10% 3.9%;
         --card-foreground: 0 0% 98%;
         --popover: 240 10% 3.9%;
         --popover-foreground: 0 0% 98%;
-        --primary: 0 0% 98%;
-        --primary-foreground: 240 5.9% 10%;
+        --primary: 333.62 85.19% 52.35%;
+        --primary-foreground: 0 0 99.61%;
         --secondary: 240 3.7% 15.9%;
         --secondary-foreground: 0 0% 98%;
         --muted: 240 3.7% 15.9%;

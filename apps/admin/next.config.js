@@ -37,6 +37,7 @@ const config = {
     experimental: {
         after: true,
         appNavFailHandling: true,
+        caseSensitiveRoutes: true,
         cssChunking: 'loose',
         middlewarePrefetch: 'strict',
         optimizeCss: true,
@@ -53,7 +54,8 @@ const config = {
         staleTimes: { dynamic: 0, static: 180 },
         taint: true,
         turbo: { root: path.resolve('../..') },
-        typedEnv: true,
+        //typedEnv: true,
+        typedRoutes: true,
         useEarlyImport: true,
         webpackBuildWorker: true
     },

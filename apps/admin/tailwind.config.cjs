@@ -13,6 +13,15 @@ module.exports = {
         },
         fontFamily: 'var(--font-primary, var(--font-fallback))',
         extend: {
+            brightness: {
+                65: '.65'
+            },
+            transitionProperty: {
+                colors: 'color, background-color, border-color, text-decoration-color, fill, stroke, filter'
+            },
+            transitionDuration: {
+                DEFAULT: '250ms'
+            },
             fontFamily: {
                 sans: ['var(--font-primary, var(--font-fallback))', 'sans-serif'],
                 mono: ['var(--font-geist-mono)', 'monospace']
@@ -51,6 +60,9 @@ module.exports = {
                     DEFAULT: 'hsl(var(--card))',
                     foreground: 'hsl(var(--card-foreground))'
                 }
+            },
+            borderWidth: {
+                3: '3px'
             },
             strokeWidth: {
                 1: '0.2rem',

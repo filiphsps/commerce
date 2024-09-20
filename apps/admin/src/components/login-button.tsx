@@ -13,6 +13,7 @@ import { signIn } from 'next-auth/react';
 import { toast } from 'sonner';
 
 import type { AuthProvider } from '@/auth';
+import type { Route } from 'next';
 import type { HTMLProps, ReactNode } from 'react';
 
 export type LoginButtonProps = {
@@ -40,7 +41,7 @@ export default function LoginButton({ provider = 'github', className, ...props }
         params.delete('error');
         params.delete('callbackUrl');
 
-        router.replace(`${path}${params.size > 0 ? '?' : ''}${params.toString()}`);
+        router.replace(`${path}${params.size > 0 ? '?' : ''}${params.toString()}` as Route);
     }, [error]);
 
     let layout: ReactNode = <></>;

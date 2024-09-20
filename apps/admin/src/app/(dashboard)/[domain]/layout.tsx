@@ -5,7 +5,7 @@ import { Error } from '@nordcom/commerce-errors';
 
 import { auth } from '@/auth';
 import { cn } from '@/utils/tailwind';
-import { Binoculars as BinocularsIcon, Images as ImagesIcon, Tag as TagIcon } from 'lucide-react';
+import { Binoculars, Images, Tag } from 'lucide-react';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 
@@ -13,9 +13,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/avatar';
 import { Button } from '@/components/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/card';
 import { Header } from '@/components/header';
+import { MenuItem } from '@/components/menu-item';
 import { ScrollArea } from '@/components/scroll-area';
 
-import type { Metadata } from 'next';
+import type { Metadata, Route } from 'next';
 import type { ReactNode } from 'react';
 
 export type ShopLayoutProps = {
@@ -53,7 +54,7 @@ export async function generateMetadata({ params: { domain } }: ShopLayoutProps):
 }
 
 const LINK_STYLES =
-    'hover:bg-muted flex w-full items-center justify-start gap-2 rounded-md px-3 py-2 hover:text-primary *:stroke-2';
+    'hover:bg-muted flex w-full items-center justify-start gap-2 rounded-md px-3 py-2 hover:text-primary';
 
 export default async function ShopLayout({ children, params: { domain } }: ShopLayoutProps) {
     const session = await auth();
@@ -84,26 +85,35 @@ export default async function ShopLayout({ children, params: { domain } }: ShopL
                 <CardContent className="h-full grow">
                     <ScrollArea className="h-full">
                         <nav className="text-muted-foreground flex w-full flex-col gap-2 text-sm font-medium">
-                            <Link href={`${urlBase}/`} className={cn(LINK_STYLES, 'text-primary bg-muted')}>
-                                <BinocularsIcon className="text-lg" />
+                            <MenuItem
+                                href={`${urlBase}/` as Route}
+                                className={cn(LINK_STYLES, 'text-primary bg-muted')}
+                            >
+                                <Binoculars className="text-lg" />
                                 Home
-                            </Link>
-                            <Link href={`${urlBase}/products/`} className={LINK_STYLES}>
-                                <TagIcon className="text-lg" />
-                                Products
-                            </Link>
-                            <Link href={`${urlBase}/content/`} className={LINK_STYLES}>
-                                <ImagesIcon className="text-lg" />
-                                Content
-                            </Link>
+                            </MenuItem>
+                            <MenuItem
+                                href={`${urlBase}/products` as Route}
+                                className={cn(LINK_STYLES, 'text-primary bg-muted')}
+                            >
+                                <Tag className="text-lg" />
+                                Home
+                            </MenuItem>
+                            <MenuItem
+                                href={`${urlBase}/content` as Route}
+                                className={cn(LINK_STYLES, 'text-primary bg-muted')}
+                            >
+                                <Images className="text-lg" />
+                                Home
+                            </MenuItem>
                         </nav>
                     </ScrollArea>
                 </CardContent>
 
                 <CardFooter>
                     <div className="flex w-full flex-col justify-start gap-3">
-                        <Button className="w-full" asChild>
-                            <Link href="/new/">Connect a new Shop</Link>
+                        <Button as={Link} href="/new" className="w-full">
+                            Connect a new Shop
                         </Button>
                     </div>
                 </CardFooter>
