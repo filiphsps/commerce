@@ -212,11 +212,12 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
 
     // Update legacy blog path.
     if (newUrl.pathname.includes('/blog/')) {
-        if (newUrl.pathname.endsWith('/blog/')) {
-            newUrl.pathname = newUrl.pathname.replace('/blog/', '/blogs/news/');
-        } else {
-            newUrl.pathname = newUrl.pathname.replace('/blog/', '/blogs/');
-        }
+        newUrl.pathname = newUrl.pathname.replace('/blog/', '/blogs/news/');
+    }
+
+    // Check if `homepage` is explicitly set as the handle, if so remove it.
+    if (newUrl.pathname.endsWith('/homepage/')) {
+        newUrl.pathname = newUrl.pathname.replace('/homepage/', '/');
     }
 
     // Redirect if `newURL` is different from `req.nextUrl`.

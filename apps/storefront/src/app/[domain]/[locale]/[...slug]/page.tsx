@@ -108,7 +108,7 @@ export async function generateMetadata({
             )
         },
         openGraph: {
-            url: handle,
+            url: handle !== 'homepage' ? handle : undefined,
             type: 'website',
             title,
             description,
