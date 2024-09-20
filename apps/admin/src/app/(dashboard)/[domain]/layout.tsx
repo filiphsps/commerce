@@ -4,7 +4,6 @@ import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 
 import { auth } from '@/auth';
-import { cn } from '@/utils/tailwind';
 import { Binoculars, Images, Tag } from 'lucide-react';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
@@ -53,16 +52,24 @@ export async function generateMetadata({ params: { domain } }: ShopLayoutProps):
     }
 }
 
-const LINK_STYLES =
-    'hover:bg-muted flex w-full items-center justify-start gap-2 rounded-md px-3 py-2 hover:text-primary';
-
 export default async function ShopLayout({ children, params: { domain } }: ShopLayoutProps) {
     const session = await auth();
     if (!session?.user) {
         redirect('/auth/login/');
     }
 
-    const shop = await Shop.findByDomain(domain, { convert: true });
+    let shop: Awaited<ReturnType<typeof Shop.findByDomain>>;
+    try {
+        shop = await Shop.findByDomain(domain, { convert: true });
+    } catch (error: unknown) {
+        if (Error.isNotFound(error)) {
+            notFound();
+        }
+
+        console.error(error);
+        throw error;
+    }
+
     const urlBase = `/${shop.domain}`;
 
     return (
@@ -85,24 +92,15 @@ export default async function ShopLayout({ children, params: { domain } }: ShopL
                 <CardContent className="h-full grow">
                     <ScrollArea className="h-full">
                         <nav className="text-muted-foreground flex w-full flex-col gap-2 text-sm font-medium">
-                            <MenuItem
-                                href={`${urlBase}/` as Route}
-                                className={cn(LINK_STYLES, 'text-primary bg-muted')}
-                            >
+                            <MenuItem href={`${urlBase}/` as Route}>
                                 <Binoculars className="text-lg" />
                                 Home
                             </MenuItem>
-                            <MenuItem
-                                href={`${urlBase}/products` as Route}
-                                className={cn(LINK_STYLES, 'text-primary bg-muted')}
-                            >
+                            <MenuItem href={`${urlBase}/products` as Route}>
                                 <Tag className="text-lg" />
                                 Home
                             </MenuItem>
-                            <MenuItem
-                                href={`${urlBase}/content` as Route}
-                                className={cn(LINK_STYLES, 'text-primary bg-muted')}
-                            >
+                            <MenuItem href={`${urlBase}/content` as Route}>
                                 <Images className="text-lg" />
                                 Home
                             </MenuItem>
