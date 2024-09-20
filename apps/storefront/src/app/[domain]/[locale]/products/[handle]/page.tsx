@@ -233,9 +233,10 @@ export default async function ProductPage({
     // TODO: Create a proper `shopify-html-parser` to convert the HTML to React components.
 
     const rating = product.rating ? parseMetafield<ParsedMetafields['rating']>(product.rating).parsedValue : null;
-    const ratingCount = product.ratingCount
-        ? parseMetafield<ParsedMetafields['number_integer']>(product.ratingCount).parsedValue
-        : null;
+    const ratingCount =
+        (product.ratingCount
+            ? parseMetafield<ParsedMetafields['number_integer']>(product.ratingCount).parsedValue
+            : null) || 0;
 
     const jsonLd: WithContext<ProductGroup> = {
         '@context': 'https://schema.org',
@@ -248,13 +249,16 @@ export default async function ProductPage({
             'name': product.vendor
         },
         'productGroupID': productToMerchantsCenterId({ locale, product: { productGid: product.id } }),
-        'aggregateRating': ratingCount > 0 ? {
-            '@type': 'AggregateRating',
-            'ratingValue': rating?.value || 5,
-            'bestRating': rating?.scale_max || 5.0,
-            'worstRating': rating?.scale_min || 1.0,
-            'ratingCount': ratingCount || 1 // TODO: Should be zero instead of one for the fallback, but that errors.
-        } : undefined,
+        'aggregateRating':
+            ratingCount > 0
+                ? {
+                      '@type': 'AggregateRating',
+                      'ratingValue': rating?.value,
+                      'bestRating': rating?.scale_max || 5.0,
+                      'worstRating': rating?.scale_min || 1.0,
+                      'ratingCount': ratingCount
+                  }
+                : undefined,
         'variesBy': [
             //...(product.options.some(({ name }) => name.toLowerCase() === 'size') ? ['https://schema.org/size'] : []),
             //...(product.options.some(({ name }) => name.toLowerCase() === 'color') ? ['https://schema.org/color'] : [])
