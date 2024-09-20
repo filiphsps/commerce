@@ -81,11 +81,13 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Robo
                 {
                     userAgent: '*',
                     disallow: [
-                        '/storefront/',
-                        '/admin/',
-                        '/slice-machine/',
-                        '/cdn-cgi/',
+                        '/_next/static/chunks/',
                         '/_next/static/css/',
+                        '/admin/',
+                        '/assets/',
+                        '/cdn-cgi/',
+                        '/slice-machine/',
+                        '/storefront/',
                         `/${shop.domain}/`
                     ]
                 }
