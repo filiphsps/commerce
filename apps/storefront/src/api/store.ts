@@ -162,9 +162,9 @@ export const BusinessDataApi = async ({
         const res = await client.getSingle<BusinessDataDocument>('business_data');
         return res.data;
     } catch (error: unknown) {
-        const locale = Locale.from(client.defaultParams?.lang!); // Actually used locale.
+        const _locale = client.defaultParams?.lang ? Locale.from(client.defaultParams.lang) : locale; // Actually used locale.
         if (Error.isNotFound(error)) {
-            if (!Locale.isDefault(locale)) {
+            if (!Locale.isDefault(_locale)) {
                 return await BusinessDataApi({ shop, locale: Locale.default }); // Try again with default locale.
             }
 

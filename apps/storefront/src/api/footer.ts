@@ -23,7 +23,7 @@ export async function FooterApi({
 
                 return footer.data;
             } catch (error: unknown) {
-                const _locale = Locale.from(client.defaultParams?.lang!) || locale;
+                const _locale = client.defaultParams?.lang ? Locale.from(client.defaultParams.lang) : locale;
 
                 if (Error.isNotFound(error)) {
                     if (!Locale.isDefault(_locale)) {
