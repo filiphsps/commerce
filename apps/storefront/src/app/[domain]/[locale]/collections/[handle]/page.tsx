@@ -8,8 +8,9 @@ import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CollectionApi, CollectionPaginationCountApi, CollectionsApi } from '@/api/shopify/collection';
 import { LocalesApi } from '@/api/store';
+import { getDictionary } from '@/utils/dictionary';
 import { isValidHandle } from '@/utils/handle';
-import { Locale } from '@/utils/locale';
+import { getTranslations, Locale } from '@/utils/locale';
 import { checkAndHandleRedirect } from '@/utils/redirect';
 import { asText } from '@prismicio/client';
 import { notFound, unstable_rethrow } from 'next/navigation';
@@ -68,7 +69,7 @@ type SearchParams = {
 
 export async function generateMetadata({
     params: { domain, locale: localeData, handle },
-    searchParams: { page: pageNumber }
+    searchParams: searchParams
 }: {
     params: CollectionPageParams;
     searchParams: SearchParams;
@@ -102,8 +103,16 @@ export async function generateMetadata({
 
     const locales = await LocalesApi({ api });
 
+    const i18n = await getDictionary({ shop, locale });
+    const { t } = getTranslations('common', i18n);
+
+    const pageNumber = searchParams.page ? parseInt(searchParams.page, 10) : 1;
+
     // TODO: i18n.
-    const title = page?.meta_title || collection.seo.title || collection.title;
+    const title =
+        pageNumber > 1
+            ? `${collection.title} - ${t('page-n', pageNumber)}`
+            : page?.meta_title || collection.seo.title || collection.title;
     const description: string | undefined =
         asText(page?.meta_description) ||
         collection.seo.description ||
@@ -146,10 +155,10 @@ export async function generateMetadata({
 
 export default async function CollectionPage({
     params: { domain, locale: localeData, handle },
-    searchParams
+    searchParams: searchParams
 }: {
     params: CollectionPageParams;
-    searchParams: { [key: string]: string | string[] | undefined };
+    searchParams: SearchParams;
 }) {
     if (!isValidHandle(handle)) {
         notFound();
@@ -222,6 +231,8 @@ export default async function CollectionPage({
     const hasCustomPageContentPosition =
         hasSlices && page ? page.slices.some((slice) => slice.slice_type === 'original_content') : false;
 
+    const pageNumber = searchParams.page ? parseInt(searchParams.page, 10) : 1;
+
     return (
         <>
             <Suspense key={`collections.${handle}.breadcrumbs`} fallback={<BreadcrumbsSkeleton />}>
@@ -241,7 +252,7 @@ export default async function CollectionPage({
                     </>
                 ) : null}
 
-                {!page || page.slices.length <= 0 ? (
+                {!page || pageNumber > 1 ? (
                     pageContent
                 ) : (
                     <>
