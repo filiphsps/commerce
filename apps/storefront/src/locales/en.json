@@ -55,6 +55,8 @@
         "quantity-too-low": "Too Low Quantity",
         "quantity": "Quantity",
         "remove": "Remove",
+        "save-as-csv": "Save as CSV",
+        "save-as-pdf": "Save as PDF",
         "search": "Search",
         "share-on-facebook": "Share on Facebook",
         "share-on-x": "Share on X (Twitter)",

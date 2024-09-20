@@ -120,18 +120,16 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
 
                         <div className="flex items-center justify-start gap-1 gap-x-3 md:flex-col md:items-start md:pt-1">
                             {discounts.length > 0 ? (
-                                <div className="w-fit py-1">
-                                    <div className="flex w-full flex-wrap items-start justify-start gap-2">
-                                        {discounts.map((discount, index) => (
-                                            <div
-                                                key={`${line.id}-discount-${index}`}
-                                                className="flex items-center justify-center gap-1 rounded-xl bg-gray-100 p-1 px-2 text-xs font-semibold leading-none"
-                                            >
-                                                <FiTag className="text-inherit" />
-                                                <Label>{(discount as any).title || tCart('automatic-discount')}</Label>
-                                            </div>
-                                        ))}
-                                    </div>
+                                <div className="flex w-full flex-wrap items-start justify-start gap-2">
+                                    {discounts.map((discount, index) => (
+                                        <div
+                                            key={`${line.id}-discount-${index}`}
+                                            className="flex items-center justify-center gap-1 text-xs font-medium leading-none text-gray-600"
+                                        >
+                                            <FiTag className="stroke-1 text-inherit" />
+                                            <Label>{(discount as any).title || tCart('automatic-discount')}</Label>
+                                        </div>
+                                    ))}
                                 </div>
                             ) : null}
                         </div>

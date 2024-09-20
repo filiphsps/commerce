@@ -54,6 +54,8 @@
         "quantity-too-low": "Cantidad Demasiado Baja",
         "quantity": "Cantidad",
         "remove": "Eliminar",
+        "save-as-csv": "Guardar como CSV",
+        "save-as-pdf": "Guardar como PDF",
         "search": "Buscar",
         "share-on-facebook": "Compartir en Facebook",
         "share-on-x": "Compartir en X (Twitter)",

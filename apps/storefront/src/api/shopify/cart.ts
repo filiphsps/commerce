@@ -50,6 +50,8 @@ export const CartFragment = /* GraphQL */ `
                         ... on ProductVariant {
                             id
                             availableForSale
+                            barcode
+                            sku
                             compareAtPrice {
                                 ...MoneyFragment
                             }
