@@ -159,24 +159,41 @@ const config = {
     skipTrailingSlashRedirect: true
 };
 
-export default withSentryConfig(withVercelToolbar(config), {
-    org: 'nordcom',
-    project: 'commerce',
-    authToken: process.env.SENTRY_AUTH_TOKEN,
-    silent: true,
-    debug: isDev,
-    widenClientFileUpload: true,
-    hideSourceMaps: true,
-    disableLogger: true,
-    automaticVercelMonitors: true,
-    transpileClientSDK: false,
-    unstable_sentryWebpackPluginOptions: {
-        bundleSizeOptimizations: {
-            excludeDebugStatements: true,
-            excludePerformanceMonitoring: true,
-            excludeReplayShadowDom: true,
-            excludeReplayIframe: true,
-            excludeReplayWorker: true
-        }
+/**
+ *
+ * @param {import('next').NextConfig} config
+ * @returns
+ */
+const wrapConfig = (config) => {
+    // Always include vercel toolbar.
+    config = withVercelToolbar(config);
+
+    if (isDev) {
+        console.warn('Development mode detected, skipping Sentry...');
+        return config;
     }
-});
+
+    return withSentryConfig(config, {
+        org: 'nordcom',
+        project: 'commerce',
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+        silent: true,
+        debug: isDev,
+        widenClientFileUpload: true,
+        hideSourceMaps: true,
+        disableLogger: true,
+        automaticVercelMonitors: true,
+        transpileClientSDK: false,
+        unstable_sentryWebpackPluginOptions: {
+            bundleSizeOptimizations: {
+                excludeDebugStatements: true,
+                excludePerformanceMonitoring: true,
+                excludeReplayShadowDom: true,
+                excludeReplayIframe: true,
+                excludeReplayWorker: true
+            }
+        }
+    });
+};
+
+export default wrapConfig(config);
