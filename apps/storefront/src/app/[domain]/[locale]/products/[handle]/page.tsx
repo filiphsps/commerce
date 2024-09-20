@@ -379,7 +379,10 @@ export default async function ProductPage({
                     </section>
                 </Suspense>
 
-                <Suspense key={`products.${handle}.details`} fallback={<section className="w-full lg:max-w-[38rem]" />}>
+                <Suspense
+                    key={`products.${handle}.details`}
+                    fallback={<section className="w-full overflow-hidden lg:max-w-[38rem]" />}
+                >
                     <section className="flex w-full max-w-full flex-col gap-2 2xl:w-auto">
                         <Suspense
                             key={`products.${handle}.details.savings`}
@@ -444,7 +447,7 @@ export default async function ProductPage({
                         </Suspense>
 
                         <Suspense fallback={<Card className={cn(BLOCK_STYLES, 'h-32 rounded-lg')} data-skeleton />}>
-                            <section className="w-full max-w-full empty:hidden">
+                            <section className="lg:max-w-[38rem]">
                                 <CMSContent shop={shop} locale={locale} handle={handle} type={'product_page'} />
                             </section>
                         </Suspense>

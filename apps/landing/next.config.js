@@ -44,7 +44,6 @@ const config = {
         appNavFailHandling: true,
         cssChunking: 'loose',
         middlewarePrefetch: 'strict',
-        //nextScriptWorkers: true,
         optimizeCss: true,
         optimizePackageImports: ['@apollo/client', '@shopify/hydrogen-react', 'react-icons', '@nordcom/nordstar'],
         optimizeServerReact: true,

@@ -29,7 +29,7 @@ import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 
 export const runtime = 'nodejs';
-export const dynamic = 'auto';
+export const dynamic = 'force-static';
 export const dynamicParams = true;
 export const revalidate = false;
 export const preferredRegion = 'home';
@@ -201,7 +201,7 @@ export default async function RootLayout({
                     locale={locale}
                     domain={domain}
                 >
-                    <AnalyticsProvider shop={publicShop}>
+                    <AnalyticsProvider shop={publicShop} hostname={domain}>
                         <HeaderProvider loaderColor={branding?.primary.color}>
                             <Suspense fallback={<Fragment />}>
                                 <GeoRedirect shop={publicShop} countries={countries} locale={locale} i18n={i18n} />

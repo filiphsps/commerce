@@ -25,7 +25,7 @@ import type { ReactNode } from 'react';
 
 const SUMMARY_LABEL_STYLES = 'font-medium text-sm capitalize text-gray-600 leading-none';
 const PRICE_STYLES = 'text-sm font-bold';
-const PRICE_DISCOUNT_STYLES = 'bg-green-200 text-green-900 rounded-lg px-1 -mx-1';
+const PRICE_DISCOUNT_STYLES = 'bg-green-200 text-green-950 rounded-lg px-1 -mx-1 font-extrabold';
 
 // TODO: Configurable free shipping.
 

@@ -7,6 +7,7 @@ import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { BuildConfig } from '@/utils/build-config';
 import { isCrawler } from '@/utils/is-crawler';
+import { isPreviewEnv } from '@/utils/is-preview-env';
 import { Trackable } from '@/utils/trackable';
 import { GoogleTagManager } from '@next/third-parties/google';
 import { Analytics as VercelAnalytics } from '@vercel/analytics/react';
@@ -16,10 +17,11 @@ import type { ReactNode } from 'react';
 
 export type AnalyticsProviderProps = {
     shop: OnlineShop;
+    hostname?: string;
     children: ReactNode;
     enableThirdParty?: boolean;
 };
-export const AnalyticsProvider = ({ shop, children, enableThirdParty = true }: AnalyticsProviderProps) => {
+export const AnalyticsProvider = ({ shop, hostname, children, enableThirdParty = true }: AnalyticsProviderProps) => {
     const vercelAnalyticsMode = BuildConfig.environment !== 'test' ? BuildConfig.environment : 'auto';
 
     const [deferred, setDeferred] = useState<ReactNode>(null);
@@ -31,13 +33,14 @@ export const AnalyticsProvider = ({ shop, children, enableThirdParty = true }: A
     );
 
     useEffect(() => {
-        if (isCrawler(window.navigator.userAgent)) {
+        if (isPreviewEnv(hostname) || isCrawler(window.navigator.userAgent)) {
             return undefined;
         }
 
-        setTimeout(() => {
+        const timeout = setTimeout(() => {
             setDeferred(trackers);
         }, 2000);
+        return () => clearTimeout(timeout);
     }, []);
 
     return (

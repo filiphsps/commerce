@@ -52,7 +52,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
             alt={variant.image.altText || variant.title}
             width={85}
             height={85}
-            sizes="(max-width: 920px) 90vw, 500px"
+            sizes="(max-width: 920px) 65px, 175px"
             priority={false}
             loading="lazy"
             decoding="async"
