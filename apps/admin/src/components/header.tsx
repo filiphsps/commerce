@@ -4,7 +4,7 @@ import Link from 'next/link';
 export type HeaderProps = {};
 export function Header({}) {
     return (
-        <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 border-border top-0 z-40 flex items-center justify-between border-0 border-b border-solid p-4 backdrop-blur lg:sticky">
+        <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 border-border top-0 z-40 flex items-center justify-between border-0 border-b border-solid p-4 pt-[calc(1rem+env(safe-area-inset-top,0))] backdrop-blur lg:sticky">
             <Link href="/" title="Nordcom Commerce">
                 <Image
                     className="h-8 object-contain object-left"
