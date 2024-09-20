@@ -249,6 +249,7 @@ export default async function ProductPage({
             'name': product.vendor
         },
         'productGroupID': productToMerchantsCenterId({ locale, product: { productGid: product.id } }),
+        'sku': productToMerchantsCenterId({ locale, product: { productGid: product.id } }),
         'aggregateRating':
             ratingCount > 0
                 ? {
@@ -278,6 +279,12 @@ export default async function ProductPage({
                 } as any
             }),
             'mpn': variant.barcode || variant.sku || undefined,
+
+            'weight': {
+                '@type': 'QuantitativeValue',
+                'unitText': variant.weightUnit,
+                'value': safeParseFloat(undefined, variant.weight)
+            },
 
             'offers': {
                 '@type': 'Offer',
