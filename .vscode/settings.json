@@ -196,5 +196,7 @@
     },
     "git.defaultBranchName": "master",
     "git.autofetchPeriod": 30,
-    "git.similarityThreshold": 72
+    "git.similarityThreshold": 72,
+    "vitest.rootConfig": "./vitest.config.ts",
+    "vitest.workspaceConfig": "./vitest.workspace.ts"
 }

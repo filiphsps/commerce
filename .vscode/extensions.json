@@ -11,6 +11,6 @@
         "wakatime.vscode-wakatime",
         "esbenp.prettier-vscode",
         "bradlc.vscode-tailwindcss",
-        "codecov.codecov"
+        "vitest.explorer"
     ]
 }
