@@ -9,7 +9,7 @@ import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
 
 import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { CountriesApi, LocaleApi } from '@/api/store';
+import { CountriesApi, LocaleApi, LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { CssVariablesProvider, getBrandingColors } from '@/utils/css-variables';
 import { primaryFont } from '@/utils/fonts';
@@ -181,7 +181,14 @@ export default async function RootLayout({
     }
 
     const api = await ShopifyApolloApiClient({ shop, locale });
-    const [localization, countries] = await Promise.all([LocaleApi({ api }), CountriesApi({ api })]);
+
+    // Make sure that the current locale is a valid and active locale.
+    if (!(await LocalesApi({ api })).map((locale) => locale.code).includes(locale.code)) {
+        notFound();
+    }
+
+    const localization = await LocaleApi({ api });
+    const countries = await CountriesApi({ api });
 
     const branding = await getBrandingColors({ domain, shop });
     const i18n = await getDictionary(locale);
