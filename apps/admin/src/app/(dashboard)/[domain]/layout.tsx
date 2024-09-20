@@ -1,12 +1,11 @@
 import 'server-only';
 
-import { PiBinoculars, PiImages, PiTagLight } from 'react-icons/pi';
-
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 
 import { auth } from '@/auth';
 import { cn } from '@/utils/tailwind';
+import { Binoculars as BinocularsIcon, Images as ImagesIcon, Tag as TagIcon } from 'lucide-react';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 
@@ -86,15 +85,15 @@ export default async function ShopLayout({ children, params: { domain } }: ShopL
                     <ScrollArea className="h-full">
                         <nav className="text-muted-foreground flex w-full flex-col gap-2 text-sm font-medium">
                             <Link href={`${urlBase}/`} className={cn(LINK_STYLES, 'text-primary bg-muted')}>
-                                <PiBinoculars className="text-lg" />
+                                <BinocularsIcon className="text-lg" />
                                 Home
                             </Link>
                             <Link href={`${urlBase}/products/`} className={LINK_STYLES}>
-                                <PiTagLight className="text-lg" />
+                                <TagIcon className="text-lg" />
                                 Products
                             </Link>
                             <Link href={`${urlBase}/content/`} className={LINK_STYLES}>
-                                <PiImages className="text-lg" />
+                                <ImagesIcon className="text-lg" />
                                 Content
                             </Link>
                         </nav>

@@ -1,6 +1,5 @@
 import 'server-only';
 
-import 'the-new-css-reset';
 import '@/styles/app.scss';
 import '@/styles/global.css';
 
@@ -66,7 +65,7 @@ export default async function RootLayout({
                         domain={domain}
                         toolbars={false}
                     >
-                        <AnalyticsProvider shop={publicShop} dummy={true}>
+                        <AnalyticsProvider shop={publicShop} enableThirdParty={false}>
                             <HeaderProvider loaderColor="transparent">
                                 <PageContent primary>{children}</PageContent>
                             </HeaderProvider>

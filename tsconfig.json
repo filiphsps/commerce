@@ -34,7 +34,7 @@
         "strictPropertyInitialization": true,
         "target": "ESNext",
         "types": ["node"],
-        "typeRoots": ["node_modules/@types", "./packages/**/src/@types"],
+        "typeRoots": ["node_modules/@types", "./apps/**/src/@types", "./packages/**/src/@types"],
         "useDefineForClassFields": true
     },
     "exclude": ["**/.turbo", "**/coverage", "**/*.stories.ts", "**/dist.*", "node_modules"],

@@ -41,7 +41,14 @@
         "resolveJsonModule": true,
         "skipLibCheck": true,
         "strict": true,
-        "target": "ES2017"
+        "strictBindCallApply": true,
+        "strictFunctionTypes": true,
+        "strictNullChecks": true,
+        "strictPropertyInitialization": true,
+        "target": "ES2017",
+        "types": ["node"],
+        "typeRoots": ["node_modules/@types", "./src/@types"],
+        "useDefineForClassFields": true
     },
     "exclude": ["node_modules"],
     "include": ["next-env.d.ts", "src/**/*.ts", "src/**/.well-known/**/*.ts", "src/**/*.tsx", ".next/types/**/*.ts"],

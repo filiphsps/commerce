@@ -1,4 +1,3 @@
-import 'the-new-css-reset';
 import './globals.css';
 
 import { primaryFont } from '@/utils/fonts';
