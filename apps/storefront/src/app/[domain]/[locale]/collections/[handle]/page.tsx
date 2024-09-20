@@ -1,6 +1,5 @@
 import { Suspense } from 'react';
 
-import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 
@@ -63,10 +62,16 @@ export async function generateStaticParams({
     }
 }
 
+type SearchParams = {
+    page?: string;
+};
+
 export async function generateMetadata({
-    params: { domain, locale: localeData, handle }
+    params: { domain, locale: localeData, handle },
+    searchParams: { page: pageNumber }
 }: {
     params: CollectionPageParams;
+    searchParams: SearchParams;
 }): Promise<Metadata> {
     if (!isValidHandle(handle)) {
         notFound();
@@ -108,11 +113,11 @@ export async function generateMetadata({
         title,
         description,
         alternates: {
-            canonical: `https://${shop.domain}/${locale.code}/collections/${handle}/`,
+            canonical: `https://${shop.domain}/${locale.code}/collections/${handle}/${pageNumber ? `?page=${pageNumber}` : ''}`,
             languages: locales.reduce(
                 (prev, { code }) => ({
                     ...prev,
-                    [code]: `https://${shop.domain}/${code}/collections/${handle}/`
+                    [code]: `https://${shop.domain}/${code}/collections/${handle}/${pageNumber ? `?page=${pageNumber}` : ''}`
                 }),
                 {}
             )
@@ -137,19 +142,6 @@ export async function generateMetadata({
                 : undefined
         }
     };
-}
-
-async function CollectionPageSlices({ shop, locale, handle }: { shop: OnlineShop; locale: Locale; handle: string }) {
-    const page = await PageApi({ shop, locale, handle, type: 'collection_page' });
-    if (!page || page.slices.length <= 0) {
-        return null;
-    }
-
-    return (
-        <PageContent>
-            <PrismicPage shop={shop} locale={locale} page={page} handle={handle} type={'collection_page'} />
-        </PageContent>
-    );
 }
 
 export default async function CollectionPage({
