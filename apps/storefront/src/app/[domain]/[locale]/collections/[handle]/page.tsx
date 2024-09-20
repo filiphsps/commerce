@@ -14,7 +14,7 @@ import { getTranslations, Locale } from '@/utils/locale';
 import { checkAndHandleRedirect } from '@/utils/redirect';
 import { asText } from '@prismicio/client';
 import { flattenConnection } from '@shopify/hydrogen-react';
-import { notFound, unstable_rethrow } from 'next/navigation';
+import { notFound, redirect, RedirectType, unstable_rethrow } from 'next/navigation';
 
 import { Pagination } from '@/components/actionable/pagination';
 import PrismicPage from '@/components/cms/prismic-page';
@@ -123,11 +123,11 @@ export async function generateMetadata({
         title,
         description,
         alternates: {
-            canonical: `https://${shop.domain}/${locale.code}/collections/${handle}/${pageNumber ? `?page=${pageNumber}` : ''}`,
+            canonical: `https://${shop.domain}/${locale.code}/collections/${handle}/${pageNumber > 1 ? `?page=${pageNumber}` : ''}`,
             languages: locales.reduce(
                 (prev, { code }) => ({
                     ...prev,
-                    [code]: `https://${shop.domain}/${code}/collections/${handle}/${pageNumber ? `?page=${pageNumber}` : ''}`
+                    [code]: `https://${shop.domain}/${code}/collections/${handle}/${pageNumber > 1 ? `?page=${pageNumber}` : ''}`
                 }),
                 {}
             )
@@ -167,6 +167,15 @@ export default async function CollectionPage({
 
     // Creates a locale object from a locale code (e.g. `en-US`).
     const locale = Locale.from(localeData);
+
+    // Handle `?page=1` which should be removed.
+    if (searchParams.page === '1') {
+        const params = new URLSearchParams(searchParams);
+        redirect(
+            `/${locale.code}/collections/${handle}/${params.size > 0 ? '?' : ''}${params.toString()}`,
+            RedirectType.replace
+        );
+    }
 
     // Fetch the current shop.
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });

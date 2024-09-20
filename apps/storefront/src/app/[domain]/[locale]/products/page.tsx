@@ -27,11 +27,17 @@ export const dynamic = 'force-dynamic'; // TODO: Figure out a better way to deal
 export const dynamicParams = true;
 export const revalidate = false;
 
+type SearchParams = {
+    page?: string;
+};
+
 export type ProductsPageParams = { domain: string; locale: string };
 export async function generateMetadata({
-    params: { domain, locale: localeData }
+    params: { domain, locale: localeData },
+    searchParams: searchParams
 }: {
     params: ProductsPageParams;
+    searchParams: SearchParams;
 }): Promise<Metadata> {
     const locale = Locale.from(localeData);
 
@@ -44,17 +50,22 @@ export async function generateMetadata({
     const i18n = await getDictionary(locale);
     const { t } = getTranslations('common', i18n);
 
-    const title = page?.meta_title || page?.title || capitalize(t('products'));
+    const pageNumber = searchParams.page ? parseInt(searchParams.page, 10) : 1;
+
+    const title =
+        pageNumber > 1
+            ? `${t('products')} - ${t('page-n', pageNumber)}`
+            : page?.meta_title || page?.title || capitalize(t('products'));
     const description = asText(page?.meta_description) || page?.description || undefined;
     return {
         title,
         description,
         alternates: {
-            canonical: `https://${shop.domain}/${locale.code}/products/`,
+            canonical: `https://${shop.domain}/${locale.code}/products/${pageNumber > 1 ? `?page=${pageNumber}` : ''}`,
             languages: locales.reduce(
                 (prev, { code }) => ({
                     ...prev,
-                    [code]: `https://${shop.domain}/${code}/products/`
+                    [code]: `https://${shop.domain}/${code}/products/${pageNumber > 1 ? `?page=${pageNumber}` : ''}`
                 }),
                 {}
             )
@@ -86,13 +97,19 @@ export default async function ProductsPage({
     searchParams
 }: {
     params: ProductsPageParams;
-    searchParams: any;
+    searchParams: SearchParams;
 }) {
     // Creates a locale object from a locale code (e.g. `en-US`).
     const locale = Locale.from(localeData);
 
     if (!(await enableProductsPage())) {
         redirect(`/${locale.code}/`, RedirectType.replace);
+    }
+
+    // Handle `?page=1` which should be removed.
+    if (searchParams.page === '1') {
+        const params = new URLSearchParams(searchParams);
+        redirect(`/${locale.code}/products/${params.size > 0 ? '?' : ''}${params.toString()}`, RedirectType.replace);
     }
 
     // Fetch the current shop.
