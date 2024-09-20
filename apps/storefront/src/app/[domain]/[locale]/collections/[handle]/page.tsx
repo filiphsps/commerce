@@ -13,6 +13,7 @@ import { isValidHandle } from '@/utils/handle';
 import { getTranslations, Locale } from '@/utils/locale';
 import { checkAndHandleRedirect } from '@/utils/redirect';
 import { asText } from '@prismicio/client';
+import { flattenConnection } from '@shopify/hydrogen-react';
 import { notFound, unstable_rethrow } from 'next/navigation';
 
 import { Pagination } from '@/components/actionable/pagination';
@@ -28,7 +29,7 @@ import Heading from '@/components/typography/heading';
 import { CollectionContent, PRODUCTS_PER_PAGE } from './collection-content';
 
 import type { Metadata } from 'next';
-import type { Collection, WithContext } from 'schema-dts';
+import type { CollectionPage, WithContext } from 'schema-dts';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic'; // TODO: Figure out a better way to deal with query params.
@@ -87,7 +88,7 @@ export async function generateMetadata({
 
     try {
         // Do the actual API calls.
-        collection = await CollectionApi({ api, handle, limit: 1 });
+        collection = await CollectionApi({ api, handle, limit: 8 });
         page = await PageApi({ shop, locale, handle, type: 'collection_page' });
     } catch (error: unknown) {
         unstable_rethrow(error);
@@ -178,7 +179,7 @@ export default async function CollectionPage({
 
     try {
         // Do the actual API calls.
-        collection = await CollectionApi({ api, handle, limit: 1 });
+        collection = await CollectionApi({ api, handle, limit: 8 });
         pagesInfo = await CollectionPaginationCountApi({ api, handle, filters: { first: PRODUCTS_PER_PAGE } });
     } catch (error: unknown) {
         unstable_rethrow(error);
@@ -192,22 +193,46 @@ export default async function CollectionPage({
         throw error;
     }
 
-    const page = await PageApi({ shop, locale, handle, type: 'collection_page' });
+    let page: Awaited<ReturnType<typeof PageApi<'collection_page'>>> | null = null;
+    try {
+        page = await PageApi({ shop, locale, handle, type: 'collection_page' });
+    } catch {}
 
     const empty = collection.products.edges.length <= 0;
 
-    const jsonLd: WithContext<Collection> = {
+    const jsonLd: WithContext<CollectionPage> = {
         '@context': 'https://schema.org',
-        '@type': 'Collection',
+        '@type': 'CollectionPage',
         'name': collection.title,
         'description': collection.description,
-        'url': `https://${shop.domain}/${locale.code}/collections/${handle}/`
+        'url': `https://${shop.domain}/${locale.code}/collections/${handle}/`,
+        'image': collection.image?.url || undefined,
+        'mainEntity': {
+            '@type': 'ItemList',
+            'numberOfItems': pagesInfo.products,
+            'itemListElement': flattenConnection(collection.products).map(
+                ({ handle, title, images, description, vendor }, index) => ({
+                    '@type': 'ListItem',
+                    'position': index,
+                    'url': `https://${shop.domain}/${locale.code}/products/${handle}/`,
+                    'name': title,
+                    'description': description,
+                    'image': flattenConnection(images)[0]?.url || undefined,
+                    'brand': {
+                        '@type': 'Brand',
+                        'name': vendor
+                    }
+                })
+            )
+        }
     };
+
+    const pageNumber = searchParams.page ? parseInt(searchParams.page, 10) : 1;
 
     const pageContent = !empty ? (
         <>
             <Suspense
-                key={JSON.stringify(searchParams)}
+                key={`collections.${handle}.content.page.${pageNumber}`}
                 fallback={<CollectionBlock.skeleton length={PRODUCTS_PER_PAGE} />}
             >
                 <CollectionContent
@@ -230,8 +255,6 @@ export default async function CollectionPage({
     const hasSlices = page ? page.slices.length > 0 : false;
     const hasCustomPageContentPosition =
         hasSlices && page ? page.slices.some((slice) => slice.slice_type === 'original_content') : false;
-
-    const pageNumber = searchParams.page ? parseInt(searchParams.page, 10) : 1;
 
     return (
         <>
