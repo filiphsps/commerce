@@ -14,7 +14,8 @@ import { PrismicText } from '@/components/typography/prismic-text';
 import type { DropdownSliceDefaultPrimaryLinksItem, Simplify } from '@/prismic/types';
 import type { SliceComponentProps } from '@prismicio/react';
 
-const MENU_COMMON_STYLES = 'h-full w-full max-w-[var(--page-width)] px-3 py-4 md:px-4 2xl:px-3 overflow-x-auto ';
+const MENU_COMMON_STYLES =
+    'content-visibility-auto contain-intrinsic-size-[auto_var(--page-width)] h-full w-full max-w-[var(--page-width)] overflow-x-auto px-3 py-4 md:px-4 2xl:px-3';
 const MENU_ITEM_COMMON_STYLES =
     'group/item hover:border-primary focus-within:border-primary hover:text-primary focus-within:text-primary flex h-full grow shrink-0 overflow-hidden rounded-lg border border-solid border-gray-300 bg-white transition-colors duration-75';
 const TITLE_COMMON_STYLES = 'text-xl leading-none py-2 font-semibold';

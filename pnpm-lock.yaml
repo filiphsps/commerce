@@ -759,6 +759,9 @@ importers:
       tailwindcss:
         specifier: 3.4.12
         version: 3.4.12(ts-node@10.9.1(@types/node@20.16.5)(typescript@5.6.2))
+      tailwindcss-content-visibility:
+        specifier: 0.2.0
+        version: 0.2.0(tailwindcss@3.4.12(ts-node@10.9.1(@types/node@20.16.5)(typescript@5.6.2)))
       typescript:
         specifier: 5.6.2
         version: 5.6.2
@@ -6349,6 +6352,11 @@ packages:
     resolution: {integrity: sha512-bl6mpH3T7I3UFxuvDEXLxy/VuFxBk5bbzplh7tXI68mwMokNYd1t9qPBHlnyTwfa4JGC4zP516I1hYYtQ/vspA==}
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders'
+
+  tailwindcss-content-visibility@0.2.0:
+    resolution: {integrity: sha512-GsmCKKkyTz7yirk++A1PXZ5rS0Ea8uzEYKKL+czlpgvcLfM7l3EVsTy5HTqhdvRYb4A/zr/nasd/t6oTCqIjUg==}
+    peerDependencies:
+      tailwindcss: ^3.0.0
 
   tailwindcss@3.4.12:
     resolution: {integrity: sha512-Htf/gHj2+soPb9UayUNci/Ja3d8pTmu9ONTfh4QY8r3MATTZOzmv6UYWF7ZwikEIC8okpfqmGqrmDehua8mF8w==}
@@ -13119,6 +13127,10 @@ snapshots:
   tailwind-merge@2.5.2: {}
 
   tailwindcss-animate@1.0.7(tailwindcss@3.4.12(ts-node@10.9.1(@types/node@20.16.5)(typescript@5.6.2))):
+    dependencies:
+      tailwindcss: 3.4.12(ts-node@10.9.1(@types/node@20.16.5)(typescript@5.6.2))
+
+  tailwindcss-content-visibility@0.2.0(tailwindcss@3.4.12(ts-node@10.9.1(@types/node@20.16.5)(typescript@5.6.2))):
     dependencies:
       tailwindcss: 3.4.12(ts-node@10.9.1(@types/node@20.16.5)(typescript@5.6.2))
 

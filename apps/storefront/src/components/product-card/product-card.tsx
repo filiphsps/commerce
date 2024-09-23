@@ -40,7 +40,7 @@ const ProductCard = async ({ shop, locale, data: product, priority, className, .
         <div
             className={cn(
                 CARD_STYLES,
-                'transition-shadow hover:drop-shadow',
+                'content-visibility-auto contain-intrinsic-size-[20rem_auto] transition-shadow hover:drop-shadow',
                 isFreeShipping && 'border-primary shadow',
                 className
             )}
@@ -48,7 +48,7 @@ const ProductCard = async ({ shop, locale, data: product, priority, className, .
         >
             <ProductCardBadges data={product} i18n={i18n} />
 
-            <Suspense fallback={<Fragment />}>
+            <Suspense key={`product-card.${product.handle}.content`} fallback={<Fragment />}>
                 <ProductCardContent locale={locale} i18n={i18n} data={product} priority={priority}>
                     <ProductCardTitle shop={shop} data={product} />
                 </ProductCardContent>

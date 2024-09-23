@@ -86,7 +86,7 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
         <Tag
             {...props}
             className={cn(
-                'grid w-full gap-2',
+                'content-visibility-auto contain-intrinsic-size-[auto_100%] grid w-full gap-2',
                 !isHorizontal &&
                     'grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] md:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] xl:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))]',
                 isHorizontal &&
