@@ -63,7 +63,7 @@ const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
                 {isVegan && (
                     <div className={cn(COMMON_BADGE_STYLES, 'bg-green-600 text-white')}>
                         <AttributeIcon data={'vegan'} className="text-lg" />
-                        {t('vegan')}
+                        {capitalize(t('vegan'))}
                     </div>
                 )}
 
@@ -72,7 +72,7 @@ const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
                         className={cn(COMMON_BADGE_STYLES, 'bg-sale-stripes font-bold text-white')}
                         data-nosnippet={true}
                     >
-                        {t('percentage-off', discount)}
+                        {capitalize(t('percentage-off', discount))}
                     </div>
                 ) : null}
             </div>

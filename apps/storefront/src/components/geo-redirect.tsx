@@ -112,7 +112,7 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
                     <div data-nosnippet={true}>
                         {t(
                             'geo-redirect-message',
-                            <span className="font-semibold" key={targetLocale.code}>
+                            <span className="font-semibold" key={targetLocale.code} data-nosnippet={true}>
                                 <LocaleCountryName locale={targetLocale} />
                             </span>
                         )}
@@ -160,7 +160,9 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
                             )}
                         >
                             <div className="w-5"></div>
-                            <div className="text-inherit">Another country or region</div>
+                            <div className="text-inherit" data-nosnippet={true}>
+                                Another country or region
+                            </div>
                         </Link>
                     </div>
 

@@ -6,13 +6,12 @@ import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { getAuthSession } from '@/auth';
 import { enableAccountsFunctionality } from '@/utils/flags';
+import { capitalize, getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 
 import { LoginButton } from '@/components/actionable/login-button';
 import { Avatar } from '@/components/informational/avatar';
 import Link from '@/components/link';
-
-import type { Locale, LocaleDictionary } from '@/utils/locale';
 
 export type HeaderAccountSectionProps = {
     shop: OnlineShop;
@@ -29,10 +28,12 @@ export async function HeaderAccountSection({ shop, i18n, className, ...props }: 
         return <LoginButton i18n={i18n} />;
     }
 
+    const { t } = getTranslations('common', i18n);
+
     return (
         <section className={cn('flex h-full items-center justify-end gap-1 empty:hidden', className)} {...props}>
             <Link href="/account/" className="hover:brightness-75 focus-visible:brightness-75" draggable={false}>
-                <Avatar name={session.user?.name} src={session.user?.image} />
+                <Avatar name={session.user?.name} src={session.user?.image} title={capitalize(t('account'))} />
             </Link>
         </section>
     );

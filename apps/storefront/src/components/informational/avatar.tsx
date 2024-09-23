@@ -22,6 +22,7 @@ export async function Avatar({ src, name, title, className, ...props }: AvatarPr
             )}
         >
             {src ? (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img
                     className={cn('h-full w-full object-cover object-center', className)}
                     role="presentation"
