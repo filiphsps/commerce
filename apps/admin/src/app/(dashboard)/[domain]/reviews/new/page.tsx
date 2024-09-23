@@ -27,7 +27,7 @@ export default async function ShopNewReviewPagePage({ params: { domain } }: Shop
         redirect('/auth/login/');
     }
 
-    const _shop = await Shop.findByDomain(domain); // FIXME: Handle errors.
+    const shop = await Shop.findByDomain(domain); // FIXME: Handle errors.
 
     return (
         <>
@@ -35,7 +35,7 @@ export default async function ShopNewReviewPagePage({ params: { domain } }: Shop
                 action={async (formData: FormData) => {
                     'use server';
                     // TODO: Implement this.
-                    console.warn(formData);
+                    console.warn(formData, shop.domain);
                 }}
             >
                 <Card>
@@ -49,7 +49,7 @@ export default async function ShopNewReviewPagePage({ params: { domain } }: Shop
 
                             <Input type="number" min={1} max={5} defaultValue={5} name="rating" label="rating" />
                             <Input type="text" name="title" label="Title" />
-                            <Input type="textarea" name="body" label="Body" className="min-h-72 resize-y" />
+                            <Input as="textarea" type="text" name="body" label="Body" className="min-h-72 resize-y" />
                         </div>
                     </Card.content>
 
