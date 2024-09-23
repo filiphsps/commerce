@@ -39,6 +39,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params: { code } }: ErrorPageProps): Promise<Metadata> {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     const error = ERROR_CODES[code as keyof typeof ERROR_CODES] || ERROR_CODES['unknown-error'];
 
     return {
@@ -49,6 +50,7 @@ export async function generateMetadata({ params: { code } }: ErrorPageProps): Pr
 
 export default function StatusPage({ params: { code }, searchParams: { shop } }: ErrorPageProps) {
     const hostname = shop || headers().get('x-nordcom-shop');
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     const error = ERROR_CODES[code as keyof typeof ERROR_CODES] || ERROR_CODES['unknown-error'];
 
     const mailTitle = `${shop ? `[${shop}] ` : ''}${error.title}`;

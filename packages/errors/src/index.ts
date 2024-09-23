@@ -454,7 +454,7 @@ export const getAllErrorCodes = () => {
 
 export const getErrorFromCode = (
     code: GenericErrorKind | ApiErrorKind
-): typeof GenericError | typeof ApiError | typeof Error | null => {
+): typeof GenericError | typeof ApiError | null => {
     switch (code) {
         // Generic Errors.
         case GenericErrorKind.GENERIC_UNKNOWN_ERROR:
