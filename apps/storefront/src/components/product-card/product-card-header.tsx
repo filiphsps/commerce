@@ -21,7 +21,7 @@ const VariantImage = ({ image, priority }: VariantImageProps) => {
     return (
         <div className="aspect-3/2 h-max w-full rounded-lg bg-white drop-shadow">
             <Image
-                className="h-full w-full transform-gpu object-contain object-center p-3 transition-transform group-hover/card:scale-110"
+                className="h-full w-full object-contain object-center p-3 transition-transform group-hover/card:scale-110"
                 role={image.altText ? undefined : 'presentation'}
                 src={image.url}
                 alt={image.altText!}
