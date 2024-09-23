@@ -170,7 +170,7 @@ describe('app', () => {
         });
 
         it('generates the correct metadata', async () => {
-            const metadata = await generateMetadata({ params });
+            const metadata = await generateMetadata({ params, searchParams: {} });
             expect(metadata!.title).toBe(`${product.vendor} ${product.title}`);
         });
     });
