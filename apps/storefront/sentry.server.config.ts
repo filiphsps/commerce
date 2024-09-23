@@ -8,15 +8,21 @@ import { nodeProfilingIntegration } from '@sentry/profiling-node';
 Sentry.init({
     dsn: 'https://69f04d1649cfe353ec27e6a30ca412d5@o4506147853828096.ingest.us.sentry.io/4507483915091968',
 
-    // Adjust this value in production, or use tracesSampler for greater control
-    tracesSampleRate: 0.85,
-    profilesSampleRate: 1.0, // Profiling sample rate is relative to tracesSampleRate
-    integrations: [
-        // Add profiling integration to list of integrations
-        nodeProfilingIntegration()
+    ignoreErrors: [
+        'ApolloError',
+        'HierarchyRequestError',
+        'InvalidContentProviderError',
+        'NoLocalesAvailableError',
+        'Response not successful',
+        'The operation would yield an incorrect node tree.',
+        'TodoError',
+        "Failed to execute 'removeChild'",
+        `Unexpected token`
     ],
 
-    // Setting this option to true will print useful information to the console while you're setting up Sentry.
+    tracesSampleRate: 0.85,
+    profilesSampleRate: 1.0,
+    integrations: [nodeProfilingIntegration()],
     debug: false
 
     // Uncomment the line below to enable Spotlight (https://spotlightjs.com)

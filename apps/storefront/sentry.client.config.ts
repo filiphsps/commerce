@@ -8,11 +8,15 @@ Sentry.init({
     dsn: 'https://69f04d1649cfe353ec27e6a30ca412d5@o4506147853828096.ingest.us.sentry.io/4507483915091968',
 
     ignoreErrors: [
-        'HierarchyRequestError',
         'ApolloError',
+        'HierarchyRequestError',
+        'InvalidContentProviderError',
+        'NoLocalesAvailableError',
+        'Response not successful',
         'The operation would yield an incorrect node tree.',
+        'TodoError',
         "Failed to execute 'removeChild'",
-        `Unexpected token '<', "<html> <h"... is not valid JSON`
+        `Unexpected token`
     ],
 
     tracesSampleRate: 0,
