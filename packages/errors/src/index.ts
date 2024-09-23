@@ -152,6 +152,14 @@ export class UnknownLocaleError extends UnknownError {
     details = 'Unknown locale';
     description = 'Unsupported or invalid locale code was provided';
     code = ApiErrorKind.API_UNKNOWN_LOCALE;
+
+    constructor(code?: any, cause?: string, statusCode?: number) {
+        super(cause, statusCode);
+
+        if (code) {
+            this.description = this.description.replace('code', `code "${code}"`);
+        }
+    }
 }
 
 export class InvalidShopError extends ApiError {
@@ -168,8 +176,8 @@ export class InvalidHandleError extends ApiError {
     description = 'The handle is invalid';
     code = ApiErrorKind.API_INVALID_HANDLE;
 
-    constructor(handle?: string) {
-        super();
+    constructor(handle?: string, cause?: string, statusCode?: number) {
+        super(cause, statusCode);
 
         if (handle) {
             this.description = this.description.replace('handle', `handle "${handle}"`);
@@ -183,9 +191,10 @@ export class InvalidIDError extends ApiError {
     description = 'The ID is invalid';
     code = ApiErrorKind.API_INVALID_ID;
 
-    constructor(id?: any) {
-        super();
+    constructor(id?: any, cause?: string, statusCode?: number) {
+        super(cause, statusCode);
 
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (typeof id !== undefined && id !== null) {
             this.description = this.description.replace('ID', `ID "${id?.toString?.() || id}"`);
         }
@@ -198,12 +207,14 @@ export class InvalidSliceVariationError extends ApiError {
     description = 'The slice variation is invalid';
     code = ApiErrorKind.API_INVALID_SLICE_VARIATION;
 
-    constructor(variation?: any, slice?: any) {
-        super();
+    constructor(variation?: any, slice?: any, cause?: string, statusCode?: number) {
+        super(cause, statusCode);
 
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (typeof slice !== undefined && slice !== null) {
             this.description = this.description.replace('slice', `slice "${slice?.toString?.() || slice}"`);
         }
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (typeof variation !== undefined && variation !== null) {
             this.description = this.description.replace(
                 'variation',
@@ -443,7 +454,7 @@ export const getAllErrorCodes = () => {
 
 export const getErrorFromCode = (
     code: GenericErrorKind | ApiErrorKind
-): typeof GenericError | typeof ApiError | null => {
+): typeof GenericError | typeof ApiError | typeof Error | null => {
     switch (code) {
         // Generic Errors.
         case GenericErrorKind.GENERIC_UNKNOWN_ERROR:
@@ -473,13 +484,13 @@ export const getErrorFromCode = (
         case ApiErrorKind.API_INVALID_CONTENT_PROVIDER:
             return InvalidContentProviderError;
         case ApiErrorKind.API_UNKNOWN_LOCALE:
-            return UnknownLocaleError;
+            return UnknownLocaleError as any;
         case ApiErrorKind.API_INVALID_SHOP:
             return InvalidShopError;
         case ApiErrorKind.API_INVALID_HANDLE:
-            return InvalidHandleError;
+            return InvalidHandleError as any;
         case ApiErrorKind.API_INVALID_ID:
-            return InvalidIDError;
+            return InvalidIDError as any;
         case ApiErrorKind.API_INVALID_SLICE_VARIATION:
             return InvalidSliceVariationError;
         case ApiErrorKind.API_INVALID_CART:

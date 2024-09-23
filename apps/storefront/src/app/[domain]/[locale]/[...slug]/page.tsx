@@ -164,7 +164,7 @@ async function PageBreadcrumbs({ shop, locale, handle }: { shop: OnlineShop; loc
 }
 
 export default async function CustomPage({
-    params: { domain, locale: localeCode, slug }
+    params: { domain, locale: localeData, slug }
 }: {
     params: CustomPageParams;
 }) {
@@ -174,7 +174,7 @@ export default async function CustomPage({
     }
 
     // Creates a locale object from a locale code (e.g. `en-US`).
-    const locale = Locale.from(localeCode);
+    const locale = Locale.from(localeData);
 
     // Fetch the current shop.
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });

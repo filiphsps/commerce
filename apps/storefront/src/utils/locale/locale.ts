@@ -71,7 +71,7 @@ export class Locale implements SerializableLocale {
         // Get the locale code from the first path segment.
         const code = window.location.pathname.split('/')[1];
         if (!code) {
-            throw new UnknownLocaleError(`Invalid locale: "${code}"`);
+            return Locale.default;
         }
 
         return Locale.from(code);
@@ -102,23 +102,23 @@ export class Locale implements SerializableLocale {
             const code = data.toUpperCase() as Uppercase<Code>;
 
             if (!(code as any) || code.length < 2 || code.length > 5 || (code.length !== 2 && !code.includes('-'))) {
-                throw new UnknownLocaleError(`Invalid locale: "${data}"`);
+                throw new UnknownLocaleError(data);
             }
 
             if (code.length === 2) {
-                return wrap(new Locale({ language: code as LanguageCode }));
+                return wrap(new Locale({ language: code as LanguageCode, country: undefined }));
             }
 
             const [language, country] = code.split('-') as [LanguageCode, CountryCode?];
             return wrap(new Locale({ language, country }));
         } else {
             if (!(data as any)) {
-                throw new UnknownLocaleError(`Invalid locale: "${data}"`);
+                throw new UnknownLocaleError(data);
             }
 
             const { language, country } = data;
             if ((language as any).length !== 2 || (!!country && (language as any).length !== 2)) {
-                throw new UnknownLocaleError(`Invalid locale: "${data}"`);
+                throw new UnknownLocaleError(data);
             }
 
             return wrap(new Locale({ language, country }));

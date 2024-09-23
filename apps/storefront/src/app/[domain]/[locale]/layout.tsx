@@ -103,13 +103,24 @@ export async function generateMetadata({
 }: {
     params: LayoutParams;
 }): Promise<Metadata> {
-    if (!localeData) {
+    if (!localeData || !domain) {
         notFound();
     }
 
-    const locale = Locale.from(localeData);
-    let shop: OnlineShop;
+    let locale: Locale;
+    try {
+        locale = Locale.from(localeData);
+    } catch (error: unknown) {
+        if (Error.isNotFound(error)) {
+            notFound();
+        }
 
+        console.error(error);
+        unstable_rethrow(error);
+        throw error;
+    }
+
+    let shop: OnlineShop;
     try {
         shop = await Shop.findByDomain(domain, { sensitiveData: true });
     } catch (error: unknown) {
@@ -160,13 +171,24 @@ export default async function RootLayout({
     children: ReactNode;
     params: LayoutParams;
 }) {
-    if (!localeData) {
-        notFound(); // TODO: This should show an Invalid configuration status page.
+    if (!localeData || !domain) {
+        notFound();
     }
 
-    const locale = Locale.from(localeData);
-    let shop: OnlineShop, publicShop: OnlineShop;
+    let locale: Locale;
+    try {
+        locale = Locale.from(localeData);
+    } catch (error: unknown) {
+        if (Error.isNotFound(error)) {
+            notFound();
+        }
 
+        console.error(error);
+        unstable_rethrow(error);
+        throw error;
+    }
+
+    let shop: OnlineShop, publicShop: OnlineShop;
     try {
         shop = await Shop.findByDomain(domain, { sensitiveData: true });
         publicShop = await Shop.findByDomain(domain);
@@ -182,8 +204,21 @@ export default async function RootLayout({
 
     const api = await ShopifyApolloApiClient({ shop, locale });
 
+    let locales: Locale[];
+    try {
+        locales = await LocalesApi({ api });
+    } catch (error: unknown) {
+        if (Error.isNotFound(error)) {
+            notFound();
+        }
+
+        console.error(error);
+        unstable_rethrow(error);
+        throw error;
+    }
+
     // Make sure that the current locale is a valid and active locale.
-    if (!(await LocalesApi({ api })).map((locale) => locale.code).includes(locale.code)) {
+    if (!locales.map((locale) => locale.code).includes(locale.code)) {
         notFound();
     }
 
