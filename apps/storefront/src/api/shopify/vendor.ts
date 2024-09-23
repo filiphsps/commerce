@@ -1,4 +1,4 @@
-import { NotFoundError } from '@nordcom/commerce-errors';
+import { NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
 
 import { TitleToHandle } from '@/utils/title-to-handle';
 import { gql } from '@apollo/client';
@@ -47,8 +47,10 @@ type VendorsOptions = { api: AbstractApi };
  * @returns {Promise<VendorModel[]>} The list of vendors.
  */
 export const VendorsApi = async ({ api }: VendorsOptions): Promise<VendorModel[]> => {
+    const shop = api.shop();
+
     try {
-        const { data } = await api.query<{ products: ProductConnection }>(gql`
+        const { data, errors } = await api.query<{ products: ProductConnection }>(gql`
             query products {
                 products(first: 250, sortKey: BEST_SELLING) {
                     edges {
@@ -61,9 +63,11 @@ export const VendorsApi = async ({ api }: VendorsOptions): Promise<VendorModel[]
             }
         `);
 
-        // FIXME: Handle errors and missing data.
-        if (!data || data.products.edges.length <= 0) {
-            throw new NotFoundError('vendors');
+        if (errors && errors.length > 0) {
+            throw new ProviderFetchError(errors);
+        }
+        if (!data?.products || data.products.edges.length <= 0) {
+            throw new NotFoundError(`"vendors" on shop "${shop.id}"`);
         }
 
         return Convertor(data.products.edges!);

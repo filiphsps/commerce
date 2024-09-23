@@ -10,7 +10,7 @@ import type { AbstractApi } from '@/utils/abstract-api';
 // TODO: Migrate to the new recommendations api.
 export const RecommendationApi = async ({ api, id }: { api: AbstractApi; id: string }): Promise<Product[]> => {
     const gid = parseGid(id);
-    if (!gid) {
+    if (!gid.id) {
         throw new InvalidIDError(id);
     }
 
@@ -26,15 +26,15 @@ export const RecommendationApi = async ({ api, id }: { api: AbstractApi; id: str
                 }
             `,
             {
-                productId: id
+                productId: gid.id
             }
         );
 
         if (errors && errors.length > 0) {
             throw new ProviderFetchError(errors);
         }
-        if (!data?.productRecommendations) {
-            throw new NotFoundError(`"Recommendations" for "Product" with id "${id}" on shop "${shop.id}"`);
+        if (!data?.productRecommendations || data.productRecommendations.length <= 0) {
+            throw new NotFoundError(`"Recommendations" for "Product" with id "${gid.id}" on shop "${shop.id}"`);
         }
 
         return data.productRecommendations;
