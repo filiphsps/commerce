@@ -26,10 +26,10 @@ export const ProductActionsContainer = ({ className, i18n, ...props }: ProductAc
     const { quantity, setQuantity } = useQuantity();
 
     const { product, selectedVariant } = useProduct() as ReturnType<typeof useProduct> & {
-        product: Product;
-        selectedVariant: ProductVariant;
+        product: Product | undefined;
+        selectedVariant: ProductVariant | undefined;
     };
-    if (!(product as any)) {
+    if (!product || !selectedVariant) {
         return null;
     }
 

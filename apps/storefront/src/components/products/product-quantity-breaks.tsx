@@ -101,8 +101,14 @@ export function ProductQuantityBreaks({
     className = '',
     ...props
 }: ProductQuantityBreaksProps) {
-    const { selectedVariant } = useProduct() as ReturnType<typeof useProduct> & { selectedVariant: ProductVariant };
+    const { selectedVariant } = useProduct() as ReturnType<typeof useProduct> & {
+        selectedVariant: ProductVariant | undefined;
+    };
     const { cartReady, status } = useCart();
+
+    if (!selectedVariant) {
+        return null;
+    }
 
     const breaks = transformQuantityBreaks(selectedVariant.quantityBreaks) || [];
     if (breaks.length <= 0) {
