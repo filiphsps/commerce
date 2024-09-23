@@ -11,6 +11,6 @@ export default function CustomHTML({ slice }: CustomHTMLProps) {
             dangerouslySetInnerHTML={{ __html: slice.primary.html || '' }}
             suppressHydrationWarning={true}
             suppressContentEditableWarning={true}
-        ></section>
+        />
     );
 }
