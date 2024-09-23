@@ -98,7 +98,6 @@ export function Pagination({
 
     return (
         <nav
-            role="navigation"
             aria-label="pagination"
             className="overflow-x-shadow flex max-w-full flex-nowrap items-center gap-3 md:gap-4"
         >
