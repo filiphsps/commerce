@@ -183,6 +183,7 @@ export default function SearchContent({
                                     {image ? (
                                         <Image
                                             className={'aspect-square h-full object-contain object-center'}
+                                            role={image.altText ? undefined : 'presentation'}
                                             src={image.url!}
                                             alt={image.altText!}
                                             title={image.altText!}

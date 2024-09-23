@@ -102,15 +102,17 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                                 style={{ backgroundColor: background_color || undefined }}
                             >
                                 <Image
-                                    src={image.url}
-                                    alt={image.alt || image.copyright ? `© ${image.copyright}` : ''}
-                                    width={image.dimensions.width}
-                                    height={image.dimensions.height}
-                                    quality={80}
                                     className={cn(
                                         'pointer-events-none h-full w-full object-cover shadow group-focus-within/item:brightness-75 group-hover/item:brightness-75',
                                         imagePositionStyles
                                     )}
+                                    role={image.alt ? undefined : 'presentation'}
+                                    src={image.url}
+                                    alt={image.alt!}
+                                    width={image.dimensions.width}
+                                    height={image.dimensions.height}
+                                    quality={80}
+                                    sizes="(max-width: 920px) 90vw, 300px"
                                     draggable={false}
                                     priority={true}
                                     loading="eager"

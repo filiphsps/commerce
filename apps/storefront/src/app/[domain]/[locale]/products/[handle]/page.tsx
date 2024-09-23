@@ -303,8 +303,8 @@ export default async function ProductPage({
 
             'offers': {
                 '@type': 'Offer',
-                'url': `https://${shop.domain}/${locale.code}/products/${product.handle}/?variant=${
-                    parseGid(variant.id).id
+                'url': `https://${shop.domain}/${locale.code}/products/${product.handle}/${
+                    variant.id !== initialVariant.id ? `?variant=${parseGid(variant.id).id}` : ''
                 }`,
                 'itemCondition': 'https://schema.org/NewCondition',
                 'availability': variant.availableForSale ? 'https://schema.org/InStock' : 'https://schema.org/SoldOut',
@@ -403,9 +403,9 @@ export default async function ProductPage({
 
                 <Suspense
                     key={`products.${handle}.details`}
-                    fallback={<section className="w-full overflow-hidden lg:max-w-[38rem]" />}
+                    fallback={<section className="w-full overflow-hidden md:max-w-[32rem]" />}
                 >
-                    <section className="flex w-full max-w-full flex-col gap-2 2xl:w-auto">
+                    <section className="flex w-full flex-col gap-2 overflow-hidden md:max-w-[32rem] 2xl:w-auto">
                         <Suspense
                             key={`products.${handle}.details.savings`}
                             fallback={<div className="h-4 w-full" data-skeleton />}
@@ -462,30 +462,39 @@ export default async function ProductPage({
                             </Suspense>
                         </Card>
 
-                        <Suspense>
+                        <Suspense fallback={<Fragment />}>
                             <Card className={cn(BLOCK_STYLES)}>
                                 <InfoLines product={product} i18n={i18n} locale={locale} />
                             </Card>
                         </Suspense>
 
-                        <Suspense fallback={<Card className={cn(BLOCK_STYLES, 'h-32 rounded-lg')} data-skeleton />}>
-                            <section className="lg:max-w-[38rem]">
+                        <Suspense
+                            key={`products.${handle}.details.slices`}
+                            fallback={<Card className={cn(BLOCK_STYLES, 'h-32 rounded-lg')} data-skeleton />}
+                        >
+                            <section className="md:max-w-[32rem]">
                                 <CMSContent shop={shop} locale={locale} handle={handle} type={'product_page'} />
                             </section>
                         </Suspense>
 
-                        <Card className={cn(BLOCK_STYLES, 'gap-0 lg:gap-0')} border={true}>
-                            <Suspense fallback={<div className="h-12 w-full" data-skeleton />}>
+                        <Card className={cn(BLOCK_STYLES, 'gap-3 lg:gap-3')}>
+                            <Suspense
+                                key={`products.${handle}.details.description`}
+                                fallback={<div className="h-12 w-full" data-skeleton />}
+                            >
                                 <Content html={content} />
                             </Suspense>
 
-                            <Suspense>
+                            <Suspense fallback={<Fragment />}>
                                 <ProductOriginalName data={product} locale={locale} />
                             </Suspense>
                         </Card>
 
                         <Suspense fallback={<div className="h-12 w-full" data-skeleton />}>
-                            <div className="flex flex-wrap gap-2 empty:hidden">
+                            <div
+                                key={`products.${handle}.details.details`}
+                                className="flex flex-wrap gap-2 empty:hidden"
+                            >
                                 <ProductDetails data={product} locale={locale} />
                             </div>
                         </Suspense>
@@ -494,9 +503,9 @@ export default async function ProductPage({
             </PageContent>
 
             <Card className="mt-2 flex w-full flex-col gap-3 px-0 lg:mt-6" border={true}>
-                <p className="block px-3 text-xl font-extrabold leading-tight" data-nosnippet={true}>
+                <h2 className="block px-3 text-2xl font-medium leading-tight" data-nosnippet={true}>
                     {t('you-may-also-like')}
-                </p>
+                </h2>
 
                 <Suspense key={`products.${handle}.recommended-products`} fallback={<RecommendedProducts.skeleton />}>
                     <RecommendedProducts shop={shop} locale={locale} product={product} className="-my-2 w-full px-3" />

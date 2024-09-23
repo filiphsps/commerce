@@ -40,7 +40,7 @@ export async function ProductIngredients({ locale, data: product, className = ''
     }
 
     return (
-        <Card className={cn(COMMON_STYLES, 'w-min', className)} border={true}>
+        <Card className={cn(COMMON_STYLES, 'flex-wrap md:max-w-[32rem]', className)} border={true}>
             <Label className={cn(LABEL_STYLES)}>{t('ingredients')}</Label>
             <p className={cn('whitespace-pre-wrap text-sm font-medium leading-snug')}>{parsedIngredients}</p>
         </Card>
@@ -93,7 +93,7 @@ export async function ProductDetails({ locale, data: product }: ProductDetailsPr
 
     const variantDetails = variants.find(({ node: { sku, title } }) => !!sku && title !== 'Default Title') // TODO: Deal with the `Default Title` variant in a better way.
         ? variants.map(({ node: { sku, barcode, title, id } }) => (
-              <Card key={id} className={cn(COMMON_STYLES, 'flex flex-col gap-2')} border={true}>
+              <Card key={id} className={cn(COMMON_STYLES, 'flex w-min flex-col gap-2')} border={true}>
                   <Label className={cn(LABEL_STYLES, '')}>{title}</Label>
 
                   <div className="flex flex-col flex-wrap items-start gap-1">
@@ -113,10 +113,6 @@ export async function ProductDetails({ locale, data: product }: ProductDetailsPr
 
     return (
         <>
-            <Suspense fallback={<div className="h-12 w-full" data-skeleton />}>
-                <ProductIngredients locale={locale} data={product} />
-            </Suspense>
-
             {parsedFlavors ? (
                 <Card className={cn(COMMON_STYLES, '')} border={true}>
                     <Label className={cn(LABEL_STYLES)}>{t('attributes')}</Label>
@@ -136,6 +132,10 @@ export async function ProductDetails({ locale, data: product }: ProductDetailsPr
             ) : null}
 
             {variantDetails}
+
+            <Suspense fallback={<div className="h-12 w-full" data-skeleton />}>
+                <ProductIngredients locale={locale} data={product} />
+            </Suspense>
         </>
     );
 }

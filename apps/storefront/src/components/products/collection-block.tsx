@@ -90,11 +90,11 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
         <Tag
             {...props}
             className={cn(
-                'content-visibility-auto contain-intrinsic-size-[auto_100%] grid w-full gap-2',
+                'content-visibility-auto contain-intrinsic-size-[auto_100%] grid w-full snap-x snap-mandatory gap-2',
                 !isHorizontal &&
                     'grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] md:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] xl:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))]',
                 isHorizontal &&
-                    'overflow-x-shadow -my-2 snap-x snap-mandatory auto-cols-[minmax(13rem,1fr)] grid-flow-col grid-cols-[repeat(auto-fit,minmax(13rem,1fr))] grid-rows-1 overscroll-x-auto py-2',
+                    'overflow-x-shadow -my-2 auto-cols-[minmax(13rem,1fr)] grid-flow-col grid-cols-[repeat(auto-fit,minmax(13rem,1fr))] grid-rows-1 overscroll-x-auto py-2',
                 className
             )}
         >
