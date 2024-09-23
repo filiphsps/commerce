@@ -4,11 +4,11 @@ import { FiChevronDown } from 'react-icons/fi';
 
 import { LINK_ACTIVE_MENU_STYLES, LINK_BUBBLE_STYLES, LINK_STYLES } from '@/slices/navigation/Link';
 import { cn } from '@/utils/tailwind';
+import { asText, type Content } from '@prismicio/client';
 
 import { useHeaderMenu } from '@/components/header/header-provider';
 import { PrismicText } from '@/components/typography/prismic-text';
 
-import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
 
 export type DropdownMenuItemProps = Pick<SliceComponentProps<Content.DropdownSlice>, 'slice'>;
@@ -19,6 +19,8 @@ export function DropdownMenuItem({ slice }: DropdownMenuItemProps) {
 
     return (
         <button
+            type="button"
+            title={asText(slice.primary.title)}
             className={cn(LINK_STYLES, activeMenu && LINK_ACTIVE_MENU_STYLES, activeMenu && 'text-black')}
             onClick={() => {
                 if (activeMenu) {

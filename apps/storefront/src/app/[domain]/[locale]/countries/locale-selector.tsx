@@ -37,7 +37,7 @@ export default function LocaleSelector({ countries = [], locale }: LocaleSelecto
     return (
         <div className={styles.list}>
             <input ref={localeRef} type="hidden" name="locale" />
-            <button ref={buttonRef} type="submit" style={{ display: 'none' }}>
+            <button ref={buttonRef} type="submit" className="hidden">
                 Change locale
             </button>
 

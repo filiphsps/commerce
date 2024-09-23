@@ -184,6 +184,7 @@ const ProductGallery = ({
                             .map((image, index) => {
                                 return (
                                     <button
+                                        type="button"
                                         key={image.id}
                                         aria-label={`Enlarge image #${index + 1}`}
                                         onClick={() => setImage(image)}

@@ -7,6 +7,7 @@ import useGeoLocation from 'react-ipgeolocation';
 import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { getDictionary } from '@/utils/dictionary';
+import { isCrawler } from '@/utils/is-crawler';
 import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 import { setCookie } from 'cookies-next';
@@ -100,7 +101,7 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
         location.country === locale.country ||
         !targetLocale ||
         !userAgent ||
-        /bot|googlebot|crawler|spider|robot|crawling/i.test(userAgent)
+        isCrawler(userAgent)
     ) {
         return null;
     }
@@ -128,6 +129,7 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
                         )}
                     >
                         <button
+                            type="button"
                             className={cn(
                                 'flex h-10 w-full grow cursor-pointer select-none appearance-none items-center justify-start gap-3 rounded-lg p-2 text-base leading-none *:select-none focus-within:bg-gray-100 hover:bg-gray-100',
                                 dropdownActive && 'hover:border-primary'

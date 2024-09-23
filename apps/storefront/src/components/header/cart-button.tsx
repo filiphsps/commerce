@@ -1,10 +1,8 @@
 'use client';
 
-import styles from '@/components/header/cart-button.module.scss';
-
 import { FiShoppingBag } from 'react-icons/fi';
 
-import { getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
+import { capitalize, getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 import { useCart } from '@shopify/hydrogen-react';
 
@@ -25,21 +23,16 @@ const CartButton = ({ locale, i18n }: CartButtonProps) => {
             href="/cart/"
             locale={locale}
             className={cn(
-                styles.container,
-                'duration-250 group h-10 overflow-clip rounded-none bg-transparent p-0 py-0 transition-all *:leading-snug',
+                'duration-250 group grid h-10 grid-cols-[auto_1fr] grid-rows-[1fr] items-center justify-center gap-0 overflow-clip rounded-none bg-transparent p-0 py-0 text-center leading-none transition-all *:leading-snug',
                 totalQuantity &&
-                    'bg-primary text-primary-foreground fill-primary-foreground stroke-primary-foreground rounded-3xl px-4 shadow transition-all',
+                    'bg-primary text-primary-foreground fill-primary-foreground stroke-primary-foreground gap-2 rounded-3xl px-4 shadow transition-all',
                 !totalQuantity && 'text-base text-black shadow-none hover:shadow-none'
             )}
             data-items={totalQuantity || 0}
-            title={t('view-cart')}
+            title={capitalize(t('view-cart'))}
         >
             <div
-                className={cn(
-                    styles.quantity,
-                    'text-left text-base font-extrabold transition-all',
-                    !totalQuantity && 'w-0'
-                )}
+                className={cn('text-left text-base font-extrabold transition-all', !totalQuantity && 'w-0')}
                 suppressHydrationWarning={true}
             >
                 {totalQuantity ? totalQuantity : null}
@@ -47,8 +40,7 @@ const CartButton = ({ locale, i18n }: CartButtonProps) => {
 
             <FiShoppingBag
                 className={cn(
-                    styles.icon,
-                    'stroke-1 text-base transition-all',
+                    'block overflow-hidden stroke-1 text-right text-base transition-all',
                     !totalQuantity && 'group-hover:text-primary text-xl lg:text-2xl'
                 )}
                 suppressHydrationWarning={true}
