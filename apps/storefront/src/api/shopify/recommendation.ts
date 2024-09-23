@@ -26,7 +26,7 @@ export const RecommendationApi = async ({ api, id }: { api: AbstractApi; id: str
                 }
             `,
             {
-                productId: gid.id
+                productId: id
             }
         );
 
@@ -34,7 +34,7 @@ export const RecommendationApi = async ({ api, id }: { api: AbstractApi; id: str
             throw new ProviderFetchError(errors);
         }
         if (!data?.productRecommendations || data.productRecommendations.length <= 0) {
-            throw new NotFoundError(`"Recommendations" for "Product" with id "${gid.id}" on shop "${shop.id}"`);
+            throw new NotFoundError(`"Recommendations" for "Product" with id "${id}" on shop "${shop.id}"`);
         }
 
         return data.productRecommendations;

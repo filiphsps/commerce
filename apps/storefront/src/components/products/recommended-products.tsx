@@ -22,22 +22,26 @@ export type RecommendedProductsProps = {
     className?: string;
 };
 const RecommendedProducts = async ({ shop, locale, product, className }: RecommendedProductsProps) => {
-    if (!product) {
+    if (!product?.id) {
         return null;
     }
 
     const api = await ShopifyApolloApiClient({ shop, locale });
-    const recommended = await RecommendationApi({ api, id: product.id });
+    try {
+        const recommended = await RecommendationApi({ api, id: product.id });
 
-    return (
-        <CollectionBlock shop={shop} locale={locale} className={className} isHorizontal={true}>
-            {recommended.map((product) => (
-                <Suspense key={product.id} fallback={<ProductCard.skeleton />}>
-                    <ProductCard shop={shop} locale={locale} data={product} priority={false} />
-                </Suspense>
-            ))}
-        </CollectionBlock>
-    );
+        return (
+            <CollectionBlock shop={shop} locale={locale} className={className} isHorizontal={true}>
+                {recommended.map((product) => (
+                    <Suspense key={product.id} fallback={<ProductCard.skeleton />}>
+                        <ProductCard shop={shop} locale={locale} data={product} priority={false} />
+                    </Suspense>
+                ))}
+            </CollectionBlock>
+        );
+    } catch {
+        return null;
+    }
 };
 RecommendedProducts.displayName = 'Nordcom.Products.RecommendedProducts';
 
