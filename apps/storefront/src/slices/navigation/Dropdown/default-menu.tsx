@@ -96,14 +96,14 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                         {background && !!(image as any) && image.url ? (
                             <div
                                 className={cn(
-                                    'text-primary-foreground relative h-full shrink-0 overflow-hidden',
+                                    'text-primary-foreground relative h-full shrink-0 overflow-hidden group-hover/item:brightness-75 group-focus/item:brightness-75',
                                     !background_color && 'bg-primary' // FIXME: Deal with text color when custom bg color is used.
                                 )}
                                 style={{ backgroundColor: background_color || undefined }}
                             >
                                 <Image
                                     className={cn(
-                                        'pointer-events-none h-full w-full object-cover shadow group-focus-within/item:brightness-75 group-hover/item:brightness-75',
+                                        'pointer-events-none h-full w-full object-cover shadow transition-all group-hover/item:scale-110 group-focus/item:scale-110',
                                         imagePositionStyles
                                     )}
                                     role={image.alt ? undefined : 'presentation'}
