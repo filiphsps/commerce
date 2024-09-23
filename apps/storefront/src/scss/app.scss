@@ -149,14 +149,15 @@ a:is([href]):where([href=''], [href='#']) {
 [data-skeleton] {
     position: relative;
     overflow: hidden;
-    background-color: #f3f4f6;
+    background-color: rgba(0, 0, 0, 0.15);
 
     &::before {
         z-index: 1;
         content: '';
         position: absolute;
         inset: 0;
-        border: 1px solid #e5e7eb;
+        border: 1px solid rgba(0, 0, 0, 0.25);
+        margin: -1px;
 
         border-radius: inherit;
     }
@@ -167,7 +168,7 @@ a:is([href]):where([href=''], [href='#']) {
         position: absolute;
         inset: 0;
         transform: translateX(-100%);
-        background-image: linear-gradient(to right, #f3f4f6 0%, #d1d5db 25%, #f3f4f6 50%);
+        background-image: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.15) 25%, rgba(0, 0, 0, 0) 50%);
         animation: shimmer 5s infinite;
 
         border-radius: inherit;

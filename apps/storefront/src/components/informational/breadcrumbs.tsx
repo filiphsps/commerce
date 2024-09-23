@@ -5,10 +5,9 @@ import { Fragment } from 'react/jsx-runtime';
 import { cn } from '@/utils/tailwind';
 import { usePathname } from 'next/navigation';
 
+import { JsonLd } from '@/components/json-ld';
 import Link from '@/components/link';
 import { useShop } from '@/components/shop/provider';
-
-import { JsonLd } from '../json-ld';
 
 import type { Locale } from '@/utils/locale';
 import type { BreadcrumbList, WithContext } from 'schema-dts';

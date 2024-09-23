@@ -1,22 +1,20 @@
 import 'server-only';
 
-import styles from '@/components/footer/footer.module.scss';
-
 import { Suspense } from 'react';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { FooterApi } from '@/api/footer';
-import { cn } from '@/utils/tailwind';
 import Image from 'next/image';
 
 import FooterContent from '@/components/footer/footer-content';
 import Link from '@/components/link';
+import { Content } from '@/components/typography/content';
 import { PrismicText } from '@/components/typography/prismic-text';
 
-import { Content } from '../typography/content';
-
 import type { Locale, LocaleDictionary } from '@/utils/locale';
+
+const BLOCK_STYLES = 'flex-grow w-full h-full flex-col auto-rows-auto gap-3 flex empty:hidden md:empty:flex';
 
 export type FooterProps = {
     shop: OnlineShop;
@@ -27,19 +25,17 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
     const footer = await FooterApi({ shop, locale });
 
     // TODO: This should be `design.footer`.
-    const logo = shop.design.header.logo;
-
-    const borderStyles = 'border-0 border-b-4 border-solid border-primary-dark pb-6 lg:border-0 lg:pb-0';
+    const { logo } = shop.design.header;
 
     // TODO: Dynamic copyright copy and content.
     return (
         <footer className="bg-primary text-primary-foreground flex h-full max-h-max w-full items-center justify-around self-end overflow-hidden p-2 pt-8 [grid-area:footer] md:p-3 md:pt-6">
-            <div className={cn(styles.content, 'flex h-full flex-col items-stretch gap-4 md:gap-8 2xl:px-3')}>
-                <div className={cn(styles.blocks, 'gap-6 pb-6 lg:pb-12', borderStyles)}>
-                    <div className={cn(styles.block, borderStyles)}>
+            <div className="flex h-full w-full max-w-[var(--page-width)] flex-col items-stretch gap-4 md:gap-8 2xl:px-3">
+                <section className="grid h-full w-full grid-cols-1 items-start justify-between gap-6 pb-6 text-left md:flex lg:pb-12">
+                    <div className={BLOCK_STYLES}>
                         {logo.src ? (
                             <Image
-                                className={styles.logo}
+                                className="h-16 object-contain object-left brightness-100 grayscale invert"
                                 title={shop.name}
                                 src={logo.src}
                                 alt={`${shop.name}'s Logo`}
@@ -53,7 +49,7 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
                             />
                         ) : null}
 
-                        <Content as="address" className="prose-sm prose-p:leading-snug font-medium">
+                        <Content as="address" className="prose-sm prose-p:leading-snug font-medium not-italic">
                             <PrismicText data={footer.address} styled={false} />
                         </Content>
 
@@ -64,20 +60,9 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
 
                     {footer.body.map(({ primary: { title }, items }, index) => {
                         return (
-                            <div
-                                key={`${title}-${index}`}
-                                className={cn(
-                                    styles.block,
-                                    'flex flex-col gap-2 empty:hidden md:items-end md:justify-end md:empty:flex'
-                                )}
-                                data-align="right"
-                            >
+                            <div key={`${title}-${index}`} className={BLOCK_STYLES} data-align="right">
                                 {title ? (
-                                    <div
-                                        className={cn(styles.title, 'text-lg font-extrabold leading-tight md:text-xl')}
-                                    >
-                                        {title}
-                                    </div>
+                                    <div className="text-lg font-extrabold leading-tight md:text-xl">{title}</div>
                                 ) : null}
 
                                 {items.length > 0 ? (
@@ -99,7 +84,7 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
                             </div>
                         );
                     })}
-                </div>
+                </section>
 
                 <Suspense key="layout.footer.footer-content" fallback={<FooterContent.skeleton />}>
                     <FooterContent locale={locale} i18n={i18n} shop={shop} />
@@ -110,15 +95,15 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
 };
 
 Footer.skeleton = () => (
-    <footer className={cn(styles.container, '[grid-area:footer]')} data-skeleton>
-        <div className={styles.content}>
-            <div className={styles.blocks}>
-                <div className={styles.block}>
-                    <div className={styles.logo}></div>
+    <footer className="text-primary-foreground bg-primary flex h-full max-h-max w-full items-center justify-around self-end overflow-hidden p-2 pt-8 [grid-area:footer] md:p-3 md:pt-6">
+        <div className="flex h-full w-full max-w-[var(--page-width)] flex-col items-stretch gap-4 md:gap-8 2xl:px-3">
+            <section className="grid h-full w-full grid-cols-1 items-start justify-between gap-6 pb-6 text-left md:flex lg:pb-12">
+                <div className={BLOCK_STYLES}>
+                    <div className="h-16 w-full overflow-hidden" data-skeleton></div>
                 </div>
-            </div>
+            </section>
 
-            <div className={styles.legal}></div>
+            <FooterContent.skeleton />
         </div>
     </footer>
 );

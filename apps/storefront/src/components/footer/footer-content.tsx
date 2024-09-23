@@ -5,15 +5,14 @@ import { Suspense } from 'react';
 import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { FooterApi } from '@/api/footer';
-import { getTranslations } from '@/utils/locale';
+import { capitalize, getTranslations } from '@/utils/locale';
 import { linkResolver } from '@/utils/prismic';
 import { asLink, asText } from '@prismicio/client';
 
 import { AcceptedPaymentMethods } from '@/components/informational/accepted-payment-methods';
 import { CurrentLocaleFlag } from '@/components/informational/current-locale-flag';
 import Link from '@/components/link';
-
-import { PrismicText } from '../typography/prismic-text';
+import { PrismicText } from '@/components/typography/prismic-text';
 
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 
@@ -30,8 +29,7 @@ const FooterContent = async ({ locale, i18n, shop }: FooterContentProps) => {
     const hasCopyrights = asText(footer.copyrights).trim().length > 0;
 
     return (
-        /* TODO: This should be configurable in prismic. */
-        <div className="grid h-full w-full grid-cols-1 gap-8 overflow-hidden md:grid-cols-2 md:gap-4">
+        <section className="grid h-full w-full grid-cols-1 gap-8 overflow-hidden md:grid-cols-2 md:gap-4">
             <div className="flex flex-col items-center justify-end gap-2 md:items-start">
                 <Suspense>
                     <AcceptedPaymentMethods shop={shop} locale={locale} />
@@ -60,28 +58,34 @@ const FooterContent = async ({ locale, i18n, shop }: FooterContentProps) => {
                 ) : null}
             </div>
 
-            <div className="focus- flex flex-col items-center justify-end gap-2 md:items-end">
-                <Link className="block h-8" href="/countries/" title={t('language-and-region-settings')}>
-                    <Suspense>
-                        <CurrentLocaleFlag locale={locale} />
-                    </Suspense>
+            <div className="flex flex-col items-center justify-end gap-2 md:items-end">
+                <Link className="block h-8" href="/countries/" title={capitalize(t('language-and-region-settings'))}>
+                    <CurrentLocaleFlag locale={locale} />
                 </Link>
 
                 {hasCopyrights ? (
                     <div className="flex gap-2 text-xs font-black uppercase lg:text-sm">
-                        <PrismicText data={footer.copyrights} styled={false} />
+                        <Suspense key="footer.copyrights" fallback={<div className="h-8 w-44 max-w-full" />}>
+                            <PrismicText data={footer.copyrights} styled={false} />
+                        </Suspense>
                     </div>
                 ) : null}
             </div>
-        </div>
+        </section>
     );
 };
 
 FooterContent.skeleton = () => (
-    <div className="grid h-full w-full grid-cols-1 gap-8 overflow-hidden md:grid-cols-2 md:gap-4">
-        <div></div>
-        <div></div>
-    </div>
+    <section className="grid h-full w-full grid-cols-1 gap-8 overflow-hidden md:grid-cols-2 md:gap-4">
+        <div className="flex flex-col items-center justify-end gap-2 md:items-start">
+            <div className="h-8 w-64 max-w-full overflow-hidden" data-skeleton />
+        </div>
+        <div className="flex h-full flex-col items-center justify-end gap-2 md:items-end">
+            <div className="aspect-[3/2] h-8 max-w-full overflow-hidden" data-skeleton />
+
+            <div className="h-8 w-44 max-w-full overflow-hidden" data-skeleton />
+        </div>
+    </section>
 );
 
 FooterContent.displayName = 'Nordcom.Footer.Content';

@@ -6,7 +6,7 @@ import { capitalize, getTranslations } from '@/utils/locale';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 
-import { AttributeIcon } from '../products/attribute-icon';
+import { AttributeIcon } from '@/components/products/attribute-icon';
 
 import type { LocaleDictionary } from '@/utils/locale';
 

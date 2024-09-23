@@ -50,7 +50,7 @@ export default async function AccountPage({
 
     return (
         <>
-            <Suspense key={`account.dashboard-.breadcrumbs`} fallback={<BreadcrumbsSkeleton />}>
+            <Suspense key={`account.dashboard.breadcrumbs`} fallback={<BreadcrumbsSkeleton />}>
                 <div className="-mb-[1.25rem] empty:hidden md:-mb-[2.25rem]">
                     <Breadcrumbs locale={locale} title={capitalize(t('account-dashboard'))} />
                 </div>
@@ -66,6 +66,7 @@ export default async function AccountPage({
                     <Label as="div">{user?.name}</Label>
                     <Label as="div">{user?.email}</Label>
                     {user?.image ? (
+                        // eslint-disable-next-line @next/next/no-img-element
                         <img
                             src={user.image}
                             alt={user.name || ''}

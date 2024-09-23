@@ -21,7 +21,8 @@
                     "scrollbar-color",
                     "text-underline-position",
                     "contain-intrinsic-size",
-                    "backdrop-filter"
+                    "backdrop-filter",
+                    "font-size-adjust"
                 ]
             }
         ],
@@ -30,6 +31,7 @@
             {
                 "select-name": "off"
             }
-        ]
+        ],
+        "no-inline-styles": "off"
     }
 }

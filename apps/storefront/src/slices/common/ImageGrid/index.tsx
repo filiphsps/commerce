@@ -35,9 +35,15 @@ const ImageGrid = ({ slice, index }: ImageGridProps) => {
                 }
 
                 // Handle old titles that were `KeyTextField`s.
-                const titleText = title && typeof title !== 'string' ? asText(title).trim() : (title as string).trim();
-                const descriptionText = description ? asText(description).trim() : '';
-                const isInlineTitle = descriptionText.length <= 0 && titleText.length > 0 && titleText.length < 65;
+                const titleText =
+                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                    title && typeof title !== 'string'
+                        ? title.length > 0 && asText(title).trim()
+                        : (title as string).trim();
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                const descriptionText = description && description.length > 0 ? asText(description).trim() : '';
+                const isInlineTitle =
+                    descriptionText.length <= 0 && titleText && titleText.length > 0 && titleText.length < 65;
 
                 // Handle old links that were `KeyTextField`s.
                 const href = link && typeof link !== 'string' ? asLink(link, { linkResolver }) : link;
@@ -49,7 +55,7 @@ const ImageGrid = ({ slice, index }: ImageGridProps) => {
                     <WrapperTag
                         key={href!}
                         className="group/item relative flex flex-col gap-1"
-                        title={titleText}
+                        title={titleText || undefined}
                         href={href!}
                         target={target}
                     >
@@ -83,7 +89,7 @@ const ImageGrid = ({ slice, index }: ImageGridProps) => {
                                     'absolute inset-auto bottom-3 right-3 ml-3 rounded-lg bg-gray-100/95 px-3 py-2 text-gray-700 shadow transition-all group-focus-within/item:brightness-75 group-hover/item:brightness-75'
                             )}
                         >
-                            {titleText.length > 0 ? (
+                            {titleText && titleText.length > 0 ? (
                                 <div
                                     className={cn(
                                         'font-semibold transition-colors',
