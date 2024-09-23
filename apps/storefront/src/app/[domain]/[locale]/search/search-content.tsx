@@ -1,11 +1,11 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState, useTransition } from 'react';
 import { HiOutlineSearch } from 'react-icons/hi';
 
 //import type { Product, ProductFilters } from '@/api/product';
-import { createProductSearchParams, type Product, type ProductFilters } from '@/api/product';
-import { getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
+import { createProductSearchParams, isProductVegan, type Product, type ProductFilters } from '@/api/product';
+import { capitalize, getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -13,6 +13,8 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/actionable/button';
 import { Filters } from '@/components/actionable/filters';
 import Link from '@/components/link';
+import { COMMON_BADGE_STYLES } from '@/components/product-card/product-card-badges';
+import { AttributeIcon } from '@/components/products/attribute-icon';
 import { Label } from '@/components/typography/label';
 
 import type { HTMLProps } from 'react';
@@ -96,18 +98,14 @@ export default function SearchContent({
     const { replace } = useRouter();
     const searchParams = useSearchParams();
     const pathname = usePathname();
-    const [searching, setSearching] = useState<boolean>(false);
+    const [isPending, startTransition] = useTransition();
 
-    useEffect(() => {
-        setSearching(false);
-    }, [searchParams]);
-
-    const commonItemStyles =
-        'group/item h-28 overflow-clip rounded-lg border-2 border-solid border-gray-300 bg-gray-100 lg:h-36';
+    const { t } = getTranslations('common', i18n);
 
     return (
         <>
             <SearchBar
+                disabled={isPending}
                 locale={locale}
                 i18n={i18n}
                 defaultValue={searchParams.get('q')?.toString()}
@@ -122,7 +120,6 @@ export default function SearchContent({
                         }
 
                         params.set('q', query);
-                        setSearching(true);
                     } else {
                         params.delete('q');
                     }
@@ -135,23 +132,32 @@ export default function SearchContent({
                         params.delete(key);
                     });
 
-                    replace(`${pathname}?${params.toString()}`, { scroll: true });
+                    startTransition(() => {
+                        replace(`${pathname}?${params.toString()}`, { scroll: true });
+                    });
                 }}
             />
 
-            {showFilters ? <Filters filters={productFilters} /> : null}
+            {showFilters ? <Filters disabled={isPending} filters={productFilters} /> : null}
 
             <section className="grid grid-cols-1 gap-2 empty:hidden md:grid-cols-3 lg:grid-cols-4">
-                {searching === true ? (
+                {isPending ? (
                     <>
                         {new Array(6).fill(0).map((_, index) => (
-                            <div key={index} className={commonItemStyles} data-skeleton></div>
+                            <div
+                                key={index}
+                                className="h-28 select-none rounded-lg border-2 border-solid border-gray-200 bg-gray-100"
+                                style={{
+                                    '--animation-delay': `${150 * (index + 1)}ms`
+                                }}
+                                data-skeleton
+                            />
                         ))}
                     </>
                 ) : null}
 
-                {(!searching ? products : []).map(
-                    ({
+                {(!isPending ? products : []).map((product) => {
+                    const {
                         id,
                         title,
                         handle,
@@ -161,55 +167,79 @@ export default function SearchContent({
                         productType,
                         vendor,
                         availableForSale
-                    }) => {
-                        const image: Product['images']['edges'][number]['node'] | undefined =
-                            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                            featuredImage ?? images.edges.at(0)?.node;
+                    } = product;
 
-                        const params = createProductSearchParams({ product: { trackingParameters } });
-                        const href = `/products/${handle}/${params ? `?${params}` : ''}`;
+                    const image: Product['images']['edges'][number]['node'] | undefined =
+                        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                        featuredImage ?? images.edges.at(0)?.node;
 
-                        return (
-                            <Link
-                                href={href}
-                                key={id}
-                                className={cn(
-                                    commonItemStyles,
-                                    'hover:text-primary flex gap-2 transition-shadow hover:shadow-lg lg:gap-4',
-                                    !availableForSale && 'border-gray-100 opacity-35 brightness-75'
-                                )}
+                    const params = createProductSearchParams({ product: { trackingParameters } });
+                    const href = `/products/${handle}/${params ? `?${params}` : ''}`;
+
+                    let productTypeElement = null;
+                    if (productType) {
+                        productTypeElement = (
+                            <span
+                                data-nosnippet={true}
+                                className="group-hover/item:text-primary contents text-lg font-semibold leading-none text-gray-700 transition-colors"
                             >
-                                <div className="flex aspect-square h-full w-auto shrink-0 grow-0 items-center justify-center overflow-hidden bg-white p-2">
-                                    {image ? (
-                                        <Image
-                                            className={'aspect-square h-full object-contain object-center'}
-                                            role={image.altText ? undefined : 'presentation'}
-                                            src={image.url!}
-                                            alt={image.altText!}
-                                            title={image.altText!}
-                                            width={image.width || 75}
-                                            height={image.height || 75}
-                                            sizes="(max-width: 920px) 90vw, 500px"
-                                            loading="eager"
-                                            decoding="async"
-                                            draggable={false}
-                                        />
-                                    ) : null}
-                                </div>
-
-                                <div className="col-span-6 flex h-full w-full flex-col gap-1 py-2 pr-2 leading-tight lg:py-4">
-                                    <Label className="overflow-hidden text-ellipsis whitespace-nowrap text-sm leading-none opacity-75">
-                                        {vendor}
-                                    </Label>
-
-                                    <div className="font-medium leading-none">
-                                        {title} &mdash; {productType}
-                                    </div>
-                                </div>
-                            </Link>
+                                {' '}
+                                &ndash; {productType}
+                            </span>
                         );
                     }
-                )}
+
+                    const isVegan = isProductVegan(product);
+
+                    return (
+                        <Link
+                            href={href}
+                            key={id}
+                            className={cn(
+                                'group/item hover:text-primary relative flex h-28 select-none gap-2 overflow-hidden rounded-lg border-2 border-solid border-gray-200 bg-gray-100 transition-shadow hover:border-gray-300 hover:drop-shadow focus-visible:border-gray-400 lg:h-36 lg:gap-4',
+                                !availableForSale && 'opacity-35 brightness-75'
+                            )}
+                        >
+                            <div className="flex aspect-square h-full w-auto shrink-0 grow-0 items-center justify-center overflow-hidden bg-white p-2">
+                                {image ? (
+                                    <Image
+                                        className="aspect-square h-full object-contain object-center transition-transform group-hover/item:scale-110"
+                                        role={image.altText ? undefined : 'presentation'}
+                                        src={image.url!}
+                                        alt={image.altText!}
+                                        title={image.altText!}
+                                        width={image.width || 75}
+                                        height={image.height || 75}
+                                        sizes="(max-width: 920px) 90vw, 500px"
+                                        loading="eager"
+                                        decoding="async"
+                                        draggable={false}
+                                    />
+                                ) : null}
+                            </div>
+
+                            <div className="col-span-6 flex h-full w-full flex-col gap-1 py-2 pr-2 leading-tight *:transition-colors lg:py-4">
+                                <Label className="group-hover/item:text-primary pt-2 text-sm font-medium normal-case leading-snug text-gray-700 duration-75">
+                                    {vendor}
+                                </Label>
+
+                                <div className="group-hover/item:text-primary transition-color flex grow items-start justify-start gap-0 pr-1 text-lg font-bold leading-tight text-current duration-75">
+                                    {title}
+                                    {productTypeElement}
+                                </div>
+                            </div>
+
+                            {isVegan && (
+                                <div
+                                    className={cn(COMMON_BADGE_STYLES, 'absolute left-1 top-1 bg-green-600 text-white')}
+                                >
+                                    <AttributeIcon data={'vegan'} className="text-lg" />
+                                    {capitalize(t('vegan'))}
+                                </div>
+                            )}
+                        </Link>
+                    );
+                })}
             </section>
         </>
     );

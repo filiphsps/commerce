@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useCallback, useEffect, useState } from 'react';
+import { Fragment, Suspense, useCallback, useEffect, useState } from 'react';
 import { FiMail } from 'react-icons/fi';
 import { EmailShareButton, FacebookShareButton, TwitterShareButton } from 'react-share';
 
@@ -14,7 +14,7 @@ import type { Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-a
 import type { HTMLProps, ReactNode } from 'react';
 
 const SHARE_BUTTON_STYLES =
-    'z-10 flex h-8 w-8 appearance-none items-center justify-center rounded-full border border-solid border-gray-300 bg-white fill-primary stroke-primary object-cover object-center transition-colors hover:border-primary hover:text-primary md:h-9 md:w-9';
+    'z-10 flex h-8 w-8 appearance-none items-center justify-center rounded-full border-2 border-solid border-gray-300 bg-white fill-primary stroke-primary object-cover object-center transition-colors hover:border-primary hover:text-primary md:h-9 md:w-9';
 
 export type ProductGalleryProps = {
     initialImageId?: string | null;
@@ -121,7 +121,7 @@ const ProductGallery = ({
                                 'hidden md:flex'
                             )}
                         >
-                            <Suspense>
+                            <Suspense fallback={<Fragment />}>
                                 <div className="flex flex-col gap-2 empty:hidden md:gap-1">
                                     <EmailShareButton
                                         key="email"
@@ -131,7 +131,7 @@ const ProductGallery = ({
                                         title={title}
                                         htmlTitle={t('share-via-email')}
                                     >
-                                        <FiMail />
+                                        <FiMail className="stroke-2" />
                                     </EmailShareButton>
                                     <FacebookShareButton
                                         key="facebook"
@@ -142,6 +142,7 @@ const ProductGallery = ({
                                         htmlTitle={t('share-on-facebook')}
                                     >
                                         <Image
+                                            className="stroke-2"
                                             src="/assets/icons/social/facebook-outline.svg"
                                             alt="Facebook"
                                             width={20}
@@ -157,6 +158,7 @@ const ProductGallery = ({
                                         htmlTitle={t('share-on-x')}
                                     >
                                         <Image
+                                            className="stroke-2"
                                             src="/assets/icons/social/twitter-outline.svg"
                                             alt="X (Twitter)"
                                             width={20}

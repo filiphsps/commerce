@@ -28,7 +28,7 @@ const ProductCardTitle = ({ shop, data: product, className }: ProductCardTitlePr
         productTypeElement = (
             <span
                 data-nosnippet={true}
-                className="group-hover/header:text-primary contents text-lg font-semibold leading-none text-gray-700"
+                className="group-hover/header:text-primary contents text-lg font-semibold leading-none text-gray-700 transition-colors"
             >
                 {' '}
                 &ndash; {product.productType}

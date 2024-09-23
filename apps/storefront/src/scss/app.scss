@@ -166,6 +166,7 @@ a:is([href]):where([href=''], [href='#']) {
         transform: translateX(-100%);
         background-image: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.15) 25%, rgba(0, 0, 0, 0) 50%);
         animation: shimmer 5s infinite;
+        animation-delay: var(--animation-delay, 0ms);
 
         border-radius: inherit;
     }

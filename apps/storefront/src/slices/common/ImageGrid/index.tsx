@@ -95,7 +95,7 @@ const ImageGrid = ({ slice, index }: ImageGridProps) => {
                                         'font-semibold transition-colors',
                                         isInlineTitle && 'line-clamp-1 leading-none text-inherit',
                                         descriptionText.length > 0 &&
-                                            'group-hover/item:text-primary text-xl text-gray-600'
+                                            'group-hover/item:text-primary text-xl text-gray-700'
                                     )}
                                 >
                                     {typeof title !== 'string' ? <PrismicText data={title} /> : (title as string)}

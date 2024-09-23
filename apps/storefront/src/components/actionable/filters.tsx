@@ -11,14 +11,18 @@ import type { HTMLProps } from 'react';
 
 export type FiltersProps = {
     filters: Filter[];
+    disabled?: boolean;
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
-export function Filters({ filters, className, ...props }: FiltersProps) {
+export function Filters({ filters, disabled = false, className, ...props }: FiltersProps) {
     if (filters.length <= 0) {
         return null;
     }
 
     return (
-        <section {...props} className={cn('flex flex-wrap gap-3 md:gap-4', className)}>
+        <section
+            {...props}
+            className={cn('flex flex-wrap gap-3 md:gap-4', disabled && 'pointer-events-none brightness-50', className)}
+        >
             {filters.map(({ id, label, type, values }) => {
                 return (
                     <Card key={id} className="flex flex-col gap-2" border={true}>

@@ -15,7 +15,7 @@ import ProductCardTitle from '@/components/product-card/product-card-title';
 import type { Locale } from '@/utils/locale';
 
 export const CARD_STYLES =
-    'group/card relative flex min-h-[20rem] w-full snap-center snap-always flex-col overflow-hidden rounded-xl border-2 border-solid border-gray-200 bg-gray-100 p-1 transition-shadow hover:drop-shadow focus-visible:border-gray-400';
+    'group/card relative flex min-h-[20rem] w-full snap-center snap-always flex-col overflow-hidden rounded-xl border-2 border-solid border-gray-200 bg-gray-100 p-1 brightness-100 transition-all hover:drop-shadow focus-visible:border-gray-400 active:brightness-75';
 
 export type ProductCardProps = {
     shop: OnlineShop;
