@@ -61,7 +61,7 @@ const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
                 )}
             >
                 {isVegan && (
-                    <div className={cn(COMMON_BADGE_STYLES, 'bg-green-500 text-white')}>
+                    <div className={cn(COMMON_BADGE_STYLES, 'bg-green-600 text-white')}>
                         <AttributeIcon data={'vegan'} className="text-lg" />
                         {t('vegan')}
                     </div>

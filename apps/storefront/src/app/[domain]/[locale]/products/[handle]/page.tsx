@@ -185,7 +185,7 @@ async function Badges({ product, i18n }: { product: Product; i18n: LocaleDiction
         badges.push(
             <div
                 key={'badge-attribute-vegan'}
-                className="flex items-center justify-center gap-1 rounded-2xl bg-green-500 p-[0.4rem] px-3 text-xs font-semibold uppercase leading-none text-white"
+                className="flex items-center justify-center gap-1 rounded-2xl bg-green-600 p-[0.4rem] px-3 text-xs font-semibold uppercase leading-none text-white"
                 title={t('this-product-is-vegan')}
                 data-nosnippet={true}
             >
