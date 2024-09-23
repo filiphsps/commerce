@@ -26,10 +26,10 @@
         "n-items": "{0} artículo(s)"
     },
     "common": {
+        "account": "cuenta",
         "add-to-cart": "Agregar al Carrito",
         "add": "Agregar",
         "added-to-cart": "¡Agregado!",
-        "account": "cuenta",
         "blog": "Blog",
         "buy": "Comprar",
         "cart-not-ready": "Espera...",
@@ -47,10 +47,13 @@
         "increase": "Aumentar",
         "language-and-region-settings": "Configuración de Idioma y Región",
         "login": "iniciar sesión",
+        "n-min-read": "{0} min de lectura",
+        "next": "siguiente",
         "out-of-stock": "Agotado",
         "page-n": "página {0}",
         "phone-tooltip": "Llámanos",
         "phone": "teléfono",
+        "previous": "anterior",
         "price": "Precio",
         "product": "Producto",
         "quantity-too-low": "Cantidad Demasiado Baja",
@@ -64,7 +67,6 @@
         "share-via-email": "Compartir por Correo Electrónico",
         "share": "Compartir",
         "size": "Tamaño",
-        "n-min-read": "{0} min de lectura",
         "wishlist": "Lista de Deseos"
     },
     "product": {

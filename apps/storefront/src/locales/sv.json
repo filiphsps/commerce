@@ -21,8 +21,8 @@
     "common": {
         "add-to-cart": "Köp",
         "add": "Lägg till",
-        "added-to-cart": "Tillagd!",
         "account": "konto",
+        "added-to-cart": "Tillagd!",
         "buy": "Köp",
         "cart-not-ready": "En sekund...",
         "cart": "Varukorgen",
@@ -36,10 +36,13 @@
         "increase": "Öka",
         "language-and-region-settings": "Språk- och regioninställningar",
         "login": "logga in",
+        "n-min-read": "{0} min läsning",
+        "next": "nästa",
         "out-of-stock": "Slutsåld",
         "page-n": "sida {0}",
         "phone-tooltip": "Ring oss",
         "phone": "telefon",
+        "previous": "föregående",
         "quantity-too-low": "För lågt antal",
         "quantity": "Antal",
         "remove": "Ta bort",
@@ -50,7 +53,6 @@
         "share-on-x": "Dela på X (Twitter)",
         "share-via-email": "Dela via E-post",
         "share": "Dela",
-        "n-min-read": "{0} min läsning",
         "wishlist": "Önskelista"
     },
     "product": {

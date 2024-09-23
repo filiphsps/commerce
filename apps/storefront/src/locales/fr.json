@@ -21,10 +21,10 @@
         "view-cart": "Voir votre panier"
     },
     "common": {
+        "account": "compte",
         "add-to-cart": "Ajouter au panier",
         "add": "Ajouter",
         "added-to-cart": "Ajouté !",
-        "account": "compte",
         "blog": "Blog",
         "buy": "Acheter",
         "cart-not-ready": "Attendez...",
@@ -42,10 +42,13 @@
         "increase": "Augmenter",
         "language-and-region-settings": "Paramètres de langue et de région",
         "login": "connexion",
+        "n-min-read": "{0} min de lecture",
+        "next": "suivant",
         "out-of-stock": "En rupture de stock",
         "page-n": "page {0}",
         "phone-tooltip": "Appelez-nous",
         "phone": "Téléphone",
+        "previous": "précédent",
         "quantity-too-low": "Quantité trop faible",
         "quantity": "Quantité",
         "remove": "Supprimer",
@@ -56,7 +59,6 @@
         "share-on-x": "Partager sur X (Twitter)",
         "share-via-email": "Partager par e-mail",
         "share": "Partager",
-        "n-min-read": "{0} min de lecture",
         "wishlist": "Liste des souhaits"
     },
     "product": {
