@@ -1,3 +1,7 @@
+'use client';
+
+import { useDetectClickOutside } from 'react-detect-click-outside';
+
 import { linkResolver } from '@/utils/prismic';
 import { cn } from '@/utils/tailwind';
 import { asLink, type Content } from '@prismicio/client';
@@ -18,6 +22,8 @@ const TITLE_COMMON_STYLES = 'text-xl leading-none py-2 font-semibold';
 type DropdownDefaultMenuProps = Pick<SliceComponentProps<Content.DropdownSlice>, 'slice'>;
 export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
     const { closeMenu } = useHeaderMenu();
+    const ref = useDetectClickOutside({ onTriggered: closeMenu });
+
     const links: typeof slice.primary.links = (slice.primary.links as any) || [];
 
     return (
@@ -26,6 +32,7 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                 MENU_COMMON_STYLES,
                 'z-10 flex flex-col gap-3 md:grid md:max-h-none md:auto-rows-max md:grid-cols-2 lg:grid-cols-3 lg:gap-2 xl:grid-cols-4'
             )}
+            ref={ref}
         >
             {links.map((item, index) => {
                 const { title, image, href, background_color } = item;
@@ -43,6 +50,7 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                 let imagePositionStyles = 'object-center';
 
                 switch (slice.variation) {
+                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                     case 'default': {
                         const { shadow = true, image_position = 'center' } =
                             item as Simplify<DropdownSliceDefaultPrimaryLinksItem>;
