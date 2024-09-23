@@ -2063,7 +2063,7 @@ export interface DropdownSliceDefaultPrimaryLinksItem {
      * - **API ID Path**: dropdown.default.primary.links[].image
      * - **Documentation**: https://prismic.io/docs/field#image
      */
-    image: prismic.ImageField<'desktop' | 'large desktop'>;
+    image: prismic.ImageField<never>;
 
     /**
      * Background Color (optional) field in *Dropdown → Default → Primary → Links*

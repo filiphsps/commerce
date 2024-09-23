@@ -50,21 +50,10 @@
                                 "config": {
                                     "label": "Image (optional)",
                                     "constraint": {
-                                        "width": 256,
-                                        "height": 50
+                                        "width": 2048,
+                                        "height": 400
                                     },
-                                    "thumbnails": [
-                                        {
-                                            "name": "desktop",
-                                            "width": 1024,
-                                            "height": 200
-                                        },
-                                        {
-                                            "name": "large desktop",
-                                            "width": 2048,
-                                            "height": 400
-                                        }
-                                    ]
+                                    "thumbnails": []
                                 }
                             },
                             "background_color": {
