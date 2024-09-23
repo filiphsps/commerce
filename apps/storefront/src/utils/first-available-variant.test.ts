@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest';
 
-import { FirstAvailableVariant } from '@/utils/first-available-variant';
+import { firstAvailableVariant } from '@/utils/first-available-variant';
 
 import type { Product } from '@/api/product';
 
 describe('utils', () => {
-    describe('FirstAvailableVariant', () => {
+    describe('firstAvailableVariant', () => {
         it(`should return undefined when given no product`, () => {
-            const result = FirstAvailableVariant();
+            const result = firstAvailableVariant();
             expect(result).toBeUndefined();
         });
 
@@ -31,7 +31,7 @@ describe('utils', () => {
                 }
             } as any;
 
-            const result = FirstAvailableVariant(product);
+            const result = firstAvailableVariant(product);
             expect(result?.id).toEqual('pass');
         });
 
@@ -67,7 +67,7 @@ describe('utils', () => {
                 }
             } as any;
 
-            const result = FirstAvailableVariant(product);
+            const result = firstAvailableVariant(product);
             expect(result?.id).toEqual('pass');
         });
 
@@ -97,7 +97,7 @@ describe('utils', () => {
                 }
             } as any;
 
-            const result = FirstAvailableVariant(product);
+            const result = firstAvailableVariant(product);
             expect(result?.id).toEqual('pass');
         });
     });

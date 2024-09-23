@@ -8,7 +8,7 @@ import type { Product, ProductVariant } from '@/api/product';
  * @param {Product} product - The product data.
  * @returns {ProductVariant} The recommended variant based on availability and price.
  */
-export const FirstAvailableVariant = (product?: Product | null): ProductVariant | undefined => {
+export const firstAvailableVariant = (product?: Product | null): ProductVariant | undefined => {
     // 1. Make sure we got a product passed to us.
     if (!product?.variants) {
         return undefined;

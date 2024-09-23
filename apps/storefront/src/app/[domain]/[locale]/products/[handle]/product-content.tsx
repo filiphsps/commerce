@@ -4,6 +4,7 @@ import styles from './page.module.scss';
 
 import { useMemo, useState } from 'react';
 
+import { firstAvailableVariant } from '@/utils/first-available-variant';
 import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
@@ -25,7 +26,10 @@ export type ProductContentProps = {
 export function ProductContent({ product, i18n }: ProductContentProps) {
     const searchParams = useSearchParams();
     const initialVariantId = useMemo(
-        () => (searchParams.has('variant') ? `gid://shopify/ProductVariant/${searchParams.get('variant')}` : undefined),
+        () =>
+            searchParams.has('variant')
+                ? `gid://shopify/ProductVariant/${searchParams.get('variant')}`
+                : firstAvailableVariant(product)?.id,
         [product, searchParams]
     );
 
@@ -52,7 +56,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
         () =>
             searchParams.has('variant')
                 ? product.variants.edges.find(({ node: { id } }) => id.includes(searchParams.get('variant')!))?.node
-                : product.variants.edges[0].node,
+                : firstAvailableVariant(product),
         [product, searchParams]
     );
 
@@ -89,7 +93,7 @@ export function ProductSavings({ i18n, product, className }: ProductSavingsProps
         () =>
             searchParams.has('variant')
                 ? product.variants.edges.find(({ node: { id } }) => id.includes(searchParams.get('variant')!))?.node
-                : product.variants.edges[0].node,
+                : firstAvailableVariant(product),
         [product, searchParams]
     );
     const { t } = getTranslations('product', i18n);

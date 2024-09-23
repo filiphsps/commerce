@@ -2,7 +2,7 @@
 
 import { Suspense, useState } from 'react';
 
-import { FirstAvailableVariant } from '@/utils/first-available-variant';
+import { firstAvailableVariant } from '@/utils/first-available-variant';
 import { cn } from '@/utils/tailwind';
 
 import ProductCardFooter from '@/components/product-card/product-card-footer';
@@ -23,7 +23,7 @@ export type ProductCardFooterProps = {
     children?: ReactNode;
 };
 const ProductCardContent = ({ data: product, priority, locale, i18n, children }: ProductCardFooterProps) => {
-    const [selectedVariant, setSelectedVariant] = useState(FirstAvailableVariant(product)!);
+    const [selectedVariant, setSelectedVariant] = useState(firstAvailableVariant(product)!);
     if (!product) {
         return null;
     }

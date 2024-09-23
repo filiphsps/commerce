@@ -18,7 +18,7 @@ export type StockStatusProps = {
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 const StockStatus = ({ product, i18n, className, ...props }: StockStatusProps) => {
     const { t } = getTranslations('product', i18n);
-    if (!product) {
+    if (!product || !product.totalInventory || product.totalInventory <= 0) {
         return null;
     }
 

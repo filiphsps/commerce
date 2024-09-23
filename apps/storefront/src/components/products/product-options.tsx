@@ -90,7 +90,7 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
                                                 isSelected && styles.selected,
                                                 !inStock && styles.disabled,
                                                 styles.clickable,
-                                                'h-12 bg-white text-sm shadow hover:border-gray-400',
+                                                'h-12 rounded-lg border-2 border-solid border-white bg-white text-sm shadow hover:border-gray-400',
                                                 !isSelected && inStock && 'cursor-pointer focus-visible:border-gray-400'
                                             )}
                                             onClick={() =>

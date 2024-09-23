@@ -12,7 +12,7 @@ import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductApi, ProductsApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
-import { FirstAvailableVariant } from '@/utils/first-available-variant';
+import { firstAvailableVariant } from '@/utils/first-available-variant';
 import { isValidHandle } from '@/utils/handle';
 import { getTranslations, Locale } from '@/utils/locale';
 import { productToMerchantsCenterId } from '@/utils/merchants-center-id';
@@ -49,7 +49,7 @@ import type { ReactNode } from 'react';
 import type { ProductGroup, WithContext } from 'schema-dts';
 
 export const runtime = 'nodejs';
-export const dynamic = 'force-static';
+export const dynamic = 'auto';
 export const dynamicParams = true;
 export const revalidate = false;
 
@@ -79,10 +79,16 @@ export async function generateStaticParams({
     }
 }
 
+type SearchParams = {
+    variant?: string;
+};
+
 export async function generateMetadata({
-    params: { domain, locale: localeData, handle }
+    params: { domain, locale: localeData, handle },
+    searchParams: searchParams
 }: {
     params: ProductPageParams;
+    searchParams: SearchParams;
 }): Promise<Metadata> {
     if (!isValidHandle(handle)) {
         notFound();
@@ -110,6 +116,11 @@ export async function generateMetadata({
         throw error;
     }
 
+    const initialVariant = firstAvailableVariant(product);
+    if (!initialVariant) {
+        notFound();
+    }
+
     let page: Awaited<ReturnType<typeof PageApi<'product_page'>>> | undefined = null;
     try {
         page = await PageApi({ shop, locale, handle, type: 'product_page' });
@@ -117,22 +128,26 @@ export async function generateMetadata({
 
     const locales = await LocalesApi({ api });
 
+    let search = '';
+    if (searchParams.variant && searchParams.variant !== parseGid(initialVariant.id).id) {
+        search = `?variant=${searchParams.variant}`;
+    }
+
     const title = page?.meta_title || product.seo.title || `${product.vendor} ${product.title}`;
     page;
     const description =
         (page?.meta_description ? asText(page.meta_description) : undefined) ||
         product.seo.description ||
         product.description;
-
     return {
         title,
         description,
         alternates: {
-            canonical: `https://${shop.domain}/${locale.code}/products/${handle}/`,
+            canonical: `https://${shop.domain}/${locale.code}/products/${handle}/${search}`,
             languages: locales.reduce(
                 (prev, { code }) => ({
                     ...prev,
-                    [code]: `https://${shop.domain}/${code}/products/${handle}/`
+                    [code]: `https://${shop.domain}/${code}/products/${handle}/${search}`
                 }),
                 {}
             )
@@ -225,7 +240,7 @@ export default async function ProductPage({
     const i18n = await getDictionary({ shop, locale });
     const { t } = getTranslations('product', i18n);
 
-    const initialVariant = FirstAvailableVariant(product);
+    const initialVariant = firstAvailableVariant(product);
     if (!initialVariant) {
         notFound();
     }
