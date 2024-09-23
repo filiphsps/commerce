@@ -125,11 +125,11 @@ export async function generateMetadata({
     return {
         metadataBase: new URL(`https://${shop.domain}/${locale.code}/`),
         title: {
-            absolute: `${shop.name} ${locale.country!}`.trim(),
+            absolute: `${shop.name} (${locale.country!})`.trim(),
             // Allow tenants to customize this.
             // For example allow them to use other separators
             // like `·`, `-` etc.
-            template: `%s - ${shop.name} ${locale.country!}`
+            template: `%s - ${shop.name} (${locale.country!})`
         },
         icons: {
             icon: ['/favicon.png'],
