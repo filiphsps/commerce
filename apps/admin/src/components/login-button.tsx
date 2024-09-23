@@ -69,6 +69,7 @@ export default function LoginButton({ provider = 'github', className, ...props }
                 }
 
                 switch (provider) {
+                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                     case 'github': {
                         setLoading(true);
                         signIn('github');

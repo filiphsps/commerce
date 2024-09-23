@@ -7,13 +7,14 @@ import type { VariantProps } from 'class-variance-authority';
 import type { ComponentPropsWithoutRef, ElementType, ReactNode } from 'react';
 
 const buttonVariants = cva(
-    'inline-flex items-center justify-center whitespace-nowrap rounded-md text-base leading-none ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed font-bold uppercase px-3 h-11 appearance-none',
+    'inline-flex cursor-pointer appearance-none items-center justify-center whitespace-nowrap rounded-md px-3 py-3 text-sm font-bold uppercase leading-none ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50',
     {
         variants: {
             variant: {
-                default: 'bg-primary text-primary-foreground hover:brightness-50 font-extrabold',
+                default: 'bg-primary text-primary-foreground hover:brightness-50',
                 secondary: 'bg-foreground text-background hover:brightness-50',
-                outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+                outline:
+                    'border-2 border-solid border-foreground bg-transparent hover:bg-accent hover:text-accent-foreground',
                 ghost: 'hover:bg-accent hover:text-accent-foreground',
                 link: 'text-primary underline-offset-4 hover:underline'
             }

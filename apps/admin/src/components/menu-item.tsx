@@ -16,15 +16,20 @@ export function MenuItem({ href, children, className }: MenuItemProps) {
     const [active, setActive] = useState(false);
 
     useEffect(() => {
-        setActive(href.toString().toLowerCase().endsWith(pathname.toLowerCase()));
+        if (href.toString().split('/')[2] === '') {
+            setActive(href.toString().toLowerCase().startsWith(pathname.toLowerCase()));
+            return;
+        }
+
+        setActive(pathname.toLowerCase().startsWith(href.toString().toLowerCase()));
     }, [href, pathname]);
 
     return (
         <Link
             href={href}
             className={cn(
-                'text-foreground flex w-full items-center justify-start gap-2 rounded-md px-3 py-2',
-                active && 'bg-muted cursor-default',
+                'text-foreground flex w-full items-center justify-start gap-2 rounded-md px-3 py-2 font-semibold',
+                active && 'bg-muted cursor-default font-extrabold uppercase',
                 !active && 'hover:text-primary cursor-pointer',
                 className
             )}

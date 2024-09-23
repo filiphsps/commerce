@@ -46,6 +46,7 @@ const ImageGrid = ({ slice, index }: ImageGridProps) => {
                     descriptionText.length <= 0 && titleText && titleText.length > 0 && titleText.length < 65;
 
                 // Handle old links that were `KeyTextField`s.
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                 const href = link && typeof link !== 'string' ? asLink(link, { linkResolver }) : link;
                 const target: undefined | '_blank' = (href as any).target || undefined;
 

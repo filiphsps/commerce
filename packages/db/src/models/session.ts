@@ -3,7 +3,7 @@ import { Schema } from 'mongoose';
 import { db } from '../db';
 
 import type { BaseDocument } from '../db';
-import type { UserBase } from '.';
+import type { UserBase } from './user';
 
 export interface SessionBase extends BaseDocument {
     user: UserBase;
@@ -29,8 +29,7 @@ export const SessionSchema = new Schema<SessionBase>(
     },
     {
         id: true,
-        timestamps: true,
-        versionKey: false
+        timestamps: true
     }
 );
 

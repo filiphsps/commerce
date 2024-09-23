@@ -1,5 +1,3 @@
-import { TodoError } from '@nordcom/commerce-errors';
-
 import { db } from '../db';
 
 import type { BaseDocument } from '../db';
@@ -91,7 +89,7 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
 
         let res = await req.exec();
         if (((res as any) || []).length <= 0) {
-            throw new TodoError('No data found');
+            return [];
         }
 
         if ((id as any) || (count && count === 1)) {
@@ -104,10 +102,10 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
         id: string,
         projection?: ProjectionType<DocType> | null,
         options?: QueryOptions<DocType> | null
-    ): Promise<DocType> {
+    ): Promise<DocType | null> {
         const res = this.model.findById(id, projection, options);
         if (!(res as any)) {
-            throw new TodoError('No data found');
+            return null;
         }
 
         return res;
@@ -117,10 +115,10 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
         filter: FilterQuery<DocType>,
         update?: UpdateQuery<DocType>,
         options: QueryOptions<DocType> = { includeResultMetadata: true, lean: true }
-    ): Promise<DocType> {
+    ): Promise<DocType | null> {
         const res = this.model.findOneAndUpdate(filter, update, options);
         if (!(res as any)) {
-            throw new TodoError('No data found');
+            return null;
         }
 
         return res;

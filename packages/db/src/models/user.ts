@@ -2,10 +2,10 @@ import { Schema } from 'mongoose';
 
 import { db } from '../db';
 
-import { IdentitySchema } from '.';
+import { IdentitySchema } from './identity';
 
 import type { BaseDocument } from '../db';
-import type { IdentityBase } from '.';
+import type { IdentityBase } from './identity';
 
 export interface UserBase extends BaseDocument {
     email: string;
@@ -45,8 +45,7 @@ export const UserSchema = new Schema<UserBase>(
     },
     {
         id: true,
-        timestamps: true,
-        versionKey: false
+        timestamps: true
     }
 );
 

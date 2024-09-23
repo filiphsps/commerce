@@ -11,6 +11,8 @@ import NextTopLoader from 'nextjs-toploader';
 import * as NProgress from 'nprogress';
 import { Toaster } from 'sonner';
 
+import { HeaderProvider } from '@/components/header-provider';
+
 import type { ReactNode } from 'react';
 
 export type ProvidersProps = {
@@ -32,7 +34,7 @@ export function Providers({ children }: ProvidersProps) {
             <Toaster theme="dark" />
             <NextTopLoader color={Theme.accents.primary} showSpinner={true} crawl={true} />
 
-            {children}
+            <HeaderProvider>{children}</HeaderProvider>
 
             <GoogleTagManager gtmId={'GTM-N6TLG8MX'} />
         </NordstarProvider>

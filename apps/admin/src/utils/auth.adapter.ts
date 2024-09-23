@@ -98,6 +98,9 @@ export function AuthAdapter(): Adapter {
         async linkAccount({ userId, ...account }) {
             try {
                 const user = await User.findById(userId);
+                if (!user) {
+                    return null;
+                }
 
                 // Update or create the identity
                 const identity = await Identity.findOneAndUpdate(
@@ -118,6 +121,9 @@ export function AuthAdapter(): Adapter {
                         new: true
                     }
                 );
+                if (!identity) {
+                    return null;
+                }
 
                 if (!user.identities.find(({ id }) => id === identity.id)) {
                     user.identities.push(identity);

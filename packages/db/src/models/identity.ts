@@ -40,8 +40,7 @@ export const IdentitySchema = new Schema<IdentityBase>(
     },
     {
         id: true,
-        timestamps: true,
-        versionKey: false
+        timestamps: true
     }
 );
 

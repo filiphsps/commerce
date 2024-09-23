@@ -1,3 +1,4 @@
+import { cn } from '@/utils/tailwind';
 import Image from 'next/image';
 
 import type { Locale } from '@/utils/locale';
@@ -18,7 +19,7 @@ export const CurrentLocaleFlag = ({
     return (
         <Image
             {...props}
-            className="aspect-[3/2] h-full max-h-8 w-auto overflow-hidden object-contain object-center"
+            className={cn('aspect-[3/2] h-full max-h-8 w-auto overflow-hidden object-contain object-center', className)}
             alt={alt!}
             aria-label={alt}
             width={width || '24'}
