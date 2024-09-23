@@ -21,18 +21,17 @@ const VariantImage = ({ image, priority }: VariantImageProps) => {
     return (
         <div className="aspect-3/2 h-max w-full rounded-lg bg-white drop-shadow">
             <Image
-                role="presentation"
                 className="h-full w-full transform-gpu object-contain object-center p-3 transition-transform group-hover/card:scale-110"
+                role={image.altText ? undefined : 'presentation'}
                 src={image.url}
-                alt={image.altText ?? ``}
-                title={image.altText!}
+                alt={image.altText!}
                 height={image.height || 100}
                 width={image.width || 100}
                 sizes="(max-width: 950px) 120px, 185px"
                 decoding="async"
                 draggable={false}
-                quality={80}
                 loading={priority ? 'eager' : 'lazy'}
+                quality={80}
             />
         </div>
     );

@@ -202,6 +202,7 @@ export default async function BlogPage({
                                             loading={'eager'}
                                             priority={true}
                                             draggable={false}
+                                            quality={80}
                                         />
                                     ) : (
                                         <div className="transition-color aspect-[16/7] rounded-lg bg-gray-100 group-hover/header:brightness-75 group-focus-visible/header:brightness-75" />
