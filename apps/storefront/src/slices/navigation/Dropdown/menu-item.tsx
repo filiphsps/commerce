@@ -35,7 +35,10 @@ export function DropdownMenuItem({ slice }: DropdownMenuItemProps) {
             <div className={cn(LINK_BUBBLE_STYLES, 'flex items-center gap-1')}>
                 <PrismicText data={slice.primary.title} styled={false} bare={true} />
 
-                <FiChevronDown className={cn('text-inherit', activeMenu && 'rotate-180')} style={{ strokeWidth: 3 }} />
+                <FiChevronDown
+                    className={cn('text-inherit transition-transform', activeMenu && 'rotate-180')}
+                    style={{ strokeWidth: 3 }}
+                />
             </div>
         </button>
     );

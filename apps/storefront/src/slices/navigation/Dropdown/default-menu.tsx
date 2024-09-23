@@ -22,7 +22,7 @@ const TITLE_COMMON_STYLES = 'text-xl leading-none py-2 font-semibold';
 type DropdownDefaultMenuProps = Pick<SliceComponentProps<Content.DropdownSlice>, 'slice'>;
 export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
     const { closeMenu } = useHeaderMenu();
-    const ref = useDetectClickOutside({ onTriggered: closeMenu });
+    const ref = useDetectClickOutside({ onTriggered: closeMenu, disableTouch: true });
 
     const links: typeof slice.primary.links = (slice.primary.links as any) || [];
 
@@ -82,7 +82,7 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
 
                 return (
                     <Link
-                        key={`${slice.id}_${target}_${index}`}
+                        key={`${slice.id}-${target}-${index}`}
                         href={target}
                         className={cn(
                             MENU_ITEM_COMMON_STYLES,
