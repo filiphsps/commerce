@@ -14,6 +14,7 @@ import { isValidHandle } from '@/utils/handle';
 import { getTranslations, Locale } from '@/utils/locale';
 import md5 from 'crypto-js/md5';
 import Image from 'next/image';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import { Avatar } from '@/components/informational/avatar';
@@ -223,7 +224,7 @@ export default async function ArticlePage({
                 <aside className="w-full empty:hidden md:h-full empty:md:flex"></aside>
 
                 <article className="prone md:max-w-[720px]">
-                    <div className="flex gap-2 pb-6 text-gray-500 *:text-sm *:font-semibold *:leading-tight md:pb-0">
+                    <div className="flex items-center gap-2 pb-6 text-gray-500 *:text-sm *:font-semibold *:leading-tight md:pb-0">
                         <Label className="text-inherit">{publishedAtString}</Label>
                         {' • '}
                         <Label className="text-inherit">{t('n-min-read', readingTime)}</Label>
@@ -235,20 +236,32 @@ export default async function ArticlePage({
                 <aside className="w-full md:h-full">
                     {author ? (
                         <div className="flex items-center justify-start gap-2">
-                            {avatar ? <Avatar name={author.name} src={avatar} className="size-6" /> : null}
-                            <div className="flex flex-col items-start justify-between">
+                            {avatar ? <Avatar name={author.name} src={avatar} className="size-8" /> : null}
+                            <div className="flex flex-col items-start justify-center gap-1">
                                 <Label
                                     as="div"
                                     className="text-base font-normal normal-case leading-none text-gray-600"
                                 >
                                     {author.name}
                                 </Label>
-                                <Label
-                                    as="div"
-                                    className="text-sm font-semibold normal-case leading-none text-gray-500 empty:hidden"
-                                >
-                                    {author.bio}
-                                </Label>
+                                {author.bio ? (
+                                    <Label
+                                        as="div"
+                                        className="text-sm font-semibold normal-case leading-none text-gray-500"
+                                    >
+                                        {author.bio.startsWith('@') ? (
+                                            <Link
+                                                className="hover:text-primary transition-colors"
+                                                href={`https://x.com/${author.bio}`}
+                                                target="_blank"
+                                            >
+                                                {author.bio}
+                                            </Link>
+                                        ) : (
+                                            author.bio
+                                        )}
+                                    </Label>
+                                ) : null}
                             </div>
                         </div>
                     ) : null}
