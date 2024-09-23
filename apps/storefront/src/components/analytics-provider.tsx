@@ -39,7 +39,7 @@ export const AnalyticsProvider = ({ shop, hostname, children, enableThirdParty =
 
         const timeout = setTimeout(() => {
             setDeferred(trackers);
-        }, 2000);
+        }, 6500);
         return () => clearTimeout(timeout);
     }, []);
 
