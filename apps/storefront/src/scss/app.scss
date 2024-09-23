@@ -43,10 +43,6 @@ html {
         --accent-primary-text: var(--color-accent-primary-text, var(--color-bright));
         --accent-secondary-text: var(--color-accent-secondary-text, var(--color-dark));
 
-        // Components:
-        --component-product-card-width: 12rem;
-
-        // Layouting:
         --page-width: #{$page-width};
 
         --block-border-radius-large: 1rem;

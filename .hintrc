@@ -13,16 +13,18 @@
             "default",
             {
                 "ignore": [
-                    "font-smooth",
                     "-webkit-overflow-scrolling",
-                    "text-size-adjust",
-                    "overscroll-behavior",
-                    "scrollbar-width",
-                    "scrollbar-color",
-                    "text-underline-position",
-                    "contain-intrinsic-size",
+                    "animation-timeline",
                     "backdrop-filter",
-                    "font-size-adjust"
+                    "contain-intrinsic-size",
+                    "font-size-adjust",
+                    "font-smooth",
+                    "no-inline-styles",
+                    "overscroll-behavior",
+                    "scrollbar-color",
+                    "scrollbar-width",
+                    "text-size-adjust",
+                    "text-underline-position"
                 ]
             }
         ],

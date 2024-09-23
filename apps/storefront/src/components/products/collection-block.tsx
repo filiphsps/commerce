@@ -78,6 +78,10 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
         </Suspense>
     ));
 
+    if (products.length <= 0 && !children) {
+        return null;
+    }
+
     if (bare) {
         return <>{productCards}</>;
     }
@@ -90,19 +94,19 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
                 !isHorizontal &&
                     'grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] md:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] xl:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))]',
                 isHorizontal &&
-                    'overflow-x-shadow auto-cols-[minmax(12rem,1fr)] grid-flow-col grid-cols-[repeat(auto-fit,minmax(12rem,1fr))] grid-rows-1 overscroll-x-auto',
+                    'overflow-x-shadow -my-2 snap-x snap-mandatory auto-cols-[minmax(13rem,1fr)] grid-flow-col grid-cols-[repeat(auto-fit,minmax(13rem,1fr))] grid-rows-1 overscroll-x-auto py-2',
                 className
             )}
         >
             {children}
-            {productCards.length > 0 ? productCards : null}
+            {productCards}
 
             {collection && showViewAll ? (
                 <Link
                     href={`/collections/${collection.handle}/`}
                     className={cn(
                         CARD_STYLES,
-                        'bg-primary text-primary-foreground hover:*:text-primary-foreground flex items-center justify-center p-3 transition-all hover:brightness-75 hover:transition-all'
+                        'bg-primary text-primary-foreground hover:text-primary-foreground *:text-primary-foreground border-primary-dark flex items-center justify-center p-3 transition-all hover:brightness-75 hover:transition-all'
                     )}
                     // TODO: i18n.
                     // TODO: View all {products.length} {Pluralize({ count: products.length, noun: 'product' })}.
