@@ -105,7 +105,7 @@ vi.mock('next/navigation', async () => ({
     useRouter: vi.fn().mockReturnValue({
         replace: vi.fn()
     }),
-    useSearchParams: vi.fn()
+    useSearchParams: vi.fn().mockReturnValue(new URLSearchParams())
 }));
 
 vi.mock('@shopify/hydrogen-react', async () => ({
