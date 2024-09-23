@@ -1,5 +1,3 @@
-import { Suspense } from 'react';
-
 import { linkResolver } from '@/utils/prismic';
 import { cn } from '@/utils/tailwind';
 import { asLink } from '@prismicio/client';
@@ -40,9 +38,7 @@ export const BannerDefault = ({ slice }: { slice: BannerSliceDefault }): JSX.Ele
                             href={href}
                             target={target}
                         >
-                            <Suspense>
-                                <PrismicText data={title} />
-                            </Suspense>
+                            <PrismicText data={title} />
                         </Button>
                     );
                 })}

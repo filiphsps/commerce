@@ -17,7 +17,7 @@ describe('components', () => {
             };
         });
 
-        it('should render', () => {
+        it('should render without crashing', () => {
             const wrapper = render(<Breadcrumbs locale={Locale.default} />);
 
             expect(() => wrapper.unmount()).not.toThrow();

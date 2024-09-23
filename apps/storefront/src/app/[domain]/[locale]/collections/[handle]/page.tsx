@@ -10,7 +10,7 @@ import { CollectionApi, CollectionPaginationCountApi, CollectionsApi } from '@/a
 import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/utils/dictionary';
 import { isValidHandle } from '@/utils/handle';
-import { getTranslations, Locale } from '@/utils/locale';
+import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import { checkAndHandleRedirect } from '@/utils/redirect';
 import { asText } from '@prismicio/client';
 import { flattenConnection } from '@shopify/hydrogen-react';
@@ -112,7 +112,7 @@ export async function generateMetadata({
     // TODO: i18n.
     const title =
         pageNumber > 1
-            ? `${collection.title} - ${t('page-n', pageNumber)}`
+            ? `${collection.title} - ${capitalize(t('page-n', pageNumber))}`
             : page?.meta_title || collection.seo.title || collection.title;
     const description: string | undefined =
         asText(page?.meta_description) ||
@@ -236,10 +236,11 @@ export default async function CollectionPage({
         }
     };
 
+    const i18n = await getDictionary({ shop, locale });
     const pagination = (
         <section className="flex w-full items-center justify-center empty:hidden">
-            <Suspense key={`collections.${handle}.pagination`}>
-                <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
+            <Suspense key={`collections.${handle}.pagination`} fallback={<div className="h-8 w-full" data-skeleton />}>
+                <Pagination i18n={i18n} knownFirstPage={1} knownLastPage={pagesInfo.pages} />
             </Suspense>
         </section>
     );
@@ -247,7 +248,7 @@ export default async function CollectionPage({
     const pageNumber = searchParams.page ? parseInt(searchParams.page, 10) : 1;
 
     const pageContent = !empty ? (
-        <>
+        <PageContent>
             {pagination}
 
             <Suspense
@@ -264,7 +265,7 @@ export default async function CollectionPage({
             </Suspense>
 
             {pagination}
-        </>
+        </PageContent>
     ) : null;
 
     const hasSlices = page ? page.slices.length > 0 : false;
@@ -279,34 +280,32 @@ export default async function CollectionPage({
                 </div>
             </Suspense>
 
-            <PageContent as="section">
-                {!hasSlices || !hasCustomPageContentPosition ? (
-                    <>
-                        <Heading title={collection.title || collection.seo.title} />
-                        <Content
-                            className="prose max-w-none"
-                            html={collection.descriptionHtml || collection.seo.description}
-                        />
-                    </>
-                ) : null}
+            {!hasSlices || !hasCustomPageContentPosition ? (
+                <>
+                    <Heading title={collection.title || collection.seo.title} />
+                    <Content
+                        className="prose max-w-none"
+                        html={collection.descriptionHtml || collection.seo.description}
+                    />
+                </>
+            ) : null}
 
-                {!page || pageNumber > 1 ? (
-                    pageContent
-                ) : (
-                    <>
-                        {!hasCustomPageContentPosition ? <>{pageContent}</> : null}
+            {!page || pageNumber > 1 ? (
+                pageContent
+            ) : (
+                <>
+                    {!hasCustomPageContentPosition ? <>{pageContent}</> : null}
 
-                        <PrismicPage
-                            shop={shop}
-                            locale={locale}
-                            pageContent={pageContent}
-                            page={page}
-                            handle={handle}
-                            type={'collection_page'}
-                        />
-                    </>
-                )}
-            </PageContent>
+                    <PrismicPage
+                        shop={shop}
+                        locale={locale}
+                        pageContent={pageContent}
+                        page={page}
+                        handle={handle}
+                        type={'collection_page'}
+                    />
+                </>
+            )}
 
             {/* Metadata */}
             <JsonLd data={jsonLd} />

@@ -65,9 +65,7 @@ const FooterContent = async ({ locale, i18n, shop }: FooterContentProps) => {
 
                 {hasCopyrights ? (
                     <div className="flex gap-2 text-xs font-black uppercase lg:text-sm">
-                        <Suspense key="footer.copyrights" fallback={<div className="h-8 w-44 max-w-full" />}>
-                            <PrismicText data={footer.copyrights} styled={false} />
-                        </Suspense>
+                        <PrismicText data={footer.copyrights} styled={false} />
                     </div>
                 ) : null}
             </div>

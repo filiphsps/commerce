@@ -1,7 +1,10 @@
+import { Suspense } from 'react';
+
 import { Shop } from '@nordcom/commerce-db';
 
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductsPaginationApi, ProductsPaginationCountApi } from '@/api/shopify/product';
+import { getDictionary } from '@/utils/dictionary';
 import { cn } from '@/utils/tailwind';
 import { notFound } from 'next/navigation';
 
@@ -41,7 +44,14 @@ export default async function ProductsContent({ domain, locale, searchParams = {
 
     const { products, filters } = await ProductsPaginationApi({ api, filters: { limit, vendor, sorting, after } });
 
-    const pagination = <Pagination knownFirstPage={1} knownLastPage={pages} morePagesAfterKnownLastPage={false} />;
+    const i18n = await getDictionary({ shop, locale });
+    const pagination = (
+        <section className="flex w-full items-center justify-center empty:hidden">
+            <Suspense key={`products.pagination`} fallback={<div className="h-8 w-full" data-skeleton />}>
+                <Pagination i18n={i18n} knownFirstPage={1} knownLastPage={pages} />
+            </Suspense>
+        </section>
+    );
 
     return (
         <>

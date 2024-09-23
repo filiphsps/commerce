@@ -31,7 +31,7 @@ export const PrismicText = ({ data, styled = true, bare = false }: PrismicTextPr
     }
 
     return (
-        <Suspense fallback={<Fragment />}>
+        <Suspense key={JSON.stringify(data)} fallback={<Fragment />}>
             <PrismicRichText
                 field={data}
                 linkResolver={linkResolver}

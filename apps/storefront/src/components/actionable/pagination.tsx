@@ -1,23 +1,30 @@
 'use client';
 
-import styles from '@/components/actionable/pagination.module.scss';
-
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { TbDots } from 'react-icons/tb';
 
+import { capitalize, getTranslations } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 import { usePathname, useSearchParams } from 'next/navigation';
 
 import Link from '@/components/link';
 
+import type { LocaleDictionary } from '@/utils/locale';
 import type { ComponentProps } from 'react';
 
+const ACTION_STYLES =
+    'flex select-none items-center justify-center gap-1 text-center text-xs font-medium text-current transition-colors hover:text-primary';
+const ITEM_STYLES =
+    'flex h-8 min-w-8 select-none items-center justify-center rounded bg-transparent p-2 text-center text-sm font-medium text-current transition-colors hover:text-primary data-[selected]:bg-primary data-[selected]:font-bold data-[selected]:text-primary-foreground md:h-10';
+
 export type PaginationProps = ComponentProps<'nav'> & {
+    i18n: LocaleDictionary;
     knownFirstPage?: number;
     knownLastPage?: number;
     morePagesAfterKnownLastPage?: boolean;
 };
 export function Pagination({
+    i18n,
     knownFirstPage = 1,
     knownLastPage = 1,
     morePagesAfterKnownLastPage = false
@@ -28,6 +35,8 @@ export function Pagination({
     if (knownFirstPage === knownLastPage) {
         return null;
     }
+
+    const { t } = getTranslations('common', i18n);
 
     const currentPage = (() => {
         const page = searchParams.get('page');
@@ -50,7 +59,7 @@ export function Pagination({
 
         if (i === currentPage) {
             items.push(
-                <div key={url} className={styles.item} data-selected>
+                <div key={url} className={ITEM_STYLES} data-selected>
                     {i}
                 </div>
             );
@@ -58,7 +67,13 @@ export function Pagination({
         }
 
         items.push(
-            <Link key={url} className={styles.item} href={url} prefetch={false}>
+            <Link
+                key={url}
+                className={ITEM_STYLES}
+                title={capitalize(t('page-n', i.toString()))}
+                href={url}
+                prefetch={false}
+            >
                 {i}
             </Link>
         );
@@ -82,30 +97,44 @@ export function Pagination({
     })();
 
     return (
-        <nav role="navigation" aria-label="pagination" className={cn(styles.container, 'overflow-x-shadow')}>
+        <nav
+            role="navigation"
+            aria-label="pagination"
+            className="overflow-x-shadow flex max-w-full flex-nowrap items-center gap-3 md:gap-4"
+        >
             {currentPage !== 1 ? (
-                <Link className={styles.action} href={previousHref} prefetch={false}>
-                    <FiChevronLeft />
-                    Prev
+                <Link className={ACTION_STYLES} href={previousHref} prefetch={false}>
+                    <FiChevronLeft className="stroke-2 text-inherit" />
+                    {capitalize(t('previous'))}
                 </Link>
-            ) : null}
+            ) : (
+                <div className={cn(ACTION_STYLES, 'cursor-not-allowed text-gray-400 hover:text-gray-400')}>
+                    <FiChevronLeft className="stroke-2 text-inherit" />
+                    {capitalize(t('previous'))}
+                </div>
+            )}
 
-            <div className={styles.content}>
+            <div className="flex items-center gap-1 md:flex-wrap">
                 {items}
 
                 {morePagesAfterKnownLastPage ? (
-                    <div className={styles.ellipsis}>
+                    <div className={ACTION_STYLES}>
                         <TbDots />
                     </div>
                 ) : null}
             </div>
 
             {currentPage !== knownLastPage ? (
-                <Link className={styles.action} href={nextHref} prefetch={false}>
-                    Next
-                    <FiChevronRight />
+                <Link className={ACTION_STYLES} href={nextHref} prefetch={true}>
+                    {capitalize(t('next'))}
+                    <FiChevronRight className="stroke-2 text-inherit" />
                 </Link>
-            ) : null}
+            ) : (
+                <div className={cn(ACTION_STYLES, 'cursor-not-allowed text-gray-400 hover:text-gray-400')}>
+                    {capitalize(t('next'))}
+                    <FiChevronRight className="stroke-2 text-inherit" />
+                </div>
+            )}
         </nav>
     );
 }

@@ -6,9 +6,8 @@ import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skel
 
 describe('components', () => {
     describe('BreadcrumbsSkeleton', () => {
-        it('should render', () => {
+        it('should render without crashing', () => {
             const wrapper = render(<BreadcrumbsSkeleton />);
-
             expect(() => wrapper.unmount()).not.toThrow();
         });
     });
