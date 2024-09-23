@@ -144,6 +144,25 @@ async function OnlineStoreJsonLd({ shop, locale }: { shop: OnlineShop; locale: L
     }
 }
 
+async function PageBreadcrumbs({ shop, locale, handle }: { shop: OnlineShop; locale: Locale; handle: string }) {
+    const page = (await PageApi({ shop, locale, handle })) as PageData<'custom_page'> | null; // TODO: Page api should return a proper error.
+    if (!page) {
+        notFound();
+    }
+
+    if (handle === 'homepage' || !page.title) {
+        return null;
+    }
+
+    return (
+        <div className="-mb-[1.25rem] empty:hidden md:-mb-[2.25rem]">
+            <Suspense key={`pages.${handle}.breadcrumbs.content`} fallback={<BreadcrumbsSkeleton />}>
+                <Breadcrumbs locale={locale} title={page.title} />
+            </Suspense>
+        </div>
+    );
+}
+
 export default async function CustomPage({
     params: { domain, locale: localeCode, slug }
 }: {
@@ -160,25 +179,15 @@ export default async function CustomPage({
     // Fetch the current shop.
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
 
-    const page = (await PageApi({ shop, locale, handle })) as PageData<'custom_page'> | null; // TODO: Page api should return a proper error.
-    if (!page) {
-        notFound();
-    }
-
-    const breadcrumbs =
-        handle !== 'homepage' && page.title ? (
-            <Suspense key={`pages.${handle}.breadcrumbs`} fallback={<BreadcrumbsSkeleton />}>
-                <div className="-mb-[1.25rem] empty:hidden md:-mb-[2.25rem]">
-                    <Breadcrumbs locale={locale} title={page.title} />
-                </div>
-            </Suspense>
-        ) : null;
-
     return (
         <>
-            {breadcrumbs}
+            <Suspense key={`pages.${handle}.breadcrumbs`} fallback={<Fragment />}>
+                <PageBreadcrumbs shop={shop} locale={locale} handle={handle} />
+            </Suspense>
 
-            <CMSContent shop={shop} locale={locale} handle={handle} />
+            <Suspense key={`pages.${handle}.content`} fallback={<Fragment />}>
+                <CMSContent shop={shop} locale={locale} handle={handle} />
+            </Suspense>
 
             {/* Metadata */}
             {handle === 'homepage' ? (

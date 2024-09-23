@@ -236,10 +236,20 @@ export default async function CollectionPage({
         }
     };
 
+    const pagination = (
+        <section className="flex w-full items-center justify-center empty:hidden">
+            <Suspense key={`collections.${handle}.pagination`}>
+                <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
+            </Suspense>
+        </section>
+    );
+
     const pageNumber = searchParams.page ? parseInt(searchParams.page, 10) : 1;
 
     const pageContent = !empty ? (
         <>
+            {pagination}
+
             <Suspense
                 key={`collections.${handle}.content.page.${pageNumber}`}
                 fallback={<CollectionBlock.skeleton length={PRODUCTS_PER_PAGE} />}
@@ -253,11 +263,7 @@ export default async function CollectionPage({
                 />
             </Suspense>
 
-            <section className="flex w-full items-center justify-center empty:hidden">
-                <Suspense>
-                    <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
-                </Suspense>
-            </section>
+            {pagination}
         </>
     ) : null;
 
