@@ -49,7 +49,7 @@
         "language-and-region-settings": "Language and Region settings",
         "login": "login",
         "out-of-stock": "Out of Stock",
-        "page-n": "page {n}",
+        "page-n": "page {0}",
         "phone-tooltip": "Call us",
         "phone": "phone",
         "price": "Price",

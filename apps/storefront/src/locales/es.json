@@ -48,7 +48,7 @@
         "language-and-region-settings": "Configuración de Idioma y Región",
         "login": "iniciar sesión",
         "out-of-stock": "Agotado",
-        "page-n": "página {n}",
+        "page-n": "página {0}",
         "phone-tooltip": "Llámanos",
         "phone": "teléfono",
         "price": "Precio",

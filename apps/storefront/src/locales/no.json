@@ -32,7 +32,7 @@
         "language-and-region-settings": "Innstillinger for språk og region",
         "login": "logge inn",
         "out-of-stock": "Utsolgt",
-        "page-n": "side {n}",
+        "page-n": "side {0}",
         "quantity-too-low": "For lav mengde",
         "quantity": "Mengde",
         "increase": "Øke",
