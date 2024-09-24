@@ -2,6 +2,7 @@ import 'server-only';
 
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
+import { Button } from '@nordcom/nordstar';
 
 import { auth } from '@/auth';
 import { Binoculars, Images, MessageCircleHeart, Settings, Tag } from 'lucide-react';
@@ -9,7 +10,6 @@ import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/avatar';
-import { Button } from '@/components/button';
 import { Card } from '@/components/card';
 import { Header } from '@/components/header';
 import { MenuItem } from '@/components/menu-item';
@@ -74,7 +74,7 @@ export default async function ShopLayout({ children, params: { domain } }: ShopL
 
     return (
         <div className="flex h-full w-full grow flex-col-reverse items-stretch justify-stretch md:flex-row">
-            <Card className="border-border fixed -left-full top-0 z-50 flex h-screen w-80 max-w-full flex-col gap-2 rounded-none border-0 border-r-2 border-solid transition-all group-data-[menu-open=true]/body:left-0 lg:sticky lg:left-0">
+            <Card className="border-border supports-[backdrop-filter]:bg-background/75 bg-background/95 fixed -left-full top-0 z-50 mt-[4.5rem] flex h-[calc(100vh-4.5rem)] w-80 max-w-full flex-col gap-2 rounded-none border-0 border-r-2 border-solid backdrop-blur transition-all group-data-[menu-open=true]/body:left-0 md:mt-0 md:h-full lg:sticky lg:left-0">
                 <Card.header className="h-[4.5rem] max-h-[4.5rem] min-h-[4.5rem]">
                     <div className="flex items-center justify-start gap-3">
                         <Avatar>
@@ -125,7 +125,7 @@ export default async function ShopLayout({ children, params: { domain } }: ShopL
 
                 <Card.footer>
                     <div className="flex w-full flex-col justify-start gap-3">
-                        <Button as={Link} href="/new" className="w-full" variant="ghost">
+                        <Button as={Link} href="/new" className="w-full" variant="outline" color="foreground">
                             Connect a new Shop
                         </Button>
                     </div>

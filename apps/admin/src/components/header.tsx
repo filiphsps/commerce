@@ -1,4 +1,5 @@
-import { cn } from '@/utils/tailwind';
+import { cn, Header as NordstarHeader } from '@nordcom/nordstar';
+
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -9,14 +10,15 @@ import type { HTMLAttributes } from 'react';
 export type HeaderProps = {} & HTMLAttributes<HTMLDivElement>;
 export function Header({ className, children, ...props }: HeaderProps) {
     return (
-        <header
-            className={cn(
-                'bg-background/95 supports-[backdrop-filter]:bg-background/60 border-border top-0 z-40 flex items-center justify-between border-0 border-b-2 border-solid p-4 backdrop-blur lg:sticky',
-                className
-            )}
+        <NordstarHeader
             {...props}
+            className={cn('[&>div>*]:px-1 [&>div]:max-w-full [&>div]:grid-cols-[auto_1fr_auto]', className)}
         >
-            <Link href="/" title="Nordcom Commerce">
+            <NordstarHeader.Menu className="w-min">
+                <ToggleSidebar />
+            </NordstarHeader.Menu>
+
+            <NordstarHeader.Logo as={Link} href="/" title="Nordcom Commerce" className="block w-fit">
                 <Image
                     className="h-8 object-contain object-left"
                     src="https://shops.nordcom.io/logo.svg"
@@ -28,13 +30,9 @@ export function Header({ className, children, ...props }: HeaderProps) {
                     priority={true}
                     loader={undefined}
                 />
-            </Link>
+            </NordstarHeader.Logo>
 
-            <div className="flex gap-2">
-                {children}
-
-                <ToggleSidebar />
-            </div>
-        </header>
+            <NordstarHeader.Menu className="w-full">{children}</NordstarHeader.Menu>
+        </NordstarHeader>
     );
 }

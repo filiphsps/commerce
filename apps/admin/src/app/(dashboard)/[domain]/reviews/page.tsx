@@ -1,13 +1,12 @@
 import 'server-only';
 
 import { Review, Shop } from '@nordcom/commerce-db';
-import { Heading } from '@nordcom/nordstar';
+import { Button, Heading } from '@nordcom/nordstar';
 
 import { auth } from '@/auth';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-import { Button } from '@/components/button';
 import { Card } from '@/components/card';
 
 import type { Metadata, Route } from 'next';

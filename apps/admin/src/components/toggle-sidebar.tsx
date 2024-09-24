@@ -12,9 +12,8 @@ export function ToggleSidebar({ className }: ToggleSidebarProps) {
     const { menu, setMenu } = useHeaderMenu();
 
     return (
-        <button className={cn('flex gap-2 md:hidden', className)} onClick={() => setMenu(!menu)}>
+        <button title="Menu" className={cn('flex gap-2 md:hidden', className)} onClick={() => setMenu(!menu)}>
             <Menu />
-            Menu
         </button>
     );
 }

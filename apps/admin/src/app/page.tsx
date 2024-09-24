@@ -1,4 +1,4 @@
-import { Accented, Heading, Label } from '@nordcom/nordstar';
+import { Accented, Button, Heading, Label } from '@nordcom/nordstar';
 
 import { auth } from '@/auth';
 import { getShopsForUser } from '@/utils/fetchers';
@@ -6,8 +6,6 @@ import { Settings } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-
-import { Button } from '@/components/button';
 
 import type { Metadata, Route } from 'next';
 
@@ -28,7 +26,7 @@ export default async function Overview() {
     const lastName = user.name?.split(' ').slice(1).join(' ') || null;
 
     const shopsActions = shops.map(({ id, domain, name }) => (
-        <Button key={id} as={Link} href={`/${domain}` as Route} title={name} variant="secondary" className="w-full">
+        <Button key={id} as={Link} href={`/${domain}` as Route} title={name} variant="outline" className="w-full">
             {name}
         </Button>
     ));
@@ -70,7 +68,7 @@ export default async function Overview() {
                 <section className="grid w-full grid-flow-row grid-cols-1 gap-2 py-2">{shopsActions}</section>
 
                 <footer className="border-border border-t-3 border-0 border-solid pt-3">
-                    <Button as={Link} href={'/new'} variant="default" className="h-12 w-full">
+                    <Button as={Link} href={'/new'} variant="solid" color="primary" className="h-12 w-full">
                         Connect a new Shop
                     </Button>
                 </footer>

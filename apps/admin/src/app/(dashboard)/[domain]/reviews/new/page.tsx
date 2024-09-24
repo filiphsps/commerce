@@ -1,12 +1,11 @@
 import 'server-only';
 
 import { Shop } from '@nordcom/commerce-db';
-import { Input, Label } from '@nordcom/nordstar';
+import { Button, Input, Label } from '@nordcom/nordstar';
 
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 
-import { Button } from '@/components/button';
 import { Card } from '@/components/card';
 
 import type { Metadata } from 'next';
