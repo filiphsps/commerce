@@ -60,7 +60,7 @@ const CollectionContainerHeader = ({ slice }: Omit<CollectionContainerProps, 'ch
             data-align={slice.primary.alignment}
             className={cn(
                 'max-w-none',
-                'md:data-[align=left]:text-left md:data-[align=center]:text-center md:data-[align=right]:text-right'
+                'text-base md:data-[align=center]:max-w-[900px] md:data-[align=left]:text-left md:data-[align=center]:text-center md:data-[align=right]:text-right'
             )}
         >
             <PrismicText data={slice.primary.body} />

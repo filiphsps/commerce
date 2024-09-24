@@ -5,6 +5,6 @@
         "types": ["vitest/globals", "happy-dom"]
     },
 
-    "include": ["packages", "apps", "@types/declaration.d.ts", "**/*.test.*"],
+    "include": ["packages", "apps", "@types/declaration.d.ts", "**/*.test.*", "tailwind.config.cjs"],
     "exclude": ["**/node_modules", "**/dist", "**/.turbo", "**/coverage", "**/build", "**/public"]
 }

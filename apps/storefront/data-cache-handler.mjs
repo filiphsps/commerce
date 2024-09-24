@@ -8,6 +8,13 @@ if (!process.env.DATA_CACHE_REDIS_URL) {
 }
 
 CacheHandler.onCreation(async () => {
+    if (!process.env.DATA_CACHE_REDIS_URL) {
+        console.error('DATA_CACHE_REDIS_URL is still not set, falling back to Lru handler.');
+        return {
+            handlers: [createLruHandler()]
+        };
+    }
+
     let client;
 
     try {
@@ -22,6 +29,9 @@ CacheHandler.onCreation(async () => {
                 // Use logging with caution in production. Redis will flood your logs. Hide it behind a flag.
                 console.error('Redis client error:', error);
             }
+        });
+        client.on('ready', () => {
+            console.debug('Redis client connected!');
         });
     } catch (error) {
         console.warn('Failed to create Redis client:', error);
@@ -53,8 +63,9 @@ CacheHandler.onCreation(async () => {
         // Create the `redis-stack` Handler if the client is available and connected.
         handler = await createRedisHandler({
             client,
-            keyPrefix: '',
-            timeoutMs: 1000
+            keyPrefix: undefined,
+            timeoutMs: 1000,
+            revalidateTagQuerySize: 500
         });
     } else {
         // Fallback to LRU handler if Redis client is not available.

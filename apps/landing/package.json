@@ -78,7 +78,6 @@
         "sharp": "0.33.5",
         "sonner": "1.5.0",
         "tailwind-merge": "2.5.2",
-        "the-new-css-reset": "1.11.3",
         "use-context-selector": "2.0.0"
     },
     "devDependencies": {

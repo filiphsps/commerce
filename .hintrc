@@ -34,6 +34,8 @@
                 "select-name": "off"
             }
         ],
-        "no-inline-styles": "off"
+        "no-inline-styles": "off",
+        "typescript-config/is-valid": "off",
+        "typescript-config/consistent-casing": "off"
     }
 }

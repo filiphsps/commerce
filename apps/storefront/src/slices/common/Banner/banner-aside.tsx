@@ -18,38 +18,39 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
     const imageAlt = image.alt || image.copyright || undefined;
 
     const textColor = slice.primary.text_color;
+    const textShadow =
+        typeof (slice.primary.text_shadow as boolean | undefined) === 'undefined' ? true : slice.primary.text_shadow;
 
     return (
         <section
             className={cn(
-                'bg-primary text-primary-foreground relative flex grid-flow-col justify-between gap-2 overflow-hidden overflow-x-clip rounded-lg py-2 md:grid md:grid-cols-6 md:py-0',
-                background.url && 'bg-cover bg-center bg-no-repeat text-black'
+                'bg-primary text-primary-foreground relative flex h-full min-h-fit grid-flow-col justify-between gap-2 overflow-hidden overflow-x-clip rounded-lg md:grid md:grid-cols-6',
+                background.url && 'bg-center bg-repeat text-black'
             )}
             style={{
-                backgroundImage: background.url ? `url('${background.url}')` : undefined
+                backgroundImage: background.url ? `url('${background.url}&auto=enhance&q=92')` : undefined
             }}
             data-slice-variation={slice.variation}
         >
-            <div className="z-10 col-span-4 flex h-full w-full flex-col items-start justify-center gap-4 p-4 md:max-w-[720px] md:px-6 lg:gap-6">
+            <div className="z-10 col-span-4 flex h-full w-full flex-col items-start justify-center gap-4 p-3 py-5 md:max-w-[720px] md:px-6 md:py-10 lg:gap-6">
                 <div
-                    className="mr-[5rem] flex flex-col items-start justify-center gap-1 text-left md:m-0"
+                    className="mr-[4rem] flex h-full min-h-fit flex-col items-start justify-center gap-1 text-left md:m-0"
                     style={{
                         color: textColor ?? undefined,
-                        textShadow: background.url ? '1px 1px 10px #000' : undefined
+                        textShadow: background.url && textShadow ? '1px 1px 10px #000' : '1px 1px 0px rgba(0,0,0,.45)'
                     }}
                 >
                     <Content
                         className={cn(
-                            'prose-headings:mt-0 -mt-2 md:m-0',
-                            'prose-h1:first-of-type:text-3xl prose-h1:first-of-type:leading-normal prose-h2:first-of-type:text-3xl prose-h2:first-of-type:leading-normal',
-                            'md:prose-h1:first-of-type:text-4xl md:prose-h2:first-of-type:text-4xl md:prose-h1:first-of-type:leading-normal md:prose-h2:first-of-type:leading-normal'
+                            'prose-h1:first-of-type:text-2xl md:prose-h1:first-of-type:text-3xl md:prose-h1:first-of-type:leading-normal prose-h2:first-of-type:text-xl md:prose-h2:first-of-type:text-3xl prose-h1:first-of-type:leading-tight md:prose-h2:first-of-type:leading-snug prose-h2:first-of-type:leading-tight',
+                            'md:prose-h1:first-of-type:text-4xl md:prose-h2:first-of-type:text-4xl md:prose-h1:first-of-type:leading-normal md:prose-h2:first-of-type:leading-normal prose-h2:first:-mt-1 md:prose-h2:first:-mt-3 prose-h1:first:-mt-1 md:prose-h1:first:-mt-2 prose-p:text-sm md:prose-p:text-base [&>h1>strong]:underline'
                         )}
                     >
                         <PrismicText data={slice.primary.content} styled={false} />
                     </Content>
                 </div>
 
-                <div className="flex w-full items-start justify-start gap-4 empty:hidden">
+                <div className="flex w-full flex-wrap items-start justify-start gap-3 empty:hidden md:gap-6">
                     {slice.items.map(({ type, target: link, title }, index) => {
                         const href = asLink(link, { linkResolver });
                         const target: undefined | '_blank' = (href as any).target || undefined;
@@ -59,7 +60,7 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
                                 as={Link}
                                 key={`${target}-${index}`}
                                 className={cn(
-                                    'bg-white text-base text-black shadow',
+                                    'rounded-lg bg-white p-2 px-4 leading-normal text-black drop-shadow hover:shadow',
                                     type && 'bg-secondary text-secondary-foreground'
                                 )}
                                 href={href}
@@ -78,12 +79,13 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
                 width={image.dimensions?.width!}
                 height={image.dimensions?.height!}
                 alt={imageAlt!}
-                className="absolute -right-[calc(100%-8rem)] left-auto z-0 col-span-2 h-full w-full object-cover object-left md:relative md:inset-0 md:flex md:object-center"
+                className="absolute -right-[calc(100%-8rem)] left-auto z-0 col-span-2 h-full w-full object-cover object-left md:relative md:inset-0 md:flex"
                 draggable={false}
                 loading={priority ? 'eager' : 'lazy'}
                 priority={priority}
                 unoptimized={(image.url || '').includes('.gif')}
                 decoding="async"
+                quality={92}
             />
         </section>
     );

@@ -1,7 +1,7 @@
 import { Error, MethodNotAllowedError, TodoError } from '@nordcom/commerce-errors';
 
 import { findShopByDomainOverHttp } from '@/api/shop';
-import { revalidateTag, revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { type NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'experimental-edge';
@@ -18,10 +18,13 @@ const revalidate = async (req: NextRequest, { domain }: RevalidateApiRouteParams
 
     try {
         const shop = await findShopByDomainOverHttp(domain);
+
         //TODO: Do this in the correct place.
         revalidateTag(shop.id);
         revalidateTag(shop.domain);
         revalidatePath('/en-US/homepage/', 'page'); // FIXME: Do this properly.
+
+        console.warn('Request:', req.method, await req.clone().json());
 
         switch (req.method) {
             case 'POST': {
@@ -72,6 +75,8 @@ const revalidate = async (req: NextRequest, { domain }: RevalidateApiRouteParams
             }
         }
     } catch (error: unknown) {
+        console.error(error);
+
         switch (true) {
             // Switch case to let us easily add more specific error handling.
             case error instanceof Error: {

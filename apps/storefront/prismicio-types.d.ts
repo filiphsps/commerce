@@ -1334,6 +1334,17 @@ export interface BannerSliceAsidePrimary {
      * - **Documentation**: https://prismic.io/docs/field#color
      */
     text_color: prismic.ColorField;
+
+    /**
+     * Text Shadow field in *Banner → Aside → Primary*
+     *
+     * - **Field Type**: Boolean
+     * - **Placeholder**: *None*
+     * - **Default Value**: true
+     * - **API ID Path**: banner.aside.primary.text_shadow
+     * - **Documentation**: https://prismic.io/docs/field#boolean
+     */
+    text_shadow: prismic.BooleanField;
 }
 
 /**

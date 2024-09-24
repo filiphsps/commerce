@@ -83,7 +83,7 @@ export default function StatusPage({ params: { code }, searchParams: { shop } }:
                         href="https://nordcom.io/"
                         target="_blank"
                         rel="follow"
-                        className="not-prose hover:*:text-primary-foreground px-2 font-mono font-bold leading-snug *:transition-colors hover:*:underline"
+                        className="not-prose px-2 font-mono font-bold leading-snug"
                     >
                         <code>Nordcom AB</code>
                     </Link>
@@ -92,7 +92,7 @@ export default function StatusPage({ params: { code }, searchParams: { shop } }:
                         href={`mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(mailTitle)}&body=${encodeURIComponent(mailBody)}`}
                         target="_blank"
                         rel="follow"
-                        className="not-prose hover:text-primary px-2 font-mono font-bold transition-colors hover:underline"
+                        className="not-prose px-2 font-mono font-bold transition-colors"
                     >
                         hi@nordcom.io
                     </Link>

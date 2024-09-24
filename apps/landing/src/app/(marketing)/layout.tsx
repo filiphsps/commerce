@@ -1,4 +1,3 @@
-import 'the-new-css-reset';
 import '@/styles/app.scss';
 import '@/styles/global.css';
 import styles from './layout.module.scss';
@@ -62,7 +61,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     return (
         <html lang="en" className={cn(primaryFont.className, primaryFont.variable, GeistMono.variable)}>
             <head />
-            <body className="grid min-h-screen grid-cols-[100%] grid-rows-[auto_1fr_auto] [grid-template-areas:'header''content''footer']">
+            <body className="grid min-h-screen w-full grid-cols-[100%] grid-rows-[auto_1fr_auto] [grid-template-areas:'header''content''footer']">
                 <Providers>
                     <Header />
 

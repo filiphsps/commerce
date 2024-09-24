@@ -90,6 +90,15 @@
                         "label": "Text color",
                         "placeholder": ""
                     }
+                },
+                "text_shadow": {
+                    "type": "Boolean",
+                    "config": {
+                        "label": "Text shadow",
+                        "placeholder_false": "No text shadow",
+                        "placeholder_true": "Text shadow if background image is set",
+                        "default_value": true
+                    }
                 }
             },
             "items": {

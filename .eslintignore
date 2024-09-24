@@ -17,3 +17,8 @@ public/
 *.d.ts
 
 next.config.*
+
+tailwind.config.cjs
+tailwind.config.js
+postcss.config.cjs
+postcss.config.js

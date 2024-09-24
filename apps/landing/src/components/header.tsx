@@ -12,7 +12,7 @@ import type { HTMLProps } from 'react';
 export type HeaderProps = {} & Omit<HTMLProps<HTMLDivElement>, 'children' | 'color'>;
 export default async function Header({ className, ...props }: HeaderProps) {
     return (
-        <NordstarHeader {...props} className={cn(styles.header, '[grid-area:header]', className)}>
+        <NordstarHeader {...props} className={cn(styles.header, 'w-full [grid-area:header]', className)}>
             <NordstarHeader.Logo>
                 <Link href="/" title="Nordcom Commerce" className={styles['logo-wrapper']}>
                     <Image

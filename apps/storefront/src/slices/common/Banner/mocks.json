@@ -183,6 +183,10 @@
                 "__TYPE__": "FieldContent",
                 "value": "#47f137",
                 "type": "Color"
+            },
+            "text_shadow": {
+                "__TYPE__": "BooleanContent",
+                "value": false
             }
         },
         "items": [

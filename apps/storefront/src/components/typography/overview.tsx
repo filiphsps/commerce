@@ -71,7 +71,7 @@ export const Overview = ({
     );
 
     const contentElement = (
-        <Card className="col-span-7 py-3 md:h-full md:px-3">
+        <Card className="col-span-7 px-3 py-5 md:h-full md:px-6 md:py-10">
             <Content className="prose max-w-full">{body}</Content>
         </Card>
     );

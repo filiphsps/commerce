@@ -13,7 +13,7 @@ export default defineConfig({
     },
     build: {
         copyPublicDir: false,
-        cssCodeSplit: true,
+        cssCodeSplit: false,
         cssMinify: false,
         emptyOutDir: true,
         minify: false,
