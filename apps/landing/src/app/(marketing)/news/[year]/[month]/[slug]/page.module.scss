@@ -71,7 +71,7 @@
                         font-weight: 700;
                         line-height: normal;
                         color: inherit;
-                        color: var(--color-foreground);
+                        color: hsl(var(--color-foreground));
                         transition: inherit;
                     }
                     .handle {

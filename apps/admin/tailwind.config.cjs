@@ -1,8 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     darkMode: ['class'],
-    content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
-    prefix: '',
+    content: [
+        './src/**/*.{js,ts,jsx,tsx,mdx}',
+        './node_modules/@nordcom/nordstar/**/*.{js,jsx}',
+        '../../node_modules/@nordcom/nordstar/**/*.{js,jsx}'
+    ],
     theme: {
         container: {
             center: true,

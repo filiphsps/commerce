@@ -1,5 +1,5 @@
 import '@/styles/app.scss';
-import '@/styles/global.css';
+import '../globals.css';
 
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';

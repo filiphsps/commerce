@@ -1,12 +1,10 @@
 import 'server-only';
 
 import { Shop } from '@nordcom/commerce-db';
-import { Button, Input, Label } from '@nordcom/nordstar';
+import { Button, Card, Input, Label } from '@nordcom/nordstar';
 
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
-
-import { Card } from '@/components/card';
 
 import type { Metadata } from 'next';
 
@@ -38,23 +36,19 @@ export default async function ShopNewReviewPagePage({ params: { domain } }: Shop
                 }}
             >
                 <Card>
-                    <Card.header>
+                    <Card.Header>
                         <Label>Create a new review</Label>
-                    </Card.header>
+                    </Card.Header>
 
-                    <Card.content>
-                        <div className="flex flex-col gap-3">
-                            <Input type="text" name="product" label="Product" />
+                    <div className="flex flex-col gap-3">
+                        <Input type="text" name="product" label="Product" />
 
-                            <Input type="number" min={1} max={5} defaultValue={5 as any} name="rating" label="rating" />
-                            <Input type="text" name="title" label="Title" />
-                            <Input as="textarea" name="body" label="Body" className="min-h-72 resize-y" />
-                        </div>
-                    </Card.content>
+                        <Input type="number" min={1} max={5} defaultValue={5 as any} name="rating" label="rating" />
+                        <Input type="text" name="title" label="Title" />
+                        <Input as="textarea" name="body" label="Body" className="min-h-72 resize-y" />
+                    </div>
 
-                    <Card.footer>
-                        <Button type="submit">Save</Button>
-                    </Card.footer>
+                    <Button type="submit">Save</Button>
                 </Card>
             </form>
         </>

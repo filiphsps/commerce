@@ -41,7 +41,7 @@
 
                 border: none;
                 background: none;
-                color: var(--color-foreground);
+                color: hsl(var(--color-foreground));
 
                 &:is(:hover, :active) {
                     opacity: 1;

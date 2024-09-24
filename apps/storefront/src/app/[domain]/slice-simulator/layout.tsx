@@ -1,7 +1,7 @@
 import 'server-only';
 
 import '@/styles/app.scss';
-import '@/styles/global.css';
+import '../../globals.css';
 
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';

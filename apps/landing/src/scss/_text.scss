@@ -1,6 +1,6 @@
 *::selection {
     background: var(--color-accent-primary);
-    color: var(--color-foreground);
+    color: hsl(var(--color-foreground));
 }
 
 h1 {
@@ -65,7 +65,7 @@ pre[class*='language-'] {
     padding: 0 !important;
     text-shadow: none !important;
     background: transparent !important;
-    color: var(--color-foreground) !important;
+    color: hsl(var(--color-foreground)) !important;
     font-weight: 400 !important;
 
     .token {

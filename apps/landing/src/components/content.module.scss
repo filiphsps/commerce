@@ -22,7 +22,7 @@ article.container {
         font-weight: 500;
         font-size: 2em;
         line-height: 1.1;
-        color: var(--color-foreground);
+        color: hsl(var(--color-foreground));
 
         @media (min-width: $breakpoint-mobile) {
             font-size: 2.5em;
@@ -40,7 +40,7 @@ article.container {
         font-weight: 800;
         line-height: 1.1;
         text-transform: uppercase;
-        color: var(--color-foreground);
+        color: hsl(var(--color-foreground));
 
         @media (min-width: $breakpoint-mobile) {
             font-size: 1.75em;
@@ -80,7 +80,7 @@ article.container {
         ::before,
         ::after {
             text-decoration: underline;
-            text-decoration-color: var(--color-foreground);
+            text-decoration-color: hsl(var(--color-foreground));
             transition: 150ms ease-in-out;
         }
 
@@ -159,7 +159,7 @@ article.container {
             margin: 0;
 
             strong {
-                color: var(--color-foreground);
+                color: hsl(var(--color-foreground));
             }
         }
     }
