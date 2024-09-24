@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { createProductSearchParams, type Product } from '@/api/product';
-import Image from 'next/image';
+import { Image } from '@shopify/hydrogen-react';
 
 import Link from '@/components/link';
 
@@ -31,7 +31,6 @@ const VariantImage = ({ image, priority }: VariantImageProps) => {
                 decoding="async"
                 draggable={false}
                 loading={priority ? 'eager' : 'lazy'}
-                quality={80}
             />
         </div>
     );

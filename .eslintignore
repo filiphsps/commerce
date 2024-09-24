@@ -16,6 +16,8 @@ public/
 *.bak
 *.d.ts
 
+vitest.setup.ts
+
 next.config.*
 
 tailwind.config.cjs
