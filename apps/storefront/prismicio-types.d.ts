@@ -5,6 +5,7 @@ import type * as prismic from '@prismicio/client';
 type Simplify<T> = { [KeyType in keyof T]: T[KeyType] };
 
 type ArticlePageDocumentDataSlicesSlice =
+    | CustomHtmlSlice
     | ColumnsSlice
     | ContentBlockSlice
     | BannerSlice
@@ -199,6 +200,7 @@ export type BusinessDataDocument<Lang extends string = string> = prismic.Prismic
 >;
 
 type CartPageDocumentDataSlicesSlice =
+    | CustomHtmlSlice
     | IconGridSlice
     | VendorsSlice
     | ColumnsSlice
@@ -895,6 +897,7 @@ export type MenuItemDocument<Lang extends string = string> = prismic.PrismicDocu
 >;
 
 type ProductPageDocumentDataSlicesSlice =
+    | CustomHtmlSlice
     | ContentBlockSlice
     | ColumnsSlice
     | TextBlockSlice
@@ -1336,7 +1339,7 @@ export interface BannerSliceAsidePrimary {
     text_color: prismic.ColorField;
 
     /**
-     * Text Shadow field in *Banner → Aside → Primary*
+     * Text shadow field in *Banner → Aside → Primary*
      *
      * - **Field Type**: Boolean
      * - **Placeholder**: *None*

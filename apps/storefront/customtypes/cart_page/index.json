@@ -18,6 +18,9 @@
                 "fieldset": "Slice Zone",
                 "config": {
                     "choices": {
+                        "custom_html": {
+                            "type": "SharedSlice"
+                        },
                         "icon_grid": {
                             "type": "SharedSlice"
                         },

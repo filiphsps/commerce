@@ -1,18 +1,21 @@
+import { Shop } from '@nordcom/commerce-db';
 import { Error, MethodNotAllowedError, TodoError } from '@nordcom/commerce-errors';
 
 import { findShopByDomainOverHttp } from '@/api/shop';
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { type NextRequest, NextResponse } from 'next/server';
 
-export const runtime = 'experimental-edge';
+export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+export const dynamicParams = true;
+export const revalidate = false;
 
 const headers = { 'Cache-Control': 'no-store' };
 
 export type RevalidateApiRouteParams = {
     domain: string;
 };
-const revalidate = async (req: NextRequest, { domain }: RevalidateApiRouteParams) => {
+const route = async (req: NextRequest, { domain }: RevalidateApiRouteParams) => {
     // TODO: Revalidate either depending on the topic or the body.
     // TODO: Support revalidating subtype (e.g. `namespace.shop.type`).
 
@@ -23,8 +26,6 @@ const revalidate = async (req: NextRequest, { domain }: RevalidateApiRouteParams
         revalidateTag(shop.id);
         revalidateTag(shop.domain);
         revalidatePath('/en-US/homepage/', 'page'); // FIXME: Do this properly.
-
-        console.warn('Request:', req.method, await req.clone().json());
 
         switch (req.method) {
             case 'POST': {
@@ -104,9 +105,35 @@ const revalidate = async (req: NextRequest, { domain }: RevalidateApiRouteParams
 };
 
 export async function GET(req: NextRequest, { params }: { params: RevalidateApiRouteParams }) {
-    return revalidate(req, params);
+    console.warn('revalidate GET', req.method, await req.nextUrl.searchParams, JSON.stringify(req.headers));
+    return route(req, params);
 }
 
 export async function POST(req: NextRequest, { params }: { params: RevalidateApiRouteParams }) {
-    return revalidate(req, params);
+    const shop = await Shop.findByDomain(params.domain);
+
+    const userAgent = req.headers.get('user-agent');
+    if (userAgent && userAgent.includes('Prismic')) {
+        const body = await req.json();
+        console.debug('prismic revalidation request', body);
+
+        switch (body.type) {
+            case 'api-update': {
+                const _documents = body.documents;
+                // TODO: Invalidate only the affected documents.
+                revalidateTag(`prismic.${shop.id}`);
+                return NextResponse.json({ status: 200 });
+            }
+            case 'test-trigger': {
+                console.debug('prismic test-trigger', body);
+                return NextResponse.json({ status: 200 });
+            }
+        }
+
+        console.warn('unknown prismic revalidation request', body);
+        return NextResponse.json({ status: 404 });
+    }
+
+    console.error('unknown revalidation request', req.method, await req.clone().text());
+    return NextResponse.json({ status: 500 });
 }
