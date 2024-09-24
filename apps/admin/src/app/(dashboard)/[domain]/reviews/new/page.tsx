@@ -47,9 +47,9 @@ export default async function ShopNewReviewPagePage({ params: { domain } }: Shop
                         <div className="flex flex-col gap-3">
                             <Input type="text" name="product" label="Product" />
 
-                            <Input type="number" min={1} max={5} defaultValue={5} name="rating" label="rating" />
+                            <Input type="number" min={1} max={5} defaultValue={5 as any} name="rating" label="rating" />
                             <Input type="text" name="title" label="Title" />
-                            <Input as="textarea" type="text" name="body" label="Body" className="min-h-72 resize-y" />
+                            <Input as="textarea" name="body" label="Body" className="min-h-72 resize-y" />
                         </div>
                     </Card.content>
 
