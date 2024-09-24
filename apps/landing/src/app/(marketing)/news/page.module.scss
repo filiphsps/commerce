@@ -30,7 +30,7 @@
             gap: calc(var(--layout-block-padding) / 4);
 
             .heading {
-                color: var(--color-foreground);
+                color: hsl(var(--color-foreground));
             }
 
             &:is(a) {
@@ -47,16 +47,16 @@
                 }
 
                 &:is(:hover):not(:disabled) {
-                    border-color: var(--color-foreground);
+                    border-color: hsl(var(--color-foreground));
                 }
                 &:is(:active, :focus):not(:disabled) {
-                    color: var(--color-foreground);
-                    border-color: var(--color-foreground);
+                    color: hsl(var(--color-foreground));
+                    border-color: hsl(var(--color-foreground));
                 }
                 &:is(:hover, :active, :focus, :focus-within):not(:disabled) {
                     h3,
                     p {
-                        color: var(--color-foreground);
+                        color: hsl(var(--color-foreground));
                     }
                 }
             }

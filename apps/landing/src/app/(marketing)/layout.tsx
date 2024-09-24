@@ -1,5 +1,5 @@
 import '@/styles/app.scss';
-import '@/styles/global.css';
+import '@/styles/globals.css';
 import styles from './layout.module.scss';
 
 import { View } from '@nordcom/nordstar';

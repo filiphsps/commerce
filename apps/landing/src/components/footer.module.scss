@@ -23,13 +23,13 @@
 
 .container {
     background: hsl(var(--color-accent-primary));
-    color: hsl(var(--color-foreground));
+    color: hsl(hsl(var(--color-foreground)));
 
     .content {
         .section {
             a {
                 &:is(:hover) {
-                    color: hsl(var(--color-background));
+                    color: hsl(hsl(var(--color-background)));
                 }
             }
         }
@@ -51,7 +51,7 @@
                 gap: calc(var(--layout-block-padding) / 2);
 
                 .message {
-                    color: hsl(var(--color-foreground));
+                    color: hsl(hsl(var(--color-foreground)));
                 }
 
                 a,
@@ -66,8 +66,8 @@
 }
 
 .copyrights {
-    background: hsl(var(--color-background));
-    color: hsl(var(--color-foreground));
+    background: hsl(hsl(var(--color-background)));
+    color: hsl(hsl(var(--color-foreground)));
 
     .content {
         margin: 0 var(--layout-page-spacing);
