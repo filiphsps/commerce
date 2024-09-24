@@ -129,6 +129,7 @@ async function OnlineStoreJsonLd({ shop, locale }: { shop: OnlineShop; locale: L
             '@type': 'OnlineStore',
             'name': shop.name,
             'url': `https://${shop.domain}/${locale.code}/`,
+            'image': shop.icons?.favicon?.src,
             'logo': shop.icons?.favicon?.src,
             'telephone': businessData.telephone || undefined,
             'email': businessData.email || undefined,
