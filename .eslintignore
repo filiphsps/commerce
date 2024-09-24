@@ -15,3 +15,5 @@ public/
 *.log
 *.bak
 *.d.ts
+
+next.config.*

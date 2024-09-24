@@ -20,7 +20,14 @@
             "outputLogs": "new-only",
             "dependsOn": ["^build"],
             "outputs": [".next/**", "!.next/cache/**", "dist/**"],
-            "inputs": ["$TURBO_DEFAULT$", "!README.md", ".env.production.local", ".env.local", ".env.production", ".env"]
+            "inputs": [
+                "$TURBO_DEFAULT$",
+                "!README.md",
+                ".env.production.local",
+                ".env.local",
+                ".env.production",
+                ".env"
+            ]
         },
         "clean": {
             "cache": false

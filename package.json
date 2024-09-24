@@ -24,7 +24,7 @@
         "prettier": "prettier **/src/**/*.{ts,tsx} --check",
         "format": "concurrently pnpm:format:* && turbo run format && turbo run fix:lint",
         "format:eslint": "eslint --fix **/src/**/*.{ts,tsx}",
-        "format:prettier": "prettier --write **/src/**/*.{ts,tsx,scss,json}",
+        "format:prettier": "prettier --write \"./**/*.{cjs,mjs,ts,tsx,scss,json}\"",
         "typecheck": "turbo run typecheck",
         "test": "dotenv -c -e . -- vitest run --coverage",
         "test:watch": "dotenv -c -e . -- vitest watch",

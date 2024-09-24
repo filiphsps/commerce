@@ -39,6 +39,7 @@ const config = {
         appNavFailHandling: true,
         caseSensitiveRoutes: true,
         cssChunking: 'loose',
+        esmExternals: true,
         middlewarePrefetch: 'strict',
         optimizeCss: true,
         optimizePackageImports: ['@apollo/client', '@shopify/hydrogen-react', '@nordcom/nordstar'],
@@ -54,7 +55,6 @@ const config = {
         staleTimes: { dynamic: 0, static: 180 },
         taint: true,
         turbo: { root: path.resolve('../..') },
-        //typedEnv: true,
         typedRoutes: true,
         useEarlyImport: true,
         webpackBuildWorker: true
