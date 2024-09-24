@@ -178,8 +178,8 @@ importers:
         specifier: 1.0.12
         version: 1.0.12(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@5.4.7(@types/node@20.16.6)(sass@1.79.3)(terser@5.31.1)))(next@15.0.0-canary.165(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240919)(react-dom@0.0.0-experimental-e4953922-20240919(react@0.0.0-experimental-e4953922-20240919))(react@0.0.0-experimental-e4953922-20240919)(sass@1.79.3))(react@0.0.0-experimental-e4953922-20240919)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.2)))(vue@3.4.27(typescript@5.6.2))
       '@vercel/toolbar':
-        specifier: 0.1.20
-        version: 0.1.20(next@15.0.0-canary.165(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240919)(react-dom@0.0.0-experimental-e4953922-20240919(react@0.0.0-experimental-e4953922-20240919))(react@0.0.0-experimental-e4953922-20240919)(sass@1.79.3))(react@0.0.0-experimental-e4953922-20240919)(vite@5.4.7(@types/node@20.16.6)(sass@1.79.3)(terser@5.31.1))
+        specifier: 0.1.21
+        version: 0.1.21(next@15.0.0-canary.165(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240919)(react-dom@0.0.0-experimental-e4953922-20240919(react@0.0.0-experimental-e4953922-20240919))(react@0.0.0-experimental-e4953922-20240919)(sass@1.79.3))(react@0.0.0-experimental-e4953922-20240919)(vite@5.4.7(@types/node@20.16.6)(sass@1.79.3)(terser@5.31.1))
       class-variance-authority:
         specifier: 0.7.0
         version: 0.7.0
@@ -365,8 +365,8 @@ importers:
         specifier: 1.0.12
         version: 1.0.12(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@5.4.7(@types/node@20.16.6)(sass@1.79.3)(terser@5.31.1)))(next@15.0.0-canary.165(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240919)(react-dom@0.0.0-experimental-e4953922-20240919(react@0.0.0-experimental-e4953922-20240919))(react@0.0.0-experimental-e4953922-20240919)(sass@1.79.3))(react@0.0.0-experimental-e4953922-20240919)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.2)))(vue@3.4.27(typescript@5.6.2))
       '@vercel/toolbar':
-        specifier: 0.1.20
-        version: 0.1.20(next@15.0.0-canary.165(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240919)(react-dom@0.0.0-experimental-e4953922-20240919(react@0.0.0-experimental-e4953922-20240919))(react@0.0.0-experimental-e4953922-20240919)(sass@1.79.3))(react@0.0.0-experimental-e4953922-20240919)(vite@5.4.7(@types/node@20.16.6)(sass@1.79.3)(terser@5.31.1))
+        specifier: 0.1.21
+        version: 0.1.21(next@15.0.0-canary.165(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240919)(react-dom@0.0.0-experimental-e4953922-20240919(react@0.0.0-experimental-e4953922-20240919))(react@0.0.0-experimental-e4953922-20240919)(sass@1.79.3))(react@0.0.0-experimental-e4953922-20240919)(vite@5.4.7(@types/node@20.16.6)(sass@1.79.3)(terser@5.31.1))
       clsx:
         specifier: 2.1.1
         version: 2.1.1
@@ -573,8 +573,8 @@ importers:
         specifier: 1.0.12
         version: 1.0.12(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@5.4.7(@types/node@20.16.6)(sass@1.79.3)(terser@5.31.1)))(next@15.0.0-canary.165(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240919)(react-dom@0.0.0-experimental-e4953922-20240919(react@0.0.0-experimental-e4953922-20240919))(react@0.0.0-experimental-e4953922-20240919)(sass@1.79.3))(react@0.0.0-experimental-e4953922-20240919)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.2)))(vue@3.4.27(typescript@5.6.2))
       '@vercel/toolbar':
-        specifier: 0.1.20
-        version: 0.1.20(next@15.0.0-canary.165(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240919)(react-dom@0.0.0-experimental-e4953922-20240919(react@0.0.0-experimental-e4953922-20240919))(react@0.0.0-experimental-e4953922-20240919)(sass@1.79.3))(react@0.0.0-experimental-e4953922-20240919)(vite@5.4.7(@types/node@20.16.6)(sass@1.79.3)(terser@5.31.1))
+        specifier: 0.1.21
+        version: 0.1.21(next@15.0.0-canary.165(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240919)(react-dom@0.0.0-experimental-e4953922-20240919(react@0.0.0-experimental-e4953922-20240919))(react@0.0.0-experimental-e4953922-20240919)(sass@1.79.3))(react@0.0.0-experimental-e4953922-20240919)(vite@5.4.7(@types/node@20.16.6)(sass@1.79.3)(terser@5.31.1))
       class-variance-authority:
         specifier: 0.7.0
         version: 0.7.0
@@ -3018,8 +3018,8 @@ packages:
       vue-router:
         optional: true
 
-  '@vercel/toolbar@0.1.20':
-    resolution: {integrity: sha512-+TUF4XV4xwP/A5r2Vf4qMF3oSO6wqNjE2wt6rVYSXgdnaqkmNBTSATD/pgi2DcCYt0ppwHuMjCQli1+jb6gIBA==}
+  '@vercel/toolbar@0.1.21':
+    resolution: {integrity: sha512-MaXdojXz3gyJgZEulNY7R7/ihT0nFP17rNH4og7Ubo0y2wH3shnN2Bnw63AD/T66WTwiMD7qqoZQ/zvNtDbU6w==}
     peerDependencies:
       next: '>=11.0.0'
       react: '>=17'
@@ -9448,7 +9448,7 @@ snapshots:
       vue: 3.4.27(typescript@5.6.2)
       vue-router: 4.3.2(vue@3.4.27(typescript@5.6.2))
 
-  '@vercel/toolbar@0.1.20(next@15.0.0-canary.165(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240919)(react-dom@0.0.0-experimental-e4953922-20240919(react@0.0.0-experimental-e4953922-20240919))(react@0.0.0-experimental-e4953922-20240919)(sass@1.79.3))(react@0.0.0-experimental-e4953922-20240919)(vite@5.4.7(@types/node@20.16.6)(sass@1.79.3)(terser@5.31.1))':
+  '@vercel/toolbar@0.1.21(next@15.0.0-canary.165(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240919)(react-dom@0.0.0-experimental-e4953922-20240919(react@0.0.0-experimental-e4953922-20240919))(react@0.0.0-experimental-e4953922-20240919)(sass@1.79.3))(react@0.0.0-experimental-e4953922-20240919)(vite@5.4.7(@types/node@20.16.6)(sass@1.79.3)(terser@5.31.1))':
     dependencies:
       '@tinyhttp/app': 1.3.0
       chokidar: 3.6.0
@@ -10574,7 +10574,7 @@ snapshots:
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint@8.57.1))(eslint@8.57.1)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.1)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
       eslint-plugin-jsx-a11y: 6.10.0(eslint@8.57.1)
       eslint-plugin-react: 7.36.1(eslint@8.57.1)
       eslint-plugin-react-hooks: 4.6.0(eslint@8.57.1)
@@ -10602,7 +10602,7 @@ snapshots:
       enhanced-resolve: 5.17.0
       eslint: 8.57.1
       eslint-module-utils: 2.8.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.1)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
       fast-glob: 3.3.2
       get-tsconfig: 4.7.5
       is-core-module: 2.14.0
@@ -10624,7 +10624,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.1):
+  eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
       array-includes: 3.1.8
       array.prototype.findlastindex: 1.2.5
