@@ -124,8 +124,8 @@ importers:
         specifier: 0.11.3
         version: 0.11.3(@apollo/client@3.11.8(@types/react@18.3.8)(graphql@16.9.0)(react-dom@0.0.0-experimental-e4953922-20240919(react@0.0.0-experimental-e4953922-20240919))(react@0.0.0-experimental-e4953922-20240919))(next@15.0.0-canary.165(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240919)(react-dom@0.0.0-experimental-e4953922-20240919(react@0.0.0-experimental-e4953922-20240919))(react@0.0.0-experimental-e4953922-20240919)(sass@1.79.3))(react@0.0.0-experimental-e4953922-20240919)
       '@auth/core':
-        specifier: 0.35.0
-        version: 0.35.0
+        specifier: 0.35.2
+        version: 0.35.2
       '@next/third-parties':
         specifier: 15.0.0-canary.165
         version: 15.0.0-canary.165(next@15.0.0-canary.165(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240919)(react-dom@0.0.0-experimental-e4953922-20240919(react@0.0.0-experimental-e4953922-20240919))(react@0.0.0-experimental-e4953922-20240919)(sass@1.79.3))(react@0.0.0-experimental-e4953922-20240919)
@@ -519,8 +519,8 @@ importers:
         specifier: 0.11.3
         version: 0.11.3(@apollo/client@3.11.8(@types/react@18.3.8)(graphql@16.9.0)(react-dom@0.0.0-experimental-e4953922-20240919(react@0.0.0-experimental-e4953922-20240919))(react@0.0.0-experimental-e4953922-20240919))(next@15.0.0-canary.165(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240919)(react-dom@0.0.0-experimental-e4953922-20240919(react@0.0.0-experimental-e4953922-20240919))(react@0.0.0-experimental-e4953922-20240919)(sass@1.79.3))(react@0.0.0-experimental-e4953922-20240919)
       '@auth/core':
-        specifier: 0.35.0
-        version: 0.35.0
+        specifier: 0.35.2
+        version: 0.35.2
       '@neshca/cache-handler':
         specifier: 1.7.3
         version: 1.7.3(next@15.0.0-canary.165(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240919)(react-dom@0.0.0-experimental-e4953922-20240919(react@0.0.0-experimental-e4953922-20240919))(react@0.0.0-experimental-e4953922-20240919)(sass@1.79.3))(redis@4.7.0)
@@ -959,6 +959,20 @@ packages:
 
   '@auth/core@0.35.0':
     resolution: {integrity: sha512-XvMALiYn5ZQd1hVeG1t+jCU89jRrc7ortl/05wkBrPHnRWZScxAK5jKuzBz+AOBQXewDjYcMpzeF5tTqg6rDhQ==}
+    peerDependencies:
+      '@simplewebauthn/browser': ^9.0.1
+      '@simplewebauthn/server': ^9.0.2
+      nodemailer: ^6.8.0
+    peerDependenciesMeta:
+      '@simplewebauthn/browser':
+        optional: true
+      '@simplewebauthn/server':
+        optional: true
+      nodemailer:
+        optional: true
+
+  '@auth/core@0.35.2':
+    resolution: {integrity: sha512-4PSrmSkZNMNQEHq86jARBYqls/9G2ECGMJmlazXxkRpZWgtKMUBXF1HUPz82cxy3qFXZ9/HPEiGIEGtIvu4YGQ==}
     peerDependencies:
       '@simplewebauthn/browser': ^9.0.1
       '@simplewebauthn/server': ^9.0.2
@@ -7068,6 +7082,16 @@ snapshots:
       preact: 10.11.3
       preact-render-to-string: 5.2.3(preact@10.11.3)
 
+  '@auth/core@0.35.2':
+    dependencies:
+      '@panva/hkdf': 1.1.1
+      '@types/cookie': 0.6.0
+      cookie: 0.6.0
+      jose: 5.6.3
+      oauth4webapi: 2.10.4
+      preact: 10.11.3
+      preact-render-to-string: 5.2.3(preact@10.11.3)
+
   '@babel/code-frame@7.24.7':
     dependencies:
       '@babel/highlight': 7.24.7
@@ -10580,7 +10604,7 @@ snapshots:
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint@8.57.1))(eslint@8.57.1)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.1)
       eslint-plugin-jsx-a11y: 6.10.0(eslint@8.57.1)
       eslint-plugin-react: 7.36.1(eslint@8.57.1)
       eslint-plugin-react-hooks: 4.6.0(eslint@8.57.1)
@@ -10608,7 +10632,7 @@ snapshots:
       enhanced-resolve: 5.17.0
       eslint: 8.57.1
       eslint-module-utils: 2.8.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.1)
       fast-glob: 3.3.2
       get-tsconfig: 4.7.5
       is-core-module: 2.14.0
@@ -10630,7 +10654,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
+  eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.1):
     dependencies:
       array-includes: 3.1.8
       array.prototype.findlastindex: 1.2.5
