@@ -53,7 +53,7 @@
     ],
     "dependencies": {
         "@nordcom/commerce-errors": "workspace:*",
-        "mongoose": "8.6.3"
+        "mongoose": "8.6.4"
     },
     "devDependencies": {
         "@codecov/vite-plugin": "1.2.0",
