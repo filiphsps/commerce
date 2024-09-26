@@ -117,7 +117,7 @@
         "autoprefixer": "10.4.20",
         "babel-plugin-react-compiler": "0.0.0-experimental-6067d4e-20240925",
         "concurrently": "9.0.1",
-        "tailwindcss-content-visibility": "0.2.0",
+        "tailwindcss-content-visibility": "1.0.0",
         "dotenv": "16.4.5",
         "eslint-config-next": "15.0.0-canary.171",
         "eslint": "8.57.1",
