@@ -3,8 +3,8 @@ module.exports = {
     darkMode: ['class'],
     content: [
         './src/**/*.{js,ts,jsx,tsx,mdx}',
-        './node_modules/@nordcom/nordstar/**/*.{js,jsx}',
-        '../../node_modules/@nordcom/nordstar/**/*.{js,jsx}'
+        //
+        '../../**/node_modules/@nordcom/**/dist/**/*.{js,jsx}'
     ],
     theme: {
         container: {

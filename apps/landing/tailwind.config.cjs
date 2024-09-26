@@ -2,8 +2,8 @@
 module.exports = {
     content: [
         './src/**/*.{js,ts,jsx,tsx,mdx}',
-        './node_modules/@nordcom/nordstar/**/*.{js,ts,jsx,tsx}',
-        '../../node_modules/@nordcom/nordstar/**/*.{js,ts,jsx,tsx}'
+        //
+        '../../**/node_modules/@nordcom/**/dist/**/*.{js,jsx}'
     ],
     theme: {
         fontFamily: ['var(--font-primary, var(--font-fallback))', 'sans-serif'],
