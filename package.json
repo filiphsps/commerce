@@ -80,7 +80,7 @@
         "eslint-plugin-unused-imports": "4.1.4",
         "eslint": "8.57.1",
         "glob": "11.0.0",
-        "import-in-the-middle": "1.11.0",
+        "import-in-the-middle": "1.11.1",
         "mongoose": "8.6.4",
         "prettier-eslint": "16.3.0",
         "prettier-plugin-tailwindcss": "0.6.8",
