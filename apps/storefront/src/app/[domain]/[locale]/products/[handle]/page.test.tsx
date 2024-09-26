@@ -117,11 +117,11 @@ describe('app', () => {
                 }
             }
         }));
-        const params: ProductPageParams = {
+        const params: ProductPageParams = (async () => ({
             domain: 'staging.demo.nordcom.io',
             locale: 'en-US',
             handle: product.handle
-        };
+        }))();
 
         // Mock the `ProductApi` function to prevent API calls.
         vi.mock('@/api/shopify/product', () => {
@@ -170,7 +170,10 @@ describe('app', () => {
         });
 
         it('generates the correct metadata', async () => {
-            const metadata = await generateMetadata({ params, searchParams: {} });
+            const metadata = await generateMetadata({
+                params,
+                searchParams: (async () => ({}) as any)()
+            });
             expect(metadata!.title).toBe(`${product.vendor} ${product.title}`);
         });
     });

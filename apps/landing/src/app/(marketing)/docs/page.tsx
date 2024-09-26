@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 export type DocsPageParams = {};
-export default async function DocsPage({ params: {} }: { params: DocsPageParams }) {
+export default async function DocsPage({}: {}) {
     return (
         <article className={`${styles.container}`}>
             <div className={`${styles.heading}`}>

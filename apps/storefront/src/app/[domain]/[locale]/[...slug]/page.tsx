@@ -28,13 +28,15 @@ export const dynamic = 'force-static';
 export const dynamicParams = true;
 export const revalidate = false;
 
-export type CustomPageParams = { domain: string; locale: string; slug: string[] };
+export type CustomPageParams = Promise<{ domain: string; locale: string; slug: string[] }>;
 
 export async function generateStaticParams({
-    params: { domain, locale: localeData }
+    params
 }: {
     params: Omit<CustomPageParams, 'slug'>;
-}): Promise<Omit<CustomPageParams, 'domain' | 'locale'>[]> {
+}): Promise<Omit<Awaited<CustomPageParams>, 'domain' | 'locale'>[]> {
+    const { domain, locale: localeData } = await params;
+
     try {
         const locale = Locale.from(localeData);
 
@@ -53,11 +55,9 @@ export async function generateStaticParams({
     }
 }
 
-export async function generateMetadata({
-    params: { domain, locale: localeData, slug }
-}: {
-    params: CustomPageParams;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: CustomPageParams }): Promise<Metadata> {
+    const { domain, locale: localeData, slug } = await params;
+
     const handle = slug.join('/');
     if (!isValidHandle(handle)) {
         notFound();
@@ -164,11 +164,9 @@ async function PageBreadcrumbs({ shop, locale, handle }: { shop: OnlineShop; loc
     );
 }
 
-export default async function CustomPage({
-    params: { domain, locale: localeData, slug }
-}: {
-    params: CustomPageParams;
-}) {
+export default async function CustomPage({ params }: { params: CustomPageParams }) {
+    const { domain, locale: localeData, slug } = await params;
+
     const handle = slug.join('/');
     if (!isValidHandle(handle)) {
         notFound();

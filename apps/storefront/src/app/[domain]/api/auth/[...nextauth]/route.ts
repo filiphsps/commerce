@@ -5,7 +5,11 @@ import type { NextRequest } from 'next/server';
 
 export const runtime = 'nodejs';
 
-export async function GET(req: NextRequest, { params: { domain } }: { params: { domain: string } }) {
+export type AuthRouteParams = Promise<{ domain: string }>;
+
+export async function GET(req: NextRequest, { params }: { params: AuthRouteParams }) {
+    const { domain } = await params;
+
     const shop = await findShopByDomainOverHttp(domain);
     const {
         handlers: { GET }
@@ -14,7 +18,9 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: { 
     return await GET(req);
 }
 
-export async function POST(req: NextRequest, { params: { domain } }: { params: { domain: string } }) {
+export async function POST(req: NextRequest, { params }: { params: AuthRouteParams }) {
+    const { domain } = await params;
+
     const shop = await findShopByDomainOverHttp(domain);
     const {
         handlers: { POST }

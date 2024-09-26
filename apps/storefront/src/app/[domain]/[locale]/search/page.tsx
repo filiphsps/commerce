@@ -28,12 +28,9 @@ export const dynamic = 'force-dynamic';
 export const dynamicParams = true;
 export const revalidate = false;
 
-export type SearchPageParams = { domain: string; locale: string };
-export async function generateMetadata({
-    params: { domain, locale: localeData }
-}: {
-    params: SearchPageParams;
-}): Promise<Metadata> {
+export type SearchPageParams = Promise<{ domain: string; locale: string }>;
+export async function generateMetadata({ params }: { params: SearchPageParams }): Promise<Metadata> {
+    const { domain, locale: localeData } = await params;
     const locale = Locale.from(localeData);
 
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
@@ -82,17 +79,18 @@ export async function generateMetadata({
     };
 }
 
-type SearchParams = {
+type SearchParams = Promise<{
     q?: string;
-};
+}>;
 
 export default async function SearchPage({
-    params: { domain, locale: localeData },
-    searchParams
+    params,
+    searchParams: queryParams
 }: {
     params: SearchPageParams;
     searchParams: SearchParams;
 }) {
+    const { domain, locale: localeData } = await params;
     const locale = Locale.from(localeData);
 
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
@@ -101,6 +99,7 @@ export default async function SearchPage({
     const i18n = await getDictionary(locale);
     const { t } = getTranslations('common', i18n);
 
+    const searchParams = await queryParams;
     const query = searchParams.q?.toString() || null;
 
     const client = await ShopifyApolloApiClient({ shop, locale });

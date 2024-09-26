@@ -9,21 +9,22 @@ import { redirect } from 'next/navigation';
 import type { Metadata } from 'next';
 
 export type ShopNewReviewPageProps = {
-    params: {
+    params: Promise<{
         domain: string;
-    };
+    }>;
 };
 
 export const metadata: Metadata = {
     title: 'New Review'
 };
 
-export default async function ShopNewReviewPagePage({ params: { domain } }: ShopNewReviewPageProps) {
+export default async function ShopNewReviewPagePage({ params }: ShopNewReviewPageProps) {
     const session = await auth();
     if (!session?.user) {
         redirect('/auth/login/');
     }
 
+    const { domain } = await params;
     const shop = await Shop.findByDomain(domain); // FIXME: Handle errors.
 
     return (

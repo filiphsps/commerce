@@ -16,7 +16,7 @@ export const metadata: Metadata = {
         'Bring the benefits of headless e-commerce to your store without any of the hassles that usually comes with it'
 };
 
-export default async function IndexAdminPage({}: { params: IndexAdminPageParams }) {
+export default async function IndexAdminPage({}: {}) {
     return (
         <>
             <div className={`${styles.heading}`}>

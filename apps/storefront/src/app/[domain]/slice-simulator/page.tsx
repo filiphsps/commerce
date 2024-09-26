@@ -11,21 +11,21 @@ import type { SliceSimulatorParams } from '@slicemachine/adapter-next/simulator'
 
 export const dynamic = 'force-dynamic';
 
-export type SliceSimulatorPageParams = { domain: string };
+export type SliceSimulatorPageParams = Promise<{ domain: string }>;
 
 export default async function SliceSimulatorPage({
-    params: { domain },
-    searchParams
+    params,
+    searchParams: queryParams
 }: {
     params: SliceSimulatorPageParams;
-} & SliceSimulatorParams) {
+} & { searchParams: Promise<SliceSimulatorParams['searchParams']> }) {
     const locale = Locale.default;
 
-    // Fetch the current shop.
+    const { domain } = await params;
     const shop = await findShopByDomainOverHttp(domain);
-
-    // Get dictionary of strings for the current locale.
     const i18n = await getDictionary({ shop, locale });
+
+    const searchParams = await queryParams;
 
     return (
         <SliceSimulator>

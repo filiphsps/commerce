@@ -14,11 +14,14 @@ export const dynamic = 'force-static';
 export const revalidate = false;
 
 export type ProductsSitemapRouteParams = {
-    params: DynamicSitemapRouteParams & {
-        locale: string;
-    };
+    params: Promise<
+        Awaited<DynamicSitemapRouteParams> & {
+            locale: string;
+        }
+    >;
 };
-export async function GET(_: NextRequest, { params: { domain, locale: localeData } }: ProductsSitemapRouteParams) {
+export async function GET({}: NextRequest, { params }: ProductsSitemapRouteParams) {
+    const { domain, locale: localeData } = await params;
     if (!localeData) {
         notFound();
     }

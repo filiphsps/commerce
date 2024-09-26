@@ -11,12 +11,12 @@ export const dynamicParams = false;
 const SUPPORT_EMAIL = 'hi@nordcom.io';
 
 export type ErrorPageProps = {
-    params: {
+    params: Promise<{
         code: string;
-    };
-    searchParams: {
+    }>;
+    searchParams: Promise<{
         shop: string | undefined;
-    };
+    }>;
 };
 
 const ERROR_CODES = {
@@ -38,7 +38,8 @@ export async function generateStaticParams() {
     }));
 }
 
-export async function generateMetadata({ params: { code } }: ErrorPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: ErrorPageProps): Promise<Metadata> {
+    const { code } = await params;
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     const error = ERROR_CODES[code as keyof typeof ERROR_CODES] || ERROR_CODES['unknown-error'];
 
@@ -48,8 +49,11 @@ export async function generateMetadata({ params: { code } }: ErrorPageProps): Pr
     };
 }
 
-export default function StatusPage({ params: { code }, searchParams: { shop } }: ErrorPageProps) {
-    const hostname = shop || headers().get('x-nordcom-shop');
+export default async function StatusPage({ params, searchParams }: ErrorPageProps) {
+    const { shop } = await searchParams;
+    const hostname = shop || (await headers()).get('x-nordcom-shop');
+    const { code } = await params;
+
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     const error = ERROR_CODES[code as keyof typeof ERROR_CODES] || ERROR_CODES['unknown-error'];
 

@@ -12,8 +12,7 @@ export const metadata: Metadata = {
     title: 'Errors'
 };
 
-export type DocsErrorsPageParams = {};
-export default async function DocsErrorsPage({ params: {} }: { params: DocsErrorsPageParams }) {
+export default async function DocsErrorsPage({}: {}) {
     const errors = getAllErrorCodes();
 
     return (

@@ -35,13 +35,16 @@ export const metadata: Metadata = {
     }
 };
 
-export default async function RootLayout({
+export type SliceSimulatorLayoutParams = Promise<{ domain: string }>;
+
+export default async function SliceSimulatorLayout({
     children,
-    params: { domain }
+    params
 }: {
     children: ReactNode;
-    params: { domain: string };
+    params: SliceSimulatorLayoutParams;
 }) {
+    const { domain } = await params;
     const locale = Locale.default;
 
     try {

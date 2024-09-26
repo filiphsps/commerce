@@ -7,10 +7,12 @@ import { type NextRequest, NextResponse } from 'next/server';
 export const dynamic = 'force-static';
 export const revalidate = false;
 
-export type AppleIconRouteParams = {
+export type AppleIconRouteParams = Promise<{
     domain: string;
-};
-export async function GET({}: NextRequest, { params: { domain } }: { params: AppleIconRouteParams }) {
+}>;
+export async function GET({}: NextRequest, { params }: { params: AppleIconRouteParams }) {
+    const { domain } = await params;
+
     let width = 512;
     let height = 512;
 

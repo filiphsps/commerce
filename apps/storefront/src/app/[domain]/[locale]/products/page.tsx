@@ -27,18 +27,19 @@ export const dynamic = 'force-dynamic'; // TODO: Figure out a better way to deal
 export const dynamicParams = true;
 export const revalidate = false;
 
-type SearchParams = {
+type SearchParams = Promise<{
     page?: string;
-};
+}>;
 
-export type ProductsPageParams = { domain: string; locale: string };
+export type ProductsPageParams = Promise<{ domain: string; locale: string }>;
 export async function generateMetadata({
-    params: { domain, locale: localeData },
-    searchParams: searchParams
+    params,
+    searchParams: queryParams
 }: {
     params: ProductsPageParams;
     searchParams: SearchParams;
 }): Promise<Metadata> {
+    const { domain, locale: localeData } = await params;
     const locale = Locale.from(localeData);
 
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
@@ -50,6 +51,7 @@ export async function generateMetadata({
     const i18n = await getDictionary(locale);
     const { t } = getTranslations('common', i18n);
 
+    const searchParams = await queryParams;
     const pageNumber = searchParams.page ? parseInt(searchParams.page, 10) : 1;
 
     const title =
@@ -93,18 +95,20 @@ export async function generateMetadata({
 }
 
 export default async function ProductsPage({
-    params: { domain, locale: localeData },
-    searchParams
+    params,
+    searchParams: queryParams
 }: {
     params: ProductsPageParams;
     searchParams: SearchParams;
 }) {
-    // Creates a locale object from a locale code (e.g. `en-US`).
+    const { domain, locale: localeData } = await params;
     const locale = Locale.from(localeData);
 
     if (!(await enableProductsPage())) {
         redirect(`/${locale.code}/`, RedirectType.replace);
     }
+
+    const searchParams = await queryParams;
 
     // Handle `?page=1` which should be removed.
     if (searchParams.page === '1') {

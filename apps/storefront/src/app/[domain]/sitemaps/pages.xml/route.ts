@@ -13,7 +13,8 @@ import type { ISitemapField } from 'next-sitemap';
 export const dynamic = 'force-static';
 export const revalidate = false;
 
-export async function GET(_: NextRequest, { params: { domain } }: { params: DynamicSitemapRouteParams }) {
+export async function GET({}: NextRequest, { params }: { params: DynamicSitemapRouteParams }) {
+    const { domain } = await params;
     const shop = await findShopByDomainOverHttp(domain);
     const locale = Locale.default;
     const api = await ShopifyApiClient({ shop, locale });

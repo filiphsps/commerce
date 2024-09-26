@@ -20,16 +20,18 @@ import type { ReactNode } from 'react';
 
 export type ShopLayoutProps = {
     children: ReactNode;
-    params: {
+    params: Promise<{
         domain: string;
-    };
+    }>;
 };
 
-export async function generateMetadata({ params: { domain } }: ShopLayoutProps): Promise<Metadata> {
+export async function generateMetadata({ params }: ShopLayoutProps): Promise<Metadata> {
     const session = await auth();
     if (!session?.user) {
         redirect('/auth/login/');
     }
+
+    const { domain } = await params;
 
     try {
         const shop = await Shop.findByDomain(domain, { convert: true });
@@ -52,11 +54,13 @@ export async function generateMetadata({ params: { domain } }: ShopLayoutProps):
     }
 }
 
-export default async function ShopLayout({ children, params: { domain } }: ShopLayoutProps) {
+export default async function ShopLayout({ children, params }: ShopLayoutProps) {
     const session = await auth();
     if (!session?.user) {
         redirect('/auth/login/');
     }
+
+    const { domain } = await params;
 
     let shop: Awaited<ReturnType<typeof Shop.findByDomain>>;
     try {

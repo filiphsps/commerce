@@ -7,12 +7,13 @@ import { NextResponse } from 'next/server';
 
 import type { NextRequest } from 'next/server';
 
-export type PreviewApiRouteParams = {
+export type PreviewApiRouteParams = Promise<{
     domain: string;
-};
-export async function GET(request: NextRequest, { params: { domain } }: { params: PreviewApiRouteParams }) {
+}>;
+export async function GET(request: NextRequest, { params }: { params: PreviewApiRouteParams }) {
     const locale = Locale.default;
 
+    const { domain } = await params;
     const shop = await findShopByDomainOverHttp(domain);
     if (shop.contentProvider.type !== 'prismic') {
         // TODO: Handle non-Prismic content providers.
@@ -22,7 +23,7 @@ export async function GET(request: NextRequest, { params: { domain } }: { params
     const client = createClient({ shop, locale });
 
     // Enable Draft Mode by setting the cookie.
-    draftMode().enable();
+    (await draftMode()).enable();
 
     return await redirectToPreviewURL({ client, request });
 }

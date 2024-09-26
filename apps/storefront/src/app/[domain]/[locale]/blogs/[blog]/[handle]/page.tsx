@@ -32,18 +32,19 @@ export const dynamic = 'force-static';
 export const dynamicParams = true;
 export const revalidate = false;
 
-export type ArticlePageParams = { domain: string; locale: string; blog: string; handle: string };
+export type ArticlePageParams = Promise<{ domain: string; locale: string; blog: string; handle: string }>;
 
 export async function generateStaticParams({
-    params: { domain, locale: localeData }
+    params
 }: {
     params: Omit<ArticlePageParams, 'handle'>;
-}): Promise<Pick<ArticlePageParams, 'handle'>[]> {
+}): Promise<Pick<Awaited<ArticlePageParams>, 'handle'>[]> {
     /** @note Limit pre-rendering when not in production. */
     if (process.env.VERCEL_ENV !== 'production') {
         return [];
     }
 
+    const { domain, locale: localeData } = await params;
     const locale = Locale.from(localeData);
 
     const shop = await findShopByDomainOverHttp(domain);
@@ -65,11 +66,8 @@ export async function generateStaticParams({
         }));
 }
 
-export async function generateMetadata({
-    params: { domain, locale: localeData, blog: blogHandle, handle }
-}: {
-    params: ArticlePageParams;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: ArticlePageParams }): Promise<Metadata> {
+    const { domain, locale: localeData, blog: blogHandle, handle } = await params;
     if (!isValidHandle(handle)) {
         notFound();
     }
@@ -127,11 +125,8 @@ export async function generateMetadata({
     };
 }
 
-export default async function ArticlePage({
-    params: { domain, locale: localeData, blog: blogHandle, handle }
-}: {
-    params: ArticlePageParams;
-}) {
+export default async function ArticlePage({ params }: { params: ArticlePageParams }) {
+    const { domain, locale: localeData, blog: blogHandle, handle } = await params;
     if (!isValidHandle(blogHandle) || !isValidHandle(handle)) {
         notFound();
     }

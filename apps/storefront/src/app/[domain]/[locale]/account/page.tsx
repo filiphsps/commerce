@@ -16,13 +16,11 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-export type AccountDashboardParams = { domain: string; locale: string };
+export type AccountDashboardParams = Promise<{ domain: string; locale: string }>;
 
-export async function generateMetadata({
-    params: { domain, locale: localeData }
-}: {
-    params: AccountDashboardParams;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: AccountDashboardParams }): Promise<Metadata> {
+    const { domain, locale: localeData } = await params;
+
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const locale = Locale.from(localeData);
 
@@ -34,11 +32,9 @@ export async function generateMetadata({
     };
 }
 
-export default async function AccountPage({
-    params: { domain, locale: localeData }
-}: {
-    params: AccountDashboardParams;
-}) {
+export default async function AccountPage({ params }: { params: AccountDashboardParams }) {
+    const { domain, locale: localeData } = await params;
+
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const locale = Locale.from(localeData);
 

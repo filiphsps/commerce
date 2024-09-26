@@ -12,10 +12,12 @@ export const dynamic = 'force-static';
 export const dynamicParams = true;
 export const revalidate = false;
 
-export type FaviconRouteParams = {
+export type FaviconRouteParams = Promise<{
     domain: string;
-};
-export async function GET(req: NextRequest, { params: { domain } }: { params: FaviconRouteParams }) {
+}>;
+export async function GET(req: NextRequest, { params }: { params: FaviconRouteParams }) {
+    const { domain } = await params;
+
     const searchParams = req.nextUrl.searchParams;
     let width = safeParseFloat(null, searchParams.get('width') ?? searchParams.get('w'));
     let height = safeParseFloat(null, searchParams.get('height') ?? searchParams.get('h'));

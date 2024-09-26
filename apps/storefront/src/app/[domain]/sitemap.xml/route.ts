@@ -9,12 +9,13 @@ import type { NextRequest } from 'next/server';
 export const dynamic = 'force-static';
 export const revalidate = false;
 
-export type DynamicSitemapRouteParams = {
+export type DynamicSitemapRouteParams = Promise<{
     domain: string;
-};
-export async function GET(_: NextRequest, { params: { domain } }: { params: DynamicSitemapRouteParams }) {
+}>;
+export async function GET({}: NextRequest, { params }: { params: DynamicSitemapRouteParams }) {
     const locale = Locale.default;
 
+    const { domain } = await params;
     const shop = await findShopByDomainOverHttp(domain);
     const api = await ShopifyApolloApiClient({ shop, locale });
 

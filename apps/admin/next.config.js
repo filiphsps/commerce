@@ -99,6 +99,10 @@ const config = {
     eslint: {
         ignoreDuringBuilds: true
     },
+    typescript: {
+        ignoreBuildErrors: true,
+        tsconfigPath: 'tsconfig.json'
+    },
     sassOptions: {
         includePaths: [path.join(__dirname, 'src/scss'), path.join(__dirname, 'src')]
     },

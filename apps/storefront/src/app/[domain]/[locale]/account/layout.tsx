@@ -10,7 +10,7 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-export type LayoutParams = { domain: string; locale: string };
+export type LayoutParams = Promise<{ domain: string; locale: string }>;
 
 export const metadata: Metadata = {
     robots: {
@@ -19,13 +19,9 @@ export const metadata: Metadata = {
     openGraph: null
 };
 
-export default async function AccountLayout({
-    children,
-    params: { domain }
-}: {
-    children: ReactNode;
-    params: LayoutParams;
-}) {
+export default async function AccountLayout({ children, params }: { children: ReactNode; params: LayoutParams }) {
+    const { domain } = await params;
+
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const session = await getAuthSession(shop);
 

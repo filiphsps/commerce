@@ -53,7 +53,7 @@ export const ShopifyApiConfig = async ({
      */
     let buyerIp: string | undefined = undefined;
     try {
-        const head = headers();
+        const head = await headers();
 
         const forwarded =
             head.get('CF-Connecting-IP') || head.get('x-forwarded-for') || head.get('x-real-ip') || undefined;

@@ -34,9 +34,9 @@ export const dynamicParams = true;
 export const revalidate = false;
 export const preferredRegion = 'home';
 
-export type LayoutParams = { domain: string; locale: string };
+export type LayoutParams = Promise<{ domain: string; locale: string }>;
 
-export async function generateStaticParams(): Promise<LayoutParams[]> {
+export async function generateStaticParams(): Promise<Awaited<LayoutParams>[]> {
     /** @note Limit pre-rendering when not in production. */
     if (process.env.VERCEL_ENV !== 'production') {
         return [];
@@ -87,7 +87,8 @@ export async function generateStaticParams(): Promise<LayoutParams[]> {
         .filter(Boolean);
 }
 
-export async function generateViewport({ params: { domain } }: { params: LayoutParams }): Promise<Viewport> {
+export async function generateViewport({ params }: { params: LayoutParams }): Promise<Viewport> {
+    const { domain } = await params;
     const branding = await getBrandingColors({ domain });
 
     return {
@@ -98,11 +99,8 @@ export async function generateViewport({ params: { domain } }: { params: LayoutP
     };
 }
 
-export async function generateMetadata({
-    params: { domain, locale: localeData }
-}: {
-    params: LayoutParams;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: LayoutParams }): Promise<Metadata> {
+    const { domain, locale: localeData } = await params;
     if (!localeData || !domain) {
         notFound();
     }
@@ -164,13 +162,8 @@ export async function generateMetadata({
     };
 }
 
-export default async function RootLayout({
-    children,
-    params: { domain, locale: localeData }
-}: {
-    children: ReactNode;
-    params: LayoutParams;
-}) {
+export default async function RootLayout({ children, params }: { children: ReactNode; params: LayoutParams }) {
+    const { domain, locale: localeData } = await params;
     if (!localeData || !domain) {
         notFound();
     }

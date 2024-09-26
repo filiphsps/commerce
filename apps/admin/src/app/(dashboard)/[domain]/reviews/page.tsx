@@ -12,21 +12,22 @@ import { Card } from '@/components/card';
 import type { Metadata, Route } from 'next';
 
 export type ShopReviewsPageProps = {
-    params: {
+    params: Promise<{
         domain: string;
-    };
+    }>;
 };
 
 export const metadata: Metadata = {
     title: 'Reviews'
 };
 
-export default async function ShopReviewsPagePage({ params: { domain } }: ShopReviewsPageProps) {
+export default async function ShopReviewsPagePage({ params }: ShopReviewsPageProps) {
     const session = await auth();
     if (!session?.user) {
         redirect('/auth/login/');
     }
 
+    const { domain } = await params;
     const shop = await Shop.findByDomain(domain); // FIXME: Handle errors.
     const reviews = await Review.findByShop(shop.id!);
 

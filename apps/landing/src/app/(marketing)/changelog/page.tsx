@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 
 export type ChangelogPageParams = {};
-export default async function ChangelogPage({ params: {} }: { params: ChangelogPageParams }) {
+export default async function ChangelogPage({}: {}) {
     return (
         <article>
             <header>

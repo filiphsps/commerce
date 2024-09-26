@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export type NewsPageParams = {};
-export default async function DocsPage({ params: {} }: { params: NewsPageParams }) {
+export default async function DocsPage({}: {}) {
     const articles = await getArticles();
 
     return (

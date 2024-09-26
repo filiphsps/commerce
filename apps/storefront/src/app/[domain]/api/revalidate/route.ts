@@ -12,10 +12,10 @@ export const revalidate = false;
 
 const headers = { 'Cache-Control': 'no-store' };
 
-export type RevalidateApiRouteParams = {
+export type RevalidateApiRouteParams = Promise<{
     domain: string;
-};
-const route = async (req: NextRequest, { domain }: RevalidateApiRouteParams) => {
+}>;
+const route = async (req: NextRequest, { domain }: Awaited<RevalidateApiRouteParams>) => {
     // TODO: Revalidate either depending on the topic or the body.
     // TODO: Support revalidating subtype (e.g. `namespace.shop.type`).
 
@@ -106,11 +106,12 @@ const route = async (req: NextRequest, { domain }: RevalidateApiRouteParams) => 
 
 export async function GET(req: NextRequest, { params }: { params: RevalidateApiRouteParams }) {
     console.warn('revalidate GET', req.method, await req.nextUrl.searchParams, JSON.stringify(req.headers));
-    return route(req, params);
+    return route(req, await params);
 }
 
 export async function POST(req: NextRequest, { params }: { params: RevalidateApiRouteParams }) {
-    const shop = await Shop.findByDomain(params.domain);
+    const { domain } = await params;
+    const shop = await Shop.findByDomain(domain);
 
     const userAgent = req.headers.get('user-agent');
     if (userAgent && userAgent.includes('Prismic')) {

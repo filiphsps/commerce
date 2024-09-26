@@ -10,20 +10,22 @@ import { notFound, redirect } from 'next/navigation';
 import type { Metadata } from 'next';
 
 export type ShopSettingsPageProps = {
-    params: {
+    params: Promise<{
         domain: string;
-    };
+    }>;
 };
 
 export const metadata: Metadata = {
     title: 'Settings'
 };
 
-export default async function ShopSettingsPagePage({ params: { domain } }: ShopSettingsPageProps) {
+export default async function ShopSettingsPagePage({ params }: ShopSettingsPageProps) {
     const session = await auth();
     if (!session?.user) {
         redirect('/auth/login/');
     }
+
+    const { domain } = await params;
 
     try {
         const _shop = await Shop.findByDomain(domain, { convert: true });

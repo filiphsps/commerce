@@ -68,10 +68,11 @@ const nextRobotsSchemaParser = (schema: MetadataRoute.Robots): string => {
     return output.trim();
 };
 
-export type RobotsParams = {
+export type RobotsParams = Promise<{
     domain: string;
-};
-export async function GET(_: NextRequest, { params: { domain } }: { params: RobotsParams }): Promise<any> {
+}>;
+export async function GET({}: NextRequest, { params }: { params: RobotsParams }): Promise<any> {
+    const { domain } = await params;
     const shop = await findShopByDomainOverHttp(domain);
 
     return new NextResponse(

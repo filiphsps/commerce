@@ -31,11 +31,13 @@ async function getErrorDocsContent({ slug }: { slug: string }) {
     }
 }
 
-export type DocsErrorPageParams = {
+export type DocsErrorPageParams = Promise<{
     code: string;
-};
-export default async function DocsErrorPage({ params: { code } }: { params: DocsErrorPageParams }) {
+}>;
+export default async function DocsErrorPage({ params }: { params: DocsErrorPageParams }) {
     // TODO: Forward to uppercase version of code if not uppercase.
+
+    const { code } = await params;
 
     const ErrorKind = getErrorFromCode(code.toUpperCase() as any);
     if (!ErrorKind) notFound();

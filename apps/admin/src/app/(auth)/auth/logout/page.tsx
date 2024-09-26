@@ -4,13 +4,11 @@ import { LogoutAction } from './logout-action';
 
 import type { Metadata } from 'next';
 
-export type IndexAdminPageParams = {};
-
 export const metadata: Metadata = {
     title: 'Logout'
 };
 
-export default async function IndexAdminPage({}: { params: IndexAdminPageParams }) {
+export default async function IndexAdminPage({}: {}) {
     return (
         <section className="">
             <Heading level="h1">Logging out...</Heading>

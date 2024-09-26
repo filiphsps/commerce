@@ -53,17 +53,19 @@ export const dynamic = 'auto';
 export const dynamicParams = true;
 export const revalidate = false;
 
-export type ProductPageParams = { domain: string; locale: string; handle: string };
+export type ProductPageParams = Promise<{ domain: string; locale: string; handle: string }>;
 
 export async function generateStaticParams({
-    params: { domain, locale: localeData }
+    params
 }: {
     params: Omit<ProductPageParams, 'handle'>;
-}): Promise<Omit<ProductPageParams, 'domain' | 'locale'>[]> {
+}): Promise<Omit<Awaited<ProductPageParams>, 'domain' | 'locale'>[]> {
     /** @note Limit pre-rendering when not in production. */
     if (process.env.VERCEL_ENV !== 'production') {
         return [];
     }
+
+    const { domain, locale: localeData } = await params;
 
     try {
         const locale = Locale.from(localeData);
@@ -79,17 +81,18 @@ export async function generateStaticParams({
     }
 }
 
-type SearchParams = {
+type SearchParams = Promise<{
     variant?: string;
-};
+}>;
 
 export async function generateMetadata({
-    params: { domain, locale: localeData, handle },
-    searchParams: searchParams
+    params,
+    searchParams: queryParams
 }: {
     params: ProductPageParams;
     searchParams: SearchParams;
 }): Promise<Metadata> {
+    const { domain, locale: localeData, handle } = await params;
     if (!isValidHandle(handle)) {
         notFound();
     }
@@ -127,6 +130,8 @@ export async function generateMetadata({
     } catch {}
 
     const locales = await LocalesApi({ api });
+
+    const searchParams = await queryParams;
 
     let search = '';
     if (searchParams.variant && searchParams.variant !== parseGid(initialVariant.id).id) {
@@ -202,11 +207,8 @@ async function Badges({ product, i18n }: { product: Product; i18n: LocaleDiction
     return <div className="flex items-center gap-1 empty:hidden">{badges}</div>;
 }
 
-export default async function ProductPage({
-    params: { domain, locale: localeData, handle }
-}: {
-    params: ProductPageParams;
-}) {
+export default async function ProductPage({ params }: { params: ProductPageParams }) {
+    const { domain, locale: localeData, handle } = await params;
     if (!isValidHandle(handle)) {
         notFound();
     }

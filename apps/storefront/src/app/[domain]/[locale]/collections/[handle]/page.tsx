@@ -36,17 +36,19 @@ export const dynamic = 'force-dynamic'; // TODO: Figure out a better way to deal
 export const dynamicParams = true;
 export const revalidate = false;
 
-export type CollectionPageParams = { domain: string; locale: string; handle: string };
+export type CollectionPageParams = Promise<{ domain: string; locale: string; handle: string }>;
 
 export async function generateStaticParams({
-    params: { domain, locale: localeData }
+    params
 }: {
     params: Omit<CollectionPageParams, 'handle'>;
-}): Promise<Omit<CollectionPageParams, 'domain' | 'locale'>[]> {
+}): Promise<Omit<Awaited<CollectionPageParams>, 'domain' | 'locale'>[]> {
     /** @note Limit pre-rendering when not in production. */
     if (process.env.VERCEL_ENV !== 'production') {
         return [];
     }
+
+    const { domain, locale: localeData } = await params;
 
     try {
         const locale = Locale.from(localeData);
@@ -64,17 +66,18 @@ export async function generateStaticParams({
     }
 }
 
-type SearchParams = {
+type SearchParams = Promise<{
     page?: string;
-};
+}>;
 
 export async function generateMetadata({
-    params: { domain, locale: localeData, handle },
-    searchParams: searchParams
+    params,
+    searchParams: queryParams
 }: {
     params: CollectionPageParams;
     searchParams: SearchParams;
 }): Promise<Metadata> {
+    const { domain, locale: localeData, handle } = await params;
     if (!isValidHandle(handle)) {
         notFound();
     }
@@ -107,6 +110,7 @@ export async function generateMetadata({
     const i18n = await getDictionary({ shop, locale });
     const { t } = getTranslations('common', i18n);
 
+    const searchParams = await queryParams;
     const pageNumber = searchParams.page ? parseInt(searchParams.page, 10) : 1;
 
     // TODO: i18n.
@@ -155,15 +159,18 @@ export async function generateMetadata({
 }
 
 export default async function CollectionPage({
-    params: { domain, locale: localeData, handle },
-    searchParams: searchParams
+    params,
+    searchParams: queryParams
 }: {
     params: CollectionPageParams;
     searchParams: SearchParams;
 }) {
+    const { domain, locale: localeData, handle } = await params;
     if (!isValidHandle(handle)) {
         notFound();
     }
+
+    const searchParams = await queryParams;
 
     // Creates a locale object from a locale code (e.g. `en-US`).
     const locale = Locale.from(localeData);

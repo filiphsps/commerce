@@ -20,12 +20,9 @@ import type { Metadata } from 'next';
 
 export const dynamic = 'force-dynamic';
 
-export type CartPageParams = { domain: string; locale: string };
-export async function generateMetadata({
-    params: { domain, locale: localeData }
-}: {
-    params: CartPageParams;
-}): Promise<Metadata> {
+export type CartPageParams = Promise<{ domain: string; locale: string }>;
+export async function generateMetadata({ params }: { params: CartPageParams }): Promise<Metadata> {
+    const { domain, locale: localeData } = await params;
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
 
     const locale = Locale.from(localeData);
@@ -78,7 +75,8 @@ export async function generateMetadata({
     };
 }
 
-export default async function CartPage({ params: { domain, locale: localeData } }: { params: CartPageParams }) {
+export default async function CartPage({ params }: { params: CartPageParams }) {
+    const { domain, locale: localeData } = await params;
     const locale = Locale.from(localeData);
     const shop = await Shop.findByDomain(domain);
 

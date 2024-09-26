@@ -22,12 +22,9 @@ import LocaleSelector from './locale-selector';
 
 import type { Metadata } from 'next';
 
-export type CountriesPageParams = { domain: string; locale: string };
-export async function generateMetadata({
-    params: { domain, locale: localeData }
-}: {
-    params: CountriesPageParams;
-}): Promise<Metadata> {
+export type CountriesPageParams = Promise<{ domain: string; locale: string }>;
+export async function generateMetadata({ params }: { params: CountriesPageParams }): Promise<Metadata> {
+    const { domain, locale: localeData } = await params;
     const locale = Locale.from(localeData);
 
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
@@ -77,11 +74,8 @@ export async function generateMetadata({
     };
 }
 
-export default async function CountriesPage({
-    params: { domain, locale: localeData }
-}: {
-    params: CountriesPageParams;
-}) {
+export default async function CountriesPage({ params }: { params: CountriesPageParams }) {
+    const { domain, locale: localeData } = await params;
     const locale = Locale.from(localeData);
 
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
@@ -113,8 +107,8 @@ export default async function CountriesPage({
                         // Validate the locale.
                         try {
                             const { code } = Locale.from(locale);
-                            cookies().set('localization', code);
-                            cookies().set('NEXT_LOCALE', code);
+                            (await cookies()).set('localization', code);
+                            (await cookies()).set('NEXT_LOCALE', code);
                         } catch (error: unknown) {
                             throw error; // TODO: Proper nordcom error.
                         }

@@ -18,21 +18,18 @@ import type { Metadata } from 'next';
 
 export const dynamicParams = false;
 
-export type ArticlePageParams = {
+export type ArticlePageParams = Promise<{
     year: string;
     month: string;
     slug: string;
-};
+}>;
 
 export async function generateStaticParams() {
     return await getArticlePaths();
 }
 
-export async function generateMetadata({
-    params: { year, month, slug }
-}: {
-    params: ArticlePageParams;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: ArticlePageParams }): Promise<Metadata> {
+    const { year, month, slug } = await params;
     const {
         meta: { title, description }
     } = await getArticleContent({ year, month, slug });
@@ -54,7 +51,8 @@ export async function generateMetadata({
     };
 }
 
-export default async function ArticlePage({ params: { year, month, slug } }: { params: ArticlePageParams }) {
+export default async function ArticlePage({ params }: { params: ArticlePageParams }) {
+    const { year, month, slug } = await params;
     const {
         content,
         meta: { title, date, author }
