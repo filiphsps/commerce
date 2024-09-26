@@ -81,7 +81,7 @@
         "eslint": "8.57.1",
         "glob": "11.0.0",
         "import-in-the-middle": "1.11.0",
-        "mongoose": "8.6.3",
+        "mongoose": "8.6.4",
         "prettier-eslint": "16.3.0",
         "prettier-plugin-tailwindcss": "0.6.8",
         "prettier": "3.3.3",
