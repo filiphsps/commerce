@@ -178,8 +178,8 @@ importers:
         specifier: 1.0.12
         version: 1.0.12(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@5.4.8(@types/node@20.16.9)(sass@1.79.3)(terser@5.31.1)))(next@15.0.0-canary.171(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240925)(react-dom@0.0.0-experimental-778e1ed2-20240926(react@0.0.0-experimental-778e1ed2-20240926))(react@0.0.0-experimental-778e1ed2-20240926)(sass@1.79.3))(react@0.0.0-experimental-778e1ed2-20240926)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.2)))(vue@3.4.27(typescript@5.6.2))
       '@vercel/toolbar':
-        specifier: 0.1.21
-        version: 0.1.21(next@15.0.0-canary.171(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240925)(react-dom@0.0.0-experimental-778e1ed2-20240926(react@0.0.0-experimental-778e1ed2-20240926))(react@0.0.0-experimental-778e1ed2-20240926)(sass@1.79.3))(react@0.0.0-experimental-778e1ed2-20240926)(vite@5.4.8(@types/node@20.16.9)(sass@1.79.3)(terser@5.31.1))
+        specifier: 0.1.22
+        version: 0.1.22(next@15.0.0-canary.171(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240925)(react-dom@0.0.0-experimental-778e1ed2-20240926(react@0.0.0-experimental-778e1ed2-20240926))(react@0.0.0-experimental-778e1ed2-20240926)(sass@1.79.3))(react@0.0.0-experimental-778e1ed2-20240926)(vite@5.4.8(@types/node@20.16.9)(sass@1.79.3)(terser@5.31.1))
       class-variance-authority:
         specifier: 0.7.0
         version: 0.7.0
@@ -368,8 +368,8 @@ importers:
         specifier: 1.0.12
         version: 1.0.12(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@5.4.8(@types/node@20.16.9)(sass@1.79.3)(terser@5.31.1)))(next@15.0.0-canary.171(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240925)(react-dom@0.0.0-experimental-778e1ed2-20240926(react@0.0.0-experimental-778e1ed2-20240926))(react@0.0.0-experimental-778e1ed2-20240926)(sass@1.79.3))(react@0.0.0-experimental-778e1ed2-20240926)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.2)))(vue@3.4.27(typescript@5.6.2))
       '@vercel/toolbar':
-        specifier: 0.1.21
-        version: 0.1.21(next@15.0.0-canary.171(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240925)(react-dom@0.0.0-experimental-778e1ed2-20240926(react@0.0.0-experimental-778e1ed2-20240926))(react@0.0.0-experimental-778e1ed2-20240926)(sass@1.79.3))(react@0.0.0-experimental-778e1ed2-20240926)(vite@5.4.8(@types/node@20.16.9)(sass@1.79.3)(terser@5.31.1))
+        specifier: 0.1.22
+        version: 0.1.22(next@15.0.0-canary.171(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240925)(react-dom@0.0.0-experimental-778e1ed2-20240926(react@0.0.0-experimental-778e1ed2-20240926))(react@0.0.0-experimental-778e1ed2-20240926)(sass@1.79.3))(react@0.0.0-experimental-778e1ed2-20240926)(vite@5.4.8(@types/node@20.16.9)(sass@1.79.3)(terser@5.31.1))
       clsx:
         specifier: 2.1.1
         version: 2.1.1
@@ -579,8 +579,8 @@ importers:
         specifier: 1.0.12
         version: 1.0.12(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@5.4.8(@types/node@20.16.9)(sass@1.79.3)(terser@5.31.1)))(next@15.0.0-canary.171(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240925)(react-dom@0.0.0-experimental-778e1ed2-20240926(react@0.0.0-experimental-778e1ed2-20240926))(react@0.0.0-experimental-778e1ed2-20240926)(sass@1.79.3))(react@0.0.0-experimental-778e1ed2-20240926)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.2)))(vue@3.4.27(typescript@5.6.2))
       '@vercel/toolbar':
-        specifier: 0.1.21
-        version: 0.1.21(next@15.0.0-canary.171(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240925)(react-dom@0.0.0-experimental-778e1ed2-20240926(react@0.0.0-experimental-778e1ed2-20240926))(react@0.0.0-experimental-778e1ed2-20240926)(sass@1.79.3))(react@0.0.0-experimental-778e1ed2-20240926)(vite@5.4.8(@types/node@20.16.9)(sass@1.79.3)(terser@5.31.1))
+        specifier: 0.1.22
+        version: 0.1.22(next@15.0.0-canary.171(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240925)(react-dom@0.0.0-experimental-778e1ed2-20240926(react@0.0.0-experimental-778e1ed2-20240926))(react@0.0.0-experimental-778e1ed2-20240926)(sass@1.79.3))(react@0.0.0-experimental-778e1ed2-20240926)(vite@5.4.8(@types/node@20.16.9)(sass@1.79.3)(terser@5.31.1))
       class-variance-authority:
         specifier: 0.7.0
         version: 0.7.0
@@ -3044,8 +3044,8 @@ packages:
       vue-router:
         optional: true
 
-  '@vercel/toolbar@0.1.21':
-    resolution: {integrity: sha512-MaXdojXz3gyJgZEulNY7R7/ihT0nFP17rNH4og7Ubo0y2wH3shnN2Bnw63AD/T66WTwiMD7qqoZQ/zvNtDbU6w==}
+  '@vercel/toolbar@0.1.22':
+    resolution: {integrity: sha512-f+IbPrWn1t3PpbBYtQXbvkrJ7xLzxu1f29bx5ZPF1r2OMXJYOw48/Q/0kz5ukPXGVhOHYyOX/0c8OpYYy8tt2Q==}
     peerDependencies:
       next: '>=11.0.0'
       react: '>=17'
@@ -9495,7 +9495,7 @@ snapshots:
       vue: 3.4.27(typescript@5.6.2)
       vue-router: 4.3.2(vue@3.4.27(typescript@5.6.2))
 
-  '@vercel/toolbar@0.1.21(next@15.0.0-canary.171(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240925)(react-dom@0.0.0-experimental-778e1ed2-20240926(react@0.0.0-experimental-778e1ed2-20240926))(react@0.0.0-experimental-778e1ed2-20240926)(sass@1.79.3))(react@0.0.0-experimental-778e1ed2-20240926)(vite@5.4.8(@types/node@20.16.9)(sass@1.79.3)(terser@5.31.1))':
+  '@vercel/toolbar@0.1.22(next@15.0.0-canary.171(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240925)(react-dom@0.0.0-experimental-778e1ed2-20240926(react@0.0.0-experimental-778e1ed2-20240926))(react@0.0.0-experimental-778e1ed2-20240926)(sass@1.79.3))(react@0.0.0-experimental-778e1ed2-20240926)(vite@5.4.8(@types/node@20.16.9)(sass@1.79.3)(terser@5.31.1))':
     dependencies:
       '@tinyhttp/app': 1.3.0
       chokidar: 3.6.0
