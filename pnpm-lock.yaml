@@ -199,8 +199,8 @@ importers:
         specifier: 15.0.0-canary.171
         version: 15.0.0-canary.171(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240925)(react-dom@0.0.0-experimental-778e1ed2-20240926(react@0.0.0-experimental-778e1ed2-20240926))(react@0.0.0-experimental-778e1ed2-20240926)(sass@1.79.3)
       next-auth:
-        specifier: 5.0.0-beta.21
-        version: 5.0.0-beta.21(next@15.0.0-canary.171(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240925)(react-dom@0.0.0-experimental-778e1ed2-20240926(react@0.0.0-experimental-778e1ed2-20240926))(react@0.0.0-experimental-778e1ed2-20240926)(sass@1.79.3))(react@0.0.0-experimental-778e1ed2-20240926)
+        specifier: 5.0.0-beta.22
+        version: 5.0.0-beta.22(next@15.0.0-canary.171(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240925)(react-dom@0.0.0-experimental-778e1ed2-20240926(react@0.0.0-experimental-778e1ed2-20240926))(react@0.0.0-experimental-778e1ed2-20240926)(sass@1.79.3))(react@0.0.0-experimental-778e1ed2-20240926)
       next-seo:
         specifier: 6.6.0
         version: 6.6.0(next@15.0.0-canary.171(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240925)(react-dom@0.0.0-experimental-778e1ed2-20240926(react@0.0.0-experimental-778e1ed2-20240926))(react@0.0.0-experimental-778e1ed2-20240926)(sass@1.79.3))(react-dom@0.0.0-experimental-778e1ed2-20240926(react@0.0.0-experimental-778e1ed2-20240926))(react@0.0.0-experimental-778e1ed2-20240926)
@@ -615,8 +615,8 @@ importers:
         specifier: 15.0.0-canary.171
         version: 15.0.0-canary.171(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240925)(react-dom@0.0.0-experimental-778e1ed2-20240926(react@0.0.0-experimental-778e1ed2-20240926))(react@0.0.0-experimental-778e1ed2-20240926)(sass@1.79.3)
       next-auth:
-        specifier: 5.0.0-beta.21
-        version: 5.0.0-beta.21(next@15.0.0-canary.171(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240925)(react-dom@0.0.0-experimental-778e1ed2-20240926(react@0.0.0-experimental-778e1ed2-20240926))(react@0.0.0-experimental-778e1ed2-20240926)(sass@1.79.3))(react@0.0.0-experimental-778e1ed2-20240926)
+        specifier: 5.0.0-beta.22
+        version: 5.0.0-beta.22(next@15.0.0-canary.171(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240925)(react-dom@0.0.0-experimental-778e1ed2-20240926(react@0.0.0-experimental-778e1ed2-20240926))(react@0.0.0-experimental-778e1ed2-20240926)(sass@1.79.3))(react@0.0.0-experimental-778e1ed2-20240926)
       next-sitemap:
         specifier: 4.2.3
         version: 4.2.3(next@15.0.0-canary.171(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240925)(react-dom@0.0.0-experimental-778e1ed2-20240926(react@0.0.0-experimental-778e1ed2-20240926))(react@0.0.0-experimental-778e1ed2-20240926)(sass@1.79.3))
@@ -956,20 +956,6 @@ packages:
       '@apollo/client': ^3.10.4
       next: ^13.4.1 || ^14.0.0 || 15.0.0-rc.0
       react: ^18
-
-  '@auth/core@0.35.0':
-    resolution: {integrity: sha512-XvMALiYn5ZQd1hVeG1t+jCU89jRrc7ortl/05wkBrPHnRWZScxAK5jKuzBz+AOBQXewDjYcMpzeF5tTqg6rDhQ==}
-    peerDependencies:
-      '@simplewebauthn/browser': ^9.0.1
-      '@simplewebauthn/server': ^9.0.2
-      nodemailer: ^6.8.0
-    peerDependenciesMeta:
-      '@simplewebauthn/browser':
-        optional: true
-      '@simplewebauthn/server':
-        optional: true
-      nodemailer:
-        optional: true
 
   '@auth/core@0.35.3':
     resolution: {integrity: sha512-g6qfiqU4OtyvIEZ8J7UoIwAxEnNnLJV0/f/DW41U+4G5nhBlaCrnKhawJIJpU0D3uavXLeDT3B0BkjtiimvMDA==}
@@ -5303,8 +5289,8 @@ packages:
       fp-ts: ^2.0.0
       monocle-ts: ^2.0.0
 
-  next-auth@5.0.0-beta.21:
-    resolution: {integrity: sha512-VrT6LV9u/o5tMuWxRDN5d/K1OgPskrMHy+aITTwasVfIrkIaU/8UVg3TXH8ynJgzhfzlDx/3hLWGhi+eXQw4qg==}
+  next-auth@5.0.0-beta.22:
+    resolution: {integrity: sha512-QGBo9HGOjmnJBHGXvtFztl0tM5tL0porDlk74HVoCCzXd986ApOlIW3EmiCuho7YzEopgkFiwwmcXpoCrHAtYw==}
     peerDependencies:
       '@simplewebauthn/browser': ^9.0.1
       '@simplewebauthn/server': ^9.0.2
@@ -7077,16 +7063,6 @@ snapshots:
       '@apollo/client-react-streaming': 0.11.3(@apollo/client@3.11.8(@types/react@18.3.8)(graphql@16.9.0)(react-dom@0.0.0-experimental-778e1ed2-20240926(react@0.0.0-experimental-778e1ed2-20240926))(react@0.0.0-experimental-778e1ed2-20240926))(react@0.0.0-experimental-778e1ed2-20240926)
       next: 15.0.0-canary.171(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240925)(react-dom@0.0.0-experimental-778e1ed2-20240926(react@0.0.0-experimental-778e1ed2-20240926))(react@0.0.0-experimental-778e1ed2-20240926)(sass@1.79.3)
       react: 0.0.0-experimental-778e1ed2-20240926
-
-  '@auth/core@0.35.0':
-    dependencies:
-      '@panva/hkdf': 1.1.1
-      '@types/cookie': 0.6.0
-      cookie: 0.6.0
-      jose: 5.6.3
-      oauth4webapi: 2.10.4
-      preact: 10.11.3
-      preact-render-to-string: 5.2.3(preact@10.11.3)
 
   '@auth/core@0.35.3':
     dependencies:
@@ -10621,7 +10597,7 @@ snapshots:
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint@8.57.1))(eslint@8.57.1)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.1)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
       eslint-plugin-jsx-a11y: 6.10.0(eslint@8.57.1)
       eslint-plugin-react: 7.37.0(eslint@8.57.1)
       eslint-plugin-react-hooks: 4.6.0(eslint@8.57.1)
@@ -10649,7 +10625,7 @@ snapshots:
       enhanced-resolve: 5.17.0
       eslint: 8.57.1
       eslint-module-utils: 2.8.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.1)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
       fast-glob: 3.3.2
       get-tsconfig: 4.7.5
       is-core-module: 2.14.0
@@ -10671,7 +10647,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.1):
+  eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.7.0(eslint@8.57.1)(typescript@5.6.2))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
       array-includes: 3.1.8
       array.prototype.findlastindex: 1.2.5
@@ -12094,9 +12070,9 @@ snapshots:
       fp-ts: 2.16.6
       monocle-ts: 2.3.13(fp-ts@2.16.6)
 
-  next-auth@5.0.0-beta.21(next@15.0.0-canary.171(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240925)(react-dom@0.0.0-experimental-778e1ed2-20240926(react@0.0.0-experimental-778e1ed2-20240926))(react@0.0.0-experimental-778e1ed2-20240926)(sass@1.79.3))(react@0.0.0-experimental-778e1ed2-20240926):
+  next-auth@5.0.0-beta.22(next@15.0.0-canary.171(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240925)(react-dom@0.0.0-experimental-778e1ed2-20240926(react@0.0.0-experimental-778e1ed2-20240926))(react@0.0.0-experimental-778e1ed2-20240926)(sass@1.79.3))(react@0.0.0-experimental-778e1ed2-20240926):
     dependencies:
-      '@auth/core': 0.35.0
+      '@auth/core': 0.35.3
       next: 15.0.0-canary.171(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-6067d4e-20240925)(react-dom@0.0.0-experimental-778e1ed2-20240926(react@0.0.0-experimental-778e1ed2-20240926))(react@0.0.0-experimental-778e1ed2-20240926)(sass@1.79.3)
       react: 0.0.0-experimental-778e1ed2-20240926
 
