@@ -92,7 +92,7 @@
         "react": "0.0.0-experimental-778e1ed2-20240926",
         "redis": "4.7.0",
         "resolve-accept-language": "3.1.7",
-        "sass": "1.79.3",
+        "sass": "1.79.4",
         "sharp": "0.33.5",
         "sonner": "1.5.0",
         "tailwind-merge": "2.5.2",
