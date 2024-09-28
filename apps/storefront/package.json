@@ -56,7 +56,7 @@
         "@opentelemetry/instrumentation": "0.53.0",
         "@opentelemetry/sdk-logs": "0.53.0",
         "@prismicio/client": "7.11.0",
-        "@prismicio/next": "1.6.0",
+        "@prismicio/next": "1.7.0",
         "@prismicio/react": "2.8.0",
         "@sentry/nextjs": "8.32.0",
         "@sentry/profiling-node": "8.32.0",
