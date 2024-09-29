@@ -87,17 +87,12 @@ export async function generateStaticParams(): Promise<Awaited<LayoutParams>[]> {
         .filter(Boolean);
 }
 
-export async function generateViewport({ params }: { params: LayoutParams }): Promise<Viewport> {
-    const { domain } = await params;
-    const branding = await getBrandingColors({ domain });
-
-    return {
-        initialScale: 1,
-        interactiveWidget: 'resizes-content',
-        themeColor: branding?.primary.color,
-        width: 'device-width'
-    };
-}
+export const viewport: Viewport = {
+    initialScale: 1,
+    interactiveWidget: 'resizes-content',
+    viewportFit: 'cover',
+    width: 'device-width'
+};
 
 export async function generateMetadata({ params }: { params: LayoutParams }): Promise<Metadata> {
     const { domain, locale: localeData } = await params;
@@ -238,11 +233,11 @@ export default async function RootLayout({ children, params }: { children: React
                 >
                     <AnalyticsProvider shop={publicShop} hostname={domain}>
                         <HeaderProvider loaderColor={branding?.primary.color}>
-                            <Suspense fallback={<Fragment />}>
+                            <Suspense key="layout.geo-redirect" fallback={<Fragment />}>
                                 <GeoRedirect shop={publicShop} countries={countries} locale={locale} i18n={i18n} />
                             </Suspense>
 
-                            <Suspense key="layout" fallback={<ShopLayout.skeleton />}>
+                            <Suspense key="layout.shop-layout" fallback={<ShopLayout.skeleton />}>
                                 <ShopLayout shop={shop} locale={locale} i18n={i18n}>
                                     <PageContent as="section" primary={true}>
                                         {children}

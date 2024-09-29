@@ -81,16 +81,6 @@ export async function generateMetadata({ params }: { params: CustomPageParams })
 
     const title = page.meta_title || page.title || handle;
     const description = asText(page.meta_description) || page.description || undefined;
-    const images = page.meta_image.url
-        ? [
-              {
-                  url: page.meta_image.url!,
-                  width: page.meta_image.dimensions.width!,
-                  height: page.meta_image.dimensions.height!
-              }
-          ]
-        : [];
-
     return {
         title,
         description,
@@ -112,9 +102,17 @@ export async function generateMetadata({ params }: { params: CustomPageParams })
             type: 'website',
             title,
             description,
-            siteName: shop.name,
+            siteName: `${shop.name} (${locale.country!})`,
             locale: locale.code,
-            images
+            images: page.meta_image.url
+                ? [
+                      {
+                          url: page.meta_image.url!,
+                          width: page.meta_image.dimensions.width!,
+                          height: page.meta_image.dimensions.height!
+                      }
+                  ]
+                : []
         }
     };
 }

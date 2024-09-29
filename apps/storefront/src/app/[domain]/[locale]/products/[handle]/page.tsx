@@ -178,7 +178,7 @@ export async function generateMetadata({
     };
 }
 
-const BLOCK_STYLES =
+export const BLOCK_STYLES =
     'flex h-auto w-full flex-col items-stretch justify-start gap-8 overflow-clip rounded-lg md:justify-stretch lg:gap-8 empty:hidden';
 
 async function Badges({ product, i18n }: { product: Product; i18n: LocaleDictionary }) {
@@ -410,7 +410,7 @@ export default async function ProductPage({ params }: { params: ProductPageParam
                     <section className="flex w-full flex-col gap-2 overflow-hidden md:max-w-[32rem] 2xl:w-auto">
                         <Suspense
                             key={`products.${handle}.details.savings`}
-                            fallback={<div className="h-4 w-full" data-skeleton />}
+                            fallback={<div className="h-24 w-full" data-skeleton />}
                         >
                             <ProductSavings product={product} i18n={i18n} />
                         </Suspense>

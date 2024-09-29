@@ -1,5 +1,3 @@
-import { Suspense } from 'react';
-
 import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { PageApi } from '@/api/page';
@@ -24,11 +22,7 @@ const Prismic = async ({ shop, locale, handle, type = 'custom_page' }: CMSConten
 export const CMSContent = async ({ shop, locale, handle, type }: CMSContentProps) => {
     switch (shop.contentProvider.type) {
         case 'prismic': {
-            return (
-                <Suspense fallback={<div className="h-36 w-full" data-skeleton />}>
-                    <Prismic shop={shop} locale={locale} handle={handle} type={type} />
-                </Suspense>
-            );
+            return <Prismic shop={shop} locale={locale} handle={handle} type={type} />;
         }
     }
 
