@@ -45,7 +45,10 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: ReactNode }) {
     return (
         <html lang="en" className={cn(primaryFont.className, primaryFont.variable, GeistMono.variable)}>
-            <head></head>
+            <head>
+                <meta name="apple-mobile-web-app-capable" content="yes">
+                <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+            </head>
             <body className="group/body grid min-h-[100svh] grid-cols-[100%] grid-rows-1 overflow-x-hidden overscroll-x-none font-sans">
                 <Providers>{children}</Providers>
             </body>
