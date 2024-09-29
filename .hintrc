@@ -24,7 +24,8 @@
                     "scrollbar-color",
                     "scrollbar-width",
                     "text-size-adjust",
-                    "text-underline-position"
+                    "text-underline-position",
+                    "animation-timeline: scroll(self inline)"
                 ]
             }
         ],
