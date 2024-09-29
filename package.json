@@ -13,11 +13,12 @@
         "packages/*"
     ],
     "scripts": {
-        "dev": "dotenv -c -e . -- turbo run dev --env-mode=loose",
-        "dev:admin": "dotenv -c -e . -- turbo run dev --filter=./apps/admin --env-mode=loose",
-        "dev:landing": "dotenv -c -e . -- turbo run dev --filter=./apps/landing --env-mode=loose",
-        "dev:storefront": "dotenv -c -e . -- turbo run dev --filter=./apps/storefront --env-mode=loose",
-        "build": "dotenv -c -e . -- turbo run build --env-mode=loose --remote-cache-timeout=60",
+        "dev": "dotenv -c -- turbo run dev --env-mode=loose",
+        "dev:admin": "dotenv -c -- turbo run dev --filter=./apps/admin --env-mode=loose",
+        "dev:landing": "dotenv -c -- turbo run dev --filter=./apps/landing --env-mode=loose",
+        "dev:storefront": "dotenv -c -- turbo run dev --filter=./apps/storefront --env-mode=loose",
+        "build": "dotenv -c -- turbo run build --env-mode=loose --remote-cache-timeout=60",
+        "build:admin": "dotenv -c -- turbo run build --filter=./apps/admin --env-mode=loose --remote-cache-timeout=60",
         "build:packages": "turbo run build --filter=./packages/* --env-mode=loose --remote-cache-timeout=60",
         "clean": "turbo run clean",
         "lint": "turbo run lint",
@@ -26,8 +27,8 @@
         "format:eslint": "eslint --fix **/src/**/*.{ts,tsx}",
         "format:prettier": "prettier --write \"./**/*.{cjs,mjs,ts,tsx,scss,json}\"",
         "typecheck": "turbo run typecheck",
-        "test": "dotenv -c -e . -- vitest run --coverage",
-        "test:watch": "dotenv -c -e . -- vitest watch",
+        "test": "dotenv -c -- vitest run --coverage",
+        "test:watch": "dotenv -c -- vitest watch",
         "slicemachine": "turbo run slicemachine --env-mode=loose"
     },
     "author": {

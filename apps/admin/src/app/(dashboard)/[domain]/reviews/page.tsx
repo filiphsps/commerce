@@ -49,12 +49,10 @@ export default async function ShopReviewsPagePage({ params }: ShopReviewsPagePro
             ) : (
                 <Card>
                     <Card.content className="flex flex-col gap-3">
-                        <h2 className="text-foreground/75 text-3xl font-normal lowercase leading-none">
-                            Your reviews will appear here.
-                        </h2>
-                        <p className="text-base">
+                        <Heading level="h2">Your reviews will appear here</Heading>
+                        <Heading level="h3" as="p">
                             This is where you will manage, reply to and moderate reviews of your products and services.
-                        </p>
+                        </Heading>
                     </Card.content>
                 </Card>
             )}

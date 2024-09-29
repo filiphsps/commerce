@@ -2,15 +2,14 @@ import type { ReactNode } from 'react';
 
 export default async function ReviewsLayout({
     children,
-    create
-}: {
-    // TODO
+    modal
+}: Readonly<{
     children: ReactNode;
-    create: ReactNode;
-}) {
+    modal: ReactNode;
+}>) {
     return (
         <>
-            <div className="inset-8 bg-black md:fixed">{create}</div>
+            <div className="fixed inset-8 z-10 empty:hidden">{modal}</div>
             {children}
         </>
     );
