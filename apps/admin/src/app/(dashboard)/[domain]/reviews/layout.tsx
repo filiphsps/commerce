@@ -10,7 +10,7 @@ export default async function ReviewsLayout({
 }) {
     return (
         <>
-            <div className="inset-8 md:fixed">{create}</div>
+            <div className="inset-8 bg-black md:fixed">{create}</div>
             {children}
         </>
     );

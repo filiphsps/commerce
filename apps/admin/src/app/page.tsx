@@ -68,7 +68,7 @@ export default async function Overview() {
                 <section className="grid w-full grid-flow-row grid-cols-1 gap-2 py-2">{shopsActions}</section>
 
                 <footer className="border-border border-t-3 border-0 border-solid pt-3">
-                    <Button as={Link} href={'/new'} variant="solid" color="primary" className="h-12 w-full">
+                    <Button as={Link} href={'/new'} variant="solid" color="foreground" className="h-12 w-full">
                         Connect a new Shop
                     </Button>
                 </footer>

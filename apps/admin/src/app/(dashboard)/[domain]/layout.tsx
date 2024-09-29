@@ -139,7 +139,9 @@ export default async function ShopLayout({ children, params }: ShopLayoutProps) 
             <div className="flex h-full min-h-screen w-full grow flex-col">
                 <Header className="h-[4.5rem] max-h-[4.5rem] min-h-[4.5rem]" />
 
-                <main className="flex h-full min-h-[150vh] w-full flex-col justify-stretch gap-4 p-4">{children}</main>
+                <main className="relative flex h-full min-h-[150vh] w-full flex-col justify-stretch gap-4 p-4">
+                    {children}
+                </main>
             </div>
         </div>
     );
