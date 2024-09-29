@@ -51,7 +51,7 @@
         "@next/third-parties": "15.0.0-canary.173",
         "@nordcom/commerce-db": "workspace:*",
         "@nordcom/commerce-errors": "workspace:*",
-        "@nordcom/nordstar": "0.0.69",
+        "@nordcom/nordstar": "0.0.70",
         "@opentelemetry/api-logs": "0.53.0",
         "@opentelemetry/instrumentation": "0.53.0",
         "@opentelemetry/sdk-logs": "0.53.0",

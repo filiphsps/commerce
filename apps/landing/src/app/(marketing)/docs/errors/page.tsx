@@ -42,10 +42,14 @@ export default async function DocsErrorsPage({}: {}) {
                             href={`/docs/errors/${error.code}/`}
                             key={error.code}
                             draggable={false}
+                            className="flex flex-col"
                         >
-                            <Heading level="h4" as="h3">
-                                {error.code}
-                            </Heading>
+                            <Card.Header>
+                                <Heading level="h4" as="h3">
+                                    {error.code}
+                                </Heading>
+                            </Card.Header>
+
                             <p>
                                 {error.statusCode}: {error.details}.
                             </p>

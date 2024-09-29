@@ -18,10 +18,13 @@ export default async function DocsPage({}: {}) {
                 </Heading>
             </header>
 
-            <Card as={Link} href={`/docs/errors/`} draggable={false}>
-                <Heading level="h4" as="h3">
-                    Error Codes
-                </Heading>
+            <Card as={Link} href={`/docs/errors/`} draggable={false} className="flex flex-col">
+                <Card.Header>
+                    <Heading level="h4" as="h3">
+                        Error Codes
+                    </Heading>
+                </Card.Header>
+
                 <p>A list of all error codes that can be returned by the API and what they mean.</p>
             </Card>
         </>
