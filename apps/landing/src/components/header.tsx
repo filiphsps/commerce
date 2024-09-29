@@ -12,9 +12,15 @@ import type { HTMLProps } from 'react';
 export type HeaderProps = {} & Omit<HTMLProps<HTMLDivElement>, 'children' | 'color'>;
 export default async function Header({ className, ...props }: HeaderProps) {
     return (
-        <NordstarHeader {...props} className={cn(styles.header, 'w-full [grid-area:header]', className)}>
+        <NordstarHeader
+            {...props}
+            className={cn(
+                'top-0 w-full [grid-area:header] *:w-screen [&>div>*]:px-1 [&>div]:max-w-[var(--layout-page-width)] [&>div]:grid-cols-[auto_1fr_auto]',
+                className
+            )}
+        >
             <NordstarHeader.Logo>
-                <Link href="/" title="Nordcom Commerce" className={styles['logo-wrapper']}>
+                <Link href="/" title="Nordcom Commerce">
                     <Image
                         className={styles.logo}
                         src={logo}
@@ -36,7 +42,7 @@ export default async function Header({ className, ...props }: HeaderProps) {
                     Documentation
                 </NordstarHeader.Menu.Link>
 
-                <Button as="a" href="https://admin.shops.nordcom.io/" target="_blank" className={styles.button}>
+                <Button as={Link} href="https://admin.shops.nordcom.io/">
                     Admin
                 </Button>
             </NordstarHeader.Menu>

@@ -1,5 +1,3 @@
-import styles from './page.module.scss';
-
 import { Card, Heading } from '@nordcom/nordstar';
 
 import Link from 'next/link';
@@ -13,21 +11,19 @@ export const metadata: Metadata = {
 export type DocsPageParams = {};
 export default async function DocsPage({}: {}) {
     return (
-        <article className={`${styles.container}`}>
-            <div className={`${styles.heading}`}>
+        <>
+            <header>
                 <Heading level="h1" title="Documentation">
                     Docu&shy;mentation
                 </Heading>
-            </div>
+            </header>
 
-            <article className={styles.content}>
-                <Card as={Link} href={`/docs/errors/`} className={styles.section} draggable={false}>
-                    <Heading level="h4" as="h3" className={styles.item}>
-                        Error Codes
-                    </Heading>
-                    <p>A list of all error codes that can be returned by the API and what they mean.</p>
-                </Card>
-            </article>
-        </article>
+            <Card as={Link} href={`/docs/errors/`} draggable={false}>
+                <Heading level="h4" as="h3">
+                    Error Codes
+                </Heading>
+                <p>A list of all error codes that can be returned by the API and what they mean.</p>
+            </Card>
+        </>
     );
 }

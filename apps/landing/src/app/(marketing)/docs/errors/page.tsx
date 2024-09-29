@@ -1,5 +1,3 @@
-import styles from './page.module.scss';
-
 import type { Error } from '@nordcom/commerce-errors';
 import { getAllErrorCodes, getErrorFromCode, MissingContextProviderError } from '@nordcom/commerce-errors';
 import { Card, Heading } from '@nordcom/nordstar';
@@ -16,13 +14,13 @@ export default async function DocsErrorsPage({}: {}) {
     const errors = getAllErrorCodes();
 
     return (
-        <article className={`${styles.container}`}>
-            <div className={`${styles.heading}`}>
+        <>
+            <header>
                 <Heading level="h1">Errors Codes</Heading>
                 <Heading level="h2">These are all of the currently documented error codes</Heading>
-            </div>
+            </header>
 
-            <div className={styles.content}>
+            <section className="">
                 {errors.map((code) => {
                     const ErrorKind = getErrorFromCode(code.toUpperCase() as any);
                     if (!ErrorKind) return null;
@@ -42,11 +40,10 @@ export default async function DocsErrorsPage({}: {}) {
                             id={error.code}
                             as={Link}
                             href={`/docs/errors/${error.code}/`}
-                            className={styles.section}
                             key={error.code}
                             draggable={false}
                         >
-                            <Heading level="h4" as="h3" className={styles.item}>
+                            <Heading level="h4" as="h3">
                                 {error.code}
                             </Heading>
                             <p>
@@ -55,7 +52,7 @@ export default async function DocsErrorsPage({}: {}) {
                         </Card>
                     );
                 })}
-            </div>
-        </article>
+            </section>
+        </>
     );
 }

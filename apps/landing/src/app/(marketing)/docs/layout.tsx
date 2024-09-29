@@ -10,5 +10,5 @@ export const metadata: Metadata = {
 };
 
 export default async function DocsLayout({ children }: { children: ReactNode }) {
-    return <>{children}</>;
+    return children;
 }

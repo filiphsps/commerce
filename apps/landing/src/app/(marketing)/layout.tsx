@@ -1,6 +1,5 @@
 import '@/styles/app.scss';
 import '@/styles/globals.css';
-import styles from './layout.module.scss';
 
 import { View } from '@nordcom/nordstar';
 
@@ -65,7 +64,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
                 <Providers>
                     <Header />
 
-                    <View className={cn(styles.content, '[grid-area:content]')} withoutWrapper={true}>
+                    <View className={cn('w-full max-w-[var(--layout-page-width)] [grid-area:content]')}>
                         {children}
                     </View>
 
