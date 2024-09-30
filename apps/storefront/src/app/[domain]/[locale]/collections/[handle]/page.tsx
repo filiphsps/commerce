@@ -111,12 +111,12 @@ export async function generateMetadata({
     const { t } = getTranslations('common', i18n);
 
     const searchParams = await queryParams;
-    const pageNumber = searchParams.page ? parseInt(searchParams.page, 10) : 1;
+    const pageNumber = searchParams.page ? Number.parseInt(searchParams.page, 10) : 1;
 
     // TODO: i18n.
     const title =
         pageNumber > 1
-            ? `${collection.title} - ${capitalize(t('page-n', pageNumber))}`
+            ? `${collection.title} - ${capitalize(t('page-n', pageNumber.toString()))}`
             : page?.meta_title || collection.seo.title || collection.title;
     const description: string | undefined =
         asText(page?.meta_description) ||

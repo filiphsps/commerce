@@ -46,7 +46,7 @@ const RecommendedProducts = async ({ shop, locale, product, className }: Recomme
 RecommendedProducts.displayName = 'Nordcom.Products.RecommendedProducts';
 
 RecommendedProducts.skeleton = () => {
-    return <section className="" />;
+    return <CollectionBlock.skeleton isHorizontal={true} />;
 };
 (RecommendedProducts.skeleton as any).displayName = 'Nordcom.Products.RecommendedProducts.Skeleton';
 

@@ -143,7 +143,7 @@ CollectionBlock.skeleton = ({
                 !isHorizontal &&
                     'grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] md:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] xl:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))]',
                 isHorizontal &&
-                    'overflow-x-shadow auto-cols-[minmax(12rem,1fr)] grid-flow-col grid-cols-[repeat(auto-fit,minmax(12rem,1fr))] grid-rows-1 overscroll-x-auto'
+                    '-mr-8 auto-cols-[minmax(12rem,1fr)] grid-flow-col grid-cols-[repeat(auto-fit,minmax(12rem,1fr))] grid-rows-1 overflow-x-clip overscroll-none'
             )}
         >
             {cards}

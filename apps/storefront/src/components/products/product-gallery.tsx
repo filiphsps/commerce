@@ -80,10 +80,10 @@ const ProductGallery = ({
 
     return (
         <section draggable={false} className={cn(className)} {...props}>
-            <div className="flex w-full gap-2 overflow-clip md:sticky md:top-36 md:flex-col lg:gap-4">
+            <div className="flex w-full gap-2 overflow-clip md:sticky md:top-36 md:flex-col lg:gap-3">
                 <div
                     className={cn(
-                        'relative w-full grow overflow-hidden rounded-lg border border-solid border-gray-200 bg-white p-2 md:h-full md:p-3',
+                        'relative flex w-full grow items-center justify-center overflow-hidden rounded-lg border border-solid border-gray-200 bg-white p-2 md:h-full md:p-3',
                         isLoading && 'bg-gray-100',
                         padding && 'p-8 py-12 md:p-16'
                     )}
@@ -189,7 +189,7 @@ const ProductGallery = ({
                 </div>
 
                 {image && images.length > 1 ? (
-                    <aside className="flex grid-cols-4 flex-col gap-2 overflow-hidden md:grid lg:h-fit">
+                    <aside className="flex grid-cols-4 grid-rows-[1fr] flex-col gap-2 overflow-hidden md:grid md:h-40">
                         {images
                             .filter(({ id }) => image.id !== id)
                             .map((image, index) => {
@@ -200,14 +200,14 @@ const ProductGallery = ({
                                         aria-label={`Enlarge image #${index + 1}`}
                                         onClick={() => setImage(image)}
                                         className={cn(
-                                            'hover:border-primary flex appearance-none items-center justify-center rounded-lg border-2 border-solid border-gray-100 bg-white p-1 transition-all md:h-full md:p-8 lg:aspect-square lg:h-full lg:w-auto',
+                                            'hover:border-primary flex appearance-none items-center justify-center rounded-lg border-2 border-solid border-gray-100 bg-white p-1 transition-all md:aspect-[4/3] md:size-32 md:p-4',
                                             isLoading && 'bg-gray-100'
                                         )}
                                         {...loadingProps}
                                     >
                                         <Image
                                             className={cn(
-                                                'h-14 w-14 object-contain object-center transition-opacity duration-500 md:aspect-square md:h-full md:w-full',
+                                                'h-14 w-14 object-contain object-center transition-opacity duration-500 md:aspect-[4/3] md:size-full',
                                                 isLoading && 'opacity-0 transition-none'
                                             )}
                                             style={{ transitionDelay: `${(index + 1) * 250}ms` }}
