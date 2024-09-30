@@ -25,7 +25,8 @@
                     "scrollbar-width",
                     "text-size-adjust",
                     "text-underline-position",
-                    "animation-timeline: scroll(self inline)"
+                    "animation-timeline: scroll(self inline)",
+                    "overscroll-behavior-x"
                 ]
             }
         ],

@@ -25,6 +25,7 @@
 
     .overflow-x-shadow {
         overflow-x: auto;
+        overscroll-behavior-x: auto;
         animation: overflow-x-scroll-shadow linear;
         animation-timeline: scroll(self inline);
     }
