@@ -4,6 +4,7 @@ import { ApiError, InvalidHandleError, NotFoundError, ProviderFetchError } from 
 import { extractLimitLikeFilters } from '@/api/shopify/collection';
 import { cleanShopifyHtml } from '@/utils/abstract-api';
 import { gql } from '@apollo/client';
+import md5 from 'crypto-js/md5';
 
 import type { Product } from '@/api/product';
 import type { AbstractApi, ApiOptions } from '@/utils/abstract-api';
@@ -268,12 +269,16 @@ type ProductsFilters = {
     sorting?: Nullable<ProductSortKeys>;
 } & LimitFilters;
 
-type ProductOptions = ApiOptions & Identifiable;
+type ProductOptions = ApiOptions &
+    Identifiable & {
+        /** GraphQL */
+        fragment?: string;
+    };
 type ProductsOptions = ApiOptions & {
     filters: ProductsFilters;
 };
 
-export const ProductApi = async ({ api, handle }: ProductOptions): Promise<Product> => {
+export const ProductApi = async ({ api, handle, fragment }: ProductOptions): Promise<Product> => {
     if (!handle) {
         throw new InvalidHandleError(handle);
     }
@@ -283,17 +288,17 @@ export const ProductApi = async ({ api, handle }: ProductOptions): Promise<Produ
     try {
         const { data, errors } = await api.query<{ product: Maybe<Product> }>(
             gql`
-                    query product($handle: String!) {
-                        product(handle: $handle) {
-                            ${PRODUCT_FRAGMENT}
-                        }
+                query product($handle: String!) {
+                    product(handle: $handle) {
+                        ${fragment?.trim() ?? PRODUCT_FRAGMENT}
                     }
-                `,
+                }
+            `,
             {
                 handle
             },
             {
-                tags: [`product`, handle]
+                tags: [`product`, handle, ...(fragment ? [md5(fragment).toString()] : [])]
             }
         );
 

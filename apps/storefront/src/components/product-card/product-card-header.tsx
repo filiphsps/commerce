@@ -25,9 +25,9 @@ const VariantImage = ({ image, priority }: VariantImageProps) => {
                 role={image.altText ? undefined : 'presentation'}
                 src={image.url}
                 alt={image.altText!}
-                height={image.height || 100}
-                width={image.width || 100}
-                sizes="(max-width: 950px) 120px, 185px"
+                height={image.height ?? 100}
+                width={image.width ?? 100}
+                sizes="(max-width: 950px) 100px, 150px"
                 decoding="async"
                 draggable={false}
                 loading={priority ? 'eager' : 'lazy'}

@@ -19,6 +19,7 @@
             "@/utils/*": ["src/utils/*"],
             "@/utils/locale": ["src/utils/locale/index.ts"],
             "@/styles/*": ["src/scss/*"],
+            "@/pages/*": ["src/app/[domain]/[locale]/*"],
             // i18n.
             "@/i18n/*": ["src/locales/*"],
             "@/i18n/dictionary": ["src/utils/dictionary.ts"],

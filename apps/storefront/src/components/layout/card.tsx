@@ -27,7 +27,7 @@ export const Card = <ComponentGeneric extends ElementType = 'div'>({
     return (
         <Tag
             className={cn(
-                'rounded-lg p-3',
+                'rounded-lg border border-solid border-gray-200 p-3',
                 !border && 'bg-gray-100',
                 border && 'border-2 border-solid border-gray-100',
                 className

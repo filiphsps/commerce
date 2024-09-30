@@ -20,18 +20,24 @@ export type ProductGalleryProps = {
     initialImageId?: string | null;
     images: ShopifyImage[] | null;
     actions?: ReactNode | ReactNode[];
+    enableShare?: boolean;
+    padding?: boolean;
     pageUrl: string;
     i18n: LocaleDictionary;
     product: Product;
+    primaryImageClassName?: string;
 } & HTMLProps<HTMLDivElement>;
 const ProductGallery = ({
     initialImageId,
     images,
     className,
     actions,
+    enableShare = true,
+    padding = true,
     pageUrl,
     i18n,
     product,
+    primaryImageClassName,
     ...props
 }: ProductGalleryProps) => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -70,30 +76,28 @@ const ProductGallery = ({
     const isLoading = loading || !image;
     const loadingProps = { ...(isLoading ? { 'data-skeleton': true } : {}) };
 
-    const title = product.seo.title || `${product.vendor} ${product.title}`;
+    const title = enableShare ? product.seo.title || `${product.vendor} ${product.title}` : undefined;
 
     return (
         <section draggable={false} className={cn(className)} {...props}>
             <div className="flex w-full gap-2 overflow-clip md:sticky md:top-36 md:flex-col lg:gap-4">
                 <div
                     className={cn(
-                        'relative w-full grow overflow-hidden rounded-lg border-2 border-solid border-gray-100 bg-white p-8 py-12 md:h-full md:p-16',
-                        isLoading && 'bg-gray-100'
+                        'relative w-full grow overflow-hidden rounded-lg border border-solid border-gray-200 bg-white p-2 md:h-full md:p-3',
+                        isLoading && 'bg-gray-100',
+                        padding && 'p-8 py-12 md:p-16'
                     )}
                     {...loadingProps}
                 >
                     {image ? (
                         <div className="h-fit min-h-32 w-full overflow-hidden md:h-full md:max-h-[30rem]">
                             <Image
-                                className={cn(
-                                    'opacity-1 h-fit w-full object-contain object-center transition-opacity duration-500 md:h-full md:max-h-[30rem]',
-                                    isLoading && 'opacity-0 transition-none'
-                                )}
+                                role={image.altText ? undefined : 'presentation'}
                                 src={image.url!}
-                                alt={image.altText || product.title}
+                                alt={image.altText!}
                                 title={image.altText!}
-                                width={500}
-                                height={500}
+                                width={image.width ?? 500}
+                                height={image.height ?? 500}
                                 sizes="(max-width: 920px) 75vw, 500px"
                                 loading="eager"
                                 decoding="async"
@@ -108,13 +112,18 @@ const ProductGallery = ({
                                     setSelected(() => next);
                                     setNext(null);
                                 }}
+                                className={cn(
+                                    'opacity-1 h-fit w-full object-contain object-center transition-opacity duration-500 md:h-full md:max-h-[30rem]',
+                                    isLoading && 'opacity-0 transition-none',
+                                    primaryImageClassName
+                                )}
                             />
                         </div>
                     ) : (
                         <div className="h-full min-h-32 w-full md:min-h-[36rem]" />
                     )}
 
-                    {!isLoading ? (
+                    {!isLoading && enableShare ? (
                         <div
                             className={cn(
                                 'absolute inset-x-2 top-2 flex flex-row-reverse items-start justify-between gap-2',
@@ -205,8 +214,8 @@ const ProductGallery = ({
                                             src={image.url!}
                                             alt={image.altText || `#${index + 1}`}
                                             title={image.altText!}
-                                            width={175}
-                                            height={175}
+                                            width={image.width ?? 175}
+                                            height={image.height ?? 175}
                                             sizes="(max-width: 920px) 75px, 175px"
                                             loading="eager"
                                             decoding="async"
