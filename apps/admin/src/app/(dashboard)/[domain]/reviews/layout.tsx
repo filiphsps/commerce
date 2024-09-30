@@ -9,7 +9,7 @@ export default async function ReviewsLayout({
 }>) {
     return (
         <>
-            <div className="fixed inset-8 z-10 empty:hidden">{modal}</div>
+            <section className="fixed inset-8 z-30 empty:hidden">{modal}</section>
             {children}
         </>
     );
