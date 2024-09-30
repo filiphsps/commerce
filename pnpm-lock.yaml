@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@nordcom/nordstar':
-        specifier: 0.0.70
-        version: 0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
+        specifier: 0.0.71
+        version: 0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
     devDependencies:
       '@nordcom/prettier':
         specifier: 0.1.1
@@ -139,8 +139,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/marketing-common
       '@nordcom/nordstar':
-        specifier: 0.0.70
-        version: 0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
+        specifier: 0.0.71
+        version: 0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
       '@opentelemetry/api-logs':
         specifier: 0.53.0
         version: 0.53.0
@@ -344,8 +344,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/marketing-common
       '@nordcom/nordstar':
-        specifier: 0.0.70
-        version: 0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
+        specifier: 0.0.71
+        version: 0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
       '@opentelemetry/api-logs':
         specifier: 0.53.0
         version: 0.53.0
@@ -534,8 +534,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/errors
       '@nordcom/nordstar':
-        specifier: 0.0.70
-        version: 0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
+        specifier: 0.0.71
+        version: 0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
       '@opentelemetry/api-logs':
         specifier: 0.53.0
         version: 0.53.0
@@ -872,8 +872,8 @@ importers:
   packages/marketing-common:
     dependencies:
       '@nordcom/nordstar':
-        specifier: 0.0.70
-        version: 0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
+        specifier: 0.0.71
+        version: 0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
     devDependencies:
       '@codecov/vite-plugin':
         specifier: 1.2.0
@@ -1658,68 +1658,68 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
-  '@nordcom/nordstar-accented@0.0.70':
-    resolution: {integrity: sha512-LZ6L0TmzEEsSgHl6tjDLxwuue5Y3GKrnhEVygHs+pD23kiPTGUxCV9yN8wkSJ+5/Y50ED1B2ajcUGkbePnZI+g==}
+  '@nordcom/nordstar-accented@0.0.71':
+    resolution: {integrity: sha512-14nrB21zxBqDwq5Eu4loJmZa/2M6YE9V7fhM8/NsBuQMLq+LA2GTm2p0MgyXs7rmG69nbbw6iM1MBoLT2gQhyg==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
 
-  '@nordcom/nordstar-button@0.0.70':
-    resolution: {integrity: sha512-O2yafpY/cHzym6NiXWD2gWLEUISm248H8pOh5d91VkZH91h63pvi4iylAyaeCof+i7DclULbbl6TeK9WtFLNgQ==}
+  '@nordcom/nordstar-button@0.0.71':
+    resolution: {integrity: sha512-DiYxDOlfoDFPpvQ0oIf1WSAo3Uf5EJtAyORQQ6dAuTbXRUpuXLzXqAwmY4cngY2FhQ6ZawFbr3sKyhMoBfcQIQ==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
 
-  '@nordcom/nordstar-card@0.0.70':
-    resolution: {integrity: sha512-cZUIYo9qv186DksUMy6LpJ0zCOSAdvZgGdcltE2xCu+L0TTryNTeYo4BoazFcdMHoNbqqYnc2k5Xm0r4BgFXAg==}
+  '@nordcom/nordstar-card@0.0.71':
+    resolution: {integrity: sha512-bG9O5HAvzBA7n2Xn7oAgykNrcoEFf/I2r2nA/wxV2OJNxyfBNVs+Wk1RdiDS3uudE3TMXXx48SFuV84WHoIY6g==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
 
-  '@nordcom/nordstar-details@0.0.70':
-    resolution: {integrity: sha512-87BTG3KCAjpTU8iLiDqV1PcRbLjZF1sqcaIlQPnW+y1AEj5vXZwGWk5CpphKCscGVYVLxpVKy/efCc1TvktubQ==}
+  '@nordcom/nordstar-details@0.0.71':
+    resolution: {integrity: sha512-FDdq+BvBli9Trz9JV7x3nQ14zMvjuL7jda5YlY9JxmzSjVl68yvmUn/hTvCF9TzoPyxNYI9IxB9V/2ehtsTuKA==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
 
-  '@nordcom/nordstar-header@0.0.70':
-    resolution: {integrity: sha512-CcwqEJvSk7/KeEMbFHamAIjblfljPP4WERasRRHSpkhKodnZjSPVZlKiSsc6P6g5oz1A/8woH1lJ5QqGw3rLjg==}
+  '@nordcom/nordstar-header@0.0.71':
+    resolution: {integrity: sha512-HKGpcHByKA+/xDQChk2QMNWxbe31BPDZsIt6lStq/R7ldahwDnzYSjfs/s6Dtje0YtiAq+xr/8HVBTkHRiccdg==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
 
-  '@nordcom/nordstar-heading@0.0.70':
-    resolution: {integrity: sha512-4bmt/jNe9q+rFqELDYrk+sj6Lzyuf+V+TrFExo3Y6ZOvB3TgwEYfSUhz7iipPXhB7Nd6ABfOR12rezKi5y3+CQ==}
+  '@nordcom/nordstar-heading@0.0.71':
+    resolution: {integrity: sha512-W0dwAkO3yAmj0XQ4OLSrRyJrwEHw1fUGP/tQVRxlPYUcpPej5/NIf3TtCnyZ17kbyZhSJhdmZvq5T6fZYwHvjw==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
 
-  '@nordcom/nordstar-input@0.0.70':
-    resolution: {integrity: sha512-X0RGsMIYyQIYLyxz/bJrVgW9+OVv5jaiRcsBkyS4zZoIeYh6VpmzBAEZLg8Dt1PwSXhDOyx+NiKA3jpm7BcuVQ==}
+  '@nordcom/nordstar-input@0.0.71':
+    resolution: {integrity: sha512-Hnuvj2si5gqb5i2Nm+UaE1fZd8ccAvfTppyiRjZPIwyGkSl+S7fgdSzgLNUW545rHP7ktZJd+EtEHY1O9oFTew==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
 
-  '@nordcom/nordstar-label@0.0.70':
-    resolution: {integrity: sha512-4iaiPLI5AiDUh17Y95hVjdmdRPR7YlkkxSBkVDZdBVQcBAIZcDSOMfXVe9nm7sbUFd/pYawiy//nxtrfvfF+Tw==}
+  '@nordcom/nordstar-label@0.0.71':
+    resolution: {integrity: sha512-mY54xOi5rTSOmbgh26ZopcmSzkAq9i+RAI31oqebF7zD3MfqA2nYJKOA4kjWGl0AlecW6JA4S0GjyFFQWbMAHw==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
 
-  '@nordcom/nordstar-system@0.0.70':
-    resolution: {integrity: sha512-DVVRgwULgy13kDrRlh/HfPZ7lSYk4QWyzfrlQnoulle3n9vbk+Wz3Bm0w+DjYjGr7De5ljGfY25ndbOyG4+mIA==}
+  '@nordcom/nordstar-system@0.0.71':
+    resolution: {integrity: sha512-hv9TlISobYKJ5oW/1nVeohV8lJ8SS+/4AzKrDG5UEwO3EUC+l4sY70YSHZ+ofZx7NlBeKBPy1M0Ebn67Uk97eg==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
 
-  '@nordcom/nordstar-view@0.0.70':
-    resolution: {integrity: sha512-TmvtqqLsXNXaRXPKRVK0wJFOLtqgc0tdWc87USrQXPlPkd4s7VcKqXK/I8XHmloiiTsNKH5vdqyk5/j0k5SZMA==}
+  '@nordcom/nordstar-view@0.0.71':
+    resolution: {integrity: sha512-jKCnEeWqJFfef4Qn/EJ641tbcbk00gMoW/V4HVhcykDq2Imbyfev/ls4Hxi744b4DhxdV4hrLinsPlXHJmq2cQ==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
 
-  '@nordcom/nordstar@0.0.70':
-    resolution: {integrity: sha512-9SHtlgzC96LI0LbUbnA4RTxth9F2+jTirTqwLbfPVcV5SUMRPD3dA6/amZQIMdOlfPNG1hauUy64AOUO03YlfQ==}
+  '@nordcom/nordstar@0.0.71':
+    resolution: {integrity: sha512-sciS6qBRx7wJJueFBW1V6Wul8/1OXNOkYSzOwB1W5pegI+Se16QzJqJW8GehcTxYPleR/Qm8s3oDWIX3fpK55g==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
@@ -7945,117 +7945,117 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.17.1
 
-  '@nordcom/nordstar-accented@0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)':
+  '@nordcom/nordstar-accented@0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)':
     dependencies:
-      '@nordcom/nordstar-system': 0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
+      '@nordcom/nordstar-system': 0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
       react: 0.0.0-experimental-3edc000d-20240926
       react-dom: 0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926)
 
-  '@nordcom/nordstar-accented@0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
+  '@nordcom/nordstar-accented@0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
     dependencies:
-      '@nordcom/nordstar-system': 0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
+      '@nordcom/nordstar-system': 0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
       react: 19.0.0-rc-f65ac7bd-20240826
       react-dom: 19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826)
 
-  '@nordcom/nordstar-button@0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)':
+  '@nordcom/nordstar-button@0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)':
     dependencies:
-      '@nordcom/nordstar-system': 0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
+      '@nordcom/nordstar-system': 0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
       class-variance-authority: 0.7.0
       react: 0.0.0-experimental-3edc000d-20240926
       react-dom: 0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926)
 
-  '@nordcom/nordstar-button@0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
+  '@nordcom/nordstar-button@0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
     dependencies:
-      '@nordcom/nordstar-system': 0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
+      '@nordcom/nordstar-system': 0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
       class-variance-authority: 0.7.0
       react: 19.0.0-rc-f65ac7bd-20240826
       react-dom: 19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826)
 
-  '@nordcom/nordstar-card@0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)':
+  '@nordcom/nordstar-card@0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)':
     dependencies:
-      '@nordcom/nordstar-system': 0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
+      '@nordcom/nordstar-system': 0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
       class-variance-authority: 0.7.0
       react: 0.0.0-experimental-3edc000d-20240926
       react-dom: 0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926)
 
-  '@nordcom/nordstar-card@0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
+  '@nordcom/nordstar-card@0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
     dependencies:
-      '@nordcom/nordstar-system': 0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
+      '@nordcom/nordstar-system': 0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
       class-variance-authority: 0.7.0
       react: 19.0.0-rc-f65ac7bd-20240826
       react-dom: 19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826)
 
-  '@nordcom/nordstar-details@0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)':
+  '@nordcom/nordstar-details@0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)':
     dependencies:
-      '@nordcom/nordstar-card': 0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
-      '@nordcom/nordstar-label': 0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
-      '@nordcom/nordstar-system': 0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
+      '@nordcom/nordstar-card': 0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
+      '@nordcom/nordstar-label': 0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
+      '@nordcom/nordstar-system': 0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
       react: 0.0.0-experimental-3edc000d-20240926
       react-dom: 0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926)
 
-  '@nordcom/nordstar-details@0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
+  '@nordcom/nordstar-details@0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
     dependencies:
-      '@nordcom/nordstar-card': 0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
-      '@nordcom/nordstar-label': 0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
-      '@nordcom/nordstar-system': 0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
+      '@nordcom/nordstar-card': 0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
+      '@nordcom/nordstar-label': 0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
+      '@nordcom/nordstar-system': 0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
       react: 19.0.0-rc-f65ac7bd-20240826
       react-dom: 19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826)
 
-  '@nordcom/nordstar-header@0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)':
+  '@nordcom/nordstar-header@0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)':
     dependencies:
-      '@nordcom/nordstar-card': 0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
-      '@nordcom/nordstar-system': 0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
-      '@nordcom/nordstar-view': 0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
+      '@nordcom/nordstar-card': 0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
+      '@nordcom/nordstar-system': 0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
+      '@nordcom/nordstar-view': 0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
       react: 0.0.0-experimental-3edc000d-20240926
       react-dom: 0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926)
 
-  '@nordcom/nordstar-header@0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
+  '@nordcom/nordstar-header@0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
     dependencies:
-      '@nordcom/nordstar-card': 0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
-      '@nordcom/nordstar-system': 0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
-      '@nordcom/nordstar-view': 0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
+      '@nordcom/nordstar-card': 0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
+      '@nordcom/nordstar-system': 0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
+      '@nordcom/nordstar-view': 0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
       react: 19.0.0-rc-f65ac7bd-20240826
       react-dom: 19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826)
 
-  '@nordcom/nordstar-heading@0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)':
+  '@nordcom/nordstar-heading@0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)':
     dependencies:
-      '@nordcom/nordstar-system': 0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
+      '@nordcom/nordstar-system': 0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
       react: 0.0.0-experimental-3edc000d-20240926
       react-dom: 0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926)
 
-  '@nordcom/nordstar-heading@0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
+  '@nordcom/nordstar-heading@0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
     dependencies:
-      '@nordcom/nordstar-system': 0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
+      '@nordcom/nordstar-system': 0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
       react: 19.0.0-rc-f65ac7bd-20240826
       react-dom: 19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826)
 
-  '@nordcom/nordstar-input@0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)':
+  '@nordcom/nordstar-input@0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)':
     dependencies:
-      '@nordcom/nordstar-system': 0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
+      '@nordcom/nordstar-system': 0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
       class-variance-authority: 0.7.0
       react: 0.0.0-experimental-3edc000d-20240926
       react-dom: 0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926)
 
-  '@nordcom/nordstar-input@0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
+  '@nordcom/nordstar-input@0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
     dependencies:
-      '@nordcom/nordstar-system': 0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
+      '@nordcom/nordstar-system': 0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
       class-variance-authority: 0.7.0
       react: 19.0.0-rc-f65ac7bd-20240826
       react-dom: 19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826)
 
-  '@nordcom/nordstar-label@0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)':
+  '@nordcom/nordstar-label@0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)':
     dependencies:
-      '@nordcom/nordstar-system': 0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
+      '@nordcom/nordstar-system': 0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
       react: 0.0.0-experimental-3edc000d-20240926
       react-dom: 0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926)
 
-  '@nordcom/nordstar-label@0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
+  '@nordcom/nordstar-label@0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
     dependencies:
-      '@nordcom/nordstar-system': 0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
+      '@nordcom/nordstar-system': 0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
       react: 19.0.0-rc-f65ac7bd-20240826
       react-dom: 19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826)
 
-  '@nordcom/nordstar-system@0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)':
+  '@nordcom/nordstar-system@0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)':
     dependencies:
       clsx: 2.1.1
       hex-to-hsl: 1.0.2
@@ -8063,7 +8063,7 @@ snapshots:
       react-dom: 0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926)
       tailwind-merge: 2.5.2
 
-  '@nordcom/nordstar-system@0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
+  '@nordcom/nordstar-system@0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
     dependencies:
       clsx: 2.1.1
       hex-to-hsl: 1.0.2
@@ -8071,46 +8071,46 @@ snapshots:
       react-dom: 19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826)
       tailwind-merge: 2.5.2
 
-  '@nordcom/nordstar-view@0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)':
+  '@nordcom/nordstar-view@0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)':
     dependencies:
-      '@nordcom/nordstar-system': 0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
+      '@nordcom/nordstar-system': 0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
       react: 0.0.0-experimental-3edc000d-20240926
       react-dom: 0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926)
 
-  '@nordcom/nordstar-view@0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
+  '@nordcom/nordstar-view@0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
     dependencies:
-      '@nordcom/nordstar-system': 0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
+      '@nordcom/nordstar-system': 0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
       react: 19.0.0-rc-f65ac7bd-20240826
       react-dom: 19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826)
 
-  '@nordcom/nordstar@0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)':
+  '@nordcom/nordstar@0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)':
     dependencies:
-      '@nordcom/nordstar-accented': 0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
-      '@nordcom/nordstar-button': 0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
-      '@nordcom/nordstar-card': 0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
-      '@nordcom/nordstar-details': 0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
-      '@nordcom/nordstar-header': 0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
-      '@nordcom/nordstar-heading': 0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
-      '@nordcom/nordstar-input': 0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
-      '@nordcom/nordstar-label': 0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
-      '@nordcom/nordstar-system': 0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
-      '@nordcom/nordstar-view': 0.0.70(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
+      '@nordcom/nordstar-accented': 0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
+      '@nordcom/nordstar-button': 0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
+      '@nordcom/nordstar-card': 0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
+      '@nordcom/nordstar-details': 0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
+      '@nordcom/nordstar-header': 0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
+      '@nordcom/nordstar-heading': 0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
+      '@nordcom/nordstar-input': 0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
+      '@nordcom/nordstar-label': 0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
+      '@nordcom/nordstar-system': 0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
+      '@nordcom/nordstar-view': 0.0.71(react-dom@0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926))(react@0.0.0-experimental-3edc000d-20240926)
       class-variance-authority: 0.7.0
       react: 0.0.0-experimental-3edc000d-20240926
       react-dom: 0.0.0-experimental-3edc000d-20240926(react@0.0.0-experimental-3edc000d-20240926)
 
-  '@nordcom/nordstar@0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
+  '@nordcom/nordstar@0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)':
     dependencies:
-      '@nordcom/nordstar-accented': 0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
-      '@nordcom/nordstar-button': 0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
-      '@nordcom/nordstar-card': 0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
-      '@nordcom/nordstar-details': 0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
-      '@nordcom/nordstar-header': 0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
-      '@nordcom/nordstar-heading': 0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
-      '@nordcom/nordstar-input': 0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
-      '@nordcom/nordstar-label': 0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
-      '@nordcom/nordstar-system': 0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
-      '@nordcom/nordstar-view': 0.0.70(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
+      '@nordcom/nordstar-accented': 0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
+      '@nordcom/nordstar-button': 0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
+      '@nordcom/nordstar-card': 0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
+      '@nordcom/nordstar-details': 0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
+      '@nordcom/nordstar-header': 0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
+      '@nordcom/nordstar-heading': 0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
+      '@nordcom/nordstar-input': 0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
+      '@nordcom/nordstar-label': 0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
+      '@nordcom/nordstar-system': 0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
+      '@nordcom/nordstar-view': 0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
       class-variance-authority: 0.7.0
       react: 19.0.0-rc-f65ac7bd-20240826
       react-dom: 19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826)
