@@ -157,7 +157,11 @@ export async function generateMetadata({ params }: { params: LayoutParams }): Pr
     };
 }
 
-export default async function RootLayout({ children, params }: { children: ReactNode; params: LayoutParams }) {
+export default async function RootLayout({
+    children,
+    modal,
+    params
+}: Readonly<{ children: ReactNode; modal: ReactNode; params: LayoutParams }>) {
     const { domain, locale: localeData } = await params;
     if (!localeData || !domain) {
         notFound();
@@ -233,6 +237,8 @@ export default async function RootLayout({ children, params }: { children: React
                 >
                     <AnalyticsProvider shop={publicShop} hostname={domain}>
                         <HeaderProvider loaderColor={branding?.primary.color}>
+                            {modal}
+
                             <Suspense key="layout.geo-redirect" fallback={<Fragment />}>
                                 <GeoRedirect shop={publicShop} countries={countries} locale={locale} i18n={i18n} />
                             </Suspense>

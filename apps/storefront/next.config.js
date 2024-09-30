@@ -50,7 +50,7 @@ const config = {
         pprFallbacks: true,
         reactCompiler: true,
         scrollRestoration: true,
-        serverComponentsHmrCache: true,
+        serverComponentsHmrCache: false,
         serverSourceMaps: true,
         staleTimes: { dynamic: 0, static: 180 },
         taint: true,

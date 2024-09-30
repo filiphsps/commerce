@@ -58,6 +58,8 @@
         "@prismicio/client": "7.11.0",
         "@prismicio/next": "1.7.0",
         "@prismicio/react": "2.9.0",
+        "@radix-ui/react-visually-hidden": "1.1.0",
+        "@radix-ui/react-dialog": "1.1.1",
         "@sentry/nextjs": "8.32.0",
         "@sentry/profiling-node": "8.32.0",
         "@shopify/hydrogen-react": "2024.7.5",
