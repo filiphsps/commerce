@@ -148,7 +148,7 @@ export default async function BlogPage({ params }: { params: BlogPageParams }) {
                 </div>
             </Suspense>
 
-            <PageContent>
+            <PageContent as="article">
                 <Heading
                     title={title}
                     subtitleAs={Fragment}

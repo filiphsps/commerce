@@ -389,7 +389,7 @@ export default async function ProductPage({ params }: { params: ProductPageParam
                 </div>
             </Suspense>
 
-            <PageContent className="overflow flex max-w-full flex-col gap-4 px-0 md:flex-row md:flex-nowrap">
+            <PageContent className="flex max-w-full flex-col gap-4 px-0 md:flex-row md:flex-nowrap">
                 <Suspense key={`products.${handle}.gallery`} fallback={<section className="w-full" />}>
                     <section className={'flex h-auto w-full grow flex-col gap-4'}>
                         <ProductGallery
@@ -415,7 +415,7 @@ export default async function ProductPage({ params }: { params: ProductPageParam
                             <ProductSavings product={product} i18n={i18n} />
                         </Suspense>
 
-                        <Card className={cn(BLOCK_STYLES)}>
+                        <Card className={BLOCK_STYLES}>
                             <div className="flex h-auto w-full flex-col justify-start gap-3">
                                 <Suspense
                                     key={`products.${handle}.details.badges`}
@@ -465,7 +465,7 @@ export default async function ProductPage({ params }: { params: ProductPageParam
                         </Card>
 
                         <Suspense fallback={<Fragment />}>
-                            <Card className={cn(BLOCK_STYLES)}>
+                            <Card className={BLOCK_STYLES}>
                                 <InfoLines product={product} i18n={i18n} locale={locale} />
                             </Card>
                         </Suspense>

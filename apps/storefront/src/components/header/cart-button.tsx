@@ -37,7 +37,12 @@ const CartButton = ({ locale, i18n }: CartButtonProps) => {
                 suppressHydrationWarning={true}
             >
                 {totalQuantity ? (
-                    <MotionNumber value={totalQuantity} format={{ notation: 'compact' }} locales={locale.code} />
+                    <MotionNumber
+                        value={totalQuantity}
+                        format={{ notation: 'compact' }}
+                        locales={locale.code}
+                        inert={false}
+                    />
                 ) : null}
             </div>
 

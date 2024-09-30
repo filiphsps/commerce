@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default async function IndexAdminPage({}: {}) {
     return (
-        <section className="">
+        <section>
             <Heading level="h1">Logging out...</Heading>
 
             <LogoutAction />

@@ -10,7 +10,7 @@ export default function ProductPageLoading() {
             <div className="-mb-[1.25rem] empty:hidden md:-mb-[2.25rem]">
                 <BreadcrumbsSkeleton />
             </div>
-            <PageContent as="section" primary={true}>
+            <PageContent primary={true}>
                 <section className="flex w-full flex-col gap-2 overflow-hidden md:max-w-[32rem] 2xl:w-auto">
                     <div className="h-24 w-full" data-skeleton />
                 </section>

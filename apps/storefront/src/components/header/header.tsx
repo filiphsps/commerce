@@ -56,7 +56,7 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
             ))}
 
             <section
-                className="sticky top-0 z-50 flex w-full flex-col items-center overscroll-contain shadow-none transition-shadow duration-150 [grid-area:header] group-data-[menu-open=true]/body:shadow-lg group-data-[scrolled=true]/body:shadow-lg md:max-h-[95dvh]"
+                className="sticky top-0 z-20 flex w-full flex-col items-center overscroll-contain shadow-none transition-shadow duration-150 [grid-area:header] group-data-[menu-open=true]/body:shadow-lg group-data-[scrolled=true]/body:shadow-lg md:max-h-[95dvh]"
                 {...props}
             >
                 <section className="flex h-16 w-full flex-col items-center bg-white">

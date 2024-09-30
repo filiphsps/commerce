@@ -239,7 +239,7 @@ export default async function RootLayout({ children, params }: { children: React
 
                             <Suspense key="layout.shop-layout" fallback={<ShopLayout.skeleton />}>
                                 <ShopLayout shop={shop} locale={locale} i18n={i18n}>
-                                    <PageContent as="section" primary={true}>
+                                    <PageContent as="article" primary={true}>
                                         {children}
                                     </PageContent>
                                 </ShopLayout>
