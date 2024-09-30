@@ -124,11 +124,13 @@ CollectionBlock.displayName = 'Nordcom.Products.CollectionBlock';
 CollectionBlock.skeleton = ({
     isHorizontal = false,
     bare = false,
-    length = 7
+    length = 7,
+    className
 }: {
     length?: number;
     isHorizontal?: boolean;
     bare?: boolean;
+    className?: string;
 }) => {
     const cards = Array.from({ length }).map((_, index) => <ProductCard.skeleton key={index} />);
 
@@ -143,7 +145,8 @@ CollectionBlock.skeleton = ({
                 !isHorizontal &&
                     'grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] md:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] xl:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))]',
                 isHorizontal &&
-                    '-mr-8 auto-cols-[minmax(12rem,1fr)] grid-flow-col grid-cols-[repeat(auto-fit,minmax(12rem,1fr))] grid-rows-1 overflow-x-clip overscroll-none'
+                    '-mr-8 auto-cols-[minmax(12rem,1fr)] grid-flow-col grid-cols-[repeat(auto-fit,minmax(12rem,1fr))] grid-rows-1 overflow-x-clip overscroll-none',
+                className
             )}
         >
             {cards}

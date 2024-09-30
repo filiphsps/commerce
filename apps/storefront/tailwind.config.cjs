@@ -4,6 +4,9 @@ module.exports = {
     theme: {
         fontFamily: ['var(--font-primary, var(--font-fallback))', 'sans-serif'],
         extend: {
+            zIndex: {
+                5: 5
+            },
             fontFamily: {
                 sans: ['var(--font-primary, var(--font-fallback))', 'sans-serif']
             },

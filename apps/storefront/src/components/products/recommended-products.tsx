@@ -21,7 +21,7 @@ export type RecommendedProductsProps = {
     product?: Product;
     className?: string;
 };
-const RecommendedProducts = async ({ shop, locale, product, className }: RecommendedProductsProps) => {
+async function Component({ shop, locale, product, className }: Readonly<RecommendedProductsProps>) {
     if (!product?.id) {
         return null;
     }
@@ -42,12 +42,15 @@ const RecommendedProducts = async ({ shop, locale, product, className }: Recomme
     } catch {
         return null;
     }
-};
-RecommendedProducts.displayName = 'Nordcom.Products.RecommendedProducts';
+}
 
-RecommendedProducts.skeleton = () => {
-    return <CollectionBlock.skeleton isHorizontal={true} />;
-};
-(RecommendedProducts.skeleton as any).displayName = 'Nordcom.Products.RecommendedProducts.Skeleton';
+function Skeleton({ className }: { className?: string }) {
+    return <CollectionBlock.skeleton isHorizontal={true} className={className} />;
+}
 
-export { RecommendedProducts };
+export const RecommendedProducts = Object.assign(Component, {
+    displayName: 'Nordcom.Product.RecommendedProducts',
+    skeleton: Object.assign(Skeleton, {
+        displayName: 'Nordcom.Product.RecommendedProducts.skeleton'
+    })
+});

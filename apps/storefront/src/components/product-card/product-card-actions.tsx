@@ -69,7 +69,10 @@ const ProductCardActions = ({ i18n, data: product, selectedVariant }: ProductCar
 
     return (
         <AddToCart
-            className={cn(baseStyles, 'bg-primary text-primary-foreground flex w-full items-center justify-center')}
+            className={cn(
+                baseStyles,
+                'bg-primary text-primary-foreground flex w-full transform-gpu items-center justify-center'
+            )}
             quantity={1}
             data={{
                 product,
