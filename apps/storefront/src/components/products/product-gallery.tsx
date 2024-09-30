@@ -90,7 +90,7 @@ const ProductGallery = ({
                     {...loadingProps}
                 >
                     {image ? (
-                        <div className="h-fit min-h-32 w-full overflow-hidden md:h-full md:max-h-[30rem]">
+                        <div className="z-5 h-fit min-h-32 w-full transform-gpu overflow-hidden md:h-full md:max-h-[30rem]">
                             <Image
                                 role={image.altText ? undefined : 'presentation'}
                                 src={image.url!}

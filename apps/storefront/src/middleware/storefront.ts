@@ -22,7 +22,9 @@ function hostnameFromRequest(req: NextRequest): string {
         !hostname ||
         hostname === 'localhost' ||
         hostname.includes('.vercel.app') ||
-        hostname.includes('app.github.dev')
+        hostname.includes('app.github.dev') ||
+        hostname.startsWith('192.168.') ||
+        hostname.startsWith('10.0.0.')
     ) {
         hostname = 'swedish-candy-store.com';
     }
