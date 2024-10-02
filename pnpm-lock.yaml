@@ -166,8 +166,8 @@ importers:
         specifier: 2024.7.5
         version: 2024.7.5(@types/react@18.3.8)(react-dom@0.0.0-experimental-2d16326d-20240930(react@0.0.0-experimental-2d16326d-20240930))(react@0.0.0-experimental-2d16326d-20240930)
       '@shopify/shopify-api':
-        specifier: 11.4.1
-        version: 11.4.1
+        specifier: 11.5.0
+        version: 11.5.0
       '@vercel/analytics':
         specifier: 1.3.1
         version: 1.3.1(next@15.0.0-canary.174(@babel/core@7.25.2)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-3feb7e4-20240930)(react-dom@0.0.0-experimental-2d16326d-20240930(react@0.0.0-experimental-2d16326d-20240930))(react@0.0.0-experimental-2d16326d-20240930)(sass@1.79.4))(react@0.0.0-experimental-2d16326d-20240930)
@@ -2639,8 +2639,8 @@ packages:
     peerDependencies:
       webpack: '>=4.40.0'
 
-  '@shopify/admin-api-client@1.0.2':
-    resolution: {integrity: sha512-QSYOlaW3wQwSeLgnsvtTvsCQI1wmDEHTDFgXhWTF3A4tPR7iW06b1iShTOZyrgYv5tr4GY4SIAu97Xiz6ZvCRA==}
+  '@shopify/admin-api-client@1.0.3':
+    resolution: {integrity: sha512-m0lIYYhij7J697qxD0KiwJ4m0IchCq+JMp/7zWndq9M6XUssW2gxisFQ6i0nqiujCx4omUbO96DVvBbugq6OYw==}
 
   '@shopify/graphql-client@1.2.0':
     resolution: {integrity: sha512-xHboSDWetnprv6nxhw3N9gjx1vTFZPVXTD5WH6IEQNPjf4M+S05R4nHruX0iAsfKObFDbxwBXZldao/XrRHX9Q==}
@@ -2656,8 +2656,8 @@ packages:
     resolution: {integrity: sha512-Lln7vglzLK9KiYhl9ucQFVM7ArlpUM21xkDriBX8kVrqsoBsi+4vFIjf1wjhNPT0J/zHMjky7jiTnxVfdm+xXw==}
     engines: {node: '>=18.12.0'}
 
-  '@shopify/shopify-api@11.4.1':
-    resolution: {integrity: sha512-q4cxAmBA6QNYymQMc0SxNyOqh1EsfLUZCLfg6g+iQs156Q+Np+rQqWz6ZaPkNzw8uSaWZNEIFm8VBIMZC+vR+Q==}
+  '@shopify/shopify-api@11.5.0':
+    resolution: {integrity: sha512-tmG2sHTO0/DMvSK4tYFPi9hKlupEfQ6peT0hTLKS8lOuq/+zWpXOgKTaOFen/bm+4XCKg8WjAlxQqi0mTu4Ziw==}
 
   '@shopify/storefront-api-client@1.0.2':
     resolution: {integrity: sha512-s8vYcZ9+FfM0GwQUlyzz2vJ1m8ss3V+2fum+SPUq02iUpZnpVVlgVkCNTfftrwctq7lCrj/R50sG7pAEDX1C1A==}
@@ -4943,6 +4943,9 @@ packages:
 
   jose@5.6.3:
     resolution: {integrity: sha512-1Jh//hEEwMhNYPDDLwXHa2ePWgWiFNNUadVmguAAw2IJ6sj9mNxV5tGXJNqlMkJAybF6Lgw1mISDxTePP/187g==}
+
+  jose@5.9.3:
+    resolution: {integrity: sha512-egLIoYSpcd+QUF+UHgobt5YzI2Pkw/H39ou9suW687MY6PmCwPmkNV/4TNjn1p2tX5xO3j0d0sq5hiYE24bSlg==}
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -9161,7 +9164,7 @@ snapshots:
       - encoding
       - supports-color
 
-  '@shopify/admin-api-client@1.0.2':
+  '@shopify/admin-api-client@1.0.3':
     dependencies:
       '@shopify/graphql-client': 1.2.0
 
@@ -9183,15 +9186,15 @@ snapshots:
 
   '@shopify/network@3.3.0': {}
 
-  '@shopify/shopify-api@11.4.1':
+  '@shopify/shopify-api@11.5.0':
     dependencies:
-      '@shopify/admin-api-client': 1.0.2
+      '@shopify/admin-api-client': 1.0.3
       '@shopify/graphql-client': 1.2.0
       '@shopify/network': 3.3.0
       '@shopify/storefront-api-client': 1.0.2
       compare-versions: 6.1.1
       isbot: 5.1.17
-      jose: 5.6.3
+      jose: 5.9.3
       jsonwebtoken: 9.0.2
       node-fetch: 2.7.0
       tslib: 2.6.3
@@ -11006,7 +11009,7 @@ snapshots:
       debug: 4.3.6
       enhanced-resolve: 5.17.0
       eslint: 8.57.1
-      eslint-module-utils: 2.8.1(@typescript-eslint/parser@8.8.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@8.8.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1)(eslint@8.57.1))(eslint@8.57.1)
+      eslint-module-utils: 2.8.1(@typescript-eslint/parser@8.8.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.1)
       eslint-plugin-import: 2.29.1(@typescript-eslint/parser@8.8.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.1)
       fast-glob: 3.3.2
       get-tsconfig: 4.7.5
@@ -11018,7 +11021,7 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-module-utils@2.8.1(@typescript-eslint/parser@8.8.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@8.8.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1)(eslint@8.57.1))(eslint@8.57.1):
+  eslint-module-utils@2.8.1(@typescript-eslint/parser@8.8.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.1):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
@@ -11039,7 +11042,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.8.1(@typescript-eslint/parser@8.8.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@8.8.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1)(eslint@8.57.1))(eslint@8.57.1)
+      eslint-module-utils: 2.8.1(@typescript-eslint/parser@8.8.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.1)
       hasown: 2.0.2
       is-core-module: 2.14.0
       is-glob: 4.0.3
@@ -11989,6 +11992,8 @@ snapshots:
   jose@5.2.1: {}
 
   jose@5.6.3: {}
+
+  jose@5.9.3: {}
 
   js-tokens@4.0.0: {}
 
