@@ -688,8 +688,8 @@ importers:
         specifier: 0.1.1
         version: 0.1.1
       '@slicemachine/adapter-next':
-        specifier: 0.3.49
-        version: 0.3.49(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(next@15.0.0-canary.174(@babel/core@7.25.2)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-3feb7e4-20240930)(react-dom@0.0.0-experimental-2d16326d-20240930(react@0.0.0-experimental-2d16326d-20240930))(react@0.0.0-experimental-2d16326d-20240930)(sass@1.79.4))(react@0.0.0-experimental-2d16326d-20240930)(uuid@9.0.1)
+        specifier: 0.3.50
+        version: 0.3.50(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(next@15.0.0-canary.174(@babel/core@7.25.2)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-3feb7e4-20240930)(react-dom@0.0.0-experimental-2d16326d-20240930(react@0.0.0-experimental-2d16326d-20240930))(react@0.0.0-experimental-2d16326d-20240930)(sass@1.79.4))(react@0.0.0-experimental-2d16326d-20240930)(uuid@9.0.1)
       '@tailwindcss/forms':
         specifier: 0.5.9
         version: 0.5.9(tailwindcss@3.4.13(ts-node@10.9.1(@types/node@20.16.10)(typescript@5.6.2)))
@@ -2041,6 +2041,16 @@ packages:
       io-ts-types: ^0.5.16
       uuid: ^9.0.0
 
+  '@prismicio/types-internal@2.8.0':
+    resolution: {integrity: sha512-CkqBaKy0UcEgTJC37rqQlQUpbnEENcPR4XLlBQAdxOGLtFdgejE0cuZWea2DDrg0HUPxB+WQ+NmwhQYwTDhrkA==}
+    engines: {node: '>=12.7.0'}
+    peerDependencies:
+      '@types/uuid': ^9.0.2
+      fp-ts: ^2.11.8
+      io-ts: ^2.2.16
+      io-ts-types: ^0.5.16
+      uuid: ^9.0.0
+
   '@prismicio/types@0.2.9':
     resolution: {integrity: sha512-1uhHnZTiGeCi+rmO507B8jtnUTCNetdgrC5sfZEw9zsCplfgBELt0+BN1RFsXWLbZbyvR9xzHcrJ87Ykqa8JZA==}
     engines: {node: '>=12.7.0'}
@@ -2646,8 +2656,8 @@ packages:
   '@sinclair/typebox@0.27.8':
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
 
-  '@slicemachine/adapter-next@0.3.49':
-    resolution: {integrity: sha512-5otmdjGY/ybZoV54ks+pl2c/iHsblOQUpCDcW3puLn82Q11u6pwUGScg2avFWXUxyobTF36lB0T0YKC979OHwQ==}
+  '@slicemachine/adapter-next@0.3.50':
+    resolution: {integrity: sha512-Vq7fB49rQ4h94YEUGSNivATTtYZK3LeY7n8X/XDfw6JIwxJLva7nZJzg9F2e8sGYfv5ITx+tM1ihbHI5yY1pJg==}
     engines: {node: '>=14.15.0'}
     peerDependencies:
       next: ^11 || ^12 || ^13 || ^14 || ^15.0.0-rc.0
@@ -2664,6 +2674,10 @@ packages:
 
   '@slicemachine/plugin-kit@0.4.49':
     resolution: {integrity: sha512-s3QMptdu2lcKEjcAr6SOH88FyYCffL/56lHSVwiPiOfAtQQ34sXht8r05au7drZ/uRMn4pqYlOtCQWp2cuiaHg==}
+    engines: {node: '>=14.15.0'}
+
+  '@slicemachine/plugin-kit@0.4.50':
+    resolution: {integrity: sha512-EyQ6lVhrS27Ern5EJZaGPp9KrhL0rRe48MqA9WIyFOQ8ycTzUvyhLb/sYVcCI0/Gd93eVs4XYZG+A3b6jhTc5g==}
     engines: {node: '>=14.15.0'}
 
   '@sveltejs/kit@1.30.4':
@@ -5930,6 +5944,19 @@ packages:
       '@prismicio/types':
         optional: true
 
+  prismic-ts-codegen@0.1.22:
+    resolution: {integrity: sha512-vEFP/TeFPAD+SA/tqBvL3Pos/qRwneoU3bdy4jEuZDxpm/1gq3XqDG1mnzBTk+UGEPtYIDICt0Ne+PZjbxrpyg==}
+    engines: {node: '>=12.7.0'}
+    hasBin: true
+    peerDependencies:
+      '@prismicio/client': ^6.6 || ^7
+      '@prismicio/types': ^0.2.8
+    peerDependenciesMeta:
+      '@prismicio/client':
+        optional: true
+      '@prismicio/types':
+        optional: true
+
   progress@2.0.3:
     resolution: {integrity: sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==}
     engines: {node: '>=0.4.0'}
@@ -8471,6 +8498,17 @@ snapshots:
       tslib: 2.6.3
       uuid: 9.0.1
 
+  '@prismicio/types-internal@2.8.0(@types/uuid@9.0.8)(fp-ts@2.16.6)(io-ts-types@0.5.19(fp-ts@2.16.6)(io-ts@2.2.21(fp-ts@2.16.6))(monocle-ts@2.3.13(fp-ts@2.16.6))(newtype-ts@0.3.5(fp-ts@2.16.6)(monocle-ts@2.3.13(fp-ts@2.16.6))))(io-ts@2.2.21(fp-ts@2.16.6))(uuid@9.0.1)':
+    dependencies:
+      '@types/uuid': 9.0.8
+      fp-ts: 2.16.6
+      io-ts: 2.2.21(fp-ts@2.16.6)
+      io-ts-types: 0.5.19(fp-ts@2.16.6)(io-ts@2.2.21(fp-ts@2.16.6))(monocle-ts@2.3.13(fp-ts@2.16.6))(newtype-ts@0.3.5(fp-ts@2.16.6)(monocle-ts@2.3.13(fp-ts@2.16.6)))
+      monocle-ts: 2.3.13(fp-ts@2.16.6)
+      newtype-ts: 0.3.5(fp-ts@2.16.6)(monocle-ts@2.3.13(fp-ts@2.16.6))
+      tslib: 2.6.3
+      uuid: 9.0.1
+
   '@prismicio/types@0.2.9': {}
 
   '@radix-ui/number@1.1.0': {}
@@ -9130,11 +9168,11 @@ snapshots:
 
   '@sinclair/typebox@0.27.8': {}
 
-  '@slicemachine/adapter-next@0.3.49(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(next@15.0.0-canary.174(@babel/core@7.25.2)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-3feb7e4-20240930)(react-dom@0.0.0-experimental-2d16326d-20240930(react@0.0.0-experimental-2d16326d-20240930))(react@0.0.0-experimental-2d16326d-20240930)(sass@1.79.4))(react@0.0.0-experimental-2d16326d-20240930)(uuid@9.0.1)':
+  '@slicemachine/adapter-next@0.3.50(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(next@15.0.0-canary.174(@babel/core@7.25.2)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-3feb7e4-20240930)(react-dom@0.0.0-experimental-2d16326d-20240930(react@0.0.0-experimental-2d16326d-20240930))(react@0.0.0-experimental-2d16326d-20240930)(sass@1.79.4))(react@0.0.0-experimental-2d16326d-20240930)(uuid@9.0.1)':
     dependencies:
       '@prismicio/simulator': 0.1.4
-      '@prismicio/types-internal': 2.6.0(@types/uuid@9.0.8)(fp-ts@2.16.6)(io-ts-types@0.5.19(fp-ts@2.16.6)(io-ts@2.2.21(fp-ts@2.16.6))(monocle-ts@2.3.13(fp-ts@2.16.6))(newtype-ts@0.3.5(fp-ts@2.16.6)(monocle-ts@2.3.13(fp-ts@2.16.6))))(io-ts@2.2.21(fp-ts@2.16.6))(uuid@9.0.1)
-      '@slicemachine/plugin-kit': 0.4.49(@prismicio/types@0.2.9)
+      '@prismicio/types-internal': 2.8.0(@types/uuid@9.0.8)(fp-ts@2.16.6)(io-ts-types@0.5.19(fp-ts@2.16.6)(io-ts@2.2.21(fp-ts@2.16.6))(monocle-ts@2.3.13(fp-ts@2.16.6))(newtype-ts@0.3.5(fp-ts@2.16.6)(monocle-ts@2.3.13(fp-ts@2.16.6))))(io-ts@2.2.21(fp-ts@2.16.6))(uuid@9.0.1)
+      '@slicemachine/plugin-kit': 0.4.50(@prismicio/types@0.2.9)
       common-tags: 1.8.2
       fp-ts: 2.16.6
       io-ts: 2.2.21(fp-ts@2.16.6)
@@ -9198,6 +9236,22 @@ snapshots:
       p-limit: 4.0.0
       prettier: 3.3.3
       prismic-ts-codegen: 0.1.21(@prismicio/client@7.11.0)(@prismicio/types@0.2.9)
+    transitivePeerDependencies:
+      - '@prismicio/types'
+
+  '@slicemachine/plugin-kit@0.4.50(@prismicio/types@0.2.9)':
+    dependencies:
+      '@prismicio/client': 7.11.0
+      common-tags: 1.8.2
+      defu: 6.1.4
+      dotenv: 16.3.1
+      fp-ts: 2.16.6
+      fs-extra: 11.1.1
+      io-ts: 2.2.21(fp-ts@2.16.6)
+      io-ts-reporters: 2.0.1(fp-ts@2.16.6)(io-ts@2.2.21(fp-ts@2.16.6))
+      p-limit: 4.0.0
+      prettier: 3.3.3
+      prismic-ts-codegen: 0.1.22(@prismicio/client@7.11.0)(@prismicio/types@0.2.9)
     transitivePeerDependencies:
       - '@prismicio/types'
 
@@ -10867,7 +10921,7 @@ snapshots:
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@8.8.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.8.0(eslint@8.57.1)(typescript@5.6.2))(eslint@8.57.1))(eslint@8.57.1)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@8.8.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.1)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@8.8.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@8.8.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.8.0(eslint@8.57.1)(typescript@5.6.2))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
       eslint-plugin-jsx-a11y: 6.10.0(eslint@8.57.1)
       eslint-plugin-react: 7.37.1(eslint@8.57.1)
       eslint-plugin-react-hooks: 4.6.0(eslint@8.57.1)
@@ -10895,7 +10949,7 @@ snapshots:
       enhanced-resolve: 5.17.0
       eslint: 8.57.1
       eslint-module-utils: 2.8.1(@typescript-eslint/parser@8.8.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@8.8.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.8.0(eslint@8.57.1)(typescript@5.6.2))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@8.8.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.1)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@8.8.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@8.8.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.8.0(eslint@8.57.1)(typescript@5.6.2))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
       fast-glob: 3.3.2
       get-tsconfig: 4.7.5
       is-core-module: 2.14.0
@@ -10917,7 +10971,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.8.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.1):
+  eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.8.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@8.8.0(eslint@8.57.1)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.8.0(eslint@8.57.1)(typescript@5.6.2))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
       array-includes: 3.1.8
       array.prototype.findlastindex: 1.2.5
@@ -12789,6 +12843,21 @@ snapshots:
   pretty-format@3.8.0: {}
 
   prismic-ts-codegen@0.1.21(@prismicio/client@7.11.0)(@prismicio/types@0.2.9):
+    dependencies:
+      '@prismicio/custom-types-client': 1.3.1(@prismicio/client@7.11.0)
+      common-tags: 1.8.2
+      fast-glob: 3.3.2
+      jiti: 1.21.0
+      joi: 17.13.1
+      meow: 12.1.1
+      node-fetch: 3.3.2
+      pascal-case: 3.1.2
+      quick-lru: 6.1.2
+    optionalDependencies:
+      '@prismicio/client': 7.11.0
+      '@prismicio/types': 0.2.9
+
+  prismic-ts-codegen@0.1.22(@prismicio/client@7.11.0)(@prismicio/types@0.2.9):
     dependencies:
       '@prismicio/custom-types-client': 1.3.1(@prismicio/client@7.11.0)
       common-tags: 1.8.2
