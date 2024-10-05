@@ -208,8 +208,8 @@ importers:
         specifier: 4.2.3
         version: 4.2.3(next@15.0.0-canary.174(@babel/core@7.25.2)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-3feb7e4-20240930)(react-dom@0.0.0-experimental-2d16326d-20240930(react@0.0.0-experimental-2d16326d-20240930))(react@0.0.0-experimental-2d16326d-20240930)(sass@1.79.4))
       nextjs-toploader:
-        specifier: 3.6.15
-        version: 3.6.15(next@15.0.0-canary.174(@babel/core@7.25.2)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-3feb7e4-20240930)(react-dom@0.0.0-experimental-2d16326d-20240930(react@0.0.0-experimental-2d16326d-20240930))(react@0.0.0-experimental-2d16326d-20240930)(sass@1.79.4))(react-dom@0.0.0-experimental-2d16326d-20240930(react@0.0.0-experimental-2d16326d-20240930))(react@0.0.0-experimental-2d16326d-20240930)
+        specifier: 3.7.15
+        version: 3.7.15(next@15.0.0-canary.174(@babel/core@7.25.2)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-3feb7e4-20240930)(react-dom@0.0.0-experimental-2d16326d-20240930(react@0.0.0-experimental-2d16326d-20240930))(react@0.0.0-experimental-2d16326d-20240930)(sass@1.79.4))(react-dom@0.0.0-experimental-2d16326d-20240930(react@0.0.0-experimental-2d16326d-20240930))(react@0.0.0-experimental-2d16326d-20240930)
       nprogress:
         specifier: 0.2.0
         version: 0.2.0
@@ -395,8 +395,8 @@ importers:
         specifier: 4.2.3
         version: 4.2.3(next@15.0.0-canary.174(@babel/core@7.25.2)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-3feb7e4-20240930)(react-dom@0.0.0-experimental-2d16326d-20240930(react@0.0.0-experimental-2d16326d-20240930))(react@0.0.0-experimental-2d16326d-20240930)(sass@1.79.4))
       nextjs-toploader:
-        specifier: 3.6.15
-        version: 3.6.15(next@15.0.0-canary.174(@babel/core@7.25.2)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-3feb7e4-20240930)(react-dom@0.0.0-experimental-2d16326d-20240930(react@0.0.0-experimental-2d16326d-20240930))(react@0.0.0-experimental-2d16326d-20240930)(sass@1.79.4))(react-dom@0.0.0-experimental-2d16326d-20240930(react@0.0.0-experimental-2d16326d-20240930))(react@0.0.0-experimental-2d16326d-20240930)
+        specifier: 3.7.15
+        version: 3.7.15(next@15.0.0-canary.174(@babel/core@7.25.2)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-3feb7e4-20240930)(react-dom@0.0.0-experimental-2d16326d-20240930(react@0.0.0-experimental-2d16326d-20240930))(react@0.0.0-experimental-2d16326d-20240930)(sass@1.79.4))(react-dom@0.0.0-experimental-2d16326d-20240930(react@0.0.0-experimental-2d16326d-20240930))(react@0.0.0-experimental-2d16326d-20240930)
       nprogress:
         specifier: 0.2.0
         version: 0.2.0
@@ -630,8 +630,8 @@ importers:
         specifier: 4.2.3
         version: 4.2.3(next@15.0.0-canary.174(@babel/core@7.25.2)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-3feb7e4-20240930)(react-dom@0.0.0-experimental-2d16326d-20240930(react@0.0.0-experimental-2d16326d-20240930))(react@0.0.0-experimental-2d16326d-20240930)(sass@1.79.4))
       nextjs-toploader:
-        specifier: 3.6.15
-        version: 3.6.15(next@15.0.0-canary.174(@babel/core@7.25.2)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-3feb7e4-20240930)(react-dom@0.0.0-experimental-2d16326d-20240930(react@0.0.0-experimental-2d16326d-20240930))(react@0.0.0-experimental-2d16326d-20240930)(sass@1.79.4))(react-dom@0.0.0-experimental-2d16326d-20240930(react@0.0.0-experimental-2d16326d-20240930))(react@0.0.0-experimental-2d16326d-20240930)
+        specifier: 3.7.15
+        version: 3.7.15(next@15.0.0-canary.174(@babel/core@7.25.2)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-3feb7e4-20240930)(react-dom@0.0.0-experimental-2d16326d-20240930(react@0.0.0-experimental-2d16326d-20240930))(react@0.0.0-experimental-2d16326d-20240930)(sass@1.79.4))(react-dom@0.0.0-experimental-2d16326d-20240930(react@0.0.0-experimental-2d16326d-20240930))(react@0.0.0-experimental-2d16326d-20240930)
       nprogress:
         specifier: 0.2.0
         version: 0.2.0
@@ -4190,6 +4190,7 @@ packages:
   eslint@8.57.1:
     resolution: {integrity: sha512-ypowyDxpVSYpkXr9WPv2PAZCtNip1Mv5KTW0SCurXv/9iOpcrH9PaqUElksqEB6pChqHGDRCFTyrZlGhnLNGiA==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
 
   esm-env@1.0.0:
@@ -5474,8 +5475,8 @@ packages:
       sass:
         optional: true
 
-  nextjs-toploader@3.6.15:
-    resolution: {integrity: sha512-DMxO0BiT+NbGU7E9A8U2+0e7rRbG9qozbk19DFXhKRc9wuhgTPR/u8zr2TevsbFtVxDb9mf8YHFz+oBgjMC+HA==}
+  nextjs-toploader@3.7.15:
+    resolution: {integrity: sha512-DvvXEJVRPfE2j1HVXgFhmPl8pRcLb/4mvyVBDuYdMdkbEY7KJghp0fG5iOZ002cV6awbBw9j/Di7vQL8LRazxQ==}
     peerDependencies:
       next: '>= 6.0.0'
       react: '>= 16.0.0'
@@ -12412,7 +12413,7 @@ snapshots:
       - '@babel/core'
       - babel-plugin-macros
 
-  nextjs-toploader@3.6.15(next@15.0.0-canary.174(@babel/core@7.25.2)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-3feb7e4-20240930)(react-dom@0.0.0-experimental-2d16326d-20240930(react@0.0.0-experimental-2d16326d-20240930))(react@0.0.0-experimental-2d16326d-20240930)(sass@1.79.4))(react-dom@0.0.0-experimental-2d16326d-20240930(react@0.0.0-experimental-2d16326d-20240930))(react@0.0.0-experimental-2d16326d-20240930):
+  nextjs-toploader@3.7.15(next@15.0.0-canary.174(@babel/core@7.25.2)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-3feb7e4-20240930)(react-dom@0.0.0-experimental-2d16326d-20240930(react@0.0.0-experimental-2d16326d-20240930))(react@0.0.0-experimental-2d16326d-20240930)(sass@1.79.4))(react-dom@0.0.0-experimental-2d16326d-20240930(react@0.0.0-experimental-2d16326d-20240930))(react@0.0.0-experimental-2d16326d-20240930):
     dependencies:
       next: 15.0.0-canary.174(@babel/core@7.25.2)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-3feb7e4-20240930)(react-dom@0.0.0-experimental-2d16326d-20240930(react@0.0.0-experimental-2d16326d-20240930))(react@0.0.0-experimental-2d16326d-20240930)(sass@1.79.4)
       nprogress: 0.2.0
