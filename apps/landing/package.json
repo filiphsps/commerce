@@ -95,7 +95,7 @@
         "autoprefixer": "10.4.20",
         "babel-plugin-react-compiler": "0.0.0-experimental-3feb7e4-20240930",
         "concurrently": "9.0.1",
-        "critters": "0.0.24",
+        "critters": "0.0.25",
         "dotenv": "16.4.5",
         "eslint-config-next": "15.0.0-canary.174",
         "eslint": "8.57.1",
