@@ -74,7 +74,7 @@
         "react-dom": "0.0.0-experimental-2d16326d-20240930",
         "react-icons": "5.3.0",
         "react": "0.0.0-experimental-2d16326d-20240930",
-        "sass": "1.79.4",
+        "sass": "1.79.5",
         "sharp": "0.33.5",
         "sonner": "1.5.0",
         "tailwind-merge": "2.5.3",
