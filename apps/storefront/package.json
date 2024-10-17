@@ -107,7 +107,7 @@
         "@slicemachine/adapter-next": "0.3.51",
         "@tailwindcss/forms": "0.5.9",
         "@tailwindcss/typography": "0.5.15",
-        "@testing-library/jest-dom": "6.5.0",
+        "@testing-library/jest-dom": "6.6.2",
         "@testing-library/react": "16.0.1",
         "@types/accept-language-parser": "1.5.6",
         "@types/convert-units": "2.3.9",
