@@ -227,7 +227,7 @@ importers:
         version: 2.5.4
       tailwindcss-animate:
         specifier: 1.0.7
-        version: 1.0.7(tailwindcss@3.4.13(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3)))
+        version: 1.0.7(tailwindcss@3.4.14(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3)))
       use-context-selector:
         specifier: 2.0.0
         version: 2.0.0(react@0.0.0-experimental-77b637d6-20241016)(scheduler@0.25.0-rc-f65ac7bd-20240826)
@@ -240,10 +240,10 @@ importers:
         version: 0.1.1
       '@tailwindcss/forms':
         specifier: 0.5.9
-        version: 0.5.9(tailwindcss@3.4.13(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3)))
+        version: 0.5.9(tailwindcss@3.4.14(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3)))
       '@tailwindcss/typography':
         specifier: 0.5.15
-        version: 0.5.15(tailwindcss@3.4.13(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3)))
+        version: 0.5.15(tailwindcss@3.4.14(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3)))
       '@testing-library/jest-dom':
         specifier: 6.5.0
         version: 6.5.0
@@ -305,8 +305,8 @@ importers:
         specifier: 0.0.1
         version: 0.0.1
       tailwindcss:
-        specifier: 3.4.13
-        version: 3.4.13(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3))
+        specifier: 3.4.14
+        version: 3.4.14(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3))
       typescript:
         specifier: 5.6.3
         version: 5.6.3
@@ -430,10 +430,10 @@ importers:
         version: 0.1.1
       '@tailwindcss/forms':
         specifier: 0.5.9
-        version: 0.5.9(tailwindcss@3.4.13(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3)))
+        version: 0.5.9(tailwindcss@3.4.14(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3)))
       '@tailwindcss/typography':
         specifier: 0.5.15
-        version: 0.5.15(tailwindcss@3.4.13(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3)))
+        version: 0.5.15(tailwindcss@3.4.14(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3)))
       '@testing-library/jest-dom':
         specifier: 6.5.0
         version: 6.5.0
@@ -498,8 +498,8 @@ importers:
         specifier: 0.0.1
         version: 0.0.1
       tailwindcss:
-        specifier: 3.4.13
-        version: 3.4.13(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3))
+        specifier: 3.4.14
+        version: 3.4.14(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3))
       typescript:
         specifier: 5.6.3
         version: 5.6.3
@@ -689,10 +689,10 @@ importers:
         version: 0.3.51(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(next@15.0.0-canary.196(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-fa06e2c-20241016)(react-dom@0.0.0-experimental-77b637d6-20241016(react@0.0.0-experimental-77b637d6-20241016))(react@0.0.0-experimental-77b637d6-20241016)(sass@1.79.5))(react@0.0.0-experimental-77b637d6-20241016)(uuid@9.0.1)
       '@tailwindcss/forms':
         specifier: 0.5.9
-        version: 0.5.9(tailwindcss@3.4.13(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3)))
+        version: 0.5.9(tailwindcss@3.4.14(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3)))
       '@tailwindcss/typography':
         specifier: 0.5.15
-        version: 0.5.15(tailwindcss@3.4.13(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3)))
+        version: 0.5.15(tailwindcss@3.4.14(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3)))
       '@testing-library/jest-dom':
         specifier: 6.5.0
         version: 6.5.0
@@ -769,11 +769,11 @@ importers:
         specifier: 2.8.1
         version: 2.8.1(@prismicio/types@0.2.9)(@types/express@4.17.21)(@types/react-dom@18.3.0)(@types/react@18.3.8)(@types/uuid@9.0.8)(react-dom@0.0.0-experimental-77b637d6-20241016(react@0.0.0-experimental-77b637d6-20241016))(react@0.0.0-experimental-77b637d6-20241016)(uuid@9.0.1)
       tailwindcss:
-        specifier: 3.4.13
-        version: 3.4.13(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3))
+        specifier: 3.4.14
+        version: 3.4.14(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3))
       tailwindcss-content-visibility:
         specifier: 1.0.0
-        version: 1.0.0(tailwindcss@3.4.13(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3)))
+        version: 1.0.0(tailwindcss@3.4.14(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3)))
       typescript:
         specifier: 5.6.3
         version: 5.6.3
@@ -6713,8 +6713,8 @@ packages:
     peerDependencies:
       tailwindcss: ^3.0.0
 
-  tailwindcss@3.4.13:
-    resolution: {integrity: sha512-KqjHOJKogOUt5Bs752ykCeiwvi0fKVkr5oqsFNt/8px/tA8scFPIlkygsf6jXrfCqGHz7VflA6+yytWuM+XhFw==}
+  tailwindcss@3.4.14:
+    resolution: {integrity: sha512-IcSvOcTRcUtQQ7ILQL5quRDg7Xs93PdJEk1ZLbhhvJc7uj/OAhYOnruEiwnGgBvUtaUAJ8/mhSw1o8L2jCiENA==}
     engines: {node: '>=14.0.0'}
     hasBin: true
 
@@ -9503,18 +9503,18 @@ snapshots:
     dependencies:
       tslib: 2.8.0
 
-  '@tailwindcss/forms@0.5.9(tailwindcss@3.4.13(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3)))':
+  '@tailwindcss/forms@0.5.9(tailwindcss@3.4.14(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3)))':
     dependencies:
       mini-svg-data-uri: 1.4.4
-      tailwindcss: 3.4.13(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3))
+      tailwindcss: 3.4.14(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3))
 
-  '@tailwindcss/typography@0.5.15(tailwindcss@3.4.13(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3)))':
+  '@tailwindcss/typography@0.5.15(tailwindcss@3.4.14(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3)))':
     dependencies:
       lodash.castarray: 4.4.0
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       postcss-selector-parser: 6.0.10
-      tailwindcss: 3.4.13(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3))
+      tailwindcss: 3.4.14(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3))
 
   '@testing-library/dom@10.1.0':
     dependencies:
@@ -13862,15 +13862,15 @@ snapshots:
 
   tailwind-merge@2.5.4: {}
 
-  tailwindcss-animate@1.0.7(tailwindcss@3.4.13(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3))):
+  tailwindcss-animate@1.0.7(tailwindcss@3.4.14(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3))):
     dependencies:
-      tailwindcss: 3.4.13(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3))
+      tailwindcss: 3.4.14(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3))
 
-  tailwindcss-content-visibility@1.0.0(tailwindcss@3.4.13(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3))):
+  tailwindcss-content-visibility@1.0.0(tailwindcss@3.4.14(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3))):
     dependencies:
-      tailwindcss: 3.4.13(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3))
+      tailwindcss: 3.4.14(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3))
 
-  tailwindcss@3.4.13(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3)):
+  tailwindcss@3.4.14(ts-node@10.9.1(@types/node@20.16.11)(typescript@5.6.3)):
     dependencies:
       '@alloc/quick-lru': 5.2.0
       arg: 5.0.2
