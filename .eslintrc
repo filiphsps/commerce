@@ -6,12 +6,7 @@
         "es2024": true,
         "node": true
     },
-    "extends": [
-        "plugin:jsx-a11y/recommended",
-        "plugin:prettier/recommended",
-        "plugin:react-hooks/recommended",
-        "plugin:react/recommended"
-    ],
+    "extends": ["plugin:jsx-a11y/recommended", "plugin:prettier/recommended", "plugin:react/recommended"],
     "settings": {
         "react": {
             "version": "detect"
@@ -22,7 +17,6 @@
         "eslint-plugin-jsdoc",
         "jsx-a11y",
         "prettier",
-        "react-hooks",
         "react",
         "simple-import-sort",
         "unused-imports"
@@ -86,8 +80,6 @@
         "no-unused-vars": "off",
         "no-useless-constructor": "off",
         "prettier/prettier": "error",
-        "react-hooks/exhaustive-deps": "off",
-        "react-hooks/rules-of-hooks": "error",
         "react/jsx-uses-react": "off",
         "react/no-children-prop": "off",
         "react/no-find-dom-node": "off",
