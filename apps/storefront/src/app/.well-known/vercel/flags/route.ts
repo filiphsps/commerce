@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server';
 import type { ApiData } from '@vercel/flags';
 import type { NextRequest } from 'next/server';
 
-export const runtime = 'experimental-edge';
+export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
