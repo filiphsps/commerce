@@ -5,13 +5,11 @@ import { Shop } from '@nordcom/commerce-db';
 //import { Error } from '@nordcom/commerce-errors';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductApi } from '@/api/shopify/product';
-import { getDictionary } from '@/utils/dictionary';
 import { firstAvailableVariant } from '@/utils/first-available-variant';
 import { isValidHandle } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
 import { productToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { safeParseFloat } from '@/utils/pricing';
-import { cn } from '@/utils/tailwind';
 import { AnalyticsEventTrigger } from '@/utils/trackable';
 import { parseGid, parseMetafield } from '@shopify/hydrogen-react';
 import { notFound } from 'next/navigation';
@@ -19,10 +17,9 @@ import { notFound } from 'next/navigation';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import { JsonLd } from '@/components/json-ld';
-import { Card } from '@/components/layout/card';
 import PageContent from '@/components/page-content';
 
-import { BLOCK_STYLES, type ProductPageParams } from './page';
+import { type ProductPageParams } from './page';
 import { ProductDetails } from './product-details';
 
 import type { ParsedMetafields } from '@shopify/hydrogen-react';
@@ -56,8 +53,6 @@ export default async function ProductPageLayout({
     if (!initialVariant) {
         notFound();
     }
-
-    const i18n = await getDictionary({ shop, locale });
 
     let title = product.title.trim();
     if (
@@ -194,7 +189,7 @@ export default async function ProductPageLayout({
                         {children}
                     </Suspense>
 
-                    <Card className={cn(BLOCK_STYLES, 'gap-3 lg:gap-3')}>{description}</Card>
+                    {description}
 
                     <Suspense fallback={<div className="h-12 w-full" data-skeleton />}>
                         <div key={`products.${handle}.details.details`} className="flex flex-wrap gap-2 empty:hidden">
