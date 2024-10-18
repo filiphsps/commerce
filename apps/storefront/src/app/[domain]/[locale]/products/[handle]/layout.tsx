@@ -18,9 +18,10 @@ import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import { JsonLd } from '@/components/json-ld';
 import PageContent from '@/components/page-content';
+import { ProductDescription } from '@/components/products/product-description';
+import { RecommendedProducts } from '@/components/products/recommended-products';
 
 import { type ProductPageParams } from './page';
-import { ProductDetails } from './product-details';
 
 import type { ParsedMetafields } from '@shopify/hydrogen-react';
 import type { ReactNode } from 'react';
@@ -31,12 +32,14 @@ export default async function ProductPageLayout({
     gallery,
     children,
     description,
+    details,
     recommendations
 }: Readonly<{
     params: ProductPageParams;
     gallery: ReactNode;
     children: ReactNode;
     description: ReactNode;
+    details: ReactNode;
     recommendations: ReactNode;
 }>) {
     const { domain, locale: localeData, handle } = await params;
@@ -47,7 +50,10 @@ export default async function ProductPageLayout({
     const locale = Locale.from(localeData);
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const api = await ShopifyApolloApiClient({ shop, locale });
-    const product = await ProductApi({ api, handle });
+    const product = await ProductApi({
+        api,
+        handle
+    });
 
     const initialVariant = firstAvailableVariant(product);
     if (!initialVariant) {
@@ -182,24 +188,17 @@ export default async function ProductPageLayout({
                 <Suspense>{gallery}</Suspense>
 
                 <section className="flex w-full grow flex-col gap-2 overflow-hidden md:max-w-[34rem] md:gap-3">
-                    <Suspense
-                        key={`products.${handle}.details`}
-                        fallback={<section className="w-full overflow-hidden md:max-w-[32rem]" />}
-                    >
+                    <Suspense fallback={<section className="w-full overflow-hidden md:max-w-[32rem]" />}>
                         {children}
                     </Suspense>
 
-                    {description}
+                    <Suspense fallback={<ProductDescription.skeleton />}>{description}</Suspense>
 
-                    <Suspense fallback={<div className="h-12 w-full" data-skeleton />}>
-                        <div key={`products.${handle}.details.details`} className="flex flex-wrap gap-2 empty:hidden">
-                            <ProductDetails data={product} locale={locale} />
-                        </div>
-                    </Suspense>
+                    <Suspense fallback={<div className="h-12 w-full" data-skeleton />}>{details}</Suspense>
                 </section>
             </PageContent>
 
-            {recommendations}
+            <Suspense fallback={<RecommendedProducts.skeleton className="px-3" />}>{recommendations}</Suspense>
 
             {/* Metadata */}
             <JsonLd data={jsonLd} />

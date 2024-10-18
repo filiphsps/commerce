@@ -1,7 +1,5 @@
 import 'server-only';
 
-import styles from './collection.module.scss';
-
 import { type HTMLProps } from 'react';
 import { FiChevronRight } from 'react-icons/fi';
 
@@ -86,7 +84,7 @@ const CollectionContainer = async ({ slice, children, className }: CollectionCon
     return (
         <PageContent
             as="section"
-            className={cn(styles.container, 'gap-4', className)}
+            className={cn('flex flex-col items-start justify-start gap-4 self-start', className)}
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
         >
@@ -97,7 +95,7 @@ const CollectionContainer = async ({ slice, children, className }: CollectionCon
     );
 };
 
-CollectionContainer.skeleton = ({ slice }: { slice?: Slice }) => {
+CollectionContainer.skeleton = ({ slice, className }: { slice?: Slice; className?: string }) => {
     if (!slice || !(slice as any)?.primary) {
         return null;
     }
@@ -105,7 +103,7 @@ CollectionContainer.skeleton = ({ slice }: { slice?: Slice }) => {
     return (
         <PageContent
             as="section"
-            className={styles.container}
+            className={cn('flex flex-col items-start justify-start gap-4 self-start', className)}
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
         >

@@ -1,4 +1,28 @@
-@import 'globals';
+@keyframes shimmer {
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes forward-pulse {
+    0%,
+    100% {
+        transform: scale(1) scaleY(1.05) translateX(-0.25rem);
+    }
+    50% {
+        transform: scale(1.2) scaleY(0.8) translateX(0.75rem);
+    }
+}
+
+@keyframes pulse {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.15);
+    }
+}
 
 :root {
     --font-fallback: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, Cantarell,
@@ -43,7 +67,7 @@ html {
         --accent-primary-text: var(--color-accent-primary-text, var(--color-bright));
         --accent-secondary-text: var(--color-accent-secondary-text, var(--color-dark));
 
-        --page-width: #{$page-width};
+        --page-width: 1536px;
 
         --block-border-radius-large: 1rem;
         --block-border-radius: 0.75rem;

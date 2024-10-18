@@ -1,7 +1,5 @@
 import 'server-only';
 
-import styles from './collection.module.scss';
-
 import { Suspense } from 'react';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
@@ -42,7 +40,7 @@ const CollectionSlice = async ({ slice, index, context: { shop, locale } }: Coll
     const showViewAll = slice.primary.show_view_all_card;
 
     return (
-        <CollectionContainer slice={slice} className={cn('w-full', fullWidth && styles.full)}>
+        <CollectionContainer slice={slice} className={cn('w-full', fullWidth && '')}>
             <Suspense fallback={<CollectionBlock.skeleton isHorizontal={horizontal} />}>
                 <CollectionBlock
                     shop={shop}

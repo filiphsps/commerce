@@ -1,7 +1,5 @@
 'use client';
 
-import styles from './page.module.scss';
-
 import { useMemo, useState } from 'react';
 
 import { firstAvailableVariant } from '@/utils/first-available-variant';
@@ -38,7 +36,7 @@ export function ProductContent({ product, i18n }: ProductContentProps) {
     return (
         <ProductProvider data={product as any} initialVariantId={initialVariantId}>
             <QuantityProvider quantity={quantity} setQuantity={setQuantity}>
-                <ProductActionsContainer i18n={i18n} className={styles.actions} />
+                <ProductActionsContainer i18n={i18n} />
             </QuantityProvider>
         </ProductProvider>
     );
