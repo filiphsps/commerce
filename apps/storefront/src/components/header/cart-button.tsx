@@ -5,7 +5,6 @@ import { FiShoppingBag } from 'react-icons/fi';
 import { capitalize, getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 import { useCart } from '@shopify/hydrogen-react';
-import MotionNumber from 'motion-number';
 
 import { Button } from '@/components/actionable/button';
 import Link from '@/components/link';
@@ -36,14 +35,7 @@ const CartButton = ({ locale, i18n }: CartButtonProps) => {
                 className={cn('text-left text-base font-extrabold transition-colors', !totalQuantity && 'w-0')}
                 suppressHydrationWarning={true}
             >
-                {totalQuantity ? (
-                    <MotionNumber
-                        value={totalQuantity}
-                        format={{ notation: 'compact' }}
-                        locales={locale.code}
-                        inert={false}
-                    />
-                ) : null}
+                {totalQuantity || null}
             </div>
 
             <FiShoppingBag
