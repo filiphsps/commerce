@@ -56,7 +56,7 @@
         "mongoose": "8.7.2"
     },
     "devDependencies": {
-        "@codecov/vite-plugin": "1.2.0",
+        "@codecov/vite-plugin": "1.2.1",
         "@nordcom/prettier": "0.1.1",
         "@types/node": "20.16.12",
         "concurrently": "9.0.1",
