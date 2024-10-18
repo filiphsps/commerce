@@ -121,8 +121,8 @@ importers:
         specifier: 0.11.3
         version: 0.11.3(@apollo/client@3.11.8(@types/react@18.3.8)(graphql@16.9.0)(react-dom@0.0.0-experimental-77b637d6-20241016(react@0.0.0-experimental-77b637d6-20241016))(react@0.0.0-experimental-77b637d6-20241016))(next@15.0.0-canary.197(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-fa06e2c-20241016)(react-dom@0.0.0-experimental-77b637d6-20241016(react@0.0.0-experimental-77b637d6-20241016))(react@0.0.0-experimental-77b637d6-20241016)(sass@1.80.2))(react@0.0.0-experimental-77b637d6-20241016)
       '@auth/core':
-        specifier: 0.37.0
-        version: 0.37.0
+        specifier: 0.37.1
+        version: 0.37.1
       '@next/third-parties':
         specifier: 15.0.0-canary.197
         version: 15.0.0-canary.197(next@15.0.0-canary.197(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-fa06e2c-20241016)(react-dom@0.0.0-experimental-77b637d6-20241016(react@0.0.0-experimental-77b637d6-20241016))(react@0.0.0-experimental-77b637d6-20241016)(sass@1.80.2))(react@0.0.0-experimental-77b637d6-20241016)
@@ -516,8 +516,8 @@ importers:
         specifier: 0.11.3
         version: 0.11.3(@apollo/client@3.11.8(@types/react@18.3.8)(graphql@16.9.0)(react-dom@0.0.0-experimental-77b637d6-20241016(react@0.0.0-experimental-77b637d6-20241016))(react@0.0.0-experimental-77b637d6-20241016))(next@15.0.0-canary.197(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-fa06e2c-20241016)(react-dom@0.0.0-experimental-77b637d6-20241016(react@0.0.0-experimental-77b637d6-20241016))(react@0.0.0-experimental-77b637d6-20241016)(sass@1.80.2))(react@0.0.0-experimental-77b637d6-20241016)
       '@auth/core':
-        specifier: 0.37.0
-        version: 0.37.0
+        specifier: 0.37.1
+        version: 0.37.1
       '@neshca/cache-handler':
         specifier: 1.8.1
         version: 1.8.1(next@15.0.0-canary.197(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-fa06e2c-20241016)(react-dom@0.0.0-experimental-77b637d6-20241016(react@0.0.0-experimental-77b637d6-20241016))(react@0.0.0-experimental-77b637d6-20241016)(sass@1.80.2))(redis@4.7.0)
@@ -983,8 +983,8 @@ packages:
       nodemailer:
         optional: true
 
-  '@auth/core@0.37.0':
-    resolution: {integrity: sha512-LybAgfFC5dta3Mu3al0UbnzMGVBpZRqLMvvXupQOfETtPNlL7rXgTO13EVRTCdvPqMQrVYjODUDvgVfQM1M3Qg==}
+  '@auth/core@0.37.1':
+    resolution: {integrity: sha512-85PosPEZXHKZhEaAH5DVCig2N1Cu5PC8CbWX03Dw9g1JISLHyrRT0RZRcaWlgmz+0Ua4N52sFRX+g9WARQaUlA==}
     peerDependencies:
       '@simplewebauthn/browser': ^9.0.1
       '@simplewebauthn/server': ^9.0.2
@@ -7373,7 +7373,7 @@ snapshots:
       preact: 10.11.3
       preact-render-to-string: 5.2.3(preact@10.11.3)
 
-  '@auth/core@0.37.0':
+  '@auth/core@0.37.1':
     dependencies:
       '@panva/hkdf': 1.2.1
       '@types/cookie': 0.6.0
