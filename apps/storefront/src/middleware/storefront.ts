@@ -90,6 +90,9 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     let newUrl = req.nextUrl.clone();
     let cookies: string[][] = [];
 
+    // Sort the search params to improve caching.
+    newUrl.searchParams.sort();
+
     let hostname: string;
     try {
         hostname = await getHostname(req);
@@ -114,9 +117,6 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         newUrl.pathname = newUrl.pathname.replace(`/${hostname}/`, `/`);
         return NextResponse.redirect(newUrl, { status: 301 });
     }
-
-    // Sort the search params to improve caching.
-    newUrl.searchParams.sort();
 
     const isSpecialPath: boolean =
         !!newUrl.pathname.match(FILE_TEST) ||
