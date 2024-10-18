@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
+import { Error } from '@nordcom/commerce-errors';
 
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductApi } from '@/api/shopify/product';
@@ -15,7 +16,8 @@ import { ProductDescription } from '@/components/products/product-description';
 
 async function Content({ shop, locale, handle }: { shop: OnlineShop; locale: Locale; handle: string }) {
     const api = await ShopifyApolloApiClient({ shop, locale });
-    const product = await ProductApi({
+
+    const [product, productError] = await ProductApi({
         api,
         handle,
         fragment: /* GraphQL */ `
@@ -30,6 +32,14 @@ async function Content({ shop, locale, handle }: { shop: OnlineShop; locale: Loc
             }
         `
     });
+    if (productError) {
+        if (Error.isNotFound(productError)) {
+            notFound();
+        }
+
+        console.error(productError);
+        throw productError;
+    }
 
     return (
         <ProductDescription

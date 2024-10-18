@@ -94,19 +94,15 @@ export async function generateMetadata({
     // Setup the AbstractApi client.
     const api = await ShopifyApiClient({ shop, locale });
 
-    let product: Awaited<ReturnType<typeof ProductApi>> | null = null;
-    try {
-        product = await ProductApi({ api, handle });
-    } catch (error: unknown) {
-        unstable_rethrow(error);
-
-        if (Error.isNotFound(error)) {
+    const [product, productError] = await ProductApi({ api, handle });
+    if (productError) {
+        if (Error.isNotFound(productError)) {
             await checkAndHandleRedirect({ domain, locale: Locale.from(localeData), path: `/products/${handle}` });
             notFound();
         }
 
-        console.error(error);
-        throw error;
+        console.error(productError);
+        throw productError;
     }
 
     const initialVariant = firstAvailableVariant(product);
@@ -214,19 +210,15 @@ export default async function ProductPage({ params }: { params: ProductPageParam
     // Setup the AbstractApi client.
     const api = await ShopifyApolloApiClient({ shop, locale });
 
-    let product: Awaited<ReturnType<typeof ProductApi>> | null = null;
-    try {
-        product = await ProductApi({ api, handle });
-    } catch (error: unknown) {
-        unstable_rethrow(error);
-
-        if (Error.isNotFound(error)) {
+    const [product, productError] = await ProductApi({ api, handle });
+    if (productError) {
+        if (Error.isNotFound(productError)) {
             await checkAndHandleRedirect({ domain, locale: Locale.from(localeData), path: `/products/${handle}` });
             notFound();
         }
 
-        console.error(error);
-        throw error;
+        console.error(productError);
+        throw productError;
     }
 
     const { descriptionHtml: content } = product;

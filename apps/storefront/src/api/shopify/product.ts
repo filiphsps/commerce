@@ -7,7 +7,7 @@ import { gql } from '@apollo/client';
 import md5 from 'crypto-js/md5';
 
 import type { Product } from '@/api/product';
-import type { AbstractApi, ApiOptions } from '@/utils/abstract-api';
+import type { AbstractApi, ApiOptions, ApiReturn } from '@/utils/abstract-api';
 import type {
     Filter,
     Maybe,
@@ -278,9 +278,9 @@ type ProductsOptions = ApiOptions & {
     filters: ProductsFilters;
 };
 
-export const ProductApi = async ({ api, handle, fragment }: ProductOptions): Promise<Product> => {
+export const ProductApi = async ({ api, handle, fragment }: ProductOptions): Promise<ApiReturn<Product>> => {
     if (!handle) {
-        throw new InvalidHandleError(handle);
+        return [undefined, new InvalidHandleError(handle)];
     }
 
     const shop = api.shop();
@@ -311,13 +311,16 @@ export const ProductApi = async ({ api, handle, fragment }: ProductOptions): Pro
         const {
             product: { descriptionHtml, ...product }
         } = data;
-        return {
-            ...product,
-            descriptionHtml: cleanShopifyHtml(descriptionHtml) || ''
-        } as Product;
+        return [
+            {
+                ...product,
+                descriptionHtml: cleanShopifyHtml(descriptionHtml) || ''
+            } as Product,
+            undefined
+        ];
     } catch (error: unknown) {
         console.error(error);
-        throw error;
+        return [undefined, error as any];
     }
 };
 
