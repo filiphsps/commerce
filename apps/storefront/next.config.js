@@ -47,6 +47,7 @@ const config = {
         parallelServerBuildTraces: true,
         parallelServerCompiles: true,
         ppr: true,
+        prerenderEarlyExit: true,
         reactCompiler: true,
         scrollRestoration: true,
         serverComponentsHmrCache: true,

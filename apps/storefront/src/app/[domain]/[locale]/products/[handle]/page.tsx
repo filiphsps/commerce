@@ -63,6 +63,8 @@ export async function generateStaticParams({
 
         return products.map(({ node: { handle } }) => ({ handle }));
     } catch (error: unknown) {
+        unstable_rethrow(error);
+
         console.error(error);
         return [];
     }
@@ -96,13 +98,14 @@ export async function generateMetadata({
     try {
         product = await ProductApi({ api, handle });
     } catch (error: unknown) {
+        unstable_rethrow(error);
+
         if (Error.isNotFound(error)) {
             await checkAndHandleRedirect({ domain, locale: Locale.from(localeData), path: `/products/${handle}` });
             notFound();
         }
 
         console.error(error);
-        unstable_rethrow(error);
         throw error;
     }
 
@@ -114,7 +117,9 @@ export async function generateMetadata({
     let page: Awaited<ReturnType<typeof PageApi<'product_page'>>> | undefined = null;
     try {
         page = await PageApi({ shop, locale, handle, type: 'product_page' });
-    } catch {}
+    } catch (error: unknown) {
+        unstable_rethrow(error);
+    }
 
     const locales = await LocalesApi({ api });
 
@@ -213,13 +218,14 @@ export default async function ProductPage({ params }: { params: ProductPageParam
     try {
         product = await ProductApi({ api, handle });
     } catch (error: unknown) {
+        unstable_rethrow(error);
+
         if (Error.isNotFound(error)) {
             await checkAndHandleRedirect({ domain, locale: Locale.from(localeData), path: `/products/${handle}` });
             notFound();
         }
 
         console.error(error);
-        unstable_rethrow(error);
         throw error;
     }
 

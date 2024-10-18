@@ -61,6 +61,8 @@ export async function generateStaticParams({
             handle
         }));
     } catch (error: unknown) {
+        unstable_rethrow(error);
+
         console.error(error);
         return [];
     }
@@ -212,7 +214,9 @@ export default async function CollectionPage({
     let page: Awaited<ReturnType<typeof PageApi<'collection_page'>>> | null = null;
     try {
         page = await PageApi({ shop, locale, handle, type: 'collection_page' });
-    } catch {}
+    } catch (error: unknown) {
+        unstable_rethrow(error);
+    }
 
     const empty = collection.products.edges.length <= 0;
 

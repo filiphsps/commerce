@@ -6,6 +6,7 @@ import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { RecommendationApi } from '@/api/shopify/recommendation';
+import { unstable_rethrow } from 'next/navigation';
 
 import ProductCard from '@/components/product-card/product-card';
 
@@ -39,7 +40,9 @@ async function Component({ shop, locale, product, className }: Readonly<Recommen
                 ))}
             </CollectionBlock>
         );
-    } catch {
+    } catch (error: unknown) {
+        unstable_rethrow(error);
+
         return null;
     }
 }
