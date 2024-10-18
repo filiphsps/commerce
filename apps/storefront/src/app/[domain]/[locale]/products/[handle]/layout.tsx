@@ -1,6 +1,7 @@
 import { Fragment, Suspense } from 'react';
 
 import { Shop } from '@nordcom/commerce-db';
+import { Error } from '@nordcom/commerce-errors';
 
 //import { Error } from '@nordcom/commerce-errors';
 import { ShopifyApolloApiClient } from '@/api/shopify';
@@ -50,10 +51,19 @@ export default async function ProductPageLayout({
     const locale = Locale.from(localeData);
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const api = await ShopifyApolloApiClient({ shop, locale });
-    const product = await ProductApi({
+
+    const [product, productError] = await ProductApi({
         api,
         handle
     });
+    if (productError) {
+        if (Error.isNotFound(productError)) {
+            notFound();
+        }
+
+        console.error(productError);
+        throw productError;
+    }
 
     const initialVariant = firstAvailableVariant(product);
     if (!initialVariant) {
