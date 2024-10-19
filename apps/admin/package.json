@@ -46,7 +46,7 @@
     "dependencies": {
         "@apollo/client": "3.11.8",
         "@apollo/experimental-nextjs-app-support": "0.11.3",
-        "@auth/core": "0.37.1",
+        "@auth/core": "0.37.2",
         "@next/third-parties": "15.0.0-canary.197",
         "@nordcom/commerce-db": "workspace:*",
         "@nordcom/commerce-errors": "workspace:*",
