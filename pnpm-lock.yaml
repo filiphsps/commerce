@@ -642,8 +642,8 @@ importers:
         specifier: 0.0.0-experimental-28668d39-20241023
         version: 0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023)
       react-error-boundary:
-        specifier: 4.0.13
-        version: 4.0.13(react@0.0.0-experimental-28668d39-20241023)
+        specifier: 4.1.2
+        version: 4.1.2(react@0.0.0-experimental-28668d39-20241023)
       react-ipgeolocation:
         specifier: 1.4.0
         version: 1.4.0
@@ -6080,8 +6080,8 @@ packages:
     peerDependencies:
       react: 19.0.0-rc-f65ac7bd-20240826
 
-  react-error-boundary@4.0.13:
-    resolution: {integrity: sha512-b6PwbdSv8XeOSYvjt8LpgpKrZ0yGdtZokYwkwV2wlcZbxgopHX/hgPl5VgpnoVOWd868n1hktM8Qm4b+02MiLQ==}
+  react-error-boundary@4.1.2:
+    resolution: {integrity: sha512-GQDxZ5Jd+Aq/qUxbCm1UtzmL/s++V7zKgE8yMktJiCQXCCFZnMZh9ng+6/Ne6PjNSXH0L9CjeOEREfRnq6Duag==}
     peerDependencies:
       react: '>=16.13.1'
 
@@ -13032,7 +13032,7 @@ snapshots:
       react: 19.0.0-rc-f65ac7bd-20240826
       scheduler: 0.25.0-rc-f65ac7bd-20240826
 
-  react-error-boundary@4.0.13(react@0.0.0-experimental-28668d39-20241023):
+  react-error-boundary@4.1.2(react@0.0.0-experimental-28668d39-20241023):
     dependencies:
       '@babel/runtime': 7.25.7
       react: 0.0.0-experimental-28668d39-20241023
