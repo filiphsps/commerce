@@ -42,7 +42,7 @@ export default function LoginButton({ provider = 'github', className, ...props }
         params.delete('callbackUrl');
 
         router.replace(`${path}${params.size > 0 ? '?' : ''}${params.toString()}` as Route);
-    }, [error]);
+    }, [error, path, router, searchParams]);
 
     let layout: ReactNode = <></>;
     let icon: ReactNode = <></>;
