@@ -1,9 +1,8 @@
 'use client';
 
-import { FiTag, FiX } from 'react-icons/fi';
-
 import { cn } from '@/utils/tailwind';
 import { useCart } from '@shopify/hydrogen-react';
+import { Tag as TagIcon, X as XIcon } from 'lucide-react';
 
 import { Button } from '@/components/actionable/button';
 import { Label } from '@/components/typography/label';
@@ -27,7 +26,7 @@ const CartCoupons = ({}) => {
                         key={code}
                         className="flex items-center justify-center gap-2 overflow-hidden rounded-xl bg-white px-3 py-2"
                     >
-                        <FiTag className="" />
+                        <TagIcon className="" />
 
                         <Label>{code}</Label>
 
@@ -45,7 +44,7 @@ const CartCoupons = ({}) => {
                                 discountCodesUpdate(codes.filter((i) => i !== code));
                             }}
                         >
-                            <FiX
+                            <XIcon
                                 className="h-4 text-lg transition-colors hover:fill-red-500 hover:stroke-red-500"
                                 style={{ strokeWidth: 2.5 }}
                             />

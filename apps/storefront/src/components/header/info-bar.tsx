@@ -1,12 +1,11 @@
 import 'server-only';
 
-import { FiMail, FiPhone } from 'react-icons/fi';
-
 import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { MenuApi } from '@/api/navigation';
 import { capitalize, getTranslations } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
+import { Mail as MailIcon, Phone as PhoneIcon } from 'lucide-react';
 
 import { LocaleFlag } from '@/components/informational/locale-flag';
 import Link from '@/components/link';
@@ -76,7 +75,7 @@ export async function InfoBar({ className, shop, locale, i18n, ...props }: InfoB
                                 title={t('email-tooltip')}
                                 data-nosnippet={true}
                             >
-                                <FiMail className="h-4 text-lg" style={{ strokeWidth: 2.5 }} />
+                                <MailIcon className="h-4 text-lg" style={{ strokeWidth: 2.5 }} />
                                 {capitalize(t('email'))}
                             </Link>
                         ) : null}
@@ -90,7 +89,7 @@ export async function InfoBar({ className, shop, locale, i18n, ...props }: InfoB
                                 title={t('phone-tooltip')}
                                 data-nosnippet={true}
                             >
-                                <FiPhone className="h-4 text-lg" style={{ strokeWidth: 2.5 }} />
+                                <PhoneIcon className="h-4 text-lg" style={{ strokeWidth: 2.5 }} />
                                 {capitalize(t('phone'))}
                             </Link>
                         ) : null}

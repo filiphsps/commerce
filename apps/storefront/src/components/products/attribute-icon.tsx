@@ -1,14 +1,22 @@
-import { LuApple, LuBanana, LuCakeSlice, LuCandy, LuCarrot, LuCoffee, LuIceCream, LuWine } from 'react-icons/lu';
-import { PiBeerBottleBold, PiPlant } from 'react-icons/pi';
-import { TbMelon, TbSalt } from 'react-icons/tb';
-
 import { cn } from '@/utils/tailwind';
+import {
+    Apple as AppleIcon,
+    Banana as BananaIcon,
+    CakeSlice as CakeSliceIcon,
+    Candy as CandyIcon,
+    Carrot as CarrotIcon,
+    Coffee as CoffeeIcon,
+    CupSoda as CupSodaIcon,
+    IceCreamCone as IceCreamConeIcon,
+    Leaf as LeafIcon,
+    Wine as WineIcon
+} from 'lucide-react';
 
 import type { HTMLProps } from 'react';
 
 export type AttributeIconProps = {
     data?: string;
-} & Omit<HTMLProps<SVGElement>, 'children'>;
+} & Omit<HTMLProps<SVGElement>, 'children' | 'ref'>;
 
 /**
  * Get icon for a flavor or attribute.
@@ -28,43 +36,37 @@ export function AttributeIcon({ data = '', className, style = {}, ...props }: At
     const icon = data.toLowerCase().trim();
     switch (icon) {
         case 'apple':
-            Tag = LuApple;
+            Tag = AppleIcon;
             break;
         case 'banana':
-            Tag = LuBanana;
+            Tag = BananaIcon;
             break;
         case 'cake':
-            Tag = LuCakeSlice;
+            Tag = CakeSliceIcon;
             break;
         case 'carrot':
-            Tag = LuCarrot;
+            Tag = CarrotIcon;
             break;
         case 'coffee':
-            Tag = LuCoffee;
+            Tag = CoffeeIcon;
             break;
         case 'cola':
         case 'soda':
-            Tag = PiBeerBottleBold;
-            break;
-        case 'watermelon':
-        case 'melon':
-            Tag = TbMelon;
+            Tag = CupSodaIcon;
             break;
         case 'ice cream':
-            Tag = LuIceCream;
+            Tag = IceCreamConeIcon;
             break;
-        case 'salt':
-            Tag = TbSalt;
         case 'sweet':
-            Tag = LuCandy;
+            Tag = CandyIcon;
             break;
         case 'toffee':
             break; // TODO
         case 'vegan':
-            Tag = PiPlant;
+            Tag = LeafIcon;
             break;
         case 'wine':
-            Tag = LuWine;
+            Tag = WineIcon;
             break;
     }
 

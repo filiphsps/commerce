@@ -1,10 +1,10 @@
 import 'server-only';
 
 import { type HTMLProps } from 'react';
-import { FiChevronRight } from 'react-icons/fi';
 
 import { cn } from '@/utils/tailwind';
 import { asText } from '@prismicio/client';
+import { ChevronRight as ChevronRightIcon } from 'lucide-react';
 
 import Link from '@/components/link';
 import PageContent from '@/components/page-content';
@@ -49,7 +49,7 @@ const CollectionContainerHeader = ({ slice }: Omit<CollectionContainerProps, 'ch
             )}
         >
             <PrismicText data={slice.primary.title} styled={false} bare={true} />
-            <FiChevronRight className="stroke-2 text-3xl transition-transform group-hover:scale-110 md:text-xl" />
+            <ChevronRightIcon className="stroke-2 text-3xl transition-transform group-hover:scale-110 md:text-xl" />
         </Title>
     ) : null;
 

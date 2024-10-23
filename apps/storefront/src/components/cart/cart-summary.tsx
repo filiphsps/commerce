@@ -1,7 +1,6 @@
 import styles from '@/components/cart/cart-summary.module.scss';
 
 import { useEffect, useState } from 'react';
-import { FiChevronRight, FiLock } from 'react-icons/fi';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 
@@ -11,6 +10,7 @@ import { pluralize } from '@/utils/pluralize';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 import { useCart } from '@shopify/hydrogen-react';
+import { ChevronRight as ChevronRightIcon, Lock as LockIcon } from 'lucide-react';
 
 import { Button } from '@/components/actionable/button';
 import { CartCoupons } from '@/components/cart/cart-coupons';
@@ -308,7 +308,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                     onClick={onCheckout}
                 >
                     <span>{t('continue-to-checkout')}</span>
-                    <FiChevronRight className={styles.icon} />
+                    <ChevronRightIcon className={styles.icon} />
                 </Button>
             </section>
 
@@ -316,7 +316,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                 {paymentMethods || null}
 
                 <div className={'text-sm leading-snug'}>
-                    <FiLock className="stroke -mt-1 mr-1 inline h-3 stroke-2" />
+                    <LockIcon className="stroke -mt-1 mr-1 inline h-3 stroke-2" />
                     Safely complete your purchase through Nordcom AB&apos;s trusted partner&apos;s
                     <Link
                         href="https://www.shopify.com/security/pci-compliant"

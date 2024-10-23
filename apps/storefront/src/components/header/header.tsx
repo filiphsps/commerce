@@ -1,13 +1,13 @@
 import 'server-only';
 
 import { type HTMLProps, Suspense } from 'react';
-import { HiOutlineSearch } from 'react-icons/hi';
 
 import { Shop } from '@nordcom/commerce-db';
 
 import { HeaderApi, MenuApi } from '@/api/navigation';
 import CustomHTML from '@/slices/common/CustomHtml';
 import { getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
+import { Search as SearchIcon } from 'lucide-react';
 import Image from 'next/image';
 
 import { CartButton } from '@/components/header/cart-button';
@@ -92,7 +92,7 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
                                 className="hover:text-primary focus-visible:text-primary transition-colors"
                                 title={t('search')}
                             >
-                                <HiOutlineSearch className="stroke-1 text-xl lg:text-2xl" />
+                                <SearchIcon className="stroke-1 text-xl lg:text-2xl" />
                             </Link>
 
                             <Suspense fallback={<HeaderAccountSection.skeleton />}>

@@ -1,8 +1,7 @@
 import 'server-only';
 
-import { FiChevronUp } from 'react-icons/fi';
-
 import { cn } from '@/utils/tailwind';
+import { ChevronUp as ChevronUpIcon } from 'lucide-react';
 
 import { Content as ContentContainer } from '@/components/typography/content';
 import { PrismicText } from '@/components/typography/prismic-text';
@@ -33,7 +32,7 @@ const CollapsibleText = ({ slice }: CollapsibleTextProps): JSX.Element => {
                 )}
             >
                 <div className="flex h-8 w-12 items-center justify-center">
-                    <FiChevronUp className="h-full w-full py-1 transition-transform duration-150 group-open:rotate-180" />
+                    <ChevronUpIcon className="h-full w-full py-1 transition-transform duration-150 group-open:rotate-180" />
                 </div>
 
                 <div className="text-base font-semibold leading-snug">{slice.primary.title}</div>

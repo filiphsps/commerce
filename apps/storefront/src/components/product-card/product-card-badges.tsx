@@ -1,10 +1,9 @@
-import { FiBox } from 'react-icons/fi';
-
 import { isProductVegan, type Product } from '@/api/product';
 import { firstAvailableVariant } from '@/utils/first-available-variant';
 import { capitalize, getTranslations } from '@/utils/locale';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
+import { Package as PackageIcon } from 'lucide-react';
 
 import { AttributeIcon } from '@/components/products/attribute-icon';
 
@@ -36,7 +35,7 @@ const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
                         'bg-primary text-primary-foreground -mt-1 h-8 rounded-l-none rounded-t-none text-xs normal-case leading-none'
                     )}
                 >
-                    <FiBox className="text-sm leading-none" />
+                    <PackageIcon className="text-sm leading-none" />
                     {capitalize(t('free-shipping'))}
                 </div>
             </div>
@@ -61,8 +60,8 @@ const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
                 )}
             >
                 {isVegan && (
-                    <div className={cn(COMMON_BADGE_STYLES, 'bg-green-600 text-white')}>
-                        <AttributeIcon data={'vegan'} className="text-lg" />
+                    <div className={cn(COMMON_BADGE_STYLES, 'bg-green-600 stroke-white text-white')}>
+                        <AttributeIcon data={'vegan'} className="h-4" />
                         {capitalize(t('vegan'))}
                     </div>
                 )}

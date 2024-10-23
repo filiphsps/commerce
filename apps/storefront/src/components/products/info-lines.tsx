@@ -1,10 +1,9 @@
 import 'server-only';
 
-import { FiCheck } from 'react-icons/fi';
-
 import { showProductInfoLines } from '@/utils/flags';
 import { getTranslations } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
+import { Check as CheckIcon } from 'lucide-react';
 
 import { Label } from '@/components/typography/label';
 
@@ -28,7 +27,7 @@ const StockStatus = ({ product, i18n, className, ...props }: StockStatusProps) =
             title={t('in-stock-and-available')}
             {...props}
         >
-            <FiCheck className="stroke-2 align-middle text-base" />
+            <CheckIcon className="stroke-2 align-middle text-base" />
             <Label className="text-base font-semibold normal-case">
                 {product.totalInventory ? t('n-in-stock', product.totalInventory.toString()) : t('in-stock')}
             </Label>

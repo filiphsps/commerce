@@ -1,10 +1,9 @@
 'use client';
 
-import { FiShoppingBag } from 'react-icons/fi';
-
 import { capitalize, getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 import { useCart } from '@shopify/hydrogen-react';
+import { ShoppingBag as ShoppingBagIcon } from 'lucide-react';
 
 import { Button } from '@/components/actionable/button';
 import Link from '@/components/link';
@@ -38,10 +37,10 @@ const CartButton = ({ locale, i18n }: CartButtonProps) => {
                 {totalQuantity || null}
             </div>
 
-            <FiShoppingBag
+            <ShoppingBagIcon
                 className={cn(
                     'block overflow-hidden stroke-1 text-right text-base transition-all',
-                    !totalQuantity && 'group-hover:text-primary text-xl lg:text-2xl'
+                    !totalQuantity && 'group-hover:text-primary h-6'
                 )}
                 suppressHydrationWarning={true}
             />

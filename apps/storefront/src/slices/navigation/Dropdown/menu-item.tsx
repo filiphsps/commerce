@@ -1,10 +1,9 @@
 'use client';
 
-import { FiChevronDown } from 'react-icons/fi';
-
 import { LINK_ACTIVE_MENU_STYLES, LINK_BUBBLE_STYLES, LINK_STYLES } from '@/slices/navigation/Link';
 import { cn } from '@/utils/tailwind';
 import { asText, type Content } from '@prismicio/client';
+import { ChevronDown as ChevronDownIcon } from 'lucide-react';
 
 import { useHeaderMenu } from '@/components/header/header-provider';
 import { PrismicText } from '@/components/typography/prismic-text';
@@ -35,9 +34,8 @@ export function DropdownMenuItem({ slice }: DropdownMenuItemProps) {
             <div className={cn(LINK_BUBBLE_STYLES, 'flex items-center gap-1')}>
                 <PrismicText data={slice.primary.title} styled={false} bare={true} />
 
-                <FiChevronDown
-                    className={cn('text-inherit transition-transform', activeMenu && 'rotate-180')}
-                    style={{ strokeWidth: 3 }}
+                <ChevronDownIcon
+                    className={cn('stroke-1 text-inherit transition-transform', activeMenu && 'rotate-180')}
                 />
             </div>
         </button>

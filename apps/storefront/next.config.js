@@ -42,7 +42,7 @@ const config = {
         esmExternals: true,
         middlewarePrefetch: 'strict',
         optimizeCss: true,
-        optimizePackageImports: ['@apollo/client', '@shopify/hydrogen-react', 'react-icons', '@nordcom/nordstar'],
+        optimizePackageImports: ['@apollo/client', '@shopify/hydrogen-react', '@nordcom/nordstar'],
         optimizeServerReact: true,
         parallelServerBuildTraces: true,
         parallelServerCompiles: true,

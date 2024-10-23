@@ -1,10 +1,12 @@
 'use client';
 
-import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-import { TbDots } from 'react-icons/tb';
-
 import { capitalize, getTranslations } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
+import {
+    ChevronLeft as ChevronLeftIcon,
+    ChevronRight as ChevronRightIcon,
+    Ellipsis as EllipsisIcon
+} from 'lucide-react';
 import { usePathname, useSearchParams } from 'next/navigation';
 
 import Link from '@/components/link';
@@ -103,12 +105,12 @@ export function Pagination({
         >
             {currentPage !== 1 ? (
                 <Link className={ACTION_STYLES} href={previousHref} prefetch={false}>
-                    <FiChevronLeft className="stroke-2 text-inherit" />
+                    <ChevronLeftIcon className="stroke-2 text-inherit" />
                     {capitalize(t('previous'))}
                 </Link>
             ) : (
                 <div className={cn(ACTION_STYLES, 'cursor-not-allowed text-gray-400 hover:text-gray-400')}>
-                    <FiChevronLeft className="stroke-2 text-inherit" />
+                    <ChevronLeftIcon className="stroke-2 text-inherit" />
                     {capitalize(t('previous'))}
                 </div>
             )}
@@ -118,7 +120,7 @@ export function Pagination({
 
                 {morePagesAfterKnownLastPage ? (
                     <div className={ACTION_STYLES}>
-                        <TbDots />
+                        <EllipsisIcon />
                     </div>
                 ) : null}
             </div>
@@ -126,12 +128,12 @@ export function Pagination({
             {currentPage !== knownLastPage ? (
                 <Link className={ACTION_STYLES} href={nextHref} prefetch={true}>
                     {capitalize(t('next'))}
-                    <FiChevronRight className="stroke-2 text-inherit" />
+                    <ChevronRightIcon className="stroke-2 text-inherit" />
                 </Link>
             ) : (
                 <div className={cn(ACTION_STYLES, 'cursor-not-allowed text-gray-400 hover:text-gray-400')}>
                     {capitalize(t('next'))}
-                    <FiChevronRight className="stroke-2 text-inherit" />
+                    <ChevronRightIcon className="stroke-2 text-inherit" />
                 </div>
             )}
         </nav>

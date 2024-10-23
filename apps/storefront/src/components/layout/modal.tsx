@@ -3,12 +3,12 @@
 'use client';
 
 import { type ReactNode, useEffect, useState } from 'react';
-import { FiX } from 'react-icons/fi';
 
 import { capitalize, getTranslations } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
+import { X as XIcon } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 
 import { Button } from '@/components/actionable/button';
@@ -82,7 +82,7 @@ export function Modal({
                                         className="flex size-5 items-center justify-end text-right text-gray-600 drop-shadow transition-colors hover:text-black"
                                         styled={false}
                                     >
-                                        <FiX className="size-full stroke-2 text-inherit" />
+                                        <XIcon className="size-full stroke-2 text-inherit" />
                                     </Button>
                                 </Dialog.Close>
                             </div>

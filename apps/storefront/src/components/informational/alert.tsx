@@ -1,7 +1,9 @@
-import { BiCheckCircle, BiErrorCircle, BiInfoCircle } from 'react-icons/bi';
-import { PiWarningCircleBold } from 'react-icons/pi';
-
 import { cn } from '@/utils/tailwind';
+import {
+    CircleAlert as CircleAlertIcon,
+    CircleCheck as CircleCheckIcon,
+    CircleHelp as CircleHelpIcon
+} from 'lucide-react';
 
 import { Content } from '@/components/typography/content';
 
@@ -19,14 +21,14 @@ export const Alert = ({ children, severity, icon, className, ...props }: AlertPr
     if (typeof icon === 'undefined' || (typeof icon === 'boolean' && icon !== false)) {
         switch (severity) {
             case 'success':
-                iconElement = <BiCheckCircle className={ICON_STYLES} />;
+                iconElement = <CircleCheckIcon className={ICON_STYLES} />;
                 break;
 
             case 'warning':
-                iconElement = <PiWarningCircleBold className={ICON_STYLES} />;
+                iconElement = <CircleAlertIcon className={ICON_STYLES} />;
                 break;
             case 'error':
-                iconElement = <BiErrorCircle className={ICON_STYLES} />;
+                iconElement = <CircleAlertIcon className={ICON_STYLES} />;
                 break;
 
             case 'callout':
@@ -34,7 +36,7 @@ export const Alert = ({ children, severity, icon, className, ...props }: AlertPr
 
             case 'info':
             default:
-                iconElement = <BiInfoCircle className={ICON_STYLES} />;
+                iconElement = <CircleHelpIcon className={ICON_STYLES} />;
         }
     } else if (typeof icon !== 'boolean') {
         iconElement = icon;

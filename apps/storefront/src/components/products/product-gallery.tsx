@@ -1,11 +1,11 @@
 'use client';
 
 import { Fragment, Suspense, useCallback, useEffect, useState } from 'react';
-import { FiMail } from 'react-icons/fi';
 import { EmailShareButton, FacebookShareButton, TwitterShareButton } from 'react-share';
 
 import { getTranslations } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
+import { Mail as MailIcon } from 'lucide-react';
 import Image from 'next/image';
 
 import type { Product } from '@/api/product';
@@ -140,7 +140,7 @@ const ProductGallery = ({
                                         title={title}
                                         htmlTitle={t('share-via-email')}
                                     >
-                                        <FiMail className="stroke-2" />
+                                        <MailIcon className="stroke-2" />
                                     </EmailShareButton>
                                     <FacebookShareButton
                                         key="facebook"

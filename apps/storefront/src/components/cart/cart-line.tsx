@@ -1,9 +1,8 @@
-import { FiTag, FiX } from 'react-icons/fi';
-
 import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 import { useCart } from '@shopify/hydrogen-react';
+import { Tag as TagIcon, X as XIcon } from 'lucide-react';
 import Image from 'next/image';
 
 import { Button } from '@/components/actionable/button';
@@ -126,7 +125,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                                             key={`${line.id}-discount-${index}`}
                                             className="flex items-center justify-center gap-1 text-xs font-medium leading-none text-gray-600"
                                         >
-                                            <FiTag className="stroke-1 text-inherit" />
+                                            <TagIcon className="stroke-1 text-inherit" />
                                             <Label>{(discount as any).title || tCart('automatic-discount')}</Label>
                                         </div>
                                     ))}
@@ -148,7 +147,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                             className="flex items-center justify-center gap-1 border-0 border-solid border-red-500 text-sm hover:text-red-500 focus-visible:border-b-2 focus-visible:text-red-500 md:text-base"
                             title={t('remove')}
                         >
-                            <FiX className="stroke-2 text-xl" />
+                            <XIcon className="stroke-2 text-xl" />
                         </Label>
                     </div>
 

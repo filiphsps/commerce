@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { FiCheck, FiChevronDown, FiX } from 'react-icons/fi';
 import useGeoLocation from 'react-ipgeolocation';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
@@ -11,6 +10,7 @@ import { isCrawler } from '@/utils/is-crawler';
 import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 import { setCookie } from 'cookies-next';
+import { Check as CheckIcon, ChevronDown as ChevronDownIcon, X as XIcon } from 'lucide-react';
 import { usePathname, useSearchParams } from 'next/navigation';
 
 import { Button } from '@/components/actionable/button';
@@ -92,7 +92,7 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
         }
 
         getDictionary({ shop, locale: targetLocale }).then(setI18n);
-    }, [location, i18n, targetLocale, navigatorLanguage]);
+    }, [location, i18n, targetLocale, navigatorLanguage, shop]);
 
     if (
         dismissed ||
@@ -137,7 +137,7 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
                             onClick={() => setDropdownActive(!dropdownActive)}
                         >
                             <div className="w-5">
-                                <FiCheck className="h-4 stroke-1 text-2xl text-inherit" />
+                                <CheckIcon className="h-4 stroke-1 text-2xl text-inherit" />
                             </div>
                             <div className="flex gap-1 text-inherit">
                                 <LocaleFlag
@@ -149,7 +149,7 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
                                 />
                             </div>
                             <div className="flex h-4 w-full items-end justify-end leading-none text-inherit">
-                                <FiChevronDown className="stroke-1 text-2xl text-inherit" />
+                                <ChevronDownIcon className="stroke-1 text-2xl text-inherit" />
                             </div>
                         </button>
 
@@ -191,7 +191,7 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
                     className="absolute right-0 top-4 flex h-10 w-10 items-start justify-end text-lg text-current opacity-70 invert-[20%] transition-all hover:opacity-100 hover:invert-0 focus-visible:invert-0 md:items-center 2xl:right-2"
                     styled={false}
                 >
-                    <FiX className="block size-6 md:size-6" />
+                    <XIcon className="block size-6 md:size-6" />
                 </Button>
             </div>
         </div>

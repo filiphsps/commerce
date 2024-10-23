@@ -1,11 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { LuDownload } from 'react-icons/lu';
 
 import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 import { parseGid, useCart } from '@shopify/hydrogen-react';
 import { download, generateCsv, mkConfig } from 'export-to-csv';
+import { Download as DownloadIcon } from 'lucide-react';
 
 import { Button } from '@/components/actionable/button';
 import { useShop } from '@/components/shop/provider';
@@ -64,7 +64,7 @@ export function ExportCartButton({ i18n }: ExportCartButtonProps) {
             }}
         >
             <span className="h-4">{t('save-as-csv')}</span>
-            <LuDownload className="h-4 stroke-2" />
+            <DownloadIcon className="h-4 stroke-2" />
         </Button>
     );
 }

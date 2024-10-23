@@ -1,6 +1,5 @@
-import { HiOutlineSearch } from 'react-icons/hi';
-
 import { cn } from '@/utils/tailwind';
+import { Search as SearchIcon } from 'lucide-react';
 
 import { Button } from '@/components/actionable/button';
 
@@ -29,7 +28,7 @@ export function SearchBar({ className, ...props }: SearchBarProps) {
                 />
 
                 <Button styled={false} className="px-3 hover:bg-red-500">
-                    <HiOutlineSearch style={{ strokeWidth: 2.5 }} />
+                    <SearchIcon style={{ strokeWidth: 2.5 }} />
                 </Button>
             </div>
 

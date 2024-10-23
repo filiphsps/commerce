@@ -1,12 +1,12 @@
 'use client';
 
 import { useCallback, useState, useTransition } from 'react';
-import { HiOutlineSearch } from 'react-icons/hi';
 
 //import type { Product, ProductFilters } from '@/api/product';
 import { createProductSearchParams, isProductVegan, type Product, type ProductFilters } from '@/api/product';
 import { capitalize, getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
+import { Search as SearchIcon } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
@@ -74,7 +74,7 @@ export const SearchBar = ({ defaultValue, onSearch, disabled, className, i18n, .
                 disabled={disabled}
                 type="submit"
             >
-                <HiOutlineSearch className="text-xl lg:text-2xl" style={{ strokeWidth: 2.5 }} />
+                <SearchIcon className="text-xl lg:text-2xl" style={{ strokeWidth: 2.5 }} />
             </Button>
         </div>
     );
