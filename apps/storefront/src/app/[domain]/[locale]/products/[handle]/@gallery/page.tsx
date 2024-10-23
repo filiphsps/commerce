@@ -82,9 +82,9 @@ export default async function ProductModalGallery({ params }: Readonly<{ params:
     return (
         <Suspense
             fallback={
-                <div className="flex w-full gap-2 md:h-full md:flex-col lg:gap-4">
-                    <div className="relative w-full grow overflow-hidden rounded-lg border-2 border-solid border-gray-100 bg-white md:h-full">
-                        <div className="aspect-[4/3] w-full md:aspect-auto md:max-h-[30rem]" data-skeleton />
+                <div className="flex h-full w-full gap-2 md:flex-col lg:gap-4">
+                    <div className="relative h-full w-full grow overflow-hidden rounded-lg border-2 border-solid border-gray-100 bg-white md:h-full">
+                        <div className="aspect-[4/3] h-1/4 w-full md:aspect-auto md:max-h-[30rem]" data-skeleton />
                     </div>
                 </div>
             }

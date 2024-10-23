@@ -68,7 +68,7 @@ const ProductGallery = ({
         }
 
         setImage(target);
-    }, [, images, initialImageId]);
+    }, [, images, initialImageId, selected, setImage]);
 
     if (!images || images.length <= 0) return null;
 
@@ -83,7 +83,7 @@ const ProductGallery = ({
             <div className="flex w-full gap-2 overflow-clip md:sticky md:top-36 md:flex-col lg:gap-3">
                 <div
                     className={cn(
-                        'relative flex w-full grow items-center justify-center overflow-hidden rounded-lg border border-solid border-gray-200 bg-white p-2 md:h-full md:p-3',
+                        'relative flex h-1/4 w-full grow items-center justify-center overflow-hidden rounded-lg border border-solid border-gray-200 bg-white p-2 md:h-full md:p-3',
                         isLoading && 'bg-gray-100',
                         padding && 'p-8 py-12 md:p-16'
                     )}
