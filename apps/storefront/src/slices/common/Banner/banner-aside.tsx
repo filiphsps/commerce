@@ -79,7 +79,7 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
                 width={image.dimensions?.width!}
                 height={image.dimensions?.height!}
                 alt={imageAlt!}
-                className="absolute -right-[calc(100%-8rem)] left-auto z-0 col-span-2 h-full w-full object-cover object-left md:relative md:inset-0 md:flex"
+                className="absolute -right-[calc(100%-8rem)] left-auto z-0 col-span-2 hidden h-full w-full object-cover object-left md:relative md:inset-0 md:flex"
                 draggable={false}
                 loading={priority ? 'eager' : 'lazy'}
                 priority={priority}
