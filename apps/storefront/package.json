@@ -94,7 +94,7 @@
         "react": "0.0.0-experimental-28668d39-20241023",
         "redis": "4.7.0",
         "resolve-accept-language": "3.1.8",
-        "sass": "1.80.3",
+        "sass": "1.80.4",
         "sharp": "0.33.5",
         "sonner": "1.5.0",
         "tailwind-merge": "2.5.4",
