@@ -172,8 +172,8 @@ importers:
         specifier: 1.10.0
         version: 1.10.0(@opentelemetry/api-logs@0.54.0)(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.54.0(@opentelemetry/api@1.9.0))(@opentelemetry/resources@1.27.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.54.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.26.0(@opentelemetry/api@1.9.0))
       '@vercel/speed-insights':
-        specifier: 1.0.13
-        version: 1.0.13(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@5.4.10(@types/node@20.17.1)(sass@1.80.4)(terser@5.36.0)))(next@15.0.2-canary.6(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.4))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
+        specifier: 1.0.14
+        version: 1.0.14(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@5.4.10(@types/node@20.17.1)(sass@1.80.4)(terser@5.36.0)))(next@15.0.2-canary.6(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.4))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@vercel/toolbar':
         specifier: 0.1.22
         version: 0.1.22(next@15.0.2-canary.6(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.4))(react@0.0.0-experimental-28668d39-20241023)(vite@5.4.10(@types/node@20.17.1)(sass@1.80.4)(terser@5.36.0))
@@ -362,8 +362,8 @@ importers:
         specifier: 1.10.0
         version: 1.10.0(@opentelemetry/api-logs@0.54.0)(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.54.0(@opentelemetry/api@1.9.0))(@opentelemetry/resources@1.27.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.54.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.26.0(@opentelemetry/api@1.9.0))
       '@vercel/speed-insights':
-        specifier: 1.0.13
-        version: 1.0.13(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@5.4.10(@types/node@20.17.1)(sass@1.80.4)(terser@5.36.0)))(next@15.0.2-canary.6(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.4))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
+        specifier: 1.0.14
+        version: 1.0.14(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@5.4.10(@types/node@20.17.1)(sass@1.80.4)(terser@5.36.0)))(next@15.0.2-canary.6(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.4))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@vercel/toolbar':
         specifier: 0.1.22
         version: 0.1.22(next@15.0.2-canary.6(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.4))(react@0.0.0-experimental-28668d39-20241023)(vite@5.4.10(@types/node@20.17.1)(sass@1.80.4)(terser@5.36.0))
@@ -579,8 +579,8 @@ importers:
         specifier: 1.10.0
         version: 1.10.0(@opentelemetry/api-logs@0.54.0)(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.54.0(@opentelemetry/api@1.9.0))(@opentelemetry/resources@1.27.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.54.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.26.0(@opentelemetry/api@1.9.0))
       '@vercel/speed-insights':
-        specifier: 1.0.13
-        version: 1.0.13(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@5.4.10(@types/node@20.17.1)(sass@1.80.4)(terser@5.36.0)))(next@15.0.2-canary.6(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.4))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
+        specifier: 1.0.14
+        version: 1.0.14(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@5.4.10(@types/node@20.17.1)(sass@1.80.4)(terser@5.36.0)))(next@15.0.2-canary.6(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.4))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@vercel/toolbar':
         specifier: 0.1.22
         version: 0.1.22(next@15.0.2-canary.6(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.4))(react@0.0.0-experimental-28668d39-20241023)(vite@5.4.10(@types/node@20.17.1)(sass@1.80.4)(terser@5.36.0))
@@ -3202,12 +3202,12 @@ packages:
       '@opentelemetry/sdk-metrics': ^1.19.0
       '@opentelemetry/sdk-trace-base': ^1.19.0
 
-  '@vercel/speed-insights@1.0.13':
-    resolution: {integrity: sha512-3iuOMB/M0WE3Zeuoo2mnlD7Eo7fGH7RBGi92Vq4qO7Kp+BwNbpwFqkjuPQDEeBxoGQLJFRICrsx5/IluHZVCZA==}
+  '@vercel/speed-insights@1.0.14':
+    resolution: {integrity: sha512-env1BkPddz1UaEZwBL4GmfRksMi2LbiYaKuoxMQjfLk83aEh7kkWMukkUhpQVs717NE6nnD+1+KO85GZHOZ4nQ==}
     peerDependencies:
       '@sveltejs/kit': ^1 || ^2
       next: '>= 13'
-      react: ^18 || ^19
+      react: ^18 || ^19 || ^19.0.0-rc
       svelte: '>= 4'
       vue: ^3
       vue-router: ^4
@@ -9905,7 +9905,7 @@ snapshots:
       '@opentelemetry/sdk-metrics': 1.26.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-trace-base': 1.26.0(@opentelemetry/api@1.9.0)
 
-  '@vercel/speed-insights@1.0.13(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@5.4.10(@types/node@20.17.1)(sass@1.80.4)(terser@5.36.0)))(next@15.0.2-canary.6(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.4))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))':
+  '@vercel/speed-insights@1.0.14(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@5.4.10(@types/node@20.17.1)(sass@1.80.4)(terser@5.36.0)))(next@15.0.2-canary.6(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.4))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))':
     optionalDependencies:
       '@sveltejs/kit': 1.30.4(svelte@4.2.17)(vite@5.4.10(@types/node@20.17.1)(sass@1.80.4)(terser@5.36.0))
       next: 15.0.2-canary.6(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.4)
