@@ -682,8 +682,8 @@ importers:
         specifier: 0.1.1
         version: 0.1.1
       '@slicemachine/adapter-next':
-        specifier: 0.3.53
-        version: 0.3.53(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(next@15.0.2-canary.9(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.4))(react@0.0.0-experimental-28668d39-20241023)(uuid@9.0.1)
+        specifier: 0.3.54
+        version: 0.3.54(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(next@15.0.2-canary.9(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.4))(react@0.0.0-experimental-28668d39-20241023)(uuid@9.0.1)
       '@tailwindcss/forms':
         specifier: 0.5.9
         version: 0.5.9(tailwindcss@3.4.14(ts-node@10.9.1(@types/node@20.17.1)(typescript@5.6.3)))
@@ -2732,8 +2732,8 @@ packages:
   '@sinclair/typebox@0.27.8':
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
 
-  '@slicemachine/adapter-next@0.3.53':
-    resolution: {integrity: sha512-xPCeXZAcK2T18HU56+13SbzOS6sO7x34qQn5RY+YOhkjwS1O0uE2Nup0B6wBNeKAU2xA2VlMJEPYZku+Yt9srw==}
+  '@slicemachine/adapter-next@0.3.54':
+    resolution: {integrity: sha512-DreXEYLCB80MXHtankELO/ej21CRAC9hJ1FJYJBq2+QyjsLa7qGq4jv5vHwc6T+oXfU/6XSa4wfCRtsEQiOuvA==}
     engines: {node: '>=14.15.0'}
     peerDependencies:
       next: ^11 || ^12 || ^13 || ^14 || ^15.0.0-rc.0
@@ -2750,6 +2750,10 @@ packages:
 
   '@slicemachine/plugin-kit@0.4.53':
     resolution: {integrity: sha512-wWHQtBOIvajtqzZv4aT/KRp+Q+UPYgHNO+CpHKRgtnu7bjLcNHefWsYkHPNMEdw9oBQx8OXlf3Qt8be9HkArzw==}
+    engines: {node: '>=14.15.0'}
+
+  '@slicemachine/plugin-kit@0.4.54':
+    resolution: {integrity: sha512-XSOsT2xpzF8qfndAx/gVh/jNTveCoq55s7cVnYgOCpCgOQPTSnwpUS/asTcTca+sUBPzlDR/fB6H67CP7tS/ZQ==}
     engines: {node: '>=14.15.0'}
 
   '@sveltejs/kit@1.30.4':
@@ -3824,6 +3828,7 @@ packages:
 
   critters@0.0.25:
     resolution: {integrity: sha512-ROF/tjJyyRdM8/6W0VqoN5Ql05xAGnkf5b7f3sTEl1bI5jTQQf8O918RD/V9tEb9pRY/TKcvJekDbJtniHyPtQ==}
+    deprecated: Ownership of Critters has moved to the Nuxt team, who will be maintaining the project going forward. If you'd like to keep using Critters, please switch to the actively-maintained fork at https://github.com/danielroe/beasties
 
   cross-spawn@7.0.3:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
@@ -9279,11 +9284,11 @@ snapshots:
 
   '@sinclair/typebox@0.27.8': {}
 
-  '@slicemachine/adapter-next@0.3.53(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(next@15.0.2-canary.9(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.4))(react@0.0.0-experimental-28668d39-20241023)(uuid@9.0.1)':
+  '@slicemachine/adapter-next@0.3.54(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(next@15.0.2-canary.9(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.4))(react@0.0.0-experimental-28668d39-20241023)(uuid@9.0.1)':
     dependencies:
       '@prismicio/simulator': 0.1.4
       '@prismicio/types-internal': 2.8.0(@types/uuid@9.0.8)(fp-ts@2.16.9)(io-ts-types@0.5.19(fp-ts@2.16.9)(io-ts@2.2.21(fp-ts@2.16.9))(monocle-ts@2.3.13(fp-ts@2.16.9))(newtype-ts@0.3.5(fp-ts@2.16.9)(monocle-ts@2.3.13(fp-ts@2.16.9))))(io-ts@2.2.21(fp-ts@2.16.9))(uuid@9.0.1)
-      '@slicemachine/plugin-kit': 0.4.53(@prismicio/types@0.2.9)
+      '@slicemachine/plugin-kit': 0.4.54(@prismicio/types@0.2.9)
       common-tags: 1.8.2
       fp-ts: 2.16.9
       io-ts: 2.2.21(fp-ts@2.16.9)
@@ -9334,6 +9339,22 @@ snapshots:
       - uuid
 
   '@slicemachine/plugin-kit@0.4.53(@prismicio/types@0.2.9)':
+    dependencies:
+      '@prismicio/client': 7.11.0
+      common-tags: 1.8.2
+      defu: 6.1.4
+      dotenv: 16.3.1
+      fp-ts: 2.16.9
+      fs-extra: 11.1.1
+      io-ts: 2.2.21(fp-ts@2.16.9)
+      io-ts-reporters: 2.0.1(fp-ts@2.16.9)(io-ts@2.2.21(fp-ts@2.16.9))
+      p-limit: 4.0.0
+      prettier: 3.3.3
+      prismic-ts-codegen: 0.1.22(@prismicio/client@7.11.0)(@prismicio/types@0.2.9)
+    transitivePeerDependencies:
+      - '@prismicio/types'
+
+  '@slicemachine/plugin-kit@0.4.54(@prismicio/types@0.2.9)':
     dependencies:
       '@prismicio/client': 7.11.0
       common-tags: 1.8.2
@@ -11015,7 +11036,7 @@ snapshots:
       debug: 4.3.7
       enhanced-resolve: 5.17.1
       eslint: 8.57.1
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.11.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.11.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.11.0(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.11.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1)
       fast-glob: 3.3.2
       get-tsconfig: 4.8.1
       is-bun-module: 1.2.1
@@ -11028,7 +11049,7 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.11.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.11.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.11.0(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
+  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.11.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
@@ -11050,7 +11071,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.11.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.11.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.11.0(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.11.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1)
       hasown: 2.0.2
       is-core-module: 2.15.1
       is-glob: 4.0.3
