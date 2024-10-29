@@ -546,8 +546,8 @@ importers:
         specifier: 7.11.0
         version: 7.11.0
       '@prismicio/next':
-        specifier: 1.7.0
-        version: 1.7.0(@prismicio/client@7.11.0)(next@15.0.2-canary.9(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.4))(react@0.0.0-experimental-28668d39-20241023)
+        specifier: 1.7.1
+        version: 1.7.1(@prismicio/client@7.11.0)(next@15.0.2-canary.9(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.4))(react@0.0.0-experimental-28668d39-20241023)
       '@prismicio/react':
         specifier: 2.9.0
         version: 2.9.0(@prismicio/client@7.11.0)(react@0.0.0-experimental-28668d39-20241023)
@@ -2091,8 +2091,8 @@ packages:
     resolution: {integrity: sha512-9rvrzifcmx1/DCsnJKdyVt914L9DFX+DFO8XbS/oGJI+K3DtQeZ5NanJ6SmpsEucrTLO5NiPOTQ5eAYWtT3gLQ==}
     engines: {node: '>=12.7.0'}
 
-  '@prismicio/next@1.7.0':
-    resolution: {integrity: sha512-kHAYNWvBOmyo1iwli04fZb5wK9q6hXRxuKLvKaz3ZRogAttVdiyj3yGVjQn5Krr1J0xN8RipBArTJIMnXBAqeQ==}
+  '@prismicio/next@1.7.1':
+    resolution: {integrity: sha512-j1kmQrRN7HttsfxU02en4vk8vTH/UrRxKyKNGj1jslnjbltb+3GUlH0CzFZRvSC++mJGnHdKgYWavdbP8CAl7A==}
     engines: {node: '>=14.15.0'}
     peerDependencies:
       '@prismicio/client': ^6 || ^7
@@ -8576,7 +8576,7 @@ snapshots:
     transitivePeerDependencies:
       - '@types/uuid'
 
-  '@prismicio/next@1.7.0(@prismicio/client@7.11.0)(next@15.0.2-canary.9(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.4))(react@0.0.0-experimental-28668d39-20241023)':
+  '@prismicio/next@1.7.1(@prismicio/client@7.11.0)(next@15.0.2-canary.9(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.4))(react@0.0.0-experimental-28668d39-20241023)':
     dependencies:
       '@formatjs/intl-localematcher': 0.5.5
       '@prismicio/client': 7.11.0
@@ -11006,7 +11006,7 @@ snapshots:
       '@typescript-eslint/parser': 8.11.0(eslint@8.57.1)(typescript@5.6.3)
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@8.11.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0)(eslint@8.57.1)
+      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@8.11.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.11.0(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1)
       eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.11.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@8.57.1)
       eslint-plugin-react: 7.37.2(eslint@8.57.1)
@@ -11030,7 +11030,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.11.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0)(eslint@8.57.1):
+  eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.11.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.11.0(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.3.7
@@ -11056,7 +11056,7 @@ snapshots:
       '@typescript-eslint/parser': 8.11.0(eslint@8.57.1)(typescript@5.6.3)
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@8.11.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0)(eslint@8.57.1)
+      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@8.11.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.11.0(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1)
     transitivePeerDependencies:
       - supports-color
 
