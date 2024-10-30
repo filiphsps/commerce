@@ -549,8 +549,8 @@ importers:
         specifier: 1.7.1
         version: 1.7.1(@prismicio/client@7.11.1)(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)
       '@prismicio/react':
-        specifier: 2.9.0
-        version: 2.9.0(@prismicio/client@7.11.1)(react@0.0.0-experimental-28668d39-20241023)
+        specifier: 2.9.1
+        version: 2.9.1(@prismicio/client@7.11.1)(react@0.0.0-experimental-28668d39-20241023)
       '@radix-ui/react-dialog':
         specifier: 1.1.2
         version: 1.1.2(@types/react-dom@18.3.0)(@types/react@18.3.8)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
@@ -2099,8 +2099,8 @@ packages:
       next: ^13.4.5 || ^14 || ^15.0.0-rc.0
       react: ^18 || ^19.0.0-rc.0
 
-  '@prismicio/react@2.9.0':
-    resolution: {integrity: sha512-gkZJYzSpi58NWikzitebZY/ra8fBRaoPosQ8ZaianDy5/A+7F9xYyk674n/SNC37TS6UEswp5r+eRkdkFFiyrw==}
+  '@prismicio/react@2.9.1':
+    resolution: {integrity: sha512-ea0tRi74Xt3Qg3cXDNtB3OlKnHXas4vh0zjiHXjho17wJ7sqExCXEOMypNi3phMlqVv2VGL5ual4A/fF+4M0MQ==}
     engines: {node: '>=12.7.0'}
     peerDependencies:
       '@prismicio/client': ^6 || ^7
@@ -8588,7 +8588,7 @@ snapshots:
       next: 15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5)
       react: 0.0.0-experimental-28668d39-20241023
 
-  '@prismicio/react@2.9.0(@prismicio/client@7.11.1)(react@0.0.0-experimental-28668d39-20241023)':
+  '@prismicio/react@2.9.1(@prismicio/client@7.11.1)(react@0.0.0-experimental-28668d39-20241023)':
     dependencies:
       '@prismicio/client': 7.11.1
       '@prismicio/richtext': 2.1.5
