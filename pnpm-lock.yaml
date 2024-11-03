@@ -35,7 +35,7 @@ importers:
         version: 4.3.3(vite@5.4.10(@types/node@22.8.6)(sass@1.80.5)(terser@5.36.0))
       '@vitest/coverage-v8':
         specifier: 1.6.0
-        version: 1.6.0(vitest@1.6.0(@edge-runtime/vm@3.2.0)(@types/node@22.8.6)(happy-dom@15.8.0)(sass@1.80.5)(terser@5.36.0))
+        version: 1.6.0(vitest@1.6.0(@edge-runtime/vm@3.2.0)(@types/node@22.8.6)(happy-dom@15.8.2)(sass@1.80.5)(terser@5.36.0))
       babel-plugin-module-resolver:
         specifier: 5.0.2
         version: 5.0.2
@@ -110,7 +110,7 @@ importers:
         version: 5.0.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.8.6)(sass@1.80.5)(terser@5.36.0))
       vitest:
         specifier: 1.6.0
-        version: 1.6.0(@edge-runtime/vm@3.2.0)(@types/node@22.8.6)(happy-dom@15.8.0)(sass@1.80.5)(terser@5.36.0)
+        version: 1.6.0(@edge-runtime/vm@3.2.0)(@types/node@22.8.6)(happy-dom@15.8.2)(sass@1.80.5)(terser@5.36.0)
 
   apps/admin:
     dependencies:
@@ -233,8 +233,8 @@ importers:
         version: 2.0.0(react@0.0.0-experimental-28668d39-20241023)(scheduler@0.25.0-rc-f65ac7bd-20240826)
     devDependencies:
       '@happy-dom/global-registrator':
-        specifier: 15.8.0
-        version: 15.8.0
+        specifier: 15.8.2
+        version: 15.8.2
       '@nordcom/prettier':
         specifier: 0.1.1
         version: 0.1.1
@@ -423,8 +423,8 @@ importers:
         version: 2.0.0(react@0.0.0-experimental-28668d39-20241023)(scheduler@0.25.0-rc-f65ac7bd-20240826)
     devDependencies:
       '@happy-dom/global-registrator':
-        specifier: 15.8.0
-        version: 15.8.0
+        specifier: 15.8.2
+        version: 15.8.2
       '@nordcom/prettier':
         specifier: 0.1.1
         version: 0.1.1
@@ -676,8 +676,8 @@ importers:
         version: 2.0.0(react@0.0.0-experimental-28668d39-20241023)(scheduler@0.25.0-rc-f65ac7bd-20240826)
     devDependencies:
       '@happy-dom/global-registrator':
-        specifier: 15.8.0
-        version: 15.8.0
+        specifier: 15.8.2
+        version: 15.8.2
       '@nordcom/prettier':
         specifier: 0.1.1
         version: 0.1.1
@@ -828,7 +828,7 @@ importers:
         version: 5.0.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.8.6)(sass@1.80.5)(terser@5.36.0))
       vitest:
         specifier: 1.6.0
-        version: 1.6.0(@edge-runtime/vm@3.2.0)(@types/node@22.8.6)(happy-dom@15.8.0)(sass@1.80.5)(terser@5.36.0)
+        version: 1.6.0(@edge-runtime/vm@3.2.0)(@types/node@22.8.6)(happy-dom@15.8.2)(sass@1.80.5)(terser@5.36.0)
 
   packages/errors:
     devDependencies:
@@ -864,7 +864,7 @@ importers:
         version: 5.0.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.8.6)(sass@1.80.5)(terser@5.36.0))
       vitest:
         specifier: 1.6.0
-        version: 1.6.0(@edge-runtime/vm@3.2.0)(@types/node@22.8.6)(happy-dom@15.8.0)(sass@1.80.5)(terser@5.36.0)
+        version: 1.6.0(@edge-runtime/vm@3.2.0)(@types/node@22.8.6)(happy-dom@15.8.2)(sass@1.80.5)(terser@5.36.0)
 
   packages/marketing-common:
     dependencies:
@@ -904,7 +904,7 @@ importers:
         version: 5.0.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.8.6)(sass@1.80.5)(terser@5.36.0))
       vitest:
         specifier: 1.6.0
-        version: 1.6.0(@edge-runtime/vm@3.2.0)(@types/node@22.8.6)(happy-dom@15.8.0)(sass@1.80.5)(terser@5.36.0)
+        version: 1.6.0(@edge-runtime/vm@3.2.0)(@types/node@22.8.6)(happy-dom@15.8.2)(sass@1.80.5)(terser@5.36.0)
 
 packages:
 
@@ -1325,8 +1325,8 @@ packages:
   '@hapi/topo@5.1.0':
     resolution: {integrity: sha512-foQZKJig7Ob0BMAYBfcJk8d77QtOe7Wo4ox7ff1lQYoNNAb6jwcY1ncdoy2e9wQZzvNy7ODZCYJkK8kzmcAnAg==}
 
-  '@happy-dom/global-registrator@15.8.0':
-    resolution: {integrity: sha512-j4CmIQLRf2GMFUVQ2fcXi/b9WS21xMEh2wWIZ7ow2EURiSQRDKFRiJ00RR1tN5fagxwU1u4LHHtLupgRTHKXTQ==}
+  '@happy-dom/global-registrator@15.8.2':
+    resolution: {integrity: sha512-kCLdtZDlWN3ICY6N/AOoZSBkyRtM3btubkF3CsJX4GykDJFVnO9mZs5tJyif398vo87uHqFe+OVhNSsdUznj0Q==}
     engines: {node: '>=18.0.0'}
 
   '@humanwhocodes/config-array@0.13.0':
@@ -4607,6 +4607,10 @@ packages:
     resolution: {integrity: sha512-LwBvPvR4MQ1xfrf4gbWRJzeL2xQqWiEiHvZF5uA1AwlCCgjH9ht0fGVXciRGQCghdHAIXw1zGX1mJ6a3O0fpeA==}
     engines: {node: '>=18.0.0'}
 
+  happy-dom@15.8.2:
+    resolution: {integrity: sha512-MhU+SvFD6Ul002JPMY8WoKSV1EV+AK+sLfeqWluvUmD873G0DNXpsUdi7gmBgXo8Nwj44NeWCuWy8OmPDLqs1g==}
+    engines: {node: '>=18.0.0'}
+
   has-ansi@2.0.0:
     resolution: {integrity: sha512-C8vBJ8DwUCx19vhm7urhTuUsr4/IyP6l4VzNQDv+ryHQObW3TTTp9yB68WpYgRe2bbaGuZ/se74IqFeVnMnLZg==}
     engines: {node: '>=0.10.0'}
@@ -7673,9 +7677,9 @@ snapshots:
     dependencies:
       '@hapi/hoek': 9.3.0
 
-  '@happy-dom/global-registrator@15.8.0':
+  '@happy-dom/global-registrator@15.8.2':
     dependencies:
-      happy-dom: 15.8.0
+      happy-dom: 15.8.2
 
   '@humanwhocodes/config-array@0.13.0':
     dependencies:
@@ -9927,7 +9931,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/coverage-v8@1.6.0(vitest@1.6.0(@edge-runtime/vm@3.2.0)(@types/node@22.8.6)(happy-dom@15.8.0)(sass@1.80.5)(terser@5.36.0))':
+  '@vitest/coverage-v8@1.6.0(vitest@1.6.0(@edge-runtime/vm@3.2.0)(@types/node@22.8.6)(happy-dom@15.8.2)(sass@1.80.5)(terser@5.36.0))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3
@@ -9942,7 +9946,7 @@ snapshots:
       std-env: 3.7.0
       strip-literal: 2.1.0
       test-exclude: 6.0.0
-      vitest: 1.6.0(@edge-runtime/vm@3.2.0)(@types/node@22.8.6)(happy-dom@15.8.0)(sass@1.80.5)(terser@5.36.0)
+      vitest: 1.6.0(@edge-runtime/vm@3.2.0)(@types/node@22.8.6)(happy-dom@15.8.2)(sass@1.80.5)(terser@5.36.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -11006,7 +11010,7 @@ snapshots:
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1)
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@8.57.1)
       eslint-plugin-react: 7.37.2(eslint@8.57.1)
       eslint-plugin-react-hooks: 5.0.0(eslint@8.57.1)
@@ -11041,7 +11045,7 @@ snapshots:
       is-bun-module: 1.2.1
       is-glob: 4.0.3
     optionalDependencies:
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1)
     transitivePeerDependencies:
       - '@typescript-eslint/parser'
       - eslint-import-resolver-node
@@ -11059,7 +11063,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
+  eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.8
@@ -11642,6 +11646,12 @@ snapshots:
       unenv: 1.10.0
 
   happy-dom@15.8.0:
+    dependencies:
+      entities: 4.5.0
+      webidl-conversions: 7.0.0
+      whatwg-mimetype: 3.0.0
+
+  happy-dom@15.8.2:
     dependencies:
       entities: 4.5.0
       webidl-conversions: 7.0.0
@@ -14061,6 +14071,42 @@ snapshots:
       '@edge-runtime/vm': 3.2.0
       '@types/node': 22.8.6
       happy-dom: 15.8.0
+    transitivePeerDependencies:
+      - less
+      - lightningcss
+      - sass
+      - sass-embedded
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+
+  vitest@1.6.0(@edge-runtime/vm@3.2.0)(@types/node@22.8.6)(happy-dom@15.8.2)(sass@1.80.5)(terser@5.36.0):
+    dependencies:
+      '@vitest/expect': 1.6.0
+      '@vitest/runner': 1.6.0
+      '@vitest/snapshot': 1.6.0
+      '@vitest/spy': 1.6.0
+      '@vitest/utils': 1.6.0
+      acorn-walk: 8.3.4
+      chai: 4.5.0
+      debug: 4.3.7
+      execa: 8.0.1
+      local-pkg: 0.5.0
+      magic-string: 0.30.12
+      pathe: 1.1.2
+      picocolors: 1.1.1
+      std-env: 3.7.0
+      strip-literal: 2.1.0
+      tinybench: 2.9.0
+      tinypool: 0.8.4
+      vite: 5.4.10(@types/node@22.8.6)(sass@1.80.5)(terser@5.36.0)
+      vite-node: 1.6.0(@types/node@22.8.6)(sass@1.80.5)(terser@5.36.0)
+      why-is-node-running: 2.3.0
+    optionalDependencies:
+      '@edge-runtime/vm': 3.2.0
+      '@types/node': 22.8.6
+      happy-dom: 15.8.2
     transitivePeerDependencies:
       - less
       - lightningcss
