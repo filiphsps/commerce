@@ -97,7 +97,7 @@
         "@types/react": "18.3.8",
         "autoprefixer": "10.4.20",
         "babel-plugin-react-compiler": "19.0.0-beta-8a03594-20241020",
-        "concurrently": "9.0.1",
+        "concurrently": "9.1.0",
         "critters": "0.0.25",
         "dotenv": "16.4.5",
         "eslint-config-next": "15.0.2-canary.10",
