@@ -106,8 +106,8 @@ importers:
         specifier: 3.9.1
         version: 3.9.1(@types/node@22.8.6)(rollup@4.24.0)(typescript@5.6.3)(vite@5.4.10(@types/node@22.8.6)(sass@1.80.5)(terser@5.36.0))
       vite-tsconfig-paths:
-        specifier: 5.0.1
-        version: 5.0.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.8.6)(sass@1.80.5)(terser@5.36.0))
+        specifier: 5.1.0
+        version: 5.1.0(typescript@5.6.3)(vite@5.4.10(@types/node@22.8.6)(sass@1.80.5)(terser@5.36.0))
       vitest:
         specifier: 1.6.0
         version: 1.6.0(@edge-runtime/vm@3.2.0)(@types/node@22.8.6)(happy-dom@15.8.0)(sass@1.80.5)(terser@5.36.0)
@@ -824,8 +824,8 @@ importers:
         specifier: 3.9.1
         version: 3.9.1(@types/node@22.8.6)(rollup@4.24.0)(typescript@5.6.3)(vite@5.4.10(@types/node@22.8.6)(sass@1.80.5)(terser@5.36.0))
       vite-tsconfig-paths:
-        specifier: 5.0.1
-        version: 5.0.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.8.6)(sass@1.80.5)(terser@5.36.0))
+        specifier: 5.1.0
+        version: 5.1.0(typescript@5.6.3)(vite@5.4.10(@types/node@22.8.6)(sass@1.80.5)(terser@5.36.0))
       vitest:
         specifier: 1.6.0
         version: 1.6.0(@edge-runtime/vm@3.2.0)(@types/node@22.8.6)(happy-dom@15.8.0)(sass@1.80.5)(terser@5.36.0)
@@ -860,8 +860,8 @@ importers:
         specifier: 3.9.1
         version: 3.9.1(@types/node@22.8.6)(rollup@4.24.0)(typescript@5.6.3)(vite@5.4.10(@types/node@22.8.6)(sass@1.80.5)(terser@5.36.0))
       vite-tsconfig-paths:
-        specifier: 5.0.1
-        version: 5.0.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.8.6)(sass@1.80.5)(terser@5.36.0))
+        specifier: 5.1.0
+        version: 5.1.0(typescript@5.6.3)(vite@5.4.10(@types/node@22.8.6)(sass@1.80.5)(terser@5.36.0))
       vitest:
         specifier: 1.6.0
         version: 1.6.0(@edge-runtime/vm@3.2.0)(@types/node@22.8.6)(happy-dom@15.8.0)(sass@1.80.5)(terser@5.36.0)
@@ -900,8 +900,8 @@ importers:
         specifier: 3.9.1
         version: 3.9.1(@types/node@22.8.6)(rollup@4.24.0)(typescript@5.6.3)(vite@5.4.10(@types/node@22.8.6)(sass@1.80.5)(terser@5.36.0))
       vite-tsconfig-paths:
-        specifier: 5.0.1
-        version: 5.0.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.8.6)(sass@1.80.5)(terser@5.36.0))
+        specifier: 5.1.0
+        version: 5.1.0(typescript@5.6.3)(vite@5.4.10(@types/node@22.8.6)(sass@1.80.5)(terser@5.36.0))
       vitest:
         specifier: 1.6.0
         version: 1.6.0(@edge-runtime/vm@3.2.0)(@types/node@22.8.6)(happy-dom@15.8.0)(sass@1.80.5)(terser@5.36.0)
@@ -7011,8 +7011,8 @@ packages:
       vite:
         optional: true
 
-  vite-tsconfig-paths@5.0.1:
-    resolution: {integrity: sha512-yqwv+LstU7NwPeNqajZzLEBVpUFU6Dugtb2P84FXuvaoYA+/70l9MHE+GYfYAycVyPSDYZ7mjOFuYBRqlEpTig==}
+  vite-tsconfig-paths@5.1.0:
+    resolution: {integrity: sha512-Y1PLGHCJfAq1Zf4YIGEsmuU/NCX1epoZx9zwSr32Gjn3aalwQHRKr5aUmbo6r0JHeHkqmWpmDg7WOynhYXw1og==}
     peerDependencies:
       vite: '*'
     peerDependenciesMeta:
@@ -11069,7 +11069,7 @@ snapshots:
       debug: 4.3.7
       enhanced-resolve: 5.17.1
       eslint: 8.57.1
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1)
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
       fast-glob: 3.3.2
       get-tsconfig: 4.8.1
       is-bun-module: 1.2.1
@@ -11082,7 +11082,7 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1):
+  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
@@ -11104,7 +11104,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1)
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
       hasown: 2.0.2
       is-core-module: 2.15.1
       is-glob: 4.0.3
@@ -14046,7 +14046,7 @@ snapshots:
       - rollup
       - supports-color
 
-  vite-tsconfig-paths@5.0.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.8.6)(sass@1.80.5)(terser@5.36.0)):
+  vite-tsconfig-paths@5.1.0(typescript@5.6.3)(vite@5.4.10(@types/node@22.8.6)(sass@1.80.5)(terser@5.36.0)):
     dependencies:
       debug: 4.3.7
       globrex: 0.1.2
