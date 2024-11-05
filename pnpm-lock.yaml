@@ -573,8 +573,8 @@ importers:
         specifier: 1.4.0
         version: 1.4.0(@opentelemetry/api@1.9.0)
       '@vercel/flags':
-        specifier: 2.6.2
-        version: 2.6.2(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@5.4.10(@types/node@22.8.6)(sass@1.80.5)(terser@5.36.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
+        specifier: 2.6.3
+        version: 2.6.3(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@5.4.10(@types/node@22.8.6)(sass@1.80.5)(terser@5.36.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
       '@vercel/otel':
         specifier: 1.10.0
         version: 1.10.0(@opentelemetry/api-logs@0.54.0)(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.54.0(@opentelemetry/api@1.9.0))(@opentelemetry/resources@1.27.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.54.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.26.0(@opentelemetry/api@1.9.0))
@@ -3173,8 +3173,8 @@ packages:
       '@opentelemetry/api':
         optional: true
 
-  '@vercel/flags@2.6.2':
-    resolution: {integrity: sha512-XQo8Wdxkud9eIaH7J+aiJ/RhHIJS1n9sQzHzW4qJMAhrORVIHx2jCBLQ4I7o8QIgncb2zNRLCO9AehZWo0VfrQ==}
+  '@vercel/flags@2.6.3':
+    resolution: {integrity: sha512-knLDYS8MCc/zx4FF6KRzHQzAKdo8VQ3V0PEBI5WvRlFIhcqhcEomxHoK41/xMnNEQvUzETACHw610/i/pVwYSA==}
     peerDependencies:
       '@sveltejs/kit': '*'
       next: '*'
@@ -9907,7 +9907,7 @@ snapshots:
     optionalDependencies:
       '@opentelemetry/api': 1.9.0
 
-  '@vercel/flags@2.6.2(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@5.4.10(@types/node@22.8.6)(sass@1.80.5)(terser@5.36.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)':
+  '@vercel/flags@2.6.3(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@5.4.10(@types/node@22.8.6)(sass@1.80.5)(terser@5.36.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)':
     dependencies:
       jose: 5.2.1
     optionalDependencies:
