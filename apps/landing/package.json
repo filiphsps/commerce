@@ -100,7 +100,7 @@
         "eslint-config-next": "15.0.2-canary.10",
         "eslint": "8.57.1",
         "graphql": "16.9.0",
-        "happy-dom": "15.10.1",
+        "happy-dom": "15.10.2",
         "postcss-import": "16.1.0",
         "postcss": "8.4.47",
         "prettier": "3.3.3",
