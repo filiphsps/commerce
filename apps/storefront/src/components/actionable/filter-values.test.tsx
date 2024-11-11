@@ -33,6 +33,27 @@ describe('components', () => {
             expect(unmount).not.toThrow();
         });
 
-        // TODO: Add tests for the filter component.
+        it('returns null when an invalid type is provided', () => {
+            const { container, unmount } = render(<FilterValues id={'id'} type={'INVALID' as any} values={[]} />);
+            expect(container.textContent).toBe('');
+            expect(container.childElementCount).toBe(0);
+            expect(unmount).not.toThrow();
+        });
+
+        it.skip('parses and renders a ´BOOLEAN´ type', () => {
+            const { unmount } = render(<FilterValues id={'id'} type={'BOOLEAN'} values={[]} />);
+
+            expect(unmount).not.toThrow();
+        });
+        it.skip('parses and renders a LIST type', () => {
+            const { unmount } = render(<FilterValues id={'id'} type={'LIST'} values={[]} />);
+
+            expect(unmount).not.toThrow();
+        });
+        it.skip('parses and renders a PRICE_RANGE type', () => {
+            const { unmount } = render(<FilterValues id={'id'} type={'PRICE_RANGE'} values={[]} />);
+
+            expect(unmount).not.toThrow();
+        });
     });
 });
