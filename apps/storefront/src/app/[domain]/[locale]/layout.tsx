@@ -223,6 +223,9 @@ export default async function RootLayout({
     return (
         <html lang={locale.code} className={cn(primaryFont.className, primaryFont.variable, 'overscroll-x-none')}>
             <head>
+                {process.env.NODE_ENV === 'development' ? (
+                    <script src="https://unpkg.com/react-scan/dist/auto.global.js" async={true} />
+                ) : null}
                 <Suspense fallback={<Fragment />}>
                     <CssVariablesProvider domain={domain} />
                 </Suspense>
