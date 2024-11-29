@@ -56,7 +56,7 @@
         "@opentelemetry/instrumentation": "0.54.2",
         "@opentelemetry/sdk-logs": "0.54.2",
         "@radix-ui/react-avatar": "1.1.1",
-        "@radix-ui/react-scroll-area": "1.2.0",
+        "@radix-ui/react-scroll-area": "1.2.1",
         "@radix-ui/react-separator": "1.1.0",
         "@radix-ui/react-slot": "1.1.0",
         "@shopify/hydrogen-react": "2024.7.6",
