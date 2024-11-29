@@ -102,7 +102,7 @@
         "graphql": "16.9.0",
         "happy-dom": "15.10.2",
         "postcss-import": "16.1.0",
-        "postcss": "8.4.47",
+        "postcss": "8.4.49",
         "prettier": "3.3.3",
         "rimraf": "6.0.1",
         "server-only": "0.0.1",
