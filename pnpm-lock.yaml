@@ -79,8 +79,8 @@ importers:
         specifier: 1.11.2
         version: 1.11.2
       mongoose:
-        specifier: 8.8.0
-        version: 8.8.0
+        specifier: 8.8.3
+        version: 8.8.3
       prettier:
         specifier: 3.3.3
         version: 3.3.3
@@ -190,8 +190,8 @@ importers:
         specifier: 0.456.0
         version: 0.456.0(react@0.0.0-experimental-28668d39-20241023)
       mongoose:
-        specifier: 8.8.0
-        version: 8.8.0
+        specifier: 8.8.3
+        version: 8.8.3
       next:
         specifier: 15.0.2-canary.10
         version: 15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5)
@@ -615,8 +615,8 @@ importers:
         specifier: 0.456.0
         version: 0.456.0(react@0.0.0-experimental-28668d39-20241023)
       mongoose:
-        specifier: 8.8.0
-        version: 8.8.0
+        specifier: 8.8.3
+        version: 8.8.3
       next:
         specifier: 15.0.2-canary.10
         version: 15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5)
@@ -787,8 +787,8 @@ importers:
         specifier: workspace:*
         version: link:../errors
       mongoose:
-        specifier: 8.8.0
-        version: 8.8.0
+        specifier: 8.8.3
+        version: 8.8.3
     devDependencies:
       '@codecov/vite-plugin':
         specifier: 1.2.1
@@ -5440,8 +5440,8 @@ packages:
       socks:
         optional: true
 
-  mongoose@8.8.0:
-    resolution: {integrity: sha512-KluvgwnQB1GPOYZZXUHJRjS1TW6xxwTlf/YgjWExuuNanIe3W7VcR7dDXQVCIRk8L7NYge8EnoTcu2grWtN+XQ==}
+  mongoose@8.8.3:
+    resolution: {integrity: sha512-/I4n/DcXqXyIiLRfAmUIiTjj3vXfeISke8dt4U4Y8Wfm074Wa6sXnQrXN49NFOFf2mM1kUdOXryoBvkuCnr+Qw==}
     engines: {node: '>=16.20.1'}
 
   monocle-ts@2.3.13:
@@ -12435,7 +12435,7 @@ snapshots:
       bson: 6.8.0
       mongodb-connection-string-url: 3.0.1
 
-  mongoose@8.8.0:
+  mongoose@8.8.3:
     dependencies:
       bson: 6.8.0
       kareem: 2.6.3
