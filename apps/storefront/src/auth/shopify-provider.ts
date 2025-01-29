@@ -84,6 +84,7 @@ function ShopifyProvider<P extends ShopifyProfile = ShopifyProfile>(
         type: 'oidc',
         name: 'Shopify',
         clientId,
+        shopId,
         clientSecret,
         client: {
             client_id: clientId,
@@ -188,7 +189,6 @@ function ShopifyProvider<P extends ShopifyProfile = ShopifyProfile>(
                 name: customer?.displayName
             };
         },
-        // @ts-expect-error: options not picked up, but they are defined in `OIDCConfig`
         options
     } satisfies ShopifyConfig<P>;
 }
