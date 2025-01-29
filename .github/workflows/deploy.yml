@@ -17,9 +17,6 @@ env:
     SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY }}
     SHOPIFY_API_SECRET_KEY: ${{ secrets.SHOPIFY_API_SECRET_KEY }}
     AUTH_SECRET: 'development-secret'
-    SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-    SENTRY_ORG: ${{ vars.SENTRY_ORG }}
-    SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
     MONGODB_DATA_API_TOKEN: ${{ secrets.MONGODB_DATA_API_TOKEN }}
     MONGODB_DATA_API_URI: ${{ secrets.MONGODB_DATA_API_URI }}
 

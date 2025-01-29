@@ -557,12 +557,6 @@ importers:
       '@radix-ui/react-visually-hidden':
         specifier: 1.1.0
         version: 1.1.0(@types/react-dom@18.3.0)(@types/react@18.3.8)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
-      '@sentry/nextjs':
-        specifier: 8.37.1
-        version: 8.37.1(@opentelemetry/core@1.27.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.54.2(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.26.0(@opentelemetry/api@1.9.0))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(webpack@5.92.1)
-      '@sentry/profiling-node':
-        specifier: 8.37.1
-        version: 8.37.1
       '@shopify/hydrogen-react':
         specifier: 2024.7.6
         version: 2024.7.6(@types/react@18.3.8)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
@@ -1756,14 +1750,6 @@ packages:
   '@octokit/types@13.6.1':
     resolution: {integrity: sha512-PHZE9Z+kWXb23Ndik8MKPirBPziOc0D2/3KH1P+6jK5nGWe96kadZuE4jev2/Jq7FvIfTlT2Ltg8Fv2x1v0a5g==}
 
-  '@opentelemetry/api-logs@0.52.1':
-    resolution: {integrity: sha512-qnSqB2DQ9TPP96dl8cDubDvrUyWc0/sK81xHTK8eSUspzDM3bsewX903qclQFvVhgStjRWdC5bLb3kQqMkfV5A==}
-    engines: {node: '>=14'}
-
-  '@opentelemetry/api-logs@0.53.0':
-    resolution: {integrity: sha512-8HArjKx+RaAI8uEIgcORbZIPklyh1YLjPSBus8hjRmvLi6DeFzgOcdZ7KwPabKj8mXF8dX0hyfAyGfycz0DbFw==}
-    engines: {node: '>=14'}
-
   '@opentelemetry/api-logs@0.54.2':
     resolution: {integrity: sha512-4MTVwwmLgUh5QrJnZpYo6YRO5IBLAggf2h8gWDblwRagDStY13aEvt7gGk3jewrMaPlHiF83fENhIx0HO97/cQ==}
     engines: {node: '>=14'}
@@ -1771,12 +1757,6 @@ packages:
   '@opentelemetry/api@1.9.0':
     resolution: {integrity: sha512-3giAOQvZiH5F9bMlMiv8+GSPMeqg0dbaeo58/0SlA9sxSqZhnUtxzX9/2FzyhS9sWQf5S0GJE0AKBrFqjpeYcg==}
     engines: {node: '>=8.0.0'}
-
-  '@opentelemetry/context-async-hooks@1.26.0':
-    resolution: {integrity: sha512-HedpXXYzzbaoutw6DFLWLDket2FwLkLpil4hGCZ1xYEIMTcivdfwEOISgdbLEWyG3HW52gTq2V9mOVJrONgiwg==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
   '@opentelemetry/core@1.26.0':
     resolution: {integrity: sha512-1iKxXXE8415Cdv0yjG3G6hQnB5eVEsJce3QaawX8SjDn0mAS0ZM8fAbZZJD4ajvhC15cePvosSCut404KrIIvQ==}
@@ -1790,159 +1770,11 @@ packages:
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
-  '@opentelemetry/instrumentation-amqplib@0.42.0':
-    resolution: {integrity: sha512-fiuU6OKsqHJiydHWgTRQ7MnIrJ2lEqsdgFtNIH4LbAUJl/5XmrIeoDzDnox+hfkgWK65jsleFuQDtYb5hW1koQ==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': ^1.3.0
-
-  '@opentelemetry/instrumentation-connect@0.40.0':
-    resolution: {integrity: sha512-3aR/3YBQ160siitwwRLjwqrv2KBT16897+bo6yz8wIfel6nWOxTZBJudcbsK3p42pTC7qrbotJ9t/1wRLpv79Q==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': ^1.3.0
-
-  '@opentelemetry/instrumentation-dataloader@0.12.0':
-    resolution: {integrity: sha512-pnPxatoFE0OXIZDQhL2okF//dmbiWFzcSc8pUg9TqofCLYZySSxDCgQc69CJBo5JnI3Gz1KP+mOjS4WAeRIH4g==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': ^1.3.0
-
-  '@opentelemetry/instrumentation-express@0.44.0':
-    resolution: {integrity: sha512-GWgibp6Q0wxyFaaU8ERIgMMYgzcHmGrw3ILUtGchLtLncHNOKk0SNoWGqiylXWWT4HTn5XdV8MGawUgpZh80cA==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': ^1.3.0
-
-  '@opentelemetry/instrumentation-fastify@0.41.0':
-    resolution: {integrity: sha512-pNRjFvf0mvqfJueaeL/qEkuGJwgtE5pgjIHGYwjc2rMViNCrtY9/Sf+Nu8ww6dDd/Oyk2fwZZP7i0XZfCnETrA==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': ^1.3.0
-
-  '@opentelemetry/instrumentation-fs@0.16.0':
-    resolution: {integrity: sha512-hMDRUxV38ln1R3lNz6osj3YjlO32ykbHqVrzG7gEhGXFQfu7LJUx8t9tEwE4r2h3CD4D0Rw4YGDU4yF4mP3ilg==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': ^1.3.0
-
-  '@opentelemetry/instrumentation-generic-pool@0.39.0':
-    resolution: {integrity: sha512-y4v8Y+tSfRB3NNBvHjbjrn7rX/7sdARG7FuK6zR8PGb28CTa0kHpEGCJqvL9L8xkTNvTXo+lM36ajFGUaK1aNw==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': ^1.3.0
-
-  '@opentelemetry/instrumentation-graphql@0.44.0':
-    resolution: {integrity: sha512-FYXTe3Bv96aNpYktqm86BFUTpjglKD0kWI5T5bxYkLUPEPvFn38vWGMJTGrDMVou/i55E4jlWvcm6hFIqLsMbg==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': ^1.3.0
-
-  '@opentelemetry/instrumentation-hapi@0.41.0':
-    resolution: {integrity: sha512-jKDrxPNXDByPlYcMdZjNPYCvw0SQJjN+B1A+QH+sx+sAHsKSAf9hwFiJSrI6C4XdOls43V/f/fkp9ITkHhKFbQ==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': ^1.3.0
-
-  '@opentelemetry/instrumentation-http@0.53.0':
-    resolution: {integrity: sha512-H74ErMeDuZfj7KgYCTOFGWF5W9AfaPnqLQQxeFq85+D29wwV2yqHbz2IKLYpkOh7EI6QwDEl7rZCIxjJLyc/CQ==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': ^1.3.0
-
-  '@opentelemetry/instrumentation-ioredis@0.43.0':
-    resolution: {integrity: sha512-i3Dke/LdhZbiUAEImmRG3i7Dimm/BD7t8pDDzwepSvIQ6s2X6FPia7561gw+64w+nx0+G9X14D7rEfaMEmmjig==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': ^1.3.0
-
-  '@opentelemetry/instrumentation-kafkajs@0.4.0':
-    resolution: {integrity: sha512-I9VwDG314g7SDL4t8kD/7+1ytaDBRbZQjhVaQaVIDR8K+mlsoBhLsWH79yHxhHQKvwCSZwqXF+TiTOhoQVUt7A==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': ^1.3.0
-
-  '@opentelemetry/instrumentation-koa@0.43.0':
-    resolution: {integrity: sha512-lDAhSnmoTIN6ELKmLJBplXzT/Jqs5jGZehuG22EdSMaTwgjMpxMDI1YtlKEhiWPWkrz5LUsd0aOO0ZRc9vn3AQ==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': ^1.3.0
-
-  '@opentelemetry/instrumentation-lru-memoizer@0.40.0':
-    resolution: {integrity: sha512-21xRwZsEdMPnROu/QsaOIODmzw59IYpGFmuC4aFWvMj6stA8+Ei1tX67nkarJttlNjoM94um0N4X26AD7ff54A==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': ^1.3.0
-
-  '@opentelemetry/instrumentation-mongodb@0.48.0':
-    resolution: {integrity: sha512-9YWvaGvrrcrydMsYGLu0w+RgmosLMKe3kv/UNlsPy8RLnCkN2z+bhhbjjjuxtUmvEuKZMCoXFluABVuBr1yhjw==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': ^1.3.0
-
-  '@opentelemetry/instrumentation-mongoose@0.42.0':
-    resolution: {integrity: sha512-AnWv+RaR86uG3qNEMwt3plKX1ueRM7AspfszJYVkvkehiicC3bHQA6vWdb6Zvy5HAE14RyFbu9+2hUUjR2NSyg==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': ^1.3.0
-
-  '@opentelemetry/instrumentation-mysql2@0.41.0':
-    resolution: {integrity: sha512-REQB0x+IzVTpoNgVmy5b+UnH1/mDByrneimP6sbDHkp1j8QOl1HyWOrBH/6YWR0nrbU3l825Em5PlybjT3232g==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': ^1.3.0
-
-  '@opentelemetry/instrumentation-mysql@0.41.0':
-    resolution: {integrity: sha512-jnvrV6BsQWyHS2qb2fkfbfSb1R/lmYwqEZITwufuRl37apTopswu9izc0b1CYRp/34tUG/4k/V39PND6eyiNvw==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': ^1.3.0
-
-  '@opentelemetry/instrumentation-nestjs-core@0.40.0':
-    resolution: {integrity: sha512-WF1hCUed07vKmf5BzEkL0wSPinqJgH7kGzOjjMAiTGacofNXjb/y4KQ8loj2sNsh5C/NN7s1zxQuCgbWbVTGKg==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': ^1.3.0
-
-  '@opentelemetry/instrumentation-pg@0.44.0':
-    resolution: {integrity: sha512-oTWVyzKqXud1BYEGX1loo2o4k4vaU1elr3vPO8NZolrBtFvQ34nx4HgUaexUDuEog00qQt+MLR5gws/p+JXMLQ==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': ^1.3.0
-
-  '@opentelemetry/instrumentation-redis-4@0.42.0':
-    resolution: {integrity: sha512-NaD+t2JNcOzX/Qa7kMy68JbmoVIV37fT/fJYzLKu2Wwd+0NCxt+K2OOsOakA8GVg8lSpFdbx4V/suzZZ2Pvdjg==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': ^1.3.0
-
-  '@opentelemetry/instrumentation-undici@0.6.0':
-    resolution: {integrity: sha512-ABJBhm5OdhGmbh0S/fOTE4N69IZ00CsHC5ijMYfzbw3E5NwLgpQk5xsljaECrJ8wz1SfXbO03FiSuu5AyRAkvQ==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': ^1.7.0
-
-  '@opentelemetry/instrumentation@0.52.1':
-    resolution: {integrity: sha512-uXJbYU/5/MBHjMp1FqrILLRuiJCs3Ofk0MeRDk8g1S1gD47U8X3JnSwcMO1rtRo1x1a7zKaQHaoYu49p/4eSKw==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': ^1.3.0
-
-  '@opentelemetry/instrumentation@0.53.0':
-    resolution: {integrity: sha512-DMwg0hy4wzf7K73JJtl95m/e0boSoWhH07rfvHvYzQtBD3Bmv0Wc1x733vyZBqmFm8OjJD0/pfiUg1W3JjFX0A==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': ^1.3.0
-
   '@opentelemetry/instrumentation@0.54.2':
     resolution: {integrity: sha512-go6zpOVoZVztT9r1aPd79Fr3OWiD4N24bCPJsIKkBses8oyFo12F/Ew3UBTdIu6hsW4HC4MVEJygG6TEyJI/lg==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': ^1.3.0
-
-  '@opentelemetry/redis-common@0.36.2':
-    resolution: {integrity: sha512-faYX1N0gpLhej/6nyp6bgRjzAKXn5GOEMYY7YhciSfCoITAktLUtQ36d24QEWNA1/WA1y6qQunCe0OhHRkVl9g==}
-    engines: {node: '>=14'}
 
   '@opentelemetry/resources@1.26.0':
     resolution: {integrity: sha512-CPNYchBE7MBecCSVy0HKpUISEeJOniWqcHaAHpmasZ3j9o6V3AyBzhRc90jdmemq0HOxDr6ylhUbDhBqqPpeNw==}
@@ -1977,12 +1809,6 @@ packages:
   '@opentelemetry/semantic-conventions@1.27.0':
     resolution: {integrity: sha512-sAay1RrB+ONOem0OZanAR1ZI/k7yDpnOQSQmTMuGImUQb2y8EbSaCJ94FQluM74xoU03vlb2d2U90hZluL6nQg==}
     engines: {node: '>=14'}
-
-  '@opentelemetry/sql-common@0.40.1':
-    resolution: {integrity: sha512-nSDlnHSqzC3pXn/wZEZVLuAuJ1MYMXPBwtv2qAbCa3847SaHItdE7SzUq/Jtb0KZmh1zfAbNi3AAMjztTT4Ugg==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': ^1.1.0
 
   '@panva/hkdf@1.2.1':
     resolution: {integrity: sha512-6oclG6Y3PiDFcoyk8srjLfVKyMfVCKJ27JwNPViuXziFpmdz+MZnZN/aKY0JGXgYuO/VghU0jcOAZgWXZ1Dmrw==}
@@ -2073,9 +1899,6 @@ packages:
 
   '@polka/url@1.0.0-next.28':
     resolution: {integrity: sha512-8LduaNlMZGwdZ6qWrKlfa+2M4gahzFkprZiAt2TF8uS0qQgBizKXpXURqvTJ4WtmupWxaLqjRb2UCTe72mu+Aw==}
-
-  '@prisma/instrumentation@5.19.1':
-    resolution: {integrity: sha512-VLnzMQq7CWroL5AeaW0Py2huiNKeoMfCH3SUxstdzPrlWQi6UQ9UrfcbUkNHlVFqOMacqy8X/8YtE0kuKDpD9w==}
 
   '@prismicio/api-renderer@3.4.0':
     resolution: {integrity: sha512-0imTdI/sQcVNjd51mW2Bd/ZhwFBUwZSm0CYW3yXeu8ulwO9qBZCez/kog8uZIQLeZUs4nSKdi9TXjUtK5loAyQ==}
@@ -2441,15 +2264,6 @@ packages:
     peerDependencies:
       '@redis/client': ^1.0.0
 
-  '@rollup/plugin-commonjs@26.0.1':
-    resolution: {integrity: sha512-UnsKoZK6/aGIH6AdkptXhNvhaqftcjq3zZdT+LY5Ftms6JR06nADcDsYp5hTU9E2lbJUEOhdlY5J4DNTneM+jQ==}
-    engines: {node: '>=16.0.0 || 14 >= 14.17'}
-    peerDependencies:
-      rollup: ^2.68.0||^3.0.0||^4.0.0
-    peerDependenciesMeta:
-      rollup:
-        optional: true
-
   '@rollup/pluginutils@5.1.2':
     resolution: {integrity: sha512-/FIdS3PyZ39bjZlwqFnWqCOVnW7o963LtKMwQOD0NhQqw22gSr2YY1afu3FxRip4ZCZNsD5jq6Aaz6QV3D/Njw==}
     engines: {node: '>=14.0.0'}
@@ -2579,133 +2393,6 @@ packages:
   '@segment/analytics-node@2.2.0':
     resolution: {integrity: sha512-mPFTSBr9CrkFBdgr7KU/YD8V/25P8vPb/hVvVHYKwEdHRovlizZ34ENgQlvqeRuamQiXD3RLM8pcWX+WxPz3lQ==}
     engines: {node: '>=18'}
-
-  '@sentry-internal/browser-utils@8.37.1':
-    resolution: {integrity: sha512-OSR/V5GCsSCG7iapWtXCT/y22uo3HlawdEgfM1NIKk1mkP15UyGQtGEzZDdih2H+SNuX1mp9jQLTjr5FFp1A5w==}
-    engines: {node: '>=14.18'}
-
-  '@sentry-internal/feedback@8.37.1':
-    resolution: {integrity: sha512-Se25NXbSapgS2S+JssR5YZ48b3OY4UGmAuBOafgnMW91LXMxRNWRbehZuNUmjjHwuywABMxjgu+Yp5uJDATX+g==}
-    engines: {node: '>=14.18'}
-
-  '@sentry-internal/replay-canvas@8.37.1':
-    resolution: {integrity: sha512-1JLAaPtn1VL5vblB0BMELFV0D+KUm/iMGsrl4/JpRm0Ws5ESzQl33DhXVv1IX/ZAbx9i14EjR7MG9+Hj70tieQ==}
-    engines: {node: '>=14.18'}
-
-  '@sentry-internal/replay@8.37.1':
-    resolution: {integrity: sha512-E/Plhisk/pXJjOdOU12sg8m/APTXTA21iEniidP6jW3/+O0tD/H/UovEqa4odNTqxPMa798xHQSQNt5loYiaLA==}
-    engines: {node: '>=14.18'}
-
-  '@sentry/babel-plugin-component-annotate@2.22.6':
-    resolution: {integrity: sha512-V2g1Y1I5eSe7dtUVMBvAJr8BaLRr4CLrgNgtPaZyMT4Rnps82SrZ5zqmEkLXPumlXhLUWR6qzoMNN2u+RXVXfQ==}
-    engines: {node: '>= 14'}
-
-  '@sentry/browser@8.37.1':
-    resolution: {integrity: sha512-5ym+iGiIpjIKKpMWi9S3/tXh9xneS+jqxwRTJqed3cb8i4ydfMAAP8sM3U8xMCWWABpWyIUW+fpewC0tkhE1aQ==}
-    engines: {node: '>=14.18'}
-
-  '@sentry/bundler-plugin-core@2.22.6':
-    resolution: {integrity: sha512-1esQdgSUCww9XAntO4pr7uAM5cfGhLsgTK9MEwAKNfvpMYJi9NUTYa3A7AZmdA8V6107Lo4OD7peIPrDRbaDCg==}
-    engines: {node: '>= 14'}
-
-  '@sentry/cli-darwin@2.37.0':
-    resolution: {integrity: sha512-CsusyMvO0eCPSN7H+sKHXS1pf637PWbS4rZak/7giz/z31/6qiXmeMlcL3f9lLZKtFPJmXVFO9uprn1wbBVF8A==}
-    engines: {node: '>=10'}
-    os: [darwin]
-
-  '@sentry/cli-linux-arm64@2.37.0':
-    resolution: {integrity: sha512-2vzUWHLZ3Ct5gpcIlfd/2Qsha+y9M8LXvbZE26VxzYrIkRoLAWcnClBv8m4XsHLMURYvz3J9QSZHMZHSO7kAzw==}
-    engines: {node: '>=10'}
-    cpu: [arm64]
-    os: [linux, freebsd]
-
-  '@sentry/cli-linux-arm@2.37.0':
-    resolution: {integrity: sha512-Dz0qH4Yt+gGUgoVsqVt72oDj4VQynRF1QB1/Sr8g76Vbi+WxWZmUh0iFwivYVwWxdQGu/OQrE0tx946HToCRyA==}
-    engines: {node: '>=10'}
-    cpu: [arm]
-    os: [linux, freebsd]
-
-  '@sentry/cli-linux-i686@2.37.0':
-    resolution: {integrity: sha512-MHRLGs4t/CQE1pG+mZBQixyWL6xDZfNalCjO8GMcTTbZFm44S3XRHfYJZNVCgdtnUP7b6OHGcu1v3SWE10LcwQ==}
-    engines: {node: '>=10'}
-    cpu: [x86, ia32]
-    os: [linux, freebsd]
-
-  '@sentry/cli-linux-x64@2.37.0':
-    resolution: {integrity: sha512-k76ClefKZaDNJZU/H3mGeR8uAzAGPzDRG/A7grzKfBeyhP3JW09L7Nz9IQcSjCK+xr399qLhM2HFCaPWQ6dlMw==}
-    engines: {node: '>=10'}
-    cpu: [x64]
-    os: [linux, freebsd]
-
-  '@sentry/cli-win32-i686@2.37.0':
-    resolution: {integrity: sha512-FFyi5RNYQQkEg4GkP2f3BJcgQn0F4fjFDMiWkjCkftNPXQG+HFUEtrGsWr6mnHPdFouwbYg3tEPUWNxAoypvTw==}
-    engines: {node: '>=10'}
-    cpu: [x86, ia32]
-    os: [win32]
-
-  '@sentry/cli-win32-x64@2.37.0':
-    resolution: {integrity: sha512-nSMj4OcfQmyL+Tu/jWCJwhKCXFsCZW1MUk6wjjQlRt9SDLfgeapaMlK1ZvT1eZv5ZH6bj3qJfefwj4U8160uOA==}
-    engines: {node: '>=10'}
-    cpu: [x64]
-    os: [win32]
-
-  '@sentry/cli@2.37.0':
-    resolution: {integrity: sha512-fM3V4gZRJR/s8lafc3O07hhOYRnvkySdPkvL/0e0XW0r+xRwqIAgQ5ECbsZO16A5weUiXVSf03ztDL1FcmbJCQ==}
-    engines: {node: '>= 10'}
-    hasBin: true
-
-  '@sentry/core@8.37.1':
-    resolution: {integrity: sha512-82csXby589iDupM3VgCHJeWZagUyEEaDnbFcoZ/Z91QX2Sjq8FcF5OsforoXjw09i0XTFqlkFAnQVpDBmMXcpQ==}
-    engines: {node: '>=14.18'}
-
-  '@sentry/nextjs@8.37.1':
-    resolution: {integrity: sha512-MMe+W1Jd/liYA47RU8qCFSYATgnVEAcFoREnbK2L4ooIDB2RP7jB8AX9LWD9ZWg9MduyQdDoFsI9OPIO3WmfuQ==}
-    engines: {node: '>=14.18'}
-    peerDependencies:
-      next: ^13.2.0 || ^14.0 || ^15.0.0-rc.0
-
-  '@sentry/node@8.37.1':
-    resolution: {integrity: sha512-ACRZmqOBHRPKsyVhnDR4+RH1QQr7WMdH7RNl62VlKNZGLvraxW1CUqTSeNUFUuOwks3P6nozROSQs8VMSC/nVg==}
-    engines: {node: '>=14.18'}
-
-  '@sentry/opentelemetry@8.37.1':
-    resolution: {integrity: sha512-P/Rp7R+qNiRYz9qtVMV12YL9CIrZjzXWGVUBZjJayHu37jdvMowCol5G850QPYy0E2O0AQnFtxBno2yeURn8QQ==}
-    engines: {node: '>=14.18'}
-    peerDependencies:
-      '@opentelemetry/api': ^1.9.0
-      '@opentelemetry/core': ^1.25.1
-      '@opentelemetry/instrumentation': ^0.54.0
-      '@opentelemetry/sdk-trace-base': ^1.26.0
-      '@opentelemetry/semantic-conventions': ^1.27.0
-
-  '@sentry/profiling-node@8.37.1':
-    resolution: {integrity: sha512-4pkl2PyaX/uNQm6eCzKepCbSTL/3eumZjVxJz5EfIn9D5vqesBn3NVyb1dha7+5BTzvHsi+N9ZGQUa2XHVskbw==}
-    engines: {node: '>=14.18'}
-    hasBin: true
-
-  '@sentry/react@8.37.1':
-    resolution: {integrity: sha512-HanDqBFTgIUhUsYztAHhSti+sEhQ8YopAymXgnpqkJ7j1PLHXZgQAre6M4Uvixu28WS5MDHC1onnAIBDgYRDYw==}
-    engines: {node: '>=14.18'}
-    peerDependencies:
-      react: ^16.14.0 || 17.x || 18.x || 19.x
-
-  '@sentry/types@8.37.1':
-    resolution: {integrity: sha512-ryMOTROLSLINKFEbHWvi7GigNrsQhsaScw2NddybJGztJQ5UhxIGESnxGxWCufBmWFDwd7+5u0jDPCVUJybp7w==}
-    engines: {node: '>=14.18'}
-
-  '@sentry/utils@8.37.1':
-    resolution: {integrity: sha512-Qtn2IfpII12K17txG/ZtTci35XYjYi4CxbQ3j7nXY7toGv/+MqPXwV5q2i9g94XaSXlE5Wy9/hoCZoZpZs/djA==}
-    engines: {node: '>=14.18'}
-
-  '@sentry/vercel-edge@8.37.1':
-    resolution: {integrity: sha512-LBf1UFNermpDtV+n5tsOJgtc6b+9/uLsffvq64ktnx9x+Pz2/3sFAHauikB/fwmo0MLxYk9AIng5b2QL5+uv4Q==}
-    engines: {node: '>=14.18'}
-
-  '@sentry/webpack-plugin@2.22.6':
-    resolution: {integrity: sha512-BiLhAzQYAz/9kCXKj2LeUKWf/9GBVn2dD0DeYK89s+sjDEaxjbcLBBiLlLrzT7eC9QVj2tUZRKOi6puCfc8ysw==}
-    engines: {node: '>= 14'}
-    peerDependencies:
-      webpack: '>=4.40.0'
 
   '@shopify/admin-api-client@1.0.4':
     resolution: {integrity: sha512-IJ50MrVy245ivuxnrg0R1lwXoAmzqQ6FDeq/vFEhbxe20ub3CFL8lIUmbG+2Uql8vrsW4b7RML4COs22sPxArw==}
@@ -2927,9 +2614,6 @@ packages:
   '@types/body-parser@1.19.5':
     resolution: {integrity: sha512-fB3Zu92ucau0iQ0JMCFQE7b/dv8Ot07NI3KaZIkIUNXq82k4eBAqUaneXfleGY9JWskeS9y+u0nXMyspcuQrCg==}
 
-  '@types/connect@3.4.36':
-    resolution: {integrity: sha512-P63Zd/JUGq+PdrM1lv0Wv5SBYeA2+CORvbrXbngriYY0jzLUWfQMQQxOhjONEz/wlHOAxOdY7CY65rgQdTjq2w==}
-
   '@types/connect@3.4.38':
     resolution: {integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==}
 
@@ -2944,9 +2628,6 @@ packages:
 
   '@types/crypto-js@4.2.2':
     resolution: {integrity: sha512-sDOLlVbHhXpAUAL0YHDUUwDZf3iN4Bwi4W6a0W0b+QcAezUbRtH4FVb+9J4h+XFPW7l/gQ9F8qC7P+Ec4k8QVQ==}
-
-  '@types/eslint-scope@3.7.7':
-    resolution: {integrity: sha512-MzMFlSLBqNF2gcHWO0G1vP/YQyfvrxZ0bF+u7mzUdZ1/xK4A4sru+nraZz5i3iEIk1l1uyicaDVTB4QbbEkAYg==}
 
   '@types/eslint@9.6.1':
     resolution: {integrity: sha512-FXx2pKgId/WyYo2jXw63kk7/+TY7u7AziEJxJAnSFzHlqTAS3Ync6SvgYAN/k4/PQpnnVuzoMuVnByKK2qp0ag==}
@@ -2999,20 +2680,11 @@ packages:
   '@types/mime@1.3.5':
     resolution: {integrity: sha512-/pyBZWSLD2n0dcHE3hq8s8ZvcETHtEuF+3E7XVt0Ig2nvsVQXdghHVcEkIWjy9A0wKfTn97a/PSDYohKIlnP/w==}
 
-  '@types/mysql@2.15.26':
-    resolution: {integrity: sha512-DSLCOXhkvfS5WNNPbfn2KdICAmk8lLc+/PNvnPnF7gOdMZCxopXduqv0OQ13y/yA/zXTSikZZqVgybUxOEg6YQ==}
-
   '@types/node@22.8.6':
     resolution: {integrity: sha512-tosuJYKrIqjQIlVCM4PEGxOmyg3FCPa/fViuJChnGeEIhjA46oy8FMVoF9su1/v8PNs2a8Q0iFNyOx0uOF91nw==}
 
   '@types/nprogress@0.2.3':
     resolution: {integrity: sha512-k7kRA033QNtC+gLc4VPlfnue58CM1iQLgn1IMAU8VPHGOj7oIHPp9UlhedEnD/Gl8evoCjwkZjlBORtZ3JByUA==}
-
-  '@types/pg-pool@2.0.6':
-    resolution: {integrity: sha512-TaAUE5rq2VQYxab5Ts7WZhKNmuN78Q6PiFonTDdpbx8a1H0M1vhy3rhiMjl+e2iHmogyMw7jZF4FrE6eJUy5HQ==}
-
-  '@types/pg@8.6.1':
-    resolution: {integrity: sha512-1Kc4oAGzAl7uqUStZCDvaLFqZrW9qWSjXOmBfdgyBP5La7Us6Mg4GBvRlSoaZMhQF/zSj1C8CtKMBkoiT8eL8w==}
 
   '@types/prop-types@15.7.13':
     resolution: {integrity: sha512-hCZTSvwbzWGvhqxp/RqVqwU999pBf2vp7hzIjiYOsl8wqOmUxkQ6ddw1cV3l8811+kdUFus/q4d1Y3E3SyEifA==}
@@ -3323,51 +2995,6 @@ packages:
   '@vue/shared@3.5.12':
     resolution: {integrity: sha512-L2RPSAwUFbgZH20etwrXyVyCBu9OxRSi8T/38QsvnkJyvq2LufW2lDCOzm7t/U9C1mkhJGWYfCuFBCmIuNivrg==}
 
-  '@webassemblyjs/ast@1.12.1':
-    resolution: {integrity: sha512-EKfMUOPRRUTy5UII4qJDGPpqfwjOmZ5jeGFwid9mnoqIFK+e0vqoi1qH56JpmZSzEL53jKnNzScdmftJyG5xWg==}
-
-  '@webassemblyjs/floating-point-hex-parser@1.11.6':
-    resolution: {integrity: sha512-ejAj9hfRJ2XMsNHk/v6Fu2dGS+i4UaXBXGemOfQ/JfQ6mdQg/WXtwleQRLLS4OvfDhv8rYnVwH27YJLMyYsxhw==}
-
-  '@webassemblyjs/helper-api-error@1.11.6':
-    resolution: {integrity: sha512-o0YkoP4pVu4rN8aTJgAyj9hC2Sv5UlkzCHhxqWj8butaLvnpdc2jOwh4ewE6CX0txSfLn/UYaV/pheS2Txg//Q==}
-
-  '@webassemblyjs/helper-buffer@1.12.1':
-    resolution: {integrity: sha512-nzJwQw99DNDKr9BVCOZcLuJJUlqkJh+kVzVl6Fmq/tI5ZtEyWT1KZMyOXltXLZJmDtvLCDgwsyrkohEtopTXCw==}
-
-  '@webassemblyjs/helper-numbers@1.11.6':
-    resolution: {integrity: sha512-vUIhZ8LZoIWHBohiEObxVm6hwP034jwmc9kuq5GdHZH0wiLVLIPcMCdpJzG4C11cHoQ25TFIQj9kaVADVX7N3g==}
-
-  '@webassemblyjs/helper-wasm-bytecode@1.11.6':
-    resolution: {integrity: sha512-sFFHKwcmBprO9e7Icf0+gddyWYDViL8bpPjJJl0WHxCdETktXdmtWLGVzoHbqUcY4Be1LkNfwTmXOJUFZYSJdA==}
-
-  '@webassemblyjs/helper-wasm-section@1.12.1':
-    resolution: {integrity: sha512-Jif4vfB6FJlUlSbgEMHUyk1j234GTNG9dBJ4XJdOySoj518Xj0oGsNi59cUQF4RRMS9ouBUxDDdyBVfPTypa5g==}
-
-  '@webassemblyjs/ieee754@1.11.6':
-    resolution: {integrity: sha512-LM4p2csPNvbij6U1f19v6WR56QZ8JcHg3QIJTlSwzFcmx6WSORicYj6I63f9yU1kEUtrpG+kjkiIAkevHpDXrg==}
-
-  '@webassemblyjs/leb128@1.11.6':
-    resolution: {integrity: sha512-m7a0FhE67DQXgouf1tbN5XQcdWoNgaAuoULHIfGFIEVKA6tu/edls6XnIlkmS6FrXAquJRPni3ZZKjw6FSPjPQ==}
-
-  '@webassemblyjs/utf8@1.11.6':
-    resolution: {integrity: sha512-vtXf2wTQ3+up9Zsg8sa2yWiQpzSsMyXj0qViVP6xKGCUT8p8YJ6HqI7l5eCnWx1T/FYdsv07HQs2wTFbbof/RA==}
-
-  '@webassemblyjs/wasm-edit@1.12.1':
-    resolution: {integrity: sha512-1DuwbVvADvS5mGnXbE+c9NfA8QRcZ6iKquqjjmR10k6o+zzsRVesil54DKexiowcFCPdr/Q0qaMgB01+SQ1u6g==}
-
-  '@webassemblyjs/wasm-gen@1.12.1':
-    resolution: {integrity: sha512-TDq4Ojh9fcohAw6OIMXqiIcTq5KUXTGRkVxbSo1hQnSy6lAM5GSdfwWeSxpAo0YzgsgF182E/U0mDNhuA0tW7w==}
-
-  '@webassemblyjs/wasm-opt@1.12.1':
-    resolution: {integrity: sha512-Jg99j/2gG2iaz3hijw857AVYekZe2SAskcqlWIZXjji5WStnOpVoat3gQfT/Q5tb2djnCjBtMocY/Su1GfxPBg==}
-
-  '@webassemblyjs/wasm-parser@1.12.1':
-    resolution: {integrity: sha512-xikIi7c2FHXysxXe3COrVUPSheuBtpcfhbpFj4gmu7KRLYOzANztwUU0IbsqvMqzuNK2+glRGWCEqZo1WCLyAQ==}
-
-  '@webassemblyjs/wast-printer@1.12.1':
-    resolution: {integrity: sha512-+X4WAlOisVWQMikjbcvY2e0rwPsKQ9F688lksZhBcPycBBuii3O7m8FACbDMWDojpAqvjIncrG8J0XHKyQfVeA==}
-
   '@wry/caches@1.0.1':
     resolution: {integrity: sha512-bXuaUNLVVkD20wcGBWRyo7j9N3TxePEWFZj2Y+r9OoUzfqmavM84+mFykRicNsBqatba5JLay1t48wxaXaWnlA==}
     engines: {node: '>=8'}
@@ -3403,12 +3030,6 @@ packages:
       xstate:
         optional: true
 
-  '@xtuc/ieee754@1.2.0':
-    resolution: {integrity: sha512-DX8nKgqcGwsc0eJSqYt5lwP4DH5FlHnmuWWBRy7X0NcaGR0ZtuyeESgMwTYVEtxmsNGY+qit4QYT/MIYTOTPeA==}
-
-  '@xtuc/long@4.2.2':
-    resolution: {integrity: sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==}
-
   accepts@1.3.8:
     resolution: {integrity: sha512-PYAthTa2m2VKxuvSD3DPC/Gy+U+sOA1LAuT8mkmRuvw+NACSaeXEQ+NHcVF7rONl6qcaxV3Uuemwawk+7+SJLw==}
     engines: {node: '>= 0.6'}
@@ -3431,15 +3052,6 @@ packages:
     resolution: {integrity: sha512-8zSiw54Oxrdym50NlZ9sUusyO1Z1ZchgRLWRaK6c86XJFClyCgFKetdowBg5bKxyp/u+CDBJG4Mpp0m3HLZl9w==}
     engines: {node: '>=0.4.0'}
     hasBin: true
-
-  agent-base@6.0.2:
-    resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
-    engines: {node: '>= 6.0.0'}
-
-  ajv-keywords@3.5.2:
-    resolution: {integrity: sha512-5p6WTN0DdTGVQk6VjcEju19IgaHudalcfabD7yhDGeA6bcQnmL+CpveLJq/3hvfwd1aof6L386Ougkx6RfyMIQ==}
-    peerDependencies:
-      ajv: ^6.9.1
 
   ajv@6.12.6:
     resolution: {integrity: sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==}
@@ -3690,10 +3302,6 @@ packages:
     resolution: {integrity: sha512-n8enUVCED/KVRQlab1hr3MVpcVMvxtZjmEa956u+4YijlmQED223XMSYj2tLuKvr4jcCTzNNMpQDUer72MMmzA==}
     engines: {node: '>= 14.16.0'}
 
-  chrome-trace-event@1.0.4:
-    resolution: {integrity: sha512-rNjApaLzuwaOTjCiT8lSDdGN1APCiqkChLMJxJPWLunPAt5fy8xgU9/jNOchV84wfIxrA0lRQB7oCT8jrn/wrQ==}
-    engines: {node: '>=6.0'}
-
   cjs-module-lexer@1.4.1:
     resolution: {integrity: sha512-cuSVIHi9/9E/+821Qjdvngor+xpnlwnuwIyZOaLmHBVdXL+gP+I6QQB9VkO7RI77YIcTV+S1W9AreJ5eN63JBA==}
 
@@ -3766,9 +3374,6 @@ packages:
   common-tags@1.8.2:
     resolution: {integrity: sha512-gk/Z852D2Wtb//0I+kRFNKKE9dIIVirjoqPoA1wJU+XePVXZfGeBpk45+A1rKO4Q43prqWBNY/MiIeRLbPWUaA==}
     engines: {node: '>=4.0.0'}
-
-  commondir@1.0.1:
-    resolution: {integrity: sha512-W9pAhw0ja1Edb5GVdIF1mjZw/ASI0AlShXM83UUGe2DVr5TdAPEA1OA8m/g8zWp9x6On7gqufY+FatDbC3MDQg==}
 
   compare-versions@6.1.1:
     resolution: {integrity: sha512-4hm4VPpIecmlg59CHXnRDnqGplJFrbLG4aFEl5vl6cK1u76ws3LLvX7ikFnTDl5vo39sjWD6AaDPYodJp/NNHg==}
@@ -4269,10 +3874,6 @@ packages:
       '@typescript-eslint/eslint-plugin':
         optional: true
 
-  eslint-scope@5.1.1:
-    resolution: {integrity: sha512-2NxwbF/hZ0KpepYN0cNbo+FN6XoK7GaHlQhgx/hIZl6Va0bF45RQOOwhLIy8lQDbuCiadSLCBnH2CFYquit5bw==}
-    engines: {node: '>=8.0.0'}
-
   eslint-scope@7.2.2:
     resolution: {integrity: sha512-dOt21O7lTMhDM+X9mB4GX+DZrZtCUJPL/wlcTqxyrx5IvO0IYtILdtrQGQp+8n5S0gwSVmOf9NQrjMOgfQZlIg==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
@@ -4315,10 +3916,6 @@ packages:
     resolution: {integrity: sha512-KmfKL3b6G+RXvP8N1vr3Tq1kL/oCFgn2NYXEtqP8/L3pKapUA4G8cFVaoF3SU323CD4XypR/ffioHmkti6/Tag==}
     engines: {node: '>=4.0'}
 
-  estraverse@4.3.0:
-    resolution: {integrity: sha512-39nnKffWz8xN1BU/2c79n9nB9HDzo0niYUqx6xyqUnyoAnQyyWpOTdZEeiCch8BBu515t4wp9ZmgVfVhn9EBpw==}
-    engines: {node: '>=4.0'}
-
   estraverse@5.3.0:
     resolution: {integrity: sha512-MMdARuVEQziNTeJD8DgMqmhwR11BRQ/cBP+pLtYdSTnf3MIO8fFeiINEbX36ZdNlfU/7A9f3gUw49B3oQsvwBA==}
     engines: {node: '>=4.0'}
@@ -4339,10 +3936,6 @@ packages:
 
   eventemitter3@4.0.7:
     resolution: {integrity: sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==}
-
-  events@3.3.0:
-    resolution: {integrity: sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==}
-    engines: {node: '>=0.8.x'}
 
   execa@5.1.1:
     resolution: {integrity: sha512-8uSpZZocAZRBAPIEINJj3Lo9HyGitllczc27Eh5YYojjMFMn8yHMDMaUHE2Jqfq05D/wucwI4JGURyXt1vchyg==}
@@ -4548,9 +4141,6 @@ packages:
     resolution: {integrity: sha512-XxwI8EOhVQgWp6iDL+3b0r86f4d6AX6zSU55HfB4ydCEuXLXc5FcYeOu+nnGftS4TEju/11rt4KJPTMgbfmv4A==}
     engines: {node: '>=10.13.0'}
 
-  glob-to-regexp@0.4.1:
-    resolution: {integrity: sha512-lkX1HJXwyMcprw/5YUZc2s7DrpAiHB21/V+E1rHUrVNokkvB6bqMzT0VfV6/86ZNabt1k14YOIaT7nDvOX3Iiw==}
-
   glob@10.4.5:
     resolution: {integrity: sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==}
     hasBin: true
@@ -4698,10 +4288,6 @@ packages:
   http-proxy@1.18.1:
     resolution: {integrity: sha512-7mz/721AbnJwIVbnaSv1Cz3Am0ZLT/UBwkC92VlxhXv/k/BBQfM2fXElQNC27BVGr0uwUpplYPQM9LnaBMR5NQ==}
     engines: {node: '>=8.0.0'}
-
-  https-proxy-agent@5.0.1:
-    resolution: {integrity: sha512-dFcAjpTQFgoLMzC2VwU+C/CbS7uRL0lWmxDITmqm7C+7F0Odmj6s9l6alZc6AELXhrnggM2CeWSXHGOdX2YtwA==}
-    engines: {node: '>= 6'}
 
   human-signals@2.1.0:
     resolution: {integrity: sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw==}
@@ -4893,9 +4479,6 @@ packages:
     resolution: {integrity: sha512-gwsOE28k+23GP1B6vFl1oVh/WOzmawBrKwo5Ev6wMKzPkaXaCDIQKzLnvsA42DRlbVTWorkgTKIviAKCWkfUwA==}
     engines: {node: '>=10'}
 
-  is-reference@1.2.1:
-    resolution: {integrity: sha512-U82MsXXiFIrjCK4otLT+o2NA2Cd2g5MLoOVXUZjIOhLurrRxpEXzI8O0KZHr3IjLvlAH1kTPYSuqer5T9ZVBKQ==}
-
   is-reference@3.0.2:
     resolution: {integrity: sha512-v3rht/LgVcsdZa3O2Nqs+NMowLOxeOm7Ay9+/ARQ2F+qEoANRcqrjAZKGN0v8ymUetZGgkp26LTnGT7H0Qo9Pg==}
 
@@ -4983,10 +4566,6 @@ packages:
     resolution: {integrity: sha512-bZsjR/iRjl1Nk1UkjGpAzLNfQtzuijhn2g+pbZb98HQ1Gk8vM9hfbxeMBP+M2/UUdwj0RqGG3mlvk2MsAqwvEw==}
     engines: {node: 20 || >=22}
 
-  jest-worker@27.5.1:
-    resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
-    engines: {node: '>= 10.13.0'}
-
   jiti@1.21.6:
     resolution: {integrity: sha512-2yTgeWTWzMWkHu6Jp9NKgePDaYHbntiwvYuuJLbbN9vl7DC9DvXKOB2BC3ZZ92D3cvV/aflH0osDfwpHepQ53w==}
     hasBin: true
@@ -5033,9 +4612,6 @@ packages:
 
   json-buffer@3.0.1:
     resolution: {integrity: sha512-4bV5BfR2mqfQTJm+V5tPPdf+ZpuhiIvTuAB5g8kcrXOZpTT/QwwVRWBywX1ozr6lEuPdbHxwaJlm9G6mI2sfSQ==}
-
-  json-parse-even-better-errors@2.3.1:
-    resolution: {integrity: sha512-xyFwyhro/JEof6Ghe2iz2NcXoj2sloNsWr/XsERDK/oiPCfaNhl5ONfp+jQdAZRQQ0IJWNzH9zIZF7li91kh2w==}
 
   json-schema-traverse@0.4.1:
     resolution: {integrity: sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEHcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg==}
@@ -5123,10 +4699,6 @@ packages:
 
   lit@2.8.0:
     resolution: {integrity: sha512-4Sc3OFX9QHOJaHbmTMk28SYgVxLN3ePDjg7hofEft2zWlehFL3LiAuapWc4U/kYwMYJSh2hTCPZ6/LIC7ii0MA==}
-
-  loader-runner@4.3.0:
-    resolution: {integrity: sha512-3R/1M+yS3j5ou80Me59j7F9IMs4PXs3VqRrm0TU3AbKPxlmpoY1TNscJV/oGJXo8qCatFGTfDbY6W6ipGOYXfg==}
-    engines: {node: '>=6.11.5'}
 
   local-pkg@0.5.0:
     resolution: {integrity: sha512-ok6z3qlYyCDS4ZEU27HaU6x/xZa9Whf8jD4ptH5UZTQYZVYeb9bnZ3ojVhiJNLiXK1Hfc0GNbLXcmZ5plLDDBg==}
@@ -5286,10 +4858,6 @@ packages:
 
   magic-string@0.30.12:
     resolution: {integrity: sha512-Ea8I3sQMVXr8JhN4z+H/d8zwo+tYDgHE9+5G4Wnrwhs0gaK9fXTKx0Tw5Xwsd/bCPTTZNRAdpyzvoeORe9LYpw==}
-
-  magic-string@0.30.8:
-    resolution: {integrity: sha512-ISQTe55T2ao7XtlAStud6qwYPZjE4GK1S/BeVPus4jrq6JuOnQ00YKQC581RWhR122W7msZV263KzVeLoqidyQ==}
-    engines: {node: '>=12'}
 
   magicast@0.3.5:
     resolution: {integrity: sha512-L0WhttDl+2BOsybvEOLK7fW3UA0OQ0IQ2d6Zl2x/a6vVRs3bAY0ECOSHHeL5jD+SbOpOCUEi0y1DgHEn9Qn1AQ==}
@@ -5493,9 +5061,6 @@ packages:
     resolution: {integrity: sha512-+EUsqGPLsM+j/zdChZjsnX51g4XrHFOIXwfnCVPGlQk/k5giakcKsuxCObBRu6DSm9opw/O6slWbJdghQM4bBg==}
     engines: {node: '>= 0.6'}
 
-  neo-async@2.6.2:
-    resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
-
   newtype-ts@0.3.5:
     resolution: {integrity: sha512-v83UEQMlVR75yf1OUdoSFssjitxzjZlqBAjiGQ4WJaML8Jdc68LJ+BaSAXUmKY4bNzp7hygkKLYTsDi14PxI2g==}
     peerDependencies:
@@ -5562,10 +5127,6 @@ packages:
 
   no-case@3.0.4:
     resolution: {integrity: sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg==}
-
-  node-abi@3.71.0:
-    resolution: {integrity: sha512-SZ40vRiy/+wRTf21hxkkEjPJZpARzUMVcJoQse2EF8qkUWbbO2z7vd5oA/H6bVH6SZQ5STGcu0KRDS7biNRfxw==}
-    engines: {node: '>=10'}
 
   node-addon-api@7.1.1:
     resolution: {integrity: sha512-5m3bsyrjFWE1xf7nz7YXdN4udnVtXK6/Yfgn5qnahL6bCkf2yKt4k3nuTKAtT4r3IG8JNR2ncsIMdZuAzJjHQQ==}
@@ -5783,17 +5344,6 @@ packages:
   periscopic@3.1.0:
     resolution: {integrity: sha512-vKiQ8RRtkl9P+r/+oefh25C3fhybptkHKCZSPlcXiJux2tJF55GnEj3BVn4A5gKfq9NWWXXrxkHBwVPUfH0opw==}
 
-  pg-int8@1.0.1:
-    resolution: {integrity: sha512-WCtabS6t3c8SkpDBUlb1kjOs7l66xsGdKpIPZsg4wR+B3+u9UAum2odSsF9tnvxg80h4ZxLWMy4pRjOsFIqQpw==}
-    engines: {node: '>=4.0.0'}
-
-  pg-protocol@1.7.0:
-    resolution: {integrity: sha512-hTK/mE36i8fDDhgDFjy6xNOG+LCorxLG3WO17tku+ij6sVHXh1jQUJ8hYAnRhNla4QVD2H8er/FOjc/+EgC6yQ==}
-
-  pg-types@2.2.0:
-    resolution: {integrity: sha512-qTAAlrEsl8s4OiEQY69wDvcMIdQN6wdz5ojQiOy6YRMuynxenON0O5oCpJI6lshc6scgAY8qvJ2On/p+CXY0GA==}
-    engines: {node: '>=4'}
-
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
 
@@ -5877,22 +5427,6 @@ packages:
   postcss@8.4.47:
     resolution: {integrity: sha512-56rxCq7G/XfB4EkXq9Egn5GCqugWvDFjafDOThIdMBsI15iqPqR5r15TfSr1YPYeEI19YeaXMCbY6u88Y76GLQ==}
     engines: {node: ^10 || ^12 || >=14}
-
-  postgres-array@2.0.0:
-    resolution: {integrity: sha512-VpZrUqU5A69eQyW2c5CA1jtLecCsN2U/bD6VilrFDWq5+5UIEVO7nazS3TEcHf1zuPYO/sqGvUvW62g86RXZuA==}
-    engines: {node: '>=4'}
-
-  postgres-bytea@1.0.0:
-    resolution: {integrity: sha512-xy3pmLuQqRBZBXDULy7KbaitYqLcmxigw14Q5sj8QBVLqEwXfeybIKVWiqAXTlcvdvb0+xkOtDbfQMOf4lST1w==}
-    engines: {node: '>=0.10.0'}
-
-  postgres-date@1.0.7:
-    resolution: {integrity: sha512-suDmjLVQg78nMK2UZ454hAG+OAW+HQPZ6n++TNDUX+L0+uUlLywnoxJKDou51Zm+zTCjrCl0Nq6J9C5hP9vK/Q==}
-    engines: {node: '>=0.10.0'}
-
-  postgres-interval@1.2.0:
-    resolution: {integrity: sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ==}
-    engines: {node: '>=0.10.0'}
 
   preact-render-to-string@5.2.3:
     resolution: {integrity: sha512-aPDxUn5o3GhWdtJtW0svRC2SS/l8D9MAgo2+AWml+BhDImb27ALf04Q2d+AHqUUOc6RdSXFIBVa2gxzgMKgtZA==}
@@ -6018,19 +5552,12 @@ packages:
       '@prismicio/types':
         optional: true
 
-  progress@2.0.3:
-    resolution: {integrity: sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==}
-    engines: {node: '>=0.4.0'}
-
   prop-types@15.8.1:
     resolution: {integrity: sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==}
 
   proxy-addr@2.0.7:
     resolution: {integrity: sha512-llQsMLSUDUPT44jdrU/O37qlnifitDP+ZwrmmZcoSKyLKvtZxpyV0n2/bD/N4tBAAZ/gJEdZU7KMraoK1+XYAg==}
     engines: {node: '>= 0.10'}
-
-  proxy-from-env@1.1.0:
-    resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
 
   punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
@@ -6053,9 +5580,6 @@ packages:
 
   radix3@1.1.2:
     resolution: {integrity: sha512-b484I/7b8rDEdSDKckSSBA8knMpcdsXudlE/LNL639wFoHKwLbEkQFZHWEYwDC0wa0FKUcCY+GAF73Z7wxNVFA==}
-
-  randombytes@2.1.0:
-    resolution: {integrity: sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==}
 
   range-parser@1.2.1:
     resolution: {integrity: sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==}
@@ -6274,11 +5798,6 @@ packages:
     engines: {node: 20 || >=22}
     hasBin: true
 
-  rollup@3.29.5:
-    resolution: {integrity: sha512-GVsDdsbJzzy4S/v3dqWPJ7EfvZJfCHiDqe80IyrF59LYuP+e6U1LJoUqeuqRbwAWoMNoXivMNeNAOf5E22VA1w==}
-    engines: {node: '>=14.18.0', npm: '>=8.0.0'}
-    hasBin: true
-
   rollup@4.24.0:
     resolution: {integrity: sha512-DOmrlGSXNk1DM0ljiQA+i+o0rSLhtii1je5wgk60j49d1jHT5YYttBv1iWOnYSTG+fZZESUOSNiAl89SIet+Cg==}
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
@@ -6324,10 +5843,6 @@ packages:
     peerDependencies:
       typescript: '>=4.1.0'
 
-  schema-utils@3.3.0:
-    resolution: {integrity: sha512-pN/yOAvcC+5rQ5nERGuwrjLlYvLTbCibnZ1I7B1LaiAz9BRBlE9GMgE/eqV30P7aJQUf7Ddimy/RsbYO/GrVGg==}
-    engines: {node: '>= 10.13.0'}
-
   section-matter@1.0.0:
     resolution: {integrity: sha512-vfD3pmTzGpufjScBh50YHKzEu2lxBWhVEHsNGoEXmCmn2hKGfeNLYMzCJpe8cD7gqX7TJluOVpBkAequ6dgMmA==}
     engines: {node: '>=4'}
@@ -6349,9 +5864,6 @@ packages:
   send@0.19.0:
     resolution: {integrity: sha512-dW41u5VfLXu8SJh5bwRmyYUbAoSB3c9uQh6L8h/KtsFREPWpbX1lrljJo186Jc4nmci/sGUZ9a0a0J2zgfq2hw==}
     engines: {node: '>= 0.8.0'}
-
-  serialize-javascript@6.0.2:
-    resolution: {integrity: sha512-Saa1xPByTTq2gdeFZYLLo+RFE35NHZkAbqZeWNd3BpzppeVisAqpDjcp8dyf6uIvEqJRd46jemmyA4iFIeVk8g==}
 
   serve-static@1.16.2:
     resolution: {integrity: sha512-VqpjJZKadQB/PEbEwvFdO43Ax5dFBZ2UECszz8bQ7pi7wt//PWe1P6MN7eCnjsatYtBT6EuiClbjSWP2WrIoTw==}
@@ -6466,10 +5978,6 @@ packages:
 
   stackback@0.0.2:
     resolution: {integrity: sha512-1XMJE5fQo1jGH6Y/7ebnwPOBEkIEnT4QF32d5R1+VXdXveM0IBMJt8zfaxX1P3QhVwrYe+576+jkANtSS2mBbw==}
-
-  stacktrace-parser@0.1.10:
-    resolution: {integrity: sha512-KJP1OCML99+8fhOHxwwzyWrlUuVX5GQ0ZpJTd1DFXhdkrvg1szxfHhawXUZ3g9TkXORQd4/WG68jMlQZ2p8wlg==}
-    engines: {node: '>=6'}
 
   start-slicemachine@0.12.35:
     resolution: {integrity: sha512-RLhHwDnF3KGbiNzARvO7C69eqll1CDtZad8qjyHPs3+P4LO3O0gEbjx08S8gHq5APEc96QvtZC2jGBuYGKTjYA==}
@@ -6648,22 +6156,6 @@ packages:
     resolution: {integrity: sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==}
     engines: {node: '>=6'}
 
-  terser-webpack-plugin@5.3.10:
-    resolution: {integrity: sha512-BKFPWlPDndPs+NGGCr1U59t0XScL5317Y0UReNrHaw9/FwhPENlq6bfgs+4yPfyP51vqC1bQ4rp1EfXW5ZSH9w==}
-    engines: {node: '>= 10.13.0'}
-    peerDependencies:
-      '@swc/core': '*'
-      esbuild: '*'
-      uglify-js: '*'
-      webpack: ^5.1.0
-    peerDependenciesMeta:
-      '@swc/core':
-        optional: true
-      esbuild:
-        optional: true
-      uglify-js:
-        optional: true
-
   terser@5.36.0:
     resolution: {integrity: sha512-IYV9eNMuFAV4THUspIRXkLakHnV6XO7FEdtKjf/mDyrnqUg9LnlOn6/RwRvM9SZjR4GUq8Nk8zj67FzVARr74w==}
     engines: {node: '>=10'}
@@ -6835,10 +6327,6 @@ packages:
     resolution: {integrity: sha512-Ne+eE4r0/iWnpAxD852z3A+N0Bt5RN//NjJwRd2VFHEmrywxf5vsZlh4R6lixl6B+wz/8d+maTSAkN1FIkI3LQ==}
     engines: {node: '>=10'}
 
-  type-fest@0.7.1:
-    resolution: {integrity: sha512-Ne2YiiGN8bmrmJJEuTWTLJR32nh/JdL1+PSicowtNb0WFpn59GK8/lfD61bVtzguz7b3PBt74nxpv/Pw5po5Rg==}
-    engines: {node: '>=8'}
-
   type-fest@4.26.1:
     resolution: {integrity: sha512-yOGpmOAL7CkKe/91I5O3gPICmJNLJ1G4zFYVAsRHg7M64biSnPtRj0WNQt++bRkjYOqjWXrhnUw1utzmVErAdg==}
     engines: {node: '>=16'}
@@ -6906,9 +6394,6 @@ packages:
   unpipe@1.0.0:
     resolution: {integrity: sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==}
     engines: {node: '>= 0.8'}
-
-  unplugin@1.0.1:
-    resolution: {integrity: sha512-aqrHaVBWW1JVKBHmGo33T5TxeL0qWzfvjWokObHA9bYmN7eNDkwOxmLjhioHl9878qDFMAaT51XNroRyuz7WxA==}
 
   unplugin@1.14.1:
     resolution: {integrity: sha512-lBlHbfSFPToDYp9pjXlUEFVxYLaue9f9T1HC+4OHlmj+HnMDdz9oZY+erXfoCe/5V/7gKUSY2jpXPb9S7f0f/w==}
@@ -7109,10 +6594,6 @@ packages:
       typescript:
         optional: true
 
-  watchpack@2.4.2:
-    resolution: {integrity: sha512-TnbFSbcOCcDgjZ4piURLCbJ3nJhznVh9kw6F6iokjiFPl8ONxe9A6nMDVXDiNbrSfLILs6vB07F7wLBrwPYzJw==}
-    engines: {node: '>=10.13.0'}
-
   web-streams-polyfill@3.3.3:
     resolution: {integrity: sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==}
     engines: {node: '>= 8'}
@@ -7128,21 +6609,8 @@ packages:
     resolution: {integrity: sha512-/DyMEOrDgLKKIG0fmvtz+4dUX/3Ghozwgm6iPp8KRhvn+eQf9+Q7GWxVNMk3+uCPWfdXYC4ExGBckIXdFEfH1w==}
     engines: {node: '>=10.13.0'}
 
-  webpack-virtual-modules@0.5.0:
-    resolution: {integrity: sha512-kyDivFZ7ZM0BVOUteVbDFhlRt7Ah/CSPwJdi8hBpkK7QLumUqdLtVfm/PX/hkcnrvr0i77fO5+TjZ94Pe+C9iw==}
-
   webpack-virtual-modules@0.6.2:
     resolution: {integrity: sha512-66/V2i5hQanC51vBQKPH4aI8NMAcBW59FVBs+rC7eGHupMyfn34q7rZIE+ETlJ+XTevqfUhVVBgSUNSW2flEUQ==}
-
-  webpack@5.92.1:
-    resolution: {integrity: sha512-JECQ7IwJb+7fgUFBlrJzbyu3GEuNBcdqr1LD7IbSzwkSmIevTm8PF+wej3Oxuz/JFBUZ6O1o43zsPkwm1C4TmA==}
-    engines: {node: '>=10.13.0'}
-    hasBin: true
-    peerDependencies:
-      webpack-cli: '*'
-    peerDependenciesMeta:
-      webpack-cli:
-        optional: true
 
   whatwg-mimetype@3.0.0:
     resolution: {integrity: sha512-nt+N2dzIutVRxARx1nghPKGv1xHikU7HKdfafKkLNLindmPU/ch3U31NOCGGA/dmPcmb1VlofO0vnKAcsm0o/Q==}
@@ -7198,10 +6666,6 @@ packages:
 
   wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
-
-  xtend@4.0.2:
-    resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}
-    engines: {node: '>=0.4'}
 
   y18n@5.0.8:
     resolution: {integrity: sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA==}
@@ -7829,6 +7293,7 @@ snapshots:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
+    optional: true
 
   '@jridgewell/sourcemap-codec@1.5.0': {}
 
@@ -8198,23 +7663,11 @@ snapshots:
     dependencies:
       '@octokit/openapi-types': 22.2.0
 
-  '@opentelemetry/api-logs@0.52.1':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-
-  '@opentelemetry/api-logs@0.53.0':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-
   '@opentelemetry/api-logs@0.54.2':
     dependencies:
       '@opentelemetry/api': 1.9.0
 
   '@opentelemetry/api@1.9.0': {}
-
-  '@opentelemetry/context-async-hooks@1.26.0(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
 
   '@opentelemetry/core@1.26.0(@opentelemetry/api@1.9.0)':
     dependencies:
@@ -8225,219 +7678,6 @@ snapshots:
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/semantic-conventions': 1.27.0
-
-  '@opentelemetry/instrumentation-amqplib@0.42.0(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/core': 1.27.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation': 0.53.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
-    transitivePeerDependencies:
-      - supports-color
-
-  '@opentelemetry/instrumentation-connect@0.40.0(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/core': 1.27.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation': 0.54.2(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
-      '@types/connect': 3.4.36
-    transitivePeerDependencies:
-      - supports-color
-
-  '@opentelemetry/instrumentation-dataloader@0.12.0(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/instrumentation': 0.53.0(@opentelemetry/api@1.9.0)
-    transitivePeerDependencies:
-      - supports-color
-
-  '@opentelemetry/instrumentation-express@0.44.0(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/core': 1.27.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation': 0.54.2(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
-    transitivePeerDependencies:
-      - supports-color
-
-  '@opentelemetry/instrumentation-fastify@0.41.0(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/core': 1.27.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation': 0.54.2(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
-    transitivePeerDependencies:
-      - supports-color
-
-  '@opentelemetry/instrumentation-fs@0.16.0(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/core': 1.27.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation': 0.54.2(@opentelemetry/api@1.9.0)
-    transitivePeerDependencies:
-      - supports-color
-
-  '@opentelemetry/instrumentation-generic-pool@0.39.0(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/instrumentation': 0.53.0(@opentelemetry/api@1.9.0)
-    transitivePeerDependencies:
-      - supports-color
-
-  '@opentelemetry/instrumentation-graphql@0.44.0(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/instrumentation': 0.54.2(@opentelemetry/api@1.9.0)
-    transitivePeerDependencies:
-      - supports-color
-
-  '@opentelemetry/instrumentation-hapi@0.41.0(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/core': 1.27.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation': 0.53.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
-    transitivePeerDependencies:
-      - supports-color
-
-  '@opentelemetry/instrumentation-http@0.53.0(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/core': 1.26.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation': 0.53.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
-      semver: 7.6.3
-    transitivePeerDependencies:
-      - supports-color
-
-  '@opentelemetry/instrumentation-ioredis@0.43.0(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/instrumentation': 0.53.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/redis-common': 0.36.2
-      '@opentelemetry/semantic-conventions': 1.27.0
-    transitivePeerDependencies:
-      - supports-color
-
-  '@opentelemetry/instrumentation-kafkajs@0.4.0(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/instrumentation': 0.54.2(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
-    transitivePeerDependencies:
-      - supports-color
-
-  '@opentelemetry/instrumentation-koa@0.43.0(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/core': 1.27.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation': 0.53.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
-    transitivePeerDependencies:
-      - supports-color
-
-  '@opentelemetry/instrumentation-lru-memoizer@0.40.0(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/instrumentation': 0.53.0(@opentelemetry/api@1.9.0)
-    transitivePeerDependencies:
-      - supports-color
-
-  '@opentelemetry/instrumentation-mongodb@0.48.0(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/instrumentation': 0.54.2(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
-    transitivePeerDependencies:
-      - supports-color
-
-  '@opentelemetry/instrumentation-mongoose@0.42.0(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/core': 1.27.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation': 0.53.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
-    transitivePeerDependencies:
-      - supports-color
-
-  '@opentelemetry/instrumentation-mysql2@0.41.0(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/instrumentation': 0.53.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
-      '@opentelemetry/sql-common': 0.40.1(@opentelemetry/api@1.9.0)
-    transitivePeerDependencies:
-      - supports-color
-
-  '@opentelemetry/instrumentation-mysql@0.41.0(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/instrumentation': 0.53.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
-      '@types/mysql': 2.15.26
-    transitivePeerDependencies:
-      - supports-color
-
-  '@opentelemetry/instrumentation-nestjs-core@0.40.0(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/instrumentation': 0.53.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
-    transitivePeerDependencies:
-      - supports-color
-
-  '@opentelemetry/instrumentation-pg@0.44.0(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/instrumentation': 0.53.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
-      '@opentelemetry/sql-common': 0.40.1(@opentelemetry/api@1.9.0)
-      '@types/pg': 8.6.1
-      '@types/pg-pool': 2.0.6
-    transitivePeerDependencies:
-      - supports-color
-
-  '@opentelemetry/instrumentation-redis-4@0.42.0(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/instrumentation': 0.53.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/redis-common': 0.36.2
-      '@opentelemetry/semantic-conventions': 1.27.0
-    transitivePeerDependencies:
-      - supports-color
-
-  '@opentelemetry/instrumentation-undici@0.6.0(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/core': 1.27.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation': 0.53.0(@opentelemetry/api@1.9.0)
-    transitivePeerDependencies:
-      - supports-color
-
-  '@opentelemetry/instrumentation@0.52.1(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/api-logs': 0.52.1
-      '@types/shimmer': 1.2.0
-      import-in-the-middle: 1.11.2
-      require-in-the-middle: 7.4.0
-      semver: 7.6.3
-      shimmer: 1.2.1
-    transitivePeerDependencies:
-      - supports-color
-
-  '@opentelemetry/instrumentation@0.53.0(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/api-logs': 0.53.0
-      '@types/shimmer': 1.2.0
-      import-in-the-middle: 1.11.2
-      require-in-the-middle: 7.4.0
-      semver: 7.6.3
-      shimmer: 1.2.1
-    transitivePeerDependencies:
-      - supports-color
 
   '@opentelemetry/instrumentation@0.54.2(@opentelemetry/api@1.9.0)':
     dependencies:
@@ -8450,8 +7690,6 @@ snapshots:
       shimmer: 1.2.1
     transitivePeerDependencies:
       - supports-color
-
-  '@opentelemetry/redis-common@0.36.2': {}
 
   '@opentelemetry/resources@1.26.0(@opentelemetry/api@1.9.0)':
     dependencies:
@@ -8486,11 +7724,6 @@ snapshots:
       '@opentelemetry/semantic-conventions': 1.27.0
 
   '@opentelemetry/semantic-conventions@1.27.0': {}
-
-  '@opentelemetry/sql-common@0.40.1(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/core': 1.27.0(@opentelemetry/api@1.9.0)
 
   '@panva/hkdf@1.2.1': {}
 
@@ -8557,14 +7790,6 @@ snapshots:
 
   '@polka/url@1.0.0-next.28':
     optional: true
-
-  '@prisma/instrumentation@5.19.1':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/instrumentation': 0.52.1(@opentelemetry/api@1.9.0)
-      '@opentelemetry/sdk-trace-base': 1.26.0(@opentelemetry/api@1.9.0)
-    transitivePeerDependencies:
-      - supports-color
 
   '@prismicio/api-renderer@3.4.0(@types/uuid@9.0.8)(fp-ts@2.16.9)(io-ts-types@0.5.19(fp-ts@2.16.9)(io-ts@2.2.21(fp-ts@2.16.9))(monocle-ts@2.3.13(fp-ts@2.16.9))(newtype-ts@0.3.5(fp-ts@2.16.9)(monocle-ts@2.3.13(fp-ts@2.16.9))))(io-ts@2.2.21(fp-ts@2.16.9))':
     dependencies:
@@ -8893,25 +8118,6 @@ snapshots:
     dependencies:
       '@redis/client': 1.6.0
 
-  '@rollup/plugin-commonjs@26.0.1(rollup@3.29.5)':
-    dependencies:
-      '@rollup/pluginutils': 5.1.2(rollup@3.29.5)
-      commondir: 1.0.1
-      estree-walker: 2.0.2
-      glob: 10.4.5
-      is-reference: 1.2.1
-      magic-string: 0.30.12
-    optionalDependencies:
-      rollup: 3.29.5
-
-  '@rollup/pluginutils@5.1.2(rollup@3.29.5)':
-    dependencies:
-      '@types/estree': 1.0.6
-      estree-walker: 2.0.2
-      picomatch: 2.3.1
-    optionalDependencies:
-      rollup: 3.29.5
-
   '@rollup/pluginutils@5.1.2(rollup@4.24.0)':
     dependencies:
       '@types/estree': 1.0.6
@@ -9028,226 +8234,6 @@ snapshots:
       tslib: 2.8.0
     transitivePeerDependencies:
       - encoding
-
-  '@sentry-internal/browser-utils@8.37.1':
-    dependencies:
-      '@sentry/core': 8.37.1
-      '@sentry/types': 8.37.1
-      '@sentry/utils': 8.37.1
-
-  '@sentry-internal/feedback@8.37.1':
-    dependencies:
-      '@sentry/core': 8.37.1
-      '@sentry/types': 8.37.1
-      '@sentry/utils': 8.37.1
-
-  '@sentry-internal/replay-canvas@8.37.1':
-    dependencies:
-      '@sentry-internal/replay': 8.37.1
-      '@sentry/core': 8.37.1
-      '@sentry/types': 8.37.1
-      '@sentry/utils': 8.37.1
-
-  '@sentry-internal/replay@8.37.1':
-    dependencies:
-      '@sentry-internal/browser-utils': 8.37.1
-      '@sentry/core': 8.37.1
-      '@sentry/types': 8.37.1
-      '@sentry/utils': 8.37.1
-
-  '@sentry/babel-plugin-component-annotate@2.22.6': {}
-
-  '@sentry/browser@8.37.1':
-    dependencies:
-      '@sentry-internal/browser-utils': 8.37.1
-      '@sentry-internal/feedback': 8.37.1
-      '@sentry-internal/replay': 8.37.1
-      '@sentry-internal/replay-canvas': 8.37.1
-      '@sentry/core': 8.37.1
-      '@sentry/types': 8.37.1
-      '@sentry/utils': 8.37.1
-
-  '@sentry/bundler-plugin-core@2.22.6':
-    dependencies:
-      '@babel/core': 7.25.8
-      '@sentry/babel-plugin-component-annotate': 2.22.6
-      '@sentry/cli': 2.37.0
-      dotenv: 16.4.5
-      find-up: 5.0.0
-      glob: 9.3.5
-      magic-string: 0.30.8
-      unplugin: 1.0.1
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
-
-  '@sentry/cli-darwin@2.37.0':
-    optional: true
-
-  '@sentry/cli-linux-arm64@2.37.0':
-    optional: true
-
-  '@sentry/cli-linux-arm@2.37.0':
-    optional: true
-
-  '@sentry/cli-linux-i686@2.37.0':
-    optional: true
-
-  '@sentry/cli-linux-x64@2.37.0':
-    optional: true
-
-  '@sentry/cli-win32-i686@2.37.0':
-    optional: true
-
-  '@sentry/cli-win32-x64@2.37.0':
-    optional: true
-
-  '@sentry/cli@2.37.0':
-    dependencies:
-      https-proxy-agent: 5.0.1
-      node-fetch: 2.7.0
-      progress: 2.0.3
-      proxy-from-env: 1.1.0
-      which: 2.0.2
-    optionalDependencies:
-      '@sentry/cli-darwin': 2.37.0
-      '@sentry/cli-linux-arm': 2.37.0
-      '@sentry/cli-linux-arm64': 2.37.0
-      '@sentry/cli-linux-i686': 2.37.0
-      '@sentry/cli-linux-x64': 2.37.0
-      '@sentry/cli-win32-i686': 2.37.0
-      '@sentry/cli-win32-x64': 2.37.0
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
-
-  '@sentry/core@8.37.1':
-    dependencies:
-      '@sentry/types': 8.37.1
-      '@sentry/utils': 8.37.1
-
-  '@sentry/nextjs@8.37.1(@opentelemetry/core@1.27.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.54.2(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.26.0(@opentelemetry/api@1.9.0))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(webpack@5.92.1)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/instrumentation-http': 0.53.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
-      '@rollup/plugin-commonjs': 26.0.1(rollup@3.29.5)
-      '@sentry-internal/browser-utils': 8.37.1
-      '@sentry/core': 8.37.1
-      '@sentry/node': 8.37.1
-      '@sentry/opentelemetry': 8.37.1(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.27.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.54.2(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.27.0)
-      '@sentry/react': 8.37.1(react@0.0.0-experimental-28668d39-20241023)
-      '@sentry/types': 8.37.1
-      '@sentry/utils': 8.37.1
-      '@sentry/vercel-edge': 8.37.1
-      '@sentry/webpack-plugin': 2.22.6(webpack@5.92.1)
-      chalk: 3.0.0
-      next: 15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5)
-      resolve: 1.22.8
-      rollup: 3.29.5
-      stacktrace-parser: 0.1.10
-    transitivePeerDependencies:
-      - '@opentelemetry/core'
-      - '@opentelemetry/instrumentation'
-      - '@opentelemetry/sdk-trace-base'
-      - encoding
-      - react
-      - supports-color
-      - webpack
-
-  '@sentry/node@8.37.1':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/context-async-hooks': 1.26.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/core': 1.27.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation': 0.54.2(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation-amqplib': 0.42.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation-connect': 0.40.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation-dataloader': 0.12.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation-express': 0.44.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation-fastify': 0.41.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation-fs': 0.16.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation-generic-pool': 0.39.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation-graphql': 0.44.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation-hapi': 0.41.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation-http': 0.53.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation-ioredis': 0.43.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation-kafkajs': 0.4.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation-koa': 0.43.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation-lru-memoizer': 0.40.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation-mongodb': 0.48.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation-mongoose': 0.42.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation-mysql': 0.41.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation-mysql2': 0.41.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation-nestjs-core': 0.40.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation-pg': 0.44.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation-redis-4': 0.42.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation-undici': 0.6.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/resources': 1.27.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/sdk-trace-base': 1.26.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
-      '@prisma/instrumentation': 5.19.1
-      '@sentry/core': 8.37.1
-      '@sentry/opentelemetry': 8.37.1(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.27.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.54.2(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.27.0)
-      '@sentry/types': 8.37.1
-      '@sentry/utils': 8.37.1
-      import-in-the-middle: 1.11.2
-    transitivePeerDependencies:
-      - supports-color
-
-  '@sentry/opentelemetry@8.37.1(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.27.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.54.2(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.27.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/core': 1.27.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation': 0.54.2(@opentelemetry/api@1.9.0)
-      '@opentelemetry/sdk-trace-base': 1.26.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
-      '@sentry/core': 8.37.1
-      '@sentry/types': 8.37.1
-      '@sentry/utils': 8.37.1
-
-  '@sentry/profiling-node@8.37.1':
-    dependencies:
-      '@sentry/core': 8.37.1
-      '@sentry/node': 8.37.1
-      '@sentry/types': 8.37.1
-      '@sentry/utils': 8.37.1
-      detect-libc: 2.0.3
-      node-abi: 3.71.0
-    transitivePeerDependencies:
-      - supports-color
-
-  '@sentry/react@8.37.1(react@0.0.0-experimental-28668d39-20241023)':
-    dependencies:
-      '@sentry/browser': 8.37.1
-      '@sentry/core': 8.37.1
-      '@sentry/types': 8.37.1
-      '@sentry/utils': 8.37.1
-      hoist-non-react-statics: 3.3.2
-      react: 0.0.0-experimental-28668d39-20241023
-
-  '@sentry/types@8.37.1': {}
-
-  '@sentry/utils@8.37.1':
-    dependencies:
-      '@sentry/types': 8.37.1
-
-  '@sentry/vercel-edge@8.37.1':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@sentry/core': 8.37.1
-      '@sentry/types': 8.37.1
-      '@sentry/utils': 8.37.1
-
-  '@sentry/webpack-plugin@2.22.6(webpack@5.92.1)':
-    dependencies:
-      '@sentry/bundler-plugin-core': 2.22.6
-      unplugin: 1.0.1
-      uuid: 9.0.1
-      webpack: 5.92.1
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
 
   '@shopify/admin-api-client@1.0.4':
     dependencies:
@@ -9596,10 +8582,6 @@ snapshots:
       '@types/node': 22.8.6
     optional: true
 
-  '@types/connect@3.4.36':
-    dependencies:
-      '@types/node': 22.8.6
-
   '@types/connect@3.4.38':
     dependencies:
       '@types/node': 22.8.6
@@ -9614,15 +8596,11 @@ snapshots:
 
   '@types/crypto-js@4.2.2': {}
 
-  '@types/eslint-scope@3.7.7':
-    dependencies:
-      '@types/eslint': 9.6.1
-      '@types/estree': 1.0.6
-
   '@types/eslint@9.6.1':
     dependencies:
       '@types/estree': 1.0.6
       '@types/json-schema': 7.0.15
+    optional: true
 
   '@types/estree@1.0.6': {}
 
@@ -9660,7 +8638,8 @@ snapshots:
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-lib-report': 3.0.3
 
-  '@types/json-schema@7.0.15': {}
+  '@types/json-schema@7.0.15':
+    optional: true
 
   '@types/json5@0.0.29': {}
 
@@ -9685,25 +8664,11 @@ snapshots:
   '@types/mime@1.3.5':
     optional: true
 
-  '@types/mysql@2.15.26':
-    dependencies:
-      '@types/node': 22.8.6
-
   '@types/node@22.8.6':
     dependencies:
       undici-types: 6.19.8
 
   '@types/nprogress@0.2.3': {}
-
-  '@types/pg-pool@2.0.6':
-    dependencies:
-      '@types/pg': 8.6.1
-
-  '@types/pg@8.6.1':
-    dependencies:
-      '@types/node': 22.8.6
-      pg-protocol: 1.7.0
-      pg-types: 2.2.0
 
   '@types/prop-types@15.7.13': {}
 
@@ -10100,82 +9065,6 @@ snapshots:
 
   '@vue/shared@3.5.12': {}
 
-  '@webassemblyjs/ast@1.12.1':
-    dependencies:
-      '@webassemblyjs/helper-numbers': 1.11.6
-      '@webassemblyjs/helper-wasm-bytecode': 1.11.6
-
-  '@webassemblyjs/floating-point-hex-parser@1.11.6': {}
-
-  '@webassemblyjs/helper-api-error@1.11.6': {}
-
-  '@webassemblyjs/helper-buffer@1.12.1': {}
-
-  '@webassemblyjs/helper-numbers@1.11.6':
-    dependencies:
-      '@webassemblyjs/floating-point-hex-parser': 1.11.6
-      '@webassemblyjs/helper-api-error': 1.11.6
-      '@xtuc/long': 4.2.2
-
-  '@webassemblyjs/helper-wasm-bytecode@1.11.6': {}
-
-  '@webassemblyjs/helper-wasm-section@1.12.1':
-    dependencies:
-      '@webassemblyjs/ast': 1.12.1
-      '@webassemblyjs/helper-buffer': 1.12.1
-      '@webassemblyjs/helper-wasm-bytecode': 1.11.6
-      '@webassemblyjs/wasm-gen': 1.12.1
-
-  '@webassemblyjs/ieee754@1.11.6':
-    dependencies:
-      '@xtuc/ieee754': 1.2.0
-
-  '@webassemblyjs/leb128@1.11.6':
-    dependencies:
-      '@xtuc/long': 4.2.2
-
-  '@webassemblyjs/utf8@1.11.6': {}
-
-  '@webassemblyjs/wasm-edit@1.12.1':
-    dependencies:
-      '@webassemblyjs/ast': 1.12.1
-      '@webassemblyjs/helper-buffer': 1.12.1
-      '@webassemblyjs/helper-wasm-bytecode': 1.11.6
-      '@webassemblyjs/helper-wasm-section': 1.12.1
-      '@webassemblyjs/wasm-gen': 1.12.1
-      '@webassemblyjs/wasm-opt': 1.12.1
-      '@webassemblyjs/wasm-parser': 1.12.1
-      '@webassemblyjs/wast-printer': 1.12.1
-
-  '@webassemblyjs/wasm-gen@1.12.1':
-    dependencies:
-      '@webassemblyjs/ast': 1.12.1
-      '@webassemblyjs/helper-wasm-bytecode': 1.11.6
-      '@webassemblyjs/ieee754': 1.11.6
-      '@webassemblyjs/leb128': 1.11.6
-      '@webassemblyjs/utf8': 1.11.6
-
-  '@webassemblyjs/wasm-opt@1.12.1':
-    dependencies:
-      '@webassemblyjs/ast': 1.12.1
-      '@webassemblyjs/helper-buffer': 1.12.1
-      '@webassemblyjs/wasm-gen': 1.12.1
-      '@webassemblyjs/wasm-parser': 1.12.1
-
-  '@webassemblyjs/wasm-parser@1.12.1':
-    dependencies:
-      '@webassemblyjs/ast': 1.12.1
-      '@webassemblyjs/helper-api-error': 1.11.6
-      '@webassemblyjs/helper-wasm-bytecode': 1.11.6
-      '@webassemblyjs/ieee754': 1.11.6
-      '@webassemblyjs/leb128': 1.11.6
-      '@webassemblyjs/utf8': 1.11.6
-
-  '@webassemblyjs/wast-printer@1.12.1':
-    dependencies:
-      '@webassemblyjs/ast': 1.12.1
-      '@xtuc/long': 4.2.2
-
   '@wry/caches@1.0.1':
     dependencies:
       tslib: 2.8.0
@@ -10208,10 +9097,6 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
 
-  '@xtuc/ieee754@1.2.0': {}
-
-  '@xtuc/long@4.2.2': {}
-
   accepts@1.3.8:
     dependencies:
       mime-types: 2.1.35
@@ -10230,16 +9115,6 @@ snapshots:
       acorn: 8.13.0
 
   acorn@8.13.0: {}
-
-  agent-base@6.0.2:
-    dependencies:
-      debug: 4.3.7
-    transitivePeerDependencies:
-      - supports-color
-
-  ajv-keywords@3.5.2(ajv@6.12.6):
-    dependencies:
-      ajv: 6.12.6
 
   ajv@6.12.6:
     dependencies:
@@ -10460,7 +9335,8 @@ snapshots:
 
   buffer-equal-constant-time@1.0.1: {}
 
-  buffer-from@1.1.2: {}
+  buffer-from@1.1.2:
+    optional: true
 
   buffer@6.0.3:
     dependencies:
@@ -10543,8 +9419,6 @@ snapshots:
     dependencies:
       readdirp: 4.0.2
 
-  chrome-trace-event@1.0.4: {}
-
   cjs-module-lexer@1.4.1: {}
 
   class-variance-authority@0.7.0:
@@ -10600,7 +9474,8 @@ snapshots:
 
   colord@2.9.3: {}
 
-  commander@2.20.3: {}
+  commander@2.20.3:
+    optional: true
 
   commander@4.1.1: {}
 
@@ -10609,8 +9484,6 @@ snapshots:
   comment-parser@1.4.1: {}
 
   common-tags@1.8.2: {}
-
-  commondir@1.0.1: {}
 
   compare-versions@6.1.1: {}
 
@@ -11024,7 +9897,7 @@ snapshots:
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@8.13.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.13.0(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1)
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.13.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.13.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.13.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.13.0(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@8.57.1)
       eslint-plugin-react: 7.37.2(eslint@8.57.1)
       eslint-plugin-react-hooks: 5.0.0(eslint@8.57.1)
@@ -11059,7 +9932,7 @@ snapshots:
       is-bun-module: 1.2.1
       is-glob: 4.0.3
     optionalDependencies:
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.13.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.13.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.13.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.13.0(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
     transitivePeerDependencies:
       - '@typescript-eslint/parser'
       - eslint-import-resolver-node
@@ -11077,7 +9950,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.13.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1):
+  eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.13.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.13.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.13.0(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.8
@@ -11200,11 +10073,6 @@ snapshots:
     optionalDependencies:
       '@typescript-eslint/eslint-plugin': 8.13.0(@typescript-eslint/parser@8.13.0(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1)(typescript@5.6.3)
 
-  eslint-scope@5.1.1:
-    dependencies:
-      esrecurse: 4.3.0
-      estraverse: 4.3.0
-
   eslint-scope@7.2.2:
     dependencies:
       esrecurse: 4.3.0
@@ -11282,8 +10150,6 @@ snapshots:
     dependencies:
       estraverse: 5.3.0
 
-  estraverse@4.3.0: {}
-
   estraverse@5.3.0: {}
 
   estree-walker@2.0.2: {}
@@ -11297,8 +10163,6 @@ snapshots:
   etag@1.8.1: {}
 
   eventemitter3@4.0.7: {}
-
-  events@3.3.0: {}
 
   execa@5.1.1:
     dependencies:
@@ -11557,8 +10421,6 @@ snapshots:
     dependencies:
       is-glob: 4.0.3
 
-  glob-to-regexp@0.4.1: {}
-
   glob@10.4.5:
     dependencies:
       foreground-child: 3.3.0
@@ -11747,13 +10609,6 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  https-proxy-agent@5.0.1:
-    dependencies:
-      agent-base: 6.0.2
-      debug: 4.3.7
-    transitivePeerDependencies:
-      - supports-color
-
   human-signals@2.1.0: {}
 
   human-signals@4.3.1: {}
@@ -11908,10 +10763,6 @@ snapshots:
 
   is-plain-obj@3.0.0: {}
 
-  is-reference@1.2.1:
-    dependencies:
-      '@types/estree': 1.0.6
-
   is-reference@3.0.2:
     dependencies:
       '@types/estree': 1.0.6
@@ -12004,12 +10855,6 @@ snapshots:
     dependencies:
       '@isaacs/cliui': 8.0.2
 
-  jest-worker@27.5.1:
-    dependencies:
-      '@types/node': 22.8.6
-      merge-stream: 2.0.0
-      supports-color: 8.1.1
-
   jiti@1.21.6: {}
 
   jju@1.4.0: {}
@@ -12046,8 +10891,6 @@ snapshots:
   jsesc@3.0.2: {}
 
   json-buffer@3.0.1: {}
-
-  json-parse-even-better-errors@2.3.1: {}
 
   json-schema-traverse@0.4.1: {}
 
@@ -12151,8 +10994,6 @@ snapshots:
       '@lit/reactive-element': 1.6.3
       lit-element: 3.3.3
       lit-html: 2.8.0
-
-  loader-runner@4.3.0: {}
 
   local-pkg@0.5.0:
     dependencies:
@@ -12326,10 +11167,6 @@ snapshots:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.0
 
-  magic-string@0.30.8:
-    dependencies:
-      '@jridgewell/sourcemap-codec': 1.5.0
-
   magicast@0.3.5:
     dependencies:
       '@babel/parser': 7.25.8
@@ -12492,8 +11329,6 @@ snapshots:
 
   negotiator@0.6.3: {}
 
-  neo-async@2.6.2: {}
-
   newtype-ts@0.3.5(fp-ts@2.16.9)(monocle-ts@2.3.13(fp-ts@2.16.9)):
     dependencies:
       fp-ts: 2.16.9
@@ -12559,10 +11394,6 @@ snapshots:
     dependencies:
       lower-case: 2.0.2
       tslib: 2.8.0
-
-  node-abi@3.71.0:
-    dependencies:
-      semver: 7.6.3
 
   node-addon-api@7.1.1: {}
 
@@ -12767,18 +11598,6 @@ snapshots:
       is-reference: 3.0.2
     optional: true
 
-  pg-int8@1.0.1: {}
-
-  pg-protocol@1.7.0: {}
-
-  pg-types@2.2.0:
-    dependencies:
-      pg-int8: 1.0.1
-      postgres-array: 2.0.0
-      postgres-bytea: 1.0.0
-      postgres-date: 1.0.7
-      postgres-interval: 1.2.0
-
   picocolors@1.1.1: {}
 
   picomatch@2.3.1: {}
@@ -12856,16 +11675,6 @@ snapshots:
       nanoid: 3.3.7
       picocolors: 1.1.1
       source-map-js: 1.2.1
-
-  postgres-array@2.0.0: {}
-
-  postgres-bytea@1.0.0: {}
-
-  postgres-date@1.0.7: {}
-
-  postgres-interval@1.2.0:
-    dependencies:
-      xtend: 4.0.2
 
   preact-render-to-string@5.2.3(preact@10.11.3):
     dependencies:
@@ -12945,8 +11754,6 @@ snapshots:
       '@prismicio/client': 7.12.0
       '@prismicio/types': 0.2.9
 
-  progress@2.0.3: {}
-
   prop-types@15.8.1:
     dependencies:
       loose-envify: 1.4.0
@@ -12957,8 +11764,6 @@ snapshots:
     dependencies:
       forwarded: 0.2.0
       ipaddr.js: 1.9.1
-
-  proxy-from-env@1.1.0: {}
 
   punycode@2.3.1: {}
 
@@ -12975,10 +11780,6 @@ snapshots:
       '@msgpack/msgpack': 2.8.0
 
   radix3@1.1.2: {}
-
-  randombytes@2.1.0:
-    dependencies:
-      safe-buffer: 5.2.1
 
   range-parser@1.2.1: {}
 
@@ -13188,10 +11989,6 @@ snapshots:
       glob: 11.0.0
       package-json-from-dist: 1.0.1
 
-  rollup@3.29.5:
-    optionalDependencies:
-      fsevents: 2.3.3
-
   rollup@4.24.0:
     dependencies:
       '@types/estree': 1.0.6
@@ -13259,12 +12056,6 @@ snapshots:
     dependencies:
       typescript: 5.6.3
 
-  schema-utils@3.3.0:
-    dependencies:
-      '@types/json-schema': 7.0.15
-      ajv: 6.12.6
-      ajv-keywords: 3.5.2(ajv@6.12.6)
-
   section-matter@1.0.0:
     dependencies:
       extend-shallow: 2.0.1
@@ -13295,10 +12086,6 @@ snapshots:
       statuses: 2.0.1
     transitivePeerDependencies:
       - supports-color
-
-  serialize-javascript@6.0.2:
-    dependencies:
-      randombytes: 2.1.0
 
   serve-static@1.16.2:
     dependencies:
@@ -13428,6 +12215,7 @@ snapshots:
     dependencies:
       buffer-from: 1.1.2
       source-map: 0.6.1
+    optional: true
 
   source-map@0.5.7: {}
 
@@ -13449,10 +12237,6 @@ snapshots:
   sprintf-js@1.0.3: {}
 
   stackback@0.0.2: {}
-
-  stacktrace-parser@0.1.10:
-    dependencies:
-      type-fest: 0.7.1
 
   start-slicemachine@0.12.35(@prismicio/types@0.2.9)(@types/express@4.17.21)(@types/uuid@9.0.8)(uuid@9.0.1):
     dependencies:
@@ -13691,21 +12475,13 @@ snapshots:
 
   tapable@2.2.1: {}
 
-  terser-webpack-plugin@5.3.10(webpack@5.92.1):
-    dependencies:
-      '@jridgewell/trace-mapping': 0.3.25
-      jest-worker: 27.5.1
-      schema-utils: 3.3.0
-      serialize-javascript: 6.0.2
-      terser: 5.36.0
-      webpack: 5.92.1
-
   terser@5.36.0:
     dependencies:
       '@jridgewell/source-map': 0.3.6
       acorn: 8.13.0
       commander: 2.20.3
       source-map-support: 0.5.21
+    optional: true
 
   test-exclude@6.0.0:
     dependencies:
@@ -13848,8 +12624,6 @@ snapshots:
 
   type-fest@0.20.2: {}
 
-  type-fest@0.7.1: {}
-
   type-fest@4.26.1: {}
 
   type-is@1.6.18:
@@ -13925,13 +12699,6 @@ snapshots:
   universalify@2.0.1: {}
 
   unpipe@1.0.0: {}
-
-  unplugin@1.0.1:
-    dependencies:
-      acorn: 8.13.0
-      chokidar: 3.6.0
-      webpack-sources: 3.2.3
-      webpack-virtual-modules: 0.5.0
 
   unplugin@1.14.1(webpack-sources@3.2.3):
     dependencies:
@@ -14135,53 +12902,16 @@ snapshots:
       typescript: 5.6.3
     optional: true
 
-  watchpack@2.4.2:
-    dependencies:
-      glob-to-regexp: 0.4.1
-      graceful-fs: 4.2.11
-
   web-streams-polyfill@3.3.3: {}
 
   webidl-conversions@3.0.1: {}
 
   webidl-conversions@7.0.0: {}
 
-  webpack-sources@3.2.3: {}
-
-  webpack-virtual-modules@0.5.0: {}
+  webpack-sources@3.2.3:
+    optional: true
 
   webpack-virtual-modules@0.6.2: {}
-
-  webpack@5.92.1:
-    dependencies:
-      '@types/eslint-scope': 3.7.7
-      '@types/estree': 1.0.6
-      '@webassemblyjs/ast': 1.12.1
-      '@webassemblyjs/wasm-edit': 1.12.1
-      '@webassemblyjs/wasm-parser': 1.12.1
-      acorn: 8.13.0
-      acorn-import-attributes: 1.9.5(acorn@8.13.0)
-      browserslist: 4.24.0
-      chrome-trace-event: 1.0.4
-      enhanced-resolve: 5.17.1
-      es-module-lexer: 1.5.4
-      eslint-scope: 5.1.1
-      events: 3.3.0
-      glob-to-regexp: 0.4.1
-      graceful-fs: 4.2.11
-      json-parse-even-better-errors: 2.3.1
-      loader-runner: 4.3.0
-      mime-types: 2.1.35
-      neo-async: 2.6.2
-      schema-utils: 3.3.0
-      tapable: 2.2.1
-      terser-webpack-plugin: 5.3.10(webpack@5.92.1)
-      watchpack: 2.4.2
-      webpack-sources: 3.2.3
-    transitivePeerDependencies:
-      - '@swc/core'
-      - esbuild
-      - uglify-js
 
   whatwg-mimetype@3.0.0: {}
 
@@ -14261,8 +12991,6 @@ snapshots:
       strip-ansi: 7.1.0
 
   wrappy@1.0.2: {}
-
-  xtend@4.0.2: {}
 
   y18n@5.0.8: {}
 
