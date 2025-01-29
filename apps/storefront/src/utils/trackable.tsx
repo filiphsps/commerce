@@ -409,7 +409,7 @@ export function Trackable({ children, dummy = false }: TrackableProps) {
         }
 
         setIsInternalTraffic(true);
-    }, []);
+    }, [, internalTraffic]);
 
     const checkoutDomain = shop.commerceProvider.domain;
     // Only use the domain, not the subdomain.
