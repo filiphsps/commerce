@@ -91,7 +91,7 @@
         "react-share": "5.2.2",
         "react": "0.0.0-experimental-28668d39-20241023",
         "redis": "4.7.0",
-        "resolve-accept-language": "3.1.8",
+        "resolve-accept-language": "3.1.10",
         "sass": "1.80.5",
         "sharp": "0.33.5",
         "sonner": "1.7.4",
