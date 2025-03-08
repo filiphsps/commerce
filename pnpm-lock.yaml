@@ -794,8 +794,8 @@ importers:
         version: 8.8.0
     devDependencies:
       '@codecov/vite-plugin':
-        specifier: 1.2.1
-        version: 1.2.1(vite@6.2.1(@types/node@22.13.9)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))(webpack-sources@3.2.3)
+        specifier: 1.9.0
+        version: 1.9.0(vite@6.2.1(@types/node@22.13.9)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))(webpack-sources@3.2.3)
       '@nordcom/prettier':
         specifier: 0.1.1
         version: 0.1.1
@@ -836,8 +836,8 @@ importers:
   packages/errors:
     devDependencies:
       '@codecov/vite-plugin':
-        specifier: 1.2.1
-        version: 1.2.1(vite@6.2.1(@types/node@22.13.9)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))(webpack-sources@3.2.3)
+        specifier: 1.9.0
+        version: 1.9.0(vite@6.2.1(@types/node@22.13.9)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))(webpack-sources@3.2.3)
       '@nordcom/prettier':
         specifier: 0.1.1
         version: 0.1.1
@@ -876,8 +876,8 @@ importers:
         version: 0.0.71(react-dom@19.0.0-rc-f65ac7bd-20240826(react@19.0.0-rc-f65ac7bd-20240826))(react@19.0.0-rc-f65ac7bd-20240826)
     devDependencies:
       '@codecov/vite-plugin':
-        specifier: 1.2.1
-        version: 1.2.1(vite@6.2.1(@types/node@22.13.9)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))(webpack-sources@3.2.3)
+        specifier: 1.9.0
+        version: 1.9.0(vite@6.2.1(@types/node@22.13.9)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))(webpack-sources@3.2.3)
       '@nordcom/prettier':
         specifier: 0.1.1
         version: 0.1.1
@@ -1201,15 +1201,15 @@ packages:
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
 
-  '@codecov/bundler-plugin-core@1.2.1':
-    resolution: {integrity: sha512-9Iqr+PAQ/QVEnvKr56W/Jo8IaWJDFQkbcffNgG8Oc5GIQ1NRWsPmL/jxhkGrnp2LMJnpG2gPtV3+fet1jy6gbA==}
+  '@codecov/bundler-plugin-core@1.9.0':
+    resolution: {integrity: sha512-UB0I5haL0gnF4ei46wxNo7ptCHqFAh3PnmcLLeXRb2zV7HeobOF8WRjOW/PwrXAphPS/6bL7PDUmh3ruVObGtg==}
     engines: {node: '>=18.0.0'}
 
-  '@codecov/vite-plugin@1.2.1':
-    resolution: {integrity: sha512-fxlSsRpilO593qzpZ+7gOij/adWJmfcGkuR+b68OaBZq/kAH1IDssZX1RO6/mKtxr+BcjByZ7mcKU59SFHVWIA==}
+  '@codecov/vite-plugin@1.9.0':
+    resolution: {integrity: sha512-5+CxUGN0Rxr5F6xYqrKwug3NXTlNVBEZcI9caOCjlpErt7p2lp7J/6Qo+GRjmaVkXErnNMiyhjzXRB6rLNAjfg==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
-      vite: 4.x || 5.x
+      vite: 4.x || 5.x || 6.x
 
   '@corex/deepmerge@4.0.43':
     resolution: {integrity: sha512-N8uEMrMPL0cu/bdboEWpQYb/0i2K5Qn8eCsxzOmxSggJbbQte7ljMRoXm917AbntqTGOzdTu+vP3KOOzoC70HQ==}
@@ -7803,7 +7803,7 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
-  '@codecov/bundler-plugin-core@1.2.1(webpack-sources@3.2.3)':
+  '@codecov/bundler-plugin-core@1.9.0(webpack-sources@3.2.3)':
     dependencies:
       '@actions/core': 1.11.1
       '@actions/github': 6.0.0
@@ -7814,9 +7814,9 @@ snapshots:
     transitivePeerDependencies:
       - webpack-sources
 
-  '@codecov/vite-plugin@1.2.1(vite@6.2.1(@types/node@22.13.9)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))(webpack-sources@3.2.3)':
+  '@codecov/vite-plugin@1.9.0(vite@6.2.1(@types/node@22.13.9)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))(webpack-sources@3.2.3)':
     dependencies:
-      '@codecov/bundler-plugin-core': 1.2.1(webpack-sources@3.2.3)
+      '@codecov/bundler-plugin-core': 1.9.0(webpack-sources@3.2.3)
       unplugin: 1.14.1(webpack-sources@3.2.3)
       vite: 6.2.1(@types/node@22.13.9)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
     transitivePeerDependencies:
@@ -9412,7 +9412,7 @@ snapshots:
 
   '@testing-library/dom@10.1.0':
     dependencies:
-      '@babel/code-frame': 7.25.7
+      '@babel/code-frame': 7.26.2
       '@babel/runtime': 7.25.7
       '@types/aria-query': 5.0.4
       aria-query: 5.3.0
@@ -9964,7 +9964,7 @@ snapshots:
 
   '@vue/compiler-core@3.4.27':
     dependencies:
-      '@babel/parser': 7.25.8
+      '@babel/parser': 7.26.9
       '@vue/shared': 3.4.27
       entities: 4.5.0
       estree-walker: 2.0.2
@@ -9992,7 +9992,7 @@ snapshots:
 
   '@vue/compiler-sfc@3.4.27':
     dependencies:
-      '@babel/parser': 7.25.8
+      '@babel/parser': 7.26.9
       '@vue/compiler-core': 3.4.27
       '@vue/compiler-dom': 3.4.27
       '@vue/compiler-ssr': 3.4.27
@@ -11060,7 +11060,7 @@ snapshots:
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@8.13.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.13.0(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1)
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.13.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.13.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.13.0(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.13.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@8.57.1)
       eslint-plugin-react: 7.37.4(eslint@8.57.1)
       eslint-plugin-react-hooks: 5.0.0(eslint@8.57.1)
@@ -11095,7 +11095,7 @@ snapshots:
       is-bun-module: 1.2.1
       is-glob: 4.0.3
     optionalDependencies:
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.13.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.13.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.13.0(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.13.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1)
     transitivePeerDependencies:
       - '@typescript-eslint/parser'
       - eslint-import-resolver-node
@@ -11113,7 +11113,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.13.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.13.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.13.0(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
+  eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.13.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.8
