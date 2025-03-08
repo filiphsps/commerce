@@ -106,8 +106,8 @@ importers:
         specifier: 3.9.1
         version: 3.9.1(@types/node@22.8.6)(rollup@4.34.9)(typescript@5.6.3)(vite@6.2.1(@types/node@22.8.6)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
       vite-tsconfig-paths:
-        specifier: 5.1.1
-        version: 5.1.1(typescript@5.6.3)(vite@6.2.1(@types/node@22.8.6)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
+        specifier: 5.1.4
+        version: 5.1.4(typescript@5.6.3)(vite@6.2.1(@types/node@22.8.6)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
       vitest:
         specifier: 1.6.1
         version: 1.6.1(@edge-runtime/vm@3.2.0)(@types/node@22.8.6)(happy-dom@17.4.0)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)
@@ -827,8 +827,8 @@ importers:
         specifier: 3.9.1
         version: 3.9.1(@types/node@22.8.6)(rollup@4.34.9)(typescript@5.6.3)(vite@6.2.1(@types/node@22.8.6)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
       vite-tsconfig-paths:
-        specifier: 5.1.1
-        version: 5.1.1(typescript@5.6.3)(vite@6.2.1(@types/node@22.8.6)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
+        specifier: 5.1.4
+        version: 5.1.4(typescript@5.6.3)(vite@6.2.1(@types/node@22.8.6)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
       vitest:
         specifier: 1.6.1
         version: 1.6.1(@edge-runtime/vm@3.2.0)(@types/node@22.8.6)(happy-dom@17.4.0)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)
@@ -863,8 +863,8 @@ importers:
         specifier: 3.9.1
         version: 3.9.1(@types/node@22.8.6)(rollup@4.34.9)(typescript@5.6.3)(vite@6.2.1(@types/node@22.8.6)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
       vite-tsconfig-paths:
-        specifier: 5.1.1
-        version: 5.1.1(typescript@5.6.3)(vite@6.2.1(@types/node@22.8.6)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
+        specifier: 5.1.4
+        version: 5.1.4(typescript@5.6.3)(vite@6.2.1(@types/node@22.8.6)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
       vitest:
         specifier: 1.6.1
         version: 1.6.1(@edge-runtime/vm@3.2.0)(@types/node@22.8.6)(happy-dom@17.4.0)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)
@@ -903,8 +903,8 @@ importers:
         specifier: 3.9.1
         version: 3.9.1(@types/node@22.8.6)(rollup@4.34.9)(typescript@5.6.3)(vite@6.2.1(@types/node@22.8.6)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
       vite-tsconfig-paths:
-        specifier: 5.1.1
-        version: 5.1.1(typescript@5.6.3)(vite@6.2.1(@types/node@22.8.6)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
+        specifier: 5.1.4
+        version: 5.1.4(typescript@5.6.3)(vite@6.2.1(@types/node@22.8.6)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
       vitest:
         specifier: 1.6.1
         version: 1.6.1(@edge-runtime/vm@3.2.0)(@types/node@22.8.6)(happy-dom@17.4.0)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)
@@ -7062,8 +7062,8 @@ packages:
       vite:
         optional: true
 
-  vite-tsconfig-paths@5.1.1:
-    resolution: {integrity: sha512-0nLY3qQI4GlYw3We4rps16ntW+nAZYCUrJwsuvqxIUCY9Bk3VnSeJDm/VPCmjOcAJ9Kud4k+CK2ZEnf9pbzK9Q==}
+  vite-tsconfig-paths@5.1.4:
+    resolution: {integrity: sha512-cYj0LRuLV2c2sMqhqhGpaO3LretdtMn/BVX4cPLanIZuwwrkVl+lK84E/miEXkCHWXuq65rhNN4rXsBcOB3S4w==}
     peerDependencies:
       vite: '*'
     peerDependenciesMeta:
@@ -14002,7 +14002,7 @@ snapshots:
       - rollup
       - supports-color
 
-  vite-tsconfig-paths@5.1.1(typescript@5.6.3)(vite@6.2.1(@types/node@22.8.6)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)):
+  vite-tsconfig-paths@5.1.4(typescript@5.6.3)(vite@6.2.1(@types/node@22.8.6)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)):
     dependencies:
       debug: 4.3.7
       globrex: 0.1.2
