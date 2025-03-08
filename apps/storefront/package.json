@@ -105,7 +105,7 @@
         "@tailwindcss/forms": "0.5.10",
         "@tailwindcss/typography": "0.5.16",
         "@testing-library/jest-dom": "6.6.3",
-        "@testing-library/react": "16.0.1",
+        "@testing-library/react": "16.2.0",
         "@types/accept-language-parser": "1.5.7",
         "@types/convert-units": "2.3.11",
         "@types/crypto-js": "4.2.2",
