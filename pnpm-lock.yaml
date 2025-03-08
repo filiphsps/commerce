@@ -34,8 +34,8 @@ importers:
         specifier: 4.3.3
         version: 4.3.3(vite@5.4.12(@types/node@22.8.6)(sass@1.80.5)(terser@5.36.0))
       '@vitest/coverage-v8':
-        specifier: 1.6.0
-        version: 1.6.0(vitest@1.6.1(@edge-runtime/vm@3.2.0)(@types/node@22.8.6)(happy-dom@15.10.2)(sass@1.80.5)(terser@5.36.0))
+        specifier: 1.6.1
+        version: 1.6.1(vitest@1.6.1(@edge-runtime/vm@3.2.0)(@types/node@22.8.6)(happy-dom@15.10.2)(sass@1.80.5)(terser@5.36.0))
       babel-plugin-module-resolver:
         specifier: 5.0.2
         version: 5.0.2
@@ -2922,10 +2922,10 @@ packages:
     peerDependencies:
       vite: ^4.2.0 || ^5.0.0
 
-  '@vitest/coverage-v8@1.6.0':
-    resolution: {integrity: sha512-KvapcbMY/8GYIG0rlwwOKCVNRc0OL20rrhFkg/CHNzncV03TE2XWvO5w9uZYoxNiMEBacAJt3unSOiZ7svePew==}
+  '@vitest/coverage-v8@1.6.1':
+    resolution: {integrity: sha512-6YeRZwuO4oTGKxD3bijok756oktHSIm3eczVVzNe3scqzuhLwltIF3S9ZL/vwOVIpURmU6SnZhziXXAfw8/Qlw==}
     peerDependencies:
-      vitest: 1.6.0
+      vitest: 1.6.1
 
   '@vitest/expect@1.6.1':
     resolution: {integrity: sha512-jXL+9+ZNIJKruofqXuuTClf44eSpcHlgj3CiuNihUF3Ioujtmc0zIa3UJOW5RjDK1YLBJZnWBlPuqhYycLioog==}
@@ -9165,7 +9165,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/coverage-v8@1.6.0(vitest@1.6.1(@edge-runtime/vm@3.2.0)(@types/node@22.8.6)(happy-dom@15.10.2)(sass@1.80.5)(terser@5.36.0))':
+  '@vitest/coverage-v8@1.6.1(vitest@1.6.1(@edge-runtime/vm@3.2.0)(@types/node@22.8.6)(happy-dom@15.10.2)(sass@1.80.5)(terser@5.36.0))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3
