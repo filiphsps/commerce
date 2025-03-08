@@ -37,10 +37,6 @@
 }
 
 @layer base {
-    * {
-        @apply border-border;
-    }
-
     html {
         @apply font-sans;
         @apply bg-background text-foreground;

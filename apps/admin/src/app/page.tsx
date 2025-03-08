@@ -41,7 +41,7 @@ export default async function Overview() {
 
     return (
         <main className="flex flex-col items-center justify-center">
-            <article className="border-border border-3 flex flex-col gap-3 rounded-2xl border-solid p-3">
+            <article className="border-3 flex flex-col gap-3 rounded-2xl border-solid p-3">
                 <header className="flex flex-col">
                     <section className="flex items-start justify-between">
                         <Link href="/" title="Nordcom Commerce" className="block pb-4">
@@ -75,7 +75,7 @@ export default async function Overview() {
 
                 <section className="grid w-full grid-flow-row grid-cols-1 gap-2 py-2">{shopsActions}</section>
 
-                <footer className="border-border border-t-3 border-0 border-solid pt-3">
+                <footer className="border-t-3 border-0 border-solid pt-3">
                     <Button as={Link} href={'/new'} variant="solid" className="h-12 w-full">
                         Connect a new Shop
                     </Button>

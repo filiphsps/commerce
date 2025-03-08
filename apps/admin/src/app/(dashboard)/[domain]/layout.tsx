@@ -78,7 +78,7 @@ export default async function ShopLayout({ children, params }: ShopLayoutProps) 
 
     return (
         <div className="flex h-full w-full grow flex-col-reverse items-stretch justify-stretch md:flex-row">
-            <Card className="border-border supports-[backdrop-filter]:bg-background/75 bg-background/95 fixed -left-full top-0 z-50 mt-[4.5rem] flex h-[calc(100vh-4.5rem)] w-80 max-w-full flex-col gap-2 rounded-none border-0 border-r-2 border-solid backdrop-blur transition-all group-data-[menu-open=true]/body:left-0 md:z-0 md:mt-0 md:h-full lg:sticky lg:left-0">
+            <Card className="supports-[backdrop-filter]:bg-background/75 bg-background/95 fixed -left-full top-0 z-50 mt-[4.5rem] flex h-[calc(100vh-4.5rem)] w-80 max-w-full flex-col gap-2 rounded-none border-0 border-r-2 border-solid backdrop-blur transition-all group-data-[menu-open=true]/body:left-0 md:z-0 md:mt-0 md:h-full lg:sticky lg:left-0">
                 <Card.header className="h-[4.5rem] max-h-[4.5rem] min-h-[4.5rem]">
                     <div className="flex items-center justify-start gap-3">
                         <Avatar>
