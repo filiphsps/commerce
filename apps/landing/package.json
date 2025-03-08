@@ -99,7 +99,7 @@
         "dotenv": "16.4.5",
         "eslint-config-next": "15.0.2-canary.10",
         "eslint": "8.57.1",
-        "graphql": "16.9.0",
+        "graphql": "16.10.0",
         "happy-dom": "15.10.2",
         "postcss-import": "16.1.0",
         "postcss": "8.4.47",
