@@ -60,7 +60,7 @@
         "@vercel/analytics": "1.3.2",
         "@vercel/otel": "1.10.2",
         "@vercel/speed-insights": "1.2.0",
-        "@vercel/toolbar": "0.1.22",
+        "@vercel/toolbar": "0.1.34",
         "clsx": "2.1.1",
         "geist": "1.3.1",
         "glob": "11.0.1",
