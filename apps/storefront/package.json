@@ -67,7 +67,7 @@
         "@vercel/otel": "1.10.2",
         "@vercel/speed-insights": "1.2.0",
         "@vercel/toolbar": "0.1.34",
-        "class-variance-authority": "0.7.0",
+        "class-variance-authority": "0.7.1",
         "clsx": "2.1.1",
         "colord": "2.9.3",
         "convert-units": "2.3.4",
