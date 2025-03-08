@@ -651,8 +651,8 @@ importers:
         specifier: 2.11.0
         version: 2.11.0(react@0.0.0-experimental-28668d39-20241023)
       react-share:
-        specifier: 5.1.0
-        version: 5.1.0(react@0.0.0-experimental-28668d39-20241023)
+        specifier: 5.2.2
+        version: 5.2.2(react@0.0.0-experimental-28668d39-20241023)
       redis:
         specifier: 4.7.0
         version: 4.7.0
@@ -6190,10 +6190,10 @@ packages:
       '@types/react':
         optional: true
 
-  react-share@5.1.0:
-    resolution: {integrity: sha512-OvyfMtj/0UzH1wi90OdHhZVJ6WUC/+IeWvBwppeZozwIGyAjQgyR0QXlHOrxVHVECqnGvcpBaFTXVrqouTieaw==}
+  react-share@5.2.2:
+    resolution: {integrity: sha512-z0nbOX6X6vHHWAvXduNkYeJUKTKNpKM5Xpmc5a2BxjJhUWl+sE7AsSEMmYEUj2DuDjZr5m7KFIGF0sQPKcUN6w==}
     peerDependencies:
-      react: ^17 || ^18
+      react: ^17 || ^18 || ^19
 
   react-style-singleton@2.2.1:
     resolution: {integrity: sha512-ZWj0fHEMyWkHzKYUr2Bs/4zU6XLmq9HsgBURm7g5pAVfyn49DgUiNgY2d4lXRlYSiCif9YBGpQleewkcqddc7g==}
@@ -12971,7 +12971,7 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.3.8
 
-  react-share@5.1.0(react@0.0.0-experimental-28668d39-20241023):
+  react-share@5.2.2(react@0.0.0-experimental-28668d39-20241023):
     dependencies:
       classnames: 2.5.1
       jsonp: 0.2.1
