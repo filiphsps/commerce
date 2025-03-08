@@ -46,7 +46,7 @@ export default async function Overview() {
                     <section className="flex items-start justify-between">
                         <Link href="/" title="Nordcom Commerce" className="block pb-4">
                             <Image
-                                src="https://shops.nordcom.io/logo.svg"
+                                src={`https://${(process.env.LANDING_DOMAIN as string) || 'shops.nordcom.io'}/logo.svg`}
                                 alt="Nordcom AB's Logo"
                                 height={75}
                                 width={150}

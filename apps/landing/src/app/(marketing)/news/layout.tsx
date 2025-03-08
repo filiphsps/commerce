@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
 export const metadata: Metadata = {
-    metadataBase: new URL(`https://shops.nordcom.io/news/`),
+    metadataBase: new URL(`https://${(process.env.LANDING_DOMAIN as string) || 'shops.nordcom.io'}/news/`),
     title: {
         default: 'Overview',
         template: `%s · News · Nordcom Commerce`

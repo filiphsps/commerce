@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: { params: ArticlePageParams }
         meta: { title, description }
     } = await getArticleContent({ year, month, slug });
 
-    const url = `https://shops.nordcom.io/news/${year}/${month}/${slug}/`;
+    const url = `https://${(process.env.LANDING_DOMAIN as string) || 'shops.nordcom.io'}/news/${year}/${month}/${slug}/`;
     return {
         title,
         description,

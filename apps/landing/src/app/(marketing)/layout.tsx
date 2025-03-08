@@ -22,7 +22,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-    metadataBase: new URL(`https://shops.nordcom.io/`),
+    metadataBase: new URL(`https://${(process.env.LANDING_DOMAIN as string) || 'shops.nordcom.io'}/`),
     title: {
         default: 'Headless Commerce as a Service',
         template: `%s · Nordcom Commerce`

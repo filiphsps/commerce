@@ -20,7 +20,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-    metadataBase: new URL(`https://admin.shops.nordcom.io/`),
+    metadataBase: new URL(`https://${(process.env.ADMIN_DOMAIN as string) || 'admin.shops.nordcom.io'}/`),
     title: {
         default: 'admin',
         template: `%s · Nordcom Commerce`

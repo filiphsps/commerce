@@ -56,7 +56,7 @@ async function handleCommerceError(req: NextRequest, error: Error) {
     const hostname = hostnameFromRequest(req);
 
     const newUrl = new URL(req.url);
-    newUrl.hostname = 'shops.nordcom.io';
+    newUrl.hostname = (process.env.LANDING_DOMAIN as string) || 'shops.nordcom.io';
     newUrl.protocol = 'https';
     newUrl.port = '443';
     newUrl.pathname = '/status/unknown-error/'; // Default error.
@@ -99,7 +99,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     } catch (error: unknown) {
         console.error(error);
 
-        newUrl.hostname = 'shops.nordcom.io';
+        newUrl.hostname = (process.env.LANDING_DOMAIN as string) || 'shops.nordcom.io';
         newUrl.protocol = 'https';
         newUrl.port = '443';
         newUrl.searchParams.set('shop', hostnameFromRequest(req));
