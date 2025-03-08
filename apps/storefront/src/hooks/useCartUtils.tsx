@@ -47,7 +47,7 @@ export const useCartUtils = ({
         buyerIdentityUpdate({
             countryCode: locale.country
         });
-    }, [locale.code, buyerIdentity, cartReady]);
+    }, [locale.code, buyerIdentity, cartReady, locale.country, buyerIdentityUpdate]);
 
     // Discount codes in url
     useEffect(() => {
@@ -78,7 +78,7 @@ export const useCartUtils = ({
         if (cartError && error != cartError) {
             setError(() => error);
         }
-    }, [status, query, pathname]);
+    }, [status, query, pathname, discountCodes, discountCodesUpdate, router, cartError, error]);
 
     // Remove codes that are no longer applicable.
     useEffect(() => {
@@ -97,7 +97,7 @@ export const useCartUtils = ({
         }
 
         discountCodesUpdate(applicable.map(({ code }) => code!));
-    }, [discountCodes, cartReady]);
+    }, [discountCodes, cartReady, discountCodesUpdate]);
 
     return { error, cartError };
 };

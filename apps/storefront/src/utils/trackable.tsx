@@ -447,10 +447,11 @@ export function Trackable({ children, dummy = false }: TrackableProps) {
                 return [...queue, { type, event }];
             });
         },
-        [queue, setQueue]
+        [setQueue, internalTraffic]
     );
 
     const postEvent = useCallback(
+        // eslint-disable-next-line react-compiler/react-compiler
         debounce((type: AnalyticsEventType, event: AnalyticsEventData) => {
             if (internalTraffic) {
                 return undefined;
@@ -509,7 +510,16 @@ export function Trackable({ children, dummy = false }: TrackableProps) {
                 }
             }
         });
-    }, [path, prevPath]);
+    }, [
+        cart.cost?.totalAmount?.amount,
+        cart.cost?.totalAmount?.currencyCode,
+        cart.lines,
+        internalTraffic,
+        locale,
+        path,
+        prevPath,
+        queueEvent
+    ]);
 
     // Send events.
     useEffect(() => {
@@ -542,7 +552,7 @@ export function Trackable({ children, dummy = false }: TrackableProps) {
                 console.error('Failed to send analytics events:', failed);
             }
         });
-    }, [shop, currency, queue]);
+    }, [shop, currency, queue, internalTraffic, path, locale, shopify, cart]);
 
     const store = useMemo(
         () => ({
@@ -554,6 +564,7 @@ export function Trackable({ children, dummy = false }: TrackableProps) {
 
     return useMemo(
         () =>
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             store ? (
                 <TrackableContext.Provider value={store as TrackableContextValue}>{children}</TrackableContext.Provider>
             ) : (
@@ -585,7 +596,7 @@ export function AnalyticsEventTrigger({ event, data }: { event: AnalyticsEventTy
 
     useEffect(() => {
         queueEvent(event, { path, ...data });
-    }, []);
+    }, [data, event, path, queueEvent]);
 
     return <Fragment />;
 }

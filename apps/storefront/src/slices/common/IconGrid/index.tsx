@@ -65,7 +65,7 @@ const IconGrid = ({ slice, index: order }: IconGridProps) => {
                     </div>
                 );
             }),
-        [sliceItems]
+        [background, order, sliceItems]
     );
 
     if (!(slice as any) || items.length <= 0) {
