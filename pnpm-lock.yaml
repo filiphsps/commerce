@@ -112,11 +112,11 @@ importers:
   apps/admin:
     dependencies:
       '@apollo/client':
-        specifier: 3.13.3
-        version: 3.13.3(@types/react@18.3.8)(graphql@16.10.0)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
+        specifier: 3.13.4
+        version: 3.13.4(@types/react@18.3.8)(graphql@16.10.0)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
       '@apollo/experimental-nextjs-app-support':
         specifier: 0.11.10
-        version: 0.11.10(@apollo/client@3.13.3(@types/react@18.3.8)(graphql@16.10.0)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023))(graphql@16.10.0)(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
+        version: 0.11.10(@apollo/client@3.13.4(@types/react@18.3.8)(graphql@16.10.0)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023))(graphql@16.10.0)(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
       '@auth/core':
         specifier: 0.38.0
         version: 0.38.0
@@ -317,11 +317,11 @@ importers:
   apps/landing:
     dependencies:
       '@apollo/client':
-        specifier: 3.13.3
-        version: 3.13.3(@types/react@18.3.8)(graphql@16.10.0)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
+        specifier: 3.13.4
+        version: 3.13.4(@types/react@18.3.8)(graphql@16.10.0)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
       '@apollo/experimental-nextjs-app-support':
         specifier: 0.11.10
-        version: 0.11.10(@apollo/client@3.13.3(@types/react@18.3.8)(graphql@16.10.0)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023))(graphql@16.10.0)(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
+        version: 0.11.10(@apollo/client@3.13.4(@types/react@18.3.8)(graphql@16.10.0)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023))(graphql@16.10.0)(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
       '@markdoc/markdoc':
         specifier: 0.5.1
         version: 0.5.1(@types/react@18.3.8)(react@0.0.0-experimental-28668d39-20241023)
@@ -513,11 +513,11 @@ importers:
   apps/storefront:
     dependencies:
       '@apollo/client':
-        specifier: 3.13.3
-        version: 3.13.3(@types/react@18.3.8)(graphql@16.10.0)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
+        specifier: 3.13.4
+        version: 3.13.4(@types/react@18.3.8)(graphql@16.10.0)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
       '@apollo/experimental-nextjs-app-support':
         specifier: 0.11.10
-        version: 0.11.10(@apollo/client@3.13.3(@types/react@18.3.8)(graphql@16.10.0)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023))(graphql@16.10.0)(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
+        version: 0.11.10(@apollo/client@3.13.4(@types/react@18.3.8)(graphql@16.10.0)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023))(graphql@16.10.0)(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
       '@auth/core':
         specifier: 0.38.0
         version: 0.38.0
@@ -946,8 +946,8 @@ packages:
       react: ^18 || >=19.0.0-rc
       react-dom: ^18 || >=19.0.0-rc
 
-  '@apollo/client@3.13.3':
-    resolution: {integrity: sha512-StozissNsakG9cveM5IYcVjQBiJXXtfybSwIklrJQv3c0CLshWBlUv5OddMrJxKfQ1A+9WqPQZXjkA/HxbflDA==}
+  '@apollo/client@3.13.4':
+    resolution: {integrity: sha512-Ot3RaN2M/rhIKDqXBdOVlN0dQbHydUrYJ9lTxkvd6x7W1pAjwduUccfoz2gsO4U9by7oWtRj/ySF0MFNUp+9Aw==}
     peerDependencies:
       graphql: ^15.0.0 || ^16.0.0
       graphql-ws: ^5.5.5 || ^6.0.3
@@ -7611,15 +7611,15 @@ snapshots:
 
   '@antfu/ni@0.20.0': {}
 
-  '@apollo/client-react-streaming@0.11.10(@apollo/client@3.13.3(@types/react@18.3.8)(graphql@16.10.0)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023))(graphql@16.10.0)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)':
+  '@apollo/client-react-streaming@0.11.10(@apollo/client@3.13.4(@types/react@18.3.8)(graphql@16.10.0)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023))(graphql@16.10.0)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)':
     dependencies:
-      '@apollo/client': 3.13.3(@types/react@18.3.8)(graphql@16.10.0)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
+      '@apollo/client': 3.13.4(@types/react@18.3.8)(graphql@16.10.0)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
       graphql: 16.10.0
       react: 0.0.0-experimental-28668d39-20241023
       react-dom: 0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023)
       ts-invariant: 0.10.3
 
-  '@apollo/client@3.13.3(@types/react@18.3.8)(graphql@16.10.0)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)':
+  '@apollo/client@3.13.4(@types/react@18.3.8)(graphql@16.10.0)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)':
     dependencies:
       '@graphql-typed-document-node/core': 3.2.0(graphql@16.10.0)
       '@wry/caches': 1.0.1
@@ -7633,7 +7633,7 @@ snapshots:
       rehackt: 0.1.0(@types/react@18.3.8)(react@0.0.0-experimental-28668d39-20241023)
       symbol-observable: 4.0.0
       ts-invariant: 0.10.3
-      tslib: 2.8.0
+      tslib: 2.8.1
       zen-observable-ts: 1.2.5
     optionalDependencies:
       react: 0.0.0-experimental-28668d39-20241023
@@ -7641,10 +7641,10 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
 
-  '@apollo/experimental-nextjs-app-support@0.11.10(@apollo/client@3.13.3(@types/react@18.3.8)(graphql@16.10.0)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023))(graphql@16.10.0)(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)':
+  '@apollo/experimental-nextjs-app-support@0.11.10(@apollo/client@3.13.4(@types/react@18.3.8)(graphql@16.10.0)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023))(graphql@16.10.0)(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)':
     dependencies:
-      '@apollo/client': 3.13.3(@types/react@18.3.8)(graphql@16.10.0)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
-      '@apollo/client-react-streaming': 0.11.10(@apollo/client@3.13.3(@types/react@18.3.8)(graphql@16.10.0)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023))(graphql@16.10.0)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
+      '@apollo/client': 3.13.4(@types/react@18.3.8)(graphql@16.10.0)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
+      '@apollo/client-react-streaming': 0.11.10(@apollo/client@3.13.4(@types/react@18.3.8)(graphql@16.10.0)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023))(graphql@16.10.0)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
       next: 15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5)
       react: 0.0.0-experimental-28668d39-20241023
     transitivePeerDependencies:
@@ -9497,7 +9497,7 @@ snapshots:
 
   '@swc/helpers@0.5.13':
     dependencies:
-      tslib: 2.8.0
+      tslib: 2.8.1
 
   '@tailwindcss/forms@0.5.10(tailwindcss@4.0.12)':
     dependencies:
@@ -10222,23 +10222,23 @@ snapshots:
 
   '@wry/caches@1.0.1':
     dependencies:
-      tslib: 2.8.0
+      tslib: 2.8.1
 
   '@wry/context@0.7.4':
     dependencies:
-      tslib: 2.8.0
+      tslib: 2.8.1
 
   '@wry/equality@0.5.7':
     dependencies:
-      tslib: 2.8.0
+      tslib: 2.8.1
 
   '@wry/trie@0.4.3':
     dependencies:
-      tslib: 2.8.0
+      tslib: 2.8.1
 
   '@wry/trie@0.5.0':
     dependencies:
-      tslib: 2.8.0
+      tslib: 2.8.1
 
   '@xstate/fsm@2.0.0': {}
 
@@ -11899,7 +11899,7 @@ snapshots:
   graphql-tag@2.12.6(graphql@16.10.0):
     dependencies:
       graphql: 16.10.0
-      tslib: 2.8.0
+      tslib: 2.8.1
 
   graphql@16.10.0: {}
 
@@ -13100,7 +13100,7 @@ snapshots:
       '@wry/caches': 1.0.1
       '@wry/context': 0.7.4
       '@wry/trie': 0.4.3
-      tslib: 2.8.0
+      tslib: 2.8.1
 
   optionator@0.9.4:
     dependencies:
@@ -14233,7 +14233,7 @@ snapshots:
 
   ts-invariant@0.10.3:
     dependencies:
-      tslib: 2.8.0
+      tslib: 2.8.1
 
   tsconfck@3.1.4(typescript@5.6.3):
     optionalDependencies:
