@@ -47,7 +47,7 @@
         "@apollo/client": "3.13.4",
         "@apollo/experimental-nextjs-app-support": "0.11.10",
         "@markdoc/markdoc": "0.5.1",
-        "@markdoc/next.js": "0.3.7",
+        "@markdoc/next.js": "0.4.0",
         "@next/third-parties": "15.0.2-canary.10",
         "@nordcom/commerce-db": "workspace:*",
         "@nordcom/commerce-errors": "workspace:*",
