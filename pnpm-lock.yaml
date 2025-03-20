@@ -679,8 +679,8 @@ importers:
         specifier: 0.1.1
         version: 0.1.1
       '@slicemachine/adapter-next':
-        specifier: 0.3.70
-        version: 0.3.70(@prismicio/types@0.2.9)(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)
+        specifier: 0.3.71
+        version: 0.3.71(@prismicio/types@0.2.9)(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)
       '@tailwindcss/forms':
         specifier: 0.5.10
         version: 0.5.10(tailwindcss@4.0.14)
@@ -2752,8 +2752,8 @@ packages:
   '@sinclair/typebox@0.27.8':
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
 
-  '@slicemachine/adapter-next@0.3.70':
-    resolution: {integrity: sha512-vux0y0zwL58sd4ZSKmUo80Ol3wysuvL/yqrgf7N8t9ZOsjSgUZmuS3RYdDOwaYL+YzRnOhW8oGgN5tydst7hVg==}
+  '@slicemachine/adapter-next@0.3.71':
+    resolution: {integrity: sha512-z6b5lRPB5XVmYSFQntw1/PqAMspcv8cdCYlYz3MYj8gVmvJfWmX0vqA2Dt8mjpA3nObulFh3Vv/cPlwP9H4eKA==}
     engines: {node: '>=14.15.0'}
     peerDependencies:
       next: ^11 || ^12 || ^13 || ^14 || ^15.0.0-rc.0
@@ -2772,8 +2772,8 @@ packages:
     resolution: {integrity: sha512-+dWhN3P6//Gqk7A4kx9LA+zWlFSTocxfsZEUAXkUrqqC8Px3RClGPooi9g6qLWTK9WxF5hEWrCiK7T5W2txJQA==}
     engines: {node: '>=14.15.0'}
 
-  '@slicemachine/plugin-kit@0.4.69':
-    resolution: {integrity: sha512-jdc4haz3Leoi9QGTDgtoN5W+75xjpiumgI4Q5MQtPAeJdOVHfWm+tnEEadrbuigOwQ1/96ONBee0vq+pFh3g+A==}
+  '@slicemachine/plugin-kit@0.4.70':
+    resolution: {integrity: sha512-5lIwuVwttmQNAuGU0ZDK3gjzbdT4+5amkIgBBdGIladjNQhOmKTiTUgao6+yzr1CLaRU2H8dHG5p2jnkuH2KMw==}
     engines: {node: '>=14.15.0'}
 
   '@sveltejs/kit@1.30.4':
@@ -9371,11 +9371,11 @@ snapshots:
 
   '@sinclair/typebox@0.27.8': {}
 
-  '@slicemachine/adapter-next@0.3.70(@prismicio/types@0.2.9)(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)':
+  '@slicemachine/adapter-next@0.3.71(@prismicio/types@0.2.9)(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)':
     dependencies:
       '@prismicio/simulator': 0.1.4
       '@prismicio/types-internal': 3.6.0(fp-ts@2.16.9)(io-ts-types@0.5.19(fp-ts@2.16.9)(io-ts@2.2.21(fp-ts@2.16.9))(monocle-ts@2.3.13(fp-ts@2.16.9))(newtype-ts@0.3.5(fp-ts@2.16.9)(monocle-ts@2.3.13(fp-ts@2.16.9))))(io-ts@2.2.21(fp-ts@2.16.9))
-      '@slicemachine/plugin-kit': 0.4.69(@prismicio/types@0.2.9)
+      '@slicemachine/plugin-kit': 0.4.70(@prismicio/types@0.2.9)
       common-tags: 1.8.2
       fp-ts: 2.16.9
       io-ts: 2.2.21(fp-ts@2.16.9)
@@ -9439,7 +9439,7 @@ snapshots:
     transitivePeerDependencies:
       - '@prismicio/types'
 
-  '@slicemachine/plugin-kit@0.4.69(@prismicio/types@0.2.9)':
+  '@slicemachine/plugin-kit@0.4.70(@prismicio/types@0.2.9)':
     dependencies:
       '@prismicio/client': 7.16.1
       common-tags: 1.8.2
