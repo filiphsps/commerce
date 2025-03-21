@@ -172,8 +172,8 @@ importers:
         specifier: 1.2.0
         version: 1.2.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.2(@types/node@22.13.11)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@vercel/toolbar':
-        specifier: 0.1.34
-        version: 0.1.34(05640da7d363aea9f51d7655c43666a1)
+        specifier: 0.1.35
+        version: 0.1.35(05640da7d363aea9f51d7655c43666a1)
       class-variance-authority:
         specifier: 0.7.1
         version: 0.7.1
@@ -365,8 +365,8 @@ importers:
         specifier: 1.2.0
         version: 1.2.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.2(@types/node@22.13.11)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@vercel/toolbar':
-        specifier: 0.1.34
-        version: 0.1.34(05640da7d363aea9f51d7655c43666a1)
+        specifier: 0.1.35
+        version: 0.1.35(05640da7d363aea9f51d7655c43666a1)
       clsx:
         specifier: 2.1.1
         version: 2.1.1
@@ -579,8 +579,8 @@ importers:
         specifier: 1.2.0
         version: 1.2.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.2(@types/node@22.13.11)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@vercel/toolbar':
-        specifier: 0.1.34
-        version: 0.1.34(05640da7d363aea9f51d7655c43666a1)
+        specifier: 0.1.35
+        version: 0.1.35(05640da7d363aea9f51d7655c43666a1)
       class-variance-authority:
         specifier: 0.7.1
         version: 0.7.1
@@ -3316,8 +3316,8 @@ packages:
       vue-router:
         optional: true
 
-  '@vercel/toolbar@0.1.34':
-    resolution: {integrity: sha512-ovM4bP66Vy0OJUPeDL/M+neKcAqVrIbU19v+lKs1mlrYd+bMJSt41MH4p0v80mcYH14mUz3l9jyxdsxxfAnCJw==}
+  '@vercel/toolbar@0.1.35':
+    resolution: {integrity: sha512-RUg/MSRLQR+LZWI8bXvfNO25VJxUpCPwHMlkGZqqW1gQ9T1WYM6xHSB2vEk1zkjtqzRFqDnjLITS5ckegbDf7A==}
     peerDependencies:
       next: '>=11.0.0'
       react: '>=17'
@@ -9997,7 +9997,7 @@ snapshots:
       ajv: 8.17.1
       commander: 12.1.0
       cookie: 0.4.0
-      fast-glob: 3.3.2
+      fast-glob: 3.3.3
       http-proxy: 1.18.1
       jsonc-parser: 3.3.1
       path-to-regexp: 6.2.1
@@ -10029,13 +10029,13 @@ snapshots:
       vue: 3.4.27(typescript@5.6.3)
       vue-router: 4.3.2(vue@3.4.27(typescript@5.6.3))
 
-  '@vercel/toolbar@0.1.34(05640da7d363aea9f51d7655c43666a1)':
+  '@vercel/toolbar@0.1.35(05640da7d363aea9f51d7655c43666a1)':
     dependencies:
       '@tinyhttp/app': 1.3.0
       '@vercel/microfrontends': 1.0.0(3f5114856c3dbb19625d5affd70ad5e3)
       chokidar: 3.6.0
       execa: 5.1.1
-      fast-glob: 3.3.2
+      fast-glob: 3.3.3
       find-up: 5.0.0
       get-port: 5.1.1
       jsonc-parser: 3.3.1
@@ -11259,7 +11259,7 @@ snapshots:
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@8.27.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.27.0(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1)
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.27.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.27.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.27.0(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.27.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@8.57.1)
       eslint-plugin-react: 7.37.4(eslint@8.57.1)
       eslint-plugin-react-hooks: 5.0.0(eslint@8.57.1)
@@ -11294,7 +11294,7 @@ snapshots:
       is-bun-module: 1.2.1
       is-glob: 4.0.3
     optionalDependencies:
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.27.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.27.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.27.0(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.27.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1)
     transitivePeerDependencies:
       - '@typescript-eslint/parser'
       - eslint-import-resolver-node
@@ -11312,7 +11312,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.27.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.27.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.27.0(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
+  eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.27.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.8
