@@ -57,7 +57,7 @@
         "@opentelemetry/sdk-logs": "0.200.0",
         "@prismicio/client": "7.17.0",
         "@prismicio/next": "2.0.0",
-        "@prismicio/react": "2.9.2",
+        "@prismicio/react": "3.2.0",
         "@radix-ui/react-dialog": "1.1.6",
         "@radix-ui/react-visually-hidden": "1.1.2",
         "@shopify/hydrogen-react": "2025.1.3",
