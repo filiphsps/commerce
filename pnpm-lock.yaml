@@ -172,8 +172,8 @@ importers:
         specifier: 1.2.0
         version: 1.2.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@vercel/toolbar':
-        specifier: 0.1.35
-        version: 0.1.35(4e6016602b157d6c2132fc30e987b521)
+        specifier: 0.1.36
+        version: 0.1.36(93e6cef7d3d44c1ef622a10e01bd3f0f)
       class-variance-authority:
         specifier: 0.7.1
         version: 0.7.1
@@ -365,8 +365,8 @@ importers:
         specifier: 1.2.0
         version: 1.2.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@vercel/toolbar':
-        specifier: 0.1.35
-        version: 0.1.35(4e6016602b157d6c2132fc30e987b521)
+        specifier: 0.1.36
+        version: 0.1.36(93e6cef7d3d44c1ef622a10e01bd3f0f)
       clsx:
         specifier: 2.1.1
         version: 2.1.1
@@ -579,8 +579,8 @@ importers:
         specifier: 1.2.0
         version: 1.2.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@vercel/toolbar':
-        specifier: 0.1.35
-        version: 0.1.35(4e6016602b157d6c2132fc30e987b521)
+        specifier: 0.1.36
+        version: 0.1.36(93e6cef7d3d44c1ef622a10e01bd3f0f)
       class-variance-authority:
         specifier: 0.7.1
         version: 0.7.1
@@ -3208,16 +3208,20 @@ packages:
       react-dom:
         optional: true
 
-  '@vercel/microfrontends@1.0.0':
-    resolution: {integrity: sha512-83ikhvV/k9F48zu/J7KtIi6ly1hZ5vSAosBBdkb9hmFgz8iL7iifjEpNp9cREjYa/8hajpbuVhqzsL23Cc+70Q==}
+  '@vercel/microfrontends@1.1.0':
+    resolution: {integrity: sha512-w7SeCV10hsLh3xUB4M1xsqbBSo+ry5PPL9/pkX9St5ZDRUHGZT/UEQd4vhOcSgwObn/1gbcuV0Il/unXmPty9A==}
     hasBin: true
     peerDependencies:
+      '@sveltejs/kit': '>=1'
       '@vercel/analytics': '>=1.5.0'
       '@vercel/speed-insights': '>=1.2.0'
       next: '>=13'
       react: '>=17.0.0'
       react-dom: '>=17.0.0'
+      vite: '>=5'
     peerDependenciesMeta:
+      '@sveltejs/kit':
+        optional: true
       '@vercel/analytics':
         optional: true
       '@vercel/speed-insights':
@@ -3227,6 +3231,8 @@ packages:
       react:
         optional: true
       react-dom:
+        optional: true
+      vite:
         optional: true
 
   '@vercel/otel@1.10.4':
@@ -3264,8 +3270,8 @@ packages:
       vue-router:
         optional: true
 
-  '@vercel/toolbar@0.1.35':
-    resolution: {integrity: sha512-RUg/MSRLQR+LZWI8bXvfNO25VJxUpCPwHMlkGZqqW1gQ9T1WYM6xHSB2vEk1zkjtqzRFqDnjLITS5ckegbDf7A==}
+  '@vercel/toolbar@0.1.36':
+    resolution: {integrity: sha512-hEY4dx2XkR6p7uWT1pvP9brVWGM8cY6Ga9WG7utAsmayie+wNRKN/oVSGAVWTp4A55S0bYZshYBKwoZ7ng9FxA==}
     peerDependencies:
       next: '>=11.0.0'
       react: '>=17'
@@ -9944,7 +9950,7 @@ snapshots:
       react: 0.0.0-experimental-28668d39-20241023
       react-dom: 0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023)
 
-  '@vercel/microfrontends@1.0.0(644f62deb779fc34a55316dc8de593bf)':
+  '@vercel/microfrontends@1.1.0(93e6cef7d3d44c1ef622a10e01bd3f0f)':
     dependencies:
       ajv: 8.17.1
       commander: 12.1.0
@@ -9952,13 +9958,16 @@ snapshots:
       fast-glob: 3.3.3
       http-proxy: 1.18.1
       jsonc-parser: 3.3.1
+      nanoid: 3.3.9
       path-to-regexp: 6.2.1
     optionalDependencies:
+      '@sveltejs/kit': 1.30.4(svelte@4.2.17)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
       '@vercel/analytics': 1.5.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@vercel/speed-insights': 1.2.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       next: 15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5)
       react: 0.0.0-experimental-28668d39-20241023
       react-dom: 0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023)
+      vite: 6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
     transitivePeerDependencies:
       - debug
 
@@ -9981,10 +9990,10 @@ snapshots:
       vue: 3.4.27(typescript@5.6.3)
       vue-router: 4.3.2(vue@3.4.27(typescript@5.6.3))
 
-  '@vercel/toolbar@0.1.35(4e6016602b157d6c2132fc30e987b521)':
+  '@vercel/toolbar@0.1.36(93e6cef7d3d44c1ef622a10e01bd3f0f)':
     dependencies:
       '@tinyhttp/app': 1.3.0
-      '@vercel/microfrontends': 1.0.0(644f62deb779fc34a55316dc8de593bf)
+      '@vercel/microfrontends': 1.1.0(93e6cef7d3d44c1ef622a10e01bd3f0f)
       chokidar: 3.6.0
       execa: 5.1.1
       fast-glob: 3.3.3
@@ -9997,6 +10006,7 @@ snapshots:
       react: 0.0.0-experimental-28668d39-20241023
       vite: 6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
     transitivePeerDependencies:
+      - '@sveltejs/kit'
       - '@vercel/analytics'
       - '@vercel/speed-insights'
       - debug
