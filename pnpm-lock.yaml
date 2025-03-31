@@ -32,7 +32,7 @@ importers:
         version: 8.28.0(eslint@8.57.1)(typescript@5.6.3)
       '@vitejs/plugin-react':
         specifier: 4.3.4
-        version: 4.3.4(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
+        version: 4.3.4(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
       '@vitest/coverage-v8':
         specifier: 1.6.1
         version: 1.6.1(vitest@1.6.1(@edge-runtime/vm@3.2.0)(@types/node@22.13.14)(happy-dom@17.4.0)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0))
@@ -97,14 +97,14 @@ importers:
         specifier: 5.6.3
         version: 5.6.3
       vite:
-        specifier: 6.2.3
-        version: 6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
+        specifier: 6.2.4
+        version: 6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
       vite-plugin-dts:
         specifier: 3.9.1
-        version: 3.9.1(@types/node@22.13.14)(rollup@4.34.9)(typescript@5.6.3)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
+        version: 3.9.1(@types/node@22.13.14)(rollup@4.34.9)(typescript@5.6.3)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
       vite-tsconfig-paths:
         specifier: 5.1.4
-        version: 5.1.4(typescript@5.6.3)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
+        version: 5.1.4(typescript@5.6.3)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
       vitest:
         specifier: 1.6.1
         version: 1.6.1(@edge-runtime/vm@3.2.0)(@types/node@22.13.14)(happy-dom@17.4.0)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)
@@ -158,22 +158,22 @@ importers:
         version: 1.1.2(@types/react@18.3.8)(react@0.0.0-experimental-28668d39-20241023)
       '@shopify/hydrogen-react':
         specifier: 2025.1.3
-        version: 2025.1.3(@types/react@18.3.8)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(three@0.139.2)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
+        version: 2025.1.3(@types/react@18.3.8)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(three@0.139.2)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
       '@shopify/shopify-api':
         specifier: 11.11.1
         version: 11.11.1
       '@vercel/analytics':
         specifier: 1.5.0
-        version: 1.5.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
+        version: 1.5.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@vercel/otel':
         specifier: 1.10.4
         version: 1.10.4(@opentelemetry/api-logs@0.200.0)(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.200.0(@opentelemetry/api@1.9.0))(@opentelemetry/resources@2.0.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.200.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.26.0(@opentelemetry/api@1.9.0))
       '@vercel/speed-insights':
         specifier: 1.2.0
-        version: 1.2.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
+        version: 1.2.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@vercel/toolbar':
         specifier: 0.1.35
-        version: 0.1.35(bfdfd95faf6fd3952721870115dd5183)
+        version: 0.1.35(4e6016602b157d6c2132fc30e987b521)
       class-variance-authority:
         specifier: 0.7.1
         version: 0.7.1
@@ -354,19 +354,19 @@ importers:
         version: 0.200.0(@opentelemetry/api@1.9.0)
       '@shopify/hydrogen-react':
         specifier: 2025.1.3
-        version: 2025.1.3(@types/react@18.3.8)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(three@0.139.2)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
+        version: 2025.1.3(@types/react@18.3.8)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(three@0.139.2)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
       '@vercel/analytics':
         specifier: 1.5.0
-        version: 1.5.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
+        version: 1.5.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@vercel/otel':
         specifier: 1.10.4
         version: 1.10.4(@opentelemetry/api-logs@0.200.0)(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.200.0(@opentelemetry/api@1.9.0))(@opentelemetry/resources@2.0.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.200.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.26.0(@opentelemetry/api@1.9.0))
       '@vercel/speed-insights':
         specifier: 1.2.0
-        version: 1.2.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
+        version: 1.2.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@vercel/toolbar':
         specifier: 0.1.35
-        version: 0.1.35(bfdfd95faf6fd3952721870115dd5183)
+        version: 0.1.35(4e6016602b157d6c2132fc30e987b521)
       clsx:
         specifier: 2.1.1
         version: 2.1.1
@@ -562,25 +562,25 @@ importers:
         version: 1.1.2(@types/react-dom@18.3.0)(@types/react@18.3.8)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
       '@shopify/hydrogen-react':
         specifier: 2025.1.3
-        version: 2025.1.3(@types/react@18.3.8)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(three@0.139.2)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
+        version: 2025.1.3(@types/react@18.3.8)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(three@0.139.2)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
       '@vercel/analytics':
         specifier: 1.5.0
-        version: 1.5.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
+        version: 1.5.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@vercel/edge-config':
         specifier: 1.4.0
         version: 1.4.0(@opentelemetry/api@1.9.0)
       '@vercel/flags':
         specifier: 2.6.3
-        version: 2.6.3(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
+        version: 2.6.3(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
       '@vercel/otel':
         specifier: 1.10.4
         version: 1.10.4(@opentelemetry/api-logs@0.200.0)(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.200.0(@opentelemetry/api@1.9.0))(@opentelemetry/resources@2.0.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.200.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.26.0(@opentelemetry/api@1.9.0))
       '@vercel/speed-insights':
         specifier: 1.2.0
-        version: 1.2.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
+        version: 1.2.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@vercel/toolbar':
         specifier: 0.1.35
-        version: 0.1.35(bfdfd95faf6fd3952721870115dd5183)
+        version: 0.1.35(4e6016602b157d6c2132fc30e987b521)
       class-variance-authority:
         specifier: 0.7.1
         version: 0.7.1
@@ -792,7 +792,7 @@ importers:
     devDependencies:
       '@codecov/vite-plugin':
         specifier: 1.9.0
-        version: 1.9.0(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))(webpack-sources@3.2.3)
+        version: 1.9.0(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))(webpack-sources@3.2.3)
       '@nordcom/prettier':
         specifier: 0.1.1
         version: 0.1.1
@@ -818,14 +818,14 @@ importers:
         specifier: 5.6.3
         version: 5.6.3
       vite:
-        specifier: 6.2.3
-        version: 6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
+        specifier: 6.2.4
+        version: 6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
       vite-plugin-dts:
         specifier: 3.9.1
-        version: 3.9.1(@types/node@22.13.14)(rollup@4.34.9)(typescript@5.6.3)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
+        version: 3.9.1(@types/node@22.13.14)(rollup@4.34.9)(typescript@5.6.3)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
       vite-tsconfig-paths:
         specifier: 5.1.4
-        version: 5.1.4(typescript@5.6.3)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
+        version: 5.1.4(typescript@5.6.3)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
       vitest:
         specifier: 1.6.1
         version: 1.6.1(@edge-runtime/vm@3.2.0)(@types/node@22.13.14)(happy-dom@17.4.0)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)
@@ -834,7 +834,7 @@ importers:
     devDependencies:
       '@codecov/vite-plugin':
         specifier: 1.9.0
-        version: 1.9.0(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))(webpack-sources@3.2.3)
+        version: 1.9.0(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))(webpack-sources@3.2.3)
       '@nordcom/prettier':
         specifier: 0.1.1
         version: 0.1.1
@@ -854,14 +854,14 @@ importers:
         specifier: 5.6.3
         version: 5.6.3
       vite:
-        specifier: 6.2.3
-        version: 6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
+        specifier: 6.2.4
+        version: 6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
       vite-plugin-dts:
         specifier: 3.9.1
-        version: 3.9.1(@types/node@22.13.14)(rollup@4.34.9)(typescript@5.6.3)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
+        version: 3.9.1(@types/node@22.13.14)(rollup@4.34.9)(typescript@5.6.3)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
       vite-tsconfig-paths:
         specifier: 5.1.4
-        version: 5.1.4(typescript@5.6.3)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
+        version: 5.1.4(typescript@5.6.3)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
       vitest:
         specifier: 1.6.1
         version: 1.6.1(@edge-runtime/vm@3.2.0)(@types/node@22.13.14)(happy-dom@17.4.0)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)
@@ -874,7 +874,7 @@ importers:
     devDependencies:
       '@codecov/vite-plugin':
         specifier: 1.9.0
-        version: 1.9.0(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))(webpack-sources@3.2.3)
+        version: 1.9.0(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))(webpack-sources@3.2.3)
       '@nordcom/prettier':
         specifier: 0.1.1
         version: 0.1.1
@@ -894,14 +894,14 @@ importers:
         specifier: 5.6.3
         version: 5.6.3
       vite:
-        specifier: 6.2.3
-        version: 6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
+        specifier: 6.2.4
+        version: 6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
       vite-plugin-dts:
         specifier: 3.9.1
-        version: 3.9.1(@types/node@22.13.14)(rollup@4.34.9)(typescript@5.6.3)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
+        version: 3.9.1(@types/node@22.13.14)(rollup@4.34.9)(typescript@5.6.3)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
       vite-tsconfig-paths:
         specifier: 5.1.4
-        version: 5.1.4(typescript@5.6.3)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
+        version: 5.1.4(typescript@5.6.3)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
       vitest:
         specifier: 1.6.1
         version: 1.6.1(@edge-runtime/vm@3.2.0)(@types/node@22.13.14)(happy-dom@17.4.0)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)
@@ -2511,19 +2511,9 @@ packages:
       rollup:
         optional: true
 
-  '@rollup/rollup-android-arm-eabi@4.24.0':
-    resolution: {integrity: sha512-Q6HJd7Y6xdB48x8ZNVDOqsbh2uByBhgK8PiQgPhwkIw/HC/YX5Ghq2mQY5sRMZWHb3VsFkWooUVOZHKr7DmDIA==}
-    cpu: [arm]
-    os: [android]
-
   '@rollup/rollup-android-arm-eabi@4.34.9':
     resolution: {integrity: sha512-qZdlImWXur0CFakn2BJ2znJOdqYZKiedEPEVNTBrpfPjc/YuTGcaYZcdmNFTkUj3DU0ZM/AElcM8Ybww3xVLzA==}
     cpu: [arm]
-    os: [android]
-
-  '@rollup/rollup-android-arm64@4.24.0':
-    resolution: {integrity: sha512-ijLnS1qFId8xhKjT81uBHuuJp2lU4x2yxa4ctFPtG+MqEE6+C5f/+X/bStmxapgmwLwiL3ih122xv8kVARNAZA==}
-    cpu: [arm64]
     os: [android]
 
   '@rollup/rollup-android-arm64@4.34.9':
@@ -2531,19 +2521,9 @@ packages:
     cpu: [arm64]
     os: [android]
 
-  '@rollup/rollup-darwin-arm64@4.24.0':
-    resolution: {integrity: sha512-bIv+X9xeSs1XCk6DVvkO+S/z8/2AMt/2lMqdQbMrmVpgFvXlmde9mLcbQpztXm1tajC3raFDqegsH18HQPMYtA==}
-    cpu: [arm64]
-    os: [darwin]
-
   '@rollup/rollup-darwin-arm64@4.34.9':
     resolution: {integrity: sha512-0CY3/K54slrzLDjOA7TOjN1NuLKERBgk9nY5V34mhmuu673YNb+7ghaDUs6N0ujXR7fz5XaS5Aa6d2TNxZd0OQ==}
     cpu: [arm64]
-    os: [darwin]
-
-  '@rollup/rollup-darwin-x64@4.24.0':
-    resolution: {integrity: sha512-X6/nOwoFN7RT2svEQWUsW/5C/fYMBe4fnLK9DQk4SX4mgVBiTA9h64kjUYPvGQ0F/9xwJ5U5UfTbl6BEjaQdBQ==}
-    cpu: [x64]
     os: [darwin]
 
   '@rollup/rollup-darwin-x64@4.34.9':
@@ -2561,18 +2541,8 @@ packages:
     cpu: [x64]
     os: [freebsd]
 
-  '@rollup/rollup-linux-arm-gnueabihf@4.24.0':
-    resolution: {integrity: sha512-0KXvIJQMOImLCVCz9uvvdPgfyWo93aHHp8ui3FrtOP57svqrF/roSSR5pjqL2hcMp0ljeGlU4q9o/rQaAQ3AYA==}
-    cpu: [arm]
-    os: [linux]
-
   '@rollup/rollup-linux-arm-gnueabihf@4.34.9':
     resolution: {integrity: sha512-88I+D3TeKItrw+Y/2ud4Tw0+3CxQ2kLgu3QvrogZ0OfkmX/DEppehus7L3TS2Q4lpB+hYyxhkQiYPJ6Mf5/dPg==}
-    cpu: [arm]
-    os: [linux]
-
-  '@rollup/rollup-linux-arm-musleabihf@4.24.0':
-    resolution: {integrity: sha512-it2BW6kKFVh8xk/BnHfakEeoLPv8STIISekpoF+nBgWM4d55CZKc7T4Dx1pEbTnYm/xEKMgy1MNtYuoA8RFIWw==}
     cpu: [arm]
     os: [linux]
 
@@ -2581,18 +2551,8 @@ packages:
     cpu: [arm]
     os: [linux]
 
-  '@rollup/rollup-linux-arm64-gnu@4.24.0':
-    resolution: {integrity: sha512-i0xTLXjqap2eRfulFVlSnM5dEbTVque/3Pi4g2y7cxrs7+a9De42z4XxKLYJ7+OhE3IgxvfQM7vQc43bwTgPwA==}
-    cpu: [arm64]
-    os: [linux]
-
   '@rollup/rollup-linux-arm64-gnu@4.34.9':
     resolution: {integrity: sha512-6TZjPHjKZUQKmVKMUowF3ewHxctrRR09eYyvT5eFv8w/fXarEra83A2mHTVJLA5xU91aCNOUnM+DWFMSbQ0Nxw==}
-    cpu: [arm64]
-    os: [linux]
-
-  '@rollup/rollup-linux-arm64-musl@4.24.0':
-    resolution: {integrity: sha512-9E6MKUJhDuDh604Qco5yP/3qn3y7SLXYuiC0Rpr89aMScS2UAmK1wHP2b7KAa1nSjWJc/f/Lc0Wl1L47qjiyQw==}
     cpu: [arm64]
     os: [linux]
 
@@ -2606,19 +2566,9 @@ packages:
     cpu: [loong64]
     os: [linux]
 
-  '@rollup/rollup-linux-powerpc64le-gnu@4.24.0':
-    resolution: {integrity: sha512-2XFFPJ2XMEiF5Zi2EBf4h73oR1V/lycirxZxHZNc93SqDN/IWhYYSYj8I9381ikUFXZrz2v7r2tOVk2NBwxrWw==}
-    cpu: [ppc64]
-    os: [linux]
-
   '@rollup/rollup-linux-powerpc64le-gnu@4.34.9':
     resolution: {integrity: sha512-PHcNOAEhkoMSQtMf+rJofwisZqaU8iQ8EaSps58f5HYll9EAY5BSErCZ8qBDMVbq88h4UxaNPlbrKqfWP8RfJA==}
     cpu: [ppc64]
-    os: [linux]
-
-  '@rollup/rollup-linux-riscv64-gnu@4.24.0':
-    resolution: {integrity: sha512-M3Dg4hlwuntUCdzU7KjYqbbd+BLq3JMAOhCKdBE3TcMGMZbKkDdJ5ivNdehOssMCIokNHFOsv7DO4rlEOfyKpg==}
-    cpu: [riscv64]
     os: [linux]
 
   '@rollup/rollup-linux-riscv64-gnu@4.34.9':
@@ -2626,28 +2576,13 @@ packages:
     cpu: [riscv64]
     os: [linux]
 
-  '@rollup/rollup-linux-s390x-gnu@4.24.0':
-    resolution: {integrity: sha512-mjBaoo4ocxJppTorZVKWFpy1bfFj9FeCMJqzlMQGjpNPY9JwQi7OuS1axzNIk0nMX6jSgy6ZURDZ2w0QW6D56g==}
-    cpu: [s390x]
-    os: [linux]
-
   '@rollup/rollup-linux-s390x-gnu@4.34.9':
     resolution: {integrity: sha512-U+5SwTMoeYXoDzJX5dhDTxRltSrIax8KWwfaaYcynuJw8mT33W7oOgz0a+AaXtGuvhzTr2tVKh5UO8GVANTxyQ==}
     cpu: [s390x]
     os: [linux]
 
-  '@rollup/rollup-linux-x64-gnu@4.24.0':
-    resolution: {integrity: sha512-ZXFk7M72R0YYFN5q13niV0B7G8/5dcQ9JDp8keJSfr3GoZeXEoMHP/HlvqROA3OMbMdfr19IjCeNAnPUG93b6A==}
-    cpu: [x64]
-    os: [linux]
-
   '@rollup/rollup-linux-x64-gnu@4.34.9':
     resolution: {integrity: sha512-FwBHNSOjUTQLP4MG7y6rR6qbGw4MFeQnIBrMe161QGaQoBQLqSUEKlHIiVgF3g/mb3lxlxzJOpIBhaP+C+KP2A==}
-    cpu: [x64]
-    os: [linux]
-
-  '@rollup/rollup-linux-x64-musl@4.24.0':
-    resolution: {integrity: sha512-w1i+L7kAXZNdYl+vFvzSZy8Y1arS7vMgIy8wusXJzRrPyof5LAb02KGr1PD2EkRcl73kHulIID0M501lN+vobQ==}
     cpu: [x64]
     os: [linux]
 
@@ -2656,29 +2591,14 @@ packages:
     cpu: [x64]
     os: [linux]
 
-  '@rollup/rollup-win32-arm64-msvc@4.24.0':
-    resolution: {integrity: sha512-VXBrnPWgBpVDCVY6XF3LEW0pOU51KbaHhccHw6AS6vBWIC60eqsH19DAeeObl+g8nKAz04QFdl/Cefta0xQtUQ==}
-    cpu: [arm64]
-    os: [win32]
-
   '@rollup/rollup-win32-arm64-msvc@4.34.9':
     resolution: {integrity: sha512-z4mQK9dAN6byRA/vsSgQiPeuO63wdiDxZ9yg9iyX2QTzKuQM7T4xlBoeUP/J8uiFkqxkcWndWi+W7bXdPbt27Q==}
     cpu: [arm64]
     os: [win32]
 
-  '@rollup/rollup-win32-ia32-msvc@4.24.0':
-    resolution: {integrity: sha512-xrNcGDU0OxVcPTH/8n/ShH4UevZxKIO6HJFK0e15XItZP2UcaiLFd5kiX7hJnqCbSztUF8Qot+JWBC/QXRPYWQ==}
-    cpu: [ia32]
-    os: [win32]
-
   '@rollup/rollup-win32-ia32-msvc@4.34.9':
     resolution: {integrity: sha512-KB48mPtaoHy1AwDNkAJfHXvHp24H0ryZog28spEs0V48l3H1fr4i37tiyHsgKZJnCmvxsbATdZGBpbmxTE3a9w==}
     cpu: [ia32]
-    os: [win32]
-
-  '@rollup/rollup-win32-x64-msvc@4.24.0':
-    resolution: {integrity: sha512-fbMkAF7fufku0N2dE5TBXcNlg0pt0cJue4xBRE2Qc5Vqikxr4VCgKj/ht6SMdFcOacVA9rqF70APJ8RN/4vMJw==}
-    cpu: [x64]
     os: [win32]
 
   '@rollup/rollup-win32-x64-msvc@4.34.9':
@@ -6562,11 +6482,6 @@ packages:
     engines: {node: 20 || >=22}
     hasBin: true
 
-  rollup@4.24.0:
-    resolution: {integrity: sha512-DOmrlGSXNk1DM0ljiQA+i+o0rSLhtii1je5wgk60j49d1jHT5YYttBv1iWOnYSTG+fZZESUOSNiAl89SIet+Cg==}
-    engines: {node: '>=18.0.0', npm: '>=8.0.0'}
-    hasBin: true
-
   rollup@4.34.9:
     resolution: {integrity: sha512-nF5XYqWWp9hx/LrpC8sZvvvmq0TeTjQgaZHYmAgwysT9nh8sWnZhBnM8ZyVbbJFIQBLwHDNoMqsBZBbUo4U8sQ==}
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
@@ -7364,8 +7279,8 @@ packages:
       terser:
         optional: true
 
-  vite@6.2.3:
-    resolution: {integrity: sha512-IzwM54g4y9JA/xAeBPNaDXiBF8Jsgl3VBQ2YQ/wOY6fyW3xMdSoltIV3Bo59DErdqdE6RxUfv8W69DvUorE4Eg==}
+  vite@6.2.4:
+    resolution: {integrity: sha512-veHMSew8CcRzhL5o8ONjy8gkfmFJAd5Ac16oxBUjlwgX3Gq2Wqr+qNC3TjPIpy7TPV/KporLga5GT9HqdrCizw==}
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
     peerDependencies:
@@ -8003,11 +7918,11 @@ snapshots:
     transitivePeerDependencies:
       - webpack-sources
 
-  '@codecov/vite-plugin@1.9.0(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))(webpack-sources@3.2.3)':
+  '@codecov/vite-plugin@1.9.0(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))(webpack-sources@3.2.3)':
     dependencies:
       '@codecov/bundler-plugin-core': 1.9.0(webpack-sources@3.2.3)
       unplugin: 1.14.1(webpack-sources@3.2.3)
-      vite: 6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
+      vite: 6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
     transitivePeerDependencies:
       - webpack-sources
 
@@ -9193,25 +9108,13 @@ snapshots:
     optionalDependencies:
       rollup: 4.34.9
 
-  '@rollup/rollup-android-arm-eabi@4.24.0':
-    optional: true
-
   '@rollup/rollup-android-arm-eabi@4.34.9':
-    optional: true
-
-  '@rollup/rollup-android-arm64@4.24.0':
     optional: true
 
   '@rollup/rollup-android-arm64@4.34.9':
     optional: true
 
-  '@rollup/rollup-darwin-arm64@4.24.0':
-    optional: true
-
   '@rollup/rollup-darwin-arm64@4.34.9':
-    optional: true
-
-  '@rollup/rollup-darwin-x64@4.24.0':
     optional: true
 
   '@rollup/rollup-darwin-x64@4.34.9':
@@ -9223,25 +9126,13 @@ snapshots:
   '@rollup/rollup-freebsd-x64@4.34.9':
     optional: true
 
-  '@rollup/rollup-linux-arm-gnueabihf@4.24.0':
-    optional: true
-
   '@rollup/rollup-linux-arm-gnueabihf@4.34.9':
-    optional: true
-
-  '@rollup/rollup-linux-arm-musleabihf@4.24.0':
     optional: true
 
   '@rollup/rollup-linux-arm-musleabihf@4.34.9':
     optional: true
 
-  '@rollup/rollup-linux-arm64-gnu@4.24.0':
-    optional: true
-
   '@rollup/rollup-linux-arm64-gnu@4.34.9':
-    optional: true
-
-  '@rollup/rollup-linux-arm64-musl@4.24.0':
     optional: true
 
   '@rollup/rollup-linux-arm64-musl@4.34.9':
@@ -9250,49 +9141,25 @@ snapshots:
   '@rollup/rollup-linux-loongarch64-gnu@4.34.9':
     optional: true
 
-  '@rollup/rollup-linux-powerpc64le-gnu@4.24.0':
-    optional: true
-
   '@rollup/rollup-linux-powerpc64le-gnu@4.34.9':
-    optional: true
-
-  '@rollup/rollup-linux-riscv64-gnu@4.24.0':
     optional: true
 
   '@rollup/rollup-linux-riscv64-gnu@4.34.9':
     optional: true
 
-  '@rollup/rollup-linux-s390x-gnu@4.24.0':
-    optional: true
-
   '@rollup/rollup-linux-s390x-gnu@4.34.9':
-    optional: true
-
-  '@rollup/rollup-linux-x64-gnu@4.24.0':
     optional: true
 
   '@rollup/rollup-linux-x64-gnu@4.34.9':
     optional: true
 
-  '@rollup/rollup-linux-x64-musl@4.24.0':
-    optional: true
-
   '@rollup/rollup-linux-x64-musl@4.34.9':
-    optional: true
-
-  '@rollup/rollup-win32-arm64-msvc@4.24.0':
     optional: true
 
   '@rollup/rollup-win32-arm64-msvc@4.34.9':
     optional: true
 
-  '@rollup/rollup-win32-ia32-msvc@4.24.0':
-    optional: true
-
   '@rollup/rollup-win32-ia32-msvc@4.34.9':
-    optional: true
-
-  '@rollup/rollup-win32-x64-msvc@4.24.0':
     optional: true
 
   '@rollup/rollup-win32-x64-msvc@4.34.9':
@@ -9365,7 +9232,7 @@ snapshots:
 
   '@shopify/graphql-client@1.3.1': {}
 
-  '@shopify/hydrogen-react@2025.1.3(@types/react@18.3.8)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(three@0.139.2)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))':
+  '@shopify/hydrogen-react@2025.1.3(@types/react@18.3.8)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(three@0.139.2)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))':
     dependencies:
       '@google/model-viewer': 4.0.0(three@0.139.2)
       '@xstate/fsm': 2.0.0
@@ -9374,7 +9241,7 @@ snapshots:
       react: 0.0.0-experimental-28668d39-20241023
       react-dom: 0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023)
       type-fest: 4.38.0
-      vite: 6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
+      vite: 6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
       worktop: 0.7.3
     transitivePeerDependencies:
       - '@types/react'
@@ -9497,9 +9364,9 @@ snapshots:
     transitivePeerDependencies:
       - '@prismicio/types'
 
-  '@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))':
+  '@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))':
     dependencies:
-      '@sveltejs/vite-plugin-svelte': 2.5.3(svelte@4.2.17)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
+      '@sveltejs/vite-plugin-svelte': 2.5.3(svelte@4.2.17)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
       '@types/cookie': 0.5.4
       cookie: 0.5.0
       devalue: 4.3.3
@@ -9513,32 +9380,32 @@ snapshots:
       svelte: 4.2.17
       tiny-glob: 0.2.9
       undici: 5.28.4
-      vite: 6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
+      vite: 6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
     transitivePeerDependencies:
       - supports-color
     optional: true
 
-  '@sveltejs/vite-plugin-svelte-inspector@1.0.4(@sveltejs/vite-plugin-svelte@2.5.3(svelte@4.2.17)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(svelte@4.2.17)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))':
+  '@sveltejs/vite-plugin-svelte-inspector@1.0.4(@sveltejs/vite-plugin-svelte@2.5.3(svelte@4.2.17)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(svelte@4.2.17)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))':
     dependencies:
-      '@sveltejs/vite-plugin-svelte': 2.5.3(svelte@4.2.17)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
+      '@sveltejs/vite-plugin-svelte': 2.5.3(svelte@4.2.17)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
       debug: 4.3.7
       svelte: 4.2.17
-      vite: 6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
+      vite: 6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
     transitivePeerDependencies:
       - supports-color
     optional: true
 
-  '@sveltejs/vite-plugin-svelte@2.5.3(svelte@4.2.17)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))':
+  '@sveltejs/vite-plugin-svelte@2.5.3(svelte@4.2.17)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))':
     dependencies:
-      '@sveltejs/vite-plugin-svelte-inspector': 1.0.4(@sveltejs/vite-plugin-svelte@2.5.3(svelte@4.2.17)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(svelte@4.2.17)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
+      '@sveltejs/vite-plugin-svelte-inspector': 1.0.4(@sveltejs/vite-plugin-svelte@2.5.3(svelte@4.2.17)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(svelte@4.2.17)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
       debug: 4.3.7
       deepmerge: 4.3.1
       kleur: 4.1.5
       magic-string: 0.30.12
       svelte: 4.2.17
       svelte-hmr: 0.15.3(svelte@4.2.17)
-      vite: 6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
-      vitefu: 0.2.5(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
+      vite: 6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
+      vitefu: 0.2.5(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
     transitivePeerDependencies:
       - supports-color
     optional: true
@@ -10020,9 +9887,9 @@ snapshots:
 
   '@ungap/structured-clone@1.2.0': {}
 
-  '@vercel/analytics@1.5.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))':
+  '@vercel/analytics@1.5.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))':
     optionalDependencies:
-      '@sveltejs/kit': 1.30.4(svelte@4.2.17)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
+      '@sveltejs/kit': 1.30.4(svelte@4.2.17)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
       next: 15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5)
       react: 0.0.0-experimental-28668d39-20241023
       svelte: 4.2.17
@@ -10037,16 +9904,16 @@ snapshots:
     optionalDependencies:
       '@opentelemetry/api': 1.9.0
 
-  '@vercel/flags@2.6.3(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)':
+  '@vercel/flags@2.6.3(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)':
     dependencies:
       jose: 5.2.1
     optionalDependencies:
-      '@sveltejs/kit': 1.30.4(svelte@4.2.17)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
+      '@sveltejs/kit': 1.30.4(svelte@4.2.17)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
       next: 15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5)
       react: 0.0.0-experimental-28668d39-20241023
       react-dom: 0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023)
 
-  '@vercel/microfrontends@1.0.0(d23fe67e5022ab5bedc85cd333f7cd07)':
+  '@vercel/microfrontends@1.0.0(644f62deb779fc34a55316dc8de593bf)':
     dependencies:
       ajv: 8.17.1
       commander: 12.1.0
@@ -10056,8 +9923,8 @@ snapshots:
       jsonc-parser: 3.3.1
       path-to-regexp: 6.2.1
     optionalDependencies:
-      '@vercel/analytics': 1.5.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
-      '@vercel/speed-insights': 1.2.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
+      '@vercel/analytics': 1.5.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
+      '@vercel/speed-insights': 1.2.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       next: 15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5)
       react: 0.0.0-experimental-28668d39-20241023
       react-dom: 0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023)
@@ -10074,19 +9941,19 @@ snapshots:
       '@opentelemetry/sdk-metrics': 1.26.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-trace-base': 1.26.0(@opentelemetry/api@1.9.0)
 
-  '@vercel/speed-insights@1.2.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))':
+  '@vercel/speed-insights@1.2.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))':
     optionalDependencies:
-      '@sveltejs/kit': 1.30.4(svelte@4.2.17)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
+      '@sveltejs/kit': 1.30.4(svelte@4.2.17)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
       next: 15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5)
       react: 0.0.0-experimental-28668d39-20241023
       svelte: 4.2.17
       vue: 3.4.27(typescript@5.6.3)
       vue-router: 4.3.2(vue@3.4.27(typescript@5.6.3))
 
-  '@vercel/toolbar@0.1.35(bfdfd95faf6fd3952721870115dd5183)':
+  '@vercel/toolbar@0.1.35(4e6016602b157d6c2132fc30e987b521)':
     dependencies:
       '@tinyhttp/app': 1.3.0
-      '@vercel/microfrontends': 1.0.0(d23fe67e5022ab5bedc85cd333f7cd07)
+      '@vercel/microfrontends': 1.0.0(644f62deb779fc34a55316dc8de593bf)
       chokidar: 3.6.0
       execa: 5.1.1
       fast-glob: 3.3.3
@@ -10097,21 +9964,21 @@ snapshots:
     optionalDependencies:
       next: 15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5)
       react: 0.0.0-experimental-28668d39-20241023
-      vite: 6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
+      vite: 6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
     transitivePeerDependencies:
       - '@vercel/analytics'
       - '@vercel/speed-insights'
       - debug
       - react-dom
 
-  '@vitejs/plugin-react@4.3.4(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))':
+  '@vitejs/plugin-react@4.3.4(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))':
     dependencies:
       '@babel/core': 7.26.9
       '@babel/plugin-transform-react-jsx-self': 7.25.9(@babel/core@7.26.9)
       '@babel/plugin-transform-react-jsx-source': 7.25.9(@babel/core@7.26.9)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: 6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
+      vite: 6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -13682,28 +13549,6 @@ snapshots:
       glob: 11.0.1
       package-json-from-dist: 1.0.1
 
-  rollup@4.24.0:
-    dependencies:
-      '@types/estree': 1.0.6
-    optionalDependencies:
-      '@rollup/rollup-android-arm-eabi': 4.24.0
-      '@rollup/rollup-android-arm64': 4.24.0
-      '@rollup/rollup-darwin-arm64': 4.24.0
-      '@rollup/rollup-darwin-x64': 4.24.0
-      '@rollup/rollup-linux-arm-gnueabihf': 4.24.0
-      '@rollup/rollup-linux-arm-musleabihf': 4.24.0
-      '@rollup/rollup-linux-arm64-gnu': 4.24.0
-      '@rollup/rollup-linux-arm64-musl': 4.24.0
-      '@rollup/rollup-linux-powerpc64le-gnu': 4.24.0
-      '@rollup/rollup-linux-riscv64-gnu': 4.24.0
-      '@rollup/rollup-linux-s390x-gnu': 4.24.0
-      '@rollup/rollup-linux-x64-gnu': 4.24.0
-      '@rollup/rollup-linux-x64-musl': 4.24.0
-      '@rollup/rollup-win32-arm64-msvc': 4.24.0
-      '@rollup/rollup-win32-ia32-msvc': 4.24.0
-      '@rollup/rollup-win32-x64-msvc': 4.24.0
-      fsevents: 2.3.3
-
   rollup@4.34.9:
     dependencies:
       '@types/estree': 1.0.6
@@ -14582,7 +14427,7 @@ snapshots:
       - supports-color
       - terser
 
-  vite-plugin-dts@3.9.1(@types/node@22.13.14)(rollup@4.34.9)(typescript@5.6.3)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)):
+  vite-plugin-dts@3.9.1(@types/node@22.13.14)(rollup@4.34.9)(typescript@5.6.3)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)):
     dependencies:
       '@microsoft/api-extractor': 7.43.0(@types/node@22.13.14)
       '@rollup/pluginutils': 5.1.2(rollup@4.34.9)
@@ -14593,19 +14438,19 @@ snapshots:
       typescript: 5.6.3
       vue-tsc: 1.8.27(typescript@5.6.3)
     optionalDependencies:
-      vite: 6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
+      vite: 6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
     transitivePeerDependencies:
       - '@types/node'
       - rollup
       - supports-color
 
-  vite-tsconfig-paths@5.1.4(typescript@5.6.3)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)):
+  vite-tsconfig-paths@5.1.4(typescript@5.6.3)(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)):
     dependencies:
       debug: 4.3.7
       globrex: 0.1.2
       tsconfck: 3.1.4(typescript@5.6.3)
     optionalDependencies:
-      vite: 6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
+      vite: 6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -14614,7 +14459,7 @@ snapshots:
     dependencies:
       esbuild: 0.21.5
       postcss: 8.5.3
-      rollup: 4.24.0
+      rollup: 4.34.9
     optionalDependencies:
       '@types/node': 22.13.14
       fsevents: 2.3.3
@@ -14622,7 +14467,7 @@ snapshots:
       sass: 1.80.5
       terser: 5.36.0
 
-  vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0):
+  vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0):
     dependencies:
       esbuild: 0.25.0
       postcss: 8.5.3
@@ -14636,9 +14481,9 @@ snapshots:
       terser: 5.36.0
       yaml: 2.6.0
 
-  vitefu@0.2.5(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)):
+  vitefu@0.2.5(vite@6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)):
     optionalDependencies:
-      vite: 6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
+      vite: 6.2.4(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)
     optional: true
 
   vitest@1.6.1(@edge-runtime/vm@3.2.0)(@types/node@22.13.14)(happy-dom@17.4.0)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0):
