@@ -58,7 +58,7 @@
     "devDependencies": {
         "@codecov/vite-plugin": "1.9.0",
         "@nordcom/prettier": "0.1.1",
-        "@types/node": "22.13.16",
+        "@types/node": "22.13.17",
         "concurrently": "9.1.2",
         "eslint": "8.57.1",
         "glob": "11.0.1",
