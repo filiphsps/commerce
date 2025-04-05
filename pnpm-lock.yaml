@@ -217,8 +217,8 @@ importers:
         specifier: 0.34.0
         version: 0.34.0
       sonner:
-        specifier: 1.7.4
-        version: 1.7.4(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
+        specifier: 2.0.3
+        version: 2.0.3(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
       tailwind-merge:
         specifier: 3.1.0
         version: 3.1.0
@@ -413,8 +413,8 @@ importers:
         specifier: 0.34.0
         version: 0.34.0
       sonner:
-        specifier: 1.7.4
-        version: 1.7.4(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
+        specifier: 2.0.3
+        version: 2.0.3(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
       tailwind-merge:
         specifier: 3.1.0
         version: 3.1.0
@@ -663,8 +663,8 @@ importers:
         specifier: 0.34.0
         version: 0.34.0
       sonner:
-        specifier: 1.7.4
-        version: 1.7.4(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
+        specifier: 2.0.3
+        version: 2.0.3(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
       tailwind-merge:
         specifier: 3.1.0
         version: 3.1.0
@@ -6756,8 +6756,8 @@ packages:
     engines: {node: '>=14'}
     hasBin: true
 
-  sonner@1.7.4:
-    resolution: {integrity: sha512-DIS8z4PfJRbIyfVFDVnK9rO3eYDtse4Omcm6bt0oEr5/jtLgysmjuBl1frJ9E/EQZrFmKx2A8m/s5s9CRXIzhw==}
+  sonner@2.0.3:
+    resolution: {integrity: sha512-njQ4Hht92m0sMqqHVDL32V2Oun9W1+PHO9NDv9FHfJjT3JT22IG4Jpo3FPQy+mouRKCXFWO+r67v6MrHX2zeIA==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
       react-dom: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
@@ -13999,7 +13999,7 @@ snapshots:
       - supports-color
       - uuid
 
-  sonner@1.7.4(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023):
+  sonner@2.0.3(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023):
     dependencies:
       react: 0.0.0-experimental-28668d39-20241023
       react-dom: 0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023)
