@@ -552,8 +552,8 @@ importers:
         specifier: 2.0.0
         version: 2.0.0(@prismicio/client@7.17.1)(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)
       '@prismicio/react':
-        specifier: 2.9.2
-        version: 2.9.2(@prismicio/client@7.17.1)(react@0.0.0-experimental-28668d39-20241023)
+        specifier: 3.2.0
+        version: 3.2.0(@prismicio/client@7.17.1)(react@0.0.0-experimental-28668d39-20241023)
       '@radix-ui/react-dialog':
         specifier: 1.1.6
         version: 1.1.6(@types/react-dom@18.3.0)(@types/react@18.3.8)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
@@ -2286,16 +2286,12 @@ packages:
       next: ^13.4.5 || ^14 || ^15
       react: ^18 || ^19
 
-  '@prismicio/react@2.9.2':
-    resolution: {integrity: sha512-aXTIYI1DNbBMaaDd4czW8foqJku2VXVGqI4n34w2BKMBPXqugCcL1dqaKtsyreza3bo0nE5C6YhUyil4rx70BA==}
-    engines: {node: '>=12.7.0'}
+  '@prismicio/react@3.2.0':
+    resolution: {integrity: sha512-oxn7EfJOhdYe2UNLymPQUNurhcV7zbeEHmG6pQ6IKI5FRqtyJB3xlqqW02Zq01YOYHVihnfNwfPXtAxAn/9E4Q==}
+    engines: {node: '>=18'}
     peerDependencies:
-      '@prismicio/client': ^6 || ^7
-      react: ^18 || ^19.0.0-rc.0
-
-  '@prismicio/richtext@2.1.5':
-    resolution: {integrity: sha512-Sf6iCsciPmfK3uQeFmeY9RTRSuhrCVzyU39OkiJ1VJn8O0531pKapGoWS+5WGxouJtE5+jGqV8L+L2mKP7NkXQ==}
-    engines: {node: '>=12.7.0'}
+      '@prismicio/client': ^7
+      react: ^18 || ^19
 
   '@prismicio/simulator@0.1.4':
     resolution: {integrity: sha512-aBDwGghM8LqXOvdbJWJScBTpY8wuVl3CyCWFqiFwqC8l5SPrQtD2CwEVX0UCB0azPlisb7l7al5Wcg2nxQ6xrQ==}
@@ -9006,15 +9002,11 @@ snapshots:
       next: 15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5)
       react: 0.0.0-experimental-28668d39-20241023
 
-  '@prismicio/react@2.9.2(@prismicio/client@7.17.1)(react@0.0.0-experimental-28668d39-20241023)':
+  '@prismicio/react@3.2.0(@prismicio/client@7.17.1)(react@0.0.0-experimental-28668d39-20241023)':
     dependencies:
       '@prismicio/client': 7.17.1
-      '@prismicio/richtext': 2.1.5
+      esm-env: 1.2.2
       react: 0.0.0-experimental-28668d39-20241023
-
-  '@prismicio/richtext@2.1.5':
-    dependencies:
-      '@prismicio/types': 0.2.9
 
   '@prismicio/simulator@0.1.4':
     dependencies:
@@ -9043,7 +9035,8 @@ snapshots:
       tslib: 2.8.1
       uuid: 9.0.1
 
-  '@prismicio/types@0.2.9': {}
+  '@prismicio/types@0.2.9':
+    optional: true
 
   '@radix-ui/number@1.1.0': {}
 
