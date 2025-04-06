@@ -80,7 +80,7 @@
         "react": "0.0.0-experimental-28668d39-20241023",
         "sharp": "0.34.0",
         "sonner": "1.7.4",
-        "tailwind-merge": "3.1.0",
+        "tailwind-merge": "3.2.0",
         "tailwindcss-animate": "1.0.7",
         "use-context-selector": "2.0.0"
     },
