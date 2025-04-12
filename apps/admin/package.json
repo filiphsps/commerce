@@ -78,7 +78,7 @@
         "nprogress": "0.2.0",
         "react-dom": "0.0.0-experimental-28668d39-20241023",
         "react": "0.0.0-experimental-28668d39-20241023",
-        "sharp": "0.34.0",
+        "sharp": "0.34.1",
         "sonner": "1.7.4",
         "tailwind-merge": "3.2.0",
         "tailwindcss-animate": "1.0.7",
