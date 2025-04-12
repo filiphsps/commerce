@@ -166,8 +166,8 @@ importers:
         specifier: 1.5.0
         version: 1.5.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.6(@types/node@22.14.1)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@vercel/otel':
-        specifier: 1.10.4
-        version: 1.10.4(@opentelemetry/api-logs@0.200.0)(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.200.0(@opentelemetry/api@1.9.0))(@opentelemetry/resources@2.0.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.200.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.26.0(@opentelemetry/api@1.9.0))
+        specifier: 1.11.0
+        version: 1.11.0(@opentelemetry/api-logs@0.200.0)(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.200.0(@opentelemetry/api@1.9.0))(@opentelemetry/resources@2.0.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.200.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.26.0(@opentelemetry/api@1.9.0))
       '@vercel/speed-insights':
         specifier: 1.2.0
         version: 1.2.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.6(@types/node@22.14.1)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
@@ -359,8 +359,8 @@ importers:
         specifier: 1.5.0
         version: 1.5.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.6(@types/node@22.14.1)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@vercel/otel':
-        specifier: 1.10.4
-        version: 1.10.4(@opentelemetry/api-logs@0.200.0)(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.200.0(@opentelemetry/api@1.9.0))(@opentelemetry/resources@2.0.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.200.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.26.0(@opentelemetry/api@1.9.0))
+        specifier: 1.11.0
+        version: 1.11.0(@opentelemetry/api-logs@0.200.0)(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.200.0(@opentelemetry/api@1.9.0))(@opentelemetry/resources@2.0.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.200.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.26.0(@opentelemetry/api@1.9.0))
       '@vercel/speed-insights':
         specifier: 1.2.0
         version: 1.2.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.6(@types/node@22.14.1)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
@@ -573,8 +573,8 @@ importers:
         specifier: 2.6.3
         version: 2.6.3(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.6(@types/node@22.14.1)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
       '@vercel/otel':
-        specifier: 1.10.4
-        version: 1.10.4(@opentelemetry/api-logs@0.200.0)(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.200.0(@opentelemetry/api@1.9.0))(@opentelemetry/resources@2.0.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.200.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.26.0(@opentelemetry/api@1.9.0))
+        specifier: 1.11.0
+        version: 1.11.0(@opentelemetry/api-logs@0.200.0)(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.200.0(@opentelemetry/api@1.9.0))(@opentelemetry/resources@2.0.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.200.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.26.0(@opentelemetry/api@1.9.0))
       '@vercel/speed-insights':
         specifier: 1.2.0
         version: 1.2.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.2.6(@types/node@22.14.1)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.25.8)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react@0.0.0-experimental-28668d39-20241023)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
@@ -3348,8 +3348,8 @@ packages:
       vite:
         optional: true
 
-  '@vercel/otel@1.10.4':
-    resolution: {integrity: sha512-X01cOLU2Aiku4y1Vn9HQ8VmkQEdIQiWhjHa7DEUspcNGNg0Xm7GYAU7ErZ0pH/5spsrvb2wpIIHSBFgs0M5p4g==}
+  '@vercel/otel@1.11.0':
+    resolution: {integrity: sha512-cS+Yq2qfkkGyoRKhdKd81J5pVPo7ulLnqeQsISITJVynRNuun8+1FfY+DHcPT2drj9Bl/7LpG0BosULrv7yyqg==}
     engines: {node: '>=18'}
     peerDependencies:
       '@opentelemetry/api': ^1.7.0
@@ -10134,7 +10134,7 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  '@vercel/otel@1.10.4(@opentelemetry/api-logs@0.200.0)(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.200.0(@opentelemetry/api@1.9.0))(@opentelemetry/resources@2.0.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.200.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.26.0(@opentelemetry/api@1.9.0))':
+  '@vercel/otel@1.11.0(@opentelemetry/api-logs@0.200.0)(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.200.0(@opentelemetry/api@1.9.0))(@opentelemetry/resources@2.0.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.200.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.26.0(@opentelemetry/api@1.9.0))':
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/api-logs': 0.200.0
