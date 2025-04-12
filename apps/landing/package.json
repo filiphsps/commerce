@@ -75,7 +75,7 @@
         "react-icons": "5.5.0",
         "react": "0.0.0-experimental-28668d39-20241023",
         "sass": "1.80.5",
-        "sharp": "0.34.0",
+        "sharp": "0.34.1",
         "sonner": "1.7.4",
         "tailwind-merge": "3.2.0",
         "use-context-selector": "2.0.0"
