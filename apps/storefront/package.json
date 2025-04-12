@@ -55,7 +55,7 @@
         "@opentelemetry/api-logs": "0.200.0",
         "@opentelemetry/instrumentation": "0.200.0",
         "@opentelemetry/sdk-logs": "0.200.0",
-        "@prismicio/client": "7.17.1",
+        "@prismicio/client": "7.17.2",
         "@prismicio/next": "2.0.0",
         "@prismicio/react": "2.9.2",
         "@radix-ui/react-dialog": "1.1.6",
