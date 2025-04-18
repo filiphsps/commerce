@@ -134,6 +134,6 @@
         "tailwindcss-content-visibility": "1.0.2",
         "tailwindcss": "4.1.4",
         "typescript": "5.6.3",
-        "vitest": "1.6.1"
+        "vitest": "3.1.1"
     }
 }
