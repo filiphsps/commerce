@@ -115,8 +115,8 @@ importers:
         specifier: 3.13.8
         version: 3.13.8(@types/react@18.3.8)(graphql@16.10.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@apollo/experimental-nextjs-app-support':
-        specifier: 0.12.1
-        version: 0.12.1(@apollo/client@3.13.8(@types/react@18.3.8)(graphql@16.10.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@types/react@18.3.8)(graphql@16.10.0)(next@15.0.2-canary.10(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.80.5))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: 0.12.2
+        version: 0.12.2(@apollo/client@3.13.8(@types/react@18.3.8)(graphql@16.10.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@types/react@18.3.8)(graphql@16.10.0)(next@15.0.2-canary.10(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.80.5))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@auth/core':
         specifier: 0.38.0
         version: 0.38.0
@@ -320,8 +320,8 @@ importers:
         specifier: 3.13.8
         version: 3.13.8(@types/react@18.3.8)(graphql@16.10.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@apollo/experimental-nextjs-app-support':
-        specifier: 0.12.1
-        version: 0.12.1(@apollo/client@3.13.8(@types/react@18.3.8)(graphql@16.10.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@types/react@18.3.8)(graphql@16.10.0)(next@15.0.2-canary.10(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.80.5))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: 0.12.2
+        version: 0.12.2(@apollo/client@3.13.8(@types/react@18.3.8)(graphql@16.10.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@types/react@18.3.8)(graphql@16.10.0)(next@15.0.2-canary.10(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.80.5))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@markdoc/markdoc':
         specifier: 0.5.1
         version: 0.5.1(@types/react@18.3.8)(react@19.1.0)
@@ -516,8 +516,8 @@ importers:
         specifier: 3.13.8
         version: 3.13.8(@types/react@18.3.8)(graphql@16.10.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@apollo/experimental-nextjs-app-support':
-        specifier: 0.12.1
-        version: 0.12.1(@apollo/client@3.13.8(@types/react@18.3.8)(graphql@16.10.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@types/react@18.3.8)(graphql@16.10.0)(next@15.0.2-canary.10(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.80.5))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: 0.12.2
+        version: 0.12.2(@apollo/client@3.13.8(@types/react@18.3.8)(graphql@16.10.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@types/react@18.3.8)(graphql@16.10.0)(next@15.0.2-canary.10(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.80.5))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@auth/core':
         specifier: 0.38.0
         version: 0.38.0
@@ -938,15 +938,15 @@ packages:
     resolution: {integrity: sha512-mBgAuq2b0daSA/14LMyjEjaInD7/Zd7KVXZge7bQPKmtQJFqy9/pWBml6DMkMreeHQEomMtIbbeqReNJ/74kjA==}
     hasBin: true
 
-  '@apollo/client-integration-nextjs@0.12.1':
-    resolution: {integrity: sha512-QZCSxiBOTgiWBsdLrxZs1G31E/bO/n3mCq1X3Aw7T/szVTvzZ961uT9e3VGkFmF8EdGDl/q+FV3smja/Np0aog==}
+  '@apollo/client-integration-nextjs@0.12.2':
+    resolution: {integrity: sha512-Nsoe/onkEqCfIcQfoklnimRGibtaYXmkst6moXJw9Jl0sFqxpEyNMv3xvdPXItN6lZABBeKM8N+u+/7iqyZDig==}
     peerDependencies:
       '@apollo/client': ^3.13.0
       next: ^15.2.3
       react: ^19
 
-  '@apollo/client-react-streaming@0.12.1':
-    resolution: {integrity: sha512-KOfx16GLodZxKtoyh+C5eOp6bYPthBl21J5qeIRF6K7a2a2qzY6JwWnf0rgiCPgp/uiM15LCTAIwGdEIy0Z0SA==}
+  '@apollo/client-react-streaming@0.12.2':
+    resolution: {integrity: sha512-zVc6QmvvR+9DZaLPUES1Rp63MC2VAnvHJC7gNVagH5kI3IZgeJGNgxKX/RMpYJ2+a2EclOG50czFCD7XkXe24w==}
     peerDependencies:
       '@apollo/client': ^3.13.0
       graphql: ^16 || >=17.0.0-alpha.2
@@ -971,8 +971,8 @@ packages:
       subscriptions-transport-ws:
         optional: true
 
-  '@apollo/experimental-nextjs-app-support@0.12.1':
-    resolution: {integrity: sha512-RTDtSuOhJzHbH2gXUO1g8b+X7pCwZ/Ta3rQUQ/nlmUMmhLevHCPM3avPRMqEIZ3XOhaJdu1yt2XhDWA6QETFeA==}
+  '@apollo/experimental-nextjs-app-support@0.12.2':
+    resolution: {integrity: sha512-a+WpKGuabj1rAgDCSwaAt8LYitusVcTm/W2jGNFqTz4nerJ0XeWaN1JTmJI8uoCWMyXdRIa2ZzUjX3UcDKsBeQ==}
     peerDependencies:
       '@apollo/client': ^3.13.0
       next: ^15.2.3
@@ -3235,7 +3235,7 @@ packages:
 
   '@vercel/flags@2.6.3':
     resolution: {integrity: sha512-knLDYS8MCc/zx4FF6KRzHQzAKdo8VQ3V0PEBI5WvRlFIhcqhcEomxHoK41/xMnNEQvUzETACHw610/i/pVwYSA==}
-    deprecated: This package was renamed to flags, which offers the same functionality. https://vercel.com/changelog/npm-i-flags
+    deprecated: This package has been renamed to flags. It offers the same functionality under a new name. Please follow the upgrade guide https://github.com/vercel/flags/blob/main/packages/flags/guides/upgrade-to-v4.md
     peerDependencies:
       '@sveltejs/kit': '*'
       next: '*'
@@ -5861,6 +5861,7 @@ packages:
   node-domexception@1.0.0:
     resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
     engines: {node: '>=10.5.0'}
+    deprecated: Use your platform's native DOMException instead
 
   node-fetch-native@1.6.4:
     resolution: {integrity: sha512-IhOigYzAKHd244OC0JIMIUrjzctirCmPkaIfhDeGcEETWof5zKYUW7e7MYvChGWh/4CJeXEgsRyGzuF334rOOQ==}
@@ -7569,10 +7570,10 @@ snapshots:
 
   '@antfu/ni@0.20.0': {}
 
-  '@apollo/client-integration-nextjs@0.12.1(@apollo/client@3.13.8(@types/react@18.3.8)(graphql@16.10.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@types/react@18.3.8)(graphql@16.10.0)(next@15.0.2-canary.10(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.80.5))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+  '@apollo/client-integration-nextjs@0.12.2(@apollo/client@3.13.8(@types/react@18.3.8)(graphql@16.10.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@types/react@18.3.8)(graphql@16.10.0)(next@15.0.2-canary.10(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.80.5))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
       '@apollo/client': 3.13.8(@types/react@18.3.8)(graphql@16.10.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@apollo/client-react-streaming': 0.12.1(@apollo/client@3.13.8(@types/react@18.3.8)(graphql@16.10.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@types/react@18.3.8)(graphql@16.10.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@apollo/client-react-streaming': 0.12.2(@apollo/client@3.13.8(@types/react@18.3.8)(graphql@16.10.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@types/react@18.3.8)(graphql@16.10.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       next: 15.0.2-canary.10(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.80.5)
       react: 19.1.0
     transitivePeerDependencies:
@@ -7580,7 +7581,7 @@ snapshots:
       - graphql
       - react-dom
 
-  '@apollo/client-react-streaming@0.12.1(@apollo/client@3.13.8(@types/react@18.3.8)(graphql@16.10.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@types/react@18.3.8)(graphql@16.10.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+  '@apollo/client-react-streaming@0.12.2(@apollo/client@3.13.8(@types/react@18.3.8)(graphql@16.10.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@types/react@18.3.8)(graphql@16.10.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
       '@apollo/client': 3.13.8(@types/react@18.3.8)(graphql@16.10.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@types/react-dom': 19.1.6(@types/react@18.3.8)
@@ -7614,10 +7615,10 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
 
-  '@apollo/experimental-nextjs-app-support@0.12.1(@apollo/client@3.13.8(@types/react@18.3.8)(graphql@16.10.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@types/react@18.3.8)(graphql@16.10.0)(next@15.0.2-canary.10(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.80.5))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+  '@apollo/experimental-nextjs-app-support@0.12.2(@apollo/client@3.13.8(@types/react@18.3.8)(graphql@16.10.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@types/react@18.3.8)(graphql@16.10.0)(next@15.0.2-canary.10(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.80.5))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
       '@apollo/client': 3.13.8(@types/react@18.3.8)(graphql@16.10.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@apollo/client-integration-nextjs': 0.12.1(@apollo/client@3.13.8(@types/react@18.3.8)(graphql@16.10.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@types/react@18.3.8)(graphql@16.10.0)(next@15.0.2-canary.10(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.80.5))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@apollo/client-integration-nextjs': 0.12.2(@apollo/client@3.13.8(@types/react@18.3.8)(graphql@16.10.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@types/react@18.3.8)(graphql@16.10.0)(next@15.0.2-canary.10(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.80.5))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       next: 15.0.2-canary.10(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.80.5)
       react: 19.1.0
     transitivePeerDependencies:
@@ -11227,8 +11228,8 @@ snapshots:
       '@typescript-eslint/parser': 8.30.1(eslint@8.57.1)(typescript@5.8.3)
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0)(eslint@8.57.1)
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1)
+      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@8.57.1)
       eslint-plugin-react: 7.37.5(eslint@8.57.1)
       eslint-plugin-react-hooks: 5.0.0(eslint@8.57.1)
@@ -11251,37 +11252,37 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0)(eslint@8.57.1):
+  eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.4.1
       enhanced-resolve: 5.17.1
       eslint: 8.57.1
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1)
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
       fast-glob: 3.3.3
       get-tsconfig: 4.8.1
       is-bun-module: 1.2.1
       is-glob: 4.0.3
     optionalDependencies:
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
     transitivePeerDependencies:
       - '@typescript-eslint/parser'
       - eslint-import-resolver-node
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1):
+  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
       '@typescript-eslint/parser': 8.30.1(eslint@8.57.1)(typescript@5.8.3)
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0)(eslint@8.57.1)
+      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1)
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1):
+  eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.9
@@ -11292,7 +11293,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1)
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.30.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
       hasown: 2.0.2
       is-core-module: 2.15.1
       is-glob: 4.0.3
