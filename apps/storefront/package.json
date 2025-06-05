@@ -85,7 +85,7 @@
         "nprogress": "0.2.0",
         "react-detect-click-outside": "1.1.7",
         "react-dom": "19.1.0",
-        "react-error-boundary": "5.0.0",
+        "react-error-boundary": "6.0.0",
         "react-ipgeolocation": "1.4.0",
         "react-live-chat-loader": "2.11.0",
         "react-share": "5.2.2",
