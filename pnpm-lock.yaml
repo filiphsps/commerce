@@ -552,8 +552,8 @@ importers:
         specifier: 2.0.0
         version: 2.0.0(@prismicio/client@7.17.2)(next@15.0.2-canary.10(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.80.5))(react@19.1.0)
       '@prismicio/react':
-        specifier: 2.9.2
-        version: 2.9.2(@prismicio/client@7.17.2)(react@19.1.0)
+        specifier: 3.2.1
+        version: 3.2.1(@prismicio/client@7.17.2)(react@19.1.0)
       '@radix-ui/react-dialog':
         specifier: 1.1.7
         version: 1.1.7(@types/react-dom@18.3.0)(@types/react@18.3.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -2103,16 +2103,12 @@ packages:
       next: ^13.4.5 || ^14 || ^15
       react: ^18 || ^19
 
-  '@prismicio/react@2.9.2':
-    resolution: {integrity: sha512-aXTIYI1DNbBMaaDd4czW8foqJku2VXVGqI4n34w2BKMBPXqugCcL1dqaKtsyreza3bo0nE5C6YhUyil4rx70BA==}
-    engines: {node: '>=12.7.0'}
+  '@prismicio/react@3.2.1':
+    resolution: {integrity: sha512-osNwJ/M53l5ck7ScetYgkrye3NuPxCQOBR9kMSnUjg0C0YaIqeNLOrnMBm8IW319+XsdXO0uI72jg+9N4k7xhg==}
+    engines: {node: '>=18'}
     peerDependencies:
-      '@prismicio/client': ^6 || ^7
-      react: ^18 || ^19.0.0-rc.0
-
-  '@prismicio/richtext@2.1.5':
-    resolution: {integrity: sha512-Sf6iCsciPmfK3uQeFmeY9RTRSuhrCVzyU39OkiJ1VJn8O0531pKapGoWS+5WGxouJtE5+jGqV8L+L2mKP7NkXQ==}
-    engines: {node: '>=12.7.0'}
+      '@prismicio/client': ^7
+      react: ^18 || ^19
 
   '@prismicio/simulator@0.1.4':
     resolution: {integrity: sha512-aBDwGghM8LqXOvdbJWJScBTpY8wuVl3CyCWFqiFwqC8l5SPrQtD2CwEVX0UCB0azPlisb7l7al5Wcg2nxQ6xrQ==}
@@ -3235,7 +3231,7 @@ packages:
 
   '@vercel/flags@2.6.3':
     resolution: {integrity: sha512-knLDYS8MCc/zx4FF6KRzHQzAKdo8VQ3V0PEBI5WvRlFIhcqhcEomxHoK41/xMnNEQvUzETACHw610/i/pVwYSA==}
-    deprecated: This package was renamed to flags, which offers the same functionality. https://vercel.com/changelog/npm-i-flags
+    deprecated: This package has been renamed to flags. It offers the same functionality under a new name. Please follow the upgrade guide https://github.com/vercel/flags/blob/main/packages/flags/guides/upgrade-to-v4.md
     peerDependencies:
       '@sveltejs/kit': '*'
       next: '*'
@@ -5861,6 +5857,7 @@ packages:
   node-domexception@1.0.0:
     resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
     engines: {node: '>=10.5.0'}
+    deprecated: Use your platform's native DOMException instead
 
   node-fetch-native@1.6.4:
     resolution: {integrity: sha512-IhOigYzAKHd244OC0JIMIUrjzctirCmPkaIfhDeGcEETWof5zKYUW7e7MYvChGWh/4CJeXEgsRyGzuF334rOOQ==}
@@ -8735,15 +8732,11 @@ snapshots:
       next: 15.0.2-canary.10(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.80.5)
       react: 19.1.0
 
-  '@prismicio/react@2.9.2(@prismicio/client@7.17.2)(react@19.1.0)':
+  '@prismicio/react@3.2.1(@prismicio/client@7.17.2)(react@19.1.0)':
     dependencies:
       '@prismicio/client': 7.17.2
-      '@prismicio/richtext': 2.1.5
+      esm-env: 1.2.2
       react: 19.1.0
-
-  '@prismicio/richtext@2.1.5':
-    dependencies:
-      '@prismicio/types': 0.2.9
 
   '@prismicio/simulator@0.1.4':
     dependencies:
@@ -8772,7 +8765,8 @@ snapshots:
       tslib: 2.8.1
       uuid: 9.0.1
 
-  '@prismicio/types@0.2.9': {}
+  '@prismicio/types@0.2.9':
+    optional: true
 
   '@radix-ui/number@1.1.1': {}
 
