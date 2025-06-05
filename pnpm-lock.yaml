@@ -160,8 +160,8 @@ importers:
         specifier: 2025.1.3
         version: 2025.1.3(@types/react@18.3.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(three@0.139.2)(vite@6.3.5(@types/node@22.14.1)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))
       '@shopify/shopify-api':
-        specifier: 11.12.0
-        version: 11.12.0
+        specifier: 11.13.0
+        version: 11.13.0
       '@vercel/analytics':
         specifier: 1.5.0
         version: 1.5.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@6.3.5(@types/node@22.14.1)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0)))(next@15.0.2-canary.10(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.80.5))(react@19.1.0)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.8.3)))(vue@3.4.27(typescript@5.8.3))
@@ -2614,11 +2614,11 @@ packages:
     resolution: {integrity: sha512-mPFTSBr9CrkFBdgr7KU/YD8V/25P8vPb/hVvVHYKwEdHRovlizZ34ENgQlvqeRuamQiXD3RLM8pcWX+WxPz3lQ==}
     engines: {node: '>=18'}
 
-  '@shopify/admin-api-client@1.0.8':
-    resolution: {integrity: sha512-yqbh/fcQ3BcBhEPfPlC8EJOHlMfHwugwmlVeo6XyAHIOLb/S6SRifHYlT1y8s+zHy82AzAX5IhfcZZtrIBGiHQ==}
+  '@shopify/admin-api-client@1.1.0':
+    resolution: {integrity: sha512-LAslaTFcFYQPzmY4bpQ4GQ6Tid4pbaznI3Xz3OXzWQhfTMuTF3QQoLEEAyaeXfu6PHrSxmlh1Zg5tPib8tGHdw==}
 
-  '@shopify/graphql-client@1.3.2':
-    resolution: {integrity: sha512-ylHVk6cqjwl3W2ek3FbedH+yO0xXz8gMUuB8A+Rb/mHUD+GLkGdIJChilYf6IkjITnfkJinHdaeLEIappdtpNA==}
+  '@shopify/graphql-client@1.4.0':
+    resolution: {integrity: sha512-tyjXkZ/rGK+x3Ep5Y0y0e6q1RbUwv759rsrkzyO7ZDK1cdTc8HP6KcbaNwTNpHO/a0ItbXMFGz5wUIRZqgDMaA==}
 
   '@shopify/hydrogen-react@2025.1.3':
     resolution: {integrity: sha512-h1e0GBx5y0JjFA15Ohf91s9Y4lRsf3HVsK2g1R8kOuHWLk5ldRlrthUysKClmTJRChutYJ73k3xHr9JUhFe6Ng==}
@@ -2633,11 +2633,11 @@ packages:
     engines: {node: '>=18.12.0'}
     deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
-  '@shopify/shopify-api@11.12.0':
-    resolution: {integrity: sha512-tYpJt7EsTWUsteXkDS6rJvADGhio2pb7U2S5PTXy6W+UhwXPCCcPt8R0Yuj5snybwXRd4eKz237CfaI/o/vIQw==}
+  '@shopify/shopify-api@11.13.0':
+    resolution: {integrity: sha512-lUYjjF/FEtVGN0+xdBlVF02OP1xp5U35yseehzVSXWTBQFgqv0NwNPh2fXCyRXKctfrbhbBTQI10cEvpJT+q1w==}
 
-  '@shopify/storefront-api-client@1.0.7':
-    resolution: {integrity: sha512-6gucjhk+cpvxAn3iU8esPjWpA4heWlwNC0gJbl0nFgbcpCcji8Rl5ERF9gCRG60m+9JXSsOLWm4LVeKxvcPIvw==}
+  '@shopify/storefront-api-client@1.0.8':
+    resolution: {integrity: sha512-F8llAG9ANQl9HEgsjwhjOik9FcLarPFBe5DrqwbDx+qildHc1jBgWzDlIPvZAeI/fOztcXJrpGopE11S8nkAAA==}
 
   '@sideway/address@4.1.5':
     resolution: {integrity: sha512-IqO/DUQHUkPeixNQ8n0JA6102hT9CmaljNTPmQ1u8MEhBo/R4Q8eKLN/vGZxuebwOroDB4cbpjheD4+/sKFK4Q==}
@@ -3235,7 +3235,7 @@ packages:
 
   '@vercel/flags@2.6.3':
     resolution: {integrity: sha512-knLDYS8MCc/zx4FF6KRzHQzAKdo8VQ3V0PEBI5WvRlFIhcqhcEomxHoK41/xMnNEQvUzETACHw610/i/pVwYSA==}
-    deprecated: This package was renamed to flags, which offers the same functionality. https://vercel.com/changelog/npm-i-flags
+    deprecated: This package has been renamed to flags. It offers the same functionality under a new name. Please follow the upgrade guide https://github.com/vercel/flags/blob/main/packages/flags/guides/upgrade-to-v4.md
     peerDependencies:
       '@sveltejs/kit': '*'
       next: '*'
@@ -5134,8 +5134,8 @@ packages:
   isarray@2.0.5:
     resolution: {integrity: sha512-xHjhDr3cNBK0BzdUJSPXZntQUx/mwMS5Rw4A7lPJ90XGAO6ISP/ePDNuo0vhqOZU+UD5JoodwCAAoZQd3FeAKw==}
 
-  isbot@5.1.23:
-    resolution: {integrity: sha512-ie3ehy2iXdkuzaZx32SoKb9b8l9Cm8cqQ1lJjQXnq8GRTrk/Jx7IUDcB4mhlw6H3gWaMqGYoWeV0lPv1P/20Ig==}
+  isbot@5.1.28:
+    resolution: {integrity: sha512-qrOp4g3xj8YNse4biorv6O5ZShwsJM0trsoda4y7j/Su7ZtTTfVXFzbKkpgcSoDrHS8FcTuUwcU04YimZlZOxw==}
     engines: {node: '>=18'}
 
   isexe@2.0.0:
@@ -5861,6 +5861,7 @@ packages:
   node-domexception@1.0.0:
     resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
     engines: {node: '>=10.5.0'}
+    deprecated: Use your platform's native DOMException instead
 
   node-fetch-native@1.6.4:
     resolution: {integrity: sha512-IhOigYzAKHd244OC0JIMIUrjzctirCmPkaIfhDeGcEETWof5zKYUW7e7MYvChGWh/4CJeXEgsRyGzuF334rOOQ==}
@@ -9217,11 +9218,11 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@shopify/admin-api-client@1.0.8':
+  '@shopify/admin-api-client@1.1.0':
     dependencies:
-      '@shopify/graphql-client': 1.3.2
+      '@shopify/graphql-client': 1.4.0
 
-  '@shopify/graphql-client@1.3.2': {}
+  '@shopify/graphql-client@1.4.0': {}
 
   '@shopify/hydrogen-react@2025.1.3(@types/react@18.3.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(three@0.139.2)(vite@6.3.5(@types/node@22.14.1)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.80.5)(terser@5.36.0)(yaml@2.6.0))':
     dependencies:
@@ -9241,14 +9242,14 @@ snapshots:
 
   '@shopify/network@3.3.0': {}
 
-  '@shopify/shopify-api@11.12.0':
+  '@shopify/shopify-api@11.13.0':
     dependencies:
-      '@shopify/admin-api-client': 1.0.8
-      '@shopify/graphql-client': 1.3.2
+      '@shopify/admin-api-client': 1.1.0
+      '@shopify/graphql-client': 1.4.0
       '@shopify/network': 3.3.0
-      '@shopify/storefront-api-client': 1.0.7
+      '@shopify/storefront-api-client': 1.0.8
       compare-versions: 6.1.1
-      isbot: 5.1.23
+      isbot: 5.1.28
       jose: 5.9.6
       jsonwebtoken: 9.0.2
       node-fetch: 2.7.0
@@ -9257,9 +9258,9 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@shopify/storefront-api-client@1.0.7':
+  '@shopify/storefront-api-client@1.0.8':
     dependencies:
-      '@shopify/graphql-client': 1.3.2
+      '@shopify/graphql-client': 1.4.0
 
   '@sideway/address@4.1.5':
     dependencies:
@@ -12213,7 +12214,7 @@ snapshots:
 
   isarray@2.0.5: {}
 
-  isbot@5.1.23: {}
+  isbot@5.1.28: {}
 
   isexe@2.0.0: {}
 
