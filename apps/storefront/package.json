@@ -84,12 +84,12 @@
         "nextjs-toploader": "3.8.16",
         "nprogress": "0.2.0",
         "react-detect-click-outside": "1.1.7",
-        "react-dom": "0.0.0-experimental-28668d39-20241023",
+        "react-dom": "19.1.0",
         "react-error-boundary": "5.0.0",
         "react-ipgeolocation": "1.4.0",
         "react-live-chat-loader": "2.11.0",
         "react-share": "5.2.2",
-        "react": "0.0.0-experimental-28668d39-20241023",
+        "react": "19.1.0",
         "redis": "4.7.0",
         "resolve-accept-language": "3.1.11",
         "sass": "1.80.5",
@@ -133,7 +133,7 @@
         "slice-machine-ui": "2.10.1",
         "tailwindcss-content-visibility": "1.0.2",
         "tailwindcss": "4.1.4",
-        "typescript": "5.6.3",
-        "vitest": "1.6.1"
+        "typescript": "5.8.3",
+        "vitest": "3.2.1"
     }
 }

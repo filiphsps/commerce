@@ -76,8 +76,8 @@
         "next": "15.0.2-canary.10",
         "nextjs-toploader": "3.8.16",
         "nprogress": "0.2.0",
-        "react-dom": "0.0.0-experimental-28668d39-20241023",
-        "react": "0.0.0-experimental-28668d39-20241023",
+        "react-dom": "19.1.0",
+        "react": "19.1.0",
         "sharp": "0.34.1",
         "sonner": "1.7.4",
         "tailwind-merge": "3.2.0",
@@ -111,7 +111,7 @@
         "rimraf": "6.0.1",
         "server-only": "0.0.1",
         "tailwindcss": "4.1.4",
-        "typescript": "5.6.3",
-        "vitest": "1.6.1"
+        "typescript": "5.8.3",
+        "vitest": "3.2.1"
     }
 }
