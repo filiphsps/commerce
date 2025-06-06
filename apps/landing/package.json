@@ -109,6 +109,6 @@
         "server-only": "0.0.1",
         "tailwindcss": "4.1.4",
         "typescript": "5.8.3",
-        "vitest": "3.2.1"
+        "vitest": "3.2.2"
     }
 }
