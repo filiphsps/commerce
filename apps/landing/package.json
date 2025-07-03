@@ -46,7 +46,7 @@
     "dependencies": {
         "@apollo/client": "3.13.8",
         "@apollo/experimental-nextjs-app-support": "0.12.2",
-        "@markdoc/markdoc": "0.5.1",
+        "@markdoc/markdoc": "0.5.2",
         "@markdoc/next.js": "0.4.0",
         "@next/third-parties": "15.3.4",
         "@nordcom/commerce-db": "workspace:*",
