@@ -64,7 +64,7 @@
         "@vercel/analytics": "1.5.0",
         "@vercel/edge-config": "1.4.0",
         "@vercel/flags": "2.6.3",
-        "@vercel/otel": "1.11.0",
+        "@vercel/otel": "1.13.0",
         "@vercel/speed-insights": "1.2.0",
         "@vercel/toolbar": "0.1.36",
         "class-variance-authority": "0.7.1",
