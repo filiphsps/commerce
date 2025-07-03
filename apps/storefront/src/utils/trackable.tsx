@@ -452,14 +452,15 @@ export function Trackable({ children, dummy = false }: TrackableProps) {
 
     const postEvent = useCallback(
         // eslint-disable-next-line react-compiler/react-compiler
-        debounce((type: AnalyticsEventType, event: AnalyticsEventData) => {
-            if (internalTraffic) {
-                return undefined;
-            }
+        (type: AnalyticsEventType, event: AnalyticsEventData) =>
+            debounce((type, event) => {
+                if (internalTraffic) {
+                    return undefined;
+                }
 
-            return handleEvent(type, event, { shop, currency, locale, shopify, cart });
-        }, 500),
-        [handleEvent, shop, currency, locale, shopify, cart]
+                return handleEvent(type, event, { shop, currency, locale, shopify, cart });
+            }, 500)(type, event),
+        [internalTraffic, shop, currency, locale, shopify, cart]
     )!;
 
     // Web vitals.
@@ -566,7 +567,9 @@ export function Trackable({ children, dummy = false }: TrackableProps) {
         () =>
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             store ? (
-                <TrackableContext.Provider value={store as TrackableContextValue}>{children}</TrackableContext.Provider>
+                <TrackableContext.Provider value={store as TrackableContextValue}>
+                    {children as any}
+                </TrackableContext.Provider>
             ) : (
                 children
             ),

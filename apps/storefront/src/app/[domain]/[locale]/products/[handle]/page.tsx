@@ -179,7 +179,7 @@ async function Badges({ product, i18n }: { product: Product; i18n: LocaleDiction
             <div
                 key={'badge-attribute-vegan'}
                 className="flex items-center justify-center gap-1 rounded-2xl bg-green-600 stroke-white p-[0.4rem] px-3 text-xs font-semibold uppercase leading-none text-white"
-                title={t('this-product-is-vegan')}
+                title={t('this-product-is-vegan').toString()}
                 data-nosnippet={true}
             >
                 <AttributeIcon data={'vegan'} className="h-4" />
@@ -292,7 +292,7 @@ export default async function ProductPage({ params }: { params: ProductPageParam
                                     locale={locale}
                                     product={product}
                                     className="font-semibold normal-case leading-tight text-gray-600 transition-colors md:text-lg"
-                                    title={t('browse-all-products-by-brand', product.vendor)}
+                                    title={t('browse-all-products-by-brand', product.vendor).toString()}
                                     prefix={<span className="font-normal">{t('by')} </span>}
                                 />
                             </Suspense>

@@ -28,7 +28,7 @@ export type IconGridProps = SliceComponentProps<
  */
 const IconGrid = ({ slice, index: order }: IconGridProps) => {
     const background = slice.primary.background;
-    const sliceItems: IconGridProps['slice']['items'] = (slice as any).items || [];
+    const sliceItems: IconGridProps['slice']['items'] = useMemo(() => (slice as any).items || [], [slice]);
 
     const items = useMemo(
         () =>

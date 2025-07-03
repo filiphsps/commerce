@@ -33,9 +33,9 @@ export interface ShopContextValue extends ShopProviderBase, ShopContextReturns {
 export const ShopContext = createContext<ShopContextValue | null>(null);
 
 export function ShopProvider({ children, shop, currency = 'USD', locale = Locale.default }: ShopProviderProps) {
-    const value = useMemo(() => ({ shop, currency, locale }), [shop.id, currency, locale]);
+    const value = useMemo(() => ({ shop, currency, locale }), [shop, currency, locale]);
 
-    return <ShopContext.Provider value={value}>{children}</ShopContext.Provider>;
+    return <ShopContext.Provider value={value}>{children as any}</ShopContext.Provider>;
 }
 ShopProvider.displayName = 'Nordcom.ShopProvider';
 

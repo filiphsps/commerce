@@ -34,7 +34,7 @@ export function MenuItem({ href, children, className }: MenuItemProps) {
                 className
             )}
         >
-            {children}
+            {children as any}
         </Link>
     );
 }

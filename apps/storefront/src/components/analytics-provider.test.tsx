@@ -34,7 +34,7 @@ describe('components', () => {
                 Trackable:
                     () =>
                     // eslint-disable-next-line react/display-name
-                    ({ children }: any) => <>{children}</>
+                    ({ children }: any) => <>{children as any}</>
             };
         });
 

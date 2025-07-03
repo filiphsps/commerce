@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-
 import { Suspense } from 'react';
 
 import { Shop } from '@nordcom/commerce-db';

@@ -39,7 +39,7 @@ export const HeaderProvider = ({ children = null }: HeaderProviderProps) => {
     }, [pathname, router]);
 
     const value = { menu, setMenu, closeMenu: () => setMenu(false) };
-    return <HeaderContext.Provider value={value}>{children}</HeaderContext.Provider>;
+    return <HeaderContext.Provider value={value}>{children as any}</HeaderContext.Provider>;
 };
 
 export const useHeaderMenu = (): HeaderContextValue => {

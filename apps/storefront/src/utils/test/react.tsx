@@ -21,7 +21,7 @@ const Providers = ({ children }: { children: ReactNode }) => {
 
     return (
         <ShopProvider shop={shop} locale={Locale.default} currency={'USD'}>
-            <Trackable>{children}</Trackable>
+            <Trackable>{children as any}</Trackable>
         </ShopProvider>
     );
 };

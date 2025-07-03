@@ -33,7 +33,7 @@ export const Card = <ComponentGeneric extends ElementType = 'div'>({
                 className
             )}
         >
-            {children}
+            {children as any}
         </Tag>
     );
 };

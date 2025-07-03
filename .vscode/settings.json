@@ -41,7 +41,6 @@
         "**/.DS_Store": true,
         "**/.git": true,
         "**/.hg": true,
-        "**/.next": true,
         "**/.svn": true,
         "**/*.tsbuildinfo": true,
         "**/CVS": true,
@@ -175,7 +174,6 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "prettier.prettierPath": "./node_modules/prettier",
-
     "tailwindCSS.classAttributes": ["class", "className", ".*ClassName", ".*Styles"],
     "tailwindCSS.lint.invalidVariant": "warning",
     "tailwindCSS.colorDecorators": true,

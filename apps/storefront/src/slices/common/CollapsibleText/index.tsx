@@ -17,7 +17,7 @@ export type CollapsibleTextProps = SliceComponentProps<Content.CollapsibleTextSl
 /**
  * Component for "CollapsibleText" Slices.
  */
-const CollapsibleText = ({ slice }: CollapsibleTextProps): JSX.Element => {
+const CollapsibleText = ({ slice }: CollapsibleTextProps) => {
     return (
         <details
             data-slice-type={slice.slice_type}

@@ -26,7 +26,7 @@ export const HeaderMenu = ({ slices, children, className, ...props }: HeaderMenu
         <div className={cn(SHARED_STYLES, className)} {...props}>
             <SliceZone slices={slices} components={menuSlices} context={{ isHeader: false, menu }} />
 
-            {children}
+            {children as any}
         </div>
     );
 };

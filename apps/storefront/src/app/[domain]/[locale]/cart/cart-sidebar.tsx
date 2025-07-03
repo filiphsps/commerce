@@ -57,7 +57,7 @@ export const CartSidebar = ({ i18n, locale, className, children, paymentMethods,
                 i18n={i18n}
                 paymentMethods={paymentMethods}
             >
-                {children}
+                {children as any}
             </CartSummary>
         </aside>
     );

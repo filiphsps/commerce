@@ -24,12 +24,12 @@ const StockStatus = ({ product, i18n, className, ...props }: StockStatusProps) =
     return (
         <section
             className={cn('flex items-center justify-start gap-1 *:leading-none *:text-green-600', className)}
-            title={t('in-stock-and-available')}
+            title={t('in-stock-and-available').toString()}
             {...props}
         >
             <CheckIcon className="stroke-2 align-middle text-base" />
             <Label className="text-base font-semibold normal-case">
-                {product.totalInventory ? t('n-in-stock', product.totalInventory.toString()) : t('in-stock')}
+                {product.totalInventory ? t('n-in-stock', product.totalInventory) : t('in-stock')}
             </Label>
         </section>
     );

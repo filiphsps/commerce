@@ -199,7 +199,7 @@ export default async function ProductPageLayout({
 
                 <section className="flex w-full grow flex-col gap-2 overflow-hidden md:max-w-[34rem] md:gap-3">
                     <Suspense fallback={<section className="w-full overflow-hidden md:max-w-[32rem]" />}>
-                        {children}
+                        {children as any}
                     </Suspense>
 
                     <Suspense fallback={<ProductDescription.skeleton />}>{description}</Suspense>

@@ -65,7 +65,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
                     <Header />
 
                     <View className={cn('w-full max-w-[var(--layout-page-width)] [grid-area:content]')}>
-                        {children}
+                        {children as any}
                     </View>
 
                     <Footer />

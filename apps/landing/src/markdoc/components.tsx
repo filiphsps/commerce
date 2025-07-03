@@ -21,5 +21,5 @@ export const components = {
     Heading,
     Link,
     Spacer: ({ h }: { h: number }) => <div className="spacer" style={{ height: `${h || 1}rem` }} />,
-    Card: ({ children }: { children: ReactNode }) => <Card className="card">{children}</Card>
+    Card: ({ children }: { children: ReactNode }) => <Card className="card">{children as any}</Card>
 };

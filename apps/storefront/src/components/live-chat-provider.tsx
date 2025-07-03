@@ -23,13 +23,13 @@ export const LiveChatProvider = ({
 }: LiveChatProviderProps) => {
     // TODO: Support more than just Intercom.
     if (BuildConfig.environment !== 'production' || !intercom) {
-        return <>{children}</>;
+        return <>{children as any}</>;
     }
 
     const primaryColor = accents.find(({ type }) => type === 'primary');
     return (
         <>
-            {children}
+            {children as any}
 
             {intercom ? (
                 <>

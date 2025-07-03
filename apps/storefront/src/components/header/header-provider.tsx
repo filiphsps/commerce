@@ -72,7 +72,7 @@ export const HeaderProvider = ({ children = null, loaderColor }: HeaderProviderP
     const value = { menu, setMenu, closeMenu: () => setMenu(null) };
     return (
         <HeaderContext.Provider value={value}>
-            {children}
+            {children as any}
 
             <NextTopLoader color={loaderColor} height={8} showSpinner={true} crawl={true} zIndex={9999} />
         </HeaderContext.Provider>

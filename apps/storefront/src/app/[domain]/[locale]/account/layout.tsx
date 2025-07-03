@@ -25,5 +25,5 @@ export default async function AccountLayout({ children, params }: { children: Re
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const session = await getAuthSession(shop);
 
-    return <SessionProvider session={session}>{children}</SessionProvider>;
+    return <SessionProvider session={session}>{children as any}</SessionProvider>;
 }

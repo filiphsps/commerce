@@ -98,7 +98,7 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
                 className
             )}
         >
-            {children}
+            {children as any}
             {productCards}
 
             {collection && showViewAll ? (

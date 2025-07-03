@@ -44,7 +44,7 @@ const CommerceProvider = ({ shop, locale, children }: { shop: OnlineShop; locale
                     countryIsoCode={locale.country!}
                     languageIsoCode={locale.language}
                 >
-                    {children}
+                    {children as any}
                 </ShopifyProvider>
             );
         }
@@ -84,7 +84,7 @@ const ContentProvider = ({
         case 'prismic': {
             return (
                 <PrismicRegistry client={createClient({ shop, locale })}>
-                    {children}
+                    {children as any}
 
                     {isPreviewEnv('domain') || isInternalTraffic ? (
                         <PrismicPreview repositoryName={shop.contentProvider.repositoryName} />
@@ -94,7 +94,7 @@ const ContentProvider = ({
         }
         case 'shopify': {
             // TODO: Handle this.
-            return <>{children}</>;
+            return <>{children as any}</>;
         }
         default: {
             throw new UnknownContentProviderError(shop.contentProvider.type);
@@ -133,9 +133,9 @@ const ProvidersRegistry = ({
                                 </Suspense>
 
                                 {toolbars ? (
-                                    <Suspense fallback={children}>
+                                    <Suspense fallback={children as any}>
                                         <LiveChatProvider shop={shop} locale={locale}>
-                                            {children}
+                                            {children as any}
                                         </LiveChatProvider>
 
                                         <ToasterProvider
@@ -145,7 +145,6 @@ const ProvidersRegistry = ({
                                             duration={5000}
                                             gap={4}
                                             visibleToasts={2}
-                                            pauseWhenPageIsHidden={true}
                                             toastOptions={{
                                                 duration: 2500,
                                                 classNames: {
@@ -157,7 +156,7 @@ const ProvidersRegistry = ({
                                         <Toolbars domain={domain} />
                                     </Suspense>
                                 ) : (
-                                    children
+                                    (children as any)
                                 )}
                             </ErrorBoundary>
                         </CartProvider>

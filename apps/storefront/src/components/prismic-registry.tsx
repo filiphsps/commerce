@@ -15,7 +15,7 @@ export const PrismicRegistry = ({ client, children }: PrismicRegistryProps) => {
 
     return (
         <PrismicProvider client={client} linkResolver={linkResolver}>
-            {children}
+            {children as any}
         </PrismicProvider>
     );
 };

@@ -35,7 +35,7 @@ const ProductCardContent = ({ data: product, priority, locale, i18n, children }:
         <>
             <Suspense>
                 <ProductCardHeader data={product} selectedVariant={selectedVariant} priority={priority}>
-                    {children}
+                    {children as any}
                 </ProductCardHeader>
             </Suspense>
 

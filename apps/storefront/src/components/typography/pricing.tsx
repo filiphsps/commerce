@@ -21,7 +21,7 @@ export const Pricing = ({ price, as: Tag = 'div', className, ...props }: Pricing
     return (
         <Suspense fallback={<Tag data-skeleton>...</Tag>}>
             <Price
-                as={Tag}
+                as={Tag as any}
                 {...props}
                 data={price}
                 className={cn('text-lg font-bold proportional-nums leading-none', className)}

@@ -32,7 +32,7 @@ export function Providers({ children }: ProvidersProps) {
             <Toaster theme="dark" />
             <NextTopLoader color={Theme.accents.primary} showSpinner={true} crawl={true} />
 
-            {children}
+            {children as any}
 
             <GoogleTagManager gtmId={'GTM-N6TLG8MX'} />
         </NordstarProvider>

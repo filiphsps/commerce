@@ -9,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default async function AuthLayout({ children }: { children: ReactNode }) {
-    return <div className="flex h-full min-h-full w-full items-center justify-center">{children}</div>;
+    return <div className="flex h-full min-h-full w-full items-center justify-center">{children as any}</div>;
 }

@@ -27,7 +27,7 @@ export async function SliceZone({ shop, locale, i18n, data = [], components, con
         <Suspense fallback={<Fragment />}>
             <PrismicSliceZone
                 slices={data}
-                components={components}
+                components={components as any}
                 context={{
                     shop: {
                         ...shop,

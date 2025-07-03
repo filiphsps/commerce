@@ -50,7 +50,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
                 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
             </head>
             <body className="group/body grid min-h-[100svh] grid-cols-[100%] grid-rows-1 overflow-x-hidden overscroll-x-none font-sans">
-                <Providers>{children}</Providers>
+                <Providers>{children as any}</Providers>
             </body>
         </html>
     );

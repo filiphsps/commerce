@@ -1,4 +1,4 @@
-import { experimental_taintUniqueValue } from 'react';
+// import { experimental_taintUniqueValue } from 'react';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { InvalidContentProviderError, InvalidShopError } from '@nordcom/commerce-errors';
@@ -27,7 +27,7 @@ export const createClient = ({ shop, /* locale = Locale.default,*/ ...config }: 
     const accessToken = contentProvider.authentication?.token || undefined;
 
     if (accessToken) {
-        experimental_taintUniqueValue('Do not pass private tokens to the client', globalThis, accessToken);
+        // experimental_taintUniqueValue('Do not pass private tokens to the client', globalThis, accessToken);
     }
 
     const client = prismic.createClient(repository, {

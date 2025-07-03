@@ -47,7 +47,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
         if (!note || showNote) return;
 
         setShowNote(showNote);
-    }, [note]);
+    }, [note, showNote]);
     const sale =
         (lines &&
             lines.reduce(
@@ -90,7 +90,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                 !cartReady && 'pointer-events-none brightness-50'
             )}
         >
-            {children}
+            {children as any}
 
             <section className={cn(styles.section, 'gap-1')}>
                 <header className={styles.header}>

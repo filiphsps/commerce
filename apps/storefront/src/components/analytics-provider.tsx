@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
@@ -25,11 +25,16 @@ export const AnalyticsProvider = ({ shop, hostname, children, enableThirdParty =
     const vercelAnalyticsMode = BuildConfig.environment !== 'test' ? BuildConfig.environment : 'auto';
 
     const [deferred, setDeferred] = useState<ReactNode>(null);
-    const trackers = () => (
-        <>
-            {shop.thirdParty?.googleTagManager ? <GoogleTagManager gtmId={shop.thirdParty.googleTagManager!} /> : null}
-            <VercelAnalytics mode={vercelAnalyticsMode} debug={vercelAnalyticsMode === 'development'} />
-        </>
+    const trackers = useMemo(
+        () => (
+            <>
+                {shop.thirdParty?.googleTagManager ? (
+                    <GoogleTagManager gtmId={shop.thirdParty.googleTagManager!} />
+                ) : null}
+                <VercelAnalytics mode={vercelAnalyticsMode} debug={vercelAnalyticsMode === 'development'} />
+            </>
+        ),
+        [shop, vercelAnalyticsMode]
     );
 
     useEffect(() => {
@@ -41,11 +46,11 @@ export const AnalyticsProvider = ({ shop, hostname, children, enableThirdParty =
             setDeferred(trackers);
         }, 6500);
         return () => clearTimeout(timeout);
-    }, []);
+    }, [hostname, trackers]);
 
     return (
-        <ErrorBoundary fallbackRender={() => children}>
-            <Trackable>{children}</Trackable>
+        <ErrorBoundary fallbackRender={() => children as any}>
+            <Trackable>{children as any}</Trackable>
 
             {enableThirdParty ? (
                 <>

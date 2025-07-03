@@ -50,12 +50,15 @@ export default mergeConfig(
                     format: 'esm',
                     globals: {},
                     interop: 'esModule',
+                    hoistTransitiveImports: true,
                     sourcemapExcludeSources: false
                 }
             }
         },
         plugins: [
-            tsConfigPaths(),
+            tsConfigPaths({
+                root: process.cwd()
+            }),
             dts({
                 clearPureImport: false,
                 copyDtsFiles: true,

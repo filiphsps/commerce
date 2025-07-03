@@ -70,7 +70,7 @@ export default async function SliceSimulatorLayout({
                     >
                         <AnalyticsProvider shop={publicShop} enableThirdParty={false}>
                             <HeaderProvider loaderColor="transparent">
-                                <PageContent primary>{children}</PageContent>
+                                <PageContent primary>{children as any}</PageContent>
                             </HeaderProvider>
                         </AnalyticsProvider>
                     </ProvidersRegistry>

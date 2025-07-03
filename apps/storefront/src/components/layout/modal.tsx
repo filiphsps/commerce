@@ -25,7 +25,7 @@ export function ModalCard({ children = null, className }: { children?: ReactNode
                 className
             )}
         >
-            {children}
+            {children as any}
         </Card>
     );
 }
@@ -47,7 +47,7 @@ export function Modal({
     const [originalPathName, setOriginalPathName] = useState(pathname);
     useEffect(() => {
         setOriginalPathName(pathname);
-    }, []);
+    }, [pathname]);
 
     if (!children) {
         return null;
@@ -87,7 +87,7 @@ export function Modal({
                                 </Dialog.Close>
                             </div>
 
-                            {children}
+                            {children as any}
                         </div>
                     </div>
                 </Dialog.Content>

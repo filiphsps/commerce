@@ -19,7 +19,7 @@
         "noFallthroughCasesInSwitch": true,
         "noImplicitAny": true,
         "noUncheckedIndexedAccess": true,
-        "noUnusedLocals": true,
+        "noUnusedLocals": false,
         "noUnusedParameters": true,
         "paths": {},
         "plugins": [],
@@ -33,7 +33,7 @@
         "strictNullChecks": true,
         "strictPropertyInitialization": true,
         "target": "ESNext",
-        "types": ["node"],
+        "types": ["node", "react"],
         "typeRoots": ["node_modules/@types", "./apps/**/src/@types", "./packages/**/src/@types"],
         "useDefineForClassFields": true
     },

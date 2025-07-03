@@ -12,7 +12,9 @@
         ".env",
         "**/.env",
         "*.env",
-        "**/*.env"
+        "**/*.env",
+        "vite.config.ts",
+        "packages/**/vite.config.ts"
     ],
     "tasks": {
         "build": {

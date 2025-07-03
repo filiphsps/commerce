@@ -1,17 +1,19 @@
-name: '📦 Bootstrap'
-description: 'Install and configure dependencies'
+name: "📦 Bootstrap"
+description: "Install and configure dependencies"
 
 runs:
-    using: 'composite'
+    using: "composite"
     steps:
+        - name: 🏎️ Setup pnpm
+          uses: pnpm/action-setup@v4
+
         - name: 🏎️ Setup Node
           uses: actions/setup-node@v4
           with:
-              registry-url: 'https://registry.npmjs.org/'
-              node-version-file: '.nvmrc'
+              registry-url: "https://registry.npmjs.org/"
+              node-version-file: ".nvmrc"
+              cache: "pnpm"
 
-        - name: 🏎️ Setup pnpm
-          uses: pnpm/action-setup@v3
-          with:
-              version: 9
-              run_install: true
+        - name: 📦 Install dependencies
+          shell: bash
+          run: pnpm install --frozen-lockfile

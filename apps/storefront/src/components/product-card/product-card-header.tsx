@@ -91,7 +91,7 @@ const ProductCardHeader = ({
         <Link className="group/header contents" href={href} title={title} prefetch={priority} tabIndex={0} {...props}>
             <VariantImage image={{ ...image, altText: image.altText ?? title }} priority={priority} />
 
-            {children}
+            {children as any}
         </Link>
     );
 };

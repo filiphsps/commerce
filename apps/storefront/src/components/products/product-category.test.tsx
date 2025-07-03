@@ -10,7 +10,7 @@ describe('components', () => {
         vi.mock('@/components/link', () => {
             return {
                 default: vi.fn().mockImplementation(({ children, href }) => {
-                    return <a href={href}>{children}</a>;
+                    return <a href={href}>{children as any}</a>;
                 })
             };
         });

@@ -249,7 +249,7 @@ export default async function RootLayout({
                             <Suspense key="layout.shop-layout" fallback={<ShopLayout.skeleton />}>
                                 <ShopLayout shop={shop} locale={locale} i18n={i18n}>
                                     <PageContent as="article" primary={true}>
-                                        {children}
+                                        {children as any}
                                     </PageContent>
                                 </ShopLayout>
                             </Suspense>

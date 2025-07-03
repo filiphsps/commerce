@@ -28,7 +28,7 @@ const ShopLayout = async ({ shop, locale, i18n, children }: ShopLayoutProps) => 
             </Suspense>
 
             <Suspense key="layout.main" fallback={<PageContent as="article" primary={true} />}>
-                {children}
+                {children as any}
             </Suspense>
 
             <Suspense key="layout.footer" fallback={<Footer.skeleton />}>

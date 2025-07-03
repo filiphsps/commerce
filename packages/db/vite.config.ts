@@ -29,13 +29,10 @@ export default mergeConfig(
                 }
             }
         },
-        esbuild: {
-            supported: {
-                'top-level-await': true
-            }
-        },
         plugins: [
-            tsConfigPaths(),
+            tsConfigPaths({
+                root: resolve(__dirname)
+            }),
             dts({
                 clearPureImport: false,
                 copyDtsFiles: true,
@@ -44,7 +41,7 @@ export default mergeConfig(
                 rollupTypes: false,
                 tsconfigPath: `./tsconfig.json`,
                 include: ['**/src']
-            }),
+            }) as any /* FIXME: Update dts to latest vite */,
             codecovVitePlugin({
                 enableBundleAnalysis: !!process.env.CODECOV_TOKEN,
                 bundleName: name,

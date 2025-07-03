@@ -37,7 +37,6 @@ export const dynamicParams = true;
 export const revalidate = false;
 
 export type CollectionPageParams = Promise<{ domain: string; locale: string; handle: string }>;
-
 export async function generateStaticParams({
     params
 }: {
@@ -54,6 +53,10 @@ export async function generateStaticParams({
         const locale = Locale.from(localeData);
 
         const shop = await findShopByDomainOverHttp(domain);
+        if (shop.domain.includes('demo')) {
+            return [];
+        }
+
         const api = await ShopifyApolloApiClient({ shop, locale });
         const collections = await CollectionsApi({ api });
 

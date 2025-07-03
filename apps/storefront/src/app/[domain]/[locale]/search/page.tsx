@@ -1,10 +1,10 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-
 import { Suspense } from 'react';
 
 import { Shop } from '@nordcom/commerce-db';
+import { Error } from '@nordcom/commerce-errors';
 
 import { PageApi } from '@/api/prismic/page';
+import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { SearchApi } from '@/api/shopify/search';
 import { LocalesApi } from '@/api/store';
@@ -29,6 +29,42 @@ export const dynamicParams = true;
 export const revalidate = false;
 
 export type SearchPageParams = Promise<{ domain: string; locale: string }>;
+export async function generateStaticParams(): Promise<Awaited<SearchPageParams>[]> {
+    /** @note Limit pre-rendering when not in production. */
+    if (process.env.VERCEL_ENV !== 'production') {
+        return [];
+    }
+
+    const shops = await Shop.findAll();
+    return (
+        await Promise.all(
+            shops.map(async ({ domain }) => {
+                try {
+                    const shop = await findShopByDomainOverHttp(domain);
+                    if (shop.domain.includes('demo')) {
+                        return [];
+                    }
+
+                    return [
+                        {
+                            domain: shop.domain,
+                            locale: Locale.from('en-US').code
+                        }
+                    ];
+                } catch (error: unknown) {
+                    if (!Error.isNotFound(error)) {
+                        console.error(error);
+                    }
+
+                    return [];
+                }
+            })
+        )
+    )
+        .flat(1)
+        .filter(Boolean);
+}
+
 export async function generateMetadata({ params }: { params: SearchPageParams }): Promise<Metadata> {
     const { domain, locale: localeData } = await params;
     const locale = Locale.from(localeData);
@@ -111,7 +147,7 @@ export default async function SearchPage({
         <>
             <Suspense key={`pages.search.breadcrumbs`} fallback={<BreadcrumbsSkeleton />}>
                 <div className="-mb-[1.25rem] empty:hidden md:-mb-[2.25rem]">
-                    <Breadcrumbs locale={locale} title={t('search')} />
+                    <Breadcrumbs locale={locale} title={t('search').toString()} />
                 </div>
             </Suspense>
 

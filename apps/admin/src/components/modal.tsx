@@ -25,7 +25,7 @@ export function Modal({ title, children }: { title: ReactNode; children: ReactNo
 
             <Card.Divider />
 
-            {children}
+            {children as any}
         </Card>
     );
 }

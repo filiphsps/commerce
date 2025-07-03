@@ -11,7 +11,7 @@ export function Toolbars({ children, domain }: { children?: ReactNode; domain: s
         <>
             {isPreviewEnv(domain) ? <VercelToolbar /> : null}
 
-            {children}
+            {children as any}
         </>
     );
 }

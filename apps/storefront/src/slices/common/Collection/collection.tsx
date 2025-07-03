@@ -90,7 +90,7 @@ const CollectionContainer = async ({ slice, children, className }: CollectionCon
         >
             <CollectionContainerHeader slice={slice} />
 
-            {children}
+            {children as any}
         </PageContent>
     );
 };

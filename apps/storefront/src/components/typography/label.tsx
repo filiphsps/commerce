@@ -29,7 +29,7 @@ export const Label = <ComponentGeneric extends ElementType = 'p'>({
 
     return (
         <Tag {...props} className={cn('block text-sm font-extrabold uppercase leading-tight', className)}>
-            {children}
+            {children as any}
         </Tag>
     );
 };

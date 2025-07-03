@@ -58,7 +58,7 @@ export const Alert = ({ children, severity, icon, className, ...props }: AlertPr
         >
             {iconElement ? <div className="aspect-square text-3xl">{iconElement}</div> : null}
 
-            <Content className="h-full">{children}</Content>
+            <Content className="h-full">{children as any}</Content>
         </div>
     );
 };

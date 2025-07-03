@@ -79,7 +79,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
 
                     <div className="flex h-full w-full grow items-stretch justify-center [grid-area:content]">
                         <View className="flex h-full w-full flex-col gap-3" withoutWrapper={true}>
-                            {children}
+                            {children as any}
                         </View>
                     </div>
 

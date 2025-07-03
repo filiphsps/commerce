@@ -140,7 +140,7 @@ export default async function ShopLayout({ children, params }: ShopLayoutProps) 
                 <Header className="h-[4.5rem] max-h-[4.5rem] min-h-[4.5rem]" />
 
                 <main className="relative flex h-full min-h-[150vh] w-full flex-col justify-stretch gap-4 p-4">
-                    {children}
+                    {children as any}
                 </main>
             </div>
         </div>

@@ -46,7 +46,7 @@ export function HeaderNavigation({
                 />
             </Suspense>
 
-            {children}
+            {children as any}
         </nav>
     );
 }

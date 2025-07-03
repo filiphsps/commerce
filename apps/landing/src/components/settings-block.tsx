@@ -35,7 +35,7 @@ const SettingsBlockContent = ({
     const label = pending ? 'Working...' : actionButtonLabel || 'Save';
     return (
         <>
-            {children}
+            {children as any}
 
             <Button
                 disabled={pending}

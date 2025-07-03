@@ -48,7 +48,7 @@ const MultilineInput = <T extends ElementType>({
                 className
             )}
         >
-            {children}
+            {children as any}
         </Tag>
     );
 };

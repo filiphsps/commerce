@@ -23,7 +23,7 @@ export const QuantityContext = createContext<QuantityContextValue | null>(null);
 export function QuantityProvider({ children, quantity, setQuantity }: ShopProviderProps) {
     const value = useMemo(() => ({ quantity, setQuantity }), [quantity, setQuantity]);
 
-    return <QuantityContext.Provider value={value}>{children}</QuantityContext.Provider>;
+    return <QuantityContext.Provider value={value}>{children as any}</QuantityContext.Provider>;
 }
 QuantityProvider.displayName = 'Nordcom.QuantityProvider';
 

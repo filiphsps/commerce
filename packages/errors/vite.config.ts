@@ -14,16 +14,25 @@ const name = '@nordcom/commerce-errors';
 export default mergeConfig(
     base,
     defineConfig({
+        optimizeDeps: {
+            esbuildOptions: {
+                target: 'esnext'
+            }
+        },
         root: resolve(__dirname),
         build: {
+            target: 'esnext',
             rollupOptions: {
+                external: ['mongoose', 'mongodb'],
                 output: {
                     name
                 }
             }
         },
         plugins: [
-            tsConfigPaths(),
+            tsConfigPaths({
+                root: resolve(__dirname)
+            }),
             dts({
                 clearPureImport: false,
                 copyDtsFiles: true,
@@ -32,7 +41,7 @@ export default mergeConfig(
                 rollupTypes: false,
                 tsconfigPath: `./tsconfig.json`,
                 include: ['**/src']
-            }),
+            }) as any /* FIXME: Update dts to latest vite */,
             codecovVitePlugin({
                 enableBundleAnalysis: !!process.env.CODECOV_TOKEN,
                 bundleName: name,

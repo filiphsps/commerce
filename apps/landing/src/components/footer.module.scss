@@ -1,4 +1,4 @@
-@import 'globals';
+@use 'variables';
 
 .footer {
     overflow-x: hidden;
@@ -38,7 +38,7 @@
             &.beside {
                 grid-template-columns: 1fr;
 
-                @media (min-width: $breakpoint-mobile) {
+                @media (min-width: variables.$breakpoint-mobile) {
                     grid-template-columns: auto 1fr;
                 }
             }
@@ -80,7 +80,7 @@
         }
 
         &.beside {
-            @media (max-width: $breakpoint-mobile) {
+            @media (max-width: variables.$breakpoint-mobile) {
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
@@ -101,7 +101,7 @@
 
     .section {
         &:is(:last-child) {
-            @media (min-width: $breakpoint-mobile) {
+            @media (min-width: variables.$breakpoint-mobile) {
                 justify-self: flex-end;
                 text-align: right;
             }
@@ -112,7 +112,7 @@
         }
     }
 
-    @media (min-width: $breakpoint-mobile) {
+    @media (min-width: variables.$breakpoint-mobile) {
         display: grid;
         grid-template-columns: 1fr 1fr;
         justify-content: flex-start;

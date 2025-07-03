@@ -1,5 +1,6 @@
-import { cn, Header as NordstarHeader } from '@nordcom/nordstar';
+import { Header as NordstarHeader } from '@nordcom/nordstar';
 
+import { cn } from '@/utils/tailwind';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -32,7 +33,7 @@ export function Header({ className, children, ...props }: HeaderProps) {
                 />
             </NordstarHeader.Logo>
 
-            <NordstarHeader.Menu className="w-full">{children}</NordstarHeader.Menu>
+            <NordstarHeader.Menu className="w-full">{children as any}</NordstarHeader.Menu>
         </NordstarHeader>
     );
 }

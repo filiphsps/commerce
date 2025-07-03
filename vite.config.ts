@@ -2,6 +2,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { defineConfig } from 'vite';
+import dts from 'vite-plugin-dts';
 import tsConfigPaths from 'vite-tsconfig-paths';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -39,5 +40,27 @@ export default defineConfig({
             }
         }
     },
-    plugins: [tsConfigPaths()]
+    esbuild: {
+        keepNames: true,
+        minifyIdentifiers: false,
+
+        supported: {
+            'top-level-await': true
+        }
+    },
+    plugins: [
+        tsConfigPaths({
+            root: resolve(__dirname)
+        }),
+        dts({
+            clearPureImport: false,
+            copyDtsFiles: true,
+            entryRoot: 'src',
+            include: ['**/src', `${__dirname}/@types/declaration.d.ts`],
+            insertTypesEntry: true,
+            staticImport: true,
+            pathsToAliases: true,
+            tsconfigPath: `${__dirname}/tsconfig.json`
+        })
+    ]
 });

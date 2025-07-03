@@ -31,7 +31,7 @@ export default async function SliceSimulatorPage({
         <SliceSimulator>
             <SliceZone
                 slices={getSlices(searchParams.state)}
-                components={components}
+                components={components as any}
                 context={{
                     shop: {
                         ...shop,

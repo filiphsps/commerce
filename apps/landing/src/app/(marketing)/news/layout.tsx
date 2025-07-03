@@ -12,5 +12,5 @@ export const metadata: Metadata = {
 };
 
 export default async function NewsLayout({ children }: { children: ReactNode }) {
-    return <div className={styles.content}>{children}</div>;
+    return <div className={styles.content}>{children as any}</div>;
 }

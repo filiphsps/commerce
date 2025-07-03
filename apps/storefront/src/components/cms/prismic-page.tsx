@@ -51,7 +51,7 @@ async function PrismicPage<T extends PageType = 'custom_page'>({
                 locale={locale}
                 i18n={i18n}
                 data={slices || page?.slices}
-                components={components}
+                components={components as any}
                 context={{
                     shop: {
                         ...shop,
