@@ -121,7 +121,7 @@
         "dotenv": "17.0.1",
         "eslint-config-next": "15.3.4",
         "eslint": "8.57.1",
-        "graphql": "16.10.0",
+        "graphql": "16.11.0",
         "happy-dom": "17.4.0",
         "postcss-import": "16.1.0",
         "postcss": "8.5.6",
