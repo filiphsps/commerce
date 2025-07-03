@@ -163,8 +163,8 @@ importers:
         specifier: 1.2.0
         version: 1.2.0(@types/react@19.1.8)(react@19.1.0)
       '@shopify/hydrogen-react':
-        specifier: 2025.1.3
-        version: 2025.1.3(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(three@0.139.2)(vite@7.0.0(@types/node@24.0.10)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.89.2)(terser@5.36.0)(yaml@2.6.0))
+        specifier: 2025.5.0
+        version: 2025.5.0(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(three@0.139.2)(vite@7.0.0(@types/node@24.0.10)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.89.2)(terser@5.36.0)(yaml@2.6.0))
       '@shopify/shopify-api':
         specifier: 11.12.0
         version: 11.12.0
@@ -359,8 +359,8 @@ importers:
         specifier: 0.200.0
         version: 0.200.0(@opentelemetry/api@1.9.0)
       '@shopify/hydrogen-react':
-        specifier: 2025.1.3
-        version: 2025.1.3(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(three@0.139.2)(vite@7.0.0(@types/node@24.0.10)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.89.2)(terser@5.36.0)(yaml@2.6.0))
+        specifier: 2025.5.0
+        version: 2025.5.0(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(three@0.139.2)(vite@7.0.0(@types/node@24.0.10)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.89.2)(terser@5.36.0)(yaml@2.6.0))
       '@vercel/analytics':
         specifier: 1.5.0
         version: 1.5.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@7.0.0(@types/node@24.0.10)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.89.2)(terser@5.36.0)(yaml@2.6.0)))(next@15.4.0-canary.110(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.89.2))(react@19.1.0)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.8.3)))(vue@3.4.27(typescript@5.8.3))
@@ -567,8 +567,8 @@ importers:
         specifier: 1.1.3
         version: 1.1.3(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@shopify/hydrogen-react':
-        specifier: 2025.1.3
-        version: 2025.1.3(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(three@0.139.2)(vite@7.0.0(@types/node@24.0.10)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.89.2)(terser@5.36.0)(yaml@2.6.0))
+        specifier: 2025.5.0
+        version: 2025.5.0(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(three@0.139.2)(vite@7.0.0(@types/node@24.0.10)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.89.2)(terser@5.36.0)(yaml@2.6.0))
       '@vercel/analytics':
         specifier: 1.5.0
         version: 1.5.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@7.0.0(@types/node@24.0.10)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.89.2)(terser@5.36.0)(yaml@2.6.0)))(next@15.4.0-canary.110(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.89.2))(react@19.1.0)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@5.8.3)))(vue@3.4.27(typescript@5.8.3))
@@ -2600,8 +2600,8 @@ packages:
   '@shopify/graphql-client@1.4.0':
     resolution: {integrity: sha512-tyjXkZ/rGK+x3Ep5Y0y0e6q1RbUwv759rsrkzyO7ZDK1cdTc8HP6KcbaNwTNpHO/a0ItbXMFGz5wUIRZqgDMaA==}
 
-  '@shopify/hydrogen-react@2025.1.3':
-    resolution: {integrity: sha512-h1e0GBx5y0JjFA15Ohf91s9Y4lRsf3HVsK2g1R8kOuHWLk5ldRlrthUysKClmTJRChutYJ73k3xHr9JUhFe6Ng==}
+  '@shopify/hydrogen-react@2025.5.0':
+    resolution: {integrity: sha512-sGJdv6cr9cQYviaOBIXTFQSgPfiBO3P2jpnXRYGCuz10w/IrANPFpas4FN++yumcgJc1GmE1IndoyCoB7GQcaA==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^18.0.0
@@ -3258,7 +3258,7 @@ packages:
 
   '@vercel/flags@2.6.3':
     resolution: {integrity: sha512-knLDYS8MCc/zx4FF6KRzHQzAKdo8VQ3V0PEBI5WvRlFIhcqhcEomxHoK41/xMnNEQvUzETACHw610/i/pVwYSA==}
-    deprecated: This package was renamed to flags, which offers the same functionality. https://vercel.com/changelog/npm-i-flags
+    deprecated: This package has been renamed to flags. It offers the same functionality under a new name. Please follow the upgrade guide https://github.com/vercel/flags/blob/main/packages/flags/guides/upgrade-to-v4.md
     peerDependencies:
       '@sveltejs/kit': '*'
       next: '*'
@@ -9179,7 +9179,7 @@ snapshots:
 
   '@shopify/graphql-client@1.4.0': {}
 
-  '@shopify/hydrogen-react@2025.1.3(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(three@0.139.2)(vite@7.0.0(@types/node@24.0.10)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.89.2)(terser@5.36.0)(yaml@2.6.0))':
+  '@shopify/hydrogen-react@2025.5.0(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(three@0.139.2)(vite@7.0.0(@types/node@24.0.10)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.89.2)(terser@5.36.0)(yaml@2.6.0))':
     dependencies:
       '@google/model-viewer': 4.1.0(three@0.139.2)
       '@xstate/fsm': 2.0.0
@@ -11153,8 +11153,8 @@ snapshots:
       '@typescript-eslint/parser': 8.33.1(eslint@8.57.1)(typescript@5.8.3)
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.33.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1)
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.33.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.33.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1)
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.33.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@8.57.1)
       eslint-plugin-react: 7.37.5(eslint@8.57.1)
       eslint-plugin-react-hooks: 5.2.0(eslint@8.57.1)
@@ -11177,7 +11177,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.33.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1):
+  eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.4.1
@@ -11188,22 +11188,22 @@ snapshots:
       tinyglobby: 0.2.14
       unrs-resolver: 1.10.1
     optionalDependencies:
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.33.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.33.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.33.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1)
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.1(@typescript-eslint/parser@8.33.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.33.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
+  eslint-module-utils@2.12.1(@typescript-eslint/parser@8.33.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
       '@typescript-eslint/parser': 8.33.1(eslint@8.57.1)(typescript@5.8.3)
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.33.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1)
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.33.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.33.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
+  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.33.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.9
@@ -11214,7 +11214,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.1(@typescript-eslint/parser@8.33.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.33.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-module-utils: 2.12.1(@typescript-eslint/parser@8.33.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1)
       hasown: 2.0.2
       is-core-module: 2.16.1
       is-glob: 4.0.3
