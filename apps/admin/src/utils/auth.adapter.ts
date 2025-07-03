@@ -125,7 +125,7 @@ export function AuthAdapter(): Adapter {
                     return null;
                 }
 
-                if (!user.identities.find(({ id }) => id === identity.id)) {
+                if (!user.identities.find(({ id }: any) => id === identity.id)) {
                     user.identities.push(identity);
                     await user.save();
                 }

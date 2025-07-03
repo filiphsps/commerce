@@ -1,5 +1,6 @@
-import { cn, Header as NordstarHeader } from '@nordcom/nordstar';
+import { Header as NordstarHeader } from '@nordcom/nordstar';
 
+import { cn } from '@/utils/tailwind';
 import Image from 'next/image';
 import Link from 'next/link';
 

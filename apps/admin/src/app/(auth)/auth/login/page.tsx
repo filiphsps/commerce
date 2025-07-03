@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     title: 'Login'
 };
 
-export default async function IndexAdminPage({}: { params: IndexAdminPageParams }) {
+export default async function IndexAdminPage({}: { params: any }) {
     const session = await auth();
     if (session?.user) {
         redirect('/');

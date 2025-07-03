@@ -20,10 +20,8 @@ vitest.setup.ts
 
 next.config.*
 
-tailwind.config.cjs
-tailwind.config.js
-postcss.config.cjs
-postcss.config.js
-vite.config.ts
-vitest.config.ts
-vitest.setup.ts
+tailwind.config.*
+postcss.config.*
+vite.config.*
+vitest.config.*
+vitest.setup.*

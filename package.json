@@ -56,7 +56,9 @@
     },
     "homepage": "https://shops.nordcom.io/",
     "dependencies": {
-        "@nordcom/nordstar": "0.0.72"
+        "@nordcom/nordstar": "0.0.73-unstable-20250703081501",
+        "react": "19.1.0",
+        "react-dom": "19.1.0"
     },
     "devDependencies": {
         "@nordcom/prettier": "0.1.1",

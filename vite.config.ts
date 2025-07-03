@@ -39,5 +39,13 @@ export default defineConfig({
             }
         }
     },
-    plugins: [tsConfigPaths()]
+    esbuild: {
+        keepNames: true,
+        minifyIdentifiers: false
+    },
+    plugins: [
+        tsConfigPaths({
+            root: resolve(__dirname)
+        })
+    ]
 });

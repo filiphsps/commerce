@@ -5,8 +5,6 @@ import { Locale } from '@/utils/locale';
 import { act, renderHook, waitFor } from '@/utils/test/react';
 import { useCart } from '@shopify/hydrogen-react';
 
-import type { Mock } from 'vitest';
-
 const USA = Locale.from('en-US')!;
 const GER = Locale.from('de-DE')!;
 
@@ -27,7 +25,7 @@ describe('hooks', () => {
         }));
 
         beforeEach(() => {
-            (useCart as Mock<any, any>).mockReturnValue({
+            (useCart as any).mockReturnValue({
                 error: undefined,
 
                 buyerIdentity: {

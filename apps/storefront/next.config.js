@@ -30,14 +30,10 @@ const config = {
     compress: true,
     transpilePackages: ['@shopify/hydrogen-react', '@prismicio/client', '@slicemachine/adapter-next'],
     serverExternalPackages: ['crypto-js'],
-    devIndicators: {
-        buildActivity: true,
-        appIsrStatus: true
-    },
+    turbopack: { root: path.resolve('../..') },
     experimental: {
-        after: true,
         appNavFailHandling: true,
-        cssChunking: 'loose',
+        cssChunking: true,
         esmExternals: true,
         middlewarePrefetch: 'strict',
         optimizeCss: true,
@@ -53,9 +49,8 @@ const config = {
         serverSourceMaps: true,
         staleTimes: { dynamic: 0, static: 180 },
         taint: true,
-        turbo: { root: path.resolve('../..') },
         typedEnv: true,
-        useEarlyImport: true,
+        typedRoutes: false,
         webpackBuildWorker: true
     },
     images: {

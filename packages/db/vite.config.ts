@@ -44,7 +44,7 @@ export default mergeConfig(
                 rollupTypes: false,
                 tsconfigPath: `./tsconfig.json`,
                 include: ['**/src']
-            }),
+            }) as any /* FIXME: Update dts to latest vite */,
             codecovVitePlugin({
                 enableBundleAnalysis: !!process.env.CODECOV_TOKEN,
                 bundleName: name,

@@ -10,11 +10,12 @@ import Link from '@/components/link';
 import { useShop } from '@/components/shop/provider';
 
 import type { Locale } from '@/utils/locale';
+import type { ReactNode } from 'react';
 import type { BreadcrumbList, WithContext } from 'schema-dts';
 
 type BreadcrumbsProps = {
     locale: Locale;
-    title?: string;
+    title?: string | ReactNode | ReactNode[];
     className?: string;
 };
 const Breadcrumbs = ({ locale, title, className }: BreadcrumbsProps) => {
@@ -40,7 +41,7 @@ const Breadcrumbs = ({ locale, title, className }: BreadcrumbsProps) => {
             'position': index + 1,
             ...(index === path.length - 1
                 ? {
-                      name: title || entry
+                      name: (typeof title === 'string' ? title : entry) || entry
                   }
                 : {
                       name: entry,

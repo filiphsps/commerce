@@ -5,7 +5,7 @@ export const revalidate = false;
 
 export type FaviconRouteParams = {
     domain: string;
-};
+} & any; // FIXME: Don't use any here.
 
 // TODO: Convert the png favicon to a proper ico instead of redirecting to the png.
 export const GET = async (req: NextRequest, {}: FaviconRouteParams) => {

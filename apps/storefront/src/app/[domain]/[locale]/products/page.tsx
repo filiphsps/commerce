@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-
 import { Suspense } from 'react';
 
 import { Shop } from '@nordcom/commerce-db';
@@ -130,7 +128,7 @@ export default async function ProductsPage({
         <>
             <Suspense key={`products.breadcrumbs`} fallback={<BreadcrumbsSkeleton />}>
                 <div className="-mb-[1.25rem] empty:hidden md:-mb-[2.25rem]">
-                    <Breadcrumbs locale={locale} title={t('products')} />
+                    <Breadcrumbs locale={locale} title={t('products').toString()} />
                 </div>
             </Suspense>
 

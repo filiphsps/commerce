@@ -52,7 +52,7 @@ export async function InfoBar({ className, shop, locale, i18n, ...props }: InfoB
                     <Link
                         className="group flex select-none items-center justify-start gap-1 *:select-none"
                         href="/countries/"
-                        title={t('language-and-region-settings')}
+                        title={t('language-and-region-settings').toString()}
                         data-nosnippet={true}
                     >
                         <LocaleFlag
@@ -72,7 +72,7 @@ export async function InfoBar({ className, shop, locale, i18n, ...props }: InfoB
                             <Link
                                 href={`mailto:${email}`}
                                 className={LINK_STYLES}
-                                title={t('email-tooltip')}
+                                title={t('email-tooltip').toString()}
                                 data-nosnippet={true}
                             >
                                 <MailIcon className="h-4 text-lg" style={{ strokeWidth: 2.5 }} />
@@ -86,7 +86,7 @@ export async function InfoBar({ className, shop, locale, i18n, ...props }: InfoB
                             <Link
                                 href={`tel:${phone}`}
                                 className={LINK_STYLES}
-                                title={t('phone-tooltip')}
+                                title={t('phone-tooltip').toString()}
                                 data-nosnippet={true}
                             >
                                 <PhoneIcon className="h-4 text-lg" style={{ strokeWidth: 2.5 }} />
