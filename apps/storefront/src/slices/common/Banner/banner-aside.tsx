@@ -10,7 +10,7 @@ import { PrismicText } from '@/components/typography/prismic-text';
 
 import type { BannerSliceAside } from '@/prismic/types';
 
-export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; index?: number }): JSX.Element => {
+export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; index?: number }) => {
     const priority = index < 2;
 
     const background = slice.primary.background;

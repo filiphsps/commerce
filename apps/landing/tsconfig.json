@@ -2,7 +2,11 @@
     "$schema": "https://json.schemastore.org/tsconfig",
     "compilerOptions": {
         "baseUrl": ".",
-        "plugins": [{ "name": "next" }],
+        "plugins": [
+            {
+                "name": "next"
+            }
+        ],
         "lib": ["DOM", "DOM.iterable", "ESNext"],
         "rootDir": "../../",
         "jsx": "preserve",
@@ -45,5 +49,9 @@
     },
     "exclude": ["node_modules"],
     "include": ["next-env.d.ts", "src/**/*.ts", "src/**/.well-known/**/*.ts", "src/**/*.tsx", ".next/types/**/*.ts"],
-    "references": [{ "path": "../../tsconfig.json" }]
+    "references": [
+        {
+            "path": "../../tsconfig.json"
+        }
+    ]
 }

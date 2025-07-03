@@ -79,7 +79,7 @@ const QuantitySelector = ({
 
             update(parsedQuantity);
         },
-        [update, quantity, quantityValue]
+        [update, quantity]
     );
     const decrease = useCallback(() => {
         if (allowDecreaseToZero ? quantity <= 0 : quantity <= 1) {
@@ -87,10 +87,10 @@ const QuantitySelector = ({
         }
 
         updateQuantity(quantity - 1);
-    }, [quantity]);
+    }, [allowDecreaseToZero, quantity, updateQuantity]);
     const increase = useCallback(() => {
         updateQuantity(quantity + 1);
-    }, [quantity]);
+    }, [quantity, updateQuantity]);
 
     const onBlur = useCallback(() => {
         if (!quantityValue) {
@@ -105,7 +105,7 @@ const QuantitySelector = ({
         }
 
         updateQuantity(quantityValue);
-    }, [quantityValue]);
+    }, [allowDecreaseToZero, quantityValue, updateQuantity]);
     const onKeyDown = useCallback(
         ({ key }: Parameters<KeyboardEventHandler<HTMLInputElement>>[0]) => {
             if (key !== 'Enter') {
@@ -114,7 +114,7 @@ const QuantitySelector = ({
 
             updateQuantity(quantityValue);
         },
-        [quantityValue]
+        [quantityValue, updateQuantity]
     );
 
     const onChange = useCallback(
@@ -132,7 +132,7 @@ const QuantitySelector = ({
         }
 
         setQuantityValue(quantity.toString());
-    }, [quantity]);
+    }, [quantity, quantityValue]);
 
     const disabled = isDisabled || !ready;
     const decreaseDisabled = disabled || (allowDecreaseToZero ? quantity <= 0 : quantity <= 1);
@@ -150,7 +150,7 @@ const QuantitySelector = ({
             <Button
                 suppressHydrationWarning={true}
                 aria-disabled={decreaseDisabled}
-                aria-label={t('decrease')}
+                aria-label={t('decrease').toString()}
                 type="button"
                 className={cn(
                     'aspect-[3/4] h-full select-none appearance-none rounded-none bg-transparent p-2 font-bold text-current',
@@ -160,7 +160,7 @@ const QuantitySelector = ({
                 )}
                 disabled={decreaseDisabled}
                 onClick={decrease}
-                title={t('decrease')}
+                title={t('decrease').toString()}
                 data-quantity-decrease
                 data-testid="quantity-decrease"
                 data-nosnippet={true}
@@ -169,13 +169,15 @@ const QuantitySelector = ({
                 &ndash;
             </Button>
 
+            {/* FIXME: This @ts-expect-error shouldn't be here! */}
+            {/* @ts-expect-error */}
             <Input
                 suppressHydrationWarning={true}
                 aria-disabled={disabled}
-                aria-label={t('quantity')}
+                aria-label={t('quantity').toString()}
                 ref={inputRef}
                 type="number"
-                title={t('quantity')}
+                title={t('quantity').toString()}
                 min={1}
                 max={MAX_QUANTITY}
                 step={1}
@@ -186,7 +188,7 @@ const QuantitySelector = ({
                 )}
                 disabled={disabled}
                 value={quantityValue}
-                placeholder={t('quantity')}
+                placeholder={t('quantity').toString()}
                 onBlur={onBlur}
                 onKeyDown={onKeyDown}
                 onChange={onChange}
@@ -198,7 +200,7 @@ const QuantitySelector = ({
             <Button
                 suppressHydrationWarning={true}
                 aria-disabled={disabled}
-                aria-label={t('increase')}
+                aria-label={t('increase').toString()}
                 type="button"
                 className={cn(
                     'aspect-[3/4] h-full select-none appearance-none rounded-none bg-transparent p-2 font-bold text-current',
@@ -208,7 +210,7 @@ const QuantitySelector = ({
                 )}
                 disabled={disabled}
                 onClick={increase}
-                title={t('increase')}
+                title={t('increase').toString()}
                 data-quantity-increase
                 data-testid="quantity-increase"
                 data-nosnippet={true}

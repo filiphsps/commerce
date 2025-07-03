@@ -44,7 +44,7 @@ const ProductCardActions = ({ i18n, data: product, selectedVariant }: ProductCar
                 }
             ]);
         },
-        [linesUpdate, lines, cartReady]
+        [lines, line, linesUpdate]
     );
 
     if (cartReady === undefined) {

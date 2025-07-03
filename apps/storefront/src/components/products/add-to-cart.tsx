@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 'use client';
 
 import { type HTMLProps, useCallback, useEffect, useState } from 'react';
@@ -54,7 +53,7 @@ export function AddToCart({
     // This is a bit of a hack, but it works.
     const { cartReady, linesAdd, status = 'fetching' } = useCart();
 
-    const ready = selectedVariant?.availableForSale && cartReady && !['updating'].includes(status);
+    const ready: boolean = (selectedVariant?.availableForSale && cartReady && !['updating'].includes(status)) || false;
 
     const add = useCallback(() => {
         if (!ready || !product || !selectedVariant) {
@@ -113,34 +112,34 @@ export function AddToCart({
         if (redirect) {
             router.push('/cart/');
         }
-    }, [linesAdd, selectedVariant, quantity, ready]);
+    }, [ready, product, selectedVariant, linesAdd, quantity, postEvent, path, locale, animation, redirect, router]);
 
-    const [label, setLabel] = useState<string>(t('add-to-cart'));
+    const [label, setLabel] = useState<string>(t('add-to-cart').toString());
     useEffect(() => {
         if (children) return;
 
         if (animation) {
-            const newLabel = t('added-to-cart');
+            const newLabel = t('added-to-cart').toString();
 
             // 1. Have we just successfully added to cart, if so, show a checkmark.
             if (label !== newLabel) setLabel(newLabel);
         } else if (!selectedVariant?.availableForSale) {
-            const newLabel = t('out-of-stock');
+            const newLabel = t('out-of-stock').toString();
 
             // 2. If out of stock, show the relevant label.
             if (label !== newLabel) setLabel(newLabel);
         } else if (!quantity || quantity < 1) {
-            const newLabel = t('quantity-too-low');
+            const newLabel = t('quantity-too-low').toString();
 
             // 3. Quantity is either invalid or 0.
             if (label !== newLabel) setLabel(newLabel);
         } else {
-            const newLabel = t('add-to-cart');
+            const newLabel = t('add-to-cart').toString();
 
             // 4. Default state.
             if (label !== newLabel) setLabel(newLabel);
         }
-    }, [animation, selectedVariant]);
+    }, [animation, children, label, quantity, selectedVariant, t]);
 
     const disabled = isDisabled || !ready || quantity <= 0;
 
@@ -155,7 +154,7 @@ export function AddToCart({
             data-ready={ready || undefined}
             data-success={!!(animation as any) ? 'true' : undefined}
             onClick={add}
-            title={tCart('add-n-to-your-cart', quantity)}
+            title={tCart('add-n-to-your-cart', quantity).toString()}
             data-nosnippet={true}
         >
             {children || label}

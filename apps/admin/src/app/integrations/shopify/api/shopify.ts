@@ -21,5 +21,9 @@ export const shopifyAdminApi = shopifyApi({
             ? 'localhost:3000'
             : (process.env.ADMIN_DOMAIN as string) || 'admin.shops.nordcom.io',
     isEmbeddedApp: true,
-    apiVersion: ApiVersion.October23
+    apiVersion: ApiVersion.October24,
+    future: {
+        customerAddressDefaultFix: true,
+        lineItemBilling: true
+    }
 });

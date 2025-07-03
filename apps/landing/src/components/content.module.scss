@@ -1,4 +1,4 @@
-@import 'globals';
+@use 'variables';
 
 .container,
 article.container {
@@ -12,7 +12,7 @@ article.container {
     max-width: 100%;
     margin-top: calc(var(--layout-section-spacing) * 2);
 
-    @media (min-width: $breakpoint-mobile) {
+    @media (min-width: variables.$breakpoint-mobile) {
         --small-spacing: calc(var(--layout-block-padding) / 2);
     }
 
@@ -24,7 +24,7 @@ article.container {
         line-height: 1.1;
         color: hsl(var(--color-foreground));
 
-        @media (min-width: $breakpoint-mobile) {
+        @media (min-width: variables.$breakpoint-mobile) {
             font-size: 2.5em;
         }
 
@@ -42,7 +42,7 @@ article.container {
         text-transform: uppercase;
         color: hsl(var(--color-foreground));
 
-        @media (min-width: $breakpoint-mobile) {
+        @media (min-width: variables.$breakpoint-mobile) {
             font-size: 1.75em;
         }
 
@@ -110,7 +110,7 @@ article.container {
         object-fit: cover;
         aspect-ratio: 16 / 6;
 
-        @media (min-width: $breakpoint-mobile) {
+        @media (min-width: variables.$breakpoint-mobile) {
             aspect-ratio: 16 / 4;
         }
     }

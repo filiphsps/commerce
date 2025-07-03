@@ -47,7 +47,7 @@ export function Modal({
     const [originalPathName, setOriginalPathName] = useState(pathname);
     useEffect(() => {
         setOriginalPathName(pathname);
-    }, []);
+    }, [pathname]);
 
     if (!children) {
         return null;

@@ -9,7 +9,7 @@ import { PrismicText } from '@/components/typography/prismic-text';
 
 import type { BannerSliceDefault } from '@/prismic/types';
 
-export const BannerDefault = ({ slice }: { slice: BannerSliceDefault }): JSX.Element => {
+export const BannerDefault = ({ slice }: { slice: BannerSliceDefault }) => {
     return (
         <section
             className="bg-primary text-primary-foreground flex flex-col items-center justify-center gap-4 rounded-lg p-8"

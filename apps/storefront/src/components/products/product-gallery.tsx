@@ -138,7 +138,7 @@ const ProductGallery = ({
                                         className={SHARE_BUTTON_STYLES}
                                         resetButtonStyle={false}
                                         title={title}
-                                        htmlTitle={t('share-via-email')}
+                                        htmlTitle={t('share-via-email').toString()}
                                     >
                                         <MailIcon className="stroke-2" />
                                     </EmailShareButton>
@@ -148,7 +148,7 @@ const ProductGallery = ({
                                         className={SHARE_BUTTON_STYLES}
                                         resetButtonStyle={false}
                                         title={title}
-                                        htmlTitle={t('share-on-facebook')}
+                                        htmlTitle={t('share-on-facebook').toString()}
                                     >
                                         <Image
                                             className="stroke-2"
@@ -164,7 +164,7 @@ const ProductGallery = ({
                                         className={SHARE_BUTTON_STYLES}
                                         resetButtonStyle={false}
                                         title={title}
-                                        htmlTitle={t('share-on-x')}
+                                        htmlTitle={t('share-on-x').toString()}
                                     >
                                         <Image
                                             className="stroke-2"

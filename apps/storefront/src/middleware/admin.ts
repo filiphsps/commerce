@@ -1,4 +1,3 @@
-/* c8 ignore start */
 import { NextResponse } from 'next/server';
 
 import type { NextRequest } from 'next/server';
@@ -11,4 +10,3 @@ export const admin = async (req: NextRequest): Promise<NextResponse> => {
 
     return NextResponse.redirect(`https://${ADMIN_HOSTNAME}/${hostname}/`);
 };
-/* c8 ignore end */

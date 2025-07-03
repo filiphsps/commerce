@@ -1,5 +1,5 @@
-@import 'globals';
-@import 'text';
+@use 'variables';
+@use 'text';
 
 :root {
     --font-fallback:

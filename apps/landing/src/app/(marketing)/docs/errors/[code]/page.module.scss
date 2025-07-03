@@ -1,4 +1,4 @@
-@import 'globals';
+@use 'variables';
 
 .container {
     .heading {
@@ -16,7 +16,7 @@
         h1 {
             margin: calc(var(--layout-block-padding) / 4) 0 0 0;
 
-            @media (max-width: $breakpoint-mobile) {
+            @media (max-width: variables.$breakpoint-mobile) {
                 font-size: 3.25rem !important;
             }
         }
