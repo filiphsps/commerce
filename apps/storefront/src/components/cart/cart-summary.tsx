@@ -47,7 +47,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
         if (!note || showNote) return;
 
         setShowNote(showNote);
-    }, [note]);
+    }, [note, showNote]);
     const sale =
         (lines &&
             lines.reduce(

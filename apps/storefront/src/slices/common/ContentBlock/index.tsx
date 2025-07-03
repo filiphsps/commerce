@@ -7,7 +7,7 @@ import { PrismicText } from '@/components/typography/prismic-text';
 import type { Content as Slices } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
 
-const DefaultContentBlock = (props: ContentBlockProps): JSX.Element => {
+const DefaultContentBlock = (props: ContentBlockProps) => {
     const {
         primary: { text, width: wide }
     } = props.slice as Slices.ContentBlockSliceDefault;
@@ -23,7 +23,7 @@ const DefaultContentBlock = (props: ContentBlockProps): JSX.Element => {
     );
 };
 
-const CardContentBlock = (props: ContentBlockProps): JSX.Element => {
+const CardContentBlock = (props: ContentBlockProps) => {
     const {
         primary: { text, width: wide, border }
     } = props.slice as Slices.ContentBlockSliceCard;
@@ -42,7 +42,7 @@ const CardContentBlock = (props: ContentBlockProps): JSX.Element => {
 };
 
 export type ContentBlockProps = SliceComponentProps<Slices.ContentBlockSlice>;
-const ContentBlock = (props: ContentBlockProps): JSX.Element => {
+const ContentBlock = (props: ContentBlockProps) => {
     switch (props.slice.variation as string) {
         case 'default':
             return <DefaultContentBlock {...props} />;

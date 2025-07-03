@@ -69,7 +69,7 @@ export const SearchBar = ({ defaultValue, onSearch, disabled, className, i18n, .
                     e.preventDefault();
                     performSearch();
                 }}
-                title={t('search')}
+                title={t('search').toString()}
                 styled={false}
                 disabled={disabled}
                 type="submit"
@@ -234,7 +234,7 @@ export default function SearchContent({
                                     className={cn(COMMON_BADGE_STYLES, 'absolute left-1 top-1 bg-green-600 text-white')}
                                 >
                                     <AttributeIcon data={'vegan'} className="text-lg" />
-                                    {capitalize(t('vegan'))}
+                                    {capitalize(t('vegan').toString())}
                                 </div>
                             )}
                         </Link>

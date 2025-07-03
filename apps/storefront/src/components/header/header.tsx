@@ -90,7 +90,7 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
                             <Link
                                 href="/search/"
                                 className="hover:text-primary focus-visible:text-primary transition-colors"
-                                title={t('search')}
+                                title={t('search').toString()}
                             >
                                 <SearchIcon className="stroke-1 text-xl lg:text-2xl" />
                             </Link>

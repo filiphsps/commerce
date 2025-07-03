@@ -20,7 +20,7 @@ export const Button = <ComponentGeneric extends ElementType = 'button'>({
     styled = true,
     className,
     ...props
-}: ButtonProps<ComponentGeneric>): JSX.Element => {
+}: ButtonProps<ComponentGeneric>) => {
     const Tag = as ?? 'button';
 
     return (

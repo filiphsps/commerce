@@ -1,16 +1,28 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
-    "extends": "../../tsconfig.json",
     "compilerOptions": {
+        "strict": true,
         "baseUrl": ".",
         "composite": true,
-        "module": "ESNext",
-        "moduleResolution": "Bundler",
         "outDir": "./dist",
         "rootDir": "./src",
-        "typeRoots": ["./node_modules/@types", "./src/@types", "./dist/index.d.ts"]
+        "typeRoots": [
+            "./dist/index.d.ts"
+        ]
     },
-    "exclude": ["node_modules", "coverage", "dist", "**/*.test.*"],
-    "include": ["./src/@types"],
-    "references": [{ "path": "../../tsconfig.json" }]
+    "exclude": [
+        "node_modules",
+        "coverage",
+        "dist",
+        "**/*.test.*",
+        "**/*.stories.*"
+    ],
+    "include": [
+        "../../@types/declaration.d.ts"
+    ],
+    "references": [
+        {
+            "path": "../../tsconfig.json"
+        }
+    ]
 }

@@ -152,7 +152,10 @@ type TranslationLiteral = string | number | boolean | ReactNode;
 export const getTranslations = (scope: LocaleDictionaryScope, dictionary?: LocaleDictionary) => {
     return {
         // FIXME: Fix return type.
-        t: <T extends LocaleDictionaryKey, L extends TranslationLiteral[]>(key: T, ...literals: L): string => {
+        t: <T extends LocaleDictionaryKey, L extends TranslationLiteral[]>(
+            key: T,
+            ...literals: L
+        ): string | (string | ReactNode)[] => {
             const string: string = (dictionary as any)?.[scope]?.[key] || key;
 
             if (((literals as any)?.length || 0) <= 0) {
@@ -197,15 +200,23 @@ type CapitalizeOptions = {
     everyWord?: boolean;
     lowerCase?: boolean;
 };
+
 /**
+ * Capitalize a string.
  *
- * @param {string} string - The string to capitalize.
+ * @param {string | ReactNode | ReactNode[]} input - The string to capitalize.
  * @param {CapitalizeOptions} options - The options.
  * @param {boolean} [options.everyWord=false] - Whether to capitalize every word in the string.
  * @param {boolean} [options.lowerCase=true] - Whether to convert the rest of the string to lowercase.
  * @returns {string} The capitalized string.
  */
-export function capitalize(string: string, { everyWord = false, lowerCase = true }: CapitalizeOptions = {}): string {
+export function capitalize(
+    input: string | ReactNode | ReactNode[],
+    { everyWord = false, lowerCase = true }: CapitalizeOptions = {}
+): string {
+    const string = input?.toString() || '';
+
+    // TODO: Handle ReactNode & ReactNode[].
     if (everyWord) {
         return string
             .split(' ')

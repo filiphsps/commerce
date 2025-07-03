@@ -14,7 +14,7 @@ const CartNote = ({ i18n }: { i18n: LocaleDictionary }) => {
         if (!note || note === text) return;
 
         setText(note);
-    }, [note]);
+    }, [note, text]);
 
     return (
         <MultilineInput

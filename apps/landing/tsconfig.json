@@ -2,33 +2,75 @@
     "$schema": "https://json.schemastore.org/tsconfig",
     "compilerOptions": {
         "baseUrl": ".",
-        "plugins": [{ "name": "next" }],
-        "lib": ["DOM", "DOM.iterable", "ESNext"],
+        "plugins": [
+            {
+                "name": "next"
+            }
+        ],
+        "lib": [
+            "DOM",
+            "DOM.iterable",
+            "ESNext"
+        ],
         "rootDir": "../../",
         "jsx": "preserve",
         "jsxImportSource": "react",
         "paths": {
             // Storefront.
-            "@/middleware/*": ["src/middleware/*"],
-            "@/components/*": ["src/components/*"],
-            "@/markdoc": ["src/markdoc/index.ts"],
-            "@/markdoc/*": ["src/markdoc/*"],
-            "@/hooks/*": ["src/hooks/*"],
-            "@/api/*": ["src/api/*"],
-            "@/auth": ["src/utils/auth.ts"],
-            "@/models/*": ["src/models/*"],
-            "@/utils/*": ["src/utils/*"],
-            "@/styles/*": ["src/scss/*"],
+            "@/middleware/*": [
+                "src/middleware/*"
+            ],
+            "@/components/*": [
+                "src/components/*"
+            ],
+            "@/markdoc": [
+                "src/markdoc/index.ts"
+            ],
+            "@/markdoc/*": [
+                "src/markdoc/*"
+            ],
+            "@/hooks/*": [
+                "src/hooks/*"
+            ],
+            "@/api/*": [
+                "src/api/*"
+            ],
+            "@/auth": [
+                "src/utils/auth.ts"
+            ],
+            "@/models/*": [
+                "src/models/*"
+            ],
+            "@/utils/*": [
+                "src/utils/*"
+            ],
+            "@/styles/*": [
+                "src/scss/*"
+            ],
             // i18n.
-            "@/i18n/*": ["src/locales/*"],
-            "@/i18n/dictionary": ["src/utils/dictionary.ts"],
+            "@/i18n/*": [
+                "src/locales/*"
+            ],
+            "@/i18n/dictionary": [
+                "src/utils/dictionary.ts"
+            ],
             // Prismic.
-            "@/slices/*": ["src/slices/*"],
-            "@/slices/navigation": ["src/slices/navigation/index.ts"],
-            "@/slices": ["src/slices/index"],
-            "@/prismic/types": ["prismicio-types.d.ts"],
+            "@/slices/*": [
+                "src/slices/*"
+            ],
+            "@/slices/navigation": [
+                "src/slices/navigation/index.ts"
+            ],
+            "@/slices": [
+                "src/slices/index"
+            ],
+            "@/prismic/types": [
+                "prismicio-types.d.ts"
+            ],
             // Assets.
-            "@/static/*": ["public/*"]
+            "@/static/*": [
+                "public/*"
+            ]
         },
         "allowJs": true,
         "downlevelIteration": true,
@@ -43,7 +85,19 @@
         "strict": true,
         "target": "ES2017"
     },
-    "exclude": ["node_modules"],
-    "include": ["next-env.d.ts", "src/**/*.ts", "src/**/.well-known/**/*.ts", "src/**/*.tsx", ".next/types/**/*.ts"],
-    "references": [{ "path": "../../tsconfig.json" }]
+    "exclude": [
+        "node_modules"
+    ],
+    "include": [
+        "next-env.d.ts",
+        "src/**/*.ts",
+        "src/**/.well-known/**/*.ts",
+        "src/**/*.tsx",
+        ".next/types/**/*.ts"
+    ],
+    "references": [
+        {
+            "path": "../../tsconfig.json"
+        }
+    ]
 }
