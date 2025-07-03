@@ -43,7 +43,7 @@ export const SubTitle = ({ as, bold, className, key, ...props }: SubTitleProps) 
         return <Fragment key={key} children={props.children} />;
     }
 
-    const fallback: keyof JSX.IntrinsicElements = 'div';
+    const fallback: keyof JSX.IntrinsicElements | 'div' = 'div';
     const AsComponent = as || fallback;
 
     return (
