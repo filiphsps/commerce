@@ -1,4 +1,3 @@
-/* c8 ignore start */
 import { verifyAccess } from '@vercel/flags';
 import { NextResponse } from 'next/server';
 

@@ -9,16 +9,8 @@
     "types": "./dist/index.d.ts",
     "module": "./dist/index.ts",
     "exports": {
-        ".": [
-            "./src/index.ts",
-            "./dist/index.js"
-        ],
-        "./*": [
-            "./src/*.ts",
-            "./dist/*.js",
-            "./src/*/index.ts",
-            "./dist/*/index.js"
-        ]
+        ".": "./dist/index.js",
+        "./*": "./dist/*.js"
     },
     "scripts": {
         "build": "tsc && vite build",

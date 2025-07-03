@@ -1,4 +1,3 @@
-/* c8 ignore start */
 import authConfig from '@/utils/auth.config';
 import { NextResponse } from 'next/server';
 import NextAuth from 'next-auth';

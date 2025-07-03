@@ -1,4 +1,3 @@
-/* c8 ignore start */
 'use client';
 
 import { Fragment, Suspense } from 'react';

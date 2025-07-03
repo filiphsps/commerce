@@ -1,4 +1,3 @@
-/* c8 ignore start */
 export const BuildConfig = {
     environment: process.env.NODE_ENV,
 

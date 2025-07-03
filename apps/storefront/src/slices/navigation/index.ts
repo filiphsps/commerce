@@ -1,4 +1,3 @@
-/* c8 ignore start */
 import Dropdown from './Dropdown';
 import Link from './Link';
 

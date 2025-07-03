@@ -1,4 +1,3 @@
-/* c8 ignore start */
 import { Public_Sans } from 'next/font/google';
 
 const primaryFont = Public_Sans({

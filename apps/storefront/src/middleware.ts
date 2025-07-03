@@ -1,4 +1,3 @@
-/* c8 ignore start */
 import { admin } from '@/middleware/admin';
 import { storefront } from '@/middleware/storefront';
 import { NextResponse } from 'next/server';

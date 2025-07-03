@@ -1,4 +1,3 @@
-/* c8 ignore start */
 import { components as commonComponents } from '@/slices/common';
 import { components as menuComponents } from '@/slices/navigation';
 
