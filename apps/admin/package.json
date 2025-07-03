@@ -71,7 +71,7 @@
         "lucide-react": "0.500.0",
         "mongoose": "8.13.2",
         "next-auth": "5.0.0-beta.25",
-        "next-seo": "6.6.0",
+        "next-seo": "6.8.0",
         "next-sitemap": "4.2.3",
         "next": "15.0.2-canary.10",
         "nextjs-toploader": "3.8.16",
