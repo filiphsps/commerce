@@ -61,7 +61,7 @@ jobs:
 
             - name: 🦺 Report Coverage to GitHub
               if: ${{ !cancelled() }}
-              uses: davelosert/vitest-coverage-report-action@v2.8.1
+              uses: davelosert/vitest-coverage-report-action@v2.8.3
 
             - name: 🦺 Codecov Coverage Reports
               if: ${{ !cancelled() }}
