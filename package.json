@@ -84,7 +84,7 @@
         "glob": "11.0.2",
         "mongoose": "8.15.1",
         "prettier-eslint": "16.4.2",
-        "prettier-plugin-tailwindcss": "0.6.12",
+        "prettier-plugin-tailwindcss": "0.6.14",
         "prettier": "3.5.3",
         "turbo-ignore": "2.5.4",
         "turbo": "2.5.4",
