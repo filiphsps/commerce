@@ -33,7 +33,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: 🕶️ Checkout repository
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
 
             - name: 🚀 Bootstrap
               uses: ./.github/common/bootstrap
@@ -48,7 +48,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: 🕶️ Checkout repository
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
 
             - name: 🚀 Bootstrap
               uses: ./.github/common/bootstrap
@@ -81,7 +81,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: 🕶️ Checkout repository
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
 
             - name: 🚀 Bootstrap
               uses: ./.github/common/bootstrap
@@ -98,7 +98,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: 🕶️ Checkout repository
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
 
             - name: 🚀 Bootstrap
               uses: ./.github/common/bootstrap
@@ -117,7 +117,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: 🕶️ Checkout repository
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
             # Deliberately empty as this is just used
             # to trigger other workflows when this one
             # completes successfully. Otherwise we can't
