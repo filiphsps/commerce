@@ -63,7 +63,7 @@
         "@vercel/toolbar": "0.1.38",
         "clsx": "2.1.1",
         "geist": "1.4.2",
-        "glob": "11.0.3",
+        "glob": "11.1.0",
         "gravatar.js": "2.0.0",
         "gray-matter": "4.0.3",
         "next-seo": "6.8.0",
