@@ -133,7 +133,7 @@
         "slice-machine-ui": "2.10.1",
         "tailwindcss-content-visibility": "1.0.2",
         "tailwindcss": "4.1.4",
-        "typescript": "5.8.3",
+        "typescript": "6.0.3",
         "vitest": "3.2.4"
     }
 }

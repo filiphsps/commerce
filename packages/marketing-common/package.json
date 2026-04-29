@@ -61,7 +61,7 @@
         "eslint": "8.57.1",
         "glob": "11.0.3",
         "rimraf": "6.0.1",
-        "typescript": "5.8.3",
+        "typescript": "6.0.3",
         "vite-plugin-dts": "4.5.4",
         "vite-tsconfig-paths": "5.1.4",
         "vite": "7.0.0",
