@@ -29,9 +29,9 @@ export type CustomPageParams = Promise<{ domain: string; locale: string; slug: s
 export async function generateStaticParams({
     params
 }: {
-    params: Omit<CustomPageParams, 'slug'>;
+    params: Omit<Awaited<CustomPageParams>, 'slug'>;
 }): Promise<Omit<Awaited<CustomPageParams>, 'domain' | 'locale'>[]> {
-    const { domain, locale: localeData } = await params;
+    const { domain, locale: localeData } = params;
 
     try {
         const locale = Locale.from(localeData);
