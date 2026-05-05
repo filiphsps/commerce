@@ -1,4 +1,3 @@
-import type { JSX } from 'react';
 import 'server-only';
 
 import { cn } from '@/utils/tailwind';
@@ -9,6 +8,7 @@ import { PrismicText } from '@/components/typography/prismic-text';
 
 import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
+import type { JSX } from 'react';
 
 /**
  * Props for `CollapsibleText`.

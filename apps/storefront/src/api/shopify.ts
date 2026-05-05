@@ -2,11 +2,10 @@ import 'server-only';
 
 import { experimental_taintUniqueValue } from 'react';
 
-import type { OnlineShop } from '@nordcom/commerce-db';
+import { type OnlineShop, Shop } from '@nordcom/commerce-db';
 import { UnknownCommerceProviderError } from '@nordcom/commerce-errors';
 
 import { createApolloClient } from '@/api/client';
-import { findShopByDomainOverHttp } from '@/api/shop';
 import { ApiBuilder } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
 import { createStorefrontClient } from '@shopify/hydrogen-react';
@@ -22,7 +21,7 @@ export const ShopifyApiConfig = async ({
     public: () => ApiConfig;
     private: () => ApiConfig;
 }> => {
-    const { commerceProvider } = await findShopByDomainOverHttp(domain);
+    const { commerceProvider } = await Shop.findByDomain(domain, { sensitiveData: true });
     if (commerceProvider.type !== 'shopify') {
         throw new UnknownCommerceProviderError(commerceProvider.type);
     }

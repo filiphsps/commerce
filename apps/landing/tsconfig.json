@@ -1,10 +1,14 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
     "compilerOptions": {
-        "plugins": [{ "name": "next" }],
+        "plugins": [
+            {
+                "name": "next"
+            }
+        ],
         "lib": ["DOM", "DOM.iterable", "ESNext"],
         "rootDir": "../../",
-        "jsx": "preserve",
+        "jsx": "react-jsx",
         "jsxImportSource": "react",
         "paths": {
             // Storefront.
@@ -47,6 +51,7 @@
         "./src/**/*.ts",
         "./src/**/.well-known/**/*.ts",
         "./src/**/*.tsx",
-        ".next/types/**/*.ts"
+        ".next/types/**/*.ts",
+        ".next/dev/types/**/*.ts"
     ]
 }

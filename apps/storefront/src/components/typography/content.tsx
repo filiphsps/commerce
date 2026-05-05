@@ -1,4 +1,3 @@
-import type { JSX } from 'react';
 import { type ElementType, type ReactNode } from 'react';
 
 import { cn } from '@/utils/tailwind';

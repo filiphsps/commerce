@@ -1,4 +1,5 @@
-import { findShopByDomainOverHttp } from '@/api/shop';
+import { Shop } from '@nordcom/commerce-db';
+
 import { cacheLife } from 'next/cache';
 import { type NextRequest, NextResponse } from 'next/server';
 
@@ -74,7 +75,7 @@ export async function GET({}: NextRequest, { params }: { params: RobotsParams })
     cacheLife('max');
 
     const { domain } = await params;
-    const shop = await findShopByDomainOverHttp(domain);
+    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
 
     return new NextResponse(
         nextRobotsSchemaParser({

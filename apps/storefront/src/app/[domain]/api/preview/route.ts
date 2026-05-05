@@ -1,4 +1,5 @@
-import { findShopByDomainOverHttp } from '@/api/shop';
+import { Shop } from '@nordcom/commerce-db';
+
 import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
 import { redirectToPreviewURL } from '@prismicio/next';
@@ -14,7 +15,7 @@ export async function GET(request: NextRequest, { params }: { params: PreviewApi
     const locale = Locale.default;
 
     const { domain } = await params;
-    const shop = await findShopByDomainOverHttp(domain);
+    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     if (shop.contentProvider.type !== 'prismic') {
         // TODO: Handle non-Prismic content providers.
         return NextResponse.json({ status: 404, message: 'Non-Prismic content providers are not supported.' });

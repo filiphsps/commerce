@@ -1,4 +1,3 @@
-import type { JSX } from 'react';
 import { cn } from '@/utils/tailwind';
 
 import { Card } from '@/components/layout/card';
@@ -7,6 +6,7 @@ import { PrismicText } from '@/components/typography/prismic-text';
 
 import type { Content as Slices } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
+import type { JSX } from 'react';
 
 const DefaultContentBlock = (props: ContentBlockProps): JSX.Element => {
     const {

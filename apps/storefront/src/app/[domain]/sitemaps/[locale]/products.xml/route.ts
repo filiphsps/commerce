@@ -1,4 +1,5 @@
-import { findShopByDomainOverHttp } from '@/api/shop';
+import { Shop } from '@nordcom/commerce-db';
+
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductsPaginationApi } from '@/api/shopify/product';
 import { Locale } from '@/utils/locale';
@@ -29,7 +30,7 @@ export async function GET({}: NextRequest, { params }: ProductsSitemapRouteParam
 
     const locale = Locale.from(localeData);
 
-    const shop = await findShopByDomainOverHttp(domain);
+    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const api = await ShopifyApolloApiClient({ shop, locale });
 
     let res: Awaited<ReturnType<typeof ProductsPaginationApi>> | null = null;

@@ -1,4 +1,3 @@
-import type { JSX } from 'react';
 import { linkResolver } from '@/utils/prismic';
 import { cn } from '@/utils/tailwind';
 import { asLink } from '@prismicio/client';
@@ -9,6 +8,7 @@ import { Content } from '@/components/typography/content';
 import { PrismicText } from '@/components/typography/prismic-text';
 
 import type { BannerSliceDefault } from '@/prismic/types';
+import type { JSX } from 'react';
 
 export const BannerDefault = ({ slice }: { slice: BannerSliceDefault }): JSX.Element => {
     return (

@@ -5,7 +5,6 @@ import { Suspense } from 'react';
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 
-import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi, BlogArticleApi } from '@/api/shopify/blog';
 import { LocalesApi } from '@/api/store';
@@ -43,7 +42,7 @@ export async function generateStaticParams({
     const { domain, locale: localeData } = params;
     const locale = Locale.from(localeData);
 
-    const shop = await findShopByDomainOverHttp(domain);
+    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const api = await ShopifyApolloApiClient({ shop, locale });
 
     const [blog, blogError] = await BlogApi({ api });

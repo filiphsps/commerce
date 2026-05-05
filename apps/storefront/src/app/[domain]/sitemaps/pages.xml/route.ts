@@ -1,5 +1,6 @@
+import { Shop } from '@nordcom/commerce-db';
+
 import { PagesApi } from '@/api/page';
-import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { Locale } from '@/utils/locale';
@@ -16,7 +17,7 @@ export async function GET({}: NextRequest, { params }: { params: DynamicSitemapR
     cacheLife('max');
 
     const { domain } = await params;
-    const shop = await findShopByDomainOverHttp(domain);
+    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const locale = Locale.default;
     const api = await ShopifyApiClient({ shop, locale });
     const locales = await LocalesApi({ api });
@@ -29,19 +30,17 @@ export async function GET({}: NextRequest, { params }: { params: DynamicSitemapR
         }));
 
     return getServerSideSitemap(
-        locales
-            .map(({ code }) => {
-                return pages.map(
-                    (page) =>
-                        ({
-                            loc: `https://${shop.domain}/${code}/${page.url}${page.url && !page.url.endsWith('/') ? '/' : ''}`,
-                            changefreq: 'weekly',
-                            lastmod: convertPrismicDateToISO(page.last_publication_date),
-                            //priority: 0.9,
-                            trailingSlash: true
-                        }) as ISitemapField
-                );
-            })
-            .flat(1)
+        locales.flatMap(({ code }) => {
+            return pages.map(
+                (page) =>
+                    ({
+                        loc: `https://${shop.domain}/${code}/${page.url}${page.url && !page.url.endsWith('/') ? '/' : ''}`,
+                        changefreq: 'weekly',
+                        lastmod: convertPrismicDateToISO(page.last_publication_date),
+                        //priority: 0.9,
+                        trailingSlash: true
+                    }) as ISitemapField
+            );
+        })
     );
 }

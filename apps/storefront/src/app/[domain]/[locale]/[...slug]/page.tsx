@@ -6,7 +6,6 @@ import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
 
 import { PageApi, PagesApi } from '@/api/page';
-import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { BusinessDataApi, LocalesApi } from '@/api/store';
 import { isValidHandle } from '@/utils/handle';
@@ -36,15 +35,17 @@ export async function generateStaticParams({
     try {
         const locale = Locale.from(localeData);
 
-        const shop = await findShopByDomainOverHttp(domain);
+        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
         const pages = await PagesApi({ shop, locale });
         if (!pages) {
             return [];
         }
 
-        return pages.map(({ uid }) => ({
-            slug: [uid!] // TODO: Handle nested paths.
-        }));
+        return pages
+            .filter((p): p is typeof p & { uid: string } => typeof p.uid === 'string')
+            .map(({ uid }) => ({
+                slug: [uid]
+            }));
     } catch (error: unknown) {
         console.error(error);
         return [];

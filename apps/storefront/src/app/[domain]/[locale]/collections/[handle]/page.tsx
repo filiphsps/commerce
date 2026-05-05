@@ -4,7 +4,6 @@ import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 
 import { PageApi } from '@/api/prismic/page';
-import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CollectionApi, CollectionPaginationCountApi, CollectionsApi } from '@/api/shopify/collection';
 import { LocalesApi } from '@/api/store';
@@ -51,7 +50,7 @@ export async function generateStaticParams({
     try {
         const locale = Locale.from(localeData);
 
-        const shop = await findShopByDomainOverHttp(domain);
+        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
         const api = await ShopifyApolloApiClient({ shop, locale });
         const collections = await CollectionsApi({ api });
 

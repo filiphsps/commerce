@@ -1,6 +1,7 @@
+import { Shop } from '@nordcom/commerce-db';
 import { Error, MissingEnvironmentVariableError, NotFoundError, UnknownError } from '@nordcom/commerce-errors';
 
-import { findShopByDomainOverHttp } from '@/api/shop';
+import { getGlobalServiceDomain } from '@/api/shop';
 import { ShopifyApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { commonValidations } from '@/middleware/common-validations';
@@ -15,7 +16,7 @@ function hostnameFromRequest(req: NextRequest): string {
     let hostname = (req.headers.get('host')?.replace('.localhost', '') || req.nextUrl.host || '').toLowerCase();
 
     // Remove port from hostname.
-    hostname = hostname ? hostname.split(':')[0]! : '';
+    hostname = hostname ? hostname.split(':')[0] : '';
 
     // Deal with development server and Vercel's preview URLs.
     if (
@@ -34,7 +35,7 @@ function hostnameFromRequest(req: NextRequest): string {
 
 export const getHostname = async (req: NextRequest): Promise<string> => {
     const hostname = hostnameFromRequest(req);
-    const domain = (await findShopByDomainOverHttp(hostname)).domain;
+    const domain = (await Shop.findByDomain(hostname, { sensitiveData: true })).domain;
 
     if (!domain) {
         throw new NotFoundError(`"Shop" with the handle "${hostname}" cannot be found`);
@@ -48,7 +49,7 @@ async function setCookies(res: NextResponse, cookies: string[][] = []): Promise<
         return res;
     }
 
-    cookies.forEach(([key, value]) => res.cookies.set(key, value));
+    cookies.forEach(([key, value]) => void res.cookies.set(key, value));
     return res;
 }
 
@@ -56,7 +57,7 @@ async function handleCommerceError(req: NextRequest, error: Error) {
     const hostname = hostnameFromRequest(req);
 
     const newUrl = new URL(req.url);
-    newUrl.hostname = 'shops.nordcom.io';
+    newUrl.hostname = getGlobalServiceDomain();
     newUrl.protocol = 'https';
     newUrl.port = '443';
     newUrl.pathname = '/status/unknown-error/'; // Default error.
@@ -99,7 +100,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     } catch (error: unknown) {
         console.error(error);
 
-        newUrl.hostname = 'shops.nordcom.io';
+        newUrl.hostname = getGlobalServiceDomain();
         newUrl.protocol = 'https';
         newUrl.port = '443';
         newUrl.searchParams.set('shop', hostnameFromRequest(req));
@@ -144,7 +145,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         let locale = req.cookies.get('localization')?.value || req.cookies.get('NEXT_LOCALE')?.value;
 
         if (!locale) {
-            const shop = await findShopByDomainOverHttp(hostname);
+            const shop = await Shop.findByDomain(hostname, { sensitiveData: true });
             const api = await ShopifyApiClient({ shop });
             const locales = (await LocalesApi({ api })).map((locale) => locale.code);
 

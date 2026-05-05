@@ -2,7 +2,7 @@ import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skel
 import { Card } from '@/components/layout/card';
 import PageContent from '@/components/page-content';
 
-import { BLOCK_STYLES } from './page';
+import { BLOCK_STYLES } from './styles';
 
 export default function ProductPageLoading() {
     return (

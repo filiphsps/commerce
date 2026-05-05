@@ -1,18 +1,30 @@
-import type { OnlineShop } from '@nordcom/commerce-db';
+import { type OnlineShop, Shop } from '@nordcom/commerce-db';
+import { Error } from '@nordcom/commerce-errors';
 
-import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApiClient } from '@/api/shopify';
 import { BrandApi } from '@/api/shopify/brand';
 import { Locale } from '@/utils/locale';
 import { colord, extend } from 'colord';
 import a11yPlugin from 'colord/plugins/a11y';
+import { notFound } from 'next/navigation';
 
 extend([a11yPlugin]);
 
 // TODO: Generalize this
 export const getBrandingColors = async ({ domain, shop }: { domain: string; shop?: OnlineShop }) => {
     try {
-        shop = shop || (await findShopByDomainOverHttp(domain));
+        if (!shop) {
+            try {
+                shop = await Shop.findByDomain(domain, { convert: true });
+            } catch (error: unknown) {
+                if (Error.isNotFound(error)) {
+                    notFound();
+                }
+
+                console.error(error);
+                throw error;
+            }
+        }
 
         const {
             design: { accents },
@@ -105,4 +117,5 @@ const CssVariablesProvider = async ({ domain, shop }: { domain: string; shop?: O
 };
 
 CssVariablesProvider.displayName = 'Nordcom.CssVariablesProvider';
+
 export { CssVariablesProvider };

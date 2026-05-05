@@ -6,7 +6,8 @@ import { Error } from '@nordcom/commerce-errors';
 
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductApi } from '@/api/shopify/product';
-import { BLOCK_STYLES, type ProductPageParams } from '@/pages/products/[handle]/page';
+import { type ProductPageParams } from '@/pages/products/[handle]/page';
+import { BLOCK_STYLES } from '@/pages/products/[handle]/styles';
 import { isValidHandle } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
