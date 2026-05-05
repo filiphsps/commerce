@@ -61,7 +61,7 @@
         "@radix-ui/react-dialog": "1.1.15",
         "@radix-ui/react-visually-hidden": "1.2.3",
         "@sentry/nextjs": "10.51.0",
-        "@sentry/profiling-node": "8.37.1",
+        "@sentry/profiling-node": "10.51.0",
         "@shopify/hydrogen-react": "2024.7.6",
         "@vercel/analytics": "2.0.1",
         "@vercel/edge-config": "1.4.3",
