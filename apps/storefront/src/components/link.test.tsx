@@ -6,33 +6,33 @@ import Link from '@/components/link';
 
 import type { Locale } from '@/utils/locale';
 
+vi.mock('@shopify/hydrogen-react', async () => {
+    return {
+        useCart: vi.fn().mockReturnValue({
+            status: 'idle'
+        }),
+        useShop: vi.fn().mockReturnValue({
+            domain: 'staging.demo.nordcom.io'
+        }),
+        useShopifyCookies: vi.fn().mockReturnValue({})
+    };
+});
+
+vi.mock('@/utils/build-config', () => ({
+    BuildConfig: {
+        domain: 'staging.demo.nordcom.io',
+        i18n: {
+            default: 'en-US'
+        }
+    }
+}));
+
 describe('components', () => {
     describe('Link', () => {
         beforeEach(() => {
             vi.spyOn(console, 'warn').mockImplementation(() => {});
             vi.spyOn(console, 'error').mockImplementation(() => {});
         });
-
-        vi.mock('@shopify/hydrogen-react', async () => {
-            return {
-                useCart: vi.fn().mockReturnValue({
-                    status: 'idle'
-                }),
-                useShop: vi.fn().mockReturnValue({
-                    domain: 'staging.demo.nordcom.io'
-                }),
-                useShopifyCookies: vi.fn().mockReturnValue({})
-            };
-        });
-
-        vi.mock('@/utils/build-config', () => ({
-            BuildConfig: {
-                domain: 'staging.demo.nordcom.io',
-                i18n: {
-                    default: 'en-US'
-                }
-            }
-        }));
 
         it('should render a link with the correct `href`', () => {
             const href = '/some/path';

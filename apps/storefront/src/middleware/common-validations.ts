@@ -57,6 +57,5 @@ export const commonValidations = <T extends string | NextURL | URL>(url: T): T =
         return url;
     }
 
-    // eslint-disable-next-line no-unreachable
     throw new UnreachableError();
 };

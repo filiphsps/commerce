@@ -1,4 +1,5 @@
 /* c8 ignore start */
+
 import { verifyAccess } from '@vercel/flags';
 import { NextResponse } from 'next/server';
 
@@ -6,7 +7,6 @@ import type { ApiData } from '@vercel/flags';
 import type { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
-export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
     const access = await verifyAccess(request.headers.get('Authorization'));

@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 
 import { type LocaleDictionary } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
@@ -24,12 +24,7 @@ const ProductCardActions = ({ i18n, data: product, selectedVariant }: ProductCar
 
     const line = (lines as CartLine[]).find(({ merchandise: { id } }) => id === selectedVariant.id) ?? null;
 
-    const [quantity, setQuantity] = useState<number>(1);
-    useEffect(() => {
-        if (!line) return;
-
-        setQuantity(line.quantity);
-    }, [line, line?.quantity]);
+    const quantity = line ? line.quantity : 1;
 
     const update = useCallback(
         (quantity: number) => {
@@ -44,7 +39,7 @@ const ProductCardActions = ({ i18n, data: product, selectedVariant }: ProductCar
                 }
             ]);
         },
-        [linesUpdate, lines, cartReady]
+        [linesUpdate, lines, line]
     );
 
     if (cartReady === undefined) {

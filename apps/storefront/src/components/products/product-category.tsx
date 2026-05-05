@@ -33,17 +33,10 @@ export async function ProductCategory({
     const typeTextElement = <>{productType}</>;
     const type = TitleToHandle(productType.toLowerCase().trim());
 
+    let collection: Awaited<ReturnType<typeof CollectionApi>>;
     try {
         const api = await ShopifyApiClient({ shop, locale });
-        const collection = await CollectionApi({ handle: type, api, first: 1 });
-        return (
-            <>
-                {prefix}
-                <Link className={cn('hover:text-primary', className)} href={`/collections/${collection.handle}/`}>
-                    {typeTextElement}
-                </Link>
-            </>
-        );
+        collection = await CollectionApi({ handle: type, api, first: 1 });
     } catch {
         return (
             <>
@@ -52,4 +45,13 @@ export async function ProductCategory({
             </>
         );
     }
+
+    return (
+        <>
+            {prefix}
+            <Link className={cn('hover:text-primary', className)} href={`/collections/${collection.handle}/`}>
+                {typeTextElement}
+            </Link>
+        </>
+    );
 }

@@ -1,10 +1,8 @@
 import { findShopByDomainOverHttp } from '@/api/shop';
+import { cacheLife } from 'next/cache';
 import { type NextRequest, NextResponse } from 'next/server';
 
 import type { MetadataRoute } from 'next';
-
-export const dynamic = 'force-static';
-export const revalidate = false;
 
 type Rules = Extract<MetadataRoute.Robots['rules'], Array<any>>;
 type Rule = Rules[number];
@@ -72,6 +70,9 @@ export type RobotsParams = Promise<{
     domain: string;
 }>;
 export async function GET({}: NextRequest, { params }: { params: RobotsParams }): Promise<any> {
+    'use cache';
+    cacheLife('max');
+
     const { domain } = await params;
     const shop = await findShopByDomainOverHttp(domain);
 

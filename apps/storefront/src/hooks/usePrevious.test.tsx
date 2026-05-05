@@ -25,7 +25,7 @@ describe('hooks', () => {
             expect(result.current).toBe('updated');
         });
 
-        it('should return the previous value after a re-render with the same value', () => {
+        it('should keep the previous distinct value when re-rendered with the same value', () => {
             const { result, rerender } = renderHook(({ value }) => usePrevious(value), {
                 initialProps: { value: 'initial' }
             });
@@ -33,10 +33,10 @@ describe('hooks', () => {
             expect(result.current).toBeUndefined();
 
             rerender({ value: 'initial' });
-            expect(result.current).toBe('initial');
+            expect(result.current).toBeUndefined();
 
             rerender({ value: 'initial' });
-            expect(result.current).toBe('initial');
+            expect(result.current).toBeUndefined();
         });
 
         it('should return the previous value after a re-render with a different value', () => {

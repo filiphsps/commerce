@@ -9,8 +9,6 @@ import { getSlices, SliceSimulator } from '@slicemachine/adapter-next/simulator'
 
 import type { SliceSimulatorParams } from '@slicemachine/adapter-next/simulator';
 
-export const dynamic = 'force-dynamic';
-
 export type SliceSimulatorPageParams = Promise<{ domain: string }>;
 
 export default async function SliceSimulatorPage({

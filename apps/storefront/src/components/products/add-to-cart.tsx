@@ -1,7 +1,6 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 'use client';
 
-import { type HTMLProps, useCallback, useEffect, useState } from 'react';
+import { type HTMLProps, useCallback, useState } from 'react';
 
 import { getTranslations } from '@/utils/locale';
 import { productToMerchantsCenterId } from '@/utils/merchants-center-id';
@@ -29,7 +28,6 @@ export type AddToCartProps = {
     };
 } & Omit<HTMLProps<HTMLButtonElement>, 'data'>;
 
-// eslint-disable-next-line unused-imports/no-unused-vars
 export function AddToCart({
     i18n,
     redirect = false,
@@ -57,7 +55,7 @@ export function AddToCart({
     const ready = selectedVariant?.availableForSale && cartReady && !['updating'].includes(status);
 
     const add = useCallback(() => {
-        if (!ready || !product || !selectedVariant) {
+        if (!ready || !product) {
             // TODO: i18n.
             toast.warning(`The cart is still loading, please try again in a few seconds!`);
             return;
@@ -65,7 +63,7 @@ export function AddToCart({
 
         linesAdd([
             {
-                merchandiseId: selectedVariant!.id!,
+                merchandiseId: selectedVariant.id!,
                 quantity
             }
         ]);
@@ -81,8 +79,8 @@ export function AddToCart({
                             item_id: productToMerchantsCenterId({
                                 locale,
                                 product: {
-                                    productGid: product!.id!,
-                                    variantGid: selectedVariant!.id!
+                                    productGid: product.id!,
+                                    variantGid: selectedVariant.id!
                                 }
                             }),
                             item_name: product.title,
@@ -113,34 +111,25 @@ export function AddToCart({
         if (redirect) {
             router.push('/cart/');
         }
-    }, [linesAdd, selectedVariant, quantity, ready]);
+    }, [linesAdd, selectedVariant, quantity, ready, animation, locale, path, postEvent, product, redirect, router]);
 
-    const [label, setLabel] = useState<string>(t('add-to-cart'));
-    useEffect(() => {
-        if (children) return;
+    const label = (() => {
+        if (children) return t('add-to-cart');
 
         if (animation) {
-            const newLabel = t('added-to-cart');
-
             // 1. Have we just successfully added to cart, if so, show a checkmark.
-            if (label !== newLabel) setLabel(newLabel);
+            return t('added-to-cart');
         } else if (!selectedVariant?.availableForSale) {
-            const newLabel = t('out-of-stock');
-
             // 2. If out of stock, show the relevant label.
-            if (label !== newLabel) setLabel(newLabel);
+            return t('out-of-stock');
         } else if (!quantity || quantity < 1) {
-            const newLabel = t('quantity-too-low');
-
             // 3. Quantity is either invalid or 0.
-            if (label !== newLabel) setLabel(newLabel);
-        } else {
-            const newLabel = t('add-to-cart');
-
-            // 4. Default state.
-            if (label !== newLabel) setLabel(newLabel);
+            return t('quantity-too-low');
         }
-    }, [animation, selectedVariant]);
+
+        // 4. Default state.
+        return t('add-to-cart');
+    })();
 
     const disabled = isDisabled || !ready || quantity <= 0;
 

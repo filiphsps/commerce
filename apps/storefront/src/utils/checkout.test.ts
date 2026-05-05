@@ -7,29 +7,29 @@ import { Locale } from '@/utils/locale';
 
 import type { CartWithActions } from '@shopify/hydrogen-react';
 
+vi.mock('@/utils/build-config', () => ({
+    BuildConfig: {
+        shopify: {
+            domain: 'example.com',
+            checkout_domain: 'checkout.example.com'
+        }
+    }
+}));
+
+vi.mock('@/utils/pluralize', () => ({
+    Pluralize: vi.fn(({ count, noun, suffix }) => `${count} ${noun}${count > 1 ? suffix : ''}`)
+}));
+
+vi.mock('@/utils/merchants-center-id', () => ({
+    productToMerchantsCenterId: vi.fn(() => 'product-id')
+}));
+
 describe('utils', () => {
     describe('checkout', () => {
         beforeEach(() => {
             vi.spyOn(console, 'warn').mockImplementation(() => {});
             vi.spyOn(console, 'error').mockImplementation(() => {});
         });
-
-        vi.mock('@/utils/build-config', () => ({
-            BuildConfig: {
-                shopify: {
-                    domain: 'example.com',
-                    checkout_domain: 'checkout.example.com'
-                }
-            }
-        }));
-
-        vi.mock('@/utils/pluralize', () => ({
-            Pluralize: vi.fn(({ count, noun, suffix }) => `${count} ${noun}${count > 1 ? suffix : ''}`)
-        }));
-
-        vi.mock('@/utils/merchants-center-id', () => ({
-            productToMerchantsCenterId: vi.fn(() => 'product-id')
-        }));
 
         const cart: CartWithActions = {
             totalQuantity: 2,

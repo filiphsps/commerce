@@ -1,6 +1,6 @@
 'use client';
 
-import { type ComponentProps, type ReactNode, useEffect, useState } from 'react';
+import { type ComponentProps, type ReactNode } from 'react';
 
 import { cn } from '@/utils/tailwind';
 import Link from 'next/link';
@@ -13,16 +13,12 @@ export type MenuItemProps = {
 };
 export function MenuItem({ href, children, className }: MenuItemProps) {
     const pathname = usePathname();
-    const [active, setActive] = useState(false);
 
-    useEffect(() => {
-        if (href.toString().split('/')[2] === '') {
-            setActive(href.toString().toLowerCase().startsWith(pathname.toLowerCase()));
-            return;
-        }
-
-        setActive(pathname.toLowerCase().startsWith(href.toString().toLowerCase()));
-    }, [href, pathname]);
+    const hrefString = href.toString();
+    const active =
+        hrefString.split('/')[2] === ''
+            ? hrefString.toLowerCase().startsWith(pathname.toLowerCase())
+            : pathname.toLowerCase().startsWith(hrefString.toLowerCase());
 
     return (
         <Link

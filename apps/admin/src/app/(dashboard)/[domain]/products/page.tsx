@@ -28,13 +28,7 @@ export default async function ShopProductsPagePage({ params }: ShopProductsPageP
     const { domain } = await params;
 
     try {
-        const _shop = await Shop.findByDomain(domain, { convert: true });
-
-        return (
-            <>
-                <Heading level="h1">Products</Heading>
-            </>
-        );
+        await Shop.findByDomain(domain, { convert: true });
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
             notFound();
@@ -42,4 +36,10 @@ export default async function ShopProductsPagePage({ params }: ShopProductsPageP
 
         throw error;
     }
+
+    return (
+        <>
+            <Heading level="h1">Products</Heading>
+        </>
+    );
 }

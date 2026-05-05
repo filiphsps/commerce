@@ -14,16 +14,21 @@ export type Image = {
     copyright?: string;
 };
 
-export const findShopByDomainOverHttp = async (domain: string): Promise<OnlineShop> => {
-    if (!process.env.MONGODB_DATA_API_TOKEN) {
+function getMongoDbApiToken() {
+    const token = process.env.MONGODB_DATA_API_TOKEN;
+    if (!token) {
         throw new MissingEnvironmentVariableError('MONGODB_DATA_API_TOKEN');
     }
 
+    return token;
+}
+
+export const findShopByDomainOverHttp = async (domain: string): Promise<OnlineShop> => {
     const data = await fetch(`${process.env.MONGODB_DATA_API_URI}/action/findOne`, {
         headers: {
             'Content-Type': 'application/json',
             'Access-Control-Request-Headers': '*',
-            'api-key': process.env.MONGODB_DATA_API_TOKEN!
+            'api-key': getMongoDbApiToken()
         },
         method: 'POST',
         body: JSON.stringify({
@@ -44,7 +49,7 @@ export const findShopByDomainOverHttp = async (domain: string): Promise<OnlineSh
             tags: [domain]
         }
     });
-    if (!(data as any) || (data.status >= 400 && data.status < 500)) {
+    if (!(data as typeof data | null) || (data.status >= 400 && data.status < 500)) {
         throw new UnknownShopDomainError(data.statusText, data.status);
     } else if (data.status !== 200) {
         throw new GenericError(data.statusText);
@@ -75,7 +80,7 @@ export const findShopsByDomainOverHttp = async (): Promise<OnlineShop> => {
                 headers: {
                     'Content-Type': 'application/json',
                     'Access-Control-Request-Headers': '*',
-                    'api-key': process.env.MONGODB_DATA_API_TOKEN!
+                    'api-key': getMongoDbApiToken()
                 },
                 method: 'POST',
                 body: JSON.stringify({

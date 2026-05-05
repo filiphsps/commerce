@@ -6,10 +6,6 @@ import { SessionProvider } from 'next-auth/react';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
-export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-
 export type LayoutParams = Promise<{ domain: string; locale: string }>;
 
 export const metadata: Metadata = {

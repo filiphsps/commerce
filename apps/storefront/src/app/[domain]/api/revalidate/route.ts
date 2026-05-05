@@ -5,11 +5,6 @@ import { findShopByDomainOverHttp } from '@/api/shop';
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { type NextRequest, NextResponse } from 'next/server';
 
-export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic';
-export const dynamicParams = true;
-export const revalidate = false;
-
 const headers = { 'Cache-Control': 'no-store' };
 
 export type RevalidateApiRouteParams = Promise<{
@@ -23,8 +18,8 @@ const route = async (req: NextRequest, { domain }: Awaited<RevalidateApiRoutePar
         const shop = await findShopByDomainOverHttp(domain);
 
         //TODO: Do this in the correct place.
-        revalidateTag(shop.id);
-        revalidateTag(shop.domain);
+        revalidateTag(shop.id, 'max');
+        revalidateTag(shop.domain, 'max');
         revalidatePath('/en-US/homepage/', 'page'); // FIXME: Do this properly.
 
         switch (req.method) {
@@ -35,7 +30,7 @@ const route = async (req: NextRequest, { domain }: Awaited<RevalidateApiRoutePar
                 const data = await req.json();
                 console.warn(JSON.stringify({ ...data }, null, 4));
 
-                revalidateTag('shopify');
+                revalidateTag('shopify', 'max');
 
                 return NextResponse.json(
                     {
@@ -55,7 +50,7 @@ const route = async (req: NextRequest, { domain }: Awaited<RevalidateApiRoutePar
                 // FIXME: This is incorrect, prismic also uses POST.
                 console.warn(`Revalidated prismic for shop with id ${shop.id}`);
 
-                revalidateTag('prismic');
+                revalidateTag('prismic', 'max');
 
                 return NextResponse.json(
                     {
@@ -114,15 +109,17 @@ export async function POST(req: NextRequest, { params }: { params: RevalidateApi
     const shop = await Shop.findByDomain(domain);
 
     const userAgent = req.headers.get('user-agent');
-    if (userAgent && userAgent.includes('Prismic')) {
+    if (userAgent?.includes('Prismic')) {
         const body = await req.json();
         console.debug('prismic revalidation request', body);
 
         switch (body.type) {
             case 'api-update': {
-                const _documents = body.documents;
+                const documents = body.documents;
+                console.debug('prismic api-update for documents', documents);
+
                 // TODO: Invalidate only the affected documents.
-                revalidateTag(`prismic.${shop.id}`);
+                revalidateTag(`prismic.${shop.id}`, 'max');
                 return NextResponse.json({ status: 200 });
             }
             case 'test-trigger': {

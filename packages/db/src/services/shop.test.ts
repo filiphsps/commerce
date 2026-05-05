@@ -71,7 +71,6 @@ describe('services', () => {
             const filter = { name: 'Shop 1' };
             const findSpy = vi.spyOn(shopService, 'find');
 
-            // eslint-disable-next-line unused-imports/no-unused-vars
             const _res = await shopService.findByCollaborator({ collaboratorId, filter });
 
             expect(findSpy).toHaveBeenCalledOnce();

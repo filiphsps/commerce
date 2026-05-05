@@ -28,45 +28,44 @@ export type IconGridProps = SliceComponentProps<
  */
 const IconGrid = ({ slice, index: order }: IconGridProps) => {
     const background = slice.primary.background;
-    const sliceItems: IconGridProps['slice']['items'] = (slice as any).items || [];
 
-    const items = useMemo(
-        () =>
-            sliceItems.map(({ icon, title }, index) => {
-                const priority = order < 2;
+    const items = useMemo(() => {
+        const sliceItems: Array<{ icon: { url?: string | null; alt?: string | null }; title: string }> =
+            (slice as any).items || [];
 
-                return (
-                    <div
-                        key={`${title}_${index}`}
-                        className={cn(
-                            'flex items-center justify-center gap-4 rounded-lg border-2 border-solid border-transparent p-4',
-                            background === 'primary' && 'bg-primary text-primary-foreground border-primary-dark',
-                            background === 'secondary' &&
-                                'bg-secondary-light text-secondary-foreground border-secondary'
-                        )}
-                    >
-                        {icon.url ? (
-                            <Image
-                                role={icon.alt ? undefined : 'presentation'}
-                                className="h-8 w-8 select-none object-contain object-center md:h-6 md:w-6"
-                                style={{ strokeWidth: 2.5 }}
-                                src={icon.url}
-                                alt={icon.alt!}
-                                width={35}
-                                height={35}
-                                quality={75}
-                                decoding="async"
-                                loading={priority ? 'eager' : 'lazy'}
-                                priority={priority}
-                                draggable={false}
-                            />
-                        ) : null}
-                        <div className="text-sm font-semibold leading-tight lg:text-base">{title}</div>
-                    </div>
-                );
-            }),
-        [sliceItems]
-    );
+        return sliceItems.map(({ icon, title }, index) => {
+            const priority = order < 2;
+
+            return (
+                <div
+                    key={`${title}_${index}`}
+                    className={cn(
+                        'flex items-center justify-center gap-4 rounded-lg border-2 border-solid border-transparent p-4',
+                        background === 'primary' && 'bg-primary text-primary-foreground border-primary-dark',
+                        background === 'secondary' && 'bg-secondary-light text-secondary-foreground border-secondary'
+                    )}
+                >
+                    {icon.url ? (
+                        <Image
+                            role={icon.alt ? undefined : 'presentation'}
+                            className="h-8 w-8 select-none object-contain object-center md:h-6 md:w-6"
+                            style={{ strokeWidth: 2.5 }}
+                            src={icon.url}
+                            alt={icon.alt!}
+                            width={35}
+                            height={35}
+                            quality={75}
+                            decoding="async"
+                            loading={priority ? 'eager' : 'lazy'}
+                            priority={priority}
+                            draggable={false}
+                        />
+                    ) : null}
+                    <div className="text-sm font-semibold leading-tight lg:text-base">{title}</div>
+                </div>
+            );
+        });
+    }, [slice, background, order]);
 
     if (!(slice as any) || items.length <= 0) {
         return null;

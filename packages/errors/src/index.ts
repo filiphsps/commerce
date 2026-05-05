@@ -191,12 +191,11 @@ export class InvalidIDError extends ApiError {
     description = 'The ID is invalid';
     code = ApiErrorKind.API_INVALID_ID;
 
-    constructor(id?: any, cause?: string, statusCode?: number) {
+    constructor(id?: unknown, cause?: string, statusCode?: number) {
         super(cause, statusCode);
 
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if (typeof id !== undefined && id !== null) {
-            this.description = this.description.replace('ID', `ID "${id?.toString?.() || id}"`);
+        if (id !== undefined && id !== null) {
+            this.description = this.description.replace('ID', `ID "${String(id)}"`);
         }
     }
 }
@@ -207,19 +206,15 @@ export class InvalidSliceVariationError extends ApiError {
     description = 'The slice variation is invalid';
     code = ApiErrorKind.API_INVALID_SLICE_VARIATION;
 
-    constructor(variation?: any, slice?: any, cause?: string, statusCode?: number) {
+    constructor(variation?: unknown, slice?: unknown, cause?: string, statusCode?: number) {
         super(cause, statusCode);
 
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if (typeof slice !== undefined && slice !== null) {
-            this.description = this.description.replace('slice', `slice "${slice?.toString?.() || slice}"`);
+        if (slice !== undefined && slice !== null) {
+            this.description = this.description.replace('slice', `slice "${String(slice)}"`);
         }
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if (typeof variation !== undefined && variation !== null) {
-            this.description = this.description.replace(
-                'variation',
-                `variation "${variation?.toString?.() || variation}"`
-            );
+
+        if (variation !== undefined && variation !== null) {
+            this.description = this.description.replace('variation', `variation "${String(variation)}"`);
         }
     }
 }
@@ -513,6 +508,5 @@ export const getErrorFromCode = (
             return ProviderFetchError;
     }
 
-    // eslint-disable-next-line no-unreachable
     return null;
 };

@@ -56,7 +56,6 @@ export const SearchBar = ({ defaultValue, onSearch, disabled, className, i18n, .
 
                     performSearch();
                 }}
-                // eslint-disable-next-line jsx-a11y/no-autofocus
                 autoFocus={true}
                 spellCheck={true}
                 /* TODO: Make this copy configurable. */
@@ -170,7 +169,6 @@ export default function SearchContent({
                     } = product;
 
                     const image: Product['images']['edges'][number]['node'] | undefined =
-                        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                         featuredImage ?? images.edges.at(0)?.node;
 
                     const params = createProductSearchParams({ product: { trackingParameters } });

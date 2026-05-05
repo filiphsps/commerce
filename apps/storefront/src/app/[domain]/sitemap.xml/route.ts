@@ -2,17 +2,18 @@ import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { Locale } from '@/utils/locale';
+import { cacheLife } from 'next/cache';
 import { getServerSideSitemapIndex } from 'next-sitemap';
 
 import type { NextRequest } from 'next/server';
-
-export const dynamic = 'force-static';
-export const revalidate = false;
 
 export type DynamicSitemapRouteParams = Promise<{
     domain: string;
 }>;
 export async function GET({}: NextRequest, { params }: { params: DynamicSitemapRouteParams }) {
+    'use cache';
+    cacheLife('max');
+
     const locale = Locale.default;
 
     const { domain } = await params;

@@ -1,5 +1,4 @@
 /* c8 ignore start */
-
 export async function register() {
     const { registerOTel } = await import('@vercel/otel');
     registerOTel('Nordcom Commerce');
@@ -10,12 +9,18 @@ export async function register() {
         await registerInitialCache(CacheHandler, {});
     }
 
+    const sentryConfigured = Boolean(process.env.SENTRY_AUTH_TOKEN);
+
     if (process.env.NEXT_RUNTIME === 'nodejs') {
-        await import('../sentry.server.config');
+        if (sentryConfigured) {
+            await import('../sentry.server.config');
+        }
     }
 
     if (process.env.NEXT_RUNTIME === 'edge') {
-        await import('../sentry.edge.config');
+        if (sentryConfigured) {
+            await import('../sentry.edge.config');
+        }
     }
 }
 /* c8 ignore stop */

@@ -1,4 +1,3 @@
-/* eslint-disable unused-imports/no-unused-vars */
 import type { Nullable, OnlineShop } from '@nordcom/commerce-db';
 
 import { DocumentTransform } from '@apollo/client';

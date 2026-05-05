@@ -1,8 +1,6 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
 'use client';
 
-import { type ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 
 import { capitalize, getTranslations } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
@@ -44,10 +42,7 @@ export function Modal({
     const router = useRouter();
 
     const pathname = usePathname();
-    const [originalPathName, setOriginalPathName] = useState(pathname);
-    useEffect(() => {
-        setOriginalPathName(pathname);
-    }, []);
+    const [originalPathName] = useState(pathname);
 
     if (!children) {
         return null;

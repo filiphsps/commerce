@@ -1,4 +1,19 @@
 /**
+ * Returns a date `daysAhead` days from now formatted as `YYYY-MM-DD` in the
+ * caller's locale. Encapsulating `Date.now()` here keeps render functions free
+ * of impure calls while still giving callers a fresh value per invocation.
+ *
+ * @param {number} daysAhead - Number of days to add to the current time.
+ * @returns {string} The formatted future date string.
+ */
+export const futureDateString = (daysAhead: number): string =>
+    new Date(Date.now() + daysAhead * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    });
+
+/**
  * Parse and if required provide the best fallback,
  * mostly used with a Shopify pricing string.
  *

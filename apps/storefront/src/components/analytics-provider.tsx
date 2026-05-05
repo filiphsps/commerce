@@ -25,12 +25,6 @@ export const AnalyticsProvider = ({ shop, hostname, children, enableThirdParty =
     const vercelAnalyticsMode = BuildConfig.environment !== 'test' ? BuildConfig.environment : 'auto';
 
     const [deferred, setDeferred] = useState<ReactNode>(null);
-    const trackers = () => (
-        <>
-            {shop.thirdParty?.googleTagManager ? <GoogleTagManager gtmId={shop.thirdParty.googleTagManager!} /> : null}
-            <VercelAnalytics mode={vercelAnalyticsMode} debug={vercelAnalyticsMode === 'development'} />
-        </>
-    );
 
     useEffect(() => {
         if (isPreviewEnv(hostname) || isCrawler(window.navigator.userAgent)) {
@@ -38,10 +32,17 @@ export const AnalyticsProvider = ({ shop, hostname, children, enableThirdParty =
         }
 
         const timeout = setTimeout(() => {
-            setDeferred(trackers);
+            setDeferred(() => (
+                <>
+                    {shop.thirdParty?.googleTagManager ? (
+                        <GoogleTagManager gtmId={shop.thirdParty.googleTagManager!} />
+                    ) : null}
+                    <VercelAnalytics mode={vercelAnalyticsMode} debug={vercelAnalyticsMode === 'development'} />
+                </>
+            ));
         }, 6500);
         return () => clearTimeout(timeout);
-    }, []);
+    }, [hostname, shop.thirdParty?.googleTagManager, vercelAnalyticsMode]);
 
     return (
         <ErrorBoundary fallbackRender={() => children}>

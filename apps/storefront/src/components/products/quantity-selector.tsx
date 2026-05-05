@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 import { getTranslations } from '@/utils/locale';
 import { safeParseFloat } from '@/utils/pricing';
@@ -59,6 +59,15 @@ const QuantitySelector = ({
 }: QuantitySelectorProps) => {
     const { t } = getTranslations('common', i18n);
     const [quantityValue, setQuantityValue] = useState(quantity.toString() || '1');
+    const [lastQuantity, setLastQuantity] = useState(quantity);
+
+    // Sync local quantityValue with the prop whenever the upstream value changes.
+    if (quantity !== lastQuantity) {
+        setLastQuantity(quantity);
+        if (quantity.toString() !== quantityValue) {
+            setQuantityValue(quantity.toString());
+        }
+    }
 
     const { cartReady, status } = useCart();
     const ready = cartReady && !['updating'].includes(status);
@@ -79,7 +88,7 @@ const QuantitySelector = ({
 
             update(parsedQuantity);
         },
-        [update, quantity, quantityValue]
+        [update, quantity]
     );
     const decrease = useCallback(() => {
         if (allowDecreaseToZero ? quantity <= 0 : quantity <= 1) {
@@ -87,10 +96,10 @@ const QuantitySelector = ({
         }
 
         updateQuantity(quantity - 1);
-    }, [quantity]);
+    }, [quantity, allowDecreaseToZero, updateQuantity]);
     const increase = useCallback(() => {
         updateQuantity(quantity + 1);
-    }, [quantity]);
+    }, [quantity, updateQuantity]);
 
     const onBlur = useCallback(() => {
         if (!quantityValue) {
@@ -105,7 +114,7 @@ const QuantitySelector = ({
         }
 
         updateQuantity(quantityValue);
-    }, [quantityValue]);
+    }, [quantityValue, allowDecreaseToZero, updateQuantity]);
     const onKeyDown = useCallback(
         ({ key }: Parameters<KeyboardEventHandler<HTMLInputElement>>[0]) => {
             if (key !== 'Enter') {
@@ -114,7 +123,7 @@ const QuantitySelector = ({
 
             updateQuantity(quantityValue);
         },
-        [quantityValue]
+        [quantityValue, updateQuantity]
     );
 
     const onChange = useCallback(
@@ -125,14 +134,6 @@ const QuantitySelector = ({
         },
         [quantityValue]
     );
-
-    useEffect(() => {
-        if (quantity.toString() === quantityValue) {
-            return;
-        }
-
-        setQuantityValue(quantity.toString());
-    }, [quantity]);
 
     const disabled = isDisabled || !ready;
     const decreaseDisabled = disabled || (allowDecreaseToZero ? quantity <= 0 : quantity <= 1);

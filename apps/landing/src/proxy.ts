@@ -4,7 +4,6 @@ import { NextResponse } from 'next/server';
 
 import type { NextRequest } from 'next/server';
 
-export const runtime = 'experimental-edge';
 export const config = {
     matcher: ['/((?!_next|_static|_vercel|instrumentation|assets|[\\w-]+\\.\\w+).*)'],
     missing: [
@@ -13,7 +12,7 @@ export const config = {
     ]
 };
 
-export default async function middleware(req: NextRequest) {
+export default async function proxy(req: NextRequest) {
     const url = req.nextUrl.clone();
     const pathname = url.pathname;
     const segments = pathname

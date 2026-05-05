@@ -18,8 +18,6 @@ import CartContent from './cart-content';
 
 import type { Metadata } from 'next';
 
-export const dynamic = 'force-dynamic';
-
 export type CartPageParams = Promise<{ domain: string; locale: string }>;
 export async function generateMetadata({ params }: { params: CartPageParams }): Promise<Metadata> {
     const { domain, locale: localeData } = await params;
@@ -36,7 +34,7 @@ export async function generateMetadata({ params }: { params: CartPageParams }): 
     const locales = await LocalesApi({ api });
 
     const i18n = await getDictionary(locale);
-    const { t } = getTranslations('common', i18n); // eslint-disable-line react-hooks/rules-of-hooks
+    const { t } = getTranslations('common', i18n);
 
     const title = page?.meta_title || capitalize(t('cart'));
     const description: string | undefined = asText(page?.meta_description) || undefined;

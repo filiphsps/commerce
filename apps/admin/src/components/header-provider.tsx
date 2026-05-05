@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 
 import { MissingContextProviderError } from '@nordcom/commerce-errors';
 
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 import type { ReactNode } from 'react';
 
@@ -23,22 +23,29 @@ export type HeaderProviderProps = {
 };
 export const HeaderProvider = ({ children = null }: HeaderProviderProps) => {
     const pathname = usePathname();
-    const router = useRouter();
 
     const [menu, setMenu] = useState<boolean>(false);
+    const [lastPathname, setLastPathname] = useState(pathname);
+
+    // Reset menu state when navigating between pages.
+    let menuValue = menu;
+    if (pathname !== lastPathname) {
+        setLastPathname(pathname);
+        setMenu(false);
+        menuValue = false;
+    }
 
     // Deal with showing shadow when the menu is open.
     useEffect(() => {
-        document.body.setAttribute('data-menu-open', menu.toString());
-    }, [, menu]);
+        document.body.setAttribute('data-menu-open', menuValue.toString());
+    }, [menuValue]);
 
-    // Stop the loader on page navigation and close the menu.
+    // Clean up the menu attribute on navigation.
     useEffect(() => {
         document.body.removeAttribute('data-menu-open');
-        setMenu(false);
-    }, [pathname, router]);
+    }, [pathname]);
 
-    const value = { menu, setMenu, closeMenu: () => setMenu(false) };
+    const value = { menu: menuValue, setMenu, closeMenu: () => setMenu(false) };
     return <HeaderContext.Provider value={value}>{children}</HeaderContext.Provider>;
 };
 

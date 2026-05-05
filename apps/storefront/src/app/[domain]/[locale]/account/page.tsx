@@ -12,10 +12,6 @@ import { Label } from '@/components/typography/label';
 
 import type { Metadata } from 'next';
 
-export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-
 export type AccountDashboardParams = Promise<{ domain: string; locale: string }>;
 
 export async function generateMetadata({ params }: { params: AccountDashboardParams }): Promise<Metadata> {

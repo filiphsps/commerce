@@ -7,6 +7,7 @@ import { Heading } from '@nordcom/nordstar';
 import { components } from '@/markdoc';
 import Markdoc from '@markdoc/markdoc';
 import gravatar from 'gravatar.js';
+import { cacheLife } from 'next/cache';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -15,8 +16,6 @@ import { Content } from '@/components/content';
 import { getArticleContent, getArticlePaths } from './articles';
 
 import type { Metadata } from 'next';
-
-export const dynamicParams = false;
 
 export type ArticlePageParams = Promise<{
     year: string;
@@ -52,6 +51,9 @@ export async function generateMetadata({ params }: { params: ArticlePageParams }
 }
 
 export default async function ArticlePage({ params }: { params: ArticlePageParams }) {
+    'use cache';
+    cacheLife('max');
+
     const { year, month, slug } = await params;
     const {
         content,

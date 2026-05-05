@@ -1,7 +1,6 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
     "compilerOptions": {
-        "baseUrl": ".",
         "plugins": [{ "name": "next" }],
         "lib": ["DOM", "DOM.iterable", "ESNext"],
         "rootDir": "../../",
@@ -9,35 +8,34 @@
         "jsxImportSource": "react",
         "paths": {
             // Storefront.
-            "@/middleware/*": ["src/middleware/*"],
-            "@/components/*": ["src/components/*"],
-            "@/hooks/*": ["src/hooks/*"],
-            "@/api/*": ["src/api/*"],
-            "@/auth": ["src/auth/auth.ts"],
-            "@/auth/*": ["src/auth/*"],
-            "@/models/*": ["src/models/*"],
-            "@/utils/*": ["src/utils/*"],
-            "@/utils/locale": ["src/utils/locale/index.ts"],
-            "@/styles/*": ["src/scss/*"],
-            "@/pages/*": ["src/app/[domain]/[locale]/*"],
+            "@/middleware/*": ["./src/middleware/*"],
+            "@/components/*": ["./src/components/*"],
+            "@/hooks/*": ["./src/hooks/*"],
+            "@/api/*": ["./src/api/*"],
+            "@/auth": ["./src/auth/auth.ts"],
+            "@/auth/*": ["./src/auth/*"],
+            "@/models/*": ["./src/models/*"],
+            "@/utils/*": ["./src/utils/*"],
+            "@/utils/locale": ["./src/utils/locale/index.ts"],
+            "@/styles/*": ["./src/scss/*"],
+            "@/pages/*": ["./src/app/[domain]/[locale]/*"],
             // i18n.
-            "@/i18n/*": ["src/locales/*"],
-            "@/i18n/dictionary": ["src/utils/dictionary.ts"],
+            "@/i18n/*": ["./src/locales/*"],
+            "@/i18n/dictionary": ["./src/utils/dictionary.ts"],
             // Prismic.
-            "@/slices/*": ["src/slices/*"],
-            "@/slices/navigation": ["src/slices/navigation/index.ts"],
-            "@/slices": ["src/slices/index"],
-            "@/prismic/types": ["prismicio-types.d.ts"],
+            "@/slices/*": ["./src/slices/*"],
+            "@/slices/navigation": ["./src/slices/navigation/index.ts"],
+            "@/slices": ["./src/slices/index"],
+            "@/prismic/types": ["./prismicio-types.d.ts"],
             // Assets.
-            "@/static/*": ["public/*"]
+            "@/static/*": ["./public/*"]
         },
         "allowJs": true,
-        "downlevelIteration": true,
         "esModuleInterop": true,
         "incremental": true,
         "isolatedModules": true,
         "module": "ESNext",
-        "moduleResolution": "Node10",
+        "moduleResolution": "Bundler",
         "noEmit": true,
         "resolveJsonModule": true,
         "skipLibCheck": true,
@@ -46,12 +44,18 @@
         "strictFunctionTypes": true,
         "strictNullChecks": true,
         "strictPropertyInitialization": true,
-        "target": "ES2017",
+        "target": "ESNext",
         "types": ["node"],
-        "typeRoots": ["node_modules/@types", "./src/@types"],
+        "typeRoots": ["node_modules/@types", "././src/@types"],
         "useDefineForClassFields": true
     },
     "exclude": ["node_modules"],
-    "include": ["next-env.d.ts", "src/**/*.ts", "src/**/.well-known/**/*.ts", "src/**/*.tsx", ".next/types/**/*.ts"],
+    "include": [
+        "next-env.d.ts",
+        "./src/**/*.ts",
+        "./src/**/.well-known/**/*.ts",
+        "./src/**/*.tsx",
+        ".next/types/**/*.ts"
+    ],
     "references": [{ "path": "../../tsconfig.json" }]
 }

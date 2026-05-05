@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-
 import { Suspense } from 'react';
 
 import { Shop } from '@nordcom/commerce-db';
@@ -12,6 +10,7 @@ import { getDictionary } from '@/i18n/dictionary';
 import { showSearchFilter } from '@/utils/flags';
 import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import { asText } from '@prismicio/client';
+import { cacheLife } from 'next/cache';
 
 import PrismicPage from '@/components/cms/prismic-page';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
@@ -23,13 +22,11 @@ import SearchContent from './search-content';
 
 import type { Metadata } from 'next';
 
-export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic';
-export const dynamicParams = true;
-export const revalidate = false;
-
 export type SearchPageParams = Promise<{ domain: string; locale: string }>;
 export async function generateMetadata({ params }: { params: SearchPageParams }): Promise<Metadata> {
+    'use cache';
+    cacheLife('max');
+
     const { domain, locale: localeData } = await params;
     const locale = Locale.from(localeData);
 
@@ -90,6 +87,9 @@ export default async function SearchPage({
     params: SearchPageParams;
     searchParams: SearchParams;
 }) {
+    'use cache';
+    cacheLife('max');
+
     const { domain, locale: localeData } = await params;
     const locale = Locale.from(localeData);
 

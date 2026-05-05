@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-
 import { Suspense } from 'react';
 
 import { Shop } from '@nordcom/commerce-db';
@@ -11,6 +9,7 @@ import { getDictionary } from '@/i18n/dictionary';
 import { enableProductsPage } from '@/utils/flags';
 import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import { asText } from '@prismicio/client';
+import { cacheLife } from 'next/cache';
 import { redirect, RedirectType } from 'next/navigation';
 
 import Breadcrumbs from '@/components/informational/breadcrumbs';
@@ -22,10 +21,7 @@ import ProductsContent from './products-content';
 
 import type { Metadata } from 'next';
 
-export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic'; // TODO: Figure out a better way to deal with query params.
-export const dynamicParams = true;
-export const revalidate = false;
+// TODO: Figure out a better way to deal with query params.
 
 type SearchParams = Promise<{
     page?: string;
@@ -39,6 +35,9 @@ export async function generateMetadata({
     params: ProductsPageParams;
     searchParams: SearchParams;
 }): Promise<Metadata> {
+    'use cache';
+    cacheLife('max');
+
     const { domain, locale: localeData } = await params;
     const locale = Locale.from(localeData);
 
@@ -101,6 +100,9 @@ export default async function ProductsPage({
     params: ProductsPageParams;
     searchParams: SearchParams;
 }) {
+    'use cache';
+    cacheLife('max');
+
     const { domain, locale: localeData } = await params;
     const locale = Locale.from(localeData);
 

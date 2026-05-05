@@ -1,7 +1,5 @@
 import styles from '@/components/cart/cart-summary.module.scss';
 
-import { useEffect, useState } from 'react';
-
 import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { BuildConfig } from '@/utils/build-config';
@@ -39,15 +37,9 @@ type CartSummaryProps = {
 };
 const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummaryProps) => {
     const { t } = getTranslations('cart', i18n);
-    const { totalQuantity, lines, cost, note, discountCodes = [], cartReady } = useCart();
+    const { totalQuantity, lines, cost, discountCodes = [], cartReady } = useCart();
     const { currency } = useShop();
-    const [showNote, setShowNote] = useState(false);
 
-    useEffect(() => {
-        if (!note || showNote) return;
-
-        setShowNote(showNote);
-    }, [note]);
     const sale =
         (lines &&
             lines.reduce(

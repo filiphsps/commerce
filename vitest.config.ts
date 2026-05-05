@@ -51,6 +51,7 @@ export default defineConfig({
         outputFile: {
             junit: './junit.xml'
         },
+        projects: ['{apps,packages}/*/vitest.config.ts'],
 
         coverage: {
             all: true,

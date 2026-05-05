@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, type ReactNode, Suspense, useEffect, useState } from 'react';
+import { Fragment, type ReactNode, Suspense, useSyncExternalStore } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
@@ -22,8 +22,24 @@ import { Toolbars } from '@/components/toolbars';
 
 import type { CurrencyCode, Locale } from '@/utils/locale';
 
+const subscribeToNothing = () => () => {};
+const getInternalTraffic = (): boolean => {
+    if (typeof window === 'undefined') {
+        return false;
+    }
+
+    // Use vercel toolbar to determine internal traffic.
+    // TODO: This should be some form of a utility function.
+    const value = localStorage.getItem('__vercel_toolbar');
+    if (value !== '1' || (!Number.isNaN(value) && Number.parseInt(value, 10) >= 1)) {
+        return false;
+    }
+
+    return true;
+};
+
 const RequiredHooks = ({ locale, children = null }: { shop: OnlineShop; locale: Locale; children?: ReactNode }) => {
-    const {} = useCartUtils({ locale });
+    void useCartUtils({ locale });
 
     return children;
 };
@@ -64,21 +80,7 @@ const ContentProvider = ({
     locale: Locale;
     children: ReactNode;
 }) => {
-    const [isInternalTraffic, setIsInternalTraffic] = useState(false);
-    useEffect(() => {
-        if (!(window as any).localStorage) {
-            return;
-        }
-
-        // Use vercel toolbar to determine internal traffic.
-        // TODO: This should be some form of a utility function.
-        const value = localStorage.getItem('__vercel_toolbar');
-        if (value !== '1' || (!Number.isNaN(value) && Number.parseInt(value) >= 1)) {
-            return;
-        }
-
-        setIsInternalTraffic(true);
-    }, []);
+    const isInternalTraffic = useSyncExternalStore<boolean>(subscribeToNothing, getInternalTraffic, () => false);
 
     switch (shop.contentProvider.type) {
         case 'prismic': {
@@ -125,7 +127,7 @@ const ProvidersRegistry = ({
                         <CartProvider
                             cartFragment={CartFragment}
                             languageCode={locale.language}
-                            countryCode={locale.country!}
+                            countryCode={locale.country}
                         >
                             <ErrorBoundary fallbackRender={() => null}>
                                 <Suspense fallback={<Fragment />}>

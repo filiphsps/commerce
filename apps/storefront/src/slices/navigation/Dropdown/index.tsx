@@ -21,7 +21,6 @@ const Dropdown = ({ slice, context: { isHeader = false, menu = null } }: Dropdow
         }
     }
 
-    // eslint-disable-next-line no-unreachable
     return null;
 };
 

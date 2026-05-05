@@ -51,11 +51,14 @@ export default function Link({ locale, href, prefetch, ...props }: LinkProps) {
     }
 
     // Get the locale if it's not provided to us.
+    let resolvedLocale: Locale;
     try {
-        locale = !!(locale as any) ? locale : (shop.locale as any) || (Locale.current as any) || Locale.default;
+        resolvedLocale = !!(locale as any)
+            ? locale!
+            : (shop.locale as any) || (Locale.current as any) || Locale.default;
     } catch (error: unknown) {
         console.error(error);
-        locale = Locale.default;
+        resolvedLocale = Locale.default;
     }
 
     const url = ((href: string = '', shop?: OnlineShop): string | URL => {
@@ -74,7 +77,7 @@ export default function Link({ locale, href, prefetch, ...props }: LinkProps) {
 
             // Check if locale is provided, if not add it.
             if (!/\/[a-z]{2}-[A-Z]{2}\//.test(href)) {
-                return `/${locale!.code}${href}`;
+                return `/${resolvedLocale.code}${href}`;
             } else {
                 // Otherwise return as-is.
                 return href;
