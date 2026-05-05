@@ -65,7 +65,7 @@
         "@types/react-dom": "18.3.0",
         "@typescript-eslint/eslint-plugin": "8.13.0",
         "@typescript-eslint/parser": "8.13.0",
-        "@vitejs/plugin-react": "4.3.3",
+        "@vitejs/plugin-react": "4.7.0",
         "@vitest/coverage-v8": "1.6.0",
         "babel-plugin-module-resolver": "5.0.2",
         "concurrently": "9.1.0",
