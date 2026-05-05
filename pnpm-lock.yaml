@@ -436,13 +436,13 @@ importers:
         version: 0.1.1
       '@tailwindcss/forms':
         specifier: 0.5.9
-        version: 0.5.9(tailwindcss@3.4.14(ts-node@10.9.1(@types/node@22.8.6)(typescript@6.0.3)))
+        version: 0.5.9(tailwindcss@4.2.2)
       '@tailwindcss/postcss':
         specifier: 4.2.2
         version: 4.2.2
       '@tailwindcss/typography':
         specifier: 0.5.15
-        version: 0.5.15(tailwindcss@3.4.14(ts-node@10.9.1(@types/node@22.8.6)(typescript@6.0.3)))
+        version: 0.5.15(tailwindcss@4.2.2)
       '@testing-library/jest-dom':
         specifier: 6.9.1
         version: 6.9.1
@@ -464,9 +464,6 @@ importers:
       '@types/react-dom':
         specifier: 19.2.3
         version: 19.2.3(@types/react@19.2.14)
-      autoprefixer:
-        specifier: 10.5.0
-        version: 10.5.0(postcss@8.5.14)
       babel-plugin-react-compiler:
         specifier: 1.0.0
         version: 1.0.0
@@ -494,9 +491,6 @@ importers:
       postcss:
         specifier: 8.5.14
         version: 8.5.14
-      postcss-import:
-        specifier: 16.1.1
-        version: 16.1.1(postcss@8.5.14)
       postcss-load-config:
         specifier: 6.0.1
         version: 6.0.1(jiti@2.6.1)(postcss@8.5.14)(yaml@2.8.4)
@@ -510,8 +504,8 @@ importers:
         specifier: 0.0.1
         version: 0.0.1
       tailwindcss:
-        specifier: 3.4.14
-        version: 3.4.14(ts-node@10.9.1(@types/node@22.8.6)(typescript@6.0.3))
+        specifier: 4.2.2
+        version: 4.2.2
       typescript:
         specifier: 6.0.3
         version: 6.0.3
