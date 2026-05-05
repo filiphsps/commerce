@@ -4,6 +4,7 @@ import { Fragment, Suspense } from 'react';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
+import { NotFoundError } from '@nordcom/commerce-errors';
 
 import { PageApi, PagesApi } from '@/api/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
@@ -32,24 +33,25 @@ export async function generateStaticParams({
 }): Promise<Omit<Awaited<CustomPageParams>, 'domain' | 'locale'>[]> {
     const { domain, locale: localeData } = params;
 
-    try {
-        const locale = Locale.from(localeData);
+    const locale = Locale.from(localeData);
 
-        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-        const pages = await PagesApi({ shop, locale });
-        if (!pages) {
-            return [];
-        }
-
-        return pages
-            .filter((p): p is typeof p & { uid: string } => typeof p.uid === 'string')
-            .map(({ uid }) => ({
-                slug: [uid]
-            }));
-    } catch (error: unknown) {
-        console.error(error);
-        return [];
+    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    const pages = await PagesApi({ shop, locale });
+    if (!pages) {
+        throw new NotFoundError('pages');
     }
+
+    const slugs = pages
+        .filter((p): p is typeof p & { uid: string } => typeof p.uid === 'string')
+        .map(({ uid }) => ({
+            slug: [uid]
+        }));
+
+    if (slugs.length === 0) {
+        throw new NotFoundError('pages');
+    }
+
+    return slugs;
 }
 
 export async function generateMetadata({ params }: { params: CustomPageParams }): Promise<Metadata> {

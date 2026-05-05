@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 
 import { Shop } from '@nordcom/commerce-db';
-import { Error } from '@nordcom/commerce-errors';
+import { Error, NotFoundError } from '@nordcom/commerce-errors';
 
 import { PageApi } from '@/api/prismic/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
@@ -40,29 +40,21 @@ export async function generateStaticParams({
 }: {
     params: Omit<Awaited<CollectionPageParams>, 'handle'>;
 }): Promise<Omit<Awaited<CollectionPageParams>, 'domain' | 'locale'>[]> {
-    /** @note Limit pre-rendering when not in production. */
-    if (process.env.VERCEL_ENV !== 'production') {
-        return [];
-    }
-
     const { domain, locale: localeData } = params;
 
-    try {
-        const locale = Locale.from(localeData);
+    const locale = Locale.from(localeData);
 
-        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-        const api = await ShopifyApolloApiClient({ shop, locale });
-        const collections = await CollectionsApi({ api });
+    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    const api = await ShopifyApolloApiClient({ shop, locale });
+    const collections = await CollectionsApi({ api });
 
-        return collections.map(({ handle }) => ({
-            handle
-        }));
-    } catch (error: unknown) {
-        unstable_rethrow(error);
-
-        console.error(error);
-        return [];
+    if (collections.length === 0) {
+        throw new NotFoundError('collections');
     }
+
+    return collections.map(({ handle }) => ({
+        handle
+    }));
 }
 
 type SearchParams = Promise<{

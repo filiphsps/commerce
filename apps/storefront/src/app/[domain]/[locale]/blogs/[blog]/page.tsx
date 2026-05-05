@@ -3,7 +3,7 @@ import 'server-only';
 import { Fragment, Suspense } from 'react';
 
 import { Shop } from '@nordcom/commerce-db';
-import { Error } from '@nordcom/commerce-errors';
+import { Error, NotFoundError } from '@nordcom/commerce-errors';
 
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi, BlogsApi } from '@/api/shopify/blog';
@@ -37,11 +37,6 @@ export async function generateStaticParams({
 }): Promise<Pick<Awaited<BlogPageParams>, 'blog'>[]> {
     const { domain, locale: localeData } = params;
 
-    /** @note Limit pre-rendering when not in production. */
-    if (process.env.VERCEL_ENV !== 'production') {
-        return [];
-    }
-
     const locale = Locale.from(localeData);
 
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
@@ -49,11 +44,11 @@ export async function generateStaticParams({
 
     const [blogs, blogsError] = await BlogsApi({ api });
     if (blogsError) {
-        if (!Error.isNotFound(blogsError)) {
-            console.error(blogsError);
-        }
+        throw blogsError;
+    }
 
-        return [];
+    if (blogs.length === 0) {
+        throw new NotFoundError('blogs');
     }
 
     return blogs.map(({ handle }) => ({

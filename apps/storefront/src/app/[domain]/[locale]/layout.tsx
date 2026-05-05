@@ -5,7 +5,7 @@ import { Fragment, Suspense } from 'react';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
-import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
+import { Error, NotFoundError, UnknownShopDomainError } from '@nordcom/commerce-errors';
 
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CountriesApi, LocaleApi, LocalesApi } from '@/api/store';
@@ -31,54 +31,33 @@ import type { ReactNode } from 'react';
 export type LayoutParams = Promise<{ domain: string; locale: string }>;
 
 export async function generateStaticParams(): Promise<Awaited<LayoutParams>[]> {
-    /** @note Limit pre-rendering when not in production. */
-    if (process.env.VERCEL_ENV !== 'production') {
-        return [];
-    }
-
     const shops = await Shop.findAll();
 
-    // const codes = await generatePermutations(precomputeFlags);
-
-    return (
+    const params = (
         await Promise.all(
             shops.map(async ({ domain }) => {
-                try {
-                    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-                    if (shop.domain.includes('demo')) {
-                        return null as any as LayoutParams;
-                    }
-
-                    return [
-                        {
-                            domain: shop.domain,
-                            locale: Locale.from('en-US').code
-                        }
-                    ];
-
-                    /*try {
-                        const api = await ShopifyApiClient({ shop });
-                        const locales = await LocalesApi({ api });
-
-                        return locales.map(({ code }) => ({
-                            domain: shop.domain,
-                            locale: code
-                        }));
-                    } catch {
-                        return [];
-                    }*/
-                } catch (error: unknown) {
-                    if (!Error.isNotFound(error)) {
-                        console.error(error);
-                    }
-
-                    return [];
+                const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+                if (shop.domain.includes('demo')) {
+                    return null as any as LayoutParams;
                 }
+
+                return [
+                    {
+                        domain: shop.domain,
+                        locale: Locale.from('en-US').code
+                    }
+                ];
             })
         )
     )
         .flat(1)
         .filter(Boolean);
+
+    if (params.length === 0) {
+        throw new NotFoundError('shops');
+    }
+
+    return params;
 }
 
 export const viewport: Viewport = {

@@ -3,7 +3,7 @@ import 'server-only';
 import { Fragment, Suspense } from 'react';
 
 import { Shop } from '@nordcom/commerce-db';
-import { Error } from '@nordcom/commerce-errors';
+import { Error, NotFoundError } from '@nordcom/commerce-errors';
 
 import { PageApi } from '@/api/prismic/page';
 import { isProductVegan } from '@/api/product';
@@ -43,27 +43,19 @@ export async function generateStaticParams({
 }: {
     params: Omit<Awaited<ProductPageParams>, 'handle'>;
 }): Promise<Omit<Awaited<ProductPageParams>, 'domain' | 'locale'>[]> {
-    /** @note Limit pre-rendering when not in production. */
-    if (process.env.VERCEL_ENV !== 'production') {
-        return [];
-    }
-
     const { domain, locale: localeData } = params;
 
-    try {
-        const locale = Locale.from(localeData);
-        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-        const api = await ShopifyApiClient({ shop, locale });
+    const locale = Locale.from(localeData);
+    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    const api = await ShopifyApiClient({ shop, locale });
 
-        const { products } = await ProductsApi({ api, limit: 5 });
+    const { products } = await ProductsApi({ api, limit: 5 });
 
-        return products.map(({ node: { handle } }) => ({ handle }));
-    } catch (error: unknown) {
-        unstable_rethrow(error);
-
-        console.error(error);
-        return [];
+    if (products.length === 0) {
+        throw new NotFoundError('products');
     }
+
+    return products.map(({ node: { handle } }) => ({ handle }));
 }
 
 type SearchParams = Promise<{

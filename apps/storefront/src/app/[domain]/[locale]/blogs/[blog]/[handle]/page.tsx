@@ -3,7 +3,7 @@ import 'server-only';
 import { Suspense } from 'react';
 
 import { Shop } from '@nordcom/commerce-db';
-import { Error } from '@nordcom/commerce-errors';
+import { Error, NotFoundError } from '@nordcom/commerce-errors';
 
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi, BlogArticleApi } from '@/api/shopify/blog';
@@ -34,11 +34,6 @@ export async function generateStaticParams({
 }: {
     params: Omit<Awaited<ArticlePageParams>, 'handle'>;
 }): Promise<Pick<Awaited<ArticlePageParams>, 'handle'>[]> {
-    /** @note Limit pre-rendering when not in production. */
-    if (process.env.VERCEL_ENV !== 'production') {
-        return [];
-    }
-
     const { domain, locale: localeData } = params;
     const locale = Locale.from(localeData);
 
@@ -47,18 +42,20 @@ export async function generateStaticParams({
 
     const [blog, blogError] = await BlogApi({ api });
     if (blogError) {
-        if (!Error.isNotFound(blogError)) {
-            console.error(blogError);
-        }
-
-        return [];
+        throw blogError;
     }
 
-    return blog.articles.edges
+    const articles = blog.articles.edges
         .map(({ node }) => node)
         .map(({ handle }) => ({
             handle
         }));
+
+    if (articles.length === 0) {
+        throw new NotFoundError('articles');
+    }
+
+    return articles;
 }
 
 export async function generateMetadata({ params }: { params: ArticlePageParams }): Promise<Metadata> {
