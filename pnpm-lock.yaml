@@ -205,8 +205,8 @@ importers:
         specifier: 4.2.3
         version: 4.2.3(next@15.0.2-canary.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))
       nextjs-toploader:
-        specifier: 3.7.15
-        version: 3.7.15(next@15.0.2-canary.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
+        specifier: 3.9.17
+        version: 3.9.17(next@15.0.2-canary.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
       nprogress:
         specifier: 0.2.0
         version: 0.2.0
@@ -392,8 +392,8 @@ importers:
         specifier: 4.2.3
         version: 4.2.3(next@15.0.2-canary.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))
       nextjs-toploader:
-        specifier: 3.7.15
-        version: 3.7.15(next@15.0.2-canary.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
+        specifier: 3.9.17
+        version: 3.9.17(next@15.0.2-canary.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
       nprogress:
         specifier: 0.2.0
         version: 0.2.0
@@ -627,8 +627,8 @@ importers:
         specifier: 4.2.3
         version: 4.2.3(next@15.0.2-canary.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))
       nextjs-toploader:
-        specifier: 3.7.15
-        version: 3.7.15(next@15.0.2-canary.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
+        specifier: 3.9.17
+        version: 3.9.17(next@15.0.2-canary.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)
       nprogress:
         specifier: 0.2.0
         version: 0.2.0
@@ -6012,8 +6012,8 @@ packages:
       sass:
         optional: true
 
-  nextjs-toploader@3.7.15:
-    resolution: {integrity: sha512-DvvXEJVRPfE2j1HVXgFhmPl8pRcLb/4mvyVBDuYdMdkbEY7KJghp0fG5iOZ002cV6awbBw9j/Di7vQL8LRazxQ==}
+  nextjs-toploader@3.9.17:
+    resolution: {integrity: sha512-9OF0KSSLtoSAuNg2LZ3aTl4hR9mBDj5L9s9DZiFCbMlXehyICGjkIz5dVGzuATU2bheJZoBdFgq9w07AKSuQQw==}
     peerDependencies:
       next: '>= 6.0.0'
       react: '>= 16.0.0'
@@ -13566,7 +13566,7 @@ snapshots:
       - '@babel/core'
       - babel-plugin-macros
 
-  nextjs-toploader@3.7.15(next@15.0.2-canary.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023):
+  nextjs-toploader@3.9.17(next@15.0.2-canary.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5))(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023):
     dependencies:
       next: 15.0.2-canary.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@19.0.0-beta-8a03594-20241020)(react-dom@0.0.0-experimental-28668d39-20241023(react@0.0.0-experimental-28668d39-20241023))(react@0.0.0-experimental-28668d39-20241023)(sass@1.80.5)
       nprogress: 0.2.0
