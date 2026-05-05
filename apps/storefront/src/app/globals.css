@@ -1,12 +1,57 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@plugin "@tailwindcss/typography";
+@plugin "@tailwindcss/forms";
+
+@theme inline {
+    --font-sans: var(--font-primary, var(--font-fallback)), sans-serif;
+
+    --color-primary-light: var(--color-accent-primary-light);
+    --color-primary: var(--color-accent-primary);
+    --color-primary-dark: var(--color-accent-primary-dark);
+    --color-primary-foreground: var(--color-accent-primary-text);
+
+    --color-secondary-light: var(--color-accent-secondary-light);
+    --color-secondary: var(--color-accent-secondary);
+    --color-secondary-dark: var(--color-accent-secondary-dark);
+    --color-secondary-foreground: var(--color-accent-secondary-text);
+
+    --aspect-3\/2: 3 / 2;
+
+    --z-index-5: 5;
+
+    --background-image-sale-stripes: repeating-linear-gradient(
+        -45deg,
+        #dc2626 0px,
+        #dc2626 1rem,
+        #cb2424 1rem,
+        #cb2424 2rem
+    );
+}
+
+@utility stroke-1 {
+    stroke-width: 0.15rem;
+}
+@utility stroke-2 {
+    stroke-width: 0.2rem;
+}
+@utility stroke-3 {
+    stroke-width: 0.25rem;
+}
+
+@utility content-visibility-auto {
+    content-visibility: auto;
+}
+
+@utility contain-intrinsic-size-* {
+    contain-intrinsic-size: --value([ *]);
+}
 
 @layer base {
     html {
         font-feature-settings:
-            'rlig' 1,
-            'calt' 1;
+            "rlig" 1,
+            "calt" 1;
     }
     body {
         @apply min-h-screen;
@@ -16,10 +61,10 @@
 @layer utilities {
     @keyframes overflow-x-scroll-shadow {
         from {
-            box-shadow: inset -30px 0px 25px -30px theme('colors.black / 75%');
+            box-shadow: inset -30px 0px 25px -30px rgb(0 0 0 / 0.75);
         }
         to {
-            box-shadow: inset 30px 0px 25px -30px theme('colors.black / 75%');
+            box-shadow: inset 30px 0px 25px -30px rgb(0 0 0 / 0.75);
         }
     }
 
