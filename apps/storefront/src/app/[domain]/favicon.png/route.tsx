@@ -3,19 +3,19 @@ import { NotFoundError } from '@nordcom/commerce-errors';
 import { findShopByDomainOverHttp } from '@/api/shop';
 import { BuildConfig } from '@/utils/build-config';
 import { safeParseFloat } from '@/utils/pricing';
+import { cacheLife } from 'next/cache';
 import { ImageResponse } from 'next/og';
 import { type NextRequest, NextResponse } from 'next/server';
 
 import { validateSize } from './validate-size';
 
-export const dynamic = 'force-static';
-export const dynamicParams = true;
-export const revalidate = false;
-
 export type FaviconRouteParams = Promise<{
     domain: string;
 }>;
 export async function GET(req: NextRequest, { params }: { params: FaviconRouteParams }) {
+    'use cache';
+    cacheLife('max');
+
     const { domain } = await params;
 
     const searchParams = req.nextUrl.searchParams;
@@ -61,10 +61,8 @@ export async function GET(req: NextRequest, { params }: { params: FaviconRoutePa
 
         /** @see {@link https://vercel.com/docs/functions/edge-functions/og-image-generation/og-image-examples#using-an-external-dynamic-image} */
         return new ImageResponse(
-            (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img width={width!} height={height!} src={src} title="favicon" />
-            ),
+            // eslint-disable-next-line @next/next/no-img-element
+            <img width={width!} height={height!} src={src} title="favicon" />,
             {
                 width: width!,
                 height: height!,

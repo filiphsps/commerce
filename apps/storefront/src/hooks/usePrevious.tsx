@@ -1,17 +1,21 @@
-import { useEffect, useRef } from 'react';
+import { useState } from 'react';
 
 /**
- * Returns the previous value of a variable.
+ * Returns the previous distinct value of a variable. While `value` stays
+ * referentially equal across renders, the returned value remains the last
+ * value that was different from it.
  *
  * @param {T} value - The value to track
  * @returns {T | undefined} - The previous value
  */
 export const usePrevious = <T,>(value: T): T | undefined => {
-    const ref = useRef<T | undefined>();
+    const [current, setCurrent] = useState<T>(value);
+    const [previous, setPrevious] = useState<T | undefined>(undefined);
 
-    useEffect(() => {
-        ref.current = value;
-    }); /*, [value]*/
+    if (current !== value) {
+        setCurrent(value);
+        setPrevious(current);
+    }
 
-    return ref.current;
+    return previous;
 };

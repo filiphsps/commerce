@@ -12,6 +12,7 @@ import { BusinessDataApi, LocalesApi } from '@/api/store';
 import { isValidHandle } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
 import { asText } from '@prismicio/client';
+import { cacheLife } from 'next/cache';
 import { notFound } from 'next/navigation';
 
 import { CMSContent } from '@/components/cms/cms-content';
@@ -22,11 +23,6 @@ import { JsonLd } from '@/components/json-ld';
 import type { PageData } from '@/api/prismic/page';
 import type { Metadata } from 'next';
 import type { OnlineStore, WithContext } from 'schema-dts';
-
-export const runtime = 'nodejs';
-export const dynamic = 'force-static';
-export const dynamicParams = true;
-export const revalidate = false;
 
 export type CustomPageParams = Promise<{ domain: string; locale: string; slug: string[] }>;
 
@@ -56,6 +52,9 @@ export async function generateStaticParams({
 }
 
 export async function generateMetadata({ params }: { params: CustomPageParams }): Promise<Metadata> {
+    'use cache';
+    cacheLife('max');
+
     const { domain, locale: localeData, slug } = await params;
 
     const handle = slug.join('/');
@@ -118,11 +117,12 @@ export async function generateMetadata({ params }: { params: CustomPageParams })
 }
 
 async function OnlineStoreJsonLd({ shop, locale }: { shop: OnlineShop; locale: Locale }) {
+    let jsonLd: WithContext<OnlineStore>;
     try {
         const businessData = await BusinessDataApi({ shop, locale });
 
         // TODO: Add more data.
-        const jsonLd: WithContext<OnlineStore> = {
+        jsonLd = {
             '@context': 'https://schema.org',
             '@type': 'OnlineStore',
             'name': shop.name,
@@ -135,12 +135,12 @@ async function OnlineStoreJsonLd({ shop, locale }: { shop: OnlineShop; locale: L
             'taxID': businessData.tax_number || undefined,
             'vatID': businessData.vat_number || undefined
         };
-
-        return <JsonLd data={jsonLd} />;
     } catch (error: unknown) {
         console.error(error);
         return null;
     }
+
+    return <JsonLd data={jsonLd} />;
 }
 
 async function PageBreadcrumbs({ shop, locale, handle }: { shop: OnlineShop; locale: Locale; handle: string }) {
@@ -163,6 +163,9 @@ async function PageBreadcrumbs({ shop, locale, handle }: { shop: OnlineShop; loc
 }
 
 export default async function CustomPage({ params }: { params: CustomPageParams }) {
+    'use cache';
+    cacheLife('max');
+
     const { domain, locale: localeData, slug } = await params;
 
     const handle = slug.join('/');

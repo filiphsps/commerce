@@ -2,14 +2,14 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { isPreviewEnv } from '@/utils/is-preview-env';
 
+vi.mock('@/utils/build-config', () => ({
+    BuildConfig: {
+        environment: 'production'
+    }
+}));
+
 describe('utils', () => {
     describe('isPreviewEnv', () => {
-        vi.mock('@/utils/build-config', () => ({
-            BuildConfig: {
-                environment: 'production'
-            }
-        }));
-
         it('should return `null` when no hostname is provided', () => {
             const result = isPreviewEnv();
             expect(result).toBeNull();

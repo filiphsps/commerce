@@ -14,6 +14,7 @@ import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import { checkAndHandleRedirect } from '@/utils/redirect';
 import { asText } from '@prismicio/client';
 import { flattenConnection } from '@shopify/hydrogen-react';
+import { cacheLife } from 'next/cache';
 import { notFound, redirect, RedirectType, unstable_rethrow } from 'next/navigation';
 
 import { Pagination } from '@/components/actionable/pagination';
@@ -31,10 +32,7 @@ import { CollectionContent, PRODUCTS_PER_PAGE } from './collection-content';
 import type { Metadata } from 'next';
 import type { CollectionPage, WithContext } from 'schema-dts';
 
-export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic'; // TODO: Figure out a better way to deal with query params.
-export const dynamicParams = true;
-export const revalidate = false;
+// TODO: Figure out a better way to deal with query params.
 
 export type CollectionPageParams = Promise<{ domain: string; locale: string; handle: string }>;
 
@@ -79,6 +77,9 @@ export async function generateMetadata({
     params: CollectionPageParams;
     searchParams: SearchParams;
 }): Promise<Metadata> {
+    'use cache';
+    cacheLife('max');
+
     const { domain, locale: localeData, handle } = await params;
     if (!isValidHandle(handle)) {
         notFound();
@@ -145,14 +146,14 @@ export async function generateMetadata({
             description,
             siteName: shop.name,
             locale: locale.code,
-            images: page?.meta_image
+            images: page?.meta_image.url
                 ? [
                       {
-                          url: page.meta_image!.url as string,
-                          width: page.meta_image!.dimensions?.width || 0,
-                          height: page.meta_image!.dimensions?.height || 0,
-                          alt: page.meta_image!.alt || '',
-                          secureUrl: page.meta_image!.url as string
+                          url: page.meta_image.url,
+                          width: page.meta_image.dimensions.width || 0,
+                          height: page.meta_image.dimensions.height || 0,
+                          alt: page.meta_image.alt || '',
+                          secureUrl: page.meta_image.url
                       }
                   ]
                 : undefined
@@ -160,13 +161,16 @@ export async function generateMetadata({
     };
 }
 
-export default async function CollectionPage({
+export default async function CollectionsCollectionPage({
     params,
     searchParams: queryParams
 }: {
     params: CollectionPageParams;
     searchParams: SearchParams;
 }) {
+    'use cache';
+    cacheLife('max');
+
     const { domain, locale: localeData, handle } = await params;
     if (!isValidHandle(handle)) {
         notFound();

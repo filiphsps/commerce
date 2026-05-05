@@ -3,18 +3,18 @@ import { describe, expect, it, vi } from 'vitest';
 import { CssVariablesProvider } from '@/utils/css-variables';
 import { render, waitFor } from '@/utils/test/react';
 
+vi.mock('@shopify/hydrogen-react', async () => {
+    return {
+        useCart: vi.fn().mockReturnValue({
+            status: 'idle'
+        }),
+        useShop: vi.fn().mockReturnValue({}),
+        useShopifyCookies: vi.fn().mockReturnValue({})
+    };
+});
+
 describe('utils', () => {
     describe('CssVariablesProvider', () => {
-        vi.mock('@shopify/hydrogen-react', async () => {
-            return {
-                useCart: vi.fn().mockReturnValue({
-                    status: 'idle'
-                }),
-                useShop: vi.fn().mockReturnValue({}),
-                useShopifyCookies: vi.fn().mockReturnValue({})
-            };
-        });
-
         it('should render without crashing', async () => {
             const wrapper = render(await CssVariablesProvider({ domain: 'example.com' }));
 

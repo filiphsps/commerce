@@ -10,7 +10,7 @@ import { firstAvailableVariant } from '@/utils/first-available-variant';
 import { isValidHandle } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
 import { productToMerchantsCenterId } from '@/utils/merchants-center-id';
-import { safeParseFloat } from '@/utils/pricing';
+import { futureDateString, safeParseFloat } from '@/utils/pricing';
 import { AnalyticsEventTrigger } from '@/utils/trackable';
 import { parseGid, parseMetafield } from '@shopify/hydrogen-react';
 import { notFound } from 'next/navigation';
@@ -142,11 +142,7 @@ export default async function ProductPageLayout({
                 'availability': variant.availableForSale ? 'https://schema.org/InStock' : 'https://schema.org/SoldOut',
                 'price': safeParseFloat(undefined, variant.price.amount),
                 'priceCurrency': variant.price.currencyCode,
-                'priceValidUntil': new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit'
-                })
+                'priceValidUntil': futureDateString(7)
             }
         }))
     };

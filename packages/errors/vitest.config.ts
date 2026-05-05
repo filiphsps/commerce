@@ -1,5 +1,6 @@
-import path from 'node:path';
 import { configDefaults, defineProject } from 'vitest/config';
+
+import path from 'node:path';
 
 export default defineProject({
     optimizeDeps: {

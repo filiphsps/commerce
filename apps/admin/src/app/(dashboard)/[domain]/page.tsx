@@ -28,25 +28,9 @@ export default async function ShopPage({ params }: ShopPageProps) {
 
     const { domain } = await params;
 
+    let shop: Awaited<ReturnType<typeof Shop.findByDomain>>;
     try {
-        const shop = await Shop.findByDomain(domain, { convert: true });
-        const code = JSON.stringify(shop, null, 4);
-
-        return (
-            <>
-                <Heading level="h1">{shop.name}</Heading>
-                <Heading level="h4" as="h2">
-                    <Link href={`https://${shop.domain}`} target="_blank" rel="noreferrer">
-                        {shop.domain}
-                    </Link>
-                </Heading>
-
-                {/* Dropdown */}
-                <Details label="Raw Shop">
-                    <code className="whitespace-pre-wrap">{code}</code>
-                </Details>
-            </>
-        );
+        shop = await Shop.findByDomain(domain, { convert: true });
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
             notFound();
@@ -54,4 +38,22 @@ export default async function ShopPage({ params }: ShopPageProps) {
 
         throw error;
     }
+
+    const code = JSON.stringify(shop, null, 4);
+
+    return (
+        <>
+            <Heading level="h1">{shop.name}</Heading>
+            <Heading level="h4" as="h2">
+                <Link href={`https://${shop.domain}`} target="_blank" rel="noreferrer">
+                    {shop.domain}
+                </Link>
+            </Heading>
+
+            {/* Dropdown */}
+            <Details label="Raw Shop">
+                <code className="whitespace-pre-wrap">{code}</code>
+            </Details>
+        </>
+    );
 }

@@ -19,6 +19,7 @@ import { checkAndHandleRedirect } from '@/utils/redirect';
 import { cn } from '@/utils/tailwind';
 import { asText } from '@prismicio/client';
 import { parseGid } from '@shopify/hydrogen-react';
+import { cacheLife } from 'next/cache';
 import { notFound, unstable_rethrow } from 'next/navigation';
 
 import { CMSContent } from '@/components/cms/cms-content';
@@ -34,11 +35,6 @@ import type { Product } from '@/api/product';
 import type { LocaleDictionary } from '@/utils/locale';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
-
-export const runtime = 'nodejs';
-export const dynamic = 'auto';
-export const dynamicParams = true;
-export const revalidate = false;
 
 export type ProductPageParams = Promise<{ domain: string; locale: string; handle: string }>;
 
@@ -81,6 +77,9 @@ export async function generateMetadata({
     params: ProductPageParams;
     searchParams: SearchParams;
 }): Promise<Metadata> {
+    'use cache';
+    cacheLife('max');
+
     const { domain, locale: localeData, handle } = await params;
     if (!isValidHandle(handle)) {
         notFound();
@@ -196,6 +195,9 @@ async function Badges({ product, i18n }: { product: Product; i18n: LocaleDiction
 }
 
 export default async function ProductPage({ params }: { params: ProductPageParams }) {
+    'use cache';
+    cacheLife('max');
+
     const { domain, locale: localeData, handle } = await params;
     if (!isValidHandle(handle)) {
         notFound();

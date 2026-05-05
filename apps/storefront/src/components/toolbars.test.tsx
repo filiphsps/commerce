@@ -4,14 +4,14 @@ import { render } from '@/utils/test/react';
 
 import { Toolbars } from '@/components/toolbars';
 
+vi.mock('@vercel/toolbar/next', async () => {
+    return {
+        VercelToolbar: () => <div data-testid="toolbar" />
+    };
+});
+
 describe('components', () => {
     describe('Toolbars', () => {
-        vi.mock('@vercel/toolbar/next', async () => {
-            return {
-                VercelToolbar: () => <div data-testid="toolbar" />
-            };
-        });
-
         it('renders without crashing', async () => {
             const { unmount } = render(<Toolbars domain={'staging.example.com'} />);
             expect(() => unmount()).not.toThrow();

@@ -13,6 +13,7 @@ import { getDictionary } from '@/utils/dictionary';
 import { isValidHandle } from '@/utils/handle';
 import { getTranslations, Locale } from '@/utils/locale';
 import md5 from 'crypto-js/md5';
+import { cacheLife } from 'next/cache';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -26,11 +27,6 @@ import { Label } from '@/components/typography/label';
 
 import type { Metadata } from 'next';
 import type { Article as LdArticle, WithContext } from 'schema-dts';
-
-export const runtime = 'nodejs';
-export const dynamic = 'force-static';
-export const dynamicParams = true;
-export const revalidate = false;
 
 export type ArticlePageParams = Promise<{ domain: string; locale: string; blog: string; handle: string }>;
 
@@ -67,6 +63,9 @@ export async function generateStaticParams({
 }
 
 export async function generateMetadata({ params }: { params: ArticlePageParams }): Promise<Metadata> {
+    'use cache';
+    cacheLife('max');
+
     const { domain, locale: localeData, blog: blogHandle, handle } = await params;
     if (!isValidHandle(handle)) {
         notFound();
@@ -126,6 +125,9 @@ export async function generateMetadata({ params }: { params: ArticlePageParams }
 }
 
 export default async function ArticlePage({ params }: { params: ArticlePageParams }) {
+    'use cache';
+    cacheLife('max');
+
     const { domain, locale: localeData, blog: blogHandle, handle } = await params;
     if (!isValidHandle(blogHandle) || !isValidHandle(handle)) {
         notFound();

@@ -28,13 +28,7 @@ export default async function ShopContentPagePage({ params }: ShopContentPagePro
     const { domain } = await params;
 
     try {
-        const _shop = await Shop.findByDomain(domain, { convert: true });
-
-        return (
-            <>
-                <Heading level="h1">Content</Heading>
-            </>
-        );
+        await Shop.findByDomain(domain, { convert: true });
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
             notFound();
@@ -42,4 +36,10 @@ export default async function ShopContentPagePage({ params }: ShopContentPagePro
 
         throw error;
     }
+
+    return (
+        <>
+            <Heading level="h1">Content</Heading>
+        </>
+    );
 }

@@ -15,6 +15,7 @@ import { CssVariablesProvider, getBrandingColors } from '@/utils/css-variables';
 import { primaryFont } from '@/utils/fonts';
 import { Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
+import { cacheLife } from 'next/cache';
 import { notFound, unstable_rethrow } from 'next/navigation';
 
 import { AnalyticsProvider } from '@/components/analytics-provider';
@@ -27,12 +28,6 @@ import ProvidersRegistry from '@/components/providers-registry';
 
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
-
-export const runtime = 'nodejs';
-export const dynamic = 'force-static';
-export const dynamicParams = true;
-export const revalidate = false;
-export const preferredRegion = 'home';
 
 export type LayoutParams = Promise<{ domain: string; locale: string }>;
 
@@ -95,6 +90,9 @@ export const viewport: Viewport = {
 };
 
 export async function generateMetadata({ params }: { params: LayoutParams }): Promise<Metadata> {
+    'use cache';
+    cacheLife('max');
+
     const { domain, locale: localeData } = await params;
     if (!localeData || !domain) {
         notFound();
@@ -162,6 +160,9 @@ export default async function RootLayout({
     modal,
     params
 }: Readonly<{ children: ReactNode; modal: ReactNode; params: LayoutParams }>) {
+    'use cache';
+    cacheLife('max');
+
     const { domain, locale: localeData } = await params;
     if (!localeData || !domain) {
         notFound();

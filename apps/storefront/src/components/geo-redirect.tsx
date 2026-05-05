@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import useGeoLocation from 'react-ipgeolocation';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
@@ -22,6 +22,34 @@ import type { Country, LanguageCode } from '@shopify/hydrogen-react/storefront-a
 
 const DISMISSED_KEY = 'geo-redirect-banner-dismissed';
 
+const subscribeToNothing = () => () => {};
+const getNavigatorLanguage = () => (navigator.language.split('-').at(0) || 'en').toLowerCase();
+const getUserAgent = () => navigator.userAgent;
+const readStoredDismissed = (): number | null => {
+    if (typeof localStorage === 'undefined') {
+        return null;
+    }
+
+    const stored = localStorage.getItem(DISMISSED_KEY);
+    if (!stored) {
+        return null;
+    }
+
+    const value = Number.parseInt(stored, 10);
+    if (!value) {
+        return null;
+    }
+
+    // FIXME: Make this configurable.
+    // Check if dismissed is more than 1 days ago.
+    if (value < Date.now() - 1000 * 60 * 60 * 24 * 1) {
+        localStorage.removeItem(DISMISSED_KEY);
+        return null;
+    }
+
+    return value;
+};
+
 export type GeoRedirectProps = {
     countries: Country[];
     locale: Locale;
@@ -30,39 +58,28 @@ export type GeoRedirectProps = {
 };
 export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoRedirectProps) {
     const [closed, setClosed] = useState(false);
-    const [dropdownActive, setDropdownActive] = useState(false);
-    const [navigatorLanguage, setNavigatorLanguage] = useState<string | undefined>();
-    const [userAgent, setUserAgent] = useState<string | undefined>();
     const [i18n, setI18n] = useState<LocaleDictionary | undefined>();
-    const [dismissed, setDismissed] = useState<number | null>(null);
+
+    const navigatorLanguage = useSyncExternalStore<string | undefined>(
+        subscribeToNothing,
+        getNavigatorLanguage,
+        () => undefined
+    );
+    const userAgent = useSyncExternalStore<string | undefined>(subscribeToNothing, getUserAgent, () => undefined);
+    const dismissed = useSyncExternalStore<number | null>(subscribeToNothing, readStoredDismissed, () => null);
 
     const pathname = `/${usePathname().split('/').slice(2).join('/')}`;
     const searchParams = useSearchParams();
 
-    useEffect(() => {
-        setNavigatorLanguage((navigator.language.split('-').at(0) || 'en').toLowerCase());
-        setUserAgent(navigator.userAgent);
-
-        if (!(localStorage as any)) {
-            return;
-        }
-
-        const value = localStorage.getItem(DISMISSED_KEY)
-            ? Number.parseInt(localStorage.getItem(DISMISSED_KEY) as string)
-            : null;
-        setDismissed(value);
-
-        // FIXME: Make this configurable.
-        // Check if dismissed is more than 1 days ago.
-        if (value && value < Date.now() - 1000 * 60 * 60 * 24 * 1) {
-            localStorage.removeItem(DISMISSED_KEY);
-            setDismissed(null);
-        }
-    }, []);
-
-    useEffect(() => {
+    // Track previous pathname to reset dropdown only when navigation occurs.
+    const [dropdownActiveState, setDropdownActive] = useState(false);
+    const [lastPathname, setLastPathname] = useState(pathname);
+    let dropdownActive = dropdownActiveState;
+    if (pathname !== lastPathname) {
+        setLastPathname(pathname);
         setDropdownActive(false);
-    }, [pathname]);
+        dropdownActive = false;
+    }
 
     const { t } = getTranslations('common', i18n || defaultI18n);
 

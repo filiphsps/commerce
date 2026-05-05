@@ -5,32 +5,32 @@ import { render, waitFor } from '@/utils/test/react';
 
 import { ProductVendor } from '@/components/products/product-vendor';
 
+vi.mock('@/components/link', () => {
+    return {
+        default: vi.fn().mockImplementation(({ children, href }) => {
+            return <a href={href}>{children}</a>;
+        })
+    };
+});
+
+vi.mock('@/api/shopify', () => ({
+    ShopifyApiClient: vi.fn().mockReturnValue({})
+}));
+vi.mock('@/api/shopify/collection', () => ({
+    CollectionApi: vi.fn().mockImplementation(async ({ handle }: { handle: string }) => {
+        if (handle !== 'test-vendor') {
+            throw new Error();
+        }
+
+        return {
+            handle: 'test-vendor',
+            title: 'Test Vendor'
+        };
+    })
+}));
+
 describe('components', () => {
     describe('ProductVendor', () => {
-        vi.mock('@/components/link', () => {
-            return {
-                default: vi.fn().mockImplementation(({ children, href }) => {
-                    return <a href={href}>{children}</a>;
-                })
-            };
-        });
-
-        vi.mock('@/api/shopify', () => ({
-            ShopifyApiClient: vi.fn().mockReturnValue({})
-        }));
-        vi.mock('@/api/shopify/collection', () => ({
-            CollectionApi: vi.fn().mockImplementation(async ({ handle }: { handle: string }) => {
-                if (handle !== 'test-vendor') {
-                    throw new Error();
-                }
-
-                return {
-                    handle: 'test-vendor',
-                    title: 'Test Vendor'
-                };
-            })
-        }));
-
         it('renders without errors', async () => {
             const { unmount } = render(
                 await ProductVendor({

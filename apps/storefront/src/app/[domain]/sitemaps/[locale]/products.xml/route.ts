@@ -2,6 +2,7 @@ import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductsPaginationApi } from '@/api/shopify/product';
 import { Locale } from '@/utils/locale';
+import { cacheLife } from 'next/cache';
 import { notFound } from 'next/navigation';
 import { getServerSideSitemap } from 'next-sitemap';
 
@@ -9,9 +10,6 @@ import type { DynamicSitemapRouteParams } from '../../../sitemap.xml/route';
 import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import type { NextRequest } from 'next/server';
 import type { ISitemapField } from 'next-sitemap';
-
-export const dynamic = 'force-static';
-export const revalidate = false;
 
 export type ProductsSitemapRouteParams = {
     params: Promise<
@@ -21,6 +19,9 @@ export type ProductsSitemapRouteParams = {
     >;
 };
 export async function GET({}: NextRequest, { params }: ProductsSitemapRouteParams) {
+    'use cache';
+    cacheLife('max');
+
     const { domain, locale: localeData } = await params;
     if (!localeData) {
         notFound();

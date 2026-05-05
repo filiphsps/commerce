@@ -5,6 +5,8 @@ import Link from 'next/link';
 
 import type { HTMLProps } from 'react';
 
+const CURRENT_YEAR = new Date().getFullYear();
+
 export type FooterProps = {} & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 export default function Footer({ className, ...props }: FooterProps) {
     return (
@@ -60,7 +62,7 @@ export default function Footer({ className, ...props }: FooterProps) {
                         </Link>
                     </section>
                     <section className={cn(styles.section, 'text-sm font-bold')}>
-                        <Link href="https://nordcom.io/">&copy; 2023-{new Date().getFullYear()} Nordcom AB</Link>
+                        <Link href="https://nordcom.io/">&copy; 2023-{CURRENT_YEAR} Nordcom AB</Link>
                     </section>
                 </div>
             </div>

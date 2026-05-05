@@ -3,18 +3,18 @@ import { describe, it, vi } from 'vitest';
 //import PrismicPage from '@/components/cms/prismic-page';
 //import { render } from '@/utils/test/react';
 
+vi.mock('@shopify/hydrogen-react', async () => {
+    return {
+        useCart: vi.fn().mockReturnValue({
+            status: 'idle'
+        }),
+        useShop: vi.fn().mockReturnValue({}),
+        useShopifyCookies: vi.fn().mockReturnValue({})
+    };
+});
+
 describe('components', () => {
     describe('PrismicPage', () => {
-        vi.mock('@shopify/hydrogen-react', async () => {
-            return {
-                useCart: vi.fn().mockReturnValue({
-                    status: 'idle'
-                }),
-                useShop: vi.fn().mockReturnValue({}),
-                useShopifyCookies: vi.fn().mockReturnValue({})
-            };
-        });
-
         const propsBase = {
             locale: {
                 locale: 'en-US',

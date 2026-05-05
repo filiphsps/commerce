@@ -4,69 +4,68 @@ import { fireEvent, render, screen } from '@/utils/test/react';
 
 import { ProductOptions } from '@/components/products/product-options';
 
-const options = [
-    {
-        name: 'Size',
-        values: ['100g', '200g', '300g']
-    }
-];
-
-const selectedOptions = {
-    Size: '200g'
-};
-
-const variants = [
-    {
-        title: '100g',
-        id: 'gid://shopify/ProductVariant/1'
+const { options, selectedOptions, variants, setSelectedOptions } = vi.hoisted(() => ({
+    options: [
+        {
+            name: 'Size',
+            values: ['100g', '200g', '300g']
+        }
+    ],
+    selectedOptions: {
+        Size: '200g'
     },
-    {
-        title: '200g',
-        id: 'gid://shopify/ProductVariant/2'
-    },
-    {
-        title: '300g',
-        id: 'gid://shopify/ProductVariant/3'
-    }
-];
+    variants: [
+        {
+            title: '100g',
+            id: 'gid://shopify/ProductVariant/1'
+        },
+        {
+            title: '200g',
+            id: 'gid://shopify/ProductVariant/2'
+        },
+        {
+            title: '300g',
+            id: 'gid://shopify/ProductVariant/3'
+        }
+    ],
+    setSelectedOptions: vi.fn()
+}));
 
-const setSelectedOptions = vi.fn();
+// Mock `@shopify/hydrogen-react`s `useProduct` hook and other
+// required functions to prevent `<ProductProvider>` error.
+vi.mock('@shopify/hydrogen-react', async () => ({
+    ...(((await vi.importActual('@shopify/hydrogen-react')) as any) || {}),
+    flattenConnection: vi.fn().mockImplementation((data) => data),
+    useProduct: () => ({
+        options,
+        product: {
+            handle: 'test',
+            title: 'title',
+            vendor: 'vendor',
+            variants
+        },
+        variants,
+        selectedOptions,
+        setSelectedOptions,
+        isOptionInStock: vi.fn().mockImplementation((_, val) => val !== '100g')
+    }),
+    createStorefrontClient: () => ({
+        getStorefrontApiUrl: () => '',
+        getPublicTokenHeaders: () => ({})
+    }),
+    useCart: vi.fn().mockReturnValue({
+        status: 'idle'
+    }),
+    useShop: vi.fn().mockReturnValue({}),
+    useShopifyCookies: vi.fn().mockReturnValue({})
+}));
+
+vi.mock('next/link', async () => ({
+    ...(((await vi.importActual('next/link')) as any) || {}),
+    default: (props: any) => <a {...props} />
+}));
 
 describe.skip('components', () => {
-    // Mock `@shopify/hydrogen-react`s `useProduct` hook and other
-    // required functions to prevent `<ProductProvider>` error.
-    vi.mock('@shopify/hydrogen-react', async () => ({
-        ...(((await vi.importActual('@shopify/hydrogen-react')) as any) || {}),
-        flattenConnection: vi.fn().mockImplementation((data) => data),
-        useProduct: () => ({
-            options,
-            product: {
-                handle: 'test',
-                title: 'title',
-                vendor: 'vendor',
-                variants
-            },
-            variants,
-            selectedOptions,
-            setSelectedOptions,
-            isOptionInStock: vi.fn().mockImplementation((_, val) => val !== '100g')
-        }),
-        createStorefrontClient: () => ({
-            getStorefrontApiUrl: () => '',
-            getPublicTokenHeaders: () => ({})
-        }),
-        useCart: vi.fn().mockReturnValue({
-            status: 'idle'
-        }),
-        useShop: vi.fn().mockReturnValue({}),
-        useShopifyCookies: vi.fn().mockReturnValue({})
-    }));
-
-    vi.mock('next/link', async () => ({
-        ...(((await vi.importActual('next/link')) as any) || {}),
-        default: (props: any) => <a {...props} /> // eslint-disable-line
-    }));
-
     describe('ProductOptions', () => {
         it('renders all options and values', async () => {
             const { unmount } = render(<ProductOptions />);

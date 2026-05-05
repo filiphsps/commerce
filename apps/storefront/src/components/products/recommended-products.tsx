@@ -28,23 +28,24 @@ async function Component({ shop, locale, product, className }: Readonly<Recommen
     }
 
     const api = await ShopifyApolloApiClient({ shop, locale });
+    let recommended: Awaited<ReturnType<typeof RecommendationApi>>;
     try {
-        const recommended = await RecommendationApi({ api, id: product.id });
-
-        return (
-            <CollectionBlock shop={shop} locale={locale} className={className} isHorizontal={true}>
-                {recommended.map((product) => (
-                    <Suspense key={product.id} fallback={<ProductCard.skeleton />}>
-                        <ProductCard shop={shop} locale={locale} data={product} priority={false} />
-                    </Suspense>
-                ))}
-            </CollectionBlock>
-        );
+        recommended = await RecommendationApi({ api, id: product.id });
     } catch (error: unknown) {
         unstable_rethrow(error);
 
         return null;
     }
+
+    return (
+        <CollectionBlock shop={shop} locale={locale} className={className} isHorizontal={true}>
+            {recommended.map((product) => (
+                <Suspense key={product.id} fallback={<ProductCard.skeleton />}>
+                    <ProductCard shop={shop} locale={locale} data={product} priority={false} />
+                </Suspense>
+            ))}
+        </CollectionBlock>
+    );
 }
 
 function Skeleton({ className }: { className?: string }) {

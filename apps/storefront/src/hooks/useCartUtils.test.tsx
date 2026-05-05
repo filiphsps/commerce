@@ -10,22 +10,22 @@ import type { Mock } from 'vitest';
 const USA = Locale.from('en-US')!;
 const GER = Locale.from('de-DE')!;
 
+// Mock `next/navigation`.
+vi.mock('next/navigation', async () => ({
+    ...(((await vi.importActual('next/navigation')) as any) || {}),
+    usePathname: vi.fn().mockReturnValue(''),
+    useRouter: () => ({
+        replace: vi.fn()
+    }),
+    useSearchParams: () => ({
+        get: () => 'coupon_code',
+        getAll: () => ['coupon_code'],
+        has: () => true
+    })
+}));
+
 describe('hooks', () => {
     describe('useCartUtils', () => {
-        // Mock `next/navigation`.
-        vi.mock('next/navigation', async () => ({
-            ...(((await vi.importActual('next/navigation')) as any) || {}),
-            usePathname: vi.fn().mockReturnValue(''),
-            useRouter: () => ({
-                replace: vi.fn()
-            }),
-            useSearchParams: () => ({
-                get: () => 'coupon_code',
-                getAll: () => ['coupon_code'],
-                has: () => true
-            })
-        }));
-
         beforeEach(() => {
             (useCart as Mock<any, any>).mockReturnValue({
                 error: undefined,

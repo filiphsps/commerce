@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 
 import { MissingContextProviderError } from '@nordcom/commerce-errors';
 
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import NextTopLoader from 'nextjs-toploader';
 import * as NProgress from 'nprogress';
 
@@ -28,7 +28,6 @@ export type HeaderProviderProps = {
 };
 export const HeaderProvider = ({ children = null, loaderColor }: HeaderProviderProps) => {
     const pathname = usePathname();
-    const router = useRouter();
 
     // Deal with scrolling and setting the scrolled attribute.
     useEffect(() => {
@@ -52,11 +51,20 @@ export const HeaderProvider = ({ children = null, loaderColor }: HeaderProviderP
     }, []);
 
     const [menu, setMenu] = useState<string | null>(null);
+    const [lastPathname, setLastPathname] = useState(pathname);
+
+    // Reset menu state when navigating to a new page.
+    let menuValue = menu;
+    if (pathname !== lastPathname) {
+        setLastPathname(pathname);
+        setMenu(null);
+        menuValue = null;
+    }
 
     // Deal with showing shadow when the menu is open.
     useEffect(() => {
-        document.body.setAttribute('data-menu-open', menu !== null ? 'true' : 'false');
-    }, [, menu]);
+        document.body.setAttribute('data-menu-open', menuValue !== null ? 'true' : 'false');
+    }, [menuValue]);
 
     // Stop the loader on page navigation and close the menu.
     useEffect(() => {
@@ -66,10 +74,9 @@ export const HeaderProvider = ({ children = null, loaderColor }: HeaderProviderP
         NProgress.done();
 
         document.body.removeAttribute('data-menu-open');
-        setMenu(null);
-    }, [pathname, router]);
+    }, [pathname]);
 
-    const value = { menu, setMenu, closeMenu: () => setMenu(null) };
+    const value = { menu: menuValue, setMenu, closeMenu: () => setMenu(null) };
     return (
         <HeaderContext.Provider value={value}>
             {children}

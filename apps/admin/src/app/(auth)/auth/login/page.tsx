@@ -1,3 +1,5 @@
+import { Suspense } from 'react';
+
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 
@@ -11,7 +13,7 @@ export const metadata: Metadata = {
     title: 'Login'
 };
 
-export default async function IndexAdminPage({}: { params: IndexAdminPageParams }) {
+export async function IndexAdminPageContent() {
     const session = await auth();
     if (session?.user) {
         redirect('/');
@@ -21,5 +23,13 @@ export default async function IndexAdminPage({}: { params: IndexAdminPageParams 
         <div>
             <LoginButton provider="github" className="" />
         </div>
+    );
+}
+
+export default async function IndexAdminPage({}: { params: IndexAdminPageParams }) {
+    return (
+        <Suspense>
+            <IndexAdminPageContent />
+        </Suspense>
     );
 }

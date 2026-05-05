@@ -7,10 +7,13 @@ export function JsonLd({ data }: JsonLdProps) {
         return null;
     }
 
+    let serialized: string;
     try {
-        return <script type="application/ld+json">{JSON.stringify(data)}</script>;
+        serialized = JSON.stringify(data);
     } catch (error: unknown) {
         console.error(error);
         return null;
     }
+
+    return <script type="application/ld+json">{serialized}</script>;
 }

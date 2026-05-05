@@ -7,11 +7,11 @@ import { ApolloClient } from '@apollo/client';
 
 import type { Locale } from '@/utils/locale';
 
-describe('utils', () => {
-    vi.mock('@apollo/client', async () => ({
-        ...((await vi.importActual('@apollo/client')) as any),
-        ApolloClient: vi.fn().mockReturnValue({
-            query: vi.fn().mockResolvedValue({
+vi.mock('@apollo/client', async () => ({
+    ...((await vi.importActual('@apollo/client')) as any),
+    ApolloClient: vi.fn().mockImplementation(
+        class {
+            query = vi.fn().mockResolvedValue({
                 data: {
                     product: {
                         id: '123',
@@ -19,9 +19,12 @@ describe('utils', () => {
                     }
                 },
                 errors: undefined
-            })
-        })
-    }));
+            });
+        }
+    )
+}));
+
+describe('utils', () => {
     describe('ApiBuilder', () => {
         // Mock apollo client.
         const client = new ApolloClient({

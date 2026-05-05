@@ -3,8 +3,6 @@ import { getAuth } from '@/auth';
 
 import type { NextRequest } from 'next/server';
 
-export const runtime = 'nodejs';
-
 export type AuthRouteParams = Promise<{ domain: string }>;
 
 export async function GET(req: NextRequest, { params }: { params: AuthRouteParams }) {

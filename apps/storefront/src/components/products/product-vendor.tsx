@@ -16,7 +16,7 @@ export type ProductVendorProps = {
     locale: Locale;
     product: Product;
     prefix?: ReactNode;
-} & Omit<ComponentPropsWithoutRef<'div'>, 'ref' | 'children' | 'prefix'>;
+} & Omit<ComponentPropsWithoutRef<'a'>, 'ref' | 'children' | 'prefix' | 'href'>;
 
 export async function ProductVendor({
     shop,
@@ -38,25 +38,23 @@ export async function ProductVendor({
     );
     const vendor = TitleToHandle(productVendor.toLowerCase().trim());
 
+    let collection: Awaited<ReturnType<typeof CollectionApi>>;
     try {
         const api = await ShopifyApiClient({ shop, locale });
-        const collection = await CollectionApi({ handle: vendor, api, first: 1 });
-        return (
-            <Link
-                {...(props as any)}
-                className={cn('hover:text-primary', className)}
-                href={`/collections/${collection.handle}/`}
-            >
-                {vendorTextElement}
-            </Link>
-        );
+        collection = await CollectionApi({ handle: vendor, api, first: 1 });
     } catch (error: unknown) {
         console.error(error);
 
         return (
-            <div {...(props as any)} title={undefined} className={cn(className)}>
+            <div {...(props as ComponentPropsWithoutRef<'div'>)} title={undefined} className={cn(className)}>
                 {vendorTextElement}
             </div>
         );
     }
+
+    return (
+        <Link {...props} className={cn('hover:text-primary', className)} href={`/collections/${collection.handle}/`}>
+            {vendorTextElement}
+        </Link>
+    );
 }

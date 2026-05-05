@@ -143,7 +143,7 @@ export function transformQuantityBreaks(quantityBreaks: ProductVariant['quantity
         const { reference } = quantityBreaks;
         const { steps } = reference;
         return steps.references.edges.map(({ node: { minimumQuantity, value } }) => ({
-            minimumQuantity: Number.parseInt(minimumQuantity.value),
+            minimumQuantity: Number.parseInt(minimumQuantity.value, 10),
             value: Number.parseFloat(value.value)
         }));
     } catch {

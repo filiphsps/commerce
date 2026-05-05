@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 
 import type { Nullable, OnlineShop } from '@nordcom/commerce-db';
 import { MissingContextProviderError, TodoError, UnknownCommerceProviderError } from '@nordcom/commerce-errors';
@@ -28,7 +28,7 @@ import { useShop } from '@/components/shop/provider';
 
 import type { CurrencyCode, Locale } from '@/utils/locale';
 import type { CartWithActions, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
-import type { ShopifyContextValue } from '@shopify/hydrogen-react/dist/types/ShopifyProvider';
+import type { ShopifyContextValue } from '@shopify/hydrogen-react/ShopifyProvider';
 import type { CartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import type { ReactNode } from 'react';
 
@@ -161,7 +161,6 @@ const shopifyEventHandler = async (
     if (event !== 'page_view' && event !== 'add_to_cart') {
         throw new TodoError();
         // TODO:.type shouldn't be considered a literal.
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     } else if (shop.commerceProvider.type !== 'shopify') {
         throw new TodoError('shopifyEventHandler() called for non-Shopify shop.');
     }
@@ -382,6 +381,17 @@ export type TrackableContextValue = {
 
 export const TrackableContext = createContext<TrackableContextValue>({} as TrackableContextValue);
 
+const subscribeToNothing = () => () => {};
+const getInternalTrafficFlag = (): boolean => {
+    if (typeof window === 'undefined') {
+        return false;
+    }
+
+    // Use vercel toolbar to determine internal traffic.
+    // TODO: This should be some form of a utility function.
+    return localStorage.getItem('__vercel_toolbar') === '1';
+};
+
 export type TrackableProps = {
     children: ReactNode;
     dummy?: boolean;
@@ -395,21 +405,12 @@ export function Trackable({ children, dummy = false }: TrackableProps) {
         throw new UnknownCommerceProviderError(shop.commerceProvider.type);
     }
 
-    const [internalTraffic, setIsInternalTraffic] = useState(dummy ? true : false);
-    useEffect(() => {
-        if (!(window as any).localStorage) {
-            return;
-        }
-
-        // Use vercel toolbar to determine internal traffic.
-        // TODO: This should be some form of a utility function.
-        const value = localStorage.getItem('__vercel_toolbar');
-        if (value !== '1') {
-            return;
-        }
-
-        setIsInternalTraffic(true);
-    }, []);
+    const detectedInternalTraffic = useSyncExternalStore<boolean>(
+        subscribeToNothing,
+        getInternalTrafficFlag,
+        () => false
+    );
+    const internalTraffic = dummy || detectedInternalTraffic;
 
     const checkoutDomain = shop.commerceProvider.domain;
     // Only use the domain, not the subdomain.
@@ -429,12 +430,14 @@ export function Trackable({ children, dummy = false }: TrackableProps) {
     const shopify = useShopify();
     const cart = useCart();
 
-    const [queue, setQueue] = useState<
+    const queueRef = useRef<
         {
             type: AnalyticsEventType;
             event: AnalyticsEventData;
         }[]
     >([]);
+    // Bumping this counter signals that the queue ref has new entries to flush.
+    const [flushSignal, setFlushSignal] = useState(0);
 
     const queueEvent = useCallback(
         (type: AnalyticsEventType, event: AnalyticsEventData) => {
@@ -442,24 +445,24 @@ export function Trackable({ children, dummy = false }: TrackableProps) {
                 return;
             }
 
-            setQueue((queue) => {
-                // FIXME: Don't add duplicate events. This is a very naive implementation.
-                return [...queue, { type, event }];
-            });
+            // FIXME: Don't add duplicate events. This is a very naive implementation.
+            queueRef.current = [...queueRef.current, { type, event }];
+            setFlushSignal((signal) => signal + 1);
         },
-        [queue, setQueue]
+        [internalTraffic]
     );
 
-    const postEvent = useCallback(
-        debounce((type: AnalyticsEventType, event: AnalyticsEventData) => {
-            if (internalTraffic) {
-                return undefined;
-            }
+    const postEvent = useMemo(
+        () =>
+            debounce((type: AnalyticsEventType, event: AnalyticsEventData) => {
+                if (internalTraffic) {
+                    return undefined;
+                }
 
-            return handleEvent(type, event, { shop, currency, locale, shopify, cart });
-        }, 500),
-        [handleEvent, shop, currency, locale, shopify, cart]
-    )!;
+                return handleEvent(type, event, { shop, currency, locale, shopify, cart });
+            }, 500),
+        [internalTraffic, shop, currency, locale, shopify, cart]
+    );
 
     // Web vitals.
     /*useReportWebVitals(({ id, value, name, label })  => {
@@ -479,13 +482,20 @@ export function Trackable({ children, dummy = false }: TrackableProps) {
         );
     });*/
 
+    // Stable ref to queueEvent so the page-view effect doesn't depend on
+    // every cart/locale tick yet still calls the up-to-date implementation.
+    const queueEventRef = useRef(queueEvent);
+    useEffect(() => {
+        queueEventRef.current = queueEvent;
+    });
+
     // Page view.
     useEffect(() => {
         if (!path || path === prevPath || internalTraffic) {
             return;
         }
 
-        queueEvent('page_view', {
+        queueEventRef.current('page_view', {
             path,
             gtm: {
                 ecommerce: {
@@ -509,19 +519,17 @@ export function Trackable({ children, dummy = false }: TrackableProps) {
                 }
             }
         });
-    }, [path, prevPath]);
+    }, [path, prevPath, internalTraffic, cart, locale]);
 
-    // Send events.
+    // Send events whenever the queue ref grows (signaled by flushSignal).
     useEffect(() => {
-        if (queue.length <= 0 || internalTraffic) {
+        if (queueRef.current.length <= 0 || internalTraffic) {
             return;
         }
 
-        // Clone the queue, as it may be modified while we are sending events.
-        let events = [...queue];
-
-        // Clear queue to prevent duplicate events.
-        setQueue(() => []);
+        // Clone the queue, then clear it to prevent duplicate events.
+        const events = queueRef.current;
+        queueRef.current = [];
 
         // Flush the queue.
         Promise.allSettled(
@@ -542,7 +550,7 @@ export function Trackable({ children, dummy = false }: TrackableProps) {
                 console.error('Failed to send analytics events:', failed);
             }
         });
-    }, [shop, currency, queue]);
+    }, [flushSignal, internalTraffic, shop, currency, locale, shopify, cart, path]);
 
     const store = useMemo(
         () => ({
@@ -553,12 +561,7 @@ export function Trackable({ children, dummy = false }: TrackableProps) {
     );
 
     return useMemo(
-        () =>
-            store ? (
-                <TrackableContext.Provider value={store as TrackableContextValue}>{children}</TrackableContext.Provider>
-            ) : (
-                children
-            ),
+        () => <TrackableContext.Provider value={store as TrackableContextValue}>{children}</TrackableContext.Provider>,
         [store, children]
     );
 }
@@ -572,7 +575,7 @@ Trackable.displayName = 'Nordcom.Trackable';
  */
 export function useTrackable(): TrackableContextValue {
     const context = useContext(TrackableContext);
-    if (!(context as any)) {
+    if (!(context as typeof context | null)) {
         throw new MissingContextProviderError('useTrackable', 'Trackable');
     }
 
@@ -583,8 +586,21 @@ export function AnalyticsEventTrigger({ event, data }: { event: AnalyticsEventTy
     const path = usePathname();
     const { queueEvent } = useTrackable();
 
+    // Snapshot the inputs in refs so we only ever fire once on mount but still
+    // use the latest values.
+    const eventRef = useRef(event);
+    const pathRef = useRef(path);
+    const dataRef = useRef(data);
+    const queueEventRef = useRef(queueEvent);
     useEffect(() => {
-        queueEvent(event, { path, ...data });
+        eventRef.current = event;
+        pathRef.current = path;
+        dataRef.current = data;
+        queueEventRef.current = queueEvent;
+    });
+
+    useEffect(() => {
+        queueEventRef.current(eventRef.current, { path: pathRef.current, ...dataRef.current });
     }, []);
 
     return <Fragment />;

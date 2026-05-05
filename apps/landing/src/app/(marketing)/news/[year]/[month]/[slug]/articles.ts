@@ -9,10 +9,10 @@ import type { Schema } from '@markdoc/markdoc';
 
 const ARTICLES_PATH = 'articles/';
 const POSTS_DIR = path.join(process.cwd(), ARTICLES_PATH);
+const POST_PATHS = glob.sync(path.join(POSTS_DIR, '**/*.md'));
 
 export async function getArticlePaths() {
-    const postPaths = await glob(path.join(POSTS_DIR, '**/*.md'));
-    return postPaths.map((postPath) => {
+    return POST_PATHS.map((postPath) => {
         const slug = path.basename(postPath, path.extname(postPath));
         const month = path.basename(path.dirname(postPath));
         const year = path.basename(path.dirname(path.dirname(postPath)));
@@ -30,7 +30,7 @@ export async function getArticleContent({ year, month, slug }: { year: string; m
     const source = fs.readFileSync(filePath, 'utf-8');
     const matterResult = matter(source);
     const { title, description, date, author, handle } = matterResult.data;
-    const content = (Markdoc.transform(Markdoc.parse(source), config) as Schema).children as Schema[];
+    const content = (Markdoc.transform(Markdoc.parse(source), config) as Schema).children;
 
     return {
         content,

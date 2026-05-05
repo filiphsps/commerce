@@ -4,21 +4,21 @@ import { InvalidHandleError, NotFoundError, ProviderFetchError } from '@nordcom/
 
 import { ProductApi } from './product';
 
+vi.mock('@apollo/client', () => ({
+    gql: vi.fn()
+}));
+
+vi.mock('crypto-js/md5', () => ({
+    default: vi.fn(() => ({ toString: vi.fn(() => 'mocked-md5') }))
+}));
+
+vi.mock('@/utils/abstract-api', () => ({
+    cleanShopifyHtml: vi.fn(() => 'cleaned-html')
+}));
+
 describe('api', () => {
     describe('shopify', () => {
         describe('product', () => {
-            vi.mock('@apollo/client', () => ({
-                gql: vi.fn()
-            }));
-
-            vi.mock('crypto-js/md5', () => ({
-                default: vi.fn(() => ({ toString: vi.fn(() => 'mocked-md5') }))
-            }));
-
-            vi.mock('@/utils/abstract-api', () => ({
-                cleanShopifyHtml: vi.fn(() => 'cleaned-html')
-            }));
-
             describe('ProductApi', () => {
                 const mockApi = {
                     shop: vi.fn(() => ({ id: 'mock-shop-id' })),

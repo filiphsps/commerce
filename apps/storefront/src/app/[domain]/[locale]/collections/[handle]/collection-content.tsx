@@ -28,7 +28,7 @@ export async function CollectionContent({
     searchParams?: SearchParams;
     pagesInfo: { cursors: string[]; pages: number; products: number };
 }) {
-    if (typeof searchParams.page !== 'undefined' && isNaN(Number.parseInt(searchParams.page.toString()))) {
+    if (typeof searchParams.page !== 'undefined' && Number.isNaN(Number.parseInt(searchParams.page.toString(), 10))) {
         notFound();
     }
 

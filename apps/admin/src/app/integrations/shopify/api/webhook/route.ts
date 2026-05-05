@@ -2,8 +2,6 @@ import { NextResponse } from 'next/server';
 
 import type { NextRequest } from 'next/server';
 
-export const dynamic = 'force-dynamic';
-
 export const GET = async (req: NextRequest) => {
     console.debug('GET Shopify Webhook', req);
 

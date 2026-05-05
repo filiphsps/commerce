@@ -5,18 +5,18 @@ import React from 'react';
 import { render } from '@/utils/test/react';
 import { Trackable } from '@/utils/trackable';
 
+vi.mock('@shopify/hydrogen-react', async () => {
+    return {
+        useCart: vi.fn().mockReturnValue({
+            status: 'idle'
+        }),
+        useShop: vi.fn().mockReturnValue({}),
+        useShopifyCookies: vi.fn().mockReturnValue({})
+    };
+});
+
 describe('components', () => {
     describe('Trackable', () => {
-        vi.mock('@shopify/hydrogen-react', async () => {
-            return {
-                useCart: vi.fn().mockReturnValue({
-                    status: 'idle'
-                }),
-                useShop: vi.fn().mockReturnValue({}),
-                useShopifyCookies: vi.fn().mockReturnValue({})
-            };
-        });
-
         it('should render children', () => {
             render(
                 <Trackable>

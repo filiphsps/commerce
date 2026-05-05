@@ -9,8 +9,6 @@ import { Providers } from '@/components/providers';
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 
-export const dynamic = 'force-dynamic';
-
 export const viewport: Viewport = {
     initialScale: 1,
     interactiveWidget: 'resizes-content',

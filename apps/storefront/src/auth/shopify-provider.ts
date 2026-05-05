@@ -39,8 +39,7 @@ export interface ShopifyOwnConfig {
 }
 
 export interface ShopifyConfig<P extends ShopifyProfile>
-    extends ShopifyOwnConfig,
-        Omit<OIDCConfig<P>, 'clientId' | 'clientSecret' | 'issuer'> {}
+    extends ShopifyOwnConfig, Omit<OIDCConfig<P>, 'clientId' | 'clientSecret' | 'issuer'> {}
 
 export type ShopifyUserConfig<P extends ShopifyProfile> = ShopifyOwnConfig &
     Partial<Omit<OIDCUserConfig<P>, 'options' | 'type'>>;

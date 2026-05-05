@@ -44,7 +44,7 @@ export function Pagination({
         const page = searchParams.get('page');
         if (!page || Number.isSafeInteger(page)) return 1;
 
-        return Number.parseInt(page);
+        return Number.parseInt(page, 10);
     })();
 
     let items = [];

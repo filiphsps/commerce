@@ -20,7 +20,6 @@ export function SearchBar({ className, ...props }: SearchBarProps) {
                     name="query"
                     className="w-full p-2 pl-3 outline-none"
                     type="search"
-                    // eslint-disable-next-line jsx-a11y/no-autofocus
                     autoFocus={true}
                     spellCheck={true}
                     /* TODO: Make this copy configurable. */

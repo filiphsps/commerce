@@ -6,7 +6,6 @@
         "composite": true,
         "declaration": true,
         "declarationMap": true,
-        "downlevelIteration": false,
         "esModuleInterop": true,
         "experimentalDecorators": true,
         "forceConsistentCasingInFileNames": true,

@@ -13,6 +13,7 @@ import { isValidHandle } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
 import { flattenConnection, RichText } from '@shopify/hydrogen-react';
 import md5 from 'crypto-js/md5';
+import { cacheLife } from 'next/cache';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
@@ -27,11 +28,6 @@ import Heading from '@/components/typography/heading';
 import { Label } from '@/components/typography/label';
 
 import type { Metadata } from 'next';
-
-export const runtime = 'nodejs';
-export const dynamic = 'force-static';
-export const dynamicParams = true;
-export const revalidate = false;
 
 export type BlogPageParams = Promise<{ domain: string; locale: string; blog: string }>;
 
@@ -67,6 +63,9 @@ export async function generateStaticParams({
 }
 
 export async function generateMetadata({ params }: { params: BlogPageParams }): Promise<Metadata> {
+    'use cache';
+    cacheLife('max');
+
     const { domain, locale: localeData, blog: blogHandle } = await params;
     if (!isValidHandle(blogHandle)) {
         notFound();
@@ -117,6 +116,9 @@ export async function generateMetadata({ params }: { params: BlogPageParams }): 
 }
 
 export default async function BlogPage({ params }: { params: BlogPageParams }) {
+    'use cache';
+    cacheLife('max');
+
     const { domain, locale: localeData, blog: blogHandle } = await params;
     if (!isValidHandle(blogHandle)) {
         notFound();

@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, Suspense, useCallback, useEffect, useState } from 'react';
+import { Fragment, Suspense, useCallback, useState } from 'react';
 import { EmailShareButton, FacebookShareButton, TwitterShareButton } from 'react-share';
 
 import { getTranslations } from '@/utils/locale';
@@ -57,22 +57,10 @@ const ProductGallery = ({
         [loading]
     );
 
-    useEffect(() => {
-        if (selected || !images) {
-            return;
-        }
-
-        const target = initialImageId ? images.find(({ id }) => id === initialImageId) : images[0];
-        if (!target) {
-            return;
-        }
-
-        setImage(target);
-    }, [, images, initialImageId, selected, setImage]);
-
     if (!images || images.length <= 0) return null;
 
-    const image = next || selected;
+    const initialImage = (initialImageId ? images.find(({ id }) => id === initialImageId) : images[0]) ?? null;
+    const image = next || selected || initialImage;
     const isLoading = loading || !image;
     const loadingProps = { ...(isLoading ? { 'data-skeleton': true } : {}) };
 

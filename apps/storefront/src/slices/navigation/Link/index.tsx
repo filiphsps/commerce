@@ -1,7 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-
 import { linkResolver } from '@/utils/prismic';
 import { cn } from '@/utils/tailwind';
 import { asLink } from '@prismicio/client';
@@ -27,8 +25,6 @@ const LinkSlice = ({ slice, context: { isHeader = true } }: LinkProps) => {
     const { locale } = useShop();
     const pathname = usePathname().slice(1).split('/').slice(1).join('/') || `/${locale.code}/`; // FIXME: This is really ugly.
 
-    const [active, setActive] = useState(false);
-
     const link = slice.primary.href;
     const title = slice.primary.title;
     const variant = slice.variation;
@@ -45,9 +41,7 @@ const LinkSlice = ({ slice, context: { isHeader = true } }: LinkProps) => {
         }
     }
 
-    useEffect(() => {
-        setActive(target.toLowerCase().endsWith(pathname.toLowerCase()));
-    }, [target, pathname]);
+    const active = target.toLowerCase().endsWith(pathname.toLowerCase());
 
     // Don't render the link slice as a standalone menu.
     if (!isHeader) {
