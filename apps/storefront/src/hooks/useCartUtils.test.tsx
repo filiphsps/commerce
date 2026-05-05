@@ -27,7 +27,7 @@ vi.mock('next/navigation', async () => ({
 describe('hooks', () => {
     describe('useCartUtils', () => {
         beforeEach(() => {
-            (useCart as Mock<any, any>).mockReturnValue({
+            (useCart as Mock).mockReturnValue({
                 error: undefined,
 
                 buyerIdentity: {

@@ -1,13 +1,12 @@
 import { cn } from '@/utils/tailwind';
 
-import type { ComponentProps, ElementType, HTMLProps, ReactNode, RefObject } from 'react';
+import type { ComponentProps, ElementType, ReactNode, RefObject } from 'react';
 
-export type InputProps<T extends ElementType> = {
-    as?: ElementType;
-    ref?: RefObject<HTMLInputElement | any>;
-} & HTMLProps<HTMLInputElement> &
-    ComponentProps<T>;
-const Input = <T extends ElementType = ElementType<'input'>>({
+export type InputProps<T extends ElementType = 'input'> = {
+    as?: T;
+    ref?: RefObject<HTMLInputElement | null>;
+} & ComponentProps<T>;
+const Input = <T extends ElementType = 'input'>({
     as: Tag = 'input' as T,
     ref,
     className,
@@ -16,11 +15,11 @@ const Input = <T extends ElementType = ElementType<'input'>>({
     return (
         <Tag
             ref={ref}
-            {...props}
+            {...(props as ComponentProps<T>)}
             draggable={false}
             className={cn(
                 'w-full appearance-none rounded-lg focus:outline-none focus:ring-0',
-                props.disabled && 'pointer-events-none cursor-not-allowed',
+                (props as { disabled?: boolean }).disabled && 'pointer-events-none cursor-not-allowed',
                 className
             )}
         />
