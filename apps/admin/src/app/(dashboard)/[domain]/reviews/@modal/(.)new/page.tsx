@@ -8,7 +8,7 @@ import { redirect } from 'next/navigation';
 
 import { Modal } from '@/components/modal';
 
-import type { Metadata } from 'next';
+import type { Metadata, Route } from 'next';
 
 export type ShopNewReviewPageProps = {
     params: Promise<{
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 export default async function ShopNewReviewPagePage({ params }: ShopNewReviewPageProps) {
     const session = await auth();
     if (!session?.user) {
-        redirect('/auth/login/');
+        redirect('/auth/login/' as Route);
     }
 
     const { domain } = await params;

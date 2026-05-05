@@ -1,9 +1,10 @@
-import { cn, Header as NordstarHeader } from '@nordcom/nordstar';
+import { Header as NordstarHeader } from '@nordcom/nordstar';
 
 import Image from 'next/image';
 import Link from 'next/link';
 
 import { ToggleSidebar } from '@/components/toggle-sidebar';
+import { cn } from '@/utils/tailwind';
 
 import type { HTMLAttributes } from 'react';
 

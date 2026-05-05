@@ -46,6 +46,5 @@
         "./src/**/.well-known/**/*.ts",
         "./src/**/*.tsx",
         ".next/types/**/*.ts"
-    ],
-    "references": [{ "path": "../../tsconfig.json" }]
+    ]
 }

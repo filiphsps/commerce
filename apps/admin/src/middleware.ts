@@ -3,8 +3,6 @@ import authConfig from '@/utils/auth.config';
 import { NextResponse } from 'next/server';
 import NextAuth from 'next-auth';
 
-import type { NextAuthRequest } from 'next-auth/lib';
-
 export const config = {
     matcher: ['/((?!_next|_static|_vercel|instrumentation|assets|favicon.ico|[\\w-]+\\.\\w+).*)'],
     missing: [
@@ -15,7 +13,7 @@ export const config = {
 
 const { auth } = NextAuth(authConfig);
 
-export default auth((_req: NextAuthRequest) => {
+export default auth(() => {
     return NextResponse.next();
 });
 /* c8 ignore stop */

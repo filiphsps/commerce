@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export default async function Overview() {
     const session = await auth();
     if (!session?.user) {
-        redirect('/auth/login/');
+        redirect('/auth/login/' as Route);
     }
 
     const { user } = session;
