@@ -9,17 +9,19 @@ import type { Locale } from '@/utils/locale';
 
 vi.mock('@apollo/client', async () => ({
     ...((await vi.importActual('@apollo/client')) as any),
-    ApolloClient: vi.fn().mockImplementation(() => ({
-        query: vi.fn().mockResolvedValue({
-            data: {
-                product: {
-                    id: '123',
-                    title: 'Fake Product'
-                }
-            },
-            errors: undefined
-        })
-    }))
+    ApolloClient: vi.fn().mockImplementation(function () {
+        return {
+            query: vi.fn().mockResolvedValue({
+                data: {
+                    product: {
+                        id: '123',
+                        title: 'Fake Product'
+                    }
+                },
+                errors: undefined
+            })
+        };
+    })
 }));
 
 describe('utils', () => {

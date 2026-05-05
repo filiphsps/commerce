@@ -1,6 +1,6 @@
+import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 
-import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi, BlogsApi } from '@/api/shopify/blog';
 import { Locale } from '@/utils/locale';
@@ -30,7 +30,7 @@ export async function GET({}: NextRequest, { params }: BlogsSitemapRouteParams) 
 
     const locale = Locale.from(localeData);
 
-    const shop = await findShopByDomainOverHttp(domain);
+    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const api = await ShopifyApolloApiClient({ shop, locale });
 
     const [blogs, blogsError] = await BlogsApi({ api });

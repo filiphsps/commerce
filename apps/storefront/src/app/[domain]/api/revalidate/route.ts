@@ -1,7 +1,6 @@
 import { Shop } from '@nordcom/commerce-db';
 import { Error, MethodNotAllowedError, TodoError } from '@nordcom/commerce-errors';
 
-import { findShopByDomainOverHttp } from '@/api/shop';
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { type NextRequest, NextResponse } from 'next/server';
 
@@ -15,7 +14,7 @@ const route = async (req: NextRequest, { domain }: Awaited<RevalidateApiRoutePar
     // TODO: Support revalidating subtype (e.g. `namespace.shop.type`).
 
     try {
-        const shop = await findShopByDomainOverHttp(domain);
+        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
 
         //TODO: Do this in the correct place.
         revalidateTag(shop.id, 'max');

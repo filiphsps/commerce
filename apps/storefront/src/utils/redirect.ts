@@ -1,9 +1,11 @@
 import 'server-only';
 
-import { findShopByDomainOverHttp } from '@/api/shop';
+import { Shop } from '@nordcom/commerce-db';
+import { Error } from '@nordcom/commerce-errors';
+
 import { ShopifyApiClient } from '@/api/shopify';
 import { RedirectApi } from '@/api/shopify/redirects';
-import { redirect, RedirectType } from 'next/navigation';
+import { notFound, redirect, RedirectType } from 'next/navigation';
 
 import type { Locale } from './locale';
 
@@ -20,7 +22,17 @@ export async function checkAndHandleRedirect({
     let target: string | null = null;
 
     try {
-        const shop = await findShopByDomainOverHttp(domain);
+        let shop: Awaited<ReturnType<typeof Shop.findByDomain>>;
+        try {
+            shop = await Shop.findByDomain(domain, { convert: true });
+        } catch (error: unknown) {
+            if (Error.isNotFound(error)) {
+                notFound();
+            }
+
+            console.error(error);
+            throw error;
+        }
         const api = await ShopifyApiClient({ shop, locale });
 
         target = await RedirectApi({ api, path });

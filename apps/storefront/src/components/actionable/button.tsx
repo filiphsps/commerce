@@ -1,6 +1,6 @@
-import type { JSX } from 'react';
 import { cn } from '@/utils/tailwind';
 
+import type { JSX } from 'react';
 import type { ComponentPropsWithoutRef, ElementType, ReactNode } from 'react';
 
 export type ButtonPropsBase<ComponentGeneric extends ElementType> = {

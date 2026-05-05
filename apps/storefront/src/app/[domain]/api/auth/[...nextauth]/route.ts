@@ -1,4 +1,5 @@
-import { findShopByDomainOverHttp } from '@/api/shop';
+import { Shop } from '@nordcom/commerce-db';
+
 import { getAuth } from '@/auth';
 
 import type { NextRequest } from 'next/server';
@@ -8,7 +9,7 @@ export type AuthRouteParams = Promise<{ domain: string }>;
 export async function GET(req: NextRequest, { params }: { params: AuthRouteParams }) {
     const { domain } = await params;
 
-    const shop = await findShopByDomainOverHttp(domain);
+    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const {
         handlers: { GET }
     } = getAuth(shop);
@@ -19,7 +20,7 @@ export async function GET(req: NextRequest, { params }: { params: AuthRouteParam
 export async function POST(req: NextRequest, { params }: { params: AuthRouteParams }) {
     const { domain } = await params;
 
-    const shop = await findShopByDomainOverHttp(domain);
+    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const {
         handlers: { POST }
     } = getAuth(shop);

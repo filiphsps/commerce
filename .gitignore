@@ -26,6 +26,7 @@ apps/**/public/**/robots.txt*
 .DS_Store
 .swc
 .bak
+docs/superpowers/
 
 # debug
 npm-debug.log*

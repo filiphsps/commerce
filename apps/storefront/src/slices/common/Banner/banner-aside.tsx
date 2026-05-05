@@ -1,4 +1,3 @@
-import type { JSX } from 'react';
 import { linkResolver } from '@/utils/prismic';
 import { cn } from '@/utils/tailwind';
 import { asLink } from '@prismicio/client';
@@ -10,6 +9,7 @@ import { Content } from '@/components/typography/content';
 import { PrismicText } from '@/components/typography/prismic-text';
 
 import type { BannerSliceAside } from '@/prismic/types';
+import type { JSX } from 'react';
 
 export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; index?: number }): JSX.Element => {
     const priority = index < 2;

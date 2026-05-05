@@ -124,7 +124,7 @@ const config = {
 			headers: [
 				{
 					key: "X-Powered-By",
-					value: "Nordcom Commerce (shops.nordcom.io)",
+					value: `Nordcom Commerce (${process.env.SERVICE_DOMAIN || "unknown"})`,
 				},
 			],
 		}));

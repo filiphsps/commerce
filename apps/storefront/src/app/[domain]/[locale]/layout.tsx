@@ -7,7 +7,6 @@ import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
 import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
 
-import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CountriesApi, LocaleApi, LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
@@ -45,7 +44,7 @@ export async function generateStaticParams(): Promise<Awaited<LayoutParams>[]> {
         await Promise.all(
             shops.map(async ({ domain }) => {
                 try {
-                    const shop = await findShopByDomainOverHttp(domain);
+                    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
                     if (shop.domain.includes('demo')) {
                         return null as any as LayoutParams;
                     }

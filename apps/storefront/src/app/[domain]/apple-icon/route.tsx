@@ -1,6 +1,6 @@
+import { Shop } from '@nordcom/commerce-db';
 import { NotFoundError } from '@nordcom/commerce-errors';
 
-import { findShopByDomainOverHttp } from '@/api/shop';
 import { cacheLife } from 'next/cache';
 import { ImageResponse } from 'next/og';
 import { type NextRequest, NextResponse } from 'next/server';
@@ -20,7 +20,7 @@ export async function GET({}: NextRequest, { params }: { params: AppleIconRouteP
     try {
         let src!: string;
 
-        const shop = await findShopByDomainOverHttp(domain);
+        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
         if (shop.icons?.favicon?.src) {
             src = shop.icons.favicon.src;
         } else {
@@ -30,7 +30,7 @@ export async function GET({}: NextRequest, { params }: { params: AppleIconRouteP
         /** @see {@link https://vercel.com/docs/functions/edge-functions/og-image-generation/og-image-examples#using-an-external-dynamic-image} */
         return new ImageResponse(
             // eslint-disable-next-line @next/next/no-img-element
-            <img width={width} height={height} src={src} title="apple-icon" />,
+            <img alt="apple-icon" width={width} height={height} src={src} title="apple-icon" />,
             {
                 width,
                 height

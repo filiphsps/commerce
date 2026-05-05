@@ -7,7 +7,6 @@ import { Error } from '@nordcom/commerce-errors';
 
 import { PageApi } from '@/api/prismic/page';
 import { isProductVegan } from '@/api/product';
-import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductApi, ProductsApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
@@ -30,6 +29,7 @@ import { ProductCategory } from '@/components/products/product-category';
 import { ProductVendor } from '@/components/products/product-vendor';
 
 import { ProductContent, ProductPricing, ProductSavings } from './product-content';
+import { BLOCK_STYLES } from './styles';
 
 import type { Product } from '@/api/product';
 import type { LocaleDictionary } from '@/utils/locale';
@@ -52,7 +52,7 @@ export async function generateStaticParams({
 
     try {
         const locale = Locale.from(localeData);
-        const shop = await findShopByDomainOverHttp(domain);
+        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
         const api = await ShopifyApiClient({ shop, locale });
 
         const { products } = await ProductsApi({ api, limit: 5 });
@@ -164,9 +164,6 @@ export async function generateMetadata({
         }
     };
 }
-
-export const BLOCK_STYLES =
-    'flex h-auto w-full flex-col items-stretch justify-start gap-8 overflow-clip rounded-lg md:justify-stretch lg:gap-8 empty:hidden';
 
 async function Badges({ product, i18n }: { product: Product; i18n: LocaleDictionary }) {
     const badges: ReactNode[] = [];

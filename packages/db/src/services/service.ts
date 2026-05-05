@@ -1,7 +1,7 @@
 import { db } from '../db';
 
 import type { BaseDocument } from '../db';
-import type { QueryFilter, Model, ProjectionType, Query, QueryOptions, UpdateQuery } from 'mongoose';
+import type { Model, ProjectionType, Query, QueryFilter, QueryOptions, UpdateQuery } from 'mongoose';
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 

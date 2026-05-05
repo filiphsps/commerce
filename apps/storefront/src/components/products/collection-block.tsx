@@ -1,4 +1,3 @@
-import type { JSX } from 'react';
 import 'server-only';
 
 import { Suspense } from 'react';

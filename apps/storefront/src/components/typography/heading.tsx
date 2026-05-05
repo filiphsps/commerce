@@ -1,10 +1,10 @@
-import type { JSX } from 'react';
 import { Fragment } from 'react';
 
 import type { As } from '@nordcom/nordstar';
 
 import { cn } from '@/utils/tailwind';
 
+import type { JSX } from 'react';
 import type { ComponentProps, CSSProperties, ElementType, FunctionComponent, HTMLProps, ReactNode } from 'react';
 
 export type TitleProps<T extends As> = {
