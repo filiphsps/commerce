@@ -1,11 +1,79 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@plugin "@tailwindcss/typography";
+@plugin "@tailwindcss/forms";
+
+@source "../../../../node_modules/@nordcom";
+@source "../../node_modules/@nordcom";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+    --font-sans: var(--font-primary, var(--font-fallback)), sans-serif;
+    --font-mono: var(--font-geist-mono), monospace;
+
+    --color-border: hsl(var(--border));
+    --color-input: hsl(var(--input));
+    --color-ring: hsl(var(--ring));
+    --color-background: hsl(var(--background));
+    --color-foreground: hsl(var(--foreground));
+
+    --color-primary: hsl(var(--primary));
+    --color-primary-foreground: hsl(var(--primary-foreground));
+    --color-secondary: hsl(var(--secondary));
+    --color-secondary-foreground: hsl(var(--secondary-foreground));
+    --color-destructive: hsl(var(--destructive));
+    --color-destructive-foreground: hsl(var(--destructive-foreground));
+    --color-muted: hsl(var(--muted));
+    --color-muted-foreground: hsl(var(--muted-foreground));
+    --color-accent: hsl(var(--accent));
+    --color-accent-foreground: hsl(var(--accent-foreground));
+    --color-popover: hsl(var(--popover));
+    --color-popover-foreground: hsl(var(--popover-foreground));
+    --color-card: hsl(var(--color-background-highlight));
+    --color-card-foreground: hsl(var(--card-foreground));
+
+    --aspect-3\/2: 3 / 2;
+
+    --default-transition-duration: 250ms;
+}
+
+@utility border-3 {
+    border-width: 3px;
+}
+
+@utility border-t-3 {
+    border-top-width: 3px;
+}
+
+@utility brightness-65 {
+    filter: brightness(0.65);
+}
+
+@utility stroke-1 {
+    stroke-width: 0.2rem;
+}
+
+@utility stroke-2 {
+    stroke-width: 0.25rem;
+}
+
+@utility stroke-3 {
+    stroke-width: 0.35rem;
+}
+
+@utility container {
+    margin-inline: auto;
+    padding-inline: 2rem;
+    @media (width >= 1400px) {
+        max-width: 1400px;
+    }
+}
 
 @layer base {
     :root {
-        --font-fallback: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, Cantarell,
-            'Helvetica Neue', sans-serif;
+        --font-fallback: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, Cantarell,
+            "Helvetica Neue", sans-serif;
 
         --background: 0 0% 0%;
         --foreground: 0 0% 99.61%;
@@ -45,8 +113,8 @@
         @apply font-sans;
         @apply bg-background text-foreground;
         font-feature-settings:
-            'rlig' 1,
-            'calt' 1;
+            "rlig" 1,
+            "calt" 1;
     }
 
     body {
