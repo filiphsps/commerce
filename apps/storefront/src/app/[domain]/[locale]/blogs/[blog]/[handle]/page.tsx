@@ -33,14 +33,14 @@ export type ArticlePageParams = Promise<{ domain: string; locale: string; blog: 
 export async function generateStaticParams({
     params
 }: {
-    params: Omit<ArticlePageParams, 'handle'>;
+    params: Omit<Awaited<ArticlePageParams>, 'handle'>;
 }): Promise<Pick<Awaited<ArticlePageParams>, 'handle'>[]> {
     /** @note Limit pre-rendering when not in production. */
     if (process.env.VERCEL_ENV !== 'production') {
         return [];
     }
 
-    const { domain, locale: localeData } = await params;
+    const { domain, locale: localeData } = params;
     const locale = Locale.from(localeData);
 
     const shop = await findShopByDomainOverHttp(domain);

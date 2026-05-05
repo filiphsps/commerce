@@ -34,9 +34,9 @@ export type BlogPageParams = Promise<{ domain: string; locale: string; blog: str
 export async function generateStaticParams({
     params
 }: {
-    params: Omit<BlogPageParams, 'blog'>;
+    params: Omit<Awaited<BlogPageParams>, 'blog'>;
 }): Promise<Pick<Awaited<BlogPageParams>, 'blog'>[]> {
-    const { domain, locale: localeData } = await params;
+    const { domain, locale: localeData } = params;
 
     /** @note Limit pre-rendering when not in production. */
     if (process.env.VERCEL_ENV !== 'production') {

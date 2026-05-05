@@ -41,14 +41,14 @@ export type ProductPageParams = Promise<{ domain: string; locale: string; handle
 export async function generateStaticParams({
     params
 }: {
-    params: Omit<ProductPageParams, 'handle'>;
+    params: Omit<Awaited<ProductPageParams>, 'handle'>;
 }): Promise<Omit<Awaited<ProductPageParams>, 'domain' | 'locale'>[]> {
     /** @note Limit pre-rendering when not in production. */
     if (process.env.VERCEL_ENV !== 'production') {
         return [];
     }
 
-    const { domain, locale: localeData } = await params;
+    const { domain, locale: localeData } = params;
 
     try {
         const locale = Locale.from(localeData);

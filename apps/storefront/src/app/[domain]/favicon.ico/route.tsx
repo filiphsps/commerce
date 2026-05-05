@@ -1,12 +1,12 @@
 import { cacheLife } from 'next/cache';
 import { type NextRequest, NextResponse } from 'next/server';
 
-export type FaviconRouteParams = {
+export type FaviconRouteParams = Promise<{
     domain: string;
-};
+}>;
 
 // TODO: Convert the png favicon to a proper ico instead of redirecting to the png.
-export const GET = async (req: NextRequest, {}: FaviconRouteParams) => {
+export const GET = async (req: NextRequest, { params: _params }: { params: FaviconRouteParams }) => {
     'use cache';
     cacheLife('max');
 
