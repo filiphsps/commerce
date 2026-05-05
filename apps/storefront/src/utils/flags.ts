@@ -1,6 +1,6 @@
 /* c8 ignore start */
 import { get } from '@vercel/edge-config';
-import { unstable_flag as flag } from '@vercel/flags/next';
+import { flag } from '@vercel/flags/next';
 
 export const showSearchFilter = flag<boolean>({
     key: 'search-filter',

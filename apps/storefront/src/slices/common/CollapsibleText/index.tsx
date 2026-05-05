@@ -1,3 +1,4 @@
+import type { JSX } from 'react';
 import 'server-only';
 
 import { cn } from '@/utils/tailwind';

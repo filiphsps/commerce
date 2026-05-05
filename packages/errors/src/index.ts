@@ -38,7 +38,7 @@ export class Error<T = unknown> extends BuiltinError {
         return this.code === error.code;
     }
 
-    public static isError(error: Error | unknown): boolean {
+    public static override isError(error: unknown): error is Error {
         return error instanceof Error;
     }
 

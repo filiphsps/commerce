@@ -8,7 +8,7 @@ import { auth } from '@/auth';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 
-import type { Metadata } from 'next';
+import type { Metadata, Route } from 'next';
 
 export type ShopPageProps = {
     params: Promise<{
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 export default async function ShopPage({ params }: ShopPageProps) {
     const session = await auth();
     if (!session?.user) {
-        redirect('/auth/login/');
+        redirect('/auth/login/' as Route);
     }
 
     const { domain } = await params;

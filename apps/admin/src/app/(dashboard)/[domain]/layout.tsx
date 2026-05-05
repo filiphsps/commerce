@@ -28,7 +28,7 @@ export type ShopLayoutProps = {
 export async function generateMetadata({ params }: ShopLayoutProps): Promise<Metadata> {
     const session = await auth();
     if (!session?.user) {
-        redirect('/auth/login/');
+        redirect('/auth/login/' as Route);
     }
 
     const { domain } = await params;
@@ -57,7 +57,7 @@ export async function generateMetadata({ params }: ShopLayoutProps): Promise<Met
 export default async function ShopLayout({ children, params }: ShopLayoutProps) {
     const session = await auth();
     if (!session?.user) {
-        redirect('/auth/login/');
+        redirect('/auth/login/' as Route);
     }
 
     const { domain } = await params;

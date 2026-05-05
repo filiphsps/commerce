@@ -5,7 +5,7 @@ import { Heading } from '@nordcom/nordstar';
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 
-import type { Metadata } from 'next';
+import type { Metadata, Route } from 'next';
 
 export type SetupNewPageProps = {};
 
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export default async function SetupNewPage({}: SetupNewPageProps) {
     const session = await auth();
     if (!session?.user) {
-        redirect('/auth/login/');
+        redirect('/auth/login/' as Route);
     }
 
     return (

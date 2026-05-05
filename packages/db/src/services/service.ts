@@ -1,7 +1,7 @@
 import { db } from '../db';
 
 import type { BaseDocument } from '../db';
-import type { FilterQuery, Model, ProjectionType, Query, QueryOptions, UpdateQuery } from 'mongoose';
+import type { QueryFilter, Model, ProjectionType, Query, QueryOptions, UpdateQuery } from 'mongoose';
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 
@@ -26,7 +26,7 @@ interface ReturnsOneQuery {
 }*/
 
 interface BaseFilterableQuery<I> {
-    filter?: FilterQuery<I>;
+    filter?: QueryFilter<I>;
     projection?: ProjectionType<I> | undefined;
 }
 
@@ -112,7 +112,7 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
     }
 
     public async findOneAndUpdate(
-        filter: FilterQuery<DocType>,
+        filter: QueryFilter<DocType>,
         update?: UpdateQuery<DocType>,
         options: QueryOptions<DocType> = { includeResultMetadata: true, lean: true }
     ): Promise<DocType | null> {

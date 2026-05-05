@@ -1,3 +1,4 @@
+import type { JSX } from 'react';
 import { cn } from '@/utils/tailwind';
 
 import { Card } from '@/components/layout/card';

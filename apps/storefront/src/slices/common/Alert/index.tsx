@@ -1,3 +1,4 @@
+import type { JSX } from 'react';
 import { Alert as AlertComponent } from '@/components/informational/alert';
 import { PrismicText } from '@/components/typography/prismic-text';
 

@@ -1,3 +1,4 @@
+import type { JSX } from 'react';
 import { linkResolver } from '@/utils/prismic';
 import { cn } from '@/utils/tailwind';
 import { asLink } from '@prismicio/client';

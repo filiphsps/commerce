@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 export default async function ShopReviewsPagePage({ params }: ShopReviewsPageProps) {
     const session = await auth();
     if (!session?.user) {
-        redirect('/auth/login/');
+        redirect('/auth/login/' as Route);
     }
 
     const { domain } = await params;

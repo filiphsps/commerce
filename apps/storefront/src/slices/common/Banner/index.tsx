@@ -1,3 +1,4 @@
+import type { JSX } from 'react';
 import { BannerAside } from './banner-aside';
 import { BannerDefault } from './banner-default';
 

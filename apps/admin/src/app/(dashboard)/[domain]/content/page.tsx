@@ -7,7 +7,7 @@ import { Heading } from '@nordcom/nordstar';
 import { auth } from '@/auth';
 import { notFound, redirect } from 'next/navigation';
 
-import type { Metadata } from 'next';
+import type { Metadata, Route } from 'next';
 
 export type ShopContentPageProps = {
     params: Promise<{
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 export default async function ShopContentPagePage({ params }: ShopContentPageProps) {
     const session = await auth();
     if (!session?.user) {
-        redirect('/auth/login/');
+        redirect('/auth/login/' as Route);
     }
 
     const { domain } = await params;
