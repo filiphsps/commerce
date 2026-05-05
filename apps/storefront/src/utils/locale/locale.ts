@@ -175,7 +175,7 @@ export const getTranslations = (scope: LocaleDictionaryScope, dictionary?: Local
             const partsWithKeys = parts.map((part, index) =>
                 React.isValidElement(part) ? { ...{ key: index }, ...part } : part
             );
-            return partsWithKeys.some((part) => React.isValidElement(part)) ? partsWithKeys : (parts.join('') as any);
+            return partsWithKeys.some((part) => React.isValidElement(part)) ? (partsWithKeys as any) : (parts.join('') as any);
         }
     };
 };
