@@ -1,97 +1,97 @@
 {
-    "$schema": "https://json.schemastore.org/package.json",
-    "name": "@nordcom/commerce",
-    "version": "2.1.0",
-    "private": true,
-    "type": "module",
-    "cacheDirectories": [
-        ".next/cache",
-        "apps/**/.next/cache"
-    ],
-    "workspaces": [
-        "apps/*",
-        "packages/*"
-    ],
-    "scripts": {
-        "dev": "dotenv -c -- turbo run dev --env-mode=loose",
-        "dev:admin": "dotenv -c -- turbo run dev --filter=./apps/admin --env-mode=loose",
-        "dev:landing": "dotenv -c -- turbo run dev --filter=./apps/landing --env-mode=loose",
-        "dev:storefront": "dotenv -c -- turbo run dev --filter=./apps/storefront --env-mode=loose",
-        "build": "dotenv -c -- turbo run build --env-mode=loose --remote-cache-timeout=60",
-        "build:admin": "dotenv -c -- turbo run build --filter=./apps/admin --env-mode=loose --remote-cache-timeout=60",
-        "build:packages": "turbo run build --filter=./packages/* --env-mode=loose --remote-cache-timeout=60",
-        "clean": "turbo run clean",
-        "lint": "turbo run lint",
-        "prettier": "prettier **/src/**/*.{ts,tsx} --check",
-        "format": "concurrently pnpm:format:* && turbo run format && turbo run fix:lint",
-        "format:eslint": "eslint --fix **/src/**/*.{ts,tsx}",
-        "format:prettier": "prettier --write \"./**/*.{cjs,mjs,ts,tsx,scss,json}\"",
-        "typecheck": "turbo run typecheck",
-        "test": "dotenv -c -- vitest run --coverage",
-        "test:watch": "dotenv -c -- vitest watch",
-        "slicemachine": "turbo run slicemachine --env-mode=loose"
-    },
-    "author": {
-        "name": "Nordcom AB",
-        "email": "hi@nordcom.io",
-        "url": "https://nordcom.io/"
-    },
-    "contributors": [
-        {
-            "name": "Filiph Siitam Sandström",
-            "email": "filiph@nordcom.io",
-            "url": "https://github.com/filiphsps/"
-        }
-    ],
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/NordcomInc/ecommerce.git"
-    },
-    "keywords": [
-        "nextjs",
-        "react"
-    ],
-    "bugs": {
-        "url": "https://github.com/NordcomInc/ecommerce/issues"
-    },
-    "homepage": "https://shops.nordcom.io/",
-    "dependencies": {
-        "@nordcom/nordstar": "0.0.71"
-    },
-    "devDependencies": {
-        "@nordcom/prettier": "0.1.1",
-        "@types/node": "22.8.6",
-        "@types/react-dom": "18.3.0",
-        "@types/react": "18.3.8",
-        "@typescript-eslint/eslint-plugin": "8.13.0",
-        "@typescript-eslint/parser": "8.13.0",
-        "@vitejs/plugin-react": "4.3.3",
-        "@vitest/coverage-v8": "1.6.0",
-        "babel-plugin-module-resolver": "5.0.2",
-        "concurrently": "9.1.0",
-        "dotenv-cli": "7.4.2",
-        "eslint-config-prettier": "9.1.0",
-        "eslint-plugin-jsdoc": "50.4.3",
-        "eslint-plugin-jsx-a11y": "6.10.2",
-        "eslint-plugin-prettier": "5.2.1",
-        "eslint-plugin-react-compiler": "19.0.0-beta-8a03594-20241020",
-        "eslint-plugin-react": "7.37.2",
-        "eslint-plugin-simple-import-sort": "12.1.1",
-        "eslint-plugin-unused-imports": "4.1.4",
-        "eslint": "8.57.1",
-        "glob": "11.0.0",
-        "import-in-the-middle": "1.11.2",
-        "mongoose": "8.8.0",
-        "prettier-eslint": "16.3.0",
-        "prettier-plugin-tailwindcss": "0.6.8",
-        "prettier": "3.3.3",
-        "turbo-ignore": "2.2.3",
-        "turbo": "2.2.3",
-        "typescript": "5.6.3",
-        "vite-plugin-dts": "3.9.1",
-        "vite-tsconfig-paths": "5.1.1",
-        "vite": "5.4.10",
-        "vitest": "1.6.0"
-    },
-    "packageManager": "pnpm@9.12.3"
+	"$schema": "https://json.schemastore.org/package.json",
+	"name": "@nordcom/commerce",
+	"version": "2.1.0",
+	"private": true,
+	"type": "module",
+	"cacheDirectories": [
+		".next/cache",
+		"apps/**/.next/cache"
+	],
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
+	"scripts": {
+		"dev": "dotenv -c -- turbo run dev --env-mode=loose",
+		"dev:admin": "dotenv -c -- turbo run dev --filter=./apps/admin --env-mode=loose",
+		"dev:landing": "dotenv -c -- turbo run dev --filter=./apps/landing --env-mode=loose",
+		"dev:storefront": "dotenv -c -- turbo run dev --filter=./apps/storefront --env-mode=loose",
+		"build": "dotenv -c -- turbo run build --env-mode=loose --remote-cache-timeout=60",
+		"build:admin": "dotenv -c -- turbo run build --filter=./apps/admin --env-mode=loose --remote-cache-timeout=60",
+		"build:packages": "turbo run build --filter=./packages/* --env-mode=loose --remote-cache-timeout=60",
+		"clean": "turbo run clean",
+		"lint": "turbo run lint",
+		"prettier": "prettier **/src/**/*.{ts,tsx} --check",
+		"format": "concurrently pnpm:format:* && turbo run format && turbo run fix:lint",
+		"format:eslint": "eslint --fix **/src/**/*.{ts,tsx}",
+		"format:prettier": "prettier --write \"./**/*.{cjs,mjs,ts,tsx,scss,json}\"",
+		"typecheck": "turbo run typecheck",
+		"test": "dotenv -c -- vitest run --coverage",
+		"test:watch": "dotenv -c -- vitest watch",
+		"slicemachine": "turbo run slicemachine --env-mode=loose"
+	},
+	"author": {
+		"name": "Nordcom AB",
+		"email": "hi@nordcom.io",
+		"url": "https://nordcom.io/"
+	},
+	"contributors": [
+		{
+			"name": "Filiph Siitam Sandström",
+			"email": "filiph@nordcom.io",
+			"url": "https://github.com/filiphsps/"
+		}
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/filiphsps/commerce.git"
+	},
+	"keywords": [
+		"nextjs",
+		"react"
+	],
+	"bugs": {
+		"url": "https://github.com/filiphsps/commerce/issues"
+	},
+	"homepage": "https://shops.nordcom.io/",
+	"dependencies": {
+		"@nordcom/nordstar": "0.0.71"
+	},
+	"devDependencies": {
+		"@nordcom/prettier": "0.1.1",
+		"@types/node": "22.8.6",
+		"@types/react-dom": "18.3.0",
+		"@types/react": "18.3.8",
+		"@typescript-eslint/eslint-plugin": "8.13.0",
+		"@typescript-eslint/parser": "8.13.0",
+		"@vitejs/plugin-react": "4.3.3",
+		"@vitest/coverage-v8": "1.6.0",
+		"babel-plugin-module-resolver": "5.0.2",
+		"concurrently": "9.1.0",
+		"dotenv-cli": "7.4.2",
+		"eslint-config-prettier": "9.1.0",
+		"eslint-plugin-jsdoc": "50.4.3",
+		"eslint-plugin-jsx-a11y": "6.10.2",
+		"eslint-plugin-prettier": "5.2.1",
+		"eslint-plugin-react-compiler": "19.0.0-beta-8a03594-20241020",
+		"eslint-plugin-react": "7.37.2",
+		"eslint-plugin-simple-import-sort": "12.1.1",
+		"eslint-plugin-unused-imports": "4.1.4",
+		"eslint": "8.57.1",
+		"glob": "11.0.0",
+		"import-in-the-middle": "1.11.2",
+		"mongoose": "8.8.0",
+		"prettier-eslint": "16.3.0",
+		"prettier-plugin-tailwindcss": "0.6.8",
+		"prettier": "3.3.3",
+		"turbo-ignore": "2.2.3",
+		"turbo": "2.2.3",
+		"typescript": "5.6.3",
+		"vite-plugin-dts": "3.9.1",
+		"vite-tsconfig-paths": "5.1.1",
+		"vite": "5.4.10",
+		"vitest": "1.6.0"
+	},
+	"packageManager": "pnpm@9.12.3"
 }

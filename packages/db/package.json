@@ -1,73 +1,73 @@
 {
-    "$schema": "https://json.schemastore.org/package.json",
-    "name": "@nordcom/commerce-db",
-    "version": "0.1.0",
-    "private": true,
-    "sideEffects": false,
-    "type": "module",
-    "prettier": "@nordcom/prettier",
-    "types": "./dist/index.d.ts",
-    "module": "./dist/index.ts",
-    "exports": {
-        ".": [
-            "./src/index.ts",
-            "./dist/index.js"
-        ],
-        "./*": [
-            "./src/*.ts",
-            "./dist/*.js",
-            "./src/*/index.ts",
-            "./dist/*/index.js"
-        ]
-    },
-    "scripts": {
-        "build": "tsc && vite build",
-        "clean": "rimraf -g dist coverage .turbo .next *.tsbuildinfo *.log node_modules",
-        "lint": "eslint",
-        "format": "eslint --fix",
-        "typecheck": "tsc -noEmit"
-    },
-    "author": {
-        "name": "Nordcom AB",
-        "email": "hi@nordcom.io",
-        "url": "https://nordcom.io/"
-    },
-    "contributors": [
-        {
-            "name": "Filiph Siitam Sandström",
-            "email": "filiph@nordcom.io",
-            "url": "https://github.com/filiphsps/"
-        }
-    ],
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/NordcomInc/commerce.git"
-    },
-    "keywords": [],
-    "bugs": {
-        "url": "https://github.com/NordcomInc/commerce/issues"
-    },
-    "homepage": "https://shops.nordcom.io/",
-    "files": [
-        "dist"
-    ],
-    "dependencies": {
-        "@nordcom/commerce-errors": "workspace:*",
-        "mongoose": "8.8.0"
-    },
-    "devDependencies": {
-        "@codecov/vite-plugin": "1.2.1",
-        "@nordcom/prettier": "0.1.1",
-        "@types/node": "22.8.6",
-        "concurrently": "9.1.0",
-        "eslint": "8.57.1",
-        "glob": "11.0.0",
-        "rimraf": "6.0.1",
-        "server-only": "0.0.1",
-        "typescript": "5.6.3",
-        "vite-plugin-dts": "3.9.1",
-        "vite-tsconfig-paths": "5.1.1",
-        "vite": "5.4.10",
-        "vitest": "1.6.0"
-    }
+	"$schema": "https://json.schemastore.org/package.json",
+	"name": "@nordcom/commerce-db",
+	"version": "0.1.0",
+	"private": true,
+	"sideEffects": false,
+	"type": "module",
+	"prettier": "@nordcom/prettier",
+	"types": "./dist/index.d.ts",
+	"module": "./dist/index.ts",
+	"exports": {
+		".": [
+			"./src/index.ts",
+			"./dist/index.js"
+		],
+		"./*": [
+			"./src/*.ts",
+			"./dist/*.js",
+			"./src/*/index.ts",
+			"./dist/*/index.js"
+		]
+	},
+	"scripts": {
+		"build": "tsc && vite build",
+		"clean": "rimraf -g dist coverage .turbo .next *.tsbuildinfo *.log node_modules",
+		"lint": "eslint",
+		"format": "eslint --fix",
+		"typecheck": "tsc -noEmit"
+	},
+	"author": {
+		"name": "Nordcom AB",
+		"email": "hi@nordcom.io",
+		"url": "https://nordcom.io/"
+	},
+	"contributors": [
+		{
+			"name": "Filiph Siitam Sandström",
+			"email": "filiph@nordcom.io",
+			"url": "https://github.com/filiphsps/"
+		}
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/filiphsps/commerce.git"
+	},
+	"keywords": [],
+	"bugs": {
+		"url": "https://github.com/filiphsps/commerce/issues"
+	},
+	"homepage": "https://shops.nordcom.io/",
+	"files": [
+		"dist"
+	],
+	"dependencies": {
+		"@nordcom/commerce-errors": "workspace:*",
+		"mongoose": "8.8.0"
+	},
+	"devDependencies": {
+		"@codecov/vite-plugin": "1.2.1",
+		"@nordcom/prettier": "0.1.1",
+		"@types/node": "22.8.6",
+		"concurrently": "9.1.0",
+		"eslint": "8.57.1",
+		"glob": "11.0.0",
+		"rimraf": "6.0.1",
+		"server-only": "0.0.1",
+		"typescript": "5.6.3",
+		"vite-plugin-dts": "3.9.1",
+		"vite-tsconfig-paths": "5.1.1",
+		"vite": "5.4.10",
+		"vitest": "1.6.0"
+	}
 }
