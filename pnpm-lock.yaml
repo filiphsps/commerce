@@ -669,8 +669,8 @@ importers:
         specifier: 4.7.0
         version: 4.7.0
       resolve-accept-language:
-        specifier: 3.1.8
-        version: 3.1.8
+        specifier: 3.2.1
+        version: 3.2.1
       sass:
         specifier: 1.80.5
         version: 1.80.5
@@ -7018,8 +7018,8 @@ packages:
   reselect@4.1.8:
     resolution: {integrity: sha512-ab9EmR80F/zQTMNeneUr4cv+jSwPJgIlvEmVwLerwrWVbpLlBuls9XHzIeTFy4cegU2NHBp3va0LKOzU5qFEYQ==}
 
-  resolve-accept-language@3.1.8:
-    resolution: {integrity: sha512-DGFxmsDUmHO6l73kkGqQNSsdk1RpbxIuHSqFhrlBH+5DZiumiHV2uVkKwIBQhRvQHV1tBl00vtZQhV1o4NHgXQ==}
+  resolve-accept-language@3.2.1:
+    resolution: {integrity: sha512-En80VSeDCy21t5+7wjJKiSBKNJwDRlj12Mo6cjZzuLvF3Pr/NQT4QzYrCCkdTfon8mt418ismwLPdQbfG8+pcw==}
     engines: {node: '>=4.0.0'}
 
   resolve-from@4.0.0:
@@ -14461,7 +14461,7 @@ snapshots:
 
   reselect@4.1.8: {}
 
-  resolve-accept-language@3.1.8: {}
+  resolve-accept-language@3.2.1: {}
 
   resolve-from@4.0.0: {}
 
