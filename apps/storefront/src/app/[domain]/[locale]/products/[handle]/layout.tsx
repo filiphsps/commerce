@@ -34,7 +34,7 @@ export default async function ProductPageLayout({
     children,
     description,
     details,
-    recommendations
+    recommendations,
 }: Readonly<{
     params: ProductPageParams;
     gallery: ReactNode;
@@ -54,7 +54,7 @@ export default async function ProductPageLayout({
 
     const [product, productError] = await ProductApi({
         api,
-        handle
+        handle,
     });
     if (productError) {
         if (Error.isNotFound(productError)) {
@@ -88,63 +88,63 @@ export default async function ProductPageLayout({
     const jsonLd: WithContext<ProductGroup> = {
         '@context': 'https://schema.org',
         '@type': 'ProductGroup',
-        'name': product.title,
-        'description': product.description || '',
-        'url': `https://${shop.domain}/${locale.code}/products/${handle}/`,
-        'brand': {
+        name: product.title,
+        description: product.description || '',
+        url: `https://${shop.domain}/${locale.code}/products/${handle}/`,
+        brand: {
             '@type': 'Brand',
-            'name': product.vendor
+            name: product.vendor,
         },
-        'productGroupID': productToMerchantsCenterId({ locale, product: { productGid: product.id } }),
-        'sku': productToMerchantsCenterId({ locale, product: { productGid: product.id } }),
-        'aggregateRating':
+        productGroupID: productToMerchantsCenterId({ locale, product: { productGid: product.id } }),
+        sku: productToMerchantsCenterId({ locale, product: { productGid: product.id } }),
+        aggregateRating:
             ratingCount > 0
                 ? {
                       '@type': 'AggregateRating',
-                      'ratingValue': rating?.value,
-                      'bestRating': rating?.scale_max || 5.0,
-                      'worstRating': rating?.scale_min || 1.0,
-                      'ratingCount': ratingCount
+                      ratingValue: rating?.value,
+                      bestRating: rating?.scale_max || 5.0,
+                      worstRating: rating?.scale_min || 1.0,
+                      ratingCount: ratingCount,
                   }
                 : undefined,
-        'variesBy': [
+        variesBy: [
             //...(product.options.some(({ name }) => name.toLowerCase() === 'size') ? ['https://schema.org/size'] : []),
             //...(product.options.some(({ name }) => name.toLowerCase() === 'color') ? ['https://schema.org/color'] : [])
         ],
-        'hasVariant': product.variants.edges.map(({ node: variant }) => ({
+        hasVariant: product.variants.edges.map(({ node: variant }) => ({
             '@type': 'Product',
-            'name': `${product.title} ${variant.title}`,
-            'category': product.productType || undefined,
-            'description': product.description || '',
-            'image': variant.image?.url || product.images.edges[0]?.node.url,
+            name: `${product.title} ${variant.title}`,
+            category: product.productType || undefined,
+            description: product.description || '',
+            image: variant.image?.url || product.images.edges[0]?.node.url,
 
-            'sku': productToMerchantsCenterId({
+            sku: productToMerchantsCenterId({
                 locale: locale,
                 product: {
                     productGid: product!.id,
-                    variantGid: variant!.id
-                } as any
+                    variantGid: variant!.id,
+                } as any,
             }),
-            'mpn': variant.barcode || variant.sku || undefined,
+            mpn: variant.barcode || variant.sku || undefined,
 
-            'weight': {
+            weight: {
                 '@type': 'QuantitativeValue',
-                'unitText': variant.weightUnit,
-                'value': safeParseFloat(undefined, variant.weight)
+                unitText: variant.weightUnit,
+                value: safeParseFloat(undefined, variant.weight),
             },
 
-            'offers': {
+            offers: {
                 '@type': 'Offer',
-                'url': `https://${shop.domain}/${locale.code}/products/${product.handle}/${
+                url: `https://${shop.domain}/${locale.code}/products/${product.handle}/${
                     variant.id !== initialVariant.id ? `?variant=${parseGid(variant.id).id}` : ''
                 }`,
-                'itemCondition': 'https://schema.org/NewCondition',
-                'availability': variant.availableForSale ? 'https://schema.org/InStock' : 'https://schema.org/SoldOut',
-                'price': safeParseFloat(undefined, variant.price.amount),
-                'priceCurrency': variant.price.currencyCode,
-                'priceValidUntil': futureDateString(7)
-            }
-        }))
+                itemCondition: 'https://schema.org/NewCondition',
+                availability: variant.availableForSale ? 'https://schema.org/InStock' : 'https://schema.org/SoldOut',
+                price: safeParseFloat(undefined, variant.price.amount),
+                priceCurrency: variant.price.currencyCode,
+                priceValidUntil: futureDateString(7),
+            },
+        })),
     };
 
     return (
@@ -163,8 +163,8 @@ export default async function ProductPageLayout({
                                             locale,
                                             product: {
                                                 productGid: product.id,
-                                                variantGid: initialVariant.id
-                                            }
+                                                variantGid: initialVariant.id,
+                                            },
                                         }),
                                         item_name: product.title,
                                         item_brand: product.vendor,
@@ -175,11 +175,11 @@ export default async function ProductPageLayout({
                                         variant_id: initialVariant.id,
                                         sku: initialVariant.sku || undefined,
                                         currency: initialVariant.price.currencyCode,
-                                        price: safeParseFloat(undefined, initialVariant.price.amount!)
-                                    }
-                                ]
-                            }
-                        }
+                                        price: safeParseFloat(undefined, initialVariant.price.amount!),
+                                    },
+                                ],
+                            },
+                        },
                     }}
                 />
             </Suspense>

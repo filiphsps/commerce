@@ -16,7 +16,7 @@ import type { Locale } from '@/utils/locale';
  * @returns {{ error: Error | undefined; cartError: unknown | undefined; }} potential errors.
  */
 export const useCartUtils = ({
-    locale
+    locale,
 }: {
     locale: Locale;
 }): {
@@ -34,7 +34,7 @@ export const useCartUtils = ({
         discountCodes,
         discountCodesUpdate,
         cartReady,
-        error: cartError
+        error: cartError,
     } = useCart();
 
     // Stable refs to mutable values that should not retrigger effects. Refs are
@@ -58,7 +58,7 @@ export const useCartUtils = ({
         }
 
         buyerIdentityUpdateRef.current({
-            countryCode: locale.country
+            countryCode: locale.country,
         });
     }, [locale.country, buyerIdentity, cartReady]);
 
@@ -79,7 +79,7 @@ export const useCartUtils = ({
         const active = [
             ...(discountCodesRef.current
                 ?.map((discount) => discount?.code?.toLowerCase())
-                .filter((i): i is string => !!i) || [])
+                .filter((i): i is string => !!i) || []),
         ];
         if (discounts.every((discount) => active.includes(discount))) {
             return;

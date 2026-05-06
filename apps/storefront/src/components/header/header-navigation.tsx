@@ -29,7 +29,7 @@ export function HeaderNavigation({
         <nav
             className={cn(
                 'overflow-x-shadow flex w-full grow items-center justify-start gap-5 overflow-x-auto overflow-y-clip whitespace-nowrap px-2 md:max-w-[var(--page-width)] md:flex-row md:overflow-hidden md:px-3 lg:gap-6',
-                className
+                className,
             )}
             {...props}
         >
@@ -41,7 +41,7 @@ export function HeaderNavigation({
                     data={slices}
                     components={menuSlices}
                     context={{
-                        isHeader: true
+                        isHeader: true,
                     }}
                 />
             </Suspense>

@@ -19,38 +19,38 @@ export async function GET(request: NextRequest) {
                 description: 'Controls if the search filter is visible',
                 options: [
                     { value: false, label: 'Hidden' },
-                    { value: true, label: 'Visible' }
-                ]
+                    { value: true, label: 'Visible' },
+                ],
             },
             'product-page-info-lines': {
                 description: 'Controls if the info lines are visible on the product page',
                 options: [
                     { value: false, label: 'Hidden' },
-                    { value: true, label: 'Visible' }
-                ]
+                    { value: true, label: 'Visible' },
+                ],
             },
             'header-search-bar': {
                 description: 'Controls if header search bar experiment is enabled',
                 options: [
                     { value: false, label: 'Off' },
-                    { value: true, label: 'On' }
-                ]
+                    { value: true, label: 'On' },
+                ],
             },
             'products-page': {
                 description: 'Controls if the products page (`/products/`) is enabled',
                 options: [
                     { value: false, label: 'Disabled' },
-                    { value: true, label: 'Enabled' }
-                ]
+                    { value: true, label: 'Enabled' },
+                ],
             },
             'accounts-functionality': {
                 description: 'Controls if the accounts functionality is enabled',
                 options: [
                     { value: false, label: 'Disabled' },
-                    { value: true, label: 'Enabled' }
-                ]
-            }
-        }
+                    { value: true, label: 'Enabled' },
+                ],
+            },
+        },
     });
 }
 /* c8 ignore stop */

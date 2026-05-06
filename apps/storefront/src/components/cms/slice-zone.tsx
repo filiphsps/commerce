@@ -32,11 +32,11 @@ export async function SliceZone({ shop, locale, i18n, data = [], components, con
                     shop: {
                         ...shop,
                         commerceProvider: {},
-                        contentProvider: {}
+                        contentProvider: {},
                     },
                     i18n,
                     locale,
-                    ...context
+                    ...context,
                 }}
             />
         </Suspense>
@@ -74,12 +74,12 @@ async function skeleton({ shop, locale, i18n, data = [], components = {}, contex
                         shop: {
                             ...shop,
                             commerceProvider: {},
-                            contentProvider: {}
+                            contentProvider: {},
                         },
                         i18n,
                         locale,
-                        ...context
-                    }
+                        ...context,
+                    },
                 };
 
                 if (Slice.skeleton) {

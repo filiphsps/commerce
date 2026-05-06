@@ -11,7 +11,7 @@ describe('utils', () => {
         ['Hello World!', 'hello-world'],
         ["A'hoy", 'ahoy'],
         ['Francén', 'francen'],
-        ['Another-Title', 'another-title']
+        ['Another-Title', 'another-title'],
     ];
 
     describe('TitleToHandle', () => {

@@ -24,7 +24,7 @@ export async function ProductCategory({
     locale,
     product: { productType },
     prefix = null,
-    className
+    className,
 }: ProductCategoryProps) {
     if (!productType) {
         return null;

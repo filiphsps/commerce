@@ -35,11 +35,11 @@ const ProductCardActions = ({ i18n, data: product, selectedVariant }: ProductCar
             linesUpdate([
                 {
                     id: line.id,
-                    quantity
-                }
+                    quantity,
+                },
             ]);
         },
-        [linesUpdate, lines, line]
+        [linesUpdate, lines, line],
     );
 
     if (cartReady === undefined) {
@@ -66,12 +66,12 @@ const ProductCardActions = ({ i18n, data: product, selectedVariant }: ProductCar
         <AddToCart
             className={cn(
                 baseStyles,
-                'bg-primary text-primary-foreground flex w-full transform-gpu items-center justify-center'
+                'bg-primary text-primary-foreground flex w-full transform-gpu items-center justify-center',
             )}
             quantity={1}
             data={{
                 product,
-                selectedVariant
+                selectedVariant,
             }}
             disabled={!cartReady}
             i18n={i18n}

@@ -92,7 +92,7 @@ export default function SearchContent({
     i18n,
     locale,
     showFilters = false,
-    data: { products = [], productFilters = [] }
+    data: { products = [], productFilters = [] },
 }: SearchContentProps) {
     const { replace } = useRouter();
     const searchParams = useSearchParams();
@@ -147,7 +147,7 @@ export default function SearchContent({
                                 key={index}
                                 className="h-28 select-none rounded-lg border-2 border-solid border-gray-200 bg-gray-100"
                                 style={{
-                                    '--animation-delay': `${150 * (index + 1)}ms`
+                                    '--animation-delay': `${150 * (index + 1)}ms`,
                                 }}
                                 data-skeleton
                             />
@@ -165,7 +165,7 @@ export default function SearchContent({
                         trackingParameters,
                         productType,
                         vendor,
-                        availableForSale
+                        availableForSale,
                     } = product;
 
                     const image: Product['images']['edges'][number]['node'] | undefined =
@@ -195,7 +195,7 @@ export default function SearchContent({
                             key={id}
                             className={cn(
                                 'group/item hover:text-primary relative flex h-28 select-none gap-2 overflow-hidden rounded-lg border-2 border-solid border-gray-200 bg-gray-100 transition-shadow hover:border-gray-300 hover:drop-shadow focus-visible:border-gray-400 lg:h-36 lg:gap-4',
-                                !availableForSale && 'opacity-35 brightness-75'
+                                !availableForSale && 'opacity-35 brightness-75',
                             )}
                         >
                             <div className="flex aspect-square h-full w-auto shrink-0 grow-0 items-center justify-center overflow-hidden bg-white p-2">

@@ -63,7 +63,7 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
               handle,
               // TODO: Pagination for the full variation.
               first: limit,
-              ...filters
+              ...filters,
           })
         : null;
 
@@ -95,7 +95,7 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
                     'grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] md:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] xl:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))]',
                 isHorizontal &&
                     'overflow-x-shadow -my-2 auto-cols-[minmax(13rem,1fr)] grid-flow-col grid-cols-[repeat(auto-fit,minmax(13rem,1fr))] grid-rows-1 overscroll-x-auto py-2',
-                className
+                className,
             )}
         >
             {children}
@@ -106,7 +106,7 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
                     href={`/collections/${collection.handle}/`}
                     className={cn(
                         CARD_STYLES,
-                        'bg-primary text-primary-foreground hover:text-primary-foreground *:text-primary-foreground border-primary-dark flex items-center justify-center p-3 transition-all hover:brightness-75 hover:transition-all'
+                        'bg-primary text-primary-foreground hover:text-primary-foreground *:text-primary-foreground border-primary-dark flex items-center justify-center p-3 transition-all hover:brightness-75 hover:transition-all',
                     )}
                     // TODO: i18n.
                     // TODO: View all {products.length} {Pluralize({ count: products.length, noun: 'product' })}.
@@ -125,7 +125,7 @@ CollectionBlock.skeleton = ({
     isHorizontal = false,
     bare = false,
     length = 7,
-    className
+    className,
 }: {
     length?: number;
     isHorizontal?: boolean;
@@ -146,7 +146,7 @@ CollectionBlock.skeleton = ({
                     'grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] md:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] xl:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))]',
                 isHorizontal &&
                     '-mr-8 auto-cols-[minmax(12rem,1fr)] grid-flow-col grid-cols-[repeat(auto-fit,minmax(12rem,1fr))] grid-rows-1 overflow-x-clip overscroll-none',
-                className
+                className,
             )}
         >
             {cards}

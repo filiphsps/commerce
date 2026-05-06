@@ -8,14 +8,14 @@ describe('utils', () => {
         it(`should generate a Merchants Center product ID based on the product's Shopify GIDs`, () => {
             const product = {
                 productGid: 'gid://shopify/Product/123',
-                variantGid: 'gid://shopify/ProductVariant/456'
+                variantGid: 'gid://shopify/ProductVariant/456',
             } as any;
 
             const locale = Locale.from('en-US')!;
 
             const merchantsCenterId = productToMerchantsCenterId({
                 locale,
-                product
+                product,
             });
 
             expect(merchantsCenterId).toBe('shopify_US_123_456');
@@ -25,14 +25,14 @@ describe('utils', () => {
         it(`should generate a Merchants Center product ID based on the product's Shopify GIDs`, () => {
             const product = {
                 productGid: 'gid://shopify/Product/123',
-                variantGid: 'gid://shopify/ProductVariant/456'
+                variantGid: 'gid://shopify/ProductVariant/456',
             } as any;
 
             const locale = Locale.from('fr-CA')!;
 
             const merchantsCenterId = productToMerchantsCenterId({
                 locale,
-                product
+                product,
             });
 
             expect(merchantsCenterId).toBe('shopify_CA_123_456');

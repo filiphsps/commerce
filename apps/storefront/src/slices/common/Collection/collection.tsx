@@ -45,7 +45,7 @@ const CollectionContainerHeader = ({ slice }: Omit<CollectionContainerProps, 'ch
             title={asText(slice.primary.title)}
             className={cn(
                 'group flex items-center gap-1 text-xl font-bold leading-tight hover:underline focus-visible:underline lg:text-2xl',
-                'md:data-[align=left]:text-left md:data-[align=center]:text-center md:data-[align=right]:text-right'
+                'md:data-[align=left]:text-left md:data-[align=center]:text-center md:data-[align=right]:text-right',
             )}
         >
             <PrismicText data={slice.primary.title} styled={false} bare={true} />
@@ -58,7 +58,7 @@ const CollectionContainerHeader = ({ slice }: Omit<CollectionContainerProps, 'ch
             data-align={slice.primary.alignment}
             className={cn(
                 'max-w-none',
-                'text-base md:data-[align=center]:max-w-[900px] md:data-[align=left]:text-left md:data-[align=center]:text-center md:data-[align=right]:text-right'
+                'text-base md:data-[align=center]:max-w-[900px] md:data-[align=left]:text-left md:data-[align=center]:text-center md:data-[align=right]:text-right',
             )}
         >
             <PrismicText data={slice.primary.body} />
@@ -71,7 +71,7 @@ const CollectionContainerHeader = ({ slice }: Omit<CollectionContainerProps, 'ch
             data-align={slice.primary.alignment}
             className={cn(
                 'flex w-full flex-col gap-1',
-                'md:data-[align=left]:items-start md:data-[align=right]:items-end md:data-[align=center]:items-center'
+                'md:data-[align=left]:items-start md:data-[align=right]:items-end md:data-[align=center]:items-center',
             )}
         >
             {title}

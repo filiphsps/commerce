@@ -7,8 +7,8 @@ export const metadata: Metadata = {
     metadataBase: new URL(`https://shops.nordcom.io/news/`),
     title: {
         default: 'Overview',
-        template: `%s · News · Nordcom Commerce`
-    }
+        template: `%s · News · Nordcom Commerce`,
+    },
 };
 
 export default async function NewsLayout({ children }: { children: ReactNode }) {

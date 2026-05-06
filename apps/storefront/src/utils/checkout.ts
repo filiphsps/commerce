@@ -46,7 +46,7 @@ export const Checkout = async ({
     shop,
     locale,
     cart,
-    trackable
+    trackable,
 }: {
     shop: OnlineShop;
     locale: Locale;
@@ -78,8 +78,8 @@ export const Checkout = async ({
                             locale: locale,
                             product: {
                                 productGid: line.merchandise!.product!.id,
-                                variantGid: line.merchandise!.id
-                            } as any
+                                variantGid: line.merchandise!.id,
+                            } as any,
                         }),
                         item_name: line.merchandise.product.title,
                         item_variant: line.merchandise.title,
@@ -90,10 +90,10 @@ export const Checkout = async ({
                         variant_id: line.merchandise!.id,
                         currency: line.merchandise.price.currencyCode!,
                         price: safeParseFloat(undefined, line.merchandise.price.amount),
-                        quantity: line.quantity
-                    }))
-                }
-            }
+                        quantity: line.quantity,
+                    })),
+                },
+            },
         });
     } catch (error: unknown) {
         console.error(error);

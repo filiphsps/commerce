@@ -15,13 +15,13 @@ export const ReviewSchema = new Schema<ReviewBase>(
     {
         shop: {
             type: ShopSchema,
-            required: true
-        }
+            required: true,
+        },
     },
     {
         id: true,
-        timestamps: true
-    }
+        timestamps: true,
+    },
 );
 
 export const ReviewModel = (db.models.Review || db.model('Review', ReviewSchema)) as ReturnType<

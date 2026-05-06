@@ -21,7 +21,7 @@ export async function PageApi({
     shop,
     locale,
     handle,
-    type
+    type,
 }: {
     shop: OnlineShop;
     locale: Locale;

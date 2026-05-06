@@ -22,7 +22,7 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
         selectedOptions,
         setSelectedOptions,
         isOptionInStock,
-        product
+        product,
     } = useProduct();
 
     if (!product) {
@@ -39,7 +39,7 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
     // TODO: Figure out how to handle this properly.
     const options = productOptions?.filter(
         (option) =>
-            option?.values && !(option.values.length === 1 && option.values[0]!.toLowerCase() === 'default title')
+            option?.values && !(option.values.length === 1 && option.values[0]!.toLowerCase() === 'default title'),
     );
 
     const onlyOneOption = options && options.length === 1 && options[0]?.values && options[0].values.length === 1;
@@ -60,7 +60,7 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
 
                                     // FIXME: Handle options to variant properly.
                                     const matchingVariant = variants.find((variant) =>
-                                        variant!.title?.toLowerCase().includes(value.toLowerCase())
+                                        variant!.title?.toLowerCase().includes(value.toLowerCase()),
                                     );
 
                                     let href = `/products/${handle}/`;
@@ -77,7 +77,7 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
                                             ? convertToLocalMeasurementSystem({
                                                   locale,
                                                   weight: matchingVariant.weight!,
-                                                  weightUnit: matchingVariant.weightUnit!
+                                                  weightUnit: matchingVariant.weightUnit!,
                                               })
                                             : null;
 
@@ -91,12 +91,14 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
                                                 !inStock && styles.disabled,
                                                 styles.clickable,
                                                 'h-12 rounded-lg border-2 border-solid border-white bg-white text-sm shadow hover:border-gray-400',
-                                                !isSelected && inStock && 'cursor-pointer focus-visible:border-gray-400'
+                                                !isSelected &&
+                                                    inStock &&
+                                                    'cursor-pointer focus-visible:border-gray-400',
                                             )}
                                             onClick={() =>
                                                 setSelectedOptions({
                                                     ...(selectedOptions as any),
-                                                    [option.name!]: value!
+                                                    [option.name!]: value!,
                                                 })
                                             }
                                             locale={locale}
@@ -113,7 +115,7 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
                         </Fragment>
                     ) : (
                         <div key={`empty_${index}`} />
-                    ) // Empty div to keep the grid layout
+                    ), // Empty div to keep the grid layout
             )}
         </div>
     );

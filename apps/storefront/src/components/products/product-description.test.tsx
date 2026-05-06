@@ -12,8 +12,8 @@ describe('components', () => {
                 await ProductDescription({
                     shop: {} as any,
                     locale: Locale.default,
-                    product: { descriptionHtml: '' } as any
-                })
+                    product: { descriptionHtml: '' } as any,
+                }),
             );
 
             await waitFor(() => expect(unmount).not.toThrow());

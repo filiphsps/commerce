@@ -16,21 +16,21 @@ export const SessionSchema = new Schema<SessionBase>(
         user: {
             type: Schema.Types.ObjectId,
             required: true,
-            ref: 'User'
+            ref: 'User',
         },
         token: {
             type: Schema.Types.String,
-            required: true
+            required: true,
         },
         expiresAt: {
             type: Schema.Types.Date,
-            required: true
-        }
+            required: true,
+        },
     },
     {
         id: true,
-        timestamps: true
-    }
+        timestamps: true,
+    },
 );
 
 export const SessionModel = (db.models.Session || db.model('Session', SessionSchema)) as ReturnType<

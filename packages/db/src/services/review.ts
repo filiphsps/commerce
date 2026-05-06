@@ -21,8 +21,8 @@ export class ReviewService extends Service<ReviewBase, typeof ReviewModel> {
         return await this.find({
             count,
             filter: {
-                shop
-            }
+                shop,
+            },
         });
     }
 
@@ -30,8 +30,8 @@ export class ReviewService extends Service<ReviewBase, typeof ReviewModel> {
         return await this.find({
             ...args,
             filter: {
-                ...args.filter
-            }
+                ...args.filter,
+            },
         });
     }
 }

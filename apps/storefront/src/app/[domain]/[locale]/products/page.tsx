@@ -30,7 +30,7 @@ type SearchParams = Promise<{
 export type ProductsPageParams = Promise<{ domain: string; locale: string }>;
 export async function generateMetadata({
     params,
-    searchParams: queryParams
+    searchParams: queryParams,
 }: {
     params: ProductsPageParams;
     searchParams: SearchParams;
@@ -66,10 +66,10 @@ export async function generateMetadata({
             languages: locales.reduce(
                 (prev, { code }) => ({
                     ...prev,
-                    [code]: `https://${shop.domain}/${code}/products/${pageNumber > 1 ? `?page=${pageNumber}` : ''}`
+                    [code]: `https://${shop.domain}/${code}/products/${pageNumber > 1 ? `?page=${pageNumber}` : ''}`,
                 }),
-                {}
-            )
+                {},
+            ),
         },
         openGraph: {
             url: `/products/`,
@@ -85,17 +85,17 @@ export async function generateMetadata({
                           width: page.meta_image!.dimensions?.width || 0,
                           height: page.meta_image!.dimensions?.height || 0,
                           alt: page.meta_image!.alt || '',
-                          secureUrl: page.meta_image!.url as string
-                      }
+                          secureUrl: page.meta_image!.url as string,
+                      },
                   ]
-                : undefined
-        }
+                : undefined,
+        },
     };
 }
 
 export default async function ProductsPage({
     params,
-    searchParams: queryParams
+    searchParams: queryParams,
 }: {
     params: ProductsPageParams;
     searchParams: SearchParams;

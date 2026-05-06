@@ -9,12 +9,12 @@ import type { Locale } from '@/utils/locale';
 vi.mock('@shopify/hydrogen-react', async () => {
     return {
         useCart: vi.fn().mockReturnValue({
-            status: 'idle'
+            status: 'idle',
         }),
         useShop: vi.fn().mockReturnValue({
-            domain: 'staging.demo.nordcom.io'
+            domain: 'staging.demo.nordcom.io',
         }),
-        useShopifyCookies: vi.fn().mockReturnValue({})
+        useShopifyCookies: vi.fn().mockReturnValue({}),
     };
 });
 
@@ -22,9 +22,9 @@ vi.mock('@/utils/build-config', () => ({
     BuildConfig: {
         domain: 'staging.demo.nordcom.io',
         i18n: {
-            default: 'en-US'
-        }
-    }
+            default: 'en-US',
+        },
+    },
 }));
 
 describe('components', () => {

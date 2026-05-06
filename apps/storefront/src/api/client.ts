@@ -21,9 +21,9 @@ export const createApolloClient = ({ uri, headers }: ApiConfig, shop: OnlineShop
             fetchOptions: {
                 next: {
                     revalidate: 28_800,
-                    tags: ['shopify', `shopify.${shop.id}`, shop.domain]
-                }
-            }
+                    tags: ['shopify', `shopify.${shop.id}`, shop.domain],
+                },
+            },
         }),
         cache: new InMemoryCache({
             canonizeResults: true,
@@ -40,7 +40,7 @@ export const createApolloClient = ({ uri, headers }: ApiConfig, shop: OnlineShop
                                 }
 
                                 return value.trim();
-                            }
+                            },
                         },
                         descriptionHtml: {
                             read(value) {
@@ -54,39 +54,39 @@ export const createApolloClient = ({ uri, headers }: ApiConfig, shop: OnlineShop
                                     .replaceAll('<meta charset="UTF-8">', '')
                                     .replaceAll(/data-[a-zA-Z0-9-]+="[^"]+"/g, '') // Remove all data-attributes.
                                     .trim();
-                            }
+                            },
                         },
                         trackingParameters: {
                             read(value) {
                                 return value || '';
-                            }
-                        }
-                    }
+                            },
+                        },
+                    },
                 },
                 Query: {
                     fields: {
                         localization: {
                             merge(existing, incoming, { mergeObjects }) {
                                 return mergeObjects(existing, incoming);
-                            }
-                        }
-                    }
-                }
-            }
+                            },
+                        },
+                    },
+                },
+            },
         }),
         documentTransform: shopifyContextTransform,
         defaultOptions: {
             watchQuery: {
                 fetchPolicy: 'cache-and-network',
-                errorPolicy: 'all'
+                errorPolicy: 'all',
             },
             query: {
                 fetchPolicy: 'cache-first',
-                errorPolicy: 'all'
+                errorPolicy: 'all',
             },
             mutate: {
-                errorPolicy: 'all'
-            }
-        }
+                errorPolicy: 'all',
+            },
+        },
     });
 };

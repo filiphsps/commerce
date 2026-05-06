@@ -56,10 +56,10 @@ export async function GET({}: NextRequest, { params }: BlogsSitemapRouteParams) 
             return blog.articles.edges.map(({ node: article }) => ({
                 ...article,
                 blog: {
-                    handle: blogHandle
-                }
+                    handle: blogHandle,
+                },
             }));
-        })
+        }),
     );
 
     return getServerSideSitemap(
@@ -75,7 +75,7 @@ export async function GET({}: NextRequest, { params }: BlogsSitemapRouteParams) 
                     changefreq: 'weekly',
                     lastmod: undefined,
                     alternateRefs: [],
-                    trailingSlash: true
+                    trailingSlash: true,
                 },
                 ...articles.map(
                     ({ handle, publishedAt }) =>
@@ -84,12 +84,12 @@ export async function GET({}: NextRequest, { params }: BlogsSitemapRouteParams) 
                             changefreq: 'yearly',
                             lastmod: publishedAt,
                             alternateRefs: [],
-                            trailingSlash: true
-                        }) as ISitemapField
-                )
+                            trailingSlash: true,
+                        }) as ISitemapField,
+                ),
             ];
 
             return pages;
-        })
+        }),
     );
 }

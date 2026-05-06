@@ -5,8 +5,8 @@ export const metadata: Metadata = {
     metadataBase: new URL(`https://shops.nordcom.io/docs/`),
     title: {
         absolute: 'Documentation · Nordcom Commerce',
-        template: `%s · Documentation · Nordcom Commerce`
-    }
+        template: `%s · Documentation · Nordcom Commerce`,
+    },
 };
 
 export default async function DocsLayout({ children }: { children: ReactNode }) {

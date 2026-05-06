@@ -17,13 +17,13 @@ const __dirname = dirname(__filename);
 
 const compat = new FlatCompat({
     baseDirectory: __dirname,
-    recommendedConfig: js.configs.recommended
+    recommendedConfig: js.configs.recommended,
 });
 
 const APP_GLOBS = [
     'apps/admin/**/*.{ts,tsx,js,jsx,mjs,cjs}',
     'apps/landing/**/*.{ts,tsx,js,jsx,mjs,cjs}',
-    'apps/storefront/**/*.{ts,tsx,js,jsx,mjs,cjs}'
+    'apps/storefront/**/*.{ts,tsx,js,jsx,mjs,cjs}',
 ];
 
 const NON_APP_GLOBS = ['packages/**/*.{ts,tsx,js,jsx,mjs,cjs}', '*.{ts,tsx,js,jsx,mjs,cjs}'];
@@ -37,27 +37,27 @@ const tsLanguageOptions = {
                 'vitest.config.{ts,mts,cts}',
                 'vitest.workspace.{ts,mts,cts}',
                 'apps/*/vitest.config.{ts,mts,cts}',
-                'apps/storefront/sentry.client.config.{ts,mts,cts}'
-            ]
+                'apps/storefront/sentry.client.config.{ts,mts,cts}',
+            ],
         },
         tsconfigRootDir: __dirname,
         ecmaFeatures: { jsx: true },
         sourceType: 'module',
-        ecmaVersion: 'latest'
-    }
+        ecmaVersion: 'latest',
+    },
 };
 
 const sharedRules = {
     '@typescript-eslint/consistent-type-exports': ['error', { fixMixedExportsWithInlineTypeSpecifier: false }],
     '@typescript-eslint/consistent-type-imports': [
         'error',
-        { fixStyle: 'separate-type-imports', prefer: 'type-imports' }
+        { fixStyle: 'separate-type-imports', prefer: 'type-imports' },
     ],
     '@typescript-eslint/no-require-imports': 'error',
     '@typescript-eslint/no-unnecessary-condition': 'warn',
     'brace-style': ['error', '1tbs', { allowSingleLine: true }],
     'consistent-return': 'error',
-    'indent': 'off',
+    indent: 'off',
     'jsdoc/check-alignment': 'error',
     'jsdoc/check-indentation': 'off',
     'jsdoc/check-line-alignment': 'error',
@@ -81,7 +81,7 @@ const sharedRules = {
     'react/prop-types': 'error',
     'react/react-in-jsx-scope': 'off',
     'react/display-name': 'off',
-    'semi': ['error', 'always'],
+    semi: ['error', 'always'],
     'sort-imports': 'off',
     'simple-import-sort/exports': 'error',
     'simple-import-sort/imports': [
@@ -96,9 +96,9 @@ const sharedRules = {
                 ['^@/components(/.*|$)'],
                 ['^\\.\\.(?!/?$)'],
                 ['^\\.', '^\\./?$'],
-                ['^.+\\u0000$', '^.+\\u0000$\\.']
-            ]
-        }
+                ['^.+\\u0000$', '^.+\\u0000$\\.'],
+            ],
+        },
     ],
     'unused-imports/no-unused-imports': 'error',
     'unused-imports/no-unused-vars': [
@@ -107,15 +107,15 @@ const sharedRules = {
             vars: 'all',
             varsIgnorePattern: '^_',
             args: 'after-used',
-            argsIgnorePattern: '^_'
-        }
-    ]
+            argsIgnorePattern: '^_',
+        },
+    ],
 };
 
 const extraPlugins = {
     jsdoc,
     'simple-import-sort': simpleImportSort,
-    'unused-imports': unusedImports
+    'unused-imports': unusedImports,
 };
 
 export default [
@@ -140,8 +140,8 @@ export default [
             '**/next.config.*',
             '**/tailwind.config.*',
             '**/postcss.config.*',
-            '**/next-env.d.ts'
-        ]
+            '**/next-env.d.ts',
+        ],
     },
 
     prettierRecommended,
@@ -153,7 +153,7 @@ export default [
         languageOptions: tsLanguageOptions,
         plugins: extraPlugins,
         settings: { react: { version: 'detect' } },
-        rules: { ...sharedRules, '@next/next/no-html-link-for-pages': 'off' }
+        rules: { ...sharedRules, '@next/next/no-html-link-for-pages': 'off' },
     },
 
     // Non-apps: legacy plugin extends provide react + jsx-a11y plugins.
@@ -165,21 +165,21 @@ export default [
         languageOptions: tsLanguageOptions,
         plugins: { '@typescript-eslint': tseslintPlugin, ...extraPlugins },
         settings: { react: { version: 'detect' } },
-        rules: sharedRules
+        rules: sharedRules,
     },
 
     {
         files: ['apps/admin/**/*.{ts,tsx}'],
         rules: {
             'react/prop-types': 'off',
-            'jsx-a11y/heading-has-content': 'off'
-        }
+            'jsx-a11y/heading-has-content': 'off',
+        },
     },
 
     {
         files: ['apps/storefront/**/*.{ts,tsx}'],
         plugins: { 'react-compiler': reactCompiler },
-        rules: { 'react-compiler/react-compiler': 'warn' }
+        rules: { 'react-compiler/react-compiler': 'warn' },
     },
 
     // New strict rules from eslint-plugin-react-hooks v7 / Next 16. The codebase predates them;
@@ -192,7 +192,7 @@ export default [
             'react-hooks/purity': 'warn',
             'react-hooks/immutability': 'warn',
             'react-hooks/refs': 'warn',
-            'react-hooks/use-memo': 'warn'
-        }
-    }
+            'react-hooks/use-memo': 'warn',
+        },
+    },
 ];

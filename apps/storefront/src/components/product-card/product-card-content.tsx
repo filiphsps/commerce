@@ -46,7 +46,7 @@ const ProductCardContent = ({ data: product, priority, locale, i18n, children }:
                             price={price}
                             className={cn(
                                 'text-lg font-bold text-gray-700',
-                                onSale && 'text-xl font-black text-red-600'
+                                onSale && 'text-xl font-black text-red-600',
                             )}
                         />
 

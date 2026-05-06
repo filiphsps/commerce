@@ -39,7 +39,8 @@ export interface ShopifyOwnConfig {
 }
 
 export interface ShopifyConfig<P extends ShopifyProfile>
-    extends ShopifyOwnConfig, Omit<OIDCConfig<P>, 'clientId' | 'clientSecret' | 'issuer'> {}
+    extends ShopifyOwnConfig,
+        Omit<OIDCConfig<P>, 'clientId' | 'clientSecret' | 'issuer'> {}
 
 export type ShopifyUserConfig<P extends ShopifyProfile> = ShopifyOwnConfig &
     Partial<Omit<OIDCUserConfig<P>, 'options' | 'type'>>;
@@ -69,7 +70,7 @@ export interface ShopifyJWTAuthorizationConformedPayload extends ShopifyJWTAutho
 
 function ShopifyProvider<P extends ShopifyProfile = ShopifyProfile>(
     options: ShopifyUserConfig<P>,
-    shop: OnlineShop
+    shop: OnlineShop,
 ): ShopifyConfig<P> {
     const { shopId, clientId, clientSecret } = options;
 
@@ -87,7 +88,7 @@ function ShopifyProvider<P extends ShopifyProfile = ShopifyProfile>(
         clientSecret,
         client: {
             client_id: clientId,
-            client_secret: clientSecret
+            client_secret: clientSecret,
         },
         issuer,
         authorization: {
@@ -96,8 +97,8 @@ function ShopifyProvider<P extends ShopifyProfile = ShopifyProfile>(
                 scope: 'openid email https://api.customers.com/auth/customer.graphql',
                 client_id: clientId,
                 response_type: 'code',
-                redirect_uri: callbackUrl
-            }
+                redirect_uri: callbackUrl,
+            },
         },
         token: {
             url: `${endpointBase}/token`,
@@ -105,7 +106,7 @@ function ShopifyProvider<P extends ShopifyProfile = ShopifyProfile>(
                 grant_type: 'authorization_code',
                 client_id: clientId,
                 redirect_uri: callbackUrl,
-                client_secret: clientSecret!
+                client_secret: clientSecret!,
             },
             /**
              * This function gets the `id_token` from the response and conforms it so
@@ -136,7 +137,7 @@ function ShopifyProvider<P extends ShopifyProfile = ShopifyProfile>(
                 const conformedPayload: ShopifyJWTAuthorizationConformedPayload = {
                     ...responsePayload,
                     aud: clientId,
-                    iss: issuer
+                    iss: issuer,
                 };
                 const idToken = `${header}.${btoa(JSON.stringify(conformedPayload))}.${sig}`;
                 //? Cloning the response again to patch it, though the caller already clones
@@ -145,9 +146,9 @@ function ShopifyProvider<P extends ShopifyProfile = ShopifyProfile>(
                 return Object.assign(response.clone(), {
                     json() {
                         return Promise.resolve({ ...data, id_token: idToken });
-                    }
+                    },
                 });
-            }
+            },
         },
         idToken: true,
         checks: ['pkce', 'state'],
@@ -158,13 +159,13 @@ function ShopifyProvider<P extends ShopifyProfile = ShopifyProfile>(
                       cache: 'no-store',
                       headers: {
                           'Content-Type': 'application/json',
-                          'Authorization': tokens.access_token
+                          Authorization: tokens.access_token,
                       },
                       body: JSON.stringify({
                           operationName: 'getCustomerForSession',
                           query: GET_CUSTOMER_FOR_SESSION,
-                          variables: {}
-                      })
+                          variables: {},
+                      }),
                   })
                       .then(
                           (res) =>
@@ -175,7 +176,7 @@ function ShopifyProvider<P extends ShopifyProfile = ShopifyProfile>(
                                           imageUrl: string | null;
                                       };
                                   };
-                              }>
+                              }>,
                       )
                       .then((res) => res.data.customer)
                 : null;
@@ -185,10 +186,10 @@ function ShopifyProvider<P extends ShopifyProfile = ShopifyProfile>(
                 email: profile.email,
                 emailVerified: profile.email_verified ? new Date() : null,
                 image: customer?.imageUrl,
-                name: customer?.displayName
+                name: customer?.displayName,
             };
         },
-        options
+        options,
     } satisfies ShopifyConfig<P>;
 }
 

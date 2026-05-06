@@ -73,7 +73,7 @@ const CommerceProvider = ({ shop, locale, children }: { shop: OnlineShop; locale
 const ContentProvider = ({
     shop,
     locale,
-    children
+    children,
 }: {
     shop: OnlineShop;
     domain: string;
@@ -110,7 +110,7 @@ const ProvidersRegistry = ({
     domain,
     locale,
     children,
-    toolbars = true
+    toolbars = true,
 }: {
     shop: OnlineShop;
     domain: string;
@@ -151,8 +151,8 @@ const ProvidersRegistry = ({
                                             toastOptions={{
                                                 duration: 2500,
                                                 classNames: {
-                                                    toast: 'toast-notification'
-                                                }
+                                                    toast: 'toast-notification',
+                                                },
                                             }}
                                         />
 

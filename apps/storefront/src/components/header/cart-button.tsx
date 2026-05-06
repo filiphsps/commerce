@@ -25,7 +25,7 @@ const CartButton = ({ locale, i18n }: CartButtonProps) => {
                 'duration-250 group grid h-10 grid-cols-[auto_1fr] grid-rows-[1fr] items-center justify-center gap-0 overflow-clip rounded-none bg-transparent p-0 py-0 text-center leading-none transition-all *:leading-snug',
                 totalQuantity &&
                     'bg-primary text-primary-foreground fill-primary-foreground stroke-primary-foreground gap-2 rounded-3xl px-4 shadow',
-                !totalQuantity && 'text-base text-black shadow-none hover:shadow-none'
+                !totalQuantity && 'text-base text-black shadow-none hover:shadow-none',
             )}
             data-items={totalQuantity || 0}
             title={capitalize(t('view-cart'))}
@@ -40,7 +40,7 @@ const CartButton = ({ locale, i18n }: CartButtonProps) => {
             <ShoppingBagIcon
                 className={cn(
                     'block overflow-hidden stroke-1 text-right text-base transition-all',
-                    !totalQuantity && 'group-hover:text-primary h-6'
+                    !totalQuantity && 'group-hover:text-primary h-6',
                 )}
                 suppressHydrationWarning={true}
             />

@@ -9,10 +9,10 @@ import { Label } from '@/components/typography/label';
 vi.mock('@shopify/hydrogen-react', async () => {
     return {
         useCart: vi.fn().mockReturnValue({
-            status: 'idle'
+            status: 'idle',
         }),
         useShop: vi.fn().mockReturnValue({}),
-        useShopifyCookies: vi.fn().mockReturnValue({})
+        useShopifyCookies: vi.fn().mockReturnValue({}),
     };
 });
 

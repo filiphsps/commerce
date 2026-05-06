@@ -16,8 +16,8 @@ function NewsItem({
         year,
         month,
         slug,
-        meta: { title, description }
-    }
+        meta: { title, description },
+    },
 }: NewsItemProps) {
     return (
         <Card
@@ -36,7 +36,7 @@ function NewsItem({
 }
 
 export const metadata: Metadata = {
-    title: 'News'
+    title: 'News',
 };
 
 export default async function NewsPage() {

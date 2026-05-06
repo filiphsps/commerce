@@ -10,7 +10,7 @@ import type { JSX } from 'react';
 
 const DefaultContentBlock = (props: ContentBlockProps): JSX.Element => {
     const {
-        primary: { text, width: wide }
+        primary: { text, width: wide },
     } = props.slice as Slices.ContentBlockSliceDefault;
     return (
         <Content
@@ -26,7 +26,7 @@ const DefaultContentBlock = (props: ContentBlockProps): JSX.Element => {
 
 const CardContentBlock = (props: ContentBlockProps): JSX.Element => {
     const {
-        primary: { text, width: wide, border }
+        primary: { text, width: wide, border },
     } = props.slice as Slices.ContentBlockSliceCard;
 
     return (

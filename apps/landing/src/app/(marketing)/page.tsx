@@ -10,10 +10,10 @@ export type IndexAdminPageParams = {};
 
 export const metadata: Metadata = {
     title: {
-        absolute: 'Nordcom Commerce — the Headless Commerce Solution'
+        absolute: 'Nordcom Commerce — the Headless Commerce Solution',
     },
     description:
-        'Bring the benefits of headless e-commerce to your store without any of the hassles that usually comes with it'
+        'Bring the benefits of headless e-commerce to your store without any of the hassles that usually comes with it',
 };
 
 export default async function IndexAdminPage({}: {}) {

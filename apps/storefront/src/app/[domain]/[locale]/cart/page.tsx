@@ -46,10 +46,10 @@ export async function generateMetadata({ params }: { params: CartPageParams }): 
             languages: locales.reduce(
                 (prev, { code }) => ({
                     ...prev,
-                    [code]: `https://${shop.domain}/${code}/cart/`
+                    [code]: `https://${shop.domain}/${code}/cart/`,
                 }),
-                {}
-            )
+                {},
+            ),
         },
         openGraph: {
             url: `/cart/`,
@@ -65,11 +65,11 @@ export async function generateMetadata({ params }: { params: CartPageParams }): 
                           width: page.meta_image!.dimensions?.width || 0,
                           height: page.meta_image!.dimensions?.height || 0,
                           alt: page.meta_image!.alt || '',
-                          secureUrl: page.meta_image!.url as string
-                      }
+                          secureUrl: page.meta_image!.url as string,
+                      },
                   ]
-                : undefined
-        }
+                : undefined,
+        },
     };
 }
 

@@ -54,14 +54,14 @@ export function localizeWeight(locale: Locale, weight: Weight, {}: LocalizeWeigh
         const target = weight.unit === 'GRAMS' || weight.unit === 'OUNCES' ? 'OUNCES' : 'POUNDS';
         return {
             weight: convertWeight(weight.weight, weight.unit, target),
-            unit: target
+            unit: target,
         };
     }
 
     const target = weight.unit === 'GRAMS' || weight.unit === 'OUNCES' ? 'GRAMS' : 'KILOGRAMS';
     return {
         weight: convertWeight(weight.weight, weight.unit, target),
-        unit: target
+        unit: target,
     };
 }
 
@@ -72,7 +72,7 @@ export function convertWeight(
     weight: number,
     from: WeightUnit,
     to: WeightUnit,
-    { round = 'FIVES' }: ConvertWeightOptions = {}
+    { round = 'FIVES' }: ConvertWeightOptions = {},
 ): number {
     const fromUnit = weightUnitToUnit(from);
     const toUnit = weightUnitToUnit(to);
@@ -99,7 +99,7 @@ type ConvertToLocalMeasurementSystemOptions = {
 export function convertToLocalMeasurementSystem({
     locale,
     weight,
-    weightUnit
+    weightUnit,
 }: {
     locale: Locale;
     weight: number;

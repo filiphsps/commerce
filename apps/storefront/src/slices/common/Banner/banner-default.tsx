@@ -34,7 +34,7 @@ export const BannerDefault = ({ slice }: { slice: BannerSliceDefault }): JSX.Ele
                             className={cn(
                                 'flex items-center gap-2 rounded-full bg-white px-4 py-2 text-black transition-colors hover:bg-black hover:text-white md:px-6 md:py-3 md:text-lg',
                                 type &&
-                                    'bg-secondary text-secondary-foreground hover:bg-secondary-dark hover:text-secondary-foreground'
+                                    'bg-secondary text-secondary-foreground hover:bg-secondary-dark hover:text-secondary-foreground',
                             )}
                             href={href}
                             target={target}

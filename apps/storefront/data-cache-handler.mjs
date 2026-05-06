@@ -11,7 +11,7 @@ CacheHandler.onCreation(async () => {
     if (!process.env.DATA_CACHE_REDIS_URL) {
         console.error('DATA_CACHE_REDIS_URL is still not set, falling back to Lru handler.');
         return {
-            handlers: [createLruHandler()]
+            handlers: [createLruHandler()],
         };
     }
 
@@ -20,7 +20,7 @@ CacheHandler.onCreation(async () => {
     try {
         // Create a Redis client.
         client = createClient({
-            url: process.env.DATA_CACHE_REDIS_URL
+            url: process.env.DATA_CACHE_REDIS_URL,
         });
 
         // Redis won't work without error handling. https://github.com/redis/node-redis?tab=readme-ov-file#events
@@ -65,7 +65,7 @@ CacheHandler.onCreation(async () => {
             client,
             keyPrefix: undefined,
             timeoutMs: 1000,
-            revalidateTagQuerySize: 500
+            revalidateTagQuerySize: 500,
         });
     } else {
         // Fallback to LRU handler if Redis client is not available.
@@ -75,7 +75,7 @@ CacheHandler.onCreation(async () => {
     }
 
     return {
-        handlers: [handler]
+        handlers: [handler],
     };
 });
 

@@ -42,7 +42,7 @@ const IconGrid = ({ slice, index: order }: IconGridProps) => {
                     className={cn(
                         'flex items-center justify-center gap-4 rounded-lg border-2 border-solid border-transparent p-4',
                         background === 'primary' && 'bg-primary text-primary-foreground border-primary-dark',
-                        background === 'secondary' && 'bg-secondary-light text-secondary-foreground border-secondary'
+                        background === 'secondary' && 'bg-secondary-light text-secondary-foreground border-secondary',
                     )}
                 >
                     {icon.url ? (

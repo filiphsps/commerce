@@ -30,7 +30,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: ArticlePageParams }): Promise<Metadata> {
     const { year, month, slug } = await params;
     const {
-        meta: { title, description }
+        meta: { title, description },
     } = await getArticleContent({ year, month, slug });
 
     const url = `https://shops.nordcom.io/news/${year}/${month}/${slug}/`;
@@ -39,14 +39,14 @@ export async function generateMetadata({ params }: { params: ArticlePageParams }
         description,
         publisher: 'Nordcom AB',
         alternates: {
-            canonical: url
+            canonical: url,
         },
         openGraph: {
             type: 'article',
             title,
             description,
-            url
-        }
+            url,
+        },
     };
 }
 
@@ -57,12 +57,12 @@ export default async function ArticlePage({ params }: { params: ArticlePageParam
     const { year, month, slug } = await params;
     const {
         content,
-        meta: { title, date, author }
+        meta: { title, date, author },
     } = await getArticleContent({ year, month, slug });
 
     const avatar = await gravatar.resolve(author.email, {
         protocol: 'https',
-        defaultIcon: 'blank'
+        defaultIcon: 'blank',
     });
 
     return (

@@ -13,12 +13,12 @@ export const config = {
         '/:path*/favicon:type*',
         '/:path*/apple-icon:type*',
         '/:path*/sitemap:type*.xml',
-        '/:path*/robots.txt'
+        '/:path*/robots.txt',
     ],
     missing: [
         { type: 'header', key: 'next-router-prefetch' },
-        { type: 'header', key: 'purpose', value: 'prefetch' }
-    ]
+        { type: 'header', key: 'purpose', value: 'prefetch' },
+    ],
 };
 
 export default async function proxy(req: NextRequest) {

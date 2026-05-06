@@ -35,18 +35,18 @@ const Breadcrumbs = ({ locale, title, className }: BreadcrumbsProps) => {
     const jsonLd: WithContext<BreadcrumbList> = {
         '@context': 'https://schema.org',
         '@type': 'BreadcrumbList',
-        'itemListElement': path.map((entry, index) => ({
+        itemListElement: path.map((entry, index) => ({
             '@type': 'ListItem',
-            'position': index + 1,
+            position: index + 1,
             ...(index === path.length - 1
                 ? {
-                      name: title || entry
+                      name: title || entry,
                   }
                 : {
                       name: entry,
-                      item: `https://${shop.domain}/${locale.code}${hrefs[index]!}`
-                  })
-        }))
+                      item: `https://${shop.domain}/${locale.code}${hrefs[index]!}`,
+                  }),
+        })),
     };
 
     return (
@@ -56,7 +56,7 @@ const Breadcrumbs = ({ locale, title, className }: BreadcrumbsProps) => {
             <section
                 className={cn(
                     '-mx-2 flex w-screen list-none flex-nowrap items-center justify-start gap-1 overflow-hidden overflow-x-auto overscroll-x-contain whitespace-nowrap rounded-lg px-2 font-medium leading-none text-gray-700 md:-mx-0 md:w-full md:max-w-full md:px-0',
-                    className
+                    className,
                 )}
                 itemScope
                 itemType="https://schema.org/BreadcrumbList"

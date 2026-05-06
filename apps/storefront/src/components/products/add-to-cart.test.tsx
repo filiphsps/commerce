@@ -10,14 +10,14 @@ vi.mock('@shopify/hydrogen-react', async () => {
     return {
         useProduct: vi.fn().mockReturnValue({
             selectedVariant: {
-                availableForSale: true
-            }
+                availableForSale: true,
+            },
         }),
         useCart: vi.fn().mockReturnValue({
-            status: 'idle'
+            status: 'idle',
         }),
         useShop: vi.fn().mockReturnValue({}),
-        useShopifyCookies: vi.fn().mockReturnValue({})
+        useShopifyCookies: vi.fn().mockReturnValue({}),
     };
 });
 
@@ -28,10 +28,10 @@ describe('components', () => {
                 locale: {
                     locale: 'en-US',
                     country: 'US',
-                    language: 'EN'
+                    language: 'EN',
                 },
                 i18n: {},
-                quantity: 1
+                quantity: 1,
             } as any;
             const wrapper = render(<AddToCart {...props} />);
 
@@ -43,10 +43,10 @@ describe('components', () => {
                 locale: {
                     locale: 'en-US',
                     country: 'US',
-                    language: 'EN'
+                    language: 'EN',
                 },
                 i18n: {},
-                quantity: 0
+                quantity: 0,
             } as any;
             const wrapper = render(<AddToCart {...props} />);
 
@@ -58,10 +58,10 @@ describe('components', () => {
                 locale: {
                     locale: 'en-US',
                     country: 'US',
-                    language: 'EN'
+                    language: 'EN',
                 },
                 i18n: {},
-                quantity: -5
+                quantity: -5,
             } as any;
             const wrapper = render(<AddToCart {...props} />);
 

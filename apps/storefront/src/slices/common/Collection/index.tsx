@@ -53,7 +53,7 @@ const CollectionSlice = async ({ slice, index, context: { shop, locale } }: Coll
                     className={cn(
                         fullWidth &&
                             horizontal &&
-                            'max-w-screen -mx-3 w-[calc(100%+1.23rem)] px-3 md:mx-0 md:w-full md:px-0'
+                            'max-w-screen -mx-3 w-[calc(100%+1.23rem)] px-3 md:mx-0 md:w-full md:px-0',
                     )}
                 />
             </Suspense>

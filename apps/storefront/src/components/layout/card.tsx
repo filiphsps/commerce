@@ -20,7 +20,7 @@ export const Card = <ComponentGeneric extends ElementType = 'div'>({
     className,
     children,
 
-    border = false
+    border = false,
 }: CardProps<ComponentGeneric>) => {
     const Tag = as ?? 'div';
 
@@ -30,7 +30,7 @@ export const Card = <ComponentGeneric extends ElementType = 'div'>({
                 'rounded-lg border border-solid border-gray-200 p-3',
                 !border && 'bg-gray-100',
                 border && 'border-2 border-solid border-gray-100',
-                className
+                className,
             )}
         >
             {children}

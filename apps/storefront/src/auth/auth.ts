@@ -25,9 +25,9 @@ export function getAuth(shop: OnlineShop) {
             shopifyAuth: {
                 shopId: customers.id,
                 clientId: customers.clientId,
-                clientSecret: customers.clientSecret
-            }
-        })
+                clientSecret: customers.clientSecret,
+            },
+        }),
     );
 }
 

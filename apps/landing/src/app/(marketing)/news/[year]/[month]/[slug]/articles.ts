@@ -20,7 +20,7 @@ export async function getArticlePaths() {
         return {
             year,
             month,
-            slug
+            slug,
         };
     });
 }
@@ -42,9 +42,9 @@ export async function getArticleContent({ year, month, slug }: { year: string; m
                 // Parse `Name <email>` into { name, email }.
                 name: (author?.split('<')[0]?.trim() as string) || '',
                 email: (author?.split('<')[1]?.replace('>', '').trim() as string) || '',
-                handle
-            }
-        }
+                handle,
+            },
+        },
     };
 }
 
@@ -58,9 +58,9 @@ export async function getArticles() {
                     year,
                     month,
                     slug,
-                    meta
+                    meta,
                 };
-            })
+            }),
         )
     ).sort((a, b) => {
         if (a.meta.date < b.meta.date) {

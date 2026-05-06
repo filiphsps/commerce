@@ -18,34 +18,34 @@ export const viewport: Viewport = {
     themeColor: '#000000',
     width: 'device-width',
     initialScale: 1,
-    interactiveWidget: 'resizes-visual'
+    interactiveWidget: 'resizes-visual',
 };
 
 export const metadata: Metadata = {
     metadataBase: new URL(`https://shops.nordcom.io/`),
     title: {
         default: 'Headless Commerce as a Service',
-        template: `%s · Nordcom Commerce`
+        template: `%s · Nordcom Commerce`,
     },
     icons: {
         icon: ['/favicon.png', '/favicon.ico'],
         shortcut: ['/favicon.png'],
-        apple: ['/favicon.png']
+        apple: ['/favicon.png'],
     },
     robots: {
         follow: true,
-        index: true
+        index: true,
     },
     referrer: 'origin',
     formatDetection: {
         email: false,
         address: false,
-        telephone: false
+        telephone: false,
     },
     openGraph: {
         siteName: 'Nordcom Commerce',
-        locale: 'en-US'
-    }
+        locale: 'en-US',
+    },
 };
 
 const primaryFont = Montserrat({
@@ -53,7 +53,7 @@ const primaryFont = Montserrat({
     subsets: ['latin'],
     display: 'swap',
     variable: '--font-primary',
-    preload: true
+    preload: true,
 });
 
 export default async function RootLayout({ children }: { children: ReactNode }) {

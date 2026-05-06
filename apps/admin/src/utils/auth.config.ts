@@ -16,10 +16,10 @@ export default {
                     id: id.toString(),
                     name: name,
                     email: email || login,
-                    image: avatar_url
+                    image: avatar_url,
                 };
-            }
-        })
+            },
+        }),
     ],
     cookies: {
         sessionToken: {
@@ -29,10 +29,10 @@ export default {
                 sameSite: 'lax',
                 path: '/',
                 domain: NEXTAUTH_URL ? `.${INTERNAL_HOSTNAME}` : undefined,
-                secure: !!NEXTAUTH_URL
-            }
-        }
+                secure: !!NEXTAUTH_URL,
+            },
+        },
     },
     secret: process.env.AUTH_SECRET,
-    debug: false
+    debug: false,
 } satisfies NextAuthConfig;

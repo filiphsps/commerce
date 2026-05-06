@@ -30,7 +30,7 @@ import type { Article as LdArticle, WithContext } from 'schema-dts';
 export type ArticlePageParams = Promise<{ domain: string; locale: string; blog: string; handle: string }>;
 
 export async function generateStaticParams({
-    params
+    params,
 }: {
     params: Omit<Awaited<ArticlePageParams>, 'handle'>;
 }): Promise<Pick<Awaited<ArticlePageParams>, 'handle'>[]> {
@@ -48,7 +48,7 @@ export async function generateStaticParams({
     const articles = blog.articles.edges
         .map(({ node }) => node)
         .map(({ handle }) => ({
-            handle
+            handle,
         }));
 
     if (articles.length === 0) {
@@ -95,10 +95,10 @@ export async function generateMetadata({ params }: { params: ArticlePageParams }
             languages: locales.reduce(
                 (prev, { code }) => ({
                     ...prev,
-                    [code]: `https://${shop.domain}/${code}/blogs/${blogHandle}/${handle}/`
+                    [code]: `https://${shop.domain}/${code}/blogs/${blogHandle}/${handle}/`,
                 }),
-                {}
-            )
+                {},
+            ),
         },
         openGraph: {
             url: `/blogs/${handle}/`,
@@ -112,11 +112,11 @@ export async function generateMetadata({ params }: { params: ArticlePageParams }
                       {
                           url: image.url,
                           width: image.width!,
-                          height: image.height!
-                      }
+                          height: image.height!,
+                      },
                   ]
-                : undefined
-        }
+                : undefined,
+        },
     };
 }
 
@@ -153,34 +153,34 @@ export default async function ArticlePage({ params }: { params: ArticlePageParam
     const jsonLd: WithContext<LdArticle> = {
         '@context': 'https://schema.org',
         '@type': 'Article',
-        'url': `https://${shop.domain}/${locale.code}/blogs/${blogHandle}/${handle}/`,
-        'headline': title,
-        'text': content,
-        'description': seo?.description || excerpt || '',
-        'articleSection': article.blog.title,
-        'image': image?.url ? [image.url] : [],
-        'keywords': ((tags as any) || []).join(', '),
-        'dateCreated': publishedAt,
-        'datePublished': publishedAt,
-        'author': {
+        url: `https://${shop.domain}/${locale.code}/blogs/${blogHandle}/${handle}/`,
+        headline: title,
+        text: content,
+        description: seo?.description || excerpt || '',
+        articleSection: article.blog.title,
+        image: image?.url ? [image.url] : [],
+        keywords: ((tags as any) || []).join(', '),
+        dateCreated: publishedAt,
+        datePublished: publishedAt,
+        author: {
             '@type': 'Person',
-            'name': author?.name!
+            name: author?.name!,
         },
-        'publisher': {
+        publisher: {
             '@type': 'Organization',
-            'name': shop.name,
-            'logo': {
+            name: shop.name,
+            logo: {
                 '@type': 'ImageObject',
-                'url': shop.icons?.favicon?.src!
-            }
-        }
+                url: shop.icons?.favicon?.src!,
+            },
+        },
     };
 
     const publishedAtString = new Date(publishedAt).toLocaleDateString(locale as any, {
         weekday: undefined,
         year: 'numeric',
         month: 'short',
-        day: 'numeric'
+        day: 'numeric',
     });
 
     const wordCount = content.split(/\s+/).length;

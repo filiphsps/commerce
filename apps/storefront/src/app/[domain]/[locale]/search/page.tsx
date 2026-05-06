@@ -49,10 +49,10 @@ export async function generateMetadata({ params }: { params: SearchPageParams })
             languages: locales.reduce(
                 (prev, { code }) => ({
                     ...prev,
-                    [code]: `https://${shop.domain}/${code}/search/`
+                    [code]: `https://${shop.domain}/${code}/search/`,
                 }),
-                {}
-            )
+                {},
+            ),
         },
         openGraph: {
             url: `/search/`,
@@ -68,11 +68,11 @@ export async function generateMetadata({ params }: { params: SearchPageParams })
                           width: page.meta_image!.dimensions?.width || 0,
                           height: page.meta_image!.dimensions?.height || 0,
                           alt: page.meta_image!.alt || '',
-                          secureUrl: page.meta_image!.url as string
-                      }
+                          secureUrl: page.meta_image!.url as string,
+                      },
                   ]
-                : undefined
-        }
+                : undefined,
+        },
     };
 }
 
@@ -82,7 +82,7 @@ type SearchParams = Promise<{
 
 export default async function SearchPage({
     params,
-    searchParams: queryParams
+    searchParams: queryParams,
 }: {
     params: SearchPageParams;
     searchParams: SearchParams;
@@ -129,7 +129,7 @@ export default async function SearchPage({
                         showFilters={await showSearchFilter()}
                         data={{
                             products,
-                            productFilters
+                            productFilters,
                         }}
                     />
                 </Suspense>

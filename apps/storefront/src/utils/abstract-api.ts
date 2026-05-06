@@ -20,13 +20,13 @@ export type AbstractApi<Q = any> = {
             fetchPolicy?: RequestCache;
             tags?: string[];
             revalidate?: number;
-        }
+        },
     ) => Promise<{ data: T | null; errors: readonly any[] | undefined }>;
 };
 export type AbstractApiBuilder<K, Q> = ({
     api,
     locale,
-    shop
+    shop,
 }: {
     api: K;
     locale: Locale;
@@ -63,19 +63,19 @@ export const ApiBuilder: AbstractShopifyApolloApiBuilder<TypedDocumentNode<any, 
                     cache: fetchPolicy ?? 'no-store',
                     next: {
                         revalidate: revalidate ?? undefined,
-                        tags: buildCacheTagArray(shop, locale, tags)
-                    }
-                }
+                        tags: buildCacheTagArray(shop, locale, tags),
+                    },
+                },
             },
             variables: {
                 language: locale.language,
                 country: locale.country,
-                ...variables
-            }
+                ...variables,
+            },
         });
 
         return { data: data || null, errors, error };
-    }
+    },
 });
 
 /**
@@ -127,16 +127,16 @@ export const shopifyContextTransform = new DocumentTransform((document) => {
                             kind: 'Variable',
                             name: {
                                 kind: 'Name',
-                                value: 'country'
-                            }
+                                value: 'country',
+                            },
                         },
                         type: {
                             kind: 'NamedType',
                             name: {
                                 kind: 'Name',
-                                value: 'CountryCode'
-                            }
-                        }
+                                value: 'CountryCode',
+                            },
+                        },
                     },
                     {
                         kind: 'VariableDefinition',
@@ -144,17 +144,17 @@ export const shopifyContextTransform = new DocumentTransform((document) => {
                             kind: 'Variable',
                             name: {
                                 kind: 'Name',
-                                value: 'language'
-                            }
+                                value: 'language',
+                            },
                         },
                         type: {
                             kind: 'NamedType',
                             name: {
                                 kind: 'Name',
-                                value: 'LanguageCode'
-                            }
-                        }
-                    }
+                                value: 'LanguageCode',
+                            },
+                        },
+                    },
                 ],
                 directives: [
                     ...(node.directives || []),
@@ -162,42 +162,42 @@ export const shopifyContextTransform = new DocumentTransform((document) => {
                         kind: 'Directive',
                         name: {
                             kind: 'Name',
-                            value: 'inContext'
+                            value: 'inContext',
                         },
                         arguments: [
                             {
                                 kind: 'Argument',
                                 name: {
                                     kind: 'Name',
-                                    value: 'country'
+                                    value: 'country',
                                 },
                                 value: {
                                     kind: 'Variable',
                                     name: {
                                         kind: 'Name',
-                                        value: 'country'
-                                    }
-                                }
+                                        value: 'country',
+                                    },
+                                },
                             },
                             {
                                 kind: 'Argument',
                                 name: {
                                     kind: 'Name',
-                                    value: 'language'
+                                    value: 'language',
                                 },
                                 value: {
                                     kind: 'Variable',
                                     name: {
                                         kind: 'Name',
-                                        value: 'language'
-                                    }
-                                }
-                            }
-                        ]
-                    }
-                ]
+                                        value: 'language',
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                ],
             };
-        }
+        },
     });
     return transformedDocument;
 });

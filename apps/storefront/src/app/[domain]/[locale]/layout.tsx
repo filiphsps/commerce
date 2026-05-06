@@ -44,10 +44,10 @@ export async function generateStaticParams(): Promise<Awaited<LayoutParams>[]> {
                 return [
                     {
                         domain: shop.domain,
-                        locale: Locale.from('en-US').code
-                    }
+                        locale: Locale.from('en-US').code,
+                    },
                 ];
-            })
+            }),
         )
     )
         .flat(1)
@@ -64,7 +64,7 @@ export const viewport: Viewport = {
     initialScale: 1,
     interactiveWidget: 'resizes-content',
     viewportFit: 'cover',
-    width: 'device-width'
+    width: 'device-width',
 };
 
 export async function generateMetadata({ params }: { params: LayoutParams }): Promise<Metadata> {
@@ -109,34 +109,34 @@ export async function generateMetadata({ params }: { params: LayoutParams }): Pr
             // Allow tenants to customize this.
             // For example allow them to use other separators
             // like `·`, `–`, `—` etc.
-            template: `%s — ${shop.name} (${locale.country!})`
+            template: `%s — ${shop.name} (${locale.country!})`,
         },
         icons: {
             icon: ['/favicon.png'],
             shortcut: ['/favicon.png'],
-            apple: ['/apple-icon.png']
+            apple: ['/apple-icon.png'],
         },
         robots: {
             follow: true,
-            index: true
+            index: true,
         },
         referrer: 'origin',
         formatDetection: {
             email: false,
             address: false,
-            telephone: false
+            telephone: false,
         },
         openGraph: {
             siteName: shop.name,
-            locale: locale.code
-        }
+            locale: locale.code,
+        },
     };
 }
 
 export default async function RootLayout({
     children,
     modal,
-    params
+    params,
 }: Readonly<{ children: ReactNode; modal: ReactNode; params: LayoutParams }>) {
     'use cache';
     cacheLife('max');
@@ -241,17 +241,17 @@ export default async function RootLayout({
                     data={{
                         '@context': 'http://schema.org',
                         '@type': 'WebSite',
-                        'url': `https://${shop.domain}/${locale.code}/`,
-                        'name': shop.name,
-                        'potentialAction': {
+                        url: `https://${shop.domain}/${locale.code}/`,
+                        name: shop.name,
+                        potentialAction: {
                             '@type': 'SearchAction',
-                            'target': {
+                            target: {
                                 '@type': 'EntryPoint',
-                                'urlTemplate': `https://${domain}/search/?q={query}`
+                                urlTemplate: `https://${domain}/search/?q={query}`,
                             },
-                            'query': 'required',
-                            'query-input': 'required name=query'
-                        }
+                            query: 'required',
+                            'query-input': 'required name=query',
+                        },
                     }}
                 />
             </body>

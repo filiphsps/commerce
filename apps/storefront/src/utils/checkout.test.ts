@@ -11,17 +11,17 @@ vi.mock('@/utils/build-config', () => ({
     BuildConfig: {
         shopify: {
             domain: 'example.com',
-            checkout_domain: 'checkout.example.com'
-        }
-    }
+            checkout_domain: 'checkout.example.com',
+        },
+    },
 }));
 
 vi.mock('@/utils/pluralize', () => ({
-    Pluralize: vi.fn(({ count, noun, suffix }) => `${count} ${noun}${count > 1 ? suffix : ''}`)
+    Pluralize: vi.fn(({ count, noun, suffix }) => `${count} ${noun}${count > 1 ? suffix : ''}`),
 }));
 
 vi.mock('@/utils/merchants-center-id', () => ({
-    productToMerchantsCenterId: vi.fn(() => 'product-id')
+    productToMerchantsCenterId: vi.fn(() => 'product-id'),
 }));
 
 describe('utils', () => {
@@ -40,40 +40,40 @@ describe('utils', () => {
                         product: {
                             id: 'product-1',
                             title: 'Product 1',
-                            vendor: 'Vendor 1'
+                            vendor: 'Vendor 1',
                         },
                         id: 'variant-1',
                         title: 'Variant 1',
                         price: {
                             amount: '10.00',
-                            currencyCode: 'USD'
-                        }
+                            currencyCode: 'USD',
+                        },
                     },
-                    quantity: 1
+                    quantity: 1,
                 },
                 {
                     merchandise: {
                         product: {
                             id: 'product-2',
                             title: 'Product 2',
-                            vendor: 'Vendor 2'
+                            vendor: 'Vendor 2',
                         },
                         id: 'variant-2',
                         title: 'Variant 2',
                         price: {
                             amount: '20.00',
-                            currencyCode: 'USD'
-                        }
+                            currencyCode: 'USD',
+                        },
                     },
-                    quantity: 1
-                }
+                    quantity: 1,
+                },
             ],
             cost: {
                 totalAmount: {
                     amount: '30.00',
-                    currencyCode: 'USD'
-                }
-            }
+                    currencyCode: 'USD',
+                },
+            },
         } as any;
 
         const shop: OnlineShop = {
@@ -84,14 +84,14 @@ describe('utils', () => {
                 storefrontId: 'Storefront Id',
                 authentication: {
                     token: null,
-                    publicToken: 'this-is-a-public-token'
-                }
-            }
+                    publicToken: 'this-is-a-public-token',
+                },
+            },
         } as any;
 
         const trackable = {
             queueEvent: vi.fn(),
-            postEvent: vi.fn()
+            postEvent: vi.fn(),
         };
 
         const locale = Locale.from('en-US')!;
@@ -108,9 +108,9 @@ describe('utils', () => {
                 cost: {
                     totalAmount: {
                         amount: '0.00',
-                        currencyCode: 'USD'
-                    }
-                }
+                        currencyCode: 'USD',
+                    },
+                },
             } as any;
 
             await expect(Checkout({ shop, locale, cart: emptyCart, trackable })).rejects.toThrow();
@@ -126,24 +126,24 @@ describe('utils', () => {
                             product: {
                                 id: 'product-1',
                                 title: 'Product 1',
-                                vendor: 'Vendor 1'
+                                vendor: 'Vendor 1',
                             },
                             id: 'variant-1',
                             title: 'Variant 1',
                             price: {
                                 amount: '10.00',
-                                currencyCode: 'USD'
-                            }
+                                currencyCode: 'USD',
+                            },
                         },
-                        quantity: 1
-                    }
+                        quantity: 1,
+                    },
                 ],
                 cost: {
                     totalAmount: {
                         amount: '10.00',
-                        currencyCode: 'USD'
-                    }
-                }
+                        currencyCode: 'USD',
+                    },
+                },
             } as any;
 
             await expect(Checkout({ shop, locale, cart: cartWithoutCheckoutUrl, trackable })).rejects.toThrow();
@@ -168,7 +168,7 @@ describe('utils', () => {
                                 product_id: 'product-1',
                                 quantity: 1,
                                 sku: undefined,
-                                variant_id: 'variant-1'
+                                variant_id: 'variant-1',
                             },
                             {
                                 currency: 'USD',
@@ -181,11 +181,11 @@ describe('utils', () => {
                                 product_id: 'product-2',
                                 quantity: 1,
                                 sku: undefined,
-                                variant_id: 'variant-2'
-                            }
-                        ]
-                    }
-                }
+                                variant_id: 'variant-2',
+                            },
+                        ],
+                    },
+                },
             };
 
             await Checkout({ shop, locale, cart, trackable });

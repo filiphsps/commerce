@@ -17,9 +17,9 @@ export type LiveChatProviderProps = {
 export const LiveChatProvider = ({
     shop: {
         thirdParty: { intercom } = {},
-        design: { accents }
+        design: { accents },
     },
-    children
+    children,
 }: LiveChatProviderProps) => {
     // TODO: Support more than just Intercom.
     if (BuildConfig.environment !== 'production' || !intercom) {
@@ -47,7 +47,7 @@ export const LiveChatProvider = ({
                             app_id: intercom,
                             action_color: primaryColor?.color,
                             background_color: primaryColor?.color,
-                            hide_default_launcher: false
+                            hide_default_launcher: false,
                         })};`}
                     </script>
                 </>

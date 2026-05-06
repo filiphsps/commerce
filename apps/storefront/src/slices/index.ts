@@ -4,7 +4,7 @@ import { components as menuComponents } from '@/slices/navigation';
 
 export const components = {
     ...commonComponents,
-    ...menuComponents
+    ...menuComponents,
 };
 
 export default components;

@@ -15,7 +15,7 @@ export type ShopNewReviewPageProps = {
 };
 
 export const metadata: Metadata = {
-    title: 'New Review'
+    title: 'New Review',
 };
 
 export default async function ShopNewReviewPagePage({ params }: ShopNewReviewPageProps) {

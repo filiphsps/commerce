@@ -8,7 +8,7 @@ vi.mock('mongoose', async () => {
         _id: '123',
         name: 'John Doe',
         age: 30,
-        save: vi.fn().mockResolvedValue(this)
+        save: vi.fn().mockResolvedValue(this),
     };
 
     const mockDocuments = [
@@ -17,8 +17,8 @@ vi.mock('mongoose', async () => {
             _id: '456',
             name: 'Jane Doe',
             age: 25,
-            save: vi.fn().mockResolvedValue(this)
-        }
+            save: vi.fn().mockResolvedValue(this),
+        },
     ];
 
     class MockModel {
@@ -39,11 +39,11 @@ vi.mock('mongoose', async () => {
         connect: vi.fn().mockResolvedValue({
             get models() {
                 return new Proxy([], {
-                    get: () => MockModel
+                    get: () => MockModel,
                 });
-            }
+            },
         }),
-        set: vi.fn()
+        set: vi.fn(),
     };
 
     return {
@@ -53,8 +53,8 @@ vi.mock('mongoose', async () => {
         ...values,
         connect: vi.fn().mockResolvedValue(values),
         default: {
-            ...values
-        }
+            ...values,
+        },
     };
 });
 

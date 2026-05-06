@@ -30,7 +30,7 @@ async function PrismicPage<T extends PageType = 'custom_page'>({
     slices = undefined,
     pageContent = undefined,
     handle,
-    type = 'custom_page' as T
+    type = 'custom_page' as T,
 }: PageParams<T>) {
     if (typeof page === 'undefined' && typeof slices === 'undefined') {
         console.warn(`No page or slices provided for "${handle}"`);
@@ -56,12 +56,12 @@ async function PrismicPage<T extends PageType = 'custom_page'>({
                     shop: {
                         ...shop,
                         commerceProvider: {},
-                        contentProvider: {}
+                        contentProvider: {},
                     },
                     i18n,
                     locale,
                     type,
-                    pageContent
+                    pageContent,
                 }}
             />
         </Suspense>

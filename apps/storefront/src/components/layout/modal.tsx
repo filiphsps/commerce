@@ -20,7 +20,7 @@ export function ModalCard({ children = null, className }: { children?: ReactNode
         <Card
             className={cn(
                 'pointer-events-auto flex w-full max-w-lg snap-start snap-normal flex-col gap-1 bg-white p-2 drop-shadow last:mb-2 md:mx-auto md:w-full md:max-w-[calc(var(--page-width)/1.1)] md:p-4',
-                className
+                className,
             )}
         >
             {children}
@@ -32,7 +32,7 @@ export function Modal({
     i18n,
     title,
     description,
-    children
+    children,
 }: {
     i18n: LocaleDictionary;
     title: ReactNode;

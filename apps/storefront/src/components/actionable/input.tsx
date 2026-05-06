@@ -20,7 +20,7 @@ const Input = <T extends ElementType = 'input'>({
             className={cn(
                 'w-full appearance-none rounded-lg focus:outline-none focus:ring-0',
                 (props as { disabled?: boolean }).disabled && 'pointer-events-none cursor-not-allowed',
-                className
+                className,
             )}
         />
     );
@@ -44,7 +44,7 @@ const MultilineInput = <T extends ElementType>({
             {...props}
             className={cn(
                 'border-primary w-full resize-none appearance-none rounded-md bg-white p-2 text-xs focus:outline-none focus:ring-0',
-                className
+                className,
             )}
         >
             {children}

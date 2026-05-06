@@ -26,41 +26,41 @@ describe('api', () => {
                                         altText: 'Test Collection Image',
                                         url: 'https://example.com/test-collection.jpg',
                                         height: 500,
-                                        width: 500
+                                        width: 500,
                                     },
                                     seo: {
                                         title: 'Test Collection SEO Title',
-                                        description: 'Test Collection SEO Description'
+                                        description: 'Test Collection SEO Description',
                                     },
                                     products: {
                                         edges: [
                                             {
                                                 node: {
-                                                    id: '789'
-                                                }
-                                            }
+                                                    id: '789',
+                                                },
+                                            },
                                         ],
                                         pageInfo: {
                                             startCursor: 'start',
                                             endCursor: 'end',
                                             hasNextPage: false,
-                                            hasPreviousPage: false
-                                        }
+                                            hasPreviousPage: false,
+                                        },
                                     },
                                     keywords: {
-                                        value: 'test, collection'
+                                        value: 'test, collection',
                                     },
                                     isBrand: {
-                                        value: 'true'
+                                        value: 'true',
                                     },
                                     shortDescription: {
-                                        value: 'Short description of the test collection'
-                                    }
-                                }
-                            }
+                                        value: 'Short description of the test collection',
+                                    },
+                                },
+                            },
                         }),
                         locale: () => Locale.default,
-                        shop: () => ({}) as OnlineShop
+                        shop: () => ({}) as OnlineShop,
                     };
 
                     const collection = await CollectionApi({ api, handle: 'test-collection', filters: {} });
@@ -76,36 +76,36 @@ describe('api', () => {
                             altText: 'Test Collection Image',
                             url: 'https://example.com/test-collection.jpg',
                             height: 500,
-                            width: 500
+                            width: 500,
                         },
                         seo: {
                             title: 'Test Collection SEO Title',
-                            description: 'Test Collection SEO Description'
+                            description: 'Test Collection SEO Description',
                         },
                         products: {
                             edges: [
                                 {
                                     node: {
-                                        id: '789'
-                                    }
-                                }
+                                        id: '789',
+                                    },
+                                },
                             ],
                             pageInfo: {
                                 startCursor: 'start',
                                 endCursor: 'end',
                                 hasNextPage: false,
-                                hasPreviousPage: false
-                            }
+                                hasPreviousPage: false,
+                            },
                         },
                         keywords: {
-                            value: 'test, collection'
+                            value: 'test, collection',
                         },
                         isBrand: {
-                            value: 'true'
+                            value: 'true',
                         },
                         shortDescription: {
-                            value: 'Short description of the test collection'
-                        }
+                            value: 'Short description of the test collection',
+                        },
                     });
                 });
 
@@ -124,41 +124,41 @@ describe('api', () => {
                                         altText: 'Test Collection Image',
                                         url: 'https://example.com/test-collection.jpg',
                                         height: 500,
-                                        width: 500
+                                        width: 500,
                                     },
                                     seo: {
                                         title: 'Test Collection SEO Title',
-                                        description: 'Test Collection SEO Description'
+                                        description: 'Test Collection SEO Description',
                                     },
                                     products: {
                                         edges: [
                                             {
                                                 node: {
-                                                    id: '789'
-                                                }
-                                            }
+                                                    id: '789',
+                                                },
+                                            },
                                         ],
                                         pageInfo: {
                                             startCursor: 'start',
                                             endCursor: 'end',
                                             hasNextPage: false,
-                                            hasPreviousPage: false
-                                        }
+                                            hasPreviousPage: false,
+                                        },
                                     },
                                     keywords: {
-                                        value: 'test, collection'
+                                        value: 'test, collection',
                                     },
                                     isBrand: {
-                                        value: 'true'
+                                        value: 'true',
                                     },
                                     shortDescription: {
-                                        value: 'Short description of the test collection'
-                                    }
-                                }
-                            }
+                                        value: 'Short description of the test collection',
+                                    },
+                                },
+                            },
                         }),
                         locale: () => Locale.default,
-                        shop: () => ({}) as OnlineShop
+                        shop: () => ({}) as OnlineShop,
                     };
 
                     const handle = 'test-collection';
@@ -166,7 +166,7 @@ describe('api', () => {
                         sorting: 'BEST_SELLING',
                         after: 'start',
                         before: 'end',
-                        limit: 10
+                        limit: 10,
                     } as any;
 
                     const collection = await CollectionApi({ api, handle, filters });
@@ -182,36 +182,36 @@ describe('api', () => {
                             altText: 'Test Collection Image',
                             url: 'https://example.com/test-collection.jpg',
                             height: 500,
-                            width: 500
+                            width: 500,
                         },
                         seo: {
                             title: 'Test Collection SEO Title',
-                            description: 'Test Collection SEO Description'
+                            description: 'Test Collection SEO Description',
                         },
                         products: {
                             edges: [
                                 {
                                     node: {
-                                        id: '789'
-                                    }
-                                }
+                                        id: '789',
+                                    },
+                                },
                             ],
                             pageInfo: {
                                 startCursor: 'start',
                                 endCursor: 'end',
                                 hasNextPage: false,
-                                hasPreviousPage: false
-                            }
+                                hasPreviousPage: false,
+                            },
                         },
                         keywords: {
-                            value: 'test, collection'
+                            value: 'test, collection',
                         },
                         isBrand: {
-                            value: 'true'
+                            value: 'true',
                         },
                         shortDescription: {
-                            value: 'Short description of the test collection'
-                        }
+                            value: 'Short description of the test collection',
+                        },
                     });
                 });
 
@@ -235,28 +235,28 @@ describe('api', () => {
                                                     edges: [
                                                         {
                                                             node: {
-                                                                id: '456'
-                                                            }
-                                                        }
-                                                    ]
-                                                }
-                                            }
+                                                                id: '456',
+                                                            },
+                                                        },
+                                                    ],
+                                                },
+                                            },
                                         },
                                         {
                                             node: {
                                                 id: '789',
                                                 handle: 'collection-2',
                                                 products: {
-                                                    edges: []
-                                                }
-                                            }
-                                        }
-                                    ]
-                                }
-                            }
+                                                    edges: [],
+                                                },
+                                            },
+                                        },
+                                    ],
+                                },
+                            },
                         }),
                         locale: () => Locale.default,
-                        shop: () => ({}) as OnlineShop
+                        shop: () => ({}) as OnlineShop,
                     };
 
                     const collections = await CollectionsApi({ client });
@@ -265,13 +265,13 @@ describe('api', () => {
                         {
                             id: '123',
                             handle: 'collection-1',
-                            hasProducts: true
+                            hasProducts: true,
                         },
                         {
                             id: '789',
                             handle: 'collection-2',
-                            hasProducts: false
-                        }
+                            hasProducts: false,
+                        },
                     ]);
                 });
             });
@@ -298,13 +298,13 @@ describe('api', () => {
                                                     altText: 'Collection 1 Image',
                                                     url: 'https://example.com/collection-1.jpg',
                                                     height: 500,
-                                                    width: 500
+                                                    width: 500,
                                                 },
                                                 seo: {
                                                     title: 'Collection 1 SEO Title',
-                                                    description: 'Collection 1 SEO Description'
-                                                }
-                                            }
+                                                    description: 'Collection 1 SEO Description',
+                                                },
+                                            },
                                         },
                                         {
                                             cursor: 'cursor-2',
@@ -321,26 +321,26 @@ describe('api', () => {
                                                     altText: 'Collection 2 Image',
                                                     url: 'https://example.com/collection-2.jpg',
                                                     height: 500,
-                                                    width: 500
+                                                    width: 500,
                                                 },
                                                 seo: {
                                                     title: 'Collection 2 SEO Title',
-                                                    description: 'Collection 2 SEO Description'
-                                                }
-                                            }
-                                        }
+                                                    description: 'Collection 2 SEO Description',
+                                                },
+                                            },
+                                        },
                                     ],
                                     pageInfo: {
                                         startCursor: 'cursor-1',
                                         endCursor: 'cursor-2',
                                         hasPreviousPage: false,
-                                        hasNextPage: false
-                                    }
-                                }
-                            }
+                                        hasNextPage: false,
+                                    },
+                                },
+                            },
                         }),
                         locale: () => Locale.default,
-                        shop: () => ({}) as OnlineShop
+                        shop: () => ({}) as OnlineShop,
                     };
 
                     const collections = await CollectionsPaginationApi({ api, filters: {} });
@@ -350,7 +350,7 @@ describe('api', () => {
                             start_cursor: 'cursor-1',
                             end_cursor: 'cursor-2',
                             has_next_page: false,
-                            has_prev_page: false
+                            has_prev_page: false,
                         },
                         collections: [
                             {
@@ -368,13 +368,13 @@ describe('api', () => {
                                         altText: 'Collection 1 Image',
                                         url: 'https://example.com/collection-1.jpg',
                                         height: 500,
-                                        width: 500
+                                        width: 500,
                                     },
                                     seo: {
                                         title: 'Collection 1 SEO Title',
-                                        description: 'Collection 1 SEO Description'
-                                    }
-                                }
+                                        description: 'Collection 1 SEO Description',
+                                    },
+                                },
                             },
                             {
                                 cursor: 'cursor-2',
@@ -391,15 +391,15 @@ describe('api', () => {
                                         altText: 'Collection 2 Image',
                                         url: 'https://example.com/collection-2.jpg',
                                         height: 500,
-                                        width: 500
+                                        width: 500,
                                     },
                                     seo: {
                                         title: 'Collection 2 SEO Title',
-                                        description: 'Collection 2 SEO Description'
-                                    }
-                                }
-                            }
-                        ]
+                                        description: 'Collection 2 SEO Description',
+                                    },
+                                },
+                            },
+                        ],
                     });
                 });
             });

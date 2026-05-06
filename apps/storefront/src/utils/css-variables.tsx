@@ -28,7 +28,7 @@ export const getBrandingColors = async ({ domain, shop }: { domain: string; shop
 
         const {
             design: { accents },
-            commerceProvider
+            commerceProvider,
         } = shop;
 
         if (accents.length <= 0) {
@@ -45,13 +45,13 @@ export const getBrandingColors = async ({ domain, shop }: { domain: string; shop
                             primary: {
                                 type: 'primary',
                                 color: primary.background!,
-                                foreground: primary.foreground! || '#000000'
+                                foreground: primary.foreground! || '#000000',
                             },
                             secondary: {
                                 type: 'secondary',
                                 color: secondary.background!,
-                                foreground: secondary.foreground! || '#000000'
-                            }
+                                foreground: secondary.foreground! || '#000000',
+                            },
                         };
                     }
                 }
@@ -74,7 +74,7 @@ export const getBrandingColors = async ({ domain, shop }: { domain: string; shop
 
         return {
             primary,
-            secondary
+            secondary,
         };
     } catch {
         return null;

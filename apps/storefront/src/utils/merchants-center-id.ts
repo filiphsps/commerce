@@ -14,7 +14,7 @@ import type { Locale } from '@/utils/locale';
  */
 export const productToMerchantsCenterId = ({
     locale,
-    product
+    product,
 }: {
     locale: Locale;
     product: {

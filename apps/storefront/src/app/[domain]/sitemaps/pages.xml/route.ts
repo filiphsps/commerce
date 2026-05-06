@@ -26,7 +26,7 @@ export async function GET({}: NextRequest, { params }: { params: DynamicSitemapR
         .filter(({ url }) => url)
         .map(({ url, ...page }) => ({
             ...page,
-            url: url?.split('/').slice(2).join('/')
+            url: url?.split('/').slice(2).join('/'),
         }));
 
     return getServerSideSitemap(
@@ -38,9 +38,9 @@ export async function GET({}: NextRequest, { params }: { params: DynamicSitemapR
                         changefreq: 'weekly',
                         lastmod: convertPrismicDateToISO(page.last_publication_date),
                         //priority: 0.9,
-                        trailingSlash: true
-                    }) as ISitemapField
+                        trailingSlash: true,
+                    }) as ISitemapField,
             );
-        })
+        }),
     );
 }

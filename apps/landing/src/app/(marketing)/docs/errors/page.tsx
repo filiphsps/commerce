@@ -7,7 +7,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Errors'
+    title: 'Errors',
 };
 
 export default async function DocsErrorsPage({}: {}) {
@@ -29,7 +29,7 @@ export default async function DocsErrorsPage({}: {}) {
                     if (ErrorKind instanceof MissingContextProviderError) {
                         error = new (ErrorKind as typeof MissingContextProviderError)(
                             'useSomeContext',
-                            'SomeContextProvider'
+                            'SomeContextProvider',
                         );
                     } else {
                         error = new ErrorKind();

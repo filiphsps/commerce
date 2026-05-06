@@ -31,7 +31,7 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
         <nav
             className={cn(
                 MENU_COMMON_STYLES,
-                'z-10 flex flex-col gap-3 md:grid md:max-h-none md:auto-rows-max md:grid-cols-2 lg:grid-cols-3 lg:gap-2 xl:grid-cols-4'
+                'z-10 flex flex-col gap-3 md:grid md:max-h-none md:auto-rows-max md:grid-cols-2 lg:grid-cols-3 lg:gap-2 xl:grid-cols-4',
             )}
             ref={ref}
         >
@@ -89,7 +89,7 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                             MENU_ITEM_COMMON_STYLES,
                             background && 'grid grid-cols-1 grid-rows-1 items-center justify-start xl:grid-rows-1',
                             description && background && 'grid-rows-[4.25rem_1fr] xl:grid-rows-[4.25rem_1fr]',
-                            'h-auto'
+                            'h-auto',
                         )}
                         onClick={() => closeMenu()}
                     >
@@ -97,14 +97,14 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                             <div
                                 className={cn(
                                     'text-primary-foreground relative h-full shrink-0 overflow-hidden transition-all group-hover/item:brightness-75 group-focus/item:brightness-75',
-                                    !background_color && 'bg-primary' // FIXME: Deal with text color when custom bg color is used.
+                                    !background_color && 'bg-primary', // FIXME: Deal with text color when custom bg color is used.
                                 )}
                                 style={{ backgroundColor: background_color || undefined }}
                             >
                                 <Image
                                     className={cn(
                                         'pointer-events-none h-full w-full object-cover shadow transition-transform group-hover/item:scale-110 group-focus/item:scale-110',
-                                        imagePositionStyles
+                                        imagePositionStyles,
                                     )}
                                     role={image.alt ? undefined : 'presentation'}
                                     src={image.url}
@@ -124,14 +124,14 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                                         'absolute inset-0 flex w-full items-end justify-start p-2 text-white',
                                         gradientStyles,
                                         TITLE_COMMON_STYLES,
-                                        'h-auto'
+                                        'h-auto',
                                     )}
                                     style={{
                                         WebkitTextStroke: '.15rem rgba(0,0,0,.3)',
                                         paintOrder: 'stroke fill',
                                         ...(!background_color && {
-                                            textShadow: `1px 1px {gradientStyles ? '8px' : '2px'} #000`
-                                        })
+                                            textShadow: `1px 1px {gradientStyles ? '8px' : '2px'} #000`,
+                                        }),
                                     }}
                                 >
                                     <PrismicText data={title} styled={false} bare={true} />
@@ -141,7 +141,7 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
 
                         <div
                             className={cn(
-                                'flex h-full flex-col items-start justify-start p-2 pt-2 text-gray-600 empty:hidden group-focus-within/item:text-inherit group-hover/item:text-inherit'
+                                'flex h-full flex-col items-start justify-start p-2 pt-2 text-gray-600 empty:hidden group-focus-within/item:text-inherit group-hover/item:text-inherit',
                             )}
                         >
                             {!background ? (

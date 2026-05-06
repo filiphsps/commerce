@@ -19,7 +19,7 @@ export const createClient = ({ shop, /* locale = Locale.default,*/ ...config }: 
         throw new InvalidShopError("Shop doesn't have a content provider.");
     } else if (contentProvider.type !== 'prismic') {
         throw new InvalidContentProviderError(
-            `"contentProvider.type" is "${contentProvider.type}", expected "prismic"`
+            `"contentProvider.type" is "${contentProvider.type}", expected "prismic"`,
         );
     }
 
@@ -35,15 +35,15 @@ export const createClient = ({ shop, /* locale = Locale.default,*/ ...config }: 
         routes,
         defaultParams: {
             //lang: locale.code // FIXME: We're making too many calls to the API.
-            lang: Locale.default.code
+            lang: Locale.default.code,
         },
         ...config,
         fetchOptions: {
             cache: config.fetchOptions?.cache || 'no-store',
             next: {
-                tags: ['prismic', `prismic.${shop.id}`, shop.domain /*, locale.code*/]
-            }
-        }
+                tags: ['prismic', `prismic.${shop.id}`, shop.domain /*, locale.code*/],
+            },
+        },
     });
 
     //enableAutoPreviews({ client });
@@ -86,42 +86,42 @@ export const routes: ClientConfig['routes'] = [
     {
         type: 'custom_page',
         uid: 'homepage',
-        path: '/:lang/'
+        path: '/:lang/',
     },
     {
         type: 'custom_page',
         uid: 'countries',
-        path: '/:lang/countries/'
+        path: '/:lang/countries/',
     },
     {
         type: 'custom_page',
         uid: 'search',
-        path: '/:lang/search/'
+        path: '/:lang/search/',
     },
     {
         type: 'cart_page',
         uid: 'cart',
-        path: '/:lang/cart/'
+        path: '/:lang/cart/',
     },
     {
         type: 'product_page',
-        path: '/:lang/products/:uid/'
+        path: '/:lang/products/:uid/',
     },
     {
         type: 'collection_page',
-        path: '/:lang/collections/:uid/'
+        path: '/:lang/collections/:uid/',
     },
     {
         type: 'custom_page',
         uid: 'blogs',
-        path: '/:lang/blogs/news/'
+        path: '/:lang/blogs/news/',
     },
     {
         type: 'custom_page',
-        path: '/:lang/blogs/news/:uid/'
+        path: '/:lang/blogs/news/:uid/',
     },
     {
         type: 'custom_page',
-        path: '/:lang/:uid/'
-    }
+        path: '/:lang/:uid/',
+    },
 ];

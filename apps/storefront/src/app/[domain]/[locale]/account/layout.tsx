@@ -10,9 +10,9 @@ export type LayoutParams = Promise<{ domain: string; locale: string }>;
 
 export const metadata: Metadata = {
     robots: {
-        index: false
+        index: false,
     },
-    openGraph: null
+    openGraph: null,
 };
 
 export default async function AccountLayout({ children, params }: { children: ReactNode; params: LayoutParams }) {

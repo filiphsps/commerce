@@ -42,7 +42,7 @@ async function Content({ shop, locale, handle }: { shop: OnlineShop; locale: Loc
                     }
                 }
             }
-        `
+        `,
     });
     if (productError) {
         if (Error.isNotFound(productError)) {

@@ -17,11 +17,11 @@ describe('components', () => {
                                 id: 'id',
                                 label: 'label',
                                 count: 123,
-                                input: {}
-                            }
+                                input: {},
+                            },
                         ]}
-                    />
-                ).unmount()
+                    />,
+                ).unmount(),
             ).not.toThrow();
         });
 

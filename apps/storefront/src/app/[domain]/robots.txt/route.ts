@@ -41,7 +41,7 @@ const nextRobotsSchemaParser = (schema: MetadataRoute.Robots): string => {
 
     output += parseRule({
         userAgent: '*',
-        allow: '/'
+        allow: '/',
     });
 
     if (schema.host) {
@@ -91,12 +91,12 @@ export async function GET({}: NextRequest, { params }: { params: RobotsParams })
                         '/cdn-cgi/',
                         '/slice-machine/',
                         '/storefront/',
-                        `/${shop.domain}/`
-                    ]
-                }
+                        `/${shop.domain}/`,
+                    ],
+                },
             ],
-            sitemap: [`https://${shop.domain}/sitemap.xml`]
+            sitemap: [`https://${shop.domain}/sitemap.xml`],
         }),
-        {}
+        {},
     );
 }

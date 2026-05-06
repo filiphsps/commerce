@@ -34,7 +34,7 @@ export const AcceptedPaymentMethods = async ({ shop, locale, className, ...props
             {...props}
             className={cn(
                 className,
-                'flex flex-wrap items-center justify-center gap-1 overflow-hidden empty:hidden md:gap-2'
+                'flex flex-wrap items-center justify-center gap-1 overflow-hidden empty:hidden md:gap-2',
             )}
         >
             {methods.map((method) => (

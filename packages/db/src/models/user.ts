@@ -21,32 +21,32 @@ export const UserSchema = new Schema<UserBase>(
         email: {
             type: Schema.Types.String,
             required: true,
-            unique: true
+            unique: true,
         },
         name: {
             type: Schema.Types.String,
-            required: true
+            required: true,
         },
         avatar: {
             type: Schema.Types.String,
-            default: null
+            default: null,
         },
         identities: [
             {
                 type: IdentitySchema,
-                default: []
-            }
+                default: [],
+            },
         ],
 
         emailVerified: {
             type: Schema.Types.Date,
-            default: null
-        }
+            default: null,
+        },
     },
     {
         id: true,
-        timestamps: true
-    }
+        timestamps: true,
+    },
 );
 
 export const UserModel = (db.models.User || db.model('User', UserSchema)) as ReturnType<

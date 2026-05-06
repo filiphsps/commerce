@@ -35,7 +35,7 @@ export const Button = <ComponentGeneric extends ElementType = 'button'>({
                     styled &&
                     'drop-shadow focus-within:brightness-75 hover:shadow-lg hover:brightness-75 active:brightness-75',
                 props.disabled && 'pointer-events-none cursor-not-allowed shadow-none',
-                className
+                className,
             )}
             draggable={false}
             suppressHydrationWarning={true}

@@ -31,7 +31,7 @@ import type { Metadata } from 'next';
 export type BlogPageParams = Promise<{ domain: string; locale: string; blog: string }>;
 
 export async function generateStaticParams({
-    params
+    params,
 }: {
     params: Omit<Awaited<BlogPageParams>, 'blog'>;
 }): Promise<Pick<Awaited<BlogPageParams>, 'blog'>[]> {
@@ -52,7 +52,7 @@ export async function generateStaticParams({
     }
 
     return blogs.map(({ handle }) => ({
-        blog: handle
+        blog: handle,
     }));
 }
 
@@ -92,10 +92,10 @@ export async function generateMetadata({ params }: { params: BlogPageParams }): 
             languages: locales.reduce(
                 (prev, { code }) => ({
                     ...prev,
-                    [code]: `https://${shop.domain}/${code}/blogs/${blogHandle}/`
+                    [code]: `https://${shop.domain}/${code}/blogs/${blogHandle}/`,
                 }),
-                {}
-            )
+                {},
+            ),
         },
         openGraph: {
             url: `/blogs/${blogHandle}/`,
@@ -104,8 +104,8 @@ export async function generateMetadata({ params }: { params: BlogPageParams }): 
             description,
             siteName: shop.name,
             locale: locale.code,
-            images: []
-        }
+            images: [],
+        },
     };
 }
 
@@ -166,7 +166,7 @@ export default async function BlogPage({ params }: { params: BlogPageParams }) {
                             weekday: undefined,
                             year: 'numeric',
                             month: 'short',
-                            day: 'numeric'
+                            day: 'numeric',
                         });
                         const avatar = author
                             ? `https://www.gravatar.com/avatar/${md5(author.email)}.jpg?s=25&d=blank`

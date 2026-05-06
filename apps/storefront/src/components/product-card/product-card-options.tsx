@@ -17,10 +17,10 @@ const ProductCardOptions = ({
     locale,
     data: product,
     selectedVariant = undefined,
-    setSelectedVariant
+    setSelectedVariant,
 }: ProductCardOptionsProps) => {
     const {
-        variants: { edges: variants = [] }
+        variants: { edges: variants = [] },
     } = product;
 
     if (!selectedVariant || variants.length <= 0) {
@@ -58,7 +58,7 @@ const ProductCardOptions = ({
                     title = convertToLocalMeasurementSystem({
                         locale: locale,
                         weight: variant.weight,
-                        weightUnit: variant.weightUnit
+                        weightUnit: variant.weightUnit,
                     });
                 }
 
@@ -76,7 +76,7 @@ const ProductCardOptions = ({
                         className={cn(
                             'hover:border-primary flex h-8 select-none items-center justify-center rounded-lg border-2 border-solid border-white bg-white px-3 py-0 text-sm font-semibold text-gray-600 transition-all',
                             isSelected && 'border-primary text-primary',
-                            !isSelected && 'cursor-pointer hover:shadow-lg'
+                            !isSelected && 'cursor-pointer hover:shadow-lg',
                         )}
                         data-active={isSelected}
                         suppressHydrationWarning={true}

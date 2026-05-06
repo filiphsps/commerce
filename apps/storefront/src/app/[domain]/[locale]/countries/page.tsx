@@ -45,10 +45,10 @@ export async function generateMetadata({ params }: { params: CountriesPageParams
             languages: locales.reduce(
                 (prev, { code }) => ({
                     ...prev,
-                    [code]: `https://${shop.domain}/${code}/countries/`
+                    [code]: `https://${shop.domain}/${code}/countries/`,
                 }),
-                {}
-            )
+                {},
+            ),
         },
         openGraph: {
             url: `/countries/`,
@@ -64,11 +64,11 @@ export async function generateMetadata({ params }: { params: CountriesPageParams
                           width: page.meta_image!.dimensions?.width || 0,
                           height: page.meta_image!.dimensions?.height || 0,
                           alt: page.meta_image!.alt || '',
-                          secureUrl: page.meta_image!.url as string
-                      }
+                          secureUrl: page.meta_image!.url as string,
+                      },
                   ]
-                : undefined
-        }
+                : undefined,
+        },
     };
 }
 

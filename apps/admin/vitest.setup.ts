@@ -34,11 +34,11 @@ vi.mock('mongoose', async (importActual) => {
                 model: vi.fn().mockImplementation((name: string) => {
                     return {
                         ...(actual?.default?.models[name] || {}),
-                        find: vi.fn().mockResolvedValue([])
+                        find: vi.fn().mockResolvedValue([]),
                     };
-                })
-            }))
-        }
+                }),
+            })),
+        },
     };
 });
 vi.stubEnv('MONGODB_URI', 'mongodb+srv://dummy-string');

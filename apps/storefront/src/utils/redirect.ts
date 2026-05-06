@@ -13,7 +13,7 @@ import type { Locale } from './locale';
 export async function checkAndHandleRedirect({
     domain,
     locale,
-    path
+    path,
 }: {
     domain: string;
     locale: Locale;

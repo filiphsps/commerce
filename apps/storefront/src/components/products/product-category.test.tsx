@@ -9,12 +9,12 @@ vi.mock('@/components/link', () => {
     return {
         default: vi.fn().mockImplementation(({ children, href }) => {
             return <a href={href}>{children}</a>;
-        })
+        }),
     };
 });
 
 vi.mock('@/api/shopify', () => ({
-    ShopifyApiClient: vi.fn().mockReturnValue({})
+    ShopifyApiClient: vi.fn().mockReturnValue({}),
 }));
 vi.mock('@/api/shopify/collection', () => ({
     CollectionApi: vi.fn().mockImplementation(async ({ handle }: { handle: string }) => {
@@ -24,9 +24,9 @@ vi.mock('@/api/shopify/collection', () => ({
 
         return {
             handle: 'test-type',
-            title: 'Test Type'
+            title: 'Test Type',
         };
-    })
+    }),
 }));
 
 describe('components', () => {
@@ -36,8 +36,8 @@ describe('components', () => {
                 await ProductCategory({
                     shop: {} as any,
                     locale: Locale.default,
-                    product: { productType: 'Test Type' } as any
-                })
+                    product: { productType: 'Test Type' } as any,
+                }),
             );
 
             await waitFor(() => expect(unmount).not.toThrow());
@@ -45,7 +45,7 @@ describe('components', () => {
 
         it('renders nothing when no product type is present', async () => {
             const { container, unmount } = render(
-                await ProductCategory({ shop: {} as any, locale: Locale.default, product: {} as any })
+                await ProductCategory({ shop: {} as any, locale: Locale.default, product: {} as any }),
             );
             await waitFor(() => {
                 expect(container.textContent).toBe('');
@@ -59,8 +59,8 @@ describe('components', () => {
                 await ProductCategory({
                     shop: {} as any,
                     locale: Locale.default,
-                    product: { productType: 'Test Type' } as any
-                })
+                    product: { productType: 'Test Type' } as any,
+                }),
             );
 
             await waitFor(() => {

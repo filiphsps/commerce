@@ -41,7 +41,7 @@ export function FilterValues({ id: filterId, type, values }: Pick<Filter, 'type'
                                 prefetch={false}
                                 className={cn(
                                     'flex appearance-none flex-nowrap items-center justify-between gap-1 whitespace-nowrap rounded-xl border-2 border-solid border-gray-300 px-2 py-1 text-sm font-semibold leading-none text-gray-500 transition-colors hover:border-black hover:text-black',
-                                    active && 'border-primary text-primary'
+                                    active && 'border-primary text-primary',
                                 )}
                             >
                                 <span>{label}</span> <span className="text-xs font-normal">({count})</span>

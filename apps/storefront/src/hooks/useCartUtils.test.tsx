@@ -15,13 +15,13 @@ vi.mock('next/navigation', async () => ({
     ...(((await vi.importActual('next/navigation')) as any) || {}),
     usePathname: vi.fn().mockReturnValue(''),
     useRouter: () => ({
-        replace: vi.fn()
+        replace: vi.fn(),
     }),
     useSearchParams: () => ({
         get: () => 'coupon_code',
         getAll: () => ['coupon_code'],
-        has: () => true
-    })
+        has: () => true,
+    }),
 }));
 
 describe('hooks', () => {
@@ -31,7 +31,7 @@ describe('hooks', () => {
                 error: undefined,
 
                 buyerIdentity: {
-                    countryCode: 'US'
+                    countryCode: 'US',
                 },
                 buyerIdentityUpdate: vi.fn().mockImplementation(({ countryCode }) => {
                     useCart().buyerIdentity!.countryCode = countryCode;
@@ -46,7 +46,7 @@ describe('hooks', () => {
                 cartReady: true,
                 cartCreate: vi.fn().mockImplementation(() => {
                     useCart().status = 'idle';
-                })
+                }),
             });
         });
 

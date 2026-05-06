@@ -20,7 +20,7 @@ export async function CollectionContent({
     locale,
     handle,
     searchParams = {},
-    pagesInfo: { cursors, pages }
+    pagesInfo: { cursors, pages },
 }: {
     shop: OnlineShop;
     locale: Locale;

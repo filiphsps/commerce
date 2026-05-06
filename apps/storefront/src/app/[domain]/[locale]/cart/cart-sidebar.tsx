@@ -47,7 +47,7 @@ export const CartSidebar = ({ i18n, locale, className, children, paymentMethods,
                             shop,
                             locale,
                             cart,
-                            trackable: { queueEvent, postEvent }
+                            trackable: { queueEvent, postEvent },
                         });
                     } catch (error: unknown) {
                         console.error(error);

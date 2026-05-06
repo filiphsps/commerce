@@ -7,13 +7,13 @@ export const metadata: Metadata = {
     icons: {
         icon: ['/favicon.png'],
         shortcut: ['/favicon.png'],
-        apple: ['/favicon.png']
+        apple: ['/favicon.png'],
     },
     robots: {
         index: false,
-        follow: false
+        follow: false,
     },
-    referrer: 'origin'
+    referrer: 'origin',
 };
 
 export default function NotFound() {

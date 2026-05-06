@@ -14,7 +14,7 @@ export type SliceSimulatorPageParams = Promise<{ domain: string }>;
 
 export default async function SliceSimulatorPage({
     params,
-    searchParams: queryParams
+    searchParams: queryParams,
 }: {
     params: SliceSimulatorPageParams;
 } & { searchParams: Promise<SliceSimulatorParams['searchParams']> }) {
@@ -35,7 +35,7 @@ export default async function SliceSimulatorPage({
                     shop: {
                         ...shop,
                         commerceProvider: {},
-                        contentProvider: {}
+                        contentProvider: {},
                     },
                     i18n,
                     locale,
@@ -43,7 +43,7 @@ export default async function SliceSimulatorPage({
                     uid: 'homepage',
                     handle: 'homepage',
                     pathname: '/hello-world/',
-                    menu: '__SLICE_MACHINE_TEST__'
+                    menu: '__SLICE_MACHINE_TEST__',
                 }}
             />
         </SliceSimulator>

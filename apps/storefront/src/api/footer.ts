@@ -9,7 +9,7 @@ import type { FooterDocument } from '@/prismic/types';
 
 export async function FooterApi({
     shop,
-    locale
+    locale,
 }: {
     shop: OnlineShop;
     locale: Locale;
@@ -40,12 +40,12 @@ export async function FooterApi({
         },
         [
             shop.domain,
-            Locale.default.code // TODO: This should be the actual locale, but we're calling prismic.io's API way too much.
+            Locale.default.code, // TODO: This should be the actual locale, but we're calling prismic.io's API way too much.
             /* locale.code */
         ],
         {
             revalidate: 86_400, // 24hrs.
-            tags: ['prismic', shop.domain, locale.code]
-        }
+            tags: ['prismic', shop.domain, locale.code],
+        },
     )();
 }

@@ -8,7 +8,7 @@ import type { PredictiveSearchResult, SearchResultItemConnection } from '@shopif
 export const SearchApi = async ({
     client,
     query,
-    limit
+    limit,
 }: {
     client: AbstractApi;
     query: string;
@@ -56,13 +56,13 @@ export const SearchApi = async ({
                 {
                     query,
                     type: type,
-                    first: limit || 75
-                }
+                    first: limit || 75,
+                },
             );
 
             return {
                 result: data?.search.edges.map((item: any) => item?.node) || [],
-                productFilters: data?.search.productFilters || []
+                productFilters: data?.search.productFilters || [],
             };
         };
 
@@ -70,7 +70,7 @@ export const SearchApi = async ({
             const { result: products, productFilters } = await search({ type: 'PRODUCT' });
             return resolve({
                 products,
-                productFilters
+                productFilters,
             });
         } catch (error: unknown) {
             return reject(error);
@@ -80,7 +80,7 @@ export const SearchApi = async ({
 
 export const SearchPredictionApi = async ({
     client,
-    query
+    query,
 }: {
     client: AbstractApi;
     query: string;
@@ -90,18 +90,18 @@ export const SearchPredictionApi = async ({
 
         const { data } = await client.query<{ predictiveSearch: PredictiveSearchResult }>(
             gql`
-                query predictiveSearch($query: String!) {
-                    predictiveSearch(query: $query, types: [QUERY], limit: 5) {
-                        queries {
-                            styledText
-                            text
-                        }
+            query predictiveSearch($query: String!) {
+                predictiveSearch(query: $query, types: [QUERY], limit: 5) {
+                    queries {
+                        styledText
+                        text
                     }
                 }
-            `,
-            {
-                query
             }
+        `,
+            {
+                query,
+            },
         );
 
         return resolve(data?.predictiveSearch || {});

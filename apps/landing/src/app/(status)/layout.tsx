@@ -19,29 +19,29 @@ export const viewport: Viewport = {
     themeColor: '#000000',
     width: 'device-width',
     initialScale: 1,
-    interactiveWidget: 'resizes-visual'
+    interactiveWidget: 'resizes-visual',
 };
 
 export const metadata: Metadata = {
     title: {
         default: 'Headless Commerce as a Service',
-        template: `%s · Nordcom Commerce`
+        template: `%s · Nordcom Commerce`,
     },
     icons: {
         icon: ['/favicon.png', '/favicon.ico'],
         shortcut: ['/favicon.png'],
-        apple: ['/apple-icon.png']
+        apple: ['/apple-icon.png'],
     },
     robots: {
         follow: false,
-        index: false
+        index: false,
     },
     referrer: 'origin',
     formatDetection: {
         email: false,
         address: false,
-        telephone: false
-    }
+        telephone: false,
+    },
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {

@@ -38,11 +38,11 @@ const route = async (req: NextRequest, { domain }: Awaited<RevalidateApiRoutePar
                             revalidated: true,
                             tags: [`shopify.${shop.id}`],
                             paths: [],
-                            domains: [domain]
+                            domains: [domain],
                         },
-                        errors: null
+                        errors: null,
                     },
-                    { status: 200, headers }
+                    { status: 200, headers },
                 );
             }
             case 'GET': {
@@ -58,11 +58,11 @@ const route = async (req: NextRequest, { domain }: Awaited<RevalidateApiRoutePar
                             revalidated: true,
                             tags: [`prismic.${shop.id}`],
                             paths: [],
-                            domains: [domain]
+                            domains: [domain],
                         },
-                        errors: null
+                        errors: null,
                     },
-                    { status: 200, headers }
+                    { status: 200, headers },
                 );
             }
             default: {
@@ -79,9 +79,9 @@ const route = async (req: NextRequest, { domain }: Awaited<RevalidateApiRoutePar
                     {
                         status: error.statusCode ?? 500,
                         data: null,
-                        errors: [error]
+                        errors: [error],
                     },
-                    { status: error.statusCode ?? 500 }
+                    { status: error.statusCode ?? 500 },
                 );
             }
         }
@@ -91,9 +91,9 @@ const route = async (req: NextRequest, { domain }: Awaited<RevalidateApiRoutePar
             {
                 status: ex.statusCode,
                 data: null,
-                errors: [error, ex]
+                errors: [error, ex],
             },
-            { status: ex.statusCode }
+            { status: ex.statusCode },
         );
     }
 };

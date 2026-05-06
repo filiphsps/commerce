@@ -44,13 +44,13 @@ export const MenuApi = async ({ shop, locale }: { shop: OnlineShop; locale: Loca
         },
         [
             shop.domain,
-            Locale.default.code // TODO: This should be the actual locale, but we're calling prismic.io's API way too much.
+            Locale.default.code, // TODO: This should be the actual locale, but we're calling prismic.io's API way too much.
             /* locale.code */
         ],
         {
             revalidate: 86_400, // 24hrs.
-            tags: ['prismic', shop.domain, locale.code]
-        }
+            tags: ['prismic', shop.domain, locale.code],
+        },
     )();
 };
 
@@ -81,12 +81,12 @@ export async function HeaderApi({ shop, locale }: { shop: OnlineShop; locale: Lo
         },
         [
             shop.domain,
-            Locale.default.code // TODO: This should be the actual locale, but we're calling prismic.io's API way too much.
+            Locale.default.code, // TODO: This should be the actual locale, but we're calling prismic.io's API way too much.
             /* locale.code */
         ],
         {
             revalidate: 86_400, // 24hrs.
-            tags: ['prismic', shop.domain, locale.code]
-        }
+            tags: ['prismic', shop.domain, locale.code],
+        },
     )();
 }

@@ -17,7 +17,7 @@ import {
     ShopifySalesChannel,
     useCart,
     useShop as useShopify,
-    useShopifyCookies
+    useShopifyCookies,
 } from '@shopify/hydrogen-react';
 import { track as vercelTrack } from '@vercel/analytics/react';
 import debounce from 'lodash.debounce';
@@ -155,7 +155,7 @@ export type AnalyticsEventActionProps = {
 const shopifyEventHandler = async (
     event: AnalyticsEventType,
     data: AnalyticsEventData,
-    { shop, currency, locale, shopify, cart }: AnalyticsEventActionProps & { shopify: ShopifyContextValue }
+    { shop, currency, locale, shopify, cart }: AnalyticsEventActionProps & { shopify: ShopifyContextValue },
 ) => {
     // Shopify only supports a subset of events.
     if (event !== 'page_view' && event !== 'add_to_cart') {
@@ -187,7 +187,7 @@ const shopifyEventHandler = async (
                 }
             }
         })(),
-        pageType
+        pageType,
     };
 
     let path = data.path || '';
@@ -217,8 +217,8 @@ const shopifyEventHandler = async (
             category: line.item_category!,
             price: line.price?.toString(10)!,
             sku: line.sku!,
-            quantity: line.quantity!
-        }))
+            quantity: line.quantity!,
+        })),
     };
 
     if (isCrawler(sharedPayload.userAgent || window.navigator.userAgent)) {
@@ -232,8 +232,8 @@ const shopifyEventHandler = async (
                 const data = {
                     eventName: AnalyticsShopifyEventName.PAGE_VIEW,
                     payload: {
-                        ...sharedPayload
-                    }
+                        ...sharedPayload,
+                    },
                 };
 
                 await sendShopifyAnalytics(data, commerce.domain);
@@ -244,8 +244,8 @@ const shopifyEventHandler = async (
                     eventName: AnalyticsShopifyEventName.ADD_TO_CART,
                     payload: {
                         cartId: cart.id,
-                        ...sharedPayload
-                    }
+                        ...sharedPayload,
+                    },
                 };
 
                 await sendShopifyAnalytics(data, commerce.domain);
@@ -263,7 +263,7 @@ const shopifyEventHandler = async (
 const klaviyoEventHandler = async (
     event: AnalyticsEventType,
     data: AnalyticsEventData, // eslint-disable-line unused-imports/no-unused-vars
-    { shop, currency, locale, cart }: AnalyticsEventActionProps // eslint-disable-line unused-imports/no-unused-vars
+    { shop, currency, locale, cart }: AnalyticsEventActionProps, // eslint-disable-line unused-imports/no-unused-vars
 ) => {
     window._learnq = window._learnq || [];
 
@@ -288,7 +288,7 @@ const klaviyoEventHandler = async (
 const handleEvent = async (
     event: AnalyticsEventType,
     data: AnalyticsEventData,
-    { shop, currency, locale, shopify, cart }: AnalyticsEventActionProps & { shopify: ShopifyContextValue }
+    { shop, currency, locale, shopify, cart }: AnalyticsEventActionProps & { shopify: ShopifyContextValue },
 ) => {
     window.dataLayer = window.dataLayer || [];
     if (window.dataLayer.length <= 0) {
@@ -302,9 +302,9 @@ const handleEvent = async (
                     ad_personalization: 'granted',
                     functionality_storage: 'granted',
                     personalization_storage: 'granted',
-                    security_storage: 'granted'
-                }
-            }
+                    security_storage: 'granted',
+                },
+            },
         });
     }
 
@@ -338,7 +338,7 @@ const handleEvent = async (
         case 'exception':
             additionalData = {
                 ...additionalData,
-                non_interaction: true // Avoids affecting bounce rate.
+                non_interaction: true, // Avoids affecting bounce rate.
             };
     }
 
@@ -346,7 +346,7 @@ const handleEvent = async (
         window.dataLayer.push({
             event,
             ...additionalData,
-            ...(data.gtm || {})
+            ...(data.gtm || {}),
         });
     } catch (error: unknown) {
         console.error(`Error sending "${event}" event: ${(error as any)?.message || error}`);
@@ -355,7 +355,7 @@ const handleEvent = async (
     if (typeof data.gtm?.ecommerce !== 'undefined') {
         window.dataLayer.push({
             // Get the dataLayer ready for the next event.
-            ecommerce: null
+            ecommerce: null,
         });
     }
 
@@ -408,7 +408,7 @@ export function Trackable({ children, dummy = false }: TrackableProps) {
     const detectedInternalTraffic = useSyncExternalStore<boolean>(
         subscribeToNothing,
         getInternalTrafficFlag,
-        () => false
+        () => false,
     );
     const internalTraffic = dummy || detectedInternalTraffic;
 
@@ -424,7 +424,7 @@ export function Trackable({ children, dummy = false }: TrackableProps) {
     useShopifyCookies(
         BuildConfig.environment === 'production'
             ? { hasUserConsent: true, domain: cookieDomain, checkoutDomain }
-            : undefined
+            : undefined,
     );
 
     const shopify = useShopify();
@@ -449,7 +449,7 @@ export function Trackable({ children, dummy = false }: TrackableProps) {
             queueRef.current = [...queueRef.current, { type, event }];
             setFlushSignal((signal) => signal + 1);
         },
-        [internalTraffic]
+        [internalTraffic],
     );
 
     const postEvent = useMemo(
@@ -461,7 +461,7 @@ export function Trackable({ children, dummy = false }: TrackableProps) {
 
                 return handleEvent(type, event, { shop, currency, locale, shopify, cart });
             }, 500),
-        [internalTraffic, shop, currency, locale, shopify, cart]
+        [internalTraffic, shop, currency, locale, shopify, cart],
     );
 
     // Web vitals.
@@ -506,18 +506,18 @@ export function Trackable({ children, dummy = false }: TrackableProps) {
                             locale,
                             product: {
                                 productGid: line.merchandise.product.id!,
-                                variantGid: line.merchandise.id!
-                            }
+                                variantGid: line.merchandise.id!,
+                            },
                         }),
                         item_name: line.merchandise.product.title,
                         item_variant: line.merchandise.title,
                         item_brand: line.merchandise.product.vendor,
                         currency: line.merchandise.price.currencyCode,
                         price: safeParseFloat(undefined, line.merchandise.price.amount!),
-                        quantity: line.quantity
-                    }))
-                }
-            }
+                        quantity: line.quantity,
+                    })),
+                },
+            },
         });
     }, [path, prevPath, internalTraffic, cart, locale]);
 
@@ -538,11 +538,11 @@ export function Trackable({ children, dummy = false }: TrackableProps) {
                     type,
                     {
                         ...event,
-                        path: event.path || path
+                        path: event.path || path,
                     },
-                    { shop, currency, locale, shopify, cart }
+                    { shop, currency, locale, shopify, cart },
                 );
-            })
+            }),
         ).then((results) => {
             const failed = results.filter((result) => result.status === 'rejected');
 
@@ -555,14 +555,14 @@ export function Trackable({ children, dummy = false }: TrackableProps) {
     const store = useMemo(
         () => ({
             queueEvent,
-            postEvent
+            postEvent,
         }),
-        [queueEvent, postEvent]
+        [queueEvent, postEvent],
     );
 
     return useMemo(
         () => <TrackableContext.Provider value={store as TrackableContextValue}>{children}</TrackableContext.Provider>,
-        [store, children]
+        [store, children],
     );
 }
 Trackable.displayName = 'Nordcom.Trackable';

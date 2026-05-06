@@ -4,8 +4,8 @@ import { isPreviewEnv } from '@/utils/is-preview-env';
 
 vi.mock('@/utils/build-config', () => ({
     BuildConfig: {
-        environment: 'production'
-    }
+        environment: 'production',
+    },
 }));
 
 describe('utils', () => {

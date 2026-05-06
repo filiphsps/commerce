@@ -10,8 +10,8 @@ describe('components', () => {
         const defaultProps: PriceProps = {
             data: {
                 amount: '10.00',
-                currencyCode: 'USD'
-            }
+                currencyCode: 'USD',
+            },
         };
 
         it('renders without errors', () => {

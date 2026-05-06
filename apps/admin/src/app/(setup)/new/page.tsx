@@ -10,7 +10,7 @@ import type { Metadata, Route } from 'next';
 export type SetupNewPageProps = {};
 
 export const metadata: Metadata = {
-    title: 'New'
+    title: 'New',
 };
 
 export default async function SetupNewPage({}: SetupNewPageProps) {

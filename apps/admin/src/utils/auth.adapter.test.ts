@@ -18,7 +18,7 @@ describe('utils', () => {
                 const id = '123';
                 const user = { id: '123', name: 'John Doe' };
                 const findSpy = vi.spyOn(User, 'find').mockResolvedValue({
-                    toObject: vi.fn().mockReturnValue(user)
+                    toObject: vi.fn().mockReturnValue(user),
                 } as any);
 
                 const result = await adapter.getUser?.(id);
@@ -43,7 +43,7 @@ describe('utils', () => {
                 const provider = 'google';
                 const user = { id: '123', name: 'John Doe' };
                 const findSpy = vi.spyOn(User, 'find').mockResolvedValue({
-                    toObject: vi.fn().mockReturnValue(user)
+                    toObject: vi.fn().mockReturnValue(user),
                 } as any);
 
                 const result = await adapter.getUserByAccount?.({ provider, providerAccountId });
@@ -54,10 +54,10 @@ describe('utils', () => {
                         identities: {
                             $elemMatch: {
                                 provider,
-                                identity: providerAccountId
-                            }
-                        }
-                    }
+                                identity: providerAccountId,
+                            },
+                        },
+                    },
                 });
                 expect(result).toEqual(user);
             });

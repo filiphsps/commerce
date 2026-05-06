@@ -7,7 +7,7 @@ import {
     localizeWeight,
     unitToWeightUnit,
     usesImperialUnits,
-    weightUnitToUnit
+    weightUnitToUnit,
 } from '@/utils/locale';
 
 describe('utils', () => {
@@ -59,50 +59,50 @@ describe('utils', () => {
                     expect(
                         localizeWeight(Locale.from('en-GB'), {
                             weight: 10,
-                            unit: 'GRAMS'
-                        })
+                            unit: 'GRAMS',
+                        }),
                     ).toEqual({
                         weight: 10,
-                        unit: 'GRAMS'
+                        unit: 'GRAMS',
                     });
 
                     expect(
                         localizeWeight(Locale.from('en-US'), {
                             weight: 10,
-                            unit: 'GRAMS'
-                        })
+                            unit: 'GRAMS',
+                        }),
                     ).toEqual({
                         weight: 0.4,
-                        unit: 'OUNCES'
+                        unit: 'OUNCES',
                     });
 
                     expect(
                         localizeWeight(Locale.from('en-GB'), {
                             weight: 5,
-                            unit: 'OUNCES'
-                        })
+                            unit: 'OUNCES',
+                        }),
                     ).toEqual({
                         weight: 141.75,
-                        unit: 'GRAMS'
+                        unit: 'GRAMS',
                     });
                     expect(
                         localizeWeight(Locale.from('en-US'), {
                             weight: 5,
-                            unit: 'OUNCES'
-                        })
+                            unit: 'OUNCES',
+                        }),
                     ).toEqual({
                         weight: 5,
-                        unit: 'OUNCES'
+                        unit: 'OUNCES',
                     });
 
                     expect(
                         localizeWeight(Locale.from('en-GB'), {
                             weight: 10,
-                            unit: 'GRAMS'
-                        })
+                            unit: 'GRAMS',
+                        }),
                     ).toEqual({
                         weight: 10,
-                        unit: 'GRAMS'
+                        unit: 'GRAMS',
                     });
                 });
             });
@@ -152,60 +152,60 @@ describe('utils', () => {
                         convertToLocalMeasurementSystem({
                             locale: Locale.from('en-GB'),
                             weight: 10,
-                            weightUnit: 'KILOGRAMS'
-                        })
+                            weightUnit: 'KILOGRAMS',
+                        }),
                     ).toBe('10kg');
                     expect(
                         convertToLocalMeasurementSystem({
                             locale: Locale.from('en-US'),
                             weight: 10,
-                            weightUnit: 'KILOGRAMS'
-                        })
+                            weightUnit: 'KILOGRAMS',
+                        }),
                     ).toBe('22.05lb');
 
                     expect(
                         convertToLocalMeasurementSystem({
                             locale: Locale.from('en-GB'),
                             weight: 5,
-                            weightUnit: 'OUNCES'
-                        })
+                            weightUnit: 'OUNCES',
+                        }),
                     ).toBe('141.75g');
                     expect(
                         convertToLocalMeasurementSystem({
                             locale: Locale.from('en-US'),
                             weight: 5,
-                            weightUnit: 'OUNCES'
-                        })
+                            weightUnit: 'OUNCES',
+                        }),
                     ).toBe('5oz');
 
                     expect(
                         convertToLocalMeasurementSystem({
                             locale: Locale.from('en-GB'),
                             weight: 10,
-                            weightUnit: 'GRAMS'
-                        })
+                            weightUnit: 'GRAMS',
+                        }),
                     ).toBe('10g');
                     expect(
                         convertToLocalMeasurementSystem({
                             locale: Locale.from('en-US'),
                             weight: 10,
-                            weightUnit: 'GRAMS'
-                        })
+                            weightUnit: 'GRAMS',
+                        }),
                     ).toBe('0.4oz');
 
                     expect(
                         convertToLocalMeasurementSystem({
                             locale: Locale.from('en-GB'),
                             weight: 10,
-                            weightUnit: 'POUNDS'
-                        })
+                            weightUnit: 'POUNDS',
+                        }),
                     ).toBe('4.55kg');
                     expect(
                         convertToLocalMeasurementSystem({
                             locale: Locale.from('en-US'),
                             weight: 10,
-                            weightUnit: 'POUNDS'
-                        })
+                            weightUnit: 'POUNDS',
+                        }),
                     ).toBe('10lb');
                 });
             });

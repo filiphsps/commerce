@@ -4,15 +4,15 @@ import path from 'node:path';
 
 export default defineProject({
     optimizeDeps: {
-        force: true
+        force: true,
     },
     resolve: {
         alias: [
             {
                 find: '@',
-                replacement: path.resolve(__dirname, './src')
-            }
-        ]
+                replacement: path.resolve(__dirname, './src'),
+            },
+        ],
     },
     test: {
         bail: 1,
@@ -21,7 +21,7 @@ export default defineProject({
         passWithNoTests: true,
 
         typecheck: {
-            tsconfig: './tsconfig.test.json'
+            tsconfig: './tsconfig.test.json',
         },
 
         setupFiles: ['vitest.setup.ts'],
@@ -34,7 +34,7 @@ export default defineProject({
             '**/node_modules/**/*.*',
             '**/utils/test/**/*.*',
             './src/error.ts',
-            './src/index.ts'
+            './src/index.ts',
         ],
 
         globals: true,
@@ -55,8 +55,8 @@ export default defineProject({
                 '**/src/**/index.*',
                 '**/src/**/config/*.*',
                 './src/error.ts',
-                './src/index.ts'
-            ]
-        }
-    }
+                './src/index.ts',
+            ],
+        },
+    },
 });

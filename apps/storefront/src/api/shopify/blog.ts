@@ -10,32 +10,32 @@ import type { Article, ArticleSortKeys, BlogConnection } from '@shopify/hydrogen
 export async function BlogsApi({ api }: { api: AbstractApi }): Promise<ApiReturn<Blog[]>> {
     const { data, errors } = await api.query<{ blogs: BlogConnection }>(
         gql`
-            query blogs($first: Int!) {
-                blogs(first: $first) {
-                    edges {
-                        node {
-                            id
-                            handle
+        query blogs($first: Int!) {
+            blogs(first: $first) {
+                edges {
+                    node {
+                        id
+                        handle
 
+                        title
+                        seo {
                             title
-                            seo {
-                                title
-                                description
-                            }
+                            description
+                        }
 
-                            authors {
-                                name
-                                email
-                                bio
-                            }
+                        authors {
+                            name
+                            email
+                            bio
                         }
                     }
                 }
             }
-        `,
-        {
-            first: 250
         }
+    `,
+        {
+            first: 250,
+        },
     );
 
     if (errors && errors.length > 0) {
@@ -54,7 +54,7 @@ export async function BlogApi({
     handle = 'news',
     limit = 30,
     sorting = 'PUBLISHED_AT',
-    reverseSorting = true
+    reverseSorting = true,
 }: {
     api: AbstractApi;
     handle?: string;
@@ -64,53 +64,53 @@ export async function BlogApi({
 }): Promise<ApiReturn<Blog>> {
     const { data, errors } = await api.query<{ blogByHandle: Blog & { description?: { value: string } } }>(
         gql`
-            query blog($handle: String!, $first: Int!, $sorting: ArticleSortKeys!, $reverseSorting: Boolean!) {
-                blogByHandle(handle: $handle) {
-                    id
-                    handle
+        query blog($handle: String!, $first: Int!, $sorting: ArticleSortKeys!, $reverseSorting: Boolean!) {
+            blogByHandle(handle: $handle) {
+                id
+                handle
 
+                title
+                description: metafield(namespace: "nordcom-commerce", key: "description") {
+                    value
+                }
+
+                seo {
                     title
-                    description: metafield(namespace: "nordcom-commerce", key: "description") {
-                        value
-                    }
+                    description
+                }
+                articles(first: $first, sortKey: $sorting, reverse: $reverseSorting) {
+                    edges {
+                        node {
+                            id
+                            handle
+                            publishedAt
 
-                    seo {
-                        title
-                        description
-                    }
-                    articles(first: $first, sortKey: $sorting, reverse: $reverseSorting) {
-                        edges {
-                            node {
-                                id
-                                handle
-                                publishedAt
+                            title
+                            excerptHtml
 
-                                title
-                                excerptHtml
+                            image {
+                                url
+                                height
+                                width
+                                altText
+                            }
 
-                                image {
-                                    url
-                                    height
-                                    width
-                                    altText
-                                }
-
-                                authorV2 {
-                                    name
-                                    email
-                                }
+                            authorV2 {
+                                name
+                                email
                             }
                         }
                     }
                 }
             }
-        `,
+        }
+    `,
         {
             handle,
             first: limit,
             sorting,
-            reverseSorting
-        }
+            reverseSorting,
+        },
     );
 
     if (errors && errors.length > 0) {
@@ -124,16 +124,16 @@ export async function BlogApi({
     return [
         {
             ...data.blogByHandle,
-            description: data.blogByHandle.description?.value
+            description: data.blogByHandle.description?.value,
         },
-        undefined
+        undefined,
     ];
 }
 
 export async function BlogArticleApi({
     api,
     blogHandle = 'news',
-    handle
+    handle,
 }: {
     api: AbstractApi;
     blogHandle?: string;
@@ -143,52 +143,52 @@ export async function BlogArticleApi({
 
     const { data, errors } = await api.query<{ blogByHandle: Blog }>(
         gql`
-            query article($blogHandle: String!, $handle: String!) {
-                blogByHandle(handle: $blogHandle) {
-                    articleByHandle(handle: $handle) {
-                        id
-                        handle
-                        publishedAt
+        query article($blogHandle: String!, $handle: String!) {
+            blogByHandle(handle: $blogHandle) {
+                articleByHandle(handle: $handle) {
+                    id
+                    handle
+                    publishedAt
 
+                    title
+                    content
+                    contentHtml
+                    excerpt
+                    excerptHtml
+                    tags
+
+                    seo {
                         title
-                        content
-                        contentHtml
-                        excerpt
-                        excerptHtml
-                        tags
+                        description
+                    }
 
-                        seo {
-                            title
-                            description
-                        }
+                    image {
+                        url
+                        height
+                        width
+                        altText
+                    }
 
-                        image {
-                            url
-                            height
-                            width
-                            altText
-                        }
+                    authorV2 {
+                        name
+                        firstName
+                        lastName
+                        email
+                        bio
+                    }
 
-                        authorV2 {
-                            name
-                            firstName
-                            lastName
-                            email
-                            bio
-                        }
-
-                        blog {
-                            title
-                            handle
-                        }
+                    blog {
+                        title
+                        handle
                     }
                 }
             }
-        `,
+        }
+    `,
         {
             blogHandle,
-            handle
-        }
+            handle,
+        },
     );
 
     if (errors && errors.length > 0) {
@@ -204,8 +204,8 @@ export async function BlogArticleApi({
     return [
         {
             ...data.blogByHandle.articleByHandle,
-            contentHtml: data.blogByHandle.articleByHandle.contentHtml.replace(/data-mce-fragment="1"/gi, '')
+            contentHtml: data.blogByHandle.articleByHandle.contentHtml.replace(/data-mce-fragment="1"/gi, ''),
         },
-        undefined
+        undefined,
     ];
 }

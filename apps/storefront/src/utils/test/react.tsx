@@ -15,8 +15,8 @@ const Providers = ({ children }: { children: ReactNode }) => {
         domain: 'staging.demo.nordcom.io',
         commerceProvider: {
             type: 'shopify' as const,
-            domain: 'mock.shop' as const
-        }
+            domain: 'mock.shop' as const,
+        },
     } as any;
 
     return (

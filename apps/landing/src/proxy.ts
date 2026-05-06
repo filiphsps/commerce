@@ -8,8 +8,8 @@ export const config = {
     matcher: ['/((?!_next|_static|_vercel|instrumentation|assets|[\\w-]+\\.\\w+).*)'],
     missing: [
         { type: 'header', key: 'next-router-prefetch' },
-        { type: 'header', key: 'purpose', value: 'prefetch' }
-    ]
+        { type: 'header', key: 'purpose', value: 'prefetch' },
+    ],
 };
 
 export default async function proxy(req: NextRequest) {

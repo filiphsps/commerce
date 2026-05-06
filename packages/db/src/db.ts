@@ -17,7 +17,7 @@ if (!uri) throw new MissingEnvironmentVariableError('MONGODB_URI');
 export const db = await mongoose.connect(uri, {
     autoCreate: true,
     autoIndex: true,
-    bufferCommands: false
+    bufferCommands: false,
 });
 
 try {

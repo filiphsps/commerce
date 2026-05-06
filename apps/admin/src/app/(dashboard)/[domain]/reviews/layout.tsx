@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 
 export default async function ReviewsLayout({
     children,
-    modal
+    modal,
 }: Readonly<{
     children: ReactNode;
     modal: ReactNode;

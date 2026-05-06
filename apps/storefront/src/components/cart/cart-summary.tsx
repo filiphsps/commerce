@@ -49,7 +49,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                             (safeParseFloat(0, line?.cost?.compareAtAmountPerQuantity?.amount) * (line!.quantity || 0) -
                                 safeParseFloat(0, line?.cost?.totalAmount?.amount))) ||
                     sum,
-                0
+                0,
             )) ||
         0;
     const totalSale =
@@ -64,7 +64,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                     (sum, line) =>
                         (line!.discountedAmount!.amount && sum + safeParseFloat(0, line?.discountedAmount?.amount)) ||
                         sum,
-                    0
+                    0,
                 );
             })
             .reduce((sum, line) => sum + line || sum, 0);
@@ -79,7 +79,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
             className={cn(
                 styles.container,
                 'sticky top-32 flex flex-col gap-4',
-                !cartReady && 'pointer-events-none brightness-50'
+                !cartReady && 'pointer-events-none brightness-50',
             )}
         >
             {children}
@@ -108,7 +108,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                                     amount:
                                         (totalSale &&
                                             (safeParseFloat(0, cost.subtotalAmount.amount) + totalSale).toString()) ||
-                                        cost.subtotalAmount.amount
+                                        cost.subtotalAmount.amount,
                                 }}
                             />
                         ) : (
@@ -129,7 +129,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                                             className={cn(PRICE_STYLES, PRICE_DISCOUNT_STYLES)}
                                             data={{
                                                 currencyCode: cost?.totalAmount?.currencyCode,
-                                                amount: sale.toString()
+                                                amount: sale.toString(),
                                             }}
                                         />
                                     ) : null}
@@ -155,7 +155,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
 
                                                 const discountAmount = safeParseFloat(
                                                     0,
-                                                    discount.discountedAmount.amount
+                                                    discount.discountedAmount.amount,
                                                 );
                                                 const title = (discount as any).title || t('automatic-discounts');
 
@@ -167,7 +167,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                                                     <div
                                                         className={cn(
                                                             styles.discounted,
-                                                            'flex items-center justify-between'
+                                                            'flex items-center justify-between',
                                                         )}
                                                         key={`${line.id}-${discount.discountedAmount.amount}`}
                                                     >
@@ -176,7 +176,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                                                             className={cn(PRICE_STYLES, PRICE_DISCOUNT_STYLES)}
                                                             data={{
                                                                 currencyCode: cost?.totalAmount?.currencyCode,
-                                                                amount: discount.discountedAmount.amount
+                                                                amount: discount.discountedAmount.amount,
                                                             }}
                                                         />
                                                     </div>
@@ -197,7 +197,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                                     className={cn(PRICE_STYLES, PRICE_DISCOUNT_STYLES)}
                                     data={{
                                         currencyCode: cost?.totalAmount?.currencyCode,
-                                        amount: promos.toString()
+                                        amount: promos.toString(),
                                     }}
                                 />
                             ) : null}
@@ -213,7 +213,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                                     cost.checkoutChargeAmount ||
                                     (cost.totalAmount as any) || {
                                         currencyCode: currency,
-                                        amount: 0
+                                        amount: 0,
                                     }
                                 }
                             />
@@ -280,8 +280,8 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                                                 {[
                                                     ...(productType ? [productType] : []),
                                                     ...variant.selectedOptions.map(
-                                                        ({ name, value }) => `${name}: ${value}`
-                                                    )
+                                                        ({ name, value }) => `${name}: ${value}`,
+                                                    ),
                                                 ].join(', ')}
                                             </span>
                                         </Label>

@@ -73,7 +73,7 @@ export const ProductActionsContainer = ({ className, i18n, ...props }: ProductAc
                     i18n={i18n}
                     data={{
                         product,
-                        selectedVariant
+                        selectedVariant,
                     }}
                 />
             </Suspense>

@@ -42,12 +42,12 @@ export function ProductQuantityBreaksItem({
 
     const price: MoneyV2 = {
         currencyCode: selectedVariant.price.currencyCode!,
-        amount: (safeParseFloat(0, selectedVariant.price.amount) * minQuantity).toString()
+        amount: (safeParseFloat(0, selectedVariant.price.amount) * minQuantity).toString(),
     };
     const discountedPrice: MoneyV2 = discount
         ? {
               currencyCode: selectedVariant.price.currencyCode!,
-              amount: (safeParseFloat(0, selectedVariant.price.amount) * (1 - discount / 100) * minQuantity).toString()
+              amount: (safeParseFloat(0, selectedVariant.price.amount) * (1 - discount / 100) * minQuantity).toString(),
           }
         : price;
 
@@ -71,7 +71,7 @@ export function ProductQuantityBreaksItem({
             className={cn(
                 'flex h-16 items-center justify-between gap-2 rounded-xl border-2 border-solid border-white bg-white px-3 py-3 text-lg leading-none shadow transition-colors focus-within:border-gray-400 hover:border-gray-400',
                 active && 'border-primary text-primary',
-                className
+                className,
             )}
             onClick={() => setQuantity(minQuantity)}
             styled={false}

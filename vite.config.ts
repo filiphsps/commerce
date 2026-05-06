@@ -9,7 +9,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
     root: resolve(__dirname),
     resolve: {
-        alias: []
+        alias: [],
     },
     build: {
         copyPublicDir: false,
@@ -35,9 +35,9 @@ export default defineConfig({
                 minifyInternalExports: true,
                 noConflict: true,
                 sourcemapExcludeSources: false,
-                strict: true
-            }
-        }
+                strict: true,
+            },
+        },
     },
-    plugins: [tsConfigPaths()]
+    plugins: [tsConfigPaths()],
 });

@@ -6,10 +6,10 @@ import { describe, it, vi } from 'vitest';
 vi.mock('@shopify/hydrogen-react', async () => {
     return {
         useCart: vi.fn().mockReturnValue({
-            status: 'idle'
+            status: 'idle',
         }),
         useShop: vi.fn().mockReturnValue({}),
-        useShopifyCookies: vi.fn().mockReturnValue({})
+        useShopifyCookies: vi.fn().mockReturnValue({}),
     };
 });
 
@@ -19,10 +19,10 @@ describe('components', () => {
             locale: {
                 locale: 'en-US',
                 country: 'US',
-                language: 'EN'
+                language: 'EN',
             },
             i18n: {},
-            store: {}
+            store: {},
         } as any;
 
         // TODO: Also test actually rendering slices.
@@ -32,8 +32,8 @@ describe('components', () => {
             const props = {
                 ...propsBase,
                 page: {
-                    slices: []
-                }
+                    slices: [],
+                },
             } as any;
 
             //const wrapper = render(<PrismicPage {...props} />);

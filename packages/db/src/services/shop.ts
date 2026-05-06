@@ -28,17 +28,17 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
                 ...args.filter,
                 collaborators: {
                     $elemMatch: {
-                        user: collaborator
-                    }
-                }
-            }
+                        user: collaborator,
+                    },
+                },
+            },
         });
     }
 
     public async findByDomain(domain: string, options?: FindOptions): Promise<OnlineShop | ShopBase>;
     public async findByDomain(
         domain: string,
-        { sensitiveData = false, convert = true }: FindOptions = {}
+        { sensitiveData = false, convert = true }: FindOptions = {},
     ): Promise<OnlineShop | ShopBase> {
         const shop = await this.find({
             count: 1,
@@ -46,15 +46,15 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
                 $or: [
                     { domain },
                     {
-                        alternativeDomains: domain
-                    }
-                ]
+                        alternativeDomains: domain,
+                    },
+                ],
             },
             projection: {
                 ...(!sensitiveData && {
-                    collaborators: 0
-                })
-            }
+                    collaborators: 0,
+                }),
+            },
         });
 
         if (!convert) {
@@ -68,7 +68,7 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
             flattenMaps: true,
             flattenObjectIds: true,
             useProjection: true,
-            depopulate: true
+            depopulate: true,
         });
 
         if (!sensitiveData) {
@@ -81,15 +81,15 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
                         ...res.commerceProvider,
                         authentication: {
                             domain: res.commerceProvider.authentication.domain,
-                            publicToken: res.commerceProvider.authentication.publicToken
-                        }
+                            publicToken: res.commerceProvider.authentication.publicToken,
+                        },
                     };
                     break;
                 }
                 case 'stripe': {
                     commerceProvider = {
                         ...res.commerceProvider,
-                        authentication: {}
+                        authentication: {},
                     };
                     break;
                 }
@@ -100,7 +100,7 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
                 case 'prismic': {
                     contentProvider = {
                         ...res.contentProvider,
-                        authentication: {}
+                        authentication: {},
                     };
                     break;
                 }
@@ -108,8 +108,8 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
                     contentProvider = {
                         ...res.contentProvider,
                         authentication: {
-                            publicToken: res.contentProvider.authentication.publicToken
-                        }
+                            publicToken: res.contentProvider.authentication.publicToken,
+                        },
                     };
                 }
             }
@@ -117,7 +117,7 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
             return {
                 ...res,
                 commerceProvider,
-                contentProvider
+                contentProvider,
             } as any;
         }
 
@@ -132,8 +132,8 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
                 collaborators: 0,
                 contentProvider: 0,
                 commerceProvider: 0,
-                thirdParty: 0
-            }
+                thirdParty: 0,
+            },
         });
     }
 }

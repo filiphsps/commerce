@@ -16,7 +16,7 @@ export type ShopProductsPageProps = {
 };
 
 export const metadata: Metadata = {
-    title: 'Products'
+    title: 'Products',
 };
 
 export default async function ShopProductsPagePage({ params }: ShopProductsPageProps) {

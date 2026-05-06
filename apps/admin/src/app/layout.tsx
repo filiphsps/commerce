@@ -14,30 +14,30 @@ export const viewport: Viewport = {
     interactiveWidget: 'resizes-content',
     themeColor: '#ED1E79',
     width: 'device-width',
-    viewportFit: 'cover'
+    viewportFit: 'cover',
 };
 
 export const metadata: Metadata = {
     metadataBase: new URL(`https://admin.shops.nordcom.io/`),
     title: {
         default: 'admin',
-        template: `%s · Nordcom Commerce`
+        template: `%s · Nordcom Commerce`,
     },
     icons: {
         icon: ['/favicon.png', '/favicon.ico'],
         shortcut: ['/favicon.png'],
-        apple: ['/favicon.png']
+        apple: ['/favicon.png'],
     },
     robots: {
         follow: false,
-        index: false
+        index: false,
     },
     referrer: 'origin',
     formatDetection: {
         email: false,
         address: false,
-        telephone: false
-    }
+        telephone: false,
+    },
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {

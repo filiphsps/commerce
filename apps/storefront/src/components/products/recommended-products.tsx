@@ -55,6 +55,6 @@ function Skeleton({ className }: { className?: string }) {
 export const RecommendedProducts = Object.assign(Component, {
     displayName: 'Nordcom.Product.RecommendedProducts',
     skeleton: Object.assign(Skeleton, {
-        displayName: 'Nordcom.Product.RecommendedProducts.skeleton'
-    })
+        displayName: 'Nordcom.Product.RecommendedProducts.skeleton',
+    }),
 });

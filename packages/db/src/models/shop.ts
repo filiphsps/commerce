@@ -104,7 +104,7 @@ export interface ShopBase extends BaseDocument {
                 permissions: string[];
             };
             default: [];
-        }
+        },
     ];
 
     integrations?: {
@@ -127,23 +127,23 @@ export const ShopSchema = new Schema<ShopBase>(
     {
         name: {
             type: Schema.Types.String,
-            required: true
+            required: true,
         },
         description: {
             type: Schema.Types.String,
-            required: false
+            required: false,
         },
 
         domain: {
             type: Schema.Types.String,
             unique: true,
-            required: true
+            required: true,
         },
         alternativeDomains: [
             {
                 type: Schema.Types.String,
-                default: []
-            }
+                default: [],
+            },
         ],
 
         i18n: {
@@ -151,13 +151,13 @@ export const ShopSchema = new Schema<ShopBase>(
                 defaultLocale: {
                     type: Schema.Types.String,
                     required: true,
-                    default: 'en-US'
-                }
+                    default: 'en-US',
+                },
             },
             required: true,
             default: {
-                defaultLocale: 'en-US'
-            }
+                defaultLocale: 'en-US',
+            },
         },
 
         design: {
@@ -166,22 +166,22 @@ export const ShopSchema = new Schema<ShopBase>(
                     width: {
                         type: Schema.Types.Number,
                         required: true,
-                        default: 512
+                        default: 512,
                     },
                     height: {
                         type: Schema.Types.Number,
                         required: true,
-                        default: 512
+                        default: 512,
                     },
                     src: {
                         type: Schema.Types.String,
-                        required: true
+                        required: true,
                     },
                     alt: {
                         type: Schema.Types.String,
-                        required: true
-                    }
-                }
+                        required: true,
+                    },
+                },
             },
             accents: {
                 type: [
@@ -189,21 +189,21 @@ export const ShopSchema = new Schema<ShopBase>(
                         type: {
                             type: Schema.Types.String,
                             enum: ['primary', 'secondary'],
-                            required: true
+                            required: true,
                         },
                         color: {
                             type: Schema.Types.String,
-                            required: true
+                            required: true,
                         },
                         foreground: {
                             type: Schema.Types.String,
-                            required: true
-                        }
-                    }
+                            required: true,
+                        },
+                    },
                 ],
                 required: true,
-                default: []
-            }
+                default: [],
+            },
         },
 
         icons: {
@@ -211,22 +211,22 @@ export const ShopSchema = new Schema<ShopBase>(
                 width: {
                     type: Schema.Types.Number,
                     required: true,
-                    default: 512
+                    default: 512,
                 },
                 height: {
                     type: Schema.Types.Number,
                     required: true,
-                    default: 512
+                    default: 512,
                 },
                 src: {
                     type: Schema.Types.String,
-                    required: true
+                    required: true,
                 },
                 alt: {
                     type: Schema.Types.String,
-                    required: true
-                }
-            }
+                    required: true,
+                },
+            },
         },
 
         contentProvider: {
@@ -234,70 +234,70 @@ export const ShopSchema = new Schema<ShopBase>(
                 type: Schema.Types.String,
                 enum: ContentProviders,
                 required: true,
-                default: 'prismic'
+                default: 'prismic',
             },
             authentication: {
                 token: {
                     type: Schema.Types.String,
-                    required: false
-                }
+                    required: false,
+                },
             },
             repositoryName: {
                 type: Schema.Types.String,
-                required: false
+                required: false,
             },
             repository: {
                 type: Schema.Types.String,
-                required: false
-            }
+                required: false,
+            },
         },
         commerceProvider: {
             type: {
                 type: Schema.Types.String,
                 enum: CommerceProviders,
                 required: true,
-                default: 'shopify'
+                default: 'shopify',
             },
             authentication: {
                 token: {
                     type: Schema.Types.String,
-                    required: false
+                    required: false,
                 },
                 publicToken: {
                     type: Schema.Types.String,
-                    required: false
+                    required: false,
                 },
 
                 customers: {
                     type: {
                         id: {
                             type: Schema.Types.String,
-                            required: true
+                            required: true,
                         },
                         clientId: {
                             type: Schema.Types.String,
-                            required: true
+                            required: true,
                         },
                         clientSecret: {
                             type: Schema.Types.String,
-                            required: true
-                        }
+                            required: true,
+                        },
                     },
-                    required: false
-                }
+                    required: false,
+                },
             },
             id: {
                 type: Schema.Types.String,
-                required: false
+                required: false,
             },
             storefrontId: {
                 type: Schema.Types.String,
-                required: false
+                required: false,
             },
             domain: {
                 type: Schema.Types.String,
-                required: false
-            }
+                required: false,
+            },
         },
 
         collaborators: {
@@ -305,18 +305,18 @@ export const ShopSchema = new Schema<ShopBase>(
                 {
                     user: {
                         type: Schema.Types.ObjectId,
-                        ref: 'User'
+                        ref: 'User',
                     },
                     permissions: [
                         {
                             type: Schema.Types.String,
-                            default: []
-                        }
-                    ]
-                }
+                            default: [],
+                        },
+                    ],
+                },
             ],
             required: true,
-            default: []
+            default: [],
         },
 
         integrations: {
@@ -325,30 +325,30 @@ export const ShopSchema = new Schema<ShopBase>(
                     type: {
                         publicToken: {
                             type: Schema.Types.String,
-                            required: true
-                        }
+                            required: true,
+                        },
                     },
-                    required: false
-                }
+                    required: false,
+                },
             },
-            required: false
+            required: false,
         },
 
         thirdParty: {
             googleTagManager: {
                 type: Schema.Types.String,
-                required: false
+                required: false,
             },
             intercom: {
                 type: Schema.Types.String,
-                required: false
-            }
-        }
+                required: false,
+            },
+        },
     },
     {
         id: true,
-        timestamps: true
-    }
+        timestamps: true,
+    },
 );
 
 export const ShopModel = (db.models.Shop || db.model('Shop', ShopSchema)) as ReturnType<

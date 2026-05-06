@@ -5,7 +5,7 @@ import { LogoutAction } from './logout-action';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Logout'
+    title: 'Logout',
 };
 
 export default async function IndexAdminPage({}: {}) {

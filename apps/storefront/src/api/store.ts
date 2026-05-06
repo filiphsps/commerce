@@ -13,7 +13,7 @@ import type { Country, Localization, PaymentSettings } from '@shopify/hydrogen-r
 const DEFAULT_LOCALE = {
     availableLanguages: [{ isoCode: 'EN', name: 'English' }],
     isoCode: 'US',
-    name: 'United States'
+    name: 'United States',
 };
 
 export const CountriesApi = async ({ api }: { api: AbstractApi }): Promise<Country[]> => {
@@ -61,7 +61,7 @@ export const LocalesApi = async ({ api }: { api: AbstractApi }): Promise<Locale[
             } catch {
                 return Locale.default;
             }
-        })
+        }),
     ) as Locale[] | undefined;
 
     if (!locales || locales.length <= 0) {
@@ -111,7 +111,7 @@ export const LocaleApi = async ({ api }: { api: AbstractApi }) => {
 };
 
 export const ShopPaymentSettingsApi = async ({
-    api
+    api,
 }: {
     api: AbstractApi;
 }): Promise<Pick<
@@ -151,7 +151,7 @@ export const ShopPaymentSettingsApi = async ({
 
 export const BusinessDataApi = async ({
     shop,
-    locale
+    locale,
 }: {
     shop: OnlineShop;
     locale: Locale;

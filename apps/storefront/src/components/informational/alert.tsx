@@ -2,7 +2,7 @@ import { cn } from '@/utils/tailwind';
 import {
     CircleAlert as CircleAlertIcon,
     CircleCheck as CircleCheckIcon,
-    CircleHelp as CircleHelpIcon
+    CircleHelp as CircleHelpIcon,
 } from 'lucide-react';
 
 import { Content } from '@/components/typography/content';
@@ -51,7 +51,7 @@ export const Alert = ({ children, severity, icon, className, ...props }: AlertPr
                 severity === 'warning' && 'bg-yellow-200',
                 severity === 'error' && 'bg-red-600',
                 severity === 'callout' && 'bg-primary text-primary-foreground',
-                className
+                className,
             )}
             data-severity={severity}
             {...props}

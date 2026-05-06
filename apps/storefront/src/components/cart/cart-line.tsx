@@ -68,7 +68,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                         amount: (
                             safeParseFloat(0, variant.compareAtPrice?.amount, variant.price.amount) * line.quantity
                         ).toString(),
-                        currencyCode: variant.price.currencyCode
+                        currencyCode: variant.price.currencyCode,
                     }}
                 />
             ) : null}
@@ -76,7 +76,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
             <Price
                 className={cn(
                     'text-xl font-bold leading-tight',
-                    discount > 0.1 && 'text-xl font-extrabold text-red-500'
+                    discount > 0.1 && 'text-xl font-extrabold text-red-500',
                 )}
                 data={line.cost.totalAmount}
             />
@@ -92,7 +92,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
         <Card
             className={cn(
                 'relative flex gap-3 shadow',
-                !ready && 'cursor-not-allowed opacity-50 *:pointer-events-none'
+                !ready && 'cursor-not-allowed opacity-50 *:pointer-events-none',
             )}
         >
             <Card className="aspect-square h-32 w-auto overflow-hidden bg-white p-2 shadow">{image}</Card>
@@ -113,7 +113,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                                 ...(productType ? [productType] : []),
                                 ...variant.selectedOptions
                                     .map(({ name, value }) => `${name}: ${value}`)
-                                    .filter((_) => _ !== 'Title: Default Title')
+                                    .filter((_) => _ !== 'Title: Default Title'),
                             ].join(', ')}
                         </div>
 
@@ -166,8 +166,8 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                                 linesUpdate([
                                     {
                                         id: line.id!,
-                                        quantity: value
-                                    }
+                                        quantity: value,
+                                    },
                                 ]);
                             }}
                             allowDecreaseToZero={true}

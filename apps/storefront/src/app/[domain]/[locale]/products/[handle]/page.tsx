@@ -39,7 +39,7 @@ import type { ReactNode } from 'react';
 export type ProductPageParams = Promise<{ domain: string; locale: string; handle: string }>;
 
 export async function generateStaticParams({
-    params
+    params,
 }: {
     params: Omit<Awaited<ProductPageParams>, 'handle'>;
 }): Promise<Omit<Awaited<ProductPageParams>, 'domain' | 'locale'>[]> {
@@ -64,7 +64,7 @@ type SearchParams = Promise<{
 
 export async function generateMetadata({
     params,
-    searchParams: queryParams
+    searchParams: queryParams,
 }: {
     params: ProductPageParams;
     searchParams: SearchParams;
@@ -131,10 +131,10 @@ export async function generateMetadata({
             languages: locales.reduce(
                 (prev, { code }) => ({
                     ...prev,
-                    [code]: `https://${shop.domain}/${code}/products/${handle}/${search}`
+                    [code]: `https://${shop.domain}/${code}/products/${handle}/${search}`,
                 }),
-                {}
-            )
+                {},
+            ),
         },
         openGraph: {
             url: `/products/${handle}/`,
@@ -149,11 +149,11 @@ export async function generateMetadata({
                           width: page.meta_image!.dimensions?.width || 0,
                           height: page.meta_image!.dimensions?.height || 0,
                           alt: page.meta_image!.alt || '',
-                          secureUrl: page.meta_image!.url as string
-                      }
+                          secureUrl: page.meta_image!.url as string,
+                      },
                   ]
-                : undefined
-        }
+                : undefined,
+        },
     };
 }
 
@@ -172,7 +172,7 @@ async function Badges({ product, i18n }: { product: Product; i18n: LocaleDiction
             >
                 <AttributeIcon data={'vegan'} className="h-4" />
                 {capitalize(t('vegan'))}
-            </div>
+            </div>,
         );
     }
 

@@ -15,32 +15,32 @@ vi.mock('@apollo/client', async () => ({
                 data: {
                     product: {
                         id: '123',
-                        title: 'Fake Product'
-                    }
+                        title: 'Fake Product',
+                    },
                 },
-                errors: undefined
-            })
+                errors: undefined,
+            }),
         };
-    })
+    }),
 }));
 
 describe('utils', () => {
     describe('ApiBuilder', () => {
         // Mock apollo client.
         const client = new ApolloClient({
-            uri: 'https://fake-shopify-store.com/graphql'
+            uri: 'https://fake-shopify-store.com/graphql',
         } as any);
 
         const locale = {
             locale: 'en-US',
             language: 'EN',
-            country: 'US'
+            country: 'US',
         } as Locale;
 
         const api = ApiBuilder({
             shop: {} as any,
             api: client,
-            locale
+            locale,
         });
 
         it('should return the correct locale', () => {
@@ -69,11 +69,11 @@ describe('utils', () => {
         it('should build the cache tag array correctly', () => {
             const shop = {
                 id: 'id',
-                domain: 'domain'
+                domain: 'domain',
             } as OnlineShop;
 
             const locale = {
-                code: 'en-US'
+                code: 'en-US',
             } as Locale;
 
             const tags = ['tag1', 'tag2'];

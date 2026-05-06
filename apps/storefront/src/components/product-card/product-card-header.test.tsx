@@ -8,14 +8,14 @@ vi.mock('@shopify/hydrogen-react', async () => {
     return {
         useProduct: vi.fn().mockReturnValue({
             selectedVariant: {
-                availableForSale: true
-            }
+                availableForSale: true,
+            },
         }),
         useCart: vi.fn().mockReturnValue({
-            status: 'idle'
+            status: 'idle',
         }),
         useShop: vi.fn().mockReturnValue({}),
-        useShopifyCookies: vi.fn().mockReturnValue({})
+        useShopifyCookies: vi.fn().mockReturnValue({}),
     };
 });
 

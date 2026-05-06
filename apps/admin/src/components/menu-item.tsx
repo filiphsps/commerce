@@ -27,7 +27,7 @@ export function MenuItem({ href, children, className }: MenuItemProps) {
                 'text-foreground flex w-full items-center justify-start gap-2 rounded-md px-3 py-2 font-semibold',
                 active && 'bg-muted cursor-default font-extrabold uppercase',
                 !active && 'hover:text-primary cursor-pointer',
-                className
+                className,
             )}
         >
             {children}

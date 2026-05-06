@@ -14,7 +14,7 @@ export const GET = async (req: NextRequest, _context: any) => {
             shop: shopifyAdminApi.utils.sanitizeShop(searchParams.get('shop') as string, true)!,
             callbackPath: '/integrations/shopify/api/',
             isOnline: false,
-            rawRequest: req
+            rawRequest: req,
         });
 
         return res;
@@ -23,11 +23,11 @@ export const GET = async (req: NextRequest, _context: any) => {
 
         return NextResponse.json(
             {
-                errors: [new ProviderFetchError((error as any)?.message)]
+                errors: [new ProviderFetchError((error as any)?.message)],
             },
             {
-                status: 500
-            }
+                status: 500,
+            },
         );
     }
 };

@@ -63,7 +63,7 @@ const ImageGrid = ({ slice, index }: ImageGridProps) => {
                         <div
                             className="bg-primary w-full overflow-clip rounded-lg shadow"
                             style={{
-                                aspectRatio: `${(image.dimensions.width / image.dimensions.height).toFixed(2)} / 1`
+                                aspectRatio: `${(image.dimensions.width / image.dimensions.height).toFixed(2)} / 1`,
                             }}
                         >
                             <Image
@@ -87,7 +87,7 @@ const ImageGrid = ({ slice, index }: ImageGridProps) => {
                             className={cn(
                                 'empty:hidden',
                                 isInlineTitle &&
-                                    'absolute inset-auto bottom-3 right-3 ml-3 rounded-lg bg-gray-100/95 px-3 py-2 text-gray-700 shadow transition-all group-focus-within/item:brightness-75 group-hover/item:brightness-75'
+                                    'absolute inset-auto bottom-3 right-3 ml-3 rounded-lg bg-gray-100/95 px-3 py-2 text-gray-700 shadow transition-all group-focus-within/item:brightness-75 group-hover/item:brightness-75',
                             )}
                         >
                             {titleText && titleText.length > 0 ? (
@@ -96,7 +96,7 @@ const ImageGrid = ({ slice, index }: ImageGridProps) => {
                                         'font-semibold transition-colors',
                                         isInlineTitle && 'line-clamp-1 leading-none text-inherit',
                                         descriptionText.length > 0 &&
-                                            'group-hover/item:text-primary text-xl text-gray-700'
+                                            'group-hover/item:text-primary text-xl text-gray-700',
                                     )}
                                 >
                                     {typeof title !== 'string' ? <PrismicText data={title} /> : (title as string)}

@@ -30,7 +30,7 @@ export async function GET({}: NextRequest, { params }: { params: DynamicSitemapR
         ...locales.flatMap(({ code }) => [
             `${href}/${code}/products.xml`,
             `${href}/${code}/collections.xml`,
-            `${href}/${code}/blogs.xml`
-        ])
+            `${href}/${code}/blogs.xml`,
+        ]),
     ]);
 }

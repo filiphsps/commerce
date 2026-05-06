@@ -45,7 +45,7 @@ const ProductCardTitle = ({ shop, data: product, className }: ProductCardTitlePr
                     as={'div'}
                     className={cn(
                         'group-hover/header:text-primary pt-2 text-sm font-medium normal-case leading-snug text-gray-700 transition-colors duration-75',
-                        className
+                        className,
                     )}
                 >
                     {product.vendor}
@@ -57,7 +57,7 @@ const ProductCardTitle = ({ shop, data: product, className }: ProductCardTitlePr
             <div
                 className={cn(
                     'group-hover/header:text-primary transition-color flex grow items-start justify-start gap-0 pr-1 text-lg font-bold leading-tight text-current duration-75',
-                    className
+                    className,
                 )}
             >
                 {title}

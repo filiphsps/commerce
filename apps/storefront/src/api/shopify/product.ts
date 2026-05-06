@@ -14,7 +14,7 @@ import type {
     ProductConnection,
     ProductEdge,
     ProductSortKeys,
-    QueryRoot
+    QueryRoot,
 } from '@shopify/hydrogen-react/storefront-api-types';
 
 export const PRODUCT_FRAGMENT_MINIMAL_NO_VARIANTS = /* GraphQL */ `
@@ -295,11 +295,11 @@ export const ProductApi = async ({ api, handle, fragment }: ProductOptions): Pro
                 }
             `,
             {
-                handle
+                handle,
             },
             {
-                tags: [`product`, handle, ...(fragment ? [md5(fragment).toString()] : [])]
-            }
+                tags: [`product`, handle, ...(fragment ? [md5(fragment).toString()] : [])],
+            },
         );
 
         if (errors && errors.length > 0) {
@@ -309,14 +309,14 @@ export const ProductApi = async ({ api, handle, fragment }: ProductOptions): Pro
         }
 
         const {
-            product: { descriptionHtml, ...product }
+            product: { descriptionHtml, ...product },
         } = data;
         return [
             {
                 ...product,
-                descriptionHtml: cleanShopifyHtml(descriptionHtml) || ''
+                descriptionHtml: cleanShopifyHtml(descriptionHtml) || '',
             } as Product,
-            undefined
+            undefined,
         ];
     } catch (error: unknown) {
         console.error(error);
@@ -361,12 +361,12 @@ export const ProductsPaginationCountApi = async ({
                 ...extractLimitLikeFilters(filters),
                 ...(({ sorting = 'BEST_SELLING' }) => ({
                     sorting: sorting,
-                    after: after
-                }))(filters)
+                    after: after,
+                }))(filters),
             },
             {
-                tags: ['products', 'pagination', 'count', ...(filtersTag ? [filtersTag] : [])]
-            }
+                tags: ['products', 'pagination', 'count', ...(filtersTag ? [filtersTag] : [])],
+            },
         );
 
         if (errors) {
@@ -374,7 +374,7 @@ export const ProductsPaginationCountApi = async ({
         } else if (!data?.products.edges || data.products.edges.length <= 0) {
             return {
                 count,
-                cursors
+                cursors,
             };
         }
 
@@ -388,7 +388,7 @@ export const ProductsPaginationCountApi = async ({
 
         return {
             count: count + data.products.edges.length,
-            cursors
+            cursors,
         };
     };
 
@@ -400,7 +400,7 @@ export const ProductsPaginationCountApi = async ({
         return {
             pages,
             cursors: cursors.reverse(),
-            products
+            products,
         };
     } catch (error: unknown) {
         throw error;
@@ -411,7 +411,7 @@ export const ProductsApi = async ({
     api,
     limit = 250,
     sorting = 'BEST_SELLING',
-    cursor
+    cursor,
 }: {
     api: AbstractApi;
     limit?: number;
@@ -457,11 +457,11 @@ export const ProductsApi = async ({
             {
                 limit,
                 sorting: (sorting as any) || null,
-                cursor: (cursor as any) || null
+                cursor: (cursor as any) || null,
             },
             {
-                tags: ['products']
-            }
+                tags: ['products'],
+            },
         );
 
         if (errors && errors.length > 0) {
@@ -475,8 +475,8 @@ export const ProductsApi = async ({
             cursor: data.products.edges.at(-1)!.cursor,
             pagination: {
                 next: data.products.pageInfo.hasNextPage,
-                previous: data.products.pageInfo.hasPreviousPage
-            }
+                previous: data.products.pageInfo.hasPreviousPage,
+            },
         };
     } catch (error: unknown) {
         throw error;
@@ -500,7 +500,7 @@ export const ProductsApi = async ({
  */
 export const ProductsPaginationApi = async ({
     api,
-    filters: { limit = 35, sorting = 'BEST_SELLING', available_for_sale, reverse, vendor, before, after }
+    filters: { limit = 35, sorting = 'BEST_SELLING', available_for_sale, reverse, vendor, before, after },
 }: {
     api: AbstractApi;
     filters: {
@@ -534,7 +534,7 @@ export const ProductsPaginationApi = async ({
         const filter = {
             query: queryEntries.length > 0 ? queryEntries.join(' AND ') : null,
             sorting: (sorting as any) || null,
-            reverse: typeof reverse !== 'undefined' ? (reverse ? 'true' : 'false') : null
+            reverse: typeof reverse !== 'undefined' ? (reverse ? 'true' : 'false') : null,
         };
 
         const { data, errors } = await api.query<{ products: ProductConnection }>(
@@ -586,11 +586,11 @@ export const ProductsPaginationApi = async ({
                 limit,
                 before: (before as any) || null,
                 after: (after as any) || null,
-                ...filter
+                ...filter,
             },
             {
-                ...(Object.keys(filter).length > 0 ? { fetchPolicy: 'no-cache' } : {})
-            }
+                ...(Object.keys(filter).length > 0 ? { fetchPolicy: 'no-cache' } : {}),
+            },
         );
 
         if (errors && errors.length > 0) {
@@ -607,10 +607,10 @@ export const ProductsPaginationApi = async ({
                 start_cursor: page_info.startCursor || null,
                 end_cursor: page_info.endCursor || null,
                 has_next_page: page_info.hasNextPage,
-                has_prev_page: page_info.hasPreviousPage
+                has_prev_page: page_info.hasPreviousPage,
             },
             products: ((data.products.edges as any) || []) as ProductEdge[],
-            filters: data.products.filters
+            filters: data.products.filters,
         };
     } catch (error: unknown) {
         throw error;

@@ -8,10 +8,10 @@ import { Trackable } from '@/utils/trackable';
 vi.mock('@shopify/hydrogen-react', async () => {
     return {
         useCart: vi.fn().mockReturnValue({
-            status: 'idle'
+            status: 'idle',
         }),
         useShop: vi.fn().mockReturnValue({}),
-        useShopifyCookies: vi.fn().mockReturnValue({})
+        useShopifyCookies: vi.fn().mockReturnValue({}),
     };
 });
 
@@ -21,7 +21,7 @@ describe('components', () => {
             render(
                 <Trackable>
                     <div>Test Content</div>
-                </Trackable>
+                </Trackable>,
             );
 
             expect(document.querySelector('div')).not.toBeNull();

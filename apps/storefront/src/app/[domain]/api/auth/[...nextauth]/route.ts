@@ -11,7 +11,7 @@ export async function GET(req: NextRequest, { params }: { params: AuthRouteParam
 
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const {
-        handlers: { GET }
+        handlers: { GET },
     } = getAuth(shop);
 
     return await GET(req);
@@ -22,7 +22,7 @@ export async function POST(req: NextRequest, { params }: { params: AuthRoutePara
 
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const {
-        handlers: { POST }
+        handlers: { POST },
     } = getAuth(shop);
 
     return await POST(req);

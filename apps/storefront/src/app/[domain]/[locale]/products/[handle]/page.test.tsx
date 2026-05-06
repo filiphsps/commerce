@@ -13,17 +13,17 @@ const { product } = vi.hoisted(() => ({
         handle: 'test-product',
         vendor: 'Test Vendor',
         sellingPlanGroups: {
-            edges: []
+            edges: [],
         },
         images: {
             edges: [
                 {
                     node: {
                         id: '1',
-                        url: 'https://placehold.co/50x50.png'
-                    }
-                }
-            ]
+                        url: 'https://placehold.co/50x50.png',
+                    },
+                },
+            ],
         },
         variants: {
             edges: [
@@ -31,53 +31,53 @@ const { product } = vi.hoisted(() => ({
                     node: {
                         price: {
                             amount: '10.00',
-                            currencyCode: 'USD'
+                            currencyCode: 'USD',
                         },
                         compareAtPrice: {
                             amount: '15.00',
-                            currencyCode: 'USD'
+                            currencyCode: 'USD',
                         },
                         selectedOptions: [],
-                        images: []
-                    }
-                }
-            ]
-        }
-    }
+                        images: [],
+                    },
+                },
+            ],
+        },
+    },
 }));
 
 vi.mock('@/i18n/dictionary', () => ({
-    getDictionary: vi.fn().mockResolvedValue({})
+    getDictionary: vi.fn().mockResolvedValue({}),
 }));
 
 // Mock various API functions.
 vi.mock('@/api/shopify', () => ({
     ShopifyApolloApiClient: vi.fn().mockReturnValue({
-        query: vi.fn().mockResolvedValue({})
-    })
+        query: vi.fn().mockResolvedValue({}),
+    }),
 }));
 vi.mock('@/api/page', () => {
     let PageApi = vi.fn().mockResolvedValue({
         page: {
-            slices: []
-        }
+            slices: [],
+        },
     }) as any as typeof OriginalPageApi;
     return {
-        PageApi
+        PageApi,
     };
 });
 vi.mock('@/api/store', () => ({
     useShop: vi.fn().mockReturnValue({}),
     LocalesApi: vi.fn().mockResolvedValue([]),
-    ShopPaymentSettingsApi: vi.fn().mockReturnValue({})
+    ShopPaymentSettingsApi: vi.fn().mockReturnValue({}),
 }));
 
 vi.mock('next/navigation', () => ({
     usePathname: vi.fn().mockReturnValue(''),
     useRouter: vi.fn().mockReturnValue({
-        replace: vi.fn()
+        replace: vi.fn(),
     }),
-    useSearchParams: vi.fn().mockReturnValue(new URLSearchParams())
+    useSearchParams: vi.fn().mockReturnValue(new URLSearchParams()),
 }));
 
 // Mock `@shopify/hydrogen-react`.
@@ -87,42 +87,42 @@ vi.mock('@shopify/hydrogen-react', async () => {
         flattenConnection: vi.fn().mockImplementation((data) => data),
         useProduct: vi.fn().mockReturnValue({
             selectedVariant: {
-                availableForSale: true
+                availableForSale: true,
             },
             product: {
                 variants: {
-                    edges: []
+                    edges: [],
                 },
                 sellingPlanGroups: {
-                    edges: []
+                    edges: [],
                 },
                 images: {
-                    edges: []
-                }
+                    edges: [],
+                },
             },
             selectedOptions: [],
             variants: [
                 {
                     availableForSale: true,
-                    selectedOptions: []
-                }
-            ]
+                    selectedOptions: [],
+                },
+            ],
         }),
         useCart: vi.fn().mockReturnValue({
-            status: 'uninitialized'
+            status: 'uninitialized',
         }),
         useShop: vi.fn().mockReturnValue({}),
-        useShopifyCookies: vi.fn().mockReturnValue({})
+        useShopifyCookies: vi.fn().mockReturnValue({}),
     };
 });
 
 // Mock the `ProductApi` function to prevent API calls.
 vi.mock('@/api/shopify/product', () => {
     let ProductApi = vi.fn().mockResolvedValue({
-        ...product
+        ...product,
     }) as any as typeof OriginalPageApi;
     return {
-        ProductApi
+        ProductApi,
     };
 });
 
@@ -133,10 +133,10 @@ vi.mock('@nordcom/commerce-db', () => ({
             domains: 'staging.demo.nordcom.io',
             commerceProvider: {
                 type: 'shopify' as const,
-                domain: 'mock.shop' as const
-            }
-        })
-    }
+                domain: 'mock.shop' as const,
+            },
+        }),
+    },
 }));
 
 describe('app', () => {
@@ -144,7 +144,7 @@ describe('app', () => {
         const params: ProductPageParams = (async () => ({
             domain: 'staging.demo.nordcom.io',
             locale: 'en-US',
-            handle: product.handle
+            handle: product.handle,
         }))();
 
         it('renders the product title and vendor', async () => {
@@ -173,7 +173,7 @@ describe('app', () => {
         it('generates the correct metadata', async () => {
             const metadata = await generateMetadata({
                 params,
-                searchParams: (async () => ({}) as any)()
+                searchParams: (async () => ({}) as any)(),
             });
             expect(metadata!.title).toBe(`${product.vendor} ${product.title}`);
         });

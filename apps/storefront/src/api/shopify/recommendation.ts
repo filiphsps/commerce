@@ -26,8 +26,8 @@ export const RecommendationApi = async ({ api, id }: { api: AbstractApi; id: str
                 }
             `,
             {
-                productId: id
-            }
+                productId: id,
+            },
         );
 
         if (errors && errors.length > 0) {

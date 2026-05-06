@@ -18,7 +18,7 @@ import type { UrlRedirect, UrlRedirectConnection } from '@shopify/hydrogen-react
 export const RedirectsApi = async ({
     api,
     cursor,
-    redirects = []
+    redirects = [],
 }: {
     api: AbstractApi;
     cursor?: string;
@@ -46,8 +46,8 @@ export const RedirectsApi = async ({
             `,
             {
                 limit: 250,
-                after: cursor || null
-            }
+                after: cursor || null,
+            },
         );
 
         const urlRedirects = data ? flattenConnection(data.urlRedirects) : null;
@@ -64,8 +64,8 @@ export const RedirectsApi = async ({
                 ...urlRedirects.map(({ id, path, target }) => ({
                     id,
                     path: path.toLowerCase(),
-                    target: target.toLowerCase()
-                }))
+                    target: target.toLowerCase(),
+                })),
             );
         }
 
@@ -113,8 +113,8 @@ export const RedirectApi = async ({ api, path }: { api: AbstractApi; path: strin
         `,
         {
             limit: 1,
-            query: `path:${path}*`
-        }
+            query: `path:${path}*`,
+        },
     );
 
     if (!errors && data && data.urlRedirects.edges.length > 0) {

@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: AccountDashboardPar
     const { t } = getTranslations('common', i18n);
 
     return {
-        title: capitalize(t('account-dashboard'))
+        title: capitalize(t('account-dashboard')),
     };
 }
 

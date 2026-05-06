@@ -8,7 +8,7 @@ export const showSearchFilter = flag<boolean>({
     async decide() {
         const value = await get(this.key);
         return !!value || false;
-    }
+    },
 });
 
 export const showProductInfoLines = flag<boolean>({
@@ -17,7 +17,7 @@ export const showProductInfoLines = flag<boolean>({
     async decide() {
         const value = await get(this.key);
         return !!value || false;
-    }
+    },
 });
 
 export const showHeaderSearchBar = flag<boolean>({
@@ -26,7 +26,7 @@ export const showHeaderSearchBar = flag<boolean>({
     async decide() {
         const value = await get(this.key);
         return !!value || false;
-    }
+    },
 });
 
 export const enableProductsPage = flag<boolean>({
@@ -35,12 +35,12 @@ export const enableProductsPage = flag<boolean>({
     defaultValue: false,
     options: [
         { label: 'Disabled', value: false },
-        { label: 'Enabled', value: true }
+        { label: 'Enabled', value: true },
     ],
     async decide() {
         const value = await get(this.key);
         return !!value || false;
-    }
+    },
 });
 
 export const enableAccountsFunctionality = flag<boolean>({
@@ -49,11 +49,11 @@ export const enableAccountsFunctionality = flag<boolean>({
     defaultValue: false,
     options: [
         { label: 'Disabled', value: false },
-        { label: 'Enabled', value: true }
+        { label: 'Enabled', value: true },
     ],
     async decide() {
         const value = await get(this.key);
         return !!value || false;
-    }
+    },
 });
 /* c8 ignore stop */

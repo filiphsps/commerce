@@ -10,7 +10,7 @@ import type { Metadata } from 'next';
 export type IndexAdminPageParams = {};
 
 export const metadata: Metadata = {
-    title: 'Login'
+    title: 'Login',
 };
 
 export async function IndexAdminPageContent() {

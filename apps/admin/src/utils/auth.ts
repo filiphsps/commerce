@@ -11,16 +11,16 @@ export const {
     handlers: { GET, POST },
     signIn,
     signOut,
-    auth
+    auth,
 } = NextAuth({
     adapter: AuthAdapter(),
     session: {
-        strategy: 'jwt'
+        strategy: 'jwt',
     },
     pages: {
         signIn: `/auth/login/`,
         signOut: `/auth/logout/`,
-        error: '/auth/login/'
+        error: '/auth/login/',
     },
     callbacks: {
         async session({ token, session, ..._args }) {
@@ -28,14 +28,14 @@ export const {
                 ...session,
                 user: {
                     ...session.user,
-                    id: token.sub
+                    id: token.sub,
                 },
-                ...token
+                ...token,
             };
         },
         async jwt({ token, ..._args }) {
             return token;
-        }
+        },
     },
-    ...config
+    ...config,
 });

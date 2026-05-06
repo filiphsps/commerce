@@ -33,8 +33,8 @@ export async function GET({}: NextRequest, { params }: { params: AppleIconRouteP
             <img alt="apple-icon" width={width} height={height} src={src} title="apple-icon" />,
             {
                 width,
-                height
-            }
+                height,
+            },
         );
     } catch (error: unknown) {
         console.error(error);
@@ -44,11 +44,11 @@ export async function GET({}: NextRequest, { params }: { params: AppleIconRouteP
                 status: 500,
                 tenant: domain,
                 data: null,
-                errors: [error]
+                errors: [error],
             },
             {
-                status: 500
-            }
+                status: 500,
+            },
         );
     }
 }

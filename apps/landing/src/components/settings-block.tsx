@@ -28,7 +28,7 @@ const SettingsBlock = ({ as, save, ...props }: SettingsBlockProps) => {
 const SettingsBlockContent = ({
     actionButtonIcon,
     actionButtonLabel,
-    children
+    children,
 }: Pick<SettingsBlockProps, 'actionButtonLabel' | 'actionButtonIcon' | 'children'>) => {
     const { pending } = useFormStatus();
 

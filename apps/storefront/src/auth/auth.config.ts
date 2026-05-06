@@ -8,7 +8,7 @@ const VERCEL_DEPLOYMENT = process.env.VERCEL_URL;
 
 const config = ({
     shop,
-    shopifyAuth
+    shopifyAuth,
 }: {
     shop: OnlineShop;
     shopifyAuth: {
@@ -29,12 +29,12 @@ const config = ({
                     path: '/',
                     // When working on localhost, the cookie domain must be omitted entirely (https://stackoverflow.com/a/1188145)
                     domain: !!VERCEL_DEPLOYMENT ? `.${shop.domain.split('.').slice(-2).join('.')}` : undefined,
-                    secure: !!VERCEL_DEPLOYMENT
-                }
-            }
+                    secure: !!VERCEL_DEPLOYMENT,
+                },
+            },
         },
         secret: process.env.AUTH_SECRET,
-        debug: false
+        debug: false,
     } satisfies NextAuthConfig;
 };
 

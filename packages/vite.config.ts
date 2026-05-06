@@ -12,16 +12,16 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const input = Object.fromEntries(
     globSync('./**/src/**/*.ts*', {
-        ignore: ['**/*.d.ts', '**/coverage/**', '**/dist/**', '**/node_modules/**', '**/*.test.*', '**/*.stories.*']
+        ignore: ['**/*.d.ts', '**/coverage/**', '**/dist/**', '**/node_modules/**', '**/*.test.*', '**/*.stories.*'],
     }).map((file) => {
         const filenameWithoutExt = file.slice(0, file.length - extname(file).length);
 
         return [relative('src', filenameWithoutExt), resolve(process.cwd(), file)];
-    })
+    }),
 );
 
 const logger = createLogger(undefined, {
-    prefix: process.cwd().split('/').at(-1)
+    prefix: process.cwd().split('/').at(-1),
 });
 logger.info(JSON.stringify({ __dirname, ...input }, null, 4));
 
@@ -38,7 +38,7 @@ export default mergeConfig(
             target: 'esnext',
             lib: {
                 entry: input,
-                formats: ['es']
+                formats: ['es'],
             },
             rollupOptions: {
                 external: ['@nordcom/commerce-errors', 'server-only'],
@@ -50,9 +50,9 @@ export default mergeConfig(
                     format: 'esm',
                     globals: {},
                     interop: 'esModule',
-                    sourcemapExcludeSources: false
-                }
-            }
+                    sourcemapExcludeSources: false,
+                },
+            },
         },
         plugins: [
             tsConfigPaths(),
@@ -63,8 +63,8 @@ export default mergeConfig(
                 insertTypesEntry: true,
                 rollupTypes: false,
                 tsconfigPath: `./tsconfig.json`,
-                include: ['**/src']
-            })
-        ]
-    })
+                include: ['**/src'],
+            }),
+        ],
+    }),
 );

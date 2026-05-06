@@ -27,7 +27,7 @@ export const Card = Object.assign(
             ref={ref}
             className={cn(
                 'bg-card text-card-foreground border-border rounded-lg border-2 border-solid shadow-sm',
-                className
+                className,
             )}
             {...props}
         />
@@ -35,13 +35,13 @@ export const Card = Object.assign(
     {
         displayName: 'Card',
         header: Object.assign(Header, {
-            displayName: 'Card.Header'
+            displayName: 'Card.Header',
         }),
         footer: Object.assign(Footer, {
-            displayName: 'Card.footer'
+            displayName: 'Card.footer',
         }),
         content: Object.assign(Content, {
-            displayName: 'Card.content'
-        })
-    }
+            displayName: 'Card.content',
+        }),
+    },
 );

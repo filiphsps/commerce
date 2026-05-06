@@ -18,17 +18,17 @@ describe('utils', () => {
                         {
                             node: {
                                 id: 'fail',
-                                availableForSale: false
-                            }
+                                availableForSale: false,
+                            },
                         },
                         {
                             node: {
                                 id: 'pass',
-                                availableForSale: true
-                            }
-                        }
-                    ]
-                }
+                                availableForSale: true,
+                            },
+                        },
+                    ],
+                },
             } as any;
 
             const result = firstAvailableVariant(product);
@@ -42,29 +42,29 @@ describe('utils', () => {
                         {
                             node: {
                                 id: 'fail',
-                                availableForSale: false
-                            }
+                                availableForSale: false,
+                            },
                         },
                         {
                             node: {
                                 id: 'fail',
-                                availableForSale: true
-                            }
+                                availableForSale: true,
+                            },
                         },
                         {
                             node: {
                                 id: 'pass',
-                                availableForSale: true
-                            }
+                                availableForSale: true,
+                            },
                         },
                         {
                             node: {
                                 id: 'fail',
-                                availableForSale: false
-                            }
-                        }
-                    ]
-                }
+                                availableForSale: false,
+                            },
+                        },
+                    ],
+                },
             } as any;
 
             const result = firstAvailableVariant(product);
@@ -78,23 +78,23 @@ describe('utils', () => {
                         {
                             node: {
                                 availableForSale: false,
-                                id: 'fail'
-                            }
+                                id: 'fail',
+                            },
                         },
                         {
                             node: {
                                 availableForSale: false,
-                                id: 'fail'
-                            }
+                                id: 'fail',
+                            },
                         },
                         {
                             node: {
                                 availableForSale: false,
-                                id: 'pass'
-                            }
-                        }
-                    ]
-                }
+                                id: 'pass',
+                            },
+                        },
+                    ],
+                },
             } as any;
 
             const result = firstAvailableVariant(product);

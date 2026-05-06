@@ -28,7 +28,7 @@ export const Title = <T extends As>({ as: Tag = 'h1' as T, bold, className, key,
                 props.href && 'hover:text-primary focus-visible:text-primary cursor-pointer',
                 bold && 'text-primary font-bold',
                 props.href && bold && 'hover:underline focus-visible:underline',
-                className
+                className,
             )}
         />
     );
@@ -56,7 +56,7 @@ export const SubTitle = ({ as, bold, className, key, ...props }: SubTitleProps) 
                 props.href && 'hover:text-primary focus-visible:text-primary cursor-pointer',
                 bold && 'font-extrabold',
                 props.href && bold && 'hover:underline focus-visible:underline',
-                className
+                className,
             )}
         />
     );

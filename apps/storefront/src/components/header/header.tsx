@@ -46,11 +46,11 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
                             shop: {
                                 ...shop,
                                 commerceProvider: {},
-                                contentProvider: {}
+                                contentProvider: {},
                             },
                             i18n,
-                            locale
-                        }
+                            locale,
+                        },
                     }}
                 />
             ))}
@@ -65,7 +65,7 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
                             <Link
                                 href={'/'}
                                 style={{
-                                    aspectRatio: `${(logo.width / logo.height).toFixed(2)} / 1`
+                                    aspectRatio: `${(logo.width / logo.height).toFixed(2)} / 1`,
                                 }}
                                 className="focus-visible::bg-gray-100 -ml-2 block h-full rounded-lg px-2 py-2 hover:bg-gray-100"
                             >

@@ -18,7 +18,7 @@ export function LoginButton({ i18n }: LoginButtonProps) {
         <Button
             onClick={() =>
                 signIn('shopify', {
-                    redirectTo: '/account/'
+                    redirectTo: '/account/',
                 })
             }
             styled={false}

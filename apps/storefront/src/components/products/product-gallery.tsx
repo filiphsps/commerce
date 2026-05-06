@@ -54,7 +54,7 @@ const ProductGallery = ({
             setLoading(true);
             setNext(image);
         },
-        [loading]
+        [loading],
     );
 
     if (!images || images.length <= 0) return null;
@@ -73,7 +73,7 @@ const ProductGallery = ({
                     className={cn(
                         'relative flex h-1/4 w-full grow items-center justify-center overflow-hidden rounded-lg border border-solid border-gray-200 bg-white p-2 md:h-full md:p-3',
                         isLoading && 'bg-gray-100',
-                        padding && 'p-8 py-12 md:p-16'
+                        padding && 'p-8 py-12 md:p-16',
                     )}
                     {...loadingProps}
                 >
@@ -103,7 +103,7 @@ const ProductGallery = ({
                                 className={cn(
                                     'opacity-1 h-fit w-full object-contain object-center transition-opacity duration-500 md:h-full md:max-h-[30rem]',
                                     isLoading && 'opacity-0 transition-none',
-                                    primaryImageClassName
+                                    primaryImageClassName,
                                 )}
                             />
                         </div>
@@ -115,7 +115,7 @@ const ProductGallery = ({
                         <div
                             className={cn(
                                 'absolute inset-x-2 top-2 flex flex-row-reverse items-start justify-between gap-2',
-                                'hidden md:flex'
+                                'hidden md:flex',
                             )}
                         >
                             <Suspense fallback={<Fragment />}>
@@ -189,14 +189,14 @@ const ProductGallery = ({
                                         onClick={() => setImage(image)}
                                         className={cn(
                                             'hover:border-primary flex appearance-none items-center justify-center rounded-lg border-2 border-solid border-gray-100 bg-white p-1 transition-all md:aspect-[4/3] md:size-32 md:p-4',
-                                            isLoading && 'bg-gray-100'
+                                            isLoading && 'bg-gray-100',
                                         )}
                                         {...loadingProps}
                                     >
                                         <Image
                                             className={cn(
                                                 'h-14 w-14 object-contain object-center transition-opacity duration-500 md:aspect-[4/3] md:size-full',
-                                                isLoading && 'opacity-0 transition-none'
+                                                isLoading && 'opacity-0 transition-none',
                                             )}
                                             style={{ transitionDelay: `${(index + 1) * 250}ms` }}
                                             src={image.url!}

@@ -6,10 +6,10 @@ import { render, waitFor } from '@/utils/test/react';
 vi.mock('@shopify/hydrogen-react', async () => {
     return {
         useCart: vi.fn().mockReturnValue({
-            status: 'idle'
+            status: 'idle',
         }),
         useShop: vi.fn().mockReturnValue({}),
-        useShopifyCookies: vi.fn().mockReturnValue({})
+        useShopifyCookies: vi.fn().mockReturnValue({}),
     };
 });
 
@@ -43,17 +43,17 @@ describe('utils', () => {
                                 {
                                     type: 'primary',
                                     color: '#00ff00',
-                                    foreground: '#000000'
+                                    foreground: '#000000',
                                 },
                                 {
                                     type: 'secondary',
                                     color: '#0000ff',
-                                    foreground: '#ffffff'
-                                }
-                            ]
-                        }
-                    } as any
-                })
+                                    foreground: '#ffffff',
+                                },
+                            ],
+                        },
+                    } as any,
+                }),
             );
 
             await waitFor(() => {

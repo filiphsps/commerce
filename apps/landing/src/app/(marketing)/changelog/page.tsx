@@ -3,7 +3,7 @@ import { Heading } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Changelog'
+    title: 'Changelog',
 };
 
 export type ChangelogPageParams = {};

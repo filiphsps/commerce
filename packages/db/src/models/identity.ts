@@ -18,30 +18,30 @@ export const IdentitySchema = new Schema<IdentityBase>(
     {
         provider: {
             type: Schema.Types.String,
-            required: true
+            required: true,
         },
         identity: {
             type: Schema.Types.String,
             required: true,
-            unique: true
+            unique: true,
         },
         scope: {
-            type: Schema.Types.String
+            type: Schema.Types.String,
         },
         expiresAt: {
-            type: Schema.Types.Date
+            type: Schema.Types.Date,
         },
         refreshToken: {
-            type: Schema.Types.String
+            type: Schema.Types.String,
         },
         accessToken: {
-            type: Schema.Types.String
-        }
+            type: Schema.Types.String,
+        },
     },
     {
         id: true,
-        timestamps: true
-    }
+        timestamps: true,
+    },
 );
 
 export const IdentityModel = (db.models.Identity || db.model('Identity', IdentitySchema)) as ReturnType<

@@ -19,7 +19,7 @@ async function Content({ shop, locale, handle }: { shop: OnlineShop; locale: Loc
     const api = await ShopifyApolloApiClient({ shop, locale });
     const [product, productError] = await ProductApi({
         api,
-        handle
+        handle,
         //fragment: /* GraphQL */ `
         /*    handle
 

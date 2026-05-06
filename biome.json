@@ -58,7 +58,6 @@
         "lineWidth": 120
     },
     "javascript": {
-        "experimentalEmbeddedSnippetsEnabled": true,
         "formatter": {
             "arrowParentheses": "always",
             "bracketSpacing": true,

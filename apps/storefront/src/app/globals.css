@@ -44,7 +44,7 @@
 }
 
 @utility contain-intrinsic-size-* {
-    contain-intrinsic-size: --value([ *]);
+    contain-intrinsic-size: --value([*]);
 }
 
 @layer base {

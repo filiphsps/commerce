@@ -14,13 +14,13 @@ export default mergeConfig(
             alias: [
                 {
                     find: '@',
-                    replacement: resolve(__dirname, './src')
-                }
-            ]
+                    replacement: resolve(__dirname, './src'),
+                },
+            ],
         },
         test: {
             typecheck: {
-                tsconfig: `${__dirname}/tsconfig.test.json`
+                tsconfig: `${__dirname}/tsconfig.test.json`,
             },
             setupFiles: [`${__dirname}/vitest.setup.ts`],
             coverage: {
@@ -34,9 +34,9 @@ export default mergeConfig(
                     '**/*.test.*',
                     '**/utils/test/**/*.*',
                     '**/src/**/index.*',
-                    '**/src/**/config/*.*'
-                ]
-            }
-        }
-    })
+                    '**/src/**/config/*.*',
+                ],
+            },
+        },
+    }),
 );

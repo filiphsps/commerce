@@ -16,16 +16,16 @@ export default mergeConfig(
         build: {
             rollupOptions: {
                 output: {
-                    name
-                }
-            }
+                    name,
+                },
+            },
         },
         plugins: [
             codecovVitePlugin({
                 enableBundleAnalysis: !!process.env.CODECOV_TOKEN,
                 bundleName: name,
-                uploadToken: process.env.CODECOV_TOKEN
-            })
-        ]
-    })
+                uploadToken: process.env.CODECOV_TOKEN,
+            }),
+        ],
+    }),
 );

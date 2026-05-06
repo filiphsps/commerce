@@ -23,7 +23,7 @@ const exclude = [
     'next.config.js',
     'vite.config.ts',
     'vitest.config.ts',
-    'vitest.workspace.ts'
+    'vitest.workspace.ts',
 ];
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -35,10 +35,10 @@ export default defineConfig({
         force: true,
         esbuildOptions: {
             define: {
-                global: 'globalThis'
+                global: 'globalThis',
             },
-            plugins: []
-        }
+            plugins: [],
+        },
     },
     test: {
         bail: 1,
@@ -49,7 +49,7 @@ export default defineConfig({
         silent: false,
         reporters: [...reporters, ...extraReporters],
         outputFile: {
-            junit: './junit.xml'
+            junit: './junit.xml',
         },
         projects: ['{apps,packages}/*/vitest.config.ts'],
 
@@ -58,11 +58,11 @@ export default defineConfig({
             exclude: exclude,
             provider: 'v8',
             reporter: ['json', 'json-summary', 'text'],
-            reportOnFailure: true
+            reportOnFailure: true,
         },
 
         typecheck: {
-            tsconfig: './tsconfig.test.json'
-        }
-    }
+            tsconfig: './tsconfig.test.json',
+        },
+    },
 });

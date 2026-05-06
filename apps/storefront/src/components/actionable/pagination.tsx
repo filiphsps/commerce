@@ -5,7 +5,7 @@ import { cn } from '@/utils/tailwind';
 import {
     ChevronLeft as ChevronLeftIcon,
     ChevronRight as ChevronRightIcon,
-    Ellipsis as EllipsisIcon
+    Ellipsis as EllipsisIcon,
 } from 'lucide-react';
 import { usePathname, useSearchParams } from 'next/navigation';
 
@@ -29,7 +29,7 @@ export function Pagination({
     i18n,
     knownFirstPage = 1,
     knownLastPage = 1,
-    morePagesAfterKnownLastPage = false
+    morePagesAfterKnownLastPage = false,
 }: PaginationProps) {
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -63,7 +63,7 @@ export function Pagination({
             items.push(
                 <div key={url} className={ITEM_STYLES} data-selected>
                     {i}
-                </div>
+                </div>,
             );
             continue;
         }
@@ -77,7 +77,7 @@ export function Pagination({
                 prefetch={false}
             >
                 {i}
-            </Link>
+            </Link>,
         );
     }
 

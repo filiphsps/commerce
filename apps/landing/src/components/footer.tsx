@@ -49,7 +49,7 @@ export default function Footer({ className, ...props }: FooterProps) {
                     className={cn(
                         styles.content,
                         styles.beside,
-                        'font-base w-full p-4 py-5 font-semibold leading-snug md:py-6'
+                        'font-base w-full p-4 py-5 font-semibold leading-snug md:py-6',
                     )}
                 >
                     <section className={cn(styles.section, styles.links, 'font-semibold')}>

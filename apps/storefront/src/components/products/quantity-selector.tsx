@@ -88,7 +88,7 @@ const QuantitySelector = ({
 
             update(parsedQuantity);
         },
-        [update, quantity]
+        [update, quantity],
     );
     const decrease = useCallback(() => {
         if (allowDecreaseToZero ? quantity <= 0 : quantity <= 1) {
@@ -123,7 +123,7 @@ const QuantitySelector = ({
 
             updateQuantity(quantityValue);
         },
-        [quantityValue, updateQuantity]
+        [quantityValue, updateQuantity],
     );
 
     const onChange = useCallback(
@@ -132,7 +132,7 @@ const QuantitySelector = ({
 
             setQuantityValue(parsedValue);
         },
-        [quantityValue]
+        [quantityValue],
     );
 
     const disabled = isDisabled || !ready;
@@ -144,7 +144,7 @@ const QuantitySelector = ({
             className={cn(
                 'flex min-h-fit w-full overflow-hidden rounded-lg border-2 border-solid border-white bg-white p-0 leading-none opacity-50 drop-shadow transition-colors *:appearance-none *:text-center *:text-lg *:leading-none *:transition-colors',
                 !disabled && 'hover:border-primary focus-visible::border-gray-300 opacity-100',
-                className
+                className,
             )}
             suppressHydrationWarning={true}
         >
@@ -157,7 +157,7 @@ const QuantitySelector = ({
                     'aspect-[3/4] h-full select-none appearance-none rounded-none bg-transparent p-2 font-bold text-current',
                     !disabled &&
                         'hover:bg-primary hover:text-primary-foreground focus-visible:bg-primary focus-visible:text-primary-foreground active:bg-primary active:text-primary-foreground cursor-pointer',
-                    buttonClassName
+                    buttonClassName,
                 )}
                 disabled={decreaseDisabled}
                 onClick={decrease}
@@ -183,7 +183,7 @@ const QuantitySelector = ({
                 pattern="[0-9]"
                 className={cn(
                     'h-full w-full grow appearance-none border-none bg-transparent text-sm font-bold outline-none focus:outline-none focus:ring-0',
-                    inputClassName
+                    inputClassName,
                 )}
                 disabled={disabled}
                 value={quantityValue}
@@ -205,7 +205,7 @@ const QuantitySelector = ({
                     'aspect-[3/4] h-full select-none appearance-none rounded-none bg-transparent p-2 font-bold text-current',
                     !disabled &&
                         'hover:bg-primary hover:text-primary-foreground focus-visible:bg-primary focus-visible:text-primary-foreground active:bg-primary active:text-primary-foreground cursor-pointer',
-                    buttonClassName
+                    buttonClassName,
                 )}
                 disabled={disabled}
                 onClick={increase}

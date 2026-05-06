@@ -10,7 +10,7 @@ export const futureDateString = (daysAhead: number): string =>
     new Date(Date.now() + daysAhead * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, {
         year: 'numeric',
         month: '2-digit',
-        day: '2-digit'
+        day: '2-digit',
     });
 
 /**

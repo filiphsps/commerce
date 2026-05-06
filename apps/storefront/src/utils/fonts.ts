@@ -6,7 +6,7 @@ const primaryFont = Public_Sans({
     subsets: ['latin'],
     display: 'swap',
     variable: '--font-primary',
-    preload: true
+    preload: true,
 });
 
 export { primaryFont };

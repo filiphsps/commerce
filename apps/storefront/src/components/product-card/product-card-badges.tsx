@@ -32,7 +32,7 @@ const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
                 <div
                     className={cn(
                         COMMON_BADGE_STYLES,
-                        'bg-primary text-primary-foreground -mt-1 h-8 rounded-l-none rounded-t-none text-xs normal-case leading-none'
+                        'bg-primary text-primary-foreground -mt-1 h-8 rounded-l-none rounded-t-none text-xs normal-case leading-none',
                     )}
                 >
                     <PackageIcon className="text-sm leading-none" />
@@ -56,7 +56,7 @@ const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
         <>
             <div
                 className={cn(
-                    'pointer-events-none absolute inset-1 bottom-auto flex flex-wrap justify-start gap-1 empty:hidden'
+                    'pointer-events-none absolute inset-1 bottom-auto flex flex-wrap justify-start gap-1 empty:hidden',
                 )}
             >
                 {isVegan && (

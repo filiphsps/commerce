@@ -26,10 +26,10 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
         <section
             className={cn(
                 'bg-primary text-primary-foreground relative flex h-full min-h-fit grid-flow-col justify-between gap-2 overflow-hidden overflow-x-clip rounded-lg md:grid md:grid-cols-6',
-                background.url && 'bg-center bg-repeat text-black'
+                background.url && 'bg-center bg-repeat text-black',
             )}
             style={{
-                backgroundImage: background.url ? `url('${background.url}&auto=enhance&q=92')` : undefined
+                backgroundImage: background.url ? `url('${background.url}&auto=enhance&q=92')` : undefined,
             }}
             data-slice-variation={slice.variation}
         >
@@ -38,13 +38,13 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
                     className="mr-[4rem] flex h-full min-h-fit flex-col items-start justify-center gap-1 text-left md:m-0"
                     style={{
                         color: textColor ?? undefined,
-                        textShadow: background.url && textShadow ? '1px 1px 10px #000' : '1px 1px 0px rgba(0,0,0,.45)'
+                        textShadow: background.url && textShadow ? '1px 1px 10px #000' : '1px 1px 0px rgba(0,0,0,.45)',
                     }}
                 >
                     <Content
                         className={cn(
                             'prose-h1:first-of-type:text-2xl md:prose-h1:first-of-type:text-3xl md:prose-h1:first-of-type:leading-normal prose-h2:first-of-type:text-xl md:prose-h2:first-of-type:text-3xl prose-h1:first-of-type:leading-tight md:prose-h2:first-of-type:leading-snug prose-h2:first-of-type:leading-tight',
-                            'md:prose-h1:first-of-type:text-4xl md:prose-h2:first-of-type:text-4xl md:prose-h1:first-of-type:leading-normal md:prose-h2:first-of-type:leading-normal prose-h2:first:-mt-1 md:prose-h2:first:-mt-3 prose-h1:first:-mt-1 md:prose-h1:first:-mt-2 prose-p:text-sm md:prose-p:text-base [&>h1>strong]:underline'
+                            'md:prose-h1:first-of-type:text-4xl md:prose-h2:first-of-type:text-4xl md:prose-h1:first-of-type:leading-normal md:prose-h2:first-of-type:leading-normal prose-h2:first:-mt-1 md:prose-h2:first:-mt-3 prose-h1:first:-mt-1 md:prose-h1:first:-mt-2 prose-p:text-sm md:prose-p:text-base [&>h1>strong]:underline',
                         )}
                     >
                         <PrismicText data={slice.primary.content} styled={false} />
@@ -62,7 +62,7 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
                                 key={`${target}-${index}`}
                                 className={cn(
                                     'rounded-lg bg-white p-2 px-4 leading-normal text-black drop-shadow hover:shadow',
-                                    type && 'bg-secondary text-secondary-foreground'
+                                    type && 'bg-secondary text-secondary-foreground',
                                 )}
                                 href={href}
                                 target={target}

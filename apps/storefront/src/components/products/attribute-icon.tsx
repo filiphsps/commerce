@@ -9,7 +9,7 @@ import {
     CupSoda as CupSodaIcon,
     IceCreamCone as IceCreamConeIcon,
     Leaf as LeafIcon,
-    Wine as WineIcon
+    Wine as WineIcon,
 } from 'lucide-react';
 
 import type { HTMLProps } from 'react';
@@ -80,7 +80,7 @@ export function AttributeIcon({ data = '', className, style = {}, ...props }: At
             className={cn('stroke-inherit', className)}
             style={{
                 strokeWidth: 2.5,
-                ...style
+                ...style,
             }}
             {...props}
         />

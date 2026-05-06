@@ -27,7 +27,7 @@ import type { OnlineStore, WithContext } from 'schema-dts';
 export type CustomPageParams = Promise<{ domain: string; locale: string; slug: string[] }>;
 
 export async function generateStaticParams({
-    params
+    params,
 }: {
     params: Omit<Awaited<CustomPageParams>, 'slug'>;
 }): Promise<Omit<Awaited<CustomPageParams>, 'domain' | 'locale'>[]> {
@@ -44,7 +44,7 @@ export async function generateStaticParams({
     const slugs = pages
         .filter((p): p is typeof p & { uid: string } => typeof p.uid === 'string')
         .map(({ uid }) => ({
-            slug: [uid]
+            slug: [uid],
         }));
 
     if (slugs.length === 0) {
@@ -87,17 +87,17 @@ export async function generateMetadata({ params }: { params: CustomPageParams })
         title,
         description,
         robots: {
-            index: (page.noindex as any) === undefined ? true : !page.noindex
+            index: (page.noindex as any) === undefined ? true : !page.noindex,
         },
         alternates: {
             canonical: `https://${shop.domain}/${locale.code}${path}`,
             languages: locales.reduce(
                 (prev, { code }) => ({
                     ...prev,
-                    [code]: `https://${shop.domain}/${code}${path}`
+                    [code]: `https://${shop.domain}/${code}${path}`,
                 }),
-                {}
-            )
+                {},
+            ),
         },
         openGraph: {
             url: handle !== 'homepage' ? handle : undefined,
@@ -111,11 +111,11 @@ export async function generateMetadata({ params }: { params: CustomPageParams })
                       {
                           url: page.meta_image.url,
                           width: page.meta_image.dimensions.width,
-                          height: page.meta_image.dimensions.height
-                      }
+                          height: page.meta_image.dimensions.height,
+                      },
                   ]
-                : []
-        }
+                : [],
+        },
     };
 }
 
@@ -128,15 +128,15 @@ async function OnlineStoreJsonLd({ shop, locale }: { shop: OnlineShop; locale: L
         jsonLd = {
             '@context': 'https://schema.org',
             '@type': 'OnlineStore',
-            'name': shop.name,
-            'url': `https://${shop.domain}/${locale.code}/`,
-            'image': shop.icons?.favicon?.src,
-            'logo': shop.icons?.favicon?.src,
-            'telephone': businessData.telephone || undefined,
-            'email': businessData.email || undefined,
-            'sameAs': (businessData.social_profiles || []).map(({ href }) => href as string), // eslint-disable-line  @typescript-eslint/no-unnecessary-condition
-            'taxID': businessData.tax_number || undefined,
-            'vatID': businessData.vat_number || undefined
+            name: shop.name,
+            url: `https://${shop.domain}/${locale.code}/`,
+            image: shop.icons?.favicon?.src,
+            logo: shop.icons?.favicon?.src,
+            telephone: businessData.telephone || undefined,
+            email: businessData.email || undefined,
+            sameAs: (businessData.social_profiles || []).map(({ href }) => href as string), // eslint-disable-line  @typescript-eslint/no-unnecessary-condition
+            taxID: businessData.tax_number || undefined,
+            vatID: businessData.vat_number || undefined,
         };
     } catch (error: unknown) {
         console.error(error);

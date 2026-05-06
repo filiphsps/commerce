@@ -38,12 +38,12 @@ export async function generateMetadata({ params }: ShopLayoutProps): Promise<Met
         return {
             title: {
                 default: 'Home',
-                template: `${shop.name} · %s · Nordcom Commerce`
+                template: `${shop.name} · %s · Nordcom Commerce`,
             },
             robots: {
                 follow: true,
-                index: false
-            }
+                index: false,
+            },
         };
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {

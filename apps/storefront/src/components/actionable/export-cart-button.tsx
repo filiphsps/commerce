@@ -39,23 +39,23 @@ export function ExportCartButton({ i18n }: ExportCartButtonProps) {
                             barcode,
                             sku,
                             title: variantTitle,
-                            product: { title, vendor, handle }
+                            product: { title, vendor, handle },
                         },
-                        quantity
+                        quantity,
                     }) => ({
                         'GTIN/EAN': barcode ? `#${barcode}` : null,
                         ...(sku && sku !== barcode ? { SKU: sku } : {}),
-                        'Vendor': vendor,
-                        'Product': title,
-                        'Variant': variantTitle,
-                        'URL': `https://${shop.domain}/products/${handle}/?variant=${parseGid(id).id}`,
-                        'Quantity': quantity
-                    })
+                        Vendor: vendor,
+                        Product: title,
+                        Variant: variantTitle,
+                        URL: `https://${shop.domain}/products/${handle}/?variant=${parseGid(id).id}`,
+                        Quantity: quantity,
+                    }),
                 );
 
                 const config = mkConfig({
                     useKeysAsHeaders: true,
-                    filename: `${parseGid(cartId).id}.csv`
+                    filename: `${parseGid(cartId).id}.csv`,
                 });
                 const csv = generateCsv(config)(data);
 

@@ -10,14 +10,14 @@ import type {
     CollectionPageDocument,
     CustomPageDocument,
     ProductPageDocument,
-    Simplify
+    Simplify,
 } from '@/prismic/types';
 import type { PrismicDocument } from '@prismicio/client';
 
 export const PagesApi = async ({
     shop,
     locale,
-    exclude = ['homepage', 'shop', 'countries', 'search', 'cart']
+    exclude = ['homepage', 'shop', 'countries', 'search', 'cart'],
 }: {
     shop: OnlineShop;
     locale: Locale;
@@ -49,13 +49,13 @@ export const PagesApi = async ({
         },
         [
             shop.domain,
-            Locale.default.code // TODO: This should be the actual locale, but we're calling prismic.io's API way too much.
+            Locale.default.code, // TODO: This should be the actual locale, but we're calling prismic.io's API way too much.
             /* locale.code */
         ],
         {
             revalidate: 86_400, // 24hrs.
-            tags: ['prismic', shop.domain, locale.code]
-        }
+            tags: ['prismic', shop.domain, locale.code],
+        },
     )();
 };
 
@@ -90,7 +90,7 @@ export const PageApi = async <T extends keyof PageTypeMapping | 'custom_page' = 
     shop,
     locale,
     type = 'custom_page',
-    handle
+    handle,
 }: PageApiProps & { type?: T | 'custom_page' }): Promise<Simplify<NarrowedPageType<T>['data']> | null> => {
     const client = createClient({ shop, locale });
 
@@ -121,12 +121,12 @@ export const PageApi = async <T extends keyof PageTypeMapping | 'custom_page' = 
         },
         [
             shop.domain,
-            Locale.default.code // TODO: This should be the actual locale, but we're calling prismic.io's API way too much.
+            Locale.default.code, // TODO: This should be the actual locale, but we're calling prismic.io's API way too much.
             /* locale.code */
         ],
         {
             revalidate: 86_400, // 24hrs.
-            tags: ['prismic', shop.domain, locale.code, `page.${handle}`]
-        }
+            tags: ['prismic', shop.domain, locale.code, `page.${handle}`],
+        },
     )(handle, type as T);
 };

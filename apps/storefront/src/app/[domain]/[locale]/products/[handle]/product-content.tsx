@@ -28,7 +28,7 @@ export function ProductContent({ product, i18n }: ProductContentProps) {
             searchParams.has('variant')
                 ? `gid://shopify/ProductVariant/${searchParams.get('variant')}`
                 : firstAvailableVariant(product)?.id,
-        [product, searchParams]
+        [product, searchParams],
     );
 
     const [quantity, setQuantity] = useState(1);
@@ -55,7 +55,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
             searchParams.has('variant')
                 ? product.variants.edges.find(({ node: { id } }) => id.includes(searchParams.get('variant')!))?.node
                 : firstAvailableVariant(product),
-        [product, searchParams]
+        [product, searchParams],
     );
 
     if (!variant || !product.availableForSale) {
@@ -92,7 +92,7 @@ export function ProductSavings({ i18n, product, className }: ProductSavingsProps
             searchParams.has('variant')
                 ? product.variants.edges.find(({ node: { id } }) => id.includes(searchParams.get('variant')!))?.node
                 : firstAvailableVariant(product),
-        [product, searchParams]
+        [product, searchParams],
     );
     const { t } = getTranslations('product', i18n);
 
@@ -122,7 +122,7 @@ export function ProductSavings({ i18n, product, className }: ProductSavingsProps
             <div
                 className={cn(
                     'bg-sale-stripes flex items-center justify-between gap-1 rounded-lg p-2 px-4 text-[0.82rem] font-semibold text-white md:px-5 md:text-sm',
-                    className
+                    className,
                 )}
             >
                 <div className="flex items-center gap-1">
@@ -132,10 +132,10 @@ export function ProductSavings({ i18n, product, className }: ProductSavingsProps
                             key={savings}
                             data={{
                                 amount: savings.toString(),
-                                currencyCode: price.currencyCode
+                                currencyCode: price.currencyCode,
                             }}
                             className="font-black"
-                        />
+                        />,
                     )}
                 </div>
 

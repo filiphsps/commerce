@@ -10,8 +10,8 @@ describe('components', () => {
             const data = {
                 '@context': 'https://schema.org',
                 '@type': 'Organization',
-                'name': 'My Organization',
-                'url': 'https://example.com'
+                name: 'My Organization',
+                url: 'https://example.com',
             };
 
             const { container } = render(<JsonLd data={data} />);

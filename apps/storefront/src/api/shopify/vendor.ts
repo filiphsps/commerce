@@ -17,7 +17,7 @@ import type { Product, ProductConnection } from '@shopify/hydrogen-react/storefr
 export const Convertor = (
     products: Array<{
         node: Product;
-    }>
+    }>,
 ): VendorModel[] => {
     let vendors: any[] = [];
     products.forEach((product) => {
@@ -33,7 +33,7 @@ export const Convertor = (
     return (
         Array.from(new Set(vendors)).map((vendor) => ({
             title: vendor,
-            handle: TitleToHandle(vendor)
+            handle: TitleToHandle(vendor),
         })) as any
     ).filter((_: VendorModel) => _);
 };

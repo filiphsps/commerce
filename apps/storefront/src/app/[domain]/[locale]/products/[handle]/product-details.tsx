@@ -83,7 +83,7 @@ export async function ProductDetails({ locale, data: product }: ProductDetailsPr
     const {
         flavors,
         // allergen,
-        variants: { edges: variants }
+        variants: { edges: variants },
     } = product;
 
     //const parsedNutritionalContent = nutritionalContent ? parseMetafield(nutritionalContent) : null;

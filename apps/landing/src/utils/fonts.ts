@@ -6,7 +6,7 @@ const primaryFont = Montserrat({
     subsets: ['latin'],
     display: 'swap',
     variable: '--font-primary',
-    preload: true
+    preload: true,
 });
 
 export { primaryFont };

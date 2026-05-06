@@ -22,7 +22,7 @@ const Columns = async ({ slice, context: { shop, locale } }: ColumnsProps) => {
             data-slice-variation={slice.variation}
             className="flex flex-wrap gap-3 md:grid"
             style={{
-                gridTemplateColumns: slice.primary.children.map(() => '1fr').join(' ') // TODO: custom sizes?.
+                gridTemplateColumns: slice.primary.children.map(() => '1fr').join(' '), // TODO: custom sizes?.
             }}
         >
             {slice.primary.children.map(async ({ column }) => {
@@ -45,7 +45,7 @@ const Columns = async ({ slice, context: { shop, locale } }: ColumnsProps) => {
                             const client = createClient({
                                 shop: sensitiveShop,
                                 locale: Locale.default,
-                                fetchOptions: { cache: 'force-cache' }
+                                fetchOptions: { cache: 'force-cache' },
                             });
                             const { data } = await client.getByUID<ColumnDocument>(type as any, uid);
                             if (!(data as any)) {

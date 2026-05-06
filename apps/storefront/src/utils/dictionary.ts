@@ -148,7 +148,7 @@ export const dictionaries: Record<Lowercase<LanguageCode>, () => Promise<LocaleD
     zh_cn: () => new Promise((resolve) => resolve(stub)) as any /* TODO */,
     zh_tw: () => new Promise((resolve) => resolve(stub)) as any /* TODO */,
     zh: () => new Promise((resolve) => resolve(stub)) as any /* TODO */,
-    zu: () => new Promise((resolve) => resolve(stub)) as any /* TODO */
+    zu: () => new Promise((resolve) => resolve(stub)) as any /* TODO */,
 };
 
 export type DictionaryLanguageCode = keyof typeof dictionaries;
@@ -163,7 +163,7 @@ export type DictionaryLanguageCode = keyof typeof dictionaries;
  * @returns {Promise<LocaleDictionary>} Promise with dictionary.
  */
 export const getDictionary = async (
-    props: { shop: OnlineShop; locale: Locale } | Locale
+    props: { shop: OnlineShop; locale: Locale } | Locale,
 ): Promise<LocaleDictionary> => {
     let locale: Locale, shop: OnlineShop | undefined;
 

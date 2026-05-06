@@ -14,7 +14,7 @@ import { headers } from 'next/headers';
 import type { ApiConfig } from '@/api/client';
 
 export const ShopifyApiConfig = async ({
-    shop: { domain }
+    shop: { domain },
 }: {
     shop: OnlineShop;
 }): Promise<{
@@ -29,13 +29,13 @@ export const ShopifyApiConfig = async ({
     experimental_taintUniqueValue(
         'Do not pass private tokens to the client',
         globalThis,
-        commerceProvider.authentication.token
+        commerceProvider.authentication.token,
     );
     if (commerceProvider.authentication.customers) {
         experimental_taintUniqueValue(
             'Do not pass private tokens to the client',
             globalThis,
-            commerceProvider.authentication.customers.clientSecret
+            commerceProvider.authentication.customers.clientSecret,
         );
     }
 
@@ -43,7 +43,7 @@ export const ShopifyApiConfig = async ({
         publicStorefrontToken: commerceProvider.authentication.publicToken,
         privateStorefrontToken: commerceProvider.authentication.token || undefined,
         storeDomain: commerceProvider.domain,
-        contentType: 'json'
+        contentType: 'json',
     });
 
     /**
@@ -64,14 +64,14 @@ export const ShopifyApiConfig = async ({
     return {
         public: () => ({
             uri: api.getStorefrontApiUrl(),
-            headers: api.getPublicTokenHeaders({})
+            headers: api.getPublicTokenHeaders({}),
         }),
         private: () => ({
             uri: api.getStorefrontApiUrl(),
             headers: api.getPrivateTokenHeaders({
-                buyerIp: buyerIp || '::1' // FIXME: Ugly hack to silence warnings.
-            })
-        })
+                buyerIp: buyerIp || '::1', // FIXME: Ugly hack to silence warnings.
+            }),
+        }),
     };
 };
 
@@ -99,7 +99,7 @@ export const ShopifyApolloApiClient = async ({ shop, locale = Locale.default, ap
     return ApiBuilder({
         shop,
         locale,
-        api: createApolloClient(config, shop)
+        api: createApolloClient(config, shop),
     });
 };
 
@@ -121,7 +121,7 @@ export const ShopifyApiClient = async ({ shop, locale = Locale.default, apiConfi
                     body: JSON.stringify({
                         ...(query && { query: query?.loc?.source?.body }),
                         ...(variables && { variables }),
-                        ...(context && { context })
+                        ...(context && { context }),
                     }),
 
                     // This handles cache, next options, etc.
@@ -130,9 +130,9 @@ export const ShopifyApiClient = async ({ shop, locale = Locale.default, apiConfi
                         : {
                               fetchOptions: {
                                   revalidate: 28_800, // 8hrs.
-                                  tags: ['shopify', `shopify.${shop.id}`, shop.domain]
-                              }
-                          })
+                                  tags: ['shopify', `shopify.${shop.id}`, shop.domain],
+                              },
+                          }),
 
                     // TODO: context, e.g. locale
                 });
@@ -144,23 +144,23 @@ export const ShopifyApiClient = async ({ shop, locale = Locale.default, apiConfi
                         return {
                             loading: false,
                             errors: body.errors,
-                            data: body
+                            data: body,
                         };
                     }
 
                     return {
                         loading: false,
                         data: body.data,
-                        errors: null
+                        errors: null,
                     } as any;
                 } catch (error: unknown) {
                     return {
                         loading: false,
                         errors: [error],
-                        data: null
+                        data: null,
                     };
                 }
-            }
-        } as any
+            },
+        } as any,
     });
 };

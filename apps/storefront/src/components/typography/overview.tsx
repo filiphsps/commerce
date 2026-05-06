@@ -43,20 +43,20 @@ export const Overview = ({
         <div
             style={{
                 ...(accent && {
-                    '--accent-primary': accent
-                })
+                    '--accent-primary': accent,
+                }),
             }}
             className={cn(
                 'relative z-0 col-span-3 flex h-32 w-full overflow-hidden bg-[var(--accent-primary)] p-3 lg:h-auto',
                 layout === 'center' && 'h-32 lg:h-28',
-                imageStyle === 'cover' && 'p-0'
+                imageStyle === 'cover' && 'p-0',
             )}
         >
             <Image
                 role={image.alt ? undefined : 'presentation'}
                 className={cn(
                     'absolute inset-0 z-[1] h-full w-full object-contain object-center',
-                    imageStyle === 'cover' && 'object-cover'
+                    imageStyle === 'cover' && 'object-cover',
                 )}
                 src={image.url}
                 alt={image.alt!}
@@ -83,7 +83,7 @@ export const Overview = ({
                 layout === 'left' && 'lg:grid-cols-10',
                 layout === 'right' && 'lg:grid-cols-10',
                 layout === 'center' && 'flex flex-col lg:flex',
-                className
+                className,
             )}
             {...props}
         >

@@ -52,8 +52,8 @@ export async function GET({}: NextRequest, { params }: CollectionsSitemapRoutePa
                     changefreq: 'daily',
                     lastmod: updatedAt,
                     alternateRefs: [],
-                    trailingSlash: true
-                }) as ISitemapField
-        )
+                    trailingSlash: true,
+                }) as ISitemapField,
+        ),
     );
 }

@@ -81,9 +81,9 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
         let req = this.model.find<DocType>(
             {
                 ...filter,
-                ...((id as any) ? { _id: id } : {})
+                ...((id as any) ? { _id: id } : {}),
             },
-            projection
+            projection,
         );
         req = (await this.mutateQuery<Req>(req, args))();
 
@@ -101,7 +101,7 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
     public async findById(
         id: string,
         projection?: ProjectionType<DocType> | null,
-        options?: QueryOptions<DocType> | null
+        options?: QueryOptions<DocType> | null,
     ): Promise<DocType | null> {
         const res = this.model.findById(id, projection, options);
         if (!(res as any)) {
@@ -114,7 +114,7 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
     public async findOneAndUpdate(
         filter: QueryFilter<DocType>,
         update?: UpdateQuery<DocType>,
-        options: QueryOptions<DocType> = { includeResultMetadata: true, lean: true }
+        options: QueryOptions<DocType> = { includeResultMetadata: true, lean: true },
     ): Promise<DocType | null> {
         const res = this.model.findOneAndUpdate(filter, update, options);
         if (!(res as any)) {

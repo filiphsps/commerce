@@ -10,7 +10,7 @@ import { redirect } from 'next/navigation';
 import type { Metadata, Route } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Your Shops'
+    title: 'Your Shops',
 };
 
 export default async function Overview() {

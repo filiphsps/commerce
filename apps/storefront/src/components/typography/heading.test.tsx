@@ -7,10 +7,10 @@ import Heading from '@/components/typography/heading';
 vi.mock('@shopify/hydrogen-react', async () => {
     return {
         useCart: vi.fn().mockReturnValue({
-            status: 'idle'
+            status: 'idle',
         }),
         useShop: vi.fn().mockReturnValue({}),
-        useShopifyCookies: vi.fn().mockReturnValue({})
+        useShopifyCookies: vi.fn().mockReturnValue({}),
     };
 });
 
@@ -66,7 +66,7 @@ describe('components', () => {
             const { getByTestId } = render(
                 <div data-testid="heading">
                     <Heading title={title} subtitle={subtitle} titleAs="h2" subtitleAs="h3" />
-                </div>
+                </div>,
             );
 
             const h2 = getByTestId('heading').querySelector('h2');
@@ -86,7 +86,7 @@ describe('components', () => {
                     subtitle={subtitle}
                     titleStyle={{ color: 'rgb(255, 0, 0)' }}
                     subtitleStyle={{ color: 'rgb(0, 0, 255)' }}
-                />
+                />,
             );
             expect(getByText(title).style.cssText).toBe('color: rgb(255, 0, 0);');
             expect(getByText(subtitle).style.cssText).toBe('color: rgb(0, 0, 255);');
@@ -101,7 +101,7 @@ describe('components', () => {
                     subtitle={subtitle}
                     titleClassName="title-class"
                     subtitleClassName="subtitle-class"
-                />
+                />,
             );
             expect(getByText(title).className).toContain('title-class');
             expect(getByText(subtitle).className).toContain('subtitle-class');

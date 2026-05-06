@@ -13,7 +13,7 @@ describe('hooks', () => {
 
         it('should return the previous value after a re-render', () => {
             const { result, rerender } = renderHook(({ value }) => usePrevious(value), {
-                initialProps: { value: 'initial' }
+                initialProps: { value: 'initial' },
             });
 
             expect(result.current).toBeUndefined();
@@ -27,7 +27,7 @@ describe('hooks', () => {
 
         it('should keep the previous distinct value when re-rendered with the same value', () => {
             const { result, rerender } = renderHook(({ value }) => usePrevious(value), {
-                initialProps: { value: 'initial' }
+                initialProps: { value: 'initial' },
             });
 
             expect(result.current).toBeUndefined();
@@ -41,7 +41,7 @@ describe('hooks', () => {
 
         it('should return the previous value after a re-render with a different value', () => {
             const { result, rerender } = renderHook(({ value }) => usePrevious(value), {
-                initialProps: { value: 'initial' }
+                initialProps: { value: 'initial' },
             });
 
             expect(result.current).toBeUndefined();

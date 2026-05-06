@@ -4,7 +4,7 @@ import {
     NotFoundError,
     ProviderFetchError,
     TodoError,
-    UnreachableError
+    UnreachableError,
 } from '@nordcom/commerce-errors';
 
 import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
@@ -18,7 +18,7 @@ import type {
     CollectionEdge,
     CollectionSortKeys,
     ProductCollectionSortKeys,
-    QueryRoot
+    QueryRoot,
 } from '@shopify/hydrogen-react/storefront-api-types';
 
 type GenericCollectionFilters = {
@@ -42,7 +42,7 @@ type CollectionsFilters = {
 // TODO: This should be generic.
 export const extractLimitLikeFilters = (
     filters: LimitFilters,
-    defaultLimit = 30
+    defaultLimit = 30,
 ):
     | {
           first: number;
@@ -63,7 +63,7 @@ export const extractLimitLikeFilters = (
             typeof (filters as any).last !== 'number':
         case !('limit' in filters) && !('first' in filters) && !('last' in filters):
             return {
-                first: defaultLimit
+                first: defaultLimit,
             };
 
         case 'limit' in filters:
@@ -71,7 +71,7 @@ export const extractLimitLikeFilters = (
                 throw new TodoError(); // TODO: Add ErrorCode and Error for this.
             }
             return {
-                first: filters.limit || defaultLimit
+                first: filters.limit || defaultLimit,
             };
 
         case 'first' in filters || 'last' in filters:
@@ -80,7 +80,7 @@ export const extractLimitLikeFilters = (
             }
             return {
                 first: filters.first || null,
-                last: filters.last || null
+                last: filters.last || null,
             };
     }
 
@@ -113,7 +113,7 @@ type CollectionOptions = ApiOptions &
  */
 export const CollectionApi = async (
     { api, handle, ...props }: CollectionOptions,
-    _cache?: any
+    _cache?: any,
 ): Promise<Collection> => {
     if (!isValidHandle(handle)) {
         throw new InvalidHandleError(handle);
@@ -191,12 +191,12 @@ export const CollectionApi = async (
                 ...(({ sorting = 'COLLECTION_DEFAULT', before = null, after = null }) => ({
                     sorting: sorting,
                     before: before,
-                    after: after
-                }))(filters)
+                    after: after,
+                }))(filters),
             },
             {
-                tags: ['collection', handle, ...(filtersTag ? [filtersTag] : [])]
-            }
+                tags: ['collection', handle, ...(filtersTag ? [filtersTag] : [])],
+            },
         );
 
         if (errors && errors.length > 0) {
@@ -207,7 +207,7 @@ export const CollectionApi = async (
 
         return {
             ...data.collection,
-            descriptionHtml: cleanShopifyHtml(data.collection.descriptionHtml) || ''
+            descriptionHtml: cleanShopifyHtml(data.collection.descriptionHtml) || '',
         };
     } catch (error: unknown) {
         throw error;
@@ -264,12 +264,12 @@ export const CollectionPaginationCountApi = async ({
                 ...extractLimitLikeFilters(filters),
                 ...(({ sorting = 'COLLECTION_DEFAULT' }) => ({
                     sorting: sorting,
-                    after: after
-                }))(filters)
+                    after: after,
+                }))(filters),
             },
             {
-                tags: ['collection', handle, 'pagination', 'count', ...(filtersTag ? [filtersTag] : [])]
-            }
+                tags: ['collection', handle, 'pagination', 'count', ...(filtersTag ? [filtersTag] : [])],
+            },
         );
 
         if (errors && errors.length > 0) {
@@ -277,7 +277,7 @@ export const CollectionPaginationCountApi = async ({
         } else if (!data?.collection?.products.edges || data.collection.products.edges.length <= 0) {
             return {
                 count,
-                cursors
+                cursors,
             };
         }
 
@@ -291,7 +291,7 @@ export const CollectionPaginationCountApi = async ({
 
         return {
             count: count + data.collection.products.edges.length,
-            cursors
+            cursors,
         };
     };
 
@@ -303,7 +303,7 @@ export const CollectionPaginationCountApi = async ({
         return {
             pages,
             cursors: cursors.reverse(),
-            products
+            products,
         };
     } catch (error: unknown) {
         throw error;
@@ -320,7 +320,7 @@ export const CollectionsApi = async (
                * @deprecated Use `api` instead.
                */
               client: AbstractApi;
-          }
+          },
 ): Promise<
     Array<{
         id: string;
@@ -362,8 +362,8 @@ export const CollectionsApi = async (
             data.collections.edges.map(({ node: { id, handle, products } }) => ({
                 id,
                 handle,
-                hasProducts: products.edges.length > 0
-            }))
+                hasProducts: products.edges.length > 0,
+            })),
         );
     });
 };
@@ -452,12 +452,12 @@ export const CollectionsPaginationApi = async ({
                         query: vendor && `query:"vendor:${vendor}"`,
                         sorting: sorting,
                         before: before,
-                        after: after
-                    }))(filters)
+                        after: after,
+                    }))(filters),
                 },
                 {
-                    tags: ['collections', 'pagination']
-                }
+                    tags: ['collections', 'pagination'],
+                },
             );
 
             const page_info = data?.collections.pageInfo;
@@ -471,8 +471,8 @@ export const CollectionsPaginationApi = async ({
                     start_cursor: page_info.startCursor || null,
                     end_cursor: page_info.endCursor || null,
                     has_next_page: page_info.hasNextPage,
-                    has_prev_page: page_info.hasPreviousPage
-                }
+                    has_prev_page: page_info.hasPreviousPage,
+                },
             });
         } catch (error: unknown) {
             return reject(error);

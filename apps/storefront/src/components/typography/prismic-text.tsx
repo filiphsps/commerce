@@ -44,7 +44,7 @@ export const PrismicText = ({ data, styled = true, bare = false }: PrismicTextPr
                         ) : (
                             <p
                                 className={cn(
-                                    styled && 'block text-base leading-snug empty:hidden md:text-lg md:leading-tight'
+                                    styled && 'block text-base leading-snug empty:hidden md:text-lg md:leading-tight',
                                 )}
                             >
                                 {children}
@@ -80,7 +80,7 @@ export const PrismicText = ({ data, styled = true, bare = false }: PrismicTextPr
                         ),
                     strong: ({ children }) => <strong className="font-extrabold">{children}</strong>,
                     listItem: ({ children }) => <li className="list-disc">{children}</li>,
-                    oListItem: ({ children }) => <li className="list-decimal">{children}</li>
+                    oListItem: ({ children }) => <li className="list-decimal">{children}</li>,
                 }}
             />
         </Suspense>

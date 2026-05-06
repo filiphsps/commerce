@@ -6,7 +6,7 @@ import { Toolbars } from '@/components/toolbars';
 
 vi.mock('@vercel/toolbar/next', async () => {
     return {
-        VercelToolbar: () => <div data-testid="toolbar" />
+        VercelToolbar: () => <div data-testid="toolbar" />,
     };
 });
 
@@ -31,7 +31,7 @@ describe('components', () => {
             const { getByText, getByTestId } = render(
                 <Toolbars domain={'staging.example.com'}>
                     <div>Test</div>
-                </Toolbars>
+                </Toolbars>,
             );
 
             expect(getByText('Test')).toBeDefined();
@@ -42,7 +42,7 @@ describe('components', () => {
             const { queryByTestId, getByText } = render(
                 <Toolbars domain={'example.com'}>
                     <div>Test</div>
-                </Toolbars>
+                </Toolbars>,
             );
 
             expect(getByText('Test')).toBeDefined();

@@ -15,7 +15,7 @@ export function AuthAdapter(): Adapter {
 
         async getUserByAccount({
             providerAccountId,
-            provider
+            provider,
         }: Pick<AdapterAccount, 'provider' | 'providerAccountId'>) {
             try {
                 return (
@@ -25,10 +25,10 @@ export function AuthAdapter(): Adapter {
                             identities: {
                                 $elemMatch: {
                                     provider: provider,
-                                    identity: providerAccountId
-                                }
-                            }
-                        }
+                                    identity: providerAccountId,
+                                },
+                            },
+                        },
                     })
                 ).toObject();
             } catch (error: unknown) {
@@ -42,7 +42,7 @@ export function AuthAdapter(): Adapter {
                 return (
                     await User.find({
                         count: 1,
-                        filter: { email }
+                        filter: { email },
                     })
                 ).toObject();
             } catch (error: unknown) {
@@ -58,7 +58,7 @@ export function AuthAdapter(): Adapter {
                     name: name || email,
                     avatar: avatar || undefined,
                     emailVerified,
-                    identities: []
+                    identities: [],
                 })
             ).toObject();
         },
@@ -74,16 +74,16 @@ export function AuthAdapter(): Adapter {
         async createSession({ userId, sessionToken, expires }) {
             const session = await Session.create({
                 user: await User.find({
-                    id: userId
+                    id: userId,
                 }),
                 token: sessionToken,
-                expiresAt: expires
+                expiresAt: expires,
             });
 
             return {
                 sessionToken: session.token,
                 userId: session.user.id,
-                expires: session.expiresAt
+                expires: session.expiresAt,
             };
         },
         async updateSession(session) {
@@ -106,7 +106,7 @@ export function AuthAdapter(): Adapter {
                 const identity = await Identity.findOneAndUpdate(
                     {
                         provider: account.provider,
-                        identity: account.providerAccountId
+                        identity: account.providerAccountId,
                     },
                     {
                         provider: account.provider,
@@ -114,12 +114,12 @@ export function AuthAdapter(): Adapter {
                         scope: account.scope,
                         expiresAt: account.expires_at ? new Date(account.expires_at * 1000) : undefined,
                         refreshToken: account.refreshToken,
-                        accessToken: account.accessToken
+                        accessToken: account.accessToken,
                     },
                     {
                         upsert: true,
-                        new: true
-                    }
+                        new: true,
+                    },
                 );
                 if (!identity) {
                     return null;
@@ -132,7 +132,7 @@ export function AuthAdapter(): Adapter {
 
                 return {
                     userId,
-                    ...account
+                    ...account,
                 };
             } catch (error: unknown) {
                 console.error(error);
@@ -142,6 +142,6 @@ export function AuthAdapter(): Adapter {
         async unlinkAccount(providerAccountId) {
             console.debug('[TODO] AuthAdapter - unlinkAccount', providerAccountId);
             return;
-        }
+        },
     };
 }

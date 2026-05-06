@@ -14,8 +14,8 @@ export default mergeConfig(
     defineConfig({
         optimizeDeps: {
             esbuildOptions: {
-                target: 'esnext'
-            }
+                target: 'esnext',
+            },
         },
         root: resolve(__dirname),
         build: {
@@ -23,21 +23,21 @@ export default mergeConfig(
             rollupOptions: {
                 external: ['mongoose', 'mongodb'],
                 output: {
-                    name
-                }
-            }
+                    name,
+                },
+            },
         },
         esbuild: {
             supported: {
-                'top-level-await': true
-            }
+                'top-level-await': true,
+            },
         },
         plugins: [
             codecovVitePlugin({
                 enableBundleAnalysis: !!process.env.CODECOV_TOKEN,
                 bundleName: name,
-                uploadToken: process.env.CODECOV_TOKEN
-            })
-        ]
-    })
+                uploadToken: process.env.CODECOV_TOKEN,
+            }),
+        ],
+    }),
 );

@@ -12,8 +12,8 @@ describe('components', () => {
                     title: 'Test',
                     description: 'Test',
                     i18n: {} as any,
-                    children: <div>Test</div>
-                })
+                    children: <div>Test</div>,
+                }),
             );
 
             await waitFor(() => expect(unmount).not.toThrow());

@@ -29,8 +29,8 @@ export default function LocaleSelector({ countries = [], locale }: LocaleSelecto
                 locale: `${language.isoCode.toLowerCase()}-${country.isoCode.toUpperCase()}`,
                 country: country.name,
                 language: language.name,
-                currency: country.currency.isoCode
-            }))
+                currency: country.currency.isoCode,
+            })),
         )
         .filter((i) => ((i as any)?.length || 0) > 0);
 
@@ -89,7 +89,7 @@ export default function LocaleSelector({ countries = [], locale }: LocaleSelecto
                             <Label>{country.currency}</Label>
                         </Link>
                     );
-                })
+                }),
             )}
         </div>
     );

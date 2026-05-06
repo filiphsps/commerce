@@ -64,8 +64,8 @@ export function AddToCart({
         linesAdd([
             {
                 merchandiseId: selectedVariant.id!,
-                quantity
-            }
+                quantity,
+            },
         ]);
 
         postEvent('add_to_cart', {
@@ -80,8 +80,8 @@ export function AddToCart({
                                 locale,
                                 product: {
                                     productGid: product.id!,
-                                    variantGid: selectedVariant.id!
-                                }
+                                    variantGid: selectedVariant.id!,
+                                },
                             }),
                             item_name: product.title,
                             item_variant: selectedVariant.title,
@@ -92,11 +92,11 @@ export function AddToCart({
                             sku: selectedVariant.sku || undefined,
                             currency: selectedVariant.price.currencyCode!,
                             price: safeParseFloat(undefined, selectedVariant.price.amount!),
-                            quantity
-                        }
-                    ]
-                }
-            }
+                            quantity,
+                        },
+                    ],
+                },
+            },
         });
 
         clearTimeout(animation);
@@ -105,7 +105,7 @@ export function AddToCart({
             setTimeout(() => {
                 clearTimeout(animation);
                 setAnimation(() => undefined);
-            }, 3000)
+            }, 3000),
         );
 
         if (redirect) {

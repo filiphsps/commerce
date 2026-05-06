@@ -5,15 +5,15 @@ import { InvalidHandleError, NotFoundError, ProviderFetchError } from '@nordcom/
 import { ProductApi } from './product';
 
 vi.mock('@apollo/client', () => ({
-    gql: vi.fn()
+    gql: vi.fn(),
 }));
 
 vi.mock('crypto-js/md5', () => ({
-    default: vi.fn(() => ({ toString: vi.fn(() => 'mocked-md5') }))
+    default: vi.fn(() => ({ toString: vi.fn(() => 'mocked-md5') })),
 }));
 
 vi.mock('@/utils/abstract-api', () => ({
-    cleanShopifyHtml: vi.fn(() => 'cleaned-html')
+    cleanShopifyHtml: vi.fn(() => 'cleaned-html'),
 }));
 
 describe('api', () => {
@@ -22,7 +22,7 @@ describe('api', () => {
             describe('ProductApi', () => {
                 const mockApi = {
                     shop: vi.fn(() => ({ id: 'mock-shop-id' })),
-                    query: vi.fn()
+                    query: vi.fn(),
                 };
 
                 it('should return InvalidHandleError if handle is not provided', async () => {
@@ -54,7 +54,7 @@ describe('api', () => {
                 it('should return product data if product is found', async () => {
                     const mockProduct = {
                         handle: 'some-handle',
-                        descriptionHtml: '<p>Some description</p>'
+                        descriptionHtml: '<p>Some description</p>',
                     };
                     mockApi.query.mockResolvedValueOnce({ data: { product: mockProduct }, errors: [] });
 
@@ -62,7 +62,7 @@ describe('api', () => {
 
                     expect(result).toEqual({
                         handle: 'some-handle',
-                        descriptionHtml: 'cleaned-html'
+                        descriptionHtml: 'cleaned-html',
                     });
                     expect(error).toBeUndefined();
                 });

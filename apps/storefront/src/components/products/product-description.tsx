@@ -65,6 +65,6 @@ function Skeleton({ className, ...props }: ProductDescriptionSkeletonProps) {
 export const ProductDescription = Object.assign(Component, {
     displayName: 'Nordcom.Product.Description',
     skeleton: Object.assign(Skeleton, {
-        displayName: 'Nordcom.Product.Description.skeleton'
-    })
+        displayName: 'Nordcom.Product.Description.skeleton',
+    }),
 });

@@ -36,7 +36,7 @@ import type { CollectionPage, WithContext } from 'schema-dts';
 export type CollectionPageParams = Promise<{ domain: string; locale: string; handle: string }>;
 
 export async function generateStaticParams({
-    params
+    params,
 }: {
     params: Omit<Awaited<CollectionPageParams>, 'handle'>;
 }): Promise<Omit<Awaited<CollectionPageParams>, 'domain' | 'locale'>[]> {
@@ -53,7 +53,7 @@ export async function generateStaticParams({
     }
 
     return collections.map(({ handle }) => ({
-        handle
+        handle,
     }));
 }
 
@@ -63,7 +63,7 @@ type SearchParams = Promise<{
 
 export async function generateMetadata({
     params,
-    searchParams: queryParams
+    searchParams: queryParams,
 }: {
     params: CollectionPageParams;
     searchParams: SearchParams;
@@ -125,10 +125,10 @@ export async function generateMetadata({
             languages: locales.reduce(
                 (prev, { code }) => ({
                     ...prev,
-                    [code]: `https://${shop.domain}/${code}/collections/${handle}/${pageNumber > 1 ? `?page=${pageNumber}` : ''}`
+                    [code]: `https://${shop.domain}/${code}/collections/${handle}/${pageNumber > 1 ? `?page=${pageNumber}` : ''}`,
                 }),
-                {}
-            )
+                {},
+            ),
         },
         openGraph: {
             url: `/collections/${handle}/`,
@@ -144,17 +144,17 @@ export async function generateMetadata({
                           width: page.meta_image.dimensions.width || 0,
                           height: page.meta_image.dimensions.height || 0,
                           alt: page.meta_image.alt || '',
-                          secureUrl: page.meta_image.url
-                      }
+                          secureUrl: page.meta_image.url,
+                      },
                   ]
-                : undefined
-        }
+                : undefined,
+        },
     };
 }
 
 export default async function CollectionsCollectionPage({
     params,
-    searchParams: queryParams
+    searchParams: queryParams,
 }: {
     params: CollectionPageParams;
     searchParams: SearchParams;
@@ -177,7 +177,7 @@ export default async function CollectionsCollectionPage({
         const params = new URLSearchParams(searchParams);
         redirect(
             `/${locale.code}/collections/${handle}/${params.size > 0 ? '?' : ''}${params.toString()}`,
-            RedirectType.replace
+            RedirectType.replace,
         );
     }
 
@@ -218,28 +218,28 @@ export default async function CollectionsCollectionPage({
     const jsonLd: WithContext<CollectionPage> = {
         '@context': 'https://schema.org',
         '@type': 'CollectionPage',
-        'name': collection.title,
-        'description': collection.description,
-        'url': `https://${shop.domain}/${locale.code}/collections/${handle}/`,
-        'image': collection.image?.url || undefined,
-        'mainEntity': {
+        name: collection.title,
+        description: collection.description,
+        url: `https://${shop.domain}/${locale.code}/collections/${handle}/`,
+        image: collection.image?.url || undefined,
+        mainEntity: {
             '@type': 'ItemList',
-            'numberOfItems': pagesInfo.products,
-            'itemListElement': flattenConnection(collection.products).map(
+            numberOfItems: pagesInfo.products,
+            itemListElement: flattenConnection(collection.products).map(
                 ({ handle, title, images, description, vendor }, index) => ({
                     '@type': 'ListItem',
-                    'position': index,
-                    'url': `https://${shop.domain}/${locale.code}/products/${handle}/`,
-                    'name': title,
-                    'description': description,
-                    'image': flattenConnection(images)[0]?.url || undefined,
-                    'brand': {
+                    position: index,
+                    url: `https://${shop.domain}/${locale.code}/products/${handle}/`,
+                    name: title,
+                    description: description,
+                    image: flattenConnection(images)[0]?.url || undefined,
+                    brand: {
                         '@type': 'Brand',
-                        'name': vendor
-                    }
-                })
-            )
-        }
+                        name: vendor,
+                    },
+                }),
+            ),
+        },
     };
 
     const i18n = await getDictionary({ shop, locale });

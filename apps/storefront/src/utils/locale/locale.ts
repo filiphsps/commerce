@@ -173,12 +173,12 @@ export const getTranslations = (scope: LocaleDictionaryScope, dictionary?: Local
             parts.push(string.substring(lastIndex));
 
             const partsWithKeys = parts.map((part, index) =>
-                React.isValidElement(part) ? { ...{ key: index }, ...part } : part
+                React.isValidElement(part) ? { ...{ key: index }, ...part } : part,
             );
             return partsWithKeys.some((part) => React.isValidElement(part))
                 ? (partsWithKeys as any)
                 : (parts.join('') as any);
-        }
+        },
     };
 };
 
@@ -192,7 +192,7 @@ export const isSizeOption = (name: string): boolean =>
         'size', // English.
         'tamaño', // Spanish.
         'größe', // German.
-        'storlek' // Swedish, Norwegian, Danish.
+        'storlek', // Swedish, Norwegian, Danish.
     ].includes(name.toLowerCase());
 
 type CapitalizeOptions = {

@@ -25,7 +25,7 @@ async function Content({ shop, locale, handle }: { shop: OnlineShop; locale: Loc
         fragment: /* GraphQL */ `
             id
             handle
-        `
+        `,
     });
     if (productError) {
         if (Error.isNotFound(productError)) {

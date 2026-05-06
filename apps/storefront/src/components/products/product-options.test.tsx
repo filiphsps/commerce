@@ -8,27 +8,27 @@ const { options, selectedOptions, variants, setSelectedOptions } = vi.hoisted(()
     options: [
         {
             name: 'Size',
-            values: ['100g', '200g', '300g']
-        }
+            values: ['100g', '200g', '300g'],
+        },
     ],
     selectedOptions: {
-        Size: '200g'
+        Size: '200g',
     },
     variants: [
         {
             title: '100g',
-            id: 'gid://shopify/ProductVariant/1'
+            id: 'gid://shopify/ProductVariant/1',
         },
         {
             title: '200g',
-            id: 'gid://shopify/ProductVariant/2'
+            id: 'gid://shopify/ProductVariant/2',
         },
         {
             title: '300g',
-            id: 'gid://shopify/ProductVariant/3'
-        }
+            id: 'gid://shopify/ProductVariant/3',
+        },
     ],
-    setSelectedOptions: vi.fn()
+    setSelectedOptions: vi.fn(),
 }));
 
 // Mock `@shopify/hydrogen-react`s `useProduct` hook and other
@@ -42,27 +42,27 @@ vi.mock('@shopify/hydrogen-react', async () => ({
             handle: 'test',
             title: 'title',
             vendor: 'vendor',
-            variants
+            variants,
         },
         variants,
         selectedOptions,
         setSelectedOptions,
-        isOptionInStock: vi.fn().mockImplementation((_, val) => val !== '100g')
+        isOptionInStock: vi.fn().mockImplementation((_, val) => val !== '100g'),
     }),
     createStorefrontClient: () => ({
         getStorefrontApiUrl: () => '',
-        getPublicTokenHeaders: () => ({})
+        getPublicTokenHeaders: () => ({}),
     }),
     useCart: vi.fn().mockReturnValue({
-        status: 'idle'
+        status: 'idle',
     }),
     useShop: vi.fn().mockReturnValue({}),
-    useShopifyCookies: vi.fn().mockReturnValue({})
+    useShopifyCookies: vi.fn().mockReturnValue({}),
 }));
 
 vi.mock('next/link', async () => ({
     ...(((await vi.importActual('next/link')) as any) || {}),
-    default: (props: any) => <a {...props} />
+    default: (props: any) => <a {...props} />,
 }));
 
 describe.skip('components', () => {

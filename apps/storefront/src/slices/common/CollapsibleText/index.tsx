@@ -24,12 +24,12 @@ const CollapsibleText = ({ slice }: CollapsibleTextProps): JSX.Element => {
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
             className={cn(
-                'group w-full select-none appearance-none rounded-lg border-2 border-solid border-gray-300 bg-gray-100 py-3 transition-all duration-150'
+                'group w-full select-none appearance-none rounded-lg border-2 border-solid border-gray-300 bg-gray-100 py-3 transition-all duration-150',
             )}
         >
             <summary
                 className={cn(
-                    'flex cursor-pointer appearance-none items-center justify-start gap-2 border-0 border-solid border-gray-300 px-2 transition-all duration-150 group-open:mb-3 group-open:border-b-2 group-open:pb-3'
+                    'flex cursor-pointer appearance-none items-center justify-start gap-2 border-0 border-solid border-gray-300 px-2 transition-all duration-150 group-open:mb-3 group-open:border-b-2 group-open:pb-3',
                 )}
             >
                 <div className="flex h-8 w-12 items-center justify-center">

@@ -17,7 +17,7 @@ export type ShopPageProps = {
 };
 
 export const metadata: Metadata = {
-    title: 'Home'
+    title: 'Home',
 };
 
 export default async function ShopPage({ params }: ShopPageProps) {

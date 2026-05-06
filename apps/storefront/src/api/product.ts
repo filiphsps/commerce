@@ -5,7 +5,7 @@ import type {
     Product as ShopifyProduct,
     ProductSortKeys,
     ProductVariant as ShopifyVariant,
-    SearchResultItemConnection
+    SearchResultItemConnection,
 } from '@shopify/hydrogen-react/storefront-api-types';
 
 export type ProductVariant = {
@@ -62,7 +62,7 @@ export type Product = {
 export type ProductFilters = SearchResultItemConnection['productFilters'];
 
 export const createProductSearchParams = ({
-    product: { trackingParameters }
+    product: { trackingParameters },
 }: {
     product: Partial<Product>;
 }): string => {
@@ -104,7 +104,7 @@ export const isProductConfectionary = (product: Product): boolean => {
         'pie',
         'snack',
         'snacks',
-        'sweets'
+        'sweets',
     ];
 
     if (applicableTypes.some((t) => type.includes(t))) {
@@ -144,7 +144,7 @@ export function transformQuantityBreaks(quantityBreaks: ProductVariant['quantity
         const { steps } = reference;
         return steps.references.edges.map(({ node: { minimumQuantity, value } }) => ({
             minimumQuantity: Number.parseInt(minimumQuantity.value, 10),
-            value: Number.parseFloat(value.value)
+            value: Number.parseFloat(value.value),
         }));
     } catch {
         // TODO: Handle errors properly.

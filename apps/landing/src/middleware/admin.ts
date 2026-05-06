@@ -25,7 +25,7 @@ export const admin = async (req: NextRequest): Promise<NextResponse> => {
     }
 
     return NextResponse.rewrite(newUrl, {
-        request: { headers }
+        request: { headers },
     });
 };
 /* c8 ignore end */

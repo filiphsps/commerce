@@ -25,5 +25,5 @@ export const components = {
     image_grid: ImageGrid,
     original_content: OriginalContent,
     text_block: Overview,
-    vendors: Vendors
+    vendors: Vendors,
 };

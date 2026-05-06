@@ -30,11 +30,11 @@ export async function GET(req: NextRequest, { params }: { params: FaviconRoutePa
                 status: errors[0].statusCode,
                 tenant: domain,
                 data: null,
-                errors
+                errors,
             },
             {
-                status: errors[0].statusCode
-            }
+                status: errors[0].statusCode,
+            },
         );
     }
 
@@ -66,8 +66,8 @@ export async function GET(req: NextRequest, { params }: { params: FaviconRoutePa
             {
                 width: width!,
                 height: height!,
-                fonts: []
-            }
+                fonts: [],
+            },
         );
     } catch (error: unknown) {
         console.error(error);
@@ -77,11 +77,11 @@ export async function GET(req: NextRequest, { params }: { params: FaviconRoutePa
                 status: 500,
                 tenant: domain,
                 data: null,
-                errors: [error]
+                errors: [error],
             },
             {
-                status: 500
-            }
+                status: 500,
+            },
         );
     }
 }

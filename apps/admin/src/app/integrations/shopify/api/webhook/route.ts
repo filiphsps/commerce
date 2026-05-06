@@ -9,9 +9,9 @@ export const GET = async (req: NextRequest) => {
         {
             status: 500,
             data: null,
-            errors: null
+            errors: null,
         },
-        { status: 500 }
+        { status: 500 },
     );
 };
 
@@ -22,8 +22,8 @@ export const POST = async (req: NextRequest) => {
         {
             status: 500,
             data: null,
-            errors: null
+            errors: null,
         },
-        { status: 500 }
+        { status: 500 },
     );
 };

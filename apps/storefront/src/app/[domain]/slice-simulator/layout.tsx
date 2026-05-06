@@ -25,15 +25,15 @@ import type { ReactNode } from 'react';
 export const metadata: Metadata = {
     robots: {
         follow: false,
-        index: false
-    }
+        index: false,
+    },
 };
 
 export type SliceSimulatorLayoutParams = Promise<{ domain: string }>;
 
 export default async function SliceSimulatorLayout({
     children,
-    params
+    params,
 }: {
     children: ReactNode;
     params: SliceSimulatorLayoutParams;

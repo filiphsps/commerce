@@ -14,35 +14,35 @@ export default defineProject({
         alias: [
             {
                 find: '@/i18n/dictionary',
-                replacement: resolve(__dirname, './src/utils/dictionary.ts')
+                replacement: resolve(__dirname, './src/utils/dictionary.ts'),
             },
             {
                 find: '@/i18n',
-                replacement: resolve(__dirname, './src/locales')
+                replacement: resolve(__dirname, './src/locales'),
             },
             {
                 find: '@/slices',
-                replacement: resolve(__dirname, './src/slices')
+                replacement: resolve(__dirname, './src/slices'),
             },
             {
                 find: '@/slices/navigation',
-                replacement: resolve(__dirname, './src/slices/navigation')
+                replacement: resolve(__dirname, './src/slices/navigation'),
             },
             {
                 find: '@/pages',
-                replacement: resolve(__dirname, './src/app/[domain]/[locale]')
+                replacement: resolve(__dirname, './src/app/[domain]/[locale]'),
             },
             {
                 find: '@',
-                replacement: resolve(__dirname, './src')
-            }
-        ]
+                replacement: resolve(__dirname, './src'),
+            },
+        ],
     },
     test: {
         environment: 'happy-dom',
 
         typecheck: {
-            tsconfig: `${__dirname}/tsconfig.test.json`
+            tsconfig: `${__dirname}/tsconfig.test.json`,
         },
 
         setupFiles: [`${__dirname}/vitest.setup.ts`],
@@ -51,13 +51,13 @@ export default defineProject({
         deps: {
             web: {
                 transformCss: true,
-                transformAssets: true
-            }
+                transformAssets: true,
+            },
         },
 
         exclude: [...configDefaults.exclude, './src/utils/flags.ts'],
         coverage: {
-            exclude: [...configDefaults.exclude, './src/utils/flags.ts']
-        }
-    }
+            exclude: [...configDefaults.exclude, './src/utils/flags.ts'],
+        },
+    },
 });

@@ -10,7 +10,7 @@ describe('utils', () => {
                     code: 'en-US',
                     locale: 'en-US',
                     language: 'EN',
-                    country: 'US'
+                    country: 'US',
                 });
             });
             it('should return a locale object with a country code', () => {
@@ -52,11 +52,11 @@ describe('utils', () => {
                 const dictionary = {
                     common: {
                         hello: 'Hello',
-                        world: 'World'
+                        world: 'World',
                     },
                     cart: {
-                        welcome: 'Welcome to the homepage'
-                    }
+                        welcome: 'Welcome to the homepage',
+                    },
                 } as any;
 
                 const { t: cartT }: any = getTranslations('cart', dictionary);

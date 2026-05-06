@@ -7,7 +7,7 @@ import type { Metadata } from 'next';
 export type SetupNewPageProps = {};
 
 export const metadata: Metadata = {
-    title: 'Account'
+    title: 'Account',
 };
 
 export default async function AccountPage({}: SetupNewPageProps) {

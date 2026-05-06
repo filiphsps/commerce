@@ -10,7 +10,7 @@ describe('components', () => {
     describe('Pricing', () => {
         const price: MoneyV2 = {
             amount: '10.00',
-            currencyCode: 'USD'
+            currencyCode: 'USD',
         };
 
         it('renders without crashing', async () => {

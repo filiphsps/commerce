@@ -16,10 +16,10 @@ Sentry.init({
         'The operation would yield an incorrect node tree.',
         'TodoError',
         "Failed to execute 'removeChild'",
-        `Unexpected token`
+        `Unexpected token`,
     ],
 
     tracesSampleRate: 0,
     debug: false,
-    integrations: []
+    integrations: [],
 });

@@ -42,7 +42,7 @@ const ProductCard = async ({ shop, locale, data: product, priority, className, .
                 CARD_STYLES,
                 'content-visibility-auto contain-intrinsic-size-[20rem_auto] hover:border-gray-300',
                 isFreeShipping && 'border-primary shadow',
-                className
+                className,
             )}
             {...props}
         >

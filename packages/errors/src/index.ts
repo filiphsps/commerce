@@ -25,7 +25,7 @@ export class Error<T = unknown> extends BuiltinError {
                 return `https://shops.nordcom.io/docs/errors/${this.code}/`;
             },
             enumerable: true,
-            configurable: false
+            configurable: false,
         });
         Object.setPrototypeOf(this, Error.prototype);
     }
@@ -92,7 +92,7 @@ export enum ApiErrorKind {
     API_NO_LOCALES_AVAILABLE = 'API_NO_LOCALES_AVAILABLE',
     API_INVALID_SHOPIFY_CUSTOMER_ACCOUNT_API_CONFIGURATION = 'API_INVALID_SHOPIFY_CUSTOMER_ACCOUNT_API_CONFIGURATION',
     API_MISSING_ENVIRONMENT_VARIABLE = 'API_MISSING_ENVIRONMENT_VARIABLE',
-    API_PROVIDER_FETCH_FAILED = 'API_PROVIDER_FETCH_FAILED'
+    API_PROVIDER_FETCH_FAILED = 'API_PROVIDER_FETCH_FAILED',
 }
 
 export class ApiError extends Error<ApiErrorKind> {
@@ -373,7 +373,7 @@ export enum GenericErrorKind {
     UNREACHABLE = 'UNREACHABLE',
     INVALID_TYPE = 'INVALID_TYPE',
     MISSING_CONTEXT_PROVIDER = 'MISSING_CONTEXT_PROVIDER',
-    NOT_CONNECTED_TO_DATABASE = 'NOT_CONNECTED_TO_DATABASE'
+    NOT_CONNECTED_TO_DATABASE = 'NOT_CONNECTED_TO_DATABASE',
 }
 
 export class GenericError extends Error<GenericErrorKind> {
@@ -448,7 +448,7 @@ export const getAllErrorCodes = () => {
 };
 
 export const getErrorFromCode = (
-    code: GenericErrorKind | ApiErrorKind
+    code: GenericErrorKind | ApiErrorKind,
 ): typeof GenericError | typeof ApiError | null => {
     switch (code) {
         // Generic Errors.

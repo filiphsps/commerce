@@ -78,8 +78,8 @@ async function handleCommerceError(req: NextRequest, error: Error) {
     return NextResponse.rewrite(newUrl, {
         status: error.statusCode || 500,
         request: {
-            headers: headers
-        }
+            headers: headers,
+        },
     });
 }
 
@@ -156,7 +156,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
 
             const defaultLocale = (shop.i18n?.defaultLocale ?? 'en-US') as Code;
             const userLang = resolveAcceptLanguage(acceptLanguageHeader ?? '', locales, defaultLocale, {
-                matchCountry: true
+                matchCountry: true,
             });
 
             locale = userLang as string;
