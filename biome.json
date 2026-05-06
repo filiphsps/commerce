@@ -13,7 +13,7 @@
                 "useSortedProperties": "on"
             }
         },
-        "includes": ["!package.json", "!coverage/**", "!**/coverage/**", "!.claude/**", "!docs/superpowers/**"]
+        "includes": ["**", "!package.json", "!coverage/**", "!**/coverage/**", "!.claude/**", "!docs/superpowers/**"]
     },
     "css": {
         "formatter": { "enabled": true },
@@ -51,7 +51,7 @@
     },
     "formatter": {
         "enabled": true,
-        "includes": ["!package.json"],
+        "includes": ["**", "!package.json"],
         "indentStyle": "space",
         "indentWidth": 4,
         "lineEnding": "lf",
@@ -117,12 +117,7 @@
     },
     "overrides": [
         {
-            "includes": [
-                "**/*.test.*",
-                "**/*.spec.*",
-                "**/vitest.config.*",
-                "**/vitest.setup.*"
-            ],
+            "includes": ["**/*.test.*", "**/*.spec.*", "**/vitest.config.*", "**/vitest.setup.*"],
             "linter": {
                 "rules": {
                     "performance": { "useTopLevelRegex": "off" },
