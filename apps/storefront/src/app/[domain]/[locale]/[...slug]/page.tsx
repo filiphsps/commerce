@@ -104,14 +104,14 @@ export async function generateMetadata({ params }: { params: CustomPageParams })
             type: 'website',
             title,
             description,
-            siteName: `${shop.name} (${locale.country!})`,
+            siteName: `${shop.name} (${locale.country})`,
             locale: locale.code,
             images: page.meta_image.url
                 ? [
                       {
-                          url: page.meta_image.url!,
-                          width: page.meta_image.dimensions.width!,
-                          height: page.meta_image.dimensions.height!
+                          url: page.meta_image.url,
+                          width: page.meta_image.dimensions.width,
+                          height: page.meta_image.dimensions.height
                       }
                   ]
                 : []

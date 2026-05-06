@@ -139,7 +139,8 @@ export default [
             '**/vitest.setup.ts',
             '**/next.config.*',
             '**/tailwind.config.*',
-            '**/postcss.config.*'
+            '**/postcss.config.*',
+            '**/next-env.d.ts'
         ]
     },
 
