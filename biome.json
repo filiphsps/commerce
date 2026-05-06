@@ -1,0 +1,161 @@
+{
+    "$schema": "https://biomejs.dev/schemas/2.4.10/schema.json",
+    "assist": {
+        "actions": {
+            "source": {
+                "organizeImports": "on",
+                "useSortedAttributes": "on",
+                "useSortedInterfaceMembers": "on",
+                "useSortedKeys": {
+                    "level": "on",
+                    "options": { "groupByNesting": true }
+                },
+                "useSortedProperties": "on"
+            }
+        },
+        "includes": ["!package.json", "!coverage/**", "!**/coverage/**", "!.claude/**", "!docs/superpowers/**"]
+    },
+    "css": {
+        "formatter": { "enabled": true },
+        "linter": { "enabled": true },
+        "parser": { "cssModules": true, "tailwindDirectives": true }
+    },
+    "files": {
+        "includes": [
+            "**",
+            "!**/*.scss",
+            "!**/.next",
+            "!**/.next/**",
+            "!**/.turbo",
+            "!**/.turbo/**",
+            "!**/.vercel",
+            "!**/.vercel/**",
+            "!**/.vscode",
+            "!**/.claude",
+            "!**/.worktrees",
+            "!**/*.d.ts",
+            "!**/build",
+            "!**/build/**",
+            "!**/coverage",
+            "!**/coverage/**",
+            "!**/dist",
+            "!**/dist/**",
+            "!**/node_modules",
+            "!**/node_modules/**",
+            "!**/public/sitemap*.xml*",
+            "!**/public/robots.txt*",
+            "!**/storybook-static/**",
+            "!apps/storefront/prismicio-types.d.ts",
+            "!docs/superpowers/**"
+        ]
+    },
+    "formatter": {
+        "enabled": true,
+        "includes": ["!package.json"],
+        "indentStyle": "space",
+        "indentWidth": 4,
+        "lineEnding": "lf",
+        "lineWidth": 120
+    },
+    "javascript": {
+        "experimentalEmbeddedSnippetsEnabled": true,
+        "formatter": {
+            "arrowParentheses": "always",
+            "bracketSpacing": true,
+            "quoteStyle": "single",
+            "semicolons": "always",
+            "trailingCommas": "all"
+        },
+        "jsxRuntime": "transparent"
+    },
+    "linter": {
+        "enabled": true,
+        "includes": ["**", "!package.json"],
+        "rules": {
+            "recommended": true,
+            "a11y": { "recommended": false },
+            "complexity": { "noBannedTypes": "off" },
+            "correctness": {
+                "noEmptyPattern": "off",
+                "noUnusedImports": "error",
+                "noUnusedVariables": { "fix": "unsafe", "level": "error" },
+                "useExhaustiveDependencies": "warn",
+                "useHookAtTopLevel": "error"
+            },
+            "nursery": {
+                "useSortedClasses": { "fix": "unsafe", "level": "warn" }
+            },
+            "performance": {
+                "noNamespaceImport": "off",
+                "recommended": true
+            },
+            "security": {
+                "noDangerouslySetInnerHtml": "off"
+            },
+            "style": {
+                "noNonNullAssertion": "off",
+                "noRestrictedImports": "off",
+                "useConst": "error",
+                "useFilenamingConvention": "off",
+                "useImportType": "error",
+                "useNamingConvention": "off"
+            },
+            "suspicious": {
+                "noArrayIndexKey": "off",
+                "noConsole": {
+                    "level": "warn",
+                    "options": { "allow": ["warn", "error", "info", "debug"] }
+                },
+                "noDebugger": "warn",
+                "noDocumentCookie": "off",
+                "noEmptyInterface": "off",
+                "noExplicitAny": "warn",
+                "noShadowRestrictedNames": "off",
+                "noVar": "error"
+            }
+        }
+    },
+    "overrides": [
+        {
+            "includes": [
+                "**/*.test.*",
+                "**/*.spec.*",
+                "**/vitest.config.*",
+                "**/vitest.setup.*"
+            ],
+            "linter": {
+                "rules": {
+                    "performance": { "useTopLevelRegex": "off" },
+                    "suspicious": {
+                        "noConsole": "off",
+                        "noExplicitAny": "off",
+                        "noVar": "off"
+                    }
+                }
+            }
+        },
+        {
+            "includes": [
+                "**/next.config.*",
+                "**/postcss.config.*",
+                "**/tailwind.config.*",
+                "**/sentry.*.config.*",
+                "**/instrumentation.ts",
+                "**/data-cache-handler.mjs"
+            ],
+            "linter": {
+                "rules": {
+                    "suspicious": {
+                        "noConsole": "off",
+                        "noExplicitAny": "off"
+                    }
+                }
+            }
+        }
+    ],
+    "vcs": {
+        "clientKind": "git",
+        "enabled": true,
+        "useIgnoreFile": true
+    }
+}
