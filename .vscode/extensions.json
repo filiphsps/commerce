@@ -1,5 +1,6 @@
 {
     "recommendations": [
+        "biomejs.biome",
         "jgclark.vscode-todo-highlight",
         "formulahendry.auto-rename-tag",
         "formulahendry.auto-close-tag",
@@ -9,8 +10,11 @@
         "bierner.markdown-preview-github-styles",
         "medo64.render-crlf",
         "wakatime.vscode-wakatime",
-        "esbenp.prettier-vscode",
         "bradlc.vscode-tailwindcss",
         "vitest.explorer"
+    ],
+    "unwantedRecommendations": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode"
     ]
 }
