@@ -26,6 +26,7 @@ describe('utils', () => {
         beforeEach(() => {
             vi.spyOn(console, 'warn').mockImplementation(() => {});
             vi.spyOn(console, 'error').mockImplementation(() => {});
+            window.location.href = '';
         });
 
         const cart: CartWithActions = {
@@ -92,10 +93,6 @@ describe('utils', () => {
         };
 
         const locale = Locale.from('en-US')!;
-
-        beforeEach(() => {
-            window.location.href = '';
-        });
 
         it(`should throw an error when cart is empty`, async () => {
             const emptyCart: CartWithActions = {

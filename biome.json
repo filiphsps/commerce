@@ -57,6 +57,7 @@
                 "useArrowFunction": "off"
             },
             "correctness": {
+                "noChildrenProp": "warn",
                 "noEmptyPattern": "off",
                 "noUnusedImports": "error",
                 "noUnusedVariables": { "fix": "unsafe", "level": "error" },
@@ -83,6 +84,8 @@
             },
             "suspicious": {
                 "noArrayIndexKey": "off",
+                "noAssignInExpressions": "warn",
+                "noAsyncPromiseExecutor": "warn",
                 "noConsole": {
                     "level": "warn",
                     "options": { "allow": ["warn", "error", "info", "debug"] }
@@ -91,6 +94,7 @@
                 "noDocumentCookie": "off",
                 "noEmptyInterface": "off",
                 "noExplicitAny": "warn",
+                "noNonNullAssertedOptionalChain": "warn",
                 "noShadowRestrictedNames": "off",
                 "noVar": "error"
             }

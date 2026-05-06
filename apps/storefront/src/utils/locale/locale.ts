@@ -160,7 +160,7 @@ export const getTranslations = (scope: LocaleDictionaryScope, dictionary?: Local
             const placeholderRegex = /\{([^}]+)\}/g;
             const parts: (string | ReactNode)[] = [];
 
-            let match;
+            let match: RegExpExecArray | null;
             let lastIndex = 0;
             while ((match = placeholderRegex.exec(string)) !== null) {
                 parts.push(string.substring(lastIndex, match.index));

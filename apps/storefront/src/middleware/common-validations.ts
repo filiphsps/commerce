@@ -1,5 +1,3 @@
-import { UnreachableError } from '@nordcom/commerce-errors';
-
 import type { NextURL } from 'next/dist/server/web/next-url';
 
 export const DOUBLE_SLASHES = /\/\//g;
@@ -52,10 +50,8 @@ export const commonValidations = <T extends string | NextURL | URL>(url: T): T =
 
     if (typeof url === 'string') {
         return path as T;
-    } else {
-        url.pathname = path;
-        return url;
     }
 
-    throw new UnreachableError();
+    url.pathname = path;
+    return url;
 };
