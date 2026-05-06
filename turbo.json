@@ -9,6 +9,7 @@
         "**/vite.config.ts",
         "package.json",
         "**/package.json",
+        "biome.json",
         ".env",
         "**/.env",
         "*.env",
@@ -38,20 +39,24 @@
             "inputs": ["$TURBO_DEFAULT$", ".env.development.local", ".env.local", ".env.development", ".env"]
         },
         "lint": {
-            "cache": false,
-            "dependsOn": ["^build"]
-        },
-        "fix:lint": {
-            "cache": false
-        },
-        "prettier": {
-            "cache": false
+            "cache": true,
+            "dependsOn": ["^build"],
+            "outputs": []
         },
         "typecheck": {
             "cache": false,
             "dependsOn": ["^build"]
         },
         "format": {
+            "cache": false
+        },
+        "format:lint": {
+            "cache": false
+        },
+        "format:format": {
+            "cache": false
+        },
+        "format:check": {
             "cache": false
         },
         "slicemachine": {
