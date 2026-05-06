@@ -80,7 +80,7 @@
         "lodash.debounce": "4.0.8",
         "lucide-react": "0.456.0",
         "mongoose": "9.6.1",
-        "next-auth": "5.0.0-beta.25",
+        "next-auth": "5.0.0-beta.30",
         "next-sitemap": "4.2.3",
         "next": "16.2.4",
         "nextjs-toploader": "3.9.17",
