@@ -1,15 +1,13 @@
 import 'server-only';
 
-import { type OnlineShop } from '@nordcom/commerce-db';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { VendorsApi } from '@/api/shopify/vendor';
-import { cn } from '@/utils/tailwind';
-
 import Link from '@/components/link';
-
 import type { VendorModel } from '@/models/VendorModel';
 import type { Locale } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
 
 export type VendorsProps = {
     shop: OnlineShop;
@@ -32,7 +30,7 @@ const Vendors = async ({ shop, locale, className, ...props }: VendorsProps) => {
             // TODO: Figure out if we should link to the collection or a filtered product list.
             href={`/collections/${vendor.handle}/`}
             className={cn(
-                'bg-secondary-light hover:bg-primary hover:text-primary-foreground flex items-center justify-center whitespace-nowrap rounded-lg p-2 px-3 text-center text-sm font-semibold leading-tight transition-colors md:mr-0 md:whitespace-normal md:px-3',
+                'flex items-center justify-center whitespace-nowrap rounded-lg bg-secondary-light p-2 px-3 text-center font-semibold text-sm leading-tight transition-colors hover:bg-primary hover:text-primary-foreground md:mr-0 md:whitespace-normal md:px-3',
                 className,
             )}
         >

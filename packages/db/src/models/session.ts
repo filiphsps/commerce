@@ -1,8 +1,6 @@
 import { Schema } from 'mongoose';
-
-import { db } from '../db';
-
 import type { BaseDocument } from '../db';
+import { db } from '../db';
 import type { UserBase } from './user';
 
 export interface SessionBase extends BaseDocument {

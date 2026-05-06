@@ -1,11 +1,9 @@
-import { cn } from '@/utils/tailwind';
 import Image from 'next/image';
-
+import type { HTMLProps } from 'react';
+import type { Color } from '@/api/shop';
 import { Card } from '@/components/layout/card';
 import { Content } from '@/components/typography/content';
-
-import type { Color } from '@/api/shop';
-import type { HTMLProps } from 'react';
+import { cn } from '@/utils/tailwind';
 
 export type OverviewProps = {
     body?: React.ReactNode;

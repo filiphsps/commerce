@@ -1,9 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
-
+import { ProductCategory } from '@/components/products/product-category';
 import { Locale } from '@/utils/locale';
 import { render, waitFor } from '@/utils/test/react';
-
-import { ProductCategory } from '@/components/products/product-category';
 
 vi.mock('@/components/link', () => {
     return {

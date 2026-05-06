@@ -1,10 +1,8 @@
 import { TodoError } from '@nordcom/commerce-errors';
-
-import ConvertUnits from 'convert-units';
-
-import type { Locale } from './locale';
 import type { WeightUnit } from '@shopify/hydrogen-react/storefront-api-types';
 import type { Unit } from 'convert-units';
+import ConvertUnits from 'convert-units';
+import type { Locale } from './locale';
 
 export function usesImperialUnits(locale: Locale): boolean {
     return locale.country

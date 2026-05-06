@@ -1,10 +1,7 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-
 import { Model } from 'mongoose';
-
-import { Service } from './service';
-
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { BaseDocument } from '../db';
+import { Service } from './service';
 
 // Mocking the Model class
 vi.mock('mongoose', async () => {

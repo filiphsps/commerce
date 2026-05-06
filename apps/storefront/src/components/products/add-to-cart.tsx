@@ -1,21 +1,18 @@
 'use client';
 
+import { useCart } from '@shopify/hydrogen-react';
+import { usePathname, useRouter } from 'next/navigation';
 import { type HTMLProps, useCallback, useState } from 'react';
-
+import { toast } from 'sonner';
+import type { Product, ProductVariant } from '@/api/product';
+import { Button } from '@/components/actionable/button';
+import { useShop } from '@/components/shop/provider';
+import type { LocaleDictionary } from '@/utils/locale';
 import { getTranslations } from '@/utils/locale';
 import { productToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 import { useTrackable } from '@/utils/trackable';
-import { useCart } from '@shopify/hydrogen-react';
-import { usePathname, useRouter } from 'next/navigation';
-import { toast } from 'sonner';
-
-import { Button } from '@/components/actionable/button';
-import { useShop } from '@/components/shop/provider';
-
-import type { Product, ProductVariant } from '@/api/product';
-import type { LocaleDictionary } from '@/utils/locale';
 
 export type AddToCartProps = {
     i18n: LocaleDictionary;
@@ -142,7 +139,7 @@ export function AddToCart({
             as="button"
             type={(type as any) || ('button' as const)}
             data-ready={ready || undefined}
-            data-success={!!(animation as any) ? 'true' : undefined}
+            data-success={(animation as any) ? 'true' : undefined}
             onClick={add}
             title={tCart('add-n-to-your-cart', quantity)}
             data-nosnippet={true}

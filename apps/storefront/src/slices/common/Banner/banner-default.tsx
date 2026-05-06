@@ -1,19 +1,17 @@
-import { linkResolver } from '@/utils/prismic';
-import { cn } from '@/utils/tailwind';
 import { asLink } from '@prismicio/client';
-
+import type { JSX } from 'react';
 import { Button } from '@/components/actionable/button';
 import Link from '@/components/link';
 import { Content } from '@/components/typography/content';
 import { PrismicText } from '@/components/typography/prismic-text';
-
 import type { BannerSliceDefault } from '@/prismic/types';
-import type { JSX } from 'react';
+import { linkResolver } from '@/utils/prismic';
+import { cn } from '@/utils/tailwind';
 
 export const BannerDefault = ({ slice }: { slice: BannerSliceDefault }): JSX.Element => {
     return (
         <section
-            className="bg-primary text-primary-foreground flex flex-col items-center justify-center gap-4 rounded-lg p-8"
+            className="flex flex-col items-center justify-center gap-4 rounded-lg bg-primary p-8 text-primary-foreground"
             data-slice-variation={slice.variation}
         >
             <div className="flex h-full w-full flex-col items-center justify-center text-center empty:hidden">

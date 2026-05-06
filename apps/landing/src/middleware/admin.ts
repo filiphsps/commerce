@@ -1,9 +1,7 @@
 /* c8 ignore start */
 import { MissingEnvironmentVariableError } from '@nordcom/commerce-errors';
-
-import { NextResponse } from 'next/server';
-
 import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 
 export const ADMIN_HOSTNAME = 'admin.shops.nordcom.io';
 

@@ -1,20 +1,19 @@
 'use client';
 
-import { transformQuantityBreaks } from '@/api/product';
-import { capitalize, getTranslations } from '@/utils/locale';
-import { safeParseFloat } from '@/utils/pricing';
-import { cn } from '@/utils/tailwind';
 import { useCart, useProduct } from '@shopify/hydrogen-react';
+import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
+import type { HTMLProps } from 'react';
+import type { ProductVariant } from '@/api/product';
+import { transformQuantityBreaks } from '@/api/product';
 
 import { Button } from '@/components/actionable/button';
 import { COMMON_BADGE_STYLES } from '@/components/product-card/product-card-badges';
 import { Price } from '@/components/products/price';
 import { useQuantity } from '@/components/products/quantity-provider';
-
-import type { ProductVariant } from '@/api/product';
 import type { LocaleDictionary } from '@/utils/locale';
-import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
-import type { HTMLProps } from 'react';
+import { capitalize, getTranslations } from '@/utils/locale';
+import { safeParseFloat } from '@/utils/pricing';
+import { cn } from '@/utils/tailwind';
 
 export type ProductQuantityBreaksItemProps = {
     i18n: LocaleDictionary;
@@ -36,7 +35,7 @@ export function ProductQuantityBreaksItem({
     const { quantity, setQuantity } = useQuantity();
 
     const { selectedVariant } = useProduct();
-    if (!selectedVariant || !selectedVariant.price) {
+    if (!selectedVariant?.price) {
         return null;
     }
 
@@ -54,11 +53,11 @@ export function ProductQuantityBreaksItem({
     const pricing = (
         <>
             <Price
-                className={cn('text-lg font-bold leading-none', discount && 'text-red-500')}
+                className={cn('font-bold text-lg leading-none', discount && 'text-red-500')}
                 data={discountedPrice}
             />
             {discount ? (
-                <Price className="text-sm font-semibold leading-none text-gray-400 line-through" data={price} />
+                <Price className="font-semibold text-gray-400 text-sm leading-none line-through" data={price} />
             ) : null}
         </>
     );
@@ -69,7 +68,7 @@ export function ProductQuantityBreaksItem({
             {...props}
             type="button"
             className={cn(
-                'flex h-16 items-center justify-between gap-2 rounded-xl border-2 border-solid border-white bg-white px-3 py-3 text-lg leading-none shadow transition-colors focus-within:border-gray-400 hover:border-gray-400',
+                'flex h-16 items-center justify-between gap-2 rounded-xl border-2 border-white border-solid bg-white px-3 py-3 text-lg leading-none shadow transition-colors focus-within:border-gray-400 hover:border-gray-400',
                 active && 'border-primary text-primary',
                 className,
             )}
@@ -77,10 +76,10 @@ export function ProductQuantityBreaksItem({
             styled={false}
         >
             <div className="flex items-start gap-2">
-                <div className="text-lg font-bold leading-none">{minQuantity}x</div>
+                <div className="font-bold text-lg leading-none">{minQuantity}x</div>
 
                 {discount ? (
-                    <div className={cn(COMMON_BADGE_STYLES, 'bg-sale-stripes h-5 px-2 font-bold text-white')}>
+                    <div className={cn(COMMON_BADGE_STYLES, 'h-5 bg-sale-stripes px-2 font-bold text-white')}>
                         {capitalize(tProduct('save-n-percent', discount))}
                     </div>
                 ) : null}

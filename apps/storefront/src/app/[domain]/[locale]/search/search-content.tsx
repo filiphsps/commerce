@@ -1,23 +1,20 @@
 'use client';
 
-import { useCallback, useState, useTransition } from 'react';
-
-//import type { Product, ProductFilters } from '@/api/product';
-import { createProductSearchParams, isProductVegan, type Product, type ProductFilters } from '@/api/product';
-import { capitalize, getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
-import { cn } from '@/utils/tailwind';
 import { Search as SearchIcon } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-
+import type { HTMLProps } from 'react';
+import { useCallback, useState, useTransition } from 'react';
+//import type { Product, ProductFilters } from '@/api/product';
+import { createProductSearchParams, isProductVegan, type Product, type ProductFilters } from '@/api/product';
 import { Button } from '@/components/actionable/button';
 import { Filters } from '@/components/actionable/filters';
 import Link from '@/components/link';
 import { COMMON_BADGE_STYLES } from '@/components/product-card/product-card-badges';
 import { AttributeIcon } from '@/components/products/attribute-icon';
 import { Label } from '@/components/typography/label';
-
-import type { HTMLProps } from 'react';
+import { capitalize, getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
 
 type SearchBarProps = {
     locale: Locale;
@@ -38,7 +35,7 @@ export const SearchBar = ({ defaultValue, onSearch, disabled, className, i18n, .
         <div className={cn('flex h-14 overflow-clip rounded-lg bg-white', className)} {...props}>
             <input
                 name="query"
-                className="grow rounded-l-lg border-2 border-r-0 border-solid border-gray-300 px-4 py-2"
+                className="grow rounded-l-lg border-2 border-gray-300 border-r-0 border-solid px-4 py-2"
                 type="search"
                 value={value}
                 onChange={({ target: { value } }) => setValue(value)}
@@ -63,7 +60,7 @@ export const SearchBar = ({ defaultValue, onSearch, disabled, className, i18n, .
             />
 
             <Button
-                className="bg-primary text-primary-foreground flex w-14 items-center justify-center rounded-br-none rounded-tr-none"
+                className="flex w-14 items-center justify-center rounded-tr-none rounded-br-none bg-primary text-primary-foreground"
                 onClick={(e: any) => {
                     e.preventDefault();
                     performSearch();
@@ -140,20 +137,18 @@ export default function SearchContent({
             {showFilters ? <Filters disabled={isPending} filters={productFilters} /> : null}
 
             <section className="grid grid-cols-1 gap-2 empty:hidden md:grid-cols-3 lg:grid-cols-4">
-                {isPending ? (
-                    <>
-                        {new Array(6).fill(0).map((_, index) => (
-                            <div
-                                key={index}
-                                className="h-28 select-none rounded-lg border-2 border-solid border-gray-200 bg-gray-100"
-                                style={{
-                                    '--animation-delay': `${150 * (index + 1)}ms`,
-                                }}
-                                data-skeleton
-                            />
-                        ))}
-                    </>
-                ) : null}
+                {isPending
+                    ? new Array(6).fill(0).map((_, index) => (
+                          <div
+                              key={index}
+                              className="h-28 select-none rounded-lg border-2 border-gray-200 border-solid bg-gray-100"
+                              style={{
+                                  '--animation-delay': `${150 * (index + 1)}ms`,
+                              }}
+                              data-skeleton
+                          />
+                      ))
+                    : null}
 
                 {(!isPending ? products : []).map((product) => {
                     const {
@@ -179,7 +174,7 @@ export default function SearchContent({
                         productTypeElement = (
                             <span
                                 data-nosnippet={true}
-                                className="group-hover/item:text-primary contents text-lg font-semibold leading-none text-gray-700 transition-colors"
+                                className="contents font-semibold text-gray-700 text-lg leading-none transition-colors group-hover/item:text-primary"
                             >
                                 {' '}
                                 &ndash; {productType}
@@ -194,7 +189,7 @@ export default function SearchContent({
                             href={href}
                             key={id}
                             className={cn(
-                                'group/item hover:text-primary relative flex h-28 select-none gap-2 overflow-hidden rounded-lg border-2 border-solid border-gray-200 bg-gray-100 transition-shadow hover:border-gray-300 hover:drop-shadow focus-visible:border-gray-400 lg:h-36 lg:gap-4',
+                                'group/item relative flex h-28 select-none gap-2 overflow-hidden rounded-lg border-2 border-gray-200 border-solid bg-gray-100 transition-shadow hover:border-gray-300 hover:text-primary hover:drop-shadow focus-visible:border-gray-400 lg:h-36 lg:gap-4',
                                 !availableForSale && 'opacity-35 brightness-75',
                             )}
                         >
@@ -217,11 +212,11 @@ export default function SearchContent({
                             </div>
 
                             <div className="col-span-6 flex h-full w-full flex-col gap-1 py-2 pr-2 leading-tight *:transition-colors lg:py-4">
-                                <Label className="group-hover/item:text-primary pt-2 text-sm font-medium normal-case leading-snug text-gray-700 duration-75">
+                                <Label className="pt-2 font-medium text-gray-700 text-sm normal-case leading-snug duration-75 group-hover/item:text-primary">
                                     {vendor}
                                 </Label>
 
-                                <div className="group-hover/item:text-primary transition-color flex grow items-start justify-start gap-0 pr-1 text-lg font-bold leading-tight text-current duration-75">
+                                <div className="flex grow items-start justify-start gap-0 pr-1 font-bold text-current text-lg leading-tight transition-color duration-75 group-hover/item:text-primary">
                                     {title}
                                     {productTypeElement}
                                 </div>
@@ -229,7 +224,7 @@ export default function SearchContent({
 
                             {isVegan && (
                                 <div
-                                    className={cn(COMMON_BADGE_STYLES, 'absolute left-1 top-1 bg-green-600 text-white')}
+                                    className={cn(COMMON_BADGE_STYLES, 'absolute top-1 left-1 bg-green-600 text-white')}
                                 >
                                     <AttributeIcon data={'vegan'} className="text-lg" />
                                     {capitalize(t('vegan'))}

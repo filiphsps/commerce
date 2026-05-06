@@ -1,8 +1,8 @@
 /* c8 ignore start */
-import { admin } from '@/middleware/admin';
-import { NextResponse } from 'next/server';
 
 import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+import { admin } from '@/middleware/admin';
 
 export const config = {
     matcher: ['/((?!_next|_static|_vercel|instrumentation|assets|[\\w-]+\\.\\w+).*)'],

@@ -2,10 +2,9 @@ import 'server-only';
 
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
-
+import { notFound, RedirectType, redirect } from 'next/navigation';
 import { ShopifyApiClient } from '@/api/shopify';
 import { RedirectApi } from '@/api/shopify/redirects';
-import { notFound, redirect, RedirectType } from 'next/navigation';
 
 import type { Locale } from './locale';
 

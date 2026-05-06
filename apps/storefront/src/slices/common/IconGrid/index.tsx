@@ -1,15 +1,12 @@
 import 'server-only';
 
-import { useMemo } from 'react';
-
 import type { OnlineShop } from '@nordcom/commerce-db';
-
-import { cn } from '@/utils/tailwind';
-import Image from 'next/image';
-
-import type { Locale, LocaleDictionary } from '@/utils/locale';
 import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
+import Image from 'next/image';
+import { useMemo } from 'react';
+import type { Locale, LocaleDictionary } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
 
 /**
  * Props for `IconGrid`.
@@ -40,9 +37,9 @@ const IconGrid = ({ slice, index: order }: IconGridProps) => {
                 <div
                     key={`${title}_${index}`}
                     className={cn(
-                        'flex items-center justify-center gap-4 rounded-lg border-2 border-solid border-transparent p-4',
-                        background === 'primary' && 'bg-primary text-primary-foreground border-primary-dark',
-                        background === 'secondary' && 'bg-secondary-light text-secondary-foreground border-secondary',
+                        'flex items-center justify-center gap-4 rounded-lg border-2 border-transparent border-solid p-4',
+                        background === 'primary' && 'border-primary-dark bg-primary text-primary-foreground',
+                        background === 'secondary' && 'border-secondary bg-secondary-light text-secondary-foreground',
                     )}
                 >
                     {icon.url ? (
@@ -61,7 +58,7 @@ const IconGrid = ({ slice, index: order }: IconGridProps) => {
                             draggable={false}
                         />
                     ) : null}
-                    <div className="text-sm font-semibold leading-tight lg:text-base">{title}</div>
+                    <div className="font-semibold text-sm leading-tight lg:text-base">{title}</div>
                 </div>
             );
         });

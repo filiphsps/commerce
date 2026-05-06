@@ -1,9 +1,7 @@
 import { describe, expect, it } from 'vitest';
-
-import { render, screen } from '@/utils/test/react';
-
 import type { PriceProps } from '@/components/products/price';
 import { Price } from '@/components/products/price';
+import { render, screen } from '@/utils/test/react';
 
 describe('components', () => {
     describe('Price', () => {

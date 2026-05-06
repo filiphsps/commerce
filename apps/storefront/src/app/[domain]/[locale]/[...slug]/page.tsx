@@ -1,28 +1,24 @@
 import 'server-only';
 
-import { Fragment, Suspense } from 'react';
-
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
 import { NotFoundError } from '@nordcom/commerce-errors';
-
-import { PageApi, PagesApi } from '@/api/page';
-import { ShopifyApolloApiClient } from '@/api/shopify';
-import { BusinessDataApi, LocalesApi } from '@/api/store';
-import { isValidHandle } from '@/utils/handle';
-import { Locale } from '@/utils/locale';
 import { asText } from '@prismicio/client';
+import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
 import { notFound } from 'next/navigation';
-
+import { Fragment, Suspense } from 'react';
+import type { OnlineStore, WithContext } from 'schema-dts';
+import { PageApi, PagesApi } from '@/api/page';
+import type { PageData } from '@/api/prismic/page';
+import { ShopifyApolloApiClient } from '@/api/shopify';
+import { BusinessDataApi, LocalesApi } from '@/api/store';
 import { CMSContent } from '@/components/cms/cms-content';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import { JsonLd } from '@/components/json-ld';
-
-import type { PageData } from '@/api/prismic/page';
-import type { Metadata } from 'next';
-import type { OnlineStore, WithContext } from 'schema-dts';
+import { isValidHandle } from '@/utils/handle';
+import { Locale } from '@/utils/locale';
 
 export type CustomPageParams = Promise<{ domain: string; locale: string; slug: string[] }>;
 

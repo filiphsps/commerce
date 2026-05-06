@@ -1,9 +1,7 @@
+import type { OnlineShop, ShopBase } from '../models';
 import { ShopModel } from '../models';
-
 import { User } from '.';
 import { Service } from './service';
-
-import type { OnlineShop, ShopBase } from '../models';
 
 type FindOptions = {
     /** Whether to convert the result to a normal object or keep it as a mongoose document. */

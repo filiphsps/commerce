@@ -1,8 +1,6 @@
 import { describe, expect, it } from 'vitest';
-
-import { render } from '@/utils/test/react';
-
 import { FilterValues } from '@/components/actionable/filter-values';
+import { render } from '@/utils/test/react';
 
 describe('components', () => {
     describe('FilterValues', () => {

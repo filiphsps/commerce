@@ -1,18 +1,15 @@
 import 'server-only';
 
+import type { OnlineShop } from '@nordcom/commerce-db';
 import { Fragment, Suspense } from 'react';
 
-import type { OnlineShop } from '@nordcom/commerce-db';
-
-import { type Product } from '@/api/product';
-import { getDictionary } from '@/utils/dictionary';
-import { cn } from '@/utils/tailwind';
-
+import type { Product } from '@/api/product';
 import ProductCardBadges from '@/components/product-card/product-card-badges';
 import ProductCardContent from '@/components/product-card/product-card-content';
 import ProductCardTitle from '@/components/product-card/product-card-title';
-
+import { getDictionary } from '@/utils/dictionary';
 import type { Locale } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
 
 export const CARD_STYLES =
     'group/card relative flex min-h-[20rem] w-full snap-center snap-always flex-col overflow-hidden rounded-xl border-2 border-solid border-gray-200 bg-gray-100 p-1 brightness-100 transition-all hover:drop-shadow focus-visible:border-gray-400 active:brightness-75';
@@ -40,7 +37,7 @@ const ProductCard = async ({ shop, locale, data: product, priority, className, .
         <div
             className={cn(
                 CARD_STYLES,
-                'content-visibility-auto contain-intrinsic-size-[20rem_auto] hover:border-gray-300',
+                'contain-intrinsic-size-[20rem_auto] content-visibility-auto hover:border-gray-300',
                 isFreeShipping && 'border-primary shadow',
                 className,
             )}

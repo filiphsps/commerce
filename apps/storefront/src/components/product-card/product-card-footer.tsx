@@ -1,11 +1,9 @@
 'use client';
 
 import { Fragment, Suspense } from 'react';
-
+import type { Product, ProductVariant } from '@/api/product';
 import ProductCardActions from '@/components/product-card/product-card-actions';
 import ProductCardOptions from '@/components/product-card/product-card-options';
-
-import type { Product, ProductVariant } from '@/api/product';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 
 export type ProductCardFooterProps = {

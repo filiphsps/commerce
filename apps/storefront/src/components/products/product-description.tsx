@@ -1,15 +1,11 @@
-import { type ComponentPropsWithoutRef, Fragment, Suspense } from 'react';
-
 import type { OnlineShop } from '@nordcom/commerce-db';
-
-import { ProductOriginalName } from '@/pages/products/[handle]/product-details';
-import { cn } from '@/utils/tailwind';
-
+import { type ComponentPropsWithoutRef, Fragment, Suspense } from 'react';
+import type { Product } from '@/api/product';
 import { Card } from '@/components/layout/card';
 import { Content } from '@/components/typography/content';
-
-import type { Product } from '@/api/product';
+import { ProductOriginalName } from '@/pages/products/[handle]/product-details';
 import type { Locale } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
 
 export type ProductDescriptionProps = {
     shop: OnlineShop;

@@ -1,13 +1,10 @@
 'use client';
 
-import { Intercom, LiveChatLoaderProvider } from 'react-live-chat-loader';
-
 import type { OnlineShop } from '@nordcom/commerce-db';
-
-import { BuildConfig } from '@/utils/build-config';
-
-import type { Locale } from '@/utils/locale';
 import type { ReactNode } from 'react';
+import { Intercom, LiveChatLoaderProvider } from 'react-live-chat-loader';
+import { BuildConfig } from '@/utils/build-config';
+import type { Locale } from '@/utils/locale';
 
 export type LiveChatProviderProps = {
     shop: OnlineShop;

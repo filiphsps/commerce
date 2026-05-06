@@ -1,12 +1,10 @@
 'use client';
 
-import { capitalize, getTranslations } from '@/utils/locale';
 import { User as UserIcon } from 'lucide-react';
 import { signIn } from 'next-auth/react';
-
 import { Button } from '@/components/actionable/button';
-
 import type { LocaleDictionary } from '@/utils/locale';
+import { capitalize, getTranslations } from '@/utils/locale';
 
 export type LoginButtonProps = {
     i18n: LocaleDictionary;
@@ -23,7 +21,7 @@ export function LoginButton({ i18n }: LoginButtonProps) {
             }
             styled={false}
             title={capitalize(t('login'))}
-            className="hover:text-primary focus-visible:text-primary transition-colors"
+            className="transition-colors hover:text-primary focus-visible:text-primary"
         >
             <UserIcon className="stroke-1 text-xl lg:text-2xl" />
         </Button>

@@ -9,7 +9,7 @@ import { ImageNoFractionalError, ImageOutOfBoundsError } from '@nordcom/commerce
  * @returns {ApiError[]} - An array of errors.
  */
 export const validateSize = ({ width, height }: { width?: number | null; height?: number | null }): ApiError[] => {
-    let errors: ApiError[] = [];
+    const errors: ApiError[] = [];
 
     if (width) {
         if (!Number.isInteger(width)) {

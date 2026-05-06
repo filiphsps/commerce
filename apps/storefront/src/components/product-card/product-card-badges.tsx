@@ -1,13 +1,11 @@
+import { Package as PackageIcon } from 'lucide-react';
 import { isProductVegan, type Product } from '@/api/product';
+import { AttributeIcon } from '@/components/products/attribute-icon';
 import { firstAvailableVariant } from '@/utils/first-available-variant';
+import type { LocaleDictionary } from '@/utils/locale';
 import { capitalize, getTranslations } from '@/utils/locale';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
-import { Package as PackageIcon } from 'lucide-react';
-
-import { AttributeIcon } from '@/components/products/attribute-icon';
-
-import type { LocaleDictionary } from '@/utils/locale';
 
 export type ProductCardBadgesProps = {
     data: Product;
@@ -32,7 +30,7 @@ const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
                 <div
                     className={cn(
                         COMMON_BADGE_STYLES,
-                        'bg-primary text-primary-foreground -mt-1 h-8 rounded-l-none rounded-t-none text-xs normal-case leading-none',
+                        '-mt-1 h-8 rounded-t-none rounded-l-none bg-primary text-primary-foreground text-xs normal-case leading-none',
                     )}
                 >
                     <PackageIcon className="text-sm leading-none" />
@@ -53,29 +51,24 @@ const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
     }
 
     return (
-        <>
-            <div
-                className={cn(
-                    'pointer-events-none absolute inset-1 bottom-auto flex flex-wrap justify-start gap-1 empty:hidden',
-                )}
-            >
-                {isVegan && (
-                    <div className={cn(COMMON_BADGE_STYLES, 'bg-green-600 stroke-white text-white')}>
-                        <AttributeIcon data={'vegan'} className="h-4" />
-                        {capitalize(t('vegan'))}
-                    </div>
-                )}
+        <div
+            className={cn(
+                'pointer-events-none absolute inset-1 bottom-auto flex flex-wrap justify-start gap-1 empty:hidden',
+            )}
+        >
+            {isVegan && (
+                <div className={cn(COMMON_BADGE_STYLES, 'bg-green-600 stroke-white text-white')}>
+                    <AttributeIcon data={'vegan'} className="h-4" />
+                    {capitalize(t('vegan'))}
+                </div>
+            )}
 
-                {discount > 1 ? ( // Handle rounding-errors.
-                    <div
-                        className={cn(COMMON_BADGE_STYLES, 'bg-sale-stripes font-bold text-white')}
-                        data-nosnippet={true}
-                    >
-                        {capitalize(t('percentage-off', discount))}
-                    </div>
-                ) : null}
-            </div>
-        </>
+            {discount > 1 ? ( // Handle rounding-errors.
+                <div className={cn(COMMON_BADGE_STYLES, 'bg-sale-stripes font-bold text-white')} data-nosnippet={true}>
+                    {capitalize(t('percentage-off', discount))}
+                </div>
+            ) : null}
+        </div>
     );
 };
 

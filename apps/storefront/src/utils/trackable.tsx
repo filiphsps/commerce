@@ -1,36 +1,32 @@
 'use client';
 
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
-
 import type { Nullable, OnlineShop } from '@nordcom/commerce-db';
 import { MissingContextProviderError, TodoError, UnknownCommerceProviderError } from '@nordcom/commerce-errors';
-
-import { usePrevious } from '@/hooks/usePrevious';
-import { BuildConfig } from '@/utils/build-config';
-import { isCrawler } from '@/utils/is-crawler';
-import { productToMerchantsCenterId } from '@/utils/merchants-center-id';
-import { safeParseFloat } from '@/utils/pricing';
+import type { CartWithActions, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 import {
     AnalyticsEventName as AnalyticsShopifyEventName,
     getClientBrowserParameters,
-    sendShopifyAnalytics,
     ShopifySalesChannel,
+    sendShopifyAnalytics,
     useCart,
     useShop as useShopify,
     useShopifyCookies,
 } from '@shopify/hydrogen-react';
+import type { ShopifyContextValue } from '@shopify/hydrogen-react/ShopifyProvider';
+import type { CartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import { track as vercelTrack } from '@vercel/analytics/react';
 import debounce from 'lodash.debounce';
 import { usePathname } from 'next/navigation';
-import { createContext, useContext } from 'use-context-selector';
-
-import { useShop } from '@/components/shop/provider';
-
-import type { CurrencyCode, Locale } from '@/utils/locale';
-import type { CartWithActions, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
-import type { ShopifyContextValue } from '@shopify/hydrogen-react/ShopifyProvider';
-import type { CartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import type { ReactNode } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+import { createContext, useContext } from 'use-context-selector';
+import { useShop } from '@/components/shop/provider';
+import { usePrevious } from '@/hooks/usePrevious';
+import { BuildConfig } from '@/utils/build-config';
+import { isCrawler } from '@/utils/is-crawler';
+import type { CurrencyCode, Locale } from '@/utils/locale';
+import { productToMerchantsCenterId } from '@/utils/merchants-center-id';
+import { safeParseFloat } from '@/utils/pricing';
 
 /**
  * Analytics events.
@@ -262,7 +258,7 @@ const shopifyEventHandler = async (
  */
 const klaviyoEventHandler = async (
     event: AnalyticsEventType,
-    data: AnalyticsEventData, // eslint-disable-line unused-imports/no-unused-vars
+    _data: AnalyticsEventData, // eslint-disable-line unused-imports/no-unused-vars
     { shop, currency, locale, cart }: AnalyticsEventActionProps, // eslint-disable-line unused-imports/no-unused-vars
 ) => {
     window._learnq = window._learnq || [];
@@ -437,7 +433,7 @@ export function Trackable({ children, dummy = false }: TrackableProps) {
         }[]
     >([]);
     // Bumping this counter signals that the queue ref has new entries to flush.
-    const [flushSignal, setFlushSignal] = useState(0);
+    const [_flushSignal, setFlushSignal] = useState(0);
 
     const queueEvent = useCallback(
         (type: AnalyticsEventType, event: AnalyticsEventData) => {
@@ -550,7 +546,7 @@ export function Trackable({ children, dummy = false }: TrackableProps) {
                 console.error('Failed to send analytics events:', failed);
             }
         });
-    }, [flushSignal, internalTraffic, shop, currency, locale, shopify, cart, path]);
+    }, [internalTraffic, shop, currency, locale, shopify, cart, path]);
 
     const store = useMemo(
         () => ({

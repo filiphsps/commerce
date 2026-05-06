@@ -1,7 +1,6 @@
-import styles from './layout.module.scss';
-
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+import styles from './layout.module.scss';
 
 export const metadata: Metadata = {
     metadataBase: new URL(`https://shops.nordcom.io/news/`),

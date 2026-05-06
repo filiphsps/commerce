@@ -1,6 +1,5 @@
-import GitHub from 'next-auth/providers/github';
-
 import type { NextAuthConfig } from 'next-auth';
+import GitHub from 'next-auth/providers/github';
 
 const NEXTAUTH_URL = process.env.NEXTAUTH_URL || null;
 const INTERNAL_HOSTNAME = 'shops.nordcom.io';

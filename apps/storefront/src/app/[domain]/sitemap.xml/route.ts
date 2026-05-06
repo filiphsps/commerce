@@ -1,12 +1,10 @@
 import { Shop } from '@nordcom/commerce-db';
-
+import { cacheLife } from 'next/cache';
+import type { NextRequest } from 'next/server';
+import { getServerSideSitemapIndex } from 'next-sitemap';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { Locale } from '@/utils/locale';
-import { cacheLife } from 'next/cache';
-import { getServerSideSitemapIndex } from 'next-sitemap';
-
-import type { NextRequest } from 'next/server';
 
 export type DynamicSitemapRouteParams = Promise<{
     domain: string;

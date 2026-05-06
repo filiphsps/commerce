@@ -1,17 +1,14 @@
 'use client';
 
+import { useCart } from '@shopify/hydrogen-react';
+import type { ChangeEvent, HTMLProps, KeyboardEventHandler } from 'react';
 import { useCallback, useRef, useState } from 'react';
-
+import { Button } from '@/components/actionable/button';
+import { Input } from '@/components/actionable/input';
+import type { LocaleDictionary } from '@/utils/locale';
 import { getTranslations } from '@/utils/locale';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
-import { useCart } from '@shopify/hydrogen-react';
-
-import { Button } from '@/components/actionable/button';
-import { Input } from '@/components/actionable/input';
-
-import type { LocaleDictionary } from '@/utils/locale';
-import type { ChangeEvent, HTMLProps, KeyboardEventHandler } from 'react';
 
 const MAX_QUANTITY = 199_999; // TODO: Per-tenant configuration.
 
@@ -142,8 +139,8 @@ const QuantitySelector = ({
         <section
             {...props}
             className={cn(
-                'flex min-h-fit w-full overflow-hidden rounded-lg border-2 border-solid border-white bg-white p-0 leading-none opacity-50 drop-shadow transition-colors *:appearance-none *:text-center *:text-lg *:leading-none *:transition-colors',
-                !disabled && 'hover:border-primary focus-visible::border-gray-300 opacity-100',
+                'flex min-h-fit w-full overflow-hidden rounded-lg border-2 border-white border-solid bg-white p-0 leading-none opacity-50 drop-shadow transition-colors *:appearance-none *:text-center *:text-lg *:leading-none *:transition-colors',
+                !disabled && 'opacity-100 hover:border-primary focus-visible::border-gray-300',
                 className,
             )}
             suppressHydrationWarning={true}
@@ -156,7 +153,7 @@ const QuantitySelector = ({
                 className={cn(
                     'aspect-[3/4] h-full select-none appearance-none rounded-none bg-transparent p-2 font-bold text-current',
                     !disabled &&
-                        'hover:bg-primary hover:text-primary-foreground focus-visible:bg-primary focus-visible:text-primary-foreground active:bg-primary active:text-primary-foreground cursor-pointer',
+                        'cursor-pointer hover:bg-primary hover:text-primary-foreground focus-visible:bg-primary focus-visible:text-primary-foreground active:bg-primary active:text-primary-foreground',
                     buttonClassName,
                 )}
                 disabled={decreaseDisabled}
@@ -182,7 +179,7 @@ const QuantitySelector = ({
                 step={1}
                 pattern="[0-9]"
                 className={cn(
-                    'h-full w-full grow appearance-none border-none bg-transparent text-sm font-bold outline-none focus:outline-none focus:ring-0',
+                    'h-full w-full grow appearance-none border-none bg-transparent font-bold text-sm outline-none focus:outline-none focus:ring-0',
                     inputClassName,
                 )}
                 disabled={disabled}
@@ -204,7 +201,7 @@ const QuantitySelector = ({
                 className={cn(
                     'aspect-[3/4] h-full select-none appearance-none rounded-none bg-transparent p-2 font-bold text-current',
                     !disabled &&
-                        'hover:bg-primary hover:text-primary-foreground focus-visible:bg-primary focus-visible:text-primary-foreground active:bg-primary active:text-primary-foreground cursor-pointer',
+                        'cursor-pointer hover:bg-primary hover:text-primary-foreground focus-visible:bg-primary focus-visible:text-primary-foreground active:bg-primary active:text-primary-foreground',
                     buttonClassName,
                 )}
                 disabled={disabled}
@@ -222,4 +219,5 @@ const QuantitySelector = ({
 };
 
 QuantitySelector.displayName = 'Nordcom.Products.QuantitySelector';
+
 export { QuantitySelector };

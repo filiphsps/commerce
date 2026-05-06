@@ -1,7 +1,6 @@
+import type { Metadata } from 'next';
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
-
-import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
     title: '404: Page Not Found',

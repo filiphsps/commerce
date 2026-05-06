@@ -1,14 +1,12 @@
 'use client';
 
-import { Suspense } from 'react';
-
-import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 import { useCart } from '@shopify/hydrogen-react';
-
+import { Suspense } from 'react';
 import { Button } from '@/components/actionable/button';
 import { ExportCartButton } from '@/components/actionable/export-cart-button';
 import { CartLine } from '@/components/cart/cart-line';
 import { Label } from '@/components/typography/label';
+import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 
 type CartContentProps = {
     i18n: LocaleDictionary;
@@ -28,10 +26,10 @@ const CartLines = ({ i18n }: CartContentProps) => {
 
     return (
         <div className="flex w-full flex-col gap-2">
-            <div className="flex w-full items-center justify-between border-0 border-b border-solid border-gray-200 pb-1 text-gray-600 md:border-0 md:px-1 md:pb-0">
+            <div className="flex w-full items-center justify-between border-0 border-gray-200 border-b border-solid pb-1 text-gray-600 md:border-0 md:px-1 md:pb-0">
                 <Button
                     as={Label as any}
-                    className="inline-flex cursor-pointer text-sm font-bold hover:text-red-500"
+                    className="inline-flex cursor-pointer font-bold text-sm hover:text-red-500"
                     styled={false}
                     onClick={() => linesRemove(lines.map((line) => line?.id).filter((_) => _) as string[])}
                 >
@@ -69,4 +67,5 @@ CartLines.skeleton = () => {
 };
 
 CartLines.displayName = 'Nordcom.Cart.Lines';
+
 export { CartLines };

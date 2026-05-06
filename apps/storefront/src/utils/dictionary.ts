@@ -165,13 +165,13 @@ export type DictionaryLanguageCode = keyof typeof dictionaries;
 export const getDictionary = async (
     props: { shop: OnlineShop; locale: Locale } | Locale,
 ): Promise<LocaleDictionary> => {
-    let locale: Locale, shop: OnlineShop | undefined;
+    let locale: Locale, _shop: OnlineShop | undefined;
 
     if (Object.hasOwn(props, 'shop')) {
         const temp = props as { shop: OnlineShop; locale: Locale };
         locale = temp.locale;
         // eslint-disable-next-line unused-imports/no-unused-vars
-        shop = temp.shop;
+        _shop = temp.shop;
     } else {
         locale = props as Locale;
     }

@@ -1,8 +1,6 @@
 import { Heading } from '@nordcom/nordstar';
-
-import { LogoutAction } from './logout-action';
-
 import type { Metadata } from 'next';
+import { LogoutAction } from './logout-action';
 
 export const metadata: Metadata = {
     title: 'Logout',

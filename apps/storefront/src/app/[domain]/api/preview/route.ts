@@ -1,12 +1,10 @@
 import { Shop } from '@nordcom/commerce-db';
-
-import { Locale } from '@/utils/locale';
-import { createClient } from '@/utils/prismic';
 import { redirectToPreviewURL } from '@prismicio/next';
 import { draftMode } from 'next/headers';
-import { NextResponse } from 'next/server';
-
 import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+import { Locale } from '@/utils/locale';
+import { createClient } from '@/utils/prismic';
 
 export type PreviewApiRouteParams = Promise<{
     domain: string;

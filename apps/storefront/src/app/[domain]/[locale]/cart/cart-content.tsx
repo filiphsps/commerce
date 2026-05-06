@@ -1,21 +1,16 @@
 import 'server-only';
 
-import styles from './cart-content.module.scss';
-
-import { type ReactNode, Suspense } from 'react';
-
 import type { OnlineShop } from '@nordcom/commerce-db';
 
+import { type ReactNode, Suspense } from 'react';
 import { PageApi } from '@/api/prismic/page';
-import { cn } from '@/utils/tailwind';
-
 import { CartLines } from '@/components/cart/cart-lines';
 import PrismicPage from '@/components/cms/prismic-page';
 import PageContent from '@/components/page-content';
-
-import { CartSidebar } from './cart-sidebar';
-
 import type { Locale, LocaleDictionary } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
+import styles from './cart-content.module.scss';
+import { CartSidebar } from './cart-sidebar';
 
 export type CartContentProps = {
     shop: OnlineShop;

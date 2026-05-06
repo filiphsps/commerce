@@ -1,18 +1,14 @@
 'use client';
 
-import styles from './countries.module.scss';
-
-import { useRef } from 'react';
-
-import { Locale } from '@/utils/locale';
+import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
 import { byIso as countryLookup } from 'country-code-lookup';
 import Image from 'next/image';
-
+import { useRef } from 'react';
 import Link from '@/components/link';
 import { useShop } from '@/components/shop/provider';
 import { Label } from '@/components/typography/label';
-
-import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
+import { Locale } from '@/utils/locale';
+import styles from './countries.module.scss';
 
 type LocaleSelectorProps = {
     countries: Country[];

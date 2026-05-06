@@ -1,31 +1,27 @@
 import 'server-only';
 
-import { Suspense } from 'react';
-
 import { Shop } from '@nordcom/commerce-db';
 import { Error, NotFoundError } from '@nordcom/commerce-errors';
-
-import { ShopifyApolloApiClient } from '@/api/shopify';
-import { BlogApi, BlogArticleApi } from '@/api/shopify/blog';
-import { LocalesApi } from '@/api/store';
-import { getDictionary } from '@/utils/dictionary';
-import { isValidHandle } from '@/utils/handle';
-import { getTranslations, Locale } from '@/utils/locale';
 import md5 from 'crypto-js/md5';
+import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-
+import { Suspense } from 'react';
+import type { Article as LdArticle, WithContext } from 'schema-dts';
+import { ShopifyApolloApiClient } from '@/api/shopify';
+import { BlogApi, BlogArticleApi } from '@/api/shopify/blog';
+import { LocalesApi } from '@/api/store';
 import { Avatar } from '@/components/informational/avatar';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import { JsonLd } from '@/components/json-ld';
 import { Content } from '@/components/typography/content';
 import { Label } from '@/components/typography/label';
-
-import type { Metadata } from 'next';
-import type { Article as LdArticle, WithContext } from 'schema-dts';
+import { getDictionary } from '@/utils/dictionary';
+import { isValidHandle } from '@/utils/handle';
+import { getTranslations, Locale } from '@/utils/locale';
 
 export type ArticlePageParams = Promise<{ domain: string; locale: string; blog: string; handle: string }>;
 
@@ -195,7 +191,7 @@ export default async function ArticlePage({ params }: { params: ArticlePageParam
             </Suspense>
 
             <header className="flex flex-col-reverse items-center justify-start gap-2 md:flex-col md:gap-3">
-                <h1 className="text-2xl font-semibold md:text-3xl 2xl:text-center">{title}</h1>
+                <h1 className="font-semibold text-2xl md:text-3xl 2xl:text-center">{title}</h1>
 
                 {image?.url ? (
                     <Image
@@ -217,7 +213,7 @@ export default async function ArticlePage({ params }: { params: ArticlePageParam
                 <aside className="w-full empty:hidden md:h-full empty:md:flex"></aside>
 
                 <article className="prone md:max-w-[720px]">
-                    <div className="flex items-center gap-2 pb-6 text-gray-500 *:text-sm *:font-semibold *:leading-tight md:pb-0">
+                    <div className="flex items-center gap-2 pb-6 text-gray-500 *:font-semibold *:text-sm *:leading-tight md:pb-0">
                         <Label className="text-inherit">{publishedAtString}</Label>
                         {' • '}
                         <Label className="text-inherit">{t('n-min-read', readingTime)}</Label>
@@ -233,18 +229,18 @@ export default async function ArticlePage({ params }: { params: ArticlePageParam
                             <div className="flex flex-col items-start justify-center gap-1">
                                 <Label
                                     as="div"
-                                    className="text-base font-normal normal-case leading-none text-gray-600"
+                                    className="font-normal text-base text-gray-600 normal-case leading-none"
                                 >
                                     {author.name}
                                 </Label>
                                 {author.bio ? (
                                     <Label
                                         as="div"
-                                        className="text-sm font-semibold normal-case leading-none text-gray-500"
+                                        className="font-semibold text-gray-500 text-sm normal-case leading-none"
                                     >
                                         {author.bio.startsWith('@') ? (
                                             <Link
-                                                className="hover:text-primary transition-colors"
+                                                className="transition-colors hover:text-primary"
                                                 href={`https://x.com/${author.bio}`}
                                                 target="_blank"
                                             >

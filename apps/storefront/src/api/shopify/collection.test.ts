@@ -1,11 +1,9 @@
+import type { OnlineShop } from '@nordcom/commerce-db';
 import { describe, expect, it, vi } from 'vitest';
 
-import type { OnlineShop } from '@nordcom/commerce-db';
-
 import { CollectionApi, CollectionsApi, CollectionsPaginationApi } from '@/api/shopify/collection';
-import { Locale } from '@/utils/locale';
-
 import type { AbstractApi } from '@/utils/abstract-api';
+import { Locale } from '@/utils/locale';
 
 describe('api', () => {
     describe('shopify', () => {

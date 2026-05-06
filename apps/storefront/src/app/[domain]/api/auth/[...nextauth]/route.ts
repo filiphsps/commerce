@@ -1,8 +1,6 @@
 import { Shop } from '@nordcom/commerce-db';
-
-import { getAuth } from '@/auth';
-
 import type { NextRequest } from 'next/server';
+import { getAuth } from '@/auth';
 
 export type AuthRouteParams = Promise<{ domain: string }>;
 

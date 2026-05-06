@@ -1,13 +1,10 @@
+import type { Filter } from '@shopify/hydrogen-react/storefront-api-types';
+import type { HTMLProps } from 'react';
 import { Suspense } from 'react';
-
-import { cn } from '@/utils/tailwind';
-
 import { FilterValues } from '@/components/actionable/filter-values';
 import { Card } from '@/components/layout/card';
 import { Label } from '@/components/typography/label';
-
-import type { Filter } from '@shopify/hydrogen-react/storefront-api-types';
-import type { HTMLProps } from 'react';
+import { cn } from '@/utils/tailwind';
 
 export type FiltersProps = {
     filters: Filter[];

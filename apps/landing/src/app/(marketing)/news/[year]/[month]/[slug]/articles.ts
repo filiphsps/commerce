@@ -1,11 +1,10 @@
-import { config } from '@/markdoc';
+import fs from 'node:fs';
+import path from 'node:path';
+import type { Schema } from '@markdoc/markdoc';
 import Markdoc from '@markdoc/markdoc';
-import fs from 'fs';
 import { glob } from 'glob';
 import matter from 'gray-matter';
-import path from 'path';
-
-import type { Schema } from '@markdoc/markdoc';
+import { config } from '@/markdoc';
 
 const ARTICLES_PATH = 'articles/';
 const POSTS_DIR = path.join(process.cwd(), ARTICLES_PATH);

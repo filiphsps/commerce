@@ -1,16 +1,14 @@
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
-
+import { cacheLife } from 'next/cache';
+import { notFound } from 'next/navigation';
+import type { NextRequest } from 'next/server';
+import type { ISitemapField } from 'next-sitemap';
+import { getServerSideSitemap } from 'next-sitemap';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi, BlogsApi } from '@/api/shopify/blog';
 import { Locale } from '@/utils/locale';
-import { cacheLife } from 'next/cache';
-import { notFound } from 'next/navigation';
-import { getServerSideSitemap } from 'next-sitemap';
-
 import type { DynamicSitemapRouteParams } from '../../../sitemap.xml/route';
-import type { NextRequest } from 'next/server';
-import type { ISitemapField } from 'next-sitemap';
 
 export type BlogsSitemapRouteParams = {
     params: Promise<
@@ -69,7 +67,7 @@ export async function GET({}: NextRequest, { params }: BlogsSitemapRouteParams) 
             }
 
             const blogHandle = articles[0].blog.handle;
-            let pages: ISitemapField[] = [
+            const pages: ISitemapField[] = [
                 {
                     loc: `https://${shop.domain}/${locale.code}/blogs/${blogHandle}/`,
                     changefreq: 'weekly',

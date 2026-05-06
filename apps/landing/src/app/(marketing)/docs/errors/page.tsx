@@ -1,10 +1,8 @@
 import type { Error } from '@nordcom/commerce-errors';
 import { getAllErrorCodes, getErrorFromCode, MissingContextProviderError } from '@nordcom/commerce-errors';
 import { Card, Heading } from '@nordcom/nordstar';
-
-import Link from 'next/link';
-
 import type { Metadata } from 'next';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
     title: 'Errors',

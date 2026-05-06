@@ -1,14 +1,10 @@
-import { Fragment, type HTMLProps, Suspense } from 'react';
-
 import type { OnlineShop } from '@nordcom/commerce-db';
-
-import { components as menuSlices } from '@/slices/navigation';
-import { cn } from '@/utils/tailwind';
-
+import { Fragment, type HTMLProps, Suspense } from 'react';
 import type { Slices } from '@/components/cms/slice-zone';
 import { SliceZone } from '@/components/cms/slice-zone';
-
+import { components as menuSlices } from '@/slices/navigation';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
 
 type HeaderNavigationProps = {
     shop: OnlineShop;

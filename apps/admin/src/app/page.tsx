@@ -1,13 +1,11 @@
 import { Accented, Button, Heading, Label } from '@nordcom/nordstar';
-
-import { auth } from '@/auth';
-import { getShopsForUser } from '@/utils/fetchers';
 import { Settings } from 'lucide-react';
+import type { Metadata, Route } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-
-import type { Metadata, Route } from 'next';
+import { auth } from '@/auth';
+import { getShopsForUser } from '@/utils/fetchers';
 
 export const metadata: Metadata = {
     title: 'Your Shops',
@@ -41,7 +39,7 @@ export default async function Overview() {
 
     return (
         <main className="flex flex-col items-center justify-center">
-            <article className="border-border border-3 flex flex-col gap-3 rounded-2xl border-solid p-3">
+            <article className="flex flex-col gap-3 rounded-2xl border-3 border-border border-solid p-3">
                 <header className="flex flex-col">
                     <section className="flex items-start justify-between">
                         <Link href="/" title="Nordcom Commerce" className="block pb-4">
@@ -60,7 +58,7 @@ export default async function Overview() {
                         <div>
                             <Link
                                 href="/accounts"
-                                className="hover:text-primary flex w-5 overflow-hidden transition-colors"
+                                className="flex w-5 overflow-hidden transition-colors hover:text-primary"
                             >
                                 <Settings />
                             </Link>
@@ -75,7 +73,7 @@ export default async function Overview() {
 
                 <section className="grid w-full grid-flow-row grid-cols-1 gap-2 py-2">{shopsActions}</section>
 
-                <footer className="border-border border-t-3 border-0 border-solid pt-3">
+                <footer className="border-0 border-border border-t-3 border-solid pt-3">
                     <Button as={Link} href={'/new'} variant="solid" className="h-12 w-full">
                         Connect a new Shop
                     </Button>

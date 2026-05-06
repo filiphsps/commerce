@@ -1,8 +1,6 @@
 import { describe, expect, it } from 'vitest';
-
-import { render } from '@/utils/test/react';
-
 import { Filters } from '@/components/actionable/filters';
+import { render } from '@/utils/test/react';
 
 describe('components', () => {
     describe('Filters', () => {

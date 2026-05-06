@@ -1,10 +1,7 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Error, NotFoundError } from '@nordcom/commerce-errors';
-
-import { Locale } from '@/utils/locale';
-import { createClient } from '@/utils/prismic';
+import type { PrismicDocument } from '@prismicio/client';
 import { unstable_cache } from 'next/cache';
-
 import type {
     CartPageDocument,
     CollectionPageDocument,
@@ -12,7 +9,8 @@ import type {
     ProductPageDocument,
     Simplify,
 } from '@/prismic/types';
-import type { PrismicDocument } from '@prismicio/client';
+import { Locale } from '@/utils/locale';
+import { createClient } from '@/utils/prismic';
 
 export const PagesApi = async ({
     shop,

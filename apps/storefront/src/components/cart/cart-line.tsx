@@ -1,19 +1,17 @@
-import { getTranslations, type LocaleDictionary } from '@/utils/locale';
-import { safeParseFloat } from '@/utils/pricing';
-import { cn } from '@/utils/tailwind';
 import { useCart } from '@shopify/hydrogen-react';
+import type { CartLine as ShopifyCartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import { Tag as TagIcon, X as XIcon } from 'lucide-react';
 import Image from 'next/image';
-
+import type { Product, ProductVariant } from '@/api/product';
 import { Button } from '@/components/actionable/button';
 import { Card } from '@/components/layout/card';
 import Link from '@/components/link';
 import { Price } from '@/components/products/price';
 import { QuantitySelector } from '@/components/products/quantity-selector';
 import { Label } from '@/components/typography/label';
-
-import type { Product, ProductVariant } from '@/api/product';
-import type { CartLine as ShopifyCartLine } from '@shopify/hydrogen-react/storefront-api-types';
+import { getTranslations, type LocaleDictionary } from '@/utils/locale';
+import { safeParseFloat } from '@/utils/pricing';
+import { cn } from '@/utils/tailwind';
 
 interface CartLineProps {
     i18n: LocaleDictionary;
@@ -63,7 +61,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
         <>
             {discount > 0.1 ? (
                 <Price
-                    className="text-base font-medium leading-tight text-gray-500 line-through"
+                    className="font-medium text-base text-gray-500 leading-tight line-through"
                     data={{
                         amount: (
                             safeParseFloat(0, variant.compareAtPrice?.amount, variant.price.amount) * line.quantity
@@ -75,8 +73,8 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
 
             <Price
                 className={cn(
-                    'text-xl font-bold leading-tight',
-                    discount > 0.1 && 'text-xl font-extrabold text-red-500',
+                    'font-bold text-xl leading-tight',
+                    discount > 0.1 && 'font-extrabold text-red-500 text-xl',
                 )}
                 data={line.cost.totalAmount}
             />
@@ -103,7 +101,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                         <Link
                             href={`/products/${handle}`}
                             prefetch={false}
-                            className="hover:text-primary focus-visible:text-primary text-lg font-bold leading-none transition-colors"
+                            className="font-bold text-lg leading-none transition-colors hover:text-primary focus-visible:text-primary"
                         >
                             <span>{vendor}</span> {title}
                         </Link>
@@ -123,7 +121,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                                     {discounts.map((discount, index) => (
                                         <div
                                             key={`${line.id}-discount-${index}`}
-                                            className="flex items-center justify-center gap-1 text-xs font-medium leading-none text-gray-600"
+                                            className="flex items-center justify-center gap-1 font-medium text-gray-600 text-xs leading-none"
                                         >
                                             <TagIcon className="stroke-1 text-inherit" />
                                             <Label>{(discount as any).title || tCart('automatic-discount')}</Label>
@@ -139,12 +137,12 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                 </header>
 
                 <section className="flex h-full w-full flex-col items-end justify-end">
-                    <div className="absolute inset-auto right-3 top-3">
+                    <div className="absolute inset-auto top-3 right-3">
                         <Label
                             as={Button}
                             onClick={() => linesRemove([line.id!])}
                             styled={false}
-                            className="flex items-center justify-center gap-1 border-0 border-solid border-red-500 text-sm hover:text-red-500 focus-visible:border-b-2 focus-visible:text-red-500 md:text-base"
+                            className="flex items-center justify-center gap-1 border-0 border-red-500 border-solid text-sm hover:text-red-500 focus-visible:border-b-2 focus-visible:text-red-500 md:text-base"
                             title={t('remove')}
                         >
                             <XIcon className="stroke-2 text-xl" />
@@ -181,10 +179,11 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
 
 CartLine.skeleton = () => (
     <section
-        className="flex w-full flex-nowrap gap-2 border-0 border-b-2 border-solid border-gray-100 pb-2"
+        className="flex w-full flex-nowrap gap-2 border-0 border-gray-100 border-b-2 border-solid pb-2"
         data-skeleton
     ></section>
 );
 
 CartLine.displayName = 'Nordcom.Cart.Line';
+
 export { CartLine };

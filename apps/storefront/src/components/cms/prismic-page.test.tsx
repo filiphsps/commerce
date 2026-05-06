@@ -29,7 +29,7 @@ describe('components', () => {
         // FIXME: Support react server components in tests.
         it.todo('should render without crashing', () => {
             // eslint-disable-next-line unused-imports/no-unused-vars
-            const props = {
+            const _props = {
                 ...propsBase,
                 page: {
                     slices: [],

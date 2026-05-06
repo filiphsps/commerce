@@ -1,12 +1,9 @@
-import { experimental_taintUniqueValue } from 'react';
-
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { InvalidContentProviderError, InvalidShopError } from '@nordcom/commerce-errors';
-
-import { Locale } from '@/utils/locale';
-import * as prismic from '@prismicio/client';
-
 import type { Client, ClientConfig, LinkResolverFunction } from '@prismicio/client';
+import * as prismic from '@prismicio/client';
+import { experimental_taintUniqueValue } from 'react';
+import { Locale } from '@/utils/locale';
 
 type CreateClientOptions = {
     shop: OnlineShop;

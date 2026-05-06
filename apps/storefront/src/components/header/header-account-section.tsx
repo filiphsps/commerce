@@ -1,17 +1,15 @@
 import 'server-only';
 
+import type { OnlineShop } from '@nordcom/commerce-db';
 import { Fragment, type HTMLProps } from 'react';
 
-import type { OnlineShop } from '@nordcom/commerce-db';
-
 import { getAuthSession } from '@/auth';
-import { enableAccountsFunctionality } from '@/utils/flags';
-import { capitalize, getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
-import { cn } from '@/utils/tailwind';
-
 import { LoginButton } from '@/components/actionable/login-button';
 import { Avatar } from '@/components/informational/avatar';
 import Link from '@/components/link';
+import { enableAccountsFunctionality } from '@/utils/flags';
+import { capitalize, getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
 
 export type HeaderAccountSectionProps = {
     shop: OnlineShop;

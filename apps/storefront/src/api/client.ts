@@ -1,9 +1,8 @@
 import 'server-only';
 
-import type { OnlineShop } from '@nordcom/commerce-db';
-
-import { shopifyContextTransform } from '@/utils/abstract-api';
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
+import type { OnlineShop } from '@nordcom/commerce-db';
+import { shopifyContextTransform } from '@/utils/abstract-api';
 
 export type ApiConfig = {
     uri: string;

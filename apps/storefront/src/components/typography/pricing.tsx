@@ -1,12 +1,9 @@
-import { Suspense } from 'react';
-
-import { cn } from '@/utils/tailwind';
-
-import type { PriceProps } from '@/components/products/price';
-import { Price } from '@/components/products/price';
-
 import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
 import type { ElementType, HTMLProps } from 'react';
+import { Suspense } from 'react';
+import type { PriceProps } from '@/components/products/price';
+import { Price } from '@/components/products/price';
+import { cn } from '@/utils/tailwind';
 
 export type PricingProps = {
     price?: MoneyV2 | null;
@@ -24,7 +21,7 @@ export const Pricing = ({ price, as: Tag = 'div', className, ...props }: Pricing
                 as={Tag}
                 {...props}
                 data={price}
-                className={cn('text-lg font-bold proportional-nums leading-none', className)}
+                className={cn('font-bold text-lg proportional-nums leading-none', className)}
             />
         </Suspense>
     );

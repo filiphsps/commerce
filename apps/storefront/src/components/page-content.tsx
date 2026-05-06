@@ -1,8 +1,5 @@
-import { type HTMLProps, type ReactNode } from 'react';
-
+import type { ElementType, HTMLProps, ReactNode } from 'react';
 import { cn } from '@/utils/tailwind';
-
-import type { ElementType } from 'react';
 
 export type PageContentProps = {
     as?: ElementType;

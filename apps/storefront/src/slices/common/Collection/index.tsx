@@ -1,18 +1,15 @@
 import 'server-only';
 
-import { Suspense } from 'react';
-
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { InvalidSliceVariationError } from '@nordcom/commerce-errors';
-
-import CollectionContainer from '@/slices/common/Collection/collection';
-import { cn } from '@/utils/tailwind';
-
-import CollectionBlock from '@/components/products/collection-block';
-
-import type { Locale, LocaleDictionary } from '@/utils/locale';
 import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
+import { Suspense } from 'react';
+
+import CollectionBlock from '@/components/products/collection-block';
+import CollectionContainer from '@/slices/common/Collection/collection';
+import type { Locale, LocaleDictionary } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
 
 /**
  * Props for `Collection`.
@@ -53,7 +50,7 @@ const CollectionSlice = async ({ slice, index, context: { shop, locale } }: Coll
                     className={cn(
                         fullWidth &&
                             horizontal &&
-                            'max-w-screen -mx-3 w-[calc(100%+1.23rem)] px-3 md:mx-0 md:w-full md:px-0',
+                            '-mx-3 w-[calc(100%+1.23rem)] max-w-screen px-3 md:mx-0 md:w-full md:px-0',
                     )}
                 />
             </Suspense>

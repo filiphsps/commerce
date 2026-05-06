@@ -1,19 +1,14 @@
 import 'server-only';
 
-import { Suspense } from 'react';
-
 import type { OnlineShop } from '@nordcom/commerce-db';
-
+import { unstable_rethrow } from 'next/navigation';
+import { Suspense } from 'react';
+import type { Product } from '@/api/product';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { RecommendationApi } from '@/api/shopify/recommendation';
-import { unstable_rethrow } from 'next/navigation';
-
 import ProductCard from '@/components/product-card/product-card';
-
-import CollectionBlock from './collection-block';
-
-import type { Product } from '@/api/product';
 import type { Locale } from '@/utils/locale';
+import CollectionBlock from './collection-block';
 
 export type RecommendedProductsProps = {
     shop: OnlineShop;

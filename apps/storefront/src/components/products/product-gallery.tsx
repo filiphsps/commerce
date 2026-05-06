@@ -1,17 +1,16 @@
 'use client';
 
+import type { Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
+import { Mail as MailIcon } from 'lucide-react';
+import Image from 'next/image';
+import type { HTMLProps, ReactNode } from 'react';
 import { Fragment, Suspense, useCallback, useState } from 'react';
 import { EmailShareButton, FacebookShareButton, TwitterShareButton } from 'react-share';
 
-import { getTranslations } from '@/utils/locale';
-import { cn } from '@/utils/tailwind';
-import { Mail as MailIcon } from 'lucide-react';
-import Image from 'next/image';
-
 import type { Product } from '@/api/product';
 import type { LocaleDictionary } from '@/utils/locale';
-import type { Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
-import type { HTMLProps, ReactNode } from 'react';
+import { getTranslations } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
 
 const SHARE_BUTTON_STYLES =
     'z-10 flex h-8 w-8 appearance-none items-center justify-center rounded-full border-2 border-solid border-gray-300 bg-white fill-primary stroke-primary object-cover object-center transition-colors hover:border-primary hover:text-primary md:h-9 md:w-9';
@@ -71,7 +70,7 @@ const ProductGallery = ({
             <div className="flex w-full gap-2 overflow-clip md:sticky md:top-36 md:flex-col lg:gap-3">
                 <div
                     className={cn(
-                        'relative flex h-1/4 w-full grow items-center justify-center overflow-hidden rounded-lg border border-solid border-gray-200 bg-white p-2 md:h-full md:p-3',
+                        'relative flex h-1/4 w-full grow items-center justify-center overflow-hidden rounded-lg border border-gray-200 border-solid bg-white p-2 md:h-full md:p-3',
                         isLoading && 'bg-gray-100',
                         padding && 'p-8 py-12 md:p-16',
                     )}
@@ -101,7 +100,7 @@ const ProductGallery = ({
                                     setNext(null);
                                 }}
                                 className={cn(
-                                    'opacity-1 h-fit w-full object-contain object-center transition-opacity duration-500 md:h-full md:max-h-[30rem]',
+                                    'h-fit w-full object-contain object-center opacity-1 transition-opacity duration-500 md:h-full md:max-h-[30rem]',
                                     isLoading && 'opacity-0 transition-none',
                                     primaryImageClassName,
                                 )}
@@ -168,7 +167,7 @@ const ProductGallery = ({
                             </Suspense>
 
                             {image.altText ? (
-                                <div className="rounded-lg bg-gray-100 p-1 px-2 text-sm font-semibold text-gray-500 opacity-80">
+                                <div className="rounded-lg bg-gray-100 p-1 px-2 font-semibold text-gray-500 text-sm opacity-80">
                                     {image.altText}
                                 </div>
                             ) : null}
@@ -188,7 +187,7 @@ const ProductGallery = ({
                                         aria-label={`Enlarge image #${index + 1}`}
                                         onClick={() => setImage(image)}
                                         className={cn(
-                                            'hover:border-primary flex appearance-none items-center justify-center rounded-lg border-2 border-solid border-gray-100 bg-white p-1 transition-all md:aspect-[4/3] md:size-32 md:p-4',
+                                            'flex appearance-none items-center justify-center rounded-lg border-2 border-gray-100 border-solid bg-white p-1 transition-all hover:border-primary md:aspect-[4/3] md:size-32 md:p-4',
                                             isLoading && 'bg-gray-100',
                                         )}
                                         {...loadingProps}
@@ -220,4 +219,5 @@ const ProductGallery = ({
 };
 
 ProductGallery.displayName = 'Nordcom.Products.Gallery';
+
 export { ProductGallery };

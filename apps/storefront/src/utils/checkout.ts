@@ -1,13 +1,12 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { InvalidCartError, UnknownCommerceProviderError } from '@nordcom/commerce-errors';
-
-import { productToMerchantsCenterId } from '@/utils/merchants-center-id';
-import { safeParseFloat } from '@/utils/pricing';
-
-import type { Locale } from '@/utils/locale';
-import type { TrackableContextValue } from '@/utils/trackable';
 import type { CartWithActions } from '@shopify/hydrogen-react';
 import type { CartLine } from '@shopify/hydrogen-react/storefront-api-types';
+
+import type { Locale } from '@/utils/locale';
+import { productToMerchantsCenterId } from '@/utils/merchants-center-id';
+import { safeParseFloat } from '@/utils/pricing';
+import type { TrackableContextValue } from '@/utils/trackable';
 
 // Const hacky workaround for ga4 cross-domain
 // taken from StackOverflow
@@ -65,7 +64,7 @@ export const Checkout = async ({
         throw new InvalidCartError('Cart is missing checkoutUrl');
     }
 
-    const url = cart.checkoutUrl.replace(/[A-Za-z0-9\-\_]+.\.myshopify\.com/, shop.commerceProvider.domain);
+    const url = cart.checkoutUrl.replace(/[A-Za-z0-9\-_]+.\.myshopify\.com/, shop.commerceProvider.domain);
 
     try {
         trackable.postEvent('begin_checkout', {

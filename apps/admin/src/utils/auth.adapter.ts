@@ -1,6 +1,5 @@
-import { Identity, Session, User } from '@nordcom/commerce-db';
-
 import type { Adapter, AdapterAccount } from '@auth/core/adapters';
+import { Identity, Session, User } from '@nordcom/commerce-db';
 
 export function AuthAdapter(): Adapter {
     return {

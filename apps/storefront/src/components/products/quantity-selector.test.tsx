@@ -1,8 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-
-import { fireEvent, render, screen, waitFor } from '@/utils/test/react';
-
 import { QuantitySelector } from '@/components/products/quantity-selector';
+import { fireEvent, render, screen, waitFor } from '@/utils/test/react';
 
 describe('components', () => {
     describe('QuantitySelector', () => {

@@ -1,8 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-
-import { fireEvent, render, screen } from '@/utils/test/react';
-
 import { ProductOptions } from '@/components/products/product-options';
+import { fireEvent, render, screen } from '@/utils/test/react';
 
 const { options, selectedOptions, variants, setSelectedOptions } = vi.hoisted(() => ({
     options: [

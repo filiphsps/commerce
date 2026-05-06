@@ -10,7 +10,7 @@ export const GET = async (req: NextRequest, { params: _params }: { params: Favic
     'use cache';
     cacheLife('max');
 
-    let newUrl = req.nextUrl.clone();
+    const newUrl = req.nextUrl.clone();
     newUrl.pathname = newUrl.pathname.replace('.ico', '.png');
 
     return NextResponse.redirect(newUrl, { status: 302 });

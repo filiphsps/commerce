@@ -1,9 +1,7 @@
-import { NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
-
 import { gql } from '@apollo/client';
-
-import type { AbstractApi } from '@/utils/abstract-api';
+import { NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
 import type { Brand } from '@shopify/hydrogen-react/storefront-api-types';
+import type { AbstractApi } from '@/utils/abstract-api';
 
 export const BrandApi = async ({ api }: { api: AbstractApi }) => {
     const shop = api.shop();

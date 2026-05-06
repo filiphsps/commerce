@@ -1,26 +1,22 @@
 'use client';
 
-import { Fragment, type ReactNode, Suspense, useSyncExternalStore } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
-
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { UnknownCommerceProviderError, UnknownContentProviderError } from '@nordcom/commerce-errors';
-
-import { CartFragment } from '@/api/shopify/cart';
-import { useCartUtils } from '@/hooks/useCartUtils';
-import { BuildConfig } from '@/utils/build-config';
-import { isPreviewEnv } from '@/utils/is-preview-env';
-import { createClient } from '@/utils/prismic';
 import { PrismicPreview } from '@prismicio/next';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
+import { Fragment, type ReactNode, Suspense, useSyncExternalStore } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 import { Toaster as ToasterProvider } from 'sonner';
-
+import { CartFragment } from '@/api/shopify/cart';
 import { LiveChatProvider } from '@/components/live-chat-provider';
 import { PrismicRegistry } from '@/components/prismic-registry';
 import { ShopProvider } from '@/components/shop/provider';
 import { Toolbars } from '@/components/toolbars';
-
+import { useCartUtils } from '@/hooks/useCartUtils';
+import { BuildConfig } from '@/utils/build-config';
+import { isPreviewEnv } from '@/utils/is-preview-env';
 import type { CurrencyCode, Locale } from '@/utils/locale';
+import { createClient } from '@/utils/prismic';
 
 const subscribeToNothing = () => () => {};
 const getInternalTraffic = (): boolean => {

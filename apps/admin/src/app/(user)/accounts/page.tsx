@@ -11,9 +11,5 @@ export const metadata: Metadata = {
 };
 
 export default async function AccountPage({}: SetupNewPageProps) {
-    return (
-        <>
-            <Heading level="h1">TODO</Heading>
-        </>
-    );
+    return <Heading level="h1">TODO</Heading>;
 }

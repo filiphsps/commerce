@@ -3,12 +3,10 @@ import 'server-only';
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 import { Details, Heading } from '@nordcom/nordstar';
-
-import { auth } from '@/auth';
+import type { Metadata, Route } from 'next';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
-
-import type { Metadata, Route } from 'next';
+import { auth } from '@/auth';
 
 export type ShopPageProps = {
     params: Promise<{

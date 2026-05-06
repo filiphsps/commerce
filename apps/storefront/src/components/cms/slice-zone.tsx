@@ -1,12 +1,10 @@
-import { Fragment, Suspense } from 'react';
-
 import type { OnlineShop } from '@nordcom/commerce-db';
+import type { Slice as PrismicSlice, SliceZone as PrismicSlices } from '@prismicio/client';
 
 import { SliceZone as PrismicSliceZone } from '@prismicio/react';
-
-import type { Locale, LocaleDictionary } from '@/utils/locale';
-import type { Slice as PrismicSlice, SliceZone as PrismicSlices } from '@prismicio/client';
 import type { ComponentProps, ComponentType } from 'react';
+import { Fragment, Suspense } from 'react';
+import type { Locale, LocaleDictionary } from '@/utils/locale';
 
 export type Slice = PrismicSlice<any, any>;
 export type Slices = PrismicSlices<Slice>;

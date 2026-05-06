@@ -1,15 +1,13 @@
-import { linkResolver } from '@/utils/prismic';
-import { cn } from '@/utils/tailwind';
 import { asLink } from '@prismicio/client';
 import Image from 'next/image';
-
+import type { JSX } from 'react';
 import { Button } from '@/components/actionable/button';
 import Link from '@/components/link';
 import { Content } from '@/components/typography/content';
 import { PrismicText } from '@/components/typography/prismic-text';
-
 import type { BannerSliceAside } from '@/prismic/types';
-import type { JSX } from 'react';
+import { linkResolver } from '@/utils/prismic';
+import { cn } from '@/utils/tailwind';
 
 export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; index?: number }): JSX.Element => {
     const priority = index < 2;
@@ -25,7 +23,7 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
     return (
         <section
             className={cn(
-                'bg-primary text-primary-foreground relative flex h-full min-h-fit grid-flow-col justify-between gap-2 overflow-hidden overflow-x-clip rounded-lg md:grid md:grid-cols-6',
+                'relative flex h-full min-h-fit grid-flow-col justify-between gap-2 overflow-hidden overflow-x-clip rounded-lg bg-primary text-primary-foreground md:grid md:grid-cols-6',
                 background.url && 'bg-center bg-repeat text-black',
             )}
             style={{
@@ -43,8 +41,8 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
                 >
                     <Content
                         className={cn(
-                            'prose-h1:first-of-type:text-2xl md:prose-h1:first-of-type:text-3xl md:prose-h1:first-of-type:leading-normal prose-h2:first-of-type:text-xl md:prose-h2:first-of-type:text-3xl prose-h1:first-of-type:leading-tight md:prose-h2:first-of-type:leading-snug prose-h2:first-of-type:leading-tight',
-                            'md:prose-h1:first-of-type:text-4xl md:prose-h2:first-of-type:text-4xl md:prose-h1:first-of-type:leading-normal md:prose-h2:first-of-type:leading-normal prose-h2:first:-mt-1 md:prose-h2:first:-mt-3 prose-h1:first:-mt-1 md:prose-h1:first:-mt-2 prose-p:text-sm md:prose-p:text-base [&>h1>strong]:underline',
+                            'prose-h1:first-of-type:text-2xl prose-h2:first-of-type:text-xl prose-h1:first-of-type:leading-tight prose-h2:first-of-type:leading-tight md:prose-h1:first-of-type:text-3xl md:prose-h2:first-of-type:text-3xl md:prose-h1:first-of-type:leading-normal md:prose-h2:first-of-type:leading-snug',
+                            'prose-p:text-sm prose-h1:first:-mt-1 prose-h2:first:-mt-1 md:prose-p:text-base md:prose-h1:first-of-type:text-4xl md:prose-h2:first-of-type:text-4xl md:prose-h1:first-of-type:leading-normal md:prose-h2:first-of-type:leading-normal md:prose-h1:first:-mt-2 md:prose-h2:first:-mt-3 [&>h1>strong]:underline',
                         )}
                     >
                         <PrismicText data={slice.primary.content} styled={false} />
@@ -61,7 +59,7 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
                                 as={Link}
                                 key={`${target}-${index}`}
                                 className={cn(
-                                    'rounded-lg bg-white p-2 px-4 leading-normal text-black drop-shadow hover:shadow',
+                                    'rounded-lg bg-white p-2 px-4 text-black leading-normal drop-shadow hover:shadow',
                                     type && 'bg-secondary text-secondary-foreground',
                                 )}
                                 href={href}

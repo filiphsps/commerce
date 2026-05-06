@@ -1,8 +1,6 @@
 import { describe, expect, it } from 'vitest';
-
-import { render } from '@/utils/test/react';
-
 import { JsonLd } from '@/components/json-ld';
+import { render } from '@/utils/test/react';
 
 describe('components', () => {
     describe('JsonLd', () => {

@@ -1,11 +1,9 @@
 import { Button, Header as NordstarHeader } from '@nordcom/nordstar';
-
-import logo from '@/static/logo.svg';
-import { cn } from '@/utils/tailwind';
 import Image from 'next/image';
 import Link from 'next/link';
-
 import type { HTMLProps } from 'react';
+import logo from '@/static/logo.svg';
+import { cn } from '@/utils/tailwind';
 
 export type HeaderProps = {} & Omit<HTMLProps<HTMLDivElement>, 'children' | 'color'>;
 export default async function Header({ className, ...props }: HeaderProps) {

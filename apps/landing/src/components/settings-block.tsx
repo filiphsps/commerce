@@ -1,12 +1,9 @@
 'use client';
 
-import styles from '@/components/settings-block.module.scss';
-
-import { useFormStatus } from 'react-dom';
-
 import { Button, Card } from '@nordcom/nordstar';
-
 import type { ElementType, ReactNode } from 'react';
+import { useFormStatus } from 'react-dom';
+import styles from '@/components/settings-block.module.scss';
 
 export type SettingsBlockProps = {
     as?: ElementType;
@@ -52,4 +49,5 @@ const SettingsBlockContent = ({
 };
 
 SettingsBlock.displayName = 'Nordcom.Admin.SettingsBlock';
+
 export { SettingsBlock };

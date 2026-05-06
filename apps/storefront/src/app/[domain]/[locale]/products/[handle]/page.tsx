@@ -1,40 +1,35 @@
 import 'server-only';
 
-import { Fragment, Suspense } from 'react';
-
 import { Shop } from '@nordcom/commerce-db';
 import { Error, NotFoundError } from '@nordcom/commerce-errors';
-
+import { asText } from '@prismicio/client';
+import { parseGid } from '@shopify/hydrogen-react';
+import type { Metadata } from 'next';
+import { cacheLife } from 'next/cache';
+import { notFound, unstable_rethrow } from 'next/navigation';
+import type { ReactNode } from 'react';
+import { Fragment, Suspense } from 'react';
 import { PageApi } from '@/api/prismic/page';
+import type { Product } from '@/api/product';
 import { isProductVegan } from '@/api/product';
 import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductApi, ProductsApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
-import { getDictionary } from '@/i18n/dictionary';
-import { firstAvailableVariant } from '@/utils/first-available-variant';
-import { isValidHandle } from '@/utils/handle';
-import { capitalize, getTranslations, Locale } from '@/utils/locale';
-import { checkAndHandleRedirect } from '@/utils/redirect';
-import { cn } from '@/utils/tailwind';
-import { asText } from '@prismicio/client';
-import { parseGid } from '@shopify/hydrogen-react';
-import { cacheLife } from 'next/cache';
-import { notFound, unstable_rethrow } from 'next/navigation';
-
 import { CMSContent } from '@/components/cms/cms-content';
 import { Card } from '@/components/layout/card';
 import { AttributeIcon } from '@/components/products/attribute-icon';
 import { InfoLines } from '@/components/products/info-lines';
 import { ProductCategory } from '@/components/products/product-category';
 import { ProductVendor } from '@/components/products/product-vendor';
-
+import { getDictionary } from '@/i18n/dictionary';
+import { firstAvailableVariant } from '@/utils/first-available-variant';
+import { isValidHandle } from '@/utils/handle';
+import type { LocaleDictionary } from '@/utils/locale';
+import { capitalize, getTranslations, Locale } from '@/utils/locale';
+import { checkAndHandleRedirect } from '@/utils/redirect';
+import { cn } from '@/utils/tailwind';
 import { ProductContent, ProductPricing, ProductSavings } from './product-content';
 import { BLOCK_STYLES } from './styles';
-
-import type { Product } from '@/api/product';
-import type { LocaleDictionary } from '@/utils/locale';
-import type { Metadata } from 'next';
-import type { ReactNode } from 'react';
 
 export type ProductPageParams = Promise<{ domain: string; locale: string; handle: string }>;
 
@@ -166,7 +161,7 @@ async function Badges({ product, i18n }: { product: Product; i18n: LocaleDiction
         badges.push(
             <div
                 key={'badge-attribute-vegan'}
-                className="flex items-center justify-center gap-1 rounded-2xl bg-green-600 stroke-white p-[0.4rem] px-3 text-xs font-semibold uppercase leading-none text-white"
+                className="flex items-center justify-center gap-1 rounded-2xl bg-green-600 stroke-white p-[0.4rem] px-3 font-semibold text-white text-xs uppercase leading-none"
                 title={t('this-product-is-vegan')}
                 data-nosnippet={true}
             >
@@ -237,7 +232,7 @@ export default async function ProductPage({ params }: { params: ProductPageParam
     let productTypeElement = null;
     if (product.productType) {
         productTypeElement = (
-            <span data-nosnippet={true} className="contents leading-none text-gray-700">
+            <span data-nosnippet={true} className="contents text-gray-700 leading-none">
                 {' '}
                 &ndash; <ProductCategory shop={shop} locale={locale} product={product} />
             </span>
@@ -270,7 +265,7 @@ export default async function ProductPage({ params }: { params: ProductPageParam
 
                     <header className="flex flex-col gap-3">
                         <div className="flex grow flex-col gap-0">
-                            <div className="flex w-full grow flex-wrap whitespace-pre-wrap text-3xl font-extrabold leading-tight">
+                            <div className="flex w-full grow flex-wrap whitespace-pre-wrap font-extrabold text-3xl leading-tight">
                                 <TitleTag className="text-inherit">
                                     {title}
                                     <Suspense>{productTypeElement}</Suspense>
@@ -282,7 +277,7 @@ export default async function ProductPage({ params }: { params: ProductPageParam
                                     shop={shop}
                                     locale={locale}
                                     product={product}
-                                    className="font-semibold normal-case leading-tight text-gray-600 transition-colors md:text-lg"
+                                    className="font-semibold text-gray-600 normal-case leading-tight transition-colors md:text-lg"
                                     title={t('browse-all-products-by-brand', product.vendor)}
                                     prefix={<span className="font-normal">{t('by')} </span>}
                                 />

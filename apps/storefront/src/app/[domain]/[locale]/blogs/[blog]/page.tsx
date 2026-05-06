@@ -1,21 +1,17 @@
 import 'server-only';
 
-import { Fragment, Suspense } from 'react';
-
 import { Shop } from '@nordcom/commerce-db';
 import { Error, NotFoundError } from '@nordcom/commerce-errors';
-
-import { ShopifyApolloApiClient } from '@/api/shopify';
-import { BlogApi, BlogsApi } from '@/api/shopify/blog';
-import { LocalesApi } from '@/api/store';
-import { isValidHandle } from '@/utils/handle';
-import { Locale } from '@/utils/locale';
 import { flattenConnection, RichText } from '@shopify/hydrogen-react';
 import md5 from 'crypto-js/md5';
+import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-
+import { Fragment, Suspense } from 'react';
+import { ShopifyApolloApiClient } from '@/api/shopify';
+import { BlogApi, BlogsApi } from '@/api/shopify/blog';
+import { LocalesApi } from '@/api/store';
 import { Avatar } from '@/components/informational/avatar';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
@@ -25,8 +21,8 @@ import PageContent from '@/components/page-content';
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
 import { Label } from '@/components/typography/label';
-
-import type { Metadata } from 'next';
+import { isValidHandle } from '@/utils/handle';
+import { Locale } from '@/utils/locale';
 
 export type BlogPageParams = Promise<{ domain: string; locale: string; blog: string }>;
 
@@ -197,10 +193,10 @@ export default async function BlogPage({ params }: { params: BlogPageParams }) {
                                             quality={80}
                                         />
                                     ) : (
-                                        <div className="transition-color aspect-[16/7] rounded-lg bg-gray-100 group-hover/header:brightness-75 group-focus-visible/header:brightness-75" />
+                                        <div className="aspect-[16/7] rounded-lg bg-gray-100 transition-color group-hover/header:brightness-75 group-focus-visible/header:brightness-75" />
                                     )}
 
-                                    <div className="group-focus-visible/header:text-primary group-hover/header:text-primary block text-xl font-semibold transition-colors">
+                                    <div className="block font-semibold text-xl transition-colors group-hover/header:text-primary group-focus-visible/header:text-primary">
                                         {title}
                                     </div>
                                 </Link>
@@ -218,13 +214,13 @@ export default async function BlogPage({ params }: { params: BlogPageParams }) {
                                                     <Avatar
                                                         name={author.name}
                                                         src={avatar}
-                                                        className="-mb-1 -mt-1 size-4"
+                                                        className="-mt-1 -mb-1 size-4"
                                                     />
                                                 ) : null}
 
                                                 <Label
                                                     as="div"
-                                                    className="text-sm font-semibold normal-case leading-none text-gray-500"
+                                                    className="font-semibold text-gray-500 text-sm normal-case leading-none"
                                                 >
                                                     {author.name}
                                                 </Label>
@@ -233,7 +229,7 @@ export default async function BlogPage({ params }: { params: BlogPageParams }) {
 
                                         <Label
                                             as="div"
-                                            className="text-sm font-semibold normal-case leading-none text-gray-500"
+                                            className="font-semibold text-gray-500 text-sm normal-case leading-none"
                                         >
                                             {publishedAtString}
                                         </Label>

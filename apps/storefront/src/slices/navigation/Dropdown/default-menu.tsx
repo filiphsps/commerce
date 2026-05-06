@@ -1,18 +1,15 @@
 'use client';
 
-import { useDetectClickOutside } from 'react-detect-click-outside';
-
-import { linkResolver } from '@/utils/prismic';
-import { cn } from '@/utils/tailwind';
 import { asLink, type Content } from '@prismicio/client';
+import type { SliceComponentProps } from '@prismicio/react';
 import Image from 'next/image';
-
+import { useDetectClickOutside } from 'react-detect-click-outside';
 import { useHeaderMenu } from '@/components/header/header-provider';
 import Link from '@/components/link';
 import { PrismicText } from '@/components/typography/prismic-text';
-
 import type { DropdownSliceDefaultPrimaryLinksItem, Simplify } from '@/prismic/types';
-import type { SliceComponentProps } from '@prismicio/react';
+import { linkResolver } from '@/utils/prismic';
+import { cn } from '@/utils/tailwind';
 
 const MENU_COMMON_STYLES =
     'content-visibility-auto contain-intrinsic-size-[auto_var(--page-width)] h-full w-full max-w-[var(--page-width)] overflow-x-auto px-3 py-4 md:px-4 2xl:px-3';
@@ -96,7 +93,7 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                         {background && !!(image as any) && image.url ? (
                             <div
                                 className={cn(
-                                    'text-primary-foreground relative h-full shrink-0 overflow-hidden transition-all group-hover/item:brightness-75 group-focus/item:brightness-75',
+                                    'relative h-full shrink-0 overflow-hidden text-primary-foreground transition-all group-hover/item:brightness-75 group-focus/item:brightness-75',
                                     !background_color && 'bg-primary', // FIXME: Deal with text color when custom bg color is used.
                                 )}
                                 style={{ backgroundColor: background_color || undefined }}

@@ -1,20 +1,16 @@
 import 'server-only';
 
-import { Suspense } from 'react';
-
 import type { OnlineShop } from '@nordcom/commerce-db';
-
-import { FooterApi } from '@/api/footer';
-import { capitalize, getTranslations } from '@/utils/locale';
-import { linkResolver } from '@/utils/prismic';
 import { asLink, asText } from '@prismicio/client';
-
+import { Suspense } from 'react';
+import { FooterApi } from '@/api/footer';
 import { AcceptedPaymentMethods } from '@/components/informational/accepted-payment-methods';
 import { CurrentLocaleFlag } from '@/components/informational/current-locale-flag';
 import Link from '@/components/link';
 import { PrismicText } from '@/components/typography/prismic-text';
-
 import type { Locale, LocaleDictionary } from '@/utils/locale';
+import { capitalize, getTranslations } from '@/utils/locale';
+import { linkResolver } from '@/utils/prismic';
 
 export type FooterContentProps = {
     locale: Locale;
@@ -37,7 +33,7 @@ const FooterContent = async ({ locale, i18n, shop }: FooterContentProps) => {
 
                 {footer.policy_links.length > 0 ? (
                     <div className="flex flex-wrap items-center justify-self-end md:items-end">
-                        <div className="flex flex-wrap justify-center gap-4 gap-y-1 *:text-xs *:font-black *:uppercase lg:justify-start *:lg:text-sm">
+                        <div className="flex flex-wrap justify-center gap-4 gap-y-1 *:font-black *:text-xs *:uppercase lg:justify-start *:lg:text-sm">
                             {footer.policy_links.map(({ title, href: link }, index) => {
                                 const href = asLink(link, { linkResolver });
                                 const target: undefined | '_blank' = (href as any).target || undefined;
@@ -64,7 +60,7 @@ const FooterContent = async ({ locale, i18n, shop }: FooterContentProps) => {
                 </Link>
 
                 {hasCopyrights ? (
-                    <div className="flex gap-2 text-xs font-black uppercase lg:text-sm">
+                    <div className="flex gap-2 font-black text-xs uppercase lg:text-sm">
                         <PrismicText data={footer.copyrights} styled={false} />
                     </div>
                 ) : null}

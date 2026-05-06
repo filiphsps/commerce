@@ -1,21 +1,16 @@
-import { Suspense } from 'react';
-
 import { Shop } from '@nordcom/commerce-db';
 import { Error, NotFoundError } from '@nordcom/commerce-errors';
-
+import { asText } from '@prismicio/client';
+import { flattenConnection } from '@shopify/hydrogen-react';
+import type { Metadata } from 'next';
+import { cacheLife } from 'next/cache';
+import { notFound, RedirectType, redirect, unstable_rethrow } from 'next/navigation';
+import { Suspense } from 'react';
+import type { CollectionPage, WithContext } from 'schema-dts';
 import { PageApi } from '@/api/prismic/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CollectionApi, CollectionPaginationCountApi, CollectionsApi } from '@/api/shopify/collection';
 import { LocalesApi } from '@/api/store';
-import { getDictionary } from '@/utils/dictionary';
-import { isValidHandle } from '@/utils/handle';
-import { capitalize, getTranslations, Locale } from '@/utils/locale';
-import { checkAndHandleRedirect } from '@/utils/redirect';
-import { asText } from '@prismicio/client';
-import { flattenConnection } from '@shopify/hydrogen-react';
-import { cacheLife } from 'next/cache';
-import { notFound, redirect, RedirectType, unstable_rethrow } from 'next/navigation';
-
 import { Pagination } from '@/components/actionable/pagination';
 import PrismicPage from '@/components/cms/prismic-page';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
@@ -25,11 +20,11 @@ import PageContent from '@/components/page-content';
 import CollectionBlock from '@/components/products/collection-block';
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
-
+import { getDictionary } from '@/utils/dictionary';
+import { isValidHandle } from '@/utils/handle';
+import { capitalize, getTranslations, Locale } from '@/utils/locale';
+import { checkAndHandleRedirect } from '@/utils/redirect';
 import { CollectionContent, PRODUCTS_PER_PAGE } from './collection-content';
-
-import type { Metadata } from 'next';
-import type { CollectionPage, WithContext } from 'schema-dts';
 
 // TODO: Figure out a better way to deal with query params.
 
@@ -300,7 +295,7 @@ export default async function CollectionsCollectionPage({
                 pageContent
             ) : (
                 <>
-                    {!hasCustomPageContentPosition ? <>{pageContent}</> : null}
+                    {!hasCustomPageContentPosition ? pageContent : null}
 
                     <PrismicPage
                         shop={shop}

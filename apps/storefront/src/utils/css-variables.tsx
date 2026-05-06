@@ -1,12 +1,11 @@
 import { type OnlineShop, Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
-
-import { ShopifyApiClient } from '@/api/shopify';
-import { BrandApi } from '@/api/shopify/brand';
-import { Locale } from '@/utils/locale';
 import { colord, extend } from 'colord';
 import a11yPlugin from 'colord/plugins/a11y';
 import { notFound } from 'next/navigation';
+import { ShopifyApiClient } from '@/api/shopify';
+import { BrandApi } from '@/api/shopify/brand';
+import { Locale } from '@/utils/locale';
 
 extend([a11yPlugin]);
 

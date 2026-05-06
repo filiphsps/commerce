@@ -1,12 +1,10 @@
 import { Header as NordstarHeader } from '@nordcom/nordstar';
-
-import { cn } from '@/utils/tailwind';
 import Image from 'next/image';
 import Link from 'next/link';
+import type { HTMLAttributes } from 'react';
 
 import { ToggleSidebar } from '@/components/toggle-sidebar';
-
-import type { HTMLAttributes } from 'react';
+import { cn } from '@/utils/tailwind';
 
 export type HeaderProps = {} & HTMLAttributes<HTMLDivElement>;
 export function Header({ className, children, ...props }: HeaderProps) {

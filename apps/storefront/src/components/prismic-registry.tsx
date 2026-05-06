@@ -1,10 +1,9 @@
 'use client';
 
-import { linkResolver } from '@/utils/prismic';
-import { PrismicProvider } from '@prismicio/react';
-
 import type { Client } from '@prismicio/client';
+import { PrismicProvider } from '@prismicio/react';
 import type { ReactNode } from 'react';
+import { linkResolver } from '@/utils/prismic';
 
 export type PrismicRegistryProps = {
     client: Client;

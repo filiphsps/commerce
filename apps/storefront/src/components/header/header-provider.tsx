@@ -1,14 +1,11 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
-
 import { MissingContextProviderError } from '@nordcom/commerce-errors';
-
 import { usePathname } from 'next/navigation';
 import NextTopLoader from 'nextjs-toploader';
 import * as NProgress from 'nprogress';
-
 import type { ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 const SCROLL_THRESHOLD = 35;
 
@@ -31,7 +28,7 @@ export const HeaderProvider = ({ children = null, loaderColor }: HeaderProviderP
 
     // Deal with scrolling and setting the scrolled attribute.
     useEffect(() => {
-        const scrolled = Math.floor(window.scrollY) >= SCROLL_THRESHOLD ? true : false;
+        const scrolled = Math.floor(window.scrollY) >= SCROLL_THRESHOLD;
         document.body.setAttribute('data-scrolled', scrolled ? 'true' : 'false');
 
         const onScroll = () => {
@@ -74,7 +71,7 @@ export const HeaderProvider = ({ children = null, loaderColor }: HeaderProviderP
         NProgress.done();
 
         document.body.removeAttribute('data-menu-open');
-    }, [pathname]);
+    }, []);
 
     const value = { menu: menuValue, setMenu, closeMenu: () => setMenu(null) };
     return (

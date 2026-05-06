@@ -1,8 +1,6 @@
 import { describe, expect, it } from 'vitest';
-
-import { render } from '@/utils/test/react';
-
 import { Pagination } from '@/components/actionable/pagination';
+import { render } from '@/utils/test/react';
 
 describe('components', () => {
     describe('Pagination', () => {

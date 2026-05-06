@@ -277,7 +277,7 @@ export class MissingEnvironmentVariableError extends ApiError {
     statusCode = 500;
     name = 'MissingEnvironmentVariableError';
     details = 'Missing environment variable';
-    description = `${!!this.cause ? 'the' : 'A'} required environment variable ${!!this.cause ? `"${this.cause}"` : ''} is missing`;
+    description = `${this.cause ? 'the' : 'A'} required environment variable ${this.cause ? `"${this.cause}"` : ''} is missing`;
     code = ApiErrorKind.API_MISSING_ENVIRONMENT_VARIABLE;
 }
 

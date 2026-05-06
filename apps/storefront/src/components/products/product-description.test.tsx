@@ -1,9 +1,7 @@
 import { describe, expect, it } from 'vitest';
-
+import { ProductDescription } from '@/components/products/product-description';
 import { Locale } from '@/utils/locale';
 import { render, waitFor } from '@/utils/test/react';
-
-import { ProductDescription } from '@/components/products/product-description';
 
 describe('components', () => {
     describe('ProductDescription', () => {

@@ -1,19 +1,16 @@
 import 'server-only';
 
-import { type HTMLProps, Suspense } from 'react';
-
 import { Shop } from '@nordcom/commerce-db';
-
-import { HeaderApi, MenuApi } from '@/api/navigation';
-import CustomHTML from '@/slices/common/CustomHtml';
-import { getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
 import { Search as SearchIcon } from 'lucide-react';
 import Image from 'next/image';
-
+import { type HTMLProps, Suspense } from 'react';
+import { HeaderApi, MenuApi } from '@/api/navigation';
 import { CartButton } from '@/components/header/cart-button';
 import { HeaderMenu } from '@/components/header/header-menu';
 import { HeaderNavigation } from '@/components/header/header-navigation';
 import Link from '@/components/link';
+import CustomHTML from '@/slices/common/CustomHtml';
+import { getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
 
 import { HeaderAccountSection } from './header-account-section';
 
@@ -67,7 +64,7 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
                                 style={{
                                     aspectRatio: `${(logo.width / logo.height).toFixed(2)} / 1`,
                                 }}
-                                className="focus-visible::bg-gray-100 -ml-2 block h-full rounded-lg px-2 py-2 hover:bg-gray-100"
+                                className="-ml-2 block h-full rounded-lg px-2 py-2 hover:bg-gray-100 focus-visible::bg-gray-100"
                             >
                                 {logo.src ? (
                                     <Image
@@ -89,7 +86,7 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
                         <div className="flex h-full grow items-center justify-end gap-6" data-nosnippet={true}>
                             <Link
                                 href="/search/"
-                                className="hover:text-primary focus-visible:text-primary transition-colors"
+                                className="transition-colors hover:text-primary focus-visible:text-primary"
                                 title={t('search')}
                             >
                                 <SearchIcon className="stroke-1 text-xl lg:text-2xl" />
@@ -104,7 +101,7 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
                     </header>
                 </section>
 
-                <section className="flex h-12 w-full flex-col items-center justify-center gap-0 border-0 border-b border-t border-solid border-gray-200 bg-white text-black group-data-[menu-open=true]/body:border-b-gray-100">
+                <section className="flex h-12 w-full flex-col items-center justify-center gap-0 border-0 border-gray-200 border-t border-b border-solid bg-white text-black group-data-[menu-open=true]/body:border-b-gray-100">
                     <Suspense key="layout.header.header-navigation" fallback={<HeaderNavigation.skeleton />}>
                         <HeaderNavigation shop={shop} i18n={i18n} locale={locale} slices={slices} />
                     </Suspense>
@@ -132,7 +129,7 @@ HeaderComponent.skeleton = () => (
                 </div>
             </header>
         </section>
-        <section className="flex h-12 w-full flex-col items-center justify-center gap-0 border-0 border-b border-t border-solid border-gray-300 bg-white text-black">
+        <section className="flex h-12 w-full flex-col items-center justify-center gap-0 border-0 border-gray-300 border-t border-b border-solid bg-white text-black">
             <HeaderNavigation.skeleton />
         </section>
     </section>

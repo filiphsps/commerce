@@ -1,9 +1,9 @@
 /* c8 ignore start */
-import { verifyAccess } from '@vercel/flags';
-import { NextResponse } from 'next/server';
 
 import type { ApiData } from '@vercel/flags';
+import { verifyAccess } from '@vercel/flags';
 import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 
 export const runtime = 'nodejs';
 

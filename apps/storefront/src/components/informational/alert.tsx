@@ -1,13 +1,12 @@
-import { cn } from '@/utils/tailwind';
 import {
     CircleAlert as CircleAlertIcon,
     CircleCheck as CircleCheckIcon,
     CircleHelp as CircleHelpIcon,
 } from 'lucide-react';
+import type { HTMLProps } from 'react';
 
 import { Content } from '@/components/typography/content';
-
-import type { HTMLProps } from 'react';
+import { cn } from '@/utils/tailwind';
 
 const ICON_STYLES = 'flex text-inherit';
 
@@ -33,8 +32,6 @@ export const Alert = ({ children, severity, icon, className, ...props }: AlertPr
 
             case 'callout':
                 break;
-
-            case 'info':
             default:
                 iconElement = <CircleHelpIcon className={ICON_STYLES} />;
         }

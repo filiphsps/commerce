@@ -1,8 +1,6 @@
-import { Suspense } from 'react';
-
 import type { OnlineShop } from '@nordcom/commerce-db';
-
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 
 import CollectionBlock from '@/components/products/collection-block';
 

@@ -1,13 +1,12 @@
 'use client';
 
-import { cn } from '@/utils/tailwind';
 import { useCart } from '@shopify/hydrogen-react';
+import type { CartDiscountCode } from '@shopify/hydrogen-react/storefront-api-types';
 import { Tag as TagIcon, X as XIcon } from 'lucide-react';
 
 import { Button } from '@/components/actionable/button';
 import { Label } from '@/components/typography/label';
-
-import type { CartDiscountCode } from '@shopify/hydrogen-react/storefront-api-types';
+import { cn } from '@/utils/tailwind';
 
 const CartCoupons = ({}) => {
     const { discountCodes = [], discountCodesUpdate, cartReady } = useCart();
@@ -57,4 +56,5 @@ const CartCoupons = ({}) => {
 };
 
 CartCoupons.displayName = 'Nordcom.Cart.Coupons';
+
 export { CartCoupons };

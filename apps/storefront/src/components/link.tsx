@@ -1,17 +1,14 @@
 'use client';
 
-import { type ComponentProps } from 'react';
+import type { Url } from 'node:url';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { TypeError } from '@nordcom/commerce-errors';
-
+import BaseLink from 'next/link';
+import type { ComponentProps } from 'react';
+import { useShop } from '@/components/shop/provider';
 import { commonValidations } from '@/middleware/common-validations';
 import { Locale } from '@/utils/locale';
-import BaseLink from 'next/link';
-
-import { useShop } from '@/components/shop/provider';
-
-import type { Url } from 'node:url';
 
 export type LinkProps = {
     shop?: OnlineShop;
@@ -53,9 +50,7 @@ export default function Link({ locale, href, prefetch, ...props }: LinkProps) {
     // Get the locale if it's not provided to us.
     let resolvedLocale: Locale;
     try {
-        resolvedLocale = !!(locale as any)
-            ? locale!
-            : (shop.locale as any) || (Locale.current as any) || Locale.default;
+        resolvedLocale = (locale as any) ? locale! : (shop.locale as any) || (Locale.current as any) || Locale.default;
     } catch (error: unknown) {
         console.error(error);
         resolvedLocale = Locale.default;

@@ -1,9 +1,9 @@
-import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
 import { gql } from '@apollo/client';
+import type { PredictiveSearchResult, SearchResultItemConnection } from '@shopify/hydrogen-react/storefront-api-types';
 
 import type { Product, ProductFilters } from '@/api/product';
+import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
 import type { AbstractApi } from '@/utils/abstract-api';
-import type { PredictiveSearchResult, SearchResultItemConnection } from '@shopify/hydrogen-react/storefront-api-types';
 
 export const SearchApi = async ({
     client,

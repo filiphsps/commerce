@@ -1,9 +1,7 @@
-import styles from '@/components/footer.module.scss';
-
-import { cn } from '@/utils/tailwind';
 import Link from 'next/link';
-
 import type { HTMLProps } from 'react';
+import styles from '@/components/footer.module.scss';
+import { cn } from '@/utils/tailwind';
 
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -29,11 +27,11 @@ export default function Footer({ className, ...props }: FooterProps) {
                         </section>
 
                         {process.env.GIT_COMMIT_SHA ? (
-                            <section className="flex h-8 items-center justify-end text-xs font-semibold lowercase leading-none text-current empty:hidden md:text-sm">
+                            <section className="flex h-8 items-center justify-end font-semibold text-current text-xs lowercase leading-none empty:hidden md:text-sm">
                                 <Link
                                     href="https://shops.nordcom.io/changelog/"
                                     prefetch={false}
-                                    className="hover:text-primary-foreground text-inherit transition-colors hover:underline"
+                                    className="text-inherit transition-colors hover:text-primary-foreground hover:underline"
                                     title={process.env.GIT_COMMIT_SHA}
                                 >
                                     {process.env.GIT_COMMIT_SHA.slice(0, 7)}
@@ -49,7 +47,7 @@ export default function Footer({ className, ...props }: FooterProps) {
                     className={cn(
                         styles.content,
                         styles.beside,
-                        'font-base w-full p-4 py-5 font-semibold leading-snug md:py-6',
+                        'w-full p-4 py-5 font-base font-semibold leading-snug md:py-6',
                     )}
                 >
                     <section className={cn(styles.section, styles.links, 'font-semibold')}>
@@ -61,7 +59,7 @@ export default function Footer({ className, ...props }: FooterProps) {
                             Privacy Policy
                         </Link>
                     </section>
-                    <section className={cn(styles.section, 'text-sm font-bold')}>
+                    <section className={cn(styles.section, 'font-bold text-sm')}>
                         <Link href="https://nordcom.io/">&copy; 2023-{CURRENT_YEAR} Nordcom AB</Link>
                     </section>
                 </div>

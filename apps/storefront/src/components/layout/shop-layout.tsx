@@ -1,8 +1,7 @@
 import 'server-only';
 
-import { Fragment, type HTMLProps, type ReactNode, Suspense } from 'react';
-
 import type { OnlineShop } from '@nordcom/commerce-db';
+import { Fragment, type HTMLProps, type ReactNode, Suspense } from 'react';
 
 import Footer from '@/components/footer/footer';
 import Header from '@/components/header/header';

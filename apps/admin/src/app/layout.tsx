@@ -1,13 +1,12 @@
 import './globals.css';
 
-import { primaryFont } from '@/utils/fonts';
-import { cn } from '@/utils/tailwind';
 import { GeistMono } from 'geist/font/mono';
-
-import { Providers } from '@/components/providers';
-
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
+
+import { Providers } from '@/components/providers';
+import { primaryFont } from '@/utils/fonts';
+import { cn } from '@/utils/tailwind';
 
 export const viewport: Viewport = {
     initialScale: 1,

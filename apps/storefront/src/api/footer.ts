@@ -1,11 +1,9 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Error, NotFoundError } from '@nordcom/commerce-errors';
-
+import { unstable_cache } from 'next/cache';
+import type { FooterDocument } from '@/prismic/types';
 import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
-import { unstable_cache } from 'next/cache';
-
-import type { FooterDocument } from '@/prismic/types';
 
 export async function FooterApi({
     shop,

@@ -1,11 +1,10 @@
 'use client';
 
-import { cn } from '@/utils/tailwind';
 import { Menu } from 'lucide-react';
+import type { HTMLAttributes } from 'react';
 
 import { useHeaderMenu } from '@/components/header-provider';
-
-import type { HTMLAttributes } from 'react';
+import { cn } from '@/utils/tailwind';
 
 export type ToggleSidebarProps = {} & Omit<HTMLAttributes<HTMLButtonElement>, 'type' | 'children'>;
 export function ToggleSidebar({ className }: ToggleSidebarProps) {

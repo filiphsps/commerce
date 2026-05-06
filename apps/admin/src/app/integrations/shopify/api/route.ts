@@ -1,10 +1,7 @@
 import { ProviderFetchError } from '@nordcom/commerce-errors';
-
-import { NextResponse } from 'next/server';
-
-import { shopifyAdminApi } from './shopify';
-
 import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+import { shopifyAdminApi } from './shopify';
 
 export const GET = async (req: NextRequest, _context: any) => {
     const searchParams = req.nextUrl.searchParams;

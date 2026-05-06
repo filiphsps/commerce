@@ -1,22 +1,16 @@
 import '@/styles/app.scss';
 import '../../globals.css';
 
-import { Fragment, Suspense } from 'react';
-
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
 import { Error, NotFoundError, UnknownShopDomainError } from '@nordcom/commerce-errors';
-
-import { ShopifyApolloApiClient } from '@/api/shopify';
-import { CountriesApi, LocaleApi, LocalesApi } from '@/api/store';
-import { getDictionary } from '@/i18n/dictionary';
-import { CssVariablesProvider, getBrandingColors } from '@/utils/css-variables';
-import { primaryFont } from '@/utils/fonts';
-import { Locale } from '@/utils/locale';
-import { cn } from '@/utils/tailwind';
+import type { Metadata, Viewport } from 'next';
 import { cacheLife } from 'next/cache';
 import { notFound, unstable_rethrow } from 'next/navigation';
-
+import type { ReactNode } from 'react';
+import { Fragment, Suspense } from 'react';
+import { ShopifyApolloApiClient } from '@/api/shopify';
+import { CountriesApi, LocaleApi, LocalesApi } from '@/api/store';
 import { AnalyticsProvider } from '@/components/analytics-provider';
 import { GeoRedirect } from '@/components/geo-redirect';
 import { HeaderProvider } from '@/components/header/header-provider';
@@ -24,9 +18,11 @@ import { JsonLd } from '@/components/json-ld';
 import ShopLayout from '@/components/layout/shop-layout';
 import PageContent from '@/components/page-content';
 import ProvidersRegistry from '@/components/providers-registry';
-
-import type { Metadata, Viewport } from 'next';
-import type { ReactNode } from 'react';
+import { getDictionary } from '@/i18n/dictionary';
+import { CssVariablesProvider, getBrandingColors } from '@/utils/css-variables';
+import { primaryFont } from '@/utils/fonts';
+import { Locale } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
 
 export type LayoutParams = Promise<{ domain: string; locale: string }>;
 

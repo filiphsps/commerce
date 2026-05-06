@@ -2,17 +2,14 @@ import '@/styles/app.scss';
 import '@/styles/globals.css';
 
 import { View } from '@nordcom/nordstar';
-
-import { cn } from '@/utils/tailwind';
 import { GeistMono } from 'geist/font/mono';
+import type { Metadata, Viewport } from 'next';
 import { Montserrat } from 'next/font/google';
-
+import type { ReactNode } from 'react';
 import Footer from '@/components/footer';
 import Header from '@/components/header';
 import { Providers } from '@/components/providers';
-
-import type { Metadata, Viewport } from 'next';
-import type { ReactNode } from 'react';
+import { cn } from '@/utils/tailwind';
 
 export const viewport: Viewport = {
     themeColor: '#000000',

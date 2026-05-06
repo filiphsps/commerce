@@ -1,19 +1,16 @@
 import 'server-only';
 
-import { type HTMLProps } from 'react';
-
-import { cn } from '@/utils/tailwind';
 import { asText } from '@prismicio/client';
 import { ChevronRight as ChevronRightIcon } from 'lucide-react';
-
+import type { HTMLProps } from 'react';
 import Link from '@/components/link';
 import PageContent from '@/components/page-content';
 import CollectionBlock from '@/components/products/collection-block';
 import { Content } from '@/components/typography/content';
 import { Title } from '@/components/typography/heading';
 import { PrismicText } from '@/components/typography/prismic-text';
-
 import type { CollectionSliceDefault } from '@/prismic/types';
+import { cn } from '@/utils/tailwind';
 
 type Slice = {
     slice_type: 'collection';
@@ -44,7 +41,7 @@ const CollectionContainerHeader = ({ slice }: Omit<CollectionContainerProps, 'ch
             href={`/collections/${slice.primary.handle!}`}
             title={asText(slice.primary.title)}
             className={cn(
-                'group flex items-center gap-1 text-xl font-bold leading-tight hover:underline focus-visible:underline lg:text-2xl',
+                'group flex items-center gap-1 font-bold text-xl leading-tight hover:underline focus-visible:underline lg:text-2xl',
                 'md:data-[align=left]:text-left md:data-[align=center]:text-center md:data-[align=right]:text-right',
             )}
         >

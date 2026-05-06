@@ -1,9 +1,7 @@
+import type { ReviewBase } from '../models';
 import { ReviewModel } from '../models';
-
 import { Service } from './service';
 import { Shop } from './shop';
-
-import type { ReviewBase } from '../models';
 
 type FindOptions = {
     count?: number;

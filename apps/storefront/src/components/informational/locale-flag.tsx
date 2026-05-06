@@ -1,9 +1,9 @@
-import { cn } from '@/utils/tailwind';
 import { byIso as countryLookup } from 'country-code-lookup';
 import Image from 'next/image';
+import type { ComponentProps, ReactNode } from 'react';
 
 import type { Locale } from '@/utils/locale';
-import type { ComponentProps, ReactNode } from 'react';
+import { cn } from '@/utils/tailwind';
 
 export type LocaleFlagProps = {
     locale: Locale;
@@ -54,7 +54,7 @@ export const LocaleFlag = ({
                     {suffix}
                 </div>
             ) : (
-                <>{suffix}</>
+                suffix
             )}
         </>
     );

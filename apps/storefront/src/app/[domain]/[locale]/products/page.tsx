@@ -1,25 +1,20 @@
-import { Suspense } from 'react';
-
 import { Shop } from '@nordcom/commerce-db';
-
+import { asText } from '@prismicio/client';
+import type { Metadata } from 'next';
+import { cacheLife } from 'next/cache';
+import { RedirectType, redirect } from 'next/navigation';
+import { Suspense } from 'react';
 import { PageApi } from '@/api/prismic/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
-import { getDictionary } from '@/i18n/dictionary';
-import { enableProductsPage } from '@/utils/flags';
-import { capitalize, getTranslations, Locale } from '@/utils/locale';
-import { asText } from '@prismicio/client';
-import { cacheLife } from 'next/cache';
-import { redirect, RedirectType } from 'next/navigation';
-
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import PageContent from '@/components/page-content';
 import Heading from '@/components/typography/heading';
-
+import { getDictionary } from '@/i18n/dictionary';
+import { enableProductsPage } from '@/utils/flags';
+import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import ProductsContent from './products-content';
-
-import type { Metadata } from 'next';
 
 // TODO: Figure out a better way to deal with query params.
 

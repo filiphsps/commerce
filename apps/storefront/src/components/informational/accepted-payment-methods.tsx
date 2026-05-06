@@ -1,14 +1,13 @@
 import 'server-only';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
-
+import Image from 'next/image';
+import type { HTMLProps } from 'react';
 import { ShopifyApiClient } from '@/api/shopify';
 import { ShopPaymentSettingsApi } from '@/api/store';
-import { cn } from '@/utils/tailwind';
-import Image from 'next/image';
 
 import type { Locale } from '@/utils/locale';
-import type { HTMLProps } from 'react';
+import { cn } from '@/utils/tailwind';
 
 const CARD_STYLES = 'aspect-[16_10] h-fit w-10 object-fill object-center';
 

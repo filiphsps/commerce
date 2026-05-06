@@ -1,17 +1,16 @@
 'use client';
 
-import { Checkout } from '@/utils/checkout';
-import { cn } from '@/utils/tailwind';
-import { useTrackable } from '@/utils/trackable';
 import { useCart } from '@shopify/hydrogen-react';
-import { toast } from 'sonner';
-
-import { CartSummary } from '@/components/cart/cart-summary';
-import { useShop } from '@/components/shop/provider';
-
-import type { Locale, LocaleDictionary } from '@/utils/locale';
 import type { CartLine, ComponentizableCartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import type { HTMLProps, ReactNode } from 'react';
+import { toast } from 'sonner';
+import { CartSummary } from '@/components/cart/cart-summary';
+import { useShop } from '@/components/shop/provider';
+import { Checkout } from '@/utils/checkout';
+
+import type { Locale, LocaleDictionary } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
+import { useTrackable } from '@/utils/trackable';
 
 export type CartSidebarProps = {
     locale: Locale;

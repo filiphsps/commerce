@@ -1,19 +1,16 @@
 import 'server-only';
 
-import { Suspense } from 'react';
-
-import { isProductConfectionary, type Product } from '@/api/product';
-import { getDictionary } from '@/utils/dictionary';
-import { getTranslations } from '@/utils/locale';
-import { cn } from '@/utils/tailwind';
+import type { ParsedMetafields } from '@shopify/hydrogen-react';
 import { parseMetafield } from '@shopify/hydrogen-react';
-
+import { Suspense } from 'react';
+import { isProductConfectionary, type Product } from '@/api/product';
 import { Card } from '@/components/layout/card';
 import { AttributeIcon } from '@/components/products/attribute-icon';
 import { Label } from '@/components/typography/label';
-
+import { getDictionary } from '@/utils/dictionary';
 import type { Locale } from '@/utils/locale';
-import type { ParsedMetafields } from '@shopify/hydrogen-react';
+import { getTranslations } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
 
 const COMMON_STYLES = 'md:gap-2 flex grow flex-col items-stretch justify-start gap-1 empty:hidden';
 const LABEL_STYLES = 'leading-none text-base';
@@ -42,7 +39,7 @@ export async function ProductIngredients({ locale, data: product, className = ''
     return (
         <Card className={cn(COMMON_STYLES, 'flex-wrap md:max-w-[32rem]', className)} border={true}>
             <Label className={cn(LABEL_STYLES)}>{t('ingredients')}</Label>
-            <p className={cn('whitespace-pre-wrap text-sm font-medium leading-snug')}>{parsedIngredients}</p>
+            <p className={cn('whitespace-pre-wrap font-medium text-sm leading-snug')}>{parsedIngredients}</p>
         </Card>
     );
 }
@@ -65,7 +62,7 @@ export async function ProductOriginalName({ data: product }: ProductOriginalName
         return null;
     }
 
-    return <p className="text-base font-medium italic">&ldquo;{parsedName}&rdquo;</p>;
+    return <p className="font-medium text-base italic">&ldquo;{parsedName}&rdquo;</p>;
 }
 
 export type ProductDetailsProps = {
@@ -87,7 +84,7 @@ export async function ProductDetails({ locale, data: product }: ProductDetailsPr
     } = product;
 
     //const parsedNutritionalContent = nutritionalContent ? parseMetafield(nutritionalContent) : null;
-    const parsedFlavors = !!flavors
+    const parsedFlavors = flavors
         ? parseMetafield<ParsedMetafields['list.single_line_text_field']>(flavors).parsedValue
         : null;
 
@@ -97,12 +94,12 @@ export async function ProductDetails({ locale, data: product }: ProductDetailsPr
                   <Label className={cn(LABEL_STYLES, '')}>{title}</Label>
 
                   <div className="flex flex-col flex-wrap items-start gap-1">
-                      <div className="flex gap-1 text-sm font-medium leading-none *:text-sm *:leading-none">
+                      <div className="flex gap-1 font-medium text-sm leading-none *:text-sm *:leading-none">
                           <Label className="font-bold">{t('sku')}:</Label>
                           <p>{sku}</p>
                       </div>
 
-                      <div className="flex gap-1 text-sm font-medium leading-none *:text-sm *:leading-none">
+                      <div className="flex gap-1 font-medium text-sm leading-none *:text-sm *:leading-none">
                           <Label className="font-bold">{t('barcode')}:</Label>
                           <p>{barcode}</p>
                       </div>

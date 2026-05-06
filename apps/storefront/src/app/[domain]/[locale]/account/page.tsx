@@ -1,16 +1,12 @@
-import { Suspense } from 'react';
-
 import { Shop } from '@nordcom/commerce-db';
-
+import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import { getAuthSession } from '@/auth';
-import { getDictionary } from '@/utils/dictionary';
-import { capitalize, getTranslations, Locale } from '@/utils/locale';
-
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import { Label } from '@/components/typography/label';
-
-import type { Metadata } from 'next';
+import { getDictionary } from '@/utils/dictionary';
+import { capitalize, getTranslations, Locale } from '@/utils/locale';
 
 export type AccountDashboardParams = Promise<{ domain: string; locale: string }>;
 

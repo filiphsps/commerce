@@ -1,15 +1,14 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
 import { Error, NotFoundError } from '@nordcom/commerce-errors';
-
-import { Locale } from '@/utils/locale';
-import { createClient } from '@/utils/prismic';
+import type { Content } from '@prismicio/client';
+import type { SliceComponentProps } from '@prismicio/react';
 
 import PrismicPage from '@/components/cms/prismic-page';
 
 import type { ColumnDocument } from '@/prismic/types';
-import type { Content } from '@prismicio/client';
-import type { SliceComponentProps } from '@prismicio/react';
+import { Locale } from '@/utils/locale';
+import { createClient } from '@/utils/prismic';
 
 export type ColumnsProps = SliceComponentProps<Content.ColumnsSlice, { shop: OnlineShop; locale: Locale }>;
 const Columns = async ({ slice, context: { shop, locale } }: ColumnsProps) => {
@@ -60,7 +59,7 @@ const Columns = async ({ slice, context: { shop, locale } }: ColumnsProps) => {
                 })();
 
                 return (
-                    <div className="min-w-18 flex w-full flex-col gap-3" key={id}>
+                    <div className="flex w-full min-w-18 flex-col gap-3" key={id}>
                         <PrismicPage shop={shop} locale={locale} handle={uid} slices={slices} />
                     </div>
                 );

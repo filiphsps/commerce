@@ -1,16 +1,14 @@
 import { Shop } from '@nordcom/commerce-db';
-
+import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
+import { cacheLife } from 'next/cache';
+import { notFound } from 'next/navigation';
+import type { NextRequest } from 'next/server';
+import type { ISitemapField } from 'next-sitemap';
+import { getServerSideSitemap } from 'next-sitemap';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductsPaginationApi } from '@/api/shopify/product';
 import { Locale } from '@/utils/locale';
-import { cacheLife } from 'next/cache';
-import { notFound } from 'next/navigation';
-import { getServerSideSitemap } from 'next-sitemap';
-
 import type { DynamicSitemapRouteParams } from '../../../sitemap.xml/route';
-import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
-import type { NextRequest } from 'next/server';
-import type { ISitemapField } from 'next-sitemap';
 
 export type ProductsSitemapRouteParams = {
     params: Promise<
@@ -34,7 +32,7 @@ export async function GET({}: NextRequest, { params }: ProductsSitemapRouteParam
     const api = await ShopifyApolloApiClient({ shop, locale });
 
     let res: Awaited<ReturnType<typeof ProductsPaginationApi>> | null = null;
-    let products: Product[] = [];
+    const products: Product[] = [];
 
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     while ((res = await ProductsPaginationApi({ api, filters: { limit: 75, after: res?.page_info.end_cursor } }))) {

@@ -1,11 +1,8 @@
 import { Schema } from 'mongoose';
-
-import { db } from '../db';
-
-import { ShopSchema } from './shop';
-
 import type { BaseDocument } from '../db';
+import { db } from '../db';
 import type { ShopBase } from './shop';
+import { ShopSchema } from './shop';
 
 export interface ReviewBase extends BaseDocument {
     shop: ShopBase;

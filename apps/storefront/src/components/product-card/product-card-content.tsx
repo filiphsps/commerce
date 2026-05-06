@@ -1,17 +1,15 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import { Suspense, useState } from 'react';
-
-import { firstAvailableVariant } from '@/utils/first-available-variant';
-import { cn } from '@/utils/tailwind';
+import type { Product } from '@/api/product';
 
 import ProductCardFooter from '@/components/product-card/product-card-footer';
 import ProductCardHeader from '@/components/product-card/product-card-header';
 import { Pricing } from '@/components/typography/pricing';
-
-import type { Product } from '@/api/product';
+import { firstAvailableVariant } from '@/utils/first-available-variant';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
-import type { ReactNode } from 'react';
+import { cn } from '@/utils/tailwind';
 
 export type ProductCardFooterProps = {
     data?: Product;
@@ -45,15 +43,15 @@ const ProductCardContent = ({ data: product, priority, locale, i18n, children }:
                         <Pricing
                             price={price}
                             className={cn(
-                                'text-lg font-bold text-gray-700',
-                                onSale && 'text-xl font-black text-red-600',
+                                'font-bold text-gray-700 text-lg',
+                                onSale && 'font-black text-red-600 text-xl',
                             )}
                         />
 
                         {onSale ? (
                             <Pricing
                                 price={compareAtPrice}
-                                className="text-sm font-medium leading-none text-gray-400 line-through"
+                                className="font-medium text-gray-400 text-sm leading-none line-through"
                             />
                         ) : null}
                     </div>

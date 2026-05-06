@@ -1,10 +1,9 @@
 'use client';
 
-import { type ComponentProps, type ReactNode } from 'react';
-
-import { cn } from '@/utils/tailwind';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import type { ComponentProps, ReactNode } from 'react';
+import { cn } from '@/utils/tailwind';
 
 export type MenuItemProps = {
     href: ComponentProps<typeof Link>['href'];
@@ -24,9 +23,9 @@ export function MenuItem({ href, children, className }: MenuItemProps) {
         <Link
             href={href}
             className={cn(
-                'text-foreground flex w-full items-center justify-start gap-2 rounded-md px-3 py-2 font-semibold',
-                active && 'bg-muted cursor-default font-extrabold uppercase',
-                !active && 'hover:text-primary cursor-pointer',
+                'flex w-full items-center justify-start gap-2 rounded-md px-3 py-2 font-semibold text-foreground',
+                active && 'cursor-default bg-muted font-extrabold uppercase',
+                !active && 'cursor-pointer hover:text-primary',
                 className,
             )}
         >

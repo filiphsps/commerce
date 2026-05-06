@@ -1,6 +1,5 @@
-import { cn } from '@/utils/tailwind';
-
 import type { ComponentProps, ElementType, ReactNode, RefObject } from 'react';
+import { cn } from '@/utils/tailwind';
 
 export type InputProps<T extends ElementType = 'input'> = {
     as?: T;
@@ -43,7 +42,7 @@ const MultilineInput = <T extends ElementType>({
             draggable={false}
             {...props}
             className={cn(
-                'border-primary w-full resize-none appearance-none rounded-md bg-white p-2 text-xs focus:outline-none focus:ring-0',
+                'w-full resize-none appearance-none rounded-md border-primary bg-white p-2 text-xs focus:outline-none focus:ring-0',
                 className,
             )}
         >

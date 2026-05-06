@@ -1,7 +1,8 @@
 /* c8 ignore start */
-import authConfig from '@/utils/auth.config';
+
 import { NextResponse } from 'next/server';
 import NextAuth from 'next-auth';
+import authConfig from '@/utils/auth.config';
 
 export const config = {
     matcher: ['/((?!_next|_static|_vercel|instrumentation|assets|favicon.ico|[\\w-]+\\.\\w+).*)'],

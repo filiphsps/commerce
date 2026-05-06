@@ -1,8 +1,7 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { Adapter } from '@auth/core/adapters';
 
 import { User } from '@nordcom/commerce-db';
-
-import type { Adapter } from '@auth/core/adapters';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('utils', () => {
     describe('AuthAdapter', () => {

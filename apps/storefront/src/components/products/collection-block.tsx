@@ -1,20 +1,16 @@
 import 'server-only';
 
+import type { OnlineShop } from '@nordcom/commerce-db';
+import type { ComponentPropsWithoutRef, ElementType, ReactNode } from 'react';
 import { Suspense } from 'react';
-
-import { type OnlineShop } from '@nordcom/commerce-db';
-
+import type { Product } from '@/api/product';
 import { ShopifyApolloApiClient } from '@/api/shopify';
+import type { CollectionFilters } from '@/api/shopify/collection';
 import { CollectionApi } from '@/api/shopify/collection';
-import { cn } from '@/utils/tailwind';
-
 import Link from '@/components/link';
 import ProductCard, { CARD_STYLES } from '@/components/product-card/product-card';
-
-import type { Product } from '@/api/product';
-import type { CollectionFilters } from '@/api/shopify/collection';
 import type { Locale } from '@/utils/locale';
-import type { ComponentPropsWithoutRef, ElementType, ReactNode } from 'react';
+import { cn } from '@/utils/tailwind';
 
 export type CollectionBlockBase<ComponentGeneric extends ElementType> = {
     as?: ComponentGeneric;
@@ -90,7 +86,7 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
         <Tag
             {...props}
             className={cn(
-                'content-visibility-auto contain-intrinsic-size-[auto_100%] grid w-full snap-x snap-mandatory gap-2',
+                'contain-intrinsic-size-[auto_100%] grid w-full snap-x snap-mandatory gap-2 content-visibility-auto',
                 !isHorizontal &&
                     'grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] md:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] xl:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))]',
                 isHorizontal &&
@@ -106,7 +102,7 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
                     href={`/collections/${collection.handle}/`}
                     className={cn(
                         CARD_STYLES,
-                        'bg-primary text-primary-foreground hover:text-primary-foreground *:text-primary-foreground border-primary-dark flex items-center justify-center p-3 transition-all hover:brightness-75 hover:transition-all',
+                        'flex items-center justify-center border-primary-dark bg-primary p-3 text-primary-foreground transition-all *:text-primary-foreground hover:text-primary-foreground hover:brightness-75 hover:transition-all',
                     )}
                     // TODO: i18n.
                     // TODO: View all {products.length} {Pluralize({ count: products.length, noun: 'product' })}.

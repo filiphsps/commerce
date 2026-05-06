@@ -1,24 +1,20 @@
 'use client';
 
-import { useEffect, useState, useSyncExternalStore } from 'react';
-import useGeoLocation from 'react-ipgeolocation';
-
 import type { OnlineShop } from '@nordcom/commerce-db';
-
-import { getDictionary } from '@/utils/dictionary';
-import { isCrawler } from '@/utils/is-crawler';
-import { capitalize, getTranslations, Locale } from '@/utils/locale';
-import { cn } from '@/utils/tailwind';
+import type { Country, LanguageCode } from '@shopify/hydrogen-react/storefront-api-types';
 import { setCookie } from 'cookies-next';
 import { Check as CheckIcon, ChevronDown as ChevronDownIcon, X as XIcon } from 'lucide-react';
 import { usePathname, useSearchParams } from 'next/navigation';
-
+import { useEffect, useState, useSyncExternalStore } from 'react';
+import useGeoLocation from 'react-ipgeolocation';
 import { Button } from '@/components/actionable/button';
 import { LocaleCountryName, LocaleFlag } from '@/components/informational/locale-flag';
 import Link from '@/components/link';
-
+import { getDictionary } from '@/utils/dictionary';
+import { isCrawler } from '@/utils/is-crawler';
 import type { LocaleDictionary } from '@/utils/locale';
-import type { Country, LanguageCode } from '@shopify/hydrogen-react/storefront-api-types';
+import { capitalize, getTranslations, Locale } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
 
 const DISMISSED_KEY = 'geo-redirect-banner-dismissed';
 
@@ -124,9 +120,9 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
     }
 
     return (
-        <div className="sticky inset-x-0 bottom-0 z-50 w-full border-0 border-b-2 border-solid border-gray-300 bg-gray-100 px-2 py-3 text-black transition-all md:px-2">
+        <div className="sticky inset-x-0 bottom-0 z-50 w-full border-0 border-gray-300 border-b-2 border-solid bg-gray-100 px-2 py-3 text-black transition-all md:px-2">
             <div className="relative mx-auto flex w-full flex-col items-start justify-between gap-3 py-2 pt-4 md:grid md:max-w-[var(--page-width)] md:grid-cols-[1fr_auto] md:items-center md:gap-4 md:px-3 md:pr-12">
-                <div className="flex w-full select-none flex-wrap items-center gap-x-2 gap-y-0 pr-11 text-sm font-normal leading-tight md:pr-0 md:text-base lg:gap-x-3">
+                <div className="flex w-full select-none flex-wrap items-center gap-x-2 gap-y-0 pr-11 font-normal text-sm leading-tight md:pr-0 md:text-base lg:gap-x-3">
                     <div data-nosnippet={true}>
                         {t(
                             'geo-redirect-message',
@@ -140,8 +136,8 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
                 <div className="flex w-full grow gap-3 md:w-96">
                     <div
                         className={cn(
-                            'focus-within:border-primary relative flex h-10 w-full cursor-pointer select-none flex-col gap-0 rounded-lg border-2 border-solid border-white bg-white shadow',
-                            dropdownActive && 'border-primary rounded-b-none border-b-0',
+                            'relative flex h-10 w-full cursor-pointer select-none flex-col gap-0 rounded-lg border-2 border-white border-solid bg-white shadow focus-within:border-primary',
+                            dropdownActive && 'rounded-b-none border-primary border-b-0',
                             !dropdownActive && 'hover:border-gray-400',
                         )}
                     >
@@ -165,7 +161,7 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
                                     priority={true}
                                 />
                             </div>
-                            <div className="flex h-4 w-full items-end justify-end leading-none text-inherit">
+                            <div className="flex h-4 w-full items-end justify-end text-inherit leading-none">
                                 <ChevronDownIcon className="stroke-1 text-2xl text-inherit" />
                             </div>
                         </button>
@@ -173,8 +169,8 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
                         <Link
                             href="/countries/"
                             className={cn(
-                                'absolute inset-x-0 -left-[2px] top-9 flex h-10 w-[calc(100%+4px)] cursor-pointer select-none gap-3 rounded-b-lg bg-white p-2 text-base text-gray-600 *:select-none focus-within:bg-gray-100 focus-within:text-black hover:bg-gray-100 hover:text-black',
-                                dropdownActive && 'border-primary border-2 border-t-0 border-solid shadow-xl',
+                                'absolute inset-x-0 top-9 -left-[2px] flex h-10 w-[calc(100%+4px)] cursor-pointer select-none gap-3 rounded-b-lg bg-white p-2 text-base text-gray-600 *:select-none focus-within:bg-gray-100 focus-within:text-black hover:bg-gray-100 hover:text-black',
+                                dropdownActive && 'border-2 border-primary border-t-0 border-solid shadow-xl',
                                 !dropdownActive && 'hidden',
                             )}
                         >
@@ -193,7 +189,7 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
                         }}
                         href={`${pathname}${searchParams.size > 0 ? `?${searchParams.toString()}` : ''}`}
                         locale={targetLocale}
-                        className="border-primary flex h-10 items-center justify-center rounded-lg px-4 py-2 text-base shadow transition-colors"
+                        className="flex h-10 items-center justify-center rounded-lg border-primary px-4 py-2 text-base shadow transition-colors"
                     >
                         {capitalize(t('continue'))}
                     </Button>
@@ -205,7 +201,7 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
                         localStorage.setItem(DISMISSED_KEY, Date.now().toString());
                         setClosed(true);
                     }}
-                    className="absolute right-0 top-4 flex h-10 w-10 items-start justify-end text-lg text-current opacity-70 invert-[20%] transition-all hover:opacity-100 hover:invert-0 focus-visible:invert-0 md:items-center 2xl:right-2"
+                    className="absolute top-4 right-0 flex h-10 w-10 items-start justify-end text-current text-lg opacity-70 invert-[20%] transition-all hover:opacity-100 hover:invert-0 focus-visible:invert-0 md:items-center 2xl:right-2"
                     styled={false}
                 >
                     <XIcon className="block size-6 md:size-6" />

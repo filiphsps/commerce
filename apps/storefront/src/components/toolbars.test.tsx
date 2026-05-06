@@ -1,8 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-
-import { render } from '@/utils/test/react';
-
 import { Toolbars } from '@/components/toolbars';
+import { render } from '@/utils/test/react';
 
 vi.mock('@vercel/toolbar/next', async () => {
     return {

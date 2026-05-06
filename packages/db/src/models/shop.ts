@@ -1,10 +1,9 @@
+import type { Document } from 'mongoose';
 import { Schema } from 'mongoose';
 
-import { db } from '../db';
-
 import type { BaseDocument, DocumentExtras } from '../db';
+import { db } from '../db';
 import type { UserBase } from './user';
-import type { Document } from 'mongoose';
 
 // TODO: Remove this.
 export type ShopTheme = {

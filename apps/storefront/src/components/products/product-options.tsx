@@ -1,16 +1,14 @@
 'use client';
 
-import styles from '@/components/products/product-options.module.scss';
-
-import { Fragment, type HTMLProps } from 'react';
-
-import { convertToLocalMeasurementSystem, isSizeOption } from '@/utils/locale';
-import { cn } from '@/utils/tailwind';
 import { parseGid, useProduct } from '@shopify/hydrogen-react';
 
+import { Fragment, type HTMLProps } from 'react';
 import Link from '@/components/link';
+import styles from '@/components/products/product-options.module.scss';
 import { useShop } from '@/components/shop/provider';
 import { Label } from '@/components/typography/label';
+import { convertToLocalMeasurementSystem, isSizeOption } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
 
 export type ProductOptionProps = {} & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
@@ -90,7 +88,7 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
                                                 isSelected && styles.selected,
                                                 !inStock && styles.disabled,
                                                 styles.clickable,
-                                                'h-12 rounded-lg border-2 border-solid border-white bg-white text-sm shadow hover:border-gray-400',
+                                                'h-12 rounded-lg border-2 border-white border-solid bg-white text-sm shadow hover:border-gray-400',
                                                 !isSelected &&
                                                     inStock &&
                                                     'cursor-pointer focus-visible:border-gray-400',

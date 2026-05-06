@@ -1,25 +1,21 @@
-import styles from '@/components/cart/cart-summary.module.scss';
-
 import type { OnlineShop } from '@nordcom/commerce-db';
-
+import { useCart } from '@shopify/hydrogen-react';
+import type { CartAutomaticDiscountAllocation, CartLine } from '@shopify/hydrogen-react/storefront-api-types';
+import { ChevronRight as ChevronRightIcon, Lock as LockIcon } from 'lucide-react';
+import type { ReactNode } from 'react';
+import { Button } from '@/components/actionable/button';
+import { CartCoupons } from '@/components/cart/cart-coupons';
+import { CartNote } from '@/components/cart/cart-note';
+import styles from '@/components/cart/cart-summary.module.scss';
+import Link from '@/components/link';
+import { Price } from '@/components/products/price';
+import { useShop } from '@/components/shop/provider';
+import { Label } from '@/components/typography/label';
 import { BuildConfig } from '@/utils/build-config';
 import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 import { pluralize } from '@/utils/pluralize';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
-import { useCart } from '@shopify/hydrogen-react';
-import { ChevronRight as ChevronRightIcon, Lock as LockIcon } from 'lucide-react';
-
-import { Button } from '@/components/actionable/button';
-import { CartCoupons } from '@/components/cart/cart-coupons';
-import { CartNote } from '@/components/cart/cart-note';
-import Link from '@/components/link';
-import { Price } from '@/components/products/price';
-import { useShop } from '@/components/shop/provider';
-import { Label } from '@/components/typography/label';
-
-import type { CartAutomaticDiscountAllocation, CartLine } from '@shopify/hydrogen-react/storefront-api-types';
-import type { ReactNode } from 'react';
 
 const SUMMARY_LABEL_STYLES = 'font-medium text-sm capitalize text-gray-600 leading-none';
 const PRICE_STYLES = 'text-sm font-bold';
@@ -41,17 +37,15 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
     const { currency } = useShop();
 
     const sale =
-        (lines &&
-            lines.reduce(
-                (sum, line) =>
-                    (line!.cost!.compareAtAmountPerQuantity &&
-                        sum +
-                            (safeParseFloat(0, line?.cost?.compareAtAmountPerQuantity?.amount) * (line!.quantity || 0) -
-                                safeParseFloat(0, line?.cost?.totalAmount?.amount))) ||
-                    sum,
-                0,
-            )) ||
-        0;
+        lines?.reduce(
+            (sum, line) =>
+                (line!.cost!.compareAtAmountPerQuantity &&
+                    sum +
+                        (safeParseFloat(0, line?.cost?.compareAtAmountPerQuantity?.amount) * (line!.quantity || 0) -
+                            safeParseFloat(0, line?.cost?.totalAmount?.amount))) ||
+                sum,
+            0,
+        ) || 0;
     const totalSale =
         sale +
         (lines || [])
@@ -138,7 +132,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
 
                             {lines && lines.flatMap((line) => line?.discountAllocations).length > 0 ? (
                                 <div className="flex flex-col gap-1 pt-4">
-                                    <Label className="text-xs leading-none text-gray-700">
+                                    <Label className="text-gray-700 text-xs leading-none">
                                         {t('automatic-discounts')}
                                     </Label>
 
@@ -205,7 +199,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                     ) : null}
 
                     <div className={cn(styles.totals, 'flex items-center justify-between pt-1')}>
-                        <Label className="text-xl font-bold capitalize">{t('estimated-total')}</Label>
+                        <Label className="font-bold text-xl capitalize">{t('estimated-total')}</Label>
                         {cost && !noItems ? (
                             <Price
                                 className={PRICE_STYLES}
@@ -223,73 +217,72 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                     </div>
 
                     <div
-                        className={'text-xs font-semibold opacity-75'}
+                        className={'font-semibold text-xs opacity-75'}
                     >{`*${t('shipping-calculated-at-checkout')}`}</div>
                 </div>
             </section>
 
             {BuildConfig.environment === 'development' ? (
                 <section className={cn(styles.section, 'gap-2 empty:hidden')}>
-                    {lines &&
-                        lines
-                            .filter(Boolean)
-                            .map((line) => line as CartLine)
-                            .map(({ id, merchandise: { product, ...variant }, discountAllocations }) => {
-                                const discountLineElements = discountAllocations
-                                    .map((discount, index) => {
-                                        const { discountedAmount } = discount;
-                                        const amount = safeParseFloat(0, discountedAmount.amount);
+                    {lines
+                        ?.filter(Boolean)
+                        .map((line) => line as CartLine)
+                        .map(({ id, merchandise: { product, ...variant }, discountAllocations }) => {
+                            const discountLineElements = discountAllocations
+                                .map((discount, index) => {
+                                    const { discountedAmount } = discount;
+                                    const amount = safeParseFloat(0, discountedAmount.amount);
 
-                                        if (amount <= 0) {
-                                            return null;
-                                        }
+                                    if (amount <= 0) {
+                                        return null;
+                                    }
 
-                                        if (Object.hasOwn(discount, 'title')) {
-                                            const { title } = discount as CartAutomaticDiscountAllocation;
-                                            return (
-                                                <div key={index} className="flex items-center justify-between">
-                                                    <Label>{title}</Label>
-                                                    <Price data={discountedAmount} className="text-sm font-bold" />
-                                                </div>
-                                            );
-                                        }
-
+                                    if (Object.hasOwn(discount, 'title')) {
+                                        const { title } = discount as CartAutomaticDiscountAllocation;
                                         return (
                                             <div key={index} className="flex items-center justify-between">
-                                                <Label>discount</Label>
-                                                <Price data={discountedAmount} className="text-sm font-bold" />
+                                                <Label>{title}</Label>
+                                                <Price data={discountedAmount} className="font-bold text-sm" />
                                             </div>
                                         );
-                                    })
-                                    .filter(Boolean);
+                                    }
 
-                                if (!discountLineElements.length) {
-                                    return null;
-                                }
+                                    return (
+                                        <div key={index} className="flex items-center justify-between">
+                                            <Label>discount</Label>
+                                            <Price data={discountedAmount} className="font-bold text-sm" />
+                                        </div>
+                                    );
+                                })
+                                .filter(Boolean);
 
-                                const { vendor, title, productType } = product;
+                            if (!discountLineElements.length) {
+                                return null;
+                            }
 
-                                return (
-                                    <div key={id} className="flex flex-col">
-                                        <Label className="flex gap-1 normal-case">
-                                            <span>
-                                                {vendor} {title}
-                                            </span>
-                                            &ndash;
-                                            <span className="font-bold">
-                                                {[
-                                                    ...(productType ? [productType] : []),
-                                                    ...variant.selectedOptions.map(
-                                                        ({ name, value }) => `${name}: ${value}`,
-                                                    ),
-                                                ].join(', ')}
-                                            </span>
-                                        </Label>
+                            const { vendor, title, productType } = product;
 
-                                        <div className="flex flex-col">{discountLineElements}</div>
-                                    </div>
-                                );
-                            })}
+                            return (
+                                <div key={id} className="flex flex-col">
+                                    <Label className="flex gap-1 normal-case">
+                                        <span>
+                                            {vendor} {title}
+                                        </span>
+                                        &ndash;
+                                        <span className="font-bold">
+                                            {[
+                                                ...(productType ? [productType] : []),
+                                                ...variant.selectedOptions.map(
+                                                    ({ name, value }) => `${name}: ${value}`,
+                                                ),
+                                            ].join(', ')}
+                                        </span>
+                                    </Label>
+
+                                    <div className="flex flex-col">{discountLineElements}</div>
+                                </div>
+                            );
+                        })}
                 </section>
             ) : null}
 
@@ -342,4 +335,5 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
 };
 
 CartSummary.displayName = 'Nordcom.Cart.Summary';
+
 export { CartSummary };

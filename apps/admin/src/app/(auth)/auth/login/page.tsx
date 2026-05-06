@@ -1,11 +1,8 @@
-import { Suspense } from 'react';
-
-import { auth } from '@/auth';
-import { redirect } from 'next/navigation';
-
-import LoginButton from '@/components/login-button';
-
 import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
+import { auth } from '@/auth';
+import LoginButton from '@/components/login-button';
 
 export type IndexAdminPageParams = {};
 

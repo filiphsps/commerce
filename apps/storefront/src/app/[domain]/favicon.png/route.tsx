@@ -1,11 +1,10 @@
 import { Shop } from '@nordcom/commerce-db';
 import { NotFoundError } from '@nordcom/commerce-errors';
-
-import { BuildConfig } from '@/utils/build-config';
-import { safeParseFloat } from '@/utils/pricing';
 import { cacheLife } from 'next/cache';
 import { ImageResponse } from 'next/og';
 import { type NextRequest, NextResponse } from 'next/server';
+import { BuildConfig } from '@/utils/build-config';
+import { safeParseFloat } from '@/utils/pricing';
 
 import { validateSize } from './validate-size';
 

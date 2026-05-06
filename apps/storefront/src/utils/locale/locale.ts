@@ -1,10 +1,8 @@
-import React from 'react';
-
 import { UnknownLocaleError } from '@nordcom/commerce-errors';
-
-import type english from '@/i18n/en.json';
 import type { CountryCode, CurrencyCode, LanguageCode } from '@shopify/hydrogen-react/storefront-api-types';
 import type { ReactNode } from 'react';
+import React from 'react';
+import type english from '@/i18n/en.json';
 
 export type { CountryCode, CurrencyCode, LanguageCode };
 export type Code = `${Lowercase<LanguageCode>}-${CountryCode}` | Lowercase<LanguageCode>;

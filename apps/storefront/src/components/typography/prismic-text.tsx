@@ -1,15 +1,12 @@
 /* c8 ignore start */
 'use client';
 
+import type { RichTextField } from '@prismicio/client';
+import { PrismicRichText } from '@prismicio/react';
 import { Fragment, Suspense } from 'react';
-
+import Link from '@/components/link';
 import { linkResolver } from '@/utils/prismic';
 import { cn } from '@/utils/tailwind';
-import { PrismicRichText } from '@prismicio/react';
-
-import Link from '@/components/link';
-
-import type { RichTextField } from '@prismicio/client';
 
 export type PrismicTextProps = {
     data: RichTextField;
@@ -40,7 +37,7 @@ export const PrismicText = ({ data, styled = true, bare = false }: PrismicTextPr
                 components={{
                     paragraph: ({ children }) =>
                         bare ? (
-                            <>{children}</>
+                            children
                         ) : (
                             <p
                                 className={cn(
@@ -52,29 +49,29 @@ export const PrismicText = ({ data, styled = true, bare = false }: PrismicTextPr
                         ),
                     heading1: ({ children }) =>
                         bare ? (
-                            <>{children}</>
+                            children
                         ) : (
                             <h1
-                                className={cn(styled && 'text-2xl font-semibold leading-none empty:hidden md:text-4xl')}
+                                className={cn(styled && 'font-semibold text-2xl leading-none empty:hidden md:text-4xl')}
                             >
                                 {children}
                             </h1>
                         ),
                     heading2: ({ children }) =>
                         bare ? (
-                            <>{children}</>
+                            children
                         ) : (
                             <h2
-                                className={cn(styled && 'text-xl font-semibold leading-tight empty:hidden md:text-2xl')}
+                                className={cn(styled && 'font-semibold text-xl leading-tight empty:hidden md:text-2xl')}
                             >
                                 {children}
                             </h2>
                         ),
                     heading3: ({ children }) =>
                         bare ? (
-                            <>{children}</>
+                            children
                         ) : (
-                            <h3 className={cn(styled && 'text-lg font-semibold leading-tight empty:hidden md:text-xl')}>
+                            <h3 className={cn(styled && 'font-semibold text-lg leading-tight empty:hidden md:text-xl')}>
                                 {children}
                             </h3>
                         ),

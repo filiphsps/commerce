@@ -1,5 +1,5 @@
-import type { Locale } from '@/utils/locale';
 import type { CountryCode } from '@shopify/hydrogen-react/storefront-api-types';
+import type { Locale } from '@/utils/locale';
 
 type StoreImageModel = {
     src: string;

@@ -1,8 +1,5 @@
-import { type ElementType, type ReactNode } from 'react';
-
+import type { ComponentPropsWithoutRef, ElementType, ReactNode } from 'react';
 import { cn } from '@/utils/tailwind';
-
-import type { ComponentPropsWithoutRef } from 'react';
 
 export type ContentPropsBase<ComponentGeneric extends ElementType> = {
     as?: ComponentGeneric;
@@ -33,7 +30,7 @@ export const Content = <ComponentGeneric extends ElementType = 'div'>({
         <AsComponent
             {...props}
             className={cn(
-                'prose prose-strong:font-extrabold prose-headings:text-inherit prose-a:text-inherit prose-a:no-underline prose-headings:text-pretty text-current *:text-inherit empty:hidden',
+                'prose prose-headings:text-pretty prose-strong:font-extrabold prose-a:text-inherit prose-headings:text-inherit text-current prose-a:no-underline *:text-inherit empty:hidden',
                 className,
             )}
             {...(html ? { dangerouslySetInnerHTML: { __html: html } } : { children })}

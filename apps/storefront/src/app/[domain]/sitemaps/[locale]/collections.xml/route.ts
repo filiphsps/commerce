@@ -1,16 +1,14 @@
 import { Shop } from '@nordcom/commerce-db';
-
+import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
+import { cacheLife } from 'next/cache';
+import { notFound } from 'next/navigation';
+import type { NextRequest } from 'next/server';
+import type { ISitemapField } from 'next-sitemap';
+import { getServerSideSitemap } from 'next-sitemap';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CollectionsPaginationApi } from '@/api/shopify/collection';
 import { Locale } from '@/utils/locale';
-import { cacheLife } from 'next/cache';
-import { notFound } from 'next/navigation';
-import { getServerSideSitemap } from 'next-sitemap';
-
 import type { DynamicSitemapRouteParams } from '../../../sitemap.xml/route';
-import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
-import type { NextRequest } from 'next/server';
-import type { ISitemapField } from 'next-sitemap';
 
 export type CollectionsSitemapRouteParams = {
     params: Promise<
@@ -34,7 +32,7 @@ export async function GET({}: NextRequest, { params }: CollectionsSitemapRoutePa
     const api = await ShopifyApolloApiClient({ shop, locale });
 
     let res: Awaited<ReturnType<typeof CollectionsPaginationApi>> | null = null;
-    let collections: Collection[] = [];
+    const collections: Collection[] = [];
 
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     while ((res = await CollectionsPaginationApi({ api, filters: { limit: 75, after: res?.page_info.end_cursor } }))) {

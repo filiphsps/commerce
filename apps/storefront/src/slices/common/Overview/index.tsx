@@ -1,10 +1,9 @@
 import 'server-only';
 
-import { Overview } from '@/components/typography/overview';
-import { PrismicText } from '@/components/typography/prismic-text';
-
 import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
+import { Overview } from '@/components/typography/overview';
+import { PrismicText } from '@/components/typography/prismic-text';
 
 /**
  * Props for `Overview`.

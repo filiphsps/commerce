@@ -1,17 +1,14 @@
 import 'server-only';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
-
-import { MenuApi } from '@/api/navigation';
-import { capitalize, getTranslations } from '@/utils/locale';
-import { cn } from '@/utils/tailwind';
 import { Mail as MailIcon, Phone as PhoneIcon } from 'lucide-react';
-
+import type { HTMLProps } from 'react';
+import { MenuApi } from '@/api/navigation';
 import { LocaleFlag } from '@/components/informational/locale-flag';
 import Link from '@/components/link';
-
 import type { Locale, LocaleDictionary } from '@/utils/locale';
-import type { HTMLProps } from 'react';
+import { capitalize, getTranslations } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
 
 const BLOCK_STYLES = 'flex gap-2 *:text-sm *:leading-none';
 const LINK_STYLES =

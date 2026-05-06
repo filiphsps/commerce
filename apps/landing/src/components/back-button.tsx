@@ -1,12 +1,8 @@
-import styles from '@/components/back-button.module.scss';
-
-import { BiChevronLeft } from 'react-icons/bi';
-
 import { Label } from '@nordcom/nordstar';
-
 import Link from 'next/link';
-
 import type { HTMLProps } from 'react';
+import { BiChevronLeft } from 'react-icons/bi';
+import styles from '@/components/back-button.module.scss';
 
 export type BackButtonProps = {
     href: string;

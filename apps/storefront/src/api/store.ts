@@ -1,13 +1,11 @@
+import { gql } from '@apollo/client';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Error, NoLocalesAvailableError, NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
-
-import { Locale } from '@/utils/locale';
-import { createClient } from '@/utils/prismic';
-import { gql } from '@apollo/client';
-
+import type { Country, Localization, PaymentSettings } from '@shopify/hydrogen-react/storefront-api-types';
 import type { BusinessDataDocument, BusinessDataDocumentData, Simplify } from '@/prismic/types';
 import type { AbstractApi } from '@/utils/abstract-api';
-import type { Country, Localization, PaymentSettings } from '@shopify/hydrogen-react/storefront-api-types';
+import { Locale } from '@/utils/locale';
+import { createClient } from '@/utils/prismic';
 
 // FIXME: Handle tenant-specific default.
 const DEFAULT_LOCALE = {

@@ -1,8 +1,6 @@
 import { describe, expect, it } from 'vitest';
-
-import { firstAvailableVariant } from '@/utils/first-available-variant';
-
 import type { Product } from '@/api/product';
+import { firstAvailableVariant } from '@/utils/first-available-variant';
 
 describe('utils', () => {
     describe('firstAvailableVariant', () => {

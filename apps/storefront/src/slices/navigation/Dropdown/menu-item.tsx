@@ -1,14 +1,12 @@
 'use client';
 
-import { LINK_ACTIVE_MENU_STYLES, LINK_BUBBLE_STYLES, LINK_STYLES } from '@/slices/navigation/Link';
-import { cn } from '@/utils/tailwind';
 import { asText, type Content } from '@prismicio/client';
+import type { SliceComponentProps } from '@prismicio/react';
 import { ChevronDown as ChevronDownIcon } from 'lucide-react';
-
 import { useHeaderMenu } from '@/components/header/header-provider';
 import { PrismicText } from '@/components/typography/prismic-text';
-
-import type { SliceComponentProps } from '@prismicio/react';
+import { LINK_ACTIVE_MENU_STYLES, LINK_BUBBLE_STYLES, LINK_STYLES } from '@/slices/navigation/Link';
+import { cn } from '@/utils/tailwind';
 
 export type DropdownMenuItemProps = Pick<SliceComponentProps<Content.DropdownSlice>, 'slice'>;
 

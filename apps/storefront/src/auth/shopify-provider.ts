@@ -1,6 +1,5 @@
-import type { OnlineShop } from '@nordcom/commerce-db';
-
 import type { TokenSet } from '@auth/core/types';
+import type { OnlineShop } from '@nordcom/commerce-db';
 import type { OIDCConfig, OIDCUserConfig } from 'next-auth/providers';
 
 const GET_CUSTOMER_FOR_SESSION = /* GraphQL */ `

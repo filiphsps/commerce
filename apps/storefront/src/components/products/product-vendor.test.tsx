@@ -1,9 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
-
+import { ProductVendor } from '@/components/products/product-vendor';
 import { Locale } from '@/utils/locale';
 import { render, waitFor } from '@/utils/test/react';
-
-import { ProductVendor } from '@/components/products/product-vendor';
 
 vi.mock('@/components/link', () => {
     return {

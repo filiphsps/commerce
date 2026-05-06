@@ -1,19 +1,16 @@
 'use client';
 
-import { type ReactNode, useState } from 'react';
-
-import { capitalize, getTranslations } from '@/utils/locale';
-import { cn } from '@/utils/tailwind';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
 import { X as XIcon } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
-
+import { type ReactNode, useState } from 'react';
 import { Button } from '@/components/actionable/button';
 import { Card } from '@/components/layout/card';
 import { Label } from '@/components/typography/label';
-
 import type { LocaleDictionary } from '@/utils/locale';
+import { capitalize, getTranslations } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
 
 export function ModalCard({ children = null, className }: { children?: ReactNode; className?: string }) {
     return (
@@ -65,10 +62,10 @@ export function Modal({
                             <Dialog.Description>{description}</Dialog.Description>
                         </VisuallyHidden.Root>
 
-                        <div className="fixed left-[calc(50%-0.5rem)] top-[calc(50%-0.5rem)] m-2 flex h-full min-h-screen w-[calc(100%-1rem)] max-w-lg translate-x-[-50%] translate-y-[-50%] snap-y snap-mandatory scroll-py-2 flex-col items-stretch justify-stretch gap-2 overflow-x-hidden scroll-smooth bg-transparent md:w-full md:max-w-full md:snap-none md:gap-3">
-                            <div className="pointer-events-auto z-10 mt-[16.5vh] flex snap-end snap-always items-center justify-between gap-3 rounded-lg border border-solid border-gray-200 bg-white p-2 px-3 leading-none drop-shadow [-webkit-overflow-scrolling:touch] md:mx-auto md:-mb-6 md:mt-4 md:w-full md:max-w-[calc(var(--page-width)/1.1)] md:border-none md:px-4 md:pb-0 md:pt-3 md:drop-shadow-none lg:mt-4">
+                        <div className="fixed top-[calc(50%-0.5rem)] left-[calc(50%-0.5rem)] m-2 flex h-full min-h-screen w-[calc(100%-1rem)] max-w-lg translate-x-[-50%] translate-y-[-50%] snap-y snap-mandatory scroll-py-2 flex-col items-stretch justify-stretch gap-2 overflow-x-hidden scroll-smooth bg-transparent md:w-full md:max-w-full md:snap-none md:gap-3">
+                            <div className="pointer-events-auto z-10 mt-[16.5vh] flex snap-end snap-always items-center justify-between gap-3 rounded-lg border border-gray-200 border-solid bg-white p-2 px-3 leading-none drop-shadow [-webkit-overflow-scrolling:touch] md:mx-auto md:mt-4 md:-mb-6 md:w-full md:max-w-[calc(var(--page-width)/1.1)] md:border-none md:px-4 md:pt-3 md:pb-0 md:drop-shadow-none lg:mt-4">
                                 <Dialog.Title asChild={true}>
-                                    <Label className="line-clamp-1 font-bold leading-none text-current">{title}</Label>
+                                    <Label className="line-clamp-1 font-bold text-current leading-none">{title}</Label>
                                 </Dialog.Title>
 
                                 <Dialog.Close asChild={true}>

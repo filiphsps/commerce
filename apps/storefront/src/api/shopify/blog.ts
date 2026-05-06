@@ -1,11 +1,9 @@
-import { NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
-
 import { gql } from '@apollo/client';
+import { NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
 import { flattenConnection } from '@shopify/hydrogen-react';
-
+import type { Article, ArticleSortKeys, BlogConnection } from '@shopify/hydrogen-react/storefront-api-types';
 import type { Blog } from '@/api/blog';
 import type { AbstractApi, ApiReturn } from '@/utils/abstract-api';
-import type { Article, ArticleSortKeys, BlogConnection } from '@shopify/hydrogen-react/storefront-api-types';
 
 export async function BlogsApi({ api }: { api: AbstractApi }): Promise<ApiReturn<Blog[]>> {
     const { data, errors } = await api.query<{ blogs: BlogConnection }>(

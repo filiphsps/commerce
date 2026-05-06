@@ -1,10 +1,9 @@
 'use client';
 
-import { type Product, type ProductVariant } from '@/api/product';
+import type { Product, ProductVariant } from '@/api/product';
+import type { Locale } from '@/utils/locale';
 import { convertToLocalMeasurementSystem, isSizeOption } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
-
-import type { Locale } from '@/utils/locale';
 
 export type ProductCardOptionsProps = {
     locale: Locale;
@@ -74,7 +73,7 @@ const ProductCardOptions = ({
                             setSelectedVariant(variant);
                         }}
                         className={cn(
-                            'hover:border-primary flex h-8 select-none items-center justify-center rounded-lg border-2 border-solid border-white bg-white px-3 py-0 text-sm font-semibold text-gray-600 transition-all',
+                            'flex h-8 select-none items-center justify-center rounded-lg border-2 border-white border-solid bg-white px-3 py-0 font-semibold text-gray-600 text-sm transition-all hover:border-primary',
                             isSelected && 'border-primary text-primary',
                             !isSelected && 'cursor-pointer hover:shadow-lg',
                         )}

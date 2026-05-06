@@ -2,14 +2,11 @@ import 'server-only';
 
 import { Review, Shop } from '@nordcom/commerce-db';
 import { Button, Heading } from '@nordcom/nordstar';
-
-import { auth } from '@/auth';
+import type { Metadata, Route } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-
+import { auth } from '@/auth';
 import { Card } from '@/components/card';
-
-import type { Metadata, Route } from 'next';
 
 export type ShopReviewsPageProps = {
     params: Promise<{

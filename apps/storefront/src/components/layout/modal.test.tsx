@@ -1,8 +1,6 @@
 import { describe, expect, it } from 'vitest';
-
-import { render, waitFor } from '@/utils/test/react';
-
 import { Modal } from '@/components/layout/modal';
+import { render, waitFor } from '@/utils/test/react';
 
 describe('components', () => {
     describe('Modal', () => {

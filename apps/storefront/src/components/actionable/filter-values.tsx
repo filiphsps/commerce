@@ -1,11 +1,10 @@
 'use client';
 
-import { cn } from '@/utils/tailwind';
+import type { Filter } from '@shopify/hydrogen-react/storefront-api-types';
 import { usePathname, useSearchParams } from 'next/navigation';
 
 import Link from '@/components/link';
-
-import type { Filter } from '@shopify/hydrogen-react/storefront-api-types';
+import { cn } from '@/utils/tailwind';
 
 export function FilterValues({ id: filterId, type, values }: Pick<Filter, 'type' | 'values' | 'id'>) {
     const pathname = usePathname();
@@ -40,11 +39,11 @@ export function FilterValues({ id: filterId, type, values }: Pick<Filter, 'type'
                                 shallow={true}
                                 prefetch={false}
                                 className={cn(
-                                    'flex appearance-none flex-nowrap items-center justify-between gap-1 whitespace-nowrap rounded-xl border-2 border-solid border-gray-300 px-2 py-1 text-sm font-semibold leading-none text-gray-500 transition-colors hover:border-black hover:text-black',
+                                    'flex appearance-none flex-nowrap items-center justify-between gap-1 whitespace-nowrap rounded-xl border-2 border-gray-300 border-solid px-2 py-1 font-semibold text-gray-500 text-sm leading-none transition-colors hover:border-black hover:text-black',
                                     active && 'border-primary text-primary',
                                 )}
                             >
-                                <span>{label}</span> <span className="text-xs font-normal">({count})</span>
+                                <span>{label}</span> <span className="font-normal text-xs">({count})</span>
                             </Link>
                         );
                     })}

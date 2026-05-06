@@ -1,11 +1,8 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-
 import type { OnlineShop } from '@nordcom/commerce-db';
-
+import type { CartWithActions } from '@shopify/hydrogen-react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Checkout } from '@/utils/checkout';
 import { Locale } from '@/utils/locale';
-
-import type { CartWithActions } from '@shopify/hydrogen-react';
 
 vi.mock('@/utils/build-config', () => ({
     BuildConfig: {

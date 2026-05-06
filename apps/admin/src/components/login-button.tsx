@@ -1,20 +1,18 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-
 import { TodoError } from '@nordcom/commerce-errors';
 import { Button } from '@nordcom/nordstar';
-
-import GithubLight from '@/static/icons/light/github.svg';
-import { cn } from '@/utils/tailwind';
+import type { Route } from 'next';
 import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
+import type { HTMLProps, ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import type { AuthProvider } from '@/auth';
-import type { Route } from 'next';
-import type { HTMLProps, ReactNode } from 'react';
+import GithubLight from '@/static/icons/light/github.svg';
+import { cn } from '@/utils/tailwind';
 
 export type LoginButtonProps = {
     provider?: AuthProvider['name'];

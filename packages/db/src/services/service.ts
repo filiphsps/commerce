@@ -1,7 +1,7 @@
-import { db } from '../db';
+import type { Model, ProjectionType, Query, QueryFilter, QueryOptions, UpdateQuery } from 'mongoose';
 
 import type { BaseDocument } from '../db';
-import type { Model, ProjectionType, Query, QueryFilter, QueryOptions, UpdateQuery } from 'mongoose';
+import { db } from '../db';
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 
@@ -87,7 +87,7 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
         );
         req = (await this.mutateQuery<Req>(req, args))();
 
-        let res = await req.exec();
+        const res = await req.exec();
         if (((res as any) || []).length <= 0) {
             return [];
         }

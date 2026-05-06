@@ -1,9 +1,7 @@
 import { describe, expect, it } from 'vitest';
-
+import type { DictionaryLanguageCode } from '@/i18n/dictionary';
 import { dictionaries, getDictionary } from '@/i18n/dictionary';
 import { Locale } from '@/utils/locale';
-
-import type { DictionaryLanguageCode } from '@/i18n/dictionary';
 
 describe('utils', () => {
     describe('dictionary', () => {

@@ -1,10 +1,10 @@
 import 'dotenv/config';
 
-import { withSentryConfig } from '@sentry/nextjs';
-import createVercelToolbar from '@vercel/toolbar/plugins/next';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { withSentryConfig } from '@sentry/nextjs';
+import createVercelToolbar from '@vercel/toolbar/plugins/next';
 
 const withVercelToolbar = createVercelToolbar();
 

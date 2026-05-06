@@ -1,8 +1,8 @@
-import { cn } from '@/utils/tailwind';
 import Image from 'next/image';
+import type { ComponentProps } from 'react';
 
 import type { Locale } from '@/utils/locale';
-import type { ComponentProps } from 'react';
+import { cn } from '@/utils/tailwind';
 
 export type CurrentLocaleFlagProps = {
     locale: Locale;

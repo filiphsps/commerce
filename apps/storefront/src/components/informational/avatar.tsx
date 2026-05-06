@@ -1,6 +1,5 @@
-import { cn } from '@/utils/tailwind';
-
 import type { HTMLProps } from 'react';
+import { cn } from '@/utils/tailwind';
 
 export type AvatarProps = {
     src?: string | null;

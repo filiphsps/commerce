@@ -1,8 +1,6 @@
 import { Card, Heading } from '@nordcom/nordstar';
-
-import Link from 'next/link';
-
 import type { Metadata } from 'next';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
     title: 'Documentation',

@@ -1,14 +1,11 @@
 'use client';
 
-import { createContext, useContext, useMemo } from 'react';
-
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { MissingContextProviderError } from '@nordcom/commerce-errors';
-
-import { Locale } from '@/utils/locale';
-
 import type { CurrencyCode } from '@shopify/hydrogen-react/storefront-api-types';
 import type { ReactNode } from 'react';
+import { createContext, useContext, useMemo } from 'react';
+import { Locale } from '@/utils/locale';
 
 type ShopContextReturns = {};
 

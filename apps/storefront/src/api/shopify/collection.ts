@@ -1,3 +1,4 @@
+import { gql } from '@apollo/client';
 import type { Identifiable, LimitFilters, Nullable } from '@nordcom/commerce-db';
 import {
     InvalidHandleError,
@@ -6,13 +7,6 @@ import {
     TodoError,
     UnreachableError,
 } from '@nordcom/commerce-errors';
-
-import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
-import { cleanShopifyHtml } from '@/utils/abstract-api';
-import { isValidHandle } from '@/utils/handle';
-import { gql } from '@apollo/client';
-
-import type { AbstractApi, ApiOptions } from '@/utils/abstract-api';
 import type {
     Collection,
     CollectionEdge,
@@ -20,6 +14,10 @@ import type {
     ProductCollectionSortKeys,
     QueryRoot,
 } from '@shopify/hydrogen-react/storefront-api-types';
+import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
+import type { AbstractApi, ApiOptions } from '@/utils/abstract-api';
+import { cleanShopifyHtml } from '@/utils/abstract-api';
+import { isValidHandle } from '@/utils/handle';
 
 type GenericCollectionFilters = {
     after?: Nullable<string>;
@@ -123,12 +121,10 @@ export const CollectionApi = async (
 
     const filters = 'filters' in props ? props.filters : /** @deprecated */ (props as CollectionFilters);
     const filtersTag = JSON.stringify(filters, null, 0);
-
-    try {
-        const { data, errors } = await api.query<{
-            collection: QueryRoot['collection'];
-        }>(
-            gql`
+    const { data, errors } = await api.query<{
+        collection: QueryRoot['collection'];
+    }>(
+        gql`
                 query collection(
                     $handle: String!
                     $first: Int
@@ -185,33 +181,30 @@ export const CollectionApi = async (
                     }
                 }
             `,
-            {
-                handle: handle,
-                ...extractLimitLikeFilters(filters),
-                ...(({ sorting = 'COLLECTION_DEFAULT', before = null, after = null }) => ({
-                    sorting: sorting,
-                    before: before,
-                    after: after,
-                }))(filters),
-            },
-            {
-                tags: ['collection', handle, ...(filtersTag ? [filtersTag] : [])],
-            },
-        );
+        {
+            handle: handle,
+            ...extractLimitLikeFilters(filters),
+            ...(({ sorting = 'COLLECTION_DEFAULT', before = null, after = null }) => ({
+                sorting: sorting,
+                before: before,
+                after: after,
+            }))(filters),
+        },
+        {
+            tags: ['collection', handle, ...(filtersTag ? [filtersTag] : [])],
+        },
+    );
 
-        if (errors && errors.length > 0) {
-            throw new ProviderFetchError(errors);
-        } else if (!data?.collection) {
-            throw new NotFoundError(`"Collection" with the handle "${handle}" on shop "${shop.id}"`);
-        }
-
-        return {
-            ...data.collection,
-            descriptionHtml: cleanShopifyHtml(data.collection.descriptionHtml) || '',
-        };
-    } catch (error: unknown) {
-        throw error;
+    if (errors && errors.length > 0) {
+        throw new ProviderFetchError(errors);
+    } else if (!data?.collection) {
+        throw new NotFoundError(`"Collection" with the handle "${handle}" on shop "${shop.id}"`);
     }
+
+    return {
+        ...data.collection,
+        descriptionHtml: cleanShopifyHtml(data.collection.descriptionHtml) || '',
+    };
 };
 
 export const CollectionPaginationCountApi = async ({
@@ -294,20 +287,15 @@ export const CollectionPaginationCountApi = async ({
             cursors,
         };
     };
+    const { count: products, cursors } = await countProducts(0);
 
-    try {
-        const { count: products, cursors } = await countProducts(0);
-
-        const perPage = ((extractLimitLikeFilters(filters) as any)?.first || 30) as number;
-        const pages = Math.ceil(products / perPage);
-        return {
-            pages,
-            cursors: cursors.reverse(),
-            products,
-        };
-    } catch (error: unknown) {
-        throw error;
-    }
+    const perPage = ((extractLimitLikeFilters(filters) as any)?.first || 30) as number;
+    const pages = Math.ceil(products / perPage);
+    return {
+        pages,
+        cursors: cursors.reverse(),
+        products,
+    };
 };
 
 export const CollectionsApi = async (

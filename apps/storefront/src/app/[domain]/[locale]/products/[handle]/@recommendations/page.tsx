@@ -1,20 +1,16 @@
-import { Suspense } from 'react';
-
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
-
+import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductApi } from '@/api/shopify/product';
+import { Card } from '@/components/layout/card';
+import { RecommendedProducts } from '@/components/products/recommended-products';
+import type { ProductPageParams } from '@/pages/products/[handle]/page';
 import { getDictionary } from '@/utils/dictionary';
 import { isValidHandle } from '@/utils/handle';
 import { getTranslations, Locale } from '@/utils/locale';
-import { notFound } from 'next/navigation';
-
-import { Card } from '@/components/layout/card';
-import { RecommendedProducts } from '@/components/products/recommended-products';
-
-import type { ProductPageParams } from '@/pages/products/[handle]/page';
 
 async function Content({ shop, locale, handle }: { shop: OnlineShop; locale: Locale; handle: string }) {
     const api = await ShopifyApolloApiClient({ shop, locale });
@@ -53,7 +49,7 @@ export default async function ProductModalRecommendations({ params }: Readonly<{
 
     return (
         <Card className="mt-2 flex w-full flex-col gap-3 px-0 lg:mt-6" border={true}>
-            <h2 className="block px-3 text-2xl font-medium leading-tight" data-nosnippet={true}>
+            <h2 className="block px-3 font-medium text-2xl leading-tight" data-nosnippet={true}>
                 {t('you-may-also-like')}
             </h2>
 

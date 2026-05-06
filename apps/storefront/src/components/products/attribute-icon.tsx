@@ -1,4 +1,3 @@
-import { cn } from '@/utils/tailwind';
 import {
     Apple as AppleIcon,
     Banana as BananaIcon,
@@ -11,8 +10,8 @@ import {
     Leaf as LeafIcon,
     Wine as WineIcon,
 } from 'lucide-react';
-
 import type { HTMLProps } from 'react';
+import { cn } from '@/utils/tailwind';
 
 export type AttributeIconProps = {
     data?: string;

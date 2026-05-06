@@ -1,22 +1,17 @@
-import { Fragment, Suspense } from 'react';
-
 import { Shop } from '@nordcom/commerce-db';
-
+import { asText } from '@prismicio/client';
+import type { Metadata } from 'next';
+import { Fragment, Suspense } from 'react';
 import { PageApi } from '@/api/prismic/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
-import { getDictionary } from '@/i18n/dictionary';
-import { capitalize, getTranslations, Locale } from '@/utils/locale';
-import { asText } from '@prismicio/client';
-
 import { AcceptedPaymentMethods } from '@/components/informational/accepted-payment-methods';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import Heading from '@/components/typography/heading';
-
+import { getDictionary } from '@/i18n/dictionary';
+import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import CartContent from './cart-content';
-
-import type { Metadata } from 'next';
 
 export type CartPageParams = Promise<{ domain: string; locale: string }>;
 export async function generateMetadata({ params }: { params: CartPageParams }): Promise<Metadata> {

@@ -1,10 +1,8 @@
-import { NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
-
 import { gql } from '@apollo/client';
+import { NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
 import { flattenConnection } from '@shopify/hydrogen-react';
-
-import type { AbstractApi } from '@/utils/abstract-api';
 import type { UrlRedirect, UrlRedirectConnection } from '@shopify/hydrogen-react/storefront-api-types';
+import type { AbstractApi } from '@/utils/abstract-api';
 
 /**
  * Get all redirects from Shopify.
@@ -25,10 +23,8 @@ export const RedirectsApi = async ({
     redirects?: UrlRedirect[];
 }): Promise<UrlRedirect[]> => {
     const shop = api.shop();
-
-    try {
-        const { data, errors } = await api.query<{ urlRedirects: UrlRedirectConnection }>(
-            gql`
+    const { data, errors } = await api.query<{ urlRedirects: UrlRedirectConnection }>(
+        gql`
                 query urlRedirects($limit: Int!, $after: String) {
                     urlRedirects(first: $limit, after: $after) {
                         edges {
@@ -44,39 +40,36 @@ export const RedirectsApi = async ({
                     }
                 }
             `,
-            {
-                limit: 250,
-                after: cursor || null,
-            },
-        );
+        {
+            limit: 250,
+            after: cursor || null,
+        },
+    );
 
-        const urlRedirects = data ? flattenConnection(data.urlRedirects) : null;
+    const urlRedirects = data ? flattenConnection(data.urlRedirects) : null;
 
-        if (errors && errors.length > 0) {
-            throw new ProviderFetchError(errors);
-        } else if ((!urlRedirects || urlRedirects.length <= 0) && redirects.length <= 0) {
-            throw new NotFoundError(`"Redirects" on shop "${shop.id}"`);
-        }
-
-        if (data && urlRedirects) {
-            cursor = data.urlRedirects.edges.at(-1)!.cursor;
-            redirects.push(
-                ...urlRedirects.map(({ id, path, target }) => ({
-                    id,
-                    path: path.toLowerCase(),
-                    target: target.toLowerCase(),
-                })),
-            );
-        }
-
-        if (data?.urlRedirects.pageInfo.hasNextPage) {
-            return RedirectsApi({ api, cursor, redirects });
-        }
-
-        return redirects;
-    } catch (error: unknown) {
-        throw error;
+    if (errors && errors.length > 0) {
+        throw new ProviderFetchError(errors);
+    } else if ((!urlRedirects || urlRedirects.length <= 0) && redirects.length <= 0) {
+        throw new NotFoundError(`"Redirects" on shop "${shop.id}"`);
     }
+
+    if (data && urlRedirects) {
+        cursor = data.urlRedirects.edges.at(-1)!.cursor;
+        redirects.push(
+            ...urlRedirects.map(({ id, path, target }) => ({
+                id,
+                path: path.toLowerCase(),
+                target: target.toLowerCase(),
+            })),
+        );
+    }
+
+    if (data?.urlRedirects.pageInfo.hasNextPage) {
+        return RedirectsApi({ api, cursor, redirects });
+    }
+
+    return redirects;
 };
 
 /**
@@ -123,13 +116,8 @@ export const RedirectApi = async ({ api, path }: { api: AbstractApi; path: strin
             return redirect.target;
         }
     }
-
-    try {
-        const redirects = await RedirectsApi({ api });
-        return redirects.find((redirect) => redirect.path === path)?.target || null;
-    } catch (error: unknown) {
-        throw error;
-    }
+    const redirects = await RedirectsApi({ api });
+    return redirects.find((redirect) => redirect.path === path)?.target || null;
 };
 
 export const RedirectProductApi = async ({ api, handle }: { api: AbstractApi; handle: string }) =>

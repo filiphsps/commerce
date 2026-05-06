@@ -1,16 +1,15 @@
 'use client';
 
-import { Fragment } from 'react/jsx-runtime';
-
-import { cn } from '@/utils/tailwind';
 import { usePathname } from 'next/navigation';
+import { Fragment } from 'react/jsx-runtime';
+import type { BreadcrumbList, WithContext } from 'schema-dts';
 
 import { JsonLd } from '@/components/json-ld';
 import Link from '@/components/link';
 import { useShop } from '@/components/shop/provider';
 
 import type { Locale } from '@/utils/locale';
-import type { BreadcrumbList, WithContext } from 'schema-dts';
+import { cn } from '@/utils/tailwind';
 
 type BreadcrumbsProps = {
     locale: Locale;
@@ -55,7 +54,7 @@ const Breadcrumbs = ({ locale, title, className }: BreadcrumbsProps) => {
 
             <section
                 className={cn(
-                    '-mx-2 flex w-screen list-none flex-nowrap items-center justify-start gap-1 overflow-hidden overflow-x-auto overscroll-x-contain whitespace-nowrap rounded-lg px-2 font-medium leading-none text-gray-700 md:-mx-0 md:w-full md:max-w-full md:px-0',
+                    '-mx-2 flex w-screen list-none flex-nowrap items-center justify-start gap-1 overflow-hidden overflow-x-auto overscroll-x-contain whitespace-nowrap rounded-lg px-2 font-medium text-gray-700 leading-none md:-mx-0 md:w-full md:max-w-full md:px-0',
                     className,
                 )}
                 itemScope

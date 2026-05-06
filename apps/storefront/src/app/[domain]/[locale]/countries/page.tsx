@@ -1,24 +1,19 @@
-import { Suspense } from 'react';
-
 import { Shop } from '@nordcom/commerce-db';
 import { UnknownLocaleError } from '@nordcom/commerce-errors';
-
+import { asText } from '@prismicio/client';
+import type { Metadata } from 'next';
+import { cookies } from 'next/headers';
+import { RedirectType, redirect } from 'next/navigation';
+import { Suspense } from 'react';
 import { PageApi } from '@/api/prismic/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CountriesApi, LocalesApi } from '@/api/store';
-import { getDictionary } from '@/i18n/dictionary';
-import { capitalize, getTranslations, Locale } from '@/utils/locale';
-import { asText } from '@prismicio/client';
-import { cookies } from 'next/headers';
-import { redirect, RedirectType } from 'next/navigation';
-
 import PrismicPage from '@/components/cms/prismic-page';
 import PageContent from '@/components/page-content';
 import Heading from '@/components/typography/heading';
-
+import { getDictionary } from '@/i18n/dictionary';
+import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import LocaleSelector from './locale-selector';
-
-import type { Metadata } from 'next';
 
 export type CountriesPageParams = Promise<{ domain: string; locale: string }>;
 export async function generateMetadata({ params }: { params: CountriesPageParams }): Promise<Metadata> {
@@ -101,15 +96,9 @@ export default async function CountriesPage({ params }: { params: CountriesPageP
                             // See https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations#error-handling.
                             throw new UnknownLocaleError();
                         }
-
-                        // Validate the locale.
-                        try {
-                            const { code } = Locale.from(locale);
-                            (await cookies()).set('localization', code);
-                            (await cookies()).set('NEXT_LOCALE', code);
-                        } catch (error: unknown) {
-                            throw error; // TODO: Proper nordcom error.
-                        }
+                        const { code } = Locale.from(locale);
+                        (await cookies()).set('localization', code);
+                        (await cookies()).set('NEXT_LOCALE', code);
 
                         // Needs to happen outside of the try and catch block.
                         // See https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations#redirecting.

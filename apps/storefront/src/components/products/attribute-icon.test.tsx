@@ -1,8 +1,6 @@
 import { describe, expect, it } from 'vitest';
-
-import { render } from '@/utils/test/react';
-
 import { AttributeIcon } from '@/components/products/attribute-icon';
+import { render } from '@/utils/test/react';
 
 describe('components', () => {
     describe('AttributeIcon', () => {

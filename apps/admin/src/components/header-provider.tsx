@@ -1,12 +1,9 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
-
 import { MissingContextProviderError } from '@nordcom/commerce-errors';
-
 import { usePathname } from 'next/navigation';
-
 import type { ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 export type HeaderContextReturns = {};
 export type HeaderProviderBase = {
@@ -43,7 +40,7 @@ export const HeaderProvider = ({ children = null }: HeaderProviderProps) => {
     // Clean up the menu attribute on navigation.
     useEffect(() => {
         document.body.removeAttribute('data-menu-open');
-    }, [pathname]);
+    }, []);
 
     const value = { menu: menuValue, setMenu, closeMenu: () => setMenu(false) };
     return <HeaderContext.Provider value={value}>{children}</HeaderContext.Provider>;

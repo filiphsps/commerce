@@ -1,26 +1,21 @@
-import { Suspense } from 'react';
-
 import { Shop } from '@nordcom/commerce-db';
-
+import { asText } from '@prismicio/client';
+import type { Metadata } from 'next';
+import { cacheLife } from 'next/cache';
+import { Suspense } from 'react';
 import { PageApi } from '@/api/prismic/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { SearchApi } from '@/api/shopify/search';
 import { LocalesApi } from '@/api/store';
-import { getDictionary } from '@/i18n/dictionary';
-import { showSearchFilter } from '@/utils/flags';
-import { capitalize, getTranslations, Locale } from '@/utils/locale';
-import { asText } from '@prismicio/client';
-import { cacheLife } from 'next/cache';
-
 import PrismicPage from '@/components/cms/prismic-page';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import PageContent from '@/components/page-content';
 import Heading from '@/components/typography/heading';
-
+import { getDictionary } from '@/i18n/dictionary';
+import { showSearchFilter } from '@/utils/flags';
+import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import SearchContent from './search-content';
-
-import type { Metadata } from 'next';
 
 export type SearchPageParams = Promise<{ domain: string; locale: string }>;
 export async function generateMetadata({ params }: { params: SearchPageParams }): Promise<Metadata> {

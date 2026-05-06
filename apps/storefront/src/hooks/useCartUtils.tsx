@@ -1,9 +1,7 @@
-import { useEffect, useRef } from 'react';
-
 import type { Error } from '@nordcom/commerce-errors';
-
 import { useCart } from '@shopify/hydrogen-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useRef } from 'react';
 
 import type { Locale } from '@/utils/locale';
 

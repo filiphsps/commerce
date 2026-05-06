@@ -1,12 +1,10 @@
 import 'server-only';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
-
-import { cn } from '@/utils/tailwind';
+import type { Product } from '@/api/product';
 
 import { Label } from '@/components/typography/label';
-
-import type { Product } from '@/api/product';
+import { cn } from '@/utils/tailwind';
 
 export type ProductCardTitleProps = {
     shop: OnlineShop;
@@ -28,7 +26,7 @@ const ProductCardTitle = ({ shop, data: product, className }: ProductCardTitlePr
         productTypeElement = (
             <span
                 data-nosnippet={true}
-                className="group-hover/header:text-primary contents text-lg font-semibold leading-none text-gray-700 transition-colors"
+                className="contents font-semibold text-gray-700 text-lg leading-none transition-colors group-hover/header:text-primary"
             >
                 {' '}
                 &ndash; {product.productType}
@@ -44,7 +42,7 @@ const ProductCardTitle = ({ shop, data: product, className }: ProductCardTitlePr
                 <Label
                     as={'div'}
                     className={cn(
-                        'group-hover/header:text-primary pt-2 text-sm font-medium normal-case leading-snug text-gray-700 transition-colors duration-75',
+                        'pt-2 font-medium text-gray-700 text-sm normal-case leading-snug transition-colors duration-75 group-hover/header:text-primary',
                         className,
                     )}
                 >
@@ -56,7 +54,7 @@ const ProductCardTitle = ({ shop, data: product, className }: ProductCardTitlePr
 
             <div
                 className={cn(
-                    'group-hover/header:text-primary transition-color flex grow items-start justify-start gap-0 pr-1 text-lg font-bold leading-tight text-current duration-75',
+                    'flex grow items-start justify-start gap-0 pr-1 font-bold text-current text-lg leading-tight transition-color duration-75 group-hover/header:text-primary',
                     className,
                 )}
             >

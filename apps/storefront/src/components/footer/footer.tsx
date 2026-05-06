@@ -1,11 +1,9 @@
 import 'server-only';
 
-import { Suspense } from 'react';
-
 import type { OnlineShop } from '@nordcom/commerce-db';
-
-import { FooterApi } from '@/api/footer';
 import Image from 'next/image';
+import { Suspense } from 'react';
+import { FooterApi } from '@/api/footer';
 
 import FooterContent from '@/components/footer/footer-content';
 import Link from '@/components/link';
@@ -29,7 +27,7 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
 
     // TODO: Dynamic copyright copy and content.
     return (
-        <footer className="bg-primary text-primary-foreground flex h-full max-h-max w-full items-center justify-around self-end overflow-hidden p-2 pt-8 [grid-area:footer] md:p-3 md:pt-6">
+        <footer className="flex h-full max-h-max w-full items-center justify-around self-end overflow-hidden bg-primary p-2 pt-8 text-primary-foreground [grid-area:footer] md:p-3 md:pt-6">
             <div className="flex h-full w-full max-w-[var(--page-width)] flex-col items-stretch gap-4 md:gap-8 2xl:px-3">
                 <section className="grid h-full w-full grid-cols-1 items-start justify-between gap-6 pb-6 text-left md:flex lg:pb-12">
                     <div className={BLOCK_STYLES}>
@@ -49,7 +47,7 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
                             />
                         ) : null}
 
-                        <Content as="address" className="prose-sm prose-p:leading-snug font-medium not-italic">
+                        <Content as="address" className="prose-sm font-medium not-italic prose-p:leading-snug">
                             <PrismicText data={footer.address} styled={false} />
                         </Content>
 
@@ -62,7 +60,7 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
                         return (
                             <div key={`${title}-${index}`} className={BLOCK_STYLES} data-align="right">
                                 {title ? (
-                                    <div className="text-lg font-extrabold leading-tight md:text-xl">{title}</div>
+                                    <div className="font-extrabold text-lg leading-tight md:text-xl">{title}</div>
                                 ) : null}
 
                                 {items.length > 0 ? (
@@ -95,7 +93,7 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
 };
 
 Footer.skeleton = () => (
-    <footer className="text-primary-foreground bg-primary flex h-full max-h-max w-full items-center justify-around self-end overflow-hidden p-2 pt-8 [grid-area:footer] md:p-3 md:pt-6">
+    <footer className="flex h-full max-h-max w-full items-center justify-around self-end overflow-hidden bg-primary p-2 pt-8 text-primary-foreground [grid-area:footer] md:p-3 md:pt-6">
         <div className="flex h-full w-full max-w-[var(--page-width)] flex-col items-stretch gap-4 md:gap-8 2xl:px-3">
             <section className="grid h-full w-full grid-cols-1 items-start justify-between gap-6 pb-6 text-left md:flex lg:pb-12">
                 <div className={BLOCK_STYLES}>

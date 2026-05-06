@@ -1,16 +1,14 @@
 import { Shop } from '@nordcom/commerce-db';
 import { Error, MissingEnvironmentVariableError, NotFoundError, UnknownError } from '@nordcom/commerce-errors';
-
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+import { resolveAcceptLanguage } from 'resolve-accept-language';
 import { getGlobalServiceDomain } from '@/api/shop';
 import { ShopifyApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { commonValidations } from '@/middleware/common-validations';
 import { BuildConfig } from '@/utils/build-config';
-import { NextResponse } from 'next/server';
-import { resolveAcceptLanguage } from 'resolve-accept-language';
-
 import type { Code } from '@/utils/locale';
-import type { NextRequest } from 'next/server';
 
 function hostnameFromRequest(req: NextRequest): string {
     let hostname = (req.headers.get('host')?.replace('.localhost', '') || req.nextUrl.host || '').toLowerCase();
@@ -89,7 +87,7 @@ const LOCALE_SLASH_TEST = /\/([a-zA-Z]{2}-[a-zA-Z]{2})\//g;
 
 export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     let newUrl = req.nextUrl.clone();
-    let cookies: string[][] = [];
+    const cookies: string[][] = [];
 
     // Sort the search params to improve caching.
     newUrl.searchParams.sort();

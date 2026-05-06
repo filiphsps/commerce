@@ -1,14 +1,12 @@
 import 'server-only';
 
-import { cn } from '@/utils/tailwind';
-import { ChevronUp as ChevronUpIcon } from 'lucide-react';
-
-import { Content as ContentContainer } from '@/components/typography/content';
-import { PrismicText } from '@/components/typography/prismic-text';
-
 import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
+import { ChevronUp as ChevronUpIcon } from 'lucide-react';
 import type { JSX } from 'react';
+import { Content as ContentContainer } from '@/components/typography/content';
+import { PrismicText } from '@/components/typography/prismic-text';
+import { cn } from '@/utils/tailwind';
 
 /**
  * Props for `CollapsibleText`.
@@ -24,19 +22,19 @@ const CollapsibleText = ({ slice }: CollapsibleTextProps): JSX.Element => {
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
             className={cn(
-                'group w-full select-none appearance-none rounded-lg border-2 border-solid border-gray-300 bg-gray-100 py-3 transition-all duration-150',
+                'group w-full select-none appearance-none rounded-lg border-2 border-gray-300 border-solid bg-gray-100 py-3 transition-all duration-150',
             )}
         >
             <summary
                 className={cn(
-                    'flex cursor-pointer appearance-none items-center justify-start gap-2 border-0 border-solid border-gray-300 px-2 transition-all duration-150 group-open:mb-3 group-open:border-b-2 group-open:pb-3',
+                    'flex cursor-pointer appearance-none items-center justify-start gap-2 border-0 border-gray-300 border-solid px-2 transition-all duration-150 group-open:mb-3 group-open:border-b-2 group-open:pb-3',
                 )}
             >
                 <div className="flex h-8 w-12 items-center justify-center">
                     <ChevronUpIcon className="h-full w-full py-1 transition-transform duration-150 group-open:rotate-180" />
                 </div>
 
-                <div className="text-base font-semibold leading-snug">{slice.primary.title}</div>
+                <div className="font-semibold text-base leading-snug">{slice.primary.title}</div>
             </summary>
 
             <ContentContainer className="px-4 py-1">

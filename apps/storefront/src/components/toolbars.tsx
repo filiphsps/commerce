@@ -1,7 +1,6 @@
-import { isPreviewEnv } from '@/utils/is-preview-env';
 import { VercelToolbar } from '@vercel/toolbar/next';
-
 import type { ReactNode } from 'react';
+import { isPreviewEnv } from '@/utils/is-preview-env';
 
 /**
  * Injects toolbars on development environments and staging builds.

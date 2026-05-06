@@ -1,9 +1,7 @@
 import { Shop } from '@nordcom/commerce-db';
-
+import type { MetadataRoute } from 'next';
 import { cacheLife } from 'next/cache';
 import { type NextRequest, NextResponse } from 'next/server';
-
-import type { MetadataRoute } from 'next';
 
 type Rules = Extract<MetadataRoute.Robots['rules'], Array<any>>;
 type Rule = Rules[number];
@@ -36,7 +34,7 @@ const nextRobotsSchemaParser = (schema: MetadataRoute.Robots): string => {
             }
         }
 
-        return output + '\n';
+        return `${output}\n`;
     };
 
     output += parseRule({

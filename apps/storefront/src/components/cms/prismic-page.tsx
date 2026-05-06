@@ -1,18 +1,15 @@
 import 'server-only';
 
-import { Suspense } from 'react';
-
 import type { OnlineShop } from '@nordcom/commerce-db';
-
-import { components } from '@/slices';
-import { getDictionary } from '@/utils/dictionary';
+import type { ReactNode } from 'react';
+import { Suspense } from 'react';
+import type { PageData, PageType } from '@/api/prismic/page';
 
 import type { Slices } from '@/components/cms/slice-zone';
 import { SliceZone } from '@/components/cms/slice-zone';
-
-import type { PageData, PageType } from '@/api/prismic/page';
+import { components } from '@/slices';
+import { getDictionary } from '@/utils/dictionary';
 import type { Locale } from '@/utils/locale';
-import type { ReactNode } from 'react';
 
 type PageParams<T extends PageType> = {
     shop: OnlineShop;

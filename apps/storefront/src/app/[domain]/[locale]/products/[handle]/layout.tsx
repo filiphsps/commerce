@@ -1,32 +1,27 @@
-import { Fragment, Suspense } from 'react';
-
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
-
+import type { ParsedMetafields } from '@shopify/hydrogen-react';
+import { parseGid, parseMetafield } from '@shopify/hydrogen-react';
+import { notFound } from 'next/navigation';
+import type { ReactNode } from 'react';
+import { Fragment, Suspense } from 'react';
+import type { ProductGroup, WithContext } from 'schema-dts';
 //import { Error } from '@nordcom/commerce-errors';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductApi } from '@/api/shopify/product';
-import { firstAvailableVariant } from '@/utils/first-available-variant';
-import { isValidHandle } from '@/utils/handle';
-import { Locale } from '@/utils/locale';
-import { productToMerchantsCenterId } from '@/utils/merchants-center-id';
-import { futureDateString, safeParseFloat } from '@/utils/pricing';
-import { AnalyticsEventTrigger } from '@/utils/trackable';
-import { parseGid, parseMetafield } from '@shopify/hydrogen-react';
-import { notFound } from 'next/navigation';
-
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import { JsonLd } from '@/components/json-ld';
 import PageContent from '@/components/page-content';
 import { ProductDescription } from '@/components/products/product-description';
 import { RecommendedProducts } from '@/components/products/recommended-products';
-
-import { type ProductPageParams } from './page';
-
-import type { ParsedMetafields } from '@shopify/hydrogen-react';
-import type { ReactNode } from 'react';
-import type { ProductGroup, WithContext } from 'schema-dts';
+import { firstAvailableVariant } from '@/utils/first-available-variant';
+import { isValidHandle } from '@/utils/handle';
+import { Locale } from '@/utils/locale';
+import { productToMerchantsCenterId } from '@/utils/merchants-center-id';
+import { futureDateString, safeParseFloat } from '@/utils/pricing';
+import { AnalyticsEventTrigger } from '@/utils/trackable';
+import type { ProductPageParams } from './page';
 
 export default async function ProductPageLayout({
     params,

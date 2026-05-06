@@ -1,21 +1,16 @@
-import styles from './page.module.scss';
-
-import React from 'react';
-
+import fs from 'node:fs';
+import path from 'node:path';
+import type { Schema } from '@markdoc/markdoc';
+import Markdoc from '@markdoc/markdoc';
 import { getErrorFromCode } from '@nordcom/commerce-errors';
 import { Card, Heading } from '@nordcom/nordstar';
-
-import { components, config } from '@/markdoc';
-import Markdoc from '@markdoc/markdoc';
-import fs from 'fs';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import path from 'path';
-
+import React from 'react';
 import BackButton from '@/components/back-button';
 import { Content } from '@/components/content';
-
-import type { Schema } from '@markdoc/markdoc';
+import { components, config } from '@/markdoc';
+import styles from './page.module.scss';
 
 const CONTENT_DIR = path.join(process.cwd(), 'docs/errors');
 
@@ -68,17 +63,15 @@ export default async function DocsErrorPage({ params }: { params: DocsErrorPageP
                 </Card>
 
                 {!content ? (
-                    <>
-                        <Card as="section" className={styles.section}>
-                            <Heading id="documentation" level="h4" as="h3">
-                                Documentation
-                            </Heading>
+                    <Card as="section" className={styles.section}>
+                        <Heading id="documentation" level="h4" as="h3">
+                            Documentation
+                        </Heading>
 
-                            <p>TODO.</p>
-                        </Card>
-                    </>
+                        <p>TODO.</p>
+                    </Card>
                 ) : (
-                    <>{Markdoc.renderers.react(content as any, React, { components })}</>
+                    Markdoc.renderers.react(content as any, React, { components })
                 )}
 
                 <Card as="section" className={styles.section}>

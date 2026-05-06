@@ -1,15 +1,13 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
-
+import type { ComponentPropsWithoutRef, ReactNode } from 'react';
+import type { Product } from '@/api/product';
 import { ShopifyApiClient } from '@/api/shopify';
 import { CollectionApi } from '@/api/shopify/collection';
-import { cn } from '@/utils/tailwind';
-import { TitleToHandle } from '@/utils/title-to-handle';
 
 import Link from '@/components/link';
-
-import type { Product } from '@/api/product';
 import type { Locale } from '@/utils/locale';
-import type { ComponentPropsWithoutRef, ReactNode } from 'react';
+import { cn } from '@/utils/tailwind';
+import { TitleToHandle } from '@/utils/title-to-handle';
 
 export type ProductVendorProps = {
     shop: OnlineShop;

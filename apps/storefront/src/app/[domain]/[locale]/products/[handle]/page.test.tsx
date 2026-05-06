@@ -1,11 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
-
+import type { PageApi as OriginalPageApi } from '@/api/page';
 import { render, screen } from '@/utils/test/react';
 
-import ProductPage, { generateMetadata } from './page';
-
 import type { ProductPageParams } from './page';
-import type { PageApi as OriginalPageApi } from '@/api/page';
+import ProductPage, { generateMetadata } from './page';
 
 const { product } = vi.hoisted(() => ({
     product: {
@@ -57,7 +55,7 @@ vi.mock('@/api/shopify', () => ({
     }),
 }));
 vi.mock('@/api/page', () => {
-    let PageApi = vi.fn().mockResolvedValue({
+    const PageApi = vi.fn().mockResolvedValue({
         page: {
             slices: [],
         },
@@ -118,7 +116,7 @@ vi.mock('@shopify/hydrogen-react', async () => {
 
 // Mock the `ProductApi` function to prevent API calls.
 vi.mock('@/api/shopify/product', () => {
-    let ProductApi = vi.fn().mockResolvedValue({
+    const ProductApi = vi.fn().mockResolvedValue({
         ...product,
     }) as any as typeof OriginalPageApi;
     return {

@@ -1,17 +1,15 @@
 'use client';
 
-import { useEffect } from 'react';
+import { GoogleTagManager } from '@next/third-parties/google';
 
 import { Theme } from '@nordcom/commerce-marketing-common';
 import { NordstarProvider } from '@nordcom/nordstar';
-
-import { GoogleTagManager } from '@next/third-parties/google';
 import { usePathname } from 'next/navigation';
 import NextTopLoader from 'nextjs-toploader';
 import * as NProgress from 'nprogress';
-import { Toaster } from 'sonner';
-
 import type { ReactNode } from 'react';
+import { useEffect } from 'react';
+import { Toaster } from 'sonner';
 
 export type ProvidersProps = {
     children: ReactNode;

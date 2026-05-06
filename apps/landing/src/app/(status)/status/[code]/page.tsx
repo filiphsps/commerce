@@ -1,11 +1,9 @@
 'use cache';
 
 import { Heading } from '@nordcom/nordstar';
-
+import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import Link from 'next/link';
-
-import type { Metadata } from 'next';
 
 const SUPPORT_EMAIL = 'hi@nordcom.io';
 
@@ -85,7 +83,7 @@ export default async function StatusPage({ params, searchParams }: ErrorPageProp
                         href="https://nordcom.io/"
                         target="_blank"
                         rel="follow"
-                        className="not-prose px-2 font-mono font-bold leading-snug"
+                        className="not-prose px-2 font-bold font-mono leading-snug"
                     >
                         <code>Nordcom AB</code>
                     </Link>
@@ -94,7 +92,7 @@ export default async function StatusPage({ params, searchParams }: ErrorPageProp
                         href={`mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(mailTitle)}&body=${encodeURIComponent(mailBody)}`}
                         target="_blank"
                         rel="follow"
-                        className="not-prose px-2 font-mono font-bold transition-colors"
+                        className="not-prose px-2 font-bold font-mono transition-colors"
                     >
                         hi@nordcom.io
                     </Link>
@@ -106,7 +104,7 @@ export default async function StatusPage({ params, searchParams }: ErrorPageProp
                 </p>
             </div>
 
-            <footer className="pt-6 text-sm font-semibold uppercase leading-snug text-gray-500">
+            <footer className="pt-6 font-semibold text-gray-500 text-sm uppercase leading-snug">
                 {hostname}, {code.toUpperCase()}.
             </footer>
         </>

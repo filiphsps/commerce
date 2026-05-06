@@ -1,8 +1,7 @@
-import { DropdownDefaultMenu } from './default-menu';
-import { DropdownMenuItem } from './menu-item';
-
 import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
+import { DropdownDefaultMenu } from './default-menu';
+import { DropdownMenuItem } from './menu-item';
 
 export type DropdownProps = SliceComponentProps<Content.DropdownSlice, { isHeader: boolean; menu: string | null }>;
 const Dropdown = ({ slice, context: { isHeader = false, menu = null } }: DropdownProps) => {

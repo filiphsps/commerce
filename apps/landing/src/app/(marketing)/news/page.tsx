@@ -1,12 +1,10 @@
-import styles from './page.module.scss';
-
 import { Card, Heading } from '@nordcom/nordstar';
+import type { Metadata } from 'next';
 
 import Link from 'next/link';
 
 import { getArticles } from './[year]/[month]/[slug]/articles';
-
-import type { Metadata } from 'next';
+import styles from './page.module.scss';
 
 type NewsItemProps = {
     data: Awaited<ReturnType<typeof getArticles>>[number];

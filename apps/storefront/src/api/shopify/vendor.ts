@@ -1,11 +1,10 @@
-import { NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
-
-import { TitleToHandle } from '@/utils/title-to-handle';
 import { gql } from '@apollo/client';
+import { NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
+import type { Product, ProductConnection } from '@shopify/hydrogen-react/storefront-api-types';
 
 import type { VendorModel } from '@/models/VendorModel';
 import type { AbstractApi } from '@/utils/abstract-api';
-import type { Product, ProductConnection } from '@shopify/hydrogen-react/storefront-api-types';
+import { TitleToHandle } from '@/utils/title-to-handle';
 
 /**
  * Convert the Shopify product list to a list of vendors.
@@ -26,7 +25,7 @@ export const Convertor = (
         vendors.push(product.node.vendor);
     });
     vendors = vendors.filter((item, pos, self) => {
-        return self.indexOf(item) == pos;
+        return self.indexOf(item) === pos;
     });
 
     // Remove duplicates and create a proper object
@@ -48,9 +47,7 @@ type VendorsOptions = { api: AbstractApi };
  */
 export const VendorsApi = async ({ api }: VendorsOptions): Promise<VendorModel[]> => {
     const shop = api.shop();
-
-    try {
-        const { data, errors } = await api.query<{ products: ProductConnection }>(gql`
+    const { data, errors } = await api.query<{ products: ProductConnection }>(gql`
             query products {
                 products(first: 250, sortKey: BEST_SELLING) {
                     edges {
@@ -63,15 +60,12 @@ export const VendorsApi = async ({ api }: VendorsOptions): Promise<VendorModel[]
             }
         `);
 
-        if (errors && errors.length > 0) {
-            throw new ProviderFetchError(errors);
-        }
-        if (!data?.products || data.products.edges.length <= 0) {
-            throw new NotFoundError(`"vendors" on shop "${shop.id}"`);
-        }
-
-        return Convertor(data.products.edges!);
-    } catch (error: unknown) {
-        throw error;
+    if (errors && errors.length > 0) {
+        throw new ProviderFetchError(errors);
     }
+    if (!data?.products || data.products.edges.length <= 0) {
+        throw new NotFoundError(`"vendors" on shop "${shop.id}"`);
+    }
+
+    return Convertor(data.products.edges!);
 };

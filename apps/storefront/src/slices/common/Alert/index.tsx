@@ -1,9 +1,8 @@
-import { Alert as AlertComponent } from '@/components/informational/alert';
-import { PrismicText } from '@/components/typography/prismic-text';
-
 import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
 import type { JSX } from 'react';
+import { Alert as AlertComponent } from '@/components/informational/alert';
+import { PrismicText } from '@/components/typography/prismic-text';
 
 /**
  * Props for `Alert`.

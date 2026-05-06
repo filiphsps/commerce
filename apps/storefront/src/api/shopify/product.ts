@@ -1,13 +1,6 @@
+import { gql } from '@apollo/client';
 import type { Identifiable, LimitFilters, Nullable } from '@nordcom/commerce-db';
 import { ApiError, InvalidHandleError, NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
-
-import { extractLimitLikeFilters } from '@/api/shopify/collection';
-import { cleanShopifyHtml } from '@/utils/abstract-api';
-import { gql } from '@apollo/client';
-import md5 from 'crypto-js/md5';
-
-import type { Product } from '@/api/product';
-import type { AbstractApi, ApiOptions, ApiReturn } from '@/utils/abstract-api';
 import type {
     Filter,
     Maybe,
@@ -16,6 +9,11 @@ import type {
     ProductSortKeys,
     QueryRoot,
 } from '@shopify/hydrogen-react/storefront-api-types';
+import md5 from 'crypto-js/md5';
+import type { Product } from '@/api/product';
+import { extractLimitLikeFilters } from '@/api/shopify/collection';
+import type { AbstractApi, ApiOptions, ApiReturn } from '@/utils/abstract-api';
+import { cleanShopifyHtml } from '@/utils/abstract-api';
 
 export const PRODUCT_FRAGMENT_MINIMAL_NO_VARIANTS = /* GraphQL */ `
     id
@@ -391,20 +389,15 @@ export const ProductsPaginationCountApi = async ({
             cursors,
         };
     };
+    const { count: products, cursors } = await countProducts(0);
 
-    try {
-        const { count: products, cursors } = await countProducts(0);
-
-        const perPage = ((extractLimitLikeFilters(filters) as any)?.first || 30) as number;
-        const pages = Math.ceil(products / perPage) - 1; // Subtract 1 because we're using `after` cursors.
-        return {
-            pages,
-            cursors: cursors.reverse(),
-            products,
-        };
-    } catch (error: unknown) {
-        throw error;
-    }
+    const perPage = ((extractLimitLikeFilters(filters) as any)?.first || 30) as number;
+    const pages = Math.ceil(products / perPage) - 1; // Subtract 1 because we're using `after` cursors.
+    return {
+        pages,
+        cursors: cursors.reverse(),
+        products,
+    };
 };
 
 export const ProductsApi = async ({
@@ -426,10 +419,8 @@ export const ProductsApi = async ({
     };
 }> => {
     const shop = api.shop();
-
-    try {
-        const { data, errors } = await api.query<{ products: ProductConnection }>(
-            gql`
+    const { data, errors } = await api.query<{ products: ProductConnection }>(
+        gql`
                 fragment ProductFragment on Product {
                     ${PRODUCT_FRAGMENT}
                 }
@@ -454,33 +445,30 @@ export const ProductsApi = async ({
                     }
                 }
             `,
-            {
-                limit,
-                sorting: (sorting as any) || null,
-                cursor: (cursor as any) || null,
-            },
-            {
-                tags: ['products'],
-            },
-        );
+        {
+            limit,
+            sorting: (sorting as any) || null,
+            cursor: (cursor as any) || null,
+        },
+        {
+            tags: ['products'],
+        },
+    );
 
-        if (errors && errors.length > 0) {
-            throw new ProviderFetchError(errors);
-        } else if (!data?.products.edges || data.products.edges.length <= 0) {
-            throw new NotFoundError(`"Product" on shop "${shop.id}"`);
-        }
-
-        return {
-            products: data.products.edges,
-            cursor: data.products.edges.at(-1)!.cursor,
-            pagination: {
-                next: data.products.pageInfo.hasNextPage,
-                previous: data.products.pageInfo.hasPreviousPage,
-            },
-        };
-    } catch (error: unknown) {
-        throw error;
+    if (errors && errors.length > 0) {
+        throw new ProviderFetchError(errors);
+    } else if (!data?.products.edges || data.products.edges.length <= 0) {
+        throw new NotFoundError(`"Product" on shop "${shop.id}"`);
     }
+
+    return {
+        products: data.products.edges,
+        cursor: data.products.edges.at(-1)!.cursor,
+        pagination: {
+            next: data.products.pageInfo.hasNextPage,
+            previous: data.products.pageInfo.hasPreviousPage,
+        },
+    };
 };
 
 /**
@@ -522,23 +510,22 @@ export const ProductsPaginationApi = async ({
     products: ProductEdge[];
     filters: Filter[];
 }> => {
-    try {
-        let queryEntries = [];
-        if (available_for_sale !== undefined) {
-            queryEntries.push(`available_for_sale:${available_for_sale ? 'true' : 'false'}`);
-        }
-        if (vendor) {
-            queryEntries.push(`vendor:"${vendor}"`);
-        }
+    const queryEntries = [];
+    if (available_for_sale !== undefined) {
+        queryEntries.push(`available_for_sale:${available_for_sale ? 'true' : 'false'}`);
+    }
+    if (vendor) {
+        queryEntries.push(`vendor:"${vendor}"`);
+    }
 
-        const filter = {
-            query: queryEntries.length > 0 ? queryEntries.join(' AND ') : null,
-            sorting: (sorting as any) || null,
-            reverse: typeof reverse !== 'undefined' ? (reverse ? 'true' : 'false') : null,
-        };
+    const filter = {
+        query: queryEntries.length > 0 ? queryEntries.join(' AND ') : null,
+        sorting: (sorting as any) || null,
+        reverse: typeof reverse !== 'undefined' ? (reverse ? 'true' : 'false') : null,
+    };
 
-        const { data, errors } = await api.query<{ products: ProductConnection }>(
-            gql`
+    const { data, errors } = await api.query<{ products: ProductConnection }>(
+        gql`
                     fragment ProductFragment on Product {
                         ${PRODUCT_FRAGMENT}
                     }
@@ -582,37 +569,34 @@ export const ProductsPaginationApi = async ({
                         }
                     }
                 `,
-            {
-                limit,
-                before: (before as any) || null,
-                after: (after as any) || null,
-                ...filter,
-            },
-            {
-                ...(Object.keys(filter).length > 0 ? { fetchPolicy: 'no-cache' } : {}),
-            },
-        );
+        {
+            limit,
+            before: (before as any) || null,
+            after: (after as any) || null,
+            ...filter,
+        },
+        {
+            ...(Object.keys(filter).length > 0 ? { fetchPolicy: 'no-cache' } : {}),
+        },
+    );
 
-        if (errors && errors.length > 0) {
-            throw new ProviderFetchError(errors);
-        }
-
-        const page_info = data?.products.pageInfo;
-        if (!page_info) {
-            throw new ApiError("Shopify API didn't return a page info object");
-        }
-
-        return {
-            page_info: {
-                start_cursor: page_info.startCursor || null,
-                end_cursor: page_info.endCursor || null,
-                has_next_page: page_info.hasNextPage,
-                has_prev_page: page_info.hasPreviousPage,
-            },
-            products: ((data.products.edges as any) || []) as ProductEdge[],
-            filters: data.products.filters,
-        };
-    } catch (error: unknown) {
-        throw error;
+    if (errors && errors.length > 0) {
+        throw new ProviderFetchError(errors);
     }
+
+    const page_info = data?.products.pageInfo;
+    if (!page_info) {
+        throw new ApiError("Shopify API didn't return a page info object");
+    }
+
+    return {
+        page_info: {
+            start_cursor: page_info.startCursor || null,
+            end_cursor: page_info.endCursor || null,
+            has_next_page: page_info.hasNextPage,
+            has_prev_page: page_info.hasPreviousPage,
+        },
+        products: ((data.products.edges as any) || []) as ProductEdge[],
+        filters: data.products.filters,
+    };
 };

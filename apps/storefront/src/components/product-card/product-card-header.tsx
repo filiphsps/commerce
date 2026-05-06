@@ -1,13 +1,11 @@
-import { useMemo } from 'react';
-
-import { createProductSearchParams, type Product } from '@/api/product';
 import { Image } from '@shopify/hydrogen-react';
-
-import Link from '@/components/link';
-
-import type { ProductVariant } from '@/api/product';
 import type { Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
 import type { ReactNode } from 'react';
+import { useMemo } from 'react';
+
+import type { ProductVariant } from '@/api/product';
+import { createProductSearchParams, type Product } from '@/api/product';
+import Link from '@/components/link';
 
 interface VariantImageProps {
     image?: ShopifyImage;

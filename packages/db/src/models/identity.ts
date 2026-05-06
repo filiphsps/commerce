@@ -1,8 +1,6 @@
 import { Schema } from 'mongoose';
-
-import { db } from '../db';
-
 import type { BaseDocument } from '../db';
+import { db } from '../db';
 
 export interface IdentityBase extends BaseDocument {
     provider: string;

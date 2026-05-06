@@ -1,11 +1,9 @@
 import 'server-only';
 
 import { Heading } from '@nordcom/nordstar';
-
-import { auth } from '@/auth';
-import { redirect } from 'next/navigation';
-
 import type { Metadata, Route } from 'next';
+import { redirect } from 'next/navigation';
+import { auth } from '@/auth';
 
 export type SetupNewPageProps = {};
 

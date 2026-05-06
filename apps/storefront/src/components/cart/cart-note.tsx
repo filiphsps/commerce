@@ -1,9 +1,7 @@
-import { useState } from 'react';
-
-import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 import { useCart } from '@shopify/hydrogen-react';
-
+import { useState } from 'react';
 import { MultilineInput } from '@/components/actionable/input';
+import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 
 const CartNote = ({ i18n }: { i18n: LocaleDictionary }) => {
     const { t } = getTranslations('cart', i18n);
@@ -32,4 +30,5 @@ const CartNote = ({ i18n }: { i18n: LocaleDictionary }) => {
 };
 
 CartNote.displayName = 'Nordcom.Cart.Note';
+
 export { CartNote };

@@ -1,16 +1,14 @@
 'use client';
 
-import { useState } from 'react';
-
-import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 import { parseGid, useCart } from '@shopify/hydrogen-react';
+import type { CartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import { download, generateCsv, mkConfig } from 'export-to-csv';
 import { Download as DownloadIcon } from 'lucide-react';
+import { useState } from 'react';
 
 import { Button } from '@/components/actionable/button';
 import { useShop } from '@/components/shop/provider';
-
-import type { CartLine } from '@shopify/hydrogen-react/storefront-api-types';
+import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 
 type ExportCartButtonProps = {
     i18n: LocaleDictionary;
@@ -29,7 +27,7 @@ export function ExportCartButton({ i18n }: ExportCartButtonProps) {
         <Button
             disabled={busy}
             styled={false}
-            className="hover:text-primary inline-flex items-center justify-stretch gap-1 text-sm font-bold uppercase leading-snug transition-colors disabled:pointer-events-none disabled:brightness-50"
+            className="inline-flex items-center justify-stretch gap-1 font-bold text-sm uppercase leading-snug transition-colors hover:text-primary disabled:pointer-events-none disabled:brightness-50"
             onClick={async () => {
                 setBusy(true);
                 const data: any[] = (lines.filter(Boolean) as CartLine[]).map(

@@ -1,21 +1,16 @@
-import styles from './page.module.scss';
-
-import React from 'react';
-
-import { Heading } from '@nordcom/nordstar';
-
-import { components } from '@/markdoc';
 import Markdoc from '@markdoc/markdoc';
+import { Heading } from '@nordcom/nordstar';
 import gravatar from 'gravatar.js';
+import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
 import Image from 'next/image';
 import Link from 'next/link';
-
+import React from 'react';
 import { Content } from '@/components/content';
+import { components } from '@/markdoc';
 
 import { getArticleContent, getArticlePaths } from './articles';
-
-import type { Metadata } from 'next';
+import styles from './page.module.scss';
 
 export type ArticlePageParams = Promise<{
     year: string;

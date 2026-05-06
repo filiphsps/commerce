@@ -3,11 +3,9 @@ import 'server-only';
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 import { Heading } from '@nordcom/nordstar';
-
-import { auth } from '@/auth';
-import { notFound, redirect } from 'next/navigation';
-
 import type { Metadata, Route } from 'next';
+import { notFound, redirect } from 'next/navigation';
+import { auth } from '@/auth';
 
 export type ShopProductsPageProps = {
     params: Promise<{
@@ -37,9 +35,5 @@ export default async function ShopProductsPagePage({ params }: ShopProductsPageP
         throw error;
     }
 
-    return (
-        <>
-            <Heading level="h1">Products</Heading>
-        </>
-    );
+    return <Heading level="h1">Products</Heading>;
 }

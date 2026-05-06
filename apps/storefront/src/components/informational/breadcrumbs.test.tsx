@@ -1,9 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
-
+import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { Locale } from '@/utils/locale';
 import { render } from '@/utils/test/react';
-
-import Breadcrumbs from '@/components/informational/breadcrumbs';
 
 vi.mock('@shopify/hydrogen-react', async () => {
     return {

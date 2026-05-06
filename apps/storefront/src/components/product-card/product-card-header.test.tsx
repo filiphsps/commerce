@@ -1,8 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-
-import { render } from '@/utils/test/react';
-
 import ProductCardHeader from '@/components/product-card/product-card-header';
+import { render } from '@/utils/test/react';
 
 vi.mock('@shopify/hydrogen-react', async () => {
     return {

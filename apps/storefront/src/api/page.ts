@@ -1,9 +1,7 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { TodoError } from '@nordcom/commerce-errors';
-
-import { PageApi as PrismicPageApi, PagesApi as PrismicPagesApi } from '@/api/prismic/page';
-
 import type { PageType } from '@/api/prismic/page';
+import { PageApi as PrismicPageApi, PagesApi as PrismicPagesApi } from '@/api/prismic/page';
 import type { Locale } from '@/utils/locale';
 
 export async function PagesApi({ shop, locale }: { shop: OnlineShop; locale: Locale }) {

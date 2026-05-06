@@ -1,11 +1,7 @@
-import { Fragment } from 'react';
-
 import type { As } from '@nordcom/nordstar';
-
+import type { ComponentProps, CSSProperties, ElementType, FunctionComponent, HTMLProps, JSX, ReactNode } from 'react';
+import { Fragment } from 'react';
 import { cn } from '@/utils/tailwind';
-
-import type { JSX } from 'react';
-import type { ComponentProps, CSSProperties, ElementType, FunctionComponent, HTMLProps, ReactNode } from 'react';
 
 export type TitleProps<T extends As> = {
     as?: ElementType;
@@ -24,9 +20,9 @@ export const Title = <T extends As>({ as: Tag = 'h1' as T, bold, className, key,
             key={key}
             {...props}
             className={cn(
-                'text-3xl font-medium leading-snug md:text-4xl',
-                props.href && 'hover:text-primary focus-visible:text-primary cursor-pointer',
-                bold && 'text-primary font-bold',
+                'font-medium text-3xl leading-snug md:text-4xl',
+                props.href && 'cursor-pointer hover:text-primary focus-visible:text-primary',
+                bold && 'font-bold text-primary',
                 props.href && bold && 'hover:underline focus-visible:underline',
                 className,
             )}
@@ -52,8 +48,8 @@ export const SubTitle = ({ as, bold, className, key, ...props }: SubTitleProps) 
             key={key}
             {...props}
             className={cn(
-                'text-lg text-gray-500 md:text-xl',
-                props.href && 'hover:text-primary focus-visible:text-primary cursor-pointer',
+                'text-gray-500 text-lg md:text-xl',
+                props.href && 'cursor-pointer hover:text-primary focus-visible:text-primary',
                 bold && 'font-extrabold',
                 props.href && bold && 'hover:underline focus-visible:underline',
                 className,

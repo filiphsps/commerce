@@ -1,9 +1,8 @@
-import { BannerAside } from './banner-aside';
-import { BannerDefault } from './banner-default';
-
 import type { Content as PrismicContent } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
 import type { JSX } from 'react';
+import { BannerAside } from './banner-aside';
+import { BannerDefault } from './banner-default';
 
 /**
  * Props for `Banner`.

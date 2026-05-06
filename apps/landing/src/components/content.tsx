@@ -1,6 +1,5 @@
-import styles from '@/components/content.module.scss';
-
 import type { ComponentProps, ElementType, ReactNode } from 'react';
+import styles from '@/components/content.module.scss';
 
 export type ContentProps<T extends ElementType = 'article'> = {
     children?: ReactNode;

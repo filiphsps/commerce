@@ -1,10 +1,7 @@
-import { describe, expect, it, vi } from 'vitest';
-
 import type { OnlineShop } from '@nordcom/commerce-db';
-
-import { render } from '@/utils/test/react';
-
+import { describe, expect, it, vi } from 'vitest';
 import { AnalyticsProvider } from '@/components/analytics-provider';
+import { render } from '@/utils/test/react';
 
 vi.mock('@next/third-parties/google', async () => {
     return {

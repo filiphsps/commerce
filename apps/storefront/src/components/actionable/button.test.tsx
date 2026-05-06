@@ -1,8 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-
-import { render } from '@/utils/test/react';
-
 import { Button } from '@/components/actionable/button';
+import { render } from '@/utils/test/react';
 
 vi.mock('@shopify/hydrogen-react', async () => {
     return {

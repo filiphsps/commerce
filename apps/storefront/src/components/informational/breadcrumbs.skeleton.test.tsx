@@ -1,8 +1,6 @@
 import { describe, expect, it } from 'vitest';
-
-import { render } from '@/utils/test/react';
-
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
+import { render } from '@/utils/test/react';
 
 describe('components', () => {
     describe('BreadcrumbsSkeleton', () => {

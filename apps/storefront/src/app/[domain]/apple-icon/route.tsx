@@ -14,8 +14,8 @@ export async function GET({}: NextRequest, { params }: { params: AppleIconRouteP
 
     const { domain } = await params;
 
-    let width = 512;
-    let height = 512;
+    const width = 512;
+    const height = 512;
 
     try {
         let src!: string;

@@ -1,10 +1,9 @@
-import type { Nullable, OnlineShop } from '@nordcom/commerce-db';
+import type { ApolloClient, TypedDocumentNode } from '@apollo/client';
 
 import { DocumentTransform } from '@apollo/client';
+import type { Nullable, OnlineShop } from '@nordcom/commerce-db';
 import { visit } from 'graphql';
-
 import type { Locale } from '@/utils/locale';
-import type { ApolloClient, TypedDocumentNode } from '@apollo/client';
 
 export type OmitTypeName<T> = Omit<T, '__typename'>;
 

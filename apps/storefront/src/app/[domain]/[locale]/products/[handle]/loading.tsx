@@ -19,7 +19,7 @@ export default function ProductPageLoading() {
                     <div className="flex h-auto w-full flex-col justify-start gap-3">
                         <header className="flex flex-col gap-3">
                             <div className="flex grow flex-col gap-0">
-                                <div className="flex w-full grow flex-wrap whitespace-pre-wrap text-3xl font-extrabold leading-tight">
+                                <div className="flex w-full grow flex-wrap whitespace-pre-wrap font-extrabold text-3xl leading-tight">
                                     <div className="h-6 w-24" data-skeleton />
                                 </div>
                             </div>

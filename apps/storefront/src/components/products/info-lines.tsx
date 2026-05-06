@@ -1,15 +1,13 @@
 import 'server-only';
 
+import { Check as CheckIcon } from 'lucide-react';
+import type { HTMLProps } from 'react';
+import type { Product } from '@/api/product';
+import { Label } from '@/components/typography/label';
 import { showProductInfoLines } from '@/utils/flags';
+import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { getTranslations } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
-import { Check as CheckIcon } from 'lucide-react';
-
-import { Label } from '@/components/typography/label';
-
-import type { Product } from '@/api/product';
-import type { Locale, LocaleDictionary } from '@/utils/locale';
-import type { HTMLProps } from 'react';
 
 export type StockStatusProps = {
     product?: Product;
@@ -17,18 +15,18 @@ export type StockStatusProps = {
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 const StockStatus = ({ product, i18n, className, ...props }: StockStatusProps) => {
     const { t } = getTranslations('product', i18n);
-    if (!product || !product.totalInventory || product.totalInventory <= 0) {
+    if (!product?.totalInventory || product.totalInventory <= 0) {
         return null;
     }
 
     return (
         <section
-            className={cn('flex items-center justify-start gap-1 *:leading-none *:text-green-600', className)}
+            className={cn('flex items-center justify-start gap-1 *:text-green-600 *:leading-none', className)}
             title={t('in-stock-and-available')}
             {...props}
         >
             <CheckIcon className="stroke-2 align-middle text-base" />
-            <Label className="text-base font-semibold normal-case">
+            <Label className="font-semibold text-base normal-case">
                 {product.totalInventory ? t('n-in-stock', product.totalInventory.toString()) : t('in-stock')}
             </Label>
         </section>
@@ -52,7 +50,7 @@ export const GetOrderByEstimate = ({ product, i18n, className, ...props }: GetOr
 
     return (
         <section className={cn('flex items-center justify-start gap-1', className)} {...props}>
-            <Label className="text-base font-semibold normal-case">
+            <Label className="font-semibold text-base normal-case">
                 {t('dispatch-within-n-business-days', processingTimeInDays)}
             </Label>
         </section>

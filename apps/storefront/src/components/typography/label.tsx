@@ -1,6 +1,5 @@
-import { cn } from '@/utils/tailwind';
-
 import type { ComponentPropsWithoutRef, ElementType, ReactNode } from 'react';
+import { cn } from '@/utils/tailwind';
 
 export type LabelPropsBase<ComponentGeneric extends ElementType> = {
     as?: ComponentGeneric;
@@ -28,7 +27,7 @@ export const Label = <ComponentGeneric extends ElementType = 'p'>({
     const Tag = as ?? 'p';
 
     return (
-        <Tag {...props} className={cn('block text-sm font-extrabold uppercase leading-tight', className)}>
+        <Tag {...props} className={cn('block font-extrabold text-sm uppercase leading-tight', className)}>
             {children}
         </Tag>
     );

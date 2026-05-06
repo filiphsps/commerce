@@ -3,20 +3,17 @@ import 'server-only';
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 import { Button } from '@nordcom/nordstar';
-
-import { auth } from '@/auth';
 import { Binoculars, Images, MessageCircleHeart, Settings, Tag } from 'lucide-react';
+import type { Metadata, Route } from 'next';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
-
+import type { ReactNode } from 'react';
+import { auth } from '@/auth';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/avatar';
 import { Card } from '@/components/card';
 import { Header } from '@/components/header';
 import { MenuItem } from '@/components/menu-item';
 import { ScrollArea } from '@/components/scroll-area';
-
-import type { Metadata, Route } from 'next';
-import type { ReactNode } from 'react';
 
 export type ShopLayoutProps = {
     children: ReactNode;
@@ -78,7 +75,7 @@ export default async function ShopLayout({ children, params }: ShopLayoutProps) 
 
     return (
         <div className="flex h-full w-full grow flex-col-reverse items-stretch justify-stretch md:flex-row">
-            <Card className="border-border supports-[backdrop-filter]:bg-background/75 bg-background/95 fixed -left-full top-0 z-50 mt-[4.5rem] flex h-[calc(100vh-4.5rem)] w-80 max-w-full flex-col gap-2 rounded-none border-0 border-r-2 border-solid backdrop-blur transition-all group-data-[menu-open=true]/body:left-0 md:z-0 md:mt-0 md:h-full lg:sticky lg:left-0">
+            <Card className="fixed top-0 -left-full z-50 mt-[4.5rem] flex h-[calc(100vh-4.5rem)] w-80 max-w-full flex-col gap-2 rounded-none border-0 border-border border-r-2 border-solid bg-background/95 backdrop-blur transition-all group-data-[menu-open=true]/body:left-0 supports-[backdrop-filter]:bg-background/75 md:z-0 md:mt-0 md:h-full lg:sticky lg:left-0">
                 <Card.header className="h-[4.5rem] max-h-[4.5rem] min-h-[4.5rem]">
                     <div className="flex items-center justify-start gap-3">
                         <Avatar>
@@ -87,7 +84,7 @@ export default async function ShopLayout({ children, params }: ShopLayoutProps) 
                         </Avatar>
 
                         <div className="flex flex-col gap-1">
-                            <h4 className="text-sm font-semibold leading-none">{shop.name}</h4>
+                            <h4 className="font-semibold text-sm leading-none">{shop.name}</h4>
                             <Link
                                 href={`https://${shop.domain}/?utm_campaign=admin&utm_source=nordcom-commerce`}
                                 target="_blank"
@@ -101,7 +98,7 @@ export default async function ShopLayout({ children, params }: ShopLayoutProps) 
 
                 <Card.content className="h-full grow">
                     <ScrollArea className="h-full">
-                        <nav className="text-muted-foreground flex w-full flex-col gap-2 text-sm font-medium">
+                        <nav className="flex w-full flex-col gap-2 font-medium text-muted-foreground text-sm">
                             <MenuItem href={`${urlBase}/` as Route}>
                                 <Binoculars className="text-lg" />
                                 Home

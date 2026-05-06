@@ -1,17 +1,14 @@
 import 'server-only';
 
-import { experimental_taintUniqueValue } from 'react';
-
 import { type OnlineShop, Shop } from '@nordcom/commerce-db';
 import { UnknownCommerceProviderError } from '@nordcom/commerce-errors';
-
+import { createStorefrontClient } from '@shopify/hydrogen-react';
+import { headers } from 'next/headers';
+import { experimental_taintUniqueValue } from 'react';
+import type { ApiConfig } from '@/api/client';
 import { createApolloClient } from '@/api/client';
 import { ApiBuilder } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
-import { createStorefrontClient } from '@shopify/hydrogen-react';
-import { headers } from 'next/headers';
-
-import type { ApiConfig } from '@/api/client';
 
 export const ShopifyApiConfig = async ({
     shop: { domain },
@@ -50,7 +47,7 @@ export const ShopifyApiConfig = async ({
      * @todo TODO: Should probably find a better way since this forces routes into
      * dynamic rendering unless dynamic has been set to `force-static`.
      */
-    let buyerIp: string | undefined = undefined;
+    let buyerIp: string | undefined;
     try {
         const head = await headers();
 

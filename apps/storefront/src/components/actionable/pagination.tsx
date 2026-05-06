@@ -1,18 +1,16 @@
 'use client';
 
-import { capitalize, getTranslations } from '@/utils/locale';
-import { cn } from '@/utils/tailwind';
 import {
     ChevronLeft as ChevronLeftIcon,
     ChevronRight as ChevronRightIcon,
     Ellipsis as EllipsisIcon,
 } from 'lucide-react';
 import { usePathname, useSearchParams } from 'next/navigation';
-
-import Link from '@/components/link';
-
-import type { LocaleDictionary } from '@/utils/locale';
 import type { ComponentProps } from 'react';
+import Link from '@/components/link';
+import type { LocaleDictionary } from '@/utils/locale';
+import { capitalize, getTranslations } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
 
 const ACTION_STYLES =
     'flex select-none items-center justify-center gap-1 text-center text-xs font-medium text-current transition-colors hover:text-primary';
@@ -47,7 +45,7 @@ export function Pagination({
         return Number.parseInt(page, 10);
     })();
 
-    let items = [];
+    const items = [];
     for (let i = knownFirstPage; i <= knownLastPage; i++) {
         const query = new URLSearchParams(searchParams);
         if (i === 1) {

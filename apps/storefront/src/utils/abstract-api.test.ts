@@ -1,9 +1,8 @@
-import { describe, expect, it, vi } from 'vitest';
+import { ApolloClient } from '@apollo/client';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
-
+import { describe, expect, it, vi } from 'vitest';
 import { ApiBuilder, buildCacheTagArray } from '@/utils/abstract-api';
-import { ApolloClient } from '@apollo/client';
 
 import type { Locale } from '@/utils/locale';
 

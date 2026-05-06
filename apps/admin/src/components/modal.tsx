@@ -17,7 +17,7 @@ export function Modal({ title, children }: { title: ReactNode; children: ReactNo
 
                 <button
                     onClick={() => router.back()}
-                    className="hover:text-primary flex appearance-none items-center justify-center border-none bg-transparent outline-none transition-colors"
+                    className="flex appearance-none items-center justify-center border-none bg-transparent outline-none transition-colors hover:text-primary"
                 >
                     <X />
                 </button>

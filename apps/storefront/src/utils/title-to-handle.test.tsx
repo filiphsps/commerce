@@ -19,8 +19,8 @@ describe('utils', () => {
             for (let i = 0; i < example_titles.length; i++) {
                 const item = example_titles[i]!;
 
-                let res = TitleToHandle(item[0]!);
-                expect(res == item[1]).toBeTruthy();
+                const res = TitleToHandle(item[0]!);
+                expect(res === item[1]).toBeTruthy();
                 //expect(res).toMatchSnapshot();
             }
         });

@@ -5,22 +5,19 @@ import '../../globals.css';
 
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
-
+import type { Metadata } from 'next';
+import { notFound, unstable_rethrow } from 'next/navigation';
+import type { ReactNode } from 'react';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { LocaleApi } from '@/api/store';
-import { CssVariablesProvider } from '@/utils/css-variables';
-import { primaryFont } from '@/utils/fonts';
-import { Locale } from '@/utils/locale';
-import { cn } from '@/utils/tailwind';
-import { notFound, unstable_rethrow } from 'next/navigation';
-
 import { AnalyticsProvider } from '@/components/analytics-provider';
 import { HeaderProvider } from '@/components/header/header-provider';
 import PageContent from '@/components/page-content';
 import ProvidersRegistry from '@/components/providers-registry';
-
-import type { Metadata } from 'next';
-import type { ReactNode } from 'react';
+import { CssVariablesProvider } from '@/utils/css-variables';
+import { primaryFont } from '@/utils/fonts';
+import { Locale } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
 
 export const metadata: Metadata = {
     robots: {

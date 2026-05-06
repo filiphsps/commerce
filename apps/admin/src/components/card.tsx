@@ -5,14 +5,14 @@ import { cn } from '@/utils/tailwind';
 const Header = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
     <header
         ref={ref}
-        className={cn('border-border mb-4 flex w-full flex-col border-0 border-b-2 border-solid p-4', className)}
+        className={cn('mb-4 flex w-full flex-col border-0 border-border border-b-2 border-solid p-4', className)}
         {...props}
     />
 ));
 const Footer = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
     <footer
         ref={ref}
-        className={cn('border-border mt-4 flex w-full items-center border-0 border-t-2 border-solid p-4', className)}
+        className={cn('mt-4 flex w-full items-center border-0 border-border border-t-2 border-solid p-4', className)}
         {...props}
     />
 ));
@@ -26,7 +26,7 @@ export const Card = Object.assign(
         <section
             ref={ref}
             className={cn(
-                'bg-card text-card-foreground border-border rounded-lg border-2 border-solid shadow-sm',
+                'rounded-lg border-2 border-border border-solid bg-card text-card-foreground shadow-sm',
                 className,
             )}
             {...props}

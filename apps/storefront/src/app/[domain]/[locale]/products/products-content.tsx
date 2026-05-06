@@ -1,19 +1,15 @@
-import { Suspense } from 'react';
-
 import { Shop } from '@nordcom/commerce-db';
-
+import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
+import type { ProductSorting } from '@/api/product';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductsPaginationApi, ProductsPaginationCountApi } from '@/api/shopify/product';
-import { getDictionary } from '@/utils/dictionary';
-import { cn } from '@/utils/tailwind';
-import { notFound } from 'next/navigation';
-
 import { Filters } from '@/components/actionable/filters';
 import { Pagination } from '@/components/actionable/pagination';
 import ProductCard from '@/components/product-card/product-card';
-
-import type { ProductSorting } from '@/api/product';
+import { getDictionary } from '@/utils/dictionary';
 import type { Locale } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
 
 type SearchParams = {
     page?: string;

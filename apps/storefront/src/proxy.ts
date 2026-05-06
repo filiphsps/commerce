@@ -1,9 +1,9 @@
 /* c8 ignore start */
-import { admin } from '@/middleware/admin';
-import { storefront } from '@/middleware/storefront';
-import { NextResponse } from 'next/server';
 
 import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+import { admin } from '@/middleware/admin';
+import { storefront } from '@/middleware/storefront';
 
 export const config = {
     matcher: [

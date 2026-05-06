@@ -1,14 +1,12 @@
 import 'server-only';
 
-import { linkResolver } from '@/utils/prismic';
-import { cn } from '@/utils/tailwind';
 import { asLink, asText, type Content } from '@prismicio/client';
+import type { SliceComponentProps } from '@prismicio/react';
 import Image from 'next/image';
-
 import Link from '@/components/link';
 import { PrismicText } from '@/components/typography/prismic-text';
-
-import type { SliceComponentProps } from '@prismicio/react';
+import { linkResolver } from '@/utils/prismic';
+import { cn } from '@/utils/tailwind';
 
 /**
  * Props for `ImageGrid`.
@@ -61,7 +59,7 @@ const ImageGrid = ({ slice, index }: ImageGridProps) => {
                         target={target}
                     >
                         <div
-                            className="bg-primary w-full overflow-clip rounded-lg shadow"
+                            className="w-full overflow-clip rounded-lg bg-primary shadow"
                             style={{
                                 aspectRatio: `${(image.dimensions.width / image.dimensions.height).toFixed(2)} / 1`,
                             }}
@@ -87,23 +85,23 @@ const ImageGrid = ({ slice, index }: ImageGridProps) => {
                             className={cn(
                                 'empty:hidden',
                                 isInlineTitle &&
-                                    'absolute inset-auto bottom-3 right-3 ml-3 rounded-lg bg-gray-100/95 px-3 py-2 text-gray-700 shadow transition-all group-focus-within/item:brightness-75 group-hover/item:brightness-75',
+                                    'absolute inset-auto right-3 bottom-3 ml-3 rounded-lg bg-gray-100/95 px-3 py-2 text-gray-700 shadow transition-all group-focus-within/item:brightness-75 group-hover/item:brightness-75',
                             )}
                         >
                             {titleText && titleText.length > 0 ? (
                                 <div
                                     className={cn(
                                         'font-semibold transition-colors',
-                                        isInlineTitle && 'line-clamp-1 leading-none text-inherit',
+                                        isInlineTitle && 'line-clamp-1 text-inherit leading-none',
                                         descriptionText.length > 0 &&
-                                            'group-hover/item:text-primary text-xl text-gray-700',
+                                            'text-gray-700 text-xl group-hover/item:text-primary',
                                     )}
                                 >
                                     {typeof title !== 'string' ? <PrismicText data={title} /> : (title as string)}
                                 </div>
                             ) : null}
                             {descriptionText.length > 0 ? (
-                                <div className="group-focus-within/item:text-primary group-hover/item:text-primary text-sm leading-tight transition-colors">
+                                <div className="text-sm leading-tight transition-colors group-focus-within/item:text-primary group-hover/item:text-primary">
                                     <PrismicText data={description} />
                                 </div>
                             ) : null}

@@ -1,10 +1,9 @@
 'use client';
 
-import { Suspense } from 'react';
-
-import { getTranslations } from '@/utils/locale';
-import { cn } from '@/utils/tailwind';
 import { useProduct } from '@shopify/hydrogen-react';
+import type { HTMLProps } from 'react';
+import { Suspense } from 'react';
+import type { Product, ProductVariant } from '@/api/product';
 
 import AddToCart from '@/components/products/add-to-cart';
 import { ProductOptions } from '@/components/products/product-options';
@@ -12,10 +11,9 @@ import { ProductQuantityBreaks } from '@/components/products/product-quantity-br
 import { useQuantity } from '@/components/products/quantity-provider';
 import { QuantitySelector } from '@/components/products/quantity-selector';
 import { Label } from '@/components/typography/label';
-
-import type { Product, ProductVariant } from '@/api/product';
 import type { LocaleDictionary } from '@/utils/locale';
-import type { HTMLProps } from 'react';
+import { getTranslations } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
 
 export type ProductActionsContainerProps = {
     i18n: LocaleDictionary;

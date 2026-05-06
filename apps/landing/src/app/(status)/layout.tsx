@@ -2,18 +2,16 @@ import '@/styles/app.scss';
 import '@/styles/globals.css';
 
 import { View } from '@nordcom/nordstar';
-
-import { primaryFont } from '@/utils/fonts';
-import { cn } from '@/utils/tailwind';
 import { GeistMono } from 'geist/font/mono';
+import type { Metadata, Viewport } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import type { ReactNode } from 'react';
 
 import Footer from '@/components/footer';
 import { Providers } from '@/components/providers';
-
-import type { Metadata, Viewport } from 'next';
-import type { ReactNode } from 'react';
+import { primaryFont } from '@/utils/fonts';
+import { cn } from '@/utils/tailwind';
 
 export const viewport: Viewport = {
     themeColor: '#000000',
@@ -53,7 +51,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
                     <div className="flex h-full w-full grow items-stretch justify-center [grid-area:header]">
                         <View
                             as="header"
-                            className="flex w-full items-start justify-start gap-4 overflow-hidden pb-6 pt-3"
+                            className="flex w-full items-start justify-start gap-4 overflow-hidden pt-3 pb-6"
                             withoutWrapper={true}
                         >
                             <Link

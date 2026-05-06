@@ -1,21 +1,18 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-
-import { firstAvailableVariant } from '@/utils/first-available-variant';
-import { getTranslations, type LocaleDictionary } from '@/utils/locale';
-import { safeParseFloat } from '@/utils/pricing';
-import { cn } from '@/utils/tailwind';
 import { ProductProvider } from '@shopify/hydrogen-react';
+import type { ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
 import { useSearchParams } from 'next/navigation';
-
+import { useMemo, useState } from 'react';
+import type { Product } from '@/api/product';
 import { Price } from '@/components/products/price';
 import { ProductActionsContainer } from '@/components/products/product-actions-container';
 import { QuantityProvider } from '@/components/products/quantity-provider';
 import type { PricingProps } from '@/components/typography/pricing';
-
-import type { Product } from '@/api/product';
-import type { ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
+import { firstAvailableVariant } from '@/utils/first-available-variant';
+import { getTranslations, type LocaleDictionary } from '@/utils/locale';
+import { safeParseFloat } from '@/utils/pricing';
+import { cn } from '@/utils/tailwind';
 
 export type ProductContentProps = {
     product: Product;
@@ -70,11 +67,11 @@ export function ProductPricing({ product }: ProductPricingProps) {
             {price ? (
                 <Price
                     data={price}
-                    className={cn('text-2xl font-bold md:text-3xl', compareAtPrice && 'font-black text-red-500')}
+                    className={cn('font-bold text-2xl md:text-3xl', compareAtPrice && 'font-black text-red-500')}
                 />
             ) : null}
             {compareAtPrice ? (
-                <Price data={compareAtPrice} className="text-xl font-medium text-gray-500 line-through md:text-2xl" />
+                <Price data={compareAtPrice} className="font-medium text-gray-500 text-xl line-through md:text-2xl" />
             ) : null}
         </>
     );
@@ -118,33 +115,31 @@ export function ProductSavings({ i18n, product, className }: ProductSavingsProps
     const discount = Math.round((100 * (compareAtAmount - totalAmount)) / Math.max(1, compareAtAmount));
 
     return (
-        <>
-            <div
-                className={cn(
-                    'bg-sale-stripes flex items-center justify-between gap-1 rounded-lg p-2 px-4 text-[0.82rem] font-semibold text-white md:px-5 md:text-sm',
-                    className,
+        <div
+            className={cn(
+                'flex items-center justify-between gap-1 rounded-lg bg-sale-stripes p-2 px-4 font-semibold text-[0.82rem] text-white md:px-5 md:text-sm',
+                className,
+            )}
+        >
+            <div className="flex items-center gap-1">
+                {t(
+                    'save-n-per-item',
+                    <Price
+                        key={savings}
+                        data={{
+                            amount: savings.toString(),
+                            currencyCode: price.currencyCode,
+                        }}
+                        className="font-black"
+                    />,
                 )}
-            >
-                <div className="flex items-center gap-1">
-                    {t(
-                        'save-n-per-item',
-                        <Price
-                            key={savings}
-                            data={{
-                                amount: savings.toString(),
-                                currencyCode: price.currencyCode,
-                            }}
-                            className="font-black"
-                        />,
-                    )}
-                </div>
-
-                <div className="flex items-center gap-1 font-black">
-                    {t('percentage-off', discount)}
-                    <span className="hidden xl:block">&mdash;</span>
-                    <span className="hidden font-bold xl:block">{t('what-a-deal')}</span>
-                </div>
             </div>
-        </>
+
+            <div className="flex items-center gap-1 font-black">
+                {t('percentage-off', discount)}
+                <span className="hidden xl:block">&mdash;</span>
+                <span className="hidden font-bold xl:block">{t('what-a-deal')}</span>
+            </div>
+        </div>
     );
 }
