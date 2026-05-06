@@ -76,7 +76,7 @@
         "react": "19.2.5",
         "sass": "1.80.5",
         "sharp": "0.34.5",
-        "sonner": "1.7.0",
+        "sonner": "1.7.4",
         "tailwind-merge": "3.5.0",
         "use-context-selector": "2.0.0"
     },
