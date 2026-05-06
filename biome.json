@@ -3,14 +3,7 @@
     "assist": {
         "actions": {
             "source": {
-                "organizeImports": "on",
-                "useSortedAttributes": "on",
-                "useSortedInterfaceMembers": "on",
-                "useSortedKeys": {
-                    "level": "on",
-                    "options": { "groupByNesting": true }
-                },
-                "useSortedProperties": "on"
+                "organizeImports": "on"
             }
         },
         "includes": ["**", "!package.json", "!coverage/**", "!**/coverage/**", "!.claude/**", "!docs/superpowers/**"]
@@ -23,30 +16,16 @@
     "files": {
         "includes": [
             "**",
-            "!**/*.scss",
-            "!**/.next",
-            "!**/.next/**",
-            "!**/.turbo",
-            "!**/.turbo/**",
-            "!**/.vercel",
-            "!**/.vercel/**",
-            "!**/.vscode",
-            "!**/.claude",
-            "!**/.worktrees",
             "!**/*.d.ts",
-            "!**/build",
-            "!**/build/**",
-            "!**/coverage",
-            "!**/coverage/**",
-            "!**/dist",
-            "!**/dist/**",
-            "!**/node_modules",
-            "!**/node_modules/**",
-            "!**/public/sitemap*.xml*",
+            "!**/*.scss",
+            "!**/.claude",
+            "!**/.vscode",
+            "!**/.worktrees",
             "!**/public/robots.txt*",
-            "!**/storybook-static/**",
+            "!**/public/sitemap*.xml*",
+            "!**/storybook-static",
             "!apps/storefront/prismicio-types.d.ts",
-            "!docs/superpowers/**"
+            "!docs/superpowers"
         ]
     },
     "formatter": {
@@ -73,7 +52,10 @@
         "rules": {
             "recommended": true,
             "a11y": { "recommended": false },
-            "complexity": { "noBannedTypes": "off" },
+            "complexity": {
+                "noBannedTypes": "off",
+                "useArrowFunction": "off"
+            },
             "correctness": {
                 "noEmptyPattern": "off",
                 "noUnusedImports": "error",
