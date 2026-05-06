@@ -23,8 +23,11 @@
     "scripts": {
         "build": "tsc && vite build",
         "clean": "rimraf -g dist coverage .turbo .next *.tsbuildinfo *.log node_modules",
-        "lint": "eslint .",
-        "format": "eslint . --fix",
+        "lint": "biome lint .",
+        "format": "concurrently -i pnpm:format:*",
+        "format:lint": "biome lint --write .",
+        "format:format": "biome format --write .",
+        "format:check": "biome check --write --unsafe .",
         "typecheck": "tsc -noEmit"
     },
     "author": {
