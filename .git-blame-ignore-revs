@@ -1,0 +1,6 @@
+# Mechanical biome formatter pass — ignore for `git blame`
+103f37715dcb562fcb565f8ce81992cdabf692b9
+
+# Mechanical biome auto-fixes (organize imports, useImportType, useSortedClasses,
+# noUnusedImports, etc.)
+6b54d44168db774f00fc47f657f7da2b63e3b98d
