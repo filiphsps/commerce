@@ -18,7 +18,7 @@ export const Convertor = (
         node: Product;
     }>,
 ): VendorModel[] => {
-    let vendors: any[] = [];
+    let vendors: string[] = [];
     products.forEach((product) => {
         if (!product.node.vendor) return;
 
@@ -29,12 +29,12 @@ export const Convertor = (
     });
 
     // Remove duplicates and create a proper object
-    return (
-        Array.from(new Set(vendors)).map((vendor) => ({
+    return Array.from(new Set(vendors))
+        .map((vendor) => ({
             title: vendor,
             handle: TitleToHandle(vendor),
-        })) as any
-    ).filter((_: VendorModel) => _);
+        }))
+        .filter((_): _ is VendorModel => Boolean(_));
 };
 
 type VendorsOptions = { api: AbstractApi };

@@ -158,7 +158,7 @@ export default async function BlogPage({ params }: { params: BlogPageParams }) {
 
                 <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 md:gap-4 lg:grid-cols-4">
                     {articles.map(({ id, title, excerptHtml, publishedAt, authorV2: author, image, handle }) => {
-                        const publishedAtString = new Date(publishedAt).toLocaleDateString(locale as any, {
+                        const publishedAtString = new Date(publishedAt).toLocaleDateString(locale.code, {
                             weekday: undefined,
                             year: 'numeric',
                             month: 'short',

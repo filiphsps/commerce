@@ -50,7 +50,7 @@ export const CartSidebar = ({ i18n, locale, className, children, paymentMethods,
                         });
                     } catch (error: unknown) {
                         console.error(error);
-                        toast.error((error as any)?.message);
+                        toast.error(error instanceof Error ? error.message : String(error));
                     }
                 }}
                 i18n={i18n}

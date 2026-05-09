@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { shopifyAdminApi } from './shopify';
 
-export const GET = async (req: NextRequest, _context: any) => {
+export const GET = async (req: NextRequest) => {
     const searchParams = req.nextUrl.searchParams;
 
     try {
@@ -20,7 +20,7 @@ export const GET = async (req: NextRequest, _context: any) => {
 
         return NextResponse.json(
             {
-                errors: [new ProviderFetchError((error as any)?.message)],
+                errors: [new ProviderFetchError(error instanceof Error ? error.message : String(error))],
             },
             {
                 status: 500,

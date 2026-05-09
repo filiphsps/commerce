@@ -3,9 +3,9 @@ import type { Model, ProjectionType, Query, QueryFilter, QueryOptions, UpdateQue
 import type { BaseDocument } from '../db';
 import { db } from '../db';
 
-type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
+type UnionToIntersection<U> = (U extends unknown ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 
-type MergeTypes<T extends any[]> =
+type MergeTypes<T extends unknown[]> =
     UnionToIntersection<T[number]> extends infer A ? { [key in keyof A]: A[key] } : never;
 
 interface BaseQuery {
@@ -44,7 +44,7 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
         return this.model.create(input).then((doc) => doc.save());
     }
 
-    private mutateQuery<Q>(req: Query<any, DocType>, args: { [k: string]: any }): Promise<() => Q> {
+    private mutateQuery<Q>(req: Query<unknown, DocType>, args: { [k: string]: unknown }): Promise<() => Q> {
         return new Promise(async (resolve) => {
             const { id } = args;
 
@@ -60,7 +60,7 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
                     case 'sort': {
                         if (!id || !value) break;
 
-                        req = req.sort(value);
+                        req = req.sort(value as BaseQuery['sort']);
                         break;
                     }
                 }
@@ -81,18 +81,18 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
         let req = this.model.find<DocType>(
             {
                 ...filter,
-                ...((id as any) ? { _id: id } : {}),
+                ...(id ? { _id: id } : {}),
             },
             projection,
         );
         req = (await this.mutateQuery<Req>(req, args))();
 
         const res = await req.exec();
-        if (((res as any) || []).length <= 0) {
+        if ((res || []).length <= 0) {
             return [];
         }
 
-        if ((id as any) || (count && count === 1)) {
+        if (id || (count && count === 1)) {
             return res[0] as DocType;
         }
         return res as DocType[];
@@ -104,7 +104,7 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
         options?: QueryOptions<DocType> | null,
     ): Promise<DocType | null> {
         const res = this.model.findById(id, projection, options);
-        if (!(res as any)) {
+        if (!res) {
             return null;
         }
 
@@ -117,7 +117,7 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
         options: QueryOptions<DocType> = { includeResultMetadata: true, lean: true },
     ): Promise<DocType | null> {
         const res = this.model.findOneAndUpdate(filter, update, options);
-        if (!(res as any)) {
+        if (!res) {
             return null;
         }
 

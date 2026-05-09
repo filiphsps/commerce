@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import type { Schema } from '@markdoc/markdoc';
+import type { Tag } from '@markdoc/markdoc';
 import Markdoc from '@markdoc/markdoc';
 import { glob } from 'glob';
 import matter from 'gray-matter';
@@ -29,7 +29,7 @@ export async function getArticleContent({ year, month, slug }: { year: string; m
     const source = fs.readFileSync(filePath, 'utf-8');
     const matterResult = matter(source);
     const { title, description, date, author, handle } = matterResult.data;
-    const content = (Markdoc.transform(Markdoc.parse(source), config) as Schema).children;
+    const content = (Markdoc.transform(Markdoc.parse(source), config) as Tag).children;
 
     return {
         content,

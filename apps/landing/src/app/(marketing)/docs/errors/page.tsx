@@ -1,4 +1,4 @@
-import type { Error } from '@nordcom/commerce-errors';
+import type { ApiErrorKind, Error, GenericErrorKind } from '@nordcom/commerce-errors';
 import { getAllErrorCodes, getErrorFromCode, MissingContextProviderError } from '@nordcom/commerce-errors';
 import { Card, Heading } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
@@ -20,7 +20,7 @@ export default async function DocsErrorsPage({}: {}) {
 
             <section className="">
                 {errors.map((code) => {
-                    const ErrorKind = getErrorFromCode(code.toUpperCase() as any);
+                    const ErrorKind = getErrorFromCode(code.toUpperCase() as GenericErrorKind | ApiErrorKind);
                     if (!ErrorKind) return null;
 
                     let error!: Error<string>;

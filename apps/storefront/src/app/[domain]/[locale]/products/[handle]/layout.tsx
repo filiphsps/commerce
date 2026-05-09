@@ -118,7 +118,7 @@ export default async function ProductPageLayout({
                 product: {
                     productGid: product!.id,
                     variantGid: variant!.id,
-                } as any,
+                },
             }),
             mpn: variant.barcode || variant.sku || undefined,
 

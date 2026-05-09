@@ -6,7 +6,7 @@ export type ContentProps<T extends ElementType = 'article'> = {
     as?: T;
 } & Omit<ComponentProps<T>, 'as'>;
 export const Content = <T extends ElementType = 'article'>({ children, as, className, ...props }: ContentProps<T>) => {
-    const AsComponent: ElementType = (as || 'article') as any;
+    const AsComponent: ElementType = as || 'article';
 
     return (
         <AsComponent {...props} className={`${styles.container} ${className || ''}`}>

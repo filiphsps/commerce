@@ -70,7 +70,7 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
         });
 
         if (!sensitiveData) {
-            delete (res as any)._id;
+            delete (res as { _id?: unknown })._id;
 
             let commerceProvider = {};
             switch (res.commerceProvider.type) {
@@ -116,7 +116,7 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
                 ...res,
                 commerceProvider,
                 contentProvider,
-            } as any;
+            } as unknown as OnlineShop;
         }
 
         return res;

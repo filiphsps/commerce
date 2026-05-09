@@ -318,7 +318,7 @@ export const ProductApi = async ({ api, handle, fragment }: ProductOptions): Pro
         ];
     } catch (error: unknown) {
         console.error(error);
-        return [undefined, error as any];
+        return [undefined, error instanceof Error ? error : new Error(String(error))];
     }
 };
 
@@ -391,7 +391,7 @@ export const ProductsPaginationCountApi = async ({
     };
     const { count: products, cursors } = await countProducts(0);
 
-    const perPage = ((extractLimitLikeFilters(filters) as any)?.first || 30) as number;
+    const perPage = ((extractLimitLikeFilters(filters) as { first?: number })?.first || 30) as number;
     const pages = Math.ceil(products / perPage) - 1; // Subtract 1 because we're using `after` cursors.
     return {
         pages,
@@ -447,8 +447,8 @@ export const ProductsApi = async ({
             `,
         {
             limit,
-            sorting: (sorting as any) || null,
-            cursor: (cursor as any) || null,
+            sorting: sorting || null,
+            cursor: cursor || null,
         },
         {
             tags: ['products'],
@@ -520,7 +520,7 @@ export const ProductsPaginationApi = async ({
 
     const filter = {
         query: queryEntries.length > 0 ? queryEntries.join(' AND ') : null,
-        sorting: (sorting as any) || null,
+        sorting: sorting || null,
         reverse: typeof reverse !== 'undefined' ? (reverse ? 'true' : 'false') : null,
     };
 
@@ -571,8 +571,8 @@ export const ProductsPaginationApi = async ({
                 `,
         {
             limit,
-            before: (before as any) || null,
-            after: (after as any) || null,
+            before: before || null,
+            after: after || null,
             ...filter,
         },
         {
@@ -596,7 +596,7 @@ export const ProductsPaginationApi = async ({
             has_next_page: page_info.hasNextPage,
             has_prev_page: page_info.hasPreviousPage,
         },
-        products: ((data.products.edges as any) || []) as ProductEdge[],
+        products: (data.products.edges || []) as ProductEdge[],
         filters: data.products.filters,
     };
 };

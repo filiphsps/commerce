@@ -61,7 +61,7 @@ export const SearchApi = async ({
             );
 
             return {
-                result: data?.search.edges.map((item: any) => item?.node) || [],
+                result: data?.search.edges.map((item) => item.node as unknown as Product) || [],
                 productFilters: data?.search.productFilters || [],
             };
         };

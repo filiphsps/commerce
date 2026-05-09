@@ -1,4 +1,4 @@
-import type { Adapter, AdapterAccount } from '@auth/core/adapters';
+import type { Adapter, AdapterAccount, AdapterUser } from '@auth/core/adapters';
 import { Identity, Session, User } from '@nordcom/commerce-db';
 
 export function AuthAdapter(): Adapter {
@@ -63,7 +63,7 @@ export function AuthAdapter(): Adapter {
         },
         async updateUser(user) {
             console.debug('[TODO] AuthAdapter - updateUser', user);
-            return user as any;
+            return user as unknown as AdapterUser;
         },
         async deleteUser(userId) {
             console.debug('[TODO] AuthAdapter - deleteUser', userId);

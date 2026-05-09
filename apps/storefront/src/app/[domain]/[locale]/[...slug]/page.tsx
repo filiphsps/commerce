@@ -83,7 +83,7 @@ export async function generateMetadata({ params }: { params: CustomPageParams })
         title,
         description,
         robots: {
-            index: (page.noindex as any) === undefined ? true : !page.noindex,
+            index: typeof page.noindex === 'undefined' ? true : !page.noindex,
         },
         alternates: {
             canonical: `https://${shop.domain}/${locale.code}${path}`,

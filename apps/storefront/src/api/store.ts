@@ -15,7 +15,7 @@ const DEFAULT_LOCALE = {
 };
 
 export const CountriesApi = async ({ api }: { api: AbstractApi }): Promise<Country[]> => {
-    const { data: localData, errors } = await api.query<Localization>(gql`
+    const { data: localData, errors } = await api.query<{ localization: Localization }>(gql`
         query localization {
             localization {
                 availableCountries {
@@ -42,7 +42,7 @@ export const CountriesApi = async ({ api }: { api: AbstractApi }): Promise<Count
 
     // FIXME: Handle errors or missing data.
     return (
-        (((localData as any)?.localization.availableCountries! || [DEFAULT_LOCALE]) as Country[])
+        ((localData?.localization.availableCountries! || [DEFAULT_LOCALE]) as Country[])
             // https://nordcom.sentry.io/share/issue/b0b9721ad1e54a88b779605737472230/
             // `availableLanguages` shouldn't be nullable, but it sometimes is.
             .map((data) => ({ ...data, availableLanguages: data.availableLanguages || [] })) // eslint-disable-line @typescript-eslint/no-unnecessary-condition
@@ -104,7 +104,7 @@ export const LocaleApi = async ({ api }: { api: AbstractApi }) => {
 
         return data?.localization!;
     } catch (error: unknown) {
-        throw new ProviderFetchError((error as any)?.message);
+        throw new ProviderFetchError(error instanceof Error ? error.message : String(error));
     }
 };
 

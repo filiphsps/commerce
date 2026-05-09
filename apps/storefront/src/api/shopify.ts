@@ -1,5 +1,6 @@
 import 'server-only';
 
+import type { ApolloClient, QueryOptions } from '@apollo/client';
 import { type OnlineShop, Shop } from '@nordcom/commerce-db';
 import { UnknownCommerceProviderError } from '@nordcom/commerce-errors';
 import { createStorefrontClient } from '@shopify/hydrogen-react';
@@ -111,12 +112,16 @@ export const ShopifyApiClient = async ({ shop, locale = Locale.default, apiConfi
         shop,
         locale,
         api: {
-            query: async ({ query, context: { fetchOptions, ...context }, variables }: any) => {
+            query: async ({
+                query,
+                context: { fetchOptions, ...context } = {} as { fetchOptions?: unknown; [key: string]: unknown },
+                variables,
+            }: QueryOptions & { context?: { fetchOptions?: unknown; [key: string]: unknown } }) => {
                 const response = await fetch(config.uri, {
                     method: 'POST',
                     headers: config.headers,
                     body: JSON.stringify({
-                        ...(query && { query: query?.loc?.source?.body }),
+                        ...(query && { query: (query as { loc?: { source?: { body?: string } } })?.loc?.source?.body }),
                         ...(variables && { variables }),
                         ...(context && { context }),
                     }),
@@ -149,7 +154,7 @@ export const ShopifyApiClient = async ({ shop, locale = Locale.default, apiConfi
                         loading: false,
                         data: body.data,
                         errors: null,
-                    } as any;
+                    };
                 } catch (error: unknown) {
                     return {
                         loading: false,
@@ -158,6 +163,6 @@ export const ShopifyApiClient = async ({ shop, locale = Locale.default, apiConfi
                     };
                 }
             },
-        } as any,
+        } as unknown as ApolloClient<unknown>,
     });
 };

@@ -28,7 +28,7 @@ export default function LocaleSelector({ countries = [], locale }: LocaleSelecto
                 currency: country.currency.isoCode,
             })),
         )
-        .filter((i) => ((i as any)?.length || 0) > 0);
+        .filter((i) => (i?.length || 0) > 0);
 
     return (
         <div className={styles.list}>

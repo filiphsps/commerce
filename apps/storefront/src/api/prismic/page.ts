@@ -96,7 +96,7 @@ export const PageApi = async <T extends keyof PageTypeMapping | 'custom_page' = 
         async (handle: string, type: T) => {
             try {
                 const { data: page } = await client.getByUID<NarrowedPageType<T>>(type, handle);
-                if (!(page as any)) {
+                if (!page) {
                     throw new NotFoundError(`"Page" with the handle "${handle}"`);
                 }
 

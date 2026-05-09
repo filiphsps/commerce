@@ -53,12 +53,11 @@ export const extractLimitLikeFilters = (
           last: number;
       }
     | {} => {
+    const f = filters as Record<string, unknown>;
     switch (true) {
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         case filters === null || typeof filters === 'undefined':
-        case typeof (filters as any).limit !== 'number' &&
-            typeof (filters as any).first !== 'number' &&
-            typeof (filters as any).last !== 'number':
+        case typeof f.limit !== 'number' && typeof f.first !== 'number' && typeof f.last !== 'number':
         case !('limit' in filters) && !('first' in filters) && !('last' in filters):
             return {
                 first: defaultLimit,
@@ -111,7 +110,7 @@ type CollectionOptions = ApiOptions &
  */
 export const CollectionApi = async (
     { api, handle, ...props }: CollectionOptions,
-    _cache?: any,
+    _cache?: unknown,
 ): Promise<Collection> => {
     if (!isValidHandle(handle)) {
         throw new InvalidHandleError(handle);
@@ -289,7 +288,7 @@ export const CollectionPaginationCountApi = async ({
     };
     const { count: products, cursors } = await countProducts(0);
 
-    const perPage = ((extractLimitLikeFilters(filters) as any)?.first || 30) as number;
+    const perPage = ((extractLimitLikeFilters(filters) as { first?: number })?.first || 30) as number;
     const pages = Math.ceil(products / perPage);
     return {
         pages,

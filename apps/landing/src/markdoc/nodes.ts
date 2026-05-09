@@ -1,3 +1,4 @@
+import type { Config, Node } from '@markdoc/markdoc';
 import { Tag } from '@markdoc/markdoc';
 
 export const link = {
@@ -42,10 +43,10 @@ export const heading = {
         level: { type: Number, required: true, default: 1 },
         className: { type: String },
     },
-    transform(node: any, config: any) {
+    transform(node: Node, config: Config) {
         const { level, ...attributes } = node.transformAttributes(config);
         const children = node.transformChildren(config);
 
-        return new Tag(this.render as any, { ...attributes, level: `h${level}`, 'data-level': `h${level}` }, children);
+        return new Tag(this.render, { ...attributes, level: `h${level}`, 'data-level': `h${level}` }, children);
     },
 };

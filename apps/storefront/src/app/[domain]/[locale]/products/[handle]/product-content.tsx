@@ -1,7 +1,10 @@
 'use client';
 
 import { ProductProvider } from '@shopify/hydrogen-react';
-import type { ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
+import type {
+    Product as StorefrontProduct,
+    ProductVariant,
+} from '@shopify/hydrogen-react/storefront-api-types';
 import { useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import type { Product } from '@/api/product';
@@ -31,7 +34,7 @@ export function ProductContent({ product, i18n }: ProductContentProps) {
     const [quantity, setQuantity] = useState(1);
 
     return (
-        <ProductProvider data={product as any} initialVariantId={initialVariantId}>
+        <ProductProvider data={product as unknown as StorefrontProduct} initialVariantId={initialVariantId}>
             <QuantityProvider quantity={quantity} setQuantity={setQuantity}>
                 <ProductActionsContainer i18n={i18n} />
             </QuantityProvider>

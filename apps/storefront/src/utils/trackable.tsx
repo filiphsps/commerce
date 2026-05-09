@@ -345,7 +345,8 @@ const handleEvent = async (
             ...(data.gtm || {}),
         });
     } catch (error: unknown) {
-        console.error(`Error sending "${event}" event: ${(error as any)?.message || error}`);
+        const message = error instanceof Error ? error.message : String(error);
+        console.error(`Error sending "${event}" event: ${message}`);
     }
 
     if (typeof data.gtm?.ecommerce !== 'undefined') {

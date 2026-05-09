@@ -1,7 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import type { Schema } from '@markdoc/markdoc';
+import type { RenderableTreeNode, Tag } from '@markdoc/markdoc';
 import Markdoc from '@markdoc/markdoc';
+import type { ApiErrorKind, GenericErrorKind } from '@nordcom/commerce-errors';
 import { getErrorFromCode } from '@nordcom/commerce-errors';
 import { Card, Heading } from '@nordcom/nordstar';
 import Link from 'next/link';
@@ -14,13 +15,12 @@ import styles from './page.module.scss';
 
 const CONTENT_DIR = path.join(process.cwd(), 'docs/errors');
 
-async function getErrorDocsContent({ slug }: { slug: string }) {
+async function getErrorDocsContent({ slug }: { slug: string }): Promise<RenderableTreeNode[] | null> {
     try {
         const filePath = path.join(CONTENT_DIR, `${slug}.md`);
         const source = fs.readFileSync(filePath, 'utf-8');
-        //const matterResult = matter(source);
-        //const res = matterResult.data;
-        return (Markdoc.transform(Markdoc.parse(source), config) as Schema).children || null;
+        const transformed = Markdoc.transform(Markdoc.parse(source), config);
+        return (transformed as Tag).children || null;
     } catch {
         return null;
     }
@@ -34,7 +34,7 @@ export default async function DocsErrorPage({ params }: { params: DocsErrorPageP
 
     const { code } = await params;
 
-    const ErrorKind = getErrorFromCode(code.toUpperCase() as any);
+    const ErrorKind = getErrorFromCode(code.toUpperCase() as GenericErrorKind | ApiErrorKind);
     if (!ErrorKind) notFound();
 
     const content = await getErrorDocsContent({ slug: code });
@@ -71,7 +71,7 @@ export default async function DocsErrorPage({ params }: { params: DocsErrorPageP
                         <p>TODO.</p>
                     </Card>
                 ) : (
-                    Markdoc.renderers.react(content as any, React, { components })
+                    Markdoc.renderers.react(content, React, { components })
                 )}
 
                 <Card as="section" className={styles.section}>

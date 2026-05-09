@@ -155,7 +155,7 @@ export default async function ArticlePage({ params }: { params: ArticlePageParam
         description: seo?.description || excerpt || '',
         articleSection: article.blog.title,
         image: image?.url ? [image.url] : [],
-        keywords: ((tags as any) || []).join(', '),
+        keywords: (tags || []).join(', '),
         dateCreated: publishedAt,
         datePublished: publishedAt,
         author: {
@@ -172,7 +172,7 @@ export default async function ArticlePage({ params }: { params: ArticlePageParam
         },
     };
 
-    const publishedAtString = new Date(publishedAt).toLocaleDateString(locale as any, {
+    const publishedAtString = new Date(publishedAt).toLocaleDateString(locale.code, {
         weekday: undefined,
         year: 'numeric',
         month: 'short',

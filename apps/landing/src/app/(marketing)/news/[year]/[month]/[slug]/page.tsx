@@ -86,7 +86,7 @@ export default async function ArticlePage({ params }: { params: ArticlePageParam
                 </Heading>
             </div>
 
-            <Content>{Markdoc.renderers.react(content as any, React, { components })}</Content>
+            <Content>{Markdoc.renderers.react(content, React, { components })}</Content>
         </div>
     );
 }

@@ -59,7 +59,7 @@ export class Error<T = unknown> extends BuiltinError {
             return true;
         }
 
-        const message = (error as any)?.message as string | undefined;
+        const message = error instanceof Error ? error.message : undefined;
         if (!message) {
             return false;
         }
@@ -153,11 +153,12 @@ export class UnknownLocaleError extends UnknownError {
     description = 'Unsupported or invalid locale code was provided';
     code = ApiErrorKind.API_UNKNOWN_LOCALE;
 
-    constructor(code?: any, cause?: string, statusCode?: number) {
+    constructor(code?: unknown, cause?: string, statusCode?: number) {
         super(cause, statusCode);
 
         if (code) {
-            this.description = this.description.replace('code', `code "${code}"`);
+            const codeStr = typeof code === 'string' ? code : JSON.stringify(code);
+            this.description = this.description.replace('code', `code "${codeStr}"`);
         }
     }
 }
@@ -288,7 +289,7 @@ export class ProviderFetchError extends ApiError {
     description = 'Failed to fetch from source';
     code = ApiErrorKind.API_PROVIDER_FETCH_FAILED;
 
-    static stringifyInput(input: any): string | null {
+    static stringifyInput(input: unknown): string | null {
         if (typeof input === 'undefined' || input === null) {
             return null;
         }
@@ -338,28 +339,28 @@ export class ProviderFetchError extends ApiError {
                 .join('\n');
         }
 
-        if (typeof input === 'object') {
+        if (typeof input === 'object' && input !== null) {
             if ('message' in input && 'name' in input) {
                 if ('toString' in input && typeof input.toString === 'function') {
                     return input.toString();
                 }
 
-                return `${input.name}: ${input.message}`;
+                return `${String(input.name)}: ${String(input.message)}`;
             }
 
             if ('status' in input) {
                 if ('statusText' in input) {
-                    return `${input.status}: ${input.statusText}`;
+                    return `${String(input.status)}: ${String(input.statusText)}`;
                 }
 
-                return input.status;
+                return String(input.status);
             }
         }
 
         return null;
     }
 
-    constructor(sourceErrors?: any) {
+    constructor(sourceErrors?: unknown) {
         super();
 
         this.cause = ProviderFetchError.stringifyInput(sourceErrors);
@@ -463,7 +464,7 @@ export const getErrorFromCode = (
         case GenericErrorKind.INVALID_TYPE:
             return TypeError;
         case GenericErrorKind.MISSING_CONTEXT_PROVIDER:
-            return MissingContextProviderError as any;
+            return MissingContextProviderError as unknown as typeof GenericError;
         case GenericErrorKind.NOT_CONNECTED_TO_DATABASE:
             return NotConnectedToDatabase;
 
@@ -479,13 +480,13 @@ export const getErrorFromCode = (
         case ApiErrorKind.API_INVALID_CONTENT_PROVIDER:
             return InvalidContentProviderError;
         case ApiErrorKind.API_UNKNOWN_LOCALE:
-            return UnknownLocaleError as any;
+            return UnknownLocaleError as unknown as typeof ApiError;
         case ApiErrorKind.API_INVALID_SHOP:
             return InvalidShopError;
         case ApiErrorKind.API_INVALID_HANDLE:
-            return InvalidHandleError as any;
+            return InvalidHandleError as unknown as typeof ApiError;
         case ApiErrorKind.API_INVALID_ID:
-            return InvalidIDError as any;
+            return InvalidIDError as unknown as typeof ApiError;
         case ApiErrorKind.API_INVALID_SLICE_VARIATION:
             return InvalidSliceVariationError;
         case ApiErrorKind.API_INVALID_CART:
