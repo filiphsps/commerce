@@ -5,6 +5,10 @@ import { normalize } from './normalize';
 const ATTR_RENAME: Record<string, string> = {
     class: 'className',
     for: 'htmlFor',
+    tabindex: 'tabIndex',
+    colspan: 'colSpan',
+    rowspan: 'rowSpan',
+    accesskey: 'accessKey',
 };
 
 const VOID_ELEMENTS = new Set([
@@ -27,7 +31,7 @@ function convertAttributes(raw: Record<string, string>): Record<string, string> 
 
 function nodeToReact(node: Node, key: string, opts: ToReactNodesOptions): ReactNode {
     if (node.nodeType === NodeType.TEXT_NODE) {
-        return node.rawText;
+        return node.text;
     }
     if (node.nodeType !== NodeType.ELEMENT_NODE) {
         return null;
@@ -46,7 +50,7 @@ function nodeToReact(node: Node, key: string, opts: ToReactNodesOptions): ReactN
 
     const children = el.childNodes
         .map((child, i) => nodeToReact(child, `${key}.${i}`, opts))
-        .filter((c) => c !== null && c !== '');
+        .filter((c) => c !== null && (typeof c !== 'string' || c.trim() !== ''));
 
     return createElement(Component, props, ...children);
 }
@@ -60,7 +64,7 @@ export function toReactNodes(
 
     const children = root.childNodes
         .map((child, i) => nodeToReact(child, `n${i}`, opts))
-        .filter((c) => c !== null && c !== '');
+        .filter((c) => c !== null && (typeof c !== 'string' || c.trim() !== ''));
 
     if (children.length === 0) return null;
     if (children.length === 1) return children[0];

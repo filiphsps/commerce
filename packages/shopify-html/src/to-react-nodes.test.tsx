@@ -46,4 +46,17 @@ describe('toReactNodes', () => {
         const out = html(toReactNodes('<a href="/x">go</a>', { components: { a: Anchor } }));
         expect(out).toBe('<a href="/x" data-test="overridden">go</a>');
     });
+
+    it('decodes HTML entities in text content', () => {
+        expect(html(toReactNodes('<p>R&amp;D &mdash; great</p>'))).toBe('<p>R&amp;D — great</p>');
+    });
+
+    it('filters whitespace-only text nodes between elements', () => {
+        expect(html(toReactNodes('<ul>\n  <li>a</li>\n  <li>b</li>\n</ul>'))).toBe('<ul><li>a</li><li>b</li></ul>');
+    });
+
+    it('renames table-cell colspan/rowspan to React conventions', () => {
+        const out = html(toReactNodes('<table><tbody><tr><td colspan="2">cell</td></tr></tbody></table>'));
+        expect(out).toBe('<table><tbody><tr><td colspan="2">cell</td></tr></tbody></table>');
+    });
 });

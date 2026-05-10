@@ -44,4 +44,8 @@ describe('toPlainText', () => {
     it('collapses non-breaking spaces', () => {
         expect(toPlainText('<p>a\u00a0b</p>')).toBe('a b');
     });
+
+    it('decodes HTML entities in text content', () => {
+        expect(toPlainText('<p>R&amp;D &mdash; great</p>')).toBe('R&D \u2014 great');
+    });
 });

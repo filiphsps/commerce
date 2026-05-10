@@ -5,7 +5,7 @@ const BLOCK_TAGS = new Set(['p', 'div', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'
 
 function walk(node: Node, lines: string[], current: { value: string }): void {
     if (node.nodeType === NodeType.TEXT_NODE) {
-        current.value += node.rawText;
+        current.value += node.text;
         return;
     }
 
