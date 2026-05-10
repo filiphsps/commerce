@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import type { HTMLProps } from 'react';
 import { cn } from '@/utils/tailwind';
 
@@ -21,10 +22,10 @@ export async function Avatar({ src, name, title, className, ...props }: AvatarPr
             )}
         >
             {src ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+                <Image
                     className={cn('h-full w-full object-cover object-center', className)}
                     role="presentation"
+                    alt=""
                     width={45}
                     height={45}
                     src={src}

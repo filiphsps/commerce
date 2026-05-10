@@ -315,44 +315,40 @@ export const CollectionsApi = async (
         hasProducts: boolean;
     }>
 > => {
-    return new Promise(async (resolve, reject) => {
-        const api = 'api' in options ? options.api : /** @deprecated */ options.client;
+    const api = 'api' in options ? options.api : /** @deprecated */ options.client;
 
-        const { data, errors } = await api.query<{ collections: QueryRoot['collections'] }>(gql`
-            query collections {
-                collections(first: 250) {
-                    edges {
-                        node {
-                            id
-                            handle
+    const { data, errors } = await api.query<{ collections: QueryRoot['collections'] }>(gql`
+        query collections {
+            collections(first: 250) {
+                edges {
+                    node {
+                        id
+                        handle
 
-                            products(first: 1) {
-                                edges {
-                                    node {
-                                        id
-                                    }
+                        products(first: 1) {
+                            edges {
+                                node {
+                                    id
                                 }
                             }
                         }
                     }
                 }
             }
-        `);
-
-        if (errors && errors.length > 0) {
-            return reject(new ProviderFetchError(errors));
-        } else if (!data?.collections) {
-            return reject(new NotFoundError(`"Collections" cannot be found`));
         }
+    `);
 
-        return resolve(
-            data.collections.edges.map(({ node: { id, handle, products } }) => ({
-                id,
-                handle,
-                hasProducts: products.edges.length > 0,
-            })),
-        );
-    });
+    if (errors && errors.length > 0) {
+        throw new ProviderFetchError(errors);
+    } else if (!data?.collections) {
+        throw new NotFoundError(`"Collections" cannot be found`);
+    }
+
+    return data.collections.edges.map(({ node: { id, handle, products } }) => ({
+        id,
+        handle,
+        hasProducts: products.edges.length > 0,
+    }));
 };
 
 type CollectionsOptions = ApiOptions &
@@ -381,88 +377,82 @@ export const CollectionsPaginationApi = async ({
     const shop = api.shop();
     const filters = 'filters' in props ? props.filters : /** @deprecated */ (props as CollectionsFilters);
 
-    return new Promise(async (resolve, reject) => {
-        try {
-            const { data } = await api.query<{ collections: QueryRoot['collections'] }>(
-                gql`
-                    query collections(
-                        $first: Int
-                        $last: Int
-                        $sorting: CollectionSortKeys
-                        $query: String
-                        $before: String
-                        $after: String
-                    ) {
-                        collections(
-                            first: $first
-                            last: $last
-                            sortKey: $sorting
-                            query: $query
-                            before: $before
-                            after: $after
-                        ) {
-                            edges {
-                                cursor
-                                node {
-                                    id
-                                    handle
-                                    createdAt
-                                    updatedAt
-                                    title
-                                    description
-                                    descriptionHtml
-                                    image {
-                                        id
-                                        altText
-                                        url
-                                        height
-                                        width
-                                    }
-                                    seo {
-                                        title
-                                        description
-                                    }
-                                }
+    const { data } = await api.query<{ collections: QueryRoot['collections'] }>(
+        gql`
+            query collections(
+                $first: Int
+                $last: Int
+                $sorting: CollectionSortKeys
+                $query: String
+                $before: String
+                $after: String
+            ) {
+                collections(
+                    first: $first
+                    last: $last
+                    sortKey: $sorting
+                    query: $query
+                    before: $before
+                    after: $after
+                ) {
+                    edges {
+                        cursor
+                        node {
+                            id
+                            handle
+                            createdAt
+                            updatedAt
+                            title
+                            description
+                            descriptionHtml
+                            image {
+                                id
+                                altText
+                                url
+                                height
+                                width
                             }
-                            pageInfo {
-                                startCursor
-                                endCursor
-                                hasNextPage
-                                hasPreviousPage
+                            seo {
+                                title
+                                description
                             }
                         }
                     }
-                `,
-                {
-                    ...extractLimitLikeFilters(filters),
-                    ...(({ vendor = null, sorting = 'RELEVANCE', before = null, after = null }) => ({
-                        query: vendor && `query:"vendor:${vendor}"`,
-                        sorting: sorting,
-                        before: before,
-                        after: after,
-                    }))(filters),
-                },
-                {
-                    tags: ['collections', 'pagination'],
-                },
-            );
-
-            const page_info = data?.collections.pageInfo;
-            if (!page_info) {
-                return reject(new ProviderFetchError(`"Collections.pageInfo" on shop "${shop.id}"`));
+                    pageInfo {
+                        startCursor
+                        endCursor
+                        hasNextPage
+                        hasPreviousPage
+                    }
+                }
             }
+        `,
+        {
+            ...extractLimitLikeFilters(filters),
+            ...(({ vendor = null, sorting = 'RELEVANCE', before = null, after = null }) => ({
+                query: vendor && `query:"vendor:${vendor}"`,
+                sorting: sorting,
+                before: before,
+                after: after,
+            }))(filters),
+        },
+        {
+            tags: ['collections', 'pagination'],
+        },
+    );
 
-            return resolve({
-                collections: data.collections.edges,
-                page_info: {
-                    start_cursor: page_info.startCursor || null,
-                    end_cursor: page_info.endCursor || null,
-                    has_next_page: page_info.hasNextPage,
-                    has_prev_page: page_info.hasPreviousPage,
-                },
-            });
-        } catch (error: unknown) {
-            return reject(error);
-        }
-    });
+    const page_info = data?.collections.pageInfo;
+    if (!page_info) {
+        throw new ProviderFetchError(`"Collections.pageInfo" on shop "${shop.id}"`);
+    }
+
+    return {
+        collections: data.collections.edges,
+        page_info: {
+            start_cursor: page_info.startCursor || null,
+            end_cursor: page_info.endCursor || null,
+            has_next_page: page_info.hasNextPage,
+            has_prev_page: page_info.hasPreviousPage,
+        },
+    };
 };

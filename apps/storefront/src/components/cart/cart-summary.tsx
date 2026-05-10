@@ -25,7 +25,7 @@ const PRICE_DISCOUNT_STYLES = 'bg-green-200 text-green-950 rounded-lg px-1 -mx-1
 
 type CartSummaryProps = {
     shop: OnlineShop;
-    onCheckout: any;
+    onCheckout: () => void | Promise<void>;
     i18n: LocaleDictionary;
 
     children?: ReactNode;
@@ -151,7 +151,8 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                                                     0,
                                                     discount.discountedAmount.amount,
                                                 );
-                                                const title = (discount as any).title || t('automatic-discounts');
+                                                const title =
+                                                    (discount as { title?: string }).title || t('automatic-discounts');
 
                                                 if (discountAmount <= 0) {
                                                     return null;
@@ -205,9 +206,9 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                                 className={PRICE_STYLES}
                                 data={
                                     cost.checkoutChargeAmount ||
-                                    (cost.totalAmount as any) || {
+                                    cost.totalAmount || {
                                         currencyCode: currency,
-                                        amount: 0,
+                                        amount: '0',
                                     }
                                 }
                             />

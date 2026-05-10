@@ -123,12 +123,8 @@ export async function generateMetadata({
         description,
         alternates: {
             canonical: `https://${shop.domain}/${locale.code}/products/${handle}/${search}`,
-            languages: locales.reduce(
-                (prev, { code }) => ({
-                    ...prev,
-                    [code]: `https://${shop.domain}/${code}/products/${handle}/${search}`,
-                }),
-                {},
+            languages: Object.fromEntries(
+                locales.map(({ code }) => [code, `https://${shop.domain}/${code}/products/${handle}/${search}`]),
             ),
         },
         openGraph: {
@@ -240,7 +236,7 @@ export default async function ProductPage({ params }: { params: ProductPageParam
     }
 
     // If the product description contains a <h1> tag, replace our h1 with a div to avoid multiple h1s.
-    let TitleTag: any = 'h1';
+    let TitleTag: 'h1' | 'div' = 'h1';
     if (content.includes('<h1')) {
         TitleTag = 'div';
     }

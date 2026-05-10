@@ -36,7 +36,10 @@ const FooterContent = async ({ locale, i18n, shop }: FooterContentProps) => {
                         <div className="flex flex-wrap justify-center gap-4 gap-y-1 *:font-black *:text-xs *:uppercase lg:justify-start *:lg:text-sm">
                             {footer.policy_links.map(({ title, href: link }, index) => {
                                 const href = asLink(link, { linkResolver });
-                                const target: undefined | '_blank' = (href as any).target || undefined;
+                                if (!href) return null;
+
+                                const target: undefined | '_blank' =
+                                    (href as unknown as { target?: '_blank' }).target || undefined;
 
                                 return (
                                     <Link

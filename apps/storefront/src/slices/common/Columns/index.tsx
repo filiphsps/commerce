@@ -26,15 +26,15 @@ const Columns = async ({ slice, context: { shop, locale } }: ColumnsProps) => {
         >
             {slice.primary.children.map(async ({ column }) => {
                 const { uid, type, id } = column as { uid: string; type: string; id: string };
-                if (!(uid as any)) {
+                if (!uid) {
                     return null;
                 }
 
                 const { slices } = await (async () => {
                     // FIXME: This should be in an API helper.
                     try {
-                        const { data } = await client.getByUID<ColumnDocument>(type as any, uid);
-                        if (!(data as any)) {
+                        const { data } = await client.getByUID<ColumnDocument>(type as ColumnDocument['type'], uid);
+                        if (!data) {
                             throw new NotFoundError(`"Columns" with the uid "${uid}"`);
                         }
 
@@ -46,8 +46,8 @@ const Columns = async ({ slice, context: { shop, locale } }: ColumnsProps) => {
                                 locale: Locale.default,
                                 fetchOptions: { cache: 'force-cache' },
                             });
-                            const { data } = await client.getByUID<ColumnDocument>(type as any, uid);
-                            if (!(data as any)) {
+                            const { data } = await client.getByUID<ColumnDocument>(type as ColumnDocument['type'], uid);
+                            if (!data) {
                                 throw new NotFoundError(`"Columns" with the uid "${uid}"`);
                             }
 

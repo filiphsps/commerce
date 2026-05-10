@@ -52,7 +52,10 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
                 <div className="flex w-full flex-wrap items-start justify-start gap-3 empty:hidden md:gap-6">
                     {slice.items.map(({ type, target: link, title }, index) => {
                         const href = asLink(link, { linkResolver });
-                        const target: undefined | '_blank' = (href as any).target || undefined;
+                        if (!href) return null;
+
+                        const target: undefined | '_blank' =
+                            (href as unknown as { target?: '_blank' })?.target || undefined;
 
                         return (
                             <Button
@@ -75,8 +78,8 @@ export const BannerAside = ({ slice, index = 100 }: { slice: BannerSliceAside; i
             <Image
                 role={imageAlt ? undefined : 'presentation'}
                 src={image.url!}
-                width={image.dimensions?.width!}
-                height={image.dimensions?.height!}
+                width={image.dimensions?.width ?? 0}
+                height={image.dimensions?.height ?? 0}
                 alt={imageAlt!}
                 className="absolute -right-[calc(100%-8rem)] left-auto z-0 col-span-2 hidden h-full w-full object-cover object-left md:relative md:inset-0 md:flex"
                 draggable={false}

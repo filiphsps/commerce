@@ -17,7 +17,7 @@ const config = ({
 }) => {
     return {
         providers: [ShopifyProvider(shopifyAuth, shop)],
-        skipCSRFCheck: true as any, // TODO
+        skipCSRFCheck: true as unknown as NextAuthConfig['skipCSRFCheck'], // TODO
         cookies: {
             sessionToken: {
                 name: `${VERCEL_DEPLOYMENT ? '__Secure-' : ''}NordcomCommerceSession`,

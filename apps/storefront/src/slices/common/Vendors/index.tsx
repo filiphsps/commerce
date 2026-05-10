@@ -1,13 +1,15 @@
 import 'server-only';
 
+import type { OnlineShop } from '@nordcom/commerce-db';
 import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
 import Vendors from '@/components/informational/vendors';
+import type { Locale } from '@/utils/locale';
 
 /**
  * Props for `Vendors`.
  */
-export type VendorsProps = SliceComponentProps<Content.VendorsSlice, any>;
+export type VendorsProps = SliceComponentProps<Content.VendorsSlice, { shop: OnlineShop; locale: Locale }>;
 
 /**
  * Component for "Vendors" Slices.

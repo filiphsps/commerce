@@ -1,5 +1,6 @@
 import { Shop } from '@nordcom/commerce-db';
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import { Suspense } from 'react';
 import { getAuthSession } from '@/auth';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
@@ -54,8 +55,7 @@ export default async function AccountPage({ params }: { params: AccountDashboard
                     <Label as="div">{user?.name}</Label>
                     <Label as="div">{user?.email}</Label>
                     {user?.image ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
+                        <Image
                             src={user.image}
                             alt={user.name || ''}
                             height={100}

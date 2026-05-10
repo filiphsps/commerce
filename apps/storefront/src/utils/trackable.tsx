@@ -55,9 +55,9 @@ export type AnalyticsEventType =
 export type AnalyticsEventData = {
     path?: Nullable<string>;
     gtm?: {
-        [key: string]: any;
+        [key: string]: unknown;
         ecommerce?: {
-            [key: string]: any;
+            [key: string]: unknown;
             currency?: string;
             value?: number;
             items?: {
@@ -172,7 +172,7 @@ const shopifyEventHandler = async (
         resourceId: (() => {
             switch (pageType) {
                 case 'product': {
-                    if (!(products[0]?.product_id as any)) {
+                    if (!products[0]?.product_id) {
                         return undefined;
                     }
 
@@ -211,7 +211,7 @@ const shopifyEventHandler = async (
             variantName: line.item_variant!,
             brand: line.item_brand!,
             category: line.item_category!,
-            price: line.price?.toString(10)!,
+            price: line.price?.toString(10) ?? '',
             sku: line.sku!,
             quantity: line.quantity!,
         })),
@@ -256,11 +256,7 @@ const shopifyEventHandler = async (
 /**
  * @see {@link https://developers.klaviyo.com/en/v1-2/docs/integrate-with-a-shopify-hydrogen-store#enable-onsite-tracking}
  */
-const klaviyoEventHandler = async (
-    event: AnalyticsEventType,
-    _data: AnalyticsEventData, // eslint-disable-line unused-imports/no-unused-vars
-    { shop, currency, locale, cart }: AnalyticsEventActionProps, // eslint-disable-line unused-imports/no-unused-vars
-) => {
+const klaviyoEventHandler = async (event: AnalyticsEventType, _data: AnalyticsEventData) => {
     window._learnq = window._learnq || [];
 
     // TODO: Implement this.
@@ -310,7 +306,7 @@ const handleEvent = async (
     }
 
     // This should never actually happen, but does in testing since the shop mocks aren't correctly setup.
-    if (!(shop as any)?.commerceProvider?.type) {
+    if (!shop?.commerceProvider?.type) {
         return;
     }
 
@@ -326,7 +322,7 @@ const handleEvent = async (
         }
     }
 
-    await klaviyoEventHandler(event, data, { shop, currency, locale, cart });
+    await klaviyoEventHandler(event, data);
 
     let additionalData = {};
     switch (event) {
@@ -411,8 +407,7 @@ export function Trackable({ children, dummy = false }: TrackableProps) {
 
     const checkoutDomain = shop.commerceProvider.domain;
     // Only use the domain, not the subdomain.
-    let cookieDomain: string | undefined =
-        (shop.domain as any)?.split('.').slice(-2).join('.') || shop.domain || undefined;
+    let cookieDomain: string | undefined = shop.domain?.split('.').slice(-2).join('.') || shop.domain || undefined;
     if (cookieDomain && !cookieDomain.startsWith('.')) {
         cookieDomain = `.${cookieDomain}`;
     }
@@ -496,8 +491,8 @@ export function Trackable({ children, dummy = false }: TrackableProps) {
             path,
             gtm: {
                 ecommerce: {
-                    currency: cart.cost?.totalAmount?.currencyCode!,
-                    value: safeParseFloat(undefined, cart.cost?.totalAmount?.amount!),
+                    currency: cart.cost?.totalAmount?.currencyCode,
+                    value: safeParseFloat(undefined, cart.cost?.totalAmount?.amount),
                     items: ((cart.lines || []).filter((_) => _) as CartLine[]).map((line) => ({
                         item_id: productToMerchantsCenterId({
                             locale,

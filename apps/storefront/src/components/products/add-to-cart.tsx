@@ -137,9 +137,9 @@ export function AddToCart({
             className={cn(className)}
             disabled={disabled || undefined}
             as="button"
-            type={(type as any) || ('button' as const)}
+            type={(type as 'button' | 'reset' | 'submit' | undefined) || 'button'}
             data-ready={ready || undefined}
-            data-success={(animation as any) ? 'true' : undefined}
+            data-success={animation ? 'true' : undefined}
             onClick={add}
             title={tCart('add-n-to-your-cart', quantity)}
             data-nosnippet={true}
@@ -150,9 +150,11 @@ export function AddToCart({
 }
 AddToCart.displayName = 'Nordcom.Products.AddToCart';
 
-AddToCart.skeleton = function AddToCartSkeleton({}: {}) {
-    return <Button aria-disabled={true} disabled={true} as="button" />;
-};
-(AddToCart.skeleton as any).displayName = 'Nordcom.Products.AddToCart.Skeleton';
+AddToCart.skeleton = Object.assign(
+    function AddToCartSkeleton({}: {}) {
+        return <Button aria-disabled={true} disabled={true} as="button" />;
+    },
+    { displayName: 'Nordcom.Products.AddToCart.Skeleton' },
+);
 
 export default AddToCart;

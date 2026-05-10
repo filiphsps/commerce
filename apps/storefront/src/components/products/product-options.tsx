@@ -95,7 +95,7 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
                                             )}
                                             onClick={() =>
                                                 setSelectedOptions({
-                                                    ...(selectedOptions as any),
+                                                    ...(selectedOptions as Record<string, string>),
                                                     [option.name!]: value!,
                                                 })
                                             }

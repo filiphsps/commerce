@@ -22,7 +22,7 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
     const { closeMenu } = useHeaderMenu();
     const ref = useDetectClickOutside({ onTriggered: closeMenu, disableTouch: true });
 
-    const links: typeof slice.primary.links = (slice.primary.links as any) || [];
+    const links: typeof slice.primary.links = slice.primary.links || [];
 
     return (
         <nav
@@ -90,7 +90,7 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                         )}
                         onClick={() => closeMenu()}
                     >
-                        {background && !!(image as any) && image.url ? (
+                        {background && image?.url ? (
                             <div
                                 className={cn(
                                     'relative h-full shrink-0 overflow-hidden text-primary-foreground transition-all group-hover/item:brightness-75 group-focus/item:brightness-75',

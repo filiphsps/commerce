@@ -38,13 +38,7 @@ export async function generateMetadata({ params }: { params: CartPageParams }): 
         description,
         alternates: {
             canonical: `https://${shop.domain}/${locale.code}/cart/`,
-            languages: locales.reduce(
-                (prev, { code }) => ({
-                    ...prev,
-                    [code]: `https://${shop.domain}/${code}/cart/`,
-                }),
-                {},
-            ),
+            languages: Object.fromEntries(locales.map(({ code }) => [code, `https://${shop.domain}/${code}/cart/`])),
         },
         openGraph: {
             url: `/cart/`,

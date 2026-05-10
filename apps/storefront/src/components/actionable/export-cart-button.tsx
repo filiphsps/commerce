@@ -30,7 +30,7 @@ export function ExportCartButton({ i18n }: ExportCartButtonProps) {
             className="inline-flex items-center justify-stretch gap-1 font-bold text-sm uppercase leading-snug transition-colors hover:text-primary disabled:pointer-events-none disabled:brightness-50"
             onClick={async () => {
                 setBusy(true);
-                const data: any[] = (lines.filter(Boolean) as CartLine[]).map(
+                const data = (lines.filter(Boolean) as CartLine[]).map(
                     ({
                         merchandise: {
                             id,

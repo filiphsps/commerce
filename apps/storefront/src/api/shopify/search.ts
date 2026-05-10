@@ -17,65 +17,56 @@ export const SearchApi = async ({
     products: Product[];
     productFilters: ProductFilters;
 }> => {
-    return new Promise(async (resolve, reject) => {
-        if (!query) {
-            return resolve({ products: [], productFilters: [] });
-        }
+    if (!query) {
+        return { products: [], productFilters: [] };
+    }
 
-        const search = async ({ type }: { type: 'PRODUCT' }) => {
-            const { data } = await client.query<{ search: SearchResultItemConnection }>(
-                gql`
-                    query searchProducts(
-                            $query: String!,
-                            $first: Int,
-                            $type: [SearchType!]) {
+    const search = async ({ type }: { type: 'PRODUCT' }) => {
+        const { data } = await client.query<{ search: SearchResultItemConnection }>(
+            gql`
+                query searchProducts(
+                        $query: String!,
+                        $first: Int,
+                        $type: [SearchType!]) {
 
-                        search(query: $query, first: $first, types: $type) {
-                            productFilters {
+                    search(query: $query, first: $first, types: $type) {
+                        productFilters {
+                            id
+                            label
+                            type
+                            values {
                                 id
                                 label
-                                type
-                                values {
-                                    id
-                                    label
-                                    count
-                                    input
-                                }
+                                count
+                                input
                             }
-                            edges {
-                                node {
-                                    ... on Product {
-                                        ${PRODUCT_FRAGMENT_MINIMAL}
-                                        trackingParameters
-                                    }
+                        }
+                        edges {
+                            node {
+                                ... on Product {
+                                    ${PRODUCT_FRAGMENT_MINIMAL}
+                                    trackingParameters
                                 }
                             }
                         }
                     }
-                `,
-                {
-                    query,
-                    type: type,
-                    first: limit || 75,
-                },
-            );
+                }
+            `,
+            {
+                query,
+                type: type,
+                first: limit || 75,
+            },
+        );
 
-            return {
-                result: data?.search.edges.map((item) => item.node as unknown as Product) || [],
-                productFilters: data?.search.productFilters || [],
-            };
+        return {
+            result: data?.search.edges.map((item) => item.node as unknown as Product) || [],
+            productFilters: data?.search.productFilters || [],
         };
+    };
 
-        try {
-            const { result: products, productFilters } = await search({ type: 'PRODUCT' });
-            return resolve({
-                products,
-                productFilters,
-            });
-        } catch (error: unknown) {
-            return reject(error);
-        }
-    });
+    const { result: products, productFilters } = await search({ type: 'PRODUCT' });
+    return { products, productFilters };
 };
 
 export const SearchPredictionApi = async ({
@@ -85,25 +76,23 @@ export const SearchPredictionApi = async ({
     client: AbstractApi;
     query: string;
 }): Promise<PredictiveSearchResult | {}> => {
-    return new Promise(async (resolve) => {
-        if (!query) return resolve({});
+    if (!query) return {};
 
-        const { data } = await client.query<{ predictiveSearch: PredictiveSearchResult }>(
-            gql`
-            query predictiveSearch($query: String!) {
-                predictiveSearch(query: $query, types: [QUERY], limit: 5) {
-                    queries {
-                        styledText
-                        text
-                    }
+    const { data } = await client.query<{ predictiveSearch: PredictiveSearchResult }>(
+        gql`
+        query predictiveSearch($query: String!) {
+            predictiveSearch(query: $query, types: [QUERY], limit: 5) {
+                queries {
+                    styledText
+                    text
                 }
             }
-        `,
-            {
-                query,
-            },
-        );
+        }
+    `,
+        {
+            query,
+        },
+    );
 
-        return resolve(data?.predictiveSearch || {});
-    });
+    return data?.predictiveSearch || {};
 };

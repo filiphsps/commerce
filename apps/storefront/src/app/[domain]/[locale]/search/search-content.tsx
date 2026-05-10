@@ -61,7 +61,7 @@ export const SearchBar = ({ defaultValue, onSearch, disabled, className, i18n, .
 
             <Button
                 className="flex w-14 items-center justify-center rounded-tr-none rounded-br-none bg-primary text-primary-foreground"
-                onClick={(e: any) => {
+                onClick={(e) => {
                     e.preventDefault();
                     performSearch();
                 }}

@@ -1,6 +1,7 @@
 'use client';
 
 import { useCart } from '@shopify/hydrogen-react';
+import type { CartLine as ShopifyCartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import { Suspense } from 'react';
 import { Button } from '@/components/actionable/button';
 import { ExportCartButton } from '@/components/actionable/export-cart-button';
@@ -28,7 +29,7 @@ const CartLines = ({ i18n }: CartContentProps) => {
         <div className="flex w-full flex-col gap-2">
             <div className="flex w-full items-center justify-between border-0 border-gray-200 border-b border-solid pb-1 text-gray-600 md:border-0 md:px-1 md:pb-0">
                 <Button
-                    as={Label as any}
+                    as={Label}
                     className="inline-flex cursor-pointer font-bold text-sm hover:text-red-500"
                     styled={false}
                     onClick={() => linesRemove(lines.map((line) => line?.id).filter((_) => _) as string[])}
@@ -47,7 +48,7 @@ const CartLines = ({ i18n }: CartContentProps) => {
 
                     return (
                         <Suspense fallback={<CartLine.skeleton />} key={item.id}>
-                            <CartLine i18n={i18n} data={item as any} />
+                            <CartLine i18n={i18n} data={item as ShopifyCartLine} />
                         </Suspense>
                     );
                 })}

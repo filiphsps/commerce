@@ -21,7 +21,7 @@ export const futureDateString = (daysAhead: number): string =>
  * @param {string | any} prices - The prices to parse.
  * @returns {(number | T)} The parsed price or the fallback.
  */
-export const safeParseFloat = <T>(fallback: number | T, ...prices: Array<string | any>): number | T => {
+export const safeParseFloat = <T>(fallback: number | T, ...prices: Array<string | unknown>): number | T => {
     for (let i = 0; i < prices.length; i++) {
         const priceString = prices[i];
         if (!priceString || !(typeof priceString === 'string' || priceString instanceof String)) {

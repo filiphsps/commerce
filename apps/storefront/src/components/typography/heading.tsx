@@ -11,7 +11,7 @@ export type TitleProps<T extends As> = {
 export const Title = <T extends As>({ as: Tag = 'h1' as T, bold, className, key, ...props }: TitleProps<T>) => {
     if (!props.children) return null;
     if (Tag === null) {
-        return <Fragment key={key} children={props.children} />;
+        return <Fragment key={key}>{props.children}</Fragment>;
     }
 
     const AsComponent = Tag || ('h1' as keyof JSX.IntrinsicElements);
@@ -34,10 +34,10 @@ export type SubTitleProps = {
     children?: ReactNode;
     as?: ElementType | null;
     bold?: boolean;
-} & HTMLProps<HTMLDivElement>;
+} & Omit<HTMLProps<HTMLDivElement>, 'as'>;
 export const SubTitle = ({ as, bold, className, key, ...props }: SubTitleProps) => {
-    if ((as as any) === null) {
-        return <Fragment key={key} children={props.children} />;
+    if (as === null) {
+        return <Fragment key={key}>{props.children}</Fragment>;
     }
 
     const fallback: keyof JSX.IntrinsicElements = 'div';
@@ -63,7 +63,7 @@ type TitlePropFields = {
     titleAs?: ElementType | null;
     titleStyle?: CSSProperties;
     titleClassName?: string;
-    titleProps?: ComponentProps<any>;
+    titleProps?: ComponentProps<ElementType>;
 };
 type SubPropFields = {
     subtitle?: ReactNode;
@@ -77,7 +77,7 @@ type HeadingProps = {
 } & (
     | (TitlePropFields &
           SubPropFields & {
-              wrapper?: FunctionComponent<{ children: ReactNode | undefined } & any>;
+              wrapper?: FunctionComponent<{ children: ReactNode | undefined }>;
               reverse?: boolean;
           })
     | TitlePropFields
@@ -103,7 +103,7 @@ const Heading = ({ bold, ...props }: HeadingProps) => {
     if ('subtitle' in props) {
         const { subtitle, subtitleAs, subtitleStyle, subtitleClassName } = props;
         subtitleElement = (
-            <SubTitle bold={bold} as={subtitleAs as any} style={subtitleStyle} className={subtitleClassName}>
+            <SubTitle bold={bold} as={subtitleAs} style={subtitleStyle} className={subtitleClassName}>
                 {subtitle}
             </SubTitle>
         );
@@ -118,26 +118,20 @@ const Heading = ({ bold, ...props }: HeadingProps) => {
     }
 
     const { reverse, wrapper: Wrapper } = props;
-    const headingSet = (
-        <Fragment
-            children={
-                !reverse ? (
-                    <>
-                        {titleElement}
-                        {subtitleElement}
-                    </>
-                ) : (
-                    <>
-                        {subtitleElement}
-                        {titleElement}
-                    </>
-                )
-            }
-        />
+    const headingSet = !reverse ? (
+        <>
+            {titleElement}
+            {subtitleElement}
+        </>
+    ) : (
+        <>
+            {subtitleElement}
+            {titleElement}
+        </>
     );
 
     if (Wrapper) {
-        return <Wrapper children={headingSet} />;
+        return <Wrapper>{headingSet}</Wrapper>;
     }
     return <div className="flex flex-col gap-1">{headingSet}</div>;
 };

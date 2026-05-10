@@ -5,7 +5,7 @@ export interface PageModel {
     keywords?: string;
     slices?: Array<{
         type: string;
-        data?: any;
+        data?: unknown;
     }>;
-    body?: any;
+    body?: unknown;
 }

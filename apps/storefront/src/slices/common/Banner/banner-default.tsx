@@ -23,7 +23,10 @@ export const BannerDefault = ({ slice }: { slice: BannerSliceDefault }): JSX.Ele
             <div className="flex gap-4 empty:hidden">
                 {slice.items.map(({ target: link, type, title }, index) => {
                     const href = asLink(link, { linkResolver });
-                    const target: undefined | '_blank' = (href as any).target || undefined;
+                    if (!href) return null;
+
+                    const target: undefined | '_blank' =
+                        (href as unknown as { target?: '_blank' })?.target || undefined;
 
                     return (
                         <Button

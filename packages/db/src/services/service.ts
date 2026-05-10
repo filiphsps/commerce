@@ -44,30 +44,28 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
         return this.model.create(input).then((doc) => doc.save());
     }
 
-    private mutateQuery<Q>(req: Query<unknown, DocType>, args: { [k: string]: unknown }): Promise<() => Q> {
-        return new Promise(async (resolve) => {
-            const { id } = args;
+    private mutateQuery<Q>(req: Query<unknown, DocType>, args: { [k: string]: unknown }): () => Q {
+        const { id } = args;
 
-            for (const [key, value] of Object.entries(args)) {
-                switch (key) {
-                    case 'count': {
-                        if ((!id && !value) || typeof value !== 'number') break;
+        for (const [key, value] of Object.entries(args)) {
+            switch (key) {
+                case 'count': {
+                    if ((!id && !value) || typeof value !== 'number') break;
 
-                        req.limit(id || (typeof value === 'number' && value <= 1) ? 1 : value);
-                        break;
-                    }
+                    req.limit(id || (typeof value === 'number' && value <= 1) ? 1 : value);
+                    break;
+                }
 
-                    case 'sort': {
-                        if (!id || !value) break;
+                case 'sort': {
+                    if (!id || !value) break;
 
-                        req = req.sort(value as BaseQuery['sort']);
-                        break;
-                    }
+                    req = req.sort(value as BaseQuery['sort']);
+                    break;
                 }
             }
+        }
 
-            return resolve(() => req as Q);
-        });
+        return () => req as Q;
     }
 
     public async find(args: MergeTypes<[BaseQuery, BaseFilterableQuery<DocType>, ReturnsOneQuery]>): Promise<DocType>;
@@ -85,7 +83,7 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
             },
             projection,
         );
-        req = (await this.mutateQuery<Req>(req, args))();
+        req = this.mutateQuery<Req>(req, args)();
 
         const res = await req.exec();
         if ((res || []).length <= 0) {

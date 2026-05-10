@@ -1,7 +1,7 @@
 export type FooterModel = {
-    address: any;
+    address: unknown;
     blocks: Array<
-        | any
+        | unknown
         | {
               title: string;
               items: {

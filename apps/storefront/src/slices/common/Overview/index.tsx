@@ -14,7 +14,7 @@ export type OverviewProps = SliceComponentProps<Content.TextBlockSlice>;
  * Component for "Overview" Slices.
  */
 const OverviewSlice = ({ slice }: OverviewProps) => {
-    if (((slice as any)?.items || []).length <= 0) {
+    if ((slice?.items || []).length <= 0) {
         return null;
     }
 
@@ -25,11 +25,20 @@ const OverviewSlice = ({ slice }: OverviewProps) => {
             data-slice-variation={slice.variation}
         >
             {slice.items.map((item, index) => {
+                const image = item.image as {
+                    url?: string;
+                    alt?: string;
+                    dimensions?: { height: number; width: number };
+                };
                 return (
                     <Overview
                         key={index}
                         layout={item.layout}
-                        image={(item.image.url && (item.image as any)) || undefined}
+                        image={
+                            image.url && image.dimensions
+                                ? { url: image.url, alt: image.alt, dimensions: image.dimensions }
+                                : undefined
+                        }
                         imageStyle={item.image_style}
                         body={<PrismicText data={item.text} styled={false} />}
                         accent={item.accent || undefined}
@@ -41,10 +50,10 @@ const OverviewSlice = ({ slice }: OverviewProps) => {
 };
 
 OverviewSlice.skeleton = ({ slice }: { slice?: Content.CollectionSlice }) => {
-    if (!slice || ((slice.items as any) || []).length <= 0) {
+    if (!slice || (slice.items || []).length <= 0) {
         return null;
     }
-    return <OverviewSlice {...({ slice } as any)} />;
+    return <OverviewSlice {...({ slice } as unknown as OverviewProps)} />;
 };
 
 OverviewSlice.displayName = 'Nordcom.Slices.Overview';

@@ -99,7 +99,7 @@ export class Locale implements SerializableLocale {
         if (typeof data === 'string') {
             const code = data.toUpperCase() as Uppercase<Code>;
 
-            if (!(code as any) || code.length < 2 || code.length > 5 || (code.length !== 2 && !code.includes('-'))) {
+            if (!code || code.length < 2 || code.length > 5 || (code.length !== 2 && !code.includes('-'))) {
                 throw new UnknownLocaleError(data);
             }
 
@@ -110,12 +110,12 @@ export class Locale implements SerializableLocale {
             const [language, country] = code.split('-') as [LanguageCode, CountryCode?];
             return wrap(new Locale({ language, country }));
         } else {
-            if (!(data as any)) {
+            if (!data) {
                 throw new UnknownLocaleError(data);
             }
 
             const { language, country } = data;
-            if ((language as any).length !== 2 || (!!country && (language as any).length !== 2)) {
+            if (language.length !== 2 || (!!country && language.length !== 2)) {
                 throw new UnknownLocaleError(data);
             }
 
@@ -151,18 +151,18 @@ export const getTranslations = (scope: LocaleDictionaryScope, dictionary?: Local
     return {
         // FIXME: Fix return type.
         t: <T extends LocaleDictionaryKey, L extends TranslationLiteral[]>(key: T, ...literals: L): string => {
-            const string: string = (dictionary as any)?.[scope]?.[key] || key;
+            const string: string =
+                (dictionary as Record<string, Record<string, string>> | undefined)?.[scope]?.[key] || key;
 
-            if (((literals as any)?.length || 0) <= 0) {
-                return string as string;
+            if ((literals?.length || 0) <= 0) {
+                return string;
             }
 
             const placeholderRegex = /\{([^}]+)\}/g;
             const parts: (string | ReactNode)[] = [];
 
-            let match: RegExpExecArray | null;
             let lastIndex = 0;
-            while ((match = placeholderRegex.exec(string)) !== null) {
+            for (const match of string.matchAll(placeholderRegex)) {
                 parts.push(string.substring(lastIndex, match.index));
                 const index = parseInt(match[1], 10);
                 parts.push(literals[index]);
@@ -174,8 +174,8 @@ export const getTranslations = (scope: LocaleDictionaryScope, dictionary?: Local
                 React.isValidElement(part) ? { ...{ key: index }, ...part } : part,
             );
             return partsWithKeys.some((part) => React.isValidElement(part))
-                ? (partsWithKeys as any)
-                : (parts.join('') as any);
+                ? (partsWithKeys as unknown as string)
+                : parts.join('');
         },
     };
 };

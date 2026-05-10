@@ -29,7 +29,7 @@ export async function GET({}: NextRequest, { params }: { params: AppleIconRouteP
 
         /** @see {@link https://vercel.com/docs/functions/edge-functions/og-image-generation/og-image-examples#using-an-external-dynamic-image} */
         return new ImageResponse(
-            // eslint-disable-next-line @next/next/no-img-element
+            // biome-ignore lint/performance/noImgElement: Required by next/og ImageResponse, which renders to a raster image server-side.
             <img alt="apple-icon" width={width} height={height} src={src} title="apple-icon" />,
             {
                 width,

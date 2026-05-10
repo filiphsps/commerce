@@ -11,7 +11,7 @@ const GET_CUSTOMER_FOR_SESSION = /* GraphQL */ `
     }
 `;
 
-type UntypedValue = any;
+type UntypedValue = unknown;
 export interface ShopifyProfile extends Record<string, UntypedValue> {
     iss: string;
     sub: string;

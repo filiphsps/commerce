@@ -50,7 +50,7 @@ export default function Link({ locale, href, prefetch, ...props }: LinkProps) {
     // Get the locale if it's not provided to us.
     let resolvedLocale: Locale;
     try {
-        resolvedLocale = (locale as any) ? locale! : (shop.locale as any) || (Locale.current as any) || Locale.default;
+        resolvedLocale = locale ?? shop.locale ?? Locale.current ?? Locale.default;
     } catch (error: unknown) {
         console.error(error);
         resolvedLocale = Locale.default;

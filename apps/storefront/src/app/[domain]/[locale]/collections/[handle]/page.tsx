@@ -117,12 +117,11 @@ export async function generateMetadata({
         description,
         alternates: {
             canonical: `https://${shop.domain}/${locale.code}/collections/${handle}/${pageNumber > 1 ? `?page=${pageNumber}` : ''}`,
-            languages: locales.reduce(
-                (prev, { code }) => ({
-                    ...prev,
-                    [code]: `https://${shop.domain}/${code}/collections/${handle}/${pageNumber > 1 ? `?page=${pageNumber}` : ''}`,
-                }),
-                {},
+            languages: Object.fromEntries(
+                locales.map(({ code }) => [
+                    code,
+                    `https://${shop.domain}/${code}/collections/${handle}/${pageNumber > 1 ? `?page=${pageNumber}` : ''}`,
+                ]),
             ),
         },
         openGraph: {

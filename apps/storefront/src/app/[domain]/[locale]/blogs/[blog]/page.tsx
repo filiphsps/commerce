@@ -85,12 +85,8 @@ export async function generateMetadata({ params }: { params: BlogPageParams }): 
         description,
         alternates: {
             canonical: `https://${shop.domain}/${locale.code}/blogs/${blogHandle}/`,
-            languages: locales.reduce(
-                (prev, { code }) => ({
-                    ...prev,
-                    [code]: `https://${shop.domain}/${code}/blogs/${blogHandle}/`,
-                }),
-                {},
+            languages: Object.fromEntries(
+                locales.map(({ code }) => [code, `https://${shop.domain}/${code}/blogs/${blogHandle}/`]),
             ),
         },
         openGraph: {

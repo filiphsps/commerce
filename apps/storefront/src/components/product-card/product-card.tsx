@@ -55,7 +55,8 @@ const ProductCard = async ({ shop, locale, data: product, priority, className, .
 };
 ProductCard.displayName = 'Nordcom.ProductCard';
 
-ProductCard.skeleton = () => <div className={CARD_STYLES} data-skeleton />;
-(ProductCard.skeleton as any).displayName = 'Nordcom.ProductCard.Skeleton';
+ProductCard.skeleton = Object.assign(() => <div className={CARD_STYLES} data-skeleton />, {
+    displayName: 'Nordcom.ProductCard.Skeleton',
+});
 
 export default ProductCard;

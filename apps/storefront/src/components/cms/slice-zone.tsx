@@ -6,7 +6,8 @@ import type { ComponentProps, ComponentType } from 'react';
 import { Fragment, Suspense } from 'react';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 
-export type Slice = PrismicSlice<any, any>;
+// biome-ignore lint/suspicious/noExplicitAny: Prismic's `Slice` generic constraint requires regular fields only, but our slices include GroupFields.
+export type Slice = PrismicSlice<string, any>;
 export type Slices = PrismicSlices<Slice>;
 
 export type SliceZone = {
@@ -57,7 +58,7 @@ async function skeleton({ shop, locale, i18n, data = [], components = {}, contex
                 const Slice = components[slice.slice_type] as
                     | undefined
                     | ((typeof components)[string] & {
-                          skeleton?: ComponentType<any>;
+                          skeleton?: ComponentType<Record<string, unknown>>;
                       });
                 if (!Slice) {
                     return null;

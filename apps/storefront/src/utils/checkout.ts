@@ -12,15 +12,15 @@ import type { TrackableContextValue } from '@/utils/trackable';
 // taken from StackOverflow
 export const getCrossDomainLinkerParameter = (domain: string) => {
     // create form element, give it an action, make it hidden and prevent the submit event
-    const formNode = document.createElement('form') as any;
+    const formNode = document.createElement('form');
     formNode.action = `https://checkout.${domain}`; // TODO: This should be dependant on the tenant.
     formNode.style.opacity = '0';
-    formNode.addEventListener('submit', (event: any) => {
+    formNode.addEventListener('submit', (event) => {
         event.preventDefault();
     });
 
     // create a button node, make it type=submit and append it to the form
-    const buttonNode = document.createElement('button') as any;
+    const buttonNode = document.createElement('button');
     buttonNode.type = 'submit';
     formNode.append(buttonNode);
 
@@ -31,10 +31,10 @@ export const getCrossDomainLinkerParameter = (domain: string) => {
     buttonNode.click();
 
     // check for the input[name=_gl] hidden input in the form (if decoration worked)
-    const _glNode = formNode.querySelector('input[name="_gl"]') as any;
+    const _glNode = formNode.querySelector<HTMLInputElement>('input[name="_gl"]');
 
     if (_glNode) {
-        return _glNode.value as string;
+        return _glNode.value;
     }
 
     console.warn(`Could not find _gl input in checkout form with action "${formNode.action}"`);
@@ -56,7 +56,7 @@ export const Checkout = async ({
         throw new UnknownCommerceProviderError();
     }
 
-    if (typeof (cart as any) === 'undefined' || !(cart as any)) {
+    if (typeof cart === 'undefined' || !cart) {
         throw new InvalidCartError('Cart is undefined or null');
     } else if (!cart.totalQuantity || cart.totalQuantity <= 0 || !cart.lines) {
         throw new InvalidCartError('Cart is empty');
@@ -70,7 +70,7 @@ export const Checkout = async ({
         trackable.postEvent('begin_checkout', {
             gtm: {
                 ecommerce: {
-                    currency: cart.cost?.totalAmount?.currencyCode!,
+                    currency: cart.cost?.totalAmount?.currencyCode,
                     value: safeParseFloat(undefined, cart.cost?.totalAmount?.amount),
                     items: (cart.lines.filter((_) => _) as CartLine[]).map((line) => ({
                         item_id: productToMerchantsCenterId({
@@ -78,7 +78,7 @@ export const Checkout = async ({
                             product: {
                                 productGid: line.merchandise!.product!.id,
                                 variantGid: line.merchandise!.id,
-                            } as any,
+                            },
                         }),
                         item_name: line.merchandise.product.title,
                         item_variant: line.merchandise.title,

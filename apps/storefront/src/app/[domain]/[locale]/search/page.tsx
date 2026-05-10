@@ -41,13 +41,7 @@ export async function generateMetadata({ params }: { params: SearchPageParams })
         description,
         alternates: {
             canonical: `https://${shop.domain}/${locale.code}/search/`,
-            languages: locales.reduce(
-                (prev, { code }) => ({
-                    ...prev,
-                    [code]: `https://${shop.domain}/${code}/search/`,
-                }),
-                {},
-            ),
+            languages: Object.fromEntries(locales.map(({ code }) => [code, `https://${shop.domain}/${code}/search/`])),
         },
         openGraph: {
             url: `/search/`,

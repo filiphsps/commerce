@@ -88,12 +88,8 @@ export async function generateMetadata({ params }: { params: ArticlePageParams }
         description,
         alternates: {
             canonical: `https://${shop.domain}/${locale.code}/blogs/${blogHandle}/${handle}/`,
-            languages: locales.reduce(
-                (prev, { code }) => ({
-                    ...prev,
-                    [code]: `https://${shop.domain}/${code}/blogs/${blogHandle}/${handle}/`,
-                }),
-                {},
+            languages: Object.fromEntries(
+                locales.map(({ code }) => [code, `https://${shop.domain}/${code}/blogs/${blogHandle}/${handle}/`]),
             ),
         },
         openGraph: {
@@ -160,14 +156,14 @@ export default async function ArticlePage({ params }: { params: ArticlePageParam
         datePublished: publishedAt,
         author: {
             '@type': 'Person',
-            name: author?.name!,
+            name: author?.name ?? '',
         },
         publisher: {
             '@type': 'Organization',
             name: shop.name,
             logo: {
                 '@type': 'ImageObject',
-                url: shop.icons?.favicon?.src!,
+                url: shop.icons?.favicon?.src ?? '',
             },
         },
     };

@@ -1,5 +1,5 @@
 import { useCart } from '@shopify/hydrogen-react';
-import { useState } from 'react';
+import { type ChangeEvent, useState } from 'react';
 import { MultilineInput } from '@/components/actionable/input';
 import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 
@@ -22,7 +22,7 @@ const CartNote = ({ i18n }: { i18n: LocaleDictionary }) => {
             className="h-16"
             value={text}
             placeholder={t('placeholder-cart-note')}
-            onChange={(e: any) => setText(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setText(e.target.value)}
             onBlur={() => text !== note && noteUpdate(text.length > 0 ? text : '')}
             disabled={!cartReady}
         />

@@ -3,7 +3,7 @@ import type { MetadataRoute } from 'next';
 import { cacheLife } from 'next/cache';
 import { type NextRequest, NextResponse } from 'next/server';
 
-type Rules = Extract<MetadataRoute.Robots['rules'], Array<any>>;
+type Rules = Extract<MetadataRoute.Robots['rules'], Array<unknown>>;
 type Rule = Rules[number];
 const nextRobotsSchemaParser = (schema: MetadataRoute.Robots): string => {
     let output = '';
@@ -68,7 +68,7 @@ const nextRobotsSchemaParser = (schema: MetadataRoute.Robots): string => {
 export type RobotsParams = Promise<{
     domain: string;
 }>;
-export async function GET({}: NextRequest, { params }: { params: RobotsParams }): Promise<any> {
+export async function GET({}: NextRequest, { params }: { params: RobotsParams }): Promise<NextResponse> {
     'use cache';
     cacheLife('max');
 

@@ -1,6 +1,7 @@
 import '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 
+import type { OnlineShop } from '@nordcom/commerce-db';
 import { queries, queryHelpers, render, within } from '@testing-library/react';
 import type { ReactElement, ReactNode } from 'react';
 import { ShopProvider } from '@/components/shop/provider';
@@ -15,7 +16,7 @@ const Providers = ({ children }: { children: ReactNode }) => {
             type: 'shopify' as const,
             domain: 'mock.shop' as const,
         },
-    } as any;
+    } as unknown as OnlineShop;
 
     return (
         <ShopProvider shop={shop} locale={Locale.default} currency={'USD'}>
@@ -25,7 +26,7 @@ const Providers = ({ children }: { children: ReactNode }) => {
 };
 
 const customScreen = within(document.body, queries);
-const customWithin = (element: ReactElement) => within(element as any, queries);
+const customWithin = (element: ReactElement) => within(element as unknown as HTMLElement, queries);
 const customRender = (ui: Parameters<typeof render>[0], options?: Omit<Parameters<typeof render>[1], 'queries'>) =>
     render(ui, { wrapper: Providers, ...options });
 

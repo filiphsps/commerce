@@ -87,13 +87,7 @@ export async function generateMetadata({ params }: { params: CustomPageParams })
         },
         alternates: {
             canonical: `https://${shop.domain}/${locale.code}${path}`,
-            languages: locales.reduce(
-                (prev, { code }) => ({
-                    ...prev,
-                    [code]: `https://${shop.domain}/${code}${path}`,
-                }),
-                {},
-            ),
+            languages: Object.fromEntries(locales.map(({ code }) => [code, `https://${shop.domain}/${code}${path}`])),
         },
         openGraph: {
             url: handle !== 'homepage' ? handle : undefined,

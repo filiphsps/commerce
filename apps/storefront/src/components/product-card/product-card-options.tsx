@@ -52,7 +52,7 @@ const ProductCardOptions = ({
                     variant.selectedOptions.length === 1 &&
                     isSizeOption(variant.selectedOptions[0]!.name) &&
                     variant.weight &&
-                    !!(variant as any).weightUnit
+                    !!variant.weightUnit
                 ) {
                     title = convertToLocalMeasurementSystem({
                         locale: locale,
@@ -61,7 +61,7 @@ const ProductCardOptions = ({
                     });
                 }
 
-                const isSelected = (selectedVariant as any)?.id === variant.id;
+                const isSelected = selectedVariant?.id === variant.id;
 
                 const Tag = isSelected ? 'div' : 'button';
                 return (

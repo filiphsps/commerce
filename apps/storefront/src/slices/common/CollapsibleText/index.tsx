@@ -44,7 +44,7 @@ const CollapsibleText = ({ slice }: CollapsibleTextProps): JSX.Element => {
     );
 };
 CollapsibleText.skeleton = ({ slice }: { slice?: Content.CollectionSlice }) => (
-    <CollapsibleText {...({ slice } as any)} />
+    <CollapsibleText {...({ slice } as unknown as CollapsibleTextProps)} />
 );
 
 CollapsibleText.displayName = 'Nordcom.Slices.CollapsibleText';

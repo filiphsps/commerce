@@ -46,7 +46,7 @@ const ImageGrid = ({ slice, index }: ImageGridProps) => {
                 // Handle old links that were `KeyTextField`s.
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                 const href = link && typeof link !== 'string' ? asLink(link, { linkResolver }) : link;
-                const target: undefined | '_blank' = (href as any).target || undefined;
+                const target: undefined | '_blank' = (href as unknown as { target?: '_blank' })?.target || undefined;
 
                 const WrapperTag = href ? Link : 'div';
 
@@ -114,7 +114,6 @@ const ImageGrid = ({ slice, index }: ImageGridProps) => {
 };
 ImageGrid.displayName = 'Nordcom.Slices.ImageGrid';
 
-ImageGrid.skeleton = ImageGrid;
-(ImageGrid.skeleton as any).displayName = 'Nordcom.Slices.ImageGrid.Skeleton';
+ImageGrid.skeleton = Object.assign(ImageGrid, { displayName: 'Nordcom.Slices.ImageGrid.Skeleton' });
 
 export default ImageGrid;

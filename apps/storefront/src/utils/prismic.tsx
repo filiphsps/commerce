@@ -12,7 +12,7 @@ type CreateClientOptions = {
 
 export const createClient = ({ shop, /* locale = Locale.default,*/ ...config }: CreateClientOptions): Client => {
     const contentProvider = shop.contentProvider as Partial<typeof shop.contentProvider>;
-    if (!(contentProvider as any)) {
+    if (!contentProvider) {
         throw new InvalidShopError("Shop doesn't have a content provider.");
     } else if (contentProvider.type !== 'prismic') {
         throw new InvalidContentProviderError(
@@ -48,7 +48,7 @@ export const createClient = ({ shop, /* locale = Locale.default,*/ ...config }: 
     return client;
 };
 
-export const linkResolver: LinkResolverFunction<any> = (doc) => {
+export const linkResolver: LinkResolverFunction<string | null> = (doc) => {
     // TODO: Deal with tenants that don't use locales in their paths.
     //const { code: locale } = Locale.from(doc.lang || Locale.default.code)!;
 

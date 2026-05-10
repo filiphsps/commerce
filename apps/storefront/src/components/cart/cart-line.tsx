@@ -24,8 +24,8 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
 
     const ready = cartReady && status !== 'updating';
 
-    const product: Required<Product> | undefined = line.merchandise.product! as any;
-    const variant: Required<ProductVariant> | undefined = line.merchandise! as any;
+    const product = line.merchandise.product as unknown as Required<Product> | undefined;
+    const variant = line.merchandise as unknown as Required<ProductVariant> | undefined;
     if (!product || !variant) {
         console.error(`Product or product variant not found for line ${line.id}`);
         return null;
@@ -124,7 +124,9 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                                             className="flex items-center justify-center gap-1 font-medium text-gray-600 text-xs leading-none"
                                         >
                                             <TagIcon className="stroke-1 text-inherit" />
-                                            <Label>{(discount as any).title || tCart('automatic-discount')}</Label>
+                                            <Label>
+                                                {(discount as { title?: string }).title || tCart('automatic-discount')}
+                                            </Label>
                                         </div>
                                     ))}
                                 </div>

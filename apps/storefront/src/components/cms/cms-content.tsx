@@ -1,6 +1,7 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { PageApi } from '@/api/page';
+import type { PageType } from '@/api/prismic/page';
 
 import PrismicPage from '@/components/cms/prismic-page';
 
@@ -16,7 +17,7 @@ export type CMSContentProps = {
 const Prismic = async ({ shop, locale, handle, type = 'custom_page' }: CMSContentProps) => {
     const page = await PageApi({ shop, locale, handle, type });
 
-    return <PrismicPage shop={shop} locale={locale} handle={handle} page={page} type={type as any} />;
+    return <PrismicPage shop={shop} locale={locale} handle={handle} page={page} type={type as PageType} />;
 };
 
 export const CMSContent = async ({ shop, locale, handle, type }: CMSContentProps) => {

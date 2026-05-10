@@ -1,10 +1,7 @@
 'use client';
 
 import { ProductProvider } from '@shopify/hydrogen-react';
-import type {
-    Product as StorefrontProduct,
-    ProductVariant,
-} from '@shopify/hydrogen-react/storefront-api-types';
+import type { ProductVariant, Product as StorefrontProduct } from '@shopify/hydrogen-react/storefront-api-types';
 import { useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import type { Product } from '@/api/product';

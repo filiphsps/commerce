@@ -37,12 +37,8 @@ export async function generateMetadata({ params }: { params: CountriesPageParams
         description,
         alternates: {
             canonical: `https://${shop.domain}/${locale.code}/countries/`,
-            languages: locales.reduce(
-                (prev, { code }) => ({
-                    ...prev,
-                    [code]: `https://${shop.domain}/${code}/countries/`,
-                }),
-                {},
+            languages: Object.fromEntries(
+                locales.map(({ code }) => [code, `https://${shop.domain}/${code}/countries/`]),
             ),
         },
         openGraph: {

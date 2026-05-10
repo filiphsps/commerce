@@ -17,8 +17,7 @@ export class Error<T = unknown> extends BuiltinError {
     }
 
     public constructor(message?: string) {
-        const args = [...arguments].splice(0, 1);
-        super(message, ...args);
+        super(message);
 
         Object.defineProperty(this, 'help', {
             get: function () {

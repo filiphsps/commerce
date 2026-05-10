@@ -34,8 +34,10 @@ export async function GET({}: NextRequest, { params }: ProductsSitemapRouteParam
     let res: Awaited<ReturnType<typeof ProductsPaginationApi>> | null = null;
     const products: Product[] = [];
 
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    while ((res = await ProductsPaginationApi({ api, filters: { limit: 75, after: res?.page_info.end_cursor } }))) {
+    while (true) {
+        res = await ProductsPaginationApi({ api, filters: { limit: 75, after: res?.page_info.end_cursor } });
+        if (!res) break;
+
         products.push(...res.products.map(({ node: product }) => product));
         if (!res.page_info.has_next_page) {
             break;

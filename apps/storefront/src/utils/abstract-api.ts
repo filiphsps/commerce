@@ -9,7 +9,7 @@ export type OmitTypeName<T> = Omit<T, '__typename'>;
 
 export type ApiOptions = { api: AbstractApi };
 
-export type AbstractApi<Q = any> = {
+export type AbstractApi<Q = TypedDocumentNode<unknown, unknown>> = {
     locale: () => Locale;
     shop: () => OnlineShop;
     query: <T>(
@@ -20,7 +20,7 @@ export type AbstractApi<Q = any> = {
             tags?: string[];
             revalidate?: number;
         },
-    ) => Promise<{ data: T | null; errors: readonly any[] | undefined }>;
+    ) => Promise<{ data: T | null; errors: readonly unknown[] | undefined }>;
 };
 export type AbstractApiBuilder<K, Q> = ({
     api,
@@ -32,7 +32,7 @@ export type AbstractApiBuilder<K, Q> = ({
     shop: OnlineShop;
 }) => AbstractApi<Q>;
 
-export type AbstractShopifyApolloApiBuilder<Q> = AbstractApiBuilder<ApolloClient<any>, Q>;
+export type AbstractShopifyApolloApiBuilder<Q> = AbstractApiBuilder<ApolloClient<unknown>, Q>;
 
 export function buildCacheTagArray(shop: OnlineShop, locale: Locale, tags: string[]) {
     // TODO: change `shopify` tag based on the api we're using.
@@ -50,10 +50,22 @@ export function buildCacheTagArray(shop: OnlineShop, locale: Locale, tags: strin
  * @param {OnlineShop} options.shop - The locale to use.
  * @returns {AbstractApiBuilder} The AbstractApiBuilder.
  */
-export const ApiBuilder: AbstractShopifyApolloApiBuilder<TypedDocumentNode<any, any>> = ({ api, locale, shop }) => ({
+export const ApiBuilder: AbstractShopifyApolloApiBuilder<TypedDocumentNode<unknown, unknown>> = ({
+    api,
+    locale,
+    shop,
+}) => ({
     locale: () => locale,
     shop: () => shop,
-    query: async (query, variables = {}, { tags = [], revalidate = undefined, fetchPolicy = undefined } = {}) => {
+    query: async <T>(
+        query: TypedDocumentNode<unknown, unknown>,
+        variables: Record<string, string | number | boolean | object | Array<string | number | object> | null> = {},
+        {
+            tags = [],
+            revalidate = undefined,
+            fetchPolicy = undefined,
+        }: { fetchPolicy?: RequestCache; tags?: string[]; revalidate?: number } = {},
+    ) => {
         const { data, errors, error } = await api.query({
             query,
             //fetchPolicy,
@@ -73,7 +85,7 @@ export const ApiBuilder: AbstractShopifyApolloApiBuilder<TypedDocumentNode<any, 
             },
         });
 
-        return { data: data || null, errors, error };
+        return { data: (data as T | undefined) || null, errors, error };
     },
 });
 

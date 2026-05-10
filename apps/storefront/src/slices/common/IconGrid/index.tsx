@@ -28,7 +28,8 @@ const IconGrid = ({ slice, index: order }: IconGridProps) => {
 
     const items = useMemo(() => {
         const sliceItems: Array<{ icon: { url?: string | null; alt?: string | null }; title: string }> =
-            (slice as any).items || [];
+            (slice as { items?: Array<{ icon: { url?: string | null; alt?: string | null }; title: string }> }).items ||
+            [];
 
         return sliceItems.map(({ icon, title }, index) => {
             const priority = order < 2;
@@ -64,7 +65,7 @@ const IconGrid = ({ slice, index: order }: IconGridProps) => {
         });
     }, [slice, background, order]);
 
-    if (!(slice as any) || items.length <= 0) {
+    if (!slice || items.length <= 0) {
         return null;
     }
 

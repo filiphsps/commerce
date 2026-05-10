@@ -30,7 +30,7 @@ const LinkSlice = ({ slice, context: { isHeader = true } }: LinkProps) => {
 
     const resolvedPrismicLink = asLink(link, { linkResolver });
     let target = `/${locale.code}/`;
-    if (resolvedPrismicLink.startsWith('/')) {
+    if (resolvedPrismicLink?.startsWith('/')) {
         target += resolvedPrismicLink.slice(1);
 
         // Make sure the target ends with a slash.
@@ -47,7 +47,7 @@ const LinkSlice = ({ slice, context: { isHeader = true } }: LinkProps) => {
         return null;
     }
 
-    switch (variant as any) {
+    switch (variant) {
         case 'highlighted': {
             return (
                 <Link

@@ -3,7 +3,7 @@ export type JsonLdProps = {
 };
 
 export function JsonLd({ data }: JsonLdProps) {
-    if (!(data as any)) {
+    if (!data) {
         return null;
     }
 

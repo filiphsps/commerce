@@ -12,9 +12,10 @@ export const components = {
                 <code
                     data-multiline="true"
                     data-language={language}
-                    children={content}
                     className={language ? `language-${language}` : undefined}
-                />
+                >
+                    {content}
+                </code>
             </pre>
         </Card>
     ),

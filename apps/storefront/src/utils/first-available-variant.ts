@@ -15,9 +15,9 @@ export const firstAvailableVariant = (product?: Product | null): ProductVariant 
     }
 
     const variants: ProductVariant[] =
-        ((product.variants.edges as any)
+        (product.variants.edges
             ? product.variants.edges.map(({ node: variant }) => variant)
-            : (product.variants as any)) || [];
+            : (product.variants as unknown as ProductVariant[])) || [];
 
     if (variants.length <= 0) {
         throw new NotFoundError(`"product.variant"`);
