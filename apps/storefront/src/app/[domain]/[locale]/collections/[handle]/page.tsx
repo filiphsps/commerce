@@ -18,7 +18,7 @@ import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skel
 import { JsonLd } from '@/components/json-ld';
 import PageContent from '@/components/page-content';
 import CollectionBlock from '@/components/products/collection-block';
-import { Content } from '@/components/typography/content';
+import { ShopifyContent } from '@/components/typography/shopify-content';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/utils/dictionary';
 import { isValidHandle } from '@/utils/handle';
@@ -283,7 +283,7 @@ export default async function CollectionsCollectionPage({
             {!hasSlices || !hasCustomPageContentPosition ? (
                 <>
                     <Heading title={collection.title || collection.seo.title} />
-                    <Content
+                    <ShopifyContent
                         className="prose max-w-none"
                         html={collection.descriptionHtml || collection.seo.description}
                     />

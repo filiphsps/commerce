@@ -214,8 +214,6 @@ export default async function ProductPage({ params }: { params: ProductPageParam
         notFound();
     }
 
-    // TODO: Create a proper `shopify-html-parser` to convert the HTML to React components.
-
     let title = product.title.trim();
     if (
         product.productType &&

@@ -2,7 +2,7 @@ import type { OnlineShop } from '@nordcom/commerce-db';
 import { type ComponentPropsWithoutRef, Fragment, Suspense } from 'react';
 import type { Product } from '@/api/product';
 import { Card } from '@/components/layout/card';
-import { Content } from '@/components/typography/content';
+import { ShopifyContent } from '@/components/typography/shopify-content';
 import { ProductOriginalName } from '@/pages/products/[handle]/product-details';
 import type { Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
@@ -22,7 +22,7 @@ async function Component({ locale, product, className, ...props }: ProductDescri
                 key={`product-description.${handle}.content`}
                 fallback={<div className="h-12 w-full" data-skeleton />}
             >
-                <Content html={descriptionHtml} />
+                <ShopifyContent html={descriptionHtml} />
             </Suspense>
 
             <Suspense key={`product-description.${handle}.product-original-name`} fallback={<Fragment />}>
