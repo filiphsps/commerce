@@ -8,7 +8,6 @@
         "jsx": "react-jsx",
         "typeRoots": ["./dist/index.d.ts"]
     },
-    "exclude": ["node_modules", "coverage", "dist", "**/*.test.*", "**/*.stories.*"],
-    "include": ["../../@types/declaration.d.ts"],
-    "references": [{ "path": "../../tsconfig.json" }]
+    "exclude": ["node_modules", "coverage", "dist", "**/*.stories.*"],
+    "include": ["./src/**/*", "../../@types/declaration.d.ts"]
 }
