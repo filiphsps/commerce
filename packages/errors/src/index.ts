@@ -92,6 +92,8 @@ export enum ApiErrorKind {
     API_INVALID_SHOPIFY_CUSTOMER_ACCOUNT_API_CONFIGURATION = 'API_INVALID_SHOPIFY_CUSTOMER_ACCOUNT_API_CONFIGURATION',
     API_MISSING_ENVIRONMENT_VARIABLE = 'API_MISSING_ENVIRONMENT_VARIABLE',
     API_PROVIDER_FETCH_FAILED = 'API_PROVIDER_FETCH_FAILED',
+    API_SHOPIFY_GRAPHQL_DUPLICATE_CONTEXT_DIRECTIVE = 'API_SHOPIFY_GRAPHQL_DUPLICATE_CONTEXT_DIRECTIVE',
+    API_SHOPIFY_GRAPHQL_DUPLICATE_CONTEXT_VARIABLE = 'API_SHOPIFY_GRAPHQL_DUPLICATE_CONTEXT_VARIABLE',
 }
 
 export class ApiError extends Error<ApiErrorKind> {
@@ -366,6 +368,48 @@ export class ProviderFetchError extends ApiError {
     }
 }
 
+export class DuplicateContextDirectiveError extends ApiError {
+    statusCode = 500;
+    name = 'DuplicateContextDirectiveError';
+    details = 'Duplicate @inContext directive';
+    description = 'Source operation already declares an @inContext directive; the inContextTransform owns context injection and the operation must not pre-declare it';
+    code = ApiErrorKind.API_SHOPIFY_GRAPHQL_DUPLICATE_CONTEXT_DIRECTIVE;
+
+    constructor(operationName?: string, cause?: string, statusCode?: number) {
+        super(cause, statusCode);
+
+        if (operationName) {
+            this.description = this.description.replace('Source operation', `Source operation "${operationName}"`);
+        }
+    }
+}
+
+export class DuplicateContextVariableError extends ApiError {
+    statusCode = 500;
+    name = 'DuplicateContextVariableError';
+    details = 'Duplicate context variable';
+    description = 'Source operation already declares a reserved context variable ($country or $language); the inContextTransform owns these and the operation must not pre-declare them';
+    code = ApiErrorKind.API_SHOPIFY_GRAPHQL_DUPLICATE_CONTEXT_VARIABLE;
+
+    constructor(operationName?: string, variableName?: 'country' | 'language', cause?: string, statusCode?: number) {
+        super(cause, statusCode);
+
+        if (operationName && variableName) {
+            this.description = this.description.replace(
+                'Source operation',
+                `Source operation "${operationName}" (variable: $${variableName})`,
+            );
+        } else if (variableName) {
+            this.description = this.description.replace(
+                'reserved context variable ($country or $language)',
+                `reserved context variable ($${variableName})`,
+            );
+        } else if (operationName) {
+            this.description = this.description.replace('Source operation', `Source operation "${operationName}"`);
+        }
+    }
+}
+
 export enum GenericErrorKind {
     GENERIC_UNKNOWN_ERROR = 'GENERIC_UNKNOWN_ERROR',
     GENERIC_TODO = 'GENERIC_TODO',
@@ -506,7 +550,9 @@ export const getErrorFromCode = (
             return MissingEnvironmentVariableError;
         case ApiErrorKind.API_PROVIDER_FETCH_FAILED:
             return ProviderFetchError;
+        case ApiErrorKind.API_SHOPIFY_GRAPHQL_DUPLICATE_CONTEXT_DIRECTIVE:
+            return DuplicateContextDirectiveError as unknown as typeof ApiError;
+        case ApiErrorKind.API_SHOPIFY_GRAPHQL_DUPLICATE_CONTEXT_VARIABLE:
+            return DuplicateContextVariableError as unknown as typeof ApiError;
     }
-
-    return null;
 };
