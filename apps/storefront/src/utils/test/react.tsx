@@ -2,7 +2,7 @@ import '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { queries, queryHelpers, render, within } from '@testing-library/react';
+import { queries, render, within } from '@testing-library/react';
 import type { ReactElement, ReactNode } from 'react';
 import { ShopProvider } from '@/components/shop/provider';
 import { Locale } from '@/utils/locale';
@@ -35,5 +35,3 @@ export * from '@testing-library/react';
 
 // override render method
 export { customRender as render, customScreen as screen, customWithin as within };
-
-export const queryBySliceType = queryHelpers.queryByAttribute.bind(null, 'data-slice-type');

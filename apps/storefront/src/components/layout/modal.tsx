@@ -6,24 +6,9 @@ import { X as XIcon } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { type ReactNode, useState } from 'react';
 import { Button } from '@/components/actionable/button';
-import { Card } from '@/components/layout/card';
 import { Label } from '@/components/typography/label';
 import type { LocaleDictionary } from '@/utils/locale';
 import { capitalize, getTranslations } from '@/utils/locale';
-import { cn } from '@/utils/tailwind';
-
-export function ModalCard({ children = null, className }: { children?: ReactNode; className?: string }) {
-    return (
-        <Card
-            className={cn(
-                'pointer-events-auto flex w-full max-w-lg snap-start snap-normal flex-col gap-1 bg-white p-2 drop-shadow last:mb-2 md:mx-auto md:w-full md:max-w-[calc(var(--page-width)/1.1)] md:p-4',
-                className,
-            )}
-        >
-            {children}
-        </Card>
-    );
-}
 
 export function Modal({
     i18n,

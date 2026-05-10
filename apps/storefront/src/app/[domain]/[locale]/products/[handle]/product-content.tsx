@@ -38,9 +38,6 @@ export function ProductContent({ product, i18n }: ProductContentProps) {
         </ProductProvider>
     );
 }
-export function ProductContentSkeleton({}) {
-    return <section className="flex flex-col" data-skeleton />;
-}
 
 export type ProductPricingProps = {
     product: Product;

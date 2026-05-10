@@ -119,8 +119,3 @@ export const RedirectApi = async ({ api, path }: { api: AbstractApi; path: strin
     const redirects = await RedirectsApi({ api });
     return redirects.find((redirect) => redirect.path === path)?.target || null;
 };
-
-export const RedirectProductApi = async ({ api, handle }: { api: AbstractApi; handle: string }) =>
-    RedirectApi({ path: `/products/${handle}`, api });
-export const RedirectCollectionApi = async ({ api, handle }: { api: AbstractApi; handle: string }) =>
-    RedirectApi({ path: `/collections/${handle}`, api });

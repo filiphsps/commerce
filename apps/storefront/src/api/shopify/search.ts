@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import type { PredictiveSearchResult, SearchResultItemConnection } from '@shopify/hydrogen-react/storefront-api-types';
+import type { SearchResultItemConnection } from '@shopify/hydrogen-react/storefront-api-types';
 
 import type { Product, ProductFilters } from '@/api/product';
 import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
@@ -67,32 +67,4 @@ export const SearchApi = async ({
 
     const { result: products, productFilters } = await search({ type: 'PRODUCT' });
     return { products, productFilters };
-};
-
-export const SearchPredictionApi = async ({
-    client,
-    query,
-}: {
-    client: AbstractApi;
-    query: string;
-}): Promise<PredictiveSearchResult | {}> => {
-    if (!query) return {};
-
-    const { data } = await client.query<{ predictiveSearch: PredictiveSearchResult }>(
-        gql`
-        query predictiveSearch($query: String!) {
-            predictiveSearch(query: $query, types: [QUERY], limit: 5) {
-                queries {
-                    styledText
-                    text
-                }
-            }
-        }
-    `,
-        {
-            query,
-        },
-    );
-
-    return data?.predictiveSearch || {};
 };

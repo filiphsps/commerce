@@ -24,7 +24,6 @@
 	"files.associations": {
 		"**/*.hbs": "plaintext",
 		"LICENSE": "plaintext",
-		".eslintrc": "jsonc",
 		".renovaterc": "json"
 	},
 	"[plaintext]": {
@@ -177,9 +176,7 @@
 		"[a-zA-Z]*ClassName={`([^`]+)`}",
 		["Styles\\s*=\\s*([^;]*);", "'([^']*)'"],
 		["Styles\\s*=\\s*([^;]*);", "\"([^\"]*)\""],
-		["Styles\\s*=\\s*([^;]*);", "\\`([^\\`]*)\\`"],
-		["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
-		["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+		["Styles\\s*=\\s*([^;]*);", "\\`([^\\`]*)\\`"]
 	],
 	"tailwindCSS.includeLanguages": {
 		"html": "html",
