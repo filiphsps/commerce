@@ -1,4 +1,4 @@
-import { parse, type HTMLElement } from 'node-html-parser';
+import { type HTMLElement, parse } from 'node-html-parser';
 
 const STRIP_TAGS = new Set(['meta', 'script', 'style']);
 

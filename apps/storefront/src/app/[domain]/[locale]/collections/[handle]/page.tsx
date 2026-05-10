@@ -18,8 +18,8 @@ import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skel
 import { JsonLd } from '@/components/json-ld';
 import PageContent from '@/components/page-content';
 import CollectionBlock from '@/components/products/collection-block';
-import { ShopifyContent } from '@/components/typography/shopify-content';
 import Heading from '@/components/typography/heading';
+import { ShopifyContent } from '@/components/typography/shopify-content';
 import { getDictionary } from '@/utils/dictionary';
 import { isValidHandle } from '@/utils/handle';
 import { capitalize, getTranslations, Locale } from '@/utils/locale';
@@ -284,10 +284,7 @@ export default async function CollectionsCollectionPage({
                 <>
                     <Heading title={collection.title || collection.seo.title} />
                     {collection.descriptionHtml ? (
-                        <ShopifyContent
-                            className="prose max-w-none"
-                            html={collection.descriptionHtml}
-                        />
+                        <ShopifyContent className="prose max-w-none" html={collection.descriptionHtml} />
                     ) : collection.seo.description ? (
                         <p className="prose max-w-none">{collection.seo.description}</p>
                     ) : null}

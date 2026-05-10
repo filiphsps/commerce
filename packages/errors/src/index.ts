@@ -372,7 +372,8 @@ export class DuplicateContextDirectiveError extends ApiError {
     statusCode = 500;
     name = 'DuplicateContextDirectiveError';
     details = 'Duplicate @inContext directive';
-    description = 'Source operation already declares an @inContext directive; the inContextTransform owns context injection and the operation must not pre-declare it';
+    description =
+        'Source operation already declares an @inContext directive; the inContextTransform owns context injection and the operation must not pre-declare it';
     code = ApiErrorKind.API_SHOPIFY_GRAPHQL_DUPLICATE_CONTEXT_DIRECTIVE;
 
     constructor(operationName?: string, cause?: string, statusCode?: number) {
@@ -388,7 +389,8 @@ export class DuplicateContextVariableError extends ApiError {
     statusCode = 500;
     name = 'DuplicateContextVariableError';
     details = 'Duplicate context variable';
-    description = 'Source operation already declares a reserved context variable ($country or $language); the inContextTransform owns these and the operation must not pre-declare them';
+    description =
+        'Source operation already declares a reserved context variable ($country or $language); the inContextTransform owns these and the operation must not pre-declare them';
     code = ApiErrorKind.API_SHOPIFY_GRAPHQL_DUPLICATE_CONTEXT_VARIABLE;
 
     constructor(operationName?: string, variableName?: 'country' | 'language', cause?: string, statusCode?: number) {

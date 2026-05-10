@@ -1,11 +1,6 @@
 import { DocumentTransform } from '@apollo/client';
 import { DuplicateContextDirectiveError, DuplicateContextVariableError } from '@nordcom/commerce-errors';
-import {
-    Kind,
-    type DirectiveNode,
-    type OperationDefinitionNode,
-    type VariableDefinitionNode,
-} from 'graphql';
+import { type DirectiveNode, Kind, type OperationDefinitionNode, type VariableDefinitionNode } from 'graphql';
 
 const COUNTRY_VAR: VariableDefinitionNode = {
     kind: Kind.VARIABLE_DEFINITION,

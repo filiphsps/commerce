@@ -1,4 +1,4 @@
-import { toReactNodes, type ToReactNodesOptions } from '@nordcom/commerce-shopify-html';
+import { type ToReactNodesOptions, toReactNodes } from '@nordcom/commerce-shopify-html';
 import type { ComponentPropsWithoutRef, ElementType } from 'react';
 import Link from '@/components/link';
 import { cn } from '@/utils/tailwind';

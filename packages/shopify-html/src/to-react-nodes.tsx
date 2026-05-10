@@ -12,7 +12,20 @@ const ATTR_RENAME: Record<string, string> = {
 };
 
 const VOID_ELEMENTS = new Set([
-    'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr',
+    'area',
+    'base',
+    'br',
+    'col',
+    'embed',
+    'hr',
+    'img',
+    'input',
+    'link',
+    'meta',
+    'param',
+    'source',
+    'track',
+    'wbr',
 ]);
 
 export type ToReactNodesOptions = {
@@ -55,10 +68,7 @@ function nodeToReact(node: Node, key: string, opts: ToReactNodesOptions): ReactN
     return createElement(Component, props, ...children);
 }
 
-export function toReactNodes(
-    html: string | null | undefined,
-    opts: ToReactNodesOptions = {},
-): ReactNode {
+export function toReactNodes(html: string | null | undefined, opts: ToReactNodesOptions = {}): ReactNode {
     const root = normalize(html);
     if (!root) return null;
 

@@ -1,7 +1,22 @@
 import { type HTMLElement, type Node, NodeType } from 'node-html-parser';
 import { normalize } from './normalize';
 
-const BLOCK_TAGS = new Set(['p', 'div', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'br', 'tr', 'td', 'th', 'blockquote']);
+const BLOCK_TAGS = new Set([
+    'p',
+    'div',
+    'li',
+    'h1',
+    'h2',
+    'h3',
+    'h4',
+    'h5',
+    'h6',
+    'br',
+    'tr',
+    'td',
+    'th',
+    'blockquote',
+]);
 
 function walk(node: Node, lines: string[], current: { value: string }): void {
     if (node.nodeType === NodeType.TEXT_NODE) {

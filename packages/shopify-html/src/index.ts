@@ -1,2 +1,2 @@
 export { toPlainText } from './to-plain-text';
-export { toReactNodes, type ToReactNodesOptions } from './to-react-nodes';
+export { type ToReactNodesOptions, toReactNodes } from './to-react-nodes';

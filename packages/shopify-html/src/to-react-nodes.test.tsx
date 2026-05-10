@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { toReactNodes } from './to-react-nodes';
 
 function html(node: ReturnType<typeof toReactNodes>): string {
-    const { container } = render(<>{node}</>);
+    const { container } = render(node);
     return container.innerHTML;
 }
 
