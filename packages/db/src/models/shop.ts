@@ -50,6 +50,11 @@ export interface ShopBase extends BaseDocument {
         defaultLocale: string;
     };
 
+    commerce?: {
+        maxQuantity?: number;
+        processingTimeInDays?: number;
+    };
+
     design: {
         header: {
             logo: {
@@ -157,6 +162,23 @@ export const ShopSchema = new Schema<ShopBase>(
             default: {
                 defaultLocale: 'en-US',
             },
+        },
+
+        commerce: {
+            type: {
+                maxQuantity: {
+                    type: Schema.Types.Number,
+                    required: false,
+                    default: 199_999,
+                },
+                processingTimeInDays: {
+                    type: Schema.Types.Number,
+                    required: false,
+                    default: 5,
+                },
+            },
+            required: false,
+            default: {},
         },
 
         design: {
