@@ -86,7 +86,7 @@ importers:
         version: 0.37.3
       '@next/third-parties':
         specifier: 16.2.4
-        version: 16.2.4(next@16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)
+        version: 16.2.4(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)
       '@nordcom/commerce-db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -137,10 +137,10 @@ importers:
         version: 16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5)
       next-auth:
         specifier: 5.0.0-beta.25
-        version: 5.0.0-beta.25(next@16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)
+        version: 5.0.0-beta.25(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)
       nextjs-toploader:
         specifier: 3.9.17
-        version: 3.9.17(next@16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+        version: 3.9.17(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       nprogress:
         specifier: 0.2.0
         version: 0.2.0
@@ -240,7 +240,7 @@ importers:
         version: 0.5.0(@markdoc/markdoc@0.5.7(@types/react@19.2.14)(react@19.2.5))(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)
       '@next/third-parties':
         specifier: 16.2.4
-        version: 16.2.4(next@16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)
+        version: 16.2.4(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)
       '@nordcom/commerce-errors':
         specifier: workspace:*
         version: link:../../packages/errors
@@ -285,7 +285,7 @@ importers:
         version: 16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5)
       nextjs-toploader:
         specifier: 3.9.17
-        version: 3.9.17(next@16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+        version: 3.9.17(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       nprogress:
         specifier: 0.2.0
         version: 0.2.0
@@ -397,13 +397,19 @@ importers:
         version: 1.8.1(next@16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(redis@4.7.0)
       '@next/third-parties':
         specifier: 16.2.4
-        version: 16.2.4(next@16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)
+        version: 16.2.4(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)
       '@nordcom/commerce-db':
         specifier: workspace:*
         version: link:../../packages/db
       '@nordcom/commerce-errors':
         specifier: workspace:*
         version: link:../../packages/errors
+      '@nordcom/commerce-shopify-graphql':
+        specifier: workspace:*
+        version: link:../../packages/shopify-graphql
+      '@nordcom/commerce-shopify-html':
+        specifier: workspace:*
+        version: link:../../packages/shopify-html
       '@nordcom/nordstar':
         specifier: 0.0.74
         version: 0.0.74(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(tailwindcss@4.2.2)
@@ -442,7 +448,7 @@ importers:
         version: 2024.7.6(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@vercel/analytics':
         specifier: 2.0.1
-        version: 2.0.1(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4)))(next@16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@6.0.3)))(vue@3.4.27(typescript@6.0.3))
+        version: 2.0.1(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4)))(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@6.0.3)))(vue@3.4.27(typescript@6.0.3))
       '@vercel/edge-config':
         specifier: 1.4.3
         version: 1.4.3(@opentelemetry/api@1.9.1)(next@16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))
@@ -490,13 +496,13 @@ importers:
         version: 16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5)
       next-auth:
         specifier: 5.0.0-beta.25
-        version: 5.0.0-beta.25(next@16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)
+        version: 5.0.0-beta.25(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)
       next-sitemap:
         specifier: 4.2.3
         version: 4.2.3(next@16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))
       nextjs-toploader:
         specifier: 3.9.17
-        version: 3.9.17(next@16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+        version: 3.9.17(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       nprogress:
         specifier: 0.2.0
         version: 0.2.0
@@ -7475,7 +7481,7 @@ snapshots:
   '@next/swc-win32-x64-msvc@16.2.4':
     optional: true
 
-  '@next/third-parties@16.2.4(next@16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)':
+  '@next/third-parties@16.2.4(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)':
     dependencies:
       next: 16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5)
       react: 19.2.5
@@ -9323,7 +9329,7 @@ snapshots:
     dependencies:
       '@types/node': 22.8.6
 
-  '@vercel/analytics@2.0.1(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4)))(next@16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@6.0.3)))(vue@3.4.27(typescript@6.0.3))':
+  '@vercel/analytics@2.0.1(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4)))(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@6.0.3)))(vue@3.4.27(typescript@6.0.3))':
     optionalDependencies:
       '@sveltejs/kit': 1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4))
       next: 16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5)
@@ -9368,7 +9374,7 @@ snapshots:
       semver: 7.7.4
     optionalDependencies:
       '@sveltejs/kit': 1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4))
-      '@vercel/analytics': 2.0.1(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4)))(next@16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@6.0.3)))(vue@3.4.27(typescript@6.0.3))
+      '@vercel/analytics': 2.0.1(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4)))(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@6.0.3)))(vue@3.4.27(typescript@6.0.3))
       '@vercel/speed-insights': 1.1.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4)))(next@16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@6.0.3)))(vue@3.4.27(typescript@6.0.3))
       next: 16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5)
       react: 19.2.5
@@ -11339,7 +11345,7 @@ snapshots:
       fp-ts: 2.16.11
       monocle-ts: 2.3.13(fp-ts@2.16.11)
 
-  next-auth@5.0.0-beta.25(next@16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5):
+  next-auth@5.0.0-beta.25(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5):
     dependencies:
       '@auth/core': 0.37.2
       next: 16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5)
@@ -11380,7 +11386,7 @@ snapshots:
       - '@babel/core'
       - babel-plugin-macros
 
-  nextjs-toploader@3.9.17(next@16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
+  nextjs-toploader@3.9.17(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
     dependencies:
       next: 16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5)
       nprogress: 0.2.0
