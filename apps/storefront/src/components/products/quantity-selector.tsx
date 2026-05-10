@@ -5,14 +5,18 @@ import type { ChangeEvent, HTMLProps, KeyboardEventHandler } from 'react';
 import { useCallback, useRef, useState } from 'react';
 import { Button } from '@/components/actionable/button';
 import { Input } from '@/components/actionable/input';
+import { useShop } from '@/components/shop/provider';
+import { COMMERCE_DEFAULTS } from '@/utils/build-config';
 import type { LocaleDictionary } from '@/utils/locale';
 import { getTranslations } from '@/utils/locale';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 
-const MAX_QUANTITY = 199_999; // TODO: Per-tenant configuration.
-
-export const QuantityInputFilter = (value?: string, prev?: string): string => {
+export const QuantityInputFilter = (
+    value?: string,
+    prev?: string,
+    maxQuantity: number = COMMERCE_DEFAULTS.maxQuantity,
+): string => {
     // FRO-58: Only allow numbers
     if (value && (/^[^\d()]*$/.test(value) || value.includes('.'))) return prev ?? '';
 
@@ -26,8 +30,8 @@ export const QuantityInputFilter = (value?: string, prev?: string): string => {
     let quantity = safeParseFloat(0, value);
     if (quantity < 0) {
         quantity = 0;
-    } else if (quantity > MAX_QUANTITY) {
-        quantity = MAX_QUANTITY;
+    } else if (quantity > maxQuantity) {
+        quantity = maxQuantity;
     }
 
     return quantity.toString(10).split('.')[0];
@@ -55,6 +59,9 @@ const QuantitySelector = ({
     ...props
 }: QuantitySelectorProps) => {
     const { t } = getTranslations('common', i18n);
+    const { shop } = useShop();
+    const maxQuantity = shop.commerce?.maxQuantity ?? COMMERCE_DEFAULTS.maxQuantity;
+
     const [quantityValue, setQuantityValue] = useState(quantity.toString() || '1');
     const [lastQuantity, setLastQuantity] = useState(quantity);
 
@@ -77,7 +84,7 @@ const QuantitySelector = ({
                 return;
             }
 
-            const parsedQuantity = safeParseFloat(null, QuantityInputFilter(value.toString()));
+            const parsedQuantity = safeParseFloat(null, QuantityInputFilter(value.toString(), undefined, maxQuantity));
             if (parsedQuantity === null) {
                 // TODO: Should we show an error?
                 return;
@@ -85,7 +92,7 @@ const QuantitySelector = ({
 
             update(parsedQuantity);
         },
-        [update, quantity],
+        [update, quantity, maxQuantity],
     );
     const decrease = useCallback(() => {
         if (allowDecreaseToZero ? quantity <= 0 : quantity <= 1) {
@@ -125,11 +132,11 @@ const QuantitySelector = ({
 
     const onChange = useCallback(
         ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
-            const parsedValue = QuantityInputFilter(value, quantityValue);
+            const parsedValue = QuantityInputFilter(value, quantityValue, maxQuantity);
 
             setQuantityValue(parsedValue);
         },
-        [quantityValue],
+        [quantityValue, maxQuantity],
     );
 
     const disabled = isDisabled || !ready;
@@ -175,7 +182,7 @@ const QuantitySelector = ({
                 type="number"
                 title={t('quantity')}
                 min={1}
-                max={MAX_QUANTITY}
+                max={maxQuantity}
                 step={1}
                 pattern="[0-9]"
                 className={cn(
