@@ -1,7 +1,7 @@
 /**
  * Check if an user agent is some form of a web crawler.
- * @param {string} userAgent - The user agent to check.
- * @returns {boolean | null} `null` if the user agent is not provided, is empty, or is invalid, `true` if the user agent is a crawler, otherwise `false`.
+ * @param userAgent - The user agent to check.
+ * @returns `null` if the user agent is not provided, is empty, or is invalid, `true` if the user agent is a crawler, otherwise `false`.
  */
 export function isCrawler(userAgent?: string): boolean | null {
     if (!userAgent || typeof userAgent !== 'string' || userAgent.length <= 0) {

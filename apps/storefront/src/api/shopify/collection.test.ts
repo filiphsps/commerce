@@ -220,7 +220,7 @@ describe('api', () => {
 
             describe('CollectionsApi', () => {
                 it('should return an array of collections with their IDs, handles, and product availability', async () => {
-                    const client: AbstractApi = {
+                    const api: AbstractApi = {
                         query: vi.fn().mockResolvedValue({
                             data: {
                                 collections: {
@@ -257,7 +257,7 @@ describe('api', () => {
                         shop: () => ({}) as OnlineShop,
                     };
 
-                    const collections = await CollectionsApi({ client });
+                    const collections = await CollectionsApi({ api });
 
                     expect(collections).toEqual([
                         {

@@ -7,7 +7,7 @@ import Link from '@/components/link';
 import styles from '@/components/products/product-options.module.scss';
 import { useShop } from '@/components/shop/provider';
 import { Label } from '@/components/typography/label';
-import { convertToLocalMeasurementSystem, isSizeOption } from '@/utils/locale';
+import { formatWeight, isSizeOption, localizeWeight } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 
 export type ProductOptionProps = {} & Omit<HTMLProps<HTMLDivElement>, 'children'>;
@@ -72,11 +72,12 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
                                     const title = `${product.vendor} ${product.title} - ${matchingVariant?.title}`;
                                     const label =
                                         matchingVariant && option.name && isSizeOption(option.name)
-                                            ? convertToLocalMeasurementSystem({
-                                                  locale,
-                                                  weight: matchingVariant.weight!,
-                                                  weightUnit: matchingVariant.weightUnit!,
-                                              })
+                                            ? formatWeight(
+                                                  localizeWeight(locale, {
+                                                      weight: matchingVariant.weight!,
+                                                      unit: matchingVariant.weightUnit!,
+                                                  }),
+                                              )
                                             : null;
 
                                     return (

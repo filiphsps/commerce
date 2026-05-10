@@ -63,6 +63,16 @@ export function localizeWeight(locale: Locale, weight: Weight, {}: LocalizeWeigh
     };
 }
 
+export function formatWeight({ weight, unit }: Weight): string {
+    let res = weight.toFixed(2);
+    if (res.endsWith('.00')) {
+        res = res.slice(0, -3);
+    } else if (res.includes('.') && res.endsWith('0')) {
+        res = res.slice(0, -1);
+    }
+    return `${res}${weightUnitToUnit(unit)}`;
+}
+
 type ConvertWeightOptions = {
     round?: 'WHOLE' | 'FIVES' | false;
 };
@@ -86,71 +96,4 @@ export function convertWeight(
         default:
             throw new TodoError(`Unknown round option: "${round}"`);
     }
-}
-
-type ConvertToLocalMeasurementSystemOptions = {
-    round?: boolean;
-};
-/**
- * @deprecated use {@link localizeWeight} instead.
- */
-export function convertToLocalMeasurementSystem({
-    locale,
-    weight,
-    weightUnit,
-}: {
-    locale: Locale;
-    weight: number;
-    weightUnit: WeightUnit;
-} & ConvertToLocalMeasurementSystemOptions): string {
-    const metric = !usesImperialUnits(locale);
-    const unit = weightUnitToUnit(weightUnit);
-
-    let targetUnit: Unit;
-    if (metric) {
-        switch (unit) {
-            case 'kg':
-                targetUnit = 'kg';
-                break;
-            case 'g':
-                targetUnit = 'g';
-                break;
-            case 'lb':
-                targetUnit = 'kg';
-                break;
-            case 'oz':
-                targetUnit = 'g';
-                break;
-            default:
-                throw new TodoError(`Unknown weight unit: ${unit}`);
-        }
-    } else {
-        switch (unit) {
-            case 'kg':
-                targetUnit = 'lb';
-                break;
-            case 'g':
-                targetUnit = 'oz';
-                break;
-            case 'lb':
-                targetUnit = 'lb';
-                break;
-            case 'oz':
-                targetUnit = 'oz';
-                break;
-            default:
-                throw new TodoError(`Unknown weight unit: ${unit}`);
-        }
-    }
-
-    weight = convertWeight(weight, weightUnit, unitToWeightUnit(targetUnit));
-
-    let res = weight.toFixed(2).toString();
-    if (res.endsWith('.00')) {
-        res = res.slice(0, -3);
-    } else if (res.includes('.') && res.endsWith('0')) {
-        res = res.slice(0, -1);
-    }
-
-    return `${res}${targetUnit}`;
 }

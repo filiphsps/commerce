@@ -44,11 +44,11 @@ export function buildCacheTagArray(shop: OnlineShop, locale: Locale, tags: strin
  *
  * @todo TODO: Improve the type safety of all `AbstractApi` implementations.
  *
- * @param {object} options - The api options.
- * @param {ApolloClient<any>} options.api - The Apollo client to use.
- * @param {Locale} options.locale - The locale to use.
- * @param {OnlineShop} options.shop - The locale to use.
- * @returns {AbstractApiBuilder} The AbstractApiBuilder.
+ * @param options - The api options.
+ * @param options.api - The Apollo client to use.
+ * @param options.locale - The locale to use.
+ * @param options.shop - The locale to use.
+ * @returns The AbstractApiBuilder.
  */
 export const ApiBuilder: AbstractShopifyApolloApiBuilder<TypedDocumentNode<unknown, unknown>> = ({
     api,

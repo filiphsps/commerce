@@ -3,8 +3,8 @@
  * caller's locale. Encapsulating `Date.now()` here keeps render functions free
  * of impure calls while still giving callers a fresh value per invocation.
  *
- * @param {number} daysAhead - Number of days to add to the current time.
- * @returns {string} The formatted future date string.
+ * @param daysAhead - Number of days to add to the current time.
+ * @returns The formatted future date string.
  */
 export const futureDateString = (daysAhead: number): string =>
     new Date(Date.now() + daysAhead * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, {
@@ -17,9 +17,9 @@ export const futureDateString = (daysAhead: number): string =>
  * Parse and if required provide the best fallback,
  * mostly used with a Shopify pricing string.
  *
- * @param {number | T} fallback - The fallback value.
- * @param {string | any} prices - The prices to parse.
- * @returns {(number | T)} The parsed price or the fallback.
+ * @param fallback - The fallback value.
+ * @param prices - The prices to parse.
+ * @returns The parsed price or the fallback.
  */
 export const safeParseFloat = <T>(fallback: number | T, ...prices: Array<string | unknown>): number | T => {
     for (let i = 0; i < prices.length; i++) {

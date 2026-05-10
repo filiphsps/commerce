@@ -8,7 +8,6 @@ describe('utils', () => {
             it('should return a locale object', () => {
                 expect(Locale.from('en-US')).toEqual({
                     code: 'en-US',
-                    locale: 'en-US',
                     language: 'EN',
                     country: 'US',
                 });

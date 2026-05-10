@@ -2,7 +2,7 @@
 
 import type { Product, ProductVariant } from '@/api/product';
 import type { Locale } from '@/utils/locale';
-import { convertToLocalMeasurementSystem, isSizeOption } from '@/utils/locale';
+import { formatWeight, isSizeOption, localizeWeight } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 
 export type ProductCardOptionsProps = {
@@ -54,11 +54,7 @@ const ProductCardOptions = ({
                     variant.weight &&
                     !!variant.weightUnit
                 ) {
-                    title = convertToLocalMeasurementSystem({
-                        locale: locale,
-                        weight: variant.weight,
-                        weightUnit: variant.weightUnit,
-                    });
+                    title = formatWeight(localizeWeight(locale, { weight: variant.weight, unit: variant.weightUnit }));
                 }
 
                 const isSelected = selectedVariant?.id === variant.id;

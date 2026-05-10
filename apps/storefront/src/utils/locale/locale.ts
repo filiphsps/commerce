@@ -8,11 +8,6 @@ export type { CountryCode, CurrencyCode, LanguageCode };
 export type Code = `${Lowercase<LanguageCode>}-${CountryCode}` | Lowercase<LanguageCode>;
 
 type SerializableLocale = {
-    /**
-     * @deprecated Use `code` instead.
-     */
-    locale: Code;
-
     code: Code;
     language: LanguageCode;
     country?: CountryCode;
@@ -26,11 +21,6 @@ export class Locale implements SerializableLocale {
     public language: LanguageCode;
     public country?: CountryCode;
 
-    /**
-     * @deprecated Use `code` instead.
-     */
-    public locale!: Code;
-
     private constructor({ language, country }: { language: LanguageCode; country?: CountryCode }) {
         this.language = language;
         this.country = country;
@@ -40,9 +30,6 @@ export class Locale implements SerializableLocale {
         } else {
             this.code = `${language.toLowerCase()}` as Code;
         }
-
-        // TODO: Remove `locale` when `locale` is removed from `SerializableLocale`.
-        this.locale = this.code;
     }
 
     /**
@@ -78,8 +65,8 @@ export class Locale implements SerializableLocale {
     /**
      * Check if a locale is configured as the default locale.
      *
-     * @param {Locale} locale - The locale
-     * @returns {boolean} `true` if the locale is the default locale, otherwise `false`.
+     * @param locale - The locale
+     * @returns `true` if the locale is the default locale, otherwise `false`.
      */
     static isDefault(locale: Locale = Locale.default): boolean {
         return locale.code === Locale.default.code;
@@ -88,8 +75,8 @@ export class Locale implements SerializableLocale {
     /**
      * Convert data to a `Locale`.
      *
-     * @param {Code | any} data - The basis to create the locale from.
-     * @returns {Locale} The immutable locale.
+     * @param data - The basis to create the locale from.
+     * @returns The immutable locale.
      */
     static from(data: { language: LanguageCode; country?: CountryCode } | Code | string) {
         // We can only pass pure objects to the client.
@@ -143,9 +130,9 @@ type TranslationLiteral = string | number | boolean | ReactNode;
  *
  * > NOTE: This is a very simple implementation of a translation function.
  *
- * @param {string} scope - The scope of the translation.
- * @param {LocaleDictionary} dictionary - The dictionary to use for the translation.
- * @returns {({ t: (key: string, ...literals: TranslationLiteral[]) => string })} The translation function.
+ * @param scope - The scope of the translation.
+ * @param dictionary - The dictionary to use for the translation.
+ * @returns The translation function.
  */
 export const getTranslations = (scope: LocaleDictionaryScope, dictionary?: LocaleDictionary) => {
     return {
@@ -182,8 +169,8 @@ export const getTranslations = (scope: LocaleDictionaryScope, dictionary?: Local
 
 /**
  * Checks if the option name is a size option.
- * @param {string} name - The name of the option.
- * @returns {boolean} `true` if the option is a size option, otherwise `false`.
+ * @param name - The name of the option.
+ * @returns `true` if the option is a size option, otherwise `false`.
  */
 export const isSizeOption = (name: string): boolean =>
     [
@@ -199,11 +186,11 @@ type CapitalizeOptions = {
 };
 /**
  *
- * @param {string} string - The string to capitalize.
- * @param {CapitalizeOptions} options - The options.
- * @param {boolean} [options.everyWord=false] - Whether to capitalize every word in the string.
- * @param {boolean} [options.lowerCase=true] - Whether to convert the rest of the string to lowercase.
- * @returns {string} The capitalized string.
+ * @param string - The string to capitalize.
+ * @param options - The options.
+ * @param [options.everyWord=false] - Whether to capitalize every word in the string.
+ * @param [options.lowerCase=true] - Whether to convert the rest of the string to lowercase.
+ * @returns The capitalized string.
  */
 export function capitalize(string: string, { everyWord = false, lowerCase = true }: CapitalizeOptions = {}): string {
     if (everyWord) {

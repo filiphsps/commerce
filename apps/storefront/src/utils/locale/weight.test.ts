@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-    convertToLocalMeasurementSystem,
     convertWeight,
+    formatWeight,
     Locale,
     localizeWeight,
     unitToWeightUnit,
@@ -146,67 +146,22 @@ describe('utils', () => {
                 });
             });
 
-            describe('convertToLocalMeasurementSystem', () => {
+            describe('formatWeight + localizeWeight', () => {
+                const fmt = (locale: Locale, weight: number, unit: 'GRAMS' | 'KILOGRAMS' | 'OUNCES' | 'POUNDS') =>
+                    formatWeight(localizeWeight(locale, { weight, unit }));
+
                 it('should convert a value to the local measurement system', () => {
-                    expect(
-                        convertToLocalMeasurementSystem({
-                            locale: Locale.from('en-GB'),
-                            weight: 10,
-                            weightUnit: 'KILOGRAMS',
-                        }),
-                    ).toBe('10kg');
-                    expect(
-                        convertToLocalMeasurementSystem({
-                            locale: Locale.from('en-US'),
-                            weight: 10,
-                            weightUnit: 'KILOGRAMS',
-                        }),
-                    ).toBe('22.05lb');
+                    expect(fmt(Locale.from('en-GB'), 10, 'KILOGRAMS')).toBe('10kg');
+                    expect(fmt(Locale.from('en-US'), 10, 'KILOGRAMS')).toBe('22.05lb');
 
-                    expect(
-                        convertToLocalMeasurementSystem({
-                            locale: Locale.from('en-GB'),
-                            weight: 5,
-                            weightUnit: 'OUNCES',
-                        }),
-                    ).toBe('141.75g');
-                    expect(
-                        convertToLocalMeasurementSystem({
-                            locale: Locale.from('en-US'),
-                            weight: 5,
-                            weightUnit: 'OUNCES',
-                        }),
-                    ).toBe('5oz');
+                    expect(fmt(Locale.from('en-GB'), 5, 'OUNCES')).toBe('141.75g');
+                    expect(fmt(Locale.from('en-US'), 5, 'OUNCES')).toBe('5oz');
 
-                    expect(
-                        convertToLocalMeasurementSystem({
-                            locale: Locale.from('en-GB'),
-                            weight: 10,
-                            weightUnit: 'GRAMS',
-                        }),
-                    ).toBe('10g');
-                    expect(
-                        convertToLocalMeasurementSystem({
-                            locale: Locale.from('en-US'),
-                            weight: 10,
-                            weightUnit: 'GRAMS',
-                        }),
-                    ).toBe('0.4oz');
+                    expect(fmt(Locale.from('en-GB'), 10, 'GRAMS')).toBe('10g');
+                    expect(fmt(Locale.from('en-US'), 10, 'GRAMS')).toBe('0.4oz');
 
-                    expect(
-                        convertToLocalMeasurementSystem({
-                            locale: Locale.from('en-GB'),
-                            weight: 10,
-                            weightUnit: 'POUNDS',
-                        }),
-                    ).toBe('4.55kg');
-                    expect(
-                        convertToLocalMeasurementSystem({
-                            locale: Locale.from('en-US'),
-                            weight: 10,
-                            weightUnit: 'POUNDS',
-                        }),
-                    ).toBe('10lb');
+                    expect(fmt(Locale.from('en-GB'), 10, 'POUNDS')).toBe('4.55kg');
+                    expect(fmt(Locale.from('en-US'), 10, 'POUNDS')).toBe('10lb');
                 });
             });
         });

@@ -34,8 +34,8 @@ export function getAuth(shop: OnlineShop) {
 /**
  * Get auth session for server components and API routes.
  *
- * @param {Shop} shop - The shop to get the auth session for.
- * @returns {Promise<Session>} The auth session.
+ * @param shop - The shop to get the auth session for.
+ * @returns The auth session.
  */
 export async function getAuthSession(shop: OnlineShop) {
     return getAuth(shop).auth();

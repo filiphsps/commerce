@@ -48,7 +48,6 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                 let imagePositionStyles = 'object-center';
 
                 switch (slice.variation) {
-                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                     case 'default': {
                         const { shadow = true, image_position = 'center' } =
                             item as Simplify<DropdownSliceDefaultPrimaryLinksItem>;

@@ -7,11 +7,11 @@ import type { AbstractApi } from '@/utils/abstract-api';
 /**
  * Get all redirects from Shopify.
  *
- * @param {object} options - The options.
- * @param {AbstractApi} options.api - The client to use for the query.
- * @param {string} [options.cursor] - The cursor to use for the query.
- * @param {UrlRedirect[]} [options.redirects]
- * @returns {Promise<RedirectModel[]>} The list of redirects.
+ * @param options - The options.
+ * @param options.api - The client to use for the query.
+ * @param [options.cursor] - The cursor to use for the query.
+ * @param [options.redirects]
+ * @returns The list of redirects.
  */
 export const RedirectsApi = async ({
     api,
@@ -75,10 +75,10 @@ export const RedirectsApi = async ({
 /**
  * Get specific redirect from Shopify.
  *
- * @param {object} options - The options.
- * @param {AbstractApi} options.api - The client to use for the query.
- * @param {string} options.path - The path to get the redirect for.
- * @returns {Promise<string | null>} The redirect target.
+ * @param options - The options.
+ * @param options.api - The client to use for the query.
+ * @param options.path - The path to get the redirect for.
+ * @returns The redirect target.
  */
 export const RedirectApi = async ({ api, path }: { api: AbstractApi; path: string }): Promise<string | null> => {
     path = path.toLowerCase();

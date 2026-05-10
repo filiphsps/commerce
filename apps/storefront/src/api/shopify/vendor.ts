@@ -10,8 +10,8 @@ import { TitleToHandle } from '@/utils/title-to-handle';
  * Convert the Shopify product list to a list of vendors.
  * TODO: Remove this and use the standard layout.
  *
- * @param {Array<{ node: Product }>} products - The list of products.
- * @returns {VendorModel[]} The list of vendors.
+ * @param products - The list of products.
+ * @returns The list of vendors.
  */
 export const Convertor = (
     products: Array<{
@@ -42,8 +42,8 @@ type VendorsOptions = { api: AbstractApi };
 /**
  * Get all vendors from Shopify.
  *
- * @param {AbstractApi} api - The client to use for the query.
- * @returns {Promise<VendorModel[]>} The list of vendors.
+ * @param api - The client to use for the query.
+ * @returns The list of vendors.
  */
 export const VendorsApi = async ({ api }: VendorsOptions): Promise<VendorModel[]> => {
     const shop = api.shop();

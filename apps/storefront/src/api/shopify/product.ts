@@ -474,17 +474,17 @@ export const ProductsApi = async ({
 /**
  * Fetches products from the Shopify API.
  *
- * @param {object} options - The options.
- * @param {AbstractApi} options.api - The AbstractApi to use.
- * @param {object} options.filters - The AbstractApi to use.
- * @param {number} [options.filters.limit=35] - The limit of products to fetch.
- * @param {ProductSortKeys} [options.filters.sorting='BEST_SELLING'] - The sorting to use.
- * @param {boolean} [options.filters.available_for_sale=true] - Whether to include available for sale products, set to `undefined` to disable.
- * @param {boolean} [options.filters.reverse] - Whether to reverse the order of the products.
- * @param {string} [options.filters.vendor] - The vendor to use.
- * @param {string} [options.filters.before] - The cursor to use for pagination.
- * @param {string} [options.filters.after] - The cursor to use for pagination.
- * @returns {Promise<ProductEdge[]>} The products.
+ * @param options - The options.
+ * @param options.api - The AbstractApi to use.
+ * @param options.filters - The AbstractApi to use.
+ * @param [options.filters.limit=35] - The limit of products to fetch.
+ * @param [options.filters.sorting='BEST_SELLING'] - The sorting to use.
+ * @param [options.filters.available_for_sale=true] - Whether to include available for sale products, set to `undefined` to disable.
+ * @param [options.filters.reverse] - Whether to reverse the order of the products.
+ * @param [options.filters.vendor] - The vendor to use.
+ * @param [options.filters.before] - The cursor to use for pagination.
+ * @param [options.filters.after] - The cursor to use for pagination.
+ * @returns The products.
  */
 export const ProductsPaginationApi = async ({
     api,

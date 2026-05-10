@@ -14,7 +14,6 @@ const Dropdown = ({ slice, context: { isHeader = false, menu = null } }: Dropdow
     }
 
     switch (slice.variation) {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         case 'default': {
             return <DropdownDefaultMenu slice={slice} />;
         }

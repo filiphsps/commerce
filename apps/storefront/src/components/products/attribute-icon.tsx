@@ -20,8 +20,8 @@ export type AttributeIconProps = {
 /**
  * Get icon for a flavor or attribute.
  *
- * @param {string} data - The attribute/flavor to get the icon for.
- * @returns {ReactNode} The icon.
+ * @param data - The attribute/flavor to get the icon for.
+ * @returns The icon.
  */
 export function AttributeIcon({ data = '', className, style = {}, ...props }: AttributeIconProps) {
     if (!data) {

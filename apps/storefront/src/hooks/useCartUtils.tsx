@@ -9,9 +9,9 @@ import type { Locale } from '@/utils/locale';
  * Cart-related hacks and utilities.
  * This hook handles `/?discount={code}` parameters and cart creation timeouts.
  *
- * @param {object} options - The options.
- * @param {Locale} options.locale - The locale.
- * @returns {{ error: Error | undefined; cartError: unknown | undefined; }} potential errors.
+ * @param options - The options.
+ * @param options.locale - The locale.
+ * @returns } potential errors.
  */
 export const useCartUtils = ({
     locale,

@@ -22,7 +22,7 @@ describe('components', () => {
         it('should render with normal quantity', () => {
             const props = {
                 locale: {
-                    locale: 'en-US',
+                    code: 'en-US',
                     country: 'US',
                     language: 'EN',
                 },
@@ -37,7 +37,7 @@ describe('components', () => {
         it('should render with zero quantity', () => {
             const props = {
                 locale: {
-                    locale: 'en-US',
+                    code: 'en-US',
                     country: 'US',
                     language: 'EN',
                 },
@@ -52,7 +52,7 @@ describe('components', () => {
         it('should render with negative quantity', () => {
             const props = {
                 locale: {
-                    locale: 'en-US',
+                    code: 'en-US',
                     country: 'US',
                     language: 'EN',
                 },

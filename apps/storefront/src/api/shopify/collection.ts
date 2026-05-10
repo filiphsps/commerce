@@ -29,11 +29,6 @@ export type CollectionFilters = {
     LimitFilters;
 type CollectionsFilters = {
     sorting?: Nullable<CollectionSortKeys>;
-
-    /**
-     * @deprecated
-     */
-    vendor?: Nullable<string>;
 } & GenericCollectionFilters &
     LimitFilters;
 
@@ -55,7 +50,6 @@ export const extractLimitLikeFilters = (
     | {} => {
     const f = filters as Record<string, unknown>;
     switch (true) {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         case filters === null || typeof filters === 'undefined':
         case typeof f.limit !== 'number' && typeof f.first !== 'number' && typeof f.last !== 'number':
         case !('limit' in filters) && !('first' in filters) && !('last' in filters):
@@ -102,11 +96,11 @@ type CollectionOptions = ApiOptions &
  *
  * @todo TODO: Support `id` as an alternative to `handle` {@link https://shopify.dev/docs/api/storefront/2024-07/queries/collection}.
  *
- * @param {CollectionOptions} options - The options for the collection.
- * @param {AbstractApi} options.api - The API to use.
- * @param {string} options.handle - The handle of the collection to fetch.
- * @param {CollectionFilters} [options.filters] - The filters to apply to the collection.
- * @returns {Promise<Collection>} The collection.
+ * @param options - The options for the collection.
+ * @param options.api - The API to use.
+ * @param options.handle - The handle of the collection to fetch.
+ * @param [options.filters] - The filters to apply to the collection.
+ * @returns The collection.
  */
 export const CollectionApi = async (
     { api, handle, ...props }: CollectionOptions,
@@ -297,26 +291,17 @@ export const CollectionPaginationCountApi = async ({
     };
 };
 
-export const CollectionsApi = async (
-    options:
-        | {
-              api: AbstractApi;
-          }
-        | {
-              /**
-               * @deprecated Use `api` instead.
-               */
-              client: AbstractApi;
-          },
-): Promise<
+export const CollectionsApi = async ({
+    api,
+}: {
+    api: AbstractApi;
+}): Promise<
     Array<{
         id: string;
         handle: string;
         hasProducts: boolean;
     }>
 > => {
-    const api = 'api' in options ? options.api : /** @deprecated */ options.client;
-
     const { data, errors } = await api.query<{ collections: QueryRoot['collections'] }>(gql`
         query collections {
             collections(first: 250) {
@@ -383,7 +368,6 @@ export const CollectionsPaginationApi = async ({
                 $first: Int
                 $last: Int
                 $sorting: CollectionSortKeys
-                $query: String
                 $before: String
                 $after: String
             ) {
@@ -391,7 +375,6 @@ export const CollectionsPaginationApi = async ({
                     first: $first
                     last: $last
                     sortKey: $sorting
-                    query: $query
                     before: $before
                     after: $after
                 ) {
@@ -429,8 +412,7 @@ export const CollectionsPaginationApi = async ({
         `,
         {
             ...extractLimitLikeFilters(filters),
-            ...(({ vendor = null, sorting = 'RELEVANCE', before = null, after = null }) => ({
-                query: vendor && `query:"vendor:${vendor}"`,
+            ...(({ sorting = 'RELEVANCE', before = null, after = null }) => ({
                 sorting: sorting,
                 before: before,
                 after: after,

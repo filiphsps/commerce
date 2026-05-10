@@ -563,7 +563,7 @@ Trackable.displayName = 'Nordcom.Trackable';
  * Provides access to the {@link TrackableContext}.
  * Must be a descendant of {@link Trackable}.
  *
- * @returns {TrackableContextValue} The trackable context.
+ * @returns The trackable context.
  */
 export function useTrackable(): TrackableContextValue {
     const context = useContext(TrackableContext);

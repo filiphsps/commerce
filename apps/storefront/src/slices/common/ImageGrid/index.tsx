@@ -34,17 +34,14 @@ const ImageGrid = ({ slice, index }: ImageGridProps) => {
 
                 // Handle old titles that were `KeyTextField`s.
                 const titleText =
-                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                     title && typeof title !== 'string'
                         ? title.length > 0 && asText(title).trim()
                         : (title as string).trim();
-                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                 const descriptionText = description && description.length > 0 ? asText(description).trim() : '';
                 const isInlineTitle =
                     descriptionText.length <= 0 && titleText && titleText.length > 0 && titleText.length < 65;
 
                 // Handle old links that were `KeyTextField`s.
-                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                 const href = link && typeof link !== 'string' ? asLink(link, { linkResolver }) : link;
                 const target: undefined | '_blank' = (href as unknown as { target?: '_blank' })?.target || undefined;
 

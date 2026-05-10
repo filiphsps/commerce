@@ -157,21 +157,19 @@ export type DictionaryLanguageCode = keyof typeof dictionaries;
  * Get dictionary for locale.
  * @todo Handle templates.
  *
- * @param {object} props - The data
- * @param {Locale} props.locale - Locale to get dictionary for.
- * @param {OnlineShop} props.shop - Shop to get dictionary for.
- * @returns {Promise<LocaleDictionary>} Promise with dictionary.
+ * @param props - The data
+ * @param props.locale - Locale to get dictionary for.
+ * @param props.shop - Shop to get dictionary for.
+ * @returns Promise with dictionary.
  */
 export const getDictionary = async (
     props: { shop: OnlineShop; locale: Locale } | Locale,
 ): Promise<LocaleDictionary> => {
-    let locale: Locale, _shop: OnlineShop | undefined;
+    let locale: Locale;
 
     if (Object.hasOwn(props, 'shop')) {
         const temp = props as { shop: OnlineShop; locale: Locale };
         locale = temp.locale;
-        // eslint-disable-next-line unused-imports/no-unused-vars
-        _shop = temp.shop;
     } else {
         locale = props as Locale;
     }

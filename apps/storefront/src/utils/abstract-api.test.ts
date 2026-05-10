@@ -31,7 +31,7 @@ describe('utils', () => {
         } as any);
 
         const locale = {
-            locale: 'en-US',
+            code: 'en-US',
             language: 'EN',
             country: 'US',
         } as Locale;

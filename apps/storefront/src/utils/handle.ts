@@ -1,8 +1,8 @@
 /**
  * Verifies if a handle is valid.
  *
- * @param {unknown} handle - The handle to verify.
- * @returns {boolean} Whether the handle is valid.
+ * @param handle - The handle to verify.
+ * @returns Whether the handle is valid.
  */
 export const isValidHandle = (handle: unknown): boolean => {
     if (!handle) return false;
