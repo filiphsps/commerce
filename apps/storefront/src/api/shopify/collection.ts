@@ -16,7 +16,6 @@ import type {
 } from '@shopify/hydrogen-react/storefront-api-types';
 import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
 import type { AbstractApi, ApiOptions } from '@/utils/abstract-api';
-import { cleanShopifyHtml } from '@/utils/abstract-api';
 import { isValidHandle } from '@/utils/handle';
 
 type GenericCollectionFilters = {
@@ -90,9 +89,6 @@ type CollectionOptions = ApiOptions &
 
 /**
  * Get a collection from Shopify.
- *
- * @note We modify the descriptionHtml to remove all non-breaking spaces
- *       and replace them with normal spaces.
  *
  * @todo TODO: Support `id` as an alternative to `handle` {@link https://shopify.dev/docs/api/storefront/2024-07/queries/collection}.
  *
@@ -196,7 +192,7 @@ export const CollectionApi = async (
 
     return {
         ...data.collection,
-        descriptionHtml: cleanShopifyHtml(data.collection.descriptionHtml) || '',
+        descriptionHtml: data.collection.descriptionHtml ?? '',
     };
 };
 

@@ -13,7 +13,6 @@ import md5 from 'crypto-js/md5';
 import type { Product } from '@/api/product';
 import { extractLimitLikeFilters } from '@/api/shopify/collection';
 import type { AbstractApi, ApiOptions, ApiReturn } from '@/utils/abstract-api';
-import { cleanShopifyHtml } from '@/utils/abstract-api';
 
 export const PRODUCT_FRAGMENT_MINIMAL_NO_VARIANTS = /* GraphQL */ `
     id
@@ -306,13 +305,10 @@ export const ProductApi = async ({ api, handle, fragment }: ProductOptions): Pro
             throw new NotFoundError(`"Product" with the handle "${handle}" on shop "${shop.id}"`);
         }
 
-        const {
-            product: { descriptionHtml, ...product },
-        } = data;
         return [
             {
-                ...product,
-                descriptionHtml: cleanShopifyHtml(descriptionHtml) || '',
+                ...data.product,
+                descriptionHtml: data.product.descriptionHtml ?? '',
             } as Product,
             undefined,
         ];
