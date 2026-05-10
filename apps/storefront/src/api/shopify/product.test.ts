@@ -11,10 +11,6 @@ vi.mock('crypto-js/md5', () => ({
     default: vi.fn(() => ({ toString: vi.fn(() => 'mocked-md5') })),
 }));
 
-vi.mock('@/utils/abstract-api', () => ({
-    cleanShopifyHtml: vi.fn(() => 'cleaned-html'),
-}));
-
 describe('api', () => {
     describe('shopify', () => {
         describe('product', () => {
@@ -61,7 +57,7 @@ describe('api', () => {
 
                     expect(result).toEqual({
                         handle: 'some-handle',
-                        descriptionHtml: 'cleaned-html',
+                        descriptionHtml: '<p>Some description</p>',
                     });
                     expect(error).toBeUndefined();
                 });
