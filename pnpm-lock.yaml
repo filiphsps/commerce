@@ -130,8 +130,8 @@ importers:
         specifier: 11.6.0
         version: 11.6.0
       '@vercel/analytics':
-        specifier: 1.3.2
-        version: 1.3.2(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)
+        specifier: 1.6.1
+        version: 1.6.1(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4)))(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@6.0.3)))(vue@3.4.27(typescript@6.0.3))
       '@vercel/otel':
         specifier: 1.10.0
         version: 1.10.0(@opentelemetry/api-logs@0.216.0)(@opentelemetry/api@1.9.1)(@opentelemetry/instrumentation@0.216.0(@opentelemetry/api@1.9.1))(@opentelemetry/resources@2.7.1(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-logs@0.216.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-metrics@1.26.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.7.1(@opentelemetry/api@1.9.1))
@@ -140,7 +140,7 @@ importers:
         version: 1.1.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4)))(next@16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@6.0.3)))(vue@3.4.27(typescript@6.0.3))
       '@vercel/toolbar':
         specifier: 0.2.2
-        version: 0.2.2(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4)))(@vercel/analytics@1.3.2(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5))(@vercel/speed-insights@1.1.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4)))(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@6.0.3)))(vue@3.4.27(typescript@6.0.3)))(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4))
+        version: 0.2.2(e79cf3be767f820a3a514c212acabe3e)
       class-variance-authority:
         specifier: 0.7.1
         version: 0.7.1
@@ -305,8 +305,8 @@ importers:
         specifier: 2024.7.6
         version: 2024.7.6(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@vercel/analytics':
-        specifier: 1.3.2
-        version: 1.3.2(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)
+        specifier: 1.6.1
+        version: 1.6.1(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4)))(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@6.0.3)))(vue@3.4.27(typescript@6.0.3))
       '@vercel/otel':
         specifier: 2.1.2
         version: 2.1.2(@opentelemetry/api-logs@0.216.0)(@opentelemetry/api@1.9.1)(@opentelemetry/instrumentation@0.216.0(@opentelemetry/api@1.9.1))(@opentelemetry/resources@2.7.1(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-logs@0.216.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-metrics@1.26.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.7.1(@opentelemetry/api@1.9.1))
@@ -315,7 +315,7 @@ importers:
         version: 1.1.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4)))(next@16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@6.0.3)))(vue@3.4.27(typescript@6.0.3))
       '@vercel/toolbar':
         specifier: 0.2.2
-        version: 0.2.2(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4)))(@vercel/analytics@1.3.2(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5))(@vercel/speed-insights@1.1.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4)))(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@6.0.3)))(vue@3.4.27(typescript@6.0.3)))(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4))
+        version: 0.2.2(e79cf3be767f820a3a514c212acabe3e)
       clsx:
         specifier: 2.1.1
         version: 2.1.1
@@ -3331,15 +3331,30 @@ packages:
   '@types/ws@8.18.1':
     resolution: {integrity: sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==}
 
-  '@vercel/analytics@1.3.2':
-    resolution: {integrity: sha512-n/Ws7skBbW+fUBMeg+jrT30+GP00jTHvCcL4fuVrShuML0uveEV/4vVUdvqEVnDgXIGfLm0GXW5EID2mCcRXhg==}
+  '@vercel/analytics@1.6.1':
+    resolution: {integrity: sha512-oH9He/bEM+6oKlv3chWuOOcp8Y6fo6/PSro8hEkgCW3pu9/OiCXiUpRUogDh3Fs3LH2sosDrx8CxeOLBEE+afg==}
     peerDependencies:
+      '@remix-run/react': ^2
+      '@sveltejs/kit': ^1 || ^2
       next: '>= 13'
-      react: ^18.0 || ^19.0 || ^19.0.0-rc
+      react: ^18 || ^19 || ^19.0.0-rc
+      svelte: '>= 4'
+      vue: ^3
+      vue-router: ^4
     peerDependenciesMeta:
+      '@remix-run/react':
+        optional: true
+      '@sveltejs/kit':
+        optional: true
       next:
         optional: true
       react:
+        optional: true
+      svelte:
+        optional: true
+      vue:
+        optional: true
+      vue-router:
         optional: true
 
   '@vercel/analytics@2.0.1':
@@ -9196,12 +9211,14 @@ snapshots:
     dependencies:
       '@types/node': 22.8.6
 
-  '@vercel/analytics@1.3.2(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)':
-    dependencies:
-      server-only: 0.0.1
+  '@vercel/analytics@1.6.1(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4)))(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@6.0.3)))(vue@3.4.27(typescript@6.0.3))':
     optionalDependencies:
+      '@sveltejs/kit': 1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4))
       next: 16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5)
       react: 19.2.5
+      svelte: 4.2.17
+      vue: 3.4.27(typescript@6.0.3)
+      vue-router: 4.3.2(vue@3.4.27(typescript@6.0.3))
 
   '@vercel/analytics@2.0.1(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4)))(next@16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@6.0.3)))(vue@3.4.27(typescript@6.0.3))':
     optionalDependencies:
@@ -9232,31 +9249,6 @@ snapshots:
       react: 19.2.5
       react-dom: 19.2.5(react@19.2.5)
 
-  ? '@vercel/microfrontends@2.0.1(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4)))(@vercel/analytics@1.3.2(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5))(@vercel/speed-insights@1.1.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4)))(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@6.0.3)))(vue@3.4.27(typescript@6.0.3)))(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4))'
-  : dependencies:
-      '@next/env': 15.5.4
-      '@types/md5': 2.3.6
-      ajv: 8.20.0
-      commander: 12.1.0
-      cookie: 1.0.2
-      fast-glob: 3.3.3
-      http-proxy: 1.18.1
-      jsonc-parser: 3.3.1
-      md5: 2.3.0
-      nanoid: 3.3.12
-      path-to-regexp: 6.2.1
-      semver: 7.7.4
-    optionalDependencies:
-      '@sveltejs/kit': 1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4))
-      '@vercel/analytics': 1.3.2(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)
-      '@vercel/speed-insights': 1.1.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4)))(next@16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@6.0.3)))(vue@3.4.27(typescript@6.0.3))
-      next: 16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5)
-      react: 19.2.5
-      react-dom: 19.2.5(react@19.2.5)
-      vite: 8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4)
-    transitivePeerDependencies:
-      - debug
-
   '@vercel/microfrontends@2.0.1(d7279066b39fb33017494dbf8826fb8f)':
     dependencies:
       '@next/env': 15.5.4
@@ -9274,6 +9266,31 @@ snapshots:
     optionalDependencies:
       '@sveltejs/kit': 1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4))
       '@vercel/analytics': 2.0.1(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4)))(next@16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@6.0.3)))(vue@3.4.27(typescript@6.0.3))
+      '@vercel/speed-insights': 1.1.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4)))(next@16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@6.0.3)))(vue@3.4.27(typescript@6.0.3))
+      next: 16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5)
+      react: 19.2.5
+      react-dom: 19.2.5(react@19.2.5)
+      vite: 8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4)
+    transitivePeerDependencies:
+      - debug
+
+  '@vercel/microfrontends@2.0.1(e79cf3be767f820a3a514c212acabe3e)':
+    dependencies:
+      '@next/env': 15.5.4
+      '@types/md5': 2.3.6
+      ajv: 8.20.0
+      commander: 12.1.0
+      cookie: 1.0.2
+      fast-glob: 3.3.3
+      http-proxy: 1.18.1
+      jsonc-parser: 3.3.1
+      md5: 2.3.0
+      nanoid: 3.3.12
+      path-to-regexp: 6.2.1
+      semver: 7.7.4
+    optionalDependencies:
+      '@sveltejs/kit': 1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4))
+      '@vercel/analytics': 1.6.1(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4)))(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@6.0.3)))(vue@3.4.27(typescript@6.0.3))
       '@vercel/speed-insights': 1.1.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4)))(next@16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@6.0.3)))(vue@3.4.27(typescript@6.0.3))
       next: 16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5)
       react: 19.2.5
@@ -9311,10 +9328,10 @@ snapshots:
       vue: 3.4.27(typescript@6.0.3)
       vue-router: 4.3.2(vue@3.4.27(typescript@6.0.3))
 
-  '@vercel/toolbar@0.2.2(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4)))(@vercel/analytics@1.3.2(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5))(@vercel/speed-insights@1.1.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4)))(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@6.0.3)))(vue@3.4.27(typescript@6.0.3)))(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4))':
+  '@vercel/toolbar@0.2.2(d7279066b39fb33017494dbf8826fb8f)':
     dependencies:
       '@tinyhttp/app': 1.3.0
-      '@vercel/microfrontends': 2.0.1(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4)))(@vercel/analytics@1.3.2(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5))(@vercel/speed-insights@1.1.0(@sveltejs/kit@1.30.4(svelte@4.2.17)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4)))(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react@19.2.5)(svelte@4.2.17)(vue-router@4.3.2(vue@3.4.27(typescript@6.0.3)))(vue@3.4.27(typescript@6.0.3)))(next@16.2.4(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.80.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@22.8.6)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.80.5)(terser@5.46.2)(yaml@2.8.4))
+      '@vercel/microfrontends': 2.0.1(d7279066b39fb33017494dbf8826fb8f)
       chokidar: 3.6.0
       execa: 5.1.1
       fast-glob: 3.3.3
@@ -9333,10 +9350,10 @@ snapshots:
       - debug
       - react-dom
 
-  '@vercel/toolbar@0.2.2(d7279066b39fb33017494dbf8826fb8f)':
+  '@vercel/toolbar@0.2.2(e79cf3be767f820a3a514c212acabe3e)':
     dependencies:
       '@tinyhttp/app': 1.3.0
-      '@vercel/microfrontends': 2.0.1(d7279066b39fb33017494dbf8826fb8f)
+      '@vercel/microfrontends': 2.0.1(e79cf3be767f820a3a514c212acabe3e)
       chokidar: 3.6.0
       execa: 5.1.1
       fast-glob: 3.3.3
