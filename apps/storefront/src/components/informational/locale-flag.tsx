@@ -2,6 +2,7 @@ import { byIso as countryLookup } from 'country-code-lookup';
 import Image from 'next/image';
 import type { ComponentProps, ReactNode } from 'react';
 
+import { FLAG_IMAGES_BASE_URL } from '@/utils/build-config';
 import type { Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 
@@ -43,8 +44,7 @@ export const LocaleFlag = ({
                 draggable={false}
                 loading={priority ? 'eager' : 'lazy'}
                 decoding="async"
-                // TODO: Don't hardcode to some random github pages repo.
-                src={`https://purecatamphetamine.github.io/country-flag-icons/3x2/${locale.country}.svg`}
+                src={`${FLAG_IMAGES_BASE_URL}/${locale.country}.svg`}
                 unoptimized={true}
             />
 

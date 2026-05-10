@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import type { ComponentProps } from 'react';
 
+import { FLAG_IMAGES_BASE_URL } from '@/utils/build-config';
 import type { Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 
@@ -28,8 +29,7 @@ export const CurrentLocaleFlag = ({
             loading="lazy"
             decoding="async"
             draggable={false}
-            // TODO: Don't hardcode to some random github pages repo.
-            src={`https://purecatamphetamine.github.io/country-flag-icons/3x2/${locale.country}.svg`}
+            src={`${FLAG_IMAGES_BASE_URL}/${locale.country}.svg`}
         />
     );
 };
