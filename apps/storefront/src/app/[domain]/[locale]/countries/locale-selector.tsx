@@ -7,6 +7,7 @@ import { useRef } from 'react';
 import Link from '@/components/link';
 import { useShop } from '@/components/shop/provider';
 import { Label } from '@/components/typography/label';
+import { FLAG_IMAGES_BASE_URL } from '@/utils/build-config';
 import { Locale } from '@/utils/locale';
 import styles from './countries.module.scss';
 
@@ -66,7 +67,7 @@ export default function LocaleSelector({ countries = [], locale }: LocaleSelecto
                         >
                             <div className={styles.flag}>
                                 <Image
-                                    src={`https://purecatamphetamine.github.io/country-flag-icons/3x2/${country.locale
+                                    src={`${FLAG_IMAGES_BASE_URL}/${country.locale
                                         .split('-')
                                         .at(-1)}.svg`}
                                     alt={country.country}
