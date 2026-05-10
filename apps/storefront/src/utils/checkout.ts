@@ -10,10 +10,10 @@ import type { TrackableContextValue } from '@/utils/trackable';
 
 // Const hacky workaround for ga4 cross-domain
 // taken from StackOverflow
-export const getCrossDomainLinkerParameter = (domain: string) => {
+export const getCrossDomainLinkerParameter = (checkoutOrigin: string) => {
     // create form element, give it an action, make it hidden and prevent the submit event
     const formNode = document.createElement('form');
-    formNode.action = `https://checkout.${domain}`; // TODO: This should be dependant on the tenant.
+    formNode.action = checkoutOrigin;
     formNode.style.opacity = '0';
     formNode.addEventListener('submit', (event) => {
         event.preventDefault();
@@ -98,6 +98,6 @@ export const Checkout = async ({
         console.error(error);
     }
 
-    const ga4 = getCrossDomainLinkerParameter(shop.domain);
+    const ga4 = getCrossDomainLinkerParameter(`https://${shop.commerceProvider.domain}`);
     window.location.href = `${url}${ga4 ? `${url.includes('?') ? '&' : '?'}_gl=${ga4}` : ''}`;
 };
