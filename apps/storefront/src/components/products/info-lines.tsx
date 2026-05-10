@@ -1,9 +1,11 @@
 import 'server-only';
 
+import type { OnlineShop } from '@nordcom/commerce-db';
 import { Check as CheckIcon } from 'lucide-react';
 import type { HTMLProps } from 'react';
 import type { Product } from '@/api/product';
 import { Label } from '@/components/typography/label';
+import { COMMERCE_DEFAULTS } from '@/utils/build-config';
 import { showProductInfoLines } from '@/utils/flags';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { getTranslations } from '@/utils/locale';
@@ -38,15 +40,20 @@ export type GetOrderByEstimateProps = {
     product?: Product;
     i18n: LocaleDictionary;
     locale: Locale;
+    processingTimeInDays: number;
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 
-export const GetOrderByEstimate = ({ product, i18n, className, ...props }: GetOrderByEstimateProps) => {
+export const GetOrderByEstimate = ({
+    product,
+    i18n,
+    processingTimeInDays,
+    className,
+    ...props
+}: GetOrderByEstimateProps) => {
     const { t } = getTranslations('product', i18n);
     if (!product) {
         return null;
     }
-
-    const processingTimeInDays = 5; // TODO: Make this configurable.
 
     return (
         <section className={cn('flex items-center justify-start gap-1', className)} {...props}>
@@ -58,22 +65,30 @@ export const GetOrderByEstimate = ({ product, i18n, className, ...props }: GetOr
 };
 
 export type InfoLinesProps = {
+    shop: OnlineShop;
     product?: Product;
     i18n: LocaleDictionary;
     locale: Locale;
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 
-const InfoLines = async ({ product, i18n, locale, className, ...props }: InfoLinesProps) => {
+const InfoLines = async ({ shop, product, i18n, locale, className, ...props }: InfoLinesProps) => {
     if (!product || !(await showProductInfoLines())) {
         return null;
     }
+
+    const processingTimeInDays = shop.commerce?.processingTimeInDays ?? COMMERCE_DEFAULTS.processingTimeInDays;
 
     return (
         <div className={cn('flex w-full select-none flex-col items-start gap-4 empty:hidden', className)} {...props}>
             {product.availableForSale ? (
                 <>
                     <StockStatus product={product} i18n={i18n} />
-                    <GetOrderByEstimate product={product} i18n={i18n} locale={locale} />
+                    <GetOrderByEstimate
+                        product={product}
+                        i18n={i18n}
+                        locale={locale}
+                        processingTimeInDays={processingTimeInDays}
+                    />
                 </>
             ) : null}
         </div>
