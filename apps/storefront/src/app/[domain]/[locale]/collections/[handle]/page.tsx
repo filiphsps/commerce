@@ -283,10 +283,14 @@ export default async function CollectionsCollectionPage({
             {!hasSlices || !hasCustomPageContentPosition ? (
                 <>
                     <Heading title={collection.title || collection.seo.title} />
-                    <ShopifyContent
-                        className="prose max-w-none"
-                        html={collection.descriptionHtml || collection.seo.description}
-                    />
+                    {collection.descriptionHtml ? (
+                        <ShopifyContent
+                            className="prose max-w-none"
+                            html={collection.descriptionHtml}
+                        />
+                    ) : collection.seo.description ? (
+                        <p className="prose max-w-none">{collection.seo.description}</p>
+                    ) : null}
                 </>
             ) : null}
 
