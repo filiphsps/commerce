@@ -2,7 +2,7 @@ import 'server-only';
 
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { shopifyContextTransform } from '@/utils/abstract-api';
+import { inContextTransform } from '@nordcom/commerce-shopify-graphql';
 
 export type ApiConfig = {
     uri: string;
@@ -28,7 +28,6 @@ export const createApolloClient = ({ uri, headers }: ApiConfig, shop: OnlineShop
             canonizeResults: true,
             addTypename: true,
 
-            // TODO: Validate that this is correct.
             typePolicies: {
                 Product: {
                     fields: {
@@ -39,20 +38,6 @@ export const createApolloClient = ({ uri, headers }: ApiConfig, shop: OnlineShop
                                 }
 
                                 return value.trim();
-                            },
-                        },
-                        descriptionHtml: {
-                            read(value) {
-                                if (!value || value.length <= 0) {
-                                    return '';
-                                }
-
-                                // Clean up the HTML.
-                                return value
-                                    .replaceAll('\n', '')
-                                    .replaceAll('<meta charset="UTF-8">', '')
-                                    .replaceAll(/data-[a-zA-Z0-9-]+="[^"]+"/g, '') // Remove all data-attributes.
-                                    .trim();
                             },
                         },
                         trackingParameters: {
@@ -73,7 +58,7 @@ export const createApolloClient = ({ uri, headers }: ApiConfig, shop: OnlineShop
                 },
             },
         }),
-        documentTransform: shopifyContextTransform,
+        documentTransform: inContextTransform,
         defaultOptions: {
             watchQuery: {
                 fetchPolicy: 'cache-and-network',
