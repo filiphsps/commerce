@@ -39,17 +39,12 @@ function makeRequest(): Request {
 describe('app/[domain]/sitemaps/[locale]/blogs.xml', () => {
     describe('GET', () => {
         it('returns 200 with XML content-type when blogs exist', async () => {
-            BlogsApiMock.mockResolvedValueOnce([
-                [{ handle: 'news' }],
-                undefined,
-            ]);
+            BlogsApiMock.mockResolvedValueOnce([[{ handle: 'news' }], undefined]);
             BlogApiMock.mockResolvedValueOnce([
                 {
                     handle: 'news',
                     articles: {
-                        edges: [
-                            { node: { handle: 'my-article', publishedAt: '2024-01-01T00:00:00Z' } },
-                        ],
+                        edges: [{ node: { handle: 'my-article', publishedAt: '2024-01-01T00:00:00Z' } }],
                     },
                 },
                 undefined,
@@ -64,10 +59,7 @@ describe('app/[domain]/sitemaps/[locale]/blogs.xml', () => {
         });
 
         it('includes blog and article handles in the sitemap body', async () => {
-            BlogsApiMock.mockResolvedValueOnce([
-                [{ handle: 'news' }],
-                undefined,
-            ]);
+            BlogsApiMock.mockResolvedValueOnce([[{ handle: 'news' }], undefined]);
             BlogApiMock.mockResolvedValueOnce([
                 {
                     handle: 'news',
@@ -105,10 +97,7 @@ describe('app/[domain]/sitemaps/[locale]/blogs.xml', () => {
         });
 
         it('returns valid XML with empty urlset when BlogApi returns no articles for a blog', async () => {
-            BlogsApiMock.mockResolvedValueOnce([
-                [{ handle: 'news' }],
-                undefined,
-            ]);
+            BlogsApiMock.mockResolvedValueOnce([[{ handle: 'news' }], undefined]);
             BlogApiMock.mockResolvedValueOnce([
                 {
                     handle: 'news',

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import ProductCardActions from '@/components/product-card/product-card-actions';
-import { render, screen } from '@/utils/test/react';
 import { mockProduct } from '@/utils/test/fixtures';
+import { render, screen } from '@/utils/test/react';
 
 let mockCartState: Record<string, any> = {
     cartReady: true,

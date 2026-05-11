@@ -38,7 +38,12 @@ describe('slices/navigation/Dropdown', () => {
     it('renders DropdownDefaultMenu when menu matches slice id', async () => {
         const slice = dropdownFixture();
         const result = await renderRSC(() => (
-            <Slice slice={slice} context={{ isHeader: false, menu: '__SLICE_MACHINE_TEST__' }} slices={[slice]} index={0} />
+            <Slice
+                slice={slice}
+                context={{ isHeader: false, menu: '__SLICE_MACHINE_TEST__' }}
+                slices={[slice]}
+                index={0}
+            />
         ));
         // DropdownDefaultMenu renders a nav element
         expect(result.container.querySelector('nav')).toBeTruthy();

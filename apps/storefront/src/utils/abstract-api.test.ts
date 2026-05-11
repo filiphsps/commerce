@@ -3,10 +3,9 @@ import { ApolloClient } from '@apollo/client';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { describe, expect, it, vi } from 'vitest';
 import { ApiBuilder, buildCacheTagArray } from '@/utils/abstract-api';
+import type { Locale } from '@/utils/locale';
 import { mockLocale } from '@/utils/test/fixtures/locale';
 import { mockShop } from '@/utils/test/fixtures/shop';
-
-import type { Locale } from '@/utils/locale';
 
 vi.mock('@apollo/client', async () => ({
     ...((await vi.importActual('@apollo/client')) as any),

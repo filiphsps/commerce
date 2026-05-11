@@ -29,13 +29,11 @@ describe('api', () => {
                 });
 
                 it('throws ProviderFetchError when errors are present', async () => {
-                    const api = makeApi(
-                        vi.fn().mockResolvedValue({ data: null, errors: [{ message: 'err' }] }),
-                    );
+                    const api = makeApi(vi.fn().mockResolvedValue({ data: null, errors: [{ message: 'err' }] }));
 
-                    await expect(
-                        RecommendationApi({ api, id: 'gid://shopify/Product/123' }),
-                    ).rejects.toMatchObject({ name: ProviderFetchError.name });
+                    await expect(RecommendationApi({ api, id: 'gid://shopify/Product/123' })).rejects.toMatchObject({
+                        name: ProviderFetchError.name,
+                    });
                 });
 
                 it('throws NotFoundError when recommendations list is empty', async () => {
@@ -46,9 +44,9 @@ describe('api', () => {
                         }),
                     );
 
-                    await expect(
-                        RecommendationApi({ api, id: 'gid://shopify/Product/123' }),
-                    ).rejects.toMatchObject({ name: NotFoundError.name });
+                    await expect(RecommendationApi({ api, id: 'gid://shopify/Product/123' })).rejects.toMatchObject({
+                        name: NotFoundError.name,
+                    });
                 });
 
                 it('returns recommendation list when data is present', async () => {

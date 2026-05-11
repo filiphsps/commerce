@@ -13,6 +13,5 @@ export const COMMERCE_DEFAULTS = {
 } as const;
 
 export const FLAG_IMAGES_BASE_URL =
-    process.env.NEXT_PUBLIC_FLAG_IMAGES_BASE_URL ??
-    'https://purecatamphetamine.github.io/country-flag-icons/3x2';
+    process.env.NEXT_PUBLIC_FLAG_IMAGES_BASE_URL ?? 'https://purecatamphetamine.github.io/country-flag-icons/3x2';
 /* c8 ignore stop */

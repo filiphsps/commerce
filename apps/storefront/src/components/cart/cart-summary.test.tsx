@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { CartSummary } from '@/components/cart/cart-summary';
-import { render, screen } from '@/utils/test/react';
 import { mockShop } from '@/utils/test/fixtures';
+import { render, screen } from '@/utils/test/react';
 
 const mockOnCheckout = vi.fn();
 

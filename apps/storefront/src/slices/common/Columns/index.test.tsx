@@ -33,9 +33,7 @@ describe('slices/common/Columns', () => {
         const slice = columnsFixture({ children: [] });
         const shop = mockShop();
         const locale = mockLocale();
-        const result = await renderRSC(() =>
-            Columns({ slice, context: { shop, locale }, slices: [slice], index: 0 }),
-        );
+        const result = await renderRSC(() => Columns({ slice, context: { shop, locale }, slices: [slice], index: 0 }));
         expect(result.container.querySelector('[data-slice-type="columns"]')).toBeTruthy();
     });
 });

@@ -1,5 +1,4 @@
-import { NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
-import { InvalidHandleError } from '@nordcom/commerce-errors';
+import { InvalidHandleError, NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
 import { describe, expect, it, vi } from 'vitest';
 
 import { ProductApi, ProductsApi, ProductsPaginationApi } from './product';

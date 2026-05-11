@@ -295,7 +295,12 @@ export const ProductApi = async ({ api, handle, fragment }: ProductOptions): Pro
                 handle,
             },
             {
-                tags: [`shopify.${api.shop().id}.product.${handle}`, 'product', handle, ...(fragment ? [md5(fragment).toString()] : [])],
+                tags: [
+                    `shopify.${api.shop().id}.product.${handle}`,
+                    'product',
+                    handle,
+                    ...(fragment ? [md5(fragment).toString()] : []),
+                ],
             },
         );
 
@@ -359,7 +364,13 @@ export const ProductsPaginationCountApi = async ({
                 }))(filters),
             },
             {
-                tags: [`shopify.${api.shop().id}.products`, 'products', 'pagination', 'count', ...(filtersTag ? [filtersTag] : [])],
+                tags: [
+                    `shopify.${api.shop().id}.products`,
+                    'products',
+                    'pagination',
+                    'count',
+                    ...(filtersTag ? [filtersTag] : []),
+                ],
             },
         );
 

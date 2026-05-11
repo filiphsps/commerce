@@ -29,9 +29,7 @@ describe('api', () => {
                 });
 
                 it('returns NotFoundError when no blogs are returned', async () => {
-                    const api = makeApi(
-                        vi.fn().mockResolvedValue({ data: { blogs: { edges: [] } }, errors: [] }),
-                    );
+                    const api = makeApi(vi.fn().mockResolvedValue({ data: { blogs: { edges: [] } }, errors: [] }));
                     const [result, error] = await BlogsApi({ api });
 
                     expect(result).toBeUndefined();
@@ -64,9 +62,7 @@ describe('api', () => {
                 });
 
                 it('returns NotFoundError when blogByHandle is null', async () => {
-                    const api = makeApi(
-                        vi.fn().mockResolvedValue({ data: { blogByHandle: null }, errors: [] }),
-                    );
+                    const api = makeApi(vi.fn().mockResolvedValue({ data: { blogByHandle: null }, errors: [] }));
                     const [result, error] = await BlogApi({ api, handle: 'missing' });
 
                     expect(result).toBeUndefined();
@@ -107,9 +103,7 @@ describe('api', () => {
                 });
 
                 it('returns NotFoundError when blogByHandle is null', async () => {
-                    const api = makeApi(
-                        vi.fn().mockResolvedValue({ data: { blogByHandle: null }, errors: [] }),
-                    );
+                    const api = makeApi(vi.fn().mockResolvedValue({ data: { blogByHandle: null }, errors: [] }));
                     const [result, error] = await BlogArticleApi({ api, handle: 'my-article' });
 
                     expect(result).toBeUndefined();

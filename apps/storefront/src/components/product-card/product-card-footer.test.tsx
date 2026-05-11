@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import ProductCardFooter from '@/components/product-card/product-card-footer';
-import { render } from '@/utils/test/react';
 import { mockProduct } from '@/utils/test/fixtures';
+import { render } from '@/utils/test/react';
 
 vi.mock('@shopify/hydrogen-react', async (importOriginal) => {
     const actual = await importOriginal<typeof import('@shopify/hydrogen-react')>();
@@ -58,11 +58,7 @@ describe('components', () => {
         describe('ProductCardFooter', () => {
             it('renders nothing when product is not provided', () => {
                 const { container } = render(
-                    <ProductCardFooter
-                        locale={{ code: 'en-US' } as any}
-                        i18n={{} as any}
-                        setSelected={vi.fn()}
-                    />,
+                    <ProductCardFooter locale={{ code: 'en-US' } as any} i18n={{} as any} setSelected={vi.fn()} />,
                 );
                 expect(container.firstChild).toBeNull();
             });

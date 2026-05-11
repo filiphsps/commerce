@@ -155,7 +155,7 @@ describe('storefront middleware — error rewrites', () => {
 
     afterEach(() => {
         vi.clearAllMocks();
-        delete process.env['VERCEL_AUTOMATION_BYPASS_SECRET'];
+        delete process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
     });
 
     it('rewrites to /status/unknown-shop/ when Shop.findByDomain throws NotFoundError', async () => {
@@ -183,7 +183,7 @@ describe('storefront middleware — error rewrites', () => {
     });
 
     it('forwards VERCEL_AUTOMATION_BYPASS_SECRET as x-vercel-protection-bypass on error rewrite', async () => {
-        process.env['VERCEL_AUTOMATION_BYPASS_SECRET'] = 'bypass-token-abc';
+        process.env.VERCEL_AUTOMATION_BYPASS_SECRET = 'bypass-token-abc';
         vi.mocked(Shop.findByDomain).mockRejectedValue(new NotFoundError('shop'));
 
         // Spy on NextResponse.rewrite so we can inspect the headers passed into the

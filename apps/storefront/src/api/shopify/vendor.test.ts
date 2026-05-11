@@ -51,9 +51,7 @@ describe('api', () => {
                 });
 
                 it('throws NotFoundError when products list is empty', async () => {
-                    const api = makeApi(
-                        vi.fn().mockResolvedValue({ data: { products: { edges: [] } }, errors: [] }),
-                    );
+                    const api = makeApi(vi.fn().mockResolvedValue({ data: { products: { edges: [] } }, errors: [] }));
 
                     await expect(VendorsApi({ api })).rejects.toMatchObject({ name: NotFoundError.name });
                 });

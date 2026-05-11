@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
-import { mockShop } from '@/utils/test/fixtures/shop';
 import { mockLocale } from '@/utils/test/fixtures/locale';
 import { vendorsFixture } from '@/utils/test/fixtures/prismic/vendors';
+import { mockShop } from '@/utils/test/fixtures/shop';
 import { renderRSC } from '@/utils/test/rsc';
 import VendorsSlice from './index';
 

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { InfoBar } from '@/components/header/info-bar';
-import { render, screen } from '@/utils/test/react';
 import { mockShop } from '@/utils/test/fixtures';
+import { render, screen } from '@/utils/test/react';
 
 vi.mock('@/api/navigation', () => ({
     MenuApi: vi.fn(),

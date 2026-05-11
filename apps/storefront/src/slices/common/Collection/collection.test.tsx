@@ -13,9 +13,7 @@ describe('slices/common/Collection/CollectionContainer', () => {
 
     it('renders section with data-slice-type attribute when children provided', async () => {
         const slice = collectionFixture();
-        const result = await renderRSC(() =>
-            CollectionContainer({ slice: slice as any, children: <div>child</div> }),
-        );
+        const result = await renderRSC(() => CollectionContainer({ slice: slice as any, children: <div>child</div> }));
         expect(result.container.querySelector('[data-slice-type="collection"]')).toBeTruthy();
     });
 
@@ -31,9 +29,7 @@ describe('slices/common/Collection/CollectionContainer', () => {
 
     it('does not render header when no handle is set', async () => {
         const slice = collectionFixture({ handle: null });
-        const result = await renderRSC(() =>
-            CollectionContainer({ slice: slice as any, children: <div>test</div> }),
-        );
+        const result = await renderRSC(() => CollectionContainer({ slice: slice as any, children: <div>test</div> }));
         // No h1/h2 heading when handle is absent
         expect(result.container.querySelector('header')).toBeNull();
     });

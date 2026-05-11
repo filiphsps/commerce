@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import ProductCard from '@/components/product-card/product-card';
-import { render } from '@/utils/test/react';
 import { mockProduct, mockShop } from '@/utils/test/fixtures';
+import { render } from '@/utils/test/react';
 
 vi.mock('@/utils/dictionary', () => ({
     getDictionary: vi.fn().mockResolvedValue({}),

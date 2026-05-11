@@ -42,8 +42,8 @@ vi.mock('@/components/link', () => ({
     default: ({ children, href }: any) => <a href={href}>{children}</a>,
 }));
 
-import { render } from '@/utils/test/react';
 import HeaderComponent from '@/components/header/header';
+import { render } from '@/utils/test/react';
 
 describe('components', () => {
     describe('header', () => {

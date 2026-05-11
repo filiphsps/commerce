@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import ProductCardOptions from '@/components/product-card/product-card-options';
-import { fireEvent, render, screen } from '@/utils/test/react';
 import { mockProduct } from '@/utils/test/fixtures';
+import { fireEvent, render, screen } from '@/utils/test/react';
 
 vi.mock('@/utils/locale', async (importOriginal) => {
     const actual = await importOriginal<typeof import('@/utils/locale')>();
@@ -9,7 +9,7 @@ vi.mock('@/utils/locale', async (importOriginal) => {
         ...actual,
         isSizeOption: () => false,
         formatWeight: (v: any) => String(v),
-        localizeWeight: (locale: any, v: any) => v,
+        localizeWeight: (_locale: any, v: any) => v,
     };
 });
 

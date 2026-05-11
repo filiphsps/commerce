@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import ProductCardContent from '@/components/product-card/product-card-content';
-import { render } from '@/utils/test/react';
 import { mockProduct } from '@/utils/test/fixtures';
+import { render } from '@/utils/test/react';
 
 vi.mock('@shopify/hydrogen-react', async (importOriginal) => {
     const actual = await importOriginal<typeof import('@shopify/hydrogen-react')>();
@@ -59,23 +59,14 @@ describe('components', () => {
     describe('product-card', () => {
         describe('ProductCardContent', () => {
             it('renders nothing when product is not provided', () => {
-                const { container } = render(
-                    <ProductCardContent
-                        locale={{ code: 'en-US' } as any}
-                        i18n={{} as any}
-                    />,
-                );
+                const { container } = render(<ProductCardContent locale={{ code: 'en-US' } as any} i18n={{} as any} />);
                 expect(container.firstChild).toBeNull();
             });
 
             it('renders price for a regular product', () => {
                 const product = makeProduct();
                 const { container } = render(
-                    <ProductCardContent
-                        data={product}
-                        locale={{ code: 'en-US' } as any}
-                        i18n={{} as any}
-                    />,
+                    <ProductCardContent data={product} locale={{ code: 'en-US' } as any} i18n={{} as any} />,
                 );
                 // Price component should render something with the price amount
                 expect(container.textContent).toMatch(/10/);
@@ -100,11 +91,7 @@ describe('components', () => {
                 });
 
                 const { container } = render(
-                    <ProductCardContent
-                        data={product}
-                        locale={{ code: 'en-US' } as any}
-                        i18n={{} as any}
-                    />,
+                    <ProductCardContent data={product} locale={{ code: 'en-US' } as any} i18n={{} as any} />,
                 );
                 // Both the sale price (5) and compare-at price (10) should appear
                 expect(container.textContent).toMatch(/5/);

@@ -61,7 +61,11 @@ describe('utils/webhooks/shopify', () => {
         });
 
         it('emits broad sweep for inventory_levels/update', () => {
-            const tags = parseShopifyWebhook({ shop, topic: 'inventory_levels/update', body: { inventory_item_id: 1 } });
+            const tags = parseShopifyWebhook({
+                shop,
+                topic: 'inventory_levels/update',
+                body: { inventory_item_id: 1 },
+            });
             expect(tags).toEqual(['shopify.shop-1']);
         });
 

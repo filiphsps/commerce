@@ -8,7 +8,7 @@ vi.mock('@/utils/dictionary', () => ({
 
 vi.mock('@/components/cms/slice-zone', () => ({
     SliceZone: Object.assign(
-        ({ data }: { data?: unknown[] }) => <div data-testid="slice-zone-output">{(data?.length ?? 0)} slices</div>,
+        ({ data }: { data?: unknown[] }) => <div data-testid="slice-zone-output">{data?.length ?? 0} slices</div>,
         { skeleton: () => <div data-testid="slice-zone-skeleton" /> },
     ),
 }));
@@ -27,9 +27,7 @@ describe('components', () => {
     describe('PrismicPage', () => {
         it('returns null when no page and no slices are provided', async () => {
             const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-            const ui = await renderRSC(() =>
-                PrismicPage({ shop: baseShop, locale: baseLocale, handle: 'test' }),
-            );
+            const ui = await renderRSC(() => PrismicPage({ shop: baseShop, locale: baseLocale, handle: 'test' }));
             expect(ui.container.textContent).toBe('');
             expect(warnSpy).toHaveBeenCalled();
             ui.unmount();

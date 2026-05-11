@@ -31,13 +31,12 @@ vi.mock('@/components/link', () => ({
     default: ({ children, href }: any) => <a href={href}>{children}</a>,
 }));
 
-import { get } from '@vercel/edge-config';
 import { headers } from 'next/headers';
 import { getAuthSession } from '@/auth';
 import { HeaderAccountSection } from '@/components/header/header-account-section';
-import { render, screen } from '@/utils/test/react';
 import { readFlag } from '@/utils/flags-cache-safe';
 import { Locale, type LocaleDictionary } from '@/utils/locale';
+import { render, screen } from '@/utils/test/react';
 
 const mockShop = { id: 'shop-1', domain: 'example.com' } as unknown as OnlineShop;
 const mockI18n = {} as unknown as LocaleDictionary;

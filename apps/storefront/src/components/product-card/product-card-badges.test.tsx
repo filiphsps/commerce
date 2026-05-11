@@ -1,13 +1,13 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import ProductCardBadges from '@/components/product-card/product-card-badges';
-import { render, screen } from '@/utils/test/react';
 import { mockProduct } from '@/utils/test/fixtures';
+import { render } from '@/utils/test/react';
 
 describe('components', () => {
     describe('product-card', () => {
         describe('ProductCardBadges', () => {
             it('renders nothing when product has no variants', () => {
-                const product = mockProduct({
+                const _product = mockProduct({
                     variants: { edges: [], pageInfo: {} },
                     tags: [],
                 }) as any;

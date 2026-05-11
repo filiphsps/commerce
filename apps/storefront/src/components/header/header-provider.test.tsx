@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { HeaderProvider, useHeaderMenu } from '@/components/header/header-provider';
 import { act, render, screen } from '@/utils/test/react';
-import { MissingContextProviderError } from '@nordcom/commerce-errors';
 
 vi.mock('next/navigation', async () => ({
     usePathname: vi.fn().mockReturnValue('/en-US/'),

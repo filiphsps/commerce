@@ -16,9 +16,9 @@ vi.mock('@shopify/hydrogen-react', async () => {
     const actual = (await vi.importActual('@shopify/hydrogen-react')) as Record<string, unknown>;
     return {
         ...actual,
-        flattenConnection: vi.fn().mockImplementation((connection: { edges: { node: unknown }[] }) =>
-            connection.edges.map((e) => e.node),
-        ),
+        flattenConnection: vi
+            .fn()
+            .mockImplementation((connection: { edges: { node: unknown }[] }) => connection.edges.map((e) => e.node)),
         createStorefrontClient: () => ({
             getStorefrontApiUrl: () => '',
             getPublicTokenHeaders: () => ({}),

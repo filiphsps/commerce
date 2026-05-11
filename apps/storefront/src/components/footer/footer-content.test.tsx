@@ -32,8 +32,8 @@ vi.mock('@/utils/prismic', () => ({
 
 import { FooterApi } from '@/api/footer';
 import FooterContent from '@/components/footer/footer-content';
-import { render, screen } from '@/utils/test/react';
 import { mockShop } from '@/utils/test/fixtures';
+import { render, screen } from '@/utils/test/react';
 
 const mockLocale = { code: 'en-US' } as any;
 const mockI18n = {} as any;

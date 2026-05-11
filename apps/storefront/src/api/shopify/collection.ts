@@ -180,7 +180,12 @@ export const CollectionApi = async (
             }))(filters),
         },
         {
-            tags: [`shopify.${api.shop().id}.collection.${handle}`, 'collection', handle, ...(filtersTag ? [filtersTag] : [])],
+            tags: [
+                `shopify.${api.shop().id}.collection.${handle}`,
+                'collection',
+                handle,
+                ...(filtersTag ? [filtersTag] : []),
+            ],
         },
     );
 
@@ -250,7 +255,14 @@ export const CollectionPaginationCountApi = async ({
                 }))(filters),
             },
             {
-                tags: [`shopify.${api.shop().id}.collection.${handle}`, 'collection', handle, 'pagination', 'count', ...(filtersTag ? [filtersTag] : [])],
+                tags: [
+                    `shopify.${api.shop().id}.collection.${handle}`,
+                    'collection',
+                    handle,
+                    'pagination',
+                    'count',
+                    ...(filtersTag ? [filtersTag] : []),
+                ],
             },
         );
 
@@ -298,7 +310,8 @@ export const CollectionsApi = async ({
         hasProducts: boolean;
     }>
 > => {
-    const { data, errors } = await api.query<{ collections: QueryRoot['collections'] }>(gql`
+    const { data, errors } = await api.query<{ collections: QueryRoot['collections'] }>(
+        gql`
         query collections {
             collections(first: 250) {
                 edges {
@@ -317,7 +330,10 @@ export const CollectionsApi = async ({
                 }
             }
         }
-    `, undefined, { tags: [`shopify.${api.shop().id}.collections`, 'collections'] });
+    `,
+        undefined,
+        { tags: [`shopify.${api.shop().id}.collections`, 'collections'] },
+    );
 
     if (errors && errors.length > 0) {
         throw new ProviderFetchError(errors);

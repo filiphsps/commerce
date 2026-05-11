@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import ProductCardTitle from '@/components/product-card/product-card-title';
-import { render, screen } from '@/utils/test/react';
 import { mockProduct, mockShop } from '@/utils/test/fixtures';
+import { render, screen } from '@/utils/test/react';
 
 describe('components', () => {
     describe('product-card', () => {
