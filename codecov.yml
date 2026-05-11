@@ -1,4 +1,23 @@
 coverage:
     status:
-        project: off
-        patch: off
+        project:
+            storefront:
+                target: 80%
+                threshold: 1%
+                flags: [storefront]
+            admin:
+                target: 60%
+                threshold: 1%
+                flags: [admin]
+        patch:
+            default:
+                target: 80%
+                threshold: 5%
+
+flags:
+    storefront:
+        paths:
+            - apps/storefront/
+    admin:
+        paths:
+            - apps/admin/

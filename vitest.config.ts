@@ -58,6 +58,24 @@ export default defineConfig({
             provider: 'v8',
             reporter: ['json', 'json-summary', 'text'],
             reportOnFailure: true,
+            // Per-glob regression floors. Spec target is 80% storefront / 60% admin lines.
+            // Current achieved levels (after Wave 2): storefront ~73% lines, admin ~67% lines.
+            // The floors below act as anti-regression gates; raise toward the spec target
+            // as additional tests land.
+            thresholds: {
+                'apps/storefront/src/**': {
+                    lines: 70,
+                    branches: 55,
+                    functions: 80,
+                    statements: 70,
+                },
+                'apps/admin/src/**': {
+                    lines: 65,
+                    branches: 45,
+                    functions: 50,
+                    statements: 65,
+                },
+            },
         },
 
         typecheck: {
