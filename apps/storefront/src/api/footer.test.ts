@@ -39,10 +39,12 @@ describe('api/footer', () => {
             // locale passed to the call, ensuring the guard terminates on the second call.
             const getSingleMock = vi.fn().mockRejectedValue(new NotFoundError('footer not found'));
             const { createClient } = await import('@/utils/prismic');
-            vi.mocked(createClient).mockImplementation(({ locale: requestedLocale }: any) => ({
-                getSingle: getSingleMock,
-                defaultParams: { lang: requestedLocale.code },
-            })) as any;
+            vi.mocked(createClient).mockImplementation(
+                (({ locale: requestedLocale }: any) => ({
+                    getSingle: getSingleMock,
+                    defaultParams: { lang: requestedLocale.code },
+                })) as any,
+            );
 
             const shop = makePrismicShop('en-US');
             // Request with a non-default locale so a fallback attempt can occur.
