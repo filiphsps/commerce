@@ -91,7 +91,7 @@ describe('components', () => {
         it('converts grams to ounces when locale is en-US', async () => {
             render(<ProductOptions />);
             const matches = await screen.findAllByText(/oz/i);
-            expect(matches.length).toBeGreaterThan(0);
+            expect(matches.length).toBe(3);
         });
 
         it('disables options that are out of stock or unavailable', async () => {
