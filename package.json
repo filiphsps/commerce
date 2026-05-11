@@ -29,6 +29,7 @@
         "typecheck": "turbo run typecheck",
         "test": "dotenv -c -- vitest run --coverage",
         "test:watch": "dotenv -c -- vitest watch",
+        "test:e2e": "dotenv -c -- turbo run test:e2e",
         "slicemachine": "turbo run slicemachine --env-mode=loose"
     },
     "author": {
