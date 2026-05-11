@@ -19,6 +19,9 @@ export type FooterContentProps = {
 };
 const FooterContent = async ({ locale, i18n, shop }: FooterContentProps) => {
     const footer = await FooterApi({ shop, locale });
+    if (!footer) {
+        return null;
+    }
 
     const { t } = getTranslations('common', i18n);
 

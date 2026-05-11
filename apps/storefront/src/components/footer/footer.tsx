@@ -21,6 +21,9 @@ export type FooterProps = {
 };
 const Footer = async ({ shop, locale, i18n }: FooterProps) => {
     const footer = await FooterApi({ shop, locale });
+    if (!footer) {
+        return null;
+    }
 
     // TODO: This should be `design.footer`.
     const { logo } = shop.design.header;

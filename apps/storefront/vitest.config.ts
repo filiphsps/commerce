@@ -58,8 +58,5 @@ export default defineProject({
         },
 
         exclude: [...configDefaults.exclude, './src/utils/flags.ts'],
-        coverage: {
-            exclude: [...configDefaults.exclude, './src/utils/flags.ts'],
-        },
     },
 });

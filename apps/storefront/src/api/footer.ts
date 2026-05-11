@@ -11,7 +11,10 @@ export async function FooterApi({
 }: {
     shop: OnlineShop;
     locale: Locale;
-}): Promise<FooterDocument['data']> {
+}): Promise<FooterDocument['data'] | null> {
+    // TODO: Provide a Shopify equivalent (e.g. fetch from shop metafields or Storefront API).
+    //       For now, non-Prismic shops degrade gracefully — caller renders without this data.
+    if (shop.contentProvider.type !== 'prismic') return null;
     const client = createClient({ shop, locale });
 
     return unstable_cache(
