@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { capitalize, getTranslations, isSizeOption, Locale, usesImperialUnits } from '@/utils/locale';
+import { mockShop } from '@/utils/test/fixtures/shop';
 
 describe('utils', () => {
     describe('Locale', () => {
@@ -130,6 +131,18 @@ describe('utils', () => {
 
             it('returns en-US when shop has i18n but no defaultLocale', () => {
                 const shop = { i18n: {} } as any;
+                const locale = Locale.fallbackForShop(shop);
+                expect(locale.code).toBe('en-US');
+            });
+
+            it('returns a Locale matching shop.i18n.defaultLocale via mockShop fixture', () => {
+                const shop = mockShop({ overrides: { i18n: { defaultLocale: 'sv-SE' } as any } as any });
+                const locale = Locale.fallbackForShop(shop);
+                expect(locale.code).toBe('sv-SE');
+            });
+
+            it('returns Locale.default when shop.i18n is undefined via mockShop fixture', () => {
+                const shop = mockShop({ overrides: { i18n: undefined as any } as any });
                 const locale = Locale.fallbackForShop(shop);
                 expect(locale.code).toBe('en-US');
             });
