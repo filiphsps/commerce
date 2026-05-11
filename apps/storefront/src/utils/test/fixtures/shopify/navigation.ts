@@ -1,0 +1,14 @@
+type DeepPartial<T> = { [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K] };
+
+export function mockNavigation(overrides: DeepPartial<any> = {}) {
+    return {
+        id: 'gid://shopify/Menu/1',
+        handle: 'main-menu',
+        title: 'Main Menu',
+        items: [
+            { id: 'gid://shopify/MenuItem/1', title: 'Home', url: '/', items: [] },
+            { id: 'gid://shopify/MenuItem/2', title: 'Shop', url: '/collections/all/', items: [] },
+        ],
+        ...overrides,
+    };
+}
