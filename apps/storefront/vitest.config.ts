@@ -57,6 +57,6 @@ export default defineProject({
             },
         },
 
-        exclude: [...configDefaults.exclude, './src/utils/flags.ts'],
+        exclude: [...configDefaults.exclude, './src/utils/flags.ts', './e2e/**'],
     },
 });
