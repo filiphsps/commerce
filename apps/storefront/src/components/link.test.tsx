@@ -39,9 +39,12 @@ describe('components', () => {
             expect(link?.getAttribute('href')).toBe(`/en-US${href}`);
         });
 
-        it.skip('should throw an error if `href` is not a string', () => {
+        it('returns null and logs an error when `href` is not a string', () => {
+            const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
             const href = { invalid: 'href' };
-            expect(() => render(<Link href={href as any} />)).toThrowError();
+            const { container } = render(<Link href={href as any} />);
+            expect(container.querySelector('a')).toBeNull();
+            expect(errorSpy).toHaveBeenCalled();
         });
 
         it('should add the locale to the `href` if it is not already present', () => {
