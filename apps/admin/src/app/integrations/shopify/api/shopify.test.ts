@@ -64,7 +64,7 @@ describe('integrations/shopify/api/shopify', () => {
         const { shopifyAdminApi } = await import('./shopify');
 
         // Walk the top-level values of the returned object looking for the raw secret string.
-        const allValues = Object.values(shopifyAdminApi as Record<string, unknown>);
+        const allValues = Object.values(shopifyAdminApi as unknown as Record<string, unknown>);
         const secretFound = allValues.some((v) => v === SECRET_KEY);
         expect(secretFound).toBe(false);
     });
