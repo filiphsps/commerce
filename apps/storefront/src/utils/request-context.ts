@@ -4,7 +4,7 @@ import { headers } from 'next/headers';
 import { cache } from 'react';
 import { Locale } from '@/utils/locale';
 
-export type RequestContext = { shop: OnlineShop; locale: Readonly<{ code: string; language: string; country?: string }> };
+export type RequestContext = { shop: OnlineShop; locale: ReturnType<typeof Locale.from> };
 
 export const getRequestContext = cache(async (): Promise<RequestContext | null> => {
     try {
@@ -13,12 +13,15 @@ export const getRequestContext = cache(async (): Promise<RequestContext | null> 
         const localeCode = h.get('x-locale');
         if (!domain || !localeCode) return null;
 
-        const shop = await Shop.findByDomain(domain);
+        const shop = await Shop.findByDomain(domain, { convert: true });
         const locale = Locale.from(localeCode);
         if (!shop || !locale) return null;
 
         return { shop: shop as OnlineShop, locale };
-    } catch {
+    } catch (error) {
+        if (process.env.NODE_ENV !== 'test') {
+            console.error('[request-context] getRequestContext failed:', error);
+        }
         return null;
     }
 });
