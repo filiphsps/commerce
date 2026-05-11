@@ -10,7 +10,7 @@ import type {
     Simplify,
 } from '@/prismic/types';
 import { Locale } from '@/utils/locale';
-import { createClient } from '@/utils/prismic';
+import { buildPrismicCacheTags, createClient } from '@/utils/prismic';
 
 export const PagesApi = async ({
     shop,
@@ -34,7 +34,7 @@ export const PagesApi = async ({
 
                 if (Error.isNotFound(error)) {
                     if (!Locale.isDefault(_locale)) {
-                        return await PagesApi({ shop, locale: Locale.default }); // Try again with default locale.
+                        return await PagesApi({ shop, locale: Locale.fallbackForShop(shop) }); // Try again with default locale.
                     }
 
                     return null;
@@ -45,14 +45,10 @@ export const PagesApi = async ({
                 return null;
             }
         },
-        [
-            shop.domain,
-            Locale.default.code, // TODO: This should be the actual locale, but we're calling prismic.io's API way too much.
-            /* locale.code */
-        ],
+        [shop.domain, locale.code, 'pages'],
         {
             revalidate: 86_400, // 24hrs.
-            tags: ['prismic', shop.domain, locale.code],
+            tags: buildPrismicCacheTags({ shop, locale }),
         },
     )();
 };
@@ -106,7 +102,7 @@ export const PageApi = async <T extends keyof PageTypeMapping | 'custom_page' = 
 
                 if (Error.isNotFound(error)) {
                     if (!Locale.isDefault(_locale)) {
-                        return await PageApi({ shop, locale: Locale.default, type, handle }); // Try again with default locale.
+                        return await PageApi({ shop, locale: Locale.fallbackForShop(shop), type, handle }); // Try again with default locale.
                     }
 
                     return null;
@@ -117,14 +113,10 @@ export const PageApi = async <T extends keyof PageTypeMapping | 'custom_page' = 
                 return null;
             }
         },
-        [
-            shop.domain,
-            Locale.default.code, // TODO: This should be the actual locale, but we're calling prismic.io's API way too much.
-            /* locale.code */
-        ],
+        [shop.domain, locale.code, type, handle],
         {
             revalidate: 86_400, // 24hrs.
-            tags: ['prismic', shop.domain, locale.code, `page.${handle}`],
+            tags: buildPrismicCacheTags({ shop, locale, doc: { type, uid: handle } }),
         },
     )(handle, type as T);
 };

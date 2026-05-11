@@ -3,7 +3,7 @@ import { Error, NotFoundError } from '@nordcom/commerce-errors';
 import { unstable_cache } from 'next/cache';
 import type { HeaderDocument, HeaderDocumentData, MenuDocument, MenuDocumentData } from '@/prismic/types';
 import { Locale } from '@/utils/locale';
-import { createClient } from '@/utils/prismic';
+import { buildPrismicCacheTags, createClient } from '@/utils/prismic';
 
 export type NavigationItem = {
     title: string;
@@ -29,7 +29,7 @@ export const MenuApi = async ({ shop, locale }: { shop: OnlineShop; locale: Loca
 
                 if (Error.isNotFound(error)) {
                     if (!Locale.isDefault(_locale)) {
-                        return await MenuApi({ shop, locale: Locale.default }); // Try again with default locale.
+                        return await MenuApi({ shop, locale: Locale.fallbackForShop(shop) }); // Try again with default locale.
                     }
 
                     throw new NotFoundError(`"Menu" with the locale "${locale.code}"`);
@@ -40,14 +40,10 @@ export const MenuApi = async ({ shop, locale }: { shop: OnlineShop; locale: Loca
                 throw error;
             }
         },
-        [
-            shop.domain,
-            Locale.default.code, // TODO: This should be the actual locale, but we're calling prismic.io's API way too much.
-            /* locale.code */
-        ],
+        [shop.domain, locale.code, 'menu'],
         {
             revalidate: 86_400, // 24hrs.
-            tags: ['prismic', shop.domain, locale.code],
+            tags: buildPrismicCacheTags({ shop, locale, doc: { type: 'menu', uid: 'menu' } }),
         },
     )();
 };
@@ -66,7 +62,7 @@ export async function HeaderApi({ shop, locale }: { shop: OnlineShop; locale: Lo
 
                 if (Error.isNotFound(error)) {
                     if (!Locale.isDefault(_locale)) {
-                        return await HeaderApi({ shop, locale: Locale.default }); // Try again with default locale.
+                        return await HeaderApi({ shop, locale: Locale.fallbackForShop(shop) }); // Try again with default locale.
                     }
 
                     throw new NotFoundError(`"Header" with the locale "${locale.code}"`);
@@ -77,14 +73,10 @@ export async function HeaderApi({ shop, locale }: { shop: OnlineShop; locale: Lo
                 throw error;
             }
         },
-        [
-            shop.domain,
-            Locale.default.code, // TODO: This should be the actual locale, but we're calling prismic.io's API way too much.
-            /* locale.code */
-        ],
+        [shop.domain, locale.code, 'header'],
         {
             revalidate: 86_400, // 24hrs.
-            tags: ['prismic', shop.domain, locale.code],
+            tags: buildPrismicCacheTags({ shop, locale, doc: { type: 'header', uid: 'header' } }),
         },
     )();
 }
