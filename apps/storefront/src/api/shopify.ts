@@ -11,10 +11,27 @@ import { createApolloClient } from '@/api/client';
 import { ApiBuilder } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
 
+/**
+ * Reads the buyer's forwarded IP from request headers. MUST be called outside any
+ * `'use cache'` scope — Next.js 16 forbids `headers()` inside cached functions.
+ * Pass the result to `ShopifyApolloApiClient({ shop, buyerIp })` when buyer-IP
+ * routing matters (e.g. cart, checkout).
+ */
+export async function getBuyerIp(): Promise<string | undefined> {
+    try {
+        const head = await headers();
+        return head.get('CF-Connecting-IP') || head.get('x-forwarded-for') || head.get('x-real-ip') || undefined;
+    } catch {
+        return undefined;
+    }
+}
+
 export const ShopifyApiConfig = async ({
     shop: { domain },
+    buyerIp,
 }: {
     shop: OnlineShop;
+    buyerIp?: string;
 }): Promise<{
     public: () => ApiConfig;
     private: () => ApiConfig;
@@ -44,21 +61,6 @@ export const ShopifyApiConfig = async ({
         contentType: 'json',
     });
 
-    /**
-     * @todo TODO: Should probably find a better way since this forces routes into
-     * dynamic rendering unless dynamic has been set to `force-static`.
-     */
-    let buyerIp: string | undefined;
-    try {
-        const head = await headers();
-
-        const forwarded =
-            head.get('CF-Connecting-IP') || head.get('x-forwarded-for') || head.get('x-real-ip') || undefined;
-        if (forwarded) {
-            buyerIp = forwarded;
-        }
-    } catch {} // Discard errors.
-
     return {
         public: () => ({
             uri: api.getStorefrontApiUrl(),
@@ -78,10 +80,16 @@ type ShopifyApiOptions = {
     shop: OnlineShop;
     locale?: Locale;
     apiConfig?: StorefrontApiConfig;
+    buyerIp?: string;
 };
 
-export const ShopifyApolloApiClient = async ({ shop, locale = Locale.default, apiConfig }: ShopifyApiOptions) => {
-    const configBuilder = apiConfig || (await ShopifyApiConfig({ shop }));
+export const ShopifyApolloApiClient = async ({
+    shop,
+    locale = Locale.default,
+    apiConfig,
+    buyerIp,
+}: ShopifyApiOptions) => {
+    const configBuilder = apiConfig || (await ShopifyApiConfig({ shop, buyerIp }));
 
     let config: ApiConfig | null = null;
     try {
@@ -104,9 +112,9 @@ export const ShopifyApolloApiClient = async ({ shop, locale = Locale.default, ap
 /**
  * Shopify API client using the fetch API instead of Apollo.
  */
-export const ShopifyApiClient = async ({ shop, locale = Locale.default, apiConfig }: ShopifyApiOptions) => {
+export const ShopifyApiClient = async ({ shop, locale = Locale.default, apiConfig, buyerIp }: ShopifyApiOptions) => {
     // TODO: Support public headers too.
-    const config = (apiConfig || (await ShopifyApiConfig({ shop }))).private();
+    const config = (apiConfig || (await ShopifyApiConfig({ shop, buyerIp }))).private();
 
     return ApiBuilder({
         shop,
