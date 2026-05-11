@@ -1,6 +1,11 @@
 import { defineConfig, devices } from '@playwright/test';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
+    globalSetup: resolve(__dirname, './e2e/fixtures/seed.ts'),
     testDir: './e2e',
     fullyParallel: true,
     forbidOnly: !!process.env.CI,
