@@ -60,17 +60,17 @@ export default async function globalSetup(): Promise<void> {
 
     let connection: mongoose.Connection | undefined;
     try {
-        const conn = await mongoose.createConnection(uri, {
-            autoCreate: true,
-            autoIndex: true,
-            bufferCommands: false,
-        }).asPromise();
+        const conn = await mongoose
+            .createConnection(uri, {
+                autoCreate: true,
+                autoIndex: true,
+                bufferCommands: false,
+            })
+            .asPromise();
 
         connection = conn;
 
-        const ShopModel =
-            conn.models['Shop'] ??
-            conn.model('Shop', ShopSchema);
+        const ShopModel = conn.models.Shop ?? conn.model('Shop', ShopSchema);
 
         const existing = await ShopModel.findOne({ domain: TEST_DOMAIN }).lean().exec();
         if (existing) {

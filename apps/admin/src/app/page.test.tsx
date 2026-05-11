@@ -48,8 +48,8 @@ vi.mock('@nordcom/nordstar', () => ({
 
 vi.mock('lucide-react', () => ({ Settings: () => <svg /> }));
 
-import React from 'react';
 import { within } from '@testing-library/react';
+import type React from 'react';
 import { renderRSC } from '@/utils/test/rsc';
 import Overview from './page';
 

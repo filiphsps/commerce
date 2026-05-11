@@ -20,7 +20,7 @@ vi.mock('next-auth/react', () => ({
 //   2. signOut() is invoked with the expected callbackUrl on mount.
 // ------------------------------------------------------------------
 
-import React from 'react';
+import type React from 'react';
 import { LogoutAction } from './logout-action';
 
 describe('(auth)/auth/logout/logout-action', () => {

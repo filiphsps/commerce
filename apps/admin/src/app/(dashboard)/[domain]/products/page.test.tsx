@@ -33,15 +33,15 @@ vi.mock('@nordcom/commerce-db', () => ({
 }));
 
 vi.mock('@nordcom/commerce-errors', () => ({
-    Error: { isNotFound: (e: unknown) => (e instanceof globalThis.Error && e.message === 'NOT_FOUND') },
+    Error: { isNotFound: (e: unknown) => e instanceof globalThis.Error && e.message === 'NOT_FOUND' },
 }));
 
 vi.mock('@nordcom/nordstar', () => ({
     Heading: ({ children }: { children: React.ReactNode }) => <h1>{children}</h1>,
 }));
 
-import React from 'react';
 import { within } from '@testing-library/react';
+import type React from 'react';
 import { renderRSC } from '@/utils/test/rsc';
 import ShopProductsPage from './page';
 

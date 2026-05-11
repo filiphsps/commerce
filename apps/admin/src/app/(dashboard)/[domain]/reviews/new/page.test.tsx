@@ -37,7 +37,7 @@ vi.mock('@nordcom/nordstar', () => ({
     Label: ({ children }: { children: React.ReactNode }) => <label>{children}</label>,
 }));
 
-import React from 'react';
+import type React from 'react';
 
 describe('(dashboard)/[domain]/reviews/new/page', () => {
     const validParams = Promise.resolve({ domain: 'example.myshopify.com' });

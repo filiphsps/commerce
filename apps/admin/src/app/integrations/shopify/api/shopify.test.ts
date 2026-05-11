@@ -39,7 +39,7 @@ describe('integrations/shopify/api/shopify', () => {
         await import('./shopify');
 
         const callArg = mockShopifyApi.mock.calls[0]?.[0] as Record<string, unknown>;
-        expect(callArg?.['apiKey']).toBe(API_KEY);
+        expect(callArg?.apiKey).toBe(API_KEY);
     });
 
     it('passes the secret key from environment variable (not hard-coded)', async () => {
@@ -47,7 +47,7 @@ describe('integrations/shopify/api/shopify', () => {
 
         const callArg = mockShopifyApi.mock.calls[0]?.[0] as Record<string, unknown>;
         // Secret must come from env, not a hard-coded literal.
-        expect(callArg?.['apiSecretKey']).toBe(SECRET_KEY);
+        expect(callArg?.apiSecretKey).toBe(SECRET_KEY);
     });
 
     it('secret key is NOT directly visible on the exported shopifyAdminApi object', async () => {
@@ -74,12 +74,7 @@ describe('integrations/shopify/api/shopify', () => {
 
         const callArg = mockShopifyApi.mock.calls[0]?.[0] as { scopes?: string[] };
         expect(callArg?.scopes).toEqual(
-            expect.arrayContaining([
-                'read_products',
-                'read_orders',
-                'write_orders',
-                'read_all_orders',
-            ]),
+            expect.arrayContaining(['read_products', 'read_orders', 'write_orders', 'read_all_orders']),
         );
     });
 

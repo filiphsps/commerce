@@ -65,7 +65,7 @@ export default async function globalSetup(): Promise<void> {
 
         connection = conn;
 
-        const UserModel = conn.models['User'] ?? conn.model('User', UserSchema);
+        const UserModel = conn.models.User ?? conn.model('User', UserSchema);
 
         const existing = await UserModel.findOne({ email: TEST_EMAIL }).lean().exec();
         if (existing) {
