@@ -58,5 +58,28 @@ describe('utils/webhooks/shopify', () => {
             const tags = parseShopifyWebhook({ shop, topic: 'products/update', body: {} });
             expect(tags).toEqual(['shopify.shop-1']);
         });
+
+        it('emits per-page tag for pages/update', () => {
+            const tags = parseShopifyWebhook({ shop, topic: 'pages/update', body: { handle: 'about' } });
+            expect(tags).toContain('shopify.shop-1.page.about');
+            expect(tags).toContain('shopify.shop-1');
+        });
+
+        it('emits per-page tag for pages/create', () => {
+            const tags = parseShopifyWebhook({ shop, topic: 'pages/create', body: { handle: 'faq' } });
+            expect(tags).toContain('shopify.shop-1.page.faq');
+            expect(tags).toContain('shopify.shop-1');
+        });
+
+        it('emits per-page tag for pages/delete', () => {
+            const tags = parseShopifyWebhook({ shop, topic: 'pages/delete', body: { handle: 'gone' } });
+            expect(tags).toContain('shopify.shop-1.page.gone');
+            expect(tags).toContain('shopify.shop-1');
+        });
+
+        it('falls back to broad sweep on pages/* when handle is missing', () => {
+            const tags = parseShopifyWebhook({ shop, topic: 'pages/update', body: {} });
+            expect(tags).toEqual(['shopify.shop-1']);
+        });
     });
 });

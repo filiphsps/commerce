@@ -31,6 +31,11 @@ export function parseShopifyWebhook({
         return [broad];
     }
 
+    if (topic.startsWith('pages/')) {
+        if (body.handle) return [`shopify.${shop.id}.page.${body.handle}`, broad];
+        return [broad];
+    }
+
     if (!topic.startsWith('inventory_levels/')) {
         console.warn(`[shopify webhook] unknown topic "${topic}" — falling back to broad sweep`);
     }
