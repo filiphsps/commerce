@@ -44,7 +44,7 @@ export default defineProject({
         },
 
         setupFiles: [`${__dirname}/vitest.setup.ts`],
-        exclude: ['**/*.d.ts', '**/*.stories.*', '**/dist/**/', '**/node_modules/**/*.*', '**/utils/test/**/*.*'],
+        exclude: ['**/*.d.ts', '**/*.stories.*', '**/dist/**/', '**/node_modules/**/*.*'],
 
         globals: true,
         deps: {
