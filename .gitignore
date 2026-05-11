@@ -27,6 +27,7 @@ apps/**/public/**/robots.txt*
 .swc
 .bak
 docs/superpowers/
+CLAUDE.md
 
 # debug
 npm-debug.log*
