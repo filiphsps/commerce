@@ -19,6 +19,13 @@ describe('utils/webhooks/shopify', () => {
         it('returns false when the body has been tampered with', () => {
             expect(validateShopifyHmac('{"id":2}', validHmac, secret)).toBe(false);
         });
+
+        it('returns false when a different (wrong) secret is used to compute the header HMAC', () => {
+            const wrongSecret = 'wrong-secret';
+            const hmacFromWrongSecret = createHmac('sha256', wrongSecret).update(body, 'utf8').digest('base64');
+            // header carries HMAC from wrong-secret; we validate against the real secret — must fail
+            expect(validateShopifyHmac(body, hmacFromWrongSecret, secret)).toBe(false);
+        });
     });
 
     describe('parseShopifyWebhook', () => {
@@ -36,9 +43,35 @@ describe('utils/webhooks/shopify', () => {
             expect(tags).toContain('shopify.shop-1');
         });
 
+        it('emits per-collection tag for collections/create', () => {
+            const tags = parseShopifyWebhook({ shop, topic: 'collections/create', body: { handle: 'winter' } });
+            expect(tags).toContain('shopify.shop-1.collection.winter');
+            expect(tags).toContain('shopify.shop-1');
+        });
+
+        it('emits per-collection tag for collections/delete', () => {
+            const tags = parseShopifyWebhook({ shop, topic: 'collections/delete', body: { handle: 'old-sale' } });
+            expect(tags).toContain('shopify.shop-1.collection.old-sale');
+            expect(tags).toContain('shopify.shop-1');
+        });
+
+        it('falls back to broad sweep when collections/* handle is missing', () => {
+            const tags = parseShopifyWebhook({ shop, topic: 'collections/update', body: {} });
+            expect(tags).toEqual(['shopify.shop-1']);
+        });
+
         it('emits broad sweep for inventory_levels/update', () => {
             const tags = parseShopifyWebhook({ shop, topic: 'inventory_levels/update', body: { inventory_item_id: 1 } });
             expect(tags).toEqual(['shopify.shop-1']);
+        });
+
+        it('emits broad sweep for inventory_levels/connect without console.warn', () => {
+            const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+            const tags = parseShopifyWebhook({ shop, topic: 'inventory_levels/connect', body: {} });
+            expect(tags).toEqual(['shopify.shop-1']);
+            // inventory_levels/* topics are known — no warn should fire
+            expect(warnSpy).not.toHaveBeenCalled();
+            warnSpy.mockRestore();
         });
 
         it('emits broad sweep for unknown topics', () => {
@@ -47,6 +80,12 @@ describe('utils/webhooks/shopify', () => {
             expect(tags).toEqual(['shopify.shop-1']);
             expect(warnSpy).toHaveBeenCalled();
             warnSpy.mockRestore();
+        });
+
+        it('emits per-product tag for products/create', () => {
+            const tags = parseShopifyWebhook({ shop, topic: 'products/create', body: { handle: 'new-shirt' } });
+            expect(tags).toContain('shopify.shop-1.product.new-shirt');
+            expect(tags).toContain('shopify.shop-1');
         });
 
         it('handles products/delete with handle from body', () => {
