@@ -127,6 +127,13 @@ vi.mock('next/cache', async () => {
     };
 });
 
+vi.mock('next/image', () => ({
+    default: vi.fn().mockImplementation(({ src, alt, ...props }: any) => {
+        const React = require('react');
+        return React.createElement('img', { src, alt, ...props });
+    }),
+}));
+
 window.location = {
     ...((window.location as any) || {}),
     pathname: '/en-US/',
