@@ -28,6 +28,7 @@ apps/**/public/**/robots.txt*
 .bak
 docs/superpowers/
 CLAUDE.md
+.worktrees/
 
 # debug
 npm-debug.log*
