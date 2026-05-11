@@ -180,7 +180,7 @@ export const CollectionApi = async (
             }))(filters),
         },
         {
-            tags: ['collection', handle, ...(filtersTag ? [filtersTag] : [])],
+            tags: [`shopify.${api.shop().id}.collection.${handle}`, 'collection', handle, ...(filtersTag ? [filtersTag] : [])],
         },
     );
 
@@ -250,7 +250,7 @@ export const CollectionPaginationCountApi = async ({
                 }))(filters),
             },
             {
-                tags: ['collection', handle, 'pagination', 'count', ...(filtersTag ? [filtersTag] : [])],
+                tags: [`shopify.${api.shop().id}.collection.${handle}`, 'collection', handle, 'pagination', 'count', ...(filtersTag ? [filtersTag] : [])],
             },
         );
 
@@ -317,7 +317,7 @@ export const CollectionsApi = async ({
                 }
             }
         }
-    `);
+    `, undefined, { tags: [`shopify.${api.shop().id}.collections`, 'collections'] });
 
     if (errors && errors.length > 0) {
         throw new ProviderFetchError(errors);
@@ -415,7 +415,7 @@ export const CollectionsPaginationApi = async ({
             }))(filters),
         },
         {
-            tags: ['collections', 'pagination'],
+            tags: [`shopify.${api.shop().id}.collections`, 'collections', 'pagination'],
         },
     );
 

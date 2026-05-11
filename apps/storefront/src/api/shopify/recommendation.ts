@@ -24,6 +24,7 @@ export const RecommendationApi = async ({ api, id }: { api: AbstractApi; id: str
         {
             productId: id,
         },
+        { tags: [`shopify.${shop.id}.product.${gid.id}`, 'recommendations'] },
     );
 
     if (errors && errors.length > 0) {
