@@ -1,9 +1,26 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { InvalidHandleError, NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
 import { describe, expect, it, vi } from 'vitest';
-import { ShopifyPageApi } from '@/api/shopify/page';
+import { ShopifyPageApi, ShopifyPagesApi } from '@/api/shopify/page';
 import type { AbstractApi } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
+
+// Override the global `flattenConnection` passthrough mock from `vitest.setup.ts`
+// with the real implementation so that pagination tests below exercise the
+// connection-shape (`edges`/`pageInfo`) input the production code expects.
+vi.mock('@shopify/hydrogen-react', async () => {
+    const actual = (await vi.importActual('@shopify/hydrogen-react')) as Record<string, unknown>;
+    return {
+        ...actual,
+        createStorefrontClient: () => ({
+            getStorefrontApiUrl: () => '',
+            getPublicTokenHeaders: () => ({}),
+        }),
+        useCart: vi.fn().mockReturnValue({ status: 'idle' }),
+        useShop: vi.fn().mockReturnValue({}),
+        useShopifyCookies: vi.fn().mockReturnValue({}),
+    };
+});
 
 const makePageNode = (handle: string) => ({
     id: `gid://shopify/Page/${handle}`,
@@ -88,6 +105,85 @@ describe('api', () => {
 
                     expect(queryMock).toHaveBeenCalledTimes(1);
                     expect(queryMock.mock.calls[0]?.[1]).toMatchObject({ handle: 'about' });
+                });
+            });
+
+            describe('ShopifyPagesApi', () => {
+                it('returns an empty array when no pages exist', async () => {
+                    const queryMock = vi.fn().mockResolvedValue({
+                        data: { pages: { edges: [], pageInfo: { hasNextPage: false } } },
+                        errors: [],
+                    });
+                    const api = mockApi(queryMock);
+
+                    const [result, error] = await ShopifyPagesApi({ api });
+
+                    expect(error).toBeUndefined();
+                    expect(result).toEqual([]);
+                });
+
+                it('returns flattened pages on a single page of results', async () => {
+                    const queryMock = vi.fn().mockResolvedValue({
+                        data: {
+                            pages: {
+                                edges: [
+                                    { cursor: 'c1', node: makePageNode('about') },
+                                    { cursor: 'c2', node: makePageNode('faq') },
+                                ],
+                                pageInfo: { hasNextPage: false },
+                            },
+                        },
+                        errors: [],
+                    });
+                    const api = mockApi(queryMock);
+
+                    const [result, error] = await ShopifyPagesApi({ api });
+
+                    expect(error).toBeUndefined();
+                    expect(result).toHaveLength(2);
+                    expect(result?.[0]?.handle).toBe('about');
+                    expect(result?.[1]?.handle).toBe('faq');
+                });
+
+                it('paginates via cursor when hasNextPage', async () => {
+                    const queryMock = vi
+                        .fn()
+                        .mockResolvedValueOnce({
+                            data: {
+                                pages: {
+                                    edges: [{ cursor: 'c1', node: makePageNode('about') }],
+                                    pageInfo: { hasNextPage: true },
+                                },
+                            },
+                            errors: [],
+                        })
+                        .mockResolvedValueOnce({
+                            data: {
+                                pages: {
+                                    edges: [{ cursor: 'c2', node: makePageNode('faq') }],
+                                    pageInfo: { hasNextPage: false },
+                                },
+                            },
+                            errors: [],
+                        });
+                    const api = mockApi(queryMock);
+
+                    const [result, error] = await ShopifyPagesApi({ api });
+
+                    expect(error).toBeUndefined();
+                    expect(result).toHaveLength(2);
+                    expect(queryMock).toHaveBeenCalledTimes(2);
+                    expect(queryMock.mock.calls[1]?.[1]).toMatchObject({ after: 'c1' });
+                });
+
+                it('returns ProviderFetchError when errors is non-empty', async () => {
+                    const queryMock = vi.fn().mockResolvedValue({ data: null, errors: [{ message: 'boom' }] });
+                    const api = mockApi(queryMock);
+
+                    const [result, error] = await ShopifyPagesApi({ api });
+
+                    expect(result).toBeUndefined();
+                    expect(error?.name).toBe(ProviderFetchError.name);
                 });
             });
         });
