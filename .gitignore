@@ -29,6 +29,7 @@ apps/**/public/**/robots.txt*
 docs/superpowers/
 CLAUDE.md
 /.worktrees/
+.superpowers/
 
 # debug
 npm-debug.log*
