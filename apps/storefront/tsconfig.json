@@ -12,6 +12,7 @@
         "jsxImportSource": "react",
         "paths": {
             // Storefront.
+            "@/app/*": ["./src/app/*"],
             "@/middleware/*": ["./src/middleware/*"],
             "@/components/*": ["./src/components/*"],
             "@/hooks/*": ["./src/hooks/*"],

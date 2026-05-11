@@ -1,136 +1,77 @@
 import { Shop } from '@nordcom/commerce-db';
-import { Error, MethodNotAllowedError, TodoError } from '@nordcom/commerce-errors';
-
-import { revalidatePath, revalidateTag } from 'next/cache';
+import { revalidateTag } from 'next/cache';
 import { type NextRequest, NextResponse } from 'next/server';
+import { parsePrismicWebhook } from '@/utils/webhooks/prismic';
+import { parseShopifyWebhook, validateShopifyHmac } from '@/utils/webhooks/shopify';
 
-const headers = { 'Cache-Control': 'no-store' };
+const noStoreHeaders = { 'Cache-Control': 'no-store' };
 
-export type RevalidateApiRouteParams = Promise<{
-    domain: string;
-}>;
-const route = async (req: NextRequest, { domain }: Awaited<RevalidateApiRouteParams>) => {
-    // TODO: Revalidate either depending on the topic or the body.
-    // TODO: Support revalidating subtype (e.g. `namespace.shop.type`).
-
-    try {
-        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-
-        //TODO: Do this in the correct place.
-        revalidateTag(shop.id, 'max');
-        revalidateTag(shop.domain, 'max');
-        revalidatePath('/en-US/homepage/', 'page'); // FIXME: Do this properly.
-
-        switch (req.method) {
-            case 'POST': {
-                // TODO: Validate API type and authenticity.
-                console.warn(`Revalidated shopify for shop with id ${shop.id}`);
-
-                const data = await req.json();
-                console.warn(JSON.stringify({ ...data }, null, 4));
-
-                revalidateTag('shopify', 'max');
-
-                return NextResponse.json(
-                    {
-                        status: 200,
-                        data: {
-                            revalidated: true,
-                            tags: [`shopify.${shop.id}`],
-                            paths: [],
-                            domains: [domain],
-                        },
-                        errors: null,
-                    },
-                    { status: 200, headers },
-                );
-            }
-            case 'GET': {
-                // FIXME: This is incorrect, prismic also uses POST.
-                console.warn(`Revalidated prismic for shop with id ${shop.id}`);
-
-                revalidateTag('prismic', 'max');
-
-                return NextResponse.json(
-                    {
-                        status: 200,
-                        data: {
-                            revalidated: true,
-                            tags: [`prismic.${shop.id}`],
-                            paths: [],
-                            domains: [domain],
-                        },
-                        errors: null,
-                    },
-                    { status: 200, headers },
-                );
-            }
-            default: {
-                throw new MethodNotAllowedError(req.method);
-            }
-        }
-    } catch (error: unknown) {
-        console.error(error);
-
-        switch (true) {
-            // Switch case to let us easily add more specific error handling.
-            case error instanceof Error: {
-                return NextResponse.json(
-                    {
-                        status: error.statusCode ?? 500,
-                        data: null,
-                        errors: [error],
-                    },
-                    { status: error.statusCode ?? 500 },
-                );
-            }
-        }
-
-        const ex = new TodoError();
-        return NextResponse.json(
-            {
-                status: ex.statusCode,
-                data: null,
-                errors: [error, ex],
-            },
-            { status: ex.statusCode },
-        );
-    }
-};
-
-export async function GET(req: NextRequest, { params }: { params: RevalidateApiRouteParams }) {
-    console.warn('revalidate GET', req.method, await req.nextUrl.searchParams, JSON.stringify(req.headers));
-    return route(req, await params);
-}
+export type RevalidateApiRouteParams = Promise<{ domain: string }>;
 
 export async function POST(req: NextRequest, { params }: { params: RevalidateApiRouteParams }) {
     const { domain } = await params;
-    const shop = await Shop.findByDomain(domain);
-
-    const userAgent = req.headers.get('user-agent');
-    if (userAgent?.includes('Prismic')) {
-        const body = await req.json();
-        console.debug('prismic revalidation request', body);
-
-        switch (body.type) {
-            case 'api-update': {
-                const documents = body.documents;
-                console.debug('prismic api-update for documents', documents);
-
-                // TODO: Invalidate only the affected documents.
-                revalidateTag(`prismic.${shop.id}`, 'max');
-                return NextResponse.json({ status: 200 });
-            }
-            case 'test-trigger': {
-                console.debug('prismic test-trigger', body);
-                return NextResponse.json({ status: 200 });
-            }
-        }
-
-        console.warn('unknown prismic revalidation request', body);
-        return NextResponse.json({ status: 404 });
+    let shop: { id: string; domain: string };
+    try {
+        shop = await Shop.findByDomain(domain);
+    } catch {
+        return NextResponse.json({ status: 404, error: 'shop not found' }, { status: 404, headers: noStoreHeaders });
     }
 
-    console.error('unknown revalidation request', req.method, await req.clone().text());
-    return NextResponse.json({ status: 500 });
+    const rawBody = await req.text();
+    const headerHmac = req.headers.get('x-shopify-hmac-sha256');
+
+    // Shopify webhook
+    if (headerHmac) {
+        const secret = process.env.SHOPIFY_WEBHOOK_SECRET;
+        if (!secret) {
+            console.warn('SHOPIFY_WEBHOOK_SECRET is not set — accepting Shopify webhook without HMAC validation (dev mode).');
+        } else if (!validateShopifyHmac(rawBody, headerHmac, secret)) {
+            return NextResponse.json(
+                { status: 401, error: 'invalid HMAC' },
+                { status: 401, headers: noStoreHeaders },
+            );
+        }
+
+        const topic = req.headers.get('x-shopify-topic') ?? 'unknown';
+        let body: Record<string, unknown> = {};
+        try {
+            body = JSON.parse(rawBody);
+        } catch {
+            // body parse failure — broad sweep below
+        }
+
+        const tags = parseShopifyWebhook({ shop, topic, body });
+        // @ts-expect-error — next/cache revalidateTag profile arg not needed for tag purge
+        for (const tag of tags) revalidateTag(tag);
+
+        return NextResponse.json({ status: 200, tags }, { status: 200, headers: noStoreHeaders });
+    }
+
+    // Prismic webhook
+    let body: Record<string, unknown> = {};
+    try {
+        body = JSON.parse(rawBody);
+    } catch {
+        return NextResponse.json(
+            { status: 400, error: 'invalid JSON body' },
+            { status: 400, headers: noStoreHeaders },
+        );
+    }
+
+    if (Array.isArray((body as { documents?: unknown[] }).documents)) {
+        const tags = parsePrismicWebhook({ shop, body: body as { documents: Array<{ id: string; uid?: string; type: string }> } });
+        // @ts-expect-error — next/cache revalidateTag profile arg not needed for tag purge
+        for (const tag of tags) revalidateTag(tag);
+        return NextResponse.json({ status: 200, tags }, { status: 200, headers: noStoreHeaders });
+    }
+
+    return NextResponse.json(
+        { status: 400, error: 'unknown webhook shape' },
+        { status: 400, headers: noStoreHeaders },
+    );
+}
+
+export async function GET(_req: NextRequest, _ctx: { params: RevalidateApiRouteParams }) {
+    // Prismic webhook test pings use GET. Acknowledge without revalidating.
+    return NextResponse.json({ status: 200 }, { status: 200, headers: noStoreHeaders });
 }

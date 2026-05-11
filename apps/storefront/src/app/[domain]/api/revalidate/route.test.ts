@@ -1,0 +1,134 @@
+import { createHmac } from 'node:crypto';
+import { describe, expect, it, vi } from 'vitest';
+
+const revalidateTagMock = vi.fn();
+
+vi.mock('next/cache', () => ({
+    revalidateTag: revalidateTagMock,
+}));
+
+vi.mock('@nordcom/commerce-db', () => ({
+    Shop: {
+        findByDomain: vi.fn().mockResolvedValue({ id: 'shop-1', domain: 'mock.shop' }),
+    },
+}));
+
+const { POST, GET } = await import('@/app/[domain]/api/revalidate/route');
+
+function makeRequest({
+    method,
+    body,
+    headers,
+}: {
+    method: string;
+    body: string;
+    headers: Record<string, string>;
+}): Request {
+    return new Request('http://test.local/mock.shop/api/revalidate', {
+        method,
+        body,
+        headers,
+    });
+}
+
+describe('app/[domain]/api/revalidate', () => {
+    describe('POST — Shopify', () => {
+        it('busts per-product tag on products/update with valid HMAC', async () => {
+            revalidateTagMock.mockClear();
+            const body = '{"handle":"my-product"}';
+            const secret = 'shopify-secret';
+            process.env.SHOPIFY_WEBHOOK_SECRET = secret;
+            const hmac = createHmac('sha256', secret).update(body, 'utf8').digest('base64');
+
+            const req = makeRequest({
+                method: 'POST',
+                body,
+                headers: {
+                    'x-shopify-hmac-sha256': hmac,
+                    'x-shopify-topic': 'products/update',
+                    'content-type': 'application/json',
+                },
+            });
+
+            const res = await POST(req as any, { params: Promise.resolve({ domain: 'mock.shop' }) } as any);
+            expect(res.status).toBe(200);
+            expect(revalidateTagMock).toHaveBeenCalledWith('shopify.shop-1.product.my-product');
+        });
+
+        it('returns 401 on invalid HMAC', async () => {
+            revalidateTagMock.mockClear();
+            process.env.SHOPIFY_WEBHOOK_SECRET = 'shopify-secret';
+            const req = makeRequest({
+                method: 'POST',
+                body: '{"handle":"my-product"}',
+                headers: {
+                    'x-shopify-hmac-sha256': 'wrong-hmac',
+                    'x-shopify-topic': 'products/update',
+                },
+            });
+
+            const res = await POST(req as any, { params: Promise.resolve({ domain: 'mock.shop' }) } as any);
+            expect(res.status).toBe(401);
+            expect(revalidateTagMock).not.toHaveBeenCalled();
+        });
+
+        it('accepts when SHOPIFY_WEBHOOK_SECRET is missing (dev mode)', async () => {
+            revalidateTagMock.mockClear();
+            delete process.env.SHOPIFY_WEBHOOK_SECRET;
+            const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+            const req = makeRequest({
+                method: 'POST',
+                body: '{"handle":"my-product"}',
+                headers: {
+                    'x-shopify-hmac-sha256': 'anything',
+                    'x-shopify-topic': 'products/update',
+                },
+            });
+
+            const res = await POST(req as any, { params: Promise.resolve({ domain: 'mock.shop' }) } as any);
+            expect(res.status).toBe(200);
+            expect(warnSpy).toHaveBeenCalled();
+            warnSpy.mockRestore();
+        });
+    });
+
+    describe('POST — Prismic', () => {
+        it('busts per-doc tags from documents array', async () => {
+            revalidateTagMock.mockClear();
+            const req = makeRequest({
+                method: 'POST',
+                body: JSON.stringify({
+                    documents: [{ id: 'doc-a', uid: 'home', type: 'custom_page' }],
+                }),
+                headers: { 'content-type': 'application/json' },
+            });
+
+            const res = await POST(req as any, { params: Promise.resolve({ domain: 'mock.shop' }) } as any);
+            expect(res.status).toBe(200);
+            expect(revalidateTagMock).toHaveBeenCalledWith('prismic.shop-1.doc.custom_page.home');
+        });
+    });
+
+    describe('POST — unknown shape', () => {
+        it('returns 400 when neither Shopify HMAC nor Prismic documents are present', async () => {
+            revalidateTagMock.mockClear();
+            const req = makeRequest({
+                method: 'POST',
+                body: '{"random":"payload"}',
+                headers: { 'content-type': 'application/json' },
+            });
+
+            const res = await POST(req as any, { params: Promise.resolve({ domain: 'mock.shop' }) } as any);
+            expect(res.status).toBe(400);
+        });
+    });
+
+    describe('GET', () => {
+        it('returns 200 empty for Prismic test pings', async () => {
+            const req = makeRequest({ method: 'GET', body: null as any, headers: {} });
+            const res = await GET(req as any, { params: Promise.resolve({ domain: 'mock.shop' }) } as any);
+            expect(res.status).toBe(200);
+        });
+    });
+});
