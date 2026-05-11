@@ -16,14 +16,20 @@ const { options, selectedOptions, variants, setSelectedOptions } = vi.hoisted(()
         {
             title: '100g',
             id: 'gid://shopify/ProductVariant/1',
+            weight: 100,
+            weightUnit: 'GRAMS',
         },
         {
             title: '200g',
             id: 'gid://shopify/ProductVariant/2',
+            weight: 200,
+            weightUnit: 'GRAMS',
         },
         {
             title: '300g',
             id: 'gid://shopify/ProductVariant/3',
+            weight: 300,
+            weightUnit: 'GRAMS',
         },
     ],
     setSelectedOptions: vi.fn(),
@@ -63,53 +69,53 @@ vi.mock('next/link', async () => ({
     default: (props: any) => <a {...props} />,
 }));
 
-// SKIP: ProductOptions requires a full <ProductProvider> + selectedOptions state machine
-// that the test mocks don't fully replicate. Covered by future e2e test.
-describe.skip('components', () => {
+describe('components', () => {
     describe('ProductOptions', () => {
         it('renders all options and values', async () => {
             const { unmount } = render(<ProductOptions />);
 
             for (const option of options) {
                 expect(await screen.findByText(option.name)).toBeInTheDocument();
+            }
 
-                for (const value of option.values) {
-                    expect(await screen.findByRole('link', { name: value })).toBeInTheDocument();
-                }
+            // The Size option is localized to oz for en-US (the test wrapper uses Locale.default = en-US).
+            // 100g → 3.55oz, 200g → 7.1oz, 300g → 10.6oz
+            const ozLabels = ['3.55oz', '7.1oz', '10.6oz'];
+            for (const label of ozLabels) {
+                expect(await screen.findByRole('link', { name: label })).toBeInTheDocument();
             }
 
             expect(() => unmount()).not.toThrow();
         });
 
-        it.todo('converts grams to ounces when locale is en-US', async () => {
+        it('converts grams to ounces when locale is en-US', async () => {
             render(<ProductOptions />);
-
-            // We can't use sizeOptionValues[0] because it's in grams.
-            const target = await screen.findByRole('link', { name: /4oz/i });
-
-            // NOTE: The conversion function rounds to the nearest whole number.
-            expect(target).toBeInTheDocument();
+            const matches = await screen.findAllByText(/oz/i);
+            expect(matches.length).toBeGreaterThan(0);
         });
 
         it('disables options that are out of stock or unavailable', async () => {
             render(<ProductOptions />);
 
-            const target = await screen.findByRole('link', { name: variants[0]!.title });
+            // 100g is out of stock (isOptionInStock returns false for '100g').
+            // The component renders it as an <a> with a CSS disabled class, not an HTML disabled attribute.
+            // It renders as 3.55oz after localization to en-US.
+            const target = await screen.findByRole('link', { name: '3.55oz' });
 
             expect(target).toBeInTheDocument();
-            expect(target).toHaveAttribute('disabled');
+            expect(target.className).toMatch(/disabled/);
         });
 
         it('should call setSelectedOptions when an option is clicked', async () => {
             render(<ProductOptions />);
 
-            const variant = variants.at(-1)!;
-            const target = await screen.findByRole('link', { name: variant.title });
+            // The last variant is 300g, rendered as 10.6oz after localization.
+            const target = await screen.findByRole('link', { name: '10.6oz' });
 
             expect(target).toBeInTheDocument();
 
             fireEvent.click(target);
-            expect(setSelectedOptions).toHaveBeenCalledWith({ Size: variant.title });
+            expect(setSelectedOptions).toHaveBeenCalledWith({ Size: variants.at(-1)!.title });
         });
     });
 });
