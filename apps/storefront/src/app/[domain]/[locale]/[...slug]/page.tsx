@@ -10,7 +10,6 @@ import { notFound } from 'next/navigation';
 import { Fragment, Suspense } from 'react';
 import type { OnlineStore, WithContext } from 'schema-dts';
 import { PageApi, PagesApi } from '@/api/page';
-import type { PageData } from '@/api/prismic/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { BusinessDataApi, LocalesApi } from '@/api/store';
 import { CMSContent } from '@/components/cms/cms-content';
@@ -37,11 +36,17 @@ export async function generateStaticParams({
         throw new NotFoundError('pages');
     }
 
-    const slugs = pages
-        .filter((p): p is typeof p & { uid: string } => typeof p.uid === 'string')
-        .map(({ uid }) => ({
-            slug: [uid],
-        }));
+    let slugs: { slug: string[] }[] = [];
+    switch (pages.provider) {
+        case 'prismic':
+            slugs = pages.items
+                .filter((p): p is typeof p & { uid: string } => typeof p.uid === 'string')
+                .map(({ uid }) => ({ slug: [uid] }));
+            break;
+        case 'shopify':
+            slugs = pages.items.map(({ handle }) => ({ slug: [handle] }));
+            break;
+    }
 
     if (slugs.length === 0) {
         throw new NotFoundError('pages');
@@ -66,7 +71,7 @@ export async function generateMetadata({ params }: { params: CustomPageParams })
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const api = await ShopifyApolloApiClient({ shop, locale });
 
-    const page = (await PageApi({ shop, locale, handle })) as PageData<'custom_page'> | null;
+    const page = await PageApi({ shop, locale, handle });
     if (!page) {
         notFound();
     }
@@ -77,14 +82,42 @@ export async function generateMetadata({ params }: { params: CustomPageParams })
     // TODO: Deal with this in a better way.
     const path = handle === 'homepage' ? '/' : `/${handle}/`;
 
-    const title = page.meta_title || page.title || handle;
-    const description = asText(page.meta_description) || page.description || undefined;
+    let title: string = handle;
+    let description: string | undefined;
+    let index = true;
+    let images: NonNullable<Metadata['openGraph']>['images'] = [];
+
+    switch (page.provider) {
+        case 'prismic': {
+            const data = page.data;
+            title = data.meta_title || data.title || handle;
+            description = asText(data.meta_description) || data.description || undefined;
+            index = typeof data.noindex === 'undefined' ? true : !data.noindex;
+            images = data.meta_image.url
+                ? [
+                      {
+                          url: data.meta_image.url,
+                          width: data.meta_image.dimensions.width,
+                          height: data.meta_image.dimensions.height,
+                      },
+                  ]
+                : [];
+            break;
+        }
+        case 'shopify': {
+            const data = page.data;
+            title = data.seo.title || data.title || handle;
+            description = data.seo.description || undefined;
+            // Shopify has no noindex field; default to indexed.
+            // Shopify has no meta_image at the page level; default to empty.
+            break;
+        }
+    }
+
     return {
         title,
         description,
-        robots: {
-            index: typeof page.noindex === 'undefined' ? true : !page.noindex,
-        },
+        robots: { index },
         alternates: {
             canonical: `https://${shop.domain}/${locale.code}${path}`,
             languages: Object.fromEntries(locales.map(({ code }) => [code, `https://${shop.domain}/${code}${path}`])),
@@ -96,15 +129,7 @@ export async function generateMetadata({ params }: { params: CustomPageParams })
             description,
             siteName: `${shop.name} (${locale.country})`,
             locale: locale.code,
-            images: page.meta_image.url
-                ? [
-                      {
-                          url: page.meta_image.url,
-                          width: page.meta_image.dimensions.width,
-                          height: page.meta_image.dimensions.height,
-                      },
-                  ]
-                : [],
+            images,
         },
     };
 }
@@ -137,19 +162,21 @@ async function OnlineStoreJsonLd({ shop, locale }: { shop: OnlineShop; locale: L
 }
 
 async function PageBreadcrumbs({ shop, locale, handle }: { shop: OnlineShop; locale: Locale; handle: string }) {
-    const page = (await PageApi({ shop, locale, handle })) as PageData<'custom_page'> | null; // TODO: Page api should return a proper error.
+    const page = await PageApi({ shop, locale, handle });
     if (!page) {
         notFound();
     }
 
-    if (handle === 'homepage' || !page.title) {
+    const title = page.data.title as string | null;
+
+    if (handle === 'homepage' || !title) {
         return null;
     }
 
     return (
         <div className="-mb-[1.25rem] empty:hidden md:-mb-[2.25rem]">
             <Suspense key={`pages.${handle}.breadcrumbs.content`} fallback={<BreadcrumbsSkeleton />}>
-                <Breadcrumbs locale={locale} title={page.title} />
+                <Breadcrumbs locale={locale} title={title} />
             </Suspense>
         </div>
     );

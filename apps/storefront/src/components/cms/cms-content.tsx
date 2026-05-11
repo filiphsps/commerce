@@ -1,10 +1,8 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
-
 import { PageApi } from '@/api/page';
 import type { PageType } from '@/api/prismic/page';
-
 import PrismicPage from '@/components/cms/prismic-page';
-
+import ShopifyPage from '@/components/cms/shopify-page';
 import type { Locale } from '@/utils/locale';
 
 export type CMSContentProps = {
@@ -14,19 +12,22 @@ export type CMSContentProps = {
     type?: string;
 };
 
-const Prismic = async ({ shop, locale, handle, type = 'custom_page' }: CMSContentProps) => {
-    const page = await PageApi({ shop, locale, handle, type });
-
-    return <PrismicPage shop={shop} locale={locale} handle={handle} page={page} type={type as PageType} />;
-};
-
 export const CMSContent = async ({ shop, locale, handle, type }: CMSContentProps) => {
-    switch (shop.contentProvider.type) {
-        case 'prismic': {
-            return <Prismic shop={shop} locale={locale} handle={handle} type={type} />;
-        }
-    }
+    const page = await PageApi({ shop, locale, handle, type });
+    if (!page) return null;
 
-    console.warn(`No CMS content provider found for "${shop.contentProvider.type}"`);
-    return null;
+    switch (page.provider) {
+        case 'prismic':
+            return (
+                <PrismicPage
+                    shop={shop}
+                    locale={locale}
+                    handle={handle}
+                    page={page.data}
+                    type={(type as PageType) ?? 'custom_page'}
+                />
+            );
+        case 'shopify':
+            return <ShopifyPage page={page.data} />;
+    }
 };

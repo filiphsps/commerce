@@ -10,6 +10,11 @@ import { Locale } from '@/utils/locale';
 import { convertPrismicDateToISO } from '@/utils/prismic-date';
 import type { DynamicSitemapRouteParams } from '../../sitemap.xml/route';
 
+type SitemapPage = {
+    url: string;
+    lastmod: string | null;
+};
+
 export async function GET({}: NextRequest, { params }: { params: DynamicSitemapRouteParams }) {
     'use cache';
     cacheLife('max');
@@ -20,25 +25,41 @@ export async function GET({}: NextRequest, { params }: { params: DynamicSitemapR
     const api = await ShopifyApiClient({ shop, locale });
     const locales = await LocalesApi({ api });
 
-    const pages = ((await PagesApi({ shop, locale })) || [])
-        .filter(({ url }) => url)
-        .map(({ url, ...page }) => ({
-            ...page,
-            url: url?.split('/').slice(2).join('/'),
-        }));
+    const pagesResult = await PagesApi({ shop, locale });
+    const pages: SitemapPage[] = [];
+    if (pagesResult) {
+        switch (pagesResult.provider) {
+            case 'prismic':
+                for (const page of pagesResult.items) {
+                    if (!page.url) continue;
+                    pages.push({
+                        url: page.url.split('/').slice(2).join('/'),
+                        lastmod: convertPrismicDateToISO(page.last_publication_date),
+                    });
+                }
+                break;
+            case 'shopify':
+                for (const page of pagesResult.items) {
+                    pages.push({
+                        url: page.handle,
+                        lastmod: page.updatedAt,
+                    });
+                }
+                break;
+        }
+    }
 
     return getServerSideSitemap(
-        locales.flatMap(({ code }) => {
-            return pages.map(
+        locales.flatMap(({ code }) =>
+            pages.map(
                 (page) =>
                     ({
                         loc: `https://${shop.domain}/${code}/${page.url}${page.url && !page.url.endsWith('/') ? '/' : ''}`,
                         changefreq: 'weekly',
-                        lastmod: convertPrismicDateToISO(page.last_publication_date),
-                        //priority: 0.9,
+                        lastmod: page.lastmod ?? undefined,
                         trailingSlash: true,
                     }) as ISitemapField,
-            );
-        }),
+            ),
+        ),
     );
 }
