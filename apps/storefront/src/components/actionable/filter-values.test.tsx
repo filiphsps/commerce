@@ -38,7 +38,13 @@ describe('components', () => {
 
         it('returns null when an invalid type is provided', () => {
             const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-            const { container, unmount } = render(<FilterValues id={'id'} type={'INVALID' as any} values={[{ id: 'a', label: 'A', count: 1, input: {} } as any]} />);
+            const { container, unmount } = render(
+                <FilterValues
+                    id={'id'}
+                    type={'INVALID' as any}
+                    values={[{ id: 'a', label: 'A', count: 1, input: {} } as any]}
+                />,
+            );
             expect(container.textContent).toBe('');
             expect(container.childElementCount).toBe(0);
             expect(warnSpy).toHaveBeenCalled();

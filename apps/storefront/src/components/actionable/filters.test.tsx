@@ -36,10 +36,7 @@ describe('components', () => {
 
         it('applies disabled styles when disabled prop is set', () => {
             const { container } = render(
-                <Filters
-                    filters={[{ id: 'a', label: 'Size', type: 'LIST', values: [] } as any]}
-                    disabled={true}
-                />,
+                <Filters filters={[{ id: 'a', label: 'Size', type: 'LIST', values: [] } as any]} disabled={true} />,
             );
             const section = container.querySelector('section');
             expect(section?.className).toContain('pointer-events-none');

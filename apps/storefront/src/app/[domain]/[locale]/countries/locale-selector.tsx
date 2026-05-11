@@ -67,9 +67,7 @@ export default function LocaleSelector({ countries = [], locale }: LocaleSelecto
                         >
                             <div className={styles.flag}>
                                 <Image
-                                    src={`${FLAG_IMAGES_BASE_URL}/${country.locale
-                                        .split('-')
-                                        .at(-1)}.svg`}
+                                    src={`${FLAG_IMAGES_BASE_URL}/${country.locale.split('-').at(-1)}.svg`}
                                     alt={country.country}
                                     fill
                                     aria-label={country.country}

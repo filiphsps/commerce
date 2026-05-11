@@ -1,5 +1,5 @@
 import 'server-only';
-import { Shop, type OnlineShop } from '@nordcom/commerce-db';
+import { type OnlineShop, Shop } from '@nordcom/commerce-db';
 import { headers } from 'next/headers';
 import { cache } from 'react';
 import { Locale } from '@/utils/locale';

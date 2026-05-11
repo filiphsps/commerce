@@ -24,12 +24,11 @@ export async function POST(req: NextRequest, { params }: { params: RevalidateApi
     if (headerHmac) {
         const secret = process.env.SHOPIFY_WEBHOOK_SECRET;
         if (!secret) {
-            console.warn('SHOPIFY_WEBHOOK_SECRET is not set — accepting Shopify webhook without HMAC validation (dev mode).');
-        } else if (!validateShopifyHmac(rawBody, headerHmac, secret)) {
-            return NextResponse.json(
-                { status: 401, error: 'invalid HMAC' },
-                { status: 401, headers: noStoreHeaders },
+            console.warn(
+                'SHOPIFY_WEBHOOK_SECRET is not set — accepting Shopify webhook without HMAC validation (dev mode).',
             );
+        } else if (!validateShopifyHmac(rawBody, headerHmac, secret)) {
+            return NextResponse.json({ status: 401, error: 'invalid HMAC' }, { status: 401, headers: noStoreHeaders });
         }
 
         const topic = req.headers.get('x-shopify-topic') ?? 'unknown';
@@ -51,22 +50,19 @@ export async function POST(req: NextRequest, { params }: { params: RevalidateApi
     try {
         body = JSON.parse(rawBody);
     } catch {
-        return NextResponse.json(
-            { status: 400, error: 'invalid JSON body' },
-            { status: 400, headers: noStoreHeaders },
-        );
+        return NextResponse.json({ status: 400, error: 'invalid JSON body' }, { status: 400, headers: noStoreHeaders });
     }
 
     if (Array.isArray((body as { documents?: unknown[] }).documents)) {
-        const tags = parsePrismicWebhook({ shop, body: body as { documents: Array<{ id: string; uid?: string; type: string }> } });
+        const tags = parsePrismicWebhook({
+            shop,
+            body: body as { documents: Array<{ id: string; uid?: string; type: string }> },
+        });
         for (const tag of tags) revalidateTag(tag, 'max');
         return NextResponse.json({ status: 200, tags }, { status: 200, headers: noStoreHeaders });
     }
 
-    return NextResponse.json(
-        { status: 400, error: 'unknown webhook shape' },
-        { status: 400, headers: noStoreHeaders },
-    );
+    return NextResponse.json({ status: 400, error: 'unknown webhook shape' }, { status: 400, headers: noStoreHeaders });
 }
 
 export async function GET(_req: NextRequest, _ctx: { params: RevalidateApiRouteParams }) {
