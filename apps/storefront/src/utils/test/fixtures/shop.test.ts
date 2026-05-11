@@ -6,7 +6,10 @@ describe('mockShop', () => {
         const shop = mockShop();
         expect(shop.id).toBe('mock-shop-id');
         expect(shop.domain).toBe('staging.demo.nordcom.io');
-        expect(shop.commerceProvider.domain).toBe('mock.shop');
+        expect(shop.commerceProvider.type).toBe('shopify');
+        if (shop.commerceProvider.type === 'shopify') {
+            expect(shop.commerceProvider.domain).toBe('mock.shop');
+        }
     });
 
     it('merges overrides into the default shape', () => {
