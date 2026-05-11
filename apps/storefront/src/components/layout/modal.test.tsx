@@ -1,20 +1,28 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { Modal } from '@/components/layout/modal';
-import { render, waitFor } from '@/utils/test/react';
+import { render } from '@/utils/test/react';
+
+vi.mock('next/navigation', () => ({
+    usePathname: () => '/en-US/test',
+    useRouter: () => ({
+        back: vi.fn(),
+        push: vi.fn(),
+        replace: vi.fn(),
+        prefetch: vi.fn(),
+        refresh: vi.fn(),
+        forward: vi.fn(),
+    }),
+}));
 
 describe('components', () => {
     describe('Modal', () => {
-        it.todo('renders without errors', async () => {
+        it('renders without errors', () => {
             const { unmount } = render(
-                await Modal({
-                    title: 'Test',
-                    description: 'Test',
-                    i18n: {} as any,
-                    children: <div>Test</div>,
-                }),
+                <Modal title="Test" description="Test" i18n={{} as any}>
+                    <div>Test</div>
+                </Modal>,
             );
-
-            await waitFor(() => expect(unmount).not.toThrow());
+            expect(unmount).not.toThrow();
         });
     });
 });
