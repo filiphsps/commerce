@@ -44,7 +44,13 @@ const CommerceProvider = ({ shop, locale, children }: { shop: OnlineShop; locale
     switch (shop.commerceProvider.type) {
         case 'shopify': {
             if (!shop.commerceProvider.domain) {
-                throw new UnknownCommerceProviderError();
+                // TODO: Surface this as a tenant-config validation error during shop lookup.
+                //       For now, render without the Shopify cart provider — content pages still work,
+                //       cart/checkout features will be unavailable.
+                console.error(
+                    `Shop "${shop.domain}" missing commerceProvider.domain — Shopify provider context unavailable.`,
+                );
+                return <>{children}</>;
             }
 
             return (
