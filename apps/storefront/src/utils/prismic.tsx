@@ -3,14 +3,14 @@ import { InvalidContentProviderError, InvalidShopError } from '@nordcom/commerce
 import type { Client, ClientConfig, LinkResolverFunction } from '@prismicio/client';
 import * as prismic from '@prismicio/client';
 import { experimental_taintUniqueValue } from 'react';
-import { Locale } from '@/utils/locale';
+import type { Locale } from '@/utils/locale';
 
 type CreateClientOptions = {
     shop: OnlineShop;
     locale: Locale;
 } & ClientConfig;
 
-export const createClient = ({ shop, /* locale = Locale.default,*/ ...config }: CreateClientOptions): Client => {
+export const createClient = ({ shop, locale, ...config }: CreateClientOptions): Client => {
     const contentProvider = shop.contentProvider as Partial<typeof shop.contentProvider>;
     if (!contentProvider) {
         throw new InvalidShopError("Shop doesn't have a content provider.");
@@ -31,14 +31,13 @@ export const createClient = ({ shop, /* locale = Locale.default,*/ ...config }: 
         accessToken,
         routes,
         defaultParams: {
-            //lang: locale.code // FIXME: We're making too many calls to the API.
-            lang: Locale.default.code,
+            lang: locale.code,
         },
         ...config,
         fetchOptions: {
             cache: config.fetchOptions?.cache || 'no-store',
             next: {
-                tags: ['prismic', `prismic.${shop.id}`, shop.domain /*, locale.code*/],
+                tags: ['prismic', `prismic.${shop.id}`, shop.domain, locale.code],
             },
         },
     });
@@ -122,3 +121,27 @@ export const routes: ClientConfig['routes'] = [
         path: '/:lang/:uid/',
     },
 ];
+
+/**
+ * Build a cache-tag array for Prismic API calls. Optional `doc` adds a per-entity tag.
+ *
+ * Tag scheme:
+ *   - 'prismic' — global
+ *   - 'prismic.{shop.id}' — all Prismic content for this shop
+ *   - shop.domain — alias for the above
+ *   - locale.code — per-locale invalidation
+ *   - 'prismic.{shop.id}.doc.{type}.{uid}' — per-document (when `doc` is supplied)
+ */
+export function buildPrismicCacheTags({
+    shop,
+    locale,
+    doc,
+}: {
+    shop: { id: string; domain: string };
+    locale: { code: string };
+    doc?: { type: string; uid: string };
+}): string[] {
+    const tags = ['prismic', `prismic.${shop.id}`, shop.domain, locale.code];
+    if (doc) tags.push(`prismic.${shop.id}.doc.${doc.type}.${doc.uid}`);
+    return tags;
+}
