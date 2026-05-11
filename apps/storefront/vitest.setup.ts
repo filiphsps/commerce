@@ -50,32 +50,14 @@ vi.mock('@/utils/build-config', () => ({
     },
 }));
 
-vi.mock('@nordcom/commerce-db', () => ({
-    Shop: {
-        findByDomain: vi.fn().mockResolvedValue({
-            id: 'mock-shop-id',
-            domain: 'staging.demo.nordcom.io',
-            commerceProvider: {
-                type: 'shopify' as const,
-                domain: 'mock.shop' as const,
-            },
-            design: {
-                accents: [
-                    {
-                        type: 'primary',
-                        color: '#00ff00',
-                        foreground: '#000000',
-                    },
-                    {
-                        type: 'secondary',
-                        color: '#0000ff',
-                        foreground: '#ffffff',
-                    },
-                ],
-            },
-        }),
-    },
-}));
+vi.mock('@nordcom/commerce-db', async () => {
+    const { mockShop } = await import('./src/utils/test/fixtures/shop');
+    return {
+        Shop: {
+            findByDomain: vi.fn().mockResolvedValue(mockShop()),
+        },
+    };
+});
 
 // Mock the `prismic` module as it requires a valid Prismic repository,
 // which we don't have in our tests. It's up to prismic to test their
