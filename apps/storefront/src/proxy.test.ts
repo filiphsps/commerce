@@ -11,7 +11,7 @@ vi.mock('@/middleware/storefront', () => ({
 
 import { admin } from '@/middleware/admin';
 import { storefront } from '@/middleware/storefront';
-import proxy from '@/proxy';
+import proxy from './proxy';
 
 describe('proxy', () => {
     beforeEach(() => {
