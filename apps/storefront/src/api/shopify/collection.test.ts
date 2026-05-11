@@ -213,9 +213,131 @@ describe('api', () => {
                     });
                 });
 
-                it.todo('should paginate products when `before` is provided');
-                it.todo('should paginate products when `after` is provided');
-                it.todo('should fail to paginate products when both `before` and `after` are provided');
+                it('should paginate products when `after` is provided', async () => {
+                    const queryMock = vi.fn().mockResolvedValue({
+                        data: {
+                            collection: {
+                                id: '123',
+                                handle: 'test-collection',
+                                title: 'Test Collection',
+                                description: '',
+                                descriptionHtml: '',
+                                image: null,
+                                seo: { title: '', description: '' },
+                                products: {
+                                    edges: [],
+                                    pageInfo: {
+                                        startCursor: 'start',
+                                        endCursor: 'end',
+                                        hasNextPage: true,
+                                        hasPreviousPage: false,
+                                    },
+                                },
+                                keywords: { value: '' },
+                                isBrand: { value: 'false' },
+                                shortDescription: { value: '' },
+                            },
+                        },
+                    });
+                    const api: AbstractApi = {
+                        query: queryMock,
+                        locale: () => Locale.default,
+                        shop: () => ({}) as OnlineShop,
+                    };
+
+                    await CollectionApi({
+                        api,
+                        handle: 'test-collection',
+                        filters: { after: 'cursor-1' },
+                    });
+
+                    const callArgs = queryMock.mock.calls[0]?.[1];
+                    expect(callArgs).toMatchObject({ after: 'cursor-1' });
+                });
+
+                it('should paginate products when `before` is provided', async () => {
+                    const queryMock = vi.fn().mockResolvedValue({
+                        data: {
+                            collection: {
+                                id: '123',
+                                handle: 'test-collection',
+                                title: 'Test Collection',
+                                description: '',
+                                descriptionHtml: '',
+                                image: null,
+                                seo: { title: '', description: '' },
+                                products: {
+                                    edges: [],
+                                    pageInfo: {
+                                        startCursor: 'start',
+                                        endCursor: 'end',
+                                        hasNextPage: false,
+                                        hasPreviousPage: true,
+                                    },
+                                },
+                                keywords: { value: '' },
+                                isBrand: { value: 'false' },
+                                shortDescription: { value: '' },
+                            },
+                        },
+                    });
+                    const api: AbstractApi = {
+                        query: queryMock,
+                        locale: () => Locale.default,
+                        shop: () => ({}) as OnlineShop,
+                    };
+
+                    await CollectionApi({
+                        api,
+                        handle: 'test-collection',
+                        filters: { before: 'cursor-9' },
+                    });
+
+                    const callArgs = queryMock.mock.calls[0]?.[1];
+                    expect(callArgs).toMatchObject({ before: 'cursor-9' });
+                });
+
+                it('should pass both `before` and `after` cursors to the query when both are provided', async () => {
+                    const queryMock = vi.fn().mockResolvedValue({
+                        data: {
+                            collection: {
+                                id: '123',
+                                handle: 'test-collection',
+                                title: 'Test Collection',
+                                description: '',
+                                descriptionHtml: '',
+                                image: null,
+                                seo: { title: '', description: '' },
+                                products: {
+                                    edges: [],
+                                    pageInfo: {
+                                        startCursor: 'start',
+                                        endCursor: 'end',
+                                        hasNextPage: false,
+                                        hasPreviousPage: false,
+                                    },
+                                },
+                                keywords: { value: '' },
+                                isBrand: { value: 'false' },
+                                shortDescription: { value: '' },
+                            },
+                        },
+                    });
+                    const api: AbstractApi = {
+                        query: queryMock,
+                        locale: () => Locale.default,
+                        shop: () => ({}) as OnlineShop,
+                    };
+
+                    await CollectionApi({
+                        api,
+                        handle: 'test-collection',
+                        filters: { before: 'cursor-1', after: 'cursor-2' } as any,
+                    });
+
+                    const callArgs = queryMock.mock.calls[0]?.[1];
+                    expect(callArgs).toMatchObject({ before: 'cursor-1', after: 'cursor-2' });
+                });
             });
 
             describe('CollectionsApi', () => {
