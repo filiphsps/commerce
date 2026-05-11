@@ -233,5 +233,15 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
 
     const target = `${newUrl.origin}/${hostname}${newUrl.pathname}${newUrl.searchParams.size > 0 ? '?' : ''}${newUrl.searchParams.toString()}`;
 
-    return setCookies(NextResponse.rewrite(new URL(target, req.url)), cookies);
+    // Extract locale from the path (first segment after the leading slash).
+    const localeFromPath = newUrl.pathname.split('/').filter(Boolean)[0] ?? '';
+
+    const requestHeaders = new Headers(req.headers);
+    requestHeaders.set('x-shop-domain', hostname);
+    requestHeaders.set('x-locale', localeFromPath);
+
+    return setCookies(
+        NextResponse.rewrite(new URL(target, req.url), { request: { headers: requestHeaders } }),
+        cookies,
+    );
 };
