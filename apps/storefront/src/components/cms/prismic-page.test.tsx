@@ -33,6 +33,7 @@ describe('components', () => {
             expect(ui.container.textContent).toBe('');
             expect(warnSpy).toHaveBeenCalled();
             ui.unmount();
+            warnSpy.mockRestore();
         });
 
         it('returns null when page has no slices', async () => {
