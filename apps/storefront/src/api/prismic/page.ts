@@ -33,8 +33,9 @@ export const PagesApi = async ({
                 const _locale = client.defaultParams?.lang ? Locale.from(client.defaultParams.lang) : locale;
 
                 if (Error.isNotFound(error)) {
-                    if (!Locale.isDefault(_locale)) {
-                        return await PagesApi({ shop, locale: Locale.fallbackForShop(shop) }); // Try again with default locale.
+                    const fallback = Locale.fallbackForShop(shop);
+                    if (fallback.code !== _locale.code) {
+                        return await PagesApi({ shop, locale: fallback }); // Try again with fallback locale.
                     }
 
                     return null;
@@ -101,8 +102,9 @@ export const PageApi = async <T extends keyof PageTypeMapping | 'custom_page' = 
                 const _locale = client.defaultParams?.lang ? Locale.from(client.defaultParams.lang) : locale;
 
                 if (Error.isNotFound(error)) {
-                    if (!Locale.isDefault(_locale)) {
-                        return await PageApi({ shop, locale: Locale.fallbackForShop(shop), type, handle }); // Try again with default locale.
+                    const fallback = Locale.fallbackForShop(shop);
+                    if (fallback.code !== _locale.code) {
+                        return await PageApi({ shop, locale: fallback, type, handle }); // Try again with fallback locale.
                     }
 
                     return null;

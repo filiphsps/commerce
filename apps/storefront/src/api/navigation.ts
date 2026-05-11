@@ -28,8 +28,9 @@ export const MenuApi = async ({ shop, locale }: { shop: OnlineShop; locale: Loca
                 const _locale = client.defaultParams?.lang ? Locale.from(client.defaultParams.lang) : locale;
 
                 if (Error.isNotFound(error)) {
-                    if (!Locale.isDefault(_locale)) {
-                        return await MenuApi({ shop, locale: Locale.fallbackForShop(shop) }); // Try again with default locale.
+                    const fallback = Locale.fallbackForShop(shop);
+                    if (fallback.code !== _locale.code) {
+                        return await MenuApi({ shop, locale: fallback }); // Try again with fallback locale.
                     }
 
                     throw new NotFoundError(`"Menu" with the locale "${locale.code}"`);
@@ -61,8 +62,9 @@ export async function HeaderApi({ shop, locale }: { shop: OnlineShop; locale: Lo
                 const _locale = client.defaultParams?.lang ? Locale.from(client.defaultParams.lang) : locale;
 
                 if (Error.isNotFound(error)) {
-                    if (!Locale.isDefault(_locale)) {
-                        return await HeaderApi({ shop, locale: Locale.fallbackForShop(shop) }); // Try again with default locale.
+                    const fallback = Locale.fallbackForShop(shop);
+                    if (fallback.code !== _locale.code) {
+                        return await HeaderApi({ shop, locale: fallback }); // Try again with fallback locale.
                     }
 
                     throw new NotFoundError(`"Header" with the locale "${locale.code}"`);

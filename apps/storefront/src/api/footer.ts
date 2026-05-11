@@ -24,8 +24,9 @@ export async function FooterApi({
                 const _locale = client.defaultParams?.lang ? Locale.from(client.defaultParams.lang) : locale;
 
                 if (Error.isNotFound(error)) {
-                    if (!Locale.isDefault(_locale)) {
-                        return await FooterApi({ shop, locale: Locale.fallbackForShop(shop) }); // Try again with default locale.
+                    const fallback = Locale.fallbackForShop(shop);
+                    if (fallback.code !== _locale.code) {
+                        return await FooterApi({ shop, locale: fallback }); // Try again with fallback locale.
                     }
 
                     throw new NotFoundError(`"Footer" with the locale "${locale.code}"`);
