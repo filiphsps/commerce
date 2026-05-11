@@ -1,13 +1,13 @@
 import 'server-only';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
+import { get } from '@vercel/edge-config';
 import { Fragment, type HTMLProps } from 'react';
 
 import { getAuthSession } from '@/auth';
 import { LoginButton } from '@/components/actionable/login-button';
 import { Avatar } from '@/components/informational/avatar';
 import Link from '@/components/link';
-import { enableAccountsFunctionality } from '@/utils/flags';
 import { capitalize, getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 
@@ -17,7 +17,11 @@ export type HeaderAccountSectionProps = {
     i18n: LocaleDictionary;
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 export async function HeaderAccountSection({ shop, i18n, className, ...props }: HeaderAccountSectionProps) {
-    if (!(await enableAccountsFunctionality())) {
+    // Avoid `enableAccountsFunctionality()` here — `@vercel/flags/next`'s `flag()` wrapper
+    // reads request headers internally, which is forbidden inside the `'use cache'` scope
+    // that wraps this component's parent. The underlying edge-config value is global.
+    const accountsEnabled = await get<boolean>('accounts-functionality');
+    if (!accountsEnabled) {
         return null;
     }
 

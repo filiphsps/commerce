@@ -22,6 +22,8 @@ export const MenuApi = async ({
     shop: OnlineShop;
     locale: Locale;
 }): Promise<MenuDocumentData | null> => {
+    // TODO: Provide a Shopify equivalent (e.g. fetch from shop metafields or Storefront API).
+    //       For now, non-Prismic shops degrade gracefully — caller renders without this data.
     if (shop.contentProvider.type !== 'prismic') return null;
     const client = createClient({ shop, locale });
 
@@ -63,6 +65,8 @@ export async function HeaderApi({
     shop: OnlineShop;
     locale: Locale;
 }): Promise<HeaderDocumentData | null> {
+    // TODO: Provide a Shopify equivalent (e.g. fetch from shop metafields or Storefront API).
+    //       For now, non-Prismic shops degrade gracefully — caller renders without this data.
     if (shop.contentProvider.type !== 'prismic') return null;
     const client = createClient({ shop, locale });
 

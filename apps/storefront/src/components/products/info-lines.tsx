@@ -1,12 +1,12 @@
 import 'server-only';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
+import { get } from '@vercel/edge-config';
 import { Check as CheckIcon } from 'lucide-react';
 import type { HTMLProps } from 'react';
 import type { Product } from '@/api/product';
 import { Label } from '@/components/typography/label';
 import { COMMERCE_DEFAULTS } from '@/utils/build-config';
-import { showProductInfoLines } from '@/utils/flags';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { getTranslations } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
@@ -72,7 +72,11 @@ export type InfoLinesProps = {
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 
 const InfoLines = async ({ shop, product, i18n, locale, className, ...props }: InfoLinesProps) => {
-    if (!product || !(await showProductInfoLines())) {
+    // Avoid `showProductInfoLines()` here — `@vercel/flags/next`'s `flag()` wrapper
+    // reads request headers internally, which is forbidden inside the `'use cache'` scope
+    // that wraps this component's parent. The underlying edge-config value is global.
+    const productInfoLinesEnabled = await get<boolean>('product-page-info-lines');
+    if (!product || !productInfoLinesEnabled) {
         return null;
     }
 

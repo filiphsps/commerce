@@ -31,6 +31,10 @@ export default defineProject({
                 replacement: resolve(__dirname, './src/app/[domain]/[locale]'),
             },
             {
+                find: /^@\/auth$/,
+                replacement: resolve(__dirname, './src/auth/auth.ts'),
+            },
+            {
                 find: '@',
                 replacement: resolve(__dirname, './src'),
             },

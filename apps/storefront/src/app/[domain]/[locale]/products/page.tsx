@@ -1,5 +1,6 @@
 import { Shop } from '@nordcom/commerce-db';
 import { asText } from '@prismicio/client';
+import { get } from '@vercel/edge-config';
 import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
 import { RedirectType, redirect } from 'next/navigation';
@@ -12,7 +13,6 @@ import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skel
 import PageContent from '@/components/page-content';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
-import { enableProductsPage } from '@/utils/flags';
 import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import ProductsContent from './products-content';
 
@@ -100,7 +100,11 @@ export default async function ProductsPage({
     const { domain, locale: localeData } = await params;
     const locale = Locale.from(localeData);
 
-    if (!(await enableProductsPage())) {
+    // Avoid `enableProductsPage()` here — `@vercel/flags/next`'s `flag()` wrapper
+    // reads request headers internally, which is forbidden inside the `'use cache'` scope
+    // that wraps this component. The underlying edge-config value is global.
+    const productsPageEnabled = await get<boolean>('products-page');
+    if (!productsPageEnabled) {
         redirect(`/${locale.code}/`, RedirectType.replace);
     }
 
