@@ -2,7 +2,7 @@
 
 [![Unit & Integration Testing](https://github.com/filiphsps/commerce/actions/workflows/ci.yml/badge.svg)](https://github.com/filiphsps/commerce/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/filiphsps/commerce/graph/badge.svg?token=L6I8T166LD)](https://codecov.io/gh/filiphsps/commerce)
-[![wakatime](https://wakatime.com/badge/github/filiphsps/commerce.svg)](https://wakatime.com/badge/github/filiphsps/commerce)
+[![wakatime](https://wakatime.com/badge/user/c7ebec34-9b91-4b7f-bf49-846cb40584ac/project/804252c9-7824-43c7-8710-f36c1fde0fdf.svg)](https://wakatime.com/badge/user/c7ebec34-9b91-4b7f-bf49-846cb40584ac/project/804252c9-7824-43c7-8710-f36c1fde0fdf)
 
 Multi-tenenant headless e-commerce solution as a service.
 
