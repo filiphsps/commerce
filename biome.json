@@ -20,7 +20,6 @@
             "!**/*.scss",
             "!**/.claude",
             "!**/.vscode",
-            "!**/.worktrees",
             "!**/public/robots.txt*",
             "!**/public/sitemap*.xml*",
             "!**/storybook-static",
