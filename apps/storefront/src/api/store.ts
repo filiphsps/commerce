@@ -154,7 +154,8 @@ export const BusinessDataApi = async ({
 }: {
     shop: OnlineShop;
     locale: Locale;
-}): Promise<Simplify<BusinessDataDocumentData>> => {
+}): Promise<Simplify<BusinessDataDocumentData> | null> => {
+    if (shop.contentProvider.type !== 'prismic') return null;
     const client = createClient({ shop, locale });
 
     return unstable_cache(

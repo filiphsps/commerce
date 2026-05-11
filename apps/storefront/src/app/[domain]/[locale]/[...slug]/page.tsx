@@ -138,6 +138,7 @@ async function OnlineStoreJsonLd({ shop, locale }: { shop: OnlineShop; locale: L
     let jsonLd: WithContext<OnlineStore>;
     try {
         const businessData = await BusinessDataApi({ shop, locale });
+        if (!businessData) return null;
 
         // TODO: Add more data.
         jsonLd = {

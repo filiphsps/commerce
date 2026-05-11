@@ -99,7 +99,9 @@ export async function generateMetadata({ params }: { params: LayoutParams }): Pr
     }
 
     return {
-        metadataBase: new URL(`https://${shop.domain}/${locale.code}/`),
+        // Next 16: URL objects fail React-server-to-client serialization. Runtime
+        // accepts strings; TS Metadata type lags. Cast is intentional.
+        metadataBase: `https://${shop.domain}/${locale.code}/` as unknown as URL,
         title: {
             absolute: `${shop.name} (${locale.country!})`.trim(),
             // Allow tenants to customize this.

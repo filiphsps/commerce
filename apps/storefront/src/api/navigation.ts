@@ -15,7 +15,14 @@ export type NavigationItem = {
     }>;
 };
 
-export const MenuApi = async ({ shop, locale }: { shop: OnlineShop; locale: Locale }): Promise<MenuDocumentData> => {
+export const MenuApi = async ({
+    shop,
+    locale,
+}: {
+    shop: OnlineShop;
+    locale: Locale;
+}): Promise<MenuDocumentData | null> => {
+    if (shop.contentProvider.type !== 'prismic') return null;
     const client = createClient({ shop, locale });
 
     return unstable_cache(
@@ -49,7 +56,14 @@ export const MenuApi = async ({ shop, locale }: { shop: OnlineShop; locale: Loca
     )();
 };
 
-export async function HeaderApi({ shop, locale }: { shop: OnlineShop; locale: Locale }): Promise<HeaderDocumentData> {
+export async function HeaderApi({
+    shop,
+    locale,
+}: {
+    shop: OnlineShop;
+    locale: Locale;
+}): Promise<HeaderDocumentData | null> {
+    if (shop.contentProvider.type !== 'prismic') return null;
     const client = createClient({ shop, locale });
 
     return unstable_cache(

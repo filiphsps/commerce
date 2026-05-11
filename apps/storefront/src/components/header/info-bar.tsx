@@ -23,7 +23,7 @@ export async function InfoBar({ className, shop, locale, i18n, ...props }: InfoB
     const menu = await MenuApi({ shop, locale });
     const { t } = getTranslations('common', i18n);
 
-    if (menu.show_info_bar === false) {
+    if (!menu || menu.show_info_bar === false) {
         return null;
     }
 

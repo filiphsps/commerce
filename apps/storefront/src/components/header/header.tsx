@@ -25,14 +25,14 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
     const header = await HeaderApi({ shop, locale });
 
     const menu = await MenuApi({ shop, locale });
-    const slices = menu.slices;
+    const slices = menu?.slices ?? [];
 
     const { logo } = shop.design.header;
     const { t } = getTranslations('common', i18n);
 
     return (
         <>
-            {header.slices.map((slice, index) => (
+            {header?.slices.map((slice, index) => (
                 <CustomHTML
                     key={slice.id}
                     {...{
