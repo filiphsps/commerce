@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { ReactNode } from 'react';
 import { render as customRender } from '@/utils/test/react';
 
 /**
@@ -15,7 +15,7 @@ import { render as customRender } from '@/utils/test/react';
  * - Suspense boundaries inside the RSC still need their data deps mocked at
  *   the import boundary, same as any other test.
  */
-export async function renderRSC(factory: () => Promise<ReactElement> | ReactElement) {
+export async function renderRSC(factory: () => Promise<ReactNode> | ReactNode) {
     const node = await factory();
-    return customRender(node);
+    return customRender(node as Parameters<typeof customRender>[0]);
 }
