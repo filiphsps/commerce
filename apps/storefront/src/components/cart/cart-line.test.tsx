@@ -72,8 +72,11 @@ describe('components', () => {
         it('renders null when product is missing from merchandise', () => {
             vi.spyOn(console, 'error').mockImplementation(() => {});
             const data = makeLineData();
-            data.merchandise = { ...data.merchandise, product: null };
-            const { container } = render(<CartLine i18n={{} as any} data={data as any} />);
+            const dataWithNoProduct = {
+                ...data,
+                merchandise: { ...data.merchandise, product: null as any },
+            };
+            const { container } = render(<CartLine i18n={{} as any} data={dataWithNoProduct as any} />);
             expect(container.firstChild).toBeNull();
         });
 
