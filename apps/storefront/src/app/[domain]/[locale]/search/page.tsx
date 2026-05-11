@@ -1,6 +1,5 @@
 import { Shop } from '@nordcom/commerce-db';
 import { asText } from '@prismicio/client';
-import { get } from '@vercel/edge-config';
 import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
 import { Suspense } from 'react';
@@ -14,6 +13,7 @@ import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skel
 import PageContent from '@/components/page-content';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
+import { readFlag } from '@/utils/flags-cache-safe';
 import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import SearchContent from './search-content';
 
@@ -96,10 +96,10 @@ export default async function SearchPage({
         ? await SearchApi({ query, client })
         : { products: [], productFilters: [] };
 
-    // Avoid `showSearchFilter()` here — `@vercel/flags/next`'s `flag()` wrapper
-    // reads request headers internally, which is forbidden inside the `'use cache'` scope
-    // that wraps this component. The underlying edge-config value is global.
-    const showFilters = (await get<boolean>('search-filter')) ?? false;
+    // Use `readFlag` instead of `showSearchFilter()` — `@vercel/flags/next`'s
+    // `flag()` wrapper reads request headers internally, which is forbidden inside
+    // the `'use cache'` scope that wraps this component.
+    const showFilters = await readFlag('search-filter', false);
 
     return (
         <>
