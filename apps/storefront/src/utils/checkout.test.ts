@@ -143,6 +143,35 @@ describe('utils', () => {
             await expect(Checkout({ shop, locale, cart: cartWithoutCheckoutUrl, trackable })).rejects.toThrow();
         });
 
+        it(`should throw when cart is undefined`, async () => {
+            await expect(Checkout({ shop, locale, cart: undefined as any, trackable })).rejects.toThrow();
+        });
+
+        it(`should throw when commerce provider is not shopify`, async () => {
+            const nonShopifyShop = {
+                ...shop,
+                commerceProvider: { ...shop.commerceProvider, type: 'unknown' },
+            } as any;
+            await expect(Checkout({ shop: nonShopifyShop, locale, cart, trackable })).rejects.toThrow();
+        });
+
+        it(`navigates to the checkoutUrl after processing`, async () => {
+            // The cart fixture uses 'example.com' (no myshopify domain) so it's kept as-is.
+            await Checkout({ shop, locale, cart, trackable });
+            expect(window.location.href).toContain('example.com/cart/checkout');
+        });
+
+        it(`replaces the myshopify domain in the checkout URL with the shop's commerce domain`, async () => {
+            const cartWithMyshopify: typeof cart = {
+                ...cart,
+                checkoutUrl: 'https://my-store.myshopify.com/checkouts/1/abc123',
+            } as any;
+
+            await Checkout({ shop, locale, cart: cartWithMyshopify, trackable });
+            expect(window.location.href).not.toContain('myshopify.com');
+            expect(window.location.href).toContain('checkout.swedish-candy-store.com');
+        });
+
         it(`should track the begin_checkout event in Google Analytics`, async () => {
             const postEventSpy = vi.spyOn(trackable, 'postEvent');
             const expectedEventPayload = {
