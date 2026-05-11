@@ -36,7 +36,24 @@ export class Locale implements SerializableLocale {
      * The default locale.
      */
     static get default(): Readonly<SerializableLocale> {
-        // FIXME: Don't hardcode `en-US` as the fallback.
+        // Intentional fallback for shop-less contexts (tests, build-time, sitemaps without locale).
+        // For shop-aware retry paths, use Locale.fallbackForShop(shop) instead.
+        return Locale.from('en-US' as Code);
+    }
+
+    /**
+     * The default locale for a specific shop, reading shop.i18n.defaultLocale.
+     * Use in shop-aware retry paths where the shop is already in scope.
+     */
+    static fallbackForShop(shop: { i18n?: { defaultLocale?: string } }): Readonly<SerializableLocale> {
+        const code = shop.i18n?.defaultLocale;
+        if (code) {
+            try {
+                return Locale.from(code);
+            } catch {
+                // fall through to en-US
+            }
+        }
         return Locale.from('en-US' as Code);
     }
 
@@ -45,7 +62,9 @@ export class Locale implements SerializableLocale {
      */
     static get current(): Readonly<SerializableLocale> {
         if (typeof window === 'undefined') {
-            // TODO: This should be based on the current shop.
+            // On the server we cannot read the current request synchronously.
+            // Async code that needs the request's locale should call getRequestContext()
+            // from @/utils/request-context instead.
             return Locale.default;
         }
 

@@ -114,5 +114,25 @@ describe('utils', () => {
                 expect(capitalize('HELLO WORLD', { everyWord: true, lowerCase: false })).toBe('HELLO WORLD');
             });
         });
+
+        describe('fallbackForShop', () => {
+            it('returns the shop default locale when configured', () => {
+                const shop = { i18n: { defaultLocale: 'sv-SE' } } as any;
+                const locale = Locale.fallbackForShop(shop);
+                expect(locale.code).toBe('sv-SE');
+            });
+
+            it('returns en-US when shop has no i18n config', () => {
+                const shop = {} as any;
+                const locale = Locale.fallbackForShop(shop);
+                expect(locale.code).toBe('en-US');
+            });
+
+            it('returns en-US when shop has i18n but no defaultLocale', () => {
+                const shop = { i18n: {} } as any;
+                const locale = Locale.fallbackForShop(shop);
+                expect(locale.code).toBe('en-US');
+            });
+        });
     });
 });
