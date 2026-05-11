@@ -52,7 +52,7 @@ describe('app/[domain]/api/revalidate', () => {
 
             const res = await POST(req as any, { params: Promise.resolve({ domain: 'mock.shop' }) } as any);
             expect(res.status).toBe(200);
-            expect(revalidateTagMock).toHaveBeenCalledWith('shopify.shop-1.product.my-product');
+            expect(revalidateTagMock).toHaveBeenCalledWith('shopify.shop-1.product.my-product', 'max');
         });
 
         it('returns 401 on invalid HMAC', async () => {
@@ -106,7 +106,7 @@ describe('app/[domain]/api/revalidate', () => {
 
             const res = await POST(req as any, { params: Promise.resolve({ domain: 'mock.shop' }) } as any);
             expect(res.status).toBe(200);
-            expect(revalidateTagMock).toHaveBeenCalledWith('prismic.shop-1.doc.custom_page.home');
+            expect(revalidateTagMock).toHaveBeenCalledWith('prismic.shop-1.doc.custom_page.home', 'max');
         });
     });
 

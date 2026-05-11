@@ -41,8 +41,7 @@ export async function POST(req: NextRequest, { params }: { params: RevalidateApi
         }
 
         const tags = parseShopifyWebhook({ shop, topic, body });
-        // @ts-expect-error — next/cache revalidateTag profile arg not needed for tag purge
-        for (const tag of tags) revalidateTag(tag);
+        for (const tag of tags) revalidateTag(tag, 'max');
 
         return NextResponse.json({ status: 200, tags }, { status: 200, headers: noStoreHeaders });
     }
@@ -60,8 +59,7 @@ export async function POST(req: NextRequest, { params }: { params: RevalidateApi
 
     if (Array.isArray((body as { documents?: unknown[] }).documents)) {
         const tags = parsePrismicWebhook({ shop, body: body as { documents: Array<{ id: string; uid?: string; type: string }> } });
-        // @ts-expect-error — next/cache revalidateTag profile arg not needed for tag purge
-        for (const tag of tags) revalidateTag(tag);
+        for (const tag of tags) revalidateTag(tag, 'max');
         return NextResponse.json({ status: 200, tags }, { status: 200, headers: noStoreHeaders });
     }
 
