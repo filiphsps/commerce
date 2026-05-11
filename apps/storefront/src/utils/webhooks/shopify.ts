@@ -31,6 +31,9 @@ export function parseShopifyWebhook({
         return [broad];
     }
 
+    if (!topic.startsWith('inventory_levels/')) {
+        console.warn(`[shopify webhook] unknown topic "${topic}" — falling back to broad sweep`);
+    }
     // inventory_levels/update and other topics — broad sweep.
     // Variant-to-product resolution would require an extra Shopify call.
     return [broad];

@@ -1,5 +1,5 @@
 import { createHmac } from 'node:crypto';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 const revalidateTagMock = vi.fn();
 
@@ -32,6 +32,12 @@ function makeRequest({
 }
 
 describe('app/[domain]/api/revalidate', () => {
+    const originalSecret = process.env.SHOPIFY_WEBHOOK_SECRET;
+    afterEach(() => {
+        if (originalSecret === undefined) delete process.env.SHOPIFY_WEBHOOK_SECRET;
+        else process.env.SHOPIFY_WEBHOOK_SECRET = originalSecret;
+    });
+
     describe('POST — Shopify', () => {
         it('busts per-product tag on products/update with valid HMAC', async () => {
             revalidateTagMock.mockClear();

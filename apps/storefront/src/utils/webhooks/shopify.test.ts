@@ -1,5 +1,5 @@
 import { createHmac } from 'node:crypto';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { parseShopifyWebhook, validateShopifyHmac } from '@/utils/webhooks/shopify';
 
 describe('utils/webhooks/shopify', () => {
@@ -42,8 +42,11 @@ describe('utils/webhooks/shopify', () => {
         });
 
         it('emits broad sweep for unknown topics', () => {
+            const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
             const tags = parseShopifyWebhook({ shop, topic: 'orders/create', body: {} });
             expect(tags).toEqual(['shopify.shop-1']);
+            expect(warnSpy).toHaveBeenCalled();
+            warnSpy.mockRestore();
         });
 
         it('handles products/delete with handle from body', () => {
