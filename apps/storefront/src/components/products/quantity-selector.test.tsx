@@ -2,6 +2,14 @@ import { describe, expect, it, vi } from 'vitest';
 import { QuantitySelector } from '@/components/products/quantity-selector';
 import { fireEvent, render, screen, waitFor } from '@/utils/test/react';
 
+vi.mock('@shopify/hydrogen-react', async (importOriginal) => {
+    const actual = await importOriginal<typeof import('@shopify/hydrogen-react')>();
+    return {
+        ...actual,
+        useCart: () => ({ cartReady: true, status: 'idle' }),
+    };
+});
+
 vi.mock('@/components/shop/provider', async (importOriginal) => {
     const actual = await importOriginal<typeof import('@/components/shop/provider')>();
     return {
@@ -54,7 +62,7 @@ describe('components', () => {
             });
         });
 
-        it.skip('decreases the quantity when decrease button is clicked', async () => {
+        it('decreases the quantity when decrease button is clicked', async () => {
             const updateMock = vi.fn();
             render(<QuantitySelector i18n={{} as any} update={updateMock} value={3} />);
 
@@ -66,7 +74,7 @@ describe('components', () => {
             });
         });
 
-        it.skip('increases the quantity when increase button is clicked', async () => {
+        it('increases the quantity when increase button is clicked', async () => {
             const updateMock = vi.fn();
             render(<QuantitySelector i18n={{} as any} update={updateMock} value={3} />);
 
