@@ -43,6 +43,7 @@ describe('components', () => {
             expect(container.childElementCount).toBe(0);
             expect(warnSpy).toHaveBeenCalled();
             expect(unmount).not.toThrow();
+            warnSpy.mockRestore();
         });
 
         it('parses and renders a BOOLEAN type', () => {
