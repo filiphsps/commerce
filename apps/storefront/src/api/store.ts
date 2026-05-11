@@ -2,10 +2,11 @@ import { gql } from '@apollo/client';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Error, NoLocalesAvailableError, NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
 import type { Country, Localization, PaymentSettings } from '@shopify/hydrogen-react/storefront-api-types';
+import { unstable_cache } from 'next/cache';
 import type { BusinessDataDocument, BusinessDataDocumentData, Simplify } from '@/prismic/types';
 import type { AbstractApi } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
-import { createClient } from '@/utils/prismic';
+import { buildPrismicCacheTags, createClient } from '@/utils/prismic';
 
 // FIXME: Handle tenant-specific default.
 const DEFAULT_LOCALE = {
@@ -156,19 +157,29 @@ export const BusinessDataApi = async ({
 }): Promise<Simplify<BusinessDataDocumentData>> => {
     const client = createClient({ shop, locale });
 
-    try {
-        const res = await client.getSingle<BusinessDataDocument>('business_data');
-        return res.data;
-    } catch (error: unknown) {
-        const _locale = client.defaultParams?.lang ? Locale.from(client.defaultParams.lang) : locale; // Actually used locale.
-        if (Error.isNotFound(error)) {
-            if (!Locale.isDefault(_locale)) {
-                return await BusinessDataApi({ shop, locale: Locale.default }); // Try again with default locale.
+    return unstable_cache(
+        async () => {
+            try {
+                const res = await client.getSingle<BusinessDataDocument>('business_data');
+                return res.data;
+            } catch (error: unknown) {
+                const _locale = client.defaultParams?.lang ? Locale.from(client.defaultParams.lang) : locale; // Actually used locale.
+                if (Error.isNotFound(error)) {
+                    const fallback = Locale.fallbackForShop(shop);
+                    if (fallback.code !== _locale.code) {
+                        return await BusinessDataApi({ shop, locale: fallback as Locale }); // Try again with fallback locale.
+                    }
+
+                    throw new NotFoundError(`"BusinessData" with the locale "${locale.code}"`);
+                }
+
+                throw error;
             }
-
-            throw new NotFoundError(`"BusinessData" with the locale "${locale.code}"`);
-        }
-
-        throw error;
-    }
+        },
+        [shop.domain, locale.code, 'business_data'],
+        {
+            revalidate: 86_400, // 24hrs.
+            tags: buildPrismicCacheTags({ shop, locale, doc: { type: 'business_data', uid: 'business_data' } }),
+        },
+    )();
 };
