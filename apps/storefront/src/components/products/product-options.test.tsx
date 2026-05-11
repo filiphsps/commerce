@@ -63,6 +63,8 @@ vi.mock('next/link', async () => ({
     default: (props: any) => <a {...props} />,
 }));
 
+// SKIP: ProductOptions requires a full <ProductProvider> + selectedOptions state machine
+// that the test mocks don't fully replicate. Covered by future e2e test.
 describe.skip('components', () => {
     describe('ProductOptions', () => {
         it('renders all options and values', async () => {
