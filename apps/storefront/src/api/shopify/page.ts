@@ -9,7 +9,7 @@ export type NormalizedShopifyPage = {
     handle: string;
     title: string;
     body: string;
-    bodyHtml: string;
+    bodySummary: string;
     seo: { title: string | null; description: string | null };
     createdAt: string;
     updatedAt: string;
@@ -21,7 +21,7 @@ const PAGE_FRAGMENT = /* GraphQL */ `
     handle
     title
     body
-    bodyHtml
+    bodySummary
     seo {
         title
         description
@@ -37,7 +37,7 @@ function normalize(page: Page): NormalizedShopifyPage {
         handle: page.handle,
         title: page.title,
         body: page.body,
-        bodyHtml: page.bodyHtml,
+        bodySummary: page.bodySummary,
         seo: {
             title: page.seo?.title ?? null,
             description: page.seo?.description ?? null,
