@@ -108,11 +108,11 @@ describe('utils', () => {
             });
 
             describe('convertWeight', () => {
-                it.skip('should convert from one weight unit to another', () => {
-                    expect(convertWeight(10, 'GRAMS', 'KILOGRAMS')).toBe(0.1);
-                    expect(convertWeight(10, 'KILOGRAMS', 'GRAMS')).toBe(10);
-                    expect(convertWeight(10, 'OUNCES', 'GRAMS')).toBe(28.34952);
-                    expect(convertWeight(10, 'POUNDS', 'GRAMS')).toBe(453.59237);
+                it('should convert from one weight unit to another', () => {
+                    expect(convertWeight(10, 'GRAMS', 'KILOGRAMS', { round: false })).toBeCloseTo(0.01);
+                    expect(convertWeight(10, 'KILOGRAMS', 'GRAMS', { round: false })).toBeCloseTo(10000);
+                    expect(convertWeight(10, 'OUNCES', 'GRAMS', { round: false })).toBeCloseTo(283.495, 2);
+                    expect(convertWeight(10, 'POUNDS', 'GRAMS', { round: false })).toBeCloseTo(4535.92, 2);
                 });
 
                 it('should not round if round is set to false', () => {
