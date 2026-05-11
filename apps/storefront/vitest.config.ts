@@ -35,6 +35,10 @@ export default defineProject({
                 replacement: resolve(__dirname, './src/auth/auth.ts'),
             },
             {
+                find: '@/prismic/types',
+                replacement: resolve(__dirname, './prismicio-types.d.ts'),
+            },
+            {
                 find: '@',
                 replacement: resolve(__dirname, './src'),
             },
