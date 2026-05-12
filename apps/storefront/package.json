@@ -94,7 +94,7 @@
         "react-ipgeolocation": "1.4.0",
         "react-live-chat-loader": "2.9.2",
         "react-share": "5.1.0",
-        "redis": "4.7.0",
+        "redis": "5.12.1",
         "resolve-accept-language": "3.2.1",
         "sass": "1.80.5",
         "sharp": "0.34.5",
