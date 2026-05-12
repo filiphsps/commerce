@@ -173,6 +173,28 @@ const config: Config = {
         ],
     ],
 
+    themes: [
+        [
+            '@easyops-cn/docusaurus-search-local',
+            {
+                hashed: true,
+                indexBlog: false,
+                docsRouteBasePath: [
+                    'docs',
+                    'docs/storefront',
+                    'docs/admin',
+                    'docs/landing',
+                    'docs/db',
+                    'docs/errors',
+                    'docs/shopify-graphql',
+                    'docs/shopify-html',
+                    'docs/marketing-common',
+                ],
+                highlightSearchTermsOnTargetPage: true,
+            },
+        ],
+    ],
+
     themeConfig: {
         image: 'img/social-card.svg',
         navbar: {
