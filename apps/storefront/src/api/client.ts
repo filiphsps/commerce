@@ -26,6 +26,7 @@ export const createApolloClient = ({ uri, headers }: ApiConfig, shop: OnlineShop
                 },
             },
         }),
+        // No `addTypename` — Apollo v4 always injects __typename via a built-in DocumentTransform.
         cache: new InMemoryCache({
             typePolicies: {
                 Product: {
