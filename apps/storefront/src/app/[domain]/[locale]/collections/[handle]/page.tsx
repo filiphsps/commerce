@@ -9,7 +9,7 @@ import { Suspense } from 'react';
 import type { CollectionPage, WithContext } from 'schema-dts';
 import { PageApi } from '@/api/prismic/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { CollectionApi, CollectionPaginationCountApi, CollectionsApi } from '@/api/shopify/collection';
+import { CollectionApi, CollectionPaginationCountApi } from '@/api/shopify/collection';
 import { LocalesApi } from '@/api/store';
 import { Pagination } from '@/components/actionable/pagination';
 import PrismicPage from '@/components/cms/prismic-page';
@@ -25,33 +25,11 @@ import { isValidHandle } from '@/utils/handle';
 import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import { checkAndHandleRedirect } from '@/utils/redirect';
 import { CollectionContent, PRODUCTS_PER_PAGE } from './collection-content';
+import type { CollectionPageParams } from './static-params';
 
 // TODO: Figure out a better way to deal with query params.
 
-export type CollectionPageParams = Promise<{ domain: string; locale: string; handle: string }>;
-
-export async function generateStaticParams({
-    params,
-}: {
-    params: Omit<Awaited<CollectionPageParams>, 'handle'>;
-}): Promise<Omit<Awaited<CollectionPageParams>, 'domain' | 'locale'>[]> {
-    const { domain, locale: localeData } = params;
-
-    const locale = Locale.from(localeData);
-
-    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-    const api = await ShopifyApolloApiClient({ shop, locale });
-
-    try {
-        const collections = await CollectionsApi({ api });
-        return collections.map(({ handle }) => ({ handle }));
-    } catch (error: unknown) {
-        // Empty/missing catalog shouldn't fail the whole build — Next falls back
-        // to dynamic rendering and the page itself 404s.
-        if (Error.isNotFound(error)) return [];
-        throw error;
-    }
-}
+export { type CollectionPageParams, generateStaticParams } from './static-params';
 
 type SearchParams = Promise<{
     page?: string;

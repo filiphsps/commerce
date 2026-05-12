@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { isValidHandle } from '@/utils/handle';
+import { isValidHandle, NOT_FOUND_HANDLE } from '@/utils/handle';
 
 describe('utils', () => {
     describe('isValidHandle', () => {
@@ -42,6 +42,12 @@ describe('utils', () => {
         it(`should return false when handle is '[[...uid]]'`, () => {
             const handle = '[[...uid]]';
             const result = isValidHandle(handle);
+
+            expect(result).toBe(false);
+        });
+
+        it(`should return false for the NOT_FOUND_HANDLE sentinel`, () => {
+            const result = isValidHandle(NOT_FOUND_HANDLE);
 
             expect(result).toBe(false);
         });

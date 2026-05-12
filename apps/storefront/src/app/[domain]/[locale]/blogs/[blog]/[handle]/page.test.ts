@@ -1,6 +1,8 @@
 import { NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { isValidHandle, NOT_FOUND_HANDLE } from '@/utils/handle';
+
 const { mockBlogApi, mockShopifyApolloApiClient, mockFindByDomain } = vi.hoisted(() => ({
     mockBlogApi: vi.fn(),
     mockShopifyApolloApiClient: vi.fn(),
@@ -19,12 +21,11 @@ vi.mock('@/api/shopify', () => ({
 
 vi.mock('@/api/shopify/blog', () => ({
     BlogApi: mockBlogApi,
-    BlogArticleApi: vi.fn(),
 }));
 
-import { generateStaticParams } from './page';
+import { generateStaticParams } from './static-params';
 
-describe('app/[domain]/[locale]/blogs/[blog]/[handle]/page > generateStaticParams', () => {
+describe('app/[domain]/[locale]/blogs/[blog]/[handle] > generateStaticParams', () => {
     const params = { domain: 'shop.example.com', locale: 'en-US', blog: 'announcements' };
 
     beforeEach(() => {
@@ -61,20 +62,22 @@ describe('app/[domain]/[locale]/blogs/[blog]/[handle]/page > generateStaticParam
         expect(result).toEqual([{ handle: 'launch-day' }, { handle: 'roadmap-update' }]);
     });
 
-    it('returns an empty array when the blog is not found (build resilience)', async () => {
+    it('returns the not-found sentinel when the blog is not found (Cache Components requires >=1 entry)', async () => {
         mockBlogApi.mockResolvedValue([undefined, new NotFoundError('blog')]);
 
         const result = await generateStaticParams({ params });
 
-        expect(result).toEqual([]);
+        expect(result).toEqual([{ handle: NOT_FOUND_HANDLE }]);
+        // Runtime page falls through to notFound() via isValidHandle rejection.
+        expect(isValidHandle(NOT_FOUND_HANDLE)).toBe(false);
     });
 
-    it('returns an empty array when the blog has no articles (build resilience)', async () => {
+    it('returns the not-found sentinel when the blog has no articles (Cache Components requires >=1 entry)', async () => {
         mockBlogApi.mockResolvedValue([{ articles: { edges: [] } }, undefined]);
 
         const result = await generateStaticParams({ params });
 
-        expect(result).toEqual([]);
+        expect(result).toEqual([{ handle: NOT_FOUND_HANDLE }]);
     });
 
     it('rethrows non-NotFound errors so real failures are still surfaced', async () => {

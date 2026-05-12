@@ -1,6 +1,8 @@
 import { NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { isValidHandle, NOT_FOUND_HANDLE } from '@/utils/handle';
+
 const { mockBlogsApi, mockShopifyApolloApiClient, mockFindByDomain } = vi.hoisted(() => ({
     mockBlogsApi: vi.fn(),
     mockShopifyApolloApiClient: vi.fn(),
@@ -18,13 +20,12 @@ vi.mock('@/api/shopify', () => ({
 }));
 
 vi.mock('@/api/shopify/blog', () => ({
-    BlogApi: vi.fn(),
     BlogsApi: mockBlogsApi,
 }));
 
-import { generateStaticParams } from './page';
+import { generateStaticParams } from './static-params';
 
-describe('app/[domain]/[locale]/blogs/[blog]/page > generateStaticParams', () => {
+describe('app/[domain]/[locale]/blogs/[blog] > generateStaticParams', () => {
     const params = { domain: 'shop.example.com', locale: 'en-US' };
 
     beforeEach(() => {
@@ -44,12 +45,14 @@ describe('app/[domain]/[locale]/blogs/[blog]/page > generateStaticParams', () =>
         expect(result).toEqual([{ blog: 'news' }, { blog: 'announcements' }]);
     });
 
-    it('returns an empty array when no blogs are found (build resilience)', async () => {
+    it('returns the not-found sentinel when no blogs are found (Cache Components requires >=1 entry)', async () => {
         mockBlogsApi.mockResolvedValue([undefined, new NotFoundError('blogs')]);
 
         const result = await generateStaticParams({ params });
 
-        expect(result).toEqual([]);
+        expect(result).toEqual([{ blog: NOT_FOUND_HANDLE }]);
+        // Runtime page falls through to notFound() via isValidHandle rejection.
+        expect(isValidHandle(NOT_FOUND_HANDLE)).toBe(false);
     });
 
     it('rethrows non-NotFound errors so real failures are still surfaced', async () => {

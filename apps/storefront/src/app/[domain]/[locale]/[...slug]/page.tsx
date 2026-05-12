@@ -8,7 +8,7 @@ import { cacheLife } from 'next/cache';
 import { notFound } from 'next/navigation';
 import { Fragment, Suspense } from 'react';
 import type { OnlineStore, WithContext } from 'schema-dts';
-import { PageApi, PagesApi } from '@/api/page';
+import { PageApi } from '@/api/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { BusinessDataApi, LocalesApi } from '@/api/store';
 import { CMSContent } from '@/components/cms/cms-content';
@@ -17,33 +17,9 @@ import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skel
 import { JsonLd } from '@/components/json-ld';
 import { isValidHandle } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
+import type { CustomPageParams } from './static-params';
 
-export type CustomPageParams = Promise<{ domain: string; locale: string; slug: string[] }>;
-
-export async function generateStaticParams({
-    params,
-}: {
-    params: Omit<Awaited<CustomPageParams>, 'slug'>;
-}): Promise<Omit<Awaited<CustomPageParams>, 'domain' | 'locale'>[]> {
-    const { domain, locale: localeData } = params;
-
-    const locale = Locale.from(localeData);
-
-    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-    const pages = await PagesApi({ shop, locale });
-    // Shops with no CMS pages shouldn't fail the build — Next falls back to
-    // dynamic rendering and the page itself 404s.
-    if (!pages) return [];
-
-    switch (pages.provider) {
-        case 'prismic':
-            return pages.items
-                .filter((p): p is typeof p & { uid: string } => typeof p.uid === 'string')
-                .map(({ uid }) => ({ slug: [uid] }));
-        case 'shopify':
-            return pages.items.map(({ handle }) => ({ slug: [handle] }));
-    }
-}
+export { type CustomPageParams, generateStaticParams } from './static-params';
 
 export async function generateMetadata({ params }: { params: CustomPageParams }): Promise<Metadata> {
     'use cache';

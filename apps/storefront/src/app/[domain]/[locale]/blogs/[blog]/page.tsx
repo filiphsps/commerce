@@ -10,7 +10,7 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Fragment, Suspense } from 'react';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { BlogApi, BlogsApi } from '@/api/shopify/blog';
+import { BlogApi } from '@/api/shopify/blog';
 import { LocalesApi } from '@/api/store';
 import { Avatar } from '@/components/informational/avatar';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
@@ -23,31 +23,9 @@ import Heading from '@/components/typography/heading';
 import { Label } from '@/components/typography/label';
 import { isValidHandle } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
+import type { BlogPageParams } from './static-params';
 
-export type BlogPageParams = Promise<{ domain: string; locale: string; blog: string }>;
-
-export async function generateStaticParams({
-    params,
-}: {
-    params: Omit<Awaited<BlogPageParams>, 'blog'>;
-}): Promise<Pick<Awaited<BlogPageParams>, 'blog'>[]> {
-    const { domain, locale: localeData } = params;
-
-    const locale = Locale.from(localeData);
-
-    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-    const api = await ShopifyApolloApiClient({ shop, locale });
-
-    const [blogs, blogsError] = await BlogsApi({ api });
-    if (blogsError) {
-        if (Error.isNotFound(blogsError)) {
-            return [];
-        }
-        throw blogsError;
-    }
-
-    return blogs.map(({ handle }) => ({ blog: handle }));
-}
+export { type BlogPageParams, generateStaticParams } from './static-params';
 
 export async function generateMetadata({ params }: { params: BlogPageParams }): Promise<Metadata> {
     'use cache';

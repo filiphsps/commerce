@@ -11,7 +11,7 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import type { Article as LdArticle, WithContext } from 'schema-dts';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { BlogApi, BlogArticleApi } from '@/api/shopify/blog';
+import { BlogArticleApi } from '@/api/shopify/blog';
 import { LocalesApi } from '@/api/store';
 import { Avatar } from '@/components/informational/avatar';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
@@ -22,32 +22,9 @@ import { Label } from '@/components/typography/label';
 import { getDictionary } from '@/utils/dictionary';
 import { isValidHandle } from '@/utils/handle';
 import { getTranslations, Locale } from '@/utils/locale';
+import type { ArticlePageParams } from './static-params';
 
-export type ArticlePageParams = Promise<{ domain: string; locale: string; blog: string; handle: string }>;
-
-export async function generateStaticParams({
-    params,
-}: {
-    params: Omit<Awaited<ArticlePageParams>, 'handle'>;
-}): Promise<Pick<Awaited<ArticlePageParams>, 'handle'>[]> {
-    const { domain, locale: localeData, blog: blogHandle } = params;
-    const locale = Locale.from(localeData);
-
-    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-    const api = await ShopifyApolloApiClient({ shop, locale });
-
-    const [blog, blogError] = await BlogApi({ api, handle: blogHandle });
-    if (blogError) {
-        // Missing blog or empty article list shouldn't fail the whole build;
-        // Next will fall back to dynamic rendering and the page itself 404s.
-        if (Error.isNotFound(blogError)) {
-            return [];
-        }
-        throw blogError;
-    }
-
-    return blog.articles.edges.map(({ node: { handle } }) => ({ handle }));
-}
+export { type ArticlePageParams, generateStaticParams } from './static-params';
 
 export async function generateMetadata({ params }: { params: ArticlePageParams }): Promise<Metadata> {
     'use cache';

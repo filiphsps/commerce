@@ -13,7 +13,7 @@ import { PageApi } from '@/api/prismic/page';
 import type { Product } from '@/api/product';
 import { isProductVegan } from '@/api/product';
 import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
-import { ProductApi, ProductsApi } from '@/api/shopify/product';
+import { ProductApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
 import { CMSContent } from '@/components/cms/cms-content';
 import { Card } from '@/components/layout/card';
@@ -29,31 +29,10 @@ import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import { checkAndHandleRedirect } from '@/utils/redirect';
 import { cn } from '@/utils/tailwind';
 import { ProductContent, ProductPricing, ProductSavings } from './product-content';
+import type { ProductPageParams } from './static-params';
 import { BLOCK_STYLES } from './styles';
 
-export type ProductPageParams = Promise<{ domain: string; locale: string; handle: string }>;
-
-export async function generateStaticParams({
-    params,
-}: {
-    params: Omit<Awaited<ProductPageParams>, 'handle'>;
-}): Promise<Omit<Awaited<ProductPageParams>, 'domain' | 'locale'>[]> {
-    const { domain, locale: localeData } = params;
-
-    const locale = Locale.from(localeData);
-    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-    const api = await ShopifyApiClient({ shop, locale });
-
-    try {
-        const { products } = await ProductsApi({ api, limit: 5 });
-        return products.map(({ node: { handle } }) => ({ handle }));
-    } catch (error: unknown) {
-        // Empty catalogs (or a transient fetch failure) shouldn't fail the whole
-        // build — Next will fall back to dynamic rendering and the page 404s.
-        if (Error.isNotFound(error)) return [];
-        throw error;
-    }
-}
+export { generateStaticParams, type ProductPageParams } from './static-params';
 
 type SearchParams = Promise<{
     variant?: string;

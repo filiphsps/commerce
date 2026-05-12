@@ -1,6 +1,8 @@
 import { NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { isValidHandle, NOT_FOUND_HANDLE } from '@/utils/handle';
+
 const { mockProductsApi, mockShopifyApiClient, mockFindByDomain } = vi.hoisted(() => ({
     mockProductsApi: vi.fn(),
     mockShopifyApiClient: vi.fn(),
@@ -15,17 +17,15 @@ vi.mock('@nordcom/commerce-db', () => ({
 
 vi.mock('@/api/shopify', () => ({
     ShopifyApiClient: mockShopifyApiClient,
-    ShopifyApolloApiClient: vi.fn(),
 }));
 
 vi.mock('@/api/shopify/product', () => ({
-    ProductApi: vi.fn(),
     ProductsApi: mockProductsApi,
 }));
 
-import { generateStaticParams } from './page';
+import { generateStaticParams } from './static-params';
 
-describe('app/[domain]/[locale]/products/[handle]/page > generateStaticParams', () => {
+describe('app/[domain]/[locale]/products/[handle] > generateStaticParams', () => {
     const params = { domain: 'shop.example.com', locale: 'en-US' };
 
     beforeEach(() => {
@@ -47,12 +47,13 @@ describe('app/[domain]/[locale]/products/[handle]/page > generateStaticParams', 
         expect(result).toEqual([{ handle: 'product-a' }, { handle: 'product-b' }]);
     });
 
-    it('returns an empty array when the catalog is empty (build resilience)', async () => {
+    it('returns the not-found sentinel when the catalog is empty (Cache Components requires >=1 entry)', async () => {
         mockProductsApi.mockRejectedValue(new NotFoundError('products'));
 
         const result = await generateStaticParams({ params });
 
-        expect(result).toEqual([]);
+        expect(result).toEqual([{ handle: NOT_FOUND_HANDLE }]);
+        expect(isValidHandle(NOT_FOUND_HANDLE)).toBe(false);
     });
 
     it('rethrows non-NotFound errors so real failures are still surfaced', async () => {
