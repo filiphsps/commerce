@@ -16,10 +16,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ADMIN_DOMAIN = process.env.ADMIN_DOMAIN || undefined;
 const LANDING_DOMAIN = process.env.LANDING_DOMAIN || undefined;
 
-export function getBaseUrl() {
-    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL ?? ADMIN_DOMAIN}`;
-}
-
 const imageRemotePatterns = [
     { protocol: 'https', hostname: '**.prismic.io' },
     { protocol: 'https', hostname: '**.unsplash.com' },
@@ -45,7 +41,6 @@ const config = {
     compress: true,
     trailingSlash: true,
     transpilePackages: [],
-    assetPrefix: getBaseUrl(),
     reactCompiler: true,
     cacheComponents: true,
     typedRoutes: true,

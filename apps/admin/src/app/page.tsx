@@ -5,7 +5,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { auth } from '@/auth';
-import { LANDING_URL } from '@/utils/domains';
 import { getShopsForUser } from '@/utils/fetchers';
 
 export const metadata: Metadata = {
@@ -45,7 +44,7 @@ export default async function Overview() {
                     <section className="flex items-start justify-between">
                         <Link href="/" title="Nordcom Commerce" className="block pb-4">
                             <Image
-                                src={`${LANDING_URL}/logo.svg`}
+                                src="/logo.svg"
                                 alt="Nordcom AB's Logo"
                                 height={75}
                                 width={150}
