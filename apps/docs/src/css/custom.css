@@ -1,3 +1,18 @@
+@import 'tailwindcss';
+
+/* Tailwind v4 scans JSX/TSX for utility class usage. The default content
+   glob covers everything under src/ — explicit sources are only needed if
+   utilities are referenced outside src/. */
+@source "../**/*.{js,jsx,ts,tsx}";
+
+/* Disable Tailwind's preflight reset — Docusaurus' Infima already supplies
+   one and the two compound into ugly cascading conflicts (headings lose
+   their margins, links lose underlines, etc.). */
+@layer theme;
+@layer base;
+@layer components;
+@layer utilities;
+
 :root {
     --ifm-color-primary: #ed1e79;
     --ifm-color-primary-dark: #d51a6d;
@@ -18,4 +33,14 @@
     --ifm-color-primary-light: #f487b8;
     --ifm-color-primary-lighter: #f5a0c8;
     --ifm-color-primary-lightest: #f8c7df;
+}
+
+@theme {
+    /* Expose Infima theme tokens to Tailwind so utilities like
+       `text-primary` resolve to the Docusaurus primary color and follow
+       the light/dark theme switch. */
+    --color-primary: var(--ifm-color-primary);
+    --color-content: var(--ifm-color-content);
+    --color-emphasis-200: var(--ifm-color-emphasis-200);
+    --color-emphasis-700: var(--ifm-color-emphasis-700);
 }

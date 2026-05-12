@@ -110,7 +110,7 @@ jobs:
                   path: apps/docs/build
 
             - name: 🎭 Install Playwright browsers
-              run: pnpm --filter @nordcom/commerce-docs exec playwright install --with-deps chromium
+              run: pnpm --filter @nordcom/commerce-docs exec playwright install --with-deps chromium webkit
 
             - name: 🧪 Run Playwright tests against built site
               working-directory: apps/docs

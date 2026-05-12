@@ -98,7 +98,12 @@ function docsPlugin(w: Workspace): PluginConfig {
             path: w.docsPath,
             routeBasePath: `docs/${w.name}`,
             sidebarPath: './sidebars.ts',
-            editUrl: `${GITHUB}/edit/master/${w.repoPath}/docs/`,
+            // Function form bypasses Docusaurus' default `<editUrl><relative-path-from-siteDir>`
+            // concatenation, which would emit `../../packages/db/docs/overview.md`
+            // segments because our `path` is relative to apps/docs. Resolving from
+            // the workspace root keeps the URL clean.
+            editUrl: ({ docPath }: { docPath: string }) =>
+                `${GITHUB}/edit/master/${w.repoPath}/docs/${docPath}`,
             ...(w.extra?.exclude ? { exclude: w.extra.exclude } : {}),
         },
     ];
@@ -149,7 +154,7 @@ const config: Config = {
                     path: '../../docs',
                     routeBasePath: 'docs',
                     sidebarPath: './sidebars.ts',
-                    editUrl: `${GITHUB}/edit/master/docs/`,
+                    editUrl: ({ docPath }: { docPath: string }) => `${GITHUB}/edit/master/docs/${docPath}`,
                     exclude: ['superpowers/**'],
                 },
                 blog: false,
@@ -161,6 +166,7 @@ const config: Config = {
     ],
 
     plugins: [
+        './plugins/tailwind.cjs',
         ...WORKSPACES.map(docsPlugin),
         ...WORKSPACES.map(apiPlugin).filter((p): p is PluginConfig => p !== null),
     ],

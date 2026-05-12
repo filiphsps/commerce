@@ -31,6 +31,13 @@ export default defineConfig({
             name: 'chromium',
             use: { ...devices['Desktop Chrome'] },
         },
+        // Safari's runtime ("Can't find variable: require") historically broke
+        // first on this site — keep webkit in the matrix so a regression to
+        // bundling settings shows up in CI rather than via a user report.
+        {
+            name: 'webkit',
+            use: { ...devices['Desktop Safari'] },
+        },
     ],
     webServer: process.env.DOCS_REUSE_SERVER
         ? undefined
