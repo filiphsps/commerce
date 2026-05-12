@@ -17,7 +17,7 @@ const ADMIN_DOMAIN = process.env.ADMIN_DOMAIN || undefined;
 const LANDING_DOMAIN = process.env.LANDING_DOMAIN || undefined;
 
 export function getBaseUrl() {
-    return `https://${process.env.VERCEL_URL ?? ADMIN_DOMAIN}`;
+    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL ?? ADMIN_DOMAIN}`;
 }
 
 const imageRemotePatterns = [
