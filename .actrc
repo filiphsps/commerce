@@ -5,11 +5,15 @@
 # `act-latest` is ~1.5 GB on first pull; subsequent runs reuse the cached image.
 -P ubuntu-latest=catthehacker/ubuntu:act-latest
 
-# Required on Apple Silicon: most marketplace actions ship amd64 binaries only.
-# Harmless on amd64 hosts (Docker just runs natively).
-# (Attempted dropping this to fix Turbopack qemu SIGSEGVs by running arm64 native,
-# but the lockfile's linux-arm64 optional deps don't get installed reliably from
-# act's reused setup-node pnpm-cache. Real CI is amd64 anyway, so we keep parity.)
+# Required on Apple Silicon: most marketplace actions ship amd64 binaries only,
+# and — more importantly — pnpm v11's SQLite-backed store gets corrupted on
+# Docker Desktop's volume filesystem when running arm64 containers (every
+# `pnpm install` exits with `ERR_PNPM_ERR_SQLITE_ERROR: database disk image is
+# malformed`, even sequentially). Forcing amd64 means QEMU emulation, which
+# in turn segfaults `next build` (Turbopack's Rust binary) under qemu — but
+# everything *else* (lint, typecheck, test, codecov upload) works, and real
+# CI is amd64 anyway. Accept the Build SIGSEGV as the local cost of doing
+# business; trust real CI for Build/E2E verification.
 --container-architecture linux/amd64
 
 # Don't pull every run — let Docker decide when the image is stale.
