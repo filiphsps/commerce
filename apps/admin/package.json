@@ -63,7 +63,7 @@
         "@vercel/toolbar": "0.2.2",
         "clsx": "2.1.1",
         "geist": "1.3.1",
-        "lucide-react": "0.577.0",
+        "lucide-react": "1.14.0",
         "next": "16.2.4",
         "next-auth": "5.0.0-beta.25",
         "nextjs-toploader": "3.9.17",
