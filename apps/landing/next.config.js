@@ -20,10 +20,6 @@ if (!gitSHA) {
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export function getBaseUrl() {
-    if (process.env.VERCEL_ENV === 'production') {
-        return 'https://shops.nordcom.io';
-    }
-
     return process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined;
 }
 
