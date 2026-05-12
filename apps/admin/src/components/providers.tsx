@@ -23,7 +23,7 @@ export function Providers({ children }: ProvidersProps) {
     }, []);
 
     return (
-        <NordstarProvider theme={Theme}>
+        <NordstarProvider theme={Theme} className="block">
             <Toaster theme="dark" />
 
             {/* `NextTopLoader`, `HeaderProvider`, and `GoogleTagManager` all read */}
