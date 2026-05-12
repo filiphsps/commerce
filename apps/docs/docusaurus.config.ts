@@ -198,6 +198,19 @@ const config: Config = {
                         label: appLabel(w),
                     })),
                 },
+                {
+                    type: 'dropdown',
+                    label: 'API',
+                    position: 'left',
+                    // Only workspaces with a TypeDoc-emitted folder show up here.
+                    // TypeDoc currently only processes packages/* (see
+                    // typedoc.config.mjs), so apps won't appear unless we expand
+                    // the entry-point discovery there.
+                    items: WORKSPACES.filter((w) => w.apiPath !== null).map((w) => ({
+                        to: `/docs/${w.name}/api`,
+                        label: appLabel(w),
+                    })),
+                },
                 { to: '/docs/architecture', label: 'Architecture', position: 'left' },
                 { href: GITHUB, label: 'GitHub', position: 'right' },
             ],

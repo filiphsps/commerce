@@ -41,20 +41,8 @@ jobs:
             - name: 🕶️ Checkout repository
               uses: actions/checkout@v6
 
-            - name: 🏎️ Setup pnpm
-              uses: pnpm/action-setup@v6
-              with:
-                  run_install: false
-
-            - name: 🏎️ Setup Node
-              uses: actions/setup-node@v6
-              with:
-                  registry-url: 'https://registry.npmjs.org/'
-                  node-version-file: 'apps/docs/.nvmrc'
-                  cache: 'pnpm'
-
-            - name: 📦 Install dependencies
-              run: pnpm install --frozen-lockfile
+            - name: 🚀 Bootstrap
+              uses: ./.github/common/bootstrap
 
             - name: 🔨 Build Packages
               run: pnpm run build:packages
@@ -88,20 +76,8 @@ jobs:
             - name: 🕶️ Checkout repository
               uses: actions/checkout@v6
 
-            - name: 🏎️ Setup pnpm
-              uses: pnpm/action-setup@v6
-              with:
-                  run_install: false
-
-            - name: 🏎️ Setup Node
-              uses: actions/setup-node@v6
-              with:
-                  registry-url: 'https://registry.npmjs.org/'
-                  node-version-file: 'apps/docs/.nvmrc'
-                  cache: 'pnpm'
-
-            - name: 📦 Install dependencies
-              run: pnpm install --frozen-lockfile
+            - name: 🚀 Bootstrap
+              uses: ./.github/common/bootstrap
 
             - name: 📥 Download built site
               uses: actions/download-artifact@v4

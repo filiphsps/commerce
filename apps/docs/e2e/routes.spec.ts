@@ -135,4 +135,26 @@ test.describe('Navigation', () => {
             await expect(page.getByRole('link', { name, exact: true }).first()).toBeVisible();
         }
     });
+
+    test('API dropdown surfaces every TypeDoc-generated reference', async ({ page }) => {
+        await page.goto('/commerce/');
+        const dropdown = page.getByRole('button', { name: /^API$/i }).first();
+        await dropdown.click();
+        for (const name of [
+            'db',
+            'errors',
+            'shopify-graphql',
+            'shopify-html',
+            'marketing-common',
+        ]) {
+            const link = page.getByRole('link', { name, exact: true });
+            await expect(link.first()).toBeVisible();
+            // Every API dropdown entry must resolve to the per-workspace API
+            // index, not the overview — that was the regression.
+            const apiLinks = await link.evaluateAll((els) =>
+                els.map((a) => (a as HTMLAnchorElement).getAttribute('href') ?? '')
+            );
+            expect(apiLinks.some((h) => h.endsWith('/api/'))).toBe(true);
+        }
+    });
 });

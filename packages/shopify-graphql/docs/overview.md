@@ -22,4 +22,4 @@ every request.
 ## In this section
 
 - **Overview** — this page
-- **API Reference** — auto-generated from TypeScript source
+- **[API Reference](/docs/shopify-graphql/api/)** — auto-generated from TypeScript source

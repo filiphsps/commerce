@@ -20,4 +20,4 @@ For the canonical reference, see the [README on GitHub](https://github.com/filip
 - **Overview** — this page
 - **Services** — service classes (`Shop`, `User`, ...)
 - **Models** — Mongoose schemas
-- **API Reference** — auto-generated from TypeScript source
+- **[API Reference](/docs/db/api/)** — auto-generated from TypeScript source

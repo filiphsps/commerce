@@ -18,4 +18,3 @@ For the canonical reference, see the [README on GitHub](https://github.com/filip
 - **Data Fetching** — Shopify + Prismic patterns
 - **Webhooks** — cache invalidation
 - **Locales** — i18n
-- **API Reference** — auto-generated from TypeScript source

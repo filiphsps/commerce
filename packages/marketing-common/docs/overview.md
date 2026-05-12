@@ -15,4 +15,4 @@ For the canonical reference, see the [README on GitHub](https://github.com/filip
 ## In this section
 
 - **Overview** — this page
-- **API Reference** — auto-generated from TypeScript source
+- **[API Reference](/docs/marketing-common/api/)** — auto-generated from TypeScript source

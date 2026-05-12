@@ -28,4 +28,4 @@ package gives the platform a shared vocabulary for failures:
 ## In this section
 
 - **Overview** — this page
-- **API Reference** — auto-generated from TypeScript source
+- **[API Reference](/docs/errors/api/)** — auto-generated from TypeScript source
