@@ -18,11 +18,5 @@
         "noUnusedParameters": false,
         "types": ["node", "react", "react-dom"]
     },
-    "include": [
-        "../../packages/db/src/index.ts",
-        "../../packages/errors/src/index.ts",
-        "../../packages/shopify-graphql/src/index.ts",
-        "../../packages/shopify-html/src/index.ts",
-        "../../packages/marketing-common/src/index.ts"
-    ]
+    "include": ["../../packages/*/src/index.ts"]
 }

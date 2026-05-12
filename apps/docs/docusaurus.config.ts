@@ -1,6 +1,119 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type * as Preset from '@docusaurus/preset-classic';
+import type { PluginConfig } from '@docusaurus/types';
 import type { Config } from '@docusaurus/types';
 import { themes as prismThemes } from 'prism-react-renderer';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const REPO_ROOT = path.resolve(__dirname, '../..');
+const GITHUB = 'https://github.com/filiphsps/commerce';
+
+/**
+ * A workspace under apps/* or packages/* that has a co-located `docs/` folder.
+ * Discovered at config load time so adding a new workspace requires no edits
+ * here — drop a `docs/overview.md` next to its `src/` and rerun.
+ */
+type Workspace = {
+    /** Folder name (`storefront`, `db`, …). Used for plugin id, URL slug, and label. */
+    name: string;
+    /** `app` (lives under `apps/*`) or `package` (lives under `packages/*`). */
+    type: 'app' | 'package';
+    /** Path to the handwritten docs/ folder, relative to apps/docs. */
+    docsPath: string;
+    /** Path to the TypeDoc-emitted folder, relative to apps/docs, or null if absent. */
+    apiPath: string | null;
+    /** Path to the workspace root, relative to repo root. Used for editUrl. */
+    repoPath: string;
+    /** Optional extra options merged into the handwritten plugin instance. */
+    extra?: { exclude?: string[] };
+};
+
+/** Per-workspace overrides that can't be auto-inferred. Keep this short. */
+const WORKSPACE_OVERRIDES: Record<string, { exclude?: string[] }> = {
+    // Existing customer-facing error pages (served by apps/landing) live at
+    // `apps/landing/docs/errors/**` and use Markdoc syntax that Docusaurus
+    // can't parse. Keep them out of this site.
+    landing: { exclude: ['errors/**'] },
+};
+
+/** Folders under apps/* and packages/* to ignore even if they have docs/. */
+const SKIP = new Set([
+    'docs', // the docs site itself
+]);
+
+function discoverWorkspaces(): Workspace[] {
+    const workspaces: Workspace[] = [];
+
+    for (const [type, dir] of [
+        ['app', 'apps'],
+        ['package', 'packages'],
+    ] as const) {
+        const root = path.join(REPO_ROOT, dir);
+        if (!fs.existsSync(root)) continue;
+
+        for (const entry of fs.readdirSync(root, { withFileTypes: true })) {
+            if (!entry.isDirectory() || SKIP.has(entry.name)) continue;
+
+            const docsDir = path.join(root, entry.name, 'docs');
+            if (!fs.existsSync(docsDir)) continue;
+
+            const apiDir = path.join(__dirname, 'api', entry.name, 'src');
+            const apiPath = fs.existsSync(apiDir) ? `./api/${entry.name}/src` : null;
+
+            const relDocs = path.relative(__dirname, docsDir);
+
+            workspaces.push({
+                name: entry.name,
+                type,
+                docsPath: relDocs,
+                apiPath,
+                repoPath: `${dir}/${entry.name}`,
+                extra: WORKSPACE_OVERRIDES[entry.name],
+            });
+        }
+    }
+
+    // Stable order: apps first, then packages, alphabetical within each.
+    return workspaces.sort((a, b) => {
+        if (a.type !== b.type) return a.type === 'app' ? -1 : 1;
+        return a.name.localeCompare(b.name);
+    });
+}
+
+const WORKSPACES = discoverWorkspaces();
+
+function appLabel(w: Workspace): string {
+    return w.type === 'app' ? `${w.name[0]?.toUpperCase() ?? ''}${w.name.slice(1)}` : w.name;
+}
+
+function docsPlugin(w: Workspace): PluginConfig {
+    return [
+        '@docusaurus/plugin-content-docs',
+        {
+            id: w.name,
+            path: w.docsPath,
+            routeBasePath: `docs/${w.name}`,
+            sidebarPath: './sidebars.ts',
+            editUrl: `${GITHUB}/edit/master/${w.repoPath}/docs/`,
+            ...(w.extra?.exclude ? { exclude: w.extra.exclude } : {}),
+        },
+    ];
+}
+
+function apiPlugin(w: Workspace): PluginConfig | null {
+    if (!w.apiPath) return null;
+    return [
+        '@docusaurus/plugin-content-docs',
+        {
+            id: `${w.name}-api`,
+            path: w.apiPath,
+            routeBasePath: `docs/${w.name}/api`,
+            sidebarPath: './sidebars.ts',
+        },
+    ];
+}
 
 const config: Config = {
     title: 'Nordcom Commerce',
@@ -34,7 +147,7 @@ const config: Config = {
                     path: '../../docs',
                     routeBasePath: 'docs',
                     sidebarPath: './sidebars.ts',
-                    editUrl: 'https://github.com/filiphsps/commerce/edit/master/docs/',
+                    editUrl: `${GITHUB}/edit/master/docs/`,
                     exclude: ['superpowers/**'],
                 },
                 blog: false,
@@ -46,135 +159,8 @@ const config: Config = {
     ],
 
     plugins: [
-        [
-            '@docusaurus/plugin-content-docs',
-            {
-                id: 'storefront',
-                path: '../storefront/docs',
-                routeBasePath: 'docs/storefront',
-                sidebarPath: './sidebars.ts',
-                editUrl: 'https://github.com/filiphsps/commerce/edit/master/apps/storefront/docs/',
-            },
-        ],
-        [
-            '@docusaurus/plugin-content-docs',
-            {
-                id: 'admin',
-                path: '../admin/docs',
-                routeBasePath: 'docs/admin',
-                sidebarPath: './sidebars.ts',
-                editUrl: 'https://github.com/filiphsps/commerce/edit/master/apps/admin/docs/',
-            },
-        ],
-        [
-            '@docusaurus/plugin-content-docs',
-            {
-                id: 'landing',
-                path: '../landing/docs',
-                routeBasePath: 'docs/landing',
-                sidebarPath: './sidebars.ts',
-                editUrl: 'https://github.com/filiphsps/commerce/edit/master/apps/landing/docs/',
-                // Existing customer-facing error pages live here and use Markdoc
-                // syntax (served by apps/landing). Don't ingest them into the
-                // Docusaurus site.
-                exclude: ['errors/**'],
-            },
-        ],
-        [
-            '@docusaurus/plugin-content-docs',
-            {
-                id: 'db',
-                path: '../../packages/db/docs',
-                routeBasePath: 'docs/db',
-                sidebarPath: './sidebars.ts',
-                editUrl: 'https://github.com/filiphsps/commerce/edit/master/packages/db/docs/',
-            },
-        ],
-        [
-            '@docusaurus/plugin-content-docs',
-            {
-                id: 'errors',
-                path: '../../packages/errors/docs',
-                routeBasePath: 'docs/errors',
-                sidebarPath: './sidebars.ts',
-                editUrl: 'https://github.com/filiphsps/commerce/edit/master/packages/errors/docs/',
-            },
-        ],
-        [
-            '@docusaurus/plugin-content-docs',
-            {
-                id: 'shopify-graphql',
-                path: '../../packages/shopify-graphql/docs',
-                routeBasePath: 'docs/shopify-graphql',
-                sidebarPath: './sidebars.ts',
-                editUrl: 'https://github.com/filiphsps/commerce/edit/master/packages/shopify-graphql/docs/',
-            },
-        ],
-        [
-            '@docusaurus/plugin-content-docs',
-            {
-                id: 'shopify-html',
-                path: '../../packages/shopify-html/docs',
-                routeBasePath: 'docs/shopify-html',
-                sidebarPath: './sidebars.ts',
-                editUrl: 'https://github.com/filiphsps/commerce/edit/master/packages/shopify-html/docs/',
-            },
-        ],
-        [
-            '@docusaurus/plugin-content-docs',
-            {
-                id: 'marketing-common',
-                path: '../../packages/marketing-common/docs',
-                routeBasePath: 'docs/marketing-common',
-                sidebarPath: './sidebars.ts',
-                editUrl: 'https://github.com/filiphsps/commerce/edit/master/packages/marketing-common/docs/',
-            },
-        ],
-        [
-            '@docusaurus/plugin-content-docs',
-            {
-                id: 'db-api',
-                path: './api/db/src',
-                routeBasePath: 'docs/db/api',
-                sidebarPath: './sidebars.ts',
-            },
-        ],
-        [
-            '@docusaurus/plugin-content-docs',
-            {
-                id: 'errors-api',
-                path: './api/errors/src',
-                routeBasePath: 'docs/errors/api',
-                sidebarPath: './sidebars.ts',
-            },
-        ],
-        [
-            '@docusaurus/plugin-content-docs',
-            {
-                id: 'shopify-graphql-api',
-                path: './api/shopify-graphql/src',
-                routeBasePath: 'docs/shopify-graphql/api',
-                sidebarPath: './sidebars.ts',
-            },
-        ],
-        [
-            '@docusaurus/plugin-content-docs',
-            {
-                id: 'shopify-html-api',
-                path: './api/shopify-html/src',
-                routeBasePath: 'docs/shopify-html/api',
-                sidebarPath: './sidebars.ts',
-            },
-        ],
-        [
-            '@docusaurus/plugin-content-docs',
-            {
-                id: 'marketing-common-api',
-                path: './api/marketing-common/src',
-                routeBasePath: 'docs/marketing-common/api',
-                sidebarPath: './sidebars.ts',
-            },
-        ],
+        ...WORKSPACES.map(docsPlugin),
+        ...WORKSPACES.map(apiPlugin).filter((p): p is PluginConfig => p !== null),
     ],
 
     themes: [
@@ -183,17 +169,7 @@ const config: Config = {
             {
                 hashed: true,
                 indexBlog: false,
-                docsRouteBasePath: [
-                    'docs',
-                    'docs/storefront',
-                    'docs/admin',
-                    'docs/landing',
-                    'docs/db',
-                    'docs/errors',
-                    'docs/shopify-graphql',
-                    'docs/shopify-html',
-                    'docs/marketing-common',
-                ],
+                docsRouteBasePath: ['docs', ...WORKSPACES.map((w) => `docs/${w.name}`)],
                 highlightSearchTermsOnTargetPage: true,
             },
         ],
@@ -211,30 +187,22 @@ const config: Config = {
                     type: 'dropdown',
                     label: 'Apps',
                     position: 'left',
-                    items: [
-                        { to: '/docs/storefront/overview', label: 'Storefront' },
-                        { to: '/docs/admin/overview', label: 'Admin' },
-                        { to: '/docs/landing/overview', label: 'Landing' },
-                    ],
+                    items: WORKSPACES.filter((w) => w.type === 'app').map((w) => ({
+                        to: `/docs/${w.name}/overview`,
+                        label: appLabel(w),
+                    })),
                 },
                 {
                     type: 'dropdown',
                     label: 'Packages',
                     position: 'left',
-                    items: [
-                        { to: '/docs/db/overview', label: 'db' },
-                        { to: '/docs/errors/overview', label: 'errors' },
-                        { to: '/docs/shopify-graphql/overview', label: 'shopify-graphql' },
-                        { to: '/docs/shopify-html/overview', label: 'shopify-html' },
-                        { to: '/docs/marketing-common/overview', label: 'marketing-common' },
-                    ],
+                    items: WORKSPACES.filter((w) => w.type === 'package').map((w) => ({
+                        to: `/docs/${w.name}/overview`,
+                        label: appLabel(w),
+                    })),
                 },
                 { to: '/docs/architecture', label: 'Architecture', position: 'left' },
-                {
-                    href: 'https://github.com/filiphsps/commerce',
-                    label: 'GitHub',
-                    position: 'right',
-                },
+                { href: GITHUB, label: 'GitHub', position: 'right' },
             ],
         },
         footer: {
@@ -243,31 +211,24 @@ const config: Config = {
                 {
                     title: 'Project',
                     items: [
-                        { label: 'GitHub', href: 'https://github.com/filiphsps/commerce' },
-                        { label: 'Issues', href: 'https://github.com/filiphsps/commerce/issues' },
-                        {
-                            label: 'Discussions',
-                            href: 'https://github.com/filiphsps/commerce/discussions',
-                        },
+                        { label: 'GitHub', href: GITHUB },
+                        { label: 'Issues', href: `${GITHUB}/issues` },
+                        { label: 'Discussions', href: `${GITHUB}/discussions` },
                     ],
                 },
                 {
                     title: 'Apps',
-                    items: [
-                        { label: 'Storefront', to: '/docs/storefront/overview' },
-                        { label: 'Admin', to: '/docs/admin/overview' },
-                        { label: 'Landing', to: '/docs/landing/overview' },
-                    ],
+                    items: WORKSPACES.filter((w) => w.type === 'app').map((w) => ({
+                        label: appLabel(w),
+                        to: `/docs/${w.name}/overview`,
+                    })),
                 },
                 {
                     title: 'Packages',
-                    items: [
-                        { label: 'db', to: '/docs/db/overview' },
-                        { label: 'errors', to: '/docs/errors/overview' },
-                        { label: 'shopify-graphql', to: '/docs/shopify-graphql/overview' },
-                        { label: 'shopify-html', to: '/docs/shopify-html/overview' },
-                        { label: 'marketing-common', to: '/docs/marketing-common/overview' },
-                    ],
+                    items: WORKSPACES.filter((w) => w.type === 'package').map((w) => ({
+                        label: appLabel(w),
+                        to: `/docs/${w.name}/overview`,
+                    })),
                 },
             ],
             copyright: `Copyright © 2019–${new Date().getFullYear()} Filiph Siitam Sandström.`,
