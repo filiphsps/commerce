@@ -81,7 +81,7 @@
         "crypto-js": "4.2.0",
         "export-to-csv": "1.4.0",
         "lodash.debounce": "4.0.8",
-        "lucide-react": "0.577.0",
+        "lucide-react": "1.14.0",
         "next": "16.2.4",
         "next-auth": "5.0.0-beta.31",
         "next-sitemap": "4.2.3",
