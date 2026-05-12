@@ -5,8 +5,6 @@ import { verifyAccess } from '@vercel/flags';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-export const runtime = 'nodejs';
-
 export async function GET(request: NextRequest) {
     const access = await verifyAccess(request.headers.get('Authorization'));
     if (!access) {
