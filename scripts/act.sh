@@ -23,4 +23,10 @@ for f in .env .env.local; do
     fi
 done
 
+# Pin DNS to public resolvers because the Apple Virtualization Framework bridge
+# resolver is flaky under load (pnpm install hits EAI_AGAIN). `.actrc` already
+# sets `--network=bridge` via act's top-level flag; this only adds the DNS bits.
+# Bundled here (not in .actrc) because the file's parser whitespace-splits values.
+ARGS+=(--container-options "--dns=1.1.1.1 --dns=8.8.8.8")
+
 exec act "${ARGS[@]}" "$@"

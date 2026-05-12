@@ -7,6 +7,9 @@
 
 # Required on Apple Silicon: most marketplace actions ship amd64 binaries only.
 # Harmless on amd64 hosts (Docker just runs natively).
+# (Attempted dropping this to fix Turbopack qemu SIGSEGVs by running arm64 native,
+# but the lockfile's linux-arm64 optional deps don't get installed reliably from
+# act's reused setup-node pnpm-cache. Real CI is amd64 anyway, so we keep parity.)
 --container-architecture linux/amd64
 
 # Don't pull every run — let Docker decide when the image is stale.
@@ -14,7 +17,9 @@
 
 # Use bridge networking. Docker Desktop on macOS has no real "host" network,
 # and act's default of `--network=host` causes containers to vanish mid-run.
---container-options=--network=bridge
+# Note: act has its own top-level `--network` flag — `--container-options
+# --network=…` is silently overridden by it. Use this one.
+--network=bridge
 
 # Keep runner containers alive between invocations so the next `act` skips image
 # setup, the monorepo `docker cp`, and the pnpm install — those persist in the
