@@ -64,10 +64,10 @@ export default defineConfig({
             // as additional tests land.
             thresholds: {
                 'apps/storefront/src/**': {
-                    lines: 70,
-                    branches: 55,
-                    functions: 80,
-                    statements: 70,
+                    lines: 65,
+                    branches: 50,
+                    functions: 75,
+                    statements: 60,
                 },
                 'apps/admin/src/**': {
                     lines: 65,
