@@ -396,8 +396,8 @@ importers:
         specifier: 0.41.2
         version: 0.41.2
       '@neshca/cache-handler':
-        specifier: 1.8.1
-        version: 1.8.1(next@16.2.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(redis@5.12.1(@opentelemetry/api@1.9.1))
+        specifier: 1.9.0
+        version: 1.9.0(next@16.2.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(redis@5.12.1(@opentelemetry/api@1.9.1))
       '@next/third-parties':
         specifier: 16.2.6
         version: 16.2.6(next@16.2.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(react@19.2.6)
@@ -1526,10 +1526,10 @@ packages:
       '@emnapi/core': ^1.7.1
       '@emnapi/runtime': ^1.7.1
 
-  '@neshca/cache-handler@1.8.1':
-    resolution: {integrity: sha512-KS22IbmdCOVx4y9vaZebX3ZTGjS29+FnEcKyu+CFAXTciXdAJjv7NlVJzo7CZlEdzI/5OCzCQy5rB4lKLpax/w==}
+  '@neshca/cache-handler@1.9.0':
+    resolution: {integrity: sha512-dh0x4pdjDKvPRfZF5DZb8TtOUkbBfeTodOUdQsHDuv0oiuqQ3p7GLx38f6bPn8Sa4he8HsWo+rM4S20ZRqr7pA==}
     peerDependencies:
-      next: '>= 13.5.1'
+      next: '>= 13.5.1 < 15'
       redis: '>= 4.6'
 
   '@next/env@13.5.11':
@@ -7012,7 +7012,7 @@ snapshots:
       '@tybys/wasm-util': 0.10.2
     optional: true
 
-  '@neshca/cache-handler@1.8.1(next@16.2.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(redis@5.12.1(@opentelemetry/api@1.9.1))':
+  '@neshca/cache-handler@1.9.0(next@16.2.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(redis@5.12.1(@opentelemetry/api@1.9.1))':
     dependencies:
       cluster-key-slot: 1.1.2
       lru-cache: 10.4.3
