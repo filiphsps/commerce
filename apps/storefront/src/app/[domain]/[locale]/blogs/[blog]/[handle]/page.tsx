@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { Shop } from '@nordcom/commerce-db';
-import { Error, NotFoundError } from '@nordcom/commerce-errors';
+import { Error } from '@nordcom/commerce-errors';
 import md5 from 'crypto-js/md5';
 import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
@@ -30,28 +30,23 @@ export async function generateStaticParams({
 }: {
     params: Omit<Awaited<ArticlePageParams>, 'handle'>;
 }): Promise<Pick<Awaited<ArticlePageParams>, 'handle'>[]> {
-    const { domain, locale: localeData } = params;
+    const { domain, locale: localeData, blog: blogHandle } = params;
     const locale = Locale.from(localeData);
 
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const api = await ShopifyApolloApiClient({ shop, locale });
 
-    const [blog, blogError] = await BlogApi({ api });
+    const [blog, blogError] = await BlogApi({ api, handle: blogHandle });
     if (blogError) {
+        // Missing blog or empty article list shouldn't fail the whole build;
+        // Next will fall back to dynamic rendering and the page itself 404s.
+        if (Error.isNotFound(blogError)) {
+            return [];
+        }
         throw blogError;
     }
 
-    const articles = blog.articles.edges
-        .map(({ node }) => node)
-        .map(({ handle }) => ({
-            handle,
-        }));
-
-    if (articles.length === 0) {
-        throw new NotFoundError('articles');
-    }
-
-    return articles;
+    return blog.articles.edges.map(({ node: { handle } }) => ({ handle }));
 }
 
 export async function generateMetadata({ params }: { params: ArticlePageParams }): Promise<Metadata> {

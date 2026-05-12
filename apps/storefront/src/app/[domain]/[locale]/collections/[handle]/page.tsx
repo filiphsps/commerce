@@ -1,5 +1,5 @@
 import { Shop } from '@nordcom/commerce-db';
-import { Error, NotFoundError } from '@nordcom/commerce-errors';
+import { Error } from '@nordcom/commerce-errors';
 import { asText } from '@prismicio/client';
 import { flattenConnection } from '@shopify/hydrogen-react';
 import type { Metadata } from 'next';
@@ -41,15 +41,16 @@ export async function generateStaticParams({
 
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const api = await ShopifyApolloApiClient({ shop, locale });
-    const collections = await CollectionsApi({ api });
 
-    if (collections.length === 0) {
-        throw new NotFoundError('collections');
+    try {
+        const collections = await CollectionsApi({ api });
+        return collections.map(({ handle }) => ({ handle }));
+    } catch (error: unknown) {
+        // Empty/missing catalog shouldn't fail the whole build — Next falls back
+        // to dynamic rendering and the page itself 404s.
+        if (Error.isNotFound(error)) return [];
+        throw error;
     }
-
-    return collections.map(({ handle }) => ({
-        handle,
-    }));
 }
 
 type SearchParams = Promise<{

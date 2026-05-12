@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { Shop } from '@nordcom/commerce-db';
-import { Error, NotFoundError } from '@nordcom/commerce-errors';
+import { Error } from '@nordcom/commerce-errors';
 import { flattenConnection, RichText } from '@shopify/hydrogen-react';
 import md5 from 'crypto-js/md5';
 import type { Metadata } from 'next';
@@ -40,16 +40,13 @@ export async function generateStaticParams({
 
     const [blogs, blogsError] = await BlogsApi({ api });
     if (blogsError) {
+        if (Error.isNotFound(blogsError)) {
+            return [];
+        }
         throw blogsError;
     }
 
-    if (blogs.length === 0) {
-        throw new NotFoundError('blogs');
-    }
-
-    return blogs.map(({ handle }) => ({
-        blog: handle,
-    }));
+    return blogs.map(({ handle }) => ({ blog: handle }));
 }
 
 export async function generateMetadata({ params }: { params: BlogPageParams }): Promise<Metadata> {

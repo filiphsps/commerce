@@ -2,7 +2,6 @@ import 'server-only';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
-import { NotFoundError } from '@nordcom/commerce-errors';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
@@ -32,27 +31,18 @@ export async function generateStaticParams({
 
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const pages = await PagesApi({ shop, locale });
-    if (!pages) {
-        throw new NotFoundError('pages');
-    }
+    // Shops with no CMS pages shouldn't fail the build — Next falls back to
+    // dynamic rendering and the page itself 404s.
+    if (!pages) return [];
 
-    let slugs: { slug: string[] }[] = [];
     switch (pages.provider) {
         case 'prismic':
-            slugs = pages.items
+            return pages.items
                 .filter((p): p is typeof p & { uid: string } => typeof p.uid === 'string')
                 .map(({ uid }) => ({ slug: [uid] }));
-            break;
         case 'shopify':
-            slugs = pages.items.map(({ handle }) => ({ slug: [handle] }));
-            break;
+            return pages.items.map(({ handle }) => ({ slug: [handle] }));
     }
-
-    if (slugs.length === 0) {
-        throw new NotFoundError('pages');
-    }
-
-    return slugs;
 }
 
 export async function generateMetadata({ params }: { params: CustomPageParams }): Promise<Metadata> {

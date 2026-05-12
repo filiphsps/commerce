@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { Shop } from '@nordcom/commerce-db';
-import { Error, NotFoundError } from '@nordcom/commerce-errors';
+import { Error } from '@nordcom/commerce-errors';
 import { asText } from '@prismicio/client';
 import { parseGid } from '@shopify/hydrogen-react';
 import type { Metadata } from 'next';
@@ -44,13 +44,15 @@ export async function generateStaticParams({
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const api = await ShopifyApiClient({ shop, locale });
 
-    const { products } = await ProductsApi({ api, limit: 5 });
-
-    if (products.length === 0) {
-        throw new NotFoundError('products');
+    try {
+        const { products } = await ProductsApi({ api, limit: 5 });
+        return products.map(({ node: { handle } }) => ({ handle }));
+    } catch (error: unknown) {
+        // Empty catalogs (or a transient fetch failure) shouldn't fail the whole
+        // build — Next will fall back to dynamic rendering and the page 404s.
+        if (Error.isNotFound(error)) return [];
+        throw error;
     }
-
-    return products.map(({ node: { handle } }) => ({ handle }));
 }
 
 type SearchParams = Promise<{
