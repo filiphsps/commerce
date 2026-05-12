@@ -11,7 +11,7 @@
 [![TODOs](https://img.shields.io/github/search/filiphsps/commerce/todo?label=todos)](https://github.com/filiphsps/commerce/search?q=todo)
 [![FIXMEs](https://img.shields.io/github/search/filiphsps/commerce/fixme?label=fixmes)](https://github.com/filiphsps/commerce/search?q=fixme)
 
-[Website](https://shops.nordcom.io) · [Documentation](https://shops.nordcom.io/docs) · [Issues](https://github.com/filiphsps/commerce/issues) · [Discussions](https://github.com/filiphsps/commerce/discussions)
+[Issues](https://github.com/filiphsps/commerce/issues) · [Discussions](https://github.com/filiphsps/commerce/discussions)
 
 </div>
 
@@ -42,7 +42,7 @@ a marketing site, and a small set of reusable packages — all in one TypeScript
 
 ## Quick start
 
-> **Prerequisites:** Node.js `22.x` (see `.nvmrc`), `pnpm@11.x`, and a running
+> **Prerequisites:** Node.js `26.x` (see `.nvmrc`), `pnpm@11.x`, and a running
 > MongoDB instance for the data layer.
 
 ```bash
@@ -107,29 +107,7 @@ To start only one app, use `pnpm dev:storefront`, `pnpm dev:admin`, or `pnpm dev
                      └──────────────────┘
 ```
 
-For a deeper tour of the routing, data-access, and webhook flows, see [`CLAUDE.md`](./CLAUDE.md).
-
 ## Repository layout
-
-```text
-commerce/
-├── apps/
-│   ├── storefront/   # Public tenant storefront (Next.js, Prismic, Shopify Storefront API)
-│   ├── admin/        # Merchant dashboard      (Next.js, NextAuth, Shopify Admin API)
-│   └── landing/      # Marketing site          (Next.js, Markdoc)
-├── packages/
-│   ├── db/                  # Mongoose models + services (server-only)
-│   ├── errors/              # Typed, code-tagged error hierarchy
-│   ├── shopify-graphql/     # Apollo DocumentTransform for Shopify @inContext
-│   ├── shopify-html/        # Shopify rich-text → React / plain text
-│   └── marketing-common/    # Shared marketing UI primitives
-├── docs/                # Internal architecture notes
-├── scripts/             # Local CI runner, helpers
-├── biome.json           # Lint/format config (no ESLint / Prettier)
-├── turbo.json           # Turborepo pipeline
-├── vitest.config.ts     # Vitest workspace root
-└── pnpm-workspace.yaml  # pnpm workspaces
-```
 
 ### Apps
 
@@ -154,7 +132,7 @@ commerce/
 | Concern         | Tool                                                              |
 | --------------- | ----------------------------------------------------------------- |
 | Package manager | [pnpm](https://pnpm.io) 11.x (workspaces)                         |
-| Runtime         | Node.js 22.x (see `.nvmrc`)                                       |
+| Runtime         | Node.js 26.x (see `.nvmrc`)                                       |
 | Build / cache   | [Turborepo](https://turbo.build) 2.x (with optional Remote Cache) |
 | Framework       | [Next.js](https://nextjs.org) 16, React 19                        |
 | Lint / format   | [Biome](https://biomejs.dev) 2.x — **no ESLint / Prettier**       |
@@ -219,23 +197,7 @@ pnpm clean              # rm dist / .next / .turbo / coverage everywhere
 
 ## Environment
 
-Copy `.env.example` to `.env` and fill in the values you need. The minimum set for
-local development is:
-
-| Variable                | Required | Purpose                                                  |
-| ----------------------- | -------- | -------------------------------------------------------- |
-| `MONGODB_URI`           | Yes      | Mongo connection string. `@nordcom/commerce-db` needs this at import time. |
-| `AUTH_SECRET`           | Yes      | NextAuth signing secret.                                 |
-| `AUTH_TRUST_HOST`       | Yes      | Set to `true` for local development behind proxies.      |
-| `SERVICE_DOMAIN`        | Yes      | Root hostname used for unknown-shop rewrites and links.  |
-| `SHOPIFY_API_KEY`       | Optional | Required for Shopify Admin API integrations.             |
-| `SHOPIFY_API_SECRET_KEY`| Optional | Pairs with `SHOPIFY_API_KEY`.                            |
-| `SHOPIFY_WEBHOOK_SECRET`| Prod     | HMAC for Shopify webhooks. Skipped (with warning) in dev.|
-| `DATA_CACHE_REDIS_URL`  | Prod     | Enables the Redis-backed Next.js data cache.             |
-| `SENTRY_AUTH_TOKEN`     | Optional | Source-map uploads at build time.                        |
-| `TURBO_TOKEN` / `TURBO_TEAM` | Optional | Turborepo Remote Cache.                              |
-
-See [`.env.example`](./.env.example) for the full, commented list.
+Copy `.env.example` to `.env` and fill in the values you need. See [`.env.example`](./.env.example) for the full, commented list.
 
 ## Multi-tenancy in 30 seconds
 
@@ -263,14 +225,6 @@ Pull requests are welcome. Before opening one:
 5.  Use `import type` for type-only imports — `useImportType` is enforced as an error.
 6.  Plain `console.log` will fail lint; only `warn` / `error` / `info` / `debug` are
     permitted outside of test/config files.
-
-## CI
-
-GitHub Actions (`.github/workflows/ci.yml`) runs **lint**, **typecheck**, **test**, and
-**build** in parallel on every PR and on pushes to `master`, `staging`, and
-`dev/*` / `fix/*` branches. Coverage is uploaded to Codecov.
-
-The `test` job requires a real `MONGODB_URI` — there is no in-memory mock.
 
 ## Maintainers
 
