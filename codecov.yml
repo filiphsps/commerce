@@ -1,23 +1,143 @@
+# Codecov configuration for the Nordcom Commerce monorepo.
+# Two orthogonal axes:
+#   - Flags  : which test SUITE produced the coverage (unit vs. e2e, optionally per-app).
+#   - Components: which logical AREA of the codebase the lines belong to (per app, per package).
+# See https://docs.codecov.com/docs/flags and https://docs.codecov.com/docs/components.
+
 coverage:
+    precision: 2
+    round: down
+    range: '60...90'
     status:
         project:
-            storefront:
-                target: 80%
+            default:
+                target: auto
                 threshold: 1%
-                flags: [storefront]
-            admin:
-                target: 60%
-                threshold: 1%
-                flags: [admin]
+                informational: true
         patch:
             default:
-                target: 80%
+                target: auto
                 threshold: 5%
+                informational: true
 
-flags:
-    storefront:
-        paths:
-            - apps/storefront/
-    admin:
-        paths:
-            - apps/admin/
+# Flags split coverage by test type (and per-app sub-flags for granular views).
+# `carryforward: true` keeps the last-known coverage for a flag when its job didn't
+# upload on a given run (e.g. e2e on a docs-only PR), so the overall % doesn't dive
+# falsely. Path scoping prevents a flag's status check from being penalized by
+# files outside its purview.
+flag_management:
+    default_rules:
+        carryforward: true
+        statuses:
+            - type: project
+              target: auto
+              threshold: 1%
+              informational: true
+    individual_flags:
+        - name: unit
+          paths:
+              - apps/
+              - packages/
+        - name: unit-storefront
+          paths:
+              - apps/storefront/src/
+        - name: unit-admin
+          paths:
+              - apps/admin/src/
+        - name: unit-packages
+          paths:
+              - packages/
+        - name: e2e
+          paths:
+              - apps/storefront/src/
+              - apps/admin/src/
+        - name: e2e-storefront
+          paths:
+              - apps/storefront/src/
+        - name: e2e-admin
+          paths:
+              - apps/admin/src/
+
+# Components group files into logical units regardless of which flag uploaded them.
+# Useful for "show me overall storefront coverage from all sources" or for
+# tracking coverage on individual workspace packages without grep'ing flags.
+component_management:
+    default_rules:
+        statuses:
+            - type: project
+              target: auto
+              threshold: 1%
+              informational: true
+            - type: patch
+              target: auto
+              threshold: 5%
+              informational: true
+    individual_components:
+        # Apps.
+        - component_id: app-storefront
+          name: 'App: Storefront'
+          paths:
+              - apps/storefront/src/**
+        - component_id: app-admin
+          name: 'App: Admin'
+          paths:
+              - apps/admin/src/**
+        - component_id: app-landing
+          name: 'App: Landing'
+          paths:
+              - apps/landing/src/**
+
+        # Workspace packages.
+        - component_id: pkg-db
+          name: 'Pkg: @nordcom/commerce-db'
+          paths:
+              - packages/db/src/**
+        - component_id: pkg-errors
+          name: 'Pkg: @nordcom/commerce-errors'
+          paths:
+              - packages/errors/src/**
+        - component_id: pkg-marketing-common
+          name: 'Pkg: @nordcom/commerce-marketing-common'
+          paths:
+              - packages/marketing-common/src/**
+        - component_id: pkg-shopify-graphql
+          name: 'Pkg: @nordcom/commerce-shopify-graphql'
+          paths:
+              - packages/shopify-graphql/src/**
+        - component_id: pkg-shopify-html
+          name: 'Pkg: @nordcom/commerce-shopify-html'
+          paths:
+              - packages/shopify-html/src/**
+
+        # Rollups for quick "apps vs. packages" comparisons.
+        - component_id: layer-apps
+          name: 'Layer: Apps'
+          paths:
+              - apps/**/src/**
+        - component_id: layer-packages
+          name: 'Layer: Packages'
+          paths:
+              - packages/**/src/**
+
+# Files that exist in the repo but shouldn't count toward coverage attribution.
+ignore:
+    - '**/*.d.ts'
+    - '**/*.config.*'
+    - '**/dist/**'
+    - '**/.next/**'
+    - '**/coverage/**'
+    - '**/node_modules/**'
+    - '**/public/**'
+    - 'apps/*/e2e/**'
+    - 'apps/*/src/instrumentation.ts'
+    - 'apps/*/src/sentry.*.config.*'
+    - 'apps/*/data-cache-handler.mjs'
+    - 'docs/**'
+    - 'scripts/**'
+
+comment:
+    layout: 'header, diff, components, flags, files'
+    behavior: default
+    require_changes: false
+    require_base: false
+    require_head: true

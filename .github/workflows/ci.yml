@@ -66,12 +66,16 @@ jobs:
               if: ${{ !cancelled() }}
               uses: davelosert/vitest-coverage-report-action@v2.12
 
+            # Single combined vitest run produces one coverage-final.json at repo root
+            # covering all workspace projects. Codecov splits it per-app via the components
+            # defined in codecov.yml (path-based); the `unit` flag tags the upload as
+            # unit-test coverage so we can compare against `e2e` later.
             - name: 🦺 Codecov Coverage Reports
               if: ${{ !cancelled() }}
               uses: codecov/codecov-action@v6
               with:
                   files: ./coverage/coverage-final.json
-                  flags: storefront,admin
+                  flags: unit
               env:
                   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
@@ -124,6 +128,14 @@ jobs:
             fail-fast: false
             matrix:
                 app: [storefront, admin]
+        # NODE_V8_COVERAGE makes the Next.js `next start` process emit raw V8 coverage
+        # to disk for every file it executes during the e2e run. After tests we run
+        # `c8 report` to convert that into an istanbul-style coverage JSON that
+        # codecov can ingest. This captures SSR / API-route / middleware coverage;
+        # browser-side coverage would require a separate Playwright fixture
+        # (e.g. monocart-reporter) and is out of scope for this pass.
+        env:
+            NODE_V8_COVERAGE: ${{ github.workspace }}/coverage/e2e-raw
         steps:
             - name: 🕶️ Checkout repository
               uses: actions/checkout@v6
@@ -142,6 +154,30 @@ jobs:
 
             - name: 🧪 Run Playwright Tests
               run: pnpm --filter @nordcom/commerce-${{ matrix.app }} test:e2e
+
+            - name: 🦺 Convert V8 Coverage to Codecov Format
+              if: ${{ !cancelled() }}
+              run: |
+                  pnpm dlx c8@10 report \
+                      --reporter=json \
+                      --reporter=lcov \
+                      --reports-dir=./coverage/e2e \
+                      --src=apps/${{ matrix.app }} \
+                      --include='apps/${{ matrix.app }}/src/**' \
+                      --exclude='**/*.d.ts' \
+                      --exclude='**/*.config.*' \
+                      --exclude='**/.next/**' \
+                      --exclude='apps/*/e2e/**' \
+                  || echo "c8 report exited non-zero (likely no coverage emitted); continuing"
+
+            - name: 🦺 Codecov E2E Coverage
+              if: ${{ !cancelled() }}
+              uses: codecov/codecov-action@v6
+              with:
+                  files: ./coverage/e2e/coverage-final.json,./coverage/e2e/lcov.info
+                  flags: e2e,e2e-${{ matrix.app }}
+              env:
+                  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
             - name: 📦 Upload Report on Failure
               if: failure()
