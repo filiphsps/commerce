@@ -28,6 +28,30 @@ export const metadata: Metadata = {
 
 export type SliceSimulatorLayoutParams = Promise<{ domain: string }>;
 
+export async function generateStaticParams(): Promise<Awaited<SliceSimulatorLayoutParams>[]> {
+    const shops = await Shop.findAll();
+
+    const params = (
+        await Promise.all(
+            shops.map(async ({ domain }) => {
+                const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+                if (shop.contentProvider.type !== 'prismic') {
+                    return null;
+                }
+                return { domain: shop.domain };
+            }),
+        )
+    ).filter(Boolean) as Awaited<SliceSimulatorLayoutParams>[];
+
+    // `rootParams: true` requires at least one entry. When no shop uses Prismic
+    // we still need to satisfy the build; the runtime gate below 404s the route.
+    if (params.length === 0) {
+        return shops.slice(0, 1).map(({ domain }) => ({ domain }));
+    }
+
+    return params;
+}
+
 export default async function SliceSimulatorLayout({
     children,
     params,
@@ -42,6 +66,10 @@ export default async function SliceSimulatorLayout({
     let localization: Awaited<ReturnType<typeof LocaleApi>>;
     try {
         const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+        if (shop.contentProvider.type !== 'prismic') {
+            notFound();
+        }
+
         publicShop = await Shop.findByDomain(domain);
 
         const api = await ShopifyApolloApiClient({ shop, locale });
