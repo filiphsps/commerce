@@ -103,6 +103,53 @@ describe('integrations/shopify/api/shopify', () => {
         const callArg = mockShopifyApiDev.mock.calls[0]?.[0] as { hostName?: string };
         expect(callArg?.hostName).toBe('localhost:3000');
     });
+
+    describe('when Shopify environment variables are missing', () => {
+        const importFreshShopify = async () => {
+            vi.resetModules();
+            const skippedShopifyApi = vi.fn();
+            vi.doMock('@shopify/shopify-api', () => ({
+                ApiVersion: { October23: '2023-10' },
+                shopifyApi: skippedShopifyApi,
+            }));
+            vi.doMock('@shopify/shopify-api/adapters/cf-worker', () => ({}));
+            const mod = await import('./shopify');
+            return { mod, skippedShopifyApi };
+        };
+
+        it('exports a null client and is not configured when SHOPIFY_API_KEY is empty', async () => {
+            vi.stubEnv('SHOPIFY_API_KEY', '');
+            vi.stubEnv('SHOPIFY_API_SECRET_KEY', SECRET_KEY);
+
+            const { mod, skippedShopifyApi } = await importFreshShopify();
+
+            expect(mod.shopifyAdminApi).toBeNull();
+            expect(mod.isShopifyConfigured).toBe(false);
+            expect(skippedShopifyApi).not.toHaveBeenCalled();
+        });
+
+        it('exports a null client and is not configured when SHOPIFY_API_SECRET_KEY is empty', async () => {
+            vi.stubEnv('SHOPIFY_API_KEY', API_KEY);
+            vi.stubEnv('SHOPIFY_API_SECRET_KEY', '');
+
+            const { mod, skippedShopifyApi } = await importFreshShopify();
+
+            expect(mod.shopifyAdminApi).toBeNull();
+            expect(mod.isShopifyConfigured).toBe(false);
+            expect(skippedShopifyApi).not.toHaveBeenCalled();
+        });
+
+        it('exports a null client and is not configured when both keys are empty', async () => {
+            vi.stubEnv('SHOPIFY_API_KEY', '');
+            vi.stubEnv('SHOPIFY_API_SECRET_KEY', '');
+
+            const { mod, skippedShopifyApi } = await importFreshShopify();
+
+            expect(mod.shopifyAdminApi).toBeNull();
+            expect(mod.isShopifyConfigured).toBe(false);
+            expect(skippedShopifyApi).not.toHaveBeenCalled();
+        });
+    });
 });
 
 // Cannot unit-test: route.ts (OAuth callback) requires live Shopify OAuth flow.

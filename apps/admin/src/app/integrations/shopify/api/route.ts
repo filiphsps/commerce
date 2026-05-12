@@ -4,6 +4,20 @@ import { NextResponse } from 'next/server';
 import { shopifyAdminApi } from './shopify';
 
 export const GET = async (req: NextRequest) => {
+    if (!shopifyAdminApi) {
+        return NextResponse.json(
+            {
+                errors: [
+                    {
+                        code: 'SHOPIFY_NOT_CONFIGURED',
+                        message: 'Shopify integration is not configured on this deployment.',
+                    },
+                ],
+            },
+            { status: 503 },
+        );
+    }
+
     const searchParams = req.nextUrl.searchParams;
 
     try {
