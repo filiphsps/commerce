@@ -16,3 +16,9 @@
 # and act's default of `--network=host` causes containers to vanish mid-run.
 --container-options=--network=bridge
 
+# Keep runner containers alive between invocations so the next `act` skips image
+# setup, the monorepo `docker cp`, and the pnpm install — those persist in the
+# warm container. If the workflow changes meaningfully, run `docker rm -f $(docker
+# ps -aq --filter "name=act-")` to force a clean container on the next run.
+--reuse
+
