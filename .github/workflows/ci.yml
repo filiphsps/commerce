@@ -60,8 +60,11 @@ jobs:
             - name: 🧪 Test
               run: pnpm run test
 
+            # Each upload step gates on `hashFiles(...)` so we don't push empty
+            # results to codecov when an earlier step failed before vitest could
+            # produce coverage / junit (e.g. install dependencies blew up).
             - name: 🦺 Report Coverage to GitHub
-              if: ${{ !cancelled() }}
+              if: ${{ !cancelled() && hashFiles('coverage/coverage-summary.json') != '' }}
               uses: davelosert/vitest-coverage-report-action@v2.12
 
             # Single combined vitest run produces one coverage-final.json at repo root
@@ -69,7 +72,7 @@ jobs:
             # defined in codecov.yml (path-based); the `unit` flag tags the upload as
             # unit-test coverage so we can compare against `e2e` later.
             - name: 🦺 Codecov Coverage Reports
-              if: ${{ !cancelled() }}
+              if: ${{ !cancelled() && hashFiles('coverage/coverage-final.json') != '' }}
               uses: codecov/codecov-action@v6
               with:
                   files: ./coverage/coverage-final.json
@@ -78,7 +81,7 @@ jobs:
                   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
             - name: 🦺 Codecov Test Results
-              if: ${{ !cancelled() }}
+              if: ${{ !cancelled() && hashFiles('junit.xml') != '' }}
               uses: codecov/test-results-action@v1
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
@@ -168,8 +171,12 @@ jobs:
                       --exclude='apps/*/e2e/**' \
                   || echo "c8 report exited non-zero (likely no coverage emitted); continuing"
 
+            # Gate on c8 actually having emitted something — if `next start`
+            # didn't write any V8 coverage (process killed before exit, etc.),
+            # `coverage/e2e/coverage-final.json` won't exist and we'd be
+            # uploading nothing.
             - name: 🦺 Codecov E2E Coverage
-              if: ${{ !cancelled() }}
+              if: ${{ !cancelled() && hashFiles('coverage/e2e/coverage-final.json') != '' }}
               uses: codecov/codecov-action@v6
               with:
                   files: ./coverage/e2e/coverage-final.json,./coverage/e2e/lcov.info

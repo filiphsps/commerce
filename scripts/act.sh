@@ -6,6 +6,9 @@
 # Pass any extra args through to `act`, e.g.:
 #   ./scripts/act.sh -j lint
 #   ./scripts/act.sh --list
+#
+# For full-workflow invocations the wrapper pre-warms the setup-node pnpm cache
+# by running `lint` alone first. See the PRE-WARM block below for why.
 set -euo pipefail
 
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -28,5 +31,35 @@ done
 # sets `--network=bridge` via act's top-level flag; this only adds the DNS bits.
 # Bundled here (not in .actrc) because the file's parser whitespace-splits values.
 ARGS+=(--container-options "--dns=1.1.1.1 --dns=8.8.8.8")
+
+# --- PRE-WARM ---------------------------------------------------------------
+# `setup-node` with `cache: 'pnpm'` saves a tarball of the pnpm store keyed by
+# the lockfile hash. When stage-0 jobs (lint + typecheck) run in parallel
+# *without* an existing cache, both of their post-step cache-saves race to
+# write the same key — one ends up corrupted, and the SQLite database inside
+# pnpm's store (v11+) reports `ERR_PNPM_ERR_SQLITE_ERROR: database disk image
+# is malformed` when stage-1 jobs (build + test) try to restore it.
+#
+# Pre-warming by running `lint` alone seeds the cache cleanly. Subsequent
+# parallel cache-saves see the key already exists and skip the write.
+#
+# Skips when: an explicit `-j`/`--job` filter is passed (single job, no
+# parallel save), or when introspecting (`--list`/`-l`/`--help`/`-h`/
+# `--dryrun`/`-n`), or when `ACT_NO_PREWARM=1`.
+skip_prewarm=false
+if [ "${ACT_NO_PREWARM:-}" = "1" ]; then
+    skip_prewarm=true
+fi
+for a in "$@"; do
+    case "$a" in
+        -j|--job|--list|-l|--help|-h|-n|--dryrun) skip_prewarm=true; break ;;
+    esac
+done
+
+if [ "$skip_prewarm" = "false" ]; then
+    echo ">>> Pre-warming setup-node pnpm cache via 'lint' (skip with ACT_NO_PREWARM=1)..." >&2
+    act "${ARGS[@]}" -j lint
+    echo ">>> Pre-warm done; running full invocation..." >&2
+fi
 
 exec act "${ARGS[@]}" "$@"
