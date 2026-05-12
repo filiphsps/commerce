@@ -24,6 +24,17 @@ if ! command -v act >/dev/null 2>&1; then
     exit 127
 fi
 
+# `act` uses `docker cp` to copy the repo into each job's container, which
+# blindly includes `.pnpm-store/` — pnpm's content-addressable store created
+# on the host (darwin-arm64). Inside the linux/amd64 container that store
+# collides with the one setup-node restores from cache, surfacing as
+# `ERR_PNPM_UNEXPECTED_PKG_CONTENT_IN_STORE` mid-install. Park it for the
+# duration of the run and restore on exit (incl. Ctrl-C / failure).
+if [ -d .pnpm-store ]; then
+    mv .pnpm-store .pnpm-store.act-stash
+    trap 'mv .pnpm-store.act-stash .pnpm-store 2>/dev/null || true' EXIT INT TERM
+fi
+
 ARGS=()
 for f in .env .env.local; do
     if [ -f "$f" ]; then
@@ -81,17 +92,18 @@ fi
 # Pre-warming by running `lint` alone seeds the cache cleanly. Subsequent
 # parallel cache-saves see the key already exists and skip the write.
 #
-# Only runs when the user opts into the full parallel workflow via
-# `ACT_ALL_JOBS=1` and hasn't suppressed it via `ACT_NO_PREWARM=1`.
-# Single-job invocations don't race, so the pre-warm is wasted work for them.
-if [ "${ACT_ALL_JOBS:-}" = "1" ] \
-    && [ "${ACT_NO_PREWARM:-}" != "1" ] \
-    && [ "$caller_set_job" = "false" ] \
-    && [ "$caller_set_workflow" = "false" ] \
+# Runs by default because almost every entrypoint into ci.yml ends up running
+# lint + typecheck in parallel: `-j test`/`-j build`/`-j dispatch` all declare
+# `needs: [lint, typecheck]`, and `-j e2e` transitively needs them via build.
+# The only invocations that don't race are `-j lint` / `-j typecheck` alone
+# and the introspection commands — those should opt out via `ACT_NO_PREWARM=1`.
+if [ "${ACT_NO_PREWARM:-}" != "1" ] \
     && [ "$caller_introspect" = "false" ]; then
     echo ">>> Pre-warming setup-node pnpm cache via 'lint' (skip with ACT_NO_PREWARM=1)..." >&2
     act "${ARGS[@]}" -j lint
     echo ">>> Pre-warm done; running full invocation..." >&2
 fi
 
-exec act "${ARGS[@]}" "$@"
+# Not `exec` — the EXIT trap that restores `.pnpm-store` only fires if this
+# shell stays alive. `set -e` still propagates act's exit code.
+act "${ARGS[@]}" "$@"
