@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import createVercelToolbar from '@vercel/toolbar/plugins/next';
 
 const withVercelToolbar = createVercelToolbar({
-    devServerPort: 1337,
+    devServerPort: 3000,
 });
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -17,11 +17,7 @@ const ADMIN_DOMAIN = process.env.ADMIN_DOMAIN || undefined;
 const LANDING_DOMAIN = process.env.LANDING_DOMAIN || undefined;
 
 export function getBaseUrl() {
-    if (ADMIN_DOMAIN) {
-        return `https://${ADMIN_DOMAIN}`;
-    }
-
-    return process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined;
+    return `https://${process.env.VERCEL_URL ?? ADMIN_DOMAIN}`;
 }
 
 const imageRemotePatterns = [
