@@ -32,6 +32,21 @@ done
 # Bundled here (not in .actrc) because the file's parser whitespace-splits values.
 ARGS+=(--container-options "--dns=1.1.1.1 --dns=8.8.8.8")
 
+# Restrict to the main CI workflow unless the caller explicitly passes `-W`/
+# `--workflows`. Default `act` scans all of `.github/workflows/` and triggers
+# every workflow that matches the event (e.g. the standalone Docs build kicks
+# off alongside CI on `push`), which is rarely what you want locally.
+caller_set_workflow=false
+for a in "$@"; do
+    case "$a" in
+        -W|--workflows) caller_set_workflow=true; break ;;
+        -W=*|--workflows=*) caller_set_workflow=true; break ;;
+    esac
+done
+if [ "$caller_set_workflow" = "false" ]; then
+    ARGS+=(-W .github/workflows/ci.yml)
+fi
+
 # --- PRE-WARM ---------------------------------------------------------------
 # `setup-node` with `cache: 'pnpm'` saves a tarball of the pnpm store keyed by
 # the lockfile hash. When stage-0 jobs (lint + typecheck) run in parallel
@@ -44,10 +59,11 @@ ARGS+=(--container-options "--dns=1.1.1.1 --dns=8.8.8.8")
 # parallel cache-saves see the key already exists and skip the write.
 #
 # Skips when: an explicit `-j`/`--job` filter is passed (single job, no
-# parallel save), or when introspecting (`--list`/`-l`/`--help`/`-h`/
-# `--dryrun`/`-n`), or when `ACT_NO_PREWARM=1`.
+# parallel save), when the caller picks their own workflow via `-W`/
+# `--workflows` (no guarantee a `lint` job exists there), when introspecting
+# (`--list`/`-l`/`--help`/`-h`/`--dryrun`/`-n`), or when `ACT_NO_PREWARM=1`.
 skip_prewarm=false
-if [ "${ACT_NO_PREWARM:-}" = "1" ]; then
+if [ "${ACT_NO_PREWARM:-}" = "1" ] || [ "$caller_set_workflow" = "true" ]; then
     skip_prewarm=true
 fi
 for a in "$@"; do
