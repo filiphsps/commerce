@@ -1,6 +1,5 @@
 import 'dotenv/config';
 
-import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { withSentryConfig } from '@sentry/nextjs';
@@ -13,13 +12,8 @@ const isDev = process.env.NODE_ENV === 'development';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const environment = process.env.VERCEL_ENV || process.env.NODE_ENV || 'development';
 
-const data_cache_url = process.env.DATA_CACHE_REDIS_URL || undefined;
-const require = createRequire(import.meta.url);
-
 /** @type {import('next').NextConfig} */
 const config = {
-    cacheHandler: !isDev && data_cache_url ? require.resolve('./data-cache-handler.mjs') : undefined,
-    cacheMaxMemorySize: !isDev && data_cache_url ? 0 : undefined,
     pageExtensions: ['ts', 'tsx'],
     poweredByHeader: false,
     generateEtags: true,

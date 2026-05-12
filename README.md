@@ -34,7 +34,7 @@ a marketing site, and a small set of reusable packages — all in one TypeScript
 -   **i18n that respects shops.** Locales live on the shop record; fallbacks degrade
     from `request → shop default → platform default` with recursion guards.
 -   **Edge-friendly caching.** Per-tenant, per-entity cache tags with surgical Shopify
-    and Prismic webhook revalidation backed by Redis.
+    and Prismic webhook revalidation.
 -   **Type-safe end to end.** Strict TypeScript, `noUncheckedIndexedAccess`, and a
     typed error hierarchy used uniformly across packages.
 -   **One toolchain.** Turborepo + pnpm workspaces, Biome for lint/format, Vitest for
@@ -139,7 +139,6 @@ To start only one app, use `pnpm dev:storefront`, `pnpm dev:admin`, or `pnpm dev
 | Testing         | [Vitest](https://vitest.dev) 4.x + Playwright for E2E             |
 | Bundling (libs) | [Vite](https://vitejs.dev) (per-package `dist/`)                  |
 | Data            | MongoDB (Mongoose 9.x)                                            |
-| Cache           | Redis via `@neshca/cache-handler` (production only)               |
 | Auth            | NextAuth v5 (`@auth/core`)                                        |
 | Observability   | Sentry, OpenTelemetry, Vercel Analytics                           |
 

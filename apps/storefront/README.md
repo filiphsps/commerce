@@ -14,7 +14,6 @@ This is the customer-facing surface. The operator dashboard lives in
 -   **CMS:** [Prismic](https://prismic.io) — slices, custom types, Slicemachine
 -   **Auth:** NextAuth v5 (`@auth/core`)
 -   **Data:** `@nordcom/commerce-db` for tenant resolution (Mongo / Mongoose)
--   **Cache:** `@neshca/cache-handler` (Redis) for the Next.js data cache in production
 -   **Styles:** Tailwind CSS 4, SCSS modules, [Nordstar](https://www.npmjs.com/package/@nordcom/nordstar)
 -   **Observability:** Sentry, OpenTelemetry, Vercel Analytics / Speed Insights / Toolbar
 
@@ -40,7 +39,6 @@ Required environment variables (see [`.env.example`](../../.env.example) at the 
 | `AUTH_SECRET`           | NextAuth signing secret.                                    |
 | `SERVICE_DOMAIN`        | Fallback hostname for unknown-shop rewrites.                |
 | `SHOPIFY_WEBHOOK_SECRET`| HMAC validation for `/api/revalidate`. Required in prod.    |
-| `DATA_CACHE_REDIS_URL`  | Enables the Redis cache handler (production only).          |
 
 ## Multi-tenant routing
 
@@ -82,7 +80,6 @@ apps/storefront/
 │   ├── scss/                   # Global styles
 │   ├── slices/                 # Prismic slices (managed via Slicemachine)
 │   └── utils/                  # Locale, prismic client, abstract-api, ...
-├── data-cache-handler.mjs      # Redis cache handler (production)
 ├── next.config.js
 └── package.json
 ```
@@ -140,10 +137,6 @@ Generated types land in `prismicio-types.d.ts` — **don't hand-edit** this file
     (dev only — never deploy without it).
 -   **Prismic** path is detected by the `documents` array in the body and maps each
     document to tags via `parsePrismicWebhook`.
-
-In production, the Next.js data cache itself is Redis-backed via
-`data-cache-handler.mjs` (only enabled when `DATA_CACHE_REDIS_URL` is set and
-`NODE_ENV !== 'development'`).
 
 ## Locales
 
