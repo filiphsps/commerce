@@ -1,6 +1,8 @@
 import { Shop } from '@nordcom/commerce-db';
 import type { Metadata } from 'next';
+import { cacheLife } from 'next/cache';
 import Image from 'next/image';
+import { connection } from 'next/server';
 import { Suspense } from 'react';
 import { getAuthSession } from '@/auth';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
@@ -12,6 +14,9 @@ import { capitalize, getTranslations, Locale } from '@/utils/locale';
 export type AccountDashboardParams = Promise<{ domain: string; locale: string }>;
 
 export async function generateMetadata({ params }: { params: AccountDashboardParams }): Promise<Metadata> {
+    'use cache';
+    cacheLife('max');
+
     const { domain, locale: localeData } = await params;
 
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
@@ -26,6 +31,9 @@ export async function generateMetadata({ params }: { params: AccountDashboardPar
 }
 
 export default async function AccountPage({ params }: { params: AccountDashboardParams }) {
+    // Per-user (session) — mark dynamic before Mongoose's `new Date()` runs.
+    await connection();
+
     const { domain, locale: localeData } = await params;
 
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });

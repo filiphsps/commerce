@@ -2,6 +2,7 @@ import { Shop } from '@nordcom/commerce-db';
 import { UnknownLocaleError } from '@nordcom/commerce-errors';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
+import { cacheLife } from 'next/cache';
 import { cookies } from 'next/headers';
 import { RedirectType, redirect } from 'next/navigation';
 import { Suspense } from 'react';
@@ -17,6 +18,9 @@ import LocaleSelector from './locale-selector';
 
 export type CountriesPageParams = Promise<{ domain: string; locale: string }>;
 export async function generateMetadata({ params }: { params: CountriesPageParams }): Promise<Metadata> {
+    'use cache';
+    cacheLife('max');
+
     const { domain, locale: localeData } = await params;
     const locale = Locale.from(localeData);
 
@@ -64,6 +68,9 @@ export async function generateMetadata({ params }: { params: CountriesPageParams
 }
 
 export default async function CountriesPage({ params }: { params: CountriesPageParams }) {
+    'use cache';
+    cacheLife('max');
+
     const { domain, locale: localeData } = await params;
     const locale = Locale.from(localeData);
 

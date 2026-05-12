@@ -45,6 +45,11 @@ export async function generateMetadata({
     params: ProductPageParams;
     searchParams: SearchParams;
 }): Promise<Metadata> {
+    // Read searchParams first to mark this function dynamic before Mongoose
+    // calls `new Date()` (forbidden in cached server components by Cache
+    // Components unless dynamic data or uncached fetch has been read first).
+    const searchParams = await queryParams;
+
     const { domain, locale: localeData, handle } = await params;
     if (!isValidHandle(handle)) {
         notFound();
@@ -82,8 +87,6 @@ export async function generateMetadata({
     }
 
     const locales = await LocalesApi({ api });
-
-    const searchParams = await queryParams;
 
     let search = '';
     if (searchParams.variant && searchParams.variant !== parseGid(initialVariant.id).id) {

@@ -76,8 +76,11 @@ export default async function SearchPage({
     params: SearchPageParams;
     searchParams: SearchParams;
 }) {
-    'use cache';
-    cacheLife('max');
+    // Read searchParams first to mark this function dynamic before Mongoose
+    // calls `new Date()` (forbidden in cached server components by Cache
+    // Components unless dynamic data or uncached fetch has been read first).
+    const searchParams = await queryParams;
+    const query = searchParams.q?.toString() || null;
 
     const { domain, locale: localeData } = await params;
     const locale = Locale.from(localeData);
@@ -87,9 +90,6 @@ export default async function SearchPage({
 
     const i18n = await getDictionary(locale);
     const { t } = getTranslations('common', i18n);
-
-    const searchParams = await queryParams;
-    const query = searchParams.q?.toString() || null;
 
     const client = await ShopifyApolloApiClient({ shop, locale });
     const { products, productFilters } = query

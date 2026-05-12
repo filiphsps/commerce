@@ -1,6 +1,7 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
+import { cacheLife } from 'next/cache';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { ShopifyApolloApiClient } from '@/api/shopify';
@@ -43,6 +44,9 @@ async function Content({ shop, locale, handle }: { shop: OnlineShop; locale: Loc
 }
 
 export default async function ProductModalDescription({ params }: Readonly<{ params: ProductPageParams }>) {
+    'use cache';
+    cacheLife('max');
+
     const { domain, locale: localeData, handle } = await params;
     if (!isValidHandle(handle)) {
         notFound();

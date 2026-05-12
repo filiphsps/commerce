@@ -1,6 +1,7 @@
 import { Shop } from '@nordcom/commerce-db';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
+import { cacheLife } from 'next/cache';
 import { Fragment, Suspense } from 'react';
 import { PageApi } from '@/api/prismic/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
@@ -15,6 +16,9 @@ import CartContent from './cart-content';
 
 export type CartPageParams = Promise<{ domain: string; locale: string }>;
 export async function generateMetadata({ params }: { params: CartPageParams }): Promise<Metadata> {
+    'use cache';
+    cacheLife('max');
+
     const { domain, locale: localeData } = await params;
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
 
@@ -63,6 +67,9 @@ export async function generateMetadata({ params }: { params: CartPageParams }): 
 }
 
 export default async function CartPage({ params }: { params: CartPageParams }) {
+    'use cache';
+    cacheLife('max');
+
     const { domain, locale: localeData } = await params;
     const locale = Locale.from(localeData);
     const shop = await Shop.findByDomain(domain);

@@ -16,13 +16,16 @@ export default async function SliceSimulatorPage({
 }: {
     params: SliceSimulatorPageParams;
 } & { searchParams: Promise<SliceSimulatorParams['searchParams']> }) {
+    // Read searchParams first to mark this function dynamic before Mongoose
+    // calls `new Date()` (forbidden in cached server components by Cache
+    // Components unless dynamic data or uncached fetch has been read first).
+    const searchParams = await queryParams;
+
     const locale = Locale.default;
 
     const { domain } = await params;
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const i18n = await getDictionary({ shop, locale });
-
-    const searchParams = await queryParams;
 
     return (
         <SliceSimulator>

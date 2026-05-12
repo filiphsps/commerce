@@ -6,6 +6,7 @@ import '../../globals.css';
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 import type { Metadata } from 'next';
+import { cacheLife } from 'next/cache';
 import { notFound, unstable_rethrow } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { ShopifyApolloApiClient } from '@/api/shopify';
@@ -59,6 +60,9 @@ export default async function SliceSimulatorLayout({
     children: ReactNode;
     params: SliceSimulatorLayoutParams;
 }) {
+    'use cache';
+    cacheLife('max');
+
     const { domain } = await params;
     const locale = Locale.default;
 

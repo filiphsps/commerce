@@ -2,6 +2,7 @@ import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 import type { ParsedMetafields } from '@shopify/hydrogen-react';
 import { parseGid, parseMetafield } from '@shopify/hydrogen-react';
+import { cacheLife } from 'next/cache';
 import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { Fragment, Suspense } from 'react';
@@ -38,6 +39,9 @@ export default async function ProductPageLayout({
     details: ReactNode;
     recommendations: ReactNode;
 }>) {
+    'use cache';
+    cacheLife('max');
+
     const { domain, locale: localeData, handle } = await params;
     if (!isValidHandle(handle)) {
         notFound();
