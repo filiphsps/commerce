@@ -133,6 +133,6 @@
         "slice-machine-ui": "2.10.1",
         "tailwindcss": "4.2.2",
         "typescript": "6.0.3",
-        "vitest": "4.1.5"
+        "vitest": "4.1.6"
     }
 }

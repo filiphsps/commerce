@@ -65,7 +65,7 @@
         "@types/react": "19.2.14",
         "@types/react-dom": "19.2.3",
         "@vitejs/plugin-react": "6.0.1",
-        "@vitest/coverage-v8": "4.1.5",
+        "@vitest/coverage-v8": "4.1.6",
         "babel-plugin-module-resolver": "5.0.3",
         "concurrently": "9.2.1",
         "dotenv-cli": "11.0.0",
@@ -81,7 +81,7 @@
         "vite": "8.0.12",
         "vite-plugin-dts": "5.0.0",
         "vite-tsconfig-paths": "6.1.1",
-        "vitest": "4.1.5"
+        "vitest": "4.1.6"
     },
     "packageManager": "pnpm@11.1.0"
 }
