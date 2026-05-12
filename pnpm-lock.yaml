@@ -115,8 +115,8 @@ importers:
         specifier: 1.2.10
         version: 1.2.10(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@shopify/shopify-api':
-        specifier: 11.6.0
-        version: 11.6.0
+        specifier: 11.14.1
+        version: 11.14.1
       '@vercel/otel':
         specifier: 2.1.2
         version: 2.1.2(@opentelemetry/api-logs@0.217.0)(@opentelemetry/api@1.9.1)(@opentelemetry/instrumentation@0.217.0(@opentelemetry/api@1.9.1))(@opentelemetry/resources@2.7.1(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-logs@0.217.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-metrics@1.26.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.7.1(@opentelemetry/api@1.9.1))
@@ -560,7 +560,7 @@ importers:
         version: 1.60.0
       '@slicemachine/adapter-next':
         specifier: 0.3.53
-        version: 0.3.53(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(next@16.2.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(react@19.2.6)(uuid@10.0.0)
+        version: 0.3.53(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(next@16.2.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(react@19.2.6)(uuid@11.1.1)
       '@tailwindcss/forms':
         specifier: 0.5.11
         version: 0.5.11(tailwindcss@4.3.0)
@@ -635,7 +635,7 @@ importers:
         version: 0.0.1
       slice-machine-ui:
         specifier: 2.10.1
-        version: 2.10.1(@prismicio/types@0.2.9)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(@types/uuid@9.0.8)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(uuid@10.0.0)
+        version: 2.10.1(@prismicio/types@0.2.9)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(@types/uuid@9.0.8)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(uuid@11.1.1)
       tailwindcss:
         specifier: 4.3.0
         version: 4.3.0
@@ -2898,8 +2898,8 @@ packages:
     engines: {node: '>=18.12.0'}
     deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
-  '@shopify/shopify-api@11.6.0':
-    resolution: {integrity: sha512-FGwDlO/WoJi6iXriJw/qDLjTSsn/wUHbhwwn2on1JOMbGdROJY/DHknTNybbKmT8L7PRYB+NXenoEKol0Lx5cA==}
+  '@shopify/shopify-api@11.14.1':
+    resolution: {integrity: sha512-5VyQZyNhMN2PJLosA6OytYL1ENmdpqslcTcr1jFjGn6sEuxhXtLav+I74ygdL2iTdjEud4aDBZycgDVxPIH+uw==}
 
   '@shopify/storefront-api-client@1.0.10':
     resolution: {integrity: sha512-A0ItFW58L5+y/jnnJDEsmt2YcQSt2BG+pNoQOYRpPBJaOLpTj7A13q1QVrE5XYVGZCA6ZQ6FqAtgosHHrkut0Q==}
@@ -6203,9 +6203,8 @@ packages:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
 
-  uuid@10.0.0:
-    resolution: {integrity: sha512-8XkAphELsDnEGrDxUOHB3RGvXz6TeuYSGEZBOjtTtPm2lwhGBjLgOzLHB63IUWfBpNucQjND6d3AOudO+H3RWQ==}
-    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+  uuid@11.1.1:
+    resolution: {integrity: sha512-vIYxrBCC/N/K+Js3qSN88go7kIfNPssr/hHCesKCQNAjmgvYS2oqr69kIufEG+O4+PfezOH4EbIeHCfFov8ZgQ==}
     hasBin: true
 
   uuid@9.0.1:
@@ -7607,7 +7606,7 @@ snapshots:
       '@types/statuses': 2.0.6
       statuses: 2.0.2
 
-  '@prismicio/types-internal@2.8.0(@types/uuid@9.0.8)(fp-ts@2.16.11)(io-ts-types@0.5.19(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(monocle-ts@2.3.13(fp-ts@2.16.11))(newtype-ts@0.3.5(fp-ts@2.16.11)(monocle-ts@2.3.13(fp-ts@2.16.11))))(io-ts@2.2.22(fp-ts@2.16.11))(uuid@10.0.0)':
+  '@prismicio/types-internal@2.8.0(@types/uuid@9.0.8)(fp-ts@2.16.11)(io-ts-types@0.5.19(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(monocle-ts@2.3.13(fp-ts@2.16.11))(newtype-ts@0.3.5(fp-ts@2.16.11)(monocle-ts@2.3.13(fp-ts@2.16.11))))(io-ts@2.2.22(fp-ts@2.16.11))(uuid@11.1.1)':
     dependencies:
       '@types/uuid': 9.0.8
       fp-ts: 2.16.11
@@ -7616,7 +7615,7 @@ snapshots:
       monocle-ts: 2.3.13(fp-ts@2.16.11)
       newtype-ts: 0.3.5(fp-ts@2.16.11)(monocle-ts@2.3.13(fp-ts@2.16.11))
       tslib: 2.8.1
-      uuid: 10.0.0
+      uuid: 11.1.1
 
   '@prismicio/types-internal@3.13.0(fp-ts@2.16.11)(io-ts-types@0.5.19(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(monocle-ts@2.3.13(fp-ts@2.16.11))(newtype-ts@0.3.5(fp-ts@2.16.11)(monocle-ts@2.3.13(fp-ts@2.16.11))))(io-ts@2.2.22(fp-ts@2.16.11))':
     dependencies:
@@ -8302,7 +8301,7 @@ snapshots:
 
   '@shopify/network@3.3.0': {}
 
-  '@shopify/shopify-api@11.6.0':
+  '@shopify/shopify-api@11.14.1':
     dependencies:
       '@shopify/admin-api-client': 1.1.2
       '@shopify/graphql-client': 1.4.2
@@ -8314,7 +8313,7 @@ snapshots:
       jsonwebtoken: 9.0.3
       node-fetch: 2.7.0
       tslib: 2.8.1
-      uuid: 10.0.0
+      uuid: 11.1.1
     transitivePeerDependencies:
       - encoding
 
@@ -8322,10 +8321,10 @@ snapshots:
     dependencies:
       '@shopify/graphql-client': 1.4.2
 
-  '@slicemachine/adapter-next@0.3.53(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(next@16.2.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(react@19.2.6)(uuid@10.0.0)':
+  '@slicemachine/adapter-next@0.3.53(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(next@16.2.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(react@19.2.6)(uuid@11.1.1)':
     dependencies:
       '@prismicio/simulator': 0.1.4
-      '@prismicio/types-internal': 2.8.0(@types/uuid@9.0.8)(fp-ts@2.16.11)(io-ts-types@0.5.19(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(monocle-ts@2.3.13(fp-ts@2.16.11))(newtype-ts@0.3.5(fp-ts@2.16.11)(monocle-ts@2.3.13(fp-ts@2.16.11))))(io-ts@2.2.22(fp-ts@2.16.11))(uuid@10.0.0)
+      '@prismicio/types-internal': 2.8.0(@types/uuid@9.0.8)(fp-ts@2.16.11)(io-ts-types@0.5.19(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(monocle-ts@2.3.13(fp-ts@2.16.11))(newtype-ts@0.3.5(fp-ts@2.16.11)(monocle-ts@2.3.13(fp-ts@2.16.11))))(io-ts@2.2.22(fp-ts@2.16.11))(uuid@11.1.1)
       '@slicemachine/plugin-kit': 0.4.53(@prismicio/types@0.2.9)
       common-tags: 1.8.2
       fp-ts: 2.16.11
@@ -8342,13 +8341,13 @@ snapshots:
       - '@types/uuid'
       - uuid
 
-  '@slicemachine/manager@0.22.1(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(uuid@10.0.0)':
+  '@slicemachine/manager@0.22.1(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(uuid@11.1.1)':
     dependencies:
       '@antfu/ni': 0.20.0
       '@prismicio/client': 7.12.0
       '@prismicio/custom-types-client': 2.1.0(@prismicio/client@7.12.0)
       '@prismicio/mocks': 2.15.2
-      '@prismicio/types-internal': 2.8.0(@types/uuid@9.0.8)(fp-ts@2.16.11)(io-ts-types@0.5.19(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(monocle-ts@2.3.13(fp-ts@2.16.11))(newtype-ts@0.3.5(fp-ts@2.16.11)(monocle-ts@2.3.13(fp-ts@2.16.11))))(io-ts@2.2.22(fp-ts@2.16.11))(uuid@10.0.0)
+      '@prismicio/types-internal': 2.8.0(@types/uuid@9.0.8)(fp-ts@2.16.11)(io-ts-types@0.5.19(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(monocle-ts@2.3.13(fp-ts@2.16.11))(newtype-ts@0.3.5(fp-ts@2.16.11)(monocle-ts@2.3.13(fp-ts@2.16.11))))(io-ts@2.2.22(fp-ts@2.16.11))(uuid@11.1.1)
       '@segment/analytics-node': 2.3.0
       '@slicemachine/plugin-kit': 0.4.55(@prismicio/types@0.2.9)
       cookie: 0.5.0
@@ -11262,11 +11261,11 @@ snapshots:
 
   signal-exit@3.0.7: {}
 
-  slice-machine-ui@2.10.1(@prismicio/types@0.2.9)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(@types/uuid@9.0.8)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(uuid@10.0.0):
+  slice-machine-ui@2.10.1(@prismicio/types@0.2.9)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(@types/uuid@9.0.8)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(uuid@11.1.1):
     dependencies:
       '@radix-ui/react-visually-hidden': 1.0.3(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
-      '@slicemachine/manager': 0.22.1(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(uuid@10.0.0)
-      start-slicemachine: 0.12.35(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(uuid@10.0.0)
+      '@slicemachine/manager': 0.22.1(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(uuid@11.1.1)
+      start-slicemachine: 0.12.35(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(uuid@11.1.1)
     transitivePeerDependencies:
       - '@prismicio/types'
       - '@types/express'
@@ -11321,11 +11320,11 @@ snapshots:
     dependencies:
       type-fest: 0.7.1
 
-  start-slicemachine@0.12.35(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(uuid@10.0.0):
+  start-slicemachine@0.12.35(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(uuid@11.1.1):
     dependencies:
       '@prismicio/mocks': 2.15.2
-      '@prismicio/types-internal': 2.8.0(@types/uuid@9.0.8)(fp-ts@2.16.11)(io-ts-types@0.5.19(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(monocle-ts@2.3.13(fp-ts@2.16.11))(newtype-ts@0.3.5(fp-ts@2.16.11)(monocle-ts@2.3.13(fp-ts@2.16.11))))(io-ts@2.2.22(fp-ts@2.16.11))(uuid@10.0.0)
-      '@slicemachine/manager': 0.22.1(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(uuid@10.0.0)
+      '@prismicio/types-internal': 2.8.0(@types/uuid@9.0.8)(fp-ts@2.16.11)(io-ts-types@0.5.19(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(monocle-ts@2.3.13(fp-ts@2.16.11))(newtype-ts@0.3.5(fp-ts@2.16.11)(monocle-ts@2.3.13(fp-ts@2.16.11))))(io-ts@2.2.22(fp-ts@2.16.11))(uuid@11.1.1)
+      '@slicemachine/manager': 0.22.1(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(uuid@11.1.1)
       body-parser: 1.20.5
       chalk: 4.1.2
       cors: 2.8.6
@@ -11607,7 +11606,7 @@ snapshots:
 
   utils-merge@1.0.1: {}
 
-  uuid@10.0.0: {}
+  uuid@11.1.1: {}
 
   uuid@9.0.1: {}
 
