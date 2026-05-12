@@ -1,1 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#ed1e79"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+    <rect width="1200" height="630" fill="#0d0d0d"/>
+    <rect x="40" y="40" width="1120" height="550" rx="24" fill="#1a1a1a" stroke="#ed1e79" stroke-width="4"/>
+    <text x="600" y="300" font-family="ui-sans-serif, system-ui, sans-serif" font-size="80" font-weight="800" fill="#fff" text-anchor="middle">Nordcom Commerce</text>
+    <text x="600" y="370" font-family="ui-sans-serif, system-ui, sans-serif" font-size="32" fill="#aaa" text-anchor="middle">Multi-tenant, headless e-commerce</text>
+</svg>

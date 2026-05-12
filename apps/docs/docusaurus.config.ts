@@ -5,7 +5,7 @@ import { themes as prismThemes } from 'prism-react-renderer';
 const config: Config = {
     title: 'Nordcom Commerce',
     tagline: 'A multi-tenant, headless e-commerce platform.',
-    favicon: 'img/favicon.svg',
+    favicon: 'img/favicon.ico',
 
     url: 'https://filiphsps.github.io',
     baseUrl: '/commerce/',
