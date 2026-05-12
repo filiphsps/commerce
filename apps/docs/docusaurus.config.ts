@@ -239,7 +239,38 @@ const config: Config = {
         },
         footer: {
             style: 'dark',
-            copyright: `Copyright © ${new Date().getFullYear()} Filiph Siitam Sandström.`,
+            links: [
+                {
+                    title: 'Project',
+                    items: [
+                        { label: 'GitHub', href: 'https://github.com/filiphsps/commerce' },
+                        { label: 'Issues', href: 'https://github.com/filiphsps/commerce/issues' },
+                        {
+                            label: 'Discussions',
+                            href: 'https://github.com/filiphsps/commerce/discussions',
+                        },
+                    ],
+                },
+                {
+                    title: 'Apps',
+                    items: [
+                        { label: 'Storefront', to: '/docs/storefront/overview' },
+                        { label: 'Admin', to: '/docs/admin/overview' },
+                        { label: 'Landing', to: '/docs/landing/overview' },
+                    ],
+                },
+                {
+                    title: 'Packages',
+                    items: [
+                        { label: 'db', to: '/docs/db/overview' },
+                        { label: 'errors', to: '/docs/errors/overview' },
+                        { label: 'shopify-graphql', to: '/docs/shopify-graphql/overview' },
+                        { label: 'shopify-html', to: '/docs/shopify-html/overview' },
+                        { label: 'marketing-common', to: '/docs/marketing-common/overview' },
+                    ],
+                },
+            ],
+            copyright: `Copyright © 2019–${new Date().getFullYear()} Filiph Siitam Sandström.`,
         },
         prism: {
             theme: prismThemes.github,
