@@ -70,43 +70,6 @@ You should now have:
 
 To start only one app, use `pnpm dev:storefront`, `pnpm dev:admin`, or `pnpm dev:landing`.
 
-## Architecture
-
-```text
-┌─────────────────────────────────────────────────────────────────┐
-│                       Browser / Customer                        │
-└──────────────────────────────┬──────────────────────────────────┘
-                               │ Host header
-                  ┌────────────▼────────────┐
-                  │  Next.js middleware     │
-                  │  (apps/storefront)      │
-                  │  Resolves tenant by     │
-                  │  hostname → MongoDB     │
-                  └────────────┬────────────┘
-                               │
-        ┌──────────────────────┼───────────────────────┐
-        ▼                      ▼                       ▼
-┌───────────────┐     ┌───────────────┐       ┌────────────────┐
-│  Storefront   │     │     Admin     │       │    Landing     │
-│  (tenant UI)  │     │  (operator)   │       │  (marketing)   │
-└───────┬───────┘     └───────┬───────┘       └────────┬───────┘
-        │                     │                        │
-        │   workspace:* packages — db, errors,         │
-        │   shopify-graphql, shopify-html,             │
-        │   marketing-common                           │
-        ▼                     ▼                        ▼
-┌─────────────────┐  ┌──────────────────┐    ┌──────────────────┐
-│ Shopify Store-  │  │ Shopify Admin    │    │   Prismic CMS    │
-│   front API     │  │      API         │    │  (slices, docs)  │
-└─────────────────┘  └──────────────────┘    └──────────────────┘
-                              │
-                              ▼
-                     ┌──────────────────┐
-                     │     MongoDB      │
-                     │  (shops, users)  │
-                     └──────────────────┘
-```
-
 ## Repository layout
 
 ### Apps
@@ -154,7 +117,6 @@ pnpm dev                # All apps in parallel
 pnpm dev:storefront     # Only the storefront     (http://localhost:1337)
 pnpm dev:admin          # Only the admin          (http://localhost:3000)
 pnpm dev:landing        # Only the marketing site (http://localhost:3001)
-pnpm slicemachine       # Open Prismic Slicemachine (storefront only)
 ```
 
 ### Build
