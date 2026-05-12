@@ -80,11 +80,20 @@ jobs:
               env:
                   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
+            # Powers Codecov Test Analytics (failed-test grouping, flakiness
+            # detection, slow-test trends). The legacy `codecov/test-results-action`
+            # is deprecated; `codecov-action` with `report_type: test_results` is
+            # the replacement. Same `unit` flag as the coverage upload so Codecov
+            # ties tests ↔ coverage in the per-flag views.
+            # See https://docs.codecov.com/docs/test-analytics
             - name: 🦺 Codecov Test Results
               if: ${{ !cancelled() && hashFiles('junit.xml') != '' }}
-              uses: codecov/test-results-action@v1
+              uses: codecov/codecov-action@v6
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
+                  files: ./junit.xml
+                  report_type: test_results
+                  flags: unit
 
     lint:
         name: 📋 Lint
