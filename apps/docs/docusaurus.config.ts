@@ -5,6 +5,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 import type { PluginConfig } from '@docusaurus/types';
 import type { Config } from '@docusaurus/types';
 import { themes as prismThemes } from 'prism-react-renderer';
+import polyfillResolveWeakPlugin from './src/plugins/polyfill-resolve-weak.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, '../..');
@@ -159,6 +160,7 @@ const config: Config = {
     ],
 
     plugins: [
+        polyfillResolveWeakPlugin as unknown as PluginConfig,
         ...WORKSPACES.map(docsPlugin),
         ...WORKSPACES.map(apiPlugin).filter((p): p is PluginConfig => p !== null),
     ],
