@@ -1,5 +1,3 @@
-/* c8 ignore start */
-
 import { NextResponse } from 'next/server';
 import NextAuth from 'next-auth';
 import authConfig from '@/utils/auth.config';
@@ -17,4 +15,3 @@ const { auth } = NextAuth(authConfig);
 export default auth(() => {
     return NextResponse.next();
 });
-/* c8 ignore stop */
