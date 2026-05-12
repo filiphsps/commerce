@@ -82,12 +82,6 @@ export const CartFragment = /* GraphQL */ `
             totalAmount {
                 ...MoneyFragment
             }
-            totalDutyAmount {
-                ...MoneyFragment
-            }
-            totalTaxAmount {
-                ...MoneyFragment
-            }
         }
         note
         attributes {
