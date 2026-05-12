@@ -1,11 +1,10 @@
-import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type * as Preset from '@docusaurus/preset-classic';
 import type { PluginConfig } from '@docusaurus/types';
 import type { Config } from '@docusaurus/types';
+import { globSync } from 'glob';
 import { themes as prismThemes } from 'prism-react-renderer';
-import polyfillResolveWeakPlugin from './src/plugins/polyfill-resolve-weak.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, '../..');
@@ -45,35 +44,37 @@ const SKIP = new Set([
 ]);
 
 function discoverWorkspaces(): Workspace[] {
+    // Glob every workspace member with a `docs/` folder. Adding a new workspace
+    // requires no edits here — drop a `docs/overview.md` next to its `src/`
+    // and rerun.
+    const docsFolders = globSync(['apps/*/docs', 'packages/*/docs'], {
+        cwd: REPO_ROOT,
+        absolute: true,
+    });
+
     const workspaces: Workspace[] = [];
 
-    for (const [type, dir] of [
-        ['app', 'apps'],
-        ['package', 'packages'],
-    ] as const) {
-        const root = path.join(REPO_ROOT, dir);
-        if (!fs.existsSync(root)) continue;
+    for (const docsDir of docsFolders) {
+        const relative = path.relative(REPO_ROOT, docsDir);
+        const [dir, name] = relative.split(path.sep);
+        if (!dir || !name || SKIP.has(name)) continue;
 
-        for (const entry of fs.readdirSync(root, { withFileTypes: true })) {
-            if (!entry.isDirectory() || SKIP.has(entry.name)) continue;
+        const type: 'app' | 'package' = dir === 'apps' ? 'app' : 'package';
 
-            const docsDir = path.join(root, entry.name, 'docs');
-            if (!fs.existsSync(docsDir)) continue;
+        // Look for the matching TypeDoc-emitted folder (gitignored, may be absent
+        // if `pnpm typedoc` hasn't run yet — that's fine, the API section is
+        // skipped for that workspace).
+        const apiDir = path.join(__dirname, 'api', name, 'src');
+        const apiPath = globSync('*.md', { cwd: apiDir }).length > 0 ? `./api/${name}/src` : null;
 
-            const apiDir = path.join(__dirname, 'api', entry.name, 'src');
-            const apiPath = fs.existsSync(apiDir) ? `./api/${entry.name}/src` : null;
-
-            const relDocs = path.relative(__dirname, docsDir);
-
-            workspaces.push({
-                name: entry.name,
-                type,
-                docsPath: relDocs,
-                apiPath,
-                repoPath: `${dir}/${entry.name}`,
-                extra: WORKSPACE_OVERRIDES[entry.name],
-            });
-        }
+        workspaces.push({
+            name,
+            type,
+            docsPath: path.relative(__dirname, docsDir),
+            apiPath,
+            repoPath: `${dir}/${name}`,
+            extra: WORKSPACE_OVERRIDES[name],
+        });
     }
 
     // Stable order: apps first, then packages, alphabetical within each.
@@ -160,23 +161,11 @@ const config: Config = {
     ],
 
     plugins: [
-        polyfillResolveWeakPlugin as unknown as PluginConfig,
         ...WORKSPACES.map(docsPlugin),
         ...WORKSPACES.map(apiPlugin).filter((p): p is PluginConfig => p !== null),
     ],
 
-    themes: [
-        [
-            '@easyops-cn/docusaurus-search-local',
-            {
-                hashed: true,
-                indexBlog: false,
-                docsRouteBasePath: ['docs', ...WORKSPACES.map((w) => `docs/${w.name}`)],
-                highlightSearchTermsOnTargetPage: true,
-            },
-        ],
-        '@docusaurus/theme-mermaid',
-    ],
+    themes: ['@docusaurus/theme-mermaid'],
 
     themeConfig: {
         image: 'img/social-card.svg',
