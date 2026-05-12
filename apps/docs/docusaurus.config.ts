@@ -22,6 +22,10 @@ const config: Config = {
         locales: ['en'],
     },
 
+    markdown: {
+        mermaid: true,
+    },
+
     presets: [
         [
             'classic',
@@ -193,6 +197,7 @@ const config: Config = {
                 highlightSearchTermsOnTargetPage: true,
             },
         ],
+        '@docusaurus/theme-mermaid',
     ],
 
     themeConfig: {

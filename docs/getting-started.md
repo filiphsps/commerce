@@ -14,6 +14,11 @@ deployment serves arbitrarily many shops resolved by hostname.
 - pnpm `11.x`
 - A running MongoDB instance
 
+:::tip
+Run `pnpm dev:storefront` if you only need the storefront — it boots faster than
+`pnpm dev`.
+:::
+
 ## Install
 
 ```bash

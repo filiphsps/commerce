@@ -8,6 +8,14 @@ sidebar_position: 2
 Nordcom Commerce is a single Next.js deployment that serves many tenants. Tenants are
 resolved by hostname in middleware before any page renders.
 
+```mermaid
+flowchart LR
+    A[Request] --> B[Middleware]
+    B --> C[Shop.findByDomain]
+    C --> D[App Router]
+    D --> E[Shopify + Prismic]
+```
+
 ## Request flow
 
 1. The Next.js middleware (`apps/storefront/src/proxy.ts`) is the entry.
