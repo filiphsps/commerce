@@ -525,8 +525,8 @@ importers:
         specifier: 1.4.0
         version: 1.4.0
       react-live-chat-loader:
-        specifier: 2.9.2
-        version: 2.9.2(react@19.2.5)
+        specifier: 2.11.0
+        version: 2.11.0(react@19.2.5)
       react-share:
         specifier: 5.1.0
         version: 5.1.0(react@19.2.5)
@@ -5566,10 +5566,10 @@ packages:
   react-is@17.0.2:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
 
-  react-live-chat-loader@2.9.2:
-    resolution: {integrity: sha512-8x7GBX5zylsUbMZX1B5RQmcbPKZ7daTz3K6L42o03VwxyUbfdbb1sJTOriwCRtDsKwpOnMEWa2KUzHsR+OsbVw==}
+  react-live-chat-loader@2.11.0:
+    resolution: {integrity: sha512-Nq1oK249vvQbjZUuoIcNzT4+9VWJoLL7c3ss5ykod8JFs0Vh0R5u5WZGAK3LoCwXTRxknXyfKAzCIGI+0RC+HQ==}
     peerDependencies:
-      react: ^16.14.0 || ^17.0.0 || ^18.0.0
+      react: ^16.14.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   react-remove-scroll-bar@2.3.8:
     resolution: {integrity: sha512-9r+yi9+mgU33AKcj6IbT9oRCO78WriSj6t/cF8DWBZJ9aOGPOTEDvdUDz1FwKim7QXWwmHqtdHnRJfhAxEG46Q==}
@@ -10916,7 +10916,7 @@ snapshots:
 
   react-is@17.0.2: {}
 
-  react-live-chat-loader@2.9.2(react@19.2.5):
+  react-live-chat-loader@2.11.0(react@19.2.5):
     dependencies:
       react: 19.2.5
 
