@@ -171,6 +171,6 @@ export const ShopifyApiClient = async ({ shop, locale = Locale.default, apiConfi
                     };
                 }
             },
-        } as unknown as ApolloClient<unknown>,
+        } as unknown as ApolloClient,
     });
 };

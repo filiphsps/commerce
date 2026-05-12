@@ -1,4 +1,5 @@
 import type { ApolloClient, TypedDocumentNode } from '@apollo/client';
+import { CombinedGraphQLErrors } from '@apollo/client';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 import type { Locale } from '@/utils/locale';
@@ -30,7 +31,7 @@ export type AbstractApiBuilder<K, Q> = ({
     shop: OnlineShop;
 }) => AbstractApi<Q>;
 
-export type AbstractShopifyApolloApiBuilder<Q> = AbstractApiBuilder<ApolloClient<unknown>, Q>;
+export type AbstractShopifyApolloApiBuilder<Q> = AbstractApiBuilder<ApolloClient, Q>;
 
 export function buildCacheTagArray(shop: OnlineShop, locale: Locale, tags: string[]) {
     // TODO: change `shopify` tag based on the api we're using.
@@ -64,7 +65,7 @@ export const ApiBuilder: AbstractShopifyApolloApiBuilder<TypedDocumentNode<unkno
             fetchPolicy = undefined,
         }: { fetchPolicy?: RequestCache; tags?: string[]; revalidate?: number } = {},
     ) => {
-        const { data, errors, error } = await api.query({
+        const { data, error } = await api.query({
             query,
             //fetchPolicy,
             context: {
@@ -83,6 +84,9 @@ export const ApiBuilder: AbstractShopifyApolloApiBuilder<TypedDocumentNode<unkno
             },
         });
 
+        // Apollo v4 unified errors → error. Re-expose the GraphQL error list to keep
+        // callers (and the AbstractApi contract) unchanged.
+        const errors = CombinedGraphQLErrors.is(error) ? error.errors : undefined;
         return { data: (data as T | undefined) || null, errors, error };
     },
 });

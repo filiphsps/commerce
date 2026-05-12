@@ -11,7 +11,9 @@ export type ApiConfig = {
 
 export const createApolloClient = ({ uri, headers }: ApiConfig, shop: OnlineShop) => {
     return new ApolloClient({
-        name: 'nordcom-headless-client',
+        clientAwareness: {
+            name: 'nordcom-headless-client',
+        },
         queryDeduplication: true,
         ssrMode: false,
         link: new HttpLink({
@@ -25,9 +27,6 @@ export const createApolloClient = ({ uri, headers }: ApiConfig, shop: OnlineShop
             },
         }),
         cache: new InMemoryCache({
-            canonizeResults: true,
-            addTypename: true,
-
             typePolicies: {
                 Product: {
                     fields: {
