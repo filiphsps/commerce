@@ -75,5 +75,82 @@ describe('services', () => {
 
             expect(findSpy).toHaveBeenCalledOnce();
         });
+
+        describe('findByDomain > public projection', () => {
+            const stubDocument = (raw: Record<string, unknown>) => ({
+                toObject: vi.fn(() => ({ ...raw })),
+            });
+
+            it('preserves shopify content provider type (regression for missing switch case)', async () => {
+                vi.spyOn(shopService, 'find').mockResolvedValue(
+                    stubDocument({
+                        _id: 'shop-1',
+                        domain: 'shop.example.com',
+                        commerceProvider: {
+                            type: 'shopify',
+                            authentication: { domain: 'x.myshopify.com', publicToken: 'pub' },
+                        },
+                        contentProvider: { type: 'shopify' },
+                    }) as never,
+                );
+
+                const result = (await shopService.findByDomain('shop.example.com')) as {
+                    contentProvider: { type: string };
+                };
+
+                expect(result.contentProvider.type).toBe('shopify');
+            });
+
+            it('preserves prismic content provider type and strips its authentication token', async () => {
+                vi.spyOn(shopService, 'find').mockResolvedValue(
+                    stubDocument({
+                        _id: 'shop-2',
+                        domain: 'shop.example.com',
+                        commerceProvider: {
+                            type: 'shopify',
+                            authentication: { domain: 'x.myshopify.com', publicToken: 'pub' },
+                        },
+                        contentProvider: {
+                            type: 'prismic',
+                            authentication: { token: 'secret' },
+                            repositoryName: 'repo',
+                            repository: 'repo-url',
+                        },
+                    }) as never,
+                );
+
+                const result = (await shopService.findByDomain('shop.example.com')) as {
+                    contentProvider: { type: string; authentication: Record<string, unknown>; repositoryName: string };
+                };
+
+                expect(result.contentProvider.type).toBe('prismic');
+                expect(result.contentProvider.repositoryName).toBe('repo');
+                expect(result.contentProvider.authentication).toEqual({});
+            });
+
+            it('exposes only the public builder.io token in the public projection', async () => {
+                vi.spyOn(shopService, 'find').mockResolvedValue(
+                    stubDocument({
+                        _id: 'shop-3',
+                        domain: 'shop.example.com',
+                        commerceProvider: {
+                            type: 'shopify',
+                            authentication: { domain: 'x.myshopify.com', publicToken: 'pub' },
+                        },
+                        contentProvider: {
+                            type: 'builder.io',
+                            authentication: { token: 'secret', publicToken: 'builder-pub' },
+                        },
+                    }) as never,
+                );
+
+                const result = (await shopService.findByDomain('shop.example.com')) as {
+                    contentProvider: { type: string; authentication: Record<string, unknown> };
+                };
+
+                expect(result.contentProvider.type).toBe('builder.io');
+                expect(result.contentProvider.authentication).toEqual({ publicToken: 'builder-pub' });
+            });
+        });
     });
 });

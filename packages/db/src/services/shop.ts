@@ -102,6 +102,10 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
                     };
                     break;
                 }
+                case 'shopify': {
+                    contentProvider = { ...res.contentProvider };
+                    break;
+                }
                 case 'builder.io': {
                     contentProvider = {
                         ...res.contentProvider,
@@ -109,6 +113,7 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
                             publicToken: res.contentProvider.authentication.publicToken,
                         },
                     };
+                    break;
                 }
             }
 
