@@ -1,0 +1,9 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "extends": "@docusaurus/tsconfig",
+    "compilerOptions": {
+        "baseUrl": "."
+    },
+    "include": ["src/", "docusaurus.config.ts", "sidebars.ts"],
+    "exclude": [".docusaurus", "build", "api", "node_modules"]
+}

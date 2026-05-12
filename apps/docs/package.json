@@ -1,0 +1,80 @@
+{
+    "$schema": "https://json.schemastore.org/package.json",
+    "name": "@nordcom/commerce-docs",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "start": "docusaurus start --port 3002",
+        "dev": "concurrently -i \"pnpm:typedoc:watch\" \"pnpm:docusaurus:start\"",
+        "docusaurus:start": "docusaurus start --port 3002",
+        "typedoc": "typedoc",
+        "typedoc:watch": "typedoc --watch",
+        "build": "pnpm run typedoc && pnpm run docusaurus:build",
+        "docusaurus:build": "docusaurus build",
+        "serve": "docusaurus serve --port 3003",
+        "clear": "docusaurus clear",
+        "clean": "rimraf -g build api .docusaurus .turbo *.log",
+        "lint": "biome lint .",
+        "format:check": "biome check --write --unsafe .",
+        "typecheck": "tsc -noEmit"
+    },
+    "author": {
+        "name": "Nordcom AB",
+        "email": "hi@nordcom.io",
+        "url": "https://nordcom.io/"
+    },
+    "contributors": [
+        {
+            "name": "Filiph Siitam Sandström",
+            "email": "filiph@nordcom.io",
+            "url": "https://github.com/filiphsps/"
+        }
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/filiphsps/commerce.git"
+    },
+    "bugs": {
+        "url": "https://github.com/filiphsps/commerce/issues"
+    },
+    "homepage": "https://filiphsps.github.io/commerce/",
+    "dependencies": {
+        "@docusaurus/core": "3.10.1",
+        "@docusaurus/preset-classic": "3.10.1",
+        "@docusaurus/theme-mermaid": "3.10.1",
+        "@easyops-cn/docusaurus-search-local": "0.55.1",
+        "@mdx-js/react": "3.1.0",
+        "@nordcom/commerce-db": "workspace:*",
+        "@nordcom/commerce-errors": "workspace:*",
+        "@nordcom/commerce-marketing-common": "workspace:*",
+        "@nordcom/commerce-shopify-graphql": "workspace:*",
+        "@nordcom/commerce-shopify-html": "workspace:*",
+        "clsx": "2.1.1",
+        "prism-react-renderer": "2.4.1",
+        "react": "19.2.6",
+        "react-dom": "19.2.6"
+    },
+    "devDependencies": {
+        "@docusaurus/module-type-aliases": "3.10.1",
+        "@docusaurus/tsconfig": "3.10.1",
+        "@docusaurus/types": "3.10.1",
+        "@types/node": "24.12.4",
+        "@types/react": "19.2.14",
+        "@types/react-dom": "19.2.3",
+        "concurrently": "9.2.1",
+        "rimraf": "6.1.3",
+        "typedoc": "0.28.19",
+        "typedoc-plugin-frontmatter": "1.3.1",
+        "typedoc-plugin-markdown": "4.11.0",
+        "typescript": "6.0.3"
+    },
+    "browserslist": {
+        "production": [">0.5%", "not dead", "not op_mini all"],
+        "development": [
+            "last 3 chrome version",
+            "last 3 firefox version",
+            "last 5 safari version"
+        ]
+    }
+}

@@ -1,13 +1,14 @@
 packages:
-    - "packages/**"
-    - "apps/**"
+  - "packages/**"
+  - "apps/**"
 
 allowBuilds:
-    "@parcel/watcher": true
-    "@swc/core": true
-    "@scarf/scarf": true
-    "@sentry-internal/node-cpu-profiler": true
-    "@sentry/cli": true
-    esbuild: true
-    sharp: true
-    unrs-resolver: true
+  "@parcel/watcher": true
+  "@swc/core": true
+  "@scarf/scarf": true
+  "@sentry-internal/node-cpu-profiler": true
+  "@sentry/cli": true
+  esbuild: true
+  sharp: true
+  unrs-resolver: true
+  core-js: false
