@@ -1,8 +1,9 @@
 import type { NextAuthConfig } from 'next-auth';
 import GitHub from 'next-auth/providers/github';
 
+import { LANDING_DOMAIN } from '@/utils/domains';
+
 const NEXTAUTH_URL = process.env.NEXTAUTH_URL || null;
-const INTERNAL_HOSTNAME = 'shops.nordcom.io';
 
 export default {
     providers: [
@@ -27,7 +28,7 @@ export default {
                 httpOnly: true,
                 sameSite: 'lax',
                 path: '/',
-                domain: NEXTAUTH_URL ? `.${INTERNAL_HOSTNAME}` : undefined,
+                domain: NEXTAUTH_URL ? `.${LANDING_DOMAIN}` : undefined,
                 secure: !!NEXTAUTH_URL,
             },
         },

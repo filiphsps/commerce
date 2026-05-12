@@ -13,8 +13,30 @@ const isDev = process.env.NODE_ENV === 'development';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+const ADMIN_DOMAIN = process.env.ADMIN_DOMAIN || undefined;
+const LANDING_DOMAIN = process.env.LANDING_DOMAIN || undefined;
+
 export function getBaseUrl() {
+    if (ADMIN_DOMAIN) {
+        return `https://${ADMIN_DOMAIN}`;
+    }
+
     return process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined;
+}
+
+const imageRemotePatterns = [
+    { protocol: 'https', hostname: '**.prismic.io' },
+    { protocol: 'https', hostname: '**.unsplash.com' },
+    { protocol: 'https', hostname: '**.shopify.com' },
+    { protocol: 'https', hostname: '**.github.io' },
+    { protocol: 'https', hostname: '**.gravatar.com' },
+];
+
+if (LANDING_DOMAIN) {
+    imageRemotePatterns.unshift({ protocol: 'https', hostname: LANDING_DOMAIN });
+}
+if (ADMIN_DOMAIN) {
+    imageRemotePatterns.unshift({ protocol: 'https', hostname: ADMIN_DOMAIN });
 }
 
 /** @type {import('next').NextConfig} */
@@ -55,39 +77,9 @@ const config = {
     },
     images: {
         dangerouslyAllowSVG: true,
-        //path: 'https://cloudflare-image.nordcom.workers.dev', // Shopify images fails when using .nordcom.io domain.
         //minimumCacheTTL: 60,
         contentDispositionType: 'inline',
-        remotePatterns: [
-            {
-                protocol: 'https',
-                hostname: 'nordcom.io',
-            },
-            {
-                protocol: 'https',
-                hostname: '**.nordcom.io',
-            },
-            {
-                protocol: 'https',
-                hostname: '**.prismic.io',
-            },
-            {
-                protocol: 'https',
-                hostname: '**.unsplash.com',
-            },
-            {
-                protocol: 'https',
-                hostname: '**.shopify.com',
-            },
-            {
-                protocol: 'https',
-                hostname: '**.github.io',
-            },
-            {
-                protocol: 'https',
-                hostname: '**.gravatar.com',
-            },
-        ],
+        remotePatterns: imageRemotePatterns,
         formats: ['image/webp', 'image/avif'],
     },
     typescript: {

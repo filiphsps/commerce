@@ -1,12 +1,14 @@
 import type { MetadataRoute } from 'next';
 
+import { ADMIN_URL } from '@/utils/domains';
+
 export default function manifest(): MetadataRoute.Manifest {
     return {
         name: 'Nordcom Commerce',
         short_name: 'nordcom',
         description: 'Nordcom Commerce',
         display_override: ['standalone', 'fullscreen'],
-        scope: 'https://admin.shops.nordcom.io/',
+        scope: `${ADMIN_URL}/`,
         start_url: '/',
         display: 'standalone',
         background_color: '#000000',

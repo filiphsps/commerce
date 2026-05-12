@@ -5,6 +5,7 @@ import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 
 import { Providers } from '@/components/providers';
+import { ADMIN_URL } from '@/utils/domains';
 import { primaryFont } from '@/utils/fonts';
 import { cn } from '@/utils/tailwind';
 
@@ -17,7 +18,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-    metadataBase: new URL(`https://admin.shops.nordcom.io/`),
+    metadataBase: new URL(`${ADMIN_URL}/`),
     title: {
         default: 'admin',
         template: `%s · Nordcom Commerce`,

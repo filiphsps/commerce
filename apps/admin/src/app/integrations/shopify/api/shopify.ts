@@ -2,6 +2,8 @@ import '@shopify/shopify-api/adapters/cf-worker';
 
 import { ApiVersion, shopifyApi } from '@shopify/shopify-api';
 
+import { ADMIN_DOMAIN } from '@/utils/domains';
+
 const apiKey = process.env.SHOPIFY_API_KEY;
 const apiSecretKey = process.env.SHOPIFY_API_SECRET_KEY;
 
@@ -25,7 +27,7 @@ export const shopifyAdminApi = isShopifyConfigured
               'read_own_subscription_contracts',
               'write_own_subscription_contracts',
           ],
-          hostName: process.env.NODE_ENV === 'development' ? 'localhost:3000' : 'admin.shops.nordcom.io',
+          hostName: ADMIN_DOMAIN,
           isEmbeddedApp: true,
           apiVersion: ApiVersion.October23,
       })

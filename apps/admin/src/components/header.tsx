@@ -4,6 +4,7 @@ import Link from 'next/link';
 import type { HTMLAttributes } from 'react';
 
 import { ToggleSidebar } from '@/components/toggle-sidebar';
+import { LANDING_URL } from '@/utils/domains';
 import { cn } from '@/utils/tailwind';
 
 export type HeaderProps = {} & HTMLAttributes<HTMLDivElement>;
@@ -20,7 +21,7 @@ export function Header({ className, children, ...props }: HeaderProps) {
             <NordstarHeader.Logo as={Link} href="/" title="Nordcom Commerce" className="block w-fit">
                 <Image
                     className="h-8 object-contain object-left"
-                    src="https://shops.nordcom.io/logo.svg"
+                    src={`${LANDING_URL}/logo.svg`}
                     alt="Nordcom AB's Logo"
                     height={75}
                     width={150}

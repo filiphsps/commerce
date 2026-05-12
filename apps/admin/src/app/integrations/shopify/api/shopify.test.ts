@@ -78,29 +78,37 @@ describe('integrations/shopify/api/shopify', () => {
         );
     });
 
-    it('uses production hostname when not in development', async () => {
-        vi.stubEnv('NODE_ENV', 'production');
-
-        await import('./shopify');
-
-        const callArg = mockShopifyApi.mock.calls[0]?.[0] as { hostName?: string };
-        expect(callArg?.hostName).toBe('admin.shops.nordcom.io');
-    });
-
-    it('uses localhost hostname in development mode', async () => {
-        vi.stubEnv('NODE_ENV', 'development');
+    it('uses the configured ADMIN_DOMAIN as the Shopify host', async () => {
+        vi.stubEnv('ADMIN_DOMAIN', 'admin.example.com');
         vi.resetModules();
 
-        const mockShopifyApiDev = vi.fn().mockReturnValue({});
+        const mockShopifyApiConfigured = vi.fn().mockReturnValue({});
         vi.doMock('@shopify/shopify-api', () => ({
             ApiVersion: { October23: '2023-10' },
-            shopifyApi: mockShopifyApiDev,
+            shopifyApi: mockShopifyApiConfigured,
         }));
         vi.doMock('@shopify/shopify-api/adapters/cf-worker', () => ({}));
 
         await import('./shopify');
 
-        const callArg = mockShopifyApiDev.mock.calls[0]?.[0] as { hostName?: string };
+        const callArg = mockShopifyApiConfigured.mock.calls[0]?.[0] as { hostName?: string };
+        expect(callArg?.hostName).toBe('admin.example.com');
+    });
+
+    it('falls back to localhost:3000 when ADMIN_DOMAIN is not set', async () => {
+        vi.stubEnv('ADMIN_DOMAIN', '');
+        vi.resetModules();
+
+        const mockShopifyApiFallback = vi.fn().mockReturnValue({});
+        vi.doMock('@shopify/shopify-api', () => ({
+            ApiVersion: { October23: '2023-10' },
+            shopifyApi: mockShopifyApiFallback,
+        }));
+        vi.doMock('@shopify/shopify-api/adapters/cf-worker', () => ({}));
+
+        await import('./shopify');
+
+        const callArg = mockShopifyApiFallback.mock.calls[0]?.[0] as { hostName?: string };
         expect(callArg?.hostName).toBe('localhost:3000');
     });
 
