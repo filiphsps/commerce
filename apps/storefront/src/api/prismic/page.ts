@@ -21,6 +21,8 @@ export const PagesApi = async ({
     locale: Locale;
     exclude?: string[];
 }): Promise<PrismicDocument[] | null> => {
+    if (shop.contentProvider.type !== 'prismic') return null;
+
     const client = createClient({ shop, locale });
 
     return unstable_cache(
@@ -87,6 +89,8 @@ export const PageApi = async <T extends keyof PageTypeMapping | 'custom_page' = 
     type = 'custom_page',
     handle,
 }: PageApiProps & { type?: T | 'custom_page' }): Promise<Simplify<NarrowedPageType<T>['data']> | null> => {
+    if (shop.contentProvider.type !== 'prismic') return null;
+
     const client = createClient({ shop, locale });
 
     return unstable_cache(

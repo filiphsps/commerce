@@ -45,9 +45,6 @@ export async function generateMetadata({
     params: ProductPageParams;
     searchParams: SearchParams;
 }): Promise<Metadata> {
-    'use cache';
-    cacheLife('max');
-
     const { domain, locale: localeData, handle } = await params;
     if (!isValidHandle(handle)) {
         notFound();

@@ -1,7 +1,6 @@
 import { Shop } from '@nordcom/commerce-db';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
-import { cacheLife } from 'next/cache';
 import { RedirectType, redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import { PageApi } from '@/api/prismic/page';
@@ -30,9 +29,6 @@ export async function generateMetadata({
     params: ProductsPageParams;
     searchParams: SearchParams;
 }): Promise<Metadata> {
-    'use cache';
-    cacheLife('max');
-
     const { domain, locale: localeData } = await params;
     const locale = Locale.from(localeData);
 
@@ -94,9 +90,6 @@ export default async function ProductsPage({
     params: ProductsPageParams;
     searchParams: SearchParams;
 }) {
-    'use cache';
-    cacheLife('max');
-
     const { domain, locale: localeData } = await params;
     const locale = Locale.from(localeData);
 

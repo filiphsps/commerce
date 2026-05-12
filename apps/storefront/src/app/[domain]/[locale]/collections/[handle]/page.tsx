@@ -3,7 +3,6 @@ import { Error } from '@nordcom/commerce-errors';
 import { asText } from '@prismicio/client';
 import { flattenConnection } from '@shopify/hydrogen-react';
 import type { Metadata } from 'next';
-import { cacheLife } from 'next/cache';
 import { notFound, RedirectType, redirect, unstable_rethrow } from 'next/navigation';
 import { Suspense } from 'react';
 import type { CollectionPage, WithContext } from 'schema-dts';
@@ -42,9 +41,6 @@ export async function generateMetadata({
     params: CollectionPageParams;
     searchParams: SearchParams;
 }): Promise<Metadata> {
-    'use cache';
-    cacheLife('max');
-
     const { domain, locale: localeData, handle } = await params;
     if (!isValidHandle(handle)) {
         notFound();
@@ -132,9 +128,6 @@ export default async function CollectionsCollectionPage({
     params: CollectionPageParams;
     searchParams: SearchParams;
 }) {
-    'use cache';
-    cacheLife('max');
-
     const { domain, locale: localeData, handle } = await params;
     if (!isValidHandle(handle)) {
         notFound();
