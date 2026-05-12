@@ -20,7 +20,7 @@
             "cache": true,
             "outputLogs": "new-only",
             "dependsOn": ["^build"],
-            "outputs": [".next/**", "!.next/cache/**", "dist/**"],
+            "outputs": [".next/**", "!.next/cache/**", "dist/**", "build/**", "api/**", ".docusaurus/**"],
             "inputs": [
                 "$TURBO_DEFAULT$",
                 "!README.md",
