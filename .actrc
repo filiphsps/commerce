@@ -1,0 +1,18 @@
+# Default flags passed to every `act` invocation.
+# See https://nektosact.com/usage/index.html#configuration-file
+
+# Use a full Ubuntu image so most setup-* actions work out of the box.
+# `act-latest` is ~1.5 GB on first pull; subsequent runs reuse the cached image.
+-P ubuntu-latest=catthehacker/ubuntu:act-latest
+
+# Required on Apple Silicon: most marketplace actions ship amd64 binaries only.
+# Harmless on amd64 hosts (Docker just runs natively).
+--container-architecture linux/amd64
+
+# Don't pull every run — let Docker decide when the image is stale.
+--pull=false
+
+# Use bridge networking. Docker Desktop on macOS has no real "host" network,
+# and act's default of `--network=host` causes containers to vanish mid-run.
+--container-options=--network=bridge
+
