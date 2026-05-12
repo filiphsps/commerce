@@ -58,7 +58,7 @@
         "@opentelemetry/sdk-logs": "0.217.0",
         "@radix-ui/react-avatar": "1.1.11",
         "@radix-ui/react-scroll-area": "1.2.10",
-        "@shopify/shopify-api": "11.6.0",
+        "@shopify/shopify-api": "13.0.0",
         "@vercel/otel": "2.1.2",
         "@vercel/toolbar": "0.2.5",
         "clsx": "2.1.1",
