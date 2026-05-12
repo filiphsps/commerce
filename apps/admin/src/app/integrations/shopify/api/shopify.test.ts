@@ -5,7 +5,7 @@ import { beforeAll, describe, expect, it, vi } from 'vitest';
 const mockShopifyApi = vi.fn();
 vi.mock('@shopify/shopify-api', () => ({
     ApiVersion: {
-        October23: '2023-10',
+        October25: '2025-10',
     },
     shopifyApi: mockShopifyApi,
 }));
@@ -30,7 +30,7 @@ describe('integrations/shopify/api/shopify', () => {
             expect.objectContaining({
                 userAgentPrefix: 'nordcom',
                 isEmbeddedApp: true,
-                apiVersion: '2023-10',
+                apiVersion: '2025-10',
             }),
         );
     });
@@ -84,7 +84,7 @@ describe('integrations/shopify/api/shopify', () => {
 
         const mockShopifyApiConfigured = vi.fn().mockReturnValue({});
         vi.doMock('@shopify/shopify-api', () => ({
-            ApiVersion: { October23: '2023-10' },
+            ApiVersion: { October25: '2025-10' },
             shopifyApi: mockShopifyApiConfigured,
         }));
         vi.doMock('@shopify/shopify-api/adapters/cf-worker', () => ({}));
@@ -101,7 +101,7 @@ describe('integrations/shopify/api/shopify', () => {
 
         const mockShopifyApiFallback = vi.fn().mockReturnValue({});
         vi.doMock('@shopify/shopify-api', () => ({
-            ApiVersion: { October23: '2023-10' },
+            ApiVersion: { October25: '2025-10' },
             shopifyApi: mockShopifyApiFallback,
         }));
         vi.doMock('@shopify/shopify-api/adapters/cf-worker', () => ({}));
@@ -117,7 +117,7 @@ describe('integrations/shopify/api/shopify', () => {
             vi.resetModules();
             const skippedShopifyApi = vi.fn();
             vi.doMock('@shopify/shopify-api', () => ({
-                ApiVersion: { October23: '2023-10' },
+                ApiVersion: { October25: '2025-10' },
                 shopifyApi: skippedShopifyApi,
             }));
             vi.doMock('@shopify/shopify-api/adapters/cf-worker', () => ({}));

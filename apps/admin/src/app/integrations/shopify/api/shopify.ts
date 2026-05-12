@@ -29,7 +29,7 @@ export const shopifyAdminApi = isShopifyConfigured
           ],
           hostName: ADMIN_DOMAIN,
           isEmbeddedApp: true,
-          apiVersion: ApiVersion.October23,
+          apiVersion: ApiVersion.October25,
       })
     : null;
 
