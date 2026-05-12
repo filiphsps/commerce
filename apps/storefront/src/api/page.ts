@@ -1,5 +1,5 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { Error as CommerceError, TodoError } from '@nordcom/commerce-errors';
+import { Error as CommerceError } from '@nordcom/commerce-errors';
 import type { PrismicDocument } from '@prismicio/client';
 import type { PageData, PageType } from '@/api/prismic/page';
 import { PageApi as PrismicPageApi, PagesApi as PrismicPagesApi } from '@/api/prismic/page';
@@ -32,9 +32,13 @@ export async function PagesApi({ shop, locale }: { shop: OnlineShop; locale: Loc
             }
             return { provider: 'shopify', items };
         }
+        default: {
+            // Unsupported / unimplemented content providers (e.g. `builder.io`) —
+            // degrade gracefully so the page renders without CMS content instead
+            // of throwing and 500ing the whole route.
+            return null;
+        }
     }
-
-    throw new TodoError();
 }
 
 export async function PageApi({
@@ -63,7 +67,8 @@ export async function PageApi({
             }
             return { provider: 'shopify', data };
         }
+        default: {
+            return null;
+        }
     }
-
-    throw new TodoError();
 }

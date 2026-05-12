@@ -319,6 +319,7 @@ const handleEvent = async (
             try {
                 await shopifyEventHandler(event, data, { shop, currency, locale, shopify, cart });
             } catch {} // TODO: Handle errors properly.
+            break;
         }
     }
 
