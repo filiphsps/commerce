@@ -73,7 +73,7 @@
         "glob": "13.0.6",
         "import-in-the-middle": "3.0.1",
         "jsdom": "29.1.1",
-        "mongoose": "9.6.1",
+        "mongoose": "9.6.2",
         "react": "19.2.5",
         "turbo": "2.9.12",
         "turbo-ignore": "2.9.12",
