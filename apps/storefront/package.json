@@ -108,7 +108,7 @@
         "@slicemachine/adapter-next": "0.3.53",
         "@tailwindcss/forms": "0.5.9",
         "@tailwindcss/postcss": "4.2.2",
-        "@tailwindcss/typography": "0.5.15",
+        "@tailwindcss/typography": "0.5.19",
         "@testing-library/jest-dom": "6.9.1",
         "@testing-library/react": "16.0.1",
         "@types/accept-language-parser": "1.5.8",
