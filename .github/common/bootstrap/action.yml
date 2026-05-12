@@ -4,13 +4,22 @@ description: 'Install and configure dependencies'
 runs:
     using: 'composite'
     steps:
+        # pnpm must be set up BEFORE setup-node so that `cache: 'pnpm'` below can
+        # resolve the pnpm binary, hash pnpm-lock.yaml, and restore the global
+        # pnpm store from cache. Without this ordering setup-node falls back to
+        # a no-op and every job redownloads the entire dependency graph.
+        - name: 🏎️ Setup pnpm
+          uses: pnpm/action-setup@v6
+          with:
+              run_install: false
+
         - name: 🏎️ Setup Node
           uses: actions/setup-node@v6
           with:
               registry-url: 'https://registry.npmjs.org/'
               node-version-file: '.nvmrc'
+              cache: 'pnpm'
 
-        - name: 🏎️ Setup pnpm
-          uses: pnpm/action-setup@v6
-          with:
-              run_install: true
+        - name: 📦 Install dependencies
+          run: pnpm install --frozen-lockfile
+          shell: bash
