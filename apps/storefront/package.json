@@ -115,7 +115,7 @@
         "@types/convert-units": "2.3.11",
         "@types/crypto-js": "4.2.2",
         "@types/lodash.debounce": "4.0.9",
-        "@types/node": "22.8.6",
+        "@types/node": "22.19.19",
         "@types/nprogress": "0.2.3",
         "@types/react": "19.2.14",
         "@types/react-dom": "19.2.3",
