@@ -4,6 +4,6 @@
     "compilerOptions": {
         "ignoreDeprecations": "6.0"
     },
-    "include": ["src/", "docusaurus.config.ts", "sidebars.ts"],
+    "include": ["src/", "docusaurus.config.ts", "sidebars.ts", "playwright.config.ts", "e2e/"],
     "exclude": [".docusaurus", "build", "api", "node_modules"]
 }
