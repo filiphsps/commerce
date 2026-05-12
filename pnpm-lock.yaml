@@ -333,8 +333,8 @@ importers:
         specifier: 16.3.2
         version: 16.3.2(@testing-library/dom@10.1.0)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@types/convert-units':
-        specifier: 2.3.11
-        version: 2.3.11
+        specifier: 2.3.12
+        version: 2.3.12
       '@types/node':
         specifier: 22.8.6
         version: 22.8.6
@@ -580,8 +580,8 @@ importers:
         specifier: 1.5.8
         version: 1.5.8
       '@types/convert-units':
-        specifier: 2.3.11
-        version: 2.3.11
+        specifier: 2.3.12
+        version: 2.3.12
       '@types/crypto-js':
         specifier: 4.2.2
         version: 4.2.2
@@ -3167,8 +3167,8 @@ packages:
   '@types/connect@3.4.38':
     resolution: {integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==}
 
-  '@types/convert-units@2.3.11':
-    resolution: {integrity: sha512-ld2+nLOUHMOFThcXQEcVgzoNVjjyBHp/dD5G00nS5TOfgDqIcAyX1T8xR2C162qjfEIby3AoxwwB1Vl9mLdvsQ==}
+  '@types/convert-units@2.3.12':
+    resolution: {integrity: sha512-4EaowCOJMy8Cb2nB8XSN61U82VV4qFsFYY2WhKIwXy936aBTp2yWKvMpTCt1g76MDmd+DmVi9YxKSYVrfCQ/yw==}
 
   '@types/crypto-js@4.2.2':
     resolution: {integrity: sha512-sDOLlVbHhXpAUAL0YHDUUwDZf3iN4Bwi4W6a0W0b+QcAezUbRtH4FVb+9J4h+XFPW7l/gQ9F8qC7P+Ec4k8QVQ==}
@@ -8627,7 +8627,7 @@ snapshots:
     dependencies:
       '@types/node': 22.8.6
 
-  '@types/convert-units@2.3.11': {}
+  '@types/convert-units@2.3.12': {}
 
   '@types/crypto-js@4.2.2': {}
 
