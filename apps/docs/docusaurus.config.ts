@@ -70,6 +70,10 @@ const config: Config = {
                 routeBasePath: 'docs/landing',
                 sidebarPath: './sidebars.ts',
                 editUrl: 'https://github.com/filiphsps/commerce/edit/master/apps/landing/docs/',
+                // Existing customer-facing error pages live here and use Markdoc
+                // syntax (served by apps/landing). Don't ingest them into the
+                // Docusaurus site.
+                exclude: ['errors/**'],
             },
         ],
         [
@@ -120,6 +124,51 @@ const config: Config = {
                 routeBasePath: 'docs/marketing-common',
                 sidebarPath: './sidebars.ts',
                 editUrl: 'https://github.com/filiphsps/commerce/edit/master/packages/marketing-common/docs/',
+            },
+        ],
+        [
+            '@docusaurus/plugin-content-docs',
+            {
+                id: 'db-api',
+                path: './api/db/src',
+                routeBasePath: 'docs/db/api',
+                sidebarPath: './sidebars.ts',
+            },
+        ],
+        [
+            '@docusaurus/plugin-content-docs',
+            {
+                id: 'errors-api',
+                path: './api/errors/src',
+                routeBasePath: 'docs/errors/api',
+                sidebarPath: './sidebars.ts',
+            },
+        ],
+        [
+            '@docusaurus/plugin-content-docs',
+            {
+                id: 'shopify-graphql-api',
+                path: './api/shopify-graphql/src',
+                routeBasePath: 'docs/shopify-graphql/api',
+                sidebarPath: './sidebars.ts',
+            },
+        ],
+        [
+            '@docusaurus/plugin-content-docs',
+            {
+                id: 'shopify-html-api',
+                path: './api/shopify-html/src',
+                routeBasePath: 'docs/shopify-html/api',
+                sidebarPath: './sidebars.ts',
+            },
+        ],
+        [
+            '@docusaurus/plugin-content-docs',
+            {
+                id: 'marketing-common-api',
+                path: './api/marketing-common/src',
+                routeBasePath: 'docs/marketing-common/api',
+                sidebarPath: './sidebars.ts',
             },
         ],
     ],
