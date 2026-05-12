@@ -93,7 +93,7 @@
         "react-error-boundary": "6.1.1",
         "react-ipgeolocation": "1.4.0",
         "react-live-chat-loader": "2.11.0",
-        "react-share": "5.1.0",
+        "react-share": "5.3.0",
         "redis": "5.12.1",
         "resolve-accept-language": "3.2.1",
         "sass": "1.99.0",

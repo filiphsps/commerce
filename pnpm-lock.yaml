@@ -528,8 +528,8 @@ importers:
         specifier: 2.11.0
         version: 2.11.0(react@19.2.6)
       react-share:
-        specifier: 5.1.0
-        version: 5.1.0(react@19.2.6)
+        specifier: 5.3.0
+        version: 5.3.0(react@19.2.6)
       redis:
         specifier: 5.12.1
         version: 5.12.1(@opentelemetry/api@1.9.1)
@@ -5591,10 +5591,10 @@ packages:
       '@types/react':
         optional: true
 
-  react-share@5.1.0:
-    resolution: {integrity: sha512-OvyfMtj/0UzH1wi90OdHhZVJ6WUC/+IeWvBwppeZozwIGyAjQgyR0QXlHOrxVHVECqnGvcpBaFTXVrqouTieaw==}
+  react-share@5.3.0:
+    resolution: {integrity: sha512-NU4TqizVi2TuyLpN93/ng2ux+uIGHK5b2dT15cHvZDwfi5b5NuzGych4htCGObN8lubygeamhRxUot4lZ0Pv6Q==}
     peerDependencies:
-      react: ^17 || ^18
+      react: ^17 || ^18 || ^19
 
   react-style-singleton@2.2.3:
     resolution: {integrity: sha512-b6jSvxvVnyptAiLjbkWLE/lOnR4lfTtDAl+eUC7RZy+QQWc6wRzIV2CE6xBuMmDxc2qIihtDCZD5NPOFl7fRBQ==}
@@ -10941,7 +10941,7 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.2.14
 
-  react-share@5.1.0(react@19.2.6):
+  react-share@5.3.0(react@19.2.6):
     dependencies:
       classnames: 2.5.1
       jsonp: 0.2.1
