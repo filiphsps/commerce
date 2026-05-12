@@ -447,8 +447,8 @@ importers:
         specifier: 10.52.0
         version: 10.52.0
       '@shopify/hydrogen-react':
-        specifier: 2024.7.6
-        version: 2024.7.6(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 2024.10.2
+        version: 2024.10.2(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@vercel/analytics':
         specifier: 2.0.1
         version: 2.0.1(next@16.2.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(react@19.2.6)
@@ -2886,8 +2886,8 @@ packages:
   '@shopify/graphql-client@1.4.2':
     resolution: {integrity: sha512-C/fEyx6BZmTGeJv0HSsduhfn5ZbkXk0nePkyo0+xXxorP1I+uvx9pobdFxTfiPnOrh+P6QiKzBgIviksnSo4YA==}
 
-  '@shopify/hydrogen-react@2024.7.6':
-    resolution: {integrity: sha512-uwn9t0C3MFaRF+pU8zniFXYv8yLMMqC7NypcOf08rDrJAxdlMc0nHIbYb1Y2CKPolhQpBNXK3sYRyFiSKEMmvQ==}
+  '@shopify/hydrogen-react@2024.10.2':
+    resolution: {integrity: sha512-fO9x2zK4b/s/a5lZCu5JgI/vHVCtXYmSGcHJ4o0KVLW4nYDdKpFNRnYEcztHdIpmk8t57lox7kYXAfuTsDfoPA==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^18.0.0
@@ -4350,10 +4350,6 @@ packages:
 
   graphql@16.14.0:
     resolution: {integrity: sha512-BBvQ/406p+4CZbTpCbVPSxfzrZrbnuWSP1ELYgyS6B+hNeKzgrdB4JczCa5VZUBQrDa9hUngm0KnexY6pJRN5Q==}
-    engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
-
-  graphql@16.9.0:
-    resolution: {integrity: sha512-GGTKBX4SD7Wdb8mqeDLni2oaRGYQWjWHGKPQ24ZMnUtKfcsVoiv4uX8+LJr1K6U5VW2Lu1BwJnj7uiori0YtRw==}
     engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
 
   gravatar.js@2.0.0:
@@ -8254,12 +8250,12 @@ snapshots:
 
   '@shopify/graphql-client@1.4.2': {}
 
-  '@shopify/hydrogen-react@2024.7.6(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
+  '@shopify/hydrogen-react@2024.10.2(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
       '@google/model-viewer': 1.12.1
       '@xstate/fsm': 2.0.0
       '@xstate/react': 3.2.1(@types/react@19.2.14)(@xstate/fsm@2.0.0)(react@19.2.6)
-      graphql: 16.9.0
+      graphql: 16.14.0
       react: 19.2.6
       react-dom: 19.2.6(react@19.2.6)
       type-fest: 4.41.0
@@ -9743,8 +9739,6 @@ snapshots:
       tslib: 2.8.1
 
   graphql@16.14.0: {}
-
-  graphql@16.9.0: {}
 
   gravatar.js@2.0.0:
     dependencies:
