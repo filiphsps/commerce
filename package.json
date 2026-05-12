@@ -74,7 +74,7 @@
         "import-in-the-middle": "3.0.1",
         "jsdom": "29.1.1",
         "mongoose": "9.6.2",
-        "react": "19.2.5",
+        "react": "19.2.6",
         "turbo": "2.9.12",
         "turbo-ignore": "2.9.12",
         "typescript": "6.0.3",
