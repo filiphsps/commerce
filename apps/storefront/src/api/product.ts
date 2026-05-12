@@ -35,7 +35,7 @@ export type ProductVariant = {
           }
         | undefined
         | null;
-} & OmitTypeName<Omit<ShopifyVariant, 'compareAtPriceV2' | 'priceV2' | 'metafields'>>;
+} & OmitTypeName<Omit<ShopifyVariant, 'metafields'>>;
 
 export type Product = {
     productType?: string | null;

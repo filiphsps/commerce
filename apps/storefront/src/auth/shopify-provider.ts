@@ -1,6 +1,7 @@
 import type { TokenSet } from '@auth/core/types';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import type { OIDCConfig, OIDCUserConfig } from 'next-auth/providers';
+import { BuildConfig } from '@/utils/build-config';
 
 const GET_CUSTOMER_FOR_SESSION = /* GraphQL */ `
     query getCustomerForSession {
@@ -76,7 +77,7 @@ function ShopifyProvider<P extends ShopifyProfile = ShopifyProfile>(
     const endpointBase = `https://shopify.com/${shopId}/auth/oauth`;
     const issuer = `https://customer.login.shopify.com`;
     const callbackUrl = `https://${shop.domain}/api/auth/callback/shopify/`;
-    const graphqlUrl = `https://shopify.com/${shopId}/account/customer/api/2024-07/graphql`;
+    const graphqlUrl = `https://shopify.com/${shopId}/account/customer/api/${BuildConfig.shopify.api}/graphql`;
 
     return {
         id: 'shopify',
