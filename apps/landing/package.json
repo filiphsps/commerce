@@ -89,7 +89,7 @@
         "concurrently": "9.2.1",
         "critters": "0.0.25",
         "dotenv": "17.4.2",
-        "graphql": "16.9.0",
+        "graphql": "16.14.0",
         "happy-dom": "20.9.0",
         "postcss": "8.5.14",
         "postcss-load-config": "6.0.1",
