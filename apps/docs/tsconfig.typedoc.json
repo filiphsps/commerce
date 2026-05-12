@@ -1,0 +1,28 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "Bundler",
+        "lib": ["ESNext", "DOM"],
+        "jsx": "react-jsx",
+        "strict": false,
+        "noEmit": true,
+        "skipLibCheck": true,
+        "resolveJsonModule": true,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "isolatedModules": true,
+        "noUncheckedIndexedAccess": false,
+        "noUnusedLocals": false,
+        "noUnusedParameters": false,
+        "types": ["node", "react", "react-dom"]
+    },
+    "include": [
+        "../../packages/db/src/index.ts",
+        "../../packages/errors/src/index.ts",
+        "../../packages/shopify-graphql/src/index.ts",
+        "../../packages/shopify-html/src/index.ts",
+        "../../packages/marketing-common/src/index.ts"
+    ]
+}
