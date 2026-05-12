@@ -48,7 +48,7 @@
     "dependencies": {
         "@markdoc/markdoc": "0.5.7",
         "@markdoc/next.js": "0.5.0",
-        "@next/third-parties": "16.2.4",
+        "@next/third-parties": "16.2.6",
         "@nordcom/commerce-errors": "workspace:*",
         "@nordcom/commerce-marketing-common": "workspace:*",
         "@nordcom/nordstar": "0.0.74",
@@ -62,7 +62,7 @@
         "glob": "13.0.6",
         "gravatar.js": "2.0.0",
         "gray-matter": "4.0.3",
-        "next": "16.2.4",
+        "next": "16.2.6",
         "nextjs-toploader": "3.9.17",
         "nprogress": "0.2.0",
         "react": "19.2.6",
