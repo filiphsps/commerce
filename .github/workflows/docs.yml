@@ -9,8 +9,8 @@ on:
             - 'apps/docs/**'
             - 'apps/**/src/**'
             - 'packages/**/src/**'
-            - 'apps/**/typedoc.json'
-            - 'packages/**/typedoc.json'
+            - 'apps/docs/typedoc.config.mjs'
+            - 'apps/docs/tsconfig.typedoc.json'
             - 'pnpm-lock.yaml'
             - '.github/workflows/docs.yml'
     push:
