@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload';
-import { adminOnly, publicRead, tenantScopedWrite } from '../../access';
+import { adminOnly, publishedOrAuthRead, tenantScopedWrite } from '../../access';
 import { imageField, linkField, navItemField } from '../../fields';
 import { buildRevalidateHooks } from '../_hooks/revalidate';
 
@@ -7,7 +7,10 @@ export const header: CollectionConfig = {
     slug: 'header',
     versions: { drafts: { autosave: { interval: 2000 } } },
     access: {
-        read: publicRead,
+        // Anonymous storefront reads are restricted to `_status: published` so
+        // autosaved drafts (every 2s while an editor types) don't leak to
+        // public visitors.
+        read: publishedOrAuthRead,
         create: tenantScopedWrite,
         update: tenantScopedWrite,
         delete: adminOnly,

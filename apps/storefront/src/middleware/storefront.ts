@@ -85,8 +85,13 @@ async function handleCommerceError(req: NextRequest, error: Error) {
     });
 }
 
-const FILE_TEST = /\.[a-zA-Z]{2,6}$/gi;
-const LOCALE_TEST = /\/([a-zA-Z]{2}-[a-zA-Z]{2})/g;
+// Don't add the `g` flag here. `.test()` on a `g`-flagged regex preserves
+// `lastIndex` between calls — and these regexes are module-scoped, so a hit
+// on one request leaves the cursor mid-string and the next request's `.test()`
+// can falsely return `false` against the same input. Plain regexes are
+// stateless and safe to share.
+const FILE_TEST = /\.[a-zA-Z]{2,6}$/i;
+const LOCALE_TEST = /\/([a-zA-Z]{2}-[a-zA-Z]{2})/;
 const LOCALE_SLASH_TEST = /\/([a-zA-Z]{2}-[a-zA-Z]{2})\//g;
 
 export const storefront = async (req: NextRequest): Promise<NextResponse> => {

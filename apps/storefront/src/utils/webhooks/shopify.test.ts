@@ -144,5 +144,21 @@ describe('utils/webhooks/shopify', () => {
             const tags = parseShopifyWebhook({ shop, topic: 'pages/update', body: {} });
             expect(tags).toEqual(['shopify.shop-1']);
         });
+
+        it('rejects malformed handles instead of interpolating them into tag strings', () => {
+            // Handle is HMAC-signed by Shopify, but a crafted handle (regex
+            // metachars, spaces, ../, leading dashes) could collide with
+            // unrelated tag namespaces. Strict kebab-case only — anything
+            // else falls back to broad sweep.
+            for (const bad of ['', '../etc', 'with space', 'CAPS', 'a/b', '..', '-leading', 'trailing-']) {
+                const tags = parseShopifyWebhook({ shop, topic: 'products/update', body: { handle: bad } });
+                expect(tags).toEqual(['shopify.shop-1.products', 'shopify.shop-1']);
+            }
+        });
+
+        it('accepts well-formed kebab-case handles', () => {
+            const tags = parseShopifyWebhook({ shop, topic: 'products/update', body: { handle: 'a1-b2-c3' } });
+            expect(tags).toContain('shopify.shop-1.product.a1-b2-c3');
+        });
     });
 });

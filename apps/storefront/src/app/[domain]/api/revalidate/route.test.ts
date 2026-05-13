@@ -211,10 +211,11 @@ describe('app/[domain]/api/revalidate', () => {
         });
     });
 
-    describe('POST — shop not found', () => {
-        it('returns 404 when Shop.findByDomain throws', async () => {
+    describe('POST — shop lookup failure', () => {
+        it('returns 404 when Shop.findByDomain throws NotFoundError', async () => {
             const { Shop } = await import('@nordcom/commerce-db');
-            vi.mocked(Shop.findByDomain).mockRejectedValueOnce(new Error('not found'));
+            const { NotFoundError } = await import('@nordcom/commerce-errors');
+            vi.mocked(Shop.findByDomain).mockRejectedValueOnce(new NotFoundError('"Shop" with the handle "unknown.shop"'));
 
             const req = makeRequest({
                 method: 'POST',
@@ -226,6 +227,28 @@ describe('app/[domain]/api/revalidate', () => {
             expect(res.status).toBe(404);
 
             // restore default mock for subsequent tests
+            vi.mocked(Shop.findByDomain).mockResolvedValue({ id: 'shop-1', domain: 'mock.shop' } as any);
+        });
+
+        it('returns 503 (with Retry-After) when Shop.findByDomain throws a non-NotFound error', async () => {
+            // Mongo timeouts, replica-set elections, pool exhaustion — all
+            // map to a transient 503 so Shopify retries the webhook. Without
+            // this, infra blips silently dropped cache busts.
+            const { Shop } = await import('@nordcom/commerce-db');
+            const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+            vi.mocked(Shop.findByDomain).mockRejectedValueOnce(new Error('mongo timeout'));
+
+            const req = makeRequest({
+                method: 'POST',
+                body: '{}',
+                headers: { 'content-type': 'application/json' },
+            });
+
+            const res = await POST(req as any, { params: Promise.resolve({ domain: 'mock.shop' }) } as any);
+            expect(res.status).toBe(503);
+            expect(res.headers.get('Retry-After')).toBe('30');
+
+            errSpy.mockRestore();
             vi.mocked(Shop.findByDomain).mockResolvedValue({ id: 'shop-1', domain: 'mock.shop' } as any);
         });
     });

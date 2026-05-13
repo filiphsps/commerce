@@ -126,6 +126,42 @@ describe('BannerBlock', () => {
         expect(container.querySelector('a')).toBeNull();
     });
 
+    it('drops javascript:/data: external CTAs (xss surface)', () => {
+        // Editors can paste an arbitrary url into `kind: external`. Without
+        // a scheme allowlist, the anchor fires the script on click.
+        for (const bad of ['javascript:alert(1)', ' javascript:alert(1)', 'data:text/html,<script>x</script>', 'vbscript:msgbox']) {
+            const { container } = render(
+                <BannerBlock
+                    context={ctx}
+                    block={{
+                        blockType: 'banner',
+                        heading: 'XSS',
+                        alignment: 'left',
+                        cta: { kind: 'external', url: bad, label: 'Click' },
+                    }}
+                />,
+            );
+            expect(container.querySelector('a')).toBeNull();
+        }
+    });
+
+    it('keeps safe http(s)/mailto/tel/relative external CTAs', () => {
+        for (const ok of ['https://example.com/', 'http://example.com/', 'mailto:hi@example.com', 'tel:+15555550100', '/internal', '#anchor']) {
+            const { container } = render(
+                <BannerBlock
+                    context={ctx}
+                    block={{
+                        blockType: 'banner',
+                        heading: 'OK',
+                        alignment: 'left',
+                        cta: { kind: 'external', url: ok, label: 'Go' },
+                    }}
+                />,
+            );
+            expect(container.querySelector('a')?.getAttribute('href')).toBe(ok);
+        }
+    });
+
     it('renders inline background style when background is an object with url', () => {
         const { container } = render(
             <BannerBlock

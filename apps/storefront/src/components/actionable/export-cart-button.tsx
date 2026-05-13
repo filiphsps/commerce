@@ -58,7 +58,7 @@ export function ExportCartButton({ i18n }: ExportCartButtonProps) {
                 const csv = generateCsv(config)(data);
 
                 download(config)(csv);
-                setBusy(true);
+                setBusy(false);
             }}
         >
             <span className="h-4">{t('save-as-csv')}</span>

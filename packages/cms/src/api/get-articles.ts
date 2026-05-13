@@ -23,8 +23,13 @@ export const getArticles = async ({
     __payload,
 }: GetArticlesArgs) => {
     const payload = __payload ?? (await getPayloadInstance());
+    // `contains` translates to a MongoDB regex against the `tags` array — that
+    // both does a substring match (`news` matches `breaking-news`) AND lets
+    // attacker-supplied regex metachars (`.+*?()[]\`) through to the query,
+    // which is a ReDoS / partial-DoS surface. Use `in` for an exact-equality
+    // match against any element of the hasMany text field.
     const where = (
-        tag ? { and: [{ tenant: { equals: shop.id } }, { tags: { contains: tag } }] } : { tenant: { equals: shop.id } }
+        tag ? { and: [{ tenant: { equals: shop.id } }, { tags: { in: [tag] } }] } : { tenant: { equals: shop.id } }
     ) as never;
     return payload.find({
         collection: 'articles',

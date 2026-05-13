@@ -1,5 +1,20 @@
 import type { LocaleRef, LinkRef } from './types';
 
+// `kind: 'external'` and the legacy default branch both ship a freeform `url`
+// straight into an `<a href>`. Without a scheme check an editor can paste
+// `javascript:alert(1)` (or `data:text/html,...`) and the anchor fires it on
+// click. Allow only the safe web/contact schemes; drop everything else.
+const SAFE_SCHEME = /^(?:https?|mailto|tel):/i;
+// Pre-`kind` data sometimes stored bare paths or hash fragments. Those are
+// fine — only block embedded scripts.
+const SAFE_RELATIVE = /^(?:\/|#|\?)/;
+const isSafeExternalUrl = (raw: string): boolean => {
+    const trimmed = raw.trim();
+    if (!trimmed) return false;
+    if (SAFE_RELATIVE.test(trimmed)) return true;
+    return SAFE_SCHEME.test(trimmed);
+};
+
 /**
  * Renderer-local link resolver. Mirrors the api/resolve-link helper but
  * accepts the looser `LinkRef` shape emitted by Payload — the latter can
@@ -24,7 +39,7 @@ export const resolveLinkRef = (
 
     switch (link.kind) {
         case 'external':
-            return link.url ? { href: link.url, openInNewTab } : null;
+            return link.url && isSafeExternalUrl(link.url) ? { href: link.url, openInNewTab } : null;
         case 'anchor':
             return link.url ? { href: `#${link.url.replace(/^#/, '')}`, openInNewTab } : null;
         case 'page': {
@@ -45,7 +60,9 @@ export const resolveLinkRef = (
         }
         default:
             // Pre-`kind` data — only `url` is set. Treat as external for
-            // back-compat so existing CMS docs don't suddenly stop linking.
-            return link.url ? { href: link.url, openInNewTab } : null;
+            // back-compat so existing CMS docs don't suddenly stop linking,
+            // but still gate the scheme so `javascript:` payloads don't slip
+            // through the legacy path.
+            return link.url && isSafeExternalUrl(link.url) ? { href: link.url, openInNewTab } : null;
     }
 };

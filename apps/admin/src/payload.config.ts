@@ -26,12 +26,17 @@ if (!PAYLOAD_SECRET) throw new Error('PAYLOAD_SECRET is required');
 if (!MONGODB_URI) throw new Error('MONGODB_URI is required');
 if (!NEXTAUTH_SECRET) throw new Error('NEXTAUTH_SECRET (or AUTH_SECRET) is required');
 
+// Lowercase the env list once so the runtime `has()` check is
+// case-insensitive. JWE `email` claims aren't normalized — `Admin@x.com`
+// arriving when the env has `admin@x.com` would otherwise be silently demoted
+// to editor on every login, with no visible signal.
 const OPERATOR_EMAILS = new Set(
     (process.env.NORDCOM_OPERATOR_EMAILS ?? '')
         .split(',')
-        .map((s) => s.trim())
+        .map((s) => s.trim().toLowerCase())
         .filter(Boolean),
 );
+const isOperatorEmail = (email: string): boolean => OPERATOR_EMAILS.has(email.trim().toLowerCase());
 
 // Without operator emails configured the bridge mints every new user as an
 // editor — including the first admin trying to sign in — so the admin panel
@@ -128,7 +133,7 @@ const findOrCreateUser = async (email: string) => {
             collection: 'users',
             data: {
                 email,
-                role: OPERATOR_EMAILS.has(email) ? 'admin' : 'editor',
+                role: isOperatorEmail(email) ? 'admin' : 'editor',
                 password: crypto.randomUUID(),
             } as never,
             overrideAccess: true,
@@ -146,7 +151,7 @@ const findOrCreateUser = async (email: string) => {
 };
 
 const recomputeRoles = async (email: string) => {
-    const isOperator = OPERATOR_EMAILS.has(email);
+    const isOperator = isOperatorEmail(email);
     const shopCollaborators = await findShopsForUser(email);
     return computeRolesFromShopMembership({ email, isOperator, shopCollaborators });
 };

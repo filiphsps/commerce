@@ -1,12 +1,14 @@
 import type { CollectionConfig } from 'payload';
-import { adminOnly, publicRead, tenantScopedWrite } from '../../access';
+import { adminOnly, publishedOrAuthRead, tenantScopedWrite } from '../../access';
 import { buildRevalidateHooks } from '../_hooks/revalidate';
 
 export const businessData: CollectionConfig = {
     slug: 'businessData',
     versions: { drafts: { autosave: { interval: 2000 } } },
     access: {
-        read: publicRead,
+        // See header.ts for rationale — autosaved drafts must not leak to anon
+        // storefront reads.
+        read: publishedOrAuthRead,
         create: tenantScopedWrite,
         update: tenantScopedWrite,
         delete: adminOnly,

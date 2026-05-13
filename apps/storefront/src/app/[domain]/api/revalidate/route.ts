@@ -1,4 +1,5 @@
 import { Shop } from '@nordcom/commerce-db';
+import { Error as CommerceError } from '@nordcom/commerce-errors';
 import { revalidateTag } from 'next/cache';
 import { type NextRequest, NextResponse } from 'next/server';
 import { parseShopifyWebhook, validateShopifyHmac } from '@/utils/webhooks/shopify';
@@ -12,8 +13,24 @@ export async function POST(req: NextRequest, { params }: { params: RevalidateApi
     let shop: { id: string; domain: string };
     try {
         shop = await Shop.findByDomain(domain);
-    } catch {
-        return NextResponse.json({ status: 404, error: 'shop not found' }, { status: 404, headers: noStoreHeaders });
+    } catch (error: unknown) {
+        // Distinguish "shop truly doesn't exist" from "infra blip" (Mongo
+        // timeout, replica-set election, connection pool saturation). The
+        // 404 path is permanent from Shopify's perspective — its webhook
+        // retry policy treats 4xx as "do not retry," so the cache bust is
+        // silently dropped. Map infra failures to 503 + Retry-After so the
+        // delivery is re-queued.
+        if (CommerceError.isNotFound(error)) {
+            return NextResponse.json(
+                { status: 404, error: 'shop not found' },
+                { status: 404, headers: noStoreHeaders },
+            );
+        }
+        console.error('[revalidate] Shop.findByDomain failed:', error);
+        return NextResponse.json(
+            { status: 503, error: 'shop lookup failed' },
+            { status: 503, headers: { ...noStoreHeaders, 'Retry-After': '30' } },
+        );
     }
 
     const rawBody = await req.text();

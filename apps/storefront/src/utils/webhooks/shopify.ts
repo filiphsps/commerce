@@ -10,6 +10,15 @@ export function validateShopifyHmac(rawBody: string, headerHmac: string, secret:
 
 type ShopifyWebhookBody = { handle?: string; [key: string]: unknown };
 
+// Shopify product/collection/page handles match `^[a-z0-9](-?[a-z0-9])*$`
+// (kebab-case, ASCII). Anything outside that is either a bug upstream or a
+// crafted payload aiming to inject characters into the tag string we then
+// hand to `revalidateTag`. Reject those — fall back to broad sweep — so the
+// tag namespace stays predictable and a malformed handle can't be used to
+// invalidate cross-tenant tags by collision.
+const HANDLE_PATTERN = /^[a-z0-9](?:[a-z0-9-]{0,254}[a-z0-9])?$/;
+const isValidHandle = (h: unknown): h is string => typeof h === 'string' && HANDLE_PATTERN.test(h);
+
 export function parseShopifyWebhook({
     shop,
     topic,
@@ -20,6 +29,7 @@ export function parseShopifyWebhook({
     body: ShopifyWebhookBody;
 }): string[] {
     const broad = `shopify.${shop.id}`;
+    const handle = isValidHandle(body.handle) ? body.handle : undefined;
 
     // `*.products` / `*.collections` (plural) are the tags storefront list
     // pages — `/products`, `/collections/<x>` listings, recommendation rails,
@@ -29,18 +39,18 @@ export function parseShopifyWebhook({
     // "indefinitely from the user's perspective."
     if (topic.startsWith('products/')) {
         const list = `shopify.${shop.id}.products`;
-        if (body.handle) return [`shopify.${shop.id}.product.${body.handle}`, list, broad];
+        if (handle) return [`shopify.${shop.id}.product.${handle}`, list, broad];
         return [list, broad];
     }
 
     if (topic.startsWith('collections/')) {
         const list = `shopify.${shop.id}.collections`;
-        if (body.handle) return [`shopify.${shop.id}.collection.${body.handle}`, list, broad];
+        if (handle) return [`shopify.${shop.id}.collection.${handle}`, list, broad];
         return [list, broad];
     }
 
     if (topic.startsWith('pages/')) {
-        if (body.handle) return [`shopify.${shop.id}.page.${body.handle}`, broad];
+        if (handle) return [`shopify.${shop.id}.page.${handle}`, broad];
         return [broad];
     }
 

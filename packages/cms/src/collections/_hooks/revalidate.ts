@@ -6,6 +6,7 @@ type Doc = {
     slug?: string;
     shopifyHandle?: string;
     tenant?: string | { id: string };
+    _status?: 'draft' | 'published';
 };
 
 const tenantId = (doc: Doc): string | undefined => {
@@ -26,8 +27,16 @@ const invalidate = (collection: string, doc: Doc): void => {
 export type RevalidateHookOptions = { collection: string };
 
 export const buildRevalidateHooks = ({ collection }: RevalidateHookOptions): NonNullable<CollectionConfig['hooks']> => {
+    // `afterChange` fires for every write, including the 2-second autosave
+    // cadence used by draft-enabled collections. Without this gate every
+    // keystroke would burst-invalidate prod cache, re-render pages, and
+    // hammer Shopify/Mongo on the storefront. Only published transitions
+    // should bust public caches; drafts are invisible to anonymous reads
+    // anyway (see `publishedOrAuthRead`).
     const afterChange: CollectionAfterChangeHook = async ({ doc }) => {
-        invalidate(collection, doc as Doc);
+        const d = doc as Doc;
+        if (d._status && d._status !== 'published') return doc;
+        invalidate(collection, d);
         return doc;
     };
     const afterDelete: CollectionAfterDeleteHook = async ({ doc }) => {
