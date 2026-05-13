@@ -1,0 +1,58 @@
+import type { CacheAdapter, AdapterCtx, ILogger, WriteOpts } from './adapter';
+import { consoleLogger } from './adapter';
+import { buildKeyFactory, type CacheKey, type KeyFactory } from './keys';
+import type { CacheSchema, CacheSchemaShape, EntitiesMap } from './schema';
+
+export interface WrapOpts {
+	ttl?: number;
+	swr?: boolean;
+	stalenessGuard?: boolean;
+}
+
+export interface CacheInstance<T = unknown, Q = unknown> {
+	schema: CacheSchemaShape;
+	keys: KeyFactory<T, Q>;
+	wrap<R>(key: CacheKey, fetcher: () => Promise<R>, opts?: WrapOpts): Promise<R>;
+	read<R = unknown>(key: CacheKey): Promise<R | undefined>;
+	write<R>(key: CacheKey, value: R, opts?: WriteOpts): Promise<void>;
+	invalidateRaw(tags: string[]): Promise<void>;
+}
+
+export function createCacheInstance<NS extends string, T, Q, E extends EntitiesMap>(
+	cache: CacheSchema<NS, T, Q, E>,
+	adapter: CacheAdapter,
+	options: { logger?: ILogger } = {},
+): CacheInstance<T, Q> {
+	const ctx: AdapterCtx = { schema: cache.schema, logger: options.logger ?? consoleLogger };
+	const keys = buildKeyFactory(cache.schema);
+
+	return {
+		schema: cache.schema,
+		keys,
+
+		async wrap<R>(key: CacheKey, fetcher: () => Promise<R>, opts: WrapOpts = {}): Promise<R> {
+			const hit = await adapter.read(key.readTag, ctx);
+			if (hit !== undefined) return hit.value as R;
+
+			const startedAt = Date.now();
+			const value = await fetcher();
+			const writeOpts: WriteOpts = { ttl: opts.ttl, swr: opts.swr };
+			if (opts.stalenessGuard) writeOpts.writeIfNewerThan = startedAt;
+			await adapter.write(key.readTag, value, key.tags, writeOpts, ctx);
+			return value;
+		},
+
+		async read<R>(key: CacheKey): Promise<R | undefined> {
+			const hit = await adapter.read(key.readTag, ctx);
+			return hit ? (hit.value as R) : undefined;
+		},
+
+		async write<R>(key: CacheKey, value: R, opts: WriteOpts = {}): Promise<void> {
+			await adapter.write(key.readTag, value, key.tags, opts, ctx);
+		},
+
+		async invalidateRaw(tags: string[]): Promise<void> {
+			await adapter.invalidate(tags, ctx);
+		},
+	};
+}
