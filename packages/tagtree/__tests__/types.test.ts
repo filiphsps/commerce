@@ -1,5 +1,5 @@
 import { describe, expect, it, expectTypeOf } from 'vitest';
-import { str, num, type ParamType, type ParamTypeShape, type EntityDecl, type Brand } from '../src/types';
+import { str, num, type ParamTypeShape, type EntityDecl, type Brand } from '../src/types';
 
 describe('types', () => {
     it('str is a Brand<string> sentinel', () => {
