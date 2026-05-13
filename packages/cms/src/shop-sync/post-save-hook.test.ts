@@ -18,7 +18,10 @@ describe('syncShopToTenant', () => {
             data: expect.objectContaining({
                 shopId: 'shop_abc',
                 name: 'Swedish Candy Store',
-                slug: 'swedish-candy-store-com',
+                // Slug now mirrors shop.id directly — domain-derived slugs
+                // collided across casing/punctuation variants and the unique
+                // index then rejected the second shop's save silently.
+                slug: 'shop_abc',
                 defaultLocale: 'sv',
                 locales: ['sv', 'en-US'],
             }),
@@ -46,7 +49,10 @@ describe('syncShopToTenant', () => {
         expect(create).not.toHaveBeenCalled();
     });
 
-    it('reflects the domain rename in the tenant slug', async () => {
+    it('keeps the slug stable across domain renames (slug = shop.id)', async () => {
+        // Slugs derived from domain meant a domain swap would orphan all
+        // tenant-keyed data (CMS docs, S3 prefixes). Anchoring the slug to
+        // shop.id keeps it constant for the lifetime of the shop.
         const find = vi.fn(async () => ({ docs: [{ id: 'existing' }] }));
         const update = vi.fn(async () => ({ id: 'existing' }));
         const payload = { find, create: vi.fn(), update } as never;
@@ -59,7 +65,7 @@ describe('syncShopToTenant', () => {
         expect(update).toHaveBeenCalledWith({
             collection: 'tenants',
             id: 'existing',
-            data: expect.objectContaining({ slug: 'new-brand-hub-example-com' }),
+            data: expect.objectContaining({ slug: 'shop_abc' }),
             overrideAccess: true,
         });
     });

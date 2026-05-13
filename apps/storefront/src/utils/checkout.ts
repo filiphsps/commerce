@@ -64,7 +64,32 @@ export const Checkout = async ({
         throw new InvalidCartError('Cart is missing checkoutUrl');
     }
 
-    const url = cart.checkoutUrl.replace(/[A-Za-z0-9\-_]+.\.myshopify\.com/, shop.commerceProvider.domain);
+    // Prefer parsing the checkoutUrl over a regex rewrite. The previous regex
+    // had an unescaped `.` and no anchor — so a checkoutUrl Shopify ever
+    // returned in an unexpected shape (or a partial-string match like
+    // `foo.myshopify.com.evil.com`) could produce a corrupt swap. Only swap
+    // the host when it cleanly ends in `.myshopify.com`.
+    let url: string;
+    try {
+        const parsed = new URL(cart.checkoutUrl);
+        if (parsed.protocol !== 'https:') {
+            throw new InvalidCartError(`Refusing non-https checkoutUrl: ${parsed.protocol}`);
+        }
+        if (parsed.hostname.endsWith('.myshopify.com')) {
+            parsed.hostname = shop.commerceProvider.domain;
+        }
+        url = parsed.toString();
+    } catch (err) {
+        if (err instanceof InvalidCartError) throw err;
+        throw new InvalidCartError(`Invalid checkoutUrl: ${cart.checkoutUrl}`);
+    }
+
+    // Drop lines whose variant has been deleted upstream — Shopify will strip
+    // them at checkout but our analytics event would crash on the
+    // non-null assertions below.
+    const safeLines = (cart.lines.filter(Boolean) as CartLine[]).filter(
+        (line) => line.merchandise && line.merchandise.product,
+    );
 
     try {
         trackable.postEvent('begin_checkout', {
@@ -72,7 +97,7 @@ export const Checkout = async ({
                 ecommerce: {
                     currency: cart.cost?.totalAmount?.currencyCode,
                     value: safeParseFloat(undefined, cart.cost?.totalAmount?.amount),
-                    items: (cart.lines.filter((_) => _) as CartLine[]).map((line) => ({
+                    items: safeLines.map((line) => ({
                         item_id: productToMerchantsCenterId({
                             locale: locale,
                             product: {

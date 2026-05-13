@@ -101,7 +101,12 @@ export function AuthAdapter(): Adapter {
                     return null;
                 }
 
-                // Update or create the identity
+                // Auth.js v5 hands `account` through with snake_case fields
+                // (`refresh_token` / `access_token`) per the OAuth spec
+                // mapping. The previous camelCase reads silently stored
+                // `undefined` for every identity, so any future provider
+                // that needed those tokens to call back into its API would
+                // break with no signal until it was used.
                 const identity = await Identity.findOneAndUpdate(
                     {
                         provider: account.provider,
@@ -112,8 +117,8 @@ export function AuthAdapter(): Adapter {
                         identity: account.providerAccountId,
                         scope: account.scope,
                         expiresAt: account.expires_at ? new Date(account.expires_at * 1000) : undefined,
-                        refreshToken: account.refreshToken,
-                        accessToken: account.accessToken,
+                        refreshToken: account.refresh_token,
+                        accessToken: account.access_token,
                     },
                     {
                         upsert: true,

@@ -7,12 +7,12 @@ export type ShopForSync = {
     i18n: { defaultLocale: string; locales: string[] };
 };
 
-const slugify = (s: string) =>
-    s
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-+|-+$/g, '');
-
+// `tenants.slug` carries a `unique: true` index. Two shops with collision-prone
+// domains (`Example.com` vs `example.com.`, custom-vs-myshopify, casing
+// differences) used to slug to the same value, the second save would throw on
+// the index, and the post-save hook caught it silently — leaving the second
+// shop without a mirrored tenant. shop.id is the only attribute guaranteed
+// unique by the source-of-truth Mongoose schema, so use it directly.
 export const syncShopToTenant = async (payload: Payload, shop: ShopForSync): Promise<void> => {
     // Runs from a Mongoose post-save hook outside any HTTP request, so there is
     // no `req.user` for Payload access predicates to inspect. Without
@@ -28,7 +28,7 @@ export const syncShopToTenant = async (payload: Payload, shop: ShopForSync): Pro
     const data = {
         shopId: shop.id,
         name: shop.name,
-        slug: slugify(shop.domain),
+        slug: shop.id,
         defaultLocale: shop.i18n.defaultLocale,
         locales: shop.i18n.locales,
     };
