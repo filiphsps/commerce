@@ -60,7 +60,7 @@
     },
     "homepage": "https://shops.nordcom.io/",
     "dependencies": {
-        "@nordcom/nordstar": "0.0.74"
+        "@nordcom/nordstar": "0.0.75"
     },
     "devDependencies": {
         "@biomejs/biome": "2.4.15",

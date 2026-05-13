@@ -54,7 +54,7 @@
         "@nordcom/commerce-errors": "workspace:*",
         "@nordcom/commerce-shopify-graphql": "workspace:*",
         "@nordcom/commerce-shopify-html": "workspace:*",
-        "@nordcom/nordstar": "0.0.74",
+        "@nordcom/nordstar": "0.0.75",
         "@opentelemetry/api-logs": "0.217.0",
         "@opentelemetry/instrumentation": "0.217.0",
         "@opentelemetry/sdk-logs": "0.217.0",

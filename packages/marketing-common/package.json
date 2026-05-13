@@ -54,7 +54,7 @@
         "dist"
     ],
     "dependencies": {
-        "@nordcom/nordstar": "0.0.74"
+        "@nordcom/nordstar": "0.0.75"
     },
     "devDependencies": {
         "@codecov/vite-plugin": "2.0.1",
