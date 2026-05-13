@@ -33,6 +33,11 @@ export default {
             },
         },
     },
-    secret: process.env.AUTH_SECRET,
+    // Keep the env-name fallback aligned with payload.config.ts so a prod
+    // deployment that sets only `NEXTAUTH_SECRET` (the Auth.js v5 default) or
+    // only `AUTH_SECRET` (the older name) doesn't end up with one half of the
+    // app encrypting cookies with one secret and the other half trying to
+    // decrypt with another.
+    secret: process.env.NEXTAUTH_SECRET ?? process.env.AUTH_SECRET,
     debug: false,
 } satisfies NextAuthConfig;

@@ -60,11 +60,23 @@ export type ShopModelLike = {
 // fire the sync once more per Shop save, multiplying tenant upserts and noise.
 const attachedSchemas = new WeakSet<object>();
 
+/**
+ * The Payload instance is resolved lazily by the caller so the hook can attach
+ * synchronously at module load — earlier than the `configPromise.then(...)`
+ * pattern, which left a race window where Shop saves during admin app startup
+ * fired before the listener was registered and were silently dropped.
+ */
+export type PayloadResolver = Payload | (() => Promise<Payload>);
+
+const resolvePayload = async (resolver: PayloadResolver): Promise<Payload> =>
+    typeof resolver === 'function' ? await resolver() : resolver;
+
 /** Attaches the sync to the Shop Mongoose model. Idempotent. */
-export const attachShopSync = (shopModel: ShopModelLike, payload: Payload): void => {
+export const attachShopSync = (shopModel: ShopModelLike, payload: PayloadResolver): void => {
     const hook = async (doc: ShopForSync) => {
         try {
-            await syncShopToTenant(payload, doc);
+            const resolved = await resolvePayload(payload);
+            await syncShopToTenant(resolved, doc);
         } catch (err) {
             console.error('[cms] Shop -> tenant sync failed:', err);
         }

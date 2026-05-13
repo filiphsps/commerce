@@ -21,6 +21,16 @@ const OPERATOR_EMAILS = new Set(
         .filter(Boolean),
 );
 
+// Without operator emails configured the bridge mints every new user as an
+// editor — including the first admin trying to sign in — so the admin panel
+// boots, accepts logins, and silently exposes only editor-level access. Surface
+// this loudly at startup so it can't slip past code review.
+if (OPERATOR_EMAILS.size === 0) {
+    console.warn(
+        '[payload-config] NORDCOM_OPERATOR_EMAILS is empty — no signed-in user will be promoted to admin. Set it to a comma-separated list of operator emails to unlock admin access.',
+    );
+}
+
 const storefrontBaseUrl = process.env.STOREFRONT_BASE_URL ?? 'http://localhost:1337';
 
 const buildLivePreviewUrl = ({
@@ -146,14 +156,10 @@ const configPromise = buildPayloadConfig({
     livePreview: { url: buildLivePreviewUrl },
 });
 
-// Attach Shop -> tenant sync side-effect once Payload is up.
-configPromise
-    .then(async () => {
-        const payload = await getPayload({ config: configPromise });
-        attachShopSync(Shop.model as never, payload);
-    })
-    .catch((err) => {
-        console.error('[payload-config] Failed to attach shop sync:', err);
-    });
+// Attach the Shop -> tenant sync listener synchronously so a Shop save during
+// admin startup (seed scripts, webhook racing module load, etc.) can't slip in
+// before the post-save hook is registered. The Payload instance is resolved
+// lazily on first fire — by then `configPromise` will have settled.
+attachShopSync(Shop.model as never, () => getPayload({ config: configPromise }));
 
 export default configPromise;

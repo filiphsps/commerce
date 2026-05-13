@@ -41,7 +41,12 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
     }
 
     public async create(input: Omit<DocType, keyof BaseDocument>): Promise<DocType> {
-        return this.model.create(input).then((doc) => doc.save());
+        // `Model.create()` already persists the document; the previous code
+        // chained `.then((doc) => doc.save())` which re-saved a clean doc and
+        // re-fired every `post('save')` hook. With the Shop -> tenant sync
+        // hook attached, that meant every `Shop.create()` ran the tenant
+        // upsert twice and stressed both Mongo and Payload for no reason.
+        return this.model.create(input);
     }
 
     private mutateQuery<Q>(req: Query<unknown, DocType>, args: { [k: string]: unknown }): () => Q {

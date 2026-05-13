@@ -206,4 +206,26 @@ describe('attachShopSync', () => {
         expect(find).toHaveBeenCalledWith(expect.objectContaining({ overrideAccess: true }));
         expect(create).toHaveBeenCalledWith(expect.objectContaining({ overrideAccess: true }));
     });
+
+    it('accepts a lazy payload resolver so the hook can attach before Payload boots', async () => {
+        let captured: ((doc: unknown) => Promise<void>) | undefined;
+        const post = vi.fn((_event: string, fn: (doc: unknown) => Promise<void>) => {
+            captured = fn;
+        });
+        const find = vi.fn(async () => ({ docs: [] }));
+        const create = vi.fn(async () => ({ id: 't-late' }));
+        const update = vi.fn();
+        const getPayload = vi.fn(async () => ({ find, create, update }) as never);
+        attachShopSync({ schema: { post } } as never, getPayload);
+        // Hook registers immediately, before any payload resolution.
+        expect(getPayload).not.toHaveBeenCalled();
+        await captured!({
+            id: 'shop-late',
+            name: 'Lazy',
+            domain: 'lazy.example',
+            i18n: { defaultLocale: 'en-US', locales: ['en-US'] },
+        });
+        expect(getPayload).toHaveBeenCalledTimes(1);
+        expect(create).toHaveBeenCalled();
+    });
 });
