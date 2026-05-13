@@ -9,5 +9,8 @@
     ],
     "toolSettings": {
         "nodeMaxMemory": 2048
+    },
+    "lockFileMaintenance": {
+        "enabled": true
     }
 }
