@@ -115,7 +115,10 @@ describe('reusable field configs', () => {
                 page: 'pages',
                 article: 'articles',
                 product: 'productMetadata',
-                collection: 'collectionMetadata',
+                // `collection` is reserved by Mongoose, so the relation field
+                // is named `collectionRef`; the `kind` discriminator stays
+                // 'collection' for editor familiarity.
+                collectionRef: 'collectionMetadata',
             });
         });
 

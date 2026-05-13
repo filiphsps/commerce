@@ -6,7 +6,7 @@ export type LinkValue =
     | { kind: 'page'; page: { slug: string } | string }
     | { kind: 'article'; article: { slug: string } | string }
     | { kind: 'product'; product: { shopifyHandle: string } | string }
-    | { kind: 'collection'; collection: { shopifyHandle: string } | string };
+    | { kind: 'collection'; collectionRef: { shopifyHandle: string } | string };
 
 const slugOf = (v: { slug: string } | string | undefined): string | undefined =>
     typeof v === 'string' ? undefined : v?.slug;
@@ -33,7 +33,7 @@ export const resolveLink = (link: LinkValue, { locale }: { locale: LocaleRef }):
             return handle ? `/${locale.code}/products/${handle}/` : '';
         }
         case 'collection': {
-            const handle = handleOf((link as Extract<LinkValue, { kind: 'collection' }>).collection);
+            const handle = handleOf((link as Extract<LinkValue, { kind: 'collection' }>).collectionRef);
             return handle ? `/${locale.code}/collections/${handle}/` : '';
         }
         default:

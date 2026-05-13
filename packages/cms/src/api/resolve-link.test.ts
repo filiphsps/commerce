@@ -22,7 +22,7 @@ describe('resolveLink', () => {
         );
     });
     it('resolves collection links by Shopify handle', () => {
-        expect(resolveLink({ kind: 'collection', collection: { shopifyHandle: 'candy' } }, { locale })).toBe(
+        expect(resolveLink({ kind: 'collection', collectionRef: { shopifyHandle: 'candy' } }, { locale })).toBe(
             '/sv/collections/candy/',
         );
     });

@@ -102,12 +102,29 @@ describe('syncShopToTenant', () => {
 });
 
 describe('attachShopSync', () => {
-    it('registers a post-save handler on the shop model', () => {
+    it('registers a post-save handler on model.schema (Mongoose Model shape)', () => {
         const post = vi.fn();
-        const model = { post } as never;
-        const payload = {} as never;
-        attachShopSync(model, payload);
+        const model = { schema: { post } } as never;
+        attachShopSync(model, {} as never);
         expect(post).toHaveBeenCalledWith('save', expect.any(Function));
+    });
+
+    it('falls back to model.post when handed a raw schema', () => {
+        const post = vi.fn();
+        attachShopSync({ post } as never, {} as never);
+        expect(post).toHaveBeenCalledWith('save', expect.any(Function));
+    });
+
+    it('prefers schema.post when both are present (Model wins over raw)', () => {
+        const schemaPost = vi.fn();
+        const modelPost = vi.fn();
+        attachShopSync({ schema: { post: schemaPost }, post: modelPost } as never, {} as never);
+        expect(schemaPost).toHaveBeenCalledTimes(1);
+        expect(modelPost).not.toHaveBeenCalled();
+    });
+
+    it('throws TypeError when handed something with no post hook', () => {
+        expect(() => attachShopSync({} as never, {} as never)).toThrow(TypeError);
     });
 
     it("invokes syncShopToTenant for the saved doc and doesn't throw on errors", async () => {
@@ -123,7 +140,7 @@ describe('attachShopSync', () => {
             create: vi.fn(),
             update: vi.fn(),
         } as never;
-        attachShopSync({ post } as never, payload);
+        attachShopSync({ schema: { post } } as never, payload);
         expect(captured).toBeDefined();
         const handler = captured!;
         await expect(
@@ -143,7 +160,7 @@ describe('attachShopSync', () => {
         const create = vi.fn();
         const update = vi.fn();
         const post = vi.fn();
-        attachShopSync({ post } as never, { find, create, update } as never);
+        attachShopSync({ schema: { post } } as never, { find, create, update } as never);
         expect(find).not.toHaveBeenCalled();
         expect(create).not.toHaveBeenCalled();
         expect(update).not.toHaveBeenCalled();

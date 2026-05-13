@@ -45,7 +45,10 @@ export const linkField = ({ name, label, localized = true }: LinkFieldOptions): 
             admin: { condition: (_d, sib) => sib?.kind === 'product' },
         },
         {
-            name: 'collection',
+            // `collection` is reserved by Mongoose (it's a getter on Model), so we
+            // store the collection-link relation under `collectionRef`. The `kind`
+            // discriminator stays 'collection' for editor familiarity.
+            name: 'collectionRef',
             type: 'relationship',
             relationTo: 'collectionMetadata',
             admin: { condition: (_d, sib) => sib?.kind === 'collection' },

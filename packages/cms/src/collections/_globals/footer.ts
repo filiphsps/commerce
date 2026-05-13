@@ -44,6 +44,6 @@ export const footer: CollectionConfig = {
         { name: 'legal', type: 'array', fields: [linkField({ name: 'link' })] },
         { name: 'copyrightLine', type: 'text', localized: true },
     ],
-    indexes: [{ fields: ['tenant'], unique: true }],
+    // No explicit `tenant` index: the multi-tenant plugin owns it for globals.
     hooks: buildRevalidateHooks({ collection: 'footer' }),
 };

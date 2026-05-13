@@ -26,6 +26,7 @@ export const header: CollectionConfig = {
         },
         linkField({ name: 'cta' }),
     ],
-    indexes: [{ fields: ['tenant'], unique: true }],
+    // No explicit `tenant` index: @payloadcms/plugin-multi-tenant adds a unique
+    // tenant index automatically when `isGlobal: true` is set on the collection.
     hooks: buildRevalidateHooks({ collection: 'header' }),
 };

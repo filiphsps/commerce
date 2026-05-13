@@ -37,6 +37,6 @@ export const businessData: CollectionConfig = {
             ],
         },
     ],
-    indexes: [{ fields: ['tenant'], unique: true }],
+    // No explicit `tenant` index: the multi-tenant plugin owns it for globals.
     hooks: buildRevalidateHooks({ collection: 'businessData' }),
 };
