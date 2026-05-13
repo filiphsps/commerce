@@ -520,8 +520,8 @@ importers:
         specifier: 7.21.8
         version: 7.21.8
       '@prismicio/next':
-        specifier: 1.7.1
-        version: 1.7.1(@prismicio/client@7.21.8)(next@16.2.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(react@19.2.6)
+        specifier: 1.7.2
+        version: 1.7.2(@prismicio/client@7.21.8)(next@16.2.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(react@19.2.6)
       '@prismicio/react':
         specifier: 2.9.1
         version: 2.9.1(@prismicio/client@7.21.8)(react@19.2.6)
@@ -3492,8 +3492,8 @@ packages:
     resolution: {integrity: sha512-AUbLw0g5WI7kcrPT2r2wQVERdGb+txTwIJmNzS+ZzFSmPQbfzEixF4u5Ieb++7Y/DO41RW3hDHzY/4EGa/ylzQ==}
     engines: {node: '>=12.7.0'}
 
-  '@prismicio/next@1.7.1':
-    resolution: {integrity: sha512-j1kmQrRN7HttsfxU02en4vk8vTH/UrRxKyKNGj1jslnjbltb+3GUlH0CzFZRvSC++mJGnHdKgYWavdbP8CAl7A==}
+  '@prismicio/next@1.7.2':
+    resolution: {integrity: sha512-dS9fRujiqK+uyhA5vCJgvxp4k7w3s6jm5Ln4fh1NSMS00yo7lHVL4GnhNmrxqATnIn/nHLbQmO24+yZVRWvxjw==}
     engines: {node: '>=14.15.0'}
     peerDependencies:
       '@prismicio/client': ^6 || ^7
@@ -14180,7 +14180,7 @@ snapshots:
       tslib: 2.8.1
       uuid: 9.0.1
 
-  '@prismicio/next@1.7.1(@prismicio/client@7.21.8)(next@16.2.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(react@19.2.6)':
+  '@prismicio/next@1.7.2(@prismicio/client@7.21.8)(next@16.2.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(react@19.2.6)':
     dependencies:
       '@formatjs/intl-localematcher': 0.5.10
       '@prismicio/client': 7.21.8
