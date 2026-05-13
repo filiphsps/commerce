@@ -14,10 +14,16 @@ const slugify = (s: string) =>
         .replace(/^-+|-+$/g, '');
 
 export const syncShopToTenant = async (payload: Payload, shop: ShopForSync): Promise<void> => {
+    // Runs from a Mongoose post-save hook outside any HTTP request, so there is
+    // no `req.user` for Payload access predicates to inspect. Without
+    // `overrideAccess: true`, the tenants collection's `create: adminOnly`
+    // predicate rejects the call and the sync silently leaves the Shop without
+    // its mirrored tenant.
     const existing = await payload.find({
         collection: 'tenants',
         where: { shopId: { equals: shop.id } },
         limit: 1,
+        overrideAccess: true,
     });
     const data = {
         shopId: shop.id,
@@ -27,10 +33,15 @@ export const syncShopToTenant = async (payload: Payload, shop: ShopForSync): Pro
         locales: shop.i18n.locales,
     };
     if (existing.docs[0]) {
-        await payload.update({ collection: 'tenants', id: existing.docs[0].id, data });
+        await payload.update({
+            collection: 'tenants',
+            id: existing.docs[0].id,
+            data,
+            overrideAccess: true,
+        });
         return;
     }
-    await payload.create({ collection: 'tenants', data });
+    await payload.create({ collection: 'tenants', data, overrideAccess: true });
 };
 
 /**
@@ -43,7 +54,13 @@ export type ShopModelLike = {
     post?: (event: 'save', fn: (doc: ShopForSync) => Promise<void>) => unknown;
 };
 
-/** Attaches the sync to the Shop Mongoose model. Called once at admin app boot. */
+// Track which Mongoose schemas already have the sync hook so repeated
+// `attachShopSync` calls (Next.js hot reload, retried boot, multiple
+// `getPayload` callers) don't stack duplicate listeners — each duplicate would
+// fire the sync once more per Shop save, multiplying tenant upserts and noise.
+const attachedSchemas = new WeakSet<object>();
+
+/** Attaches the sync to the Shop Mongoose model. Idempotent. */
 export const attachShopSync = (shopModel: ShopModelLike, payload: Payload): void => {
     const hook = async (doc: ShopForSync) => {
         try {
@@ -52,11 +69,16 @@ export const attachShopSync = (shopModel: ShopModelLike, payload: Payload): void
             console.error('[cms] Shop -> tenant sync failed:', err);
         }
     };
-    if (shopModel.schema && typeof shopModel.schema.post === 'function') {
-        shopModel.schema.post('save', hook);
+    const schema = shopModel.schema;
+    if (schema && typeof schema.post === 'function') {
+        if (attachedSchemas.has(schema as unknown as object)) return;
+        attachedSchemas.add(schema as unknown as object);
+        schema.post('save', hook);
         return;
     }
     if (typeof shopModel.post === 'function') {
+        if (attachedSchemas.has(shopModel as unknown as object)) return;
+        attachedSchemas.add(shopModel as unknown as object);
         shopModel.post('save', hook);
         return;
     }

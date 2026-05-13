@@ -48,10 +48,13 @@ const config = {
     experimental: {
         appNavFailHandling: true,
         caseSensitiveRoutes: true,
-        cssChunking: true,
+        // `cssChunking` + `optimizeCss` (critters) silently mangle Payload's
+        // `@layer payload-default, payload` cascade and inline rules in a way
+        // that strips the admin UI styles in production webpack builds. The
+        // local Turbopack dev server doesn't run either optimization so the
+        // breakage was invisible until deploy.
         esmExternals: true,
         proxyPrefetch: 'flexible',
-        optimizeCss: true,
         optimizePackageImports: ['@apollo/client', '@shopify/hydrogen-react'],
         optimizeServerReact: true,
         parallelServerBuildTraces: true,

@@ -165,4 +165,41 @@ describe('attachShopSync', () => {
         expect(create).not.toHaveBeenCalled();
         expect(update).not.toHaveBeenCalled();
     });
+
+    it('is idempotent across repeated calls on the same schema (no duplicate listeners)', () => {
+        const post = vi.fn();
+        const schema = { post };
+        attachShopSync({ schema } as never, {} as never);
+        attachShopSync({ schema } as never, {} as never);
+        attachShopSync({ schema } as never, {} as never);
+        expect(post).toHaveBeenCalledTimes(1);
+    });
+
+    it('is idempotent when handed the same raw schema twice', () => {
+        const post = vi.fn();
+        const raw = { post };
+        attachShopSync(raw as never, {} as never);
+        attachShopSync(raw as never, {} as never);
+        expect(post).toHaveBeenCalledTimes(1);
+    });
+
+    it('passes overrideAccess: true on the underlying payload calls (server-side sync)', async () => {
+        let captured: ((doc: unknown) => Promise<void>) | undefined;
+        const post = vi.fn((_event: string, fn: (doc: unknown) => Promise<void>) => {
+            captured = fn;
+        });
+        const find = vi.fn(async () => ({ docs: [] }));
+        const create = vi.fn(async () => ({ id: 't-x' }));
+        const update = vi.fn();
+        const payload = { find, create, update } as never;
+        attachShopSync({ schema: { post } } as never, payload);
+        await captured!({
+            id: 'shop-ovr',
+            name: 'Override',
+            domain: 'ovr.example',
+            i18n: { defaultLocale: 'en-US', locales: ['en-US'] },
+        });
+        expect(find).toHaveBeenCalledWith(expect.objectContaining({ overrideAccess: true }));
+        expect(create).toHaveBeenCalledWith(expect.objectContaining({ overrideAccess: true }));
+    });
 });
