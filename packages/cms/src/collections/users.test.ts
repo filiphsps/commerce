@@ -1,5 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { mongooseAdapter } from '@payloadcms/db-mongodb';
+import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import { buildConfig, getPayload } from 'payload';
 import type { Payload } from 'payload';
@@ -18,6 +19,14 @@ describe('users collection', () => {
             db: mongooseAdapter({ url: url.toString() }),
             editor: lexicalEditor({}),
             collections: [tenants, users],
+            plugins: [
+                multiTenantPlugin({
+                    tenantsSlug: 'tenants',
+                    userHasAccessToAllTenants: ({ user }: { user: { role?: string } | null }) =>
+                        user?.role === 'admin',
+                    collections: {},
+                }),
+            ],
         });
         payload = await getPayload({ config });
     });

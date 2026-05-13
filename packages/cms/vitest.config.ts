@@ -15,6 +15,7 @@ export default mergeConfig(
         test: {
             typecheck: { tsconfig: `${__dirname}/tsconfig.test.json` },
             setupFiles: [`${__dirname}/vitest.setup.ts`],
+            fileParallelism: false,
             coverage: {
                 exclude: [
                     '**/__snapshots__/**/*.*',

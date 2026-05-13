@@ -32,10 +32,8 @@ export const users: CollectionConfig = {
             ],
             access: { update: ({ req }) => req?.user?.role === 'admin' },
         },
-        {
-            name: 'tenants',
-            type: 'array',
-            fields: [{ name: 'tenant', type: 'relationship', relationTo: 'tenants', required: true }],
-        },
+        // NOTE: the `tenants` array (linking each user to one or more tenants) is
+        // injected by `@payloadcms/plugin-multi-tenant` at config-build time. Do not
+        // add it here — Payload will reject the config with a DuplicateFieldName error.
     ],
 };
