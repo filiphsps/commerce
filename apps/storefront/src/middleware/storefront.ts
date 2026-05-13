@@ -16,18 +16,6 @@ function hostnameFromRequest(req: NextRequest): string {
     // Remove port from hostname.
     hostname = hostname ? hostname.split(':')[0] : '';
 
-    // Deal with development server and Vercel's preview URLs.
-    if (
-        !hostname ||
-        hostname === 'localhost' ||
-        hostname.includes('.vercel.app') ||
-        hostname.includes('app.github.dev') ||
-        hostname.startsWith('192.168.') ||
-        hostname.startsWith('10.0.0.')
-    ) {
-        hostname = 'swedish-candy-store.com';
-    }
-
     return hostname;
 }
 
