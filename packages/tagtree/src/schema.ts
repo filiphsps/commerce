@@ -1,13 +1,13 @@
 import type { EntityDecl, ParamMap } from './types';
 
 export interface TenantConfig<T> {
-    type?: T;
+    type: T;
     key: (t: T) => string;
     extraTags?: (t: T) => string[];
 }
 
 export interface QualifierConfig<Q> {
-    type?: Q;
+    type: Q;
     key: (q: Q) => string;
 }
 
