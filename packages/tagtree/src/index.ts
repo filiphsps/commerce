@@ -15,3 +15,5 @@ export type {
     ParamValues,
 } from './types';
 export { num, str } from './types';
+export type { FanoutInput } from './fanout';
+export { computeFanout } from './fanout';
