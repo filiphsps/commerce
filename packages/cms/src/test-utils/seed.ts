@@ -8,6 +8,16 @@ export type SeedTenantInput = {
     locales?: string[];
 };
 
-export async function seedTenant(_input: SeedTenantInput): Promise<{ id: string }> {
-    throw new Error('seedTenant: tenants collection not yet defined — implemented in Task 5');
+export async function seedTenant({
+    payload,
+    name,
+    slug,
+    defaultLocale = 'en-US',
+    locales = ['en-US'],
+}: SeedTenantInput): Promise<{ id: string }> {
+    const tenant = await payload.create({
+        collection: 'tenants',
+        data: { name, slug, defaultLocale, locales },
+    });
+    return { id: String(tenant.id) };
 }
