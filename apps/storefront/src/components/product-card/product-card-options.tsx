@@ -52,7 +52,7 @@ const ProductCardOptions = ({
                     variant.selectedOptions.length === 1 &&
                     isSizeOption(variant.selectedOptions[0]!.name) &&
                     variant.weight &&
-                    !!variant.weightUnit
+                    variant.weightUnit
                 ) {
                     title = formatWeight(localizeWeight(locale, { weight: variant.weight, unit: variant.weightUnit }));
                 }

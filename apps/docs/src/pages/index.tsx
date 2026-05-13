@@ -49,7 +49,7 @@ function CardLink({ card }: { card: WorkspaceCard }) {
             className="flex flex-col gap-1 rounded-lg border border-emphasis-200 px-5 py-4 text-content no-underline transition hover:-translate-y-0.5 hover:border-primary hover:no-underline"
         >
             <strong>{card.name}</strong>
-            <span className="text-sm text-emphasis-700">{card.description}</span>
+            <span className="text-emphasis-700 text-sm">{card.description}</span>
         </Link>
     );
 }

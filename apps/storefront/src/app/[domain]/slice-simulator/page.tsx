@@ -1,10 +1,10 @@
 import 'server-only';
 
-import { Suspense } from 'react';
 import { Shop } from '@nordcom/commerce-db';
 import { SliceZone } from '@prismicio/react';
 import type { SliceSimulatorParams } from '@slicemachine/adapter-next/simulator';
 import { getSlices, SliceSimulator } from '@slicemachine/adapter-next/simulator';
+import { Suspense } from 'react';
 import { components } from '@/slices';
 import { getDictionary } from '@/utils/dictionary';
 import { Locale } from '@/utils/locale';

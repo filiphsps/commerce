@@ -26,8 +26,8 @@ vi.mock('@/api/shopify/page', () => ({
     ShopifyPagesApi: mockShopifyPagesApi,
 }));
 
-import { PageApi, PagesApi } from './page';
 import { Locale } from '@/utils/locale';
+import { PageApi, PagesApi } from './page';
 
 const locale = Locale.from('en-US');
 

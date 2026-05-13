@@ -1,8 +1,7 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type * as Preset from '@docusaurus/preset-classic';
-import type { PluginConfig } from '@docusaurus/types';
-import type { Config } from '@docusaurus/types';
+import type { Config, PluginConfig } from '@docusaurus/types';
 import { globSync } from 'glob';
 import { themes as prismThemes } from 'prism-react-renderer';
 
@@ -102,8 +101,7 @@ function docsPlugin(w: Workspace): PluginConfig {
             // concatenation, which would emit `../../packages/db/docs/overview.md`
             // segments because our `path` is relative to apps/docs. Resolving from
             // the workspace root keeps the URL clean.
-            editUrl: ({ docPath }: { docPath: string }) =>
-                `${GITHUB}/edit/master/${w.repoPath}/docs/${docPath}`,
+            editUrl: ({ docPath }: { docPath: string }) => `${GITHUB}/edit/master/${w.repoPath}/docs/${docPath}`,
             ...(w.extra?.exclude ? { exclude: w.extra.exclude } : {}),
         },
     ];

@@ -48,7 +48,6 @@ async function createMissingFallbackShells(distDir) {
     }
 
     if (createdCount > 0) {
-        console.log(`[storefront-adapter] Created ${createdCount} missing fallback shell file(s).`);
     }
 }
 

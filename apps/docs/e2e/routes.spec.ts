@@ -1,4 +1,4 @@
-import { type Page, expect, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 
 /**
  * Every URL the site is expected to serve. Generated from the same workspace
@@ -71,12 +71,7 @@ const API_REFERENCE_ROUTES: Route[] = [
     },
 ];
 
-const ALL_ROUTES = [
-    ...ROOT_ROUTES,
-    ...APP_OVERVIEW_ROUTES,
-    ...PACKAGE_OVERVIEW_ROUTES,
-    ...API_REFERENCE_ROUTES,
-];
+const ALL_ROUTES = [...ROOT_ROUTES, ...APP_OVERVIEW_ROUTES, ...PACKAGE_OVERVIEW_ROUTES, ...API_REFERENCE_ROUTES];
 
 async function loadAndCollectErrors(page: Page, path: string): Promise<string[]> {
     const errors: string[] = [];
@@ -125,13 +120,7 @@ test.describe('Navigation', () => {
         await page.goto('/commerce/');
         const dropdown = page.getByRole('button', { name: /Packages/i }).first();
         await dropdown.click();
-        for (const name of [
-            'db',
-            'errors',
-            'shopify-graphql',
-            'shopify-html',
-            'marketing-common',
-        ]) {
+        for (const name of ['db', 'errors', 'shopify-graphql', 'shopify-html', 'marketing-common']) {
             await expect(page.getByRole('link', { name, exact: true }).first()).toBeVisible();
         }
     });
@@ -140,19 +129,13 @@ test.describe('Navigation', () => {
         await page.goto('/commerce/');
         const dropdown = page.getByRole('button', { name: /^API$/i }).first();
         await dropdown.click();
-        for (const name of [
-            'db',
-            'errors',
-            'shopify-graphql',
-            'shopify-html',
-            'marketing-common',
-        ]) {
+        for (const name of ['db', 'errors', 'shopify-graphql', 'shopify-html', 'marketing-common']) {
             const link = page.getByRole('link', { name, exact: true });
             await expect(link.first()).toBeVisible();
             // Every API dropdown entry must resolve to the per-workspace API
             // index, not the overview — that was the regression.
             const apiLinks = await link.evaluateAll((els) =>
-                els.map((a) => (a as HTMLAnchorElement).getAttribute('href') ?? '')
+                els.map((a) => (a as HTMLAnchorElement).getAttribute('href') ?? ''),
             );
             expect(apiLinks.some((h) => h.endsWith('/api/'))).toBe(true);
         }
