@@ -93,7 +93,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                 !ready && 'cursor-not-allowed opacity-50 *:pointer-events-none',
             )}
         >
-            <Card className="aspect-square h-32 w-auto overflow-hidden bg-white p-2 shadow">{image}</Card>
+            <Card className="h-full min-h-32 w-auto overflow-hidden bg-white p-2 shadow">{image}</Card>
 
             <div className="flex w-full flex-col items-start gap-3 md:flex-row">
                 <header className="flex h-full w-full flex-col items-start justify-between gap-1 md:py-2">
@@ -153,7 +153,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
 
                     <div className="h-12 w-full max-w-none md:w-full md:max-w-56">
                         <QuantitySelector
-                            className="h-full border-gray-200"
+                            className="h-full"
                             buttonClassName={cn(quantity > 999 && 'hidden')}
                             disabled={!ready}
                             i18n={i18n}
