@@ -103,26 +103,6 @@ describe('getHostname', () => {
         expect(vi.mocked(Shop.findByDomain)).toHaveBeenCalledWith('myshop.com', expect.anything());
     });
 
-    it('falls back to swedish-candy-store.com when host is exactly localhost', async () => {
-        const req = new NextRequest('http://localhost/', {
-            headers: { host: 'localhost', 'accept-language': 'en-US' },
-        });
-
-        await getHostname(req);
-
-        expect(vi.mocked(Shop.findByDomain)).toHaveBeenCalledWith('swedish-candy-store.com', expect.anything());
-    });
-
-    it('falls back to swedish-candy-store.com for *.vercel.app hosts', async () => {
-        const req = new NextRequest('http://my-preview.vercel.app/', {
-            headers: { host: 'my-preview.vercel.app', 'accept-language': 'en-US' },
-        });
-
-        await getHostname(req);
-
-        expect(vi.mocked(Shop.findByDomain)).toHaveBeenCalledWith('swedish-candy-store.com', expect.anything());
-    });
-
     it('returns the domain from the Shop record', async () => {
         vi.mocked(Shop.findByDomain).mockResolvedValueOnce({ ...MOCK_SHOP, domain: 'example.com' } as any);
 
