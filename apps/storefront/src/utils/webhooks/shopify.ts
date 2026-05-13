@@ -21,14 +21,22 @@ export function parseShopifyWebhook({
 }): string[] {
     const broad = `shopify.${shop.id}`;
 
+    // `*.products` / `*.collections` (plural) are the tags storefront list
+    // pages — `/products`, `/collections/<x>` listings, recommendation rails,
+    // etc. — cache against. Without re-emitting them on the per-entity
+    // webhook the single-entity pages refresh but the list pages stay stale
+    // until the cache lifetime hits, which on long ISR windows means
+    // "indefinitely from the user's perspective."
     if (topic.startsWith('products/')) {
-        if (body.handle) return [`shopify.${shop.id}.product.${body.handle}`, broad];
-        return [broad];
+        const list = `shopify.${shop.id}.products`;
+        if (body.handle) return [`shopify.${shop.id}.product.${body.handle}`, list, broad];
+        return [list, broad];
     }
 
     if (topic.startsWith('collections/')) {
-        if (body.handle) return [`shopify.${shop.id}.collection.${body.handle}`, broad];
-        return [broad];
+        const list = `shopify.${shop.id}.collections`;
+        if (body.handle) return [`shopify.${shop.id}.collection.${body.handle}`, list, broad];
+        return [list, broad];
     }
 
     if (topic.startsWith('pages/')) {
