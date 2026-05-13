@@ -106,24 +106,26 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
         projection?: ProjectionType<DocType> | null,
         options?: QueryOptions<DocType> | null,
     ): Promise<DocType | null> {
-        const res = this.model.findById(id, projection, options);
-        if (!res) {
-            return null;
-        }
-
-        return res;
+        // Mongoose Query objects are thenable, so the old `return res;` form
+        // worked at runtime — but the return type from `Model.findById` is
+        // `Query<...>`, not `Promise<...>`. Without an explicit `.exec()`
+        // call, TypeScript silently widens the return type to `any` for
+        // callers and we lose the `DocType | null` contract that the
+        // signature promises.
+        const res = await this.model.findById(id, projection, options).exec();
+        return res ?? null;
     }
 
     public async findOneAndUpdate(
         filter: QueryFilter<DocType>,
         update?: UpdateQuery<DocType>,
-        options: QueryOptions<DocType> = { includeResultMetadata: true, lean: true },
+        options: QueryOptions<DocType> = { lean: true },
     ): Promise<DocType | null> {
-        const res = this.model.findOneAndUpdate(filter, update, options);
-        if (!res) {
-            return null;
-        }
-
-        return res;
+        // Same shape problem as `findById`. Also drop the default
+        // `includeResultMetadata: true` — it changes the return type from the
+        // promised `DocType | null` to a `ModifyResult<DocType>` wrapper,
+        // which callers were never wired up to unwrap.
+        const res = await this.model.findOneAndUpdate(filter, update, options).exec();
+        return (res as DocType | null) ?? null;
     }
 }
