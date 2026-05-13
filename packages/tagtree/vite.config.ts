@@ -7,7 +7,7 @@ import { defineConfig, mergeConfig } from 'vite';
 import base from '../vite.config';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const name = '@nordcom/commerce-errors';
+const name = 'tagtree';
 
 export default mergeConfig(
     base,
