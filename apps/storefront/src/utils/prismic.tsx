@@ -47,7 +47,7 @@ export const createClient = ({ shop, locale, ...config }: CreateClientOptions): 
             }
 
             console.warn('Prismic request failed', args, res);
-            throw new GenericError‎(`Prismic request for ${args[0]} failed with ${res.status} ${res.statusText}`);
+            throw new GenericError(`Prismic request for ${args[0]} failed with ${res.status} ${res.statusText}`);
         }
     });
 
