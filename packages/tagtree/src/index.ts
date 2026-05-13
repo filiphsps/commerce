@@ -19,3 +19,5 @@ export type { FanoutInput } from './fanout';
 export { computeFanout } from './fanout';
 export { buildKeyFactory } from './keys';
 export type { CacheKey, KeyFactory } from './keys';
+export { consoleLogger } from './adapter';
+export type { CacheAdapter, AdapterCtx, WriteOpts, ILogger } from './adapter';
