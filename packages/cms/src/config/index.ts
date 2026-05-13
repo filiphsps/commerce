@@ -28,6 +28,17 @@ export type BuildPayloadConfigOptions = {
     authStrategies?: AuthStrategy[];
     /** Disable password-based login in favour of the provided strategies. */
     disablePasswordLogin?: boolean;
+    /**
+     * Absolute path Payload uses as the base for resolving component paths in
+     * the importMap. Without this, the CLI / runtime fall back to the
+     * package's own folder (inside node_modules in production) and the
+     * "import map not found" troubleshooting note in the Payload docs
+     * applies: components are looked up at the wrong base and never resolve.
+     * Pass the consuming Next.js app's `src/` directory.
+     */
+    importMapBaseDir?: string;
+    /** Absolute path to the generated importMap file (matches what `next/views` imports). */
+    importMapFile?: string;
     /** Optional live-preview URL builder for the admin iframe. */
     livePreview?: {
         url: (args: BuildLivePreviewUrlArgs) => string;
@@ -47,6 +58,8 @@ export const buildPayloadConfig = async ({
     defaultLocale = 'en-US',
     authStrategies,
     disablePasswordLogin,
+    importMapBaseDir,
+    importMapFile,
     livePreview,
 }: BuildPayloadConfigOptions): Promise<SanitizedConfig> => {
     const plugins = [buildMultiTenantPlugin()];
@@ -64,6 +77,21 @@ export const buildPayloadConfig = async ({
               admin: {
                   user: 'users',
                   meta: { titleSuffix: ' — Nordcom CMS' },
+                  // `importMap.baseDir` tells Payload where component paths are
+                  // resolved relative to. Without it the runtime falls back to
+                  // the @nordcom/commerce-cms package's own folder inside
+                  // node_modules, which is wrong for every component reference
+                  // the host app makes — manifesting in prod as blank pages on
+                  // Create / Edit views where Payload silently fails to load
+                  // the field/cell components from the importMap.
+                  ...(importMapBaseDir || importMapFile
+                      ? {
+                            importMap: {
+                                ...(importMapBaseDir ? { baseDir: importMapBaseDir } : {}),
+                                ...(importMapFile ? { importMapFile } : {}),
+                            },
+                        }
+                      : {}),
                   ...(livePreview
                       ? {
                             livePreview: {

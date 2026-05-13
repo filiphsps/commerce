@@ -1,10 +1,22 @@
 import 'server-only';
 
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { buildNextAuthStrategy, computeRolesFromShopMembership } from '@nordcom/commerce-cms/auth';
 import { buildPayloadConfig } from '@nordcom/commerce-cms/config';
 import { attachShopSync } from '@nordcom/commerce-cms/shop-sync';
 import { Shop, User as UserService } from '@nordcom/commerce-db';
 import { getPayload } from 'payload';
+
+// Anchor Payload's import map / dependency resolution at the admin app's `src`
+// directory. Without this the runtime resolves component paths against the
+// @nordcom/commerce-cms package's own folder under node_modules, which makes
+// every importMap lookup miss in prod and silently leaves Create / Edit views
+// blank because Payload can't load the field/cell components.
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const IMPORT_MAP_BASE_DIR = path.resolve(__dirname);
+const IMPORT_MAP_FILE = path.resolve(__dirname, 'app', '(payload)', 'cms', 'importMap.js');
 
 const PAYLOAD_SECRET = process.env.PAYLOAD_SECRET;
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -160,6 +172,8 @@ const configPromise = buildPayloadConfig({
     enableStorage: true,
     authStrategies: [strategy],
     disablePasswordLogin: true,
+    importMapBaseDir: IMPORT_MAP_BASE_DIR,
+    importMapFile: IMPORT_MAP_FILE,
     livePreview: { url: buildLivePreviewUrl },
 });
 
