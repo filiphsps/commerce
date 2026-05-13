@@ -74,7 +74,7 @@ export const LocaleApi = async ({ api }: { api: AbstractApi }) => {
     }
 
     try {
-        const { data } = await api.query<{ localization: Localization }>(gql`
+        const { data, errors } = await api.query<{ localization: Localization }>(gql`
             query localization {
                 localization {
                     country {
@@ -98,6 +98,15 @@ export const LocaleApi = async ({ api }: { api: AbstractApi }) => {
                 }
             }
         `);
+
+        // Same partial-error trap as the other API helpers — without
+        // surfacing `errors` a Shopify failure collapses to `null
+        // localization`, which downstream treats as "shop without locale
+        // info" and then renders the wrong currency/language without
+        // warning.
+        if (errors && errors.length > 0) {
+            throw new ProviderFetchError(errors as never);
+        }
 
         return data?.localization;
     } catch (error: unknown) {

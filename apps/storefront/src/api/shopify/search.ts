@@ -22,7 +22,7 @@ export const SearchApi = async ({
     }
 
     const search = async ({ type }: { type: 'PRODUCT' }) => {
-        const { data } = await client.query<{ search: SearchResultItemConnection }>(
+        const { data, errors } = await client.query<{ search: SearchResultItemConnection }>(
             gql`
                 query searchProducts(
                         $query: String!,
@@ -58,6 +58,14 @@ export const SearchApi = async ({
                 first: limit || 75,
             },
         );
+
+        // Without surfacing `errors` a Shopify failure (rate limit, invalid
+        // query syntax, transient 5xx) collapses to "no results" — visually
+        // identical to a legitimate empty result, so users get a broken
+        // search experience with nothing in the logs to explain it.
+        if (errors && errors.length > 0) {
+            console.error('[shopify] SearchApi errors:', errors);
+        }
 
         return {
             result: data?.search.edges.map((item) => item.node as unknown as Product) || [],
