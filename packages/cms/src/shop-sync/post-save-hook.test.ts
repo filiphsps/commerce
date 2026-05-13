@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { syncShopToTenant } from './post-save-hook';
+import { attachShopSync, syncShopToTenant } from './post-save-hook';
 
 describe('syncShopToTenant', () => {
     it('upserts a tenant matching the shop _id', async () => {
@@ -42,5 +42,110 @@ describe('syncShopToTenant', () => {
             data: expect.objectContaining({ name: 'Renamed' }),
         });
         expect(create).not.toHaveBeenCalled();
+    });
+
+    it('reflects the domain rename in the tenant slug', async () => {
+        const find = vi.fn(async () => ({ docs: [{ id: 'existing' }] }));
+        const update = vi.fn(async () => ({ id: 'existing' }));
+        const payload = { find, create: vi.fn(), update } as never;
+        await syncShopToTenant(payload, {
+            id: 'shop_abc',
+            name: 'Renamed',
+            domain: 'New-Brand_Hub.example.COM',
+            i18n: { defaultLocale: 'en-US', locales: ['en-US'] },
+        });
+        expect(update).toHaveBeenCalledWith({
+            collection: 'tenants',
+            id: 'existing',
+            data: expect.objectContaining({ slug: 'new-brand-hub-example-com' }),
+        });
+    });
+
+    it('is idempotent: a second run with the same shop only updates, never creates', async () => {
+        const find = vi
+            .fn()
+            .mockImplementationOnce(async () => ({ docs: [] }))
+            .mockImplementationOnce(async () => ({ docs: [{ id: 't-1' }] }));
+        const create = vi.fn(async () => ({ id: 't-1' }));
+        const update = vi.fn(async () => ({ id: 't-1' }));
+        const payload = { find, create, update } as never;
+        const shop = {
+            id: 'shop_abc',
+            name: 'Swedish Candy Store',
+            domain: 'swedish-candy-store.com',
+            i18n: { defaultLocale: 'en-US', locales: ['en-US'] },
+        };
+        await syncShopToTenant(payload, shop);
+        await syncShopToTenant(payload, shop);
+        expect(create).toHaveBeenCalledTimes(1);
+        expect(update).toHaveBeenCalledTimes(1);
+    });
+
+    it('passes the full locales array through', async () => {
+        const create = vi.fn(async () => ({ id: 't-multi' }));
+        const payload = {
+            find: async () => ({ docs: [] }),
+            create,
+            update: vi.fn(),
+        } as never;
+        await syncShopToTenant(payload, {
+            id: 'shop-multi',
+            name: 'Multi-locale Shop',
+            domain: 'multi.example',
+            i18n: { defaultLocale: 'fr', locales: ['fr', 'es', 'de'] },
+        });
+        expect(create).toHaveBeenCalledWith({
+            collection: 'tenants',
+            data: expect.objectContaining({ defaultLocale: 'fr', locales: ['fr', 'es', 'de'] }),
+        });
+    });
+});
+
+describe('attachShopSync', () => {
+    it('registers a post-save handler on the shop model', () => {
+        const post = vi.fn();
+        const model = { post } as never;
+        const payload = {} as never;
+        attachShopSync(model, payload);
+        expect(post).toHaveBeenCalledWith('save', expect.any(Function));
+    });
+
+    it("invokes syncShopToTenant for the saved doc and doesn't throw on errors", async () => {
+        let captured: ((doc: unknown) => Promise<void>) | undefined;
+        const post = vi.fn((_event: string, fn: (doc: unknown) => Promise<void>) => {
+            captured = fn;
+        });
+        const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+        const payload = {
+            find: vi.fn(async () => {
+                throw new Error('boom');
+            }),
+            create: vi.fn(),
+            update: vi.fn(),
+        } as never;
+        attachShopSync({ post } as never, payload);
+        expect(captured).toBeDefined();
+        const handler = captured!;
+        await expect(
+            handler({
+                id: 'shop-err',
+                name: 'X',
+                domain: 'x.com',
+                i18n: { defaultLocale: 'en-US', locales: ['en-US'] },
+            }),
+        ).resolves.toBeUndefined();
+        expect(errSpy).toHaveBeenCalled();
+        errSpy.mockRestore();
+    });
+
+    it('does not invoke any payload op until the post-save event actually fires', () => {
+        const find = vi.fn();
+        const create = vi.fn();
+        const update = vi.fn();
+        const post = vi.fn();
+        attachShopSync({ post } as never, { find, create, update } as never);
+        expect(find).not.toHaveBeenCalled();
+        expect(create).not.toHaveBeenCalled();
+        expect(update).not.toHaveBeenCalled();
     });
 });

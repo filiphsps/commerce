@@ -94,4 +94,151 @@ describe('buildNextAuthStrategy', () => {
         const result = await strategy.authenticate(ctx('next-auth.session-token=garbage'));
         expect(result.user).toBeNull();
     });
+
+    it('returns { user: null } when the named cookie is missing among others', async () => {
+        const strategy = buildNextAuthStrategy({
+            secret: 'test-nextauth-secret',
+            cookieName: 'next-auth.session-token',
+            findOrCreateUser: vi.fn(),
+            recomputeRoles: vi.fn(),
+        });
+        const result = await strategy.authenticate(ctx('foo=bar; baz=qux'));
+        expect(result.user).toBeNull();
+    });
+
+    it('returns { user: null } when JWT is signed by a different secret', async () => {
+        const wrongKey = new TextEncoder().encode('a-different-secret-entirely');
+        const forged = await new SignJWT({ email: 'attacker@example.com' })
+            .setProtectedHeader({ alg: 'HS256' })
+            .setIssuedAt()
+            .setExpirationTime('5m')
+            .sign(wrongKey);
+        const findOrCreate = vi.fn();
+        const strategy = buildNextAuthStrategy({
+            secret: 'test-nextauth-secret',
+            cookieName: 'next-auth.session-token',
+            findOrCreateUser: findOrCreate as never,
+            recomputeRoles: vi.fn() as never,
+        });
+        const result = await strategy.authenticate(ctx(`next-auth.session-token=${forged}`));
+        expect(result.user).toBeNull();
+        expect(findOrCreate).not.toHaveBeenCalled();
+    });
+
+    it('returns { user: null } when JWT is expired', async () => {
+        const expired = await new SignJWT({ email: 'someone@example.com' })
+            .setProtectedHeader({ alg: 'HS256' })
+            .setIssuedAt(0)
+            .setExpirationTime(1)
+            .sign(secret);
+        const findOrCreate = vi.fn();
+        const strategy = buildNextAuthStrategy({
+            secret: 'test-nextauth-secret',
+            cookieName: 'next-auth.session-token',
+            findOrCreateUser: findOrCreate as never,
+            recomputeRoles: vi.fn() as never,
+        });
+        const result = await strategy.authenticate(ctx(`next-auth.session-token=${expired}`));
+        expect(result.user).toBeNull();
+        expect(findOrCreate).not.toHaveBeenCalled();
+    });
+
+    it('returns { user: null } when JWT has no email claim', async () => {
+        const findOrCreate = vi.fn();
+        const noEmail = await signToken({ sub: 'user-1' });
+        const strategy = buildNextAuthStrategy({
+            secret: 'test-nextauth-secret',
+            cookieName: 'next-auth.session-token',
+            findOrCreateUser: findOrCreate as never,
+            recomputeRoles: vi.fn() as never,
+        });
+        const result = await strategy.authenticate(ctx(`next-auth.session-token=${noEmail}`));
+        expect(result.user).toBeNull();
+        expect(findOrCreate).not.toHaveBeenCalled();
+    });
+
+    it('returns { user: null } when JWT email claim is non-string', async () => {
+        const findOrCreate = vi.fn();
+        const t = await signToken({ email: 123 as never });
+        const strategy = buildNextAuthStrategy({
+            secret: 'test-nextauth-secret',
+            cookieName: 'next-auth.session-token',
+            findOrCreateUser: findOrCreate as never,
+            recomputeRoles: vi.fn() as never,
+        });
+        const result = await strategy.authenticate(ctx(`next-auth.session-token=${t}`));
+        expect(result.user).toBeNull();
+    });
+
+    it('escalates to admin when recomputeRoles flips the role', async () => {
+        const findOrCreate = vi.fn(async (email: string) => ({
+            id: 'u-op',
+            email,
+            role: 'editor' as const,
+            tenants: [],
+        }));
+        const recomputeRoles = vi.fn(async () => ({ role: 'admin' as const, tenants: [] }));
+        const strategy = buildNextAuthStrategy({
+            secret: 'test-nextauth-secret',
+            cookieName: 'next-auth.session-token',
+            findOrCreateUser: findOrCreate,
+            recomputeRoles,
+        });
+        const token = await signToken({ email: 'op@nordcom.io' });
+        const result = await strategy.authenticate(ctx(`next-auth.session-token=${token}`));
+        expect((result.user as { role?: string } | null)?.role).toBe('admin');
+    });
+
+    it('attaches collection: "users" to the resolved user (Payload contract)', async () => {
+        const findOrCreate = vi.fn(async (email: string) => ({
+            id: 'u1',
+            email,
+            role: 'editor' as const,
+            tenants: [],
+        }));
+        const strategy = buildNextAuthStrategy({
+            secret: 'test-nextauth-secret',
+            cookieName: 'next-auth.session-token',
+            findOrCreateUser: findOrCreate,
+            recomputeRoles: vi.fn(async () => ({ role: 'editor' as const, tenants: [] })),
+        });
+        const token = await signToken({ email: 'a@b.com' });
+        const result = await strategy.authenticate(ctx(`next-auth.session-token=${token}`));
+        expect((result.user as { collection?: string } | null)?.collection).toBe('users');
+    });
+
+    it('returns { user: null } when findOrCreateUser throws', async () => {
+        const failing = vi.fn(async () => {
+            throw new Error('db down');
+        });
+        const token = await signToken({ email: 'x@y.com' });
+        const strategy = buildNextAuthStrategy({
+            secret: 'test-nextauth-secret',
+            cookieName: 'next-auth.session-token',
+            findOrCreateUser: failing as never,
+            recomputeRoles: vi.fn() as never,
+        });
+        const result = await strategy.authenticate(ctx(`next-auth.session-token=${token}`));
+        expect(result.user).toBeNull();
+    });
+
+    it('decodes URL-encoded cookie values', async () => {
+        const findOrCreate = vi.fn(async (email: string) => ({
+            id: 'u1',
+            email,
+            role: 'editor' as const,
+            tenants: [],
+        }));
+        const strategy = buildNextAuthStrategy({
+            secret: 'test-nextauth-secret',
+            cookieName: 'next-auth.session-token',
+            findOrCreateUser: findOrCreate,
+            recomputeRoles: vi.fn(async () => ({ role: 'editor' as const, tenants: [] })),
+        });
+        const token = await signToken({ email: 'a@b.com' });
+        const result = await strategy.authenticate(
+            ctx(`next-auth.session-token=${encodeURIComponent(token)}`),
+        );
+        expect(result.user).not.toBeNull();
+    });
 });
