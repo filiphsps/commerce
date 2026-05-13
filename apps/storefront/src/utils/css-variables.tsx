@@ -33,7 +33,12 @@ export const getBrandingColors = async ({ domain, shop }: { domain: string; shop
         if (accents.length <= 0) {
             try {
                 if ((commerceProvider.type as string) === 'shopify') {
-                    const api = await ShopifyApiClient({ shop, locale: Locale.default });
+                    // `Locale.default` (en-US) is fine for English-first shops
+                    // but silently mis-queries Swedish/German/etc. storefronts
+                    // — the Brand query goes out `@inContext` of the wrong
+                    // locale and Shopify either returns generic copy or 404s.
+                    // Use the shop's configured default locale instead.
+                    const api = await ShopifyApiClient({ shop, locale: Locale.fallbackForShop(shop) as Locale });
                     const brand = await BrandApi({ api });
 
                     const primary = brand.colors.primary[0];
