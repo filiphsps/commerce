@@ -21,6 +21,11 @@ export function HeaderNavigation({
     className,
     ...props
 }: HeaderNavigationProps) {
+    // NO-OP if no navigation has been defined.
+    if (slices.length <= 0) {
+        return null;
+    }
+
     return (
         <nav
             className={cn(
