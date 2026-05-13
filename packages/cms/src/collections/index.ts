@@ -9,6 +9,7 @@ import { users } from './users';
 
 export { articles } from './articles';
 export { businessData, footer, header } from './_globals';
+export { buildUsers, type BuildUsersOptions } from './build-users';
 export { collectionMetadata } from './collection-metadata';
 export { media } from './media';
 export { pages } from './pages';
