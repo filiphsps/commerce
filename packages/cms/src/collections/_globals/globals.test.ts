@@ -1,6 +1,6 @@
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { getPayload } from 'payload';
 import type { Payload } from 'payload';
+import { getPayload } from 'payload';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { buildTestConfig } from '../../test-utils/build-test-config';
 
 describe('globals (header/footer/businessData)', () => {

@@ -82,8 +82,7 @@ export const buildPayloadConfig = async ({
                                         slug?: string;
                                         shopifyHandle?: string;
                                     };
-                                    const tenantId =
-                                        typeof d.tenant === 'string' ? d.tenant : (d.tenant?.id ?? '');
+                                    const tenantId = typeof d.tenant === 'string' ? d.tenant : (d.tenant?.id ?? '');
                                     return livePreview.url({
                                         tenantId: String(tenantId),
                                         collection: args.collectionConfig?.slug ?? '',

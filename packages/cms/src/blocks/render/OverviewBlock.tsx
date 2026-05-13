@@ -1,12 +1,6 @@
 import type { BlockRenderContext, OverviewBlockNode } from './types';
 
-export async function OverviewBlock({
-    block,
-    context,
-}: {
-    block: OverviewBlockNode;
-    context: BlockRenderContext;
-}) {
+export async function OverviewBlock({ block, context }: { block: OverviewBlockNode; context: BlockRenderContext }) {
     const products = await context.loaders.loadOverview({
         shop: context.shop,
         locale: context.locale,

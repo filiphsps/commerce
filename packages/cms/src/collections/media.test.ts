@@ -1,10 +1,10 @@
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { mongooseAdapter } from '@payloadcms/db-mongodb';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
-import { buildConfig, getPayload } from 'payload';
 import type { Payload } from 'payload';
-import { tenants } from './tenants';
+import { buildConfig, getPayload } from 'payload';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { media } from './media';
+import { tenants } from './tenants';
 
 describe('media collection', () => {
     let payload: Payload;

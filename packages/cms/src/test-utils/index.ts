@@ -1,3 +1,3 @@
 export { bootTestPayload, type TestPayload } from './boot-test-payload';
-export { buildTestConfig, type BuildTestConfigOptions } from './build-test-config';
-export { seedTenant, type SeedTenantInput } from './seed';
+export { type BuildTestConfigOptions, buildTestConfig } from './build-test-config';
+export { type SeedTenantInput, seedTenant } from './seed';

@@ -1,9 +1,9 @@
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { mongooseAdapter } from '@payloadcms/db-mongodb';
 import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
-import { buildConfig, getPayload } from 'payload';
 import type { Payload } from 'payload';
+import { buildConfig, getPayload } from 'payload';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { tenants } from './tenants';
 import { users } from './users';
 
@@ -22,8 +22,7 @@ describe('users collection', () => {
             plugins: [
                 multiTenantPlugin({
                     tenantsSlug: 'tenants',
-                    userHasAccessToAllTenants: (user: unknown) =>
-                        (user as { role?: string } | null)?.role === 'admin',
+                    userHasAccessToAllTenants: (user: unknown) => (user as { role?: string } | null)?.role === 'admin',
                     collections: {},
                 }),
             ],

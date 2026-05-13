@@ -1,2 +1,2 @@
-export { buildStoragePlugin, storagePluginFromEnv, type StoragePluginOptions } from './storage';
 export { buildMultiTenantPlugin } from './multi-tenant';
+export { buildStoragePlugin, type StoragePluginOptions, storagePluginFromEnv } from './storage';

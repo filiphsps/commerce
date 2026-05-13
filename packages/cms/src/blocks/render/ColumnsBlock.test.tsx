@@ -16,8 +16,14 @@ describe('ColumnsBlock (via BlockRenderer)', () => {
             {
                 blockType: 'columns',
                 columns: [
-                    { width: '1/2', content: [{ blockType: 'alert', severity: 'info', title: 'Left', dismissible: false }] },
-                    { width: '1/2', content: [{ blockType: 'alert', severity: 'info', title: 'Right', dismissible: false }] },
+                    {
+                        width: '1/2',
+                        content: [{ blockType: 'alert', severity: 'info', title: 'Left', dismissible: false }],
+                    },
+                    {
+                        width: '1/2',
+                        content: [{ blockType: 'alert', severity: 'info', title: 'Right', dismissible: false }],
+                    },
                 ],
             },
         ];

@@ -1,12 +1,6 @@
 import type { BlockRenderContext, CollectionBlockNode } from './types';
 
-export async function CollectionBlock({
-    block,
-    context,
-}: {
-    block: CollectionBlockNode;
-    context: BlockRenderContext;
-}) {
+export async function CollectionBlock({ block, context }: { block: CollectionBlockNode; context: BlockRenderContext }) {
     const collection = await context.loaders.loadCollection({
         shop: context.shop,
         locale: context.locale,

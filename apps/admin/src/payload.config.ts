@@ -1,12 +1,9 @@
 import 'server-only';
 
-import { Shop, User as UserService } from '@nordcom/commerce-db';
-import {
-    buildNextAuthStrategy,
-    computeRolesFromShopMembership,
-} from '@nordcom/commerce-cms/auth';
+import { buildNextAuthStrategy, computeRolesFromShopMembership } from '@nordcom/commerce-cms/auth';
 import { buildPayloadConfig } from '@nordcom/commerce-cms/config';
 import { attachShopSync } from '@nordcom/commerce-cms/shop-sync';
+import { Shop, User as UserService } from '@nordcom/commerce-db';
 import { getPayload } from 'payload';
 
 const PAYLOAD_SECRET = process.env.PAYLOAD_SECRET;
@@ -65,10 +62,7 @@ const findShopsForUser = async (email: string): Promise<Array<{ shopId: string }
     const userId = await lookupUserId(email);
     if (!userId) return [];
     try {
-        const shops = await Shop.model
-            .find({ 'collaborators.user': userId })
-            .select('_id')
-            .lean();
+        const shops = await Shop.model.find({ 'collaborators.user': userId }).select('_id').lean();
         return shops.map((s) => ({ shopId: String(s._id) }));
     } catch {
         return [];

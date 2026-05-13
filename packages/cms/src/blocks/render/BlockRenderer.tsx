@@ -7,18 +7,12 @@ import { HtmlBlock } from './HtmlBlock';
 import { MediaGridBlock } from './MediaGridBlock';
 import { OverviewBlock } from './OverviewBlock';
 import { RichTextBlock } from './RichTextBlock';
-import { VendorsBlock } from './VendorsBlock';
 import type { BlockNode, BlockRenderContext } from './types';
+import { VendorsBlock } from './VendorsBlock';
 
 const MAX_DEPTH = 6;
 
-export function BlockRenderer({
-    blocks,
-    context,
-}: {
-    blocks: BlockNode[];
-    context: BlockRenderContext;
-}): ReactNode {
+export function BlockRenderer({ blocks, context }: { blocks: BlockNode[]; context: BlockRenderContext }): ReactNode {
     const depth = context.depth ?? 0;
     if (depth >= MAX_DEPTH) return null;
 

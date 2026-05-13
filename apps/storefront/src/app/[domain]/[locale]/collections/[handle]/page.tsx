@@ -225,10 +225,7 @@ export default async function CollectionsCollectionPage({
             {pageContent}
 
             {pageNumber <= 1 ? (
-                <Suspense
-                    key={`collections.${handle}.cms`}
-                    fallback={<div className="h-32 w-full" data-skeleton />}
-                >
+                <Suspense key={`collections.${handle}.cms`} fallback={<div className="h-32 w-full" data-skeleton />}>
                     <CMSContent shop={shop} locale={locale} handle={handle} type={'collection_page'} />
                 </Suspense>
             ) : null}

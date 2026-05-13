@@ -1,6 +1,6 @@
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { Payload } from 'payload';
 import { getPayload } from 'payload';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { buildPayloadConfig } from './index';
 
 describe('multi-tenant isolation', () => {

@@ -1,10 +1,10 @@
-import type { OnlineShop } from '@nordcom/commerce-db';
-import { BlockRenderer } from '@nordcom/commerce-cms/blocks/render';
 import type { BlockNode } from '@nordcom/commerce-cms/blocks/render';
+import { BlockRenderer } from '@nordcom/commerce-cms/blocks/render';
+import type { OnlineShop } from '@nordcom/commerce-db';
 import { PageApi } from '@/api/page';
 import ShopifyPage from '@/components/cms/shopify-page';
-import { buildBlockLoaders } from '../../cms-loaders';
 import type { Locale } from '@/utils/locale';
+import { buildBlockLoaders } from '../../cms-loaders';
 
 export type CMSContentProps = {
     shop: OnlineShop;

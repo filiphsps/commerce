@@ -1,8 +1,8 @@
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { mongooseAdapter } from '@payloadcms/db-mongodb';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
-import { buildConfig, getPayload } from 'payload';
 import type { Payload } from 'payload';
+import { buildConfig, getPayload } from 'payload';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { tenants } from './tenants';
 
 describe('tenants collection', () => {

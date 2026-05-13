@@ -1,1 +1,1 @@
-export { attachShopSync, syncShopToTenant, type ShopForSync } from './post-save-hook';
+export { attachShopSync, type ShopForSync, syncShopToTenant } from './post-save-hook';

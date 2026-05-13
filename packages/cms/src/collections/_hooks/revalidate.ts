@@ -1,5 +1,5 @@
-import type { CollectionAfterChangeHook, CollectionAfterDeleteHook, CollectionConfig } from 'payload';
 import { revalidateTag } from 'next/cache';
+import type { CollectionAfterChangeHook, CollectionAfterDeleteHook, CollectionConfig } from 'payload';
 
 type Doc = {
     id: string | number;
@@ -25,9 +25,7 @@ const invalidate = (collection: string, doc: Doc): void => {
 
 export type RevalidateHookOptions = { collection: string };
 
-export const buildRevalidateHooks = ({
-    collection,
-}: RevalidateHookOptions): NonNullable<CollectionConfig['hooks']> => {
+export const buildRevalidateHooks = ({ collection }: RevalidateHookOptions): NonNullable<CollectionConfig['hooks']> => {
     const afterChange: CollectionAfterChangeHook = async ({ doc }) => {
         invalidate(collection, doc as Doc);
         return doc;

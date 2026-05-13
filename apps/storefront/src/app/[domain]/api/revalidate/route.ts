@@ -44,10 +44,7 @@ export async function POST(req: NextRequest, { params }: { params: RevalidateApi
         return NextResponse.json({ status: 200, tags }, { status: 200, headers: noStoreHeaders });
     }
 
-    return NextResponse.json(
-        { status: 400, error: 'unrecognised webhook' },
-        { status: 400, headers: noStoreHeaders },
-    );
+    return NextResponse.json({ status: 400, error: 'unrecognised webhook' }, { status: 400, headers: noStoreHeaders });
 }
 
 export async function GET() {

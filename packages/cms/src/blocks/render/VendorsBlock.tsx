@@ -1,12 +1,6 @@
 import type { BlockRenderContext, VendorsBlockNode } from './types';
 
-export async function VendorsBlock({
-    block,
-    context,
-}: {
-    block: VendorsBlockNode;
-    context: BlockRenderContext;
-}) {
+export async function VendorsBlock({ block, context }: { block: VendorsBlockNode; context: BlockRenderContext }) {
     const vendors = await context.loaders.loadVendors({
         shop: context.shop,
         locale: context.locale,

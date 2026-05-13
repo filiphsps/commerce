@@ -1,6 +1,6 @@
 import 'server-only';
-import { getPayload } from 'payload';
 import type { Payload } from 'payload';
+import { getPayload } from 'payload';
 import { buildPayloadConfig } from '../config';
 
 let cached: Promise<Payload> | undefined;

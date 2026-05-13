@@ -11,11 +11,7 @@ const imageAlt = (item: MediaItem): string => {
 
 export function MediaGridBlock({ block }: { block: MediaGridBlockNode }) {
     return (
-        <div
-            className="cms-media-grid"
-            data-item-type={block.itemType}
-            style={{ ['--cols' as string]: block.columns }}
-        >
+        <div className="cms-media-grid" data-item-type={block.itemType} style={{ ['--cols' as string]: block.columns }}>
             {block.items.map((item, idx) => {
                 const url = imageUrl(item);
                 const inner = url ? <img src={url} alt={imageAlt(item)} loading="lazy" /> : null;

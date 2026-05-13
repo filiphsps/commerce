@@ -1,16 +1,11 @@
 // @vitest-environment happy-dom
 import { render } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
 import type { ReactElement } from 'react';
+import { describe, expect, it, vi } from 'vitest';
 import { CollectionBlock } from './CollectionBlock';
 import { OverviewBlock } from './OverviewBlock';
+import type { BlockRenderContext, CollectionBlockNode, OverviewBlockNode, VendorsBlockNode } from './types';
 import { VendorsBlock } from './VendorsBlock';
-import type {
-    BlockRenderContext,
-    CollectionBlockNode,
-    OverviewBlockNode,
-    VendorsBlockNode,
-} from './types';
 
 const makeCtx = (overrides: Partial<BlockRenderContext['loaders']> = {}): BlockRenderContext => ({
     shop: { id: 'shop_1', domain: 'example.com' },
@@ -34,9 +29,7 @@ describe('Shopify-aware blocks', () => {
         const element = (await CollectionBlock({ block, context: ctx })) as ReactElement;
         const { container } = render(element);
         expect(container.textContent ?? '').toContain('Sour Worms');
-        expect(ctx.loaders.loadCollection).toHaveBeenCalledWith(
-            expect.objectContaining({ handle: 'candy', limit: 8 }),
-        );
+        expect(ctx.loaders.loadCollection).toHaveBeenCalledWith(expect.objectContaining({ handle: 'candy', limit: 8 }));
     });
 
     it('CollectionBlock returns null when loader yields nothing', async () => {
@@ -60,8 +53,6 @@ describe('Shopify-aware blocks', () => {
         const element = (await OverviewBlock({ block, context: ctx })) as ReactElement;
         const { container } = render(element);
         expect(container.textContent ?? '').toContain('Sour Worms');
-        expect(ctx.loaders.loadOverview).toHaveBeenCalledWith(
-            expect.objectContaining({ source: 'latest', limit: 12 }),
-        );
+        expect(ctx.loaders.loadOverview).toHaveBeenCalledWith(expect.objectContaining({ source: 'latest', limit: 12 }));
     });
 });

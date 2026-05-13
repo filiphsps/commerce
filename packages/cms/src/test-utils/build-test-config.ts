@@ -1,8 +1,8 @@
 import { mongooseAdapter } from '@payloadcms/db-mongodb';
 import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
-import { buildConfig } from 'payload';
 import type { SanitizedConfig } from 'payload';
+import { buildConfig } from 'payload';
 
 import { articles } from '../collections/articles';
 import { collectionMetadata } from '../collections/collection-metadata';
@@ -40,8 +40,7 @@ export const buildTestConfig = async ({
         plugins: [
             multiTenantPlugin({
                 tenantsSlug: 'tenants',
-                userHasAccessToAllTenants: (user: unknown) =>
-                    (user as { role?: string } | null)?.role === 'admin',
+                userHasAccessToAllTenants: (user: unknown) => (user as { role?: string } | null)?.role === 'admin',
                 collections: {
                     pages: {},
                     articles: {},

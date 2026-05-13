@@ -1,6 +1,6 @@
+import { getPage as CmsGetPage } from '@nordcom/commerce-cms/api';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Error as CommerceError } from '@nordcom/commerce-errors';
-import { getPage as CmsGetPage } from '@nordcom/commerce-cms/api';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import type { NormalizedShopifyPage } from '@/api/shopify/page';
 import { ShopifyPageApi, ShopifyPagesApi } from '@/api/shopify/page';
@@ -16,13 +16,7 @@ export type ProvidedPages =
     | { provider: 'cms'; items: Array<NonNullable<CmsPageData>> }
     | { provider: 'shopify'; items: NormalizedShopifyPage[] };
 
-export async function PagesApi({
-    shop,
-    locale,
-}: {
-    shop: OnlineShop;
-    locale: Locale;
-}): Promise<ProvidedPages | null> {
+export async function PagesApi({ shop, locale }: { shop: OnlineShop; locale: Locale }): Promise<ProvidedPages | null> {
     switch (shop.contentProvider.type) {
         case 'shopify': {
             const api = await ShopifyApolloApiClient({ shop, locale });

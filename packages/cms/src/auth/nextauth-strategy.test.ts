@@ -1,5 +1,5 @@
-import { describe, expect, it, vi } from 'vitest';
 import { SignJWT } from 'jose';
+import { describe, expect, it, vi } from 'vitest';
 import { buildNextAuthStrategy, computeRolesFromShopMembership } from './nextauth-strategy';
 
 const secret = new TextEncoder().encode('test-nextauth-secret');

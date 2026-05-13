@@ -1,4 +1,4 @@
+export { type ImageFieldOptions, imageField } from './image';
+export { type LinkFieldOptions, linkField } from './link';
+export { type NavItemFieldOptions, navItemField } from './nav-item';
 export { seoGroup } from './seo';
-export { linkField, type LinkFieldOptions } from './link';
-export { imageField, type ImageFieldOptions } from './image';
-export { navItemField, type NavItemFieldOptions } from './nav-item';

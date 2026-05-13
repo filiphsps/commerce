@@ -23,9 +23,9 @@ export const getArticles = async ({
     __payload,
 }: GetArticlesArgs) => {
     const payload = __payload ?? (await getPayloadInstance());
-    const where = (tag
-        ? { and: [{ tenant: { equals: shop.id } }, { tags: { contains: tag } }] }
-        : { tenant: { equals: shop.id } }) as never;
+    const where = (
+        tag ? { and: [{ tenant: { equals: shop.id } }, { tags: { contains: tag } }] } : { tenant: { equals: shop.id } }
+    ) as never;
     return payload.find({
         collection: 'articles',
         where,

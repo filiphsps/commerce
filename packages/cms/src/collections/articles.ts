@@ -1,5 +1,5 @@
-import type { CollectionConfig } from 'payload';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
+import type { CollectionConfig } from 'payload';
 import { adminOnly, tenantScopedRead, tenantScopedWrite } from '../access';
 import { imageField, seoGroup } from '../fields';
 import { buildRevalidateHooks } from './_hooks/revalidate';

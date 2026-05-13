@@ -1,9 +1,9 @@
 import 'server-only';
 
-import { Error as CommerceError } from '@nordcom/commerce-errors';
 import type { BlockLoaders } from '@nordcom/commerce-cms/blocks/render';
-import { CollectionApi } from '@/api/shopify/collection';
+import { Error as CommerceError } from '@nordcom/commerce-errors';
 import { ShopifyApolloApiClient } from '@/api/shopify';
+import { CollectionApi } from '@/api/shopify/collection';
 
 const toShop = ({ id, domain }: { id: string; domain: string }) => ({ id, domain });
 
@@ -25,7 +25,14 @@ export const buildBlockLoaders = (): BlockLoaders => ({
             const collection = await CollectionApi({ api, handle, first: limit });
             if (!collection) return null;
             const edges = ((collection as { products?: { edges?: Array<{ node: unknown }> } }).products?.edges ??
-                []) as Array<{ node: { handle: string; title: string; featuredImage?: { url?: string }; priceRange?: { minVariantPrice?: { amount: string; currencyCode: string } } } }>;
+                []) as Array<{
+                node: {
+                    handle: string;
+                    title: string;
+                    featuredImage?: { url?: string };
+                    priceRange?: { minVariantPrice?: { amount: string; currencyCode: string } };
+                };
+            }>;
             return {
                 handle: (collection as { handle: string }).handle,
                 title: (collection as { title: string }).title,
@@ -63,7 +70,14 @@ export const buildBlockLoaders = (): BlockLoaders => ({
             const collection = await CollectionApi({ api, handle, first: limit });
             if (!collection) return [];
             const edges = ((collection as { products?: { edges?: Array<{ node: unknown }> } }).products?.edges ??
-                []) as Array<{ node: { handle: string; title: string; featuredImage?: { url?: string }; priceRange?: { minVariantPrice?: { amount: string; currencyCode: string } } } }>;
+                []) as Array<{
+                node: {
+                    handle: string;
+                    title: string;
+                    featuredImage?: { url?: string };
+                    priceRange?: { minVariantPrice?: { amount: string; currencyCode: string } };
+                };
+            }>;
             return edges.map(({ node }) => ({
                 handle: node.handle,
                 title: node.title,

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isAdmin, type CmsUser } from './is-admin';
+import { type CmsUser, isAdmin } from './is-admin';
 import { isTenantMember } from './is-tenant-member';
 import { publicRead } from './public-read';
 

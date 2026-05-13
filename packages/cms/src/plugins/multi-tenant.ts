@@ -5,10 +5,7 @@ import { globalLikeCollections, tenantScopedCollections } from '../collections';
 export const buildMultiTenantPlugin = (): Plugin => {
     const globals: readonly string[] = globalLikeCollections;
     const collectionsConfig = Object.fromEntries(
-        tenantScopedCollections.map((slug) => [
-            slug,
-            { isGlobal: globals.includes(slug) },
-        ]),
+        tenantScopedCollections.map((slug) => [slug, { isGlobal: globals.includes(slug) }]),
     );
     return multiTenantPlugin({
         tenantsSlug: 'tenants',
