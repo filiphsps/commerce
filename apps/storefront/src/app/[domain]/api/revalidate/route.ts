@@ -50,6 +50,6 @@ export async function POST(req: NextRequest, { params }: { params: RevalidateApi
     );
 }
 
-export async function GET(_req: NextRequest, _ctx: { params: RevalidateApiRouteParams }) {
+export async function GET() {
     return NextResponse.json({ status: 200 }, { status: 200, headers: noStoreHeaders });
 }

@@ -18,8 +18,7 @@
         "format:lint": "biome lint --write .",
         "format:format": "biome format --write .",
         "format:check": "biome check --write --unsafe .",
-        "typecheck": "tsc -noEmit",
-        "slicemachine": "exit 0"
+        "typecheck": "tsc -noEmit"
     },
     "author": {
         "name": "Nordcom AB",

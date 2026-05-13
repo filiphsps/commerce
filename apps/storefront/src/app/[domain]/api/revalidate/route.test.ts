@@ -201,8 +201,7 @@ describe('app/[domain]/api/revalidate', () => {
 
     describe('GET', () => {
         it('returns 200 empty for liveness pings', async () => {
-            const req = makeRequest({ method: 'GET', body: null as any, headers: {} });
-            const res = await GET(req as any, { params: Promise.resolve({ domain: 'mock.shop' }) } as any);
+            const res = await GET();
             expect(res.status).toBe(200);
         });
     });

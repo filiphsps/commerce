@@ -18,7 +18,6 @@ const ADMIN_DOMAIN = process.env.ADMIN_DOMAIN || undefined;
 const LANDING_DOMAIN = process.env.LANDING_DOMAIN || undefined;
 
 const imageRemotePatterns = [
-    { protocol: 'https', hostname: '**.prismic.io' },
     { protocol: 'https', hostname: '**.unsplash.com' },
     { protocol: 'https', hostname: '**.shopify.com' },
     { protocol: 'https', hostname: '**.github.io' },

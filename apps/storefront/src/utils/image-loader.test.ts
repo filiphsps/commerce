@@ -4,20 +4,6 @@ import { fallbackLoader as ImageLoader } from '@/utils/image-loader';
 
 describe('utils', () => {
     describe('ImageLoader', () => {
-        it('should return the correct URL for images from images.prismic.io', () => {
-            const src = 'https://images.prismic.io/my-image.jpg';
-            const width = 500;
-            const quality = 80;
-
-            const result = ImageLoader({ src, width, quality } as any);
-            expect(result).toBe(`${src}?w=${width}&q=${quality}&fm=avif`);
-        });
-        it('should return the correct URL when fm is set', () => {
-            const src = 'https://images.prismic.io/my-image.jpg?fm=avif';
-            const result = ImageLoader({ src } as any);
-            expect(result).toBe(src);
-        });
-
         it('should return the correct URL for other images', () => {
             const src = 'https://example.com/my-image.jpg';
             const width = 500;

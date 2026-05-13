@@ -2,7 +2,6 @@ import 'server-only';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Suspense } from 'react';
-import { FooterApi } from '@/api/footer';
 import { AcceptedPaymentMethods } from '@/components/informational/accepted-payment-methods';
 import { CurrentLocaleFlag } from '@/components/informational/current-locale-flag';
 import Link from '@/components/link';
@@ -16,11 +15,6 @@ export type FooterContentProps = {
 };
 
 const FooterContent = async ({ locale, i18n, shop }: FooterContentProps) => {
-    const footer = await FooterApi({ shop, locale });
-    if (!footer) {
-        return null;
-    }
-
     const { t } = getTranslations('common', i18n);
 
     return (

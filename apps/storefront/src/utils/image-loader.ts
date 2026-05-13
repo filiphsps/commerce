@@ -16,25 +16,12 @@ const cloudflareImageLoader: ImageLoaderType = ({ src, width, quality }) => {
 };
 
 export const fallbackLoader: ImageLoaderType = ({ src, width, quality }) => {
-    const params = [];
-    if (src.includes('images.prismic.io')) {
-        if (width) {
-            params.push(`w=${width}`);
-        }
-        if (quality) {
-            params.push(`q=${quality}`);
-        }
-
-        if (!src.includes('fm=')) {
-            params.push(`fm=avif`);
-        }
-    } else {
-        if (width) {
-            params.push(`width=${width}`);
-        }
-        if (quality) {
-            params.push(`quality=${quality}`);
-        }
+    const params: string[] = [];
+    if (width) {
+        params.push(`width=${width}`);
+    }
+    if (quality) {
+        params.push(`quality=${quality}`);
     }
 
     const div = src.includes('?') ? '&' : '?';

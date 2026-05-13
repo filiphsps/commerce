@@ -23,11 +23,6 @@
             // i18n.
             "@/i18n/*": ["./src/locales/*"],
             "@/i18n/dictionary": ["./src/utils/dictionary.ts"],
-            // Prismic.
-            "@/slices/*": ["./src/slices/*"],
-            "@/slices/navigation": ["./src/slices/navigation/index.ts"],
-            "@/slices": ["./src/slices/index"],
-            "@/prismic/types": ["./prismicio-types.d.ts"],
             // Assets.
             "@/static/*": ["./public/*"]
         },

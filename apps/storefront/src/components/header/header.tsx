@@ -5,8 +5,6 @@ import { Search as SearchIcon } from 'lucide-react';
 import Image from 'next/image';
 import { type HTMLProps, Suspense } from 'react';
 import { CartButton } from '@/components/header/cart-button';
-import { HeaderMenu } from '@/components/header/header-menu';
-import { HeaderNavigation } from '@/components/header/header-navigation';
 import Link from '@/components/link';
 import { getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
 
@@ -17,82 +15,63 @@ export type HeaderProps = {
     locale: Locale;
     i18n: LocaleDictionary;
 } & Omit<HTMLProps<HTMLDivElement>, 'className'>;
+
 const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) => {
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-
-    // CMS-managed header + menu slices have moved to the @nordcom/commerce-cms
-    // Header global. The migration wires them in via the new BlockRenderer /
-    // nav-item field in a follow-up; for now the header renders without CMS
-    // overrides (logo + cart + account section continue working).
-    const slices: unknown[] = [];
 
     const { logo } = shop.design.header;
     const { t } = getTranslations('common', i18n);
 
     return (
-        <>
-            <section
-                className="sticky top-0 z-20 flex w-full flex-col items-center overscroll-contain shadow-none transition-shadow duration-150 [grid-area:header] group-data-[menu-open=true]/body:shadow-lg group-data-[scrolled=true]/body:shadow-lg md:max-h-[95dvh]"
-                {...props}
-            >
-                <section className="flex h-16 w-full flex-col items-center bg-white">
-                    <header className="flex h-full w-full max-w-[var(--page-width)] items-center justify-start gap-4 overflow-hidden px-2 md:px-3">
-                        <div className="flex h-16 py-1">
-                            <Link
-                                href={'/'}
-                                style={{
-                                    aspectRatio: `${(logo.width / logo.height).toFixed(2)} / 1`,
-                                }}
-                                className="-ml-2 block h-full rounded-lg px-2 py-2 hover:bg-gray-100 focus-visible::bg-gray-100"
-                            >
-                                {logo.src ? (
-                                    <Image
-                                        className="h-full w-full object-contain object-left"
-                                        src={logo.src}
-                                        width={logo.width || 125}
-                                        height={logo.height || 50}
-                                        alt={logo.alt || `${shop.name}'s logo`}
-                                        sizes="(max-width: 1024px) 125px, 175px"
-                                        draggable={false}
-                                        priority={true}
-                                        loading="eager"
-                                        decoding="async"
-                                    />
-                                ) : null}
-                            </Link>
-                        </div>
+        <section
+            className="sticky top-0 z-20 flex w-full flex-col items-center overscroll-contain shadow-none transition-shadow duration-150 [grid-area:header] group-data-[menu-open=true]/body:shadow-lg group-data-[scrolled=true]/body:shadow-lg md:max-h-[95dvh]"
+            {...props}
+        >
+            <section className="flex h-16 w-full flex-col items-center bg-white">
+                <header className="flex h-full w-full max-w-[var(--page-width)] items-center justify-start gap-4 overflow-hidden px-2 md:px-3">
+                    <div className="flex h-16 py-1">
+                        <Link
+                            href={'/'}
+                            style={{
+                                aspectRatio: `${(logo.width / logo.height).toFixed(2)} / 1`,
+                            }}
+                            className="-ml-2 block h-full rounded-lg px-2 py-2 hover:bg-gray-100 focus-visible::bg-gray-100"
+                        >
+                            {logo.src ? (
+                                <Image
+                                    className="h-full w-full object-contain object-left"
+                                    src={logo.src}
+                                    width={logo.width || 125}
+                                    height={logo.height || 50}
+                                    alt={logo.alt || `${shop.name}'s logo`}
+                                    sizes="(max-width: 1024px) 125px, 175px"
+                                    draggable={false}
+                                    priority={true}
+                                    loading="eager"
+                                    decoding="async"
+                                />
+                            ) : null}
+                        </Link>
+                    </div>
 
-                        <div className="flex h-full grow items-center justify-end gap-6" data-nosnippet={true}>
-                            <Link
-                                href="/search/"
-                                className="transition-colors hover:text-primary focus-visible:text-primary"
-                                title={t('search')}
-                            >
-                                <SearchIcon className="stroke-1 text-xl lg:text-2xl" />
-                            </Link>
+                    <div className="flex h-full grow items-center justify-end gap-6" data-nosnippet={true}>
+                        <Link
+                            href="/search/"
+                            className="transition-colors hover:text-primary focus-visible:text-primary"
+                            title={t('search')}
+                        >
+                            <SearchIcon className="stroke-1 text-xl lg:text-2xl" />
+                        </Link>
 
-                            <Suspense fallback={<HeaderAccountSection.skeleton />}>
-                                <HeaderAccountSection shop={shop} locale={locale} i18n={i18n} />
-                            </Suspense>
-
-                            <CartButton i18n={i18n} locale={locale} />
-                        </div>
-                    </header>
-                </section>
-
-                {slices.length > 0 ? (
-                    <section className="flex h-12 w-full flex-col items-center justify-center gap-0 border-0 border-gray-200 border-t border-b border-solid bg-white text-black group-data-[menu-open=true]/body:border-b-gray-100">
-                        <Suspense key="layout.header.header-navigation" fallback={<HeaderNavigation.skeleton />}>
-                            <HeaderNavigation shop={shop} i18n={i18n} locale={locale} slices={slices as never} />
+                        <Suspense fallback={<HeaderAccountSection.skeleton />}>
+                            <HeaderAccountSection shop={shop} locale={locale} i18n={i18n} />
                         </Suspense>
-                    </section>
-                ) : null}
 
-                <Suspense key="layout.header.header-menu" fallback={<div className="h-0 w-full border-0" />}>
-                    <HeaderMenu slices={slices as never} />
-                </Suspense>
+                        <CartButton i18n={i18n} locale={locale} />
+                    </div>
+                </header>
             </section>
-        </>
+        </section>
     );
 };
 
@@ -109,9 +88,6 @@ HeaderComponent.skeleton = () => (
                     <div className="aspect-square h-full w-20 rounded-3xl" data-skeleton />
                 </div>
             </header>
-        </section>
-        <section className="flex h-12 w-full flex-col items-center justify-center gap-0 border-0 border-gray-300 border-t border-b border-solid bg-white text-black">
-            <HeaderNavigation.skeleton />
         </section>
     </section>
 );

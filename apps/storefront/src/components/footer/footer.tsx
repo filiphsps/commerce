@@ -3,7 +3,6 @@ import 'server-only';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import Image from 'next/image';
 import { Suspense } from 'react';
-import { FooterApi } from '@/api/footer';
 
 import FooterContent from '@/components/footer/footer-content';
 
@@ -18,12 +17,6 @@ export type FooterProps = {
 };
 
 const Footer = async ({ shop, locale, i18n }: FooterProps) => {
-    const footer = await FooterApi({ shop, locale });
-    if (!footer) {
-        return null;
-    }
-
-    // TODO: This should be `design.footer`.
     const { logo } = shop.design.header;
 
     return (

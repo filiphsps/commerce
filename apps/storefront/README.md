@@ -2,16 +2,18 @@
 
 The public, multi-tenant storefront. A single Next.js 16 app that serves an arbitrary
 number of shops, resolves the tenant from the request hostname, and renders catalog,
-cart, account, and CMS pages backed by Shopify and Prismic.
+cart, account, and CMS pages backed by Shopify and the embedded Payload CMS.
 
-This is the customer-facing surface. The operator dashboard lives in
-[`apps/admin`](../admin); the marketing site is [`apps/landing`](../landing).
+This is the customer-facing surface. The operator dashboard (which also embeds
+Payload's admin UI at `/cms`) lives in [`apps/admin`](../admin); the marketing site
+is [`apps/landing`](../landing).
 
 ## Stack
 
 -   **Framework:** Next.js 16 (App Router, Turbopack), React 19
 -   **Commerce:** Shopify Storefront API via `@apollo/client` + `@shopify/hydrogen-react`
--   **CMS:** [Prismic](https://prismic.io) — slices, custom types, Slicemachine
+-   **CMS:** [`@nordcom/commerce-cms`](../../packages/cms) — Payload-backed pages,
+    articles, globals, and a tenant-aware `BlockRenderer`
 -   **Auth:** NextAuth v5 (`@auth/core`)
 -   **Data:** `@nordcom/commerce-db` for tenant resolution (Mongo / Mongoose)
 -   **Styles:** Tailwind CSS 4, SCSS modules, [Nordstar](https://www.npmjs.com/package/@nordcom/nordstar)
@@ -33,12 +35,13 @@ pnpm dev:storefront
 
 Required environment variables (see [`.env.example`](../../.env.example) at the root):
 
-| Variable                | Purpose                                                     |
-| ----------------------- | ----------------------------------------------------------- |
-| `MONGODB_URI`           | Tenant resolution. Module-load failure if missing.          |
-| `AUTH_SECRET`           | NextAuth signing secret.                                    |
-| `SERVICE_DOMAIN`        | Fallback hostname for unknown-shop rewrites.                |
-| `SHOPIFY_WEBHOOK_SECRET`| HMAC validation for `/api/revalidate`. Required in prod.    |
+| Variable                    | Purpose                                                                   |
+| --------------------------- | ------------------------------------------------------------------------- |
+| `MONGODB_URI`               | Tenant resolution. Module-load failure if missing.                        |
+| `AUTH_SECRET`               | NextAuth signing secret (also used by the Payload auth bridge).           |
+| `SERVICE_DOMAIN`            | Fallback hostname for unknown-shop rewrites.                              |
+| `SHOPIFY_WEBHOOK_SECRET`    | HMAC validation for `/api/revalidate`. Required in prod.                  |
+| `STOREFRONT_PREVIEW_SECRET` | Required to enter draft mode via `/[domain]/api/cms-preview`.             |
 
 ## Multi-tenant routing
 
@@ -68,18 +71,18 @@ apps/storefront/
 │   ├── app/
 │   │   └── [domain]/
 │   │       ├── [locale]/       # All public, tenant-scoped pages
-│   │       ├── api/            # Tenant-scoped API routes (e.g. /revalidate)
+│   │       ├── api/            # Tenant-scoped API routes (e.g. /revalidate, /cms-preview)
 │   │       └── sitemaps/       # Per-tenant sitemap routes
-│   ├── api/                    # Shared data fetchers (AbstractApi, ShopifyApolloApiClient)
+│   ├── api/                    # Shared data fetchers (AbstractApi, ShopifyApolloApiClient, PageApi dispatcher)
 │   ├── auth/                   # NextAuth config
-│   ├── components/             # React components
+│   ├── cms-loaders.ts          # BlockLoaders for the CMS BlockRenderer (Shopify-aware blocks)
+│   ├── components/             # React components (incl. <CMSContent /> dispatcher)
 │   ├── hooks/                  # Client hooks
 │   ├── instrumentation.ts      # OpenTelemetry / Sentry bootstrap
 │   ├── locales/                # i18n dictionaries (en, sv, de, es, fr, no)
 │   ├── models/                 # UI / data models
 │   ├── scss/                   # Global styles
-│   ├── slices/                 # Prismic slices (managed via Slicemachine)
-│   └── utils/                  # Locale, prismic client, abstract-api, ...
+│   └── utils/                  # Locale, abstract-api, ...
 ├── next.config.js
 └── package.json
 ```
@@ -114,29 +117,33 @@ Cache tags follow `buildCacheTagArray(shop, locale, [...extra])`:
 Per-entity tags use `shopify.<shopId>.product.<handle>` and
 `shopify.<shopId>.collection.<handle>` so revalidation can be surgical.
 
-### Prismic
+### CMS
 
-Prismic access goes through `createClient({ shop, locale })` in
-`src/utils/prismic.tsx`. Slices live under `src/slices/` and are managed via
-Slicemachine:
+CMS access goes through `@nordcom/commerce-cms/api`:
 
-```bash
-pnpm slicemachine
+```ts
+import { getPage as CmsGetPage } from '@nordcom/commerce-cms/api';
+
+const page = await CmsGetPage({ shop, locale, handle });
 ```
 
-Generated types land in `prismicio-types.d.ts` — **don't hand-edit** this file.
+`src/api/page.ts` is the storefront-level dispatcher that returns either a
+`cms`- or `shopify`-provider page; `<CMSContent>` renders block trees via the
+`BlockRenderer` from `@nordcom/commerce-cms/blocks/render`, with Shopify-aware
+loaders injected from `src/cms-loaders.ts`.
 
 ## Cache invalidation / webhooks
 
-`/[domain]/api/revalidate` accepts both Shopify and Prismic webhooks:
+`/[domain]/api/revalidate` accepts Shopify webhooks:
 
 -   **Shopify** path verifies `X-Shopify-Hmac-SHA256` via
     `validateShopifyHmac()` (`src/utils/webhooks/shopify.ts`), maps the topic to
     per-entity tags (`parseShopifyWebhook`), and calls `revalidateTag(tag, 'max')`.
     If `SHOPIFY_WEBHOOK_SECRET` is unset, validation is skipped with a warning
     (dev only — never deploy without it).
--   **Prismic** path is detected by the `documents` array in the body and maps each
-    document to tags via `parsePrismicWebhook`.
+
+CMS invalidation runs from the Payload collection `afterChange` hooks in
+`@nordcom/commerce-cms`, which call `revalidateTag` directly — no webhook required.
 
 ## Locales
 
@@ -162,7 +169,6 @@ Both `tsconfig.json` and `vitest.config.ts` declare the same aliases — keep th
 | `@/*`                | `src/*`                                  |
 | `@/i18n`             | `src/locales`                            |
 | `@/i18n/dictionary`  | `src/utils/dictionary.ts`                |
-| `@/slices`           | `src/slices`                             |
 | `@/pages`            | `src/app/[domain]/[locale]`              |
 
 ## Scripts
@@ -171,7 +177,6 @@ Both `tsconfig.json` and `vitest.config.ts` declare the same aliases — keep th
 pnpm dev              # Next.js dev server on :1337 (Turbopack)
 pnpm build            # Production build (Turbopack)
 pnpm start            # Run the built server ($PORT)
-pnpm slicemachine     # Open Prismic Slicemachine UI
 pnpm lint             # biome lint .
 pnpm typecheck        # tsc -noEmit
 pnpm test:e2e         # Playwright E2E suite

@@ -33,9 +33,21 @@ Cache tags follow `buildCacheTagArray(shop, locale, [...extra])`:
 Per-entity tags use `shopify.<shopId>.product.<handle>` and
 `shopify.<shopId>.collection.<handle>` so revalidation can be surgical.
 
-## Prismic
+## CMS
 
-Prismic access goes through `createClient({ shop, locale })` in
-`src/utils/prismic.tsx`. Slices live under `src/slices/` and are managed via
-Slicemachine. Generated types land in `prismicio-types.d.ts` — don't hand-edit
-this file.
+CMS access goes through `@nordcom/commerce-cms/api`:
+
+```ts
+import { getPage as CmsGetPage } from '@nordcom/commerce-cms/api';
+
+const page = await CmsGetPage({ shop, locale, handle });
+```
+
+`src/api/page.ts` is the storefront-level dispatcher that returns either a
+`cms`- or `shopify`-provider page; `<CMSContent>` renders block trees via the
+`BlockRenderer` from `@nordcom/commerce-cms/blocks/render`, with Shopify-aware
+loaders injected from `src/cms-loaders.ts`.
+
+Payload generates TS types for the CMS schema; run
+`pnpm --filter @nordcom/commerce-cms generate:types` after any collection-field
+change to refresh `packages/cms/src/types/payload-types.ts`.

@@ -1,11 +1,10 @@
 import 'server-only';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { Fragment, type HTMLProps, type ReactNode, Suspense } from 'react';
+import { type HTMLProps, type ReactNode, Suspense } from 'react';
 
 import Footer from '@/components/footer/footer';
 import Header from '@/components/header/header';
-import { InfoBar } from '@/components/header/info-bar';
 import PageContent from '@/components/page-content';
 
 import type { Locale, LocaleDictionary } from '@/utils/locale';
@@ -16,12 +15,10 @@ export type ShopLayoutProps = {
     i18n: LocaleDictionary;
     children: ReactNode;
 } & Omit<HTMLProps<HTMLDivElement>, 'data' | 'className'>;
+
 const ShopLayout = async ({ shop, locale, i18n, children }: ShopLayoutProps) => {
     return (
-        <main className="grid min-h-screen grid-cols-[100%] grid-rows-[auto_auto_1fr_auto] [grid-template-areas:'info-bar''header''content''footer']">
-            <Suspense key="layout.info-bar" fallback={<Fragment />}>
-                <InfoBar locale={locale} i18n={i18n} shop={shop} />
-            </Suspense>
+        <main className="grid min-h-screen grid-cols-[100%] grid-rows-[auto_1fr_auto] [grid-template-areas:'header''content''footer']">
             <Suspense key="layout.header" fallback={<Header.skeleton />}>
                 <Header domain={shop.domain} locale={locale} i18n={i18n} />
             </Suspense>
@@ -38,7 +35,7 @@ const ShopLayout = async ({ shop, locale, i18n, children }: ShopLayoutProps) => 
 };
 
 ShopLayout.skeleton = () => (
-    <main className="grid min-h-screen grid-cols-[100%] grid-rows-[auto_auto_1fr_auto] [grid-template-areas:'info-bar''header''content''footer']">
+    <main className="grid min-h-screen grid-cols-[100%] grid-rows-[auto_1fr_auto] [grid-template-areas:'header''content''footer']">
         <Header.skeleton />
 
         <PageContent as="article" primary={true} />

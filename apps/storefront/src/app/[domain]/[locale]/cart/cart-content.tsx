@@ -18,11 +18,6 @@ export type CartContentProps = {
     paymentMethods?: ReactNode;
 };
 
-/**
- * Cart-page CMS overlays (top/sidebar/bottom slices) were sourced from
- * Prismic. With Prismic removed, the cart page renders without overlay
- * content until a Cart page Block type is added to @nordcom/commerce-cms.
- */
 export default async function CartContent({ locale, i18n, header, paymentMethods = null }: CartContentProps) {
     return (
         <PageContent className={styles.container}>

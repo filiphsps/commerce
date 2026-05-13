@@ -1,5 +1,4 @@
 import { gql } from '@apollo/client';
-import type { OnlineShop } from '@nordcom/commerce-db';
 import { NoLocalesAvailableError, ProviderFetchError } from '@nordcom/commerce-errors';
 import type { Country, Localization, PaymentSettings } from '@shopify/hydrogen-react/storefront-api-types';
 import type { AbstractApi } from '@/utils/abstract-api';
@@ -143,14 +142,4 @@ export const ShopPaymentSettingsApi = async ({
     }
 
     return data.shop.paymentSettings;
-};
-
-/**
- * Legacy Prismic-shaped business data. Stubbed until the new CMS BusinessData
- * global (@nordcom/commerce-cms/api: getBusinessData) is wired in.
- */
-export type LegacyBusinessData = Record<string, unknown> | null;
-
-export const BusinessDataApi = async (_args: { shop: OnlineShop; locale: Locale }): Promise<LegacyBusinessData> => {
-    return null;
 };

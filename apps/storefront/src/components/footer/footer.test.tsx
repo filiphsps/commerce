@@ -1,9 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
 
-vi.mock('@/api/footer', () => ({
-    FooterApi: vi.fn(),
-}));
-
 vi.mock('@/components/footer/footer-content', () => {
     const FooterContent = () => <div data-testid="footer-content" />;
     FooterContent.skeleton = () => <div data-testid="footer-content-skeleton" />;
@@ -19,7 +15,6 @@ vi.mock('@/components/typography/content', () => ({
     Content: ({ children }: any) => <div>{children}</div>,
 }));
 
-import { FooterApi } from '@/api/footer';
 import Footer from '@/components/footer/footer';
 import { mockShop } from '@/utils/test/fixtures';
 import { render } from '@/utils/test/react';
@@ -42,21 +37,7 @@ describe('components', () => {
                 expect(typeof Footer).toBe('function');
             });
 
-            it('returns null when FooterApi returns null', async () => {
-                vi.mocked(FooterApi).mockResolvedValue(null as any);
-                const result = await Footer({ shop: mockShop(), locale: mockLocale, i18n: mockI18n });
-                expect(result).toBeNull();
-            });
-
-            it('renders a footer element when FooterApi returns data', async () => {
-                vi.mocked(FooterApi).mockResolvedValue({
-                    address: [],
-                    custom_html: null,
-                    body: [],
-                    copyrights: [],
-                    policy_links: [],
-                } as any);
-
+            it('renders a footer element', async () => {
                 const jsx = await Footer({ shop: shopWithLogo(), locale: mockLocale, i18n: mockI18n });
                 const { container } = render(jsx as any);
                 expect(container.querySelector('footer')).toBeTruthy();

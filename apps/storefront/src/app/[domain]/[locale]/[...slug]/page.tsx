@@ -9,7 +9,7 @@ import { Fragment, Suspense } from 'react';
 import type { OnlineStore, WithContext } from 'schema-dts';
 import { PageApi } from '@/api/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { BusinessDataApi, LocalesApi } from '@/api/store';
+import { LocalesApi } from '@/api/store';
 import { CMSContent } from '@/components/cms/cms-content';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
@@ -94,10 +94,7 @@ export async function generateMetadata({ params }: { params: CustomPageParams })
     };
 }
 
-async function OnlineStoreJsonLd({ shop, locale }: { shop: OnlineShop; locale: Locale }) {
-    const businessData = await BusinessDataApi({ shop, locale });
-    if (!businessData) return null;
-
+function OnlineStoreJsonLd({ shop, locale }: { shop: OnlineShop; locale: Locale }) {
     const jsonLd: WithContext<OnlineStore> = {
         '@context': 'https://schema.org',
         '@type': 'OnlineStore',

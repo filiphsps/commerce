@@ -34,7 +34,7 @@ const ShopSchema = new Schema(
             accents: { type: [], default: [] },
         },
         contentProvider: {
-            type: { type: String, enum: ['prismic', 'shopify', 'builder.io'], default: 'shopify' },
+            type: { type: String, enum: ['cms', 'shopify', 'builder.io'], default: 'shopify' },
         },
         commerceProvider: {
             type: { type: String, enum: ['shopify', 'stripe'], default: 'shopify' },
