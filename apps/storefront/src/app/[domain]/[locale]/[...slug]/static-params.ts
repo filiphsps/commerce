@@ -25,10 +25,11 @@ export async function generateStaticParams({
 
     let slugs: { slug: string[] }[] = [];
     switch (pages.provider) {
-        case 'prismic':
+        case 'cms':
             slugs = pages.items
-                .filter((p): p is typeof p & { uid: string } => typeof p.uid === 'string')
-                .map(({ uid }) => ({ slug: [uid] }));
+                .map((p) => (p as { slug?: string }).slug)
+                .filter((s): s is string => typeof s === 'string')
+                .map((s) => ({ slug: [s] }));
             break;
         case 'shopify':
             slugs = pages.items.map(({ handle }) => ({ slug: [handle] }));

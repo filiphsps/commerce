@@ -1,102 +1,28 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { Error, NotFoundError } from '@nordcom/commerce-errors';
-import { unstable_cache } from 'next/cache';
-import type { HeaderDocument, HeaderDocumentData, MenuDocument, MenuDocumentData } from '@/prismic/types';
-import { Locale } from '@/utils/locale';
-import { buildPrismicCacheTags, createClient } from '@/utils/prismic';
+import type { Locale } from '@/utils/locale';
 
-export type NavigationItem = {
+/**
+ * Legacy Prismic-shaped header/menu data types. Retained as `unknown` to keep
+ * source compatibility with header components during the CMS migration. The
+ * Prismic backend has been removed; both APIs return null until the new CMS
+ * Header global is wired into the storefront header components.
+ *
+ * Follow-up: replace these call sites with `getHeader` from
+ * @nordcom/commerce-cms/api and the Header global's recursive nav-item field.
+ */
+export type LegacyNavigationItem = {
     title: string;
     handle?: string;
-    children: Array<{
-        title: string;
-        handle: string;
-        description?: string;
-    }>;
+    children: Array<{ title: string; handle: string; description?: string }>;
 };
 
-export const MenuApi = async ({
-    shop,
-    locale,
-}: {
-    shop: OnlineShop;
-    locale: Locale;
-}): Promise<MenuDocumentData | null> => {
-    // TODO: Provide a Shopify equivalent (e.g. fetch from shop metafields or Storefront API).
-    //       For now, non-Prismic shops degrade gracefully — caller renders without this data.
-    if (shop.contentProvider.type !== 'prismic') return null;
-    const client = createClient({ shop, locale });
+export type LegacyHeaderData = { slices?: unknown[] } | null;
+export type LegacyMenuData = { slices?: unknown[] } | null;
 
-    return unstable_cache(
-        async () => {
-            try {
-                const menu = await client.getSingle<MenuDocument>('menu');
-
-                return menu.data;
-            } catch (error: unknown) {
-                const _locale = client.defaultParams?.lang ? Locale.from(client.defaultParams.lang) : locale;
-
-                if (Error.isNotFound(error)) {
-                    const fallback = Locale.fallbackForShop(shop);
-                    if (fallback.code !== _locale.code) {
-                        return await MenuApi({ shop, locale: fallback }); // Try again with fallback locale.
-                    }
-
-                    throw new NotFoundError(`"Menu" with the locale "${locale.code}"`);
-                }
-
-                // TODO: Deal with errors properly.
-                console.error(error);
-                throw error;
-            }
-        },
-        [shop.domain, locale.code, 'menu'],
-        {
-            revalidate: 86_400, // 24hrs.
-            tags: buildPrismicCacheTags({ shop, locale, doc: { type: 'menu', uid: 'menu' } }),
-        },
-    )();
+export const MenuApi = async (_args: { shop: OnlineShop; locale: Locale }): Promise<LegacyMenuData> => {
+    return null;
 };
 
-export async function HeaderApi({
-    shop,
-    locale,
-}: {
-    shop: OnlineShop;
-    locale: Locale;
-}): Promise<HeaderDocumentData | null> {
-    // TODO: Provide a Shopify equivalent (e.g. fetch from shop metafields or Storefront API).
-    //       For now, non-Prismic shops degrade gracefully — caller renders without this data.
-    if (shop.contentProvider.type !== 'prismic') return null;
-    const client = createClient({ shop, locale });
-
-    return unstable_cache(
-        async () => {
-            try {
-                const header = await client.getSingle<HeaderDocument>('header');
-
-                return header.data;
-            } catch (error: unknown) {
-                const _locale = client.defaultParams?.lang ? Locale.from(client.defaultParams.lang) : locale;
-
-                if (Error.isNotFound(error)) {
-                    const fallback = Locale.fallbackForShop(shop);
-                    if (fallback.code !== _locale.code) {
-                        return await HeaderApi({ shop, locale: fallback }); // Try again with fallback locale.
-                    }
-
-                    throw new NotFoundError(`"Header" with the locale "${locale.code}"`);
-                }
-
-                // TODO: Deal with errors properly.
-                console.error(error);
-                throw error;
-            }
-        },
-        [shop.domain, locale.code, 'header'],
-        {
-            revalidate: 86_400, // 24hrs.
-            tags: buildPrismicCacheTags({ shop, locale, doc: { type: 'header', uid: 'header' } }),
-        },
-    )();
+export async function HeaderApi(_args: { shop: OnlineShop; locale: Locale }): Promise<LegacyHeaderData> {
+    return null;
 }

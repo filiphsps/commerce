@@ -2,7 +2,6 @@ import 'server-only';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
-import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
 import { notFound } from 'next/navigation';
@@ -54,20 +53,15 @@ export async function generateMetadata({ params }: { params: CustomPageParams })
     let images: NonNullable<Metadata['openGraph']>['images'] = [];
 
     switch (page.provider) {
-        case 'prismic': {
-            const data = page.data;
-            title = data.meta_title || data.title || handle;
-            description = asText(data.meta_description) || data.description || undefined;
-            index = typeof data.noindex === 'undefined' ? true : !data.noindex;
-            images = data.meta_image.url
-                ? [
-                      {
-                          url: data.meta_image.url,
-                          width: data.meta_image.dimensions.width,
-                          height: data.meta_image.dimensions.height,
-                      },
-                  ]
-                : [];
+        case 'cms': {
+            const data = page.data as {
+                title?: string;
+                seo?: { title?: string; description?: string; noindex?: boolean; image?: { url?: string } };
+            };
+            title = data.seo?.title || data.title || handle;
+            description = data.seo?.description || undefined;
+            index = data.seo?.noindex !== true;
+            images = data.seo?.image?.url ? [{ url: data.seo.image.url }] : [];
             break;
         }
         case 'shopify': {

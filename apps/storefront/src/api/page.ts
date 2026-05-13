@@ -1,28 +1,29 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Error as CommerceError } from '@nordcom/commerce-errors';
-import type { PrismicDocument } from '@prismicio/client';
-import type { PageData, PageType } from '@/api/prismic/page';
-import { PageApi as PrismicPageApi, PagesApi as PrismicPagesApi } from '@/api/prismic/page';
+import { getPage as CmsGetPage } from '@nordcom/commerce-cms/api';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import type { NormalizedShopifyPage } from '@/api/shopify/page';
 import { ShopifyPageApi, ShopifyPagesApi } from '@/api/shopify/page';
 import type { Locale } from '@/utils/locale';
 
+export type CmsPageData = Awaited<ReturnType<typeof CmsGetPage>>;
+
 export type ProvidedPage =
-    | { provider: 'prismic'; data: PageData<'custom_page'> }
+    | { provider: 'cms'; data: NonNullable<CmsPageData> }
     | { provider: 'shopify'; data: NormalizedShopifyPage };
 
 export type ProvidedPages =
-    | { provider: 'prismic'; items: PrismicDocument[] }
+    | { provider: 'cms'; items: Array<NonNullable<CmsPageData>> }
     | { provider: 'shopify'; items: NormalizedShopifyPage[] };
 
-export async function PagesApi({ shop, locale }: { shop: OnlineShop; locale: Locale }): Promise<ProvidedPages | null> {
+export async function PagesApi({
+    shop,
+    locale,
+}: {
+    shop: OnlineShop;
+    locale: Locale;
+}): Promise<ProvidedPages | null> {
     switch (shop.contentProvider.type) {
-        case 'prismic': {
-            const items = await PrismicPagesApi({ shop, locale });
-            if (!items) return null;
-            return { provider: 'prismic', items };
-        }
         case 'shopify': {
             const api = await ShopifyApolloApiClient({ shop, locale });
             const [items, err] = await ShopifyPagesApi({ api });
@@ -33,10 +34,9 @@ export async function PagesApi({ shop, locale }: { shop: OnlineShop; locale: Loc
             return { provider: 'shopify', items };
         }
         default: {
-            // Unsupported / unimplemented content providers (e.g. `builder.io`) —
-            // degrade gracefully so the page renders without CMS content instead
-            // of throwing and 500ing the whole route.
-            return null;
+            // CMS-managed pages are fetched per-handle in PageApi; listing all pages
+            // is not a current use case — return an empty list instead of throwing.
+            return { provider: 'cms', items: [] };
         }
     }
 }
@@ -45,19 +45,14 @@ export async function PageApi({
     shop,
     locale,
     handle,
-    type,
 }: {
     shop: OnlineShop;
     locale: Locale;
     handle: string;
+    /** @deprecated Retained for source compatibility; CMS lookups go through getPage by slug. */
     type?: string;
 }): Promise<ProvidedPage | null> {
     switch (shop.contentProvider.type) {
-        case 'prismic': {
-            const data = await PrismicPageApi({ shop, locale, handle, type: type as PageType });
-            if (!data) return null;
-            return { provider: 'prismic', data: data as PageData<'custom_page'> };
-        }
         case 'shopify': {
             const api = await ShopifyApolloApiClient({ shop, locale });
             const [data, err] = await ShopifyPageApi({ api, handle });
@@ -68,7 +63,17 @@ export async function PageApi({
             return { provider: 'shopify', data };
         }
         default: {
-            return null;
+            const data = await CmsGetPage({
+                shop: {
+                    id: shop.id,
+                    domain: shop.domain,
+                    i18n: { defaultLocale: shop.i18n?.defaultLocale ?? 'en-US' },
+                },
+                locale: { code: locale.code },
+                slug: handle,
+            });
+            if (!data) return null;
+            return { provider: 'cms', data };
         }
     }
 }

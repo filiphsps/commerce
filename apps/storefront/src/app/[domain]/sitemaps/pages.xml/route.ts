@@ -7,7 +7,6 @@ import { PagesApi } from '@/api/page';
 import { ShopifyApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { Locale } from '@/utils/locale';
-import { convertPrismicDateToISO } from '@/utils/prismic-date';
 import type { DynamicSitemapRouteParams } from '../../sitemap.xml/route';
 
 type SitemapPage = {
@@ -29,13 +28,11 @@ export async function GET({}: NextRequest, { params }: { params: DynamicSitemapR
     const pages: SitemapPage[] = [];
     if (pagesResult) {
         switch (pagesResult.provider) {
-            case 'prismic':
+            case 'cms':
                 for (const page of pagesResult.items) {
-                    if (!page.url) continue;
-                    pages.push({
-                        url: page.url.split('/').slice(2).join('/'),
-                        lastmod: convertPrismicDateToISO(page.last_publication_date),
-                    });
+                    const p = page as { slug?: string; updatedAt?: string };
+                    if (!p.slug) continue;
+                    pages.push({ url: p.slug, lastmod: p.updatedAt ?? null });
                 }
                 break;
             case 'shopify':

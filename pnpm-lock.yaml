@@ -513,6 +513,9 @@ importers:
       '@next/third-parties':
         specifier: 16.2.6
         version: 16.2.6(next@16.2.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(react@19.2.6)
+      '@nordcom/commerce-cms':
+        specifier: workspace:*
+        version: link:../../packages/cms
       '@nordcom/commerce-db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -537,6 +540,18 @@ importers:
       '@opentelemetry/sdk-logs':
         specifier: 0.217.0
         version: 0.217.0(@opentelemetry/api@1.9.1)
+      '@payloadcms/db-mongodb':
+        specifier: 3.84.0
+        version: 3.84.0(payload@3.84.0(graphql@16.14.0)(typescript@6.0.3))
+      '@payloadcms/plugin-multi-tenant':
+        specifier: 3.84.0
+        version: 3.84.0(@payloadcms/ui@3.84.0(@types/react@19.2.14)(monaco-editor@0.55.1)(next@16.2.6(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(payload@3.84.0(graphql@16.14.0)(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3))(payload@3.84.0(graphql@16.14.0)(typescript@6.0.3))
+      '@payloadcms/richtext-lexical':
+        specifier: 3.84.0
+        version: 3.84.0(@faceless-ui/modal@3.0.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(@faceless-ui/scroll-info@2.0.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(@payloadcms/next@3.84.0(@types/react@19.2.14)(graphql@16.14.0)(monaco-editor@0.55.1)(next@16.2.6(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(payload@3.84.0(graphql@16.14.0)(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3))(@types/react@19.2.14)(monaco-editor@0.55.1)(next@16.2.6(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(payload@3.84.0(graphql@16.14.0)(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3)(yjs@13.6.30)
+      '@payloadcms/storage-s3':
+        specifier: 3.84.0
+        version: 3.84.0(@types/react@19.2.14)(monaco-editor@0.55.1)(next@16.2.6(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(payload@3.84.0(graphql@16.14.0)(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3)
       '@prismicio/client':
         specifier: 7.21.8
         version: 7.21.8
@@ -621,6 +636,9 @@ importers:
       nprogress:
         specifier: 0.2.0
         version: 0.2.0
+      payload:
+        specifier: 3.84.0
+        version: 3.84.0(graphql@16.14.0)(typescript@6.0.3)
       react:
         specifier: 19.2.6
         version: 19.2.6

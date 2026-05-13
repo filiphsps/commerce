@@ -4,12 +4,10 @@ import { Shop } from '@nordcom/commerce-db';
 import { Search as SearchIcon } from 'lucide-react';
 import Image from 'next/image';
 import { type HTMLProps, Suspense } from 'react';
-import { HeaderApi, MenuApi } from '@/api/navigation';
 import { CartButton } from '@/components/header/cart-button';
 import { HeaderMenu } from '@/components/header/header-menu';
 import { HeaderNavigation } from '@/components/header/header-navigation';
 import Link from '@/components/link';
-import CustomHTML from '@/slices/common/CustomHtml';
 import { getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
 
 import { HeaderAccountSection } from './header-account-section';
@@ -22,36 +20,17 @@ export type HeaderProps = {
 const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) => {
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
 
-    const header = await HeaderApi({ shop, locale });
-
-    const menu = await MenuApi({ shop, locale });
-    const slices = menu?.slices ?? [];
+    // CMS-managed header + menu slices have moved to the @nordcom/commerce-cms
+    // Header global. The migration wires them in via the new BlockRenderer /
+    // nav-item field in a follow-up; for now the header renders without CMS
+    // overrides (logo + cart + account section continue working).
+    const slices: unknown[] = [];
 
     const { logo } = shop.design.header;
     const { t } = getTranslations('common', i18n);
 
     return (
         <>
-            {header?.slices.map((slice, index) => (
-                <CustomHTML
-                    key={slice.id}
-                    {...{
-                        slice,
-                        index,
-                        slices,
-                        context: {
-                            shop: {
-                                ...shop,
-                                commerceProvider: {},
-                                contentProvider: {},
-                            },
-                            i18n,
-                            locale,
-                        },
-                    }}
-                />
-            ))}
-
             <section
                 className="sticky top-0 z-20 flex w-full flex-col items-center overscroll-contain shadow-none transition-shadow duration-150 [grid-area:header] group-data-[menu-open=true]/body:shadow-lg group-data-[scrolled=true]/body:shadow-lg md:max-h-[95dvh]"
                 {...props}
@@ -101,16 +80,16 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
                     </header>
                 </section>
 
-                {slices.length >= 0 ? (
+                {slices.length > 0 ? (
                     <section className="flex h-12 w-full flex-col items-center justify-center gap-0 border-0 border-gray-200 border-t border-b border-solid bg-white text-black group-data-[menu-open=true]/body:border-b-gray-100">
                         <Suspense key="layout.header.header-navigation" fallback={<HeaderNavigation.skeleton />}>
-                            <HeaderNavigation shop={shop} i18n={i18n} locale={locale} slices={slices} />
+                            <HeaderNavigation shop={shop} i18n={i18n} locale={locale} slices={slices as never} />
                         </Suspense>
                     </section>
                 ) : null}
 
                 <Suspense key="layout.header.header-menu" fallback={<div className="h-0 w-full border-0" />}>
-                    <HeaderMenu slices={slices} />
+                    <HeaderMenu slices={slices as never} />
                 </Suspense>
             </section>
         </>
