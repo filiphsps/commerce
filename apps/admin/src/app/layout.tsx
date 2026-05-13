@@ -1,13 +1,17 @@
-import './globals.css';
-
-import { GeistMono } from 'geist/font/mono';
+/**
+ * Root layout for the admin app. Intentionally a passthrough — the actual
+ * `<html>/<body>` shell lives in `(app)/layout.tsx` (regular admin routes)
+ * and `(payload)/layout.tsx` (Payload's own RootLayout).
+ *
+ * Next 16 allows the root layout to skip `<html>/<body>` as long as every
+ * top-level route group provides them. That lets Payload's RootLayout render
+ * unimpeded — otherwise it would nest its own `<html>` inside ours and break
+ * the admin UI.
+ */
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 
-import { Providers } from '@/components/providers';
 import { ADMIN_URL } from '@/utils/domains';
-import { primaryFont } from '@/utils/fonts';
-import { cn } from '@/utils/tailwind';
 
 export const viewport: Viewport = {
     initialScale: 1,
@@ -40,16 +44,6 @@ export const metadata: Metadata = {
     },
 };
 
-export default async function RootLayout({ children }: { children: ReactNode }) {
-    return (
-        <html lang="en" className={cn(primaryFont.className, primaryFont.variable, GeistMono.variable)}>
-            <head>
-                <meta name="apple-mobile-web-app-capable" content="yes" />
-                <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-            </head>
-            <body className="group/body grid min-h-[100svh] grid-cols-[100%] grid-rows-1 overflow-x-hidden overscroll-x-none font-sans">
-                <Providers>{children}</Providers>
-            </body>
-        </html>
-    );
+export default function RootLayout({ children }: { children: ReactNode }) {
+    return children;
 }

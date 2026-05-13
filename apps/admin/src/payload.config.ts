@@ -106,9 +106,15 @@ const recomputeRoles = async (email: string) => {
     return computeRolesFromShopMembership({ email, isOperator, shopCollaborators });
 };
 
+// Mirror the cookie naming in apps/admin/src/utils/auth.config.ts. In prod
+// (NEXTAUTH_URL is set) NextAuth writes a `__Secure-` prefixed cookie; locally
+// it uses the bare name. NEXTAUTH_COOKIE_NAME is an explicit override for
+// non-default deployments.
+const defaultCookieName =
+    process.env.NEXTAUTH_URL ? '__Secure-next-auth.session-token' : 'next-auth.session-token';
 const strategy = buildNextAuthStrategy({
     secret: NEXTAUTH_SECRET,
-    cookieName: process.env.NEXTAUTH_COOKIE_NAME ?? 'next-auth.session-token',
+    cookieName: process.env.NEXTAUTH_COOKIE_NAME ?? defaultCookieName,
     findOrCreateUser,
     recomputeRoles,
 });
