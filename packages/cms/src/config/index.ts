@@ -5,6 +5,13 @@ import { buildConfig } from 'payload';
 import { allCollections, buildUsers } from '../collections';
 import { buildMultiTenantPlugin, storagePluginFromEnv } from '../plugins';
 
+export type BuildLivePreviewUrlArgs = {
+    tenantId: string;
+    collection: string;
+    data: { slug?: string; shopifyHandle?: string };
+    locale: string;
+};
+
 export type BuildPayloadConfigOptions = {
     secret: string;
     mongoUrl: string;
@@ -21,6 +28,11 @@ export type BuildPayloadConfigOptions = {
     authStrategies?: AuthStrategy[];
     /** Disable password-based login in favour of the provided strategies. */
     disablePasswordLogin?: boolean;
+    /** Optional live-preview URL builder for the admin iframe. */
+    livePreview?: {
+        url: (args: BuildLivePreviewUrlArgs) => string;
+        breakpoints?: Array<{ label: string; name: string; width: number; height: number }>;
+    };
 };
 
 const DEFAULT_LOCALES = ['en-US', 'sv', 'de', 'es', 'fr', 'no'];
@@ -35,6 +47,7 @@ export const buildPayloadConfig = async ({
     defaultLocale = 'en-US',
     authStrategies,
     disablePasswordLogin,
+    livePreview,
 }: BuildPayloadConfigOptions): Promise<SanitizedConfig> => {
     const plugins = [buildMultiTenantPlugin()];
     if (enableStorage) {
@@ -46,6 +59,45 @@ export const buildPayloadConfig = async ({
         c.slug === 'users' ? buildUsers({ authStrategies, disablePasswordLogin }) : c,
     );
 
+    const adminConfig = includeAdmin
+        ? {
+              admin: {
+                  user: 'users',
+                  meta: { titleSuffix: ' — Nordcom CMS' },
+                  ...(livePreview
+                      ? {
+                            livePreview: {
+                                breakpoints: livePreview.breakpoints ?? [
+                                    { label: 'Mobile', name: 'mobile', width: 375, height: 667 },
+                                    { label: 'Tablet', name: 'tablet', width: 768, height: 1024 },
+                                    { label: 'Desktop', name: 'desktop', width: 1440, height: 900 },
+                                ],
+                                url: ((args: {
+                                    data?: Record<string, unknown>;
+                                    collectionConfig?: { slug?: string };
+                                    locale?: { code?: string };
+                                }) => {
+                                    const d = (args.data ?? {}) as {
+                                        tenant?: string | { id?: string };
+                                        slug?: string;
+                                        shopifyHandle?: string;
+                                    };
+                                    const tenantId =
+                                        typeof d.tenant === 'string' ? d.tenant : (d.tenant?.id ?? '');
+                                    return livePreview.url({
+                                        tenantId: String(tenantId),
+                                        collection: args.collectionConfig?.slug ?? '',
+                                        data: { slug: d.slug, shopifyHandle: d.shopifyHandle },
+                                        locale: args.locale?.code ?? 'en-US',
+                                    });
+                                }) as never,
+                            },
+                        }
+                      : {}),
+              },
+          }
+        : {};
+
     return buildConfig({
         secret,
         serverURL: serverUrl,
@@ -54,7 +106,7 @@ export const buildPayloadConfig = async ({
         collections,
         localization: { locales, defaultLocale, fallback: true },
         plugins,
-        ...(includeAdmin ? { admin: { user: 'users', meta: { titleSuffix: ' — Nordcom CMS' } } } : {}),
+        ...adminConfig,
         routes: { admin: '/cms' },
     });
 };

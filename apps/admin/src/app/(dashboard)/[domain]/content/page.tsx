@@ -2,7 +2,6 @@ import 'server-only';
 
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
-import { Heading } from '@nordcom/nordstar';
 import type { Metadata, Route } from 'next';
 import { notFound, redirect } from 'next/navigation';
 import { auth } from '@/auth';
@@ -25,8 +24,9 @@ export default async function ShopContentPagePage({ params }: ShopContentPagePro
 
     const { domain } = await params;
 
+    let shop: { id: string };
     try {
-        await Shop.findByDomain(domain, { convert: true });
+        shop = (await Shop.findByDomain(domain, { convert: true })) as { id: string };
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
             notFound();
@@ -35,5 +35,5 @@ export default async function ShopContentPagePage({ params }: ShopContentPagePro
         throw error;
     }
 
-    return <Heading level="h1">Content</Heading>;
+    redirect(`/cms?tenant=${shop.id}` as Route);
 }

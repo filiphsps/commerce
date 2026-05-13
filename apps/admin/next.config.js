@@ -3,6 +3,7 @@ import 'dotenv/config';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { withPayload } from '@payloadcms/next/withPayload';
 import createVercelToolbar from '@vercel/toolbar/plugins/next';
 
 const withVercelToolbar = createVercelToolbar({
@@ -120,4 +121,4 @@ const config = {
     skipTrailingSlashRedirect: true,
 };
 
-export default withVercelToolbar(config);
+export default withPayload(withVercelToolbar(config));
