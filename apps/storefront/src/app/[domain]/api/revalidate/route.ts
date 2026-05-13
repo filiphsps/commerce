@@ -23,8 +23,20 @@ export async function POST(req: NextRequest, { params }: { params: RevalidateApi
     if (headerHmac) {
         const secret = process.env.SHOPIFY_WEBHOOK_SECRET;
         if (!secret) {
+            // Missing secret means we cannot verify Shopify origin. The
+            // previous logging-only fallback would silently keep working in
+            // prod if the env var was dropped, leaving the endpoint open to
+            // anyone with a domain in the table — they could thrash the
+            // cache with no auth. Reject hard outside of dev so it surfaces
+            // in monitoring instead of being a stealth foot-gun.
+            if (process.env.NODE_ENV !== 'development') {
+                return NextResponse.json(
+                    { status: 503, error: 'SHOPIFY_WEBHOOK_SECRET is not configured' },
+                    { status: 503, headers: noStoreHeaders },
+                );
+            }
             console.warn(
-                'SHOPIFY_WEBHOOK_SECRET is not set — accepting Shopify webhook without HMAC validation (dev mode).',
+                '[revalidate] SHOPIFY_WEBHOOK_SECRET is not set — accepting Shopify webhook without HMAC validation. This is permitted in dev only.',
             );
         } else if (!validateShopifyHmac(rawBody, headerHmac, secret)) {
             return NextResponse.json({ status: 401, error: 'invalid HMAC' }, { status: 401, headers: noStoreHeaders });
