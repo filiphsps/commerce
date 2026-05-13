@@ -9,8 +9,13 @@ export interface WrapOpts {
 	stalenessGuard?: boolean;
 }
 
-export interface CacheInstance<T = unknown, Q = unknown> {
-	schema: CacheSchemaShape;
+export interface CacheInstance<
+	NS extends string = string,
+	T = unknown,
+	Q = unknown,
+	E extends EntitiesMap = EntitiesMap,
+> {
+	schema: CacheSchemaShape<NS, T, Q, E>;
 	keys: KeyFactory<T, Q>;
 	wrap<R>(key: CacheKey, fetcher: () => Promise<R>, opts?: WrapOpts): Promise<R>;
 	read<R = unknown>(key: CacheKey): Promise<R | undefined>;
@@ -22,7 +27,7 @@ export function createCacheInstance<NS extends string, T, Q, E extends EntitiesM
 	cache: CacheSchema<NS, T, Q, E>,
 	adapter: CacheAdapter,
 	options: { logger?: ILogger } = {},
-): CacheInstance<T, Q> {
+): CacheInstance<NS, T, Q, E> {
 	const ctx: AdapterCtx = { schema: cache.schema, logger: options.logger ?? consoleLogger };
 	const keys = buildKeyFactory(cache.schema);
 
