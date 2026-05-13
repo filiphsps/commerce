@@ -31,7 +31,13 @@ const config = ({
                 },
             },
         },
-        secret: process.env.AUTH_SECRET,
+        // Mirror the env-name fallback the admin app uses. A deployment that
+        // sets only `NEXTAUTH_SECRET` (Auth.js v5 default) would otherwise
+        // leave the storefront's NextAuth with `secret: undefined`, which
+        // silently breaks session encryption — and the failure mode looks
+        // like "customers can't stay logged in" rather than the underlying
+        // misconfiguration.
+        secret: process.env.NEXTAUTH_SECRET ?? process.env.AUTH_SECRET,
         debug: false,
     } satisfies NextAuthConfig;
 };

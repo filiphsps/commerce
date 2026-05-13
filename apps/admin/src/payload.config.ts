@@ -63,7 +63,13 @@ const lookupUserId = async (email: string): Promise<string | undefined> => {
     try {
         const result = await UserService.model.findOne({ email }).select('_id').lean();
         return result?._id ? String(result._id) : undefined;
-    } catch {
+    } catch (err) {
+        // The previous empty-catch returned `undefined` for both "no such
+        // user" and "DB connection dropped" — and a dropped Mongo connection
+        // would silently flow downstream to `findShopsForUser` → "no
+        // tenants" → "user has no access to anything," with no log to
+        // explain why. Log so the incident is visible.
+        console.error('[payload-config] lookupUserId failed:', err);
         return undefined;
     }
 };
@@ -74,7 +80,8 @@ const findShopsForUser = async (email: string): Promise<Array<{ shopId: string }
     try {
         const shops = await Shop.model.find({ 'collaborators.user': userId }).select('_id').lean();
         return shops.map((s) => ({ shopId: String(s._id) }));
-    } catch {
+    } catch (err) {
+        console.error('[payload-config] findShopsForUser failed:', err);
         return [];
     }
 };
