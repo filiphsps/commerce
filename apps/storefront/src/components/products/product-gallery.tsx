@@ -100,7 +100,7 @@ const ProductGallery = ({
                                     setNext(null);
                                 }}
                                 className={cn(
-                                    'h-fit w-full object-contain object-center opacity-1 transition-opacity duration-500 md:h-full md:max-h-[30rem]',
+                                    'h-fit w-full object-contain object-center opacity-100 transition-opacity duration-500 md:h-full md:max-h-[30rem]',
                                     isLoading && 'opacity-0 transition-none',
                                     primaryImageClassName,
                                 )}
