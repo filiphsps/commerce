@@ -1,5 +1,5 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { GenericError‎, InvalidContentProviderError, InvalidShopError } from '@nordcom/commerce-errors';
+import { GenericError, InvalidContentProviderError, InvalidShopError } from '@nordcom/commerce-errors';
 import type { Client, ClientConfig, LinkResolverFunction } from '@prismicio/client';
 import * as prismic from '@prismicio/client';
 import { experimental_taintUniqueValue } from 'react';
