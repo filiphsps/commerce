@@ -101,7 +101,7 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
                     </header>
                 </section>
 
-                {slices.length <= 0 ? (
+                {slices.length => 0 ? (
                     <section className="flex h-12 w-full flex-col items-center justify-center gap-0 border-0 border-gray-200 border-t border-b border-solid bg-white text-black group-data-[menu-open=true]/body:border-b-gray-100">
                         <Suspense key="layout.header.header-navigation" fallback={<HeaderNavigation.skeleton />}>
                             <HeaderNavigation shop={shop} i18n={i18n} locale={locale} slices={slices} />
