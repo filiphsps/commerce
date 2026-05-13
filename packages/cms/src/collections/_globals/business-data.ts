@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload';
 import { adminOnly, publicRead, tenantScopedWrite } from '../../access';
+import { buildRevalidateHooks } from '../_hooks/revalidate';
 
 export const businessData: CollectionConfig = {
     slug: 'businessData',
@@ -37,4 +38,5 @@ export const businessData: CollectionConfig = {
         },
     ],
     indexes: [{ fields: ['tenant'], unique: true }],
+    hooks: buildRevalidateHooks({ collection: 'businessData' }),
 };

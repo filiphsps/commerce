@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload';
 import { adminOnly, publicRead, tenantScopedWrite } from '../../access';
 import { imageField, linkField, navItemField } from '../../fields';
+import { buildRevalidateHooks } from '../_hooks/revalidate';
 
 export const header: CollectionConfig = {
     slug: 'header',
@@ -26,4 +27,5 @@ export const header: CollectionConfig = {
         linkField({ name: 'cta' }),
     ],
     indexes: [{ fields: ['tenant'], unique: true }],
+    hooks: buildRevalidateHooks({ collection: 'header' }),
 };

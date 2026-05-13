@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload';
 import { adminOnly, tenantScopedRead, tenantScopedWrite } from '../access';
 import { allBlocks } from '../blocks';
 import { seoGroup } from '../fields';
+import { buildRevalidateHooks } from './_hooks/revalidate';
 
 export const pages: CollectionConfig = {
     slug: 'pages',
@@ -20,4 +21,5 @@ export const pages: CollectionConfig = {
         seoGroup(),
     ],
     indexes: [{ fields: ['tenant', 'slug'], unique: true }],
+    hooks: buildRevalidateHooks({ collection: 'pages' }),
 };

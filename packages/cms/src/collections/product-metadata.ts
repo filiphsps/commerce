@@ -3,6 +3,7 @@ import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import { adminOnly, tenantScopedRead, tenantScopedWrite } from '../access';
 import { allBlocks } from '../blocks';
 import { seoGroup } from '../fields';
+import { buildRevalidateHooks } from './_hooks/revalidate';
 
 export const productMetadata: CollectionConfig = {
     slug: 'productMetadata',
@@ -27,4 +28,5 @@ export const productMetadata: CollectionConfig = {
         seoGroup(),
     ],
     indexes: [{ fields: ['tenant', 'shopifyHandle'], unique: true }],
+    hooks: buildRevalidateHooks({ collection: 'productMetadata' }),
 };

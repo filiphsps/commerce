@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload';
 import { adminOnly, publicRead, tenantScopedWrite } from '../../access';
 import { linkField } from '../../fields';
+import { buildRevalidateHooks } from '../_hooks/revalidate';
 
 export const footer: CollectionConfig = {
     slug: 'footer',
@@ -44,4 +45,5 @@ export const footer: CollectionConfig = {
         { name: 'copyrightLine', type: 'text', localized: true },
     ],
     indexes: [{ fields: ['tenant'], unique: true }],
+    hooks: buildRevalidateHooks({ collection: 'footer' }),
 };
