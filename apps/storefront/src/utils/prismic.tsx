@@ -40,6 +40,13 @@ export const createClient = ({ shop, locale, ...config }: CreateClientOptions): 
                 tags: ['prismic', `prismic.${shop.id}`, shop.domain, locale.code],
             },
         },
+        fetch: async (...args: Parameters<typeof fetch>) => {
+            const res = fetch(...args);
+            if (res.ok) return res;
+
+            console.warn('Prismic request failed', res);
+            return null;
+        }
     });
 
     //enableAutoPreviews({ client });
