@@ -42,8 +42,24 @@ async function setCookies(res: NextResponse, cookies: string[][] = []): Promise<
 async function handleCommerceError(req: NextRequest, error: Error) {
     const hostname = hostnameFromRequest(req);
 
+    // `getGlobalServiceDomain()` throws when `SERVICE_DOMAIN` is unset. The
+    // previous code let that throw bubble through the error handler — so a
+    // misconfigured deployment turned every "unknown shop" / commerce error
+    // into an uncaught 500 from the edge middleware, hiding the real cause.
+    // Fall back to a plain 503 so the misconfiguration is obvious in logs.
+    let serviceDomain: string;
+    try {
+        serviceDomain = getGlobalServiceDomain();
+    } catch (envError) {
+        console.error('[storefront-middleware] cannot route to service domain:', envError);
+        return new NextResponse(
+            `Service unavailable: ${(envError as { message?: string }).message ?? 'misconfiguration'}`,
+            { status: 503, headers: { 'Cache-Control': 'no-store' } },
+        );
+    }
+
     const newUrl = new URL(req.url);
-    newUrl.hostname = getGlobalServiceDomain();
+    newUrl.hostname = serviceDomain;
     newUrl.protocol = 'https';
     newUrl.port = '443';
     newUrl.pathname = '/status/unknown-error/'; // Default error.
@@ -86,14 +102,23 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     } catch (error: unknown) {
         console.error(error);
 
-        newUrl.hostname = getGlobalServiceDomain();
-        newUrl.protocol = 'https';
-        newUrl.port = '443';
-        newUrl.searchParams.set('shop', hostnameFromRequest(req));
-
-        // Check if we're requesting a file, if so, let it pass.
-        if (FILE_TEST.test(newUrl.pathname)) {
-            return NextResponse.rewrite(newUrl);
+        // `getGlobalServiceDomain()` throws if SERVICE_DOMAIN is unset, so we
+        // can't unconditionally call it inline — that would turn a missing
+        // env var into a 500 on every unknown-shop request, masking the real
+        // problem. Defer the service-domain rewrite to handleCommerceError
+        // (which now degrades gracefully), and only short-circuit asset
+        // requests when we actually have a service domain to fall back to.
+        try {
+            const serviceDomain = getGlobalServiceDomain();
+            if (FILE_TEST.test(newUrl.pathname)) {
+                newUrl.hostname = serviceDomain;
+                newUrl.protocol = 'https';
+                newUrl.port = '443';
+                newUrl.searchParams.set('shop', hostnameFromRequest(req));
+                return NextResponse.rewrite(newUrl);
+            }
+        } catch (envError) {
+            console.warn('[storefront-middleware] SERVICE_DOMAIN unset, skipping file passthrough:', envError);
         }
 
         return handleCommerceError(req, (error as undefined | Error) || new UnknownError(error?.toString?.()));
