@@ -1,4 +1,5 @@
-import type { MediaGridBlockNode, MediaItem } from './types';
+import { resolveLinkRef } from './resolve-link-ref';
+import type { BlockRenderContext, MediaGridBlockNode, MediaItem } from './types';
 
 const imageUrl = (item: MediaItem): string | undefined => {
     if (!item.image) return undefined;
@@ -9,14 +10,26 @@ const imageAlt = (item: MediaItem): string => {
     return typeof item.image === 'string' ? '' : (item.image.alt ?? '');
 };
 
-export function MediaGridBlock({ block }: { block: MediaGridBlockNode }) {
+export function MediaGridBlock({
+    block,
+    context,
+}: { block: MediaGridBlockNode; context: BlockRenderContext }) {
     return (
         <div className="cms-media-grid" data-item-type={block.itemType} style={{ ['--cols' as string]: block.columns }}>
             {block.items.map((item, idx) => {
                 const url = imageUrl(item);
                 const inner = url ? <img src={url} alt={imageAlt(item)} loading="lazy" /> : null;
-                const wrapped = item.link?.url ? (
-                    <a href={item.link.url} target={item.link.openInNewTab ? '_blank' : undefined} rel="noreferrer">
+                // Same fix as BannerBlock — the previous code only honoured
+                // raw `link.url`, dropping every internal link kind. Route
+                // through resolveLinkRef so page/article/product/collection
+                // links wrap the image too.
+                const resolved = resolveLinkRef(item.link, { locale: context.locale });
+                const wrapped = resolved ? (
+                    <a
+                        href={resolved.href}
+                        target={resolved.openInNewTab ? '_blank' : undefined}
+                        rel="noreferrer"
+                    >
                         {inner}
                     </a>
                 ) : (

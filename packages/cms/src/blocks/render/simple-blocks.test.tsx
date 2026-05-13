@@ -13,6 +13,17 @@ import { BannerBlock } from './BannerBlock';
 import { HtmlBlock } from './HtmlBlock';
 import { MediaGridBlock } from './MediaGridBlock';
 import { RichTextBlock } from './RichTextBlock';
+import type { BlockRenderContext } from './types';
+
+const ctx: BlockRenderContext = {
+    shop: { id: 'shop-1', domain: 'example.com' },
+    locale: { code: 'en-US' },
+    loaders: {
+        loadCollection: async () => null,
+        loadVendors: async () => [],
+        loadOverview: async () => [],
+    },
+};
 
 describe('AlertBlock', () => {
     it('renders title + body with the severity in className and data-severity', () => {
@@ -48,11 +59,12 @@ describe('BannerBlock', () => {
     it('renders heading + cta and reflects alignment in className', () => {
         const { container, getByText } = render(
             <BannerBlock
+                context={ctx}
                 block={{
                     blockType: 'banner',
                     heading: 'Hello',
                     alignment: 'center',
-                    cta: { url: '/x', label: 'Buy', openInNewTab: true },
+                    cta: { kind: 'external', url: '/x', label: 'Buy', openInNewTab: true },
                 }}
             />,
         );
@@ -64,14 +76,50 @@ describe('BannerBlock', () => {
         expect(section?.className).toContain('cms-banner--align-center');
     });
 
-    it('does not render the CTA when cta.url is missing', () => {
+    it('resolves a kind=page CTA to a localised storefront URL', () => {
+        // Before the fix the renderer only read `cta.url`, so a CTA built in the
+        // CMS UI as "Internal page → About" had no href and silently
+        // disappeared from the rendered banner.
         const { container } = render(
             <BannerBlock
+                context={ctx}
+                block={{
+                    blockType: 'banner',
+                    heading: 'Hi',
+                    alignment: 'left',
+                    cta: { kind: 'page', page: { slug: 'about' }, label: 'About us' },
+                }}
+            />,
+        );
+        const anchor = container.querySelector('a');
+        expect(anchor?.getAttribute('href')).toBe('/en-US/about/');
+        expect(anchor?.textContent).toBe('About us');
+    });
+
+    it('resolves a kind=product CTA via productMetadata.shopifyHandle', () => {
+        const { container } = render(
+            <BannerBlock
+                context={ctx}
+                block={{
+                    blockType: 'banner',
+                    heading: 'Hi',
+                    alignment: 'left',
+                    cta: { kind: 'product', product: { shopifyHandle: 'red-shoe' }, label: 'Shop' },
+                }}
+            />,
+        );
+        expect(container.querySelector('a')?.getAttribute('href')).toBe('/en-US/products/red-shoe/');
+    });
+
+    it('does not render the CTA when the link is unfilled', () => {
+        const { container } = render(
+            <BannerBlock
+                context={ctx}
                 block={{
                     blockType: 'banner',
                     heading: 'Bare',
                     alignment: 'left',
-                    cta: { label: 'No-op' },
+                    cta: { kind: 'page', label: 'No-op' },
                 }}
             />,
         );
@@ -81,6 +129,7 @@ describe('BannerBlock', () => {
     it('renders inline background style when background is an object with url', () => {
         const { container } = render(
             <BannerBlock
+                context={ctx}
                 block={{
                     blockType: 'banner',
                     heading: 'BG',
@@ -96,6 +145,7 @@ describe('BannerBlock', () => {
     it('omits inline background style when background is a string (legacy)', () => {
         const { container } = render(
             <BannerBlock
+                context={ctx}
                 block={{
                     blockType: 'banner',
                     heading: 'BG',
@@ -111,6 +161,7 @@ describe('BannerBlock', () => {
     it('omits subheading paragraph when subheading absent', () => {
         const { container } = render(
             <BannerBlock
+                context={ctx}
                 block={{ blockType: 'banner', heading: 'Solo', alignment: 'left' } as never}
             />,
         );
@@ -138,6 +189,7 @@ describe('MediaGridBlock', () => {
     it('renders an image with caption + wraps in a link when item.link.url present', () => {
         const { container } = render(
             <MediaGridBlock
+                context={ctx}
                 block={{
                     blockType: 'media-grid',
                     itemType: 'image',
@@ -146,7 +198,7 @@ describe('MediaGridBlock', () => {
                         {
                             image: { id: 'm1', url: '/a.jpg', alt: 'first' },
                             caption: 'cap',
-                            link: { url: '/dest', openInNewTab: false },
+                            link: { kind: 'external', url: '/dest', openInNewTab: false },
                         },
                     ],
                 }}
@@ -162,6 +214,7 @@ describe('MediaGridBlock', () => {
     it('does not wrap in a link when link.url is absent', () => {
         const { container } = render(
             <MediaGridBlock
+                context={ctx}
                 block={{
                     blockType: 'media-grid',
                     itemType: 'image',
@@ -174,9 +227,30 @@ describe('MediaGridBlock', () => {
         expect(container.querySelector('img')).not.toBeNull();
     });
 
+    it('wraps in a link for kind=collection items via collectionRef.shopifyHandle', () => {
+        const { container } = render(
+            <MediaGridBlock
+                context={ctx}
+                block={{
+                    blockType: 'media-grid',
+                    itemType: 'image',
+                    columns: 1,
+                    items: [
+                        {
+                            image: { id: 'm', url: '/a.jpg' },
+                            link: { kind: 'collection', collectionRef: { shopifyHandle: 'tops' } },
+                        },
+                    ],
+                }}
+            />,
+        );
+        expect(container.querySelector('a')?.getAttribute('href')).toBe('/en-US/collections/tops/');
+    });
+
     it('skips the <img> element when item has no usable image url (string id)', () => {
         const { container } = render(
             <MediaGridBlock
+                context={ctx}
                 block={{
                     blockType: 'media-grid',
                     itemType: 'image',
@@ -192,6 +266,7 @@ describe('MediaGridBlock', () => {
     it('renders no figures for empty items', () => {
         const { container } = render(
             <MediaGridBlock
+                context={ctx}
                 block={{ blockType: 'media-grid', itemType: 'image', columns: 3, items: [] }}
             />,
         );

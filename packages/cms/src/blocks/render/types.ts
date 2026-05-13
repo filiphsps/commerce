@@ -60,10 +60,31 @@ export type AlertBlockNode = {
 
 export type HtmlBlockNode = { blockType: 'html'; html: string };
 
+/**
+ * Mirrors the shape the `linkField` group emits — `kind` discriminates which
+ * of `page`/`article`/`product`/`collectionRef`/`url` carries the actual
+ * destination. The renderers route this through `resolveLink()` (from the
+ * api package) so internal page/article/product/collection links resolve to
+ * proper storefront URLs instead of silently rendering nothing.
+ *
+ * The old renderers only read `link.url`, so anything other than
+ * `kind: 'external'` / `kind: 'anchor'` rendered as a missing link.
+ */
+export type LinkRef = {
+    kind?: 'page' | 'article' | 'product' | 'collection' | 'external' | 'anchor';
+    page?: { slug?: string } | string | null;
+    article?: { slug?: string } | string | null;
+    product?: { shopifyHandle?: string } | string | null;
+    collectionRef?: { shopifyHandle?: string } | string | null;
+    url?: string;
+    label?: string;
+    openInNewTab?: boolean;
+};
+
 export type MediaItem = {
     image?: { id: string; url?: string; alt?: string } | string | null;
     caption?: string;
-    link?: { url?: string; label?: string; openInNewTab?: boolean } | null;
+    link?: LinkRef | null;
 };
 
 export type MediaGridBlockNode = {
@@ -78,7 +99,7 @@ export type BannerBlockNode = {
     heading: string;
     subheading?: string;
     background?: { id: string; url?: string; alt?: string } | string | null;
-    cta?: { url?: string; label?: string; openInNewTab?: boolean } | null;
+    cta?: LinkRef | null;
     alignment: 'left' | 'center' | 'right';
 };
 

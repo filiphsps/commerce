@@ -27,9 +27,9 @@ export function BlockRenderer({ blocks, context }: { blocks: BlockNode[]; contex
                     case 'html':
                         return <HtmlBlock key={idx} block={block} />;
                     case 'media-grid':
-                        return <MediaGridBlock key={idx} block={block} />;
+                        return <MediaGridBlock key={idx} block={block} context={context} />;
                     case 'banner':
-                        return <BannerBlock key={idx} block={block} />;
+                        return <BannerBlock key={idx} block={block} context={context} />;
                     case 'columns':
                         return <ColumnsBlock key={idx} block={block} context={context} Renderer={BlockRenderer} />;
                     case 'collection':
