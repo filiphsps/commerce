@@ -19,24 +19,12 @@ export default defineProject({
                 replacement: resolve(__dirname, './src/locales'),
             },
             {
-                find: '@/slices',
-                replacement: resolve(__dirname, './src/slices'),
-            },
-            {
-                find: '@/slices/navigation',
-                replacement: resolve(__dirname, './src/slices/navigation'),
-            },
-            {
                 find: '@/pages',
                 replacement: resolve(__dirname, './src/app/[domain]/[locale]'),
             },
             {
                 find: /^@\/auth$/,
                 replacement: resolve(__dirname, './src/auth/auth.ts'),
-            },
-            {
-                find: '@/prismic/types',
-                replacement: resolve(__dirname, './prismicio-types.d.ts'),
             },
             {
                 find: '@',

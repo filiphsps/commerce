@@ -13,7 +13,7 @@ export type ShopTheme = {
     };
 };
 
-export const ContentProviders = ['prismic', 'shopify', 'builder.io'] as const;
+export const ContentProviders = ['cms', 'shopify', 'builder.io'] as const;
 export const CommerceProviders = ['shopify', 'stripe'] as const;
 
 export type ShopifyCommerceProvider = {
@@ -81,12 +81,7 @@ export interface ShopBase extends BaseDocument {
 
     contentProvider:
         | {
-              type: 'prismic';
-              authentication: {
-                  token: string;
-              };
-              repositoryName: string;
-              repository: string;
+              type: 'cms';
           }
         | {
               type: 'shopify';
@@ -255,21 +250,7 @@ export const ShopSchema = new Schema<ShopBase>(
                 type: Schema.Types.String,
                 enum: ContentProviders,
                 required: true,
-                default: 'prismic',
-            },
-            authentication: {
-                token: {
-                    type: Schema.Types.String,
-                    required: false,
-                },
-            },
-            repositoryName: {
-                type: Schema.Types.String,
-                required: false,
-            },
-            repository: {
-                type: Schema.Types.String,
-                required: false,
+                default: 'cms',
             },
         },
         commerceProvider: {

@@ -19,10 +19,6 @@ vi.mock('@/components/typography/content', () => ({
     Content: ({ children }: any) => <div>{children}</div>,
 }));
 
-vi.mock('@/components/typography/prismic-text', () => ({
-    PrismicText: ({ data }: any) => <span>{JSON.stringify(data)}</span>,
-}));
-
 import { FooterApi } from '@/api/footer';
 import Footer from '@/components/footer/footer';
 import { mockShop } from '@/utils/test/fixtures';

@@ -3,9 +3,7 @@ import 'server-only';
 import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { type ReactNode, Suspense } from 'react';
-import { PageApi } from '@/api/prismic/page';
 import { CartLines } from '@/components/cart/cart-lines';
-import PrismicPage from '@/components/cms/prismic-page';
 import PageContent from '@/components/page-content';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
@@ -19,18 +17,17 @@ export type CartContentProps = {
     header: ReactNode;
     paymentMethods?: ReactNode;
 };
-export default async function CartContent({ shop, locale, i18n, header, paymentMethods = null }: CartContentProps) {
-    let page: Awaited<ReturnType<typeof PageApi<'cart_page'>>> = null;
-    try {
-        page = await PageApi({ shop, locale, handle: 'cart', type: 'cart_page' });
-    } catch {}
 
+/**
+ * Cart-page CMS overlays (top/sidebar/bottom slices) were sourced from
+ * Prismic. With Prismic removed, the cart page renders without overlay
+ * content until a Cart page Block type is added to @nordcom/commerce-cms.
+ */
+export default async function CartContent({ locale, i18n, header, paymentMethods = null }: CartContentProps) {
     return (
         <PageContent className={styles.container}>
             <section className={cn(styles.content, 'gap-4 lg:gap-8')}>
                 <div className="flex flex-col gap-4">
-                    <PrismicPage shop={shop} locale={locale} slices={page?.slices} handle={'cart'} type={'cart_page'} />
-
                     <div className={cn(styles.lines, 'flex flex-col gap-3')} suppressHydrationWarning={true}>
                         {header}
 
@@ -42,18 +39,10 @@ export default async function CartContent({ shop, locale, i18n, header, paymentM
 
                 <Suspense fallback={<aside className={cn(styles.sidebar, 'h-32')} data-skeleton />}>
                     <CartSidebar locale={locale} i18n={i18n} className={styles.sidebar} paymentMethods={paymentMethods}>
-                        <PrismicPage
-                            shop={shop}
-                            locale={locale}
-                            slices={page?.sidebar_slices}
-                            handle={'cart'}
-                            type={'cart_page'}
-                        />
+                        {null}
                     </CartSidebar>
                 </Suspense>
             </section>
-
-            <PrismicPage shop={shop} locale={locale} slices={page?.bottom_slices} handle={'cart'} type={'cart_page'} />
         </PageContent>
     );
 }

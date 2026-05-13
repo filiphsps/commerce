@@ -19,8 +19,9 @@
 
 Nordcom Commerce is a production-grade, multi-tenant storefront platform that serves
 many tenants from a single deployment. It pairs **Next.js 16** with **Shopify** as the
-commerce backend and **Prismic** as the content layer, and ships an operator dashboard,
-a marketing site, and a small set of reusable packages — all in one TypeScript monorepo.
+commerce backend and an embedded **Payload CMS** for content, and ships an operator
+dashboard, a marketing site, and a small set of reusable packages — all in one
+TypeScript monorepo.
 
 ## Highlights
 
@@ -29,12 +30,13 @@ a marketing site, and a small set of reusable packages — all in one TypeScript
     `/[domain]/[locale]/…` segment, so adding a new shop is a database row, not a deploy.
 -   **Headless commerce.** Shopify Storefront API for catalog/cart/checkout, Shopify
     Admin API for back-office operations, all behind a uniform fetch layer.
--   **Composable content.** Prismic slices and structured documents drive marketing
-    pages, navigation, and component-level CMS overrides.
+-   **Composable content.** Payload CMS blocks and structured documents drive
+    marketing pages, navigation, and component-level CMS overrides, embedded in the
+    admin app and shared with the storefront via `@nordcom/commerce-cms`.
 -   **i18n that respects shops.** Locales live on the shop record; fallbacks degrade
     from `request → shop default → platform default` with recursion guards.
 -   **Edge-friendly caching.** Per-tenant, per-entity cache tags with surgical Shopify
-    and Prismic webhook revalidation.
+    webhook revalidation and CMS-driven `revalidateTag` hooks.
 -   **Type-safe end to end.** Strict TypeScript, `noUncheckedIndexedAccess`, and a
     typed error hierarchy used uniformly across packages.
 -   **One toolchain.** Turborepo + pnpm workspaces, Biome for lint/format, Vitest for

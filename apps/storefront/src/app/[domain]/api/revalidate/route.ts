@@ -1,7 +1,6 @@
 import { Shop } from '@nordcom/commerce-db';
 import { revalidateTag } from 'next/cache';
 import { type NextRequest, NextResponse } from 'next/server';
-import { parsePrismicWebhook } from '@/utils/webhooks/prismic';
 import { parseShopifyWebhook, validateShopifyHmac } from '@/utils/webhooks/shopify';
 
 const noStoreHeaders = { 'Cache-Control': 'no-store' };
@@ -45,27 +44,12 @@ export async function POST(req: NextRequest, { params }: { params: RevalidateApi
         return NextResponse.json({ status: 200, tags }, { status: 200, headers: noStoreHeaders });
     }
 
-    // Prismic webhook
-    let body: Record<string, unknown> = {};
-    try {
-        body = JSON.parse(rawBody);
-    } catch {
-        return NextResponse.json({ status: 400, error: 'invalid JSON body' }, { status: 400, headers: noStoreHeaders });
-    }
-
-    if (Array.isArray((body as { documents?: unknown[] }).documents)) {
-        const tags = parsePrismicWebhook({
-            shop,
-            body: body as { documents: Array<{ id: string; uid?: string; type: string }> },
-        });
-        for (const tag of tags) revalidateTag(tag, 'max');
-        return NextResponse.json({ status: 200, tags }, { status: 200, headers: noStoreHeaders });
-    }
-
-    return NextResponse.json({ status: 400, error: 'unknown webhook shape' }, { status: 400, headers: noStoreHeaders });
+    return NextResponse.json(
+        { status: 400, error: 'unrecognised webhook' },
+        { status: 400, headers: noStoreHeaders },
+    );
 }
 
 export async function GET(_req: NextRequest, _ctx: { params: RevalidateApiRouteParams }) {
-    // Prismic webhook test pings use GET. Acknowledge without revalidating.
     return NextResponse.json({ status: 200 }, { status: 200, headers: noStoreHeaders });
 }

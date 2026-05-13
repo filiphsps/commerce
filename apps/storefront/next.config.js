@@ -23,7 +23,7 @@ const config = {
     compress: true,
     reactCompiler: true,
     cacheComponents: true,
-    transpilePackages: ['@shopify/hydrogen-react', '@prismicio/client', '@slicemachine/adapter-next'],
+    transpilePackages: ['@shopify/hydrogen-react'],
     serverExternalPackages: ['crypto-js'],
     turbopack: { root: path.resolve(path.join(__dirname, '../..')) },
     devIndicators: {
@@ -68,10 +68,6 @@ const config = {
             {
                 protocol: 'https',
                 hostname: '**.nordcom.io',
-            },
-            {
-                protocol: 'https',
-                hostname: '**.prismic.io',
             },
             {
                 protocol: 'https',

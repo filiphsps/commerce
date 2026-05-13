@@ -6,9 +6,6 @@ import { Suspense } from 'react';
 import { FooterApi } from '@/api/footer';
 
 import FooterContent from '@/components/footer/footer-content';
-import Link from '@/components/link';
-import { Content } from '@/components/typography/content';
-import { PrismicText } from '@/components/typography/prismic-text';
 
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 
@@ -19,6 +16,7 @@ export type FooterProps = {
     locale: Locale;
     i18n: LocaleDictionary;
 };
+
 const Footer = async ({ shop, locale, i18n }: FooterProps) => {
     const footer = await FooterApi({ shop, locale });
     if (!footer) {
@@ -28,7 +26,6 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
     // TODO: This should be `design.footer`.
     const { logo } = shop.design.header;
 
-    // TODO: Dynamic copyright copy and content.
     return (
         <footer className="flex h-full max-h-max w-full items-center justify-around self-end overflow-hidden bg-primary p-2 pt-8 text-primary-foreground [grid-area:footer] md:p-3 md:pt-6">
             <div className="flex h-full w-full max-w-[var(--page-width)] flex-col items-stretch gap-4 md:gap-8 2xl:px-3">
@@ -49,42 +46,7 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
                                 draggable={false}
                             />
                         ) : null}
-
-                        <Content as="address" className="prose-sm font-medium not-italic prose-p:leading-snug">
-                            <PrismicText data={footer.address} styled={false} />
-                        </Content>
-
-                        {footer.custom_html ? (
-                            <div className="w-full" dangerouslySetInnerHTML={{ __html: footer.custom_html }} />
-                        ) : null}
                     </div>
-
-                    {footer.body.map(({ primary: { title }, items }, index) => {
-                        return (
-                            <div key={`${title}-${index}`} className={BLOCK_STYLES} data-align="right">
-                                {title ? (
-                                    <div className="font-extrabold text-lg leading-tight md:text-xl">{title}</div>
-                                ) : null}
-
-                                {items.length > 0 ? (
-                                    <div className="flex flex-wrap gap-2 *:after:font-extrabold *:after:opacity-75 *:after:content-[','] last:*:after:content-['.'] md:gap-y-1">
-                                        {items
-                                            .filter(({ title }) => title && title.length > 0)
-                                            .map((item) => (
-                                                <Link
-                                                    key={`${item.handle}-${item.title}`}
-                                                    href={item.handle || ''}
-                                                    target={item.handle?.startsWith('http') ? '_blank' : ''}
-                                                    className="text-base leading-none hover:underline focus-visible:underline md:text-sm"
-                                                >
-                                                    {item.title}
-                                                </Link>
-                                            ))}
-                                    </div>
-                                ) : null}
-                            </div>
-                        );
-                    })}
                 </section>
 
                 <Suspense key="layout.footer.footer-content" fallback={<FooterContent.skeleton />}>

@@ -166,72 +166,8 @@ describe('app/[domain]/api/revalidate', () => {
         });
     });
 
-    describe('POST — Prismic', () => {
-        it('busts per-doc tags from documents array', async () => {
-            revalidateTagMock.mockClear();
-            const req = makeRequest({
-                method: 'POST',
-                body: JSON.stringify({
-                    documents: [{ id: 'doc-a', uid: 'home', type: 'custom_page' }],
-                }),
-                headers: { 'content-type': 'application/json' },
-            });
-
-            const res = await POST(req as any, { params: Promise.resolve({ domain: 'mock.shop' }) } as any);
-            expect(res.status).toBe(200);
-            expect(revalidateTagMock).toHaveBeenCalledWith('prismic.shop-1.doc.custom_page.home', 'max');
-        });
-
-        it('calls revalidateTag for each document in documents array', async () => {
-            revalidateTagMock.mockClear();
-            const req = makeRequest({
-                method: 'POST',
-                body: JSON.stringify({
-                    documents: [
-                        { id: 'doc-a', uid: 'home', type: 'custom_page' },
-                        { id: 'doc-b', uid: 'about', type: 'custom_page' },
-                    ],
-                }),
-                headers: { 'content-type': 'application/json' },
-            });
-
-            const res = await POST(req as any, { params: Promise.resolve({ domain: 'mock.shop' }) } as any);
-            expect(res.status).toBe(200);
-            expect(revalidateTagMock).toHaveBeenCalledWith('prismic.shop-1.doc.custom_page.home', 'max');
-            expect(revalidateTagMock).toHaveBeenCalledWith('prismic.shop-1.doc.custom_page.about', 'max');
-            expect(revalidateTagMock).toHaveBeenCalledTimes(2);
-        });
-
-        it('returns 200 with empty tags array for empty documents array', async () => {
-            revalidateTagMock.mockClear();
-            const req = makeRequest({
-                method: 'POST',
-                body: JSON.stringify({ documents: [] }),
-                headers: { 'content-type': 'application/json' },
-            });
-
-            const res = await POST(req as any, { params: Promise.resolve({ domain: 'mock.shop' }) } as any);
-            expect(res.status).toBe(200);
-            const data = await res.json();
-            expect(data.tags).toEqual([]);
-            expect(revalidateTagMock).not.toHaveBeenCalled();
-        });
-
-        it('returns 400 on invalid JSON body (non-Shopify path)', async () => {
-            revalidateTagMock.mockClear();
-            const req = makeRequest({
-                method: 'POST',
-                body: 'definitely-not-json',
-                headers: { 'content-type': 'text/plain' },
-            });
-
-            const res = await POST(req as any, { params: Promise.resolve({ domain: 'mock.shop' }) } as any);
-            expect(res.status).toBe(400);
-        });
-    });
-
     describe('POST — unknown shape', () => {
-        it('returns 400 when neither Shopify HMAC nor Prismic documents are present', async () => {
+        it('returns 400 when Shopify HMAC header is absent', async () => {
             revalidateTagMock.mockClear();
             const req = makeRequest({
                 method: 'POST',
@@ -264,7 +200,7 @@ describe('app/[domain]/api/revalidate', () => {
     });
 
     describe('GET', () => {
-        it('returns 200 empty for Prismic test pings', async () => {
+        it('returns 200 empty for liveness pings', async () => {
             const req = makeRequest({ method: 'GET', body: null as any, headers: {} });
             const res = await GET(req as any, { params: Promise.resolve({ domain: 'mock.shop' }) } as any);
             expect(res.status).toBe(200);

@@ -1,38 +1,18 @@
 'use client';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { UnknownCommerceProviderError, UnknownContentProviderError } from '@nordcom/commerce-errors';
-import { PrismicPreview } from '@prismicio/next';
+import { UnknownCommerceProviderError } from '@nordcom/commerce-errors';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
-import { Fragment, type ReactNode, Suspense, useSyncExternalStore } from 'react';
+import { Fragment, type ReactNode, Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Toaster as ToasterProvider } from 'sonner';
 import { CartFragment } from '@/api/shopify/cart';
 import { LiveChatProvider } from '@/components/live-chat-provider';
-import { PrismicRegistry } from '@/components/prismic-registry';
 import { ShopProvider } from '@/components/shop/provider';
 import { Toolbars } from '@/components/toolbars';
 import { useCartUtils } from '@/hooks/useCartUtils';
 import { BuildConfig } from '@/utils/build-config';
-import { isPreviewEnv } from '@/utils/is-preview-env';
 import type { CurrencyCode, Locale } from '@/utils/locale';
-import { createClient } from '@/utils/prismic';
-
-const subscribeToNothing = () => () => {};
-const getInternalTraffic = (): boolean => {
-    if (typeof window === 'undefined') {
-        return false;
-    }
-
-    // Use vercel toolbar to determine internal traffic.
-    // TODO: This should be some form of a utility function.
-    const value = localStorage.getItem('__vercel_toolbar');
-    if (value !== '1' || (!Number.isNaN(value) && Number.parseInt(value, 10) >= 1)) {
-        return false;
-    }
-
-    return true;
-};
 
 const RequiredHooks = ({ locale, children = null }: { shop: OnlineShop; locale: Locale; children?: ReactNode }) => {
     void useCartUtils({ locale });
@@ -72,38 +52,10 @@ const CommerceProvider = ({ shop, locale, children }: { shop: OnlineShop; locale
     }
 };
 
-const ContentProvider = ({
-    shop,
-    locale,
-    children,
-}: {
-    shop: OnlineShop;
-    domain: string;
-    locale: Locale;
-    children: ReactNode;
-}) => {
-    const isInternalTraffic = useSyncExternalStore<boolean>(subscribeToNothing, getInternalTraffic, () => false);
-
-    switch (shop.contentProvider.type) {
-        case 'prismic': {
-            return (
-                <PrismicRegistry client={createClient({ shop, locale })}>
-                    {children}
-
-                    {isPreviewEnv('domain') || isInternalTraffic ? (
-                        <PrismicPreview repositoryName={shop.contentProvider.repositoryName} />
-                    ) : null}
-                </PrismicRegistry>
-            );
-        }
-        case 'shopify': {
-            // TODO: Handle this.
-            return <>{children}</>;
-        }
-        default: {
-            throw new UnknownContentProviderError(shop.contentProvider.type);
-        }
-    }
+const ContentProvider = ({ children }: { shop: OnlineShop; domain: string; locale: Locale; children: ReactNode }) => {
+    // CMS content is fetched via Payload's Local API server-side; there is no
+    // client-side provider needed.
+    return <>{children}</>;
 };
 
 const ProvidersRegistry = ({

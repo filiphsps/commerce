@@ -59,10 +59,6 @@
         "format:check": {
             "cache": false
         },
-        "slicemachine": {
-            "cache": false,
-            "persistent": true
-        },
         "test:e2e": {
             "cache": false,
             "dependsOn": ["^build"],

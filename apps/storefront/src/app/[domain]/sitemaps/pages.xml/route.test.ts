@@ -116,13 +116,13 @@ describe('app/[domain]/sitemaps/pages.xml', () => {
             expect(body).toContain('<urlset');
         });
 
-        it('includes Prismic page URLs when provider is prismic', async () => {
+        it('includes CMS page URLs when provider is cms', async () => {
             PagesApiMock.mockResolvedValueOnce({
-                provider: 'prismic' as const,
+                provider: 'cms' as const,
                 items: [
                     {
-                        url: 'https://staging.demo.nordcom.io/en-US/about',
-                        last_publication_date: '2024-01-01T00:00:00+0000',
+                        slug: 'about',
+                        updatedAt: '2024-01-01T00:00:00.000Z',
                     },
                 ],
             });

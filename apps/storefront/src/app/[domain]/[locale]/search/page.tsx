@@ -1,13 +1,10 @@
 import { Shop } from '@nordcom/commerce-db';
-import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
 import { Suspense } from 'react';
-import { PageApi } from '@/api/prismic/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { SearchApi } from '@/api/shopify/search';
 import { LocalesApi } from '@/api/store';
-import PrismicPage from '@/components/cms/prismic-page';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import PageContent from '@/components/page-content';
@@ -28,17 +25,14 @@ export async function generateMetadata({ params }: { params: SearchPageParams })
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const api = await ShopifyApolloApiClient({ shop, locale });
 
-    const page = await PageApi({ shop, locale, handle: 'search' });
     const locales = await LocalesApi({ api });
 
     const i18n = await getDictionary(locale);
     const { t } = getTranslations('common', i18n);
 
-    const title = page?.meta_title || page?.title || capitalize(t('search'));
-    const description = asText(page?.meta_description) || page?.description || undefined;
+    const title = capitalize(t('search'));
     return {
         title,
-        description,
         alternates: {
             canonical: `https://${shop.domain}/${locale.code}/search/`,
             languages: Object.fromEntries(locales.map(({ code }) => [code, `https://${shop.domain}/${code}/search/`])),
@@ -47,20 +41,8 @@ export async function generateMetadata({ params }: { params: SearchPageParams })
             url: `/search/`,
             type: 'website',
             title,
-            description,
             siteName: shop.name,
             locale: locale.code,
-            images: page?.meta_image
-                ? [
-                      {
-                          url: page.meta_image!.url as string,
-                          width: page.meta_image!.dimensions?.width || 0,
-                          height: page.meta_image!.dimensions?.height || 0,
-                          alt: page.meta_image!.alt || '',
-                          secureUrl: page.meta_image!.url as string,
-                      },
-                  ]
-                : undefined,
         },
     };
 }
@@ -76,9 +58,6 @@ export default async function SearchPage({
     params: SearchPageParams;
     searchParams: SearchParams;
 }) {
-    // Read searchParams first to mark this function dynamic before Mongoose
-    // calls `new Date()` (forbidden in cached server components by Cache
-    // Components unless dynamic data or uncached fetch has been read first).
     const searchParams = await queryParams;
     const query = searchParams.q?.toString() || null;
 
@@ -86,7 +65,6 @@ export default async function SearchPage({
     const locale = Locale.from(localeData);
 
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-    const page = await PageApi({ shop, locale, handle: 'search' });
 
     const i18n = await getDictionary(locale);
     const { t } = getTranslations('common', i18n);
@@ -96,9 +74,6 @@ export default async function SearchPage({
         ? await SearchApi({ query, client })
         : { products: [], productFilters: [] };
 
-    // Use `readFlag` instead of `showSearchFilter()` — `@vercel/flags/next`'s
-    // `flag()` wrapper reads request headers internally, which is forbidden inside
-    // the `'use cache'` scope that wraps this component.
     const showFilters = await readFlag('search-filter', false);
 
     return (
@@ -110,11 +85,7 @@ export default async function SearchPage({
             </Suspense>
 
             <PageContent>
-                <Heading title={page?.title} subtitle={page?.description} />
-
-                {page?.slices && page.slices.length > 0 ? (
-                    <PrismicPage shop={shop} locale={locale} page={page} handle={'search'} type={'custom_page'} />
-                ) : null}
+                <Heading title={capitalize(t('search'))} />
 
                 <Suspense key={`pages.search.${JSON.stringify(searchParams)}`}>
                     <SearchContent

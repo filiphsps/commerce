@@ -1,17 +1,15 @@
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
-import { asText } from '@prismicio/client';
 import { flattenConnection } from '@shopify/hydrogen-react';
 import type { Metadata } from 'next';
 import { notFound, RedirectType, redirect, unstable_rethrow } from 'next/navigation';
 import { Suspense } from 'react';
 import type { CollectionPage, WithContext } from 'schema-dts';
-import { PageApi } from '@/api/prismic/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CollectionApi, CollectionPaginationCountApi } from '@/api/shopify/collection';
 import { LocalesApi } from '@/api/store';
 import { Pagination } from '@/components/actionable/pagination';
-import PrismicPage from '@/components/cms/prismic-page';
+import { CMSContent } from '@/components/cms/cms-content';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import { JsonLd } from '@/components/json-ld';
@@ -26,8 +24,6 @@ import { checkAndHandleRedirect } from '@/utils/redirect';
 import { CollectionContent, PRODUCTS_PER_PAGE } from './collection-content';
 import type { CollectionPageParams } from './static-params';
 
-// TODO: Figure out a better way to deal with query params.
-
 export { type CollectionPageParams, generateStaticParams } from './static-params';
 
 type SearchParams = Promise<{
@@ -41,9 +37,6 @@ export async function generateMetadata({
     params: CollectionPageParams;
     searchParams: SearchParams;
 }): Promise<Metadata> {
-    // Read searchParams first to mark this function dynamic before Mongoose
-    // calls `new Date()` (forbidden in cached server components by Cache
-    // Components unless dynamic data or uncached fetch has been read first).
     const searchParams = await queryParams;
     const pageNumber = searchParams.page ? Number.parseInt(searchParams.page, 10) : 1;
 
@@ -57,12 +50,10 @@ export async function generateMetadata({
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const api = await ShopifyApolloApiClient({ shop, locale });
 
-    let collection: Awaited<ReturnType<typeof CollectionApi>>, page: Awaited<ReturnType<typeof PageApi>>;
+    let collection: Awaited<ReturnType<typeof CollectionApi>>;
 
     try {
-        // Do the actual API calls.
         collection = await CollectionApi({ api, handle, limit: 8 });
-        page = await PageApi({ shop, locale, handle, type: 'collection_page' });
     } catch (error: unknown) {
         unstable_rethrow(error);
 
@@ -80,16 +71,12 @@ export async function generateMetadata({
     const i18n = await getDictionary({ shop, locale });
     const { t } = getTranslations('common', i18n);
 
-    // TODO: i18n.
     const title =
         pageNumber > 1
             ? `${collection.title} - ${capitalize(t('page-n', pageNumber.toString()))}`
-            : page?.meta_title || collection.seo.title || collection.title;
+            : collection.seo.title || collection.title;
     const description: string | undefined =
-        asText(page?.meta_description) ||
-        collection.seo.description ||
-        collection.description.substring(0, 150) ||
-        undefined;
+        collection.seo.description || collection.description.substring(0, 150) || undefined;
     return {
         title,
         description,
@@ -109,17 +96,6 @@ export async function generateMetadata({
             description,
             siteName: shop.name,
             locale: locale.code,
-            images: page?.meta_image.url
-                ? [
-                      {
-                          url: page.meta_image.url,
-                          width: page.meta_image.dimensions.width || 0,
-                          height: page.meta_image.dimensions.height || 0,
-                          alt: page.meta_image.alt || '',
-                          secureUrl: page.meta_image.url,
-                      },
-                  ]
-                : undefined,
         },
     };
 }
@@ -138,10 +114,8 @@ export default async function CollectionsCollectionPage({
 
     const searchParams = await queryParams;
 
-    // Creates a locale object from a locale code (e.g. `en-US`).
     const locale = Locale.from(localeData);
 
-    // Handle `?page=1` which should be removed.
     if (searchParams.page === '1') {
         const params = new URLSearchParams(searchParams);
         redirect(
@@ -150,17 +124,14 @@ export default async function CollectionsCollectionPage({
         );
     }
 
-    // Fetch the current shop.
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
 
-    // Setup the AbstractApi client.
     const api = await ShopifyApolloApiClient({ shop, locale });
 
     let collection: Awaited<ReturnType<typeof CollectionApi>>,
         pagesInfo: Awaited<ReturnType<typeof CollectionPaginationCountApi>>;
 
     try {
-        // Do the actual API calls.
         collection = await CollectionApi({ api, handle, limit: 8 });
         pagesInfo = await CollectionPaginationCountApi({ api, handle, filters: { first: PRODUCTS_PER_PAGE } });
     } catch (error: unknown) {
@@ -173,13 +144,6 @@ export default async function CollectionsCollectionPage({
 
         console.error(error);
         throw error;
-    }
-
-    let page: Awaited<ReturnType<typeof PageApi<'collection_page'>>> | null = null;
-    try {
-        page = await PageApi({ shop, locale, handle, type: 'collection_page' });
-    } catch (error: unknown) {
-        unstable_rethrow(error);
     }
 
     const empty = collection.products.edges.length <= 0;
@@ -243,10 +207,6 @@ export default async function CollectionsCollectionPage({
         </PageContent>
     ) : null;
 
-    const hasSlices = page ? page.slices.length > 0 : false;
-    const hasCustomPageContentPosition =
-        hasSlices && page ? page.slices.some((slice) => slice.slice_type === 'original_content') : false;
-
     return (
         <>
             <Suspense key={`collections.${handle}.breadcrumbs`} fallback={<BreadcrumbsSkeleton />}>
@@ -255,35 +215,24 @@ export default async function CollectionsCollectionPage({
                 </div>
             </Suspense>
 
-            {!hasSlices || !hasCustomPageContentPosition ? (
-                <>
-                    <Heading title={collection.title || collection.seo.title} />
-                    {collection.descriptionHtml ? (
-                        <ShopifyContent className="prose max-w-none" html={collection.descriptionHtml} />
-                    ) : collection.seo.description ? (
-                        <p className="prose max-w-none">{collection.seo.description}</p>
-                    ) : null}
-                </>
+            <Heading title={collection.title || collection.seo.title} />
+            {collection.descriptionHtml ? (
+                <ShopifyContent className="prose max-w-none" html={collection.descriptionHtml} />
+            ) : collection.seo.description ? (
+                <p className="prose max-w-none">{collection.seo.description}</p>
             ) : null}
 
-            {!page || pageNumber > 1 ? (
-                pageContent
-            ) : (
-                <>
-                    {!hasCustomPageContentPosition ? pageContent : null}
+            {pageContent}
 
-                    <PrismicPage
-                        shop={shop}
-                        locale={locale}
-                        pageContent={pageContent}
-                        page={page}
-                        handle={handle}
-                        type={'collection_page'}
-                    />
-                </>
-            )}
+            {pageNumber <= 1 ? (
+                <Suspense
+                    key={`collections.${handle}.cms`}
+                    fallback={<div className="h-32 w-full" data-skeleton />}
+                >
+                    <CMSContent shop={shop} locale={locale} handle={handle} type={'collection_page'} />
+                </Suspense>
+            ) : null}
 
-            {/* Metadata */}
             <JsonLd data={jsonLd} />
         </>
     );

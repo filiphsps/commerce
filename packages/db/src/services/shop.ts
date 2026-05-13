@@ -95,11 +95,8 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
 
             let contentProvider = {};
             switch (res.contentProvider.type) {
-                case 'prismic': {
-                    contentProvider = {
-                        ...res.contentProvider,
-                        authentication: {},
-                    };
+                case 'cms': {
+                    contentProvider = { ...res.contentProvider };
                     break;
                 }
                 case 'shopify': {

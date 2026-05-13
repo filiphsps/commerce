@@ -71,7 +71,7 @@ describe('services', () => {
             const filter = { name: 'Shop 1' };
             const findSpy = vi.spyOn(shopService, 'find');
 
-            const _res = await shopService.findByCollaborator({ collaboratorId, filter });
+            await shopService.findByCollaborator({ collaboratorId, filter });
 
             expect(findSpy).toHaveBeenCalledOnce();
         });
@@ -101,7 +101,7 @@ describe('services', () => {
                 expect(result.contentProvider.type).toBe('shopify');
             });
 
-            it('preserves prismic content provider type and strips its authentication token', async () => {
+            it('preserves cms content provider type', async () => {
                 vi.spyOn(shopService, 'find').mockResolvedValue(
                     stubDocument({
                         _id: 'shop-2',
@@ -111,21 +111,16 @@ describe('services', () => {
                             authentication: { domain: 'x.myshopify.com', publicToken: 'pub' },
                         },
                         contentProvider: {
-                            type: 'prismic',
-                            authentication: { token: 'secret' },
-                            repositoryName: 'repo',
-                            repository: 'repo-url',
+                            type: 'cms',
                         },
                     }) as never,
                 );
 
                 const result = (await shopService.findByDomain('shop.example.com')) as {
-                    contentProvider: { type: string; authentication: Record<string, unknown>; repositoryName: string };
+                    contentProvider: { type: string };
                 };
 
-                expect(result.contentProvider.type).toBe('prismic');
-                expect(result.contentProvider.repositoryName).toBe('repo');
-                expect(result.contentProvider.authentication).toEqual({});
+                expect(result.contentProvider.type).toBe('cms');
             });
 
             it('exposes only the public builder.io token in the public projection', async () => {

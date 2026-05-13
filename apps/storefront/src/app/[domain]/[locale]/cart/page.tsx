@@ -1,9 +1,7 @@
 import { Shop } from '@nordcom/commerce-db';
-import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
 import { Fragment, Suspense } from 'react';
-import { PageApi } from '@/api/prismic/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { AcceptedPaymentMethods } from '@/components/informational/accepted-payment-methods';
@@ -25,21 +23,14 @@ export async function generateMetadata({ params }: { params: CartPageParams }): 
     const locale = Locale.from(localeData);
     const api = await ShopifyApolloApiClient({ shop, locale });
 
-    let page: Awaited<ReturnType<typeof PageApi<'cart_page'>>> | null = null;
-    try {
-        page = await PageApi({ shop, locale, handle: 'cart', type: 'cart_page' });
-    } catch {}
-
     const locales = await LocalesApi({ api });
 
     const i18n = await getDictionary(locale);
     const { t } = getTranslations('common', i18n);
 
-    const title = page?.meta_title || capitalize(t('cart'));
-    const description: string | undefined = asText(page?.meta_description) || undefined;
+    const title = capitalize(t('cart'));
     return {
         title,
-        description,
         alternates: {
             canonical: `https://${shop.domain}/${locale.code}/cart/`,
             languages: Object.fromEntries(locales.map(({ code }) => [code, `https://${shop.domain}/${code}/cart/`])),
@@ -48,20 +39,8 @@ export async function generateMetadata({ params }: { params: CartPageParams }): 
             url: `/cart/`,
             type: 'website',
             title,
-            description,
             siteName: shop.name,
             locale: locale.code,
-            images: page?.meta_image
-                ? [
-                      {
-                          url: page.meta_image!.url as string,
-                          width: page.meta_image!.dimensions?.width || 0,
-                          height: page.meta_image!.dimensions?.height || 0,
-                          alt: page.meta_image!.alt || '',
-                          secureUrl: page.meta_image!.url as string,
-                      },
-                  ]
-                : undefined,
         },
     };
 }

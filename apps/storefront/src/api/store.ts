@@ -1,12 +1,9 @@
 import { gql } from '@apollo/client';
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { Error, NoLocalesAvailableError, NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
+import { NoLocalesAvailableError, ProviderFetchError } from '@nordcom/commerce-errors';
 import type { Country, Localization, PaymentSettings } from '@shopify/hydrogen-react/storefront-api-types';
-import { unstable_cache } from 'next/cache';
-import type { BusinessDataDocument, BusinessDataDocumentData, Simplify } from '@/prismic/types';
 import type { AbstractApi } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
-import { buildPrismicCacheTags, createClient } from '@/utils/prismic';
 
 // FIXME: Handle tenant-specific default.
 const DEFAULT_LOCALE = {
@@ -148,41 +145,12 @@ export const ShopPaymentSettingsApi = async ({
     return data.shop.paymentSettings;
 };
 
-export const BusinessDataApi = async ({
-    shop,
-    locale,
-}: {
-    shop: OnlineShop;
-    locale: Locale;
-}): Promise<Simplify<BusinessDataDocumentData> | null> => {
-    // TODO: Provide a Shopify equivalent (e.g. fetch from shop metafields or Storefront API).
-    //       For now, non-Prismic shops degrade gracefully — caller renders without this data.
-    if (shop.contentProvider.type !== 'prismic') return null;
-    const client = createClient({ shop, locale });
+/**
+ * Legacy Prismic-shaped business data. Stubbed until the new CMS BusinessData
+ * global (@nordcom/commerce-cms/api: getBusinessData) is wired in.
+ */
+export type LegacyBusinessData = Record<string, unknown> | null;
 
-    return unstable_cache(
-        async () => {
-            try {
-                const res = await client.getSingle<BusinessDataDocument>('business_data');
-                return res.data;
-            } catch (error: unknown) {
-                const _locale = client.defaultParams?.lang ? Locale.from(client.defaultParams.lang) : locale; // Actually used locale.
-                if (Error.isNotFound(error)) {
-                    const fallback = Locale.fallbackForShop(shop);
-                    if (fallback.code !== _locale.code) {
-                        return await BusinessDataApi({ shop, locale: fallback as Locale }); // Try again with fallback locale.
-                    }
-
-                    throw new NotFoundError(`"BusinessData" with the locale "${locale.code}"`);
-                }
-
-                throw error;
-            }
-        },
-        [shop.domain, locale.code, 'business_data'],
-        {
-            revalidate: 86_400, // 24hrs.
-            tags: buildPrismicCacheTags({ shop, locale, doc: { type: 'business_data', uid: 'business_data' } }),
-        },
-    )();
+export const BusinessDataApi = async (_args: { shop: OnlineShop; locale: Locale }): Promise<LegacyBusinessData> => {
+    return null;
 };

@@ -29,10 +29,10 @@ describe('app/[domain]/[locale]/[...slug] > generateStaticParams', () => {
         mockFindByDomain.mockResolvedValue({ id: 'shop-1', domain: params.domain });
     });
 
-    it('returns Prismic UIDs as slug segments', async () => {
+    it('returns CMS slugs as slug segments', async () => {
         mockPagesApi.mockResolvedValue({
-            provider: 'prismic',
-            items: [{ uid: 'about' }, { uid: 'contact' }, { uid: null }],
+            provider: 'cms',
+            items: [{ slug: 'about' }, { slug: 'contact' }, { slug: null }],
         });
 
         const result = await generateStaticParams({ params });

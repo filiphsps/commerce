@@ -1,55 +1,21 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { Fragment, type HTMLProps, Suspense } from 'react';
-import type { Slices } from '@/components/cms/slice-zone';
-import { SliceZone } from '@/components/cms/slice-zone';
-import { components as menuSlices } from '@/slices/navigation';
+import type { HTMLProps } from 'react';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
-import { cn } from '@/utils/tailwind';
 
 type HeaderNavigationProps = {
     shop: OnlineShop;
     locale: Locale;
     i18n: LocaleDictionary;
-    slices: Slices;
+    slices: unknown[];
 } & HTMLProps<HTMLDivElement>;
-export function HeaderNavigation({
-    shop,
-    locale,
-    i18n,
-    slices = [],
-    children,
-    className,
-    ...props
-}: HeaderNavigationProps) {
-    // NO-OP if no navigation has been defined.
-    if (slices.length <= 0) {
-        return null;
-    }
 
-    return (
-        <nav
-            className={cn(
-                'overflow-x-shadow flex w-full grow items-center justify-start gap-5 overflow-x-auto overflow-y-clip whitespace-nowrap px-2 md:max-w-[var(--page-width)] md:flex-row md:overflow-hidden md:px-3 lg:gap-6',
-                className,
-            )}
-            {...props}
-        >
-            <Suspense fallback={<Fragment />}>
-                <SliceZone
-                    shop={shop}
-                    locale={locale}
-                    i18n={i18n}
-                    data={slices}
-                    components={menuSlices}
-                    context={{
-                        isHeader: true,
-                    }}
-                />
-            </Suspense>
-
-            {children}
-        </nav>
-    );
+/**
+ * Legacy Prismic-driven header navigation. Renders nothing until the new CMS
+ * Header global's recursive nav-item field is wired in. Skeleton kept for
+ * Suspense fallbacks in header.tsx.
+ */
+export function HeaderNavigation(_props: HeaderNavigationProps) {
+    return null;
 }
 HeaderNavigation.displayName = 'Nordcom.Header.HeaderNavigation';
 

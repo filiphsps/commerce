@@ -1,49 +1,14 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { Error, NotFoundError } from '@nordcom/commerce-errors';
-import { unstable_cache } from 'next/cache';
-import type { FooterDocument } from '@/prismic/types';
-import { Locale } from '@/utils/locale';
-import { buildPrismicCacheTags, createClient } from '@/utils/prismic';
+import type { Locale } from '@/utils/locale';
 
-export async function FooterApi({
-    shop,
-    locale,
-}: {
-    shop: OnlineShop;
-    locale: Locale;
-}): Promise<FooterDocument['data'] | null> {
-    // TODO: Provide a Shopify equivalent (e.g. fetch from shop metafields or Storefront API).
-    //       For now, non-Prismic shops degrade gracefully — caller renders without this data.
-    if (shop.contentProvider.type !== 'prismic') return null;
-    const client = createClient({ shop, locale });
+/**
+ * Legacy Prismic-shaped footer data. The type is intentionally loose so
+ * existing footer components compile during the migration. FooterApi always
+ * returns null until the new CMS Footer global (getFooter) is wired in.
+ */
+// biome-ignore lint/suspicious/noExplicitAny: legacy Prismic shape during migration
+export type LegacyFooterData = (Record<string, any> & {}) | null;
 
-    return unstable_cache(
-        async () => {
-            try {
-                const footer = await client.getSingle<FooterDocument>('footer');
-
-                return footer.data;
-            } catch (error: unknown) {
-                const _locale = client.defaultParams?.lang ? Locale.from(client.defaultParams.lang) : locale;
-
-                if (Error.isNotFound(error)) {
-                    const fallback = Locale.fallbackForShop(shop);
-                    if (fallback.code !== _locale.code) {
-                        return await FooterApi({ shop, locale: fallback }); // Try again with fallback locale.
-                    }
-
-                    throw new NotFoundError(`"Footer" with the locale "${locale.code}"`);
-                }
-
-                // TODO: Deal with errors properly.
-                console.error(error);
-                throw error;
-            }
-        },
-        [shop.domain, locale.code, 'footer'],
-        {
-            revalidate: 86_400, // 24hrs.
-            tags: buildPrismicCacheTags({ shop, locale, doc: { type: 'footer', uid: 'footer' } }),
-        },
-    )();
+export async function FooterApi(_args: { shop: OnlineShop; locale: Locale }): Promise<LegacyFooterData> {
+    return null;
 }

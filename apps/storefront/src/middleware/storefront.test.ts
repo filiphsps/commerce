@@ -45,7 +45,7 @@ const MOCK_SHOP = {
             token: 'priv-token',
         },
     },
-    contentProvider: { type: 'prismic' as const },
+    contentProvider: { type: 'cms' as const },
     i18n: { defaultLocale: 'en-US' },
 };
 

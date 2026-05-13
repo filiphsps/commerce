@@ -95,29 +95,17 @@ export async function generateMetadata({ params }: { params: CustomPageParams })
 }
 
 async function OnlineStoreJsonLd({ shop, locale }: { shop: OnlineShop; locale: Locale }) {
-    let jsonLd: WithContext<OnlineStore>;
-    try {
-        const businessData = await BusinessDataApi({ shop, locale });
-        if (!businessData) return null;
+    const businessData = await BusinessDataApi({ shop, locale });
+    if (!businessData) return null;
 
-        // TODO: Add more data.
-        jsonLd = {
-            '@context': 'https://schema.org',
-            '@type': 'OnlineStore',
-            name: shop.name,
-            url: `https://${shop.domain}/${locale.code}/`,
-            image: shop.icons?.favicon?.src,
-            logo: shop.icons?.favicon?.src,
-            telephone: businessData.telephone || undefined,
-            email: businessData.email || undefined,
-            sameAs: (businessData.social_profiles || []).map(({ href }) => href as string),
-            taxID: businessData.tax_number || undefined,
-            vatID: businessData.vat_number || undefined,
-        };
-    } catch (error: unknown) {
-        console.error(error);
-        return null;
-    }
+    const jsonLd: WithContext<OnlineStore> = {
+        '@context': 'https://schema.org',
+        '@type': 'OnlineStore',
+        name: shop.name,
+        url: `https://${shop.domain}/${locale.code}/`,
+        image: shop.icons?.favicon?.src,
+        logo: shop.icons?.favicon?.src,
+    };
 
     return <JsonLd data={jsonLd} />;
 }

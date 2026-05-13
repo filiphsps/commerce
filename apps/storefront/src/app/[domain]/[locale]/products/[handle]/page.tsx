@@ -2,14 +2,12 @@ import 'server-only';
 
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
-import { asText } from '@prismicio/client';
 import { parseGid } from '@shopify/hydrogen-react';
 import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
-import { notFound, unstable_rethrow } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { Fragment, Suspense } from 'react';
-import { PageApi } from '@/api/prismic/page';
 import type { Product } from '@/api/product';
 import { isProductVegan } from '@/api/product';
 import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
@@ -45,9 +43,6 @@ export async function generateMetadata({
     params: ProductPageParams;
     searchParams: SearchParams;
 }): Promise<Metadata> {
-    // Read searchParams first to mark this function dynamic before Mongoose
-    // calls `new Date()` (forbidden in cached server components by Cache
-    // Components unless dynamic data or uncached fetch has been read first).
     const searchParams = await queryParams;
 
     const { domain, locale: localeData, handle } = await params;
@@ -57,10 +52,8 @@ export async function generateMetadata({
 
     const locale = Locale.from(localeData);
 
-    // Fetch the current shop.
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
 
-    // Setup the AbstractApi client.
     const api = await ShopifyApiClient({ shop, locale });
 
     const [product, productError] = await ProductApi({ api, handle });
@@ -79,13 +72,6 @@ export async function generateMetadata({
         notFound();
     }
 
-    let page: Awaited<ReturnType<typeof PageApi<'product_page'>>> | undefined = null;
-    try {
-        page = await PageApi({ shop, locale, handle, type: 'product_page' });
-    } catch (error: unknown) {
-        unstable_rethrow(error);
-    }
-
     const locales = await LocalesApi({ api });
 
     let search = '';
@@ -93,12 +79,8 @@ export async function generateMetadata({
         search = `?variant=${searchParams.variant}`;
     }
 
-    const title = page?.meta_title || product.seo.title || `${product.vendor} ${product.title}`;
-    page;
-    const description =
-        (page?.meta_description ? asText(page.meta_description) : undefined) ||
-        product.seo.description ||
-        product.description;
+    const title = product.seo.title || `${product.vendor} ${product.title}`;
+    const description = product.seo.description || product.description;
     return {
         title,
         description,
@@ -114,17 +96,6 @@ export async function generateMetadata({
             description,
             siteName: shop.name,
             locale: locale.code,
-            images: page?.meta_image
-                ? [
-                      {
-                          url: page.meta_image!.url as string,
-                          width: page.meta_image!.dimensions?.width || 0,
-                          height: page.meta_image!.dimensions?.height || 0,
-                          alt: page.meta_image!.alt || '',
-                          secureUrl: page.meta_image!.url as string,
-                      },
-                  ]
-                : undefined,
         },
     };
 }
@@ -164,13 +135,10 @@ export default async function ProductPage({ params }: { params: ProductPageParam
         notFound();
     }
 
-    // Creates a locale object from a locale code (e.g. `en-US`).
     const locale = Locale.from(localeData);
 
-    // Fetch the current shop.
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
 
-    // Setup the AbstractApi client.
     const api = await ShopifyApolloApiClient({ shop, locale });
 
     const [product, productError] = await ProductApi({ api, handle });
@@ -186,7 +154,6 @@ export default async function ProductPage({ params }: { params: ProductPageParam
 
     const { descriptionHtml: content } = product;
 
-    // Get dictionary of strings for the current locale.
     const i18n = await getDictionary({ shop, locale });
     const { t } = getTranslations('product', i18n);
 
@@ -214,7 +181,6 @@ export default async function ProductPage({ params }: { params: ProductPageParam
         );
     }
 
-    // If the product description contains a <h1> tag, replace our h1 with a div to avoid multiple h1s.
     let TitleTag: 'h1' | 'div' = 'h1';
     if (content.includes('<h1')) {
         TitleTag = 'div';

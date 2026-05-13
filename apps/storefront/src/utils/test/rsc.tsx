@@ -5,7 +5,7 @@ import { render as customRender } from '@/utils/test/react';
  * Render an async React Server Component for unit testing.
  *
  * Pattern:
- *   const ui = await renderRSC(() => <PrismicPage shop={...} ... />);
+ *   const ui = await renderRSC(() => <CMSContent shop={...} ... />);
  *   expect(ui.getByText('hello')).toBeInTheDocument();
  *
  * Limitations:
