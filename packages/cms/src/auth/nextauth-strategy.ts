@@ -71,17 +71,26 @@ export const buildNextAuthStrategy = ({
         if (!token) return { user: null };
         try {
             const key = await deriveKey(secret, cookieName);
-            const { payload } = await jwtDecrypt(token, key, {
-                clockTolerance: 15,
-            });
+            const { payload } = await jwtDecrypt(token, key, { clockTolerance: 15 });
             const email = typeof payload.email === 'string' ? payload.email : null;
             if (!email) return { user: null };
             const user = await findOrCreateUser(email);
             const roles = await recomputeRoles(email);
             return {
-                user: { ...user, role: roles.role, tenants: roles.tenants, collection: 'users' } as never,
+                user: {
+                    ...user,
+                    role: roles.role,
+                    tenants: roles.tenants,
+                    collection: 'users',
+                } as never,
             };
-        } catch {
+        } catch (err) {
+            // Bridge swallows failure to `null` user so Payload can route to its
+            // login page; log at warn so auth misconfigs are visible in prod.
+            console.warn(
+                '[cms/auth-bridge] failed to authenticate request:',
+                err instanceof Error ? err.message : String(err),
+            );
             return { user: null };
         }
     },

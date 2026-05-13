@@ -20,14 +20,29 @@ describe('buildUsers', () => {
         expect(strategies).toEqual([fakeStrategy]);
     });
 
-    it('disables the local (password) strategy when disablePasswordLogin is true', () => {
+    it('disables the password login flow but keeps email/auth fields enabled when disablePasswordLogin is true', () => {
+        // We use the object form `{ enableFields: true }` rather than the boolean form so the
+        // email field stays in the schema — the NextAuth bridge needs to query users by email.
         const cfg = buildUsers({ authStrategies: [fakeStrategy], disablePasswordLogin: true });
-        expect((cfg.auth as { disableLocalStrategy?: boolean }).disableLocalStrategy).toBe(true);
+        const auth = cfg.auth as { disableLocalStrategy?: boolean | { enableFields?: boolean } };
+        expect(auth.disableLocalStrategy).toEqual({ enableFields: true });
     });
 
     it('leaves disableLocalStrategy undefined by default', () => {
         const cfg = buildUsers();
-        expect((cfg.auth as { disableLocalStrategy?: boolean }).disableLocalStrategy).toBeUndefined();
+        expect(
+            (cfg.auth as { disableLocalStrategy?: boolean | { enableFields?: boolean } })
+                .disableLocalStrategy,
+        ).toBeUndefined();
+    });
+
+    it('routes Payload users to a dedicated MongoDB collection via dbName', () => {
+        // Storing Payload users in the same physical `users` collection as
+        // `@nordcom/commerce-db`'s Mongoose User model would create a schema
+        // conflict (the latter requires `identities[].identity`). `dbName`
+        // isolates Payload's storage while keeping the slug `users` intact.
+        const cfg = buildUsers();
+        expect(cfg.dbName).toBe('payload-users');
     });
 
     it('declares a required role field with admin/editor options and editor default', () => {

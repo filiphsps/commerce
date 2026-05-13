@@ -75,35 +75,45 @@ const findShopsForUser = async (email: string): Promise<Array<{ shopId: string }
 // the strategy returns `null user`, sending the visitor to /cms/login.
 const findOrCreateUser = async (email: string) => {
     const payload = await getPayload({ config: configPromise });
-    const { docs } = await payload.find({
-        collection: 'users',
-        where: { email: { equals: email } },
-        limit: 1,
-        overrideAccess: true,
-    });
-    if (docs[0]) {
+    try {
+        const { docs } = await payload.find({
+            collection: 'users',
+            where: { email: { equals: email } },
+            limit: 1,
+            overrideAccess: true,
+        });
+        if (docs[0]) {
+            return {
+                id: String(docs[0].id),
+                email: docs[0].email as string,
+                role: (docs[0].role as 'admin' | 'editor') ?? 'editor',
+                tenants: [],
+            };
+        }
+    } catch (err) {
+        console.error('[payload-config] payload.find users failed:', err);
+        throw err;
+    }
+    try {
+        const created = await payload.create({
+            collection: 'users',
+            data: {
+                email,
+                role: OPERATOR_EMAILS.has(email) ? 'admin' : 'editor',
+                password: crypto.randomUUID(),
+            } as never,
+            overrideAccess: true,
+        });
         return {
-            id: String(docs[0].id),
-            email: docs[0].email as string,
-            role: (docs[0].role as 'admin' | 'editor') ?? 'editor',
+            id: String(created.id),
+            email: created.email as string,
+            role: (created.role as 'admin' | 'editor') ?? 'editor',
             tenants: [],
         };
+    } catch (err) {
+        console.error('[payload-config] payload.create users failed:', err);
+        throw err;
     }
-    const created = await payload.create({
-        collection: 'users',
-        data: {
-            email,
-            role: OPERATOR_EMAILS.has(email) ? 'admin' : 'editor',
-            password: crypto.randomUUID(),
-        } as never,
-        overrideAccess: true,
-    });
-    return {
-        id: String(created.id),
-        email: created.email as string,
-        role: (created.role as 'admin' | 'editor') ?? 'editor',
-        tenants: [],
-    };
 };
 
 const recomputeRoles = async (email: string) => {
