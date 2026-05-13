@@ -94,12 +94,20 @@ export const ShopifyApolloApiClient = async ({
     let config: ApiConfig | null = null;
     try {
         config = configBuilder.private();
-    } catch {}
+    } catch (privateConfigError) {
+        // Empty-catch previously hid every reason the private headers failed
+        // — bad/expired admin token, mis-configured shop, missing IP — and
+        // the storefront silently downgraded to public-only access in prod
+        // with nothing in the logs but a generic "falling back" line.
+        console.warn(
+            '[shopify] private headers unavailable, falling back to public Storefront API:',
+            privateConfigError instanceof Error ? privateConfigError.message : privateConfigError,
+        );
+    }
 
     if (!config) {
         // Fallback to public headers.
         config = configBuilder.public();
-        console.warn('Falling back to public headers for Shopify API client.');
     }
 
     return ApiBuilder({
@@ -151,10 +159,15 @@ export const ShopifyApiClient = async ({ shop, locale = Locale.default, apiConfi
                     const body = await response.json();
 
                     if (body.errors) {
+                        // The previous code returned `data: body` here — the
+                        // entire response, errors included. Callers that
+                        // checked `if (data)` saw truthy data and went on to
+                        // render `body.data` paths that didn't exist, turning
+                        // a GraphQL error into a mysterious render-side crash.
                         return {
                             loading: false,
                             errors: body.errors,
-                            data: body,
+                            data: body.data ?? null,
                         };
                     }
 

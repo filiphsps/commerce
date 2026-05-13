@@ -374,7 +374,7 @@ export const CollectionsPaginationApi = async ({
     const shop = api.shop();
     const filters = 'filters' in props ? props.filters : /** @deprecated */ (props as CollectionsFilters);
 
-    const { data } = await api.query<{ collections: QueryRoot['collections'] }>(
+    const { data, errors } = await api.query<{ collections: QueryRoot['collections'] }>(
         gql`
             query collections(
                 $first: Int
@@ -434,6 +434,18 @@ export const CollectionsPaginationApi = async ({
             tags: [`shopify.${api.shop().id}.collections`, 'collections', 'pagination'],
         },
     );
+
+    // The previous code destructured only `{ data }` and ignored `errors`
+    // entirely. With Apollo's `errorPolicy: 'all'`, Shopify can return a
+    // partial-success payload (`data` + `errors`) — we'd happily render the
+    // partial result and the missing collections would silently disappear
+    // from prod, masked as "empty list".
+    if (errors && errors.length > 0) {
+        console.error(`[shopify] CollectionsPaginationApi errors for shop ${shop.id}:`, errors);
+        throw new ProviderFetchError(
+            `"Collections" query on shop "${shop.id}": ${errors.map((e) => e.message).join(', ')}`,
+        );
+    }
 
     const page_info = data?.collections.pageInfo;
     if (!page_info) {
