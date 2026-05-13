@@ -40,8 +40,8 @@ export const buildTestConfig = async ({
         plugins: [
             multiTenantPlugin({
                 tenantsSlug: 'tenants',
-                userHasAccessToAllTenants: ({ user }: { user: { role?: string } | null }) =>
-                    user?.role === 'admin',
+                userHasAccessToAllTenants: (user: unknown) =>
+                    (user as { role?: string } | null)?.role === 'admin',
                 collections: {
                     pages: {},
                     articles: {},
