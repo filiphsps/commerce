@@ -22,6 +22,7 @@ describe('syncShopToTenant', () => {
                 defaultLocale: 'sv',
                 locales: ['sv', 'en-US'],
             }),
+            overrideAccess: true,
         });
     });
 
@@ -40,6 +41,7 @@ describe('syncShopToTenant', () => {
             collection: 'tenants',
             id: 'existing',
             data: expect.objectContaining({ name: 'Renamed' }),
+            overrideAccess: true,
         });
         expect(create).not.toHaveBeenCalled();
     });
@@ -58,6 +60,7 @@ describe('syncShopToTenant', () => {
             collection: 'tenants',
             id: 'existing',
             data: expect.objectContaining({ slug: 'new-brand-hub-example-com' }),
+            overrideAccess: true,
         });
     });
 
@@ -97,6 +100,7 @@ describe('syncShopToTenant', () => {
         expect(create).toHaveBeenCalledWith({
             collection: 'tenants',
             data: expect.objectContaining({ defaultLocale: 'fr', locales: ['fr', 'es', 'de'] }),
+            overrideAccess: true,
         });
     });
 });
