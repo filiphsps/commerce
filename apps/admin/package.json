@@ -11,7 +11,7 @@
     "scripts": {
         "start": "next start -p $PORT",
         "dev": "next dev -p 3000",
-        "build": "next build --turbo",
+        "build": "next build",
         "clean": "rimraf -g dist coverage .turbo .next *.tsbuildinfo *.log node_modules",
         "lint": "biome lint .",
         "format": "concurrently -i pnpm:format:*",
