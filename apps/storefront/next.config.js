@@ -51,11 +51,16 @@ const config = {
         rootParams: true,
     },
     images: {
+        unoptimized: true, // FIXME: We should optimize images.
         dangerouslyAllowSVG: true,
         //path: 'https://cloudflare-image.nordcom.workers.dev',
         minimumCacheTTL: 60,
         contentDispositionType: 'inline',
         remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: '*', // FIXME: Wildcard is a bad idea.
+            },
             {
                 protocol: 'https',
                 hostname: 'nordcom.io',
