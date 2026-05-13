@@ -21,3 +21,5 @@ export { buildKeyFactory } from './keys';
 export type { CacheKey, KeyFactory } from './keys';
 export { consoleLogger } from './adapter';
 export type { CacheAdapter, AdapterCtx, WriteOpts, ILogger } from './adapter';
+export { memoryAdapter } from './memory-adapter';
+export type { MemoryAdapterOptions } from './memory-adapter';
