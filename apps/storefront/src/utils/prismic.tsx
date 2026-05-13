@@ -1,5 +1,5 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { InvalidContentProviderError, InvalidShopError } from '@nordcom/commerce-errors';
+import { GenericError‎, InvalidContentProviderError, InvalidShopError } from '@nordcom/commerce-errors';
 import type { Client, ClientConfig, LinkResolverFunction } from '@prismicio/client';
 import * as prismic from '@prismicio/client';
 import { experimental_taintUniqueValue } from 'react';
@@ -42,10 +42,12 @@ export const createClient = ({ shop, locale, ...config }: CreateClientOptions): 
         },
         fetch: async (...args: Parameters<typeof fetch>) => {
             const res = await fetch(...args);
-            if (res.ok) return res;
+            if (res.ok) {
+                return res;
+            }
 
-            console.warn('Prismic request failed', res);
-            return null;
+            console.warn('Prismic request failed', args, res);
+            throw new GenericError‎(`Prismic request for ${args[0]} failed with ${res.status} ${res.statusText}`);
         }
     });
 
