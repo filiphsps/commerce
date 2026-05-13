@@ -41,7 +41,7 @@ export const createClient = ({ shop, locale, ...config }: CreateClientOptions): 
             },
         },
         fetch: async (...args: Parameters<typeof fetch>) => {
-            const res = fetch(...args);
+            const res = await fetch(...args);
             if (res.ok) return res;
 
             console.warn('Prismic request failed', res);
