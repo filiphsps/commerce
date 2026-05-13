@@ -28,7 +28,9 @@
         "test": "vitest run",
         "typecheck": "tsc -noEmit"
     },
-    "files": ["dist"],
+    "files": [
+        "dist"
+    ],
     "author": {
         "name": "Nordcom AB",
         "email": "hi@nordcom.io",
