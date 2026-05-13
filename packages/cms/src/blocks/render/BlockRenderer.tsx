@@ -1,9 +1,13 @@
 import type { ReactNode } from 'react';
 import { AlertBlock } from './AlertBlock';
 import { BannerBlock } from './BannerBlock';
+import { CollectionBlock } from './CollectionBlock';
+import { ColumnsBlock } from './ColumnsBlock';
 import { HtmlBlock } from './HtmlBlock';
 import { MediaGridBlock } from './MediaGridBlock';
+import { OverviewBlock } from './OverviewBlock';
 import { RichTextBlock } from './RichTextBlock';
+import { VendorsBlock } from './VendorsBlock';
 import type { BlockNode, BlockRenderContext } from './types';
 
 const MAX_DEPTH = 6;
@@ -32,6 +36,14 @@ export function BlockRenderer({
                         return <MediaGridBlock key={idx} block={block} />;
                     case 'banner':
                         return <BannerBlock key={idx} block={block} />;
+                    case 'columns':
+                        return <ColumnsBlock key={idx} block={block} context={context} Renderer={BlockRenderer} />;
+                    case 'collection':
+                        return <CollectionBlock key={idx} block={block} context={context} />;
+                    case 'vendors':
+                        return <VendorsBlock key={idx} block={block} context={context} />;
+                    case 'overview':
+                        return <OverviewBlock key={idx} block={block} context={context} />;
                     default:
                         return null;
                 }
