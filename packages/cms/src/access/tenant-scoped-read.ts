@@ -1,23 +1,5 @@
 import type { Access } from 'payload';
-
-/**
- * Pull the tenant id out of a multi-tenant plugin entry, regardless of
- * whether the relation has been populated to a full doc or left as an id.
- */
-const tenantIdOf = (entry: unknown): string | null => {
-    if (!entry || typeof entry !== 'object') return null;
-    const t = (entry as { tenant?: unknown }).tenant;
-    if (t == null) return null;
-    if (typeof t === 'string') return t;
-    if (typeof t === 'number') return String(t);
-    if (typeof t === 'object' && 'id' in t) return String((t as { id: unknown }).id);
-    return null;
-};
-
-const extractTenantIds = (user: { tenants?: unknown } | null | undefined): string[] => {
-    if (!Array.isArray(user?.tenants)) return [];
-    return user.tenants.map(tenantIdOf).filter((id): id is string => Boolean(id));
-};
+import { extractTenantIds } from './tenant-id-of';
 
 /**
  * Standard tenant-scoped access pattern for content collections that also support drafts:
