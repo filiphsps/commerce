@@ -1,5 +1,6 @@
 import 'server-only';
 
+import { Suspense } from 'react';
 import { Shop } from '@nordcom/commerce-db';
 import { SliceZone } from '@prismicio/react';
 import type { SliceSimulatorParams } from '@slicemachine/adapter-next/simulator';
@@ -28,25 +29,27 @@ export default async function SliceSimulatorPage({
     const i18n = await getDictionary({ shop, locale });
 
     return (
-        <SliceSimulator>
-            <SliceZone
-                slices={getSlices(searchParams.state)}
-                components={components}
-                context={{
-                    shop: {
-                        ...shop,
-                        commerceProvider: {},
-                        contentProvider: {},
-                    },
-                    i18n,
-                    locale,
-                    type: 'custom_page',
-                    uid: 'homepage',
-                    handle: 'homepage',
-                    pathname: '/hello-world/',
-                    menu: '__SLICE_MACHINE_TEST__',
-                }}
-            />
-        </SliceSimulator>
+        <Suspense>
+            <SliceSimulator>
+                <SliceZone
+                    slices={getSlices(searchParams.state)}
+                    components={components}
+                    context={{
+                        shop: {
+                            ...shop,
+                            commerceProvider: {},
+                            contentProvider: {},
+                        },
+                        i18n,
+                        locale,
+                        type: 'custom_page',
+                        uid: 'homepage',
+                        handle: 'homepage',
+                        pathname: '/hello-world/',
+                        menu: '__SLICE_MACHINE_TEST__',
+                    }}
+                />
+            </SliceSimulator>
+        </Suspense>
     );
 }
