@@ -1,5 +1,5 @@
 import { Shop } from '@nordcom/commerce-db';
-import { UnknownLocaleError } from '@nordcom/commerce-errors';
+import { Error, UnknownLocaleError } from '@nordcom/commerce-errors';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
@@ -27,7 +27,18 @@ export async function generateMetadata({ params }: { params: CountriesPageParams
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const api = await ShopifyApolloApiClient({ shop, locale });
 
-    const page = await PageApi({ shop, locale, handle: 'countries' });
+    // Safely try to fetch page.
+    // TODO: Do this better, for instance by returning [result, error] fron api routes.
+    const page = await (async () => {
+        try {
+            return await PageApi({ shop, locale, handle: 'countries' });
+        } catch (error: unknown) {
+            if (Error.isNotFound(error)) {
+                return null;
+            }
+            throw error;
+        }
+    })();
     const locales = await LocalesApi({ api });
 
     const i18n = await getDictionary(locale);
@@ -79,7 +90,19 @@ export default async function CountriesPage({ params }: { params: CountriesPageP
     const api = await ShopifyApolloApiClient({ shop, locale });
 
     const countries = await CountriesApi({ api });
-    const page = await PageApi({ shop, locale, handle: 'countries' });
+
+    // Safely try to fetch page.
+    // TODO: Do this better, for instance by returning [result, error] fron api routes.
+    const page = await (async () => {
+        try {
+            return await PageApi({ shop, locale, handle: 'countries' });
+        } catch (error: unknown) {
+            if (Error.isNotFound(error)) {
+                return null;
+            }
+            throw error;
+        }
+    })();
 
     const i18n = await getDictionary(locale);
     const { t } = getTranslations('common', i18n);
