@@ -78,9 +78,14 @@ describe('app/[domain]/api/revalidate', () => {
             expect(revalidateTagMock).not.toHaveBeenCalled();
         });
 
-        it('accepts when SHOPIFY_WEBHOOK_SECRET is missing (dev mode)', async () => {
+        it('accepts when SHOPIFY_WEBHOOK_SECRET is missing in dev', async () => {
             revalidateTagMock.mockClear();
             delete process.env.SHOPIFY_WEBHOOK_SECRET;
+            // Force the dev branch — outside of NODE_ENV=development the
+            // route now hard-fails with 503 instead of accepting unsigned
+            // webhooks.
+            const originalNodeEnv = process.env.NODE_ENV;
+            (process.env as { NODE_ENV?: string }).NODE_ENV = 'development';
             const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
             const req = makeRequest({
@@ -96,6 +101,28 @@ describe('app/[domain]/api/revalidate', () => {
             expect(res.status).toBe(200);
             expect(warnSpy).toHaveBeenCalled();
             warnSpy.mockRestore();
+            (process.env as { NODE_ENV?: string }).NODE_ENV = originalNodeEnv;
+        });
+
+        it('refuses with 503 when SHOPIFY_WEBHOOK_SECRET is missing outside dev', async () => {
+            revalidateTagMock.mockClear();
+            delete process.env.SHOPIFY_WEBHOOK_SECRET;
+            const originalNodeEnv = process.env.NODE_ENV;
+            (process.env as { NODE_ENV?: string }).NODE_ENV = 'production';
+
+            const req = makeRequest({
+                method: 'POST',
+                body: '{"handle":"my-product"}',
+                headers: {
+                    'x-shopify-hmac-sha256': 'anything',
+                    'x-shopify-topic': 'products/update',
+                },
+            });
+
+            const res = await POST(req as any, { params: Promise.resolve({ domain: 'mock.shop' }) } as any);
+            expect(res.status).toBe(503);
+            expect(revalidateTagMock).not.toHaveBeenCalled();
+            (process.env as { NODE_ENV?: string }).NODE_ENV = originalNodeEnv;
         });
 
         it('busts per-collection tag on collections/update with valid HMAC', async () => {
@@ -120,7 +147,10 @@ describe('app/[domain]/api/revalidate', () => {
             expect(revalidateTagMock).toHaveBeenCalledWith('shopify.shop-1.collection.summer-sale', 'max');
         });
 
-        it('falls back to broad sweep when handle is absent from body', async () => {
+        it('busts list + broad sweep when handle is absent from body', async () => {
+            // The webhook now also emits the plural list-tag for products/*
+            // and collections/*, so a handle-less webhook body still
+            // refreshes list pages.
             revalidateTagMock.mockClear();
             const body = '{}';
             const secret = 'shopify-secret';
@@ -139,8 +169,9 @@ describe('app/[domain]/api/revalidate', () => {
 
             const res = await POST(req as any, { params: Promise.resolve({ domain: 'mock.shop' }) } as any);
             expect(res.status).toBe(200);
+            expect(revalidateTagMock).toHaveBeenCalledWith('shopify.shop-1.products', 'max');
             expect(revalidateTagMock).toHaveBeenCalledWith('shopify.shop-1', 'max');
-            expect(revalidateTagMock).toHaveBeenCalledTimes(1);
+            expect(revalidateTagMock).toHaveBeenCalledTimes(2);
         });
 
         it('uses broad sweep when body is unparseable JSON', async () => {

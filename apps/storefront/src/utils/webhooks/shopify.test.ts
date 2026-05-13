@@ -55,9 +55,19 @@ describe('utils/webhooks/shopify', () => {
             expect(tags).toContain('shopify.shop-1');
         });
 
-        it('falls back to broad sweep when collections/* handle is missing', () => {
+        it('falls back to list + broad sweep when collections/* handle is missing', () => {
+            // Webhook now also emits the plural `.collections` tag so list
+            // pages (e.g. `/collections`) refresh on any collection change,
+            // not just the per-entity tag.
             const tags = parseShopifyWebhook({ shop, topic: 'collections/update', body: {} });
-            expect(tags).toEqual(['shopify.shop-1']);
+            expect(tags).toEqual(['shopify.shop-1.collections', 'shopify.shop-1']);
+        });
+
+        it('emits per-collection + list-level tags for collections/update with handle', () => {
+            const tags = parseShopifyWebhook({ shop, topic: 'collections/update', body: { handle: 'summer' } });
+            expect(tags).toContain('shopify.shop-1.collection.summer');
+            expect(tags).toContain('shopify.shop-1.collections');
+            expect(tags).toContain('shopify.shop-1');
         });
 
         it('emits broad sweep for inventory_levels/update', () => {
@@ -97,9 +107,19 @@ describe('utils/webhooks/shopify', () => {
             expect(tags).toContain('shopify.shop-1.product.old-product');
         });
 
-        it('falls back to broad sweep when handle is missing', () => {
+        it('falls back to list + broad sweep when handle is missing', () => {
+            // Webhook now also emits the plural `.products` tag so list pages
+            // (e.g. `/products`) refresh on any product change, not just the
+            // per-entity tag.
             const tags = parseShopifyWebhook({ shop, topic: 'products/update', body: {} });
-            expect(tags).toEqual(['shopify.shop-1']);
+            expect(tags).toEqual(['shopify.shop-1.products', 'shopify.shop-1']);
+        });
+
+        it('emits per-product + list-level tags for products/update with handle', () => {
+            const tags = parseShopifyWebhook({ shop, topic: 'products/update', body: { handle: 'cool-shirt' } });
+            expect(tags).toContain('shopify.shop-1.product.cool-shirt');
+            expect(tags).toContain('shopify.shop-1.products');
+            expect(tags).toContain('shopify.shop-1');
         });
 
         it('emits per-page tag for pages/update', () => {
