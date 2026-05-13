@@ -55,7 +55,7 @@ describe('defineCache', () => {
                 namespace: 'shop.ify',
                 entities: { products: {} },
             }),
-        ).toThrowError(/namespace.*"\."/);
+        ).toThrow(/namespace.*"\."/);
     });
 
     it('rejects an entity name containing the segment separator', () => {
@@ -64,6 +64,6 @@ describe('defineCache', () => {
                 namespace: 'shopify',
                 entities: { 'pro.duct': {} },
             }),
-        ).toThrowError(/entity.*"\."/);
+        ).toThrow(/entity.*"\."/);
     });
 });
