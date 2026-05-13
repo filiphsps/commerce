@@ -647,8 +647,8 @@ importers:
         specifier: 1.60.0
         version: 1.60.0
       '@slicemachine/adapter-next':
-        specifier: 0.3.53
-        version: 0.3.53(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(next@16.2.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(react@19.2.6)(uuid@14.0.0)
+        specifier: 0.3.95
+        version: 0.3.95(@prismicio/types@0.2.9)(next@16.2.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(react@19.2.6)
       '@tailwindcss/forms':
         specifier: 0.5.11
         version: 0.5.11(tailwindcss@4.3.0)
@@ -3472,6 +3472,10 @@ packages:
     resolution: {integrity: sha512-AgMROjKyj3imU64+NXk5b/3Ewp4YWIY0tS6rbjiYH0da6K45albbS8FH9w1+Fz7ksUVMai4aVeTm5AkWUF27Dg==}
     engines: {node: '>=14.15.0'}
 
+  '@prismicio/client@7.17.0':
+    resolution: {integrity: sha512-7e1ICYk4IAxKX8zmtCOy9e8rXeeT9A45ZgJY9lNNWqUaL1LW/ilXnh/SsAZG/G5q14JyRJHwBIGIzcKY9hjJhw==}
+    engines: {node: '>=14.15.0'}
+
   '@prismicio/client@7.21.8':
     resolution: {integrity: sha512-HFXrV/XdbVy/AL7V5K/976gr4SEa7WA7xuZuSNuseLK5VSl0DlMSgy7GTUk+ngjz9QvN0Xu3nxWzUGFxnD8RIA==}
     engines: {node: '>=20'}
@@ -3525,6 +3529,14 @@ packages:
       io-ts: ^2.2.16
       io-ts-types: ^0.5.16
       uuid: ^9.0.0
+
+  '@prismicio/types-internal@3.11.2':
+    resolution: {integrity: sha512-5LUDc4p7VatFikQJFM9oIL0G3+FoNUGvAHpuu3p5HfD1DUA47NATTDyD2Wg0qJi+1FSX5ociPBPryNsTTP/s8Q==}
+    engines: {node: '>=12.7.0'}
+    peerDependencies:
+      fp-ts: ^2.11.8
+      io-ts: ^2.2.16
+      io-ts-types: ^0.5.16
 
   '@prismicio/types-internal@3.13.0':
     resolution: {integrity: sha512-IdBjfbkABN/djQoDHWRS332NQvIbi1ZHYx7UdO+EPpmlgRKcf8QWRfEWvDUr01KQZp3jImrFhLJzIOaVBcSKmw==}
@@ -4322,11 +4334,11 @@ packages:
     resolution: {integrity: sha512-TV7t8GKYaJWsn00tFDqBw8+Uqmr8A0fRU1tvTQhyZzGv0sJCGRQL3JGMI3ucuKo3XIZdUP+Lx7/gh2t3lewy7g==}
     engines: {node: '>=14.16'}
 
-  '@slicemachine/adapter-next@0.3.53':
-    resolution: {integrity: sha512-xPCeXZAcK2T18HU56+13SbzOS6sO7x34qQn5RY+YOhkjwS1O0uE2Nup0B6wBNeKAU2xA2VlMJEPYZku+Yt9srw==}
+  '@slicemachine/adapter-next@0.3.95':
+    resolution: {integrity: sha512-DxixgXFKxTdSFPmQaVt/6npH6Hf9+HpTJ0beTfKVj1K42aN0BZtl940HiJstItH9SRVWzUu5/DZF0AoWOgt+DQ==}
     engines: {node: '>=14.15.0'}
     peerDependencies:
-      next: ^11 || ^12 || ^13 || ^14 || ^15.0.0-rc.0
+      next: ^11 || ^12 || ^13 || ^14 || ^15 || ^16.0.0-beta.0
       react: ^17 || ^18 || ^19.0.0-rc.0
 
   '@slicemachine/manager@0.22.1':
@@ -4338,12 +4350,12 @@ packages:
       msw:
         optional: true
 
-  '@slicemachine/plugin-kit@0.4.53':
-    resolution: {integrity: sha512-wWHQtBOIvajtqzZv4aT/KRp+Q+UPYgHNO+CpHKRgtnu7bjLcNHefWsYkHPNMEdw9oBQx8OXlf3Qt8be9HkArzw==}
-    engines: {node: '>=14.15.0'}
-
   '@slicemachine/plugin-kit@0.4.55':
     resolution: {integrity: sha512-+dWhN3P6//Gqk7A4kx9LA+zWlFSTocxfsZEUAXkUrqqC8Px3RClGPooi9g6qLWTK9WxF5hEWrCiK7T5W2txJQA==}
+    engines: {node: '>=14.15.0'}
+
+  '@slicemachine/plugin-kit@0.4.93':
+    resolution: {integrity: sha512-9LCFHouGbedmsQRUvcD6JU6/GxNxp0QUnoUHbgYFmKQSWTApXDWqPIRr1ejTRYDqLc4hg7FURiHT3tx7bDK+XA==}
     engines: {node: '>=14.15.0'}
 
   '@slorber/react-helmet-async@1.3.0':
@@ -9065,6 +9077,19 @@ packages:
     resolution: {integrity: sha512-ey8Ls/+Di31eqzUxC46h8MksNuGx/n0AAC8uKpwFau4RPDYLuE3EXTp8N8G2vX2N7UC/+IXeNUnlWBGGcAG+Ig==}
     peerDependencies:
       react: '>=16.0.0'
+
+  prismic-ts-codegen@0.1.27:
+    resolution: {integrity: sha512-PAY1FRj+O16VCFQTqG3d5v7RD6aHOtpYCe6xfUPYEHIPJOACY76uQjx27oxg/gtU5npJmgGcYb65cvjvwF2s9Q==}
+    engines: {node: '>=12.7.0'}
+    hasBin: true
+    peerDependencies:
+      '@prismicio/client': ^6.6 || ^7
+      '@prismicio/types': ^0.2.8
+    peerDependenciesMeta:
+      '@prismicio/client':
+        optional: true
+      '@prismicio/types':
+        optional: true
 
   prismic-ts-codegen@0.1.30:
     resolution: {integrity: sha512-EiHQOYJ7h6QkEW7rTG8HQAZV5/ez5dVV/7NNO1JqL2zT7L2wVz8RSORtl6ceqwXZPjdxTLWEt7nUse59GmCHSA==}
@@ -14162,13 +14187,21 @@ snapshots:
     dependencies:
       imgix-url-builder: 0.0.5
 
+  '@prismicio/client@7.17.0':
+    dependencies:
+      imgix-url-builder: 0.0.5
+
   '@prismicio/client@7.21.8':
     dependencies:
       imgix-url-builder: 0.0.6
 
-  '@prismicio/custom-types-client@1.3.1(@prismicio/client@7.12.0)':
+  '@prismicio/custom-types-client@1.3.1(@prismicio/client@7.17.0)':
     dependencies:
-      '@prismicio/client': 7.12.0
+      '@prismicio/client': 7.17.0
+
+  '@prismicio/custom-types-client@1.3.1(@prismicio/client@7.21.8)':
+    dependencies:
+      '@prismicio/client': 7.21.8
 
   '@prismicio/custom-types-client@2.1.0(@prismicio/client@7.12.0)':
     dependencies:
@@ -14208,7 +14241,7 @@ snapshots:
 
   '@prismicio/simulator@0.1.4':
     dependencies:
-      '@prismicio/client': 7.12.0
+      '@prismicio/client': 7.21.8
       '@types/statuses': 2.0.6
       statuses: 2.0.2
 
@@ -14222,6 +14255,16 @@ snapshots:
       newtype-ts: 0.3.5(fp-ts@2.16.11)(monocle-ts@2.3.13(fp-ts@2.16.11))
       tslib: 2.8.1
       uuid: 14.0.0
+
+  '@prismicio/types-internal@3.11.2(fp-ts@2.16.11)(io-ts-types@0.5.19(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(monocle-ts@2.3.13(fp-ts@2.16.11))(newtype-ts@0.3.5(fp-ts@2.16.11)(monocle-ts@2.3.13(fp-ts@2.16.11))))(io-ts@2.2.22(fp-ts@2.16.11))':
+    dependencies:
+      fp-ts: 2.16.11
+      io-ts: 2.2.22(fp-ts@2.16.11)
+      io-ts-types: 0.5.19(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(monocle-ts@2.3.13(fp-ts@2.16.11))(newtype-ts@0.3.5(fp-ts@2.16.11)(monocle-ts@2.3.13(fp-ts@2.16.11)))
+      monocle-ts: 2.3.13(fp-ts@2.16.11)
+      newtype-ts: 0.3.5(fp-ts@2.16.11)(monocle-ts@2.3.13(fp-ts@2.16.11))
+      tslib: 2.8.1
+      uuid: 9.0.1
 
   '@prismicio/types-internal@3.13.0(fp-ts@2.16.11)(io-ts-types@0.5.19(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(monocle-ts@2.3.13(fp-ts@2.16.11))(newtype-ts@0.3.5(fp-ts@2.16.11)(monocle-ts@2.3.13(fp-ts@2.16.11))))(io-ts@2.2.22(fp-ts@2.16.11))':
     dependencies:
@@ -14932,11 +14975,11 @@ snapshots:
 
   '@sindresorhus/is@5.6.0': {}
 
-  '@slicemachine/adapter-next@0.3.53(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(next@16.2.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(react@19.2.6)(uuid@14.0.0)':
+  '@slicemachine/adapter-next@0.3.95(@prismicio/types@0.2.9)(next@16.2.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(react@19.2.6)':
     dependencies:
       '@prismicio/simulator': 0.1.4
-      '@prismicio/types-internal': 2.8.0(@types/uuid@9.0.8)(fp-ts@2.16.11)(io-ts-types@0.5.19(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(monocle-ts@2.3.13(fp-ts@2.16.11))(newtype-ts@0.3.5(fp-ts@2.16.11)(monocle-ts@2.3.13(fp-ts@2.16.11))))(io-ts@2.2.22(fp-ts@2.16.11))(uuid@14.0.0)
-      '@slicemachine/plugin-kit': 0.4.53(@prismicio/types@0.2.9)
+      '@prismicio/types-internal': 3.11.2(fp-ts@2.16.11)(io-ts-types@0.5.19(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(monocle-ts@2.3.13(fp-ts@2.16.11))(newtype-ts@0.3.5(fp-ts@2.16.11)(monocle-ts@2.3.13(fp-ts@2.16.11))))(io-ts@2.2.22(fp-ts@2.16.11))
+      '@slicemachine/plugin-kit': 0.4.93(@prismicio/types@0.2.9)
       common-tags: 1.8.2
       fp-ts: 2.16.11
       io-ts: 2.2.22(fp-ts@2.16.11)
@@ -14949,8 +14992,6 @@ snapshots:
       react: 19.2.6
     transitivePeerDependencies:
       - '@prismicio/types'
-      - '@types/uuid'
-      - uuid
 
   '@slicemachine/manager@0.22.1(@prismicio/types@0.2.9)(@types/uuid@9.0.8)(uuid@14.0.0)':
     dependencies:
@@ -14986,9 +15027,9 @@ snapshots:
       - encoding
       - uuid
 
-  '@slicemachine/plugin-kit@0.4.53(@prismicio/types@0.2.9)':
+  '@slicemachine/plugin-kit@0.4.55(@prismicio/types@0.2.9)':
     dependencies:
-      '@prismicio/client': 7.12.0
+      '@prismicio/client': 7.21.8
       common-tags: 1.8.2
       defu: 6.1.7
       dotenv: 16.3.1
@@ -14998,13 +15039,13 @@ snapshots:
       io-ts-reporters: 2.0.1(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))
       p-limit: 4.0.0
       prettier: 3.8.3
-      prismic-ts-codegen: 0.1.30(@prismicio/client@7.12.0)(@prismicio/types@0.2.9)
+      prismic-ts-codegen: 0.1.30(@prismicio/client@7.21.8)(@prismicio/types@0.2.9)
     transitivePeerDependencies:
       - '@prismicio/types'
 
-  '@slicemachine/plugin-kit@0.4.55(@prismicio/types@0.2.9)':
+  '@slicemachine/plugin-kit@0.4.93(@prismicio/types@0.2.9)':
     dependencies:
-      '@prismicio/client': 7.12.0
+      '@prismicio/client': 7.17.0
       common-tags: 1.8.2
       defu: 6.1.7
       dotenv: 16.3.1
@@ -15014,7 +15055,7 @@ snapshots:
       io-ts-reporters: 2.0.1(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))
       p-limit: 4.0.0
       prettier: 3.8.3
-      prismic-ts-codegen: 0.1.30(@prismicio/client@7.12.0)(@prismicio/types@0.2.9)
+      prismic-ts-codegen: 0.1.27(@prismicio/client@7.17.0)(@prismicio/types@0.2.9)
     transitivePeerDependencies:
       - '@prismicio/types'
 
@@ -20222,9 +20263,24 @@ snapshots:
       clsx: 2.1.1
       react: 19.2.6
 
-  prismic-ts-codegen@0.1.30(@prismicio/client@7.12.0)(@prismicio/types@0.2.9):
+  prismic-ts-codegen@0.1.27(@prismicio/client@7.17.0)(@prismicio/types@0.2.9):
     dependencies:
-      '@prismicio/custom-types-client': 1.3.1(@prismicio/client@7.12.0)
+      '@prismicio/custom-types-client': 1.3.1(@prismicio/client@7.17.0)
+      common-tags: 1.8.2
+      fast-glob: 3.3.3
+      jiti: 1.21.7
+      joi: 17.13.3
+      meow: 12.0.1
+      node-fetch: 3.3.2
+      pascal-case: 3.1.2
+      quick-lru: 6.1.2
+    optionalDependencies:
+      '@prismicio/client': 7.17.0
+      '@prismicio/types': 0.2.9
+
+  prismic-ts-codegen@0.1.30(@prismicio/client@7.21.8)(@prismicio/types@0.2.9):
+    dependencies:
+      '@prismicio/custom-types-client': 1.3.1(@prismicio/client@7.21.8)
       common-tags: 1.8.2
       fast-glob: 3.3.3
       jiti: 1.21.7
@@ -20234,7 +20290,7 @@ snapshots:
       quick-lru: 6.1.2
       zod: 4.4.3
     optionalDependencies:
-      '@prismicio/client': 7.12.0
+      '@prismicio/client': 7.21.8
       '@prismicio/types': 0.2.9
 
   prismjs@1.30.0: {}
