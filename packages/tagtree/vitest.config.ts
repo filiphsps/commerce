@@ -14,12 +14,7 @@ export default defineConfig({
         typecheck: { tsconfig: './tsconfig.test.json' },
         setupFiles: ['vitest.setup.ts'],
         reporters: ['verbose'],
-        exclude: [
-            ...configDefaults.exclude,
-            '**/*.d.ts',
-            '**/dist/**',
-            '**/node_modules/**',
-        ],
+        exclude: [...configDefaults.exclude, '**/*.d.ts', '**/dist/**', '**/node_modules/**'],
         globals: true,
         coverage: {
             include: ['**/src/**/*.ts'],

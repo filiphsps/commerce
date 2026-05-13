@@ -1,9 +1,17 @@
-export { str, num } from './types';
+export type {
+    CacheSchema,
+    CacheSchemaShape,
+    EntitiesMap,
+    QualifierConfig,
+    TenantConfig,
+} from './schema';
+export { defineCache } from './schema';
 export type {
     Brand,
+    EntityDecl,
+    ParamMap,
     ParamType,
     ParamTypeShape,
-    ParamMap,
     ParamValues,
-    EntityDecl,
 } from './types';
+export { num, str } from './types';
