@@ -6,5 +6,8 @@
     "gitIgnoredAuthors": [
         "github-actions[bot]@users.noreply.github.com",
         "opensource@nordcom.io"
-    ]
+    ],
+    "toolSettings": {
+        "nodeMaxMemory": 2048
+    }
 }
