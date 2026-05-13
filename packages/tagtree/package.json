@@ -6,7 +6,7 @@
     "sideEffects": false,
     "type": "module",
     "types": "./dist/index.d.ts",
-    "module": "./dist/index.js",
+    "module": "./dist/index.ts",
     "exports": {
         ".": [
             "./src/index.ts",
@@ -21,11 +21,35 @@
         "build": "tsc && vite build",
         "clean": "rimraf -g dist coverage .turbo .next *.tsbuildinfo *.log node_modules",
         "lint": "biome lint .",
+        "format": "concurrently -i pnpm:format:*",
+        "format:lint": "biome lint --write .",
+        "format:format": "biome format --write .",
         "format:check": "biome check --write --unsafe .",
         "test": "vitest run",
         "typecheck": "tsc -noEmit"
     },
     "files": ["dist"],
+    "author": {
+        "name": "Nordcom AB",
+        "email": "hi@nordcom.io",
+        "url": "https://nordcom.io/"
+    },
+    "contributors": [
+        {
+            "name": "Filiph Siitam Sandström",
+            "email": "filiph@nordcom.io",
+            "url": "https://github.com/filiphsps/"
+        }
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/filiphsps/commerce.git"
+    },
+    "keywords": [],
+    "bugs": {
+        "url": "https://github.com/filiphsps/commerce/issues"
+    },
+    "homepage": "https://shops.nordcom.io/docs/",
     "dependencies": {},
     "devDependencies": {
         "@codecov/vite-plugin": "2.0.1",
