@@ -2,13 +2,13 @@ import type { EntityDecl, ParamMap } from './types';
 
 export interface TenantConfig<T> {
     type: T;
-    key: (t: T) => string;
-    extraTags?: (t: T) => string[];
+    key(t: T): string;
+    extraTags?(t: T): string[];
 }
 
 export interface QualifierConfig<Q> {
     type: Q;
-    key: (q: Q) => string;
+    key(q: Q): string;
 }
 
 export type EntitiesMap = Record<string, EntityDecl<ParamMap | undefined, readonly string[]>>;
