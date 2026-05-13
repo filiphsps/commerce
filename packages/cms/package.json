@@ -78,6 +78,7 @@
     "dependencies": {
         "@nordcom/commerce-db": "workspace:*",
         "@nordcom/commerce-errors": "workspace:*",
+        "@panva/hkdf": "1.2.1",
         "jose": "5.9.0",
         "server-only": "0.0.1"
     },

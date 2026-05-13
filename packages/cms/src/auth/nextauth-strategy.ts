@@ -1,4 +1,5 @@
-import { jwtVerify } from 'jose';
+import { hkdf } from '@panva/hkdf';
+import { jwtDecrypt } from 'jose';
 import type { AuthStrategy } from 'payload';
 
 export type CmsRoleAssignment = {
@@ -46,6 +47,17 @@ const parseCookie = (cookieHeader: string | null, name: string): string | null =
     return null;
 };
 
+/**
+ * Derive the JWE encryption key the same way Auth.js (NextAuth v5) does. The
+ * salt is the cookie name and the info string is hardcoded by Auth.js — see
+ * `@auth/core/jwt#getDerivedEncryptionKey`.
+ *
+ * Default content encryption is A256CBC-HS512 → a 64-byte key.
+ */
+const deriveKey = async (secret: string, salt: string): Promise<Uint8Array> => {
+    return hkdf('sha256', secret, salt, `Auth.js Generated Encryption Key (${salt})`, 64);
+};
+
 export const buildNextAuthStrategy = ({
     secret,
     cookieName,
@@ -58,8 +70,10 @@ export const buildNextAuthStrategy = ({
         const token = parseCookie(cookieHeader, cookieName);
         if (!token) return { user: null };
         try {
-            const key = new TextEncoder().encode(secret);
-            const { payload } = await jwtVerify(token, key);
+            const key = await deriveKey(secret, cookieName);
+            const { payload } = await jwtDecrypt(token, key, {
+                clockTolerance: 15,
+            });
             const email = typeof payload.email === 'string' ? payload.email : null;
             if (!email) return { user: null };
             const user = await findOrCreateUser(email);

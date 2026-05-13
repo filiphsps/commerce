@@ -69,12 +69,17 @@ const findShopsForUser = async (email: string): Promise<Array<{ shopId: string }
     }
 };
 
+// Auth-bridge lookup. Runs BEFORE Payload knows who the user is, so every
+// local-API call must pass `overrideAccess: true` — otherwise the users
+// collection's `create: isAdmin` / `read: req.user` predicates reject us and
+// the strategy returns `null user`, sending the visitor to /cms/login.
 const findOrCreateUser = async (email: string) => {
     const payload = await getPayload({ config: configPromise });
     const { docs } = await payload.find({
         collection: 'users',
         where: { email: { equals: email } },
         limit: 1,
+        overrideAccess: true,
     });
     if (docs[0]) {
         return {
@@ -91,6 +96,7 @@ const findOrCreateUser = async (email: string) => {
             role: OPERATOR_EMAILS.has(email) ? 'admin' : 'editor',
             password: crypto.randomUUID(),
         } as never,
+        overrideAccess: true,
     });
     return {
         id: String(created.id),

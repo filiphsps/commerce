@@ -1,11 +1,26 @@
-import { SignJWT } from 'jose';
+import { hkdf } from '@panva/hkdf';
+import { EncryptJWT } from 'jose';
 import { describe, expect, it, vi } from 'vitest';
 import { buildNextAuthStrategy, computeRolesFromShopMembership } from './nextauth-strategy';
 
-const secret = new TextEncoder().encode('test-nextauth-secret');
+const SECRET = 'test-nextauth-secret';
+const COOKIE_NAME = 'next-auth.session-token';
 
-const signToken = async (data: Record<string, unknown>): Promise<string> =>
-    new SignJWT(data).setProtectedHeader({ alg: 'HS256' }).setExpirationTime('1h').sign(secret);
+const deriveKey = async (secret: string, salt: string): Promise<Uint8Array> =>
+    hkdf('sha256', secret, salt, `Auth.js Generated Encryption Key (${salt})`, 64);
+
+const encryptToken = async (
+    payload: Record<string, unknown>,
+    options: { secret?: string; salt?: string; exp?: string | number } = {},
+): Promise<string> => {
+    const secret = options.secret ?? SECRET;
+    const salt = options.salt ?? COOKIE_NAME;
+    const key = await deriveKey(secret, salt);
+    let jwt = new EncryptJWT(payload).setProtectedHeader({ alg: 'dir', enc: 'A256CBC-HS512' });
+    if (options.exp === undefined) jwt = jwt.setExpirationTime('1h');
+    else if (options.exp !== null) jwt = jwt.setExpirationTime(options.exp);
+    return jwt.encrypt(key);
+};
 
 describe('computeRolesFromShopMembership', () => {
     it('returns admin role for operator-flagged users', () => {
@@ -46,7 +61,7 @@ describe('buildNextAuthStrategy', () => {
         return { headers, req: { headers } } as never;
     };
 
-    it('returns the Payload user matching the JWT email', async () => {
+    it('returns the Payload user matching the JWE email claim', async () => {
         const findOrCreate = vi.fn(async (email: string) => ({
             id: 'u1',
             email,
@@ -59,14 +74,14 @@ describe('buildNextAuthStrategy', () => {
         }));
 
         const strategy = buildNextAuthStrategy({
-            secret: 'test-nextauth-secret',
-            cookieName: 'next-auth.session-token',
+            secret: SECRET,
+            cookieName: COOKIE_NAME,
             findOrCreateUser: findOrCreate,
             recomputeRoles,
         });
 
-        const token = await signToken({ email: 'editor@example.com', sub: 'nx_1' });
-        const result = await strategy.authenticate(ctx(`next-auth.session-token=${token}`));
+        const token = await encryptToken({ email: 'editor@example.com', sub: 'nx_1' });
+        const result = await strategy.authenticate(ctx(`${COOKIE_NAME}=${token}`));
 
         expect(result.user).toMatchObject({ email: 'editor@example.com' });
         expect(findOrCreate).toHaveBeenCalledWith('editor@example.com');
@@ -75,8 +90,8 @@ describe('buildNextAuthStrategy', () => {
 
     it('returns { user: null } when no cookie present', async () => {
         const strategy = buildNextAuthStrategy({
-            secret: 'test-nextauth-secret',
-            cookieName: 'next-auth.session-token',
+            secret: SECRET,
+            cookieName: COOKIE_NAME,
             findOrCreateUser: vi.fn(),
             recomputeRoles: vi.fn(),
         });
@@ -84,21 +99,21 @@ describe('buildNextAuthStrategy', () => {
         expect(result.user).toBeNull();
     });
 
-    it('returns { user: null } when JWT is invalid', async () => {
+    it('returns { user: null } when JWE is malformed', async () => {
         const strategy = buildNextAuthStrategy({
-            secret: 'test-nextauth-secret',
-            cookieName: 'next-auth.session-token',
+            secret: SECRET,
+            cookieName: COOKIE_NAME,
             findOrCreateUser: vi.fn(),
             recomputeRoles: vi.fn(),
         });
-        const result = await strategy.authenticate(ctx('next-auth.session-token=garbage'));
+        const result = await strategy.authenticate(ctx(`${COOKIE_NAME}=garbage`));
         expect(result.user).toBeNull();
     });
 
     it('returns { user: null } when the named cookie is missing among others', async () => {
         const strategy = buildNextAuthStrategy({
-            secret: 'test-nextauth-secret',
-            cookieName: 'next-auth.session-token',
+            secret: SECRET,
+            cookieName: COOKIE_NAME,
             findOrCreateUser: vi.fn(),
             recomputeRoles: vi.fn(),
         });
@@ -106,67 +121,84 @@ describe('buildNextAuthStrategy', () => {
         expect(result.user).toBeNull();
     });
 
-    it('returns { user: null } when JWT is signed by a different secret', async () => {
-        const wrongKey = new TextEncoder().encode('a-different-secret-entirely');
-        const forged = await new SignJWT({ email: 'attacker@example.com' })
-            .setProtectedHeader({ alg: 'HS256' })
-            .setIssuedAt()
-            .setExpirationTime('5m')
-            .sign(wrongKey);
+    it('returns { user: null } when JWE is encrypted with a different secret', async () => {
         const findOrCreate = vi.fn();
+        const forged = await encryptToken(
+            { email: 'attacker@example.com' },
+            { secret: 'a-different-secret-entirely' },
+        );
         const strategy = buildNextAuthStrategy({
-            secret: 'test-nextauth-secret',
-            cookieName: 'next-auth.session-token',
+            secret: SECRET,
+            cookieName: COOKIE_NAME,
             findOrCreateUser: findOrCreate as never,
             recomputeRoles: vi.fn() as never,
         });
-        const result = await strategy.authenticate(ctx(`next-auth.session-token=${forged}`));
+        const result = await strategy.authenticate(ctx(`${COOKIE_NAME}=${forged}`));
         expect(result.user).toBeNull();
         expect(findOrCreate).not.toHaveBeenCalled();
     });
 
-    it('returns { user: null } when JWT is expired', async () => {
-        const expired = await new SignJWT({ email: 'someone@example.com' })
-            .setProtectedHeader({ alg: 'HS256' })
-            .setIssuedAt(0)
-            .setExpirationTime(1)
-            .sign(secret);
+    it('returns { user: null } when JWE was salted with a different cookie name', async () => {
+        // Auth.js salts the HKDF derivation with the cookie name. A token
+        // minted for one cookie name cannot be decrypted with the other.
         const findOrCreate = vi.fn();
+        const token = await encryptToken(
+            { email: 'someone@example.com' },
+            { salt: '__Secure-next-auth.session-token' },
+        );
         const strategy = buildNextAuthStrategy({
-            secret: 'test-nextauth-secret',
-            cookieName: 'next-auth.session-token',
+            secret: SECRET,
+            cookieName: COOKIE_NAME,
             findOrCreateUser: findOrCreate as never,
             recomputeRoles: vi.fn() as never,
         });
-        const result = await strategy.authenticate(ctx(`next-auth.session-token=${expired}`));
+        const result = await strategy.authenticate(ctx(`${COOKIE_NAME}=${token}`));
         expect(result.user).toBeNull();
         expect(findOrCreate).not.toHaveBeenCalled();
     });
 
-    it('returns { user: null } when JWT has no email claim', async () => {
+    it('returns { user: null } when JWE is expired (beyond clockTolerance)', async () => {
         const findOrCreate = vi.fn();
-        const noEmail = await signToken({ sub: 'user-1' });
+        // exp 60s in the past — clockTolerance is 15s, so this is expired.
+        const expired = await encryptToken(
+            { email: 'someone@example.com' },
+            { exp: Math.floor(Date.now() / 1000) - 60 },
+        );
         const strategy = buildNextAuthStrategy({
-            secret: 'test-nextauth-secret',
-            cookieName: 'next-auth.session-token',
+            secret: SECRET,
+            cookieName: COOKIE_NAME,
             findOrCreateUser: findOrCreate as never,
             recomputeRoles: vi.fn() as never,
         });
-        const result = await strategy.authenticate(ctx(`next-auth.session-token=${noEmail}`));
+        const result = await strategy.authenticate(ctx(`${COOKIE_NAME}=${expired}`));
         expect(result.user).toBeNull();
         expect(findOrCreate).not.toHaveBeenCalled();
     });
 
-    it('returns { user: null } when JWT email claim is non-string', async () => {
+    it('returns { user: null } when JWE has no email claim', async () => {
         const findOrCreate = vi.fn();
-        const t = await signToken({ email: 123 as never });
+        const noEmail = await encryptToken({ sub: 'user-1' });
         const strategy = buildNextAuthStrategy({
-            secret: 'test-nextauth-secret',
-            cookieName: 'next-auth.session-token',
+            secret: SECRET,
+            cookieName: COOKIE_NAME,
             findOrCreateUser: findOrCreate as never,
             recomputeRoles: vi.fn() as never,
         });
-        const result = await strategy.authenticate(ctx(`next-auth.session-token=${t}`));
+        const result = await strategy.authenticate(ctx(`${COOKIE_NAME}=${noEmail}`));
+        expect(result.user).toBeNull();
+        expect(findOrCreate).not.toHaveBeenCalled();
+    });
+
+    it('returns { user: null } when JWE email claim is non-string', async () => {
+        const findOrCreate = vi.fn();
+        const t = await encryptToken({ email: 123 as never });
+        const strategy = buildNextAuthStrategy({
+            secret: SECRET,
+            cookieName: COOKIE_NAME,
+            findOrCreateUser: findOrCreate as never,
+            recomputeRoles: vi.fn() as never,
+        });
+        const result = await strategy.authenticate(ctx(`${COOKIE_NAME}=${t}`));
         expect(result.user).toBeNull();
     });
 
@@ -179,13 +211,13 @@ describe('buildNextAuthStrategy', () => {
         }));
         const recomputeRoles = vi.fn(async () => ({ role: 'admin' as const, tenants: [] }));
         const strategy = buildNextAuthStrategy({
-            secret: 'test-nextauth-secret',
-            cookieName: 'next-auth.session-token',
+            secret: SECRET,
+            cookieName: COOKIE_NAME,
             findOrCreateUser: findOrCreate,
             recomputeRoles,
         });
-        const token = await signToken({ email: 'op@nordcom.io' });
-        const result = await strategy.authenticate(ctx(`next-auth.session-token=${token}`));
+        const token = await encryptToken({ email: 'op@nordcom.io' });
+        const result = await strategy.authenticate(ctx(`${COOKIE_NAME}=${token}`));
         expect((result.user as { role?: string } | null)?.role).toBe('admin');
     });
 
@@ -197,13 +229,13 @@ describe('buildNextAuthStrategy', () => {
             tenants: [],
         }));
         const strategy = buildNextAuthStrategy({
-            secret: 'test-nextauth-secret',
-            cookieName: 'next-auth.session-token',
+            secret: SECRET,
+            cookieName: COOKIE_NAME,
             findOrCreateUser: findOrCreate,
             recomputeRoles: vi.fn(async () => ({ role: 'editor' as const, tenants: [] })),
         });
-        const token = await signToken({ email: 'a@b.com' });
-        const result = await strategy.authenticate(ctx(`next-auth.session-token=${token}`));
+        const token = await encryptToken({ email: 'a@b.com' });
+        const result = await strategy.authenticate(ctx(`${COOKIE_NAME}=${token}`));
         expect((result.user as { collection?: string } | null)?.collection).toBe('users');
     });
 
@@ -211,14 +243,14 @@ describe('buildNextAuthStrategy', () => {
         const failing = vi.fn(async () => {
             throw new Error('db down');
         });
-        const token = await signToken({ email: 'x@y.com' });
+        const token = await encryptToken({ email: 'x@y.com' });
         const strategy = buildNextAuthStrategy({
-            secret: 'test-nextauth-secret',
-            cookieName: 'next-auth.session-token',
+            secret: SECRET,
+            cookieName: COOKIE_NAME,
             findOrCreateUser: failing as never,
             recomputeRoles: vi.fn() as never,
         });
-        const result = await strategy.authenticate(ctx(`next-auth.session-token=${token}`));
+        const result = await strategy.authenticate(ctx(`${COOKIE_NAME}=${token}`));
         expect(result.user).toBeNull();
     });
 
@@ -230,14 +262,14 @@ describe('buildNextAuthStrategy', () => {
             tenants: [],
         }));
         const strategy = buildNextAuthStrategy({
-            secret: 'test-nextauth-secret',
-            cookieName: 'next-auth.session-token',
+            secret: SECRET,
+            cookieName: COOKIE_NAME,
             findOrCreateUser: findOrCreate,
             recomputeRoles: vi.fn(async () => ({ role: 'editor' as const, tenants: [] })),
         });
-        const token = await signToken({ email: 'a@b.com' });
+        const token = await encryptToken({ email: 'a@b.com' });
         const result = await strategy.authenticate(
-            ctx(`next-auth.session-token=${encodeURIComponent(token)}`),
+            ctx(`${COOKIE_NAME}=${encodeURIComponent(token)}`),
         );
         expect(result.user).not.toBeNull();
     });
