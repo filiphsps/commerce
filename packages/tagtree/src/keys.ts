@@ -1,4 +1,5 @@
 import { computeFanout } from './fanout';
+import type { ParamMap, ParamValues } from './types';
 import type { CacheSchemaShape, EntitiesMap } from './schema';
 
 export interface CacheKey {
@@ -7,22 +8,28 @@ export interface CacheKey {
 	readTag: string;       // primary + qualifier suffix, used as cache lookup key
 }
 
-type KeyBuilderArg<T, Q> = { tenant?: T; qualifier?: Q } & Record<string, string | number>;
+type ParamsOf<D> = D extends { params: infer P } ? (P extends ParamMap ? P : undefined) : undefined;
 
-export type KeyFactory<T = unknown, Q = unknown> = Record<string, (arg: KeyBuilderArg<T, Q>) => CacheKey>;
+type KeyBuilderArg<T, Q, D> = { tenant?: T; qualifier?: Q } & ParamValues<ParamsOf<D>>;
+
+export type KeyFactory<T = unknown, Q = unknown, E extends EntitiesMap = EntitiesMap> = {
+	[K in keyof E]: (arg: KeyBuilderArg<T, Q, E[K]>) => CacheKey;
+};
 
 export function buildKeyFactory<NS extends string, T, Q, E extends EntitiesMap>(
 	schema: CacheSchemaShape<NS, T, Q, E>,
-): KeyFactory<T, Q> {
-	const out: KeyFactory<T, Q> = {};
+): KeyFactory<T, Q, E> {
+	const out: Record<string, unknown> = {};
 
 	for (const [entityName, decl] of Object.entries(schema.entities)) {
-		out[entityName] = (arg) => {
+		out[entityName] = (arg: { tenant?: T; qualifier?: Q } & Record<string, string | number>) => {
 			const params: Record<string, string | number> = {};
 			if (decl.params) {
 				for (const paramName of Object.keys(decl.params)) {
 					const value = arg[paramName];
-					if (value !== undefined) params[paramName] = value;
+					if (value !== undefined && (typeof value === 'string' || typeof value === 'number')) {
+						params[paramName] = value;
+					}
 				}
 			}
 
@@ -42,5 +49,5 @@ export function buildKeyFactory<NS extends string, T, Q, E extends EntitiesMap>(
 		};
 	}
 
-	return out;
+	return out as KeyFactory<T, Q, E>;
 }

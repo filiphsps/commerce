@@ -25,7 +25,7 @@ describe('cache.keys.<entity>', () => {
 
 	it('builds primary, tags, readTag for an entity with params + qualifier', () => {
 		const keys = buildKeyFactory(cache.schema);
-		const key: CacheKey = keys.product!({ tenant: shop, qualifier: locale, handle: 'cool-shirt' });
+		const key: CacheKey = keys.product({ tenant: shop, qualifier: locale, handle: 'cool-shirt' });
 
 		expect(key.primary).toBe('shopify.shop_1.product.cool-shirt');
 		expect(key.readTag).toBe('shopify.shop_1.product.cool-shirt::en-US');
@@ -41,7 +41,7 @@ describe('cache.keys.<entity>', () => {
 
 	it('omits the qualifier from readTag when no qualifier is supplied', () => {
 		const keys = buildKeyFactory(cache.schema);
-		const key = keys.product!({ tenant: shop, handle: 'x' });
+		const key = keys.product({ tenant: shop, handle: 'x' });
 		expect(key.readTag).toBe('shopify.shop_1.product.x');
 	});
 

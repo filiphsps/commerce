@@ -297,7 +297,7 @@ export const ProductApi = async ({ api, handle, fragment }: ProductOptions): Pro
             },
             {
                 tags: [
-                    ...cache.keys.product!({ tenant: api.shop(), handle } as any).tags,
+                    ...cache.keys.product({ tenant: api.shop(), handle }).tags,
                     'product',
                     handle,
                     ...(fragment ? [md5(fragment).toString()] : []),
@@ -366,7 +366,7 @@ export const ProductsPaginationCountApi = async ({
             },
             {
                 tags: [
-                    ...cache.keys.products!({ tenant: api.shop() } as any).tags,
+                    ...cache.keys.products({ tenant: api.shop() }).tags,
                     'products',
                     'pagination',
                     'count',
@@ -459,7 +459,7 @@ export const ProductsApi = async ({
             cursor: cursor || null,
         },
         {
-            tags: [...cache.keys.products!({ tenant: api.shop() } as any).tags, 'products'],
+            tags: [...cache.keys.products({ tenant: api.shop() }).tags, 'products'],
         },
     );
 
@@ -585,7 +585,7 @@ export const ProductsPaginationApi = async ({
         },
         {
             ...(Object.keys(filter).length > 0 ? { fetchPolicy: 'no-cache' } : {}),
-            tags: [...cache.keys.products!({ tenant: api.shop() } as any).tags, 'products', 'pagination'],
+            tags: [...cache.keys.products({ tenant: api.shop() }).tags, 'products', 'pagination'],
         },
     );
 
