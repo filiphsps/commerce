@@ -323,15 +323,17 @@ export const ShopSchema = new Schema<ShopBase>(
 
         integrations: {
             type: {
-                judgme: {
+                judgeme: {
                     type: {
                         publicToken: {
                             type: Schema.Types.String,
                             required: true,
                         },
+                        required: false,
                     },
                     required: false,
                 },
+                required: false,
             },
             required: false,
         },
