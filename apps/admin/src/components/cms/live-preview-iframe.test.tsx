@@ -5,8 +5,8 @@ import { LivePreviewIframe } from '@/components/cms/live-preview-iframe';
 import { render, screen } from '@/utils/test/react';
 
 // ------------------------------------------------------------------
-// Mock next/navigation — the component uses it indirectly via the
-// test wrapper; mock it defensively so the module resolves cleanly.
+// Mock next/navigation — the component doesn't use it directly, but
+// the test wrapper may pull it in transitively. Mock defensively.
 // ------------------------------------------------------------------
 
 vi.mock('next/navigation', () => ({
@@ -19,16 +19,13 @@ vi.mock('next/navigation', () => ({
 // Fixtures
 // ------------------------------------------------------------------
 
-const BASE_PROPS = {
-    domain: 'test-shop.com',
-    target: { collection: 'pages', slug: 'about' } as const,
-    locale: 'en-US',
-    storefrontBaseUrl: 'http://localhost:1337',
-    previewSecret: 'test-secret',
-} as const;
-
-const EXPECTED_URL =
+const PREVIEW_URL =
     'http://localhost:1337/__by-tenant/test-shop.com/en-US/about?preview=1&secret=test-secret';
+
+const BASE_PROPS = {
+    previewUrl: PREVIEW_URL,
+    domain: 'test-shop.com',
+} as const;
 
 // ------------------------------------------------------------------
 // localStorage mock — replace the instance methods so happy-dom's own
@@ -85,7 +82,7 @@ describe('LivePreviewIframe', () => {
         expect(screen.getByRole('button', { name: 'Show preview' })).toBeInTheDocument();
     });
 
-    it('shows the iframe with the correct src after clicking the "Show preview" toggle', () => {
+    it('shows the iframe with the previewUrl prop as src after clicking the toggle', () => {
         render(<LivePreviewIframe {...BASE_PROPS} />);
 
         const toggleBtn = screen.getByRole('button', { name: 'Show preview' });
@@ -93,7 +90,7 @@ describe('LivePreviewIframe', () => {
 
         const iframe = screen.getByTitle('Live preview');
         expect(iframe).toBeInTheDocument();
-        expect(iframe).toHaveAttribute('src', EXPECTED_URL);
+        expect(iframe).toHaveAttribute('src', PREVIEW_URL);
     });
 
     it('hides the iframe again after clicking the close/hide toggle button', () => {
@@ -129,7 +126,8 @@ describe('LivePreviewIframe', () => {
 
         // Track src assignments via a property descriptor spy.
         let assignedSrc: string | null = null;
-        const srcDescriptor = Object.getOwnPropertyDescriptor(HTMLIFrameElement.prototype, 'src') ??
+        const srcDescriptor =
+            Object.getOwnPropertyDescriptor(HTMLIFrameElement.prototype, 'src') ??
             Object.getOwnPropertyDescriptor(Element.prototype, 'src');
 
         const setSpy = vi.fn((value: string) => {
@@ -139,7 +137,7 @@ describe('LivePreviewIframe', () => {
         });
 
         Object.defineProperty(iframe, 'src', {
-            get: () => assignedSrc ?? EXPECTED_URL,
+            get: () => assignedSrc ?? PREVIEW_URL,
             set: setSpy,
             configurable: true,
         });
@@ -147,37 +145,30 @@ describe('LivePreviewIframe', () => {
         const refreshBtn = screen.getByRole('button', { name: /refresh preview/i });
         fireEvent.click(refreshBtn);
 
-        // The component must have written to iframe.src (the cross-origin reload
-        // pattern — `iframe.src = iframe.src` — rather than
-        // `contentWindow.location.reload()` which throws SecurityError across origins).
+        // The component must have written to iframe.src — the cross-origin reload
+        // pattern (`iframe.src = iframe.src`) rather than
+        // `contentWindow.location.reload()` which throws SecurityError across origins.
         expect(setSpy).toHaveBeenCalledTimes(1);
-    });
-
-    it('builds the URL correctly for articles collection', () => {
-        render(
-            <LivePreviewIframe
-                {...BASE_PROPS}
-                target={{ collection: 'articles', slug: 'my-post' }}
-                defaultOpen
-            />,
-        );
-
-        const iframe = screen.getByTitle('Live preview') as HTMLIFrameElement;
-        expect(iframe).toHaveAttribute(
-            'src',
-            'http://localhost:1337/__by-tenant/test-shop.com/en-US/blog/my-post?preview=1&secret=test-secret',
-        );
     });
 
     it('renders with defaultOpen=true and shows the iframe immediately', () => {
         render(<LivePreviewIframe {...BASE_PROPS} defaultOpen />);
 
         expect(screen.getByTitle('Live preview')).toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: /show preview/i })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Show preview' })).not.toBeInTheDocument();
     });
 
-    it('persists open state to localStorage when toggled', () => {
+    it('persists open state to a tenant-scoped localStorage key when toggled', () => {
         render(<LivePreviewIframe {...BASE_PROPS} />);
+
+        fireEvent.click(screen.getByRole('button', { name: 'Show preview' }));
+
+        // Key is scoped to the domain so different tenants don't share state.
+        expect(localStorageMock.setItem).toHaveBeenCalledWith('cms.live-preview.test-shop.com.open', 'true');
+    });
+
+    it('falls back to a global localStorage key when no domain is provided', () => {
+        render(<LivePreviewIframe previewUrl={PREVIEW_URL} />);
 
         fireEvent.click(screen.getByRole('button', { name: 'Show preview' }));
 

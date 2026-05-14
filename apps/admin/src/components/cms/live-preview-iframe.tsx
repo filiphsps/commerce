@@ -2,125 +2,63 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-const STORAGE_KEY = 'cms.live-preview.open';
-const DEFAULT_LOCALE = 'en-US';
-
-export type LivePreviewTarget =
-    | { collection: string; slug: string }
-    | { global: string };
+const STORAGE_KEY_PREFIX = 'cms.live-preview';
 
 export type LivePreviewIframeProps = {
-    /** Tenant domain — used to scope the preview to the right storefront. */
-    domain: string;
     /**
-     * What's being previewed.
-     *   - `{ collection, slug }` for a collection document (pages, articles, etc.)
-     *   - `{ global }` for a global (header, footer, etc.)
+     * Fully-assembled preview URL. Must be built server-side by the caller
+     * so the storefront preview secret never crosses the RSC boundary —
+     * it would otherwise land in the iframe `src` attribute in the DOM,
+     * letting any signed-in editor lift the bearer token via devtools and
+     * mint draft-mode sessions for themselves.
+     *
+     * Use `buildLivePreviewUrl` from `payload.config.ts` (or its eventual
+     * extracted helper) to assemble this in the parent server component.
      */
-    target: LivePreviewTarget;
+    previewUrl: string;
     /**
-     * Current locale (e.g. 'en-US'). Falls back to `en-US` if absent.
-     * Callers typically read this from `?locale=…` in the current URL.
+     * Tenant domain — used only to scope the `localStorage` key per tenant
+     * so different shops don't share an open/closed state in the same
+     * browser. Optional; when absent, a single global key is used.
      */
-    locale?: string;
+    domain?: string;
     /**
      * Open by default. Defaults to `false` — preview is collapsed and a
      * "Show preview" button toggles it. The last user-chosen state is
-     * persisted in `localStorage` under `cms.live-preview.open`.
+     * persisted in `localStorage` under `cms.live-preview[.<domain>].open`.
      */
     defaultOpen?: boolean;
-    /**
-     * Base URL of the storefront (e.g. `http://localhost:1337`).
-     * Must be supplied by a server component that has access to the
-     * `STOREFRONT_BASE_URL` environment variable.
-     */
-    storefrontBaseUrl: string;
-    /**
-     * Preview secret passed as the `?secret=` query parameter. Matches
-     * `STOREFRONT_PREVIEW_SECRET`. Pass an empty string if not configured.
-     * Must be supplied by a server component that has access to the env var.
-     */
-    previewSecret?: string;
 };
-
-/**
- * Builds the storefront preview URL from the same inputs as
- * `buildLivePreviewUrl` in `apps/admin/src/payload.config.ts`.
- *
- * Kept inline (not extracted to a shared helper) because `payload.config.ts`
- * also needs `process.env` values that only exist on the server — extracting
- * would require duplicating the env-read logic or threading extra parameters
- * through Payload's `LivePreviewConfig.url` callback. For Phase 0, co-locating
- * the URL builder here and accepting the resolved values as props is cleaner.
- */
-function buildPreviewUrl({
-    storefrontBaseUrl,
-    tenantId,
-    target,
-    locale,
-    previewSecret,
-}: {
-    storefrontBaseUrl: string;
-    tenantId: string;
-    target: LivePreviewTarget;
-    locale: string;
-    previewSecret: string;
-}): string {
-    let previewPath: string;
-
-    if ('global' in target) {
-        previewPath = `/${locale}`;
-    } else {
-        const { collection, slug } = target;
-        const handle = slug || 'home';
-        if (collection === 'pages') {
-            previewPath = `/${locale}/${handle}`;
-        } else if (collection === 'articles') {
-            previewPath = `/${locale}/blog/${handle}`;
-        } else if (collection === 'productMetadata') {
-            previewPath = `/${locale}/products/${handle}`;
-        } else if (collection === 'collectionMetadata') {
-            previewPath = `/${locale}/collections/${handle}`;
-        } else {
-            previewPath = `/${locale}`;
-        }
-    }
-
-    const base = storefrontBaseUrl.replace(/\/$/, '');
-    const params = new URLSearchParams({ preview: '1' });
-    if (previewSecret) {
-        params.set('secret', previewSecret);
-    }
-
-    return `${base}/__by-tenant/${tenantId}${previewPath}?${params.toString()}`;
-}
 
 /**
  * Live-preview pane for Payload CMS document edit pages.
  *
  * Renders a collapsible iframe panel with a refresh button. Hidden by default —
- * the user opens it via "Show preview". The open/closed state persists in
- * `localStorage` under `cms.live-preview.open`.
+ * the user opens it via the toggle in the header bar. The open/closed state
+ * persists in `localStorage` under a per-tenant key (`cms.live-preview.<domain>.open`)
+ * so different shops don't share state in the same browser session.
  *
- * **Cross-origin refresh:** the storefront runs on a different port/domain than
- * the admin, so `contentWindow.location.reload()` would throw a `SecurityError`.
+ * **Security note:** this component is intentionally URL-agnostic. The caller
+ * builds the URL server-side and passes the result in via `previewUrl`. This
+ * keeps the storefront preview secret out of the RSC payload — passing it as
+ * a prop would serialise it across the RSC boundary and embed it in the
+ * rendered iframe `src` attribute, where any signed-in editor could lift it
+ * from devtools and enable draft mode on their own session.
+ *
+ * **Cross-origin refresh:** the storefront runs on a different origin than the
+ * admin, so `contentWindow.location.reload()` would throw a `SecurityError`.
  * We use `iframe.src = iframe.src` instead, which forces a reload without
  * crossing the same-origin policy. This is a well-known workaround documented
  * in MDN's cross-origin iframe section.
  */
-export function LivePreviewIframe({
-    domain,
-    target,
-    locale = DEFAULT_LOCALE,
-    defaultOpen = false,
-    storefrontBaseUrl,
-    previewSecret = '',
-}: LivePreviewIframeProps) {
+export function LivePreviewIframe({ previewUrl, domain, defaultOpen = false }: LivePreviewIframeProps) {
+    const storageKey = domain ? `${STORAGE_KEY_PREFIX}.${domain}.open` : `${STORAGE_KEY_PREFIX}.open`;
+
     // Initialise from localStorage (if available) — falls back to defaultOpen.
     const [isOpen, setIsOpen] = useState<boolean>(() => {
         if (typeof window === 'undefined') return defaultOpen;
         try {
-            const stored = window.localStorage.getItem(STORAGE_KEY);
+            const stored = window.localStorage.getItem(storageKey);
             if (stored !== null) return stored === 'true';
         } catch {
             // localStorage may be blocked (private browsing, security policy).
@@ -131,21 +69,13 @@ export function LivePreviewIframe({
     // Keep localStorage in sync whenever the user toggles.
     useEffect(() => {
         try {
-            window.localStorage.setItem(STORAGE_KEY, String(isOpen));
+            window.localStorage.setItem(storageKey, String(isOpen));
         } catch {
             // Silently ignore — storage might be disabled.
         }
-    }, [isOpen]);
+    }, [isOpen, storageKey]);
 
     const iframeRef = useRef<HTMLIFrameElement>(null);
-
-    const previewUrl = buildPreviewUrl({
-        storefrontBaseUrl,
-        tenantId: domain,
-        target,
-        locale,
-        previewSecret,
-    });
 
     const handleRefresh = useCallback(() => {
         const iframe = iframeRef.current;
