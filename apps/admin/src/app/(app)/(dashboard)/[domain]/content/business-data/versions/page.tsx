@@ -68,13 +68,12 @@ export default async function BusinessDataVersionsPage({ params }: { params: Par
                                   ? updatedBy
                                   : 'Unknown';
 
-                        const restoreThis = restoreVersionAction.bind(
-                            null,
-                            domain,
-                            'businessData',
-                            String(v.id),
-                            `/${domain}/content/business-data/`,
-                        );
+                        // The default revalidation target inside the action is
+                        // `/${domain}/content/${collection}/`, which is exactly
+                        // the edit route we'd want refreshed here — no override
+                        // needed. The action also redirects to the versions list,
+                        // so we don't need to handle navigation client-side.
+                        const restoreThis = restoreVersionAction.bind(null, domain, 'businessData', String(v.id));
 
                         return (
                             <li key={String(v.id)} className="flex items-center justify-between px-4 py-3">

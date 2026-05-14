@@ -15,6 +15,20 @@ const { mockGetAuthedPayloadCtx, mockRevalidatePath } = vi.hoisted(() => ({
 
 vi.mock('server-only', () => ({}));
 
+// `redirect` is mocked as a sentinel-throwing function rather than a resettable
+// `vi.fn()`. The trade-off is we can't `toHaveBeenCalledWith` on it — instead,
+// every test asserts on the sentinel error string thrown, which is strictly
+// stronger (it proves the action called redirect with the right path AND
+// halted execution at that point). Same pattern as `payload-ctx.test.ts`.
+vi.mock('next/navigation', () => ({
+    redirect: (url: string): never => {
+        throw new Error(`NEXT_REDIRECT:${url}`);
+    },
+    notFound: (): never => {
+        throw new Error('NEXT_NOT_FOUND');
+    },
+}));
+
 vi.mock('next/cache', () => ({
     revalidatePath: mockRevalidatePath,
 }));
@@ -74,7 +88,11 @@ describe('restoreVersionAction', () => {
         const payload = makePayload();
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
 
-        await restoreVersionAction(DOMAIN, COLLECTION, VERSION_ID);
+        // `redirect()` throws — wrap the call so we can still inspect the
+        // side-effects on `payload.restoreVersion`.
+        await expect(restoreVersionAction(DOMAIN, COLLECTION, VERSION_ID)).rejects.toThrow(
+            `NEXT_REDIRECT:/${DOMAIN}/content/${COLLECTION}/versions/`,
+        );
 
         expect(mockGetAuthedPayloadCtx).toHaveBeenCalledWith(DOMAIN);
         expect(payload.restoreVersion).toHaveBeenCalledWith(
@@ -87,34 +105,56 @@ describe('restoreVersionAction', () => {
         );
     });
 
-    it('revalidates the default collection edit path when no redirectPath is given', async () => {
+    it('revalidates BOTH the edit route and the versions list, then redirects to versions', async () => {
         const payload = makePayload();
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
 
-        await restoreVersionAction(DOMAIN, COLLECTION, VERSION_ID);
+        await expect(restoreVersionAction(DOMAIN, COLLECTION, VERSION_ID)).rejects.toThrow(
+            `NEXT_REDIRECT:/${DOMAIN}/content/${COLLECTION}/versions/`,
+        );
 
-        expect(mockRevalidatePath).toHaveBeenCalledWith(`/${DOMAIN}/content/${COLLECTION}/`);
+        // Both paths revalidated, in order: edit route first, versions list second.
+        expect(mockRevalidatePath).toHaveBeenCalledTimes(2);
+        expect(mockRevalidatePath).toHaveBeenNthCalledWith(1, `/${DOMAIN}/content/${COLLECTION}/`);
+        expect(mockRevalidatePath).toHaveBeenNthCalledWith(2, `/${DOMAIN}/content/${COLLECTION}/versions/`);
     });
 
-    it('revalidates the custom redirectPath when one is supplied', async () => {
+    it('ignores any trailing FormData (the param exists only to satisfy the <form action> typing)', async () => {
         const payload = makePayload();
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
 
-        const customPath = `/${DOMAIN}/content/business-data/`;
-        await restoreVersionAction(DOMAIN, COLLECTION, VERSION_ID, customPath);
+        // The form binds (domain, collection, versionId) and Next then passes
+        // FormData as the trailing positional arg. We don't read it — every
+        // input is captured through the positional bind. Verify the action
+        // still calls payload.restoreVersion with the same args regardless.
+        const fakeFormData = new FormData();
+        fakeFormData.append('attacker-controlled', 'evil-value');
 
-        expect(mockRevalidatePath).toHaveBeenCalledWith(customPath);
+        await expect(restoreVersionAction(DOMAIN, COLLECTION, VERSION_ID, fakeFormData)).rejects.toThrow(
+            `NEXT_REDIRECT:/${DOMAIN}/content/${COLLECTION}/versions/`,
+        );
+
+        expect(payload.restoreVersion).toHaveBeenCalledWith(
+            expect.objectContaining({ collection: COLLECTION, id: VERSION_ID, user: USER, overrideAccess: false }),
+        );
     });
 
-    it('does not call revalidatePath when payload.restoreVersion throws', async () => {
+    it('does not call revalidatePath or redirect when payload.restoreVersion throws', async () => {
         const payload = makePayload();
         payload.restoreVersion.mockRejectedValue(new Error('Payload access denied'));
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
 
+        // The thrown error is the genuine Payload failure — NOT a NEXT_REDIRECT
+        // sentinel. If the action accidentally revalidated/redirected before
+        // awaiting the restore, this assertion would surface that bug.
         await expect(restoreVersionAction(DOMAIN, COLLECTION, VERSION_ID)).rejects.toThrow(
             'Payload access denied',
         );
 
         expect(mockRevalidatePath).not.toHaveBeenCalled();
+        // We can't directly assert `redirect` was not called (it's a static throw,
+        // not a vi.fn), but the rejected error above proves the rejection came
+        // from `payload.restoreVersion` — a redirect would have produced a
+        // `NEXT_REDIRECT:...` sentinel string instead.
     });
 });
