@@ -110,25 +110,28 @@ export function DocumentForm({
 
             {/* ── Form body (with optional live-preview split) ──
                   `flex-1` lets the body soak up vertical space so the sticky
-                  toolbar gets pushed to the viewport bottom on short documents. */}
+                  toolbar gets pushed to the viewport bottom on short documents.
+                  The toolbar is rendered INSIDE <Form> so client components in
+                  the toolbar slot (e.g. <BusinessDataForm>) can call useForm()
+                  and useAllFormFields() to read live field state. */}
             <div className={livePreview ? 'grid flex-1 grid-cols-1 gap-4 lg:grid-cols-2' : 'flex-1'}>
                 <div className="flex flex-col gap-4">
                     <PayloadFieldShell config={clientConfig}>
                         <Form action={onSubmit} initialState={initialState} isDocumentForm>
                             <div className="flex flex-col gap-4">{children}</div>
+
+                            {/* ── Sticky bottom toolbar (inside Form) ── */}
+                            {toolbar ? (
+                                <div className="sticky bottom-0 z-10 border-border border-t bg-background p-4">
+                                    <div className="flex items-center justify-between">{toolbar}</div>
+                                </div>
+                            ) : null}
                         </Form>
                     </PayloadFieldShell>
                 </div>
 
                 {livePreview ? <div className="flex flex-col gap-4">{livePreview}</div> : null}
             </div>
-
-            {/* ── Sticky bottom toolbar ── */}
-            {toolbar ? (
-                <div className="sticky bottom-0 z-10 border-border border-t bg-background p-4">
-                    <div className="flex items-center justify-between">{toolbar}</div>
-                </div>
-            ) : null}
         </div>
     );
 }

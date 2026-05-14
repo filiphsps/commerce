@@ -51,7 +51,7 @@ if (OPERATOR_EMAILS.size === 0) {
 
 const storefrontBaseUrl = process.env.STOREFRONT_BASE_URL ?? 'http://localhost:1337';
 
-const buildLivePreviewUrl = ({
+export const buildLivePreviewUrl = ({
     tenantId,
     collection,
     data,
@@ -166,7 +166,8 @@ const recomputeRoles = async (email: string) => {
 // canonical and the legacy v4 `next-auth.*` name. This means existing logged-
 // in users with the old cookie don't get bounced to login on the deploy that
 // switches naming — both names work until the legacy cookie expires.
-const defaultCookieNames = process.env.NEXTAUTH_URL
+const isSecureCookie = process.env.NEXTAUTH_URL?.startsWith('https') ?? false;
+const defaultCookieNames = isSecureCookie
     ? ['__Secure-authjs.session-token', '__Secure-next-auth.session-token']
     : ['authjs.session-token', 'next-auth.session-token'];
 const cookieNameCandidates = process.env.NEXTAUTH_COOKIE_NAME
