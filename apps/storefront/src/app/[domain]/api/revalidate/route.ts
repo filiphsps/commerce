@@ -1,4 +1,5 @@
 import { Shop } from '@nordcom/commerce-db';
+import { Error as CommerceError } from '@nordcom/commerce-errors';
 import { parseShopifyWebhook, verifyShopifyHmac } from '@tagtree/shopify';
 import { type NextRequest, NextResponse } from 'next/server';
 import { cache } from '@/cache';
@@ -7,13 +8,33 @@ const noStoreHeaders = { 'Cache-Control': 'no-store' };
 
 export type RevalidateApiRouteParams = Promise<{ domain: string }>;
 
+type RevalidateShop = Awaited<ReturnType<typeof Shop.findByDomain>> & {
+    commerceProvider?: { type?: string; authentication?: { domain?: string } };
+};
+
 export async function POST(req: NextRequest, { params }: { params: RevalidateApiRouteParams }) {
     const { domain } = await params;
-    let shop: Awaited<ReturnType<typeof Shop.findByDomain>>;
+    let shop: RevalidateShop;
     try {
-        shop = await Shop.findByDomain(domain);
-    } catch {
-        return NextResponse.json({ status: 404, error: 'shop not found' }, { status: 404, headers: noStoreHeaders });
+        shop = (await Shop.findByDomain(domain)) as RevalidateShop;
+    } catch (error: unknown) {
+        // Distinguish "shop truly doesn't exist" from "infra blip" (Mongo
+        // timeout, replica-set election, connection pool saturation). The
+        // 404 path is permanent from Shopify's perspective — its webhook
+        // retry policy treats 4xx as "do not retry," so the cache bust is
+        // silently dropped. Map infra failures to 503 + Retry-After so the
+        // delivery is re-queued.
+        if (CommerceError.isNotFound(error)) {
+            return NextResponse.json(
+                { status: 404, error: 'shop not found' },
+                { status: 404, headers: noStoreHeaders },
+            );
+        }
+        console.error('[revalidate] Shop.findByDomain failed:', error);
+        return NextResponse.json(
+            { status: 503, error: 'shop lookup failed' },
+            { status: 503, headers: { ...noStoreHeaders, 'Retry-After': '30' } },
+        );
     }
 
     const rawBody = await req.text();
@@ -22,10 +43,6 @@ export async function POST(req: NextRequest, { params }: { params: RevalidateApi
     if (headerHmac) {
         const secret = process.env.SHOPIFY_WEBHOOK_SECRET;
         if (!secret) {
-            // Missing secret means we cannot verify Shopify origin. In prod we
-            // reject hard so a missing env var surfaces in monitoring instead
-            // of silently leaving the endpoint open to anyone with a domain
-            // in the table.
             if (process.env.NODE_ENV !== 'development') {
                 return NextResponse.json(
                     { status: 503, error: 'SHOPIFY_WEBHOOK_SECRET is not configured' },
@@ -39,6 +56,22 @@ export async function POST(req: NextRequest, { params }: { params: RevalidateApi
             return NextResponse.json({ status: 401, error: 'invalid HMAC' }, { status: 401, headers: noStoreHeaders });
         }
 
+        // Cross-check the Shopify origin against the resolved shop. The HMAC
+        // proves the body came from Shopify, but with a single shared
+        // SHOPIFY_WEBHOOK_SECRET an HMAC-valid delivery for store A could
+        // be replayed against store B's revalidate URL — which would burst
+        // store B's cache and let an attacker DoS unrelated tenants. Pin the
+        // request to the shop whose `commerceProvider.authentication.domain`
+        // matches the Shopify-sent header.
+        const headerShopDomain = req.headers.get('x-shopify-shop-domain')?.trim().toLowerCase();
+        const shopOriginDomain = shop.commerceProvider?.authentication?.domain?.trim().toLowerCase();
+        if (headerShopDomain && shopOriginDomain && headerShopDomain !== shopOriginDomain) {
+            return NextResponse.json(
+                { status: 401, error: 'shop-domain mismatch' },
+                { status: 401, headers: noStoreHeaders },
+            );
+        }
+
         const topic = req.headers.get('x-shopify-topic') ?? 'unknown';
         let body: Record<string, unknown> = {};
         try {
@@ -50,10 +83,6 @@ export async function POST(req: NextRequest, { params }: { params: RevalidateApi
         const tags = parseShopifyWebhook({ schema: cache, tenant: shop, topic, body });
 
         if (tags.length === 0) {
-            // Unknown topic / unparseable body → broad-sweep at the tenant root.
-            // This preserves the old route's silent broad-sweep behavior, but
-            // moves the decision out of the parser (where it used to be hidden)
-            // and into the caller's explicit control.
             await cache.invalidate.tenant(shop);
             return NextResponse.json({ status: 200, tags: 'broad-sweep' }, { status: 200, headers: noStoreHeaders });
         }
