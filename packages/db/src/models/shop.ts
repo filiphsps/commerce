@@ -108,7 +108,7 @@ export interface ShopBase extends BaseDocument {
 
     integrations?: {
         judgeme?: {
-            publicToken: string;
+            publicToken?: string;
         };
     };
 
