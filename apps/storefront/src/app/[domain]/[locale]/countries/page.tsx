@@ -77,10 +77,26 @@ export default async function CountriesPage({ params }: { params: CountriesPageP
                         throw new UnknownLocaleError();
                     }
                     const { code } = Locale.from(locale);
-                    (await cookies()).set('localization', code);
-                    (await cookies()).set('NEXT_LOCALE', code);
 
-                    redirect(`/${locale}/`, RedirectType.push);
+                    // Validate the candidate against the shop's actual locale
+                    // list. `Locale.from` only checks the format — without the
+                    // membership check, a user could poison their cookie with
+                    // a locale this shop doesn't support and every subsequent
+                    // page hits a 404/redirect loop. Re-fetch instead of
+                    // closing over a render-time list so a deploy that adds a
+                    // new locale takes effect without a page-cache bust.
+                    const actionShop = await Shop.findByDomain(domain, { sensitiveData: true });
+                    const actionApi = await ShopifyApolloApiClient({ shop: actionShop, locale });
+                    const supported = (await LocalesApi({ api: actionApi })).map((l) => l.code);
+                    if (!supported.includes(code)) {
+                        throw new UnknownLocaleError(`Locale ${code} is not supported by ${actionShop.domain}`);
+                    }
+
+                    const cookieStore = await cookies();
+                    cookieStore.set('localization', code);
+                    cookieStore.set('NEXT_LOCALE', code);
+
+                    redirect(`/${code}/`, RedirectType.push);
                 }}
                 suppressHydrationWarning={true}
             >

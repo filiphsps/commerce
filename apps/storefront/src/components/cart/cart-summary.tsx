@@ -63,7 +63,12 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
             })
             .reduce((sum, line) => sum + line || sum, 0);
 
-    const salePercentage = Math.round(((100 * sale) / safeParseFloat(0, cost?.totalAmount?.amount)) * 100) / 100;
+    // Guard the divide so a fully-discounted cart (totalAmount === 0 — gift
+    // card balance covers everything, 100%-off promo, etc.) doesn't render
+    // `Infinity% OFF` in the discount-row tooltip.
+    const totalForPercent = safeParseFloat(0, cost?.totalAmount?.amount);
+    const salePercentage =
+        totalForPercent > 0 ? Math.round(((100 * sale) / totalForPercent) * 100) / 100 : 0;
     const promos = safeParseFloat(0, cost?.subtotalAmount?.amount) - safeParseFloat(0, cost?.totalAmount?.amount) || 0;
 
     const noItems = !lines || lines.length <= 0 || !totalQuantity || totalQuantity <= 0;

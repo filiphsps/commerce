@@ -31,16 +31,22 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
         return null;
     }
 
-    let discount = 0;
-    if (variant.compareAtPrice?.amount) {
-        const compare = safeParseFloat(0, variant.compareAtPrice.amount);
-        const current = safeParseFloat(0, line.cost.totalAmount.amount);
-        discount = Math.round((100 * (compare - current)) / compare) || 0;
-    } else {
-        const compare = safeParseFloat(0, variant.price.amount);
-        const current = safeParseFloat(0, line.cost.totalAmount.amount);
-        discount = Math.round((100 * (compare - current)) / compare) || 0;
-    }
+    // Free items, gift wrap, deposit lines, and partial-refund flows can leave
+    // `compare` at 0 — guard the divide so we don't render an `Infinity% off`
+    // strikethrough. Also clamp to [0,100] so a negative auto-discount
+    // allocation (current > compare) doesn't produce a confusing negative.
+    const computeDiscount = (compareStr: string | undefined, currentStr: string | undefined): number => {
+        const compare = safeParseFloat(0, compareStr);
+        const current = safeParseFloat(0, currentStr);
+        if (compare <= 0) return 0;
+        const pct = Math.round((100 * (compare - current)) / compare);
+        if (!Number.isFinite(pct)) return 0;
+        return Math.max(0, Math.min(100, pct));
+    };
+    const discount = computeDiscount(
+        variant.compareAtPrice?.amount ?? variant.price.amount,
+        line.cost.totalAmount.amount,
+    );
 
     const image = variant.image ? (
         <Image
