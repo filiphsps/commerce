@@ -25,3 +25,4 @@ export { memoryAdapter } from './memory-adapter';
 export type { MemoryAdapterOptions } from './memory-adapter';
 export { createCacheInstance } from './cache';
 export type { CacheInstance, WrapOpts } from './cache';
+export type { InvalidateNamespace } from './invalidate';
