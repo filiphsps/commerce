@@ -93,6 +93,59 @@ function linkWorkspace(name) {
     return { name, linkTarget };
 }
 
+/**
+ * TypeDoc emits cross-package references as `[Text](../../../<pkg>/src/...md)`.
+ * Each workspace is its own Docusaurus plugin, so neither the original path
+ * (the `src/` segment doesn't exist in the workspace mirror) nor any rewritten
+ * relative path resolves cleanly across plugin boundaries. The pragmatic fix:
+ * strip the link to preserve the text but drop the broken hyperlink. The
+ * reader still sees `EntitiesMap` (often a code span) where the link used to
+ * be — they just don't get a navigation target.
+ *
+ * Hardlinks share the inode, so writing one copy updates them all.
+ *
+ * @param {string[]} workspaceNames packages we just linked, used to scope the rewrite
+ * @param {string[]} mirroredApiDirs target dirs we just hardlinked into
+ */
+function rewriteCrossPackageLinks(workspaceNames, mirroredApiDirs) {
+    if (workspaceNames.length === 0) return 0;
+
+    // Match `[text](<dots><pkg>/src/<rest>)` where <pkg> is one of the workspaces
+    // we linked. Capture only the visible text so we can keep it intact.
+    const pkgAlternation = workspaceNames.map(escapeRegex).join('|');
+    const pattern = new RegExp(
+        `\\[([^\\]]+)\\]\\((?:\\.\\./)+(?:${pkgAlternation})/src/[^)]+\\)`,
+        'g',
+    );
+
+    let rewritten = 0;
+    for (const apiDir of mirroredApiDirs) {
+        for (const file of walkMarkdown(apiDir)) {
+            const before = fs.readFileSync(file, 'utf8');
+            const after = before.replace(pattern, (_match, text) => text);
+            if (after !== before) {
+                fs.writeFileSync(file, after);
+                rewritten++;
+            }
+        }
+    }
+    return rewritten;
+}
+
+/** @param {string} s */
+function escapeRegex(s) {
+    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/** @param {string} dir @returns {Generator<string>} */
+function* walkMarkdown(dir) {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory()) yield* walkMarkdown(full);
+        else if (entry.isFile() && entry.name.endsWith('.md')) yield full;
+    }
+}
+
 function main() {
     if (!fs.existsSync(TYPEDOC_OUT)) {
         console.warn(`[link-api-docs] no typedoc output at ${TYPEDOC_OUT} — run \`pnpm typedoc\` first`);
@@ -116,6 +169,15 @@ function main() {
     for (const { name } of linked) {
         console.info(`[link-api-docs] hardlinked ${name}/docs/api`);
     }
+
+    const rewritten = rewriteCrossPackageLinks(
+        linked.map((l) => l.name),
+        linked.map((l) => l.linkTarget),
+    );
+    if (rewritten > 0) {
+        console.info(`[link-api-docs] rewrote cross-package src/ links in ${rewritten} file(s)`);
+    }
+
     console.info(`[link-api-docs] linked ${linked.length} workspace(s)`);
 }
 

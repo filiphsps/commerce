@@ -5,7 +5,7 @@ sidebar_position: 1
 
 # @tagtree/payload
 
-Payload CMS hook factory for [`@tagtree/core`](../tagtree-core/). Produces
+Payload CMS hook factory for [`@tagtree/core`](/docs/tagtree-core/overview/). Produces
 `afterChange` + `afterDelete` collection hooks that fire schema-typed
 cache invalidation when documents change.
 

@@ -25,9 +25,9 @@ from user code.
 
 ## Sister packages
 
-- [`@tagtree/next`](../tagtree-next/) — Next.js storage adapter
-- [`@tagtree/shopify`](../tagtree-shopify/) — Shopify webhook → tag mapper
-- [`@tagtree/payload`](../tagtree-payload/) — Payload CMS hook factory
+- [`@tagtree/next`](/docs/tagtree-next/overview/) — Next.js storage adapter
+- [`@tagtree/shopify`](/docs/tagtree-shopify/overview/) — Shopify webhook → tag mapper
+- [`@tagtree/payload`](/docs/tagtree-payload/overview/) — Payload CMS hook factory
 
 ## In this section
 

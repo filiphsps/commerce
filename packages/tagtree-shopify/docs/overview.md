@@ -5,7 +5,7 @@ sidebar_position: 1
 
 # @tagtree/shopify
 
-Shopify webhook plugin for [`@tagtree/core`](../tagtree-core/). Verifies
+Shopify webhook plugin for [`@tagtree/core`](/docs/tagtree-core/overview/). Verifies
 incoming HMAC signatures and maps webhook topics to tag arrays that match
 the user's cache schema.
 
