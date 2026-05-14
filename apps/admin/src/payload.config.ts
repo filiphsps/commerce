@@ -4,7 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildNextAuthStrategy, computeRolesFromShopMembership } from '@nordcom/commerce-cms/auth';
 import { buildPayloadConfig } from '@nordcom/commerce-cms/config';
-import { attachShopSync } from '@nordcom/commerce-cms/shop-sync';
+import { attachShopSync, seedTenantsForExistingShops } from '@nordcom/commerce-cms/shop-sync';
 import { Shop, User as UserService } from '@nordcom/commerce-db';
 import { getPayload } from 'payload';
 
@@ -187,5 +187,45 @@ const configPromise = buildPayloadConfig({
 // before the post-save hook is registered. The Payload instance is resolved
 // lazily on first fire — by then `configPromise` will have settled.
 attachShopSync(Shop.model as never, () => getPayload({ config: configPromise }));
+
+// One-shot backfill: shops created before `attachShopSync` was wired up (or
+// imported via mongorestore / manual insert) have no mirrored `tenants` doc,
+// and the multi-tenant plugin's `GlobalViewRedirect` then bails to `/cms`
+// when an editor opens a global like Business Data / Header / Footer. Run a
+// best-effort sync on first Payload boot so existing tenants surface.
+//
+// Guarded so concurrent first-boots (warm + cold lambda) don't double-run;
+// the sync itself is idempotent but skipping the find avoids the log noise.
+let backfillRan = false;
+const runTenantBackfill = async (): Promise<void> => {
+    if (backfillRan) return;
+    backfillRan = true;
+    try {
+        const payload = await getPayload({ config: configPromise });
+        await seedTenantsForExistingShops({
+            payload,
+            findShops: async () => {
+                const docs = await Shop.model.find({}).select('_id name domain i18n').lean();
+                return docs.map((d) => ({
+                    id: String((d as { _id: unknown })._id),
+                    name: String((d as { name?: unknown }).name ?? ''),
+                    domain: String((d as { domain?: unknown }).domain ?? ''),
+                    i18n: {
+                        defaultLocale: String(
+                            (d as { i18n?: { defaultLocale?: unknown } }).i18n?.defaultLocale ?? 'en-US',
+                        ),
+                        // Shop schema only persists `defaultLocale`. Let the
+                        // sync helper fall back to `[defaultLocale]` so the
+                        // required+hasMany `locales` field validates.
+                    },
+                }));
+            },
+        });
+    } catch (err) {
+        console.error('[payload-config] tenant backfill failed:', err);
+    }
+};
+// Fire-and-forget — admin boot should not block on this.
+void runTenantBackfill();
 
 export default configPromise;

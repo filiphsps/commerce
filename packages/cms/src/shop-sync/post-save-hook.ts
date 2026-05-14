@@ -4,7 +4,14 @@ export type ShopForSync = {
     id: string;
     name: string;
     domain: string;
-    i18n: { defaultLocale: string; locales: string[] };
+    /**
+     * Source-of-truth Shop schema only persists `defaultLocale` — `locales`
+     * is reconstructed by Storefront API. The tenants collection has a
+     * `defaultValue: ['en-US']` on its `locales` field, so when callers
+     * don't supply one we let Payload fall back instead of writing `[]`
+     * (which fails the `required: true` + `hasMany` constraint).
+     */
+    i18n: { defaultLocale: string; locales?: string[] };
 };
 
 // `tenants.slug` carries a `unique: true` index. Two shops with collision-prone
@@ -25,12 +32,13 @@ export const syncShopToTenant = async (payload: Payload, shop: ShopForSync): Pro
         limit: 1,
         overrideAccess: true,
     });
+    const locales = shop.i18n.locales && shop.i18n.locales.length > 0 ? shop.i18n.locales : [shop.i18n.defaultLocale];
     const data = {
         shopId: shop.id,
         name: shop.name,
         slug: shop.id,
         defaultLocale: shop.i18n.defaultLocale,
-        locales: shop.i18n.locales,
+        locales,
     };
     if (existing.docs[0]) {
         await payload.update({
