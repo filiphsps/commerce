@@ -11,6 +11,12 @@ import type { ReactNode } from 'react';
 import { useEffect } from 'react';
 import { Toaster } from 'sonner';
 
+// Don't bake the prod GTM container into the bundle — every preview build
+// would otherwise fire analytics into the production container, polluting
+// metrics and triggering tags on dev/preview traffic. Drive it from env so
+// preview deploys can be set to empty (or a staging container).
+const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID;
+
 export type ProvidersProps = {
     children: ReactNode;
 };
@@ -33,7 +39,7 @@ export function Providers({ children }: ProvidersProps) {
 
             {children}
 
-            <GoogleTagManager gtmId={'GTM-N6TLG8MX'} />
+            {GTM_ID ? <GoogleTagManager gtmId={GTM_ID} /> : null}
         </NordstarProvider>
     );
 }

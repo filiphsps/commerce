@@ -45,7 +45,13 @@ export const LiveChatProvider = ({
                             action_color: primaryColor?.color,
                             background_color: primaryColor?.color,
                             hide_default_launcher: false,
-                        })};`}
+                            // JSON.stringify doesn't escape `</script>`, so an
+                            // admin-editable `intercom` value containing
+                            // `</script><script>...` would have broken out of
+                            // this inline script. Replace `<` with its JS
+                            // unicode escape — valid inside a string literal,
+                            // can't terminate the script element.
+                        }).replace(/</g, '\\u003c')};`}
                     </script>
                 </>
             ) : (

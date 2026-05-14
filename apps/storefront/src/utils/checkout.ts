@@ -27,18 +27,27 @@ export const getCrossDomainLinkerParameter = (checkoutOrigin: string) => {
     // append the form (and button) to the DOM
     document.body.append(formNode);
 
-    // trigger a click on the button node to submit the form
-    buttonNode.click();
+    try {
+        // trigger a click on the button node to submit the form
+        buttonNode.click();
 
-    // check for the input[name=_gl] hidden input in the form (if decoration worked)
-    const _glNode = formNode.querySelector<HTMLInputElement>('input[name="_gl"]');
+        // check for the input[name=_gl] hidden input in the form (if decoration worked)
+        const _glNode = formNode.querySelector<HTMLInputElement>('input[name="_gl"]');
 
-    if (_glNode) {
-        return _glNode.value;
+        if (_glNode) {
+            return _glNode.value;
+        }
+
+        console.warn(
+            `Could not find _gl input in checkout form with action "${formNode.action}" — proceeding without cross-domain linker.`,
+        );
+        return null;
+    } finally {
+        // Always remove — the previous code left a hidden form attached to
+        // `document.body` after every checkout click, leaking DOM nodes for
+        // the lifetime of the session.
+        formNode.remove();
     }
-
-    console.warn(`Could not find _gl input in checkout form with action "${formNode.action}"`);
-    return null;
 };
 
 export const Checkout = async ({

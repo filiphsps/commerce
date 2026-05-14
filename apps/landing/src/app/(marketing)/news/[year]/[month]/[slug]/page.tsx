@@ -5,6 +5,7 @@ import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
 import Image from 'next/image';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import React from 'react';
 import { Content } from '@/components/content';
 import { components } from '@/markdoc';
@@ -24,9 +25,11 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: ArticlePageParams }): Promise<Metadata> {
     const { year, month, slug } = await params;
+    const content = await getArticleContent({ year, month, slug });
+    if (!content) return { title: 'Article not found' };
     const {
         meta: { title, description },
-    } = await getArticleContent({ year, month, slug });
+    } = content;
 
     const url = `https://shops.nordcom.io/news/${year}/${month}/${slug}/`;
     return {
@@ -50,10 +53,12 @@ export default async function ArticlePage({ params }: { params: ArticlePageParam
     cacheLife('max');
 
     const { year, month, slug } = await params;
+    const article = await getArticleContent({ year, month, slug });
+    if (!article) notFound();
     const {
         content,
         meta: { title, date, author },
-    } = await getArticleContent({ year, month, slug });
+    } = article;
 
     const avatar = await gravatar.resolve(author.email, {
         protocol: 'https',

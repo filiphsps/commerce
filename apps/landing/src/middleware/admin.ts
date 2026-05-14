@@ -9,8 +9,11 @@ export const admin = async (req: NextRequest): Promise<NextResponse> => {
     const url = req.nextUrl.clone();
     const newUrl = url.clone();
 
-    // Remove the admin prefix.
-    newUrl.pathname = url.pathname.replace('/admin', '');
+    // Strip only the LEADING `/admin` segment — `.replace('/admin', '')`
+    // hits the first occurrence anywhere, so `/admin-fake/admin` would have
+    // become `/-fake/admin`. The anchored regex matches `/admin/...`,
+    // `/admin`, but not `/admin-foo/...`.
+    newUrl.pathname = url.pathname.replace(/^\/admin(?=\/|$)/, '') || '/';
     newUrl.hostname = ADMIN_HOSTNAME;
     newUrl.searchParams.set('shop', url.hostname);
 

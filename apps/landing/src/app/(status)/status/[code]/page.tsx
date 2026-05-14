@@ -1,5 +1,8 @@
-'use cache';
-
+// This page is what the storefront middleware rewrites to on an unknown-shop /
+// unknown-error fallback — and it reads `headers()` + `searchParams`. With
+// Next 16's `cacheComponents: true`, reading dynamic APIs inside `'use cache'`
+// throws at runtime, so the user who landed here from a misrouted host got a
+// crashed page instead of an explanation. Render dynamically.
 import { Heading } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
