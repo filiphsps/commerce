@@ -1,6 +1,8 @@
 import type { ApolloClient, TypedDocumentNode } from '@apollo/client';
 import { CombinedGraphQLErrors } from '@apollo/client';
 
+import { encodeSegment } from 'tagtree';
+
 import type { OnlineShop } from '@nordcom/commerce-db';
 import type { Locale } from '@/utils/locale';
 
@@ -62,7 +64,7 @@ export const ApiBuilder: AbstractShopifyApolloApiBuilder<TypedDocumentNode<unkno
     ) => {
         // Tenant-root tags: ['shopify', 'shopify.<id>', 'shopify.<id>.<domain>'].
         // Caller-supplied `tags` are entity-specific (e.g., 'shopify.<id>.product.<handle>').
-        const baseTags = [`shopify`, `shopify.${shop.id}`, `shopify.${shop.id}.${shop.domain}`];
+        const baseTags = [`shopify`, `shopify.${shop.id}`, `shopify.${shop.id}.${encodeSegment(shop.domain)}`];
         const allTags = [...baseTags, ...tags];
 
         const { data, error } = await api.query({
