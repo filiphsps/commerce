@@ -133,6 +133,79 @@ describe('payloadHooks', () => {
 		expect(spy).not.toHaveBeenCalled();
 	});
 
+	it('afterChange skips invalidation when _status is draft (gatePublishedDrafts default)', async () => {
+		const cache = buildCache();
+		const spy = vi.spyOn(cache, 'invalidateRaw');
+		const hooks = payloadHooks(cache, { entity: 'pages' });
+
+		await hooks.afterChange?.[0]?.({
+			doc: { slug: 'home', tenant: 't1', id: 'd1', _status: 'draft' } as never,
+			previousDoc: undefined as never,
+			collection: { slug: 'pages' } as never,
+			operation: 'update',
+			data: {} as never,
+			req: {} as never,
+			context: {} as never,
+		});
+
+		expect(spy).not.toHaveBeenCalled();
+	});
+
+	it('afterChange invalidates when _status is published', async () => {
+		const cache = buildCache();
+		const spy = vi.spyOn(cache, 'invalidateRaw');
+		const hooks = payloadHooks(cache, { entity: 'pages' });
+
+		await hooks.afterChange?.[0]?.({
+			doc: { slug: 'home', tenant: 't1', id: 'd1', _status: 'published' } as never,
+			previousDoc: undefined as never,
+			collection: { slug: 'pages' } as never,
+			operation: 'update',
+			data: {} as never,
+			req: {} as never,
+			context: {} as never,
+		});
+
+		const tags = spy.mock.calls[0]?.[0] as string[];
+		expect(tags).toContain('cms.t1.pages.home');
+	});
+
+	it('afterChange invalidates when _status is undefined (no drafts feature on this collection)', async () => {
+		const cache = buildCache();
+		const spy = vi.spyOn(cache, 'invalidateRaw');
+		const hooks = payloadHooks(cache, { entity: 'header' });
+
+		await hooks.afterChange?.[0]?.({
+			doc: { tenant: 't1', id: 'h1' } as never,
+			previousDoc: undefined as never,
+			collection: { slug: 'header' } as never,
+			operation: 'update',
+			data: {} as never,
+			req: {} as never,
+			context: {} as never,
+		});
+
+		const tags = spy.mock.calls[0]?.[0] as string[];
+		expect(tags).toContain('cms.t1.header.h1');
+	});
+
+	it('afterDelete always invalidates regardless of _status', async () => {
+		const cache = buildCache();
+		const spy = vi.spyOn(cache, 'invalidateRaw');
+		const hooks = payloadHooks(cache, { entity: 'articles' });
+
+		await hooks.afterDelete?.[0]?.({
+			doc: { slug: 'a1', tenant: 't1', id: 'd1', _status: 'draft' } as never,
+			collection: { slug: 'articles' } as never,
+			req: {} as never,
+			id: 'd1' as never,
+			context: {} as never,
+		});
+
+		const tags = spy.mock.calls[0]?.[0] as string[];
+		expect(tags).toContain('cms.t1.articles.a1');
+	});
+
 	it('afterChange returns the unmodified doc (does not silently mutate)', async () => {
 		const cache = buildCache();
 		const hooks = payloadHooks(cache, { entity: 'pages' });
