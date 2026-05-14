@@ -1,2 +1,2 @@
 export { attachShopSync, type ShopForSync, syncShopToTenant } from './post-save-hook';
-export { seedTenantsForExistingShops, type ShopFinder } from './seed-tenants';
+export { type ShopFinder, seedTenantsForExistingShops } from './seed-tenants';

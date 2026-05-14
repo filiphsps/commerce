@@ -1,5 +1,5 @@
-import type { CollectionAfterChangeHook, CollectionAfterDeleteHook, CollectionConfig } from 'payload';
 import type { CacheInstance, EntitiesMap } from '@tagtree/core';
+import type { CollectionAfterChangeHook, CollectionAfterDeleteHook, CollectionConfig } from 'payload';
 
 type Doc = {
     id: string | number;
@@ -42,9 +42,7 @@ export function payloadHooks<NS extends string, T extends string | { id: string 
         if (!tid) return;
         const invalidator = (cache.invalidate as Record<string, unknown>)[opts.entity];
         if (typeof invalidator !== 'function') {
-            throw new Error(
-                `@tagtree/payload: entity "${opts.entity}" is not declared in the cache schema`,
-            );
+            throw new Error(`@tagtree/payload: entity "${opts.entity}" is not declared in the cache schema`);
         }
         // The schema models each CMS collection as having a single 'key' param
         // (slug, shopifyHandle, or id fallback). Pass it as `key` and let

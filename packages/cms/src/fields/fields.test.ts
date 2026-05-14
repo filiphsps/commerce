@@ -41,9 +41,10 @@ describe('reusable field configs', () => {
 
         it('noindex defaults to false', () => {
             const cfg = seoGroup();
-            const noindex = cfg.fields.find(
-                (f) => 'name' in f && f.name === 'noindex',
-            ) as Extract<(typeof cfg.fields)[number], { type: 'checkbox' }>;
+            const noindex = cfg.fields.find((f) => 'name' in f && f.name === 'noindex') as Extract<
+                (typeof cfg.fields)[number],
+                { type: 'checkbox' }
+            >;
             expect(noindex.defaultValue).toBe(false);
         });
 
@@ -88,18 +89,9 @@ describe('reusable field configs', () => {
                 (typeof cfg.fields)[number],
                 { type: 'select' }
             >;
-            const values = kind.options.map((o) =>
-                typeof o === 'string' ? o : (o as { value: string }).value,
-            );
+            const values = kind.options.map((o) => (typeof o === 'string' ? o : (o as { value: string }).value));
             expect(values).toEqual(
-                expect.arrayContaining([
-                    'page',
-                    'article',
-                    'product',
-                    'collection',
-                    'external',
-                    'anchor',
-                ]),
+                expect.arrayContaining(['page', 'article', 'product', 'collection', 'external', 'anchor']),
             );
         });
 
@@ -125,8 +117,7 @@ describe('reusable field configs', () => {
         it('url field is gated on kind being external or anchor', () => {
             const cfg = linkField({ name: 'link' });
             const url = cfg.fields.find((f) => 'name' in f && f.name === 'url');
-            const cond = (url as { admin?: { condition?: (d: unknown, sib: unknown) => boolean } })
-                .admin?.condition;
+            const cond = (url as { admin?: { condition?: (d: unknown, sib: unknown) => boolean } }).admin?.condition;
             expect(cond?.({}, { kind: 'external' })).toBe(true);
             expect(cond?.({}, { kind: 'anchor' })).toBe(true);
             expect(cond?.({}, { kind: 'page' })).toBe(false);
@@ -165,13 +156,15 @@ describe('reusable field configs', () => {
     describe('navItemField', () => {
         it('nests recursively up to the configured depth', () => {
             const cfg = navItemField({ depth: 3 });
-            const lvl1 = cfg.fields.find(
-                (f) => 'name' in f && f.name === 'items',
-            ) as Extract<(typeof cfg.fields)[number], { type: 'array' }>;
+            const lvl1 = cfg.fields.find((f) => 'name' in f && f.name === 'items') as Extract<
+                (typeof cfg.fields)[number],
+                { type: 'array' }
+            >;
             expect(lvl1).toBeDefined();
-            const lvl2 = lvl1?.fields.find(
-                (f) => 'name' in f && f.name === 'items',
-            ) as Extract<(typeof lvl1.fields)[number], { type: 'array' }>;
+            const lvl2 = lvl1?.fields.find((f) => 'name' in f && f.name === 'items') as Extract<
+                (typeof lvl1.fields)[number],
+                { type: 'array' }
+            >;
             expect(lvl2).toBeDefined();
             const lvl3 = lvl2?.fields.find((f) => 'name' in f && f.name === 'items');
             expect(lvl3).toBeUndefined();

@@ -1,2 +1,2 @@
-export { payloadHooks } from './hooks';
 export type { PayloadHooksOptions } from './hooks';
+export { payloadHooks } from './hooks';

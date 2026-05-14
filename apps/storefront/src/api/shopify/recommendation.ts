@@ -2,8 +2,8 @@ import { gql } from '@apollo/client';
 import { InvalidIDError, NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
 import { parseGid } from '@shopify/hydrogen-react';
 import type { Product } from '@/api/product';
-import { cache } from '@/cache';
 import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product-fragments';
+import { cache } from '@/cache';
 import type { AbstractApi } from '@/utils/abstract-api';
 
 // TODO: Migrate to the new recommendations api.

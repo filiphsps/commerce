@@ -20,10 +20,7 @@ const resolveShop = async (domain: string) => {
         if (CommerceError.isNotFound(error)) {
             return {
                 shop: null,
-                error: NextResponse.json(
-                    { error: 'shop not found' },
-                    { status: 404, headers: noStoreHeaders },
-                ),
+                error: NextResponse.json({ error: 'shop not found' }, { status: 404, headers: noStoreHeaders }),
             };
         }
         // Mongo timeouts and other infra failures must surface as 503 so

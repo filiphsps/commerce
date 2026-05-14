@@ -1,6 +1,6 @@
 import { createHmac } from 'node:crypto';
-import { afterEach, describe, expect, it, vi } from 'vitest';
 import { NotFoundError } from '@nordcom/commerce-errors';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 const revalidateTagMock = vi.fn();
 

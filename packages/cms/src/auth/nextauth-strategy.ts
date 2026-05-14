@@ -126,12 +126,7 @@ export const buildNextAuthStrategy = ({
                 const key = await deriveKey(secret, name);
                 const { payload } = await jwtDecrypt(token, key, { clockTolerance: 15 });
                 return { name, token, payload };
-            } catch {
-                // Cookie present but decode failed under this name — try the
-                // next candidate. (Don't swallow the last failure; if every
-                // candidate fails the outer caller reports it.)
-                continue;
-            }
+            } catch {}
         }
         return null;
     };

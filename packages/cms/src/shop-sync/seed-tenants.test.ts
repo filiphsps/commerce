@@ -33,10 +33,7 @@ describe('seedTenantsForExistingShops', () => {
 
     it('continues syncing later shops when one fails', async () => {
         const find = vi.fn(async () => ({ docs: [] }));
-        const create = vi
-            .fn()
-            .mockRejectedValueOnce(new Error('boom'))
-            .mockResolvedValueOnce({ id: 't2' });
+        const create = vi.fn().mockRejectedValueOnce(new Error('boom')).mockResolvedValueOnce({ id: 't2' });
         const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
         const payload = { find, create, update: vi.fn() } as never;
         const result = await seedTenantsForExistingShops({

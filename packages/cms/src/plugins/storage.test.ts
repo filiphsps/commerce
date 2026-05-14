@@ -15,13 +15,7 @@ describe('buildStoragePlugin', () => {
 });
 
 describe('storagePluginFromEnv', () => {
-    const ENV_KEYS = [
-        'S3_BUCKET',
-        'S3_ENDPOINT',
-        'S3_REGION',
-        'S3_ACCESS_KEY_ID',
-        'S3_SECRET_ACCESS_KEY',
-    ] as const;
+    const ENV_KEYS = ['S3_BUCKET', 'S3_ENDPOINT', 'S3_REGION', 'S3_ACCESS_KEY_ID', 'S3_SECRET_ACCESS_KEY'] as const;
 
     const originals: Partial<Record<(typeof ENV_KEYS)[number], string | undefined>> = {};
     beforeEach(() => {

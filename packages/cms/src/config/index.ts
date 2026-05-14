@@ -66,7 +66,13 @@ export type BuildPayloadConfigOptions = {
 
 import { cmsDefaultLocale as DEFAULT_DEFAULT_LOCALE, cmsDefaultLocales as DEFAULT_LOCALES } from './locales';
 
-export { cmsDefaultLocale, cmsDefaultLocales, isValidLocale, resolveCmsDefaultLocale, resolveCmsLocales } from './locales';
+export {
+    cmsDefaultLocale,
+    cmsDefaultLocales,
+    isValidLocale,
+    resolveCmsDefaultLocale,
+    resolveCmsLocales,
+} from './locales';
 
 export const buildPayloadConfig = async ({
     secret,

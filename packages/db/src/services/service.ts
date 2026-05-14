@@ -85,12 +85,7 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
         // Cast the method through `unknown` to a permissive signature — same
         // pattern `findOneAndUpdate` uses below to untangle the same overload
         // selection problem.
-        let req = (
-            this.model.find as unknown as (
-                filter: unknown,
-                projection?: unknown,
-            ) => Query<DocType[], DocType>
-        )(
+        let req = (this.model.find as unknown as (filter: unknown, projection?: unknown) => Query<DocType[], DocType>)(
             {
                 ...filter,
                 ...(id ? { _id: id } : {}),

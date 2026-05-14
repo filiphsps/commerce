@@ -1,5 +1,5 @@
 import type { Payload } from 'payload';
-import { syncShopToTenant, type ShopForSync } from './post-save-hook';
+import { type ShopForSync, syncShopToTenant } from './post-save-hook';
 
 export type ShopFinder = () => Promise<ShopForSync[]>;
 

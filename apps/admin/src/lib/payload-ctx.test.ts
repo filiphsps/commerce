@@ -79,10 +79,7 @@ const TENANT_DOC = {
 
 const SHOP = { id: 'shop-1', domain: SHOP_DOMAIN };
 
-function makePayload(overrides?: {
-    userDocs?: unknown[];
-    tenantDocs?: unknown[];
-}): { find: ReturnType<typeof vi.fn> } {
+function makePayload(overrides?: { userDocs?: unknown[]; tenantDocs?: unknown[] }): { find: ReturnType<typeof vi.fn> } {
     const { userDocs = [USER_DOC], tenantDocs = [TENANT_DOC] } = overrides ?? {};
     const find = vi.fn().mockImplementation(({ collection }: { collection: string }) => {
         if (collection === 'users') return Promise.resolve({ docs: userDocs });

@@ -113,10 +113,7 @@ function rewriteCrossPackageLinks(workspaceNames, mirroredApiDirs) {
     // Match `[text](<dots><pkg>/src/<rest>)` where <pkg> is one of the workspaces
     // we linked. Capture only the visible text so we can keep it intact.
     const pkgAlternation = workspaceNames.map(escapeRegex).join('|');
-    const pattern = new RegExp(
-        `\\[([^\\]]+)\\]\\((?:\\.\\./)+(?:${pkgAlternation})/src/[^)]+\\)`,
-        'g',
-    );
+    const pattern = new RegExp(`\\[([^\\]]+)\\]\\((?:\\.\\./)+(?:${pkgAlternation})/src/[^)]+\\)`, 'g');
 
     let rewritten = 0;
     for (const apiDir of mirroredApiDirs) {

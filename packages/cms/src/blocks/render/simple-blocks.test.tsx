@@ -47,9 +47,7 @@ describe('AlertBlock', () => {
 
     it('omits the body paragraph when body is absent', () => {
         const { container } = render(
-            <AlertBlock
-                block={{ blockType: 'alert', severity: 'info', title: 'Ping' } as never}
-            />,
+            <AlertBlock block={{ blockType: 'alert', severity: 'info', title: 'Ping' } as never} />,
         );
         expect(container.querySelector('p')).toBeNull();
     });
@@ -129,7 +127,12 @@ describe('BannerBlock', () => {
     it('drops javascript:/data: external CTAs (xss surface)', () => {
         // Editors can paste an arbitrary url into `kind: external`. Without
         // a scheme allowlist, the anchor fires the script on click.
-        for (const bad of ['javascript:alert(1)', ' javascript:alert(1)', 'data:text/html,<script>x</script>', 'vbscript:msgbox']) {
+        for (const bad of [
+            'javascript:alert(1)',
+            ' javascript:alert(1)',
+            'data:text/html,<script>x</script>',
+            'vbscript:msgbox',
+        ]) {
             const { container } = render(
                 <BannerBlock
                     context={ctx}
@@ -146,7 +149,14 @@ describe('BannerBlock', () => {
     });
 
     it('keeps safe http(s)/mailto/tel/relative external CTAs', () => {
-        for (const ok of ['https://example.com/', 'http://example.com/', 'mailto:hi@example.com', 'tel:+15555550100', '/internal', '#anchor']) {
+        for (const ok of [
+            'https://example.com/',
+            'http://example.com/',
+            'mailto:hi@example.com',
+            'tel:+15555550100',
+            '/internal',
+            '#anchor',
+        ]) {
             const { container } = render(
                 <BannerBlock
                     context={ctx}
@@ -196,10 +206,7 @@ describe('BannerBlock', () => {
 
     it('omits subheading paragraph when subheading absent', () => {
         const { container } = render(
-            <BannerBlock
-                context={ctx}
-                block={{ blockType: 'banner', heading: 'Solo', alignment: 'left' } as never}
-            />,
+            <BannerBlock context={ctx} block={{ blockType: 'banner', heading: 'Solo', alignment: 'left' } as never} />,
         );
         expect(container.querySelector('p')).toBeNull();
     });
@@ -207,9 +214,7 @@ describe('BannerBlock', () => {
 
 describe('HtmlBlock', () => {
     it('dangerously injects raw html', () => {
-        const { container } = render(
-            <HtmlBlock block={{ blockType: 'html', html: '<b>bold</b>' }} />,
-        );
+        const { container } = render(<HtmlBlock block={{ blockType: 'html', html: '<b>bold</b>' }} />);
         expect(container.querySelector('b')?.textContent).toBe('bold');
     });
 
@@ -311,9 +316,7 @@ describe('MediaGridBlock', () => {
 
     it('forwards columns as a CSS --cols custom property', () => {
         const { container } = render(
-            <MediaGridBlock
-                block={{ blockType: 'media-grid', itemType: 'icon', columns: 4, items: [] }}
-            />,
+            <MediaGridBlock block={{ blockType: 'media-grid', itemType: 'icon', columns: 4, items: [] }} />,
         );
         const div = container.querySelector('.cms-media-grid') as HTMLElement;
         expect(div?.style.getPropertyValue('--cols')).toBe('4');
@@ -346,9 +349,7 @@ describe('RichTextBlock', () => {
     };
 
     it('renders paragraphs, headings, and list items from a lexical tree', () => {
-        const { container, getByText } = render(
-            <RichTextBlock block={{ blockType: 'rich-text', body: lexical }} />,
-        );
+        const { container, getByText } = render(<RichTextBlock block={{ blockType: 'rich-text', body: lexical }} />);
         expect(getByText('Hello world').tagName.toLowerCase()).toBe('p');
         expect(getByText('A heading').tagName.toLowerCase()).toBe('h2');
         expect(container.querySelectorAll('li')).toHaveLength(2);
@@ -388,17 +389,13 @@ describe('RichTextBlock', () => {
 
     it('uses "Read more" as the default summary label', () => {
         const { container } = render(
-            <RichTextBlock
-                block={{ blockType: 'rich-text', body: lexical, collapsible: true }}
-            />,
+            <RichTextBlock block={{ blockType: 'rich-text', body: lexical, collapsible: true }} />,
         );
         expect(container.querySelector('summary')?.textContent).toBe('Read more');
     });
 
     it('renders empty when body has no root', () => {
-        const { container } = render(
-            <RichTextBlock block={{ blockType: 'rich-text', body: undefined as never }} />,
-        );
+        const { container } = render(<RichTextBlock block={{ blockType: 'rich-text', body: undefined as never }} />);
         const rt = container.querySelector('.cms-rich-text');
         expect(rt?.textContent).toBe('');
     });

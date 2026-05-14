@@ -14,8 +14,8 @@ import type {
     ProductCollectionSortKeys,
     QueryRoot,
 } from '@shopify/hydrogen-react/storefront-api-types';
-import { cache } from '@/cache';
 import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product-fragments';
+import { cache } from '@/cache';
 import type { AbstractApi, ApiOptions } from '@/utils/abstract-api';
 import { isValidHandle } from '@/utils/handle';
 

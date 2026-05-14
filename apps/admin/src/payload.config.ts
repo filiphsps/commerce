@@ -166,10 +166,9 @@ const recomputeRoles = async (email: string) => {
 // canonical and the legacy v4 `next-auth.*` name. This means existing logged-
 // in users with the old cookie don't get bounced to login on the deploy that
 // switches naming — both names work until the legacy cookie expires.
-const defaultCookieNames =
-    process.env.NEXTAUTH_URL
-        ? ['__Secure-authjs.session-token', '__Secure-next-auth.session-token']
-        : ['authjs.session-token', 'next-auth.session-token'];
+const defaultCookieNames = process.env.NEXTAUTH_URL
+    ? ['__Secure-authjs.session-token', '__Secure-next-auth.session-token']
+    : ['authjs.session-token', 'next-auth.session-token'];
 const cookieNameCandidates = process.env.NEXTAUTH_COOKIE_NAME
     ? [process.env.NEXTAUTH_COOKIE_NAME, ...defaultCookieNames]
     : defaultCookieNames;
@@ -210,9 +209,7 @@ const configPromise = buildPayloadConfig({
             name: String((d as { name?: unknown }).name ?? ''),
             domain: String((d as { domain?: unknown }).domain ?? ''),
             i18n: {
-                defaultLocale: String(
-                    (d as { i18n?: { defaultLocale?: unknown } }).i18n?.defaultLocale ?? 'en-US',
-                ),
+                defaultLocale: String((d as { i18n?: { defaultLocale?: unknown } }).i18n?.defaultLocale ?? 'en-US'),
                 // Shop schema only persists `defaultLocale`. Let the
                 // sync helper fall back to `[defaultLocale]` so the
                 // required+hasMany `locales` field validates.

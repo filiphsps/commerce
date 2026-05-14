@@ -1,5 +1,5 @@
-import { describe, expect, it, vi } from 'vitest';
 import type { AuthStrategy } from 'payload';
+import { describe, expect, it, vi } from 'vitest';
 import { buildUsers } from './build-users';
 
 const fakeStrategy: AuthStrategy = {
@@ -31,8 +31,7 @@ describe('buildUsers', () => {
     it('leaves disableLocalStrategy undefined by default', () => {
         const cfg = buildUsers();
         expect(
-            (cfg.auth as { disableLocalStrategy?: boolean | { enableFields?: boolean } })
-                .disableLocalStrategy,
+            (cfg.auth as { disableLocalStrategy?: boolean | { enableFields?: boolean } }).disableLocalStrategy,
         ).toBeUndefined();
     });
 
@@ -53,9 +52,7 @@ describe('buildUsers', () => {
         >;
         expect(role.required).toBe(true);
         expect(role.defaultValue).toBe('editor');
-        const values = role.options.map((o) =>
-            typeof o === 'string' ? o : (o as { value: string }).value,
-        );
+        const values = role.options.map((o) => (typeof o === 'string' ? o : (o as { value: string }).value));
         expect(values).toEqual(['admin', 'editor']);
     });
 
@@ -117,9 +114,7 @@ describe('buildUsers', () => {
 
     it('admin panel is accessible to any logged-in user', () => {
         const cfg = buildUsers();
-        const adminAccess = cfg.access?.admin as
-            | ((args: { req: { user?: unknown } }) => boolean)
-            | undefined;
+        const adminAccess = cfg.access?.admin as ((args: { req: { user?: unknown } }) => boolean) | undefined;
         expect(adminAccess?.({ req: { user: { id: 'x' } } })).toBe(true);
         expect(adminAccess?.({ req: { user: null } })).toBe(false);
     });

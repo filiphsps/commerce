@@ -1,3 +1,15 @@
+export type { AdapterCtx, CacheAdapter, ILogger, WriteOpts } from './adapter';
+export { consoleLogger } from './adapter';
+export type { CacheInstance, WrapOpts } from './cache';
+export { createCacheInstance } from './cache';
+export { compose } from './compose';
+export { encodeSegment, joinSegments } from './encode';
+export type { FanoutInput } from './fanout';
+export { computeFanout } from './fanout';
+export type { InvalidateNamespace } from './invalidate';
+export type { CacheKey, KeyFactory } from './keys';
+export type { MemoryAdapterOptions } from './memory-adapter';
+export { memoryAdapter } from './memory-adapter';
 export type {
     CacheSchema,
     CacheSchemaShape,
@@ -15,15 +27,3 @@ export type {
     ParamValues,
 } from './types';
 export { num, str } from './types';
-export type { FanoutInput } from './fanout';
-export { computeFanout } from './fanout';
-export type { CacheKey, KeyFactory } from './keys';
-export { consoleLogger } from './adapter';
-export type { CacheAdapter, AdapterCtx, WriteOpts, ILogger } from './adapter';
-export { memoryAdapter } from './memory-adapter';
-export type { MemoryAdapterOptions } from './memory-adapter';
-export { createCacheInstance } from './cache';
-export type { CacheInstance, WrapOpts } from './cache';
-export type { InvalidateNamespace } from './invalidate';
-export { compose } from './compose';
-export { encodeSegment, joinSegments } from './encode';

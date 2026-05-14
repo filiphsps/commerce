@@ -123,10 +123,7 @@ describe('buildNextAuthStrategy', () => {
 
     it('returns { user: null } when JWE is encrypted with a different secret', async () => {
         const findOrCreate = vi.fn();
-        const forged = await encryptToken(
-            { email: 'attacker@example.com' },
-            { secret: 'a-different-secret-entirely' },
-        );
+        const forged = await encryptToken({ email: 'attacker@example.com' }, { secret: 'a-different-secret-entirely' });
         const strategy = buildNextAuthStrategy({
             secret: SECRET,
             cookieName: COOKIE_NAME,
@@ -268,9 +265,7 @@ describe('buildNextAuthStrategy', () => {
             recomputeRoles: vi.fn(async () => ({ role: 'editor' as const, tenants: [] })),
         });
         const token = await encryptToken({ email: 'a@b.com' });
-        const result = await strategy.authenticate(
-            ctx(`${COOKIE_NAME}=${encodeURIComponent(token)}`),
-        );
+        const result = await strategy.authenticate(ctx(`${COOKIE_NAME}=${encodeURIComponent(token)}`));
         expect(result.user).not.toBeNull();
     });
 
