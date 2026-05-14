@@ -4,7 +4,6 @@ import { fileURLToPath } from 'node:url';
 import { globSync } from 'glob';
 import { createLogger, defineConfig, mergeConfig } from 'vite';
 import dts from 'vite-plugin-dts';
-import tsConfigPaths from 'vite-tsconfig-paths';
 
 import base from '../vite.config';
 
@@ -49,13 +48,11 @@ export default mergeConfig(
                     esModule: true,
                     format: 'esm',
                     globals: {},
-                    interop: 'esModule',
                     sourcemapExcludeSources: false,
                 },
             },
         },
         plugins: [
-            tsConfigPaths(),
             dts({
                 clearPureImport: false,
                 copyDtsFiles: true,
