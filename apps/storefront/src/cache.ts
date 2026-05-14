@@ -1,4 +1,4 @@
-import { defineCache, createCacheInstance, str } from 'tagtree';
+import { createCacheInstance, defineCache, encodeSegment, str } from 'tagtree';
 import { nextAdapter } from '@tagtree/next';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
@@ -34,5 +34,6 @@ export const cache = createCacheInstance(shopifyCacheSchema, nextAdapter());
  * (homepage, navigation, settings) without a particular entity in mind.
  */
 export const tenantRootTags = (shop: OnlineShop): string[] => {
-	return [`shopify.${shop.id}`, `shopify.${shop.id}.${shop.domain}`, 'shopify'];
+    const id = shop.id;
+    return [`shopify.${id}`, `shopify.${id}.${encodeSegment(shop.domain)}`, 'shopify'];
 };
