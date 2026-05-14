@@ -33,20 +33,30 @@ export type AbstractApiBuilder<K, Q> = ({
 
 export type AbstractShopifyApolloApiBuilder<Q> = AbstractApiBuilder<ApolloClient, Q>;
 
+/**
+ * Compose the per-request tag set for a Shopify query: namespace root + tenant
+ * key + tenant domain + caller-supplied entity tags. Locale is intentionally NOT
+ * in this array — locale narrows reads, it does not participate in invalidation
+ * (see `cache.ts` schema).
+ *
+ * @deprecated Use `cache.keys.<entity>(...).tags` from `@/cache`. Kept for one
+ *   release cycle while per-call-site migrations land in Tasks 17-20. Removed
+ *   in Task 29.
+ */
 export function buildCacheTagArray(shop: OnlineShop, locale: Locale, tags: string[]) {
-    // TODO: change `shopify` tag based on the api we're using.
-    return ['shopify', `shopify.${shop.id}`, shop.domain, locale.code, ...tags];
+    void locale; // intentionally unused — see JSDoc above
+    return ['shopify', `shopify.${shop.id}`, shop.domain, ...tags];
 }
 
 /**
  * Creates an AbstractApiBuilder for Shopify Apollo APIs.
  *
- * @todo TODO: Improve the type safety of all `AbstractApi` implementations.
+ * @todo Improve the type safety of all `AbstractApi` implementations.
  *
  * @param options - The api options.
  * @param options.api - The Apollo client to use.
  * @param options.locale - The locale to use.
- * @param options.shop - The locale to use.
+ * @param options.shop - The shop to use.
  * @returns The AbstractApiBuilder.
  */
 export const ApiBuilder: AbstractShopifyApolloApiBuilder<TypedDocumentNode<unknown, unknown>> = ({
@@ -65,6 +75,11 @@ export const ApiBuilder: AbstractShopifyApolloApiBuilder<TypedDocumentNode<unkno
             fetchPolicy = undefined,
         }: { fetchPolicy?: RequestCache; tags?: string[]; revalidate?: number } = {},
     ) => {
+        // Tenant-root tags: ['shopify', 'shopify.<id>', 'shopify.<id>.<domain>'].
+        // Caller-supplied `tags` are entity-specific (e.g., 'shopify.<id>.product.<handle>').
+        const baseTags = [`shopify`, `shopify.${shop.id}`, `shopify.${shop.id}.${shop.domain}`];
+        const allTags = [...baseTags, ...tags];
+
         const { data, error } = await api.query({
             query,
             //fetchPolicy,
@@ -73,7 +88,7 @@ export const ApiBuilder: AbstractShopifyApolloApiBuilder<TypedDocumentNode<unkno
                     cache: fetchPolicy ?? 'no-store',
                     next: {
                         revalidate: revalidate ?? undefined,
-                        tags: buildCacheTagArray(shop, locale, tags),
+                        tags: allTags,
                     },
                 },
             },
