@@ -47,7 +47,7 @@ Required environment variables (defined at the root in [`.env.example`](../../.e
 ```text
 apps/admin/
 ├── src/
-│   ├── middleware.ts            # NextAuth-based auth gate
+│   ├── proxy.ts                 # NextAuth-based auth gate (Next 16's renamed middleware convention)
 │   ├── instrumentation.ts       # OpenTelemetry bootstrap
 │   ├── app/
 │   │   ├── layout.tsx           # Root layout
@@ -72,9 +72,10 @@ apps/admin/
 
 ## Routing
 
-Authentication is enforced in `src/middleware.ts` with NextAuth — every route except
+Authentication is enforced in `src/proxy.ts` with NextAuth — every route except
 static assets and Next internals goes through it. Unauthenticated requests are
-redirected to `/auth/login/`.
+redirected to `/auth/login/`. (Renamed from `middleware.ts` per Next 16; the
+file convention changed but the API is identical.)
 
 The post-auth landing is `/` (the **Overview** in `app/page.tsx`), which lists the
 shops the signed-in user can administer. From there:

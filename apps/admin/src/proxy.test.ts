@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
-// The admin middleware is a thin NextAuth wrapper:
+// The admin proxy (Next 16's renamed `middleware` convention) is a thin
+// NextAuth wrapper:
 //   const { auth } = NextAuth(authConfig);
 //   export default auth(() => NextResponse.next());
 //
@@ -35,21 +36,21 @@ vi.mock('next-auth', () => ({
     })),
 }));
 
-describe('admin middleware', () => {
-    it('exports a default function (the NextAuth auth middleware handler)', async () => {
-        const mod = await import('./middleware');
+describe('admin proxy', () => {
+    it('exports a default function (the NextAuth auth handler)', async () => {
+        const mod = await import('./proxy');
         // NextAuth's auth() is called with our callback and returns a handler function.
         expect(typeof mod.default).toBe('function');
     });
 
     it('exports a config object with a matcher array', async () => {
-        const { config } = await import('./middleware');
+        const { config } = await import('./proxy');
         expect(Array.isArray(config.matcher)).toBe(true);
         expect(config.matcher.length).toBeGreaterThan(0);
     });
 
     it('matcher pattern excludes Next.js internal prefixes (_next, _static, _vercel)', async () => {
-        const { config } = await import('./middleware');
+        const { config } = await import('./proxy');
         // The matcher is a negative-lookahead regex string. Paths matching _next|_static|_vercel
         // must NOT be captured. We verify by checking what the pattern string contains.
         const matcherStr = String(config.matcher[0]);
@@ -59,13 +60,13 @@ describe('admin middleware', () => {
     });
 
     it('matcher pattern excludes favicon.ico and static files', async () => {
-        const { config } = await import('./middleware');
+        const { config } = await import('./proxy');
         const matcherStr = String(config.matcher[0]);
         expect(matcherStr).toContain('favicon.ico');
     });
 
     it('config includes missing header conditions to skip prefetch requests', async () => {
-        const { config } = await import('./middleware');
+        const { config } = await import('./proxy');
         expect(Array.isArray(config.missing)).toBe(true);
         const keys = config.missing!.map((m: { key: string }) => m.key);
         expect(keys).toContain('next-router-prefetch');
@@ -75,14 +76,14 @@ describe('admin middleware', () => {
     it('the auth callback always returns NextResponse.next() (pass-through for authenticated requests)', async () => {
         // The callback passed to auth() is `() => NextResponse.next()`.
         // We assert that auth() was called with a function (the callback).
-        await import('./middleware');
+        await import('./proxy');
         expect(mockAuth).toHaveBeenCalledWith(expect.any(Function));
     });
 
     it('public auth paths (/api/auth/...) are handled by NextAuth internally, not excluded by matcher', async () => {
         // NextAuth's own middleware intercepts /api/auth/* before our callback runs.
         // Our matcher deliberately includes those paths so NextAuth can handle them.
-        const { config } = await import('./middleware');
+        const { config } = await import('./proxy');
         const matcherStr = String(config.matcher[0]);
         // The negative lookahead does NOT exclude /api/auth paths — NextAuth handles them.
         expect(matcherStr).not.toContain('api/auth');
