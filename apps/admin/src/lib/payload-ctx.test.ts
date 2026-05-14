@@ -4,13 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 // Hoisted mock fns
 // ------------------------------------------------------------------
 
-const { mockRedirect, mockNotFound, mockAuth, mockFindByDomain, mockGetPayload } = vi.hoisted(() => ({
-    mockRedirect: vi.fn((url: string): never => {
-        throw new Error(`NEXT_REDIRECT:${url}`);
-    }),
-    mockNotFound: vi.fn((): never => {
-        throw new Error('NEXT_NOT_FOUND');
-    }),
+const { mockAuth, mockFindByDomain, mockGetPayload } = vi.hoisted(() => ({
     mockAuth: vi.fn(),
     mockFindByDomain: vi.fn(),
     mockGetPayload: vi.fn(),
@@ -22,9 +16,20 @@ const { mockRedirect, mockNotFound, mockAuth, mockFindByDomain, mockGetPayload }
 
 vi.mock('server-only', () => ({}));
 
+// `redirect` and `notFound` are defined inline (rather than as resettable
+// `vi.fn()` instances) so a future cleanup pass can't silently normalise them
+// to no-op `mockReset()`s and break every assertion in this file. The trade-off
+// is that we can't `toHaveBeenCalledWith` on them — instead, every test
+// asserts on the sentinel error string they throw, which is strictly stronger
+// (it proves the helper called the right function with the right path AND
+// halted execution at that point).
 vi.mock('next/navigation', () => ({
-    redirect: mockRedirect,
-    notFound: mockNotFound,
+    redirect: (url: string): never => {
+        throw new Error(`NEXT_REDIRECT:${url}`);
+    },
+    notFound: (): never => {
+        throw new Error('NEXT_NOT_FOUND');
+    },
 }));
 
 vi.mock('@/auth', () => ({ auth: mockAuth }));
@@ -33,6 +38,10 @@ vi.mock('@nordcom/commerce-db', () => ({
     Shop: { findByDomain: mockFindByDomain },
 }));
 
+// Inline isNotFound shim — matches the existing admin-test convention
+// (see [domain]/page.test.tsx). If the real `Error.isNotFound` ever changes
+// its detection (different property, custom class), this would diverge
+// silently, but consistency with the rest of the admin suite wins here.
 vi.mock('@nordcom/commerce-errors', () => ({
     Error: { isNotFound: (e: unknown) => e instanceof globalThis.Error && e.message === 'NOT_FOUND' },
 }));
@@ -53,6 +62,7 @@ import { getAuthedPayloadCtx } from './payload-ctx';
 // Fixtures
 // ------------------------------------------------------------------
 
+const SHOP_DOMAIN = 'acme.example.com';
 const SESSION = { user: { email: 'admin@example.com', id: 'u1' }, expires: '2099-01-01' };
 
 const USER_DOC = {
@@ -67,7 +77,7 @@ const TENANT_DOC = {
     name: 'Acme Store',
 };
 
-const SHOP = { id: 'shop-1', domain: 'acme.example.com' };
+const SHOP = { id: 'shop-1', domain: SHOP_DOMAIN };
 
 function makePayload(overrides?: {
     userDocs?: unknown[];
@@ -91,30 +101,25 @@ describe('getAuthedPayloadCtx', () => {
         mockAuth.mockReset();
         mockFindByDomain.mockReset();
         mockGetPayload.mockReset();
-        mockRedirect.mockClear();
-        mockNotFound.mockClear();
     });
 
     it('redirects unauthenticated — auth() returns null', async () => {
         mockAuth.mockResolvedValue(null);
 
-        await expect(getAuthedPayloadCtx('acme.example.com')).rejects.toThrow('NEXT_REDIRECT:/auth/login/');
-        expect(mockRedirect).toHaveBeenCalledWith('/auth/login/');
+        await expect(getAuthedPayloadCtx(SHOP_DOMAIN)).rejects.toThrow('NEXT_REDIRECT:/auth/login/');
     });
 
     it('redirects unauthenticated — session has no email', async () => {
         mockAuth.mockResolvedValue({ user: { id: 'u1' }, expires: '2099-01-01' });
 
-        await expect(getAuthedPayloadCtx('acme.example.com')).rejects.toThrow('NEXT_REDIRECT:/auth/login/');
-        expect(mockRedirect).toHaveBeenCalledWith('/auth/login/');
+        await expect(getAuthedPayloadCtx(SHOP_DOMAIN)).rejects.toThrow('NEXT_REDIRECT:/auth/login/');
     });
 
     it('redirects to login when Payload user does not exist', async () => {
         mockAuth.mockResolvedValue(SESSION);
         mockGetPayload.mockResolvedValue(makePayload({ userDocs: [] }));
 
-        await expect(getAuthedPayloadCtx('acme.example.com')).rejects.toThrow('NEXT_REDIRECT:/auth/login/');
-        expect(mockRedirect).toHaveBeenCalledWith('/auth/login/');
+        await expect(getAuthedPayloadCtx(SHOP_DOMAIN)).rejects.toThrow('NEXT_REDIRECT:/auth/login/');
     });
 
     it('calls notFound() when Shop.findByDomain throws a NotFoundError', async () => {
@@ -122,8 +127,8 @@ describe('getAuthedPayloadCtx', () => {
         mockGetPayload.mockResolvedValue(makePayload());
         mockFindByDomain.mockRejectedValue(new Error('NOT_FOUND'));
 
-        await expect(getAuthedPayloadCtx('acme.example.com')).rejects.toThrow('NEXT_NOT_FOUND');
-        expect(mockNotFound).toHaveBeenCalled();
+        await expect(getAuthedPayloadCtx(SHOP_DOMAIN)).rejects.toThrow('NEXT_NOT_FOUND');
+        expect(mockFindByDomain).toHaveBeenCalledWith(SHOP_DOMAIN);
     });
 
     it('calls notFound() when tenant document is missing for the resolved shop', async () => {
@@ -131,16 +136,16 @@ describe('getAuthedPayloadCtx', () => {
         mockGetPayload.mockResolvedValue(makePayload({ tenantDocs: [] }));
         mockFindByDomain.mockResolvedValue(SHOP);
 
-        await expect(getAuthedPayloadCtx('acme.example.com')).rejects.toThrow('NEXT_NOT_FOUND');
-        expect(mockNotFound).toHaveBeenCalled();
+        await expect(getAuthedPayloadCtx(SHOP_DOMAIN)).rejects.toThrow('NEXT_NOT_FOUND');
     });
 
     it('returns full ctx on the happy path', async () => {
         mockAuth.mockResolvedValue(SESSION);
-        mockGetPayload.mockResolvedValue(makePayload());
+        const payload = makePayload();
+        mockGetPayload.mockResolvedValue(payload);
         mockFindByDomain.mockResolvedValue(SHOP);
 
-        const ctx = await getAuthedPayloadCtx('acme.example.com');
+        const ctx = await getAuthedPayloadCtx(SHOP_DOMAIN);
 
         expect(ctx.session).toMatchObject(SESSION);
         expect(ctx.user).toEqual({
@@ -155,7 +160,45 @@ describe('getAuthedPayloadCtx', () => {
             slug: String(TENANT_DOC.slug),
             name: String(TENANT_DOC.name),
         });
-        expect(ctx.payload).toBeDefined();
+        expect(ctx.payload).toBe(payload);
+        expect(mockFindByDomain).toHaveBeenCalledWith(SHOP_DOMAIN);
+        // Auth gate — both find() calls MUST set overrideAccess: true. Without
+        // it Payload's access predicates run against the un-resolved user
+        // context (no `tenants` yet) and would refuse to read the very
+        // documents we need to build that context. Silent regression here
+        // would render every authed route as Unauthorized.
+        expect(payload.find).toHaveBeenCalledWith(
+            expect.objectContaining({ collection: 'users', overrideAccess: true }),
+        );
+        expect(payload.find).toHaveBeenCalledWith(
+            expect.objectContaining({ collection: 'tenants', overrideAccess: true }),
+        );
+    });
+
+    it('narrows role to "editor" when userDoc.role is not "admin"', async () => {
+        mockAuth.mockResolvedValue(SESSION);
+        mockGetPayload.mockResolvedValue(makePayload({ userDocs: [{ ...USER_DOC, role: 'editor' }] }));
+        mockFindByDomain.mockResolvedValue(SHOP);
+
+        const ctx = await getAuthedPayloadCtx(SHOP_DOMAIN);
+
+        expect(ctx.user.role).toBe('editor');
+    });
+
+    it('falls back to shop.id for slug and domain for name when tenant doc omits them', async () => {
+        mockAuth.mockResolvedValue(SESSION);
+        mockGetPayload.mockResolvedValue(
+            makePayload({ tenantDocs: [{ id: TENANT_DOC.id, slug: undefined, name: undefined }] }),
+        );
+        mockFindByDomain.mockResolvedValue(SHOP);
+
+        const ctx = await getAuthedPayloadCtx(SHOP_DOMAIN);
+
+        expect(ctx.tenant).toEqual({
+            id: String(TENANT_DOC.id),
+            slug: SHOP.id,
+            name: SHOP_DOMAIN,
+        });
     });
 
     it('returns ctx with tenant: null when domain is omitted (cross-tenant admin case)', async () => {
