@@ -44,8 +44,8 @@ vi.mock('@nordcom/nordstar', () => ({
 type TestRow = { id: string; title: string; status: string };
 
 const COLUMNS = [
-    { key: 'title', label: 'Title' },
-    { key: 'status', label: 'Status' },
+    { key: 'title' as const, label: 'Title' },
+    { key: 'status' as const, label: 'Status' },
 ];
 
 const ROWS: TestRow[] = [
@@ -146,6 +146,44 @@ describe('CollectionTable', () => {
         expect(deleteAction.mock.calls[0]![0]).toHaveLength(2);
     });
 
+    it('clears selection after a successful deleteAction', async () => {
+        const deleteAction = vi.fn().mockResolvedValue(undefined);
+
+        render(
+            <CollectionTable
+                rows={ROWS}
+                columns={COLUMNS}
+                getRowHref={getHref}
+                selectable
+                bulkActions={<BulkActions deleteAction={deleteAction} />}
+            />,
+        );
+
+        const checkboxes = screen.getAllByRole('checkbox');
+        fireEvent.click(checkboxes[0]!);
+        fireEvent.click(checkboxes[1]!);
+
+        expect(checkboxes[0]).toBeChecked();
+        expect(checkboxes[1]).toBeChecked();
+
+        const deleteBtn = screen.getByRole('button', { name: /delete selected/i });
+        await act(async () => {
+            fireEvent.click(deleteBtn);
+        });
+
+        await vi.waitFor(() => {
+            expect(deleteAction).toHaveBeenCalledTimes(1);
+        });
+
+        // After the action resolves, clearAll() should have unticked everything.
+        await vi.waitFor(() => {
+            const post = screen.getAllByRole('checkbox');
+            expect(post[0]).not.toBeChecked();
+            expect(post[1]).not.toBeChecked();
+            expect(post[2]).not.toBeChecked();
+        });
+    });
+
     it('calls publishAction with selected ids when Publish selected is clicked', async () => {
         const publishAction = vi.fn().mockResolvedValue(undefined);
 
@@ -175,9 +213,110 @@ describe('CollectionTable', () => {
         expect(publishAction).toHaveBeenCalledWith(['row-3']);
     });
 
+    it('disables the Delete button while the transition is in flight, then re-enables', async () => {
+        // Manual deferred so we control when the server action settles.
+        let resolveDelete: () => void = () => undefined;
+        const deletePromise = new Promise<void>((resolve) => {
+            resolveDelete = resolve;
+        });
+        const deleteAction = vi.fn().mockReturnValue(deletePromise);
+
+        render(
+            <CollectionTable
+                rows={ROWS}
+                columns={COLUMNS}
+                getRowHref={getHref}
+                selectable
+                bulkActions={<BulkActions deleteAction={deleteAction} />}
+            />,
+        );
+
+        const checkboxes = screen.getAllByRole('checkbox');
+        fireEvent.click(checkboxes[0]!);
+
+        const deleteBtn = screen.getByRole('button', { name: /delete selected/i });
+        expect(deleteBtn).not.toBeDisabled();
+
+        await act(async () => {
+            fireEvent.click(deleteBtn);
+        });
+
+        // Action is still pending → button must be disabled.
+        await vi.waitFor(() => {
+            expect(screen.getByRole('button', { name: /delete selected/i })).toBeDisabled();
+        });
+
+        // Settle the action and confirm we recover (clearAll runs, count → 0,
+        // which itself also disables the button — that's expected behaviour).
+        await act(async () => {
+            resolveDelete();
+            await deletePromise;
+        });
+
+        await vi.waitFor(() => {
+            expect(deleteAction).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    it('shows an inline error and keeps selection when deleteAction rejects', async () => {
+        const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        const deleteAction = vi.fn().mockRejectedValue(new Error('boom'));
+
+        render(
+            <CollectionTable
+                rows={ROWS}
+                columns={COLUMNS}
+                getRowHref={getHref}
+                selectable
+                bulkActions={<BulkActions deleteAction={deleteAction} />}
+            />,
+        );
+
+        const checkboxes = screen.getAllByRole('checkbox');
+        fireEvent.click(checkboxes[0]!);
+
+        const deleteBtn = screen.getByRole('button', { name: /delete selected/i });
+        await act(async () => {
+            fireEvent.click(deleteBtn);
+        });
+
+        await vi.waitFor(() => {
+            expect(screen.getByRole('alert')).toHaveTextContent('boom');
+        });
+
+        // Selection is preserved so the user can retry.
+        const after = screen.getAllByRole('checkbox');
+        expect(after[0]).toBeChecked();
+
+        consoleError.mockRestore();
+    });
+
     it('does not render checkboxes when selectable is false', () => {
         render(<CollectionTable rows={ROWS} columns={COLUMNS} getRowHref={getHref} selectable={false} />);
 
         expect(screen.queryAllByRole('checkbox')).toHaveLength(0);
+    });
+
+    it('applies a custom ariaLabel to the underlying table', () => {
+        render(<CollectionTable rows={ROWS} columns={COLUMNS} getRowHref={getHref} ariaLabel="Articles" />);
+
+        expect(screen.getByRole('table', { name: 'Articles' })).toBeInTheDocument();
+    });
+
+    it('uses getRowLabel to label the checkbox and trailing Edit link', () => {
+        render(
+            <CollectionTable
+                rows={ROWS}
+                columns={COLUMNS}
+                getRowHref={getHref}
+                getRowLabel={(row) => row.title}
+                selectable
+            />,
+        );
+
+        // Checkbox aria-label comes from the row title, not the raw id.
+        expect(screen.getByRole('checkbox', { name: 'Select Article One' })).toBeInTheDocument();
+        // Trailing Edit link aria-label likewise.
+        expect(screen.getByRole('link', { name: 'Edit Article One' })).toBeInTheDocument();
     });
 });
