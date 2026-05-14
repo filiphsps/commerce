@@ -1,66 +1,50 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
-
-const ORIGINAL_LOCALES_ENV = process.env.NORDCOM_CMS_LOCALES;
-const ORIGINAL_DEFAULT_ENV = process.env.NORDCOM_CMS_DEFAULT_LOCALE;
+import { describe, expect, it, vi } from 'vitest';
+import { isValidLocale, resolveCmsDefaultLocale, resolveCmsLocales } from './locales';
 
 describe('cms localization defaults', () => {
-    afterEach(() => {
-        if (ORIGINAL_LOCALES_ENV === undefined) delete process.env.NORDCOM_CMS_LOCALES;
-        else process.env.NORDCOM_CMS_LOCALES = ORIGINAL_LOCALES_ENV;
-        if (ORIGINAL_DEFAULT_ENV === undefined) delete process.env.NORDCOM_CMS_DEFAULT_LOCALE;
-        else process.env.NORDCOM_CMS_DEFAULT_LOCALE = ORIGINAL_DEFAULT_ENV;
-        vi.resetModules();
+    it('falls back to [en-US] when no env var is set — no default superset', () => {
+        // The operator must explicitly opt into every locale. A "common
+        // locales" default would clutter the picker with options nobody
+        // approved and hide misconfiguration.
+        const locales = resolveCmsLocales({});
+        expect(locales).toEqual(['en-US']);
     });
 
-    it('falls back to a generous superset that covers IETF and POSIX styles', async () => {
-        delete process.env.NORDCOM_CMS_LOCALES;
-        vi.resetModules();
-        const { cmsDefaultLocales } = await import('./index');
-        // Multiple format variations of the same language must coexist so a
-        // tenant can pick whichever style they prefer.
-        expect(cmsDefaultLocales).toEqual(expect.arrayContaining(['de', 'de-DE', 'de_DE']));
-        expect(cmsDefaultLocales).toEqual(expect.arrayContaining(['en', 'en-US', 'en_US']));
-        expect(cmsDefaultLocales).toEqual(expect.arrayContaining(['sv', 'sv-SE', 'sv_SE']));
-        expect(cmsDefaultLocales).toEqual(expect.arrayContaining(['zh', 'zh-CN', 'zh_CN']));
+    it('honours NORDCOM_CMS_LOCALES env override', () => {
+        const locales = resolveCmsLocales({ NORDCOM_CMS_LOCALES: 'fr,fr-FR,fr_FR,custom-LOCALE' });
+        expect(locales).toEqual(['fr', 'fr-FR', 'fr_FR', 'custom-LOCALE']);
     });
 
-    it('honours NORDCOM_CMS_LOCALES env override', async () => {
-        process.env.NORDCOM_CMS_LOCALES = 'fr,fr-FR,fr_FR,custom-LOCALE';
-        vi.resetModules();
-        const { cmsDefaultLocales } = await import('./index');
-        expect(cmsDefaultLocales).toEqual(['fr', 'fr-FR', 'fr_FR', 'custom-LOCALE']);
+    it('drops malformed locale strings from the env override', () => {
+        const locales = resolveCmsLocales({
+            NORDCOM_CMS_LOCALES: 'fr, fr-FR, ../etc, fr_FR, with space, fr-XX',
+        });
+        expect(locales).toEqual(['fr', 'fr-FR', 'fr_FR', 'fr-XX']);
     });
 
-    it('drops malformed locale strings from the env override', async () => {
-        process.env.NORDCOM_CMS_LOCALES = 'fr, fr-FR, ../etc, fr_FR, with space, fr-XX';
-        vi.resetModules();
-        const { cmsDefaultLocales } = await import('./index');
-        expect(cmsDefaultLocales).toEqual(['fr', 'fr-FR', 'fr_FR', 'fr-XX']);
+    it('warns and falls back to [en-US] when env override has no valid entries', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+        const locales = resolveCmsLocales({ NORDCOM_CMS_LOCALES: '../etc, with space' });
+        expect(locales).toEqual(['en-US']);
+        expect(warnSpy).toHaveBeenCalled();
+        warnSpy.mockRestore();
     });
 
-    it('falls back to en-US when default-locale env is unset', async () => {
-        delete process.env.NORDCOM_CMS_DEFAULT_LOCALE;
-        vi.resetModules();
-        const { cmsDefaultLocale } = await import('./index');
-        expect(cmsDefaultLocale).toBe('en-US');
+    it('falls back to en-US when default-locale env is unset', () => {
+        expect(resolveCmsDefaultLocale({})).toBe('en-US');
     });
 
-    it('honours NORDCOM_CMS_DEFAULT_LOCALE when valid', async () => {
-        process.env.NORDCOM_CMS_DEFAULT_LOCALE = 'de_DE';
-        vi.resetModules();
-        const { cmsDefaultLocale } = await import('./index');
-        expect(cmsDefaultLocale).toBe('de_DE');
+    it('honours NORDCOM_CMS_DEFAULT_LOCALE when valid', () => {
+        expect(resolveCmsDefaultLocale({ NORDCOM_CMS_DEFAULT_LOCALE: 'de_DE' })).toBe('de_DE');
+        expect(resolveCmsDefaultLocale({ NORDCOM_CMS_DEFAULT_LOCALE: 'de-AT' })).toBe('de-AT');
     });
 
-    it('rejects malformed default-locale env, falling back to en-US', async () => {
-        process.env.NORDCOM_CMS_DEFAULT_LOCALE = '../etc/passwd';
-        vi.resetModules();
-        const { cmsDefaultLocale } = await import('./index');
-        expect(cmsDefaultLocale).toBe('en-US');
+    it('rejects malformed default-locale env, falling back to en-US', () => {
+        expect(resolveCmsDefaultLocale({ NORDCOM_CMS_DEFAULT_LOCALE: '../etc/passwd' })).toBe('en-US');
+        expect(resolveCmsDefaultLocale({ NORDCOM_CMS_DEFAULT_LOCALE: ' de ' })).toBe('en-US');
     });
 
-    it('isValidLocale accepts IETF + POSIX styles, rejects junk', async () => {
-        const { isValidLocale } = await import('./index');
+    it('isValidLocale accepts IETF + POSIX styles, rejects junk', () => {
         expect(isValidLocale('de')).toBe(true);
         expect(isValidLocale('de-DE')).toBe(true);
         expect(isValidLocale('de_DE')).toBe(true);
