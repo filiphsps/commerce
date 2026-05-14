@@ -21,7 +21,7 @@ describe('CacheInstance', () => {
 		const shop: Shop = { id: 'shop_1' };
 		const fetcher = vi.fn().mockResolvedValue({ name: 'Cool Shirt' });
 
-		const key = cache.keys.product!({ tenant: shop, handle: 'cool-shirt' });
+		const key = cache.keys.product({ tenant: shop, handle: 'cool-shirt' });
 		const first = await cache.wrap(key, fetcher);
 		const second = await cache.wrap(key, fetcher);
 
@@ -37,7 +37,7 @@ describe('CacheInstance', () => {
 			.mockResolvedValueOnce({ name: 'v1' })
 			.mockResolvedValueOnce({ name: 'v2' });
 
-		const key = cache.keys.product!({ tenant: shop, handle: 'cool-shirt' });
+		const key = cache.keys.product({ tenant: shop, handle: 'cool-shirt' });
 		const first = await cache.wrap(key, fetcher);
 		await cache.invalidateRaw([key.tags[0]!]);
 		const second = await cache.wrap(key, fetcher);
@@ -50,7 +50,7 @@ describe('CacheInstance', () => {
 	it('read returns the cached value when present', async () => {
 		const cache = buildCache();
 		const shop: Shop = { id: 'shop_1' };
-		const key = cache.keys.product!({ tenant: shop, handle: 'cool-shirt' });
+		const key = cache.keys.product({ tenant: shop, handle: 'cool-shirt' });
 		await cache.wrap(key, async () => ({ name: 'X' }));
 
 		const result = await cache.read(key);
@@ -60,14 +60,14 @@ describe('CacheInstance', () => {
 	it('read returns undefined when absent', async () => {
 		const cache = buildCache();
 		const shop: Shop = { id: 'shop_1' };
-		const key = cache.keys.product!({ tenant: shop, handle: 'never-cached' });
+		const key = cache.keys.product({ tenant: shop, handle: 'never-cached' });
 		expect(await cache.read(key)).toBeUndefined();
 	});
 
 	it('write stores a value without invoking a fetcher', async () => {
 		const cache = buildCache();
 		const shop: Shop = { id: 'shop_1' };
-		const key = cache.keys.product!({ tenant: shop, handle: 'cool-shirt' });
+		const key = cache.keys.product({ tenant: shop, handle: 'cool-shirt' });
 		await cache.write(key, { name: 'written' });
 		expect(await cache.read(key)).toEqual({ name: 'written' });
 	});
@@ -75,8 +75,8 @@ describe('CacheInstance', () => {
 	it('invalidateRaw fires the adapter with the given tags', async () => {
 		const cache = buildCache();
 		const shop: Shop = { id: 'shop_1' };
-		const k1 = cache.keys.product!({ tenant: shop, handle: 'a' });
-		const k2 = cache.keys.product!({ tenant: shop, handle: 'b' });
+		const k1 = cache.keys.product({ tenant: shop, handle: 'a' });
+		const k2 = cache.keys.product({ tenant: shop, handle: 'b' });
 		await cache.wrap(k1, async () => 1);
 		await cache.wrap(k2, async () => 2);
 

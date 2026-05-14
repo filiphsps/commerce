@@ -17,7 +17,7 @@ export interface CacheInstance<
 	E extends EntitiesMap = EntitiesMap,
 > {
 	schema: CacheSchemaShape<NS, T, Q, E>;
-	keys: KeyFactory<T, Q>;
+	keys: KeyFactory<T, Q, E>;
 	invalidate: InvalidateNamespace<T, E>;
 	wrap<R>(key: CacheKey, fetcher: () => Promise<R>, opts?: WrapOpts): Promise<R>;
 	read<R = unknown>(key: CacheKey): Promise<R | undefined>;
