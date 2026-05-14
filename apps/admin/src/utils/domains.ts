@@ -3,17 +3,22 @@
 // CLAUDE.md (admin: 3000, landing: 3001), so the app still boots when the vars are
 // missing in dev or preview environments.
 //
-// In production, however, missing values silently broke OAuth: Shopify
-// install would redirect back to `localhost:3000`, and the admin session
-// cookie would be scoped to the wrong parent domain. Fail fast so prod
-// deploys can't ship in that state.
+// Throwing on missing values at module-import time would also kill `next build`'s
+// page-data-collection step (Next.js executes route modules during the build to
+// gather metadata, before runtime env is necessarily fully wired). Log loudly
+// instead — Vercel deploys will surface the warning in build logs and a
+// misconfigured prod still fails predictably (the resulting `localhost` host
+// makes any OAuth callback obviously broken).
 const isProductionRuntime = process.env.NODE_ENV === 'production' && process.env.VERCEL_ENV !== 'preview';
+const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
 
 const requireOrFallback = (envName: 'ADMIN_DOMAIN' | 'LANDING_DOMAIN', fallback: string): string => {
     const value = process.env[envName];
     if (value && value.length > 0) return value;
-    if (isProductionRuntime) {
-        throw new Error(`[admin/domains] ${envName} is required in production but was not set.`);
+    if (isProductionRuntime && !isBuildPhase) {
+        console.error(
+            `[admin/domains] ${envName} is required in production but was not set — falling back to "${fallback}". OAuth flows and cookie domains will be broken until this env var is configured.`,
+        );
     }
     return fallback;
 };

@@ -46,7 +46,9 @@ export type BuildPayloadConfigOptions = {
     };
 };
 
-const DEFAULT_LOCALES = ['en-US', 'sv', 'de', 'es', 'fr', 'no'];
+import { cmsDefaultLocale as DEFAULT_DEFAULT_LOCALE, cmsDefaultLocales as DEFAULT_LOCALES } from './locales';
+
+export { cmsDefaultLocale, cmsDefaultLocales, isValidLocale, resolveCmsDefaultLocale, resolveCmsLocales } from './locales';
 
 export const buildPayloadConfig = async ({
     secret,
@@ -55,7 +57,7 @@ export const buildPayloadConfig = async ({
     includeAdmin = true,
     enableStorage = true,
     locales = DEFAULT_LOCALES,
-    defaultLocale = 'en-US',
+    defaultLocale = DEFAULT_DEFAULT_LOCALE,
     authStrategies,
     disablePasswordLogin,
     importMapBaseDir,
