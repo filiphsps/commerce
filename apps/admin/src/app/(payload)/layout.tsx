@@ -17,6 +17,14 @@ import config from '../../payload.config';
 import './custom.scss';
 import { importMap } from './cms/importMap';
 
+// `RootLayout` reads cookies/headers via `initReq` (auth, locale, theme).
+// Force the entire (payload) layout segment dynamic so the layout shell
+// itself can't accidentally end up in a cached context — both `page.tsx`
+// and the layout need this; a dynamic page inside a cached layout still
+// trips DYNAMIC_SERVER_USAGE when the layout reads headers.
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 type Args = { children: React.ReactNode };
 
 const serverFunction: ServerFunctionClient = async function (args) {

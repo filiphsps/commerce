@@ -53,6 +53,15 @@ export type BuildPayloadConfigOptions = {
      * `/cms` because no tenants exist yet.
      */
     onInit?: (payload: Payload) => Promise<void> | void;
+    /**
+     * Optional `sharp` instance to enable image resizing. Payload doesn't
+     * auto-detect the package — without this it logs "Image resizing is
+     * enabled for one or more collections, but sharp not installed" on
+     * every boot and the upload-resize pipeline silently no-ops. Pass the
+     * default `import sharp from 'sharp'` from the consuming app.
+     */
+    // biome-ignore lint/suspicious/noExplicitAny: sharp's type is unwieldy and we only forward it
+    sharp?: any;
 };
 
 import { cmsDefaultLocale as DEFAULT_DEFAULT_LOCALE, cmsDefaultLocales as DEFAULT_LOCALES } from './locales';
@@ -73,6 +82,7 @@ export const buildPayloadConfig = async ({
     importMapFile,
     livePreview,
     onInit,
+    sharp,
 }: BuildPayloadConfigOptions): Promise<SanitizedConfig> => {
     const plugins = [buildMultiTenantPlugin()];
     if (enableStorage) {
@@ -146,6 +156,7 @@ export const buildPayloadConfig = async ({
         localization: { locales, defaultLocale, fallback: true },
         plugins,
         ...adminConfig,
+        ...(sharp ? { sharp } : {}),
         routes: { admin: '/cms' },
         ...(onInit
             ? {

@@ -7,6 +7,7 @@ import { buildPayloadConfig } from '@nordcom/commerce-cms/config';
 import { attachShopSync, seedTenantsForExistingShops } from '@nordcom/commerce-cms/shop-sync';
 import { Shop, User as UserService } from '@nordcom/commerce-db';
 import { getPayload } from 'payload';
+import sharp from 'sharp';
 
 // Anchor Payload's import map / dependency resolution at the admin app's `src`
 // directory. Without this the runtime resolves component paths against the
@@ -180,6 +181,10 @@ const configPromise = buildPayloadConfig({
     importMapBaseDir: IMPORT_MAP_BASE_DIR,
     importMapFile: IMPORT_MAP_FILE,
     livePreview: { url: buildLivePreviewUrl },
+    // Wire sharp through so the `media` collection's `imageSizes` pipeline
+    // actually runs — Payload doesn't auto-detect the package and logs
+    // "sharp not installed" on every boot otherwise.
+    sharp,
     // One-shot backfill via Payload's `onInit` so it BLOCKS the first
     // `getPayload` call. Shops created before `attachShopSync` was wired
     // (older deploys, mongorestore, manual inserts) have no mirrored
