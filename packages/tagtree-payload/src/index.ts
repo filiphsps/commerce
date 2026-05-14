@@ -1,2 +1,2 @@
-// public surface — populated by Task 27
-export {};
+export { payloadHooks } from './hooks';
+export type { PayloadHooksOptions } from './hooks';
