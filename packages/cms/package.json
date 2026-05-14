@@ -36,6 +36,10 @@
             "./src/access/index.ts",
             "./dist/access/index.js"
         ],
+        "./cache": [
+            "./src/cache.ts",
+            "./dist/cache.js"
+        ],
         "./api": [
             "./src/api/index.ts",
             "./dist/api/index.js"

@@ -25,3 +25,12 @@ const schema = defineCache({
 });
 
 export const cmsCache = createCacheInstance(schema, nextAdapter());
+
+/**
+ * Tenant-root tags for CMS reads that aren't entity-specific (e.g., sitemap
+ * indexes that wrap many CMS-driven sub-routes). Matches the fanout that
+ * `cmsCache.invalidate.tenant(shop)` produces.
+ */
+export const cmsTenantRootTags = (shop: { id: string }): string[] => {
+    return [`cms.${shop.id}`, 'cms'];
+};

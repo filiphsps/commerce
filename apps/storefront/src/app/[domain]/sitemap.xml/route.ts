@@ -4,6 +4,7 @@ import type { NextRequest } from 'next/server';
 import { getServerSideSitemapIndex } from 'next-sitemap';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
+import { tenantRootTags } from '@/cache';
 import { Locale } from '@/utils/locale';
 
 export type DynamicSitemapRouteParams = Promise<{
@@ -21,7 +22,7 @@ export async function GET({}: NextRequest, { params }: { params: DynamicSitemapR
     // rename or locale change (which triggers a broad sweep on
     // `shopify.<shopId>`) busts the stale URLs. Without an explicit tag the
     // `cacheLife('max')` entry sticks around indefinitely.
-    cacheTag(`shopify.${shop.id}`);
+    cacheTag(...tenantRootTags(shop));
     const api = await ShopifyApolloApiClient({ shop, locale });
 
     const locales = await LocalesApi({ api });

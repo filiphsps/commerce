@@ -2,6 +2,7 @@ import { Shop } from '@nordcom/commerce-db';
 import type { MetadataRoute } from 'next';
 import { cacheLife, cacheTag } from 'next/cache';
 import { type NextRequest, NextResponse } from 'next/server';
+import { tenantRootTags } from '@/cache';
 
 type Rules = Extract<MetadataRoute.Robots['rules'], Array<unknown>>;
 type Rule = Rules[number];
@@ -74,7 +75,7 @@ export async function GET({}: NextRequest, { params }: { params: RobotsParams })
 
     const { domain } = await params;
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-    cacheTag(`shopify.${shop.id}`);
+    cacheTag(...tenantRootTags(shop));
 
     return new NextResponse(
         nextRobotsSchemaParser({

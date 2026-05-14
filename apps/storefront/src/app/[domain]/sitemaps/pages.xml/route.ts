@@ -1,3 +1,4 @@
+import { cmsTenantRootTags } from '@nordcom/commerce-cms/cache';
 import { Shop } from '@nordcom/commerce-db';
 import { cacheLife, cacheTag } from 'next/cache';
 import type { NextRequest } from 'next/server';
@@ -6,6 +7,7 @@ import { getServerSideSitemap } from 'next-sitemap';
 import { PagesApi } from '@/api/page';
 import { ShopifyApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
+import { tenantRootTags } from '@/cache';
 import { Locale } from '@/utils/locale';
 import type { DynamicSitemapRouteParams } from '../../sitemap.xml/route';
 
@@ -20,7 +22,7 @@ export async function GET({}: NextRequest, { params }: { params: DynamicSitemapR
 
     const { domain } = await params;
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-    cacheTag(`shopify.${shop.id}`, `cms.${shop.id}`);
+    cacheTag(...tenantRootTags(shop), ...cmsTenantRootTags(shop));
     const locale = Locale.default;
     const api = await ShopifyApiClient({ shop, locale });
     const locales = await LocalesApi({ api });

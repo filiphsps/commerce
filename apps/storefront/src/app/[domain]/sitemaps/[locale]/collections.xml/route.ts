@@ -7,6 +7,7 @@ import type { ISitemapField } from 'next-sitemap';
 import { getServerSideSitemap } from 'next-sitemap';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CollectionsPaginationApi } from '@/api/shopify/collection';
+import { cache } from '@/cache';
 import { Locale } from '@/utils/locale';
 import type { DynamicSitemapRouteParams } from '../../../sitemap.xml/route';
 
@@ -29,7 +30,7 @@ export async function GET({}: NextRequest, { params }: CollectionsSitemapRoutePa
     const locale = Locale.from(localeData);
 
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-    cacheTag(`shopify.${shop.id}`, `shopify.${shop.id}.collections`);
+    cacheTag(...cache.keys.collections({ tenant: shop }).tags);
     const api = await ShopifyApolloApiClient({ shop, locale });
 
     let res: Awaited<ReturnType<typeof CollectionsPaginationApi>> | null = null;
