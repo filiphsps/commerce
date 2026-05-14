@@ -55,6 +55,7 @@
         "@nordcom/commerce-shopify-graphql": "workspace:*",
         "@nordcom/commerce-shopify-html": "workspace:*",
         "@payloadcms/db-mongodb": "3.84.0",
+        "@tagtree/next": "workspace:*",
         "@payloadcms/plugin-multi-tenant": "3.84.0",
         "@payloadcms/richtext-lexical": "3.84.0",
         "@payloadcms/storage-s3": "3.84.0",
@@ -99,6 +100,7 @@
         "sass": "1.99.0",
         "sharp": "0.34.5",
         "sonner": "2.0.7",
+        "tagtree": "workspace:*",
         "tailwind-merge": "3.6.0",
         "use-context-selector": "2.0.0"
     },
