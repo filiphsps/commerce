@@ -4,27 +4,18 @@
 
 import * as Sentry from '@sentry/nextjs';
 import { nodeProfilingIntegration } from '@sentry/profiling-node';
+import { SENTRY_DSN, SENTRY_IGNORE_ERRORS } from './sentry.shared';
 
-Sentry.init({
-    dsn: 'https://69f04d1649cfe353ec27e6a30ca412d5@o4506147853828096.ingest.us.sentry.io/4507483915091968',
+if (SENTRY_DSN) {
+    Sentry.init({
+        dsn: SENTRY_DSN,
+        ignoreErrors: SENTRY_IGNORE_ERRORS,
+        tracesSampleRate: 0.85,
+        profilesSampleRate: 1.0,
+        integrations: [nodeProfilingIntegration()],
+        debug: false,
 
-    ignoreErrors: [
-        'ApolloError',
-        'HierarchyRequestError',
-        'InvalidContentProviderError',
-        'NoLocalesAvailableError',
-        'Response not successful',
-        'The operation would yield an incorrect node tree.',
-        'TodoError',
-        "Failed to execute 'removeChild'",
-        `Unexpected token`,
-    ],
-
-    tracesSampleRate: 0.85,
-    profilesSampleRate: 1.0,
-    integrations: [nodeProfilingIntegration()],
-    debug: false,
-
-    // Uncomment the line below to enable Spotlight (https://spotlightjs.com)
-    // spotlight: BuildConfig.environment === 'development',
-});
+        // Uncomment the line below to enable Spotlight (https://spotlightjs.com)
+        // spotlight: BuildConfig.environment === 'development',
+    });
+}

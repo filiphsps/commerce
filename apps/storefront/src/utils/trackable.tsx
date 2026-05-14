@@ -284,16 +284,23 @@ const handleEvent = async (
 ) => {
     window.dataLayer = window.dataLayer || [];
     if (window.dataLayer.length <= 0) {
-        // FIXME: Actually get the consent status.
+        // Push consent defaults BEFORE any other event so GTM/GA4 see the
+        // baseline gate. The previous defaults hard-coded every category to
+        // `granted`, which defeated downstream consent gating (and is the
+        // wrong default for EU GDPR/PECR jurisdictions). Default to `denied`
+        // — the CMP (when wired) is responsible for escalating to `granted`
+        // by emitting its own `consent` update.
         window.dataLayer.push({
             google_tag_params: {
                 consent_info: {
-                    ad_storage: 'granted',
-                    analytics_storage: 'granted',
-                    ad_user_data: 'granted',
-                    ad_personalization: 'granted',
-                    functionality_storage: 'granted',
-                    personalization_storage: 'granted',
+                    ad_storage: 'denied',
+                    analytics_storage: 'denied',
+                    ad_user_data: 'denied',
+                    ad_personalization: 'denied',
+                    functionality_storage: 'denied',
+                    personalization_storage: 'denied',
+                    // `security_storage` is for fraud/CSRF cookies and is
+                    // considered essential by GA4 — keep granted.
                     security_storage: 'granted',
                 },
             },
@@ -375,15 +382,28 @@ export type TrackableContextValue = {
 
 export const TrackableContext = createContext<TrackableContextValue>({} as TrackableContextValue);
 
-const subscribeToNothing = () => () => {};
+// Subscribe to `storage` events so a Vercel-toolbar flip in another tab
+// propagates without a reload. The previous no-op `subscribe` meant
+// `useSyncExternalStore` would never re-read the snapshot after first mount.
+const subscribeToStorage = (callback: () => void) => {
+    if (typeof window === 'undefined') return () => {};
+    window.addEventListener('storage', callback);
+    return () => window.removeEventListener('storage', callback);
+};
 const getInternalTrafficFlag = (): boolean => {
     if (typeof window === 'undefined') {
         return false;
     }
 
-    // Use vercel toolbar to determine internal traffic.
-    // TODO: This should be some form of a utility function.
-    return localStorage.getItem('__vercel_toolbar') === '1';
+    // Wrap the `localStorage` read — Safari private browsing and Firefox's
+    // third-party-isolated mode throw `SecurityError` on access. An unhandled
+    // throw inside `useSyncExternalStore`'s getSnapshot tears down the
+    // surrounding tree.
+    try {
+        return localStorage.getItem('__vercel_toolbar') === '1';
+    } catch {
+        return false;
+    }
 };
 
 export type TrackableProps = {
@@ -400,7 +420,7 @@ export function Trackable({ children, dummy = false }: TrackableProps) {
     }
 
     const detectedInternalTraffic = useSyncExternalStore<boolean>(
-        subscribeToNothing,
+        subscribeToStorage,
         getInternalTrafficFlag,
         () => false,
     );
