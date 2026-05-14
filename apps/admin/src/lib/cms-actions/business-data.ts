@@ -2,6 +2,7 @@
 
 import 'server-only';
 
+import type { BusinessDatum } from '@nordcom/commerce-cms/types';
 import { revalidatePath } from 'next/cache';
 import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
 
@@ -11,25 +12,19 @@ import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
 
 type BusinessDataStatus = 'draft' | 'published';
 
-/** Subset of the businessData collection fields that the form can supply. */
-type BusinessDataInput = {
-    legalName?: string;
-    supportEmail?: string;
-    supportPhone?: string;
-    address?: {
-        line1?: string;
-        line2?: string;
-        city?: string;
-        region?: string;
-        postalCode?: string;
-        country?: string;
-    };
-    profiles?: Array<{
-        platform: string;
-        handle: string;
-        url?: string;
-    }>;
-};
+/**
+ * Subset of the businessData collection fields that the form can supply.
+ *
+ * Derived from the canonical `BusinessDatum` Payload-generated type. The
+ * `Pick` is intentional — adding a field to the collection without listing
+ * it here would silently drop user input. If a field is renamed or removed
+ * upstream, this `Pick` breaks at compile time, forcing the action to be
+ * updated in lockstep.
+ */
+type BusinessDataInput = Pick<
+    BusinessDatum,
+    'legalName' | 'supportEmail' | 'supportPhone' | 'address' | 'profiles'
+>;
 
 // ---------------------------------------------------------------------------
 // FormData parsing
@@ -41,19 +36,34 @@ type BusinessDataInput = {
  * `@payloadcms/ui/dist/forms/Form/index.js`, `createFormData` callback).
  * We parse that blob and extract only the fields we expect — never trusting
  * caller-supplied `tenant` so cross-tenant forgery is impossible.
+ *
+ * Two distinct failure modes:
+ *   1. No `_payload` key at all → return `{}`. Payload's `<Form>` may emit
+ *      an empty submission on initial mount (e.g. autosave debounce fires
+ *      before any field is touched). Treating that as a no-op write is
+ *      safe because the upsert will still run with `{ tenant, _status }`
+ *      and the access layer will reject if something is genuinely wrong.
+ *   2. `_payload` value is not parseable JSON → THROW. A malformed payload
+ *      means the client is broken or someone is poking the action by hand;
+ *      either way, silently writing an empty doc would hide the bug and
+ *      potentially blank out the operator's real data.
  */
 function parseFormData(formData: FormData): BusinessDataInput {
     const raw = formData.get('_payload');
     if (!raw || typeof raw !== 'string') {
+        // Empty submission — no _payload key. See case (1) above.
         return {};
     }
 
     let parsed: Record<string, unknown>;
     try {
         parsed = JSON.parse(raw) as Record<string, unknown>;
-    } catch {
-        console.warn('[businessData] Failed to parse _payload JSON; treating as empty input');
-        return {};
+    } catch (err) {
+        // Malformed _payload — see case (2) above. Throw so Payload's
+        // <Form> surfaces the failure to the operator instead of writing
+        // an empty doc.
+        console.error('[businessData] Failed to parse _payload JSON', err);
+        throw new Error('Malformed form payload');
     }
 
     const address =
@@ -98,6 +108,11 @@ function parseFormData(formData: FormData): BusinessDataInput {
 // ---------------------------------------------------------------------------
 
 async function upsert(domain: string, formData: FormData, status: BusinessDataStatus): Promise<void> {
+    // Parse BEFORE auth — malformed payloads should fail fast without
+    // doing the (relatively expensive) auth roundtrip. The thrown error
+    // surfaces to Payload's <Form> as a generic submission error.
+    const parsed = parseFormData(formData);
+
     const { payload, user, tenant } = await getAuthedPayloadCtx(domain);
 
     // `getAuthedPayloadCtx(domain)` always resolves a non-null tenant when
@@ -108,8 +123,6 @@ async function upsert(domain: string, formData: FormData, status: BusinessDataSt
         console.error('[businessData] upsert called without a resolved tenant');
         throw new Error('Tenant context is required for businessData actions');
     }
-
-    const parsed = parseFormData(formData);
 
     const { docs } = await payload.find({
         collection: 'businessData',
@@ -138,7 +151,12 @@ async function upsert(domain: string, formData: FormData, status: BusinessDataSt
         });
     }
 
-    revalidatePath(`/${domain}/content/business-data`);
+    // Trailing slash matters — `apps/admin/next.config.js` sets
+    // `trailingSlash: true`, so the canonical path that the router
+    // mounts (and that `cacheComponents` keys against) ends in `/`.
+    // Without it, this `revalidatePath` no-ops and the admin UI shows
+    // stale data after save/publish.
+    revalidatePath(`/${domain}/content/business-data/`);
 }
 
 // ---------------------------------------------------------------------------

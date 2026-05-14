@@ -124,7 +124,7 @@ describe('saveBusinessDataDraftAction', () => {
                 overrideAccess: false,
             }),
         );
-        expect(mockRevalidatePath).toHaveBeenCalledWith(`/${DOMAIN}/content/business-data`);
+        expect(mockRevalidatePath).toHaveBeenCalledWith(`/${DOMAIN}/content/business-data/`);
     });
 
     it('updates the existing doc with _status: draft when an existing doc is found', async () => {
@@ -147,7 +147,7 @@ describe('saveBusinessDataDraftAction', () => {
                 overrideAccess: false,
             }),
         );
-        expect(mockRevalidatePath).toHaveBeenCalledWith(`/${DOMAIN}/content/business-data`);
+        expect(mockRevalidatePath).toHaveBeenCalledWith(`/${DOMAIN}/content/business-data/`);
     });
 });
 
@@ -176,7 +176,7 @@ describe('publishBusinessDataAction', () => {
                 overrideAccess: false,
             }),
         );
-        expect(mockRevalidatePath).toHaveBeenCalledWith(`/${DOMAIN}/content/business-data`);
+        expect(mockRevalidatePath).toHaveBeenCalledWith(`/${DOMAIN}/content/business-data/`);
     });
 
     it('updates the existing doc with _status: published when an existing doc is found', async () => {
@@ -198,7 +198,7 @@ describe('publishBusinessDataAction', () => {
                 overrideAccess: false,
             }),
         );
-        expect(mockRevalidatePath).toHaveBeenCalledWith(`/${DOMAIN}/content/business-data`);
+        expect(mockRevalidatePath).toHaveBeenCalledWith(`/${DOMAIN}/content/business-data/`);
     });
 });
 
@@ -235,16 +235,43 @@ describe('FormData parsing (_payload JSON blob)', () => {
         );
     });
 
-    it('handles missing or empty _payload gracefully (returns empty input, no crash)', async () => {
+    it('treats a missing _payload key as an empty submission (action completes, minimal data written)', async () => {
         const payload = makePayload({ existingDocs: [] });
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
 
-        // FormData with no _payload key at all
+        // FormData with no _payload key at all — Payload's <Form> can emit
+        // this on initial mount (autosave debounce before any field is
+        // touched). Treat as a no-op write rather than failing loudly.
         const formData = new FormData();
         await saveBusinessDataDraftAction(DOMAIN, formData);
 
-        // Should still call create (with minimal data), not throw
+        // Should still call create (with `{ tenant, _status }` only), not throw
         expect(payload.create).toHaveBeenCalled();
+    });
+
+    it('throws when _payload contains invalid JSON (no payload call, surfaces error to <Form>)', async () => {
+        const payload = makePayload({ existingDocs: [] });
+        mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
+
+        const formData = new FormData();
+        formData.append('_payload', '{ this is not: valid json');
+
+        // Suppress the console.error breadcrumb the action emits so the test
+        // output stays clean. The throw is what we actually assert on.
+        const consoleErrSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+        try {
+            await expect(saveBusinessDataDraftAction(DOMAIN, formData)).rejects.toThrow(
+                'Malformed form payload',
+            );
+        } finally {
+            consoleErrSpy.mockRestore();
+        }
+
+        // Nothing must be written when the input is corrupt — otherwise a
+        // broken client would silently blank out the operator's real data.
+        expect(payload.find).not.toHaveBeenCalled();
+        expect(payload.create).not.toHaveBeenCalled();
+        expect(payload.update).not.toHaveBeenCalled();
     });
 });
 
