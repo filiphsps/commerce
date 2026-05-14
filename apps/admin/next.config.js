@@ -80,10 +80,6 @@ const config = {
         scrollRestoration: true,
         serverComponentsHmrCache: true,
         serverSourceMaps: true,
-        // `staleTimes.static: 180` lets navigations show 3-minute-old
-        // static segments — but Payload's "static" routes still need fresh
-        // tenant/user data. Drop the static cache lifetime to 0.
-        staleTimes: { dynamic: 0, static: 0 },
         taint: true,
         typedEnv: true,
         useWasmBinary: false,
