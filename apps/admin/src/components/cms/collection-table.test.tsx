@@ -291,6 +291,45 @@ describe('CollectionTable', () => {
         consoleError.mockRestore();
     });
 
+    it('clears the inline error when the selection changes after a failure', async () => {
+        const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        const deleteAction = vi.fn().mockRejectedValue(new Error('boom'));
+
+        render(
+            <CollectionTable
+                rows={ROWS}
+                columns={COLUMNS}
+                getRowHref={getHref}
+                selectable
+                bulkActions={<BulkActions deleteAction={deleteAction} />}
+            />,
+        );
+
+        const checkboxes = screen.getAllByRole('checkbox');
+        fireEvent.click(checkboxes[0]!);
+
+        const deleteBtn = screen.getByRole('button', { name: /delete selected/i });
+        await act(async () => {
+            fireEvent.click(deleteBtn);
+        });
+
+        await vi.waitFor(() => {
+            expect(screen.getByRole('alert')).toHaveTextContent('boom');
+        });
+
+        // Toggle a different checkbox — the stale error must disappear because
+        // it referred to the previous set of ids.
+        await act(async () => {
+            fireEvent.click(screen.getAllByRole('checkbox')[1]!);
+        });
+
+        await vi.waitFor(() => {
+            expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+        });
+
+        consoleError.mockRestore();
+    });
+
     it('does not render checkboxes when selectable is false', () => {
         render(<CollectionTable rows={ROWS} columns={COLUMNS} getRowHref={getHref} selectable={false} />);
 

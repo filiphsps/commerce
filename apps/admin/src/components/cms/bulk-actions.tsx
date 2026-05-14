@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@nordcom/nordstar';
-import { useState, useTransition } from 'react';
+import { useEffect, useRef, useState, useTransition } from 'react';
 
 import { useBulkSelection } from '@/components/cms/bulk-selection-provider';
 
@@ -14,6 +14,19 @@ export function BulkActions({ deleteAction, publishAction }: BulkActionsProps) {
     const { selectedIds, clearAll } = useBulkSelection();
     const [isPending, startTransition] = useTransition();
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+    // Clear stale error when the user changes their selection — the message
+    // referred to the *previous* set of ids, so it's no longer meaningful.
+    // The ref comparison is what prevents the obvious feedback loop: once we
+    // clear, the next render still sees the new selectedIds but the ref now
+    // matches it, so the effect short-circuits.
+    const prevIdsRef = useRef(selectedIds);
+    useEffect(() => {
+        if (errorMessage && prevIdsRef.current !== selectedIds) {
+            setErrorMessage(null);
+        }
+        prevIdsRef.current = selectedIds;
+    }, [selectedIds, errorMessage]);
 
     const count = selectedIds.size;
     const ids = Array.from(selectedIds);
