@@ -1,6 +1,6 @@
 'use client';
 
-import { useForm } from '@payloadcms/ui';
+import { useAllFormFields, useForm } from '@payloadcms/ui';
 import { DraftPublishToolbar } from '@/components/cms/draft-publish-toolbar';
 import { useAutosave } from '@/hooks/use-autosave';
 
@@ -22,12 +22,22 @@ export type BusinessDataFormProps = {
  *   - `useAutosave` — debounced draft save every 2 s after a field change
  *   - `<DraftPublishToolbar>` — manual "Save Draft" / "Publish" buttons
  *
- * Must be rendered inside Payload's `<Form>` — `useForm()` reads from that
- * context. `<DocumentForm>` already provides `<Form>`, so placing this
- * component in the `toolbar` slot satisfies that requirement.
+ * Must be rendered inside Payload's `<Form>` — `useForm()` and
+ * `useAllFormFields()` both read from that context. `<DocumentForm>` renders
+ * its `toolbar` slot inside `<Form>`, so placing this component there
+ * satisfies that requirement.
  */
 export function BusinessDataForm({ saveDraftAction, publishAction }: BusinessDataFormProps) {
     const { createFormData } = useForm();
+
+    // Subscribe to Payload's `FormFieldsContext` — the reducer dispatches a
+    // new `FormState` array identity on every field mutation (keystroke, blur,
+    // array row add/remove, etc.). This is the canonical autosave trigger:
+    // it's tied to actual field state changes, not to incidental re-renders
+    // of this component. Future Payload versions that memoise `<Form>`
+    // children or `createFormData` won't break autosave because we don't
+    // rely on this component re-rendering on every keystroke.
+    const [fields] = useAllFormFields();
 
     /**
      * Build a FormData from the live form state and call the supplied server
@@ -48,20 +58,18 @@ export function BusinessDataForm({ saveDraftAction, publishAction }: BusinessDat
         await publishAction(formData);
     };
 
-    // Feed the autosave hook the FormData-based save action. The `state`
-    // passed here is a stable reference sentinel: a new object literal is
-    // created on every render which causes the autosave debounce to reset on
-    // every re-render — that IS the desired behaviour (re-render ≈ field
-    // change for Payload forms). A referentially stable value would never
-    // trigger the autosave effect.
-    //
-    // We can't easily pass `FormState` here because `useAllFormFields()` is
-    // stable across renders (selector based). Instead we use a dummy object
-    // counter approach via a re-render trigger from the Form context changes.
-    // The save action itself calls `createFormData()` to read latest state.
-    const { isSaving, lastSavedAt } = useAutosave<() => Promise<void>>({
-        state: buildAndSaveDraft,
-        saveAction: async (fn) => fn(),
+    // `useAutosave` reads `saveAction` via a ref on every fire (see hook
+    // implementation), so even though the closure here captures the current
+    // `createFormData` / `saveDraftAction` references, the latest values are
+    // picked up at fire time. `fields` is the debounce trigger — when its
+    // identity changes (a field mutated), the 2 s timer re-arms; when
+    // mutations stop for 2 s, the save fires.
+    const { isSaving, lastSavedAt } = useAutosave({
+        state: fields,
+        saveAction: async () => {
+            const formData = await createFormData();
+            await saveDraftAction(formData);
+        },
         delay: 2000,
     });
 

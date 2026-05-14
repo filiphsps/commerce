@@ -42,8 +42,10 @@ export type DocumentFormProps = {
      */
     initialState?: FormState;
     /**
-     * Sticky bottom slot — mount `<DraftPublishToolbar>` and/or `<LocaleSwitcher>` here.
-     * Rendered inside a `sticky bottom-0` bar below the form body.
+     * Sticky bottom slot — rendered INSIDE Payload's `<Form>` so children can call
+     * `useForm()`, `useAllFormFields()`, `useFormState()` etc. directly. Mount
+     * `<DraftPublishToolbar>` and/or `<LocaleSwitcher>` here. Rendered in a `sticky
+     * bottom-0` bar below the form body.
      */
     toolbar?: ReactNode;
     /**
@@ -61,7 +63,9 @@ export type DocumentFormProps = {
  *   1. A page header with title and optional breadcrumb trail.
  *   2. The form body (children wrapped in `<PayloadFieldShell>` + Payload `<Form>`).
  *      Switches to a two-column layout when `livePreview` is provided.
- *   3. A sticky bottom toolbar bar for `<DraftPublishToolbar>` / `<LocaleSwitcher>`.
+ *   3. A sticky bottom toolbar bar for `<DraftPublishToolbar>` / `<LocaleSwitcher>`,
+ *      rendered INSIDE `<Form>` so toolbar children can read live form state via
+ *      `useForm()` / `useAllFormFields()`.
  */
 export function DocumentForm({
     title,

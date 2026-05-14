@@ -103,6 +103,10 @@ export default async function BusinessDataPage({ params, searchParams }: Busines
         data: existing ?? {},
         id: existing ? String(existing.id) : undefined,
         operation: existing ? 'update' : 'create',
+        // TODO(Task 14): Collections with per-field access (pages, articles) must
+        // derive docPermissions from payload.docAccess({ collection, id, req }) rather
+        // than passing `true`. For businessData all fields are uniformly writable so
+        // the shortcut is correct here.
         docPermissions: {
             create: true,
             fields: true,
