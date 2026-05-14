@@ -1,6 +1,6 @@
 import { Shop } from '@nordcom/commerce-db';
 import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
-import { cacheLife } from 'next/cache';
+import { cacheLife, cacheTag } from 'next/cache';
 import { notFound } from 'next/navigation';
 import type { NextRequest } from 'next/server';
 import type { ISitemapField } from 'next-sitemap';
@@ -29,6 +29,7 @@ export async function GET({}: NextRequest, { params }: CollectionsSitemapRoutePa
     const locale = Locale.from(localeData);
 
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    cacheTag(`shopify.${shop.id}`, `shopify.${shop.id}.collections`);
     const api = await ShopifyApolloApiClient({ shop, locale });
 
     let res: Awaited<ReturnType<typeof CollectionsPaginationApi>> | null = null;

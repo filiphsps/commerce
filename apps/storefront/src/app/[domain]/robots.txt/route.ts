@@ -1,6 +1,6 @@
 import { Shop } from '@nordcom/commerce-db';
 import type { MetadataRoute } from 'next';
-import { cacheLife } from 'next/cache';
+import { cacheLife, cacheTag } from 'next/cache';
 import { type NextRequest, NextResponse } from 'next/server';
 
 type Rules = Extract<MetadataRoute.Robots['rules'], Array<unknown>>;
@@ -74,6 +74,7 @@ export async function GET({}: NextRequest, { params }: { params: RobotsParams })
 
     const { domain } = await params;
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    cacheTag(`shopify.${shop.id}`);
 
     return new NextResponse(
         nextRobotsSchemaParser({
@@ -89,12 +90,16 @@ export async function GET({}: NextRequest, { params }: { params: RobotsParams })
                         '/cdn-cgi/',
                         '/slice-machine/',
                         '/storefront/',
-                        `/${shop.domain}/`,
                     ],
                 },
             ],
             sitemap: [`https://${shop.domain}/sitemap.xml`],
         }),
-        {},
+        {
+            // SEO endpoint — short upstream cache + long stale-while-revalidate
+            // keeps Vercel/CDN serving fast and lets the data-cache refresh
+            // off the critical path. `cacheTag` above handles immediate busts.
+            headers: { 'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400' },
+        },
     );
 }

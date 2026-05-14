@@ -1,5 +1,5 @@
 import { Shop } from '@nordcom/commerce-db';
-import { cacheLife } from 'next/cache';
+import { cacheLife, cacheTag } from 'next/cache';
 import type { NextRequest } from 'next/server';
 import { getServerSideSitemapIndex } from 'next-sitemap';
 import { ShopifyApolloApiClient } from '@/api/shopify';
@@ -17,6 +17,11 @@ export async function GET({}: NextRequest, { params }: { params: DynamicSitemapR
 
     const { domain } = await params;
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    // Tie the cached sitemap to the tenant's cache namespace so a domain
+    // rename or locale change (which triggers a broad sweep on
+    // `shopify.<shopId>`) busts the stale URLs. Without an explicit tag the
+    // `cacheLife('max')` entry sticks around indefinitely.
+    cacheTag(`shopify.${shop.id}`);
     const api = await ShopifyApolloApiClient({ shop, locale });
 
     const locales = await LocalesApi({ api });

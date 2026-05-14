@@ -273,4 +273,38 @@ describe('buildNextAuthStrategy', () => {
         );
         expect(result.user).not.toBeNull();
     });
+
+    it('caches the resolved user per token within the TTL window', async () => {
+        // The Payload admin UI fires ~10+ concurrent authenticated requests
+        // per page load. Each one used to hit Mongo twice (findOrCreateUser
+        // + recomputeRoles via findShopsForUser); cache collapses the burst.
+        const findOrCreate = vi.fn(async (email: string) => ({
+            id: 'u-cache',
+            email,
+            role: 'editor' as const,
+            tenants: [],
+        }));
+        const recomputeRoles = vi.fn(async () => ({ role: 'editor' as const, tenants: [{ tenant: 't1' }] }));
+        const strategy = buildNextAuthStrategy({
+            secret: SECRET,
+            cookieName: COOKIE_NAME,
+            findOrCreateUser: findOrCreate,
+            recomputeRoles,
+        });
+        // Use a unique email so the cache key is unique to this test (the
+        // strategy cache is module-scoped and persists across `it` blocks).
+        const token = await encryptToken({ email: `cache-${Date.now()}@example.com` });
+        const cookie = `${COOKIE_NAME}=${token}`;
+
+        const r1 = await strategy.authenticate(ctx(cookie));
+        const r2 = await strategy.authenticate(ctx(cookie));
+        const r3 = await strategy.authenticate(ctx(cookie));
+
+        expect(r1.user).not.toBeNull();
+        expect(r2.user).not.toBeNull();
+        expect(r3.user).not.toBeNull();
+        // Only the first request should have hit the underlying lookups.
+        expect(findOrCreate).toHaveBeenCalledTimes(1);
+        expect(recomputeRoles).toHaveBeenCalledTimes(1);
+    });
 });

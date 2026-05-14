@@ -1,5 +1,5 @@
 import { Shop } from '@nordcom/commerce-db';
-import { cacheLife } from 'next/cache';
+import { cacheLife, cacheTag } from 'next/cache';
 import type { NextRequest } from 'next/server';
 import type { ISitemapField } from 'next-sitemap';
 import { getServerSideSitemap } from 'next-sitemap';
@@ -20,6 +20,7 @@ export async function GET({}: NextRequest, { params }: { params: DynamicSitemapR
 
     const { domain } = await params;
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    cacheTag(`shopify.${shop.id}`, `cms.${shop.id}`);
     const locale = Locale.default;
     const api = await ShopifyApiClient({ shop, locale });
     const locales = await LocalesApi({ api });
