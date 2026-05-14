@@ -174,7 +174,14 @@ describe('getAuthedPayloadCtx', () => {
 
     it('narrows role to "editor" when userDoc.role is not "admin"', async () => {
         mockAuth.mockResolvedValue(SESSION);
-        mockGetPayload.mockResolvedValue(makePayload({ userDocs: [{ ...USER_DOC, role: 'editor' }] }));
+        // Editor must be a member of the resolved tenant — otherwise the
+        // tenant-membership gate below correctly fires notFound() and this
+        // test would assert on a code path that never returns.
+        mockGetPayload.mockResolvedValue(
+            makePayload({
+                userDocs: [{ ...USER_DOC, role: 'editor', tenants: [{ tenant: TENANT_DOC.id }] }],
+            }),
+        );
         mockFindByDomain.mockResolvedValue(SHOP);
 
         const ctx = await getAuthedPayloadCtx(SHOP_DOMAIN);
@@ -207,5 +214,73 @@ describe('getAuthedPayloadCtx', () => {
         expect(ctx.tenant).toBeNull();
         expect(ctx.user.tenants).toEqual([]);
         expect(mockFindByDomain).not.toHaveBeenCalled();
+    });
+
+    // Cross-tenant write bypass prevention. See the comment block above
+    // the tenant-membership gate in payload-ctx.ts for the full rationale.
+    it('calls notFound() when an editor lacks membership in the resolved tenant', async () => {
+        mockAuth.mockResolvedValue(SESSION);
+        mockGetPayload.mockResolvedValue(
+            makePayload({
+                userDocs: [
+                    {
+                        ...USER_DOC,
+                        role: 'editor',
+                        // Editor belongs to a different tenant — must NOT
+                        // be granted access to the one resolved from the
+                        // current domain.
+                        tenants: [{ tenant: 'tenant-doc-OTHER' }],
+                    },
+                ],
+            }),
+        );
+        mockFindByDomain.mockResolvedValue(SHOP);
+
+        await expect(getAuthedPayloadCtx(SHOP_DOMAIN)).rejects.toThrow('NEXT_NOT_FOUND');
+    });
+
+    it('returns ctx normally when an editor is a member of the resolved tenant', async () => {
+        mockAuth.mockResolvedValue(SESSION);
+        mockGetPayload.mockResolvedValue(
+            makePayload({
+                userDocs: [
+                    {
+                        ...USER_DOC,
+                        role: 'editor',
+                        tenants: [{ tenant: TENANT_DOC.id }],
+                    },
+                ],
+            }),
+        );
+        mockFindByDomain.mockResolvedValue(SHOP);
+
+        const ctx = await getAuthedPayloadCtx(SHOP_DOMAIN);
+
+        expect(ctx.user.role).toBe('editor');
+        expect(ctx.tenant?.id).toBe(String(TENANT_DOC.id));
+    });
+
+    it('returns ctx for admins regardless of their tenants list (admins are not gated)', async () => {
+        mockAuth.mockResolvedValue(SESSION);
+        mockGetPayload.mockResolvedValue(
+            makePayload({
+                userDocs: [
+                    {
+                        ...USER_DOC,
+                        role: 'admin',
+                        // Admin happens to have no membership records at
+                        // all — must still be granted full access since
+                        // `tenantScopedWrite` short-circuits on role.
+                        tenants: [],
+                    },
+                ],
+            }),
+        );
+        mockFindByDomain.mockResolvedValue(SHOP);
+
+        const ctx = await getAuthedPayloadCtx(SHOP_DOMAIN);
+
+        expect(ctx.user.role).toBe('admin');
+        expect(ctx.tenant?.id).toBe(String(TENANT_DOC.id));
     });
 });

@@ -106,13 +106,43 @@ export async function getAuthedPayloadCtx(domain?: string): Promise<AuthedPayloa
         };
     }
 
+    const role: 'admin' | 'editor' = (userDoc.role as string) === 'admin' ? 'admin' : 'editor';
+
+    if (tenant && role !== 'admin') {
+        // Editors must explicitly belong to the resolved tenant. Without
+        // this check, an editor with access to tenant A could navigate to
+        // tenant B's domain — and the fabricated `user.tenants` we attach
+        // below would lie to `tenantScopedWrite`, accepting the write as
+        // if they were a member. Cross-tenant write bypass.
+        //
+        // Admins (role === 'admin') are explicitly NOT gated here — they
+        // have full access by design, which matches `tenantScopedWrite`'s
+        // early-return-true branch for admin role.
+        //
+        // `userDoc.tenants` comes from Payload's multi-tenant plugin and
+        // can be either `{ tenant: 'id-string' }` (unpopulated) or
+        // `{ tenant: { id: ... } }` (populated). Handle both.
+        const userTenants = Array.isArray(userDoc.tenants)
+            ? (userDoc.tenants as Array<{ tenant?: unknown }>).map((t) => {
+                  if (typeof t?.tenant === 'string') return t.tenant;
+                  if (t?.tenant && typeof t.tenant === 'object' && 'id' in t.tenant) {
+                      return String((t.tenant as { id: unknown }).id);
+                  }
+                  return '';
+              })
+            : [];
+        if (!userTenants.includes(tenant.id)) {
+            notFound();
+        }
+    }
+
     return {
         payload,
         session: session as AuthedSession,
         user: {
             id: String(userDoc.id),
             email: userDoc.email as string,
-            role: ((userDoc.role as string) === 'admin' ? 'admin' : 'editor') as 'admin' | 'editor',
+            role,
             tenants: tenant ? [{ tenant: tenant.id }] : [],
             collection: 'users',
         },
