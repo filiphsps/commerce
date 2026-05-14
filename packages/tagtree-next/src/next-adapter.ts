@@ -1,5 +1,5 @@
 import { revalidateTag, unstable_cache } from 'next/cache';
-import type { CacheAdapter } from 'tagtree';
+import type { AdapterCtx, CacheAdapter, WriteOpts } from 'tagtree';
 
 export function nextAdapter(): CacheAdapter {
 	return {
@@ -15,12 +15,14 @@ export function nextAdapter(): CacheAdapter {
 				revalidateTag(tag, 'max');
 			}
 		},
-		async wrap<R>(key: string, fetcher: () => Promise<R>, tags: string[], opts) {
-			const wrapped = unstable_cache(
-				fetcher,
-				[key],
-				{ tags, revalidate: opts.ttl },
-			);
+		async wrap<R>(
+			key: string,
+			fetcher: () => Promise<R>,
+			tags: string[],
+			opts: WriteOpts,
+			_ctx: AdapterCtx,
+		): Promise<R> {
+			const wrapped = unstable_cache(fetcher, [key], { tags, revalidate: opts.ttl });
 			return (await wrapped()) as R;
 		},
 	};
