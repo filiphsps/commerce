@@ -30,6 +30,7 @@ describe('payloadHooks', () => {
 			previousDoc: undefined as never,
 			collection: { slug: 'pages' } as never,
 			operation: 'update',
+			data: {} as never,
 			req: {} as never,
 			context: {} as never,
 		});
@@ -50,6 +51,7 @@ describe('payloadHooks', () => {
 			collection: { slug: 'articles' } as never,
 			req: {} as never,
 			id: 'd1' as never,
+			context: {} as never,
 		});
 
 		const tags = spy.mock.calls[0]?.[0] as string[];
@@ -66,6 +68,7 @@ describe('payloadHooks', () => {
 			previousDoc: undefined as never,
 			collection: { slug: 'header' } as never,
 			operation: 'update',
+			data: {} as never,
 			req: {} as never,
 			context: {} as never,
 		});
@@ -84,6 +87,7 @@ describe('payloadHooks', () => {
 			previousDoc: undefined as never,
 			collection: { slug: 'productMetadata' } as never,
 			operation: 'create',
+			data: {} as never,
 			req: {} as never,
 			context: {} as never,
 		});
@@ -102,6 +106,7 @@ describe('payloadHooks', () => {
 			previousDoc: undefined as never,
 			collection: { slug: 'pages' } as never,
 			operation: 'update',
+			data: {} as never,
 			req: {} as never,
 			context: {} as never,
 		});
@@ -120,6 +125,7 @@ describe('payloadHooks', () => {
 			previousDoc: undefined as never,
 			collection: { slug: 'pages' } as never,
 			operation: 'update',
+			data: {} as never,
 			req: {} as never,
 			context: {} as never,
 		});
@@ -136,6 +142,7 @@ describe('payloadHooks', () => {
 			previousDoc: undefined as never,
 			collection: { slug: 'pages' } as never,
 			operation: 'update',
+			data: {} as never,
 			req: {} as never,
 			context: {} as never,
 		});
