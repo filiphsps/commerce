@@ -28,8 +28,12 @@ export type DocumentFormProps = {
      */
     children: ReactNode;
     /**
-     * Server action invoked on form submit. Must accept `FormData` (Payload's `<Form>`
-     * calls the action with `FormData` when `action` is a function).
+     * Server action invoked on form submit. Must accept `FormData` — Payload's
+     * `<Form>` calls the action with `FormData` when `action` is a function.
+     *
+     * **Must be a server action**: declare with `'use server'` (inline directive
+     * or imported from a `'use server'` module). A plain async function fails at
+     * runtime when Payload's `<Form action={...}>` tries to invoke it.
      */
     onSubmit: (formData: FormData) => Promise<void>;
     /**
@@ -69,8 +73,13 @@ export function DocumentForm({
     toolbar,
     livePreview,
 }: DocumentFormProps) {
+    // `min-h-[calc(100vh-4.5rem)]` makes the outer container — the `sticky`
+    // containing block — at least as tall as the viewport minus the dashboard
+    // header (4.5rem; see `apps/admin/src/app/(app)/(dashboard)/[domain]/layout.tsx`).
+    // Without this, on short documents `sticky bottom-0` pins to the form
+    // container's bottom (just under the fields) rather than the viewport floor.
     return (
-        <div className="flex flex-col gap-4">
+        <div className="flex min-h-[calc(100vh-4.5rem)] grow flex-col gap-4">
             {/* ── Header ── */}
             <header className="flex flex-col gap-1">
                 {breadcrumbs && breadcrumbs.length > 0 ? (
@@ -99,8 +108,10 @@ export function DocumentForm({
                 <h1 className="font-semibold text-2xl leading-tight">{title}</h1>
             </header>
 
-            {/* ── Form body (with optional live-preview split) ── */}
-            <div className={livePreview ? 'grid grid-cols-1 gap-4 lg:grid-cols-2' : undefined}>
+            {/* ── Form body (with optional live-preview split) ──
+                  `flex-1` lets the body soak up vertical space so the sticky
+                  toolbar gets pushed to the viewport bottom on short documents. */}
+            <div className={livePreview ? 'grid flex-1 grid-cols-1 gap-4 lg:grid-cols-2' : 'flex-1'}>
                 <div className="flex flex-col gap-4">
                     <PayloadFieldShell config={clientConfig}>
                         <Form action={onSubmit} initialState={initialState} isDocumentForm>

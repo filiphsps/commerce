@@ -17,15 +17,15 @@ describe('useAutosave', () => {
     });
 
     it('does not call save immediately on mount', () => {
-        const save = vi.fn().mockResolvedValue(undefined);
-        renderHook(() => useAutosave({ state: { value: 'a' }, save }));
+        const saveAction = vi.fn().mockResolvedValue(undefined);
+        renderHook(() => useAutosave({ state: { value: 'a' }, saveAction }));
 
-        expect(save).not.toHaveBeenCalled();
+        expect(saveAction).not.toHaveBeenCalled();
     });
 
     it('calls save after the debounce delay when state changes', async () => {
-        const save = vi.fn().mockResolvedValue(undefined);
-        const { rerender } = renderHook(({ state }) => useAutosave({ state, save, delay: 500 }), {
+        const saveAction = vi.fn().mockResolvedValue(undefined);
+        const { rerender } = renderHook(({ state }) => useAutosave({ state, saveAction, delay: 500 }), {
             initialProps: { state: { value: 'a' } },
         });
 
@@ -36,20 +36,20 @@ describe('useAutosave', () => {
         act(() => {
             vi.advanceTimersByTime(400);
         });
-        expect(save).not.toHaveBeenCalled();
+        expect(saveAction).not.toHaveBeenCalled();
 
         // After delay — save fires.
         await act(async () => {
             vi.advanceTimersByTime(200);
         });
 
-        expect(save).toHaveBeenCalledTimes(1);
-        expect(save).toHaveBeenCalledWith({ value: 'b' });
+        expect(saveAction).toHaveBeenCalledTimes(1);
+        expect(saveAction).toHaveBeenCalledWith({ value: 'b' });
     });
 
     it('debounces rapid state changes — only the last state is saved', async () => {
-        const save = vi.fn().mockResolvedValue(undefined);
-        const { rerender } = renderHook(({ state }) => useAutosave({ state, save, delay: 500 }), {
+        const saveAction = vi.fn().mockResolvedValue(undefined);
+        const { rerender } = renderHook(({ state }) => useAutosave({ state, saveAction, delay: 500 }), {
             initialProps: { state: { value: 'a' } },
         });
 
@@ -69,25 +69,25 @@ describe('useAutosave', () => {
             vi.advanceTimersByTime(600);
         });
 
-        expect(save).toHaveBeenCalledTimes(1);
-        expect(save).toHaveBeenCalledWith({ value: 'd' });
+        expect(saveAction).toHaveBeenCalledTimes(1);
+        expect(saveAction).toHaveBeenCalledWith({ value: 'd' });
     });
 
     it('flush() triggers an immediate save bypassing the debounce', async () => {
-        const save = vi.fn().mockResolvedValue(undefined);
-        const { result } = renderHook(() => useAutosave({ state: { value: 'x' }, save, delay: 2000 }));
+        const saveAction = vi.fn().mockResolvedValue(undefined);
+        const { result } = renderHook(() => useAutosave({ state: { value: 'x' }, saveAction, delay: 2000 }));
 
         await act(async () => {
             await result.current.flush();
         });
 
-        expect(save).toHaveBeenCalledTimes(1);
-        expect(save).toHaveBeenCalledWith({ value: 'x' });
+        expect(saveAction).toHaveBeenCalledTimes(1);
+        expect(saveAction).toHaveBeenCalledWith({ value: 'x' });
     });
 
     it('flush() sets lastSavedAt on success', async () => {
-        const save = vi.fn().mockResolvedValue(undefined);
-        const { result } = renderHook(() => useAutosave({ state: { value: 'x' }, save }));
+        const saveAction = vi.fn().mockResolvedValue(undefined);
+        const { result } = renderHook(() => useAutosave({ state: { value: 'x' }, saveAction }));
 
         expect(result.current.lastSavedAt).toBeUndefined();
 
@@ -99,10 +99,11 @@ describe('useAutosave', () => {
     });
 
     it('disabled=true cancels a pending debounce timer', async () => {
-        const save = vi.fn().mockResolvedValue(undefined);
-        const { rerender } = renderHook(({ state, disabled }) => useAutosave({ state, save, delay: 500, disabled }), {
-            initialProps: { state: { value: 'a' }, disabled: false },
-        });
+        const saveAction = vi.fn().mockResolvedValue(undefined);
+        const { rerender } = renderHook(
+            ({ state, disabled }) => useAutosave({ state, saveAction, delay: 500, disabled }),
+            { initialProps: { state: { value: 'a' }, disabled: false } },
+        );
 
         // Start a pending debounce.
         rerender({ state: { value: 'b' }, disabled: false });
@@ -118,12 +119,12 @@ describe('useAutosave', () => {
             vi.advanceTimersByTime(600);
         });
 
-        expect(save).not.toHaveBeenCalled();
+        expect(saveAction).not.toHaveBeenCalled();
     });
 
     it('unmount cancels the pending timer — save does NOT fire', async () => {
-        const save = vi.fn().mockResolvedValue(undefined);
-        const { rerender, unmount } = renderHook(({ state }) => useAutosave({ state, save, delay: 500 }), {
+        const saveAction = vi.fn().mockResolvedValue(undefined);
+        const { rerender, unmount } = renderHook(({ state }) => useAutosave({ state, saveAction, delay: 500 }), {
             initialProps: { state: { value: 'a' } },
         });
 
@@ -136,13 +137,13 @@ describe('useAutosave', () => {
             vi.advanceTimersByTime(1000);
         });
 
-        expect(save).not.toHaveBeenCalled();
+        expect(saveAction).not.toHaveBeenCalled();
     });
 
     it('sets error when save rejects', async () => {
         const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
-        const save = vi.fn().mockRejectedValue(new Error('network error'));
-        const { result } = renderHook(() => useAutosave({ state: { value: 'x' }, save }));
+        const saveAction = vi.fn().mockRejectedValue(new Error('network error'));
+        const { result } = renderHook(() => useAutosave({ state: { value: 'x' }, saveAction }));
 
         await act(async () => {
             await result.current.flush();
@@ -156,8 +157,8 @@ describe('useAutosave', () => {
 
     it('clears the error on the next save attempt', async () => {
         const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
-        const save = vi.fn().mockRejectedValueOnce(new Error('first')).mockResolvedValue(undefined);
-        const { result } = renderHook(() => useAutosave({ state: { value: 'x' }, save }));
+        const saveAction = vi.fn().mockRejectedValueOnce(new Error('first')).mockResolvedValue(undefined);
+        const { result } = renderHook(() => useAutosave({ state: { value: 'x' }, saveAction }));
 
         await act(async () => {
             await result.current.flush();

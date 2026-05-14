@@ -8,8 +8,12 @@ const DEFAULT_DELAY_MS = 2000;
 export type UseAutosaveOptions<T> = {
     /** Current form state (rebuilt on every change). */
     state: T;
-    /** Async function that saves the state as a draft. */
-    save: (state: T) => Promise<void>;
+    /**
+     * Server action that saves the state as a draft.
+     * Suffixed `Action` to satisfy Next 16's `'use client'` server-action prop rule
+     * — passing a non-suffixed callable across the RSC boundary trips the linter.
+     */
+    saveAction: (state: T) => Promise<void>;
     /**
      * Debounce window in ms.
      * @default 2000
@@ -30,26 +34,26 @@ export type UseAutosaveResult = {
     lastSavedAt: Date | undefined;
     /** Manually trigger a save now, bypassing the debounce. */
     flush: () => Promise<void>;
-    /** Last error from `save()`, if any. Cleared on next save attempt. */
+    /** Last error from `saveAction()`, if any. Cleared on next save attempt. */
     error: string | undefined;
 };
 
 /**
  * Debounced autosave hook for document edit forms.
  *
- * On each `state` change (compared by referential equality — callers should
- * stabilise their state object via `useMemo` or similar), a debounce timer is
- * started. After `delay` ms the current `stateRef.current` is passed to `save`.
+ * `state` is read on every render; the effect re-arms the debounce timer when
+ * its identity changes. Pass Payload's `FormState` directly — it's unstable by
+ * design (changes on every keystroke), which is exactly what triggers the
+ * debounce to reset. No `useMemo` needed.
  *
  * Dirty checking: referential equality only. JSON.stringify deep-comparison is
- * intentionally avoided — it is expensive for large Payload FormState objects
- * and callers are expected to manage re-renders appropriately.
+ * intentionally avoided — it is expensive for large Payload FormState objects.
  *
  * On unmount the pending timer is cancelled and NO save fires.
  */
 export function useAutosave<T>({
     state,
-    save,
+    saveAction,
     delay = DEFAULT_DELAY_MS,
     disabled = false,
 }: UseAutosaveOptions<T>): UseAutosaveResult {
@@ -62,10 +66,10 @@ export function useAutosave<T>({
     const stateRef = useRef<T>(state);
     stateRef.current = state;
 
-    // Keep a stable reference to `save` so the effect dependency list doesn't
+    // Keep a stable reference to `saveAction` so the effect dependency list doesn't
     // thrash on every render when the caller passes an inline function.
-    const saveRef = useRef<(s: T) => Promise<void>>(save);
-    saveRef.current = save;
+    const saveRef = useRef<(s: T) => Promise<void>>(saveAction);
+    saveRef.current = saveAction;
 
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -88,9 +92,10 @@ export function useAutosave<T>({
         }
     }, []);
 
-    // `state` must be in the deps array so the effect restarts the debounce
-    // timer whenever the caller provides a new state value. Biome flags params as
-    // "outer scope" non-deps, but this is intentional — see hook doc above.
+    // Biome flags `state` because it's a destructured *parameter* rather than a
+    // hook-defined value, but `delay`/`disabled`/`executeSave` in the same deps
+    // array are accepted. Listing `state` is intentional: it's the trigger that
+    // restarts the debounce timer on every change.
     // biome-ignore lint/correctness/useExhaustiveDependencies: state is the intentional trigger for restarting the debounce timer
     useEffect(() => {
         // Cancel pending timer when disabled flips true.

@@ -1,7 +1,7 @@
 import { act, fireEvent } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { DraftPublishToolbar } from '@/components/cms/draft-publish-toolbar';
+import { DraftPublishToolbar, formatRelativeTime } from '@/components/cms/draft-publish-toolbar';
 import { render, screen } from '@/utils/test/react';
 
 // ------------------------------------------------------------------
@@ -30,16 +30,16 @@ vi.mock('@nordcom/nordstar', () => ({
 
 describe('DraftPublishToolbar', () => {
     it('renders Save Draft and Publish buttons', () => {
-        render(<DraftPublishToolbar saveDraft={vi.fn()} publish={vi.fn()} />);
+        render(<DraftPublishToolbar saveDraftAction={vi.fn()} publishAction={vi.fn()} />);
 
         expect(screen.getByRole('button', { name: /save draft/i })).toBeInTheDocument();
         expect(screen.getByRole('button', { name: /publish/i })).toBeInTheDocument();
     });
 
     it('calls the publish action when Publish is clicked', async () => {
-        const publish = vi.fn().mockResolvedValue(undefined);
+        const publishAction = vi.fn().mockResolvedValue(undefined);
 
-        render(<DraftPublishToolbar saveDraft={vi.fn()} publish={publish} />);
+        render(<DraftPublishToolbar saveDraftAction={vi.fn()} publishAction={publishAction} />);
 
         const btn = screen.getByRole('button', { name: /publish/i });
         await act(async () => {
@@ -47,14 +47,14 @@ describe('DraftPublishToolbar', () => {
         });
 
         await vi.waitFor(() => {
-            expect(publish).toHaveBeenCalledTimes(1);
+            expect(publishAction).toHaveBeenCalledTimes(1);
         });
     });
 
     it('calls the saveDraft action when Save Draft is clicked', async () => {
-        const saveDraft = vi.fn().mockResolvedValue(undefined);
+        const saveDraftAction = vi.fn().mockResolvedValue(undefined);
 
-        render(<DraftPublishToolbar saveDraft={saveDraft} publish={vi.fn()} />);
+        render(<DraftPublishToolbar saveDraftAction={saveDraftAction} publishAction={vi.fn()} />);
 
         const btn = screen.getByRole('button', { name: /save draft/i });
         await act(async () => {
@@ -62,7 +62,7 @@ describe('DraftPublishToolbar', () => {
         });
 
         await vi.waitFor(() => {
-            expect(saveDraft).toHaveBeenCalledTimes(1);
+            expect(saveDraftAction).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -71,9 +71,9 @@ describe('DraftPublishToolbar', () => {
         const publishPromise = new Promise<void>((res) => {
             resolvePublish = res;
         });
-        const publish = vi.fn().mockReturnValue(publishPromise);
+        const publishAction = vi.fn().mockReturnValue(publishPromise);
 
-        render(<DraftPublishToolbar saveDraft={vi.fn()} publish={publish} />);
+        render(<DraftPublishToolbar saveDraftAction={vi.fn()} publishAction={publishAction} />);
 
         const publishBtn = screen.getByRole('button', { name: /publish/i });
         const draftBtn = screen.getByRole('button', { name: /save draft/i });
@@ -100,9 +100,9 @@ describe('DraftPublishToolbar', () => {
 
     it('shows an inline error when publish rejects', async () => {
         const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
-        const publish = vi.fn().mockRejectedValue(new Error('server error'));
+        const publishAction = vi.fn().mockRejectedValue(new Error('server error'));
 
-        render(<DraftPublishToolbar saveDraft={vi.fn()} publish={publish} />);
+        render(<DraftPublishToolbar saveDraftAction={vi.fn()} publishAction={publishAction} />);
 
         await act(async () => {
             fireEvent.click(screen.getByRole('button', { name: /publish/i }));
@@ -117,9 +117,9 @@ describe('DraftPublishToolbar', () => {
 
     it('clears the error on the next action attempt', async () => {
         const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
-        const publish = vi.fn().mockRejectedValueOnce(new Error('first failure')).mockResolvedValue(undefined);
+        const publishAction = vi.fn().mockRejectedValueOnce(new Error('first failure')).mockResolvedValue(undefined);
 
-        render(<DraftPublishToolbar saveDraft={vi.fn()} publish={publish} />);
+        render(<DraftPublishToolbar saveDraftAction={vi.fn()} publishAction={publishAction} />);
 
         // Trigger failure.
         await act(async () => {
@@ -143,15 +143,69 @@ describe('DraftPublishToolbar', () => {
     });
 
     it('shows "Saving…" when isSaving is true', () => {
-        render(<DraftPublishToolbar saveDraft={vi.fn()} publish={vi.fn()} isSaving />);
+        render(<DraftPublishToolbar saveDraftAction={vi.fn()} publishAction={vi.fn()} isSaving />);
 
         expect(screen.getByText('Saving…')).toBeInTheDocument();
     });
 
     it('shows the last-saved timestamp when isSaving is false and lastSavedAt is set', () => {
         const ts = new Date(Date.now() - 5000); // 5 seconds ago
-        render(<DraftPublishToolbar saveDraft={vi.fn()} publish={vi.fn()} lastSavedAt={ts} />);
+        render(<DraftPublishToolbar saveDraftAction={vi.fn()} publishAction={vi.fn()} lastSavedAt={ts} />);
 
         expect(screen.getByText(/last saved/i)).toBeInTheDocument();
+    });
+});
+
+// ------------------------------------------------------------------
+// formatRelativeTime — pure helper, exhaustively covered here so the
+// component test doesn't have to assert specific phrasing.
+// ------------------------------------------------------------------
+
+describe('formatRelativeTime', () => {
+    const NOW = new Date('2026-01-15T12:00:00Z');
+
+    beforeEach(() => {
+        vi.useFakeTimers();
+        vi.setSystemTime(NOW);
+    });
+
+    afterEach(() => {
+        vi.useRealTimers();
+    });
+
+    it('returns "just now" for timestamps under 5 seconds old', () => {
+        expect(formatRelativeTime(new Date(NOW.getTime() - 2000))).toBe('just now');
+    });
+
+    it('returns "{n} seconds ago" between 5 and 60 seconds', () => {
+        expect(formatRelativeTime(new Date(NOW.getTime() - 30_000))).toBe('30 seconds ago');
+    });
+
+    it('returns "1 minute ago" (singular) for exactly 1 minute', () => {
+        expect(formatRelativeTime(new Date(NOW.getTime() - 60_000))).toBe('1 minute ago');
+    });
+
+    it('returns "{n} minutes ago" (plural) for multiple minutes', () => {
+        expect(formatRelativeTime(new Date(NOW.getTime() - 5 * 60_000))).toBe('5 minutes ago');
+    });
+
+    it('returns "1 hour ago" (singular) for exactly 1 hour', () => {
+        expect(formatRelativeTime(new Date(NOW.getTime() - 60 * 60_000))).toBe('1 hour ago');
+    });
+
+    it('returns "{n} hours ago" (plural) for multiple hours', () => {
+        expect(formatRelativeTime(new Date(NOW.getTime() - 3 * 60 * 60_000))).toBe('3 hours ago');
+    });
+
+    it('returns "1 day ago" (singular) for exactly 1 day', () => {
+        expect(formatRelativeTime(new Date(NOW.getTime() - 24 * 60 * 60_000))).toBe('1 day ago');
+    });
+
+    it('returns "{n} days ago" (plural) for multiple days', () => {
+        expect(formatRelativeTime(new Date(NOW.getTime() - 7 * 24 * 60 * 60_000))).toBe('7 days ago');
+    });
+
+    it('accepts a string ISO timestamp as well as a Date', () => {
+        expect(formatRelativeTime(new Date(NOW.getTime() - 30_000).toISOString())).toBe('30 seconds ago');
     });
 });
