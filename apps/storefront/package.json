@@ -56,6 +56,7 @@
         "@nordcom/commerce-shopify-html": "workspace:*",
         "@payloadcms/db-mongodb": "3.84.0",
         "@tagtree/next": "workspace:*",
+        "@tagtree/shopify": "workspace:*",
         "@payloadcms/plugin-multi-tenant": "3.84.0",
         "@payloadcms/richtext-lexical": "3.84.0",
         "@payloadcms/storage-s3": "3.84.0",
