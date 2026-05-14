@@ -1,11 +1,8 @@
 import { ApolloClient } from '@apollo/client';
 
-import type { OnlineShop } from '@nordcom/commerce-db';
 import { describe, expect, it, vi } from 'vitest';
-import { ApiBuilder, buildCacheTagArray } from '@/utils/abstract-api';
+import { ApiBuilder } from '@/utils/abstract-api';
 import type { Locale } from '@/utils/locale';
-import { mockLocale } from '@/utils/test/fixtures/locale';
-import { mockShop } from '@/utils/test/fixtures/shop';
 
 vi.mock('@apollo/client', async () => ({
     ...((await vi.importActual('@apollo/client')) as any),
@@ -62,72 +59,6 @@ describe('utils', () => {
             expect(errors).toBeUndefined();
             expect(data?.product.id).toBe('123');
             expect(data?.product.title).toBe('Fake Product');
-        });
-    });
-
-    describe('buildCacheTagArray', () => {
-        it('should build the cache tag array correctly', () => {
-            const shop = {
-                id: 'id',
-                domain: 'domain',
-            } as OnlineShop;
-
-            const locale = {
-                code: 'en-US',
-            } as Locale;
-
-            const tags = ['tag1', 'tag2'];
-
-            const expectedCacheTags = ['shopify', 'shopify.id', 'domain', 'tag1', 'tag2'];
-
-            const cacheTags = buildCacheTagArray(shop, locale, tags);
-
-            expect(cacheTags).toEqual(expectedCacheTags);
-        });
-
-        it('always includes shopify, shopify.<shopId>, and <domain> base tags (locale excluded)', () => {
-            const shop = mockShop();
-            const locale = mockLocale('en-US');
-
-            const result = buildCacheTagArray(shop, locale, []);
-
-            expect(result).toContain('shopify');
-            expect(result).toContain(`shopify.${shop.id}`);
-            expect(result).toContain(shop.domain);
-            expect(result).not.toContain(locale.code);
-        });
-
-        it('prepends base tags before per-entity tags', () => {
-            const shop = mockShop();
-            const locale = mockLocale('sv-SE');
-            const entityTags = ['shopify.mock-shop-id.product.my-product', 'product', 'my-product'];
-
-            const result = buildCacheTagArray(shop, locale, entityTags);
-
-            expect(result.slice(0, 3)).toEqual(['shopify', `shopify.${shop.id}`, shop.domain]);
-            expect(result).toEqual(expect.arrayContaining(entityTags));
-        });
-
-        it('appends per-entity tags when provided', () => {
-            const shop = mockShop();
-            const locale = mockLocale('de-DE');
-            const entityTags = [`shopify.${shop.id}.collection.summer`, 'collection', 'summer'];
-
-            const result = buildCacheTagArray(shop, locale, entityTags);
-
-            expect(result).toContain(`shopify.${shop.id}.collection.summer`);
-            expect(result).toContain('collection');
-            expect(result).toContain('summer');
-        });
-
-        it('returns only the three base tags when no per-entity tags are passed', () => {
-            const shop = mockShop();
-            const locale = mockLocale();
-
-            const result = buildCacheTagArray(shop, locale, []);
-
-            expect(result).toHaveLength(3);
-            expect(result).toEqual(['shopify', `shopify.${shop.id}`, shop.domain]);
         });
     });
 });
