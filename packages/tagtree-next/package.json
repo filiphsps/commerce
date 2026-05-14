@@ -47,7 +47,7 @@
     },
     "homepage": "https://shops.nordcom.io/docs/",
     "dependencies": {
-        "tagtree": "workspace:*"
+        "@tagtree/core": "workspace:*"
     },
     "peerDependencies": {
         "next": "^16.0.0"

@@ -47,7 +47,7 @@
     },
     "homepage": "https://shops.nordcom.io/docs/",
     "dependencies": {
-        "tagtree": "workspace:*"
+        "@tagtree/core": "workspace:*"
     },
     "devDependencies": {
         "@codecov/vite-plugin": "2.0.1",

@@ -1,4 +1,4 @@
-import { createCacheInstance, defineCache, encodeSegment, str } from 'tagtree';
+import { createCacheInstance, defineCache, encodeSegment, str } from '@tagtree/core';
 import { nextAdapter } from '@tagtree/next';
 
 import type { OnlineShop } from '@nordcom/commerce-db';

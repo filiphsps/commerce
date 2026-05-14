@@ -1,5 +1,5 @@
 import type { CollectionAfterChangeHook, CollectionAfterDeleteHook, CollectionConfig } from 'payload';
-import type { CacheInstance, EntitiesMap } from 'tagtree';
+import type { CacheInstance, EntitiesMap } from '@tagtree/core';
 
 type Doc = {
     id: string | number;

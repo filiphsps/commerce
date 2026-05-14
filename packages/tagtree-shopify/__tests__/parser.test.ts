@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { parseShopifyWebhook } from '../src/parser';
-import { defineCache, str } from 'tagtree';
+import { defineCache, str } from '@tagtree/core';
 
 type Shop = { id: string; domain: string };
 

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { payloadHooks } from '../src/hooks';
-import { createCacheInstance, defineCache, memoryAdapter, str } from 'tagtree';
+import { createCacheInstance, defineCache, memoryAdapter, str } from '@tagtree/core';
 
 const buildCache = () => {
 	const schema = defineCache({

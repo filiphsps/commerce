@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { nextAdapter } from '../src/next-adapter';
-import { consoleLogger, defineCache, type AdapterCtx } from 'tagtree';
+import { consoleLogger, defineCache, type AdapterCtx } from '@tagtree/core';
 
 const revalidateTagMock = vi.fn();
 const unstableCacheMock = vi.fn();
