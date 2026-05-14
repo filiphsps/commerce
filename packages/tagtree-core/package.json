@@ -1,8 +1,8 @@
 {
     "$schema": "https://json.schemastore.org/package.json",
     "name": "@tagtree/core",
-    "version": "0.0.0",
-    "private": true,
+    "version": "0.0.1",
+    "private": false,
     "sideEffects": false,
     "type": "module",
     "types": "./dist/index.d.ts",

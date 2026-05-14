@@ -1,8 +1,8 @@
 {
     "$schema": "https://json.schemastore.org/package.json",
     "name": "@tagtree/next",
-    "version": "0.0.0",
-    "private": true,
+    "version": "0.0.1",
+    "private": false,
     "sideEffects": false,
     "type": "module",
     "types": "./dist/index.d.ts",
@@ -24,7 +24,9 @@
         "test": "vitest run",
         "typecheck": "tsc -noEmit"
     },
-    "files": ["dist"],
+    "files": [
+        "dist"
+    ],
     "author": {
         "name": "Nordcom AB",
         "email": "hi@nordcom.io",
