@@ -12,6 +12,6 @@
         "lib": ["ESNext", "DOM"],
         "typeRoots": ["./node_modules/@types", "./src/@types"]
     },
-    "exclude": ["node_modules", "coverage", "dist", "**/*.test.*", "./src/types/payload-types.ts"],
+    "exclude": ["node_modules", "coverage", "dist", "**/*.test.*"],
     "include": ["./src/**/*.ts", "./src/**/*.tsx", "./src/@types"]
 }
