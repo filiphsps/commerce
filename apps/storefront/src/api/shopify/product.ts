@@ -11,6 +11,7 @@ import type {
 } from '@shopify/hydrogen-react/storefront-api-types';
 import md5 from 'crypto-js/md5';
 import type { Product } from '@/api/product';
+import { cache } from '@/cache';
 import { extractLimitLikeFilters } from '@/api/shopify/collection';
 import type { AbstractApi, ApiOptions, ApiReturn } from '@/utils/abstract-api';
 
@@ -296,7 +297,7 @@ export const ProductApi = async ({ api, handle, fragment }: ProductOptions): Pro
             },
             {
                 tags: [
-                    `shopify.${api.shop().id}.product.${handle}`,
+                    ...cache.keys.product!({ tenant: api.shop(), handle } as any).tags,
                     'product',
                     handle,
                     ...(fragment ? [md5(fragment).toString()] : []),
@@ -365,7 +366,7 @@ export const ProductsPaginationCountApi = async ({
             },
             {
                 tags: [
-                    `shopify.${api.shop().id}.products`,
+                    ...cache.keys.products!({ tenant: api.shop() } as any).tags,
                     'products',
                     'pagination',
                     'count',
@@ -458,7 +459,7 @@ export const ProductsApi = async ({
             cursor: cursor || null,
         },
         {
-            tags: [`shopify.${api.shop().id}.products`, 'products'],
+            tags: [...cache.keys.products!({ tenant: api.shop() } as any).tags, 'products'],
         },
     );
 
@@ -584,7 +585,7 @@ export const ProductsPaginationApi = async ({
         },
         {
             ...(Object.keys(filter).length > 0 ? { fetchPolicy: 'no-cache' } : {}),
-            tags: [`shopify.${api.shop().id}.products`, 'products', 'pagination'],
+            tags: [...cache.keys.products!({ tenant: api.shop() } as any).tags, 'products', 'pagination'],
         },
     );
 

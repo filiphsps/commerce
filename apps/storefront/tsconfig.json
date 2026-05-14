@@ -19,6 +19,7 @@
             "@/api/*": ["./src/api/*"],
             "@/auth": ["./src/auth/auth.ts"],
             "@/auth/*": ["./src/auth/*"],
+            "@/cache": ["./src/cache.ts"],
             "@/models/*": ["./src/models/*"],
             "@/utils/*": ["./src/utils/*"],
             "@/utils/locale": ["./src/utils/locale/index.ts"],
