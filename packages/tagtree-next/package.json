@@ -51,7 +51,8 @@
     },
     "homepage": "https://github.com/filiphsps/commerce/tree/master/packages/tagtree-next#readme",
     "dependencies": {
-        "@tagtree/core": "workspace:*"
+        "@tagtree/core": "workspace:*",
+        "server-only": "0.0.1"
     },
     "peerDependencies": {
         "next": "^16.0.0"

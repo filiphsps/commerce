@@ -6,7 +6,7 @@ import { render, waitFor } from '@/utils/test/react';
 describe('components', () => {
     describe('ProductDescription', () => {
         it('renders without errors', async () => {
-            const { unmount } = render(
+            const { unmount } = await render(
                 await ProductDescription({
                     shop: {} as any,
                     locale: Locale.default,
