@@ -14,6 +14,7 @@ import type {
     ProductCollectionSortKeys,
     QueryRoot,
 } from '@shopify/hydrogen-react/storefront-api-types';
+import { cache } from '@/cache';
 import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
 import type { AbstractApi, ApiOptions } from '@/utils/abstract-api';
 import { isValidHandle } from '@/utils/handle';
@@ -181,7 +182,7 @@ export const CollectionApi = async (
         },
         {
             tags: [
-                `shopify.${api.shop().id}.collection.${handle}`,
+                ...cache.keys.collection({ tenant: api.shop(), handle }).tags,
                 'collection',
                 handle,
                 ...(filtersTag ? [filtersTag] : []),
@@ -256,7 +257,7 @@ export const CollectionPaginationCountApi = async ({
             },
             {
                 tags: [
-                    `shopify.${api.shop().id}.collection.${handle}`,
+                    ...cache.keys.collection({ tenant: api.shop(), handle }).tags,
                     'collection',
                     handle,
                     'pagination',
@@ -332,7 +333,7 @@ export const CollectionsApi = async ({
         }
     `,
         undefined,
-        { tags: [`shopify.${api.shop().id}.collections`, 'collections'] },
+        { tags: [...cache.keys.collections({ tenant: api.shop() }).tags, 'collections'] },
     );
 
     if (errors && errors.length > 0) {
@@ -431,7 +432,7 @@ export const CollectionsPaginationApi = async ({
             }))(filters),
         },
         {
-            tags: [`shopify.${api.shop().id}.collections`, 'collections', 'pagination'],
+            tags: [...cache.keys.collections({ tenant: api.shop() }).tags, 'collections', 'pagination'],
         },
     );
 
