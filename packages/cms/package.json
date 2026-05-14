@@ -80,6 +80,7 @@
         "@nordcom/commerce-errors": "workspace:*",
         "@panva/hkdf": "1.2.1",
         "@tagtree/next": "workspace:*",
+        "@tagtree/payload": "workspace:*",
         "jose": "5.9.0",
         "server-only": "0.0.1",
         "tagtree": "workspace:*"
