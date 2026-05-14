@@ -8,6 +8,7 @@ import { headers } from 'next/headers';
 import { experimental_taintUniqueValue } from 'react';
 import type { ApiConfig } from '@/api/client';
 import { createApolloClient } from '@/api/client';
+import { tenantRootTags } from '@/cache';
 import { ApiBuilder } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
 
@@ -148,7 +149,7 @@ export const ShopifyApiClient = async ({ shop, locale = Locale.default, apiConfi
                         : {
                               fetchOptions: {
                                   revalidate: 28_800, // 8hrs.
-                                  tags: ['shopify', `shopify.${shop.id}`, shop.domain],
+                                  tags: tenantRootTags(shop),
                               },
                           }),
 

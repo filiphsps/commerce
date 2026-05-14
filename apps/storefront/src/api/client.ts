@@ -3,6 +3,7 @@ import 'server-only';
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { inContextTransform } from '@nordcom/commerce-shopify-graphql';
+import { tenantRootTags } from '@/cache';
 
 export type ApiConfig = {
     uri: string;
@@ -22,7 +23,7 @@ export const createApolloClient = ({ uri, headers }: ApiConfig, shop: OnlineShop
             fetchOptions: {
                 next: {
                     revalidate: 28_800,
-                    tags: ['shopify', `shopify.${shop.id}`, shop.domain],
+                    tags: tenantRootTags(shop),
                 },
             },
         }),
