@@ -1,5 +1,6 @@
 import 'server-only';
 import type { Payload } from 'payload';
+import { assertShopId } from './assert-shop';
 import type { GetPageArgs, LocaleRef, ShopRef } from './get-page';
 import { getPayloadInstance } from './get-payload-instance';
 
@@ -12,6 +13,7 @@ export const getArticle = async ({
     draft = false,
     __payload,
 }: GetArticleArgs & { __payload?: Payload }) => {
+    assertShopId(shop);
     const payload = __payload ?? (await getPayloadInstance());
     const { docs } = await payload.find({
         collection: 'articles',

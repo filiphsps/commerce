@@ -29,8 +29,15 @@ vi.mock('mongoose', async () => {
         public static limit = vi.fn().mockReturnThis();
         public static exec = vi.fn().mockResolvedValue(mockDocuments);
         public static create = vi.fn().mockResolvedValue(mockDocument);
-        public static findById = vi.fn().mockResolvedValue(mockDocument);
-        public static findOneAndUpdate = vi.fn().mockResolvedValue(mockDocument);
+        // `findById` returns a chainable Query in real Mongoose — Service.findById
+        // calls `.exec()` on it. Mirror that here so the unit test reflects the
+        // real call sequence.
+        public static findById = vi.fn().mockReturnValue({
+            exec: vi.fn().mockResolvedValue(mockDocument),
+        });
+        public static findOneAndUpdate = vi.fn().mockReturnValue({
+            exec: vi.fn().mockResolvedValue(mockDocument),
+        });
         public static orFail = vi.fn().mockReturnThis();
         public limit = vi.fn().mockResolvedValue(this);
         public save = vi.fn().mockResolvedValue(this);

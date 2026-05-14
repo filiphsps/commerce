@@ -1,5 +1,6 @@
 import 'server-only';
 import type { Payload } from 'payload';
+import { assertShopId } from './assert-shop';
 import type { LocaleRef, ShopRef } from './get-page';
 import { getPayloadInstance } from './get-payload-instance';
 
@@ -18,6 +19,7 @@ export const getProductMetadata = async ({
     draft = false,
     __payload,
 }: GetProductMetadataArgs) => {
+    assertShopId(shop);
     const payload = __payload ?? (await getPayloadInstance());
     const { docs } = await payload.find({
         collection: 'productMetadata',

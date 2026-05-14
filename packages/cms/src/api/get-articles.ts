@@ -1,5 +1,6 @@
 import 'server-only';
 import type { Payload } from 'payload';
+import { assertShopId } from './assert-shop';
 import type { LocaleRef, ShopRef } from './get-page';
 import { getPayloadInstance } from './get-payload-instance';
 
@@ -22,6 +23,7 @@ export const getArticles = async ({
     draft = false,
     __payload,
 }: GetArticlesArgs) => {
+    assertShopId(shop);
     const payload = __payload ?? (await getPayloadInstance());
     // `contains` translates to a MongoDB regex against the `tags` array — that
     // both does a substring match (`news` matches `breaking-news`) AND lets
