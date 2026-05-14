@@ -1,2 +1,3 @@
-// public surface — populated by Tasks 22 and 23
-export {};
+export { verifyShopifyHmac } from './hmac';
+export { parseShopifyWebhook } from './parser';
+export type { ShopifyParseInput } from './parser';
