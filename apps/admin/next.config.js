@@ -42,7 +42,20 @@ const config = {
     trailingSlash: true,
     transpilePackages: [],
     reactCompiler: true,
-    cacheComponents: true,
+    // Cache Components (PPR) requires every dynamic data fetch to live inside
+    // an explicit Suspense boundary; Payload's RootLayout responds by wrapping
+    // its entire `<html>/<head>/<body>` tree in `<Suspense fallback={null}>`
+    // when it detects `PAYLOAD_CACHE_COMPONENTS_ENABLED=true` (which
+    // `withPayload` sets from this flag). The result in production: the
+    // initial streamed shell is `null`, the `<head>` arrives in a later
+    // chunk, and Next.js's CSS-link hoisting can drop the admin stylesheet
+    // links — symptom is "Payload UI loads but is unstyled / partially
+    // styled."
+    //
+    // The admin app has no static content to amortize, so PPR offers nothing
+    // here. Leave it disabled until Payload's RootLayout can opt out of the
+    // top-level Suspense wrap.
+    // cacheComponents: true,
     typedRoutes: true,
     turbopack: { root: path.resolve(path.join(__dirname, '../..')) },
     experimental: {

@@ -1,0 +1,6 @@
+// Payload's documented entry point for tenant-side admin UI overrides. Empty
+// for now — kept here so layout.tsx's import is stable, and so future
+// `@layer payload-default { ... }` overrides have an obvious place to live.
+//
+// Wrap any custom rules in `@layer payload-default { ... }` to inherit
+// Payload's specificity baseline.
