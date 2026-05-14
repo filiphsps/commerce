@@ -78,14 +78,14 @@ describe('utils', () => {
 
             const tags = ['tag1', 'tag2'];
 
-            const expectedCacheTags = ['shopify', 'shopify.id', 'domain', 'en-US', 'tag1', 'tag2'];
+            const expectedCacheTags = ['shopify', 'shopify.id', 'domain', 'tag1', 'tag2'];
 
             const cacheTags = buildCacheTagArray(shop, locale, tags);
 
             expect(cacheTags).toEqual(expectedCacheTags);
         });
 
-        it('always includes shopify, shopify.<shopId>, <domain>, and <localeCode> base tags', () => {
+        it('always includes shopify, shopify.<shopId>, and <domain> base tags (locale excluded)', () => {
             const shop = mockShop();
             const locale = mockLocale('en-US');
 
@@ -94,7 +94,7 @@ describe('utils', () => {
             expect(result).toContain('shopify');
             expect(result).toContain(`shopify.${shop.id}`);
             expect(result).toContain(shop.domain);
-            expect(result).toContain(locale.code);
+            expect(result).not.toContain(locale.code);
         });
 
         it('prepends base tags before per-entity tags', () => {
@@ -104,7 +104,7 @@ describe('utils', () => {
 
             const result = buildCacheTagArray(shop, locale, entityTags);
 
-            expect(result.slice(0, 4)).toEqual(['shopify', `shopify.${shop.id}`, shop.domain, 'sv-SE']);
+            expect(result.slice(0, 3)).toEqual(['shopify', `shopify.${shop.id}`, shop.domain]);
             expect(result).toEqual(expect.arrayContaining(entityTags));
         });
 
@@ -120,14 +120,14 @@ describe('utils', () => {
             expect(result).toContain('summer');
         });
 
-        it('returns only the four base tags when no per-entity tags are passed', () => {
+        it('returns only the three base tags when no per-entity tags are passed', () => {
             const shop = mockShop();
             const locale = mockLocale();
 
             const result = buildCacheTagArray(shop, locale, []);
 
-            expect(result).toHaveLength(4);
-            expect(result).toEqual(['shopify', `shopify.${shop.id}`, shop.domain, locale.code]);
+            expect(result).toHaveLength(3);
+            expect(result).toEqual(['shopify', `shopify.${shop.id}`, shop.domain]);
         });
     });
 });
