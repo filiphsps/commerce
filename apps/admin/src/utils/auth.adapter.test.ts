@@ -1,6 +1,7 @@
 import type { Adapter } from '@auth/core/adapters';
 
 import { User } from '@nordcom/commerce-db';
+import { NotFoundError } from '@nordcom/commerce-errors';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('utils', () => {
@@ -26,13 +27,20 @@ describe('utils', () => {
                 expect(result).toEqual(user);
             });
 
-            it('should handle error when getting user', async () => {
-                const id = '123';
-                const error = new Error('Error getting user');
-                vi.spyOn(User, 'find').mockRejectedValue(error);
-
-                const result = await adapter.getUser?.(id);
+            it('returns null on NotFoundError (adapter contract for "no such user")', async () => {
+                vi.spyOn(User, 'find').mockRejectedValue(new NotFoundError('User'));
+                const result = await adapter.getUser?.('123');
                 expect(result).toBeNull();
+            });
+
+            it('re-throws on infra failures so Auth.js shows the real error page', async () => {
+                // Returning null on infra failures used to silently re-trigger
+                // user creation against a flapping DB and produce duplicate-key
+                // blowups one step downstream — surface the real error instead.
+                vi.spyOn(User, 'find').mockRejectedValue(new Error('mongo timeout'));
+                const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+                await expect(adapter.getUser?.('123')).rejects.toThrow('mongo timeout');
+                errSpy.mockRestore();
             });
         });
 
@@ -61,15 +69,19 @@ describe('utils', () => {
                 expect(result).toEqual(user);
             });
 
-            it('should handle error when getting user by account', async () => {
-                const providerAccountId = '456';
-                const provider = 'google';
-                const error = new Error('Error getting user by account');
-                vi.spyOn(User, 'find').mockRejectedValue(error);
-
-                const result = await adapter.getUserByAccount?.({ provider, providerAccountId });
-
+            it('returns null on NotFoundError', async () => {
+                vi.spyOn(User, 'find').mockRejectedValue(new NotFoundError('User'));
+                const result = await adapter.getUserByAccount?.({ provider: 'google', providerAccountId: '456' });
                 expect(result).toBeNull();
+            });
+
+            it('re-throws on infra failures', async () => {
+                vi.spyOn(User, 'find').mockRejectedValue(new Error('mongo down'));
+                const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+                await expect(
+                    adapter.getUserByAccount?.({ provider: 'google', providerAccountId: '456' }),
+                ).rejects.toThrow('mongo down');
+                errSpy.mockRestore();
             });
         });
     });

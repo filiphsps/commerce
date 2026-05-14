@@ -2,8 +2,30 @@ import type { Error } from '@nordcom/commerce-errors';
 import { useCart } from '@shopify/hydrogen-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef } from 'react';
+import { toast } from 'sonner';
 
 import type { Locale } from '@/utils/locale';
+
+// Pull a human-ish message out of whatever shape Hydrogen-React handed us in
+// `cart.error`. The error is `unknown` per the type — historically it has been
+// either a GraphQL response with `errors[].message`, a Shopify `userErrors`
+// list, or a fetch error. We never want to render `[object Object]` at a user.
+const formatCartError = (error: unknown): string | null => {
+    if (error == null) return null;
+    if (typeof error === 'string') return error;
+    if (typeof error !== 'object') return String(error);
+    const e = error as { message?: unknown; errors?: unknown; userErrors?: unknown };
+    if (typeof e.message === 'string') return e.message;
+    if (Array.isArray(e.errors)) {
+        const msg = e.errors.find((x) => typeof x?.message === 'string')?.message;
+        if (msg) return String(msg);
+    }
+    if (Array.isArray(e.userErrors)) {
+        const msg = e.userErrors.find((x) => typeof x?.message === 'string')?.message;
+        if (msg) return String(msg);
+    }
+    return null;
+};
 
 /**
  * Cart-related hacks and utilities.
@@ -41,6 +63,10 @@ export const useCartUtils = ({
     const discountCodesUpdateRef = useRef(discountCodesUpdate);
     const routerRef = useRef(router);
     const discountCodesRef = useRef(discountCodes);
+    // Track the last-seen error reference so we only toast once per failure
+    // — Hydrogen-React sets `cart.error` synchronously and we don't want to
+    // spam the toaster on every re-render that follows.
+    const lastSeenErrorRef = useRef<unknown>(undefined);
 
     useEffect(() => {
         buyerIdentityUpdateRef.current = buyerIdentityUpdate;
@@ -48,6 +74,19 @@ export const useCartUtils = ({
         routerRef.current = router;
         discountCodesRef.current = discountCodes;
     });
+
+    // Surface Shopify cart errors. Without this, `linesAdd`/`linesUpdate`/
+    // `discountCodesUpdate` failures (sold-out variant, quantity cap exceeded,
+    // throttled, invalid discount) silently update `cart.error` while the
+    // optimistic UI shows success — and the user sails into checkout with a
+    // cart that doesn't reflect what they thought they had.
+    useEffect(() => {
+        if (cartError == null || cartError === lastSeenErrorRef.current) return;
+        lastSeenErrorRef.current = cartError;
+        const msg = formatCartError(cartError);
+        console.error('[cart] error from Shopify storefront API:', cartError);
+        toast.error(msg ?? 'Something went wrong updating your cart.');
+    }, [cartError]);
 
     // Handle country code change
     useEffect(() => {

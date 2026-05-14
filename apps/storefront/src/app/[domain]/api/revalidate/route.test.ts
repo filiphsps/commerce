@@ -195,6 +195,67 @@ describe('app/[domain]/api/revalidate', () => {
             expect(res.status).toBe(200);
             expect(revalidateTagMock).toHaveBeenCalledWith('shopify.shop-1', 'max');
         });
+
+        it('rejects with 401 when x-shopify-shop-domain mismatches the resolved shop origin', async () => {
+            // Single shared SHOPIFY_WEBHOOK_SECRET means an HMAC-valid
+            // delivery for store A could be replayed against store B.
+            // Pin to the shop's known commerceProvider.authentication.domain.
+            revalidateTagMock.mockClear();
+            const { Shop } = await import('@nordcom/commerce-db');
+            vi.mocked(Shop.findByDomain).mockResolvedValueOnce({
+                id: 'shop-1',
+                domain: 'mock.shop',
+                commerceProvider: { type: 'shopify', authentication: { domain: 'real-store.myshopify.com' } },
+            } as any);
+            const body = '{"handle":"x"}';
+            const secret = 'shopify-secret';
+            process.env.SHOPIFY_WEBHOOK_SECRET = secret;
+            const hmac = createHmac('sha256', secret).update(body, 'utf8').digest('base64');
+
+            const req = makeRequest({
+                method: 'POST',
+                body,
+                headers: {
+                    'x-shopify-hmac-sha256': hmac,
+                    'x-shopify-topic': 'products/update',
+                    'x-shopify-shop-domain': 'attacker-store.myshopify.com',
+                },
+            });
+
+            const res = await POST(req as any, { params: Promise.resolve({ domain: 'mock.shop' }) } as any);
+            expect(res.status).toBe(401);
+            expect(revalidateTagMock).not.toHaveBeenCalled();
+        });
+
+        it('accepts when x-shopify-shop-domain matches the resolved shop origin', async () => {
+            revalidateTagMock.mockClear();
+            const { Shop } = await import('@nordcom/commerce-db');
+            vi.mocked(Shop.findByDomain).mockResolvedValueOnce({
+                id: 'shop-1',
+                domain: 'mock.shop',
+                commerceProvider: { type: 'shopify', authentication: { domain: 'real-store.myshopify.com' } },
+            } as any);
+            const body = '{"handle":"x"}';
+            const secret = 'shopify-secret';
+            process.env.SHOPIFY_WEBHOOK_SECRET = secret;
+            const hmac = createHmac('sha256', secret).update(body, 'utf8').digest('base64');
+
+            const req = makeRequest({
+                method: 'POST',
+                body,
+                headers: {
+                    'x-shopify-hmac-sha256': hmac,
+                    'x-shopify-topic': 'products/update',
+                    // Casing differences shouldn't matter — Shopify domains are
+                    // case-insensitive, and we lowercase both sides.
+                    'x-shopify-shop-domain': 'Real-Store.MyShopify.com',
+                },
+            });
+
+            const res = await POST(req as any, { params: Promise.resolve({ domain: 'mock.shop' }) } as any);
+            expect(res.status).toBe(200);
+            expect(revalidateTagMock).toHaveBeenCalled();
+        });
     });
 
     describe('POST — unknown shape', () => {

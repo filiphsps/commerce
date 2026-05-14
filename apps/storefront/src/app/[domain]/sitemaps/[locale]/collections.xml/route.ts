@@ -34,14 +34,26 @@ export async function GET({}: NextRequest, { params }: CollectionsSitemapRoutePa
     let res: Awaited<ReturnType<typeof CollectionsPaginationApi>> | null = null;
     const collections: Collection[] = [];
 
-    while (true) {
+    // See products.xml for rationale — same caps so the route can't OOM on a
+    // pathological shop.
+    const MAX_PAGES = 200;
+    const MAX_URLS = 50000;
+    let page = 0;
+
+    while (page < MAX_PAGES) {
         res = await CollectionsPaginationApi({ api, filters: { limit: 75, after: res?.page_info.end_cursor } });
         if (!res) break;
 
         collections.push(...res.collections.map(({ node: product }) => product));
-        if (!res.page_info.has_next_page) {
+        page += 1;
+        if (!res.page_info.has_next_page || collections.length >= MAX_URLS) {
             break;
         }
+    }
+    if (collections.length >= MAX_URLS) {
+        console.warn(
+            `[sitemap/collections] capped at MAX_URLS=${MAX_URLS} for shop ${shop.domain} — split into sub-sitemaps when this becomes the norm.`,
+        );
     }
 
     return getServerSideSitemap(

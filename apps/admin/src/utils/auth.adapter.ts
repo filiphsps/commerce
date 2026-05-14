@@ -1,5 +1,19 @@
 import type { Adapter, AdapterAccount, AdapterUser } from '@auth/core/adapters';
 import { Identity, Session, User } from '@nordcom/commerce-db';
+import { Error as CommerceError } from '@nordcom/commerce-errors';
+
+// `null` is the adapter contract for "no such user/account" — Auth.js then
+// triggers user creation. The previous implementation also returned `null` on
+// real DB errors (mongo timeout, replica-set election, pool saturation), which
+// silently triggered user creation against a flapping DB and produced
+// duplicate-key blowups one step downstream. Distinguish "not found" (return
+// null) from "infra failed" (re-throw) so Auth.js shows the real error page
+// instead of mutating state under a partial failure.
+const adapterCatch = (op: string, error: unknown): null => {
+    if (CommerceError.isNotFound(error)) return null;
+    console.error(`[auth-adapter] ${op} failed:`, error);
+    throw error;
+};
 
 export function AuthAdapter(): Adapter {
     return {
@@ -7,8 +21,7 @@ export function AuthAdapter(): Adapter {
             try {
                 return (await User.find({ id })).toObject();
             } catch (error: unknown) {
-                console.error(error);
-                return null;
+                return adapterCatch('getUser', error);
             }
         },
 
@@ -31,8 +44,7 @@ export function AuthAdapter(): Adapter {
                     })
                 ).toObject();
             } catch (error: unknown) {
-                console.error(error);
-                return null;
+                return adapterCatch('getUserByAccount', error);
             }
         },
 
@@ -45,8 +57,7 @@ export function AuthAdapter(): Adapter {
                     })
                 ).toObject();
             } catch (error: unknown) {
-                console.error(error);
-                return null;
+                return adapterCatch('getUserByEmail', error);
             }
         },
 
@@ -139,8 +150,12 @@ export function AuthAdapter(): Adapter {
                     ...account,
                 };
             } catch (error: unknown) {
-                console.error(error);
-                return null;
+                // `linkAccount` returning null on a DB error caused Auth.js to
+                // re-run `createUser` next time, which then failed on the
+                // unique-email index — the user saw a 500 with no signal that
+                // the underlying DB was unhealthy. Re-throw so the error page
+                // surfaces.
+                return adapterCatch('linkAccount', error);
             }
         },
         async unlinkAccount(providerAccountId) {

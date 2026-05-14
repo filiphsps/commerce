@@ -21,7 +21,7 @@ export const CartSidebar = ({ i18n, locale, className, children, paymentMethods,
     const { shop } = useShop();
 
     const cart = useCart();
-    const { status = 'fetching', cost } = cart;
+    const { status = 'fetching', cost, error: cartError } = cart;
     const lines = (cart.lines || []).filter(Boolean) as Array<CartLine | ComponentizableCartLine>;
 
     const { queueEvent, postEvent } = useTrackable();
@@ -34,6 +34,16 @@ export const CartSidebar = ({ i18n, locale, className, children, paymentMethods,
                     // TODO: i18n.
                     if (status !== 'idle') {
                         toast.error('The cart is still loading, please try again in a few seconds');
+                        return;
+                    }
+
+                    // Don't bounce the user to Shopify checkout if Hydrogen-React
+                    // is sitting on a `cart.error` from the last mutation —
+                    // checkoutUrl reflects the last *successful* server-side
+                    // cart, which can mean the wrong quantity or a sold-out
+                    // line that's about to be stripped at checkout.
+                    if (cartError != null) {
+                        toast.error('Please review your cart — the last update did not complete.');
                         return;
                     }
 

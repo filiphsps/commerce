@@ -34,14 +34,29 @@ export async function GET({}: NextRequest, { params }: ProductsSitemapRouteParam
     let res: Awaited<ReturnType<typeof ProductsPaginationApi>> | null = null;
     const products: Product[] = [];
 
-    while (true) {
+    // Hard caps so a runaway shop (or a Shopify pagination bug) can't OOM the
+    // serverless function. The sitemaps spec also caps a single sitemap at
+    // 50,000 URLs — beyond that we'd need to split into sub-sitemaps anyway.
+    // 75 per page * 200 pages = 15,000 products, well under the spec ceiling
+    // and within the 1024MB function budget.
+    const MAX_PAGES = 200;
+    const MAX_URLS = 50000;
+    let page = 0;
+
+    while (page < MAX_PAGES) {
         res = await ProductsPaginationApi({ api, filters: { limit: 75, after: res?.page_info.end_cursor } });
         if (!res) break;
 
         products.push(...res.products.map(({ node: product }) => product));
-        if (!res.page_info.has_next_page) {
+        page += 1;
+        if (!res.page_info.has_next_page || products.length >= MAX_URLS) {
             break;
         }
+    }
+    if (products.length >= MAX_URLS) {
+        console.warn(
+            `[sitemap/products] capped at MAX_URLS=${MAX_URLS} for shop ${shop.domain} — split into sub-sitemaps when this becomes the norm.`,
+        );
     }
 
     return getServerSideSitemap(
