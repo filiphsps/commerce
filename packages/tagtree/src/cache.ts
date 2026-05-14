@@ -18,7 +18,7 @@ export interface CacheInstance<
 > {
 	schema: CacheSchemaShape<NS, T, Q, E>;
 	keys: KeyFactory<T, Q>;
-	invalidate: InvalidateNamespace<T>;
+	invalidate: InvalidateNamespace<T, E>;
 	wrap<R>(key: CacheKey, fetcher: () => Promise<R>, opts?: WrapOpts): Promise<R>;
 	read<R = unknown>(key: CacheKey): Promise<R | undefined>;
 	write<R>(key: CacheKey, value: R, opts?: WriteOpts): Promise<void>;
@@ -36,7 +36,7 @@ export function createCacheInstance<NS extends string, T, Q, E extends EntitiesM
 	const instance: CacheInstance<NS, T, Q, E> = {
 		schema: cache.schema,
 		keys,
-		invalidate: undefined as unknown as InvalidateNamespace<T>,
+		invalidate: undefined as unknown as InvalidateNamespace<T, E>,
 
 		async wrap<R>(key: CacheKey, fetcher: () => Promise<R>, opts: WrapOpts = {}): Promise<R> {
 			const hit = await adapter.read(key.readTag, ctx);

@@ -1,23 +1,27 @@
 import { computeFanout } from './fanout';
 import { joinSegments } from './encode';
+import type { ParamMap, ParamValues } from './types';
 import type { CacheSchemaShape, EntitiesMap } from './schema';
 
-type EntityInvalidator<T> = (arg: { tenant?: T } & Record<string, string | number>) => Promise<void>;
+type ParamsOf<D> = D extends { params: infer P } ? (P extends ParamMap ? P : undefined) : undefined;
 
-export interface InvalidateNamespace<T = unknown> {
-	[entity: string]:
-		| EntityInvalidator<T>
-		| ((tenant: T) => Promise<void>)
-		| (() => Promise<void>);
-	tenant: (tenant: T) => Promise<void>;
-	all: () => Promise<void>;
-}
+type EntityInvalidatorArg<T, D> = { tenant?: T } & ParamValues<ParamsOf<D>>;
+
+type EntityInvalidators<E extends EntitiesMap, T> = {
+	[K in keyof E]: (arg: EntityInvalidatorArg<T, E[K]>) => Promise<void>;
+};
+
+export type InvalidateNamespace<T = unknown, E extends EntitiesMap = EntitiesMap> =
+	EntityInvalidators<E, T> & {
+		tenant(tenant: T): Promise<void>;
+		all(): Promise<void>;
+	};
 
 export function buildInvalidateNamespace<NS extends string, T, Q, E extends EntitiesMap>(
 	schema: CacheSchemaShape<NS, T, Q, E>,
 	fire: (tags: string[]) => Promise<void>,
-): InvalidateNamespace<T> {
-	const ns = {} as InvalidateNamespace<T>;
+): InvalidateNamespace<T, E> {
+	const ns: Record<string, unknown> = {};
 
 	for (const [entityName, decl] of Object.entries(schema.entities)) {
 		ns[entityName] = async (arg: { tenant?: T } & Record<string, string | number>) => {
@@ -25,7 +29,9 @@ export function buildInvalidateNamespace<NS extends string, T, Q, E extends Enti
 			if (decl.params) {
 				for (const k of Object.keys(decl.params)) {
 					const v = arg[k];
-					if (v !== undefined) params[k] = v;
+					if (v !== undefined && (typeof v === 'string' || typeof v === 'number')) {
+						params[k] = v;
+					}
 				}
 			}
 			const tags = computeFanout(schema, { entity: entityName, tenant: arg.tenant, params });
@@ -52,5 +58,5 @@ export function buildInvalidateNamespace<NS extends string, T, Q, E extends Enti
 		await fire([joinSegments([schema.namespace])]);
 	};
 
-	return ns;
+	return ns as InvalidateNamespace<T, E>;
 }
