@@ -39,15 +39,17 @@
             "url": "https://github.com/filiphsps/"
         }
     ],
+    "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/filiphsps/commerce.git"
+        "url": "git+https://github.com/filiphsps/commerce.git",
+        "directory": "packages/tagtree-payload"
     },
     "keywords": [],
     "bugs": {
         "url": "https://github.com/filiphsps/commerce/issues"
     },
-    "homepage": "https://shops.nordcom.io/docs/",
+    "homepage": "https://github.com/filiphsps/commerce/tree/master/packages/tagtree-payload#readme",
     "dependencies": {
         "@tagtree/core": "workspace:*"
     },
