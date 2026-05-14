@@ -1,5 +1,6 @@
 import { createHmac } from 'node:crypto';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { NotFoundError } from '@nordcom/commerce-errors';
 
 const revalidateTagMock = vi.fn();
 
@@ -190,9 +191,9 @@ describe('app/[domain]/api/revalidate', () => {
     });
 
     describe('POST — shop not found', () => {
-        it('returns 404 when Shop.findByDomain throws', async () => {
+        it('returns 404 when Shop.findByDomain throws a NotFoundError', async () => {
             const { Shop } = await import('@nordcom/commerce-db');
-            vi.mocked(Shop.findByDomain).mockRejectedValueOnce(new Error('not found'));
+            vi.mocked(Shop.findByDomain).mockRejectedValueOnce(new NotFoundError('unknown.shop'));
 
             const req = makeRequest({
                 method: 'POST',
@@ -205,6 +206,92 @@ describe('app/[domain]/api/revalidate', () => {
 
             // restore default mock for subsequent tests
             vi.mocked(Shop.findByDomain).mockResolvedValue({ id: 'shop-1', domain: 'mock.shop' } as any);
+        });
+
+        it('returns 503 + Retry-After on non-NotFound infra errors from Shop.findByDomain', async () => {
+            const { Shop } = await import('@nordcom/commerce-db');
+            vi.mocked(Shop.findByDomain).mockRejectedValueOnce(new globalThis.Error('MongoNetworkTimeoutError'));
+
+            const req = makeRequest({
+                method: 'POST',
+                body: '{}',
+                headers: { 'content-type': 'application/json' },
+            });
+
+            const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+            const res = await POST(req as any, { params: Promise.resolve({ domain: 'mock.shop' }) } as any);
+            consoleSpy.mockRestore();
+
+            expect(res.status).toBe(503);
+            expect(res.headers.get('Retry-After')).toBe('30');
+
+            // restore default mock for subsequent tests
+            vi.mocked(Shop.findByDomain).mockResolvedValue({ id: 'shop-1', domain: 'mock.shop' } as any);
+        });
+    });
+
+    describe('POST — shop-domain pinning', () => {
+        it('returns 401 when x-shopify-shop-domain does not match the shop on file', async () => {
+            revalidateTagMock.mockClear();
+            const body = '{"handle":"my-product"}';
+            const secret = 'shopify-secret';
+            process.env.SHOPIFY_WEBHOOK_SECRET = secret;
+            const hmac = createHmac('sha256', secret).update(body, 'utf8').digest('base64');
+
+            // The DB says this tenant's Shopify domain is store-a.myshopify.com
+            const { Shop } = await import('@nordcom/commerce-db');
+            vi.mocked(Shop.findByDomain).mockResolvedValueOnce({
+                id: 'shop-1',
+                domain: 'mock.shop',
+                commerceProvider: { authentication: { domain: 'store-a.myshopify.com' } },
+            } as any);
+
+            const req = makeRequest({
+                method: 'POST',
+                body,
+                headers: {
+                    'x-shopify-hmac-sha256': hmac,
+                    'x-shopify-topic': 'products/update',
+                    'x-shopify-shop-domain': 'store-b.myshopify.com', // different store
+                    'content-type': 'application/json',
+                },
+            });
+
+            const res = await POST(req as any, { params: Promise.resolve({ domain: 'mock.shop' }) } as any);
+            expect(res.status).toBe(401);
+            const json = await res.json();
+            expect(json.error).toBe('shop-domain mismatch');
+            expect(revalidateTagMock).not.toHaveBeenCalled();
+        });
+
+        it('passes through when x-shopify-shop-domain matches the shop on file', async () => {
+            revalidateTagMock.mockClear();
+            const body = '{"handle":"my-product"}';
+            const secret = 'shopify-secret';
+            process.env.SHOPIFY_WEBHOOK_SECRET = secret;
+            const hmac = createHmac('sha256', secret).update(body, 'utf8').digest('base64');
+
+            const { Shop } = await import('@nordcom/commerce-db');
+            vi.mocked(Shop.findByDomain).mockResolvedValueOnce({
+                id: 'shop-1',
+                domain: 'mock.shop',
+                commerceProvider: { authentication: { domain: 'store-a.myshopify.com' } },
+            } as any);
+
+            const req = makeRequest({
+                method: 'POST',
+                body,
+                headers: {
+                    'x-shopify-hmac-sha256': hmac,
+                    'x-shopify-topic': 'products/update',
+                    'x-shopify-shop-domain': 'store-a.myshopify.com',
+                    'content-type': 'application/json',
+                },
+            });
+
+            const res = await POST(req as any, { params: Promise.resolve({ domain: 'mock.shop' }) } as any);
+            expect(res.status).toBe(200);
+            expect(revalidateTagMock).toHaveBeenCalled();
         });
     });
 
