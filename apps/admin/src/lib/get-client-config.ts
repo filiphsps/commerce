@@ -2,7 +2,8 @@ import 'server-only';
 import { getClientConfig } from '@payloadcms/ui/utilities/getClientConfig';
 import { headers as getHeaders } from 'next/headers';
 import type { PayloadRequest } from 'payload';
-import { createLocalReq, getLocalI18n, getRequestLanguage, parseCookies } from 'payload';
+import { createLocalReq, getLocalI18n, getRequestLanguage } from 'payload';
+import { parseCookies } from 'payload/shared';
 import { cache } from 'react';
 import { getAuthedPayloadCtx } from './payload-ctx';
 
