@@ -121,11 +121,17 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
         update?: UpdateQuery<DocType>,
         options: QueryOptions<DocType> = { lean: true },
     ): Promise<DocType | null> {
-        // Same shape problem as `findById`. Also drop the default
-        // `includeResultMetadata: true` — it changes the return type from the
-        // promised `DocType | null` to a `ModifyResult<DocType>` wrapper,
-        // which callers were never wired up to unwrap.
-        const res = await this.model.findOneAndUpdate(filter, update, options).exec();
-        return (res as DocType | null) ?? null;
+        // Mongoose's overload resolution treats our `QueryFilter` as something
+        // that could be passed *as a query* rather than as a filter, so the
+        // strict types reject it. Cast through `unknown` — the runtime shape
+        // matches; this is just untangling the overload picker.
+        const res = await (
+            this.model.findOneAndUpdate as unknown as (
+                filter: unknown,
+                update?: unknown,
+                options?: unknown,
+            ) => { exec(): Promise<DocType | null> }
+        )(filter, update, options).exec();
+        return res ?? null;
     }
 }
