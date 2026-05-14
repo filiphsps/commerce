@@ -12,8 +12,9 @@ export type LivePreviewIframeProps = {
      * letting any signed-in editor lift the bearer token via devtools and
      * mint draft-mode sessions for themselves.
      *
-     * Use `buildLivePreviewUrl` from `payload.config.ts` (or its eventual
-     * extracted helper) to assemble this in the parent server component.
+     * `payload.config.ts` defines a private `buildLivePreviewUrl` closure;
+     * Phase 1 will export it (or extract it to a shared lib helper) and the
+     * server-component caller will invoke it to assemble this string.
      */
     previewUrl: string;
     /**
