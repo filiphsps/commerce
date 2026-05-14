@@ -307,4 +307,60 @@ describe('buildNextAuthStrategy', () => {
         expect(findOrCreate).toHaveBeenCalledTimes(1);
         expect(recomputeRoles).toHaveBeenCalledTimes(1);
     });
+
+    it('accepts an array of cookie names and tries each in order', async () => {
+        // Use case: deploy that switches from legacy `next-auth.session-token`
+        // (NextAuth v4 naming) to Auth.js v5's canonical `authjs.session-token`
+        // without bouncing logged-in users to login. The bridge should accept
+        // a token written under EITHER name as long as the HKDF salt matches.
+        const findOrCreate = vi.fn(async (email: string) => ({
+            id: 'u-multi',
+            email,
+            role: 'editor' as const,
+            tenants: [],
+        }));
+        const recomputeRoles = vi.fn(async () => ({ role: 'editor' as const, tenants: [] }));
+        const strategy = buildNextAuthStrategy({
+            secret: SECRET,
+            // Prefer the new name, fall back to the legacy name.
+            cookieName: ['authjs.session-token', 'next-auth.session-token'],
+            findOrCreateUser: findOrCreate,
+            recomputeRoles,
+        });
+
+        // Token written under the LEGACY name (HKDF salt = 'next-auth.session-token').
+        const legacyToken = await encryptToken(
+            { email: `legacy-${Date.now()}@example.com` },
+            { salt: 'next-auth.session-token' },
+        );
+        const result = await strategy.authenticate(ctx(`next-auth.session-token=${legacyToken}`));
+        expect(result.user).not.toBeNull();
+        expect(findOrCreate).toHaveBeenCalled();
+    });
+
+    it('rejects when none of the candidate cookie names match', async () => {
+        const findOrCreate = vi.fn();
+        const strategy = buildNextAuthStrategy({
+            secret: SECRET,
+            cookieName: ['authjs.session-token', 'next-auth.session-token'],
+            findOrCreateUser: findOrCreate as never,
+            recomputeRoles: vi.fn() as never,
+        });
+        const token = await encryptToken({ email: 'x@y.com' }, { salt: 'wrong-cookie-name' });
+        // Token is present under a name we DON'T accept.
+        const result = await strategy.authenticate(ctx(`wrong-cookie-name=${token}`));
+        expect(result.user).toBeNull();
+        expect(findOrCreate).not.toHaveBeenCalled();
+    });
+
+    it('throws when the cookieName array is empty', () => {
+        expect(() =>
+            buildNextAuthStrategy({
+                secret: SECRET,
+                cookieName: [],
+                findOrCreateUser: vi.fn() as never,
+                recomputeRoles: vi.fn() as never,
+            }),
+        ).toThrow(/at least one name/);
+    });
 });

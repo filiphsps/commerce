@@ -33,7 +33,14 @@ export type RecomputeRolesFn = (email: string) => Promise<CmsRoleAssignment>;
 
 export type BuildNextAuthStrategyOptions = {
     secret: string;
-    cookieName: string;
+    /**
+     * Cookie name(s) to try. Accepts a single string or an ordered array.
+     * Use an array to support multiple naming conventions in parallel — e.g.
+     * Auth.js v5 canonical (`authjs.session-token`) alongside the legacy
+     * `next-auth.session-token` during a deploy transition, so logged-in
+     * users with the old cookie aren't bounced to login.
+     */
+    cookieName: string | string[];
     findOrCreateUser: FindOrCreateUserFn;
     recomputeRoles: RecomputeRolesFn;
 };
@@ -99,50 +106,80 @@ export const buildNextAuthStrategy = ({
     cookieName,
     findOrCreateUser,
     recomputeRoles,
-}: BuildNextAuthStrategyOptions): AuthStrategy => ({
-    name: 'nextauth-bridge',
-    authenticate: async ({ headers }) => {
-        const cookieHeader = headers.get('cookie');
-        const token = parseCookie(cookieHeader, cookieName);
-        if (!token) return { user: null };
-        const cacheKey = tokenKey(token);
-        const now = Date.now();
-        const cached = strategyCache.get(cacheKey);
-        if (cached && cached.expiresAt > now) {
-            return {
-                user: {
-                    ...cached.user,
-                    role: cached.roles.role,
-                    tenants: cached.roles.tenants,
-                    collection: 'users',
-                } as never,
-            };
+}: BuildNextAuthStrategyOptions): AuthStrategy => {
+    const cookieNames = Array.isArray(cookieName) ? cookieName : [cookieName];
+    if (cookieNames.length === 0) {
+        throw new Error('[cms/auth-bridge] cookieName must contain at least one name');
+    }
+
+    // Find the first cookie that's present AND decodes successfully. Each
+    // candidate name is also used as the HKDF salt (Auth.js v5 keys its
+    // derived encryption key off the cookie name), so a token written under
+    // `authjs.session-token` can only be decoded with that exact salt.
+    const tryDecode = async (
+        cookieHeader: string | null,
+    ): Promise<{ name: string; token: string; payload: Record<string, unknown> } | null> => {
+        for (const name of cookieNames) {
+            const token = parseCookie(cookieHeader, name);
+            if (!token) continue;
+            try {
+                const key = await deriveKey(secret, name);
+                const { payload } = await jwtDecrypt(token, key, { clockTolerance: 15 });
+                return { name, token, payload };
+            } catch {
+                // Cookie present but decode failed under this name — try the
+                // next candidate. (Don't swallow the last failure; if every
+                // candidate fails the outer caller reports it.)
+                continue;
+            }
         }
-        try {
-            const key = await deriveKey(secret, cookieName);
-            const { payload } = await jwtDecrypt(token, key, { clockTolerance: 15 });
-            const email = typeof payload.email === 'string' ? payload.email : null;
-            if (!email) return { user: null };
-            const user = await findOrCreateUser(email);
-            const roles = await recomputeRoles(email);
-            strategyCache.set(cacheKey, { user, roles, expiresAt: now + STRATEGY_CACHE_TTL_MS });
-            evictExpired(now);
-            return {
-                user: {
-                    ...user,
-                    role: roles.role,
-                    tenants: roles.tenants,
-                    collection: 'users',
-                } as never,
-            };
-        } catch (err) {
-            // Bridge swallows failure to `null` user so Payload can route to its
-            // login page; log at warn so auth misconfigs are visible in prod.
-            console.warn(
-                '[cms/auth-bridge] failed to authenticate request:',
-                err instanceof Error ? err.message : String(err),
-            );
-            return { user: null };
-        }
-    },
-});
+        return null;
+    };
+
+    return {
+        name: 'nextauth-bridge',
+        authenticate: async ({ headers }) => {
+            const cookieHeader = headers.get('cookie');
+            try {
+                const decoded = await tryDecode(cookieHeader);
+                if (!decoded) return { user: null };
+                const { token, payload } = decoded;
+
+                const cacheKey = tokenKey(token);
+                const now = Date.now();
+                const cached = strategyCache.get(cacheKey);
+                if (cached && cached.expiresAt > now) {
+                    return {
+                        user: {
+                            ...cached.user,
+                            role: cached.roles.role,
+                            tenants: cached.roles.tenants,
+                            collection: 'users',
+                        } as never,
+                    };
+                }
+
+                const email = typeof payload.email === 'string' ? payload.email : null;
+                if (!email) return { user: null };
+                const user = await findOrCreateUser(email);
+                const roles = await recomputeRoles(email);
+                strategyCache.set(cacheKey, { user, roles, expiresAt: now + STRATEGY_CACHE_TTL_MS });
+                evictExpired(now);
+                return {
+                    user: {
+                        ...user,
+                        role: roles.role,
+                        tenants: roles.tenants,
+                        collection: 'users',
+                    } as never,
+                };
+            } catch (err) {
+                console.warn(
+                    '[cms/auth-bridge] failed to authenticate request:',
+                    err instanceof Error ? err.message : String(err),
+                );
+                return { user: null };
+            }
+        },
+    };
+};

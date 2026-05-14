@@ -157,15 +157,25 @@ const recomputeRoles = async (email: string) => {
     return computeRolesFromShopMembership({ email, isOperator, shopCollaborators });
 };
 
-// Mirror the cookie naming in apps/admin/src/utils/auth.config.ts. In prod
-// (NEXTAUTH_URL is set) NextAuth writes a `__Secure-` prefixed cookie; locally
-// it uses the bare name. NEXTAUTH_COOKIE_NAME is an explicit override for
-// non-default deployments.
-const defaultCookieName =
-    process.env.NEXTAUTH_URL ? '__Secure-next-auth.session-token' : 'next-auth.session-token';
+// Mirror the cookie naming in apps/admin/src/utils/auth.config.ts. Auth.js v5
+// canonical session cookie name is `__Secure-authjs.session-token` (HTTPS) or
+// `authjs.session-token` (HTTP). `NEXTAUTH_COOKIE_NAME` is an explicit
+// override for non-default deployments.
+//
+// Pass an array of candidate names to the bridge so it accepts both the v5
+// canonical and the legacy v4 `next-auth.*` name. This means existing logged-
+// in users with the old cookie don't get bounced to login on the deploy that
+// switches naming — both names work until the legacy cookie expires.
+const defaultCookieNames =
+    process.env.NEXTAUTH_URL
+        ? ['__Secure-authjs.session-token', '__Secure-next-auth.session-token']
+        : ['authjs.session-token', 'next-auth.session-token'];
+const cookieNameCandidates = process.env.NEXTAUTH_COOKIE_NAME
+    ? [process.env.NEXTAUTH_COOKIE_NAME, ...defaultCookieNames]
+    : defaultCookieNames;
 const strategy = buildNextAuthStrategy({
     secret: NEXTAUTH_SECRET,
-    cookieName: process.env.NEXTAUTH_COOKIE_NAME ?? defaultCookieName,
+    cookieName: cookieNameCandidates,
     findOrCreateUser,
     recomputeRoles,
 });
