@@ -27,6 +27,15 @@ export interface CacheAdapter {
 	read(key: string, ctx: AdapterCtx): Promise<{ value: unknown; tags: string[] } | undefined>;
 	write(key: string, value: unknown, tags: string[], opts: WriteOpts, ctx: AdapterCtx): Promise<void>;
 	invalidate(tags: string[], ctx: AdapterCtx): Promise<void>;
+	// When present, CacheInstance.wrap delegates the entire wrap-with-fetcher operation.
+	// Used by adapters that ship their own caching primitive (e.g., Next's unstable_cache).
+	wrap?<R>(
+		key: string,
+		fetcher: () => Promise<R>,
+		tags: string[],
+		opts: WriteOpts,
+		ctx: AdapterCtx,
+	): Promise<R>;
 	decorateResponse?(response: Response, tags: string[]): Response;
 	init?(): Promise<void>;
 }

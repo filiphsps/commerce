@@ -39,12 +39,18 @@ export function createCacheInstance<NS extends string, T, Q, E extends EntitiesM
 		invalidate: undefined as unknown as InvalidateNamespace<T, E>,
 
 		async wrap<R>(key: CacheKey, fetcher: () => Promise<R>, opts: WrapOpts = {}): Promise<R> {
+			const writeOpts: WriteOpts = { ttl: opts.ttl, swr: opts.swr };
+			if (opts.stalenessGuard) writeOpts.writeIfNewerThan = Date.now();
+
+			if (adapter.wrap) {
+				return adapter.wrap(key.readTag, fetcher, key.tags, writeOpts, ctx);
+			}
+
 			const hit = await adapter.read(key.readTag, ctx);
 			if (hit !== undefined) return hit.value as R;
 
 			const startedAt = Date.now();
 			const value = await fetcher();
-			const writeOpts: WriteOpts = { ttl: opts.ttl, swr: opts.swr };
 			if (opts.stalenessGuard) writeOpts.writeIfNewerThan = startedAt;
 			await adapter.write(key.readTag, value, key.tags, writeOpts, ctx);
 			return value;
