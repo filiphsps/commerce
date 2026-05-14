@@ -65,3 +65,12 @@ describe('memoryAdapter', () => {
 		expect(await small.read('k3', ctx)).toEqual({ value: 3, tags: [] });
 	});
 });
+
+import { runAdapterContract } from '../src/contract-tests';
+
+runAdapterContract({
+	name: 'memoryAdapter',
+	create: () => memoryAdapter({ maxEntries: 100 }),
+	supportsTtl: true,
+	supportsStalenessGuard: true,
+});
