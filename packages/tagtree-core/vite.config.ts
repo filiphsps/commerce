@@ -7,7 +7,7 @@ import { defineConfig, mergeConfig } from 'vite';
 import base from '../vite.config';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const name = 'tagtree';
+const name = '@tagtree/core';
 
 export default mergeConfig(
     base,

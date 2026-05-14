@@ -1,5 +1,5 @@
-import { computeFanout } from 'tagtree';
-import type { CacheSchema, EntitiesMap } from 'tagtree';
+import { computeFanout } from '@tagtree/core';
+import type { CacheSchema, EntitiesMap } from '@tagtree/core';
 
 interface TopicMapping {
 	entity: string;

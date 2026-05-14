@@ -1,7 +1,7 @@
 import type { ApolloClient, TypedDocumentNode } from '@apollo/client';
 import { CombinedGraphQLErrors } from '@apollo/client';
 
-import { encodeSegment } from 'tagtree';
+import { encodeSegment } from '@tagtree/core';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 import type { Locale } from '@/utils/locale';

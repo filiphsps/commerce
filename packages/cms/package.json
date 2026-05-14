@@ -83,7 +83,7 @@
         "@tagtree/payload": "workspace:*",
         "jose": "5.9.0",
         "server-only": "0.0.1",
-        "tagtree": "workspace:*"
+        "@tagtree/core": "workspace:*"
     },
     "peerDependencies": {
         "@payloadcms/db-mongodb": "^3.84.0",

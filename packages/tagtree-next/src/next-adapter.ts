@@ -1,5 +1,5 @@
 import { revalidateTag, unstable_cache } from 'next/cache';
-import type { AdapterCtx, CacheAdapter, WriteOpts } from 'tagtree';
+import type { AdapterCtx, CacheAdapter, WriteOpts } from '@tagtree/core';
 
 export function nextAdapter(): CacheAdapter {
 	return {

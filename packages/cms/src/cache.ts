@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { createCacheInstance, defineCache, str } from 'tagtree';
+import { createCacheInstance, defineCache, str } from '@tagtree/core';
 import { nextAdapter } from '@tagtree/next';
 
 // CMS doc shape from Payload — tenant can be either a string ID or a populated
