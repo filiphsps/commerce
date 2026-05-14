@@ -2,6 +2,7 @@ import { gql } from '@apollo/client';
 import { InvalidIDError, NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
 import { parseGid } from '@shopify/hydrogen-react';
 import type { Product } from '@/api/product';
+import { cache } from '@/cache';
 import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
 import type { AbstractApi } from '@/utils/abstract-api';
 
@@ -24,7 +25,7 @@ export const RecommendationApi = async ({ api, id }: { api: AbstractApi; id: str
         {
             productId: id,
         },
-        { tags: [`shopify.${shop.id}.product.${gid.id}`, 'recommendations'] },
+        { tags: [...cache.keys.product({ tenant: shop, handle: gid.id }).tags, 'recommendations'] },
     );
 
     if (errors && errors.length > 0) {
