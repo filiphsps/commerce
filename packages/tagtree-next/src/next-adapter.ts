@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { revalidateTag, unstable_cache } from 'next/cache';
 import type { AdapterCtx, CacheAdapter, WriteOpts } from '@tagtree/core';
 

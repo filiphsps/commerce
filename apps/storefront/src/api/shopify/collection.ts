@@ -15,7 +15,7 @@ import type {
     QueryRoot,
 } from '@shopify/hydrogen-react/storefront-api-types';
 import { cache } from '@/cache';
-import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
+import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product-fragments';
 import type { AbstractApi, ApiOptions } from '@/utils/abstract-api';
 import { isValidHandle } from '@/utils/handle';
 

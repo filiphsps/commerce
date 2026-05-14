@@ -3,12 +3,12 @@ import { Error as CommerceError } from '@nordcom/commerce-errors';
 import { type NextRequest, NextResponse } from 'next/server';
 import { getAuth } from '@/auth';
 
-// Sign-in flows mutate cookies and inspect dynamic request state — Next 16's
-// default caching cannot apply here. Without the explicit opt-out, a cached
-// response of a sign-in screen could leak across visitors.
-export const dynamic = 'force-dynamic';
-export const fetchCache = 'force-no-store';
-
+// `dynamic = 'force-dynamic'` and `fetchCache` exports are rejected at build
+// time when `nextConfig.cacheComponents` is on. The storefront uses
+// cacheComponents for PPR; this route is already dynamic-by-construction
+// because both handlers `await req.cookies` / call `getAuth(shop)` which
+// reads request state — Next picks that up without an explicit segment hint.
+// The `Cache-Control: no-store` headers below still prevent edge caching.
 const noStoreHeaders = { 'Cache-Control': 'no-store' };
 
 export type AuthRouteParams = Promise<{ domain: string }>;

@@ -2,12 +2,12 @@ import { timingSafeEqual } from 'node:crypto';
 import { draftMode } from 'next/headers';
 import { type NextRequest, NextResponse } from 'next/server';
 
-// Cookie writes (draftMode toggles a same-site cookie) require this route to
-// run dynamically per request. Without the explicit opt-out, Next 16's
-// aggressive default caching could serve a cached "preview enabled" response
-// to a visitor who never had the secret.
-export const dynamic = 'force-dynamic';
-
+// `dynamic = 'force-dynamic'` would be rejected at build because the
+// storefront sets `nextConfig.cacheComponents: true`. The route is dynamic
+// by construction — `draftMode().enable()` toggles a same-site cookie and
+// `req.nextUrl.searchParams` reads request state, both of which prevent
+// Next from caching the response. `Cache-Control: no-store` headers below
+// also prevent edge/CDN caching.
 const noStoreHeaders = { 'Cache-Control': 'no-store' };
 
 const secretsMatch = (provided: string | null, expected: string): boolean => {

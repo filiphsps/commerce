@@ -3,7 +3,7 @@ import { InvalidIDError, NotFoundError, ProviderFetchError } from '@nordcom/comm
 import { parseGid } from '@shopify/hydrogen-react';
 import type { Product } from '@/api/product';
 import { cache } from '@/cache';
-import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
+import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product-fragments';
 import type { AbstractApi } from '@/utils/abstract-api';
 
 // TODO: Migrate to the new recommendations api.

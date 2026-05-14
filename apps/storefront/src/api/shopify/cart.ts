@@ -1,4 +1,7 @@
-import { PRODUCT_FRAGMENT_MINIMAL_NO_VARIANTS } from '@/api/shopify/product';
+// Import from the fragments-only module — importing from `product.ts` here
+// would pull `@/cache` (and therefore `next/cache`) into the client bundle
+// via `providers-registry.tsx`, which webpack rejects at build time.
+import { PRODUCT_FRAGMENT_MINIMAL_NO_VARIANTS } from '@/api/shopify/product-fragments';
 
 export const CartFragment = /* GraphQL */ `
     fragment CartFragment on Cart {

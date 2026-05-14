@@ -14,94 +14,10 @@ import type { Product } from '@/api/product';
 import { cache } from '@/cache';
 import { extractLimitLikeFilters } from '@/api/shopify/collection';
 import type { AbstractApi, ApiOptions, ApiReturn } from '@/utils/abstract-api';
-
-export const PRODUCT_FRAGMENT_MINIMAL_NO_VARIANTS = /* GraphQL */ `
-    id
-    handle
-    availableForSale
-    createdAt
-    title
-    description
-    vendor
-    productType
-    tags
-    trackingParameters
-    seo {
-        title
-        description
-    }
-    priceRange {
-        maxVariantPrice {
-            amount
-            currencyCode
-        }
-        minVariantPrice {
-            amount
-            currencyCode
-        }
-    }
-`;
-
-export const PRODUCT_FRAGMENT_MINIMAL = /* GraphQL */ `
-    ${PRODUCT_FRAGMENT_MINIMAL_NO_VARIANTS}
-
-    options(first: 3) {
-        id
-        name
-        values
-    }
-    variants(first: 3) {
-        edges {
-            node {
-                id
-                title
-                barcode
-                price {
-                    amount
-                    currencyCode
-                }
-                compareAtPrice {
-                    amount
-                    currencyCode
-                }
-                availableForSale
-                currentlyNotInStock
-                quantityAvailable
-                weight
-                weightUnit
-                image {
-                    id
-                    altText
-                    url(transform: { preferredContentType: WEBP })
-                    height
-                    width
-                }
-                selectedOptions {
-                    name
-                    value
-                }
-            }
-        }
-    }
-    featuredImage {
-        id
-        altText
-        url(transform: { preferredContentType: WEBP })
-        height
-        width
-    }
-    images(first: 5) {
-        edges {
-            node {
-                id
-                altText
-                url(transform: { preferredContentType: WEBP })
-                height
-                width
-            }
-        }
-    }
-`;
+// Re-export the minimal fragments so legacy `from '@/api/shopify/product'`
+// imports keep working. Definitions live in `product-fragments.ts` (no
+// runtime dependencies) so they can be safely included in client bundles.
+export { PRODUCT_FRAGMENT_MINIMAL, PRODUCT_FRAGMENT_MINIMAL_NO_VARIANTS } from '@/api/shopify/product-fragments';
 
 export const PRODUCT_FRAGMENT = /* GraphQL */ `
     id
