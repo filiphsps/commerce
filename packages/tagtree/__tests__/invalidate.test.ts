@@ -28,7 +28,7 @@ describe('cache.invalidate.<entity>', () => {
 		const shop: Shop = { id: 'shop_1', domain: 'example.com' };
 		const adapterSpy = vi.spyOn(cache, 'invalidateRaw');
 
-		await cache.invalidate.product!({ tenant: shop, handle: 'cool-shirt' });
+		await cache.invalidate.product({ tenant: shop, handle: 'cool-shirt' });
 
 		expect(adapterSpy).toHaveBeenCalledWith([
 			'shopify.shop_1.product.cool-shirt',
@@ -45,7 +45,7 @@ describe('cache.invalidate.<entity>', () => {
 		const shop: Shop = { id: 'shop_1', domain: 'example.com' };
 		const adapterSpy = vi.spyOn(cache, 'invalidateRaw');
 
-		await cache.invalidate.products!({ tenant: shop });
+		await cache.invalidate.products({ tenant: shop });
 
 		expect(adapterSpy).toHaveBeenCalledWith([
 			'shopify.shop_1.products',
