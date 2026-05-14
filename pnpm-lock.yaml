@@ -784,6 +784,9 @@ importers:
       '@tagtree/next':
         specifier: workspace:*
         version: link:../tagtree-next
+      '@tagtree/payload':
+        specifier: workspace:*
+        version: link:../tagtree-payload
       jose:
         specifier: 5.9.0
         version: 5.9.0
