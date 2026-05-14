@@ -2,6 +2,13 @@
 
 @import "@nordcom/nordstar";
 
+/* Declare Payload's CSS layer order so its field components (mounted in
+ * /content/* via @payloadcms/ui) resolve their cascade predictably alongside
+ * our Tailwind/Nordstar styles. Anything in `payload-default` is base; any
+ * admin overrides we want above Payload's defaults go in `payload`. Unlayered
+ * Tailwind utilities still win against both. */
+@layer payload-default, payload;
+
 @plugin "@tailwindcss/typography";
 @plugin "@tailwindcss/forms";
 

@@ -40,7 +40,11 @@ const config = {
     productionBrowserSourceMaps: true,
     compress: true,
     trailingSlash: true,
-    transpilePackages: [],
+    // `@payloadcms/ui` field components are imported directly by routes in
+    // `(app)/(dashboard)/[domain]/content/*`. Without explicit transpilation
+    // Next.js doesn't process the package's `.scss` imports, and the field
+    // wrappers render unstyled.
+    transpilePackages: ['@payloadcms/ui'],
     // The Payload admin is a third-party UI we don't fully control. Every
     // experimental flag that rewrites React semantics (auto-memoization,
     // server-React optimization) or aggressively caches segments has been
