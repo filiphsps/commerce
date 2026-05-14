@@ -20,6 +20,7 @@
         "dev:docs": "dotenv -c -- turbo run dev --filter=./apps/docs --env-mode=loose",
         "build": "dotenv -c -- turbo run build --env-mode=loose --remote-cache-timeout=60",
         "build:admin": "dotenv -c -- turbo run build --filter=./apps/admin --env-mode=loose --remote-cache-timeout=60",
+        "build:landing": "dotenv -c -- turbo run build --filter=./apps/landing --env-mode=loose --remote-cache-timeout=60",
         "build:storefront": "dotenv -c -- turbo run build --filter=./apps/storefront --env-mode=loose --remote-cache-timeout=60",
         "build:docs": "dotenv -c -- turbo run build --filter=./apps/docs --env-mode=loose --remote-cache-timeout=60",
         "build:packages": "turbo run build --filter=./packages/* --env-mode=loose --remote-cache-timeout=60",
