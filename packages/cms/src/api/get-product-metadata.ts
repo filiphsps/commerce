@@ -1,5 +1,6 @@
 import 'server-only';
 import type { Payload } from 'payload';
+import type { FindFallbackLocale, FindLocale } from './_locale-cast';
 import { assertShopId } from './assert-shop';
 import type { LocaleRef, ShopRef } from './get-page';
 import { getPayloadInstance } from './get-payload-instance';
@@ -24,8 +25,8 @@ export const getProductMetadata = async ({
     const { docs } = await payload.find({
         collection: 'productMetadata',
         where: { and: [{ tenant: { equals: shop.id } }, { shopifyHandle: { equals: shopifyHandle } }] } as never,
-        locale: locale.code,
-        fallbackLocale: shop.i18n.defaultLocale,
+        locale: locale.code as FindLocale,
+        fallbackLocale: shop.i18n.defaultLocale as FindFallbackLocale,
         depth: 2,
         limit: 1,
         draft,
