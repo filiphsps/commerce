@@ -41,41 +41,49 @@ const config = {
     compress: true,
     trailingSlash: true,
     transpilePackages: [],
-    reactCompiler: true,
-    // Cache Components (PPR) requires every dynamic data fetch to live inside
-    // an explicit Suspense boundary; Payload's RootLayout responds by wrapping
-    // its entire `<html>/<head>/<body>` tree in `<Suspense fallback={null}>`
-    // when it detects `PAYLOAD_CACHE_COMPONENTS_ENABLED=true` (which
-    // `withPayload` sets from this flag). The result in production: the
-    // initial streamed shell is `null`, the `<head>` arrives in a later
-    // chunk, and Next.js's CSS-link hoisting can drop the admin stylesheet
-    // links — symptom is "Payload UI loads but is unstyled / partially
-    // styled."
+    // The Payload admin is a third-party UI we don't fully control. Every
+    // experimental flag that rewrites React semantics (auto-memoization,
+    // server-React optimization) or aggressively caches segments has been
+    // a vector for "admin loads broken in prod" — leave them off here.
+    // Re-enable individually only after verifying the admin still works.
     //
-    // The admin app has no static content to amortize, so PPR offers nothing
-    // here. Leave it disabled until Payload's RootLayout can opt out of the
-    // top-level Suspense wrap.
+    // Specifically disabled:
+    // - reactCompiler: auto-memoization can stale Payload's `useNav()` etc.
+    //   so the hamburger menu won't toggle.
+    // - cacheComponents (PPR): wraps Payload's RootLayout in
+    //   `<Suspense fallback={null}>` and Next's CSS hoisting drops the
+    //   admin stylesheet links from the initial shell.
     // cacheComponents: true,
     typedRoutes: true,
     turbopack: { root: path.resolve(path.join(__dirname, '../..')) },
     experimental: {
         appNavFailHandling: true,
-        caseSensitiveRoutes: true,
+        // `caseSensitiveRoutes` makes Payload's camelCase collection URLs
+        // (`/cms/collections/businessData`) brittle — any internal nav that
+        // happens to lowercase the slug 404s. Leave off.
+        // caseSensitiveRoutes: true,
         // `cssChunking` + `optimizeCss` (critters) silently mangle Payload's
         // `@layer payload-default, payload` cascade and inline rules in a way
         // that strips the admin UI styles in production webpack builds. The
         // local Turbopack dev server doesn't run either optimization so the
         // breakage was invisible until deploy.
         esmExternals: true,
-        proxyPrefetch: 'flexible',
+        // `proxyPrefetch: 'flexible'` changes how routes are prefetched on
+        // hover — can stale Payload's data-fetching tree. Off until proven.
+        // proxyPrefetch: 'flexible',
         optimizePackageImports: ['@apollo/client', '@shopify/hydrogen-react'],
-        optimizeServerReact: true,
+        // `optimizeServerReact` rewrites RSC trees in ways that can break
+        // third-party admin UIs. Off for the admin.
+        // optimizeServerReact: true,
         parallelServerBuildTraces: true,
         parallelServerCompiles: true,
         scrollRestoration: true,
         serverComponentsHmrCache: true,
         serverSourceMaps: true,
-        staleTimes: { dynamic: 0, static: 180 },
+        // `staleTimes.static: 180` lets navigations show 3-minute-old
+        // static segments — but Payload's "static" routes still need fresh
+        // tenant/user data. Drop the static cache lifetime to 0.
+        staleTimes: { dynamic: 0, static: 0 },
         taint: true,
         typedEnv: true,
         useWasmBinary: false,
