@@ -21,7 +21,6 @@
             "@/auth": ["./src/utils/auth.ts"],
             "@/models/*": ["./src/models/*"],
             "@/utils/*": ["./src/utils/*"],
-            "@/styles/*": ["./src/scss/*"],
             // i18n.
             "@/i18n/*": ["./src/locales/*"],
             "@/i18n/dictionary": ["./src/utils/dictionary.ts"],

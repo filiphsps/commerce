@@ -92,10 +92,6 @@ const config = {
         ignoreBuildErrors: true,
         tsconfigPath: 'tsconfig.json',
     },
-    sassOptions: {
-        loadPaths: [path.join(__dirname, 'src/scss'), path.join(__dirname, 'src')],
-    },
-
     env: {
         ENVIRONMENT: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
         GIT_COMMIT_SHA: gitSHA,

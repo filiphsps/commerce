@@ -1,0 +1,174 @@
+@import "tailwindcss";
+
+@import "@nordcom/nordstar";
+
+@plugin "@tailwindcss/typography";
+@plugin "@tailwindcss/forms";
+
+@source "../../../../node_modules/@nordcom";
+@source "../../node_modules/@nordcom";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+    --font-sans: var(--font-primary, var(--font-fallback)), sans-serif;
+    --font-mono: var(--font-geist-mono), monospace;
+
+    --color-border: hsl(var(--border));
+    --color-input: hsl(var(--input));
+    --color-ring: hsl(var(--ring));
+    --color-background: hsl(var(--background));
+    --color-foreground: hsl(var(--foreground));
+
+    --color-primary: hsl(var(--primary));
+    --color-primary-foreground: hsl(var(--primary-foreground));
+    --color-secondary: hsl(var(--secondary));
+    --color-secondary-foreground: hsl(var(--secondary-foreground));
+    --color-destructive: hsl(var(--destructive));
+    --color-destructive-foreground: hsl(var(--destructive-foreground));
+    --color-muted: hsl(var(--muted));
+    --color-muted-foreground: hsl(var(--muted-foreground));
+    --color-accent: hsl(var(--accent));
+    --color-accent-foreground: hsl(var(--accent-foreground));
+    --color-popover: hsl(var(--popover));
+    --color-popover-foreground: hsl(var(--popover-foreground));
+    --color-card: hsl(var(--color-background-highlight));
+    --color-card-foreground: hsl(var(--card-foreground));
+
+    --aspect-3\/2: 3 / 2;
+
+    --default-transition-duration: 250ms;
+}
+
+@theme {
+    /* Landing-app local tokens.
+     * Tailwind v4 only generates utility classes for tokens in the
+     * --color, --font, --container, --breakpoint, --ease namespaces;
+     * named --spacing tokens do not produce gap-foo etc., so spacing
+     * here uses the default scale (1rem = 4, 1.75rem = 7). */
+    --container-page: min(1200px, 100% - 2rem);
+
+    --color-brand: hsl(330 86% 53%);
+    --color-brand-foreground: hsl(0 0% 100%);
+}
+
+@utility border-3 {
+    border-width: 3px;
+}
+
+@utility brightness-65 {
+    filter: brightness(0.65);
+}
+
+@utility stroke-1 {
+    stroke-width: 0.2rem;
+}
+
+@utility stroke-2 {
+    stroke-width: 0.25rem;
+}
+
+@utility stroke-3 {
+    stroke-width: 0.35rem;
+}
+
+@utility container {
+    margin-inline: auto;
+    padding-inline: 2rem;
+    @media (width >= 1400px) {
+        max-width: 1400px;
+    }
+}
+
+@layer base {
+    html {
+        @apply font-sans;
+        font-family: var(--font-primary, var(--font-fallback));
+    }
+
+    body {
+        @apply grid w-full max-w-full grid-cols-[100%] grid-rows-[auto_minmax(calc(100vh-14rem),auto)_auto] items-start justify-center bg-background text-foreground;
+        font-weight: 500;
+        font-size: 16px;
+    }
+
+    body [data-sonner-toaster] {
+        font-family: inherit;
+        font-size: 1rem;
+    }
+
+    *::selection {
+        @apply bg-brand text-foreground;
+    }
+
+    a {
+        transition: color 150ms ease-in-out;
+    }
+    a:hover {
+        @apply text-brand;
+    }
+
+    b,
+    strong {
+        font-weight: 700;
+    }
+
+    h1 code {
+        font-weight: 500;
+        line-height: 1.1;
+    }
+
+    :is(h1, h2, h3, h4) b {
+        @apply font-extrabold text-brand;
+    }
+
+    code {
+        @apply rounded text-brand font-mono font-normal bg-[hsl(0_0%_51%/0.15)];
+        font-size: inherit;
+        line-height: inherit;
+    }
+
+    code:not([data-multiline="true"]):not([class*="language-"])::before,
+    code:not([data-multiline="true"]):not([class*="language-"])::after {
+        display: inline-block;
+        text-align: center;
+        content: "`";
+    }
+
+    :is(ol, ul, li) {
+        font-weight: inherit;
+        font-size: inherit;
+    }
+
+    input[type="number"],
+    textarea[type="number"],
+    select[type="number"] {
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }
+    input[type="number"]::-webkit-inner-spin-button,
+    textarea[type="number"]::-webkit-inner-spin-button,
+    select[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    hr {
+        margin: 0.5rem 0;
+        border: 0;
+        border-top: var(--border-width-2, 0.2rem) solid hsl(var(--color-background-highlight));
+    }
+
+    #nprogress {
+        pointer-events: none;
+    }
+    #nprogress .bar {
+        @apply fixed top-0 left-0 z-[1000] h-1 w-full bg-brand;
+    }
+}
+
+@layer components {
+    .card {
+        @apply flex flex-col gap-2;
+    }
+}

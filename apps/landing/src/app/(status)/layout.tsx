@@ -1,5 +1,4 @@
-import '@/styles/app.scss';
-import '@/styles/globals.css';
+import '../globals.css';
 
 import { View } from '@nordcom/nordstar';
 import { GeistMono } from 'geist/font/mono';

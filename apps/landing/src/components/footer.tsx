@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import type { HTMLProps } from 'react';
-import styles from '@/components/footer.module.scss';
 import { cn } from '@/utils/tailwind';
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -8,10 +7,17 @@ const CURRENT_YEAR = new Date().getFullYear();
 export type FooterProps = {} & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 export default function Footer({ className, ...props }: FooterProps) {
     return (
-        <footer {...props} className={cn(styles.footer, '[grid-area:footer]', className)}>
-            <div className={styles.container}>
-                <div className={cn(styles.content, 'w-full p-4 py-6 md:py-8')}>
-                    <div className={cn(styles.blocks, styles.beside)}></div>
+        <footer
+            {...props}
+            className={cn(
+                'grid w-full max-w-full grid-cols-[100%] grid-rows-[auto_1fr] overflow-x-hidden',
+                '[grid-area:footer]',
+                className,
+            )}
+        >
+            <div className="flex max-w-full flex-col items-center justify-center bg-brand text-foreground">
+                <div className="w-full max-w-page p-4 py-6 md:py-8">
+                    <div className="grid grid-cols-[1fr_1fr] items-center justify-center gap-[0.5rem] md:grid-cols-[1fr_1fr]"></div>
 
                     <div className="flex items-center justify-between gap-x-1 leading-none">
                         <section className="flex h-8 grow flex-wrap items-center justify-start gap-2">
@@ -22,7 +28,7 @@ export default function Footer({ className, ...props }: FooterProps) {
                                 height="auto"
                                 frameBorder="0"
                                 scrolling="no"
-                                className={cn(styles['status-iframe'], 'h-full w-full')}
+                                className="-mb-[3px] -ml-1 h-full w-full"
                             />
                         </section>
 
@@ -42,15 +48,9 @@ export default function Footer({ className, ...props }: FooterProps) {
                 </div>
             </div>
 
-            <div className={styles.copyrights}>
-                <div
-                    className={cn(
-                        styles.content,
-                        styles.beside,
-                        'w-full p-4 py-5 font-base font-semibold leading-snug md:py-6',
-                    )}
-                >
-                    <section className={cn(styles.section, styles.links, 'font-semibold')}>
+            <div className="flex max-w-full flex-col items-center justify-center bg-background text-foreground">
+                <div className="flex w-full max-w-page flex-col items-start justify-center gap-[0.5rem] p-4 py-5 font-base font-semibold leading-snug md:grid md:grid-cols-[1fr_1fr] md:items-center md:justify-center md:py-6">
+                    <section className="flex gap-4 font-semibold uppercase">
                         <Link className="block" href="https://nordcom.io/legal/terms-of-service/" prefetch={false}>
                             Terms of Service
                         </Link>
@@ -59,7 +59,7 @@ export default function Footer({ className, ...props }: FooterProps) {
                             Privacy Policy
                         </Link>
                     </section>
-                    <section className={cn(styles.section, 'font-bold text-sm')}>
+                    <section className="font-bold text-sm md:justify-self-end md:text-right">
                         <Link href="https://nordcom.io/">&copy; 2023-{CURRENT_YEAR} Nordcom AB</Link>
                     </section>
                 </div>

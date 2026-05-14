@@ -83,14 +83,14 @@ export async function getArticles() {
     )
         .filter((a): a is NonNullable<typeof a> => a !== null)
         .sort((a, b) => {
-        if (a.meta.date < b.meta.date) {
-            return 1;
-        } else if (a.meta.date > b.meta.date) {
-            return -1;
-        } else {
-            return 0;
-        }
-    });
+            if (a.meta.date < b.meta.date) {
+                return 1;
+            } else if (a.meta.date > b.meta.date) {
+                return -1;
+            } else {
+                return 0;
+            }
+        });
 
     return articles;
 }

@@ -2,7 +2,6 @@ import { Accented, Card, Heading } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
 
 import Link from 'next/link';
-import styles from './page.module.scss';
 
 export type IndexAdminPageParams = {};
 
@@ -17,7 +16,7 @@ export const metadata: Metadata = {
 export default async function IndexAdminPage({}: {}) {
     return (
         <>
-            <div className={`${styles.heading}`}>
+            <div className="flex w-full max-w-full flex-col gap-[0.5rem] overflow-hidden">
                 <Heading>
                     Commerce by <Accented>Nordcom</Accented> AB
                 </Heading>
@@ -27,7 +26,7 @@ export default async function IndexAdminPage({}: {}) {
                 </Heading>
             </div>
 
-            <article className={`${styles.content}`}>
+            <article className="mt-7 flex flex-col gap-7">
                 <Card variant="solid">
                     <Heading level="h4" as="div">
                         Everything on this site a work in progress and subject to change at any time. If you&apos;d like
