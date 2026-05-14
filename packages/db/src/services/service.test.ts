@@ -102,6 +102,36 @@ describe('services', () => {
             //expect(model.limit).toHaveBeenCalledWith(1);
             expect(result._id).toEqual('123');
         });
+
+        // Single-result overload (`count: 1` or `id`) promises `Promise<DocType>`.
+        // Returning `[]` on an empty match was a type lie that crashed every
+        // caller doing `(await find(...)).toObject()` — the auth adapter,
+        // `Shop.findByDomain` — with `TypeError: (intermediate value).toObject
+        // is not a function`. Throw `NotFoundError` so the adapter's existing
+        // `CommerceError.isNotFound` branch can map it to `null`.
+        //
+        // Match against `error.name` rather than `instanceof NotFoundError`:
+        // the errors package ships both `src/index.ts` and `dist/index.js`
+        // and Vitest can load them via different paths, so the two class
+        // identities don't match even though the thrown value is genuinely a
+        // NotFoundError. The `name` field is identical in both builds.
+        it('throws NotFoundError when count:1 query has no matches', async () => {
+            vi.mocked((Model as unknown as { exec: ReturnType<typeof vi.fn> }).exec).mockResolvedValueOnce([]);
+            await expect(service.find({ filter: { name: 'Nobody' }, count: 1 })).rejects.toMatchObject({
+                name: 'NotFoundError',
+            });
+        });
+
+        it('throws NotFoundError when id query has no matches', async () => {
+            vi.mocked((Model as unknown as { exec: ReturnType<typeof vi.fn> }).exec).mockResolvedValueOnce([]);
+            await expect(service.find({ id: 'missing-id' })).rejects.toMatchObject({ name: 'NotFoundError' });
+        });
+
+        it('returns [] when multi-result query has no matches', async () => {
+            vi.mocked((Model as unknown as { exec: ReturnType<typeof vi.fn> }).exec).mockResolvedValueOnce([]);
+            const result = await service.find({ filter: { name: 'Nobody' } });
+            expect(result).toEqual([]);
+        });
     });
 
     describe('findById', () => {

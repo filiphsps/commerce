@@ -1,3 +1,4 @@
+import { NotFoundError } from '@nordcom/commerce-errors';
 import type { Model, ProjectionType, Query, QueryFilter, QueryOptions, UpdateQuery } from 'mongoose';
 
 import type { BaseDocument } from '../db';
@@ -76,26 +77,45 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
     public async find(args: MergeTypes<[BaseQuery, BaseFilterableQuery<DocType>, ReturnsOneQuery]>): Promise<DocType>;
     public async find(args: MergeTypes<[BaseQuery, BaseFilterableQuery<DocType>]>): Promise<DocType[]>;
     public async find(args: MergeTypes<[BaseQuery, BaseFilterableQuery<DocType>]>): Promise<DocType | DocType[]> {
-        type Model = typeof this.model.find<DocType>;
-        type Req = ReturnType<Model>;
-
         const { id, count, filter = {}, projection = undefined } = { id: undefined, count: undefined, ...args };
 
-        let req = this.model.find<DocType>(
+        // Mongoose's strict `RootFilterQuery<DocType>` rejects our literal at
+        // admin's stricter tsconfig (the structural shape is identical, but
+        // the overload picker treats the spread as a different union member).
+        // Cast the method through `unknown` to a permissive signature — same
+        // pattern `findOneAndUpdate` uses below to untangle the same overload
+        // selection problem.
+        let req = (
+            this.model.find as unknown as (
+                filter: unknown,
+                projection?: unknown,
+            ) => Query<DocType[], DocType>
+        )(
             {
                 ...filter,
                 ...(id ? { _id: id } : {}),
             },
             projection,
         );
-        req = this.mutateQuery<Req>(req, args)();
+        req = this.mutateQuery<typeof req>(req, args)();
 
         const res = await req.exec();
+        const isSingleResult = !!id || count === 1;
         if ((res || []).length <= 0) {
+            // The single-result overload (`id` or `count: 1`) promises
+            // `Promise<DocType>`. Returning `[]` here was a type lie that
+            // crashed every caller doing `(await find(...)).toObject()` — the
+            // auth adapter and `Shop.findByDomain`. Throw `NotFoundError` so
+            // the adapter's existing `CommerceError.isNotFound` branch maps
+            // it to the documented `null` contract and the storefront
+            // middleware routes unknown shops to `/status/unknown-shop/`.
+            if (isSingleResult) {
+                throw new NotFoundError(this.modelName);
+            }
             return [];
         }
 
-        if (id || (count && count === 1)) {
+        if (isSingleResult) {
             return res[0] as DocType;
         }
         return res as DocType[];
