@@ -180,6 +180,37 @@ const configPromise = buildPayloadConfig({
     importMapBaseDir: IMPORT_MAP_BASE_DIR,
     importMapFile: IMPORT_MAP_FILE,
     livePreview: { url: buildLivePreviewUrl },
+    // One-shot backfill via Payload's `onInit` so it BLOCKS the first
+    // `getPayload` call. Shops created before `attachShopSync` was wired
+    // (older deploys, mongorestore, manual inserts) have no mirrored
+    // `tenants` doc — and the multi-tenant plugin's `GlobalViewRedirect`
+    // bails to `/cms` when an editor opens a global like Business Data
+    // because `getTenantOptions` returns an empty list. Running this in
+    // `onInit` (instead of fire-and-forget at module load) guarantees the
+    // tenants exist before any request handler runs.
+    onInit: async (payload) => {
+        const docs = await Shop.model.find({}).select('_id name domain i18n').lean();
+        const shops = docs.map((d) => ({
+            id: String((d as { _id: unknown })._id),
+            name: String((d as { name?: unknown }).name ?? ''),
+            domain: String((d as { domain?: unknown }).domain ?? ''),
+            i18n: {
+                defaultLocale: String(
+                    (d as { i18n?: { defaultLocale?: unknown } }).i18n?.defaultLocale ?? 'en-US',
+                ),
+                // Shop schema only persists `defaultLocale`. Let the
+                // sync helper fall back to `[defaultLocale]` so the
+                // required+hasMany `locales` field validates.
+            },
+        }));
+        const result = await seedTenantsForExistingShops({
+            payload,
+            findShops: async () => shops,
+        });
+        payload.logger.info(
+            `[tenant-backfill] examined ${shops.length} shop(s) — ${result.synced} synced, ${result.failed} failed`,
+        );
+    },
 });
 
 // Attach the Shop -> tenant sync listener synchronously so a Shop save during
@@ -187,45 +218,5 @@ const configPromise = buildPayloadConfig({
 // before the post-save hook is registered. The Payload instance is resolved
 // lazily on first fire — by then `configPromise` will have settled.
 attachShopSync(Shop.model as never, () => getPayload({ config: configPromise }));
-
-// One-shot backfill: shops created before `attachShopSync` was wired up (or
-// imported via mongorestore / manual insert) have no mirrored `tenants` doc,
-// and the multi-tenant plugin's `GlobalViewRedirect` then bails to `/cms`
-// when an editor opens a global like Business Data / Header / Footer. Run a
-// best-effort sync on first Payload boot so existing tenants surface.
-//
-// Guarded so concurrent first-boots (warm + cold lambda) don't double-run;
-// the sync itself is idempotent but skipping the find avoids the log noise.
-let backfillRan = false;
-const runTenantBackfill = async (): Promise<void> => {
-    if (backfillRan) return;
-    backfillRan = true;
-    try {
-        const payload = await getPayload({ config: configPromise });
-        await seedTenantsForExistingShops({
-            payload,
-            findShops: async () => {
-                const docs = await Shop.model.find({}).select('_id name domain i18n').lean();
-                return docs.map((d) => ({
-                    id: String((d as { _id: unknown })._id),
-                    name: String((d as { name?: unknown }).name ?? ''),
-                    domain: String((d as { domain?: unknown }).domain ?? ''),
-                    i18n: {
-                        defaultLocale: String(
-                            (d as { i18n?: { defaultLocale?: unknown } }).i18n?.defaultLocale ?? 'en-US',
-                        ),
-                        // Shop schema only persists `defaultLocale`. Let the
-                        // sync helper fall back to `[defaultLocale]` so the
-                        // required+hasMany `locales` field validates.
-                    },
-                }));
-            },
-        });
-    } catch (err) {
-        console.error('[payload-config] tenant backfill failed:', err);
-    }
-};
-// Fire-and-forget — admin boot should not block on this.
-void runTenantBackfill();
 
 export default configPromise;
