@@ -1,0 +1,53 @@
+name: Release
+
+on:
+    push:
+        branches:
+            - master
+        paths:
+            - 'packages/tagtree-core/**'
+            - 'packages/tagtree-next/**'
+            - 'packages/tagtree-shopify/**'
+            - 'packages/tagtree-payload/**'
+            - '.changeset/**'
+            - '.github/workflows/release.yml'
+
+concurrency:
+    group: release-${{ github.ref }}
+    cancel-in-progress: false
+
+permissions:
+    contents: write
+    pull-requests: write
+    id-token: write
+
+jobs:
+    release:
+        name: 🚀 Release
+        runs-on: ubuntu-latest
+        if: github.repository == 'filiphsps/commerce'
+        timeout-minutes: 20
+        steps:
+            - name: 🕶️ Checkout repository
+              uses: actions/checkout@v6
+              with:
+                  fetch-depth: 0
+
+            - name: 🚀 Bootstrap
+              uses: ./.github/common/bootstrap
+
+            - name: 🔨 Build packages
+              run: pnpm build:packages
+
+            - name: 📦 Create version PR or publish
+              id: changesets
+              uses: changesets/action@v1
+              with:
+                  publish: pnpm changeset:publish
+                  version: pnpm changeset:version
+                  commit: 'chore(release): version @tagtree packages'
+                  title: 'chore(release): version @tagtree packages'
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+                  NPM_CONFIG_PROVENANCE: 'true'

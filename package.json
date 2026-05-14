@@ -32,7 +32,10 @@
         "typecheck": "turbo run typecheck",
         "test": "dotenv -c -- vitest run --coverage",
         "test:watch": "dotenv -c -- vitest watch",
-        "test:e2e": "dotenv -c -- turbo run test:e2e"
+        "test:e2e": "dotenv -c -- turbo run test:e2e",
+        "changeset": "changeset",
+        "changeset:version": "changeset version",
+        "changeset:publish": "pnpm build:packages && changeset publish"
     },
     "author": {
         "name": "Nordcom AB",

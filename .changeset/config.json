@@ -1,11 +1,29 @@
 {
-  "$schema": "https://unpkg.com/@changesets/config@3.1.4/schema.json",
-  "changelog": "@changesets/cli/changelog",
-  "commit": false,
-  "fixed": [],
-  "linked": [],
-  "access": "restricted",
-  "baseBranch": "main",
-  "updateInternalDependencies": "patch",
-  "ignore": []
+    "$schema": "https://unpkg.com/@changesets/config@3.1.4/schema.json",
+    "changelog": [
+        "@changesets/changelog-github",
+        { "repo": "filiphsps/commerce" }
+    ],
+    "commit": false,
+    "fixed": [],
+    "linked": [],
+    "access": "public",
+    "baseBranch": "master",
+    "updateInternalDependencies": "patch",
+    "ignore": [
+        "@nordcom/commerce-admin",
+        "@nordcom/commerce-cms",
+        "@nordcom/commerce-db",
+        "@nordcom/commerce-docs",
+        "@nordcom/commerce-errors",
+        "@nordcom/commerce-landing",
+        "@nordcom/commerce-marketing-common",
+        "@nordcom/commerce-shopify-graphql",
+        "@nordcom/commerce-shopify-html",
+        "@nordcom/commerce-storefront"
+    ],
+    "privatePackages": {
+        "version": true,
+        "tag": false
+    }
 }
