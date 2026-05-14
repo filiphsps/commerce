@@ -255,9 +255,20 @@ const shopifyEventHandler = async (
 
 /**
  * @see {@link https://developers.klaviyo.com/en/v1-2/docs/integrate-with-a-shopify-hydrogen-store#enable-onsite-tracking}
+ *
+ * The Klaviyo loader script is not currently injected anywhere — every push
+ * just grows `window._learnq` for the lifetime of the session with no
+ * consumer. Skip the work entirely until the loader exists; gate on a runtime
+ * presence check so a future loader injection lights the integration up
+ * without code changes here.
  */
 const klaviyoEventHandler = async (event: AnalyticsEventType, _data: AnalyticsEventData) => {
-    window._learnq = window._learnq || [];
+    if (typeof window === 'undefined') return;
+    if (!Array.isArray(window._learnq) && typeof window._learnq?.push !== 'function') {
+        // Loader hasn't initialized — don't manufacture a sink that nobody
+        // drains.
+        return;
+    }
 
     // TODO: Implement this.
     switch (event) {
@@ -434,10 +445,14 @@ export function Trackable({ children, dummy = false }: TrackableProps) {
     }
 
     // TODO: Break these out into a separate hook, to support other providers.
+    // Default to prod-only so dev doesn't pollute the shop's analytics, but
+    // expose an opt-in for staging/preview parity testing (otherwise the
+    // attribution cookies are absent in staging and checkout flows behave
+    // subtly differently from prod, masking a whole bug class).
+    const enableShopifyCookies =
+        BuildConfig.environment === 'production' || process.env.NEXT_PUBLIC_FORCE_SHOPIFY_COOKIES === 'true';
     useShopifyCookies(
-        BuildConfig.environment === 'production'
-            ? { hasUserConsent: true, domain: cookieDomain, checkoutDomain }
-            : undefined,
+        enableShopifyCookies ? { hasUserConsent: true, domain: cookieDomain, checkoutDomain } : undefined,
     );
 
     const shopify = useShopify();
