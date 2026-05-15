@@ -60,6 +60,7 @@
     "devDependencies": {
         "@codecov/vite-plugin": "2.0.1",
         "@types/node": "24.12.4",
+        "@typescript/native-preview": "7.0.0-dev.20260515.1",
         "concurrently": "9.2.1",
         "glob": "13.0.6",
         "rimraf": "6.1.3",

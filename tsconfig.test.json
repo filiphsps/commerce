@@ -1,12 +1,13 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
-    "extends": "./tsconfig.json",
     "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
+        "composite": true,
         "jsx": "react-jsx",
-        "types": ["node", "vitest/globals", "happy-dom"],
-        "noEmit": true
+        "types": ["node", "vitest/globals", "happy-dom"]
     },
 
-    "include": ["packages/**/*.test.*", "apps/**/*.test.*", "apps/**/vitest.config.ts", "vitest.config.ts"],
-    "exclude": ["**/.turbo", "**/build", "**/coverage", "**/dist", "**/node_modules", "**/public"]
+    "exclude": ["**/.turbo", "**/coverage", "**/*.stories.ts", "**/dist", "node_modules"],
+    "include": ["./apps/**/*.test.*", "./packages/**/*.test.*", "./apps/**/vite*", "./packages/**/vite*"],
+    "references": [{ "path": "./tsconfig.node.json" }]
 }

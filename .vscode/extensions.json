@@ -13,8 +13,5 @@
         "bradlc.vscode-tailwindcss",
         "vitest.explorer"
     ],
-    "unwantedRecommendations": [
-        "dbaeumer.vscode-eslint",
-        "esbenp.prettier-vscode"
-    ]
+    "unwantedRecommendations": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
 }

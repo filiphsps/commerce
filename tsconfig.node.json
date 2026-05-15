@@ -1,4 +1,5 @@
 {
+    "$schema": "https://json.schemastore.org/tsconfig",
     "compilerOptions": {
         "allowSyntheticDefaultImports": true,
         "composite": true,
@@ -9,8 +10,10 @@
         "strictBindCallApply": true,
         "strictFunctionTypes": true,
         "strictNullChecks": true,
-        "strictPropertyInitialization": true
+        "strictPropertyInitialization": true,
+        "target": "ESNext",
+        "typeRoots": ["node_modules/@types", "./apps/**/src/@types", "./packages/**/src/@types"]
     },
-    "exclude": ["node_modules"],
+    "exclude": ["**/.turbo", "**/coverage", "**/dist", "node_modules"],
     "include": ["./vite.config.ts", "packages/**/vite.config.ts"]
 }

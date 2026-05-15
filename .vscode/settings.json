@@ -138,7 +138,6 @@
     },
     "files.trimFinalNewlines": false,
     "files.trimTrailingWhitespace": true,
-    "git-graph.graph.colours": ["#ED1E79", "#EDD382", "#274690"],
     "git.autofetch": "all",
     "git.autofetchPeriod": 30,
     "git.countBadge": "tracked",

@@ -33,11 +33,9 @@
         "strictNullChecks": true,
         "strictPropertyInitialization": true,
         "target": "ESNext",
-        "types": ["node"],
-        "typeRoots": ["node_modules/@types", "./apps/**/src/@types", "./packages/**/src/@types"],
         "useDefineForClassFields": true
     },
-    "exclude": ["**/.turbo", "**/coverage", "**/*.stories.ts", "**/dist.*", "node_modules"],
-    "include": ["packages", "./packages/**/src/*.*", "@types/declaration.d.ts"],
+    "exclude": ["**/.turbo", "**/coverage", "**/*.stories.ts", "**/dist", "node_modules", "**/vite*.ts"],
+    "include": ["./packages/**/src/*.*", "@types/declaration.d.ts"],
     "references": [{ "path": "./tsconfig.node.json" }]
 }
