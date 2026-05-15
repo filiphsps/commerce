@@ -18,6 +18,8 @@ export const PRODUCT_FRAGMENT_MINIMAL_NO_VARIANTS = /* GraphQL */ `
     id
     handle
     availableForSale
+    encodedVariantExistence
+    encodedVariantAvailability
     createdAt
     title
     description
