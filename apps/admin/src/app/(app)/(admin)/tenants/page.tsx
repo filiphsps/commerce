@@ -2,6 +2,7 @@ import 'server-only';
 
 import type { Metadata, Route } from 'next';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { CollectionTable } from '@/components/cms/collection-table';
 import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
 
@@ -21,7 +22,7 @@ export default async function TenantsListPage() {
     // Layout gate already rejects non-admins, but re-check here for
     // defense-in-depth (direct RSC payload requests bypass layout).
     if (user.role !== 'admin') {
-        return null;
+        notFound();
     }
 
     // Fetch all tenants — no tenant scoping filter; the collection IS the

@@ -64,7 +64,10 @@ export default async function EditTenantPage({ params }: EditTenantProps) {
             create: true,
             fields: true,
             read: true,
-            readVersions: true,
+            // No `readVersions` — the tenants collection has no `versions:`
+            // config, so there's no versions table to read. Omitting the key
+            // (rather than setting `true`) avoids misleading Payload's
+            // `<DocumentHeader>` into rendering a Versions tab that 404s.
             update: true,
         },
         docPreferences: { fields: {} },

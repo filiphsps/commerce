@@ -217,6 +217,15 @@ describe('createTenantAction', () => {
         const createCall = payload.create.mock.calls[0]?.[0] as { data: Record<string, unknown> };
         expect(createCall.data).not.toHaveProperty('_status');
     });
+
+    it('editor: calls notFound without creating', async () => {
+        const payload = makePayload();
+        mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload, EDITOR_USER));
+
+        const formData = makeFormData({ name: 'Acme', slug: 'acme', defaultLocale: 'en-US', locales: ['en-US'] });
+        await expect(createTenantAction(formData)).rejects.toThrow('NEXT_NOT_FOUND');
+        expect(payload.create).not.toHaveBeenCalled();
+    });
 });
 
 // ------------------------------------------------------------------
