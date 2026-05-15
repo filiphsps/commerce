@@ -64,6 +64,9 @@
             "cache": false,
             "dependsOn": ["^build"],
             "outputs": ["playwright-report/**", "test-results/**"]
+        },
+        "generate:types": {
+            "cache": true
         }
     }
 }
