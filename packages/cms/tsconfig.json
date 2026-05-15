@@ -1,17 +1,9 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
-    "extends": "../../tsconfig.json",
+    "extends": "../../tsconfig.lib.json",
     "compilerOptions": {
-        "module": "ESNext",
-        "moduleResolution": "Bundler",
-        "noEmit": true,
-        "outDir": "./dist",
-        "rootDir": "./src",
         "jsx": "react-jsx",
-        "jsxImportSource": "react",
-        "lib": ["ESNext", "DOM"],
-        "typeRoots": ["./node_modules/@types", "./src/@types"]
+        "lib": ["ESNext", "DOM"]
     },
-    "exclude": ["node_modules", "coverage", "dist", "**/*.test.*"],
     "include": ["./src/**/*.ts", "./src/**/*.tsx", "./src/@types"]
 }
