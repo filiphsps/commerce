@@ -444,7 +444,10 @@ export const CollectionsPaginationApi = async ({
     if (errors && errors.length > 0) {
         console.error(`[shopify] CollectionsPaginationApi errors for shop ${shop.id}:`, errors);
         throw new ProviderFetchError(
-            `"Collections" query on shop "${shop.id}": ${errors.map((e) => e instanceof Error ? e.message : undefined).filter(e => e).join(', ')}`,
+            `"Collections" query on shop "${shop.id}": ${errors
+                .map((e) => (e instanceof Error ? e.message : undefined))
+                .filter((e) => e)
+                .join(', ')}`,
         );
     }
 
