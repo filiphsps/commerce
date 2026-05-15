@@ -1,0 +1,17 @@
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: var(--block-spacer-small, 0.25rem);
+}
+
+.optionGroup {
+    display: flex;
+    flex-direction: column;
+    gap: var(--block-spacer-small, 0.25rem);
+}
+
+.values {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--block-spacer-small, 0.25rem);
+}

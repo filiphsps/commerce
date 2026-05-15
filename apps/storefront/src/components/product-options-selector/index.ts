@@ -1,3 +1,8 @@
-// Public barrel for the product options selector.
-// Re-exports are added by subsequent tasks as files come online.
-export {};
+export { ProductOptionsSelector } from './product-options-selector';
+export type {
+    ProductOptionsSelectorProps,
+    ProductOptionValueRendererProps,
+    RenderDensity,
+    SelectedOptions,
+} from './product-options-selector';
+export { defaultRenderers, SizeChipRenderer, TextChipRenderer } from './renderers';
