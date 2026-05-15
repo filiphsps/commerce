@@ -5,7 +5,7 @@ describe('mockShop', () => {
     it('returns a shop with the default id and domain', () => {
         const shop = mockShop();
         expect(shop.id).toBe('mock-shop-id');
-        expect(shop.domain).toBe('staging.demo.nordcom.io');
+        expect(shop.domain).toBe('staging.localhost:3000');
         expect(shop.commerceProvider.type).toBe('shopify');
         if (shop.commerceProvider.type === 'shopify') {
             expect(shop.commerceProvider.domain).toBe('mock.shop');

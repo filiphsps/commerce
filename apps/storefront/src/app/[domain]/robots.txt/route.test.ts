@@ -9,14 +9,14 @@ vi.mock('next/cache', () => ({
 const { GET } = await import('@/app/[domain]/robots.txt/route');
 
 function makeRequest(): Request {
-    return new Request('http://staging.demo.nordcom.io/staging.demo.nordcom.io/robots.txt');
+    return new Request('http://staging.localhost:3000/staging.localhost:3000/robots.txt');
 }
 
 describe('app/[domain]/robots.txt', () => {
     describe('GET', () => {
         it('returns 200 status', async () => {
             const res = await GET(makeRequest() as any, {
-                params: Promise.resolve({ domain: 'staging.demo.nordcom.io' }),
+                params: Promise.resolve({ domain: 'staging.localhost:3000' }),
             });
 
             expect(res.status).toBe(200);
@@ -24,7 +24,7 @@ describe('app/[domain]/robots.txt', () => {
 
         it('returns plain-text content-type', async () => {
             const res = await GET(makeRequest() as any, {
-                params: Promise.resolve({ domain: 'staging.demo.nordcom.io' }),
+                params: Promise.resolve({ domain: 'staging.localhost:3000' }),
             });
 
             // NextResponse defaults to text/plain when no explicit type is set
@@ -35,7 +35,7 @@ describe('app/[domain]/robots.txt', () => {
 
         it('body includes a Sitemap directive pointing to sitemap.xml', async () => {
             const res = await GET(makeRequest() as any, {
-                params: Promise.resolve({ domain: 'staging.demo.nordcom.io' }),
+                params: Promise.resolve({ domain: 'staging.localhost:3000' }),
             });
 
             const body = await res.text();
@@ -45,7 +45,7 @@ describe('app/[domain]/robots.txt', () => {
 
         it('body includes User-agent allow rule', async () => {
             const res = await GET(makeRequest() as any, {
-                params: Promise.resolve({ domain: 'staging.demo.nordcom.io' }),
+                params: Promise.resolve({ domain: 'staging.localhost:3000' }),
             });
 
             const body = await res.text();
@@ -55,16 +55,16 @@ describe('app/[domain]/robots.txt', () => {
 
         it('body includes Host directive with shop domain', async () => {
             const res = await GET(makeRequest() as any, {
-                params: Promise.resolve({ domain: 'staging.demo.nordcom.io' }),
+                params: Promise.resolve({ domain: 'staging.localhost:3000' }),
             });
 
             const body = await res.text();
-            expect(body).toContain('Host: https://staging.demo.nordcom.io');
+            expect(body).toContain('Host: https://staging.localhost:3000');
         });
 
         it('body includes Disallow entries for admin and private paths', async () => {
             const res = await GET(makeRequest() as any, {
-                params: Promise.resolve({ domain: 'staging.demo.nordcom.io' }),
+                params: Promise.resolve({ domain: 'staging.localhost:3000' }),
             });
 
             const body = await res.text();

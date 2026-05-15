@@ -18,7 +18,7 @@ vi.mock('next/navigation', async () => ({
 vi.mock('@/api/shopify', () => ({
     ShopifyApolloApiClient: vi.fn().mockResolvedValue({
         query: vi.fn(),
-        shop: vi.fn().mockReturnValue({ id: 'mock-shop-id', domain: 'staging.demo.nordcom.io' }),
+        shop: vi.fn().mockReturnValue({ id: 'mock-shop-id', domain: 'staging.localhost:3000' }),
         locale: vi.fn(),
     }),
 }));
@@ -33,7 +33,7 @@ vi.mock('@/api/shopify/blog', () => ({
 const { GET } = await import('@/app/[domain]/sitemaps/[locale]/blogs.xml/route');
 
 function makeRequest(): Request {
-    return new Request('http://staging.demo.nordcom.io/staging.demo.nordcom.io/sitemaps/en-US/blogs.xml');
+    return new Request('http://staging.localhost:3000/staging.localhost:3000/sitemaps/en-US/blogs.xml');
 }
 
 describe('app/[domain]/sitemaps/[locale]/blogs.xml', () => {
@@ -51,7 +51,7 @@ describe('app/[domain]/sitemaps/[locale]/blogs.xml', () => {
             ]);
 
             const res = await GET(makeRequest() as any, {
-                params: Promise.resolve({ domain: 'staging.demo.nordcom.io', locale: 'en-US' }),
+                params: Promise.resolve({ domain: 'staging.localhost:3000', locale: 'en-US' }),
             });
 
             expect(res.status).toBe(200);
@@ -74,13 +74,13 @@ describe('app/[domain]/sitemaps/[locale]/blogs.xml', () => {
             ]);
 
             const res = await GET(makeRequest() as any, {
-                params: Promise.resolve({ domain: 'staging.demo.nordcom.io', locale: 'en-US' }),
+                params: Promise.resolve({ domain: 'staging.localhost:3000', locale: 'en-US' }),
             });
 
             const body = await res.text();
             expect(body).toContain('<urlset');
             // blog index URL
-            expect(body).toContain('https://staging.demo.nordcom.io/en-US/blogs/news/');
+            expect(body).toContain('https://staging.localhost:3000/en-US/blogs/news/');
             // article URLs
             expect(body).toContain('first-post');
             expect(body).toContain('second-post');
@@ -91,7 +91,7 @@ describe('app/[domain]/sitemaps/[locale]/blogs.xml', () => {
 
             await expect(
                 GET(makeRequest() as any, {
-                    params: Promise.resolve({ domain: 'staging.demo.nordcom.io', locale: 'en-US' }),
+                    params: Promise.resolve({ domain: 'staging.localhost:3000', locale: 'en-US' }),
                 }),
             ).rejects.toThrow('NEXT_NOT_FOUND');
         });
@@ -107,7 +107,7 @@ describe('app/[domain]/sitemaps/[locale]/blogs.xml', () => {
             ]);
 
             const res = await GET(makeRequest() as any, {
-                params: Promise.resolve({ domain: 'staging.demo.nordcom.io', locale: 'en-US' }),
+                params: Promise.resolve({ domain: 'staging.localhost:3000', locale: 'en-US' }),
             });
 
             expect(res.status).toBe(200);

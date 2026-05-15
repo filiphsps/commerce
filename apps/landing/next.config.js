@@ -57,17 +57,12 @@ const config = {
     },
     images: {
         dangerouslyAllowSVG: true,
-        //path: 'https://cloudflare-image.nordcom.workers.dev', // Shopify images fails when using .nordcom.io domain.
         minimumCacheTTL: 60,
         contentDispositionType: 'inline',
         remotePatterns: [
             {
                 protocol: 'https',
                 hostname: 'nordcom.io',
-            },
-            {
-                protocol: 'https',
-                hostname: '**.nordcom.io',
             },
             {
                 protocol: 'https',
@@ -85,6 +80,7 @@ const config = {
                 protocol: 'https',
                 hostname: '**.gravatar.com',
             },
+            // FIXME: Allow SERVICE_DOMAIN.
         ],
         formats: ['image/webp', 'image/avif'],
     },

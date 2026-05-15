@@ -10,7 +10,7 @@ vi.mock('@nordcom/commerce-db', () => ({
     Shop: {
         findByDomain: vi.fn().mockResolvedValue({
             id: 'mock-shop-id',
-            domain: 'staging.demo.nordcom.io',
+            domain: 'staging.localhost:3000',
             contentProvider: {
                 type: 'shopify' as const,
             },
@@ -30,12 +30,12 @@ vi.mock('@nordcom/commerce-db', () => ({
 vi.mock('@/api/shopify', () => ({
     ShopifyApiClient: vi.fn().mockResolvedValue({
         query: vi.fn(),
-        shop: vi.fn().mockReturnValue({ id: 'mock-shop-id', domain: 'staging.demo.nordcom.io' }),
+        shop: vi.fn().mockReturnValue({ id: 'mock-shop-id', domain: 'staging.localhost:3000' }),
         locale: vi.fn(),
     }),
     ShopifyApolloApiClient: vi.fn().mockResolvedValue({
         query: vi.fn(),
-        shop: vi.fn().mockReturnValue({ id: 'mock-shop-id', domain: 'staging.demo.nordcom.io' }),
+        shop: vi.fn().mockReturnValue({ id: 'mock-shop-id', domain: 'staging.localhost:3000' }),
         locale: vi.fn(),
     }),
 }));
@@ -52,7 +52,7 @@ vi.mock('@/api/page', () => ({
 const { GET } = await import('@/app/[domain]/sitemaps/pages.xml/route');
 
 function makeRequest(): Request {
-    return new Request('http://staging.demo.nordcom.io/staging.demo.nordcom.io/sitemaps/pages.xml');
+    return new Request('http://staging.localhost:3000/staging.localhost:3000/sitemaps/pages.xml');
 }
 
 describe('app/[domain]/sitemaps/pages.xml', () => {
@@ -64,7 +64,7 @@ describe('app/[domain]/sitemaps/pages.xml', () => {
             });
 
             const res = await GET(makeRequest() as any, {
-                params: Promise.resolve({ domain: 'staging.demo.nordcom.io' }),
+                params: Promise.resolve({ domain: 'staging.localhost:3000' }),
             });
 
             expect(res.status).toBe(200);
@@ -81,7 +81,7 @@ describe('app/[domain]/sitemaps/pages.xml', () => {
             });
 
             const res = await GET(makeRequest() as any, {
-                params: Promise.resolve({ domain: 'staging.demo.nordcom.io' }),
+                params: Promise.resolve({ domain: 'staging.localhost:3000' }),
             });
 
             const body = await res.text();
@@ -97,18 +97,18 @@ describe('app/[domain]/sitemaps/pages.xml', () => {
             });
 
             const res = await GET(makeRequest() as any, {
-                params: Promise.resolve({ domain: 'staging.demo.nordcom.io' }),
+                params: Promise.resolve({ domain: 'staging.localhost:3000' }),
             });
 
             const body = await res.text();
-            expect(body).toContain('https://staging.demo.nordcom.io/en-US/about/');
+            expect(body).toContain('https://staging.localhost:3000/en-US/about/');
         });
 
         it('returns a valid empty urlset when PagesApi returns null', async () => {
             PagesApiMock.mockResolvedValueOnce(null);
 
             const res = await GET(makeRequest() as any, {
-                params: Promise.resolve({ domain: 'staging.demo.nordcom.io' }),
+                params: Promise.resolve({ domain: 'staging.localhost:3000' }),
             });
 
             expect(res.status).toBe(200);
@@ -128,7 +128,7 @@ describe('app/[domain]/sitemaps/pages.xml', () => {
             });
 
             const res = await GET(makeRequest() as any, {
-                params: Promise.resolve({ domain: 'staging.demo.nordcom.io' }),
+                params: Promise.resolve({ domain: 'staging.localhost:3000' }),
             });
 
             const body = await res.text();
@@ -146,7 +146,7 @@ describe('app/[domain]/sitemaps/pages.xml', () => {
             });
 
             const res = await GET(makeRequest() as any, {
-                params: Promise.resolve({ domain: 'staging.demo.nordcom.io' }),
+                params: Promise.resolve({ domain: 'staging.localhost:3000' }),
             });
 
             const body = await res.text();

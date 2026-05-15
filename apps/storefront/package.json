@@ -44,7 +44,7 @@
     "bugs": {
         "url": "https://github.com/filiphsps/commerce/issues"
     },
-    "homepage": "https://shops.nordcom.io/",
+    "homepage": "https://github.com/filiphsps/commerce/",
     "dependencies": {
         "@apollo/client": "4.1.9",
         "@auth/core": "0.41.2",

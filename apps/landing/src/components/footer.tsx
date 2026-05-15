@@ -21,18 +21,6 @@ export default function Footer({ className, ...props }: FooterProps) {
                     <div className="grid grid-cols-[1fr_1fr] items-center justify-center gap-[0.5rem] md:grid-cols-[1fr_1fr]"></div>
 
                     <div className="flex items-center justify-between gap-x-1 leading-none">
-                        <section className="flex h-8 grow flex-wrap items-center justify-start gap-2">
-                            <iframe
-                                title="Nordcom Status"
-                                src="https://status.nordcom.io/badge?theme=dark"
-                                width="auto"
-                                height="auto"
-                                frameBorder="0"
-                                scrolling="no"
-                                className="-mb-[3px] -ml-1 h-full w-full"
-                            />
-                        </section>
-
                         {process.env.GIT_COMMIT_SHA ? (
                             <section className="flex h-8 items-center justify-end font-semibold text-current text-xs lowercase leading-none empty:hidden md:text-sm">
                                 <Link

@@ -66,10 +66,6 @@ const config = {
             },
             {
                 protocol: 'https',
-                hostname: '**.nordcom.io',
-            },
-            {
-                protocol: 'https',
                 hostname: '**.unsplash.com',
             },
             {
@@ -84,6 +80,7 @@ const config = {
                 protocol: 'https',
                 hostname: '**.gravatar.com',
             },
+            // FIXME: Allow SERVICE_DOMAIN.
         ],
         formats: ['image/webp', 'image/avif'],
     },

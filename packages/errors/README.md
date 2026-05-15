@@ -16,7 +16,7 @@ package gives the platform a shared vocabulary for failures:
 -   **HTTP-mapped `statusCode`** lets API routes turn any thrown error into the right
     response with a single `error.statusCode ?? 500`.
 -   **Self-documenting:** every error exposes a `help` URL pointing at
-    `https://shops.nordcom.io/docs/errors/<code>/`.
+    `https://${SERVICE_DOMAIN}/docs/errors/<code>/`.
 
 ## Install
 
@@ -67,7 +67,7 @@ class Error<TCode = unknown> extends globalThis.Error {
     description: string;   // longer message (may interpolate context)
     code: TCode;           // ApiErrorKind | GenericErrorKind
     statusCode?: number;   // HTTP status (404, 400, 500, …)
-    help: string;          // → https://shops.nordcom.io/docs/errors/<code>/
+    help: string;          // → https://${SERVICE_DOMAIN}/docs/errors/<code>/
 }
 ```
 

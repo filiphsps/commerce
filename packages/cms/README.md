@@ -60,7 +60,6 @@ export { RootPage as default } from '@payloadcms/next/views';
 | `PAYLOAD_SECRET`           | yes       | Payload session + preview cookie signing.                              |
 | `MONGODB_URI`              | yes       | Mongo connection (Payload + the shared `@nordcom/commerce-db` models). |
 | `NEXTAUTH_SECRET`          | yes       | Verifies NextAuth JWTs in the auth bridge (falls back to `AUTH_SECRET`). |
-| `NORDCOM_OPERATOR_EMAILS`  | no        | Comma-separated emails escalated to Payload `admin` role.              |
 | `STOREFRONT_BASE_URL`      | no        | Base URL used by the admin live-preview iframe. Default `http://localhost:1337`. |
 | `STOREFRONT_PREVIEW_SECRET`| yes (prod)| Secret expected by the storefront's `/[domain]/api/cms-preview` route. |
 | `S3_BUCKET`                | no        | When all five S3_* vars are set, media uploads land in S3.             |

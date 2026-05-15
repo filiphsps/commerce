@@ -27,28 +27,6 @@ if (!PAYLOAD_SECRET) throw new Error('PAYLOAD_SECRET is required');
 if (!MONGODB_URI) throw new Error('MONGODB_URI is required');
 if (!NEXTAUTH_SECRET) throw new Error('NEXTAUTH_SECRET (or AUTH_SECRET) is required');
 
-// Lowercase the env list once so the runtime `has()` check is
-// case-insensitive. JWE `email` claims aren't normalized — `Admin@x.com`
-// arriving when the env has `admin@x.com` would otherwise be silently demoted
-// to editor on every login, with no visible signal.
-const OPERATOR_EMAILS = new Set(
-    (process.env.NORDCOM_OPERATOR_EMAILS ?? '')
-        .split(',')
-        .map((s) => s.trim().toLowerCase())
-        .filter(Boolean),
-);
-const isOperatorEmail = (email: string): boolean => OPERATOR_EMAILS.has(email.trim().toLowerCase());
-
-// Without operator emails configured the bridge mints every new user as an
-// editor — including the first admin trying to sign in — so the admin panel
-// boots, accepts logins, and silently exposes only editor-level access. Surface
-// this loudly at startup so it can't slip past code review.
-if (OPERATOR_EMAILS.size === 0) {
-    console.warn(
-        '[payload-config] NORDCOM_OPERATOR_EMAILS is empty — no signed-in user will be promoted to admin. Set it to a comma-separated list of operator emails to unlock admin access.',
-    );
-}
-
 const storefrontBaseUrl = process.env.STOREFRONT_BASE_URL ?? 'http://localhost:1337';
 
 export const buildLivePreviewUrl = ({
@@ -134,7 +112,7 @@ const findOrCreateUser = async (email: string) => {
             collection: 'users',
             data: {
                 email,
-                role: isOperatorEmail(email) ? 'admin' : 'editor',
+                role: 'editor',
                 password: crypto.randomUUID(),
             } as never,
             overrideAccess: true,
@@ -152,7 +130,7 @@ const findOrCreateUser = async (email: string) => {
 };
 
 const recomputeRoles = async (email: string) => {
-    const isOperator = isOperatorEmail(email);
+    const isOperator = false;
     const shopCollaborators = await findShopsForUser(email);
     return computeRolesFromShopMembership({ email, isOperator, shopCollaborators });
 };
