@@ -118,7 +118,6 @@
                 "**/next.config.*",
                 "**/postcss.config.*",
                 "**/tailwind.config.*",
-                "**/sentry.*.config.*",
                 "**/instrumentation.ts",
                 "**/data-cache-handler.mjs"
             ],

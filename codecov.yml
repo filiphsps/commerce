@@ -7,7 +7,7 @@
 coverage:
     precision: 2
     round: down
-    range: '60...90'
+    range: "60...90"
     status:
         project:
             default:
@@ -75,68 +75,67 @@ component_management:
     individual_components:
         # Apps.
         - component_id: app-storefront
-          name: 'App: Storefront'
+          name: "App: Storefront"
           paths:
               - apps/storefront/src/**
         - component_id: app-admin
-          name: 'App: Admin'
+          name: "App: Admin"
           paths:
               - apps/admin/src/**
         - component_id: app-landing
-          name: 'App: Landing'
+          name: "App: Landing"
           paths:
               - apps/landing/src/**
 
         # Workspace packages.
         - component_id: pkg-db
-          name: 'Pkg: @nordcom/commerce-db'
+          name: "Pkg: @nordcom/commerce-db"
           paths:
               - packages/db/src/**
         - component_id: pkg-errors
-          name: 'Pkg: @nordcom/commerce-errors'
+          name: "Pkg: @nordcom/commerce-errors"
           paths:
               - packages/errors/src/**
         - component_id: pkg-marketing-common
-          name: 'Pkg: @nordcom/commerce-marketing-common'
+          name: "Pkg: @nordcom/commerce-marketing-common"
           paths:
               - packages/marketing-common/src/**
         - component_id: pkg-shopify-graphql
-          name: 'Pkg: @nordcom/commerce-shopify-graphql'
+          name: "Pkg: @nordcom/commerce-shopify-graphql"
           paths:
               - packages/shopify-graphql/src/**
         - component_id: pkg-shopify-html
-          name: 'Pkg: @nordcom/commerce-shopify-html'
+          name: "Pkg: @nordcom/commerce-shopify-html"
           paths:
               - packages/shopify-html/src/**
 
         # Rollups for quick "apps vs. packages" comparisons.
         - component_id: layer-apps
-          name: 'Layer: Apps'
+          name: "Layer: Apps"
           paths:
               - apps/**/src/**
         - component_id: layer-packages
-          name: 'Layer: Packages'
+          name: "Layer: Packages"
           paths:
               - packages/**/src/**
 
 # Files that exist in the repo but shouldn't count toward coverage attribution.
 ignore:
-    - '**/*.d.ts'
-    - '**/*.config.*'
-    - '**/dist/**'
-    - '**/.next/**'
-    - '**/coverage/**'
-    - '**/node_modules/**'
-    - '**/public/**'
-    - 'apps/*/e2e/**'
-    - 'apps/*/src/instrumentation.ts'
-    - 'apps/*/src/sentry.*.config.*'
-    - 'apps/*/data-cache-handler.mjs'
-    - 'docs/**'
-    - 'scripts/**'
+    - "**/*.d.ts"
+    - "**/*.config.*"
+    - "**/dist/**"
+    - "**/.next/**"
+    - "**/coverage/**"
+    - "**/node_modules/**"
+    - "**/public/**"
+    - "apps/*/e2e/**"
+    - "apps/*/src/instrumentation.ts"
+    - "apps/*/data-cache-handler.mjs"
+    - "docs/**"
+    - "scripts/**"
 
 comment:
-    layout: 'header, diff, components, flags, files'
+    layout: "header, diff, components, flags, files"
     behavior: default
     require_changes: false
     require_base: false

@@ -104,8 +104,7 @@ To start only one app, use `pnpm dev:storefront`, `pnpm dev:admin`, or `pnpm dev
 | Testing         | [Vitest](https://vitest.dev) 4.x + Playwright for E2E             |
 | Bundling (libs) | [Vite](https://vitejs.dev) (per-package `dist/`)                  |
 | Data            | MongoDB (Mongoose 9.x)                                            |
-| Auth            | NextAuth v5 (`@auth/core`)                                        |
-| Observability   | Sentry, OpenTelemetry, Vercel Analytics                           |
+| Auth            | NextAuth v5 (`@auth/core`)                                        |                      |
 
 ## Commands
 

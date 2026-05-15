@@ -2,7 +2,6 @@ import 'dotenv/config';
 
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { withSentryConfig } from '@sentry/nextjs';
 import createVercelToolbar from '@vercel/toolbar/plugins/next';
 
 const withVercelToolbar = createVercelToolbar();
@@ -130,11 +129,8 @@ const config = {
 
         config.plugins.push(
             new webpack.DefinePlugin({
-                __SENTRY_DEBUG__: false,
-                __SENTRY_TRACING__: false,
                 __RRWEB_EXCLUDE_IFRAME__: true,
                 __RRWEB_EXCLUDE_SHADOW_DOM__: true,
-                __SENTRY_EXCLUDE_REPLAY_WORKER__: true,
             }),
         );
 
@@ -158,35 +154,11 @@ const wrapConfig = (config) => {
     config = withVercelToolbar(config);
 
     if (isDev) {
-        console.warn('Development mode detected, skipping Sentry...');
+        console.warn('Development mode detected, skipping logging...');
         return config;
     }
 
-    const sentryAuthToken = process.env.SENTRY_AUTH_TOKEN;
-
-    return sentryAuthToken
-        ? withSentryConfig(config, {
-              org: 'nordcom',
-              project: 'commerce',
-              authToken: sentryAuthToken,
-              silent: true,
-              debug: isDev,
-              widenClientFileUpload: true,
-              hideSourceMaps: true,
-              disableLogger: true,
-              automaticVercelMonitors: true,
-              transpileClientSDK: false,
-              unstable_sentryWebpackPluginOptions: {
-                  bundleSizeOptimizations: {
-                      excludeDebugStatements: true,
-                      excludePerformanceMonitoring: true,
-                      excludeReplayShadowDom: true,
-                      excludeReplayIframe: true,
-                      excludeReplayWorker: true,
-                  },
-              },
-          })
-        : config;
+    return config;
 };
 
 export default wrapConfig(config);

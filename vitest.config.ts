@@ -14,7 +14,6 @@ const exclude = [
     '**/instrumentation.ts',
     '**/next.config.js',
     '**/node_modules/**/*.*',
-    '**/sentry.*.config.ts',
     '**/tailwind.config.js',
     '**/vite.*.ts',
     '**/vitest.*.ts',
