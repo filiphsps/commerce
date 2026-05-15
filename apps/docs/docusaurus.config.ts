@@ -250,7 +250,7 @@ const config: Config = {
                     })),
                 },
             ],
-            copyright: `Copyright © 2019–${new Date().getFullYear()} Filiph Siitam Sandström.`,
+            copyright: `Copyright © 2019–${new Date().getFullYear()} Filiph Sandström.`,
         },
         prism: {
             theme: prismThemes.github,

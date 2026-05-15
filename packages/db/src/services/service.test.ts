@@ -104,17 +104,20 @@ describe('services', () => {
         });
 
         // Single-result overload (`count: 1` or `id`) promises `Promise<DocType>`.
-        // Returning `[]` on an empty match was a type lie that crashed every
-        // caller doing `(await find(...)).toObject()` — the auth adapter,
-        // `Shop.findByDomain` — with `TypeError: (intermediate value).toObject
-        // is not a function`. Throw `NotFoundError` so the adapter's existing
-        // `CommerceError.isNotFound` branch can map it to `null`.
+        // Returning `[]` on an empty match was a type lie that caused every
+        // caller doing `(await find(...)).toObject()` — the auth adapter, the
+        // storefront's `Shop.findByDomain` — to crash with
+        // `TypeError: (intermediate value).toObject is not a function`.
+        // Throw `NotFoundError` so the documented adapter contract (handle
+        // `NotFoundError` ⇒ return `null`) actually fires.
         //
         // Match against `error.name` rather than `instanceof NotFoundError`:
-        // the errors package ships both `src/index.ts` and `dist/index.js`
-        // and Vitest can load them via different paths, so the two class
-        // identities don't match even though the thrown value is genuinely a
-        // NotFoundError. The `name` field is identical in both builds.
+        // the errors package ships both `src/index.ts` and `dist/index.js` and
+        // Vitest can end up loading the two via different paths (test files
+        // resolve `src`, transitively-imported runtime resolves `dist`), so
+        // the two class identities don't match even though the thrown value
+        // is genuinely a NotFoundError. The `name` field is identical in both
+        // builds.
         it('throws NotFoundError when count:1 query has no matches', async () => {
             vi.mocked((Model as unknown as { exec: ReturnType<typeof vi.fn> }).exec).mockResolvedValueOnce([]);
             await expect(service.find({ filter: { name: 'Nobody' }, count: 1 })).rejects.toMatchObject({

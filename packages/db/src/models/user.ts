@@ -40,7 +40,14 @@ export const UserSchema = new Schema(
 
 type InferredUser = InferSchemaType<typeof UserSchema>;
 
-export type UserBase = BaseDocument & Omit<InferredUser, 'identities'> & { identities: IdentityBase[] };
+// `avatar` and `emailVerified` use `default: null` in the schema; the public
+// API exposes them as optional/nullable to match the NextAuth adapter contract.
+export type UserBase = BaseDocument &
+    Omit<InferredUser, 'identities' | 'avatar' | 'emailVerified'> & {
+        identities: IdentityBase[];
+        avatar?: string;
+        emailVerified: Date | null;
+    };
 
 export const UserModel = (db.models.User || db.model('User', UserSchema)) as ReturnType<
     typeof db.model<typeof UserSchema>

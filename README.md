@@ -190,7 +190,7 @@ Pull requests are welcome. Before opening one:
 
 ## Maintainers
 
--   2019–2026 — Filiph Siitam Sandström, [@filiphsps](https://github.com/filiphsps)
+-   2019–2026 — Filiph Sandström, [@filiphsps](https://github.com/filiphsps)
 -   2023–2024 — Nordcom Group Inc., [@NordcomInc](https://github.com/NordcomInc)
 -   2024     — Nordcom AB, [@NordcomInc](https://github.com/NordcomInc)
 
@@ -198,6 +198,6 @@ Pull requests are welcome. Before opening one:
 
 This repository is private. Copyright notices:
 
--   © 2019–2026 Filiph Siitam Sandström.
+-   © 2019–2026 Filiph Sandström.
 -   © 2023 Nordcom Group Inc.
 -   © 2024 Nordcom AB.
