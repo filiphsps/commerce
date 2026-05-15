@@ -29,15 +29,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
     root: resolve(__dirname),
     envDir: resolve(__dirname),
-    optimizeDeps: {
-        force: true,
-        rolldownOptions: {
-            define: {
-                global: 'globalThis',
-            },
-            plugins: [],
-        },
-    },
     test: {
         bail: 1,
         environment: 'node',

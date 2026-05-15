@@ -1,5 +1,5 @@
 {
-    "$schema": "https://biomejs.dev/schemas/2.4.10/schema.json",
+    "$schema": "https://biomejs.dev/schemas/2.4.15/schema.json",
     "assist": {
         "actions": {
             "source": {
@@ -19,7 +19,6 @@
             "!**/*.d.ts",
             "!**/*.scss",
             "!**/.claude",
-            "!**/.vscode",
             "!**/public/robots.txt*",
             "!**/public/sitemap*.xml*",
             "!**/storybook-static",
@@ -28,7 +27,7 @@
     },
     "formatter": {
         "enabled": true,
-        "includes": ["**", "!package.json"],
+        "includes": ["**"],
         "indentStyle": "space",
         "indentWidth": 4,
         "lineEnding": "lf",
