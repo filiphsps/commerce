@@ -206,7 +206,7 @@ const QuantitySelector = ({
                 aria-label={t('increase')}
                 type="button"
                 className={cn(
-                    'aspect-[3/4] h-full select-none appearance-none rounded-none bg-transparent p-2 font-bold text-current',
+                    'aspect-3/4 h-full select-none appearance-none rounded-none bg-transparent p-2 font-bold text-current',
                     !disabled &&
                         'cursor-pointer hover:bg-primary hover:text-primary-foreground focus-visible:bg-primary focus-visible:text-primary-foreground active:bg-primary active:text-primary-foreground',
                     buttonClassName,
