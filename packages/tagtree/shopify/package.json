@@ -43,13 +43,13 @@
     "repository": {
         "type": "git",
         "url": "git+https://github.com/filiphsps/commerce.git",
-        "directory": "packages/tagtree-shopify"
+        "directory": "packages/tagtree/shopify"
     },
     "keywords": [],
     "bugs": {
         "url": "https://github.com/filiphsps/commerce/issues"
     },
-    "homepage": "https://github.com/filiphsps/commerce/tree/master/packages/tagtree-shopify#readme",
+    "homepage": "https://github.com/filiphsps/commerce/tree/master/packages/tagtree/shopify#readme",
     "dependencies": {
         "@tagtree/core": "workspace:*"
     },
