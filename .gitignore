@@ -27,7 +27,6 @@ apps/**/public/**/robots.txt*
 .swc
 .bak
 docs/superpowers/
-CLAUDE.md
 /.worktrees/
 .superpowers/
 
