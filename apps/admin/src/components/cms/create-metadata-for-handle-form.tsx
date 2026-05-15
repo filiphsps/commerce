@@ -2,7 +2,7 @@
 
 import type { Route } from 'next';
 import { useRouter } from 'next/navigation';
-import { useTransition } from 'react';
+import { type FormEvent, useTransition } from 'react';
 
 export type CreateMetadataForHandleFormProps = {
     /**
@@ -37,7 +37,7 @@ export function CreateMetadataForHandleForm({ domain, basePath, placeholder }: C
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
 
-    function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
         const fd = new FormData(e.currentTarget);
         const handle = String(fd.get('handle') ?? '').trim();

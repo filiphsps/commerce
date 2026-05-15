@@ -1,7 +1,6 @@
 import 'server-only';
 
 import type { Metadata, Route } from 'next';
-import Link from 'next/link';
 import { CollectionTable } from '@/components/cms/collection-table';
 import { CreateMetadataForHandleForm } from '@/components/cms/create-metadata-for-handle-form';
 import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
