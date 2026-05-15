@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { codecovVitePlugin } from '@codecov/vite-plugin';
 import { defineConfig, mergeConfig } from 'vite';
 
-import base from '../vite.config';
+import base from '../../vite.config';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const name = '@tagtree/next';

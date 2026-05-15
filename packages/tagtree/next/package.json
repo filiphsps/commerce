@@ -43,13 +43,13 @@
     "repository": {
         "type": "git",
         "url": "git+https://github.com/filiphsps/commerce.git",
-        "directory": "packages/tagtree-next"
+        "directory": "packages/tagtree/next"
     },
     "keywords": [],
     "bugs": {
         "url": "https://github.com/filiphsps/commerce/issues"
     },
-    "homepage": "https://github.com/filiphsps/commerce/tree/master/packages/tagtree-next#readme",
+    "homepage": "https://github.com/filiphsps/commerce/tree/master/packages/tagtree/next#readme",
     "dependencies": {
         "@tagtree/core": "workspace:*",
         "server-only": "0.0.1"
