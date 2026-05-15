@@ -71,12 +71,17 @@ export default async function CountriesPage({ params }: { params: CountriesPageP
             <form
                 action={async (formData: FormData) => {
                     'use server';
-                    const locale = formData.get('locale') as string | null;
+                    const localeRaw = formData.get('locale') as string | null;
+                    if (!localeRaw) {
+                        throw new UnknownLocaleError();
+                    }
 
+                    const locale = Locale.from(localeRaw);
                     if (!locale) {
                         throw new UnknownLocaleError();
                     }
-                    const { code } = Locale.from(locale);
+
+                    const { code } = locale;
 
                     // Validate the candidate against the shop's actual locale
                     // list. `Locale.from` only checks the format — without the

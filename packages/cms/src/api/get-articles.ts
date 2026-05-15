@@ -1,5 +1,6 @@
 import 'server-only';
 import type { Payload } from 'payload';
+import type { FindFallbackLocale, FindLocale } from './_locale-cast';
 import { assertShopId } from './assert-shop';
 import type { LocaleRef, ShopRef } from './get-page';
 import { getPayloadInstance } from './get-payload-instance';
@@ -36,8 +37,8 @@ export const getArticles = async ({
     return payload.find({
         collection: 'articles',
         where,
-        locale: locale.code,
-        fallbackLocale: shop.i18n.defaultLocale,
+        locale: locale.code as FindLocale,
+        fallbackLocale: shop.i18n.defaultLocale as FindFallbackLocale,
         depth: 1,
         limit,
         page,

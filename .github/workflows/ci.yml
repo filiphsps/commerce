@@ -1,217 +1,214 @@
 name: CI
 
 on:
-    pull_request:
-    push:
-        branches:
-            - master
-            - staging
-            - 'dev/*'
-            - 'fix/*'
-        paths-ignore:
-            - '**.md'
-            - '**.txt'
-            - 'LICENSE'
+  pull_request:
+  push:
+    branches:
+      - master
+      - staging
+      - "dev/*"
+      - "fix/*"
+    paths-ignore:
+      - "**.md"
+      - "**.txt"
+      - "LICENSE"
 
 env:
-    CI: true
-    MONGODB_URI: ${{ secrets.MONGODB_URI }}
-    TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-    TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-    SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY }}
-    SHOPIFY_API_SECRET_KEY: ${{ secrets.SHOPIFY_API_SECRET_KEY }}
-    AUTH_SECRET: 'development-secret'
-    SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-    SENTRY_ORG: ${{ vars.SENTRY_ORG }}
-    SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
-    EDGE_CONFIG: ${{ secrets.EDGE_CONFIG }}
+  CI: true
+  MONGODB_URI: ${{ secrets.MONGODB_URI }}
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+  SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY }}
+  SHOPIFY_API_SECRET_KEY: ${{ secrets.SHOPIFY_API_SECRET_KEY }}
+  AUTH_SECRET: "development-secret"
+  EDGE_CONFIG: ${{ secrets.EDGE_CONFIG }}
 
 jobs:
-    build:
-        name: 🔨 Build
-        needs: [lint, typecheck]
-        timeout-minutes: 25
-        runs-on: ubuntu-latest
-        steps:
-            - name: 🕶️ Checkout repository
-              uses: actions/checkout@v6
+  build:
+    name: 🔨 Build
+    needs: [lint, typecheck]
+    timeout-minutes: 25
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🕶️ Checkout repository
+        uses: actions/checkout@v6
 
-            - name: 🚀 Bootstrap
-              uses: ./.github/common/bootstrap
+      - name: 🚀 Bootstrap
+        uses: ./.github/common/bootstrap
 
-            - name: 🔨 Build All
-              run: pnpm run build
+      - name: 🔨 Build All
+        run: pnpm run build
 
-    test:
-        name: 🧪 Test
-        needs: [lint, typecheck]
-        timeout-minutes: 15
-        runs-on: ubuntu-latest
-        steps:
-            - name: 🕶️ Checkout repository
-              uses: actions/checkout@v6
+  test:
+    name: 🧪 Test
+    needs: [lint, typecheck]
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🕶️ Checkout repository
+        uses: actions/checkout@v6
 
-            - name: 🚀 Bootstrap
-              uses: ./.github/common/bootstrap
+      - name: 🚀 Bootstrap
+        uses: ./.github/common/bootstrap
 
-            - name: 🔨 Build Packages
-              run: pnpm run build:packages
+      - name: 🔨 Build Packages
+        run: pnpm run build:packages
 
-            - name: 🧪 Test
-              run: pnpm run test
+      - name: 🧪 Test
+        run: pnpm run test
 
-            # Each upload step gates on `hashFiles(...)` so we don't push empty
-            # results to codecov when an earlier step failed before vitest could
-            # produce coverage / junit (e.g. install dependencies blew up).
-            - name: 🦺 Report Coverage to GitHub
-              if: ${{ !cancelled() && hashFiles('coverage/coverage-summary.json') != '' }}
-              uses: davelosert/vitest-coverage-report-action@v2.12
+      # Each upload step gates on `hashFiles(...)` so we don't push empty
+      # results to codecov when an earlier step failed before vitest could
+      # produce coverage / junit (e.g. install dependencies blew up).
+      - name: 🦺 Report Coverage to GitHub
+        if: ${{ !cancelled() && hashFiles('coverage/coverage-summary.json') != '' }}
+        uses: davelosert/vitest-coverage-report-action@v2.12
 
-            # Single combined vitest run produces one coverage-final.json at repo root
-            # covering all workspace projects. Codecov splits it per-app via the components
-            # defined in codecov.yml (path-based); the `unit` flag tags the upload as
-            # unit-test coverage so we can compare against `e2e` later.
-            - name: 🦺 Codecov Coverage Reports
-              if: ${{ !cancelled() && hashFiles('coverage/coverage-final.json') != '' }}
-              uses: codecov/codecov-action@v6
-              with:
-                  files: ./coverage/coverage-final.json
-                  flags: unit
-              env:
-                  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
-            # Powers Codecov Test Analytics (failed-test grouping, flakiness
-            # detection, slow-test trends). The legacy `codecov/test-results-action`
-            # is deprecated; `codecov-action` with `report_type: test_results` is
-            # the replacement. Same `unit` flag as the coverage upload so Codecov
-            # ties tests ↔ coverage in the per-flag views.
-            # See https://docs.codecov.com/docs/test-analytics
-            - name: 🦺 Codecov Test Results
-              if: ${{ !cancelled() && hashFiles('junit.xml') != '' }}
-              uses: codecov/codecov-action@v6
-              with:
-                  token: ${{ secrets.CODECOV_TOKEN }}
-                  files: ./junit.xml
-                  report_type: test_results
-                  flags: unit
-
-    lint:
-        name: 📋 Lint
-        timeout-minutes: 15
-        runs-on: ubuntu-latest
-        steps:
-            - name: 🕶️ Checkout repository
-              uses: actions/checkout@v6
-
-            - name: 🚀 Bootstrap
-              uses: ./.github/common/bootstrap
-
-            - name: 🔨 Build Packages
-              run: pnpm run build:packages
-
-            - name: 📋 Lint
-              run: pnpm run lint
-
-    typecheck:
-        name: ✅ Typecheck
-        timeout-minutes: 15
-        runs-on: ubuntu-latest
-        steps:
-            - name: 🕶️ Checkout repository
-              uses: actions/checkout@v6
-
-            - name: 🚀 Bootstrap
-              uses: ./.github/common/bootstrap
-
-            - name: 🔨 Build Packages
-              run: pnpm run build:packages
-
-            - name: ✅ Typecheck
-              run: pnpm run typecheck
-
-    e2e:
-        name: 🎭 E2E
-        needs: build
-        timeout-minutes: 20
-        runs-on: ubuntu-latest
-        strategy:
-            fail-fast: false
-            matrix:
-                app: [storefront, admin]
-        # NODE_V8_COVERAGE makes the Next.js `next start` process emit raw V8 coverage
-        # to disk for every file it executes during the e2e run. After tests we run
-        # `c8 report` to convert that into an istanbul-style coverage JSON that
-        # codecov can ingest. This captures SSR / API-route / middleware coverage;
-        # browser-side coverage would require a separate Playwright fixture
-        # (e.g. monocart-reporter) and is out of scope for this pass.
+      # Single combined vitest run produces one coverage-final.json at repo root
+      # covering all workspace projects. Codecov splits it per-app via the components
+      # defined in codecov.yml (path-based); the `unit` flag tags the upload as
+      # unit-test coverage so we can compare against `e2e` later.
+      - name: 🦺 Codecov Coverage Reports
+        if: ${{ !cancelled() && hashFiles('coverage/coverage-final.json') != '' }}
+        uses: codecov/codecov-action@v6
+        with:
+          files: ./coverage/coverage-final.json
+          flags: unit
         env:
-            NODE_V8_COVERAGE: ${{ github.workspace }}/coverage/e2e-raw
-        steps:
-            - name: 🕶️ Checkout repository
-              uses: actions/checkout@v6
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-            - name: 🚀 Bootstrap
-              uses: ./.github/common/bootstrap
+      # Powers Codecov Test Analytics (failed-test grouping, flakiness
+      # detection, slow-test trends). The legacy `codecov/test-results-action`
+      # is deprecated; `codecov-action` with `report_type: test_results` is
+      # the replacement. Same `unit` flag as the coverage upload so Codecov
+      # ties tests ↔ coverage in the per-flag views.
+      # See https://docs.codecov.com/docs/test-analytics
+      - name: 🦺 Codecov Test Results
+        if: ${{ !cancelled() && hashFiles('junit.xml') != '' }}
+        uses: codecov/codecov-action@v6
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./junit.xml
+          report_type: test_results
+          flags: unit
 
-            - name: 🔨 Build Packages
-              run: pnpm run build:packages
+  lint:
+    name: 📋 Lint
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🕶️ Checkout repository
+        uses: actions/checkout@v6
 
-            - name: 🔨 Build App
-              run: pnpm --filter @nordcom/commerce-${{ matrix.app }} build
+      - name: 🚀 Bootstrap
+        uses: ./.github/common/bootstrap
 
-            - name: 🎭 Install Playwright Browsers
-              run: pnpm --filter @nordcom/commerce-${{ matrix.app }} exec playwright install --with-deps chromium
+      - name: 🔨 Build Packages
+        run: pnpm run build:packages
 
-            - name: 🧪 Run Playwright Tests
-              run: pnpm --filter @nordcom/commerce-${{ matrix.app }} test:e2e
+      - name: 📋 Lint
+        run: pnpm run lint
 
-            - name: 🦺 Convert V8 Coverage to Codecov Format
-              if: ${{ !cancelled() }}
-              run: |
-                  pnpm dlx c8@10 report \
-                      --reporter=json \
-                      --reporter=lcov \
-                      --reports-dir=./coverage/e2e \
-                      --src=apps/${{ matrix.app }} \
-                      --include='apps/${{ matrix.app }}/src/**' \
-                      --exclude='**/*.d.ts' \
-                      --exclude='**/*.config.*' \
-                      --exclude='**/.next/**' \
-                      --exclude='apps/*/e2e/**' \
-                  || echo "c8 report exited non-zero (likely no coverage emitted); continuing"
+  typecheck:
+    name: ✅ Typecheck
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🕶️ Checkout repository
+        uses: actions/checkout@v6
 
-            # Gate on c8 actually having emitted something — if `next start`
-            # didn't write any V8 coverage (process killed before exit, etc.),
-            # `coverage/e2e/coverage-final.json` won't exist and we'd be
-            # uploading nothing.
-            - name: 🦺 Codecov E2E Coverage
-              if: ${{ !cancelled() && hashFiles('coverage/e2e/coverage-final.json') != '' }}
-              uses: codecov/codecov-action@v6
-              with:
-                  files: ./coverage/e2e/coverage-final.json,./coverage/e2e/lcov.info
-                  flags: e2e,e2e-${{ matrix.app }}
-              env:
-                  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - name: 🚀 Bootstrap
+        uses: ./.github/common/bootstrap
 
-            - name: 📦 Upload Report on Failure
-              if: failure()
-              uses: actions/upload-artifact@v7
-              with:
-                  name: playwright-report-${{ matrix.app }}
-                  path: apps/${{ matrix.app }}/playwright-report/
-                  retention-days: 7
+      - name: 🔨 Build Packages
+        run: pnpm run build:packages
 
-    dispatch:
-        name: 🗣️ Dispatch
-        needs: [build, test]
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-        timeout-minutes: 15
-        runs-on: ubuntu-latest
-        steps:
-            - name: 🕶️ Checkout repository
-              uses: actions/checkout@v6
-            # Deliberately empty as this is just used
-            # to trigger other workflows when this one
-            # completes successfully. Otherwise we can't
-            # make sure that every test, lint and typecheck
-            # job has validated and completed successfully.
+      - name: ✅ Typecheck
+        run: pnpm run typecheck
+
+  e2e:
+    name: 🎭 E2E
+    needs: build
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [storefront, admin]
+    # NODE_V8_COVERAGE makes the Next.js `next start` process emit raw V8 coverage
+    # to disk for every file it executes during the e2e run. After tests we run
+    # `c8 report` to convert that into an istanbul-style coverage JSON that
+    # codecov can ingest. This captures SSR / API-route / middleware coverage;
+    # browser-side coverage would require a separate Playwright fixture
+    # (e.g. monocart-reporter) and is out of scope for this pass.
+    env:
+      NODE_V8_COVERAGE: ${{ github.workspace }}/coverage/e2e-raw
+    steps:
+      - name: 🕶️ Checkout repository
+        uses: actions/checkout@v6
+
+      - name: 🚀 Bootstrap
+        uses: ./.github/common/bootstrap
+
+      - name: 🔨 Build Packages
+        run: pnpm run build:packages
+
+      - name: 🔨 Build App
+        run: pnpm --filter @nordcom/commerce-${{ matrix.app }} build
+
+      - name: 🎭 Install Playwright Browsers
+        run: pnpm --filter @nordcom/commerce-${{ matrix.app }} exec playwright install --with-deps chromium
+
+      - name: 🧪 Run Playwright Tests
+        run: pnpm --filter @nordcom/commerce-${{ matrix.app }} test:e2e
+
+      - name: 🦺 Convert V8 Coverage to Codecov Format
+        if: ${{ !cancelled() }}
+        run: |
+          pnpm dlx c8@10 report \
+              --reporter=json \
+              --reporter=lcov \
+              --reports-dir=./coverage/e2e \
+              --src=apps/${{ matrix.app }} \
+              --include='apps/${{ matrix.app }}/src/**' \
+              --exclude='**/*.d.ts' \
+              --exclude='**/*.config.*' \
+              --exclude='**/.next/**' \
+              --exclude='apps/*/e2e/**' \
+          || echo "c8 report exited non-zero (likely no coverage emitted); continuing"
+
+      # Gate on c8 actually having emitted something — if `next start`
+      # didn't write any V8 coverage (process killed before exit, etc.),
+      # `coverage/e2e/coverage-final.json` won't exist and we'd be
+      # uploading nothing.
+      - name: 🦺 Codecov E2E Coverage
+        if: ${{ !cancelled() && hashFiles('coverage/e2e/coverage-final.json') != '' }}
+        uses: codecov/codecov-action@v6
+        with:
+          files: ./coverage/e2e/coverage-final.json,./coverage/e2e/lcov.info
+          flags: e2e,e2e-${{ matrix.app }}
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: 📦 Upload Report on Failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report-${{ matrix.app }}
+          path: apps/${{ matrix.app }}/playwright-report/
+          retention-days: 7
+
+  dispatch:
+    name: 🗣️ Dispatch
+    needs: [build, test]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🕶️ Checkout repository
+        uses: actions/checkout@v6
+      # Deliberately empty as this is just used
+      # to trigger other workflows when this one
+      # completes successfully. Otherwise we can't
+      # make sure that every test, lint and typecheck
+      # job has validated and completed successfully.

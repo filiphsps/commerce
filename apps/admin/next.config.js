@@ -6,9 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { withPayload } from '@payloadcms/next/withPayload';
 import createVercelToolbar from '@vercel/toolbar/plugins/next';
 
-const withVercelToolbar = createVercelToolbar({
-    devServerPort: 3000,
-});
+const withVercelToolbar = createVercelToolbar();
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -40,7 +38,11 @@ const config = {
     productionBrowserSourceMaps: true,
     compress: true,
     trailingSlash: true,
-    transpilePackages: [],
+    // `@payloadcms/ui` field components are imported directly by routes in
+    // `(app)/(dashboard)/[domain]/content/*`. Without explicit transpilation
+    // Next.js doesn't process the package's `.scss` imports, and the field
+    // wrappers render unstyled.
+    transpilePackages: ['@payloadcms/ui'],
     // The Payload admin is a third-party UI we don't fully control. Every
     // experimental flag that rewrites React semantics (auto-memoization,
     // server-React optimization) or aggressively caches segments has been
@@ -55,7 +57,9 @@ const config = {
     //   admin stylesheet links from the initial shell.
     // cacheComponents: true,
     typedRoutes: true,
-    turbopack: { root: path.resolve(path.join(__dirname, '../..')) },
+    turbopack: {
+        root: path.resolve(path.join(__dirname, '../..')),
+    },
     experimental: {
         appNavFailHandling: true,
         // `caseSensitiveRoutes` makes Payload's camelCase collection URLs
@@ -71,20 +75,21 @@ const config = {
         // `proxyPrefetch: 'flexible'` changes how routes are prefetched on
         // hover — can stale Payload's data-fetching tree. Off until proven.
         // proxyPrefetch: 'flexible',
-        optimizePackageImports: ['@apollo/client', '@shopify/hydrogen-react'],
+        optimizePackageImports: undefined,
         // `optimizeServerReact` rewrites RSC trees in ways that can break
         // third-party admin UIs. Off for the admin.
         // optimizeServerReact: true,
-        parallelServerBuildTraces: true,
-        parallelServerCompiles: true,
+        parallelServerBuildTraces: undefined,
+        parallelServerCompiles: undefined,
         scrollRestoration: true,
-        serverComponentsHmrCache: true,
+        serverComponentsHmrCache: isDev,
         serverSourceMaps: true,
         taint: true,
         typedEnv: true,
         useWasmBinary: false,
-        webpackBuildWorker: true,
+        webpackBuildWorker: undefined,
         rootParams: true,
+        turbopackServerFastRefresh: isDev,
     },
     images: {
         dangerouslyAllowSVG: true,
@@ -112,32 +117,9 @@ const config = {
         return process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
     },
 
-    webpack: !isDev
-        ? (config, { webpack, isServer }) => {
-              config.experiments = {
-                  ...config.experiments,
-                  topLevelAwait: true,
-              };
-
-              config.plugins.push(
-                  new webpack.DefinePlugin({
-                      __SENTRY_DEBUG__: false,
-                      __SENTRY_TRACING__: false,
-                      __RRWEB_EXCLUDE_IFRAME__: true,
-                      __RRWEB_EXCLUDE_SHADOW_DOM__: true,
-                      __SENTRY_EXCLUDE_REPLAY_WORKER__: true,
-                  }),
-              );
-
-              if (isServer) {
-                  config.devtool = 'source-map';
-              }
-              return config;
-          }
-        : undefined,
-
     // We handle all redirects at the edge.
     skipTrailingSlashRedirect: true,
 };
 
-export default withPayload(withVercelToolbar(config));
+//
+export default withVercelToolbar(withPayload(config));

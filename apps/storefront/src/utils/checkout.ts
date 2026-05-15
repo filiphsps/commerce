@@ -96,9 +96,7 @@ export const Checkout = async ({
     // Drop lines whose variant has been deleted upstream — Shopify will strip
     // them at checkout but our analytics event would crash on the
     // non-null assertions below.
-    const safeLines = (cart.lines.filter(Boolean) as CartLine[]).filter(
-        (line) => line.merchandise && line.merchandise.product,
-    );
+    const safeLines = (cart.lines.filter(Boolean) as CartLine[]).filter((line) => line.merchandise?.product);
 
     try {
         trackable.postEvent('begin_checkout', {

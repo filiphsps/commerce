@@ -1,29 +1,28 @@
+import type { OnlineShop } from '@nordcom/commerce-db';
 import { createCacheInstance, defineCache, encodeSegment, str } from '@tagtree/core';
 import { nextAdapter } from '@tagtree/next';
-
-import type { OnlineShop } from '@nordcom/commerce-db';
 import type { Locale } from '@/utils/locale';
 
 // The storefront's Shopify-facing cache. CMS reads/writes use the schema declared
 // in @nordcom/commerce-cms — they're separate namespaces with separate tag trees.
 const shopifyCacheSchema = defineCache({
-	namespace: 'shopify',
-	tenant: {
-		type: {} as OnlineShop,
-		key: (s) => s.id,
-		extraTags: (s) => [s.domain],
-	},
-	qualifier: {
-		type: {} as Locale,
-		key: (l) => l.code,
-	},
-	entities: {
-		product: { params: { handle: str }, parents: ['products'] },
-		products: {},
-		collection: { params: { handle: str }, parents: ['collections'] },
-		collections: {},
-		page: { params: { handle: str } },
-	},
+    namespace: 'shopify',
+    tenant: {
+        type: {} as OnlineShop,
+        key: (s) => s.id,
+        extraTags: (s) => [s.domain],
+    },
+    qualifier: {
+        type: {} as Locale,
+        key: (l) => l.code,
+    },
+    entities: {
+        product: { params: { handle: str }, parents: ['products'] },
+        products: {},
+        collection: { params: { handle: str }, parents: ['collections'] },
+        collections: {},
+        page: { params: { handle: str } },
+    },
 });
 
 export const cache = createCacheInstance(shopifyCacheSchema, nextAdapter());

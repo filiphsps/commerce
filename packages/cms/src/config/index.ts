@@ -1,6 +1,6 @@
 import { mongooseAdapter } from '@payloadcms/db-mongodb';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
-import type { AuthStrategy, Payload, SanitizedConfig } from 'payload';
+import type { AuthStrategy, SanitizedConfig } from 'payload';
 import { buildConfig } from 'payload';
 import { allCollections, buildUsers } from '../collections';
 import { buildMultiTenantPlugin, storagePluginFromEnv } from '../plugins';
@@ -45,15 +45,6 @@ export type BuildPayloadConfigOptions = {
         breakpoints?: Array<{ label: string; name: string; width: number; height: number }>;
     };
     /**
-     * Optional callback invoked once Payload has finished initializing. Use
-     * for one-shot backfills (e.g. mirroring source-of-truth Shop rows into
-     * the `tenants` collection) that MUST complete before any request
-     * handler runs — fire-and-forget at module load races with cold-start
-     * requests and can leave the multi-tenant plugin redirecting users to
-     * `/cms` because no tenants exist yet.
-     */
-    onInit?: (payload: Payload) => Promise<void> | void;
-    /**
      * Optional `sharp` instance to enable image resizing. Payload doesn't
      * auto-detect the package — without this it logs "Image resizing is
      * enabled for one or more collections, but sharp not installed" on
@@ -66,7 +57,13 @@ export type BuildPayloadConfigOptions = {
 
 import { cmsDefaultLocale as DEFAULT_DEFAULT_LOCALE, cmsDefaultLocales as DEFAULT_LOCALES } from './locales';
 
-export { cmsDefaultLocale, cmsDefaultLocales, isValidLocale, resolveCmsDefaultLocale, resolveCmsLocales } from './locales';
+export {
+    cmsDefaultLocale,
+    cmsDefaultLocales,
+    isValidLocale,
+    resolveCmsDefaultLocale,
+    resolveCmsLocales,
+} from './locales';
 
 export const buildPayloadConfig = async ({
     secret,
@@ -81,7 +78,6 @@ export const buildPayloadConfig = async ({
     importMapBaseDir,
     importMapFile,
     livePreview,
-    onInit,
     sharp,
 }: BuildPayloadConfigOptions): Promise<SanitizedConfig> => {
     const plugins = [buildMultiTenantPlugin()];
@@ -158,19 +154,5 @@ export const buildPayloadConfig = async ({
         ...adminConfig,
         ...(sharp ? { sharp } : {}),
         routes: { admin: '/cms' },
-        ...(onInit
-            ? {
-                  onInit: async (payload) => {
-                      try {
-                          await onInit(payload);
-                      } catch (err) {
-                          // onInit failures shouldn't crash Payload boot — log
-                          // loudly so the bug is visible in deploy logs but
-                          // keep the admin functional.
-                          console.error('[cms] onInit hook failed:', err);
-                      }
-                  },
-              }
-            : {}),
     });
 };

@@ -102,7 +102,5 @@ export const attachShopSync = (shopModel: ShopModelLike, payload: PayloadResolve
         shopModel.post('save', hook);
         return;
     }
-    throw new TypeError(
-        '[cms] attachShopSync: expected a Mongoose Model with `.schema.post` or a Schema with `.post`',
-    );
+    throw new TypeError('[cms] attachShopSync: expected a Mongoose Model with `.schema.post` or a Schema with `.post`');
 };

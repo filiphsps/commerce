@@ -13,26 +13,26 @@ export default mergeConfig(
     base,
     defineConfig({
         optimizeDeps: {
-            external: ['mongoose', 'mongodb'],
-            esbuildOptions: {
-                target: 'esnext',
-            },
+            force: true,
         },
         root: resolve(__dirname),
         build: {
             target: 'esnext',
-            rollupOptions: {
+            rolldownOptions: {
+                external: ['mongoose', 'mongodb'],
                 output: {
-                    name: name,
+                    name,
                 },
             },
         },
-        plugins: [
-            codecovVitePlugin({
-                enableBundleAnalysis: !!process.env.CODECOV_TOKEN,
-                bundleName: name,
-                uploadToken: process.env.CODECOV_TOKEN,
-            }),
-        ],
+        plugins: process.env.CI
+            ? [
+                  codecovVitePlugin({
+                      enableBundleAnalysis: !!process.env.CODECOV_TOKEN,
+                      bundleName: name,
+                      uploadToken: process.env.CODECOV_TOKEN,
+                  }),
+              ]
+            : [],
     }),
 );

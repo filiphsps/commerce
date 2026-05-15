@@ -23,7 +23,7 @@ package gives the platform a shared vocabulary for failures:
 - **HTTP-mapped `statusCode`** lets API routes turn any thrown error into the right
   response with a single `error.statusCode ?? 500`.
 - **Self-documenting:** every error exposes a `help` URL pointing at
-  `https://shops.nordcom.io/docs/errors/<code>/`.
+  `https://${SERVICE_DOMAIN}/docs/errors/<code>/`.
 
 ## In this section
 

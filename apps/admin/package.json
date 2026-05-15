@@ -9,9 +9,9 @@
         ".next/cache"
     ],
     "scripts": {
-        "start": "next start -p $PORT",
-        "dev": "next dev -p 3000",
-        "build": "next build --webpack",
+        "start": "next start -p $PORT --turbo",
+        "dev": "NODE_ENV=development next dev --turbo -p 3000",
+        "build": "next build --turbo",
         "clean": "rimraf -g dist coverage .turbo .next *.tsbuildinfo *.log node_modules",
         "lint": "biome lint .",
         "format": "concurrently -i pnpm:format:*",
@@ -28,8 +28,8 @@
     },
     "contributors": [
         {
-            "name": "Filiph Siitam Sandström",
-            "email": "filiph@nordcom.io",
+            "name": "Filiph Sandström",
+            "email": "filfat@hotmail.se",
             "url": "https://github.com/filiphsps/"
         }
     ],
@@ -44,24 +44,24 @@
     "bugs": {
         "url": "https://github.com/filiphsps/commerce/issues"
     },
-    "homepage": "https://shops.nordcom.io/",
+    "homepage": "https://github.com/filiphsps/commerce/",
     "dependencies": {
         "@auth/core": "0.41.2",
         "@next/third-parties": "16.2.6",
+        "@nordcom/commerce-cms": "workspace:*",
         "@nordcom/commerce-db": "workspace:*",
         "@nordcom/commerce-errors": "workspace:*",
         "@nordcom/commerce-marketing-common": "workspace:*",
-        "@nordcom/commerce-cms": "workspace:*",
         "@nordcom/nordstar": "0.0.75",
+        "@opentelemetry/api-logs": "0.217.0",
+        "@opentelemetry/instrumentation": "0.217.0",
+        "@opentelemetry/sdk-logs": "0.217.0",
         "@payloadcms/db-mongodb": "3.84.0",
         "@payloadcms/next": "3.84.0",
         "@payloadcms/plugin-multi-tenant": "3.84.0",
         "@payloadcms/richtext-lexical": "3.84.0",
         "@payloadcms/storage-s3": "3.84.0",
-        "payload": "3.84.0",
-        "@opentelemetry/api-logs": "0.217.0",
-        "@opentelemetry/instrumentation": "0.217.0",
-        "@opentelemetry/sdk-logs": "0.217.0",
+        "@payloadcms/ui": "3.84.0",
         "@radix-ui/react-avatar": "1.1.11",
         "@radix-ui/react-scroll-area": "1.2.10",
         "@shopify/shopify-api": "13.0.0",
@@ -74,6 +74,7 @@
         "next-auth": "5.0.0-beta.31",
         "nextjs-toploader": "3.9.17",
         "nprogress": "0.2.0",
+        "payload": "3.84.0",
         "react": "19.2.6",
         "react-dom": "19.2.6",
         "sharp": "0.34.5",
@@ -84,7 +85,6 @@
         "@happy-dom/global-registrator": "20.9.0",
         "@playwright/test": "1.60.0",
         "@tailwindcss/forms": "0.5.11",
-        "@tailwindcss/postcss": "4.3.0",
         "@tailwindcss/typography": "0.5.19",
         "@testing-library/jest-dom": "6.9.1",
         "@testing-library/react": "16.3.2",

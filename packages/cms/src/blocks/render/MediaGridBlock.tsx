@@ -10,14 +10,12 @@ const imageAlt = (item: MediaItem): string => {
     return typeof item.image === 'string' ? '' : (item.image.alt ?? '');
 };
 
-export function MediaGridBlock({
-    block,
-    context,
-}: { block: MediaGridBlockNode; context: BlockRenderContext }) {
+export function MediaGridBlock({ block, context }: { block: MediaGridBlockNode; context: BlockRenderContext }) {
     return (
         <div className="cms-media-grid" data-item-type={block.itemType} style={{ ['--cols' as string]: block.columns }}>
             {block.items.map((item, idx) => {
                 const url = imageUrl(item);
+                // biome-ignore lint/performance/noImgElement: FIXME.
                 const inner = url ? <img src={url} alt={imageAlt(item)} loading="lazy" /> : null;
                 // Same fix as BannerBlock — the previous code only honoured
                 // raw `link.url`, dropping every internal link kind. Route
@@ -25,11 +23,7 @@ export function MediaGridBlock({
                 // links wrap the image too.
                 const resolved = resolveLinkRef(item.link, { locale: context.locale });
                 const wrapped = resolved ? (
-                    <a
-                        href={resolved.href}
-                        target={resolved.openInNewTab ? '_blank' : undefined}
-                        rel="noreferrer"
-                    >
+                    <a href={resolved.href} target={resolved.openInNewTab ? '_blank' : undefined} rel="noreferrer">
                         {inner}
                     </a>
                 ) : (

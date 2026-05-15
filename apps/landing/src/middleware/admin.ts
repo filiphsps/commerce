@@ -3,7 +3,7 @@ import { MissingEnvironmentVariableError } from '@nordcom/commerce-errors';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-export const ADMIN_HOSTNAME = 'admin.shops.nordcom.io';
+export const ADMIN_HOSTNAME = `admin.${process.env.SERVICE_DOMAIN}`;
 
 export const admin = async (req: NextRequest): Promise<NextResponse> => {
     const url = req.nextUrl.clone();

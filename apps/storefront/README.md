@@ -17,7 +17,7 @@ is [`apps/landing`](../landing).
 -   **Auth:** NextAuth v5 (`@auth/core`)
 -   **Data:** `@nordcom/commerce-db` for tenant resolution (Mongo / Mongoose)
 -   **Styles:** Tailwind CSS 4, SCSS modules, [Nordstar](https://www.npmjs.com/package/@nordcom/nordstar)
--   **Observability:** Sentry, OpenTelemetry, Vercel Analytics / Speed Insights / Toolbar
+-   **Observability:** OpenTelemetry, Vercel Analytics / Speed Insights / Toolbar
 
 ## Quick start
 
@@ -78,7 +78,7 @@ apps/storefront/
 │   ├── cms-loaders.ts          # BlockLoaders for the CMS BlockRenderer (Shopify-aware blocks)
 │   ├── components/             # React components (incl. <CMSContent /> dispatcher)
 │   ├── hooks/                  # Client hooks
-│   ├── instrumentation.ts      # OpenTelemetry / Sentry bootstrap
+│   ├── instrumentation.ts      # OpenTelemetry
 │   ├── locales/                # i18n dictionaries (en, sv, de, es, fr, no)
 │   ├── models/                 # UI / data models
 │   ├── scss/                   # Global styles

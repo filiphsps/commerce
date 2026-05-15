@@ -5,13 +5,13 @@ import Markdoc from '@markdoc/markdoc';
 import type { ApiErrorKind, GenericErrorKind } from '@nordcom/commerce-errors';
 import { getErrorFromCode } from '@nordcom/commerce-errors';
 import { Card, Heading } from '@nordcom/nordstar';
+import { cacheLife } from 'next/cache';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import React from 'react';
 import BackButton from '@/components/back-button';
 import { Content } from '@/components/content';
 import { components, config } from '@/markdoc';
-import styles from './page.module.scss';
 
 const CONTENT_DIR = path.join(process.cwd(), 'docs/errors');
 
@@ -30,7 +30,8 @@ export type DocsErrorPageParams = Promise<{
     code: string;
 }>;
 export default async function DocsErrorPage({ params }: { params: DocsErrorPageParams }) {
-    // TODO: Forward to uppercase version of code if not uppercase.
+    'use cache';
+    cacheLife('max');
 
     const { code } = await params;
 
@@ -39,23 +40,24 @@ export default async function DocsErrorPage({ params }: { params: DocsErrorPageP
 
     const content = await getErrorDocsContent({ slug: code });
 
-    // Trigger the error so we can access the data.
     const error = new ErrorKind();
 
     return (
-        <article className={`${styles.container}`}>
-            <div className={`${styles.heading}`}>
+        <article>
+            <div className="flex w-full max-w-full flex-col overflow-hidden">
                 <BackButton href="/docs/errors/" />
 
-                <Heading level="h3" as="div" className={styles['status-code']}>
+                <Heading level="h3" as="div" className="pt-7">
                     {error.statusCode}:
                 </Heading>
-                <Heading level="h1">{error.details}</Heading>
+                <Heading level="h1" className="max-md:!text-[3.25rem] mt-1">
+                    {error.details}
+                </Heading>
                 <Heading level="h2">{error.code}</Heading>
             </div>
 
-            <Content className={`${styles.content}`}>
-                <Card as="section" className={styles.section}>
+            <Content className="mt-7 flex w-full max-w-full flex-col gap-2">
+                <Card as="section" className="max-w-full">
                     <Heading id="name" level="h4" as="h3">
                         Error Class Name
                     </Heading>
@@ -63,7 +65,7 @@ export default async function DocsErrorPage({ params }: { params: DocsErrorPageP
                 </Card>
 
                 {!content ? (
-                    <Card as="section" className={styles.section}>
+                    <Card as="section" className="max-w-full">
                         <Heading id="documentation" level="h4" as="h3">
                             Documentation
                         </Heading>
@@ -74,7 +76,7 @@ export default async function DocsErrorPage({ params }: { params: DocsErrorPageP
                     Markdoc.renderers.react(content, React, { components })
                 )}
 
-                <Card as="section" className={styles.section}>
+                <Card as="section" className="max-w-full">
                     <Heading id="documentation" level="h4" as="h3">
                         Related Articles
                     </Heading>

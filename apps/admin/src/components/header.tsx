@@ -19,7 +19,7 @@ export function Header({ className, children, ...props }: HeaderProps) {
 
             <NordstarHeader.Logo as={Link} href="/" title="Nordcom Commerce" className="block w-fit">
                 <Image
-                    className="h-8 object-contain object-left"
+                    className="h-8 w-auto object-contain object-left"
                     src="/logo.svg"
                     alt="Nordcom AB's Logo"
                     height={75}

@@ -39,7 +39,6 @@ useful in production:
 | Variable                | Purpose                                           |
 | ----------------------- | ------------------------------------------------- |
 | `LANDING_DOMAIN`        | Canonical hostname; used by other apps for assets and post sign-in redirects. |
-| `SENTRY_AUTH_TOKEN`     | Source-map uploads at build time.                 |
 
 ## Layout
 

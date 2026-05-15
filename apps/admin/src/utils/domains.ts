@@ -26,7 +26,7 @@ const requireOrFallback = (envName: 'ADMIN_DOMAIN' | 'LANDING_DOMAIN', fallback:
 const ADMIN_HOSTNAME = requireOrFallback('ADMIN_DOMAIN', 'localhost:3000');
 const LANDING_HOSTNAME = requireOrFallback('LANDING_DOMAIN', 'localhost:3001');
 
-const protocolFor = (hostname: string) => (hostname.startsWith('localhost') ? 'http' : 'https');
+const protocolFor = (hostname: string) => (hostname.includes('localhost') ? 'http' : 'https');
 
 export const ADMIN_DOMAIN = ADMIN_HOSTNAME;
 export const LANDING_DOMAIN = LANDING_HOSTNAME;

@@ -1,14 +1,18 @@
-import { useCart } from '@shopify/hydrogen-react';
+import { getProductOptions, mapSelectedProductOptionToObject, useCart } from '@shopify/hydrogen-react';
 import type { CartLine as ShopifyCartLine } from '@shopify/hydrogen-react/storefront-api-types';
-import { Tag as TagIcon, X as XIcon } from 'lucide-react';
+import { Pencil, Tag as TagIcon, X as XIcon } from 'lucide-react';
 import Image from 'next/image';
+import { useMemo, useState } from 'react';
 import type { Product, ProductVariant } from '@/api/product';
 import { Button } from '@/components/actionable/button';
 import { Card } from '@/components/layout/card';
+import { Popover } from '@/components/layout/popover';
 import Link from '@/components/link';
+import { ProductOptionsSelector, type SelectedOptions } from '@/components/product-options-selector';
 import { Price } from '@/components/products/price';
 import { QuantitySelector } from '@/components/products/quantity-selector';
 import { Label } from '@/components/typography/label';
+import { hasProductOptions } from '@/utils/has-product-options';
 import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
@@ -26,6 +30,16 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
 
     const product = line.merchandise.product as unknown as Required<Product> | undefined;
     const variant = line.merchandise as unknown as Required<ProductVariant> | undefined;
+
+    const showSelector = hasProductOptions(product ?? null);
+
+    // biome-ignore lint/suspicious/noExplicitAny: local Product type is a stricter superset of hydrogen-react's RecursivePartial<Product>
+    const mappedOptions = useMemo(() => (product ? getProductOptions(product as any) : []), [product]);
+    const currentSelectedOptions: SelectedOptions = mapSelectedProductOptionToObject(
+        (variant?.selectedOptions ?? []) as Array<{ name: string; value: string }>,
+    );
+    const [editing, setEditing] = useState(false);
+
     if (!product || !variant) {
         console.error(`Product or product variant not found for line ${line.id}`);
         return null;
@@ -90,7 +104,23 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
     const discounts = line.discountAllocations;
 
     const { quantity } = line;
-    const { vendor, title, productType, handle } = product;
+    const { vendor, title, handle } = product;
+
+    const handleSwap = (next: SelectedOptions) => {
+        const changed = Object.entries(next).find(([k, v]) => currentSelectedOptions[k] !== v);
+        if (!changed) {
+            setEditing(false);
+            return;
+        }
+        const [name, value] = changed;
+        const entry = mappedOptions.find((o) => o.name === name)?.optionValues.find((v) => v.name === value);
+        if (!entry?.variant?.id) {
+            setEditing(false);
+            return;
+        }
+        linesUpdate([{ id: line.id!, merchandiseId: entry.variant.id, quantity: line.quantity }]);
+        setEditing(false);
+    };
 
     return (
         <Card
@@ -112,14 +142,40 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                             <span>{vendor}</span> {title}
                         </Link>
 
-                        <div className="leading-normal">
-                            {[
-                                ...(productType ? [productType] : []),
-                                ...variant.selectedOptions
-                                    .map(({ name, value }) => `${name}: ${value}`)
-                                    .filter((_) => _ !== 'Title: Default Title'),
-                            ].join(', ')}
-                        </div>
+                        {showSelector ? (
+                            <button
+                                type="button"
+                                onClick={() => setEditing(true)}
+                                aria-label="Edit options"
+                                className="inline-flex flex-wrap items-center gap-1 text-gray-600 text-sm hover:text-primary"
+                            >
+                                {variant.selectedOptions
+                                    .filter(({ name, value }) => !(name === 'Title' && value === 'Default Title'))
+                                    .map(({ name, value }) => (
+                                        <span
+                                            key={name}
+                                            className="inline-flex items-center rounded-md border border-gray-200 border-solid bg-gray-50 px-2 py-0.5 font-medium text-xs"
+                                        >
+                                            {name}·{value}
+                                        </span>
+                                    ))}
+                                <Pencil size={12} aria-hidden={true} className="opacity-70" />
+                            </button>
+                        ) : null}
+                        {showSelector ? (
+                            <Popover
+                                open={editing}
+                                onOpenChange={setEditing}
+                                title={`Edit options · ${vendor} ${title}`}
+                            >
+                                <ProductOptionsSelector
+                                    options={mappedOptions}
+                                    selectedOptions={currentSelectedOptions}
+                                    onChange={handleSwap}
+                                    density="spacious"
+                                />
+                            </Popover>
+                        ) : null}
 
                         <div className="flex items-center justify-start gap-1 gap-x-3 md:flex-col md:items-start md:pt-1">
                             {discounts.length > 0 ? (

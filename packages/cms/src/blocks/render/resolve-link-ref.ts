@@ -1,4 +1,4 @@
-import type { LocaleRef, LinkRef } from './types';
+import type { LinkRef, LocaleRef } from './types';
 
 // `kind: 'external'` and the legacy default branch both ship a freeform `url`
 // straight into an `<a href>`. Without a scheme check an editor can paste

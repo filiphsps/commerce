@@ -60,7 +60,6 @@ export { RootPage as default } from '@payloadcms/next/views';
 | `PAYLOAD_SECRET`           | yes       | Payload session + preview cookie signing.                              |
 | `MONGODB_URI`              | yes       | Mongo connection (Payload + the shared `@nordcom/commerce-db` models). |
 | `NEXTAUTH_SECRET`          | yes       | Verifies NextAuth JWTs in the auth bridge (falls back to `AUTH_SECRET`). |
-| `NORDCOM_OPERATOR_EMAILS`  | no        | Comma-separated emails escalated to Payload `admin` role.              |
 | `STOREFRONT_BASE_URL`      | no        | Base URL used by the admin live-preview iframe. Default `http://localhost:1337`. |
 | `STOREFRONT_PREVIEW_SECRET`| yes (prod)| Secret expected by the storefront's `/[domain]/api/cms-preview` route. |
 | `S3_BUCKET`                | no        | When all five S3_* vars are set, media uploads land in S3.             |
@@ -127,34 +126,6 @@ Output lands at `packages/cms/src/types/payload-types.ts` and is gitignored — 
 1. Set the required env vars above on the admin app's deployment target.
 2. Deploy admin first — its first request boots Payload, which auto-creates collection indexes against the configured Mongo.
 3. Deploy the storefront. Its `/[domain]/api/cms-preview` route needs `STOREFRONT_PREVIEW_SECRET`; the admin's "preview" button sends `?secret=<value>` against that endpoint to flip Next.js draft mode on.
-
-### Shop content provider migration
-
-The `Shop` model's `contentProvider.type` enum changed:
-
-- before: `'prismic' | 'shopify' | 'builder.io'`
-- after: `'cms' | 'shopify' | 'builder.io'`
-
-If any existing shop documents have `contentProvider.type === 'prismic'`, run this Mongo shell update before deploying:
-
-```js
-db.shops.updateMany(
-    { 'contentProvider.type': 'prismic' },
-    { $set: { 'contentProvider.type': 'cms' } },
-);
-```
-
-The legacy `contentProvider.authentication`, `contentProvider.repositoryName`, and `contentProvider.repository` fields are no longer modelled; Mongoose strips them on the next `findByDomain` projection. They can be unset at your leisure:
-
-```js
-db.shops.updateMany({}, {
-    $unset: {
-        'contentProvider.authentication': '',
-        'contentProvider.repositoryName': '',
-        'contentProvider.repository': '',
-    },
-});
-```
 
 ### Cache tag scheme
 

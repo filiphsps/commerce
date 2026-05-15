@@ -1,1 +1,3 @@
-// intentionally empty — placeholder for future setup hooks
+import { vi } from 'vitest';
+
+vi.mock('server-only', () => ({}));

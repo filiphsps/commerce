@@ -13,8 +13,20 @@ export type ShopTheme = {
     };
 };
 
-export const ContentProviders = ['cms', 'shopify', 'builder.io'] as const;
-export const CommerceProviders = ['shopify', 'stripe'] as const;
+export type CMSContentProvider = {
+    type: 'cms';
+};
+export type ShopifyContentProvider = {
+    type: 'shopify';
+};
+export type ContentProvider = CMSContentProvider | ShopifyContentProvider;
+
+// Value AND type sharing the same name: `enum: ContentProviders` in the schema
+// (Mongoose's runtime validator) needs a runtime array; consumers that write
+// `let p: ContentProviders` keep the union narrowing. The `satisfies` clause
+// guarantees the array stays in sync with the discriminated-union members.
+export const ContentProviders = ['cms', 'shopify'] as const satisfies ContentProvider['type'][];
+export type ContentProviders = (typeof ContentProviders)[number];
 
 export type ShopifyCommerceProvider = {
     type: 'shopify';
@@ -38,6 +50,10 @@ export type StripeCommerceProvider = {
     authentication: {};
 };
 export type CommerceProvider = ShopifyCommerceProvider | StripeCommerceProvider;
+
+// See `ContentProviders` for the value-and-type-share rationale.
+export const CommerceProviders = ['shopify', 'stripe'] as const satisfies CommerceProvider['type'][];
+export type CommerceProviders = (typeof CommerceProviders)[number];
 
 export interface ShopBase extends BaseDocument {
     name: string;
@@ -323,7 +339,7 @@ export const ShopSchema = new Schema<ShopBase>(
 
         integrations: {
             type: {
-                judgme: {
+                judgeme: {
                     type: {
                         publicToken: {
                             type: Schema.Types.String,

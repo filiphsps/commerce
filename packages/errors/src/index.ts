@@ -21,7 +21,8 @@ export class Error<T = unknown> extends BuiltinError {
 
         Object.defineProperty(this, 'help', {
             get: function () {
-                return `https://shops.nordcom.io/docs/errors/${this.code}/`;
+                const domain = process.env.SERVICE_DOMAIN;
+                return `https://${domain}/docs/errors/${this.code}/`;
             },
             enumerable: true,
             configurable: false,
@@ -61,11 +62,6 @@ export class Error<T = unknown> extends BuiltinError {
         const message = error instanceof Error ? error.message : undefined;
         if (!message) {
             return false;
-        }
-
-        const isPrismic404 = message.match(/no documents were returned/i);
-        if (isPrismic404) {
-            return true;
         }
 
         return false;

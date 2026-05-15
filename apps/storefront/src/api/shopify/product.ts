@@ -11,9 +11,10 @@ import type {
 } from '@shopify/hydrogen-react/storefront-api-types';
 import md5 from 'crypto-js/md5';
 import type { Product } from '@/api/product';
-import { cache } from '@/cache';
 import { extractLimitLikeFilters } from '@/api/shopify/collection';
+import { cache } from '@/cache';
 import type { AbstractApi, ApiOptions, ApiReturn } from '@/utils/abstract-api';
+
 // Re-export the minimal fragments so legacy `from '@/api/shopify/product'`
 // imports keep working. Definitions live in `product-fragments.ts` (no
 // runtime dependencies) so they can be safely included in client bundles.

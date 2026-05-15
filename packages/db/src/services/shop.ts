@@ -103,15 +103,6 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
                     contentProvider = { ...res.contentProvider };
                     break;
                 }
-                case 'builder.io': {
-                    contentProvider = {
-                        ...res.contentProvider,
-                        authentication: {
-                            publicToken: res.contentProvider.authentication.publicToken,
-                        },
-                    };
-                    break;
-                }
             }
 
             return {

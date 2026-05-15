@@ -28,8 +28,8 @@
     },
     "contributors": [
         {
-            "name": "Filiph Siitam Sandström",
-            "email": "filiph@nordcom.io",
+            "name": "Filiph Sandström",
+            "email": "filfat@hotmail.se",
             "url": "https://github.com/filiphsps/"
         }
     ],
@@ -44,7 +44,7 @@
     "bugs": {
         "url": "https://github.com/filiphsps/commerce/issues"
     },
-    "homepage": "https://shops.nordcom.io/",
+    "homepage": "https://github.com/filiphsps/commerce/",
     "dependencies": {
         "@apollo/client": "4.1.9",
         "@auth/core": "0.41.2",
@@ -67,8 +67,6 @@
         "@opentelemetry/sdk-logs": "0.217.0",
         "@radix-ui/react-dialog": "1.1.15",
         "@radix-ui/react-visually-hidden": "1.2.4",
-        "@sentry/nextjs": "10.53.1",
-        "@sentry/profiling-node": "10.53.1",
         "@shopify/hydrogen-react": "2026.4.2",
         "@vercel/analytics": "2.0.1",
         "@vercel/edge-config": "1.4.3",

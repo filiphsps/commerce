@@ -11,7 +11,7 @@ import { Trackable } from '@/utils/trackable';
 const Providers = ({ children }: { children: ReactNode }) => {
     const shop = {
         id: 'mock-shop-id',
-        domain: 'staging.demo.nordcom.io',
+        domain: 'staging.localhost:3000',
         commerceProvider: {
             type: 'shopify' as const,
             domain: 'mock.shop' as const,

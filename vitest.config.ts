@@ -14,7 +14,6 @@ const exclude = [
     '**/instrumentation.ts',
     '**/next.config.js',
     '**/node_modules/**/*.*',
-    '**/sentry.*.config.ts',
     '**/tailwind.config.js',
     '**/vite.*.ts',
     '**/vitest.*.ts',
@@ -32,7 +31,7 @@ export default defineConfig({
     envDir: resolve(__dirname),
     optimizeDeps: {
         force: true,
-        esbuildOptions: {
+        rolldownOptions: {
             define: {
                 global: 'globalThis',
             },
@@ -53,7 +52,6 @@ export default defineConfig({
         projects: ['{apps,packages}/*/vitest.config.ts'],
 
         coverage: {
-            all: true,
             exclude: exclude,
             provider: 'v8',
             reporter: ['json', 'json-summary', 'text'],

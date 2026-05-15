@@ -57,17 +57,12 @@ const config = {
     },
     images: {
         dangerouslyAllowSVG: true,
-        //path: 'https://cloudflare-image.nordcom.workers.dev', // Shopify images fails when using .nordcom.io domain.
         minimumCacheTTL: 60,
         contentDispositionType: 'inline',
         remotePatterns: [
             {
                 protocol: 'https',
                 hostname: 'nordcom.io',
-            },
-            {
-                protocol: 'https',
-                hostname: '**.nordcom.io',
             },
             {
                 protocol: 'https',
@@ -85,6 +80,7 @@ const config = {
                 protocol: 'https',
                 hostname: '**.gravatar.com',
             },
+            // FIXME: Allow SERVICE_DOMAIN.
         ],
         formats: ['image/webp', 'image/avif'],
     },
@@ -92,10 +88,6 @@ const config = {
         ignoreBuildErrors: true,
         tsconfigPath: 'tsconfig.json',
     },
-    sassOptions: {
-        loadPaths: [path.join(__dirname, 'src/scss'), path.join(__dirname, 'src')],
-    },
-
     env: {
         ENVIRONMENT: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
         GIT_COMMIT_SHA: gitSHA,
@@ -118,11 +110,8 @@ const config = {
 
               config.plugins.push(
                   new webpack.DefinePlugin({
-                      __SENTRY_DEBUG__: false,
-                      __SENTRY_TRACING__: false,
                       __RRWEB_EXCLUDE_IFRAME__: true,
                       __RRWEB_EXCLUDE_SHADOW_DOM__: true,
-                      __SENTRY_EXCLUDE_REPLAY_WORKER__: true,
                   }),
               );
 

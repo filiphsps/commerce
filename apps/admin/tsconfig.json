@@ -19,6 +19,8 @@
             "@/auth": ["./src/utils/auth.ts"],
             "@/models/*": ["./src/models/*"],
             "@/utils/*": ["./src/utils/*"],
+            "@/lib/*": ["./src/lib/*"],
+            "@/payload.config": ["./src/payload.config.ts"],
             "@/styles/*": ["./src/scss/*"],
             // i18n.
             "@/i18n/*": ["./src/locales/*"],

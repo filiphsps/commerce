@@ -6,7 +6,9 @@ import { NextResponse } from 'next/server';
 // delivery forever; 501 (Not Implemented) tells Shopify we will never accept
 // it so it stops re-queuing. The previous `req.json()` (without `await`) also
 // silently logged an unresolved Promise — drop it.
-const NOT_IMPLEMENTED = { error: 'Shopify webhooks are handled by the storefront /api/revalidate route, not this app.' };
+const NOT_IMPLEMENTED = {
+    error: 'Shopify webhooks are handled by the storefront /api/revalidate route, not this app.',
+};
 const headers = { 'Cache-Control': 'no-store' };
 
 export const GET = async () => NextResponse.json(NOT_IMPLEMENTED, { status: 501, headers });

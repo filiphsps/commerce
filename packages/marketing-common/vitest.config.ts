@@ -1,10 +1,7 @@
 import path from 'node:path';
-import { defineProject } from 'vitest/config';
+import { defineConfig } from 'vitest/config';
 
-export default defineProject({
-    optimizeDeps: {
-        force: true,
-    },
+export default defineConfig({
     resolve: {
         alias: [
             {
@@ -15,6 +12,9 @@ export default defineProject({
     },
     test: {
         bail: 1,
+        deps: {
+            optimizer: { client: { enabled: true }, ssr: { enabled: true } },
+        },
         environment: 'node',
         maxConcurrency: 16,
         passWithNoTests: true,
@@ -30,7 +30,6 @@ export default defineProject({
         globals: true,
 
         coverage: {
-            all: true,
             include: ['**/src/**/*.{ts,tsx}'],
             exclude: [
                 '__tests__/*.*',

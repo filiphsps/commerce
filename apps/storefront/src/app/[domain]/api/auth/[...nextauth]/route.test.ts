@@ -13,7 +13,7 @@ vi.mock('@nordcom/commerce-db', () => ({
     Shop: {
         findByDomain: vi.fn().mockResolvedValue({
             id: 'mock-shop-id',
-            domain: 'staging.demo.nordcom.io',
+            domain: 'staging.localhost:3000',
         }),
     },
 }));

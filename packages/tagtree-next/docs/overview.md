@@ -5,7 +5,7 @@ sidebar_position: 1
 
 # @tagtree/next
 
-Next.js storage adapter for [`@tagtree/core`](../tagtree-core/). Delegates
+Next.js storage adapter for [`@tagtree/core`](/docs/tagtree-core/overview/). Delegates
 read/write to Next's `unstable_cache` and invalidation to `revalidateTag`.
 
 For the canonical reference, see the

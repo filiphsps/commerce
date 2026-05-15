@@ -9,7 +9,7 @@ vi.mock('next/cache', () => ({
 vi.mock('@/api/shopify', () => ({
     ShopifyApolloApiClient: vi.fn().mockResolvedValue({
         query: vi.fn(),
-        shop: vi.fn().mockReturnValue({ id: 'mock-shop-id', domain: 'staging.demo.nordcom.io' }),
+        shop: vi.fn().mockReturnValue({ id: 'mock-shop-id', domain: 'staging.localhost:3000' }),
         locale: vi.fn(),
     }),
 }));
@@ -21,14 +21,14 @@ vi.mock('@/api/store', () => ({
 const { GET } = await import('@/app/[domain]/sitemap.xml/route');
 
 function makeRequest(): Request {
-    return new Request('http://staging.demo.nordcom.io/staging.demo.nordcom.io/sitemap.xml');
+    return new Request('http://staging.localhost:3000/staging.localhost:3000/sitemap.xml');
 }
 
 describe('app/[domain]/sitemap.xml', () => {
     describe('GET', () => {
         it('returns 200 with XML content-type', async () => {
             const res = await GET(makeRequest() as any, {
-                params: Promise.resolve({ domain: 'staging.demo.nordcom.io' }),
+                params: Promise.resolve({ domain: 'staging.localhost:3000' }),
             });
 
             expect(res.status).toBe(200);
@@ -38,7 +38,7 @@ describe('app/[domain]/sitemap.xml', () => {
 
         it('returns a sitemap index with pages.xml entry', async () => {
             const res = await GET(makeRequest() as any, {
-                params: Promise.resolve({ domain: 'staging.demo.nordcom.io' }),
+                params: Promise.resolve({ domain: 'staging.localhost:3000' }),
             });
 
             const body = await res.text();
@@ -48,7 +48,7 @@ describe('app/[domain]/sitemap.xml', () => {
 
         it('includes per-locale product, collection, and blog sitemap entries for each locale', async () => {
             const res = await GET(makeRequest() as any, {
-                params: Promise.resolve({ domain: 'staging.demo.nordcom.io' }),
+                params: Promise.resolve({ domain: 'staging.localhost:3000' }),
             });
 
             const body = await res.text();
@@ -62,11 +62,11 @@ describe('app/[domain]/sitemap.xml', () => {
 
         it('uses the shop domain as the base URL for all sitemap hrefs', async () => {
             const res = await GET(makeRequest() as any, {
-                params: Promise.resolve({ domain: 'staging.demo.nordcom.io' }),
+                params: Promise.resolve({ domain: 'staging.localhost:3000' }),
             });
 
             const body = await res.text();
-            expect(body).toContain('https://staging.demo.nordcom.io/sitemaps');
+            expect(body).toContain('https://staging.localhost:3000/sitemaps');
         });
     });
 });

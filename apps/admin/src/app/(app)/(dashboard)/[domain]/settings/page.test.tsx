@@ -4,15 +4,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 // Hoisted mock fns
 // ------------------------------------------------------------------
 
-const { mockRedirect, mockNotFound, mockAuth, mockFindByDomain } = vi.hoisted(() => ({
-    mockRedirect: vi.fn((url: string): never => {
-        throw new Error(`NEXT_REDIRECT:${url}`);
-    }),
+const { mockGetAuthedPayloadCtx, mockNotFound } = vi.hoisted(() => ({
+    mockGetAuthedPayloadCtx: vi.fn(),
     mockNotFound: vi.fn((): never => {
         throw new Error('NEXT_NOT_FOUND');
     }),
-    mockAuth: vi.fn(),
-    mockFindByDomain: vi.fn(),
 }));
 
 // ------------------------------------------------------------------
@@ -22,37 +18,60 @@ const { mockRedirect, mockNotFound, mockAuth, mockFindByDomain } = vi.hoisted(()
 vi.mock('server-only', () => ({}));
 
 vi.mock('next/navigation', () => ({
-    redirect: mockRedirect,
+    redirect: (url: string): never => {
+        throw new Error(`NEXT_REDIRECT:${url}`);
+    },
     notFound: mockNotFound,
 }));
 
-vi.mock('@/auth', () => ({ auth: mockAuth }));
-
-vi.mock('@nordcom/commerce-db', () => ({
-    Shop: { findByDomain: mockFindByDomain },
+vi.mock('@/lib/payload-ctx', () => ({
+    getAuthedPayloadCtx: mockGetAuthedPayloadCtx,
 }));
 
-vi.mock('@nordcom/commerce-errors', () => ({
-    Error: { isNotFound: (e: unknown) => e instanceof globalThis.Error && e.message === 'NOT_FOUND' },
-}));
-
-vi.mock('@nordcom/nordstar', () => ({
-    Heading: ({ children }: { children: React.ReactNode }) => <h1>{children}</h1>,
-}));
+// ------------------------------------------------------------------
+// Import SUT after all mocks are registered
+// ------------------------------------------------------------------
 
 import { within } from '@testing-library/react';
-import type React from 'react';
 import { renderRSC } from '@/utils/test/rsc';
 import ShopSettingsPage from './page';
 
+// ------------------------------------------------------------------
+// Fixtures
+// ------------------------------------------------------------------
+
+const ADMIN_USER = {
+    id: 'user-admin-1',
+    email: 'admin@example.com',
+    role: 'admin' as const,
+    tenants: [],
+    collection: 'users' as const,
+};
+
+const EDITOR_USER = {
+    id: 'user-editor-2',
+    email: 'editor@example.com',
+    role: 'editor' as const,
+    tenants: [],
+    collection: 'users' as const,
+};
+
+type AnyUser = typeof ADMIN_USER | typeof EDITOR_USER;
+
+function makeCtx(user: AnyUser = ADMIN_USER) {
+    return {
+        payload: {} as never,
+        user,
+        tenant: { id: 't1', slug: 'acme', name: 'Acme' },
+        session: { user: { email: user.email }, expires: '2099-01-01' },
+    };
+}
+
 describe('(dashboard)/[domain]/settings/page', () => {
-    const mockShop = { id: 's1', name: 'Acme Store', domain: 'acme.myshopify.com' };
     const validParams = Promise.resolve({ domain: 'acme.myshopify.com' });
 
     beforeEach(() => {
-        mockAuth.mockReset();
-        mockFindByDomain.mockReset();
-        mockRedirect.mockClear();
+        mockGetAuthedPayloadCtx.mockReset();
         mockNotFound.mockClear();
     });
 
@@ -60,19 +79,8 @@ describe('(dashboard)/[domain]/settings/page', () => {
         expect(typeof ShopSettingsPage).toBe('function');
     });
 
-    it('redirects to /auth/login/ when unauthenticated', async () => {
-        mockAuth.mockResolvedValue(null);
-        await expect(ShopSettingsPage({ params: validParams })).rejects.toThrow('NEXT_REDIRECT:/auth/login/');
-    });
-
-    it('redirects to /auth/login/ when session has no user', async () => {
-        mockAuth.mockResolvedValue({ user: undefined });
-        await expect(ShopSettingsPage({ params: validParams })).rejects.toThrow('NEXT_REDIRECT:/auth/login/');
-    });
-
-    it('renders the Settings heading when authenticated', async () => {
-        mockAuth.mockResolvedValue({ user: { id: 'u1' } });
-        mockFindByDomain.mockResolvedValue(mockShop);
+    it('renders the Settings heading when authenticated as admin', async () => {
+        mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(ADMIN_USER));
 
         const { container } = await renderRSC(() => ShopSettingsPage({ params: validParams }));
         const q = within(container as HTMLElement);
@@ -80,22 +88,38 @@ describe('(dashboard)/[domain]/settings/page', () => {
         expect(q.getByText('Settings')).toBeInTheDocument();
     });
 
-    it('calls notFound when shop is not found', async () => {
-        mockAuth.mockResolvedValue({ user: { id: 'u1' } });
-        const notFoundErr = new Error('NOT_FOUND');
-        mockFindByDomain.mockRejectedValue(notFoundErr);
+    it('renders admin-only cards (Tenants, Users, Media) when role is admin', async () => {
+        mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(ADMIN_USER));
 
-        await expect(ShopSettingsPage({ params: validParams })).rejects.toThrow('NEXT_NOT_FOUND');
-        expect(mockNotFound).toHaveBeenCalled();
+        const { container } = await renderRSC(() => ShopSettingsPage({ params: validParams }));
+        const q = within(container as HTMLElement);
+
+        expect(q.getByText('Tenants')).toBeInTheDocument();
+        expect(q.getByText('Users')).toBeInTheDocument();
+        expect(q.getByText('Media')).toBeInTheDocument();
     });
 
-    it('fetches shop using the domain from route params', async () => {
-        mockAuth.mockResolvedValue({ user: { id: 'u1' } });
-        mockFindByDomain.mockResolvedValue(mockShop);
+    it('hides admin-only cards when role is editor', async () => {
+        mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(EDITOR_USER));
 
-        await renderRSC(() => ShopSettingsPage({ params: validParams }));
+        const { container } = await renderRSC(() => ShopSettingsPage({ params: validParams }));
+        const q = within(container as HTMLElement);
 
-        expect(mockFindByDomain).toHaveBeenCalledWith('acme.myshopify.com', { convert: true });
+        expect(q.queryByText('Tenants')).not.toBeInTheDocument();
+        expect(q.queryByText('Users')).not.toBeInTheDocument();
+        expect(q.queryByText('Media')).not.toBeInTheDocument();
+    });
+
+    it('links Tenants card to /<domain>/settings/tenants/', async () => {
+        mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(ADMIN_USER));
+
+        const { container } = await renderRSC(() => ShopSettingsPage({ params: validParams }));
+        const q = within(container as HTMLElement);
+
+        const tenantsLink = q.getByText('Tenants').closest('div')?.querySelector('a');
+        // Next.js normalises the href when rendering; trailing slash is present in
+        // the JSX but the Link component may strip it during RSC rendering in tests.
+        expect(tenantsLink?.getAttribute('href')).toMatch(/\/acme\.myshopify\.com\/settings\/tenants\/?$/);
     });
 
     it('exports metadata with title "Settings"', async () => {

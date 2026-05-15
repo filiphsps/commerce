@@ -35,7 +35,6 @@ const FEATURES = [
         title: 'Multi-tenant',
         body: 'One deployment, many shops. Tenants resolved by hostname in middleware.',
     },
-    { title: 'Headless', body: 'Shopify Storefront + Admin APIs, with Prismic for content.' },
     {
         title: 'Type-safe',
         body: 'Strict TypeScript, noUncheckedIndexedAccess, typed errors end-to-end.',

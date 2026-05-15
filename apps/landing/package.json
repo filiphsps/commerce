@@ -27,8 +27,8 @@
     },
     "contributors": [
         {
-            "name": "Filiph Siitam Sandström",
-            "email": "filiph@nordcom.io",
+            "name": "Filiph Sandström",
+            "email": "filfat@hotmail.se",
             "url": "https://github.com/filiphsps/"
         }
     ],
@@ -43,7 +43,7 @@
     "bugs": {
         "url": "https://github.com/filiphsps/commerce/issues"
     },
-    "homepage": "https://shops.nordcom.io/",
+    "homepage": "https://github.com/filiphsps/commerce/",
     "dependencies": {
         "@markdoc/markdoc": "0.5.7",
         "@markdoc/next.js": "0.5.0",
@@ -67,7 +67,6 @@
         "react": "19.2.6",
         "react-dom": "19.2.6",
         "react-icons": "5.6.0",
-        "sass": "1.99.0",
         "sharp": "0.34.5",
         "sonner": "2.0.7",
         "tailwind-merge": "3.6.0"

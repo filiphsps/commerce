@@ -37,7 +37,6 @@ yarn-debug.log*
 yarn-error.log*
 
 # deployment
-.sentryclirc
 .vercel
 .env*
 !.env.example
@@ -56,3 +55,8 @@ playwright/.cache/
 # docs site
 apps/docs/.docusaurus/
 apps/docs/api/
+
+# TypeDoc output is emitted to apps/docs/api/ and symlinked into each
+# workspace's docs/api directory by apps/docs/scripts/link-api-docs.mjs.
+apps/*/docs/api
+packages/*/docs/api

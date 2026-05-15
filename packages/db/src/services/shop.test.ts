@@ -122,30 +122,6 @@ describe('services', () => {
 
                 expect(result.contentProvider.type).toBe('cms');
             });
-
-            it('exposes only the public builder.io token in the public projection', async () => {
-                vi.spyOn(shopService, 'find').mockResolvedValue(
-                    stubDocument({
-                        _id: 'shop-3',
-                        domain: 'shop.example.com',
-                        commerceProvider: {
-                            type: 'shopify',
-                            authentication: { domain: 'x.myshopify.com', publicToken: 'pub' },
-                        },
-                        contentProvider: {
-                            type: 'builder.io',
-                            authentication: { token: 'secret', publicToken: 'builder-pub' },
-                        },
-                    }) as never,
-                );
-
-                const result = (await shopService.findByDomain('shop.example.com')) as {
-                    contentProvider: { type: string; authentication: Record<string, unknown> };
-                };
-
-                expect(result.contentProvider.type).toBe('builder.io');
-                expect(result.contentProvider.authentication).toEqual({ publicToken: 'builder-pub' });
-            });
         });
     });
 });

@@ -1,9 +1,12 @@
 'use client';
 
+import { getProductOptions, mapSelectedProductOptionToObject } from '@shopify/hydrogen-react';
+import { useMemo, useState } from 'react';
 import type { Product, ProductVariant } from '@/api/product';
+import { ProductOptionsSelector, type SelectedOptions } from '@/components/product-options-selector';
+import { firstAvailableVariant } from '@/utils/first-available-variant';
+import { hasProductOptions } from '@/utils/has-product-options';
 import type { Locale } from '@/utils/locale';
-import { formatWeight, isSizeOption, localizeWeight } from '@/utils/locale';
-import { cn } from '@/utils/tailwind';
 
 export type ProductCardOptionsProps = {
     locale: Locale;
@@ -12,75 +15,40 @@ export type ProductCardOptionsProps = {
     setSelectedVariant(variant: ProductVariant): void;
 };
 
-const ProductCardOptions = ({
-    locale,
-    data: product,
-    selectedVariant = undefined,
-    setSelectedVariant,
-}: ProductCardOptionsProps) => {
-    const {
-        variants: { edges: variants = [] },
-    } = product;
+const ProductCardOptions = ({ data: product, selectedVariant, setSelectedVariant }: ProductCardOptionsProps) => {
+    const seed = selectedVariant ?? firstAvailableVariant(product);
 
-    if (!selectedVariant || variants.length <= 0) {
+    const [selected, setSelected] = useState<SelectedOptions>(() =>
+        mapSelectedProductOptionToObject((seed?.selectedOptions ?? []) as Array<{ name: string; value: string }>),
+    );
+
+    // biome-ignore lint/suspicious/noExplicitAny: local Product type is a stricter superset of hydrogen-react's RecursivePartial<Product>
+    const mappedOptions = useMemo(() => (product ? getProductOptions(product as any) : []), [product]);
+
+    if (!hasProductOptions(product)) {
         return null;
     }
 
-    if (
-        variants.length <= 1 ||
-        // If we only have two variants and the non-default one is out of stock, we don't need to show the variant selector.
-        (variants.length === 2 &&
-            variants.some(({ node: { id, availableForSale } }) => id !== selectedVariant.id && !availableForSale))
-    ) {
-        return null;
-    }
+    const handleChange = (next: SelectedOptions) => {
+        setSelected(next);
+        const changed = Object.entries(next).find(([k, v]) => selected[k] !== v);
+        if (!changed) return;
+        const [name, value] = changed;
+        const valueEntry = mappedOptions.find((o) => o.name === name)?.optionValues.find((v) => v.name === value);
+        if (valueEntry?.variant) {
+            setSelectedVariant(valueEntry.variant as unknown as ProductVariant);
+        }
+    };
 
-    // TODO: Use options rather than variants.
     return (
-        <div className="mt-1 inline-flex h-fit w-full shrink flex-wrap items-end justify-start gap-1">
-            {variants.map(({ node: variant }, index) => {
-                if (index >= 3) {
-                    return null; //TODO: handle more than 3 variants on the card.
-                }
-
-                let title = variant.title;
-                if (title.length > 10) {
-                    return null;
-                }
-
-                if (
-                    variant.selectedOptions.length === 1 &&
-                    isSizeOption(variant.selectedOptions[0]!.name) &&
-                    variant.weight &&
-                    variant.weightUnit
-                ) {
-                    title = formatWeight(localizeWeight(locale, { weight: variant.weight, unit: variant.weightUnit }));
-                }
-
-                const isSelected = selectedVariant?.id === variant.id;
-
-                const Tag = isSelected ? 'div' : 'button';
-                return (
-                    <Tag
-                        key={variant.id}
-                        title={variant.selectedOptions.map((i) => `${i.name}: ${i.value}`).join(', ')}
-                        onClick={() => {
-                            if (isSelected) return;
-                            setSelectedVariant(variant);
-                        }}
-                        className={cn(
-                            'flex h-8 select-none items-center justify-center rounded-lg border-2 border-white border-solid bg-white px-3 py-0 font-semibold text-gray-600 text-sm transition-all hover:border-primary',
-                            isSelected && 'border-primary text-primary',
-                            !isSelected && 'cursor-pointer hover:shadow-lg',
-                        )}
-                        data-active={isSelected}
-                        suppressHydrationWarning={true}
-                    >
-                        {title}
-                    </Tag>
-                );
-            })}
-        </div>
+        <ProductOptionsSelector
+            options={mappedOptions}
+            selectedOptions={selected}
+            onChange={handleChange}
+            density="compact"
+            maxValuesPerOption={3}
+            className="mt-1 inline-flex h-fit w-full shrink flex-wrap items-end justify-start gap-1"
+        />
     );
 };
 

@@ -67,8 +67,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
     // card balance covers everything, 100%-off promo, etc.) doesn't render
     // `Infinity% OFF` in the discount-row tooltip.
     const totalForPercent = safeParseFloat(0, cost?.totalAmount?.amount);
-    const salePercentage =
-        totalForPercent > 0 ? Math.round(((100 * sale) / totalForPercent) * 100) / 100 : 0;
+    const salePercentage = totalForPercent > 0 ? Math.round(((100 * sale) / totalForPercent) * 100) / 100 : 0;
     const promos = safeParseFloat(0, cost?.subtotalAmount?.amount) - safeParseFloat(0, cost?.totalAmount?.amount) || 0;
 
     const noItems = !lines || lines.length <= 0 || !totalQuantity || totalQuantity <= 0;

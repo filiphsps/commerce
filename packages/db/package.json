@@ -36,8 +36,8 @@
     },
     "contributors": [
         {
-            "name": "Filiph Siitam Sandström",
-            "email": "filiph@nordcom.io",
+            "name": "Filiph Sandström",
+            "email": "filfat@hotmail.se",
             "url": "https://github.com/filiphsps/"
         }
     ],
@@ -49,7 +49,7 @@
     "bugs": {
         "url": "https://github.com/filiphsps/commerce/issues"
     },
-    "homepage": "https://shops.nordcom.io/",
+    "homepage": "https://github.com/filiphsps/commerce/",
     "files": [
         "dist"
     ],

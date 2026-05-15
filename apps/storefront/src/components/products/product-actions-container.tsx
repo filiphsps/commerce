@@ -1,12 +1,11 @@
 'use client';
 
-import { useProduct } from '@shopify/hydrogen-react';
+import { getProductOptions, useProduct, useSelectedOptionInUrlParam } from '@shopify/hydrogen-react';
 import type { HTMLProps } from 'react';
-import { Suspense } from 'react';
+import { Suspense, useMemo } from 'react';
 import type { Product, ProductVariant } from '@/api/product';
-
+import { ProductOptionsSelector, SizeChipRenderer } from '@/components/product-options-selector';
 import AddToCart from '@/components/products/add-to-cart';
-import { ProductOptions } from '@/components/products/product-options';
 import { ProductQuantityBreaks } from '@/components/products/product-quantity-breaks';
 import { useQuantity } from '@/components/products/quantity-provider';
 import { QuantitySelector } from '@/components/products/quantity-selector';
@@ -23,10 +22,31 @@ export const ProductActionsContainer = ({ className, i18n, ...props }: ProductAc
     const { t } = getTranslations('common', i18n);
     const { quantity, setQuantity } = useQuantity();
 
-    const { product, selectedVariant } = useProduct() as ReturnType<typeof useProduct> & {
+    const { product, selectedVariant, selectedOptions, setSelectedOptions } = useProduct() as ReturnType<
+        typeof useProduct
+    > & {
         product: Product | undefined;
         selectedVariant: ProductVariant | undefined;
     };
+
+    useSelectedOptionInUrlParam(
+        Object.entries(selectedOptions ?? {})
+            .filter((entry): entry is [string, string] => entry[1] !== undefined)
+            .map(([name, value]) => ({ name, value })),
+    );
+
+    const mappedOptions = useMemo(() => (product ? getProductOptions(product) : []), [product]);
+
+    const resolvedSelectedOptions = useMemo(
+        () =>
+            Object.fromEntries(
+                Object.entries(selectedOptions ?? {}).filter(
+                    (entry): entry is [string, string] => entry[1] !== undefined,
+                ),
+            ),
+        [selectedOptions],
+    );
+
     if (!product || !selectedVariant) {
         return null;
     }
@@ -49,13 +69,18 @@ export const ProductActionsContainer = ({ className, i18n, ...props }: ProductAc
                         value={quantity}
                         i18n={i18n}
                         style={{ gridArea: 'quantity' }}
-                        className="h-12 grow bg-white"
                         buttonClassName="disabled:opacity-0 bg-white"
                     />
                 </div>
 
                 <Suspense fallback={<div className="flex" data-skeleton />}>
-                    <ProductOptions />
+                    <ProductOptionsSelector
+                        options={mappedOptions}
+                        selectedOptions={resolvedSelectedOptions}
+                        onChange={setSelectedOptions}
+                        renderers={{ Size: SizeChipRenderer }}
+                        productHandle={product.handle}
+                    />
                 </Suspense>
             </div>
 

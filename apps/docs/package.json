@@ -5,15 +5,16 @@
     "private": true,
     "scripts": {
         "start": "docusaurus start --port 3002",
-        "dev": "concurrently -i \"pnpm:typedoc:watch\" \"pnpm:docusaurus:start\"",
+        "dev": "pnpm run typedoc && pnpm run link-api && concurrently -i \"pnpm:typedoc:watch\" \"pnpm:docusaurus:start\"",
         "docusaurus:start": "docusaurus start --port 3002",
         "typedoc": "typedoc",
         "typedoc:watch": "typedoc --watch",
-        "build": "pnpm run typedoc && pnpm run docusaurus:build",
+        "link-api": "node scripts/link-api-docs.mjs",
+        "build": "pnpm run typedoc && pnpm run link-api && pnpm run docusaurus:build",
         "docusaurus:build": "docusaurus build",
         "serve": "docusaurus serve --port 3003",
         "clear": "docusaurus clear",
-        "clean": "rimraf -g build api .docusaurus .turbo *.log",
+        "clean": "rimraf -g build api .docusaurus .turbo *.log ../../packages/*/docs/api ../../apps/*/docs/api",
         "lint": "biome lint .",
         "format:check": "biome check --write --unsafe .",
         "typecheck": "tsc -noEmit",
@@ -26,8 +27,8 @@
     },
     "contributors": [
         {
-            "name": "Filiph Siitam Sandström",
-            "email": "filiph@nordcom.io",
+            "name": "Filiph Sandström",
+            "email": "filfat@hotmail.se",
             "url": "https://github.com/filiphsps/"
         }
     ],
