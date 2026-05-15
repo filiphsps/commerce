@@ -1,10 +1,5 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
-    "extends": "./tsconfig.json",
-    "compilerOptions": {
-        "types": ["vitest/globals", "happy-dom"]
-    },
-
-    "include": ["packages", "apps", "@types/declaration.d.ts", "**/*.test.*"],
-    "exclude": ["**/node_modules", "**/dist", "**/.turbo", "**/coverage", "**/build", "**/public"]
+    "extends": ["./tsconfig.json", "../../tsconfig.test.json"],
+    "include": ["./src/**/*.test.ts", "./src/**/*.test.tsx"]
 }
