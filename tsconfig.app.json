@@ -11,7 +11,13 @@
 
         "lib": ["DOM", "DOM.iterable", "ESNext"],
 
-        "plugins": [{ "name": "next" }]
+        "plugins": [{ "name": "next" }],
+
+        // Apps are looser than libs: framework callback signatures (Next, Payload,
+        // NextAuth) often have unused args; previously app tsconfigs didn't extend
+        // root so these checks never applied. Preserve that practical behavior.
+        "noUnusedLocals": false,
+        "noUnusedParameters": false
     },
     "exclude": ["node_modules", "**/.turbo", "**/dist", "**/coverage"]
 }
