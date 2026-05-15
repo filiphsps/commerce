@@ -15,6 +15,7 @@ export function MediaGridBlock({ block, context }: { block: MediaGridBlockNode; 
         <div className="cms-media-grid" data-item-type={block.itemType} style={{ ['--cols' as string]: block.columns }}>
             {block.items.map((item, idx) => {
                 const url = imageUrl(item);
+                // biome-ignore lint/performance/noImgElement: FIXME.
                 const inner = url ? <img src={url} alt={imageAlt(item)} loading="lazy" /> : null;
                 // Same fix as BannerBlock — the previous code only honoured
                 // raw `link.url`, dropping every internal link kind. Route
