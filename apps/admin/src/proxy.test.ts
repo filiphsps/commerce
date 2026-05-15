@@ -1,3 +1,4 @@
+import { NextRequest } from 'next/server';
 import { describe, expect, it } from 'vitest';
 
 describe('admin proxy', () => {
@@ -32,5 +33,46 @@ describe('admin proxy', () => {
         const keys = config.missing!.map((m: { key: string }) => m.key);
         expect(keys).toContain('next-router-prefetch');
         expect(keys).toContain('purpose');
+    });
+
+    describe('legacy /cms redirect', () => {
+        it('redirects /cms (exact) with 301 to /', async () => {
+            const { default: proxy } = await import('./proxy');
+            const request = new NextRequest('http://localhost/cms');
+            const response = proxy(request);
+            expect(response.status).toBe(301);
+            expect(response.headers.get('location')).toBe('http://localhost/');
+        });
+
+        it('redirects /cms/ with 301 to /', async () => {
+            const { default: proxy } = await import('./proxy');
+            const request = new NextRequest('http://localhost/cms/');
+            const response = proxy(request);
+            expect(response.status).toBe(301);
+            expect(response.headers.get('location')).toBe('http://localhost/');
+        });
+
+        it('redirects /cms/collections/anything with 301 to /', async () => {
+            const { default: proxy } = await import('./proxy');
+            const request = new NextRequest('http://localhost/cms/collections/anything');
+            const response = proxy(request);
+            expect(response.status).toBe(301);
+            expect(response.headers.get('location')).toBe('http://localhost/');
+        });
+
+        it('passes through /some-domain/content/ without redirect', async () => {
+            const { default: proxy } = await import('./proxy');
+            const request = new NextRequest('http://localhost/some-domain/content/');
+            const response = proxy(request);
+            // NextResponse.next() does not set a Location header
+            expect(response.headers.get('location')).toBeNull();
+        });
+
+        it('passes through /cms-admin without redirect (not a /cms/ prefix match)', async () => {
+            const { default: proxy } = await import('./proxy');
+            const request = new NextRequest('http://localhost/cms-admin');
+            const response = proxy(request);
+            expect(response.headers.get('location')).toBeNull();
+        });
     });
 });
