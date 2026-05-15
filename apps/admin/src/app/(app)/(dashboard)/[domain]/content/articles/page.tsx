@@ -33,7 +33,9 @@ export default async function ArticlesListPage({ params }: { params: Params }) {
     const { docs } = await payload.find({
         collection: 'articles',
         where: { tenant: { equals: tenant.id } },
-        sort: '-updatedAt',
+        // -publishedAt: editorial order. Mongo sorts null first under desc, so
+        // unpublished drafts surface at the top (what editors want to see).
+        sort: '-publishedAt',
         limit: 100,
         user,
         overrideAccess: false,
