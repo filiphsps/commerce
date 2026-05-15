@@ -55,7 +55,7 @@ const config = {
     // - cacheComponents (PPR): wraps Payload's RootLayout in
     //   `<Suspense fallback={null}>` and Next's CSS hoisting drops the
     //   admin stylesheet links from the initial shell.
-    cacheComponents: true,
+    // cacheComponents: true,
     typedRoutes: true,
     turbopack: {
         root: path.resolve(path.join(__dirname, '../..')),
