@@ -10,7 +10,7 @@ Payload CMS hook factory for [`@tagtree/core`](/docs/tagtree-core/overview/). Pr
 cache invalidation when documents change.
 
 For the canonical reference, see the
-[README on GitHub](https://github.com/filiphsps/commerce/blob/master/packages/tagtree-payload/README.md).
+[README on GitHub](https://github.com/filiphsps/commerce/blob/master/packages/tagtree/payload/README.md).
 
 ## Draft-status guard
 

@@ -8,7 +8,7 @@ sidebar_position: 1
 Typed, hierarchical, framework-agnostic tagged-cache for server-side caching.
 
 For the canonical reference, see the
-[README on GitHub](https://github.com/filiphsps/commerce/blob/master/packages/tagtree-core/README.md).
+[README on GitHub](https://github.com/filiphsps/commerce/blob/master/packages/tagtree/core/README.md).
 
 ## What it solves
 

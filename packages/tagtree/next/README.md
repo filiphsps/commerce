@@ -11,7 +11,7 @@ directly, so the standard tagtree read/write cycle does not apply here.
 headers) and maps `invalidate` straight to `revalidateTag('tag', 'max')`.
 
 > Part of the `@tagtree/*` suite. See
-> [`@tagtree/core`](https://github.com/filiphsps/commerce/tree/master/packages/tagtree-core#readme)
+> [`@tagtree/core`](https://github.com/filiphsps/commerce/tree/master/packages/tagtree/core#readme)
 > for schema definition, key builders, and the full concept guide.
 
 ## Install
@@ -74,4 +74,4 @@ await cache.invalidate.product({ tenant: shop, handle: 'gummy-bears' });
 
 ## License
 
-MIT — see [repository](https://github.com/filiphsps/commerce/tree/master/packages/tagtree-next).
+MIT — see [repository](https://github.com/filiphsps/commerce/tree/master/packages/tagtree/next).

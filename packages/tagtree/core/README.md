@@ -269,10 +269,10 @@ does not abort the read/write on sibling adapters.
 
 | Package | Description |
 |---------|-------------|
-| [`@tagtree/next`](https://github.com/filiphsps/commerce/tree/master/packages/tagtree-next#readme) | Next.js adapter — delegates `wrap` to `unstable_cache` and `invalidate` to `revalidateTag`. |
-| [`@tagtree/shopify`](https://github.com/filiphsps/commerce/tree/master/packages/tagtree-shopify#readme) | Shopify webhook HMAC verification + topic-to-tag mapping. |
-| [`@tagtree/payload`](https://github.com/filiphsps/commerce/tree/master/packages/tagtree-payload#readme) | Payload CMS `afterChange` / `afterDelete` hook factory. |
+| [`@tagtree/next`](https://github.com/filiphsps/commerce/tree/master/packages/tagtree/next#readme) | Next.js adapter — delegates `wrap` to `unstable_cache` and `invalidate` to `revalidateTag`. |
+| [`@tagtree/shopify`](https://github.com/filiphsps/commerce/tree/master/packages/tagtree/shopify#readme) | Shopify webhook HMAC verification + topic-to-tag mapping. |
+| [`@tagtree/payload`](https://github.com/filiphsps/commerce/tree/master/packages/tagtree/payload#readme) | Payload CMS `afterChange` / `afterDelete` hook factory. |
 
 ## License
 
-MIT — see [repository](https://github.com/filiphsps/commerce/tree/master/packages/tagtree-core).
+MIT — see [repository](https://github.com/filiphsps/commerce/tree/master/packages/tagtree/core).

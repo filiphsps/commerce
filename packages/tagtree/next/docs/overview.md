@@ -9,7 +9,7 @@ Next.js storage adapter for [`@tagtree/core`](/docs/tagtree-core/overview/). Del
 read/write to Next's `unstable_cache` and invalidation to `revalidateTag`.
 
 For the canonical reference, see the
-[README on GitHub](https://github.com/filiphsps/commerce/blob/master/packages/tagtree-next/README.md).
+[README on GitHub](https://github.com/filiphsps/commerce/blob/master/packages/tagtree/next/README.md).
 
 ## Why a special adapter
 

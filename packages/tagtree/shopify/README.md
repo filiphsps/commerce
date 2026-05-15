@@ -9,7 +9,7 @@ need to map that event to the exact cache tags that cover the changed resource.
 a tag that doesn't exist on the read side, and never miss a tag that does.
 
 > Part of the `@tagtree/*` suite. See
-> [`@tagtree/core`](https://github.com/filiphsps/commerce/tree/master/packages/tagtree-core#readme)
+> [`@tagtree/core`](https://github.com/filiphsps/commerce/tree/master/packages/tagtree/core#readme)
 > for schema definition, key builders, and the full concept guide.
 
 ## Install
@@ -139,4 +139,4 @@ export async function POST(req: NextRequest, { params }: { params: { domain: str
 
 ## License
 
-MIT — see [repository](https://github.com/filiphsps/commerce/tree/master/packages/tagtree-shopify).
+MIT — see [repository](https://github.com/filiphsps/commerce/tree/master/packages/tagtree/shopify).

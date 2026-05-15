@@ -10,7 +10,7 @@ incoming HMAC signatures and maps webhook topics to tag arrays that match
 the user's cache schema.
 
 For the canonical reference, see the
-[README on GitHub](https://github.com/filiphsps/commerce/blob/master/packages/tagtree-shopify/README.md).
+[README on GitHub](https://github.com/filiphsps/commerce/blob/master/packages/tagtree/shopify/README.md).
 
 ## Topics covered
 

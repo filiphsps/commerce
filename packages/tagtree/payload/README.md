@@ -11,7 +11,7 @@ that prevents Payload's autosave cadence from flushing production cache on every
 keystroke.
 
 > Part of the `@tagtree/*` suite. See
-> [`@tagtree/core`](https://github.com/filiphsps/commerce/tree/master/packages/tagtree-core#readme)
+> [`@tagtree/core`](https://github.com/filiphsps/commerce/tree/master/packages/tagtree/core#readme)
 > for schema definition, key builders, and the full concept guide.
 
 ## Install
@@ -128,4 +128,4 @@ const shopCache = defineCache({
 
 ## License
 
-MIT — see [repository](https://github.com/filiphsps/commerce/tree/master/packages/tagtree-payload).
+MIT — see [repository](https://github.com/filiphsps/commerce/tree/master/packages/tagtree/payload).
