@@ -2,6 +2,7 @@
 
 import type { ComponentType, HTMLProps } from 'react';
 import { useCallback, useMemo } from 'react';
+import type { ProductVariant } from '@/api/product';
 import styles from '@/components/product-options-selector/product-options-selector.module.scss';
 import { defaultRenderers } from '@/components/product-options-selector/renderers';
 import type {
@@ -41,6 +42,9 @@ export type ProductOptionsSelectorProps = {
     maxValuesPerOption?: number;
 } & Omit<HTMLProps<HTMLDivElement>, 'onChange' | 'children'>;
 
+type SelectorOption = ProductOptionsSelectorProps['options'][number];
+type SelectorOptionValue = SelectorOption['optionValues'][number];
+
 export const ProductOptionsSelector = ({
     options,
     selectedOptions,
@@ -52,7 +56,10 @@ export const ProductOptionsSelector = ({
     className,
     ...rest
 }: ProductOptionsSelectorProps) => {
-    const realOptions = useMemo(() => filterRealOptions(options as any[]), [options]);
+    const realOptions = useMemo<SelectorOption[]>(
+        () => filterRealOptions(options as readonly SelectorOption[] as SelectorOption[]),
+        [options],
+    );
 
     const onSelectFor = useCallback(
         (name: string, value: string) => () => onChange({ ...selectedOptions, [name]: value }),
@@ -65,7 +72,7 @@ export const ProductOptionsSelector = ({
 
     return (
         <div {...rest} className={cn(styles.root, className)}>
-            {realOptions.map((option: any) => {
+            {realOptions.map((option) => {
                 const values =
                     typeof maxValuesPerOption === 'number'
                         ? option.optionValues.slice(0, maxValuesPerOption)
@@ -76,7 +83,7 @@ export const ProductOptionsSelector = ({
                         {density === 'spacious' ? <Label className="h-fit text-gray-600">{option.name}</Label> : null}
 
                         <div className={styles.values}>
-                            {values.map((v: any) => {
+                            {values.map((v: SelectorOptionValue) => {
                                 const Renderer =
                                     renderers?.[option.name] ?? renderers?.default ?? defaultRenderers.default!;
 
@@ -94,7 +101,7 @@ export const ProductOptionsSelector = ({
                                         available={v.available}
                                         exists={v.exists}
                                         isDifferentProduct={v.isDifferentProduct}
-                                        variant={v.variant}
+                                        variant={v.variant as ProductVariant}
                                         href={href}
                                         onSelect={onSelectFor(option.name, v.name)}
                                         density={density}

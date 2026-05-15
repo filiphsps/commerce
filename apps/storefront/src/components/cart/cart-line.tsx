@@ -35,13 +35,8 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
 
     // biome-ignore lint/suspicious/noExplicitAny: local Product type is a stricter superset of hydrogen-react's RecursivePartial<Product>
     const mappedOptions = useMemo(() => (product ? getProductOptions(product as any) : []), [product]);
-    const initialSelected = useMemo<SelectedOptions>(
-        () =>
-            mapSelectedProductOptionToObject(
-                (variant?.selectedOptions ?? []) as Array<{ name: string; value: string }>,
-            ),
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [variant?.selectedOptions],
+    const currentSelectedOptions: SelectedOptions = mapSelectedProductOptionToObject(
+        (variant?.selectedOptions ?? []) as Array<{ name: string; value: string }>,
     );
     const [editing, setEditing] = useState(false);
 
@@ -112,7 +107,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
     const { vendor, title, handle } = product;
 
     const handleSwap = (next: SelectedOptions) => {
-        const changed = Object.entries(next).find(([k, v]) => initialSelected[k] !== v);
+        const changed = Object.entries(next).find(([k, v]) => currentSelectedOptions[k] !== v);
         if (!changed) {
             setEditing(false);
             return;
@@ -175,7 +170,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                             >
                                 <ProductOptionsSelector
                                     options={mappedOptions}
-                                    selectedOptions={initialSelected}
+                                    selectedOptions={currentSelectedOptions}
                                     onChange={handleSwap}
                                     density="spacious"
                                 />
