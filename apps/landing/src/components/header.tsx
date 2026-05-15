@@ -13,7 +13,7 @@ export default async function Header({ className, ...props }: HeaderProps) {
             <NordstarHeader.Logo>
                 <Link href="/" title="Nordcom Commerce">
                     <Image
-                        className="h-full"
+                        className="h-full w-auto"
                         src={logo}
                         alt="Nordcom AB's Logo"
                         height={75}
