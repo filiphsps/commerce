@@ -41,7 +41,7 @@ type MediaInput = Pick<Media, 'alt' | 'caption'>;
  * absent or empty, so `payload.update` only touches keys that were actually
  * submitted.
  */
-export function parseMediaFormData(formData: FormData): Partial<MediaInput> {
+function parseMediaFormData(formData: FormData): Partial<MediaInput> {
     const alt = formData.get('alt')?.toString();
     const caption = formData.get('caption')?.toString();
 

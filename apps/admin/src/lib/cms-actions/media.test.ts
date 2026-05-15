@@ -38,7 +38,7 @@ vi.mock('@/lib/payload-ctx', () => ({
 // Import SUT after all mocks are registered
 // ------------------------------------------------------------------
 
-import { deleteMediaAction, parseMediaFormData, updateMediaAction } from './media';
+import { deleteMediaAction, updateMediaAction } from './media';
 
 // ------------------------------------------------------------------
 // Fixtures
@@ -220,27 +220,82 @@ describe('deleteMediaAction', () => {
 });
 
 // ------------------------------------------------------------------
-// parseMediaFormData
+// FormData parsing (raw named fields — media uses a hand-rolled form,
+// not Payload's `_payload` JSON blob).
 // ------------------------------------------------------------------
 
-describe('parseMediaFormData', () => {
-    it('parses alt and caption from named fields', () => {
-        const fd = makeFormData({ alt: 'My photo', caption: 'A nice photo' });
-        expect(parseMediaFormData(fd)).toEqual({ alt: 'My photo', caption: 'A nice photo' });
+describe('FormData parsing (raw named fields)', () => {
+    beforeEach(() => {
+        mockGetAuthedPayloadCtx.mockReset();
+        mockRevalidatePath.mockReset();
+        mockNotFound.mockReset().mockImplementation((): never => {
+            throw new Error('NEXT_NOT_FOUND');
+        });
     });
 
-    it('returns undefined for missing fields', () => {
-        const fd = new FormData();
-        expect(parseMediaFormData(fd)).toEqual({ alt: undefined, caption: undefined });
+    it('forwards both alt and caption when both are present', async () => {
+        const payload = makePayload();
+        mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
+
+        const formData = makeFormData({ alt: 'My photo', caption: 'A nice photo' });
+        await updateMediaAction(MEDIA_ID, formData);
+
+        const updateCall = payload.update.mock.calls[0]?.[0] as { data: Record<string, unknown> };
+        expect(updateCall.data).toEqual({ alt: 'My photo', caption: 'A nice photo' });
     });
 
-    it('returns undefined for empty-string alt (not forwarded to Payload)', () => {
-        const fd = makeFormData({ alt: '' });
-        expect(parseMediaFormData(fd)).toEqual({ alt: undefined, caption: undefined });
+    it('forwards alt only when caption is omitted', async () => {
+        const payload = makePayload();
+        mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
+
+        const formData = makeFormData({ alt: 'Just alt' });
+        await updateMediaAction(MEDIA_ID, formData);
+
+        const updateCall = payload.update.mock.calls[0]?.[0] as { data: Record<string, unknown> };
+        expect(updateCall.data).toEqual({ alt: 'Just alt', caption: undefined });
     });
 
-    it('returns alt but not caption when only alt is provided', () => {
-        const fd = makeFormData({ alt: 'Just alt' });
-        expect(parseMediaFormData(fd)).toEqual({ alt: 'Just alt', caption: undefined });
+    it('drops empty-string alt to undefined so Payload does not overwrite the existing value', async () => {
+        const payload = makePayload();
+        mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
+
+        const formData = makeFormData({ alt: '' });
+        await updateMediaAction(MEDIA_ID, formData);
+
+        const updateCall = payload.update.mock.calls[0]?.[0] as { data: Record<string, unknown> };
+        expect(updateCall.data.alt).toBeUndefined();
+    });
+
+    it('handles a fully-empty FormData by calling update with both fields undefined', async () => {
+        const payload = makePayload();
+        mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
+
+        await updateMediaAction(MEDIA_ID, new FormData());
+
+        const updateCall = payload.update.mock.calls[0]?.[0] as { data: Record<string, unknown> };
+        expect(updateCall.data).toEqual({ alt: undefined, caption: undefined });
+    });
+
+    it('ignores extra unrecognised fields in the FormData (allowlist enforced by parse)', async () => {
+        const payload = makePayload();
+        mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
+
+        // The hand-rolled edit form should never submit these — but if it did
+        // (or someone poked the action directly), the action must not forward
+        // arbitrary keys to Payload.
+        const formData = makeFormData({
+            alt: 'Allowed',
+            caption: 'Also allowed',
+            tenant: 'forged-tenant-id',
+            _status: 'published',
+            file: 'should-be-ignored',
+        });
+        await updateMediaAction(MEDIA_ID, formData);
+
+        const updateCall = payload.update.mock.calls[0]?.[0] as { data: Record<string, unknown> };
+        expect(updateCall.data).toEqual({ alt: 'Allowed', caption: 'Also allowed' });
+        expect(updateCall.data).not.toHaveProperty('tenant');
+        expect(updateCall.data).not.toHaveProperty('_status');
+        expect(updateCall.data).not.toHaveProperty('file');
     });
 });
