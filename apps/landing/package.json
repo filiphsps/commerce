@@ -43,7 +43,7 @@
     "bugs": {
         "url": "https://github.com/filiphsps/commerce/issues"
     },
-    "homepage": "https://shops.nordcom.io/",
+    "homepage": "https://github.com/filiphsps/commerce/",
     "dependencies": {
         "@markdoc/markdoc": "0.5.7",
         "@markdoc/next.js": "0.5.0",

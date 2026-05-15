@@ -9,6 +9,7 @@ import { notFound } from 'next/navigation';
 import React from 'react';
 import { Content } from '@/components/content';
 import { components } from '@/markdoc';
+import { getServiceUrl } from '@/utils/domains';
 
 import { getArticleContent, getArticlePaths } from './articles';
 
@@ -30,7 +31,7 @@ export async function generateMetadata({ params }: { params: ArticlePageParams }
         meta: { title, description },
     } = content;
 
-    const url = `https://shops.nordcom.io/news/${year}/${month}/${slug}/`;
+    const url = `${getServiceUrl()}/news/${year}/${month}/${slug}/`;
     return {
         title,
         description,

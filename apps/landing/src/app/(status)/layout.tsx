@@ -9,6 +9,7 @@ import type { ReactNode } from 'react';
 
 import Footer from '@/components/footer';
 import { Providers } from '@/components/providers';
+import { getServiceUrl } from '@/utils/domains';
 import { primaryFont } from '@/utils/fonts';
 import { cn } from '@/utils/tailwind';
 
@@ -54,7 +55,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
                             withoutWrapper={true}
                         >
                             <Link
-                                href="https://shops.nordcom.io/"
+                                href={`${getServiceUrl()}/`}
                                 title="Nordcom Commerce"
                                 className="w-screen max-w-[80vw] md:w-[24rem]"
                                 target="_blank"

@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+import { getServiceUrl } from '@/utils/domains';
 
 export const metadata: Metadata = {
-    metadataBase: new URL(`https://shops.nordcom.io/news/`),
+    metadataBase: new URL(`${getServiceUrl()}/news/`),
     title: {
         default: 'Overview',
         template: `%s · News · Nordcom Commerce`,

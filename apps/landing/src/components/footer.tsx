@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { HTMLProps } from 'react';
+import { getServiceUrl } from '@/utils/domains';
 import { cn } from '@/utils/tailwind';
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -35,7 +36,7 @@ export default function Footer({ className, ...props }: FooterProps) {
                         {process.env.GIT_COMMIT_SHA ? (
                             <section className="flex h-8 items-center justify-end font-semibold text-current text-xs lowercase leading-none empty:hidden md:text-sm">
                                 <Link
-                                    href="https://shops.nordcom.io/changelog/"
+                                    href={`${getServiceUrl()}/changelog/`}
                                     prefetch={false}
                                     className="text-inherit transition-colors hover:text-primary-foreground hover:underline"
                                     title={process.env.GIT_COMMIT_SHA}

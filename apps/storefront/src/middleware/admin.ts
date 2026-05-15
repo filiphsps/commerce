@@ -3,7 +3,7 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-export const ADMIN_HOSTNAME = 'admin.shops.nordcom.io';
+export const ADMIN_HOSTNAME = `admin.${process.env.SERVICE_DOMAIN}`;
 
 // `req.nextUrl.hostname` derives from the (attacker-controlled) `Host` header.
 // Without validation, a request with `Host: ../something` or `Host: weird/path`

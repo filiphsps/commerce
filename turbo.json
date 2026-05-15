@@ -15,6 +15,7 @@
         "*.env",
         "**/*.env"
     ],
+    "globalPassThroughEnv": ["NODE_ENV"],
     "tasks": {
         "build": {
             "cache": true,

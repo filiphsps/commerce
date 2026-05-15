@@ -21,7 +21,8 @@ export class Error<T = unknown> extends BuiltinError {
 
         Object.defineProperty(this, 'help', {
             get: function () {
-                return `https://shops.nordcom.io/docs/errors/${this.code}/`;
+                const domain = process.env.SERVICE_DOMAIN;
+                return `https://${domain}/docs/errors/${this.code}/`;
             },
             enumerable: true,
             configurable: false,

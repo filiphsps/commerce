@@ -199,9 +199,6 @@ importers:
       '@tailwindcss/forms':
         specifier: 0.5.11
         version: 0.5.11(tailwindcss@4.3.0)
-      '@tailwindcss/postcss':
-        specifier: 4.3.0
-        version: 4.3.0
       '@tailwindcss/typography':
         specifier: 0.5.19
         version: 0.5.19(tailwindcss@4.3.0)
@@ -1101,6 +1098,9 @@ importers:
       '@tagtree/core':
         specifier: workspace:*
         version: link:../tagtree-core
+      server-only:
+        specifier: 0.0.1
+        version: 0.0.1
     devDependencies:
       '@codecov/vite-plugin':
         specifier: 2.0.1

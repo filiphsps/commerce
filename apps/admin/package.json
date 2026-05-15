@@ -9,9 +9,9 @@
         ".next/cache"
     ],
     "scripts": {
-        "start": "next start -p $PORT",
-        "dev": "next dev -p 3000",
-        "build": "next build --webpack",
+        "start": "next start -p $PORT --turbo",
+        "dev": "NODE_ENV=development next dev --turbo -p 3000",
+        "build": "next build --turbo",
         "clean": "rimraf -g dist coverage .turbo .next *.tsbuildinfo *.log node_modules",
         "lint": "biome lint .",
         "format": "concurrently -i pnpm:format:*",
@@ -44,7 +44,7 @@
     "bugs": {
         "url": "https://github.com/filiphsps/commerce/issues"
     },
-    "homepage": "https://shops.nordcom.io/",
+    "homepage": "https://github.com/filiphsps/commerce/",
     "dependencies": {
         "@auth/core": "0.41.2",
         "@next/third-parties": "16.2.6",
@@ -85,7 +85,6 @@
         "@happy-dom/global-registrator": "20.9.0",
         "@playwright/test": "1.60.0",
         "@tailwindcss/forms": "0.5.11",
-        "@tailwindcss/postcss": "4.3.0",
         "@tailwindcss/typography": "0.5.19",
         "@testing-library/jest-dom": "6.9.1",
         "@testing-library/react": "16.3.2",

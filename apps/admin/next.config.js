@@ -57,9 +57,11 @@ const config = {
     // - cacheComponents (PPR): wraps Payload's RootLayout in
     //   `<Suspense fallback={null}>` and Next's CSS hoisting drops the
     //   admin stylesheet links from the initial shell.
-    // cacheComponents: true,
+    cacheComponents: true,
     typedRoutes: true,
-    turbopack: { root: path.resolve(path.join(__dirname, '../..')) },
+    turbopack: {
+        root: path.resolve(path.join(__dirname, '../..')),
+    },
     experimental: {
         appNavFailHandling: true,
         // `caseSensitiveRoutes` makes Payload's camelCase collection URLs
@@ -75,20 +77,21 @@ const config = {
         // `proxyPrefetch: 'flexible'` changes how routes are prefetched on
         // hover — can stale Payload's data-fetching tree. Off until proven.
         // proxyPrefetch: 'flexible',
-        optimizePackageImports: ['@apollo/client', '@shopify/hydrogen-react'],
+        optimizePackageImports: undefined,
         // `optimizeServerReact` rewrites RSC trees in ways that can break
         // third-party admin UIs. Off for the admin.
         // optimizeServerReact: true,
-        parallelServerBuildTraces: true,
-        parallelServerCompiles: true,
+        parallelServerBuildTraces: undefined,
+        parallelServerCompiles: undefined,
         scrollRestoration: true,
-        serverComponentsHmrCache: true,
+        serverComponentsHmrCache: isDev,
         serverSourceMaps: true,
         taint: true,
         typedEnv: true,
         useWasmBinary: false,
-        webpackBuildWorker: true,
+        webpackBuildWorker: undefined,
         rootParams: true,
+        turbopackServerFastRefresh: isDev,
     },
     images: {
         dangerouslyAllowSVG: true,
@@ -116,7 +119,7 @@ const config = {
         return process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
     },
 
-    webpack: !isDev
+    /*webpack: !isDev
         ? (config, { webpack, isServer }) => {
               config.experiments = {
                   ...config.experiments,
@@ -138,7 +141,7 @@ const config = {
               }
               return config;
           }
-        : undefined,
+        : undefined,*/
 
     // We handle all redirects at the edge.
     skipTrailingSlashRedirect: true,
