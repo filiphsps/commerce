@@ -36,6 +36,5 @@
         "useDefineForClassFields": true
     },
     "exclude": ["**/.turbo", "**/coverage", "**/*.stories.ts", "**/dist", "node_modules", "**/vite*.ts"],
-    "include": ["./packages/**/src/*.*", "@types/declaration.d.ts"],
-    "references": [{ "path": "./tsconfig.node.json" }]
+    "include": ["./packages/**/src/*.*", "@types/declaration.d.ts"]
 }
