@@ -43,13 +43,13 @@
     "repository": {
         "type": "git",
         "url": "git+https://github.com/filiphsps/commerce.git",
-        "directory": "packages/tagtree-payload"
+        "directory": "packages/tagtree/payload"
     },
     "keywords": [],
     "bugs": {
         "url": "https://github.com/filiphsps/commerce/issues"
     },
-    "homepage": "https://github.com/filiphsps/commerce/tree/master/packages/tagtree-payload#readme",
+    "homepage": "https://github.com/filiphsps/commerce/tree/master/packages/tagtree/payload#readme",
     "dependencies": {
         "@tagtree/core": "workspace:*"
     },
