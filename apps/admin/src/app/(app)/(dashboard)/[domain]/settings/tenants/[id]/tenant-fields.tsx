@@ -27,12 +27,6 @@ export function TenantFields() {
     const fields = collectionConfig?.fields ?? [];
 
     return (
-        <RenderFields
-            fields={fields}
-            parentIndexPath=""
-            parentPath=""
-            parentSchemaPath="tenants"
-            permissions={true}
-        />
+        <RenderFields fields={fields} parentIndexPath="" parentPath="" parentSchemaPath="tenants" permissions={true} />
     );
 }

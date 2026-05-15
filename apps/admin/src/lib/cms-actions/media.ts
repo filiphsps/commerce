@@ -2,10 +2,10 @@
 
 import 'server-only';
 
+import type { Media } from '@nordcom/commerce-cms/types';
+import type { Route } from 'next';
 import { revalidatePath } from 'next/cache';
 import { notFound, redirect } from 'next/navigation';
-import type { Route } from 'next';
-import type { Media } from '@nordcom/commerce-cms/types';
 import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
 
 // ---------------------------------------------------------------------------
@@ -61,14 +61,14 @@ function parseMediaFormData(formData: FormData): Partial<MediaInput> {
 /**
  * Updates `alt` and/or `caption` for an existing media doc.
  *
- * Admin-only at the route level (gated by `(admin)/layout.tsx`) and at the
- * action level (explicit role check + `overrideAccess: false`).
+ * Admin-only at the route level and at the action level (explicit role check
+ * + `overrideAccess: false`).
  *
  * Does NOT accept a new file — binary re-uploads must go via Payload's REST
  * endpoint at `/api/media/<id>`. This action is limited to metadata only.
  */
-export async function updateMediaAction(id: string, formData: FormData): Promise<void> {
-    const { payload, user } = await getAuthedPayloadCtx();
+export async function updateMediaAction(domain: string, id: string, formData: FormData): Promise<void> {
+    const { payload, user } = await getAuthedPayloadCtx(domain);
 
     if (user.role !== 'admin') {
         notFound();
@@ -84,8 +84,8 @@ export async function updateMediaAction(id: string, formData: FormData): Promise
         overrideAccess: false,
     });
 
-    revalidatePath('/media/');
-    revalidatePath(`/media/${id}/`);
+    revalidatePath(`/${domain}/settings/media/`);
+    revalidatePath(`/${domain}/settings/media/${id}/`);
 }
 
 /**
@@ -99,8 +99,8 @@ export async function updateMediaAction(id: string, formData: FormData): Promise
  * FormData as the first argument of a bound action invoked via a form). The
  * type marker follows the pattern used in `restoreVersionAction`.
  */
-export async function deleteMediaAction(id: string, _formData?: FormData): Promise<void> {
-    const { payload, user } = await getAuthedPayloadCtx();
+export async function deleteMediaAction(domain: string, id: string, _formData?: FormData): Promise<void> {
+    const { payload, user } = await getAuthedPayloadCtx(domain);
 
     if (user.role !== 'admin') {
         notFound();
@@ -113,6 +113,6 @@ export async function deleteMediaAction(id: string, _formData?: FormData): Promi
         overrideAccess: false,
     });
 
-    revalidatePath('/media/');
-    redirect('/media/' as Route);
+    revalidatePath(`/${domain}/settings/media/`);
+    redirect(`/${domain}/settings/media/` as Route);
 }

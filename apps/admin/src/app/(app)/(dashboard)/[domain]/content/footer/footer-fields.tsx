@@ -22,12 +22,6 @@ export function FooterFields() {
     const fields = collectionConfig?.fields ?? [];
 
     return (
-        <RenderFields
-            fields={fields}
-            parentIndexPath=""
-            parentPath=""
-            parentSchemaPath="footer"
-            permissions={true}
-        />
+        <RenderFields fields={fields} parentIndexPath="" parentPath="" parentSchemaPath="footer" permissions={true} />
     );
 }

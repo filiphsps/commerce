@@ -19,8 +19,7 @@ vi.mock('next/navigation', () => ({
 // Fixtures
 // ------------------------------------------------------------------
 
-const PREVIEW_URL =
-    'http://localhost:1337/__by-tenant/test-shop.com/en-US/about?preview=1&secret=test-secret';
+const PREVIEW_URL = 'http://localhost:1337/__by-tenant/test-shop.com/en-US/about?preview=1&secret=test-secret';
 
 const BASE_PROPS = {
     previewUrl: PREVIEW_URL,

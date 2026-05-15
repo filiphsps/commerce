@@ -14,6 +14,7 @@ import { Card } from '@/components/card';
 import { Header } from '@/components/header';
 import { MenuItem } from '@/components/menu-item';
 import { ScrollArea } from '@/components/scroll-area';
+import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
 
 export type ShopLayoutProps = {
     children: ReactNode;
@@ -71,6 +72,12 @@ export default async function ShopLayout({ children, params }: ShopLayoutProps) 
         throw error;
     }
 
+    // Resolve the current user's role for operator-section gating.
+    // getAuthedPayloadCtx will redirect to login if the session is absent,
+    // but auth() above already handles that — this is role-only.
+    const { user } = await getAuthedPayloadCtx(domain);
+    const isAdmin = user.role === 'admin';
+
     const urlBase = `/${shop.domain}`;
 
     return (
@@ -125,15 +132,15 @@ export default async function ShopLayout({ children, params }: ShopLayoutProps) 
                                 <p className="mb-2 px-3 font-medium text-muted-foreground text-xs uppercase tracking-wide">
                                     Operators
                                 </p>
-                                <MenuItem href={'/tenants/' as Route}>
+                                <MenuItem href={`${urlBase}/settings/tenants/` as Route} disabled={!isAdmin}>
                                     <Building2 className="text-lg" />
                                     Tenants
                                 </MenuItem>
-                                <MenuItem href={'/users/' as Route}>
+                                <MenuItem href={`${urlBase}/settings/users/` as Route} disabled={!isAdmin}>
                                     <Users className="text-lg" />
                                     Users
                                 </MenuItem>
-                                <MenuItem href={'/media/' as Route}>
+                                <MenuItem href={`${urlBase}/settings/media/` as Route} disabled={!isAdmin}>
                                     <ImageIcon className="text-lg" />
                                     Media
                                 </MenuItem>

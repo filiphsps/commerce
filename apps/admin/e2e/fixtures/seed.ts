@@ -7,7 +7,7 @@
  *
  * If MONGODB_URI is not set (e.g. local dev without a DB), this setup is a
  * no-op — the tests themselves will simply fail to load data, which is the
- * expected behaviour when infrastructure is unavailable.
+ * expected behavior when infrastructure is unavailable.
  */
 
 import mongoose, { Schema } from 'mongoose';

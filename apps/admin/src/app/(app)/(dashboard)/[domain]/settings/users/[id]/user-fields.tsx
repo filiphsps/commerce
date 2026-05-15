@@ -34,12 +34,6 @@ export function UserFields() {
     });
 
     return (
-        <RenderFields
-            fields={fields}
-            parentIndexPath=""
-            parentPath=""
-            parentSchemaPath="users"
-            permissions={true}
-        />
+        <RenderFields fields={fields} parentIndexPath="" parentPath="" parentSchemaPath="users" permissions={true} />
     );
 }

@@ -52,7 +52,6 @@ export default defineConfig({
         projects: ['{apps,packages}/*/vitest.config.ts'],
 
         coverage: {
-            all: true,
             exclude: exclude,
             provider: 'v8',
             reporter: ['json', 'json-summary', 'text'],

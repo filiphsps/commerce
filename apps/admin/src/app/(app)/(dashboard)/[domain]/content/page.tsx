@@ -55,17 +55,11 @@ function CollectionCard<T>({
             )}
 
             <div className="mt-auto flex gap-2 pt-2">
-                <Link
-                    href={href}
-                    className="text-primary text-sm hover:underline"
-                >
+                <Link href={href} className="text-primary text-sm hover:underline">
                     View all →
                 </Link>
                 {newHref && (
-                    <Link
-                        href={newHref}
-                        className="text-muted-foreground text-sm hover:text-primary hover:underline"
-                    >
+                    <Link href={newHref} className="text-muted-foreground text-sm hover:text-primary hover:underline">
                         + New
                     </Link>
                 )}
@@ -149,7 +143,9 @@ export default async function ContentOverviewPage({ params }: { params: Params }
                         className="flex flex-col gap-2 rounded-lg border-2 border-border border-solid bg-card p-4 text-card-foreground shadow-sm hover:border-primary/50 hover:bg-card/80"
                     >
                         <h3 className="font-semibold text-base leading-none">Business data</h3>
-                        <p className="text-muted-foreground text-sm">Legal name, support contact, address, social profiles.</p>
+                        <p className="text-muted-foreground text-sm">
+                            Legal name, support contact, address, social profiles.
+                        </p>
                     </Link>
                     <Link
                         href={`${urlBase}/header/` as Route}

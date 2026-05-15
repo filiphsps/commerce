@@ -11,8 +11,9 @@ export type TenantOption = {
 
 export type NewUserFormProps = {
     /**
-     * Server action: `createUserAction`.
-     * Signature: `(formData: FormData) => Promise<{ id: string }>`.
+     * Server action with domain already bound:
+     * `createUserAction.bind(null, domain)`.
+     * Signature after binding: `(formData: FormData) => Promise<{ id: string }>`.
      */
     createAction: (formData: FormData) => Promise<{ id: string }>;
     /**
@@ -20,6 +21,8 @@ export type NewUserFormProps = {
      * Each option is `{ id, name }`.
      */
     tenantOptions: TenantOption[];
+    /** The current shop domain — used to construct the post-create redirect URL. */
+    domain: string;
 };
 
 /**
@@ -38,7 +41,7 @@ export type NewUserFormProps = {
  * value is a tenant ID. On submit, the selected IDs are mapped to
  * `[{ tenant: id }, ...]` before serializing into `_payload`.
  */
-export function NewUserForm({ createAction, tenantOptions }: NewUserFormProps) {
+export function NewUserForm({ createAction, tenantOptions, domain }: NewUserFormProps) {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
     const [error, setError] = useState<string | null>(null);
@@ -59,7 +62,7 @@ export function NewUserForm({ createAction, tenantOptions }: NewUserFormProps) {
         startTransition(async () => {
             try {
                 const { id } = await createAction(wrapped);
-                router.push(`/users/${id}/` as Route);
+                router.push(`/${domain}/settings/users/${id}/` as Route);
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Failed to create user.');
             }
@@ -72,7 +75,10 @@ export function NewUserForm({ createAction, tenantOptions }: NewUserFormProps) {
                 <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-1.5">
                         <label htmlFor="user-email" className="font-medium text-sm">
-                            Email <span className="text-destructive" aria-hidden="true">*</span>
+                            Email{' '}
+                            <span className="text-destructive" aria-hidden="true">
+                                *
+                            </span>
                         </label>
                         <input
                             id="user-email"
@@ -87,7 +93,10 @@ export function NewUserForm({ createAction, tenantOptions }: NewUserFormProps) {
 
                     <div className="flex flex-col gap-1.5">
                         <label htmlFor="user-role" className="font-medium text-sm">
-                            Role <span className="text-destructive" aria-hidden="true">*</span>
+                            Role{' '}
+                            <span className="text-destructive" aria-hidden="true">
+                                *
+                            </span>
                         </label>
                         <select
                             id="user-role"
@@ -122,7 +131,8 @@ export function NewUserForm({ createAction, tenantOptions }: NewUserFormProps) {
                                 ))}
                             </select>
                             <p className="text-muted-foreground text-xs">
-                                Hold Ctrl / Cmd to select multiple tenants. Admins have access to all tenants regardless.
+                                Hold Ctrl / Cmd to select multiple tenants. Admins have access to all tenants
+                                regardless.
                             </p>
                         </div>
                     ) : null}
@@ -130,7 +140,10 @@ export function NewUserForm({ createAction, tenantOptions }: NewUserFormProps) {
             </div>
 
             {error ? (
-                <p role="alert" className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-destructive text-sm">
+                <p
+                    role="alert"
+                    className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-destructive text-sm"
+                >
                     {error}
                 </p>
             ) : null}

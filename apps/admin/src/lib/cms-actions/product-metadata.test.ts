@@ -207,7 +207,7 @@ describe('saveProductMetadataDraftAction — create (no existing doc)', () => {
                 collection: 'productMetadata',
                 data: expect.objectContaining({
                     shopifyHandle: HANDLE, // from URL, not FormData
-                    tenant: TENANT.id,     // from ctx, not FormData
+                    tenant: TENANT.id, // from ctx, not FormData
                     _status: 'draft',
                 }),
                 user: ADMIN_USER,

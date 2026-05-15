@@ -247,7 +247,7 @@ describe('CollectionTable', () => {
         });
 
         // Settle the action and confirm we recover (clearAll runs, count → 0,
-        // which itself also disables the button — that's expected behaviour).
+        // which itself also disables the button — that's expected behavior).
         await act(async () => {
             resolveDelete();
             await deletePromise;

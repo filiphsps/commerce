@@ -43,6 +43,7 @@ import { createTenantAction, deleteTenantAction, updateTenantAction } from './te
 // Fixtures
 // ------------------------------------------------------------------
 
+const DOMAIN = 'test-shop.com';
 const TENANT_ID = 'tenant-abc123';
 
 const ADMIN_USER = {
@@ -138,7 +139,7 @@ describe('createTenantAction', () => {
             defaultLocale: 'en-US',
             locales: ['en-US'],
         });
-        const result = await createTenantAction(formData);
+        const result = await createTenantAction(DOMAIN, formData);
 
         expect(payload.create).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -154,7 +155,7 @@ describe('createTenantAction', () => {
             }),
         );
         expect(result).toEqual({ id: 'tenant-new-1' });
-        expect(mockRevalidatePath).toHaveBeenCalledWith('/tenants/');
+        expect(mockRevalidatePath).toHaveBeenCalledWith(`/${DOMAIN}/settings/tenants/`);
     });
 
     it('throws when name is missing', async () => {
@@ -162,7 +163,7 @@ describe('createTenantAction', () => {
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
 
         const formData = makeFormData({ slug: 'acme', defaultLocale: 'en-US', locales: ['en-US'] });
-        await expect(createTenantAction(formData)).rejects.toThrow('Name is required');
+        await expect(createTenantAction(DOMAIN, formData)).rejects.toThrow('Name is required');
         expect(payload.create).not.toHaveBeenCalled();
     });
 
@@ -171,7 +172,7 @@ describe('createTenantAction', () => {
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
 
         const formData = makeFormData({ name: 'Acme', defaultLocale: 'en-US', locales: ['en-US'] });
-        await expect(createTenantAction(formData)).rejects.toThrow('Slug is required');
+        await expect(createTenantAction(DOMAIN, formData)).rejects.toThrow('Slug is required');
         expect(payload.create).not.toHaveBeenCalled();
     });
 
@@ -180,7 +181,7 @@ describe('createTenantAction', () => {
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
 
         const formData = makeFormData({ name: 'Acme', slug: 'acme', locales: ['en-US'] });
-        await expect(createTenantAction(formData)).rejects.toThrow('Default locale is required');
+        await expect(createTenantAction(DOMAIN, formData)).rejects.toThrow('Default locale is required');
         expect(payload.create).not.toHaveBeenCalled();
     });
 
@@ -189,7 +190,7 @@ describe('createTenantAction', () => {
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
 
         const formData = makeFormData({ name: 'Acme', slug: 'acme', defaultLocale: 'en-US' });
-        await expect(createTenantAction(formData)).rejects.toThrow('At least one locale is required');
+        await expect(createTenantAction(DOMAIN, formData)).rejects.toThrow('At least one locale is required');
         expect(payload.create).not.toHaveBeenCalled();
     });
 
@@ -198,7 +199,7 @@ describe('createTenantAction', () => {
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
 
         const formData = makeFormData({ name: 'Acme', slug: 'acme', defaultLocale: 'en-US', locales: [] });
-        await expect(createTenantAction(formData)).rejects.toThrow('At least one locale is required');
+        await expect(createTenantAction(DOMAIN, formData)).rejects.toThrow('At least one locale is required');
         expect(payload.create).not.toHaveBeenCalled();
     });
 
@@ -212,7 +213,7 @@ describe('createTenantAction', () => {
             defaultLocale: 'en-US',
             locales: ['en-US'],
         });
-        await createTenantAction(formData);
+        await createTenantAction(DOMAIN, formData);
 
         const createCall = payload.create.mock.calls[0]?.[0] as { data: Record<string, unknown> };
         expect(createCall.data).not.toHaveProperty('_status');
@@ -223,7 +224,7 @@ describe('createTenantAction', () => {
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload, EDITOR_USER));
 
         const formData = makeFormData({ name: 'Acme', slug: 'acme', defaultLocale: 'en-US', locales: ['en-US'] });
-        await expect(createTenantAction(formData)).rejects.toThrow('NEXT_NOT_FOUND');
+        await expect(createTenantAction(DOMAIN, formData)).rejects.toThrow('NEXT_NOT_FOUND');
         expect(payload.create).not.toHaveBeenCalled();
     });
 });
@@ -245,8 +246,13 @@ describe('updateTenantAction', () => {
         const payload = makePayload();
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
 
-        const formData = makeFormData({ name: 'Acme Updated', slug: 'acme', defaultLocale: 'en-US', locales: ['en-US'] });
-        await updateTenantAction(TENANT_ID, formData);
+        const formData = makeFormData({
+            name: 'Acme Updated',
+            slug: 'acme',
+            defaultLocale: 'en-US',
+            locales: ['en-US'],
+        });
+        await updateTenantAction(DOMAIN, TENANT_ID, formData);
 
         expect(payload.update).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -257,8 +263,8 @@ describe('updateTenantAction', () => {
                 overrideAccess: false,
             }),
         );
-        expect(mockRevalidatePath).toHaveBeenCalledWith('/tenants/');
-        expect(mockRevalidatePath).toHaveBeenCalledWith(`/tenants/${TENANT_ID}/`);
+        expect(mockRevalidatePath).toHaveBeenCalledWith(`/${DOMAIN}/settings/tenants/`);
+        expect(mockRevalidatePath).toHaveBeenCalledWith(`/${DOMAIN}/settings/tenants/${TENANT_ID}/`);
     });
 
     it('editor: calls notFound without updating', async () => {
@@ -266,7 +272,7 @@ describe('updateTenantAction', () => {
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload, EDITOR_USER));
 
         const formData = makeFormData({ name: 'Acme', slug: 'acme', defaultLocale: 'en-US', locales: ['en-US'] });
-        await expect(updateTenantAction(TENANT_ID, formData)).rejects.toThrow('NEXT_NOT_FOUND');
+        await expect(updateTenantAction(DOMAIN, TENANT_ID, formData)).rejects.toThrow('NEXT_NOT_FOUND');
         expect(payload.update).not.toHaveBeenCalled();
     });
 });
@@ -288,7 +294,7 @@ describe('deleteTenantAction', () => {
         const payload = makePayload();
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
 
-        await deleteTenantAction(TENANT_ID);
+        await deleteTenantAction(DOMAIN, TENANT_ID);
 
         expect(payload.delete).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -298,14 +304,14 @@ describe('deleteTenantAction', () => {
                 overrideAccess: false,
             }),
         );
-        expect(mockRevalidatePath).toHaveBeenCalledWith('/tenants/');
+        expect(mockRevalidatePath).toHaveBeenCalledWith(`/${DOMAIN}/settings/tenants/`);
     });
 
     it('editor: calls notFound without deleting', async () => {
         const payload = makePayload();
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload, EDITOR_USER));
 
-        await expect(deleteTenantAction(TENANT_ID)).rejects.toThrow('NEXT_NOT_FOUND');
+        await expect(deleteTenantAction(DOMAIN, TENANT_ID)).rejects.toThrow('NEXT_NOT_FOUND');
         expect(payload.delete).not.toHaveBeenCalled();
         expect(mockRevalidatePath).not.toHaveBeenCalled();
     });
@@ -329,7 +335,7 @@ describe('FormData parsing (_payload JSON blob)', () => {
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
 
         const formData = new FormData(); // no _payload
-        await updateTenantAction(TENANT_ID, formData);
+        await updateTenantAction(DOMAIN, TENANT_ID, formData);
 
         // Should still call update with empty parsed data, not throw
         expect(payload.update).toHaveBeenCalled();
@@ -344,7 +350,7 @@ describe('FormData parsing (_payload JSON blob)', () => {
 
         const consoleErrSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
         try {
-            await expect(updateTenantAction(TENANT_ID, formData)).rejects.toThrow('Malformed form payload');
+            await expect(updateTenantAction(DOMAIN, TENANT_ID, formData)).rejects.toThrow('Malformed form payload');
         } finally {
             consoleErrSpy.mockRestore();
         }

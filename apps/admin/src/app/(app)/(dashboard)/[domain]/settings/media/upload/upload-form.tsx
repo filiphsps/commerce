@@ -5,6 +5,11 @@ import { useRouter } from 'next/navigation';
 import type { FormEvent } from 'react';
 import { useState, useTransition } from 'react';
 
+export type UploadFormProps = {
+    /** The current shop domain — used to construct the post-upload redirect URL. */
+    domain: string;
+};
+
 /**
  * Client upload form for new media files.
  *
@@ -17,7 +22,7 @@ import { useState, useTransition } from 'react';
  * boundary string will be missing and Payload's multipart parser will reject
  * the upload.
  */
-export function UploadForm() {
+export function UploadForm({ domain }: UploadFormProps) {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
     const [error, setError] = useState<string | null>(null);
@@ -47,9 +52,9 @@ export function UploadForm() {
                 const id = (json?.doc?.id ?? json?.id) as string | undefined;
 
                 if (id) {
-                    router.push(`/media/${id}/` as Route);
+                    router.push(`/${domain}/settings/media/${id}/` as Route);
                 } else {
-                    router.push('/media/' as Route);
+                    router.push(`/${domain}/settings/media/` as Route);
                 }
             } catch (err) {
                 console.error('[media] upload failed', err);
@@ -103,8 +108,7 @@ export function UploadForm() {
 
                     <div className="flex flex-col gap-1.5">
                         <label htmlFor="upload-caption" className="font-medium text-sm">
-                            Caption{' '}
-                            <span className="text-muted-foreground text-xs">(optional)</span>
+                            Caption <span className="text-muted-foreground text-xs">(optional)</span>
                         </label>
                         <input
                             id="upload-caption"
@@ -119,7 +123,10 @@ export function UploadForm() {
             </div>
 
             {error ? (
-                <p role="alert" className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-destructive text-sm">
+                <p
+                    role="alert"
+                    className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-destructive text-sm"
+                >
                     {error}
                 </p>
             ) : null}

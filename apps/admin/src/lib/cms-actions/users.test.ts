@@ -43,6 +43,7 @@ import { createUserAction, deleteUserAction, updateUserAction } from './users';
 // Fixtures
 // ------------------------------------------------------------------
 
+const DOMAIN = 'test-shop.com';
 const USER_ID = 'user-abc123';
 const OTHER_USER_ID = 'user-other456';
 
@@ -136,7 +137,7 @@ describe('createUserAction', () => {
             role: 'editor',
             tenants: [{ tenant: 'tenant-1' }],
         });
-        const result = await createUserAction(formData);
+        const result = await createUserAction(DOMAIN, formData);
 
         expect(payload.create).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -156,7 +157,7 @@ describe('createUserAction', () => {
         expect(createCall.data.password).not.toBe('');
 
         expect(result).toEqual({ id: 'user-new-1' });
-        expect(mockRevalidatePath).toHaveBeenCalledWith('/users/');
+        expect(mockRevalidatePath).toHaveBeenCalledWith(`/${DOMAIN}/settings/users/`);
     });
 
     it('creates a user with no tenants when tenants is omitted', async () => {
@@ -164,7 +165,7 @@ describe('createUserAction', () => {
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
 
         const formData = makeFormData({ email: 'new@example.com', role: 'admin' });
-        await createUserAction(formData);
+        await createUserAction(DOMAIN, formData);
 
         const createCall = payload.create.mock.calls[0]?.[0] as { data: Record<string, unknown> };
         expect(createCall.data.tenants).toEqual([]);
@@ -175,7 +176,7 @@ describe('createUserAction', () => {
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
 
         const formData = makeFormData({ role: 'editor' });
-        await expect(createUserAction(formData)).rejects.toThrow('Email is required');
+        await expect(createUserAction(DOMAIN, formData)).rejects.toThrow('Email is required');
         expect(payload.create).not.toHaveBeenCalled();
     });
 
@@ -184,7 +185,7 @@ describe('createUserAction', () => {
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
 
         const formData = makeFormData({ email: 'new@example.com' });
-        await expect(createUserAction(formData)).rejects.toThrow('Role is required');
+        await expect(createUserAction(DOMAIN, formData)).rejects.toThrow('Role is required');
         expect(payload.create).not.toHaveBeenCalled();
     });
 
@@ -193,7 +194,7 @@ describe('createUserAction', () => {
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload, EDITOR_USER));
 
         const formData = makeFormData({ email: 'new@example.com', role: 'editor' });
-        await expect(createUserAction(formData)).rejects.toThrow('NEXT_NOT_FOUND');
+        await expect(createUserAction(DOMAIN, formData)).rejects.toThrow('NEXT_NOT_FOUND');
         expect(payload.create).not.toHaveBeenCalled();
     });
 
@@ -202,7 +203,7 @@ describe('createUserAction', () => {
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
 
         const formData = makeFormData({ email: 'new@example.com', role: 'editor' });
-        await createUserAction(formData);
+        await createUserAction(DOMAIN, formData);
 
         const createCall = payload.create.mock.calls[0]?.[0] as { data: Record<string, unknown> };
         expect(createCall.data).not.toHaveProperty('_status');
@@ -227,7 +228,7 @@ describe('updateUserAction', () => {
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
 
         const formData = makeFormData({ email: 'updated@example.com', role: 'editor' });
-        await updateUserAction(OTHER_USER_ID, formData);
+        await updateUserAction(DOMAIN, OTHER_USER_ID, formData);
 
         expect(payload.update).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -238,8 +239,8 @@ describe('updateUserAction', () => {
                 overrideAccess: false,
             }),
         );
-        expect(mockRevalidatePath).toHaveBeenCalledWith('/users/');
-        expect(mockRevalidatePath).toHaveBeenCalledWith(`/users/${OTHER_USER_ID}/`);
+        expect(mockRevalidatePath).toHaveBeenCalledWith(`/${DOMAIN}/settings/users/`);
+        expect(mockRevalidatePath).toHaveBeenCalledWith(`/${DOMAIN}/settings/users/${OTHER_USER_ID}/`);
     });
 
     it('editor role: calls notFound without updating', async () => {
@@ -247,7 +248,7 @@ describe('updateUserAction', () => {
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload, EDITOR_USER));
 
         const formData = makeFormData({ email: 'updated@example.com', role: 'editor' });
-        await expect(updateUserAction(OTHER_USER_ID, formData)).rejects.toThrow('NEXT_NOT_FOUND');
+        await expect(updateUserAction(DOMAIN, OTHER_USER_ID, formData)).rejects.toThrow('NEXT_NOT_FOUND');
         expect(payload.update).not.toHaveBeenCalled();
     });
 
@@ -257,7 +258,7 @@ describe('updateUserAction', () => {
 
         // ADMIN_USER.id === 'user-admin-1', updating themselves to editor
         const formData = makeFormData({ email: ADMIN_USER.email, role: 'editor' });
-        await expect(updateUserAction(ADMIN_USER.id, formData)).rejects.toThrow(
+        await expect(updateUserAction(DOMAIN, ADMIN_USER.id, formData)).rejects.toThrow(
             'Admins cannot demote themselves.',
         );
         expect(payload.update).not.toHaveBeenCalled();
@@ -269,7 +270,7 @@ describe('updateUserAction', () => {
 
         // Admin updates their own email but role is undefined (not being changed)
         const formData = makeFormData({ email: 'new-admin@example.com' });
-        await updateUserAction(ADMIN_USER.id, formData);
+        await updateUserAction(DOMAIN, ADMIN_USER.id, formData);
 
         expect(payload.update).toHaveBeenCalled();
     });
@@ -280,7 +281,7 @@ describe('updateUserAction', () => {
 
         // Admin is updating a *different* user (OTHER_USER_ID) to editor — allowed
         const formData = makeFormData({ role: 'editor' });
-        await updateUserAction(OTHER_USER_ID, formData);
+        await updateUserAction(DOMAIN, OTHER_USER_ID, formData);
 
         expect(payload.update).toHaveBeenCalled();
     });
@@ -303,7 +304,7 @@ describe('deleteUserAction', () => {
         const payload = makePayload();
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
 
-        await deleteUserAction(OTHER_USER_ID);
+        await deleteUserAction(DOMAIN, OTHER_USER_ID);
 
         expect(payload.delete).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -313,14 +314,14 @@ describe('deleteUserAction', () => {
                 overrideAccess: false,
             }),
         );
-        expect(mockRevalidatePath).toHaveBeenCalledWith('/users/');
+        expect(mockRevalidatePath).toHaveBeenCalledWith(`/${DOMAIN}/settings/users/`);
     });
 
     it('editor role: calls notFound without deleting', async () => {
         const payload = makePayload();
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload, EDITOR_USER));
 
-        await expect(deleteUserAction(OTHER_USER_ID)).rejects.toThrow('NEXT_NOT_FOUND');
+        await expect(deleteUserAction(DOMAIN, OTHER_USER_ID)).rejects.toThrow('NEXT_NOT_FOUND');
         expect(payload.delete).not.toHaveBeenCalled();
         expect(mockRevalidatePath).not.toHaveBeenCalled();
     });
@@ -330,7 +331,7 @@ describe('deleteUserAction', () => {
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
 
         // ADMIN_USER.id is the same as the id passed in
-        await expect(deleteUserAction(ADMIN_USER.id)).rejects.toThrow('Admins cannot delete themselves.');
+        await expect(deleteUserAction(DOMAIN, ADMIN_USER.id)).rejects.toThrow('Admins cannot delete themselves.');
         expect(payload.delete).not.toHaveBeenCalled();
         expect(mockRevalidatePath).not.toHaveBeenCalled();
     });
@@ -354,7 +355,7 @@ describe('FormData parsing (_payload JSON blob)', () => {
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
 
         const formData = new FormData(); // no _payload
-        await updateUserAction(OTHER_USER_ID, formData);
+        await updateUserAction(DOMAIN, OTHER_USER_ID, formData);
 
         // Should still call update with empty parsed data, not throw
         expect(payload.update).toHaveBeenCalled();
@@ -369,7 +370,7 @@ describe('FormData parsing (_payload JSON blob)', () => {
 
         const consoleErrSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
         try {
-            await expect(updateUserAction(OTHER_USER_ID, formData)).rejects.toThrow('Malformed form payload');
+            await expect(updateUserAction(DOMAIN, OTHER_USER_ID, formData)).rejects.toThrow('Malformed form payload');
         } finally {
             consoleErrSpy.mockRestore();
         }
@@ -387,14 +388,14 @@ describe('FormData parsing (_payload JSON blob)', () => {
             // Mix of valid, invalid, and edge-case tenant entries
             tenants: [
                 { tenant: 'valid-tenant-id' },
-                { tenant: 123 },               // number — not a string
-                'bare-string',                  // not an object
-                null,                           // null
-                { noTenantKey: 'oops' },        // wrong key
+                { tenant: 123 }, // number — not a string
+                'bare-string', // not an object
+                null, // null
+                { noTenantKey: 'oops' }, // wrong key
             ],
         });
 
-        await updateUserAction(OTHER_USER_ID, formData);
+        await updateUserAction(DOMAIN, OTHER_USER_ID, formData);
 
         const updateCall = payload.update.mock.calls[0]?.[0] as { data: Record<string, unknown> };
         // Only the valid entry survives sanitization
@@ -411,7 +412,7 @@ describe('FormData parsing (_payload JSON blob)', () => {
             tenants: 'not-an-array',
         });
 
-        await updateUserAction(OTHER_USER_ID, formData);
+        await updateUserAction(DOMAIN, OTHER_USER_ID, formData);
 
         const updateCall = payload.update.mock.calls[0]?.[0] as { data: Record<string, unknown> };
         // Non-array tenants becomes undefined in parsed data (not forwarded)

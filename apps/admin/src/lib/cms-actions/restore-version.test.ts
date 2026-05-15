@@ -147,9 +147,7 @@ describe('restoreVersionAction', () => {
         // The thrown error is the genuine Payload failure — NOT a NEXT_REDIRECT
         // sentinel. If the action accidentally revalidated/redirected before
         // awaiting the restore, this assertion would surface that bug.
-        await expect(restoreVersionAction(DOMAIN, COLLECTION, VERSION_ID)).rejects.toThrow(
-            'Payload access denied',
-        );
+        await expect(restoreVersionAction(DOMAIN, COLLECTION, VERSION_ID)).rejects.toThrow('Payload access denied');
 
         expect(mockRevalidatePath).not.toHaveBeenCalled();
         // We can't directly assert `redirect` was not called (it's a static throw,

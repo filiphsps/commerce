@@ -1,12 +1,12 @@
 import 'server-only';
 
-import { buildCmsFormState } from '@/lib/build-cms-form-state';
 import type { Metadata, Route } from 'next';
 import { headers as getHeaders } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { createLocalReq, getLocalI18n, getRequestLanguage, type PayloadRequest } from 'payload';
 import { parseCookies } from 'payload/shared';
 import { DocumentForm } from '@/components/cms/document-form';
+import { buildCmsFormState } from '@/lib/build-cms-form-state';
 import { deleteUserAction, updateUserAction } from '@/lib/cms-actions/users';
 import { getCmsClientConfig } from '@/lib/get-client-config';
 import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
@@ -18,21 +18,21 @@ export const metadata: Metadata = {
 };
 
 export type EditUserProps = {
-    params: Promise<{ id: string }>;
+    params: Promise<{ domain: string; id: string }>;
 };
 
 export default async function EditUserPage({ params }: EditUserProps) {
-    const { id } = await params;
+    const { domain, id } = await params;
 
-    // ── Auth (no domain — admin route is cross-tenant) ────────────────────────
-    const { payload, user } = await getAuthedPayloadCtx();
+    // ── Auth ──────────────────────────────────────────────────────────────────
+    const { payload, user } = await getAuthedPayloadCtx(domain);
 
-    // Layout gate already rejects non-admins, but add defense-in-depth.
+    // Defense-in-depth: direct URL access by editors returns 404.
     if (user.role !== 'admin') {
         notFound();
     }
 
-    // ── Client config (no domain — cross-tenant) ──────────────────────────────
+    // ── Client config (no tenant scoping — cross-tenant collection) ───────────
     const clientConfig = await getCmsClientConfig();
 
     // ── Fetch user by id ──────────────────────────────────────────────────────
@@ -90,30 +90,29 @@ export default async function EditUserPage({ params }: EditUserProps) {
         skipValidation: true,
     });
 
-    // ── Bind id into server actions ───────────────────────────────────────────
-    const boundUpdate = updateUserAction.bind(null, id);
-    const boundDelete = deleteUserAction.bind(null, id);
+    // ── Bind domain + id into server actions ──────────────────────────────────
+    const boundUpdate = updateUserAction.bind(null, domain, id);
+    const boundDelete = deleteUserAction.bind(null, domain, id);
 
     const userTitle = String(userDoc.email ?? `User ${id}`);
 
     // Derive current tenant IDs from the user doc for the form's default value.
     const currentTenantIds = Array.isArray(userDoc.tenants)
-        ? (userDoc.tenants as Array<{ tenant?: unknown }>).map((t) => {
-              if (typeof t?.tenant === 'string') return t.tenant;
-              if (t?.tenant && typeof t.tenant === 'object' && 'id' in t.tenant) {
-                  return String((t.tenant as { id: unknown }).id);
-              }
-              return '';
-          }).filter(Boolean)
+        ? (userDoc.tenants as Array<{ tenant?: unknown }>)
+              .map((t) => {
+                  if (typeof t?.tenant === 'string') return t.tenant;
+                  if (t?.tenant && typeof t.tenant === 'object' && 'id' in t.tenant) {
+                      return String((t.tenant as { id: unknown }).id);
+                  }
+                  return '';
+              })
+              .filter(Boolean)
         : [];
 
     return (
         <DocumentForm
             title={userTitle}
-            breadcrumbs={[
-                { label: 'Users', href: '/users/' as Route },
-                { label: userTitle },
-            ]}
+            breadcrumbs={[{ label: 'Users', href: `/${domain}/settings/users/` as Route }, { label: userTitle }]}
             clientConfig={clientConfig}
             onSubmit={boundUpdate}
             initialState={initialState}

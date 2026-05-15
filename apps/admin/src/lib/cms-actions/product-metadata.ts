@@ -188,10 +188,6 @@ export async function saveProductMetadataDraftAction(
  * Publishes the product metadata doc (create or update).
  * Same signature as `saveProductMetadataDraftAction`.
  */
-export async function publishProductMetadataAction(
-    domain: string,
-    handle: string,
-    formData: FormData,
-): Promise<void> {
+export async function publishProductMetadataAction(domain: string, handle: string, formData: FormData): Promise<void> {
     return upsert(domain, handle, formData, 'published');
 }

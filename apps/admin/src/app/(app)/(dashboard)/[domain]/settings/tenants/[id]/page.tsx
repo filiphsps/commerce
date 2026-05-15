@@ -1,12 +1,12 @@
 import 'server-only';
 
-import { buildCmsFormState } from '@/lib/build-cms-form-state';
 import type { Metadata, Route } from 'next';
 import { headers as getHeaders } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { createLocalReq, getLocalI18n, getRequestLanguage, type PayloadRequest } from 'payload';
 import { parseCookies } from 'payload/shared';
 import { DocumentForm } from '@/components/cms/document-form';
+import { buildCmsFormState } from '@/lib/build-cms-form-state';
 import { deleteTenantAction, updateTenantAction } from '@/lib/cms-actions/tenants';
 import { getCmsClientConfig } from '@/lib/get-client-config';
 import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
@@ -18,21 +18,21 @@ export const metadata: Metadata = {
 };
 
 export type EditTenantProps = {
-    params: Promise<{ id: string }>;
+    params: Promise<{ domain: string; id: string }>;
 };
 
 export default async function EditTenantPage({ params }: EditTenantProps) {
-    const { id } = await params;
+    const { domain, id } = await params;
 
-    // ── Auth (no domain — admin route is cross-tenant) ────────────────────────
-    const { payload, user } = await getAuthedPayloadCtx();
+    // ── Auth ──────────────────────────────────────────────────────────────────
+    const { payload, user } = await getAuthedPayloadCtx(domain);
 
-    // Layout gate already rejects non-admins, but add defense-in-depth.
+    // Defense-in-depth: direct URL access by editors returns 404.
     if (user.role !== 'admin') {
         notFound();
     }
 
-    // ── Client config (no domain — cross-tenant) ──────────────────────────────
+    // ── Client config (no tenant scoping — cross-tenant collection) ───────────
     const clientConfig = await getCmsClientConfig();
 
     // ── Fetch tenant by id ────────────────────────────────────────────────────
@@ -76,19 +76,16 @@ export default async function EditTenantPage({ params }: EditTenantProps) {
         skipValidation: true,
     });
 
-    // ── Bind id into server actions ───────────────────────────────────────────
-    const boundUpdate = updateTenantAction.bind(null, id);
-    const boundDelete = deleteTenantAction.bind(null, id);
+    // ── Bind domain + id into server actions ──────────────────────────────────
+    const boundUpdate = updateTenantAction.bind(null, domain, id);
+    const boundDelete = deleteTenantAction.bind(null, domain, id);
 
     const tenantTitle = String(tenant.name ?? `Tenant ${id}`);
 
     return (
         <DocumentForm
             title={tenantTitle}
-            breadcrumbs={[
-                { label: 'Tenants', href: '/tenants/' as Route },
-                { label: tenantTitle },
-            ]}
+            breadcrumbs={[{ label: 'Tenants', href: `/${domain}/settings/tenants/` as Route }, { label: tenantTitle }]}
             clientConfig={clientConfig}
             onSubmit={boundUpdate}
             initialState={initialState}

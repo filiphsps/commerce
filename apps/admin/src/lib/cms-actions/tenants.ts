@@ -73,9 +73,9 @@ function parseFormData(formData: FormData): TenantInput {
 /**
  * Creates a new tenant doc and returns its id.
  *
- * Admin-only at the route level (gated by `(admin)/layout.tsx`) and at the
- * action level (explicit role check + `overrideAccess: false` so Payload's
- * `isAdmin` access predicate is the final arbiter).
+ * Admin-only at the route level and at the action level (explicit role check
+ * + `overrideAccess: false` so Payload's `isAdmin` access predicate is the
+ * final arbiter).
  *
  * Validates all four required fields (`name`, `slug`, `defaultLocale`,
  * `locales`) before calling `payload.create`.
@@ -83,10 +83,10 @@ function parseFormData(formData: FormData): TenantInput {
  * No `tenant` field and no `_status` — tenants are the top-level entity and
  * the collection has no drafts/versions.
  */
-export async function createTenantAction(formData: FormData): Promise<{ id: string }> {
+export async function createTenantAction(domain: string, formData: FormData): Promise<{ id: string }> {
     const parsed = parseFormData(formData);
 
-    const { payload, user } = await getAuthedPayloadCtx();
+    const { payload, user } = await getAuthedPayloadCtx(domain);
 
     if (user.role !== 'admin') {
         notFound();
@@ -112,7 +112,7 @@ export async function createTenantAction(formData: FormData): Promise<{ id: stri
         overrideAccess: false,
     });
 
-    revalidatePath('/tenants/');
+    revalidatePath(`/${domain}/settings/tenants/`);
     return { id: String(created.id) };
 }
 
@@ -123,12 +123,12 @@ export async function createTenantAction(formData: FormData): Promise<{ id: stri
  * "Save" writes the data directly.
  *
  * The Payload access predicate `isAdmin` enforces role at the SDK level
- * (defense in depth on top of the explicit role check and the layout gate).
+ * (defense in depth on top of the explicit role check).
  */
-export async function updateTenantAction(id: string, formData: FormData): Promise<void> {
+export async function updateTenantAction(domain: string, id: string, formData: FormData): Promise<void> {
     const parsed = parseFormData(formData);
 
-    const { payload, user } = await getAuthedPayloadCtx();
+    const { payload, user } = await getAuthedPayloadCtx(domain);
 
     if (user.role !== 'admin') {
         notFound();
@@ -142,8 +142,8 @@ export async function updateTenantAction(id: string, formData: FormData): Promis
         overrideAccess: false,
     });
 
-    revalidatePath('/tenants/');
-    revalidatePath(`/tenants/${id}/`);
+    revalidatePath(`/${domain}/settings/tenants/`);
+    revalidatePath(`/${domain}/settings/tenants/${id}/`);
 }
 
 /**
@@ -155,13 +155,13 @@ export async function updateTenantAction(id: string, formData: FormData): Promis
  * for cleaning up related content before or after deletion. A future Task 20
  * UI update may surface a warning about orphaned content.
  */
-export async function deleteTenantAction(id: string): Promise<void> {
-    const { payload, user } = await getAuthedPayloadCtx();
+export async function deleteTenantAction(domain: string, id: string): Promise<void> {
+    const { payload, user } = await getAuthedPayloadCtx(domain);
 
     if (user.role !== 'admin') {
         notFound();
     }
 
     await payload.delete({ collection: 'tenants', id, user, overrideAccess: false });
-    revalidatePath('/tenants/');
+    revalidatePath(`/${domain}/settings/tenants/`);
 }

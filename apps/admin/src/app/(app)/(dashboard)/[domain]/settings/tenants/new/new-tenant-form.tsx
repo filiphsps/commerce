@@ -6,11 +6,13 @@ import { useState, useTransition } from 'react';
 
 export type NewTenantFormProps = {
     /**
-     * Server action (no domain binding needed — tenants are cross-tenant):
-     * `createTenantAction`.
-     * Signature: `(formData: FormData) => Promise<{ id: string }>`.
+     * Server action with domain already bound:
+     * `createTenantAction.bind(null, domain)`.
+     * Signature after binding: `(formData: FormData) => Promise<{ id: string }>`.
      */
     createAction: (formData: FormData) => Promise<{ id: string }>;
+    /** The current shop domain — used to construct the post-create redirect URL. */
+    domain: string;
 };
 
 /**
@@ -25,7 +27,7 @@ export type NewTenantFormProps = {
  * `locales`) plus the optional `shopId`. All other editing is done in the
  * full edit form after the doc is created.
  */
-export function NewTenantForm({ createAction }: NewTenantFormProps) {
+export function NewTenantForm({ createAction, domain }: NewTenantFormProps) {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
     const [error, setError] = useState<string | null>(null);
@@ -51,7 +53,7 @@ export function NewTenantForm({ createAction }: NewTenantFormProps) {
         startTransition(async () => {
             try {
                 const { id } = await createAction(wrapped);
-                router.push(`/tenants/${id}/` as Route);
+                router.push(`/${domain}/settings/tenants/${id}/` as Route);
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Failed to create tenant.');
             }
@@ -64,7 +66,10 @@ export function NewTenantForm({ createAction }: NewTenantFormProps) {
                 <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-1.5">
                         <label htmlFor="tenant-name" className="font-medium text-sm">
-                            Name <span className="text-destructive" aria-hidden="true">*</span>
+                            Name{' '}
+                            <span className="text-destructive" aria-hidden="true">
+                                *
+                            </span>
                         </label>
                         <input
                             id="tenant-name"
@@ -79,7 +84,10 @@ export function NewTenantForm({ createAction }: NewTenantFormProps) {
 
                     <div className="flex flex-col gap-1.5">
                         <label htmlFor="tenant-slug" className="font-medium text-sm">
-                            Slug <span className="text-destructive" aria-hidden="true">*</span>
+                            Slug{' '}
+                            <span className="text-destructive" aria-hidden="true">
+                                *
+                            </span>
                         </label>
                         <input
                             id="tenant-slug"
@@ -95,7 +103,10 @@ export function NewTenantForm({ createAction }: NewTenantFormProps) {
 
                     <div className="flex flex-col gap-1.5">
                         <label htmlFor="tenant-defaultLocale" className="font-medium text-sm">
-                            Default Locale <span className="text-destructive" aria-hidden="true">*</span>
+                            Default Locale{' '}
+                            <span className="text-destructive" aria-hidden="true">
+                                *
+                            </span>
                         </label>
                         <input
                             id="tenant-defaultLocale"
@@ -111,7 +122,10 @@ export function NewTenantForm({ createAction }: NewTenantFormProps) {
 
                     <div className="flex flex-col gap-1.5">
                         <label htmlFor="tenant-locales" className="font-medium text-sm">
-                            Locales <span className="text-destructive" aria-hidden="true">*</span>
+                            Locales{' '}
+                            <span className="text-destructive" aria-hidden="true">
+                                *
+                            </span>
                         </label>
                         <input
                             id="tenant-locales"
@@ -143,7 +157,10 @@ export function NewTenantForm({ createAction }: NewTenantFormProps) {
             </div>
 
             {error ? (
-                <p role="alert" className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-destructive text-sm">
+                <p
+                    role="alert"
+                    className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-destructive text-sm"
+                >
                     {error}
                 </p>
             ) : null}

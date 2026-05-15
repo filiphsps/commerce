@@ -21,10 +21,7 @@ type BusinessDataStatus = 'draft' | 'published';
  * upstream, this `Pick` breaks at compile time, forcing the action to be
  * updated in lockstep.
  */
-type BusinessDataInput = Pick<
-    BusinessDatum,
-    'legalName' | 'supportEmail' | 'supportPhone' | 'address' | 'profiles'
->;
+type BusinessDataInput = Pick<BusinessDatum, 'legalName' | 'supportEmail' | 'supportPhone' | 'address' | 'profiles'>;
 
 // ---------------------------------------------------------------------------
 // FormData parsing
@@ -75,9 +72,7 @@ function parseFormData(formData: FormData): BusinessDataInput {
     let profiles: BusinessDataInput['profiles'];
     if (Array.isArray(rawProfiles)) {
         profiles = rawProfiles
-            .filter(
-                (p): p is Record<string, unknown> => p != null && typeof p === 'object',
-            )
+            .filter((p): p is Record<string, unknown> => p != null && typeof p === 'object')
             .map((p) => ({
                 platform: typeof p.platform === 'string' ? p.platform : '',
                 handle: typeof p.handle === 'string' ? p.handle : '',

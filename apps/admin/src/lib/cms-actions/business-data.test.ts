@@ -56,11 +56,7 @@ const TENANT = { id: 'tenant-1', slug: 'acme', name: 'Acme Store' };
 
 const EXISTING_DOC = { id: 'doc-1', tenant: 'tenant-1', legalName: 'Old Name' };
 
-function makePayload({
-    existingDocs = [] as unknown[],
-}: {
-    existingDocs?: unknown[];
-} = {}) {
+function makePayload({ existingDocs = [] as unknown[] }: { existingDocs?: unknown[] } = {}) {
     return {
         find: vi.fn().mockResolvedValue({ docs: existingDocs }),
         update: vi.fn().mockResolvedValue({ id: 'doc-1' }),
@@ -215,9 +211,7 @@ describe('FormData parsing (_payload JSON blob)', () => {
         const formData = makeFormData({
             legalName: 'Acme',
             address: { line1: '123 Main St', city: 'Springfield' },
-            profiles: [
-                { platform: 'instagram', handle: '@acme', url: 'https://instagram.com/acme' },
-            ],
+            profiles: [{ platform: 'instagram', handle: '@acme', url: 'https://instagram.com/acme' }],
         });
 
         await saveBusinessDataDraftAction(DOMAIN, formData);
@@ -260,9 +254,7 @@ describe('FormData parsing (_payload JSON blob)', () => {
         // output stays clean. The throw is what we actually assert on.
         const consoleErrSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
         try {
-            await expect(saveBusinessDataDraftAction(DOMAIN, formData)).rejects.toThrow(
-                'Malformed form payload',
-            );
+            await expect(saveBusinessDataDraftAction(DOMAIN, formData)).rejects.toThrow('Malformed form payload');
         } finally {
             consoleErrSpy.mockRestore();
         }

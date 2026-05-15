@@ -29,12 +29,6 @@ export function PageFields() {
     const fields = collectionConfig?.fields ?? [];
 
     return (
-        <RenderFields
-            fields={fields}
-            parentIndexPath=""
-            parentPath=""
-            parentSchemaPath="pages"
-            permissions={true}
-        />
+        <RenderFields fields={fields} parentIndexPath="" parentPath="" parentSchemaPath="pages" permissions={true} />
     );
 }

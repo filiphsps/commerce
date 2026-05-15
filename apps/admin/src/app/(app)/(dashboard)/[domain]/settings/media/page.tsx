@@ -2,6 +2,7 @@ import 'server-only';
 
 import type { Metadata, Route } from 'next';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
 
 export const metadata: Metadata = { title: 'Media Library' };
@@ -25,8 +26,17 @@ function mimeLabel(mimeType: string): string {
     return sub ? sub.toUpperCase().slice(0, 6) : 'FILE';
 }
 
-export default async function MediaListPage() {
-    const { payload, user } = await getAuthedPayloadCtx();
+type Params = Promise<{ domain: string }>;
+
+export default async function MediaListPage({ params }: { params: Params }) {
+    const { domain } = await params;
+
+    const { payload, user } = await getAuthedPayloadCtx(domain);
+
+    // Defense-in-depth: direct URL access by editors returns 404.
+    if (user.role !== 'admin') {
+        notFound();
+    }
 
     const { docs } = await payload.find({
         collection: 'media',
@@ -41,7 +51,7 @@ export default async function MediaListPage() {
             <header className="flex items-center justify-between">
                 <h1 className="font-semibold text-2xl">Media library</h1>
                 <Link
-                    href={'/media/upload/' as Route}
+                    href={`/${domain}/settings/media/upload/` as Route}
                     className="rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground text-sm hover:bg-primary/90"
                 >
                     + Upload
@@ -51,7 +61,10 @@ export default async function MediaListPage() {
             {docs.length === 0 ? (
                 <p className="text-muted-foreground text-sm">
                     No media yet.{' '}
-                    <Link href={'/media/upload/' as Route} className="underline hover:text-foreground">
+                    <Link
+                        href={`/${domain}/settings/media/upload/` as Route}
+                        className="underline hover:text-foreground"
+                    >
                         Upload your first file
                     </Link>
                     .
@@ -65,7 +78,7 @@ export default async function MediaListPage() {
                         return (
                             <li key={String(m.id)}>
                                 <Link
-                                    href={`/media/${m.id}/` as Route}
+                                    href={`/${domain}/settings/media/${m.id}/` as Route}
                                     className="block overflow-hidden rounded border border-border hover:border-ring"
                                 >
                                     <div className="aspect-square overflow-hidden bg-muted">

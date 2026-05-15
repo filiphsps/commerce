@@ -13,8 +13,15 @@ export type ShopTheme = {
     };
 };
 
-export const ContentProviders = ['cms', 'shopify', 'builder.io'] as const;
-export const CommerceProviders = ['shopify', 'stripe'] as const;
+export type CMSContentProvider = {
+    type: 'cms';
+};
+export type ShopifyContentProvider = {
+    type: 'shopify';
+};
+export type ContentProvider = CMSContentProvider | ShopifyContentProvider;
+
+export type ContentProviders = ContentProvider['type'];
 
 export type ShopifyCommerceProvider = {
     type: 'shopify';
@@ -38,6 +45,8 @@ export type StripeCommerceProvider = {
     authentication: {};
 };
 export type CommerceProvider = ShopifyCommerceProvider | StripeCommerceProvider;
+
+export type CommerceProviders = CommerceProvider['type'];
 
 export interface ShopBase extends BaseDocument {
     name: string;

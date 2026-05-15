@@ -126,7 +126,7 @@ export function UserForm({ saveAction, deleteAction, tenantOptions, currentTenan
             </div>
 
             {tenantOptions.length > 0 ? (
-                <div className="flex flex-col gap-1.5 border-t border-border pt-3">
+                <div className="flex flex-col gap-1.5 border-border border-t pt-3">
                     <label htmlFor="user-form-tenants" className="font-medium text-sm">
                         Tenants
                     </label>

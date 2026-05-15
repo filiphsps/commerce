@@ -2,29 +2,27 @@ import 'server-only';
 
 import type { Metadata, Route } from 'next';
 import Link from 'next/link';
-import { createUserAction } from '@/lib/cms-actions/users';
+import { notFound } from 'next/navigation';
+import { createTenantAction } from '@/lib/cms-actions/tenants';
 import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
-import { NewUserForm } from './new-user-form';
+import { NewTenantForm } from './new-tenant-form';
 
-export const metadata: Metadata = { title: 'New User' };
+export const metadata: Metadata = { title: 'New Tenant' };
 
-export default async function NewUserPage() {
-    // Layout gate already enforces admin role. Fetch tenant options server-side
-    // so the client form can render the multi-select without a client-side fetch.
-    const { payload, user } = await getAuthedPayloadCtx();
+type Params = Promise<{ domain: string }>;
 
-    const { docs: tenantDocs } = await payload.find({
-        collection: 'tenants',
-        sort: 'name',
-        limit: 100,
-        user,
-        overrideAccess: false,
-    });
+export default async function NewTenantPage({ params }: { params: Params }) {
+    const { domain } = await params;
 
-    const tenantOptions = tenantDocs.map((t) => ({
-        id: String(t.id),
-        name: String(t.name ?? t.id),
-    }));
+    const { user } = await getAuthedPayloadCtx(domain);
+
+    // Defense-in-depth: direct URL access by editors returns 404.
+    if (user.role !== 'admin') {
+        notFound();
+    }
+
+    // Bind domain into the server action so the form doesn't need to pass it.
+    const boundCreate = createTenantAction.bind(null, domain);
 
     return (
         <div className="flex flex-col gap-6 px-6 py-8">
@@ -34,10 +32,10 @@ export default async function NewUserPage() {
                         <ol className="flex items-center gap-1 text-muted-foreground text-sm">
                             <li className="flex items-center gap-1">
                                 <Link
-                                    href={'/users/' as Route}
+                                    href={`/${domain}/settings/tenants/` as Route}
                                     className="hover:text-foreground hover:underline"
                                 >
-                                    Users
+                                    Tenants
                                 </Link>
                             </li>
                             <li className="flex items-center gap-1">
@@ -46,17 +44,17 @@ export default async function NewUserPage() {
                             </li>
                         </ol>
                     </nav>
-                    <h1 className="font-semibold text-2xl leading-tight">New user</h1>
+                    <h1 className="font-semibold text-2xl leading-tight">New tenant</h1>
                 </div>
                 <Link
-                    href={'/users/' as Route}
+                    href={`/${domain}/settings/tenants/` as Route}
                     className="text-muted-foreground text-sm hover:text-foreground hover:underline"
                 >
                     ← Back to list
                 </Link>
             </header>
 
-            <NewUserForm createAction={createUserAction} tenantOptions={tenantOptions} />
+            <NewTenantForm createAction={boundCreate} domain={domain} />
         </div>
     );
 }

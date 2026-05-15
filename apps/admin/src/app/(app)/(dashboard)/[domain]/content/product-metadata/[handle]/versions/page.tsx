@@ -61,10 +61,7 @@ export default async function ProductMetadataVersionsPage({ params }: { params: 
     const { docs: versions } = await payload.findVersions({
         collection: 'productMetadata',
         where: {
-            and: [
-                { parent: { equals: doc.id } },
-                { 'version.tenant': { equals: tenant.id } },
-            ],
+            and: [{ parent: { equals: doc.id } }, { 'version.tenant': { equals: tenant.id } }],
         },
         sort: '-updatedAt',
         limit: 50,

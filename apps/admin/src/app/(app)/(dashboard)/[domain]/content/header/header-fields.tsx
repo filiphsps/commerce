@@ -22,12 +22,6 @@ export function HeaderFields() {
     const fields = collectionConfig?.fields ?? [];
 
     return (
-        <RenderFields
-            fields={fields}
-            parentIndexPath=""
-            parentPath=""
-            parentSchemaPath="header"
-            permissions={true}
-        />
+        <RenderFields fields={fields} parentIndexPath="" parentPath="" parentSchemaPath="header" permissions={true} />
     );
 }

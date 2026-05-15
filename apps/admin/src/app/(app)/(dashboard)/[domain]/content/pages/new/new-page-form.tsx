@@ -61,7 +61,10 @@ export function NewPageForm({ createAction, domain }: NewPageFormProps) {
                 <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-1.5">
                         <label htmlFor="page-title" className="font-medium text-sm">
-                            Title <span className="text-destructive" aria-hidden="true">*</span>
+                            Title{' '}
+                            <span className="text-destructive" aria-hidden="true">
+                                *
+                            </span>
                         </label>
                         <input
                             id="page-title"
@@ -76,7 +79,10 @@ export function NewPageForm({ createAction, domain }: NewPageFormProps) {
 
                     <div className="flex flex-col gap-1.5">
                         <label htmlFor="page-slug" className="font-medium text-sm">
-                            Slug <span className="text-destructive" aria-hidden="true">*</span>
+                            Slug{' '}
+                            <span className="text-destructive" aria-hidden="true">
+                                *
+                            </span>
                         </label>
                         <input
                             id="page-slug"
@@ -95,7 +101,10 @@ export function NewPageForm({ createAction, domain }: NewPageFormProps) {
             </div>
 
             {error ? (
-                <p role="alert" className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-destructive text-sm">
+                <p
+                    role="alert"
+                    className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-destructive text-sm"
+                >
                     {error}
                 </p>
             ) : null}

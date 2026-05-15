@@ -1,6 +1,5 @@
 import 'server-only';
 
-import { buildCmsFormState } from '@/lib/build-cms-form-state';
 import type { Metadata, Route } from 'next';
 import { headers as getHeaders } from 'next/headers';
 import { notFound } from 'next/navigation';
@@ -9,6 +8,7 @@ import { parseCookies } from 'payload/shared';
 import { DocumentForm } from '@/components/cms/document-form';
 import type { LocaleOption } from '@/components/cms/locale-switcher';
 import { LocaleSwitcher } from '@/components/cms/locale-switcher';
+import { buildCmsFormState } from '@/lib/build-cms-form-state';
 import { publishPageAction, savePageDraftAction } from '@/lib/cms-actions/pages';
 import { getCmsClientConfig } from '@/lib/get-client-config';
 import { getAuthedPayloadCtx } from '@/lib/payload-ctx';

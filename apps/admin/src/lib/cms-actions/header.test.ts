@@ -56,11 +56,7 @@ const TENANT = { id: 'tenant-1', slug: 'acme', name: 'Acme Store' };
 
 const EXISTING_DOC = { id: 'doc-1', tenant: 'tenant-1', logoLink: '/' };
 
-function makePayload({
-    existingDocs = [] as unknown[],
-}: {
-    existingDocs?: unknown[];
-} = {}) {
+function makePayload({ existingDocs = [] as unknown[] }: { existingDocs?: unknown[] } = {}) {
     return {
         find: vi.fn().mockResolvedValue({ docs: existingDocs }),
         update: vi.fn().mockResolvedValue({ id: 'doc-1' }),
@@ -98,7 +94,10 @@ describe('saveHeaderDraftAction', () => {
         const payload = makePayload({ existingDocs: [] });
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
 
-        const formData = makeFormData({ logoLink: '/', items: [{ link: { kind: 'external', label: 'Home', url: '/' } }] });
+        const formData = makeFormData({
+            logoLink: '/',
+            items: [{ link: { kind: 'external', label: 'Home', url: '/' } }],
+        });
         await saveHeaderDraftAction(DOMAIN, formData);
 
         expect(payload.find).toHaveBeenCalledWith(

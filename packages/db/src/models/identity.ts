@@ -1,18 +1,9 @@
+import type { InferSchemaType } from 'mongoose';
 import { Schema } from 'mongoose';
 import type { BaseDocument } from '../db';
 import { db } from '../db';
 
-export interface IdentityBase extends BaseDocument {
-    provider: string;
-    identity: string;
-    scope?: string;
-
-    expiresAt?: Date;
-    refreshToken?: string;
-    accessToken?: string;
-}
-
-export const IdentitySchema = new Schema<IdentityBase>(
+export const IdentitySchema = new Schema(
     {
         provider: {
             type: Schema.Types.String,
@@ -40,6 +31,8 @@ export const IdentitySchema = new Schema<IdentityBase>(
         timestamps: true,
     },
 );
+
+export type IdentityBase = BaseDocument & InferSchemaType<typeof IdentitySchema>;
 // `identity` alone is not unique across providers — GitHub user `42` and a
 // future Google user `42` would collide on the single-field index. Lookups
 // always go via (provider, providerAccountId) anyway. Adding a new provider

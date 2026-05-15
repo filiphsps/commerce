@@ -10,7 +10,7 @@ import { MediaForm } from './media-form';
 export const metadata: Metadata = { title: 'Edit Media' };
 
 export type EditMediaPageProps = {
-    params: Promise<{ id: string }>;
+    params: Promise<{ domain: string; id: string }>;
 };
 
 /** Derive a display URL for the preview — prefer the `card` size for a larger preview. */
@@ -24,11 +24,11 @@ function getPreviewSrc(doc: {
 }
 
 export default async function EditMediaPage({ params }: EditMediaPageProps) {
-    const { id } = await params;
+    const { domain, id } = await params;
 
-    const { payload, user } = await getAuthedPayloadCtx();
+    const { payload, user } = await getAuthedPayloadCtx(domain);
 
-    // Layout gate already rejects non-admins, but add defense-in-depth.
+    // Defense-in-depth: direct URL access by editors returns 404.
     if (user.role !== 'admin') {
         notFound();
     }
@@ -44,10 +44,10 @@ export default async function EditMediaPage({ params }: EditMediaPageProps) {
         notFound();
     }
 
-    // Bind id into server actions — `<form action={bound}>` passes FormData as
+    // Bind domain + id into server actions — `<form action={bound}>` passes FormData as
     // the first arg after binding, so calling signatures match.
-    const boundUpdate = updateMediaAction.bind(null, id);
-    const boundDelete = deleteMediaAction.bind(null, id);
+    const boundUpdate = updateMediaAction.bind(null, domain, id);
+    const boundDelete = deleteMediaAction.bind(null, domain, id);
 
     const title = String(media.filename ?? media.alt ?? `Media ${id}`);
     const previewSrc = getPreviewSrc(media);
@@ -59,7 +59,10 @@ export default async function EditMediaPage({ params }: EditMediaPageProps) {
                     <nav aria-label="Breadcrumb">
                         <ol className="flex items-center gap-1 text-muted-foreground text-sm">
                             <li className="flex items-center gap-1">
-                                <Link href={'/media/' as Route} className="hover:text-foreground hover:underline">
+                                <Link
+                                    href={`/${domain}/settings/media/` as Route}
+                                    className="hover:text-foreground hover:underline"
+                                >
                                     Media
                                 </Link>
                             </li>
@@ -74,7 +77,7 @@ export default async function EditMediaPage({ params }: EditMediaPageProps) {
                     <h1 className="font-semibold text-2xl leading-tight">{title}</h1>
                 </div>
                 <Link
-                    href={'/media/' as Route}
+                    href={`/${domain}/settings/media/` as Route}
                     className="text-muted-foreground text-sm hover:text-foreground hover:underline"
                 >
                     ← Back to library

@@ -1,19 +1,11 @@
+import type { InferSchemaType } from 'mongoose';
 import { Schema } from 'mongoose';
 import type { BaseDocument } from '../db';
 import { db } from '../db';
 import type { IdentityBase } from './identity';
 import { IdentitySchema } from './identity';
 
-export interface UserBase extends BaseDocument {
-    email: string;
-    name: string;
-    avatar?: string;
-    identities: IdentityBase[];
-
-    emailVerified: Date | null;
-}
-
-export const UserSchema = new Schema<UserBase>(
+export const UserSchema = new Schema(
     {
         email: {
             type: Schema.Types.String,
@@ -45,6 +37,10 @@ export const UserSchema = new Schema<UserBase>(
         timestamps: true,
     },
 );
+
+type InferredUser = InferSchemaType<typeof UserSchema>;
+
+export type UserBase = BaseDocument & Omit<InferredUser, 'identities'> & { identities: IdentityBase[] };
 
 export const UserModel = (db.models.User || db.model('User', UserSchema)) as ReturnType<
     typeof db.model<typeof UserSchema>

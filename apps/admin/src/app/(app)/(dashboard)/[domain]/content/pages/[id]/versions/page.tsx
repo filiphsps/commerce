@@ -28,10 +28,7 @@ export default async function PageVersionsPage({ params }: { params: Params }) {
     const { docs } = await payload.findVersions({
         collection: 'pages',
         where: {
-            and: [
-                { parent: { equals: id } },
-                { 'version.tenant': { equals: tenant.id } },
-            ],
+            and: [{ parent: { equals: id } }, { 'version.tenant': { equals: tenant.id } }],
         },
         sort: '-updatedAt',
         limit: 50,
@@ -44,8 +41,7 @@ export default async function PageVersionsPage({ params }: { params: Params }) {
     // want to stay on this page's versions list. We can't override the redirect
     // target in the generic action without changing its signature — the redirect
     // back to this same URL is acceptable UX (re-renders the updated list).
-    const restorePageVersion = (versionId: string) =>
-        restoreVersionAction.bind(null, domain, 'pages', versionId);
+    const restorePageVersion = (versionId: string) => restoreVersionAction.bind(null, domain, 'pages', versionId);
 
     return (
         <div className="mx-auto max-w-3xl px-6 py-10">

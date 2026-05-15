@@ -27,7 +27,10 @@ type ArticleStatus = 'draft' | 'published';
  * types). Payload validates required fields at publish time — saving an
  * incomplete draft is intentionally permitted.
  */
-type ArticleInput = Pick<Article, 'title' | 'slug' | 'author' | 'publishedAt' | 'cover' | 'excerpt' | 'body' | 'tags' | 'seo'>;
+type ArticleInput = Pick<
+    Article,
+    'title' | 'slug' | 'author' | 'publishedAt' | 'cover' | 'excerpt' | 'body' | 'tags' | 'seo'
+>;
 
 // ---------------------------------------------------------------------------
 // FormData parsing
@@ -84,9 +87,7 @@ function parseFormData(formData: FormData): Partial<ArticleInput> {
         // is a `SerializedEditorState`-like JSON object. Treat as opaque;
         // Payload validates the shape at write time.
         body:
-            parsed.body != null && typeof parsed.body === 'object'
-                ? (parsed.body as ArticleInput['body'])
-                : undefined,
+            parsed.body != null && typeof parsed.body === 'object' ? (parsed.body as ArticleInput['body']) : undefined,
         // `tags` is hasMany: true, so the value is string[].
         tags: Array.isArray(parsed.tags) ? (parsed.tags as string[]) : undefined,
         // `seo` is a localized group with text/upload/checkbox sub-fields.

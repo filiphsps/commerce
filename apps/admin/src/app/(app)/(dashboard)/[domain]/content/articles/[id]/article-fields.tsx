@@ -35,12 +35,6 @@ export function ArticleFields() {
     const fields = collectionConfig?.fields ?? [];
 
     return (
-        <RenderFields
-            fields={fields}
-            parentIndexPath=""
-            parentPath=""
-            parentSchemaPath="articles"
-            permissions={true}
-        />
+        <RenderFields fields={fields} parentIndexPath="" parentPath="" parentSchemaPath="articles" permissions={true} />
     );
 }

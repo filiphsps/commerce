@@ -56,11 +56,7 @@ const TENANT = { id: 'tenant-1', slug: 'acme', name: 'Acme Store' };
 
 const EXISTING_DOC = { id: 'doc-1', tenant: 'tenant-1', copyrightLine: '© Acme' };
 
-function makePayload({
-    existingDocs = [] as unknown[],
-}: {
-    existingDocs?: unknown[];
-} = {}) {
+function makePayload({ existingDocs = [] as unknown[] }: { existingDocs?: unknown[] } = {}) {
     return {
         find: vi.fn().mockResolvedValue({ docs: existingDocs }),
         update: vi.fn().mockResolvedValue({ id: 'doc-1' }),
@@ -224,12 +220,8 @@ describe('FormData parsing (_payload JSON blob)', () => {
             expect.objectContaining({
                 data: expect.objectContaining({
                     copyrightLine: '© Acme Inc.',
-                    sections: expect.arrayContaining([
-                        expect.objectContaining({ title: 'Company' }),
-                    ]),
-                    social: expect.arrayContaining([
-                        expect.objectContaining({ platform: 'instagram' }),
-                    ]),
+                    sections: expect.arrayContaining([expect.objectContaining({ title: 'Company' })]),
+                    social: expect.arrayContaining([expect.objectContaining({ platform: 'instagram' })]),
                     legal: expect.arrayContaining([
                         expect.objectContaining({ link: expect.objectContaining({ label: 'Privacy' }) }),
                     ]),

@@ -61,10 +61,14 @@ function parseFormData(formData: FormData): UserInput {
     // forwarded to Payload where they'd cause a cryptic schema error.
     let tenants: Array<{ tenant: string }> | undefined;
     if (Array.isArray(parsed.tenants)) {
-        tenants = (parsed.tenants as unknown[])
-            .filter((item): item is { tenant: string } => {
-                return typeof item === 'object' && item !== null && 'tenant' in item && typeof (item as Record<string, unknown>).tenant === 'string';
-            });
+        tenants = (parsed.tenants as unknown[]).filter((item): item is { tenant: string } => {
+            return (
+                typeof item === 'object' &&
+                item !== null &&
+                'tenant' in item &&
+                typeof (item as Record<string, unknown>).tenant === 'string'
+            );
+        });
     }
 
     return {
@@ -81,8 +85,8 @@ function parseFormData(formData: FormData): UserInput {
 /**
  * Creates a new user doc and returns its id.
  *
- * Admin-only at the route level (gated by `(admin)/layout.tsx`) and at the
- * action level (explicit role check + `overrideAccess: false`).
+ * Admin-only at the route level and at the action level (explicit role check
+ * + `overrideAccess: false`).
  *
  * Password: this codebase uses NextAuth as the primary auth strategy (the
  * "bridge" pattern). Payload expects `data.password` when `auth: {...}` is
@@ -91,8 +95,8 @@ function parseFormData(formData: FormData): UserInput {
  * `crypto.randomUUID()` as a throwaway value — real auth happens via NextAuth
  * and this password is never used.
  */
-export async function createUserAction(formData: FormData): Promise<{ id: string }> {
-    const { payload, user } = await getAuthedPayloadCtx();
+export async function createUserAction(domain: string, formData: FormData): Promise<{ id: string }> {
+    const { payload, user } = await getAuthedPayloadCtx(domain);
 
     if (user.role !== 'admin') {
         notFound();
@@ -123,7 +127,7 @@ export async function createUserAction(formData: FormData): Promise<{ id: string
         overrideAccess: false,
     });
 
-    revalidatePath('/users/');
+    revalidatePath(`/${domain}/settings/users/`);
     return { id: String(created.id) };
 }
 
@@ -138,8 +142,8 @@ export async function createUserAction(formData: FormData): Promise<{ id: string
  * admin role via the UI, which would immediately lock them out. The lockout
  * would be permanent if they are the only admin.
  */
-export async function updateUserAction(id: string, formData: FormData): Promise<void> {
-    const { payload, user } = await getAuthedPayloadCtx();
+export async function updateUserAction(domain: string, id: string, formData: FormData): Promise<void> {
+    const { payload, user } = await getAuthedPayloadCtx(domain);
 
     if (user.role !== 'admin') {
         notFound();
@@ -167,8 +171,8 @@ export async function updateUserAction(id: string, formData: FormData): Promise<
         overrideAccess: false,
     });
 
-    revalidatePath('/users/');
-    revalidatePath(`/users/${id}/`);
+    revalidatePath(`/${domain}/settings/users/`);
+    revalidatePath(`/${domain}/settings/users/${id}/`);
 }
 
 /**
@@ -178,8 +182,8 @@ export async function updateUserAction(id: string, formData: FormData): Promise<
  * an immediate lockout. If you are the only admin, it would be permanent with
  * no recovery path through this UI.
  */
-export async function deleteUserAction(id: string): Promise<void> {
-    const { payload, user } = await getAuthedPayloadCtx();
+export async function deleteUserAction(domain: string, id: string): Promise<void> {
+    const { payload, user } = await getAuthedPayloadCtx(domain);
 
     if (user.role !== 'admin') {
         notFound();
@@ -193,5 +197,5 @@ export async function deleteUserAction(id: string): Promise<void> {
     }
 
     await payload.delete({ collection: 'users', id, user, overrideAccess: false });
-    revalidatePath('/users/');
+    revalidatePath(`/${domain}/settings/users/`);
 }

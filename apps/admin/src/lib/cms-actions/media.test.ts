@@ -44,6 +44,7 @@ import { deleteMediaAction, updateMediaAction } from './media';
 // Fixtures
 // ------------------------------------------------------------------
 
+const DOMAIN = 'test-shop.com';
 const MEDIA_ID = 'media-abc123';
 
 const ADMIN_USER = {
@@ -86,11 +87,7 @@ type MockPayload = {
 
 type AnyUser = { id: string; email: string; role: string; tenants: unknown[]; collection: 'users' };
 
-function makePayload({
-    existingDoc = EXISTING_MEDIA as unknown,
-}: {
-    existingDoc?: unknown;
-} = {}): MockPayload {
+function makePayload({ existingDoc = EXISTING_MEDIA as unknown }: { existingDoc?: unknown } = {}): MockPayload {
     return {
         find: vi.fn().mockResolvedValue({ docs: existingDoc ? [existingDoc] : [] }),
         findByID: vi.fn().mockResolvedValue(existingDoc),
@@ -136,7 +133,7 @@ describe('updateMediaAction', () => {
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
 
         const formData = makeFormData({ alt: 'Updated alt text', caption: 'New caption' });
-        await updateMediaAction(MEDIA_ID, formData);
+        await updateMediaAction(DOMAIN, MEDIA_ID, formData);
 
         expect(payload.update).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -147,8 +144,8 @@ describe('updateMediaAction', () => {
                 overrideAccess: false,
             }),
         );
-        expect(mockRevalidatePath).toHaveBeenCalledWith('/media/');
-        expect(mockRevalidatePath).toHaveBeenCalledWith(`/media/${MEDIA_ID}/`);
+        expect(mockRevalidatePath).toHaveBeenCalledWith(`/${DOMAIN}/settings/media/`);
+        expect(mockRevalidatePath).toHaveBeenCalledWith(`/${DOMAIN}/settings/media/${MEDIA_ID}/`);
     });
 
     it('editor role: calls notFound without updating', async () => {
@@ -156,7 +153,7 @@ describe('updateMediaAction', () => {
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload, EDITOR_USER));
 
         const formData = makeFormData({ alt: 'Alt text' });
-        await expect(updateMediaAction(MEDIA_ID, formData)).rejects.toThrow('NEXT_NOT_FOUND');
+        await expect(updateMediaAction(DOMAIN, MEDIA_ID, formData)).rejects.toThrow('NEXT_NOT_FOUND');
         expect(payload.update).not.toHaveBeenCalled();
         expect(mockRevalidatePath).not.toHaveBeenCalled();
     });
@@ -166,7 +163,7 @@ describe('updateMediaAction', () => {
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
 
         const formData = makeFormData({ alt: 'Some alt' });
-        await updateMediaAction(MEDIA_ID, formData);
+        await updateMediaAction(DOMAIN, MEDIA_ID, formData);
 
         const updateCall = payload.update.mock.calls[0]?.[0] as { data: Record<string, unknown> };
         expect(updateCall.data).not.toHaveProperty('_status');
@@ -194,7 +191,7 @@ describe('deleteMediaAction', () => {
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
 
         // redirect() throws so we catch it
-        await expect(deleteMediaAction(MEDIA_ID)).rejects.toThrow('NEXT_REDIRECT:/media/');
+        await expect(deleteMediaAction(DOMAIN, MEDIA_ID)).rejects.toThrow(`NEXT_REDIRECT:/${DOMAIN}/settings/media/`);
 
         expect(payload.delete).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -204,15 +201,15 @@ describe('deleteMediaAction', () => {
                 overrideAccess: false,
             }),
         );
-        expect(mockRevalidatePath).toHaveBeenCalledWith('/media/');
-        expect(mockRedirect).toHaveBeenCalledWith('/media/');
+        expect(mockRevalidatePath).toHaveBeenCalledWith(`/${DOMAIN}/settings/media/`);
+        expect(mockRedirect).toHaveBeenCalledWith(`/${DOMAIN}/settings/media/`);
     });
 
     it('editor role: calls notFound without deleting', async () => {
         const payload = makePayload();
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload, EDITOR_USER));
 
-        await expect(deleteMediaAction(MEDIA_ID)).rejects.toThrow('NEXT_NOT_FOUND');
+        await expect(deleteMediaAction(DOMAIN, MEDIA_ID)).rejects.toThrow('NEXT_NOT_FOUND');
         expect(payload.delete).not.toHaveBeenCalled();
         expect(mockRevalidatePath).not.toHaveBeenCalled();
         expect(mockRedirect).not.toHaveBeenCalled();
@@ -238,7 +235,7 @@ describe('FormData parsing (raw named fields)', () => {
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
 
         const formData = makeFormData({ alt: 'My photo', caption: 'A nice photo' });
-        await updateMediaAction(MEDIA_ID, formData);
+        await updateMediaAction(DOMAIN, MEDIA_ID, formData);
 
         const updateCall = payload.update.mock.calls[0]?.[0] as { data: Record<string, unknown> };
         expect(updateCall.data).toEqual({ alt: 'My photo', caption: 'A nice photo' });
@@ -249,7 +246,7 @@ describe('FormData parsing (raw named fields)', () => {
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
 
         const formData = makeFormData({ alt: 'Just alt' });
-        await updateMediaAction(MEDIA_ID, formData);
+        await updateMediaAction(DOMAIN, MEDIA_ID, formData);
 
         const updateCall = payload.update.mock.calls[0]?.[0] as { data: Record<string, unknown> };
         expect(updateCall.data).toEqual({ alt: 'Just alt', caption: undefined });
@@ -260,7 +257,7 @@ describe('FormData parsing (raw named fields)', () => {
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
 
         const formData = makeFormData({ alt: '' });
-        await updateMediaAction(MEDIA_ID, formData);
+        await updateMediaAction(DOMAIN, MEDIA_ID, formData);
 
         const updateCall = payload.update.mock.calls[0]?.[0] as { data: Record<string, unknown> };
         expect(updateCall.data.alt).toBeUndefined();
@@ -270,7 +267,7 @@ describe('FormData parsing (raw named fields)', () => {
         const payload = makePayload();
         mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
 
-        await updateMediaAction(MEDIA_ID, new FormData());
+        await updateMediaAction(DOMAIN, MEDIA_ID, new FormData());
 
         const updateCall = payload.update.mock.calls[0]?.[0] as { data: Record<string, unknown> };
         expect(updateCall.data).toEqual({ alt: undefined, caption: undefined });
@@ -290,7 +287,7 @@ describe('FormData parsing (raw named fields)', () => {
             _status: 'published',
             file: 'should-be-ignored',
         });
-        await updateMediaAction(MEDIA_ID, formData);
+        await updateMediaAction(DOMAIN, MEDIA_ID, formData);
 
         const updateCall = payload.update.mock.calls[0]?.[0] as { data: Record<string, unknown> };
         expect(updateCall.data).toEqual({ alt: 'Allowed', caption: 'Also allowed' });

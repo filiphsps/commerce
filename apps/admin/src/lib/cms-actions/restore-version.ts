@@ -22,7 +22,7 @@ import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
  *
  * Finally, `redirect()` to the versions list. The user is most likely
  * sitting there when they clicked Restore — without an explicit navigation,
- * Next 16's default `<form action>` behaviour is "stay on the current URL
+ * Next 16's default `<form action>` behavior is "stay on the current URL
  * and re-render", which provides no transition feedback even after the
  * revalidations land. Redirecting forces a hard navigation so the user sees
  * the updated list. `redirect()` throws an internal Next signal, so it MUST

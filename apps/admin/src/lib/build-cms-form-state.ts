@@ -27,7 +27,7 @@ import type { BuildFormStateArgs } from 'payload';
  * Callers must NOT override these flags; the parameter type omits them so
  * the type system refuses any drift. If we re-introduce an importMap in
  * the future, drop both flags here and the call sites will pick up the
- * default RSC-rendering behaviour automatically.
+ * default RSC-rendering behavior automatically.
  */
 export type BuildCmsFormStateArgs = Omit<BuildFormStateArgs, 'mockRSCs' | 'renderAllFields'>;
 
