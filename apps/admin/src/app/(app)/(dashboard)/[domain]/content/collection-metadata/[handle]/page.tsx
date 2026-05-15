@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { buildFormState } from '@payloadcms/ui/utilities/buildFormState';
+import { buildCmsFormState } from '@/lib/build-cms-form-state';
 import type { Metadata, Route } from 'next';
 import { headers as getHeaders } from 'next/headers';
 import { createLocalReq, getLocalI18n, getRequestLanguage, type PayloadRequest } from 'payload';
@@ -83,7 +83,7 @@ export default async function EditCollectionMetadataPage({ params, searchParams 
 
     // When no existing doc: pass empty data — `buildFormState` populates all
     // fields with their default values, giving the editor a clean form.
-    const { state: initialState } = await buildFormState({
+    const { state: initialState } = await buildCmsFormState({
         collectionSlug: 'collectionMetadata',
         data: existing ?? {},
         id: existing ? String(existing.id) : undefined,
@@ -97,7 +97,6 @@ export default async function EditCollectionMetadataPage({ params, searchParams 
         },
         docPreferences: { fields: {} },
         locale,
-        renderAllFields: true,
         req,
         schemaPath: 'collectionMetadata',
         skipValidation: true,

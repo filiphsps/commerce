@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { buildFormState } from '@payloadcms/ui/utilities/buildFormState';
+import { buildCmsFormState } from '@/lib/build-cms-form-state';
 import type { Metadata, Route } from 'next';
 import { headers as getHeaders } from 'next/headers';
 import { notFound } from 'next/navigation';
@@ -84,7 +84,7 @@ export default async function EditArticlePage({ params, searchParams }: EditArti
     const i18n = (await getLocalI18n({ config: payload.config, language })) as PayloadRequest['i18n'];
     const req = await createLocalReq({ req: { i18n, user: user as never } }, payload);
 
-    const { state: initialState } = await buildFormState({
+    const { state: initialState } = await buildCmsFormState({
         collectionSlug: 'articles',
         data: article,
         id: String(article.id),
@@ -98,7 +98,6 @@ export default async function EditArticlePage({ params, searchParams }: EditArti
         },
         docPreferences: { fields: {} },
         locale,
-        renderAllFields: true,
         req,
         schemaPath: 'articles',
         skipValidation: true,

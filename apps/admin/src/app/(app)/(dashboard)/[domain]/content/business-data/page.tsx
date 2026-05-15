@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { buildFormState } from '@payloadcms/ui/utilities/buildFormState';
+import { buildCmsFormState } from '@/lib/build-cms-form-state';
 import type { Metadata, Route } from 'next';
 import { headers as getHeaders } from 'next/headers';
 import { createLocalReq, getLocalI18n, getRequestLanguage, type PayloadRequest } from 'payload';
@@ -98,7 +98,7 @@ export default async function BusinessDataPage({ params, searchParams }: Busines
     // `buildFormState` sees the same principal that gated this route.
     const req = await createLocalReq({ req: { i18n, user: user as never } }, payload);
 
-    const { state: initialState } = await buildFormState({
+    const { state: initialState } = await buildCmsFormState({
         collectionSlug: 'businessData',
         data: existing ?? {},
         id: existing ? String(existing.id) : undefined,
@@ -116,7 +116,6 @@ export default async function BusinessDataPage({ params, searchParams }: Busines
         },
         docPreferences: { fields: {} },
         locale,
-        renderAllFields: true,
         req,
         schemaPath: 'businessData',
         skipValidation: true,
