@@ -33,10 +33,54 @@ vi.mock('@/utils/build-config', () => ({
 // Variant stubs — referenced both in product.variants.nodes and as
 // firstSelectableVariant so that getProductOptions can resolve variant IDs.
 // The `product.handle` field is required by getProductOptions for adjacentVariants/firstSelectableVariant lookups.
-const vMR = { id: 'gid://shopify/ProductVariant/MR', handle: 'demo', title: 'M / Red', availableForSale: true, selectedOptions: [{ name: 'Size', value: 'M' }, { name: 'Color', value: 'Red' }], price: { amount: '10.00', currencyCode: 'USD' }, product: { handle: 'demo' } };
-const vMB = { id: 'gid://shopify/ProductVariant/MB', handle: 'demo', title: 'M / Blue', availableForSale: true, selectedOptions: [{ name: 'Size', value: 'M' }, { name: 'Color', value: 'Blue' }], price: { amount: '10.00', currencyCode: 'USD' }, product: { handle: 'demo' } };
-const vLR = { id: 'gid://shopify/ProductVariant/LR', handle: 'demo', title: 'L / Red', availableForSale: true, selectedOptions: [{ name: 'Size', value: 'L' }, { name: 'Color', value: 'Red' }], price: { amount: '10.00', currencyCode: 'USD' }, product: { handle: 'demo' } };
-const vLB = { id: 'gid://shopify/ProductVariant/LB', handle: 'demo', title: 'L / Blue', availableForSale: true, selectedOptions: [{ name: 'Size', value: 'L' }, { name: 'Color', value: 'Blue' }], price: { amount: '10.00', currencyCode: 'USD' }, product: { handle: 'demo' } };
+const vMR = {
+    id: 'gid://shopify/ProductVariant/MR',
+    handle: 'demo',
+    title: 'M / Red',
+    availableForSale: true,
+    selectedOptions: [
+        { name: 'Size', value: 'M' },
+        { name: 'Color', value: 'Red' },
+    ],
+    price: { amount: '10.00', currencyCode: 'USD' },
+    product: { handle: 'demo' },
+};
+const vMB = {
+    id: 'gid://shopify/ProductVariant/MB',
+    handle: 'demo',
+    title: 'M / Blue',
+    availableForSale: true,
+    selectedOptions: [
+        { name: 'Size', value: 'M' },
+        { name: 'Color', value: 'Blue' },
+    ],
+    price: { amount: '10.00', currencyCode: 'USD' },
+    product: { handle: 'demo' },
+};
+const vLR = {
+    id: 'gid://shopify/ProductVariant/LR',
+    handle: 'demo',
+    title: 'L / Red',
+    availableForSale: true,
+    selectedOptions: [
+        { name: 'Size', value: 'L' },
+        { name: 'Color', value: 'Red' },
+    ],
+    price: { amount: '10.00', currencyCode: 'USD' },
+    product: { handle: 'demo' },
+};
+const vLB = {
+    id: 'gid://shopify/ProductVariant/LB',
+    handle: 'demo',
+    title: 'L / Blue',
+    availableForSale: true,
+    selectedOptions: [
+        { name: 'Size', value: 'L' },
+        { name: 'Color', value: 'Blue' },
+    ],
+    price: { amount: '10.00', currencyCode: 'USD' },
+    product: { handle: 'demo' },
+};
 
 const multiOptionProduct = {
     id: 'gid://shopify/Product/1',
@@ -71,7 +115,15 @@ const multiOptionProduct = {
     },
 };
 
-const vSingle = { id: 'gid://shopify/ProductVariant/single', handle: 'demo', title: 'Default Title', availableForSale: true, selectedOptions: [{ name: 'Title', value: 'Default Title' }], price: { amount: '10.00', currencyCode: 'USD' }, product: { handle: 'demo' } };
+const vSingle = {
+    id: 'gid://shopify/ProductVariant/single',
+    handle: 'demo',
+    title: 'Default Title',
+    availableForSale: true,
+    selectedOptions: [{ name: 'Title', value: 'Default Title' }],
+    price: { amount: '10.00', currencyCode: 'USD' },
+    product: { handle: 'demo' },
+};
 
 const variantlessProduct = {
     ...multiOptionProduct,

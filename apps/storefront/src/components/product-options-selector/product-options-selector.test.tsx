@@ -87,10 +87,7 @@ describe('components', () => {
                 const options = buildOptions([
                     {
                         name: 'Size',
-                        values: [
-                            { name: 'S', selected: true /* mapped says S but parent says M */ },
-                            { name: 'M' },
-                        ],
+                        values: [{ name: 'S', selected: true /* mapped says S but parent says M */ }, { name: 'M' }],
                     },
                 ]);
                 render(
@@ -102,7 +99,13 @@ describe('components', () => {
 
             it('marks values disabled via the mapped available flag', () => {
                 const options = buildOptions([
-                    { name: 'Size', values: [{ name: 'S', available: true }, { name: 'M', available: false }] },
+                    {
+                        name: 'Size',
+                        values: [
+                            { name: 'S', available: true },
+                            { name: 'M', available: false },
+                        ],
+                    },
                 ]);
                 render(<ProductOptionsSelector options={options} selectedOptions={{}} onChange={() => {}} />);
                 expect(screen.getByRole('button', { name: 'Size: M' }).className).toMatch(/disabled/);
@@ -110,7 +113,9 @@ describe('components', () => {
             });
 
             it('composes href from productHandle + variantUriQuery when both supplied', () => {
-                const options = buildOptions([{ name: 'Size', values: [{ name: 'M', variantUriQuery: 'variant=42' }] }]);
+                const options = buildOptions([
+                    { name: 'Size', values: [{ name: 'M', variantUriQuery: 'variant=42' }] },
+                ]);
                 render(
                     <ProductOptionsSelector
                         options={options}

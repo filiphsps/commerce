@@ -73,16 +73,12 @@ export const ProductOptionsSelector = ({
 
                 return (
                     <div key={option.name} className={styles.optionGroup}>
-                        {density === 'spacious' ? (
-                            <Label className="h-fit text-gray-600">{option.name}</Label>
-                        ) : null}
+                        {density === 'spacious' ? <Label className="h-fit text-gray-600">{option.name}</Label> : null}
 
                         <div className={styles.values}>
                             {values.map((v: any) => {
                                 const Renderer =
-                                    renderers?.[option.name] ??
-                                    renderers?.default ??
-                                    defaultRenderers.default!;
+                                    renderers?.[option.name] ?? renderers?.default ?? defaultRenderers.default!;
 
                                 const href =
                                     productHandle && v.variantUriQuery

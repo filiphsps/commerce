@@ -4,9 +4,8 @@ import { getProductOptions, useProduct, useSelectedOptionInUrlParam } from '@sho
 import type { HTMLProps } from 'react';
 import { Suspense, useMemo } from 'react';
 import type { Product, ProductVariant } from '@/api/product';
-
-import AddToCart from '@/components/products/add-to-cart';
 import { ProductOptionsSelector, SizeChipRenderer } from '@/components/product-options-selector';
+import AddToCart from '@/components/products/add-to-cart';
 import { ProductQuantityBreaks } from '@/components/products/product-quantity-breaks';
 import { useQuantity } from '@/components/products/quantity-provider';
 import { QuantitySelector } from '@/components/products/quantity-selector';

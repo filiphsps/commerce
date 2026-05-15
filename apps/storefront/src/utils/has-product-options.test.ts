@@ -138,7 +138,10 @@ describe('utils', () => {
                 {
                     id: '2',
                     name: 'Size',
-                    optionValues: [{ name: 'S', available: true }, { name: 'M', available: true }],
+                    optionValues: [
+                        { name: 'S', available: true },
+                        { name: 'M', available: true },
+                    ],
                 },
             ] as any;
             const result = filterRealOptions(options);
@@ -147,9 +150,7 @@ describe('utils', () => {
         });
 
         it(`should preserve options with multiple values even if one is "default title"`, () => {
-            const options = [
-                { id: '1', name: 'Size', values: ['Default Title', 'M'] },
-            ] as any;
+            const options = [{ id: '1', name: 'Size', values: ['Default Title', 'M'] }] as any;
             const result = filterRealOptions(options);
             expect(result.length).toEqual(1);
         });

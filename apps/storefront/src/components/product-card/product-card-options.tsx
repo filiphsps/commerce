@@ -15,11 +15,7 @@ export type ProductCardOptionsProps = {
     setSelectedVariant(variant: ProductVariant): void;
 };
 
-const ProductCardOptions = ({
-    data: product,
-    selectedVariant,
-    setSelectedVariant,
-}: ProductCardOptionsProps) => {
+const ProductCardOptions = ({ data: product, selectedVariant, setSelectedVariant }: ProductCardOptionsProps) => {
     const seed = selectedVariant ?? firstAvailableVariant(product);
 
     const [selected, setSelected] = useState<SelectedOptions>(() =>

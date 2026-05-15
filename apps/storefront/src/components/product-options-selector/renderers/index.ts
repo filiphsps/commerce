@@ -7,5 +7,5 @@ export const defaultRenderers: Record<string, ComponentType<ProductOptionValueRe
     default: TextChipRenderer,
 };
 
-export { SizeChipRenderer, TextChipRenderer };
 export type { ProductOptionValueRendererProps, RenderDensity } from './types';
+export { SizeChipRenderer, TextChipRenderer };
