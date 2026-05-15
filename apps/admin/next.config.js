@@ -6,9 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { withPayload } from '@payloadcms/next/withPayload';
 import createVercelToolbar from '@vercel/toolbar/plugins/next';
 
-const withVercelToolbar = createVercelToolbar({
-    devServerPort: 3000,
-});
+const withVercelToolbar = createVercelToolbar();
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -119,29 +117,9 @@ const config = {
         return process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
     },
 
-    /*webpack: !isDev
-        ? (config, { webpack, isServer }) => {
-              config.experiments = {
-                  ...config.experiments,
-                  topLevelAwait: true,
-              };
-
-              config.plugins.push(
-                  new webpack.DefinePlugin({
-                      __RRWEB_EXCLUDE_IFRAME__: true,
-                      __RRWEB_EXCLUDE_SHADOW_DOM__: true,
-                  }),
-              );
-
-              if (isServer) {
-                  config.devtool = 'source-map';
-              }
-              return config;
-          }
-        : undefined,*/
-
     // We handle all redirects at the edge.
     skipTrailingSlashRedirect: true,
 };
 
-export default withPayload(withVercelToolbar(config));
+//
+export default withVercelToolbar(withPayload(config));
