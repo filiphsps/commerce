@@ -148,9 +148,14 @@ export async function updateUserAction(id: string, formData: FormData): Promise<
     const parsed = parseFormData(formData);
 
     // Prevent self-demotion: if the admin is editing their own doc and trying
-    // to set role to 'editor', reject — this would lock them out immediately,
-    // and if they're the only admin it would be permanent.
-    if (id === user.id && parsed.role === 'editor') {
+    // to set role to anything other than 'admin' (including 'editor', the
+    // empty string, or any future role), reject. This would lock them out
+    // immediately, and if they're the only admin it would be permanent.
+    // Checking `!== 'admin'` is stricter than `=== 'editor'`: it rejects any
+    // role change away from admin regardless of the submitted value, so the
+    // error surfaces here instead of being deferred to Payload schema
+    // validation with a less helpful message.
+    if (id === user.id && parsed.role !== undefined && parsed.role !== 'admin') {
         throw new Error('Admins cannot demote themselves.');
     }
 

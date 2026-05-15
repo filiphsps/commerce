@@ -26,8 +26,6 @@ export default async function NewUserPage() {
         name: String(t.name ?? t.id),
     }));
 
-    const boundCreate = createUserAction;
-
     return (
         <div className="flex flex-col gap-6 px-6 py-8">
             <header className="flex items-center justify-between">
@@ -58,7 +56,7 @@ export default async function NewUserPage() {
                 </Link>
             </header>
 
-            <NewUserForm createAction={boundCreate} tenantOptions={tenantOptions} />
+            <NewUserForm createAction={createUserAction} tenantOptions={tenantOptions} />
         </div>
     );
 }
