@@ -40,7 +40,7 @@ export default defineConfig({
         outputFile: {
             junit: './junit.xml',
         },
-        projects: ['{apps,packages}/*/vitest.config.ts'],
+        projects: ['{apps,packages}/**/vitest.config.ts'],
 
         coverage: {
             exclude: exclude,

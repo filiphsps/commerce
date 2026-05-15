@@ -47,13 +47,13 @@
     "repository": {
         "type": "git",
         "url": "git+https://github.com/filiphsps/commerce.git",
-        "directory": "packages/tagtree-core"
+        "directory": "packages/tagtree/core"
     },
     "keywords": [],
     "bugs": {
         "url": "https://github.com/filiphsps/commerce/issues"
     },
-    "homepage": "https://github.com/filiphsps/commerce/tree/master/packages/tagtree-core#readme",
+    "homepage": "https://github.com/filiphsps/commerce/tree/master/packages/tagtree/core#readme",
     "dependencies": {},
     "devDependencies": {
         "@codecov/vite-plugin": "2.0.1",
