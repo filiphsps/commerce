@@ -8,8 +8,10 @@
         "sourceMap": true,
         "incremental": true,
 
-        "outDir": "./dist",
-        "rootDir": "./src"
+        "outDir": "${configDir}/dist",
+        "rootDir": "${configDir}/src",
+
+        "types": ["node"]
     },
     "exclude": ["node_modules", "coverage", "dist", "**/.turbo", "**/*.test.*", "**/*.stories.*"]
 }
