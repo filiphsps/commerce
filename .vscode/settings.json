@@ -191,5 +191,6 @@
 	"npm.packageManager": "pnpm",
 	"npm.scriptRunner": "pnpm",
 	"js/ts.updateImportsOnFileMove.enabled": "always",
-	"typescript.native-preview.goMemLimit": "2048MiB"
+	"typescript.native-preview.goMemLimit": "2048MiB",
+	"biome.requireConfiguration": true
 }
