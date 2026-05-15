@@ -1,17 +1,8 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
+    "extends": "../../tsconfig.app.json",
     "compilerOptions": {
-        "plugins": [
-            {
-                "name": "next"
-            }
-        ],
-        "lib": ["DOM", "DOM.iterable", "ESNext"],
-        "rootDir": "../../",
-        "jsx": "react-jsx",
-        "jsxImportSource": "react",
         "paths": {
-            // Storefront.
             "@/app/*": ["./src/app/*"],
             "@/middleware/*": ["./src/middleware/*"],
             "@/components/*": ["./src/components/*"],
@@ -25,32 +16,11 @@
             "@/utils/locale": ["./src/utils/locale/index.ts"],
             "@/styles/*": ["./src/scss/*"],
             "@/pages/*": ["./src/app/[domain]/[locale]/*"],
-            // i18n.
             "@/i18n/*": ["./src/locales/*"],
             "@/i18n/dictionary": ["./src/utils/dictionary.ts"],
-            // Assets.
             "@/static/*": ["./public/*"]
-        },
-        "allowJs": true,
-        "esModuleInterop": true,
-        "incremental": true,
-        "isolatedModules": true,
-        "module": "ESNext",
-        "moduleResolution": "Bundler",
-        "noEmit": true,
-        "resolveJsonModule": true,
-        "skipLibCheck": true,
-        "strict": true,
-        "strictBindCallApply": true,
-        "strictFunctionTypes": true,
-        "strictNullChecks": true,
-        "strictPropertyInitialization": true,
-        "target": "ESNext",
-        "types": ["node"],
-        "typeRoots": ["node_modules/@types", "././src/@types"],
-        "useDefineForClassFields": true
+        }
     },
-    "exclude": ["node_modules"],
     "include": [
         "next-env.d.ts",
         "./src/**/*.ts",
