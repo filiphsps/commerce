@@ -49,12 +49,12 @@ export function HeaderForm({ saveDraftAction, publishAction }: HeaderFormProps) 
      * the server action's `parseFormData` reads the same format.
      */
     const buildAndSaveDraft = async (): Promise<void> => {
-        const formData = await createFormData();
+        const formData = await createFormData(undefined, {});
         await saveDraftAction(formData);
     };
 
     const buildAndPublish = async (): Promise<void> => {
-        const formData = await createFormData();
+        const formData = await createFormData(undefined, {});
         await publishAction(formData);
     };
 
@@ -67,7 +67,7 @@ export function HeaderForm({ saveDraftAction, publishAction }: HeaderFormProps) 
     const { isSaving, lastSavedAt } = useAutosave({
         state: fields,
         saveAction: async () => {
-            const formData = await createFormData();
+            const formData = await createFormData(undefined, {});
             await saveDraftAction(formData);
         },
         delay: 2000,

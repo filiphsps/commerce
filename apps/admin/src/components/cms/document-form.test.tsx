@@ -20,10 +20,19 @@ vi.mock('next/link', () => ({
 vi.mock('@payloadcms/ui', () => ({
     Form: ({ children }: { children: React.ReactNode }) => <form data-testid="payload-form">{children}</form>,
     ConfigProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+    ServerFunctionsProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+    UploadHandlersProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 
-// PayloadFieldShell wraps ConfigProvider, which is now a passthrough above.
-// The import in document-form.tsx will use the mocked @payloadcms/ui automatically.
+// Stub the cms-server-function module — the real one imports `payload.config`
+// which boots the full Payload runtime (Mongo, plugins, etc.).
+vi.mock('@/lib/cms-server-function', () => ({
+    cmsServerFunction: vi.fn(),
+}));
+
+// `@nordcom/commerce-cms/ui` re-exports PayloadFieldShell which wraps the
+// (now-mocked) ConfigProvider + ServerFunctionsProvider — both are passthroughs
+// above, so the shell renders its children directly.
 
 // ------------------------------------------------------------------
 // Fixtures

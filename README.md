@@ -44,7 +44,7 @@ TypeScript monorepo.
 
 ## Quick start
 
-> **Prerequisites:** Node.js `26.x` (see `.nvmrc`), `pnpm@11.x`, and a running
+> **Prerequisites:** Node.js (see `.nvmrc`), `pnpm`, and a running
 > MongoDB instance for the data layer.
 
 ```bash
@@ -97,7 +97,7 @@ To start only one app, use `pnpm dev:storefront`, `pnpm dev:admin`, or `pnpm dev
 | Concern         | Tool                                                              |
 | --------------- | ----------------------------------------------------------------- |
 | Package manager | [pnpm](https://pnpm.io) 11.x (workspaces)                         |
-| Runtime         | Node.js 26.x (see `.nvmrc`)                                       |
+| Runtime         | Node.js (see `.nvmrc`)                                       |
 | Build / cache   | [Turborepo](https://turbo.build) 2.x (with optional Remote Cache) |
 | Framework       | [Next.js](https://nextjs.org) 16, React 19                        |
 | Lint / format   | [Biome](https://biomejs.dev) 2.x — **no ESLint / Prettier**       |

@@ -7,7 +7,7 @@ sidebar_position: 3
 
 ## Prerequisites
 
-- Node.js 22.x, pnpm 11.x, MongoDB.
+- Node.js, pnpm, MongoDB.
 - `pnpm install` and `pnpm build:packages` must succeed in a fresh checkout — apps
   depend on each package's `dist/`.
 

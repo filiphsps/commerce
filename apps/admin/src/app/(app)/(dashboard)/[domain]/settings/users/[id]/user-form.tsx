@@ -61,7 +61,7 @@ export function UserForm({ saveAction, deleteAction, tenantOptions, currentTenan
         setErrorMessage(null);
         startSaveTransition(async () => {
             try {
-                const formData = await createFormData();
+                const formData = await createFormData(undefined, {});
 
                 // Merge tenant selection into _payload: read existing blob,
                 // inject `tenants`, re-serialize.

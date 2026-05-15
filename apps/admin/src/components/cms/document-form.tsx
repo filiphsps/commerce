@@ -1,10 +1,11 @@
+import { PayloadFieldShell } from '@nordcom/commerce-cms/ui';
 import { Form } from '@payloadcms/ui';
 import type { Route } from 'next';
 import Link from 'next/link';
 import type { ClientConfig, FormState } from 'payload';
 import type { ReactNode } from 'react';
 
-import { PayloadFieldShell } from '@/components/cms/payload-field-shell';
+import { cmsServerFunction } from '@/lib/cms-server-function';
 
 /** A single item in the breadcrumb trail. The last item is rendered without a link. */
 export type Breadcrumb = { label: string; href?: Route };
@@ -120,7 +121,7 @@ export function DocumentForm({
                   and useAllFormFields() to read live field state. */}
             <div className={livePreview ? 'grid flex-1 grid-cols-1 gap-4 lg:grid-cols-2' : 'flex-1'}>
                 <div className="flex flex-col gap-4">
-                    <PayloadFieldShell config={clientConfig}>
+                    <PayloadFieldShell config={clientConfig} serverFunction={cmsServerFunction}>
                         <Form action={onSubmit} initialState={initialState} isDocumentForm>
                             <div className="flex flex-col gap-4">{children}</div>
 

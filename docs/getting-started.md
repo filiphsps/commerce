@@ -10,7 +10,7 @@ deployment serves arbitrarily many shops resolved by hostname.
 
 ## Prerequisites
 
-- Node.js `22.x` (see `.nvmrc`)
+- Node.js `24.x` (see `.nvmrc`)
 - pnpm `11.x`
 - A running MongoDB instance
 

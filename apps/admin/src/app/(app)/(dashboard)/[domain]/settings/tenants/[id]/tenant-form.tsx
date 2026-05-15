@@ -43,7 +43,7 @@ export function TenantForm({ saveAction, deleteAction }: TenantFormProps) {
         setErrorMessage(null);
         startSaveTransition(async () => {
             try {
-                const formData = await createFormData();
+                const formData = await createFormData(undefined, {});
                 await saveAction(formData);
             } catch (err) {
                 console.error(err);
