@@ -1,0 +1,17 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "noEmit": true,
+        "incremental": true,
+
+        "allowJs": true,
+        "jsx": "preserve",
+        "jsxImportSource": "react",
+
+        "lib": ["DOM", "DOM.iterable", "ESNext"],
+
+        "plugins": [{ "name": "next" }]
+    },
+    "exclude": ["node_modules", "**/.turbo", "**/dist", "**/coverage"]
+}
