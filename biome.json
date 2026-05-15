@@ -23,7 +23,6 @@
             "!**/public/robots.txt*",
             "!**/public/sitemap*.xml*",
             "!**/storybook-static",
-            "!apps/storefront/prismicio-types.d.ts",
             "!docs/superpowers"
         ]
     },

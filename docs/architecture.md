@@ -13,7 +13,7 @@ flowchart LR
     A[Request] --> B[Middleware]
     B --> C[Shop.findByDomain]
     C --> D[App Router]
-    D --> E[Shopify + Prismic]
+    D --> E[Shopify]
 ```
 
 ## Request flow
@@ -32,8 +32,7 @@ All Mongo access goes through `@nordcom/commerce-db`. See the **db** section for
 
 ## Commerce + content
 
-Shopify Storefront/Admin APIs and Prismic CMS sit behind `AbstractApi` and
-`createClient` respectively. See the **Storefront** section for details.
+Shopify Storefront/Admin APIs sit behind `AbstractApi`. See the **Storefront** section for details.
 
 ## Errors
 

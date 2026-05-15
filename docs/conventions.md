@@ -32,5 +32,4 @@ sidebar_position: 5
 
 ## Generated files
 
-- `apps/storefront/prismicio-types.d.ts` is Slicemachine-generated — don't hand-edit.
 - `apps/docs/api/` is TypeDoc-generated — don't hand-edit.

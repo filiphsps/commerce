@@ -64,11 +64,6 @@ export class Error<T = unknown> extends BuiltinError {
             return false;
         }
 
-        const isPrismic404 = message.match(/no documents were returned/i);
-        if (isPrismic404) {
-            return true;
-        }
-
         return false;
     }
 }

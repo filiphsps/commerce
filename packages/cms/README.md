@@ -128,34 +128,6 @@ Output lands at `packages/cms/src/types/payload-types.ts` and is gitignored — 
 2. Deploy admin first — its first request boots Payload, which auto-creates collection indexes against the configured Mongo.
 3. Deploy the storefront. Its `/[domain]/api/cms-preview` route needs `STOREFRONT_PREVIEW_SECRET`; the admin's "preview" button sends `?secret=<value>` against that endpoint to flip Next.js draft mode on.
 
-### Shop content provider migration
-
-The `Shop` model's `contentProvider.type` enum changed:
-
-- before: `'prismic' | 'shopify' | 'builder.io'`
-- after: `'cms' | 'shopify' | 'builder.io'`
-
-If any existing shop documents have `contentProvider.type === 'prismic'`, run this Mongo shell update before deploying:
-
-```js
-db.shops.updateMany(
-    { 'contentProvider.type': 'prismic' },
-    { $set: { 'contentProvider.type': 'cms' } },
-);
-```
-
-The legacy `contentProvider.authentication`, `contentProvider.repositoryName`, and `contentProvider.repository` fields are no longer modelled; Mongoose strips them on the next `findByDomain` projection. They can be unset at your leisure:
-
-```js
-db.shops.updateMany({}, {
-    $unset: {
-        'contentProvider.authentication': '',
-        'contentProvider.repositoryName': '',
-        'contentProvider.repository': '',
-    },
-});
-```
-
 ### Cache tag scheme
 
 CMS-side `afterChange` hooks call `revalidateTag` with three tags per mutation:

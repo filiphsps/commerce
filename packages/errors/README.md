@@ -137,7 +137,6 @@ getAllErrorCodes();
 
 `Error.isNotFound` returns `true` for `NotFoundError`, `InvalidHandleError`,
 `InvalidIDError`, `UnknownLocaleError`, anything with `statusCode === 404`, and the
-Prismic `no documents were returned` shape.
 
 ## Adding a new error
 
