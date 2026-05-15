@@ -1,29 +1,47 @@
 import path from 'node:path';
-import { configDefaults, defineConfig } from 'vitest/config';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
-    optimizeDeps: { force: true },
     resolve: {
-        alias: [{ find: '@', replacement: path.resolve(__dirname, './src') }],
+        alias: [
+            {
+                find: '@',
+                replacement: path.resolve(__dirname, './src'),
+            },
+        ],
     },
     test: {
         bail: 1,
+        deps: {
+            optimizer: { client: { enabled: true }, ssr: { enabled: true } },
+        },
         environment: 'node',
         maxConcurrency: 16,
         passWithNoTests: true,
-        typecheck: { tsconfig: './tsconfig.test.json' },
+
+        typecheck: {
+            tsconfig: './tsconfig.test.json',
+        },
+
         setupFiles: ['vitest.setup.ts'],
         reporters: ['verbose'],
-        exclude: [...configDefaults.exclude, '**/*.d.ts', '**/dist/**', '**/node_modules/**'],
+        exclude: ['**/*.d.ts', '**/*.stories.*', '**/dist/**/', '**/node_modules/**/*.*', '**/utils/test/**/*.*'],
+
         globals: true,
+
         coverage: {
-            include: ['**/src/**/*.ts'],
+            include: ['**/src/**/*.{ts,tsx}'],
             exclude: [
-                ...configDefaults.exclude,
-                '**/__tests__/**',
+                '__tests__/*.*',
+                '.vitest/*.*',
+
+                '**/__snapshots__/**/*.*',
+                '**/__tests__/**/*.*',
                 '**/*.d.*',
                 '**/*.test.*',
-                './src/index.ts',
+                '**/utils/test/**/*.*',
+                '**/src/**/index.*',
+                '**/src/**/config/*.*',
                 './src/contract-tests.ts',
             ],
         },

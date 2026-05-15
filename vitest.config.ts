@@ -31,7 +31,7 @@ export default defineConfig({
     envDir: resolve(__dirname),
     optimizeDeps: {
         force: true,
-        esbuildOptions: {
+        rolldownOptions: {
             define: {
                 global: 'globalThis',
             },

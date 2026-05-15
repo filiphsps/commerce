@@ -14,20 +14,26 @@ const name = '@nordcom/commerce-shopify-html';
 export default mergeConfig(
     base,
     defineConfig({
+        optimizeDeps: {
+            force: true,
+        },
         root: resolve(__dirname),
         build: {
-            rollupOptions: {
+            target: 'esnext',
+            rolldownOptions: {
                 output: {
                     name,
                 },
             },
         },
-        plugins: [
-            codecovVitePlugin({
-                enableBundleAnalysis: !!process.env.CODECOV_TOKEN,
-                bundleName: name,
-                uploadToken: process.env.CODECOV_TOKEN,
-            }),
-        ],
+        plugins: process.env.CI
+            ? [
+                  codecovVitePlugin({
+                      enableBundleAnalysis: !!process.env.CODECOV_TOKEN,
+                      bundleName: name,
+                      uploadToken: process.env.CODECOV_TOKEN,
+                  }),
+              ]
+            : [],
     }),
 );

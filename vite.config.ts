@@ -20,7 +20,7 @@ export default defineConfig({
         outDir: 'dist',
         sourcemap: true,
         target: 'esnext',
-        rollupOptions: {
+        rolldownOptions: {
             external: [/^@nordcom\/commerce-/],
             output: {
                 chunkFileNames: 'chunks/[name].[hash].js',

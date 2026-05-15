@@ -39,7 +39,7 @@ export default mergeConfig(
                 entry: input,
                 formats: ['es'],
             },
-            rollupOptions: {
+            rolldownOptions: {
                 external: ['@nordcom/commerce-errors', 'server-only'],
                 input: input,
                 output: {
@@ -58,7 +58,7 @@ export default mergeConfig(
                 copyDtsFiles: true,
                 entryRoot: 'src',
                 insertTypesEntry: true,
-                rollupTypes: false,
+                bundleTypes: false,
                 tsconfigPath: `./tsconfig.json`,
                 include: ['**/src'],
             }),
