@@ -1,6 +1,6 @@
 'use client';
 
-import { useAllFormFields, useForm } from '@payloadcms/ui';
+import { useAllFormFields, useForm, useFormModified } from '@payloadcms/ui';
 import { DraftPublishToolbar } from '@/components/cms/draft-publish-toolbar';
 import { useAutosave } from '@/hooks/use-autosave';
 
@@ -39,6 +39,13 @@ export function BusinessDataForm({ saveDraftAction, publishAction }: BusinessDat
     // rely on this component re-rendering on every keystroke.
     const [fields] = useAllFormFields();
 
+    // Track Payload's `modified` flag so the autosave debounce stays off until
+    // the user actually edits a field. Without this gate, every revalidatePath
+    // triggered by a save fires Payload's `Form.useEffect([initialState])` →
+    // `dispatchFields(REPLACE_STATE)` → new `fields` identity → autosave timer
+    // re-arms → fires 2 s later with the same data → loop.
+    const modified = useFormModified();
+
     /**
      * Build a FormData from the live form state and call the supplied server
      * action. This is the bridge between Payload's client-side form state and
@@ -71,6 +78,7 @@ export function BusinessDataForm({ saveDraftAction, publishAction }: BusinessDat
             await saveDraftAction(formData);
         },
         delay: 2000,
+        disabled: !modified,
     });
 
     return (

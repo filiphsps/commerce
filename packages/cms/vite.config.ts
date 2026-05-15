@@ -27,6 +27,7 @@ export default mergeConfig(
                     'react-dom',
                     'server-only',
                     /^@payloadcms\//,
+                    /^@faceless-ui\//,
                     /^next($|\/)/,
                     /^next-auth($|\/)/,
                 ],

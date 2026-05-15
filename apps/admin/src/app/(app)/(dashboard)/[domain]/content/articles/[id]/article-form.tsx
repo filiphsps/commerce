@@ -1,6 +1,6 @@
 'use client';
 
-import { useAllFormFields, useForm } from '@payloadcms/ui';
+import { useAllFormFields, useForm, useFormModified } from '@payloadcms/ui';
 import { DraftPublishToolbar } from '@/components/cms/draft-publish-toolbar';
 import { useAutosave } from '@/hooks/use-autosave';
 
@@ -42,6 +42,10 @@ export function ArticleForm({ saveDraftAction, publishAction }: ArticleFormProps
     // incidental re-renders of this component.
     const [fields] = useAllFormFields();
 
+    // Track Payload's `modified` flag so autosave stays off until the user
+    // actually edits a field — see business-data-form for the rationale.
+    const modified = useFormModified();
+
     const buildAndSaveDraft = async (): Promise<void> => {
         const formData = await createFormData(undefined, {});
         await saveDraftAction(formData);
@@ -59,6 +63,7 @@ export function ArticleForm({ saveDraftAction, publishAction }: ArticleFormProps
             await saveDraftAction(formData);
         },
         delay: 2000,
+        disabled: !modified,
     });
 
     return (

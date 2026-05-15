@@ -1,5 +1,6 @@
 'use client';
 
+import { ModalContainer, ModalProvider } from '@faceless-ui/modal';
 import { ConfigProvider, ServerFunctionsProvider, UploadHandlersProvider } from '@payloadcms/ui';
 import type { ClientConfig, ServerFunctionClient } from 'payload';
 import type { ReactNode } from 'react';
@@ -36,6 +37,11 @@ export type PayloadFieldShellProps = {
  *   - `UploadHandlersProvider` — `<Form>` reads `getUploadHandler` to wire
  *     custom upload handlers. The hook throws if the provider is absent
  *     (the context defaults to `null`, and the hook null-checks).
+ *   - `ModalProvider` (+ `ModalContainer`) from `@faceless-ui/modal` — upload
+ *     and relationship field components mount document drawers via
+ *     `useDocumentDrawer`, which reads `modalState[drawerSlug]` on every
+ *     render. Without `ModalProvider`, `modalState` is undefined and the
+ *     subscript access throws on the first paint of any upload field.
  *
  * The other Payload contexts (`Auth`, `Locale`, `DocumentInfo`, `Translation`,
  * `RouteTransition`, `Operation`) all use bare `use(Context)` against non-null
@@ -45,7 +51,12 @@ export function PayloadFieldShell({ config, serverFunction, children }: PayloadF
     return (
         <ConfigProvider config={config}>
             <ServerFunctionsProvider serverFunction={serverFunction}>
-                <UploadHandlersProvider>{children}</UploadHandlersProvider>
+                <UploadHandlersProvider>
+                    <ModalProvider classPrefix="payload" transTime={0} zIndex="var(--z-modal)">
+                        {children}
+                        <ModalContainer />
+                    </ModalProvider>
+                </UploadHandlersProvider>
             </ServerFunctionsProvider>
         </ConfigProvider>
     );

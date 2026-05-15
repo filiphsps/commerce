@@ -1,6 +1,6 @@
 'use client';
 
-import { useAllFormFields, useForm } from '@payloadcms/ui';
+import { useAllFormFields, useForm, useFormModified } from '@payloadcms/ui';
 import { DraftPublishToolbar } from '@/components/cms/draft-publish-toolbar';
 import { useAutosave } from '@/hooks/use-autosave';
 
@@ -39,6 +39,10 @@ export function FooterForm({ saveDraftAction, publishAction }: FooterFormProps) 
     // rely on this component re-rendering on every keystroke.
     const [fields] = useAllFormFields();
 
+    // Track Payload's `modified` flag so autosave stays off until the user
+    // actually edits a field — see business-data-form for the rationale.
+    const modified = useFormModified();
+
     /**
      * Build a FormData from the live form state and call the supplied server
      * action. This is the bridge between Payload's client-side form state and
@@ -71,6 +75,7 @@ export function FooterForm({ saveDraftAction, publishAction }: FooterFormProps) 
             await saveDraftAction(formData);
         },
         delay: 2000,
+        disabled: !modified,
     });
 
     return (
