@@ -1,5 +1,6 @@
 'use client';
 
+import type { Route } from 'next';
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 
@@ -47,7 +48,7 @@ export function NewPageForm({ createAction, domain }: NewPageFormProps) {
         startTransition(async () => {
             try {
                 const { id } = await createAction(wrapped);
-                router.push(`/${domain}/content/pages/${id}/`);
+                router.push(`/${domain}/content/pages/${id}/` as Route);
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Failed to create page.');
             }

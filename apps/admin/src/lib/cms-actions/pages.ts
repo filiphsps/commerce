@@ -241,19 +241,41 @@ export async function bulkDeletePagesAction(domain: string, ids: string[]): Prom
  * Loops because Payload's local API doesn't have a bulk-update-with-status
  * operation. The loop is acceptable here: bulk actions are admin-triggered
  * and the page count is bounded by the list view limit (100).
+ *
+ * Partial-failure semantics: if one update fails (e.g. a stale doc lock,
+ * validation error on a specific page), the loop continues and collects the
+ * failures. After all ids have been attempted, the list path is revalidated
+ * unconditionally (so any successful updates are reflected in the UI) and a
+ * single aggregated error is thrown reporting the failed ids. This gives the
+ * operator full visibility into which pages succeeded and which need retry —
+ * if we re-threw on first failure, the remaining pages would never be
+ * attempted and the user would have no way to tell what state things ended in.
  */
 export async function bulkPublishPagesAction(domain: string, ids: string[]): Promise<void> {
     const { payload, user } = await getAuthedPayloadCtx(domain);
 
+    const errors: Array<{ id: string; error: unknown }> = [];
     for (const id of ids) {
-        await payload.update({
-            collection: 'pages',
-            id,
-            data: { _status: 'published' } as never,
-            user,
-            overrideAccess: false,
-        });
+        try {
+            await payload.update({
+                collection: 'pages',
+                id,
+                data: { _status: 'published' } as never,
+                user,
+                overrideAccess: false,
+            });
+        } catch (err) {
+            console.error(`[pages] bulkPublish failed for ${id}`, err);
+            errors.push({ id, error: err });
+        }
     }
 
+    // Revalidate unconditionally so any updates that DID succeed are visible
+    // in the list view even when other updates failed.
     revalidatePath(`/${domain}/content/pages/`);
+
+    if (errors.length > 0) {
+        const failedIds = errors.map((e) => e.id).join(', ');
+        throw new Error(`Bulk publish failed for ${errors.length}/${ids.length} page(s): ${failedIds}`);
+    }
 }

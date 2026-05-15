@@ -417,6 +417,33 @@ describe('bulkPublishPagesAction', () => {
 
         expect(payload.update).toHaveBeenCalledWith(expect.objectContaining({ user: ADMIN_USER }));
     });
+
+    it('continues on partial failure, revalidates, and throws an aggregated error', async () => {
+        const payload = makePayload();
+        // 'a' succeeds, 'b' fails, 'c' succeeds — the loop must not bail on
+        // the first failure or the user would never know 'c' wasn't even tried.
+        payload.update
+            .mockResolvedValueOnce({ id: 'a' })
+            .mockRejectedValueOnce(new Error('stale doc lock'))
+            .mockResolvedValueOnce({ id: 'c' });
+
+        mockGetAuthedPayloadCtx.mockResolvedValue(makeCtx(payload));
+
+        // Suppress the [pages] console.error breadcrumb the action emits so
+        // the test output stays clean. The throw + call count are what we
+        // actually assert on.
+        const consoleErrSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+        try {
+            await expect(bulkPublishPagesAction(DOMAIN, ['a', 'b', 'c'])).rejects.toThrow(/b/);
+        } finally {
+            consoleErrSpy.mockRestore();
+        }
+
+        // All three ids must have been attempted — the loop continued past 'b'.
+        expect(payload.update).toHaveBeenCalledTimes(3);
+        // Revalidation must still fire so 'a' and 'c' show as published in the UI.
+        expect(mockRevalidatePath).toHaveBeenCalledWith(`/${DOMAIN}/content/pages/`);
+    });
 });
 
 // ------------------------------------------------------------------
