@@ -1,4 +1,5 @@
 import type { CollectionEditorManifest } from '../manifest';
+import { articlesEditor } from './articles';
 import { businessDataEditor } from './business-data';
 import { featureFlagsEditor } from './feature-flag';
 import { footerEditor } from './footer';
@@ -7,6 +8,7 @@ import { pagesEditor } from './pages';
 import { reviewsEditor } from './review';
 import { shopsEditor } from './shop';
 
+export { articlesEditor } from './articles';
 export { businessDataEditor } from './business-data';
 export { featureFlagsEditor } from './feature-flag';
 export { footerEditor } from './footer';
@@ -20,6 +22,7 @@ export { shopsEditor } from './shop';
  * here — the codegen reads this array to emit action wrappers per entry.
  */
 export const allManifests: readonly CollectionEditorManifest[] = [
+    articlesEditor as unknown as CollectionEditorManifest,
     businessDataEditor as unknown as CollectionEditorManifest,
     shopsEditor as unknown as CollectionEditorManifest,
     reviewsEditor as unknown as CollectionEditorManifest,
