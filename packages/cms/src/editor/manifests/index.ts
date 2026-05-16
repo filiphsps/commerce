@@ -1,12 +1,14 @@
 import type { CollectionEditorManifest } from '../manifest';
 import { businessDataEditor } from './business-data';
 import { featureFlagsEditor } from './feature-flag';
+import { footerEditor } from './footer';
 import { headerEditor } from './header';
 import { reviewsEditor } from './review';
 import { shopsEditor } from './shop';
 
 export { businessDataEditor } from './business-data';
 export { featureFlagsEditor } from './feature-flag';
+export { footerEditor } from './footer';
 export { headerEditor } from './header';
 export { reviewsEditor } from './review';
 export { shopsEditor } from './shop';
@@ -21,4 +23,5 @@ export const allManifests: readonly CollectionEditorManifest[] = [
     reviewsEditor as unknown as CollectionEditorManifest,
     featureFlagsEditor as unknown as CollectionEditorManifest,
     headerEditor as unknown as CollectionEditorManifest,
+    footerEditor as unknown as CollectionEditorManifest,
 ];
