@@ -2,7 +2,7 @@ import type { Route } from 'next';
 import { adminOnly, editorOrAdmin, tenantMember } from '../access';
 import { defineCollectionEditor } from '../manifest';
 
-export const reviewEditor = defineCollectionEditor({
+export const reviewsEditor = defineCollectionEditor({
     collection: 'reviews',
     routes: {
         label: { singular: 'Review', plural: 'Reviews' },

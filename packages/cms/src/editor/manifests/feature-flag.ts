@@ -2,7 +2,7 @@ import type { Route } from 'next';
 import { adminOnly } from '../access';
 import { defineCollectionEditor } from '../manifest';
 
-export const featureFlagEditor = defineCollectionEditor({
+export const featureFlagsEditor = defineCollectionEditor({
     collection: 'feature-flags',
     routes: {
         label: { singular: 'Feature flag', plural: 'Feature flags' },

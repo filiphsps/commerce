@@ -12,7 +12,7 @@ import { defineCollectionEditor } from '../manifest';
  * editable subset (name, domain, design); secret commerce-provider tokens are
  * blocked at the collection's beforeChange hook.
  */
-export const shopEditor = defineCollectionEditor({
+export const shopsEditor = defineCollectionEditor({
     collection: 'shops',
     routes: {
         label: { singular: 'Shop', plural: 'Shops' },
