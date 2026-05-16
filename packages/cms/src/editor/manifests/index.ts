@@ -5,6 +5,7 @@ import { featureFlagsEditor } from './feature-flag';
 import { footerEditor } from './footer';
 import { headerEditor } from './header';
 import { pagesEditor } from './pages';
+import { productMetadataEditor } from './product-metadata';
 import { reviewsEditor } from './review';
 import { shopsEditor } from './shop';
 
@@ -14,6 +15,7 @@ export { featureFlagsEditor } from './feature-flag';
 export { footerEditor } from './footer';
 export { headerEditor } from './header';
 export { pagesEditor } from './pages';
+export { productMetadataEditor } from './product-metadata';
 export { reviewsEditor } from './review';
 export { shopsEditor } from './shop';
 
@@ -30,4 +32,5 @@ export const allManifests: readonly CollectionEditorManifest[] = [
     headerEditor as unknown as CollectionEditorManifest,
     footerEditor as unknown as CollectionEditorManifest,
     pagesEditor as unknown as CollectionEditorManifest,
+    productMetadataEditor as unknown as CollectionEditorManifest,
 ];
