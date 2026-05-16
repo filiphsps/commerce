@@ -1,9 +1,18 @@
 'use client';
 
-import { ModalContainer, ModalProvider } from '@faceless-ui/modal';
-import { ConfigProvider, ServerFunctionsProvider, UploadHandlersProvider } from '@payloadcms/ui';
-import type { ClientConfig, ServerFunctionClient } from 'payload';
+import type { I18nClient, I18nOptions, Language } from '@payloadcms/translations';
+import { RootProvider } from '@payloadcms/ui';
+import type {
+    ClientConfig,
+    LanguageOptions,
+    Locale,
+    SanitizedPermissions,
+    ServerFunctionClient,
+    TypedUser,
+} from 'payload';
 import type { ReactNode } from 'react';
+
+export type PayloadFieldShellTheme = 'dark' | 'light';
 
 export type PayloadFieldShellProps = {
     /**
@@ -16,12 +25,26 @@ export type PayloadFieldShellProps = {
      * (form-state, render-document, schedule-publish, …). Apps build this via
      * `createCmsServerFunctionHandler` from `@nordcom/commerce-cms/server-functions`
      * wrapped in a `'use server'` module so it crosses the RSC boundary.
-     *
-     * Without this prop Payload's `<Form>` throws
-     * "useServerFunctions must be used within a ServerFunctionsProvider" at
-     * mount time — the hook reads context unconditionally.
      */
     serverFunction: ServerFunctionClient;
+    /** Date-fns locale key for the current request, from `req.i18n.dateFNSKey`. */
+    dateFNSKey: Language['dateFNSKey'];
+    /** Fallback language code, from `config.i18n.fallbackLanguage`. */
+    fallbackLang: I18nOptions['fallbackLanguage'];
+    /** Active UI language code (e.g. `en`, `de`). */
+    languageCode: string;
+    /** Available admin languages, derived from `config.i18n.supportedLanguages`. */
+    languageOptions: LanguageOptions;
+    /** Optional document/data locale code (per-tenant, distinct from UI language). */
+    locale?: Locale['code'];
+    /** Sanitized RBAC permissions for the current user. */
+    permissions: SanitizedPermissions;
+    /** UI theme. */
+    theme: PayloadFieldShellTheme;
+    /** Translations for the active language (`req.i18n.translations`). */
+    translations: I18nClient['translations'];
+    /** Authenticated Payload user, or `null` for anonymous routes. */
+    user: null | TypedUser;
     children: ReactNode;
 };
 
@@ -29,35 +52,53 @@ export type PayloadFieldShellProps = {
  * Provider shell required by Payload field components and `<Form>` when
  * embedded outside the canonical `@payloadcms/next` admin shell.
  *
- * Mounts the minimum context tree `@payloadcms/ui` field internals read at
- * runtime:
- *   - `ConfigProvider` — collection schemas / translated labels.
- *   - `ServerFunctionsProvider` — `getFormState`, `renderDocument`, etc.
- *     Throws "useServerFunctions must be used within…" if missing.
- *   - `UploadHandlersProvider` — `<Form>` reads `getUploadHandler` to wire
- *     custom upload handlers. The hook throws if the provider is absent
- *     (the context defaults to `null`, and the hook null-checks).
- *   - `ModalProvider` (+ `ModalContainer`) from `@faceless-ui/modal` — upload
- *     and relationship field components mount document drawers via
- *     `useDocumentDrawer`, which reads `modalState[drawerSlug]` on every
- *     render. Without `ModalProvider`, `modalState` is undefined and the
- *     subscript access throws on the first paint of any upload field.
+ * Delegates to `<RootProvider>` from `@payloadcms/ui`. That provider mounts
+ * the BUNDLED copy of `@faceless-ui/modal`'s `ModalProvider` — the same
+ * module instance that `useDocumentDrawer`, `<Drawer>`, and `<ModalContainer>`
+ * inside `@payloadcms/ui` read from. Mounting `<ModalProvider>` directly
+ * from `@faceless-ui/modal` (or via any path outside `@payloadcms/ui`'s
+ * pre-bundled module graph) produces a *separate* `ModalContext` instance —
+ * the provider sets one context but consumers read another (its default
+ * empty object), leaving `modalState` undefined and crashing
+ * `modalState[drawerSlug]` in `Drawer` on first paint of any upload, blocks,
+ * or relationship field.
  *
- * The other Payload contexts (`Auth`, `Locale`, `DocumentInfo`, `Translation`,
- * `RouteTransition`, `Operation`) all use bare `use(Context)` against non-null
- * defaults, so they don't need explicit mounting for a document edit form.
+ * `<RootProvider>` also mounts `ConfigProvider`, `ServerFunctionsProvider`,
+ * `UploadHandlersProvider`, `AuthProvider`, `TranslationProvider`, theme
+ * context, and all the other context entries Payload's field internals
+ * read. Mounting individual providers piecemeal is brittle precisely
+ * because @payloadcms/ui ships a single bundled module graph — every
+ * context the bundle uses must come from the bundle.
  */
-export function PayloadFieldShell({ config, serverFunction, children }: PayloadFieldShellProps) {
+export function PayloadFieldShell({
+    config,
+    serverFunction,
+    dateFNSKey,
+    fallbackLang,
+    languageCode,
+    languageOptions,
+    locale,
+    permissions,
+    theme,
+    translations,
+    user,
+    children,
+}: PayloadFieldShellProps) {
     return (
-        <ConfigProvider config={config}>
-            <ServerFunctionsProvider serverFunction={serverFunction}>
-                <UploadHandlersProvider>
-                    <ModalProvider classPrefix="payload" transTime={0} zIndex="var(--z-modal)">
-                        {children}
-                        <ModalContainer />
-                    </ModalProvider>
-                </UploadHandlersProvider>
-            </ServerFunctionsProvider>
-        </ConfigProvider>
+        <RootProvider
+            config={config}
+            dateFNSKey={dateFNSKey}
+            fallbackLang={fallbackLang}
+            languageCode={languageCode}
+            languageOptions={languageOptions}
+            locale={locale}
+            permissions={permissions}
+            serverFunction={serverFunction}
+            theme={theme}
+            translations={translations}
+            user={user}
+        >
+            {children}
+        </RootProvider>
     );
 }

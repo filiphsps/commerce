@@ -9,7 +9,7 @@ import type { LocaleOption } from '@/components/cms/locale-switcher';
 import { LocaleSwitcher } from '@/components/cms/locale-switcher';
 import { buildCmsFormState } from '@/lib/build-cms-form-state';
 import { publishProductMetadataAction, saveProductMetadataDraftAction } from '@/lib/cms-actions/product-metadata';
-import { getCmsClientConfig } from '@/lib/get-client-config';
+import { getCmsShellProps } from '@/lib/get-cms-shell-props';
 import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
 import { ProductMetadataFields } from './product-metadata-fields';
 import { ProductMetadataForm } from './product-metadata-form';
@@ -37,7 +37,7 @@ export default async function EditProductMetadataPage({ params, searchParams }: 
     }
 
     // ── Client config ─────────────────────────────────────────────────────────
-    const clientConfig = await getCmsClientConfig(domain);
+    const shellProps = await getCmsShellProps(domain);
 
     // ── Locale resolution ─────────────────────────────────────────────────────
     const localizationConfig = payload.config.localization !== false ? payload.config.localization : undefined;
@@ -116,7 +116,7 @@ export default async function EditProductMetadataPage({ params, searchParams }: 
                 { label: 'Product Metadata', href: `/${domain}/content/product-metadata/` as Route },
                 { label: handle },
             ]}
-            clientConfig={clientConfig}
+            shellProps={shellProps}
             onSubmit={boundSaveDraft}
             initialState={initialState}
             toolbar={

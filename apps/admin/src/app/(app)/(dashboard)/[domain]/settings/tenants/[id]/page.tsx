@@ -8,7 +8,7 @@ import { parseCookies } from 'payload/shared';
 import { DocumentForm } from '@/components/cms/document-form';
 import { buildCmsFormState } from '@/lib/build-cms-form-state';
 import { deleteTenantAction, updateTenantAction } from '@/lib/cms-actions/tenants';
-import { getCmsClientConfig } from '@/lib/get-client-config';
+import { getCmsShellProps } from '@/lib/get-cms-shell-props';
 import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
 import { TenantFields } from './tenant-fields';
 import { TenantForm } from './tenant-form';
@@ -33,7 +33,7 @@ export default async function EditTenantPage({ params }: EditTenantProps) {
     }
 
     // ── Client config (no tenant scoping — cross-tenant collection) ───────────
-    const clientConfig = await getCmsClientConfig();
+    const shellProps = await getCmsShellProps();
 
     // ── Fetch tenant by id ────────────────────────────────────────────────────
     // No `draft: true` — tenants have no versions/drafts config.
@@ -86,7 +86,7 @@ export default async function EditTenantPage({ params }: EditTenantProps) {
         <DocumentForm
             title={tenantTitle}
             breadcrumbs={[{ label: 'Tenants', href: `/${domain}/settings/tenants/` as Route }, { label: tenantTitle }]}
-            clientConfig={clientConfig}
+            shellProps={shellProps}
             onSubmit={boundUpdate}
             initialState={initialState}
             toolbar={<TenantForm saveAction={boundUpdate} deleteAction={boundDelete} />}

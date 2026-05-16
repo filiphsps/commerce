@@ -10,7 +10,7 @@ import type { LocaleOption } from '@/components/cms/locale-switcher';
 import { LocaleSwitcher } from '@/components/cms/locale-switcher';
 import { buildCmsFormState } from '@/lib/build-cms-form-state';
 import { publishBusinessDataAction, saveBusinessDataDraftAction } from '@/lib/cms-actions/business-data';
-import { getCmsClientConfig } from '@/lib/get-client-config';
+import { getCmsShellProps } from '@/lib/get-cms-shell-props';
 import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
 import { buildLivePreviewUrl } from '@/payload.config';
 import { BusinessDataFields } from './business-data-fields';
@@ -42,7 +42,7 @@ export default async function BusinessDataPage({ params, searchParams }: Busines
     }
 
     // ── Client config ─────────────────────────────────────────────────────────
-    const clientConfig = await getCmsClientConfig(domain);
+    const shellProps = await getCmsShellProps(domain);
 
     // ── Locale resolution ─────────────────────────────────────────────────────
     // Build the list of available locales from the Payload config (populated
@@ -88,7 +88,7 @@ export default async function BusinessDataPage({ params, searchParams }: Busines
 
     // ── Build Payload FormState ───────────────────────────────────────────────
     // `buildFormState` needs a PayloadRequest (i18n + user). Mirror the pattern
-    // from `getCmsClientConfig` — derive language from request headers/cookies,
+    // from `getCmsShellProps` — derive language from request headers/cookies,
     // then build a local req.
     const headers = await getHeaders();
     const cookies = parseCookies(headers);
@@ -143,7 +143,7 @@ export default async function BusinessDataPage({ params, searchParams }: Busines
         <DocumentForm
             title="Business data"
             breadcrumbs={[{ label: 'Content', href: `/${domain}/content/` as Route }, { label: 'Business data' }]}
-            clientConfig={clientConfig}
+            shellProps={shellProps}
             onSubmit={boundSaveDraft}
             initialState={initialState}
             toolbar={

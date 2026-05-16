@@ -12,7 +12,7 @@ import {
     publishCollectionMetadataAction,
     saveCollectionMetadataDraftAction,
 } from '@/lib/cms-actions/collection-metadata';
-import { getCmsClientConfig } from '@/lib/get-client-config';
+import { getCmsShellProps } from '@/lib/get-cms-shell-props';
 import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
 import { CollectionMetadataFields } from './collection-metadata-fields';
 import { CollectionMetadataForm } from './collection-metadata-form';
@@ -40,7 +40,7 @@ export default async function EditCollectionMetadataPage({ params, searchParams 
     }
 
     // ── Client config ─────────────────────────────────────────────────────────
-    const clientConfig = await getCmsClientConfig(domain);
+    const shellProps = await getCmsShellProps(domain);
 
     // ── Locale resolution ─────────────────────────────────────────────────────
     const localizationConfig = payload.config.localization !== false ? payload.config.localization : undefined;
@@ -119,7 +119,7 @@ export default async function EditCollectionMetadataPage({ params, searchParams 
                 { label: 'Collection Metadata', href: `/${domain}/content/collection-metadata/` as Route },
                 { label: handle },
             ]}
-            clientConfig={clientConfig}
+            shellProps={shellProps}
             onSubmit={boundSaveDraft}
             initialState={initialState}
             toolbar={

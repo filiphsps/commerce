@@ -1,6 +1,5 @@
 import 'server-only';
 
-import { createBridgeServerActions } from '@nordcom/commerce-cms/bridge';
 import { shopBridge } from '@nordcom/commerce-cms/bridge/manifests';
 import { BridgeEditPage, type BridgeEditPageProps } from '@nordcom/commerce-cms/bridge/ui';
 import type { Metadata, Route } from 'next';
@@ -10,7 +9,8 @@ import { createLocalReq, getLocalI18n, getRequestLanguage, type PayloadRequest }
 import { parseCookies } from 'payload/shared';
 import { DocumentForm } from '@/components/cms/document-form';
 import { buildCmsFormState } from '@/lib/build-cms-form-state';
-import { getCmsClientConfig } from '@/lib/get-client-config';
+import { shopDeleteAction, shopUpdateAction } from '@/lib/cms-actions/shop';
+import { getCmsShellProps } from '@/lib/get-cms-shell-props';
 import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
 
 export const metadata: Metadata = {
@@ -54,11 +54,11 @@ export default async function ShopSettingsPage({ params }: Props) {
         skipValidation: true,
     });
 
-    const clientConfig = await getCmsClientConfig(domain);
+    const shellProps = await getCmsShellProps(domain);
 
-    // getCtx is consumed by server actions on subsequent requests; it must
-    // resolve from the request domain at action-invocation time, NOT close
-    // over the page-render ctx.
+    // `getCtx` resolves the auth context on each call. The closure forwards
+    // `domain` from the URL; never close over the page-render ctx itself —
+    // bridge access checks must re-authenticate per request.
     const getCtx = async (d: string) => {
         const { user: u } = await getAuthedPayloadCtx(d);
         return {
@@ -66,7 +66,14 @@ export default async function ShopSettingsPage({ params }: Props) {
             domain: d,
         };
     };
-    const actions = createBridgeServerActions(shopBridge, getCtx);
+
+    // `.bind(null, domain, domain)` partially applies the action's URL-derived
+    // arguments. The result is still a server action — Next.js encodes the
+    // bound prefix in the action ID, so the value is safe to pass to client
+    // components (Payload's `<Form action>` and `<BridgeFormToolbar>`).
+    // Shop is keyed by domain, so `id === domain`.
+    const boundUpdate = shopUpdateAction.bind(null, domain, domain);
+    const boundDelete = shopDeleteAction.bind(null, domain, domain);
 
     return (
         <BridgeEditPage
@@ -74,9 +81,10 @@ export default async function ShopSettingsPage({ params }: Props) {
             domain={domain}
             id={domain}
             getCtx={getCtx}
-            actions={actions}
+            updateAction={boundUpdate}
+            deleteAction={boundDelete}
             initialState={initialState}
-            clientConfig={clientConfig}
+            shellProps={shellProps}
             DocumentForm={DocumentForm as BridgeEditPageProps<never>['DocumentForm']}
             breadcrumbs={[{ label: 'Settings', href: `/${domain}/settings/` as unknown as Route }, { label: 'Shop' }]}
         />

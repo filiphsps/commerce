@@ -8,7 +8,7 @@ import { parseCookies } from 'payload/shared';
 import { DocumentForm } from '@/components/cms/document-form';
 import { buildCmsFormState } from '@/lib/build-cms-form-state';
 import { deleteUserAction, updateUserAction } from '@/lib/cms-actions/users';
-import { getCmsClientConfig } from '@/lib/get-client-config';
+import { getCmsShellProps } from '@/lib/get-cms-shell-props';
 import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
 import { UserFields } from './user-fields';
 import { UserForm } from './user-form';
@@ -33,7 +33,7 @@ export default async function EditUserPage({ params }: EditUserProps) {
     }
 
     // ── Client config (no tenant scoping — cross-tenant collection) ───────────
-    const clientConfig = await getCmsClientConfig();
+    const shellProps = await getCmsShellProps();
 
     // ── Fetch user by id ──────────────────────────────────────────────────────
     // No `draft: true` — users have no versions/drafts config.
@@ -113,7 +113,7 @@ export default async function EditUserPage({ params }: EditUserProps) {
         <DocumentForm
             title={userTitle}
             breadcrumbs={[{ label: 'Users', href: `/${domain}/settings/users/` as Route }, { label: userTitle }]}
-            clientConfig={clientConfig}
+            shellProps={shellProps}
             onSubmit={boundUpdate}
             initialState={initialState}
             toolbar={

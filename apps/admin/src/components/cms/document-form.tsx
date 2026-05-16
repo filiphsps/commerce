@@ -1,14 +1,19 @@
-import { PayloadFieldShell } from '@nordcom/commerce-cms/ui';
+import { PayloadFieldShell, type PayloadFieldShellProps } from '@nordcom/commerce-cms/ui';
 import { Form } from '@payloadcms/ui';
 import type { Route } from 'next';
 import Link from 'next/link';
-import type { ClientConfig, FormState } from 'payload';
+import type { FormState } from 'payload';
 import type { ReactNode } from 'react';
-
-import { cmsServerFunction } from '@/lib/cms-server-function';
 
 /** A single item in the breadcrumb trail. The last item is rendered without a link. */
 export type Breadcrumb = { label: string; href?: Route };
+
+/**
+ * Inputs that `<PayloadFieldShell>` requires to mount `<RootProvider>` and
+ * therefore Payload's bundled `ModalContext`. Build with
+ * `getCmsShellProps(domain)` from `@/lib/get-cms-shell-props`.
+ */
+export type CmsShellProps = Omit<PayloadFieldShellProps, 'children'>;
 
 export type DocumentFormProps = {
     /** Page title shown in the header (e.g. "Edit Article: Hello World"). */
@@ -19,10 +24,14 @@ export type DocumentFormProps = {
      */
     breadcrumbs?: Breadcrumb[];
     /**
-     * `ClientConfig` from `getCmsClientConfig()` — forwarded to `<PayloadFieldShell>`
-     * so all Payload UI field components receive the config they need.
+     * Full Payload provider prop bag — supplies `<RootProvider>` with config,
+     * i18n, permissions, theme, user, and server-function dispatcher. Every
+     * page builds this once via `getCmsShellProps` and forwards it; the
+     * shell cannot mount its providers (especially the bundled
+     * `<ModalProvider>` consumed by upload/blocks/relationship drawers)
+     * without the full set.
      */
-    clientConfig: ClientConfig;
+    shellProps: CmsShellProps;
     /**
      * Form field children — typically `<RenderFields fields={…} />` from `@payloadcms/ui`.
      * Rendered inside Payload's `<Form>` so field components can read form context.
@@ -71,7 +80,7 @@ export type DocumentFormProps = {
 export function DocumentForm({
     title,
     breadcrumbs,
-    clientConfig,
+    shellProps,
     children,
     onSubmit,
     initialState,
@@ -121,7 +130,7 @@ export function DocumentForm({
                   and useAllFormFields() to read live field state. */}
             <div className={livePreview ? 'grid flex-1 grid-cols-1 gap-4 lg:grid-cols-2' : 'flex-1'}>
                 <div className="flex flex-col gap-4">
-                    <PayloadFieldShell config={clientConfig} serverFunction={cmsServerFunction}>
+                    <PayloadFieldShell {...shellProps}>
                         <Form action={onSubmit} initialState={initialState} isDocumentForm>
                             <div className="flex flex-col gap-4">{children}</div>
 

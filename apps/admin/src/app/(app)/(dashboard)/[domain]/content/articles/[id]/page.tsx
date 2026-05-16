@@ -10,7 +10,7 @@ import type { LocaleOption } from '@/components/cms/locale-switcher';
 import { LocaleSwitcher } from '@/components/cms/locale-switcher';
 import { buildCmsFormState } from '@/lib/build-cms-form-state';
 import { publishArticleAction, saveArticleDraftAction } from '@/lib/cms-actions/articles';
-import { getCmsClientConfig } from '@/lib/get-client-config';
+import { getCmsShellProps } from '@/lib/get-cms-shell-props';
 import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
 import { ArticleFields } from './article-fields';
 import { ArticleForm } from './article-form';
@@ -36,7 +36,7 @@ export default async function EditArticlePage({ params, searchParams }: EditArti
     }
 
     // ── Client config ─────────────────────────────────────────────────────────
-    const clientConfig = await getCmsClientConfig(domain);
+    const shellProps = await getCmsShellProps(domain);
 
     // ── Locale resolution ─────────────────────────────────────────────────────
     const localizationConfig = payload.config.localization !== false ? payload.config.localization : undefined;
@@ -119,7 +119,7 @@ export default async function EditArticlePage({ params, searchParams }: EditArti
                 { label: 'Articles', href: `/${domain}/content/articles/` as Route },
                 { label: articleTitle },
             ]}
-            clientConfig={clientConfig}
+            shellProps={shellProps}
             onSubmit={boundSaveDraft}
             initialState={initialState}
             toolbar={

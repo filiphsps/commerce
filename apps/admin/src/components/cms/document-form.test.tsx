@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { DocumentForm } from '@/components/cms/document-form';
+import { type CmsShellProps, DocumentForm } from '@/components/cms/document-form';
 import { render, screen } from '@/utils/test/react';
 
 // ------------------------------------------------------------------
@@ -17,11 +17,12 @@ vi.mock('next/link', () => ({
 
 // Payload's <Form> is a rich client component — mock it to a simple <form>
 // so the smoke test exercises DocumentForm's layout without Payload internals.
+// We also mock `RootProvider` (consumed via PayloadFieldShell) so the test
+// doesn't have to boot Payload's full provider tree.
 vi.mock('@payloadcms/ui', () => ({
     Form: ({ children }: { children: React.ReactNode }) => <form data-testid="payload-form">{children}</form>,
-    ConfigProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-    ServerFunctionsProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-    UploadHandlersProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+    RootProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+    defaultTheme: 'light',
 }));
 
 // Stub the cms-server-function module — the real one imports `payload.config`
@@ -30,15 +31,24 @@ vi.mock('@/lib/cms-server-function', () => ({
     cmsServerFunction: vi.fn(),
 }));
 
-// `@nordcom/commerce-cms/ui` re-exports PayloadFieldShell which wraps the
-// (now-mocked) ConfigProvider + ServerFunctionsProvider — both are passthroughs
-// above, so the shell renders its children directly.
-
 // ------------------------------------------------------------------
 // Fixtures
 // ------------------------------------------------------------------
 
-const STUB_CONFIG = {} as import('payload').ClientConfig;
+// `unknown` casts are intentional — the mocked `<RootProvider>` is a passthrough
+// (see above), so individual prop shapes are never read at runtime.
+const STUB_SHELL_PROPS = {
+    config: {} as unknown,
+    serverFunction: vi.fn(),
+    dateFNSKey: 'en-US' as unknown,
+    fallbackLang: 'en' as unknown,
+    languageCode: 'en',
+    languageOptions: [] as unknown,
+    permissions: {} as unknown,
+    theme: 'light',
+    translations: {} as unknown,
+    user: null,
+} as unknown as CmsShellProps;
 
 // ------------------------------------------------------------------
 // Tests
@@ -47,7 +57,7 @@ const STUB_CONFIG = {} as import('payload').ClientConfig;
 describe('DocumentForm', () => {
     it('renders the page title', () => {
         render(
-            <DocumentForm title="Edit Article: Hello World" clientConfig={STUB_CONFIG} onSubmit={vi.fn()}>
+            <DocumentForm title="Edit Article: Hello World" shellProps={STUB_SHELL_PROPS} onSubmit={vi.fn()}>
                 <p>field content</p>
             </DocumentForm>,
         );
@@ -64,7 +74,7 @@ describe('DocumentForm', () => {
                     { label: 'Articles', href: '/content/articles/' as import('next').Route },
                     { label: 'Hello World' },
                 ]}
-                clientConfig={STUB_CONFIG}
+                shellProps={STUB_SHELL_PROPS}
                 onSubmit={vi.fn()}
             >
                 <p>child</p>
@@ -81,7 +91,7 @@ describe('DocumentForm', () => {
 
     it('renders children inside the form', () => {
         render(
-            <DocumentForm title="Test" clientConfig={STUB_CONFIG} onSubmit={vi.fn()}>
+            <DocumentForm title="Test" shellProps={STUB_SHELL_PROPS} onSubmit={vi.fn()}>
                 <input data-testid="form-field" />
             </DocumentForm>,
         );
@@ -93,7 +103,7 @@ describe('DocumentForm', () => {
         render(
             <DocumentForm
                 title="Test"
-                clientConfig={STUB_CONFIG}
+                shellProps={STUB_SHELL_PROPS}
                 onSubmit={vi.fn()}
                 toolbar={<button type="button">Publish</button>}
             >
@@ -108,7 +118,7 @@ describe('DocumentForm', () => {
         render(
             <DocumentForm
                 title="Test"
-                clientConfig={STUB_CONFIG}
+                shellProps={STUB_SHELL_PROPS}
                 onSubmit={vi.fn()}
                 livePreview={<div data-testid="preview-pane">Preview</div>}
             >
@@ -121,7 +131,7 @@ describe('DocumentForm', () => {
 
     it('omits the breadcrumb nav when breadcrumbs is not provided', () => {
         render(
-            <DocumentForm title="Test" clientConfig={STUB_CONFIG} onSubmit={vi.fn()}>
+            <DocumentForm title="Test" shellProps={STUB_SHELL_PROPS} onSubmit={vi.fn()}>
                 <p>child</p>
             </DocumentForm>,
         );
