@@ -84,6 +84,7 @@ describe('mongooseAdapter', () => {
 
     it('findById by _id returns plain object without _id/__v', async () => {
         const created = await WidgetModel.create({ name: 'A', domain: 'a.test' });
+        if (!created) throw new Error('test setup: Widget.create returned null');
         const adapter = mongooseAdapter(WidgetModel);
         const found = await adapter.findById(String(created._id));
         expect(found).toEqual(expect.objectContaining({ name: 'A', domain: 'a.test' }));
@@ -105,15 +106,17 @@ describe('mongooseAdapter', () => {
 
     it('update writes the patch and returns the updated doc', async () => {
         const created = await WidgetModel.create({ name: 'A', domain: 'a.test' });
+        if (!created) throw new Error('test setup: Widget.create returned null');
         const adapter = mongooseAdapter(WidgetModel);
         const updated = await adapter.update(String(created._id), { name: 'B' });
         expect((updated as { name: string }).name).toBe('B');
-        const reread = await WidgetModel.findById(created._id).exec();
+        const reread = await WidgetModel.findById(String(created._id)).exec();
         expect(reread?.name).toBe('B');
     });
 
     it('update runs Mongoose validators (rejects required:true violation)', async () => {
         const created = await WidgetModel.create({ name: 'A', domain: 'a.test' });
+        if (!created) throw new Error('test setup: Widget.create returned null');
         const adapter = mongooseAdapter(WidgetModel);
         await expect(adapter.update(String(created._id), { name: '' })).rejects.toThrow();
     });
@@ -127,7 +130,7 @@ describe('mongooseAdapter', () => {
         await WidgetModel.create({ name: 'A', domain: 'a.test', secret: 'shh' });
         const adapter = mongooseAdapter(WidgetModel, {
             idKey: 'domain',
-            redact: (doc) => {
+            redact: (doc: Record<string, unknown>) => {
                 const { secret: _s, ...rest } = doc;
                 return rest;
             },
@@ -138,8 +141,9 @@ describe('mongooseAdapter', () => {
 
     it('delete removes the document', async () => {
         const created = await WidgetModel.create({ name: 'A', domain: 'a.test' });
+        if (!created) throw new Error('test setup: Widget.create returned null');
         const adapter = mongooseAdapter(WidgetModel);
         await adapter.delete!(String(created._id));
-        expect(await WidgetModel.findById(created._id).exec()).toBeNull();
+        expect(await WidgetModel.findById(String(created._id)).exec()).toBeNull();
     });
 });
