@@ -31,6 +31,12 @@ export const UserSchema = new Schema(
             type: Schema.Types.Date,
             default: null,
         },
+
+        groups: {
+            type: [Schema.Types.String],
+            required: false,
+            default: undefined,
+        },
     },
     {
         id: true,
@@ -43,10 +49,11 @@ type InferredUser = InferSchemaType<typeof UserSchema>;
 // `avatar` and `emailVerified` use `default: null` in the schema; the public
 // API exposes them as optional/nullable to match the NextAuth adapter contract.
 export type UserBase = BaseDocument &
-    Omit<InferredUser, 'identities' | 'avatar' | 'emailVerified'> & {
+    Omit<InferredUser, 'identities' | 'avatar' | 'emailVerified' | 'groups'> & {
         identities: IdentityBase[];
         avatar?: string;
         emailVerified: Date | null;
+        groups?: string[];
     };
 
 export const UserModel = (db.models.User || db.model('User', UserSchema)) as ReturnType<
