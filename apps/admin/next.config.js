@@ -21,9 +21,6 @@ if (!gitSHA) {
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const ADMIN_DOMAIN = process.env.ADMIN_DOMAIN || undefined;
-const LANDING_DOMAIN = process.env.LANDING_DOMAIN || undefined;
-
 const imageRemotePatterns = [
     { protocol: 'https', hostname: '**.unsplash.com' },
     { protocol: 'https', hostname: '**.shopify.com' },
@@ -31,6 +28,13 @@ const imageRemotePatterns = [
     { protocol: 'https', hostname: '**.gravatar.com' },
 ];
 
+const SERVICE_DOMAIN = process.env.SERVICE_DOMAIN || undefined;
+const ADMIN_DOMAIN = process.env.ADMIN_DOMAIN || undefined;
+const LANDING_DOMAIN = process.env.LANDING_DOMAIN || undefined;
+
+if (SERVICE_DOMAIN) {
+    imageRemotePatterns.unshift({ protocol: 'https', hostname: SERVICE_DOMAIN });
+}
 if (LANDING_DOMAIN) {
     imageRemotePatterns.unshift({ protocol: 'https', hostname: LANDING_DOMAIN });
 }

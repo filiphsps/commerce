@@ -21,8 +21,40 @@ if (!gitSHA) {
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+const imageRemotePatterns = [
+    { protocol: 'https', hostname: '**.unsplash.com' },
+    { protocol: 'https', hostname: '**.shopify.com' },
+    { protocol: 'https', hostname: '**.github.io' },
+    { protocol: 'https', hostname: '**.gravatar.com' },
+];
+
+const SERVICE_DOMAIN = process.env.SERVICE_DOMAIN || undefined;
+const ADMIN_DOMAIN = process.env.ADMIN_DOMAIN || undefined;
+const LANDING_DOMAIN = process.env.LANDING_DOMAIN || undefined;
+
+if (SERVICE_DOMAIN) {
+    imageRemotePatterns.unshift({ protocol: 'https', hostname: SERVICE_DOMAIN });
+}
+if (LANDING_DOMAIN) {
+    imageRemotePatterns.unshift({ protocol: 'https', hostname: LANDING_DOMAIN });
+}
+if (ADMIN_DOMAIN) {
+    imageRemotePatterns.unshift({ protocol: 'https', hostname: ADMIN_DOMAIN });
+}
+
 export function getBaseUrl() {
-    return process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined;
+    // Make sure that we're actually on vercel.
+    if (!process.env.VERCEL_ENV) {
+        return undefined;
+    }
+
+    // TODO: Add branch deployments etc that should take president over the production url.
+    const targetUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL || undefined;
+    if (!targetUrl) {
+        return undefined;
+    }
+
+    return `https://${targetUrl}`;
 }
 
 /** @type {import('next').NextConfig} */
@@ -64,10 +96,6 @@ const config = {
         remotePatterns: [
             {
                 protocol: 'https',
-                hostname: 'nordcom.io',
-            },
-            {
-                protocol: 'https',
                 hostname: '**.unsplash.com',
             },
             {
@@ -82,7 +110,6 @@ const config = {
                 protocol: 'https',
                 hostname: '**.gravatar.com',
             },
-            // FIXME: Allow SERVICE_DOMAIN.
         ],
         formats: ['image/webp', 'image/avif'],
     },

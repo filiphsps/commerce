@@ -88,7 +88,6 @@ const config = {
                 protocol: 'https',
                 hostname: '**.gravatar.com',
             },
-            // FIXME: Allow SERVICE_DOMAIN.
         ],
         formats: ['image/webp', 'image/avif'],
     },
