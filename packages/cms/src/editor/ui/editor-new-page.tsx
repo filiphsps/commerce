@@ -68,7 +68,7 @@ export async function EditorNewPage<TSlug extends CollectionSlug>({
 
     return (
         <runtime.DocumentForm
-            title={manifest.routes.label.singular}
+            title={`New ${manifest.routes.label.singular}`}
             breadcrumbs={breadcrumbs}
             clientConfig={clientConfig}
             onSubmit={boundCreate}

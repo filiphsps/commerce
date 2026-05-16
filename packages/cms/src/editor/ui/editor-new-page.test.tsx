@@ -40,7 +40,7 @@ const buildRuntime = (overrides: Record<string, unknown> = {}): never =>
         toAccessCtx: (_ctx: never, domain: string | null) => ({ user: null, domain }),
         buildFormState: async () => ({ state: {} }),
         getClientConfig: async () => ({}),
-        DocumentForm: ({ title }: { title: string }) => <div data-testid="doc-form">New {title}</div>,
+        DocumentForm: ({ title }: { title: string }) => <div data-testid="doc-form">{title}</div>,
         Table: () => null,
         Toolbar: () => null,
         ...overrides,
