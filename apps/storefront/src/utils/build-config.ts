@@ -1,4 +1,3 @@
-/* c8 ignore start */
 export const BuildConfig = {
     environment: process.env.NODE_ENV,
 
@@ -14,4 +13,3 @@ export const COMMERCE_DEFAULTS = {
 
 export const FLAG_IMAGES_BASE_URL =
     process.env.NEXT_PUBLIC_FLAG_IMAGES_BASE_URL ?? 'https://purecatamphetamine.github.io/country-flag-icons/3x2';
-/* c8 ignore stop */

@@ -1,5 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+// Undo the global mock from vitest.setup.ts — this test exercises the real
+// evaluateShopFlag implementation end-to-end.
+vi.unmock('@/utils/flags/evaluate');
+
 // In a real 'use cache' scope, headers() and cookies() throw. Simulate that
 // strictness here so the test would catch regressions introduced by any future
 // change that adds a headers() call inside the cache-safe path.

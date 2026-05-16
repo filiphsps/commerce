@@ -20,16 +20,16 @@ afterAll(() => {
 
 vi.mock('server-only', () => ({}));
 
-vi.mock('flags', () => ({
-    unstable_flags: vi.fn().mockReturnValue(false),
-}));
-vi.mock('@vercel/edge-config', () => ({
-    get: vi.fn().mockResolvedValue(false),
-}));
-
 vi.mock('@/utils/flags', () => ({
     showSearchFilter: vi.fn().mockResolvedValue(false),
     showProductInfoLines: vi.fn().mockResolvedValue(false),
+    showHeaderSearchBar: vi.fn().mockResolvedValue(false),
+    enableProductsPage: vi.fn().mockResolvedValue(false),
+    enableAccountsFunctionality: vi.fn().mockResolvedValue(false),
+}));
+
+vi.mock('@/utils/flags/evaluate', () => ({
+    evaluateShopFlag: vi.fn().mockReturnValue(false),
 }));
 
 // Mock the `build-config` module as it almost only contains tokens,

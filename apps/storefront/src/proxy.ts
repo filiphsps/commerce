@@ -1,5 +1,3 @@
-/* c8 ignore start */
-
 import { randomUUID } from 'node:crypto';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
@@ -69,4 +67,3 @@ export default async function proxy(req: NextRequest): Promise<NextResponse> {
 
     return res;
 }
-/* c8 ignore stop */

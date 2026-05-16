@@ -67,8 +67,8 @@ importers:
         specifier: 2.9.14
         version: 2.9.14
       turbo-ignore:
-        specifier: 2.9.12
-        version: 2.9.12
+        specifier: 2.9.14
+        version: 2.9.14
       typescript:
         specifier: 6.0.3
         version: 6.0.3
@@ -10701,8 +10701,8 @@ packages:
     resolution: {integrity: sha512-1h/Lnq9yajKY2PEbBadPXj3VxsDDu844OnaAo52UVmIzIvwwtBPIuNvkjuzBlTWpfJyUbG3ez0KSBibQkj4ojg==}
     engines: {node: '>=0.6.11 <=0.7.0 || >=0.7.3'}
 
-  turbo-ignore@2.9.12:
-    resolution: {integrity: sha512-xprct7SBl2l8WV2WhkowTcCwpdf8sM7RfJPWbaJ3fcOF72JGRnYSKN93l2j9+ubYN79F2A1DT2hiqScBFB/fcw==}
+  turbo-ignore@2.9.14:
+    resolution: {integrity: sha512-6rDXfrEru9McN2dMNFf/ZS3mSC+OcZV4NmsI2SJz/X8xnm29jrg4b2mPboyY57Hw42c89n8MahAYGt5jXNX7jg==}
     hasBin: true
 
   turbo@2.9.14:
@@ -22974,7 +22974,7 @@ snapshots:
 
   tunnel@0.0.6: {}
 
-  turbo-ignore@2.9.12:
+  turbo-ignore@2.9.14:
     dependencies:
       json5: 2.2.3
 

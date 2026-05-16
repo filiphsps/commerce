@@ -53,6 +53,13 @@ export type BuildPayloadConfigOptions = {
      */
     // biome-ignore lint/suspicious/noExplicitAny: sharp's type is unwieldy and we only forward it
     sharp?: any;
+    /**
+     * Absolute path where `payload generate:types` should write its output.
+     * Set only by the dedicated type-gen entry config — Payload ignores the
+     * CLI `--output` flag and falls back to `<cwd>/payload-types.ts`, so the
+     * destination has to be threaded through here.
+     */
+    typescriptOutputFile?: string;
 };
 
 import { cmsDefaultLocale as DEFAULT_DEFAULT_LOCALE, cmsDefaultLocales as DEFAULT_LOCALES } from './locales';
@@ -79,6 +86,7 @@ export const buildPayloadConfig = async ({
     importMapFile,
     livePreview,
     sharp,
+    typescriptOutputFile,
 }: BuildPayloadConfigOptions): Promise<SanitizedConfig> => {
     const plugins = [buildMultiTenantPlugin()];
     if (enableStorage) {
@@ -153,6 +161,7 @@ export const buildPayloadConfig = async ({
         plugins,
         ...adminConfig,
         ...(sharp ? { sharp } : {}),
+        ...(typescriptOutputFile ? { typescript: { outputFile: typescriptOutputFile } } : {}),
         routes: { admin: '/cms' },
     });
 };

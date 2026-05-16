@@ -1,5 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+// Undo the global mock from vitest.setup.ts — this test exercises the real
+// evaluateShopFlag implementation.
+vi.unmock('@/utils/flags/evaluate');
+
 vi.mock('./report', () => ({ reportFlagValue: vi.fn() }));
 
 vi.mock('next/headers', () => ({

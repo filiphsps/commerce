@@ -1,5 +1,3 @@
-/* c8 ignore start */
-
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { admin } from '@/middleware/admin';
@@ -25,4 +23,3 @@ export default async function proxy(req: NextRequest) {
 
     return NextResponse.next();
 }
-/* c8 ignore stop */

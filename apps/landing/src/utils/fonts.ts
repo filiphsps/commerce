@@ -1,4 +1,3 @@
-/* c8 ignore start */
 import { Montserrat } from 'next/font/google';
 
 const primaryFont = Montserrat({
@@ -10,4 +9,3 @@ const primaryFont = Montserrat({
 });
 
 export { primaryFont };
-/* c8 ignore stop */

@@ -1,4 +1,3 @@
-/* c8 ignore start */
 import { MissingEnvironmentVariableError } from '@nordcom/commerce-errors';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
@@ -29,4 +28,3 @@ export const admin = async (req: NextRequest): Promise<NextResponse> => {
         request: { headers },
     });
 };
-/* c8 ignore end */

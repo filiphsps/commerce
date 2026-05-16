@@ -82,7 +82,7 @@
         "format:format": "biome format --write .",
         "format:check": "biome check --write --unsafe .",
         "typecheck": "tsc -noEmit",
-        "generate:types": "PAYLOAD_CONFIG_PATH=src/types/generate-types-config.ts payload generate:types --output ./src/types/payload-types.ts"
+        "generate:types": "PAYLOAD_CONFIG_PATH=src/types/generate-types-config.ts payload generate:types"
     },
     "files": [
         "dist"

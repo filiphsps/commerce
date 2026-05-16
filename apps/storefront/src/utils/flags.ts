@@ -1,4 +1,3 @@
-/* c8 ignore start */
 import { flag } from 'flags/next';
 import { nordcomFlagAdapter } from '@/utils/flags/adapter';
 
@@ -58,4 +57,3 @@ export const enableAccountsFunctionality = flag<boolean>({
     ],
     adapter,
 });
-/* c8 ignore stop */

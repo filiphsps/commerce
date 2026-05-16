@@ -1,5 +1,5 @@
 {
-    "$schema": "https://v2-9-14.turborepo.dev/schema.json",
+    "$schema": "https://turbo.build/schema.json",
     "ui": "stream",
     "globalDependencies": [
         "**/.env.*local",
@@ -64,9 +64,6 @@
             "cache": false,
             "dependsOn": ["^build"],
             "outputs": ["playwright-report/**", "test-results/**"]
-        },
-        "generate:types": {
-            "cache": true
         }
     }
 }
