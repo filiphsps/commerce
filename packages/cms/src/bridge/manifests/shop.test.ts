@@ -1,4 +1,5 @@
 import { Shop } from '@nordcom/commerce-db';
+import type { Field } from 'payload';
 import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 import { shopBridge, stripCommerceProviderSecrets } from './shop';
 
@@ -13,7 +14,7 @@ describe('shopBridge manifest', () => {
     });
 
     it('declares the required core fields', () => {
-        const names = shopBridge.fields.map((f) => (f as unknown as { name?: string }).name);
+        const names = shopBridge.fields.map((f: Field) => ('name' in f ? f.name : undefined));
         expect(names).toEqual(
             expect.arrayContaining(['name', 'description', 'domain', 'alternativeDomains', 'i18n', 'design']),
         );
