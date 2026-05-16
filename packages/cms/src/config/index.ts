@@ -1,5 +1,6 @@
 import { mongooseAdapter } from '@payloadcms/db-mongodb';
 import { resendAdapter } from '@payloadcms/email-resend';
+import { getTenantFromCookie } from '@payloadcms/plugin-multi-tenant/utilities';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import type { AuthStrategy, SanitizedConfig } from 'payload';
 import { buildConfig } from 'payload';
@@ -178,7 +179,46 @@ export const buildPayloadConfig = async ({
 
         editor: lexicalEditor({}),
         collections,
-        localization: { locales, defaultLocale, fallback: true },
+        localization: {
+            locales,
+            defaultLocale,
+            fallback: true,
+            /**
+             * Narrow the admin's locale picker to the active tenant's
+             * `locales` field. Payload's global `locales` array is fixed at
+             * boot (we ship the full ISO 639-1 superset for that), but
+             * `filterAvailableLocales` runs per-request and lets us hide
+             * everything outside the current tenant's allow-list. The
+             * multi-tenant plugin sets a `payload-tenant` cookie from the
+             * admin's tenant selector; without it (e.g. cross-tenant admin
+             * routes) we return the full superset so the picker still has
+             * options.
+             *
+             * Tenant IDs default to MongoDB ObjectIDs — `'text'` for the
+             * `idType` argument expected by `getTenantFromCookie`.
+             */
+            filterAvailableLocales: async ({ req, locales: available }) => {
+                const tenantId = getTenantFromCookie(req.headers, 'text');
+                if (!tenantId) return available;
+                try {
+                    const tenant = (await req.payload.findByID({
+                        id: String(tenantId),
+                        collection: 'tenants',
+                        depth: 0,
+                        req,
+                    })) as { locales?: string[] } | null;
+                    const allowed = tenant?.locales;
+                    if (!allowed || allowed.length === 0) return available;
+                    const filtered = available.filter((locale) => allowed.includes(locale.code));
+                    return filtered.length > 0 ? filtered : available;
+                } catch {
+                    // Tenant lookup failed (deleted, permission denied, etc.) —
+                    // fail open with the full superset rather than locking the
+                    // editor out of every locale.
+                    return available;
+                }
+            },
+        },
         plugins,
         ...adminConfig,
         ...(sharp ? { sharp } : {}),
