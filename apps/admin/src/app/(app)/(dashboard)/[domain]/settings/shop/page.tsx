@@ -34,6 +34,9 @@ export default async function ShopSettingsPage({ params }: Props) {
         };
     };
 
+    const ctx = await getCtx(domain);
+    if (!(await shopBridge.access.read(ctx))) notFound();
+
     // ── Fetch doc + build form state ──────────────────────────────────────────
     const doc = await shopBridge.adapter.findById(domain);
     if (!doc) notFound();
