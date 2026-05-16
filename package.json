@@ -85,7 +85,7 @@
         "jsdom": "29.1.1",
         "mongoose": "9.6.2",
         "react": "19.2.6",
-        "turbo": "2.9.12",
+        "turbo": "2.9.14",
         "turbo-ignore": "2.9.12",
         "typescript": "6.0.3",
         "unplugin-dts": "1.0.0",
