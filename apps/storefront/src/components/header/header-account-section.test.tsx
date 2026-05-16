@@ -1,10 +1,6 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { describe, expect, it, vi } from 'vitest';
 
-vi.mock('@vercel/edge-config', () => ({
-    get: vi.fn(),
-}));
-
 vi.mock('next/headers', () => ({
     headers: vi.fn(() => {
         throw new Error('headers() called inside cached component — this is the regression');
@@ -15,8 +11,8 @@ vi.mock('@/auth', () => ({
     getAuthSession: vi.fn().mockResolvedValue(null),
 }));
 
-vi.mock('@/utils/flags-cache-safe', () => ({
-    readFlag: vi.fn().mockResolvedValue(false),
+vi.mock('@/utils/flags/evaluate', () => ({
+    evaluateShopFlag: vi.fn().mockReturnValue(false),
 }));
 
 vi.mock('@/components/actionable/login-button', () => ({
@@ -34,7 +30,7 @@ vi.mock('@/components/link', () => ({
 import { headers } from 'next/headers';
 import { getAuthSession } from '@/auth';
 import { HeaderAccountSection } from '@/components/header/header-account-section';
-import { readFlag } from '@/utils/flags-cache-safe';
+import { evaluateShopFlag } from '@/utils/flags/evaluate';
 import { Locale, type LocaleDictionary } from '@/utils/locale';
 import { render, screen } from '@/utils/test/react';
 
@@ -43,7 +39,7 @@ const mockI18n = {} as unknown as LocaleDictionary;
 
 describe('components/header/header-account-section', () => {
     it('does not call headers() when reading the accounts-functionality flag', async () => {
-        vi.mocked(readFlag).mockResolvedValue(false);
+        vi.mocked(evaluateShopFlag).mockReturnValue(false);
         const headersMock = vi.mocked(headers);
         headersMock.mockClear();
 
@@ -59,7 +55,7 @@ describe('components/header/header-account-section', () => {
     });
 
     it('renders LoginButton when flag is enabled but session is null', async () => {
-        vi.mocked(readFlag).mockResolvedValue(true);
+        vi.mocked(evaluateShopFlag).mockReturnValue(true);
         vi.mocked(getAuthSession).mockResolvedValue(null);
 
         const jsx = await HeaderAccountSection({
@@ -73,7 +69,7 @@ describe('components/header/header-account-section', () => {
     });
 
     it('renders Avatar when flag is enabled and session has user data', async () => {
-        vi.mocked(readFlag).mockResolvedValue(true);
+        vi.mocked(evaluateShopFlag).mockReturnValue(true);
         vi.mocked(getAuthSession).mockResolvedValue({
             user: { name: 'Test User', image: null, email: 'test@example.com' },
         } as any);

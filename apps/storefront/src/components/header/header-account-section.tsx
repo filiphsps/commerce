@@ -7,7 +7,7 @@ import { getAuthSession } from '@/auth';
 import { LoginButton } from '@/components/actionable/login-button';
 import { Avatar } from '@/components/informational/avatar';
 import Link from '@/components/link';
-import { readFlag } from '@/utils/flags-cache-safe';
+import { evaluateShopFlag } from '@/utils/flags/evaluate';
 import { capitalize, getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 
@@ -17,10 +17,12 @@ export type HeaderAccountSectionProps = {
     i18n: LocaleDictionary;
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 export async function HeaderAccountSection({ shop, i18n, className, ...props }: HeaderAccountSectionProps) {
-    // Use `readFlag` instead of `enableAccountsFunctionality()` — `flags/next`'s
-    // `flag()` wrapper reads request headers internally, which is forbidden inside
-    // the `'use cache'` scope that wraps this component's parent.
-    const accountsEnabled = await readFlag('accounts-functionality', false);
+    // `evaluateShopFlag` is synchronous and reads no request data, so it's safe
+    // inside the cached layout that wraps this component. The SDK's `flag()` is
+    // disallowed here because it calls `headers()`/`cookies()` internally.
+    const accountsEnabled = evaluateShopFlag<boolean>(shop, 'accounts-functionality', {
+        codeDefaultValue: false,
+    });
     if (!accountsEnabled) {
         return null;
     }
