@@ -1,15 +1,23 @@
 import 'dotenv/config';
 
+import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import createVercelToolbar from '@vercel/toolbar/plugins/next';
 
 const withVercelToolbar = createVercelToolbar();
 
-const isDev = process.env.NODE_ENV === 'development';
+// TODO: Create util instead of duplicating it thrice.
+const isDev = [process.env.NODE_ENV, process.env.VERCEL_ENV].includes('development');
+const environment = process.env.VERCEL_ENV === 'preview' ? 'preview' : isDev ? 'development' : 'production';
+let gitSHA = process.env.GIT_COMMIT_SHA;
+if (!gitSHA) {
+    try {
+        gitSHA = execSync('git rev-parse HEAD').toString().trim() || process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
+    } catch {}
+}
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const environment = process.env.VERCEL_ENV || process.env.NODE_ENV || 'development';
 
 /** @type {import('next').NextConfig} */
 const config = {
@@ -92,11 +100,6 @@ const config = {
         loadPaths: [path.join(__dirname, 'src/scss'), path.join(__dirname, 'src')],
     },
 
-    env: {
-        ENVIRONMENT: environment,
-        GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA,
-    },
-
     async headers() {
         return ['/', '/:path*'].map((source) => ({
             source,
@@ -109,9 +112,16 @@ const config = {
         }));
     },
 
+    env: {
+        ENVIRONMENT: environment,
+        GIT_COMMIT_SHA: gitSHA,
+    },
     async generateBuildId() {
-        if (process.env.NODE_ENV === 'development') return 'dev';
-        return process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
+        if (isDev) {
+            return 'dev';
+        }
+
+        return gitSHA;
     },
 
     webpack: (config, { webpack, isServer }) => {

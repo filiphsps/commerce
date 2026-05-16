@@ -9,11 +9,13 @@ import createVercelToolbar from '@vercel/toolbar/plugins/next';
 
 const withVercelToolbar = createVercelToolbar();
 
-const isDev = process.env.NODE_ENV === 'development';
+// TODO: Create util instead of duplicating it thrice.
+const isDev = [process.env.NODE_ENV, process.env.VERCEL_ENV].includes('development');
+const environment = process.env.VERCEL_ENV === 'preview' ? 'preview' : isDev ? 'development' : 'production';
 let gitSHA = process.env.GIT_COMMIT_SHA;
 if (!gitSHA) {
     try {
-        gitSHA = execSync('git rev-parse HEAD').toString().trim();
+        gitSHA = execSync('git rev-parse HEAD').toString().trim() || process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
     } catch {}
 }
 
@@ -88,39 +90,18 @@ const config = {
         ignoreBuildErrors: true,
         tsconfigPath: 'tsconfig.json',
     },
+
     env: {
-        ENVIRONMENT: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
+        ENVIRONMENT: environment,
         GIT_COMMIT_SHA: gitSHA,
     },
-
     async generateBuildId() {
-        if (process.env.NODE_ENV === 'development') {
+        if (isDev) {
             return 'dev';
         }
 
-        return process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
+        return gitSHA;
     },
-
-    webpack: !isDev
-        ? (config, { webpack, isServer }) => {
-              config.experiments = {
-                  ...config.experiments,
-                  topLevelAwait: true,
-              };
-
-              config.plugins.push(
-                  new webpack.DefinePlugin({
-                      __RRWEB_EXCLUDE_IFRAME__: true,
-                      __RRWEB_EXCLUDE_SHADOW_DOM__: true,
-                  }),
-              );
-
-              if (isServer) {
-                  config.devtool = 'source-map';
-              }
-              return config;
-          }
-        : undefined,
 
     // We handle all redirects at the edge.
     skipTrailingSlashRedirect: true,

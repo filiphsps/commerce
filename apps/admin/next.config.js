@@ -1,5 +1,6 @@
 import 'dotenv/config';
 
+import { execSync } from 'node:child_process';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -8,7 +9,15 @@ import createVercelToolbar from '@vercel/toolbar/plugins/next';
 
 const withVercelToolbar = createVercelToolbar();
 
-const isDev = process.env.NODE_ENV === 'development';
+// TODO: Create util instead of duplicating it thrice.
+const isDev = [process.env.NODE_ENV, process.env.VERCEL_ENV].includes('development');
+const environment = process.env.VERCEL_ENV === 'preview' ? 'preview' : isDev ? 'development' : 'production';
+let gitSHA = process.env.GIT_COMMIT_SHA;
+if (!gitSHA) {
+    try {
+        gitSHA = execSync('git rev-parse HEAD').toString().trim() || process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
+    } catch {}
+}
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -107,14 +116,16 @@ const config = {
     },
 
     env: {
-        ENVIRONMENT: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
-        GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA,
+        ENVIRONMENT: environment,
+        GIT_COMMIT_SHA: gitSHA,
         AUTH_URL: process.env.AUTH_URL,
     },
-
     async generateBuildId() {
-        if (process.env.NODE_ENV === 'development') return 'dev';
-        return process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
+        if (isDev) {
+            return 'dev';
+        }
+
+        return gitSHA;
     },
 
     // We handle all redirects at the edge.
