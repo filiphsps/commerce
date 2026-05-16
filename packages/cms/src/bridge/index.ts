@@ -9,3 +9,4 @@ export {
     type BridgeManifest,
     defineBridge,
 } from './manifest';
+export { BRIDGE_COLLECTION_PREFIX, buildBridgePlugin } from './plugin';
