@@ -55,6 +55,10 @@ export type CommerceProvider = ShopifyCommerceProvider | StripeCommerceProvider;
 export const CommerceProviders = ['shopify', 'stripe'] as const satisfies CommerceProvider['type'][];
 export type CommerceProviders = (typeof CommerceProviders)[number];
 
+export interface FeatureFlagRef {
+    flag: import('mongoose').Types.ObjectId;
+}
+
 export interface ShopBase extends BaseDocument {
     name: string;
     description?: string;
@@ -132,6 +136,8 @@ export interface ShopBase extends BaseDocument {
         googleTagManager?: string;
         intercom?: string;
     };
+
+    featureFlags?: FeatureFlagRef[];
 }
 
 export type OnlineShop = Omit<ShopBase, keyof Omit<Document, keyof DocumentExtras> | 'collaborators' | 'schema'> & {
@@ -361,6 +367,20 @@ export const ShopSchema = new Schema<ShopBase>(
                 type: Schema.Types.String,
                 required: false,
             },
+        },
+
+        featureFlags: {
+            type: [
+                {
+                    flag: {
+                        type: Schema.Types.ObjectId,
+                        ref: 'FeatureFlag',
+                        required: true,
+                    },
+                },
+            ],
+            required: false,
+            default: [],
         },
     },
     {
