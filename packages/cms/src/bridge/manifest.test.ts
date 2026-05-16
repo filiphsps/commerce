@@ -43,7 +43,6 @@ describe('assertFieldsValid', () => {
 
     it('throws when a field has no name', () => {
         const broken = baseManifest({
-            // biome-ignore lint/suspicious/noExplicitAny: deliberate invalid input
             fields: [{ type: 'text' } as any],
         });
         expect(() => assertFieldsValid([broken])).toThrow(/missing `name`/i);
@@ -51,7 +50,6 @@ describe('assertFieldsValid', () => {
 
     it('throws when a field has no type', () => {
         const broken = baseManifest({
-            // biome-ignore lint/suspicious/noExplicitAny: deliberate invalid input
             fields: [{ name: 'foo' } as any],
         });
         expect(() => assertFieldsValid([broken])).toThrow(/missing `type`/i);
