@@ -25,6 +25,7 @@ All code, comments, commit messages, docs, identifiers, and UI strings use **Ame
 -   **Vitest 4.x** with project mode — see `vitest.config.ts` for global config, each app/package has its own `vitest.config.ts` consumed as a project.
 -   **`pnpm build:packages` is mandatory before lint/typecheck/test in a fresh checkout** — apps import each workspace package from its built `dist/`, not from source. Skipping this breaks `tsc -noEmit` and Vitest type resolution.
 -   All top-level scripts go through `dotenv -c -- turbo …`, so `.env` / `.env.local` are loaded automatically — don't prefix env vars manually.
+-   **`pnpm cms:gen` regenerates `apps/admin/src/lib/cms-actions/_generated/`.** Run after touching any editor manifest in `packages/cms/src/editor/manifests/`. CI runs `pnpm cms:gen:check` to verify no drift.
 
 ## Commands
 
