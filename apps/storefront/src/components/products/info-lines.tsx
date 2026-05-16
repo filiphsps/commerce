@@ -6,7 +6,7 @@ import type { HTMLProps } from 'react';
 import type { Product } from '@/api/product';
 import { Label } from '@/components/typography/label';
 import { COMMERCE_DEFAULTS } from '@/utils/build-config';
-import { readFlag } from '@/utils/flags-cache-safe';
+import { evaluateShopFlag } from '@/utils/flags/evaluate';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { getTranslations } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
@@ -72,10 +72,13 @@ export type InfoLinesProps = {
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 
 const InfoLines = async ({ shop, product, i18n, locale, className, ...props }: InfoLinesProps) => {
-    // Use `readFlag` instead of `showProductInfoLines()` — `flags/next`'s
+    // Use `evaluateShopFlag` instead of `showProductInfoLines()` — `flags/next`'s
     // `flag()` wrapper reads request headers internally, which is forbidden inside
-    // the `'use cache'` scope that wraps this component's parent.
-    const productInfoLinesEnabled = await readFlag('product-page-info-lines', false);
+    // the `'use cache'` scope that wraps this component's parent. `evaluateShopFlag`
+    // is synchronous and reads no request data.
+    const productInfoLinesEnabled = evaluateShopFlag<boolean>(shop, 'product-page-info-lines', {
+        codeDefaultValue: false,
+    });
     if (!product || !productInfoLinesEnabled) {
         return null;
     }
