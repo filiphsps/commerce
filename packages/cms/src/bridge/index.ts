@@ -11,6 +11,7 @@ export {
 } from './manifest';
 export { BRIDGE_COLLECTION_PREFIX, buildBridgePlugin } from './plugin';
 export {
+    AccessDeniedError,
     type BridgeCtxResolver,
     type BridgeServerActions,
     createBridgeServerActions,

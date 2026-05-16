@@ -47,7 +47,7 @@ export type BridgeServerActions = {
     createAction: (domain: string, formData: FormData) => Promise<{ id: string }>;
 };
 
-class AccessDeniedError extends Error {
+export class AccessDeniedError extends Error {
     constructor(slug: string, op: string) {
         super(`[bridge] access denied: ${slug}.${op}`);
         this.name = 'AccessDeniedError';
