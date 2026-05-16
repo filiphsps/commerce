@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload';
 
-export const FeatureFlags: CollectionConfig = {
+export const featureFlags: CollectionConfig = {
     slug: 'feature-flags',
     admin: { useAsTitle: 'key', defaultColumns: ['key', 'description', 'updatedAt'] },
     access: {

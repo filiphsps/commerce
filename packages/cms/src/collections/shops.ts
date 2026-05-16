@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload';
 import { rejectSecretWritesFromNonAdmins, stripSecretsOnRead } from './shops/secrets';
 
-export const Shops: CollectionConfig = {
+export const shops: CollectionConfig = {
     slug: 'shops',
     admin: { useAsTitle: 'name', defaultColumns: ['name', 'domain', 'updatedAt'] },
     access: {
