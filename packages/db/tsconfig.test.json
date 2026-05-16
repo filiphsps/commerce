@@ -1,17 +1,5 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
-    "extends": "./tsconfig.json",
-    "compilerOptions": {
-        "types": ["vitest/globals"]
-    },
-    "include": ["src/**/*.test.*"],
-    "exclude": [
-        "**/node_modules",
-        "**/dist",
-        "**/.turbo",
-        "**/storybook-static",
-        "**/coverage",
-        "**/build",
-        "**/public"
-    ]
+    "extends": ["./tsconfig.json", "../../tsconfig.test.json"],
+    "include": ["./src/**/*.test.ts", "vitest.setup.ts"]
 }

@@ -1,0 +1,66 @@
+{
+    "$schema": "https://json.schemastore.org/package.json",
+    "name": "@tagtree/core",
+    "version": "0.0.1",
+    "private": false,
+    "sideEffects": false,
+    "type": "module",
+    "types": "./dist/index.d.ts",
+    "module": "./dist/index.ts",
+    "exports": {
+        ".": [
+            "./src/index.ts",
+            "./dist/index.js"
+        ],
+        "./contract-tests": [
+            "./src/contract-tests.ts",
+            "./dist/contract-tests.js"
+        ]
+    },
+    "scripts": {
+        "build": "tsc && vite build",
+        "clean": "rimraf -g dist coverage .turbo .next *.tsbuildinfo *.log node_modules",
+        "lint": "biome lint .",
+        "format": "concurrently -i pnpm:format:*",
+        "format:lint": "biome lint --write .",
+        "format:format": "biome format --write .",
+        "format:check": "biome check --write --unsafe .",
+        "test": "vitest run",
+        "typecheck": "tsc -noEmit"
+    },
+    "files": [
+        "dist"
+    ],
+    "author": {
+        "name": "Nordcom AB",
+        "email": "hi@nordcom.io",
+        "url": "https://nordcom.io/"
+    },
+    "contributors": [
+        {
+            "name": "Filiph Sandström",
+            "email": "filfat@hotmail.se",
+            "url": "https://github.com/filiphsps/"
+        }
+    ],
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/filiphsps/commerce.git",
+        "directory": "packages/tagtree/core"
+    },
+    "keywords": [],
+    "bugs": {
+        "url": "https://github.com/filiphsps/commerce/issues"
+    },
+    "homepage": "https://github.com/filiphsps/commerce/tree/master/packages/tagtree/core#readme",
+    "dependencies": {},
+    "devDependencies": {
+        "@codecov/vite-plugin": "2.0.1",
+        "concurrently": "9.2.1",
+        "rimraf": "6.1.3",
+        "typescript": "6.0.3",
+        "vite": "8.0.12",
+        "vitest": "4.1.6"
+    }
+}

@@ -1,12 +1,8 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
-    "extends": "./tsconfig.json",
+    "extends": ["./tsconfig.json", "../../tsconfig.test.json"],
     "compilerOptions": {
-        "jsx": "react-jsx",
-        "composite": true,
-        "types": ["vitest/globals", "happy-dom", "@testing-library/react"]
+        "types": ["node", "vitest/globals", "happy-dom", "@testing-library/react"]
     },
-
-    "include": ["./**/*.test.*"],
-    "exclude": ["**/node_modules", "**/dist", "**/.turbo", "**/coverage", "**/build", "**/public"]
+    "include": ["./src/**/*.test.ts", "./src/**/*.test.tsx"]
 }

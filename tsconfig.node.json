@@ -1,19 +1,12 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
+    "extends": "./tsconfig.json",
     "compilerOptions": {
-        "allowSyntheticDefaultImports": true,
+        "types": ["node"],
+        "lib": ["ESNext"],
         "composite": true,
-        "module": "ESNext",
-        "moduleResolution": "Bundler",
-        "skipLibCheck": true,
-        "strict": true,
-        "strictBindCallApply": true,
-        "strictFunctionTypes": true,
-        "strictNullChecks": true,
-        "strictPropertyInitialization": true,
-        "target": "ESNext",
-        "typeRoots": ["node_modules/@types", "./apps/**/src/@types", "./packages/**/src/@types"]
+        "noEmit": true
     },
-    "exclude": ["**/.turbo", "**/coverage", "**/dist", "node_modules"],
-    "include": ["./vite.config.ts", "packages/**/vite.config.ts"]
+    "include": ["vite.config.ts", "vitest.config.ts"],
+    "exclude": ["node_modules", "**/.turbo", "**/dist", "**/coverage"]
 }

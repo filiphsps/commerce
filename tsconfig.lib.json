@@ -1,0 +1,17 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "composite": true,
+        "declaration": true,
+        "declarationMap": true,
+        "sourceMap": true,
+        "incremental": true,
+
+        "outDir": "${configDir}/dist",
+        "rootDir": "${configDir}/src",
+
+        "types": ["node"]
+    },
+    "exclude": ["node_modules", "coverage", "dist", "**/.turbo", "**/*.test.*", "**/*.stories.*"]
+}

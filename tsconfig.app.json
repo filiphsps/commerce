@@ -1,0 +1,29 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "noEmit": true,
+        "incremental": true,
+
+        "allowJs": true,
+        "jsx": "preserve",
+        "jsxImportSource": "react",
+
+        "lib": ["DOM", "DOM.iterable", "ESNext"],
+
+        "plugins": [{ "name": "next" }],
+
+        // Apps are looser than libs: framework callback signatures (Next, Payload,
+        // NextAuth) often have unused args; previously app tsconfigs didn't extend
+        // root so these checks never applied. Preserve that practical behavior.
+        "noUnusedLocals": false,
+        "noUnusedParameters": false,
+
+        // noUncheckedIndexedAccess was on at the root before, but apps never
+        // extended root — so the check was silently absent for storefront/admin/
+        // landing. Re-enabling now surfaces 27 violations in storefront. Tech
+        // debt: fix the code, then drop this override. Tracked separately.
+        "noUncheckedIndexedAccess": false
+    },
+    "exclude": ["node_modules", "**/.turbo", "**/dist", "**/coverage"]
+}
