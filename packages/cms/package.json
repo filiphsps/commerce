@@ -71,6 +71,18 @@
         "./ui": [
             "./src/ui/index.ts",
             "./dist/ui/index.js"
+        ],
+        "./bridge": [
+            "./src/bridge/index.ts",
+            "./dist/bridge/index.js"
+        ],
+        "./bridge/ui": [
+            "./src/bridge/ui/index.ts",
+            "./dist/bridge/ui/index.js"
+        ],
+        "./bridge/manifests": [
+            "./src/bridge/manifests/index.ts",
+            "./dist/bridge/manifests/index.js"
         ]
     },
     "scripts": {
