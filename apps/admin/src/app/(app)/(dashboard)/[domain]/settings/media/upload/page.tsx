@@ -3,7 +3,7 @@ import 'server-only';
 import type { Metadata, Route } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { createMediaAction } from '@/lib/cms-actions/media';
+import { createMediaAction } from '@/lib/cms-actions/media-upload';
 import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
 import { UploadForm } from './upload-form';
 

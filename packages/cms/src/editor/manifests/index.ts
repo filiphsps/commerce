@@ -5,6 +5,7 @@ import { collectionMetadataEditor } from './collection-metadata';
 import { featureFlagsEditor } from './feature-flag';
 import { footerEditor } from './footer';
 import { headerEditor } from './header';
+import { mediaEditor } from './media';
 import { pagesEditor } from './pages';
 import { productMetadataEditor } from './product-metadata';
 import { reviewsEditor } from './review';
@@ -18,6 +19,7 @@ export { collectionMetadataEditor } from './collection-metadata';
 export { featureFlagsEditor } from './feature-flag';
 export { footerEditor } from './footer';
 export { headerEditor } from './header';
+export { mediaEditor } from './media';
 export { pagesEditor } from './pages';
 export { productMetadataEditor } from './product-metadata';
 export { reviewsEditor } from './review';
@@ -37,6 +39,7 @@ export const allManifests: readonly CollectionEditorManifest[] = [
     featureFlagsEditor as unknown as CollectionEditorManifest,
     headerEditor as unknown as CollectionEditorManifest,
     footerEditor as unknown as CollectionEditorManifest,
+    mediaEditor as unknown as CollectionEditorManifest,
     pagesEditor as unknown as CollectionEditorManifest,
     productMetadataEditor as unknown as CollectionEditorManifest,
     collectionMetadataEditor as unknown as CollectionEditorManifest,
