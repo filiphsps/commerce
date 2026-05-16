@@ -27,7 +27,8 @@
         "format:lint": "biome lint --write .",
         "format:format": "biome format --write .",
         "format:check": "biome check --write --unsafe .",
-        "typecheck": "tsc -noEmit"
+        "typecheck": "tsc -noEmit",
+        "migrate:mongoose-to-payload": "tsx scripts/migrate-mongoose-to-payload.ts"
     },
     "author": {
         "name": "Nordcom AB",
@@ -62,8 +63,10 @@
     },
     "devDependencies": {
         "@codecov/vite-plugin": "2.0.1",
+        "@nordcom/commerce-cms": "workspace:*",
         "payload": "3.84.0",
         "@types/node": "24.12.4",
+        "tsx": "^4.22.0",
         "@typescript/native-preview": "7.0.0-dev.20260515.1",
         "concurrently": "9.2.1",
         "glob": "13.0.6",
