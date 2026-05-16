@@ -13,7 +13,10 @@ export const getRequestContext = cache(async (): Promise<RequestContext | null> 
         const localeCode = h.get('x-locale');
         if (!domain || !localeCode) return null;
 
-        const shop = await Shop.findByDomain(domain, { convert: true });
+        const shop = await Shop.findByDomain(domain, {
+            convert: true,
+            populate: ['featureFlags.flag'],
+        });
         const locale = Locale.from(localeCode);
         if (!shop || !locale) return null;
 

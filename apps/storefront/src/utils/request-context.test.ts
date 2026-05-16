@@ -46,5 +46,15 @@ describe('utils/request-context', () => {
             expect(ctx?.shop.id).toBe('shop-1');
             expect(ctx?.locale.code).toBe('en-US');
         });
+
+        it('populates featureFlags.flag on the shop fetch', async () => {
+            (headers as any).mockResolvedValue(new Headers({ 'x-shop-domain': 'mock.shop', 'x-locale': 'en-US' }));
+            (Shop.findByDomain as any).mockResolvedValue({ id: 'shop-1', domain: 'mock.shop', featureFlags: [] });
+            await getRequestContext();
+            expect(Shop.findByDomain).toHaveBeenCalledWith(
+                'mock.shop',
+                expect.objectContaining({ populate: ['featureFlags.flag'] }),
+            );
+        });
     });
 });

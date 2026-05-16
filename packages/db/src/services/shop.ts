@@ -7,6 +7,12 @@ type FindOptions = {
     /** Whether to convert the result to a normal object or keep it as a mongoose document. */
     convert?: boolean;
     sensitiveData?: boolean;
+    /**
+     * Mongoose population paths to apply before `toObject`. The toObject call
+     * still keeps the populated documents (it uses `depopulate: false` when
+     * any populate paths are provided).
+     */
+    populate?: string[];
 };
 
 export class ShopService extends Service<ShopBase, typeof ShopModel> {
@@ -36,7 +42,7 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
     public async findByDomain(domain: string, options?: FindOptions): Promise<OnlineShop | ShopBase>;
     public async findByDomain(
         domain: string,
-        { sensitiveData = false, convert = true }: FindOptions = {},
+        { sensitiveData = false, convert = true, populate = [] }: FindOptions = {},
     ): Promise<OnlineShop | ShopBase> {
         const shop = await this.find({
             count: 1,
@@ -55,6 +61,12 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
             },
         });
 
+        if (populate.length > 0) {
+            for (const path of populate) {
+                await (shop as unknown as { populate(path: string): Promise<void> }).populate(path);
+            }
+        }
+
         if (!convert) {
             return shop;
         }
@@ -66,7 +78,7 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
             flattenMaps: true,
             flattenObjectIds: true,
             useProjection: true,
-            depopulate: true,
+            depopulate: populate.length === 0,
         });
 
         if (!sensitiveData) {
