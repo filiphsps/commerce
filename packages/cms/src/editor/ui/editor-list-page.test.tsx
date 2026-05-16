@@ -40,7 +40,7 @@ const buildRuntime = (): never =>
         DocumentForm: () => null,
         Toolbar: () => null,
         buildFormState: async () => ({ state: {} }),
-        getClientConfig: async () => ({}),
+        getShellProps: async () => ({}),
     }) as never;
 
 describe('<EditorListPage>', () => {

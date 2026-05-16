@@ -48,7 +48,7 @@ const buildRuntime = (overrides: Record<string, unknown> = {}): never =>
             domain,
         }),
         buildFormState: async () => ({ state: {} }),
-        getClientConfig: async () => ({}),
+        getShellProps: async () => ({}),
         DocumentForm: ({ title }: { title: string }) => <div data-testid="doc-form">{title}</div>,
         Table: () => null,
         Toolbar: () => null,

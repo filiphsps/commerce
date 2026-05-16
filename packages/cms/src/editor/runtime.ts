@@ -1,5 +1,6 @@
-import type { ClientConfig, FormState, Payload, PayloadRequest } from 'payload';
+import type { FormState, Payload, PayloadRequest } from 'payload';
 import type { ComponentType, ReactNode } from 'react';
+import type { PayloadFieldShellProps } from '../ui';
 import type { CollectionEditorManifest, EditorAccessCtx } from './manifest';
 
 /**
@@ -39,11 +40,18 @@ export type BuildFormStateArgs = {
     skipValidation?: boolean;
 };
 
+/**
+ * Full prop bag the admin's `<DocumentForm>` forwards to `<PayloadFieldShell>`.
+ * Built per render by `EditorRuntime.getShellProps`. Excludes `children` —
+ * those are supplied at the `<DocumentForm>` render site.
+ */
+export type ShellProps = Omit<PayloadFieldShellProps, 'children'>;
+
 /** Props the runtime's `DocumentForm` shell receives. */
 export type DocumentFormShellProps = {
     title: string;
     breadcrumbs?: Array<{ label: string; href?: string }>;
-    clientConfig: ClientConfig;
+    shellProps: ShellProps;
     onSubmit: (formData: FormData) => Promise<void>;
     initialState?: FormState;
     toolbar?: ReactNode;
@@ -79,7 +87,13 @@ export type EditorRuntime = {
     getCtx: (domain: string | null) => Promise<AuthedPayloadCtx>;
     toAccessCtx: (ctx: AuthedPayloadCtx, domain: string | null) => EditorAccessCtx;
     buildFormState: (args: BuildFormStateArgs) => Promise<{ state: FormState }>;
-    getClientConfig: (domain: string | null) => Promise<ClientConfig>;
+    /**
+     * Returns the full shell prop bag the admin's `<DocumentForm>` expects.
+     * The admin builds it via its own `getCmsShellProps(domain)` helper, which
+     * internally calls `getClientConfig`, resolves the theme, language options,
+     * permissions, and so on. Editor primitives forward the result opaquely.
+     */
+    getShellProps: (domain: string | null) => Promise<ShellProps>;
     DocumentForm: ComponentType<DocumentFormShellProps>;
     Table: ComponentType<CollectionTableShellProps>;
     Toolbar: ComponentType<EditorToolbarShellProps>;

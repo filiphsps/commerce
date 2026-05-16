@@ -37,7 +37,7 @@ const buildRuntime = (versions: Array<Record<string, unknown>>): never =>
         Table: () => null,
         Toolbar: () => null,
         buildFormState: async () => ({ state: {} }),
-        getClientConfig: async () => ({}),
+        getShellProps: async () => ({}),
     }) as never;
 
 describe('<EditorVersionsPage>', () => {

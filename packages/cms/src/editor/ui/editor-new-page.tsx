@@ -50,7 +50,7 @@ export async function EditorNewPage<TSlug extends CollectionSlug>({
         skipValidation: true,
     });
 
-    const clientConfig = await runtime.getClientConfig(domain);
+    const shellProps = await runtime.getShellProps(domain);
 
     const boundCreate = async (formData: FormData) => {
         await generatedActions.create(domain, formData);
@@ -70,7 +70,7 @@ export async function EditorNewPage<TSlug extends CollectionSlug>({
         <runtime.DocumentForm
             title={`New ${manifest.routes.label.singular}`}
             breadcrumbs={breadcrumbs}
-            clientConfig={clientConfig}
+            shellProps={shellProps}
             onSubmit={boundCreate}
             initialState={initialState}
             toolbar={

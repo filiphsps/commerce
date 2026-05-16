@@ -58,7 +58,7 @@ const buildRuntime = (overrides: Partial<EditorRuntime> = {}): EditorRuntime => 
             domain,
         }),
         buildFormState: vi.fn(),
-        getClientConfig: vi.fn(),
+        getShellProps: vi.fn(),
         DocumentForm: () => null,
         Table: () => null,
         Toolbar: () => null,
