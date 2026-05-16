@@ -30,7 +30,7 @@ export type LayoutParams = Promise<{ domain: string; locale: string }>;
 export async function generateStaticParams(): Promise<Awaited<LayoutParams>[]> {
     try {
         const shops = await Shop.findAll();
-    
+
         const params = (
             await Promise.all(
                 shops.map(async ({ domain }) => {
@@ -44,7 +44,7 @@ export async function generateStaticParams(): Promise<Awaited<LayoutParams>[]> {
                     if (shop.domain.includes('demo')) {
                         return null as unknown as LayoutParams;
                     }
-    
+
                     return [
                         {
                             domain: shop.domain,
@@ -56,13 +56,13 @@ export async function generateStaticParams(): Promise<Awaited<LayoutParams>[]> {
         )
             .flat(1)
             .filter(Boolean);
-    
+
         return params.length > 0 ? params : [{ domain: NOT_FOUND_HANDLE, locale: NOT_FOUND_HANDLE }];
-    
+
         return params;
     } catch (error: unknown) {
         console.error(error);
-        return [{ domain: NOT_FOUND_HANDLE, locale: NOT_FOUND_HANDLE }];;
+        return [{ domain: NOT_FOUND_HANDLE, locale: NOT_FOUND_HANDLE }];
     }
 }
 
