@@ -8,21 +8,28 @@ import { useState, useTransition } from 'react';
 export type UploadFormProps = {
     /** The current shop domain — used to construct the post-upload redirect URL. */
     domain: string;
+    /**
+     * Server action with the shop domain already bound:
+     * `createMediaAction.bind(null, domain)`. Signature after binding:
+     * `(formData: FormData) => Promise<{ id: string }>`.
+     *
+     * We call a server action rather than POSTing directly to Payload's
+     * `/api/media` REST endpoint because the admin app has no Payload auth
+     * strategy mounted — REST requests arrive unauthenticated and
+     * `tenantScopedWrite` rejects them with a 403. The server action threads
+     * the NextAuth session into `payload.create` via `getAuthedPayloadCtx`.
+     */
+    createAction: (formData: FormData) => Promise<{ id: string }>;
 };
 
 /**
  * Client upload form for new media files.
  *
- * Posts to Payload's REST upload endpoint (`/api/media`) using `fetch()` so
- * the browser doesn't navigate to the raw JSON response. On success it
- * redirects to the new doc's edit page (or back to the grid on failure).
- *
- * The `multipart/form-data` encoding is set automatically when `FormData` is
- * passed as the `fetch` body — do not set `Content-Type` manually or the
- * boundary string will be missing and Payload's multipart parser will reject
- * the upload.
+ * Invokes a server action that authenticates via NextAuth and dispatches into
+ * `payload.create` with the file payload. On success it redirects to the new
+ * doc's edit page (or back to the grid on failure).
  */
-export function UploadForm({ domain }: UploadFormProps) {
+export function UploadForm({ domain, createAction }: UploadFormProps) {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
     const [error, setError] = useState<string | null>(null);
@@ -35,21 +42,7 @@ export function UploadForm({ domain }: UploadFormProps) {
 
         startTransition(async () => {
             try {
-                const res = await fetch('/api/media', {
-                    method: 'POST',
-                    // Do NOT set Content-Type — the browser sets it automatically
-                    // including the correct multipart boundary when body is FormData.
-                    body: formData,
-                });
-
-                if (!res.ok) {
-                    const text = await res.text();
-                    throw new Error(`Upload failed (${res.status}): ${text}`);
-                }
-
-                const json = (await res.json()) as { doc?: { id?: unknown }; id?: unknown };
-                // Payload's REST returns `{ doc: { id, ... }, errors: [] }` on success.
-                const id = (json?.doc?.id ?? json?.id) as string | undefined;
+                const { id } = await createAction(formData);
 
                 if (id) {
                     router.push(`/${domain}/settings/media/${id}/` as Route);
