@@ -1,4 +1,5 @@
 import { mongooseAdapter } from '@payloadcms/db-mongodb';
+import { resendAdapter } from '@payloadcms/email-resend';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import type { Payload } from 'payload';
 import { buildConfig, getPayload } from 'payload';
@@ -18,6 +19,11 @@ export async function bootTestPayload({ suite }: { suite: string }): Promise<Tes
     const config = await buildConfig({
         secret: process.env.PAYLOAD_SECRET ?? 'test-secret',
         db: mongooseAdapter({ url: url.toString() }),
+        email: resendAdapter({
+            defaultFromAddress: '',
+            defaultFromName: '',
+            apiKey: process.env.RESEND_API_KEY || '',
+        }),
         editor: lexicalEditor({}),
         collections: [],
     });
