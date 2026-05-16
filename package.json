@@ -36,6 +36,8 @@
         "test": "NODE_OPTIONS=\"--disable-warning=DEP0205\" dotenv -c -- vitest run --coverage",
         "test:watch": "NODE_OPTIONS=\"--disable-warning=DEP0205\" dotenv -c -- vitest watch",
         "test:e2e": "dotenv -c -- turbo run test:e2e",
+        "cms:gen": "pnpm --filter @nordcom/commerce-cms cms:gen",
+        "cms:gen:check": "pnpm --filter @nordcom/commerce-cms cms:gen:check",
         "changeset": "changeset",
         "changeset:version": "changeset version",
         "changeset:publish": "pnpm build:packages && changeset publish"
