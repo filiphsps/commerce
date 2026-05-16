@@ -13,7 +13,7 @@ describe('shopBridge manifest', () => {
     });
 
     it('declares the required core fields', () => {
-        const names = shopBridge.fields.map((f) => (f as { name?: string }).name);
+        const names = shopBridge.fields.map((f) => (f as unknown as { name?: string }).name);
         expect(names).toEqual(
             expect.arrayContaining(['name', 'description', 'domain', 'alternativeDomains', 'i18n', 'design']),
         );
@@ -64,7 +64,7 @@ describe('shopBridge adapter (domain lookup)', () => {
             icons: { favicon: { src: '/favicon.ico', alt: 'A' } },
             design: { header: { logo: { src: '/a', alt: 'a' } }, accents: [] },
             commerceProvider: { type: 'shopify' },
-        });
+        } as Parameters<typeof Shop.model.create>[0]);
         const found = await shopBridge.adapter.findById('a.test');
         expect((found as { name: string } | null)?.name).toBe('A');
     });
@@ -77,7 +77,7 @@ describe('shopBridge adapter (domain lookup)', () => {
             icons: { favicon: { src: '/favicon.ico', alt: 'A' } },
             design: { header: { logo: { src: '/a', alt: 'a' } }, accents: [] },
             commerceProvider: { type: 'shopify' },
-        });
+        } as Parameters<typeof Shop.model.create>[0]);
         const found = await shopBridge.adapter.findById('a2.test');
         expect((found as { name: string } | null)?.name).toBe('A');
     });
@@ -96,7 +96,7 @@ describe('shopBridge adapter (domain lookup)', () => {
                 type: 'shopify',
                 authentication: { token: 'leak', publicToken: 'ok' },
             },
-        });
+        } as Parameters<typeof Shop.model.create>[0]);
         const found = (await shopBridge.adapter.findById('a.test')) as {
             commerceProvider: { authentication: Record<string, unknown> };
         } | null;
