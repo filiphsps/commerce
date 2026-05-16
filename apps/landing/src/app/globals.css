@@ -113,6 +113,12 @@
         font-weight: 700;
     }
 
+    code {
+        @apply rounded text-brand font-mono font-normal bg-[hsl(0_0%_51%/0.15)];
+        font-size: inherit;
+        line-height: inherit;
+    }
+
     h1 code {
         font-weight: 500;
         line-height: 1.1;
@@ -120,12 +126,6 @@
 
     :is(h1, h2, h3, h4) b {
         @apply font-extrabold text-brand;
-    }
-
-    code {
-        @apply rounded text-brand font-mono font-normal bg-[hsl(0_0%_51%/0.15)];
-        font-size: inherit;
-        line-height: inherit;
     }
 
     code:not([data-multiline="true"]):not([class*="language-"])::before,

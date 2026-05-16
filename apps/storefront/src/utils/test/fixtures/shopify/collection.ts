@@ -1,8 +1,6 @@
 import { mockProduct } from './product';
 
-type DeepPartial<T> = { [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K] };
-
-export function mockCollection(overrides: DeepPartial<any> = {}) {
+export function mockCollection(overrides: Record<string, unknown> = {}) {
     return {
         id: 'gid://shopify/Collection/1',
         handle: 'demo-collection',

@@ -29,6 +29,7 @@ vi.mock('@/auth', () => ({ auth: mockAuth }));
 vi.mock('@/utils/fetchers', () => ({ getShopsForUser: mockGetShopsForUser }));
 
 vi.mock('next/image', () => ({
+    // biome-ignore lint/performance/noImgElement: test mock for next/image
     default: ({ alt }: { alt: string }) => <img alt={alt} />,
 }));
 vi.mock('next/link', () => ({

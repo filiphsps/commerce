@@ -8,6 +8,7 @@ vi.mock('@shopify/hydrogen-react', async (importOriginal) => {
     return {
         ...actual,
         useCart: () => ({ cartReady: true, status: 'idle', lines: [] }),
+        // biome-ignore lint/performance/noImgElement: test mock for @shopify/hydrogen-react Image
         Image: ({ src, alt }: { src: string; alt: string }) => <img src={src} alt={alt} />,
     };
 });

@@ -22,7 +22,8 @@
             "!**/public/robots.txt*",
             "!**/public/sitemap*.xml*",
             "!**/storybook-static",
-            "!docs/superpowers"
+            "!docs/superpowers",
+            "!packages/cms/src/types/payload-types.ts"
         ]
     },
     "formatter": {

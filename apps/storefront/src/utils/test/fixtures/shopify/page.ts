@@ -1,6 +1,4 @@
-type DeepPartial<T> = { [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K] };
-
-export function mockPage(overrides: DeepPartial<any> = {}) {
+export function mockPage(overrides: Record<string, unknown> = {}) {
     return {
         id: 'gid://shopify/Page/1',
         handle: 'demo-page',

@@ -2,16 +2,16 @@ import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('mongoose', async () => {
     const mockDocument = { _id: 'flag-1', key: 'accounts', defaultValue: false, targeting: [] };
-    class MockModel {
-        public static modelName = 'FeatureFlag';
-        public static find = vi.fn().mockReturnThis();
-        public static sort = vi.fn().mockReturnThis();
-        public static limit = vi.fn().mockReturnThis();
-        public static exec = vi.fn().mockResolvedValue([mockDocument]);
-        public static create = vi.fn().mockResolvedValue(mockDocument);
-        public static findById = vi.fn().mockResolvedValue(mockDocument);
-        public static findOneAndUpdate = vi.fn().mockResolvedValue(mockDocument);
-    }
+    const MockModel = {
+        modelName: 'FeatureFlag',
+        find: vi.fn().mockReturnThis(),
+        sort: vi.fn().mockReturnThis(),
+        limit: vi.fn().mockReturnThis(),
+        exec: vi.fn().mockResolvedValue([mockDocument]),
+        create: vi.fn().mockResolvedValue(mockDocument),
+        findById: vi.fn().mockResolvedValue(mockDocument),
+        findOneAndUpdate: vi.fn().mockResolvedValue(mockDocument),
+    };
     const values = {
         connect: vi.fn().mockResolvedValue({
             get models() {
