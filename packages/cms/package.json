@@ -76,6 +76,10 @@
             "./src/bridge/index.ts",
             "./dist/bridge/index.js"
         ],
+        "./bridge/server-actions": [
+            "./src/bridge/server-actions.ts",
+            "./dist/bridge/server-actions.js"
+        ],
         "./bridge/ui": [
             "./src/bridge/ui/index.ts",
             "./dist/bridge/ui/index.js"

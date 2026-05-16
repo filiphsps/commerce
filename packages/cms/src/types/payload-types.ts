@@ -13,1288 +13,1077 @@
  * via the `definition` "supportedTimezones".
  */
 export type SupportedTimezones =
-    | 'Pacific/Midway'
-    | 'Pacific/Niue'
-    | 'Pacific/Honolulu'
-    | 'Pacific/Rarotonga'
-    | 'America/Anchorage'
-    | 'Pacific/Gambier'
-    | 'America/Los_Angeles'
-    | 'America/Tijuana'
-    | 'America/Denver'
-    | 'America/Phoenix'
-    | 'America/Chicago'
-    | 'America/Guatemala'
-    | 'America/New_York'
-    | 'America/Bogota'
-    | 'America/Caracas'
-    | 'America/Santiago'
-    | 'America/Buenos_Aires'
-    | 'America/Sao_Paulo'
-    | 'Atlantic/South_Georgia'
-    | 'Atlantic/Azores'
-    | 'Atlantic/Cape_Verde'
-    | 'Europe/London'
-    | 'Europe/Berlin'
-    | 'Africa/Lagos'
-    | 'Europe/Athens'
-    | 'Africa/Cairo'
-    | 'Europe/Moscow'
-    | 'Asia/Riyadh'
-    | 'Asia/Dubai'
-    | 'Asia/Baku'
-    | 'Asia/Karachi'
-    | 'Asia/Tashkent'
-    | 'Asia/Calcutta'
-    | 'Asia/Dhaka'
-    | 'Asia/Almaty'
-    | 'Asia/Jakarta'
-    | 'Asia/Bangkok'
-    | 'Asia/Shanghai'
-    | 'Asia/Singapore'
-    | 'Asia/Tokyo'
-    | 'Asia/Seoul'
-    | 'Australia/Brisbane'
-    | 'Australia/Sydney'
-    | 'Pacific/Guam'
-    | 'Pacific/Noumea'
-    | 'Pacific/Auckland'
-    | 'Pacific/Fiji';
+  | 'Pacific/Midway'
+  | 'Pacific/Niue'
+  | 'Pacific/Honolulu'
+  | 'Pacific/Rarotonga'
+  | 'America/Anchorage'
+  | 'Pacific/Gambier'
+  | 'America/Los_Angeles'
+  | 'America/Tijuana'
+  | 'America/Denver'
+  | 'America/Phoenix'
+  | 'America/Chicago'
+  | 'America/Guatemala'
+  | 'America/New_York'
+  | 'America/Bogota'
+  | 'America/Caracas'
+  | 'America/Santiago'
+  | 'America/Buenos_Aires'
+  | 'America/Sao_Paulo'
+  | 'Atlantic/South_Georgia'
+  | 'Atlantic/Azores'
+  | 'Atlantic/Cape_Verde'
+  | 'Europe/London'
+  | 'Europe/Berlin'
+  | 'Africa/Lagos'
+  | 'Europe/Athens'
+  | 'Africa/Cairo'
+  | 'Europe/Moscow'
+  | 'Asia/Riyadh'
+  | 'Asia/Dubai'
+  | 'Asia/Baku'
+  | 'Asia/Karachi'
+  | 'Asia/Tashkent'
+  | 'Asia/Calcutta'
+  | 'Asia/Dhaka'
+  | 'Asia/Almaty'
+  | 'Asia/Jakarta'
+  | 'Asia/Bangkok'
+  | 'Asia/Shanghai'
+  | 'Asia/Singapore'
+  | 'Asia/Tokyo'
+  | 'Asia/Seoul'
+  | 'Australia/Brisbane'
+  | 'Australia/Sydney'
+  | 'Pacific/Guam'
+  | 'Pacific/Noumea'
+  | 'Pacific/Auckland'
+  | 'Pacific/Fiji';
 
 export interface Config {
-    auth: {
-        users: UserAuthOperations;
-    };
-    blocks: {};
-    collections: {
-        tenants: Tenant;
-        users: User;
-        media: Media;
-        pages: Page;
-        articles: Article;
-        productMetadata: ProductMetadatum;
-        collectionMetadata: CollectionMetadatum;
-        header: Header;
-        footer: Footer;
-        businessData: BusinessDatum;
-        'payload-kv': PayloadKv;
-        'payload-locked-documents': PayloadLockedDocument;
-        'payload-preferences': PayloadPreference;
-        'payload-migrations': PayloadMigration;
-    };
-    collectionsJoins: {};
-    collectionsSelect: {
-        tenants: TenantsSelect<false> | TenantsSelect<true>;
-        users: UsersSelect<false> | UsersSelect<true>;
-        media: MediaSelect<false> | MediaSelect<true>;
-        pages: PagesSelect<false> | PagesSelect<true>;
-        articles: ArticlesSelect<false> | ArticlesSelect<true>;
-        productMetadata: ProductMetadataSelect<false> | ProductMetadataSelect<true>;
-        collectionMetadata: CollectionMetadataSelect<false> | CollectionMetadataSelect<true>;
-        header: HeaderSelect<false> | HeaderSelect<true>;
-        footer: FooterSelect<false> | FooterSelect<true>;
-        businessData: BusinessDataSelect<false> | BusinessDataSelect<true>;
-        'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
-        'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
-        'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
-        'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
-    };
-    db: {
-        defaultIDType: string;
-    };
-    fallbackLocale:
-        | ('false' | 'none' | 'null')
-        | false
-        | null
-        | ('en-US' | 'sv' | 'de' | 'es' | 'fr' | 'no')
-        | ('en-US' | 'sv' | 'de' | 'es' | 'fr' | 'no')[];
-    globals: {};
-    globalsSelect: {};
-    locale: 'en-US' | 'sv' | 'de' | 'es' | 'fr' | 'no';
-    widgets: {
-        collections: CollectionsWidget;
-    };
-    user: User;
-    jobs: {
-        tasks: unknown;
-        workflows: unknown;
-    };
+  auth: {
+    users: UserAuthOperations;
+  };
+  blocks: {};
+  collections: {
+    tenants: Tenant;
+    users: User;
+    media: Media;
+    pages: Page;
+    articles: Article;
+    productMetadata: ProductMetadatum;
+    collectionMetadata: CollectionMetadatum;
+    header: Header;
+    footer: Footer;
+    businessData: BusinessDatum;
+    'payload-kv': PayloadKv;
+    'payload-locked-documents': PayloadLockedDocument;
+    'payload-preferences': PayloadPreference;
+    'payload-migrations': PayloadMigration;
+  };
+  collectionsJoins: {};
+  collectionsSelect: {
+    tenants: TenantsSelect<false> | TenantsSelect<true>;
+    users: UsersSelect<false> | UsersSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
+    articles: ArticlesSelect<false> | ArticlesSelect<true>;
+    productMetadata: ProductMetadataSelect<false> | ProductMetadataSelect<true>;
+    collectionMetadata: CollectionMetadataSelect<false> | CollectionMetadataSelect<true>;
+    header: HeaderSelect<false> | HeaderSelect<true>;
+    footer: FooterSelect<false> | FooterSelect<true>;
+    businessData: BusinessDataSelect<false> | BusinessDataSelect<true>;
+    'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
+    'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
+    'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
+    'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
+  };
+  db: {
+    defaultIDType: string;
+  };
+  fallbackLocale:
+    | ('false' | 'none' | 'null')
+    | false
+    | null
+    | ('en-US' | 'sv' | 'de' | 'es' | 'fr' | 'no')
+    | ('en-US' | 'sv' | 'de' | 'es' | 'fr' | 'no')[];
+  globals: {};
+  globalsSelect: {};
+  locale: 'en-US' | 'sv' | 'de' | 'es' | 'fr' | 'no';
+  widgets: {
+    collections: CollectionsWidget;
+  };
+  user: User;
+  jobs: {
+    tasks: unknown;
+    workflows: unknown;
+  };
 }
 export interface UserAuthOperations {
-    forgotPassword: {
-        email: string;
-        password: string;
-    };
-    login: {
-        email: string;
-        password: string;
-    };
-    registerFirstUser: {
-        email: string;
-        password: string;
-    };
-    unlock: {
-        email: string;
-        password: string;
-    };
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "tenants".
  */
 export interface Tenant {
-    id: string;
-    name: string;
-    slug: string;
-    defaultLocale: string;
-    locales: string[];
-    /**
-     * Source Shop._id from @nordcom/commerce-db
-     */
-    shopId?: string | null;
-    updatedAt: string;
-    createdAt: string;
+  id: string;
+  name: string;
+  slug: string;
+  defaultLocale: string;
+  locales: string[];
+  /**
+   * Source Shop._id from @nordcom/commerce-db
+   */
+  shopId?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
-    id: string;
-    role: 'admin' | 'editor';
-    tenants?:
-        | {
-              tenant: string | Tenant;
-              id?: string | null;
-          }[]
-        | null;
-    updatedAt: string;
-    createdAt: string;
-    email: string;
-    resetPasswordToken?: string | null;
-    resetPasswordExpiration?: string | null;
-    salt?: string | null;
-    hash?: string | null;
-    loginAttempts?: number | null;
-    lockUntil?: string | null;
-    sessions?:
-        | {
-              id: string;
-              createdAt?: string | null;
-              expiresAt: string;
-          }[]
-        | null;
-    password?: string | null;
-    collection: 'users';
+  id: string;
+  role: 'admin' | 'editor';
+  tenants?:
+    | {
+        tenant: string | Tenant;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'users';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
 export interface Media {
-    id: string;
-    tenant?: (string | null) | Tenant;
-    alt: string;
-    caption?: string | null;
-    updatedAt: string;
-    createdAt: string;
-    url?: string | null;
-    thumbnailURL?: string | null;
-    filename?: string | null;
-    mimeType?: string | null;
-    filesize?: number | null;
-    width?: number | null;
-    height?: number | null;
-    focalX?: number | null;
-    focalY?: number | null;
-    sizes?: {
-        thumbnail?: {
-            url?: string | null;
-            width?: number | null;
-            height?: number | null;
-            mimeType?: string | null;
-            filesize?: number | null;
-            filename?: string | null;
-        };
-        card?: {
-            url?: string | null;
-            width?: number | null;
-            height?: number | null;
-            mimeType?: string | null;
-            filesize?: number | null;
-            filename?: string | null;
-        };
-        feature?: {
-            url?: string | null;
-            width?: number | null;
-            height?: number | null;
-            mimeType?: string | null;
-            filesize?: number | null;
-            filename?: string | null;
-        };
-        hero?: {
-            url?: string | null;
-            width?: number | null;
-            height?: number | null;
-            mimeType?: string | null;
-            filesize?: number | null;
-            filename?: string | null;
-        };
+  id: string;
+  tenant?: (string | null) | Tenant;
+  alt: string;
+  caption?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
     };
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    feature?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    hero?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "pages".
  */
 export interface Page {
-    id: string;
-    tenant?: (string | null) | Tenant;
-    title: string;
-    slug: string;
-    blocks?:
-        | (
-              | ColumnsBlock
-              | AlertBlock
-              | BannerBlock
-              | CollectionBlock
-              | HtmlBlock
-              | MediaGridBlock
-              | OverviewBlock
-              | RichTextBlock
-              | VendorsBlock
-          )[]
-        | null;
-    seo?: {
-        title?: string | null;
-        description?: string | null;
-        keywords?: string[] | null;
-        image?: (string | null) | Media;
-        noindex?: boolean | null;
-    };
-    updatedAt: string;
-    createdAt: string;
-    _status?: ('draft' | 'published') | null;
+  id: string;
+  tenant?: (string | null) | Tenant;
+  title: string;
+  slug: string;
+  blocks?:
+    | (
+        | ColumnsBlock
+        | AlertBlock
+        | BannerBlock
+        | CollectionBlock
+        | HtmlBlock
+        | MediaGridBlock
+        | OverviewBlock
+        | RichTextBlock
+        | VendorsBlock
+      )[]
+    | null;
+  seo?: {
+    title?: string | null;
+    description?: string | null;
+    keywords?: string[] | null;
+    image?: (string | null) | Media;
+    noindex?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "ColumnsBlock".
  */
 export interface ColumnsBlock {
-    columns?:
-        | {
-              width?: ('auto' | '1/3' | '1/2' | '2/3' | 'full') | null;
-              content?:
-                  | (
-                        | AlertBlock
-                        | BannerBlock
-                        | CollectionBlock
-                        | HtmlBlock
-                        | MediaGridBlock
-                        | OverviewBlock
-                        | RichTextBlock
-                        | VendorsBlock
-                    )[]
-                  | null;
-              id?: string | null;
-          }[]
-        | null;
-    id?: string | null;
-    blockName?: string | null;
-    blockType: 'columns';
+  columns?:
+    | {
+        width?: ('auto' | '1/3' | '1/2' | '2/3' | 'full') | null;
+        content?:
+          | (
+              | AlertBlock
+              | BannerBlock
+              | CollectionBlock
+              | HtmlBlock
+              | MediaGridBlock
+              | OverviewBlock
+              | RichTextBlock
+              | VendorsBlock
+            )[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'columns';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "AlertBlock".
  */
 export interface AlertBlock {
-    severity: 'info' | 'success' | 'warning' | 'error';
-    title: string;
-    body?: string | null;
-    dismissible?: boolean | null;
-    id?: string | null;
-    blockName?: string | null;
-    blockType: 'alert';
+  severity: 'info' | 'success' | 'warning' | 'error';
+  title: string;
+  body?: string | null;
+  dismissible?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'alert';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "BannerBlock".
  */
 export interface BannerBlock {
-    heading: string;
-    subheading?: string | null;
-    background?: (string | null) | Media;
-    cta: {
-        kind: 'page' | 'article' | 'product' | 'collection' | 'external' | 'anchor';
-        page?: (string | null) | Page;
-        article?: (string | null) | Article;
-        product?: (string | null) | ProductMetadatum;
-        collectionRef?: (string | null) | CollectionMetadatum;
-        url?: string | null;
-        label: string;
-        openInNewTab?: boolean | null;
-    };
-    alignment?: ('left' | 'center' | 'right') | null;
-    id?: string | null;
-    blockName?: string | null;
-    blockType: 'banner';
+  heading: string;
+  subheading?: string | null;
+  background?: (string | null) | Media;
+  cta: {
+    kind: 'page' | 'article' | 'product' | 'collection' | 'external' | 'anchor';
+    page?: (string | null) | Page;
+    article?: (string | null) | Article;
+    product?: (string | null) | ProductMetadatum;
+    collectionRef?: (string | null) | CollectionMetadatum;
+    url?: string | null;
+    label: string;
+    openInNewTab?: boolean | null;
+  };
+  alignment?: ('left' | 'center' | 'right') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'banner';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "articles".
  */
 export interface Article {
-    id: string;
-    tenant?: (string | null) | Tenant;
-    title: string;
-    slug: string;
-    author: string;
-    publishedAt?: string | null;
-    cover?: (string | null) | Media;
-    excerpt?: string | null;
-    body?: {
-        root: {
-            type: string;
-            children: {
-                type: any;
-                version: number;
-                [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-        };
+  id: string;
+  tenant?: (string | null) | Tenant;
+  title: string;
+  slug: string;
+  author: string;
+  publishedAt?: string | null;
+  cover?: (string | null) | Media;
+  excerpt?: string | null;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
         [k: string]: unknown;
-    } | null;
-    tags?: string[] | null;
-    seo?: {
-        title?: string | null;
-        description?: string | null;
-        keywords?: string[] | null;
-        image?: (string | null) | Media;
-        noindex?: boolean | null;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
     };
-    updatedAt: string;
-    createdAt: string;
-    _status?: ('draft' | 'published') | null;
+    [k: string]: unknown;
+  } | null;
+  tags?: string[] | null;
+  seo?: {
+    title?: string | null;
+    description?: string | null;
+    keywords?: string[] | null;
+    image?: (string | null) | Media;
+    noindex?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "productMetadata".
  */
 export interface ProductMetadatum {
-    id: string;
-    tenant?: (string | null) | Tenant;
-    /**
-     * Shopify product handle this CMS metadata overlays
-     */
-    shopifyHandle: string;
-    descriptionOverride?: {
-        root: {
-            type: string;
-            children: {
-                type: any;
-                version: number;
-                [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-        };
+  id: string;
+  tenant?: (string | null) | Tenant;
+  /**
+   * Shopify product handle this CMS metadata overlays
+   */
+  shopifyHandle: string;
+  descriptionOverride?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
         [k: string]: unknown;
-    } | null;
-    blocks?:
-        | (
-              | ColumnsBlock
-              | AlertBlock
-              | BannerBlock
-              | CollectionBlock
-              | HtmlBlock
-              | MediaGridBlock
-              | OverviewBlock
-              | RichTextBlock
-              | VendorsBlock
-          )[]
-        | null;
-    seo?: {
-        title?: string | null;
-        description?: string | null;
-        keywords?: string[] | null;
-        image?: (string | null) | Media;
-        noindex?: boolean | null;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
     };
-    updatedAt: string;
-    createdAt: string;
-    _status?: ('draft' | 'published') | null;
+    [k: string]: unknown;
+  } | null;
+  blocks?:
+    | (
+        | ColumnsBlock
+        | AlertBlock
+        | BannerBlock
+        | CollectionBlock
+        | HtmlBlock
+        | MediaGridBlock
+        | OverviewBlock
+        | RichTextBlock
+        | VendorsBlock
+      )[]
+    | null;
+  seo?: {
+    title?: string | null;
+    description?: string | null;
+    keywords?: string[] | null;
+    image?: (string | null) | Media;
+    noindex?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "CollectionBlock".
  */
 export interface CollectionBlock {
-    /**
-     * Shopify collection handle
-     */
-    handle: string;
-    title?: string | null;
-    layout?: ('grid' | 'carousel') | null;
-    limit?: number | null;
-    id?: string | null;
-    blockName?: string | null;
-    blockType: 'collection';
+  /**
+   * Shopify collection handle
+   */
+  handle: string;
+  title?: string | null;
+  layout?: ('grid' | 'carousel') | null;
+  limit?: number | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'collection';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "HtmlBlock".
  */
 export interface HtmlBlock {
-    /**
-     * Raw HTML. Admin role only — XSS surface.
-     */
-    html: string;
-    id?: string | null;
-    blockName?: string | null;
-    blockType: 'html';
+  /**
+   * Raw HTML. Admin role only — XSS surface.
+   */
+  html: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'html';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "MediaGridBlock".
  */
 export interface MediaGridBlock {
-    itemType: 'image' | 'icon';
-    columns?: number | null;
-    items?:
-        | {
-              image?: (string | null) | Media;
-              caption?: string | null;
-              link: {
-                  kind: 'page' | 'article' | 'product' | 'collection' | 'external' | 'anchor';
-                  page?: (string | null) | Page;
-                  article?: (string | null) | Article;
-                  product?: (string | null) | ProductMetadatum;
-                  collectionRef?: (string | null) | CollectionMetadatum;
-                  url?: string | null;
-                  label: string;
-                  openInNewTab?: boolean | null;
-              };
-              id?: string | null;
-          }[]
-        | null;
-    id?: string | null;
-    blockName?: string | null;
-    blockType: 'media-grid';
+  itemType: 'image' | 'icon';
+  columns?: number | null;
+  items?:
+    | {
+        image?: (string | null) | Media;
+        caption?: string | null;
+        link: {
+          kind: 'page' | 'article' | 'product' | 'collection' | 'external' | 'anchor';
+          page?: (string | null) | Page;
+          article?: (string | null) | Article;
+          product?: (string | null) | ProductMetadatum;
+          collectionRef?: (string | null) | CollectionMetadatum;
+          url?: string | null;
+          label: string;
+          openInNewTab?: boolean | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'media-grid';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "collectionMetadata".
  */
 export interface CollectionMetadatum {
-    id: string;
-    tenant?: (string | null) | Tenant;
-    shopifyHandle: string;
-    descriptionOverride?: {
-        root: {
-            type: string;
-            children: {
-                type: any;
-                version: number;
-                [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-        };
+  id: string;
+  tenant?: (string | null) | Tenant;
+  shopifyHandle: string;
+  descriptionOverride?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
         [k: string]: unknown;
-    } | null;
-    blocks?:
-        | (
-              | ColumnsBlock
-              | AlertBlock
-              | BannerBlock
-              | CollectionBlock
-              | HtmlBlock
-              | MediaGridBlock
-              | OverviewBlock
-              | RichTextBlock
-              | VendorsBlock
-          )[]
-        | null;
-    seo?: {
-        title?: string | null;
-        description?: string | null;
-        keywords?: string[] | null;
-        image?: (string | null) | Media;
-        noindex?: boolean | null;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
     };
-    updatedAt: string;
-    createdAt: string;
-    _status?: ('draft' | 'published') | null;
+    [k: string]: unknown;
+  } | null;
+  blocks?:
+    | (
+        | ColumnsBlock
+        | AlertBlock
+        | BannerBlock
+        | CollectionBlock
+        | HtmlBlock
+        | MediaGridBlock
+        | OverviewBlock
+        | RichTextBlock
+        | VendorsBlock
+      )[]
+    | null;
+  seo?: {
+    title?: string | null;
+    description?: string | null;
+    keywords?: string[] | null;
+    image?: (string | null) | Media;
+    noindex?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "OverviewBlock".
  */
 export interface OverviewBlock {
-    source: 'collection' | 'latest' | 'featured';
-    collectionHandle?: string | null;
-    title?: string | null;
-    limit?: number | null;
-    id?: string | null;
-    blockName?: string | null;
-    blockType: 'overview';
+  source: 'collection' | 'latest' | 'featured';
+  collectionHandle?: string | null;
+  title?: string | null;
+  limit?: number | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'overview';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "RichTextBlock".
  */
 export interface RichTextBlock {
-    body?: {
-        root: {
-            type: string;
-            children: {
-                type: any;
-                version: number;
-                [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-        };
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
         [k: string]: unknown;
-    } | null;
-    collapsible?: boolean | null;
-    collapsedByDefault?: boolean | null;
-    collapseLabel?: string | null;
-    id?: string | null;
-    blockName?: string | null;
-    blockType: 'rich-text';
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  collapsible?: boolean | null;
+  collapsedByDefault?: boolean | null;
+  collapseLabel?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'rich-text';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "VendorsBlock".
  */
 export interface VendorsBlock {
-    title?: string | null;
-    maxVendors?: number | null;
-    id?: string | null;
-    blockName?: string | null;
-    blockType: 'vendors';
+  title?: string | null;
+  maxVendors?: number | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'vendors';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header".
  */
 export interface Header {
-    id: string;
-    tenant?: (string | null) | Tenant;
-    logo?: (string | null) | Media;
-    logoLink?: string | null;
-    items?:
-        | {
+  id: string;
+  tenant?: (string | null) | Tenant;
+  logo?: (string | null) | Media;
+  logoLink?: string | null;
+  items?:
+    | {
+        link: {
+          kind: 'page' | 'article' | 'product' | 'collection' | 'external' | 'anchor';
+          page?: (string | null) | Page;
+          article?: (string | null) | Article;
+          product?: (string | null) | ProductMetadatum;
+          collectionRef?: (string | null) | CollectionMetadatum;
+          url?: string | null;
+          label: string;
+          openInNewTab?: boolean | null;
+        };
+        items?:
+          | {
               link: {
-                  kind: 'page' | 'article' | 'product' | 'collection' | 'external' | 'anchor';
-                  page?: (string | null) | Page;
-                  article?: (string | null) | Article;
-                  product?: (string | null) | ProductMetadatum;
-                  collectionRef?: (string | null) | CollectionMetadatum;
-                  url?: string | null;
-                  label: string;
-                  openInNewTab?: boolean | null;
+                kind: 'page' | 'article' | 'product' | 'collection' | 'external' | 'anchor';
+                page?: (string | null) | Page;
+                article?: (string | null) | Article;
+                product?: (string | null) | ProductMetadatum;
+                collectionRef?: (string | null) | CollectionMetadatum;
+                url?: string | null;
+                label: string;
+                openInNewTab?: boolean | null;
               };
               items?:
-                  | {
-                        link: {
-                            kind: 'page' | 'article' | 'product' | 'collection' | 'external' | 'anchor';
-                            page?: (string | null) | Page;
-                            article?: (string | null) | Article;
-                            product?: (string | null) | ProductMetadatum;
-                            collectionRef?: (string | null) | CollectionMetadatum;
-                            url?: string | null;
-                            label: string;
-                            openInNewTab?: boolean | null;
-                        };
-                        items?:
-                            | {
-                                  link: {
-                                      kind: 'page' | 'article' | 'product' | 'collection' | 'external' | 'anchor';
-                                      page?: (string | null) | Page;
-                                      article?: (string | null) | Article;
-                                      product?: (string | null) | ProductMetadatum;
-                                      collectionRef?: (string | null) | CollectionMetadatum;
-                                      url?: string | null;
-                                      label: string;
-                                      openInNewTab?: boolean | null;
-                                  };
-                                  id?: string | null;
-                              }[]
-                            | null;
-                        id?: string | null;
-                    }[]
-                  | null;
+                | {
+                    link: {
+                      kind: 'page' | 'article' | 'product' | 'collection' | 'external' | 'anchor';
+                      page?: (string | null) | Page;
+                      article?: (string | null) | Article;
+                      product?: (string | null) | ProductMetadatum;
+                      collectionRef?: (string | null) | CollectionMetadatum;
+                      url?: string | null;
+                      label: string;
+                      openInNewTab?: boolean | null;
+                    };
+                    id?: string | null;
+                  }[]
+                | null;
               id?: string | null;
-          }[]
-        | null;
-    localeSwitcher?: {
-        enabled?: boolean | null;
-        label?: string | null;
-    };
-    cta: {
-        kind: 'page' | 'article' | 'product' | 'collection' | 'external' | 'anchor';
-        page?: (string | null) | Page;
-        article?: (string | null) | Article;
-        product?: (string | null) | ProductMetadatum;
-        collectionRef?: (string | null) | CollectionMetadatum;
-        url?: string | null;
-        label: string;
-        openInNewTab?: boolean | null;
-    };
-    updatedAt: string;
-    createdAt: string;
-    _status?: ('draft' | 'published') | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  localeSwitcher?: {
+    enabled?: boolean | null;
+    label?: string | null;
+  };
+  cta: {
+    kind: 'page' | 'article' | 'product' | 'collection' | 'external' | 'anchor';
+    page?: (string | null) | Page;
+    article?: (string | null) | Article;
+    product?: (string | null) | ProductMetadatum;
+    collectionRef?: (string | null) | CollectionMetadatum;
+    url?: string | null;
+    label: string;
+    openInNewTab?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "footer".
  */
 export interface Footer {
-    id: string;
-    tenant?: (string | null) | Tenant;
-    sections?:
-        | {
-              title: string;
-              links?:
-                  | {
-                        link: {
-                            kind: 'page' | 'article' | 'product' | 'collection' | 'external' | 'anchor';
-                            page?: (string | null) | Page;
-                            article?: (string | null) | Article;
-                            product?: (string | null) | ProductMetadatum;
-                            collectionRef?: (string | null) | CollectionMetadatum;
-                            url?: string | null;
-                            label: string;
-                            openInNewTab?: boolean | null;
-                        };
-                        id?: string | null;
-                    }[]
-                  | null;
-              id?: string | null;
-          }[]
-        | null;
-    social?:
-        | {
-              platform: 'instagram' | 'facebook' | 'tiktok' | 'youtube' | 'x' | 'linkedin';
-              url: string;
-              id?: string | null;
-          }[]
-        | null;
-    legal?:
-        | {
+  id: string;
+  tenant?: (string | null) | Tenant;
+  sections?:
+    | {
+        title: string;
+        links?:
+          | {
               link: {
-                  kind: 'page' | 'article' | 'product' | 'collection' | 'external' | 'anchor';
-                  page?: (string | null) | Page;
-                  article?: (string | null) | Article;
-                  product?: (string | null) | ProductMetadatum;
-                  collectionRef?: (string | null) | CollectionMetadatum;
-                  url?: string | null;
-                  label: string;
-                  openInNewTab?: boolean | null;
+                kind: 'page' | 'article' | 'product' | 'collection' | 'external' | 'anchor';
+                page?: (string | null) | Page;
+                article?: (string | null) | Article;
+                product?: (string | null) | ProductMetadatum;
+                collectionRef?: (string | null) | CollectionMetadatum;
+                url?: string | null;
+                label: string;
+                openInNewTab?: boolean | null;
               };
               id?: string | null;
-          }[]
-        | null;
-    copyrightLine?: string | null;
-    updatedAt: string;
-    createdAt: string;
-    _status?: ('draft' | 'published') | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  social?:
+    | {
+        platform: 'instagram' | 'facebook' | 'tiktok' | 'youtube' | 'x' | 'linkedin';
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  legal?:
+    | {
+        link: {
+          kind: 'page' | 'article' | 'product' | 'collection' | 'external' | 'anchor';
+          page?: (string | null) | Page;
+          article?: (string | null) | Article;
+          product?: (string | null) | ProductMetadatum;
+          collectionRef?: (string | null) | CollectionMetadatum;
+          url?: string | null;
+          label: string;
+          openInNewTab?: boolean | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  copyrightLine?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "businessData".
  */
 export interface BusinessDatum {
-    id: string;
-    tenant?: (string | null) | Tenant;
-    legalName?: string | null;
-    supportEmail?: string | null;
-    supportPhone?: string | null;
-    address?: {
-        line1?: string | null;
-        line2?: string | null;
-        city?: string | null;
-        region?: string | null;
-        postalCode?: string | null;
-        country?: string | null;
-    };
-    profiles?:
-        | {
-              platform: string;
-              handle: string;
-              url?: string | null;
-              id?: string | null;
-          }[]
-        | null;
-    updatedAt: string;
-    createdAt: string;
-    _status?: ('draft' | 'published') | null;
+  id: string;
+  tenant?: (string | null) | Tenant;
+  legalName?: string | null;
+  supportEmail?: string | null;
+  supportPhone?: string | null;
+  address?: {
+    line1?: string | null;
+    line2?: string | null;
+    city?: string | null;
+    region?: string | null;
+    postalCode?: string | null;
+    country?: string | null;
+  };
+  profiles?:
+    | {
+        platform: string;
+        handle: string;
+        url?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
-    id: string;
-    key: string;
-    data:
-        | {
-              [k: string]: unknown;
-          }
-        | unknown[]
-        | string
-        | number
-        | boolean
-        | null;
+  id: string;
+  key: string;
+  data:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
-    id: string;
-    document?:
-        | ({
-              relationTo: 'tenants';
-              value: string | Tenant;
-          } | null)
-        | ({
-              relationTo: 'users';
-              value: string | User;
-          } | null)
-        | ({
-              relationTo: 'media';
-              value: string | Media;
-          } | null)
-        | ({
-              relationTo: 'pages';
-              value: string | Page;
-          } | null)
-        | ({
-              relationTo: 'articles';
-              value: string | Article;
-          } | null)
-        | ({
-              relationTo: 'productMetadata';
-              value: string | ProductMetadatum;
-          } | null)
-        | ({
-              relationTo: 'collectionMetadata';
-              value: string | CollectionMetadatum;
-          } | null)
-        | ({
-              relationTo: 'header';
-              value: string | Header;
-          } | null)
-        | ({
-              relationTo: 'footer';
-              value: string | Footer;
-          } | null)
-        | ({
-              relationTo: 'businessData';
-              value: string | BusinessDatum;
-          } | null);
-    globalSlug?: string | null;
-    user: {
+  id: string;
+  document?:
+    | ({
+        relationTo: 'tenants';
+        value: string | Tenant;
+      } | null)
+    | ({
         relationTo: 'users';
         value: string | User;
-    };
-    updatedAt: string;
-    createdAt: string;
+      } | null)
+    | ({
+        relationTo: 'media';
+        value: string | Media;
+      } | null)
+    | ({
+        relationTo: 'pages';
+        value: string | Page;
+      } | null)
+    | ({
+        relationTo: 'articles';
+        value: string | Article;
+      } | null)
+    | ({
+        relationTo: 'productMetadata';
+        value: string | ProductMetadatum;
+      } | null)
+    | ({
+        relationTo: 'collectionMetadata';
+        value: string | CollectionMetadatum;
+      } | null)
+    | ({
+        relationTo: 'header';
+        value: string | Header;
+      } | null)
+    | ({
+        relationTo: 'footer';
+        value: string | Footer;
+      } | null)
+    | ({
+        relationTo: 'businessData';
+        value: string | BusinessDatum;
+      } | null);
+  globalSlug?: string | null;
+  user: {
+    relationTo: 'users';
+    value: string | User;
+  };
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
-    id: string;
-    user: {
-        relationTo: 'users';
-        value: string | User;
-    };
-    key?: string | null;
-    value?:
-        | {
-              [k: string]: unknown;
-          }
-        | unknown[]
-        | string
-        | number
-        | boolean
-        | null;
-    updatedAt: string;
-    createdAt: string;
+  id: string;
+  user: {
+    relationTo: 'users';
+    value: string | User;
+  };
+  key?: string | null;
+  value?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-migrations".
  */
 export interface PayloadMigration {
-    id: string;
-    name?: string | null;
-    batch?: number | null;
-    updatedAt: string;
-    createdAt: string;
+  id: string;
+  name?: string | null;
+  batch?: number | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "tenants_select".
  */
 export interface TenantsSelect<T extends boolean = true> {
-    name?: T;
-    slug?: T;
-    defaultLocale?: T;
-    locales?: T;
-    shopId?: T;
-    updatedAt?: T;
-    createdAt?: T;
+  name?: T;
+  slug?: T;
+  defaultLocale?: T;
+  locales?: T;
+  shopId?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
-    role?: T;
-    tenants?:
-        | T
-        | {
-              tenant?: T;
-              id?: T;
-          };
-    updatedAt?: T;
-    createdAt?: T;
-    email?: T;
-    resetPasswordToken?: T;
-    resetPasswordExpiration?: T;
-    salt?: T;
-    hash?: T;
-    loginAttempts?: T;
-    lockUntil?: T;
-    sessions?:
-        | T
-        | {
-              id?: T;
-              createdAt?: T;
-              expiresAt?: T;
-          };
+  role?: T;
+  tenants?:
+    | T
+    | {
+        tenant?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
-    tenant?: T;
-    alt?: T;
-    caption?: T;
-    updatedAt?: T;
-    createdAt?: T;
-    url?: T;
-    thumbnailURL?: T;
-    filename?: T;
-    mimeType?: T;
-    filesize?: T;
-    width?: T;
-    height?: T;
-    focalX?: T;
-    focalY?: T;
-    sizes?:
-        | T
-        | {
-              thumbnail?:
-                  | T
-                  | {
-                        url?: T;
-                        width?: T;
-                        height?: T;
-                        mimeType?: T;
-                        filesize?: T;
-                        filename?: T;
-                    };
-              card?:
-                  | T
-                  | {
-                        url?: T;
-                        width?: T;
-                        height?: T;
-                        mimeType?: T;
-                        filesize?: T;
-                        filename?: T;
-                    };
-              feature?:
-                  | T
-                  | {
-                        url?: T;
-                        width?: T;
-                        height?: T;
-                        mimeType?: T;
-                        filesize?: T;
-                        filename?: T;
-                    };
-              hero?:
-                  | T
-                  | {
-                        url?: T;
-                        width?: T;
-                        height?: T;
-                        mimeType?: T;
-                        filesize?: T;
-                        filename?: T;
-                    };
-          };
+  tenant?: T;
+  alt?: T;
+  caption?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+  sizes?:
+    | T
+    | {
+        thumbnail?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        card?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        feature?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        hero?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "pages_select".
  */
 export interface PagesSelect<T extends boolean = true> {
-    tenant?: T;
-    title?: T;
-    slug?: T;
-    blocks?:
-        | T
-        | {
-              columns?: T | ColumnsBlockSelect<T>;
-              alert?: T | AlertBlockSelect<T>;
-              banner?: T | BannerBlockSelect<T>;
-              collection?: T | CollectionBlockSelect<T>;
-              html?: T | HtmlBlockSelect<T>;
-              'media-grid'?: T | MediaGridBlockSelect<T>;
-              overview?: T | OverviewBlockSelect<T>;
-              'rich-text'?: T | RichTextBlockSelect<T>;
-              vendors?: T | VendorsBlockSelect<T>;
-          };
-    seo?:
-        | T
-        | {
-              title?: T;
-              description?: T;
-              keywords?: T;
-              image?: T;
-              noindex?: T;
-          };
-    updatedAt?: T;
-    createdAt?: T;
-    _status?: T;
+  tenant?: T;
+  title?: T;
+  slug?: T;
+  blocks?:
+    | T
+    | {
+        columns?: T | ColumnsBlockSelect<T>;
+        alert?: T | AlertBlockSelect<T>;
+        banner?: T | BannerBlockSelect<T>;
+        collection?: T | CollectionBlockSelect<T>;
+        html?: T | HtmlBlockSelect<T>;
+        'media-grid'?: T | MediaGridBlockSelect<T>;
+        overview?: T | OverviewBlockSelect<T>;
+        'rich-text'?: T | RichTextBlockSelect<T>;
+        vendors?: T | VendorsBlockSelect<T>;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        keywords?: T;
+        image?: T;
+        noindex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "ColumnsBlock_select".
  */
 export interface ColumnsBlockSelect<T extends boolean = true> {
-    columns?:
-        | T
-        | {
-              width?: T;
-              content?:
-                  | T
-                  | {
-                        alert?: T | AlertBlockSelect<T>;
-                        banner?: T | BannerBlockSelect<T>;
-                        collection?: T | CollectionBlockSelect<T>;
-                        html?: T | HtmlBlockSelect<T>;
-                        'media-grid'?: T | MediaGridBlockSelect<T>;
-                        overview?: T | OverviewBlockSelect<T>;
-                        'rich-text'?: T | RichTextBlockSelect<T>;
-                        vendors?: T | VendorsBlockSelect<T>;
-                    };
-              id?: T;
-          };
-    id?: T;
-    blockName?: T;
+  columns?:
+    | T
+    | {
+        width?: T;
+        content?:
+          | T
+          | {
+              alert?: T | AlertBlockSelect<T>;
+              banner?: T | BannerBlockSelect<T>;
+              collection?: T | CollectionBlockSelect<T>;
+              html?: T | HtmlBlockSelect<T>;
+              'media-grid'?: T | MediaGridBlockSelect<T>;
+              overview?: T | OverviewBlockSelect<T>;
+              'rich-text'?: T | RichTextBlockSelect<T>;
+              vendors?: T | VendorsBlockSelect<T>;
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "AlertBlock_select".
  */
 export interface AlertBlockSelect<T extends boolean = true> {
-    severity?: T;
-    title?: T;
-    body?: T;
-    dismissible?: T;
-    id?: T;
-    blockName?: T;
+  severity?: T;
+  title?: T;
+  body?: T;
+  dismissible?: T;
+  id?: T;
+  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "BannerBlock_select".
  */
 export interface BannerBlockSelect<T extends boolean = true> {
-    heading?: T;
-    subheading?: T;
-    background?: T;
-    cta?:
-        | T
-        | {
-              kind?: T;
-              page?: T;
-              article?: T;
-              product?: T;
-              collectionRef?: T;
-              url?: T;
-              label?: T;
-              openInNewTab?: T;
-          };
-    alignment?: T;
-    id?: T;
-    blockName?: T;
+  heading?: T;
+  subheading?: T;
+  background?: T;
+  cta?:
+    | T
+    | {
+        kind?: T;
+        page?: T;
+        article?: T;
+        product?: T;
+        collectionRef?: T;
+        url?: T;
+        label?: T;
+        openInNewTab?: T;
+      };
+  alignment?: T;
+  id?: T;
+  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "CollectionBlock_select".
  */
 export interface CollectionBlockSelect<T extends boolean = true> {
-    handle?: T;
-    title?: T;
-    layout?: T;
-    limit?: T;
-    id?: T;
-    blockName?: T;
+  handle?: T;
+  title?: T;
+  layout?: T;
+  limit?: T;
+  id?: T;
+  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "HtmlBlock_select".
  */
 export interface HtmlBlockSelect<T extends boolean = true> {
-    html?: T;
-    id?: T;
-    blockName?: T;
+  html?: T;
+  id?: T;
+  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "MediaGridBlock_select".
  */
 export interface MediaGridBlockSelect<T extends boolean = true> {
-    itemType?: T;
-    columns?: T;
-    items?:
-        | T
-        | {
-              image?: T;
-              caption?: T;
-              link?:
-                  | T
-                  | {
-                        kind?: T;
-                        page?: T;
-                        article?: T;
-                        product?: T;
-                        collectionRef?: T;
-                        url?: T;
-                        label?: T;
-                        openInNewTab?: T;
-                    };
-              id?: T;
-          };
-    id?: T;
-    blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "OverviewBlock_select".
- */
-export interface OverviewBlockSelect<T extends boolean = true> {
-    source?: T;
-    collectionHandle?: T;
-    title?: T;
-    limit?: T;
-    id?: T;
-    blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "RichTextBlock_select".
- */
-export interface RichTextBlockSelect<T extends boolean = true> {
-    body?: T;
-    collapsible?: T;
-    collapsedByDefault?: T;
-    collapseLabel?: T;
-    id?: T;
-    blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "VendorsBlock_select".
- */
-export interface VendorsBlockSelect<T extends boolean = true> {
-    title?: T;
-    maxVendors?: T;
-    id?: T;
-    blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "articles_select".
- */
-export interface ArticlesSelect<T extends boolean = true> {
-    tenant?: T;
-    title?: T;
-    slug?: T;
-    author?: T;
-    publishedAt?: T;
-    cover?: T;
-    excerpt?: T;
-    body?: T;
-    tags?: T;
-    seo?:
-        | T
-        | {
-              title?: T;
-              description?: T;
-              keywords?: T;
-              image?: T;
-              noindex?: T;
-          };
-    updatedAt?: T;
-    createdAt?: T;
-    _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "productMetadata_select".
- */
-export interface ProductMetadataSelect<T extends boolean = true> {
-    tenant?: T;
-    shopifyHandle?: T;
-    descriptionOverride?: T;
-    blocks?:
-        | T
-        | {
-              columns?: T | ColumnsBlockSelect<T>;
-              alert?: T | AlertBlockSelect<T>;
-              banner?: T | BannerBlockSelect<T>;
-              collection?: T | CollectionBlockSelect<T>;
-              html?: T | HtmlBlockSelect<T>;
-              'media-grid'?: T | MediaGridBlockSelect<T>;
-              overview?: T | OverviewBlockSelect<T>;
-              'rich-text'?: T | RichTextBlockSelect<T>;
-              vendors?: T | VendorsBlockSelect<T>;
-          };
-    seo?:
-        | T
-        | {
-              title?: T;
-              description?: T;
-              keywords?: T;
-              image?: T;
-              noindex?: T;
-          };
-    updatedAt?: T;
-    createdAt?: T;
-    _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "collectionMetadata_select".
- */
-export interface CollectionMetadataSelect<T extends boolean = true> {
-    tenant?: T;
-    shopifyHandle?: T;
-    descriptionOverride?: T;
-    blocks?:
-        | T
-        | {
-              columns?: T | ColumnsBlockSelect<T>;
-              alert?: T | AlertBlockSelect<T>;
-              banner?: T | BannerBlockSelect<T>;
-              collection?: T | CollectionBlockSelect<T>;
-              html?: T | HtmlBlockSelect<T>;
-              'media-grid'?: T | MediaGridBlockSelect<T>;
-              overview?: T | OverviewBlockSelect<T>;
-              'rich-text'?: T | RichTextBlockSelect<T>;
-              vendors?: T | VendorsBlockSelect<T>;
-          };
-    seo?:
-        | T
-        | {
-              title?: T;
-              description?: T;
-              keywords?: T;
-              image?: T;
-              noindex?: T;
-          };
-    updatedAt?: T;
-    createdAt?: T;
-    _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "header_select".
- */
-export interface HeaderSelect<T extends boolean = true> {
-    tenant?: T;
-    logo?: T;
-    logoLink?: T;
-    items?:
-        | T
-        | {
-              link?:
-                  | T
-                  | {
-                        kind?: T;
-                        page?: T;
-                        article?: T;
-                        product?: T;
-                        collectionRef?: T;
-                        url?: T;
-                        label?: T;
-                        openInNewTab?: T;
-                    };
-              items?:
-                  | T
-                  | {
-                        link?:
-                            | T
-                            | {
-                                  kind?: T;
-                                  page?: T;
-                                  article?: T;
-                                  product?: T;
-                                  collectionRef?: T;
-                                  url?: T;
-                                  label?: T;
-                                  openInNewTab?: T;
-                              };
-                        items?:
-                            | T
-                            | {
-                                  link?:
-                                      | T
-                                      | {
-                                            kind?: T;
-                                            page?: T;
-                                            article?: T;
-                                            product?: T;
-                                            collectionRef?: T;
-                                            url?: T;
-                                            label?: T;
-                                            openInNewTab?: T;
-                                        };
-                                  id?: T;
-                              };
-                        id?: T;
-                    };
-              id?: T;
-          };
-    localeSwitcher?:
-        | T
-        | {
-              enabled?: T;
-              label?: T;
-          };
-    cta?:
-        | T
-        | {
+  itemType?: T;
+  columns?: T;
+  items?:
+    | T
+    | {
+        image?: T;
+        caption?: T;
+        link?:
+          | T
+          | {
               kind?: T;
               page?: T;
               article?: T;
@@ -1303,158 +1092,370 @@ export interface HeaderSelect<T extends boolean = true> {
               url?: T;
               label?: T;
               openInNewTab?: T;
-          };
-    updatedAt?: T;
-    createdAt?: T;
-    _status?: T;
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "OverviewBlock_select".
+ */
+export interface OverviewBlockSelect<T extends boolean = true> {
+  source?: T;
+  collectionHandle?: T;
+  title?: T;
+  limit?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RichTextBlock_select".
+ */
+export interface RichTextBlockSelect<T extends boolean = true> {
+  body?: T;
+  collapsible?: T;
+  collapsedByDefault?: T;
+  collapseLabel?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VendorsBlock_select".
+ */
+export interface VendorsBlockSelect<T extends boolean = true> {
+  title?: T;
+  maxVendors?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles_select".
+ */
+export interface ArticlesSelect<T extends boolean = true> {
+  tenant?: T;
+  title?: T;
+  slug?: T;
+  author?: T;
+  publishedAt?: T;
+  cover?: T;
+  excerpt?: T;
+  body?: T;
+  tags?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        keywords?: T;
+        image?: T;
+        noindex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "productMetadata_select".
+ */
+export interface ProductMetadataSelect<T extends boolean = true> {
+  tenant?: T;
+  shopifyHandle?: T;
+  descriptionOverride?: T;
+  blocks?:
+    | T
+    | {
+        columns?: T | ColumnsBlockSelect<T>;
+        alert?: T | AlertBlockSelect<T>;
+        banner?: T | BannerBlockSelect<T>;
+        collection?: T | CollectionBlockSelect<T>;
+        html?: T | HtmlBlockSelect<T>;
+        'media-grid'?: T | MediaGridBlockSelect<T>;
+        overview?: T | OverviewBlockSelect<T>;
+        'rich-text'?: T | RichTextBlockSelect<T>;
+        vendors?: T | VendorsBlockSelect<T>;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        keywords?: T;
+        image?: T;
+        noindex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "collectionMetadata_select".
+ */
+export interface CollectionMetadataSelect<T extends boolean = true> {
+  tenant?: T;
+  shopifyHandle?: T;
+  descriptionOverride?: T;
+  blocks?:
+    | T
+    | {
+        columns?: T | ColumnsBlockSelect<T>;
+        alert?: T | AlertBlockSelect<T>;
+        banner?: T | BannerBlockSelect<T>;
+        collection?: T | CollectionBlockSelect<T>;
+        html?: T | HtmlBlockSelect<T>;
+        'media-grid'?: T | MediaGridBlockSelect<T>;
+        overview?: T | OverviewBlockSelect<T>;
+        'rich-text'?: T | RichTextBlockSelect<T>;
+        vendors?: T | VendorsBlockSelect<T>;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        keywords?: T;
+        image?: T;
+        noindex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "header_select".
+ */
+export interface HeaderSelect<T extends boolean = true> {
+  tenant?: T;
+  logo?: T;
+  logoLink?: T;
+  items?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              kind?: T;
+              page?: T;
+              article?: T;
+              product?: T;
+              collectionRef?: T;
+              url?: T;
+              label?: T;
+              openInNewTab?: T;
+            };
+        items?:
+          | T
+          | {
+              link?:
+                | T
+                | {
+                    kind?: T;
+                    page?: T;
+                    article?: T;
+                    product?: T;
+                    collectionRef?: T;
+                    url?: T;
+                    label?: T;
+                    openInNewTab?: T;
+                  };
+              items?:
+                | T
+                | {
+                    link?:
+                      | T
+                      | {
+                          kind?: T;
+                          page?: T;
+                          article?: T;
+                          product?: T;
+                          collectionRef?: T;
+                          url?: T;
+                          label?: T;
+                          openInNewTab?: T;
+                        };
+                    id?: T;
+                  };
+              id?: T;
+            };
+        id?: T;
+      };
+  localeSwitcher?:
+    | T
+    | {
+        enabled?: T;
+        label?: T;
+      };
+  cta?:
+    | T
+    | {
+        kind?: T;
+        page?: T;
+        article?: T;
+        product?: T;
+        collectionRef?: T;
+        url?: T;
+        label?: T;
+        openInNewTab?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "footer_select".
  */
 export interface FooterSelect<T extends boolean = true> {
-    tenant?: T;
-    sections?:
-        | T
-        | {
-              title?: T;
-              links?:
-                  | T
-                  | {
-                        link?:
-                            | T
-                            | {
-                                  kind?: T;
-                                  page?: T;
-                                  article?: T;
-                                  product?: T;
-                                  collectionRef?: T;
-                                  url?: T;
-                                  label?: T;
-                                  openInNewTab?: T;
-                              };
-                        id?: T;
-                    };
-              id?: T;
-          };
-    social?:
-        | T
-        | {
-              platform?: T;
-              url?: T;
-              id?: T;
-          };
-    legal?:
-        | T
-        | {
+  tenant?: T;
+  sections?:
+    | T
+    | {
+        title?: T;
+        links?:
+          | T
+          | {
               link?:
-                  | T
-                  | {
-                        kind?: T;
-                        page?: T;
-                        article?: T;
-                        product?: T;
-                        collectionRef?: T;
-                        url?: T;
-                        label?: T;
-                        openInNewTab?: T;
-                    };
+                | T
+                | {
+                    kind?: T;
+                    page?: T;
+                    article?: T;
+                    product?: T;
+                    collectionRef?: T;
+                    url?: T;
+                    label?: T;
+                    openInNewTab?: T;
+                  };
               id?: T;
-          };
-    copyrightLine?: T;
-    updatedAt?: T;
-    createdAt?: T;
-    _status?: T;
+            };
+        id?: T;
+      };
+  social?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  legal?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              kind?: T;
+              page?: T;
+              article?: T;
+              product?: T;
+              collectionRef?: T;
+              url?: T;
+              label?: T;
+              openInNewTab?: T;
+            };
+        id?: T;
+      };
+  copyrightLine?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "businessData_select".
  */
 export interface BusinessDataSelect<T extends boolean = true> {
-    tenant?: T;
-    legalName?: T;
-    supportEmail?: T;
-    supportPhone?: T;
-    address?:
-        | T
-        | {
-              line1?: T;
-              line2?: T;
-              city?: T;
-              region?: T;
-              postalCode?: T;
-              country?: T;
-          };
-    profiles?:
-        | T
-        | {
-              platform?: T;
-              handle?: T;
-              url?: T;
-              id?: T;
-          };
-    updatedAt?: T;
-    createdAt?: T;
-    _status?: T;
+  tenant?: T;
+  legalName?: T;
+  supportEmail?: T;
+  supportPhone?: T;
+  address?:
+    | T
+    | {
+        line1?: T;
+        line2?: T;
+        city?: T;
+        region?: T;
+        postalCode?: T;
+        country?: T;
+      };
+  profiles?:
+    | T
+    | {
+        platform?: T;
+        handle?: T;
+        url?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
-    key?: T;
-    data?: T;
+  key?: T;
+  data?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents_select".
  */
 export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
-    document?: T;
-    globalSlug?: T;
-    user?: T;
-    updatedAt?: T;
-    createdAt?: T;
+  document?: T;
+  globalSlug?: T;
+  user?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-preferences_select".
  */
 export interface PayloadPreferencesSelect<T extends boolean = true> {
-    user?: T;
-    key?: T;
-    value?: T;
-    updatedAt?: T;
-    createdAt?: T;
+  user?: T;
+  key?: T;
+  value?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-migrations_select".
  */
 export interface PayloadMigrationsSelect<T extends boolean = true> {
-    name?: T;
-    batch?: T;
-    updatedAt?: T;
-    createdAt?: T;
+  name?: T;
+  batch?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "collections_widget".
  */
 export interface CollectionsWidget {
-    data?: {
-        [k: string]: unknown;
-    };
-    width: 'full';
+  data?: {
+    [k: string]: unknown;
+  };
+  width: 'full';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "auth".
  */
 export interface Auth {
-    [k: string]: unknown;
+  [k: string]: unknown;
 }
 
+
 declare module 'payload' {
-    export interface GeneratedTypes extends Config {}
+  export interface GeneratedTypes extends Config {}
 }

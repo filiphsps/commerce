@@ -2,8 +2,8 @@
 
 import 'server-only';
 
-import { createBridgeServerActions } from '@nordcom/commerce-cms/bridge';
 import { shopBridge } from '@nordcom/commerce-cms/bridge/manifests';
+import { createBridgeServerActions } from '@nordcom/commerce-cms/bridge/server-actions';
 import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
 
 // The factory builds plain async methods that close over `shopBridge` + `getCtx`.

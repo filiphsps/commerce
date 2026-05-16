@@ -1,6 +1,6 @@
-import { type OnlineShop, Shop } from '@nordcom/commerce-db';
+import type { OnlineShop } from '@nordcom/commerce-db';
 import { adminOnly, tenantMemberCanRead } from '../access';
-import { defaultToPlain, mongooseAdapter } from '../adapter-mongoose';
+import { defaultToPlain } from '../adapter-mongoose';
 import { type BridgeAdapter, defineBridge } from '../manifest';
 
 // ---- Redaction ----
@@ -40,17 +40,39 @@ export const stripCommerceProviderSecrets = <T extends Record<string, unknown>>(
 // The default mongooseAdapter only single-keys. This wrapper preserves the
 // `mongooseAdapter`'s update/delete semantics (by `_id`) but overrides
 // `findById` to mirror Shop.findByDomain's `$or`.
+//
+// `Shop.model` is loaded via dynamic `import('@nordcom/commerce-db')` rather
+// than a static value import: `packages/db/src/db.ts` runs a top-level
+// `await mongoose.connect(...)` and pulls in `'server-only'`, both of which
+// would crash `payload generate:types` (plain Node + tsx, no Mongo) when
+// our config-build chain transitively loads this manifest. The dynamic
+// import defers both side effects until the adapter is actually invoked
+// (at request time in the running admin).
 
 const domainLookupAdapter = (): BridgeAdapter<OnlineShop> => {
-    const base = mongooseAdapter<OnlineShop>(Shop.model, {
-        redact: (doc) => stripCommerceProviderSecrets(doc),
-    });
+    const loadModel = () => import('@nordcom/commerce-db').then((m) => m.Shop.model);
     return {
-        ...base,
         async findById(domain) {
-            const doc = await Shop.model.findOne({ $or: [{ domain }, { alternativeDomains: domain }] }).exec();
+            const model = await loadModel();
+            const doc = await model.findOne({ $or: [{ domain }, { alternativeDomains: domain }] }).exec();
             if (!doc) return null;
             return stripCommerceProviderSecrets(defaultToPlain(doc)) as OnlineShop;
+        },
+        async update(id, patch) {
+            const model = await loadModel();
+            const doc = await model
+                .findOneAndUpdate(
+                    { _id: id },
+                    { $set: patch as Record<string, unknown> },
+                    { new: true, runValidators: true },
+                )
+                .exec();
+            if (!doc) throw new Error(`[bridge] update: no Shop with _id=${id}`);
+            return stripCommerceProviderSecrets(defaultToPlain(doc)) as OnlineShop;
+        },
+        async delete(id) {
+            const model = await loadModel();
+            await model.deleteOne({ _id: id }).exec();
         },
     };
 };
