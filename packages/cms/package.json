@@ -87,6 +87,18 @@
         "./bridge/manifests": [
             "./src/bridge/manifests/index.ts",
             "./dist/bridge/manifests/index.js"
+        ],
+        "./editor": [
+            "./src/editor/index.ts",
+            "./dist/editor/index.js"
+        ],
+        "./editor/ui": [
+            "./src/editor/ui/index.ts",
+            "./dist/editor/ui/index.js"
+        ],
+        "./editor/manifests": [
+            "./src/editor/manifests/index.ts",
+            "./dist/editor/manifests/index.js"
         ]
     },
     "scripts": {
