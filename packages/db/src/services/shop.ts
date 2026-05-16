@@ -1,29 +1,49 @@
+import type { Payload } from 'payload';
+import { docToOnlineShop } from '../lib/doc-to-shape';
 import type { OnlineShop, ShopBase } from '../models';
 import { ShopModel } from '../models';
 import { User } from '.';
 import { Service } from './service';
 
-type FindOptions = {
+export type FindOptions = {
     /** Whether to convert the result to a normal object or keep it as a mongoose document. */
     convert?: boolean;
     sensitiveData?: boolean;
     /**
-     * Mongoose population paths to apply before `toObject`. The toObject call
-     * still keeps the populated documents (it uses `depopulate: false` when
-     * any populate paths are provided).
+     * Payload population depth to apply. When any paths are provided depth 2
+     * is used; otherwise depth 0 (no population) is used.
      */
     populate?: string[];
 };
 
 export class ShopService extends Service<ShopBase, typeof ShopModel> {
+    // Payload instance is injected at boot via setPayload(); _setPayloadForTests is the test override.
+    private payload: Payload | null = null;
+
     public constructor() {
         super(ShopModel);
+    }
+
+    public setPayload(payload: Payload): void {
+        this.payload = payload;
+    }
+
+    /** @internal — test-only injection point */
+    public _setPayloadForTests(payload: Payload): void {
+        this.payload = payload;
+    }
+
+    private getPayload(): Payload {
+        if (!this.payload)
+            throw new Error('[ShopService] Payload not initialized; call setPayload(payload) at app boot.');
+        return this.payload;
     }
 
     public async findByCollaborator({
         collaboratorId,
         ...args
     }: { collaboratorId: string } & Parameters<typeof this.find>[0]) {
+        // KEEP existing Mongoose body — Task 12 swaps this.
         const collaborator = await User.find({ id: collaboratorId });
 
         return await this.find({
@@ -44,90 +64,27 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
         domain: string,
         { sensitiveData = false, convert = true, populate = [] }: FindOptions = {},
     ): Promise<OnlineShop | ShopBase> {
-        const shop = await this.find({
-            count: 1,
-            filter: {
-                $or: [
-                    { domain },
-                    {
-                        alternativeDomains: domain,
-                    },
-                ],
-            },
-            projection: {
-                ...(!sensitiveData && {
-                    collaborators: 0,
-                }),
-            },
+        const payload = this.getPayload();
+        const { docs } = await payload.find({
+            collection: 'shops' as never,
+            where: {
+                or: [{ domain: { equals: domain } }, { alternativeDomains: { contains: domain } }],
+            } as never,
+            limit: 1,
+            depth: populate.length > 0 ? 2 : 0,
+            overrideAccess: true,
         });
 
-        if (populate.length > 0) {
-            for (const path of populate) {
-                await (shop as unknown as { populate(path: string): Promise<void> }).populate(path);
-            }
-        }
+        const doc = docs[0];
+        if (!doc) throw new Error(`[shop] No shop for domain: ${domain}`);
 
-        if (!convert) {
-            return shop;
-        }
-
-        const res = shop.toObject<OnlineShop>({
-            getters: true,
-            virtuals: true,
-            versionKey: false,
-            flattenMaps: true,
-            flattenObjectIds: true,
-            useProjection: true,
-            depopulate: populate.length === 0,
-        });
-
-        if (!sensitiveData) {
-            delete (res as { _id?: unknown })._id;
-
-            let commerceProvider = {};
-            switch (res.commerceProvider.type) {
-                case 'shopify': {
-                    commerceProvider = {
-                        ...res.commerceProvider,
-                        authentication: {
-                            domain: res.commerceProvider.authentication.domain,
-                            publicToken: res.commerceProvider.authentication.publicToken,
-                        },
-                    };
-                    break;
-                }
-                case 'stripe': {
-                    commerceProvider = {
-                        ...res.commerceProvider,
-                        authentication: {},
-                    };
-                    break;
-                }
-            }
-
-            let contentProvider = {};
-            switch (res.contentProvider.type) {
-                case 'cms': {
-                    contentProvider = { ...res.contentProvider };
-                    break;
-                }
-                case 'shopify': {
-                    contentProvider = { ...res.contentProvider };
-                    break;
-                }
-            }
-
-            return {
-                ...res,
-                commerceProvider,
-                contentProvider,
-            } as unknown as OnlineShop;
-        }
-
-        return res;
+        if (!convert) return doc as unknown as ShopBase;
+        if (sensitiveData) return doc as unknown as OnlineShop;
+        return docToOnlineShop(doc as unknown as Record<string, unknown>);
     }
 
     public async findAll({ ...args }: Parameters<typeof this.find>[0] | undefined = {}) {
+        // KEEP existing Mongoose body — Task 12 swaps this.
         return await this.find({
             ...args,
             filter: {},

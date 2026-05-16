@@ -57,8 +57,12 @@
         "@nordcom/commerce-errors": "workspace:*",
         "mongoose": "9.6.2"
     },
+    "peerDependencies": {
+        "payload": "^3.84.0"
+    },
     "devDependencies": {
         "@codecov/vite-plugin": "2.0.1",
+        "payload": "3.84.0",
         "@types/node": "24.12.4",
         "@typescript/native-preview": "7.0.0-dev.20260515.1",
         "concurrently": "9.2.1",
