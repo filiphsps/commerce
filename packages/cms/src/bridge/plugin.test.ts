@@ -74,4 +74,10 @@ describe('buildBridgePlugin', () => {
         const slugs = (result.collections ?? []).map((c: { slug: string }) => c.slug);
         expect(slugs).toEqual(['pages', 'bridge:widget']);
     });
+
+    it('throws on collision when an existing collection uses the bridge: prefix', async () => {
+        const collision = { slug: 'bridge:rogue', fields: [] } as unknown as NonNullable<Config['collections']>[number];
+        const plugin = buildBridgePlugin([widget]);
+        await expect(plugin(fakeConfig({ collections: [collision] }))).rejects.toThrow(/reserved prefix collision/i);
+    });
 });
