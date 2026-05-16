@@ -21,7 +21,7 @@
         "test:e2e": "playwright test",
         "typecheck": "tsc -noEmit",
         "analyze": "next experimental-analyze",
-        "migrate:mongoose-to-payload": "tsx scripts/migrate-mongoose-to-payload.ts"
+        "migrate:mongoose-to-payload": "tsx --conditions=react-server scripts/migrate-mongoose-to-payload.ts"
     },
     "author": {
         "name": "Nordcom AB",
