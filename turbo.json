@@ -64,6 +64,10 @@
             "cache": false,
             "dependsOn": ["^build"],
             "outputs": ["playwright-report/**", "test-results/**"]
+        },
+        "analyze": {
+            "cache": false,
+            "persistent": true
         }
     }
 }

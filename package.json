@@ -13,6 +13,7 @@
         "packages/*"
     ],
     "scripts": {
+        "analyze": "dotenv -c -- turbo run analyze --env-mode=loose",
         "dev": "NODE_ENV=development dotenv -c -- turbo run dev --env-mode=loose",
         "dev:admin": "NODE_ENV=development dotenv -c -- turbo run dev --filter=./apps/admin --env-mode=loose",
         "dev:landing": "NODE_ENV=development dotenv -c -- turbo run dev --filter=./apps/landing --env-mode=loose",

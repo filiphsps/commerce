@@ -56,53 +56,36 @@ const config = {
     // Next.js doesn't process the package's `.scss` imports, and the field
     // wrappers render unstyled.
     transpilePackages: ['@payloadcms/ui'],
-    // The Payload admin is a third-party UI we don't fully control. Every
-    // experimental flag that rewrites React semantics (auto-memoization,
-    // server-React optimization) or aggressively caches segments has been
-    // a vector for "admin loads broken in prod" — leave them off here.
-    // Re-enable individually only after verifying the admin still works.
-    //
-    // Specifically disabled:
-    // - reactCompiler: auto-memoization can stale Payload's `useNav()` etc.
-    //   so the hamburger menu won't toggle.
-    // - cacheComponents (PPR): wraps Payload's RootLayout in
-    //   `<Suspense fallback={null}>` and Next's CSS hoisting drops the
-    //   admin stylesheet links from the initial shell.
-    // cacheComponents: true,
+    // cacheComponents: true, // TODO: Enable as soon as possible.
     typedRoutes: true,
     turbopack: {
         root: path.resolve(path.join(__dirname, '../..')),
     },
     experimental: {
+        authInterrupts: true,
+        appNewScrollHandler: true,
         appNavFailHandling: true,
-        // `caseSensitiveRoutes` makes Payload's camelCase collection URLs
-        // (`/cms/collections/businessData`) brittle — any internal nav that
-        // happens to lowercase the slug 404s. Leave off.
-        // caseSensitiveRoutes: true,
-        // `cssChunking` + `optimizeCss` (critters) silently mangle Payload's
-        // `@layer payload-default, payload` cascade and inline rules in a way
-        // that strips the admin UI styles in production webpack builds. The
-        // local Turbopack dev server doesn't run either optimization so the
-        // breakage was invisible until deploy.
+        caseSensitiveRoutes: false, // TODO: Update payload-related routing to support case-insensitive routes.
         esmExternals: true,
-        // `proxyPrefetch: 'flexible'` changes how routes are prefetched on
-        // hover — can stale Payload's data-fetching tree. Off until proven.
-        // proxyPrefetch: 'flexible',
+        dynamicOnHover: true,
+        // cachedNavigations: true, // TODO: Enable together with cacheComponents.
+        proxyPrefetch: 'flexible',
         optimizePackageImports: undefined,
         // `optimizeServerReact` rewrites RSC trees in ways that can break
         // third-party admin UIs. Off for the admin.
         // optimizeServerReact: true,
-        parallelServerBuildTraces: undefined,
-        parallelServerCompiles: undefined,
         scrollRestoration: true,
         serverComponentsHmrCache: isDev,
         serverSourceMaps: true,
+        partialFallbacks: true,
         taint: true,
         typedEnv: true,
         useWasmBinary: false,
-        webpackBuildWorker: undefined,
+        webpackBuildWorker: false,
         rootParams: true,
-        turbopackServerFastRefresh: isDev,
+        turbopackServerFastRefresh: true,
+        turbopackFileSystemCacheForDev: true,
+        mcpServer: true,
     },
     images: {
         dangerouslyAllowSVG: true,

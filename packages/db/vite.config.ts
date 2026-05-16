@@ -23,6 +23,9 @@ export default mergeConfig(
                 output: {
                     name,
                 },
+                experimental: {
+                    lazyBarrel: true,
+                },
             },
         },
         plugins: process.env.CI
