@@ -1,54 +1,6 @@
 /* c8 ignore start */
+import { createFlagsDiscoveryEndpoint, getProviderData } from 'flags/next';
+import * as flags from '@/utils/flags';
 
-import type { ApiData } from 'flags';
-import { verifyAccess } from 'flags';
-import type { NextRequest } from 'next/server';
-import { NextResponse } from 'next/server';
-
-export async function GET(request: NextRequest) {
-    const access = await verifyAccess(request.headers.get('Authorization'));
-    if (!access) {
-        return NextResponse.json(null, { status: 401 });
-    }
-
-    return NextResponse.json<ApiData>({
-        definitions: {
-            'search-filter': {
-                description: 'Controls if the search filter is visible',
-                options: [
-                    { value: false, label: 'Hidden' },
-                    { value: true, label: 'Visible' },
-                ],
-            },
-            'product-page-info-lines': {
-                description: 'Controls if the info lines are visible on the product page',
-                options: [
-                    { value: false, label: 'Hidden' },
-                    { value: true, label: 'Visible' },
-                ],
-            },
-            'header-search-bar': {
-                description: 'Controls if header search bar experiment is enabled',
-                options: [
-                    { value: false, label: 'Off' },
-                    { value: true, label: 'On' },
-                ],
-            },
-            'products-page': {
-                description: 'Controls if the products page (`/products/`) is enabled',
-                options: [
-                    { value: false, label: 'Disabled' },
-                    { value: true, label: 'Enabled' },
-                ],
-            },
-            'accounts-functionality': {
-                description: 'Controls if the accounts functionality is enabled',
-                options: [
-                    { value: false, label: 'Disabled' },
-                    { value: true, label: 'Enabled' },
-                ],
-            },
-        },
-    });
-}
+export const GET = createFlagsDiscoveryEndpoint(async () => getProviderData(flags));
 /* c8 ignore stop */
