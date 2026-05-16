@@ -566,22 +566,19 @@ importers:
         version: 2026.4.2(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(three@0.139.2)(vite@8.0.12(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.99.0)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0))
       '@tagtree/core':
         specifier: workspace:*
-        version: link:../../packages/tagtree-core
+        version: link:../../packages/tagtree/core
       '@tagtree/next':
         specifier: workspace:*
-        version: link:../../packages/tagtree-next
+        version: link:../../packages/tagtree/next
       '@tagtree/shopify':
         specifier: workspace:*
-        version: link:../../packages/tagtree-shopify
+        version: link:../../packages/tagtree/shopify
       '@vercel/analytics':
         specifier: 2.0.1
         version: 2.0.1(next@16.2.6(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(react@19.2.6)
       '@vercel/edge-config':
         specifier: 1.4.3
         version: 1.4.3(@opentelemetry/api@1.9.1)(next@16.2.6(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))
-      '@vercel/flags':
-        specifier: 3.1.1
-        version: 3.1.1(@opentelemetry/api@1.9.1)(next@16.2.6(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@vercel/otel':
         specifier: 2.1.2
         version: 2.1.2(@opentelemetry/api-logs@0.217.0)(@opentelemetry/api@1.9.1)(@opentelemetry/instrumentation@0.217.0(@opentelemetry/api@1.9.1))(@opentelemetry/resources@2.7.1(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-logs@0.217.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-metrics@1.26.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.7.1(@opentelemetry/api@1.9.1))
@@ -612,6 +609,9 @@ importers:
       export-to-csv:
         specifier: 1.4.0
         version: 1.4.0
+      flags:
+        specifier: 4.0.6
+        version: 4.0.6(@opentelemetry/api@1.9.1)(next@16.2.6(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       lodash.debounce:
         specifier: 4.0.8
         version: 4.0.8
@@ -777,13 +777,13 @@ importers:
         version: 1.2.1
       '@tagtree/core':
         specifier: workspace:*
-        version: link:../tagtree-core
+        version: link:../tagtree/core
       '@tagtree/next':
         specifier: workspace:*
-        version: link:../tagtree-next
+        version: link:../tagtree/next
       '@tagtree/payload':
         specifier: workspace:*
-        version: link:../tagtree-payload
+        version: link:../tagtree/payload
       jose:
         specifier: 5.9.0
         version: 5.9.0
@@ -1030,7 +1030,7 @@ importers:
         specifier: 4.1.6
         version: 4.1.6(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(@vitest/coverage-v8@4.1.6)(happy-dom@20.9.0)(jsdom@29.1.1)(vite@8.0.12(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.99.0)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0))
 
-  packages/tagtree-core:
+  packages/tagtree/core:
     devDependencies:
       '@codecov/vite-plugin':
         specifier: 2.0.1
@@ -1051,11 +1051,11 @@ importers:
         specifier: 4.1.6
         version: 4.1.6(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(@vitest/coverage-v8@4.1.6)(happy-dom@20.9.0)(jsdom@29.1.1)(vite@8.0.12(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.99.0)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0))
 
-  packages/tagtree-next:
+  packages/tagtree/next:
     dependencies:
       '@tagtree/core':
         specifier: workspace:*
-        version: link:../tagtree-core
+        version: link:../core
       server-only:
         specifier: 0.0.1
         version: 0.0.1
@@ -1088,11 +1088,11 @@ importers:
         specifier: 4.1.6
         version: 4.1.6(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(@vitest/coverage-v8@4.1.6)(happy-dom@20.9.0)(jsdom@29.1.1)(vite@8.0.12(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.99.0)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0))
 
-  packages/tagtree-payload:
+  packages/tagtree/payload:
     dependencies:
       '@tagtree/core':
         specifier: workspace:*
-        version: link:../tagtree-core
+        version: link:../core
     devDependencies:
       '@codecov/vite-plugin':
         specifier: 2.0.1
@@ -1116,11 +1116,11 @@ importers:
         specifier: 4.1.6
         version: 4.1.6(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(@vitest/coverage-v8@4.1.6)(happy-dom@20.9.0)(jsdom@29.1.1)(vite@8.0.12(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.99.0)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0))
 
-  packages/tagtree-shopify:
+  packages/tagtree/shopify:
     dependencies:
       '@tagtree/core':
         specifier: workspace:*
-        version: link:../tagtree-core
+        version: link:../core
     devDependencies:
       '@codecov/vite-plugin':
         specifier: 2.0.1
@@ -5528,27 +5528,6 @@ packages:
       next:
         optional: true
 
-  '@vercel/flags@3.1.1':
-    resolution: {integrity: sha512-JM0xXRCHvN5wiSr9C2u6PSbXMnqN/0IXyNEOob6UYWB70vBWVLUKM96wgSuj6orRzRTowItmja2RTYyRvVhuQg==}
-    deprecated: This package has been renamed to flags. It offers the same functionality under a new name. Please follow the upgrade guide https://github.com/vercel/flags/blob/main/packages/flags/guides/upgrade-to-v4.md
-    peerDependencies:
-      '@opentelemetry/api': ^1.7.0
-      '@sveltejs/kit': '*'
-      next: '*'
-      react: '*'
-      react-dom: '*'
-    peerDependenciesMeta:
-      '@opentelemetry/api':
-        optional: true
-      '@sveltejs/kit':
-        optional: true
-      next:
-        optional: true
-      react:
-        optional: true
-      react-dom:
-        optional: true
-
   '@vercel/microfrontends@2.3.2':
     resolution: {integrity: sha512-XwG9KrPmRXVIe2MzH+sPJscskk12m7qVPUVM7ehdod5c1HbTtwnuncK4B6KNitBpSL+2C5uRQP0/rUaBq/HLPQ==}
     hasBin: true
@@ -7270,6 +7249,26 @@ packages:
   findup-sync@4.0.0:
     resolution: {integrity: sha512-6jvvn/12IC4quLBL1KNokxC7wWTvYncaVUYSoxWw7YykPLuRrnv4qdHcSOywOI5RpkOVGeQRtWM8/q+G6W6qfQ==}
     engines: {node: '>= 8'}
+
+  flags@4.0.6:
+    resolution: {integrity: sha512-8Rz/5L8Gkl2+LmlV2gOXx3iJNTYDooa8eGvshFev9nrXtrcvsXa5z/DXdtElHvN15psnSHg+r51lYHge2rCASw==}
+    peerDependencies:
+      '@opentelemetry/api': ^1.7.0
+      '@sveltejs/kit': '*'
+      next: '*'
+      react: '*'
+      react-dom: '*'
+    peerDependenciesMeta:
+      '@opentelemetry/api':
+        optional: true
+      '@sveltejs/kit':
+        optional: true
+      next:
+        optional: true
+      react:
+        optional: true
+      react-dom:
+        optional: true
 
   flat@5.0.2:
     resolution: {integrity: sha512-b6suED+5/3rTpUBdG1gupIl8MPFCAMA0QXwmljLhvCUKcUvdE4gWky9zpuGCcXHOsz4J9wPGNWq6OKpmIzz3hQ==}
@@ -17133,16 +17132,6 @@ snapshots:
       '@opentelemetry/api': 1.9.1
       next: 16.2.6(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0)
 
-  '@vercel/flags@3.1.1(@opentelemetry/api@1.9.1)(next@16.2.6(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
-    dependencies:
-      '@edge-runtime/cookies': 5.0.2
-      jose: 5.10.0
-    optionalDependencies:
-      '@opentelemetry/api': 1.9.1
-      next: 16.2.6(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0)
-      react: 19.2.6
-      react-dom: 19.2.6(react@19.2.6)
-
   '@vercel/microfrontends@2.3.2(@vercel/analytics@2.0.1(next@16.2.6(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(react@19.2.6))(@vercel/speed-insights@2.0.0(next@16.2.6(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(react@19.2.6))(next@16.2.6(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vite@8.0.12(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.99.0)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0))':
     dependencies:
       '@next/env': 16.0.10
@@ -19013,6 +19002,16 @@ snapshots:
       is-glob: 4.0.3
       micromatch: 4.0.8
       resolve-dir: 1.0.1
+
+  flags@4.0.6(@opentelemetry/api@1.9.1)(next@16.2.6(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(react-dom@19.2.6(react@19.2.6))(react@19.2.6):
+    dependencies:
+      '@edge-runtime/cookies': 5.0.2
+      jose: 5.10.0
+    optionalDependencies:
+      '@opentelemetry/api': 1.9.1
+      next: 16.2.6(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
 
   flat@5.0.2: {}
 
