@@ -2,7 +2,6 @@ import type { Payload } from 'payload';
 import { docToOnlineShop } from '../lib/doc-to-shape';
 import type { OnlineShop, ShopBase } from '../models';
 import { ShopModel } from '../models';
-import { User } from '.';
 import { Service } from './service';
 
 export type FindOptions = {
@@ -39,24 +38,34 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
         return this.payload;
     }
 
-    public async findByCollaborator({
-        collaboratorId,
-        ...args
-    }: { collaboratorId: string } & Parameters<typeof this.find>[0]) {
-        // KEEP existing Mongoose body — Task 12 swaps this.
-        const collaborator = await User.find({ id: collaboratorId });
+    // Override the Mongoose-based base method with a Payload-backed implementation.
+    // The base returns `Promise<ShopBase | null>`; here we narrow to `Promise<OnlineShop>`
+    // (always resolves or throws). Cast through `never` to satisfy the overload checker.
+    public override findById(id: string, ..._rest: never[]): Promise<OnlineShop> & Promise<ShopBase | null> {
+        const payload = this.getPayload();
+        return payload
+            .findByID({
+                collection: 'shops' as never,
+                id,
+                overrideAccess: true,
+            })
+            .then((doc) => {
+                if (!doc) throw new Error(`[shop] No shop for id: ${id}`);
+                return docToOnlineShop(doc as unknown as Record<string, unknown>);
+            }) as Promise<OnlineShop> & Promise<ShopBase | null>;
+    }
 
-        return await this.find({
-            ...args,
-            filter: {
-                ...args.filter,
-                collaborators: {
-                    $elemMatch: {
-                        user: collaborator,
-                    },
-                },
-            },
+    public async findByCollaborator({ collaboratorId }: { collaboratorId: string }): Promise<OnlineShop[]> {
+        const payload = this.getPayload();
+        const { docs } = await payload.find({
+            collection: 'shops' as never,
+            where: {
+                'collaborators.user': { equals: collaboratorId },
+            } as never,
+            limit: 0,
+            overrideAccess: true,
         });
+        return docs.map((doc) => docToOnlineShop(doc as unknown as Record<string, unknown>));
     }
 
     public async findByDomain(domain: string, options?: FindOptions): Promise<OnlineShop | ShopBase>;
@@ -83,18 +92,14 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
         return docToOnlineShop(doc as unknown as Record<string, unknown>);
     }
 
-    public async findAll({ ...args }: Parameters<typeof this.find>[0] | undefined = {}) {
-        // KEEP existing Mongoose body — Task 12 swaps this.
-        return await this.find({
-            ...args,
-            filter: {},
-            projection: {
-                collaborators: 0,
-                contentProvider: 0,
-                commerceProvider: 0,
-                thirdParty: 0,
-            },
+    public async findAll(): Promise<OnlineShop[]> {
+        const payload = this.getPayload();
+        const { docs } = await payload.find({
+            collection: 'shops' as never,
+            limit: 0,
+            overrideAccess: true,
         });
+        return docs.map((doc) => docToOnlineShop(doc as unknown as Record<string, unknown>));
     }
 }
 

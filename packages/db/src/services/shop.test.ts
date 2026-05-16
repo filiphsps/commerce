@@ -111,3 +111,170 @@ describe('Shop.findByDomain (via payload.local)', () => {
         await expect(Shop.findByDomain('missing.test')).rejects.toThrow(/no shop/i);
     });
 });
+
+describe('Shop.findById (via payload.local)', () => {
+    const mockShop = {
+        id: 'shop-42',
+        name: 'Beta',
+        domain: 'beta.test',
+        alternativeDomains: [],
+        design: { header: { logo: { src: '/b', alt: 'b', width: 1, height: 1 } }, accents: [] },
+        commerceProvider: {
+            type: 'shopify',
+            authentication: { token: 'SECRET', publicToken: 'pub', domain: 'shopify.com' },
+            storefrontId: 's',
+            domain: 'beta.test',
+            id: 'cp',
+        },
+        contentProvider: { type: 'cms' },
+    };
+
+    let mockFindByID: ReturnType<typeof vi.fn>;
+
+    beforeEach(() => {
+        mockFindByID = vi.fn().mockResolvedValue(mockShop);
+        Shop._setPayloadForTests({ findByID: mockFindByID } as never);
+    });
+
+    it('calls payload.findByID with the given id and overrideAccess', async () => {
+        await Shop.findById('shop-42');
+        expect(mockFindByID).toHaveBeenCalledWith(
+            expect.objectContaining({ collection: 'shops', id: 'shop-42', overrideAccess: true }),
+        );
+    });
+
+    it('strips the auth token by default', async () => {
+        const result = await Shop.findById('shop-42');
+        const cp = (result as { commerceProvider: { authentication: Record<string, unknown> } }).commerceProvider;
+        expect(cp.authentication.token).toBeUndefined();
+        expect(cp.authentication.publicToken).toBe('pub');
+    });
+
+    it('throws when no shop matches', async () => {
+        mockFindByID.mockResolvedValueOnce(null);
+        await expect(Shop.findById('missing')).rejects.toThrow(/no shop/i);
+    });
+});
+
+describe('Shop.findAll (via payload.local)', () => {
+    const mockShops = [
+        {
+            id: 'shop-1',
+            name: 'Alpha',
+            domain: 'alpha.test',
+            alternativeDomains: [],
+            design: { header: { logo: { src: '/a', alt: 'a', width: 1, height: 1 } }, accents: [] },
+            commerceProvider: {
+                type: 'shopify',
+                authentication: { token: 'T1', publicToken: 'p1', domain: 'shopify.com' },
+                storefrontId: 's1',
+                domain: 'alpha.test',
+                id: 'cp1',
+            },
+            contentProvider: { type: 'cms' },
+        },
+        {
+            id: 'shop-2',
+            name: 'Beta',
+            domain: 'beta.test',
+            alternativeDomains: [],
+            design: { header: { logo: { src: '/b', alt: 'b', width: 1, height: 1 } }, accents: [] },
+            commerceProvider: {
+                type: 'shopify',
+                authentication: { token: 'T2', publicToken: 'p2', domain: 'shopify.com' },
+                storefrontId: 's2',
+                domain: 'beta.test',
+                id: 'cp2',
+            },
+            contentProvider: { type: 'cms' },
+        },
+    ];
+
+    let mockFind: ReturnType<typeof vi.fn>;
+
+    beforeEach(() => {
+        mockFind = vi.fn().mockResolvedValue({ docs: mockShops });
+        Shop._setPayloadForTests({ find: mockFind } as never);
+    });
+
+    it('calls payload.find with limit 0 and overrideAccess', async () => {
+        await Shop.findAll();
+        expect(mockFind).toHaveBeenCalledWith(
+            expect.objectContaining({ collection: 'shops', limit: 0, overrideAccess: true }),
+        );
+    });
+
+    it('returns an array mapped through docToOnlineShop', async () => {
+        const result = await Shop.findAll();
+        expect(result).toHaveLength(2);
+    });
+
+    it('strips auth tokens from all results', async () => {
+        const result = await Shop.findAll();
+        for (const shop of result) {
+            const cp = (shop as { commerceProvider: { authentication: Record<string, unknown> } }).commerceProvider;
+            expect(cp.authentication.token).toBeUndefined();
+        }
+    });
+
+    it('returns an empty array when no shops exist', async () => {
+        mockFind.mockResolvedValueOnce({ docs: [] });
+        const result = await Shop.findAll();
+        expect(result).toEqual([]);
+    });
+});
+
+describe('Shop.findByCollaborator (via payload.local)', () => {
+    const mockShop = {
+        id: 'shop-99',
+        name: 'Collab',
+        domain: 'collab.test',
+        alternativeDomains: [],
+        design: { header: { logo: { src: '/c', alt: 'c', width: 1, height: 1 } }, accents: [] },
+        commerceProvider: {
+            type: 'shopify',
+            authentication: { token: 'SECRET', publicToken: 'pt', domain: 'shopify.com' },
+            storefrontId: 's',
+            domain: 'collab.test',
+            id: 'cp',
+        },
+        contentProvider: { type: 'cms' },
+    };
+
+    let mockFind: ReturnType<typeof vi.fn>;
+
+    beforeEach(() => {
+        mockFind = vi.fn().mockResolvedValue({ docs: [mockShop] });
+        Shop._setPayloadForTests({ find: mockFind } as never);
+    });
+
+    it('queries payload.find with a collaborators.user equals filter', async () => {
+        await Shop.findByCollaborator({ collaboratorId: 'user-123' });
+        expect(mockFind).toHaveBeenCalledWith(
+            expect.objectContaining({
+                collection: 'shops',
+                where: { 'collaborators.user': { equals: 'user-123' } },
+                overrideAccess: true,
+            }),
+        );
+    });
+
+    it('returns mapped OnlineShop results', async () => {
+        const result = await Shop.findByCollaborator({ collaboratorId: 'user-123' });
+        expect(result).toHaveLength(1);
+    });
+
+    it('strips auth token from results', async () => {
+        const result = await Shop.findByCollaborator({ collaboratorId: 'user-123' });
+        const cp = (result[0] as { commerceProvider: { authentication: Record<string, unknown> } } | undefined)
+            ?.commerceProvider;
+        expect(cp?.authentication.token).toBeUndefined();
+        expect(cp?.authentication.publicToken).toBe('pt');
+    });
+
+    it('returns an empty array when no shops match', async () => {
+        mockFind.mockResolvedValueOnce({ docs: [] });
+        const result = await Shop.findByCollaborator({ collaboratorId: 'nobody' });
+        expect(result).toEqual([]);
+    });
+});
