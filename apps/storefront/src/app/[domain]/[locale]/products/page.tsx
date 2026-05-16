@@ -9,7 +9,7 @@ import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skel
 import PageContent from '@/components/page-content';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
-import { readFlag } from '@/utils/flags-cache-safe';
+import { enableProductsPage } from '@/utils/flags';
 import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import ProductsContent from './products-content';
 
@@ -72,7 +72,7 @@ export default async function ProductsPage({
     const { domain, locale: localeData } = await params;
     const locale = Locale.from(localeData);
 
-    const productsPageEnabled = await readFlag('products-page', false);
+    const productsPageEnabled = await enableProductsPage();
     if (!productsPageEnabled) {
         redirect(`/${locale.code}/`, RedirectType.replace);
     }
