@@ -1,6 +1,7 @@
 import type { CollectionEditorManifest } from '../manifest';
 import { articlesEditor } from './articles';
 import { businessDataEditor } from './business-data';
+import { collectionMetadataEditor } from './collection-metadata';
 import { featureFlagsEditor } from './feature-flag';
 import { footerEditor } from './footer';
 import { headerEditor } from './header';
@@ -11,6 +12,7 @@ import { shopsEditor } from './shop';
 
 export { articlesEditor } from './articles';
 export { businessDataEditor } from './business-data';
+export { collectionMetadataEditor } from './collection-metadata';
 export { featureFlagsEditor } from './feature-flag';
 export { footerEditor } from './footer';
 export { headerEditor } from './header';
@@ -33,4 +35,5 @@ export const allManifests: readonly CollectionEditorManifest[] = [
     footerEditor as unknown as CollectionEditorManifest,
     pagesEditor as unknown as CollectionEditorManifest,
     productMetadataEditor as unknown as CollectionEditorManifest,
+    collectionMetadataEditor as unknown as CollectionEditorManifest,
 ];
