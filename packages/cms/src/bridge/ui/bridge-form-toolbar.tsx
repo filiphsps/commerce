@@ -8,9 +8,9 @@ export type BridgeFormToolbarProps = {
      * Server action with domain + id already bound.
      * Signature after binding: `(formData: FormData) => Promise<void>`.
      *
-     * Wired via `<Form action={saveAction}>` outside this component; the
-     * Save button reads Payload's form context via `useForm()` to collect
-     * field values before calling the action directly.
+     * Called directly by the Save button via `useForm().createFormData()`.
+     * No `<Form action>` wrapper is needed; the enclosing Payload `<Form>`
+     * only needs to exist so that `useForm()` can read field values.
      */
     saveAction: (formData: FormData) => Promise<void>;
     /**
