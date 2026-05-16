@@ -3,7 +3,17 @@ import 'server-only';
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 import { Button } from '@nordcom/nordstar';
-import { Binoculars, Building2, ImageIcon, Images, MessageCircleHeart, Settings, Tag, Users } from 'lucide-react';
+import {
+    Binoculars,
+    Building2,
+    ImageIcon,
+    Images,
+    MessageCircleHeart,
+    Settings,
+    Store,
+    Tag,
+    Users,
+} from 'lucide-react';
 import type { Metadata, Route } from 'next';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
@@ -143,6 +153,10 @@ export default async function ShopLayout({ children, params }: ShopLayoutProps) 
                                 <MenuItem href={`${urlBase}/settings/media/` as Route} disabled={!isAdmin}>
                                     <ImageIcon className="text-lg" />
                                     Media
+                                </MenuItem>
+                                <MenuItem href={`${urlBase}/settings/shop/` as Route} disabled={!isAdmin}>
+                                    <Store className="text-lg" />
+                                    Shop
                                 </MenuItem>
                             </div>
                         </nav>
