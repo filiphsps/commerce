@@ -76,8 +76,8 @@ export async function EditorEditPage<TSlug extends CollectionSlug>({
 
     const { state: initialState } = await runtime.buildFormState({
         collectionSlug: String(manifest.collection),
-        data: (existing as Record<string, unknown>) ?? {},
-        id: existing ? String((existing as { id: string }).id) : undefined,
+        data: (existing as unknown as Record<string, unknown>) ?? {},
+        id: existing ? String((existing as unknown as { id: string }).id) : undefined,
         operation: existing ? 'update' : 'create',
         docPermissions: { create: true, fields: true, read: true, readVersions: hasDrafts, update: true },
         docPreferences: { fields: {} },
@@ -93,9 +93,8 @@ export async function EditorEditPage<TSlug extends CollectionSlug>({
     const boundSaveDraft = (formData: FormData) => generatedActions.saveDraft(domain, id, formData);
     const boundPublish = (formData: FormData) => generatedActions.publish(domain, id, formData);
 
-    const title = (existing as { name?: string })?.name
-        ? String((existing as { name: string }).name)
-        : manifest.routes.label.singular;
+    const existingName = (existing as unknown as { name?: string } | null)?.name;
+    const title = existingName ? String(existingName) : manifest.routes.label.singular;
 
     const breadcrumbs = manifest.routes.breadcrumbs?.({ domain }) ?? [];
 
