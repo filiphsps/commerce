@@ -1,4 +1,5 @@
 export { adminOnly, tenantMemberCanRead } from './access';
+export { coerceMissingGroups, defaultToPlain, type MongooseAdapterOptions, mongooseAdapter } from './adapter-mongoose';
 export {
     assertFieldsValid,
     assertUniqueSlugs,
