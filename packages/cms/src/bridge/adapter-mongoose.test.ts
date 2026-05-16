@@ -110,8 +110,8 @@ describe('mongooseAdapter', () => {
         const adapter = mongooseAdapter(WidgetModel);
         const updated = await adapter.update(String(created._id), { name: 'B' });
         expect((updated as { name: string }).name).toBe('B');
-        const reread = await WidgetModel.findOne({ _id: String(created._id) }).exec();
-        expect(reread?.name).toBe('B');
+        const reread = await adapter.findById(String(created._id));
+        expect((reread as { name: string } | null)?.name).toBe('B');
     });
 
     it('update runs Mongoose validators (rejects required:true violation)', async () => {
@@ -144,6 +144,6 @@ describe('mongooseAdapter', () => {
         if (!created) throw new Error('test setup: Widget.create returned null');
         const adapter = mongooseAdapter(WidgetModel);
         await adapter.delete!(String(created._id));
-        expect(await WidgetModel.findOne({ _id: String(created._id) }).exec()).toBeNull();
+        expect(await adapter.findById(String(created._id))).toBeNull();
     });
 });
