@@ -119,6 +119,19 @@ export const buildPayloadConfig = async ({
               admin: {
                   user: 'users',
                   meta: { titleSuffix: ' — Nordcom CMS' },
+                  // Pin Payload's theme to dark to match the host admin app.
+                  // Our `(app)` route group hardcodes dark color tokens in
+                  // `globals.css` (`:root { --background: 0 0% 0%; ... }`);
+                  // without this, Payload's `<ThemeProvider>` defaults to
+                  // `'light'` and its field CSS (input backgrounds, label
+                  // colors, focus rings) clashes — most visibly the input
+                  // text rendering near-white on a near-white field
+                  // background, making form values unreadable.
+                  // Setting `theme: 'dark'` also makes `getRequestTheme`
+                  // short-circuit and ignore the `payload-theme` cookie /
+                  // `Sec-CH-Prefers-Color-Scheme` header, so the value
+                  // never drifts back to light mid-session.
+                  theme: 'dark' as const,
                   // `importMap.baseDir` tells Payload where component paths are
                   // resolved relative to. Without it the runtime falls back to
                   // the @nordcom/commerce-cms package's own folder inside

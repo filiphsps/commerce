@@ -91,12 +91,21 @@ export const getCmsShellProps = cache(async (domain?: string): Promise<Omit<Payl
             value: language as LanguageOption['value'],
         }));
 
-    const theme = resolveTheme({
-        configTheme: payload.config.admin?.theme as 'all' | ShellTheme | undefined,
-        cookiePrefix: payload.config.cookiePrefix || 'payload',
-        cookies,
-        headers,
-    });
+    // The admin app's color tokens (`globals.css :root`) are hardcoded dark.
+    // `resolveTheme` only matters as a fallback for callers whose admin
+    // config doesn't pin a theme; we still call it to honor any future
+    // override but force dark when the Payload config has `admin.theme:
+    // 'dark'` (it currently does — see `buildPayloadConfig`).
+    const configTheme = payload.config.admin?.theme as 'all' | ShellTheme | undefined;
+    const theme: ShellTheme =
+        configTheme === 'dark' || configTheme === 'light'
+            ? configTheme
+            : resolveTheme({
+                  configTheme,
+                  cookiePrefix: payload.config.cookiePrefix || 'payload',
+                  cookies,
+                  headers,
+              });
 
     return {
         config,
