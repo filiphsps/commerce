@@ -1,3 +1,4 @@
+export { adminOnly, tenantMemberCanRead } from './access';
 export {
     assertFieldsValid,
     assertUniqueSlugs,
