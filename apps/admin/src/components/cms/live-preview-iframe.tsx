@@ -55,7 +55,7 @@ export type LivePreviewIframeProps = {
 export function LivePreviewIframe({ previewUrl, domain, defaultOpen = false }: LivePreviewIframeProps) {
     const storageKey = domain ? `${STORAGE_KEY_PREFIX}.${domain}.open` : `${STORAGE_KEY_PREFIX}.open`;
 
-    // Initialise from localStorage (if available) — falls back to defaultOpen.
+    // Initialize from localStorage (if available) — falls back to defaultOpen.
     const [isOpen, setIsOpen] = useState<boolean>(() => {
         if (typeof window === 'undefined') return defaultOpen;
         try {

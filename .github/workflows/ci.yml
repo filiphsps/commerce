@@ -135,12 +135,6 @@ jobs:
       fail-fast: false
       matrix:
         app: [storefront, admin]
-    # NODE_V8_COVERAGE makes the Next.js `next start` process emit raw V8 coverage
-    # to disk for every file it executes during the e2e run. After tests we run
-    # `c8 report` to convert that into an istanbul-style coverage JSON that
-    # codecov can ingest. This captures SSR / API-route / middleware coverage;
-    # browser-side coverage would require a separate Playwright fixture
-    # (e.g. monocart-reporter) and is out of scope for this pass.
     env:
       NODE_V8_COVERAGE: ${{ github.workspace }}/coverage/e2e-raw
     steps:

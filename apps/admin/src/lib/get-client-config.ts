@@ -30,7 +30,7 @@ export const getCmsClientConfig = cache(async (domain?: string) => {
 
     // Mirror @payloadcms/next's initReq: derive the request language from
     // headers + cookies (Accept-Language + payload-language cookie), then
-    // initialise i18n for that language. Without this, createLocalReq falls
+    // initialize i18n for that language. Without this, createLocalReq falls
     // back to config.i18n.fallbackLanguage ('en' by default) and every
     // label/error rendered by @payloadcms/ui downstream would be English
     // regardless of the user's preference.
