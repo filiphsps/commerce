@@ -4,8 +4,6 @@ import { getTenantFromCookie } from '@payloadcms/plugin-multi-tenant/utilities';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import type { AuthStrategy, SanitizedConfig } from 'payload';
 import { buildConfig } from 'payload';
-import { buildBridgePlugin } from '../bridge';
-import { defaultManifests } from '../bridge/manifests';
 import { allCollections, buildUsers } from '../collections';
 import { buildMultiTenantPlugin, storagePluginFromEnv } from '../plugins';
 
@@ -24,16 +22,6 @@ export type BuildPayloadConfigOptions = {
     includeAdmin?: boolean;
     /** When false, skip the S3 storage plugin even if env vars are set. Default true. */
     enableStorage?: boolean;
-    /**
-     * When false, skip registering the bridge plugin / default manifests.
-     * Default true. The bridge plugin synthesizes hidden collections with
-     * colon-prefixed slugs (e.g. `bridge:shop`) — Payload's `generate:types`
-     * mangles those into a non-generic `Select` interface whose call sites
-     * reference it as generic, so the generated `payload-types.ts` fails
-     * `tsc`. `generate-types-config.ts` passes `includeBridge: false` for a
-     * clean output; runtime apps leave it at the default.
-     */
-    includeBridge?: boolean;
     /** Hard-coded supported locales for this deployment. */
     locales?: string[];
     /** Fallback default locale. Defaults to 'en-US'. */
@@ -92,7 +80,6 @@ export const buildPayloadConfig = async ({
     serverUrl,
     includeAdmin = true,
     enableStorage = true,
-    includeBridge = true,
     locales = DEFAULT_LOCALES,
     defaultLocale = DEFAULT_DEFAULT_LOCALE,
     authStrategies,
@@ -104,7 +91,6 @@ export const buildPayloadConfig = async ({
     typescriptOutputFile,
 }: BuildPayloadConfigOptions): Promise<SanitizedConfig> => {
     const plugins = [buildMultiTenantPlugin()];
-    if (includeBridge) plugins.push(buildBridgePlugin(defaultManifests));
     if (enableStorage) {
         const storage = storagePluginFromEnv();
         if (storage) plugins.push(storage);

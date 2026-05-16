@@ -32,12 +32,6 @@ export default buildPayloadConfig({
     mongoUrl: 'mongodb://localhost:27017/generate-types-only',
     includeAdmin: false,
     enableStorage: false,
-    // Skip the bridge plugin: Payload's `generate:types` emits a non-generic
-    // `BridgeShopSelect` for colon-prefixed synthesized slugs (`bridge:shop`)
-    // while still referencing it as `BridgeShopSelect<false> | …`, which
-    // breaks `tsc` on the generated file. The bridge has no runtime presence
-    // in typegen anyway — its adapter never connects to Mongo here.
-    includeBridge: false,
     locales: TYPEGEN_LOCALES,
     typescriptOutputFile: path.resolve(__dirname, 'payload-types.ts'),
 });
