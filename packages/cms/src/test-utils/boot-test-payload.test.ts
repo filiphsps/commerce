@@ -32,7 +32,7 @@ describe('bootTestPayload', () => {
         it('registers a hidden bridge:shop collection', () => {
             const slugs = payload.instance.config.collections.map((c) => c.slug);
             expect(slugs).toContain('bridge:shop');
-            const c = payload.instance.config.collections.find((c) => c.slug === 'bridge:shop');
+            const c = payload.instance.config.collections.find((c) => String(c.slug) === 'bridge:shop');
             expect(c?.admin?.hidden).toBe(true);
         });
     });
