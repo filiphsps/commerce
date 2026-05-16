@@ -87,6 +87,9 @@ importers:
       '@auth/core':
         specifier: 0.41.2
         version: 0.41.2
+      '@faceless-ui/modal':
+        specifier: 3.0.0
+        version: 3.0.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@next/third-parties':
         specifier: 16.2.6
         version: 16.2.6(next@16.2.6(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(react@19.2.6)

@@ -1,5 +1,6 @@
 'use client';
 
+import { ModalContainer, ModalProvider } from '@faceless-ui/modal';
 import { GoogleTagManager } from '@next/third-parties/google';
 
 import { Theme } from '@nordcom/commerce-marketing-common';
@@ -32,7 +33,18 @@ export function Providers({ children }: ProvidersProps) {
             <Suspense fallback={null}>
                 <NextTopLoader color={Theme.accents.primary} showSpinner={true} crawl={true} />
 
-                <HeaderProvider>{children}</HeaderProvider>
+                {/* Global `@faceless-ui/modal` context. Defense-in-depth so any
+                 *  `@payloadcms/ui` component that mounts a document drawer
+                 *  (upload/relationship fields, lexical upload nodes, …) has
+                 *  `modalState` defined even outside `<PayloadFieldShell>`.
+                 *  Without this fallback, `useDocumentDrawer` blows up with
+                 *  `m is undefined` on the first paint of any media upload
+                 *  field — the optional chain inside Payload's hook only
+                 *  guards `.isOpen`, not the parent subscript access. */}
+                <ModalProvider classPrefix="payload" transTime={0} zIndex={9999}>
+                    <HeaderProvider>{children}</HeaderProvider>
+                    <ModalContainer />
+                </ModalProvider>
 
                 <GoogleTagManager gtmId={'GTM-N6TLG8MX'} />
             </Suspense>
