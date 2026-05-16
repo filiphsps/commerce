@@ -4,7 +4,6 @@ import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { coerceMissingGroups } from '../adapter-mongoose';
 import type { BridgeManifest } from '../manifest';
-import { BRIDGE_COLLECTION_PREFIX } from '../plugin';
 import type { BridgeCtxResolver, BridgeServerActions } from '../server-actions';
 import { BridgeFields } from './bridge-fields';
 import { BridgeFormToolbar } from './bridge-form-toolbar';
@@ -73,10 +72,6 @@ export async function BridgeEditPage<TDoc>({
     const boundDelete: () => Promise<void> = () => actions.deleteAction(domain, id);
 
     const title = titleFor ? titleFor(doc) : String((doc as { name?: string }).name ?? manifest.label.singular);
-
-    // Reference BRIDGE_COLLECTION_PREFIX for consumers that inspect the synthesized slug
-    // (BridgeFields uses this internally via the manifest.slug).
-    void `${BRIDGE_COLLECTION_PREFIX}${manifest.slug}`;
 
     return (
         <DocumentForm
