@@ -28,14 +28,18 @@ const identify = dedupe(
     },
 );
 
+interface PopulatedFlag {
+    key: string;
+    defaultValue: unknown;
+    targeting: Array<{ rule: string; params: Record<string, unknown>; value: unknown }>;
+}
+
+function isPopulated(flag: unknown): flag is PopulatedFlag {
+    return typeof flag === 'object' && flag !== null && 'key' in flag && 'targeting' in flag;
+}
+
 type ShopWithFlags = FlagEntities['shop'] & {
-    featureFlags?: Array<{
-        flag: {
-            key: string;
-            defaultValue: unknown;
-            targeting: Array<{ rule: string; params: Record<string, unknown>; value: unknown }>;
-        };
-    }>;
+    featureFlags?: Array<{ flag: unknown }>;
 };
 
 export function nordcomFlagAdapter<T>(): Adapter<T, FlagEntities> {
@@ -45,14 +49,15 @@ export function nordcomFlagAdapter<T>(): Adapter<T, FlagEntities> {
         decide({ key, entities, defaultValue }) {
             if (!entities) return defaultValue as T;
             const shop = entities.shop as ShopWithFlags;
-            const ref = shop.featureFlags?.find((entry) => entry.flag?.key === key);
-            if (!ref) return defaultValue as T;
-            for (const rule of ref.flag.targeting) {
+            const ref = shop.featureFlags?.find((entry) => isPopulated(entry.flag) && entry.flag.key === key);
+            if (!ref || !isPopulated(ref.flag)) return defaultValue as T;
+            const flagDoc = ref.flag;
+            for (const rule of flagDoc.targeting) {
                 if (evaluatePredicate(rule.rule, { ...rule.params, flagKey: key }, entities)) {
                     return rule.value as T;
                 }
             }
-            return ref.flag.defaultValue as T;
+            return flagDoc.defaultValue as T;
         },
     };
 }

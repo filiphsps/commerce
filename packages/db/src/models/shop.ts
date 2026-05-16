@@ -3,6 +3,7 @@ import { Schema } from 'mongoose';
 
 import type { BaseDocument, DocumentExtras } from '../db';
 import { db } from '../db';
+import type { FeatureFlagBase } from './feature-flag';
 import type { UserBase } from './user';
 
 // TODO: Remove this.
@@ -55,8 +56,12 @@ export type CommerceProvider = ShopifyCommerceProvider | StripeCommerceProvider;
 export const CommerceProviders = ['shopify', 'stripe'] as const satisfies CommerceProvider['type'][];
 export type CommerceProviders = (typeof CommerceProviders)[number];
 
+// `flag` is stored as an ObjectId in MongoDB. After `populate('featureFlags.flag')`
+// (see `Shop.findByDomain({ populate })`), the field is the full FeatureFlag
+// document. Consumers receive whichever shape the query produced; runtime code
+// should narrow with `typeof flag === 'object' && 'key' in flag`.
 export interface FeatureFlagRef {
-    flag: import('mongoose').Types.ObjectId;
+    flag: import('mongoose').Types.ObjectId | FeatureFlagBase;
 }
 
 export interface ShopBase extends BaseDocument {

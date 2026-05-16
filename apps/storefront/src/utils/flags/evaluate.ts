@@ -1,6 +1,6 @@
 import 'server-only';
 
-import type { FeatureFlagBase, OnlineShop } from '@nordcom/commerce-db';
+import type { OnlineShop } from '@nordcom/commerce-db';
 import type { FlagEntities } from './entities';
 import type { FlagOverrides } from './overrides';
 import { evaluatePredicate, getPredicateMetadata } from './predicates';
@@ -15,8 +15,18 @@ export interface EvaluateShopFlagOptions<T> {
     codeDefaultValue?: T;
 }
 
+interface PopulatedFlag {
+    key: string;
+    defaultValue: unknown;
+    targeting: Array<{ rule: string; params: Record<string, unknown>; value: unknown }>;
+}
+
+function isPopulated(flag: unknown): flag is PopulatedFlag {
+    return typeof flag === 'object' && flag !== null && 'key' in flag && 'targeting' in flag;
+}
+
 type ShopWithFlags = OnlineShop & {
-    featureFlags?: Array<{ flag: FeatureFlagBase }>;
+    featureFlags?: Array<{ flag: unknown }>;
 };
 
 /**
@@ -41,8 +51,8 @@ function decide<T>(shop: ShopWithFlags, key: string, options: EvaluateShopFlagOp
         return options.overrides[key] as T;
     }
 
-    const ref = shop.featureFlags?.find((entry) => entry.flag?.key === key);
-    if (!ref) return options.codeDefaultValue as T;
+    const ref = shop.featureFlags?.find((entry) => isPopulated(entry.flag) && entry.flag.key === key);
+    if (!ref || !isPopulated(ref.flag)) return options.codeDefaultValue as T;
 
     const flagDoc = ref.flag;
     const partialEntities: FlagEntities = {
