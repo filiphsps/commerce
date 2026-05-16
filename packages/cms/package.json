@@ -72,22 +72,6 @@
             "./src/ui/index.ts",
             "./dist/ui/index.js"
         ],
-        "./bridge": [
-            "./src/bridge/index.ts",
-            "./dist/bridge/index.js"
-        ],
-        "./bridge/server-actions": [
-            "./src/bridge/server-actions.ts",
-            "./dist/bridge/server-actions.js"
-        ],
-        "./bridge/ui": [
-            "./src/bridge/ui/index.ts",
-            "./dist/bridge/ui/index.js"
-        ],
-        "./bridge/manifests": [
-            "./src/bridge/manifests/index.ts",
-            "./dist/bridge/manifests/index.js"
-        ],
         "./editor": [
             "./src/editor/index.ts",
             "./dist/editor/index.js"
