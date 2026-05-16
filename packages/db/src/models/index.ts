@@ -1,5 +1,6 @@
 import * as ModelsSession from './session';
 
+export * from './feature-flag';
 export * from './identity';
 export * from './review';
 export * from './session';
