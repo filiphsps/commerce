@@ -1,7 +1,6 @@
 import type { Field } from 'payload';
 import type { BridgeManifest } from './manifest';
 
-// biome-ignore lint/correctness/noUnusedVariables: deliberate drop of mongoose internals
 const stripInternals = (obj: Record<string, unknown>): Record<string, unknown> => {
     const { _id, __v, ...rest } = obj;
     return rest;
