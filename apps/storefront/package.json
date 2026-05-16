@@ -69,7 +69,6 @@
         "@tagtree/next": "workspace:*",
         "@tagtree/shopify": "workspace:*",
         "@vercel/analytics": "2.0.1",
-        "@vercel/edge-config": "1.4.3",
         "@vercel/otel": "2.1.2",
         "@vercel/speed-insights": "2.0.0",
         "@vercel/toolbar": "0.2.5",
