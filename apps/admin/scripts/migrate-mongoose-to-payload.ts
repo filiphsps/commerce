@@ -11,9 +11,8 @@
 // Note: @nordcom/commerce-cms/config exports buildPayloadConfig; we import the
 // shared default config builder so the same Payload instance the app uses.
 import { buildPayloadConfig } from '@nordcom/commerce-cms/config';
+import { FeatureFlagModel, ReviewModel, ShopModel } from '@nordcom/commerce-db';
 import { getPayload, type Payload } from 'payload';
-
-import { FeatureFlagModel, ReviewModel, ShopModel } from '../src/models';
 
 export const migrateShops = async (payload: Payload): Promise<{ migrated: number; skipped: number }> => {
     let migrated = 0;
