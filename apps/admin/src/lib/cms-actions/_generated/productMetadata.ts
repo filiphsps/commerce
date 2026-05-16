@@ -30,6 +30,10 @@ export async function productMetadataBulkDelete(domain: string | null, ids: stri
 export async function productMetadataBulkPublish(domain: string | null, ids: string[]): Promise<void> {
     return a.bulkPublish(domain, ids);
 }
-export async function productMetadataRestoreVersion(domain: string | null, id: string, versionId: string): Promise<void> {
+export async function productMetadataRestoreVersion(
+    domain: string | null,
+    id: string,
+    versionId: string,
+): Promise<void> {
     return a.restoreVersion(domain, id, versionId);
 }
