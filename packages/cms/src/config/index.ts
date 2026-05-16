@@ -3,6 +3,8 @@ import { resendAdapter } from '@payloadcms/email-resend';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import type { AuthStrategy, SanitizedConfig } from 'payload';
 import { buildConfig } from 'payload';
+import { buildBridgePlugin } from '../bridge';
+import { defaultManifests } from '../bridge/manifests';
 import { allCollections, buildUsers } from '../collections';
 import { buildMultiTenantPlugin, storagePluginFromEnv } from '../plugins';
 
@@ -89,7 +91,7 @@ export const buildPayloadConfig = async ({
     sharp,
     typescriptOutputFile,
 }: BuildPayloadConfigOptions): Promise<SanitizedConfig> => {
-    const plugins = [buildMultiTenantPlugin()];
+    const plugins = [buildMultiTenantPlugin(), buildBridgePlugin(defaultManifests)];
     if (enableStorage) {
         const storage = storagePluginFromEnv();
         if (storage) plugins.push(storage);

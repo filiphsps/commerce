@@ -1,8 +1,6 @@
-import { mongooseAdapter } from '@payloadcms/db-mongodb';
-import { resendAdapter } from '@payloadcms/email-resend';
-import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import type { Payload } from 'payload';
-import { buildConfig, getPayload } from 'payload';
+import { getPayload } from 'payload';
+import { buildPayloadConfig } from '../config';
 
 export type TestPayload = {
     instance: Payload;
@@ -16,16 +14,11 @@ export async function bootTestPayload({ suite }: { suite: string }): Promise<Tes
     const dbName = `test_${suite}_${Date.now()}`;
     url.pathname = `/${dbName}`;
 
-    const config = await buildConfig({
+    const config = await buildPayloadConfig({
         secret: process.env.PAYLOAD_SECRET ?? 'test-secret',
-        db: mongooseAdapter({ url: url.toString() }),
-        email: resendAdapter({
-            defaultFromAddress: '',
-            defaultFromName: '',
-            apiKey: process.env.RESEND_API_KEY || '',
-        }),
-        editor: lexicalEditor({}),
-        collections: [],
+        mongoUrl: url.toString(),
+        includeAdmin: false,
+        enableStorage: false,
     });
 
     const instance = await getPayload({ config });
