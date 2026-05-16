@@ -9,6 +9,7 @@ import { pagesEditor } from './pages';
 import { productMetadataEditor } from './product-metadata';
 import { reviewsEditor } from './review';
 import { shopsEditor } from './shop';
+import { tenantsEditor } from './tenants';
 
 export { articlesEditor } from './articles';
 export { businessDataEditor } from './business-data';
@@ -20,6 +21,7 @@ export { pagesEditor } from './pages';
 export { productMetadataEditor } from './product-metadata';
 export { reviewsEditor } from './review';
 export { shopsEditor } from './shop';
+export { tenantsEditor } from './tenants';
 
 /**
  * Registry consumed by `pnpm cms:gen`. Every shipped manifest MUST be listed
@@ -36,4 +38,5 @@ export const allManifests: readonly CollectionEditorManifest[] = [
     pagesEditor as unknown as CollectionEditorManifest,
     productMetadataEditor as unknown as CollectionEditorManifest,
     collectionMetadataEditor as unknown as CollectionEditorManifest,
+    tenantsEditor as unknown as CollectionEditorManifest,
 ];
