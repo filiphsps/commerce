@@ -21,6 +21,9 @@ ordered array passed to `buildPayloadConfig`; `tenantScopedCollections` and
 | `header`             | `src/collections/_globals/header.ts`          | `isGlobal` — one row per tenant.                                      |
 | `footer`             | `src/collections/_globals/footer.ts`          | `isGlobal` — one row per tenant.                                      |
 | `businessData`       | `src/collections/_globals/business-data.ts`   | `isGlobal` — addresses, phone, support email, etc.                    |
+| `shops`              | `src/collections/shops.ts`                    | Migrated from `@nordcom/commerce-db`. Edit surface (name, domain, design) via `shopsEditor`; commerceProvider secrets blocked by hooks. |
+| `reviews`            | `src/collections/reviews.ts`                  | Migrated from `@nordcom/commerce-db`. Tenant-scoped; relationship to `shops`. |
+| `feature-flags`      | `src/collections/feature-flags.ts`            | Migrated from `@nordcom/commerce-db`. Admin-only; keyed by `key`.     |
 
 Three collections (`header`, `footer`, `businessData`) are modelled as
 singleton-like rows under `@payloadcms/plugin-multi-tenant`'s `isGlobal: true`

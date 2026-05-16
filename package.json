@@ -26,6 +26,7 @@
         "build:docs": "dotenv -c -- turbo run build --filter=./apps/docs --env-mode=loose --remote-cache-timeout=60",
         "build:packages": "turbo run build --filter=./packages/** --env-mode=loose --remote-cache-timeout=60",
         "generate:types": "pnpm --filter @nordcom/commerce-cms generate:types",
+        "migrate:mongoose-to-payload": "pnpm --filter @nordcom/commerce-admin migrate:mongoose-to-payload",
         "clean": "turbo run clean",
         "lint": "biome lint .",
         "format": "concurrently -i pnpm:format:*",

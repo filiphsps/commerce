@@ -20,7 +20,8 @@
         "format:check": "biome check --write --unsafe .",
         "test:e2e": "playwright test",
         "typecheck": "tsc -noEmit",
-        "analyze": "next experimental-analyze"
+        "analyze": "next experimental-analyze",
+        "migrate:mongoose-to-payload": "tsx scripts/migrate-mongoose-to-payload.ts"
     },
     "author": {
         "name": "Nordcom AB",
