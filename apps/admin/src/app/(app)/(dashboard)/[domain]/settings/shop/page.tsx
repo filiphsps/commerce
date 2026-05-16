@@ -21,27 +21,21 @@ type Props = { params: Promise<{ domain: string }> };
 
 export default async function ShopSettingsPage({ params }: Props) {
     const { domain } = await params;
+    const { payload, user } = await getAuthedPayloadCtx(domain);
 
-    const getCtx = async (d: string) => {
-        const { user } = await getAuthedPayloadCtx(d);
-        return {
-            user: {
-                id: user.id,
-                role: user.role,
-                tenants: user.tenants.map((t) => t.tenant),
-            },
-            domain: d,
-        };
+    const ctx = {
+        user: {
+            id: user.id,
+            role: user.role,
+            tenants: user.tenants.map((t) => t.tenant),
+        },
+        domain,
     };
-
-    const ctx = await getCtx(domain);
     if (!(await shopBridge.access.read(ctx))) notFound();
 
-    // ── Fetch doc + build form state ──────────────────────────────────────────
     const doc = await shopBridge.adapter.findById(domain);
     if (!doc) notFound();
 
-    const { payload, user } = await getAuthedPayloadCtx(domain);
     const headers = await getHeaders();
     const cookies = parseCookies(headers);
     const language = getRequestLanguage({ config: payload.config, cookies, headers });
@@ -61,6 +55,17 @@ export default async function ShopSettingsPage({ params }: Props) {
     });
 
     const clientConfig = await getCmsClientConfig(domain);
+
+    // getCtx is consumed by server actions on subsequent requests; it must
+    // resolve from the request domain at action-invocation time, NOT close
+    // over the page-render ctx.
+    const getCtx = async (d: string) => {
+        const { user: u } = await getAuthedPayloadCtx(d);
+        return {
+            user: { id: u.id, role: u.role, tenants: u.tenants.map((t) => t.tenant) },
+            domain: d,
+        };
+    };
     const actions = createBridgeServerActions(shopBridge, getCtx);
 
     return (
