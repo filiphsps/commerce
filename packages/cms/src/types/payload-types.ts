@@ -70,10 +70,13 @@ export interface Config {
     tenants: Tenant;
     users: User;
     media: Media;
+    shops: Shop;
+    'feature-flags': FeatureFlag;
     pages: Page;
     articles: Article;
     productMetadata: ProductMetadatum;
     collectionMetadata: CollectionMetadatum;
+    reviews: Review;
     header: Header;
     footer: Footer;
     businessData: BusinessDatum;
@@ -87,10 +90,13 @@ export interface Config {
     tenants: TenantsSelect<false> | TenantsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    shops: ShopsSelect<false> | ShopsSelect<true>;
+    'feature-flags': FeatureFlagsSelect<false> | FeatureFlagsSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
     productMetadata: ProductMetadataSelect<false> | ProductMetadataSelect<true>;
     collectionMetadata: CollectionMetadataSelect<false> | CollectionMetadataSelect<true>;
+    reviews: ReviewsSelect<false> | ReviewsSelect<true>;
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
     businessData: BusinessDataSelect<false> | BusinessDataSelect<true>;
@@ -241,6 +247,162 @@ export interface Media {
       filename?: string | null;
     };
   };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "shops".
+ */
+export interface Shop {
+  id: string;
+  name: string;
+  description?: string | null;
+  domain: string;
+  alternativeDomains?: string[] | null;
+  i18n: {
+    defaultLocale: string;
+  };
+  design: {
+    header: {
+      logo: {
+        src: string;
+        alt: string;
+        width: number;
+        height: number;
+      };
+    };
+    accents?:
+      | {
+          type: 'primary' | 'secondary';
+          color: string;
+          foreground: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  commerce?: {
+    maxQuantity?: number | null;
+    processingTimeInDays?: number | null;
+  };
+  icons?: {
+    favicon?: {
+      width?: number | null;
+      height?: number | null;
+      src?: string | null;
+      alt?: string | null;
+    };
+  };
+  commerceProvider: {
+    type: 'shopify' | 'stripe';
+    storefrontId?: string | null;
+    domain?: string | null;
+    id?: string | null;
+    authentication?: {
+      token?: string | null;
+      publicToken?: string | null;
+      domain?: string | null;
+      customers?: {
+        id?: string | null;
+        clientId?: string | null;
+        clientSecret?: string | null;
+      };
+    };
+  };
+  contentProvider: {
+    type: 'cms' | 'shopify' | 'builder.io';
+    authentication?: {
+      token?: string | null;
+      publicToken?: string | null;
+    };
+  };
+  integrations?: {
+    judgeme?: {
+      publicToken?: string | null;
+    };
+  };
+  thirdParty?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  featureFlags?:
+    | {
+        flag?: (string | null) | FeatureFlag;
+        id?: string | null;
+      }[]
+    | null;
+  collaborators?:
+    | {
+        user?: string | null;
+        permissions?: string[] | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "feature-flags".
+ */
+export interface FeatureFlag {
+  id: string;
+  key: string;
+  description?: string | null;
+  defaultValue:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  options?:
+    | {
+        label: string;
+        value:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  targeting?:
+    | {
+        rule: string;
+        params:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        value:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -585,6 +747,17 @@ export interface VendorsBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reviews".
+ */
+export interface Review {
+  id: string;
+  tenant?: (string | null) | Tenant;
+  shop: string | Shop;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header".
  */
 export interface Header {
@@ -777,6 +950,14 @@ export interface PayloadLockedDocument {
         value: string | Media;
       } | null)
     | ({
+        relationTo: 'shops';
+        value: string | Shop;
+      } | null)
+    | ({
+        relationTo: 'feature-flags';
+        value: string | FeatureFlag;
+      } | null)
+    | ({
         relationTo: 'pages';
         value: string | Page;
       } | null)
@@ -791,6 +972,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'collectionMetadata';
         value: string | CollectionMetadatum;
+      } | null)
+    | ({
+        relationTo: 'reviews';
+        value: string | Review;
       } | null)
     | ({
         relationTo: 'header';
@@ -951,6 +1136,148 @@ export interface MediaSelect<T extends boolean = true> {
               filename?: T;
             };
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "shops_select".
+ */
+export interface ShopsSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  domain?: T;
+  alternativeDomains?: T;
+  i18n?:
+    | T
+    | {
+        defaultLocale?: T;
+      };
+  design?:
+    | T
+    | {
+        header?:
+          | T
+          | {
+              logo?:
+                | T
+                | {
+                    src?: T;
+                    alt?: T;
+                    width?: T;
+                    height?: T;
+                  };
+            };
+        accents?:
+          | T
+          | {
+              type?: T;
+              color?: T;
+              foreground?: T;
+              id?: T;
+            };
+      };
+  commerce?:
+    | T
+    | {
+        maxQuantity?: T;
+        processingTimeInDays?: T;
+      };
+  icons?:
+    | T
+    | {
+        favicon?:
+          | T
+          | {
+              width?: T;
+              height?: T;
+              src?: T;
+              alt?: T;
+            };
+      };
+  commerceProvider?:
+    | T
+    | {
+        type?: T;
+        storefrontId?: T;
+        domain?: T;
+        id?: T;
+        authentication?:
+          | T
+          | {
+              token?: T;
+              publicToken?: T;
+              domain?: T;
+              customers?:
+                | T
+                | {
+                    id?: T;
+                    clientId?: T;
+                    clientSecret?: T;
+                  };
+            };
+      };
+  contentProvider?:
+    | T
+    | {
+        type?: T;
+        authentication?:
+          | T
+          | {
+              token?: T;
+              publicToken?: T;
+            };
+      };
+  integrations?:
+    | T
+    | {
+        judgeme?:
+          | T
+          | {
+              publicToken?: T;
+            };
+      };
+  thirdParty?: T;
+  featureFlags?:
+    | T
+    | {
+        flag?: T;
+        id?: T;
+      };
+  collaborators?:
+    | T
+    | {
+        user?: T;
+        permissions?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "feature-flags_select".
+ */
+export interface FeatureFlagsSelect<T extends boolean = true> {
+  key?: T;
+  description?: T;
+  defaultValue?: T;
+  options?:
+    | T
+    | {
+        label?: T;
+        value?: T;
+        id?: T;
+      };
+  targeting?:
+    | T
+    | {
+        rule?: T;
+        params?: T;
+        value?: T;
+        description?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1226,6 +1553,16 @@ export interface CollectionMetadataSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reviews_select".
+ */
+export interface ReviewsSelect<T extends boolean = true> {
+  tenant?: T;
+  shop?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
