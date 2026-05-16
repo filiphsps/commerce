@@ -25,7 +25,7 @@ export const buildStoragePlugin = (opts: StoragePluginOptions): Plugin =>
 export const storagePluginFromEnv = (): Plugin | null => {
     const bucket = process.env.S3_BUCKET;
     const endpoint = process.env.S3_ENDPOINT;
-    const region = process.env.S3_REGION;
+    const region = process.env.S3_REGION || 'auto';
     const accessKeyId = process.env.S3_ACCESS_KEY_ID;
     const secretAccessKey = process.env.S3_SECRET_ACCESS_KEY;
     if (!bucket || !endpoint || !region || !accessKeyId || !secretAccessKey) return null;
