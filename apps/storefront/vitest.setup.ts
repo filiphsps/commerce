@@ -20,7 +20,7 @@ afterAll(() => {
 
 vi.mock('server-only', () => ({}));
 
-vi.mock('@vercel/flags', () => ({
+vi.mock('flags', () => ({
     unstable_flags: vi.fn().mockReturnValue(false),
 }));
 vi.mock('@vercel/edge-config', () => ({

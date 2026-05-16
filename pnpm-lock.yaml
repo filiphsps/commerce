@@ -566,13 +566,13 @@ importers:
         version: 2026.4.2(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(three@0.139.2)(vite@8.0.12(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.99.0)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0))
       '@tagtree/core':
         specifier: workspace:*
-        version: link:../../packages/tagtree/core
+        version: link:../../packages/tagtree-core
       '@tagtree/next':
         specifier: workspace:*
-        version: link:../../packages/tagtree/next
+        version: link:../../packages/tagtree-next
       '@tagtree/shopify':
         specifier: workspace:*
-        version: link:../../packages/tagtree/shopify
+        version: link:../../packages/tagtree-shopify
       '@vercel/analytics':
         specifier: 2.0.1
         version: 2.0.1(next@16.2.6(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(react@19.2.6)
@@ -777,13 +777,13 @@ importers:
         version: 1.2.1
       '@tagtree/core':
         specifier: workspace:*
-        version: link:../tagtree/core
+        version: link:../tagtree-core
       '@tagtree/next':
         specifier: workspace:*
-        version: link:../tagtree/next
+        version: link:../tagtree-next
       '@tagtree/payload':
         specifier: workspace:*
-        version: link:../tagtree/payload
+        version: link:../tagtree-payload
       jose:
         specifier: 5.9.0
         version: 5.9.0
@@ -1030,7 +1030,7 @@ importers:
         specifier: 4.1.6
         version: 4.1.6(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(@vitest/coverage-v8@4.1.6)(happy-dom@20.9.0)(jsdom@29.1.1)(vite@8.0.12(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.99.0)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0))
 
-  packages/tagtree/core:
+  packages/tagtree-core:
     devDependencies:
       '@codecov/vite-plugin':
         specifier: 2.0.1
@@ -1051,11 +1051,11 @@ importers:
         specifier: 4.1.6
         version: 4.1.6(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(@vitest/coverage-v8@4.1.6)(happy-dom@20.9.0)(jsdom@29.1.1)(vite@8.0.12(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.99.0)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0))
 
-  packages/tagtree/next:
+  packages/tagtree-next:
     dependencies:
       '@tagtree/core':
         specifier: workspace:*
-        version: link:../core
+        version: link:../tagtree-core
       server-only:
         specifier: 0.0.1
         version: 0.0.1
@@ -1088,11 +1088,11 @@ importers:
         specifier: 4.1.6
         version: 4.1.6(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(@vitest/coverage-v8@4.1.6)(happy-dom@20.9.0)(jsdom@29.1.1)(vite@8.0.12(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.99.0)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0))
 
-  packages/tagtree/payload:
+  packages/tagtree-payload:
     dependencies:
       '@tagtree/core':
         specifier: workspace:*
-        version: link:../core
+        version: link:../tagtree-core
     devDependencies:
       '@codecov/vite-plugin':
         specifier: 2.0.1
@@ -1116,11 +1116,11 @@ importers:
         specifier: 4.1.6
         version: 4.1.6(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(@vitest/coverage-v8@4.1.6)(happy-dom@20.9.0)(jsdom@29.1.1)(vite@8.0.12(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.99.0)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0))
 
-  packages/tagtree/shopify:
+  packages/tagtree-shopify:
     dependencies:
       '@tagtree/core':
         specifier: workspace:*
-        version: link:../core
+        version: link:../tagtree-core
     devDependencies:
       '@codecov/vite-plugin':
         specifier: 2.0.1

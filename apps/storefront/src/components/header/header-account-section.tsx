@@ -17,7 +17,7 @@ export type HeaderAccountSectionProps = {
     i18n: LocaleDictionary;
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 export async function HeaderAccountSection({ shop, i18n, className, ...props }: HeaderAccountSectionProps) {
-    // Use `readFlag` instead of `enableAccountsFunctionality()` — `@vercel/flags/next`'s
+    // Use `readFlag` instead of `enableAccountsFunctionality()` — `flags/next`'s
     // `flag()` wrapper reads request headers internally, which is forbidden inside
     // the `'use cache'` scope that wraps this component's parent.
     const accountsEnabled = await readFlag('accounts-functionality', false);

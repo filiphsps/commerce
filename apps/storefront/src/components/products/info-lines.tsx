@@ -72,7 +72,7 @@ export type InfoLinesProps = {
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 
 const InfoLines = async ({ shop, product, i18n, locale, className, ...props }: InfoLinesProps) => {
-    // Use `readFlag` instead of `showProductInfoLines()` — `@vercel/flags/next`'s
+    // Use `readFlag` instead of `showProductInfoLines()` — `flags/next`'s
     // `flag()` wrapper reads request headers internally, which is forbidden inside
     // the `'use cache'` scope that wraps this component's parent.
     const productInfoLinesEnabled = await readFlag('product-page-info-lines', false);

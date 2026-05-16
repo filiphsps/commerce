@@ -3,7 +3,7 @@
  * default when edge config isn't configured (local dev, no EDGE_CONFIG env)
  * or the key isn't set.
  *
- * Use this instead of `@vercel/flags/next` inside `'use cache'` scopes.
+ * Use this instead of `flags/next` inside `'use cache'` scopes.
  * The flags wrapper reads request headers internally for visit attribution,
  * which Next 16 forbids inside cached components.
  *

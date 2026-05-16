@@ -1,7 +1,7 @@
 /* c8 ignore start */
 
-import type { ApiData } from '@vercel/flags';
-import { verifyAccess } from '@vercel/flags';
+import type { ApiData } from 'flags';
+import { verifyAccess } from 'flags';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
