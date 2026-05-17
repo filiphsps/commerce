@@ -14,8 +14,12 @@ const stripInternals = <T extends Doc>(doc: T): Omit<T, '_id' | '__v'> => {
  *   `customers.clientSecret` (matches the existing Mongoose service's
  *   `sensitiveData: false` default).
  */
-export const docToOnlineShop = (doc: Doc): OnlineShop => {
+export const docToOnlineShop = (doc: Doc): OnlineShop | null => {
+    if (!doc) return null;
+
     const stripped = stripInternals(doc);
+    if (!stripped) return null;
+
     const cp = (stripped as { commerceProvider?: { type?: string; authentication?: Record<string, unknown> } })
         .commerceProvider;
     if (cp && cp.authentication) {
