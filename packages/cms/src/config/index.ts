@@ -18,7 +18,7 @@ export type BuildPayloadConfigOptions = {
     secret: string;
     mongoUrl: string;
     serverUrl?: string;
-    csrd?: string[];
+    csrf?: string[];
     /** When true, mount the admin UI at routes.admin (default '/cms'). Storefront passes false. */
     includeAdmin?: boolean;
     /** When false, skip the S3 storage plugin even if env vars are set. Default true. */
@@ -79,7 +79,7 @@ export const buildPayloadConfig = async ({
     secret,
     mongoUrl,
     serverUrl,
-    csrf = [],
+    csrf,
     includeAdmin = true,
     enableStorage = true,
     locales = DEFAULT_LOCALES,
@@ -224,6 +224,7 @@ export const buildPayloadConfig = async ({
         plugins,
         ...adminConfig,
         ...(sharp ? { sharp } : {}),
+        ...(csrf ? { csrf } : {}),
         ...(typescriptOutputFile ? { typescript: { outputFile: typescriptOutputFile } } : {}),
         routes: { admin: '/cms' },
     });
