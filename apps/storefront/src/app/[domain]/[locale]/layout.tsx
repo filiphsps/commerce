@@ -21,45 +21,49 @@ import ProvidersRegistry from '@/components/providers-registry';
 import { getDictionary } from '@/i18n/dictionary';
 import { CssVariablesProvider, getBrandingColors } from '@/utils/css-variables';
 import { primaryFont } from '@/utils/fonts';
+import { NOT_FOUND_HANDLE } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 
 export type LayoutParams = Promise<{ domain: string; locale: string }>;
 
 export async function generateStaticParams(): Promise<Awaited<LayoutParams>[]> {
-    const shops = await Shop.findAll();
-
-    const params = (
-        await Promise.all(
-            shops.map(async ({ domain }) => {
-                let shop: OnlineShop;
-                try {
-                    shop = await Shop.findByDomain(domain, { sensitiveData: true });
-                } catch (error: unknown) {
-                    console.error(error);
-                    return null as unknown as LayoutParams;
-                }
-                if (shop.domain.includes('demo')) {
-                    return null as unknown as LayoutParams;
-                }
-
-                return [
-                    {
-                        domain: shop.domain,
-                        locale: Locale.from('en-US').code,
-                    },
-                ];
-            }),
+    try {
+        const shops = await Shop.findAll();
+    
+        const params = (
+            await Promise.all(
+                shops.map(async ({ domain }) => {
+                    let shop: OnlineShop;
+                    try {
+                        shop = await Shop.findByDomain(domain, { sensitiveData: true });
+                    } catch (error: unknown) {
+                        console.error(error);
+                        return null as unknown as LayoutParams;
+                    }
+                    if (shop.domain.includes('demo')) {
+                        return null as unknown as LayoutParams;
+                    }
+    
+                    return [
+                        {
+                            domain: shop.domain,
+                            locale: Locale.from('en-US').code,
+                        },
+                    ];
+                }),
+            )
         )
-    )
-        .flat(1)
-        .filter(Boolean);
-
-    if (params.length === 0) {
-        throw new NotFoundError('shops');
+            .flat(1)
+            .filter(Boolean);
+    
+        return params.length > 0 ? params : [{ domain: NOT_FOUND_HANDLE, locale: NOT_FOUND_HANDLE }];
+    
+        return params;
+    } catch (error: unknown) {
+        console.error(error);
+        return [{ domain: NOT_FOUND_HANDLE, locale: NOT_FOUND_HANDLE }];;
     }
-
-    return params;
 }
 
 export const viewport: Viewport = {
