@@ -16,7 +16,7 @@ const stripInternals = <T extends Doc>(doc: T): Omit<T, '_id' | '__v'> => {
  *   `customers.clientSecret` (matches the existing Mongoose service's
  *   `sensitiveData: false` default).
  */
-export const docToOnlineShop = (doc: Doc): OnlineShop | null => {
+export const docToOnlineShop = (doc: Doc): OnlineShop => {
     const stripped = stripInternals(doc);
     if (!doc || !stripped) {
         return null as unknown as OnlineShop;
