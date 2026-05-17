@@ -1,4 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server';
+import NextAuth from 'next-auth';
+import authConfig from '@/utils/auth.config';
 
 export const config = {
     matcher: ['/((?!_next|_static|_vercel|instrumentation|assets|favicon.ico|[\\w-]+\\.\\w+).*)'],
@@ -7,6 +9,8 @@ export const config = {
         { type: 'header', key: 'purpose', value: 'prefetch' },
     ],
 };
+
+const { auth } = NextAuth(authConfig);
 
 /**
  * Top-level admin proxy.
@@ -18,7 +22,7 @@ export const config = {
  * routes (tenants/users/media) live at the path root — both are reachable
  * after the redirect lands the user on `/`.
  */
-export default function proxy(request: NextRequest) {
+export default auth((request: NextRequest) => {
     const { pathname } = request.nextUrl;
 
     if (pathname === '/cms' || pathname.startsWith('/cms/')) {
@@ -29,4 +33,4 @@ export default function proxy(request: NextRequest) {
     }
 
     return NextResponse.next();
-}
+});
