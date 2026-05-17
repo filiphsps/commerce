@@ -17,7 +17,7 @@ const stripInternals = <T extends Doc>(doc: T): Omit<T, '_id' | '__v'> => {
  *   `sensitiveData: false` default).
  */
 export const docToOnlineShop = (doc: Doc): OnlineShop | null => {
-    lconst stripped = stripInternals(doc);
+    const stripped = stripInternals(doc);
     if (!doc || !stripped) {
         return null as unknown as OnlineShop;
     }
