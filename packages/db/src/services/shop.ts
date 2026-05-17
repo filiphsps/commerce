@@ -65,7 +65,7 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
             limit: 0,
             overrideAccess: true,
         });
-        return docs.map((doc) => docToOnlineShop(doc as unknown as Record<string, unknown>));
+        return docs.map((doc) => docToOnlineShop(doc as unknown as Record<string, unknown>)).filter(d => d);
     }
 
     public async findByDomain(domain: string, options?: FindOptions): Promise<OnlineShop | ShopBase>;
@@ -101,7 +101,7 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
                 overrideAccess: true,
             });
             // Make sure we filter out empty/invalid domains.
-            return docs.filter(d => d).map((doc) => docToOnlineShop(doc as unknown as Record<string, unknown>));
+            return docs.map((doc) => docToOnlineShop(doc as unknown as Record<string, unknown>)).filter(d => d);
         } catch (error: unknown) {
             console.warn(error);
             return [];
