@@ -99,7 +99,8 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
             limit: 0,
             overrideAccess: true,
         });
-        return docs.map((doc) => docToOnlineShop(doc as unknown as Record<string, unknown>));
+        // Make sure we filter out empty/invalid domains.
+        return docs.filter(d => d).map((doc) => docToOnlineShop(doc as unknown as Record<string, unknown>));
     }
 }
 
