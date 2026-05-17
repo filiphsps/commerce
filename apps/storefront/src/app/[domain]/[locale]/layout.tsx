@@ -32,7 +32,13 @@ export async function generateStaticParams(): Promise<Awaited<LayoutParams>[]> {
     const params = (
         await Promise.all(
             shops.map(async ({ domain }) => {
-                const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+                let shop: OnlineShop;
+                try {
+                    shop = await Shop.findByDomain(domain, { sensitiveData: true });
+                } catch (error: unknown) {
+                    console.error(error);
+                    return null as unknown as LayoutParams;
+                }
                 if (shop.domain.includes('demo')) {
                     return null as unknown as LayoutParams;
                 }
