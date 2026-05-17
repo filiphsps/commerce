@@ -3,6 +3,8 @@ import type { FeatureFlagBase, OnlineShop, ReviewBase } from '../models';
 type Doc = Record<string, unknown>;
 
 const stripInternals = <T extends Doc>(doc: T): Omit<T, '_id' | '__v'> => {
+    if (!doc) return doc;
+
     const { _id: _id_, __v: __v_, ...rest } = doc as { _id?: unknown; __v?: unknown } & T;
     return rest;
 };
@@ -15,10 +17,10 @@ const stripInternals = <T extends Doc>(doc: T): Omit<T, '_id' | '__v'> => {
  *   `sensitiveData: false` default).
  */
 export const docToOnlineShop = (doc: Doc): OnlineShop | null => {
-    if (!doc) return null;
-
-    const stripped = stripInternals(doc);
-    if (!stripped) return null;
+    lconst stripped = stripInternals(doc);
+    if (!doc || !stripped) {
+        return null as unknown as OnlineShop;
+    }
 
     const cp = (stripped as { commerceProvider?: { type?: string; authentication?: Record<string, unknown> } })
         .commerceProvider;
