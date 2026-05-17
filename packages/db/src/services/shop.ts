@@ -93,14 +93,19 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
     }
 
     public async findAll(): Promise<OnlineShop[]> {
-        const payload = this.getPayload();
-        const { docs } = await payload.find({
-            collection: 'shops' as never,
-            limit: 0,
-            overrideAccess: true,
-        });
-        // Make sure we filter out empty/invalid domains.
-        return docs.filter(d => d).map((doc) => docToOnlineShop(doc as unknown as Record<string, unknown>));
+        try {
+            const payload = this.getPayload();
+            const { docs } = await payload.find({
+                collection: 'shops' as never,
+                limit: 0,
+                overrideAccess: true,
+            });
+            // Make sure we filter out empty/invalid domains.
+            return docs.filter(d => d).map((doc) => docToOnlineShop(doc as unknown as Record<string, unknown>));
+        } catch (error: unknown) {
+            console.warn(error);
+            return [];
+        }
     }
 }
 
