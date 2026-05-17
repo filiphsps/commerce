@@ -1,5 +1,6 @@
 import 'server-only';
 
+import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 import { parseGid } from '@shopify/hydrogen-react';
@@ -46,13 +47,18 @@ export async function generateMetadata({
     const searchParams = await queryParams;
 
     const { domain, locale: localeData, handle } = await params;
-    if (!isValidHandle(handle)) {
+    if (!isValidHandle(handle) || !isValidHandle(domain)) {
         notFound();
     }
 
     const locale = Locale.from(localeData);
 
-    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    let shop: OnlineShop;
+    try {
+        shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    } catch (error: unknown) {
+        notFound();
+    }
 
     const api = await ShopifyApiClient({ shop, locale });
 
@@ -137,7 +143,12 @@ export default async function ProductPage({ params }: { params: ProductPageParam
 
     const locale = Locale.from(localeData);
 
-    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    let shop: OnlineShop;
+    try {
+        shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    } catch (error: unknown) {
+        notFound();
+    }
 
     const api = await ShopifyApolloApiClient({ shop, locale });
 
