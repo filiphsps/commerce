@@ -69,7 +69,7 @@ const config = {
         esmExternals: true,
         dynamicOnHover: true,
         // cachedNavigations: true, // TODO: Enable together with cacheComponents.
-        proxyPrefetch: 'flexible',
+        // proxyPrefetch: 'flexible', // TODO: Figure out if this breaks payload.
         optimizePackageImports: undefined,
         // `optimizeServerReact` rewrites RSC trees in ways that can break
         // third-party admin UIs. Off for the admin.
