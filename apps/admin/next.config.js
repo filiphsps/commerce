@@ -77,15 +77,14 @@ const config = {
         scrollRestoration: true,
         serverComponentsHmrCache: isDev,
         serverSourceMaps: true,
-        partialFallbacks: true,
+        // partialFallbacks: true, // TODO: Enable together with cacheComponents.
         taint: true,
         typedEnv: true,
-        useWasmBinary: false,
         webpackBuildWorker: false,
         rootParams: true,
         turbopackServerFastRefresh: true,
         turbopackFileSystemCacheForDev: true,
-        mcpServer: true,
+        mcpServer: isDev,
     },
     images: {
         dangerouslyAllowSVG: true,
