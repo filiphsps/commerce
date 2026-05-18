@@ -12,7 +12,11 @@ import { editorRuntime } from '@/lib/editor-runtime';
 
 const a = createCollectionEditorActions(collectionMetadataEditor, editorRuntime);
 
-export async function collectionMetadataSaveDraft(domain: string | null, id: string, formData: FormData): Promise<void> {
+export async function collectionMetadataSaveDraft(
+    domain: string | null,
+    id: string,
+    formData: FormData,
+): Promise<void> {
     return a.saveDraft(domain, id, formData);
 }
 export async function collectionMetadataPublish(domain: string | null, id: string, formData: FormData): Promise<void> {
@@ -30,6 +34,10 @@ export async function collectionMetadataBulkDelete(domain: string | null, ids: s
 export async function collectionMetadataBulkPublish(domain: string | null, ids: string[]): Promise<void> {
     return a.bulkPublish(domain, ids);
 }
-export async function collectionMetadataRestoreVersion(domain: string | null, id: string, versionId: string): Promise<void> {
+export async function collectionMetadataRestoreVersion(
+    domain: string | null,
+    id: string,
+    versionId: string,
+): Promise<void> {
     return a.restoreVersion(domain, id, versionId);
 }
