@@ -12,24 +12,53 @@ import { editorRuntime } from '@/lib/editor-runtime';
 
 const a = createCollectionEditorActions(headerEditor, editorRuntime);
 
-export async function headerSaveDraft(domain: string | null, id: string, formData: FormData): Promise<void> {
+// Signatures are written multi-line so Biome's auto-format hook leaves them
+// alone regardless of slug length. Short slugs (pages) and long slugs
+// (collectionMetadata) all emit the same shape, keeping cms:gen:check
+// deterministic. Do NOT use backticks in comments inside this template
+// literal — they would collide with the outer string delimiter.
+export async function headerSaveDraft(
+    domain: string | null,
+    id: string,
+    formData: FormData,
+): Promise<void> {
     return a.saveDraft(domain, id, formData);
 }
-export async function headerPublish(domain: string | null, id: string, formData: FormData): Promise<void> {
+export async function headerPublish(
+    domain: string | null,
+    id: string,
+    formData: FormData,
+): Promise<void> {
     return a.publish(domain, id, formData);
 }
-export async function headerCreate(domain: string | null, formData: FormData): Promise<{ id: string }> {
+export async function headerCreate(
+    domain: string | null,
+    formData: FormData,
+): Promise<{ id: string }> {
     return a.create(domain, formData);
 }
-export async function headerDelete(domain: string | null, id: string): Promise<void> {
+export async function headerDelete(
+    domain: string | null,
+    id: string,
+): Promise<void> {
     return a.delete(domain, id);
 }
-export async function headerBulkDelete(domain: string | null, ids: string[]): Promise<void> {
+export async function headerBulkDelete(
+    domain: string | null,
+    ids: string[],
+): Promise<void> {
     return a.bulkDelete(domain, ids);
 }
-export async function headerBulkPublish(domain: string | null, ids: string[]): Promise<void> {
+export async function headerBulkPublish(
+    domain: string | null,
+    ids: string[],
+): Promise<void> {
     return a.bulkPublish(domain, ids);
 }
-export async function headerRestoreVersion(domain: string | null, id: string, versionId: string): Promise<void> {
+export async function headerRestoreVersion(
+    domain: string | null,
+    id: string,
+    versionId: string,
+): Promise<void> {
     return a.restoreVersion(domain, id, versionId);
 }

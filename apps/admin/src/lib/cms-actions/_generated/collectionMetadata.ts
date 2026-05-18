@@ -12,6 +12,11 @@ import { editorRuntime } from '@/lib/editor-runtime';
 
 const a = createCollectionEditorActions(collectionMetadataEditor, editorRuntime);
 
+// Signatures are written multi-line so Biome's auto-format hook leaves them
+// alone regardless of slug length. Short slugs (pages) and long slugs
+// (collectionMetadata) all emit the same shape, keeping cms:gen:check
+// deterministic. Do NOT use backticks in comments inside this template
+// literal — they would collide with the outer string delimiter.
 export async function collectionMetadataSaveDraft(
     domain: string | null,
     id: string,
@@ -19,19 +24,35 @@ export async function collectionMetadataSaveDraft(
 ): Promise<void> {
     return a.saveDraft(domain, id, formData);
 }
-export async function collectionMetadataPublish(domain: string | null, id: string, formData: FormData): Promise<void> {
+export async function collectionMetadataPublish(
+    domain: string | null,
+    id: string,
+    formData: FormData,
+): Promise<void> {
     return a.publish(domain, id, formData);
 }
-export async function collectionMetadataCreate(domain: string | null, formData: FormData): Promise<{ id: string }> {
+export async function collectionMetadataCreate(
+    domain: string | null,
+    formData: FormData,
+): Promise<{ id: string }> {
     return a.create(domain, formData);
 }
-export async function collectionMetadataDelete(domain: string | null, id: string): Promise<void> {
+export async function collectionMetadataDelete(
+    domain: string | null,
+    id: string,
+): Promise<void> {
     return a.delete(domain, id);
 }
-export async function collectionMetadataBulkDelete(domain: string | null, ids: string[]): Promise<void> {
+export async function collectionMetadataBulkDelete(
+    domain: string | null,
+    ids: string[],
+): Promise<void> {
     return a.bulkDelete(domain, ids);
 }
-export async function collectionMetadataBulkPublish(domain: string | null, ids: string[]): Promise<void> {
+export async function collectionMetadataBulkPublish(
+    domain: string | null,
+    ids: string[],
+): Promise<void> {
     return a.bulkPublish(domain, ids);
 }
 export async function collectionMetadataRestoreVersion(
