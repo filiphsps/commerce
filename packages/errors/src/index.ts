@@ -416,6 +416,7 @@ export enum GenericErrorKind {
     INVALID_TYPE = 'INVALID_TYPE',
     MISSING_CONTEXT_PROVIDER = 'MISSING_CONTEXT_PROVIDER',
     NOT_CONNECTED_TO_DATABASE = 'NOT_CONNECTED_TO_DATABASE',
+    MISSING_SESSION_USER_ID = 'MISSING_SESSION_USER_ID',
 }
 
 export class GenericError extends Error<GenericErrorKind> {
@@ -484,6 +485,13 @@ export class NotConnectedToDatabase extends GenericError {
     description = 'The instance provided does not have an active database connection.';
     code = GenericErrorKind.NOT_CONNECTED_TO_DATABASE;
 }
+export class MissingSessionUserIdError extends GenericError {
+    statusCode = 500;
+    name = 'MissingSessionUserIdError';
+    details = 'Missing session user id';
+    description = 'Authenticated session is missing a user id; check the auth adapter and the jwt/session callbacks';
+    code = GenericErrorKind.MISSING_SESSION_USER_ID;
+}
 
 export const getAllErrorCodes = () => {
     return [...Object.values(GenericErrorKind), ...Object.values(ApiErrorKind)];
@@ -508,6 +516,8 @@ export const getErrorFromCode = (
             return MissingContextProviderError as unknown as typeof GenericError;
         case GenericErrorKind.NOT_CONNECTED_TO_DATABASE:
             return NotConnectedToDatabase;
+        case GenericErrorKind.MISSING_SESSION_USER_ID:
+            return MissingSessionUserIdError;
 
         // Api Errors.
         case ApiErrorKind.API_UNKNOWN_ERROR:
