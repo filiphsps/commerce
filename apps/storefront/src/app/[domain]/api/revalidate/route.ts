@@ -3,7 +3,6 @@ import { Error as CommerceError } from '@nordcom/commerce-errors';
 import { parseShopifyWebhook, verifyShopifyHmac } from '@tagtree/shopify';
 import { type NextRequest, NextResponse } from 'next/server';
 import { cache } from '@/cache';
-import { bootServices } from '@/lib/boot-services';
 
 const noStoreHeaders = { 'Cache-Control': 'no-store' };
 
@@ -14,7 +13,6 @@ type RevalidateShop = Awaited<ReturnType<typeof Shop.findByDomain>> & {
 };
 
 export async function POST(req: NextRequest, { params }: { params: RevalidateApiRouteParams }) {
-    await bootServices();
     const { domain } = await params;
     let shop: RevalidateShop;
     try {
@@ -97,6 +95,5 @@ export async function POST(req: NextRequest, { params }: { params: RevalidateApi
 }
 
 export async function GET() {
-    await bootServices();
     return NextResponse.json({ status: 200 }, { status: 200, headers: noStoreHeaders });
 }

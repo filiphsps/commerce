@@ -19,7 +19,6 @@ import ShopLayout from '@/components/layout/shop-layout';
 import PageContent from '@/components/page-content';
 import ProvidersRegistry from '@/components/providers-registry';
 import { getDictionary } from '@/i18n/dictionary';
-import { bootServices } from '@/lib/boot-services';
 import { CssVariablesProvider, getBrandingColors } from '@/utils/css-variables';
 import { primaryFont } from '@/utils/fonts';
 import { NOT_FOUND_HANDLE } from '@/utils/handle';
@@ -29,7 +28,6 @@ import { cn } from '@/utils/tailwind';
 export type LayoutParams = Promise<{ domain: string; locale: string }>;
 
 export async function generateStaticParams(): Promise<Awaited<LayoutParams>[]> {
-    await bootServices();
     try {
         const shops = await Shop.findAll();
 
@@ -76,7 +74,6 @@ export const viewport: Viewport = {
 export async function generateMetadata({ params }: { params: LayoutParams }): Promise<Metadata> {
     'use cache';
     cacheLife('max');
-    await bootServices();
 
     const { domain, locale: localeData } = await params;
     if (!localeData || localeData === NOT_FOUND_HANDLE || !domain || domain === NOT_FOUND_HANDLE) {
@@ -149,7 +146,6 @@ export default async function RootLayout({
 }: Readonly<{ children: ReactNode; modal: ReactNode; params: LayoutParams }>) {
     'use cache';
     cacheLife('max');
-    await bootServices();
 
     const { domain, locale: localeData } = await params;
     if (!localeData || localeData === NOT_FOUND_HANDLE || !domain || domain === NOT_FOUND_HANDLE) {

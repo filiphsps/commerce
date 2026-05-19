@@ -9,13 +9,10 @@ import '../globals.css';
 import { GeistMono } from 'geist/font/mono';
 import type { ReactNode } from 'react';
 import { Providers } from '@/components/providers';
-import { bootServices } from '@/lib/boot-services';
 import { primaryFont } from '@/utils/fonts';
 import { cn } from '@/utils/tailwind';
 
 export default async function AppShellLayout({ children }: { children: ReactNode }) {
-    await bootServices();
-
     return (
         // `data-theme="dark"` flips Payload's bundled CSS (input backgrounds,
         // label colors, focus rings, drawer chrome) into its dark variants on

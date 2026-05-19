@@ -3,7 +3,6 @@ import type { MetadataRoute } from 'next';
 import { cacheLife, cacheTag } from 'next/cache';
 import { type NextRequest, NextResponse } from 'next/server';
 import { tenantRootTags } from '@/cache';
-import { bootServices } from '@/lib/boot-services';
 
 type Rules = Extract<MetadataRoute.Robots['rules'], Array<unknown>>;
 type Rule = Rules[number];
@@ -73,7 +72,6 @@ export type RobotsParams = Promise<{
 export async function GET({}: NextRequest, { params }: { params: RobotsParams }): Promise<NextResponse> {
     'use cache';
     cacheLife('max');
-    await bootServices();
 
     const { domain } = await params;
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
