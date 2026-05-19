@@ -4,8 +4,10 @@ export async function register() {
     // doesn't touch the commerce-db service singletons).
     if (process.env.NEXT_RUNTIME !== 'nodejs') return;
 
-    const { bootServices } = await import('@/lib/boot-services');
-    await bootServices();
+    const { registerPayload } = await import('@nordcom/commerce-db');
+    const { getPayload } = await import('payload');
+    const { default: payloadConfig } = await import('@/payload.config');
+    registerPayload(() => getPayload({ config: payloadConfig }));
 
     if (process.env.NODE_ENV === 'production') {
         const { registerOTel } = await import('@vercel/otel');
