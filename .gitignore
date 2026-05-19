@@ -60,3 +60,4 @@ apps/docs/api/
 # workspace's docs/api directory by apps/docs/scripts/link-api-docs.mjs.
 apps/*/docs/api
 packages/*/docs/api
+packages/**/docs/api
