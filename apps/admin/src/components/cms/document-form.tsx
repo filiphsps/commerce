@@ -128,11 +128,11 @@ export function DocumentForm({
                   The toolbar is rendered INSIDE <Form> so client components in
                   the toolbar slot (e.g. <BusinessDataForm>) can call useForm()
                   and useAllFormFields() to read live field state. */}
-            <div className={livePreview ? 'grid flex-1 grid-cols-1 gap-4 lg:grid-cols-2' : 'flex-1'}>
-                <div className="flex flex-col gap-4">
+            <div className={livePreview ? 'grid flex-1 grid-cols-1 gap-4 lg:grid-cols-2' : 'flex-1 min-w-0'}>
+                <div className="flex flex-col gap-4 min-w-0">
                     <PayloadFieldShell {...shellProps}>
                         <Form action={onSubmit} initialState={initialState} isDocumentForm>
-                            <div className="flex flex-col gap-4">{children}</div>
+                            <div className="flex flex-col gap-4 min-w-0 overflow-x-auto">{children}</div>
 
                             {/* ── Sticky bottom toolbar (inside Form) ── */}
                             {toolbar ? (
@@ -144,7 +144,7 @@ export function DocumentForm({
                     </PayloadFieldShell>
                 </div>
 
-                {livePreview ? <div className="flex flex-col gap-4">{livePreview}</div> : null}
+                {livePreview ? <div className="flex flex-col gap-4 min-w-0">{livePreview}</div> : null}
             </div>
         </div>
     );

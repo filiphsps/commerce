@@ -138,4 +138,29 @@ describe('DocumentForm', () => {
 
         expect(screen.queryByRole('navigation', { name: 'Breadcrumb' })).not.toBeInTheDocument();
     });
+
+    it('applies min-w-0 and overflow-x-auto so fields cannot overflow the form column', () => {
+        const { container } = render(
+            <DocumentForm title="Test" shellProps={STUB_SHELL_PROPS} onSubmit={vi.fn()}>
+                <p data-testid="probe">child</p>
+            </DocumentForm>,
+        );
+
+        const probe = container.querySelector('[data-testid="probe"]');
+        expect(probe).not.toBeNull();
+
+        // Walk up from the probe; one of the ancestors inside the form must carry
+        // both `min-w-0` and `overflow-x-auto`.
+        let containsClasses = false;
+        let node: HTMLElement | null = probe?.parentElement ?? null;
+        while (node && node !== container) {
+            const cls = node.className;
+            if (cls.includes('min-w-0') && cls.includes('overflow-x-auto')) {
+                containsClasses = true;
+                break;
+            }
+            node = node.parentElement;
+        }
+        expect(containsClasses).toBe(true);
+    });
 });
