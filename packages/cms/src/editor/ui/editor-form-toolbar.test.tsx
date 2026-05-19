@@ -37,4 +37,27 @@ describe('<EditorFormToolbar>', () => {
         );
         expect(getByTestId('t').dataset.hasDrafts).toBe('false');
     });
+
+    it('renders the localeSwitcher slot to the left of the toolbar', () => {
+        const { getByTestId } = render(
+            <EditorFormToolbar
+                Toolbar={Toolbar as never}
+                saveDraftAction={async () => {}}
+                publishAction={async () => {}}
+                localeSwitcher={<div data-testid="switcher" />}
+            />,
+        );
+        expect(getByTestId('switcher')).toBeTruthy();
+    });
+
+    it('omits the localeSwitcher slot when not provided', () => {
+        const { queryByTestId } = render(
+            <EditorFormToolbar
+                Toolbar={Toolbar as never}
+                saveDraftAction={async () => {}}
+                publishAction={async () => {}}
+            />,
+        );
+        expect(queryByTestId('switcher')).toBeNull();
+    });
 });

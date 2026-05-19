@@ -1,7 +1,7 @@
 'use client';
 
 import { useAllFormFields, useForm, useFormModified } from '@payloadcms/ui';
-import { type ComponentType, useEffect, useRef, useState } from 'react';
+import { type ComponentType, type ReactNode, useEffect, useRef, useState } from 'react';
 import type { EditorToolbarShellProps } from '../runtime';
 
 export type EditorFormToolbarProps = {
@@ -13,6 +13,13 @@ export type EditorFormToolbarProps = {
     publishAction: (formData: FormData) => Promise<void>;
     /** Autosave config. Omit to disable autosave entirely. */
     autosave?: { interval: number };
+    /**
+     * Optional locale switcher rendered on the LEFT of the toolbar bar.
+     * The parent `<DocumentForm>` already wraps the toolbar in
+     * `flex items-center justify-between`, so this slot lands left and
+     * the Save/Publish buttons stay right.
+     */
+    localeSwitcher?: ReactNode;
 };
 
 /**
@@ -20,12 +27,19 @@ export type EditorFormToolbarProps = {
  *   - the admin app's visual `<Toolbar>` (Save / Publish buttons),
  *   - an autosave timer that fires `saveDraftAction` after `autosave.interval`
  *     milliseconds of idle (only when the form is `modified`, to prevent the
- *     revalidate-loop that bit the bespoke `business-data-form.tsx`).
+ *     revalidate-loop that bit the bespoke `business-data-form.tsx`),
+ *   - an optional locale switcher slot on the left.
  *
  * Must be rendered inside Payload's `<Form>` — `useForm`, `useAllFormFields`,
  * and `useFormModified` all read from that context.
  */
-export function EditorFormToolbar({ Toolbar, saveDraftAction, publishAction, autosave }: EditorFormToolbarProps) {
+export function EditorFormToolbar({
+    Toolbar,
+    saveDraftAction,
+    publishAction,
+    autosave,
+    localeSwitcher,
+}: EditorFormToolbarProps) {
     const { createFormData } = useForm();
     const [_fields] = useAllFormFields();
     const modified = useFormModified();
@@ -36,8 +50,6 @@ export function EditorFormToolbar({ Toolbar, saveDraftAction, publishAction, aut
     const saveActionRef = useRef(saveDraftAction);
     saveActionRef.current = saveDraftAction;
 
-    // Debounced autosave: re-arms whenever `fields` identity changes; only
-    // fires when `modified` is true.
     useEffect(() => {
         if (!autosave || !modified) return;
         const timer = setTimeout(async () => {
@@ -66,12 +78,15 @@ export function EditorFormToolbar({ Toolbar, saveDraftAction, publishAction, aut
     };
 
     return (
-        <Toolbar
-            saveDraftAction={saveDraft}
-            publishAction={publish}
-            isSaving={isSaving}
-            lastSavedAt={lastSavedAt}
-            hasDrafts={!!autosave}
-        />
+        <>
+            {localeSwitcher ? <div>{localeSwitcher}</div> : <div />}
+            <Toolbar
+                saveDraftAction={saveDraft}
+                publishAction={publish}
+                isSaving={isSaving}
+                lastSavedAt={lastSavedAt}
+                hasDrafts={!!autosave}
+            />
+        </>
     );
 }
