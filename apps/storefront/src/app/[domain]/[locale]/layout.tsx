@@ -3,7 +3,7 @@ import '../../globals.css';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
-import { Error, NotFoundError, UnknownShopDomainError } from '@nordcom/commerce-errors';
+import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
 import type { Metadata, Viewport } from 'next';
 import { cacheLife } from 'next/cache';
 import { notFound, unstable_rethrow } from 'next/navigation';
@@ -58,8 +58,6 @@ export async function generateStaticParams(): Promise<Awaited<LayoutParams>[]> {
             .filter(Boolean);
 
         return params.length > 0 ? params : [{ domain: NOT_FOUND_HANDLE, locale: NOT_FOUND_HANDLE }];
-
-        return params;
     } catch (error: unknown) {
         console.error(error);
         return [{ domain: NOT_FOUND_HANDLE, locale: NOT_FOUND_HANDLE }];

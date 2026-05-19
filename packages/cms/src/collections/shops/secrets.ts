@@ -13,11 +13,11 @@ export const rejectSecretWritesFromNonAdmins: CollectionBeforeChangeHook = async
     const origAuth = (originalDoc as { commerceProvider?: { authentication?: Record<string, unknown> } } | undefined)
         ?.commerceProvider?.authentication;
     if (auth && origAuth) {
-        if ('token' in origAuth) auth['token'] = origAuth['token'];
+        if ('token' in origAuth) auth.token = origAuth.token;
         const customers = (auth as { customers?: Record<string, unknown> }).customers;
         const origCustomers = (origAuth as { customers?: Record<string, unknown> }).customers;
         if (customers && origCustomers && 'clientSecret' in origCustomers) {
-            customers['clientSecret'] = origCustomers['clientSecret'];
+            customers.clientSecret = origCustomers.clientSecret;
         }
     }
     return data;
@@ -32,9 +32,9 @@ export const stripSecretsOnRead: CollectionBeforeReadHook = async ({ req, doc })
     const d = doc as { commerceProvider?: { authentication?: Record<string, unknown> } };
     if (d.commerceProvider?.authentication) {
         const auth = d.commerceProvider.authentication;
-        delete auth['token'];
+        delete auth.token;
         if ((auth as { customers?: Record<string, unknown> }).customers) {
-            delete (auth as { customers: Record<string, unknown> }).customers['clientSecret'];
+            delete (auth as { customers: Record<string, unknown> }).customers.clientSecret;
         }
     }
     return doc;

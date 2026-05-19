@@ -56,7 +56,7 @@ export async function generateMetadata({
     let shop: OnlineShop;
     try {
         shop = await Shop.findByDomain(domain, { sensitiveData: true });
-    } catch (error: unknown) {
+    } catch (_error: unknown) {
         notFound();
     }
 
@@ -146,7 +146,7 @@ export default async function ProductPage({ params }: { params: ProductPageParam
     let shop: OnlineShop;
     try {
         shop = await Shop.findByDomain(domain, { sensitiveData: true });
-    } catch (error: unknown) {
+    } catch (_error: unknown) {
         notFound();
     }
 

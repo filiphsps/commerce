@@ -27,7 +27,7 @@ export type EditorFormToolbarProps = {
  */
 export function EditorFormToolbar({ Toolbar, saveDraftAction, publishAction, autosave }: EditorFormToolbarProps) {
     const { createFormData } = useForm();
-    const [fields] = useAllFormFields();
+    const [_fields] = useAllFormFields();
     const modified = useFormModified();
 
     const [isSaving, setIsSaving] = useState(false);
@@ -51,7 +51,7 @@ export function EditorFormToolbar({ Toolbar, saveDraftAction, publishAction, aut
             }
         }, autosave.interval);
         return () => clearTimeout(timer);
-    }, [autosave, modified, fields, createFormData]);
+    }, [autosave, modified, createFormData]);
 
     const saveDraft = async (): Promise<void> => {
         const formData = await createFormData(undefined, {});

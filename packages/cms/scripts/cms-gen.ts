@@ -115,9 +115,8 @@ const main = async (): Promise<void> => {
 
 // Run when invoked directly: `tsx packages/cms/scripts/cms-gen.ts`
 if (import.meta.url === `file://${process.argv[1]}`) {
-    main().catch((err) => {
-        // biome-ignore lint/suspicious/noConsole: codegen script reports failures to stderr
-        console.error(err);
+    main().catch((error) => {
+        console.error(error);
         process.exit(1);
     });
 }

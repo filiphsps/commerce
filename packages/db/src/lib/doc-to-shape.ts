@@ -24,7 +24,7 @@ export const docToOnlineShop = (doc: Doc): OnlineShop => {
 
     const cp = (stripped as { commerceProvider?: { type?: string; authentication?: Record<string, unknown> } })
         .commerceProvider;
-    if (cp && cp.authentication) {
+    if (cp?.authentication) {
         const auth = { ...cp.authentication };
         delete auth.token;
         const customers = auth.customers as Record<string, unknown> | undefined;
