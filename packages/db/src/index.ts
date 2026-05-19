@@ -1,5 +1,6 @@
 export * from './db';
 export * from './models';
+export { registerPayload } from './payload-registry';
 export * from './services';
 
 export type Optional<T extends { [key: string]: unknown }> = { [K in keyof T]?: Nullable<T[K]> };
