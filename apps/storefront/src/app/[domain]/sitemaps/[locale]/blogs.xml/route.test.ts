@@ -7,8 +7,6 @@ vi.mock('next/cache', () => ({
     cacheTag: vi.fn(),
 }));
 
-vi.mock('@/lib/boot-services', () => ({ bootServices: vi.fn().mockResolvedValue(undefined) }));
-
 const notFoundMock = vi.fn().mockImplementation(() => {
     throw new Error('NEXT_NOT_FOUND');
 });
