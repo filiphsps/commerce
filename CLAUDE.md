@@ -106,6 +106,10 @@ Lint and formatting rules are defined in `biome.json` — read it for the source
 -   **`noUncheckedIndexedAccess: true`** — array/object index access is `T | undefined`. Don't paper over with `!` non-null assertions unless you've actually checked.
 -   **Trailing slashes** on internal links (`trailingSlash: true` in `next.config.js`).
 -   Provider tokens (Shopify keys etc.) are guarded with `experimental_taintUniqueValue` — preserve that pattern.
+-   **Use `@nordcom/commerce-errors` for all thrown errors.** Never `throw new Error(...)` in app or
+    package code. If no existing error fits, add a new class (and `*ErrorKind` enum value, and a
+    `getErrorFromCode` case) in `packages/errors/src/index.ts` and throw that. Errors carry
+    `statusCode`, `code`, and `help` URLs the platform relies on.
 
 ## Editor hook
 
