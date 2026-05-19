@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import { bootServices } from '@/lib/boot-services';
 import { admin } from '@/middleware/admin';
 import { storefront } from '@/middleware/storefront';
 
@@ -46,6 +47,8 @@ async function dispatch(req: NextRequest): Promise<NextResponse> {
 }
 
 export default async function proxy(req: NextRequest): Promise<NextResponse> {
+    await bootServices();
+
     const { id: visitorId, existed } = ensureVisitorId(req);
     if (!existed) {
         // Mirror to request headers so the current request's flag adapter sees
