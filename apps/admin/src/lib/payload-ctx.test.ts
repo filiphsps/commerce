@@ -156,6 +156,8 @@ describe('getAuthedPayloadCtx', () => {
             id: String(TENANT_DOC.id),
             slug: String(TENANT_DOC.slug),
             name: String(TENANT_DOC.name),
+            defaultLocale: 'en-US',
+            locales: ['en-US'],
         });
         expect(ctx.payload).toBe(payload);
         expect(mockFindByDomain).toHaveBeenCalledWith(SHOP_DOMAIN);
@@ -202,6 +204,8 @@ describe('getAuthedPayloadCtx', () => {
             id: String(TENANT_DOC.id),
             slug: SHOP.id,
             name: SHOP_DOMAIN,
+            defaultLocale: 'en-US',
+            locales: ['en-US'],
         });
     });
 
@@ -282,5 +286,50 @@ describe('getAuthedPayloadCtx', () => {
 
         expect(ctx.user.role).toBe('admin');
         expect(ctx.tenant?.id).toBe(String(TENANT_DOC.id));
+    });
+
+    it('projects tenant.defaultLocale and tenant.locales from the tenant doc', async () => {
+        mockAuth.mockResolvedValue(SESSION);
+        mockGetPayload.mockResolvedValue(
+            makePayload({
+                tenantDocs: [{ ...TENANT_DOC, defaultLocale: 'de', locales: ['de', 'en'] }],
+            }),
+        );
+        mockFindByDomain.mockResolvedValue(SHOP);
+
+        const ctx = await getAuthedPayloadCtx(SHOP_DOMAIN);
+
+        expect(ctx.tenant?.defaultLocale).toBe('de');
+        expect(ctx.tenant?.locales).toEqual(['de', 'en']);
+    });
+
+    it('falls back tenant.locales to [defaultLocale] when the tenant doc has empty locales', async () => {
+        mockAuth.mockResolvedValue(SESSION);
+        mockGetPayload.mockResolvedValue(
+            makePayload({
+                tenantDocs: [{ ...TENANT_DOC, defaultLocale: 'sv', locales: [] }],
+            }),
+        );
+        mockFindByDomain.mockResolvedValue(SHOP);
+
+        const ctx = await getAuthedPayloadCtx(SHOP_DOMAIN);
+
+        expect(ctx.tenant?.defaultLocale).toBe('sv');
+        expect(ctx.tenant?.locales).toEqual(['sv']);
+    });
+
+    it('falls back tenant.defaultLocale to "en-US" when the tenant doc omits it', async () => {
+        mockAuth.mockResolvedValue(SESSION);
+        mockGetPayload.mockResolvedValue(
+            makePayload({
+                tenantDocs: [{ ...TENANT_DOC, defaultLocale: undefined, locales: ['en-US', 'fr'] }],
+            }),
+        );
+        mockFindByDomain.mockResolvedValue(SHOP);
+
+        const ctx = await getAuthedPayloadCtx(SHOP_DOMAIN);
+
+        expect(ctx.tenant?.defaultLocale).toBe('en-US');
+        expect(ctx.tenant?.locales).toEqual(['en-US', 'fr']);
     });
 });

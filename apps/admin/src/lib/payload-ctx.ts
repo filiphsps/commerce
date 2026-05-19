@@ -50,7 +50,13 @@ export type AuthedPayloadCtx = {
         tenants: Array<{ tenant: string }>;
         collection: 'users';
     };
-    tenant: { id: string; slug: string; name: string } | null;
+    tenant: {
+        id: string;
+        slug: string;
+        name: string;
+        defaultLocale: string;
+        locales: string[];
+    } | null;
 };
 
 export async function getAuthedPayloadCtx(domain?: string): Promise<AuthedPayloadCtx> {
@@ -99,10 +105,21 @@ export async function getAuthedPayloadCtx(domain?: string): Promise<AuthedPayloa
             // than rendering a broken edit form.
             notFound();
         }
+        const tenantDefaultLocale =
+            typeof (tenantDoc as unknown as { defaultLocale?: unknown }).defaultLocale === 'string'
+                ? String((tenantDoc as unknown as { defaultLocale: string }).defaultLocale)
+                : 'en-US';
+        const rawLocales = (tenantDoc as unknown as { locales?: unknown }).locales;
+        const tenantLocales =
+            Array.isArray(rawLocales) && rawLocales.length > 0
+                ? rawLocales.filter((l): l is string => typeof l === 'string')
+                : [tenantDefaultLocale];
         tenant = {
             id: String(tenantDoc.id),
             slug: String(tenantDoc.slug ?? shop.id),
             name: String(tenantDoc.name ?? domain),
+            defaultLocale: tenantDefaultLocale,
+            locales: tenantLocales,
         };
     }
 
