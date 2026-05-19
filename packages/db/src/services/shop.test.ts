@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mongoose connects at module evaluation (src/db.ts). Mock it so the module
 // graph can load without a running MongoDB. findByDomain itself never touches
@@ -38,6 +38,8 @@ vi.mock('mongoose', async () => {
     };
 });
 
+import type { Payload } from 'payload';
+import { _resetPayloadRegistryForTests, registerPayload } from '../payload-registry';
 import { Shop } from './shop';
 
 describe('Shop.findByDomain (via payload.local)', () => {
@@ -61,7 +63,11 @@ describe('Shop.findByDomain (via payload.local)', () => {
 
     beforeEach(() => {
         mockFind = vi.fn().mockResolvedValue({ docs: [mockShop] });
-        Shop._setPayloadForTests({ find: mockFind } as never);
+        registerPayload(() => Promise.resolve({ find: mockFind } as unknown as Payload));
+    });
+
+    afterEach(() => {
+        _resetPayloadRegistryForTests();
     });
 
     it('queries payload.find with an OR on domain + alternativeDomains contains', async () => {
@@ -145,7 +151,11 @@ describe('Shop.findById (via payload.local)', () => {
 
     beforeEach(() => {
         mockFindByID = vi.fn().mockResolvedValue(mockShop);
-        Shop._setPayloadForTests({ findByID: mockFindByID } as never);
+        registerPayload(() => Promise.resolve({ findByID: mockFindByID } as unknown as Payload));
+    });
+
+    afterEach(() => {
+        _resetPayloadRegistryForTests();
     });
 
     it('calls payload.findByID with the given id and overrideAccess', async () => {
@@ -206,7 +216,11 @@ describe('Shop.findAll (via payload.local)', () => {
 
     beforeEach(() => {
         mockFind = vi.fn().mockResolvedValue({ docs: mockShops });
-        Shop._setPayloadForTests({ find: mockFind } as never);
+        registerPayload(() => Promise.resolve({ find: mockFind } as unknown as Payload));
+    });
+
+    afterEach(() => {
+        _resetPayloadRegistryForTests();
     });
 
     it('calls payload.find with limit 0 and overrideAccess', async () => {
@@ -257,7 +271,11 @@ describe('Shop.findByCollaborator (via payload.local)', () => {
 
     beforeEach(() => {
         mockFind = vi.fn().mockResolvedValue({ docs: [mockShop] });
-        Shop._setPayloadForTests({ find: mockFind } as never);
+        registerPayload(() => Promise.resolve({ find: mockFind } as unknown as Payload));
+    });
+
+    afterEach(() => {
+        _resetPayloadRegistryForTests();
     });
 
     it('queries payload.find with a collaborators.user equals filter', async () => {

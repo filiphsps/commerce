@@ -1,7 +1,7 @@
-import type { Payload } from 'payload';
 import { docToOnlineShop } from '../lib/doc-to-shape';
 import type { OnlineShop, ShopBase } from '../models';
 import { ShopModel } from '../models';
+import { getRegisteredPayload } from '../payload-registry';
 import { Service } from './service';
 
 export type FindOptions = {
@@ -16,47 +16,28 @@ export type FindOptions = {
 };
 
 export class ShopService extends Service<ShopBase, typeof ShopModel> {
-    // Payload instance is injected at boot via setPayload(); _setPayloadForTests is the test override.
-    private payload: Payload | null = null;
-
     public constructor() {
         super(ShopModel);
-    }
-
-    public setPayload(payload: Payload): void {
-        this.payload = payload;
-    }
-
-    /** @internal — test-only injection point */
-    public _setPayloadForTests(payload: Payload): void {
-        this.payload = payload;
-    }
-
-    private getPayload(): Payload {
-        if (!this.payload)
-            throw new Error('[ShopService] Payload not initialized; call setPayload(payload) at app boot.');
-        return this.payload;
     }
 
     // Override the Mongoose-based base method with a Payload-backed implementation.
     // The base returns `Promise<ShopBase | null>`; here we narrow to `Promise<OnlineShop>`
     // (always resolves or throws). Cast through `never` to satisfy the overload checker.
     public override findById(id: string, ..._rest: never[]): Promise<OnlineShop> & Promise<ShopBase | null> {
-        const payload = this.getPayload();
-        return payload
-            .findByID({
+        return (async () => {
+            const payload = await getRegisteredPayload();
+            const doc = await payload.findByID({
                 collection: 'shops' as never,
                 id,
                 overrideAccess: true,
-            })
-            .then((doc) => {
-                if (!doc) throw new Error(`[shop] No shop for id: ${id}`);
-                return docToOnlineShop(doc as unknown as Record<string, unknown>);
-            }) as Promise<OnlineShop> & Promise<ShopBase | null>;
+            });
+            if (!doc) throw new Error(`[shop] No shop for id: ${id}`);
+            return docToOnlineShop(doc as unknown as Record<string, unknown>);
+        })() as Promise<OnlineShop> & Promise<ShopBase | null>;
     }
 
     public async findByCollaborator({ collaboratorId }: { collaboratorId: string }): Promise<OnlineShop[]> {
-        const payload = this.getPayload();
+        const payload = await getRegisteredPayload();
         const { docs } = await payload.find({
             collection: 'shops' as never,
             where: {
@@ -73,7 +54,7 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
         domain: string,
         { sensitiveData = false, convert = true, populate = [] }: FindOptions = {},
     ): Promise<OnlineShop | ShopBase> {
-        const payload = this.getPayload();
+        const payload = await getRegisteredPayload();
         // `sensitiveShopRead` opts out of the shops collection's beforeRead
         // strip hook so trusted server callers receive the unmasked token.
         // Only set this when the caller has asked for sensitiveData, since the
@@ -99,7 +80,7 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
 
     public async findAll(): Promise<OnlineShop[]> {
         try {
-            const payload = this.getPayload();
+            const payload = await getRegisteredPayload();
             const { docs } = await payload.find({
                 collection: 'shops' as never,
                 limit: 0,
