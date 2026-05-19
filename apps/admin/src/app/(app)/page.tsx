@@ -1,3 +1,4 @@
+import { MissingSessionUserIdError } from '@nordcom/commerce-errors';
 import { Accented, Button, Heading, Label } from '@nordcom/nordstar';
 import { Settings } from 'lucide-react';
 import type { Metadata, Route } from 'next';
@@ -18,7 +19,10 @@ export default async function Overview() {
     }
 
     const { user } = session;
-    const shops = await getShopsForUser(user.id!);
+    if (!user.id) {
+        throw new MissingSessionUserIdError();
+    }
+    const shops = await getShopsForUser(user.id);
 
     const firstName = user.name?.split(' ').at(0) || null;
     const lastName = user.name?.split(' ').slice(1).join(' ') || null;

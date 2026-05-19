@@ -77,6 +77,20 @@ describe('app/page (root Overview)', () => {
         await expect(Overview()).rejects.toThrow('NEXT_REDIRECT:/auth/login/');
     });
 
+    it('throws MissingSessionUserIdError when session.user has no id', async () => {
+        const { MissingSessionUserIdError } = await import('@nordcom/commerce-errors');
+        mockAuth.mockResolvedValue({ user: { name: 'No Id', email: 'noid@example.com' } });
+        mockGetShopsForUser.mockResolvedValue([]);
+
+        await expect(Overview()).rejects.toMatchObject({
+            name: 'MissingSessionUserIdError',
+            code: (await import('@nordcom/commerce-errors')).GenericErrorKind.MISSING_SESSION_USER_ID,
+        });
+        // Sanity check the import works (the package's prototype-resetting
+        // base class makes `instanceof` unreliable — see errors index.test.ts).
+        expect(MissingSessionUserIdError).toBeDefined();
+    });
+
     it('renders a greeting with the user first name when authenticated', async () => {
         mockAuth.mockResolvedValue({ user: mockUser });
         mockGetShopsForUser.mockResolvedValue([]);
