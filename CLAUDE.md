@@ -27,6 +27,10 @@ All code, comments, commit messages, docs, identifiers, and UI strings use **Ame
 -   All top-level scripts go through `dotenv -c -- turbo …`, so `.env` / `.env.local` are loaded automatically — don't prefix env vars manually.
 -   **`pnpm cms:gen` regenerates `apps/admin/src/lib/cms-actions/_generated/`.** Run after touching any editor manifest in `packages/cms/src/editor/manifests/`. CI runs `pnpm cms:gen:check` to verify no drift.
 
+**When starting work on a Next.js project, ALWAYS call the `init` tool from
+next-devtools-mcp FIRST to set up proper context and establish documentation
+requirements. Do this automatically without being asked.**
+
 ## Commands
 
 ```bash
