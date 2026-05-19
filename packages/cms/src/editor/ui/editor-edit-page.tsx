@@ -90,8 +90,14 @@ export async function EditorEditPage<TSlug extends CollectionSlug>({
     const shellProps = await runtime.getShellProps(domain);
 
     // Bind the codegen'd action wrappers to (domain, id).
-    const boundSaveDraft = (formData: FormData) => generatedActions.saveDraft(domain, id, formData);
-    const boundPublish = (formData: FormData) => generatedActions.publish(domain, id, formData);
+    const boundSaveDraft = async (formData: FormData) => {
+        'use server';
+        return generatedActions.saveDraft(domain, id, formData);
+    };
+    const boundPublish = async (formData: FormData) => {
+        'use server';
+        return generatedActions.publish(domain, id, formData);
+    };
 
     const existingName = (existing as unknown as { name?: string } | null)?.name;
     const title = existingName ? String(existingName) : manifest.routes.label.singular;
