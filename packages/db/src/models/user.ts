@@ -41,6 +41,12 @@ export const UserSchema = new Schema(
     {
         id: true,
         timestamps: true,
+        // Auth.js's adapter receives `User.toObject()` results; without
+        // `virtuals: true` the `id` virtual is stripped and `token.sub` ends
+        // up undefined, which is what caused `getShopsForUser` to return
+        // an empty list. Scope is intentionally narrow to UserSchema.
+        toObject: { virtuals: true },
+        toJSON: { virtuals: true },
     },
 );
 
