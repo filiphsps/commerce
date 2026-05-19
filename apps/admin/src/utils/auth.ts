@@ -42,7 +42,8 @@ export const {
                 ...token,
             };
         },
-        async jwt({ token, ..._args }) {
+        async jwt({ token, user }) {
+            if (user?.id) token.sub = user.id;
             return token;
         },
     },
