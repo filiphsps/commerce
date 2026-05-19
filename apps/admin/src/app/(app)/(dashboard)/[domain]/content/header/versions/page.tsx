@@ -8,13 +8,20 @@ import { editorRuntime } from '@/lib/editor-runtime';
 
 export const metadata: Metadata = { title: 'Header — Versions' };
 
-export default async function HeaderVersionsPage({ params }: { params: Promise<{ domain: string }> }) {
+type Props = {
+    params: Promise<{ domain: string }>;
+    searchParams: Promise<{ locale?: string }>;
+};
+
+export default async function HeaderVersionsPage({ params, searchParams }: Props) {
     const { domain } = await params;
+    const sp = await searchParams;
     return (
         <EditorVersionsPage
             manifest={headerEditor}
             runtime={editorRuntime}
             params={{ domain, id: 'singleton' }}
+            searchParams={sp}
             generatedActions={{
                 saveDraft: actions.headerSaveDraft,
                 publish: actions.headerPublish,

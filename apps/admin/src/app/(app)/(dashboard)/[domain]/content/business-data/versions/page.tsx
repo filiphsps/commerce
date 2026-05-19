@@ -8,13 +8,20 @@ import { editorRuntime } from '@/lib/editor-runtime';
 
 export const metadata: Metadata = { title: 'Business data — Versions' };
 
-export default async function BusinessDataVersionsPage({ params }: { params: Promise<{ domain: string }> }) {
+type Props = {
+    params: Promise<{ domain: string }>;
+    searchParams: Promise<{ locale?: string }>;
+};
+
+export default async function BusinessDataVersionsPage({ params, searchParams }: Props) {
     const { domain } = await params;
+    const sp = await searchParams;
     return (
         <EditorVersionsPage
             manifest={businessDataEditor}
             runtime={editorRuntime}
             params={{ domain, id: 'singleton' }}
+            searchParams={sp}
             generatedActions={{
                 saveDraft: actions.businessDataSaveDraft,
                 publish: actions.businessDataPublish,

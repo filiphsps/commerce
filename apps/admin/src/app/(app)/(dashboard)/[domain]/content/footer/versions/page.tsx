@@ -8,13 +8,20 @@ import { editorRuntime } from '@/lib/editor-runtime';
 
 export const metadata: Metadata = { title: 'Footer — Versions' };
 
-export default async function FooterVersionsPage({ params }: { params: Promise<{ domain: string }> }) {
+type Props = {
+    params: Promise<{ domain: string }>;
+    searchParams: Promise<{ locale?: string }>;
+};
+
+export default async function FooterVersionsPage({ params, searchParams }: Props) {
     const { domain } = await params;
+    const sp = await searchParams;
     return (
         <EditorVersionsPage
             manifest={footerEditor}
             runtime={editorRuntime}
             params={{ domain, id: 'singleton' }}
+            searchParams={sp}
             generatedActions={{
                 saveDraft: actions.footerSaveDraft,
                 publish: actions.footerPublish,

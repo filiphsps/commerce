@@ -8,13 +8,20 @@ import { editorRuntime } from '@/lib/editor-runtime';
 
 export const metadata: Metadata = { title: 'Page — Versions' };
 
-export default async function PageVersionsPage({ params }: { params: Promise<{ domain: string; id: string }> }) {
+type Props = {
+    params: Promise<{ domain: string; id: string }>;
+    searchParams: Promise<{ locale?: string }>;
+};
+
+export default async function PageVersionsPage({ params, searchParams }: Props) {
     const { domain, id } = await params;
+    const sp = await searchParams;
     return (
         <EditorVersionsPage
             manifest={pagesEditor}
             runtime={editorRuntime}
             params={{ domain, id }}
+            searchParams={sp}
             generatedActions={{
                 saveDraft: actions.pagesSaveDraft,
                 publish: actions.pagesPublish,

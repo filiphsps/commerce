@@ -8,13 +8,20 @@ import { editorRuntime } from '@/lib/editor-runtime';
 
 export const metadata: Metadata = { title: 'New Tenant' };
 
-export default async function NewTenantPage({ params }: { params: Promise<{ domain: string }> }) {
+type Props = {
+    params: Promise<{ domain: string }>;
+    searchParams: Promise<{ locale?: string }>;
+};
+
+export default async function NewTenantPage({ params, searchParams }: Props) {
     const { domain } = await params;
+    const sp = await searchParams;
     return (
         <EditorNewPage
             manifest={tenantsEditor}
             runtime={editorRuntime}
             params={{ domain }}
+            searchParams={sp}
             generatedActions={{
                 saveDraft: actions.tenantsSaveDraft,
                 publish: actions.tenantsPublish,

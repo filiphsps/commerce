@@ -8,17 +8,20 @@ import { editorRuntime } from '@/lib/editor-runtime';
 
 export const metadata: Metadata = { title: 'Collection metadata — Versions' };
 
-export default async function CollectionMetadataVersionsPage({
-    params,
-}: {
+type Props = {
     params: Promise<{ domain: string; handle: string }>;
-}) {
+    searchParams: Promise<{ locale?: string }>;
+};
+
+export default async function CollectionMetadataVersionsPage({ params, searchParams }: Props) {
     const { domain, handle } = await params;
+    const sp = await searchParams;
     return (
         <EditorVersionsPage
             manifest={collectionMetadataEditor}
             runtime={editorRuntime}
             params={{ domain, id: handle }}
+            searchParams={sp}
             generatedActions={{
                 saveDraft: actions.collectionMetadataSaveDraft,
                 publish: actions.collectionMetadataPublish,
