@@ -1,7 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { Payload } from 'payload';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-// Minimal mongoose stub — feature-flag.ts no longer touches Mongoose at runtime,
-// but the transitive module graph (via ../models) imports schemas at evaluation.
 vi.mock('mongoose', async () => {
     const actual = (await vi.importActual('mongoose')) as Record<string, unknown>;
     return {
@@ -14,7 +13,8 @@ vi.mock('mongoose', async () => {
     };
 });
 
-import { FeatureFlag, FeatureFlagService } from './feature-flag';
+import { _resetPayloadRegistryForTests, registerPayload } from '../payload-registry';
+import { FeatureFlag } from './feature-flag';
 
 describe('FeatureFlagService (via payload.local)', () => {
     const mockFlag = { id: 'flag-1', key: 'accounts', defaultValue: false, targeting: [] };
@@ -23,7 +23,11 @@ describe('FeatureFlagService (via payload.local)', () => {
 
     beforeEach(() => {
         mockFind = vi.fn().mockResolvedValue({ docs: [mockFlag] });
-        FeatureFlag._setPayloadForTests({ find: mockFind } as never);
+        registerPayload(() => Promise.resolve({ find: mockFind } as unknown as Payload));
+    });
+
+    afterEach(() => {
+        _resetPayloadRegistryForTests();
     });
 
     it('findByKey queries payload.find with key equality and returns the mapped doc', async () => {
@@ -51,10 +55,5 @@ describe('FeatureFlagService (via payload.local)', () => {
         expect(result).toHaveLength(2);
         expect(result[0]?.key).toBe('accounts');
         expect(result[1]?.key).toBe('beta');
-    });
-
-    it('throws when payload is not injected', () => {
-        const svc = new FeatureFlagService();
-        expect(() => svc.findByKey('accounts')).rejects.toThrow(/not initialized/);
     });
 });

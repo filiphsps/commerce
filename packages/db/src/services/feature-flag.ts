@@ -1,35 +1,18 @@
 import 'server-only';
 
-import type { Payload } from 'payload';
 import { docToFeatureFlag } from '../lib/doc-to-shape';
 import type { FeatureFlagBase } from '../models';
+import { getRegisteredPayload } from '../payload-registry';
 
 /**
  * FeatureFlag service backed by `payload.local`. Method signatures preserved
- * from the prior Mongoose-backed service. Payload instance is injected at app
- * boot via `setPayload()`.
+ * from the prior Mongoose-backed service. Payload is obtained lazily per call
+ * from the commerce-db registry (registered once at app boot from
+ * `instrumentation.ts`).
  */
 export class FeatureFlagService {
-    private payload: Payload | null = null;
-
-    public setPayload(payload: Payload): void {
-        this.payload = payload;
-    }
-
-    /** @internal — test-only injection point. */
-    public _setPayloadForTests(payload: Payload): void {
-        this.payload = payload;
-    }
-
-    private getPayload(): Payload {
-        if (!this.payload) {
-            throw new Error('[FeatureFlagService] Payload not initialized; call setPayload(payload) at app boot.');
-        }
-        return this.payload;
-    }
-
     public async findByKey(key: string): Promise<FeatureFlagBase | null> {
-        const payload = this.getPayload();
+        const payload = await getRegisteredPayload();
         const { docs } = await payload.find({
             collection: 'feature-flags' as never,
             where: { key: { equals: key } } as never,
@@ -41,7 +24,7 @@ export class FeatureFlagService {
     }
 
     public async findAll(): Promise<FeatureFlagBase[]> {
-        const payload = this.getPayload();
+        const payload = await getRegisteredPayload();
         const { docs } = await payload.find({
             collection: 'feature-flags' as never,
             limit: 0,
