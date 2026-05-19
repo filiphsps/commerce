@@ -1,5 +1,6 @@
 import 'server-only';
 
+import type { Route } from 'next';
 import { headers as getHeaders } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
 import type { CollectionSlug } from 'payload';
@@ -52,7 +53,7 @@ export async function EditorNewPage<TSlug extends CollectionSlug>({
         }
         next.set('locale', tenantDefault);
         const base = manifest.routes.basePath(domain);
-        redirect(`${base}new/?${next.toString()}`);
+        redirect(`${base}new/?${next.toString()}` as Route);
     }
 
     const locale = requested as string;
