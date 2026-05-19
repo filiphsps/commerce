@@ -18,7 +18,15 @@ export type AuthedUser = {
 export type AuthedPayloadCtx = {
     payload: Payload;
     user: AuthedUser;
-    tenant: { id: string; slug: string; name?: string } | null;
+    tenant: {
+        id: string;
+        slug: string;
+        name?: string;
+        /** Shop's default locale (BCP-47). Always present when tenant is non-null. */
+        defaultLocale: string;
+        /** Allowed locales for this tenant. Always non-empty when tenant is non-null. */
+        locales: string[];
+    } | null;
 };
 
 export type BuildFormStateArgs = {
