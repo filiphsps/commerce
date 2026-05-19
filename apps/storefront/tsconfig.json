@@ -14,6 +14,7 @@
             "@/models/*": ["./src/models/*"],
             "@/utils/*": ["./src/utils/*"],
             "@/utils/locale": ["./src/utils/locale/index.ts"],
+            "@/lib/*": ["./src/lib/*"],
             "@/styles/*": ["./src/scss/*"],
             "@/pages/*": ["./src/app/[domain]/[locale]/*"],
             "@/i18n/*": ["./src/locales/*"],
