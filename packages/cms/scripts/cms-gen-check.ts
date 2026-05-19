@@ -36,14 +36,12 @@ const main = async (): Promise<void> => {
         }
     }
     if (failures.length > 0) {
-        // biome-ignore lint/suspicious/noConsole: drift check reports failures to stderr
         console.error(failures.join('\n'));
         process.exit(1);
     }
 };
 
-main().catch((err) => {
-    // biome-ignore lint/suspicious/noConsole: drift check reports failures to stderr
-    console.error(err);
+main().catch((error) => {
+    console.error(error);
     process.exit(1);
 });
