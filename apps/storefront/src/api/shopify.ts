@@ -42,22 +42,31 @@ export const ShopifyApiConfig = async ({
         throw new UnknownCommerceProviderError(commerceProvider.type);
     }
 
-    experimental_taintUniqueValue(
-        'Do not pass private tokens to the client',
-        globalThis,
-        commerceProvider.authentication.token,
-    );
-    if (commerceProvider.authentication.customers) {
-        experimental_taintUniqueValue(
-            'Do not pass private tokens to the client',
-            globalThis,
-            commerceProvider.authentication.customers.clientSecret,
+    // A Shopify-typed commerce provider without auth data is a misconfiguration,
+    // not a transient failure. Surface it loudly here rather than letting it
+    // surface as a React #495 (taint of undefined) or a downstream "missing
+    // storefront token" inside Hydrogen's client.
+    const { token, publicToken, customers } = commerceProvider.authentication;
+    if (!publicToken || !token || !commerceProvider.domain) {
+        throw new Error(
+            `[shopify] Shop "${domain}" is misconfigured: missing ${[
+                !publicToken && 'authentication.publicToken',
+                !token && 'authentication.token',
+                !commerceProvider.domain && 'domain',
+            ]
+                .filter(Boolean)
+                .join(', ')}`,
         );
     }
 
+    experimental_taintUniqueValue('Do not pass private tokens to the client', globalThis, token);
+    if (customers?.clientSecret) {
+        experimental_taintUniqueValue('Do not pass private tokens to the client', globalThis, customers.clientSecret);
+    }
+
     const api = createStorefrontClient({
-        publicStorefrontToken: commerceProvider.authentication.publicToken,
-        privateStorefrontToken: commerceProvider.authentication.token || undefined,
+        publicStorefrontToken: publicToken,
+        privateStorefrontToken: token,
         storeDomain: commerceProvider.domain,
         contentType: 'json',
     });

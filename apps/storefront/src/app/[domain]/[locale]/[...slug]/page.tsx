@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: { params: CustomPageParams })
     const { domain, locale: localeData, slug } = await params;
 
     const handle = slug.join('/');
-    if (!isValidHandle(handle)) {
+    if (!handle || !isValidHandle(handle)) {
         notFound();
     }
 

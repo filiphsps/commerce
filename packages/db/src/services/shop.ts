@@ -74,6 +74,10 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
         { sensitiveData = false, convert = true, populate = [] }: FindOptions = {},
     ): Promise<OnlineShop | ShopBase> {
         const payload = this.getPayload();
+        // `sensitiveShopRead` opts out of the shops collection's beforeRead
+        // strip hook so trusted server callers receive the unmasked token.
+        // Only set this when the caller has asked for sensitiveData, since the
+        // strip happens before docToOnlineShop can mask the token client-side.
         const { docs } = await payload.find({
             collection: 'shops' as never,
             where: {
@@ -82,6 +86,7 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
             limit: 1,
             depth: populate.length > 0 ? 2 : 0,
             overrideAccess: true,
+            ...(sensitiveData ? { context: { sensitiveShopRead: true } } : {}),
         });
 
         const doc = docs[0];

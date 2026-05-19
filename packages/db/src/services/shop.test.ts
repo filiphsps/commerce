@@ -91,6 +91,18 @@ describe('Shop.findByDomain (via payload.local)', () => {
         expect(cp.authentication.token).toBe('SECRET');
     });
 
+    it('passes sensitiveShopRead context to payload.find when sensitiveData: true', async () => {
+        await Shop.findByDomain('acme.test', { sensitiveData: true });
+        expect(mockFind).toHaveBeenCalledWith(expect.objectContaining({ context: { sensitiveShopRead: true } }));
+    });
+
+    it('omits the sensitiveShopRead context when sensitiveData is not set', async () => {
+        await Shop.findByDomain('acme.test');
+        const call = mockFind.mock.calls[0]?.[0] as Record<string, unknown> | undefined;
+        expect(call).toBeDefined();
+        expect(call).not.toHaveProperty('context');
+    });
+
     it('returns the raw doc when convert: false', async () => {
         const result = await Shop.findByDomain('acme.test', { convert: false });
         expect(result).toBe(mockShop);

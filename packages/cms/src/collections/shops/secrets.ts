@@ -26,9 +26,15 @@ export const rejectSecretWritesFromNonAdmins: CollectionBeforeChangeHook = async
 /**
  * Strip the same secret paths on read for non-admins so the browser-side state
  * never contains them.
+ *
+ * Trusted server-side callers (e.g. the storefront's `Shop.findByDomain({
+ * sensitiveData: true })`) opt out by setting `req.context.sensitiveShopRead`.
+ * That flag is only set by server-only code paths, never by browser requests,
+ * so it can't be used by non-admin users to bypass stripping.
  */
 export const stripSecretsOnRead: CollectionBeforeReadHook = async ({ req, doc }) => {
     if (req.user?.role === 'admin') return doc;
+    if ((req.context as { sensitiveShopRead?: boolean } | undefined)?.sensitiveShopRead) return doc;
     const d = doc as { commerceProvider?: { authentication?: Record<string, unknown> } };
     if (d.commerceProvider?.authentication) {
         const auth = d.commerceProvider.authentication;
