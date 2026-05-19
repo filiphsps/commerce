@@ -101,7 +101,7 @@ export type EditorRuntime = {
      * internally calls `getClientConfig`, resolves the theme, language options,
      * permissions, and so on. Editor primitives forward the result opaquely.
      */
-    getShellProps: (domain: string | null) => Promise<ShellProps>;
+    getShellProps: (domain: string | null, locale?: string) => Promise<ShellProps>;
     DocumentForm: ComponentType<DocumentFormShellProps>;
     Table: ComponentType<CollectionTableShellProps>;
     Toolbar: ComponentType<EditorToolbarShellProps>;

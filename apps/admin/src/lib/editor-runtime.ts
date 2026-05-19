@@ -31,7 +31,7 @@ export const editorRuntime: EditorRuntime = {
         domain,
     }),
     buildFormState: buildCmsFormState as never,
-    getShellProps: async (domain) => getCmsShellProps(domain ?? undefined),
+    getShellProps: async (domain, locale) => getCmsShellProps(domain ?? undefined, locale),
     DocumentForm: DocumentForm as never,
     Table: CollectionTable as never,
     Toolbar: DraftPublishToolbar as never,

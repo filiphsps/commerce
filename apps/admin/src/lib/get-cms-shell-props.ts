@@ -53,70 +53,73 @@ const resolveTheme = ({
  * appropriate only for admin-only routes that legitimately operate outside
  * a single tenant.
  */
-export const getCmsShellProps = cache(async (domain?: string): Promise<Omit<PayloadFieldShellProps, 'children'>> => {
-    const { payload, user } = await getAuthedPayloadCtx(domain);
+export const getCmsShellProps = cache(
+    async (domain?: string, locale?: string): Promise<Omit<PayloadFieldShellProps, 'children'>> => {
+        const { payload, user } = await getAuthedPayloadCtx(domain);
 
-    const headers = await getHeaders();
-    const cookies = parseCookies(headers);
-    const languageCode = getRequestLanguage({ config: payload.config, cookies, headers });
-    // `getLocalI18n` returns the broader `I18n`; `RootProvider.translations`
-    // and `req.i18n` consume the narrower `I18nClient`. They're the same
-    // object at runtime — `@payloadcms/next/initReq` does the same dance.
-    const i18n = (await getLocalI18n({ config: payload.config, language: languageCode })) as PayloadRequest['i18n'];
-    const req = await createLocalReq({ req: { i18n, user: user as never } }, payload);
+        const headers = await getHeaders();
+        const cookies = parseCookies(headers);
+        const languageCode = getRequestLanguage({ config: payload.config, cookies, headers });
+        // `getLocalI18n` returns the broader `I18n`; `RootProvider.translations`
+        // and `req.i18n` consume the narrower `I18nClient`. They're the same
+        // object at runtime — `@payloadcms/next/initReq` does the same dance.
+        const i18n = (await getLocalI18n({ config: payload.config, language: languageCode })) as PayloadRequest['i18n'];
+        const req = await createLocalReq({ req: { i18n, user: user as never } }, payload);
 
-    const config = getClientConfig({
-        config: payload.config,
-        i18n: req.i18n,
-        importMap: payload.importMap,
-        user: user as never,
-    });
+        const config = getClientConfig({
+            config: payload.config,
+            i18n: req.i18n,
+            importMap: payload.importMap,
+            user: user as never,
+        });
 
-    const permissions = await getAccessResults({ req });
+        const permissions = await getAccessResults({ req });
 
-    // `LanguageOptions['value']` is narrowed to Payload's supported-language
-    // union (`'en' | 'de' | ...`). We iterate the runtime supportedLanguages
-    // map and cast at the boundary — the values come from the same config
-    // table TS uses to build that union, so they're equivalent at runtime.
-    type LanguageOption = PayloadFieldShellProps['languageOptions'][number];
-    type LanguageEntry = NonNullable<
-        (typeof payload.config.i18n.supportedLanguages)[keyof typeof payload.config.i18n.supportedLanguages]
-    >;
-    const languageOptions: PayloadFieldShellProps['languageOptions'] = Object.entries(
-        payload.config.i18n.supportedLanguages || {},
-    )
-        .filter(([, langConfig]) => langConfig !== undefined)
-        .map(([language, langConfig]) => ({
-            label: (langConfig as LanguageEntry).translations.general.thisLanguage,
-            value: language as LanguageOption['value'],
-        }));
+        // `LanguageOptions['value']` is narrowed to Payload's supported-language
+        // union (`'en' | 'de' | ...`). We iterate the runtime supportedLanguages
+        // map and cast at the boundary — the values come from the same config
+        // table TS uses to build that union, so they're equivalent at runtime.
+        type LanguageOption = PayloadFieldShellProps['languageOptions'][number];
+        type LanguageEntry = NonNullable<
+            (typeof payload.config.i18n.supportedLanguages)[keyof typeof payload.config.i18n.supportedLanguages]
+        >;
+        const languageOptions: PayloadFieldShellProps['languageOptions'] = Object.entries(
+            payload.config.i18n.supportedLanguages || {},
+        )
+            .filter(([, langConfig]) => langConfig !== undefined)
+            .map(([language, langConfig]) => ({
+                label: (langConfig as LanguageEntry).translations.general.thisLanguage,
+                value: language as LanguageOption['value'],
+            }));
 
-    // The admin app's color tokens (`globals.css :root`) are hardcoded dark.
-    // `resolveTheme` only matters as a fallback for callers whose admin
-    // config doesn't pin a theme; we still call it to honor any future
-    // override but force dark when the Payload config has `admin.theme:
-    // 'dark'` (it currently does — see `buildPayloadConfig`).
-    const configTheme = payload.config.admin?.theme as 'all' | ShellTheme | undefined;
-    const theme: ShellTheme =
-        configTheme === 'dark' || configTheme === 'light'
-            ? configTheme
-            : resolveTheme({
-                  configTheme,
-                  cookiePrefix: payload.config.cookiePrefix || 'payload',
-                  cookies,
-                  headers,
-              });
+        // The admin app's color tokens (`globals.css :root`) are hardcoded dark.
+        // `resolveTheme` only matters as a fallback for callers whose admin
+        // config doesn't pin a theme; we still call it to honor any future
+        // override but force dark when the Payload config has `admin.theme:
+        // 'dark'` (it currently does — see `buildPayloadConfig`).
+        const configTheme = payload.config.admin?.theme as 'all' | ShellTheme | undefined;
+        const theme: ShellTheme =
+            configTheme === 'dark' || configTheme === 'light'
+                ? configTheme
+                : resolveTheme({
+                      configTheme,
+                      cookiePrefix: payload.config.cookiePrefix || 'payload',
+                      cookies,
+                      headers,
+                  });
 
-    return {
-        config,
-        serverFunction: cmsServerFunction,
-        dateFNSKey: req.i18n.dateFNSKey,
-        fallbackLang: payload.config.i18n.fallbackLanguage,
-        languageCode,
-        languageOptions,
-        permissions,
-        theme,
-        translations: req.i18n.translations,
-        user: user as never,
-    };
-});
+        return {
+            config,
+            serverFunction: cmsServerFunction,
+            dateFNSKey: req.i18n.dateFNSKey,
+            fallbackLang: payload.config.i18n.fallbackLanguage,
+            languageCode,
+            languageOptions,
+            ...(locale ? { locale } : {}),
+            permissions,
+            theme,
+            translations: req.i18n.translations,
+            user: user as never,
+        };
+    },
+);
