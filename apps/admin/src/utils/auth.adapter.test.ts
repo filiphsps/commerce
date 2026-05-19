@@ -1,7 +1,8 @@
 import type { Adapter } from '@auth/core/adapters';
 
-import { User } from '@nordcom/commerce-db';
+import { User, UserSchema } from '@nordcom/commerce-db';
 import { NotFoundError } from '@nordcom/commerce-errors';
+import mongoose from 'mongoose';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('utils', () => {
@@ -84,5 +85,22 @@ describe('utils', () => {
                 errSpy.mockRestore();
             });
         });
+    });
+});
+
+describe('User .toObject() includes id virtual', () => {
+    // Constructs a throwaway model bound to UserSchema so we exercise the real
+    // schema options (id/timestamps/etc.) without depending on the package's
+    // global model registry, which has dist-bundling quirks in tests.
+    it('returns id as a string equal to _id.toString()', () => {
+        const TestModel = mongoose.models.UserToObjectTest || mongoose.model('UserToObjectTest', UserSchema);
+        const doc = new TestModel({
+            email: 'alice@example.com',
+            name: 'Alice',
+            identities: [],
+        });
+        const plain = doc.toObject() as { id?: unknown; _id: { toString(): string } };
+        expect(typeof plain.id).toBe('string');
+        expect(plain.id).toBe(plain._id.toString());
     });
 });
