@@ -76,7 +76,7 @@ export async function generateMetadata({ params }: { params: LayoutParams }): Pr
     cacheLife('max');
 
     const { domain, locale: localeData } = await params;
-    if (!localeData || !domain) {
+    if (!localeData || localeData === NOT_FOUND_HANDLE || !domain || domain === NOT_FOUND_HANDLE) {
         notFound();
     }
 
