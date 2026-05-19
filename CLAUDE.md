@@ -18,6 +18,10 @@ State your hypothesis explicitly before making changes, especially for: Next.js 
 
 All code, comments, commit messages, docs, identifiers, and UI strings use **American English** exclusively — `color`, `behavior`, `organization`, `canceled`, `analyze`. Never `color`, `behavior`, `organization`, `cancelled`, `analyze`.
 
+### Keep documentation in sync
+
+When a change affects behavior, configuration, commands, architecture, or conventions that are documented in the repo, update the relevant documentation in the same change. Treat docs drift as a defect — don't ship code changes that leave the docs describing the old reality. If a change introduces something genuinely new and undocumented, add documentation for it rather than leaving it implicit.
+
 ## Toolchain quirks
 
 -   **Node (`.nvmrc`)**, **pnpm `11.x`** (pinned via `packageManager`), `.nvmrc` is authoritative.
