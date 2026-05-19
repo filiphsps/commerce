@@ -145,3 +145,23 @@
         height: var(--block-spacer);
     }
 }
+
+@layer payload {
+    /* Embedded Payload field components ship with field-row min-width
+     * assumptions tuned for the canonical Payload admin shell (full-width
+     * content column). Inside our /[domain]/content/* routes the content
+     * column is narrower (the dashboard reserves a w-80 sidebar), so the
+     * defaults overflow. Reset the row + field min-width so multi-column
+     * rows wrap instead of pushing the page sideways. The `@layer payload`
+     * declaration at the top of this file guarantees these win over
+     * @payloadcms/ui's bundled defaults (which live in `payload-default`).
+     */
+    .render-fields {
+        width: 100%;
+    }
+
+    .render-fields > .field-type,
+    .field-type__row {
+        min-width: 0;
+    }
+}
