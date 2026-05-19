@@ -1,6 +1,7 @@
 import 'server-only';
 
-import { notFound } from 'next/navigation';
+import type { Route } from 'next';
+import { notFound, redirect } from 'next/navigation';
 import type { CollectionSlug } from 'payload';
 import type { ReactNode } from 'react';
 import type { CollectionEditorManifest } from '../manifest';
@@ -27,6 +28,23 @@ export async function EditorListPage<TSlug extends CollectionSlug>({
     if (!(await manifest.access.list(runtime.toAccessCtx(ctx, domain)))) notFound();
     if (!manifest.list) {
         throw new Error(`[editor] manifest ${manifest.collection} has no list config; cannot render <EditorListPage>`);
+    }
+
+    // ── Locale resolution ── (mirrors EditorEditPage)
+    const localization = ctx.payload.config.localization !== false ? ctx.payload.config.localization : undefined;
+    const tenantDefault = ctx.tenant?.defaultLocale ?? localization?.defaultLocale ?? 'en-US';
+    const allowed = ctx.tenant?.locales ?? [tenantDefault];
+    const requested = searchParams.locale;
+    const valid = typeof requested === 'string' && allowed.includes(requested);
+
+    if (!valid) {
+        const next = new URLSearchParams();
+        for (const [key, value] of Object.entries(searchParams)) {
+            if (key !== 'locale' && typeof value === 'string') next.set(key, value);
+        }
+        next.set('locale', tenantDefault);
+        const base = manifest.routes.basePath(domain);
+        redirect(`${base}?${next.toString()}` as Route);
     }
 
     const where = manifest.tenant.kind === 'scoped' && ctx.tenant ? { tenant: { equals: ctx.tenant.id } } : undefined;

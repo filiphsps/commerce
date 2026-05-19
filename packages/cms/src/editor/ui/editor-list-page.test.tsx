@@ -4,11 +4,15 @@ import type { Route } from 'next';
 import { describe, expect, it, vi } from 'vitest';
 import { defineCollectionEditor } from '../manifest';
 
-vi.mock('next/navigation', () => ({
-    notFound: () => {
+const { mockNotFound, mockRedirect } = vi.hoisted(() => ({
+    mockNotFound: vi.fn(() => {
         throw new Error('NEXT_NOT_FOUND');
-    },
+    }),
+    mockRedirect: vi.fn((url: string) => {
+        throw new Error(`NEXT_REDIRECT:${url}`);
+    }),
 }));
+vi.mock('next/navigation', () => ({ notFound: mockNotFound, redirect: mockRedirect }));
 
 import { EditorListPage } from './editor-list-page';
 
@@ -33,7 +37,7 @@ const buildRuntime = (): never =>
                 }),
             },
             user: { id: 'u', email: 'e', role: 'editor', tenants: [{ tenant: 'tenant-1' }], collection: 'users' },
-            tenant: { id: 'tenant-1', slug: 'acme' },
+            tenant: { id: 'tenant-1', slug: 'acme', defaultLocale: 'fr', locales: ['fr', 'en'] },
         }),
         toAccessCtx: (_ctx: never, domain: string | null) => ({ user: null, domain }),
         Table: ({ rows }: { rows: Array<{ id: string }> }) => <div data-testid="table">{rows.length} rows</div>,
@@ -49,10 +53,21 @@ describe('<EditorListPage>', () => {
             manifest,
             runtime: buildRuntime(),
             params: { domain: 'a.test' },
-            searchParams: {},
+            searchParams: { locale: 'fr' },
         });
         const { getByTestId } = render(el);
         // Plain DOM access — this package's tests don't load jest-dom.
         expect(getByTestId('table').textContent).toBe('2 rows');
+    });
+
+    it('redirects to tenant.defaultLocale when searchParams.locale is missing', async () => {
+        await expect(
+            EditorListPage({
+                manifest,
+                runtime: buildRuntime(),
+                params: { domain: 'a.test' },
+                searchParams: {},
+            }),
+        ).rejects.toThrow(/NEXT_REDIRECT:.*locale=fr/);
     });
 });
