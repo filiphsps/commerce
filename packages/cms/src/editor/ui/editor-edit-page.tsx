@@ -1,7 +1,8 @@
 import 'server-only';
 
+import type { Route } from 'next';
 import { headers as getHeaders } from 'next/headers';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import type { CollectionSlug } from 'payload';
 import { createLocalReq, getLocalI18n, getRequestLanguage, type PayloadRequest } from 'payload';
 import { parseCookies } from 'payload/shared';
@@ -12,6 +13,8 @@ import { tenantWhere } from '../revalidate';
 import type { EditorRuntime } from '../runtime';
 import { EditorFields } from './editor-fields';
 import { EditorFormToolbar } from './editor-form-toolbar';
+import { localeLabel } from './locale-label';
+import { LocaleSwitcher } from './locale-switcher';
 
 export type EditorEditPageProps<TSlug extends CollectionSlug = CollectionSlug> = {
     manifest: CollectionEditorManifest<TSlug>;
@@ -43,10 +46,28 @@ export async function EditorEditPage<TSlug extends CollectionSlug>({
 
     const collection = ctx.payload.config.collections.find((c) => c.slug === manifest.collection);
 
-    // Locale resolution.
+    // ── Locale resolution ──
+    // Shop's defaultLocale (from tenant) wins over the global Payload default;
+    // searchParams.locale wins if it's in the tenant's allow-list. Otherwise
+    // redirect to ?locale=<shop default> so the URL is always populated and
+    // the doc fetch always uses a valid locale.
     const localization = ctx.payload.config.localization !== false ? ctx.payload.config.localization : undefined;
-    const defaultLocale = localization?.defaultLocale ?? 'en-US';
-    const locale = searchParams.locale ?? defaultLocale;
+    const tenantDefault = ctx.tenant?.defaultLocale ?? localization?.defaultLocale ?? 'en-US';
+    const allowed = ctx.tenant?.locales ?? [tenantDefault];
+    const requested = searchParams.locale;
+    const valid = typeof requested === 'string' && allowed.includes(requested);
+
+    if (!valid) {
+        const next = new URLSearchParams();
+        for (const [key, value] of Object.entries(searchParams)) {
+            if (key !== 'locale' && typeof value === 'string') next.set(key, value);
+        }
+        next.set('locale', tenantDefault);
+        const base = manifest.routes.basePath(domain);
+        redirect(`${base}${id}/?${next.toString()}` as Route);
+    }
+
+    const locale = requested as string;
 
     // Detect drafts support from the collection config when available.
     const hasDrafts =
@@ -87,7 +108,7 @@ export async function EditorEditPage<TSlug extends CollectionSlug>({
         skipValidation: true,
     });
 
-    const shellProps = await runtime.getShellProps(domain);
+    const shellProps = await runtime.getShellProps(domain, locale);
 
     // Bind the codegen'd action wrappers to (domain, id).
     const boundSaveDraft = async (formData: FormData) => {
@@ -109,6 +130,11 @@ export async function EditorEditPage<TSlug extends CollectionSlug>({
             ? (collection.versions as { drafts: { autosave?: { interval: number } } }).drafts.autosave
             : undefined;
 
+    const localeOptions = (ctx.tenant?.locales ?? [tenantDefault]).map((code) => ({
+        code,
+        label: localeLabel(code, language),
+    }));
+
     return (
         <runtime.DocumentForm
             title={title}
@@ -122,6 +148,7 @@ export async function EditorEditPage<TSlug extends CollectionSlug>({
                     saveDraftAction={boundSaveDraft}
                     publishAction={boundPublish}
                     autosave={autosave}
+                    localeSwitcher={<LocaleSwitcher locales={localeOptions} currentLocale={locale} />}
                 />
             }
             livePreview={livePreview}

@@ -4,12 +4,15 @@ import type { Route } from 'next';
 import { describe, expect, it, vi } from 'vitest';
 import { defineCollectionEditor } from '../manifest';
 
-const { mockNotFound } = vi.hoisted(() => ({
+const { mockNotFound, mockRedirect } = vi.hoisted(() => ({
     mockNotFound: vi.fn(() => {
         throw new Error('NEXT_NOT_FOUND');
     }),
+    mockRedirect: vi.fn((url: string) => {
+        throw new Error(`NEXT_REDIRECT:${url}`);
+    }),
 }));
-vi.mock('next/navigation', () => ({ notFound: mockNotFound }));
+vi.mock('next/navigation', () => ({ notFound: mockNotFound, redirect: mockRedirect }));
 vi.mock('next/headers', () => ({ headers: async () => new Headers() }));
 vi.mock('payload', () => ({
     createLocalReq: vi.fn(async () => ({ user: { id: 'u' }, payload: {}, i18n: {} })),
@@ -19,6 +22,7 @@ vi.mock('payload', () => ({
 vi.mock('payload/shared', () => ({ parseCookies: () => ({}) }));
 vi.mock('./editor-fields', () => ({ EditorFields: () => null }));
 vi.mock('./editor-form-toolbar', () => ({ EditorFormToolbar: () => null }));
+vi.mock('./locale-switcher', () => ({ LocaleSwitcher: () => null }));
 
 import { EditorEditPage } from './editor-edit-page';
 
@@ -38,7 +42,7 @@ const buildRuntime = (overrides: Record<string, unknown> = {}): never =>
                 find: async () => ({ docs: [{ id: 'd1', legalName: 'A' }] }),
             },
             user: { id: 'u', email: 'e', role: 'editor', tenants: [{ tenant: 'tenant-1' }], collection: 'users' },
-            tenant: { id: 'tenant-1', slug: 'acme' },
+            tenant: { id: 'tenant-1', slug: 'acme', defaultLocale: 'de', locales: ['de', 'en'] },
         }),
         toAccessCtx: (
             ctx: { user: { id: string; email: string; role: 'admin' | 'editor'; tenants: { tenant: string }[] } },
@@ -61,7 +65,7 @@ describe('<EditorEditPage>', () => {
             manifest: baseManifest,
             runtime: buildRuntime(),
             params: { domain: 'a.test', id: 'singleton' },
-            searchParams: {},
+            searchParams: { locale: 'de' },
             generatedActions: {
                 saveDraft: async () => {},
                 publish: async () => {},
@@ -87,7 +91,7 @@ describe('<EditorEditPage>', () => {
                 manifest,
                 runtime: buildRuntime(),
                 params: { domain: 'a.test', id: 'singleton' },
-                searchParams: {},
+                searchParams: { locale: 'de' },
                 generatedActions: {
                     saveDraft: async () => {},
                     publish: async () => {},
@@ -99,5 +103,65 @@ describe('<EditorEditPage>', () => {
                 },
             }),
         ).rejects.toThrow('NEXT_NOT_FOUND');
+    });
+
+    it('redirects to tenant.defaultLocale when searchParams.locale is missing', async () => {
+        await expect(
+            EditorEditPage({
+                manifest: baseManifest,
+                runtime: buildRuntime(),
+                params: { domain: 'a.test', id: 'singleton' },
+                searchParams: {},
+                generatedActions: {
+                    saveDraft: async () => {},
+                    publish: async () => {},
+                    delete: async () => {},
+                    create: async () => ({ id: 'new' }),
+                    bulkDelete: async () => {},
+                    bulkPublish: async () => {},
+                    restoreVersion: async () => {},
+                },
+            }),
+        ).rejects.toThrow(/NEXT_REDIRECT:.*locale=de/);
+    });
+
+    it('redirects when searchParams.locale is not in tenant.locales', async () => {
+        await expect(
+            EditorEditPage({
+                manifest: baseManifest,
+                runtime: buildRuntime(),
+                params: { domain: 'a.test', id: 'singleton' },
+                searchParams: { locale: 'zz' },
+                generatedActions: {
+                    saveDraft: async () => {},
+                    publish: async () => {},
+                    delete: async () => {},
+                    create: async () => ({ id: 'new' }),
+                    bulkDelete: async () => {},
+                    bulkPublish: async () => {},
+                    restoreVersion: async () => {},
+                },
+            }),
+        ).rejects.toThrow(/NEXT_REDIRECT:.*locale=de/);
+    });
+
+    it('does not redirect when searchParams.locale is in tenant.locales', async () => {
+        const el = await EditorEditPage({
+            manifest: baseManifest,
+            runtime: buildRuntime(),
+            params: { domain: 'a.test', id: 'singleton' },
+            searchParams: { locale: 'en' },
+            generatedActions: {
+                saveDraft: async () => {},
+                publish: async () => {},
+                delete: async () => {},
+                create: async () => ({ id: 'new' }),
+                bulkDelete: async () => {},
+                bulkPublish: async () => {},
+                restoreVersion: async () => {},
+            },
+        });
+        const { getByTestId } = render(el);
+        expect(getByTestId('doc-form').textContent).toBe('X');
     });
 });

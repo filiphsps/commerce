@@ -1,8 +1,8 @@
-import { fireEvent } from '@testing-library/react';
+// @vitest-environment happy-dom
+import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
-import { LocaleSwitcher } from '@/components/cms/locale-switcher';
-import { render, screen } from '@/utils/test/react';
+import { LocaleSwitcher } from './locale-switcher';
 
 // ------------------------------------------------------------------
 // Mock next/navigation — not available in the test environment.
@@ -35,9 +35,9 @@ describe('LocaleSwitcher', () => {
     it('renders all locale options', () => {
         render(<LocaleSwitcher locales={LOCALES} currentLocale="en-US" />);
 
-        expect(screen.getByRole('option', { name: 'English' })).toBeInTheDocument();
-        expect(screen.getByRole('option', { name: 'Swedish' })).toBeInTheDocument();
-        expect(screen.getByRole('option', { name: 'German' })).toBeInTheDocument();
+        expect(screen.getByRole('option', { name: 'English' })).toBeTruthy();
+        expect(screen.getByRole('option', { name: 'Swedish' })).toBeTruthy();
+        expect(screen.getByRole('option', { name: 'German' })).toBeTruthy();
     });
 
     it('reflects the currentLocale as the selected value', () => {
