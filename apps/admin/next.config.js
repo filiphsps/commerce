@@ -114,8 +114,8 @@ const config = {
         return gitSHA;
     },
 
-    // We handle all redirects at the edge.
-    skipTrailingSlashRedirect: true,
+    // TODO: handle all redirects at the edge.
+    skipTrailingSlashRedirect: false,
 };
 
 //
