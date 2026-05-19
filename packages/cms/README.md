@@ -143,7 +143,6 @@ The package ships several entry points; each maps to a folder under `src/`.
 | `./shop-sync`    | `src/shop-sync/`        | `attachShopSync(Shop.model, payload)` — mirrors `Shop` rows into tenants. |
 | `./types`        | `src/types/`            | Re-exports the Payload-generated `payload-types.ts`.                    |
 | `./test-utils`   | `src/test-utils/`       | `bootTestPayload`, `buildTestConfig`, `seedTenant`.                     |
-| `./auth`         | `src/auth/`             | Reserved subpath. Empty — kept for import compatibility (see Notes).    |
 
 ### Collections
 
@@ -273,7 +272,6 @@ retried boot, multiple `getPayload` callers) won't stack duplicate listeners.
 | -------------------------- | --------- | ---------------------------------------------------------------------- |
 | `PAYLOAD_SECRET`           | yes       | Payload session + preview cookie signing.                              |
 | `MONGODB_URI`              | yes       | Mongo connection (Payload + the shared `@nordcom/commerce-db` models). |
-| `NEXTAUTH_SECRET`          | yes       | Verifies NextAuth JWTs in admin (falls back to `AUTH_SECRET`).         |
 | `STOREFRONT_BASE_URL`      | no        | Base URL used by the admin live-preview iframe. Default `http://localhost:1337`. |
 | `STOREFRONT_PREVIEW_SECRET`| yes (prod)| Secret expected by the storefront's `/[domain]/api/cms-preview` route. |
 | `S3_BUCKET`                | no        | When all five `S3_*` vars are set, media uploads land in S3.           |
@@ -312,7 +310,6 @@ packages/cms/
     │   ├── get-payload-instance.ts
     │   ├── resolve-link.ts
     │   └── index.ts
-    ├── auth/                 # Reserved subpath — empty
     ├── blocks/               # Block definitions + render layer
     │   ├── alert.ts banner.ts collection.ts columns.ts html.ts
     │   ├── media-grid.ts overview.ts rich-text.ts vendors.ts
@@ -407,7 +404,6 @@ iterating; reserve remote for CI / final verification on a sized cluster.
 | ------------------ | -------------------------------------- | ---------------------------------------------------- |
 | `MONGODB_URI_TEST` | `mongodb://localhost:27017/test`       | Test database connection.                            |
 | `PAYLOAD_SECRET`   | `test-payload-secret`                  | Payload encryption secret.                           |
-| `NEXTAUTH_SECRET`  | `test-nextauth-secret`                 | NextAuth signing secret used by tests.               |
 
 The `MONGODB_URI` from `.env.local` is intentionally shadowed by the test setup
 so dev data is never touched.
@@ -431,9 +427,3 @@ so dev data is never touched.
 -   The Shopify-aware blocks (`collection`, `vendors`, `overview`) do not import
     anything from `@shopify/*` — the storefront passes loaders in at the
     `BlockRenderer` boundary. Keep this package Shopify-free.
--   `src/auth/index.ts` is intentionally empty: the NextAuth → Payload bridge
-    (`buildNextAuthStrategy`) was removed when the embedded Payload admin
-    shell was retired. Auth is now handled entirely by NextAuth in the admin
-    app, and Payload users are looked up per-request via
-    `getAuthedPayloadCtx` (in `apps/admin/src/lib/payload-ctx.ts`). The
-    subpath export is preserved so older consumers don't break their imports.

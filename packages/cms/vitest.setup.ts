@@ -8,7 +8,6 @@ const localTestUri = 'mongodb://localhost:27017/test';
 const testUri = process.env.MONGODB_URI_TEST ?? localTestUri;
 vi.stubEnv('MONGODB_URI', testUri);
 vi.stubEnv('PAYLOAD_SECRET', process.env.PAYLOAD_SECRET ?? 'test-payload-secret');
-vi.stubEnv('NEXTAUTH_SECRET', process.env.NEXTAUTH_SECRET ?? 'test-nextauth-secret');
 
 vi.mock('server-only', () => ({}));
 vi.mock('next/cache', () => ({ revalidateTag: vi.fn(), unstable_cache: <T>(fn: T) => fn }));
