@@ -143,7 +143,7 @@ The package ships several entry points; each maps to a folder under `src/`.
 | `./shop-sync`    | `src/shop-sync/`        | `attachShopSync(Shop.model, payload)` — mirrors `Shop` rows into tenants. |
 | `./types`        | `src/types/`            | Re-exports the Payload-generated `payload-types.ts`.                    |
 | `./test-utils`   | `src/test-utils/`       | `bootTestPayload`, `buildTestConfig`, `seedTenant`.                     |
-| `./auth`         | `src/auth/`             | Legacy NextAuth → Payload bridge entry point. Empty today.              |
+| `./auth`         | `src/auth/`             | Reserved subpath. Empty — kept for import compatibility (see Notes).    |
 
 ### Collections
 
@@ -312,7 +312,7 @@ packages/cms/
     │   ├── get-payload-instance.ts
     │   ├── resolve-link.ts
     │   └── index.ts
-    ├── auth/                 # Legacy bridge entry — empty
+    ├── auth/                 # Reserved subpath — empty
     ├── blocks/               # Block definitions + render layer
     │   ├── alert.ts banner.ts collection.ts columns.ts html.ts
     │   ├── media-grid.ts overview.ts rich-text.ts vendors.ts
@@ -407,7 +407,7 @@ iterating; reserve remote for CI / final verification on a sized cluster.
 | ------------------ | -------------------------------------- | ---------------------------------------------------- |
 | `MONGODB_URI_TEST` | `mongodb://localhost:27017/test`       | Test database connection.                            |
 | `PAYLOAD_SECRET`   | `test-payload-secret`                  | Payload encryption secret.                           |
-| `NEXTAUTH_SECRET`  | `test-nextauth-secret`                 | Used by the NextAuth → Payload auth bridge tests.    |
+| `NEXTAUTH_SECRET`  | `test-nextauth-secret`                 | NextAuth signing secret used by tests.               |
 
 The `MONGODB_URI` from `.env.local` is intentionally shadowed by the test setup
 so dev data is never touched.
@@ -432,5 +432,8 @@ so dev data is never touched.
     anything from `@shopify/*` — the storefront passes loaders in at the
     `BlockRenderer` boundary. Keep this package Shopify-free.
 -   `src/auth/index.ts` is intentionally empty: the NextAuth → Payload bridge
-    moved into co-located admin routes, but the subpath export is preserved so
-    older consumers don't break their imports.
+    (`buildNextAuthStrategy`) was removed when the embedded Payload admin
+    shell was retired. Auth is now handled entirely by NextAuth in the admin
+    app, and Payload users are looked up per-request via
+    `getAuthedPayloadCtx` (in `apps/admin/src/lib/payload-ctx.ts`). The
+    subpath export is preserved so older consumers don't break their imports.

@@ -10,11 +10,11 @@ import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
  * Creates a new media doc from an uploaded file and returns its id.
  *
  * Replaces the prior client-side `fetch('/api/media', { method: 'POST' })`
- * pattern: the admin app has no Payload auth strategy mounted (we run
- * NextAuth and bridge to Payload via `getAuthedPayloadCtx`), so a REST POST
- * arrives at Payload's `/api/media` with `req.user` undefined and
- * `tenantScopedWrite` rejects it with `403 You are not allowed to perform
- * this action.`
+ * pattern: the admin app has no Payload auth strategy mounted (NextAuth
+ * handles auth, and `getAuthedPayloadCtx` resolves the matching Payload user
+ * by email), so a REST POST arrives at Payload's `/api/media` with
+ * `req.user` undefined and `tenantScopedWrite` rejects it with `403 You are
+ * not allowed to perform this action.`
  *
  * Going through the local API with the resolved user + explicit tenant
  * avoids the unauthenticated-REST hole entirely while preserving the

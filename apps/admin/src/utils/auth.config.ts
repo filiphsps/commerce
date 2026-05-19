@@ -9,12 +9,12 @@ const NEXTAUTH_URL = process.env.NEXTAUTH_URL || null;
 // (note `authjs.` prefix, not the legacy `next-auth.` from NextAuth v4).
 // Keep that default name — overriding it to `next-auth.session-token` made
 // the CSRF/callback cookies (which we don't override and which use Auth.js
-// defaults `authjs.*`) inconsistent with the session token, and the Payload
-// auth-bridge could end up reading the wrong cookie name in prod.
+// defaults `authjs.*`) inconsistent with the session token, and the
+// co-located admin routes (which read `await auth()` via
+// `getAuthedPayloadCtx`) would silently fall back to "no session" in prod.
 //
 // Only override the cookie OPTIONS here (domain, secure flag) so the cookie
-// is shared across `.${LANDING_DOMAIN}` subdomains. The bridge reads the
-// canonical Auth.js v5 name (see payload.config.ts).
+// is shared across `.${LANDING_DOMAIN}` subdomains.
 export default {
     providers: [
         GitHub({

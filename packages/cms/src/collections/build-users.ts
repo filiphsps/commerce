@@ -24,10 +24,11 @@ export const buildUsers = ({
     auth: {
         strategies: authStrategies,
         // `disableLocalStrategy: true` (boolean) strips email/password fields
-        // from the collection schema entirely. We need the email field to remain
-        // queryable so our NextAuth -> Payload bridge can find/create users by
-        // email, so we use the object form with `enableFields: true` — that
-        // disables the password login flow but keeps the fields.
+        // from the collection schema entirely. We need the email field to
+        // remain queryable so `getAuthedPayloadCtx` (in the admin app) can map
+        // a NextAuth session to a Payload user by email, so we use the object
+        // form with `enableFields: true` — that disables the password login
+        // flow but keeps the fields.
         disableLocalStrategy: disablePasswordLogin ? { enableFields: true } : undefined,
     },
     admin: { useAsTitle: 'email' },

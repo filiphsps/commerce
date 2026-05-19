@@ -22,7 +22,8 @@ describe('buildUsers', () => {
 
     it('disables the password login flow but keeps email/auth fields enabled when disablePasswordLogin is true', () => {
         // We use the object form `{ enableFields: true }` rather than the boolean form so the
-        // email field stays in the schema — the NextAuth bridge needs to query users by email.
+        // email field stays in the schema — `getAuthedPayloadCtx` (admin app) maps NextAuth
+        // sessions to Payload users by email and needs the field queryable.
         const cfg = buildUsers({ authStrategies: [fakeStrategy], disablePasswordLogin: true });
         const auth = cfg.auth as { disableLocalStrategy?: boolean | { enableFields?: boolean } };
         expect(auth.disableLocalStrategy).toEqual({ enableFields: true });

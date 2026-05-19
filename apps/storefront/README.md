@@ -38,7 +38,7 @@ Required environment variables (see [`.env.example`](../../.env.example) at the 
 | Variable                    | Purpose                                                                   |
 | --------------------------- | ------------------------------------------------------------------------- |
 | `MONGODB_URI`               | Tenant resolution. Module-load failure if missing.                        |
-| `AUTH_SECRET`               | NextAuth signing secret (also used by the Payload auth bridge).           |
+| `AUTH_SECRET`               | NextAuth signing secret. Must match the admin app's value.                |
 | `SERVICE_DOMAIN`            | Fallback hostname for unknown-shop rewrites.                              |
 | `SHOPIFY_WEBHOOK_SECRET`    | HMAC validation for `/api/revalidate`. Required in prod.                  |
 | `STOREFRONT_PREVIEW_SECRET` | Required to enter draft mode via `/[domain]/api/cms-preview`.             |

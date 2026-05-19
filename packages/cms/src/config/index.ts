@@ -27,7 +27,14 @@ export type BuildPayloadConfigOptions = {
     locales?: string[];
     /** Fallback default locale. Defaults to 'en-US'. */
     defaultLocale?: string;
-    /** Custom Payload auth strategies (e.g. NextAuth bridge). */
+    /**
+     * Custom Payload `AuthStrategy[]` to register on the `users` collection.
+     * Forwarded verbatim to `buildUsers`. The admin app no longer mounts any
+     * strategy here — NextAuth handles auth, and the admin routes resolve a
+     * Payload user via `getAuthedPayloadCtx` (email lookup). Kept as an
+     * extension point for downstream consumers that still want a Payload-side
+     * strategy.
+     */
     authStrategies?: AuthStrategy[];
     /** Disable password-based login in favour of the provided strategies. */
     disablePasswordLogin?: boolean;
