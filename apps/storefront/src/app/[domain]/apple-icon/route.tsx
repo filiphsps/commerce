@@ -4,6 +4,7 @@ import { NotFoundError } from '@nordcom/commerce-errors';
 import { cacheLife } from 'next/cache';
 import { ImageResponse } from 'next/og';
 import { type NextRequest, NextResponse } from 'next/server';
+import { bootServices } from '@/lib/boot-services';
 
 export type AppleIconRouteParams = Promise<{
     domain: string;
@@ -11,6 +12,7 @@ export type AppleIconRouteParams = Promise<{
 export async function GET({}: NextRequest, { params }: { params: AppleIconRouteParams }) {
     'use cache';
     cacheLife('max');
+    await bootServices();
 
     const { domain } = await params;
 

@@ -6,6 +6,8 @@ vi.mock('next/cache', () => ({
     cacheTag: vi.fn(),
 }));
 
+vi.mock('@/lib/boot-services', () => ({ bootServices: vi.fn().mockResolvedValue(undefined) }));
+
 const { GET } = await import('@/app/[domain]/robots.txt/route');
 
 function makeRequest(): Request {

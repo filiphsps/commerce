@@ -8,6 +8,8 @@ vi.mock('next/cache', () => ({
     revalidateTag: revalidateTagMock,
 }));
 
+vi.mock('@/lib/boot-services', () => ({ bootServices: vi.fn().mockResolvedValue(undefined) }));
+
 vi.mock('@nordcom/commerce-db', () => ({
     Shop: {
         findByDomain: vi.fn().mockResolvedValue({ id: 'shop-1', domain: 'mock.shop' }),

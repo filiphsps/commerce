@@ -3,6 +3,7 @@ import { NotFoundError } from '@nordcom/commerce-errors';
 import { cacheLife } from 'next/cache';
 import { ImageResponse } from 'next/og';
 import { type NextRequest, NextResponse } from 'next/server';
+import { bootServices } from '@/lib/boot-services';
 import { BuildConfig } from '@/utils/build-config';
 import { safeParseFloat } from '@/utils/pricing';
 
@@ -14,6 +15,7 @@ export type FaviconRouteParams = Promise<{
 export async function GET(req: NextRequest, { params }: { params: FaviconRouteParams }) {
     'use cache';
     cacheLife('max');
+    await bootServices();
 
     const { domain } = await params;
 

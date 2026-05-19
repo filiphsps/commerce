@@ -8,6 +8,7 @@ import { PagesApi } from '@/api/page';
 import { ShopifyApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { tenantRootTags } from '@/cache';
+import { bootServices } from '@/lib/boot-services';
 import { Locale } from '@/utils/locale';
 import type { DynamicSitemapRouteParams } from '../../sitemap.xml/route';
 
@@ -19,6 +20,7 @@ type SitemapPage = {
 export async function GET({}: NextRequest, { params }: { params: DynamicSitemapRouteParams }) {
     'use cache';
     cacheLife('max');
+    await bootServices();
 
     const { domain } = await params;
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });

@@ -7,6 +7,7 @@ import type { ISitemapField } from 'next-sitemap';
 import { getServerSideSitemap } from 'next-sitemap';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi, BlogsApi } from '@/api/shopify/blog';
+import { bootServices } from '@/lib/boot-services';
 import { Locale } from '@/utils/locale';
 import type { DynamicSitemapRouteParams } from '../../../sitemap.xml/route';
 
@@ -20,6 +21,7 @@ export type BlogsSitemapRouteParams = {
 export async function GET({}: NextRequest, { params }: BlogsSitemapRouteParams) {
     'use cache';
     cacheLife('max');
+    await bootServices();
 
     const { domain, locale: localeData } = await params;
     if (!localeData) {

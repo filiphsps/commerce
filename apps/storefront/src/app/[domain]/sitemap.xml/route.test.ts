@@ -6,6 +6,8 @@ vi.mock('next/cache', () => ({
     cacheTag: vi.fn(),
 }));
 
+vi.mock('@/lib/boot-services', () => ({ bootServices: vi.fn().mockResolvedValue(undefined) }));
+
 vi.mock('@/api/shopify', () => ({
     ShopifyApolloApiClient: vi.fn().mockResolvedValue({
         query: vi.fn(),

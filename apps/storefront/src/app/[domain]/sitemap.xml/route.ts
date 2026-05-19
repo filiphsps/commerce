@@ -5,6 +5,7 @@ import { getServerSideSitemapIndex } from 'next-sitemap';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { tenantRootTags } from '@/cache';
+import { bootServices } from '@/lib/boot-services';
 import { Locale } from '@/utils/locale';
 
 export type DynamicSitemapRouteParams = Promise<{
@@ -13,6 +14,7 @@ export type DynamicSitemapRouteParams = Promise<{
 export async function GET({}: NextRequest, { params }: { params: DynamicSitemapRouteParams }) {
     'use cache';
     cacheLife('max');
+    await bootServices();
 
     const locale = Locale.default;
 
