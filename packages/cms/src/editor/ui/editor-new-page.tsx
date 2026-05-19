@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { headers as getHeaders } from 'next/headers';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import type { CollectionSlug } from 'payload';
 import { createLocalReq, getLocalI18n, getRequestLanguage, type PayloadRequest } from 'payload';
 import { parseCookies } from 'payload/shared';
@@ -16,6 +16,7 @@ export type EditorNewPageProps<TSlug extends CollectionSlug = CollectionSlug> = 
     manifest: CollectionEditorManifest<TSlug>;
     runtime: EditorRuntime;
     params: { domain: string | null };
+    searchParams: { locale?: string };
     generatedActions: EditorActions;
 };
 
@@ -23,6 +24,7 @@ export async function EditorNewPage<TSlug extends CollectionSlug>({
     manifest,
     runtime,
     params,
+    searchParams,
     generatedActions,
 }: EditorNewPageProps<TSlug>): Promise<ReactNode> {
     const { domain } = params;
@@ -32,6 +34,28 @@ export async function EditorNewPage<TSlug extends CollectionSlug>({
 
     const collection = ctx.payload.config.collections.find((c) => c.slug === manifest.collection);
     if (!collection) throw new Error(`[editor] unknown collection slug: ${manifest.collection}`);
+
+    // ── Locale resolution ── (mirrors EditorEditPage)
+    const localization = ctx.payload.config.localization !== false ? ctx.payload.config.localization : undefined;
+    const tenantDefault = ctx.tenant?.defaultLocale ?? localization?.defaultLocale ?? 'en-US';
+    const allowed = ctx.tenant?.locales ?? [tenantDefault];
+    const requested = searchParams.locale;
+    const valid = typeof requested === 'string' && allowed.includes(requested);
+
+    if (!valid) {
+        const next = new URLSearchParams();
+        for (const [key, value] of Object.entries(searchParams)) {
+            // Skip `locale` (overridden below) and skip array-valued params
+            // (Next allows `string | string[]` in searchParams; current
+            // callers pass only strings, but the guard keeps this safe).
+            if (key !== 'locale' && typeof value === 'string') next.set(key, value);
+        }
+        next.set('locale', tenantDefault);
+        const base = manifest.routes.basePath(domain);
+        redirect(`${base}new/?${next.toString()}`);
+    }
+
+    const locale = requested as string;
 
     const headers = await getHeaders();
     const cookies = parseCookies(headers);
@@ -45,12 +69,13 @@ export async function EditorNewPage<TSlug extends CollectionSlug>({
         operation: 'create',
         docPermissions: { create: true, fields: true, read: true, update: true },
         docPreferences: { fields: {} },
+        locale,
         req,
         schemaPath: String(manifest.collection),
         skipValidation: true,
     });
 
-    const shellProps = await runtime.getShellProps(domain);
+    const shellProps = await runtime.getShellProps(domain, locale);
 
     const boundCreate = async (formData: FormData) => {
         await generatedActions.create(domain, formData);

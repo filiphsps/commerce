@@ -4,11 +4,15 @@ import type { Route } from 'next';
 import { describe, expect, it, vi } from 'vitest';
 import { defineCollectionEditor } from '../manifest';
 
-vi.mock('next/navigation', () => ({
-    notFound: () => {
+const { mockNotFound, mockRedirect } = vi.hoisted(() => ({
+    mockNotFound: vi.fn(() => {
         throw new Error('NEXT_NOT_FOUND');
-    },
+    }),
+    mockRedirect: vi.fn((url: string) => {
+        throw new Error(`NEXT_REDIRECT:${url}`);
+    }),
 }));
+vi.mock('next/navigation', () => ({ notFound: mockNotFound, redirect: mockRedirect }));
 vi.mock('next/headers', () => ({ headers: async () => new Headers() }));
 vi.mock('payload', () => ({
     createLocalReq: vi.fn(async () => ({})),
@@ -35,7 +39,7 @@ const buildRuntime = (overrides: Record<string, unknown> = {}): never =>
         getCtx: async () => ({
             payload: { config: { collections: [{ slug: 'pages', fields: [], versions: false }], localization: false } },
             user: { id: 'u', email: 'e', role: 'editor', tenants: [{ tenant: 'tenant-1' }], collection: 'users' },
-            tenant: { id: 'tenant-1', slug: 'acme' },
+            tenant: { id: 'tenant-1', slug: 'acme', defaultLocale: 'sv', locales: ['sv', 'en'] },
         }),
         toAccessCtx: (_ctx: never, domain: string | null) => ({ user: null, domain }),
         buildFormState: async () => ({ state: {} }),
@@ -52,6 +56,7 @@ describe('<EditorNewPage>', () => {
             manifest,
             runtime: buildRuntime(),
             params: { domain: 'a.test' },
+            searchParams: { locale: 'sv' },
             generatedActions: {
                 saveDraft: async () => {},
                 publish: async () => {},
@@ -65,5 +70,25 @@ describe('<EditorNewPage>', () => {
         const { getByTestId } = render(el);
         // Plain DOM access — this package's tests don't load jest-dom.
         expect(getByTestId('doc-form').textContent).toBe('New Page');
+    });
+
+    it('redirects to tenant.defaultLocale when searchParams.locale is missing', async () => {
+        await expect(
+            EditorNewPage({
+                manifest,
+                runtime: buildRuntime(),
+                params: { domain: 'a.test' },
+                searchParams: {},
+                generatedActions: {
+                    saveDraft: async () => {},
+                    publish: async () => {},
+                    delete: async () => {},
+                    create: async () => ({ id: 'new' }),
+                    bulkDelete: async () => {},
+                    bulkPublish: async () => {},
+                    restoreVersion: async () => {},
+                },
+            }),
+        ).rejects.toThrow(/NEXT_REDIRECT:.*locale=sv/);
     });
 });
