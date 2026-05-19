@@ -22,13 +22,16 @@ describe('localeLabel', () => {
     });
 
     it('returns the raw code when Intl.DisplayNames is unavailable', () => {
-        const original = Intl.DisplayNames;
-        // @ts-expect-error — deliberately removing the global for this test
-        Intl.DisplayNames = undefined;
+        // `Intl.DisplayNames` is declared `readonly` in lib.es2020.intl.d.ts.
+        // Cast once to a mutable view so both the stub and the restore stay
+        // type-checked (no scattered @ts-expect-error directives).
+        const intl = Intl as { DisplayNames: typeof Intl.DisplayNames | undefined };
+        const original = intl.DisplayNames;
+        intl.DisplayNames = undefined;
         try {
             expect(localeLabel('de', 'en')).toBe('de');
         } finally {
-            Intl.DisplayNames = original;
+            intl.DisplayNames = original;
         }
     });
 });
