@@ -15,8 +15,9 @@
       }
     ]
   },
-  "useAutoModeDuringPlan": true,
   "enabledPlugins": {
-    "mongodb@claude-plugins-official": true
-  }
+    "mongodb@claude-plugins-official": true,
+    "playwright@claude-plugins-official": true
+  },
+  "useAutoModeDuringPlan": true
 }
