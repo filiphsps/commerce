@@ -4,11 +4,27 @@ import type { Route } from 'next';
 import { describe, expect, it, vi } from 'vitest';
 import { defineCollectionEditor } from '../manifest';
 
-vi.mock('next/navigation', () => ({
-    notFound: () => {
+const { mockNotFound, mockRedirect } = vi.hoisted(() => ({
+    mockNotFound: vi.fn(() => {
         throw new Error('NEXT_NOT_FOUND');
-    },
+    }),
+    mockRedirect: vi.fn((url: string) => {
+        throw new Error(`NEXT_REDIRECT:${url}`);
+    }),
 }));
+vi.mock('next/navigation', () => ({
+    notFound: mockNotFound,
+    redirect: mockRedirect,
+    useRouter: () => ({ replace: vi.fn() }),
+    usePathname: () => '/a.test/content/business-data/',
+    useSearchParams: () => new URLSearchParams('locale=de'),
+}));
+
+vi.mock('next/headers', () => ({ headers: async () => new Headers() }));
+vi.mock('payload', () => ({
+    getRequestLanguage: vi.fn(() => 'en'),
+}));
+vi.mock('payload/shared', () => ({ parseCookies: () => ({}) }));
 
 import { EditorVersionsPage } from './editor-versions-page';
 
@@ -30,7 +46,7 @@ const buildRuntime = (versions: Array<Record<string, unknown>>): never =>
                 findVersions: async () => ({ docs: versions }),
             },
             user: { id: 'u', email: 'e', role: 'editor', tenants: [{ tenant: 'tenant-1' }], collection: 'users' },
-            tenant: { id: 'tenant-1', slug: 'acme' },
+            tenant: { id: 'tenant-1', slug: 'acme', defaultLocale: 'de', locales: ['de', 'en'] },
         }),
         toAccessCtx: (_ctx: never, domain: string | null) => ({ user: null, domain }),
         DocumentForm: () => null,
@@ -46,6 +62,7 @@ describe('<EditorVersionsPage>', () => {
             manifest,
             runtime: buildRuntime([]),
             params: { domain: 'a.test', id: 'singleton' },
+            searchParams: { locale: 'de' },
             generatedActions: {
                 saveDraft: async () => {},
                 publish: async () => {},
@@ -70,6 +87,7 @@ describe('<EditorVersionsPage>', () => {
             manifest,
             runtime: buildRuntime(versions),
             params: { domain: 'a.test', id: 'singleton' },
+            searchParams: { locale: 'de' },
             generatedActions: {
                 saveDraft: async () => {},
                 publish: async () => {},
@@ -82,5 +100,45 @@ describe('<EditorVersionsPage>', () => {
         });
         const { container } = render(el);
         expect(container.querySelectorAll('li')).toHaveLength(2);
+    });
+
+    it('redirects to tenant.defaultLocale when searchParams.locale is missing', async () => {
+        await expect(
+            EditorVersionsPage({
+                manifest,
+                runtime: buildRuntime([]),
+                params: { domain: 'a.test', id: 'singleton' },
+                searchParams: {},
+                generatedActions: {
+                    saveDraft: async () => {},
+                    publish: async () => {},
+                    delete: async () => {},
+                    create: async () => ({ id: 'new' }),
+                    bulkDelete: async () => {},
+                    bulkPublish: async () => {},
+                    restoreVersion: async () => {},
+                },
+            }),
+        ).rejects.toThrow(/NEXT_REDIRECT:.*locale=de/);
+    });
+
+    it('renders the locale switcher in the header when tenant has multiple locales', async () => {
+        const el = await EditorVersionsPage({
+            manifest,
+            runtime: buildRuntime([]),
+            params: { domain: 'a.test', id: 'singleton' },
+            searchParams: { locale: 'de' },
+            generatedActions: {
+                saveDraft: async () => {},
+                publish: async () => {},
+                delete: async () => {},
+                create: async () => ({ id: 'new' }),
+                bulkDelete: async () => {},
+                bulkPublish: async () => {},
+                restoreVersion: async () => {},
+            },
+        });
+        const { container } = render(el);
+        expect(container.querySelector('select#locale-switcher')).not.toBeNull();
     });
 });

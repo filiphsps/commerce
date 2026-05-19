@@ -1,18 +1,24 @@
 import 'server-only';
 
 import type { Route } from 'next';
+import { headers as getHeaders } from 'next/headers';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import type { CollectionSlug } from 'payload';
+import { getRequestLanguage } from 'payload';
+import { parseCookies } from 'payload/shared';
 import type { ReactNode } from 'react';
 import type { EditorActions } from '../actions';
 import type { CollectionEditorManifest } from '../manifest';
 import type { EditorRuntime } from '../runtime';
+import { localeLabel } from './locale-label';
+import { LocaleSwitcher } from './locale-switcher';
 
 export type EditorVersionsPageProps<TSlug extends CollectionSlug = CollectionSlug> = {
     manifest: CollectionEditorManifest<TSlug>;
     runtime: EditorRuntime;
     params: { domain: string | null; id: string };
+    searchParams: { locale?: string };
     generatedActions: EditorActions;
 };
 
@@ -20,11 +26,31 @@ export async function EditorVersionsPage<TSlug extends CollectionSlug>({
     manifest,
     runtime,
     params,
+    searchParams,
     generatedActions,
 }: EditorVersionsPageProps<TSlug>): Promise<ReactNode> {
     const { domain, id } = params;
     const ctx = await runtime.getCtx(domain);
     if (!(await manifest.access.read(runtime.toAccessCtx(ctx, domain)))) notFound();
+
+    // ── Locale resolution ── (mirrors EditorEditPage)
+    const localization = ctx.payload.config.localization !== false ? ctx.payload.config.localization : undefined;
+    const tenantDefault = ctx.tenant?.defaultLocale ?? localization?.defaultLocale ?? 'en-US';
+    const allowed = ctx.tenant?.locales ?? [tenantDefault];
+    const requested = searchParams.locale;
+    const valid = typeof requested === 'string' && allowed.includes(requested);
+
+    if (!valid) {
+        const next = new URLSearchParams();
+        for (const [key, value] of Object.entries(searchParams)) {
+            if (key !== 'locale' && typeof value === 'string') next.set(key, value);
+        }
+        next.set('locale', tenantDefault);
+        const base = manifest.routes.basePath(domain);
+        redirect(`${base}${id !== 'singleton' ? `${id}/` : ''}versions/?${next.toString()}` as Route);
+    }
+
+    const locale = requested as string;
 
     // Tenant-scoped `findVersions` uses the `version.tenant` path because
     // versions are stored separately and embed the parent's tenant ref.
@@ -40,17 +66,30 @@ export async function EditorVersionsPage<TSlug extends CollectionSlug>({
         overrideAccess: false,
     });
 
-    const backHref = `${manifest.routes.basePath(domain)}${id !== 'singleton' ? `${id}/` : ''}` as Route;
+    const backHref =
+        `${manifest.routes.basePath(domain)}${id !== 'singleton' ? `${id}/` : ''}?locale=${encodeURIComponent(locale)}` as Route;
+
+    const headers = await getHeaders();
+    const cookies = parseCookies(headers);
+    const language = getRequestLanguage({ config: ctx.payload.config, cookies, headers });
+
+    const localeOptions = (ctx.tenant?.locales ?? [tenantDefault]).map((code) => ({
+        code,
+        label: localeLabel(code, language),
+    }));
 
     return (
         <div className="mx-auto max-w-3xl px-6 py-10">
-            <header className="mb-8 flex items-center justify-between">
+            <header className="mb-8 flex items-center justify-between gap-4">
                 <h1 className="font-semibold text-2xl">{manifest.routes.label.singular} — Versions</h1>
-                <nav>
-                    <Link href={backHref} className="text-blue-600 text-sm hover:underline">
-                        ← Back to editor
-                    </Link>
-                </nav>
+                <div className="flex items-center gap-4">
+                    <LocaleSwitcher locales={localeOptions} currentLocale={locale} />
+                    <nav>
+                        <Link href={backHref} className="text-blue-600 text-sm hover:underline">
+                            ← Back to editor
+                        </Link>
+                    </nav>
+                </div>
             </header>
 
             {docs.length === 0 ? (
