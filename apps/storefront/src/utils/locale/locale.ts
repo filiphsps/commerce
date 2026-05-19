@@ -1,8 +1,9 @@
-import { UnknownLocaleError } from '@nordcom/commerce-errors';
+import { NotFoundError, UnknownLocaleError } from '@nordcom/commerce-errors';
 import type { CountryCode, CurrencyCode, LanguageCode } from '@shopify/hydrogen-react/storefront-api-types';
 import type { ReactNode } from 'react';
 import React from 'react';
 import type english from '@/i18n/en.json';
+import { NOT_FOUND_HANDLE } from '../handle';
 
 export type { CountryCode, CurrencyCode, LanguageCode };
 export type Code = `${Lowercase<LanguageCode>}-${CountryCode}` | Lowercase<LanguageCode>;
@@ -103,6 +104,10 @@ export class Locale implements SerializableLocale {
             Object.freeze(Object.fromEntries(Object.entries(locale)) as SerializableLocale);
 
         if (typeof data === 'string') {
+            if (data === NOT_FOUND_HANDLE) {
+                throw new NotFoundError(data);
+            }
+
             const code = data.toUpperCase() as Uppercase<Code>;
 
             if (!code || code.length < 2 || code.length > 5 || (code.length !== 2 && !code.includes('-'))) {
