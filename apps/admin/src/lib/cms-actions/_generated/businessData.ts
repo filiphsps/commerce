@@ -12,24 +12,53 @@ import { editorRuntime } from '@/lib/editor-runtime';
 
 const a = createCollectionEditorActions(businessDataEditor, editorRuntime);
 
-export async function businessDataSaveDraft(domain: string | null, id: string, formData: FormData): Promise<void> {
+// Signatures are written multi-line so Biome's auto-format hook leaves them
+// alone regardless of slug length. Short slugs (pages) and long slugs
+// (collectionMetadata) all emit the same shape, keeping cms:gen:check
+// deterministic. Do NOT use backticks in comments inside this template
+// literal — they would collide with the outer string delimiter.
+export async function businessDataSaveDraft(
+    domain: string | null,
+    id: string,
+    formData: FormData,
+): Promise<void> {
     return a.saveDraft(domain, id, formData);
 }
-export async function businessDataPublish(domain: string | null, id: string, formData: FormData): Promise<void> {
+export async function businessDataPublish(
+    domain: string | null,
+    id: string,
+    formData: FormData,
+): Promise<void> {
     return a.publish(domain, id, formData);
 }
-export async function businessDataCreate(domain: string | null, formData: FormData): Promise<{ id: string }> {
+export async function businessDataCreate(
+    domain: string | null,
+    formData: FormData,
+): Promise<{ id: string }> {
     return a.create(domain, formData);
 }
-export async function businessDataDelete(domain: string | null, id: string): Promise<void> {
+export async function businessDataDelete(
+    domain: string | null,
+    id: string,
+): Promise<void> {
     return a.delete(domain, id);
 }
-export async function businessDataBulkDelete(domain: string | null, ids: string[]): Promise<void> {
+export async function businessDataBulkDelete(
+    domain: string | null,
+    ids: string[],
+): Promise<void> {
     return a.bulkDelete(domain, ids);
 }
-export async function businessDataBulkPublish(domain: string | null, ids: string[]): Promise<void> {
+export async function businessDataBulkPublish(
+    domain: string | null,
+    ids: string[],
+): Promise<void> {
     return a.bulkPublish(domain, ids);
 }
-export async function businessDataRestoreVersion(domain: string | null, id: string, versionId: string): Promise<void> {
+export async function businessDataRestoreVersion(
+    domain: string | null,
+    id: string,
+    versionId: string,
+): Promise<void> {
     return a.restoreVersion(domain, id, versionId);
 }

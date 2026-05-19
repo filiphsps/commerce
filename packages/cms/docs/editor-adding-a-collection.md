@@ -1,0 +1,158 @@
+---
+title: Adding a collection editor
+sidebar_position: 7
+---
+
+# Adding a collection editor
+
+This guide is the step-by-step for hooking up a new Payload collection to the
+admin editor system. Every editable collection follows this shape — there is
+no bespoke-route alternative.
+
+## Prerequisites
+
+- The collection's `CollectionConfig` exists in `packages/cms/src/collections/`
+  and is registered in `allCollections`.
+- The `payload-types.ts` file knows about the new slug (run
+  `pnpm generate:types` after adding the collection).
+
+## Step 1: Write the manifest
+
+Create `packages/cms/src/editor/manifests/<slug>.ts`:
+
+```ts
+import type { Route } from 'next';
+import { adminOnly, editorOrAdmin, tenantMember } from '../access';
+import { defineCollectionEditor } from '../manifest';
+
+export const <slug>Editor = defineCollectionEditor({
+    collection: '<slug>',
+    routes: {
+        label: { singular: 'Thing', plural: 'Things' },
+        basePath: (domain) => `/${domain}/content/<slug>/` as Route,
+        breadcrumbs: ({ domain }) => [
+            { label: 'Content', href: `/${domain}/content/` as Route },
+            { label: 'Things' },
+        ],
+    },
+    tenant: { kind: 'scoped', field: 'tenant' },
+    access: {
+        list: tenantMember,
+        read: tenantMember,
+        create: editorOrAdmin,
+        update: editorOrAdmin,
+        delete: adminOnly,
+    },
+    list: {
+        columns: [{ label: 'Title', accessor: 'title' }],
+        bulkActions: ['delete', 'publish'],
+    },
+    revalidate: ({ domain }) => [`/${domain}/content/<slug>/`],
+});
+```
+
+Variants:
+- **Cross-tenant admin collections**: `tenant: { kind: 'shared', readableBy: 'admin' }`,
+  all access `adminOnly`, basePath under `/settings/`.
+- **Handle-keyed (e.g. Shopify overlay)**: `routes.keyField: 'shopifyHandle'`.
+- **Singleton-by-domain (e.g. shops)**: `tenant: { kind: 'singleton-by-domain' }`,
+  `list: () => false`.
+
+## Step 2: Register in the barrel
+
+Edit `packages/cms/src/editor/manifests/index.ts`:
+
+```ts
+import { <slug>Editor } from './<slug>';
+
+export { <slug>Editor } from './<slug>';
+
+export const allManifests: readonly CollectionEditorManifest[] = [
+    /* existing entries... */
+    <slug>Editor as unknown as CollectionEditorManifest,
+];
+```
+
+## Step 3: Regenerate the action wrappers
+
+```bash
+pnpm --filter @nordcom/commerce-cms build
+pnpm cms:gen
+```
+
+This emits `apps/admin/src/lib/cms-actions/_generated/<slug>.ts` (camelCase
+filename matching the collection slug). Action names follow the pattern
+`<slug><Method>` — e.g. `myThingSaveDraft`, `myThingPublish`, `myThingDelete`.
+
+Naming caveat: the codegen derives the manifest variable name from the slug,
+so manifests must be named `<camelCaseSlug>Editor` to match. Slugs like
+`pages` produce `pagesEditor`; slugs like `feature-flags` produce
+`featureFlagsEditor`.
+
+## Step 4: Wire the route(s)
+
+Create per-route `page.tsx` files under
+`apps/admin/src/app/(app)/(dashboard)/[domain]/<area>/<slug>/`. Pattern for
+an edit page:
+
+```tsx
+import 'server-only';
+import { <slug>Editor } from '@nordcom/commerce-cms/editor/manifests';
+import { EditorEditPage } from '@nordcom/commerce-cms/editor/ui';
+import type { Metadata } from 'next';
+import * as actions from '@/lib/cms-actions/_generated/<slug>';
+import { editorRuntime } from '@/lib/editor-runtime';
+
+export const metadata: Metadata = { title: 'Edit Thing' };
+
+export default async function EditPage({ params, searchParams }: {
+    params: Promise<{ domain: string; id: string }>;
+    searchParams: Promise<{ locale?: string }>;
+}) {
+    const { domain, id } = await params;
+    const sp = await searchParams;
+    return (
+        <EditorEditPage
+            manifest={<slug>Editor}
+            runtime={editorRuntime}
+            params={{ domain, id }}
+            searchParams={sp}
+            generatedActions={{
+                saveDraft: actions.<slug>SaveDraft,
+                publish: actions.<slug>Publish,
+                create: actions.<slug>Create,
+                delete: actions.<slug>Delete,
+                bulkDelete: actions.<slug>BulkDelete,
+                bulkPublish: actions.<slug>BulkPublish,
+                restoreVersion: actions.<slug>RestoreVersion,
+            }}
+        />
+    );
+}
+```
+
+For list / new / versions routes, the same pattern applies — use
+`<EditorListPage>`, `<EditorNewPage>`, `<EditorVersionsPage>`. For globals
+(one row per tenant), pass `params: { domain, id: 'singleton' }`.
+
+## Step 5: Verify
+
+```bash
+pnpm --filter @nordcom/commerce-cms typecheck
+pnpm --filter @nordcom/commerce-admin typecheck
+pnpm cms:gen:check
+```
+
+All three must exit 0. The drift check confirms the committed
+`_generated/<slug>.ts` matches what `pnpm cms:gen` produces — Biome's
+auto-format hook sometimes reformats the generated file after writing;
+re-running `pnpm cms:gen` once after Biome settles resolves it.
+
+## Step 6: Walk the route in dev
+
+```bash
+pnpm dev:admin
+```
+
+Visit `/<seeded-domain>/<area>/<slug>/` and walk through list → new → edit →
+versions (where applicable) to confirm the manifest is wired correctly.

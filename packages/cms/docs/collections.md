@@ -11,19 +11,19 @@ ordered array passed to `buildPayloadConfig`; `tenantScopedCollections` and
 
 | Collection           | File                                          | Notes                                                                 |
 | -------------------- | --------------------------------------------- | --------------------------------------------------------------------- |
-| `tenants`            | `src/collections/tenants.ts`                  | Internal — synced from `Shop` via `attachShopSync`.                   |
-| `users`              | `src/collections/users.ts`                    | Editor accounts; auth strategies wired in via `buildUsers`.           |
-| `media`              | `src/collections/media.ts`                    | Image uploads; backed by S3 when the `S3_*` env block is set.         |
-| `pages`              | `src/collections/pages.ts`                    | Slug + blocks. Drafts + autosave at 2s.                               |
-| `articles`           | `src/collections/articles.ts`                 | Slug + body. Drafts.                                                  |
-| `productMetadata`    | `src/collections/product-metadata.ts`         | Per-`shopifyHandle` SEO/marketing overrides.                          |
-| `collectionMetadata` | `src/collections/collection-metadata.ts`      | Per-`shopifyHandle` overrides for Shopify collections.                |
-| `header`             | `src/collections/_globals/header.ts`          | `isGlobal` — one row per tenant.                                      |
-| `footer`             | `src/collections/_globals/footer.ts`          | `isGlobal` — one row per tenant.                                      |
-| `businessData`       | `src/collections/_globals/business-data.ts`   | `isGlobal` — addresses, phone, support email, etc.                    |
+| `tenants`            | `src/collections/tenants.ts`                  | Internal — synced from `Shop` via `attachShopSync`. **Editor: `tenantsEditor`.**                   |
+| `users`              | `src/collections/users.ts`                    | Editor accounts; auth strategies wired in via `buildUsers`. **Editor: `usersEditor`.**           |
+| `media`              | `src/collections/media.ts`                    | Image uploads; backed by S3 when the `S3_*` env block is set. **Editor: `mediaEditor`.**         |
+| `pages`              | `src/collections/pages.ts`                    | Slug + blocks. Drafts + autosave at 2s. **Editor: `pagesEditor`.**                               |
+| `articles`           | `src/collections/articles.ts`                 | Slug + body. Drafts. **Editor: `articlesEditor`.**                                                  |
+| `productMetadata`    | `src/collections/product-metadata.ts`         | Per-`shopifyHandle` SEO/marketing overrides. **Editor: `productMetadataEditor`.**                          |
+| `collectionMetadata` | `src/collections/collection-metadata.ts`      | Per-`shopifyHandle` overrides for Shopify collections. **Editor: `collectionMetadataEditor`.**                |
+| `header`             | `src/collections/_globals/header.ts`          | `isGlobal` — one row per tenant. **Editor: `headerEditor`.**                                      |
+| `footer`             | `src/collections/_globals/footer.ts`          | `isGlobal` — one row per tenant. **Editor: `footerEditor`.**                                      |
+| `businessData`       | `src/collections/_globals/business-data.ts`   | `isGlobal` — addresses, phone, support email, etc. **Editor: `businessDataEditor`.**                    |
 | `shops`              | `src/collections/shops.ts`                    | Migrated from `@nordcom/commerce-db`. Edit surface (name, domain, design) via `shopsEditor`; commerceProvider secrets blocked by hooks. |
-| `reviews`            | `src/collections/reviews.ts`                  | Migrated from `@nordcom/commerce-db`. Tenant-scoped; relationship to `shops`. |
-| `feature-flags`      | `src/collections/feature-flags.ts`            | Migrated from `@nordcom/commerce-db`. Admin-only; keyed by `key`.     |
+| `reviews`            | `src/collections/reviews.ts`                  | Migrated from `@nordcom/commerce-db`. Tenant-scoped; relationship to `shops`. **Editor: `reviewsEditor`.** |
+| `feature-flags`      | `src/collections/feature-flags.ts`            | Migrated from `@nordcom/commerce-db`. Admin-only; keyed by `key`. **Editor: `featureFlagsEditor`.**     |
 
 Three collections (`header`, `footer`, `businessData`) are modelled as
 singleton-like rows under `@payloadcms/plugin-multi-tenant`'s `isGlobal: true`
