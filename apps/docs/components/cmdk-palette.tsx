@@ -89,12 +89,7 @@ export function CmdkPalette(): React.JSX.Element | null {
     if (!open) return null;
 
     return (
-        <Command.Dialog
-            open={open}
-            onOpenChange={setOpen}
-            label="Command Menu"
-            className="cmdk-dialog"
-        >
+        <Command.Dialog open={open} onOpenChange={setOpen} label="Command Menu" className="cmdk-dialog">
             <Command.Input value={query} onValueChange={setQuery} placeholder="Search docs…" />
             <Command.List>
                 {results.length === 0 && query ? <Command.Empty>No results</Command.Empty> : null}

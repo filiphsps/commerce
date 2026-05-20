@@ -142,8 +142,6 @@ async function main(): Promise<void> {
             `[icons:gen] ${result.chromeExceptions.length} icon(s) did not match the chrome pattern — see scripts/CHROME_EXCEPTIONS.md`,
         );
     }
-
-    console.log(`[icons:gen] wrote ${result.entries.length} icons to ${outDir}`);
 }
 
 const invokedDirectly = process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1]);

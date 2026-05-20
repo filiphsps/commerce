@@ -1,7 +1,10 @@
 {
     "name": "@fixture/alpha",
     "exports": {
-        ".": ["./src/index.ts", "./dist/index.js"],
+        ".": [
+            "./src/index.ts",
+            "./dist/index.js"
+        ],
         "./api": "./src/api/index.ts",
         "./api/sub": "./src/api/sub/index.ts"
     }

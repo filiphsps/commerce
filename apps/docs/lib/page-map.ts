@@ -1,4 +1,4 @@
-import { pageMap, type PageMapEntry } from './page-map.generated';
+import { type PageMapEntry, pageMap } from './page-map.generated';
 
 export type { PageMapEntry };
 

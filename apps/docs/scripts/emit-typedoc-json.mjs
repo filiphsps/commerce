@@ -178,9 +178,7 @@ function commonSourceBase(absPaths) {
     }
     // Trim trailing filename component if present (entries are files, not directories).
     const candidate = parts.join(path.sep);
-    return fs.existsSync(candidate) && fs.statSync(candidate).isDirectory()
-        ? candidate
-        : path.dirname(candidate);
+    return fs.existsSync(candidate) && fs.statSync(candidate).isDirectory() ? candidate : path.dirname(candidate);
 }
 
 /**
@@ -216,7 +214,7 @@ if (WATCH) {
     // Simple watch: rebuild on any change under packages/**/src; debounced 500ms.
     let timer;
     fs.watch(path.join(REPO_ROOT, 'packages'), { recursive: true }, (_event, filename) => {
-        if (!filename || !filename.endsWith('.ts')) return;
+        if (!filename?.endsWith('.ts')) return;
         clearTimeout(timer);
         timer = setTimeout(() => main().catch(console.error), 500);
     });

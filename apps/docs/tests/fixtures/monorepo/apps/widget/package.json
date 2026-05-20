@@ -1,1 +1,4 @@
-{ "name": "@fixture/widget", "exports": "./src/index.ts" }
+{
+    "name": "@fixture/widget",
+    "exports": "./src/index.ts"
+}

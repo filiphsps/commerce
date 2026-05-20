@@ -11,10 +11,7 @@ export type ApiReferenceProps = {
     _rootDir?: string;
 };
 
-export async function ApiReference({
-    subpath,
-    _rootDir,
-}: ApiReferenceProps): Promise<React.JSX.Element> {
+export async function ApiReference({ subpath, _rootDir }: ApiReferenceProps): Promise<React.JSX.Element> {
     const rootDir = _rootDir ?? getTypedocOutRoot();
     let project: TypeDocProject;
     try {
@@ -38,6 +35,7 @@ export async function ApiReference({
             );
         }
         console.warn(`[ApiReference] Unknown subpath "${subpath}"`);
+        // biome-ignore lint/complexity/noUselessFragments: Example
         return <></>;
     }
 

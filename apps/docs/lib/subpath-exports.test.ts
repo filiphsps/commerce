@@ -8,9 +8,7 @@ const FIXTURE_ROOT = path.resolve(__dirname, '../tests/fixtures/monorepo');
 describe('resolveSubpathExports', () => {
     it('returns root entry when exports is a single string', () => {
         const subpaths = resolveSubpathExports(path.join(FIXTURE_ROOT, 'apps/widget'));
-        expect(subpaths).toEqual([
-            { subpath: '.', sourceFile: path.join(FIXTURE_ROOT, 'apps/widget/src/index.ts') },
-        ]);
+        expect(subpaths).toEqual([{ subpath: '.', sourceFile: path.join(FIXTURE_ROOT, 'apps/widget/src/index.ts') }]);
     });
 
     it('handles array form (picks first entry that resolves to .ts source)', () => {

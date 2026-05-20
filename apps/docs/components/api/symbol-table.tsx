@@ -9,14 +9,8 @@ export type SymbolTableProps = {
     sourceBaseUrl: string;
 };
 
-export async function SymbolTable({
-    title,
-    symbols,
-    sourceBaseUrl,
-}: SymbolTableProps): Promise<React.JSX.Element> {
-    const entries = await Promise.all(
-        symbols.map((symbol) => renderSymbolEntry(symbol, sourceBaseUrl)),
-    );
+export async function SymbolTable({ title, symbols, sourceBaseUrl }: SymbolTableProps): Promise<React.JSX.Element> {
+    const entries = await Promise.all(symbols.map((symbol) => renderSymbolEntry(symbol, sourceBaseUrl)));
     return (
         <section className="symbol-table">
             <h2>{title}</h2>
@@ -25,15 +19,10 @@ export async function SymbolTable({
     );
 }
 
-async function renderSymbolEntry(
-    symbol: TypeDocSymbol,
-    sourceBaseUrl: string,
-): Promise<React.JSX.Element> {
+async function renderSymbolEntry(symbol: TypeDocSymbol, sourceBaseUrl: string): Promise<React.JSX.Element> {
     const summary = symbol.comment?.summary?.map((s) => s.text).join('') ?? '';
     const source = symbol.sources?.[0];
-    const sourceUrl = source
-        ? (source.url ?? `${sourceBaseUrl}/${source.fileName}#L${source.line}`)
-        : undefined;
+    const sourceUrl = source ? (source.url ?? `${sourceBaseUrl}/${source.fileName}#L${source.line}`) : undefined;
 
     const signatures = await Promise.all(
         (symbol.signatures ?? []).map((sig) => renderSignatureEntry(sig, symbol.name)),
@@ -44,12 +33,7 @@ async function renderSymbolEntry(
             <h3>
                 <code>{symbol.name}</code>
                 {sourceUrl ? (
-                    <a
-                        className="symbol-source-link"
-                        href={sourceUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
+                    <a className="symbol-source-link" href={sourceUrl} target="_blank" rel="noopener noreferrer">
                         Source
                     </a>
                 ) : null}
@@ -60,13 +44,8 @@ async function renderSymbolEntry(
     );
 }
 
-async function renderSignatureEntry(
-    sig: TypeDocSignature,
-    fallbackName: string,
-): Promise<React.JSX.Element> {
-    const params = (sig.parameters ?? [])
-        .map((p) => `${p.name}: ${renderType(p.type)}`)
-        .join(', ');
+async function renderSignatureEntry(sig: TypeDocSignature, fallbackName: string): Promise<React.JSX.Element> {
+    const params = (sig.parameters ?? []).map((p) => `${p.name}: ${renderType(p.type)}`).join(', ');
     const ret = renderType(sig.type);
     const ts = `function ${sig.name || fallbackName}(${params}): ${ret}`;
     const signature = await Signature({ ts });

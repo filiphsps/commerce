@@ -11,9 +11,7 @@ describe('loadSubpathJson', () => {
     });
 
     it('throws with a helpful message when subpath JSON is missing', () => {
-        expect(() => loadSubpathJson(FIXTURE, 'missing')).toThrow(
-            /No TypeDoc JSON found for subpath "missing"/,
-        );
+        expect(() => loadSubpathJson(FIXTURE, 'missing')).toThrow(/No TypeDoc JSON found for subpath "missing"/);
     });
 });
 

@@ -13,11 +13,5 @@ export async function Signature({ ts }: SignatureProps): Promise<React.JSX.Eleme
         themes: { light: 'github-light', dark: 'github-dark' },
         defaultColor: false,
     });
-    return (
-        <div
-            className="signature"
-            // biome-ignore lint/security/noDangerouslySetInnerHtml: trusted Shiki output
-            dangerouslySetInnerHTML={{ __html: html }}
-        />
-    );
+    return <div className="signature" dangerouslySetInnerHTML={{ __html: html }} />;
 }

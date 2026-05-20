@@ -179,7 +179,9 @@ function main() {
 
     emitPageMapTs(entries);
 
-    console.info(`[generate-page-map] processed ${workspaces.length} workspace(s); synthesized ${synthesized} stub page(s)`);
+    console.info(
+        `[generate-page-map] processed ${workspaces.length} workspace(s); synthesized ${synthesized} stub page(s)`,
+    );
 }
 
 main();

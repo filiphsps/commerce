@@ -10,9 +10,7 @@ describe('<Breadcrumb />', () => {
     });
 
     it('truncates to ellipsis at >4 segments', () => {
-        const { container } = render(
-            <Breadcrumb segments={['Packages', 'a', 'b', 'c', 'd', 'e']} maxSegments={4} />,
-        );
+        const { container } = render(<Breadcrumb segments={['Packages', 'a', 'b', 'c', 'd', 'e']} maxSegments={4} />);
         expect(container.textContent).toContain('…');
     });
 

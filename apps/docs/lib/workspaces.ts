@@ -18,8 +18,7 @@ export function discoverWorkspaces(repoRoot: string): Workspace[] {
     const workspaces: Workspace[] = [];
 
     function walk(dir: string, parent: 'apps' | 'packages', relSegments: string[]) {
-        const isWorkspace =
-            fs.existsSync(path.join(dir, 'docs')) && fs.existsSync(path.join(dir, 'package.json'));
+        const isWorkspace = fs.existsSync(path.join(dir, 'docs')) && fs.existsSync(path.join(dir, 'package.json'));
         if (isWorkspace) {
             workspaces.push({
                 slug: relSegments.join('/'),

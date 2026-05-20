@@ -1,8 +1,8 @@
 // apps/docs/app/layout.tsx
 import type { Metadata } from 'next';
-import { Footer, Layout, Navbar } from 'nextra-theme-docs';
 import { Head } from 'nextra/components';
 import { getPageMap } from 'nextra/page-map';
+import { Footer, Layout, Navbar } from 'nextra-theme-docs';
 import 'nextra-theme-docs/style.css';
 import './globals.css';
 import { CmdkPalette } from '@/components/cmdk-palette';
@@ -30,12 +30,7 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-    const navbar = (
-        <Navbar
-            logo={<strong>Commerce</strong>}
-            projectLink="https://github.com/filiphsps/commerce"
-        />
-    );
+    const navbar = <Navbar logo={<strong>Commerce</strong>} projectLink="https://github.com/filiphsps/commerce" />;
     const footer = <Footer>© {new Date().getFullYear()} Nordcom Commerce</Footer>;
 
     return (

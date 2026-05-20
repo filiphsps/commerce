@@ -1,1 +1,4 @@
-{ "name": "@fixture/meta-leaf", "exports": "./src/index.ts" }
+{
+    "name": "@fixture/meta-leaf",
+    "exports": "./src/index.ts"
+}
