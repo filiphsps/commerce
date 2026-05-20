@@ -61,3 +61,6 @@ apps/docs/api/
 apps/*/docs/api
 packages/*/docs/api
 packages/**/docs/api
+
+# apps/docs migration scratch (temporary, removed at end of Phase 8)
+apps/docs/.migration-snapshot/
