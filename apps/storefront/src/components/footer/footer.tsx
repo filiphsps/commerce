@@ -8,7 +8,7 @@ import FooterContent from '@/components/footer/footer-content';
 
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 
-const BLOCK_STYLES = 'flex-grow w-full h-full flex-col auto-rows-auto gap-3 flex empty:hidden md:empty:flex';
+const BLOCK_STYLES = 'grow w-full h-full flex-col auto-rows-auto gap-3 flex empty:hidden md:empty:flex';
 
 export type FooterProps = {
     shop: OnlineShop;
@@ -21,7 +21,7 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
 
     return (
         <footer className="flex h-full max-h-max w-full items-center justify-around self-end overflow-hidden bg-primary p-2 pt-8 text-primary-foreground [grid-area:footer] md:p-3 md:pt-6">
-            <div className="flex h-full w-full max-w-[var(--page-width)] flex-col items-stretch gap-4 md:gap-8 2xl:px-3">
+            <div className="flex h-full w-full max-w-(--page-width) flex-col items-stretch gap-4 md:gap-8 2xl:px-3">
                 <section className="grid h-full w-full grid-cols-1 items-start justify-between gap-6 pb-6 text-left md:flex lg:pb-12">
                     <div className={BLOCK_STYLES}>
                         {logo.src ? (
@@ -52,7 +52,7 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
 
 Footer.skeleton = () => (
     <footer className="flex h-full max-h-max w-full items-center justify-around self-end overflow-hidden bg-primary p-2 pt-8 text-primary-foreground [grid-area:footer] md:p-3 md:pt-6">
-        <div className="flex h-full w-full max-w-[var(--page-width)] flex-col items-stretch gap-4 md:gap-8 2xl:px-3">
+        <div className="flex h-full w-full max-w-(--page-width) flex-col items-stretch gap-4 md:gap-8 2xl:px-3">
             <section className="grid h-full w-full grid-cols-1 items-start justify-between gap-6 pb-6 text-left md:flex lg:pb-12">
                 <div className={BLOCK_STYLES}>
                     <div className="h-16 w-full overflow-hidden" data-skeleton></div>

@@ -121,7 +121,7 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
 
     return (
         <div className="sticky inset-x-0 bottom-0 z-50 w-full border-0 border-gray-300 border-b-2 border-solid bg-gray-100 px-2 py-3 text-black transition-all md:px-2">
-            <div className="relative mx-auto flex w-full flex-col items-start justify-between gap-3 py-2 pt-4 md:grid md:max-w-[var(--page-width)] md:grid-cols-[1fr_auto] md:items-center md:gap-4 md:px-3 md:pr-12">
+            <div className="relative mx-auto flex w-full flex-col items-start justify-between gap-3 py-2 pt-4 md:grid md:max-w-(--page-width) md:grid-cols-[1fr_auto] md:items-center md:gap-4 md:px-3 md:pr-12">
                 <div className="flex w-full select-none flex-wrap items-center gap-x-2 gap-y-0 pr-11 font-normal text-sm leading-tight md:pr-0 md:text-base lg:gap-x-3">
                     <div data-nosnippet={true}>
                         {t(
