@@ -17,6 +17,13 @@ const singletonByDomain = defineCollectionEditor({
     access: { list: () => false, read: () => true, update: () => true },
 });
 
+const tenantSingleton = defineCollectionEditor({
+    collection: 'footer',
+    routes: { label: { singular: 'Footer', plural: 'Footer' }, basePath: (d) => `/${d}/content/footer/` as Route },
+    tenant: { kind: 'tenant-singleton', field: 'tenant' },
+    access: { list: () => true, read: () => true, update: () => true },
+});
+
 const shared = defineCollectionEditor({
     collection: 'tenants',
     routes: { label: { singular: 'Tenant', plural: 'Tenants' }, basePath: () => `/settings/tenants/` as Route },
@@ -43,5 +50,10 @@ describe('docUrlSegment', () => {
 
     it('preserves the id verbatim (no encoding) — caller is responsible for URL-safety', () => {
         expect(docUrlSegment(scoped, 'has spaces')).toBe('has spaces/');
+    });
+
+    it('returns empty string for tenant-singleton manifests regardless of id', () => {
+        expect(docUrlSegment(tenantSingleton, '')).toBe('');
+        expect(docUrlSegment(tenantSingleton, 'anything')).toBe('');
     });
 });
