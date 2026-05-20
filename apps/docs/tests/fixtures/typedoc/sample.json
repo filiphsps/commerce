@@ -1,0 +1,26 @@
+{
+    "name": "sample",
+    "kind": 1,
+    "flags": {},
+    "children": [
+        {
+            "id": 1,
+            "name": "getThing",
+            "kind": 64,
+            "signatures": [
+                {
+                    "id": 2,
+                    "name": "getThing",
+                    "kind": 4096,
+                    "comment": { "summary": [{ "kind": "text", "text": "Returns a thing." }] },
+                    "parameters": [
+                        { "id": 3, "name": "id", "kind": 32768, "type": { "type": "intrinsic", "name": "string" } }
+                    ],
+                    "type": { "type": "intrinsic", "name": "string" }
+                }
+            ],
+            "sources": [{ "fileName": "src/index.ts", "line": 1 }]
+        }
+    ],
+    "groups": [{ "title": "Functions", "children": [1] }]
+}
