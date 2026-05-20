@@ -1,58 +1,19 @@
 import 'server-only';
 
-import { Review, Shop } from '@nordcom/commerce-db';
-import { Button, Heading } from '@nordcom/nordstar';
-import type { Metadata, Route } from 'next';
-import Link from 'next/link';
-import { redirect } from 'next/navigation';
-import { auth } from '@/auth';
-import { Card } from '@/components/card';
+import type { Metadata } from 'next';
 
-export type ShopReviewsPageProps = {
-    params: Promise<{
-        domain: string;
-    }>;
-};
+import { ContentScrollRegion } from '@/components/shell/content-scroll-region';
+import { PageHeader } from '@/components/shell/page-header';
 
-export const metadata: Metadata = {
-    title: 'Reviews',
-};
+export const metadata: Metadata = { title: 'Reviews' };
 
-export default async function ShopReviewsPagePage({ params }: ShopReviewsPageProps) {
-    const session = await auth();
-    if (!session?.user) {
-        redirect('/auth/login/' as Route);
-    }
-
-    const { domain } = await params;
-    const shop = await Shop.findByDomain(domain); // FIXME: Handle errors.
-    const reviews = await Review.findByShop(shop.id!);
-
+export default function ReviewsPage() {
     return (
-        <>
-            <div className="flex items-center justify-between">
-                <Heading level="h1">Reviews</Heading>
-
-                <Button as={Link} href={`/${domain}/reviews/new` as Route} variant="outline">
-                    New review
-                </Button>
+        <ContentScrollRegion>
+            <PageHeader title="Reviews" />
+            <div className="flex flex-col gap-4 px-6 py-6 text-muted-foreground">
+                Reviews UI is being reworked. See the design spec for details.
             </div>
-
-            {reviews.length > 0 ? (
-                <Card>
-                    <Card.header></Card.header>
-                    <Card.content className="grid auto-rows-fr grid-cols-[1fr_1fr]"></Card.content>
-                </Card>
-            ) : (
-                <Card>
-                    <Card.content className="flex flex-col gap-3">
-                        <Heading level="h2">Your reviews will appear here</Heading>
-                        <Heading level="h3" as="p">
-                            This is where you will manage, reply to and moderate reviews of your products and services.
-                        </Heading>
-                    </Card.content>
-                </Card>
-            )}
-        </>
+        </ContentScrollRegion>
     );
 }
