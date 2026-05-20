@@ -2,7 +2,10 @@
     "index": "Introduction",
     "getting-started": "Getting Started",
     "architecture": "Architecture",
+    "contributing": "Contributing",
+    "deployment": "Deployment",
     "conventions": "Conventions",
+    "typescript-project-structure": "TypeScript Project Structure",
     "(generated)": {
         "title": "Workspaces",
         "type": "menu"

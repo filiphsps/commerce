@@ -1,7 +1,41 @@
 ---
 title: Getting Started
+sidebar_position: 1
 ---
+
+import { Callout } from 'nextra/components';
 
 # Getting Started
 
-This is a placeholder while we migrate. See the [spec](../../docs/superpowers/specs/2026-05-20-docs-site-overhaul-design.md) for full intent.
+Nordcom Commerce is a multi-tenant headless e-commerce platform. A single Next.js
+deployment serves arbitrarily many shops resolved by hostname.
+
+## Prerequisites
+
+- Node.js `24.x` (see `.nvmrc`)
+- pnpm `11.x`
+- A running MongoDB instance
+
+<Callout type="info">
+    Run `pnpm dev:storefront` if you only need the storefront — it boots faster than
+    `pnpm dev`.
+</Callout>
+
+## Install
+
+```bash
+pnpm install
+cp .env.example .env       # set MONGODB_URI, AUTH_SECRET, SERVICE_DOMAIN at minimum
+pnpm build:packages        # apps depend on each package's dist/
+pnpm dev                   # all three apps in parallel
+```
+
+| App        | URL                       |
+| ---------- | ------------------------- |
+| Storefront | http://localhost:1337     |
+| Admin      | http://localhost:3000     |
+| Landing    | http://localhost:3001     |
+| Docs       | http://localhost:3002     |
+
+See [Architecture](../architecture/) for the multi-tenancy primer, and the
+per-app guides under **Apps** for routing, data fetching, and CMS integration.
