@@ -85,12 +85,20 @@ export async function generateMetadata({ params }: { params: CustomPageParams })
         case 'cms': {
             const data = page.data as {
                 title?: string;
-                seo?: { title?: string; description?: string; noindex?: boolean; image?: { url?: string } };
+                seo?: {
+                    title?: string;
+                    description?: string;
+                    keywords?: string[] | null;
+                    noindex?: boolean;
+                    image?: { url?: string } | string | null;
+                };
             };
             title = data.seo?.title || data.title || handle;
             description = data.seo?.description || undefined;
             index = data.seo?.noindex !== true;
-            images = data.seo?.image?.url ? [{ url: data.seo.image.url }] : [];
+            const seoImage = data.seo?.image;
+            const imageUrl = seoImage && typeof seoImage === 'object' && 'url' in seoImage ? seoImage.url : undefined;
+            images = imageUrl ? [{ url: imageUrl }] : [];
             break;
         }
         case 'shopify': {
@@ -106,6 +114,9 @@ export async function generateMetadata({ params }: { params: CustomPageParams })
     return {
         title,
         description,
+        keywords: (page.provider === 'cms'
+            ? ((page.data as { seo?: { keywords?: string[] | null } }).seo?.keywords ?? undefined)
+            : undefined) as string[] | undefined,
         robots: { index },
         alternates: {
             canonical: `https://${shop.domain}/${locale.code}${path}`,
