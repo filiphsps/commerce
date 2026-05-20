@@ -16,7 +16,7 @@ import {
 import type { Metadata, Route } from 'next';
 import { cookies } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
-import { Children, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { auth } from '@/auth';
 import type { CommandPaletteItem } from '@/components/shell/command-palette';
@@ -25,6 +25,7 @@ import { MobileNav } from '@/components/shell/mobile-nav';
 import { ShellHeader } from '@/components/shell/shell-header';
 import { ShellRoot } from '@/components/shell/shell-root';
 import { parseShellState, SHELL_STATE_COOKIE } from '@/components/shell/shell-state';
+import { slotHasContent } from '@/components/shell/slot-has-content';
 import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
 import { getShopsForUser } from '@/lib/shops-for-user';
 
@@ -71,8 +72,8 @@ export default async function ShopLayout({ children, subnav, inspector, params }
     const cookieStore = await cookies();
     const initialState = parseShellState(cookieStore.get(SHELL_STATE_COOKIE)?.value);
 
-    const hasSubnav = Children.count(subnav) > 0;
-    const hasInspector = Children.count(inspector) > 0;
+    const hasSubnav = slotHasContent(subnav);
+    const hasInspector = slotHasContent(inspector);
 
     const urlBase = `/${shop.domain}`;
     const iconRailItems: IconRailItem[] = [
