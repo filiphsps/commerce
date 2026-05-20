@@ -60,6 +60,7 @@ export function getBaseUrl() {
 /** @type {import('next').NextConfig} */
 const config = {
     pageExtensions: ['ts', 'tsx', 'md', 'mdx'],
+    allowedDevOrigins: ['landing.localhost'],
     poweredByHeader: false,
     generateEtags: true,
     reactStrictMode: true,

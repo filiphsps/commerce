@@ -18,6 +18,7 @@ const nextConfig = {
     basePath: basePath || undefined,
     assetPrefix: basePath || undefined,
     images: { unoptimized: true },
+    allowedDevOrigins: ['docs.localhost'],
     trailingSlash: true,
     reactStrictMode: true,
     typescript: { ignoreBuildErrors: false },

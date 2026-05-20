@@ -22,6 +22,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 /** @type {import('next').NextConfig} */
 const config = {
     pageExtensions: ['ts', 'tsx'],
+    allowedDevOrigins: ['storefront.localhost', '*.storefront.localhost'],
     poweredByHeader: false,
     generateEtags: true,
     reactStrictMode: true,

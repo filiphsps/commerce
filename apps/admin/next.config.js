@@ -45,6 +45,7 @@ if (ADMIN_DOMAIN) {
 /** @type {import('next').NextConfig} */
 const config = {
     pageExtensions: ['ts', 'tsx'],
+    allowedDevOrigins: ['admin.localhost'],
     poweredByHeader: false,
     generateEtags: true,
     reactStrictMode: true,
