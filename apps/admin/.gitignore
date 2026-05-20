@@ -1,2 +1,5 @@
 .vercel
 certificates/
+
+# Playwright session fixture — minted at globalSetup time
+e2e/fixtures/.auth-storage-state.json
