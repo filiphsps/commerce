@@ -2,7 +2,7 @@ import type { FeatureFlagBase, OnlineShop, ReviewBase } from '../models';
 
 type Doc = Record<string, unknown>;
 
-const stripInternals = <T extends Doc>(doc: T): Omit<T, '_id' | '__v'> => {
+export const stripInternals = <T extends Doc>(doc: T): Omit<T, '_id' | '__v'> => {
     if (!doc) return doc;
 
     const { _id: _id_, __v: __v_, ...rest } = doc as { _id?: unknown; __v?: unknown } & T;
@@ -10,11 +10,16 @@ const stripInternals = <T extends Doc>(doc: T): Omit<T, '_id' | '__v'> => {
 };
 
 /**
- * Map a Payload `shops` doc to the public `OnlineShop` shape.
- * - Drops the Mongoose-era `_id` key (Payload always uses `id`).
+ * Map a Mongoose lean `shops` doc to the public `OnlineShop` shape.
+ * - Drops the internal `_id` and `__v` keys (callers see `id` via the
+ *   Mongoose virtual when `toObject({ virtuals: true })` is used; lean
+ *   docs expose the Mongo `_id` directly, which we strip here).
  * - Strips `commerceProvider.authentication.token` and
- *   `customers.clientSecret` (matches the existing Mongoose service's
- *   `sensitiveData: false` default).
+ *   `customers.clientSecret` so the public shape contains no secrets.
+ *   Callers that need the unmasked token (trusted server-only paths)
+ *   request `sensitiveData: true` on the service method, which routes
+ *   around this masking while still removing `_id`/`__v` via
+ *   `stripInternals`.
  */
 export const docToOnlineShop = (doc: Doc): OnlineShop => {
     const stripped = stripInternals(doc);

@@ -102,6 +102,14 @@ describe('Shop.findByDomain (Mongoose-backed)', () => {
         expect(cp.authentication.token).toBe('SECRET');
     });
 
+    it('strips _id and __v even when sensitiveData: true', async () => {
+        const docWithInternals = { ...mockShop, _id: 'mongo-id-x', __v: 0 };
+        mockQuery.exec.mockResolvedValueOnce(docWithInternals);
+        const result = (await Shop.findByDomain('acme.test', { sensitiveData: true })) as Record<string, unknown>;
+        expect(result).not.toHaveProperty('_id');
+        expect(result).not.toHaveProperty('__v');
+    });
+
     it('returns the raw lean doc when convert: false', async () => {
         mockQuery.exec.mockResolvedValueOnce(mockShop);
         const result = await Shop.findByDomain('acme.test', { convert: false });

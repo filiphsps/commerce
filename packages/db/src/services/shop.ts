@@ -1,6 +1,6 @@
 import { UnknownShopDomainError, UnknownShopIdError } from '@nordcom/commerce-errors';
 
-import { docToOnlineShop } from '../lib/doc-to-shape';
+import { docToOnlineShop, stripInternals } from '../lib/doc-to-shape';
 import type { OnlineShop, ShopBase } from '../models';
 import { ShopModel } from '../models';
 import { Service } from './service';
@@ -49,7 +49,7 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
         if (!doc) throw new UnknownShopDomainError(domain);
 
         if (!convert) return doc;
-        if (sensitiveData) return doc as unknown as OnlineShop;
+        if (sensitiveData) return stripInternals(doc) as unknown as OnlineShop;
         return docToOnlineShop(doc as unknown as Record<string, unknown>);
     }
 
