@@ -103,7 +103,7 @@ export default async function Page({ params, searchParams }: {
 
 ## Continue reading
 
-- [Manifest reference](./editor-manifests.md) — every field on
+- [Manifest reference](./manifests.md) — every field on
   `CollectionEditorManifest` explained, with worked examples.
-- [Collections reference](./collections.md) — the Payload collection configs
+- [Collections reference](../collections.md) — the Payload collection configs
   the manifests reference.
