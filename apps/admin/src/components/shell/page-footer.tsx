@@ -15,8 +15,8 @@ export function PageFooter({ children, sticky = true, className }: PageFooterPro
             data-page-footer
             data-sticky={sticky ? '' : undefined}
             className={cn(
-                'flex w-full flex-wrap items-center justify-between gap-3 border-0 border-border border-t-2 bg-background px-6 py-4',
-                'pb-[max(1rem,env(safe-area-inset-bottom))]',
+                'flex w-full flex-wrap items-center justify-between gap-3 border-0 border-border border-t-2 bg-background px-6 py-3',
+                'pb-[max(0.75rem,env(safe-area-inset-bottom))]',
                 className,
             )}
         >

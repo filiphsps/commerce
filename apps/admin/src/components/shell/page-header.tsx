@@ -18,7 +18,7 @@ export function PageHeader({ title, breadcrumbs, actions, meta, className }: Pag
     return (
         <header
             data-page-header
-            className={cn('flex flex-col gap-2 border-0 border-border border-b-2 bg-background px-6 py-4', className)}
+            className={cn('flex flex-col gap-2 border-0 border-border border-b-2 bg-background px-6 py-3', className)}
         >
             {breadcrumbs && breadcrumbs.length > 0 ? (
                 <nav aria-label="Breadcrumb">
