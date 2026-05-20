@@ -1,5 +1,11 @@
 import { Shop } from '@nordcom/commerce-db';
-import { Error, MissingEnvironmentVariableError, NotFoundError, UnknownError } from '@nordcom/commerce-errors';
+import {
+    Error,
+    MissingEnvironmentVariableError,
+    NoLocaleResolvableError,
+    NotFoundError,
+    UnknownError,
+} from '@nordcom/commerce-errors';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { resolveAcceptLanguage } from 'resolve-accept-language';
@@ -179,7 +185,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
             if (!locale) {
                 // TODO: this can never actually happen, but when we handle i18n properly it will.
                 // TODO: find the correct country with another language if available as a fallback.
-                throw new Error(`No locale could be found for "${req.nextUrl.href}" and no default locale is set.`);
+                throw new NoLocaleResolvableError(req.nextUrl.href);
             }
 
             // Set locale cookies.

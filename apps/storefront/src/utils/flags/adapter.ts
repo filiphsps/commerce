@@ -1,6 +1,8 @@
 import 'server-only';
 
 import { randomUUID } from 'node:crypto';
+
+import { MissingRequestContextError } from '@nordcom/commerce-errors';
 import type { Adapter } from 'flags';
 import { dedupe } from 'flags/next';
 
@@ -14,7 +16,7 @@ import { evaluatePredicate } from './predicates';
 const identify = dedupe(
     async ({ headers, cookies }: { headers: Headers; cookies: { get(n: string): { value: string } | undefined } }) => {
         const ctx = await getRequestContext();
-        if (!ctx) throw new Error('[flags] no request context');
+        if (!ctx) throw new MissingRequestContextError();
         const session = await getAuthSession(ctx.shop);
         const user = await mapSessionToUser(session);
         const visitorId =

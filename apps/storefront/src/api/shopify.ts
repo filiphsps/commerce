@@ -2,7 +2,7 @@ import 'server-only';
 
 import type { ApolloClient, QueryOptions } from '@apollo/client';
 import { type OnlineShop, Shop } from '@nordcom/commerce-db';
-import { UnknownCommerceProviderError } from '@nordcom/commerce-errors';
+import { ShopMisconfigurationError, UnknownCommerceProviderError } from '@nordcom/commerce-errors';
 import { createStorefrontClient } from '@shopify/hydrogen-react';
 import { headers } from 'next/headers';
 import { experimental_taintUniqueValue } from 'react';
@@ -48,15 +48,12 @@ export const ShopifyApiConfig = async ({
     // storefront token" inside Hydrogen's client.
     const { token, publicToken, customers } = commerceProvider.authentication;
     if (!publicToken || !token || !commerceProvider.domain) {
-        throw new Error(
-            `[shopify] Shop "${domain}" is misconfigured: missing ${[
-                !publicToken && 'authentication.publicToken',
-                !token && 'authentication.token',
-                !commerceProvider.domain && 'domain',
-            ]
-                .filter(Boolean)
-                .join(', ')}`,
-        );
+        const missingFields = [
+            !publicToken && 'authentication.publicToken',
+            !token && 'authentication.token',
+            !commerceProvider.domain && 'domain',
+        ].filter((v): v is string => Boolean(v));
+        throw new ShopMisconfigurationError(domain, missingFields);
     }
 
     experimental_taintUniqueValue('Do not pass private tokens to the client', globalThis, token);

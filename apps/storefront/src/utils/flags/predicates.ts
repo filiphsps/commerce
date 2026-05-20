@@ -1,5 +1,7 @@
 import 'server-only';
 
+import { DuplicatePredicateRegistrationError } from '@nordcom/commerce-errors';
+
 import type { FlagEntities } from './entities';
 
 export type Predicate<P = unknown> = (entities: FlagEntities, params: P) => boolean;
@@ -23,7 +25,7 @@ const warnedUnknown = new Set<string>();
 
 export function registerPredicate<P>(name: string, fn: Predicate<P>, metadata: PredicateMetadata = {}): void {
     if (predicates.has(name)) {
-        throw new Error(`Predicate "${name}" already registered`);
+        throw new DuplicatePredicateRegistrationError(name);
     }
     predicates.set(name, { fn: fn as Predicate, metadata });
 }

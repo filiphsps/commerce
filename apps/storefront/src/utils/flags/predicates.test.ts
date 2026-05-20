@@ -22,7 +22,12 @@ describe('utils/flags/predicates', () => {
 
     it('registering the same name twice throws', () => {
         registerPredicate('dup', () => true);
-        expect(() => registerPredicate('dup', () => false)).toThrow(/already registered/);
+        expect(() => registerPredicate('dup', () => false)).toThrow(
+            expect.objectContaining({
+                name: 'DuplicatePredicateRegistrationError',
+                code: 'GENERIC_DUPLICATE_PREDICATE_REGISTRATION',
+            }),
+        );
     });
 
     it('evaluatePredicate returns false for unknown predicate and warns once', () => {
