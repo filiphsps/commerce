@@ -28,6 +28,14 @@ type UserDoc = {
     emailVerified: Date | null;
 };
 
+type PayloadUserDoc = {
+    email: string;
+    role: 'admin' | 'editor';
+    tenants: Array<{ tenant: mongoose.Types.ObjectId; id: string }>;
+    loginAttempts: number;
+    sessions: unknown[];
+};
+
 const UserSchema = new Schema<UserDoc>(
     {
         email: { type: Schema.Types.String, required: true, unique: true },
@@ -35,6 +43,22 @@ const UserSchema = new Schema<UserDoc>(
         avatar: { type: Schema.Types.String, default: null },
         identities: [{ type: Schema.Types.Mixed, default: [] }],
         emailVerified: { type: Schema.Types.Date, default: null },
+    },
+    { id: true, timestamps: true },
+);
+
+const PayloadUserSchema = new Schema<PayloadUserDoc>(
+    {
+        email: { type: Schema.Types.String, required: true, unique: true },
+        role: { type: Schema.Types.String, enum: ['admin', 'editor'], default: 'editor' },
+        tenants: [
+            {
+                tenant: { type: Schema.Types.ObjectId },
+                id: { type: Schema.Types.String },
+            },
+        ],
+        loginAttempts: { type: Schema.Types.Number, default: 0 },
+        sessions: [{ type: Schema.Types.Mixed, default: [] }],
     },
     { id: true, timestamps: true },
 );
@@ -84,6 +108,31 @@ export default async function globalSetup(): Promise<void> {
             }
             userId = created._id.toString();
             console.info(`[seed] Seeded user "${TEST_EMAIL}".`);
+        }
+
+        // Seed a matching Payload user so getAuthedPayloadCtx can resolve
+        // the NextAuth session to a Payload principal. Without this, every
+        // content route redirects back to /auth/login/ and editor-ui.spec.ts
+        // times out. Grant admin role so the test user has access to all
+        // tenants without requiring an explicit tenant-membership upsert.
+        const PayloadUserModel: Model<PayloadUserDoc> =
+            conn.models['payload-users'] ??
+            conn.model<PayloadUserDoc>('payload-users', PayloadUserSchema, 'payload-users');
+
+        const existingPayload = await PayloadUserModel.findOne({ email: TEST_EMAIL })
+            .lean<{ _id: mongoose.Types.ObjectId }>()
+            .exec();
+        if (existingPayload) {
+            console.info(`[seed] Payload user "${TEST_EMAIL}" already exists.`);
+        } else {
+            await PayloadUserModel.create({
+                email: TEST_EMAIL,
+                role: 'admin',
+                tenants: [],
+                loginAttempts: 0,
+                sessions: [],
+            });
+            console.info(`[seed] Seeded Payload user "${TEST_EMAIL}" with role "admin".`);
         }
     } catch (err) {
         console.error('[seed] User seed failed:', err);
