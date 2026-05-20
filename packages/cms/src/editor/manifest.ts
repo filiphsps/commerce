@@ -5,15 +5,21 @@ import type { ReactNode } from 'react';
 /**
  * NextAuth-shaped context passed to every editor access predicate.
  * `domain` is null on cross-tenant routes (tenants, users, media list views).
+ * `tenantId` is the resolved tenant document id for the URL `domain`, or
+ * null when the route operates cross-tenant. Predicates that need to verify
+ * tenant membership should compare against this — `user.tenants` carries
+ * the same id shape (tenant document ids), not domain strings.
  */
 export type EditorAccessCtx = {
     user: {
         id: string;
         email: string;
         role: 'admin' | 'editor';
+        /** Tenant document ids the user belongs to. */
         tenants: string[];
     } | null;
     domain: string | null;
+    tenantId: string | null;
 };
 
 /**
