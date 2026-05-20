@@ -1,5 +1,5 @@
 // @vitest-environment happy-dom
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import type { Route } from 'next';
 import { describe, expect, it, vi } from 'vitest';
 import { defineCollectionEditor } from '../manifest';
@@ -52,6 +52,7 @@ const buildRuntime = (versions: Array<Record<string, unknown>>): never =>
         DocumentForm: () => null,
         Table: () => null,
         Toolbar: () => null,
+        PageHeader: ({ title }: { title: string }) => <h1>{title}</h1>,
         buildFormState: async () => ({ state: {} }),
         getShellProps: async () => ({}),
     }) as never;
@@ -76,6 +77,7 @@ describe('<EditorVersionsPage>', () => {
         const { container } = render(el);
         // Plain DOM access — no jest-dom.
         expect(container.textContent).toMatch(/no version history/i);
+        expect(screen.getByRole('heading', { level: 1, name: /Versions/ })).toBeDefined();
     });
 
     it('renders one row per version', async () => {

@@ -81,17 +81,22 @@ export async function EditorVersionsPage<TSlug extends CollectionSlug>({
 
     return (
         <div className="mx-auto max-w-3xl px-6 py-10">
-            <header className="mb-8 flex items-center justify-between gap-4">
-                <h1 className="font-semibold text-2xl">{manifest.routes.label.singular} — Versions</h1>
-                <div className="flex items-center gap-4">
-                    <LocaleSwitcher locales={localeOptions} currentLocale={locale} />
-                    <nav>
-                        <Link href={backHref} className="text-blue-600 text-sm hover:underline">
-                            ← Back to editor
-                        </Link>
-                    </nav>
-                </div>
-            </header>
+            <runtime.PageHeader
+                title={`${manifest.routes.label.singular} — Versions`}
+                breadcrumbs={[
+                    ...(manifest.routes.breadcrumbs?.({ domain }) ?? []),
+                    { label: manifest.routes.label.singular, href: `${manifest.routes.basePath(domain)}${id}/` },
+                    { label: 'Versions' },
+                ]}
+            />
+            <div className="mb-8 flex items-center justify-end gap-4">
+                <LocaleSwitcher locales={localeOptions} currentLocale={locale} />
+                <nav>
+                    <Link href={backHref} className="text-blue-600 text-sm hover:underline">
+                        ← Back to editor
+                    </Link>
+                </nav>
+            </div>
 
             {docs.length === 0 ? (
                 <p className="text-gray-500">No version history yet.</p>
