@@ -1,8 +1,14 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { getWorkspacesByType } from '@/lib/page-map';
+import { getWorkspacesByType, type PageMapEntry } from '@/lib/page-map';
 
 export const metadata: Metadata = { title: 'Search' };
+
+function firstPage(w: PageMapEntry): string {
+    if (w.pages.includes('overview')) return 'overview';
+    if (w.pages.includes('index')) return 'index';
+    return w.pages[0] ?? 'index';
+}
 
 export default function SearchFallback() {
     const { apps, packages } = getWorkspacesByType();
@@ -15,7 +21,7 @@ export default function SearchFallback() {
                 <ul>
                     {apps.map((w) => (
                         <li key={w.slug}>
-                            <Link href={`/docs/${w.slug}/index/`}>{w.slug}</Link>
+                            <Link href={`/docs/${w.slug}/${firstPage(w)}/`}>{w.slug}</Link>
                         </li>
                     ))}
                 </ul>
@@ -25,7 +31,7 @@ export default function SearchFallback() {
                 <ul>
                     {packages.map((w) => (
                         <li key={w.slug}>
-                            <Link href={`/docs/${w.slug}/index/`}>{w.slug}</Link>
+                            <Link href={`/docs/${w.slug}/${firstPage(w)}/`}>{w.slug}</Link>
                         </li>
                     ))}
                 </ul>

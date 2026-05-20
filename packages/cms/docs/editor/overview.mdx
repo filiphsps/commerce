@@ -22,9 +22,8 @@ Before this system the admin app shipped two parallel patterns:
 
 Adding a feature (tightening field allowlists, fixing the autosave loop,
 improving error handling) meant touching both. The unified editor system
-collapses them into one primitive set; phases 2 and 3 of the
-[CMS Editor Unification design](/docs/superpowers/specs/2026-05-16-cms-unification-design)
-migrate the remaining collections and the bridge entities.
+collapses them into one primitive set; the CMS Editor Unification work
+migrates the remaining collections and the bridge entities.
 
 ## The mental model
 
@@ -103,7 +102,7 @@ export default async function Page({ params, searchParams }: {
 
 ## Continue reading
 
-- [Manifest reference](./manifests.md) — every field on
+- [Manifest reference](/docs/cms/editor/manifests/) — every field on
   `CollectionEditorManifest` explained, with worked examples.
-- [Collections reference](../collections.md) — the Payload collection configs
+- [Collections reference](/docs/cms/collections/) — the Payload collection configs
   the manifests reference.
