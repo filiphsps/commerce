@@ -1,15 +1,7 @@
 import type { IconOverrides } from './scripts/types';
 
-// Overrides for auto-derived icon defaults.
-// Slugs match the filenames in ./svgs/. Use Shopify's `acceptedCardBrands` and
-// `supportedDigitalWallets` enum values (lowercased) for entries that should be
-// reachable through `<PaymentIcon name>` with Shopify's exact return strings.
-//
-// Entries not listed here fall back to auto-derived defaults:
-//   slug          = filename stem
-//   componentName = PascalCase(slug)
-//   title         = humanized slug
-//   aliases       = []
+// Temporary seed for Task 15's PaymentIcon test (overwritten by Task 17's full seed).
 export const overrides: IconOverrides = {
-    // Populated in Task 17 once SVGs are moved into ./svgs/.
+    visa: { componentName: 'Visa', title: 'Visa', aliases: ['v'] },
+    mastercard: { componentName: 'Mastercard', title: 'Mastercard' },
 };

@@ -36,8 +36,8 @@ describe('emitIconComponent', () => {
 describe('emitIconsMapModule', () => {
     it('emits a record of slug -> dynamic import', () => {
         const out = emitIconsMapModule([visa, amex]);
-        expect(out).toContain("'visa': () => import('./icons/visa.js')");
-        expect(out).toContain("'american_express': () => import('./icons/american_express.js')");
+        expect(out).toContain("'visa': () => import('./icons/visa')");
+        expect(out).toContain("'american_express': () => import('./icons/american_express')");
         expect(out).toContain('export const ICONS');
     });
 });

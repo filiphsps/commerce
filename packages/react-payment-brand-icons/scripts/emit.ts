@@ -22,7 +22,7 @@ export default function ${entry.componentName}(props: PaymentIconProps) {
 }
 
 export function emitIconsMapModule(entries: readonly IconManifestEntry[]): string {
-    const body = entries.map((e) => `    '${e.slug}': () => import('./icons/${e.slug}.js'),`).join('\n');
+    const body = entries.map((e) => `    '${e.slug}': () => import('./icons/${e.slug}'),`).join('\n');
     return `${HEADER}import type { ComponentType } from 'react';
 import type { PaymentIconProps } from '../shell';
 
