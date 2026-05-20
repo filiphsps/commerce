@@ -46,6 +46,7 @@
     "devDependencies": {
         "@playwright/test": "1.60.0",
         "@tailwindcss/postcss": "4.3.0",
+        "@testing-library/react": "16.3.2",
         "@types/node": "24.12.4",
         "@types/react": "19.2.14",
         "@types/react-dom": "19.2.3",
@@ -59,7 +60,15 @@
         "vitest": "4.1.6"
     },
     "browserslist": {
-        "production": [">0.5%", "not dead", "not op_mini all"],
-        "development": ["last 3 chrome version", "last 3 firefox version", "last 5 safari version"]
+        "production": [
+            ">0.5%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 3 chrome version",
+            "last 3 firefox version",
+            "last 5 safari version"
+        ]
     }
 }
