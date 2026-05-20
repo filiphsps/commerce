@@ -1,9 +1,25 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
-    "extends": "@docusaurus/tsconfig",
     "compilerOptions": {
-        "ignoreDeprecations": "6.0"
+        "target": "ES2022",
+        "lib": ["dom", "dom.iterable", "esnext"],
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "jsx": "preserve",
+        "allowJs": true,
+        "strict": true,
+        "noEmit": true,
+        "skipLibCheck": true,
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "esModuleInterop": true,
+        "noUncheckedIndexedAccess": true,
+        "incremental": true,
+        "plugins": [{ "name": "next" }],
+        "paths": {
+            "@/*": ["./*"]
+        }
     },
-    "include": ["src/", "docusaurus.config.ts", "sidebars.ts", "playwright.config.ts", "e2e/"],
-    "exclude": [".docusaurus", "build", "api", "node_modules"]
+    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+    "exclude": ["node_modules", ".next", "out", ".typedoc-out", "app/docs/(generated)/**"]
 }
