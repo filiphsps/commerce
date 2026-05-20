@@ -486,4 +486,21 @@
     .field-type__row {
         min-width: 0;
     }
+
+    /* Additional min-width overrides for selectors Payload's bundled CSS
+     * forces wider than our embedded content column can hold. */
+    .tabs-field__tabs,
+    .document-fields__sidebar-wrap {
+        min-width: 0;
+    }
+
+    /* Block and array rows nest another layer of fields. Default cascade
+     * lets a wide field (e.g. Lexical, columns block) blow out the row.
+     * Containing horizontal overflow at the row level keeps the page-level
+     * scroll quiet on narrow viewports. */
+    .blocks-field__row,
+    .array-field__row {
+        min-width: 0;
+        overflow-x: auto;
+    }
 }
