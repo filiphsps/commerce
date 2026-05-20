@@ -1,4 +1,101 @@
-// Temporary stub — replaced by the real codegen in Task 13 of the implementation plan.
-// Required so `pnpm icons:gen` (invoked from `build` and `typecheck` scripts) does
-// not fail before Task 13 lands.
-console.log('[icons:gen] stub — real codegen lands in Task 13');
+import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
+import { extname, join, resolve } from 'node:path';
+
+import { parse, stringify } from 'svgson';
+
+import { deriveDefaults } from './derive';
+import {
+    emitAliasesModule,
+    emitIconComponent,
+    emitIconsMapModule,
+    emitIndexModule,
+    emitManifestModule,
+    emitNamesModule,
+} from './emit';
+import { svgToInnerJsx } from './svgr-bridge';
+import { stripChrome } from './transforms/chrome';
+import { stripDimensions } from './transforms/dimensions';
+import { prefixIds } from './transforms/ids';
+import { stripTitleAndAria } from './transforms/title';
+import type { IconManifestEntry, IconOverrides } from './types';
+import { validateManifest } from './validate';
+
+export type RunCodegenOptions = {
+    svgsDir: string;
+    overrides: IconOverrides;
+    outDir: string;
+};
+
+export type RunCodegenResult = {
+    entries: readonly IconManifestEntry[];
+    chromeExceptions: readonly string[];
+};
+
+async function listSvgSlugs(svgsDir: string): Promise<string[]> {
+    const all = await readdir(svgsDir);
+    return all
+        .filter((f) => extname(f).toLowerCase() === '.svg')
+        .map((f) => f.replace(/\.svg$/i, ''))
+        .sort();
+}
+
+function resolveEntry(slug: string, overrides: IconOverrides): IconManifestEntry {
+    const defaults = deriveDefaults(slug);
+    const o = overrides[slug] ?? {};
+    return {
+        slug,
+        componentName: o.componentName ?? defaults.componentName,
+        title: o.title ?? defaults.title,
+        aliases: o.aliases ?? [],
+    };
+}
+
+async function transformSvg(
+    svgString: string,
+    slug: string,
+): Promise<{ viewBox: string; innerJsx: string; chromeMatched: boolean }> {
+    const ast = await parse(svgString);
+    const chromeResult = stripChrome(ast);
+    stripTitleAndAria(ast);
+    stripDimensions(ast);
+    prefixIds(ast, slug);
+    const viewBox = ast.attributes.viewBox ?? '0 0 38 24';
+    const cleaned = stringify(ast);
+    const innerJsx = await svgToInnerJsx(cleaned);
+    return { viewBox, innerJsx, chromeMatched: chromeResult.matched };
+}
+
+export async function runCodegen(opts: RunCodegenOptions): Promise<RunCodegenResult> {
+    const svgsDir = resolve(opts.svgsDir);
+    const outDir = resolve(opts.outDir);
+    const slugs = await listSvgSlugs(svgsDir);
+
+    for (const overrideSlug of Object.keys(opts.overrides)) {
+        if (!slugs.includes(overrideSlug)) {
+            throw new Error(`Override for "${overrideSlug}" has no matching SVG in ${svgsDir}.`);
+        }
+    }
+
+    const entries: IconManifestEntry[] = slugs.map((slug) => resolveEntry(slug, opts.overrides));
+    validateManifest(entries);
+
+    await mkdir(join(outDir, 'icons'), { recursive: true });
+
+    const chromeExceptions: string[] = [];
+
+    for (const entry of entries) {
+        const svgString = await readFile(join(svgsDir, `${entry.slug}.svg`), 'utf8');
+        const { viewBox, innerJsx, chromeMatched } = await transformSvg(svgString, entry.slug);
+        if (!chromeMatched) chromeExceptions.push(entry.slug);
+        const source = emitIconComponent({ entry, viewBox, innerJsx });
+        await writeFile(join(outDir, 'icons', `${entry.slug}.tsx`), source, 'utf8');
+    }
+
+    await writeFile(join(outDir, 'icons-map.ts'), emitIconsMapModule(entries), 'utf8');
+    await writeFile(join(outDir, 'aliases.ts'), emitAliasesModule(entries), 'utf8');
+    await writeFile(join(outDir, 'manifest.ts'), emitManifestModule(entries), 'utf8');
+    await writeFile(join(outDir, 'names.ts'), emitNamesModule(entries), 'utf8');
+    await writeFile(join(outDir, 'index.ts'), emitIndexModule(entries), 'utf8');
+
+    return { entries, chromeExceptions };
+}
