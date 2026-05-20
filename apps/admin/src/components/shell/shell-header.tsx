@@ -1,3 +1,4 @@
+import { Menu } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
@@ -5,6 +6,7 @@ import type { ReactNode } from 'react';
 import { AccountMenu, type AccountMenuUser } from '@/components/shell/account-menu';
 import { CommandPalette, type CommandPaletteItem } from '@/components/shell/command-palette';
 import { CommandPaletteTrigger } from '@/components/shell/command-palette-trigger';
+import { MobileDrawer } from '@/components/shell/mobile-drawer';
 import { ShopSwitcher, type ShopSwitcherShop } from '@/components/shell/shop-switcher';
 import logo from '@/static/logo.svg';
 import { cn } from '@/utils/tailwind';
@@ -14,17 +16,11 @@ export type ShellHeaderProps = {
     user: AccountMenuUser;
     shopsForSwitcher: ShopSwitcherShop[];
     commandPaletteItems: CommandPaletteItem[];
-    /** Trigger for the mobile drawer; provided by ShellRoot. Rendered only `<md`. */
-    mobileMenuTrigger?: ReactNode;
+    /** Pre-rendered mobile nav content (server component children of MobileDrawer). Required for `<md` UX. */
+    mobileNavContent: ReactNode;
 };
 
-export function ShellHeader({
-    shop,
-    user,
-    shopsForSwitcher,
-    commandPaletteItems,
-    mobileMenuTrigger,
-}: ShellHeaderProps) {
+export function ShellHeader({ shop, user, shopsForSwitcher, commandPaletteItems, mobileNavContent }: ShellHeaderProps) {
     return (
         <header
             className={cn(
@@ -32,7 +28,23 @@ export function ShellHeader({
             )}
         >
             <div className="flex items-center gap-3">
-                <div className="md:hidden">{mobileMenuTrigger}</div>
+                <div className="md:hidden">
+                    <MobileDrawer
+                        side="left"
+                        title="Navigate"
+                        trigger={
+                            <button
+                                type="button"
+                                aria-label="Open menu"
+                                className="flex h-9 w-9 items-center justify-center rounded-md border-2 border-border"
+                            >
+                                <Menu className="h-5 w-5" />
+                            </button>
+                        }
+                    >
+                        {mobileNavContent}
+                    </MobileDrawer>
+                </div>
                 <Link href="/" title="Nordcom Commerce" className="flex shrink-0 items-center">
                     <Image
                         className="h-7 object-contain object-left"

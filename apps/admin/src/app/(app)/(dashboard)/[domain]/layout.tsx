@@ -21,6 +21,7 @@ import { Children, type ReactNode } from 'react';
 import { auth } from '@/auth';
 import type { CommandPaletteItem } from '@/components/shell/command-palette';
 import type { IconRailItem } from '@/components/shell/icon-rail';
+import { MobileNav } from '@/components/shell/mobile-nav';
 import { ShellHeader } from '@/components/shell/shell-header';
 import { ShellRoot } from '@/components/shell/shell-root';
 import { parseShellState, SHELL_STATE_COOKIE } from '@/components/shell/shell-state';
@@ -116,21 +117,24 @@ export default async function ShopLayout({ children, subnav, inspector, params }
 
     const shopsForSwitcher = await getShopsForUser(user.id);
 
+    const mobileNavContent = <MobileNav items={iconRailItems} subnav={subnav} />;
+    const header = (
+        <ShellHeader
+            shop={{ name: shop.name, domain: shop.domain }}
+            user={{
+                name: undefined,
+                email: user.email ?? undefined,
+                role: user.role,
+            }}
+            shopsForSwitcher={shopsForSwitcher}
+            commandPaletteItems={commandPaletteItems}
+            mobileNavContent={mobileNavContent}
+        />
+    );
+
     return (
         <ShellRoot
-            renderHeader={(mobileTrigger) => (
-                <ShellHeader
-                    shop={{ name: shop.name, domain: shop.domain }}
-                    user={{
-                        name: undefined,
-                        email: user.email ?? undefined,
-                        role: user.role,
-                    }}
-                    shopsForSwitcher={shopsForSwitcher}
-                    commandPaletteItems={commandPaletteItems}
-                    mobileMenuTrigger={mobileTrigger}
-                />
-            )}
+            header={header}
             subnav={subnav}
             inspector={inspector}
             hasSubnav={hasSubnav}

@@ -22,6 +22,7 @@ describe('ShellHeader', () => {
                 user={{ name: 'A B', email: 'a@b.com', role: 'admin' }}
                 shopsForSwitcher={[{ name: 'Acme', domain: 'acme.test' }]}
                 commandPaletteItems={[]}
+                mobileNavContent={<div data-testid="mn">mobile</div>}
             />,
         );
         expect(screen.getByAltText(/Nordcom Commerce Logo/i)).toBeInTheDocument();

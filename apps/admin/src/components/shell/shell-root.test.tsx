@@ -8,7 +8,7 @@ describe('ShellRoot', () => {
     it('renders header, children, and slots (no subnav, no inspector)', () => {
         render(
             <ShellRoot
-                renderHeader={(_mobile) => <div data-testid="hdr">HEAD</div>}
+                header={<div data-testid="hdr">HEAD</div>}
                 subnav={null}
                 inspector={null}
                 hasSubnav={false}
@@ -30,7 +30,7 @@ describe('ShellRoot', () => {
     it('renders the subnav slot when hasSubnav is true', () => {
         render(
             <ShellRoot
-                renderHeader={(_mobile) => <div>H</div>}
+                header={<div>H</div>}
                 subnav={<div data-testid="nav">NAV</div>}
                 inspector={null}
                 hasSubnav={true}
