@@ -2,8 +2,10 @@
 
 import 'server-only';
 
+import { EmptyUploadFileError, MissingRequiredFieldError, MissingUploadFileError } from '@nordcom/commerce-errors';
 import { revalidatePath } from 'next/cache';
 import { notFound } from 'next/navigation';
+
 import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
 
 /**
@@ -39,10 +41,10 @@ export async function createMediaAction(domain: string, formData: FormData): Pro
 
     const fileEntry = formData.get('file');
     if (!(fileEntry instanceof File)) {
-        throw new Error('No file provided.');
+        throw new MissingUploadFileError();
     }
     if (fileEntry.size === 0) {
-        throw new Error('Uploaded file is empty.');
+        throw new EmptyUploadFileError();
     }
 
     const alt = formData.get('alt')?.toString();
@@ -52,7 +54,7 @@ export async function createMediaAction(domain: string, formData: FormData): Pro
         // `alt` is required on the collection. Surface the validation error
         // here so the operator gets a clear message instead of a generic
         // Payload validation failure thrown from inside `payload.create`.
-        throw new Error('Alt text is required.');
+        throw new MissingRequiredFieldError('alt');
     }
 
     // Browser `File` → Payload `File` shape. Payload's local API expects a

@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { buildPayloadConfig } from '@nordcom/commerce-cms/config';
 import { attachShopSync } from '@nordcom/commerce-cms/shop-sync';
 import { Shop } from '@nordcom/commerce-db';
+import { MissingEnvironmentVariableError } from '@nordcom/commerce-errors';
 import { getPayload } from 'payload';
 import sharp from 'sharp';
 
@@ -20,8 +21,8 @@ const IMPORT_MAP_BASE_DIR = path.resolve(__dirname);
 const PAYLOAD_SECRET = process.env.PAYLOAD_SECRET;
 const MONGODB_URI = process.env.MONGODB_URI;
 
-if (!PAYLOAD_SECRET) throw new Error('PAYLOAD_SECRET is required');
-if (!MONGODB_URI) throw new Error('MONGODB_URI is required');
+if (!PAYLOAD_SECRET) throw new MissingEnvironmentVariableError('PAYLOAD_SECRET');
+if (!MONGODB_URI) throw new MissingEnvironmentVariableError('MONGODB_URI');
 
 const storefrontBaseUrl = process.env.STOREFRONT_BASE_URL ?? 'http://localhost:1337';
 

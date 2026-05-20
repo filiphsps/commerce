@@ -1,5 +1,6 @@
 'use client';
 
+import { MissingContextProviderError } from '@nordcom/commerce-errors';
 import type { ReactNode } from 'react';
 import { createContext, useContext, useState } from 'react';
 
@@ -14,7 +15,7 @@ const BulkSelectionContext = createContext<BulkSelectionContextValue | null>(nul
 export function useBulkSelection(): BulkSelectionContextValue {
     const ctx = useContext(BulkSelectionContext);
     if (!ctx) {
-        throw new Error('useBulkSelection must be used within a <BulkSelectionProvider>');
+        throw new MissingContextProviderError('useBulkSelection', 'BulkSelectionProvider');
     }
     return ctx;
 }
