@@ -6,7 +6,7 @@ import type { HTMLProps } from 'react';
 import type { Product } from '@/api/product';
 import { Label } from '@/components/typography/label';
 import { COMMERCE_DEFAULTS } from '@/utils/build-config';
-import { evaluateShopFlag } from '@/utils/flags/evaluate';
+import { productInfoLines } from '@/utils/flags/definitions/product-info-lines';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { getTranslations } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
@@ -72,15 +72,8 @@ export type InfoLinesProps = {
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 
 const InfoLines = async ({ shop, product, i18n, locale, className, ...props }: InfoLinesProps) => {
-    // Cache-safe flag read: this component renders inside a `'use cache'` parent
-    // (the product page). `readFlag` calls `cookies()` for Vercel Toolbar
-    // overrides, which Next 16 forbids inside cache scopes — even behind
-    // Suspense, the prerender pass detects the reachable cookies() call and
-    // fails the build. `evaluateShopFlag` is the sync, cache-safe path; the
-    // trade-off is that toolbar overrides won't apply on cached components.
-    const productInfoLinesEnabled = evaluateShopFlag<boolean>(shop, 'product-page-info-lines', {
-        codeDefaultValue: false,
-    });
+    // Inside cached subtree → .evaluate(shop). Trade-offs in defineFlag JSDoc.
+    const productInfoLinesEnabled = productInfoLines.evaluate(shop);
     if (!product || !productInfoLinesEnabled) {
         return null;
     }
