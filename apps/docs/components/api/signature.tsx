@@ -1,4 +1,3 @@
-// apps/docs/components/api/signature.tsx
 import { codeToHtml } from 'shiki';
 
 export type SignatureProps = {

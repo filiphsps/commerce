@@ -1,4 +1,3 @@
-// apps/docs/components/nav/breadcrumb.tsx
 export type BreadcrumbProps = {
     segments: string[];
     /** Truncate middle segments to "…" when there are more than this. */

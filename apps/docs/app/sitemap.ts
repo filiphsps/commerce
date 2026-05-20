@@ -1,4 +1,3 @@
-// apps/docs/app/sitemap.ts
 import type { MetadataRoute } from 'next';
 import { docsEnv } from '@/lib/env';
 import { pageMap } from '@/lib/page-map.generated';

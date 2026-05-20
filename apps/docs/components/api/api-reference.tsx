@@ -1,4 +1,3 @@
-// apps/docs/components/api/api-reference.tsx
 import { getTypedocOutRoot, groupSymbols, loadSubpathJson, type TypeDocProject } from '@/lib/typedoc-loader';
 import { SymbolTable } from './symbol-table';
 

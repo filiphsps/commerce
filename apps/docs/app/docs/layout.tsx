@@ -1,4 +1,3 @@
-// apps/docs/app/docs/layout.tsx
 import { DocsBreadcrumb } from '@/components/nav/docs-breadcrumb';
 
 export default function DocsLayout({ children }: { children: React.ReactNode }) {

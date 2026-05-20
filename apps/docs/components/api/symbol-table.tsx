@@ -1,4 +1,3 @@
-// apps/docs/components/api/symbol-table.tsx
 import type { TypeDocSignature, TypeDocSymbol } from '@/lib/typedoc-loader';
 import { Signature } from './signature';
 

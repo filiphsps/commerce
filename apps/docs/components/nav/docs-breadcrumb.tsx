@@ -1,4 +1,3 @@
-// apps/docs/components/nav/docs-breadcrumb.tsx
 'use client';
 
 import { useSelectedLayoutSegments } from 'next/navigation';

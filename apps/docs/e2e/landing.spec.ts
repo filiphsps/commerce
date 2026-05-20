@@ -1,4 +1,3 @@
-// apps/docs/e2e/landing.spec.ts
 import { expect, test } from '@playwright/test';
 
 test('landing renders and links to Getting Started', async ({ page }) => {

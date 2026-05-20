@@ -1,4 +1,3 @@
-// apps/docs/e2e/search.spec.ts
 import { expect, test } from '@playwright/test';
 
 test('Cmd+K opens search palette', async ({ page }) => {

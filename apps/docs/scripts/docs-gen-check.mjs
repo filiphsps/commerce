@@ -1,4 +1,3 @@
-// apps/docs/scripts/docs-gen-check.mjs
 import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';

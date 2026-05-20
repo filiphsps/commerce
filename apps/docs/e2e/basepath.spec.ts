@@ -1,4 +1,3 @@
-// apps/docs/e2e/basepath.spec.ts
 import { expect, test } from '@playwright/test';
 
 test('internal links respect basePath', async ({ page }) => {
