@@ -131,6 +131,16 @@ export class UnknownShopDomainError extends UnknownError {
     details = 'Unknown shop domain';
     description = 'Could not find a shop with the given domain';
     code = ApiErrorKind.API_UNKNOWN_SHOP_DOMAIN;
+
+    constructor(domain?: string, cause?: string, statusCode?: number) {
+        super(cause, statusCode);
+        if (domain) {
+            this.description = this.description.replace('the given domain', `domain "${domain}"`);
+        }
+        if (statusCode !== undefined) {
+            this.statusCode = statusCode;
+        }
+    }
 }
 export class UnknownCommerceProviderError extends UnknownError {
     name = 'UnknownCommerceProviderError';
@@ -785,7 +795,7 @@ export const getErrorFromCode = (
         case ApiErrorKind.API_UNKNOWN_ERROR:
             return UnknownError;
         case ApiErrorKind.API_UNKNOWN_SHOP_DOMAIN:
-            return UnknownShopDomainError;
+            return UnknownShopDomainError as unknown as typeof ApiError;
         case ApiErrorKind.API_UNKNOWN_COMMERCE_PROVIDER:
             return UnknownCommerceProviderError;
         case ApiErrorKind.API_UNKNOWN_CONTENT_PROVIDER:

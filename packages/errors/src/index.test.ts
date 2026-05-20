@@ -21,6 +21,7 @@ import {
     PayloadGetterNotRegisteredError,
     ShopMisconfigurationError,
     UnknownCollectionSlugError,
+    UnknownShopDomainError,
     UnknownShopIdError,
 } from './index';
 
@@ -313,5 +314,26 @@ describe('MissingEnvironmentVariableError', () => {
         const err = new MissingEnvironmentVariableError('FOO', undefined, 'boot', 503);
         expect(err.cause).toBe('boot');
         expect(err.statusCode).toBe(503);
+    });
+});
+
+describe('UnknownShopDomainError', () => {
+    it('has the expected shape (no args)', () => {
+        const err = new UnknownShopDomainError();
+        expect(err.name).toBe('UnknownShopDomainError');
+        expect(err.statusCode).toBe(404);
+        expect(err.code).toBe(ApiErrorKind.API_UNKNOWN_SHOP_DOMAIN);
+    });
+    it('templates domain into description', () => {
+        const err = new UnknownShopDomainError('forge.shop');
+        expect(err.description).toContain('"forge.shop"');
+    });
+    it('accepts cause and statusCode positionally', () => {
+        const err = new UnknownShopDomainError('forge.shop', 'lookup failed', 410);
+        expect(err.cause).toBe('lookup failed');
+        expect(err.statusCode).toBe(410);
+    });
+    it('is reachable through getErrorFromCode', () => {
+        expect(getErrorFromCode(ApiErrorKind.API_UNKNOWN_SHOP_DOMAIN)).toBe(UnknownShopDomainError);
     });
 });
