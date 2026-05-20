@@ -183,7 +183,7 @@ export default async function globalSetup(): Promise<void> {
     console.info(`[seed] Wrote storage state to ${STORAGE_STATE_PATH}.`);
 }
 
-export async function globalTeardown(): Promise<void> {
-    // No teardown — keep the seeded document between runs for speed.
-    // CI databases are ephemeral so there is nothing to clean up.
-}
+// No teardown — the seeded user + storage state are reused across runs for
+// speed, and CI databases are ephemeral so there is nothing to clean up.
+// If a teardown is ever needed, export it from here and register it via
+// `globalTeardown:` in playwright.config.ts (currently absent).

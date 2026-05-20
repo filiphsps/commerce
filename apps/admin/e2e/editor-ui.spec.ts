@@ -1,8 +1,8 @@
 import { expect, test } from '@playwright/test';
 
-// Use the seeded shop domain. Matches the shop document created locally;
-// CI runs against a fresh Mongo so this domain is created by the seed
-// script if absent.
+// Use the seeded shop domain. Defaults to the local development shop.
+// CI/staging should set `E2E_SHOP_DOMAIN` to a domain present in the
+// target database.
 const SHOP_DOMAIN = process.env.E2E_SHOP_DOMAIN ?? 'beta.pouched.de';
 
 /**
@@ -10,6 +10,12 @@ const SHOP_DOMAIN = process.env.E2E_SHOP_DOMAIN ?? 'beta.pouched.de';
  *  - The seeded test user (e2e/fixtures/seed.ts)
  *  - A shop document with `domain` === SHOP_DOMAIN
  *  - At least one page document under that shop
+ *
+ * NOTE: `e2e/fixtures/seed.ts` does NOT currently seed a shop or page —
+ * only the test user + matching Payload user. On a fresh database with no
+ * shops/pages, `getFirstPageEditUrl` will fail with "No edit link found
+ * on pages list" rather than time out. Extend the fixture in a follow-up
+ * when this spec needs to run in CI against an ephemeral database.
  *
  * The page/article IDs are not asserted — we use the list route to find one.
  */
