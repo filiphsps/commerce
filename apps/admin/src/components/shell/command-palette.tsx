@@ -49,7 +49,7 @@ export function CommandPalette({ items }: CommandPaletteProps) {
         <Dialog.Root open={open} onOpenChange={setOpen}>
             <Dialog.Portal>
                 <Dialog.Overlay className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm" />
-                <Dialog.Content className="fixed top-[20%] left-1/2 z-50 w-[640px] max-w-[90vw] -translate-x-1/2 overflow-hidden rounded-lg border-2 border-border bg-popover shadow-2xl">
+                <Dialog.Content className="fixed top-[20%] left-1/2 z-50 w-160 max-w-[90vw] -translate-x-1/2 overflow-hidden rounded-lg border-2 border-border bg-popover shadow-2xl">
                     <Dialog.Title className="sr-only">Command Palette</Dialog.Title>
                     <Command label="Command Menu">
                         <CommandInput placeholder="Type a command or search…" />

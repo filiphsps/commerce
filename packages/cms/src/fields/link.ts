@@ -15,7 +15,7 @@ export const linkField = ({ name, label, localized = true }: LinkFieldOptions): 
         {
             name: 'kind',
             type: 'select',
-            defaultValue: 'internal',
+            defaultValue: 'page',
             options: [
                 { label: 'Internal page', value: 'page' },
                 { label: 'Article', value: 'article' },
@@ -24,7 +24,6 @@ export const linkField = ({ name, label, localized = true }: LinkFieldOptions): 
                 { label: 'External URL', value: 'external' },
                 { label: 'Anchor', value: 'anchor' },
             ],
-            required: true,
         },
         {
             name: 'page',
@@ -58,7 +57,13 @@ export const linkField = ({ name, label, localized = true }: LinkFieldOptions): 
             type: 'text',
             admin: { condition: (_d, sib) => sib?.kind === 'external' || sib?.kind === 'anchor' },
         },
-        { name: 'label', type: 'text', required: true },
+        // `label` is intentionally optional — storefront renderers (e.g.
+        // `BannerBlock`) treat an empty link group as "no CTA" via
+        // `resolveLinkRef`, so requiring the label would block saves on any
+        // doc that just hasn't filled the CTA yet (header drafts, nav items
+        // pending content). The validation belongs in the consuming render
+        // path, not in the editor schema.
+        { name: 'label', type: 'text' },
         { name: 'openInNewTab', type: 'checkbox', defaultValue: false },
     ],
 });

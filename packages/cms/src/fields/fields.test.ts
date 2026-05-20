@@ -77,10 +77,16 @@ describe('reusable field configs', () => {
             expect(cfg.label).toBe('Primary call to action');
         });
 
-        it('requires the label sub-field', () => {
+        it('leaves the label sub-field optional', () => {
+            // Required `label` would block any save where the editor hasn't
+            // yet filled a CTA (header drafts, nav items pending content) —
+            // storefront renderers treat an empty link group as "no CTA"
+            // via `resolveLinkRef`, so validation belongs in the render
+            // path, not the schema.
             const cfg = linkField({ name: 'link' });
             const label = cfg.fields.find((f) => 'name' in f && f.name === 'label');
-            expect(label).toMatchObject({ type: 'text', required: true });
+            expect(label).toMatchObject({ type: 'text' });
+            expect((label as { required?: boolean }).required).toBeUndefined();
         });
 
         it('declares all 6 link kinds', () => {

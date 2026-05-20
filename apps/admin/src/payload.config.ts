@@ -8,6 +8,7 @@ import { Shop } from '@nordcom/commerce-db';
 import { MissingEnvironmentVariableError } from '@nordcom/commerce-errors';
 import { getPayload } from 'payload';
 import sharp from 'sharp';
+import { nextAuthStrategy } from '@/lib/nextauth-strategy';
 
 // Anchor Payload's import map / dependency resolution at the admin app's `src`
 // directory. Without this the runtime resolves component paths against the
@@ -64,6 +65,12 @@ const configPromise = buildPayloadConfig({
     // that flows from this value keeps the REST endpoint locked even though
     // there is no UI login form any more.
     disablePasswordLogin: true,
+    // Register a Payload AuthStrategy that resolves the NextAuth session.
+    // `<ServerFunctionsProvider>` → `handleServerFunctions` rebuilds its own
+    // `req` via `executeAuthStrategies`; without a strategy, `req.user` is
+    // null and every server-function call (`render-list`, `form-state`, …)
+    // throws Unauthorized. See `lib/nextauth-strategy.ts`.
+    authStrategies: [nextAuthStrategy],
     importMapBaseDir: IMPORT_MAP_BASE_DIR,
     livePreview: { url: buildLivePreviewUrl },
     // Wire sharp through so the `media` collection's `imageSizes` pipeline

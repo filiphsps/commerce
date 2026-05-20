@@ -152,6 +152,19 @@
         cursor: pointer;
     }
 
+    input:focus,
+    textarea:focus,
+    select:focus,
+    button:focus,
+    [contenteditable="true"]:focus {
+        /* biome-ignore lint/complexity/noImportantStyles: Gets overwritten by dependency otherwise,. */
+        outline: none !important;
+        /* biome-ignore lint/complexity/noImportantStyles: Gets overwritten by dependency otherwise,. */
+        box-shadow: none !important;
+        /* biome-ignore lint/complexity/noImportantStyles: Gets overwritten by dependency otherwise,. */
+        border: none !important;
+    }
+
     .admin-shell-scroll > [data-page-header] {
         position: sticky;
         top: 0;

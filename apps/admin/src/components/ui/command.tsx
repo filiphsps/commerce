@@ -31,7 +31,7 @@ export const CommandInput = forwardRef<
         <CommandPrimitive.Input
             ref={ref}
             className={cn(
-                'flex h-12 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
+                'flex h-12 w-full rounded-md border-none bg-transparent py-3 text-sm placeholder:text-muted-foreground focus:outline-none disabled:cursor-not-allowed disabled:opacity-50',
                 className,
             )}
             {...props}
@@ -47,7 +47,7 @@ export const CommandList = forwardRef<
 >(({ className, ...props }, ref) => (
     <CommandPrimitive.List
         ref={ref}
-        className={cn('max-h-80 overflow-y-auto overflow-x-hidden', className)}
+        className={cn('max-h-80 overflow-y-auto overflow-x-hidden p-2', className)}
         {...props}
         key={props.key as undefined}
     />
@@ -74,7 +74,7 @@ export const CommandGroup = forwardRef<
     <CommandPrimitive.Group
         ref={ref}
         className={cn(
-            'overflow-hidden p-1 text-foreground **:[[cmdk-group-heading]]:px-2 **:[[cmdk-group-heading]]:py-1.5 **:[[cmdk-group-heading]]:font-bold **:[[cmdk-group-heading]]:text-muted-foreground **:[[cmdk-group-heading]]:text-xs **:[[cmdk-group-heading]]:uppercase **:[[cmdk-group-heading]]:tracking-wider',
+            'overflow-hidden p-1 text-foreground **:[[cmdk-group-heading]]:px-2 **:[[cmdk-group-heading]]:py-2 **:[[cmdk-group-heading]]:font-bold **:[[cmdk-group-heading]]:text-muted-foreground **:[[cmdk-group-heading]]:text-xs **:[[cmdk-group-heading]]:uppercase **:[[cmdk-group-heading]]:tracking-wider',
             className,
         )}
         {...props}
@@ -90,7 +90,7 @@ export const CommandItem = forwardRef<
     <CommandPrimitive.Item
         ref={ref}
         className={cn(
-            'relative flex cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-1.5 font-medium text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected=true]:bg-muted data-[selected=true]:text-foreground data-[disabled=true]:opacity-50',
+            'relative flex cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-3 font-medium text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected=true]:bg-muted data-[selected=true]:text-foreground data-[disabled=true]:opacity-50',
             className,
         )}
         {...props}
