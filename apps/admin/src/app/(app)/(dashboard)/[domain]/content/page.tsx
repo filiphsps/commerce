@@ -3,6 +3,8 @@ import 'server-only';
 import type { Metadata, Route } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { ContentScrollRegion } from '@/components/shell/content-scroll-region';
+import { PageHeader } from '@/components/shell/page-header';
 import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
 
 export const metadata: Metadata = {
@@ -129,96 +131,99 @@ export default async function ContentOverviewPage({ params }: { params: Params }
     ]);
 
     return (
-        <div className="flex flex-col gap-8 px-6 py-8">
-            <header>
-                <h1 className="font-semibold text-2xl">Content</h1>
-                <p className="mt-1 text-muted-foreground text-sm">
-                    Edit pages, articles, header/footer, and product/collection metadata for {domain}.
-                </p>
-            </header>
+        <ContentScrollRegion>
+            <PageHeader
+                title="Content"
+                meta={
+                    <p className="text-muted-foreground text-sm">
+                        Edit pages, articles, header/footer, and product/collection metadata for {domain}.
+                    </p>
+                }
+            />
+            <div className="flex flex-col gap-8 px-6 py-8">
+                {/* ── Globals — no recent list, just navigation cards ──────────── */}
+                <section className="flex flex-col gap-4">
+                    <h2 className="font-semibold text-lg">Globals</h2>
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                        <Link
+                            href={`${urlBase}/business-data/` as Route}
+                            className="flex flex-col gap-2 rounded-lg border-2 border-border border-solid bg-card p-4 text-card-foreground shadow-sm hover:border-primary/50 hover:bg-card/80"
+                        >
+                            <h3 className="font-semibold text-base leading-none">Business data</h3>
+                            <p className="text-muted-foreground text-sm">
+                                Legal name, support contact, address, social profiles.
+                            </p>
+                        </Link>
+                        <Link
+                            href={`${urlBase}/header/` as Route}
+                            className="flex flex-col gap-2 rounded-lg border-2 border-border border-solid bg-card p-4 text-card-foreground shadow-sm hover:border-primary/50 hover:bg-card/80"
+                        >
+                            <h3 className="font-semibold text-base leading-none">Header</h3>
+                            <p className="text-muted-foreground text-sm">Logo, navigation, CTA, locale switcher.</p>
+                        </Link>
+                        <Link
+                            href={`${urlBase}/footer/` as Route}
+                            className="flex flex-col gap-2 rounded-lg border-2 border-border border-solid bg-card p-4 text-card-foreground shadow-sm hover:border-primary/50 hover:bg-card/80"
+                        >
+                            <h3 className="font-semibold text-base leading-none">Footer</h3>
+                            <p className="text-muted-foreground text-sm">Sections, social links, legal links.</p>
+                        </Link>
+                    </div>
+                </section>
 
-            {/* ── Globals — no recent list, just navigation cards ──────────── */}
-            <section className="flex flex-col gap-4">
-                <h2 className="font-semibold text-lg">Globals</h2>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                    <Link
-                        href={`${urlBase}/business-data/` as Route}
-                        className="flex flex-col gap-2 rounded-lg border-2 border-border border-solid bg-card p-4 text-card-foreground shadow-sm hover:border-primary/50 hover:bg-card/80"
-                    >
-                        <h3 className="font-semibold text-base leading-none">Business data</h3>
-                        <p className="text-muted-foreground text-sm">
-                            Legal name, support contact, address, social profiles.
-                        </p>
-                    </Link>
-                    <Link
-                        href={`${urlBase}/header/` as Route}
-                        className="flex flex-col gap-2 rounded-lg border-2 border-border border-solid bg-card p-4 text-card-foreground shadow-sm hover:border-primary/50 hover:bg-card/80"
-                    >
-                        <h3 className="font-semibold text-base leading-none">Header</h3>
-                        <p className="text-muted-foreground text-sm">Logo, navigation, CTA, locale switcher.</p>
-                    </Link>
-                    <Link
-                        href={`${urlBase}/footer/` as Route}
-                        className="flex flex-col gap-2 rounded-lg border-2 border-border border-solid bg-card p-4 text-card-foreground shadow-sm hover:border-primary/50 hover:bg-card/80"
-                    >
-                        <h3 className="font-semibold text-base leading-none">Footer</h3>
-                        <p className="text-muted-foreground text-sm">Sections, social links, legal links.</p>
-                    </Link>
-                </div>
-            </section>
-
-            {/* ── Tenant-scoped collections — card + recent items list ─────── */}
-            <section className="flex flex-col gap-4">
-                <h2 className="font-semibold text-lg">Collections</h2>
-                <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                    <CollectionCard
-                        title="Pages"
-                        description="Marketing and landing pages."
-                        href={`${urlBase}/pages/` as Route}
-                        newHref={`${urlBase}/pages/new/` as Route}
-                        recent={pages.docs}
-                        formatRow={(p) => ({
-                            id: String(p.id),
-                            title: p.title,
-                            href: `${urlBase}/pages/${p.id}/` as Route,
-                        })}
-                    />
-                    <CollectionCard
-                        title="Articles"
-                        description="Blog posts."
-                        href={`${urlBase}/articles/` as Route}
-                        newHref={`${urlBase}/articles/new/` as Route}
-                        recent={articles.docs}
-                        formatRow={(a) => ({
-                            id: String(a.id),
-                            title: a.title,
-                            href: `${urlBase}/articles/${a.id}/` as Route,
-                        })}
-                    />
-                    <CollectionCard
-                        title="Product metadata"
-                        description="CMS overlay for Shopify products."
-                        href={`${urlBase}/product-metadata/` as Route}
-                        recent={productMeta.docs}
-                        formatRow={(p) => ({
-                            id: String(p.id),
-                            title: p.shopifyHandle,
-                            href: `${urlBase}/product-metadata/${encodeURIComponent(p.shopifyHandle)}/` as Route,
-                        })}
-                    />
-                    <CollectionCard
-                        title="Collection metadata"
-                        description="CMS overlay for Shopify collections."
-                        href={`${urlBase}/collection-metadata/` as Route}
-                        recent={collectionMeta.docs}
-                        formatRow={(c) => ({
-                            id: String(c.id),
-                            title: c.shopifyHandle,
-                            href: `${urlBase}/collection-metadata/${encodeURIComponent(c.shopifyHandle)}/` as Route,
-                        })}
-                    />
-                </div>
-            </section>
-        </div>
+                {/* ── Tenant-scoped collections — card + recent items list ─────── */}
+                <section className="flex flex-col gap-4">
+                    <h2 className="font-semibold text-lg">Collections</h2>
+                    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                        <CollectionCard
+                            title="Pages"
+                            description="Marketing and landing pages."
+                            href={`${urlBase}/pages/` as Route}
+                            newHref={`${urlBase}/pages/new/` as Route}
+                            recent={pages.docs}
+                            formatRow={(p) => ({
+                                id: String(p.id),
+                                title: p.title,
+                                href: `${urlBase}/pages/${p.id}/` as Route,
+                            })}
+                        />
+                        <CollectionCard
+                            title="Articles"
+                            description="Blog posts."
+                            href={`${urlBase}/articles/` as Route}
+                            newHref={`${urlBase}/articles/new/` as Route}
+                            recent={articles.docs}
+                            formatRow={(a) => ({
+                                id: String(a.id),
+                                title: a.title,
+                                href: `${urlBase}/articles/${a.id}/` as Route,
+                            })}
+                        />
+                        <CollectionCard
+                            title="Product metadata"
+                            description="CMS overlay for Shopify products."
+                            href={`${urlBase}/product-metadata/` as Route}
+                            recent={productMeta.docs}
+                            formatRow={(p) => ({
+                                id: String(p.id),
+                                title: p.shopifyHandle,
+                                href: `${urlBase}/product-metadata/${encodeURIComponent(p.shopifyHandle)}/` as Route,
+                            })}
+                        />
+                        <CollectionCard
+                            title="Collection metadata"
+                            description="CMS overlay for Shopify collections."
+                            href={`${urlBase}/collection-metadata/` as Route}
+                            recent={collectionMeta.docs}
+                            formatRow={(c) => ({
+                                id: String(c.id),
+                                title: c.shopifyHandle,
+                                href: `${urlBase}/collection-metadata/${encodeURIComponent(c.shopifyHandle)}/` as Route,
+                            })}
+                        />
+                    </div>
+                </section>
+            </div>
+        </ContentScrollRegion>
     );
 }
