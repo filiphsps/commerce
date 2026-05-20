@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/next';
 import type { Metadata } from 'next';
 import { Head } from 'nextra/components';
 import { getPageMap } from 'nextra/page-map';
@@ -47,6 +48,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                     {children}
                 </Layout>
                 <CmdkPalette />
+                <Analytics />
             </body>
         </html>
     );

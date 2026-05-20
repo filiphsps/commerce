@@ -289,6 +289,9 @@ importers:
       '@nordcom/commerce-shopify-html':
         specifier: workspace:*
         version: link:../../packages/shopify-html
+      '@vercel/analytics':
+        specifier: 2.0.1
+        version: 2.0.1(next@16.2.6(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(react@19.2.6)
       cmdk:
         specifier: 1.1.1
         version: 1.1.1(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
