@@ -42,12 +42,12 @@ export default function LoginButton({ provider = 'github', className, ...props }
         router.replace(`${path}${params.size > 0 ? '?' : ''}${params.toString()}` as Route);
     }, [error, path, router, searchParams]);
 
-    let layout: ReactNode = <></>;
-    let icon: ReactNode = <></>;
+    let layout: ReactNode = null,
+        icon: ReactNode = null;
     switch (provider) {
         case 'github': {
             layout = 'Login with GitHub';
-            icon = <Image className="" src={GithubLight} alt="GitHub" />;
+            icon = <Image className="" src={GithubLight} alt="GitHub" loading="eager" />;
             break;
         }
         default: {

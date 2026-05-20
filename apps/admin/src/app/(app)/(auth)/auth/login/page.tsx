@@ -1,3 +1,4 @@
+import { Accented, Card, Heading, Label } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
@@ -17,16 +18,26 @@ export async function IndexAdminPageContent() {
     }
 
     return (
-        <div>
-            <LoginButton provider="github" className="" />
-        </div>
+        <article>
+            <LoginButton provider="github" />
+        </article>
     );
 }
 
 export default async function IndexAdminPage({}: { params: IndexAdminPageParams }) {
     return (
-        <Suspense>
-            <IndexAdminPageContent />
-        </Suspense>
+        <>
+            <Card.Header>
+                <Label as="div">
+                    Welcome <Accented>back</Accented>!
+                </Label>
+                <Heading level="h1">Login</Heading>
+            </Card.Header>
+            <Card.Divider />
+
+            <Suspense>
+                <IndexAdminPageContent />
+            </Suspense>
+        </>
     );
 }

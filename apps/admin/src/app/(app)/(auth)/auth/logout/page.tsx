@@ -1,5 +1,6 @@
-import { Heading } from '@nordcom/nordstar';
+import { Card, Heading } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import { LogoutAction } from './logout-action';
 
 export const metadata: Metadata = {
@@ -8,10 +9,16 @@ export const metadata: Metadata = {
 
 export default async function IndexAdminPage({}: {}) {
     return (
-        <section>
-            <Heading level="h1">Logging out...</Heading>
+        <>
+            <Card.Header>
+                <Heading level="h1">Logging out...</Heading>
+            </Card.Header>
 
-            <LogoutAction />
-        </section>
+            <article>
+                <Suspense>
+                    <LogoutAction />
+                </Suspense>
+            </article>
+        </>
     );
 }
