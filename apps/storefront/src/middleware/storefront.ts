@@ -6,6 +6,7 @@ import {
     NotFoundError,
     UnknownError,
 } from '@nordcom/commerce-errors';
+import { shopFromHost } from '@nordcom/commerce-utils';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { resolveAcceptLanguage } from 'resolve-accept-language';
@@ -17,12 +18,7 @@ import { BuildConfig } from '@/utils/build-config';
 import type { Code } from '@/utils/locale';
 
 function hostnameFromRequest(req: NextRequest): string {
-    let hostname = (req.headers.get('host')?.replace('.localhost', '') || req.nextUrl.host || '').toLowerCase();
-
-    // Remove port from hostname.
-    hostname = hostname ? hostname.split(':')[0] : '';
-
-    return hostname;
+    return shopFromHost(req.headers.get('host') ?? req.nextUrl.host ?? '');
 }
 
 export const getHostname = async (req: NextRequest): Promise<string> => {

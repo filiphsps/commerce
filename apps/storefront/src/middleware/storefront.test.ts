@@ -73,24 +73,24 @@ describe('getHostname', () => {
         vi.clearAllMocks();
     });
 
-    it('strips .localhost suffix from the host header when present', async () => {
-        // hostnameFromRequest() calls req.headers.get('host')?.replace('.localhost', '').
-        // When the host header contains "myshop.localhost", after stripping ".localhost" the
-        // result is "myshop" — which is not a dev-fallback trigger — so findByDomain is called
-        // with "myshop". If the header falls back to req.nextUrl.host the substring is not
-        // removed (the URL host path has no .localhost stripping), so "myshop.localhost"
-        // would reach findByDomain instead.
-        // The regex below accepts both: it documents which path the runtime takes.
-        const req = new NextRequest('http://myshop.localhost/', {
-            headers: { 'accept-language': 'en-US' },
+    it('extracts shop slug from <shop>.storefront.localhost host header', async () => {
+        const req = new NextRequest('http://myshop.storefront.localhost/', {
+            headers: { host: 'myshop.storefront.localhost', 'accept-language': 'en-US' },
         });
 
         await getHostname(req);
 
-        expect(vi.mocked(Shop.findByDomain)).toHaveBeenCalledWith(
-            expect.stringMatching(/^myshop(\.localhost)?$/),
-            expect.anything(),
-        );
+        expect(vi.mocked(Shop.findByDomain)).toHaveBeenCalledWith('myshop', expect.anything());
+    });
+
+    it('uses full hostname for production-style hosts', async () => {
+        const req = new NextRequest('http://myshop.com/', {
+            headers: { host: 'myshop.com', 'accept-language': 'en-US' },
+        });
+
+        await getHostname(req);
+
+        expect(vi.mocked(Shop.findByDomain)).toHaveBeenCalledWith('myshop.com', expect.anything());
     });
 
     it('strips port from the hostname before lookup', async () => {
