@@ -534,6 +534,14 @@ export enum GenericErrorKind {
     MISSING_CONTEXT_PROVIDER = 'MISSING_CONTEXT_PROVIDER',
     NOT_CONNECTED_TO_DATABASE = 'NOT_CONNECTED_TO_DATABASE',
     MISSING_SESSION_USER_ID = 'MISSING_SESSION_USER_ID',
+    GENERIC_PAYLOAD_GETTER_NOT_REGISTERED = 'GENERIC_PAYLOAD_GETTER_NOT_REGISTERED',
+    GENERIC_MISSING_TENANT_FOR_SCOPED_COLLECTION = 'GENERIC_MISSING_TENANT_FOR_SCOPED_COLLECTION',
+    GENERIC_EMPTY_TENANT_SCOPE = 'GENERIC_EMPTY_TENANT_SCOPE',
+    GENERIC_MISSING_LIST_CONFIG = 'GENERIC_MISSING_LIST_CONFIG',
+    GENERIC_DUPLICATE_PREDICATE_REGISTRATION = 'GENERIC_DUPLICATE_PREDICATE_REGISTRATION',
+    GENERIC_MISSING_REQUEST_CONTEXT = 'GENERIC_MISSING_REQUEST_CONTEXT',
+    GENERIC_DUPLICATE_WORKSPACE_SLUG = 'GENERIC_DUPLICATE_WORKSPACE_SLUG',
+    GENERIC_MISSING_TYPEDOC_OUTPUT = 'GENERIC_MISSING_TYPEDOC_OUTPUT',
 }
 
 export class GenericError extends Error<GenericErrorKind> {
@@ -610,6 +618,107 @@ export class MissingSessionUserIdError extends GenericError {
     code = GenericErrorKind.MISSING_SESSION_USER_ID;
 }
 
+export class PayloadGetterNotRegisteredError extends GenericError {
+    name = 'PayloadGetterNotRegisteredError';
+    details = 'Payload getter not registered';
+    description = 'No Payload getter has been registered. Call `registerPayload(getter)` from instrumentation.ts.';
+    code = GenericErrorKind.GENERIC_PAYLOAD_GETTER_NOT_REGISTERED;
+}
+
+export class MissingTenantForScopedCollectionError extends GenericError {
+    name = 'MissingTenantForScopedCollectionError';
+    details = 'Missing tenant for scoped collection';
+    description = 'A tenant-scoped collection was accessed without a tenant context';
+    code = GenericErrorKind.GENERIC_MISSING_TENANT_FOR_SCOPED_COLLECTION;
+
+    constructor(collection?: string) {
+        super();
+        if (collection) {
+            this.description = this.description.replace(
+                'A tenant-scoped collection',
+                `Scoped collection "${collection}"`,
+            );
+        }
+    }
+}
+
+export class EmptyTenantScopeError extends GenericError {
+    name = 'EmptyTenantScopeError';
+    details = 'Empty tenant scope';
+    description = 'A tenant-scoped query received an empty shop id; refusing to broaden the predicate';
+    code = GenericErrorKind.GENERIC_EMPTY_TENANT_SCOPE;
+}
+
+export class MissingListConfigError extends GenericError {
+    name = 'MissingListConfigError';
+    details = 'Missing list config';
+    description = 'The editor manifest has no list config; cannot render the list page';
+    code = GenericErrorKind.GENERIC_MISSING_LIST_CONFIG;
+
+    constructor(collection?: string) {
+        super();
+        if (collection) {
+            this.description = this.description.replace('The editor manifest', `Editor manifest "${collection}"`);
+        }
+    }
+}
+
+export class DuplicatePredicateRegistrationError extends GenericError {
+    name = 'DuplicatePredicateRegistrationError';
+    details = 'Duplicate predicate registration';
+    description = 'A predicate with the given name is already registered';
+    code = GenericErrorKind.GENERIC_DUPLICATE_PREDICATE_REGISTRATION;
+
+    constructor(predicateName?: string) {
+        super();
+        if (predicateName) {
+            this.description = this.description.replace('the given name', `name "${predicateName}"`);
+        }
+    }
+}
+
+export class MissingRequestContextError extends GenericError {
+    name = 'MissingRequestContextError';
+    details = 'Missing request context';
+    description = 'No request context is available; this code path requires an active request scope';
+    code = GenericErrorKind.GENERIC_MISSING_REQUEST_CONTEXT;
+}
+
+export class DuplicateWorkspaceSlugError extends GenericError {
+    name = 'DuplicateWorkspaceSlugError';
+    details = 'Duplicate workspace slug';
+    description =
+        'A workspace slug is duplicated; workspace names must be globally unique across apps/* and packages/**';
+    code = GenericErrorKind.GENERIC_DUPLICATE_WORKSPACE_SLUG;
+
+    constructor(slug?: string) {
+        super();
+        if (slug) {
+            this.description = this.description.replace('A workspace slug', `Workspace slug "${slug}"`);
+        }
+    }
+}
+
+export class MissingTypeDocOutputError extends GenericError {
+    name = 'MissingTypeDocOutputError';
+    details = 'Missing TypeDoc output';
+    description = 'No TypeDoc JSON output was found for the requested subpath';
+    code = GenericErrorKind.GENERIC_MISSING_TYPEDOC_OUTPUT;
+
+    constructor(subpathKey?: string, rootDir?: string, buildCommand?: string) {
+        super();
+        if (subpathKey) {
+            this.description = this.description.replace('the requested subpath', `subpath "${subpathKey}"`);
+        }
+        if (rootDir) {
+            this.description = `${this.description} in "${rootDir}"`;
+        }
+        if (buildCommand) {
+            this.description = `${this.description}. Run \`${buildCommand}\` first.`;
+        }
+    }
+}
+
 export const getAllErrorCodes = () => {
     return [...Object.values(GenericErrorKind), ...Object.values(ApiErrorKind)];
 };
@@ -635,6 +744,22 @@ export const getErrorFromCode = (
             return NotConnectedToDatabase;
         case GenericErrorKind.MISSING_SESSION_USER_ID:
             return MissingSessionUserIdError;
+        case GenericErrorKind.GENERIC_PAYLOAD_GETTER_NOT_REGISTERED:
+            return PayloadGetterNotRegisteredError;
+        case GenericErrorKind.GENERIC_MISSING_TENANT_FOR_SCOPED_COLLECTION:
+            return MissingTenantForScopedCollectionError as unknown as typeof GenericError;
+        case GenericErrorKind.GENERIC_EMPTY_TENANT_SCOPE:
+            return EmptyTenantScopeError;
+        case GenericErrorKind.GENERIC_MISSING_LIST_CONFIG:
+            return MissingListConfigError as unknown as typeof GenericError;
+        case GenericErrorKind.GENERIC_DUPLICATE_PREDICATE_REGISTRATION:
+            return DuplicatePredicateRegistrationError as unknown as typeof GenericError;
+        case GenericErrorKind.GENERIC_MISSING_REQUEST_CONTEXT:
+            return MissingRequestContextError;
+        case GenericErrorKind.GENERIC_DUPLICATE_WORKSPACE_SLUG:
+            return DuplicateWorkspaceSlugError as unknown as typeof GenericError;
+        case GenericErrorKind.GENERIC_MISSING_TYPEDOC_OUTPUT:
+            return MissingTypeDocOutputError as unknown as typeof GenericError;
 
         // Api Errors.
         case ApiErrorKind.API_UNKNOWN_ERROR:

@@ -2,14 +2,22 @@ import { describe, expect, it } from 'vitest';
 
 import {
     ApiErrorKind,
+    DuplicatePredicateRegistrationError,
+    DuplicateWorkspaceSlugError,
+    EmptyTenantScopeError,
     EmptyUploadFileError,
     GenericErrorKind,
     getErrorFromCode,
     MalformedFormPayloadError,
+    MissingListConfigError,
+    MissingRequestContextError,
     MissingRequiredFieldError,
     MissingSessionUserIdError,
+    MissingTenantForScopedCollectionError,
+    MissingTypeDocOutputError,
     MissingUploadFileError,
     NoLocaleResolvableError,
+    PayloadGetterNotRegisteredError,
     ShopMisconfigurationError,
     UnknownCollectionSlugError,
     UnknownShopIdError,
@@ -162,5 +170,123 @@ describe('MissingRequiredFieldError', () => {
     });
     it('is reachable through getErrorFromCode', () => {
         expect(getErrorFromCode(ApiErrorKind.API_MISSING_REQUIRED_FIELD)).toBe(MissingRequiredFieldError);
+    });
+});
+
+describe('PayloadGetterNotRegisteredError', () => {
+    it('has the expected shape', () => {
+        const err = new PayloadGetterNotRegisteredError();
+        expect(err.name).toBe('PayloadGetterNotRegisteredError');
+        expect(err.statusCode).toBe(500);
+        expect(err.code).toBe(GenericErrorKind.GENERIC_PAYLOAD_GETTER_NOT_REGISTERED);
+        expect(err.description.length).toBeGreaterThan(0);
+    });
+    it('is reachable through getErrorFromCode', () => {
+        expect(getErrorFromCode(GenericErrorKind.GENERIC_PAYLOAD_GETTER_NOT_REGISTERED)).toBe(
+            PayloadGetterNotRegisteredError,
+        );
+    });
+});
+
+describe('MissingTenantForScopedCollectionError', () => {
+    it('has the expected shape (no args)', () => {
+        const err = new MissingTenantForScopedCollectionError();
+        expect(err.name).toBe('MissingTenantForScopedCollectionError');
+        expect(err.code).toBe(GenericErrorKind.GENERIC_MISSING_TENANT_FOR_SCOPED_COLLECTION);
+    });
+    it('templates collection into description', () => {
+        const err = new MissingTenantForScopedCollectionError('media');
+        expect(err.description).toContain('"media"');
+    });
+    it('is reachable through getErrorFromCode', () => {
+        expect(getErrorFromCode(GenericErrorKind.GENERIC_MISSING_TENANT_FOR_SCOPED_COLLECTION)).toBe(
+            MissingTenantForScopedCollectionError,
+        );
+    });
+});
+
+describe('EmptyTenantScopeError', () => {
+    it('has the expected shape', () => {
+        const err = new EmptyTenantScopeError();
+        expect(err.name).toBe('EmptyTenantScopeError');
+        expect(err.code).toBe(GenericErrorKind.GENERIC_EMPTY_TENANT_SCOPE);
+    });
+    it('is reachable through getErrorFromCode', () => {
+        expect(getErrorFromCode(GenericErrorKind.GENERIC_EMPTY_TENANT_SCOPE)).toBe(EmptyTenantScopeError);
+    });
+});
+
+describe('MissingListConfigError', () => {
+    it('has the expected shape (no args)', () => {
+        const err = new MissingListConfigError();
+        expect(err.name).toBe('MissingListConfigError');
+        expect(err.code).toBe(GenericErrorKind.GENERIC_MISSING_LIST_CONFIG);
+    });
+    it('templates collection into description', () => {
+        const err = new MissingListConfigError('reviews');
+        expect(err.description).toContain('"reviews"');
+    });
+    it('is reachable through getErrorFromCode', () => {
+        expect(getErrorFromCode(GenericErrorKind.GENERIC_MISSING_LIST_CONFIG)).toBe(MissingListConfigError);
+    });
+});
+
+describe('DuplicatePredicateRegistrationError', () => {
+    it('has the expected shape (no args)', () => {
+        const err = new DuplicatePredicateRegistrationError();
+        expect(err.name).toBe('DuplicatePredicateRegistrationError');
+        expect(err.code).toBe(GenericErrorKind.GENERIC_DUPLICATE_PREDICATE_REGISTRATION);
+    });
+    it('templates predicate name into description', () => {
+        const err = new DuplicatePredicateRegistrationError('isPro');
+        expect(err.description).toContain('"isPro"');
+    });
+    it('is reachable through getErrorFromCode', () => {
+        expect(getErrorFromCode(GenericErrorKind.GENERIC_DUPLICATE_PREDICATE_REGISTRATION)).toBe(
+            DuplicatePredicateRegistrationError,
+        );
+    });
+});
+
+describe('MissingRequestContextError', () => {
+    it('has the expected shape', () => {
+        const err = new MissingRequestContextError();
+        expect(err.name).toBe('MissingRequestContextError');
+        expect(err.code).toBe(GenericErrorKind.GENERIC_MISSING_REQUEST_CONTEXT);
+    });
+    it('is reachable through getErrorFromCode', () => {
+        expect(getErrorFromCode(GenericErrorKind.GENERIC_MISSING_REQUEST_CONTEXT)).toBe(MissingRequestContextError);
+    });
+});
+
+describe('DuplicateWorkspaceSlugError', () => {
+    it('has the expected shape (no args)', () => {
+        const err = new DuplicateWorkspaceSlugError();
+        expect(err.name).toBe('DuplicateWorkspaceSlugError');
+        expect(err.code).toBe(GenericErrorKind.GENERIC_DUPLICATE_WORKSPACE_SLUG);
+    });
+    it('templates slug into description', () => {
+        const err = new DuplicateWorkspaceSlugError('admin');
+        expect(err.description).toContain('"admin"');
+    });
+    it('is reachable through getErrorFromCode', () => {
+        expect(getErrorFromCode(GenericErrorKind.GENERIC_DUPLICATE_WORKSPACE_SLUG)).toBe(DuplicateWorkspaceSlugError);
+    });
+});
+
+describe('MissingTypeDocOutputError', () => {
+    it('has the expected shape (no args)', () => {
+        const err = new MissingTypeDocOutputError();
+        expect(err.name).toBe('MissingTypeDocOutputError');
+        expect(err.code).toBe(GenericErrorKind.GENERIC_MISSING_TYPEDOC_OUTPUT);
+    });
+    it('templates subpath, rootDir, and buildCommand into description', () => {
+        const err = new MissingTypeDocOutputError('docs', '.typedoc-out', 'pnpm pre:typedoc');
+        expect(err.description).toContain('"docs"');
+        expect(err.description).toContain('".typedoc-out"');
+        expect(err.description).toContain('`pnpm pre:typedoc`');
+    });
+    it('is reachable through getErrorFromCode', () => {
+        expect(getErrorFromCode(GenericErrorKind.GENERIC_MISSING_TYPEDOC_OUTPUT)).toBe(MissingTypeDocOutputError);
     });
 });
