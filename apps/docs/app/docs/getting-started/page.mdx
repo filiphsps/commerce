@@ -12,8 +12,8 @@ deployment serves arbitrarily many shops resolved by hostname.
 
 ## Prerequisites
 
-- Node.js `24.x` (see `.nvmrc`)
-- pnpm `11.x`
+- Node.js (see `.nvmrc` for version)
+- pnpm
 - A running MongoDB instance
 
 <Callout type="info">
@@ -30,12 +30,12 @@ pnpm build:packages        # apps depend on each package's dist/
 pnpm dev                   # all three apps in parallel
 ```
 
-| App        | URL                       |
-| ---------- | ------------------------- |
-| Storefront | http://localhost:1337     |
-| Admin      | http://localhost:3000     |
-| Landing    | http://localhost:3001     |
-| Docs       | http://localhost:3002     |
+| App        | URL                              |
+| ---------- | -------------------------------- |
+| Storefront | https://storefront.localhost     |
+| Admin      | https://admin.localhost          |
+| Landing    | https://landing.localhost        |
+| Docs       | https://docs.localhost           |
 
 See [Architecture](../architecture/) for the multi-tenancy primer, and the
 per-app guides under **Apps** for routing, data fetching, and CMS integration.
