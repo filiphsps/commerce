@@ -34,5 +34,13 @@ describe('utils', () => {
             const result = isPreviewEnv('example.com');
             expect(result).toBe(false);
         });
+
+        it('should return `true` for a portless dev hostname', () => {
+            expect(isPreviewEnv('myshop.storefront.localhost')).toBe(true);
+        });
+
+        it('should return `false` for a domain that merely contains the word localhost', () => {
+            expect(isPreviewEnv('mylocalhostapp.io')).toBe(false);
+        });
     });
 });
