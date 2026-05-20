@@ -4,6 +4,12 @@
 // during server rendering. Combined with `<html data-theme="dark">` set in
 // apps/admin/src/app/(app)/layout.tsx, this is what turns Payload's
 // otherwise-unstyled field components into a usable editor.
+//
+// Note: this CSS bundle is component styles ONLY — Payload's --theme-*
+// and --color-base-* token ramps live in `dist/scss/colors.scss` which
+// is NOT exposed by the package's exports map. We vendor those tokens
+// into apps/admin/src/app/globals.css under `@layer payload-default` to
+// keep them in sync without depending on the SCSS source.
 import '@payloadcms/ui/css';
 
 import { PayloadFieldShellInner, type PayloadFieldShellProps } from './payload-field-shell-inner';
