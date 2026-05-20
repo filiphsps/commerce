@@ -10,8 +10,6 @@ import * as NProgress from 'nprogress';
 import type { ReactNode } from 'react';
 import { Suspense, useEffect } from 'react';
 import { Toaster } from 'sonner';
-import { HeaderProvider } from '@/components/header-provider';
-
 export type ProvidersProps = {
     children: ReactNode;
 };
@@ -39,7 +37,7 @@ export function Providers({ children }: ProvidersProps) {
                      *  field — the optional chain inside Payload's hook only
                      *  guards `.isOpen`, not the parent subscript access. */}
                     <ModalProvider classPrefix="payload" transTime={0} zIndex={9999}>
-                        <HeaderProvider>{children}</HeaderProvider>
+                        {children}
                         <ModalContainer />
                     </ModalProvider>
 

@@ -18,10 +18,6 @@ vi.mock('@next/third-parties/google', () => ({
     GoogleTagManager: () => null,
 }));
 
-vi.mock('@/components/header-provider', () => ({
-    HeaderProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-}));
-
 // `@nordcom/nordstar` pulls in CSS module files from its subpackages
 // which the Vitest CSS transformer rejects. We only care about its
 // component shells acting as passthroughs in this test.
