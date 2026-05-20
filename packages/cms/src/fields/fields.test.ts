@@ -31,6 +31,61 @@ describe('reusable field configs', () => {
         expect(cfg.name).toBe('items');
     });
 
+    describe('navItemField extended fields', () => {
+        it('exposes image, description, backgroundColor at depth 1', () => {
+            const cfg = navItemField({ depth: 3 });
+            const names = cfg.fields.map((f) => ('name' in f ? f.name : ''));
+            expect(names).toEqual(expect.arrayContaining(['link', 'image', 'description', 'backgroundColor', 'items']));
+        });
+
+        it('exposes image, description, backgroundColor recursively at depth 2', () => {
+            const cfg = navItemField({ depth: 3 });
+            const nested = cfg.fields.find((f) => 'name' in f && f.name === 'items') as Extract<
+                (typeof cfg.fields)[number],
+                { type: 'array' }
+            >;
+            const names = nested.fields.map((f) => ('name' in f ? f.name : ''));
+            expect(names).toEqual(expect.arrayContaining(['link', 'image', 'description', 'backgroundColor', 'items']));
+        });
+
+        it('exposes image, description, backgroundColor at depth 3 (leaf level)', () => {
+            const cfg = navItemField({ depth: 3 });
+            const level2 = cfg.fields.find((f) => 'name' in f && f.name === 'items') as Extract<
+                (typeof cfg.fields)[number],
+                { type: 'array' }
+            >;
+            const level3 = level2.fields.find((f) => 'name' in f && f.name === 'items') as Extract<
+                (typeof level2.fields)[number],
+                { type: 'array' }
+            >;
+            const names = level3.fields.map((f) => ('name' in f ? f.name : ''));
+            expect(names).toEqual(expect.arrayContaining(['link', 'image', 'description', 'backgroundColor']));
+            expect(names).not.toContain('items');
+        });
+
+        it('depth: 1 has no nested items field (recursion termination)', () => {
+            const cfg = navItemField({ depth: 1 });
+            const names = cfg.fields.map((f) => ('name' in f ? f.name : ''));
+            expect(names).not.toContain('items');
+        });
+
+        it('description is localized at every level', () => {
+            const cfg = navItemField({ depth: 3 });
+            const findDescription = (
+                arr: Extract<typeof cfg, { type: 'array' }>,
+            ): Extract<(typeof arr.fields)[number], { type: 'textarea' }> =>
+                arr.fields.find((f) => 'name' in f && f.name === 'description') as never;
+            const d1 = findDescription(cfg);
+            expect(d1.localized).toBe(true);
+            const l2 = cfg.fields.find((f) => 'name' in f && f.name === 'items') as Extract<
+                (typeof cfg.fields)[number],
+                { type: 'array' }
+            >;
+            const d2 = findDescription(l2);
+            expect(d2.localized).toBe(true);
+        });
+    });
+
     describe('seoGroup', () => {
         it('returns a stable shape on each call (no shared mutable state)', () => {
             const a = seoGroup();

@@ -17,24 +17,48 @@ const a = createCollectionEditorActions(tenantsEditor, editorRuntime);
 // (collectionMetadata) all emit the same shape, keeping cms:gen:check
 // deterministic. Do NOT use backticks in comments inside this template
 // literal — they would collide with the outer string delimiter.
-export async function tenantsSaveDraft(domain: string | null, id: string, formData: FormData): Promise<void> {
+export async function tenantsSaveDraft(
+    domain: string | null,
+    id: string,
+    formData: FormData,
+): Promise<void> {
     return a.saveDraft(domain, id, formData);
 }
-export async function tenantsPublish(domain: string | null, id: string, formData: FormData): Promise<void> {
+export async function tenantsPublish(
+    domain: string | null,
+    id: string,
+    formData: FormData,
+): Promise<void> {
     return a.publish(domain, id, formData);
 }
-export async function tenantsCreate(domain: string | null, formData: FormData): Promise<{ id: string }> {
+export async function tenantsCreate(
+    domain: string | null,
+    formData: FormData,
+): Promise<{ id: string }> {
     return a.create(domain, formData);
 }
-export async function tenantsDelete(domain: string | null, id: string): Promise<void> {
+export async function tenantsDelete(
+    domain: string | null,
+    id: string,
+): Promise<void> {
     return a.delete(domain, id);
 }
-export async function tenantsBulkDelete(domain: string | null, ids: string[]): Promise<void> {
+export async function tenantsBulkDelete(
+    domain: string | null,
+    ids: string[],
+): Promise<void> {
     return a.bulkDelete(domain, ids);
 }
-export async function tenantsBulkPublish(domain: string | null, ids: string[]): Promise<void> {
+export async function tenantsBulkPublish(
+    domain: string | null,
+    ids: string[],
+): Promise<void> {
     return a.bulkPublish(domain, ids);
 }
-export async function tenantsRestoreVersion(domain: string | null, id: string, versionId: string): Promise<void> {
+export async function tenantsRestoreVersion(
+    domain: string | null,
+    id: string,
+    versionId: string,
+): Promise<void> {
     return a.restoreVersion(domain, id, versionId);
 }

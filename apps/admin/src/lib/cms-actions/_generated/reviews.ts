@@ -17,24 +17,48 @@ const a = createCollectionEditorActions(reviewsEditor, editorRuntime);
 // (collectionMetadata) all emit the same shape, keeping cms:gen:check
 // deterministic. Do NOT use backticks in comments inside this template
 // literal — they would collide with the outer string delimiter.
-export async function reviewsSaveDraft(domain: string | null, id: string, formData: FormData): Promise<void> {
+export async function reviewsSaveDraft(
+    domain: string | null,
+    id: string,
+    formData: FormData,
+): Promise<void> {
     return a.saveDraft(domain, id, formData);
 }
-export async function reviewsPublish(domain: string | null, id: string, formData: FormData): Promise<void> {
+export async function reviewsPublish(
+    domain: string | null,
+    id: string,
+    formData: FormData,
+): Promise<void> {
     return a.publish(domain, id, formData);
 }
-export async function reviewsCreate(domain: string | null, formData: FormData): Promise<{ id: string }> {
+export async function reviewsCreate(
+    domain: string | null,
+    formData: FormData,
+): Promise<{ id: string }> {
     return a.create(domain, formData);
 }
-export async function reviewsDelete(domain: string | null, id: string): Promise<void> {
+export async function reviewsDelete(
+    domain: string | null,
+    id: string,
+): Promise<void> {
     return a.delete(domain, id);
 }
-export async function reviewsBulkDelete(domain: string | null, ids: string[]): Promise<void> {
+export async function reviewsBulkDelete(
+    domain: string | null,
+    ids: string[],
+): Promise<void> {
     return a.bulkDelete(domain, ids);
 }
-export async function reviewsBulkPublish(domain: string | null, ids: string[]): Promise<void> {
+export async function reviewsBulkPublish(
+    domain: string | null,
+    ids: string[],
+): Promise<void> {
     return a.bulkPublish(domain, ids);
 }
-export async function reviewsRestoreVersion(domain: string | null, id: string, versionId: string): Promise<void> {
+export async function reviewsRestoreVersion(
+    domain: string | null,
+    id: string,
+    versionId: string,
+): Promise<void> {
     return a.restoreVersion(domain, id, versionId);
 }

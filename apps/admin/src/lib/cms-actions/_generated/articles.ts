@@ -17,24 +17,48 @@ const a = createCollectionEditorActions(articlesEditor, editorRuntime);
 // (collectionMetadata) all emit the same shape, keeping cms:gen:check
 // deterministic. Do NOT use backticks in comments inside this template
 // literal — they would collide with the outer string delimiter.
-export async function articlesSaveDraft(domain: string | null, id: string, formData: FormData): Promise<void> {
+export async function articlesSaveDraft(
+    domain: string | null,
+    id: string,
+    formData: FormData,
+): Promise<void> {
     return a.saveDraft(domain, id, formData);
 }
-export async function articlesPublish(domain: string | null, id: string, formData: FormData): Promise<void> {
+export async function articlesPublish(
+    domain: string | null,
+    id: string,
+    formData: FormData,
+): Promise<void> {
     return a.publish(domain, id, formData);
 }
-export async function articlesCreate(domain: string | null, formData: FormData): Promise<{ id: string }> {
+export async function articlesCreate(
+    domain: string | null,
+    formData: FormData,
+): Promise<{ id: string }> {
     return a.create(domain, formData);
 }
-export async function articlesDelete(domain: string | null, id: string): Promise<void> {
+export async function articlesDelete(
+    domain: string | null,
+    id: string,
+): Promise<void> {
     return a.delete(domain, id);
 }
-export async function articlesBulkDelete(domain: string | null, ids: string[]): Promise<void> {
+export async function articlesBulkDelete(
+    domain: string | null,
+    ids: string[],
+): Promise<void> {
     return a.bulkDelete(domain, ids);
 }
-export async function articlesBulkPublish(domain: string | null, ids: string[]): Promise<void> {
+export async function articlesBulkPublish(
+    domain: string | null,
+    ids: string[],
+): Promise<void> {
     return a.bulkPublish(domain, ids);
 }
-export async function articlesRestoreVersion(domain: string | null, id: string, versionId: string): Promise<void> {
+export async function articlesRestoreVersion(
+    domain: string | null,
+    id: string,
+    versionId: string,
+): Promise<void> {
     return a.restoreVersion(domain, id, versionId);
 }

@@ -1,4 +1,5 @@
 import type { Field } from 'payload';
+import { imageField } from './image';
 import { linkField } from './link';
 
 export type NavItemFieldOptions = {
@@ -10,6 +11,9 @@ const buildNavItems = (remaining: number): Extract<Field, { type: 'array' }> => 
     type: 'array',
     fields: [
         linkField({ name: 'link', localized: true }),
+        imageField({ name: 'image', localized: true }),
+        { name: 'description', type: 'textarea', localized: true },
+        { name: 'backgroundColor', type: 'text' },
         ...(remaining > 1 ? [buildNavItems(remaining - 1) as Field] : []),
     ],
 });

@@ -478,14 +478,14 @@ export interface BannerBlock {
   heading: string;
   subheading?: string | null;
   background?: (string | null) | Media;
-  cta: {
-    kind: 'page' | 'article' | 'product' | 'collection' | 'external' | 'anchor';
+  cta?: {
+    kind?: ('page' | 'article' | 'product' | 'collection' | 'external' | 'anchor') | null;
     page?: (string | null) | Page;
     article?: (string | null) | Article;
     product?: (string | null) | ProductMetadatum;
     collectionRef?: (string | null) | CollectionMetadatum;
     url?: string | null;
-    label: string;
+    label?: string | null;
     openInNewTab?: boolean | null;
   };
   alignment?: ('left' | 'center' | 'right') | null;
@@ -623,14 +623,14 @@ export interface MediaGridBlock {
     | {
         image?: (string | null) | Media;
         caption?: string | null;
-        link: {
-          kind: 'page' | 'article' | 'product' | 'collection' | 'external' | 'anchor';
+        link?: {
+          kind?: ('page' | 'article' | 'product' | 'collection' | 'external' | 'anchor') | null;
           page?: (string | null) | Page;
           article?: (string | null) | Article;
           product?: (string | null) | ProductMetadatum;
           collectionRef?: (string | null) | CollectionMetadatum;
           url?: string | null;
-          label: string;
+          label?: string | null;
           openInNewTab?: boolean | null;
         };
         id?: string | null;
@@ -760,40 +760,49 @@ export interface Header {
   logoLink?: string | null;
   items?:
     | {
-        link: {
-          kind: 'page' | 'article' | 'product' | 'collection' | 'external' | 'anchor';
+        link?: {
+          kind?: ('page' | 'article' | 'product' | 'collection' | 'external' | 'anchor') | null;
           page?: (string | null) | Page;
           article?: (string | null) | Article;
           product?: (string | null) | ProductMetadatum;
           collectionRef?: (string | null) | CollectionMetadatum;
           url?: string | null;
-          label: string;
+          label?: string | null;
           openInNewTab?: boolean | null;
         };
+        image?: (string | null) | Media;
+        description?: string | null;
+        backgroundColor?: string | null;
         items?:
           | {
-              link: {
-                kind: 'page' | 'article' | 'product' | 'collection' | 'external' | 'anchor';
+              link?: {
+                kind?: ('page' | 'article' | 'product' | 'collection' | 'external' | 'anchor') | null;
                 page?: (string | null) | Page;
                 article?: (string | null) | Article;
                 product?: (string | null) | ProductMetadatum;
                 collectionRef?: (string | null) | CollectionMetadatum;
                 url?: string | null;
-                label: string;
+                label?: string | null;
                 openInNewTab?: boolean | null;
               };
+              image?: (string | null) | Media;
+              description?: string | null;
+              backgroundColor?: string | null;
               items?:
                 | {
-                    link: {
-                      kind: 'page' | 'article' | 'product' | 'collection' | 'external' | 'anchor';
+                    link?: {
+                      kind?: ('page' | 'article' | 'product' | 'collection' | 'external' | 'anchor') | null;
                       page?: (string | null) | Page;
                       article?: (string | null) | Article;
                       product?: (string | null) | ProductMetadatum;
                       collectionRef?: (string | null) | CollectionMetadatum;
                       url?: string | null;
-                      label: string;
+                      label?: string | null;
                       openInNewTab?: boolean | null;
                     };
+                    image?: (string | null) | Media;
+                    description?: string | null;
+                    backgroundColor?: string | null;
                     id?: string | null;
                   }[]
                 | null;
@@ -807,14 +816,14 @@ export interface Header {
     enabled?: boolean | null;
     label?: string | null;
   };
-  cta: {
-    kind: 'page' | 'article' | 'product' | 'collection' | 'external' | 'anchor';
+  cta?: {
+    kind?: ('page' | 'article' | 'product' | 'collection' | 'external' | 'anchor') | null;
     page?: (string | null) | Page;
     article?: (string | null) | Article;
     product?: (string | null) | ProductMetadatum;
     collectionRef?: (string | null) | CollectionMetadatum;
     url?: string | null;
-    label: string;
+    label?: string | null;
     openInNewTab?: boolean | null;
   };
   updatedAt: string;
@@ -833,14 +842,14 @@ export interface Footer {
         title: string;
         links?:
           | {
-              link: {
-                kind: 'page' | 'article' | 'product' | 'collection' | 'external' | 'anchor';
+              link?: {
+                kind?: ('page' | 'article' | 'product' | 'collection' | 'external' | 'anchor') | null;
                 page?: (string | null) | Page;
                 article?: (string | null) | Article;
                 product?: (string | null) | ProductMetadatum;
                 collectionRef?: (string | null) | CollectionMetadatum;
                 url?: string | null;
-                label: string;
+                label?: string | null;
                 openInNewTab?: boolean | null;
               };
               id?: string | null;
@@ -858,14 +867,14 @@ export interface Footer {
     | null;
   legal?:
     | {
-        link: {
-          kind: 'page' | 'article' | 'product' | 'collection' | 'external' | 'anchor';
+        link?: {
+          kind?: ('page' | 'article' | 'product' | 'collection' | 'external' | 'anchor') | null;
           page?: (string | null) | Page;
           article?: (string | null) | Article;
           product?: (string | null) | ProductMetadatum;
           collectionRef?: (string | null) | CollectionMetadatum;
           url?: string | null;
-          label: string;
+          label?: string | null;
           openInNewTab?: boolean | null;
         };
         id?: string | null;
@@ -1569,6 +1578,9 @@ export interface HeaderSelect<T extends boolean = true> {
               label?: T;
               openInNewTab?: T;
             };
+        image?: T;
+        description?: T;
+        backgroundColor?: T;
         items?:
           | T
           | {
@@ -1584,6 +1596,9 @@ export interface HeaderSelect<T extends boolean = true> {
                     label?: T;
                     openInNewTab?: T;
                   };
+              image?: T;
+              description?: T;
+              backgroundColor?: T;
               items?:
                 | T
                 | {
@@ -1599,6 +1614,9 @@ export interface HeaderSelect<T extends boolean = true> {
                           label?: T;
                           openInNewTab?: T;
                         };
+                    image?: T;
+                    description?: T;
+                    backgroundColor?: T;
                     id?: T;
                   };
               id?: T;
