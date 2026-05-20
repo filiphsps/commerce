@@ -11,6 +11,9 @@ export function mockShop({ overrides }: { overrides?: DeepPartial<OnlineShop> } 
             domain: 'mock.shop' as const,
         },
         design: {
+            header: {
+                logo: { src: '', alt: 'Mock logo', width: 125, height: 50 },
+            },
             accents: [
                 { type: 'primary', color: '#00ff00', foreground: '#000000' },
                 { type: 'secondary', color: '#0000ff', foreground: '#ffffff' },
