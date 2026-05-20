@@ -26,7 +26,7 @@
         ]
     },
     "scripts": {
-        "build": "tsc && vite build",
+        "build": "pnpm icons:gen && tsc && vite build",
         "generate": "pnpm icons:gen",
         "icons:gen": "tsx scripts/generate.ts",
         "clean": "rimraf -g dist coverage .turbo src/generated *.tsbuildinfo *.log node_modules",
