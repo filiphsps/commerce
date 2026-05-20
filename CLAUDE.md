@@ -107,6 +107,19 @@ Payload is mounted inside `apps/admin` under `(payload)`. The storefront consume
 
 Per-tenant, per-entity cache tags. Shopify webhooks call `revalidateTag` via `@tagtree/shopify` (HMAC-verified — needs `SHOPIFY_WEBHOOK_SECRET`); Payload `afterChange`/`afterDelete` hooks call it via `@tagtree/payload`.
 
+### Admin shell
+
+The admin's `[domain]/layout.tsx` (`apps/admin/src/app/(app)/(dashboard)/[domain]/layout.tsx`) is a single CSS grid (`grid-template-rows: 56px 1fr`) wrapping a horizontal `react-resizable-panels` `<PanelGroup>`. Four optional panes from left to right: icon rail, sub-nav, content, inspector.
+
+- **Sub-nav** for a section lives in `[domain]/@subnav/<section>/default.tsx` (a parallel route slot). The slot returns null elsewhere; the shell collapses the pane when empty.
+- **Inspector** lives in `[domain]/@inspector/<route>/default.tsx`. Same pattern.
+- Pages render their own `<PageHeader title=… breadcrumbs=… actions=… />` and optional `<PageFooter>…</PageFooter>`. The shell-owned `<ContentScrollRegion>` provides the sticky behavior; pages do not manage scroll math.
+- Pane widths persist via the `nc-admin-shell` cookie (Zod schema in `apps/admin/src/components/shell/shell-state.ts`).
+
+To add a section with a sub-nav: create `[domain]/<section>/layout.tsx` if you need section-scoped wrapping, then create `[domain]/@subnav/<section>/default.tsx` listing the section's `<NavItem>`s.
+
+To opt a route into an inspector: create `[domain]/@inspector/<path-to-route>/default.tsx`.
+
 ## Coding conventions
 
 Lint and formatting rules are defined in `biome.json` — read it for the source of truth. `pnpm format:check` rewrites mismatches (including unsafe fixes like Tailwind class sorting).
