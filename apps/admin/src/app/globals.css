@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
 @import "@nordcom/nordstar";
 
@@ -143,6 +144,12 @@
         left: 0;
         width: 100%;
         height: var(--block-spacer);
+    }
+
+    a,
+    button,
+    [role="button"] {
+        cursor: pointer;
     }
 }
 
@@ -501,7 +508,7 @@
     /* Block and array rows nest another layer of fields. Default cascade
      * lets a wide field (e.g. Lexical, columns block) blow out the row.
      * Containing horizontal overflow at the row level keeps the page-level
-     * scroll quiet on narrow viewports. */
+     * scroll quiet on narrow viewport:s. */
     .blocks-field__row,
     .array-field__row {
         min-width: 0;
@@ -510,7 +517,8 @@
 
     .field-type.text input,
     .field-type.textarea textarea,
-    .field-type.number input {
-        @apply rounded-sm;
+    .field-type.number input,
+    .field-type.select .react-select {
+        @apply overflow-hidden rounded-md;
     }
 }

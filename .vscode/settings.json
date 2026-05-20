@@ -16,6 +16,11 @@
     "[plaintext]": {
         "editor.formatOnSave": false
     },
+    "[tailwindcss]": {
+        "editor.quickSuggestions": {
+            "strings": "on"
+        }
+    },
     "[typescript]": {
         "editor.defaultFormatter": "biomejs.biome"
     },
@@ -111,7 +116,8 @@
         "virtuals",
         "wakatime",
         "webp",
-        "Woohoo"
+        "Woohoo",
+        "wordmark"
     ],
     "editor.codeActionsOnSave": {
         "source.fixAll.biome": "explicit",
@@ -128,6 +134,7 @@
     "editor.wordWrapColumn": 120,
     "files.associations": {
         ".renovaterc": "json",
+        "*.css": "tailwindcss",
         "**/*.hbs": "plaintext",
         "LICENSE": "plaintext"
     },
@@ -146,7 +153,6 @@
     },
     "files.trimFinalNewlines": false,
     "files.trimTrailingWhitespace": true,
-    "git-graph.graph.colours": ["#ED1E79", "#EDD382", "#274690"],
     "git.autofetch": "all",
     "git.autofetchPeriod": 30,
     "git.countBadge": "tracked",
@@ -167,18 +173,7 @@
     "js/ts.inlayHints.variableTypes.enabled": true,
     "js/ts.locale": "en",
     "js/ts.tsdk.path": "./node_modules/typescript/lib",
-    "js/ts.updateImportsOnFileMove.enabled": "always",
-    "markdownlint.config": {
-        "list-indent": true,
-        "list-marker-space": {
-            "ol_multi": 1,
-            "ol_single": 1,
-            "ul_multi": 3,
-            "ul_single": 3
-        },
-        "no-inline-html": false,
-        "single-title": false
-    },
+    "js/ts.updateImportsOnFileMove.enabled": "prompt",
     "npm.packageManager": "pnpm",
     "npm.scriptRunner": "pnpm",
     "tailwindCSS.classAttributes": ["class", "className", ".*ClassName", ".*Styles"],
@@ -189,16 +184,20 @@
         "[a-zA-Z]*ClassName={`([^`]+)`}",
         ["Styles\\s*=\\s*([^;]*);", "'([^']*)'"],
         ["Styles\\s*=\\s*([^;]*);", "\"([^\"]*)\""],
-        ["Styles\\s*=\\s*([^;]*);", "\\`([^\\`]*)\\`"]
+        ["Styles\\s*=\\s*([^;]*);", "\\`([^\\`]*)\\`"],
+        ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+        ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
     ],
-    "tailwindCSS.includeLanguages": {
-        "css": "css",
-        "html": "html",
-        "javascript": "javascript"
+    "tailwindCSS.experimental.configFile": {
+        "apps/admin/src/app/globals.css": "apps/admin/**",
+        "apps/docs/app/globals.css": "apps/docs/**",
+        "apps/landing/src/app/globals.css": "apps/landing/**",
+        "apps/storefront/src/app/globals.css": "apps/storefront/**"
     },
+    "tailwindCSS.lint.cssConflict": "error",
     "tailwindCSS.lint.invalidVariant": "warning",
     "typescript.native-preview.goMemLimit": "2048MiB",
     "vitest.rootConfig": "./vitest.config.ts",
-    "vitest.workspaceConfig": "./vitest.workspace.ts",
-    "vitest.showImportsDuration": true
+    "vitest.showImportsDuration": false,
+    "vitest.workspaceConfig": "./vitest.workspace.ts"
 }

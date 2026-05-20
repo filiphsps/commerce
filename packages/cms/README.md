@@ -37,17 +37,6 @@ This package is a workspace package — consume it via `workspace:*`:
     "dependencies": {
         "@nordcom/commerce-cms": "workspace:*"
     },
-    "peerDependencies": {
-        "@payloadcms/db-mongodb": "3.84.0",
-        "@payloadcms/next": "3.84.0",
-        "@payloadcms/plugin-multi-tenant": "3.84.0",
-        "@payloadcms/richtext-lexical": "3.84.0",
-        "@payloadcms/storage-s3": "3.84.0",
-        "next": "16.2.6",
-        "payload": "3.84.0",
-        "react": "19.2.0",
-        "react-dom": "19.2.0"
-    }
 }
 ```
 
