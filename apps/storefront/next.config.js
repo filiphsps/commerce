@@ -39,23 +39,28 @@ const config = {
     },
     experimental: {
         appNavFailHandling: true,
+        appNewScrollHandler: true,
+        authInterrupts: true,
         cssChunking: true,
+        dynamicOnHover: true,
         esmExternals: true,
-        proxyPrefetch: 'strict',
+        mcpServer: isDev,
         optimizeCss: true,
         optimizePackageImports: ['@apollo/client', '@shopify/hydrogen-react', '@nordcom/nordstar'],
         optimizeServerReact: true,
-        parallelServerBuildTraces: true,
-        parallelServerCompiles: true,
+        partialFallbacks: true,
         prerenderEarlyExit: true,
+        proxyPrefetch: 'strict',
+        rootParams: true,
         scrollRestoration: true,
-        serverComponentsHmrCache: true,
+        serverComponentsHmrCache: isDev,
         serverSourceMaps: true,
         staleTimes: { dynamic: 0, static: 180 },
         taint: true,
+        turbopackFileSystemCacheForDev: true,
+        turbopackServerFastRefresh: true,
         typedEnv: true,
-        webpackBuildWorker: true,
-        rootParams: true,
+        webpackBuildWorker: false,
     },
     images: {
         unoptimized: true, // FIXME: We should optimize images.
@@ -121,29 +126,6 @@ const config = {
         }
 
         return gitSHA;
-    },
-
-    webpack: (config, { webpack, isServer }) => {
-        config.experiments = {
-            ...config.experiments,
-            topLevelAwait: true,
-        };
-
-        if (isDev) {
-            return config; // Return early in dev mode.
-        }
-
-        config.plugins.push(
-            new webpack.DefinePlugin({
-                __RRWEB_EXCLUDE_IFRAME__: true,
-                __RRWEB_EXCLUDE_SHADOW_DOM__: true,
-            }),
-        );
-
-        if (isServer) {
-            config.devtool = 'source-map';
-        }
-        return config;
     },
 
     // We handle all redirects at the edge.
