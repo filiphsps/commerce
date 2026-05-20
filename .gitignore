@@ -31,6 +31,12 @@ docs/superpowers/
 /.worktrees/
 .superpowers/
 
+# apps/docs generated artifacts
+apps/docs/.typedoc-out/
+apps/docs/app/docs/(generated)/
+apps/docs/public/_pagefind/
+apps/docs/.docusaurus/
+
 # debug
 npm-debug.log*
 yarn-debug.log*
