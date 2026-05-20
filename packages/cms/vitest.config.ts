@@ -11,14 +11,22 @@ export default defineConfig({
         ],
     },
     test: {
-        bail: 1,
         deps: {
             optimizer: { client: { enabled: true }, ssr: { enabled: true } },
         },
         environment: 'node',
-        maxConcurrency: 16,
+        maxConcurrency: Infinity,
         passWithNoTests: true,
+        // Files run sequentially — concurrent Payload bootstraps over-saturate
+        // the local Mongo connection (10s `beforeAll` timeouts) and hammer
+        // Atlas free tiers with IX-lock conflicts. Speed gains come from
+        // skipping Payload boots entirely in tests that don't need it (see
+        // `media.test.ts`, `_globals/globals.test.ts`).
         fileParallelism: false,
+        // Within-file ordering is inherited from the root `sequence.concurrent:
+        // false` (i.e. tests run one-at-a-time). The setup file's `afterEach`
+        // (cleanup + `document.body.innerHTML = ''`) only buys isolation when
+        // tests don't interleave.
 
         typecheck: {
             tsconfig: './tsconfig.test.json',
@@ -41,7 +49,7 @@ export default defineConfig({
                 '**/*.d.*',
                 '**/*.test.*',
                 '**/utils/test/**/*.*',
-                '**/src/**/index.*',
+                'src/**/index.*',
                 '**/src/**/config/*.*',
                 '**/src/test-utils/**/*.*',
                 '**/src/types/payload-types.ts',

@@ -2,8 +2,9 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
 
-const reporters = ['verbose', 'junit'];
-const extraReporters = !process.env.GITHUB_ACTIONS ? [] : ['github-actions'];
+const reporters = ['verbose'];
+const githubReporters = !process.env.GITHUB_ACTIONS ? [] : ['github-actions'];
+const ciReporters = !process.env.CI ? [] : ['junit'];
 const exclude = [
     '**/.next/**/*.*',
     '**/.turbo/**/*.*',
@@ -12,8 +13,9 @@ const exclude = [
     '**/coverage/**/*.*',
     '**/dist/**/*.*',
     '**/instrumentation.ts',
-    '**/next.config.js',
+    '**/next.config.*',
     '**/node_modules/**/*.*',
+    '**/src/generated/**/*.*',
     '**/tailwind.config.js',
     '**/vite.*.ts',
     '**/vitest.*.ts',
@@ -30,13 +32,22 @@ export default defineConfig({
     root: resolve(__dirname),
     envDir: resolve(__dirname),
     test: {
-        bail: 1,
+        bail: undefined,
         environment: 'node',
         exclude,
-        maxConcurrency: 16,
+        maxConcurrency: Infinity,
+        // Tests within a single file run SEQUENTIALLY by default. Opt-in to
+        // intra-file parallelism per-file with `describe.concurrent` or per-test
+        // with `it.concurrent`. Many of our suites mutate shared state (DOM via
+        // `@testing-library/react`'s `render`, hoisted `vi.fn()` mocks shared
+        // across `it`s) that breaks under concurrent execution. Cross-file
+        // parallelism is still on (each project's `fileParallelism: true`).
+        sequence: {
+            concurrent: false,
+        },
         passWithNoTests: true,
         silent: false,
-        reporters: [...reporters, ...extraReporters],
+        reporters: [...reporters, ...githubReporters, ...ciReporters],
         outputFile: {
             junit: './junit.xml',
         },

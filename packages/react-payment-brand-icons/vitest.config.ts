@@ -15,29 +15,35 @@ export default defineConfig({
     },
     test: {
         name: 'react-payment-brand-icons',
-        bail: 1,
         deps: {
             optimizer: { client: { enabled: true }, ssr: { enabled: true } },
         },
         environment: 'jsdom',
-        maxConcurrency: 16,
+        maxConcurrency: Infinity,
         passWithNoTests: true,
         typecheck: {
             tsconfig: './tsconfig.test.json',
         },
         setupFiles: ['vitest.setup.ts'],
         reporters: ['verbose'],
-        exclude: ['**/*.d.ts', '**/*.stories.*', '**/dist/**/', '**/node_modules/**/*.*', '**/utils/test/**/*.*'],
+        exclude: [
+            '**/*.d.ts',
+            '**/*.stories.*',
+            '**/dist/**/',
+            '**/node_modules/**/*.*',
+            '**/utils/test/**/*.*',
+            '**/generated/**/*.*',
+        ],
         globals: true,
         coverage: {
-            include: ['**/src/**/*.{ts,tsx}', '**/scripts/**/*.ts'],
+            include: ['src/**/*.{ts,tsx}', 'scripts/**/*.ts'],
             exclude: [
                 '__tests__/*.*',
                 '**/__tests__/**/*.*',
                 '**/*.d.*',
                 '**/*.test.*',
-                '**/src/**/index.*',
-                '**/src/generated/**/*.*',
+                'src/**/index.*',
+                '**/generated/**/*.*',
             ],
             thresholds: {
                 lines: 85,

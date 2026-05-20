@@ -3,7 +3,7 @@
     "extends": "./tsconfig.json",
     "compilerOptions": {
         "types": ["node", "vitest/globals", "happy-dom"],
-        "jsx": "react-jsx",
+        "jsx": "preserve",
         "composite": true,
         "noEmit": true
     },

@@ -11,12 +11,11 @@ export default defineConfig({
         ],
     },
     test: {
-        bail: 1,
         deps: {
             optimizer: { client: { enabled: true }, ssr: { enabled: true } },
         },
         environment: 'node',
-        maxConcurrency: 16,
+        maxConcurrency: Infinity,
         passWithNoTests: true,
 
         typecheck: {
@@ -47,7 +46,7 @@ export default defineConfig({
                 '**/*.d.*',
                 '**/*.test.*',
                 '**/utils/test/**/*.*',
-                '**/src/**/index.*',
+                'src/**/index.*',
                 '**/src/**/config/*.*',
                 './src/index.ts',
             ],
