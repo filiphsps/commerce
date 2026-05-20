@@ -10,6 +10,7 @@ const exclude = [
     '**/.turbo/**/*.*',
     '**/*.d.ts',
     '**/*.json',
+    '**/*.scss',
     '**/coverage/**/*.*',
     '**/dist/**/*.*',
     '**/instrumentation.ts',
