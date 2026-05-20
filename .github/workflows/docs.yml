@@ -72,7 +72,6 @@ jobs:
 
     e2e:
         name: 🧪 E2E
-        needs: build
         runs-on: ubuntu-latest
         timeout-minutes: 15
         steps:
@@ -82,14 +81,18 @@ jobs:
             - name: 🚀 Bootstrap
               uses: ./.github/common/bootstrap
 
-            - name: 📥 Download built site
-              uses: actions/download-artifact@v8
-              with:
-                  name: docs-build
-                  path: apps/docs/out
-
             - name: 🎭 Install Playwright browsers
               run: pnpm --filter @nordcom/commerce-docs exec playwright install --with-deps chromium webkit
+
+            # The build job uploads a basePath=/commerce artifact for GitHub
+            # Pages, but `serve` cannot host that under a /commerce/ prefix
+            # cleanly (cleanUrls interferes with deeply-nested paths). For e2e
+            # we rebuild without basePath — cheaper and more reliable than
+            # post-processing the deploy artifact.
+            - name: 🔨 Rebuild Docs for e2e (no basePath)
+              run: pnpm run build:packages && pnpm --filter @nordcom/commerce-docs build
+              env:
+                  NEXT_PUBLIC_DOCS_CANONICAL_URL: http://localhost:3003
 
             - name: 🧪 Run Playwright tests against built site
               working-directory: apps/docs

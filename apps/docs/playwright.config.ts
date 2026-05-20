@@ -1,7 +1,9 @@
 import { defineConfig, devices } from '@playwright/test';
 
 const PORT = 3003;
-const BASE_URL = `http://localhost:${PORT}`;
+// Allow CI to override the baseURL when the build under test lives at a
+// non-root path (e.g. when validating a basePath-prefixed build).
+const BASE_URL = process.env.BASE_URL ?? `http://localhost:${PORT}`;
 
 export default defineConfig({
     testDir: './e2e',
