@@ -14,6 +14,7 @@ export default defineConfig({
         ],
     },
     test: {
+        name: 'react-payment-brand-icons',
         bail: 1,
         deps: {
             optimizer: { client: { enabled: true }, ssr: { enabled: true } },
