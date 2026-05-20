@@ -74,6 +74,7 @@ export enum ApiErrorKind {
     API_UNKNOWN_COMMERCE_PROVIDER = 'API_UNKNOWN_COMMERCE_PROVIDER',
     API_UNKNOWN_LOCALE = 'API_UNKNOWN_LOCALE',
     API_INVALID_SHOP = 'API_INVALID_SHOP',
+    API_INVALID_SHOP_DOMAIN = 'API_INVALID_SHOP_DOMAIN',
     API_INVALID_HANDLE = 'API_INVALID_HANDLE',
     API_INVALID_ID = 'API_INVALID_ID',
     API_INVALID_SLICE_VARIATION = 'API_INVALID_SLICE_VARIATION',
@@ -169,6 +170,23 @@ export class InvalidShopError extends ApiError {
     details = 'Invalid shop';
     description = 'The current shop is invalid';
     code = ApiErrorKind.API_INVALID_SHOP;
+}
+export class InvalidShopDomainError extends ApiError {
+    statusCode = 400;
+    name = 'InvalidShopDomainError';
+    details = 'Invalid shop';
+    description = 'The given domain is invalid';
+    code = ApiErrorKind.API_INVALID_SHOP_DOMAIN;
+
+    constructor(domain?: string, cause?: string, statusCode?: number) {
+        super(cause, statusCode);
+        if (domain) {
+            this.description = this.description.replace('given domain', `domain "${domain}"`);
+        }
+        if (statusCode !== undefined) {
+            this.statusCode = statusCode;
+        }
+    }
 }
 export class InvalidHandleError extends ApiError {
     statusCode = 404;
@@ -777,6 +795,8 @@ export const getErrorFromCode = (
             return UnknownLocaleError as unknown as typeof ApiError;
         case ApiErrorKind.API_INVALID_SHOP:
             return InvalidShopError;
+        case ApiErrorKind.API_INVALID_SHOP_DOMAIN:
+            return InvalidShopDomainError as unknown as typeof ApiError;
         case ApiErrorKind.API_INVALID_HANDLE:
             return InvalidHandleError as unknown as typeof ApiError;
         case ApiErrorKind.API_INVALID_ID:

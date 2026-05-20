@@ -1,4 +1,4 @@
-import { UnknownShopDomainError, UnknownShopIdError } from '@nordcom/commerce-errors';
+import { InvalidShopDomainError, UnknownShopDomainError, UnknownShopIdError } from '@nordcom/commerce-errors';
 
 import { docToOnlineShop, stripInternals } from '../lib/doc-to-shape';
 import type { OnlineShop, ShopBase } from '../models';
@@ -46,7 +46,12 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
         for (const path of populate) query = query.populate(path);
         const doc = await query.lean<ShopBase>().exec();
 
-        if (!doc) throw new UnknownShopDomainError(domain);
+        if (!doc) {
+            if (!domain) {
+                throw new InvalidShopDomainError(domain);
+            }
+            throw new UnknownShopDomainError(domain);
+        }
 
         if (!convert) return doc;
         if (sensitiveData) return stripInternals(doc as unknown as Record<string, unknown>) as unknown as OnlineShop;
