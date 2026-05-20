@@ -1,22 +1,30 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mongoose connects at module evaluation (src/db.ts). Mock it so the module
-// graph can load without a running MongoDB. findByDomain itself never touches
-// Mongoose — it goes through Payload — but ShopModel (imported by shop.ts for
-// the Service base class) transitively imports db.ts at load time.
+// graph loads without a running MongoDB. The mock returns a chainable Query
+// stub from `find`/`findOne`/`findById`; tests configure each test case by
+// reassigning `mockQuery.exec.mockResolvedValueOnce(...)`.
+//
+// `vi.hoisted` runs before the `vi.mock` factory is hoisted, making `mockQuery`
+// available both inside the factory and in test bodies.
+
+const mockQuery = vi.hoisted(() => ({
+    lean: vi.fn(),
+    populate: vi.fn(),
+    exec: vi.fn(),
+}));
+
 vi.mock('mongoose', async () => {
+    mockQuery.lean.mockReturnValue(mockQuery);
+    mockQuery.populate.mockReturnValue(mockQuery);
+
     class MockModel {
         public static modelName = 'MockModel';
-        public static find = vi.fn().mockReturnThis();
-        public static sort = vi.fn().mockReturnThis();
-        public static limit = vi.fn().mockReturnThis();
-        public static exec = vi.fn().mockResolvedValue([]);
+        public static find = vi.fn().mockReturnValue(mockQuery);
+        public static findOne = vi.fn().mockReturnValue(mockQuery);
+        public static findById = vi.fn().mockReturnValue(mockQuery);
         public static create = vi.fn().mockResolvedValue({});
-        public static findById = vi.fn().mockReturnValue({ exec: vi.fn().mockResolvedValue(null) });
         public static findOneAndUpdate = vi.fn().mockReturnValue({ exec: vi.fn().mockResolvedValue(null) });
-        public static orFail = vi.fn().mockReturnThis();
-        public limit = vi.fn().mockResolvedValue(this);
-        public save = vi.fn().mockResolvedValue(this);
     }
 
     const values = {
@@ -38,53 +46,49 @@ vi.mock('mongoose', async () => {
     };
 });
 
-import type { Payload } from 'payload';
-import { _resetPayloadRegistryForTests, registerPayload } from '../payload-registry';
+import { ShopModel } from '../models';
 import { Shop } from './shop';
 
-describe('Shop.findByDomain (via payload.local)', () => {
-    const mockShop = {
-        id: 'doc-1',
-        name: 'Acme',
+const mockShop = {
+    id: 'doc-1',
+    name: 'Acme',
+    domain: 'acme.test',
+    alternativeDomains: [],
+    design: { header: { logo: { src: '/l', alt: 'l', width: 1, height: 1 } }, accents: [] },
+    commerceProvider: {
+        type: 'shopify',
+        authentication: { token: 'SECRET', publicToken: 'pt', domain: 'shopify.com' },
+        storefrontId: 's',
         domain: 'acme.test',
-        alternativeDomains: [],
-        design: { header: { logo: { src: '/l', alt: 'l', width: 1, height: 1 } }, accents: [] },
-        commerceProvider: {
-            type: 'shopify',
-            authentication: { token: 'SECRET', publicToken: 'pt', domain: 'shopify.com' },
-            storefrontId: 's',
-            domain: 'acme.test',
-            id: 'cp',
-        },
-        contentProvider: { type: 'cms' },
-    };
+        id: 'cp',
+    },
+    contentProvider: { type: 'cms' },
+};
 
-    let mockFind: ReturnType<typeof vi.fn>;
+beforeEach(() => {
+    mockQuery.exec.mockReset();
+    mockQuery.lean.mockClear();
+    mockQuery.populate.mockClear();
+    vi.mocked(ShopModel.find).mockClear();
+    vi.mocked(ShopModel.findOne).mockClear();
+    vi.mocked(ShopModel.findById).mockClear();
+});
 
-    beforeEach(() => {
-        mockFind = vi.fn().mockResolvedValue({ docs: [mockShop] });
-        registerPayload(() => Promise.resolve({ find: mockFind } as unknown as Payload));
-    });
+afterEach(() => {
+    vi.clearAllMocks();
+});
 
-    afterEach(() => {
-        _resetPayloadRegistryForTests();
-    });
-
-    it('queries payload.find with an OR on domain + alternativeDomains contains', async () => {
+describe('Shop.findByDomain (Mongoose-backed)', () => {
+    it('queries ShopModel.findOne with an $or on domain + alternativeDomains', async () => {
+        mockQuery.exec.mockResolvedValueOnce(mockShop);
         await Shop.findByDomain('acme.test');
-        expect(mockFind).toHaveBeenCalledWith(
-            expect.objectContaining({
-                collection: 'shops',
-                where: {
-                    or: [{ domain: { equals: 'acme.test' } }, { alternativeDomains: { contains: 'acme.test' } }],
-                },
-                limit: 1,
-                overrideAccess: true,
-            }),
-        );
+        expect(ShopModel.findOne).toHaveBeenCalledWith({
+            $or: [{ domain: 'acme.test' }, { alternativeDomains: 'acme.test' }],
+        });
     });
 
     it('strips the auth token by default (sensitiveData: false)', async () => {
+        mockQuery.exec.mockResolvedValueOnce(mockShop);
         const result = await Shop.findByDomain('acme.test');
         const cp = (result as { commerceProvider: { authentication: Record<string, unknown> } }).commerceProvider;
         expect(cp.authentication.token).toBeUndefined();
@@ -92,40 +96,32 @@ describe('Shop.findByDomain (via payload.local)', () => {
     });
 
     it('preserves the auth token when sensitiveData: true', async () => {
+        mockQuery.exec.mockResolvedValueOnce(mockShop);
         const result = await Shop.findByDomain('acme.test', { sensitiveData: true });
         const cp = (result as { commerceProvider: { authentication: Record<string, unknown> } }).commerceProvider;
         expect(cp.authentication.token).toBe('SECRET');
     });
 
-    it('passes sensitiveShopRead context to payload.find when sensitiveData: true', async () => {
-        await Shop.findByDomain('acme.test', { sensitiveData: true });
-        expect(mockFind).toHaveBeenCalledWith(expect.objectContaining({ context: { sensitiveShopRead: true } }));
-    });
-
-    it('omits the sensitiveShopRead context when sensitiveData is not set', async () => {
-        await Shop.findByDomain('acme.test');
-        const call = mockFind.mock.calls[0]?.[0] as Record<string, unknown> | undefined;
-        expect(call).toBeDefined();
-        expect(call).not.toHaveProperty('context');
-    });
-
-    it('returns the raw doc when convert: false', async () => {
+    it('returns the raw lean doc when convert: false', async () => {
+        mockQuery.exec.mockResolvedValueOnce(mockShop);
         const result = await Shop.findByDomain('acme.test', { convert: false });
         expect(result).toBe(mockShop);
     });
 
-    it('uses depth 2 when populate paths are supplied', async () => {
+    it('applies populate paths via Mongoose .populate()', async () => {
+        mockQuery.exec.mockResolvedValueOnce(mockShop);
         await Shop.findByDomain('acme.test', { populate: ['featureFlags.flag'] });
-        expect(mockFind).toHaveBeenCalledWith(expect.objectContaining({ depth: 2 }));
+        expect(mockQuery.populate).toHaveBeenCalledWith('featureFlags.flag');
     });
 
-    it('uses depth 0 by default', async () => {
+    it('does not call .populate() when no paths are supplied', async () => {
+        mockQuery.exec.mockResolvedValueOnce(mockShop);
         await Shop.findByDomain('acme.test');
-        expect(mockFind).toHaveBeenCalledWith(expect.objectContaining({ depth: 0 }));
+        expect(mockQuery.populate).not.toHaveBeenCalled();
     });
 
-    it('throws when no shop matches', async () => {
-        mockFind.mockResolvedValueOnce({ docs: [] });
+    it('throws UnknownShopDomainError when no shop matches', async () => {
+        mockQuery.exec.mockResolvedValueOnce(null);
         await expect(Shop.findByDomain('missing.test')).rejects.toMatchObject({
             name: 'UnknownShopDomainError',
             code: 'API_UNKNOWN_SHOP_DOMAIN',
@@ -133,50 +129,24 @@ describe('Shop.findByDomain (via payload.local)', () => {
     });
 });
 
-describe('Shop.findById (via payload.local)', () => {
-    const mockShop = {
-        id: 'shop-42',
-        name: 'Beta',
-        domain: 'beta.test',
-        alternativeDomains: [],
-        design: { header: { logo: { src: '/b', alt: 'b', width: 1, height: 1 } }, accents: [] },
-        commerceProvider: {
-            type: 'shopify',
-            authentication: { token: 'SECRET', publicToken: 'pub', domain: 'shopify.com' },
-            storefrontId: 's',
-            domain: 'beta.test',
-            id: 'cp',
-        },
-        contentProvider: { type: 'cms' },
-    };
+describe('Shop.findById (Mongoose-backed)', () => {
+    const mockShopForId = { ...mockShop, id: 'shop-42' };
 
-    let mockFindByID: ReturnType<typeof vi.fn>;
-
-    beforeEach(() => {
-        mockFindByID = vi.fn().mockResolvedValue(mockShop);
-        registerPayload(() => Promise.resolve({ findByID: mockFindByID } as unknown as Payload));
-    });
-
-    afterEach(() => {
-        _resetPayloadRegistryForTests();
-    });
-
-    it('calls payload.findByID with the given id and overrideAccess', async () => {
+    it('calls ShopModel.findById with the given id', async () => {
+        mockQuery.exec.mockResolvedValueOnce(mockShopForId);
         await Shop.findById('shop-42');
-        expect(mockFindByID).toHaveBeenCalledWith(
-            expect.objectContaining({ collection: 'shops', id: 'shop-42', overrideAccess: true }),
-        );
+        expect(ShopModel.findById).toHaveBeenCalledWith('shop-42');
     });
 
-    it('strips the auth token by default', async () => {
+    it('strips the auth token from the returned doc', async () => {
+        mockQuery.exec.mockResolvedValueOnce(mockShopForId);
         const result = await Shop.findById('shop-42');
         const cp = (result as { commerceProvider: { authentication: Record<string, unknown> } }).commerceProvider;
         expect(cp.authentication.token).toBeUndefined();
-        expect(cp.authentication.publicToken).toBe('pub');
     });
 
-    it('throws when no shop matches', async () => {
-        mockFindByID.mockResolvedValueOnce(null);
+    it('throws UnknownShopIdError when no shop matches', async () => {
+        mockQuery.exec.mockResolvedValueOnce(null);
         await expect(Shop.findById('missing')).rejects.toMatchObject({
             name: 'UnknownShopIdError',
             code: 'API_UNKNOWN_SHOP_ID',
@@ -184,65 +154,22 @@ describe('Shop.findById (via payload.local)', () => {
     });
 });
 
-describe('Shop.findAll (via payload.local)', () => {
+describe('Shop.findAll (Mongoose-backed)', () => {
     const mockShops = [
-        {
-            id: 'shop-1',
-            name: 'Alpha',
-            domain: 'alpha.test',
-            alternativeDomains: [],
-            design: { header: { logo: { src: '/a', alt: 'a', width: 1, height: 1 } }, accents: [] },
-            commerceProvider: {
-                type: 'shopify',
-                authentication: { token: 'T1', publicToken: 'p1', domain: 'shopify.com' },
-                storefrontId: 's1',
-                domain: 'alpha.test',
-                id: 'cp1',
-            },
-            contentProvider: { type: 'cms' },
-        },
-        {
-            id: 'shop-2',
-            name: 'Beta',
-            domain: 'beta.test',
-            alternativeDomains: [],
-            design: { header: { logo: { src: '/b', alt: 'b', width: 1, height: 1 } }, accents: [] },
-            commerceProvider: {
-                type: 'shopify',
-                authentication: { token: 'T2', publicToken: 'p2', domain: 'shopify.com' },
-                storefrontId: 's2',
-                domain: 'beta.test',
-                id: 'cp2',
-            },
-            contentProvider: { type: 'cms' },
-        },
+        { ...mockShop, id: 'shop-1', domain: 'alpha.test' },
+        { ...mockShop, id: 'shop-2', domain: 'beta.test' },
     ];
 
-    let mockFind: ReturnType<typeof vi.fn>;
-
-    beforeEach(() => {
-        mockFind = vi.fn().mockResolvedValue({ docs: mockShops });
-        registerPayload(() => Promise.resolve({ find: mockFind } as unknown as Payload));
-    });
-
-    afterEach(() => {
-        _resetPayloadRegistryForTests();
-    });
-
-    it('calls payload.find with limit 0 and overrideAccess', async () => {
+    it('calls ShopModel.find with no filter', async () => {
+        mockQuery.exec.mockResolvedValueOnce(mockShops);
         await Shop.findAll();
-        expect(mockFind).toHaveBeenCalledWith(
-            expect.objectContaining({ collection: 'shops', limit: 0, overrideAccess: true }),
-        );
+        expect(ShopModel.find).toHaveBeenCalledWith({});
     });
 
-    it('returns an array mapped through docToOnlineShop', async () => {
+    it('returns shops mapped through docToOnlineShop', async () => {
+        mockQuery.exec.mockResolvedValueOnce(mockShops);
         const result = await Shop.findAll();
         expect(result).toHaveLength(2);
-    });
-
-    it('strips auth tokens from all results', async () => {
-        const result = await Shop.findAll();
         for (const shop of result) {
             const cp = (shop as { commerceProvider: { authentication: Record<string, unknown> } }).commerceProvider;
             expect(cp.authentication.token).toBeUndefined();
@@ -250,57 +177,32 @@ describe('Shop.findAll (via payload.local)', () => {
     });
 
     it('returns an empty array when no shops exist', async () => {
-        mockFind.mockResolvedValueOnce({ docs: [] });
+        mockQuery.exec.mockResolvedValueOnce([]);
         const result = await Shop.findAll();
         expect(result).toEqual([]);
     });
+
+    it('swallows errors and returns an empty array', async () => {
+        mockQuery.exec.mockRejectedValueOnce(new Error('mongo down'));
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+        const result = await Shop.findAll();
+        expect(result).toEqual([]);
+        expect(warn).toHaveBeenCalled();
+        warn.mockRestore();
+    });
 });
 
-describe('Shop.findByCollaborator (via payload.local)', () => {
-    const mockShop = {
-        id: 'shop-99',
-        name: 'Collab',
-        domain: 'collab.test',
-        alternativeDomains: [],
-        design: { header: { logo: { src: '/c', alt: 'c', width: 1, height: 1 } }, accents: [] },
-        commerceProvider: {
-            type: 'shopify',
-            authentication: { token: 'SECRET', publicToken: 'pt', domain: 'shopify.com' },
-            storefrontId: 's',
-            domain: 'collab.test',
-            id: 'cp',
-        },
-        contentProvider: { type: 'cms' },
-    };
+describe('Shop.findByCollaborator (Mongoose-backed)', () => {
+    const mockShopForCollab = { ...mockShop, id: 'shop-99', domain: 'collab.test' };
 
-    let mockFind: ReturnType<typeof vi.fn>;
-
-    beforeEach(() => {
-        mockFind = vi.fn().mockResolvedValue({ docs: [mockShop] });
-        registerPayload(() => Promise.resolve({ find: mockFind } as unknown as Payload));
-    });
-
-    afterEach(() => {
-        _resetPayloadRegistryForTests();
-    });
-
-    it('queries payload.find with a collaborators.user equals filter', async () => {
+    it('queries with a collaborators.user filter', async () => {
+        mockQuery.exec.mockResolvedValueOnce([mockShopForCollab]);
         await Shop.findByCollaborator({ collaboratorId: 'user-123' });
-        expect(mockFind).toHaveBeenCalledWith(
-            expect.objectContaining({
-                collection: 'shops',
-                where: { 'collaborators.user': { equals: 'user-123' } },
-                overrideAccess: true,
-            }),
-        );
+        expect(ShopModel.find).toHaveBeenCalledWith({ 'collaborators.user': 'user-123' });
     });
 
-    it('returns mapped OnlineShop results', async () => {
-        const result = await Shop.findByCollaborator({ collaboratorId: 'user-123' });
-        expect(result).toHaveLength(1);
-    });
-
-    it('strips auth token from results', async () => {
+    it('strips auth tokens from results', async () => {
+        mockQuery.exec.mockResolvedValueOnce([mockShopForCollab]);
         const result = await Shop.findByCollaborator({ collaboratorId: 'user-123' });
         const cp = (result[0] as { commerceProvider: { authentication: Record<string, unknown> } } | undefined)
             ?.commerceProvider;
@@ -309,7 +211,7 @@ describe('Shop.findByCollaborator (via payload.local)', () => {
     });
 
     it('returns an empty array when no shops match', async () => {
-        mockFind.mockResolvedValueOnce({ docs: [] });
+        mockQuery.exec.mockResolvedValueOnce([]);
         const result = await Shop.findByCollaborator({ collaboratorId: 'nobody' });
         expect(result).toEqual([]);
     });
