@@ -54,6 +54,7 @@
         "@nordcom/commerce-db": "workspace:*",
         "@nordcom/commerce-errors": "workspace:*",
         "@nordcom/commerce-marketing-common": "workspace:*",
+        "@nordcom/commerce-utils": "workspace:*",
         "@nordcom/nordstar": "0.0.75",
         "@opentelemetry/api-logs": "0.217.0",
         "@opentelemetry/instrumentation": "0.217.0",
