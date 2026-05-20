@@ -11,6 +11,34 @@ const GENERATED_ROOT = path.join(DOCS_APP, 'app/docs/(generated)');
 const SKIP_DIRS = new Set(['node_modules', 'dist', 'build', '.turbo', '.next', 'coverage', 'docs', 'src', 'api']);
 const WATCH = process.argv.includes('--watch');
 
+/**
+ * Per-workspace exclude patterns (relative to the workspace's `docs/` dir, no
+ * file extension). Use `<dir>/**` to exclude everything under a directory.
+ *
+ * Why: customer-facing error pages under apps/landing/docs/errors/ use Markdoc
+ * syntax for the customer-facing site; Nextra's acorn-based MDX parser fails
+ * on them. Keep them out of this site.
+ */
+const WORKSPACE_EXCLUDES = {
+    landing: ['errors/**'],
+};
+
+function matchGlob(pattern, str) {
+    // Simple `**` glob: only prefix matching is needed for now (`errors/**`
+    // matches anything under `errors/`).
+    if (pattern.endsWith('/**')) {
+        const prefix = pattern.slice(0, -3);
+        return str === prefix || str.startsWith(`${prefix}/`);
+    }
+    return pattern === str;
+}
+
+function isExcluded(slug, relPath) {
+    const patterns = WORKSPACE_EXCLUDES[slug];
+    if (!patterns) return false;
+    return patterns.some((p) => matchGlob(p, relPath));
+}
+
 function discoverWorkspaces() {
     const out = [];
     for (const parent of ['apps', 'packages']) {
@@ -68,6 +96,7 @@ function mirrorWorkspace(ws) {
     for (const src of walkDocs(ws.docsPath)) {
         const relFromDocs = path.relative(ws.docsPath, src);
         const withoutExt = relFromDocs.replace(/\.(mdx|md)$/, '');
+        if (isExcluded(ws.slug, withoutExt)) continue;
         const dest = path.join(GENERATED_ROOT, ws.slug, withoutExt, 'page.mdx');
         mirrorFile(src, dest);
         linked++;

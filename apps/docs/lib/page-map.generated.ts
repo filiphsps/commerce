@@ -10,20 +10,7 @@ export type PageMapEntry = {
 
 export const pageMap: PageMapEntry[] = [
     { slug: 'admin', type: 'app', pages: ['overview'], sourceWorkspacePath: 'apps/admin' },
-    {
-        slug: 'landing',
-        type: 'app',
-        pages: [
-            'errors/API_METHOD_NOT_ALLOWED',
-            'errors/API_UNKNOWN_ERROR',
-            'errors/API_UNKNOWN_LOCALE',
-            'errors/GENERIC_TODO',
-            'errors/NOT_FOUND',
-            'errors/UNREACHABLE',
-            'overview',
-        ],
-        sourceWorkspacePath: 'apps/landing',
-    },
+    { slug: 'landing', type: 'app', pages: ['overview'], sourceWorkspacePath: 'apps/landing' },
     {
         slug: 'storefront',
         type: 'app',
@@ -42,10 +29,9 @@ export const pageMap: PageMapEntry[] = [
             'collections',
             'config',
             'editor',
-            'editor-adding-a-collection',
-            'editor-manifests',
-            'editor-overview',
+            'editor/adding-a-collection',
             'editor/manifests',
+            'editor/overview',
             'editor/ui',
             'fields',
             'index',
