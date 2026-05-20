@@ -6,7 +6,7 @@ describe('resolveDocsEnv', () => {
     it('defaults to empty values in dev', () => {
         const env = resolveDocsEnv({ NODE_ENV: 'development' });
         expect(env.basePath).toBe('');
-        expect(env.canonicalUrl).toBe('http://localhost:3002');
+        expect(env.canonicalUrl).toBe('https://docs.localhost');
     });
 
     it('reads NEXT_PUBLIC_DOCS_BASE_PATH and ensures leading slash', () => {

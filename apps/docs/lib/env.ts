@@ -9,7 +9,7 @@ export type DocsEnv = {
     isProduction: boolean;
 };
 
-const DEV_DEFAULT_CANONICAL = 'http://localhost:3002';
+const DEV_DEFAULT_CANONICAL = 'https://docs.localhost';
 
 export function resolveDocsEnv(env: Record<string, string | undefined> = process.env): DocsEnv {
     const isProduction = env.NODE_ENV === 'production';

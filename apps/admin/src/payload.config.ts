@@ -24,7 +24,7 @@ const MONGODB_URI = process.env.MONGODB_URI;
 if (!PAYLOAD_SECRET) throw new MissingEnvironmentVariableError('PAYLOAD_SECRET');
 if (!MONGODB_URI) throw new MissingEnvironmentVariableError('MONGODB_URI');
 
-const storefrontBaseUrl = process.env.STOREFRONT_BASE_URL ?? 'http://localhost:1337';
+const storefrontBaseUrl = process.env.STOREFRONT_BASE_URL ?? 'https://storefront.localhost';
 
 export const buildLivePreviewUrl = ({
     tenantId,

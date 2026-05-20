@@ -1,6 +1,6 @@
 // Resolves the hostnames used by the admin dashboard and the marketing/landing site.
-// Both are configured via env vars and fall back to the local dev ports declared in
-// CLAUDE.md (admin: 3000, landing: 3001), so the app still boots when the vars are
+// Both are configured via env vars and fall back to the portless dev hostnames
+// (admin.localhost, landing.localhost), so the app still boots when the vars are
 // missing in dev or preview environments.
 //
 // Throwing on missing values at module-import time would also kill `next build`'s
@@ -23,8 +23,8 @@ const requireOrFallback = (envName: 'ADMIN_DOMAIN' | 'LANDING_DOMAIN', fallback:
     return fallback;
 };
 
-const ADMIN_HOSTNAME = requireOrFallback('ADMIN_DOMAIN', 'localhost:3000');
-const LANDING_HOSTNAME = requireOrFallback('LANDING_DOMAIN', 'localhost:3001');
+const ADMIN_HOSTNAME = requireOrFallback('ADMIN_DOMAIN', 'admin.localhost');
+const LANDING_HOSTNAME = requireOrFallback('LANDING_DOMAIN', 'landing.localhost');
 
 // Portless serves HTTPS for .localhost URLs in dev, so the protocol is always https.
 const protocolFor = (_hostname: string) => 'https' as const;
