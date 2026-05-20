@@ -2,8 +2,7 @@
     "$schema": "https://json.schemastore.org/tsconfig",
     "extends": "../../tsconfig.lib.json",
     "compilerOptions": {
-        "jsx": "react-jsx",
-        "rootDir": "./"
+        "jsx": "react-jsx"
     },
-    "include": ["./src/**/*.ts", "./src/**/*.tsx", "./icons.ts", "./scripts/types.ts"]
+    "include": ["./src/**/*.ts", "./src/**/*.tsx"]
 }
