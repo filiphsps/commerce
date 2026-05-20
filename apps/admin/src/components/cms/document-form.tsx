@@ -48,13 +48,7 @@ export function DocumentForm({
                             {livePreview ? <div className="flex min-w-0 flex-col gap-4">{livePreview}</div> : null}
                         </div>
 
-                        {toolbar ? (
-                            <PageFooter>
-                                <div className="flex w-full flex-col items-center justify-between gap-3 md:flex-row">
-                                    {toolbar}
-                                </div>
-                            </PageFooter>
-                        ) : null}
+                        {toolbar ? <PageFooter>{toolbar}</PageFooter> : null}
                     </Form>
                 </PayloadFieldShell>
             </div>
