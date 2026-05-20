@@ -16,9 +16,14 @@ vi.mock('@/auth', () => ({
     getAuthSession: vi.fn(),
 }));
 
+vi.mock('./overrides', () => ({
+    getFlagOverrides: vi.fn(),
+}));
+
 import { getAuthSession } from '@/auth';
 import { getRequestContext } from '@/utils/request-context';
 import { nordcomFlagAdapter } from './adapter';
+import { getFlagOverrides } from './overrides';
 import { __resetPredicatesForTest } from './predicates';
 import { registerBuiltinPredicates } from './register-builtin-predicates';
 
@@ -122,5 +127,108 @@ describe('utils/flags/adapter.nordcomFlagAdapter', () => {
             cookies: mockCookies() as never,
         });
         expect((ents as { visitorId: string }).visitorId).toMatch(/^[0-9a-f-]{36}$/);
+    });
+});
+
+describe('utils/flags/adapter.nordcomFlagAdapter — overrides', () => {
+    beforeEach(() => {
+        __resetPredicatesForTest();
+        registerBuiltinPredicates();
+        vi.mocked(getRequestContext).mockReset();
+        vi.mocked(getAuthSession).mockReset();
+        vi.mocked(getFlagOverrides).mockReset();
+        vi.mocked(getRequestContext).mockResolvedValue({ shop: mockShop(), locale: {} as never });
+        vi.mocked(getAuthSession).mockResolvedValue(null);
+    });
+
+    afterEach(() => {
+        __resetPredicatesForTest();
+    });
+
+    const callDecide = async <T>(flagKey: string, shopFlags: unknown[], defaultValue: T): Promise<T> => {
+        const adapter = nordcomFlagAdapter<T>();
+        const entities = await adapter.identify!({
+            headers: mockHeaders() as never,
+            cookies: mockCookies() as never,
+        });
+        return adapter.decide({
+            key: flagKey,
+            entities: { ...(entities as object), shop: mockShop(shopFlags) } as never,
+            defaultValue,
+            cookies: mockCookies() as never,
+            headers: mockHeaders() as never,
+        });
+    };
+
+    it('returns the override value when the key is present in overrides', async () => {
+        vi.mocked(getFlagOverrides).mockResolvedValue({ 'flag-x': true });
+        const result = await callDecide<boolean>(
+            'flag-x',
+            [
+                {
+                    flag: {
+                        key: 'flag-x',
+                        defaultValue: false,
+                        targeting: [{ rule: 'always', params: {}, value: false }],
+                    },
+                },
+            ],
+            false,
+        );
+        expect(result).toBe(true);
+    });
+
+    it('honors an explicit undefined override (Object.hasOwn semantics)', async () => {
+        vi.mocked(getFlagOverrides).mockResolvedValue({ 'flag-x': undefined });
+        const result = await callDecide<boolean | undefined>(
+            'flag-x',
+            [
+                {
+                    flag: {
+                        key: 'flag-x',
+                        defaultValue: false,
+                        targeting: [{ rule: 'always', params: {}, value: true }],
+                    },
+                },
+            ],
+            false,
+        );
+        expect(result).toBeUndefined();
+    });
+
+    it('falls through to targeting when getFlagOverrides returns null', async () => {
+        vi.mocked(getFlagOverrides).mockResolvedValue(null);
+        const result = await callDecide<boolean>(
+            'flag-x',
+            [
+                {
+                    flag: {
+                        key: 'flag-x',
+                        defaultValue: false,
+                        targeting: [{ rule: 'always', params: {}, value: true }],
+                    },
+                },
+            ],
+            false,
+        );
+        expect(result).toBe(true);
+    });
+
+    it('falls through to targeting when key is absent from overrides', async () => {
+        vi.mocked(getFlagOverrides).mockResolvedValue({ 'other-flag': true });
+        const result = await callDecide<boolean>(
+            'flag-x',
+            [
+                {
+                    flag: {
+                        key: 'flag-x',
+                        defaultValue: false,
+                        targeting: [{ rule: 'always', params: {}, value: true }],
+                    },
+                },
+            ],
+            false,
+        );
+        expect(result).toBe(true);
     });
 });
