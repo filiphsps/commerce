@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
-vi.mock('@/utils/flags/read', () => ({
-    readFlag: vi.fn(),
+vi.mock('@/utils/flags/definitions', () => ({
+    searchFilter: vi.fn(),
 }));
 
 vi.mock('./search-content', () => ({
@@ -10,7 +10,7 @@ vi.mock('./search-content', () => ({
     ),
 }));
 
-import { readFlag } from '@/utils/flags/read';
+import { searchFilter } from '@/utils/flags/definitions';
 import { render, screen } from '@/utils/test/react';
 import SearchContentGate from './search-content-gate';
 
@@ -20,16 +20,16 @@ const i18n = {} as never;
 const data = { products: [], productFilters: [] };
 
 describe('SearchContentGate', () => {
-    it('passes showFilters=true to SearchContent when readFlag returns true', async () => {
-        vi.mocked(readFlag).mockResolvedValueOnce(true);
+    it('passes showFilters=true to SearchContent when searchFilter resolves true', async () => {
+        vi.mocked(searchFilter).mockResolvedValueOnce(true);
         const ui = await SearchContentGate({ shop, locale, i18n, data });
         render(ui as never);
         expect(screen.getByTestId('search-content').textContent).toBe('showFilters=true');
-        expect(readFlag).toHaveBeenCalledWith(shop, 'search-filter', { codeDefaultValue: false });
+        expect(searchFilter).toHaveBeenCalledTimes(1);
     });
 
-    it('passes showFilters=false to SearchContent when readFlag returns false', async () => {
-        vi.mocked(readFlag).mockResolvedValueOnce(false);
+    it('passes showFilters=false when searchFilter resolves false', async () => {
+        vi.mocked(searchFilter).mockResolvedValueOnce(false);
         const ui = await SearchContentGate({ shop, locale, i18n, data });
         render(ui as never);
         expect(screen.getByTestId('search-content').textContent).toBe('showFilters=false');
