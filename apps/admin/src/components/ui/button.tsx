@@ -31,6 +31,12 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
         asChild?: boolean;
     };
 
+/**
+ * Polymorphic button. When `asChild` is set, the underlying element is the
+ * child (e.g. an `<a>`) and the forwarded ref points to that element rather
+ * than an HTMLButtonElement. The `ref as never` cast intentionally widens the
+ * ref to permit this — callers using `asChild` must type their own ref.
+ */
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ({ className, variant, size, asChild, ...props }, ref) => {
         const Comp = asChild ? Slot : 'button';

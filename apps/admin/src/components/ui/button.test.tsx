@@ -24,4 +24,10 @@ describe('Button', () => {
         expect(link.tagName).toBe('A');
         expect(link.className).toMatch(/inline-flex/);
     });
+
+    it('applies size classes', () => {
+        render(<Button size="lg">Big</Button>);
+        const btn = screen.getByRole('button', { name: 'Big' });
+        expect(btn.className).toMatch(/h-12/);
+    });
 });
