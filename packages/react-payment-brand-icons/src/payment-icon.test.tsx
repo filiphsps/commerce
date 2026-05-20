@@ -21,11 +21,11 @@ describe('PaymentIcon', () => {
         __resetUnknownWarned();
         const { container } = render(
             <Suspense fallback={<span data-testid="loading" />}>
-                <PaymentIcon name="v" />
+                <PaymentIcon name="amex" />
             </Suspense>,
         );
         await waitFor(() => expect(container.querySelector('svg')).toBeTruthy());
-        expect(container.querySelector('title')?.textContent).toBe('Visa');
+        expect(container.querySelector('title')?.textContent).toBe('American Express');
     });
 
     it('renders the fallback for an unknown name and warns once in dev', async () => {
@@ -33,7 +33,7 @@ describe('PaymentIcon', () => {
         const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
         const { findByTestId } = render(
             <Suspense fallback={<span />}>
-                <PaymentIcon name="bogus" fallback={<span data-testid="fb" />} />
+                <PaymentIcon name="__not_a_real_icon__" fallback={<span data-testid="fb" />} />
             </Suspense>,
         );
         await findByTestId('fb');
