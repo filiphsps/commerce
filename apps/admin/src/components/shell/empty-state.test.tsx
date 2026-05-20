@@ -24,11 +24,7 @@ describe('EmptyState', () => {
 
     it('renders an action link when actionHref and actionLabel are both provided', () => {
         render(
-            <EmptyState
-                label="No pages yet"
-                actionLabel="New page"
-                actionHref={'/abc/content/pages/new/' as Route}
-            />,
+            <EmptyState label="No pages yet" actionLabel="New page" actionHref={'/abc/content/pages/new/' as Route} />,
         );
         const link = screen.getByRole('link', { name: 'New page' });
         expect(link).toHaveAttribute('href', '/abc/content/pages/new/');

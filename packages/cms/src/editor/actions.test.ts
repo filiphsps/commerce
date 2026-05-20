@@ -31,6 +31,12 @@ const baseManifest = defineCollectionEditor({
     revalidate: ({ domain }) => [`/${domain}/x/`],
 });
 
+const tenantSingletonManifest = defineCollectionEditor({
+    ...baseManifest,
+    tenant: { kind: 'tenant-singleton', field: 'tenant' },
+    access: { ...baseManifest.access, create: () => true },
+});
+
 const buildRuntime = (overrides: Partial<EditorRuntime> = {}): EditorRuntime => {
     // Stable ctx so tests can inspect the same payload mocks the action used.
     const stableCtx: AuthedPayloadCtx = {
@@ -228,5 +234,39 @@ describe('createCollectionEditorActions.bulkDelete', () => {
 
         const ctx = await runtime.getCtx('a.test');
         expect(ctx.payload.delete).toHaveBeenCalledTimes(3);
+    });
+});
+
+describe('createCollectionEditorActions on tenant-singleton manifests', () => {
+    it('saveDraft uses a tenant-only where clause and patches tenant on create', async () => {
+        const runtime = buildRuntime();
+        const actions = createCollectionEditorActions(tenantSingletonManifest, runtime);
+        await actions.saveDraft('a.test', '', fd({ legalName: 'Acme' }));
+
+        const ctx = await runtime.getCtx('a.test');
+        expect(ctx.payload.find).toHaveBeenCalledWith(
+            expect.objectContaining({
+                collection: 'businessData',
+                where: { tenant: { equals: 'tenant-1' } },
+            }),
+        );
+        expect(ctx.payload.create).toHaveBeenCalledWith(
+            expect.objectContaining({
+                data: { legalName: 'Acme', tenant: 'tenant-1', _status: 'draft' },
+            }),
+        );
+    });
+
+    it('create includes the tenant patch', async () => {
+        const runtime = buildRuntime();
+        const actions = createCollectionEditorActions(tenantSingletonManifest, runtime);
+        await actions.create('a.test', fd({ legalName: 'Acme' }));
+
+        const ctx = await runtime.getCtx('a.test');
+        expect(ctx.payload.create).toHaveBeenCalledWith(
+            expect.objectContaining({
+                data: { legalName: 'Acme', tenant: 'tenant-1', _status: 'draft' },
+            }),
+        );
     });
 });

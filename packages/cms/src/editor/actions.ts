@@ -85,7 +85,10 @@ export const createCollectionEditorActions = <T extends CollectionSlug>(
                 ...draftFlag,
             });
         } else {
-            const tenantPatch = manifest.tenant.kind === 'scoped' && ctx.tenant ? { tenant: ctx.tenant.id } : {};
+            const tenantPatch =
+                (manifest.tenant.kind === 'scoped' || manifest.tenant.kind === 'tenant-singleton') && ctx.tenant
+                    ? { tenant: ctx.tenant.id }
+                    : {};
             doc = await ctx.payload.create({
                 collection: manifest.collection as never,
                 data: { ...allowed, ...tenantPatch, ...statusPatch } as never,
@@ -116,7 +119,10 @@ export const createCollectionEditorActions = <T extends CollectionSlug>(
 
             const raw = parseFormPayload(formData);
             const allowed = pickByFieldNames(raw, collection.fields);
-            const tenantPatch = manifest.tenant.kind === 'scoped' && ctx.tenant ? { tenant: ctx.tenant.id } : {};
+            const tenantPatch =
+                (manifest.tenant.kind === 'scoped' || manifest.tenant.kind === 'tenant-singleton') && ctx.tenant
+                    ? { tenant: ctx.tenant.id }
+                    : {};
             const drafts = hasDrafts(collection);
             const statusPatch = drafts ? { _status: 'draft' as const } : {};
             // See upsert(): `draft: true` skips required-field validation so a
