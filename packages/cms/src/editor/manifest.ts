@@ -64,8 +64,9 @@ export type CollectionEditorManifest<TSlug extends CollectionSlug = CollectionSl
 
     tenant:
         | { kind: 'scoped'; field: 'tenant' }
-        | { kind: 'shared'; readableBy: 'all' | 'admin' }
-        | { kind: 'singleton-by-domain' };
+        | { kind: 'tenant-singleton'; field: 'tenant' }
+        | { kind: 'singleton-by-domain' }
+        | { kind: 'shared'; readableBy: 'all' | 'admin' };
 
     access: {
         list: EditorAccess;
