@@ -6,7 +6,7 @@ import type { HTMLProps } from 'react';
 import type { Product } from '@/api/product';
 import { Label } from '@/components/typography/label';
 import { COMMERCE_DEFAULTS } from '@/utils/build-config';
-import { evaluateShopFlag } from '@/utils/flags/evaluate';
+import { readFlag } from '@/utils/flags/read';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { getTranslations } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
@@ -72,11 +72,7 @@ export type InfoLinesProps = {
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 
 const InfoLines = async ({ shop, product, i18n, locale, className, ...props }: InfoLinesProps) => {
-    // Use `evaluateShopFlag` instead of `showProductInfoLines()` — `flags/next`'s
-    // `flag()` wrapper reads request headers internally, which is forbidden inside
-    // the `'use cache'` scope that wraps this component's parent. `evaluateShopFlag`
-    // is synchronous and reads no request data.
-    const productInfoLinesEnabled = evaluateShopFlag<boolean>(shop, 'product-page-info-lines', {
+    const productInfoLinesEnabled = await readFlag<boolean>(shop, 'product-page-info-lines', {
         codeDefaultValue: false,
     });
     if (!product || !productInfoLinesEnabled) {
@@ -102,5 +98,16 @@ const InfoLines = async ({ shop, product, i18n, locale, className, ...props }: I
     );
 };
 InfoLines.displayName = 'Nordcom.Products.InfoLines';
+
+function infoLinesSkeleton() {
+    return (
+        <div className="flex w-full select-none flex-col items-start gap-4 empty:hidden">
+            <div className="h-4 w-32 rounded-sm bg-gray-200" data-skeleton />
+            <div className="h-4 w-48 rounded-sm bg-gray-200" data-skeleton />
+        </div>
+    );
+}
+InfoLines.skeleton = infoLinesSkeleton as typeof infoLinesSkeleton & { displayName: string };
+InfoLines.skeleton.displayName = 'Nordcom.Products.InfoLines.Skeleton';
 
 export { InfoLines, StockStatus };

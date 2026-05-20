@@ -257,7 +257,9 @@ export default async function ProductPage({ params }: { params: ProductPageParam
 
             <Suspense fallback={<Fragment />}>
                 <Card className={BLOCK_STYLES}>
-                    <InfoLines shop={shop} product={product} i18n={i18n} locale={locale} />
+                    <Suspense fallback={<InfoLines.skeleton />}>
+                        <InfoLines shop={shop} product={product} i18n={i18n} locale={locale} />
+                    </Suspense>
                 </Card>
             </Suspense>
 
