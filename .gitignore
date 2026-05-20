@@ -30,6 +30,7 @@ apps/**/public/**/robots.txt*
 docs/superpowers/
 /.worktrees/
 .superpowers/
+.portless/
 next-env.d.ts
 
 # apps/docs generated artifacts

@@ -26,7 +26,7 @@ pnpm install
 pnpm build:packages
 
 pnpm dev:admin
-# → http://localhost:3000
+# → https://admin.localhost
 ```
 
 Required environment variables (defined at the root in [`.env.example`](../../.env.example)):
@@ -113,7 +113,7 @@ deployment can be embedded in any merchant's Shopify admin.
 ## Scripts
 
 ```bash
-pnpm dev              # Next.js dev server on :3000
+pnpm dev              # Next.js dev server — https://admin.localhost (Turbopack)
 pnpm build            # Production build (Turbopack)
 pnpm start            # Run the built server ($PORT)
 pnpm lint             # biome lint .

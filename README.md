@@ -64,11 +64,15 @@ pnpm dev
 
 You should now have:
 
-| App          | URL                       |
-| ------------ | ------------------------- |
-| Storefront   | <http://localhost:1337>   |
-| Admin        | <http://localhost:3000>   |
-| Landing      | <http://localhost:3001>   |
+| App          | URL                                     |
+| ------------ | --------------------------------------- |
+| Storefront   | <https://storefront.localhost>          |
+| Admin        | <https://admin.localhost>               |
+| Landing      | <https://landing.localhost>             |
+
+> **One-time setup:** install [portless](https://github.com/vercel-labs/portless) globally
+> (`npm install -g portless`), then run `portless trust` (adds the local CA to the system
+> trust store — requires a sudo prompt). `pnpm dev` will start the proxy automatically.
 
 To start only one app, use `pnpm dev:storefront`, `pnpm dev:admin`, or `pnpm dev:landing`.
 
@@ -115,9 +119,9 @@ automatically. Run from the repo root unless noted.
 
 ```bash
 pnpm dev                # All apps in parallel
-pnpm dev:storefront     # Only the storefront     (http://localhost:1337)
-pnpm dev:admin          # Only the admin          (http://localhost:3000)
-pnpm dev:landing        # Only the marketing site (http://localhost:3001)
+pnpm dev:storefront     # Only the storefront     (https://storefront.localhost)
+pnpm dev:admin          # Only the admin          (https://admin.localhost)
+pnpm dev:landing        # Only the marketing site (https://landing.localhost)
 ```
 
 ### Build

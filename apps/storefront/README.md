@@ -30,7 +30,7 @@ pnpm build:packages
 
 # Start the storefront in dev mode.
 pnpm dev:storefront
-# → http://localhost:1337
+# → https://storefront.localhost  ·  https://<shop>.storefront.localhost
 ```
 
 Required environment variables (see [`.env.example`](../../.env.example) at the root):
@@ -174,7 +174,7 @@ Both `tsconfig.json` and `vitest.config.ts` declare the same aliases — keep th
 ## Scripts
 
 ```bash
-pnpm dev              # Next.js dev server on :1337 (Turbopack)
+pnpm dev              # Next.js dev server — https://storefront.localhost (Turbopack)
 pnpm build            # Production build (Turbopack)
 pnpm start            # Run the built server ($PORT)
 pnpm lint             # biome lint .

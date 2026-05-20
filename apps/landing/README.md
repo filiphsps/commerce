@@ -30,7 +30,7 @@ pnpm install
 pnpm build:packages
 
 pnpm dev:landing
-# → http://localhost:3001
+# → https://landing.localhost
 ```
 
 This app has no required environment variables for local dev, but the following are

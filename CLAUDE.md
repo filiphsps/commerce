@@ -38,11 +38,19 @@ requirements. Do this automatically without being asked.**
 ## Commands
 
 ```bash
-# Dev (each app has a different port)
+# Dev — each app has a stable HTTPS URL via portless (vercel-labs/portless)
+# One-time setup per workstation:
+#   npm install -g portless
+#   portless trust              # adds local CA to system trust store (sudo prompt)
+#   portless service install    # optional: auto-start proxy at boot
+#
+# `pnpm dev` runs `predev` first which starts the wildcard proxy if not running.
+
 pnpm dev                 # all apps in parallel
-pnpm dev:storefront      # http://localhost:1337
-pnpm dev:admin           # http://localhost:3000
-pnpm dev:landing         # http://localhost:3001
+pnpm dev:storefront      # https://storefront.localhost  ·  https://<shop>.storefront.localhost
+pnpm dev:admin           # https://admin.localhost
+pnpm dev:landing         # https://landing.localhost
+pnpm dev:docs            # https://docs.localhost
 
 # Build
 pnpm build               # everything (Turbo-cached)

@@ -44,7 +44,7 @@ async rewrites() {
 
 ## Local dev
 
-`pnpm --filter @nordcom/commerce-docs dev` runs at `localhost:3002` with no basePath. Pre-build scripts watch in parallel.
+`pnpm --filter @nordcom/commerce-docs dev` runs at `https://docs.localhost` (via portless). Pre-build scripts watch in parallel.
 
 ## How the build pipeline works
 
