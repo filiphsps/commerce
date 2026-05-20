@@ -56,7 +56,6 @@
         "@opentelemetry/instrumentation": "0.218.0",
         "@opentelemetry/sdk-logs": "0.218.0",
         "@vercel/otel": "2.1.2",
-        "@vercel/toolbar": "0.2.6",
         "clsx": "2.1.1",
         "geist": "1.7.0",
         "glob": "13.0.6",
