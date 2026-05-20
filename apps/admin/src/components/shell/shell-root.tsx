@@ -1,6 +1,6 @@
 'use client';
 
-import { type ReactNode, useCallback, useRef } from 'react';
+import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import {
     type ImperativePanelGroupHandle,
     type ImperativePanelHandle,
@@ -30,7 +30,7 @@ export type ShellRootProps = {
     iconRailItems: IconRailItem[];
 };
 
-const RAIL_MIN_PX = 52;
+const RAIL_MIN_PX = 82;
 const RAIL_LABEL_THRESHOLD_PX = 160;
 const RAIL_MAX_PX = 280;
 const SUBNAV_MIN_PX = 200;
@@ -64,6 +64,12 @@ export function ShellRoot({
     const subnavRef = useRef<ImperativePanelHandle | null>(null);
     const inspectorRef = useRef<ImperativePanelHandle | null>(null);
 
+    const [state, setState] = useState<ShellState>(initialState);
+    // Mirror `state` in a ref so the resize/write callbacks can read the latest
+    // value without listing `state` in their deps — listing it churns the
+    // callback identity on every layout change, which feeds PanelGroup a new
+    // `onLayout` reference and is the kind of nudge react-resizable-panels
+    // needs to fire onLayout again. Keep handlers stable; read via ref.
     const stateRef = useRef<ShellState>(initialState);
 
     const writeTimer = useRef<number | null>(null);
@@ -80,93 +86,106 @@ export function ShellRoot({
     const railDefaultPct = pxToPercent(initialState.rail.w, SSR_REFERENCE_WIDTH);
     const subnavDefaultPct = pxToPercent(initialState.subnav.w, SSR_REFERENCE_WIDTH);
     const inspectorDefaultPct = pxToPercent(initialState.inspector.w, SSR_REFERENCE_WIDTH);
+    const contentDefaultPct = Math.max(20, 100 - railDefaultPct - subnavDefaultPct - inspectorDefaultPct);
 
     const onLayoutChange = useCallback(
         (sizes: number[]) => {
             const total = containerRef.current?.getBoundingClientRect().width ?? SSR_REFERENCE_WIDTH;
             if (total <= 0) return;
+
             const railPct = sizes[0] ?? railDefaultPct;
             const subnavPct = sizes[1] ?? subnavDefaultPct;
             const inspectorPct = sizes[sizes.length - 1] ?? inspectorDefaultPct;
-            stateRef.current = {
-                rail: { w: Math.round((railPct / 100) * total), collapsed: stateRef.current.rail.collapsed },
-                subnav: {
-                    w: Math.round((subnavPct / 100) * total),
-                    collapsed: stateRef.current.subnav.collapsed,
-                },
-                inspector: {
-                    w: Math.round((inspectorPct / 100) * total),
-                    collapsed: stateRef.current.inspector.collapsed,
-                },
-            };
+            setState((prev) => {
+                const next: ShellState = {
+                    rail: { w: Math.round((railPct / 100) * total), collapsed: prev.rail.collapsed },
+                    subnav: { w: Math.round((subnavPct / 100) * total), collapsed: prev.subnav.collapsed },
+                    inspector: {
+                        w: Math.round((inspectorPct / 100) * total),
+                        collapsed: prev.inspector.collapsed,
+                    },
+                };
+                stateRef.current = next;
+                return next;
+            });
             scheduleWrite();
         },
         [railDefaultPct, subnavDefaultPct, inspectorDefaultPct, scheduleWrite],
     );
 
+    // Flush any pending cookie write on unmount so a fast route change after a
+    // resize doesn't lose the last layout.
+    useEffect(
+        () => () => {
+            if (writeTimer.current !== null) {
+                window.clearTimeout(writeTimer.current);
+                writeShellStateCookie(stateRef.current);
+            }
+        },
+        [],
+    );
+
     return (
-        <div className="grid h-svh grid-rows-[56px_1fr] overflow-hidden">
+        <div ref={containerRef} className="grid h-svh grid-rows-[56px_1fr] overflow-hidden">
             {header}
             {breakpoint === 'mobile' || breakpoint === 'tablet' ? (
                 <main className="relative min-w-0 overflow-hidden">{children}</main>
             ) : (
-                <div ref={containerRef} className="contents">
-                    <PanelGroup ref={groupRef} direction="horizontal" onLayout={onLayoutChange}>
-                        <Panel
-                            ref={railRef}
-                            id="rail"
-                            order={1}
-                            defaultSize={railDefaultPct}
-                            minSize={pxToPercent(RAIL_MIN_PX, SSR_REFERENCE_WIDTH)}
-                            maxSize={pxToPercent(RAIL_MAX_PX, SSR_REFERENCE_WIDTH)}
-                            collapsible
-                            collapsedSize={pxToPercent(RAIL_MIN_PX, SSR_REFERENCE_WIDTH)}
-                        >
-                            <IconRail items={iconRailItems} expanded={initialState.rail.w >= RAIL_LABEL_THRESHOLD_PX} />
-                        </Panel>
+                <PanelGroup ref={groupRef} direction="horizontal" onLayout={onLayoutChange}>
+                    <Panel
+                        ref={railRef}
+                        id="rail"
+                        order={1}
+                        defaultSize={railDefaultPct}
+                        minSize={pxToPercent(RAIL_MIN_PX, SSR_REFERENCE_WIDTH)}
+                        maxSize={pxToPercent(RAIL_MAX_PX, SSR_REFERENCE_WIDTH)}
+                        collapsible={true}
+                        collapsedSize={pxToPercent(RAIL_MIN_PX, SSR_REFERENCE_WIDTH)}
+                    >
+                        <IconRail items={iconRailItems} expanded={state.rail.w >= RAIL_LABEL_THRESHOLD_PX} />
+                    </Panel>
 
-                        {hasSubnav ? (
-                            <>
-                                <PanelResizeHandle className="w-px bg-border transition-colors hover:bg-primary/50 data-[resize-handle-state=drag]:bg-primary" />
-                                <Panel
-                                    ref={subnavRef}
-                                    id="subnav"
-                                    order={2}
-                                    defaultSize={subnavDefaultPct}
-                                    minSize={pxToPercent(SUBNAV_MIN_PX, SSR_REFERENCE_WIDTH)}
-                                    maxSize={pxToPercent(SUBNAV_MAX_PX, SSR_REFERENCE_WIDTH)}
-                                    collapsible
-                                    collapsedSize={0}
-                                >
-                                    <SubNavSlot>{subnav}</SubNavSlot>
-                                </Panel>
-                            </>
-                        ) : null}
+                    {hasSubnav ? (
+                        <>
+                            <PanelResizeHandle className="w-px bg-border transition-colors hover:bg-primary/50 data-[resize-handle-state=drag]:bg-primary" />
+                            <Panel
+                                ref={subnavRef}
+                                id="subnav"
+                                order={2}
+                                defaultSize={subnavDefaultPct}
+                                minSize={pxToPercent(SUBNAV_MIN_PX, SSR_REFERENCE_WIDTH)}
+                                maxSize={pxToPercent(SUBNAV_MAX_PX, SSR_REFERENCE_WIDTH)}
+                                collapsible
+                                collapsedSize={0}
+                            >
+                                <SubNavSlot>{subnav}</SubNavSlot>
+                            </Panel>
+                        </>
+                    ) : null}
 
-                        <PanelResizeHandle className="w-px bg-border transition-colors hover:bg-primary/50 data-[resize-handle-state=drag]:bg-primary" />
-                        <Panel id="content" order={3} minSize={20}>
-                            <main className="relative h-full min-w-0 overflow-hidden">{children}</main>
-                        </Panel>
+                    <PanelResizeHandle className="w-px bg-border transition-colors hover:bg-primary/50 data-[resize-handle-state=drag]:bg-primary" />
+                    <Panel id="content" order={3} defaultSize={contentDefaultPct} minSize={20} collapsible={false}>
+                        <main className="relative h-full min-w-0 overflow-hidden">{children}</main>
+                    </Panel>
 
-                        {hasInspector && (breakpoint === 'wide' || breakpoint === 'comfortable') ? (
-                            <>
-                                <PanelResizeHandle className="w-px bg-border transition-colors hover:bg-primary/50 data-[resize-handle-state=drag]:bg-primary" />
-                                <Panel
-                                    ref={inspectorRef}
-                                    id="inspector"
-                                    order={4}
-                                    defaultSize={inspectorDefaultPct}
-                                    minSize={pxToPercent(INSPECTOR_MIN_PX, SSR_REFERENCE_WIDTH)}
-                                    maxSize={pxToPercent(INSPECTOR_MAX_PX, SSR_REFERENCE_WIDTH)}
-                                    collapsible
-                                    collapsedSize={0}
-                                >
-                                    <InspectorSlot>{inspector}</InspectorSlot>
-                                </Panel>
-                            </>
-                        ) : null}
-                    </PanelGroup>
-                </div>
+                    {hasInspector && (breakpoint === 'wide' || breakpoint === 'comfortable') ? (
+                        <>
+                            <PanelResizeHandle className="w-px bg-border transition-colors hover:bg-primary/50 data-[resize-handle-state=drag]:bg-primary" />
+                            <Panel
+                                ref={inspectorRef}
+                                id="inspector"
+                                order={4}
+                                defaultSize={inspectorDefaultPct}
+                                minSize={pxToPercent(INSPECTOR_MIN_PX, SSR_REFERENCE_WIDTH)}
+                                maxSize={pxToPercent(INSPECTOR_MAX_PX, SSR_REFERENCE_WIDTH)}
+                                collapsible
+                                collapsedSize={0}
+                            >
+                                <InspectorSlot>{inspector}</InspectorSlot>
+                            </Panel>
+                        </>
+                    ) : null}
+                </PanelGroup>
             )}
         </div>
     );
