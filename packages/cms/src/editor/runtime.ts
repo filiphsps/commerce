@@ -1,3 +1,4 @@
+import type { Route } from 'next';
 import type { FormState, Payload, PayloadRequest } from 'payload';
 import type { ComponentType, ReactNode } from 'react';
 import type { PayloadFieldShellProps } from '../ui';
@@ -69,9 +70,14 @@ export type DocumentFormShellProps = {
 
 /** Props the runtime's `Table` component receives. */
 export type CollectionTableShellProps = {
-    rows: Array<Record<string, unknown>>;
+    /**
+     * Payload always populates `id` on a returned doc, and the table uses it
+     * for row keys and aria labels — encode that in the type so consumers
+     * can't accidentally drop it.
+     */
+    rows: Array<Record<string, unknown> & { id: string | number }>;
     columns: Array<EditorListColumn>;
-    getRowHref: (row: Record<string, unknown>) => string;
+    getRowHref: (row: Record<string, unknown> & { id: string | number }) => Route;
     bulkActions?: ReactNode;
 };
 

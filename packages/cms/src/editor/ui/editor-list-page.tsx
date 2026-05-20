@@ -63,9 +63,9 @@ export async function EditorListPage<TSlug extends CollectionSlug>({
     const keyField = manifest.routes.keyField ?? 'id';
     return (
         <runtime.Table
-            rows={docs as Array<Record<string, unknown>>}
+            rows={docs as Array<Record<string, unknown> & { id: string | number }>}
             columns={manifest.list.columns}
-            getRowHref={(row) => `${manifest.routes.basePath(domain)}${String(row[keyField])}/`}
+            getRowHref={(row) => `${manifest.routes.basePath(domain)}${String(row[keyField])}/` as Route}
             bulkActions={bulkActions}
         />
     );
