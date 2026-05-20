@@ -41,9 +41,11 @@ describe('<HeaderMenuTrigger>', () => {
             <HeaderMenuTrigger item={itemWithChildren()} locale={{ code: en.code }} />,
         );
         const button = container.querySelector('button') as HTMLButtonElement;
+        button.focus();
         fireEvent.click(button);
         fireEvent.keyDown(window, { key: 'Escape' });
         expect(queryByText('Hats')).toBeNull();
+        expect(document.activeElement).toBe(button);
     });
 
     it('renders description text under each level-2 item when present', () => {

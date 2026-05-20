@@ -20,7 +20,6 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
     const pathname = usePathname();
     const containerRef = useDetectClickOutside({ onTriggered: () => setOpen(false), disableTouch: false });
     const previouslyFocused = useRef<HTMLElement | null>(null);
-    const panelRef = useRef<HTMLDivElement | null>(null);
 
     // Close on route change. `pathname` is intentionally the trigger.
     // biome-ignore lint/correctness/useExhaustiveDependencies: pathname change is the intended effect trigger
@@ -64,7 +63,6 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
 
             {open ? (
                 <div
-                    ref={panelRef}
                     role="menu"
                     className={cn(
                         'absolute top-full left-0 z-30 mt-2 min-w-[20rem]',
@@ -111,7 +109,7 @@ function Level2Tile({ item, locale }: { item: Level2Item; locale: { code: string
                 href={href || '/'}
                 target={link.openInNewTab ? '_blank' : undefined}
                 role="menuitem"
-                className="block"
+                className="group block"
             >
                 {image?.url ? (
                     <div className="relative aspect-[4/3] w-full overflow-hidden">
