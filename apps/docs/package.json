@@ -5,7 +5,7 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev": "concurrently -i \"pnpm:pre:watch\" \"next dev -p 3002\"",
+        "dev": "concurrently -i \"pnpm:pre:watch\" \"next dev -p 3002 --turbo\"",
         "pre": "pnpm pre:typedoc && pnpm pre:mirror && pnpm pre:page-map",
         "pre:watch": "concurrently -i pnpm:pre:typedoc:watch pnpm:pre:mirror:watch",
         "pre:typedoc": "node scripts/emit-typedoc-json.mjs",
@@ -13,7 +13,7 @@
         "pre:mirror": "node scripts/mirror-workspace-docs.mjs",
         "pre:mirror:watch": "node scripts/mirror-workspace-docs.mjs --watch",
         "pre:page-map": "node scripts/generate-page-map.mjs",
-        "build": "pnpm pre && next build && pnpm postbuild",
+        "build": "pnpm pre && next build --turbo && pnpm postbuild",
         "postbuild": "pagefind --site out --output-path \"out${NEXT_PUBLIC_DOCS_BASE_PATH:-}/_pagefind\"",
         "start": "next start -p 3002",
         "lint": "biome lint .",

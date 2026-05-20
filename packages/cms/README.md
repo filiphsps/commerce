@@ -25,7 +25,7 @@ package exists so the platform has exactly one canonical Payload config:
     that the storefront's read paths reuse — no separate DB connection per route.
 -   **Cache invalidation by construction.** Every content collection's
     `afterChange` / `afterDelete` hooks fan out `revalidateTag` calls on the
-    [`@tagtree/payload`](../tagtree-payload) adapter, so a single mutation flushes
+    [`@tagtree/payload`](../tagtree/payload) adapter, so a single mutation flushes
     exactly the per-tenant, per-collection, per-handle tags the storefront read.
 
 ## Install
