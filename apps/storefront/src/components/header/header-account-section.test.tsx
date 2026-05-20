@@ -11,8 +11,8 @@ vi.mock('@/auth', () => ({
     getAuthSession: vi.fn().mockResolvedValue(null),
 }));
 
-vi.mock('@/utils/flags/evaluate', () => ({
-    evaluateShopFlag: vi.fn().mockReturnValue(false),
+vi.mock('@/utils/flags/definitions/accounts-enabled', () => ({
+    accountsEnabled: { evaluate: vi.fn().mockReturnValue(false) },
 }));
 
 vi.mock('@/components/actionable/login-button', () => ({
@@ -30,7 +30,7 @@ vi.mock('@/components/link', () => ({
 import { headers } from 'next/headers';
 import { getAuthSession } from '@/auth';
 import { HeaderAccountSection } from '@/components/header/header-account-section';
-import { evaluateShopFlag } from '@/utils/flags/evaluate';
+import { accountsEnabled } from '@/utils/flags/definitions/accounts-enabled';
 import { Locale, type LocaleDictionary } from '@/utils/locale';
 import { render, screen } from '@/utils/test/react';
 
@@ -39,7 +39,7 @@ const mockI18n = {} as unknown as LocaleDictionary;
 
 describe('components/header/header-account-section', () => {
     it('does not call headers() when reading the accounts-functionality flag', async () => {
-        vi.mocked(evaluateShopFlag).mockReturnValueOnce(false as never);
+        vi.mocked(accountsEnabled.evaluate).mockReturnValueOnce(false as never);
         const headersMock = vi.mocked(headers);
         headersMock.mockClear();
 
@@ -55,7 +55,7 @@ describe('components/header/header-account-section', () => {
     });
 
     it('renders LoginButton when flag is enabled but session is null', async () => {
-        vi.mocked(evaluateShopFlag).mockReturnValueOnce(true as never);
+        vi.mocked(accountsEnabled.evaluate).mockReturnValueOnce(true as never);
         vi.mocked(getAuthSession).mockResolvedValue(null);
 
         const jsx = await HeaderAccountSection({
@@ -69,7 +69,7 @@ describe('components/header/header-account-section', () => {
     });
 
     it('renders Avatar when flag is enabled and session has user data', async () => {
-        vi.mocked(evaluateShopFlag).mockReturnValueOnce(true as never);
+        vi.mocked(accountsEnabled.evaluate).mockReturnValueOnce(true as never);
         vi.mocked(getAuthSession).mockResolvedValue({
             user: { name: 'Test User', image: null, email: 'test@example.com' },
         } as any);
