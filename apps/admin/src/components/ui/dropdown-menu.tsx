@@ -2,13 +2,18 @@
 
 import * as Primitive from '@radix-ui/react-dropdown-menu';
 import { Check, ChevronRight } from 'lucide-react';
-import { type ComponentPropsWithoutRef, type ComponentRef, forwardRef } from 'react';
+import { type ComponentProps, type ComponentPropsWithoutRef, type ComponentRef, forwardRef } from 'react';
 
 import { cn } from '@/utils/tailwind';
 
-export const DropdownMenu = ({ modal = false, ...props }: ComponentPropsWithoutRef<typeof Primitive.Root>) => (
-    <Primitive.Root modal={modal} {...props} />
-);
+/**
+ * DropdownMenu wrapper. Defaults `modal={false}` so shell dropdowns (account
+ * menu, shop switcher) don't trap focus or block interaction with the rest of
+ * the admin. Pass `modal={true}` for cases that should block.
+ */
+export function DropdownMenu(props: ComponentProps<typeof Primitive.Root>) {
+    return <Primitive.Root modal={false} {...props} />;
+}
 export const DropdownMenuTrigger = Primitive.Trigger;
 export const DropdownMenuGroup = Primitive.Group;
 export const DropdownMenuPortal = Primitive.Portal;
@@ -19,16 +24,18 @@ export const DropdownMenuContent = forwardRef<
     ComponentRef<typeof Primitive.Content>,
     ComponentPropsWithoutRef<typeof Primitive.Content>
 >(({ className, sideOffset = 4, ...props }, ref) => (
-    <Primitive.Content
-        ref={ref}
-        sideOffset={sideOffset}
-        className={cn(
-            'z-50 min-w-32 overflow-hidden rounded-md border-2 border-border bg-popover p-1 text-popover-foreground shadow-md',
-            'data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=closed]:animate-out data-[state=open]:animate-in',
-            className,
-        )}
-        {...props}
-    />
+    <Primitive.Portal>
+        <Primitive.Content
+            ref={ref}
+            sideOffset={sideOffset}
+            className={cn(
+                'z-50 min-w-32 overflow-hidden rounded-md border-2 border-border bg-popover p-1 text-popover-foreground shadow-md',
+                'data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=closed]:animate-out data-[state=open]:animate-in',
+                className,
+            )}
+            {...props}
+        />
+    </Primitive.Portal>
 ));
 DropdownMenuContent.displayName = Primitive.Content.displayName;
 
