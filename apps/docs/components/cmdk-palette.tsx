@@ -45,7 +45,9 @@ export function CmdkPalette(): React.JSX.Element | null {
 
     useEffect(() => {
         const onKey = (e: KeyboardEvent) => {
-            if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+            // Case-insensitive match — some test drivers (notably Playwright) emit
+            // `key: 'K'` for Meta+K, while real browsers emit lowercase. Accept both.
+            if (e.key.toLowerCase() === 'k' && (e.metaKey || e.ctrlKey)) {
                 e.preventDefault();
                 setOpen((o) => !o);
             }
