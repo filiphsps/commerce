@@ -32,7 +32,7 @@ describe('resolveDocsEnv', () => {
                 NODE_ENV: 'production',
                 NEXT_PUBLIC_DOCS_BASE_PATH: '/commerce',
             }),
-        ).toThrowError(/NEXT_PUBLIC_DOCS_CANONICAL_URL/);
+        ).toThrow(/NEXT_PUBLIC_DOCS_CANONICAL_URL/);
     });
 
     it('allows empty basePath in production', () => {
