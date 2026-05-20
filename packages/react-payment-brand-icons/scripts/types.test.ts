@@ -8,10 +8,10 @@ describe('codegen types', () => {
         const b: IconOverride = { title: 'Visa' };
         const c: IconOverride = { aliases: ['visa-card'] };
         const d: IconOverride = { componentName: 'Visa', title: 'Visa', aliases: ['v'] };
-        expectTypeOf(a).toMatchTypeOf<IconOverride>();
-        expectTypeOf(b).toMatchTypeOf<IconOverride>();
-        expectTypeOf(c).toMatchTypeOf<IconOverride>();
-        expectTypeOf(d).toMatchTypeOf<IconOverride>();
+        expectTypeOf(a).toExtend<IconOverride>();
+        expectTypeOf(b).toExtend<IconOverride>();
+        expectTypeOf(c).toExtend<IconOverride>();
+        expectTypeOf(d).toExtend<IconOverride>();
     });
 
     it('IconOverrides is keyed by slug', () => {
@@ -19,7 +19,7 @@ describe('codegen types', () => {
             visa: { componentName: 'Visa', title: 'Visa' },
             mastercard: { componentName: 'Mastercard' },
         };
-        expectTypeOf(overrides).toMatchTypeOf<Record<string, IconOverride>>();
+        expectTypeOf(overrides).toExtend<Record<string, IconOverride>>();
     });
 
     it('IconManifestEntry has slug, componentName, title, aliases', () => {
@@ -29,9 +29,9 @@ describe('codegen types', () => {
             title: 'Visa',
             aliases: ['v'],
         };
-        expectTypeOf(entry.slug).toBeString();
-        expectTypeOf(entry.componentName).toBeString();
-        expectTypeOf(entry.title).toBeString();
+        expectTypeOf(entry.slug).toBeString;
+        expectTypeOf(entry.componentName).toBeString;
+        expectTypeOf(entry.title).toBeString;
         expectTypeOf(entry.aliases).toEqualTypeOf<readonly string[]>();
     });
 });

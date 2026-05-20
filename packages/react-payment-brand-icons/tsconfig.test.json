@@ -2,7 +2,11 @@
     "$schema": "https://json.schemastore.org/tsconfig",
     "extends": ["./tsconfig.json", "../../tsconfig.test.json"],
     "compilerOptions": {
-        "types": ["node", "vitest/globals"]
+        "types": ["node", "vitest/globals"],
+        "rootDir": "${configDir}",
+        "composite": false,
+        "declaration": false,
+        "declarationMap": false
     },
     "include": [
         "./src/**/*.test.ts",
