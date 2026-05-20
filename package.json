@@ -14,6 +14,11 @@
     ],
     "scripts": {
         "analyze": "dotenv -c -- turbo run analyze --env-mode=loose",
+        "predev": "portless proxy status >/dev/null 2>&1 || portless proxy start --wildcard",
+        "predev:admin": "pnpm predev",
+        "predev:landing": "pnpm predev",
+        "predev:storefront": "pnpm predev",
+        "predev:docs": "pnpm predev",
         "dev": "NODE_ENV=development dotenv -c -- turbo run dev --env-mode=loose",
         "dev:admin": "NODE_ENV=development dotenv -c -- turbo run dev --filter=./apps/admin --env-mode=loose",
         "dev:landing": "NODE_ENV=development dotenv -c -- turbo run dev --filter=./apps/landing --env-mode=loose",
