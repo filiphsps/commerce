@@ -5,6 +5,7 @@ import { Head } from 'nextra/components';
 import { getPageMap } from 'nextra/page-map';
 import 'nextra-theme-docs/style.css';
 import './globals.css';
+import { CmdkPalette } from '@/components/cmdk-palette';
 import { docsEnv } from '@/lib/env';
 
 export const metadata: Metadata = {
@@ -35,6 +36,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 >
                     {children}
                 </Layout>
+                <CmdkPalette />
             </body>
         </html>
     );
