@@ -151,6 +151,18 @@
     [role="button"] {
         cursor: pointer;
     }
+
+    .admin-shell-scroll > [data-page-header] {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    .admin-shell-scroll > [data-page-footer][data-sticky] {
+        position: sticky;
+        bottom: 0;
+        z-index: 10;
+    }
 }
 
 /* ── Vendored from @payloadcms/ui@3.84.0 dist/scss/colors.scss ──
