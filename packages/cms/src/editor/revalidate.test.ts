@@ -26,6 +26,13 @@ const sharedManifest = defineCollectionEditor({
     access: { list: () => true, read: () => true, update: () => true },
 });
 
+const tenantSingletonManifest = defineCollectionEditor({
+    collection: 'footer',
+    routes: { label: { singular: 'Footer', plural: 'Footer' }, basePath: () => '/' as Route },
+    tenant: { kind: 'tenant-singleton', field: 'tenant' },
+    access: { list: () => true, read: () => true, update: () => true },
+});
+
 describe('tenantWhere', () => {
     it('scoped: ANDs tenant + key', () => {
         expect(tenantWhere(scopedManifest, TENANT, 'doc-1')).toEqual({
@@ -51,6 +58,18 @@ describe('tenantWhere', () => {
 
     it('shared: ignores tenant; equals on keyField', () => {
         expect(tenantWhere(sharedManifest, null, 'doc-1')).toEqual({ id: { equals: 'doc-1' } });
+    });
+
+    it('tenant-singleton: filters by tenant only, ignoring the keyField and id', () => {
+        expect(tenantWhere(tenantSingletonManifest, TENANT, 'whatever')).toEqual({
+            tenant: { equals: 'tenant-1' },
+        });
+    });
+
+    it('tenant-singleton: throws MissingTenantForScopedCollectionError when tenant is null', () => {
+        expect(() => tenantWhere(tenantSingletonManifest, null, 'whatever')).toThrow(
+            expect.objectContaining({ name: 'MissingTenantForScopedCollectionError' }),
+        );
     });
 });
 

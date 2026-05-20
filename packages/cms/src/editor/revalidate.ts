@@ -7,6 +7,8 @@ import type { CollectionEditorManifest } from './manifest';
  * Build the `where` clause for a single-doc lookup.
  *
  * - `scoped`: AND of tenant + keyField equality
+ * - `tenant-singleton`: tenant equality only — one doc per tenant, the plugin's
+ *   unique index guarantees at most one match so no id/keyField is needed
  * - `singleton-by-domain`: OR of `domain` and `alternativeDomains` contains
  *   (matches `Shop.findByDomain`'s semantics so the shop edit URL works for
  *   both the canonical domain and any alt domain)
@@ -22,6 +24,11 @@ export const tenantWhere = (manifest: CollectionEditorManifest, tenant: { id: st
             return {
                 and: [{ tenant: { equals: tenant.id } }, { [keyField]: { equals: id } }],
             };
+        case 'tenant-singleton':
+            if (!tenant) {
+                throw new MissingTenantForScopedCollectionError(manifest.collection);
+            }
+            return { tenant: { equals: tenant.id } };
         case 'singleton-by-domain':
             return {
                 or: [{ domain: { equals: id } }, { alternativeDomains: { contains: id } }],
