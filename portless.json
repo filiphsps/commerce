@@ -1,0 +1,8 @@
+{
+    "apps": {
+        "apps/storefront": { "name": "storefront", "script": "dev:app" },
+        "apps/admin": { "name": "admin", "script": "dev:app" },
+        "apps/landing": { "name": "landing", "script": "dev:app" },
+        "apps/docs": { "name": "docs", "script": "dev:app" }
+    }
+}

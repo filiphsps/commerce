@@ -5,7 +5,8 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev": "concurrently -i \"pnpm:pre:watch\" \"next dev -p 3002 --turbo\"",
+        "dev": "portless",
+        "dev:app": "concurrently -i \"pnpm:pre:watch\" \"next dev --turbo\"",
         "pre": "pnpm pre:typedoc && pnpm pre:mirror && pnpm pre:page-map",
         "pre:watch": "concurrently -i pnpm:pre:typedoc:watch pnpm:pre:mirror:watch",
         "pre:typedoc": "node scripts/emit-typedoc-json.mjs",
