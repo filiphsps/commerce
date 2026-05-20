@@ -54,7 +54,7 @@
         "@tagtree/core": "workspace:*"
     },
     "peerDependencies": {
-        "payload": "^3.0.0"
+        "payload": "3.0.0"
     },
     "devDependencies": {
         "@codecov/vite-plugin": "2.0.1",

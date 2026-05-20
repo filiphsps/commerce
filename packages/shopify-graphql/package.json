@@ -58,8 +58,8 @@
         "@nordcom/commerce-errors": "workspace:*"
     },
     "peerDependencies": {
-        "@apollo/client": "^3.13.0 || ^4.0.0",
-        "graphql": "^16.0.0"
+        "@apollo/client": "3.13.0 || ^4.0.0",
+        "graphql": "16.0.0"
     },
     "devDependencies": {
         "@apollo/client": "4.1.9",

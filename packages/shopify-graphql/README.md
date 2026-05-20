@@ -36,8 +36,8 @@ query Products($country: CountryCode, $language: LanguageCode)
         "@nordcom/commerce-shopify-graphql": "workspace:*"
     },
     "peerDependencies": {
-        "@apollo/client": "^3.13.0 || ^4.0.0",
-        "graphql": "^16.0.0"
+        "@apollo/client": "3.13.0 || ^4.0.0",
+        "graphql": "16.0.0"
     }
 }
 ```

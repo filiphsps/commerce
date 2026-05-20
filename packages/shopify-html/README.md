@@ -28,7 +28,7 @@ This package gives you both, with consistent normalization in front.
         "@nordcom/commerce-shopify-html": "workspace:*"
     },
     "peerDependencies": {
-        "react": "^19.0.0"
+        "react": "19.0.0"
     }
 }
 ```
