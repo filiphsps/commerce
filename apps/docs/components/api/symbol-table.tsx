@@ -31,7 +31,9 @@ async function renderSymbolEntry(
 ): Promise<React.JSX.Element> {
     const summary = symbol.comment?.summary?.map((s) => s.text).join('') ?? '';
     const source = symbol.sources?.[0];
-    const sourceUrl = source ? `${sourceBaseUrl}/${source.fileName}#L${source.line}` : undefined;
+    const sourceUrl = source
+        ? (source.url ?? `${sourceBaseUrl}/${source.fileName}#L${source.line}`)
+        : undefined;
 
     const signatures = await Promise.all(
         (symbol.signatures ?? []).map((sig) => renderSignatureEntry(sig, symbol.name)),

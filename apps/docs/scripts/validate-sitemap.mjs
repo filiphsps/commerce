@@ -20,7 +20,9 @@ if (urls.length === 0) {
 const nonAbs = urls.filter((u) => !u.startsWith('http://') && !u.startsWith('https://'));
 if (nonAbs.length > 0) {
     console.error(`[validate-sitemap] ${nonAbs.length} non-absolute URL(s):`);
-    nonAbs.slice(0, 5).forEach((u) => console.error(`  ${u}`));
+    for (const u of nonAbs.slice(0, 5)) {
+        console.error(`  ${u}`);
+    }
     process.exit(1);
 }
 console.info(`[validate-sitemap] ${urls.length} absolute URLs`);

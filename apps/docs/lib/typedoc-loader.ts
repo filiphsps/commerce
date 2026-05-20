@@ -9,7 +9,7 @@ export type TypeDocSymbol = {
     kind: number;
     signatures?: TypeDocSignature[];
     comment?: { summary?: { kind: string; text: string }[] };
-    sources?: { fileName: string; line: number }[];
+    sources?: { fileName: string; line: number; url?: string }[];
     type?: TypeDocType;
 };
 
