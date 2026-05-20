@@ -69,3 +69,6 @@ apps/docs/api/
 apps/*/docs/api
 packages/*/docs/api
 packages/**/docs/api
+
+# Local worktrees (created by superpowers/using-git-worktrees).
+.worktrees/
