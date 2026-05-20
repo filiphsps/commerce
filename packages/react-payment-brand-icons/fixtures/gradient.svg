@@ -1,0 +1,9 @@
+<svg viewBox="0 0 38 24" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+        <radialGradient id="grad1"><stop stop-color="#fff"/></radialGradient>
+        <linearGradient id="grad2"><stop stop-color="#000"/></linearGradient>
+    </defs>
+    <path d="M0 0h38v24H0z" fill="url(#grad1)"/>
+    <use xlink:href="#grad2"/>
+    <rect fill="url(#grad2)" x="0" y="0" width="10" height="10"/>
+</svg>
