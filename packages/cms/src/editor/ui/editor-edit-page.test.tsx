@@ -145,6 +145,26 @@ describe('<EditorEditPage>', () => {
         ).rejects.toThrow(/NEXT_REDIRECT:.*locale=de/);
     });
 
+    it('locale-redirect for a singleton omits the id segment from the URL', async () => {
+        await expect(
+            EditorEditPage({
+                manifest: baseManifest,
+                runtime: buildRuntime(),
+                params: { domain: 'a.test', id: 'singleton' },
+                searchParams: {},
+                generatedActions: {
+                    saveDraft: async () => {},
+                    publish: async () => {},
+                    delete: async () => {},
+                    create: async () => ({ id: 'new' }),
+                    bulkDelete: async () => {},
+                    bulkPublish: async () => {},
+                    restoreVersion: async () => {},
+                },
+            }),
+        ).rejects.toThrow('NEXT_REDIRECT:/a.test/x/?locale=de');
+    });
+
     it('does not redirect when searchParams.locale is in tenant.locales', async () => {
         const el = await EditorEditPage({
             manifest: baseManifest,

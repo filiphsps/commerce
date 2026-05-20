@@ -11,6 +11,7 @@ import type { EditorActions } from '../actions';
 import type { CollectionEditorManifest } from '../manifest';
 import { tenantWhere } from '../revalidate';
 import type { EditorRuntime } from '../runtime';
+import { docUrlSegment } from '../url';
 import { EditorFields } from './editor-fields';
 import { EditorFormToolbar } from './editor-form-toolbar';
 import { localeLabel } from './locale-label';
@@ -64,7 +65,7 @@ export async function EditorEditPage<TSlug extends CollectionSlug>({
         }
         next.set('locale', tenantDefault);
         const base = manifest.routes.basePath(domain);
-        redirect(`${base}${id}/?${next.toString()}` as Route);
+        redirect(`${base}${docUrlSegment(manifest, id)}?${next.toString()}` as Route);
     }
 
     const locale = requested as string;
