@@ -14,6 +14,7 @@ const isoEpoch = new Date(0).toISOString();
 export const mockMedia = (overrides?: Partial<Media>): Media =>
     ({
         id: 'media-mock-1',
+        tenant: 'tenant-mock',
         url: 'https://cdn.test/mock.png',
         alt: 'mock',
         width: 64,
