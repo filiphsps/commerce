@@ -59,7 +59,7 @@ export async function InfoBar({ shop, locale, i18n, ...props }: InfoBarProps) {
                 </div>
 
                 <div className={BLOCK_STYLES}>
-                    <div className="hidden md:visible">{t('contact')}: </div>
+                    <div className="hidden md:inline">{t('contact')}: </div>
                     <div className="flex gap-3 *:select-none">
                         {email ? (
                             <Link
