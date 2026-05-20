@@ -16,7 +16,7 @@ export const ShellState = z.object({
 export type ShellState = z.infer<typeof ShellState>;
 
 export const DEFAULT_SHELL_STATE: ShellState = {
-    rail: { w: 56, collapsed: true },
+    rail: { w: 52, collapsed: true },
     subnav: { w: 240, collapsed: false },
     inspector: { w: 320, collapsed: true },
 };

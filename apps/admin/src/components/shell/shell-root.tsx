@@ -30,7 +30,8 @@ export type ShellRootProps = {
     iconRailItems: IconRailItem[];
 };
 
-const RAIL_MIN_PX = 56;
+const RAIL_MIN_PX = 52;
+const RAIL_LABEL_THRESHOLD_PX = 160;
 const RAIL_MAX_PX = 280;
 const SUBNAV_MIN_PX = 200;
 const SUBNAV_MAX_PX = 480;
@@ -121,7 +122,7 @@ export function ShellRoot({
                             collapsible
                             collapsedSize={pxToPercent(RAIL_MIN_PX, SSR_REFERENCE_WIDTH)}
                         >
-                            <IconRail items={iconRailItems} expanded={initialState.rail.w > RAIL_MIN_PX + 16} />
+                            <IconRail items={iconRailItems} expanded={initialState.rail.w >= RAIL_LABEL_THRESHOLD_PX} />
                         </Panel>
 
                         {hasSubnav ? (
