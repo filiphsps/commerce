@@ -2,8 +2,8 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
 
-const reporters = ['verbose'];
-const extraReporters = !process.env.GITHUB_ACTIONS ? [] : ['github-actions', 'junit'];
+const reporters = ['verbose', 'junit'];
+const extraReporters = !process.env.GITHUB_ACTIONS ? [] : ['github-actions'];
 const exclude = [
     '**/.next/**/*.*',
     '**/.turbo/**/*.*',
@@ -45,7 +45,7 @@ export default defineConfig({
         coverage: {
             exclude: exclude,
             provider: 'v8',
-            reporter: ['json', 'json-summary', 'text'],
+            reporter: ['json', 'json-summary', 'text', 'text-summary'],
             reportOnFailure: true,
             // Per-glob regression floors. Spec target is 80% storefront / 60% admin lines.
             // Current achieved levels (after Wave 2): storefront ~73% lines, admin ~67% lines.
