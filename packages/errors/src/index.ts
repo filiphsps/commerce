@@ -90,6 +90,14 @@ export enum ApiErrorKind {
     API_PROVIDER_FETCH_FAILED = 'API_PROVIDER_FETCH_FAILED',
     API_SHOPIFY_GRAPHQL_DUPLICATE_CONTEXT_DIRECTIVE = 'API_SHOPIFY_GRAPHQL_DUPLICATE_CONTEXT_DIRECTIVE',
     API_SHOPIFY_GRAPHQL_DUPLICATE_CONTEXT_VARIABLE = 'API_SHOPIFY_GRAPHQL_DUPLICATE_CONTEXT_VARIABLE',
+    API_UNKNOWN_SHOP_ID = 'API_UNKNOWN_SHOP_ID',
+    API_SHOP_MISCONFIGURATION = 'API_SHOP_MISCONFIGURATION',
+    API_MALFORMED_FORM_PAYLOAD = 'API_MALFORMED_FORM_PAYLOAD',
+    API_UNKNOWN_COLLECTION_SLUG = 'API_UNKNOWN_COLLECTION_SLUG',
+    API_NO_LOCALE_RESOLVABLE = 'API_NO_LOCALE_RESOLVABLE',
+    API_MISSING_UPLOAD_FILE = 'API_MISSING_UPLOAD_FILE',
+    API_EMPTY_UPLOAD_FILE = 'API_EMPTY_UPLOAD_FILE',
+    API_MISSING_REQUIRED_FIELD = 'API_MISSING_REQUIRED_FIELD',
 }
 
 export class ApiError extends Error<ApiErrorKind> {
@@ -408,6 +416,115 @@ export class DuplicateContextVariableError extends ApiError {
     }
 }
 
+export class UnknownShopIdError extends UnknownError {
+    statusCode = 404;
+    name = 'UnknownShopIdError';
+    details = 'Unknown shop id';
+    description = 'Could not find a shop with the given id';
+    code = ApiErrorKind.API_UNKNOWN_SHOP_ID;
+
+    constructor(id?: string, cause?: string, statusCode?: number) {
+        super(cause, statusCode);
+        if (id) {
+            this.description = this.description.replace('the given id', `id "${id}"`);
+        }
+    }
+}
+
+export class ShopMisconfigurationError extends ApiError {
+    statusCode = 500;
+    name = 'ShopMisconfigurationError';
+    details = 'Shop is misconfigured';
+    description = 'The shop is misconfigured';
+    code = ApiErrorKind.API_SHOP_MISCONFIGURATION;
+
+    constructor(domain?: string, missingFields?: readonly string[], cause?: string, statusCode?: number) {
+        super(cause, statusCode);
+        if (domain) {
+            this.description = this.description.replace('The shop', `Shop "${domain}"`);
+        }
+        if (missingFields && missingFields.length > 0) {
+            this.description = `${this.description}: missing ${missingFields.join(', ')}`;
+        }
+    }
+}
+
+export class MalformedFormPayloadError extends ApiError {
+    statusCode = 400;
+    name = 'MalformedFormPayloadError';
+    details = 'Malformed form payload';
+    description = 'The form payload could not be parsed';
+    code = ApiErrorKind.API_MALFORMED_FORM_PAYLOAD;
+
+    constructor(cause?: unknown) {
+        super();
+        if (cause !== undefined && cause !== null) {
+            this.cause = cause instanceof globalThis.Error ? cause.message : String(cause);
+        }
+    }
+}
+
+export class UnknownCollectionSlugError extends ApiError {
+    statusCode = 500;
+    name = 'UnknownCollectionSlugError';
+    details = 'Unknown collection slug';
+    description = 'No collection is registered with the given slug';
+    code = ApiErrorKind.API_UNKNOWN_COLLECTION_SLUG;
+
+    constructor(slug?: string, cause?: string, statusCode?: number) {
+        super(cause, statusCode);
+        if (slug) {
+            this.description = this.description.replace('the given slug', `slug "${slug}"`);
+        }
+    }
+}
+
+export class NoLocaleResolvableError extends ApiError {
+    statusCode = 500;
+    name = 'NoLocaleResolvableError';
+    details = 'No locale resolvable';
+    description = 'No locale could be resolved for the request and no default locale is set';
+    code = ApiErrorKind.API_NO_LOCALE_RESOLVABLE;
+
+    constructor(url?: string, cause?: string, statusCode?: number) {
+        super(cause, statusCode);
+        if (url) {
+            this.description = this.description.replace('the request', `"${url}"`);
+        }
+    }
+}
+
+export class MissingUploadFileError extends ApiError {
+    statusCode = 400;
+    name = 'MissingUploadFileError';
+    details = 'Missing upload file';
+    description = 'No file was provided with the upload';
+    code = ApiErrorKind.API_MISSING_UPLOAD_FILE;
+}
+
+export class EmptyUploadFileError extends ApiError {
+    statusCode = 400;
+    name = 'EmptyUploadFileError';
+    details = 'Empty upload file';
+    description = 'The uploaded file is empty';
+    code = ApiErrorKind.API_EMPTY_UPLOAD_FILE;
+}
+
+export class MissingRequiredFieldError extends ApiError {
+    statusCode = 400;
+    name = 'MissingRequiredFieldError';
+    details = 'Missing required field';
+    description = 'A required field is missing';
+    code = ApiErrorKind.API_MISSING_REQUIRED_FIELD;
+
+    constructor(fieldName?: string, cause?: string, statusCode?: number) {
+        super(cause, statusCode);
+        if (fieldName) {
+            this.description = this.description.replace('A required field', `Required field "${fieldName}"`);
+        }
+    }
+}
+
 export enum GenericErrorKind {
     GENERIC_UNKNOWN_ERROR = 'GENERIC_UNKNOWN_ERROR',
     GENERIC_TODO = 'GENERIC_TODO',
@@ -562,5 +679,21 @@ export const getErrorFromCode = (
             return DuplicateContextDirectiveError as unknown as typeof ApiError;
         case ApiErrorKind.API_SHOPIFY_GRAPHQL_DUPLICATE_CONTEXT_VARIABLE:
             return DuplicateContextVariableError as unknown as typeof ApiError;
+        case ApiErrorKind.API_UNKNOWN_SHOP_ID:
+            return UnknownShopIdError as unknown as typeof ApiError;
+        case ApiErrorKind.API_SHOP_MISCONFIGURATION:
+            return ShopMisconfigurationError as unknown as typeof ApiError;
+        case ApiErrorKind.API_MALFORMED_FORM_PAYLOAD:
+            return MalformedFormPayloadError;
+        case ApiErrorKind.API_UNKNOWN_COLLECTION_SLUG:
+            return UnknownCollectionSlugError as unknown as typeof ApiError;
+        case ApiErrorKind.API_NO_LOCALE_RESOLVABLE:
+            return NoLocaleResolvableError as unknown as typeof ApiError;
+        case ApiErrorKind.API_MISSING_UPLOAD_FILE:
+            return MissingUploadFileError;
+        case ApiErrorKind.API_EMPTY_UPLOAD_FILE:
+            return EmptyUploadFileError;
+        case ApiErrorKind.API_MISSING_REQUIRED_FIELD:
+            return MissingRequiredFieldError as unknown as typeof ApiError;
     }
 };
