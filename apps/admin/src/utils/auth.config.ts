@@ -3,7 +3,7 @@ import GitHub from 'next-auth/providers/github';
 
 import { LANDING_DOMAIN } from '@/utils/domains';
 
-const NEXTAUTH_URL = process.env.NEXTAUTH_URL || null;
+const IS_PROD = process.env.NODE_ENV === 'production';
 
 // Auth.js v5's default session cookie name is `__Secure-authjs.session-token`
 // (note `authjs.` prefix, not the legacy `next-auth.` from NextAuth v4).
@@ -33,15 +33,15 @@ export default {
     ],
     cookies: {
         sessionToken: {
-            // Use Auth.js v5's canonical name. `__Secure-` prefix is added by
-            // Auth.js automatically when it detects HTTPS (NEXTAUTH_URL set).
-            name: `${NEXTAUTH_URL ? '__Secure-' : ''}authjs.session-token`,
+            // Use Auth.js v5's canonical name. `__Secure-` prefix is applied
+            // in production (NODE_ENV === 'production') to scope cookies to HTTPS.
+            name: `${IS_PROD ? '__Secure-' : ''}authjs.session-token`,
             options: {
                 httpOnly: true,
                 sameSite: 'lax',
                 path: '/',
-                domain: NEXTAUTH_URL ? `.${LANDING_DOMAIN}` : undefined,
-                secure: !!NEXTAUTH_URL,
+                domain: IS_PROD ? `.${LANDING_DOMAIN}` : undefined,
+                secure: IS_PROD,
             },
         },
     },

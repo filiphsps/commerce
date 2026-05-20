@@ -2,7 +2,7 @@ import type { OnlineShop } from '@nordcom/commerce-db';
 import type { NextAuthConfig } from 'next-auth';
 import ShopifyProvider from '@/auth/shopify-provider';
 
-const VERCEL_DEPLOYMENT = process.env.VERCEL_URL;
+const IS_PROD = process.env.NODE_ENV === 'production';
 
 const config = ({
     shop,
@@ -20,14 +20,14 @@ const config = ({
         skipCSRFCheck: true as unknown as NextAuthConfig['skipCSRFCheck'], // TODO
         cookies: {
             sessionToken: {
-                name: `${VERCEL_DEPLOYMENT ? '__Secure-' : ''}NordcomCommerceSession`,
+                name: `${IS_PROD ? '__Secure-' : ''}NordcomCommerceSession`,
                 options: {
                     httpOnly: true,
                     sameSite: 'lax',
                     path: '/',
                     // When working on localhost, the cookie domain must be omitted entirely (https://stackoverflow.com/a/1188145)
-                    domain: VERCEL_DEPLOYMENT ? `.${shop.domain.split('.').slice(-2).join('.')}` : undefined,
-                    secure: !!VERCEL_DEPLOYMENT,
+                    domain: IS_PROD ? `.${shop.domain.split('.').slice(-2).join('.')}` : undefined,
+                    secure: !!IS_PROD,
                 },
             },
         },
