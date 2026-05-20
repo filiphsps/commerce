@@ -16,7 +16,7 @@ vi.mock('next/navigation', async () => ({
 vi.mock('@/api/shopify', () => ({
     ShopifyApolloApiClient: vi.fn().mockResolvedValue({
         query: vi.fn(),
-        shop: vi.fn().mockReturnValue({ id: 'mock-shop-id', domain: 'staging.localhost:3000' }),
+        shop: vi.fn().mockReturnValue({ id: 'mock-shop-id', domain: 'staging.storefront.localhost' }),
         locale: vi.fn(),
     }),
 }));
@@ -30,7 +30,9 @@ vi.mock('@/api/shopify/collection', () => ({
 const { GET } = await import('@/app/[domain]/sitemaps/[locale]/collections.xml/route');
 
 function makeRequest(): Request {
-    return new Request('http://staging.localhost:3000/staging.localhost:3000/sitemaps/en-US/collections.xml');
+    return new Request(
+        'http://staging.storefront.localhost/staging.storefront.localhost/sitemaps/en-US/collections.xml',
+    );
 }
 
 describe('app/[domain]/sitemaps/[locale]/collections.xml', () => {
@@ -42,7 +44,7 @@ describe('app/[domain]/sitemaps/[locale]/collections.xml', () => {
             });
 
             const res = await GET(makeRequest() as any, {
-                params: Promise.resolve({ domain: 'staging.localhost:3000', locale: 'en-US' }),
+                params: Promise.resolve({ domain: 'staging.storefront.localhost', locale: 'en-US' }),
             });
 
             expect(res.status).toBe(200);
@@ -59,7 +61,7 @@ describe('app/[domain]/sitemaps/[locale]/collections.xml', () => {
             });
 
             const res = await GET(makeRequest() as any, {
-                params: Promise.resolve({ domain: 'staging.localhost:3000', locale: 'en-US' }),
+                params: Promise.resolve({ domain: 'staging.storefront.localhost', locale: 'en-US' }),
             });
 
             const body = await res.text();
@@ -75,18 +77,18 @@ describe('app/[domain]/sitemaps/[locale]/collections.xml', () => {
             });
 
             const res = await GET(makeRequest() as any, {
-                params: Promise.resolve({ domain: 'staging.localhost:3000', locale: 'en-US' }),
+                params: Promise.resolve({ domain: 'staging.storefront.localhost', locale: 'en-US' }),
             });
 
             const body = await res.text();
-            expect(body).toContain('https://staging.localhost:3000/en-US/collections/demo-collection/');
+            expect(body).toContain('https://staging.storefront.localhost/en-US/collections/demo-collection/');
         });
 
         it('returns a valid empty urlset when no collections exist', async () => {
             CollectionsPaginationApiMock.mockResolvedValueOnce(null);
 
             const res = await GET(makeRequest() as any, {
-                params: Promise.resolve({ domain: 'staging.localhost:3000', locale: 'en-US' }),
+                params: Promise.resolve({ domain: 'staging.storefront.localhost', locale: 'en-US' }),
             });
 
             expect(res.status).toBe(200);
@@ -104,7 +106,7 @@ describe('app/[domain]/sitemaps/[locale]/collections.xml', () => {
             });
 
             const res = await GET(makeRequest() as any, {
-                params: Promise.resolve({ domain: 'staging.localhost:3000', locale: 'en-US' }),
+                params: Promise.resolve({ domain: 'staging.storefront.localhost', locale: 'en-US' }),
             });
 
             const body = await res.text();

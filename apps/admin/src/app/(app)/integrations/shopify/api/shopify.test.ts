@@ -95,7 +95,7 @@ describe('integrations/shopify/api/shopify', () => {
         expect(callArg?.hostName).toBe('admin.example.com');
     });
 
-    it('falls back to localhost:3000 when ADMIN_DOMAIN is not set', async () => {
+    it('falls back to admin.localhost when ADMIN_DOMAIN is not set', async () => {
         vi.stubEnv('ADMIN_DOMAIN', '');
         vi.resetModules();
 
@@ -109,7 +109,7 @@ describe('integrations/shopify/api/shopify', () => {
         await import('./shopify');
 
         const callArg = mockShopifyApiFallback.mock.calls[0]?.[0] as { hostName?: string };
-        expect(callArg?.hostName).toBe('localhost:3000');
+        expect(callArg?.hostName).toBe('admin.localhost');
     });
 
     describe('when Shopify environment variables are missing', () => {

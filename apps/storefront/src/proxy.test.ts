@@ -21,7 +21,7 @@ describe('proxy', () => {
     });
 
     it('dispatches /admin/... to admin() and not storefront()', async () => {
-        const req = new NextRequest('http://localhost/admin/dashboard');
+        const req = new NextRequest('https://storefront.localhost/admin/dashboard');
         await proxy(req);
 
         expect(admin).toHaveBeenCalledOnce();
@@ -29,7 +29,7 @@ describe('proxy', () => {
     });
 
     it('dispatches non-admin paths to storefront() and not admin()', async () => {
-        const req = new NextRequest('http://localhost/products');
+        const req = new NextRequest('https://storefront.localhost/products');
         await proxy(req);
 
         expect(storefront).toHaveBeenCalledOnce();
@@ -38,7 +38,7 @@ describe('proxy', () => {
 
     it('returns NextResponse.next() for /.well-known/vercel/... without calling admin or storefront', async () => {
         const nextSpy = vi.spyOn(NextResponse, 'next');
-        const req = new NextRequest('http://localhost/.well-known/vercel/flags');
+        const req = new NextRequest('https://storefront.localhost/.well-known/vercel/flags');
         await proxy(req);
 
         expect(nextSpy).toHaveBeenCalled();

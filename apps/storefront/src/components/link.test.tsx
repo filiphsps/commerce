@@ -9,7 +9,7 @@ vi.mock('@shopify/hydrogen-react', async () => {
             status: 'idle',
         }),
         useShop: vi.fn().mockReturnValue({
-            domain: 'staging.localhost:3000',
+            domain: 'staging.storefront.localhost',
         }),
         useShopifyCookies: vi.fn().mockReturnValue({}),
     };
@@ -17,7 +17,7 @@ vi.mock('@shopify/hydrogen-react', async () => {
 
 vi.mock('@/utils/build-config', () => ({
     BuildConfig: {
-        domain: 'staging.localhost:3000',
+        domain: 'staging.storefront.localhost',
         i18n: {
             default: 'en-US',
         },
@@ -66,9 +66,9 @@ describe('components', () => {
         });
 
         it('should remove the current domain from the `href`', () => {
-            vi.spyOn(window, 'location', 'get').mockReturnValue({ host: 'staging.localhost:3000' } as any);
-            window.location.host = 'staging.localhost:3000';
-            const href = `https://staging.localhost:3000/some/path`;
+            vi.spyOn(window, 'location', 'get').mockReturnValue({ host: 'staging.storefront.localhost' } as any);
+            window.location.host = 'staging.storefront.localhost';
+            const href = `https://staging.storefront.localhost/some/path`;
             const { container } = render(<Link href={href} />);
             const link = container.querySelector('a');
             expect(link?.getAttribute('href')).toBe('/en-US/some/path');

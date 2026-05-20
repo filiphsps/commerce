@@ -5,7 +5,7 @@ type DeepPartial<T> = { [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]>
 export function mockShop({ overrides }: { overrides?: DeepPartial<OnlineShop> } = {}): OnlineShop {
     const base = {
         id: 'mock-shop-id',
-        domain: 'staging.localhost:3000',
+        domain: 'staging.storefront.localhost',
         commerceProvider: {
             type: 'shopify' as const,
             domain: 'mock.shop' as const,

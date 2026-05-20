@@ -57,37 +57,37 @@ describe('admin proxy', () => {
             const { default: proxy } = (await import('./proxy')) as unknown as {
                 default: (request: NextRequest) => Promise<Response> | Response;
             };
-            const request = new NextRequest('http://localhost/cms');
+            const request = new NextRequest('https://admin.localhost/cms');
             const response = (await proxy(request)) as Response;
             expect(response.status).toBe(301);
-            expect(response.headers.get('location')).toBe('http://localhost/');
+            expect(response.headers.get('location')).toBe('https://admin.localhost/');
         });
 
         it('redirects /cms/ with 301 to /', async () => {
             const { default: proxy } = (await import('./proxy')) as unknown as {
                 default: (request: NextRequest) => Promise<Response> | Response;
             };
-            const request = new NextRequest('http://localhost/cms/');
+            const request = new NextRequest('https://admin.localhost/cms/');
             const response = (await proxy(request)) as Response;
             expect(response.status).toBe(301);
-            expect(response.headers.get('location')).toBe('http://localhost/');
+            expect(response.headers.get('location')).toBe('https://admin.localhost/');
         });
 
         it('redirects /cms/collections/anything with 301 to /', async () => {
             const { default: proxy } = (await import('./proxy')) as unknown as {
                 default: (request: NextRequest) => Promise<Response> | Response;
             };
-            const request = new NextRequest('http://localhost/cms/collections/anything');
+            const request = new NextRequest('https://admin.localhost/cms/collections/anything');
             const response = (await proxy(request)) as Response;
             expect(response.status).toBe(301);
-            expect(response.headers.get('location')).toBe('http://localhost/');
+            expect(response.headers.get('location')).toBe('https://admin.localhost/');
         });
 
         it('passes through /some-domain/content/ without redirect', async () => {
             const { default: proxy } = (await import('./proxy')) as unknown as {
                 default: (request: NextRequest) => Promise<Response> | Response;
             };
-            const request = new NextRequest('http://localhost/some-domain/content/');
+            const request = new NextRequest('https://admin.localhost/some-domain/content/');
             const response = (await proxy(request)) as Response;
             // NextResponse.next() does not set a Location header
             expect(response.headers.get('location')).toBeNull();
@@ -97,7 +97,7 @@ describe('admin proxy', () => {
             const { default: proxy } = (await import('./proxy')) as unknown as {
                 default: (request: NextRequest) => Promise<Response> | Response;
             };
-            const request = new NextRequest('http://localhost/cms-admin');
+            const request = new NextRequest('https://admin.localhost/cms-admin');
             const response = (await proxy(request)) as Response;
             expect(response.headers.get('location')).toBeNull();
         });
