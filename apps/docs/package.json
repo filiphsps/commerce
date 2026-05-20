@@ -14,7 +14,7 @@
         "pre:mirror:watch": "node scripts/mirror-workspace-docs.mjs --watch",
         "pre:page-map": "node scripts/generate-page-map.mjs",
         "build": "pnpm pre && next build && pnpm postbuild",
-        "postbuild": "pagefind --site .next/server/app --output-path \"out${NEXT_PUBLIC_DOCS_BASE_PATH:-}/_pagefind\"",
+        "postbuild": "pagefind --site out --output-path \"out${NEXT_PUBLIC_DOCS_BASE_PATH:-}/_pagefind\"",
         "start": "next start -p 3002",
         "lint": "biome lint .",
         "format": "concurrently -i pnpm:format:*",
