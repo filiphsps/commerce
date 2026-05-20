@@ -1,6 +1,6 @@
 # @nordcom/commerce-docs
 
-Next.js 16 + Nextra 4 docs site. Static export. Supports two deployment shapes:
+Next.js 16 + Nextra 4 docs site. Static export. Supports three deployment shapes:
 
 ## GH Pages (current canonical)
 
@@ -11,7 +11,7 @@ CI builds with `NEXT_PUBLIC_DOCS_BASE_PATH=/commerce` and `NEXT_PUBLIC_DOCS_CANO
 Set Vercel project env vars:
 
 - `NEXT_PUBLIC_DOCS_BASE_PATH` = (empty)
-- `NEXT_PUBLIC_DOCS_CANONICAL_URL` = `https://docs.nordcom.io`
+- `NEXT_PUBLIC_DOCS_CANONICAL_URL` = `https://docs.nordcom.io` _(optional — see "Vercel canonical fallback" below)_
 
 Set Output directory to `out`, Framework to "Next.js".
 
@@ -20,7 +20,7 @@ Set Output directory to `out`, Framework to "Next.js".
 Set Vercel project env vars on the docs deployment:
 
 - `NEXT_PUBLIC_DOCS_BASE_PATH` = `/docs`
-- `NEXT_PUBLIC_DOCS_CANONICAL_URL` = `https://nordcom.io/docs`
+- `NEXT_PUBLIC_DOCS_CANONICAL_URL` = `https://nordcom.io/docs` _(optional — see "Vercel canonical fallback" below)_
 
 On the parent Next.js project (`nordcom.io`), add a rewrite:
 
@@ -32,6 +32,15 @@ async rewrites() {
     ];
 }
 ```
+
+## Vercel canonical fallback
+
+`NEXT_PUBLIC_DOCS_CANONICAL_URL` is **not required** on Vercel. When unset, `resolveDocsEnv` derives the canonical from Vercel's system env vars:
+
+- Production deployments (`VERCEL_ENV=production`): uses `VERCEL_PROJECT_PRODUCTION_URL`, falling back to `VERCEL_URL`.
+- Preview deployments (`VERCEL_ENV=preview`): uses `VERCEL_BRANCH_URL` (stable per-branch), falling back to `VERCEL_URL`.
+
+`NEXT_PUBLIC_DOCS_BASE_PATH` (if set) is appended to the derived host. Setting `NEXT_PUBLIC_DOCS_CANONICAL_URL` explicitly always overrides the fallback — required for non-Vercel production builds (e.g. GH Pages).
 
 ## Local dev
 

@@ -1,6 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+import { DuplicateWorkspaceSlugError } from '@nordcom/commerce-errors';
+
 export type Workspace = {
     /** URL slug, mirrors on-disk path under apps/* or packages/* (e.g. 'cms', 'tagtree/core'). */
     slug: string;
@@ -58,9 +60,7 @@ export function assertUniqueSlugs(workspaces: { slug: string }[]): void {
     const seen = new Set<string>();
     for (const w of workspaces) {
         if (seen.has(w.slug)) {
-            throw new Error(
-                `duplicate workspace slug "${w.slug}" — workspace names must be globally unique across apps/* and packages/**`,
-            );
+            throw new DuplicateWorkspaceSlugError(w.slug);
         }
         seen.add(w.slug);
     }

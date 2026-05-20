@@ -11,7 +11,13 @@ describe('loadSubpathJson', () => {
     });
 
     it('throws with a helpful message when subpath JSON is missing', () => {
-        expect(() => loadSubpathJson(FIXTURE, 'missing')).toThrow(/No TypeDoc JSON found for subpath "missing"/);
+        expect(() => loadSubpathJson(FIXTURE, 'missing')).toThrow(
+            expect.objectContaining({
+                name: 'MissingTypeDocOutputError',
+                code: 'GENERIC_MISSING_TYPEDOC_OUTPUT',
+                description: expect.stringContaining('"missing"'),
+            }),
+        );
     });
 });
 

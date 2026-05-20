@@ -2,6 +2,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+import { MissingTypeDocOutputError } from '@nordcom/commerce-errors';
+
 /** Subset of TypeDoc's serialized project shape — we read what we need, type-safely. */
 export type TypeDocSymbol = {
     id: number;
@@ -53,10 +55,7 @@ const KIND_LABELS: Record<number, string> = {
 export function loadSubpathJson(rootDir: string, subpathKey: string): TypeDocProject {
     const file = path.join(rootDir, `${subpathKey}.json`);
     if (!fs.existsSync(file)) {
-        throw new Error(
-            `No TypeDoc JSON found for subpath "${subpathKey}" in ${rootDir}. ` +
-                `Run \`pnpm --filter @nordcom/commerce-docs pre:typedoc\` first.`,
-        );
+        throw new MissingTypeDocOutputError(subpathKey, rootDir, 'pnpm --filter @nordcom/commerce-docs pre:typedoc');
     }
     return JSON.parse(fs.readFileSync(file, 'utf8')) as TypeDocProject;
 }
