@@ -25,10 +25,15 @@ import { defineFlag } from './define';
 import { __resetPredicatesForTest, registerPredicate } from './predicates';
 import { reportFlagValue } from './report';
 
-type ShopWithFlags = OnlineShop & { featureFlags?: Array<{ flag: unknown }> };
+type FlagShape = {
+    key: string;
+    defaultValue: unknown;
+    targeting: Array<{ rule: string; params: Record<string, unknown>; value: unknown }>;
+};
+type ShopOverrides = { featureFlags?: Array<{ flag: FlagShape }> };
 
-function makeShop(overrides: Partial<ShopWithFlags> = {}): OnlineShop {
-    return { id: 'shop-1', ...overrides } as OnlineShop;
+function makeShop(overrides: ShopOverrides = {}): OnlineShop {
+    return { id: 'shop-1', ...overrides } as unknown as OnlineShop;
 }
 
 describe('utils/flags/define', () => {
