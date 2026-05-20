@@ -3,9 +3,6 @@ import 'dotenv/config';
 import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import createVercelToolbar from '@vercel/toolbar/plugins/next';
-
-const withVercelToolbar = createVercelToolbar();
 
 // TODO: Create util instead of duplicating it thrice.
 const isDev = [process.env.NODE_ENV, process.env.VERCEL_ENV].includes('development');
@@ -22,7 +19,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 /** @type {import('next').NextConfig} */
 const config = {
     pageExtensions: ['ts', 'tsx'],
-    allowedDevOrigins: ['storefront.localhost', '*.storefront.localhost'],
+    allowedDevOrigins: ['storefront.localhost', '*.storefront.localhost', 'localhost'],
     poweredByHeader: false,
     generateEtags: true,
     reactStrictMode: true,
@@ -45,7 +42,7 @@ const config = {
         cssChunking: true,
         dynamicOnHover: true,
         esmExternals: true,
-        mcpServer: isDev,
+        mcpServer: false && isDev, // TODO: Enable when we can have multiple mcp servers.
         optimizeCss: !isDev,
         optimizePackageImports: ['@apollo/client', '@shopify/hydrogen-react', '@nordcom/nordstar'],
         optimizeServerReact: true,
@@ -142,9 +139,6 @@ const config = {
  * @returns
  */
 const wrapConfig = (config) => {
-    // Always include vercel toolbar.
-    config = withVercelToolbar(config);
-
     if (isDev) {
         console.warn('Development mode detected, skipping logging...');
         // TODO: Add logging service.

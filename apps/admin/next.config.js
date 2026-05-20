@@ -5,9 +5,6 @@ import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { withPayload } from '@payloadcms/next/withPayload';
-import createVercelToolbar from '@vercel/toolbar/plugins/next';
-
-const withVercelToolbar = createVercelToolbar({});
 
 // TODO: Create util instead of duplicating it thrice.
 const isDev = [process.env.NODE_ENV, process.env.VERCEL_ENV].includes('development');
@@ -45,7 +42,7 @@ if (ADMIN_DOMAIN) {
 /** @type {import('next').NextConfig} */
 const config = {
     pageExtensions: ['ts', 'tsx'],
-    allowedDevOrigins: ['admin.localhost'],
+    allowedDevOrigins: ['admin.localhost', 'localhost'],
     poweredByHeader: false,
     generateEtags: true,
     reactStrictMode: true,
@@ -128,8 +125,6 @@ const config = {
 const wrapConfig = (config) => {
     // Always include payload.
     config = withPayload(config);
-    // Always include vercel toolbar.
-    config = withVercelToolbar(config);
 
     if (isDev) {
         console.warn('Development mode detected, skipping logging...');

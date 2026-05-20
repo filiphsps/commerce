@@ -1,8 +1,9 @@
 {
+    "turbo": false,
     "apps": {
-        "apps/storefront": { "name": "storefront", "script": "dev:app" },
-        "apps/admin": { "name": "admin", "script": "dev:app" },
-        "apps/landing": { "name": "landing", "script": "dev:app" },
-        "apps/docs": { "name": "docs", "script": "dev:app" }
+        "apps/storefront": { "name": "storefront", "script": "dev" },
+        "apps/admin": { "name": "admin", "script": "dev" },
+        "apps/landing": { "name": "landing", "script": "dev" },
+        "apps/docs": { "name": "docs", "script": "dev" }
     }
 }

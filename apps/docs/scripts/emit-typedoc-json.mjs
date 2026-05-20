@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { Application, TSConfigReader } from 'typedoc';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -10,9 +10,7 @@ const OUT_ROOT = path.join(DOCS_APP, '.typedoc-out');
 
 const SKIP_DIRS = new Set(['node_modules', 'dist', 'build', '.turbo', '.next', 'coverage', 'docs', 'src', 'api']);
 
-const WATCH = process.argv.includes('--watch');
-
-async function main() {
+export async function main({ quiet = false } = {}) {
     const workspaces = discoverPackagesWithExports(REPO_ROOT);
     let totalSubpaths = 0;
     let warnings = 0;
@@ -60,7 +58,10 @@ async function main() {
         }
     }
 
-    console.info(`[emit-typedoc-json] emitted ${totalSubpaths} subpath JSON files; warnings: ${warnings}`);
+    if (!quiet) {
+        console.info(`[emit-typedoc-json] emitted ${totalSubpaths} subpath JSON files; warnings: ${warnings}`);
+    }
+    return { totalSubpaths, warnings };
 }
 
 function discoverPackagesWithExports(repoRoot) {
@@ -209,16 +210,7 @@ function filterToSubpath(project, sourceFile, sourceBase) {
     };
 }
 
-if (WATCH) {
-    // Simple watch: rebuild on any change under packages/**/src; debounced 500ms.
-    let timer;
-    fs.watch(path.join(REPO_ROOT, 'packages'), { recursive: true }, (_event, filename) => {
-        if (!filename?.endsWith('.ts')) return;
-        clearTimeout(timer);
-        timer = setTimeout(() => main().catch(console.error), 500);
-    });
-    main().catch(console.error);
-} else {
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
     main().catch((err) => {
         console.error(err);
         process.exit(1);

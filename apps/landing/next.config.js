@@ -5,9 +5,6 @@ import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import withMarkdoc from '@markdoc/next.js';
-import createVercelToolbar from '@vercel/toolbar/plugins/next';
-
-const withVercelToolbar = createVercelToolbar();
 
 // TODO: Create util instead of duplicating it thrice.
 const isDev = [process.env.NODE_ENV, process.env.VERCEL_ENV].includes('development');
@@ -60,7 +57,7 @@ export function getBaseUrl() {
 /** @type {import('next').NextConfig} */
 const config = {
     pageExtensions: ['ts', 'tsx', 'md', 'mdx'],
-    allowedDevOrigins: ['landing.localhost'],
+    allowedDevOrigins: ['landing.localhost', 'localhost'],
     poweredByHeader: false,
     generateEtags: true,
     reactStrictMode: true,
@@ -74,21 +71,28 @@ const config = {
     turbopack: { root: path.resolve(path.join(__dirname, '../..')) },
     experimental: {
         appNavFailHandling: true,
+        appNewScrollHandler: true,
         cssChunking: 'strict',
-        proxyPrefetch: 'strict',
+        mcpServer: false && isDev, // TODO: Enable when we can have multiple mcp servers.
+        dynamicOnHover: true,
+        esmExternals: true,
         optimizeCss: true,
         optimizePackageImports: ['@apollo/client', '@shopify/hydrogen-react', 'react-icons', '@nordcom/nordstar'],
         optimizeServerReact: true,
-        parallelServerBuildTraces: true,
-        parallelServerCompiles: true,
+        partialFallbacks: true,
+        prerenderEarlyExit: true,
+        proxyPrefetch: 'strict',
+        rootParams: true,
         scrollRestoration: true,
-        serverComponentsHmrCache: true,
+        serverComponentsHmrCache: isDev,
         serverSourceMaps: true,
-        staleTimes: { dynamic: 0, static: 180 },
+        staleTimes: {
+            dynamic: 30,
+            static: 60 * 15, // TODO: Investigate if 15 min is a good cache time.
+        },
         taint: true,
         typedEnv: true,
-        webpackBuildWorker: true,
-        rootParams: true,
+        webpackBuildWorker: false,
     },
     images: {
         dangerouslyAllowSVG: true,
@@ -142,4 +146,4 @@ export default withMarkdoc({
         allowComments: true,
         slots: true,
     },
-})(withVercelToolbar(config));
+})(config);

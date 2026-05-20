@@ -9,7 +9,6 @@ import { Toaster as ToasterProvider } from 'sonner';
 import { CartFragment } from '@/api/shopify/cart';
 import { LiveChatProvider } from '@/components/live-chat-provider';
 import { ShopProvider } from '@/components/shop/provider';
-import { Toolbars } from '@/components/toolbars';
 import { useCartUtils } from '@/hooks/useCartUtils';
 import { BuildConfig } from '@/utils/build-config';
 import type { CurrencyCode, Locale } from '@/utils/locale';
@@ -108,8 +107,6 @@ const ProvidersRegistry = ({
                                                 },
                                             }}
                                         />
-
-                                        <Toolbars domain={domain} />
                                     </Suspense>
                                 ) : (
                                     children

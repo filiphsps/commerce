@@ -10,8 +10,7 @@
     ],
     "scripts": {
         "start": "next start -p $PORT",
-        "dev": "portless",
-        "dev:app": "next dev --turbo",
+        "dev": "NODE_ENV=development next dev --turbo -H $HOST -p $PORT",
         "build": "node ./scripts/build.mjs",
         "clean": "rimraf -g dist coverage .turbo .next .tsbuildinfo *.log",
         "lint": "biome lint .",
@@ -20,7 +19,8 @@
         "format:format": "biome format --write .",
         "format:check": "biome check --write --unsafe .",
         "typecheck": "tsc -noEmit",
-        "test:e2e": "playwright test"
+        "test:e2e": "playwright test",
+        "analyze": "next experimental-analyze"
     },
     "author": {
         "name": "Nordcom AB",

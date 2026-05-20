@@ -5,18 +5,16 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev": "portless",
-        "dev:app": "concurrently -i \"pnpm:pre:watch\" \"next dev\"",
+        "dev": "pnpm pre && concurrently -i -k pnpm:dev:next pnpm:dev:watch",
+        "dev:next": "NODE_ENV=development next dev --turbo -H $HOST -p $PORT",
+        "dev:watch": "node scripts/watch-docs.mjs",
         "pre": "pnpm pre:typedoc && pnpm pre:mirror && pnpm pre:page-map",
-        "pre:watch": "concurrently -i pnpm:pre:typedoc:watch pnpm:pre:mirror:watch",
         "pre:typedoc": "node scripts/emit-typedoc-json.mjs",
-        "pre:typedoc:watch": "node scripts/emit-typedoc-json.mjs --watch",
         "pre:mirror": "node scripts/mirror-workspace-docs.mjs",
-        "pre:mirror:watch": "node scripts/mirror-workspace-docs.mjs --watch",
         "pre:page-map": "node scripts/generate-page-map.mjs",
         "build": "pnpm pre && next build --turbo && pnpm postbuild",
         "postbuild": "pagefind --site out --output-path \"out${NEXT_PUBLIC_DOCS_BASE_PATH:-}/_pagefind\"",
-        "start": "next start -p 3002",
+        "start": "next start -p $PORT",
         "lint": "biome lint .",
         "format": "concurrently -i pnpm:format:*",
         "format:lint": "biome lint --write .",
@@ -28,7 +26,8 @@
         "test:e2e": "playwright test",
         "test:docs:links": "node scripts/validate-links.mjs",
         "docs:gen:check": "node scripts/docs-gen-check.mjs",
-        "clean": "rimraf -g .next out .typedoc-out 'app/docs/(generated)' public/_pagefind .turbo *.tsbuildinfo *.log"
+        "clean": "rimraf -g .next out .typedoc-out 'app/docs/(generated)' public/_pagefind .turbo *.tsbuildinfo *.log",
+        "analyze": "next experimental-analyze"
     },
     "dependencies": {
         "@nordcom/commerce-cms": "workspace:*",

@@ -1,7 +1,6 @@
-import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DOCS_APP = path.resolve(__dirname, '..');
@@ -135,20 +134,12 @@ function emitPageMapTs(entries) {
     lines.push('];');
     lines.push('');
     fs.writeFileSync(PAGE_MAP_OUT, lines.join('\n'));
-
-    // Format with Biome so the generated file matches the committed version byte-for-byte.
-    // This keeps docs:gen:check stable: regenerating produces identical output.
-    try {
-        execFileSync('pnpm', ['exec', 'biome', 'format', '--write', PAGE_MAP_OUT], {
-            cwd: REPO_ROOT,
-            stdio: 'ignore',
-        });
-    } catch (err) {
-        console.warn(`[generate-page-map] biome format skipped: ${err.code ?? err.message}`);
-    }
+    // No biome format pass: the output file is gitignored (see apps/docs/.gitignore)
+    // and biome's ignore rules reject it anyway. The hand-written formatter above
+    // produces consistent output across regenerations.
 }
 
-function main() {
+export function main({ quiet = false } = {}) {
     const workspaces = discoverWorkspaces();
     let synthesized = 0;
 
@@ -178,9 +169,14 @@ function main() {
 
     emitPageMapTs(entries);
 
-    console.info(
-        `[generate-page-map] processed ${workspaces.length} workspace(s); synthesized ${synthesized} stub page(s)`,
-    );
+    if (!quiet) {
+        console.info(
+            `[generate-page-map] processed ${workspaces.length} workspace(s); synthesized ${synthesized} stub page(s)`,
+        );
+    }
+    return { workspaces: workspaces.length, synthesized };
 }
 
-main();
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+    main();
+}

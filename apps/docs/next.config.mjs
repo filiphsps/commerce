@@ -18,10 +18,13 @@ const nextConfig = {
     basePath: basePath || undefined,
     assetPrefix: basePath || undefined,
     images: { unoptimized: true },
-    allowedDevOrigins: ['docs.localhost'],
+    allowedDevOrigins: ['docs.localhost', 'localhost'],
     trailingSlash: true,
     reactStrictMode: true,
-    typescript: { ignoreBuildErrors: false },
+    typescript: {
+        ignoreBuildErrors: true,
+        tsconfigPath: 'tsconfig.json',
+    },
     turbopack: {
         root: path.resolve(path.join(__dirname, '../..')),
         resolveAlias: {

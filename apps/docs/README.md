@@ -44,7 +44,12 @@ async rewrites() {
 
 ## Local dev
 
-`pnpm --filter @nordcom/commerce-docs dev` runs at `https://docs.localhost` (via portless). Pre-build scripts watch in parallel.
+`pnpm --filter @nordcom/commerce-docs dev` runs at `https://docs.localhost` (via portless). The dev script:
+
+1. Runs `pnpm pre` once (typedoc + mirror + page-map — ~20-25s cold).
+2. Boots `next dev` and the docs watcher in parallel.
+
+The watcher only re-runs **mirror + page-map** on `.md(x)` changes under any workspace's `docs/` directory. Edits to existing files are picked up live via hardlinks; the watcher only fires on add/delete/rename. TypeDoc is **not** auto-rebuilt — re-run `pnpm pre:typedoc` (or `pnpm pre`) after API surface changes.
 
 ## How the build pipeline works
 

@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DOCS_APP = path.resolve(__dirname, '..');
@@ -8,7 +8,6 @@ const REPO_ROOT = path.resolve(DOCS_APP, '../..');
 const GENERATED_ROOT = path.join(DOCS_APP, 'app/docs/(generated)');
 
 const SKIP_DIRS = new Set(['node_modules', 'dist', 'build', '.turbo', '.next', 'coverage', 'docs', 'src', 'api']);
-const WATCH = process.argv.includes('--watch');
 
 /**
  * Per-workspace exclude patterns (relative to the workspace's `docs/` dir, no
@@ -113,30 +112,19 @@ function mirrorWorkspace(ws) {
     return linked;
 }
 
-function main() {
+export function main({ quiet = false } = {}) {
     sweep();
     const workspaces = discoverWorkspaces();
     let total = 0;
     for (const ws of workspaces) {
         total += mirrorWorkspace(ws);
     }
-    console.info(`[mirror-workspace-docs] mirrored ${total} pages across ${workspaces.length} workspace(s)`);
+    if (!quiet) {
+        console.info(`[mirror-workspace-docs] mirrored ${total} pages across ${workspaces.length} workspace(s)`);
+    }
+    return { mirrored: total, workspaces: workspaces.length };
 }
 
-if (WATCH) {
-    let timer;
-    const watch = (dir) => {
-        try {
-            fs.watch(dir, { recursive: true }, () => {
-                clearTimeout(timer);
-                timer = setTimeout(() => main(), 300);
-            });
-        } catch {}
-    };
-    for (const parent of ['apps', 'packages']) {
-        watch(path.join(REPO_ROOT, parent));
-    }
-    main();
-} else {
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
     main();
 }

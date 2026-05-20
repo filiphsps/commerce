@@ -41,14 +41,6 @@ vi.mock('sonner', () => ({
     Toaster: () => null,
 }));
 
-// `<Toolbars>` mounts `<VercelToolbar />` which injects a `<script>` pointing
-// at `https://vercel.live/_next-live/feedback/feedback.js`. happy-dom refuses
-// to load JS and logs a `NotSupportedError` to stderr — irrelevant to anything
-// this test pins, so stub the whole module out.
-vi.mock('@/components/toolbars', () => ({
-    Toolbars: () => null,
-}));
-
 // ------------------------------------------------------------------
 // Tests
 // ------------------------------------------------------------------
