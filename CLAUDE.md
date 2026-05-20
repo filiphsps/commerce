@@ -69,8 +69,8 @@ pnpm dotenv -c -- vitest run -t "describe or it name"                # by test n
 pnpm dotenv -c -- vitest run --project @nordcom/commerce-storefront  # one project
 pnpm test:e2e                                                        # Playwright (storefront, admin)
 
-# Generate Payload types after CMS schema changes
-pnpm generate:types
+# Generate types after CMS schema changes
+pnpm generate
 ```
 
 Set `MONGODB_URI_TEST` to point tests at a separate database (falls back to `mongodb://localhost:27017/test`).

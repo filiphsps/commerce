@@ -90,8 +90,8 @@
         ]
     },
     "scripts": {
-        "build": "tsc && vite build",
-        "generate": "pnpm generate:types",
+        "build": "vite build",
+        "generate": "tsc && pnpm generate:types",
         "clean": "rimraf -g dist coverage .turbo .next *.tsbuildinfo *.log node_modules",
         "lint": "biome lint .",
         "format": "concurrently -i pnpm:format:*",
@@ -99,7 +99,7 @@
         "format:format": "biome format --write .",
         "format:check": "biome check --write --unsafe .",
         "typecheck": "tsc -noEmit",
-        "generate:types": "PAYLOAD_CONFIG_PATH=src/types/generate-types-config.ts payload generate:types",
+        "generate:types": "PAYLOAD_CONFIG_PATH=src/types/generate-types-config.ts payload generate:types && tsc",
         "cms:gen": "tsx scripts/cms-gen.ts",
         "cms:gen:check": "tsx scripts/cms-gen-check.ts"
     },
