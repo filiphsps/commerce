@@ -272,7 +272,7 @@ retried boot, multiple `getPayload` callers) won't stack duplicate listeners.
 | -------------------------- | --------- | ---------------------------------------------------------------------- |
 | `PAYLOAD_SECRET`           | yes       | Payload session + preview cookie signing.                              |
 | `MONGODB_URI`              | yes       | Mongo connection (Payload + the shared `@nordcom/commerce-db` models). |
-| `STOREFRONT_BASE_URL`      | no        | Base URL used by the admin live-preview iframe. Default `http://localhost:1337`. |
+| `STOREFRONT_BASE_URL`      | no        | Base URL used by the admin live-preview iframe. Default `https://storefront.localhost`. |
 | `STOREFRONT_PREVIEW_SECRET`| yes (prod)| Secret expected by the storefront's `/[domain]/api/cms-preview` route. |
 | `S3_BUCKET`                | no        | When all five `S3_*` vars are set, media uploads land in S3.           |
 | `S3_ENDPOINT`              | no        |                                                                        |

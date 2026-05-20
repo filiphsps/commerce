@@ -104,9 +104,9 @@ vi.mock('next/image', () => ({
 window.location = {
     ...((window.location as any) || {}),
     pathname: '/en-US/',
-    host: 'staging.localhost:3000',
-    href: 'http://staging.localhost:3000/en-US/',
+    host: 'staging.storefront.localhost',
+    href: 'https://staging.storefront.localhost/en-US/',
     search: '',
-    origin: 'http://staging.localhost:3000',
-    protocol: 'http:',
+    origin: 'https://staging.storefront.localhost',
+    protocol: 'https:',
 };
