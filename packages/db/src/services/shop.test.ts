@@ -97,6 +97,26 @@ describe('Shop.findByDomain (Mongoose-backed)', () => {
         expect(cp.authentication.publicToken).toBe('pt');
     });
 
+    it('projects Mongo _id into a string id field (sensitiveData: false)', async () => {
+        // Mongoose .lean() returns docs with _id but no `id`. The fixture's
+        // baked-in `id` would mask the projection we're testing — strip it.
+        const { id: _id_, ...rest } = mockShop;
+        const docFromMongoose = { ...rest, _id: 'mongo-id-x' };
+        mockQuery.exec.mockResolvedValueOnce(docFromMongoose);
+        const result = (await Shop.findByDomain('acme.test')) as Record<string, unknown>;
+        expect(result.id).toBe('mongo-id-x');
+        expect(result).not.toHaveProperty('_id');
+    });
+
+    it('projects Mongo _id into a string id field (sensitiveData: true)', async () => {
+        const { id: _id_, ...rest } = mockShop;
+        const docFromMongoose = { ...rest, _id: 'mongo-id-x' };
+        mockQuery.exec.mockResolvedValueOnce(docFromMongoose);
+        const result = (await Shop.findByDomain('acme.test', { sensitiveData: true })) as Record<string, unknown>;
+        expect(result.id).toBe('mongo-id-x');
+        expect(result).not.toHaveProperty('_id');
+    });
+
     it('preserves the auth token when sensitiveData: true', async () => {
         mockQuery.exec.mockResolvedValueOnce(mockShop);
         const result = await Shop.findByDomain('acme.test', { sensitiveData: true });

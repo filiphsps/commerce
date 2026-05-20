@@ -2,11 +2,27 @@ import type { FeatureFlagBase, OnlineShop, ReviewBase } from '../models';
 
 type Doc = Record<string, unknown>;
 
-export const stripInternals = <T extends Doc>(doc: T): Omit<T, '_id' | '__v'> => {
+/**
+ * Strip Mongo internals (`_id`, `__v`) and project `_id` to a string `id`
+ * field, matching the public Document shape (`DocumentExtras { id: string }`)
+ * that consumers expect. Callers (e.g. `apps/admin/src/lib/payload-ctx.ts`)
+ * read `doc.id` directly — Mongoose `.lean()` returns docs with `_id` only,
+ * so without this projection `doc.id` would be `undefined`.
+ *
+ * If the doc already has an `id` field (rare — Payload sometimes mirrors
+ * `_id` into a string `id` on read), the existing value wins so we don't
+ * clobber it with a re-stringified `_id`.
+ */
+export const stripInternals = <T extends Doc>(doc: T): Omit<T, '_id' | '__v'> & { id?: string } => {
     if (!doc) return doc;
 
-    const { _id: _id_, __v: __v_, ...rest } = doc as { _id?: unknown; __v?: unknown } & T;
-    return rest;
+    const { _id, __v: __v_, ...rest } = doc as { _id?: unknown; __v?: unknown } & T;
+    const out = { ...rest } as Omit<T, '_id' | '__v'> & { id?: string };
+    const existingId = (rest as { id?: unknown }).id;
+    if (typeof existingId === 'undefined' && _id != null) {
+        out.id = typeof _id === 'string' ? _id : String(_id);
+    }
+    return out;
 };
 
 /**

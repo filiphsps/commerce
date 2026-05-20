@@ -21,6 +21,8 @@ vi.mock('mongoose', async () => {
         public static findById = vi.fn().mockReturnValue(mockQuery);
         public static create = vi.fn().mockResolvedValue({});
         public static findOneAndUpdate = vi.fn().mockReturnValue({ exec: vi.fn().mockResolvedValue(null) });
+        public limit = vi.fn().mockResolvedValue(this);
+        public save = vi.fn().mockResolvedValue(this);
     }
 
     const values = {
