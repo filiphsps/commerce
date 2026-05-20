@@ -7,7 +7,7 @@ import { getAuthSession } from '@/auth';
 import { LoginButton } from '@/components/actionable/login-button';
 import { Avatar } from '@/components/informational/avatar';
 import Link from '@/components/link';
-import { readFlag } from '@/utils/flags/read';
+import { evaluateShopFlag } from '@/utils/flags/evaluate';
 import { capitalize, getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 
@@ -17,7 +17,12 @@ export type HeaderAccountSectionProps = {
     i18n: LocaleDictionary;
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 export async function HeaderAccountSection({ shop, i18n, className, ...props }: HeaderAccountSectionProps) {
-    const accountsEnabled = await readFlag<boolean>(shop, 'accounts-functionality', {
+    // Cache-safe flag read: this component is reachable from the cached root
+    // layout. `readFlag` would call `cookies()`, which Next 16 forbids inside
+    // cache scopes. `evaluateShopFlag` is the sync, cache-safe path; toolbar
+    // overrides won't apply, but the session call below is still dynamic via
+    // Suspense.
+    const accountsEnabled = evaluateShopFlag<boolean>(shop, 'accounts-functionality', {
         codeDefaultValue: false,
     });
     if (!accountsEnabled) {
