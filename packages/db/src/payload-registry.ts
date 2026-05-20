@@ -1,4 +1,6 @@
 import 'server-only';
+
+import { PayloadGetterNotRegisteredError } from '@nordcom/commerce-errors';
 import type { Payload } from 'payload';
 
 const KEY = Symbol.for('@nordcom/commerce-db/payload-getter');
@@ -27,9 +29,7 @@ export function registerPayload(getter: () => Promise<Payload>): void {
 export async function getRegisteredPayload(): Promise<Payload> {
     const reg = slot().value;
     if (!reg) {
-        throw new Error(
-            '[commerce-db] No Payload getter registered. Call `registerPayload(getter)` from instrumentation.ts.',
-        );
+        throw new PayloadGetterNotRegisteredError();
     }
     return reg.getter();
 }

@@ -126,7 +126,10 @@ describe('Shop.findByDomain (via payload.local)', () => {
 
     it('throws when no shop matches', async () => {
         mockFind.mockResolvedValueOnce({ docs: [] });
-        await expect(Shop.findByDomain('missing.test')).rejects.toThrow(/no shop/i);
+        await expect(Shop.findByDomain('missing.test')).rejects.toMatchObject({
+            name: 'UnknownShopDomainError',
+            code: 'API_UNKNOWN_SHOP_DOMAIN',
+        });
     });
 });
 
@@ -174,7 +177,10 @@ describe('Shop.findById (via payload.local)', () => {
 
     it('throws when no shop matches', async () => {
         mockFindByID.mockResolvedValueOnce(null);
-        await expect(Shop.findById('missing')).rejects.toThrow(/no shop/i);
+        await expect(Shop.findById('missing')).rejects.toMatchObject({
+            name: 'UnknownShopIdError',
+            code: 'API_UNKNOWN_SHOP_ID',
+        });
     });
 });
 

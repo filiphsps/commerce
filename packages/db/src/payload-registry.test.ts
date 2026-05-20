@@ -15,7 +15,10 @@ describe('payload-registry', () => {
     });
 
     it('throws a named error before any getter is registered', async () => {
-        await expect(getRegisteredPayload()).rejects.toThrow(/No Payload getter registered/i);
+        await expect(getRegisteredPayload()).rejects.toMatchObject({
+            name: 'PayloadGetterNotRegisteredError',
+            code: 'GENERIC_PAYLOAD_GETTER_NOT_REGISTERED',
+        });
     });
 
     it('invokes the registered getter and returns its resolved value', async () => {
@@ -53,7 +56,10 @@ describe('payload-registry', () => {
         registerPayload(() => Promise.resolve(fakePayload as unknown as Payload));
         _resetPayloadRegistryForTests();
 
-        await expect(getRegisteredPayload()).rejects.toThrow(/No Payload getter registered/i);
+        await expect(getRegisteredPayload()).rejects.toMatchObject({
+            name: 'PayloadGetterNotRegisteredError',
+            code: 'GENERIC_PAYLOAD_GETTER_NOT_REGISTERED',
+        });
     });
 
     it('survives re-import of the module via Symbol.for slot (cross-graph)', async () => {

@@ -1,3 +1,5 @@
+import { UnknownShopDomainError, UnknownShopIdError } from '@nordcom/commerce-errors';
+
 import { docToOnlineShop } from '../lib/doc-to-shape';
 import type { OnlineShop, ShopBase } from '../models';
 import { ShopModel } from '../models';
@@ -31,7 +33,7 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
                 id,
                 overrideAccess: true,
             });
-            if (!doc) throw new Error(`[shop] No shop for id: ${id}`);
+            if (!doc) throw new UnknownShopIdError(id);
             return docToOnlineShop(doc as unknown as Record<string, unknown>);
         })() as Promise<OnlineShop> & Promise<ShopBase | null>;
     }
@@ -71,7 +73,7 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
         });
 
         const doc = docs[0];
-        if (!doc) throw new Error(`[shop] No shop for domain: ${domain}`);
+        if (!doc) throw new UnknownShopDomainError(domain);
 
         if (!convert) return doc as unknown as ShopBase;
         if (sensitiveData) return doc as unknown as OnlineShop;
