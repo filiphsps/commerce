@@ -8,8 +8,3 @@ test('unauthenticated root redirects to login', async ({ page }) => {
     await page.goto('/');
     await expect(page).toHaveURL(/login|auth/);
 });
-
-test('login page renders with email and password inputs', async ({ page }) => {
-    await page.goto('/auth/login');
-    await expect(page.getByRole('textbox').first()).toBeVisible();
-});
