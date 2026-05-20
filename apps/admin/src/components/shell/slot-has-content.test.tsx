@@ -23,10 +23,12 @@ describe('slotHasContent', () => {
     });
 
     it('returns false for an empty fragment', () => {
+        // biome-ignore lint/complexity/noUselessFragments: fragment under test
         expect(slotHasContent(<></>)).toBe(false);
     });
 
     it('returns false for a fragment containing only null children', () => {
+        // biome-ignore lint/complexity/noUselessFragments: fragment under test
         expect(slotHasContent(<>{null}</>)).toBe(false);
     });
 
@@ -37,6 +39,7 @@ describe('slotHasContent', () => {
     it('returns true for a fragment with real content', () => {
         expect(
             slotHasContent(
+                // biome-ignore lint/complexity/noUselessFragments: fragment under test
                 <>
                     <div>hi</div>
                 </>,
