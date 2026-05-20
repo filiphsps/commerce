@@ -11,6 +11,7 @@ import type { ReactNode } from 'react';
 import { Suspense, useEffect } from 'react';
 import { Toaster } from 'sonner';
 import { HeaderProvider } from '@/components/header-provider';
+import { Toolbars } from '@/components/toolbars';
 
 export type ProvidersProps = {
     children: ReactNode;
@@ -47,6 +48,7 @@ export function Providers({ children }: ProvidersProps) {
                 </ModalProvider>
 
                 <GoogleTagManager gtmId={'GTM-N6TLG8MX'} />
+                <Toolbars />
             </Suspense>
         </NordstarProvider>
     );
