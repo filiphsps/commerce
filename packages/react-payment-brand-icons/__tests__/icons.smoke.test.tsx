@@ -5,7 +5,7 @@ import { ICONS } from '../src/generated/icons-map';
 import { manifest } from '../src/generated/manifest';
 
 describe('all generated icons render', () => {
-    it.each(manifest.map((e) => [e.slug, e.componentName]))('%s (%s)', async (slug) => {
+    it.concurrent.each(manifest.map((e) => [e.slug, e.componentName]))('%s (%s)', async (slug) => {
         const loader = ICONS[slug];
         if (!loader) throw new Error(`No loader for slug "${slug}"`);
         const mod = await loader();
