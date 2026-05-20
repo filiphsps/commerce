@@ -18,7 +18,12 @@ const nextConfig = {
     trailingSlash: true,
     reactStrictMode: true,
     typescript: { ignoreBuildErrors: false },
-    eslint: { ignoreDuringBuilds: true }, // we use Biome
+    turbopack: {
+        resolveAlias: {
+            // Nextra rewrites MDX imports to this virtual module; point it at our hook.
+            'next-mdx-import-source-file': './mdx-components.tsx',
+        },
+    },
 };
 
 export default withNextra(nextConfig);

@@ -1,0 +1,16 @@
+/* apps/docs/app/globals.css */
+@import "tailwindcss";
+
+:root {
+    --primary: #ed1e79;
+    --primary-fg: #ffffff;
+}
+
+[data-theme="dark"] {
+    --primary: #f366a4;
+}
+
+body {
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+    margin: 0;
+}

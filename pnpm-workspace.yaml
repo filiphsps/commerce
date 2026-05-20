@@ -11,3 +11,10 @@ allowBuilds:
   unrs-resolver: true
   core-js: false
   core-js-pure: false
+
+# Nextra 4.6.1 + nextra-theme-docs 4.6.1 are incompatible with zod >=4.4.0
+# due to stricter property iteration in `z.strictObject`. Pin to the last
+# known-good version until Nextra ships a release with shuding/nextra#4990.
+# Tracking: https://github.com/shuding/nextra/issues/4989
+overrides:
+  zod@^4: "4.3.6"
