@@ -12,6 +12,21 @@ export const metadata: Metadata = {
     title: { default: 'Nordcom Commerce', template: '%s — Nordcom Commerce' },
     description: 'A multi-tenant, headless e-commerce platform.',
     metadataBase: new URL(docsEnv.canonicalUrl),
+    alternates: { canonical: '/' },
+    openGraph: {
+        title: 'Nordcom Commerce',
+        description: 'A multi-tenant, headless e-commerce platform.',
+        url: docsEnv.canonicalUrl,
+        siteName: 'Nordcom Commerce',
+        images: [{ url: '/img/social-card.svg' }],
+        type: 'website',
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Nordcom Commerce',
+        description: 'A multi-tenant, headless e-commerce platform.',
+        images: ['/img/social-card.svg'],
+    },
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
