@@ -78,46 +78,8 @@ The `code` field is a discriminated union, so `switch` over it for exhaustive ha
 The hierarchy splits into two roots: `ApiError` (for failures crossing an API
 boundary) and `GenericError` (for internal contract violations).
 
-### `ApiError` family
-
-| Class                                   | Code                                    | HTTP |
-| --------------------------------------- | --------------------------------------- | ---- |
-| `UnknownError`                          | `API_UNKNOWN_ERROR`                     | 500  |
-| `UnknownShopDomainError`                | `API_UNKNOWN_SHOP_DOMAIN`               | 404  |
-| `UnknownCommerceProviderError`          | `API_UNKNOWN_COMMERCE_PROVIDER`         | 500  |
-| `UnknownContentProviderError`           | `API_UNKNOWN_CONTENT_PROVIDER`          | 500  |
-| `InvalidContentProviderError`           | `API_INVALID_CONTENT_PROVIDER`          | 500  |
-| `UnknownLocaleError`                    | `API_UNKNOWN_LOCALE`                    | 404  |
-| `InvalidShopError`                      | `API_INVALID_SHOP`                      | 400  |
-| `InvalidHandleError`                    | `API_INVALID_HANDLE`                    | 404  |
-| `InvalidIDError`                        | `API_INVALID_ID`                        | 404  |
-| `InvalidSliceVariationError`            | `API_INVALID_SLICE_VARIATION`           | 404  |
-| `InvalidCartError`                      | `API_INVALID_CART`                      | 404  |
-| `TooManyRequestsError`                  | `API_TOO_MANY_REQUESTS`                 | 429  |
-| `MethodNotAllowedError`                 | `API_METHOD_NOT_ALLOWED`                | 405  |
-| `ImageNoFractionalError`                | `API_IMAGE_NO_FRACTIONAL`               | 400  |
-| `ImageOutOfBoundsError`                 | `API_IMAGE_OUT_OF_BOUNDS`               | 400  |
-| `NoLocalesAvailableError`               | `API_NO_LOCALES_AVAILABLE`              | 500  |
-| `InvalidShopifyCustomerAccountsApiConfiguration` | `API_INVALID_SHOPIFY_CUSTOMER_ACCOUNT_API_CONFIGURATION` | 500 |
-| `MissingEnvironmentVariableError`       | `API_MISSING_ENVIRONMENT_VARIABLE`      | 500  |
-| `ProviderFetchError`                    | `API_PROVIDER_FETCH_FAILED`             | 500  |
-| `DuplicateContextDirectiveError`        | `API_SHOPIFY_GRAPHQL_DUPLICATE_CONTEXT_DIRECTIVE` | 500 |
-| `DuplicateContextVariableError`         | `API_SHOPIFY_GRAPHQL_DUPLICATE_CONTEXT_VARIABLE`  | 500 |
-
 Many constructors accept context that gets interpolated into the message — e.g.
 `new InvalidHandleError('blue-shoes')` produces `The handle "blue-shoes" is invalid`.
-
-### `GenericError` family
-
-| Class                          | Code                            | HTTP |
-| ------------------------------ | ------------------------------- | ---- |
-| `GenericError`                 | `GENERIC_UNKNOWN_ERROR`         | 500  |
-| `TodoError`                    | `GENERIC_TODO`                  | 404  |
-| `NotFoundError`                | `NOT_FOUND`                     | 404  |
-| `UnreachableError`             | `UNREACHABLE`                   | 500  |
-| `TypeError`                    | `INVALID_TYPE`                  | 500  |
-| `MissingContextProviderError`  | `MISSING_CONTEXT_PROVIDER`      | 500  |
-| `NotConnectedToDatabase`       | `NOT_CONNECTED_TO_DATABASE`     | 500  |
 
 ## Helpers
 

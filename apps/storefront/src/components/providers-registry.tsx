@@ -51,16 +51,9 @@ const CommerceProvider = ({ shop, locale, children }: { shop: OnlineShop; locale
     }
 };
 
-const ContentProvider = ({ children }: { shop: OnlineShop; domain: string; locale: Locale; children: ReactNode }) => {
-    // CMS content is fetched via Payload's Local API server-side; there is no
-    // client-side provider needed.
-    return <>{children}</>;
-};
-
 const ProvidersRegistry = ({
     shop,
     currency = 'USD',
-    domain,
     locale,
     children,
     toolbars = true,
@@ -76,44 +69,42 @@ const ProvidersRegistry = ({
         <ErrorBoundary fallbackRender={() => null}>
             <ShopProvider shop={shop} currency={currency} locale={locale}>
                 <CommerceProvider shop={shop} locale={locale}>
-                    <ContentProvider shop={shop} locale={locale} domain={domain}>
-                        <CartProvider
-                            cartFragment={CartFragment}
-                            languageCode={locale.language}
-                            countryCode={locale.country}
-                        >
-                            <ErrorBoundary fallbackRender={() => null}>
-                                <Suspense fallback={<Fragment />}>
-                                    <RequiredHooks shop={shop} locale={locale} />
+                    <CartProvider
+                        cartFragment={CartFragment}
+                        languageCode={locale.language}
+                        countryCode={locale.country}
+                    >
+                        <ErrorBoundary fallbackRender={() => null}>
+                            <Suspense fallback={<Fragment />}>
+                                <RequiredHooks shop={shop} locale={locale} />
+                            </Suspense>
+
+                            {toolbars ? (
+                                <Suspense fallback={children}>
+                                    <LiveChatProvider shop={shop} locale={locale}>
+                                        {children}
+                                    </LiveChatProvider>
+
+                                    <ToasterProvider
+                                        theme="dark"
+                                        position="bottom-left"
+                                        expand={true}
+                                        duration={5000}
+                                        gap={4}
+                                        visibleToasts={2}
+                                        toastOptions={{
+                                            duration: 2500,
+                                            classNames: {
+                                                toast: 'toast-notification',
+                                            },
+                                        }}
+                                    />
                                 </Suspense>
-
-                                {toolbars ? (
-                                    <Suspense fallback={children}>
-                                        <LiveChatProvider shop={shop} locale={locale}>
-                                            {children}
-                                        </LiveChatProvider>
-
-                                        <ToasterProvider
-                                            theme="dark"
-                                            position="bottom-left"
-                                            expand={true}
-                                            duration={5000}
-                                            gap={4}
-                                            visibleToasts={2}
-                                            toastOptions={{
-                                                duration: 2500,
-                                                classNames: {
-                                                    toast: 'toast-notification',
-                                                },
-                                            }}
-                                        />
-                                    </Suspense>
-                                ) : (
-                                    children
-                                )}
-                            </ErrorBoundary>
-                        </CartProvider>
-                    </ContentProvider>
+                            ) : (
+                                children
+                            )}
+                        </ErrorBoundary>
+                    </CartProvider>
                 </CommerceProvider>
             </ShopProvider>
         </ErrorBoundary>

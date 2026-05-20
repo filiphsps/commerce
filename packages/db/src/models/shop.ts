@@ -14,21 +14,6 @@ export type ShopTheme = {
     };
 };
 
-export type CMSContentProvider = {
-    type: 'cms';
-};
-export type ShopifyContentProvider = {
-    type: 'shopify';
-};
-export type ContentProvider = CMSContentProvider | ShopifyContentProvider;
-
-// Value AND type sharing the same name: `enum: ContentProviders` in the schema
-// (Mongoose's runtime validator) needs a runtime array; consumers that write
-// `let p: ContentProviders` keep the union narrowing. The `satisfies` clause
-// guarantees the array stays in sync with the discriminated-union members.
-export const ContentProviders = ['cms', 'shopify'] as const satisfies ContentProvider['type'][];
-export type ContentProviders = (typeof ContentProviders)[number];
-
 export type ShopifyCommerceProvider = {
     type: 'shopify';
     authentication: {
@@ -52,7 +37,6 @@ export type StripeCommerceProvider = {
 };
 export type CommerceProvider = ShopifyCommerceProvider | StripeCommerceProvider;
 
-// See `ContentProviders` for the value-and-type-share rationale.
 export const CommerceProviders = ['shopify', 'stripe'] as const satisfies CommerceProvider['type'][];
 export type CommerceProviders = (typeof CommerceProviders)[number];
 
@@ -103,21 +87,6 @@ export interface ShopBase extends BaseDocument {
             alt: string;
         };
     };
-
-    contentProvider:
-        | {
-              type: 'cms';
-          }
-        | {
-              type: 'shopify';
-          }
-        | {
-              type: 'builder.io';
-              authentication: {
-                  token: string;
-                  publicToken: string;
-              };
-          };
 
     commerceProvider: CommerceProvider;
 
@@ -272,14 +241,6 @@ export const ShopSchema = new Schema<ShopBase>(
             },
         },
 
-        contentProvider: {
-            type: {
-                type: Schema.Types.String,
-                enum: ContentProviders,
-                required: true,
-                default: 'cms',
-            },
-        },
         commerceProvider: {
             type: {
                 type: Schema.Types.String,

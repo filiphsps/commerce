@@ -307,13 +307,6 @@ export interface Shop {
       };
     };
   };
-  contentProvider: {
-    type: 'cms' | 'shopify' | 'builder.io';
-    authentication?: {
-      token?: string | null;
-      publicToken?: string | null;
-    };
-  };
   integrations?: {
     judgeme?: {
       publicToken?: string | null;
@@ -1213,17 +1206,6 @@ export interface ShopsSelect<T extends boolean = true> {
                     clientId?: T;
                     clientSecret?: T;
                   };
-            };
-      };
-  contentProvider?:
-    | T
-    | {
-        type?: T;
-        authentication?:
-          | T
-          | {
-              token?: T;
-              publicToken?: T;
             };
       };
   integrations?:

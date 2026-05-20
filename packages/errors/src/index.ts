@@ -72,8 +72,6 @@ export enum ApiErrorKind {
     API_UNKNOWN_ERROR = 'API_UNKNOWN_ERROR',
     API_UNKNOWN_SHOP_DOMAIN = 'API_UNKNOWN_SHOP_DOMAIN',
     API_UNKNOWN_COMMERCE_PROVIDER = 'API_UNKNOWN_COMMERCE_PROVIDER',
-    API_UNKNOWN_CONTENT_PROVIDER = 'API_UNKNOWN_CONTENT_PROVIDER',
-    API_INVALID_CONTENT_PROVIDER = 'API_INVALID_CONTENT_PROVIDER',
     API_UNKNOWN_LOCALE = 'API_UNKNOWN_LOCALE',
     API_INVALID_SHOP = 'API_INVALID_SHOP',
     API_INVALID_HANDLE = 'API_INVALID_HANDLE',
@@ -147,19 +145,6 @@ export class UnknownCommerceProviderError extends UnknownError {
     details = 'Unknown commerce provider';
     description = 'Could not find a commerce provider with the given type';
     code = ApiErrorKind.API_UNKNOWN_COMMERCE_PROVIDER;
-}
-export class UnknownContentProviderError extends UnknownError {
-    name = 'UnknownContentProviderError';
-    details = 'Unknown content provider';
-    description = 'Could not find a content provider with the given type';
-    code = ApiErrorKind.API_UNKNOWN_CONTENT_PROVIDER;
-}
-export class InvalidContentProviderError extends UnknownError {
-    statusCode = 500;
-    name = 'InvalidContentProviderError';
-    details = 'Invalid content provider';
-    description = 'The content provider is invalid';
-    code = ApiErrorKind.API_INVALID_CONTENT_PROVIDER;
 }
 export class UnknownLocaleError extends UnknownError {
     statusCode = 404;
@@ -788,10 +773,6 @@ export const getErrorFromCode = (
             return UnknownShopDomainError as unknown as typeof ApiError;
         case ApiErrorKind.API_UNKNOWN_COMMERCE_PROVIDER:
             return UnknownCommerceProviderError;
-        case ApiErrorKind.API_UNKNOWN_CONTENT_PROVIDER:
-            return UnknownContentProviderError;
-        case ApiErrorKind.API_INVALID_CONTENT_PROVIDER:
-            return InvalidContentProviderError;
         case ApiErrorKind.API_UNKNOWN_LOCALE:
             return UnknownLocaleError as unknown as typeof ApiError;
         case ApiErrorKind.API_INVALID_SHOP:

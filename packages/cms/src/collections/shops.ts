@@ -133,31 +133,6 @@ export const shops: CollectionConfig = {
         },
 
         {
-            name: 'contentProvider',
-            type: 'group',
-            admin: { hidden: true },
-            fields: [
-                {
-                    name: 'type',
-                    type: 'select',
-                    // ShopBase discriminates on 'cms' | 'shopify' | 'builder.io'
-                    options: ['cms', 'shopify', 'builder.io'],
-                    required: true,
-                    defaultValue: 'cms',
-                },
-                // builder.io variant fields (absent on cms/shopify variants)
-                {
-                    name: 'authentication',
-                    type: 'group',
-                    fields: [
-                        { name: 'token', type: 'text' },
-                        { name: 'publicToken', type: 'text' },
-                    ],
-                },
-            ],
-        },
-
-        {
             // integrations.judgeme is the only known integration; use a typed
             // group for fidelity. Extend with additional sub-groups if new
             // integrations are added to the Mongoose schema.
