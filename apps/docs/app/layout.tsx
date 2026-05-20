@@ -1,12 +1,12 @@
-// apps/docs/app/layout.tsx
 import type { Metadata } from 'next';
 import { Head } from 'nextra/components';
 import { getPageMap } from 'nextra/page-map';
 import { Footer, Layout, Navbar } from 'nextra-theme-docs';
-import 'nextra-theme-docs/style.css';
-import './globals.css';
 import { CmdkPalette } from '@/components/cmdk-palette';
 import { docsEnv } from '@/lib/env';
+
+import 'nextra-theme-docs/style.css';
+import './globals.css';
 
 export const metadata: Metadata = {
     title: { default: 'Nordcom Commerce', template: '%s — Nordcom Commerce' },
