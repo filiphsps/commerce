@@ -1,63 +1,66 @@
-import type { Payload } from 'payload';
-import { getPayload } from 'payload';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { buildPayloadConfig } from './index';
+import { describe, expect, it, vi } from 'vitest';
+import { globalLikeCollections, tenantScopedCollections } from '../collections';
 
-describe('multi-tenant isolation', () => {
-    let payload: Payload;
-    let aId: string;
-    let bId: string;
+// `@payloadcms/plugin-multi-tenant` is library code — its tenant partitioning
+// behavior is its own test suite's job. What we pin here is OUR wiring: every
+// tenant-scoped collection is enrolled, the globals are flagged `isGlobal`, and
+// the admin-bypass predicate has the right shape. Mock the plugin factory so
+// we can read the args our wrapper passes in without booting Payload.
+const captured = vi.hoisted(() => ({ args: undefined as unknown }));
 
-    beforeAll(async () => {
-        const baseUri = process.env.MONGODB_URI ?? 'mongodb://localhost:27017/test';
-        const url = new URL(baseUri);
-        url.pathname = `/test_mt_${Date.now()}`;
-        const config = await buildPayloadConfig({
-            secret: 'test',
-            mongoUrl: url.toString(),
-            enableStorage: false,
-            includeAdmin: false,
-        });
-        payload = await getPayload({ config });
-        const a = await payload.create({
-            collection: 'tenants',
-            data: { name: 'A', slug: 'a', defaultLocale: 'en-US', locales: ['en-US'] },
-        });
-        const b = await payload.create({
-            collection: 'tenants',
-            data: { name: 'B', slug: 'b', defaultLocale: 'en-US', locales: ['en-US'] },
-        });
-        aId = String(a.id);
-        bId = String(b.id);
-        await payload.create({ collection: 'pages', data: { slug: 'home', title: 'A home', tenant: aId } });
-        await payload.create({ collection: 'pages', data: { slug: 'home', title: 'B home', tenant: bId } });
+vi.mock('@payloadcms/plugin-multi-tenant', () => ({
+    multiTenantPlugin: vi.fn((opts: unknown) => {
+        captured.args = opts;
+        // The Payload runtime expects a callable plugin; the body is irrelevant here.
+        return () => undefined;
+    }),
+}));
+
+describe('buildMultiTenantPlugin', () => {
+    // Import lazily so the vi.mock above is in place first.
+    const buildAndCapture = async () => {
+        const { buildMultiTenantPlugin } = await import('../plugins');
+        buildMultiTenantPlugin();
+        return captured.args as {
+            tenantsSlug: string;
+            collections: Record<string, { isGlobal?: boolean }>;
+            userHasAccessToAllTenants: (user: unknown) => boolean;
+        };
+    };
+
+    it('routes to the `tenants` collection for tenant resolution', async () => {
+        const args = await buildAndCapture();
+        expect(args.tenantsSlug).toBe('tenants');
     });
 
-    afterAll(async () => {
-        await payload.db.connection?.dropDatabase();
-        await payload.db.destroy?.();
+    it('enrolls every tenant-scoped collection (matches the source-of-truth list)', async () => {
+        const args = await buildAndCapture();
+        expect(new Set(Object.keys(args.collections))).toEqual(new Set(tenantScopedCollections));
     });
 
-    it('a query filtered to tenant A returns only A pages', async () => {
-        const result = await payload.find({
-            collection: 'pages',
-            where: { tenant: { equals: aId } },
-        });
-        expect(result.docs).toHaveLength(1);
-        expect(result.docs[0]?.title).toBe('A home');
+    it('flags `header` / `footer` / `businessData` as isGlobal so the plugin treats them as per-tenant singletons', async () => {
+        const args = await buildAndCapture();
+        for (const slug of globalLikeCollections) {
+            expect(args.collections[slug]?.isGlobal).toBe(true);
+        }
     });
 
-    it('a query filtered to tenant B returns only B pages', async () => {
-        const result = await payload.find({
-            collection: 'pages',
-            where: { tenant: { equals: bId } },
-        });
-        expect(result.docs).toHaveLength(1);
-        expect(result.docs[0]?.title).toBe('B home');
+    it('non-global tenant collections (pages, articles, …) are NOT flagged isGlobal', async () => {
+        const args = await buildAndCapture();
+        const nonGlobal = tenantScopedCollections.filter(
+            (slug) => !(globalLikeCollections as readonly string[]).includes(slug),
+        );
+        for (const slug of nonGlobal) {
+            expect(args.collections[slug]?.isGlobal).toBeFalsy();
+        }
     });
 
-    it('both pages share the same slug but different tenants', async () => {
-        const all = await payload.find({ collection: 'pages', where: { slug: { equals: 'home' } } });
-        expect(all.docs).toHaveLength(2);
+    it('grants admins access to ALL tenants via userHasAccessToAllTenants', async () => {
+        const args = await buildAndCapture();
+        expect(args.userHasAccessToAllTenants({ role: 'admin' })).toBe(true);
+        expect(args.userHasAccessToAllTenants({ role: 'editor' })).toBe(false);
+        expect(args.userHasAccessToAllTenants(null)).toBe(false);
+        // The role check is the boundary — a role-less user must NOT bypass.
+        expect(args.userHasAccessToAllTenants({})).toBe(false);
     });
 });

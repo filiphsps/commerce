@@ -20,9 +20,7 @@ vi.mock('@vercel/analytics/react', async () => {
 });
 vi.mock('@/utils/trackable', async () => {
     return {
-        Trackable:
-            () =>
-            ({ children }: any) => <>{children}</>,
+        Trackable: ({ children }: any) => <>{children}</>,
     };
 });
 
