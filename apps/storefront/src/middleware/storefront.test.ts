@@ -93,6 +93,16 @@ describe('getHostname', () => {
         expect(vi.mocked(Shop.findByDomain)).toHaveBeenCalledWith('myshop.com', expect.anything());
     });
 
+    it('falls back to req.nextUrl.host when the host header is absent', async () => {
+        // No `host` header set — req.headers.get('host') returns null,
+        // so the resolver falls back to req.nextUrl.host.
+        const req = new NextRequest('http://myshop.com/');
+
+        await getHostname(req);
+
+        expect(vi.mocked(Shop.findByDomain)).toHaveBeenCalledWith('myshop.com', expect.anything());
+    });
+
     it('strips port from the hostname before lookup', async () => {
         const req = new NextRequest('http://myshop.com:3000/', {
             headers: { host: 'myshop.com:3000', 'accept-language': 'en-US' },

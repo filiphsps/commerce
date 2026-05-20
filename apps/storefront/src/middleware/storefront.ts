@@ -18,7 +18,7 @@ import { BuildConfig } from '@/utils/build-config';
 import type { Code } from '@/utils/locale';
 
 function hostnameFromRequest(req: NextRequest): string {
-    return shopFromHost(req.headers.get('host') ?? req.nextUrl.host ?? '');
+    return shopFromHost(req.headers.get('host') ?? req.nextUrl.host);
 }
 
 export const getHostname = async (req: NextRequest): Promise<string> => {
