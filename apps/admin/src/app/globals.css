@@ -5,7 +5,7 @@
 /* Declare Payload's CSS layer order so its field components (mounted in
  * /content/* via @payloadcms/ui) resolve their cascade predictably alongside
  * our Tailwind/Nordstar styles. Anything in `payload-default` is base; any
- * admin overrides we want above Payload's defaults go in `payload`. Unlayered
+ * admin overrides we want above Payload's defaults go in `payload`. Un-layered
  * Tailwind utilities still win against both. */
 @layer payload-default, payload;
 
@@ -469,6 +469,10 @@
         --color-base-hover: hsl(var(--primary) / 0.85);
     }
 
+    :root {
+        --base: 1rem;
+    }
+
     /* Embedded Payload field components ship with field-row min-width
      * assumptions tuned for the canonical Payload admin shell (full-width
      * content column). Inside our /[domain]/content/* routes the content
@@ -502,5 +506,11 @@
     .array-field__row {
         min-width: 0;
         overflow-x: auto;
+    }
+
+    .field-type.text input,
+    .field-type.textarea textarea,
+    .field-type.number input {
+        @apply rounded-sm;
     }
 }

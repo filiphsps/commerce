@@ -136,9 +136,15 @@ export function DocumentForm({
 
                             {/* ── Sticky bottom toolbar (inside Form) ── */}
                             {toolbar ? (
-                                <div className="sticky bottom-0 z-10 border-border border-t bg-background p-4">
-                                    <div className="flex items-center justify-between">{toolbar}</div>
-                                </div>
+                                <>
+                                    <div className="md:h-20"></div>
+
+                                    <div className="bottom-0 z-10 flex items-center border-border border-t bg-background py-4 md:sticky md:h-20 md:px-4">
+                                        <div className="flex w-full flex-col items-center justify-between gap-3 md:flex-row">
+                                            {toolbar}
+                                        </div>
+                                    </div>
+                                </>
                             ) : null}
                         </Form>
                     </PayloadFieldShell>

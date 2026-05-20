@@ -32,12 +32,14 @@ const LOCALES = [
 // ------------------------------------------------------------------
 
 describe('LocaleSwitcher', () => {
-    it('renders all locale options', () => {
+    it('renders all locale options with label and BCP-47 code', () => {
         render(<LocaleSwitcher locales={LOCALES} currentLocale="en-US" />);
 
-        expect(screen.getByRole('option', { name: 'English' })).toBeTruthy();
-        expect(screen.getByRole('option', { name: 'Swedish' })).toBeTruthy();
-        expect(screen.getByRole('option', { name: 'German' })).toBeTruthy();
+        // Options render as "<label> · <code>" so editors can pick the exact
+        // region variant (e.g. distinguish `de-DE` from `de-AT`).
+        expect(screen.getByRole('option', { name: /English.*en-US/ })).toBeTruthy();
+        expect(screen.getByRole('option', { name: /Swedish.*sv-SE/ })).toBeTruthy();
+        expect(screen.getByRole('option', { name: /German.*de-DE/ })).toBeTruthy();
     });
 
     it('reflects the currentLocale as the selected value', () => {

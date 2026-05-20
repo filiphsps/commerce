@@ -185,7 +185,7 @@ export default async function ArticlePage({ params }: { params: ArticlePageParam
             <section className="flex flex-col-reverse gap-1 md:grid md:grid-cols-[1fr_auto_1fr] md:gap-6">
                 <aside className="w-full empty:hidden md:h-full empty:md:flex"></aside>
 
-                <article className="prone md:max-w-[720px]">
+                <article className="prone md:max-w-180">
                     <div className="flex items-center gap-2 pb-6 text-gray-500 *:font-semibold *:text-sm *:leading-tight md:pb-0">
                         <Label className="text-inherit">{publishedAtString}</Label>
                         {' • '}

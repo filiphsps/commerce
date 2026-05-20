@@ -799,12 +799,18 @@ importers:
       '@tagtree/payload':
         specifier: workspace:*
         version: link:../tagtree/payload
+      clsx:
+        specifier: 2.1.1
+        version: 2.1.1
       jose:
         specifier: 5.9.0
         version: 5.9.0
       server-only:
         specifier: 0.0.1
         version: 0.0.1
+      tailwind-merge:
+        specifier: 3.6.0
+        version: 3.6.0
     devDependencies:
       '@codecov/vite-plugin':
         specifier: 2.0.1

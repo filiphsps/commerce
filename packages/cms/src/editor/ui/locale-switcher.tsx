@@ -2,6 +2,7 @@
 
 import type { Route } from 'next';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { cn } from '../../utils/tailwind';
 
 export type LocaleOption = {
     /** BCP-47 locale code, e.g. "en-US". */
@@ -15,7 +16,24 @@ export type LocaleSwitcherProps = {
     locales: LocaleOption[];
     /** Currently selected locale code. */
     currentLocale: string;
+
+    className?: string;
 };
+
+/**
+ * Local switcher
+ */
+export function LocaleSwitcher({ locales, currentLocale, className }: LocaleSwitcherProps) {
+    return (
+        <div className={cn('flex items-center gap-2', className)}>
+            <label htmlFor="locale-switcher" className="text-muted-foreground text-sm">
+                Locale
+            </label>
+
+            <BareLocaleSwitcher locales={locales} currentLocale={currentLocale} />
+        </div>
+    );
+}
 
 /**
  * Locale switcher for document edit pages.
@@ -26,7 +44,9 @@ export type LocaleSwitcherProps = {
  * Uses a native `<select>` styled with Tailwind — Nordstar does not export a
  * `<Select>` component.
  */
-export function LocaleSwitcher({ locales, currentLocale }: LocaleSwitcherProps) {
+export function BareLocaleSwitcher({ locales, currentLocale, className }: LocaleSwitcherProps) {
+    'use client';
+
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -38,22 +58,20 @@ export function LocaleSwitcher({ locales, currentLocale }: LocaleSwitcherProps) 
     };
 
     return (
-        <div className="flex items-center gap-2">
-            <label htmlFor="locale-switcher" className="text-muted-foreground text-sm">
-                Locale
-            </label>
-            <select
-                id="locale-switcher"
-                value={currentLocale}
-                onChange={handleChange}
-                className="rounded-md border border-border bg-background px-3 py-1.5 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-            >
-                {locales.map((locale) => (
-                    <option key={locale.code} value={locale.code}>
-                        {locale.label}
-                    </option>
-                ))}
-            </select>
-        </div>
+        <select
+            id="locale-switcher"
+            value={currentLocale}
+            onChange={handleChange}
+            className={cn(
+                'rounded-md border border-border bg-background px-3 py-1.5 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring',
+                className,
+            )}
+        >
+            {locales.map((locale) => (
+                <option key={locale.code} value={locale.code}>
+                    {locale.label} · {locale.code}
+                </option>
+            ))}
+        </select>
     );
 }

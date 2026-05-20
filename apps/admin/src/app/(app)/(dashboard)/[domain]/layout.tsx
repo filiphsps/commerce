@@ -91,7 +91,7 @@ export default async function ShopLayout({ children, params }: ShopLayoutProps) 
     const urlBase = `/${shop.domain}`;
 
     return (
-        <div className="flex h-full w-full grow flex-col-reverse items-stretch justify-stretch md:flex-row">
+        <div className="flex h-screen w-full flex-col-reverse items-stretch justify-stretch md:flex-row">
             <Card className="fixed top-0 -left-full z-50 mt-18 flex h-[calc(100vh-4.5rem)] w-80 max-w-full flex-col gap-2 rounded-none border-0 border-border border-r-2 border-solid bg-background/95 backdrop-blur transition-all group-data-[menu-open=true]/body:left-0 supports-backdrop-filter:bg-background/75 md:z-0 md:mt-0 md:h-full lg:sticky lg:left-0">
                 <Card.header className="h-18 max-h-18 min-h-18">
                     <div className="flex items-center justify-start gap-3">

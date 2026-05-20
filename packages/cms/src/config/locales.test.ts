@@ -1,18 +1,43 @@
 import { describe, expect, it, vi } from 'vitest';
-import { ISO_639_1_LOCALES, isValidLocale, resolveCmsDefaultLocale, resolveCmsLocales } from './locales';
+import {
+    BCP47_REGION_TAGGED_LOCALES,
+    ISO_639_1_LOCALES,
+    isValidLocale,
+    resolveCmsDefaultLocale,
+    resolveCmsLocales,
+} from './locales';
 
 describe('cms localization defaults', () => {
-    it('falls back to the full ISO 639-1 superset (+en-US) when no env var is set', () => {
-        // The default is now a comprehensive locale superset; per-tenant
-        // scoping happens at request time via Payload's
-        // `filterAvailableLocales` (see `./index.ts`). Tenants can publish
-        // in any ISO 639-1 language without a redeploy.
+    it('falls back to the full ISO 639-1 + BCP-47 region-tagged superset when no env var is set', () => {
+        // The default is a comprehensive locale superset combining ISO 639-1
+        // bare codes with common BCP-47 region-tagged variants tenants store
+        // in `tenant.locales`. Per-tenant scoping happens at request time via
+        // Payload's `filterAvailableLocales` (see `./index.ts`). Tenants can
+        // publish in any of these locales without a redeploy.
         const locales = resolveCmsLocales({});
-        expect(locales).toEqual([...ISO_639_1_LOCALES, 'en-US']);
+        expect(locales).toEqual([...ISO_639_1_LOCALES, ...BCP47_REGION_TAGGED_LOCALES]);
         expect(locales).toContain('en');
         expect(locales).toContain('de');
         expect(locales).toContain('en-US');
-        expect(locales.length).toBe(ISO_639_1_LOCALES.length + 1);
+        expect(locales).toContain('de-DE');
+        expect(locales).toContain('sv-SE');
+        expect(locales).toContain('fr-FR');
+        expect(locales.length).toBe(ISO_639_1_LOCALES.length + BCP47_REGION_TAGGED_LOCALES.length);
+    });
+
+    it('BCP47_REGION_TAGGED_LOCALES has no duplicates and all entries are well-formed BCP-47 codes', () => {
+        expect(new Set(BCP47_REGION_TAGGED_LOCALES).size).toBe(BCP47_REGION_TAGGED_LOCALES.length);
+        for (const code of BCP47_REGION_TAGGED_LOCALES) {
+            expect(code).toMatch(/^[a-z]{2,3}-[A-Z0-9]{2,3}$/);
+            expect(isValidLocale(code)).toBe(true);
+        }
+    });
+
+    it('BCP47_REGION_TAGGED_LOCALES does not overlap ISO_639_1_LOCALES', () => {
+        const isoSet = new Set(ISO_639_1_LOCALES);
+        for (const code of BCP47_REGION_TAGGED_LOCALES) {
+            expect(isoSet.has(code)).toBe(false);
+        }
     });
 
     it('ISO_639_1_LOCALES contains 184 entries with no duplicates', () => {
@@ -35,7 +60,7 @@ describe('cms localization defaults', () => {
     it('warns and falls back to the full superset when env override has no valid entries', () => {
         const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
         const locales = resolveCmsLocales({ NORDCOM_CMS_LOCALES: '../etc, with space' });
-        expect(locales).toEqual([...ISO_639_1_LOCALES, 'en-US']);
+        expect(locales).toEqual([...ISO_639_1_LOCALES, ...BCP47_REGION_TAGGED_LOCALES]);
         expect(warnSpy).toHaveBeenCalled();
         warnSpy.mockRestore();
     });
