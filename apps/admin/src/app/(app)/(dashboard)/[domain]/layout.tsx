@@ -2,7 +2,6 @@ import 'server-only';
 
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
-import { Button } from '@nordcom/nordstar';
 import {
     Binoculars,
     Building2,
@@ -15,170 +14,131 @@ import {
     Users,
 } from 'lucide-react';
 import type { Metadata, Route } from 'next';
-import Link from 'next/link';
+import { cookies } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
-import type { ReactNode } from 'react';
+import { Children, type ReactNode } from 'react';
+
 import { auth } from '@/auth';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/avatar';
-import { Card } from '@/components/card';
-import { Header } from '@/components/header';
-import { MenuItem } from '@/components/menu-item';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import type { CommandPaletteItem } from '@/components/shell/command-palette';
+import type { IconRailItem } from '@/components/shell/icon-rail';
+import { ShellHeader } from '@/components/shell/shell-header';
+import { ShellRoot } from '@/components/shell/shell-root';
+import { parseShellState, SHELL_STATE_COOKIE } from '@/components/shell/shell-state';
 import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
+import { getShopsForUser } from '@/lib/shops-for-user';
 
 export type ShopLayoutProps = {
     children: ReactNode;
-    params: Promise<{
-        domain: string;
-    }>;
+    subnav: ReactNode;
+    inspector: ReactNode;
+    params: Promise<{ domain: string }>;
 };
 
 export async function generateMetadata({ params }: ShopLayoutProps): Promise<Metadata> {
     const session = await auth();
-    if (!session?.user) {
-        redirect('/auth/login/' as Route);
-    }
-
+    if (!session?.user) redirect('/auth/login/' as Route);
     const { domain } = await params;
-
     try {
         const shop = await Shop.findByDomain(domain, { convert: true });
         return {
-            title: {
-                default: 'Home',
-                template: `${shop.name} · %s · Nordcom Commerce`,
-            },
-            robots: {
-                follow: true,
-                index: false,
-            },
+            title: { default: 'Home', template: `${shop.name} · %s · Nordcom Commerce` },
+            robots: { follow: true, index: false },
         };
     } catch (error: unknown) {
-        if (Error.isNotFound(error)) {
-            notFound();
-        }
-
+        if (Error.isNotFound(error)) notFound();
         throw error;
     }
 }
 
-export default async function ShopLayout({ children, params }: ShopLayoutProps) {
+export default async function ShopLayout({ children, subnav, inspector, params }: ShopLayoutProps) {
     const session = await auth();
-    if (!session?.user) {
-        redirect('/auth/login/' as Route);
-    }
-
+    if (!session?.user) redirect('/auth/login/' as Route);
     const { domain } = await params;
 
     let shop: Awaited<ReturnType<typeof Shop.findByDomain>>;
     try {
         shop = await Shop.findByDomain(domain, { convert: true });
     } catch (error: unknown) {
-        if (Error.isNotFound(error)) {
-            notFound();
-        }
-
+        if (Error.isNotFound(error)) notFound();
         console.error(error);
         throw error;
     }
 
-    // Resolve the current user's role for operator-section gating.
-    // getAuthedPayloadCtx will redirect to login if the session is absent,
-    // but auth() above already handles that — this is role-only.
     const { user } = await getAuthedPayloadCtx(domain);
     const isAdmin = user.role === 'admin';
 
+    const cookieStore = await cookies();
+    const initialState = parseShellState(cookieStore.get(SHELL_STATE_COOKIE)?.value);
+
+    const hasSubnav = Children.count(subnav) > 0;
+    const hasInspector = Children.count(inspector) > 0;
+
     const urlBase = `/${shop.domain}`;
+    const iconRailItems: IconRailItem[] = [
+        { href: `${urlBase}/` as Route, label: 'Home', icon: <Binoculars className="h-5 w-5" /> },
+        { href: `${urlBase}/products` as Route, label: 'Products', icon: <Tag className="h-5 w-5" /> },
+        { href: `${urlBase}/reviews` as Route, label: 'Reviews', icon: <MessageCircleHeart className="h-5 w-5" /> },
+        { href: `${urlBase}/content` as Route, label: 'Content', icon: <Images className="h-5 w-5" /> },
+        { href: `${urlBase}/settings` as Route, label: 'Settings', icon: <Settings className="h-5 w-5" /> },
+        ...(isAdmin
+            ? [
+                  {
+                      href: `${urlBase}/settings/tenants/` as Route,
+                      label: 'Tenants',
+                      icon: <Building2 className="h-5 w-5" />,
+                  },
+                  {
+                      href: `${urlBase}/settings/users/` as Route,
+                      label: 'Users',
+                      icon: <Users className="h-5 w-5" />,
+                  },
+                  {
+                      href: `${urlBase}/settings/media/` as Route,
+                      label: 'Media',
+                      icon: <ImageIcon className="h-5 w-5" />,
+                  },
+                  {
+                      href: `${urlBase}/settings/shop/` as Route,
+                      label: 'Shop',
+                      icon: <Store className="h-5 w-5" />,
+                  },
+              ]
+            : []),
+    ];
+
+    const commandPaletteItems: CommandPaletteItem[] = iconRailItems.map((item) => ({
+        id: item.label.toLowerCase(),
+        label: item.label,
+        href: item.href,
+        group: 'Navigate',
+        icon: item.icon,
+    }));
+
+    const shopsForSwitcher = await getShopsForUser(user.id);
 
     return (
-        <div className="flex h-screen w-full flex-col-reverse items-stretch justify-stretch md:flex-row">
-            <Card className="fixed top-0 -left-full z-50 mt-18 flex h-[calc(100vh-4.5rem)] w-80 max-w-full flex-col gap-2 rounded-none border-0 border-border border-r-2 border-solid bg-background/95 backdrop-blur transition-all group-data-[menu-open=true]/body:left-0 supports-backdrop-filter:bg-background/75 md:z-0 md:mt-0 md:h-full lg:sticky lg:left-0">
-                <Card.header className="h-18 max-h-18 min-h-18">
-                    <div className="flex items-center justify-start gap-3">
-                        <Avatar>
-                            <AvatarImage src={shop.icons?.favicon?.src} />
-                            <AvatarFallback>{shop.name.slice(0, 2).toUpperCase()}</AvatarFallback>
-                        </Avatar>
-
-                        <div className="flex flex-col gap-1">
-                            <h4 className="font-semibold text-sm leading-none">{shop.name}</h4>
-                            <Link
-                                href={`https://${shop.domain}/?utm_campaign=admin&utm_source=nordcom-commerce`}
-                                target="_blank"
-                                className="text-foreground/75 text-xs leading-none"
-                            >
-                                {shop.domain}
-                            </Link>
-                        </div>
-                    </div>
-                </Card.header>
-
-                <Card.content className="h-full grow">
-                    <ScrollArea className="h-full">
-                        <nav className="flex w-full flex-col gap-2 font-medium text-muted-foreground text-sm">
-                            <MenuItem href={`${urlBase}/` as Route}>
-                                <Binoculars className="text-lg" />
-                                Home
-                            </MenuItem>
-                            <MenuItem href={`${urlBase}/products` as Route}>
-                                <Tag className="text-lg" />
-                                Products
-                            </MenuItem>
-                            <MenuItem href={`${urlBase}/reviews` as Route}>
-                                <MessageCircleHeart className="text-lg" />
-                                Reviews
-                            </MenuItem>
-                            <MenuItem href={`${urlBase}/content` as Route}>
-                                <Images className="text-lg" />
-                                Content
-                            </MenuItem>
-
-                            <MenuItem href={`${urlBase}/settings` as Route}>
-                                <Settings className="text-lg" />
-                                Settings
-                            </MenuItem>
-
-                            <div className="mt-4 border-0 border-border border-t-2 border-solid pt-4">
-                                <p className="mb-2 px-3 font-medium text-muted-foreground text-xs uppercase tracking-wide">
-                                    Operators
-                                </p>
-                                <MenuItem href={`${urlBase}/settings/tenants/` as Route} disabled={!isAdmin}>
-                                    <Building2 className="text-lg" />
-                                    Tenants
-                                </MenuItem>
-                                <MenuItem href={`${urlBase}/settings/users/` as Route} disabled={!isAdmin}>
-                                    <Users className="text-lg" />
-                                    Users
-                                </MenuItem>
-                                <MenuItem href={`${urlBase}/settings/media/` as Route} disabled={!isAdmin}>
-                                    <ImageIcon className="text-lg" />
-                                    Media
-                                </MenuItem>
-                                <MenuItem href={`${urlBase}/settings/shop/` as Route} disabled={!isAdmin}>
-                                    <Store className="text-lg" />
-                                    Shop
-                                </MenuItem>
-                            </div>
-                        </nav>
-                    </ScrollArea>
-                </Card.content>
-
-                <Card.footer>
-                    <div className="flex w-full flex-col justify-start gap-3">
-                        <Button as={Link} href="/new" className="w-full" variant="outline" color="foreground">
-                            Connect a new Shop
-                        </Button>
-                    </div>
-                </Card.footer>
-            </Card>
-
-            <div className="flex h-full min-h-screen w-full grow flex-col">
-                <Header className="h-18 max-h-18 min-h-18" />
-
-                <main className="relative flex h-full min-h-[150vh] w-full min-w-0 flex-col justify-stretch gap-4 overflow-x-clip p-4">
-                    {children}
-                </main>
-            </div>
-        </div>
+        <ShellRoot
+            renderHeader={(mobileTrigger) => (
+                <ShellHeader
+                    shop={{ name: shop.name, domain: shop.domain }}
+                    user={{
+                        name: undefined,
+                        email: user.email ?? undefined,
+                        role: user.role,
+                    }}
+                    shopsForSwitcher={shopsForSwitcher}
+                    commandPaletteItems={commandPaletteItems}
+                    mobileMenuTrigger={mobileTrigger}
+                />
+            )}
+            subnav={subnav}
+            inspector={inspector}
+            hasSubnav={hasSubnav}
+            hasInspector={hasInspector}
+            initialState={initialState}
+            iconRailItems={iconRailItems}
+        >
+            {children}
+        </ShellRoot>
     );
 }
