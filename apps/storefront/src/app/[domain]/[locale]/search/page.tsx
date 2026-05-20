@@ -11,10 +11,9 @@ import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skel
 import PageContent from '@/components/page-content';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
-import { showSearchFilter } from '@/utils/flags';
 import { NOT_FOUND_HANDLE } from '@/utils/handle';
 import { capitalize, getTranslations, Locale } from '@/utils/locale';
-import SearchContent from './search-content';
+import SearchContentGate from './search-content-gate';
 
 export type SearchPageParams = Promise<{ domain: string; locale: string }>;
 export async function generateMetadata({ params }: { params: SearchPageParams }): Promise<Metadata> {
@@ -84,8 +83,6 @@ export default async function SearchPage({
         ? await SearchApi({ query, client })
         : { products: [], productFilters: [] };
 
-    const showFilters = await showSearchFilter();
-
     return (
         <>
             <Suspense key={`pages.search.breadcrumbs`} fallback={<BreadcrumbsSkeleton />}>
@@ -98,15 +95,7 @@ export default async function SearchPage({
                 <Heading title={capitalize(t('search'))} />
 
                 <Suspense key={`pages.search.${JSON.stringify(searchParams)}`}>
-                    <SearchContent
-                        locale={locale}
-                        i18n={i18n}
-                        showFilters={showFilters}
-                        data={{
-                            products,
-                            productFilters,
-                        }}
-                    />
+                    <SearchContentGate shop={shop} locale={locale} i18n={i18n} data={{ products, productFilters }} />
                 </Suspense>
             </PageContent>
         </>
