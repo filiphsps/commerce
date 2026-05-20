@@ -24,6 +24,11 @@ export const pagesEditor = defineCollectionEditor({
             { label: 'Updated', accessor: 'updatedAt' },
         ],
         bulkActions: ['delete', 'publish'],
+        emptyState: {
+            label: 'No pages yet',
+            description: 'Create your first page to start populating this shop.',
+            actionLabel: 'New page',
+        },
     },
     revalidate: ({ domain }) => [`/${domain}/content/pages/`, `/${domain}/`],
 });

@@ -80,12 +80,21 @@ export async function EditorListPage<TSlug extends CollectionSlug>({
                     ) : null
                 }
             />
-            <runtime.Table
-                rows={docs as Array<Record<string, unknown> & { id: string | number }>}
-                columns={manifest.list.columns}
-                getRowHref={(row) => `${manifest.routes.basePath(domain)}${String(row[keyField])}/` as Route}
-                bulkActions={bulkActions}
-            />
+            {docs.length === 0 && manifest.list.emptyState ? (
+                <runtime.EmptyState
+                    label={manifest.list.emptyState.label}
+                    description={manifest.list.emptyState.description}
+                    actionLabel={manifest.list.emptyState.actionLabel}
+                    actionHref={manifest.access.create ? `${manifest.routes.basePath(domain)}new/` : undefined}
+                />
+            ) : (
+                <runtime.Table
+                    rows={docs as Array<Record<string, unknown> & { id: string | number }>}
+                    columns={manifest.list.columns}
+                    getRowHref={(row) => `${manifest.routes.basePath(domain)}${String(row[keyField])}/` as Route}
+                    bulkActions={bulkActions}
+                />
+            )}
         </>
     );
 }

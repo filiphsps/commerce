@@ -82,6 +82,12 @@ export type CollectionEditorManifest<TSlug extends CollectionSlug = CollectionSl
         /** Default '-updatedAt'. */
         sortBy?: string;
         bulkActions?: Array<'delete' | 'publish'>;
+        /** Empty-state copy used when the list returns zero docs. */
+        emptyState?: {
+            label: string;
+            description?: string;
+            actionLabel?: string;
+        };
     };
 
     /** Omit to hide the preview iframe slot. */

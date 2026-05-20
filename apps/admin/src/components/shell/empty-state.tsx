@@ -1,27 +1,36 @@
 import type { Route } from 'next';
 import Link from 'next/link';
-import type { ReactNode } from 'react';
 
-import { Button } from '@/components/ui/button';
+import { cn } from '@/utils/tailwind';
 
 export type EmptyStateProps = {
-    icon?: ReactNode;
     label: string;
     description?: string;
     actionLabel?: string;
-    actionHref?: Route;
+    actionHref?: string;
+    className?: string;
 };
 
-export function EmptyState({ icon, label, description, actionLabel, actionHref }: EmptyStateProps) {
+export function EmptyState({ label, description, actionLabel, actionHref, className }: EmptyStateProps) {
     return (
-        <div className="flex h-full min-h-[240px] flex-col items-center justify-center gap-3 p-8 text-center">
-            {icon ? <div className="text-muted-foreground">{icon}</div> : null}
-            <p className="text-base font-semibold">{label}</p>
-            {description ? <p className="text-sm text-muted-foreground">{description}</p> : null}
+        <div
+            data-empty-state
+            className={cn(
+                'flex flex-col items-center justify-center gap-4 rounded-lg border-2 border-border border-dashed px-8 py-16 text-center',
+                className,
+            )}
+        >
+            <div className="flex flex-col items-center gap-2">
+                <p className="font-semibold text-foreground text-lg">{label}</p>
+                {description ? <p className="max-w-sm text-muted-foreground text-sm">{description}</p> : null}
+            </div>
             {actionHref && actionLabel ? (
-                <Button asChild variant="primary" size="sm" className="mt-2">
-                    <Link href={actionHref}>{actionLabel}</Link>
-                </Button>
+                <Link
+                    href={actionHref as Route}
+                    className="inline-flex h-9 items-center gap-2 rounded-md border-2 border-primary bg-primary px-4 font-bold text-primary-foreground text-sm uppercase tracking-wide hover:bg-primary/90"
+                >
+                    {actionLabel}
+                </Link>
             ) : null}
         </div>
     );

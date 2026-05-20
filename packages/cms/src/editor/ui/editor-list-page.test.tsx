@@ -41,11 +41,38 @@ const buildRuntime = (): never =>
         }),
         toAccessCtx: (_ctx: never, domain: string | null) => ({ user: null, domain }),
         Table: ({ rows }: { rows: Array<{ id: string }> }) => <div data-testid="table">{rows.length} rows</div>,
+        EmptyState: ({
+            label,
+            actionHref,
+            actionLabel,
+        }: {
+            label: string;
+            actionHref?: string;
+            actionLabel?: string;
+        }) => (
+            <div data-testid="empty-state">
+                {label}
+                {actionHref && actionLabel ? <a href={actionHref}>{actionLabel}</a> : null}
+            </div>
+        ),
         DocumentForm: () => null,
         Toolbar: () => null,
         PageHeader: ({ title }: { title: string }) => <h1>{title}</h1>,
         buildFormState: async () => ({ state: {} }),
         getShellProps: async () => ({}),
+    }) as never;
+
+const buildEmptyRuntime = (): never =>
+    ({
+        ...(buildRuntime() as object),
+        getCtx: async () => ({
+            payload: {
+                config: { collections: [] },
+                find: async () => ({ docs: [] }),
+            },
+            user: { id: 'u', email: 'e', role: 'editor', tenants: [{ tenant: 'tenant-1' }], collection: 'users' },
+            tenant: { id: 'tenant-1', slug: 'acme', defaultLocale: 'fr', locales: ['fr', 'en'] },
+        }),
     }) as never;
 
 describe('<EditorListPage>', () => {
@@ -71,5 +98,37 @@ describe('<EditorListPage>', () => {
                 searchParams: {},
             }),
         ).rejects.toThrow(/NEXT_REDIRECT:.*locale=fr/);
+    });
+
+    it('renders <EmptyState> when docs are empty and manifest.list.emptyState is defined', async () => {
+        const manifestWithEmpty = defineCollectionEditor({
+            ...manifest,
+            list: {
+                columns: manifest.list?.columns ?? [],
+                emptyState: { label: 'No pages yet', actionLabel: 'New page' },
+            },
+            access: { ...manifest.access, create: () => true },
+        });
+        const el = await EditorListPage({
+            manifest: manifestWithEmpty,
+            runtime: buildEmptyRuntime(),
+            params: { domain: 'a.test' },
+            searchParams: { locale: 'fr' },
+        });
+        const { getByTestId } = render(el);
+        expect(getByTestId('empty-state').textContent).toContain('No pages yet');
+        expect(getByTestId('empty-state').textContent).toContain('New page');
+    });
+
+    it('falls back to the table when docs are empty but manifest.list.emptyState is absent', async () => {
+        const el = await EditorListPage({
+            manifest, // no emptyState
+            runtime: buildEmptyRuntime(),
+            params: { domain: 'a.test' },
+            searchParams: { locale: 'fr' },
+        });
+        const { getByTestId, queryByTestId } = render(el);
+        expect(getByTestId('table').textContent).toBe('0 rows');
+        expect(queryByTestId('empty-state')).toBeNull();
     });
 });

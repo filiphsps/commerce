@@ -106,6 +106,14 @@ export type EditorRuntime = {
      */
     getShellProps: (domain: string | null, locale?: string) => Promise<ShellProps>;
     DocumentForm: ComponentType<DocumentFormShellProps>;
+    /** Render the empty-state for a list. The list page passes label/action props.
+     *  The admin app wires this to `<EmptyState>` from its shell. */
+    EmptyState: ComponentType<{
+        label: string;
+        description?: string;
+        actionLabel?: string;
+        actionHref?: string;
+    }>;
     Table: ComponentType<CollectionTableShellProps>;
     Toolbar: ComponentType<EditorToolbarShellProps>;
     PageHeader: ComponentType<{

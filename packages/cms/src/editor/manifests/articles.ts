@@ -28,6 +28,11 @@ export const articlesEditor = defineCollectionEditor({
             { label: 'Updated', accessor: 'updatedAt' },
         ],
         bulkActions: ['delete', 'publish'],
+        emptyState: {
+            label: 'No articles yet',
+            description: 'Publish your first article to get the blog started.',
+            actionLabel: 'New article',
+        },
     },
     revalidate: ({ domain }) => [`/${domain}/content/articles/`, `/${domain}/`],
 });

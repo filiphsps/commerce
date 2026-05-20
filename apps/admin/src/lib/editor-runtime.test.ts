@@ -15,6 +15,12 @@ vi.mock('@/components/cms/document-form', () => ({
 vi.mock('@/components/cms/draft-publish-toolbar', () => ({
     DraftPublishToolbar: vi.fn(),
 }));
+vi.mock('@/components/shell/empty-state', () => ({
+    EmptyState: vi.fn(),
+}));
+vi.mock('@/components/shell/page-header', () => ({
+    PageHeader: vi.fn(),
+}));
 
 // Helpers imported by editor-runtime — stub at the module boundary so
 // tests run without real Payload / NextAuth wiring.
@@ -31,12 +37,13 @@ vi.mock('./payload-ctx', () => ({
 import { editorRuntime } from './editor-runtime';
 
 describe('editorRuntime', () => {
-    it('exposes the eight required handles', () => {
+    it('exposes the nine required handles', () => {
         expect(typeof editorRuntime.getCtx).toBe('function');
         expect(typeof editorRuntime.toAccessCtx).toBe('function');
         expect(typeof editorRuntime.buildFormState).toBe('function');
         expect(typeof editorRuntime.getShellProps).toBe('function');
         expect(typeof editorRuntime.DocumentForm).toBe('function');
+        expect(typeof editorRuntime.EmptyState).toBe('function');
         expect(typeof editorRuntime.Table).toBe('function');
         expect(typeof editorRuntime.Toolbar).toBe('function');
         expect(typeof editorRuntime.PageHeader).toBe('function');
