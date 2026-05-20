@@ -28,6 +28,7 @@ type ShopWithFlags = OnlineShop & {
  *  - Overrides (vercel-flag-overrides cookie) are not consulted.
  *  - Predicates with `requiresUser: true` are skipped.
  *  - Percentage rollouts bucket deterministically (no visitorId).
+ *  - Expects `shop` loaded via `Shop.findByDomain(..., { populate: ['featureFlags.flag'] })` — refs are introspected by shape, not by their nominal `FeatureFlagRef` type.
  */
 export function evaluateShopFlagSync<T>(shop: OnlineShop, key: string, defaultValue: T): T {
     const value = decide<T>(shop as ShopWithFlags, key, defaultValue);
@@ -35,6 +36,7 @@ export function evaluateShopFlagSync<T>(shop: OnlineShop, key: string, defaultVa
     return value;
 }
 
+// Value-type integrity (T matching stored rule/default value) is enforced by the defineFlag declaration's `defaultValue: T` — not by runtime validation here.
 function decide<T>(shop: ShopWithFlags, key: string, defaultValue: T): T {
     const ref = shop.featureFlags?.find((entry) => isPopulated(entry.flag) && entry.flag.key === key);
     if (!ref || !isPopulated(ref.flag)) return defaultValue;
