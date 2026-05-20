@@ -8,7 +8,7 @@ import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
 import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
-import { Fragment, Suspense } from 'react';
+import { Suspense } from 'react';
 import type { Product } from '@/api/product';
 import { isProductVegan } from '@/api/product';
 import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
@@ -255,13 +255,11 @@ export default async function ProductPage({ params }: { params: ProductPageParam
                 </Suspense>
             </Card>
 
-            <Suspense fallback={<Fragment />}>
-                <Card className={BLOCK_STYLES}>
-                    <Suspense fallback={<InfoLines.skeleton />}>
-                        <InfoLines shop={shop} product={product} i18n={i18n} locale={locale} />
-                    </Suspense>
-                </Card>
-            </Suspense>
+            <Card className={BLOCK_STYLES}>
+                <Suspense key={`products.${handle}.details.info-lines`} fallback={<InfoLines.skeleton />}>
+                    <InfoLines shop={shop} product={product} i18n={i18n} locale={locale} />
+                </Suspense>
+            </Card>
 
             <Suspense
                 key={`products.${handle}.details.slices`}
