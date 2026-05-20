@@ -49,12 +49,15 @@ jobs:
 
             - name: 🔨 Build Docs
               run: pnpm --filter @nordcom/commerce-docs build
+              env:
+                  NEXT_PUBLIC_DOCS_BASE_PATH: /commerce
+                  NEXT_PUBLIC_DOCS_CANONICAL_URL: https://filiphsps.github.io/commerce
 
             - name: 📦 Upload built site
               uses: actions/upload-artifact@v7
               with:
                   name: docs-build
-                  path: apps/docs/build
+                  path: apps/docs/out
                   retention-days: 1
 
             - name: ⚙️ Configure Pages
@@ -65,7 +68,7 @@ jobs:
               if: github.event_name != 'pull_request'
               uses: actions/upload-pages-artifact@v5
               with:
-                  path: apps/docs/build
+                  path: apps/docs/out
 
     e2e:
         name: 🧪 E2E
@@ -83,7 +86,7 @@ jobs:
               uses: actions/download-artifact@v8
               with:
                   name: docs-build
-                  path: apps/docs/build
+                  path: apps/docs/out
 
             - name: 🎭 Install Playwright browsers
               run: pnpm --filter @nordcom/commerce-docs exec playwright install --with-deps chromium webkit
