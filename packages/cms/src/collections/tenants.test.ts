@@ -1,50 +1,38 @@
-import { mongooseAdapter } from '@payloadcms/db-mongodb';
-import { lexicalEditor } from '@payloadcms/richtext-lexical';
-import type { Payload } from 'payload';
-import { buildConfig, getPayload } from 'payload';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import type { Field } from 'payload';
+import { describe, expect, it } from 'vitest';
 import { tenants } from './tenants';
 
+// Pure config introspection. Field-validation behavior ("rejects missing required
+// fields") belongs to Payload itself — we just declare the schema correctly and
+// trust Payload to enforce it. End-to-end enforcement is covered by the
+// multi-tenant isolation suite, which boots Payload once for the access boundary.
 describe('tenants collection', () => {
-    let payload: Payload;
+    const fields = (tenants.fields ?? []) as Field[];
+    const byName = (name: string) => fields.find((f): f is Field & { name: string } => 'name' in f && f.name === name);
 
-    beforeAll(async () => {
-        const baseUri = process.env.MONGODB_URI ?? 'mongodb://localhost:27017/test';
-        const url = new URL(baseUri);
-        url.pathname = `/test_tenants_${Date.now()}`;
-        const config = await buildConfig({
-            secret: 'test',
-            db: mongooseAdapter({ url: url.toString() }),
-            editor: lexicalEditor({}),
-            collections: [tenants],
-        });
-        payload = await getPayload({ config });
+    it('declares the expected slug + admin title', () => {
+        expect(tenants.slug).toBe('tenants');
+        expect(tenants.admin?.useAsTitle).toBe('name');
     });
 
-    afterAll(async () => {
-        await payload.db.connection?.dropDatabase();
-        await payload.db.destroy?.();
+    it('requires name, slug, defaultLocale, and locales', () => {
+        for (const name of ['name', 'slug', 'defaultLocale', 'locales']) {
+            expect(byName(name)).toMatchObject({ required: true });
+        }
     });
 
-    it('creates a tenant with required fields', async () => {
-        const tenant = await payload.create({
-            collection: 'tenants',
-            data: {
-                name: 'Swedish Candy Store',
-                slug: 'swedish-candy-store',
-                defaultLocale: 'sv',
-                locales: ['sv', 'en-US'],
-            },
-        });
-        expect(tenant.name).toBe('Swedish Candy Store');
-        expect(tenant.slug).toBe('swedish-candy-store');
-        expect(tenant.defaultLocale).toBe('sv');
-        expect(tenant.locales).toEqual(['sv', 'en-US']);
+    it('makes slug unique and indexed (tenant resolution is keyed by it)', () => {
+        const slug = byName('slug') as Field & { unique?: boolean; index?: boolean };
+        expect(slug.unique).toBe(true);
+        expect(slug.index).toBe(true);
     });
 
-    it('rejects missing required fields', async () => {
-        await expect(
-            payload.create({ collection: 'tenants', data: { name: 'Missing slug' } as never }),
-        ).rejects.toThrow();
+    it('indexes shopId so post-save tenant sync can findOne in O(1)', () => {
+        expect(byName('shopId')).toMatchObject({ index: true });
+    });
+
+    it('defaults to en-US for defaultLocale and ["en-US"] for locales', () => {
+        expect(byName('defaultLocale')).toMatchObject({ defaultValue: 'en-US' });
+        expect(byName('locales')).toMatchObject({ defaultValue: ['en-US'] });
     });
 });

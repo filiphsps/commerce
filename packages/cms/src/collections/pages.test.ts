@@ -1,57 +1,30 @@
-import type { Payload } from 'payload';
-import { getPayload } from 'payload';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { buildTestConfig } from '../test-utils/build-test-config';
+import type { Field } from 'payload';
+import { describe, expect, it } from 'vitest';
+import { pages } from './pages';
 
+// Pure config introspection. We trust Payload to enforce required-field
+// validation and localization — its own test suite covers that. The valuable
+// end-to-end behaviors (multi-tenant slug uniqueness, access predicates) are
+// covered by `access/multi-tenant-isolation.test.ts`.
 describe('pages collection', () => {
-    let payload: Payload;
-    let tenantId: string;
+    const fields = (pages.fields ?? []) as Field[];
+    const byName = (name: string) => fields.find((f): f is Field & { name: string } => 'name' in f && f.name === name);
 
-    beforeAll(async () => {
-        const config = await buildTestConfig({ suite: 'pages', locales: ['en-US', 'sv'] });
-        payload = await getPayload({ config });
-        const t = await payload.create({
-            collection: 'tenants',
-            data: { name: 'X', slug: 'x', defaultLocale: 'en-US', locales: ['en-US', 'sv'] },
-        });
-        tenantId = String(t.id);
+    it('has slug "pages" and draft versions with autosave', () => {
+        expect(pages.slug).toBe('pages');
+        expect(pages.versions).toMatchObject({ drafts: { autosave: { interval: 2000 } } });
     });
 
-    afterAll(async () => {
-        await payload.db.connection?.dropDatabase();
-        await payload.db.destroy?.();
+    it('requires title and slug', () => {
+        expect(byName('title')).toMatchObject({ required: true });
+        expect(byName('slug')).toMatchObject({ required: true });
     });
 
-    it('creates a draft page', async () => {
-        const page = await payload.create({
-            collection: 'pages',
-            data: { slug: 'home', title: 'Home', tenant: tenantId, _status: 'draft' },
-        });
-        expect(page.slug).toBe('home');
-        expect(page._status).toBe('draft');
+    it('localizes title (per-locale storage)', () => {
+        expect(byName('title')).toMatchObject({ localized: true });
     });
 
-    it('requires slug', async () => {
-        await expect(
-            payload.create({ collection: 'pages', data: { title: 'Missing slug', tenant: tenantId } as never }),
-        ).rejects.toThrow();
-    });
-
-    it('supports locales for title', async () => {
-        const page = await payload.create({
-            collection: 'pages',
-            locale: 'en-US',
-            data: { slug: 'about', title: 'About', tenant: tenantId },
-        });
-        await payload.update({
-            collection: 'pages',
-            id: page.id,
-            locale: 'sv',
-            data: { title: 'Om oss' },
-        });
-        const sv = await payload.findByID({ collection: 'pages', id: page.id, locale: 'sv' });
-        const en = await payload.findByID({ collection: 'pages', id: page.id, locale: 'en-US' });
-        expect(sv.title).toBe('Om oss');
-        expect(en.title).toBe('About');
+    it('enforces (tenant, slug) uniqueness via compound index', () => {
+        expect(pages.indexes).toContainEqual({ fields: ['tenant', 'slug'], unique: true });
     });
 });

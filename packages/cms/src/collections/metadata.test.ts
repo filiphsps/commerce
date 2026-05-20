@@ -1,43 +1,30 @@
-import type { Payload } from 'payload';
-import { getPayload } from 'payload';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { buildTestConfig } from '../test-utils/build-test-config';
+import type { Field } from 'payload';
+import { describe, expect, it } from 'vitest';
+import { collectionMetadata } from './collection-metadata';
+import { productMetadata } from './product-metadata';
 
-describe('product + collection metadata collections', () => {
-    let payload: Payload;
-    let tenantId: string;
+// Pure config introspection. Cross-tenant uniqueness of (tenant, shopifyHandle)
+// is exercised end-to-end in `access/multi-tenant-isolation.test.ts`.
+describe.each([
+    ['productMetadata', productMetadata],
+    ['collectionMetadata', collectionMetadata],
+] as const)('%s collection', (name, collection) => {
+    const fields = (collection.fields ?? []) as Field[];
+    const byName = (n: string) => fields.find((f): f is Field & { name: string } => 'name' in f && f.name === n);
 
-    beforeAll(async () => {
-        const config = await buildTestConfig({ suite: 'metadata' });
-        payload = await getPayload({ config });
-        const t = await payload.create({
-            collection: 'tenants',
-            data: { name: 'X', slug: 'x', defaultLocale: 'en-US', locales: ['en-US'] },
-        });
-        tenantId = String(t.id);
+    it(`has slug "${name}"`, () => {
+        expect(collection.slug).toBe(name);
     });
 
-    afterAll(async () => {
-        await payload.db.connection?.dropDatabase();
-        await payload.db.destroy?.();
+    it('requires shopifyHandle and indexes it', () => {
+        expect(byName('shopifyHandle')).toMatchObject({ required: true, index: true });
     });
 
-    it('creates product metadata with shopifyHandle', async () => {
-        const doc = await payload.create({
-            collection: 'productMetadata',
-            data: { shopifyHandle: 'sour-worms', tenant: tenantId },
-        });
-        expect(doc.shopifyHandle).toBe('sour-worms');
+    it('enforces (tenant, shopifyHandle) uniqueness via compound index', () => {
+        expect(collection.indexes).toContainEqual({ fields: ['tenant', 'shopifyHandle'], unique: true });
     });
 
-    it('creates collection metadata with shopifyHandle', async () => {
-        const doc = await payload.create({
-            collection: 'collectionMetadata',
-            data: { shopifyHandle: 'candy', tenant: tenantId },
-        });
-        expect(doc.shopifyHandle).toBe('candy');
+    it('opts in to drafts with autosave', () => {
+        expect(collection.versions).toMatchObject({ drafts: { autosave: { interval: 2000 } } });
     });
-
-    // Compound unique index on (tenant, shopifyHandle) is defined on each collection.
-    // Cross-tenant uniqueness is exercised end-to-end in config/multi-tenant.test.ts.
 });

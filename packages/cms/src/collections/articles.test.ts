@@ -1,46 +1,32 @@
-import type { Payload } from 'payload';
-import { getPayload } from 'payload';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { buildTestConfig } from '../test-utils/build-test-config';
+import type { Field } from 'payload';
+import { describe, expect, it } from 'vitest';
+import { articles } from './articles';
 
+// Pure config introspection. (tenant, slug) uniqueness is exercised end-to-end
+// in `access/multi-tenant-isolation.test.ts` — booting Payload here just to
+// hit the same code paths is ~5–10s of overhead for no extra signal.
 describe('articles collection', () => {
-    let payload: Payload;
-    let tenantId: string;
+    const fields = (articles.fields ?? []) as Field[];
+    const byName = (name: string) => fields.find((f): f is Field & { name: string } => 'name' in f && f.name === name);
 
-    beforeAll(async () => {
-        const config = await buildTestConfig({ suite: 'articles', locales: ['en-US', 'sv'] });
-        payload = await getPayload({ config });
-        const t = await payload.create({
-            collection: 'tenants',
-            data: { name: 'X', slug: 'x', defaultLocale: 'en-US', locales: ['en-US', 'sv'] },
-        });
-        tenantId = String(t.id);
+    it('has slug "articles" and draft versions with autosave', () => {
+        expect(articles.slug).toBe('articles');
+        expect(articles.versions).toMatchObject({ drafts: { autosave: { interval: 2000 } } });
     });
 
-    afterAll(async () => {
-        await payload.db.connection?.dropDatabase();
-        await payload.db.destroy?.();
+    it('requires title, slug, and author', () => {
+        for (const name of ['title', 'slug', 'author']) {
+            expect(byName(name)).toMatchObject({ required: true });
+        }
     });
 
-    it('creates an article with required fields', async () => {
-        const article = await payload.create({
-            collection: 'articles',
-            data: {
-                slug: 'hello-world',
-                title: 'Hello',
-                author: 'A.N. Editor',
-                excerpt: 'short',
-                tenant: tenantId,
-                _status: 'draft',
-            },
-        });
-        expect(article.slug).toBe('hello-world');
-        expect(article.author).toBe('A.N. Editor');
+    it('localizes title, excerpt, and body', () => {
+        for (const name of ['title', 'excerpt', 'body']) {
+            expect(byName(name)).toMatchObject({ localized: true });
+        }
     });
 
-    // The (tenant, slug) unique index is defined on the collection. We don't assert
-    // it here because Mongoose's autoIndex is async on a freshly-created DB and may
-    // not be ready when the second insert runs. Cross-tenant uniqueness is exercised
-    // end-to-end in the multi-tenant integration test (config/multi-tenant.test.ts).
-    it.skip('unique constraint on (tenant, slug) — covered by multi-tenant test', () => {});
+    it('enforces (tenant, slug) uniqueness via compound index', () => {
+        expect(articles.indexes).toContainEqual({ fields: ['tenant', 'slug'], unique: true });
+    });
 });

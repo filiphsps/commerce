@@ -17,6 +17,7 @@ export default defineConfig({
         environment: 'node',
         maxConcurrency: Infinity,
         passWithNoTests: true,
+        fileParallelism: true,
 
         typecheck: {
             tsconfig: './tsconfig.test.json',
@@ -33,7 +34,6 @@ export default defineConfig({
             exclude: [
                 '__tests__/*.*',
                 '.vitest/*.*',
-
                 '**/__snapshots__/**/*.*',
                 '**/__tests__/**/*.*',
                 '**/*.d.*',

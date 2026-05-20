@@ -21,6 +21,7 @@ export default defineConfig({
         environment: 'jsdom',
         maxConcurrency: Infinity,
         passWithNoTests: true,
+        fileParallelism: true,
         typecheck: {
             tsconfig: './tsconfig.test.json',
         },

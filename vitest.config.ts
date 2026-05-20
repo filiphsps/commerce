@@ -19,7 +19,7 @@ const exclude = [
     '**/tailwind.config.js',
     '**/vite.*.ts',
     '**/vitest.*.ts',
-    'packages/db/src/**/index.ts',
+    '{apps,packages}/**/src/**/index.*',
     'next.config.js',
     'vite.config.ts',
     'vitest.config.ts',

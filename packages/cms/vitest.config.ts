@@ -17,17 +17,11 @@ export default defineConfig({
         environment: 'node',
         maxConcurrency: Infinity,
         passWithNoTests: true,
-        // Files run sequentially — concurrent Payload bootstraps over-saturate
-        // the local Mongo connection (10s `beforeAll` timeouts) and hammer
-        // Atlas free tiers with IX-lock conflicts. Speed gains come from
-        // skipping Payload boots entirely in tests that don't need it (see
-        // `media.test.ts`, `_globals/globals.test.ts`).
-        fileParallelism: false,
-        // Within-file ordering is inherited from the root `sequence.concurrent:
-        // false` (i.e. tests run one-at-a-time). The setup file's `afterEach`
-        // (cleanup + `document.body.innerHTML = ''`) only buys isolation when
-        // tests don't interleave.
-
+        // File parallelism is on: only three files boot Payload (the multi-tenant
+        // suites + `boot-test-payload.test.ts`), so concurrent Mongo connections
+        // stay below the contention threshold that caused 10s `beforeAll`
+        // timeouts when every collection test was booting Payload too.
+        fileParallelism: true,
         typecheck: {
             tsconfig: './tsconfig.test.json',
         },
@@ -43,7 +37,6 @@ export default defineConfig({
             exclude: [
                 '__tests__/*.*',
                 '.vitest/*.*',
-
                 '**/__snapshots__/**/*.*',
                 '**/__tests__/**/*.*',
                 '**/*.d.*',
