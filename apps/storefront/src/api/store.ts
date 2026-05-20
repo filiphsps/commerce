@@ -1,8 +1,15 @@
+import 'server-only';
+
 import { gql } from '@apollo/client';
+import { getBusinessData } from '@nordcom/commerce-cms/api';
+import type { BusinessDatum } from '@nordcom/commerce-cms/types';
+import type { OnlineShop } from '@nordcom/commerce-db';
 import { NoLocalesAvailableError, ProviderFetchError } from '@nordcom/commerce-errors';
 import type { Country, Localization, PaymentSettings } from '@shopify/hydrogen-react/storefront-api-types';
+import { draftMode } from 'next/headers';
 import type { AbstractApi } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
+import { toShopRef } from './_cms';
 
 // FIXME: Handle tenant-specific default.
 const DEFAULT_LOCALE = {
@@ -151,4 +158,20 @@ export const ShopPaymentSettingsApi = async ({
     }
 
     return data.shop.paymentSettings;
+};
+
+export type BusinessDataApiArgs = { shop: OnlineShop; locale: Locale };
+
+/**
+ * Reads the Payload `BusinessData` global for this tenant + locale. Returns
+ * `null` when the doc has not been seeded — InfoBar / Footer call sites
+ * collapse to no-render in that case.
+ */
+export const BusinessDataApi = async ({ shop, locale }: BusinessDataApiArgs): Promise<BusinessDatum | null> => {
+    const isDraft = (await draftMode()).isEnabled;
+    return getBusinessData({
+        shop: toShopRef(shop),
+        locale: { code: locale.code },
+        draft: isDraft,
+    });
 };
