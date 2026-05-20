@@ -108,6 +108,11 @@ export type EditorRuntime = {
     DocumentForm: ComponentType<DocumentFormShellProps>;
     Table: ComponentType<CollectionTableShellProps>;
     Toolbar: ComponentType<EditorToolbarShellProps>;
+    PageHeader: ComponentType<{
+        title: string;
+        breadcrumbs?: Array<{ label: string; href?: string }>;
+        actions?: ReactNode;
+    }>;
 };
 
 /** Convenience type for primitive props that pair manifest + runtime. */

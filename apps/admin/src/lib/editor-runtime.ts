@@ -4,6 +4,7 @@ import type { EditorRuntime } from '@nordcom/commerce-cms/editor';
 import { CollectionTable } from '@/components/cms/collection-table';
 import { DocumentForm } from '@/components/cms/document-form';
 import { DraftPublishToolbar } from '@/components/cms/draft-publish-toolbar';
+import { PageHeader } from '@/components/shell/page-header';
 import { buildCmsFormState } from './build-cms-form-state';
 import { getCmsShellProps } from './get-cms-shell-props';
 import { getAuthedPayloadCtx } from './payload-ctx';
@@ -36,4 +37,5 @@ export const editorRuntime: EditorRuntime = {
     DocumentForm: DocumentForm as never,
     Table: CollectionTable,
     Toolbar: DraftPublishToolbar as never,
+    PageHeader: PageHeader as never,
 };

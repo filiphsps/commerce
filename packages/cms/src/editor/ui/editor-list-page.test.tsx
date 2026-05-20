@@ -1,5 +1,5 @@
 // @vitest-environment happy-dom
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import type { Route } from 'next';
 import { describe, expect, it, vi } from 'vitest';
 import { defineCollectionEditor } from '../manifest';
@@ -43,6 +43,7 @@ const buildRuntime = (): never =>
         Table: ({ rows }: { rows: Array<{ id: string }> }) => <div data-testid="table">{rows.length} rows</div>,
         DocumentForm: () => null,
         Toolbar: () => null,
+        PageHeader: ({ title }: { title: string }) => <h1>{title}</h1>,
         buildFormState: async () => ({ state: {} }),
         getShellProps: async () => ({}),
     }) as never;
@@ -58,6 +59,7 @@ describe('<EditorListPage>', () => {
         const { getByTestId } = render(el);
         // Plain DOM access — this package's tests don't load jest-dom.
         expect(getByTestId('table').textContent).toBe('2 rows');
+        expect(screen.getByRole('heading', { level: 1, name: /Pages/ })).toBeDefined();
     });
 
     it('redirects to tenant.defaultLocale when searchParams.locale is missing', async () => {

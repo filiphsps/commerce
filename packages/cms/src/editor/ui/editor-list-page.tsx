@@ -2,6 +2,7 @@ import 'server-only';
 
 import { MissingListConfigError } from '@nordcom/commerce-errors';
 import type { Route } from 'next';
+import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import type { CollectionSlug } from 'payload';
 import type { ReactNode } from 'react';
@@ -64,11 +65,27 @@ export async function EditorListPage<TSlug extends CollectionSlug>({
 
     const keyField = manifest.routes.keyField ?? 'id';
     return (
-        <runtime.Table
-            rows={docs as Array<Record<string, unknown> & { id: string | number }>}
-            columns={manifest.list.columns}
-            getRowHref={(row) => `${manifest.routes.basePath(domain)}${String(row[keyField])}/` as Route}
-            bulkActions={bulkActions}
-        />
+        <>
+            <runtime.PageHeader
+                title={manifest.routes.label.plural}
+                breadcrumbs={manifest.routes.breadcrumbs?.({ domain }) ?? []}
+                actions={
+                    manifest.access.create ? (
+                        <Link
+                            href={`${manifest.routes.basePath(domain)}new/` as Route}
+                            className="inline-flex h-9 items-center gap-2 rounded-md border-2 border-primary bg-primary px-4 font-bold text-primary-foreground text-sm uppercase tracking-wide hover:bg-primary/90"
+                        >
+                            New {manifest.routes.label.singular}
+                        </Link>
+                    ) : null
+                }
+            />
+            <runtime.Table
+                rows={docs as Array<Record<string, unknown> & { id: string | number }>}
+                columns={manifest.list.columns}
+                getRowHref={(row) => `${manifest.routes.basePath(domain)}${String(row[keyField])}/` as Route}
+                bulkActions={bulkActions}
+            />
+        </>
     );
 }

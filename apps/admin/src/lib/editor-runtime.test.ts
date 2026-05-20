@@ -31,7 +31,7 @@ vi.mock('./payload-ctx', () => ({
 import { editorRuntime } from './editor-runtime';
 
 describe('editorRuntime', () => {
-    it('exposes the seven required handles', () => {
+    it('exposes the eight required handles', () => {
         expect(typeof editorRuntime.getCtx).toBe('function');
         expect(typeof editorRuntime.toAccessCtx).toBe('function');
         expect(typeof editorRuntime.buildFormState).toBe('function');
@@ -39,6 +39,7 @@ describe('editorRuntime', () => {
         expect(typeof editorRuntime.DocumentForm).toBe('function');
         expect(typeof editorRuntime.Table).toBe('function');
         expect(typeof editorRuntime.Toolbar).toBe('function');
+        expect(typeof editorRuntime.PageHeader).toBe('function');
     });
 
     it('toAccessCtx flattens user.tenants from [{tenant}] to [string]', () => {
