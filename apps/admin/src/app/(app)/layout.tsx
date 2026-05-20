@@ -1,9 +1,3 @@
-/**
- * Shell layout for all non-Payload admin routes. Owns the `<html>/<body>` so
- * the root `app/layout.tsx` can stay a passthrough — that lets the `(payload)`
- * route group render Payload's own RootLayout (which emits its own html/body)
- * without nesting two html elements.
- */
 import '../globals.css';
 
 import { GeistMono } from 'geist/font/mono';

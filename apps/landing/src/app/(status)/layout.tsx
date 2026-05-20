@@ -6,9 +6,9 @@ import type { Metadata, Viewport } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
-
 import Footer from '@/components/footer';
 import { Providers } from '@/components/providers';
+import logo from '@/static/logo.svg';
 import { getServiceUrl } from '@/utils/domains';
 import { primaryFont } from '@/utils/fonts';
 import { cn } from '@/utils/tailwind';
@@ -62,9 +62,9 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
                                 rel="follow"
                             >
                                 <Image
-                                    className="h-full w-full object-contain object-left-top"
-                                    src="https://nordcom.io/logo.svg"
-                                    alt="Nordcom AB's Logo"
+                                    className="h-full w-full object-contain object-top-left"
+                                    src={logo}
+                                    alt="Nordcom Commerce Logo"
                                     height={75}
                                     width={150}
                                     draggable={false}

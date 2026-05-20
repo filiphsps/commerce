@@ -9,7 +9,7 @@ const apiSecretKey = process.env.SHOPIFY_API_SECRET_KEY;
 
 export const isShopifyConfigured = Boolean(apiKey && apiSecretKey);
 
-// Initialising `shopifyApi()` with empty credentials throws synchronously, which crashes
+// Initializing `shopifyApi()` with empty credentials throws synchronously, which crashes
 // the admin build for tenants who haven't onboarded Shopify yet. Skip init when missing
 // and let consumers null-check to return a graceful "integration disabled" response.
 export const shopifyAdminApi = isShopifyConfigured

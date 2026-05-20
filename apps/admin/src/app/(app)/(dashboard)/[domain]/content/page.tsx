@@ -45,7 +45,10 @@ function CollectionCard<T>({
                         const row = formatRow(item);
                         return (
                             <li key={row.id} className="truncate text-sm">
-                                <Link href={row.href} className="hover:text-primary hover:underline">
+                                <Link
+                                    href={row.href}
+                                    className="cursor-pointer select-none hover:text-primary hover:underline"
+                                >
                                     {row.title}
                                 </Link>
                             </li>

@@ -21,7 +21,7 @@ export function Header({ className, children, ...props }: HeaderProps) {
                 <Image
                     className="h-8 w-auto object-contain object-left"
                     src="/logo.svg"
-                    alt="Nordcom AB's Logo"
+                    alt="Nordcom Commerce Logo"
                     height={75}
                     width={150}
                     draggable={false}

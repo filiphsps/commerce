@@ -12,7 +12,7 @@ type Props = {
     searchParams: Promise<{ page?: string; locale?: string }>;
 };
 
-export default async function UsersListPage({ params, searchParams }: Props) {
+export default async function ShopSettingsUsersPage({ params, searchParams }: Props) {
     const { domain } = await params;
     const sp = await searchParams;
     return <EditorListPage manifest={usersEditor} runtime={editorRuntime} params={{ domain }} searchParams={sp} />;

@@ -24,7 +24,7 @@ export default function NotFound() {
                 <h1 className="font-normal text-4xl text-foreground/65 lowercase leading-tight">Page not found.</h1>
             </header>
 
-            <p className="block max-w-full md:w-[42rem] md:text-base">The requested resource could not be found.</p>
+            <p className="block max-w-full md:w-2xl md:text-base">The requested resource could not be found.</p>
         </main>
     );
 }

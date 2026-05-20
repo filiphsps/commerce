@@ -12,7 +12,7 @@ type Props = {
     searchParams: Promise<{ page?: string }>;
 };
 
-export default async function MediaListPage({ params, searchParams }: Props) {
+export default async function ShopSettingsMediaListPage({ params, searchParams }: Props) {
     const { domain } = await params;
     const sp = await searchParams;
     return <EditorListPage manifest={mediaEditor} runtime={editorRuntime} params={{ domain }} searchParams={sp} />;

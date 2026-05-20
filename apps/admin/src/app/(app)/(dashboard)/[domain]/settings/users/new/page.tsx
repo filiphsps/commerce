@@ -13,7 +13,7 @@ type Props = {
     searchParams: Promise<{ locale?: string }>;
 };
 
-export default async function NewUserPage({ params, searchParams }: Props) {
+export default async function ShopSettingsNewUserPage({ params, searchParams }: Props) {
     const { domain } = await params;
     const sp = await searchParams;
     return (

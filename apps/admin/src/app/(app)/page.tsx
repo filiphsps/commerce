@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     title: 'Your Shops',
 };
 
-export default async function Overview() {
+export default async function OverviewPage() {
     const session = await auth();
     if (!session?.user) {
         redirect('/auth/login/' as Route);
@@ -48,8 +48,9 @@ export default async function Overview() {
                     <section className="flex items-start justify-between">
                         <Link href="/" title="Nordcom Commerce" className="block pb-4">
                             <Image
+                                className="h-full w-auto object-contain object-left"
                                 src="/logo.svg"
-                                alt="Nordcom AB's Logo"
+                                alt="Nordcom Commerce Logo"
                                 height={75}
                                 width={150}
                                 draggable={false}

@@ -15,7 +15,7 @@ export default async function Header({ className, ...props }: HeaderProps) {
                     <Image
                         className="h-full w-auto"
                         src={logo}
-                        alt="Nordcom AB's Logo"
+                        alt="Nordcom Commerce Logo"
                         height={75}
                         width={150}
                         draggable={false}
