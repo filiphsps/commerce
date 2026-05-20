@@ -2,9 +2,10 @@ import 'server-only';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
+import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
 import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
-import { notFound } from 'next/navigation';
+import { notFound, unstable_rethrow } from 'next/navigation';
 import { Fragment, Suspense } from 'react';
 import type { OnlineStore, WithContext } from 'schema-dts';
 import { PageApi } from '@/api/page';
@@ -14,7 +15,7 @@ import { CMSContent } from '@/components/cms/cms-content';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import { JsonLd } from '@/components/json-ld';
-import { isValidHandle } from '@/utils/handle';
+import { isValidHandle, NOT_FOUND_HANDLE } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
 import type { CustomPageParams } from './static-params';
 
@@ -25,15 +26,43 @@ export async function generateMetadata({ params }: { params: CustomPageParams })
     cacheLife('max');
 
     const { domain, locale: localeData, slug } = await params;
+    if (!domain || domain === NOT_FOUND_HANDLE) {
+        notFound();
+    }
 
     const handle = slug.join('/');
     if (!handle || !isValidHandle(handle)) {
         notFound();
     }
 
-    const locale = Locale.from(localeData);
+    let locale: Locale;
+    try {
+        // Creates a locale object from a locale code (e.g. `en-US`).
+        locale = Locale.from(localeData);
+    } catch (error: unknown) {
+        if (Error.isNotFound(error)) {
+            notFound();
+        }
 
-    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+        console.error(error);
+        unstable_rethrow(error);
+        throw error;
+    }
+
+    let shop: OnlineShop;
+    try {
+        // Fetch the current shop.
+        shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    } catch (error: unknown) {
+        if (Error.isNotFound(error) || error instanceof UnknownShopDomainError) {
+            notFound();
+        }
+
+        console.error(error);
+        unstable_rethrow(error);
+        throw error;
+    }
+
     const api = await ShopifyApolloApiClient({ shop, locale });
 
     const page = await PageApi({ shop, locale, handle });
@@ -133,17 +162,42 @@ export default async function CustomPage({ params }: { params: CustomPageParams 
     cacheLife('max');
 
     const { domain, locale: localeData, slug } = await params;
+    if (!domain || domain === NOT_FOUND_HANDLE) {
+        notFound();
+    }
 
     const handle = slug.join('/');
     if (!isValidHandle(handle)) {
         notFound();
     }
 
-    // Creates a locale object from a locale code (e.g. `en-US`).
-    const locale = Locale.from(localeData);
+    let locale: Locale;
+    try {
+        // Creates a locale object from a locale code (e.g. `en-US`).
+        locale = Locale.from(localeData);
+    } catch (error: unknown) {
+        if (Error.isNotFound(error)) {
+            notFound();
+        }
 
-    // Fetch the current shop.
-    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+        console.error(error);
+        unstable_rethrow(error);
+        throw error;
+    }
+
+    let shop: OnlineShop;
+    try {
+        // Fetch the current shop.
+        shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    } catch (error: unknown) {
+        if (Error.isNotFound(error) || error instanceof UnknownShopDomainError) {
+            notFound();
+        }
+
+        console.error(error);
+        unstable_rethrow(error);
+        throw error;
+    }
 
     return (
         <>

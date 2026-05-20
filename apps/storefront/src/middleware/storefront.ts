@@ -18,7 +18,10 @@ import { BuildConfig } from '@/utils/build-config';
 import type { Code } from '@/utils/locale';
 
 function hostnameFromRequest(req: NextRequest): string {
-    return shopFromHost(req.headers.get('host') ?? req.nextUrl.host);
+    const host = req.headers.get('x-forwarded-host') || req.headers.get('host') || req.nextUrl.host;
+    const hostname = shopFromHost(host);
+
+    return hostname;
 }
 
 export const getHostname = async (req: NextRequest): Promise<string> => {

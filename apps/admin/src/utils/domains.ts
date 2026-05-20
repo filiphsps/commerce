@@ -27,7 +27,8 @@ const ADMIN_HOSTNAME = requireOrFallback('ADMIN_DOMAIN', 'admin.localhost');
 const LANDING_HOSTNAME = requireOrFallback('LANDING_DOMAIN', 'landing.localhost');
 
 // Portless serves HTTPS for .localhost URLs in dev, so the protocol is always https.
-const protocolFor = (_hostname: string) => 'https' as const;
+// biome-ignore lint/correctness/noUnusedFunctionParameters: Preserve argument name.
+const protocolFor = (hostname: string) => 'https' as const;
 
 export const ADMIN_DOMAIN = ADMIN_HOSTNAME;
 export const LANDING_DOMAIN = LANDING_HOSTNAME;

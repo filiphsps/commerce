@@ -5,9 +5,17 @@ export function stripPort(host: string): string {
 }
 
 export function isDevHost(host: string | null | undefined): boolean {
-    if (!host) return false;
-    const h = stripPort(host).toLowerCase();
-    return DEV_TLDS.some((tld) => h === tld || (h.endsWith(`.${tld}`) && !h.startsWith('.')));
+    if (!host) {
+        return false;
+    }
+
+    const hostname = stripPort(host).toLowerCase();
+    return DEV_TLDS.some(
+        (tld) =>
+            hostname === tld ||
+            (hostname.endsWith(`.${tld}`) && !hostname.startsWith('.')) ||
+            hostname.endsWith('.storefront.localhost'), // Local development servers using portless.
+    );
 }
 
 /**
@@ -21,10 +29,14 @@ export function isDevHost(host: string | null | undefined): boolean {
  *   `SHOP.example.com` → `shop.example.com`
  */
 export function shopFromHost(host: string | null | undefined): string {
-    if (!host) return '';
-    const h = stripPort(host).toLowerCase();
-    if (!isDevHost(h)) return h;
-    const segments = h.split('.');
-    if (segments.length < 3) return '';
-    return segments[0] ?? '';
+    if (!host) {
+        return '';
+    }
+
+    const hostname = stripPort(host).toLowerCase();
+    if (!isDevHost(hostname)) {
+        return hostname;
+    }
+
+    return hostname.replace('.storefront.localhost', '');
 }
