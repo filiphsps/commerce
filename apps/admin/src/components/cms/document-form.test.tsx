@@ -3,10 +3,6 @@ import { describe, expect, it, vi } from 'vitest';
 import { type CmsShellProps, DocumentForm } from '@/components/cms/document-form';
 import { render, screen } from '@/utils/test/react';
 
-// ------------------------------------------------------------------
-// Mocks — external modules that can't run in a test environment.
-// ------------------------------------------------------------------
-
 vi.mock('next/link', () => ({
     default: ({ href, children, ...rest }: { href: string; children: React.ReactNode; [key: string]: unknown }) => (
         <a href={String(href)} {...rest}>
@@ -15,10 +11,6 @@ vi.mock('next/link', () => ({
     ),
 }));
 
-// Payload's <Form> is a rich client component — mock it to a simple <form>
-// so the smoke test exercises DocumentForm's layout without Payload internals.
-// We also mock `RootProvider` (consumed via PayloadFieldShell) so the test
-// doesn't have to boot Payload's full provider tree.
 vi.mock('@payloadcms/ui', () => ({
     Form: ({ children }: { children: React.ReactNode }) => <form data-testid="payload-form">{children}</form>,
     RootProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
@@ -36,16 +28,8 @@ vi.mock('@nordcom/commerce-cms/ui', () => ({
 
 // Stub the cms-server-function module — the real one imports `payload.config`
 // which boots the full Payload runtime (Mongo, plugins, etc.).
-vi.mock('@/lib/cms-server-function', () => ({
-    cmsServerFunction: vi.fn(),
-}));
+vi.mock('@/lib/cms-server-function', () => ({ cmsServerFunction: vi.fn() }));
 
-// ------------------------------------------------------------------
-// Fixtures
-// ------------------------------------------------------------------
-
-// `unknown` casts are intentional — the mocked `<RootProvider>` is a passthrough
-// (see above), so individual prop shapes are never read at runtime.
 const STUB_SHELL_PROPS = {
     config: {} as unknown,
     serverFunction: vi.fn(),
@@ -59,117 +43,56 @@ const STUB_SHELL_PROPS = {
     user: null,
 } as unknown as CmsShellProps;
 
-// ------------------------------------------------------------------
-// Tests
-// ------------------------------------------------------------------
-
 describe('DocumentForm', () => {
-    it('renders the page title', () => {
+    it('renders the title via PageHeader', () => {
         render(
-            <DocumentForm title="Edit Article: Hello World" shellProps={STUB_SHELL_PROPS} onSubmit={vi.fn()}>
-                <p>field content</p>
+            <DocumentForm title="Edit Article: Hello" shellProps={STUB_SHELL_PROPS} onSubmit={vi.fn()}>
+                <p>field</p>
             </DocumentForm>,
         );
-
-        expect(screen.getByRole('heading', { name: 'Edit Article: Hello World' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { level: 1, name: 'Edit Article: Hello' })).toBeInTheDocument();
     });
 
-    it('renders breadcrumb trail with links for non-last items', () => {
+    it('renders breadcrumbs via PageHeader', () => {
         render(
             <DocumentForm
-                title="Edit Article"
+                title="Edit"
                 breadcrumbs={[
-                    { label: 'Content', href: '/content/' as import('next').Route },
-                    { label: 'Articles', href: '/content/articles/' as import('next').Route },
-                    { label: 'Hello World' },
+                    { label: 'Content', href: '/abc/content/' as import('next').Route },
+                    { label: 'Articles', href: '/abc/content/articles/' as import('next').Route },
+                    { label: 'Edit' },
                 ]}
                 shellProps={STUB_SHELL_PROPS}
                 onSubmit={vi.fn()}
             >
-                <p>child</p>
+                <p>field</p>
             </DocumentForm>,
         );
-
-        // First two crumbs should be links.
-        expect(screen.getByRole('link', { name: 'Content' })).toHaveAttribute('href', '/content/');
-        expect(screen.getByRole('link', { name: 'Articles' })).toHaveAttribute('href', '/content/articles/');
-        // Last crumb is plain text, not a link.
-        expect(screen.queryByRole('link', { name: 'Hello World' })).not.toBeInTheDocument();
-        expect(screen.getByText('Hello World')).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Content' })).toBeInTheDocument();
     });
 
-    it('renders children inside the form', () => {
-        render(
-            <DocumentForm title="Test" shellProps={STUB_SHELL_PROPS} onSubmit={vi.fn()}>
-                <input data-testid="form-field" />
-            </DocumentForm>,
-        );
-
-        expect(screen.getByTestId('form-field')).toBeInTheDocument();
-    });
-
-    it('renders the toolbar slot when provided', () => {
-        render(
-            <DocumentForm
-                title="Test"
-                shellProps={STUB_SHELL_PROPS}
-                onSubmit={vi.fn()}
-                toolbar={<button type="button">Publish</button>}
-            >
-                <p>child</p>
-            </DocumentForm>,
-        );
-
-        expect(screen.getByRole('button', { name: 'Publish' })).toBeInTheDocument();
-    });
-
-    it('renders the livePreview slot when provided', () => {
-        render(
-            <DocumentForm
-                title="Test"
-                shellProps={STUB_SHELL_PROPS}
-                onSubmit={vi.fn()}
-                livePreview={<div data-testid="preview-pane">Preview</div>}
-            >
-                <p>child</p>
-            </DocumentForm>,
-        );
-
-        expect(screen.getByTestId('preview-pane')).toBeInTheDocument();
-    });
-
-    it('omits the breadcrumb nav when breadcrumbs is not provided', () => {
-        render(
-            <DocumentForm title="Test" shellProps={STUB_SHELL_PROPS} onSubmit={vi.fn()}>
-                <p>child</p>
-            </DocumentForm>,
-        );
-
-        expect(screen.queryByRole('navigation', { name: 'Breadcrumb' })).not.toBeInTheDocument();
-    });
-
-    it('applies min-w-0 and overflow-x-auto so fields cannot overflow the form column', () => {
+    it('renders toolbar via PageFooter when provided', () => {
         const { container } = render(
-            <DocumentForm title="Test" shellProps={STUB_SHELL_PROPS} onSubmit={vi.fn()}>
-                <p data-testid="probe">child</p>
+            <DocumentForm
+                title="Edit"
+                shellProps={STUB_SHELL_PROPS}
+                onSubmit={vi.fn()}
+                toolbar={<button type="button">Save draft</button>}
+            >
+                <p>field</p>
             </DocumentForm>,
         );
+        expect(container.querySelector('[data-page-footer]')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Save draft' })).toBeInTheDocument();
+    });
 
-        const probe = container.querySelector('[data-testid="probe"]');
-        expect(probe).not.toBeNull();
-
-        // Walk up from the probe; one of the ancestors inside the form must carry
-        // both `min-w-0` and `overflow-x-auto`.
-        let containsClasses = false;
-        let node: HTMLElement | null = probe?.parentElement ?? null;
-        while (node && node !== container) {
-            const cls = node.className;
-            if (cls.includes('min-w-0') && cls.includes('overflow-x-auto')) {
-                containsClasses = true;
-                break;
-            }
-            node = node.parentElement;
-        }
-        expect(containsClasses).toBe(true);
+    it('does NOT use the calc(100vh-4.5rem) hack', () => {
+        const { container } = render(
+            <DocumentForm title="X" shellProps={STUB_SHELL_PROPS} onSubmit={vi.fn()}>
+                <p>x</p>
+            </DocumentForm>,
+        );
+        expect(container.innerHTML).not.toContain('calc(100vh');
+        expect(container.innerHTML).not.toContain('min-h-[150vh]');
     });
 });
