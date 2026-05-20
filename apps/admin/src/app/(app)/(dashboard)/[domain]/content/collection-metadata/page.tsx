@@ -47,9 +47,9 @@ export default async function CollectionMetadataListPage({ params }: { params: P
     }));
 
     const columns = [
-        { key: 'shopifyHandle' as const, label: 'Handle' },
-        { key: 'status' as const, label: 'Status' },
-        { key: 'updatedAt' as const, label: 'Updated' },
+        { accessor: 'shopifyHandle' as const, label: 'Handle' },
+        { accessor: 'status' as const, label: 'Status' },
+        { accessor: 'updatedAt' as const, label: 'Updated' },
     ];
 
     return (
