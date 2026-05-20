@@ -29,6 +29,7 @@ export const editorRuntime: EditorRuntime = {
               }
             : null,
         domain,
+        tenantId: ctx.tenant?.id ?? null,
     }),
     buildFormState: buildCmsFormState as never,
     getShellProps: async (domain, locale) => getCmsShellProps(domain ?? undefined, locale),
