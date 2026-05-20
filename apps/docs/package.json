@@ -17,13 +17,16 @@
         "postbuild": "pagefind --site .next/server/app --output-path \"out${NEXT_PUBLIC_DOCS_BASE_PATH:-}/_pagefind\"",
         "start": "next start -p 3002",
         "lint": "biome lint .",
+        "format": "concurrently -i pnpm:format:*",
+        "format:lint": "biome lint --write .",
+        "format:format": "biome format --write .",
         "format:check": "biome check --write --unsafe .",
         "typecheck": "tsc -noEmit",
         "test": "vitest run",
         "test:watch": "vitest",
         "test:e2e": "playwright test",
         "docs:gen:check": "node scripts/docs-gen-check.mjs",
-        "clean": "rimraf -g .next out .typedoc-out 'app/docs/(generated)' public/_pagefind .turbo *.log"
+        "clean": "rimraf -g .next out .typedoc-out 'app/docs/(generated)' public/_pagefind .turbo *.tsbuildinfo *.log"
     },
     "dependencies": {
         "@nordcom/commerce-cms": "workspace:*",
