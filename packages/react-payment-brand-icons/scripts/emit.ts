@@ -47,7 +47,7 @@ export function emitManifestModule(entries: readonly IconManifestEntry[]): strin
             return `    { slug: '${e.slug}', componentName: '${e.componentName}', title: '${e.title.replace(/'/g, "\\'")}', aliases: ${aliasArray} },`;
         })
         .join('\n');
-    return `${HEADER}import type { IconManifestEntry } from '../../scripts/types';
+    return `${HEADER}import type { IconManifestEntry } from '../types';
 
 export const manifest: readonly IconManifestEntry[] = [
 ${body}

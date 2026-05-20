@@ -1,3 +1,5 @@
+export type { IconManifestEntry } from '../src/types';
+
 export type IconOverride = {
     componentName?: string;
     title?: string;
@@ -5,10 +7,3 @@ export type IconOverride = {
 };
 
 export type IconOverrides = Record<string, IconOverride>;
-
-export type IconManifestEntry = {
-    slug: string;
-    componentName: string;
-    title: string;
-    aliases: readonly string[];
-};
