@@ -20,7 +20,11 @@ export function Popover({ open, onOpenChange, title, description, children }: Po
         <Dialog.Root open={open} onOpenChange={onOpenChange} modal={true}>
             <Dialog.Portal>
                 <Dialog.Overlay className="fixed inset-0 z-20 bg-black/40" />
-                <Dialog.Content asChild={true}>
+                {/* Explicit `aria-describedby={undefined}` is the Radix-recommended way to silence
+                   the "Missing Description" warning when the dialog intentionally has no
+                   description. When a description IS supplied, Radix auto-links it from the
+                   <Dialog.Description> child below. */}
+                <Dialog.Content asChild={true} {...(description ? {} : { 'aria-describedby': undefined })}>
                     <div className="fixed top-1/2 left-1/2 z-30 flex max-h-[80vh] w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 flex-col gap-3 overflow-y-auto rounded-lg border border-gray-200 border-solid bg-white p-4 shadow-lg">
                         <header className="flex items-center justify-between gap-2">
                             <Dialog.Title asChild={true}>
