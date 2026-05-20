@@ -10,19 +10,22 @@ export type NavItemProps = {
     href: ComponentProps<typeof Link>['href'];
     children: ReactNode;
     className?: string;
+    /** Accessible label, useful when rendering icon-only (no visible text). */
+    'aria-label'?: string;
     /** When true, render as a non-interactive span with dimmed styling. */
     disabled?: boolean;
     /** When true, render label-less (icon-only). The children's first child should be the icon. */
     iconOnly?: boolean;
 };
 
-export function NavItem({ href, children, className, disabled, iconOnly }: NavItemProps) {
+export function NavItem({ href, children, className, disabled, iconOnly, 'aria-label': ariaLabel }: NavItemProps) {
     const pathname = usePathname();
 
     if (disabled) {
         return (
             <span
                 aria-disabled="true"
+                aria-label={ariaLabel}
                 className={cn(
                     'flex w-full cursor-not-allowed items-center gap-2 rounded-md border-2 border-transparent px-3 py-2 font-bold text-muted-foreground/50',
                     iconOnly && 'justify-center px-2',
@@ -43,6 +46,7 @@ export function NavItem({ href, children, className, disabled, iconOnly }: NavIt
     return (
         <Link
             href={href}
+            aria-label={ariaLabel}
             className={cn(
                 'flex w-full items-center gap-2 rounded-md border-2 border-transparent px-3 py-2 font-bold text-foreground transition-colors',
                 active && 'cursor-default border-border bg-muted uppercase tracking-wide',
