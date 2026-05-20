@@ -23,7 +23,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/avatar';
 import { Card } from '@/components/card';
 import { Header } from '@/components/header';
 import { MenuItem } from '@/components/menu-item';
-import { ScrollArea } from '@/components/scroll-area';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
 
 export type ShopLayoutProps = {
