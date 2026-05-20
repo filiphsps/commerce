@@ -120,7 +120,7 @@ async function PageBreadcrumbs({ shop, locale, handle }: { shop: OnlineShop; loc
     }
 
     return (
-        <div className="-mb-[1.25rem] empty:hidden md:-mb-[2.25rem]">
+        <div className="-mb-5 empty:hidden md:-mb-9">
             <Suspense key={`pages.${handle}.breadcrumbs.content`} fallback={<BreadcrumbsSkeleton />}>
                 <Breadcrumbs locale={locale} title={title} />
             </Suspense>

@@ -21,7 +21,7 @@ import PageContent from '@/components/page-content';
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
 import { Label } from '@/components/typography/label';
-import { isValidHandle } from '@/utils/handle';
+import { isValidHandle, NOT_FOUND_HANDLE } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
 import type { BlogPageParams } from './static-params';
 
@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: { params: BlogPageParams }): 
     cacheLife('max');
 
     const { domain, locale: localeData, blog: blogHandle } = await params;
-    if (!isValidHandle(blogHandle)) {
+    if (!isValidHandle(domain) || localeData === NOT_FOUND_HANDLE || !isValidHandle(blogHandle)) {
         notFound();
     }
 

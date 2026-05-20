@@ -2,6 +2,7 @@ import { Shop } from '@nordcom/commerce-db';
 import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
 import Image from 'next/image';
+import { notFound } from 'next/navigation';
 import { connection } from 'next/server';
 import { Suspense } from 'react';
 import { getAuthSession } from '@/auth';
@@ -9,6 +10,7 @@ import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import { Label } from '@/components/typography/label';
 import { getDictionary } from '@/utils/dictionary';
+import { NOT_FOUND_HANDLE } from '@/utils/handle';
 import { capitalize, getTranslations, Locale } from '@/utils/locale';
 
 export type AccountDashboardParams = Promise<{ domain: string; locale: string }>;
@@ -18,6 +20,9 @@ export async function generateMetadata({ params }: { params: AccountDashboardPar
     cacheLife('max');
 
     const { domain, locale: localeData } = await params;
+    if (!domain || domain === NOT_FOUND_HANDLE) {
+        notFound();
+    }
 
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const locale = Locale.from(localeData);
@@ -35,6 +40,9 @@ export default async function AccountPage({ params }: { params: AccountDashboard
     await connection();
 
     const { domain, locale: localeData } = await params;
+    if (!domain || domain === NOT_FOUND_HANDLE) {
+        notFound();
+    }
 
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const locale = Locale.from(localeData);
@@ -48,7 +56,7 @@ export default async function AccountPage({ params }: { params: AccountDashboard
     return (
         <>
             <Suspense key={`account.dashboard.breadcrumbs`} fallback={<BreadcrumbsSkeleton />}>
-                <div className="-mb-[1.25rem] empty:hidden md:-mb-[2.25rem]">
+                <div className="-mb-5 empty:hidden md:-mb-9">
                     <Breadcrumbs locale={locale} title={capitalize(t('account-dashboard'))} />
                 </div>
             </Suspense>

@@ -27,7 +27,7 @@ const config = {
     reactStrictMode: true,
     trailingSlash: true,
     productionBrowserSourceMaps: true,
-    compress: true,
+    compress: !isDev,
     reactCompiler: true,
     cacheComponents: true,
     transpilePackages: ['@shopify/hydrogen-react'],
@@ -45,7 +45,7 @@ const config = {
         dynamicOnHover: true,
         esmExternals: true,
         mcpServer: isDev,
-        optimizeCss: true,
+        optimizeCss: !isDev,
         optimizePackageImports: ['@apollo/client', '@shopify/hydrogen-react', '@nordcom/nordstar'],
         optimizeServerReact: true,
         partialFallbacks: true,
@@ -55,7 +55,10 @@ const config = {
         scrollRestoration: true,
         serverComponentsHmrCache: isDev,
         serverSourceMaps: true,
-        staleTimes: { dynamic: 0, static: 180 },
+        staleTimes: {
+            dynamic: 30,
+            static: 60 * 15, // TODO: Investigate if 15 min is a good cache time.
+        },
         taint: true,
         turbopackFileSystemCacheForDev: true,
         turbopackServerFastRefresh: true,
@@ -143,6 +146,7 @@ const wrapConfig = (config) => {
 
     if (isDev) {
         console.warn('Development mode detected, skipping logging...');
+        // TODO: Add logging service.
         return config;
     }
 

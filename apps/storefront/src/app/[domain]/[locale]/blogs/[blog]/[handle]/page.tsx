@@ -20,7 +20,7 @@ import { JsonLd } from '@/components/json-ld';
 import { Content } from '@/components/typography/content';
 import { Label } from '@/components/typography/label';
 import { getDictionary } from '@/utils/dictionary';
-import { isValidHandle } from '@/utils/handle';
+import { isValidHandle, NOT_FOUND_HANDLE } from '@/utils/handle';
 import { getTranslations, Locale } from '@/utils/locale';
 import type { ArticlePageParams } from './static-params';
 
@@ -89,7 +89,12 @@ export default async function ArticlePage({ params }: { params: ArticlePageParam
     cacheLife('max');
 
     const { domain, locale: localeData, blog: blogHandle, handle } = await params;
-    if (!isValidHandle(blogHandle) || !isValidHandle(handle)) {
+    if (
+        !isValidHandle(domain) ||
+        localeData === NOT_FOUND_HANDLE ||
+        !isValidHandle(blogHandle) ||
+        !isValidHandle(handle)
+    ) {
         notFound();
     }
 

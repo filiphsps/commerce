@@ -16,6 +16,9 @@ export async function generateStaticParams({
     params: Omit<Awaited<ProductPageParams>, 'handle'>;
 }): Promise<Omit<Awaited<ProductPageParams>, 'domain' | 'locale'>[]> {
     const { domain, locale: localeData } = params;
+    if (!domain || domain === NOT_FOUND_HANDLE) {
+        return [{ handle: NOT_FOUND_HANDLE }];
+    }
 
     const locale = Locale.from(localeData);
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });

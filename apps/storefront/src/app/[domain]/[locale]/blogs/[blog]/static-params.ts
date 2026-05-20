@@ -16,8 +16,11 @@ export async function generateStaticParams({
     params: Omit<Awaited<BlogPageParams>, 'blog'>;
 }): Promise<Pick<Awaited<BlogPageParams>, 'blog'>[]> {
     const { domain, locale: localeData } = params;
-    const locale = Locale.from(localeData);
+    if (!domain || domain === NOT_FOUND_HANDLE) {
+        return [{ blog: NOT_FOUND_HANDLE }];
+    }
 
+    const locale = Locale.from(localeData);
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const api = await ShopifyApolloApiClient({ shop, locale });
 

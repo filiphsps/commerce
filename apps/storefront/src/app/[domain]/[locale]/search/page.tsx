@@ -1,6 +1,7 @@
 import { Shop } from '@nordcom/commerce-db';
 import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
+import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { SearchApi } from '@/api/shopify/search';
@@ -11,6 +12,7 @@ import PageContent from '@/components/page-content';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
 import { showSearchFilter } from '@/utils/flags';
+import { NOT_FOUND_HANDLE } from '@/utils/handle';
 import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import SearchContent from './search-content';
 
@@ -20,6 +22,10 @@ export async function generateMetadata({ params }: { params: SearchPageParams })
     cacheLife('max');
 
     const { domain, locale: localeData } = await params;
+    if (!domain || domain === NOT_FOUND_HANDLE) {
+        notFound();
+    }
+
     const locale = Locale.from(localeData);
 
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
@@ -62,6 +68,10 @@ export default async function SearchPage({
     const query = searchParams.q?.toString() || null;
 
     const { domain, locale: localeData } = await params;
+    if (!domain || domain === NOT_FOUND_HANDLE) {
+        notFound();
+    }
+
     const locale = Locale.from(localeData);
 
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
@@ -79,7 +89,7 @@ export default async function SearchPage({
     return (
         <>
             <Suspense key={`pages.search.breadcrumbs`} fallback={<BreadcrumbsSkeleton />}>
-                <div className="-mb-[1.25rem] empty:hidden md:-mb-[2.25rem]">
+                <div className="-mb-5 empty:hidden md:-mb-9">
                     <Breadcrumbs locale={locale} title={t('search')} />
                 </div>
             </Suspense>

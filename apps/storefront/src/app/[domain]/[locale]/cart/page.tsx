@@ -12,6 +12,7 @@ import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
+import { NOT_FOUND_HANDLE } from '@/utils/handle';
 import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import CartContent from './cart-content';
 
@@ -21,6 +22,9 @@ export async function generateMetadata({ params }: { params: CartPageParams }): 
     cacheLife('max');
 
     const { domain, locale: localeData } = await params;
+    if (!domain || domain === NOT_FOUND_HANDLE) {
+        notFound();
+    }
 
     let shop: OnlineShop;
     try {
@@ -65,6 +69,10 @@ export default async function CartPage({ params }: { params: CartPageParams }) {
     cacheLife('max');
 
     const { domain, locale: localeData } = await params;
+    if (!domain || domain === NOT_FOUND_HANDLE) {
+        notFound();
+    }
+
     const locale = Locale.from(localeData);
 
     let shop: OnlineShop;
@@ -86,7 +94,7 @@ export default async function CartPage({ params }: { params: CartPageParams }) {
     return (
         <>
             <Suspense key={`pages.cart.breadcrumbs`} fallback={<BreadcrumbsSkeleton />}>
-                <div className="-mb-[1.25rem] empty:hidden md:-mb-[2.25rem]">
+                <div className="-mb-5 empty:hidden md:-mb-9">
                     <Breadcrumbs locale={locale} />
                 </div>
             </Suspense>

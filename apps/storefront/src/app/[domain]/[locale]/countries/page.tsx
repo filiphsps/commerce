@@ -3,13 +3,14 @@ import { UnknownLocaleError } from '@nordcom/commerce-errors';
 import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
 import { cookies } from 'next/headers';
-import { RedirectType, redirect } from 'next/navigation';
+import { notFound, RedirectType, redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CountriesApi, LocalesApi } from '@/api/store';
 import PageContent from '@/components/page-content';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
+import { NOT_FOUND_HANDLE } from '@/utils/handle';
 import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import LocaleSelector from './locale-selector';
 
@@ -19,6 +20,10 @@ export async function generateMetadata({ params }: { params: CountriesPageParams
     cacheLife('max');
 
     const { domain, locale: localeData } = await params;
+    if (!domain || domain === NOT_FOUND_HANDLE) {
+        notFound();
+    }
+
     const locale = Locale.from(localeData);
 
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
@@ -53,6 +58,10 @@ export default async function CountriesPage({ params }: { params: CountriesPageP
     cacheLife('max');
 
     const { domain, locale: localeData } = await params;
+    if (!domain || domain === NOT_FOUND_HANDLE) {
+        notFound();
+    }
+
     const locale = Locale.from(localeData);
 
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });

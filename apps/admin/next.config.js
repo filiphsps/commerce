@@ -49,7 +49,8 @@ const config = {
     generateEtags: true,
     reactStrictMode: true,
     productionBrowserSourceMaps: true,
-    compress: true,
+    compress: !isDev,
+    reactCompiler: true,
     trailingSlash: true,
     // `@payloadcms/ui` field components are imported directly by routes in
     // `(app)/(dashboard)/[domain]/content/*`. Without explicit transpilation

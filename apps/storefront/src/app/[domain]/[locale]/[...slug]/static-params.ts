@@ -14,9 +14,11 @@ export async function generateStaticParams({
     params: Omit<Awaited<CustomPageParams>, 'slug'>;
 }): Promise<Omit<Awaited<CustomPageParams>, 'domain' | 'locale'>[]> {
     const { domain, locale: localeData } = params;
+    if (!domain || domain === NOT_FOUND_HANDLE) {
+        return [{ slug: [NOT_FOUND_HANDLE] }];
+    }
 
     const locale = Locale.from(localeData);
-
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const pages = await PagesApi({ shop, locale });
     // Shops with no CMS pages shouldn't fail the build; Cache Components

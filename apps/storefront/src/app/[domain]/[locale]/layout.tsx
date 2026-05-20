@@ -57,10 +57,10 @@ export async function generateStaticParams(): Promise<Awaited<LayoutParams>[]> {
             .flat(1)
             .filter(Boolean);
 
-        return params.length > 0 ? params : [{ domain: NOT_FOUND_HANDLE, locale: NOT_FOUND_HANDLE }];
+        return params.length > 0 ? params : [{ domain: NOT_FOUND_HANDLE, locale: Locale.default.code }];
     } catch (error: unknown) {
         console.error(error);
-        return [{ domain: NOT_FOUND_HANDLE, locale: NOT_FOUND_HANDLE }];
+        return [{ domain: NOT_FOUND_HANDLE, locale: Locale.default.code }];
     }
 }
 
@@ -76,7 +76,7 @@ export async function generateMetadata({ params }: { params: LayoutParams }): Pr
     cacheLife('max');
 
     const { domain, locale: localeData } = await params;
-    if (!localeData || localeData === NOT_FOUND_HANDLE || !domain || domain === NOT_FOUND_HANDLE) {
+    if (!domain || domain === NOT_FOUND_HANDLE) {
         notFound();
     }
 
@@ -148,7 +148,7 @@ export default async function RootLayout({
     cacheLife('max');
 
     const { domain, locale: localeData } = await params;
-    if (!localeData || localeData === NOT_FOUND_HANDLE || !domain || domain === NOT_FOUND_HANDLE) {
+    if (!domain || domain === NOT_FOUND_HANDLE) {
         notFound();
     }
 
