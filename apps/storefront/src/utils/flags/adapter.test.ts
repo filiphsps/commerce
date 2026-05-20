@@ -48,6 +48,7 @@ describe('utils/flags/adapter.nordcomFlagAdapter', () => {
         registerBuiltinPredicates();
         vi.mocked(getRequestContext).mockReset();
         vi.mocked(getAuthSession).mockReset();
+        vi.mocked(getFlagOverrides).mockReset();
         vi.mocked(getRequestContext).mockResolvedValue({ shop: mockShop(), locale: {} as never });
         vi.mocked(getAuthSession).mockResolvedValue(null);
     });
