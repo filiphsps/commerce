@@ -1,4 +1,5 @@
 // apps/docs/app/layout.tsx
+import type { Metadata } from 'next';
 import { Footer, Layout, Navbar } from 'nextra-theme-docs';
 import { Head } from 'nextra/components';
 import { getPageMap } from 'nextra/page-map';
@@ -6,7 +7,7 @@ import 'nextra-theme-docs/style.css';
 import './globals.css';
 import { docsEnv } from '@/lib/env';
 
-export const metadata = {
+export const metadata: Metadata = {
     title: { default: 'Nordcom Commerce', template: '%s — Nordcom Commerce' },
     description: 'A multi-tenant, headless e-commerce platform.',
     metadataBase: new URL(docsEnv.canonicalUrl),
