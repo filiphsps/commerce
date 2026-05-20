@@ -326,6 +326,9 @@ importers:
       concurrently:
         specifier: 9.2.1
         version: 9.2.1
+      happy-dom:
+        specifier: 20.9.0
+        version: 20.9.0
       pagefind:
         specifier: 1.5.2
         version: 1.5.2
@@ -12674,7 +12677,7 @@ snapshots:
 
   happy-dom@20.9.0:
     dependencies:
-      '@types/node': 22.8.6
+      '@types/node': 24.12.4
       '@types/whatwg-mimetype': 3.0.2
       '@types/ws': 8.18.1
       entities: 7.0.1
