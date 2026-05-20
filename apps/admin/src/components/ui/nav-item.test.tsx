@@ -16,19 +16,22 @@ vi.mock('next/navigation', () => ({
 
 describe('NavItem', () => {
     it('renders as a link with the given href', () => {
-        render(<NavItem href="/abc/content/">Content</NavItem>);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        render(<NavItem href={'/abc/content/' as any}>Content</NavItem>);
         expect(screen.getByRole('link', { name: 'Content' })).toHaveAttribute('href', '/abc/content/');
     });
 
     it('applies active styling when pathname starts with href', () => {
-        render(<NavItem href="/abc/content/">Content</NavItem>);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        render(<NavItem href={'/abc/content/' as any}>Content</NavItem>);
         const link = screen.getByRole('link', { name: 'Content' });
         expect(link.className).toMatch(/uppercase/);
     });
 
     it('renders as a span and applies disabled styling when disabled', () => {
         render(
-            <NavItem href="/abc/settings/users/" disabled>
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            <NavItem href={'/abc/settings/users/' as any} disabled>
                 Users
             </NavItem>,
         );

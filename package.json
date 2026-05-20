@@ -99,5 +99,11 @@
         "vite": "8.0.12",
         "vitest": "4.1.6"
     },
-    "packageManager": "pnpm@11.1.2"
+    "packageManager": "pnpm@11.1.2",
+    "pnpm": {
+        "overrides": {
+            "@types/react": "$@types/react",
+            "@types/react-dom": "$@types/react-dom"
+        }
+    }
 }

@@ -2,7 +2,13 @@
 
 import { Menu } from 'lucide-react';
 import { type ReactNode, useCallback, useRef } from 'react';
-import { type ImperativePanelHandle, Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
+import {
+    type ImperativePanelGroupHandle,
+    type ImperativePanelHandle,
+    Panel,
+    PanelGroup,
+    PanelResizeHandle,
+} from 'react-resizable-panels';
 
 import { IconRail, type IconRailItem } from '@/components/shell/icon-rail';
 import { InspectorSlot } from '@/components/shell/inspector-slot';
@@ -54,7 +60,8 @@ export function ShellRoot({
     iconRailItems,
 }: ShellRootProps) {
     const breakpoint = useBreakpoint();
-    const groupRef = useRef<HTMLDivElement | null>(null);
+    const groupRef = useRef<ImperativePanelGroupHandle | null>(null);
+    const containerRef = useRef<HTMLDivElement | null>(null);
     const railRef = useRef<ImperativePanelHandle | null>(null);
     const subnavRef = useRef<ImperativePanelHandle | null>(null);
     const inspectorRef = useRef<ImperativePanelHandle | null>(null);
@@ -68,7 +75,7 @@ export function ShellRoot({
     }, []);
 
     const fallbackTotal = typeof window === 'undefined' ? 1440 : window.innerWidth || 1440;
-    const totalPx = () => groupRef.current?.getBoundingClientRect().width ?? fallbackTotal;
+    const totalPx = () => containerRef.current?.getBoundingClientRect().width ?? fallbackTotal;
 
     const railDefaultPct = pxToPercent(initialState.rail.w, fallbackTotal);
     const subnavDefaultPct = pxToPercent(initialState.subnav.w, fallbackTotal);
@@ -126,61 +133,63 @@ export function ShellRoot({
     return (
         <div className="grid h-svh grid-rows-[56px_1fr] overflow-hidden">
             {renderHeader(undefined)}
-            <PanelGroup ref={groupRef} direction="horizontal" onLayout={onLayoutChange}>
-                <Panel
-                    ref={railRef}
-                    id="rail"
-                    order={1}
-                    defaultSize={railDefaultPct}
-                    minSize={pxToPercent(RAIL_MIN_PX, fallbackTotal)}
-                    maxSize={pxToPercent(RAIL_MAX_PX, fallbackTotal)}
-                    collapsible
-                    collapsedSize={pxToPercent(RAIL_MIN_PX, fallbackTotal)}
-                >
-                    <IconRail items={iconRailItems} expanded={initialState.rail.w > RAIL_MIN_PX + 16} />
-                </Panel>
+            <div ref={containerRef} className="contents">
+                <PanelGroup ref={groupRef} direction="horizontal" onLayout={onLayoutChange}>
+                    <Panel
+                        ref={railRef}
+                        id="rail"
+                        order={1}
+                        defaultSize={railDefaultPct}
+                        minSize={pxToPercent(RAIL_MIN_PX, fallbackTotal)}
+                        maxSize={pxToPercent(RAIL_MAX_PX, fallbackTotal)}
+                        collapsible
+                        collapsedSize={pxToPercent(RAIL_MIN_PX, fallbackTotal)}
+                    >
+                        <IconRail items={iconRailItems} expanded={initialState.rail.w > RAIL_MIN_PX + 16} />
+                    </Panel>
 
-                {hasSubnav ? (
-                    <>
-                        <PanelResizeHandle className="w-px bg-border transition-colors hover:bg-primary/50 data-[resize-handle-state=drag]:bg-primary" />
-                        <Panel
-                            ref={subnavRef}
-                            id="subnav"
-                            order={2}
-                            defaultSize={subnavDefaultPct}
-                            minSize={pxToPercent(SUBNAV_MIN_PX, fallbackTotal)}
-                            maxSize={pxToPercent(SUBNAV_MAX_PX, fallbackTotal)}
-                            collapsible
-                            collapsedSize={0}
-                        >
-                            <SubNavSlot>{subnav}</SubNavSlot>
-                        </Panel>
-                    </>
-                ) : null}
+                    {hasSubnav ? (
+                        <>
+                            <PanelResizeHandle className="w-px bg-border transition-colors hover:bg-primary/50 data-[resize-handle-state=drag]:bg-primary" />
+                            <Panel
+                                ref={subnavRef}
+                                id="subnav"
+                                order={2}
+                                defaultSize={subnavDefaultPct}
+                                minSize={pxToPercent(SUBNAV_MIN_PX, fallbackTotal)}
+                                maxSize={pxToPercent(SUBNAV_MAX_PX, fallbackTotal)}
+                                collapsible
+                                collapsedSize={0}
+                            >
+                                <SubNavSlot>{subnav}</SubNavSlot>
+                            </Panel>
+                        </>
+                    ) : null}
 
-                <PanelResizeHandle className="w-px bg-border transition-colors hover:bg-primary/50 data-[resize-handle-state=drag]:bg-primary" />
-                <Panel id="content" order={3} minSize={20}>
-                    <main className="relative h-full min-w-0 overflow-hidden">{children}</main>
-                </Panel>
+                    <PanelResizeHandle className="w-px bg-border transition-colors hover:bg-primary/50 data-[resize-handle-state=drag]:bg-primary" />
+                    <Panel id="content" order={3} minSize={20}>
+                        <main className="relative h-full min-w-0 overflow-hidden">{children}</main>
+                    </Panel>
 
-                {hasInspector && (breakpoint === 'wide' || breakpoint === 'comfortable') ? (
-                    <>
-                        <PanelResizeHandle className="w-px bg-border transition-colors hover:bg-primary/50 data-[resize-handle-state=drag]:bg-primary" />
-                        <Panel
-                            ref={inspectorRef}
-                            id="inspector"
-                            order={4}
-                            defaultSize={inspectorDefaultPct}
-                            minSize={pxToPercent(INSPECTOR_MIN_PX, fallbackTotal)}
-                            maxSize={pxToPercent(INSPECTOR_MAX_PX, fallbackTotal)}
-                            collapsible
-                            collapsedSize={0}
-                        >
-                            <InspectorSlot>{inspector}</InspectorSlot>
-                        </Panel>
-                    </>
-                ) : null}
-            </PanelGroup>
+                    {hasInspector && (breakpoint === 'wide' || breakpoint === 'comfortable') ? (
+                        <>
+                            <PanelResizeHandle className="w-px bg-border transition-colors hover:bg-primary/50 data-[resize-handle-state=drag]:bg-primary" />
+                            <Panel
+                                ref={inspectorRef}
+                                id="inspector"
+                                order={4}
+                                defaultSize={inspectorDefaultPct}
+                                minSize={pxToPercent(INSPECTOR_MIN_PX, fallbackTotal)}
+                                maxSize={pxToPercent(INSPECTOR_MAX_PX, fallbackTotal)}
+                                collapsible
+                                collapsedSize={0}
+                            >
+                                <InspectorSlot>{inspector}</InspectorSlot>
+                            </Panel>
+                        </>
+                    ) : null}
+                </PanelGroup>
+            </div>
         </div>
     );
 }

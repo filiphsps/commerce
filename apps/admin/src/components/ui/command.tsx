@@ -10,6 +10,7 @@ export const Command = forwardRef<
     ComponentRef<typeof CommandPrimitive>,
     ComponentPropsWithoutRef<typeof CommandPrimitive>
 >(({ className, ...props }, ref) => (
+    // @ts-expect-error cmdk Key type conflicts with React 19 Key — safe at runtime
     <CommandPrimitive
         ref={ref}
         className={cn(
@@ -27,6 +28,7 @@ export const CommandInput = forwardRef<
 >(({ className, ...props }, ref) => (
     <div className="flex items-center border-border border-b-2 px-3" data-cmdk-input-wrapper="">
         <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+        {/* @ts-expect-error cmdk Key type conflicts with React 19 Key — safe at runtime */}
         <CommandPrimitive.Input
             ref={ref}
             className={cn(
@@ -43,6 +45,7 @@ export const CommandList = forwardRef<
     ComponentRef<typeof CommandPrimitive.List>,
     ComponentPropsWithoutRef<typeof CommandPrimitive.List>
 >(({ className, ...props }, ref) => (
+    // @ts-expect-error cmdk Key type conflicts with React 19 Key — safe at runtime
     <CommandPrimitive.List
         ref={ref}
         className={cn('max-h-80 overflow-y-auto overflow-x-hidden', className)}
@@ -55,6 +58,7 @@ export const CommandEmpty = forwardRef<
     ComponentRef<typeof CommandPrimitive.Empty>,
     ComponentPropsWithoutRef<typeof CommandPrimitive.Empty>
 >(({ className, ...props }, ref) => (
+    // @ts-expect-error cmdk Key type conflicts with React 19 Key — safe at runtime
     <CommandPrimitive.Empty
         ref={ref}
         className={cn('py-6 text-center text-muted-foreground text-sm', className)}
@@ -67,6 +71,7 @@ export const CommandGroup = forwardRef<
     ComponentRef<typeof CommandPrimitive.Group>,
     ComponentPropsWithoutRef<typeof CommandPrimitive.Group>
 >(({ className, ...props }, ref) => (
+    // @ts-expect-error cmdk Key type conflicts with React 19 Key — safe at runtime
     <CommandPrimitive.Group
         ref={ref}
         className={cn(
@@ -82,6 +87,7 @@ export const CommandItem = forwardRef<
     ComponentRef<typeof CommandPrimitive.Item>,
     ComponentPropsWithoutRef<typeof CommandPrimitive.Item>
 >(({ className, ...props }, ref) => (
+    // @ts-expect-error cmdk Key type conflicts with React 19 Key — safe at runtime
     <CommandPrimitive.Item
         ref={ref}
         className={cn(
