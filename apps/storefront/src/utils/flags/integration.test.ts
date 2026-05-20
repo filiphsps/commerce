@@ -67,4 +67,44 @@ describe('utils/flags — integration', () => {
         });
         expect(v).toBe(true);
     });
+
+    const flagKeys = ['products-page', 'product-page-info-lines', 'accounts-functionality', 'search-filter'] as const;
+
+    for (const key of flagKeys) {
+        it(`override for "${key}" wins over DB targeting`, () => {
+            const shop = {
+                id: 'shop-1',
+                featureFlags: [
+                    {
+                        flag: {
+                            key,
+                            defaultValue: false,
+                            targeting: [{ rule: 'always', params: {}, value: false }],
+                        },
+                    },
+                ],
+            } as never;
+            const result = evaluateShopFlag<boolean>(shop, key, {
+                overrides: { [key]: true },
+            });
+            expect(result).toBe(true);
+        });
+
+        it(`no override for "${key}" returns DB targeting value`, () => {
+            const shop = {
+                id: 'shop-1',
+                featureFlags: [
+                    {
+                        flag: {
+                            key,
+                            defaultValue: false,
+                            targeting: [{ rule: 'always', params: {}, value: true }],
+                        },
+                    },
+                ],
+            } as never;
+            const result = evaluateShopFlag<boolean>(shop, key, { overrides: null });
+            expect(result).toBe(true);
+        });
+    }
 });
