@@ -58,6 +58,11 @@ export function EditorFormToolbar({
                 const formData = await createFormData(undefined, {});
                 await saveActionRef.current(formData);
                 setLastSavedAt(new Date());
+            } catch (err) {
+                // Autosave runs in the background; never surface failures as
+                // "Uncaught (in promise)" — the user explicit save action will
+                // re-trigger and report any persistent errors inline.
+                console.warn('[editor] autosave failed', err);
             } finally {
                 setIsSaving(false);
             }

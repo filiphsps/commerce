@@ -42,7 +42,7 @@ const buildRuntime = (overrides: Partial<EditorRuntime> = {}): EditorRuntime => 
             delete: vi.fn().mockResolvedValue({}),
         } as never,
         user: { id: 'u', email: 'e', role: 'editor', tenants: [{ tenant: 'tenant-1' }], collection: 'users' },
-        tenant: { id: 'tenant-1', slug: 'acme' },
+        tenant: { id: 'tenant-1', slug: 'acme', defaultLocale: 'en-US', locales: ['en-US'] },
     };
     return {
         getCtx: vi.fn(async (): Promise<AuthedPayloadCtx> => stableCtx),
@@ -56,12 +56,14 @@ const buildRuntime = (overrides: Partial<EditorRuntime> = {}): EditorRuntime => 
                   }
                 : null,
             domain,
+            tenantId: ctx.tenant?.id ?? null,
         }),
         buildFormState: vi.fn(),
         getShellProps: vi.fn(),
         DocumentForm: () => null,
         Table: () => null,
         Toolbar: () => null,
+        PageHeader: () => null,
         ...overrides,
     };
 };
@@ -77,7 +79,7 @@ beforeEach(() => {
 });
 
 describe('createCollectionEditorActions.saveDraft', () => {
-    it('creates a new doc when no existing tenant doc is found, with _status=draft', async () => {
+    it('creates a new doc when no existing tenant doc is found, with _status=draft and draft:true', async () => {
         const runtime = buildRuntime();
         const actions = createCollectionEditorActions(baseManifest, runtime);
         await actions.saveDraft('a.test', 'singleton', fd({ legalName: 'Acme' }));
@@ -87,6 +89,7 @@ describe('createCollectionEditorActions.saveDraft', () => {
             expect.objectContaining({
                 collection: 'businessData',
                 where: { and: [{ tenant: { equals: 'tenant-1' } }, { id: { equals: 'singleton' } }] },
+                draft: true,
             }),
         );
         expect(ctx.payload.create).toHaveBeenCalledWith(
@@ -94,12 +97,13 @@ describe('createCollectionEditorActions.saveDraft', () => {
                 collection: 'businessData',
                 data: { legalName: 'Acme', tenant: 'tenant-1', _status: 'draft' },
                 overrideAccess: false,
+                draft: true,
             }),
         );
         expect(mockRevalidatePath).toHaveBeenCalledWith('/a.test/x/');
     });
 
-    it('updates the existing doc when one is found', async () => {
+    it('updates the existing doc when one is found, passing draft:true to skip required validation', async () => {
         const runtime = buildRuntime();
         const ctx = await runtime.getCtx('a.test');
         (ctx.payload.find as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ docs: [{ id: 'doc-1' }] });
@@ -113,6 +117,7 @@ describe('createCollectionEditorActions.saveDraft', () => {
                 collection: 'businessData',
                 id: 'doc-1',
                 data: { legalName: 'Acme', _status: 'draft' },
+                draft: true,
             }),
         );
     });
@@ -151,6 +156,37 @@ describe('createCollectionEditorActions.publish', () => {
         expect(ctx.payload.create).toHaveBeenCalledWith(
             expect.objectContaining({
                 data: { legalName: 'Acme', tenant: 'tenant-1', _status: 'published' },
+            }),
+        );
+    });
+
+    it('does NOT pass draft:true on publish so Payload runs required-field validation', async () => {
+        const runtime = buildRuntime();
+        const actions = createCollectionEditorActions(baseManifest, runtime);
+        await actions.publish('a.test', 'singleton', fd({ legalName: 'Acme' }));
+
+        const ctx = await runtime.getCtx('a.test');
+        const call = (ctx.payload.create as ReturnType<typeof vi.fn>).mock.calls[0]?.[0];
+        expect(call?.draft).toBeUndefined();
+    });
+});
+
+describe('createCollectionEditorActions.create', () => {
+    it('passes draft:true so empty required fields and new blocks do not fail validation', async () => {
+        const runtime = buildRuntime();
+        const manifest = defineCollectionEditor({
+            ...baseManifest,
+            access: { ...baseManifest.access, create: () => true },
+        });
+        const actions = createCollectionEditorActions(manifest, runtime);
+        await actions.create('a.test', fd({ legalName: 'Acme' }));
+
+        const ctx = await runtime.getCtx('a.test');
+        expect(ctx.payload.create).toHaveBeenCalledWith(
+            expect.objectContaining({
+                collection: 'businessData',
+                data: { legalName: 'Acme', tenant: 'tenant-1', _status: 'draft' },
+                draft: true,
             }),
         );
     });

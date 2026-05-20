@@ -61,9 +61,17 @@ export const createCollectionEditorActions = <T extends CollectionSlug>(
             limit: 1,
             user: ctx.user as never,
             overrideAccess: false,
+            draft: hasDrafts(collection),
         });
 
-        const statusPatch = hasDrafts(collection) ? { _status: status } : {};
+        const drafts = hasDrafts(collection);
+        const statusPatch = drafts ? { _status: status } : {};
+        // Payload's `draft: true` option skips required-field validation so
+        // partially-filled docs (e.g. a freshly-added block whose required
+        // `Title` is still empty) can be autosaved. Without it, every
+        // autosave tick throws `ValidationError` and the new block becomes
+        // impossible to edit.
+        const draftFlag = drafts && status === 'draft' ? { draft: true as const } : {};
         const existing = docs[0];
 
         let doc: unknown;
@@ -74,6 +82,7 @@ export const createCollectionEditorActions = <T extends CollectionSlug>(
                 data: { ...allowed, ...statusPatch } as never,
                 user: ctx.user as never,
                 overrideAccess: false,
+                ...draftFlag,
             });
         } else {
             const tenantPatch = manifest.tenant.kind === 'scoped' && ctx.tenant ? { tenant: ctx.tenant.id } : {};
@@ -82,6 +91,7 @@ export const createCollectionEditorActions = <T extends CollectionSlug>(
                 data: { ...allowed, ...tenantPatch, ...statusPatch } as never,
                 user: ctx.user as never,
                 overrideAccess: false,
+                ...draftFlag,
             });
         }
 
@@ -107,13 +117,19 @@ export const createCollectionEditorActions = <T extends CollectionSlug>(
             const raw = parseFormPayload(formData);
             const allowed = pickByFieldNames(raw, collection.fields);
             const tenantPatch = manifest.tenant.kind === 'scoped' && ctx.tenant ? { tenant: ctx.tenant.id } : {};
-            const statusPatch = hasDrafts(collection) ? { _status: 'draft' as const } : {};
+            const drafts = hasDrafts(collection);
+            const statusPatch = drafts ? { _status: 'draft' as const } : {};
+            // See upsert(): `draft: true` skips required-field validation so a
+            // brand-new doc with empty required fields (or freshly-added
+            // blocks) can be autosaved before the user fills them in.
+            const draftFlag = drafts ? { draft: true as const } : {};
 
             const created = (await ctx.payload.create({
                 collection: manifest.collection as never,
                 data: { ...allowed, ...tenantPatch, ...statusPatch } as never,
                 user: ctx.user as never,
                 overrideAccess: false,
+                ...draftFlag,
             })) as { id: string };
 
             revalidateForManifest({ manifest, domain, doc: created, status: 'draft', revalidatePath });
