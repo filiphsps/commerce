@@ -49,7 +49,7 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
         if (!doc) throw new UnknownShopDomainError(domain);
 
         if (!convert) return doc;
-        if (sensitiveData) return stripInternals(doc) as unknown as OnlineShop;
+        if (sensitiveData) return stripInternals(doc as unknown as Record<string, unknown>) as unknown as OnlineShop;
         return docToOnlineShop(doc as unknown as Record<string, unknown>);
     }
 
