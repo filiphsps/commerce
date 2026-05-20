@@ -105,3 +105,7 @@ retried boot, multiple `getPayload` callers) won't stack duplicate listeners.
 Sync uses `overrideAccess: true` because it runs from a Mongoose post-save hook
 outside any HTTP request, where there is no `req.user` for the
 `adminOnly`-gated `tenants.create` predicate to inspect.
+
+import { ApiReference } from '@/components/api/api-reference';
+
+<ApiReference subpath="cms/collections" />
