@@ -1,7 +1,9 @@
-import { getPage as CmsGetPage } from '@nordcom/commerce-cms/api';
+import { getPage as CmsGetPage, getPages as CmsGetPages } from '@nordcom/commerce-cms/api';
 import type { OnlineShop } from '@nordcom/commerce-db';
+import { draftMode } from 'next/headers';
 import type { NormalizedShopifyPage } from '@/api/shopify/page';
 import type { Locale } from '@/utils/locale';
+import { toShopRef } from './_cms';
 
 export type CmsPageData = Awaited<ReturnType<typeof CmsGetPage>>;
 
@@ -13,10 +15,15 @@ export type ProvidedPages =
     | { provider: 'cms'; items: Array<NonNullable<CmsPageData>> }
     | { provider: 'shopify'; items: NormalizedShopifyPage[] };
 
-export async function PagesApi({}: { shop: OnlineShop; locale: Locale }): Promise<ProvidedPages | null> {
-    // CMS-managed pages are fetched per-handle in PageApi; listing all pages
-    // is not a current use case — return an empty list instead of throwing.
-    return { provider: 'cms', items: [] };
+export async function PagesApi({ shop, locale }: { shop: OnlineShop; locale: Locale }): Promise<ProvidedPages | null> {
+    const isDraft = (await draftMode()).isEnabled;
+    const result = await CmsGetPages({
+        shop: toShopRef(shop),
+        locale: { code: locale.code },
+        draft: isDraft,
+        limit: 1000,
+    });
+    return { provider: 'cms', items: result.docs as Array<NonNullable<CmsPageData>> };
 }
 
 export async function PageApi({
@@ -30,14 +37,12 @@ export async function PageApi({
     /** @deprecated Retained for source compatibility; CMS lookups go through getPage by slug. */
     type?: string;
 }): Promise<ProvidedPage | null> {
+    const isDraft = (await draftMode()).isEnabled;
     const data = await CmsGetPage({
-        shop: {
-            id: shop.id,
-            domain: shop.domain,
-            i18n: { defaultLocale: shop.i18n?.defaultLocale ?? 'en-US' },
-        },
+        shop: toShopRef(shop),
         locale: { code: locale.code },
         slug: handle,
+        draft: isDraft,
     });
     if (!data) return null;
     return { provider: 'cms', data };
