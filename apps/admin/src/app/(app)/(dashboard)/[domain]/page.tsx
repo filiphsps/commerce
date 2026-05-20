@@ -2,11 +2,14 @@ import 'server-only';
 
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
-import { Details, Heading } from '@nordcom/nordstar';
+import { Details } from '@nordcom/nordstar';
 import type { Metadata, Route } from 'next';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
+
 import { auth } from '@/auth';
+import { ContentScrollRegion } from '@/components/shell/content-scroll-region';
+import { PageHeader } from '@/components/shell/page-header';
 
 export type ShopPageProps = {
     params: Promise<{
@@ -40,18 +43,27 @@ export default async function ShopPage({ params }: ShopPageProps) {
     const code = JSON.stringify(shop, null, 4);
 
     return (
-        <>
-            <Heading level="h1">{shop.name}</Heading>
-            <Heading level="h4" as="h2">
-                <Link href={`https://${shop.domain}`} target="_blank" rel="noreferrer">
-                    {shop.domain}
-                </Link>
-            </Heading>
+        <ContentScrollRegion>
+            <PageHeader title="Home" />
 
-            {/* Dropdown */}
-            <Details label="Raw Shop">
-                <code className="whitespace-pre-wrap">{code}</code>
-            </Details>
-        </>
+            <div className="flex flex-col gap-4 px-6 py-6">
+                <div className="flex flex-col gap-1">
+                    <span className="font-semibold text-lg">{shop.name}</span>
+                    <Link
+                        href={`https://${shop.domain}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-muted-foreground text-sm hover:text-primary hover:underline"
+                    >
+                        {shop.domain}
+                    </Link>
+                </div>
+
+                {/* Dropdown */}
+                <Details label="Raw Shop">
+                    <code className="whitespace-pre-wrap">{code}</code>
+                </Details>
+            </div>
+        </ContentScrollRegion>
     );
 }
