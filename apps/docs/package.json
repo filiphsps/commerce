@@ -25,6 +25,7 @@
         "test": "vitest run",
         "test:watch": "vitest",
         "test:e2e": "playwright test",
+        "test:docs:links": "node scripts/validate-links.mjs",
         "docs:gen:check": "node scripts/docs-gen-check.mjs",
         "clean": "rimraf -g .next out .typedoc-out 'app/docs/(generated)' public/_pagefind .turbo *.tsbuildinfo *.log"
     },
