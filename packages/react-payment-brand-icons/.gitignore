@@ -1,0 +1,9 @@
+dist/
+coverage/
+.turbo/
+*.tsbuildinfo
+*.log
+node_modules/
+
+# Codegen output — regenerated on every build
+src/generated/
