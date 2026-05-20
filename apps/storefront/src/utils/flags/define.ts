@@ -6,6 +6,12 @@ import { flag } from 'flags/next';
 import { nordcomFlagAdapter } from './adapter';
 import { evaluateShopFlagSync } from './evaluate-sync';
 
+/**
+ * Local `label`-required option type. Tightens the SDK's `flags` `FlagOption<T>`
+ * (where `label` is optional) — every declared flag in this codebase ships an
+ * admin-facing label, so we enforce it at declaration time instead of relying
+ * on convention. Update if a label-less option ever becomes a legitimate case.
+ */
 export interface FlagOption<T> {
     label: string;
     value: T;
@@ -62,7 +68,7 @@ export function defineFlag<T>(config: FlagDefinition<T>): DefinedFlag<T> {
     const evaluate = (shop: OnlineShop): T => evaluateShopFlagSync<T>(shop, config.key, config.defaultValue);
     return Object.assign(sdkFlag, {
         evaluate,
-        key: config.key,
-        defaultValue: config.defaultValue,
+        key: sdkFlag.key,
+        defaultValue: sdkFlag.defaultValue,
     }) as unknown as DefinedFlag<T>;
 }
