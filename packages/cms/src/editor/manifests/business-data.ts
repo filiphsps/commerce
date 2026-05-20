@@ -17,7 +17,7 @@ export const businessDataEditor = defineCollectionEditor({
             { label: 'Business data' },
         ],
     },
-    tenant: { kind: 'scoped', field: 'tenant' },
+    tenant: { kind: 'tenant-singleton', field: 'tenant' },
     access: {
         list: tenantMember,
         read: tenantMember,

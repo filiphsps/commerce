@@ -5,8 +5,8 @@ describe('headerEditor', () => {
     it('targets the header collection', () => {
         expect(headerEditor.collection).toBe('header');
     });
-    it('is tenant-scoped', () => {
-        expect(headerEditor.tenant).toEqual({ kind: 'scoped', field: 'tenant' });
+    it('is a per-tenant singleton', () => {
+        expect(headerEditor.tenant).toEqual({ kind: 'tenant-singleton', field: 'tenant' });
     });
     it('basePath under /:domain/content/header/', () => {
         expect(headerEditor.routes.basePath('a.test')).toBe('/a.test/content/header/');

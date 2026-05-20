@@ -6,8 +6,8 @@ describe('businessDataEditor', () => {
         expect(businessDataEditor.collection).toBe('businessData');
     });
 
-    it('is tenant-scoped via the `tenant` field', () => {
-        expect(businessDataEditor.tenant).toEqual({ kind: 'scoped', field: 'tenant' });
+    it('is a per-tenant singleton via the `tenant` field', () => {
+        expect(businessDataEditor.tenant).toEqual({ kind: 'tenant-singleton', field: 'tenant' });
     });
 
     it('exposes admin-only delete', () => {

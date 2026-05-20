@@ -9,7 +9,7 @@ export const footerEditor = defineCollectionEditor({
         basePath: (domain) => `/${domain}/content/footer/` as Route,
         breadcrumbs: ({ domain }) => [{ label: 'Content', href: `/${domain}/content/` as Route }, { label: 'Footer' }],
     },
-    tenant: { kind: 'scoped', field: 'tenant' },
+    tenant: { kind: 'tenant-singleton', field: 'tenant' },
     access: {
         list: tenantMember,
         read: tenantMember,

@@ -5,8 +5,8 @@ describe('footerEditor', () => {
     it('targets the footer collection', () => {
         expect(footerEditor.collection).toBe('footer');
     });
-    it('is tenant-scoped', () => {
-        expect(footerEditor.tenant).toEqual({ kind: 'scoped', field: 'tenant' });
+    it('is a per-tenant singleton', () => {
+        expect(footerEditor.tenant).toEqual({ kind: 'tenant-singleton', field: 'tenant' });
     });
     it('basePath under /:domain/content/footer/', () => {
         expect(footerEditor.routes.basePath('a.test')).toBe('/a.test/content/footer/');

@@ -9,7 +9,7 @@ export const headerEditor = defineCollectionEditor({
         basePath: (domain) => `/${domain}/content/header/` as Route,
         breadcrumbs: ({ domain }) => [{ label: 'Content', href: `/${domain}/content/` as Route }, { label: 'Header' }],
     },
-    tenant: { kind: 'scoped', field: 'tenant' },
+    tenant: { kind: 'tenant-singleton', field: 'tenant' },
     access: {
         list: tenantMember,
         read: tenantMember,
