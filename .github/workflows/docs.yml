@@ -93,9 +93,6 @@ jobs:
 
             - name: 🧪 Run Playwright tests against built site
               working-directory: apps/docs
-              env:
-                  DOCS_BASE_URL: http://localhost:3003
-                  DOCS_SERVE_COMMAND: pnpm exec docusaurus serve --port 3003 --no-open
               run: pnpm exec playwright test
 
             - name: 📦 Upload Playwright report
