@@ -1,9 +1,11 @@
 import 'server-only';
 
+import { MissingListConfigError } from '@nordcom/commerce-errors';
 import type { Route } from 'next';
 import { notFound, redirect } from 'next/navigation';
 import type { CollectionSlug } from 'payload';
 import type { ReactNode } from 'react';
+
 import type { CollectionEditorManifest } from '../manifest';
 import type { EditorRuntime } from '../runtime';
 
@@ -27,7 +29,7 @@ export async function EditorListPage<TSlug extends CollectionSlug>({
     const ctx = await runtime.getCtx(domain);
     if (!(await manifest.access.list(runtime.toAccessCtx(ctx, domain)))) notFound();
     if (!manifest.list) {
-        throw new Error(`[editor] manifest ${manifest.collection} has no list config; cannot render <EditorListPage>`);
+        throw new MissingListConfigError(manifest.collection);
     }
 
     // ── Locale resolution ── (mirrors EditorEditPage)

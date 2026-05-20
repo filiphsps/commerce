@@ -20,7 +20,12 @@ describe('parseFormPayload', () => {
 
     it('throws on malformed JSON', () => {
         const fd = fdWith({ _payload: 'not-json' });
-        expect(() => parseFormPayload(fd)).toThrow(/malformed/i);
+        expect(() => parseFormPayload(fd)).toThrow(
+            expect.objectContaining({
+                name: 'MalformedFormPayloadError',
+                code: 'API_MALFORMED_FORM_PAYLOAD',
+            }),
+        );
     });
 });
 

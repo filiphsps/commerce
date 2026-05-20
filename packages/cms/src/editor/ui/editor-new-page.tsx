@@ -1,5 +1,6 @@
 import 'server-only';
 
+import { UnknownCollectionSlugError } from '@nordcom/commerce-errors';
 import type { Route } from 'next';
 import { headers as getHeaders } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
@@ -7,6 +8,7 @@ import type { CollectionSlug } from 'payload';
 import { createLocalReq, getLocalI18n, getRequestLanguage, type PayloadRequest } from 'payload';
 import { parseCookies } from 'payload/shared';
 import type { ReactNode } from 'react';
+
 import type { EditorActions } from '../actions';
 import type { CollectionEditorManifest } from '../manifest';
 import type { EditorRuntime } from '../runtime';
@@ -34,7 +36,7 @@ export async function EditorNewPage<TSlug extends CollectionSlug>({
     if (!(await manifest.access.create(runtime.toAccessCtx(ctx, domain)))) notFound();
 
     const collection = ctx.payload.config.collections.find((c) => c.slug === manifest.collection);
-    if (!collection) throw new Error(`[editor] unknown collection slug: ${manifest.collection}`);
+    if (!collection) throw new UnknownCollectionSlugError(manifest.collection);
 
     // ── Locale resolution ── (mirrors EditorEditPage)
     const localization = ctx.payload.config.localization !== false ? ctx.payload.config.localization : undefined;

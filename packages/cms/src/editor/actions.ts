@@ -1,8 +1,10 @@
 import 'server-only';
 
+import { UnknownCollectionSlugError } from '@nordcom/commerce-errors';
 import { revalidatePath } from 'next/cache';
 import { notFound } from 'next/navigation';
 import type { CollectionSlug } from 'payload';
+
 import { parseFormPayload, pickByFieldNames } from './form-payload';
 import type { CollectionEditorManifest } from './manifest';
 import { revalidateForManifest, tenantWhere } from './revalidate';
@@ -46,7 +48,7 @@ export const createCollectionEditorActions = <T extends CollectionSlug>(
 
         const collection = ctx.payload.config.collections.find((c) => c.slug === manifest.collection);
         if (!collection) {
-            throw new Error(`[editor] unknown collection slug: ${manifest.collection}`);
+            throw new UnknownCollectionSlugError(manifest.collection);
         }
 
         const raw = parseFormPayload(formData);
@@ -100,7 +102,7 @@ export const createCollectionEditorActions = <T extends CollectionSlug>(
             if (!(await manifest.access.create(accessCtx))) notFound();
 
             const collection = ctx.payload.config.collections.find((c) => c.slug === manifest.collection);
-            if (!collection) throw new Error(`[editor] unknown collection slug: ${manifest.collection}`);
+            if (!collection) throw new UnknownCollectionSlugError(manifest.collection);
 
             const raw = parseFormPayload(formData);
             const allowed = pickByFieldNames(raw, collection.fields);

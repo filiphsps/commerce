@@ -1,4 +1,7 @@
 import 'server-only';
+
+import { EmptyTenantScopeError } from '@nordcom/commerce-errors';
+
 import type { ShopRef } from './get-page';
 
 /**
@@ -12,6 +15,6 @@ import type { ShopRef } from './get-page';
  */
 export const assertShopId = (shop: ShopRef): void => {
     if (!shop || typeof shop.id !== 'string' || shop.id.length === 0) {
-        throw new Error('[cms] tenant-scoped query received empty shop.id — refusing to broaden the predicate');
+        throw new EmptyTenantScopeError();
     }
 };

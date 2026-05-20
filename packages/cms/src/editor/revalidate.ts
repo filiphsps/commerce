@@ -1,4 +1,6 @@
+import { MissingTenantForScopedCollectionError } from '@nordcom/commerce-errors';
 import type { Where } from 'payload';
+
 import type { CollectionEditorManifest } from './manifest';
 
 /**
@@ -15,7 +17,7 @@ export const tenantWhere = (manifest: CollectionEditorManifest, tenant: { id: st
     switch (manifest.tenant.kind) {
         case 'scoped':
             if (!tenant) {
-                throw new Error(`[editor] scoped collection ${manifest.collection} requires a tenant`);
+                throw new MissingTenantForScopedCollectionError(manifest.collection);
             }
             return {
                 and: [{ tenant: { equals: tenant.id } }, { [keyField]: { equals: id } }],

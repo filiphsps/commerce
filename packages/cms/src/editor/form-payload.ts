@@ -1,3 +1,4 @@
+import { MalformedFormPayloadError } from '@nordcom/commerce-errors';
 import type { Field } from 'payload';
 
 /**
@@ -14,7 +15,7 @@ export const parseFormPayload = (formData: FormData): Record<string, unknown> =>
     try {
         return JSON.parse(raw) as Record<string, unknown>;
     } catch (err) {
-        throw new Error('[editor] malformed _payload', { cause: err });
+        throw new MalformedFormPayloadError(err);
     }
 };
 
