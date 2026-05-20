@@ -25,4 +25,5 @@ export {
     type PredicateMetadata,
     registerPredicate,
 } from './predicates';
+export { readFlag } from './read';
 export { reportFlagValue } from './report';

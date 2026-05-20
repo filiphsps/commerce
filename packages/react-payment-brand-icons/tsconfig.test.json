@@ -1,0 +1,20 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "extends": ["./tsconfig.json", "../../tsconfig.test.json"],
+    "compilerOptions": {
+        "types": ["node", "vitest/globals"],
+        "lib": ["ESNext", "DOM", "DOM.Iterable"],
+        "rootDir": "${configDir}",
+        "composite": false,
+        "declaration": false,
+        "declarationMap": false
+    },
+    "include": [
+        "./src/**/*.test.ts",
+        "./src/**/*.test.tsx",
+        "./__tests__/**/*.test.ts",
+        "./__tests__/**/*.test.tsx",
+        "./scripts/**/*.test.ts",
+        "vitest.setup.ts"
+    ]
+}

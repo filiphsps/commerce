@@ -1,12 +1,13 @@
 # Changesets
 
-This directory tracks pending version bumps for the `@tagtree/*` packages.
-Other packages in this monorepo are ignored — see `.changeset/config.json`.
+This directory tracks pending version bumps for the `@tagtree/*` packages and
+the `react-payment-brand-icons` package. Other packages in this monorepo are
+ignored — see `.changeset/config.json`.
 
 ## Adding a changeset
 
-When you make a change to any `@tagtree/*` package that should ship in the
-next release, run:
+When you make a change to any `@tagtree/*` package or to
+`react-payment-brand-icons` that should ship in the next release, run:
 
     pnpm changeset
 

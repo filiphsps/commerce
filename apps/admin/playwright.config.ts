@@ -2,6 +2,8 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig, devices } from '@playwright/test';
 
+import { STORAGE_STATE_PATH } from './e2e/fixtures/storage-state';
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
@@ -19,7 +21,12 @@ export default defineConfig({
         screenshot: 'only-on-failure',
         video: 'retain-on-failure',
     },
-    projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+    projects: [
+        {
+            name: 'chromium',
+            use: { ...devices['Desktop Chrome'], storageState: STORAGE_STATE_PATH },
+        },
+    ],
     webServer: {
         command: process.env.CI ? 'pnpm start --port 3000' : 'pnpm dev',
         url: 'http://localhost:3000',

@@ -1,0 +1,47 @@
+import type { Route } from 'next';
+import { describe, expect, it } from 'vitest';
+import { defineCollectionEditor } from './manifest';
+import { docUrlSegment } from './url';
+
+const scoped = defineCollectionEditor({
+    collection: 'pages',
+    routes: { label: { singular: 'Page', plural: 'Pages' }, basePath: (d) => `/${d}/pages/` as Route },
+    tenant: { kind: 'scoped', field: 'tenant' },
+    access: { list: () => true, read: () => true, update: () => true },
+});
+
+const singletonByDomain = defineCollectionEditor({
+    collection: 'shops',
+    routes: { label: { singular: 'Shop', plural: 'Shops' }, basePath: (d) => `/${d}/settings/shop/` as Route },
+    tenant: { kind: 'singleton-by-domain' },
+    access: { list: () => false, read: () => true, update: () => true },
+});
+
+const shared = defineCollectionEditor({
+    collection: 'tenants',
+    routes: { label: { singular: 'Tenant', plural: 'Tenants' }, basePath: () => `/settings/tenants/` as Route },
+    tenant: { kind: 'shared', readableBy: 'admin' },
+    access: { list: () => true, read: () => true, update: () => true },
+});
+
+describe('docUrlSegment', () => {
+    it('returns the id with trailing slash for scoped manifests with a real id', () => {
+        expect(docUrlSegment(scoped, '507f1f77bcf86cd799439011')).toBe('507f1f77bcf86cd799439011/');
+    });
+
+    it('returns empty string for the singleton sentinel under a scoped manifest', () => {
+        expect(docUrlSegment(scoped, 'singleton')).toBe('');
+    });
+
+    it('returns empty string for singleton-by-domain manifests regardless of id', () => {
+        expect(docUrlSegment(singletonByDomain, 'beta.pouched.de')).toBe('');
+    });
+
+    it('returns the id with trailing slash for shared manifests', () => {
+        expect(docUrlSegment(shared, 'tenant-1')).toBe('tenant-1/');
+    });
+
+    it('preserves the id verbatim (no encoding) — caller is responsible for URL-safety', () => {
+        expect(docUrlSegment(scoped, 'has spaces')).toBe('has spaces/');
+    });
+});

@@ -8,6 +8,7 @@ import { getAuthSession } from '@/auth';
 import { getRequestContext } from '@/utils/request-context';
 
 import { type FlagEntities, mapSessionToUser } from './entities';
+import { getFlagOverrides } from './overrides';
 import { evaluatePredicate } from './predicates';
 
 const identify = dedupe(
@@ -46,7 +47,9 @@ export function nordcomFlagAdapter<T>(): Adapter<T, FlagEntities> {
     return {
         identify,
         origin: (key) => `/admin/feature-flags/${key}`,
-        decide({ key, entities, defaultValue }) {
+        async decide({ key, entities, defaultValue }) {
+            const overrides = await getFlagOverrides();
+            if (overrides && Object.hasOwn(overrides, key)) return overrides[key] as T;
             if (!entities) return defaultValue as T;
             const shop = entities.shop as ShopWithFlags;
             const ref = shop.featureFlags?.find((entry) => isPopulated(entry.flag) && entry.flag.key === key);

@@ -3,7 +3,11 @@
     "name": "@nordcom/commerce-cms",
     "version": "0.1.0",
     "private": true,
-    "sideEffects": false,
+    "sideEffects": [
+        "**/*.css",
+        "./src/ui/payload-field-shell.tsx",
+        "./dist/ui/payload-field-shell.js"
+    ],
     "type": "module",
     "types": "./dist/index.d.ts",
     "module": "./dist/index.ts",

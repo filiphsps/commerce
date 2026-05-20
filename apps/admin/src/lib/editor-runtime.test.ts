@@ -49,14 +49,56 @@ describe('editorRuntime', () => {
                     id: 'u',
                     email: 'e',
                     role: 'editor',
-                    tenants: [{ tenant: 'a.test' }, { tenant: 'b.test' }],
+                    tenants: [{ tenant: 'tenant-a' }, { tenant: 'tenant-b' }],
                     collection: 'users',
                 },
                 tenant: null,
             },
             'a.test',
         );
-        expect(accessCtx.user?.tenants).toEqual(['a.test', 'b.test']);
+        expect(accessCtx.user?.tenants).toEqual(['tenant-a', 'tenant-b']);
         expect(accessCtx.domain).toBe('a.test');
+    });
+
+    it('toAccessCtx forwards the resolved tenant.id as tenantId', () => {
+        const accessCtx = editorRuntime.toAccessCtx(
+            {
+                payload: {} as never,
+                user: {
+                    id: 'u',
+                    email: 'e',
+                    role: 'editor',
+                    tenants: [{ tenant: 'tenant-a' }],
+                    collection: 'users',
+                },
+                tenant: {
+                    id: 'tenant-a',
+                    slug: 'acme',
+                    name: 'Acme',
+                    defaultLocale: 'en-US',
+                    locales: ['en-US'],
+                },
+            },
+            'a.test',
+        );
+        expect(accessCtx.tenantId).toBe('tenant-a');
+    });
+
+    it('toAccessCtx returns tenantId: null when tenant is null (cross-tenant routes)', () => {
+        const accessCtx = editorRuntime.toAccessCtx(
+            {
+                payload: {} as never,
+                user: {
+                    id: 'u',
+                    email: 'e',
+                    role: 'admin',
+                    tenants: [],
+                    collection: 'users',
+                },
+                tenant: null,
+            },
+            null,
+        );
+        expect(accessCtx.tenantId).toBeNull();
     });
 });

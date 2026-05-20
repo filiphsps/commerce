@@ -1,8 +1,8 @@
 import 'server-only';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
-import Image from 'next/image';
 import type { HTMLProps } from 'react';
+import { PaymentIcon } from 'react-payment-brand-icons';
 import { ShopifyApiClient } from '@/api/shopify';
 import { ShopPaymentSettingsApi } from '@/api/store';
 
@@ -15,6 +15,7 @@ export type AcceptedPaymentMethodsProps = {
     locale: Locale;
     shop: OnlineShop;
 } & HTMLProps<HTMLDivElement>;
+
 export const AcceptedPaymentMethods = async ({ shop, locale, className, ...props }: AcceptedPaymentMethodsProps) => {
     const api = await ShopifyApiClient({ shop, locale });
     const paymentSettings = await ShopPaymentSettingsApi({ api });
@@ -37,40 +38,24 @@ export const AcceptedPaymentMethods = async ({ shop, locale, className, ...props
             )}
         >
             {methods.map((method) => (
-                <Image
+                <PaymentIcon
                     key={`method_${method}`}
+                    name={method}
                     className={CARD_STYLES}
-                    src={`/assets/payments/${method}.svg`}
-                    alt={method}
-                    height={24}
                     width={38}
-                    sizes="38px"
+                    height={24}
                     title={method.replaceAll('_', ' ')}
-                    priority={false}
-                    loading="lazy"
-                    decoding="async"
-                    loader={undefined}
-                    draggable={false}
-                    unoptimized={true}
                 />
             ))}
 
             {wallets.map((method) => (
-                <Image
+                <PaymentIcon
                     key={`wallet_${method}`}
+                    name={method}
                     className={CARD_STYLES}
-                    src={`/assets/payments/${method}.svg`}
-                    alt={method}
-                    height={24}
                     width={38}
-                    sizes="38px"
+                    height={24}
                     title={method.replaceAll('_', ' ')}
-                    priority={false}
-                    loading="lazy"
-                    decoding="async"
-                    loader={undefined}
-                    draggable={false}
-                    unoptimized={true}
                 />
             ))}
         </div>

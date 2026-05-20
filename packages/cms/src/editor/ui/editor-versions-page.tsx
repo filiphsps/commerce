@@ -11,6 +11,7 @@ import type { ReactNode } from 'react';
 import type { EditorActions } from '../actions';
 import type { CollectionEditorManifest } from '../manifest';
 import type { EditorRuntime } from '../runtime';
+import { docUrlSegment } from '../url';
 import { localeLabel } from './locale-label';
 import { LocaleSwitcher } from './locale-switcher';
 
@@ -47,7 +48,7 @@ export async function EditorVersionsPage<TSlug extends CollectionSlug>({
         }
         next.set('locale', tenantDefault);
         const base = manifest.routes.basePath(domain);
-        redirect(`${base}${id !== 'singleton' ? `${id}/` : ''}versions/?${next.toString()}` as Route);
+        redirect(`${base}${docUrlSegment(manifest, id)}versions/?${next.toString()}` as Route);
     }
 
     const locale = requested as string;
@@ -67,7 +68,7 @@ export async function EditorVersionsPage<TSlug extends CollectionSlug>({
     });
 
     const backHref =
-        `${manifest.routes.basePath(domain)}${id !== 'singleton' ? `${id}/` : ''}?locale=${encodeURIComponent(locale)}` as Route;
+        `${manifest.routes.basePath(domain)}${docUrlSegment(manifest, id)}?locale=${encodeURIComponent(locale)}` as Route;
 
     const headers = await getHeaders();
     const cookies = parseCookies(headers);

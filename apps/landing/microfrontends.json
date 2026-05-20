@@ -1,0 +1,10 @@
+{
+    "$schema": "https://openapi.vercel.sh/microfrontends.json",
+    "applications": {
+        "commerce-landing": {
+            "development": {
+                "fallback": "shops.pouched.de"
+            }
+        }
+    }
+}

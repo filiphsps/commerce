@@ -6,14 +6,18 @@ import { BulkSelectionProvider } from '@/components/cms/bulk-selection-provider'
 import { RowCheckbox } from '@/components/cms/row-checkbox';
 
 export type Column<TRow> = {
-    /**
-     * Must be a string-typed property of `TRow`. Constraining this prevents
-     * typos pointing at non-existent fields, which the table would otherwise
-     * silently render as an empty string.
-     */
-    key: keyof TRow & string;
     label: string;
-    render?: (row: TRow) => ReactNode;
+    /**
+     * Property name on the row, or a function that returns the cell value.
+     * String form is type-checked against `keyof TRow`; function form is
+     * useful when the cell value is derived from multiple fields.
+     */
+    accessor: (keyof TRow & string) | ((row: TRow) => string | null);
+    /**
+     * Optional cell renderer. Receives the resolved accessor value and the
+     * full row. Default rendering coerces the value with `String(value ?? '')`.
+     */
+    render?: (value: unknown, row: TRow) => ReactNode;
 };
 
 export type CollectionTableProps<TRow extends { id: string | number }> = {
@@ -41,6 +45,20 @@ export type CollectionTableProps<TRow extends { id: string | number }> = {
     ariaLabel?: string;
 };
 
+/**
+ * Stable React key for a column: the string accessor when present, or
+ * `fn:<index>` for function-form accessors. Function accessors can't be
+ * compared by identity across renders, but the column array is positional, so
+ * the index is a sufficient discriminator.
+ */
+function columnKey<TRow>(col: Column<TRow>, index: number): string {
+    return typeof col.accessor === 'function' ? `fn:${index}` : col.accessor;
+}
+
+function resolveCellValue<TRow>(col: Column<TRow>, row: TRow): unknown {
+    return typeof col.accessor === 'function' ? col.accessor(row) : row[col.accessor];
+}
+
 export function CollectionTable<TRow extends { id: string | number }>({
     rows,
     columns,
@@ -64,9 +82,9 @@ export function CollectionTable<TRow extends { id: string | number }>({
                                     <span className="sr-only">Select</span>
                                 </th>
                             ) : null}
-                            {columns.map((col) => (
+                            {columns.map((col, colIndex) => (
                                 <th
-                                    key={col.key}
+                                    key={columnKey(col, colIndex)}
                                     scope="col"
                                     className="px-4 py-3 text-left font-semibold text-muted-foreground"
                                 >
@@ -101,22 +119,27 @@ export function CollectionTable<TRow extends { id: string | number }>({
                                                 <RowCheckbox rowId={rowIdStr} rowLabel={rowLabel} />
                                             </td>
                                         ) : null}
-                                        {columns.map((col, colIndex) => (
-                                            <td key={col.key} className="px-4 py-3 text-foreground">
-                                                {colIndex === 0 ? (
-                                                    <Link
-                                                        href={getRowHref(row)}
-                                                        className="font-medium hover:text-primary hover:underline"
-                                                    >
-                                                        {col.render ? col.render(row) : String(row[col.key] ?? '')}
-                                                    </Link>
-                                                ) : col.render ? (
-                                                    col.render(row)
-                                                ) : (
-                                                    String(row[col.key] ?? '')
-                                                )}
-                                            </td>
-                                        ))}
+                                        {columns.map((col, colIndex) => {
+                                            const value = resolveCellValue(col, row);
+                                            const rendered = col.render ? col.render(value, row) : String(value ?? '');
+                                            return (
+                                                <td
+                                                    key={columnKey(col, colIndex)}
+                                                    className="px-4 py-3 text-foreground"
+                                                >
+                                                    {colIndex === 0 ? (
+                                                        <Link
+                                                            href={getRowHref(row)}
+                                                            className="font-medium hover:text-primary hover:underline"
+                                                        >
+                                                            {rendered}
+                                                        </Link>
+                                                    ) : (
+                                                        rendered
+                                                    )}
+                                                </td>
+                                            );
+                                        })}
                                         <td className="px-4 py-3 text-right">
                                             <Link
                                                 href={getRowHref(row)}

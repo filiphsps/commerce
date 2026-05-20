@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+test.use({ storageState: { cookies: [], origins: [] } });
+
 test('direct nav to protected route without session redirects', async ({ page, context }) => {
     await context.clearCookies();
     await page.goto('/settings');

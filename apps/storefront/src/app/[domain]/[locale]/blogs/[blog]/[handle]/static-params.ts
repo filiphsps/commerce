@@ -39,7 +39,11 @@ export async function generateStaticParams({
         const articles = blog.articles.edges.map(({ node: { handle } }) => ({ handle }));
         return articles.length > 0 ? articles : [{ handle: NOT_FOUND_HANDLE }];
     } catch (error: unknown) {
+        if (Error.isNotFound(error)) {
+            return [{ handle: NOT_FOUND_HANDLE }];
+        }
+
         console.error(error);
-        return [{ handle: NOT_FOUND_HANDLE }];
+        throw error;
     }
 }

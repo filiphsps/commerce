@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { withPayload } from '@payloadcms/next/withPayload';
 import createVercelToolbar from '@vercel/toolbar/plugins/next';
 
-const withVercelToolbar = createVercelToolbar();
+const withVercelToolbar = createVercelToolbar({});
 
 // TODO: Create util instead of duplicating it thrice.
 const isDev = [process.env.NODE_ENV, process.env.VERCEL_ENV].includes('development');
@@ -119,5 +119,24 @@ const config = {
     skipTrailingSlashRedirect: false,
 };
 
-//
-export default withVercelToolbar(withPayload(config));
+/**
+ *
+ * @param {import('next').NextConfig} config
+ * @returns
+ */
+const wrapConfig = (config) => {
+    // Always include payload.
+    config = withPayload(config);
+    // Always include vercel toolbar.
+    config = withVercelToolbar(config);
+
+    if (isDev) {
+        console.warn('Development mode detected, skipping logging...');
+        // TODO: Add logging service.
+        return config;
+    }
+
+    return config;
+};
+
+export default wrapConfig(config);

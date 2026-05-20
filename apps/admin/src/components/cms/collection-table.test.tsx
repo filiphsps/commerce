@@ -44,8 +44,8 @@ vi.mock('@nordcom/nordstar', () => ({
 type TestRow = { id: string; title: string; status: string };
 
 const COLUMNS = [
-    { key: 'title' as const, label: 'Title' },
-    { key: 'status' as const, label: 'Status' },
+    { accessor: 'title' as const, label: 'Title' },
+    { accessor: 'status' as const, label: 'Status' },
 ];
 
 const ROWS: TestRow[] = [
@@ -71,6 +71,27 @@ describe('CollectionTable', () => {
         expect(screen.getByText('Article Three')).toBeInTheDocument();
         expect(screen.getAllByText('published')).toHaveLength(1);
         expect(screen.getAllByText('draft')).toHaveLength(2);
+    });
+
+    it('resolves function-form accessors against each row', () => {
+        const COLS_WITH_FN = [
+            { accessor: 'title' as const, label: 'Title' },
+            { accessor: (row: TestRow) => `${row.title} (${row.status})`, label: 'Summary' },
+        ];
+        render(<CollectionTable rows={ROWS} columns={COLS_WITH_FN} getRowHref={getHref} />);
+        expect(screen.getByText('Article One (published)')).toBeInTheDocument();
+        expect(screen.getByText('Article Two (draft)')).toBeInTheDocument();
+    });
+
+    it('passes the resolved value and the full row to a custom render fn', () => {
+        const renderFn = vi.fn((value: unknown, row: TestRow) => <span>{`${row.id}:${String(value)}`}</span>);
+        const COLS_WITH_RENDER = [
+            { accessor: 'title' as const, label: 'Title', render: renderFn },
+            { accessor: 'status' as const, label: 'Status' },
+        ];
+        render(<CollectionTable rows={ROWS} columns={COLS_WITH_RENDER} getRowHref={getHref} />);
+        expect(screen.getByText('row-1:Article One')).toBeInTheDocument();
+        expect(renderFn).toHaveBeenCalledWith('Article One', ROWS[0]);
     });
 
     it('renders column headers', () => {
