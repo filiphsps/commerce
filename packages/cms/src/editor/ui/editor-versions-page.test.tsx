@@ -34,7 +34,7 @@ const manifest = defineCollectionEditor({
         label: { singular: 'Business data', plural: 'Business data' },
         basePath: (d) => `/${d}/content/business-data/` as Route,
     },
-    tenant: { kind: 'scoped', field: 'tenant' },
+    tenant: { kind: 'tenant-singleton', field: 'tenant' },
     access: { list: () => true, read: () => true, update: () => true },
 });
 
@@ -62,7 +62,7 @@ describe('<EditorVersionsPage>', () => {
         const el = await EditorVersionsPage({
             manifest,
             runtime: buildRuntime([]),
-            params: { domain: 'a.test', id: 'singleton' },
+            params: { domain: 'a.test', id: '' },
             searchParams: { locale: 'de' },
             generatedActions: {
                 saveDraft: async () => {},
@@ -88,7 +88,7 @@ describe('<EditorVersionsPage>', () => {
         const el = await EditorVersionsPage({
             manifest,
             runtime: buildRuntime(versions),
-            params: { domain: 'a.test', id: 'singleton' },
+            params: { domain: 'a.test', id: '' },
             searchParams: { locale: 'de' },
             generatedActions: {
                 saveDraft: async () => {},
@@ -109,7 +109,7 @@ describe('<EditorVersionsPage>', () => {
             EditorVersionsPage({
                 manifest,
                 runtime: buildRuntime([]),
-                params: { domain: 'a.test', id: 'singleton' },
+                params: { domain: 'a.test', id: '' },
                 searchParams: {},
                 generatedActions: {
                     saveDraft: async () => {},
@@ -128,7 +128,7 @@ describe('<EditorVersionsPage>', () => {
         const el = await EditorVersionsPage({
             manifest,
             runtime: buildRuntime([]),
-            params: { domain: 'a.test', id: 'singleton' },
+            params: { domain: 'a.test', id: '' },
             searchParams: { locale: 'de' },
             generatedActions: {
                 saveDraft: async () => {},

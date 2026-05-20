@@ -29,7 +29,7 @@ import { EditorEditPage } from './editor-edit-page';
 const baseManifest = defineCollectionEditor({
     collection: 'businessData',
     routes: { label: { singular: 'X', plural: 'X' }, basePath: (d) => `/${d}/x/` as Route },
-    tenant: { kind: 'scoped', field: 'tenant' },
+    tenant: { kind: 'tenant-singleton', field: 'tenant' },
     access: { list: () => true, read: () => true, update: () => true },
     revalidate: ({ domain }) => [`/${domain}/x/`],
 });
@@ -64,7 +64,7 @@ describe('<EditorEditPage>', () => {
         const el = await EditorEditPage({
             manifest: baseManifest,
             runtime: buildRuntime(),
-            params: { domain: 'a.test', id: 'singleton' },
+            params: { domain: 'a.test', id: '' },
             searchParams: { locale: 'de' },
             generatedActions: {
                 saveDraft: async () => {},
@@ -90,7 +90,7 @@ describe('<EditorEditPage>', () => {
             EditorEditPage({
                 manifest,
                 runtime: buildRuntime(),
-                params: { domain: 'a.test', id: 'singleton' },
+                params: { domain: 'a.test', id: '' },
                 searchParams: { locale: 'de' },
                 generatedActions: {
                     saveDraft: async () => {},
@@ -110,7 +110,7 @@ describe('<EditorEditPage>', () => {
             EditorEditPage({
                 manifest: baseManifest,
                 runtime: buildRuntime(),
-                params: { domain: 'a.test', id: 'singleton' },
+                params: { domain: 'a.test', id: '' },
                 searchParams: {},
                 generatedActions: {
                     saveDraft: async () => {},
@@ -130,7 +130,7 @@ describe('<EditorEditPage>', () => {
             EditorEditPage({
                 manifest: baseManifest,
                 runtime: buildRuntime(),
-                params: { domain: 'a.test', id: 'singleton' },
+                params: { domain: 'a.test', id: '' },
                 searchParams: { locale: 'zz' },
                 generatedActions: {
                     saveDraft: async () => {},
@@ -150,7 +150,7 @@ describe('<EditorEditPage>', () => {
             EditorEditPage({
                 manifest: baseManifest,
                 runtime: buildRuntime(),
-                params: { domain: 'a.test', id: 'singleton' },
+                params: { domain: 'a.test', id: '' },
                 searchParams: {},
                 generatedActions: {
                     saveDraft: async () => {},
@@ -169,7 +169,7 @@ describe('<EditorEditPage>', () => {
         const el = await EditorEditPage({
             manifest: baseManifest,
             runtime: buildRuntime(),
-            params: { domain: 'a.test', id: 'singleton' },
+            params: { domain: 'a.test', id: '' },
             searchParams: { locale: 'en' },
             generatedActions: {
                 saveDraft: async () => {},

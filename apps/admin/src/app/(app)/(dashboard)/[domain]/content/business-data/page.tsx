@@ -17,13 +17,13 @@ export default async function BusinessDataPage({ params, searchParams }: Busines
     const { domain } = await params;
     const sp = await searchParams;
 
-    // businessData is a global (one doc per tenant). Use a sentinel `id`; the
-    // manifest's `tenant.kind: 'scoped'` drives the lookup via `where: tenant`.
+    // businessData is a global (one doc per tenant). Pass an empty id; the
+    // manifest's `tenant.kind: 'tenant-singleton'` drives the lookup via `where: tenant`.
     return (
         <EditorEditPage
             manifest={businessDataEditor}
             runtime={editorRuntime}
-            params={{ domain, id: 'singleton' }}
+            params={{ domain, id: '' }}
             searchParams={sp}
             generatedActions={{
                 saveDraft: actions.businessDataSaveDraft,

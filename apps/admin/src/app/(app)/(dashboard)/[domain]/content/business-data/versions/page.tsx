@@ -20,7 +20,7 @@ export default async function BusinessDataVersionsPage({ params, searchParams }:
         <EditorVersionsPage
             manifest={businessDataEditor}
             runtime={editorRuntime}
-            params={{ domain, id: 'singleton' }}
+            params={{ domain, id: '' }}
             searchParams={sp}
             generatedActions={{
                 saveDraft: actions.businessDataSaveDraft,

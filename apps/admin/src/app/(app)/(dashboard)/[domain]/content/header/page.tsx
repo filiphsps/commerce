@@ -20,7 +20,7 @@ export default async function HeaderPage({ params, searchParams }: Props) {
         <EditorEditPage
             manifest={headerEditor}
             runtime={editorRuntime}
-            params={{ domain, id: 'singleton' }}
+            params={{ domain, id: '' }}
             searchParams={sp}
             generatedActions={{
                 saveDraft: actions.headerSaveDraft,

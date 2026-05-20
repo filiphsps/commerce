@@ -20,7 +20,7 @@ export default async function HeaderVersionsPage({ params, searchParams }: Props
         <EditorVersionsPage
             manifest={headerEditor}
             runtime={editorRuntime}
-            params={{ domain, id: 'singleton' }}
+            params={{ domain, id: '' }}
             searchParams={sp}
             generatedActions={{
                 saveDraft: actions.headerSaveDraft,

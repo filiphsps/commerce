@@ -20,7 +20,7 @@ export default async function FooterVersionsPage({ params, searchParams }: Props
         <EditorVersionsPage
             manifest={footerEditor}
             runtime={editorRuntime}
-            params={{ domain, id: 'singleton' }}
+            params={{ domain, id: '' }}
             searchParams={sp}
             generatedActions={{
                 saveDraft: actions.footerSaveDraft,

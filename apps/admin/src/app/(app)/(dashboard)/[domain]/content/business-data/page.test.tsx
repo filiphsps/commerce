@@ -34,7 +34,7 @@ describe('BusinessDataPage', () => {
         expect(element.props).toMatchObject({
             manifest: { collection: 'businessData' },
             runtime: { __mock: true },
-            params: { domain: 'acme.test', id: 'singleton' },
+            params: { domain: 'acme.test', id: '' },
         });
     });
 });
