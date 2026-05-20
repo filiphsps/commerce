@@ -71,7 +71,7 @@
         "@vercel/analytics": "2.0.1",
         "@vercel/otel": "2.1.2",
         "@vercel/speed-insights": "2.0.0",
-        "@vercel/toolbar": "0.2.5",
+        "@vercel/toolbar": "0.2.6",
         "clsx": "2.1.1",
         "colord": "2.9.3",
         "convert-units": "2.3.4",
