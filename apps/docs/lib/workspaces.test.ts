@@ -38,6 +38,6 @@ describe('discoverWorkspaces', () => {
             { slug: 'foo', type: 'app' as const, rootPath: '/a', docsPath: '/a/docs' },
             { slug: 'foo', type: 'package' as const, rootPath: '/b', docsPath: '/b/docs' },
         ];
-        expect(() => assertUniqueSlugs(fakeWorkspaces)).toThrowError(/duplicate workspace slug/i);
+        expect(() => assertUniqueSlugs(fakeWorkspaces)).toThrow(/duplicate workspace slug/i);
     });
 });
