@@ -18,7 +18,7 @@
         ],
         "./icons/*": [
             "./src/generated/icons/*.tsx",
-            "./dist/icons/*.js"
+            "./dist/generated/icons/*.js"
         ],
         "./manifest": [
             "./src/generated/manifest.ts",
@@ -42,9 +42,9 @@
         "README.md"
     ],
     "author": {
-        "name": "Nordcom AB",
-        "email": "hi@nordcom.io",
-        "url": "https://nordcom.io/"
+        "name": "Filiph Sandström",
+        "email": "filfat@hotmail.se",
+        "url": "https://github.com/filiphsps/"
     },
     "contributors": [
         {
