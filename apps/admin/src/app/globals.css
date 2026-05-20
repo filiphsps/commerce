@@ -445,6 +445,30 @@
 }
 
 @layer payload {
+    /* Bridge: map Payload's --theme-* CSS variables onto our admin HSL
+     * tokens. Scoped to dark theme (admin is dark-only). Override only the
+     * critical text/input/page-bg tokens — leaving the full 21-tier
+     * --theme-elevation-{0..1000} ramp intact (vendored from colors.scss
+     * above) preserves internal contrast inside drawers, modals, and
+     * error states. In particular we deliberately do NOT remap
+     * --theme-elevation-0, because doing so creates an inverted ramp
+     * (elevation-0 darker than elevation-50) that would break Payload's
+     * upward-elevation assumption inside nested surfaces.
+     *
+     * `--color-base` and `--color-base-hover` are Payload's primary
+     * action color — pointing them at our brand pink keeps "Add Block",
+     * focus rings, and link/hover colors consistent with the rest of
+     * the admin.
+     */
+    html[data-theme="dark"] {
+        --theme-bg: hsl(var(--background));
+        --theme-text: hsl(var(--foreground));
+        --theme-input-bg: hsl(var(--input));
+        --theme-input-border: hsl(var(--border));
+        --color-base: hsl(var(--primary));
+        --color-base-hover: hsl(var(--primary) / 0.85);
+    }
+
     /* Embedded Payload field components ship with field-row min-width
      * assumptions tuned for the canonical Payload admin shell (full-width
      * content column). Inside our /[domain]/content/* routes the content
