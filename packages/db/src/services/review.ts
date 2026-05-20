@@ -2,41 +2,28 @@ import 'server-only';
 
 import { docToReview } from '../lib/doc-to-shape';
 import type { ReviewBase } from '../models';
-import { getRegisteredPayload } from '../payload-registry';
+import { ReviewModel } from '../models';
 
 type FindOptions = {
     count?: number;
 };
 
 /**
- * Review service backed by `payload.local`. Method signatures preserved from
- * the prior Mongoose-backed service so storefront / admin callsites are
- * unchanged. Payload is obtained lazily per call from the commerce-db
- * registry (registered once at app boot from `instrumentation.ts`).
+ * Review service backed by Mongoose. Method signatures preserved from the
+ * prior Payload-backed service so callsites are unchanged.
  */
 export class ReviewService {
     public async findByShop(shopId: string, { count }: FindOptions = {}): Promise<ReviewBase[]> {
-        const payload = await getRegisteredPayload();
-        const { docs } = await payload.find({
-            collection: 'reviews' as never,
-            where: { shop: { equals: shopId } } as never,
-            limit: count ?? 0,
-            depth: 1,
-            overrideAccess: true,
-        });
-        return (docs as unknown as Array<Record<string, unknown>>).map(docToReview);
+        let query = ReviewModel.find({ shop: shopId });
+        if (count) query = query.limit(count);
+        const docs = await query.lean<ReviewBase[]>().exec();
+        return docs.map((d) => docToReview(d as unknown as Record<string, unknown>));
     }
 
     public async findAll({ tenant }: { tenant?: string } = {}): Promise<ReviewBase[]> {
-        const payload = await getRegisteredPayload();
-        const { docs } = await payload.find({
-            collection: 'reviews' as never,
-            where: tenant ? ({ tenant: { equals: tenant } } as never) : undefined,
-            limit: 0,
-            depth: 1,
-            overrideAccess: true,
-        });
-        return (docs as unknown as Array<Record<string, unknown>>).map(docToReview);
+        const filter = tenant ? { tenant } : {};
+        const docs = await ReviewModel.find(filter).lean<ReviewBase[]>().exec();
+        return docs.map((d) => docToReview(d as unknown as Record<string, unknown>));
     }
 }
 
