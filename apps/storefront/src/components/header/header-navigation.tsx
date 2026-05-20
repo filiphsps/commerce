@@ -43,7 +43,7 @@ function HeaderNavTopItem({ item, locale }: { item: NavItem; locale: Locale }) {
     const href = resolveLink(link as never, { locale: { code: locale.code } });
 
     if (hasChildren) {
-        return <HeaderMenuTrigger item={item} locale={locale} />;
+        return <HeaderMenuTrigger item={item} locale={{ code: locale.code }} />;
     }
 
     return (
