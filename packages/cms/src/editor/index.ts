@@ -23,3 +23,4 @@ export type {
     EditorToolbarShellProps,
     WithRuntime,
 } from './runtime';
+export { docUrlSegment } from './url';
