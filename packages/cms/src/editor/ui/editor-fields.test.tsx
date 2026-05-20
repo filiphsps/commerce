@@ -9,8 +9,43 @@ vi.mock('@payloadcms/ui', () => ({
         </div>
     ),
     useConfig: () => ({
-        getEntityConfig: ({ collectionSlug }: { collectionSlug: string }) =>
-            collectionSlug === 'businessData' ? { fields: [{ name: 'legalName', type: 'text' }] } : null,
+        getEntityConfig: ({ collectionSlug }: { collectionSlug: string }) => {
+            if (collectionSlug === 'businessData') return { fields: [{ name: 'legalName', type: 'text' }] };
+            if (collectionSlug === 'footer') {
+                return {
+                    fields: [
+                        { name: 'sections', type: 'array', fields: [] },
+                        {
+                            name: 'tenant',
+                            type: 'relationship',
+                            relationTo: 'tenants',
+                            admin: {
+                                position: 'sidebar',
+                                components: {
+                                    Field: { path: '@payloadcms/plugin-multi-tenant/client#TenantField' },
+                                },
+                            },
+                        },
+                    ],
+                };
+            }
+            if (collectionSlug === 'with-text-tenant') {
+                return { fields: [{ name: 'tenant', type: 'text' }] };
+            }
+            if (collectionSlug === 'with-custom-relation-tenant') {
+                return {
+                    fields: [
+                        {
+                            name: 'tenant',
+                            type: 'relationship',
+                            relationTo: 'tenants',
+                            admin: { position: 'sidebar' },
+                        },
+                    ],
+                };
+            }
+            return null;
+        },
     }),
 }));
 
@@ -27,5 +62,21 @@ describe('<EditorFields>', () => {
     it('renders an empty fields list when getEntityConfig returns null', () => {
         const { getByTestId } = render(<EditorFields collection="unknownSlug" />);
         expect(getByTestId('render-fields').textContent).toContain('0 fields');
+    });
+
+    it('filters out the multi-tenant plugin tenant field', () => {
+        const { getByTestId } = render(<EditorFields collection="footer" />);
+        // 2 input fields → 1 after filtering the plugin tenant field
+        expect(getByTestId('render-fields').textContent).toContain('1 fields');
+    });
+
+    it('does NOT filter a text field named tenant', () => {
+        const { getByTestId } = render(<EditorFields collection="with-text-tenant" />);
+        expect(getByTestId('render-fields').textContent).toContain('1 fields');
+    });
+
+    it('does NOT filter a relationship named tenant without the plugin component path', () => {
+        const { getByTestId } = render(<EditorFields collection="with-custom-relation-tenant" />);
+        expect(getByTestId('render-fields').textContent).toContain('1 fields');
     });
 });
