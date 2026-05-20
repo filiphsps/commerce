@@ -67,10 +67,10 @@ describe('GET /.well-known/vercel/flags', () => {
             expect.arrayContaining([
                 'search-filter',
                 'product-page-info-lines',
-                'header-search-bar',
                 'products-page',
                 'accounts-functionality',
             ]),
         );
+        expect(keys).not.toContain('header-search-bar');
     });
 });
