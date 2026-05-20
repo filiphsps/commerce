@@ -46,9 +46,9 @@
         "changeset:publish": "pnpm build:packages && changeset publish"
     },
     "author": {
-        "name": "Nordcom AB",
-        "email": "hi@nordcom.io",
-        "url": "https://nordcom.io/"
+        "name": "Filiph Sandström",
+        "email": "filfat@hotmail.se",
+        "url": "https://github.com/filiphsps/"
     },
     "contributors": [
         {
