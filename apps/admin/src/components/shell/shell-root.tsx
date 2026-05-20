@@ -71,16 +71,18 @@ export function ShellRoot({
         writeTimer.current = window.setTimeout(() => writeShellStateCookie(stateRef.current), 250);
     }, []);
 
-    const fallbackTotal = typeof window === 'undefined' ? 1440 : window.innerWidth || 1440;
-    const totalPx = () => containerRef.current?.getBoundingClientRect().width ?? fallbackTotal;
+    // Use a deterministic reference width for SSR/initial render so server-rendered
+    // panel sizes match the client's first paint. Panel components remeasure the
+    // actual container after mount, so this only affects the very first frame.
+    const SSR_REFERENCE_WIDTH = 1440;
 
-    const railDefaultPct = pxToPercent(initialState.rail.w, fallbackTotal);
-    const subnavDefaultPct = pxToPercent(initialState.subnav.w, fallbackTotal);
-    const inspectorDefaultPct = pxToPercent(initialState.inspector.w, fallbackTotal);
+    const railDefaultPct = pxToPercent(initialState.rail.w, SSR_REFERENCE_WIDTH);
+    const subnavDefaultPct = pxToPercent(initialState.subnav.w, SSR_REFERENCE_WIDTH);
+    const inspectorDefaultPct = pxToPercent(initialState.inspector.w, SSR_REFERENCE_WIDTH);
 
     const onLayoutChange = useCallback(
         (sizes: number[]) => {
-            const total = totalPx();
+            const total = containerRef.current?.getBoundingClientRect().width ?? SSR_REFERENCE_WIDTH;
             if (total <= 0) return;
             const railPct = sizes[0] ?? railDefaultPct;
             const subnavPct = sizes[1] ?? subnavDefaultPct;
@@ -114,10 +116,10 @@ export function ShellRoot({
                             id="rail"
                             order={1}
                             defaultSize={railDefaultPct}
-                            minSize={pxToPercent(RAIL_MIN_PX, fallbackTotal)}
-                            maxSize={pxToPercent(RAIL_MAX_PX, fallbackTotal)}
+                            minSize={pxToPercent(RAIL_MIN_PX, SSR_REFERENCE_WIDTH)}
+                            maxSize={pxToPercent(RAIL_MAX_PX, SSR_REFERENCE_WIDTH)}
                             collapsible
-                            collapsedSize={pxToPercent(RAIL_MIN_PX, fallbackTotal)}
+                            collapsedSize={pxToPercent(RAIL_MIN_PX, SSR_REFERENCE_WIDTH)}
                         >
                             <IconRail items={iconRailItems} expanded={initialState.rail.w > RAIL_MIN_PX + 16} />
                         </Panel>
@@ -130,8 +132,8 @@ export function ShellRoot({
                                     id="subnav"
                                     order={2}
                                     defaultSize={subnavDefaultPct}
-                                    minSize={pxToPercent(SUBNAV_MIN_PX, fallbackTotal)}
-                                    maxSize={pxToPercent(SUBNAV_MAX_PX, fallbackTotal)}
+                                    minSize={pxToPercent(SUBNAV_MIN_PX, SSR_REFERENCE_WIDTH)}
+                                    maxSize={pxToPercent(SUBNAV_MAX_PX, SSR_REFERENCE_WIDTH)}
                                     collapsible
                                     collapsedSize={0}
                                 >
@@ -153,8 +155,8 @@ export function ShellRoot({
                                     id="inspector"
                                     order={4}
                                     defaultSize={inspectorDefaultPct}
-                                    minSize={pxToPercent(INSPECTOR_MIN_PX, fallbackTotal)}
-                                    maxSize={pxToPercent(INSPECTOR_MAX_PX, fallbackTotal)}
+                                    minSize={pxToPercent(INSPECTOR_MIN_PX, SSR_REFERENCE_WIDTH)}
+                                    maxSize={pxToPercent(INSPECTOR_MAX_PX, SSR_REFERENCE_WIDTH)}
                                     collapsible
                                     collapsedSize={0}
                                 >

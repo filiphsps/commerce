@@ -47,7 +47,7 @@ export function ShellHeader({ shop, user, shopsForSwitcher, commandPaletteItems,
                 </div>
                 <Link href="/" title="Nordcom Commerce" className="flex shrink-0 items-center">
                     <Image
-                        className="h-7 object-contain object-left"
+                        className="h-7 w-auto object-contain object-left"
                         src={logo}
                         alt="Nordcom Commerce Logo"
                         height={75}

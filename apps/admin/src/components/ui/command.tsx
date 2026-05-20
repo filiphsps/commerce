@@ -10,7 +10,6 @@ export const Command = forwardRef<
     ComponentRef<typeof CommandPrimitive>,
     ComponentPropsWithoutRef<typeof CommandPrimitive>
 >(({ className, ...props }, ref) => (
-    // @ts-expect-error cmdk Key type conflicts with React 19 Key — safe at runtime
     <CommandPrimitive
         ref={ref}
         className={cn(
@@ -18,6 +17,7 @@ export const Command = forwardRef<
             className,
         )}
         {...props}
+        key={props.key as undefined}
     />
 ));
 Command.displayName = CommandPrimitive.displayName;
@@ -28,7 +28,6 @@ export const CommandInput = forwardRef<
 >(({ className, ...props }, ref) => (
     <div className="flex items-center border-border border-b-2 px-3" data-cmdk-input-wrapper="">
         <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
-        {/* @ts-expect-error cmdk Key type conflicts with React 19 Key — safe at runtime */}
         <CommandPrimitive.Input
             ref={ref}
             className={cn(
@@ -36,6 +35,7 @@ export const CommandInput = forwardRef<
                 className,
             )}
             {...props}
+            key={props.key as undefined}
         />
     </div>
 ));
@@ -45,11 +45,11 @@ export const CommandList = forwardRef<
     ComponentRef<typeof CommandPrimitive.List>,
     ComponentPropsWithoutRef<typeof CommandPrimitive.List>
 >(({ className, ...props }, ref) => (
-    // @ts-expect-error cmdk Key type conflicts with React 19 Key — safe at runtime
     <CommandPrimitive.List
         ref={ref}
         className={cn('max-h-80 overflow-y-auto overflow-x-hidden', className)}
         {...props}
+        key={props.key as undefined}
     />
 ));
 CommandList.displayName = CommandPrimitive.List.displayName;
@@ -58,11 +58,11 @@ export const CommandEmpty = forwardRef<
     ComponentRef<typeof CommandPrimitive.Empty>,
     ComponentPropsWithoutRef<typeof CommandPrimitive.Empty>
 >(({ className, ...props }, ref) => (
-    // @ts-expect-error cmdk Key type conflicts with React 19 Key — safe at runtime
     <CommandPrimitive.Empty
         ref={ref}
         className={cn('py-6 text-center text-muted-foreground text-sm', className)}
         {...props}
+        key={props.key as undefined}
     />
 ));
 CommandEmpty.displayName = CommandPrimitive.Empty.displayName;
@@ -71,14 +71,14 @@ export const CommandGroup = forwardRef<
     ComponentRef<typeof CommandPrimitive.Group>,
     ComponentPropsWithoutRef<typeof CommandPrimitive.Group>
 >(({ className, ...props }, ref) => (
-    // @ts-expect-error cmdk Key type conflicts with React 19 Key — safe at runtime
     <CommandPrimitive.Group
         ref={ref}
         className={cn(
-            'overflow-hidden p-1 text-foreground [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:font-bold [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-wider',
+            'overflow-hidden p-1 text-foreground **:[[cmdk-group-heading]]:px-2 **:[[cmdk-group-heading]]:py-1.5 **:[[cmdk-group-heading]]:font-bold **:[[cmdk-group-heading]]:text-muted-foreground **:[[cmdk-group-heading]]:text-xs **:[[cmdk-group-heading]]:uppercase **:[[cmdk-group-heading]]:tracking-wider',
             className,
         )}
         {...props}
+        key={props.key as undefined}
     />
 ));
 CommandGroup.displayName = CommandPrimitive.Group.displayName;
@@ -87,14 +87,14 @@ export const CommandItem = forwardRef<
     ComponentRef<typeof CommandPrimitive.Item>,
     ComponentPropsWithoutRef<typeof CommandPrimitive.Item>
 >(({ className, ...props }, ref) => (
-    // @ts-expect-error cmdk Key type conflicts with React 19 Key — safe at runtime
     <CommandPrimitive.Item
         ref={ref}
         className={cn(
-            'relative flex cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-1.5 font-medium text-sm outline-none data-[selected=true]:bg-muted data-[selected=true]:text-foreground data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50',
+            'relative flex cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-1.5 font-medium text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected=true]:bg-muted data-[selected=true]:text-foreground data-[disabled=true]:opacity-50',
             className,
         )}
         {...props}
+        key={props.key as undefined}
     />
 ));
 CommandItem.displayName = CommandPrimitive.Item.displayName;

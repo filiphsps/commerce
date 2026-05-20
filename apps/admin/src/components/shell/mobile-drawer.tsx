@@ -20,6 +20,8 @@ export function MobileDrawer({ side, trigger, title = 'Menu', children }: Mobile
 
     // Close on route change.
     useEffect(() => {
+        void pathname;
+
         setOpen(false);
     }, [pathname]);
 
@@ -33,7 +35,7 @@ export function MobileDrawer({ side, trigger, title = 'Menu', children }: Mobile
                         'fixed inset-y-0 z-50 flex w-80 max-w-[85vw] flex-col border-0 border-border bg-background shadow-lg',
                         side === 'left' && 'left-0 border-r-2',
                         side === 'right' && 'right-0 border-l-2',
-                        'data-[state=open]:animate-in data-[state=closed]:animate-out',
+                        'data-[state=closed]:animate-out data-[state=open]:animate-in',
                         side === 'left' && 'data-[state=open]:slide-in-from-left data-[state=closed]:slide-out-to-left',
                         side === 'right' &&
                             'data-[state=open]:slide-in-from-right data-[state=closed]:slide-out-to-right',
