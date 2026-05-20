@@ -9,6 +9,7 @@ import {
     GenericErrorKind,
     getErrorFromCode,
     MalformedFormPayloadError,
+    MissingEnvironmentVariableError,
     MissingListConfigError,
     MissingRequestContextError,
     MissingRequiredFieldError,
@@ -288,5 +289,29 @@ describe('MissingTypeDocOutputError', () => {
     });
     it('is reachable through getErrorFromCode', () => {
         expect(getErrorFromCode(GenericErrorKind.GENERIC_MISSING_TYPEDOC_OUTPUT)).toBe(MissingTypeDocOutputError);
+    });
+});
+
+describe('MissingEnvironmentVariableError', () => {
+    it('has the expected shape (no args)', () => {
+        const err = new MissingEnvironmentVariableError();
+        expect(err.name).toBe('MissingEnvironmentVariableError');
+        expect(err.statusCode).toBe(500);
+        expect(err.code).toBe(ApiErrorKind.API_MISSING_ENVIRONMENT_VARIABLE);
+        expect(err.description.length).toBeGreaterThan(0);
+    });
+    it('templates variable name into description', () => {
+        const err = new MissingEnvironmentVariableError('NEXT_PUBLIC_DOCS_CANONICAL_URL');
+        expect(err.description).toContain('"NEXT_PUBLIC_DOCS_CANONICAL_URL"');
+    });
+    it('appends hint when provided', () => {
+        const err = new MissingEnvironmentVariableError('PAYLOAD_SECRET', 'Set it in your deploy environment.');
+        expect(err.description).toContain('"PAYLOAD_SECRET"');
+        expect(err.description).toContain('Set it in your deploy environment.');
+    });
+    it('accepts cause and statusCode positionally', () => {
+        const err = new MissingEnvironmentVariableError('FOO', undefined, 'boot', 503);
+        expect(err.cause).toBe('boot');
+        expect(err.statusCode).toBe(503);
     });
 });

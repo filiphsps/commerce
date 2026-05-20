@@ -283,8 +283,28 @@ export class MissingEnvironmentVariableError extends ApiError {
     statusCode = 500;
     name = 'MissingEnvironmentVariableError';
     details = 'Missing environment variable';
-    description = `${this.cause ? 'the' : 'A'} required environment variable ${this.cause ? `"${this.cause}"` : ''} is missing`;
+    description = 'A required environment variable is missing';
     code = ApiErrorKind.API_MISSING_ENVIRONMENT_VARIABLE;
+
+    constructor(variableName?: string, hint?: string, cause?: string, statusCode?: number) {
+        super(cause, statusCode);
+        if (variableName) {
+            this.description = this.description.replace(
+                'A required environment variable',
+                `Required environment variable "${variableName}"`,
+            );
+        }
+        if (hint) {
+            this.description = `${this.description}. ${hint}`;
+        }
+        // Re-apply statusCode here: ApiError's ctor body sets it, but our
+        // class field `statusCode = 500` runs after super() returns and
+        // overrides it. Setting it again in the derived ctor body is the
+        // last write, so it wins.
+        if (statusCode !== undefined) {
+            this.statusCode = statusCode;
+        }
+    }
 }
 
 export class ProviderFetchError extends ApiError {
@@ -797,7 +817,7 @@ export const getErrorFromCode = (
         case ApiErrorKind.API_INVALID_SHOPIFY_CUSTOMER_ACCOUNT_API_CONFIGURATION:
             return InvalidShopifyCustomerAccountsApiConfiguration;
         case ApiErrorKind.API_MISSING_ENVIRONMENT_VARIABLE:
-            return MissingEnvironmentVariableError;
+            return MissingEnvironmentVariableError as unknown as typeof ApiError;
         case ApiErrorKind.API_PROVIDER_FETCH_FAILED:
             return ProviderFetchError;
         case ApiErrorKind.API_SHOPIFY_GRAPHQL_DUPLICATE_CONTEXT_DIRECTIVE:
