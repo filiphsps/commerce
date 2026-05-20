@@ -47,7 +47,7 @@ describe('runCodegen', () => {
         expect(namesSource).toContain("PaymentIconName = 'visa'");
 
         const mapSource = await readFile(join(outDir, 'icons-map.ts'), 'utf8');
-        expect(mapSource).toContain("'visa': () => import('./icons/visa.js')");
+        expect(mapSource).toContain("'visa': () => import('./icons/visa')");
 
         const indexSource = await readFile(join(outDir, 'index.ts'), 'utf8');
         expect(indexSource).toContain("export { default as Visa } from './icons/visa';");
