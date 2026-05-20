@@ -61,7 +61,7 @@ function makeRequest(host: string, path = '/'): NextRequest {
 }
 
 // ---------------------------------------------------------------------------
-// describe: getHostname — hostname normalisation + dev fallback
+// describe: getHostname — hostname normalization + dev fallback
 // ---------------------------------------------------------------------------
 
 describe('getHostname', () => {
