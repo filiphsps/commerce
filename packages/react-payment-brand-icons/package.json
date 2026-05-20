@@ -1,7 +1,10 @@
 {
     "$schema": "https://json.schemastore.org/package.json",
     "name": "react-payment-brand-icons",
-    "version": "0.1.0",
+    "version": "0.0.1",
+    "publishConfig": {
+        "access": "public"
+    },
     "description": "Tree-shakeable React components for payment-method brand icons (Visa, Mastercard, Apple Pay, Swish, and 460+ more).",
     "private": false,
     "sideEffects": false,
