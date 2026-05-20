@@ -564,7 +564,6 @@ export enum GenericErrorKind {
     MISSING_CONTEXT_PROVIDER = 'MISSING_CONTEXT_PROVIDER',
     NOT_CONNECTED_TO_DATABASE = 'NOT_CONNECTED_TO_DATABASE',
     MISSING_SESSION_USER_ID = 'MISSING_SESSION_USER_ID',
-    GENERIC_PAYLOAD_GETTER_NOT_REGISTERED = 'GENERIC_PAYLOAD_GETTER_NOT_REGISTERED',
     GENERIC_MISSING_TENANT_FOR_SCOPED_COLLECTION = 'GENERIC_MISSING_TENANT_FOR_SCOPED_COLLECTION',
     GENERIC_EMPTY_TENANT_SCOPE = 'GENERIC_EMPTY_TENANT_SCOPE',
     GENERIC_MISSING_LIST_CONFIG = 'GENERIC_MISSING_LIST_CONFIG',
@@ -646,13 +645,6 @@ export class MissingSessionUserIdError extends GenericError {
     details = 'Missing session user id';
     description = 'Authenticated session is missing a user id; check the auth adapter and the jwt/session callbacks';
     code = GenericErrorKind.MISSING_SESSION_USER_ID;
-}
-
-export class PayloadGetterNotRegisteredError extends GenericError {
-    name = 'PayloadGetterNotRegisteredError';
-    details = 'Payload getter not registered';
-    description = 'No Payload getter has been registered. Call `registerPayload(getter)` from instrumentation.ts.';
-    code = GenericErrorKind.GENERIC_PAYLOAD_GETTER_NOT_REGISTERED;
 }
 
 export class MissingTenantForScopedCollectionError extends GenericError {
@@ -774,8 +766,6 @@ export const getErrorFromCode = (
             return NotConnectedToDatabase;
         case GenericErrorKind.MISSING_SESSION_USER_ID:
             return MissingSessionUserIdError;
-        case GenericErrorKind.GENERIC_PAYLOAD_GETTER_NOT_REGISTERED:
-            return PayloadGetterNotRegisteredError;
         case GenericErrorKind.GENERIC_MISSING_TENANT_FOR_SCOPED_COLLECTION:
             return MissingTenantForScopedCollectionError as unknown as typeof GenericError;
         case GenericErrorKind.GENERIC_EMPTY_TENANT_SCOPE:

@@ -18,7 +18,6 @@ import {
     MissingTypeDocOutputError,
     MissingUploadFileError,
     NoLocaleResolvableError,
-    PayloadGetterNotRegisteredError,
     ShopMisconfigurationError,
     UnknownCollectionSlugError,
     UnknownShopDomainError,
@@ -172,21 +171,6 @@ describe('MissingRequiredFieldError', () => {
     });
     it('is reachable through getErrorFromCode', () => {
         expect(getErrorFromCode(ApiErrorKind.API_MISSING_REQUIRED_FIELD)).toBe(MissingRequiredFieldError);
-    });
-});
-
-describe('PayloadGetterNotRegisteredError', () => {
-    it('has the expected shape', () => {
-        const err = new PayloadGetterNotRegisteredError();
-        expect(err.name).toBe('PayloadGetterNotRegisteredError');
-        expect(err.statusCode).toBe(500);
-        expect(err.code).toBe(GenericErrorKind.GENERIC_PAYLOAD_GETTER_NOT_REGISTERED);
-        expect(err.description.length).toBeGreaterThan(0);
-    });
-    it('is reachable through getErrorFromCode', () => {
-        expect(getErrorFromCode(GenericErrorKind.GENERIC_PAYLOAD_GETTER_NOT_REGISTERED)).toBe(
-            PayloadGetterNotRegisteredError,
-        );
     });
 });
 
