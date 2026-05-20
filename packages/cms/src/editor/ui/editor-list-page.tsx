@@ -73,6 +73,10 @@ export async function EditorListPage<TSlug extends CollectionSlug>({
                     manifest.access.create ? (
                         <Link
                             href={`${manifest.routes.basePath(domain)}new/` as Route}
+                            // Inline primary-button classes: this cms package cannot
+                            // import the admin app's `<Button>` (cross-boundary). When
+                            // we move the action slot into the runtime, this string
+                            // can collapse into `runtime.Button` or equivalent.
                             className="inline-flex h-9 items-center gap-2 rounded-md border-2 border-primary bg-primary px-4 font-bold text-primary-foreground text-sm uppercase tracking-wide hover:bg-primary/90"
                         >
                             New {manifest.routes.label.singular}

@@ -1,6 +1,7 @@
 import type { Route } from 'next';
 import Link from 'next/link';
 
+import { Button } from '@/components/ui/button';
 import { cn } from '@/utils/tailwind';
 
 export type EmptyStateProps = {
@@ -25,12 +26,9 @@ export function EmptyState({ label, description, actionLabel, actionHref, classN
                 {description ? <p className="max-w-sm text-muted-foreground text-sm">{description}</p> : null}
             </div>
             {actionHref && actionLabel ? (
-                <Link
-                    href={actionHref as Route}
-                    className="inline-flex h-9 items-center gap-2 rounded-md border-2 border-primary bg-primary px-4 font-bold text-primary-foreground text-sm uppercase tracking-wide hover:bg-primary/90"
-                >
-                    {actionLabel}
-                </Link>
+                <Button asChild variant="primary" size="sm">
+                    <Link href={actionHref as Route}>{actionLabel}</Link>
+                </Button>
             ) : null}
         </div>
     );
