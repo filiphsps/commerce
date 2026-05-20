@@ -1,7 +1,8 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getWorkspacesByType } from '@/lib/page-map';
 
-export const metadata = { title: 'Search' };
+export const metadata: Metadata = { title: 'Search' };
 
 export default function SearchFallback() {
     const { apps, packages } = getWorkspacesByType();
