@@ -5,6 +5,7 @@ export { type GetCollectionMetadataArgs, getCollectionMetadata } from './get-col
 export { type GetFooterArgs, getFooter } from './get-footer';
 export { type GetHeaderArgs, getHeader } from './get-header';
 export { type GetPageArgs, getPage, type LocaleRef, type ShopRef } from './get-page';
+export { type GetPagesArgs, getPages } from './get-pages';
 export { getPayloadInstance } from './get-payload-instance';
 export { type GetProductMetadataArgs, getProductMetadata } from './get-product-metadata';
 export { type LinkValue, resolveLink } from './resolve-link';

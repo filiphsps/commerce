@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { getArticle } from './get-article';
 import { getArticles } from './get-articles';
 import { getPage } from './get-page';
+import { getPages } from './get-pages';
 
 // These helpers are thin wrappers around `payload.find` — their value is the
 // query SHAPE they build (tenant scoping, slug match, locale, fallback locale,
@@ -100,6 +101,33 @@ describe('query API', () => {
             await getArticles({ shop: shop(), locale: { code: 'en-US' }, tag: 'news', __payload: payload });
             const arg = (find.mock.calls[0]?.[0] ?? {}) as FindArgs;
             expect(arg.where).toEqual({ and: [{ tenant: { equals: 'shop-x' } }, { tags: { in: ['news'] } }] });
+        });
+    });
+
+    describe('getPages', () => {
+        it('paginates with tenant scoping and locale + fallback', async () => {
+            const { payload, find } = makePayload([{ id: 'p1', slug: 'home', updatedAt: '2026-01-01T00:00:00.000Z' }]);
+            const list = await getPages({ shop: shop(), locale: { code: 'en-US' }, limit: 100, __payload: payload });
+
+            expect(list.docs).toHaveLength(1);
+            expect(find).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    collection: 'pages',
+                    where: { tenant: { equals: 'shop-x' } },
+                    locale: 'en-US',
+                    fallbackLocale: 'en-US',
+                    limit: 100,
+                    page: 1,
+                    depth: 0,
+                    draft: false,
+                }),
+            );
+        });
+
+        it('forwards draft=true', async () => {
+            const { payload, find } = makePayload([]);
+            await getPages({ shop: shop(), locale: { code: 'en-US' }, draft: true, __payload: payload });
+            expect(find).toHaveBeenCalledWith(expect.objectContaining({ draft: true }));
         });
     });
 });
