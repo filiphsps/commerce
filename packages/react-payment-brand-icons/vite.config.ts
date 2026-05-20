@@ -1,6 +1,5 @@
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-
 import { codecovVitePlugin } from '@codecov/vite-plugin';
 import react from '@vitejs/plugin-react';
 import { defineConfig, mergeConfig } from 'vite';
@@ -17,26 +16,21 @@ export default mergeConfig(
             force: true,
         },
         root: resolve(__dirname),
-        plugins: [
-            react(),
-            ...(process.env.CI
-                ? [
-                      codecovVitePlugin({
-                          enableBundleAnalysis: !!process.env.CODECOV_TOKEN,
-                          bundleName: name,
-                          uploadToken: process.env.CODECOV_TOKEN,
-                      }),
-                  ]
-                : []),
-        ],
         build: {
             target: 'esnext',
             rolldownOptions: {
-                external: ['react', 'react-dom', /^react\//, /^react-dom\//],
                 output: {
                     name,
                 },
             },
         },
+        plugins: [
+            react(),
+            codecovVitePlugin({
+                enableBundleAnalysis: Boolean(process.env.CI) && !!process.env.CODECOV_TOKEN,
+                bundleName: name,
+                uploadToken: process.env.CODECOV_TOKEN,
+            }),
+        ],
     }),
 );

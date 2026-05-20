@@ -14,7 +14,7 @@ export default defineConfig({
         deps: {
             optimizer: { client: { enabled: true }, ssr: { enabled: true } },
         },
-        environment: 'node',
+        environment: 'happy-dom',
         maxConcurrency: Infinity,
         passWithNoTests: true,
         // File parallelism is on: only three files boot Payload (the multi-tenant

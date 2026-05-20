@@ -523,6 +523,3 @@ Every icon component accepts standard SVG props (`width`, `height`, `className`,
 | `zoodpay` | `Zoodpay` | Zoodpay |
 <!-- END_ICON_LIST -->
 
-## License
-
-MIT © [Nordcom AB](https://nordcom.io/)

@@ -36,6 +36,7 @@
         "Bergsgatan",
         "changefreq",
         "cmdk",
+        "Codegen",
         "colord",
         "compat",
         "Componentizable",
@@ -59,6 +60,7 @@
         "jsxdev",
         "Judgeme",
         "klaviyo",
+        "labelledby",
         "lastmod",
         "learnq",
         "Lexend",
@@ -98,6 +100,8 @@
         "sonner",
         "stylesheet",
         "Subframes",
+        "svgs",
+        "svgson",
         "sweetsideofsweden",
         "tagtree",
         "tailwindcss",
@@ -119,7 +123,8 @@
         "wakatime",
         "webp",
         "Woohoo",
-        "wordmark"
+        "wordmark",
+        "xlink"
     ],
     "editor.codeActionsOnSave": {
         "source.fixAll.biome": "explicit",

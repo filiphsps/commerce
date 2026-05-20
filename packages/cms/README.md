@@ -131,7 +131,6 @@ The package ships several entry points; each maps to a folder under `src/`.
 | `./plugins`      | `src/plugins/`          | `buildMultiTenantPlugin`, `storagePluginFromEnv`.                       |
 | `./shop-sync`    | `src/shop-sync/`        | `attachShopSync(Shop.model, payload)` — mirrors `Shop` rows into tenants. |
 | `./types`        | `src/types/`            | Re-exports the Payload-generated `payload-types.ts`.                    |
-| `./test-utils`   | `src/test-utils/`       | `bootTestPayload`, `buildTestConfig`, `seedTenant`.                     |
 
 ### Collections
 

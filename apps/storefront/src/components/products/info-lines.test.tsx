@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
-vi.mock('@/utils/flags/read', () => ({
-    readFlag: vi.fn(),
+vi.mock('@/utils/flags/evaluate', () => ({
+    evaluateShopFlag: vi.fn(),
 }));
 vi.mock('next/headers', () => ({
     headers: vi.fn(() => {
@@ -10,11 +10,11 @@ vi.mock('next/headers', () => ({
 }));
 
 import { InfoLines } from '@/components/products/info-lines';
-import { readFlag } from '@/utils/flags/read';
+import { evaluateShopFlag } from '@/utils/flags/evaluate';
 
 describe('components/products/info-lines', () => {
     it('returns null and does not read request headers when flag is false', async () => {
-        vi.mocked(readFlag).mockResolvedValue(false);
+        vi.mocked(evaluateShopFlag).mockReturnValue(false as never);
         const ui = await InfoLines({
             shop: { id: 's-1' } as never,
             product: { availableForSale: true, totalInventory: 10 } as never,
@@ -22,7 +22,7 @@ describe('components/products/info-lines', () => {
             locale: { code: 'en-US' } as never,
         } as never);
         expect(ui).toBeNull();
-        expect(readFlag).toHaveBeenCalledWith({ id: 's-1' }, 'product-page-info-lines', {
+        expect(evaluateShopFlag).toHaveBeenCalledWith({ id: 's-1' }, 'product-page-info-lines', {
             codeDefaultValue: false,
         });
     });

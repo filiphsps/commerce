@@ -6,8 +6,8 @@ import { defineProject } from 'vitest/config';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineProject({
-    root: resolve(__dirname as any),
-    plugins: [react() as any],
+    root: resolve(__dirname),
+    plugins: [react()],
     resolve: {
         alias: [
             {

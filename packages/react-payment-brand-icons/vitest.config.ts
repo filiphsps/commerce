@@ -1,10 +1,7 @@
 import path from 'node:path';
-
-import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
-    plugins: [react()],
     resolve: {
         alias: [
             {
@@ -14,11 +11,10 @@ export default defineConfig({
         ],
     },
     test: {
-        name: 'react-payment-brand-icons',
         deps: {
             optimizer: { client: { enabled: true }, ssr: { enabled: true } },
         },
-        environment: 'jsdom',
+        environment: 'happy-dom',
         maxConcurrency: Infinity,
         passWithNoTests: true,
         fileParallelism: true,

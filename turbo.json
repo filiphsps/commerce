@@ -1,52 +1,60 @@
 {
-    "$schema": "https://turbo.build/schema.json",
+    "$schema": "https://turborepo.dev/schema.json",
     "ui": "stream",
+    "globalPassThroughEnv": ["NODE_ENV"],
     "globalDependencies": [
-        "**/.env.*local",
-        "tsconfig.json",
-        "**/tsconfig.json",
-        "vite.config.ts",
-        "**/vite.config.ts",
         "package.json",
         "**/package.json",
-        "biome.json",
-        ".env",
-        "**/.env",
-        "*.env",
-        "**/*.env"
+        "**/tsconfig.json",
+        "pnpm-lock.yaml",
+        "pnpm-workspace.yaml",
+        "!CHANGELOG.md",
+        "!*.md"
     ],
-    "globalPassThroughEnv": ["NODE_ENV"],
     "tasks": {
         "build": {
             "cache": true,
-            "outputLogs": "new-only",
-            "dependsOn": ["^build"],
-            "outputs": [".next/**", "!.next/cache/**", "dist/**", "build/**", "api/**", ".docusaurus/**"],
-            "inputs": [
-                "$TURBO_DEFAULT$",
-                "!README.md",
-                ".env.production.local",
-                ".env.local",
-                ".env.production",
-                ".env"
-            ]
+            "dependsOn": ["^generate", "^build"],
+            "outputs": [
+                ".next/**",
+                "!.next/cache/**",
+                "dist/**",
+                "build/**",
+                "out/**",
+                "api/**",
+                ".typedoc-out/**",
+                "public/_pagefind/**"
+            ],
+            "outputLogs": "new-only"
         },
-        "clean": {
-            "cache": false
+        "generate": {
+            "cache": true,
+            "persistent": false,
+            "dependsOn": ["^generate"],
+            "outputs": ["src/generated/**"],
+            "outputLogs": "new-only"
+        },
+        "build:packages": {
+            "cache": true,
+            "dependsOn": ["^generate", "^build:packages"],
+            "outputs": ["dist/**"],
+            "outputLogs": "new-only"
+        },
+        "start": {
+            "cache": false,
+            "persistent": true,
+            "dependsOn": ["build"]
         },
         "dev": {
             "cache": false,
-            "persistent": true,
-            "inputs": ["$TURBO_DEFAULT$", ".env.development.local", ".env.local", ".env.development", ".env"]
+            "persistent": true
         },
         "lint": {
-            "cache": true,
-            "dependsOn": ["^build"],
-            "outputs": []
+            "outputs": [],
+            "outputLogs": "new-only"
         },
         "typecheck": {
-            "cache": false,
-            "dependsOn": ["^build"]
+            "outputLogs": "new-only"
         },
         "format": {
             "cache": false
@@ -60,14 +68,27 @@
         "format:check": {
             "cache": false
         },
+        "test": {
+            "dependsOn": ["^build:packages"],
+            "outputs": ["coverage/**"],
+            "outputLogs": "new-only"
+        },
+        "test:watch": {
+            "cache": false,
+            "persistent": true
+        },
         "test:e2e": {
             "cache": false,
-            "dependsOn": ["^build"],
+            "dependsOn": ["^build", "build"],
             "outputs": ["playwright-report/**", "test-results/**"]
+        },
+        "clean": {
+            "cache": false
         },
         "analyze": {
             "cache": false,
-            "persistent": true
+            "persistent": true,
+            "dependsOn": ["^build"]
         }
     }
 }

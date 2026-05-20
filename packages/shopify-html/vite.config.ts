@@ -1,5 +1,3 @@
-// @ts-nocheck
-// Editor-only suppression: this file isn't included in any tsconfig (it's tooling, not source). Build still type-checks via vite's own tsc invocation.
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 

@@ -1,6 +1,5 @@
 import { dirname, extname, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-
 import { globSync } from 'glob';
 import dts from 'unplugin-dts/vite';
 import { createLogger, defineConfig, mergeConfig } from 'vite';
@@ -41,7 +40,7 @@ export default mergeConfig(
             },
             rolldownOptions: {
                 external: ['@nordcom/commerce-errors', 'server-only'],
-                input: input,
+                input,
                 output: {
                     chunkFileNames: 'chunks/[name].[hash].js',
                     entryFileNames: '[name].js',

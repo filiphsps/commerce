@@ -56,10 +56,6 @@ export const getPage = async ({ shop, locale, slug, draft = false, __payload }: 
 };
 ```
 
-The `__payload` test seam exists so integration tests can swap in an isolated
-Payload instance booted by `bootTestPayload({ suite })`. In production every
-reader resolves through the shared `getPayloadInstance()`.
-
 ## `getPayloadInstance()`
 
 ```ts

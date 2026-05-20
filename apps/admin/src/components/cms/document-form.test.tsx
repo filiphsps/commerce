@@ -25,6 +25,15 @@ vi.mock('@payloadcms/ui', () => ({
     defaultTheme: 'light',
 }));
 
+// Mock `@nordcom/commerce-cms/ui` so the test bypasses the package's
+// transitive `@payloadcms/ui/css` -> `react-image-crop/dist/ReactCrop.css`
+// side-effect chain. The compiled cms package is loaded by Node (externalized
+// from `node_modules`), so `vi.mock('@payloadcms/ui', …)` above cannot reach
+// EditUpload's CSS import — mocking at this boundary cuts the chain entirely.
+vi.mock('@nordcom/commerce-cms/ui', () => ({
+    PayloadFieldShell: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}));
+
 // Stub the cms-server-function module — the real one imports `payload.config`
 // which boots the full Payload runtime (Mongo, plugins, etc.).
 vi.mock('@/lib/cms-server-function', () => ({
