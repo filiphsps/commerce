@@ -16,7 +16,8 @@ export default defineConfig({
     reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'list',
     timeout: 30_000,
     use: {
-        baseURL: 'http://localhost:3000',
+        baseURL: process.env.CI ? 'http://localhost:3000' : 'https://admin.localhost',
+        ignoreHTTPSErrors: true,
         trace: 'on-first-retry',
         screenshot: 'only-on-failure',
         video: 'retain-on-failure',
@@ -29,7 +30,7 @@ export default defineConfig({
     ],
     webServer: {
         command: process.env.CI ? 'pnpm start --port 3000' : 'pnpm dev',
-        url: 'http://localhost:3000',
+        url: process.env.CI ? 'http://localhost:3000' : 'https://admin.localhost',
         reuseExistingServer: !process.env.CI,
         timeout: 120_000,
         stdout: 'pipe',

@@ -146,7 +146,7 @@ export default async function globalSetup(): Promise<void> {
     }
 
     // Auth.js v5: when NEXTAUTH_URL is unset (local + CI runs against
-    // http://localhost:3000) the cookie name has no `__Secure-` prefix and
+    // admin.localhost in dev) the cookie name has no `__Secure-` prefix and
     // the cookie is not flagged secure. With NEXTAUTH_URL set, the
     // `__Secure-` prefix REQUIRES the secure flag — browsers reject the
     // cookie otherwise. Salt must equal the cookie name.
@@ -169,7 +169,7 @@ export default async function globalSetup(): Promise<void> {
             {
                 name: cookieName,
                 value: token,
-                domain: 'localhost',
+                domain: process.env.CI ? 'localhost' : 'admin.localhost',
                 path: '/',
                 httpOnly: true,
                 secure: isSecure,

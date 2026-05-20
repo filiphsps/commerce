@@ -14,7 +14,8 @@ export default defineConfig({
     reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'list',
     timeout: 30_000,
     use: {
-        baseURL: 'http://localhost:1337',
+        baseURL: process.env.CI ? 'http://localhost:1337' : 'https://storefront.localhost',
+        ignoreHTTPSErrors: true,
         trace: 'on-first-retry',
         screenshot: 'only-on-failure',
         video: 'retain-on-failure',
@@ -22,7 +23,7 @@ export default defineConfig({
     projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
     webServer: {
         command: process.env.CI ? 'pnpm start --port 1337' : 'pnpm dev',
-        url: 'http://localhost:1337',
+        url: process.env.CI ? 'http://localhost:1337' : 'https://storefront.localhost',
         reuseExistingServer: !process.env.CI,
         timeout: 120_000,
         stdout: 'pipe',
