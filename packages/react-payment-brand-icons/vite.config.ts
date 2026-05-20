@@ -5,7 +5,7 @@ import { codecovVitePlugin } from '@codecov/vite-plugin';
 import react from '@vitejs/plugin-react';
 import { defineConfig, mergeConfig } from 'vite';
 
-import base from '../../vite.config';
+import base from '../vite.config';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const name = 'react-payment-brand-icons';
@@ -32,6 +32,7 @@ export default mergeConfig(
         build: {
             target: 'esnext',
             rolldownOptions: {
+                external: ['react', 'react-dom', /^react\//, /^react-dom\//],
                 output: {
                     name,
                 },
