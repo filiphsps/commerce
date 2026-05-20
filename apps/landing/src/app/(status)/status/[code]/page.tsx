@@ -73,12 +73,12 @@ export default async function StatusPage({ params, searchParams }: ErrorPageProp
             </header>
 
             <div className="prose prose-p:m-0 flex flex-col gap-6 pt-6 text-current *:text-[.95rem] *:leading-relaxed">
-                <p className="block max-w-full md:w-[42rem] md:text-base">
+                <p className="block max-w-full md:w-2xl md:text-base">
                     We&apos;re sorry, but the shop you&apos;re trying to access appears to be unavailable at this time.
                     This could be due to an invalid shop identifier or a temporary technical issue.
                 </p>
 
-                <p className="block max-w-full md:w-[42rem] md:text-base">
+                <p className="block max-w-full md:w-2xl md:text-base">
                     If you believe this is an error, please don&apos;t hesitate to contact the
                     <Link
                         href="https://nordcom.io/"
@@ -100,9 +100,7 @@ export default async function StatusPage({ params, searchParams }: ErrorPageProp
                     We&apos;ll be happy to investigate and assist you further.
                 </p>
 
-                <p className="block max-w-full md:w-[42rem] md:text-base">
-                    Thank you for your understanding and patience.
-                </p>
+                <p className="block max-w-full md:w-2xl md:text-base">Thank you for your understanding and patience.</p>
             </div>
 
             <footer className="pt-6 font-semibold text-gray-500 text-sm uppercase leading-snug">
