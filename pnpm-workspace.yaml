@@ -1,6 +1,7 @@
 packages:
   - "packages/**"
   - "apps/**"
+  - "!**/tests/fixtures/**"
 
 allowBuilds:
   "@parcel/watcher": true
