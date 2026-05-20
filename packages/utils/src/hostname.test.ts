@@ -46,6 +46,10 @@ describe('isDevHost', () => {
     it('is case-insensitive', () => {
         expect(isDevHost('MyShop.Storefront.LOCALHOST')).toBe(true);
     });
+
+    it('returns false for leading-dot host', () => {
+        expect(isDevHost('.localhost')).toBe(false);
+    });
 });
 
 describe('shopFromHost', () => {
@@ -85,5 +89,13 @@ describe('shopFromHost', () => {
 
     it('lower-cases the result', () => {
         expect(shopFromHost('MyShop.Storefront.LOCALHOST')).toBe('myshop');
+    });
+
+    it('lower-cases production hostname', () => {
+        expect(shopFromHost('SHOP.EXAMPLE.COM')).toBe('shop.example.com');
+    });
+
+    it('returns leftmost subdomain from deeply nested dev host', () => {
+        expect(shopFromHost('myshop.tenant.storefront.localhost')).toBe('myshop');
     });
 });

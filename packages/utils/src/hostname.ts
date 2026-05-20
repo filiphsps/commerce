@@ -7,7 +7,7 @@ export function stripPort(host: string): string {
 export function isDevHost(host: string | null | undefined): boolean {
     if (!host) return false;
     const h = stripPort(host).toLowerCase();
-    return DEV_TLDS.some((tld) => h === tld || h.endsWith(`.${tld}`));
+    return DEV_TLDS.some((tld) => h === tld || (h.endsWith(`.${tld}`) && !h.startsWith('.')));
 }
 
 /**
@@ -16,8 +16,9 @@ export function isDevHost(host: string | null | undefined): boolean {
  * Dev TLDs (`.localhost`/`.test`): leftmost subdomain is the shop slug.
  *   `myshop.storefront.localhost:443` → `myshop`
  *   `storefront.localhost`            → ''  (bare app, no shop)
- * Production: returns the hostname unchanged.
+ * Production: returns the hostname unchanged, lower-cased.
  *   `shop.example.com` → `shop.example.com`
+ *   `SHOP.example.com` → `shop.example.com`
  */
 export function shopFromHost(host: string | null | undefined): string {
     if (!host) return '';
