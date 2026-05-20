@@ -49,11 +49,13 @@ async function main() {
         }
 
         const serialized = app.serializer.projectToObject(project, process.cwd());
+        const flattened = flattenModules(serialized);
+        const sourceBase = commonSourceBase(entryPoints);
 
         for (const sub of subpaths) {
             const outFile = subpathJsonPath(OUT_ROOT, ws.slug, sub.subpath);
             fs.mkdirSync(path.dirname(outFile), { recursive: true });
-            const filtered = filterToSubpath(serialized, sub.sourceFile);
+            const filtered = filterToSubpath(flattened, sub.sourceFile, sourceBase);
             fs.writeFileSync(outFile, JSON.stringify(filtered, null, 2));
             totalSubpaths++;
         }
@@ -137,12 +139,68 @@ function subpathJsonPath(outRoot, workspaceSlug, subpath) {
     return path.join(outRoot, workspaceSlug, `${subFs}.json`);
 }
 
-/** Reduce the project to only declarations whose source is inside this subpath's entry tree. */
-function filterToSubpath(project, sourceFile) {
+/**
+ * When TypeDoc is given multiple entry points (one per subpath), it wraps each entry in a Module
+ * reflection (kind=2). The real symbols (functions, classes, types, variables) live in
+ * `module.children`, not at the project root. Flatten one level so the subsequent filter sees a
+ * uniform list of declarations regardless of single-vs-multi entry-point shape. Drops `groups`
+ * because `typedoc-loader.groupSymbols` rebuilds them by kind anyway.
+ */
+function flattenModules(serialized) {
+    const out = { ...serialized };
+    out.children = [];
+    delete out.groups;
+    for (const child of serialized.children ?? []) {
+        // TypeDoc ReflectionKind.Module === 2.
+        if (child.kind === 2 && Array.isArray(child.children)) {
+            out.children.push(...child.children);
+        } else {
+            out.children.push(child);
+        }
+    }
+    return out;
+}
+
+/**
+ * Longest common ancestor directory of the given absolute paths. Used to resolve TypeDoc's
+ * relative `sources[0].fileName` back to an absolute path so the subpath filter can compare
+ * accurately even when the cwd doesn't match TypeDoc's rebase reference.
+ */
+function commonSourceBase(absPaths) {
+    if (absPaths.length === 0) return process.cwd();
+    let parts = absPaths[0].split(path.sep);
+    for (const p of absPaths.slice(1)) {
+        const other = p.split(path.sep);
+        const limit = Math.min(parts.length, other.length);
+        let i = 0;
+        while (i < limit && parts[i] === other[i]) i++;
+        parts = parts.slice(0, i);
+    }
+    // Trim trailing filename component if present (entries are files, not directories).
+    const candidate = parts.join(path.sep);
+    return fs.existsSync(candidate) && fs.statSync(candidate).isDirectory()
+        ? candidate
+        : path.dirname(candidate);
+}
+
+/**
+ * Reduce the project to only declarations whose source is inside this subpath's entry tree.
+ *
+ * Subpaths come in two flavors:
+ * - "directory" subpaths backed by `<dir>/index.ts` — match symbols anywhere under `<dir>/`.
+ * - "single-file" subpaths backed by a bare `<name>.ts` — match only that file. Otherwise a
+ *   subpath like `./cache` (sourceFile `src/cache.ts`) would absorb every symbol in the package
+ *   because its dirname is the package's src root.
+ */
+function filterToSubpath(project, sourceFile, sourceBase) {
+    const isIndexEntry = path.basename(sourceFile) === 'index.ts' || path.basename(sourceFile) === 'index.tsx';
     const dir = path.dirname(sourceFile);
     function isInSubpath(d) {
         const src = d?.sources?.[0]?.fileName;
-        return src ? path.resolve(src).startsWith(dir) : false;
+        if (!src) return false;
+        const abs = path.isAbsolute(src) ? src : path.resolve(sourceBase, src);
+        if (abs === sourceFile) return true;
+        return isIndexEntry && abs.startsWith(dir + path.sep);
     }
     const children = (project.children ?? []).filter(isInSubpath);
     return {
@@ -150,7 +208,6 @@ function filterToSubpath(project, sourceFile) {
         kind: project.kind,
         flags: project.flags,
         children,
-        groups: project.groups,
         sources: project.sources,
     };
 }
