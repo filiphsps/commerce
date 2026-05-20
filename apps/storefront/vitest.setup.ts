@@ -20,18 +20,6 @@ afterAll(() => {
 
 vi.mock('server-only', () => ({}));
 
-vi.mock('@/utils/flags', () => ({
-    showSearchFilter: vi.fn().mockResolvedValue(false),
-    showProductInfoLines: vi.fn().mockResolvedValue(false),
-    showHeaderSearchBar: vi.fn().mockResolvedValue(false),
-    enableProductsPage: vi.fn().mockResolvedValue(false),
-    enableAccountsFunctionality: vi.fn().mockResolvedValue(false),
-}));
-
-vi.mock('@/utils/flags/evaluate', () => ({
-    evaluateShopFlag: vi.fn().mockReturnValue(false),
-}));
-
 // Mock the `build-config` module as it almost only contains tokens,
 // secrets, and other sensitive data (excluding the i18n config which
 // should be handled dynamically by the platform in the future).

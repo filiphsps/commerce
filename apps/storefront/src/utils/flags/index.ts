@@ -15,8 +15,8 @@ try {
 }
 
 export { nordcomFlagAdapter } from './adapter';
+export { type DefinedFlag, defineFlag, type FlagDefinition, type FlagOption } from './define';
 export { type FlagEntities, type FlagUser, mapSessionToUser } from './entities';
-export { type EvaluateShopFlagOptions, evaluateShopFlag } from './evaluate';
 export { type FlagOverrides, getFlagOverrides } from './overrides';
 export {
     evaluatePredicate,
@@ -25,5 +25,4 @@ export {
     type PredicateMetadata,
     registerPredicate,
 } from './predicates';
-export { readFlag } from './read';
 export { reportFlagValue } from './report';
