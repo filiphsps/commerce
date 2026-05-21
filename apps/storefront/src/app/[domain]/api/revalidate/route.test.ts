@@ -334,3 +334,40 @@ describe('app/[domain]/api/revalidate', () => {
         });
     });
 });
+
+describe('POST — round trip with loader tag scheme', () => {
+    it('revalidates exactly the tags that ProductApi would write for the same product', async () => {
+        revalidateTagMock.mockClear();
+        const body = '{"handle":"red-widget"}';
+        const secret = 'shopify-secret';
+        process.env.SHOPIFY_WEBHOOK_SECRET = secret;
+        const hmac = createHmac('sha256', secret).update(body, 'utf8').digest('base64');
+
+        const req = makeRequest({
+            method: 'POST',
+            body,
+            headers: {
+                'x-shopify-hmac-sha256': hmac,
+                'x-shopify-topic': 'products/update',
+                'content-type': 'application/json',
+            },
+        });
+
+        const res = await POST(req as any, { params: Promise.resolve({ domain: 'mock.shop' }) } as any);
+        expect(res.status).toBe(200);
+
+        // Compute the tags the loader writes for shop-1 + product handle red-widget.
+        // No locale qualifier — Shopify webhook tags don't include locale, and
+        // neither does the loader's .tags array; locale only appears in readTag.
+        const { cache: shopifyCache } = await import('@/cache');
+        const loaderKey = shopifyCache.keys.product({
+            tenant: { id: 'shop-1', domain: 'mock.shop' } as any,
+            handle: 'red-widget',
+        });
+
+        // Every tag the loader writes must appear in revalidateTag invocations.
+        for (const tag of loaderKey.tags) {
+            expect(revalidateTagMock).toHaveBeenCalledWith(tag, 'max');
+        }
+    });
+});
