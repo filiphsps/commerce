@@ -17,6 +17,33 @@ import { hasProductOptions } from '@/utils/has-product-options';
 import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
+import { unsafe_cast } from '@/utils/unsafe-cast';
+
+/**
+ * Narrows an unknown value to the app's local `Product` type by checking for
+ * the minimum discriminant fields that are always present on a real Shopify
+ * product at runtime (`id` and `handle`).
+ *
+ * hydrogen-react types the cart merchandise product as
+ * `RecursivePartial<ShopifyProduct>`, making every field optional. This guard
+ * asserts that the runtime object satisfies our stricter local `Product` shape
+ * without resorting to `as unknown as`.
+ */
+function isRuntimeProduct(p: unknown): p is Product {
+    return !!p && typeof p === 'object' && 'id' in p && 'handle' in p;
+}
+
+/**
+ * Narrows an unknown value to the app's local `ProductVariant` type by
+ * checking for the minimum discriminant fields always present at runtime
+ * (`id` and `price`).
+ *
+ * Same rationale as `isRuntimeProduct` — bridging hydrogen-react's
+ * `RecursivePartial<ProductVariant>` to our stricter local type.
+ */
+function isRuntimeVariant(v: unknown): v is ProductVariant {
+    return !!v && typeof v === 'object' && 'id' in v && 'price' in v;
+}
 
 interface CartLineProps {
     i18n: LocaleDictionary;
@@ -29,15 +56,25 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
 
     const ready = cartReady && status !== 'updating';
 
-    const product = line.merchandise.product as unknown as Required<Product> | undefined;
-    const variant = line.merchandise as unknown as Required<ProductVariant> | undefined;
+    const product = isRuntimeProduct(line.merchandise.product) ? line.merchandise.product : undefined;
+    const variant = isRuntimeVariant(line.merchandise) ? line.merchandise : undefined;
 
     const showSelector = hasProductOptions(product ?? null);
 
-    // biome-ignore lint/suspicious/noExplicitAny: local Product type is a stricter superset of hydrogen-react's RecursivePartial<Product>
-    const mappedOptions = useMemo(() => (product ? getProductOptions(product as any) : []), [product]);
+    // Our local `Product` is a stricter superset of hydrogen-react's
+    // `RecursivePartial<Product>` (it omits `__typename` via `OmitTypeName`).
+    // The library's type accepts the permissive partial, not our stricter shape,
+    // so a structural mismatch forces the cast. `unsafe_cast` is the documented
+    // escape hatch for this known upstream limitation.
+    const mappedOptions = useMemo(() => (product ? getProductOptions(unsafe_cast(product)) : []), [product]);
+
+    // hydrogen-react types `selectedOptions` as `RecursivePartial<SelectedOption>[]`
+    // (i.e., `{ name?: string; value?: string }[]`) on the cart merchandise
+    // object, but the Shopify Storefront API guarantees both fields are non-null
+    // strings at runtime. `mapSelectedProductOptionToObject` requires the
+    // required-field shape. `unsafe_cast` documents this known type gap.
     const currentSelectedOptions: SelectedOptions = mapSelectedProductOptionToObject(
-        (variant?.selectedOptions ?? []) as Array<{ name: string; value: string }>,
+        unsafe_cast(variant?.selectedOptions ?? []),
     );
     const [editing, setEditing] = useState(false);
 
