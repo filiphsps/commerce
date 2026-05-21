@@ -28,9 +28,7 @@ export async function generateMetadata({ params }: { params: CountriesPageParams
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const api = await ShopifyApolloApiClient({ shop, locale });
 
-    const locales = await LocalesApi({ api });
-
-    const i18n = await getDictionary(locale);
+    const [locales, i18n] = await Promise.all([LocalesApi({ api }), getDictionary(locale)]);
     const { t } = getTranslations('common', i18n);
 
     const title = capitalize(t('countries'));
@@ -67,9 +65,7 @@ export default async function CountriesPage({ params }: { params: CountriesPageP
 
     const api = await ShopifyApolloApiClient({ shop, locale });
 
-    const countries = await CountriesApi({ api });
-
-    const i18n = await getDictionary(locale);
+    const [countries, i18n] = await Promise.all([CountriesApi({ api }), getDictionary(locale)]);
     const { t } = getTranslations('common', i18n);
 
     return (
