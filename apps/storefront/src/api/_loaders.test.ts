@@ -1,4 +1,12 @@
+import { cacheTag } from 'next/cache';
 import { describe, expect, it, vi } from 'vitest';
+
+vi.mock('next/cache', () => ({
+    cacheTag: vi.fn(),
+    cacheLife: vi.fn(),
+    unstable_cache: vi.fn(),
+    revalidateTag: vi.fn(),
+}));
 
 const findByDomainMock = vi.fn();
 const findAllMock = vi.fn();
@@ -141,7 +149,10 @@ describe('ProductApi loader', () => {
 
         expect(mod.ProductApi).not.toBe(ProductApiMock);
 
-        const result = await mod.ProductApi({ api: {} as any, handle: 'red-widget' });
+        const result = await mod.ProductApi({
+            api: { shop: () => ({ id: 's1', domain: 's1.com' }), locale: () => ({ code: 'en-US' }) } as any,
+            handle: 'red-widget',
+        });
         expect(result).toEqual([{ id: 'p1', handle: 'red-widget' }, null]);
         expect(ProductApiMock).toHaveBeenCalled();
     });
@@ -155,7 +166,10 @@ describe('CollectionApi loader', () => {
 
         expect(mod.CollectionApi).not.toBe(CollectionApiMock);
 
-        const result = await mod.CollectionApi({ api: {} as any, handle: 'summer-sale' });
+        const result = await mod.CollectionApi({
+            api: { shop: () => ({ id: 's2', domain: 's2.com' }), locale: () => ({ code: 'en-US' }) } as any,
+            handle: 'summer-sale',
+        });
         expect(result).toEqual({ id: 'c1', handle: 'summer-sale' });
         expect(CollectionApiMock).toHaveBeenCalled();
     });
@@ -260,5 +274,46 @@ describe('CMS loaders', () => {
         const result = await mod.PagesApi({ shop: {} as any, locale: {} as any });
         expect(result).toEqual([{ slug: 'about' }]);
         expect(PagesApiMock).toHaveBeenCalled();
+    });
+});
+
+describe('Cache discipline — cache tags', () => {
+    it('ProductApi writes tenant + entity tags', async () => {
+        const spy = vi.mocked(cacheTag);
+        spy.mockClear();
+        const { ProductApi } = await import('./_loaders');
+        const fakeApi = {
+            shop: () => ({ id: 'shop-1', domain: 'shop-1.com' }),
+            locale: () => ({ code: 'en-US' }),
+        } as any;
+        await ProductApi({ api: fakeApi, handle: 'red-widget' });
+        const tagsWritten = spy.mock.calls.flat();
+        expect(tagsWritten.some((t) => String(t).includes('shop-1'))).toBe(true);
+        expect(tagsWritten.some((t) => String(t).includes('red-widget'))).toBe(true);
+    });
+
+    it('CollectionApi writes tenant + entity tags', async () => {
+        const spy = vi.mocked(cacheTag);
+        spy.mockClear();
+        const { CollectionApi } = await import('./_loaders');
+        const fakeApi = {
+            shop: () => ({ id: 'shop-2', domain: 'shop-2.com' }),
+            locale: () => ({ code: 'en-US' }),
+        } as any;
+        await CollectionApi({ api: fakeApi, handle: 'summer-sale' });
+        const tagsWritten = spy.mock.calls.flat();
+        expect(tagsWritten.some((t) => String(t).includes('shop-2'))).toBe(true);
+        expect(tagsWritten.some((t) => String(t).includes('summer-sale'))).toBe(true);
+    });
+
+    it('PagesApi writes tenant-root tags', async () => {
+        const spy = vi.mocked(cacheTag);
+        spy.mockClear();
+        const { PagesApi } = await import('./_loaders');
+        const fakeShop = { id: 'shop-3', domain: 'shop-3.com' } as any;
+        const fakeLocale = { code: 'en-US' } as any;
+        await PagesApi({ shop: fakeShop, locale: fakeLocale });
+        const tagsWritten = spy.mock.calls.flat();
+        expect(tagsWritten.some((t) => String(t).includes('shop-3'))).toBe(true);
     });
 });

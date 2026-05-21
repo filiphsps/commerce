@@ -1,7 +1,10 @@
 import 'server-only';
 
 import { Shop as RawShop } from '@nordcom/commerce-db';
+import { cacheTag } from 'next/cache';
 import { cache } from 'react';
+
+import { cache as cacheKeys, tenantRootTags } from '@/cache';
 
 import { ArticleApi as _ArticleApi } from './article';
 import { FooterApi as _FooterApi } from './footer';
@@ -23,8 +26,20 @@ export const CountriesApi = cache((args: Parameters<typeof _CountriesApi>[0]) =>
 export const LocaleApi = cache((args: Parameters<typeof _LocaleApi>[0]) => _LocaleApi(args));
 export const LocalesApi = cache((args: Parameters<typeof _LocalesApi>[0]) => _LocalesApi(args));
 
-export const ProductApi = cache((args: Parameters<typeof _ProductApi>[0]) => _ProductApi(args));
-export const CollectionApi = cache((args: Parameters<typeof _CollectionApi>[0]) => _CollectionApi(args));
+export const ProductApi = cache((args: Parameters<typeof _ProductApi>[0]) => {
+    const shop = args.api.shop();
+    const locale = args.api.locale();
+    cacheTag(...cacheKeys.keys.product({ tenant: shop, qualifier: locale, handle: args.handle }).tags);
+    return _ProductApi(args);
+});
+
+export const CollectionApi = cache((args: Parameters<typeof _CollectionApi>[0]) => {
+    const shop = args.api.shop();
+    const locale = args.api.locale();
+    cacheTag(...cacheKeys.keys.collection({ tenant: shop, qualifier: locale, handle: args.handle }).tags);
+    return _CollectionApi(args);
+});
+
 export const BlogApi = cache((args: Parameters<typeof _BlogApi>[0]) => _BlogApi(args));
 export const ArticleApi = cache((args: Parameters<typeof _ArticleApi>[0]) => _ArticleApi(args));
 
@@ -35,4 +50,7 @@ export const ProductMetadataApi = cache((args: Parameters<typeof _ProductMetadat
 export const CollectionMetadataApi = cache((args: Parameters<typeof _CollectionMetadataApi>[0]) =>
     _CollectionMetadataApi(args),
 );
-export const PagesApi = cache((args: Parameters<typeof _PagesApi>[0]) => _PagesApi(args));
+export const PagesApi = cache((args: Parameters<typeof _PagesApi>[0]) => {
+    cacheTag(...tenantRootTags(args.shop));
+    return _PagesApi(args);
+});
