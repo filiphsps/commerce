@@ -23,11 +23,11 @@ describe('components', () => {
         });
 
         it("doesn't render the price when no price is supplied", () => {
-            const warnSpy = vi.spyOn(console, 'warn');
+            // No price → null render. The component no longer emits console.warn;
+            // the empty return is self-documenting.
             const { container } = render(<Pricing />);
 
             expect(container.textContent).toBe('');
-            expect(warnSpy).toHaveBeenCalled();
         });
 
         it('renders the price with a custom tag', () => {

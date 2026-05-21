@@ -37,7 +37,8 @@ describe('components', () => {
         });
 
         it('returns null when an invalid type is provided', () => {
-            const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+            // Unknown types are silently ignored (no console.warn — the component
+            // just returns null as a self-documenting empty render).
             const { container, unmount } = render(
                 <FilterValues
                     id={'id'}
@@ -47,9 +48,7 @@ describe('components', () => {
             );
             expect(container.textContent).toBe('');
             expect(container.childElementCount).toBe(0);
-            expect(warnSpy).toHaveBeenCalled();
             expect(unmount).not.toThrow();
-            warnSpy.mockRestore();
         });
 
         it('parses and renders a BOOLEAN type', () => {

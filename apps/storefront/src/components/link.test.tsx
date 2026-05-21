@@ -39,12 +39,12 @@ describe('components', () => {
             expect(link?.getAttribute('href')).toBe(`/en-US${href}`);
         });
 
-        it('returns null and logs an error when `href` is not a string', () => {
-            const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+        it('returns null when `href` is not a string', () => {
+            // The invalid-href diagnostic is now emitted via OTel addEvent (no-op in
+            // tests without an active tracer) rather than console.error.
             const href = { invalid: 'href' };
             const { container } = render(<Link href={href as any} />);
             expect(container.querySelector('a')).toBeNull();
-            expect(errorSpy).toHaveBeenCalled();
         });
 
         it('should add the locale to the `href` if it is not already present', () => {
