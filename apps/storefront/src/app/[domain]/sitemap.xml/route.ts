@@ -1,9 +1,8 @@
-import { Shop } from '@nordcom/commerce-db';
 import { cacheLife, cacheTag } from 'next/cache';
 import type { NextRequest } from 'next/server';
 import { getServerSideSitemapIndex } from 'next-sitemap';
+import { LocalesApi, Shop } from '@/api/_loaders';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { LocalesApi } from '@/api/store';
 import { tenantRootTags } from '@/cache';
 import { Locale } from '@/utils/locale';
 

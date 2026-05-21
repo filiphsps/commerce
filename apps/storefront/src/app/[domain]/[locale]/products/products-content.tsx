@@ -1,6 +1,6 @@
-import { Shop } from '@nordcom/commerce-db';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
+import { Shop } from '@/api/_loaders';
 import type { ProductSorting } from '@/api/product';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductsPaginationApi, ProductsPaginationCountApi } from '@/api/shopify/product';

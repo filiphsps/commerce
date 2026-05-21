@@ -1,8 +1,8 @@
 import 'server-only';
 
-import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 
+import { Shop } from '@/api/_loaders';
 import { ShopifyApiClient } from '@/api/shopify';
 import { ProductsApi } from '@/api/shopify/product';
 import { NOT_FOUND_HANDLE } from '@/utils/handle';

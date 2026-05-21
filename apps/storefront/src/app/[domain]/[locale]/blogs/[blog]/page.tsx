@@ -1,6 +1,5 @@
 import 'server-only';
 
-import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 import { flattenConnection, RichText } from '@shopify/hydrogen-react';
 import md5 from 'crypto-js/md5';
@@ -9,9 +8,8 @@ import { cacheLife } from 'next/cache';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Fragment, Suspense } from 'react';
+import { BlogApi, LocalesApi, Shop } from '@/api/_loaders';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { BlogApi } from '@/api/shopify/blog';
-import { LocalesApi } from '@/api/store';
 import { Avatar } from '@/components/informational/avatar';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';

@@ -1,4 +1,3 @@
-import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 import type { ParsedMetafields } from '@shopify/hydrogen-react';
 import { parseGid, parseMetafield } from '@shopify/hydrogen-react';
@@ -7,9 +6,8 @@ import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { Fragment, Suspense } from 'react';
 import type { ProductGroup, WithContext } from 'schema-dts';
-//import { Error } from '@nordcom/commerce-errors';
+import { ProductApi, Shop } from '@/api/_loaders';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { ProductApi } from '@/api/shopify/product';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import { JsonLd } from '@/components/json-ld';

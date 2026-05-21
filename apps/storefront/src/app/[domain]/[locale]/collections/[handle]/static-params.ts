@@ -1,6 +1,6 @@
-import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 
+import { Shop } from '@/api/_loaders';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CollectionsApi } from '@/api/shopify/collection';
 import { NOT_FOUND_HANDLE } from '@/utils/handle';

@@ -1,6 +1,5 @@
 import 'server-only';
 
-import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 import md5 from 'crypto-js/md5';
 import type { Metadata } from 'next';
@@ -11,10 +10,9 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import type { Article as LdArticle, WithContext } from 'schema-dts';
 import { populatedMedia } from '@/api/_cms';
-import { ArticleApi } from '@/api/article';
+import { ArticleApi, LocalesApi, Shop } from '@/api/_loaders';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogArticleApi } from '@/api/shopify/blog';
-import { LocalesApi } from '@/api/store';
 import { Blocks } from '@/blocks/blocks';
 import type { BlockNode } from '@/blocks/types';
 import { Avatar } from '@/components/informational/avatar';

@@ -1,7 +1,6 @@
 import 'server-only';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 import { parseGid } from '@shopify/hydrogen-react';
 import type { Metadata } from 'next';
@@ -9,12 +8,10 @@ import { cacheLife } from 'next/cache';
 import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { Suspense } from 'react';
-import { ProductMetadataApi } from '@/api/metadata';
+import { LocalesApi, ProductApi, ProductMetadataApi, Shop } from '@/api/_loaders';
 import type { Product } from '@/api/product';
 import { isProductVegan } from '@/api/product';
 import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
-import { ProductApi } from '@/api/shopify/product';
-import { LocalesApi } from '@/api/store';
 import { Blocks } from '@/blocks/blocks';
 import type { BlockNode } from '@/blocks/types';
 import { CMSContent } from '@/components/cms/cms-content';

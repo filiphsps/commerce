@@ -1,6 +1,11 @@
 import { NotFoundError } from '@nordcom/commerce-errors';
 import { describe, expect, it, vi } from 'vitest';
 
+const { BlogsApiMock, BlogApiMock } = vi.hoisted(() => ({
+    BlogsApiMock: vi.fn(),
+    BlogApiMock: vi.fn(),
+}));
+
 vi.mock('next/cache', () => ({
     unstable_cache: vi.fn().mockImplementation((func: any) => func),
     cacheLife: vi.fn(),
@@ -15,6 +20,27 @@ vi.mock('next/navigation', async () => ({
     notFound: notFoundMock,
 }));
 
+vi.mock('@nordcom/commerce-db', () => ({
+    Shop: {
+        findByDomain: vi.fn().mockResolvedValue({
+            id: 'mock-shop-id',
+            domain: 'staging.storefront.localhost',
+        }),
+        findAll: vi.fn(),
+    },
+}));
+
+vi.mock('@/api/_loaders', () => ({
+    Shop: {
+        findByDomain: vi.fn().mockResolvedValue({
+            id: 'mock-shop-id',
+            domain: 'staging.storefront.localhost',
+        }),
+        findAll: vi.fn(),
+    },
+    BlogApi: BlogApiMock,
+}));
+
 vi.mock('@/api/shopify', () => ({
     ShopifyApolloApiClient: vi.fn().mockResolvedValue({
         query: vi.fn(),
@@ -23,11 +49,8 @@ vi.mock('@/api/shopify', () => ({
     }),
 }));
 
-const BlogsApiMock = vi.fn();
-const BlogApiMock = vi.fn();
 vi.mock('@/api/shopify/blog', () => ({
     BlogsApi: BlogsApiMock,
-    BlogApi: BlogApiMock,
 }));
 
 const { GET } = await import('@/app/[domain]/sitemaps/[locale]/blogs.xml/route');

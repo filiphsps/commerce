@@ -1,11 +1,10 @@
 import 'server-only';
 
-import { Shop } from '@nordcom/commerce-db';
 import { Search as SearchIcon } from 'lucide-react';
 import Image from 'next/image';
 import { type HTMLProps, Suspense } from 'react';
 import { populatedMedia } from '@/api/_cms';
-import { HeaderApi } from '@/api/header';
+import { HeaderApi, Shop } from '@/api/_loaders';
 import { CartButton } from '@/components/header/cart-button';
 import { HeaderNavigation } from '@/components/header/header-navigation';
 import Link from '@/components/link';

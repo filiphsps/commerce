@@ -2,15 +2,14 @@ import '@/styles/app.scss';
 import '../../globals.css';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { Shop } from '@nordcom/commerce-db';
 import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
 import type { Metadata, Viewport } from 'next';
 import { cacheLife } from 'next/cache';
 import { notFound, unstable_rethrow } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { Fragment, Suspense } from 'react';
+import { CountriesApi, LocaleApi, LocalesApi, Shop } from '@/api/_loaders';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { CountriesApi, LocaleApi, LocalesApi } from '@/api/store';
 import { AnalyticsProvider } from '@/components/analytics-provider';
 import { GeoRedirect } from '@/components/geo-redirect';
 import { HeaderProvider } from '@/components/header/header-provider';

@@ -1,13 +1,12 @@
-import { Shop } from '@nordcom/commerce-db';
 import { describe, expect, it, vi } from 'vitest';
-import { HeaderApi } from '@/api/header';
+import { HeaderApi, Shop } from '@/api/_loaders';
 import { mockHeader, mockNavItem, mockShop } from '@/utils/test/fixtures';
 import { renderRSC } from '@/utils/test/rsc';
 import Header from './header';
 
-vi.mock('@/api/header', () => ({ HeaderApi: vi.fn() }));
-vi.mock('@nordcom/commerce-db', () => ({
-    Shop: { findByDomain: vi.fn() },
+vi.mock('@/api/_loaders', () => ({
+    HeaderApi: vi.fn(),
+    Shop: { findByDomain: vi.fn(), findAll: vi.fn() },
 }));
 
 // HeaderAccountSection sits inside <Suspense>, but importing it pulls in `@/auth`

@@ -1,9 +1,8 @@
-import { Shop } from '@nordcom/commerce-db';
 import { NotFoundError } from '@nordcom/commerce-errors';
-
 import { cacheLife } from 'next/cache';
 import { ImageResponse } from 'next/og';
 import { type NextRequest, NextResponse } from 'next/server';
+import { Shop } from '@/api/_loaders';
 export type AppleIconRouteParams = Promise<{
     domain: string;
 }>;

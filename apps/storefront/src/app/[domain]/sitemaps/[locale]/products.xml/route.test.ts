@@ -13,6 +13,26 @@ vi.mock('next/navigation', async () => ({
     }),
 }));
 
+vi.mock('@nordcom/commerce-db', () => ({
+    Shop: {
+        findByDomain: vi.fn().mockResolvedValue({
+            id: 'mock-shop-id',
+            domain: 'staging.storefront.localhost',
+        }),
+        findAll: vi.fn(),
+    },
+}));
+
+vi.mock('@/api/_loaders', () => ({
+    Shop: {
+        findByDomain: vi.fn().mockResolvedValue({
+            id: 'mock-shop-id',
+            domain: 'staging.storefront.localhost',
+        }),
+        findAll: vi.fn(),
+    },
+}));
+
 vi.mock('@/api/shopify', () => ({
     ShopifyApolloApiClient: vi.fn().mockResolvedValue({
         query: vi.fn(),

@@ -6,6 +6,13 @@ vi.mock('next/cache', () => ({
     cacheTag: vi.fn(),
 }));
 
+vi.mock('@nordcom/commerce-db', () => ({
+    Shop: {
+        findByDomain: vi.fn().mockResolvedValue({ id: 'shop-1', domain: 'staging.storefront.localhost' }),
+        findAll: vi.fn(),
+    },
+}));
+
 const { GET } = await import('@/app/[domain]/robots.txt/route');
 
 function makeRequest(): Request {

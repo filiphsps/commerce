@@ -1,14 +1,12 @@
-import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 import { flattenConnection } from '@shopify/hydrogen-react';
 import type { Metadata } from 'next';
 import { notFound, RedirectType, redirect, unstable_rethrow } from 'next/navigation';
 import { Suspense } from 'react';
 import type { CollectionPage, WithContext } from 'schema-dts';
-import { CollectionMetadataApi } from '@/api/metadata';
+import { CollectionApi, CollectionMetadataApi, LocalesApi, Shop } from '@/api/_loaders';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { CollectionApi, CollectionPaginationCountApi } from '@/api/shopify/collection';
-import { LocalesApi } from '@/api/store';
+import { CollectionPaginationCountApi } from '@/api/shopify/collection';
 import { Blocks } from '@/blocks/blocks';
 import type { BlockNode } from '@/blocks/types';
 import { Pagination } from '@/components/actionable/pagination';

@@ -1,12 +1,11 @@
-import { Shop } from '@nordcom/commerce-db';
 import { UnknownLocaleError } from '@nordcom/commerce-errors';
 import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
 import { cookies } from 'next/headers';
 import { notFound, RedirectType, redirect } from 'next/navigation';
 import { Suspense } from 'react';
+import { CountriesApi, LocalesApi, Shop } from '@/api/_loaders';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { CountriesApi, LocalesApi } from '@/api/store';
 import PageContent from '@/components/page-content';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';

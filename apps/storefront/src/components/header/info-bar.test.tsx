@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
-import { InfoBarApi } from '@/api/info-bar';
+import { InfoBarApi } from '@/api/_loaders';
 import { mockBusinessData, mockShop } from '@/utils/test/fixtures';
 import { renderRSC } from '@/utils/test/rsc';
 import { InfoBar } from './info-bar';
 
-vi.mock('@/api/info-bar', () => ({ InfoBarApi: vi.fn() }));
+vi.mock('@/api/_loaders', () => ({ InfoBarApi: vi.fn() }));
 vi.mock('@/components/informational/locale-flag', () => ({
     LocaleFlag: ({ locale }: { locale: { code: string } }) => <span data-testid="locale-flag">{locale.code}</span>,
 }));

@@ -1,11 +1,10 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 import { cacheLife } from 'next/cache';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
+import { ProductApi, Shop } from '@/api/_loaders';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { ProductApi } from '@/api/shopify/product';
 import { ProductDescription } from '@/components/products/product-description';
 import type { ProductPageParams } from '@/pages/products/[handle]/page';
 import { BLOCK_STYLES } from '@/pages/products/[handle]/styles';

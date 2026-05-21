@@ -1,12 +1,12 @@
-import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 import { cacheLife } from 'next/cache';
 import { notFound } from 'next/navigation';
 import type { NextRequest } from 'next/server';
 import type { ISitemapField } from 'next-sitemap';
 import { getServerSideSitemap } from 'next-sitemap';
+import { BlogApi, Shop } from '@/api/_loaders';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { BlogApi, BlogsApi } from '@/api/shopify/blog';
+import { BlogsApi } from '@/api/shopify/blog';
 import { Locale } from '@/utils/locale';
 import type { DynamicSitemapRouteParams } from '../../../sitemap.xml/route';
 

@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
-import { FooterApi } from '@/api/footer';
+import { FooterApi } from '@/api/_loaders';
 import { mockFooter, mockShop } from '@/utils/test/fixtures';
 import { renderRSC } from '@/utils/test/rsc';
 import Footer from './footer';
 
-vi.mock('@/api/footer', () => ({ FooterApi: vi.fn() }));
+vi.mock('@/api/_loaders', () => ({ FooterApi: vi.fn() }));
 // FooterContent is an async server component; the jsdom render path doesn't run
 // RSCs. Mock the whole component (preserving the `payments` testid the original
 // FooterContent would mount via <AcceptedPaymentMethods>).

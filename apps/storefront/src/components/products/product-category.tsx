@@ -1,8 +1,8 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
 import type { ReactNode } from 'react';
+import { CollectionApi } from '@/api/_loaders';
 import type { Product } from '@/api/product';
 import { ShopifyApiClient } from '@/api/shopify';
-import { CollectionApi } from '@/api/shopify/collection';
 
 import Link from '@/components/link';
 import type { Locale } from '@/utils/locale';

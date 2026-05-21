@@ -14,7 +14,18 @@ vi.mock('@/api/shopify', () => ({
     }),
 }));
 
-vi.mock('@/api/store', () => ({
+vi.mock('@nordcom/commerce-db', () => ({
+    Shop: {
+        findByDomain: vi.fn().mockResolvedValue({ id: 'shop-1', domain: 'staging.storefront.localhost' }),
+        findAll: vi.fn(),
+    },
+}));
+
+vi.mock('@/api/_loaders', () => ({
+    Shop: {
+        findByDomain: vi.fn().mockResolvedValue({ id: 'shop-1', domain: 'staging.storefront.localhost' }),
+        findAll: vi.fn(),
+    },
     LocalesApi: vi.fn().mockResolvedValue([{ code: 'en-US' }, { code: 'sv-SE' }]),
 }));
 

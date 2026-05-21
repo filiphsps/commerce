@@ -1,10 +1,9 @@
 import 'server-only';
 
-import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 
+import { BlogApi, Shop } from '@/api/_loaders';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { BlogApi } from '@/api/shopify/blog';
 import { isValidHandle, NOT_FOUND_HANDLE } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
 

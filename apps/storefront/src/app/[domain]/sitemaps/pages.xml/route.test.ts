@@ -24,6 +24,7 @@ vi.mock('@nordcom/commerce-db', () => ({
             },
             design: { accents: [] },
         }),
+        findAll: vi.fn(),
     },
 }));
 
@@ -40,12 +41,23 @@ vi.mock('@/api/shopify', () => ({
     }),
 }));
 
-vi.mock('@/api/store', () => ({
-    LocalesApi: vi.fn().mockResolvedValue([{ code: 'en-US' }]),
-}));
-
 const PagesApiMock = vi.fn();
-vi.mock('@/api/page', () => ({
+vi.mock('@/api/_loaders', () => ({
+    Shop: {
+        findByDomain: vi.fn().mockResolvedValue({
+            id: 'mock-shop-id',
+            domain: 'staging.storefront.localhost',
+            contentProvider: { type: 'shopify' as const },
+            commerceProvider: {
+                type: 'shopify' as const,
+                domain: 'mock.shop',
+                authentication: { publicToken: 'public-token', token: 'private-token' },
+            },
+            design: { accents: [] },
+        }),
+        findAll: vi.fn(),
+    },
+    LocalesApi: vi.fn().mockResolvedValue([{ code: 'en-US' }]),
     PagesApi: PagesApiMock,
 }));
 
@@ -133,7 +145,7 @@ describe('app/[domain]/sitemaps/pages.xml', () => {
         });
 
         it('generates entries for each locale', async () => {
-            const { LocalesApi } = await import('@/api/store');
+            const { LocalesApi } = await import('@/api/_loaders');
             vi.mocked(LocalesApi).mockResolvedValueOnce([{ code: 'en-US' }, { code: 'sv-SE' }] as any);
 
             PagesApiMock.mockResolvedValueOnce({

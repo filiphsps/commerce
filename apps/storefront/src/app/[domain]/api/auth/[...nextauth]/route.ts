@@ -1,6 +1,6 @@
-import { Shop } from '@nordcom/commerce-db';
 import { Error as CommerceError } from '@nordcom/commerce-errors';
 import { type NextRequest, NextResponse } from 'next/server';
+import { Shop } from '@/api/_loaders';
 import { getAuth } from '@/auth';
 
 // `dynamic = 'force-dynamic'` and `fetchCache` exports are rejected at build

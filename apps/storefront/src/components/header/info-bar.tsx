@@ -3,7 +3,7 @@ import 'server-only';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Mail as MailIcon, Phone as PhoneIcon } from 'lucide-react';
 import type { HTMLProps } from 'react';
-import { InfoBarApi } from '@/api/info-bar';
+import { InfoBarApi } from '@/api/_loaders';
 import { LocaleFlag } from '@/components/informational/locale-flag';
 import Link from '@/components/link';
 import type { Locale, LocaleDictionary } from '@/utils/locale';

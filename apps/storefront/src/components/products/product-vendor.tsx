@@ -1,9 +1,9 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { NotFoundError } from '@nordcom/commerce-errors';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
+import { CollectionApi } from '@/api/_loaders';
 import type { Product } from '@/api/product';
 import { ShopifyApiClient } from '@/api/shopify';
-import { CollectionApi } from '@/api/shopify/collection';
 
 import Link from '@/components/link';
 import type { Locale } from '@/utils/locale';

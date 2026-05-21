@@ -5,7 +5,7 @@ import type { Footer as FooterDoc } from '@nordcom/commerce-cms/types';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import Image from 'next/image';
 import { Suspense } from 'react';
-import { FooterApi } from '@/api/footer';
+import { FooterApi } from '@/api/_loaders';
 import FooterContent from '@/components/footer/footer-content';
 import Link from '@/components/link';
 import type { Locale, LocaleDictionary } from '@/utils/locale';

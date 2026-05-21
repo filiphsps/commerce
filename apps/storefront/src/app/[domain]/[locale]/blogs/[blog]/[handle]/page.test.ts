@@ -12,15 +12,16 @@ const { mockBlogApi, mockShopifyApolloApiClient, mockFindByDomain } = vi.hoisted
 vi.mock('server-only', () => ({}));
 
 vi.mock('@nordcom/commerce-db', () => ({
-    Shop: { findByDomain: mockFindByDomain },
+    Shop: { findByDomain: mockFindByDomain, findAll: vi.fn() },
+}));
+
+vi.mock('@/api/_loaders', () => ({
+    Shop: { findByDomain: mockFindByDomain, findAll: vi.fn() },
+    BlogApi: mockBlogApi,
 }));
 
 vi.mock('@/api/shopify', () => ({
     ShopifyApolloApiClient: mockShopifyApolloApiClient,
-}));
-
-vi.mock('@/api/shopify/blog', () => ({
-    BlogApi: mockBlogApi,
 }));
 
 import { generateStaticParams } from './static-params';

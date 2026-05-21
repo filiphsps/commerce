@@ -1,7 +1,7 @@
-import { Shop } from '@nordcom/commerce-db';
 import type { MetadataRoute } from 'next';
 import { cacheLife, cacheTag } from 'next/cache';
 import { type NextRequest, NextResponse } from 'next/server';
+import { Shop } from '@/api/_loaders';
 import { tenantRootTags } from '@/cache';
 
 type Rules = Extract<MetadataRoute.Robots['rules'], Array<unknown>>;

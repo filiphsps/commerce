@@ -15,6 +15,7 @@ vi.mock('@nordcom/commerce-db', () => ({
             id: 'mock-shop-id',
             domain: 'staging.storefront.localhost',
         }),
+        findAll: vi.fn(),
     },
 }));
 

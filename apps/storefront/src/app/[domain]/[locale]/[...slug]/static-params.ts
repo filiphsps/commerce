@@ -1,8 +1,6 @@
 import 'server-only';
 
-import { Shop } from '@nordcom/commerce-db';
-
-import { PagesApi } from '@/api/page';
+import { PagesApi, Shop } from '@/api/_loaders';
 import { NOT_FOUND_HANDLE } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
 

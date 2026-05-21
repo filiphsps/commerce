@@ -1,7 +1,7 @@
-import { Shop } from '@nordcom/commerce-db';
 import { Error as CommerceError } from '@nordcom/commerce-errors';
 import { parseShopifyWebhook, verifyShopifyHmac } from '@tagtree/shopify';
 import { type NextRequest, NextResponse } from 'next/server';
+import { Shop } from '@/api/_loaders';
 import { cache } from '@/cache';
 
 const noStoreHeaders = { 'Cache-Control': 'no-store' };

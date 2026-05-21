@@ -1,12 +1,11 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { Shop } from '@nordcom/commerce-db';
 import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
 import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
 import { notFound, unstable_rethrow } from 'next/navigation';
 import { Fragment, Suspense } from 'react';
+import { LocalesApi, Shop } from '@/api/_loaders';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { LocalesApi } from '@/api/store';
 import { AcceptedPaymentMethods } from '@/components/informational/accepted-payment-methods';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';

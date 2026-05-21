@@ -1,10 +1,10 @@
-import { Shop } from '@nordcom/commerce-db';
 import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { connection } from 'next/server';
 import { Suspense } from 'react';
+import { Shop } from '@/api/_loaders';
 import { getAuthSession } from '@/auth';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';

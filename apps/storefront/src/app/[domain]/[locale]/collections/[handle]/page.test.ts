@@ -10,7 +10,11 @@ const { mockCollectionsApi, mockShopifyApolloApiClient, mockFindByDomain } = vi.
 }));
 
 vi.mock('@nordcom/commerce-db', () => ({
-    Shop: { findByDomain: mockFindByDomain },
+    Shop: { findByDomain: mockFindByDomain, findAll: vi.fn() },
+}));
+
+vi.mock('@/api/_loaders', () => ({
+    Shop: { findByDomain: mockFindByDomain, findAll: vi.fn() },
 }));
 
 vi.mock('@/api/shopify', () => ({

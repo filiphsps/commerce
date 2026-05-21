@@ -1,11 +1,10 @@
-import { Shop } from '@nordcom/commerce-db';
 import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
+import { LocalesApi, Shop } from '@/api/_loaders';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { SearchApi } from '@/api/shopify/search';
-import { LocalesApi } from '@/api/store';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import PageContent from '@/components/page-content';

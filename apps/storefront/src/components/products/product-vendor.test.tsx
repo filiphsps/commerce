@@ -14,7 +14,7 @@ vi.mock('@/components/link', () => {
 vi.mock('@/api/shopify', () => ({
     ShopifyApiClient: vi.fn().mockReturnValue({}),
 }));
-vi.mock('@/api/shopify/collection', () => ({
+vi.mock('@/api/_loaders', () => ({
     CollectionApi: vi.fn().mockImplementation(async ({ handle }: { handle: string }) => {
         if (handle !== 'test-vendor') {
             throw new Error();

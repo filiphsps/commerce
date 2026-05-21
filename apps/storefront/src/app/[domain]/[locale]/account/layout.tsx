@@ -1,8 +1,8 @@
-import { Shop } from '@nordcom/commerce-db';
 import type { Metadata } from 'next';
 import { connection } from 'next/server';
 import { SessionProvider } from 'next-auth/react';
 import type { ReactNode } from 'react';
+import { Shop } from '@/api/_loaders';
 import { getAuthSession } from '@/auth';
 
 export type LayoutParams = Promise<{ domain: string; locale: string }>;

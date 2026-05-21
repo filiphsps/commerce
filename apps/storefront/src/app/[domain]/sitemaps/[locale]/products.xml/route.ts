@@ -1,10 +1,10 @@
-import { Shop } from '@nordcom/commerce-db';
 import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import { cacheLife, cacheTag } from 'next/cache';
 import { notFound } from 'next/navigation';
 import type { NextRequest } from 'next/server';
 import type { ISitemapField } from 'next-sitemap';
 import { getServerSideSitemap } from 'next-sitemap';
+import { Shop } from '@/api/_loaders';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductsPaginationApi } from '@/api/shopify/product';
 import { cache } from '@/cache';
