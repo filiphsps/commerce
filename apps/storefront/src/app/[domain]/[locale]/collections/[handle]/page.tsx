@@ -1,3 +1,4 @@
+import { BlockRenderer } from '@nordcom/commerce-cms/blocks/render';
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 import { flattenConnection } from '@shopify/hydrogen-react';
@@ -5,6 +6,7 @@ import type { Metadata } from 'next';
 import { notFound, RedirectType, redirect, unstable_rethrow } from 'next/navigation';
 import { Suspense } from 'react';
 import type { CollectionPage, WithContext } from 'schema-dts';
+import { CollectionMetadataApi } from '@/api/metadata';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CollectionApi, CollectionPaginationCountApi } from '@/api/shopify/collection';
 import { LocalesApi } from '@/api/store';
@@ -21,6 +23,7 @@ import { getDictionary } from '@/utils/dictionary';
 import { isValidHandle } from '@/utils/handle';
 import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import { checkAndHandleRedirect } from '@/utils/redirect';
+import { buildBlockLoaders } from '../../../../../cms-loaders';
 import { CollectionContent, PRODUCTS_PER_PAGE } from './collection-content';
 import type { CollectionPageParams } from './static-params';
 
@@ -71,15 +74,28 @@ export async function generateMetadata({
     const i18n = await getDictionary({ shop, locale });
     const { t } = getTranslations('common', i18n);
 
-    const title =
-        pageNumber > 1
-            ? `${collection.title} - ${capitalize(t('page-n', pageNumber.toString()))}`
-            : collection.seo.title || collection.title;
+    const cmsMeta = await CollectionMetadataApi({ shop, locale, handle });
+
+    const cmsSeoImageUrl = (() => {
+        const img = cmsMeta?.seo?.image;
+        return img && typeof img === 'object' && 'url' in img ? (img.url ?? undefined) : undefined;
+    })();
+
+    const baseTitle = cmsMeta?.seo?.title || collection.seo.title || collection.title;
+    const title = pageNumber > 1 ? `${baseTitle} - ${capitalize(t('page-n', pageNumber.toString()))}` : baseTitle;
     const description: string | undefined =
-        collection.seo.description || collection.description.substring(0, 150) || undefined;
+        cmsMeta?.seo?.description ||
+        collection.seo.description ||
+        collection.description.substring(0, 150) ||
+        undefined;
+    const index = cmsMeta?.seo?.noindex !== true;
+    const keywords = cmsMeta?.seo?.keywords ?? undefined;
+
     return {
         title,
         description,
+        keywords,
+        robots: { index },
         alternates: {
             canonical: `https://${shop.domain}/${locale.code}/collections/${handle}/${pageNumber > 1 ? `?page=${pageNumber}` : ''}`,
             languages: Object.fromEntries(
@@ -96,6 +112,7 @@ export async function generateMetadata({
             description,
             siteName: shop.name,
             locale: locale.code,
+            images: cmsSeoImageUrl ? [{ url: cmsSeoImageUrl }] : undefined,
         },
     };
 }
@@ -145,6 +162,8 @@ export default async function CollectionsCollectionPage({
         console.error(error);
         throw error;
     }
+
+    const cmsMeta = await CollectionMetadataApi({ shop, locale, handle });
 
     const empty = collection.products.edges.length <= 0;
 
@@ -216,6 +235,16 @@ export default async function CollectionsCollectionPage({
             </Suspense>
 
             <Heading title={collection.title || collection.seo.title} />
+            {cmsMeta?.descriptionOverride ? (
+                <BlockRenderer
+                    blocks={[{ blockType: 'rich-text', body: cmsMeta.descriptionOverride as unknown }] as never}
+                    context={{
+                        shop: { id: shop.id, domain: shop.domain },
+                        locale: { code: locale.code },
+                        loaders: buildBlockLoaders(),
+                    }}
+                />
+            ) : null}
             {collection.descriptionHtml ? (
                 <ShopifyContent className="prose max-w-none" html={collection.descriptionHtml} />
             ) : collection.seo.description ? (
@@ -226,8 +255,19 @@ export default async function CollectionsCollectionPage({
 
             {pageNumber <= 1 ? (
                 <Suspense key={`collections.${handle}.cms`} fallback={<div className="h-32 w-full" data-skeleton />}>
-                    <CMSContent shop={shop} locale={locale} handle={handle} type={'collection_page'} />
+                    <CMSContent shop={shop} locale={locale} handle={handle} />
                 </Suspense>
+            ) : null}
+
+            {cmsMeta?.blocks && cmsMeta.blocks.length > 0 ? (
+                <BlockRenderer
+                    blocks={cmsMeta.blocks as never}
+                    context={{
+                        shop: { id: shop.id, domain: shop.domain },
+                        locale: { code: locale.code },
+                        loaders: buildBlockLoaders(),
+                    }}
+                />
             ) : null}
 
             <JsonLd data={jsonLd} />
