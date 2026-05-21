@@ -41,9 +41,7 @@ export async function generateMetadata({ params }: { params: CartPageParams }): 
     const locale = Locale.from(localeData);
     const api = await ShopifyApolloApiClient({ shop, locale });
 
-    const locales = await LocalesApi({ api });
-
-    const i18n = await getDictionary(locale);
+    const [locales, i18n] = await Promise.all([LocalesApi({ api }), getDictionary(locale)]);
     const { t } = getTranslations('common', i18n);
 
     const title = capitalize(t('cart'));
