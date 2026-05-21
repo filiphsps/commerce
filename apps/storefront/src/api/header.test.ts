@@ -29,6 +29,8 @@ describe('HeaderApi', () => {
         const header = mockHeader({ logoLink: '/landing' });
         vi.mocked(getHeader).mockResolvedValue(header);
         const result = await HeaderApi({ shop: mockShop(), locale: Locale.from('en-US') });
-        expect(result).toBe(header);
+        // normalizePayloadDoc walks and copies the doc, so the result is structurally
+        // identical but not reference-equal to the original.
+        expect(result).toStrictEqual(header);
     });
 });

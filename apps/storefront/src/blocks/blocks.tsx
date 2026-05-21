@@ -35,44 +35,42 @@ type BlocksProps = {
  * a live page by adding a block that ships before the renderer.
  */
 export const Blocks = ({ blocks, context }: BlocksProps): ReactNode => {
-    if (!blocks || blocks.length === 0) return null;
+    if (!blocks) return null;
     const depth = context.depth ?? 0;
     if (depth >= MAX_BLOCK_DEPTH) return null;
 
-    return (
-        <>
-            {blocks.map((block, idx) => {
-                switch (block.blockType) {
-                    case 'alert':
-                        return <AlertBlock key={idx} block={block} />;
-                    case 'banner':
-                        return <BannerBlock key={idx} block={block} context={context} />;
-                    case 'collection':
-                        return <CollectionBlock key={idx} block={block} context={context} index={idx} />;
-                    case 'columns':
-                        return <ColumnsBlock key={idx} block={block} context={context} Renderer={Blocks} />;
-                    case 'html':
-                        return <HtmlBlock key={idx} block={block} />;
-                    case 'media-grid':
-                        return <MediaGridBlock key={idx} block={block} context={context} />;
-                    case 'overview':
-                        return <OverviewBlock key={idx} block={block} context={context} />;
-                    case 'rich-text':
-                        return <RichTextBlock key={idx} block={block} context={context} />;
-                    case 'vendors':
-                        return <VendorsBlock key={idx} block={block} context={context} />;
-                    default: {
-                        console.error(new InvalidIDError((block as BlockNode).blockType, 'BlockNode.blockType'));
-                        console.warn('Blocks, missing/invalid type:', '');
-                        // Exhaustiveness check — if a new block type is added to
-                        // `BlockNode` without a case here, TS yells about
-                        // `_exhaustive` not being assignable to `never`.
-                        return null;
-                    }
-                }
-            })}
-        </>
-    );
+    return blocks.map((block, idx) => {
+        const key = `${depth}:${idx}`;
+
+        switch (block.blockType) {
+            case 'alert':
+                return <AlertBlock key={key} block={block} />;
+            case 'banner':
+                return <BannerBlock key={key} block={block} context={context} />;
+            case 'collection':
+                return <CollectionBlock key={key} block={block} context={context} index={idx} />;
+            case 'columns':
+                return <ColumnsBlock key={key} block={block} context={context} Renderer={Blocks} />;
+            case 'html':
+                return <HtmlBlock key={key} block={block} />;
+            case 'media-grid':
+                return <MediaGridBlock key={key} block={block} context={context} />;
+            case 'overview':
+                return <OverviewBlock key={key} block={block} context={context} />;
+            case 'rich-text':
+                return <RichTextBlock key={key} block={block} context={context} />;
+            case 'vendors':
+                return <VendorsBlock key={key} block={block} context={context} />;
+            default: {
+                console.error(new InvalidIDError((block as BlockNode).blockType, 'BlockNode.blockType'));
+                console.warn('Blocks, missing/invalid type:', '');
+                // Exhaustiveness check — if a new block type is added to
+                // `BlockNode` without a case here, TS yells about
+                // `_exhaustive` not being assignable to `never`.
+                return null;
+            }
+        }
+    });
 };
 
 Blocks.displayName = 'Nordcom.Blocks';
@@ -90,7 +88,7 @@ Blocks.displayName = 'Nordcom.Blocks';
  * would fall back to live blocks inside a skeleton tree.
  */
 const BlocksSkeleton = ({ blocks, context }: BlocksProps): ReactNode => {
-    if (!blocks || blocks.length === 0) return null;
+    if (!blocks) return null;
     const depth = context.depth ?? 0;
     if (depth >= MAX_BLOCK_DEPTH) return null;
 

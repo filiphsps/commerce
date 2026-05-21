@@ -14,7 +14,8 @@ describe('InfoBarApi', () => {
         const business = mockBusinessData({ supportEmail: 'hi@x.test' });
         vi.mocked(getBusinessData).mockResolvedValue(business);
         const result = await InfoBarApi({ shop: mockShop(), locale: Locale.from('en-US') });
-        expect(result).toBe(business);
+        // BusinessDataApi runs the doc through normalizePayloadDoc, which clones it.
+        expect(result).toStrictEqual(business);
     });
 
     it('returns null when BusinessData is missing', async () => {

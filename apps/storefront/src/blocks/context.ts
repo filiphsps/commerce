@@ -18,4 +18,4 @@ export type BlockContext = {
     depth?: number;
 };
 
-export const MAX_BLOCK_DEPTH = 6;
+export const MAX_BLOCK_DEPTH = 256;

@@ -31,8 +31,7 @@ describe('app/[domain]/[locale]/[...slug] > generateStaticParams', () => {
 
     it('returns CMS slugs as slug segments', async () => {
         mockPagesApi.mockResolvedValue({
-            provider: 'cms',
-            items: [{ slug: 'about' }, { slug: 'contact' }, { slug: null }],
+            docs: [{ slug: 'about' }, { slug: 'contact' }, { slug: null }],
         });
 
         const result = await generateStaticParams({ params });
@@ -41,9 +40,10 @@ describe('app/[domain]/[locale]/[...slug] > generateStaticParams', () => {
     });
 
     it('returns Shopify page handles as slug segments', async () => {
+        // PagesApi normalizes Shopify page handles into the same `slug` field as CMS pages
+        // (PaginatedDocs<Page> shape), so the test fixture mirrors that shape regardless of provider.
         mockPagesApi.mockResolvedValue({
-            provider: 'shopify',
-            items: [{ handle: 'about' }, { handle: 'shipping' }],
+            docs: [{ slug: 'about' }, { slug: 'shipping' }],
         });
 
         const result = await generateStaticParams({ params });

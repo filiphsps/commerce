@@ -59,8 +59,7 @@ describe('app/[domain]/sitemaps/pages.xml', () => {
     describe('GET', () => {
         it('returns 200 with XML content-type', async () => {
             PagesApiMock.mockResolvedValueOnce({
-                provider: 'shopify' as const,
-                items: [{ handle: 'about', updatedAt: '2024-01-01T00:00:00Z' }],
+                docs: [{ slug: 'about', updatedAt: '2024-01-01T00:00:00Z' }],
             });
 
             const res = await GET(makeRequest() as any, {
@@ -73,10 +72,9 @@ describe('app/[domain]/sitemaps/pages.xml', () => {
 
         it('includes page handle in the sitemap body for shopify provider', async () => {
             PagesApiMock.mockResolvedValueOnce({
-                provider: 'shopify' as const,
-                items: [
-                    { handle: 'about', updatedAt: '2024-01-01T00:00:00Z' },
-                    { handle: 'contact', updatedAt: '2024-02-01T00:00:00Z' },
+                docs: [
+                    { slug: 'about', updatedAt: '2024-01-01T00:00:00Z' },
+                    { slug: 'contact', updatedAt: '2024-02-01T00:00:00Z' },
                 ],
             });
 
@@ -92,8 +90,7 @@ describe('app/[domain]/sitemaps/pages.xml', () => {
 
         it('includes locale code and shop domain in page URLs for shopify provider', async () => {
             PagesApiMock.mockResolvedValueOnce({
-                provider: 'shopify' as const,
-                items: [{ handle: 'about', updatedAt: '2024-01-01T00:00:00Z' }],
+                docs: [{ slug: 'about', updatedAt: '2024-01-01T00:00:00Z' }],
             });
 
             const res = await GET(makeRequest() as any, {
@@ -118,8 +115,7 @@ describe('app/[domain]/sitemaps/pages.xml', () => {
 
         it('includes CMS page URLs when provider is cms', async () => {
             PagesApiMock.mockResolvedValueOnce({
-                provider: 'cms' as const,
-                items: [
+                docs: [
                     {
                         slug: 'about',
                         updatedAt: '2024-01-01T00:00:00.000Z',
@@ -141,8 +137,7 @@ describe('app/[domain]/sitemaps/pages.xml', () => {
             vi.mocked(LocalesApi).mockResolvedValueOnce([{ code: 'en-US' }, { code: 'sv-SE' }] as any);
 
             PagesApiMock.mockResolvedValueOnce({
-                provider: 'shopify' as const,
-                items: [{ handle: 'about', updatedAt: '2024-01-01T00:00:00Z' }],
+                docs: [{ slug: 'about', updatedAt: '2024-01-01T00:00:00Z' }],
             });
 
             const res = await GET(makeRequest() as any, {
