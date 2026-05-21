@@ -101,10 +101,6 @@ const config = {
         ignoreBuildErrors: true,
         tsconfigPath: 'tsconfig.json',
     },
-    sassOptions: {
-        loadPaths: [path.join(__dirname, 'src/scss'), path.join(__dirname, 'src')],
-    },
-
     async headers() {
         return ['/', '/:path*'].map((source) => ({
             source,

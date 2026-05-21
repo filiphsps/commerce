@@ -686,9 +686,6 @@ importers:
       resolve-accept-language:
         specifier: 3.2.1
         version: 3.2.1
-      sass:
-        specifier: 1.99.0
-        version: 1.99.0
       sharp:
         specifier: 0.34.5
         version: 0.34.5
