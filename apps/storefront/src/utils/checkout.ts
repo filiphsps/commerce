@@ -109,25 +109,32 @@ export const Checkout = async ({
                 ecommerce: {
                     currency: cart.cost?.totalAmount?.currencyCode,
                     value: safeParseFloat(undefined, cart.cost?.totalAmount?.amount),
-                    items: safeLines.map((line) => ({
-                        item_id: productToMerchantsCenterId({
-                            locale: locale,
-                            product: {
-                                productGid: line.merchandise!.product!.id,
-                                variantGid: line.merchandise!.id,
+                    items: safeLines.flatMap((line) => {
+                        const merchandise = line.merchandise;
+                        const product = merchandise?.product;
+                        if (!merchandise || !product) return [];
+                        return [
+                            {
+                                item_id: productToMerchantsCenterId({
+                                    locale: locale,
+                                    product: {
+                                        productGid: product.id,
+                                        variantGid: merchandise.id,
+                                    },
+                                }),
+                                item_name: product.title,
+                                item_variant: merchandise.title,
+                                item_brand: product.vendor,
+                                item_category: product.productType || undefined,
+                                sku: merchandise.sku || undefined,
+                                product_id: product.id,
+                                variant_id: merchandise.id,
+                                currency: merchandise.price.currencyCode ?? '',
+                                price: safeParseFloat(undefined, merchandise.price.amount),
+                                quantity: line.quantity,
                             },
-                        }),
-                        item_name: line.merchandise.product.title,
-                        item_variant: line.merchandise.title,
-                        item_brand: line.merchandise.product.vendor,
-                        item_category: line.merchandise.product.productType || undefined,
-                        sku: line.merchandise.sku || undefined,
-                        product_id: line.merchandise!.product!.id,
-                        variant_id: line.merchandise!.id,
-                        currency: line.merchandise.price.currencyCode!,
-                        price: safeParseFloat(undefined, line.merchandise.price.amount),
-                        quantity: line.quantity,
-                    })),
+                        ];
+                    }),
                 },
             },
         });
