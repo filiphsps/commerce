@@ -1,4 +1,3 @@
-import { BlockRenderer } from '@nordcom/commerce-cms/blocks/render';
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 import { flattenConnection } from '@shopify/hydrogen-react';
@@ -10,6 +9,8 @@ import { CollectionMetadataApi } from '@/api/metadata';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CollectionApi, CollectionPaginationCountApi } from '@/api/shopify/collection';
 import { LocalesApi } from '@/api/store';
+import { Blocks } from '@/blocks/blocks';
+import type { BlockNode } from '@/blocks/types';
 import { Pagination } from '@/components/actionable/pagination';
 import { CMSContent } from '@/components/cms/cms-content';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
@@ -23,7 +24,6 @@ import { getDictionary } from '@/utils/dictionary';
 import { isValidHandle } from '@/utils/handle';
 import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import { checkAndHandleRedirect } from '@/utils/redirect';
-import { buildBlockLoaders } from '../../../../../cms-loaders';
 import { CollectionContent, PRODUCTS_PER_PAGE } from './collection-content';
 import type { CollectionPageParams } from './static-params';
 
@@ -236,13 +236,9 @@ export default async function CollectionsCollectionPage({
 
             <Heading title={collection.title || collection.seo.title} />
             {cmsMeta?.descriptionOverride ? (
-                <BlockRenderer
-                    blocks={[{ blockType: 'rich-text', body: cmsMeta.descriptionOverride as unknown }] as never}
-                    context={{
-                        shop: { id: shop.id, domain: shop.domain },
-                        locale: { code: locale.code },
-                        loaders: buildBlockLoaders(),
-                    }}
+                <Blocks
+                    blocks={[{ blockType: 'rich-text', body: cmsMeta.descriptionOverride }] as BlockNode[]}
+                    context={{ shop, locale }}
                 />
             ) : null}
             {collection.descriptionHtml ? (
@@ -260,14 +256,7 @@ export default async function CollectionsCollectionPage({
             ) : null}
 
             {cmsMeta?.blocks && cmsMeta.blocks.length > 0 ? (
-                <BlockRenderer
-                    blocks={cmsMeta.blocks as never}
-                    context={{
-                        shop: { id: shop.id, domain: shop.domain },
-                        locale: { code: locale.code },
-                        loaders: buildBlockLoaders(),
-                    }}
-                />
+                <Blocks blocks={cmsMeta.blocks as BlockNode[]} context={{ shop, locale }} />
             ) : null}
 
             <JsonLd data={jsonLd} />

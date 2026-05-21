@@ -1,6 +1,5 @@
 import 'server-only';
 
-import { BlockRenderer } from '@nordcom/commerce-cms/blocks/render';
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 import md5 from 'crypto-js/md5';
@@ -16,6 +15,8 @@ import { ArticleApi } from '@/api/article';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogArticleApi } from '@/api/shopify/blog';
 import { LocalesApi } from '@/api/store';
+import { Blocks } from '@/blocks/blocks';
+import type { BlockNode } from '@/blocks/types';
 import { Avatar } from '@/components/informational/avatar';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
@@ -25,7 +26,6 @@ import { Label } from '@/components/typography/label';
 import { getDictionary } from '@/utils/dictionary';
 import { isValidHandle, NOT_FOUND_HANDLE } from '@/utils/handle';
 import { getTranslations, Locale } from '@/utils/locale';
-import { buildBlockLoaders } from '../../../../../../cms-loaders';
 import type { ArticlePageParams } from './static-params';
 
 export { type ArticlePageParams, generateStaticParams } from './static-params';
@@ -214,13 +214,9 @@ export default async function ArticlePage({ params }: { params: ArticlePageParam
                     <Content className="prone max-w-none" html={contentHtml} />
 
                     {cmsArticle?.body ? (
-                        <BlockRenderer
-                            blocks={[{ blockType: 'rich-text', body: cmsArticle.body as unknown }] as never}
-                            context={{
-                                shop: { id: shop.id, domain: shop.domain },
-                                locale: { code: locale.code },
-                                loaders: buildBlockLoaders(),
-                            }}
+                        <Blocks
+                            blocks={[{ blockType: 'rich-text', body: cmsArticle.body }] as BlockNode[]}
+                            context={{ shop, locale }}
                         />
                     ) : null}
                 </article>

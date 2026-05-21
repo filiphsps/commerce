@@ -8,6 +8,7 @@
             "@/components/*": ["./src/components/*"],
             "@/hooks/*": ["./src/hooks/*"],
             "@/api/*": ["./src/api/*"],
+            "@/blocks/*": ["./src/blocks/*"],
             "@/auth": ["./src/auth/auth.ts"],
             "@/auth/*": ["./src/auth/*"],
             "@/cache": ["./src/cache.ts"],

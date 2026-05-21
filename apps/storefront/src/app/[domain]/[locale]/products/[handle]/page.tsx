@@ -1,6 +1,5 @@
 import 'server-only';
 
-import { BlockRenderer } from '@nordcom/commerce-cms/blocks/render';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
@@ -16,6 +15,8 @@ import { isProductVegan } from '@/api/product';
 import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
+import { Blocks } from '@/blocks/blocks';
+import type { BlockNode } from '@/blocks/types';
 import { CMSContent } from '@/components/cms/cms-content';
 import { Card } from '@/components/layout/card';
 import { AttributeIcon } from '@/components/products/attribute-icon';
@@ -29,7 +30,6 @@ import type { LocaleDictionary } from '@/utils/locale';
 import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import { checkAndHandleRedirect } from '@/utils/redirect';
 import { cn } from '@/utils/tailwind';
-import { buildBlockLoaders } from '../../../../../cms-loaders';
 import { ProductContent, ProductPricing, ProductSavings } from './product-content';
 import type { ProductPageParams } from './static-params';
 import { BLOCK_STYLES } from './styles';
@@ -280,13 +280,9 @@ export default async function ProductPage({ params }: { params: ProductPageParam
             </Card>
 
             {cmsMeta?.descriptionOverride ? (
-                <BlockRenderer
-                    blocks={[{ blockType: 'rich-text', body: cmsMeta.descriptionOverride as unknown }]}
-                    context={{
-                        shop: { id: shop.id, domain: shop.domain },
-                        locale: { code: locale.code },
-                        loaders: buildBlockLoaders(),
-                    }}
+                <Blocks
+                    blocks={[{ blockType: 'rich-text', body: cmsMeta.descriptionOverride }] as BlockNode[]}
+                    context={{ shop, locale }}
                 />
             ) : null}
 
@@ -300,14 +296,7 @@ export default async function ProductPage({ params }: { params: ProductPageParam
             </Suspense>
 
             {cmsMeta?.blocks && cmsMeta.blocks.length > 0 ? (
-                <BlockRenderer
-                    blocks={cmsMeta.blocks as never}
-                    context={{
-                        shop: { id: shop.id, domain: shop.domain },
-                        locale: { code: locale.code },
-                        loaders: buildBlockLoaders(),
-                    }}
-                />
+                <Blocks blocks={cmsMeta.blocks as BlockNode[]} context={{ shop, locale }} />
             ) : null}
         </>
     );
