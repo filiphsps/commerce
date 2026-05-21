@@ -40,6 +40,7 @@ export const SearchBar = ({ defaultValue, onSearch, disabled, className, i18n, .
                 value={value}
                 onChange={({ target: { value } }) => setValue(value)}
                 onKeyDown={(e) => {
+                    if (e.nativeEvent.isComposing) return;
                     if (e.key !== 'Enter') return;
                     e.preventDefault();
                     performSearch();
