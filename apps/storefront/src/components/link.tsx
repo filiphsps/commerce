@@ -3,7 +3,6 @@
 import type { Url } from 'node:url';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { TypeError } from '@nordcom/commerce-errors';
 import { trace } from '@opentelemetry/api';
 import BaseLink from 'next/link';
 import type { ComponentProps } from 'react';
