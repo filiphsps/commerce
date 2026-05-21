@@ -177,7 +177,12 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
 
             const acceptLanguageHeader = req.headers.get('accept-language');
             const defaultLocale = (shop.i18n?.defaultLocale ?? 'en-US') as Code;
-            const userLang = resolveAcceptLanguage(acceptLanguageHeader ?? '', locales, defaultLocale, {
+            // `resolveAcceptLanguage` throws if `defaultLocale` is missing from
+            // the locales array. The shop's configured default isn't always
+            // present in Shopify's `availableCountries × availableLanguages`
+            // matrix, so merge it in defensively.
+            const resolvableLocales = locales.includes(defaultLocale) ? locales : [...locales, defaultLocale];
+            const userLang = resolveAcceptLanguage(acceptLanguageHeader ?? '', resolvableLocales, defaultLocale, {
                 matchCountry: true,
             });
 
