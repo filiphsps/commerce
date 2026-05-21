@@ -15,17 +15,7 @@ export async function PagesApi({ shop, locale }: { shop: OnlineShop; locale: Loc
     });
 }
 
-export async function PageApi({
-    shop,
-    locale,
-    handle,
-}: {
-    shop: OnlineShop;
-    locale: Locale;
-    handle: string;
-    /** @deprecated Retained for source compatibility; CMS lookups go through getPage by slug. */
-    type?: string;
-}) {
+export async function PageApi({ shop, locale, handle }: { shop: OnlineShop; locale: Locale; handle: string }) {
     return await CmsGetPage({
         shop: toShopRef(shop),
         locale: { code: locale.code },

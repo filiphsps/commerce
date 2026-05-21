@@ -30,22 +30,9 @@ export async function GET({}: NextRequest, { params }: { params: DynamicSitemapR
     const pagesResult = await PagesApi({ shop, locale });
     const pages: SitemapPage[] = [];
     if (pagesResult) {
-        switch (pagesResult.provider) {
-            case 'cms':
-                for (const page of pagesResult.items) {
-                    const p = page as { slug?: string; updatedAt?: string };
-                    if (!p.slug) continue;
-                    pages.push({ url: p.slug, lastmod: p.updatedAt ?? null });
-                }
-                break;
-            case 'shopify':
-                for (const page of pagesResult.items) {
-                    pages.push({
-                        url: page.handle,
-                        lastmod: page.updatedAt,
-                    });
-                }
-                break;
+        for (const page of pagesResult.docs) {
+            if (!page.slug) continue;
+            pages.push({ url: page.slug, lastmod: page.updatedAt ?? null });
         }
     }
 

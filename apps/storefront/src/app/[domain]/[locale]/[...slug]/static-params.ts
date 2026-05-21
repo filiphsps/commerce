@@ -25,18 +25,10 @@ export async function generateStaticParams({
     // requires at least one entry, so we return a sentinel that 404s.
     if (!pages) return [{ slug: [NOT_FOUND_HANDLE] }];
 
-    let slugs: { slug: string[] }[] = [];
-    switch (pages.provider) {
-        case 'cms':
-            slugs = pages.items
-                .map((p) => (p as { slug?: string }).slug)
-                .filter((s): s is string => typeof s === 'string')
-                .map((s) => ({ slug: [s] }));
-            break;
-        case 'shopify':
-            slugs = pages.items.map(({ handle }) => ({ slug: [handle] }));
-            break;
-    }
+    const slugs = pages.docs
+        .map((p) => p.slug)
+        .filter((s): s is string => typeof s === 'string' && s.length > 0)
+        .map((s) => ({ slug: [s] }));
 
     return slugs.length > 0 ? slugs : [{ slug: [NOT_FOUND_HANDLE] }];
 }
