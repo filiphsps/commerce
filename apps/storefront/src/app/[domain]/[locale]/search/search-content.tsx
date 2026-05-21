@@ -39,11 +39,10 @@ export const SearchBar = ({ defaultValue, onSearch, disabled, className, i18n, .
                 type="search"
                 value={value}
                 onChange={({ target: { value } }) => setValue(value)}
-                onKeyDown={({ preventDefault, key }) => {
-                    preventDefault();
-                    if (key === 'Enter') {
-                        performSearch();
-                    }
+                onKeyDown={(e) => {
+                    if (e.key !== 'Enter') return;
+                    e.preventDefault();
+                    performSearch();
                 }}
                 onBlur={(e) => {
                     e.preventDefault();
