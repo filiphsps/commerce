@@ -147,8 +147,10 @@ export default async function CollectionsCollectionPage({
         pagesInfo: Awaited<ReturnType<typeof CollectionPaginationCountApi>>;
 
     try {
-        collection = await CollectionApi({ api, handle, limit: 8 });
-        pagesInfo = await CollectionPaginationCountApi({ api, handle, filters: { first: PRODUCTS_PER_PAGE } });
+        [collection, pagesInfo] = await Promise.all([
+            CollectionApi({ api, handle, limit: 8 }),
+            CollectionPaginationCountApi({ api, handle, filters: { first: PRODUCTS_PER_PAGE } }),
+        ]);
     } catch (error: unknown) {
         unstable_rethrow(error);
 
