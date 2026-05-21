@@ -37,16 +37,15 @@ type SearchParams = Promise<{
     variant?: string;
 }>;
 
-export async function generateMetadata({
-    params,
-    searchParams: queryParams,
-}: {
-    params: ProductPageParams;
-    searchParams: SearchParams;
-}): Promise<Metadata> {
-    const searchParams = await queryParams;
+async function buildMetadata(
+    domain: string,
+    localeData: string,
+    handle: string,
+    variantParam: string | undefined,
+): Promise<Metadata> {
+    'use cache';
+    cacheLife('days');
 
-    const { domain, locale: localeData, handle } = await params;
     if (!isValidHandle(handle) || !isValidHandle(domain)) {
         notFound();
     }
@@ -81,8 +80,8 @@ export async function generateMetadata({
     const [locales, cmsMeta] = await Promise.all([LocalesApi({ api }), ProductMetadataApi({ shop, locale, handle })]);
 
     let search = '';
-    if (searchParams.variant && searchParams.variant !== parseGid(initialVariant.id).id) {
-        search = `?variant=${searchParams.variant}`;
+    if (variantParam && variantParam !== parseGid(initialVariant.id).id) {
+        search = `?variant=${variantParam}`;
     }
 
     const cmsSeoImageUrl = (() => {
@@ -115,6 +114,17 @@ export async function generateMetadata({
             images: cmsSeoImageUrl ? [{ url: cmsSeoImageUrl }] : undefined,
         },
     };
+}
+
+export async function generateMetadata({
+    params,
+    searchParams: queryParams,
+}: {
+    params: ProductPageParams;
+    searchParams: SearchParams;
+}): Promise<Metadata> {
+    const [{ domain, locale: localeData, handle }, searchParams] = await Promise.all([params, queryParams]);
+    return buildMetadata(domain, localeData, handle, searchParams.variant);
 }
 
 async function Badges({ product, i18n }: { product: Product; i18n: LocaleDictionary }) {
