@@ -50,6 +50,24 @@ vi.mock('./article', () => ({
     ArticleApi: ArticleApiMock,
 }));
 
+// --- CMS loaders ---
+
+const HeaderApiMock = vi.fn();
+const FooterApiMock = vi.fn();
+const InfoBarApiMock = vi.fn();
+const ProductMetadataApiMock = vi.fn();
+const CollectionMetadataApiMock = vi.fn();
+const PagesApiMock = vi.fn();
+
+vi.mock('./header', () => ({ HeaderApi: HeaderApiMock }));
+vi.mock('./footer', () => ({ FooterApi: FooterApiMock }));
+vi.mock('./info-bar', () => ({ InfoBarApi: InfoBarApiMock }));
+vi.mock('./metadata', () => ({
+    ProductMetadataApi: ProductMetadataApiMock,
+    CollectionMetadataApi: CollectionMetadataApiMock,
+}));
+vi.mock('./page', () => ({ PagesApi: PagesApiMock }));
+
 describe('Locale + country loaders', () => {
     it('LocalesApi wraps the source function and delegates', async () => {
         const mod = await import('./_loaders');
@@ -168,5 +186,79 @@ describe('ArticleApi loader', () => {
         const result = await mod.ArticleApi({ shop: {} as any, locale: {} as any, slug: 'hello-world' });
         expect(result).toEqual({ id: 'a1', slug: 'hello-world' });
         expect(ArticleApiMock).toHaveBeenCalled();
+    });
+});
+
+describe('CMS loaders', () => {
+    it('HeaderApi wraps source and delegates', async () => {
+        const mod = await import('./_loaders');
+        HeaderApiMock.mockClear();
+        HeaderApiMock.mockResolvedValue({ items: [] } as any);
+
+        expect(mod.HeaderApi).not.toBe(HeaderApiMock);
+
+        const result = await mod.HeaderApi({ shop: {} as any, locale: {} as any });
+        expect(result).toEqual({ items: [] });
+        expect(HeaderApiMock).toHaveBeenCalled();
+    });
+
+    it('FooterApi wraps source and delegates', async () => {
+        const mod = await import('./_loaders');
+        FooterApiMock.mockClear();
+        FooterApiMock.mockResolvedValue({ links: [] } as any);
+
+        expect(mod.FooterApi).not.toBe(FooterApiMock);
+
+        const result = await mod.FooterApi({ shop: {} as any, locale: {} as any });
+        expect(result).toEqual({ links: [] });
+        expect(FooterApiMock).toHaveBeenCalled();
+    });
+
+    it('InfoBarApi wraps source and delegates', async () => {
+        const mod = await import('./_loaders');
+        InfoBarApiMock.mockClear();
+        InfoBarApiMock.mockResolvedValue({ message: 'hello' } as any);
+
+        expect(mod.InfoBarApi).not.toBe(InfoBarApiMock);
+
+        const result = await mod.InfoBarApi({ shop: {} as any, locale: {} as any });
+        expect(result).toEqual({ message: 'hello' });
+        expect(InfoBarApiMock).toHaveBeenCalled();
+    });
+
+    it('ProductMetadataApi wraps source and delegates', async () => {
+        const mod = await import('./_loaders');
+        ProductMetadataApiMock.mockClear();
+        ProductMetadataApiMock.mockResolvedValue({ handle: 'red-widget' } as any);
+
+        expect(mod.ProductMetadataApi).not.toBe(ProductMetadataApiMock);
+
+        const result = await mod.ProductMetadataApi({ shop: {} as any, locale: {} as any, handle: 'red-widget' });
+        expect(result).toEqual({ handle: 'red-widget' });
+        expect(ProductMetadataApiMock).toHaveBeenCalled();
+    });
+
+    it('CollectionMetadataApi wraps source and delegates', async () => {
+        const mod = await import('./_loaders');
+        CollectionMetadataApiMock.mockClear();
+        CollectionMetadataApiMock.mockResolvedValue({ handle: 'summer-sale' } as any);
+
+        expect(mod.CollectionMetadataApi).not.toBe(CollectionMetadataApiMock);
+
+        const result = await mod.CollectionMetadataApi({ shop: {} as any, locale: {} as any, handle: 'summer-sale' });
+        expect(result).toEqual({ handle: 'summer-sale' });
+        expect(CollectionMetadataApiMock).toHaveBeenCalled();
+    });
+
+    it('PagesApi wraps source and delegates', async () => {
+        const mod = await import('./_loaders');
+        PagesApiMock.mockClear();
+        PagesApiMock.mockResolvedValue([{ slug: 'about' }] as any);
+
+        expect(mod.PagesApi).not.toBe(PagesApiMock);
+
+        const result = await mod.PagesApi({ shop: {} as any, locale: {} as any });
+        expect(result).toEqual([{ slug: 'about' }]);
+        expect(PagesApiMock).toHaveBeenCalled();
     });
 });
