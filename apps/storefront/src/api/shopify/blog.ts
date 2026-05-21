@@ -82,15 +82,18 @@ export async function BlogApi({
                             id
                             handle
                             publishedAt
+                            trackingParameters
 
                             title
                             excerptHtml
 
                             image {
+                                id
                                 url
                                 height
                                 width
                                 altText
+                                thumbhash
                             }
 
                             authorV2 {
@@ -147,6 +150,7 @@ export async function BlogArticleApi({
                     id
                     handle
                     publishedAt
+                    trackingParameters
 
                     title
                     content
@@ -161,10 +165,12 @@ export async function BlogArticleApi({
                     }
 
                     image {
+                        id
                         url
                         height
                         width
                         altText
+                        thumbhash
                     }
 
                     authorV2 {
@@ -176,6 +182,7 @@ export async function BlogArticleApi({
                     }
 
                     blog {
+                        id
                         title
                         handle
                     }

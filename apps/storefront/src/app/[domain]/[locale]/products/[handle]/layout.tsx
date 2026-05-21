@@ -184,7 +184,7 @@ export default async function ProductPageLayout({
             </Suspense>
 
             <Suspense key={`products.${handle}.breadcrumbs`} fallback={<BreadcrumbsSkeleton />}>
-                <div className="-mb-[1.25rem] empty:hidden md:-mb-[2.25rem]">
+                <div className="-mb-5 empty:hidden md:-mb-9">
                     <Breadcrumbs locale={locale} title={`${product.vendor} ${product.title}`} />
                 </div>
             </Suspense>
@@ -192,8 +192,8 @@ export default async function ProductPageLayout({
             <PageContent className="flex h-full max-w-full flex-col items-start justify-stretch gap-3 px-0 md:flex-row md:flex-nowrap md:gap-4">
                 <Suspense>{gallery}</Suspense>
 
-                <section className="flex w-full grow flex-col gap-2 overflow-hidden md:max-w-[34rem] md:gap-3">
-                    <Suspense fallback={<section className="w-full overflow-hidden md:max-w-[32rem]" />}>
+                <section className="flex w-full grow flex-col gap-2 overflow-hidden md:max-w-136 md:gap-3">
+                    <Suspense fallback={<section className="w-full overflow-hidden md:max-w-lg" />}>
                         {children}
                     </Suspense>
 

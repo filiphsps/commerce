@@ -7,11 +7,11 @@ import { BLOCK_STYLES } from './styles';
 export default function ProductPageLoading() {
     return (
         <>
-            <div className="-mb-[1.25rem] empty:hidden md:-mb-[2.25rem]">
+            <div className="-mb-5 empty:hidden md:-mb-9">
                 <BreadcrumbsSkeleton />
             </div>
             <PageContent primary={true}>
-                <section className="flex w-full flex-col gap-2 overflow-hidden md:max-w-[32rem] 2xl:w-auto">
+                <section className="flex w-full flex-col gap-2 overflow-hidden md:max-w-lg 2xl:w-auto">
                     <div className="h-24 w-full" data-skeleton />
                 </section>
 

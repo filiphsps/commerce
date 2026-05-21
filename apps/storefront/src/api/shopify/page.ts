@@ -29,6 +29,7 @@ const PAGE_FRAGMENT = /* GraphQL */ `
     createdAt
     updatedAt
     onlineStoreUrl
+    trackingParameters
 `;
 
 function normalize(page: Page): NormalizedShopifyPage {

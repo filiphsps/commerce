@@ -106,7 +106,7 @@ export default async function BlogPage({ params }: { params: BlogPageParams }) {
     return (
         <>
             <Suspense key={`blog.${blogHandle}.breadcrumbs`} fallback={<BreadcrumbsSkeleton />}>
-                <div className="-mb-[1.25rem] empty:hidden md:-mb-[2.25rem]">
+                <div className="-mb-5 empty:hidden md:-mb-9">
                     <Breadcrumbs locale={locale} title={title} />
                 </div>
             </Suspense>
@@ -151,7 +151,7 @@ export default async function BlogPage({ params }: { params: BlogPageParams }) {
                                 >
                                     {image?.url ? (
                                         <Image
-                                            className="aspect-[16/7] rounded-lg bg-gray-100 object-cover object-center shadow transition-all group-hover/header:brightness-75 group-focus-visible/header:brightness-75"
+                                            className="aspect-16/7 rounded-lg bg-gray-100 object-cover object-center shadow transition-all group-hover/header:brightness-75 group-focus-visible/header:brightness-75"
                                             role={image.altText ? undefined : 'presentation'}
                                             src={image.url}
                                             alt={image.altText!}
@@ -164,7 +164,7 @@ export default async function BlogPage({ params }: { params: BlogPageParams }) {
                                             quality={80}
                                         />
                                     ) : (
-                                        <div className="aspect-[16/7] rounded-lg bg-gray-100 transition-color group-hover/header:brightness-75 group-focus-visible/header:brightness-75" />
+                                        <div className="aspect-16/7 rounded-lg bg-gray-100 transition-color group-hover/header:brightness-75 group-focus-visible/header:brightness-75" />
                                     )}
 
                                     <div className="block font-semibold text-xl transition-colors group-hover/header:text-primary group-focus-visible/header:text-primary">

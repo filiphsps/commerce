@@ -61,6 +61,8 @@
         "browse-all-products-by-brand": "Visa alla produkter av {0}",
         "by": "av",
         "dispatch-within-n-business-days": "Leverera inom {0} arbetsdagar",
+        "gift-card": "Presentkort",
+        "subscription": "Prenumeration",
         "in-stock-and-available": "Tillgängligt i lager",
         "in-stock": "Tillgängligt i lager",
         "n-in-stock-and-available": "{0} tillgängligt i lager",

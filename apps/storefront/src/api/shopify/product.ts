@@ -26,6 +26,9 @@ export const PRODUCT_FRAGMENT = /* GraphQL */ `
     availableForSale
     createdAt
     updatedAt
+    publishedAt
+    isGiftCard
+    requiresSellingPlan
     title
     description
     descriptionHtml
@@ -48,10 +51,120 @@ export const PRODUCT_FRAGMENT = /* GraphQL */ `
             currencyCode
         }
     }
+    compareAtPriceRange {
+        maxVariantPrice {
+            amount
+            currencyCode
+        }
+        minVariantPrice {
+            amount
+            currencyCode
+        }
+    }
     options(first: 250) {
         id
         name
+        # \`values\` (legacy string array) is retained alongside \`optionValues\`
+        # because internal helpers (filterRealOptions / hasProductOptions in
+        # @/utils/has-product-options) still consume either shape — newer
+        # Shopify-aware callers go through \`optionValues\` via
+        # hydrogen-react's \`getProductOptions\`.
         values
+        # Modern option-value selection model used by hydrogen-react's
+        # \`getProductOptions\`. Without these subfields the helper logs
+        # "product.options.optionValues is missing" at runtime.
+        optionValues {
+            id
+            name
+            firstSelectableVariant {
+                id
+                selectedOptions {
+                    name
+                    value
+                }
+            }
+            swatch {
+                color
+                image {
+                    previewImage {
+                        url(transform: { preferredContentType: WEBP })
+                        altText
+                        width
+                        height
+                    }
+                }
+            }
+        }
+    }
+    # Required by hydrogen-react's \`getProductOptions\` to resolve the
+    # currently-selected variant and the variants reachable in a single
+    # option change. Both fields project the same minimal variant shape.
+    selectedOrFirstAvailableVariant(ignoreUnknownOptions: true, caseInsensitiveMatch: true) {
+        id
+        title
+        availableForSale
+        currentlyNotInStock
+        quantityAvailable
+        requiresShipping
+        selectedOptions {
+            name
+            value
+        }
+        price {
+            amount
+            currencyCode
+        }
+        compareAtPrice {
+            amount
+            currencyCode
+        }
+        unitPrice {
+            amount
+            currencyCode
+        }
+        unitPriceMeasurement {
+            measuredType
+            quantityUnit
+            quantityValue
+            referenceUnit
+            referenceValue
+        }
+        image {
+            id
+            altText
+            url(transform: { preferredContentType: WEBP })
+            height
+            width
+            thumbhash
+        }
+    }
+    adjacentVariants {
+        id
+        title
+        availableForSale
+        currentlyNotInStock
+        quantityAvailable
+        requiresShipping
+        selectedOptions {
+            name
+            value
+        }
+        price {
+            amount
+            currencyCode
+        }
+        compareAtPrice {
+            amount
+            currencyCode
+        }
+        image {
+            id
+            altText
+            url(transform: { preferredContentType: WEBP })
+            height
+            width
+            thumbhash
+        }
     }
     variants(first: 250) {
         edges {
@@ -68,7 +181,22 @@ export const PRODUCT_FRAGMENT = /* GraphQL */ `
                     amount
                     currencyCode
                 }
+                unitPrice {
+                    amount
+                    currencyCode
+                }
+                unitPriceMeasurement {
+                    measuredType
+                    quantityUnit
+                    quantityValue
+                    referenceUnit
+                    referenceValue
+                }
                 availableForSale
+                currentlyNotInStock
+                quantityAvailable
+                requiresShipping
+                taxable
                 weight
                 weightUnit
                 image {
@@ -77,6 +205,7 @@ export const PRODUCT_FRAGMENT = /* GraphQL */ `
                     url(transform: { preferredContentType: WEBP })
                     height
                     width
+                    thumbhash
                 }
                 selectedOptions {
                     name
@@ -117,6 +246,7 @@ export const PRODUCT_FRAGMENT = /* GraphQL */ `
         url(transform: { preferredContentType: WEBP })
         height
         width
+        thumbhash
     }
     images(first: 250) {
         edges {
@@ -126,6 +256,7 @@ export const PRODUCT_FRAGMENT = /* GraphQL */ `
                 url(transform: { preferredContentType: WEBP })
                 height
                 width
+                thumbhash
             }
         }
     }

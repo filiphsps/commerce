@@ -112,7 +112,7 @@ function Level2Tile({ item, locale }: { item: Level2Item; locale: { code: string
                 className="group block"
             >
                 {image?.url ? (
-                    <div className="relative aspect-[4/3] w-full overflow-hidden">
+                    <div className="relative aspect-4/3 w-full overflow-hidden">
                         <Image
                             src={image.url}
                             alt={image.alt ?? link.label ?? ''}

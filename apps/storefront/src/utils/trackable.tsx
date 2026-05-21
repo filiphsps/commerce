@@ -1,7 +1,7 @@
 'use client';
 
-import type { Nullable, OnlineShop } from '@nordcom/commerce-db';
-import { MissingContextProviderError, TodoError, UnknownCommerceProviderError } from '@nordcom/commerce-errors';
+import type { Nullable, OnlineShop, ShopifyCommerceProvider } from '@nordcom/commerce-db';
+import { MissingContextProviderError, TodoError } from '@nordcom/commerce-errors';
 import type { CartWithActions, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 import {
     AnalyticsEventName as AnalyticsShopifyEventName,
@@ -393,6 +393,15 @@ export type TrackableContextValue = {
 
 export const TrackableContext = createContext<TrackableContextValue>({} as TrackableContextValue);
 
+// Inert tracking context. Mounted when the tenant lacks a Shopify commerce
+// provider (or when ShopifyProvider degraded to passthrough because
+// `commerceProvider.domain` is missing). Lets descendants call `useTrackable`
+// without crashing while still being a no-op at runtime.
+export const NOOP_TRACKABLE_VALUE: TrackableContextValue = {
+    queueEvent: () => {},
+    postEvent: async () => undefined,
+};
+
 // Subscribe to `storage` events so a Vercel-toolbar flip in another tab
 // propagates without a reload. The previous no-op `subscribe` meant
 // `useSyncExternalStore` would never re-read the snapshot after first mount.
@@ -426,9 +435,6 @@ export function Trackable({ children, dummy = false }: TrackableProps) {
     const prevPath = usePrevious(path);
 
     const { shop, currency, locale } = useShop();
-    if (shop.commerceProvider.type !== 'shopify') {
-        throw new UnknownCommerceProviderError(shop.commerceProvider.type);
-    }
 
     const detectedInternalTraffic = useSyncExternalStore<boolean>(
         subscribeToStorage,
@@ -437,7 +443,7 @@ export function Trackable({ children, dummy = false }: TrackableProps) {
     );
     const internalTraffic = dummy || detectedInternalTraffic;
 
-    const checkoutDomain = shop.commerceProvider.domain;
+    const checkoutDomain = (shop.commerceProvider as ShopifyCommerceProvider).domain || 'TODO'; // TODO
     // Only use the domain, not the subdomain.
     let cookieDomain: string | undefined = shop.domain?.split('.').slice(-2).join('.') || shop.domain || undefined;
     if (cookieDomain && !cookieDomain.startsWith('.')) {

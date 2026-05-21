@@ -54,7 +54,7 @@ const Breadcrumbs = ({ locale, title, className }: BreadcrumbsProps) => {
 
             <section
                 className={cn(
-                    '-mx-2 flex w-screen list-none flex-nowrap items-center justify-start gap-1 overflow-hidden overflow-x-auto overscroll-x-contain whitespace-nowrap rounded-lg px-2 font-medium text-gray-700 leading-none md:-mx-0 md:w-full md:max-w-full md:px-0',
+                    '-mx-2 flex w-screen list-none flex-nowrap items-center justify-start gap-1 overflow-hidden overflow-x-auto overscroll-x-contain whitespace-nowrap rounded-lg px-2 font-medium text-gray-700 leading-none md:mx-0 md:w-full md:max-w-full md:px-0',
                     className,
                 )}
                 itemScope

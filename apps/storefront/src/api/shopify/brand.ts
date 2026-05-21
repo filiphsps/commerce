@@ -24,30 +24,36 @@ export const BrandApi = async ({ api }: { api: AbstractApi }) => {
                         id
                         alt
                         image {
+                            id
                             altText
                             url(transform: { preferredContentType: WEBP })
                             height
                             width
+                            thumbhash
                         }
                     }
                     squareLogo {
                         id
                         alt
                         image {
+                            id
                             altText
                             url(transform: { preferredContentType: WEBP })
                             height
                             width
+                            thumbhash
                         }
                     }
                     coverImage {
                         id
                         alt
                         image {
+                            id
                             altText
                             url(transform: { preferredContentType: WEBP })
                             height
                             width
+                            thumbhash
                         }
                     }
                     shortDescription

@@ -1,4 +1,4 @@
-import { Package as PackageIcon } from 'lucide-react';
+import { Gift as GiftIcon, Package as PackageIcon, RefreshCw as SubscriptionIcon } from 'lucide-react';
 import { isProductVegan, type Product } from '@/api/product';
 import { AttributeIcon } from '@/components/products/attribute-icon';
 import { firstAvailableVariant } from '@/utils/first-available-variant';
@@ -42,6 +42,8 @@ const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
 
     const isVegan = isProductVegan(product);
     const isSale = typeof selectedVariant.compareAtPrice?.amount !== 'undefined';
+    const isGiftCard = product.isGiftCard === true;
+    const isSubscription = product.requiresSellingPlan === true;
 
     let discount = 0;
     if (isSale) {
@@ -62,6 +64,20 @@ const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
                     {capitalize(t('vegan'))}
                 </div>
             )}
+
+            {isGiftCard ? (
+                <div className={cn(COMMON_BADGE_STYLES, 'bg-purple-600 stroke-white text-white')}>
+                    <GiftIcon className="h-3 w-3 stroke-2" />
+                    {capitalize(t('gift-card'))}
+                </div>
+            ) : null}
+
+            {isSubscription ? (
+                <div className={cn(COMMON_BADGE_STYLES, 'bg-blue-600 stroke-white text-white')}>
+                    <SubscriptionIcon className="h-3 w-3 stroke-2" />
+                    {capitalize(t('subscription'))}
+                </div>
+            ) : null}
 
             {discount > 1 ? ( // Handle rounding-errors.
                 <div className={cn(COMMON_BADGE_STYLES, 'bg-sale-stripes font-bold text-white')} data-nosnippet={true}>

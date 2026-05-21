@@ -8,6 +8,8 @@ export const CartFragment = /* GraphQL */ `
         id
         checkoutUrl
         totalQuantity
+        createdAt
+        updatedAt
         buyerIdentity {
             countryCode
             customer {
@@ -30,6 +32,12 @@ export const CartFragment = /* GraphQL */ `
                         value
                     }
                     cost {
+                        amountPerQuantity {
+                            ...MoneyFragment
+                        }
+                        subtotalAmount {
+                            ...MoneyFragment
+                        }
                         totalAmount {
                             ...MoneyFragment
                         }
@@ -48,6 +56,13 @@ export const CartFragment = /* GraphQL */ `
                                 currencyCode
                             }
                         }
+                        ... on CartCodeDiscountAllocation {
+                            code
+                            discountedAmount {
+                                amount
+                                currencyCode
+                            }
+                        }
                     }
                     merchandise {
                         ... on ProductVariant {
@@ -59,6 +74,9 @@ export const CartFragment = /* GraphQL */ `
                                 ...MoneyFragment
                             }
                             price {
+                                ...MoneyFragment
+                            }
+                            unitPrice {
                                 ...MoneyFragment
                             }
                             requiresShipping
@@ -85,6 +103,9 @@ export const CartFragment = /* GraphQL */ `
             totalAmount {
                 ...MoneyFragment
             }
+            checkoutChargeAmount {
+                ...MoneyFragment
+            }
         }
         note
         attributes {
@@ -107,6 +128,7 @@ export const CartFragment = /* GraphQL */ `
         altText
         width
         height
+        thumbhash
     }
     fragment ProductFragment on Product {
         ${PRODUCT_FRAGMENT_MINIMAL_NO_VARIANTS}

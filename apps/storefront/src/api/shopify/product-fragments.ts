@@ -21,6 +21,9 @@ export const PRODUCT_FRAGMENT_MINIMAL_NO_VARIANTS = /* GraphQL */ `
     encodedVariantExistence
     encodedVariantAvailability
     createdAt
+    publishedAt
+    isGiftCard
+    requiresSellingPlan
     title
     description
     vendor
@@ -41,6 +44,16 @@ export const PRODUCT_FRAGMENT_MINIMAL_NO_VARIANTS = /* GraphQL */ `
             currencyCode
         }
     }
+    compareAtPriceRange {
+        maxVariantPrice {
+            amount
+            currencyCode
+        }
+        minVariantPrice {
+            amount
+            currencyCode
+        }
+    }
 `;
 
 export const PRODUCT_FRAGMENT_MINIMAL = /* GraphQL */ `
@@ -49,7 +62,53 @@ export const PRODUCT_FRAGMENT_MINIMAL = /* GraphQL */ `
     options(first: 3) {
         id
         name
+        # Legacy string-value array, retained for non-hydrogen-react consumers
+        # (see @/utils/has-product-options.filterRealOptions).
         values
+        # Modern option-value selection model required by hydrogen-react's
+        # \`getProductOptions\` — without it the helper logs
+        # "product.options.optionValues is missing" at runtime on product cards.
+        optionValues {
+            id
+            name
+            firstSelectableVariant {
+                id
+                selectedOptions {
+                    name
+                    value
+                }
+            }
+            swatch {
+                color
+                image {
+                    previewImage {
+                        url(transform: { preferredContentType: WEBP })
+                        altText
+                        width
+                        height
+                    }
+                }
+            }
+        }
+    }
+    # Required by hydrogen-react's \`getProductOptions\`. Kept minimal here so
+    # product-card payloads stay small — full pricing/imagery for these
+    # variants lives in the detail-page fragment.
+    selectedOrFirstAvailableVariant(ignoreUnknownOptions: true, caseInsensitiveMatch: true) {
+        id
+        availableForSale
+        selectedOptions {
+            name
+            value
+        }
+    }
+    adjacentVariants {
+        id
+        availableForSale
+        selectedOptions {
+            name
+            value
+        }
     }
     variants(first: 3) {
         edges {
@@ -68,6 +127,7 @@ export const PRODUCT_FRAGMENT_MINIMAL = /* GraphQL */ `
                 availableForSale
                 currentlyNotInStock
                 quantityAvailable
+                requiresShipping
                 weight
                 weightUnit
                 image {
@@ -76,6 +136,7 @@ export const PRODUCT_FRAGMENT_MINIMAL = /* GraphQL */ `
                     url(transform: { preferredContentType: WEBP })
                     height
                     width
+                    thumbhash
                 }
                 selectedOptions {
                     name
@@ -90,6 +151,7 @@ export const PRODUCT_FRAGMENT_MINIMAL = /* GraphQL */ `
         url(transform: { preferredContentType: WEBP })
         height
         width
+        thumbhash
     }
     images(first: 5) {
         edges {
@@ -99,6 +161,7 @@ export const PRODUCT_FRAGMENT_MINIMAL = /* GraphQL */ `
                 url(transform: { preferredContentType: WEBP })
                 height
                 width
+                thumbhash
             }
         }
     }

@@ -126,6 +126,7 @@ export const CollectionApi = async (
                     collection(handle: $handle) {
                         id
                         handle
+                        updatedAt
                         title
                         description
                         descriptionHtml
@@ -135,6 +136,7 @@ export const CollectionApi = async (
                             url
                             height
                             width
+                            thumbhash
                         }
                         seo {
                             title
@@ -396,7 +398,6 @@ export const CollectionsPaginationApi = async ({
                         node {
                             id
                             handle
-                            createdAt
                             updatedAt
                             title
                             description
@@ -407,6 +408,7 @@ export const CollectionsPaginationApi = async ({
                                 url
                                 height
                                 width
+                                thumbhash
                             }
                             seo {
                                 title

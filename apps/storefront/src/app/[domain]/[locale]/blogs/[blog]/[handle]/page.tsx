@@ -177,7 +177,7 @@ export default async function ArticlePage({ params }: { params: ArticlePageParam
     return (
         <>
             <Suspense key={`blog.${blogHandle}.${handle}.breadcrumbs`} fallback={<BreadcrumbsSkeleton />}>
-                <div className="-mb-[1.25rem] empty:hidden md:-mb-[2.25rem]">
+                <div className="-mb-5 empty:hidden md:-mb-9">
                     <Breadcrumbs locale={locale} title={title} />
                 </div>
             </Suspense>

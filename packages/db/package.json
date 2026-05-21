@@ -3,7 +3,13 @@
     "name": "@nordcom/commerce-db",
     "version": "0.1.0",
     "private": true,
-    "sideEffects": false,
+    "sideEffects": [
+        "./src/db.ts",
+        "./dist/db.js",
+        "./src/models/*.ts",
+        "./dist/models/*.js",
+        "./dist/chunks/*.js"
+    ],
     "type": "module",
     "types": "./dist/index.d.ts",
     "module": "./dist/index.ts",

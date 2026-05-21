@@ -77,6 +77,8 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
         />
     ) : null;
 
+    const unitPrice = variant.unitPrice;
+    const unitPriceMeasurement = variant.unitPriceMeasurement;
     const pricing = (
         <>
             {discount > 0.1 ? (
@@ -98,6 +100,15 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                 )}
                 data={line.cost.totalAmount}
             />
+
+            {unitPrice && unitPriceMeasurement ? (
+                <div className="flex items-center gap-1 font-medium text-gray-500 text-xs leading-tight">
+                    <Price data={unitPrice} />
+                    <span>
+                        {`/ ${unitPriceMeasurement.referenceValue} ${unitPriceMeasurement.referenceUnit?.toLowerCase() ?? ''}`}
+                    </span>
+                </div>
+            ) : null}
         </>
     );
 

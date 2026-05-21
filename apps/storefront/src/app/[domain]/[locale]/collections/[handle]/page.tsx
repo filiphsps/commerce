@@ -229,7 +229,7 @@ export default async function CollectionsCollectionPage({
     return (
         <>
             <Suspense key={`collections.${handle}.breadcrumbs`} fallback={<BreadcrumbsSkeleton />}>
-                <div className="-mb-[1.25rem] empty:hidden md:-mb-[2.25rem]">
+                <div className="-mb-5 empty:hidden md:-mb-9">
                     <Breadcrumbs locale={locale} title={collection.title} />
                 </div>
             </Suspense>
