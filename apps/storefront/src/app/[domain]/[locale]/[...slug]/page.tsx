@@ -6,7 +6,7 @@ import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
 import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
 import { notFound, unstable_rethrow } from 'next/navigation';
-import { Fragment, Suspense } from 'react';
+import { Suspense } from 'react';
 import type { OnlineStore, WithContext } from 'schema-dts';
 import { PageApi } from '@/api/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
@@ -193,17 +193,20 @@ export default async function CustomPage({ params }: { params: CustomPageParams 
 
     return (
         <>
-            <Suspense key={`pages.${handle}.breadcrumbs`} fallback={<Fragment />}>
+            <Suspense key={`pages.${handle}.breadcrumbs`}>
                 <PageBreadcrumbs shop={shop} locale={locale} handle={handle} />
             </Suspense>
 
-            <Suspense key={`pages.${handle}.content`} fallback={<Fragment />}>
+            <Suspense
+                key={`pages.${handle}.content`}
+                fallback={<CMSContent.Skeleton shop={shop} locale={locale} handle={handle} />}
+            >
                 <CMSContent shop={shop} locale={locale} handle={handle} />
             </Suspense>
 
             {/* Metadata */}
             {handle === 'homepage' ? (
-                <Suspense key={`pages.${handle}.jsonld.online-store`} fallback={<Fragment />}>
+                <Suspense key={`pages.${handle}.jsonld.online-store`}>
                     <OnlineStoreJsonLd shop={shop} locale={locale} />
                 </Suspense>
             ) : null}

@@ -4,6 +4,7 @@ import type { FindFallbackLocale, FindLocale } from './_locale-cast';
 import { assertShopId } from './assert-shop';
 import type { GetPageArgs, LocaleRef, ShopRef } from './get-page';
 import { getPayloadInstance } from './get-payload-instance';
+import { resolveTenantId } from './resolve-tenant-id';
 
 export type GetArticleArgs = Omit<GetPageArgs, 'slug'> & { slug: string };
 
@@ -16,9 +17,12 @@ export const getArticle = async ({
 }: GetArticleArgs & { __payload?: Payload }) => {
     assertShopId(shop);
     const payload = __payload ?? (await getPayloadInstance());
+    const tenantId = await resolveTenantId(payload, shop.id);
+    if (!tenantId) return null;
+
     const { docs } = await payload.find({
         collection: 'articles',
-        where: { and: [{ tenant: { equals: shop.id } }, { slug: { equals: slug } }] },
+        where: { and: [{ tenant: { equals: tenantId } }, { slug: { equals: slug } }] },
         locale: locale.code as FindLocale,
         fallbackLocale: shop.i18n.defaultLocale as FindFallbackLocale,
         depth: 2,

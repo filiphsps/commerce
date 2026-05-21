@@ -4,6 +4,7 @@ import type { FindFallbackLocale, FindLocale } from './_locale-cast';
 import { assertShopId } from './assert-shop';
 import type { LocaleRef, ShopRef } from './get-page';
 import { getPayloadInstance } from './get-payload-instance';
+import { resolveTenantId } from './resolve-tenant-id';
 
 export type GetArticlesArgs = {
     shop: ShopRef;
@@ -14,6 +15,8 @@ export type GetArticlesArgs = {
     draft?: boolean;
     __payload?: Payload;
 };
+
+const emptyResult = { docs: [], totalDocs: 0, hasNextPage: false, hasPrevPage: false, page: 1 };
 
 export const getArticles = async ({
     shop,
@@ -26,14 +29,17 @@ export const getArticles = async ({
 }: GetArticlesArgs) => {
     assertShopId(shop);
     const payload = __payload ?? (await getPayloadInstance());
+    const tenantId = await resolveTenantId(payload, shop.id);
+    if (!tenantId) return emptyResult as never as Awaited<ReturnType<Payload['find']>>;
     // `contains` translates to a MongoDB regex against the `tags` array — that
     // both does a substring match (`news` matches `breaking-news`) AND lets
     // attacker-supplied regex metachars (`.+*?()[]\`) through to the query,
     // which is a ReDoS / partial-DoS surface. Use `in` for an exact-equality
     // match against any element of the hasMany text field.
     const where = (
-        tag ? { and: [{ tenant: { equals: shop.id } }, { tags: { in: [tag] } }] } : { tenant: { equals: shop.id } }
+        tag ? { and: [{ tenant: { equals: tenantId } }, { tags: { in: [tag] } }] } : { tenant: { equals: tenantId } }
     ) as never;
+
     return payload.find({
         collection: 'articles',
         where,

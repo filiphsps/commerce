@@ -9,3 +9,4 @@ export { type GetPagesArgs, getPages } from './get-pages';
 export { getPayloadInstance } from './get-payload-instance';
 export { type GetProductMetadataArgs, getProductMetadata } from './get-product-metadata';
 export { type LinkValue, resolveLink } from './resolve-link';
+export { resolveTenantId } from './resolve-tenant-id';
