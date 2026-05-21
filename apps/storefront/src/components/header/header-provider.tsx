@@ -1,7 +1,7 @@
 'use client';
 
 import { MissingContextProviderError } from '@nordcom/commerce-errors';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import NextTopLoader from 'nextjs-toploader';
 import type { ReactNode } from 'react';
 import { createContext, Suspense, useContext, useEffect, useState } from 'react';
@@ -46,6 +46,7 @@ export const HeaderProvider = ({ children, loaderColor }: HeaderProviderProps) =
 
 const HeaderProviderInner = ({ children, loaderColor }: HeaderProviderProps) => {
     const pathname = usePathname();
+    const searchParams = useSearchParams();
 
     // Deal with scrolling and setting the scrolled attribute.
     useEffect(() => {
@@ -84,11 +85,10 @@ const HeaderProviderInner = ({ children, loaderColor }: HeaderProviderProps) => 
         document.body.setAttribute('data-menu-open', menuValue !== null ? 'true' : 'false');
     }, [menuValue]);
 
-    // Reset menu state on navigation. Phase 2 will broaden this to also fire
-    // on searchParams change.
+    // URL transition cleanup. Fires on both pathname AND searchParams change.
     useEffect(() => {
         document.body.removeAttribute('data-menu-open');
-    }, []);
+    }, [pathname, searchParams]);
 
     const value = { menu: menuValue, setMenu, closeMenu: () => setMenu(null) };
     return (

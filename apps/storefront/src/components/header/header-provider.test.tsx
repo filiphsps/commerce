@@ -4,6 +4,7 @@ import { act, render, screen } from '@/utils/test/react';
 
 vi.mock('next/navigation', async () => ({
     usePathname: vi.fn().mockReturnValue('/en-US/'),
+    useSearchParams: vi.fn().mockReturnValue(new URLSearchParams('q=red')),
 }));
 
 vi.mock('nextjs-toploader', () => ({
@@ -70,6 +71,30 @@ describe('components', () => {
                 }
                 // The error is a MissingContextProviderError — check its name/statusCode
                 expect((caught as any)?.name).toBe('MissingContextProviderError');
+            });
+
+            it('re-runs cleanup on searchParams change', async () => {
+                const { useSearchParams } = await import('next/navigation');
+                const useSearchParamsMock = vi.mocked(useSearchParams);
+
+                const removeAttr = vi.spyOn(document.body, 'removeAttribute');
+
+                const { rerender } = render(
+                    <HeaderProvider>
+                        <div />
+                    </HeaderProvider>,
+                );
+                removeAttr.mockClear();
+
+                useSearchParamsMock.mockReturnValue(new URLSearchParams('q=blue') as any);
+                rerender(
+                    <HeaderProvider>
+                        <div />
+                    </HeaderProvider>,
+                );
+
+                // Effect must have run again — `data-menu-open` is removed each URL transition.
+                expect(removeAttr).toHaveBeenCalledWith('data-menu-open');
             });
         });
     });
