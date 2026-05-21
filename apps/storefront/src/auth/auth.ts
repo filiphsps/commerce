@@ -5,8 +5,6 @@ import { InvalidShopifyCustomerAccountsApiConfiguration, UnknownCommerceProvider
 
 import NextAuth from 'next-auth';
 
-export type { Provider as AuthProvider } from 'next-auth/providers';
-
 import getAuthConfig from './auth.config';
 
 export function getAuth(shop: OnlineShop) {
