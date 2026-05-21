@@ -19,8 +19,8 @@ export const HEADER_LINK_BUBBLE_STYLES =
     '-mx-2 rounded-lg px-2 py-2 text-inherit group-hover/menu-item:bg-gray-100 group-focus-visible/menu-item:bg-gray-100';
 export const HEADER_LINK_ACTIVE_MENU_STYLES = '-mx-2 bg-gray-100 px-2 font-semibold text-primary';
 const PANEL_TILE_STYLES =
-    'group/item flex h-full grow shrink-0 overflow-hidden rounded-lg border border-gray-300 border-solid bg-white transition-colors duration-75 hover:border-primary hover:text-primary focus-within:border-primary focus-within:text-primary';
-const PANEL_TILE_TITLE_STYLES = 'py-2 font-semibold text-xl leading-none';
+    'group/item relative flex h-full grow shrink-0 overflow-hidden rounded-xl border border-black/[0.06] border-solid bg-white transition-[border-color,box-shadow,transform] duration-200 ease-out hover:border-primary/40 hover:shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] hover:-translate-y-0.5 focus-within:border-primary/40 focus-within:shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)]';
+const PANEL_TILE_TITLE_STYLES = 'py-2 font-semibold text-xl leading-tight tracking-tight';
 
 type NavItem = NonNullable<Header['items']>[number];
 
@@ -190,10 +190,15 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
                 onMouseEnter={handlePointerEnter}
                 onMouseLeave={handlePointerLeave}
                 style={{ position: 'fixed', top: position.top, left: 0, right: 0, zIndex: 50 }}
-                className="pt-2"
+                className="animate-mega-menu-in pt-3"
             >
                 <div className="mx-auto w-full max-w-(--page-width) px-2 md:px-3">
-                    <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-lg md:p-4">
+                    <div
+                        className={cn(
+                            'rounded-2xl border border-black/[0.06] bg-white p-3 md:p-5',
+                            'shadow-[0_24px_60px_-24px_rgba(15,23,42,0.18),0_8px_20px_-8px_rgba(15,23,42,0.08)]',
+                        )}
+                    >
                         <MegaMenuPanel item={item} locale={locale} />
                     </div>
                 </div>
@@ -229,7 +234,10 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
                     {item.link?.label}
                     <ChevronDownIcon
                         aria-hidden={true}
-                        className={cn('size-4 stroke-2 transition-transform', open && 'rotate-180')}
+                        className={cn(
+                            'size-4 stroke-2 transition-transform duration-200 ease-out',
+                            open && 'rotate-180',
+                        )}
                     />
                 </span>
             </button>
@@ -248,7 +256,7 @@ function MegaMenuPanel({ item, locale }: { item: NavItem; locale: { code: string
     if (items.length === 0) return null;
 
     return (
-        <div className="flex flex-col gap-3 md:grid md:auto-rows-max md:grid-cols-2 lg:grid-cols-3 lg:gap-2 xl:grid-cols-4">
+        <div className="flex flex-col gap-3 md:grid md:auto-rows-max md:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4">
             {items.map((child, i) => (
                 <MegaMenuItem key={child.id ?? `mm-1-${i}`} item={child} locale={locale} depth={1} />
             ))}
@@ -279,13 +287,13 @@ function MegaMenuItem({ item, locale, depth }: { item: RecursiveNavItem; locale:
     const isTopLevel = depth === 1;
     const hasImage = isTopLevel && image?.url;
 
-    // Image tile: title overlays the image with a gradient shadow + text
-    // stroke (matches the old swedish-candy-store style). Without an image
-    // we just emit the title in plain text.
+    // Image tile: title sits over the image with a layered gradient for
+    // legibility. Drops the old WebkitTextStroke / paint-order trick — the
+    // gradient + drop-shadow do the work without the skeuomorphic outline.
     const imageHeader = hasImage ? (
         <div
             className={cn(
-                'relative h-full shrink-0 overflow-hidden text-primary-foreground transition-all group-hover/item:brightness-75 group-focus-within/item:brightness-75',
+                'relative h-full shrink-0 overflow-hidden text-primary-foreground',
                 !background && 'bg-primary',
             )}
             style={background ? { backgroundColor: background } : undefined}
@@ -296,19 +304,22 @@ function MegaMenuItem({ item, locale, depth }: { item: RecursiveNavItem; locale:
                 fill={false}
                 width={image!.width ?? 320}
                 height={image!.height ?? 240}
-                className="pointer-events-none h-full w-full object-cover object-center shadow transition-transform group-hover/item:scale-110 group-focus-within/item:scale-110"
+                className="pointer-events-none h-full w-full object-cover object-center transition-transform duration-300 ease-out group-hover/item:scale-[1.04] group-focus-within/item:scale-[1.04]"
                 sizes="(max-width: 768px) 90vw, 300px"
                 draggable={false}
                 loading="lazy"
                 decoding="async"
             />
+            <div
+                aria-hidden={true}
+                className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent"
+            />
             {label ? (
                 <div
                     className={cn(
-                        'absolute inset-0 flex w-full items-end justify-start bg-gradient-to-b from-transparent to-black/45 p-2 text-white',
+                        'absolute inset-0 flex w-full items-end justify-start p-3 text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]',
                         PANEL_TILE_TITLE_STYLES,
                     )}
-                    style={{ WebkitTextStroke: '.15rem rgba(0,0,0,.3)', paintOrder: 'stroke fill' }}
                 >
                     {label}
                 </div>
@@ -316,8 +327,22 @@ function MegaMenuItem({ item, locale, depth }: { item: RecursiveNavItem; locale:
         </div>
     ) : null;
 
+    // Items with children but no link of their own become eyebrow group
+    // headings rather than interactive rows — keeps the IA scannable when
+    // editors use label-only items as section grouping.
+    const isGroupHeading = !isTopLevel && !href && hasChildren;
+
     const labelText = label ? (
-        <span className={cn(isTopLevel ? PANEL_TILE_TITLE_STYLES : 'font-medium text-gray-800 text-sm leading-tight')}>
+        <span
+            className={cn(
+                isTopLevel && PANEL_TILE_TITLE_STYLES,
+                !isTopLevel &&
+                    !isGroupHeading &&
+                    'font-medium text-gray-800 text-sm leading-tight transition-colors group-hover/sub-link:text-primary group-focus-visible/sub-link:text-primary',
+                isGroupHeading &&
+                    'block font-semibold text-[0.7rem] text-gray-500 uppercase leading-none tracking-[0.08em]',
+            )}
+        >
             {label}
         </span>
     ) : null;
@@ -327,13 +352,17 @@ function MegaMenuItem({ item, locale, depth }: { item: RecursiveNavItem; locale:
     const labelBlock = (
         <div
             className={cn(
-                'flex flex-col items-start justify-start gap-1 text-gray-600 group-hover/item:text-inherit group-focus-within/item:text-inherit',
-                isTopLevel ? 'p-3' : 'py-1',
+                'flex flex-col items-start justify-start gap-1 text-gray-600',
+                isTopLevel ? 'p-3 group-hover/item:text-inherit group-focus-within/item:text-inherit' : 'py-1.5',
                 hasImage && 'pt-2 empty:hidden',
             )}
         >
             {!hasImage ? labelText : null}
-            {description ? <span className="text-sm leading-snug">{description}</span> : null}
+            {description ? (
+                <span className={cn('leading-snug', isTopLevel ? 'text-sm' : 'text-[0.8125rem] text-gray-500')}>
+                    {description}
+                </span>
+            ) : null}
         </div>
     );
 
@@ -345,8 +374,9 @@ function MegaMenuItem({ item, locale, depth }: { item: RecursiveNavItem; locale:
             className={cn(
                 'block',
                 isTopLevel && 'h-full',
-                hasImage && 'grid grid-cols-1 grid-rows-[10rem_auto] items-stretch',
-                !isTopLevel && 'text-gray-700 transition-colors hover:text-primary focus-visible:text-primary',
+                hasImage && 'grid grid-cols-1 grid-rows-[10rem_auto] items-stretch md:grid-rows-[11rem_auto]',
+                !isTopLevel &&
+                    'group/sub-link -mx-2 rounded-md px-2 transition-colors hover:bg-gray-50 focus-visible:bg-gray-50 focus-visible:outline-2 focus-visible:outline-primary/40',
             )}
         >
             {imageHeader}
@@ -356,19 +386,14 @@ function MegaMenuItem({ item, locale, depth }: { item: RecursiveNavItem; locale:
         // No link: render the label as a non-interactive heading so an
         // editor can use a label-only item as a group header. Children
         // (if any) still recurse below.
-        <div role={isTopLevel ? undefined : 'presentation'}>
+        <div role={isTopLevel ? undefined : 'presentation'} className={cn(!isTopLevel && 'px-0')}>
             {imageHeader}
             {labelBlock}
         </div>
     );
 
     const childList = hasChildren ? (
-        <ul
-            className={cn(
-                isTopLevel ? 'border-gray-200 border-t px-3 py-2' : 'flex flex-col gap-0 pl-3',
-                !isTopLevel && depth > 2 && 'border-gray-100 border-l',
-            )}
-        >
+        <ul className={cn(isTopLevel ? 'border-black/[0.06] border-t px-3 py-3' : 'flex flex-col gap-0')}>
             {children.map((child, i) => (
                 <li key={child.id ?? `mm-${depth + 1}-${i}`}>
                     <MegaMenuItem item={child} locale={locale} depth={depth + 1} />
