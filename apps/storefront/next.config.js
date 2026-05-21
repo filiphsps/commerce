@@ -1,18 +1,11 @@
 import 'dotenv/config';
 
-import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-// TODO: Create util instead of duplicating it thrice.
-const isDev = [process.env.NODE_ENV, process.env.VERCEL_ENV].includes('development');
-const environment = process.env.VERCEL_ENV === 'preview' ? 'preview' : isDev ? 'development' : 'production';
-let gitSHA = process.env.GIT_COMMIT_SHA;
-if (!gitSHA) {
-    try {
-        gitSHA = execSync('git rev-parse HEAD').toString().trim() || process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
-    } catch {}
-}
+import { resolveBuildEnv } from '@nordcom/commerce-utils/env';
+
+const { isDev, environment, gitSHA } = resolveBuildEnv(process.env);
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

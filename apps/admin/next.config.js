@@ -1,20 +1,12 @@
 import 'dotenv/config';
 
-import { execSync } from 'node:child_process';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { resolveBuildEnv } from '@nordcom/commerce-utils/env';
 import { withPayload } from '@payloadcms/next/withPayload';
 
-// TODO: Create util instead of duplicating it thrice.
-const isDev = [process.env.NODE_ENV, process.env.VERCEL_ENV].includes('development');
-const environment = process.env.VERCEL_ENV === 'preview' ? 'preview' : isDev ? 'development' : 'production';
-let gitSHA = process.env.GIT_COMMIT_SHA;
-if (!gitSHA) {
-    try {
-        gitSHA = execSync('git rev-parse HEAD').toString().trim() || process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
-    } catch {}
-}
+const { isDev, environment, gitSHA } = resolveBuildEnv(process.env);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

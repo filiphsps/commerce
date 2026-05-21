@@ -1,3 +1,5 @@
+export type { BuildEnv } from './env';
+export { resolveBuildEnv } from './env';
 export type { AppName, DevTld, Hostname, ParsedHost, ShopHandle } from './hostname';
 export {
     appFromHost,

@@ -412,6 +412,9 @@ importers:
       '@nordcom/commerce-marketing-common':
         specifier: workspace:*
         version: link:../../packages/marketing-common
+      '@nordcom/commerce-utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
       '@nordcom/nordstar':
         specifier: 0.0.75
         version: 0.0.75(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(tailwindcss@4.3.0)
