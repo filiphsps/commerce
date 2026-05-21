@@ -1,5 +1,5 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { mockShop } from '@/utils/test/fixtures/shop';
 
@@ -18,7 +18,30 @@ vi.mock('next-auth', () => ({
 
 import { getAuth, getAuthSession } from './auth';
 
+const makeValidShop = () =>
+    mockShop({
+        overrides: {
+            commerceProvider: {
+                type: 'shopify',
+                domain: 'mock.myshopify.com',
+                authentication: {
+                    customers: {
+                        id: '99887766',
+                        clientId: 'test-client-id',
+                        clientSecret: 'test-client-secret',
+                    },
+                },
+            } as any,
+        },
+    });
+
 describe('auth/auth', () => {
+    afterEach(() => {
+        // Clear call history on the next-auth mock between tests so future
+        // call-count assertions don't leak across happy-path tests.
+        vi.clearAllMocks();
+    });
+
     describe('getAuth', () => {
         it('throws UnknownCommerceProviderError when the shop is not a Shopify shop', () => {
             const shop = {
@@ -60,21 +83,7 @@ describe('auth/auth', () => {
         });
 
         it('returns a NextAuth instance with handlers/auth/signIn/signOut for a valid Shopify shop', () => {
-            const shop = mockShop({
-                overrides: {
-                    commerceProvider: {
-                        type: 'shopify',
-                        domain: 'mock.myshopify.com',
-                        authentication: {
-                            customers: {
-                                id: '99887766',
-                                clientId: 'test-client-id',
-                                clientSecret: 'test-client-secret',
-                            },
-                        },
-                    } as any,
-                },
-            });
+            const shop = makeValidShop();
 
             const result = getAuth(shop);
 
@@ -90,21 +99,7 @@ describe('auth/auth', () => {
 
     describe('getAuthSession', () => {
         it('returns a Promise that resolves to the result of getAuth(shop).auth()', async () => {
-            const shop = mockShop({
-                overrides: {
-                    commerceProvider: {
-                        type: 'shopify',
-                        domain: 'mock.myshopify.com',
-                        authentication: {
-                            customers: {
-                                id: '99887766',
-                                clientId: 'test-client-id',
-                                clientSecret: 'test-client-secret',
-                            },
-                        },
-                    } as any,
-                },
-            });
+            const shop = makeValidShop();
 
             const promise = getAuthSession(shop);
             expect(promise).toBeInstanceOf(Promise);
