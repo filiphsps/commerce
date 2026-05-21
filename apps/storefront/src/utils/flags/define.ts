@@ -3,6 +3,7 @@ import 'server-only';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { flag } from 'flags/next';
 
+import { unsafe_cast } from '@/utils/unsafe-cast';
 import { nordcomFlagAdapter } from './adapter';
 import { evaluateShopFlagSync } from './evaluate-sync';
 
@@ -66,9 +67,14 @@ export function defineFlag<T>(config: FlagDefinition<T>): DefinedFlag<T> {
     } as Parameters<typeof flag<T>>[0];
     const sdkFlag = flag<T>(flagConfig);
     const evaluate = (shop: OnlineShop): T => evaluateShopFlagSync<T>(shop, config.key, config.defaultValue);
-    return Object.assign(sdkFlag, {
-        evaluate,
-        key: sdkFlag.key,
-        defaultValue: sdkFlag.defaultValue,
-    }) as unknown as DefinedFlag<T>;
+    // `flag()` returns a union of AppRouterFlag | PagesRouterFlag | PrecomputedFlag;
+    // Object.assign adds our `.evaluate` method, producing the DefinedFlag<T> shape.
+    // The SDK union type has no mechanism to express this augmentation, so we assert it.
+    return unsafe_cast<DefinedFlag<T>>(
+        Object.assign(sdkFlag, {
+            evaluate,
+            key: sdkFlag.key,
+            defaultValue: sdkFlag.defaultValue,
+        }),
+    );
 }

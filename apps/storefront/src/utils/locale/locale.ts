@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import React from 'react';
 import type english from '@/i18n/en.json';
 import { NOT_FOUND_HANDLE } from '../handle';
+import { unsafe_cast } from '../unsafe-cast';
 
 export type { CountryCode, CurrencyCode, LanguageCode };
 export type Code = `${Lowercase<LanguageCode>}-${CountryCode}` | Lowercase<LanguageCode>;
@@ -185,7 +186,11 @@ export const getTranslations = (scope: LocaleDictionaryScope, dictionary?: Local
                 React.isValidElement(part) ? { ...{ key: index }, ...part } : part,
             );
             return partsWithKeys.some((part) => React.isValidElement(part))
-                ? (partsWithKeys as unknown as string)
+                ? // FIXME: The declared return type is `string` but callers that pass
+                  // ReactNode literals expect the actual ReactNode[] back. This cast
+                  // preserves the existing runtime contract until the return type is
+                  // widened to `string | ReactNode[]`.
+                  unsafe_cast<string>(partsWithKeys)
                 : parts.join('');
         },
     };
