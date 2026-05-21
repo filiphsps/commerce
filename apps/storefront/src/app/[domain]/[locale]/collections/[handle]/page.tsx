@@ -1,6 +1,7 @@
 import { Error } from '@nordcom/commerce-errors';
 import { flattenConnection } from '@shopify/hydrogen-react';
 import type { Metadata } from 'next';
+import { cacheLife } from 'next/cache';
 import { notFound, RedirectType, redirect, unstable_rethrow } from 'next/navigation';
 import { Suspense } from 'react';
 import type { CollectionPage, WithContext } from 'schema-dts';
@@ -31,17 +32,15 @@ type SearchParams = Promise<{
     page?: string;
 }>;
 
-export async function generateMetadata({
-    params,
-    searchParams: queryParams,
-}: {
-    params: CollectionPageParams;
-    searchParams: SearchParams;
-}): Promise<Metadata> {
-    const searchParams = await queryParams;
-    const pageNumber = searchParams.page ? Number.parseInt(searchParams.page, 10) : 1;
+async function buildMetadata(
+    domain: string,
+    localeData: string,
+    handle: string,
+    pageNumber: number,
+): Promise<Metadata> {
+    'use cache';
+    cacheLife('days');
 
-    const { domain, locale: localeData, handle } = await params;
     if (!isValidHandle(handle)) {
         notFound();
     }
@@ -113,6 +112,18 @@ export async function generateMetadata({
             images: cmsSeoImageUrl ? [{ url: cmsSeoImageUrl }] : undefined,
         },
     };
+}
+
+export async function generateMetadata({
+    params,
+    searchParams: queryParams,
+}: {
+    params: CollectionPageParams;
+    searchParams: SearchParams;
+}): Promise<Metadata> {
+    const [{ domain, locale: localeData, handle }, searchParams] = await Promise.all([params, queryParams]);
+    const pageNumber = searchParams.page ? Number.parseInt(searchParams.page, 10) : 1;
+    return buildMetadata(domain, localeData, handle, pageNumber);
 }
 
 export default async function CollectionsCollectionPage({
