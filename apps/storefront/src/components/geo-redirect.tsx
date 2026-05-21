@@ -5,7 +5,7 @@ import type { Country, LanguageCode } from '@shopify/hydrogen-react/storefront-a
 import { setCookie } from 'cookies-next';
 import { Check as CheckIcon, ChevronDown as ChevronDownIcon, X as XIcon } from 'lucide-react';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { useEffect, useState, useSyncExternalStore } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import useGeoLocation from 'react-ipgeolocation';
 import { Button } from '@/components/actionable/button';
 import { LocaleCountryName, LocaleFlag } from '@/components/informational/locale-flag';
@@ -71,6 +71,17 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
     const [dropdownActiveState, setDropdownActive] = useState(false);
     const [lastPathname, setLastPathname] = useState(pathname);
     let dropdownActive = dropdownActiveState;
+    // Restore focus to the trigger when the dropdown closes so keyboard users
+    // don't lose their place after toggling open and dismissing without a
+    // selection.
+    const triggerRef = useRef<HTMLButtonElement>(null);
+    const wasOpenRef = useRef(false);
+    useEffect(() => {
+        if (wasOpenRef.current && !dropdownActiveState) {
+            triggerRef.current?.focus();
+        }
+        wasOpenRef.current = dropdownActiveState;
+    }, [dropdownActiveState]);
     if (pathname !== lastPathname) {
         setLastPathname(pathname);
         setDropdownActive(false);
@@ -143,11 +154,13 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
                         )}
                     >
                         <button
+                            ref={triggerRef}
                             type="button"
                             className={cn(
                                 'flex h-10 w-full grow cursor-pointer select-none appearance-none items-center justify-start gap-3 rounded-lg p-2 text-base leading-none *:select-none focus-within:bg-gray-100 hover:bg-gray-100',
                                 dropdownActive && 'hover:border-primary',
                             )}
+                            aria-expanded={dropdownActive}
                             onClick={() => setDropdownActive(!dropdownActive)}
                         >
                             <div className="w-5">
