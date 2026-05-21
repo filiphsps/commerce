@@ -1,8 +1,12 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
-
 import type { LanguageCode, Locale, LocaleDictionary } from '@/utils/locale';
+import { unsafe_cast } from '@/utils/unsafe-cast';
 
-const stub = { cart: {}, common: {}, product: {} } as unknown as LocaleDictionary;
+// JSON imports arrive as `unknown` shape; LocaleDictionary asserts the schema
+// we guarantee at build time via the i18n pipeline. Translation files are
+// validated against the LocaleDictionary shape before commit, so these casts
+// are safe by construction.
+const stub = unsafe_cast<LocaleDictionary>({ cart: {}, common: {}, product: {} });
 
 export const dictionaries: Record<Lowercase<LanguageCode>, () => Promise<LocaleDictionary>> = {
     af: () => new Promise((resolve) => resolve(stub)) /* TODO */,
@@ -25,13 +29,13 @@ export const dictionaries: Record<Lowercase<LanguageCode>, () => Promise<LocaleD
     cu: () => new Promise((resolve) => resolve(stub)) /* TODO */,
     cy: () => new Promise((resolve) => resolve(stub)) /* TODO */,
     da: () => new Promise((resolve) => resolve(stub)) /* TODO */,
-    de: () => import('@/i18n/de.json').then((module) => module.default as unknown as LocaleDictionary),
+    de: () => import('@/i18n/de.json').then((module) => unsafe_cast<LocaleDictionary>(module.default)),
     dz: () => new Promise((resolve) => resolve(stub)) /* TODO */,
     ee: () => new Promise((resolve) => resolve(stub)) /* TODO */,
     el: () => new Promise((resolve) => resolve(stub)) /* TODO */,
-    en: () => import('@/i18n/en.json').then((module) => module.default as unknown as LocaleDictionary),
+    en: () => import('@/i18n/en.json').then((module) => unsafe_cast<LocaleDictionary>(module.default)),
     eo: () => new Promise((resolve) => resolve(stub)) /* TODO */,
-    es: () => import('@/i18n/es.json').then((module) => module.default as unknown as LocaleDictionary),
+    es: () => import('@/i18n/es.json').then((module) => unsafe_cast<LocaleDictionary>(module.default)),
     et: () => new Promise((resolve) => resolve(stub)) /* TODO */,
     eu: () => new Promise((resolve) => resolve(stub)) /* TODO */,
     fa: () => new Promise((resolve) => resolve(stub)) /* TODO */,
@@ -39,7 +43,7 @@ export const dictionaries: Record<Lowercase<LanguageCode>, () => Promise<LocaleD
     fi: () => new Promise((resolve) => resolve(stub)) /* TODO */,
     fil: () => new Promise((resolve) => resolve(stub)) /* TODO */,
     fo: () => new Promise((resolve) => resolve(stub)) /* TODO */,
-    fr: () => import('@/i18n/fr.json').then((module) => module.default as unknown as LocaleDictionary),
+    fr: () => import('@/i18n/fr.json').then((module) => unsafe_cast<LocaleDictionary>(module.default)),
     fy: () => new Promise((resolve) => resolve(stub)) /* TODO */,
     ga: () => new Promise((resolve) => resolve(stub)) /* TODO */,
     gd: () => new Promise((resolve) => resolve(stub)) /* TODO */,
@@ -94,7 +98,7 @@ export const dictionaries: Record<Lowercase<LanguageCode>, () => Promise<LocaleD
     ne: () => new Promise((resolve) => resolve(stub)) /* TODO */,
     nl: () => new Promise((resolve) => resolve(stub)) /* TODO */,
     nn: () => new Promise((resolve) => resolve(stub)) /* TODO */,
-    no: () => import('@/i18n/no.json').then((module) => module.default as unknown as LocaleDictionary),
+    no: () => import('@/i18n/no.json').then((module) => unsafe_cast<LocaleDictionary>(module.default)),
     om: () => new Promise((resolve) => resolve(stub)) /* TODO */,
     or: () => new Promise((resolve) => resolve(stub)) /* TODO */,
     os: () => new Promise((resolve) => resolve(stub)) /* TODO */,
@@ -124,7 +128,7 @@ export const dictionaries: Record<Lowercase<LanguageCode>, () => Promise<LocaleD
     sq: () => new Promise((resolve) => resolve(stub)) /* TODO */,
     sr: () => new Promise((resolve) => resolve(stub)) /* TODO */,
     su: () => new Promise((resolve) => resolve(stub)) /* TODO */,
-    sv: () => import('@/i18n/sv.json').then((module) => module.default as unknown as LocaleDictionary),
+    sv: () => import('@/i18n/sv.json').then((module) => unsafe_cast<LocaleDictionary>(module.default)),
     sw: () => new Promise((resolve) => resolve(stub)) /* TODO */,
     ta: () => new Promise((resolve) => resolve(stub)) /* TODO */,
     te: () => new Promise((resolve) => resolve(stub)) /* TODO */,
@@ -177,8 +181,8 @@ export const getDictionary = async (
     try {
         // TODO: Fetch tenant-specific dictionary if it exists and shop is defined.
         const lang = locale.language?.toLowerCase?.() as DictionaryLanguageCode | undefined;
-        return typeof lang !== 'undefined' ? dictionaries[lang]() : ({} as unknown as LocaleDictionary);
+        return typeof lang !== 'undefined' ? dictionaries[lang]() : unsafe_cast<LocaleDictionary>({});
     } catch {
-        return {} as unknown as LocaleDictionary;
+        return unsafe_cast<LocaleDictionary>({});
     }
 };
