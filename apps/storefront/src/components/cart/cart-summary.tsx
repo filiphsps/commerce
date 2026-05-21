@@ -10,7 +10,7 @@ import type { ReactNode } from 'react';
 import { Button } from '@/components/actionable/button';
 import { CartCoupons } from '@/components/cart/cart-coupons';
 import { CartNote } from '@/components/cart/cart-note';
-import styles from '@/components/cart/cart-summary.module.scss';
+import styles from '@/components/cart/cart-summary.module.css';
 import Link from '@/components/link';
 import { Price } from '@/components/products/price';
 import { useShop } from '@/components/shop/provider';

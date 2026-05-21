@@ -3,7 +3,7 @@
 import type { ComponentType, HTMLProps } from 'react';
 import { useCallback, useMemo } from 'react';
 import type { ProductVariant } from '@/api/product';
-import styles from '@/components/product-options-selector/product-options-selector.module.scss';
+import styles from '@/components/product-options-selector/product-options-selector.module.css';
 import { defaultRenderers } from '@/components/product-options-selector/renderers';
 import type {
     OptionValueSwatch,

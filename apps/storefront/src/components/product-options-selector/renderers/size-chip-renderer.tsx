@@ -1,7 +1,7 @@
 'use client';
 
 import type { MouseEvent } from 'react';
-import styles from '@/components/product-options-selector/renderers/chip.module.scss';
+import styles from '@/components/product-options-selector/renderers/chip.module.css';
 import type { ProductOptionValueRendererProps } from '@/components/product-options-selector/renderers/types';
 import { useShop } from '@/components/shop/provider';
 import { formatWeight, localizeWeight } from '@/utils/locale';

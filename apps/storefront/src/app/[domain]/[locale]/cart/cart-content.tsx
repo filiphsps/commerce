@@ -7,7 +7,7 @@ import { CartLines } from '@/components/cart/cart-lines';
 import PageContent from '@/components/page-content';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
-import styles from './cart-content.module.scss';
+import styles from './cart-content.module.css';
 import { CartSidebar } from './cart-sidebar';
 
 export type CartContentProps = {

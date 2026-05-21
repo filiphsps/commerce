@@ -5,7 +5,7 @@
 
 .container {
     .lines {
-        --discount-prefix: '-';
+        --discount-prefix: "-";
 
         display: flex;
         justify-content: flex-end;
@@ -33,6 +33,7 @@
 
         overflow: hidden;
     }
+
     .checkout-button {
         display: flex;
         flex-direction: row;
@@ -146,7 +147,7 @@
         }
 
         &::after {
-            content: '';
+            content: "";
             z-index: -2;
             position: absolute;
             inset: 0.05em -0.35em;
@@ -159,7 +160,7 @@
     }
 
     &.shipping .money::before {
-        content: '';
+        content: "";
     }
 }
 

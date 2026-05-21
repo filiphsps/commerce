@@ -9,7 +9,7 @@ import { useShop } from '@/components/shop/provider';
 import { Label } from '@/components/typography/label';
 import { FLAG_IMAGES_BASE_URL } from '@/utils/build-config';
 import { Locale } from '@/utils/locale';
-import styles from './countries.module.scss';
+import styles from './countries.module.css';
 
 type LocaleSelectorProps = {
     countries: Country[];
