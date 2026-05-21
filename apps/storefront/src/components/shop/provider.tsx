@@ -44,3 +44,10 @@ export const useShop = (): ShopContextValue => {
 
     return context;
 };
+
+/**
+ * Like `useShop`, but returns `null` instead of throwing when called outside
+ * `ShopProvider`. Use this in error boundaries and other components that may
+ * render before the provider is mounted.
+ */
+export const useOptionalShop = (): ShopContextValue | null => useContext(ShopContext);

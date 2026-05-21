@@ -1,9 +1,11 @@
 'use client';
 
+import Image from 'next/image';
 import { useEffect } from 'react';
 
 import { Button } from '@/components/actionable/button';
 import PageContent from '@/components/page-content';
+import { useOptionalShop } from '@/components/shop/provider';
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
 import { Label } from '@/components/typography/label';
@@ -11,9 +13,24 @@ import { Label } from '@/components/typography/label';
 export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
     useEffect(() => console.error(error), [error]);
 
+    const ctx = useOptionalShop();
+    const shopName = ctx?.shop?.name;
+    const logo = ctx?.shop?.design?.header?.logo;
+
     return (
         <>
             <PageContent className="block">
+                {logo?.src ? (
+                    <Image
+                        src={logo.src}
+                        alt={logo.alt ?? shopName ?? 'Shop logo'}
+                        width={logo.width}
+                        height={logo.height}
+                        className="mb-4 max-h-12 w-auto object-contain object-left"
+                        unoptimized
+                    />
+                ) : null}
+
                 <Heading
                     title={`Oh no! Something went wrong`}
                     subtitle={<Label>Internal server error</Label>}
@@ -24,7 +41,7 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
 
             <Content className="min-w-none">
                 <p>
-                    Sorry, but an unexpected error occurred.
+                    Sorry, but an unexpected error occurred at {shopName ? <b>{shopName}</b> : 'this shop'}.
                     <br />
                     If this keeps happening please reach out to our support.
                 </p>
