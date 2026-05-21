@@ -1,5 +1,6 @@
 import { type OnlineShop, Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
+import { trace } from '@opentelemetry/api';
 import { colord, extend } from 'colord';
 import a11yPlugin from 'colord/plugins/a11y';
 import { notFound } from 'next/navigation';
@@ -20,7 +21,6 @@ export const getBrandingColors = async ({ domain, shop }: { domain: string; shop
                     notFound();
                 }
 
-                console.error(error);
                 throw error;
             }
         }
@@ -61,7 +61,10 @@ export const getBrandingColors = async ({ domain, shop }: { domain: string; shop
                     }
                 }
             } catch (error: unknown) {
-                console.error(error);
+                trace.getActiveSpan()?.addEvent('css_variables.brand_fetch_failed', {
+                    'error.message': (error as Error)?.message ?? String(error),
+                    'shop.domain': domain,
+                });
             }
         }
 

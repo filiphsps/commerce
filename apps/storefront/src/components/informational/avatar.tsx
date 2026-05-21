@@ -8,7 +8,6 @@ export type AvatarProps = {
 } & Omit<HTMLProps<HTMLDivElement>, 'name' | 'children' | 'src'>;
 export async function Avatar({ src, name, title, className, ...props }: AvatarProps) {
     if (!src && !name) {
-        console.warn(`No src or fallback name was provided to <${Avatar.displayName}/>, returning null.`);
         return null;
     }
 

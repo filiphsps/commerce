@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { DuplicatePredicateRegistrationError } from '@nordcom/commerce-errors';
+import { trace } from '@opentelemetry/api';
 
 import type { FlagEntities } from './entities';
 
@@ -39,14 +40,19 @@ export function evaluatePredicate(name: string, params: unknown, entities: FlagE
     if (!entry) {
         if (!warnedUnknown.has(name)) {
             warnedUnknown.add(name);
-            console.warn(`[flags] unknown predicate "${name}" — treating as no-match`);
+            trace.getActiveSpan()?.addEvent('flags.unknown_predicate', {
+                'predicate.name': name,
+            });
         }
         return false;
     }
     try {
         return entry.fn(entities, params);
     } catch (error) {
-        console.error(`[flags] predicate "${name}" threw — treating as no-match`, error);
+        trace.getActiveSpan()?.addEvent('flags.predicate_threw', {
+            'error.message': (error as Error)?.message ?? String(error),
+            'predicate.name': name,
+        });
         return false;
     }
 }

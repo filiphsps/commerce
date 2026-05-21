@@ -1,5 +1,7 @@
 import 'server-only';
 
+import { trace } from '@opentelemetry/api';
+
 type ReportFn = (key: string, value: unknown) => void;
 
 let cachedReport: ReportFn | undefined;
@@ -20,7 +22,10 @@ export function reportFlagValue(key: string, value: unknown): void {
         try {
             fn(key, value);
         } catch (error) {
-            console.warn('[flags] reportValue threw', error);
+            trace.getActiveSpan()?.addEvent('flags.report_value_failed', {
+                'error.message': (error as Error)?.message ?? String(error),
+                'flag.key': key,
+            });
         }
     });
 }

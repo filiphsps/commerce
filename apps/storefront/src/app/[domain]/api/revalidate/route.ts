@@ -57,11 +57,9 @@ export async function POST(req: NextRequest, { params }: { params: RevalidateApi
             // Dev-only diagnostic: code flow only reaches here when NODE_ENV === 'development'
             // (the branch above returns 503 in all other environments), so this warn is
             // intentionally exempt from the no-console policy.
-            if (process.env.NODE_ENV !== 'production') {
-                console.warn(
-                    '[revalidate] SHOPIFY_WEBHOOK_SECRET is not set — accepting Shopify webhook without HMAC validation. This is permitted in dev only.',
-                );
-            }
+            console.warn(
+                '[revalidate] SHOPIFY_WEBHOOK_SECRET is not set — accepting Shopify webhook without HMAC validation. This is permitted in dev only.',
+            );
         } else if (!verifyShopifyHmac(rawBody, headerHmac, secret)) {
             return NextResponse.json({ status: 401, error: 'invalid HMAC' }, { status: 401, headers: noStoreHeaders });
         }

@@ -1,5 +1,6 @@
 import 'server-only';
 import { type OnlineShop, Shop } from '@nordcom/commerce-db';
+import { trace } from '@opentelemetry/api';
 import { headers } from 'next/headers';
 import { cache } from 'react';
 import { Locale } from '@/utils/locale';
@@ -22,8 +23,11 @@ export const getRequestContext = cache(async (): Promise<RequestContext | null> 
 
         return { shop: shop as OnlineShop, locale };
     } catch (error) {
+        // Suppress during tests where headers() is unavailable.
         if (process.env.NODE_ENV !== 'test') {
-            console.error('[request-context] getRequestContext failed:', error);
+            trace.getActiveSpan()?.addEvent('request_context.lookup_failed', {
+                'error.message': (error as Error)?.message ?? String(error),
+            });
         }
         return null;
     }

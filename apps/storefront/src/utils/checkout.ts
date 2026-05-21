@@ -1,5 +1,6 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { InvalidCartError, UnknownCommerceProviderError } from '@nordcom/commerce-errors';
+import { trace } from '@opentelemetry/api';
 import type { CartWithActions } from '@shopify/hydrogen-react';
 import type { CartLine } from '@shopify/hydrogen-react/storefront-api-types';
 
@@ -38,9 +39,13 @@ export const getCrossDomainLinkerParameter = (checkoutOrigin: string) => {
             return _glNode.value;
         }
 
-        console.warn(
-            `Could not find _gl input in checkout form with action "${formNode.action}" — proceeding without cross-domain linker.`,
-        );
+        // Dev-only diagnostic: helps identify GA4 cross-domain linker misconfiguration.
+        // Absent _gl is non-fatal — checkout proceeds without the linker parameter.
+        if (process.env.NODE_ENV !== 'production') {
+            console.warn(
+                `Could not find _gl input in checkout form with action "${formNode.action}" — proceeding without cross-domain linker.`,
+            );
+        }
         return null;
     } finally {
         // Always remove — the previous code left a hidden form attached to
@@ -127,7 +132,9 @@ export const Checkout = async ({
             },
         });
     } catch (error: unknown) {
-        console.error(error);
+        trace.getActiveSpan()?.addEvent('checkout.analytics_event_failed', {
+            'error.message': (error as Error)?.message ?? String(error),
+        });
     }
 
     const ga4 = getCrossDomainLinkerParameter(`https://${shop.commerceProvider.domain}`);

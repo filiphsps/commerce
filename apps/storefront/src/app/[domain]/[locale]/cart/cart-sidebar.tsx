@@ -1,5 +1,6 @@
 'use client';
 
+import { trace } from '@opentelemetry/api';
 import { useCart } from '@shopify/hydrogen-react';
 import type { CartLine, ComponentizableCartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import type { HTMLProps, ReactNode } from 'react';
@@ -59,7 +60,9 @@ export const CartSidebar = ({ i18n, locale, className, children, paymentMethods,
                             trackable: { queueEvent, postEvent },
                         });
                     } catch (error: unknown) {
-                        console.error(error);
+                        trace.getActiveSpan()?.addEvent('cart.checkout_failed', {
+                            'error.message': (error as Error)?.message ?? String(error),
+                        });
                         toast.error(error instanceof Error ? error.message : String(error));
                     }
                 }}

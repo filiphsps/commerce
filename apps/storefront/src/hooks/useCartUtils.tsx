@@ -1,4 +1,5 @@
 import type { Error } from '@nordcom/commerce-errors';
+import { trace } from '@opentelemetry/api';
 import { useCart } from '@shopify/hydrogen-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef } from 'react';
@@ -88,7 +89,9 @@ export const useCartUtils = ({
         if (cartError == null || cartError === lastSeenErrorRef.current) return;
         lastSeenErrorRef.current = cartError;
         const msg = formatCartError(cartError);
-        console.error('[cart] error from Shopify storefront API:', cartError);
+        trace.getActiveSpan()?.addEvent('cart.storefront_api_error', {
+            'error.message': msg ?? String(cartError),
+        });
         toast.error(msg ?? 'Something went wrong updating your cart.');
     }, [cartError]);
 

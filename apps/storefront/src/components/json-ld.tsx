@@ -1,3 +1,5 @@
+import { trace } from '@opentelemetry/api';
+
 export type JsonLdProps = {
     data: Object;
 };
@@ -11,7 +13,9 @@ export function JsonLd({ data }: JsonLdProps) {
     try {
         serialized = JSON.stringify(data);
     } catch (error: unknown) {
-        console.error(error);
+        trace.getActiveSpan()?.addEvent('json_ld.serialization_failed', {
+            'error.message': (error as Error)?.message ?? String(error),
+        });
         return null;
     }
 

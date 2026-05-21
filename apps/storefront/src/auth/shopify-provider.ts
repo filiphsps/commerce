@@ -1,5 +1,6 @@
 import type { TokenSet } from '@auth/core/types';
 import type { OnlineShop } from '@nordcom/commerce-db';
+import { trace } from '@opentelemetry/api';
 import type { OIDCConfig, OIDCUserConfig } from 'next-auth/providers';
 import { BuildConfig } from '@/utils/build-config';
 
@@ -122,10 +123,14 @@ function ShopifyProvider<P extends ShopifyProfile = ShopifyProfile>(
              */
             async conform(response: Response) {
                 if (!response.ok) {
-                    console.error('ShopifyProvider: conform() failed 1/2', response.clone().status);
+                    let responseBody: string | undefined;
                     try {
-                        console.error('ShopifyProvider: conform() failed 2/2', await response.clone().text());
+                        responseBody = await response.clone().text();
                     } catch {}
+                    trace.getActiveSpan()?.addEvent('auth.shopify_provider_conform_failed', {
+                        'http.status_code': response.clone().status,
+                        'error.body': responseBody ?? '',
+                    });
                     return undefined;
                 }
                 //? Assuming a lot about the response here, as it should

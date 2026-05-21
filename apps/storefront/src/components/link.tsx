@@ -4,6 +4,7 @@ import type { Url } from 'node:url';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { TypeError } from '@nordcom/commerce-errors';
+import { trace } from '@opentelemetry/api';
 import BaseLink from 'next/link';
 import type { ComponentProps } from 'react';
 import { useShop } from '@/components/shop/provider';
@@ -43,7 +44,9 @@ export default function Link({ locale, href, prefetch, ...props }: LinkProps) {
 
     if (typeof href !== 'string') {
         // TODO: Deal with `URL` as `href`.
-        console.error(new TypeError(`Link's \`href\` must be of type string. Received \`${typeof href}\` instead.`));
+        trace.getActiveSpan()?.addEvent('link.invalid_href_type', {
+            'link.href_type': typeof href,
+        });
         return null;
     }
 
@@ -52,7 +55,9 @@ export default function Link({ locale, href, prefetch, ...props }: LinkProps) {
     try {
         resolvedLocale = locale ?? shop.locale ?? Locale.current ?? Locale.default;
     } catch (error: unknown) {
-        console.error(error);
+        trace.getActiveSpan()?.addEvent('link.locale_resolution_failed', {
+            'error.message': (error as Error)?.message ?? String(error),
+        });
         resolvedLocale = Locale.default;
     }
 

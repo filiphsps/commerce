@@ -1,3 +1,4 @@
+import { trace } from '@opentelemetry/api';
 import { getProductOptions, mapSelectedProductOptionToObject, useCart } from '@shopify/hydrogen-react';
 import type { CartLine as ShopifyCartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import { Pencil, Tag as TagIcon, X as XIcon } from 'lucide-react';
@@ -41,7 +42,9 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
     const [editing, setEditing] = useState(false);
 
     if (!product || !variant) {
-        console.error(`Product or product variant not found for line ${line.id}`);
+        trace.getActiveSpan()?.addEvent('cart_line.missing_product_or_variant', {
+            'cart.line_id': line.id,
+        });
         return null;
     }
 

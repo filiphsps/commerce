@@ -29,7 +29,6 @@ export async function checkAndHandleRedirect({
                 notFound();
             }
 
-            console.error(error);
             throw error;
         }
         const api = await ShopifyApiClient({ shop, locale });

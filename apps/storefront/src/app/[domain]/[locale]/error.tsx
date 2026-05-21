@@ -11,6 +11,9 @@ import Heading from '@/components/typography/heading';
 import { Label } from '@/components/typography/label';
 
 export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+    // Next.js error boundary: surface unhandled errors to the browser console for
+    // debugging. This is the documented sink for client-visible errors and is
+    // explicitly exempted from the no-console policy.
     useEffect(() => console.error(error), [error]);
 
     const ctx = useOptionalShop();

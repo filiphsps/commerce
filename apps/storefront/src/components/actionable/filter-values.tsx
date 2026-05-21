@@ -61,7 +61,6 @@ export function FilterValues({ id: filterId, type, values }: Pick<Filter, 'type'
             return <div className={cn('')}>PRICE_RANGE</div>;
         }
         default: {
-            console.warn('Unknown filter type:', type);
             return null;
         }
     }

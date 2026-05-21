@@ -11,7 +11,6 @@ export type PricingProps = {
 } & Omit<PriceProps & HTMLProps<HTMLDivElement>, 'children' | 'data' | 'as'>;
 export const Pricing = ({ price, as: Tag = 'div', className, ...props }: PricingProps) => {
     if (!price) {
-        console.warn('No price supplied to Pricing component.');
         return null;
     }
 
