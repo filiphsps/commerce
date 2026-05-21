@@ -62,7 +62,7 @@ export default function LocaleSelector({ countries = [], locale }: LocaleSelecto
                             replace={true}
                             onClick={(e) => {
                                 e.preventDefault();
-                                localeRef.current!.value = country.locale;
+                                if (localeRef.current) localeRef.current.value = country.locale;
                                 buttonRef.current?.click();
                             }}
                         >

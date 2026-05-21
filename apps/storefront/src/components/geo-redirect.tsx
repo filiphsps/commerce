@@ -81,9 +81,10 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
 
     const location = useGeoLocation();
 
+    const geoCountry = location.country;
     const targetCountry =
-        location.country !== undefined
-            ? countries.find(({ isoCode }) => isoCode.toLowerCase() === location.country!.toLowerCase())
+        geoCountry !== undefined
+            ? countries.find(({ isoCode }) => isoCode.toLowerCase() === geoCountry.toLowerCase())
             : null;
 
     const targetLanguage = targetCountry

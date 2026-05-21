@@ -49,7 +49,8 @@ export const filterRealOptions = <T extends OptionLike>(options: T[] | null | un
             return false;
         }
 
-        if (valueNames.length === 1 && valueNames[0]!.toLowerCase() === 'default title') {
+        const [onlyName] = valueNames;
+        if (valueNames.length === 1 && onlyName?.toLowerCase() === 'default title') {
             return false;
         }
 

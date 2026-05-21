@@ -60,7 +60,7 @@ const ProductCardHeader = ({
                 return selectedVariant.image;
             }
 
-            const image = product.images.edges.find((i) => i.node.id === selectedVariant.image!.id)?.node;
+            const image = product.images.edges.find((i) => i.node.id === selectedVariant.image?.id)?.node;
             if (image) {
                 return image;
             }
