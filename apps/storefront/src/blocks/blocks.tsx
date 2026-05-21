@@ -1,4 +1,4 @@
-import { InvalidIDError } from '@nordcom/commerce-errors';
+import { trace } from '@opentelemetry/api';
 import type { ReactNode } from 'react';
 import { AlertBlock } from './alert';
 import { BannerBlock } from './banner';
@@ -62,11 +62,13 @@ export const Blocks = ({ blocks, context }: BlocksProps): ReactNode => {
             case 'vendors':
                 return <VendorsBlock key={key} block={block} context={context} />;
             default: {
-                console.error(new InvalidIDError((block as BlockNode).blockType, 'BlockNode.blockType'));
-                console.warn('Blocks, missing/invalid type:', '');
-                // Exhaustiveness check — if a new block type is added to
-                // `BlockNode` without a case here, TS yells about
-                // `_exhaustive` not being assignable to `never`.
+                // Graceful degradation: unknown block types render as `null`
+                // (see docblock above). Record the event for observability so
+                // ops can see when a CMS document references a block type the
+                // renderer doesn't know about.
+                trace.getActiveSpan()?.addEvent('blocks.unknown_type', {
+                    'block.type': (block as BlockNode).blockType ?? '<missing>',
+                });
                 return null;
             }
         }
