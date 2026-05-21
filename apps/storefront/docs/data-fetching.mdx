@@ -22,17 +22,6 @@ The `@inContext(country, language)` directive is injected automatically by the A
 and will throw `DuplicateContextDirectiveError` / `DuplicateContextVariableError` if
 they're present.
 
-## Cache tags
-
-Cache tags follow `buildCacheTagArray(shop, locale, [...extra])`:
-
-```
-['shopify', 'shopify.<shopId>', '<domain>', '<localeCode>', ...]
-```
-
-Per-entity tags use `shopify.<shopId>.product.<handle>` and
-`shopify.<shopId>.collection.<handle>` so revalidation can be surgical.
-
 ## CMS
 
 CMS access goes through `@nordcom/commerce-cms/api`:
@@ -147,15 +136,19 @@ boundary.
 
 ### Per-route `cacheLife`
 
-- `product` / `collection` / `blog` / `article` `generateMetadata` →
-  `'days'` (or `'max'` where already in place; don't downgrade without
-  good reason).
-- `search` results metadata → `'minutes'` (intentional shorter TTL).
-- Shop root (`[locale]/layout.tsx` `generateMetadata`) → `'max'`.
-- `cart` and `account` page metadata are nominally cached at `'max'`
-  because the *metadata* (titles, robots tags) is per-tenant, not
-  per-user. The cart **contents** are client-only and never see Next's
-  cache.
+| Route type                                  | `cacheLife`   |
+|---------------------------------------------|---------------|
+| Layout `generateMetadata`                   | `'max'`       |
+| Product / Collection `generateMetadata`     | `'days'`      |
+| Blog / Article `generateMetadata`           | `'days'`      |
+| Search results `generateMetadata`           | `'minutes'`   |
+| Cart                                        | not cached¹   |
+
+¹ Cart **contents** are client-only and never see Next's cache. The
+cart page's `generateMetadata` (titles, robots tags) is per-tenant and
+remains at `'max'` like other layout-level metadata; the same applies
+to `account`. Where product/collection/blog/article metadata is
+already at `'max'`, don't downgrade it to `'days'` without a reason.
 
 ### Notes for new loaders
 
