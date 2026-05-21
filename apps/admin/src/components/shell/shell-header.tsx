@@ -1,3 +1,5 @@
+'use client';
+
 import { Menu } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -8,6 +10,7 @@ import { CommandPalette, type CommandPaletteItem } from '@/components/shell/comm
 import { CommandPaletteTrigger } from '@/components/shell/command-palette-trigger';
 import { MobileDrawer } from '@/components/shell/mobile-drawer';
 import { ShopSwitcher, type ShopSwitcherShop } from '@/components/shell/shop-switcher';
+import { useBreakpoint } from '@/components/shell/use-breakpoint';
 import logo from '@/static/logo.svg';
 import { cn } from '@/utils/tailwind';
 
