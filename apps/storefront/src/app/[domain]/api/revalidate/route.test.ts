@@ -1,6 +1,7 @@
 import { createHmac } from 'node:crypto';
 import { NotFoundError } from '@nordcom/commerce-errors';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import type * as apolloPool from '@/api/_apollo-pool';
 
 const revalidateTagMock = vi.fn();
 
@@ -14,6 +15,11 @@ vi.mock('@nordcom/commerce-db', () => ({
         findAll: vi.fn(),
     },
 }));
+
+vi.mock('@/api/_apollo-pool', async () => {
+    const actual = await vi.importActual<typeof apolloPool>('@/api/_apollo-pool');
+    return { ...actual, evictApolloClient: vi.fn() };
+});
 
 const { POST, GET } = await import('@/app/[domain]/api/revalidate/route');
 
@@ -174,6 +180,31 @@ describe('app/[domain]/api/revalidate', () => {
             // body parse fails — falls back to broad tag
             expect(res.status).toBe(200);
             expect(revalidateTagMock).toHaveBeenCalledWith('shopify.shop-1', 'max');
+        });
+
+        it('evicts the Apollo pool entry for the resolved shop', async () => {
+            revalidateTagMock.mockClear();
+            const { evictApolloClient } = await import('@/api/_apollo-pool');
+            vi.mocked(evictApolloClient).mockClear();
+
+            const body = '{"handle":"my-product"}';
+            const secret = 'shopify-secret';
+            process.env.SHOPIFY_WEBHOOK_SECRET = secret;
+            const hmac = createHmac('sha256', secret).update(body, 'utf8').digest('base64');
+
+            const req = makeRequest({
+                method: 'POST',
+                body,
+                headers: {
+                    'x-shopify-hmac-sha256': hmac,
+                    'x-shopify-topic': 'products/update',
+                    'content-type': 'application/json',
+                },
+            });
+
+            const res = await POST(req as any, { params: Promise.resolve({ domain: 'mock.shop' }) } as any);
+            expect(res.status).toBe(200);
+            expect(vi.mocked(evictApolloClient)).toHaveBeenCalledWith({ shopId: 'shop-1' });
         });
     });
 

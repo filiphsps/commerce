@@ -1,6 +1,7 @@
 import { Error as CommerceError } from '@nordcom/commerce-errors';
 import { parseShopifyWebhook, verifyShopifyHmac } from '@tagtree/shopify';
 import { type NextRequest, NextResponse } from 'next/server';
+import { evictApolloClient } from '@/api/_apollo-pool';
 import { Shop } from '@/api/_loaders';
 import { cache } from '@/cache';
 
@@ -84,10 +85,12 @@ export async function POST(req: NextRequest, { params }: { params: RevalidateApi
 
         if (tags.length === 0) {
             await cache.invalidate.tenant(shop);
+            evictApolloClient({ shopId: shop.id });
             return NextResponse.json({ status: 200, tags: 'broad-sweep' }, { status: 200, headers: noStoreHeaders });
         }
 
         await cache.invalidateRaw(tags);
+        evictApolloClient({ shopId: shop.id });
         return NextResponse.json({ status: 200, tags }, { status: 200, headers: noStoreHeaders });
     }
 
