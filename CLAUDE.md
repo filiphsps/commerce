@@ -1,108 +1,88 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for Claude Code working in this repo.
 
 ## What this is
 
-Nordcom Commerce is a multi-tenant headless e-commerce platform: a single Next.js 16 deployment that serves arbitrarily many shops, resolved by hostname in middleware. Shopify is the commerce backend; an embedded Payload CMS handles content. Everything is one TypeScript monorepo (pnpm workspaces + Turborepo).
+Nordcom Commerce — a multi-tenant headless e-commerce platform. One Next.js 16 deployment serves arbitrarily many shops, resolved by hostname in middleware. Shopify is the commerce backend; embedded Payload CMS handles content. pnpm workspaces + Turborepo monorepo, TypeScript throughout.
 
 ## Principles
 
-### Root Cause Before Symptom
-
-When debugging build errors, OAuth issues, or runtime errors, identify the root cause before applying fixes. Avoid first-guess fixes like reverting versions, returning empty arrays, or disabling features that have valid reasons to exist.
-
-State your hypothesis explicitly before making changes, especially for: Next.js cache/PPR issues, Vite/build tool errors, auth/OIDC problems, and Shopify GraphQL field mismatches.
-
-### Language
-
-All code, comments, commit messages, docs, identifiers, and UI strings use **American English** exclusively — `color`, `behavior`, `organization`, `canceled`, `analyze`. Never `color`, `behavior`, `organization`, `cancelled`, `analyze`.
-
-### Keep documentation in sync
-
-When a change affects behavior, configuration, commands, architecture, or conventions that are documented in the repo, update the relevant documentation in the same change. Treat docs drift as a defect — don't ship code changes that leave the docs describing the old reality. If a change introduces something genuinely new and undocumented, add documentation for it rather than leaving it implicit.
+-   **Root cause before symptom.** State your hypothesis before changing code. Don't revert versions, return empty arrays, or disable features as a first-guess fix — especially for Next.js cache/PPR, build-tool errors, OIDC, or Shopify GraphQL field mismatches.
+-   **American English** everywhere — code, comments, commits, docs, UI. `color`, `behavior`, `organization`, `canceled`, `analyze`. Never the `-our`/`-ise`/`-lled` spellings.
+-   **Docs stay in sync.** If a change affects documented behavior, config, commands, architecture, or conventions, update the docs in the same change. Doc drift is a defect.
 
 ## Toolchain quirks
 
--   **Node (`.nvmrc`)**, **pnpm `11.x`** (pinned via `packageManager`), `.nvmrc` is authoritative.
--   **Biome only** for lint + format — there is no ESLint and no Prettier. Don't add config for them; don't add `.prettierrc`.
--   **Vitest 4.x** with project mode — see `vitest.config.ts` for global config, each app/package has its own `vitest.config.ts` consumed as a project.
--   **`pnpm build:packages` is mandatory before lint/typecheck/test in a fresh checkout** — apps import each workspace package from its built `dist/`, not from source. Skipping this breaks `tsc -noEmit` and Vitest type resolution.
--   All top-level scripts go through `dotenv -c -- turbo …`, so `.env` / `.env.local` are loaded automatically — don't prefix env vars manually.
--   **`pnpm cms:gen` regenerates `apps/admin/src/lib/cms-actions/_generated/`.** Run after touching any editor manifest in `packages/cms/src/editor/manifests/`. CI runs `pnpm cms:gen:check` to verify no drift.
--   **Storefront API queries are typed via `gql.tada`.** Write new queries with the `graphql()` helper from `@nordcom/commerce-shopify-graphql/graphql` rather than Apollo's `gql` — `api.query(MY_QUERY, vars)` then infers both `data` and `variables` from the document against the bundled `storefront.schema.json`. After upgrading `@shopify/hydrogen-react` (or whenever the introspection needs refreshing), run `pnpm --filter @nordcom/commerce-shopify-graphql generate` (also wired into `pnpm generate`). The schema and the generated `graphql-env.d.ts` are committed so a fresh clone has working types out of the box.
-
-**When starting work on a Next.js project, ALWAYS call the `init` tool from
-next-devtools-mcp FIRST to set up proper context and establish documentation
-requirements. Do this automatically without being asked.**
+-   Node from `.nvmrc` (authoritative). pnpm `11.x` pinned via `packageManager`.
+-   **Biome only** for lint + format. No ESLint, no Prettier — don't add config for them.
+-   **Vitest 4.x** project mode (root `vitest.config.ts` + per-package configs).
+-   **`pnpm build:packages` is mandatory before lint/typecheck/test in a fresh checkout** — apps import workspace packages from built `dist/`, not source.
+-   All top-level scripts run through `dotenv -c -- turbo …`; `.env` / `.env.local` load automatically. Don't prefix env vars manually.
+-   **`pnpm cms:gen`** regenerates `apps/admin/src/lib/cms-actions/_generated/`. Run after touching `packages/cms/src/editor/manifests/*`. CI checks via `pnpm cms:gen:check`.
+-   **Storefront GraphQL is `gql.tada`.** Author queries with `graphql()` from `@nordcom/commerce-shopify-graphql/graphql`, not Apollo's `gql` — `api.query(MY_QUERY, vars)` infers `data` and `variables` from `storefront.schema.json`. Regenerate with `pnpm --filter @nordcom/commerce-shopify-graphql generate` (also wired into `pnpm generate`) when bumping `@shopify/hydrogen-react`. Schema and `graphql-env.d.ts` are committed.
+-   **Always call `init` from `next-devtools-mcp` first** when starting Next.js work — sets up context and doc requirements. Don't wait to be asked.
 
 ## Commands
 
 ```bash
-# Dev — each app has a stable HTTPS URL via portless (vercel-labs/portless)
-# One-time setup per workstation:
-#   npm install -g portless
-#   portless trust              # adds local CA to system trust store (sudo prompt)
-#   portless service install    # optional: auto-start proxy at boot
-#
-# `pnpm dev` runs `predev` first which starts the wildcard proxy if not running.
+# Dev — stable HTTPS URLs via portless (vercel-labs/portless).
+# One-time:  npm i -g portless && portless trust  (sudo for CA)
+#            portless service install  (optional auto-start)
+# `pnpm dev` runs `predev` first which boots the wildcard proxy if absent.
 
-pnpm dev                 # all apps in parallel
-pnpm dev:storefront      # https://storefront.localhost  ·  https://<shop>.storefront.localhost
-pnpm dev:admin           # https://admin.localhost
-pnpm dev:landing         # https://landing.localhost
-pnpm dev:docs            # https://docs.localhost
+pnpm dev              # portless proxy (storefront only by default)
+pnpm dev:all          # all apps in parallel via turbo
+pnpm dev:storefront   # https://storefront.localhost · https://<shop>.storefront.localhost
+pnpm dev:admin        # https://admin.localhost
+pnpm dev:landing      # https://landing.localhost
+pnpm dev:docs         # https://docs.localhost
 
 # Build
-pnpm build               # everything (Turbo-cached)
-pnpm build:packages      # ./packages/* only — required before quality gates in fresh checkouts
-pnpm build:storefront    # filter to storefront
+pnpm build            # everything (Turbo-cached)
+pnpm build:packages   # ./packages/* only — required in fresh checkouts
+pnpm build:storefront # filter to one app
 
 # Quality gates (CI runs the same set)
-pnpm lint                # biome lint .
-pnpm format              # fixes the auto
+pnpm typecheck        # turbo run typecheck
+pnpm lint             # biome lint .
+pnpm format:check     # biome check --write --unsafe . (includes Tailwind sort)
 
-# Tests — Vitest needs MONGODB_URI; @nordcom/commerce-db connects at module load
-pnpm test                                                            # all projects, with coverage
+# Tests — Vitest needs MONGODB_URI; @nordcom/commerce-db connects at module load.
+# Set MONGODB_URI_TEST for a separate DB (defaults to mongodb://localhost:27017/test).
+pnpm test                                                            # all projects + coverage
 pnpm test:watch
 pnpm dotenv -c -- vitest run path/to/file.test.ts                    # single file
-pnpm dotenv -c -- vitest run -t "describe or it name"                # by test name
+pnpm dotenv -c -- vitest run -t "test name"                          # by name
 pnpm dotenv -c -- vitest run --project @nordcom/commerce-storefront  # one project
 pnpm test:e2e                                                        # Playwright (storefront, admin)
 
-# Generate types after CMS schema changes
-pnpm generate
+pnpm generate         # regenerate CMS + GraphQL types
 ```
 
-Set `MONGODB_URI_TEST` to point tests at a separate database (falls back to `mongodb://localhost:27017/test`).
+## Pre-commit verification
 
-## Quality Gates
-
-### Pre-commit Verification
-
--   After making changes, always run `pnpm typecheck`, `pnpm lint`, and `pnpm test` before claiming completion or committing.
--   For monorepo work, run these at the package level first (`pnpm --filter @nordcom/commerce-<name> typecheck`), then at the root if cross-package changes were made.
--   If a pre-commit hook fails due to missing setup (husky, lint-staged, missing `lint:types` script, etc.), report it clearly and offer to fix the config — never bypass with `--no-verify`.
+Run `pnpm typecheck`, `pnpm lint`, and `pnpm test` before claiming done. For monorepo changes start at the package level (`pnpm --filter @nordcom/commerce-<name> typecheck`), then root if cross-package. **Never bypass hooks with `--no-verify`** — fix the underlying issue, or report missing setup so it can be patched.
 
 ## Architecture
 
-### Multi-tenancy is a middleware-level concern
+### Multi-tenancy is a middleware concern
 
-1.  Entry is `apps/storefront/src/proxy.ts` (Next.js middleware). It dispatches to `admin()` or `storefront()` based on the first path segment.
-2.  `storefront()` normalizes `req.headers.host` (strips ports, `.localhost`, Vercel preview suffixes) and calls `Shop.findByDomain(hostname)` against MongoDB.
-3.  On hit, the URL is rewritten to `/[domain]/[locale]/…` — the App Router never sees an un-tenanted request.
-4.  On `NotFoundError`, redirects to `SERVICE_DOMAIN/status/unknown-shop/`.
+1.  Entry: `apps/storefront/src/proxy.ts` dispatches to `admin()` or `storefront()` by first path segment.
+2.  `storefront()` normalizes `req.headers.host` (strips ports, `.localhost`, Vercel preview suffixes) and calls `Shop.findByDomain(hostname)`.
+3.  Hit → URL rewritten to `/[domain]/[locale]/…`. The App Router never sees an un-tenanted request.
+4.  `NotFoundError` → redirects to `SERVICE_DOMAIN/status/unknown-shop/`.
 5.  Adding a tenant = inserting a row in the `shops` MongoDB collection. No redeploy.
 
-**Tenant context is never implicit.** Every Shopify call goes through `ShopifyApolloApiClient({ shop, locale })`. If you're adding a new data-fetching helper, take `{ shop, locale }` explicitly.
+**Tenant context is never implicit.** Every Shopify call goes through `ShopifyApolloApiClient({ shop, locale })`. New data-fetching helpers must take `{ shop, locale }` explicitly.
 
-### Locale fallback chain
+### Locale fallback
 
 `request locale → shop default → platform default`, with recursion guards. Locales live on the shop record, not in a global list.
 
 ### CMS integration
 
-Payload is mounted inside `apps/admin` under `(payload)`. The storefront consumes the shared config from `@nordcom/commerce-cms` for type-safe block rendering and uses `/[domain]/api/cms-preview` (`STOREFRONT_PREVIEW_SECRET`) to flip Next.js draft mode on.
+Payload mounts inside `apps/admin` under `(payload)`. The storefront consumes the shared config from `@nordcom/commerce-cms` for type-safe block rendering and flips draft mode via `/[domain]/api/cms-preview` (`STOREFRONT_PREVIEW_SECRET`).
 
 ### Caching and revalidation
 
@@ -110,32 +90,23 @@ Per-tenant, per-entity cache tags. Shopify webhooks call `revalidateTag` via `@t
 
 ### Admin shell
 
-The admin's `[domain]/layout.tsx` (`apps/admin/src/app/(app)/(dashboard)/[domain]/layout.tsx`) is a single CSS grid (`grid-template-rows: 56px 1fr`) wrapping a horizontal `react-resizable-panels` v4 `<Group>` with `<Separator>` dividers. Four optional panes from left to right: icon rail, sub-nav, content, inspector.
+`apps/admin/src/app/(app)/(dashboard)/[domain]/layout.tsx` is a CSS grid (`grid-template-rows: 56px 1fr`) wrapping a horizontal `react-resizable-panels` v4 `<Group>` with `<Separator>` dividers. Up to four panes: icon rail, sub-nav, content, inspector.
 
-- **Sub-nav** for a section lives in `[domain]/@subnav/<section>/default.tsx` (a parallel route slot). The slot returns null elsewhere; the shell collapses the pane when empty.
-- **Inspector** lives in `[domain]/@inspector/<route>/default.tsx`. Same pattern.
-- Pages render their own `<PageHeader title=… breadcrumbs=… actions=… />` and optional `<PageFooter>…</PageFooter>`. The shell-owned `<ContentScrollRegion>` provides the sticky behavior; pages do not manage scroll math.
+-   **Sub-nav**: `[domain]/@subnav/<section>/default.tsx`. Returns null elsewhere; shell collapses the pane when empty.
+-   **Inspector**: `[domain]/@inspector/<route>/default.tsx`. Same pattern.
+-   Pages render their own `<PageHeader title=… breadcrumbs=… actions=… />` and optional `<PageFooter>`. Shell-owned `<ContentScrollRegion>` handles sticky behavior — pages don't manage scroll math.
 
-To add a section with a sub-nav: create `[domain]/<section>/layout.tsx` if you need section-scoped wrapping, then create `[domain]/@subnav/<section>/default.tsx` listing the section's `<NavItem>`s.
-
-To opt a route into an inspector: create `[domain]/@inspector/<path-to-route>/default.tsx`.
+To add a section with sub-nav: create `[domain]/<section>/layout.tsx` if needed, then `[domain]/@subnav/<section>/default.tsx` listing the `<NavItem>`s. To opt into an inspector: `[domain]/@inspector/<path>/default.tsx`.
 
 ## Coding conventions
 
-Lint and formatting rules are defined in `biome.json` — read it for the source of truth. `pnpm format:check` rewrites mismatches (including unsafe fixes like Tailwind class sorting).
+`biome.json` is the source of truth. `pnpm format:check` rewrites (including unsafe fixes like Tailwind sorting).
 
--   **`noUncheckedIndexedAccess: true`** — array/object index access is `T | undefined`. Don't paper over with `!` non-null assertions unless you've actually checked.
--   **Trailing slashes** on internal links (`trailingSlash: true` in `next.config.js`).
--   Provider tokens (Shopify keys etc.) are guarded with `experimental_taintUniqueValue` — preserve that pattern.
--   **Use `@nordcom/commerce-errors` for all thrown errors.** Never `throw new Error(...)` in app or
-    package code. If no existing error fits, add a new class (and `*ErrorKind` enum value, and a
-    `getErrorFromCode` case) in `packages/errors/src/index.ts` and throw that. Errors carry
-    `statusCode`, `code`, and `help` URLs the platform relies on.
+-   **`noUncheckedIndexedAccess: true`** — index access is `T | undefined`. Don't paper over with `!`; check it.
+-   **Trailing slashes** on internal links (`trailingSlash: true`).
+-   Provider tokens (Shopify keys, etc.) are guarded with `experimental_taintUniqueValue` — preserve that.
+-   **Use `@nordcom/commerce-errors` for every thrown error.** Never `throw new Error(...)`. If no class fits, add one (plus `*ErrorKind` and a `getErrorFromCode` case) in `packages/errors/src/index.ts`. Errors carry `statusCode`, `code`, and `help` URLs the platform relies on.
 
 ## Editor hook
 
-`.claude/settings.json` runs `pnpm biome check --write` on every file touched by `Edit`/`Write`. Expect files to be auto-formatted immediately after edits — don't fight it by re-editing for stylistic reasons.
-
-## Things that aren't what they look like
-
--   `apps/docs/api/` is **TypeDoc-generated** — don't hand-edit.
+`.claude/settings.json` runs `pnpm biome check --write` on every `Edit`/`Write` via `PostToolUse`. Files auto-format right after edits — don't re-edit for stylistic reasons.
