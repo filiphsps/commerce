@@ -37,7 +37,15 @@ const config = {
         esmExternals: true,
         mcpServer: false, // TODO: Enable when we can have multiple mcp servers.
         optimizeCss: !isDev,
-        optimizePackageImports: ['@apollo/client', '@shopify/hydrogen-react', '@nordcom/nordstar'],
+        optimizePackageImports: [
+            '@apollo/client',
+            '@shopify/hydrogen-react',
+            '@nordcom/nordstar',
+            'lucide-react',
+            'sonner',
+            '@radix-ui/react-dialog',
+            'react-payment-brand-icons',
+        ],
         optimizeServerReact: true,
         partialFallbacks: true,
         prerenderEarlyExit: true,
