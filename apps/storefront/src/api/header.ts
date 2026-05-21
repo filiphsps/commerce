@@ -3,7 +3,6 @@ import 'server-only';
 import { getHeader } from '@nordcom/commerce-cms/api';
 import type { Header } from '@nordcom/commerce-cms/types';
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { draftMode } from 'next/headers';
 import type { Locale } from '@/utils/locale';
 import { toShopRef } from './_cms';
 
@@ -16,10 +15,8 @@ export type HeaderApiArgs = { shop: OnlineShop; locale: Locale };
  * callers render their minimal fallback chrome in that case.
  */
 export async function HeaderApi({ shop, locale }: HeaderApiArgs): Promise<Header | null> {
-    const isDraft = (await draftMode()).isEnabled;
     return getHeader({
         shop: toShopRef(shop),
         locale: { code: locale.code },
-        draft: isDraft,
     });
 }

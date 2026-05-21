@@ -14,7 +14,6 @@ vi.mock('@nordcom/commerce-db', () => ({
 // and `next/headers`. Mock those so the module graph evaluates cleanly under jsdom.
 vi.mock('next/headers', () => ({
     headers: vi.fn(() => new Map()),
-    draftMode: vi.fn().mockResolvedValue({ isEnabled: false }),
     cookies: vi.fn().mockResolvedValue(new Map()),
 }));
 vi.mock('@/auth', () => ({

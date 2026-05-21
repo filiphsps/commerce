@@ -2,7 +2,6 @@ import 'server-only';
 
 import { getArticles } from '@nordcom/commerce-cms/api';
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { draftMode } from 'next/headers';
 import type { Locale } from '@/utils/locale';
 import { toShopRef } from './_cms';
 
@@ -23,13 +22,11 @@ export type BlogApiResult = Awaited<ReturnType<typeof getArticles>>;
  * on Routes for the article-overlay design.
  */
 export async function BlogApi({ shop, locale, page = 1, limit = 12, tag }: BlogApiArgs): Promise<BlogApiResult> {
-    const isDraft = (await draftMode()).isEnabled;
     return getArticles({
         shop: toShopRef(shop),
         locale: { code: locale.code },
         page,
         limit,
         tag,
-        draft: isDraft,
     });
 }

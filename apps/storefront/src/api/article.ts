@@ -3,7 +3,6 @@ import 'server-only';
 import { getArticle } from '@nordcom/commerce-cms/api';
 import type { Article } from '@nordcom/commerce-cms/types';
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { draftMode } from 'next/headers';
 import type { Locale } from '@/utils/locale';
 import { toShopRef } from './_cms';
 
@@ -19,11 +18,9 @@ export type ArticleApiArgs = { shop: OnlineShop; locale: Locale; slug: string };
  * Shopify path then renders unchanged.
  */
 export async function ArticleApi({ shop, locale, slug }: ArticleApiArgs): Promise<Article | null> {
-    const isDraft = (await draftMode()).isEnabled;
     return getArticle({
         shop: toShopRef(shop),
         locale: { code: locale.code },
         slug,
-        draft: isDraft,
     });
 }

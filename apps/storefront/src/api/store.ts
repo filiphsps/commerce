@@ -6,7 +6,6 @@ import type { BusinessDatum } from '@nordcom/commerce-cms/types';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { NoLocalesAvailableError, ProviderFetchError } from '@nordcom/commerce-errors';
 import type { Country, Localization, PaymentSettings } from '@shopify/hydrogen-react/storefront-api-types';
-import { draftMode } from 'next/headers';
 import type { AbstractApi } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
 import { toShopRef } from './_cms';
@@ -168,10 +167,8 @@ export type BusinessDataApiArgs = { shop: OnlineShop; locale: Locale };
  * collapse to no-render in that case.
  */
 export const BusinessDataApi = async ({ shop, locale }: BusinessDataApiArgs): Promise<BusinessDatum | null> => {
-    const isDraft = (await draftMode()).isEnabled;
     return getBusinessData({
         shop: toShopRef(shop),
         locale: { code: locale.code },
-        draft: isDraft,
     });
 };

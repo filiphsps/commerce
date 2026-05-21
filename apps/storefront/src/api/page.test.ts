@@ -1,21 +1,15 @@
 import { getPages } from '@nordcom/commerce-cms/api';
-import { draftMode } from 'next/headers';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { Locale } from '@/utils/locale';
 import { mockCmsPage, mockShop } from '@/utils/test/fixtures';
 import { PagesApi } from './page';
 
-vi.mock('next/headers', () => ({ draftMode: vi.fn() }));
 vi.mock('@nordcom/commerce-cms/api', async () => {
     const actual = await vi.importActual<typeof import('@nordcom/commerce-cms/api')>('@nordcom/commerce-cms/api');
     return { ...actual, getPages: vi.fn() };
 });
 
 describe('PagesApi', () => {
-    beforeEach(() => {
-        vi.mocked(draftMode).mockResolvedValue({ isEnabled: false } as never);
-    });
-
     it('returns the CMS pages list mapped to the storefront ProvidedPages shape', async () => {
         const p1 = mockCmsPage({ id: 'p1', slug: 'home' });
         const p2 = mockCmsPage({ id: 'p2', slug: 'about' });
