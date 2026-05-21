@@ -75,3 +75,45 @@ The dispatcher utilities (`toShopRef`, `populatedMedia`, `tenantId`) live in
 (`mockHeader`, `mockFooter`, `mockBusinessData`, etc.) live in
 `apps/storefront/src/utils/test/fixtures/cms.ts`. Tests for each helper sit
 next to the implementation (`*.test.ts`).
+
+## Per-request loaders
+
+Every multi-call-site data fetch goes through `src/api/_loaders.ts`. The
+module wraps each underlying function in React's `cache()` so concurrent
+callers within a single request resolve once:
+
+```ts
+import { ProductApi, Shop } from '@/api/_loaders';
+
+const shop = await Shop.findByDomain(domain);
+const [product] = await ProductApi({ api, handle });
+```
+
+**Always import from `@/api/_loaders`** when fetching `Shop`, `Locales`,
+`Locale`, `Countries`, `Product`, `Collection`, `Blog`, `Article`, `Header`,
+`Footer`, `InfoBar`, `ProductMetadata`, `CollectionMetadata`, or `Pages`.
+
+Direct imports from the source modules (`@/api/shopify/product` etc.) are
+permitted only inside `_loaders.ts` itself and inside its tests.
+
+The dedup guarantee is a React-server-render property: it only kicks in
+inside an active server component render (or other React request scope).
+Outside that scope — e.g. inside a Vitest test running on happy-dom —
+`cache()` is effectively a pass-through. Tests should assert wrapping
+behavior + delegation, not dedup itself.
+
+## Per-tenant Apollo client cache
+
+`ShopifyApolloApiClient` reuses a single `ApolloClient` per
+`${shop.id}::${locale.code}` (`src/api/_apollo-pool.ts`). The Apollo
+`InMemoryCache` survives across requests, so repeat queries within a tenant
+hit memory instead of Shopify.
+
+Invalidation is driven by tag-based revalidation: when
+`/api/revalidate` fires, the route handler calls
+`evictApolloClient({ shopId })` to drop matching pool entries. Without this
+hook the `InMemoryCache` would diverge from Next.js's data cache.
+
+If you add a new code path that mutates Shopify state, ensure a webhook
+(or explicit revalidate call) targets the affected tenant so the pool
+gets evicted.
