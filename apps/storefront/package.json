@@ -10,7 +10,7 @@
     ],
     "scripts": {
         "start": "next start -p $PORT",
-        "dev": "NODE_ENV=development next dev --turbo -H $HOST -p $PORT",
+        "dev": "NODE_ENV=development next dev --turbo",
         "build": "node ./scripts/build.mjs",
         "clean": "rimraf -g dist coverage .turbo .next .tsbuildinfo *.log",
         "lint": "biome lint .",

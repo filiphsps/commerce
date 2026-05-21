@@ -6,7 +6,7 @@
     "type": "module",
     "scripts": {
         "dev": "pnpm pre && concurrently -i -k pnpm:dev:next pnpm:dev:watch",
-        "dev:next": "NODE_ENV=development next dev --turbo -H $HOST -p $PORT",
+        "dev:next": "NODE_ENV=development next dev --turbo",
         "dev:watch": "node scripts/watch-docs.mjs",
         "pre": "pnpm pre:typedoc && pnpm pre:mirror && pnpm pre:page-map",
         "pre:typedoc": "node scripts/emit-typedoc-json.mjs",

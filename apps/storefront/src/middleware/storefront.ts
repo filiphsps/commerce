@@ -19,9 +19,12 @@ import type { Code } from '@/utils/locale';
 
 function hostnameFromRequest(req: NextRequest): string {
     const host = req.headers.get('x-forwarded-host') || req.headers.get('host') || req.nextUrl.host;
-    const hostname = shopFromHost(host);
 
-    return hostname;
+    if (host.endsWith('storefront.localhost')) {
+        return process.env.STOREFRONT_DEV_SHOP || 'beta.pouched.de';
+    }
+
+    return shopFromHost(host);
 }
 
 export const getHostname = async (req: NextRequest): Promise<string> => {
@@ -254,32 +257,6 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         newUrl.pathname += `homepage/`;
     }
 
-    // Build the rewrite URL with an origin that matches the dev server's
-    // *internal* bound address — not the public host portless serves on.
-    //
-    // Next.js's router computes `initUrl` as
-    // `${protocol}://${opts.hostname}:${opts.port}${req.url}` (see
-    // `next/dist/server/lib/router-utils/resolve-routes.js`) and runs the
-    // rewrite value through `getRelativeURL(value, initUrl)`. If the two
-    // origins match the result collapses to a path and Next.js handles the
-    // rewrite internally. If they differ, the rewrite is treated as external
-    // and routed through `proxyRequest`, which opens a TCP connection using
-    // the rewrite URL's protocol. In dev with portless that means
-    // `https://localhost:<port>/…` to a server that only speaks HTTP, surfacing
-    // as `write EPROTO … wrong version number`.
-    //
-    // Strategy: use the `Host` header the dev server actually answers on
-    // (portless's http-proxy forwards with `changeOrigin`, so the upstream
-    // Host header is the internal `localhost:<port>` — same as Next.js's
-    // `opts.hostname`/`opts.port`). Pair it with the proto Next.js inferred
-    // (`req.nextUrl.protocol`) so origins match exactly. The Host header in
-    // production (Vercel) is the public hostname and the path is rewritten
-    // by the same code with no proxy split, so the comparison still holds.
-    const internalHost = req.headers.get('host') || req.nextUrl.host;
-    const internalProto = req.nextUrl.protocol || 'http:';
-    const search = newUrl.searchParams.size > 0 ? `?${newUrl.searchParams.toString()}` : '';
-    const rewriteUrl = new URL(`${internalProto}//${internalHost}/${hostname}${newUrl.pathname}${search}`);
-
     // Extract locale from the path (first segment after the leading slash).
     const localeFromPath = newUrl.pathname.split('/').filter(Boolean)[0] ?? '';
 
@@ -287,5 +264,9 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     requestHeaders.set('x-shop-domain', hostname);
     requestHeaders.set('x-locale', localeFromPath);
 
-    return setCookies(NextResponse.rewrite(rewriteUrl, { request: { headers: requestHeaders } }), cookies);
+    const search = newUrl.searchParams.size > 0 ? `?${newUrl.searchParams.toString()}` : '';
+    // Our target URL.
+    const target = `${newUrl.origin}/${hostname}${newUrl.pathname}${search}`;
+
+    return setCookies(NextResponse.rewrite(new URL(target, newUrl), { request: { headers: requestHeaders } }), cookies);
 };
