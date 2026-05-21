@@ -117,3 +117,56 @@ hook the `InMemoryCache` would diverge from Next.js's data cache.
 If you add a new code path that mutates Shopify state, ensure a webhook
 (or explicit revalidate call) targets the affected tenant so the pool
 gets evicted.
+
+## Cache tags
+
+Every entity loader in `src/api/_loaders.ts` tags its cached payload via
+`@/cache` (built on `@tagtree/core`). The tag scheme:
+
+- **Tenant root:** `shopify.<shop.id>` and
+  `shopify.<shop.id>.<shop.domain>`.
+- **Entity:** `shopify.<shop.id>.<shop.domain>.product.<handle>`,
+  `…collection.<handle>`, `…page.<handle>`. Parent collection-list /
+  product-list tags (`…products`, `…collections`) also fan out.
+
+When Shopify state mutates (admin webhooks), the route handler at
+`/api/revalidate` calls `revalidateTag(...)` with the matching tag set
+derived from `@tagtree/shopify`'s `parseShopifyWebhook` — driven by the
+exact same `cache` instance the loaders write to, so the tag schemes are
+guaranteed to align. The handler also evicts the per-tenant Apollo pool
+entry (see _Per-tenant Apollo client cache_ above).
+
+To invalidate an entire tenant:
+`revalidateTag('shopify.<shop.id>', 'max')`.
+
+`cacheTag` only operates inside a `'use cache'` boundary. The loaders wrap
+the call in a `safeCacheTag` helper that silently no-ops outside one (so
+`generateStaticParams` and other build-time callers don't crash). Inside
+a `'use cache'` page render, the tag bubbles up to the nearest parent
+boundary.
+
+### Per-route `cacheLife`
+
+- `product` / `collection` / `blog` / `article` `generateMetadata` →
+  `'days'` (or `'max'` where already in place; don't downgrade without
+  good reason).
+- `search` results metadata → `'minutes'` (intentional shorter TTL).
+- Shop root (`[locale]/layout.tsx` `generateMetadata`) → `'max'`.
+- `cart` and `account` page metadata are nominally cached at `'max'`
+  because the *metadata* (titles, robots tags) is per-tenant, not
+  per-user. The cart **contents** are client-only and never see Next's
+  cache.
+
+### Notes for new loaders
+
+If you add a new entity loader to `_loaders.ts`:
+
+1. Decide whether it's tenant-scoped, entity-scoped, or both.
+2. Extend `src/cache.ts`'s schema with the new entity (or reuse an
+   existing one).
+3. Call `safeCacheTag(...shopifyCache.keys.<entity>({ tenant, qualifier,
+   ...params }).tags)` inside the wrapper, before delegating to the
+   source.
+4. Confirm `/api/revalidate` knows how to derive the same tags from the
+   relevant Shopify webhook topic — add a topic mapping in
+   `@tagtree/shopify` if needed.
