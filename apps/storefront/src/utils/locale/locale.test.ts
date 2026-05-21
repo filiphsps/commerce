@@ -147,5 +147,34 @@ describe('utils', () => {
                 expect(locale.code).toBe('en-US');
             });
         });
+
+        describe('Locale fallback recursion guard', () => {
+            it('falls back to en-US when shop default is malformed (Locale.from throws)', () => {
+                const shop = { i18n: { defaultLocale: 'invalid-code' } };
+                const locale = Locale.fallbackForShop(shop);
+                expect(locale.code).toBe('en-US');
+            });
+
+            it('does not throw when shop default is unresolvable', () => {
+                const shop = { i18n: { defaultLocale: 'not-a-valid-locale-code-too-long' } };
+                expect(() => Locale.fallbackForShop(shop)).not.toThrow();
+            });
+
+            it('Locale.from throws UnknownLocaleError for malformed input (lock-in)', () => {
+                let caught: unknown;
+                try {
+                    Locale.from('invalid-code');
+                } catch (err) {
+                    caught = err;
+                }
+                expect(caught).toBeDefined();
+                expect((caught as Error).name).toBe('UnknownLocaleError');
+            });
+
+            it('Locale.from throws on input exceeding length bounds', () => {
+                expect(() => Locale.from('toolongstring')).toThrow();
+                expect(() => Locale.from('a')).toThrow();
+            });
+        });
     });
 });
