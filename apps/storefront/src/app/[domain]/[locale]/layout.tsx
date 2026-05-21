@@ -2,8 +2,7 @@ import '../../globals.css';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
-import { trace } from '@opentelemetry/api';
-import type { Metadata, Viewport } from 'next';
+import type { Viewport } from 'next';
 import { cacheLife } from 'next/cache';
 import { notFound, unstable_rethrow } from 'next/navigation';
 import type { ReactNode } from 'react';
@@ -23,42 +22,11 @@ import { primaryFont } from '@/utils/fonts';
 import { NOT_FOUND_HANDLE } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
-import { unsafe_cast } from '@/utils/unsafe-cast';
 
 export type LayoutParams = Promise<{ domain: string; locale: string }>;
 
-type StaticParam = Awaited<LayoutParams>;
-
-export async function generateStaticParams(): Promise<StaticParam[]> {
-    try {
-        const shops = await Shop.findAll();
-
-        const params = (
-            await Promise.all(
-                shops.map(async ({ domain }): Promise<StaticParam[]> => {
-                    try {
-                        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-                        if (shop.domain.includes('demo')) return [];
-                        return [{ domain: shop.domain, locale: Locale.from('en-US').code }];
-                    } catch (error: unknown) {
-                        trace.getActiveSpan()?.addEvent('static_params.shop_lookup_failed', {
-                            'shop.domain': domain,
-                            'error.message': (error as Error)?.message ?? String(error),
-                        });
-                        return [];
-                    }
-                }),
-            )
-        ).flat();
-
-        return params.length > 0 ? params : [{ domain: NOT_FOUND_HANDLE, locale: Locale.default.code }];
-    } catch (error: unknown) {
-        trace.getActiveSpan()?.addEvent('static_params.shop_findall_failed', {
-            'error.message': (error as Error)?.message ?? String(error),
-        });
-        return [{ domain: NOT_FOUND_HANDLE, locale: Locale.default.code }];
-    }
-}
+export { generateMetadata } from './metadata';
+export { generateStaticParams } from './static-params';
 
 export const viewport: Viewport = {
     initialScale: 1,
@@ -66,72 +34,6 @@ export const viewport: Viewport = {
     viewportFit: 'cover',
     width: 'device-width',
 };
-
-export async function generateMetadata({ params }: { params: LayoutParams }): Promise<Metadata> {
-    'use cache';
-    cacheLife('max');
-
-    const { domain, locale: localeData } = await params;
-    if (!domain || domain === NOT_FOUND_HANDLE) {
-        notFound();
-    }
-
-    let locale: Locale;
-    try {
-        locale = Locale.from(localeData);
-    } catch (error: unknown) {
-        if (Error.isNotFound(error)) {
-            notFound();
-        }
-
-        unstable_rethrow(error);
-        throw error;
-    }
-
-    let shop: OnlineShop;
-    try {
-        shop = await Shop.findByDomain(domain, { sensitiveData: true });
-    } catch (error: unknown) {
-        if (Error.isNotFound(error) || error instanceof UnknownShopDomainError) {
-            notFound();
-        }
-
-        unstable_rethrow(error);
-        throw error;
-    }
-
-    return {
-        // Next 16: URL objects fail React-server-to-client serialization. Runtime
-        // accepts strings; TS Metadata type lags. Cast is intentional.
-        metadataBase: unsafe_cast<URL>(`https://${shop.domain}/${locale.code}/`),
-        title: {
-            absolute: `${shop.name} (${locale.country!})`.trim(),
-            // Allow tenants to customize this.
-            // For example allow them to use other separators
-            // like `·`, `–`, `—` etc.
-            template: `%s — ${shop.name} (${locale.country!})`,
-        },
-        icons: {
-            icon: ['/favicon.png'],
-            shortcut: ['/favicon.png'],
-            apple: ['/apple-icon.png'],
-        },
-        robots: {
-            follow: true,
-            index: true,
-        },
-        referrer: 'origin',
-        formatDetection: {
-            email: false,
-            address: false,
-            telephone: false,
-        },
-        openGraph: {
-            siteName: shop.name,
-            locale: locale.code,
-        },
-    };
-}
 
 export default async function RootLayout({
     children,
