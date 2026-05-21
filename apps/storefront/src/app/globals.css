@@ -147,7 +147,6 @@ html:root {
         /* Deal with font rendering */
         -moz-osx-font-smoothing: auto;
         -webkit-font-smoothing: subpixel-antialiased;
-        font-smooth: always;
         font-optical-sizing: auto;
         font-size-adjust: ex-height ch-width from-font;
         text-rendering: optimizeLegibility;
