@@ -77,7 +77,6 @@ export enum ApiErrorKind {
     API_INVALID_SHOP_DOMAIN = 'API_INVALID_SHOP_DOMAIN',
     API_INVALID_HANDLE = 'API_INVALID_HANDLE',
     API_INVALID_ID = 'API_INVALID_ID',
-    API_INVALID_SLICE_VARIATION = 'API_INVALID_SLICE_VARIATION',
     API_INVALID_CART = 'API_INVALID_CART',
     API_TOO_MANY_REQUESTS = 'API_TOO_MANY_REQUESTS',
     API_METHOD_NOT_ALLOWED = 'API_IMAGE_NO_FRACTIONAL',
@@ -215,25 +214,6 @@ export class InvalidIDError extends ApiError {
 
         if (id !== undefined && id !== null) {
             this.description = this.description.replace('ID', `ID "${String(id)}"`);
-        }
-    }
-}
-export class InvalidSliceVariationError extends ApiError {
-    statusCode = 404;
-    name = 'InvalidSliceVariationError';
-    details = 'Invalid slice variation';
-    description = 'The slice variation is invalid';
-    code = ApiErrorKind.API_INVALID_SLICE_VARIATION;
-
-    constructor(variation?: unknown, slice?: unknown, cause?: string, statusCode?: number) {
-        super(cause, statusCode);
-
-        if (slice !== undefined && slice !== null) {
-            this.description = this.description.replace('slice', `slice "${String(slice)}"`);
-        }
-
-        if (variation !== undefined && variation !== null) {
-            this.description = this.description.replace('variation', `variation "${String(variation)}"`);
         }
     }
 }
@@ -801,8 +781,6 @@ export const getErrorFromCode = (
             return InvalidHandleError as unknown as typeof ApiError;
         case ApiErrorKind.API_INVALID_ID:
             return InvalidIDError as unknown as typeof ApiError;
-        case ApiErrorKind.API_INVALID_SLICE_VARIATION:
-            return InvalidSliceVariationError;
         case ApiErrorKind.API_INVALID_CART:
             return InvalidCartError;
         case ApiErrorKind.API_TOO_MANY_REQUESTS:

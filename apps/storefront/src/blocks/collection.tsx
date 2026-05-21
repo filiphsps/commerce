@@ -5,6 +5,7 @@ import CollectionBlockComponent from '@/components/products/collection-block';
 import { Title } from '@/components/typography/heading';
 import { cn } from '@/utils/tailwind';
 import type { BlockContext } from './context';
+import { textOf } from './payload-value';
 import type { CollectionBlockNode } from './types';
 
 /**
@@ -28,6 +29,7 @@ export const CollectionBlock = ({
     index?: number;
 }) => {
     const isHorizontal = block.layout === 'carousel';
+    const title = textOf(block.title);
 
     return (
         <section
@@ -35,9 +37,9 @@ export const CollectionBlock = ({
             data-layout={block.layout}
             className={cn('flex w-full flex-col items-start justify-start gap-4 self-start')}
         >
-            {block.title ? (
+            {title ? (
                 <Title as="h2" className="font-bold text-xl leading-tight lg:text-2xl">
-                    {block.title}
+                    {title}
                 </Title>
             ) : null}
 

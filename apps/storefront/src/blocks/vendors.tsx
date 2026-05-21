@@ -4,6 +4,7 @@ import { Suspense } from 'react';
 import Vendors from '@/components/informational/vendors';
 import { Title } from '@/components/typography/heading';
 import type { BlockContext } from './context';
+import { textOf } from './payload-value';
 import type { VendorsBlockNode } from './types';
 
 // Shared rail wrapper used by both the live block and its skeleton so the
@@ -34,11 +35,12 @@ const VendorRailSkeleton = ({ count = 8 }: { count?: number }) => (
  * with the skeleton acting as a placeholder.
  */
 export const VendorsBlock = ({ block, context }: { block: VendorsBlockNode; context: BlockContext }) => {
+    const title = textOf(block.title);
     return (
         <section data-block-type="vendors" className="flex w-full flex-col gap-3">
-            {block.title ? (
+            {title ? (
                 <Title as="h2" className="font-bold text-xl leading-tight lg:text-2xl">
-                    {block.title}
+                    {title}
                 </Title>
             ) : null}
             <Suspense fallback={<VendorRailSkeleton count={Math.min(block.maxVendors ?? 8, 12)} />}>

@@ -4,6 +4,7 @@ import { Suspense } from 'react';
 import CollectionBlockComponent from '@/components/products/collection-block';
 import { Title } from '@/components/typography/heading';
 import type { BlockContext } from './context';
+import { textOf } from './payload-value';
 import type { OverviewBlockNode } from './types';
 
 /**
@@ -26,11 +27,12 @@ export const OverviewBlock = ({ block, context }: { block: OverviewBlockNode; co
         return null;
     }
 
+    const title = textOf(block.title);
     return (
         <section data-block-type="overview" data-source={block.source} className="flex w-full flex-col gap-3">
-            {block.title ? (
+            {title ? (
                 <Title as="h2" className="font-bold text-xl leading-tight lg:text-2xl">
-                    {block.title}
+                    {title}
                 </Title>
             ) : null}
             <Suspense fallback={<CollectionBlockComponent.skeleton />}>

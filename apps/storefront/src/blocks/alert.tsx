@@ -1,5 +1,6 @@
 import type { JSX } from 'react';
 import { Alert as AlertComponent } from '@/components/informational/alert';
+import { textOf } from './payload-value';
 import type { AlertBlockNode } from './types';
 
 /**
@@ -12,10 +13,14 @@ import type { AlertBlockNode } from './types';
  * a direct pass-through is type-safe.
  */
 export const AlertBlock = ({ block }: { block: AlertBlockNode }): JSX.Element => {
+    // `textOf` defends against Payload returning unresolved `{ <locale>: value }`
+    // maps when the locale chain misfires — see `payload-value.ts`.
+    const title = textOf(block.title);
+    const body = textOf(block.body);
     return (
         <AlertComponent severity={block.severity} data-block-type="alert">
-            <strong className="block font-semibold">{block.title}</strong>
-            {block.body ? <p className="text-sm leading-snug">{block.body}</p> : null}
+            <strong className="block font-semibold">{title}</strong>
+            {body ? <p className="text-sm leading-snug">{body}</p> : null}
         </AlertComponent>
     );
 };

@@ -1,3 +1,4 @@
+import { InvalidIDError } from '@nordcom/commerce-errors';
 import type { ReactNode } from 'react';
 import { AlertBlock } from './alert';
 import { BannerBlock } from './banner';
@@ -29,7 +30,7 @@ type BlocksProps = {
  * blowing the React render stack — the columns block bumps `depth`,
  * we cap it here.
  *
- * Unrecognised block types render as `null` rather than throwing,
+ * Unrecognized block types render as `null` rather than throwing,
  * matching the old SliceZone behavior — keeps editors from breaking
  * a live page by adding a block that ships before the renderer.
  */
@@ -60,11 +61,14 @@ export const Blocks = ({ blocks, context }: BlocksProps): ReactNode => {
                         return <RichTextBlock key={idx} block={block} context={context} />;
                     case 'vendors':
                         return <VendorsBlock key={idx} block={block} context={context} />;
-                    default:
+                    default: {
+                        console.error(new InvalidIDError((block as BlockNode).blockType, 'BlockNode.blockType'));
+                        console.warn('Blocks, missing/invalid type:', '');
                         // Exhaustiveness check — if a new block type is added to
                         // `BlockNode` without a case here, TS yells about
                         // `_exhaustive` not being assignable to `never`.
                         return null;
+                    }
                 }
             })}
         </>
