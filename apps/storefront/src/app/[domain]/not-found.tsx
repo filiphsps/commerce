@@ -1,4 +1,3 @@
-import '@/styles/app.scss';
 import '../globals.css';
 
 import type { Metadata } from 'next';

@@ -47,18 +47,244 @@
     contain-intrinsic-size: --value([*]);
 }
 
+/* Plain CSS custom properties consumed by hand-written CSS throughout the storefront. */
+:root {
+    --font-fallback:
+        system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, Cantarell, "Helvetica Neue",
+        sans-serif;
+
+    --color-bright: #ffffff;
+    --color-dark: #222222;
+    --color-dark-secondary: #555555;
+
+    --color-sale: #b51200;
+    --color-danger: #a53d3a;
+    --color-danger-dark: #7c2e2b;
+
+    --color-lights-out: #051821;
+
+    --color-block: #f3f3f3;
+    --color-block-light: #f5f5f5;
+    --color-block-dark: #d8d8d8;
+    --color-block-darker: #a8a8a8;
+    --color-block-black: #222222;
+    --color-block-shadow: rgba(0, 0, 0, 0.4);
+
+    --color-gray: #989898;
+    --color-green: #1b6e1b;
+    --color-green-rgb: 27, 111, 27;
+    --color-green-dark: #093f09;
+    --color-green-light: #e1faea;
+
+    --color-block-success: #3b9e2e;
+    --color-block-success-dark: #2a7221;
+    --color-block-success-text: var(--color-dark);
+    --color-block-info: #6dc0d5;
+    --color-block-info-dark: #1c5d99;
+    --color-block-info-text: var(--color-dark);
+
+    /* Gets replaced by the brand primary color in the layout. */
+    --accent-primary: #073b4c;
+    /* Gets replaced by the brand secondary color in the layout. */
+    --accent-secondary: #118ab2;
+}
+
+html:root {
+    --accent-primary-text: var(--color-accent-primary-text, var(--color-bright));
+    --accent-secondary-text: var(--color-accent-secondary-text, var(--color-dark));
+
+    --page-width: 1536px;
+
+    --block-border-radius-large: 1rem;
+    --block-border-radius: 0.75rem;
+    --block-border-radius-small: calc(var(--block-border-radius) * 0.75);
+    --block-border-radius-tiny: 0.325rem;
+    --block-border-width: 0.1625rem;
+    --block-border-width-large: 0.425rem;
+    --block-border-width-huge: 0.255rem;
+    --block-border-width-small: 0.135rem;
+    --block-border-width-tiny: 0.1rem;
+
+    --block-padding: 0.6rem;
+    --block-padding-small: calc(var(--block-padding) / 2);
+    --block-padding-tiny: calc(var(--block-padding) / 3);
+    --block-padding-large: calc(var(--block-padding) * 1.5);
+    --block-padding-huge: calc(var(--block-padding) * 1.5);
+
+    --block-spacer: 0.55rem;
+    --block-spacer-small: calc(var(--block-spacer) / 2);
+    --block-spacer-tiny: calc(var(--block-spacer) / 3);
+    --block-spacer-large: calc(var(--block-spacer) * 1.35);
+    --block-spacer-huge: calc(var(--block-spacer) * 1.5);
+}
+
 @layer base {
     html {
         font-feature-settings:
             "rlig" 1,
             "calt" 1;
     }
+
+    html,
+    body {
+        padding: 0;
+        margin: 0;
+
+        color: var(--color-foreground, var(--color-dark));
+        background: var(--color-background, var(--color-bright));
+    }
+
     body {
         @apply min-h-screen;
+
+        width: 100%;
+        max-width: 100vw;
+
+        font-size: inherit;
+
+        -webkit-overflow-scrolling: touch;
+
+        /* Deal with font rendering */
+        -moz-osx-font-smoothing: auto;
+        -webkit-font-smoothing: subpixel-antialiased;
+        font-smooth: always;
+        font-optical-sizing: auto;
+        font-size-adjust: ex-height ch-width from-font;
+        text-rendering: optimizeLegibility;
+        -webkit-text-size-adjust: auto;
+        text-size-adjust: auto;
+
+        a:is([href]):where([href=""], [href="#"]) {
+            cursor: default;
+        }
+    }
+
+    input[type="number"] {
+        -moz-appearance: textfield !important;
+        appearance: textfield;
+
+        &::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            appearance: none;
+            margin: 0;
+        }
+    }
+
+    input[type="search"]::-webkit-search-decoration,
+    input[type="search"]::-webkit-search-cancel-button,
+    input[type="search"]::-webkit-search-results-button,
+    input[type="search"]::-webkit-search-results-decoration {
+        display: none;
+        -webkit-appearance: none;
+        appearance: none;
+    }
+
+    svg {
+        font-size: inherit;
+        height: 100%;
+        vertical-align: middle;
+
+        &.primary.design,
+        &.primary {
+            stroke: inherit !important;
+            color: inherit !important;
+            fill: inherit !important;
+        }
+    }
+
+    a:is([href]):where([href=""], [href="#"]) {
+        cursor: default;
+    }
+
+    *:is(a:not(:where([href=""], [href="#"])), button):not(:disabled) {
+        cursor: pointer;
+    }
+
+    /* TODO: Don't hardcode this. */
+    footer address a:hover {
+        text-decoration: underline;
+    }
+
+    #bloggy--article {
+        max-width: unset !important;
+
+        .bggle_line {
+            width: 100% !important;
+        }
+
+        @media (max-width: 950px) {
+            .bggl-recipe-infos {
+                max-width: 100% !important;
+            }
+        }
     }
 }
 
 @layer utilities {
+    @keyframes shimmer {
+        100% {
+            transform: translateX(100%);
+        }
+    }
+
+    @keyframes forward-pulse {
+        0%,
+        100% {
+            transform: scale(1) scaleY(1.05) translateX(-0.25rem);
+        }
+        50% {
+            transform: scale(1.2) scaleY(0.8) translateX(0.75rem);
+        }
+    }
+
+    @keyframes pulse {
+        0%,
+        100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.15);
+        }
+    }
+
+    [data-skeleton] {
+        position: relative;
+        overflow: hidden;
+
+        background-color: rgba(0, 0, 0, 0.2);
+
+        border-radius: 0.25rem;
+
+        &::before {
+            z-index: 1;
+            content: "";
+            position: absolute;
+            inset: 0;
+            border: 1px solid rgba(0, 0, 0, 0.3);
+            margin: -1px;
+
+            border-radius: inherit;
+        }
+
+        &::after {
+            z-index: 0;
+            content: "";
+            position: absolute;
+            inset: 0;
+            transform: translateX(-100%);
+            background-image: linear-gradient(
+                to right,
+                rgba(0, 0, 0, 0) 0%,
+                rgba(0, 0, 0, 0.2) 25%,
+                rgba(0, 0, 0, 0) 50%
+            );
+            animation: shimmer 5s infinite;
+            animation-delay: var(--animation-delay, 0ms);
+
+            border-radius: inherit;
+        }
+    }
+
     @keyframes overflow-x-scroll-shadow {
         from {
             box-shadow: inset -30px 0px 25px -30px rgb(0 0 0 / 0.75);
