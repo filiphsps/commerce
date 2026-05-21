@@ -6,6 +6,7 @@ import { ShopMisconfigurationError, UnknownCommerceProviderError } from '@nordco
 import { createStorefrontClient } from '@shopify/hydrogen-react';
 import { headers } from 'next/headers';
 import { experimental_taintUniqueValue } from 'react';
+import { getApolloClient } from '@/api/_apollo-pool';
 import type { ApiConfig } from '@/api/client';
 import { createApolloClient } from '@/api/client';
 import { tenantRootTags } from '@/cache';
@@ -98,30 +99,29 @@ export const ShopifyApolloApiClient = async ({
 }: ShopifyApiOptions) => {
     const configBuilder = apiConfig || (await ShopifyApiConfig({ shop, buyerIp }));
 
-    let config: ApiConfig | null = null;
-    try {
-        config = configBuilder.private();
-    } catch (privateConfigError) {
-        // Empty-catch previously hid every reason the private headers failed
-        // — bad/expired admin token, mis-configured shop, missing IP — and
-        // the storefront silently downgraded to public-only access in prod
-        // with nothing in the logs but a generic "falling back" line.
-        console.warn(
-            '[shopify] private headers unavailable, falling back to public Storefront API:',
-            privateConfigError instanceof Error ? privateConfigError.message : privateConfigError,
-        );
-    }
-
-    if (!config) {
-        // Fallback to public headers.
-        config = configBuilder.public();
-    }
-
-    return ApiBuilder({
+    const api = getApolloClient({
         shop,
         locale,
-        api: createApolloClient(config, shop),
+        factory: () => {
+            let config: ApiConfig | null = null;
+            try {
+                config = configBuilder.private();
+            } catch (privateConfigError) {
+                // Empty-catch previously hid every reason the private headers failed
+                // — bad/expired admin token, mis-configured shop, missing IP — and
+                // the storefront silently downgraded to public-only access in prod
+                // with nothing in the logs but a generic "falling back" line.
+                console.warn(
+                    '[shopify] private headers unavailable, falling back to public Storefront API:',
+                    privateConfigError instanceof Error ? privateConfigError.message : privateConfigError,
+                );
+            }
+            if (!config) config = configBuilder.public();
+            return createApolloClient(config, shop);
+        },
     });
+
+    return ApiBuilder({ shop, locale, api });
 };
 
 /**

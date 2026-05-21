@@ -1,8 +1,9 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
 import { headers } from 'next/headers';
-import { describe, expect, it, vi } from 'vitest';
-import { ShopifyApiConfig } from '@/api/shopify';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import * as apolloPool from '@/api/_apollo-pool';
+import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
 
 vi.mock('@nordcom/commerce-db', () => ({
     Shop: {
@@ -28,7 +29,48 @@ vi.mock('@shopify/hydrogen-react', () => ({
     }),
 }));
 
+vi.mock('@/api/_apollo-pool', async (importActual) => {
+    const actual = (await importActual()) as typeof apolloPool;
+    return { ...actual };
+});
+
+vi.mock('@/api/client', () => ({
+    createApolloClient: vi.fn(() => ({ query: vi.fn() }) as any),
+}));
+
 describe('api/shopify', () => {
+    describe('ShopifyApolloApiClient pool integration', () => {
+        beforeEach(() => apolloPool.evictAllApolloClients());
+
+        it('returns the same Apollo client instance for the same shop+locale', async () => {
+            vi.mocked(Shop.findByDomain).mockResolvedValue({
+                commerceProvider: {
+                    type: 'shopify',
+                    domain: 'shop-pool.myshopify.com',
+                    authentication: { publicToken: 'p', token: 't' },
+                },
+            } as unknown as OnlineShop);
+
+            const spy = vi.spyOn(apolloPool, 'getApolloClient');
+
+            const shop = { id: 'shop-pool', domain: 'shop-pool.com' } as OnlineShop;
+            const locale = { code: 'en-US' } as any;
+
+            await ShopifyApolloApiClient({ shop, locale });
+            await ShopifyApolloApiClient({ shop, locale });
+
+            // getApolloClient was called twice but should have returned the same
+            // cached instance — the factory (and thus createApolloClient) must
+            // only have been invoked once.
+            expect(spy).toHaveBeenCalledTimes(2);
+            const first = spy.mock.results[0]?.value;
+            const second = spy.mock.results[1]?.value;
+            expect(first).toBe(second);
+
+            spy.mockRestore();
+        });
+    });
+
     describe('ShopifyApiConfig', () => {
         it('does not call next/headers.headers() during config construction', async () => {
             vi.mocked(Shop.findByDomain).mockResolvedValue({
