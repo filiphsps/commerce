@@ -70,6 +70,8 @@ chrome:
 -   `BlogApi({ shop, locale, page?, limit?, tag? })` — `cms-blog.ts` — paginated CMS Article listing for custom blog routes.
 -   `PagesApi({ shop, locale })` — `page.ts` — enumerates CMS pages for sitemap-style consumers.
 
-The dispatcher utilities (`toShopRef`, fixture factories) live in
-`apps/storefront/src/api/_cms.ts`. Tests for each helper sit next to the
-implementation (`*.test.ts`).
+The dispatcher utilities (`toShopRef`, `populatedMedia`, `tenantId`) live in
+`apps/storefront/src/api/_cms.ts`. Typed fixture factories
+(`mockHeader`, `mockFooter`, `mockBusinessData`, etc.) live in
+`apps/storefront/src/utils/test/fixtures/cms.ts`. Tests for each helper sit
+next to the implementation (`*.test.ts`).

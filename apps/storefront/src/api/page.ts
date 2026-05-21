@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { getPage as CmsGetPage, getPages as CmsGetPages } from '@nordcom/commerce-cms/api';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { draftMode } from 'next/headers';
