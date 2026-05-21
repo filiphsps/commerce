@@ -27,6 +27,29 @@ vi.mock('./store', () => ({
     CountriesApi: CountriesApiMock,
 }));
 
+// --- Shopify entity loaders ---
+
+const ProductApiMock = vi.fn();
+const CollectionApiMock = vi.fn();
+const BlogApiMock = vi.fn();
+const ArticleApiMock = vi.fn();
+
+vi.mock('./shopify/product', () => ({
+    ProductApi: ProductApiMock,
+}));
+
+vi.mock('./shopify/collection', () => ({
+    CollectionApi: CollectionApiMock,
+}));
+
+vi.mock('./shopify/blog', () => ({
+    BlogApi: BlogApiMock,
+}));
+
+vi.mock('./article', () => ({
+    ArticleApi: ArticleApiMock,
+}));
+
 describe('Locale + country loaders', () => {
     it('LocalesApi wraps the source function and delegates', async () => {
         const mod = await import('./_loaders');
@@ -89,5 +112,61 @@ describe('Shop loader', () => {
 
         expect(result).toHaveLength(1);
         expect(findAllMock).toHaveBeenCalled();
+    });
+});
+
+describe('ProductApi loader', () => {
+    it('wraps source ProductApi and delegates', async () => {
+        const mod = await import('./_loaders');
+        ProductApiMock.mockClear();
+        ProductApiMock.mockResolvedValue([{ id: 'p1', handle: 'red-widget' }, null] as any);
+
+        expect(mod.ProductApi).not.toBe(ProductApiMock);
+
+        const result = await mod.ProductApi({ api: {} as any, handle: 'red-widget' });
+        expect(result).toEqual([{ id: 'p1', handle: 'red-widget' }, null]);
+        expect(ProductApiMock).toHaveBeenCalled();
+    });
+});
+
+describe('CollectionApi loader', () => {
+    it('wraps source CollectionApi and delegates', async () => {
+        const mod = await import('./_loaders');
+        CollectionApiMock.mockClear();
+        CollectionApiMock.mockResolvedValue({ id: 'c1', handle: 'summer-sale' } as any);
+
+        expect(mod.CollectionApi).not.toBe(CollectionApiMock);
+
+        const result = await mod.CollectionApi({ api: {} as any, handle: 'summer-sale' });
+        expect(result).toEqual({ id: 'c1', handle: 'summer-sale' });
+        expect(CollectionApiMock).toHaveBeenCalled();
+    });
+});
+
+describe('BlogApi loader', () => {
+    it('wraps source BlogApi and delegates', async () => {
+        const mod = await import('./_loaders');
+        BlogApiMock.mockClear();
+        BlogApiMock.mockResolvedValue([{ id: 'b1', handle: 'news' }, null] as any);
+
+        expect(mod.BlogApi).not.toBe(BlogApiMock);
+
+        const result = await mod.BlogApi({ api: {} as any, handle: 'news' });
+        expect(result).toEqual([{ id: 'b1', handle: 'news' }, null]);
+        expect(BlogApiMock).toHaveBeenCalled();
+    });
+});
+
+describe('ArticleApi loader', () => {
+    it('wraps source ArticleApi and delegates', async () => {
+        const mod = await import('./_loaders');
+        ArticleApiMock.mockClear();
+        ArticleApiMock.mockResolvedValue({ id: 'a1', slug: 'hello-world' } as any);
+
+        expect(mod.ArticleApi).not.toBe(ArticleApiMock);
+
+        const result = await mod.ArticleApi({ shop: {} as any, locale: {} as any, slug: 'hello-world' });
+        expect(result).toEqual({ id: 'a1', slug: 'hello-world' });
+        expect(ArticleApiMock).toHaveBeenCalled();
     });
 });
