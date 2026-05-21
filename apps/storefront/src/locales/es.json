@@ -23,7 +23,9 @@
         "view-cart": "Ver tu carrito de compras",
         "remove-n-from-cart": "Eliminar {0} del carrito",
         "clear-cart": "Vaciar carrito",
-        "n-items": "{0} artículo(s)"
+        "n-items": "{0} artículo(s)",
+        "n-left": "Solo {0} restantes",
+        "back-order": "Disponible en pedido pendiente"
     },
     "common": {
         "account": "cuenta",
@@ -83,6 +85,7 @@
         "ingredients": "Ingredientes",
         "n-in-stock-and-available": "{0} en stock y disponible",
         "n-in-stock": "{0} en stock",
+        "back-order": "Disponible en pedido pendiente",
         "new": "Nuevo",
         "nutritional-content": "Contenido Nutricional",
         "percentage-off": "{0}% de DESCUENTO",

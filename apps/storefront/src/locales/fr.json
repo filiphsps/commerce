@@ -18,7 +18,9 @@
         "shipping-calculated-at-checkout": "Frais de port calculés à la caisse",
         "shipping": "Livraison",
         "subtotal": "Sous-total",
-        "view-cart": "Voir votre panier"
+        "view-cart": "Voir votre panier",
+        "n-left": "Plus que {0} en stock",
+        "back-order": "Disponible en précommande"
     },
     "common": {
         "account": "compte",
@@ -75,6 +77,7 @@
         "ingredients": "Ingrédients",
         "n-in-stock-and-available": "{0} en stock et disponible",
         "n-in-stock": "{0} en stock",
+        "back-order": "Disponible en précommande",
         "new": "Nouveau",
         "nutritional-content": "Contenu nutritif",
         "percentage-off": "{0}% OFF",

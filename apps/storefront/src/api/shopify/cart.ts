@@ -1,7 +1,13 @@
 // Import from the fragments-only module — importing from `product.ts` here
 // would pull `@/cache` (and therefore `next/cache`) into the client bundle
 // via `providers-registry.tsx`, which webpack rejects at build time.
+import { print } from 'graphql';
 import { PRODUCT_FRAGMENT_MINIMAL_NO_VARIANTS } from '@/api/shopify/product-fragments';
+
+// CartProvider from hydrogen-react accepts a raw GraphQL string, not a
+// `TypedDocumentNode`. Serialize the typed fragment to text so it can be
+// concatenated into the cart fragment below.
+const PRODUCT_MINIMAL_FRAGMENT_STRING = print(PRODUCT_FRAGMENT_MINIMAL_NO_VARIANTS);
 
 export const CartFragment = /* GraphQL */ `
     fragment CartFragment on Cart {
@@ -68,6 +74,8 @@ export const CartFragment = /* GraphQL */ `
                         ... on ProductVariant {
                             id
                             availableForSale
+                            currentlyNotInStock
+                            quantityAvailable
                             barcode
                             sku
                             compareAtPrice {
@@ -79,13 +87,23 @@ export const CartFragment = /* GraphQL */ `
                             unitPrice {
                                 ...MoneyFragment
                             }
+                            unitPriceMeasurement {
+                                measuredType
+                                quantityUnit
+                                quantityValue
+                                referenceUnit
+                                referenceValue
+                            }
                             requiresShipping
+                            taxable
+                            weight
+                            weightUnit
                             title
                             image {
                                 ...ImageFragment
                             }
                             product {
-                                ...ProductFragment
+                                ...ProductMinimalNoVariants
                             }
                             selectedOptions {
                                 name
@@ -130,7 +148,6 @@ export const CartFragment = /* GraphQL */ `
         height
         thumbhash
     }
-    fragment ProductFragment on Product {
-        ${PRODUCT_FRAGMENT_MINIMAL_NO_VARIANTS}
-    }
+
+    ${PRODUCT_MINIMAL_FRAGMENT_STRING}
 `;

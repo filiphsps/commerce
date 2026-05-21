@@ -23,7 +23,9 @@
         "view-cart": "View your shopping cart",
         "remove-n-from-cart": "Remove {0} from the cart",
         "clear-cart": "Clear cart",
-        "n-items": "{0} item(s)"
+        "n-items": "{0} item(s)",
+        "n-left": "Only {0} left",
+        "back-order": "Available on back-order"
     },
     "common": {
         "account-dashboard": "account dashboard",
@@ -87,6 +89,7 @@
         "ingredients": "Ingredients",
         "n-in-stock-and-available": "{0} in stock and available",
         "n-in-stock": "{0} in stock",
+        "back-order": "Available on back-order",
         "new": "New",
         "nutritional-content": "Nutritional Content",
         "percentage-off": "{0}% OFF",

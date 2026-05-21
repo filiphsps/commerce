@@ -27,6 +27,7 @@ async function Content({ shop, locale, handle }: { shop: OnlineShop; locale: Loc
                 url(transform: { preferredContentType: WEBP })
                 height
                 width
+                thumbhash
             }
             images(first: 250) {
                 edges {
@@ -36,6 +37,7 @@ async function Content({ shop, locale, handle }: { shop: OnlineShop; locale: Loc
                         url(transform: { preferredContentType: WEBP })
                         height
                         width
+                        thumbhash
                     }
                 }
             }
@@ -61,8 +63,8 @@ async function Content({ shop, locale, handle }: { shop: OnlineShop; locale: Loc
             pageUrl={`https://${shop.domain}/${locale.code}/products/${handle}/`}
             enableShare={false}
             padding={false}
-            className="w-full snap-start snap-always overflow-hidden [&>*]:inset-y-0 [&>*]:shrink [&>*]:md:relative"
-            primaryImageClassName="aspect-[4/3] md:aspect-auto"
+            className="w-full snap-start snap-always overflow-hidden *:inset-y-0 *:shrink *:md:relative"
+            primaryImageClassName="aspect-4/3 md:aspect-auto"
         />
     );
 }
@@ -84,7 +86,7 @@ export default async function ProductModalGallery({ params }: Readonly<{ params:
             fallback={
                 <div className="flex h-full w-full gap-2 md:flex-col lg:gap-4">
                     <div className="relative h-full w-full grow overflow-hidden rounded-lg border-2 border-gray-100 border-solid bg-white md:h-full">
-                        <div className="aspect-[4/3] h-1/4 w-full md:aspect-auto md:max-h-[30rem]" data-skeleton />
+                        <div className="aspect-4/3 h-1/4 w-full md:aspect-auto md:max-h-120" data-skeleton />
                     </div>
                 </div>
             }

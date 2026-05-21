@@ -105,6 +105,7 @@
         "use-context-selector": "2.0.0"
     },
     "devDependencies": {
+        "@0no-co/graphqlsp": "^1.15.4",
         "@happy-dom/global-registrator": "20.9.0",
         "@playwright/test": "1.60.0",
         "@tailwindcss/forms": "0.5.11",

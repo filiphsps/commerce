@@ -1,5 +1,4 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { notFound } from 'next/navigation';
 import { PageApi } from '@/api/page';
 import { Blocks } from '@/blocks/blocks';
 import type { BlockNode } from '@/blocks/types';
@@ -16,6 +15,10 @@ export type CMSContentProps = {
  * `PageApi`, then hands its `blocks` array to the storefront-native
  * `Blocks` dispatcher.
  *
+ * Returns `null` when no CMS doc exists for the handle — this slot is
+ * optional supplemental content layered on top of Shopify products and
+ * collections, so a missing doc must not 404 the host page.
+ *
  * The dispatcher owns block-by-block rendering — see
  * `apps/storefront/src/blocks/`. We intentionally do NOT use
  * `@nordcom/commerce-cms`'s `BlockRenderer`: the storefront blocks are
@@ -27,7 +30,7 @@ export type CMSContentProps = {
 export const CMSContent = async ({ shop, locale, handle }: CMSContentProps) => {
     const page = await PageApi({ shop, locale, handle });
     if (!page) {
-        notFound();
+        return null;
     }
 
     return <Blocks blocks={page.blocks as BlockNode[]} context={{ shop, locale }} />;

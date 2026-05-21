@@ -18,7 +18,9 @@
         "shipping-calculated-at-checkout": "Frakten beregnes i kassen",
         "shipping": "Frakt",
         "subtotal": "Delsum",
-        "view-cart": "Se handlekurven din"
+        "view-cart": "Se handlekurven din",
+        "n-left": "Bare {0} igjen",
+        "back-order": "Tilgjengelig på restordre"
     },
     "common": {
         "account": "konto",
@@ -66,6 +68,7 @@
         "ingredients": "Ingredienser",
         "n-in-stock-and-available": "{0} i lager og tilgjengelig",
         "n-in-stock": "{0} i lager",
+        "back-order": "Tilgjengelig på restordre",
         "new": "Ny",
         "nutritional-content": "Ekstra nyttig innhold",
         "percentage-off": "{0}% AVTALE",

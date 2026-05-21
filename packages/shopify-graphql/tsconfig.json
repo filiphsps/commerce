@@ -1,5 +1,16 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
     "extends": "../../tsconfig.lib.json",
+    "compilerOptions": {
+        "plugins": [
+            {
+                "name": "@0no-co/graphqlsp",
+                "schema": "./storefront.schema.json",
+                "tadaOutputLocation": "./src/graphql-env.d.ts",
+                "shouldCheckForColocatedFragments": false,
+                "trackFieldUsage": false
+            }
+        ]
+    },
     "include": ["./src/**/*.ts"]
 }

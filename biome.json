@@ -23,7 +23,8 @@
             "!**/public/sitemap*.xml*",
             "!**/storybook-static",
             "!docs/superpowers",
-            "!packages/cms/src/types/payload-types.ts"
+            "!packages/cms/src/types/payload-types.ts",
+            "!packages/shopify-graphql/storefront.schema.json"
         ]
     },
     "formatter": {

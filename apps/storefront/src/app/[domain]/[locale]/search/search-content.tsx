@@ -83,13 +83,14 @@ export type SearchContentProps = {
     data: {
         products?: Product[];
         productFilters?: ProductFilters;
+        totalCount?: number;
     };
 };
 export default function SearchContent({
     i18n,
     locale,
     showFilters = false,
-    data: { products = [], productFilters = [] },
+    data: { products = [], productFilters = [], totalCount },
 }: SearchContentProps) {
     const { replace } = useRouter();
     const searchParams = useSearchParams();
@@ -135,6 +136,12 @@ export default function SearchContent({
             />
 
             {showFilters ? <Filters disabled={isPending} filters={productFilters} /> : null}
+
+            {typeof totalCount === 'number' && totalCount > 0 ? (
+                <Label className="font-medium text-gray-600 text-sm">
+                    {totalCount === 1 ? `1 ${t('product')}` : `${totalCount} ${t('products')}`}
+                </Label>
+            ) : null}
 
             <section className="grid grid-cols-1 gap-2 empty:hidden md:grid-cols-3 lg:grid-cols-4">
                 {isPending

@@ -1,4 +1,3 @@
-import { gql } from '@apollo/client';
 import type { Identifiable, LimitFilters, Nullable } from '@nordcom/commerce-db';
 import {
     InvalidHandleError,
@@ -7,17 +6,162 @@ import {
     TodoError,
     UnreachableError,
 } from '@nordcom/commerce-errors';
+import { graphql } from '@nordcom/commerce-shopify-graphql/graphql';
 import type {
     Collection,
     CollectionEdge,
     CollectionSortKeys,
     ProductCollectionSortKeys,
-    QueryRoot,
 } from '@shopify/hydrogen-react/storefront-api-types';
 import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product-fragments';
 import { cache } from '@/cache';
 import type { AbstractApi, ApiOptions } from '@/utils/abstract-api';
 import { isValidHandle } from '@/utils/handle';
+
+const COLLECTION_QUERY = graphql(
+    `
+    query collection(
+        $handle: String!
+        $first: Int
+        $last: Int
+        $sorting: ProductCollectionSortKeys
+        $before: String
+        $after: String
+    ) {
+        collection(handle: $handle) {
+            id
+            handle
+            updatedAt
+            title
+            description
+            descriptionHtml
+            image {
+                id
+                altText
+                url
+                height
+                width
+                thumbhash
+            }
+            seo {
+                title
+                description
+            }
+            products(first: $first, last: $last, sortKey: $sorting, before: $before, after: $after) {
+                edges {
+                    node {
+                        ...ProductMinimal
+                    }
+                }
+                pageInfo {
+                    startCursor
+                    endCursor
+                    hasNextPage
+                    hasPreviousPage
+                }
+            }
+            keywords: metafield(namespace: "store", key: "keywords") {
+                value
+            }
+            isBrand: metafield(namespace: "store", key: "is_brand") {
+                value
+            }
+            shortDescription: metafield(namespace: "store", key: "short_description") {
+                value
+            }
+        }
+    }
+`,
+    [PRODUCT_FRAGMENT_MINIMAL],
+);
+
+const COLLECTION_PAGINATION_COUNT_QUERY = graphql(`
+    query collectionPaginationCount(
+        $handle: String!
+        $first: Int
+        $sorting: ProductCollectionSortKeys
+        $before: String
+        $after: String
+    ) {
+        collection(handle: $handle) {
+            id
+            handle
+            products(first: $first, sortKey: $sorting, before: $before, after: $after) {
+                edges {
+                    cursor
+                    node {
+                        id
+                    }
+                }
+                pageInfo {
+                    hasNextPage
+                }
+            }
+        }
+    }
+`);
+
+const COLLECTIONS_QUERY = graphql(`
+    query collections {
+        collections(first: 250) {
+            edges {
+                node {
+                    id
+                    handle
+                    products(first: 1) {
+                        edges {
+                            node {
+                                id
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+`);
+
+const COLLECTIONS_PAGINATION_QUERY = graphql(`
+    query collectionsPagination(
+        $first: Int
+        $last: Int
+        $sorting: CollectionSortKeys
+        $before: String
+        $after: String
+    ) {
+        collections(first: $first, last: $last, sortKey: $sorting, before: $before, after: $after) {
+            edges {
+                cursor
+                node {
+                    id
+                    handle
+                    updatedAt
+                    title
+                    description
+                    descriptionHtml
+                    image {
+                        id
+                        altText
+                        url
+                        height
+                        width
+                        thumbhash
+                    }
+                    seo {
+                        title
+                        description
+                    }
+                }
+            }
+            pageInfo {
+                startCursor
+                endCursor
+                hasNextPage
+                hasPreviousPage
+            }
+        }
+    }
+`);
 
 type GenericCollectionFilters = {
     after?: Nullable<string>;
@@ -111,75 +255,15 @@ export const CollectionApi = async (
 
     const filters = 'filters' in props ? props.filters : /** @deprecated */ (props as CollectionFilters);
     const filtersTag = JSON.stringify(filters, null, 0);
-    const { data, errors } = await api.query<{
-        collection: QueryRoot['collection'];
-    }>(
-        gql`
-                query collection(
-                    $handle: String!
-                    $first: Int
-                    $last: Int
-                    $sorting: ProductCollectionSortKeys
-                    $before: String
-                    $after: String
-                ) {
-                    collection(handle: $handle) {
-                        id
-                        handle
-                        updatedAt
-                        title
-                        description
-                        descriptionHtml
-                        image {
-                            id
-                            altText
-                            url
-                            height
-                            width
-                            thumbhash
-                        }
-                        seo {
-                            title
-                            description
-                        }
-                        products(
-                            first: $first
-                            last: $last
-                            sortKey: $sorting
-                            before: $before
-                            after: $after
-                        ) {
-                            edges {
-                                node {
-                                    ${PRODUCT_FRAGMENT_MINIMAL}
-                                }
-                            }
-                            pageInfo {
-                                startCursor
-                                endCursor
-                                hasNextPage
-                                hasPreviousPage
-                            }
-                        }
-                        keywords: metafield(namespace: "store", key: "keywords") {
-                            value
-                        }
-                        isBrand: metafield(namespace: "store", key: "is_brand") {
-                            value
-                        }
-                        shortDescription: metafield(namespace: "store", key: "short_description") {
-                            value
-                        }
-                    }
-                }
-            `,
+    const { data, errors } = await api.query(
+        COLLECTION_QUERY,
         {
-            handle: handle,
+            handle,
             ...extractLimitLikeFilters(filters),
             ...(({ sorting = 'COLLECTION_DEFAULT', before = null, after = null }) => ({
-                sorting: sorting,
-                before: before,
-                after: after,
+                sorting,
+                before,
+                after,
             }))(filters),
         },
         {
@@ -199,7 +283,7 @@ export const CollectionApi = async (
     }
 
     return {
-        ...data.collection,
+        ...(data.collection as unknown as Collection),
         descriptionHtml: data.collection.descriptionHtml ?? '',
     };
 };
@@ -221,40 +305,14 @@ export const CollectionPaginationCountApi = async ({
     const filtersTag = JSON.stringify(filters, null, 0);
 
     const countProducts = async (count: number = 0, cursors: string[] = [], after: string | null = null) => {
-        const { data, errors } = await api.query<{
-            collection: QueryRoot['collection'];
-        }>(
-            gql`
-                query collection(
-                    $handle: String!
-                    $first: Int
-                    $sorting: ProductCollectionSortKeys
-                    $before: String
-                    $after: String
-                ) {
-                    collection(handle: $handle) {
-                        id
-                        handle
-                        products(first: $first, sortKey: $sorting, before: $before, after: $after) {
-                            edges {
-                                cursor
-                                node {
-                                    id
-                                }
-                            }
-                            pageInfo {
-                                hasNextPage
-                            }
-                        }
-                    }
-                }
-            `,
+        const { data, errors } = await api.query(
+            COLLECTION_PAGINATION_COUNT_QUERY,
             {
-                handle: handle,
+                handle,
                 ...extractLimitLikeFilters(filters),
                 ...(({ sorting = 'COLLECTION_DEFAULT' }) => ({
-                    sorting: sorting,
-                    after: after,
+                    sorting,
+                    after,
                 }))(filters),
             },
             {
@@ -313,30 +371,9 @@ export const CollectionsApi = async ({
         hasProducts: boolean;
     }>
 > => {
-    const { data, errors } = await api.query<{ collections: QueryRoot['collections'] }>(
-        gql`
-        query collections {
-            collections(first: 250) {
-                edges {
-                    node {
-                        id
-                        handle
-
-                        products(first: 1) {
-                            edges {
-                                node {
-                                    id
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    `,
-        undefined,
-        { tags: [...cache.keys.collections({ tenant: api.shop() }).tags, 'collections'] },
-    );
+    const { data, errors } = await api.query(COLLECTIONS_QUERY, undefined, {
+        tags: [...cache.keys.collections({ tenant: api.shop() }).tags, 'collections'],
+    });
 
     if (errors && errors.length > 0) {
         throw new ProviderFetchError(errors);
@@ -377,60 +414,14 @@ export const CollectionsPaginationApi = async ({
     const shop = api.shop();
     const filters = 'filters' in props ? props.filters : /** @deprecated */ (props as CollectionsFilters);
 
-    const { data, errors } = await api.query<{ collections: QueryRoot['collections'] }>(
-        gql`
-            query collections(
-                $first: Int
-                $last: Int
-                $sorting: CollectionSortKeys
-                $before: String
-                $after: String
-            ) {
-                collections(
-                    first: $first
-                    last: $last
-                    sortKey: $sorting
-                    before: $before
-                    after: $after
-                ) {
-                    edges {
-                        cursor
-                        node {
-                            id
-                            handle
-                            updatedAt
-                            title
-                            description
-                            descriptionHtml
-                            image {
-                                id
-                                altText
-                                url
-                                height
-                                width
-                                thumbhash
-                            }
-                            seo {
-                                title
-                                description
-                            }
-                        }
-                    }
-                    pageInfo {
-                        startCursor
-                        endCursor
-                        hasNextPage
-                        hasPreviousPage
-                    }
-                }
-            }
-        `,
+    const { data, errors } = await api.query(
+        COLLECTIONS_PAGINATION_QUERY,
         {
             ...extractLimitLikeFilters(filters),
             ...(({ sorting = 'RELEVANCE', before = null, after = null }) => ({
-                sorting: sorting,
-                before: before,
-                after: after,
+                sorting,
+                before,
+                after,
             }))(filters),
         },
         {
@@ -459,7 +450,7 @@ export const CollectionsPaginationApi = async ({
     }
 
     return {
-        collections: data.collections.edges,
+        collections: data.collections.edges as unknown as CollectionEdge[],
         page_info: {
             start_cursor: page_info.startCursor || null,
             end_cursor: page_info.endCursor || null,

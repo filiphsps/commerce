@@ -1,15 +1,71 @@
 import 'server-only';
 
-import { gql } from '@apollo/client';
 import { getBusinessData } from '@nordcom/commerce-cms/api';
 import type { BusinessDatum } from '@nordcom/commerce-cms/types';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { NoLocalesAvailableError, ProviderFetchError } from '@nordcom/commerce-errors';
-import type { Country, Localization, PaymentSettings } from '@shopify/hydrogen-react/storefront-api-types';
+import { graphql } from '@nordcom/commerce-shopify-graphql/graphql';
+import type { Country, PaymentSettings } from '@shopify/hydrogen-react/storefront-api-types';
 import type { AbstractApi } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
 import { toShopRef } from './_cms';
 import { normalizePayloadDoc } from './_normalize-payload';
+
+const COUNTRIES_QUERY = graphql(`
+    query countries {
+        localization {
+            availableCountries {
+                availableLanguages {
+                    isoCode
+                    endonymName
+                    name
+                }
+                currency {
+                    isoCode
+                    name
+                    symbol
+                }
+                isoCode
+                name
+                unitSystem
+            }
+        }
+    }
+`);
+
+const LOCALIZATION_QUERY = graphql(`
+    query localization {
+        localization {
+            country {
+                currency {
+                    isoCode
+                    name
+                    symbol
+                }
+                isoCode
+                name
+                unitSystem
+            }
+            language {
+                isoCode
+                endonymName
+                name
+            }
+        }
+    }
+`);
+
+const PAYMENT_SETTINGS_QUERY = graphql(`
+    query paymentSettings {
+        shop {
+            paymentSettings {
+                acceptedCardBrands
+                enabledPresentmentCurrencies
+                supportedDigitalWallets
+            }
+        }
+    }
+`);
 
 // FIXME: Handle tenant-specific default.
 const DEFAULT_LOCALE = {
@@ -19,25 +75,7 @@ const DEFAULT_LOCALE = {
 };
 
 export const CountriesApi = async ({ api }: { api: AbstractApi }): Promise<Country[]> => {
-    const { data: localData, errors } = await api.query<{ localization: Localization }>(gql`
-        query localization {
-            localization {
-                availableCountries {
-                    availableLanguages {
-                        isoCode
-                        name
-                    }
-                    currency {
-                        isoCode
-                        name
-                        symbol
-                    }
-                    isoCode
-                    name
-                }
-            }
-        }
-    `);
+    const { data: localData, errors } = await api.query(COUNTRIES_QUERY);
 
     if (errors) {
         console.error(errors);
@@ -81,30 +119,7 @@ export const LocaleApi = async ({ api }: { api: AbstractApi }) => {
     }
 
     try {
-        const { data, errors } = await api.query<{ localization: Localization }>(gql`
-            query localization {
-                localization {
-                    country {
-                        currency {
-                            isoCode
-                            name
-                            symbol
-                        }
-                        isoCode
-                        name
-                        unitSystem
-                    }
-                    language {
-                        isoCode
-                        name
-                    }
-                    market {
-                        id
-                        handle
-                    }
-                }
-            }
-        `);
+        const { data, errors } = await api.query(LOCALIZATION_QUERY);
 
         // Same partial-error trap as the other API helpers — without
         // surfacing `errors` a Shopify failure collapses to `null
@@ -135,17 +150,7 @@ export const ShopPaymentSettingsApi = async ({
         return null;
     }
 
-    const { data, errors } = await api.query<{ shop: { paymentSettings: PaymentSettings } }>(gql`
-        query shop {
-            shop {
-                paymentSettings {
-                    acceptedCardBrands
-                    enabledPresentmentCurrencies
-                    supportedDigitalWallets
-                }
-            }
-        }
-    `);
+    const { data, errors } = await api.query(PAYMENT_SETTINGS_QUERY);
 
     // TODO: Handle errors properly.
     if ((errors || []).length > 0) {

@@ -23,7 +23,9 @@
         "view-cart": "Warenkorb anzeigen",
         "remove-n-from-cart": "{0} aus dem Warenkorb entfernen",
         "clear-cart": "Warenkorb leeren",
-        "n-items": "{0} Artikel"
+        "n-items": "{0} Artikel",
+        "n-left": "Nur noch {0} verfügbar",
+        "back-order": "Auf Bestellung verfügbar"
     },
     "common": {
         "account": "konto",
@@ -83,6 +85,7 @@
         "ingredients": "Zutaten",
         "n-in-stock-and-available": "{0} auf Lager und verfügbar",
         "n-in-stock": "{0} auf Lager",
+        "back-order": "Auf Bestellung verfügbar",
         "new": "Neu",
         "nutritional-content": "Nährwertgehalt",
         "percentage-off": "{0}% RABATT",

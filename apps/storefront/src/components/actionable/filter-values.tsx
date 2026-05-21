@@ -23,7 +23,7 @@ export function FilterValues({ id: filterId, type, values }: Pick<Filter, 'type'
         case 'LIST': {
             return (
                 <div className={cn('flex flex-wrap gap-1')}>
-                    {values.map(({ label, id: _id, count }) => {
+                    {values.map(({ label, id: _id, count, swatch }) => {
                         const id = _id.split('.').at(-1)!;
                         const active = searchParams.has(filterId) && searchParams.get(filterId) === id;
 
@@ -43,6 +43,13 @@ export function FilterValues({ id: filterId, type, values }: Pick<Filter, 'type'
                                     active && 'border-primary text-primary',
                                 )}
                             >
+                                {swatch?.color ? (
+                                    <span
+                                        aria-hidden={true}
+                                        className="inline-block h-3 w-3 rounded-full border border-gray-200 border-solid"
+                                        style={{ backgroundColor: swatch.color }}
+                                    />
+                                ) : null}
                                 <span>{label}</span> <span className="font-normal text-xs">({count})</span>
                             </Link>
                         );

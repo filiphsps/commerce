@@ -1,11 +1,12 @@
 import 'server-only';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { Check as CheckIcon } from 'lucide-react';
+import { Check as CheckIcon, Clock as ClockIcon } from 'lucide-react';
 import type { HTMLProps } from 'react';
 import type { Product } from '@/api/product';
 import { Label } from '@/components/typography/label';
 import { COMMERCE_DEFAULTS } from '@/utils/build-config';
+import { firstAvailableVariant } from '@/utils/first-available-variant';
 import { productInfoLines } from '@/utils/flags/definitions/product-info-lines';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { getTranslations } from '@/utils/locale';
@@ -17,7 +18,30 @@ export type StockStatusProps = {
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 const StockStatus = ({ product, i18n, className, ...props }: StockStatusProps) => {
     const { t } = getTranslations('product', i18n);
-    if (!product?.totalInventory || product.totalInventory <= 0) {
+    if (!product) {
+        return null;
+    }
+
+    // `currentlyNotInStock` flags merchandise that the merchant is still
+    // selling (availableForSale) without on-hand inventory — i.e. a back-order.
+    // Distinguishing it from "in stock" prevents a misleading green checkmark.
+    const variant = firstAvailableVariant(product);
+    const isBackOrder = product.availableForSale && variant?.currentlyNotInStock === true;
+
+    if (isBackOrder) {
+        return (
+            <section
+                className={cn('flex items-center justify-start gap-1 *:text-amber-600 *:leading-none', className)}
+                title={t('back-order')}
+                {...props}
+            >
+                <ClockIcon className="stroke-2 align-middle text-base" />
+                <Label className="font-semibold text-base normal-case">{t('back-order')}</Label>
+            </section>
+        );
+    }
+
+    if (!product.totalInventory || product.totalInventory <= 0) {
         return null;
     }
 

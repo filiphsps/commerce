@@ -40,6 +40,7 @@ export const getBrandingColors = async ({ domain, shop }: { domain: string; shop
                     // Use the shop's configured default locale instead.
                     const api = await ShopifyApiClient({ shop, locale: Locale.fallbackForShop(shop) as Locale });
                     const brand = await BrandApi({ api });
+                    if (!brand) return null;
 
                     const primary = brand.colors.primary[0];
                     const secondary = brand.colors.secondary[0];

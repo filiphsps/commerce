@@ -30,6 +30,7 @@ When a change affects behavior, configuration, commands, architecture, or conven
 -   **`pnpm build:packages` is mandatory before lint/typecheck/test in a fresh checkout** — apps import each workspace package from its built `dist/`, not from source. Skipping this breaks `tsc -noEmit` and Vitest type resolution.
 -   All top-level scripts go through `dotenv -c -- turbo …`, so `.env` / `.env.local` are loaded automatically — don't prefix env vars manually.
 -   **`pnpm cms:gen` regenerates `apps/admin/src/lib/cms-actions/_generated/`.** Run after touching any editor manifest in `packages/cms/src/editor/manifests/`. CI runs `pnpm cms:gen:check` to verify no drift.
+-   **Storefront API queries are typed via `gql.tada`.** Write new queries with the `graphql()` helper from `@nordcom/commerce-shopify-graphql/graphql` rather than Apollo's `gql` — `api.query(MY_QUERY, vars)` then infers both `data` and `variables` from the document against the bundled `storefront.schema.json`. After upgrading `@shopify/hydrogen-react` (or whenever the introspection needs refreshing), run `pnpm --filter @nordcom/commerce-shopify-graphql generate` (also wired into `pnpm generate`). The schema and the generated `graphql-env.d.ts` are committed so a fresh clone has working types out of the box.
 
 **When starting work on a Next.js project, ALWAYS call the `init` tool from
 next-devtools-mcp FIRST to set up proper context and establish documentation

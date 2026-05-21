@@ -1,8 +1,44 @@
-import { gql } from '@apollo/client';
 import { NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
+import { graphql } from '@nordcom/commerce-shopify-graphql/graphql';
 import { flattenConnection } from '@shopify/hydrogen-react';
-import type { UrlRedirect, UrlRedirectConnection } from '@shopify/hydrogen-react/storefront-api-types';
+import type { UrlRedirect } from '@shopify/hydrogen-react/storefront-api-types';
 import type { AbstractApi } from '@/utils/abstract-api';
+
+const URL_REDIRECTS_LIST_QUERY = graphql(`
+    query urlRedirects($limit: Int!, $after: String) {
+        urlRedirects(first: $limit, after: $after) {
+            edges {
+                cursor
+                node {
+                    id
+                    path
+                    target
+                }
+            }
+            pageInfo {
+                hasNextPage
+            }
+        }
+    }
+`);
+
+const URL_REDIRECTS_SEARCH_QUERY = graphql(`
+    query urlRedirectsSearch($limit: Int!, $query: String) {
+        urlRedirects(first: $limit, query: $query) {
+            edges {
+                cursor
+                node {
+                    id
+                    path
+                    target
+                }
+            }
+            pageInfo {
+                hasNextPage
+            }
+        }
+    }
+`);
 
 /**
  * Get all redirects from Shopify.
@@ -23,28 +59,10 @@ export const RedirectsApi = async ({
     redirects?: UrlRedirect[];
 }): Promise<UrlRedirect[]> => {
     const shop = api.shop();
-    const { data, errors } = await api.query<{ urlRedirects: UrlRedirectConnection }>(
-        gql`
-                query urlRedirects($limit: Int!, $after: String) {
-                    urlRedirects(first: $limit, after: $after) {
-                        edges {
-                            cursor
-                            node {
-                                path
-                                target
-                            }
-                        }
-                        pageInfo {
-                            hasNextPage
-                        }
-                    }
-                }
-            `,
-        {
-            limit: 250,
-            after: cursor || null,
-        },
-    );
+    const { data, errors } = await api.query(URL_REDIRECTS_LIST_QUERY, {
+        limit: 250,
+        after: cursor || null,
+    });
 
     const urlRedirects = data ? flattenConnection(data.urlRedirects) : null;
 
@@ -87,28 +105,10 @@ export const RedirectApi = async ({ api, path }: { api: AbstractApi; path: strin
     }
 
     // Let's first check if we can query the redirects directly.
-    const { data, errors } = await api.query<{ urlRedirects: UrlRedirectConnection }>(
-        gql`
-            query urlRedirects($limit: Int!, $query: String) {
-                urlRedirects(first: $limit, query: $query) {
-                    edges {
-                        cursor
-                        node {
-                            path
-                            target
-                        }
-                    }
-                    pageInfo {
-                        hasNextPage
-                    }
-                }
-            }
-        `,
-        {
-            limit: 1,
-            query: `path:${path}*`,
-        },
-    );
+    const { data, errors } = await api.query(URL_REDIRECTS_SEARCH_QUERY, {
+        limit: 1,
+        query: `path:${path}*`,
+    });
 
     if (!errors && data && data.urlRedirects.edges.length > 0) {
         const redirect = flattenConnection(data.urlRedirects)[0];

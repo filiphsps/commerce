@@ -17,7 +17,7 @@ export type HeaderNavigationProps = {
 } & Omit<HTMLProps<HTMLDivElement>, 'className' | 'children'>;
 
 export function HeaderNavigation({ items, locale, ...rest }: HeaderNavigationProps) {
-    if (!items || items.length === 0) return null;
+    if (!items?.length) return null;
 
     return (
         <nav
@@ -27,7 +27,7 @@ export function HeaderNavigation({ items, locale, ...rest }: HeaderNavigationPro
             {...rest}
         >
             {items.map((item, i) => (
-                <HeaderNavTopItem key={item.id ?? `nav-${i}`} item={item} locale={locale} />
+                <HeaderNavTopItem key={`nav-${item.id || i}`} item={item} locale={locale} />
             ))}
         </nav>
     );

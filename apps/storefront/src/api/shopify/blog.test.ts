@@ -61,8 +61,8 @@ describe('api', () => {
                     expect(error?.name).toBe(ProviderFetchError.name);
                 });
 
-                it('returns NotFoundError when blogByHandle is null', async () => {
-                    const api = makeApi(vi.fn().mockResolvedValue({ data: { blogByHandle: null }, errors: [] }));
+                it('returns NotFoundError when blog is null', async () => {
+                    const api = makeApi(vi.fn().mockResolvedValue({ data: { blog: null }, errors: [] }));
                     const [result, error] = await BlogApi({ api, handle: 'missing' });
 
                     expect(result).toBeUndefined();
@@ -73,7 +73,7 @@ describe('api', () => {
                     const api = makeApi(
                         vi.fn().mockResolvedValue({
                             data: {
-                                blogByHandle: {
+                                blog: {
                                     id: 'b1',
                                     handle: 'news',
                                     title: 'News',
@@ -102,8 +102,8 @@ describe('api', () => {
                     expect(error?.name).toBe(ProviderFetchError.name);
                 });
 
-                it('returns NotFoundError when blogByHandle is null', async () => {
-                    const api = makeApi(vi.fn().mockResolvedValue({ data: { blogByHandle: null }, errors: [] }));
+                it('returns NotFoundError when blog is null', async () => {
+                    const api = makeApi(vi.fn().mockResolvedValue({ data: { blog: null }, errors: [] }));
                     const [result, error] = await BlogArticleApi({ api, handle: 'my-article' });
 
                     expect(result).toBeUndefined();
@@ -113,7 +113,7 @@ describe('api', () => {
                 it('returns NotFoundError when articleByHandle is null', async () => {
                     const api = makeApi(
                         vi.fn().mockResolvedValue({
-                            data: { blogByHandle: { articleByHandle: null } },
+                            data: { blog: { articleByHandle: null } },
                             errors: [],
                         }),
                     );
@@ -127,7 +127,7 @@ describe('api', () => {
                     const api = makeApi(
                         vi.fn().mockResolvedValue({
                             data: {
-                                blogByHandle: {
+                                blog: {
                                     articleByHandle: {
                                         id: 'a1',
                                         handle: 'my-article',

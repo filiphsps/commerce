@@ -10,7 +10,7 @@ export type SearchContentGateProps = {
     shop: OnlineShop;
     locale: Locale;
     i18n: LocaleDictionary;
-    data: { products?: Product[]; productFilters?: ProductFilters };
+    data: { products?: Product[]; productFilters?: ProductFilters; totalCount?: number };
 };
 
 export default async function SearchContentGate({ shop: _shop, locale, i18n, data }: SearchContentGateProps) {

@@ -6,6 +6,7 @@ import type { ProductVariant } from '@/api/product';
 import styles from '@/components/product-options-selector/product-options-selector.module.scss';
 import { defaultRenderers } from '@/components/product-options-selector/renderers';
 import type {
+    OptionValueSwatch,
     ProductOptionValueRendererProps,
     RenderDensity,
 } from '@/components/product-options-selector/renderers/types';
@@ -31,6 +32,7 @@ export type ProductOptionsSelectorProps = {
             isDifferentProduct: boolean;
             variantUriQuery?: string;
             variant: { id?: string; weight?: number | null; weightUnit?: string | null };
+            swatch?: OptionValueSwatch;
         }>;
     }>;
     selectedOptions: SelectedOptions;
@@ -102,6 +104,7 @@ export const ProductOptionsSelector = ({
                                         exists={v.exists}
                                         isDifferentProduct={v.isDifferentProduct}
                                         variant={v.variant as ProductVariant}
+                                        swatch={v.swatch}
                                         href={href}
                                         onSelect={onSelectFor(option.name, v.name)}
                                         density={density}

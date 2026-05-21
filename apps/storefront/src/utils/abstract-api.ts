@@ -8,18 +8,39 @@ export type OmitTypeName<T> = Omit<T, '__typename'>;
 
 export type ApiOptions = { api: AbstractApi };
 
+type QueryVariables = Record<string, string | number | boolean | object | Array<string | number | object> | null>;
+
 export type AbstractApi<Q = TypedDocumentNode<unknown, unknown>> = {
     locale: () => Locale;
     shop: () => OnlineShop;
-    query: <T>(
-        query: Q,
-        variables?: Record<string, string | number | boolean | object | Array<string | number | object> | null>,
-        options?: {
-            fetchPolicy?: RequestCache;
-            tags?: string[];
-            revalidate?: number;
-        },
-    ) => Promise<{ data: T | null; errors: readonly unknown[] | undefined }>;
+    /**
+     * Run a Storefront query. When the document is a typed
+     * `TypedDocumentNode<TResult, TVariables>` (e.g. from
+     * `@nordcom/commerce-shopify-graphql`'s `graphql()`), both `data` and
+     * `variables` are inferred from the document — no explicit generic
+     * needed. The explicit `<T>` form is kept for callers that still cast
+     * an untyped `gql` result.
+     */
+    query: {
+        <TResult, TVariables extends QueryVariables = QueryVariables>(
+            query: TypedDocumentNode<TResult, TVariables>,
+            variables?: TVariables,
+            options?: {
+                fetchPolicy?: RequestCache;
+                tags?: string[];
+                revalidate?: number;
+            },
+        ): Promise<{ data: TResult | null; errors: readonly unknown[] | undefined }>;
+        <T>(
+            query: Q,
+            variables?: QueryVariables,
+            options?: {
+                fetchPolicy?: RequestCache;
+                tags?: string[];
+                revalidate?: number;
+            },
+        ): Promise<{ data: T | null; errors: readonly unknown[] | undefined }>;
+    };
 };
 export type AbstractApiBuilder<K, Q> = ({
     api,

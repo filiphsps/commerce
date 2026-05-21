@@ -156,7 +156,9 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                                                     discount.discountedAmount.amount,
                                                 );
                                                 const title =
-                                                    (discount as { title?: string }).title || t('automatic-discounts');
+                                                    (discount as { title?: string }).title ||
+                                                    (discount as { code?: string }).code ||
+                                                    t('automatic-discounts');
 
                                                 if (discountAmount <= 0) {
                                                     return null;

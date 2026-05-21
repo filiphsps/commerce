@@ -1,7 +1,6 @@
-import { gql } from '@apollo/client';
 import { InvalidHandleError, NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
+import { graphql, type ResultOf, readFragment } from '@nordcom/commerce-shopify-graphql/graphql';
 import { flattenConnection } from '@shopify/hydrogen-react';
-import type { Page, PageConnection } from '@shopify/hydrogen-react/storefront-api-types';
 import type { AbstractApi, ApiReturn } from '@/utils/abstract-api';
 
 export type NormalizedShopifyPage = {
@@ -16,23 +15,57 @@ export type NormalizedShopifyPage = {
     onlineStoreUrl: string | null;
 };
 
-const PAGE_FRAGMENT = /* GraphQL */ `
-    id
-    handle
-    title
-    body
-    bodySummary
-    seo {
+const PAGE_FIELDS_FRAGMENT = graphql(`
+    fragment PageFields on Page {
+        id
+        handle
         title
-        description
+        body
+        bodySummary
+        seo {
+            title
+            description
+        }
+        createdAt
+        updatedAt
+        onlineStoreUrl
+        trackingParameters
     }
-    createdAt
-    updatedAt
-    onlineStoreUrl
-    trackingParameters
-`;
+`);
 
-function normalize(page: Page): NormalizedShopifyPage {
+const PAGE_QUERY = graphql(
+    `
+    query page($handle: String!) {
+        page(handle: $handle) {
+            ...PageFields
+        }
+    }
+`,
+    [PAGE_FIELDS_FRAGMENT],
+);
+
+const PAGES_QUERY = graphql(
+    `
+    query pages($first: Int!, $after: String) {
+        pages(first: $first, after: $after) {
+            edges {
+                cursor
+                node {
+                    ...PageFields
+                }
+            }
+            pageInfo {
+                hasNextPage
+            }
+        }
+    }
+`,
+    [PAGE_FIELDS_FRAGMENT],
+);
+
+type PageFields = ResultOf<typeof PAGE_FIELDS_FRAGMENT>;
+
+function normalize(page: PageFields): NormalizedShopifyPage {
     return {
         id: page.id,
         handle: page.handle,
@@ -60,16 +93,7 @@ export async function ShopifyPageApi({
         return [undefined, new InvalidHandleError(handle)];
     }
 
-    const { data, errors } = await api.query<{ page: Page | null }>(
-        gql`
-            query page($handle: String!) {
-                page(handle: $handle) {
-                    ${PAGE_FRAGMENT}
-                }
-            }
-        `,
-        { handle },
-    );
+    const { data, errors } = await api.query(PAGE_QUERY, { handle });
 
     if (errors && errors.length > 0) {
         return [undefined, new ProviderFetchError(errors)];
@@ -80,7 +104,7 @@ export async function ShopifyPageApi({
         return [undefined, new NotFoundError(`"Page" with handle "${handle}" on shop "${shop.id}"`)];
     }
 
-    return [normalize(data.page), undefined];
+    return [normalize(readFragment(PAGE_FIELDS_FRAGMENT, data.page)), undefined];
 }
 
 export async function ShopifyPagesApi({
@@ -92,24 +116,7 @@ export async function ShopifyPagesApi({
     cursor?: string;
     pages?: NormalizedShopifyPage[];
 }): Promise<ApiReturn<NormalizedShopifyPage[]>> {
-    const { data, errors } = await api.query<{ pages: PageConnection }>(
-        gql`
-            query pages($first: Int!, $after: String) {
-                pages(first: $first, after: $after) {
-                    edges {
-                        cursor
-                        node {
-                            ${PAGE_FRAGMENT}
-                        }
-                    }
-                    pageInfo {
-                        hasNextPage
-                    }
-                }
-            }
-        `,
-        { first: 250, after: cursor || null },
-    );
+    const { data, errors } = await api.query(PAGES_QUERY, { first: 250, after: cursor || null });
 
     if (errors && errors.length > 0) {
         return [undefined, new ProviderFetchError(errors)];
@@ -119,7 +126,7 @@ export async function ShopifyPagesApi({
         return [pages, undefined];
     }
 
-    const fetched = flattenConnection(data.pages).map(normalize);
+    const fetched = flattenConnection(data.pages).map((node) => normalize(readFragment(PAGE_FIELDS_FRAGMENT, node)));
     pages.push(...fetched);
 
     if (data.pages.pageInfo.hasNextPage) {

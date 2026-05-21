@@ -58,9 +58,6 @@ export function ProductPricing({ product }: ProductPricingProps) {
 
     const price = variant.price as ProductVariant['price'] | undefined;
     const compareAtPrice = variant.compareAtPrice;
-    // `unitPrice` is part of the latest Storefront API spec. Surfaces "per
-    // kg / per 100ml" style pricing — required for compliance in many EU/UK
-    // markets when the variant has a `unitPriceMeasurement` set.
     const unitPrice = variant.unitPrice;
     const unitPriceMeasurement = variant.unitPriceMeasurement;
 

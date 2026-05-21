@@ -11,6 +11,7 @@ export const TextChipRenderer = ({
     selected,
     available,
     onSelect,
+    swatch,
     href,
     density,
 }: ProductOptionValueRendererProps) => {
@@ -30,6 +31,20 @@ export const TextChipRenderer = ({
         onSelect();
     };
 
+    const swatchPreview = swatch?.image?.previewImage?.url;
+    const swatchColor = swatch?.color;
+    const swatchEl =
+        swatchPreview || swatchColor ? (
+            <span
+                aria-hidden={true}
+                className="inline-block h-3 w-3 shrink-0 rounded-full border border-gray-200 border-solid bg-center bg-cover"
+                style={{
+                    backgroundColor: swatchColor ?? undefined,
+                    backgroundImage: swatchPreview ? `url(${swatchPreview})` : undefined,
+                }}
+            />
+        ) : null;
+
     if (href) {
         return (
             <a
@@ -40,6 +55,7 @@ export const TextChipRenderer = ({
                 className={className}
                 onClick={handleClick}
             >
+                {swatchEl}
                 {value}
             </a>
         );
@@ -54,6 +70,7 @@ export const TextChipRenderer = ({
             className={className}
             onClick={handleClick}
         >
+            {swatchEl}
             {value}
         </button>
     );

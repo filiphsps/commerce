@@ -128,87 +128,102 @@ export default async function BlogPage({ params }: { params: BlogPageParams }) {
                 />
 
                 <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 md:gap-4 lg:grid-cols-4">
-                    {articles.map(({ id, title, excerptHtml, publishedAt, authorV2: author, image, handle }) => {
-                        const publishedAtString = new Date(publishedAt).toLocaleDateString(locale.code, {
-                            weekday: undefined,
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric',
-                        });
-                        const avatar = author
-                            ? `https://www.gravatar.com/avatar/${md5(author.email)}.jpg?s=25&d=blank`
-                            : null;
+                    {articles.map(
+                        ({
+                            id,
+                            title,
+                            excerptHtml,
+                            publishedAt,
+                            authorV2: author,
+                            image,
+                            handle,
+                            trackingParameters,
+                        }) => {
+                            const publishedAtString = new Date(publishedAt).toLocaleDateString(locale.code, {
+                                weekday: undefined,
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric',
+                            });
+                            const avatar = author
+                                ? `https://www.gravatar.com/avatar/${md5(author.email)}.jpg?s=25&d=blank`
+                                : null;
 
-                        return (
-                            <Card
-                                key={id}
-                                className="flex h-full w-full flex-col items-stretch justify-between gap-1 p-2 md:gap-3"
-                                border={true}
-                            >
-                                <Link
-                                    href={`/blogs/${blogHandle}/${handle}`}
-                                    className="group/header flex flex-col gap-2"
+                            const tracking = trackingParameters
+                                ? `?${new URLSearchParams(trackingParameters).toString()}`
+                                : '';
+
+                            return (
+                                <Card
+                                    key={id}
+                                    className="flex h-full w-full flex-col items-stretch justify-between gap-1 p-2 md:gap-3"
+                                    border={true}
                                 >
-                                    {image?.url ? (
-                                        <Image
-                                            className="aspect-16/7 rounded-lg bg-gray-100 object-cover object-center shadow transition-all group-hover/header:brightness-75 group-focus-visible/header:brightness-75"
-                                            role={image.altText ? undefined : 'presentation'}
-                                            src={image.url}
-                                            alt={image.altText!}
-                                            height={image.height!}
-                                            width={image.width!}
-                                            decoding="async"
-                                            loading={'eager'}
-                                            priority={true}
-                                            draggable={false}
-                                            quality={80}
+                                    <Link
+                                        href={`/blogs/${blogHandle}/${handle}${tracking}`}
+                                        className="group/header flex flex-col gap-2"
+                                    >
+                                        {image?.url ? (
+                                            <Image
+                                                className="aspect-16/7 rounded-lg bg-gray-100 object-cover object-center shadow transition-all group-hover/header:brightness-75 group-focus-visible/header:brightness-75"
+                                                role={image.altText ? undefined : 'presentation'}
+                                                src={image.url}
+                                                alt={image.altText!}
+                                                height={image.height!}
+                                                width={image.width!}
+                                                decoding="async"
+                                                loading={'eager'}
+                                                priority={true}
+                                                draggable={false}
+                                                quality={80}
+                                            />
+                                        ) : (
+                                            <div className="aspect-16/7 rounded-lg bg-gray-100 transition-color group-hover/header:brightness-75 group-focus-visible/header:brightness-75" />
+                                        )}
+
+                                        <div className="block font-semibold text-xl transition-colors group-hover/header:text-primary group-focus-visible/header:text-primary">
+                                            {title}
+                                        </div>
+                                    </Link>
+
+                                    <div className="flex flex-col justify-stretch gap-3 md:gap-4">
+                                        <Content
+                                            className="not-prose line-clamp-4 overflow-hidden leading-normal"
+                                            html={excerptHtml}
                                         />
-                                    ) : (
-                                        <div className="aspect-16/7 rounded-lg bg-gray-100 transition-color group-hover/header:brightness-75 group-focus-visible/header:brightness-75" />
-                                    )}
 
-                                    <div className="block font-semibold text-xl transition-colors group-hover/header:text-primary group-focus-visible/header:text-primary">
-                                        {title}
+                                        <div className="flex items-center justify-between gap-2">
+                                            {author ? (
+                                                <div className="flex items-center justify-end gap-1">
+                                                    {avatar ? (
+                                                        <Avatar
+                                                            name={author.name}
+                                                            src={avatar}
+                                                            className="-mt-1 -mb-1 size-4"
+                                                        />
+                                                    ) : null}
+
+                                                    <Label
+                                                        as="div"
+                                                        className="font-semibold text-gray-500 text-sm normal-case leading-none"
+                                                    >
+                                                        {author.name}
+                                                    </Label>
+                                                </div>
+                                            ) : null}
+
+                                            <Label
+                                                as="div"
+                                                className="font-semibold text-gray-500 text-sm normal-case leading-none"
+                                            >
+                                                {publishedAtString}
+                                            </Label>
+                                        </div>
                                     </div>
-                                </Link>
-
-                                <div className="flex flex-col justify-stretch gap-3 md:gap-4">
-                                    <Content
-                                        className="not-prose line-clamp-4 overflow-hidden leading-normal"
-                                        html={excerptHtml}
-                                    />
-
-                                    <div className="flex items-center justify-between gap-2">
-                                        {author ? (
-                                            <div className="flex items-center justify-end gap-1">
-                                                {avatar ? (
-                                                    <Avatar
-                                                        name={author.name}
-                                                        src={avatar}
-                                                        className="-mt-1 -mb-1 size-4"
-                                                    />
-                                                ) : null}
-
-                                                <Label
-                                                    as="div"
-                                                    className="font-semibold text-gray-500 text-sm normal-case leading-none"
-                                                >
-                                                    {author.name}
-                                                </Label>
-                                            </div>
-                                        ) : null}
-
-                                        <Label
-                                            as="div"
-                                            className="font-semibold text-gray-500 text-sm normal-case leading-none"
-                                        >
-                                            {publishedAtString}
-                                        </Label>
-                                    </div>
-                                </div>
-                            </Card>
-                        );
-                    })}
+                                </Card>
+                            );
+                        },
+                    )}
                 </section>
             </PageContent>
         </>

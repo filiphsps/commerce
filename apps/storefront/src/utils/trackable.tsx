@@ -18,7 +18,7 @@ import { track as vercelTrack } from '@vercel/analytics/react';
 import debounce from 'lodash.debounce';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+import { Fragment, Suspense, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { createContext, useContext } from 'use-context-selector';
 import { useShop } from '@/components/shop/provider';
 import { usePrevious } from '@/hooks/usePrevious';
@@ -430,7 +430,7 @@ export type TrackableProps = {
     children: ReactNode;
     dummy?: boolean;
 };
-export function Trackable({ children, dummy = false }: TrackableProps) {
+function TrackableInner({ children, dummy = false }: TrackableProps) {
     const path = usePathname();
     const prevPath = usePrevious(path);
 
@@ -597,6 +597,21 @@ export function Trackable({ children, dummy = false }: TrackableProps) {
     return useMemo(
         () => <TrackableContext.Provider value={store as TrackableContextValue}>{children}</TrackableContext.Provider>,
         [store, children],
+    );
+}
+
+// `usePathname` (and other uncached client APIs in `TrackableInner`) are
+// considered uncached data under `cacheComponents`. Without a Suspense
+// boundary they block the route from prerendering. Render the children with a
+// noop tracking context during prerender; the real provider takes over after
+// hydration without disturbing any descendant `useTrackable` callers.
+export function Trackable({ children, dummy = false }: TrackableProps) {
+    return (
+        <Suspense
+            fallback={<TrackableContext.Provider value={NOOP_TRACKABLE_VALUE}>{children}</TrackableContext.Provider>}
+        >
+            <TrackableInner dummy={dummy}>{children}</TrackableInner>
+        </Suspense>
     );
 }
 Trackable.displayName = 'Nordcom.Trackable';

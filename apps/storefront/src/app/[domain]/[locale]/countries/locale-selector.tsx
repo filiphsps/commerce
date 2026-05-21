@@ -26,6 +26,7 @@ export default function LocaleSelector({ countries = [], locale }: LocaleSelecto
                 locale: `${language.isoCode.toLowerCase()}-${country.isoCode.toUpperCase()}`,
                 country: country.name,
                 language: language.name,
+                languageEndonym: language.endonymName || language.name,
                 currency: country.currency.isoCode,
             })),
         )
@@ -55,7 +56,7 @@ export default function LocaleSelector({ countries = [], locale }: LocaleSelecto
                             href={`/${country.locale}/`} // TODO: Go to the previous route
                             shop={shop}
                             locale={Locale.from(country.locale)!}
-                            title={`${country.country} (${country.language})`}
+                            title={`${country.country} (${country.languageEndonym})`}
                             className={`${styles.locale} ${(country.locale === locale.code && styles.active) || ''}`}
                             scroll={false}
                             replace={true}
@@ -79,7 +80,7 @@ export default function LocaleSelector({ countries = [], locale }: LocaleSelecto
                                 />
                             </div>
                             <Label>
-                                {info?.country ?? country.country} ({country.language})
+                                {info?.country ?? country.country} ({country.languageEndonym})
                             </Label>
                             <Label>{country.currency}</Label>
                         </Link>

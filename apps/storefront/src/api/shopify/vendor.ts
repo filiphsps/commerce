@@ -1,10 +1,22 @@
-import { gql } from '@apollo/client';
 import { NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
-import type { Product, ProductConnection } from '@shopify/hydrogen-react/storefront-api-types';
+import { graphql } from '@nordcom/commerce-shopify-graphql/graphql';
 
 import type { VendorModel } from '@/models/VendorModel';
 import type { AbstractApi } from '@/utils/abstract-api';
 import { TitleToHandle } from '@/utils/title-to-handle';
+
+const VENDORS_QUERY = graphql(`
+    query vendors {
+        products(first: 250, sortKey: BEST_SELLING) {
+            edges {
+                node {
+                    id
+                    vendor
+                }
+            }
+        }
+    }
+`);
 
 /**
  * Convert the Shopify product list to a list of vendors.
@@ -15,7 +27,7 @@ import { TitleToHandle } from '@/utils/title-to-handle';
  */
 export const Convertor = (
     products: Array<{
-        node: Product;
+        node: { vendor?: string | null };
     }>,
 ): VendorModel[] => {
     let vendors: string[] = [];
@@ -47,18 +59,7 @@ type VendorsOptions = { api: AbstractApi };
  */
 export const VendorsApi = async ({ api }: VendorsOptions): Promise<VendorModel[]> => {
     const shop = api.shop();
-    const { data, errors } = await api.query<{ products: ProductConnection }>(gql`
-            query products {
-                products(first: 250, sortKey: BEST_SELLING) {
-                    edges {
-                        node {
-                            id
-                            vendor
-                        }
-                    }
-                }
-            }
-        `);
+    const { data, errors } = await api.query(VENDORS_QUERY);
 
     if (errors && errors.length > 0) {
         throw new ProviderFetchError(errors);

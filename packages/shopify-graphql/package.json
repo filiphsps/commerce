@@ -27,6 +27,10 @@
         "format:lint": "biome lint --write .",
         "format:format": "biome format --write .",
         "format:check": "biome check --write --unsafe .",
+        "generate": "pnpm graphql:gen",
+        "graphql:schema": "node ./scripts/copy-schema.mjs",
+        "graphql:gen": "pnpm graphql:schema && gql.tada generate-output",
+        "graphql:check": "gql.tada check",
         "test": "vitest run",
         "typecheck": "tsc -noEmit"
     },
@@ -55,15 +59,18 @@
         "dist"
     ],
     "dependencies": {
-        "@nordcom/commerce-errors": "workspace:*"
+        "@nordcom/commerce-errors": "workspace:*",
+        "gql.tada": "^1.9.2"
     },
     "peerDependencies": {
         "@apollo/client": "3.13.0 || ^4.0.0",
         "graphql": "16.0.0"
     },
     "devDependencies": {
+        "@0no-co/graphqlsp": "^1.15.4",
         "@apollo/client": "4.1.9",
         "@codecov/vite-plugin": "2.0.1",
+        "@shopify/hydrogen-react": "2026.4.2",
         "concurrently": "9.2.1",
         "glob": "13.0.6",
         "graphql": "16.14.0",

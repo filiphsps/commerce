@@ -714,6 +714,9 @@ importers:
         specifier: 2.0.0
         version: 2.0.0(react@19.2.6)(scheduler@0.27.0)
     devDependencies:
+      '@0no-co/graphqlsp':
+        specifier: ^1.15.4
+        version: 1.15.4(graphql@16.14.0)(typescript@6.0.3)
       '@happy-dom/global-registrator':
         specifier: 20.9.0
         version: 20.9.0
@@ -1071,13 +1074,22 @@ importers:
       '@nordcom/commerce-errors':
         specifier: workspace:*
         version: link:../errors
+      gql.tada:
+        specifier: ^1.9.2
+        version: 1.9.2(graphql@16.14.0)(typescript@6.0.3)
     devDependencies:
+      '@0no-co/graphqlsp':
+        specifier: ^1.15.4
+        version: 1.15.4(graphql@16.14.0)(typescript@6.0.3)
       '@apollo/client':
         specifier: 4.1.9
         version: 4.1.9(graphql@16.14.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(rxjs@7.8.2)
       '@codecov/vite-plugin':
         specifier: 2.0.1
         version: 2.0.1(vite@8.0.12(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.99.0)(tsx@4.22.3)(yaml@2.9.0))
+      '@shopify/hydrogen-react':
+        specifier: 2026.4.2
+        version: 2026.4.2(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(three@0.139.2)(vite@8.0.12(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.99.0)(tsx@4.22.3)(yaml@2.9.0))
       concurrently:
         specifier: 9.2.1
         version: 9.2.1
@@ -1282,6 +1294,20 @@ importers:
         version: 4.1.6(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(@vitest/coverage-v8@4.1.6)(happy-dom@20.9.0)(jsdom@29.1.1)(vite@8.0.12(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.99.0)(tsx@4.22.3)(yaml@2.9.0))
 
 packages:
+
+  '@0no-co/graphql.web@1.2.0':
+    resolution: {integrity: sha512-/1iHy9TTr63gE1YcR5idjx8UREz1s0kFhydf3bBLCXyqjhkIc6igAzTOx3zPifCwFR87tsh/4Pa9cNts6d2otw==}
+    peerDependencies:
+      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
+    peerDependenciesMeta:
+      graphql:
+        optional: true
+
+  '@0no-co/graphqlsp@1.15.4':
+    resolution: {integrity: sha512-Nt1DVHcZ08lKRKwhiU0amXH77fSdrO6DzyjLE0DkCxfbM/N1SAs32d76y1xtCzM5H9eT0iDS7SdksgRXWJu05g==}
+    peerDependencies:
+      graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
+      typescript: ^5.0.0 || ^6.0.0
 
   '@actions/core@3.0.1':
     resolution: {integrity: sha512-a6d/Nwahm9fliVGRhdhofo40HjHQasUPusmc7vBfyky+7Z+P2A1J68zyFVaNcEclc/Se+eO595oAr5nwEIoIUA==}
@@ -2409,6 +2435,26 @@ packages:
     engines: {node: '>=6.0.0'}
     peerDependencies:
       three: ^0.182.0
+
+  '@gql.tada/cli-utils@1.7.3':
+    resolution: {integrity: sha512-3iQY5E/jvv3Lnh6D1Mh7zr+Bb9C/TGk1DHkm+lbIjQBnZAu2m+BcTcr1e3spUt6Aa6HG/xAN2XxpbWw9oZALEg==}
+    peerDependencies:
+      '@0no-co/graphqlsp': ^1.12.13
+      '@gql.tada/svelte-support': 1.0.2
+      '@gql.tada/vue-support': 1.0.2
+      graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
+      typescript: ^5.0.0 || ^6.0.0
+    peerDependenciesMeta:
+      '@gql.tada/svelte-support':
+        optional: true
+      '@gql.tada/vue-support':
+        optional: true
+
+  '@gql.tada/internal@1.0.9':
+    resolution: {integrity: sha512-Bp8yi+kLrzIJ3l5Dfxhz48H4OCH2LCX+pShaPcJgh+oiBt6clrjUKDYNDD3Z78aDQ3+Tyrxe4dd0MfLgpSLPPg==}
+    peerDependencies:
+      graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
+      typescript: ^5.0.0 || ^6.0.0
 
   '@graphql-typed-document-node/core@3.2.0':
     resolution: {integrity: sha512-mB9oAsNCm9aM3/SOv4YtBMqZbYj10R7dkq8byBqxGY/ncFwhf2oQzMV+LCRlWoDSEBJ3COiR1yeDvMtsoOsuFQ==}
@@ -5944,6 +5990,12 @@ packages:
     resolution: {integrity: sha512-jhIXaOzy1sb8IyocaruWSn1TjmnBVs8Ayhcy83rmxNJ8q2uWKCAj3CnJY+KpGSXCueAPc0i05kVvVKtP1t9S3g==}
     engines: {node: '>=10'}
 
+  gql.tada@1.9.2:
+    resolution: {integrity: sha512-QxRHVpxtrOVdYXz6oavq0lBM+Zdp0swapLGJcD4SLpXDcsD337BHDFrzqqjfkbepv0sSAiO0LGabu1kI5D5Gyg==}
+    hasBin: true
+    peerDependencies:
+      typescript: ^5.0.0 || ^6.0.0
+
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
@@ -8782,6 +8834,16 @@ packages:
 
 snapshots:
 
+  '@0no-co/graphql.web@1.2.0(graphql@16.14.0)':
+    optionalDependencies:
+      graphql: 16.14.0
+
+  '@0no-co/graphqlsp@1.15.4(graphql@16.14.0)(typescript@6.0.3)':
+    dependencies:
+      '@gql.tada/internal': 1.0.9(graphql@16.14.0)(typescript@6.0.3)
+      graphql: 16.14.0
+      typescript: 6.0.3
+
   '@actions/core@3.0.1':
     dependencies:
       '@actions/exec': 3.0.0
@@ -10128,6 +10190,19 @@ snapshots:
       '@monogrid/gainmap-js': 3.4.0(three@0.139.2)
       lit: 3.3.2
       three: 0.139.2
+
+  '@gql.tada/cli-utils@1.7.3(@0no-co/graphqlsp@1.15.4(graphql@16.14.0)(typescript@6.0.3))(graphql@16.14.0)(typescript@6.0.3)':
+    dependencies:
+      '@0no-co/graphqlsp': 1.15.4(graphql@16.14.0)(typescript@6.0.3)
+      '@gql.tada/internal': 1.0.9(graphql@16.14.0)(typescript@6.0.3)
+      graphql: 16.14.0
+      typescript: 6.0.3
+
+  '@gql.tada/internal@1.0.9(graphql@16.14.0)(typescript@6.0.3)':
+    dependencies:
+      '@0no-co/graphql.web': 1.2.0(graphql@16.14.0)
+      graphql: 16.14.0
+      typescript: 6.0.3
 
   '@graphql-typed-document-node/core@3.2.0(graphql@16.14.0)':
     dependencies:
@@ -13819,6 +13894,18 @@ snapshots:
       ignore: 5.3.2
       merge2: 1.4.1
       slash: 3.0.0
+
+  gql.tada@1.9.2(graphql@16.14.0)(typescript@6.0.3):
+    dependencies:
+      '@0no-co/graphql.web': 1.2.0(graphql@16.14.0)
+      '@0no-co/graphqlsp': 1.15.4(graphql@16.14.0)(typescript@6.0.3)
+      '@gql.tada/cli-utils': 1.7.3(@0no-co/graphqlsp@1.15.4(graphql@16.14.0)(typescript@6.0.3))(graphql@16.14.0)(typescript@6.0.3)
+      '@gql.tada/internal': 1.0.9(graphql@16.14.0)(typescript@6.0.3)
+      typescript: 6.0.3
+    transitivePeerDependencies:
+      - '@gql.tada/svelte-support'
+      - '@gql.tada/vue-support'
+      - graphql
 
   graceful-fs@4.2.11: {}
 

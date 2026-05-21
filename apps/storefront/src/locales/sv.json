@@ -16,7 +16,9 @@
         "shipping-calculated-at-checkout": "Frakt beräknas i kassan",
         "shipping": "Frakt",
         "subtotal": "Subtotal",
-        "view-cart": "Visa varukorgen"
+        "view-cart": "Visa varukorgen",
+        "n-left": "Endast {0} kvar",
+        "back-order": "Tillgängligt på restorder"
     },
     "common": {
         "add-to-cart": "Köp",
@@ -66,6 +68,7 @@
         "in-stock-and-available": "Tillgängligt i lager",
         "in-stock": "Tillgängligt i lager",
         "n-in-stock-and-available": "{0} tillgängligt i lager",
+        "back-order": "Tillgängligt på restorder",
         "new": "Ny",
         "percentage-off": "{0}% OFF",
         "recommendations": "Rekommendationer",

@@ -1,19 +1,43 @@
 import { gql } from '@apollo/client';
 import type { Identifiable, LimitFilters, Nullable } from '@nordcom/commerce-db';
 import { ApiError, InvalidHandleError, NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
+import { graphql } from '@nordcom/commerce-shopify-graphql/graphql';
 import type {
     Filter,
     Maybe,
     ProductConnection,
     ProductEdge,
     ProductSortKeys,
-    QueryRoot,
 } from '@shopify/hydrogen-react/storefront-api-types';
 import md5 from 'crypto-js/md5';
 import type { Product } from '@/api/product';
 import { extractLimitLikeFilters } from '@/api/shopify/collection';
 import { cache } from '@/cache';
 import type { AbstractApi, ApiOptions, ApiReturn } from '@/utils/abstract-api';
+
+const PRODUCTS_PAGINATION_COUNT_QUERY = graphql(`
+    query productsPaginationCount(
+        $first: Int
+        $sorting: ProductSortKeys
+        $before: String
+        $after: String
+    ) {
+        products(first: $first, sortKey: $sorting, before: $before, after: $after) {
+            edges {
+                cursor
+                node {
+                    id
+                }
+            }
+            pageInfo {
+                endCursor
+                hasNextPage
+                hasPreviousPage
+                startCursor
+            }
+        }
+    }
+`);
 
 // Re-export the minimal fragments so legacy `from '@/api/shopify/product'`
 // imports keep working. Definitions live in `product-fragments.ts` (no
@@ -24,6 +48,8 @@ export const PRODUCT_FRAGMENT = /* GraphQL */ `
     id
     handle
     availableForSale
+    encodedVariantExistence
+    encodedVariantAvailability
     createdAt
     updatedAt
     publishedAt
@@ -78,6 +104,9 @@ export const PRODUCT_FRAGMENT = /* GraphQL */ `
             name
             firstSelectableVariant {
                 id
+                product {
+                    handle
+                }
                 selectedOptions {
                     name
                     value
@@ -106,6 +135,9 @@ export const PRODUCT_FRAGMENT = /* GraphQL */ `
         currentlyNotInStock
         quantityAvailable
         requiresShipping
+        product {
+            handle
+        }
         selectedOptions {
             name
             value
@@ -145,6 +177,9 @@ export const PRODUCT_FRAGMENT = /* GraphQL */ `
         currentlyNotInStock
         quantityAvailable
         requiresShipping
+        product {
+            handle
+        }
         selectedOptions {
             name
             value
@@ -384,32 +419,13 @@ export const ProductsPaginationCountApi = async ({
     const filtersTag = JSON.stringify(filters, null, 0);
 
     const countProducts = async (count: number = 0, cursors: string[] = [], after: string | null = null) => {
-        const { data, errors } = await api.query<{
-            products: QueryRoot['products'];
-        }>(
-            gql`
-                query products($first: Int, $sorting: ProductSortKeys, $before: String, $after: String) {
-                    products(first: $first, sortKey: $sorting, before: $before, after: $after) {
-                        edges {
-                            cursor
-                            node {
-                                id
-                            }
-                        }
-                        pageInfo {
-                            endCursor
-                            hasNextPage
-                            hasPreviousPage
-                            startCursor
-                        }
-                    }
-                }
-            `,
+        const { data, errors } = await api.query(
+            PRODUCTS_PAGINATION_COUNT_QUERY,
             {
                 ...extractLimitLikeFilters(filters),
                 ...(({ sorting = 'BEST_SELLING' }) => ({
-                    sorting: sorting,
-                    after: after,
+                    sorting,
+                    after,
                 }))(filters),
             },
             {

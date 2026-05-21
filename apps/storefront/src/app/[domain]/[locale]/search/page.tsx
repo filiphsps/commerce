@@ -79,9 +79,9 @@ export default async function SearchPage({
     const { t } = getTranslations('common', i18n);
 
     const client = await ShopifyApolloApiClient({ shop, locale });
-    const { products, productFilters } = query
+    const { products, productFilters, totalCount } = query
         ? await SearchApi({ query, client })
-        : { products: [], productFilters: [] };
+        : { products: [], productFilters: [], totalCount: 0 };
 
     return (
         <>
@@ -95,7 +95,12 @@ export default async function SearchPage({
                 <Heading title={capitalize(t('search'))} />
 
                 <Suspense key={`pages.search.${JSON.stringify(searchParams)}`}>
-                    <SearchContentGate shop={shop} locale={locale} i18n={i18n} data={{ products, productFilters }} />
+                    <SearchContentGate
+                        shop={shop}
+                        locale={locale}
+                        i18n={i18n}
+                        data={{ products, productFilters, totalCount }}
+                    />
                 </Suspense>
             </PageContent>
         </>

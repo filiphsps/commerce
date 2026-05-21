@@ -189,6 +189,18 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                         ) : null}
 
                         <div className="flex items-center justify-start gap-1 gap-x-3 md:flex-col md:items-start md:pt-1">
+                            {variant.currentlyNotInStock ? (
+                                <Label className="font-medium text-amber-600 text-xs leading-none">
+                                    {tCart('back-order')}
+                                </Label>
+                            ) : typeof variant.quantityAvailable === 'number' &&
+                              variant.quantityAvailable > 0 &&
+                              variant.quantityAvailable <= 5 ? (
+                                <Label className="font-medium text-amber-600 text-xs leading-none">
+                                    {tCart('n-left', variant.quantityAvailable.toString())}
+                                </Label>
+                            ) : null}
+
                             {discounts.length > 0 ? (
                                 <div className="flex w-full flex-wrap items-start justify-start gap-2">
                                     {discounts.map((discount, index) => (
@@ -198,7 +210,9 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                                         >
                                             <TagIcon className="stroke-1 text-inherit" />
                                             <Label>
-                                                {(discount as { title?: string }).title || tCart('automatic-discount')}
+                                                {(discount as { title?: string }).title ||
+                                                    (discount as { code?: string }).code ||
+                                                    tCart('automatic-discount')}
                                             </Label>
                                         </div>
                                     ))}
