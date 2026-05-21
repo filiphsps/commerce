@@ -578,6 +578,9 @@ importers:
       '@nordcom/nordstar':
         specifier: 0.0.75
         version: 0.0.75(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(tailwindcss@4.3.0)
+      '@opentelemetry/api':
+        specifier: 1.9.1
+        version: 1.9.1
       '@opentelemetry/api-logs':
         specifier: 0.218.0
         version: 0.218.0

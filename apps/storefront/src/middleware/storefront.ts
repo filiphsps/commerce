@@ -1,12 +1,7 @@
 import { Shop } from '@nordcom/commerce-db';
-import {
-    Error,
-    MissingEnvironmentVariableError,
-    NoLocaleResolvableError,
-    NotFoundError,
-    UnknownError,
-} from '@nordcom/commerce-errors';
+import { Error, NoLocaleResolvableError, NotFoundError, UnknownError } from '@nordcom/commerce-errors';
 import { shopFromHost } from '@nordcom/commerce-utils';
+import { trace } from '@opentelemetry/api';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { resolveAcceptLanguage } from 'resolve-accept-language';
@@ -59,7 +54,9 @@ async function handleCommerceError(req: NextRequest, error: Error) {
     try {
         serviceDomain = getGlobalServiceDomain();
     } catch (envError) {
-        console.error('[storefront-middleware] cannot route to service domain:', envError);
+        trace.getActiveSpan()?.addEvent('middleware.service_domain_unavailable', {
+            'error.message': (envError as { message?: string }).message ?? 'misconfiguration',
+        });
         return new NextResponse(
             `Service unavailable: ${(envError as { message?: string }).message ?? 'misconfiguration'}`,
             { status: 503, headers: { 'Cache-Control': 'no-store' } },
@@ -78,7 +75,9 @@ async function handleCommerceError(req: NextRequest, error: Error) {
     if (process.env.VERCEL_AUTOMATION_BYPASS_SECRET) {
         headers.set('x-vercel-protection-bypass', process.env.VERCEL_AUTOMATION_BYPASS_SECRET);
     } else {
-        console.warn(new MissingEnvironmentVariableError('VERCEL_AUTOMATION_BYPASS_SECRET'));
+        trace.getActiveSpan()?.addEvent('middleware.missing_env', {
+            'env.name': 'VERCEL_AUTOMATION_BYPASS_SECRET',
+        });
     }
 
     if (Error.isNotFound(error)) {
@@ -113,7 +112,9 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     try {
         hostname = await getHostname(req);
     } catch (error: unknown) {
-        console.error(error);
+        trace.getActiveSpan()?.addEvent('middleware.hostname_resolution_failed', {
+            'error.message': (error as { message?: string }).message ?? String(error),
+        });
 
         // `getGlobalServiceDomain()` throws if SERVICE_DOMAIN is unset, so we
         // can't unconditionally call it inline — that would turn a missing
@@ -131,7 +132,9 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
                 return NextResponse.rewrite(newUrl);
             }
         } catch (envError) {
-            console.warn('[storefront-middleware] SERVICE_DOMAIN unset, skipping file passthrough:', envError);
+            trace.getActiveSpan()?.addEvent('middleware.service_domain_unset_file_passthrough_skipped', {
+                'error.message': (envError as { message?: string }).message ?? String(envError),
+            });
         }
 
         return handleCommerceError(req, (error as undefined | Error) || new UnknownError(error?.toString?.()));
@@ -174,10 +177,6 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
             const locales = (await LocalesApi({ api })).map((locale) => locale.code);
 
             const acceptLanguageHeader = req.headers.get('accept-language');
-            if (!acceptLanguageHeader && BuildConfig.environment !== 'production') {
-                console.warn(`Invalid or missing "accept-language" header.`, req);
-            }
-
             const defaultLocale = (shop.i18n?.defaultLocale ?? 'en-US') as Code;
             const userLang = resolveAcceptLanguage(acceptLanguageHeader ?? '', locales, defaultLocale, {
                 matchCountry: true,
@@ -211,9 +210,12 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
             newUrl.pathname = newUrl.pathname.replace(`${locale}`, '');
         }
 
-        // Check if we fixed an occurrence of this issue, if so log it.
+        // Check if we fixed an occurrence of this issue, if so record it.
         if (newUrl.pathname !== req.nextUrl.pathname) {
-            console.warn(`Fixed locale duplication "${req.nextUrl.href}" -> "${newUrl.href}"`);
+            trace.getActiveSpan()?.addEvent('middleware.locale_duplication_fixed', {
+                original: req.nextUrl.href,
+                normalized: newUrl.href,
+            });
         }
     }
 
