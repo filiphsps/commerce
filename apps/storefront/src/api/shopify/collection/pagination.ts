@@ -1,176 +1,27 @@
-import type { Identifiable, LimitFilters, Nullable } from '@nordcom/commerce-db';
-import {
-    InvalidHandleError,
-    NotFoundError,
-    ProviderFetchError,
-    TodoError,
-    UnreachableError,
-} from '@nordcom/commerce-errors';
-import { graphql } from '@nordcom/commerce-shopify-graphql/graphql';
+import 'server-only';
+
+import type { LimitFilters, Nullable } from '@nordcom/commerce-db';
+import { InvalidHandleError, ProviderFetchError, TodoError, UnreachableError } from '@nordcom/commerce-errors';
 import type {
-    Collection,
     CollectionEdge,
     CollectionSortKeys,
     ProductCollectionSortKeys,
 } from '@shopify/hydrogen-react/storefront-api-types';
-import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product-fragments';
 import { cache } from '@/cache';
-import type { AbstractApi, ApiOptions } from '@/utils/abstract-api';
+import type { ApiOptions } from '@/utils/abstract-api';
 import { isValidHandle } from '@/utils/handle';
-
-const COLLECTION_QUERY = graphql(
-    `
-    query collection(
-        $handle: String!
-        $first: Int
-        $last: Int
-        $sorting: ProductCollectionSortKeys
-        $before: String
-        $after: String
-    ) {
-        collection(handle: $handle) {
-            id
-            handle
-            updatedAt
-            title
-            description
-            descriptionHtml
-            image {
-                id
-                altText
-                url
-                height
-                width
-                thumbhash
-            }
-            seo {
-                title
-                description
-            }
-            products(first: $first, last: $last, sortKey: $sorting, before: $before, after: $after) {
-                edges {
-                    node {
-                        ...ProductMinimal
-                    }
-                }
-                pageInfo {
-                    startCursor
-                    endCursor
-                    hasNextPage
-                    hasPreviousPage
-                }
-            }
-            keywords: metafield(namespace: "store", key: "keywords") {
-                value
-            }
-            isBrand: metafield(namespace: "store", key: "is_brand") {
-                value
-            }
-            shortDescription: metafield(namespace: "store", key: "short_description") {
-                value
-            }
-        }
-    }
-`,
-    [PRODUCT_FRAGMENT_MINIMAL],
-);
-
-const COLLECTION_PAGINATION_COUNT_QUERY = graphql(`
-    query collectionPaginationCount(
-        $handle: String!
-        $first: Int
-        $sorting: ProductCollectionSortKeys
-        $before: String
-        $after: String
-    ) {
-        collection(handle: $handle) {
-            id
-            handle
-            products(first: $first, sortKey: $sorting, before: $before, after: $after) {
-                edges {
-                    cursor
-                    node {
-                        id
-                    }
-                }
-                pageInfo {
-                    hasNextPage
-                }
-            }
-        }
-    }
-`);
-
-const COLLECTIONS_QUERY = graphql(`
-    query collections {
-        collections(first: 250) {
-            edges {
-                node {
-                    id
-                    handle
-                    products(first: 1) {
-                        edges {
-                            node {
-                                id
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-`);
-
-const COLLECTIONS_PAGINATION_QUERY = graphql(`
-    query collectionsPagination(
-        $first: Int
-        $last: Int
-        $sorting: CollectionSortKeys
-        $before: String
-        $after: String
-    ) {
-        collections(first: $first, last: $last, sortKey: $sorting, before: $before, after: $after) {
-            edges {
-                cursor
-                node {
-                    id
-                    handle
-                    updatedAt
-                    title
-                    description
-                    descriptionHtml
-                    image {
-                        id
-                        altText
-                        url
-                        height
-                        width
-                        thumbhash
-                    }
-                    seo {
-                        title
-                        description
-                    }
-                }
-            }
-            pageInfo {
-                startCursor
-                endCursor
-                hasNextPage
-                hasPreviousPage
-            }
-        }
-    }
-`);
+import { COLLECTION_PAGINATION_COUNT_QUERY, COLLECTIONS_PAGINATION_QUERY } from './queries';
 
 type GenericCollectionFilters = {
     after?: Nullable<string>;
     before?: Nullable<string>;
 };
+
 export type CollectionFilters = {
     sorting?: Nullable<ProductCollectionSortKeys>;
 } & GenericCollectionFilters &
     LimitFilters;
+
 type CollectionsFilters = {
     sorting?: Nullable<CollectionSortKeys>;
 } & GenericCollectionFilters &
@@ -223,70 +74,12 @@ export const extractLimitLikeFilters = (
     throw new UnreachableError();
 };
 
-type CollectionOptions = ApiOptions &
-    Identifiable &
-    (
+type CollectionOptions = ApiOptions & { handle: string } & (
         | {
               filters: CollectionFilters;
           }
         | /** @deprecated */ CollectionFilters
     );
-
-/**
- * Get a collection from Shopify.
- *
- * @todo TODO: Support `id` as an alternative to `handle` {@link https://shopify.dev/docs/api/storefront/2024-07/queries/collection}.
- *
- * @param options - The options for the collection.
- * @param options.api - The API to use.
- * @param options.handle - The handle of the collection to fetch.
- * @param [options.filters] - The filters to apply to the collection.
- * @returns The collection.
- */
-export const CollectionApi = async (
-    { api, handle, ...props }: CollectionOptions,
-    _cache?: unknown,
-): Promise<Collection> => {
-    if (!isValidHandle(handle)) {
-        throw new InvalidHandleError(handle);
-    }
-
-    const shop = api.shop();
-
-    const filters = 'filters' in props ? props.filters : /** @deprecated */ (props as CollectionFilters);
-    const filtersTag = JSON.stringify(filters, null, 0);
-    const { data, errors } = await api.query(
-        COLLECTION_QUERY,
-        {
-            handle,
-            ...extractLimitLikeFilters(filters),
-            ...(({ sorting = 'COLLECTION_DEFAULT', before = null, after = null }) => ({
-                sorting,
-                before,
-                after,
-            }))(filters),
-        },
-        {
-            tags: [
-                ...cache.keys.collection({ tenant: api.shop(), handle }).tags,
-                'collection',
-                handle,
-                ...(filtersTag ? [filtersTag] : []),
-            ],
-        },
-    );
-
-    if (errors && errors.length > 0) {
-        throw new ProviderFetchError(errors);
-    } else if (!data?.collection) {
-        throw new NotFoundError(`"Collection" with the handle "${handle}" on shop "${shop.id}"`);
-    }
-
-    return {
-        ...(data.collection as unknown as Collection),
-        descriptionHtml: data.collection.descriptionHtml ?? '',
-    };
-};
 
 export const CollectionPaginationCountApi = async ({
     api,
@@ -358,34 +151,6 @@ export const CollectionPaginationCountApi = async ({
         cursors: cursors.reverse(),
         products,
     };
-};
-
-export const CollectionsApi = async ({
-    api,
-}: {
-    api: AbstractApi;
-}): Promise<
-    Array<{
-        id: string;
-        handle: string;
-        hasProducts: boolean;
-    }>
-> => {
-    const { data, errors } = await api.query(COLLECTIONS_QUERY, undefined, {
-        tags: [...cache.keys.collections({ tenant: api.shop() }).tags, 'collections'],
-    });
-
-    if (errors && errors.length > 0) {
-        throw new ProviderFetchError(errors);
-    } else if (!data?.collections) {
-        throw new NotFoundError(`"Collections" cannot be found`);
-    }
-
-    return data.collections.edges.map(({ node: { id, handle, products } }) => ({
-        id,
-        handle,
-        hasProducts: products.edges.length > 0,
-    }));
 };
 
 type CollectionsOptions = ApiOptions &
