@@ -195,32 +195,16 @@ export type RichTextProps = {
 };
 
 /**
- * Payload returns a localized richText field as `{ <locale>: { root: ... } }`
- * when the request locale doesn't resolve. Unwrap the first lexical document
- * we find so the renderer is resilient to upstream locale misconfig — same
- * defense as `payload-value.ts` does for simple text fields.
- */
-const unwrapLexicalDocument = (data: LexicalRoot): LexicalRoot => {
-    if (!data) return null;
-    if ((data as { root?: unknown }).root) return data;
-    // Locale-map shape: pick the first value whose `.root.children` looks valid.
-    if (typeof data === 'object' && data !== null) {
-        for (const value of Object.values(data as Record<string, unknown>)) {
-            if (value && typeof value === 'object' && (value as { root?: unknown }).root) {
-                return value as LexicalRoot;
-            }
-        }
-    }
-    return null;
-};
-
-/**
  * Render a Lexical rich-text document. Returns `null` when the document is
  * empty so callers can avoid emitting an empty wrapper.
+ *
+ * `data` is expected to be a resolved `{ root: { children: [...] } }` shape.
+ * Locale-map unwrapping happens upstream in
+ * `apps/storefront/src/api/_normalize-payload.ts` — the renderer trusts
+ * its input.
  */
 export const RichText = ({ data, locale }: RichTextProps): ReactNode => {
-    const doc = unwrapLexicalDocument(data);
-    const children = doc?.root?.children;
+    const children = data?.root?.children;
     if (!children || children.length === 0) return null;
     return <>{renderChildren(children, locale)}</>;
 };
@@ -230,8 +214,7 @@ export const RichText = ({ data, locale }: RichTextProps): ReactNode => {
  * regions in containers (e.g. the Banner subheading area).
  */
 export const isRichTextEmpty = (data: LexicalRoot): boolean => {
-    const doc = unwrapLexicalDocument(data);
-    const children = doc?.root?.children;
+    const children = data?.root?.children;
     if (!children || children.length === 0) return true;
     // A single empty paragraph (the editor's initial state) should also
     // count as empty, otherwise editors leave an invisible <p/> block in

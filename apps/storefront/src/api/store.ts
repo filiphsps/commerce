@@ -9,6 +9,7 @@ import type { Country, Localization, PaymentSettings } from '@shopify/hydrogen-r
 import type { AbstractApi } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
 import { toShopRef } from './_cms';
+import { normalizePayloadDoc } from './_normalize-payload';
 
 // FIXME: Handle tenant-specific default.
 const DEFAULT_LOCALE = {
@@ -167,8 +168,9 @@ export type BusinessDataApiArgs = { shop: OnlineShop; locale: Locale };
  * collapse to no-render in that case.
  */
 export const BusinessDataApi = async ({ shop, locale }: BusinessDataApiArgs): Promise<BusinessDatum | null> => {
-    return getBusinessData({
+    const data = await getBusinessData({
         shop: toShopRef(shop),
         locale: { code: locale.code },
     });
+    return data ? normalizePayloadDoc(data, locale.code) : null;
 };

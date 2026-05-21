@@ -3,7 +3,6 @@ import type { JSX, ReactNode } from 'react';
 import Link from '@/components/link';
 import { cn } from '@/utils/tailwind';
 import type { BlockContext } from './context';
-import { textOf } from './payload-value';
 import { type ResolvedLink, resolveLink } from './resolve-link';
 import type { MediaGridBlockNode, MediaItem } from './types';
 
@@ -108,21 +107,18 @@ export const MediaGridBlock = ({
                                 priority={index < 2}
                                 draggable={false}
                             />
-                            {textOf(item.caption) ? (
-                                <div className="font-semibold text-sm leading-tight lg:text-base">
-                                    {textOf(item.caption)}
-                                </div>
+                            {item.caption ? (
+                                <div className="font-semibold text-sm leading-tight lg:text-base">{item.caption}</div>
                             ) : null}
                         </ItemWrapper>
                     );
                 }
 
-                const caption = textOf(item.caption);
                 return (
                     <ItemWrapper
                         key={`${url}-${index}`}
                         link={link}
-                        title={caption || undefined}
+                        title={item.caption || undefined}
                         className="group/item relative flex flex-col gap-1"
                     >
                         <div className="aspect-[4/3] w-full overflow-clip rounded-lg bg-primary shadow">
@@ -140,9 +136,9 @@ export const MediaGridBlock = ({
                                 className="h-full w-full object-cover object-center transition-all group-focus-within/item:brightness-75 group-hover/item:scale-105 group-hover/item:brightness-90"
                             />
                         </div>
-                        {caption ? (
+                        {item.caption ? (
                             <div className="font-semibold text-sm leading-tight transition-colors group-focus-within/item:text-primary group-hover/item:text-primary">
-                                {caption}
+                                {item.caption}
                             </div>
                         ) : null}
                     </ItemWrapper>

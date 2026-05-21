@@ -3,7 +3,6 @@ import { Button } from '@/components/actionable/button';
 import Link from '@/components/link';
 import { cn } from '@/utils/tailwind';
 import type { BlockContext } from './context';
-import { textOf } from './payload-value';
 import { resolveLink } from './resolve-link';
 import type { BannerBlockNode } from './types';
 
@@ -31,9 +30,6 @@ const cssUrl = (raw: string): string => {
 export const BannerBlock = ({ block, context }: { block: BannerBlockNode; context: BlockContext }): JSX.Element => {
     const bgUrl = typeof block.background === 'string' ? undefined : block.background?.url;
     const cta = resolveLink(block.cta, { locale: context.locale });
-    const heading = textOf(block.heading);
-    const subheading = textOf(block.subheading);
-    const ctaLabel = textOf(block.cta?.label) || 'Learn more';
 
     return (
         <section
@@ -54,8 +50,8 @@ export const BannerBlock = ({ block, context }: { block: BannerBlockNode; contex
                 )}
                 data-alignment={block.alignment}
             >
-                <h1 className="font-bold text-2xl leading-tight md:text-4xl">{heading}</h1>
-                {subheading ? <p className="text-base md:text-lg">{subheading}</p> : null}
+                <h1 className="font-bold text-2xl leading-tight md:text-4xl">{block.heading}</h1>
+                {block.subheading ? <p className="text-base md:text-lg">{block.subheading}</p> : null}
             </div>
 
             {cta ? (
@@ -65,7 +61,7 @@ export const BannerBlock = ({ block, context }: { block: BannerBlockNode; contex
                     target={cta.openInNewTab ? '_blank' : undefined}
                     className="flex items-center gap-2 rounded-full bg-white px-4 py-2 text-black transition-colors hover:bg-black hover:text-white md:px-6 md:py-3 md:text-lg"
                 >
-                    {ctaLabel}
+                    {block.cta?.label ?? 'Learn more'}
                 </Button>
             ) : null}
         </section>

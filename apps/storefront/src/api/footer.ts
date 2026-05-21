@@ -5,6 +5,7 @@ import type { Footer } from '@nordcom/commerce-cms/types';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import type { Locale } from '@/utils/locale';
 import { toShopRef } from './_cms';
+import { normalizePayloadDoc } from './_normalize-payload';
 
 export type FooterApiArgs = { shop: OnlineShop; locale: Locale };
 
@@ -13,8 +14,9 @@ export type FooterApiArgs = { shop: OnlineShop; locale: Locale };
  * draft-detection + null-on-missing policy of HeaderApi.
  */
 export async function FooterApi({ shop, locale }: FooterApiArgs): Promise<Footer | null> {
-    return getFooter({
+    const footer = await getFooter({
         shop: toShopRef(shop),
         locale: { code: locale.code },
     });
+    return footer ? normalizePayloadDoc(footer, locale.code) : null;
 }

@@ -5,6 +5,7 @@ import type { Header } from '@nordcom/commerce-cms/types';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import type { Locale } from '@/utils/locale';
 import { toShopRef } from './_cms';
+import { normalizePayloadDoc } from './_normalize-payload';
 
 export type HeaderApiArgs = { shop: OnlineShop; locale: Locale };
 
@@ -15,8 +16,9 @@ export type HeaderApiArgs = { shop: OnlineShop; locale: Locale };
  * callers render their minimal fallback chrome in that case.
  */
 export async function HeaderApi({ shop, locale }: HeaderApiArgs): Promise<Header | null> {
-    return getHeader({
+    const header = await getHeader({
         shop: toShopRef(shop),
         locale: { code: locale.code },
     });
+    return header ? normalizePayloadDoc(header, locale.code) : null;
 }

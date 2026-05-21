@@ -4,21 +4,24 @@ import { getPage as CmsGetPage, getPages as CmsGetPages } from '@nordcom/commerc
 import type { OnlineShop } from '@nordcom/commerce-db';
 import type { Locale } from '@/utils/locale';
 import { toShopRef } from './_cms';
+import { normalizePayloadDoc } from './_normalize-payload';
 
 export type CmsPageData = Awaited<ReturnType<typeof CmsGetPage>>;
 
 export async function PagesApi({ shop, locale }: { shop: OnlineShop; locale: Locale }) {
-    return await CmsGetPages({
+    const result = await CmsGetPages({
         shop: toShopRef(shop),
         locale: { code: locale.code },
         limit: 1000,
     });
+    return normalizePayloadDoc(result, locale.code);
 }
 
 export async function PageApi({ shop, locale, handle }: { shop: OnlineShop; locale: Locale; handle: string }) {
-    return await CmsGetPage({
+    const page = await CmsGetPage({
         shop: toShopRef(shop),
         locale: { code: locale.code },
         slug: handle,
     });
+    return page ? normalizePayloadDoc(page, locale.code) : null;
 }

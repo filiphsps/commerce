@@ -5,6 +5,7 @@ import type { CollectionMetadatum, ProductMetadatum } from '@nordcom/commerce-cm
 import type { OnlineShop } from '@nordcom/commerce-db';
 import type { Locale } from '@/utils/locale';
 import { toShopRef } from './_cms';
+import { normalizePayloadDoc } from './_normalize-payload';
 
 export type MetadataApiArgs = { shop: OnlineShop; locale: Locale; handle: string };
 
@@ -14,11 +15,12 @@ export type MetadataApiArgs = { shop: OnlineShop; locale: Locale; handle: string
  * SEO field overrides — applied on top of the Shopify product page.
  */
 export async function ProductMetadataApi({ shop, locale, handle }: MetadataApiArgs): Promise<ProductMetadatum | null> {
-    return getProductMetadata({
+    const meta = await getProductMetadata({
         shop: toShopRef(shop),
         locale: { code: locale.code },
         shopifyHandle: handle,
     });
+    return meta ? normalizePayloadDoc(meta, locale.code) : null;
 }
 
 /**
@@ -30,9 +32,10 @@ export async function CollectionMetadataApi({
     locale,
     handle,
 }: MetadataApiArgs): Promise<CollectionMetadatum | null> {
-    return getCollectionMetadata({
+    const meta = await getCollectionMetadata({
         shop: toShopRef(shop),
         locale: { code: locale.code },
         shopifyHandle: handle,
     });
+    return meta ? normalizePayloadDoc(meta, locale.code) : null;
 }

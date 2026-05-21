@@ -5,6 +5,7 @@ import type { Article } from '@nordcom/commerce-cms/types';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import type { Locale } from '@/utils/locale';
 import { toShopRef } from './_cms';
+import { normalizePayloadDoc } from './_normalize-payload';
 
 export type ArticleApiArgs = { shop: OnlineShop; locale: Locale; slug: string };
 
@@ -18,9 +19,10 @@ export type ArticleApiArgs = { shop: OnlineShop; locale: Locale; slug: string };
  * Shopify path then renders unchanged.
  */
 export async function ArticleApi({ shop, locale, slug }: ArticleApiArgs): Promise<Article | null> {
-    return getArticle({
+    const article = await getArticle({
         shop: toShopRef(shop),
         locale: { code: locale.code },
         slug,
     });
+    return article ? normalizePayloadDoc(article, locale.code) : null;
 }

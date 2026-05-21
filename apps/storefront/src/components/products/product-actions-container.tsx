@@ -35,7 +35,18 @@ export const ProductActionsContainer = ({ className, i18n, ...props }: ProductAc
             .map(([name, value]) => ({ name, value })),
     );
 
-    const mappedOptions = useMemo(() => (product ? getProductOptions(product) : []), [product]);
+    // `getProductOptions` expects `RecursivePartial<ShopifyProduct>` — the
+    // local `Product` type extends Shopify's `Product` but loosens
+    // `metafields[]` to allow `null` entries (Shopify's `Maybe<T>`). The
+    // recursive-partial conversion only accepts `undefined`, not `null`, so
+    // the types don't structurally line up despite being compatible at
+    // runtime. `getProductOptions` reads `options` + `variants` only — it
+    // doesn't inspect `metafields` — so the cast through the call's own
+    // parameter type is safe and pinpoint.
+    const mappedOptions = useMemo(
+        () => (product ? getProductOptions(product as Parameters<typeof getProductOptions>[0]) : []),
+        [product],
+    );
 
     const resolvedSelectedOptions = useMemo(
         () =>
