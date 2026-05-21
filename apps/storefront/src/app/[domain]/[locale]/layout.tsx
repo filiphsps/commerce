@@ -24,41 +24,33 @@ import { primaryFont } from '@/utils/fonts';
 import { NOT_FOUND_HANDLE } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
+import { unsafe_cast } from '@/utils/unsafe-cast';
 
 export type LayoutParams = Promise<{ domain: string; locale: string }>;
 
-export async function generateStaticParams(): Promise<Awaited<LayoutParams>[]> {
+type StaticParam = Awaited<LayoutParams>;
+
+export async function generateStaticParams(): Promise<StaticParam[]> {
     try {
         const shops = await Shop.findAll();
 
         const params = (
             await Promise.all(
-                shops.map(async ({ domain }) => {
-                    let shop: OnlineShop;
+                shops.map(async ({ domain }): Promise<StaticParam[]> => {
                     try {
-                        shop = await Shop.findByDomain(domain, { sensitiveData: true });
+                        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+                        if (shop.domain.includes('demo')) return [];
+                        return [{ domain: shop.domain, locale: Locale.from('en-US').code }];
                     } catch (error: unknown) {
                         trace.getActiveSpan()?.addEvent('static_params.shop_lookup_failed', {
                             'shop.domain': domain,
                             'error.message': (error as Error)?.message ?? String(error),
                         });
-                        return null as unknown as LayoutParams;
+                        return [];
                     }
-                    if (shop.domain.includes('demo')) {
-                        return null as unknown as LayoutParams;
-                    }
-
-                    return [
-                        {
-                            domain: shop.domain,
-                            locale: Locale.from('en-US').code,
-                        },
-                    ];
                 }),
             )
-        )
-            .flat(1)
-            .filter(Boolean);
+        ).flat();
 
         return params.length > 0 ? params : [{ domain: NOT_FOUND_HANDLE, locale: Locale.default.code }];
     } catch (error: unknown) {
@@ -112,7 +104,7 @@ export async function generateMetadata({ params }: { params: LayoutParams }): Pr
     return {
         // Next 16: URL objects fail React-server-to-client serialization. Runtime
         // accepts strings; TS Metadata type lags. Cast is intentional.
-        metadataBase: `https://${shop.domain}/${locale.code}/` as unknown as URL,
+        metadataBase: unsafe_cast<URL>(`https://${shop.domain}/${locale.code}/`),
         title: {
             absolute: `${shop.name} (${locale.country!})`.trim(),
             // Allow tenants to customize this.
