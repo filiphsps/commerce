@@ -77,17 +77,20 @@ async function renderFavicon(domain: string, widthParam: string | null, heightPa
             },
         );
     } catch (error: unknown) {
+        const message = (error as Error)?.message ?? String(error);
         trace.getActiveSpan()?.addEvent('favicon.render_failed', {
-            'error.message': (error as Error)?.message ?? String(error),
+            'error.message': message,
             'shop.domain': domain,
         });
 
+        // `'use cache'` serializes the return value, so the body cannot
+        // contain Error class instances — convert to a plain object.
         return NextResponse.json(
             {
                 status: 500,
                 tenant: domain,
                 data: null,
-                errors: [error],
+                errors: [{ message }],
             },
             {
                 status: 500,

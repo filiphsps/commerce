@@ -118,7 +118,7 @@ export default async function RootLayout({
                 >
                     <AnalyticsProvider shop={publicShop} hostname={domain}>
                         <HeaderProvider loaderColor={branding?.primary.color}>
-                            {modal}
+                            <Fragment key="layout.modal">{modal}</Fragment>
 
                             <Suspense key="layout.geo-redirect" fallback={<Fragment />}>
                                 <GeoRedirect shop={publicShop} countries={countries} locale={locale} i18n={i18n} />
