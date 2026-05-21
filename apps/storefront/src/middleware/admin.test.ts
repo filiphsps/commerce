@@ -39,9 +39,23 @@ describe('admin middleware', () => {
         expect(res.headers.get('location')).toBe(`https://${ADMIN_HOSTNAME}/${encodeURIComponent('sub.domain.com')}/`);
     });
 
-    it('returns 400 Bad Request when the hostname exceeds 253 characters', async () => {
-        // 254 a's + '.com' → 258 chars total, comfortably over the 253 DNS cap.
-        const longHost = `${'a'.repeat(254)}.com`;
+    it('accepts a hostname of exactly 253 characters (DNS cap boundary)', async () => {
+        // 249 a's + '.com' → 253 chars total, the largest allowed by the > 253 guard.
+        const boundaryHost = `${'a'.repeat(249)}.com`;
+        expect(boundaryHost).toHaveLength(253);
+        const req = new NextRequest(`http://${boundaryHost}/`);
+        const res = await admin(req);
+
+        expect(res.status).toBeGreaterThanOrEqual(300);
+        expect(res.status).toBeLessThan(400);
+    });
+
+    it('returns 400 Bad Request when the hostname is 254 characters (just over the DNS cap)', async () => {
+        // 250 a's + '.com' → 254 chars total, the smallest value rejected by > 253.
+        // Targets the off-by-one boundary precisely; a regression to `>= 253` or
+        // `> 254` would slip past a smoke test that just uses a "very long" host.
+        const longHost = `${'a'.repeat(250)}.com`;
+        expect(longHost).toHaveLength(254);
         const req = new NextRequest(`http://${longHost}/`);
         const res = await admin(req);
 
