@@ -1,3 +1,4 @@
+import { skipCSRFCheck } from '@auth/core';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import type { NextAuthConfig } from 'next-auth';
 import ShopifyProvider from '@/auth/shopify-provider';
@@ -17,7 +18,7 @@ const config = ({
 }) => {
     return {
         providers: [ShopifyProvider(shopifyAuth, shop)],
-        skipCSRFCheck: true as unknown as NextAuthConfig['skipCSRFCheck'], // TODO
+        skipCSRFCheck,
         cookies: {
             sessionToken: {
                 name: `${IS_PROD ? '__Secure-' : ''}NordcomCommerceSession`,
