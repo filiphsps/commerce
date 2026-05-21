@@ -3,7 +3,6 @@
 import { MissingContextProviderError } from '@nordcom/commerce-errors';
 import { usePathname } from 'next/navigation';
 import NextTopLoader from 'nextjs-toploader';
-import * as NProgress from 'nprogress';
 import type { ReactNode } from 'react';
 import { createContext, Suspense, useContext, useEffect, useState } from 'react';
 
@@ -85,13 +84,9 @@ const HeaderProviderInner = ({ children, loaderColor }: HeaderProviderProps) => 
         document.body.setAttribute('data-menu-open', menuValue !== null ? 'true' : 'false');
     }, [menuValue]);
 
-    // Stop the loader on page navigation and close the menu.
+    // Reset menu state on navigation. Phase 2 will broaden this to also fire
+    // on searchParams change.
     useEffect(() => {
-        // https://github.com/TheSGJ/nextjs-toploader/issues/56#issuecomment-1820484781
-        // this should also trigger on searchParams changes but listening to it would cause
-        // Next.js to de-opt into client-side rendering. :(
-        NProgress.done();
-
         document.body.removeAttribute('data-menu-open');
     }, []);
 

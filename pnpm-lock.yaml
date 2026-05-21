@@ -653,9 +653,6 @@ importers:
       nextjs-toploader:
         specifier: 3.9.17
         version: 3.9.17(next@16.2.6(@opentelemetry/api@1.9.1)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.99.0))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
-      nprogress:
-        specifier: 0.2.0
-        version: 0.2.0
       react:
         specifier: 19.2.6
         version: 19.2.6
@@ -738,9 +735,6 @@ importers:
       '@types/node':
         specifier: 24.12.4
         version: 24.12.4
-      '@types/nprogress':
-        specifier: 0.2.3
-        version: 0.2.3
       '@types/react':
         specifier: 19.2.14
         version: 19.2.14
