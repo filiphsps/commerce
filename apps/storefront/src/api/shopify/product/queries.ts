@@ -1,36 +1,5 @@
 import 'server-only';
 
-import { graphql } from '@nordcom/commerce-shopify-graphql/graphql';
-
-export const PRODUCTS_PAGINATION_COUNT_QUERY = graphql(`
-    query productsPaginationCount(
-        $first: Int
-        $sorting: ProductSortKeys
-        $before: String
-        $after: String
-    ) {
-        products(first: $first, sortKey: $sorting, before: $before, after: $after) {
-            edges {
-                cursor
-                node {
-                    id
-                }
-            }
-            pageInfo {
-                endCursor
-                hasNextPage
-                hasPreviousPage
-                startCursor
-            }
-        }
-    }
-`);
-
-// Re-export the minimal fragments so legacy `from '@/api/shopify/product'`
-// imports keep working. Definitions live in `product-fragments.ts` (no
-// runtime dependencies) so they can be safely included in client bundles.
-export { PRODUCT_FRAGMENT_MINIMAL, PRODUCT_FRAGMENT_MINIMAL_NO_VARIANTS } from '@/api/shopify/product-fragments';
-
 export const PRODUCT_FRAGMENT = /* GraphQL */ `
     id
     handle

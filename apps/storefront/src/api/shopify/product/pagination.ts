@@ -3,6 +3,7 @@ import 'server-only';
 import { gql } from '@apollo/client';
 import type { LimitFilters, Nullable } from '@nordcom/commerce-db';
 import { ApiError, ProviderFetchError } from '@nordcom/commerce-errors';
+import { graphql } from '@nordcom/commerce-shopify-graphql/graphql';
 import type {
     Filter,
     ProductConnection,
@@ -12,7 +13,31 @@ import type {
 import { extractLimitLikeFilters } from '@/api/shopify/collection';
 import { cache } from '@/cache';
 import type { AbstractApi, ApiOptions } from '@/utils/abstract-api';
-import { PRODUCT_FRAGMENT, PRODUCTS_PAGINATION_COUNT_QUERY } from './queries';
+import { PRODUCT_FRAGMENT } from './queries';
+
+const PRODUCTS_PAGINATION_COUNT_QUERY = graphql(`
+    query productsPaginationCount(
+        $first: Int
+        $sorting: ProductSortKeys
+        $before: String
+        $after: String
+    ) {
+        products(first: $first, sortKey: $sorting, before: $before, after: $after) {
+            edges {
+                cursor
+                node {
+                    id
+                }
+            }
+            pageInfo {
+                endCursor
+                hasNextPage
+                hasPreviousPage
+                startCursor
+            }
+        }
+    }
+`);
 
 export type ProductsFilters = {
     after?: Nullable<string>;
