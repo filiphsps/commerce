@@ -76,8 +76,6 @@ export type AnalyticsEventData = {
         };
     };
 };
-export type AnalyticsEventConfig = {};
-
 /**
  * @see {@link https://shopify.dev/docs/api/hydrogen-react/2024-07/utilities/sendshopifyanalytics#analyticspagetype}
  */
