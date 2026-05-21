@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CartSummary } from '@/components/cart/cart-summary';
 import { mockShop } from '@/utils/test/fixtures';
 import { render, screen } from '@/utils/test/react';
@@ -45,8 +45,21 @@ vi.mock('@/components/cart/cart-note', () => ({
     CartNote: () => null,
 }));
 
+const BASELINE_CART_STATE: Record<string, any> = {
+    status: 'idle',
+    cartReady: true,
+    totalQuantity: 0,
+    lines: [],
+    cost: null,
+    discountCodes: [],
+};
+
 describe('components', () => {
     describe('CartSummary', () => {
+        beforeEach(() => {
+            mockCartState = { ...BASELINE_CART_STATE };
+        });
+
         it('hides sale line while cart is updating', () => {
             mockCartState = {
                 status: 'updating',
@@ -71,6 +84,86 @@ describe('components', () => {
             };
             render(<CartSummary shop={mockShop()} onCheckout={mockOnCheckout} i18n={{} as any} />);
             expect(screen.queryByTestId('cart-summary-sale')).toBeNull();
+        });
+
+        it('hides sale line while cart is fetching', () => {
+            mockCartState = {
+                status: 'fetching',
+                cartReady: true,
+                totalQuantity: 1,
+                lines: [
+                    {
+                        id: 'line-1',
+                        quantity: 1,
+                        discountAllocations: [],
+                        cost: {
+                            compareAtAmountPerQuantity: { amount: '20', currencyCode: 'USD' },
+                            totalAmount: { amount: '10', currencyCode: 'USD' },
+                        },
+                    },
+                ],
+                cost: {
+                    totalAmount: { amount: '10', currencyCode: 'USD' },
+                    subtotalAmount: { amount: '10', currencyCode: 'USD' },
+                },
+                discountCodes: [],
+            };
+            render(<CartSummary shop={mockShop()} onCheckout={mockOnCheckout} i18n={{} as any} />);
+            expect(screen.queryByTestId('cart-summary-sale')).toBeNull();
+        });
+
+        it('hides sale line while cart is creating', () => {
+            mockCartState = {
+                status: 'creating',
+                cartReady: true,
+                totalQuantity: 1,
+                lines: [
+                    {
+                        id: 'line-1',
+                        quantity: 1,
+                        discountAllocations: [],
+                        cost: {
+                            compareAtAmountPerQuantity: { amount: '20', currencyCode: 'USD' },
+                            totalAmount: { amount: '10', currencyCode: 'USD' },
+                        },
+                    },
+                ],
+                cost: {
+                    totalAmount: { amount: '10', currencyCode: 'USD' },
+                    subtotalAmount: { amount: '10', currencyCode: 'USD' },
+                },
+                discountCodes: [],
+            };
+            render(<CartSummary shop={mockShop()} onCheckout={mockOnCheckout} i18n={{} as any} />);
+            expect(screen.queryByTestId('cart-summary-sale')).toBeNull();
+        });
+
+        it('shows sale line when cart is idle', () => {
+            mockCartState = {
+                status: 'idle',
+                cartReady: true,
+                totalQuantity: 1,
+                lines: [
+                    {
+                        id: 'line-1',
+                        quantity: 1,
+                        discountAllocations: [],
+                        cost: {
+                            compareAtAmountPerQuantity: { amount: '20', currencyCode: 'USD' },
+                            totalAmount: { amount: '10', currencyCode: 'USD' },
+                        },
+                    },
+                ],
+                cost: {
+                    totalAmount: { amount: '10', currencyCode: 'USD' },
+                    subtotalAmount: { amount: '10', currencyCode: 'USD' },
+                },
+                discountCodes: [],
+            };
+            render(<CartSummary shop={mockShop()} onCheckout={mockOnCheckout} i18n={{} as any} />);
+            const saleRow = screen.queryByTestId('cart-summary-sale');
+            expect(saleRow).not.toBeNull();
+            expect(saleRow?.textContent).toMatch(/10/);
         });
 
         it('renders the checkout button', () => {

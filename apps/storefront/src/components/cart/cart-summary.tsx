@@ -36,11 +36,14 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
     const { status, totalQuantity, lines, cost, discountCodes = [], cartReady } = useCart();
     const { currency } = useShop();
 
-    const isUpdating = status === 'updating';
+    // Only trust line-level and cost data when the cart has fully settled.
+    // The `fetching`, `creating`, and `updating` states can all produce
+    // transiently stale or missing line data, so zero out derived savings
+    // figures until Shopify confirms the cart is `idle`.
+    const isSettled = status === 'idle';
 
-    const sale = isUpdating
-        ? 0
-        : (lines?.reduce(
+    const sale = isSettled
+        ? (lines?.reduce(
               (sum, line) =>
                   (line!.cost!.compareAtAmountPerQuantity &&
                       sum +
@@ -48,10 +51,10 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                               safeParseFloat(0, line?.cost?.totalAmount?.amount))) ||
                   sum,
               0,
-          ) ?? 0);
-    const totalSale = isUpdating
-        ? 0
-        : sale +
+          ) ?? 0)
+        : 0;
+    const totalSale = isSettled
+        ? sale +
           (lines || [])
               .map((line) => {
                   if (line!.discountAllocations!.length <= 0) {
@@ -65,14 +68,17 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                       0,
                   );
               })
-              .reduce((sum, line) => sum + line || sum, 0);
+              .reduce((sum, line) => sum + line || sum, 0)
+        : 0;
 
     // Guard the divide so a fully-discounted cart (totalAmount === 0 — gift
     // card balance covers everything, 100%-off promo, etc.) doesn't render
     // `Infinity% OFF` in the discount-row tooltip.
     const totalForPercent = safeParseFloat(0, cost?.totalAmount?.amount);
     const salePercentage = totalForPercent > 0 ? Math.round(((100 * sale) / totalForPercent) * 100) / 100 : 0;
-    const promos = safeParseFloat(0, cost?.subtotalAmount?.amount) - safeParseFloat(0, cost?.totalAmount?.amount) || 0;
+    const promos = isSettled
+        ? safeParseFloat(0, cost?.subtotalAmount?.amount) - safeParseFloat(0, cost?.totalAmount?.amount) || 0
+        : 0;
 
     const noItems = !lines || lines.length <= 0 || !totalQuantity || totalQuantity <= 0;
 
