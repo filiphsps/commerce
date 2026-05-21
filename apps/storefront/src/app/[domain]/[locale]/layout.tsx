@@ -166,8 +166,10 @@ export default async function RootLayout({
 
     let shop: OnlineShop, publicShop: OnlineShop;
     try {
-        shop = await Shop.findByDomain(domain, { sensitiveData: true });
-        publicShop = await Shop.findByDomain(domain);
+        [shop, publicShop] = await Promise.all([
+            Shop.findByDomain(domain, { sensitiveData: true }),
+            Shop.findByDomain(domain),
+        ]);
     } catch (error: unknown) {
         if (Error.isNotFound(error) || error instanceof UnknownShopDomainError) {
             notFound();
@@ -198,11 +200,12 @@ export default async function RootLayout({
         notFound();
     }
 
-    const localization = await LocaleApi({ api });
-    const countries = await CountriesApi({ api });
-
-    const branding = await getBrandingColors({ domain, shop });
-    const i18n = await getDictionary(locale);
+    const [localization, countries, branding, i18n] = await Promise.all([
+        LocaleApi({ api }),
+        CountriesApi({ api }),
+        getBrandingColors({ domain, shop }),
+        getDictionary(locale),
+    ]);
 
     return (
         <html lang={locale.code} className={cn(primaryFont.className, primaryFont.variable, 'overscroll-x-none')}>
