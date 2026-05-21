@@ -42,7 +42,7 @@ const config = {
         cssChunking: true,
         dynamicOnHover: true,
         esmExternals: true,
-        mcpServer: false && isDev, // TODO: Enable when we can have multiple mcp servers.
+        mcpServer: false, // TODO: Enable when we can have multiple mcp servers.
         optimizeCss: !isDev,
         optimizePackageImports: ['@apollo/client', '@shopify/hydrogen-react', '@nordcom/nordstar'],
         optimizeServerReact: true,
@@ -61,7 +61,6 @@ const config = {
         turbopackFileSystemCacheForDev: true,
         turbopackServerFastRefresh: true,
         typedEnv: true,
-        webpackBuildWorker: false,
     },
     images: {
         unoptimized: true, // FIXME: We should optimize images.
