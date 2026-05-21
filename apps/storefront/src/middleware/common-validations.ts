@@ -19,8 +19,8 @@ export const commonValidations = <T extends string | NextURL | URL>(url: T): T =
     // Make sure we don't have any double slashes, except for the ones
     // in the protocol.
     if (path.includes('://')) {
-        const chunks = path.split('://');
-        path = `${chunks[0]}://${chunks[1]!.replaceAll(DOUBLE_SLASHES, '/')}`;
+        const [scheme = '', rest = ''] = path.split('://');
+        path = `${scheme}://${rest.replaceAll(DOUBLE_SLASHES, '/')}`;
     } else {
         path = path.replaceAll(DOUBLE_SLASHES, '/');
     }
@@ -32,8 +32,8 @@ export const commonValidations = <T extends string | NextURL | URL>(url: T): T =
         !/\.(.*)$/.test(path)
     ) {
         if (path.includes('?')) {
-            const [pathname, query] = path.split('?');
-            if (!pathname!.endsWith('/')) {
+            const [pathname = '', query = ''] = path.split('?');
+            if (!pathname.endsWith('/')) {
                 path = `${pathname}/?${query}`;
             }
         } else {
@@ -42,10 +42,12 @@ export const commonValidations = <T extends string | NextURL | URL>(url: T): T =
     }
 
     // Check casing of locale, eg make sure it's `en-US` and not `en-us`.
-    const localeMatch = path.match(/\/([a-zA-Z]{2}-[a-zA-Z]{2})/g);
-    if (localeMatch) {
-        const locale = localeMatch[0]!.split('-');
-        path = path.replace(localeMatch[0]!, `${locale[0].toLowerCase()}-${locale[1].toUpperCase()}`);
+    const firstLocaleMatch = path.match(/\/([a-zA-Z]{2}-[a-zA-Z]{2})/g)?.[0];
+    if (firstLocaleMatch) {
+        const [language, country] = firstLocaleMatch.split('-');
+        if (language && country) {
+            path = path.replace(firstLocaleMatch, `${language.toLowerCase()}-${country.toUpperCase()}`);
+        }
     }
 
     if (typeof url === 'string') {
