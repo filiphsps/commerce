@@ -295,7 +295,7 @@ export default async function ProductPage({ params }: { params: ProductPageParam
                 fallback={<Card className={cn(BLOCK_STYLES, 'h-32 rounded-lg')} data-skeleton />}
             >
                 <section className="md:max-w-[32rem]">
-                    <CMSContent shop={shop} locale={locale} handle={handle} type={'product_page'} />
+                    <CMSContent shop={shop} locale={locale} handle={handle} />
                 </section>
             </Suspense>
 
