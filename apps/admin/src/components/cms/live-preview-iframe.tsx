@@ -42,7 +42,7 @@ export type LivePreviewIframeProps = {
  * **Security note:** this component is intentionally URL-agnostic. The caller
  * builds the URL server-side and passes the result in via `previewUrl`. This
  * keeps the storefront preview secret out of the RSC payload — passing it as
- * a prop would serialise it across the RSC boundary and embed it in the
+ * a prop would serialize it across the RSC boundary and embed it in the
  * rendered iframe `src` attribute, where any signed-in editor could lift it
  * from devtools and enable draft mode on their own session.
  *

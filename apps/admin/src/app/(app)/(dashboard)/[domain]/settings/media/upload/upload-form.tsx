@@ -49,9 +49,9 @@ export function UploadForm({ domain, createAction }: UploadFormProps) {
                 } else {
                     router.push(`/${domain}/settings/media/` as Route);
                 }
-            } catch (err) {
-                console.error('[media] upload failed', err);
-                setError(err instanceof Error ? err.message : 'Upload failed.');
+            } catch (error: unknown) {
+                console.error('[media] upload failed', error);
+                setError(error instanceof Error ? error.message : 'Upload failed.');
             }
         });
     }

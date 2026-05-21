@@ -2,44 +2,42 @@ import { describe, expect, it, vi } from 'vitest';
 import { ShellRoot } from '@/components/shell/shell-root';
 import { render, screen } from '@/utils/test/react';
 
-vi.mock('next/navigation', () => ({ usePathname: () => '/abc/', useRouter: () => ({ push: vi.fn() }) }));
+const { mockUseSelectedLayoutSegments } = vi.hoisted(() => ({
+    mockUseSelectedLayoutSegments: vi.fn<(slot?: string) => string[]>(() => []),
+}));
+
+vi.mock('next/navigation', () => ({
+    usePathname: () => '/abc/',
+    useRouter: () => ({ push: vi.fn() }),
+    useSelectedLayoutSegments: (slot?: string) => mockUseSelectedLayoutSegments(slot),
+}));
 
 describe('ShellRoot', () => {
     it('renders header, children, and slots (no subnav, no inspector)', () => {
+        // Empty segments array = neither slot has any matched route at all.
+        mockUseSelectedLayoutSegments.mockReturnValue([]);
         render(
-            <ShellRoot
-                header={<div data-testid="hdr">HEAD</div>}
-                subnav={null}
-                inspector={null}
-                hasSubnav={false}
-                hasInspector={false}
-                initialState={{
-                    rail: { w: 56, collapsed: true },
-                    subnav: { w: 240, collapsed: false },
-                    inspector: { w: 320, collapsed: true },
-                }}
-                iconRailItems={[]}
-            >
-                <div data-testid="content">CONTENT</div>
+            <ShellRoot header={<div data-testid="hdr">HEAD</div>} subnav={null} inspector={null} iconRailItems={[]}>
+                {/* Distinct testid: react-resizable-panels v4 stamps `data-testid="content"`
+                 *  onto the Panel itself (id="content"), so this child needs its own name. */}
+                <div data-testid="page-content">CONTENT</div>
             </ShellRoot>,
         );
         expect(screen.getByTestId('hdr')).toBeInTheDocument();
-        expect(screen.getByTestId('content')).toBeInTheDocument();
+        expect(screen.getByTestId('page-content')).toBeInTheDocument();
     });
 
-    it('renders the subnav slot when hasSubnav is true', () => {
+    it('renders the subnav slot when @subnav/<section> resolves (even via default.tsx)', () => {
+        // For `@subnav/content/default.tsx`, Next walks the path as
+        // `['content', '__DEFAULT__']`. The slot is active.
+        mockUseSelectedLayoutSegments.mockImplementation((slot) =>
+            slot === 'subnav' ? ['content', '__DEFAULT__'] : [],
+        );
         render(
             <ShellRoot
                 header={<div>H</div>}
                 subnav={<div data-testid="nav">NAV</div>}
                 inspector={null}
-                hasSubnav={true}
-                hasInspector={false}
-                initialState={{
-                    rail: { w: 56, collapsed: true },
-                    subnav: { w: 240, collapsed: false },
-                    inspector: { w: 320, collapsed: true },
-                }}
                 iconRailItems={[]}
             >
                 <div>C</div>
@@ -48,46 +46,19 @@ describe('ShellRoot', () => {
         expect(screen.getByTestId('nav')).toBeInTheDocument();
     });
 
-    it('hides icon-rail labels when rail width is below the label threshold (159px)', () => {
+    it('hides the subnav slot when only the top-level @subnav/default.tsx renders', () => {
+        // Top-level catch-all default — no section matched.
+        mockUseSelectedLayoutSegments.mockImplementation((slot) => (slot === 'subnav' ? ['__DEFAULT__'] : []));
         render(
             <ShellRoot
                 header={<div>H</div>}
-                subnav={null}
+                subnav={<div data-testid="nav">NAV</div>}
                 inspector={null}
-                hasSubnav={false}
-                hasInspector={false}
-                initialState={{
-                    rail: { w: 159, collapsed: false },
-                    subnav: { w: 240, collapsed: false },
-                    inspector: { w: 320, collapsed: true },
-                }}
-                iconRailItems={[{ href: '/abc/' as never, label: 'Home', icon: <span data-testid="i-home" /> }]}
+                iconRailItems={[]}
             >
                 <div>C</div>
             </ShellRoot>,
         );
-        // When icon-only, the label text is NOT rendered (only set as aria-label on the link).
-        expect(screen.queryByText('Home')).not.toBeInTheDocument();
-    });
-
-    it('shows icon-rail labels at and above the label threshold (160px)', () => {
-        render(
-            <ShellRoot
-                header={<div>H</div>}
-                subnav={null}
-                inspector={null}
-                hasSubnav={false}
-                hasInspector={false}
-                initialState={{
-                    rail: { w: 160, collapsed: false },
-                    subnav: { w: 240, collapsed: false },
-                    inspector: { w: 320, collapsed: true },
-                }}
-                iconRailItems={[{ href: '/abc/' as never, label: 'Home', icon: <span data-testid="i-home" /> }]}
-            >
-                <div>C</div>
-            </ShellRoot>,
-        );
-        expect(screen.getByText('Home')).toBeInTheDocument();
+        expect(screen.queryByTestId('nav')).not.toBeInTheDocument();
     });
 });

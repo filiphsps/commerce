@@ -26,7 +26,7 @@ const readStoredDismissed = (): number | null => {
         return null;
     }
 
-    const stored = localStorage.getItem(DISMISSED_KEY);
+    const stored = window.localStorage.getItem(DISMISSED_KEY);
     if (!stored) {
         return null;
     }

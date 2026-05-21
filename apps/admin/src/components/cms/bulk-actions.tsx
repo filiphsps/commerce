@@ -38,9 +38,9 @@ export function BulkActions({ deleteAction, publishAction }: BulkActionsProps) {
             try {
                 await action(ids);
                 clearAll();
-            } catch (err) {
-                console.error(err);
-                setErrorMessage(err instanceof Error ? err.message : fallbackMessage);
+            } catch (error: unknown) {
+                console.error(error);
+                setErrorMessage(error instanceof Error ? error.message : fallbackMessage);
             }
         });
     };

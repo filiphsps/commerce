@@ -23,7 +23,7 @@ test.describe('Admin shell', () => {
 
     test('resize handle persists width across reload', async ({ page }) => {
         await page.goto(`/${DOMAIN}/content/`);
-        const handle = page.locator('[data-resize-handle-state]').first();
+        const handle = page.locator('[data-separator]').first();
         const handleBox = await handle.boundingBox();
         if (!handleBox) throw new Error('resize handle not found');
         await page.mouse.move(handleBox.x + handleBox.width / 2, handleBox.y + handleBox.height / 2);

@@ -26,9 +26,11 @@ function isMultiTenantPluginTenantField(f: unknown): boolean {
         type?: string;
         admin?: { position?: string; components?: { Field?: { path?: string } | string } };
     };
+
     if (field.name !== 'tenant') return false;
     if (field.type !== 'relationship') return false;
     if (field.admin?.position !== 'sidebar') return false;
+
     const fieldComponent = field.admin?.components?.Field;
     const path = typeof fieldComponent === 'string' ? fieldComponent : fieldComponent?.path;
     return path === '@payloadcms/plugin-multi-tenant/client#TenantField';

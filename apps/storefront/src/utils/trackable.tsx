@@ -411,7 +411,7 @@ const getInternalTrafficFlag = (): boolean => {
     // throw inside `useSyncExternalStore`'s getSnapshot tears down the
     // surrounding tree.
     try {
-        return localStorage.getItem('__vercel_toolbar') === '1';
+        return window?.localStorage?.getItem?.('__vercel_toolbar') === '1';
     } catch {
         return false;
     }

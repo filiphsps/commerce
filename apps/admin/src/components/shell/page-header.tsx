@@ -16,10 +16,7 @@ export type PageHeaderProps = {
 
 export function PageHeader({ title, breadcrumbs, actions, meta, className }: PageHeaderProps) {
     return (
-        <header
-            data-page-header
-            className={cn('flex flex-col gap-2 border-0 border-border border-b-2 bg-background px-6 py-3', className)}
-        >
+        <header data-page-header className={cn('flex flex-col gap-2 border-none bg-background p-3', className)}>
             {breadcrumbs && breadcrumbs.length > 0 ? (
                 <nav aria-label="Breadcrumb">
                     <ol className="flex items-center gap-1.5 text-muted-foreground text-xs uppercase tracking-wide">

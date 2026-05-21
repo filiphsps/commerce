@@ -74,9 +74,9 @@ export function DraftPublishToolbar({
         start(async () => {
             try {
                 await action();
-            } catch (err) {
-                console.error(err);
-                setErrorMessage(err instanceof Error ? err.message : fallback);
+            } catch (error: unknown) {
+                console.error(error);
+                setErrorMessage(error instanceof Error ? error.message : fallback);
             }
         });
     };

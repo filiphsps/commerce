@@ -84,9 +84,9 @@ export function useAutosave<T>({
         try {
             await saveRef.current(stateRef.current);
             setLastSavedAt(new Date());
-        } catch (err) {
-            console.error(err);
-            setError(err instanceof Error ? err.message : 'Autosave failed.');
+        } catch (error: unknown) {
+            console.error(error);
+            setError(error instanceof Error ? error.message : 'Autosave failed.');
         } finally {
             setIsSaving(false);
         }
