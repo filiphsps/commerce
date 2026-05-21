@@ -6,8 +6,6 @@ import type { Locale } from '@/utils/locale';
 import { toShopRef } from './_cms';
 import { normalizePayloadDoc } from './_normalize-payload';
 
-export type CmsPageData = Awaited<ReturnType<typeof CmsGetPage>>;
-
 export async function PagesApi({ shop, locale }: { shop: OnlineShop; locale: Locale }) {
     const result = await CmsGetPages({
         shop: toShopRef(shop),

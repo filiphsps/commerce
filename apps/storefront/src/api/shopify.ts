@@ -5,7 +5,6 @@ import { type OnlineShop, Shop } from '@nordcom/commerce-db';
 import { ShopMisconfigurationError, UnknownCommerceProviderError } from '@nordcom/commerce-errors';
 import { trace } from '@opentelemetry/api';
 import { createStorefrontClient } from '@shopify/hydrogen-react';
-import { headers } from 'next/headers';
 import { experimental_taintUniqueValue } from 'react';
 import { getApolloClient } from '@/api/_apollo-pool';
 import type { ApiConfig } from '@/api/client';
@@ -14,21 +13,6 @@ import { tenantRootTags } from '@/cache';
 import { ApiBuilder } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
 import { unsafe_cast } from '@/utils/unsafe-cast';
-
-/**
- * Reads the buyer's forwarded IP from request headers. MUST be called outside any
- * `'use cache'` scope — Next.js 16 forbids `headers()` inside cached functions.
- * Pass the result to `ShopifyApolloApiClient({ shop, buyerIp })` when buyer-IP
- * routing matters (e.g. cart, checkout).
- */
-export async function getBuyerIp(): Promise<string | undefined> {
-    try {
-        const head = await headers();
-        return head.get('CF-Connecting-IP') || head.get('x-forwarded-for') || head.get('x-real-ip') || undefined;
-    } catch {
-        return undefined;
-    }
-}
 
 export const ShopifyApiConfig = async ({
     shop: { domain },
