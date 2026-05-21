@@ -62,3 +62,39 @@ export const ColumnsBlock = ({ block, context, Renderer }: ColumnsBlockProps) =>
 };
 
 ColumnsBlock.displayName = 'Nordcom.Blocks.Columns';
+
+/**
+ * Loading placeholder for the Columns block. Same grid template + column
+ * count as the live block — the children render through whichever
+ * `Renderer.Skeleton` the dispatcher hands in, so a `Blocks.Skeleton`
+ * call recurses into nested skeleton blocks (e.g. a column of
+ * [banner, rich-text] skeletons).
+ *
+ * Like the live block, the dispatcher is injected via `Renderer` so the
+ * import graph stays acyclic between `columns.tsx` and `blocks.tsx`.
+ */
+const ColumnsBlockSkeleton = ({ block, context, Renderer }: ColumnsBlockProps) => {
+    const nestedContext: BlockContext = { ...context, depth: (context.depth ?? 0) + 1 };
+    const gridTemplateColumns = block.columns.map((c) => WIDTH_TO_FRACTION[c.width] ?? '1fr').join(' ');
+    return (
+        <section
+            data-block-type="columns"
+            data-columns={block.columns.length}
+            data-skeleton-variant="columns"
+            className={cn('flex w-full flex-wrap gap-3 md:grid')}
+            style={{ gridTemplateColumns }}
+        >
+            {block.columns.map((column, idx) => (
+                <div
+                    key={idx}
+                    data-width={column.width}
+                    className={cn('flex w-full min-w-18 flex-col gap-3', column.width === 'full' && 'md:col-span-full')}
+                >
+                    <Renderer blocks={column.content} context={nestedContext} />
+                </div>
+            ))}
+        </section>
+    );
+};
+ColumnsBlockSkeleton.displayName = 'Nordcom.Blocks.Columns.Skeleton';
+ColumnsBlock.Skeleton = ColumnsBlockSkeleton;

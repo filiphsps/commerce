@@ -11,6 +11,11 @@ import { RichTextBlock } from './rich-text';
 import type { BlockNode } from './types';
 import { VendorsBlock } from './vendors';
 
+type BlocksProps = {
+    blocks: BlockNode[] | null | undefined;
+    context: BlockContext;
+};
+
 /**
  * Storefront-native block dispatcher — analogous to the old Prismic
  * `SliceZone`. Routes each Payload block to the matching component in
@@ -25,16 +30,10 @@ import { VendorsBlock } from './vendors';
  * we cap it here.
  *
  * Unrecognised block types render as `null` rather than throwing,
- * matching the old SliceZone behaviour — keeps editors from breaking
+ * matching the old SliceZone behavior — keeps editors from breaking
  * a live page by adding a block that ships before the renderer.
  */
-export const Blocks = ({
-    blocks,
-    context,
-}: {
-    blocks: BlockNode[] | null | undefined;
-    context: BlockContext;
-}): ReactNode => {
+export const Blocks = ({ blocks, context }: BlocksProps): ReactNode => {
     if (!blocks || blocks.length === 0) return null;
     const depth = context.depth ?? 0;
     if (depth >= MAX_BLOCK_DEPTH) return null;
@@ -73,3 +72,59 @@ export const Blocks = ({
 };
 
 Blocks.displayName = 'Nordcom.Blocks';
+
+/**
+ * Skeleton variant of the dispatcher — same switch shape, each branch
+ * routes to the corresponding `Block.Skeleton`. Use this when the blocks
+ * array is already loaded but downstream content is still streaming, or
+ * when an outer Suspense boundary needs an exactly-shaped fallback
+ * (preferable to a generic page placeholder because the skeleton already
+ * matches the editor-configured grid + item counts).
+ *
+ * Columns recurses with `Blocks.Skeleton` so a nested column of skeleton
+ * blocks renders end-to-end as skeletons — without that the recursion
+ * would fall back to live blocks inside a skeleton tree.
+ */
+const BlocksSkeleton = ({ blocks, context }: BlocksProps): ReactNode => {
+    if (!blocks || blocks.length === 0) return null;
+    const depth = context.depth ?? 0;
+    if (depth >= MAX_BLOCK_DEPTH) return null;
+
+    return (
+        <>
+            {blocks.map((block, idx) => {
+                switch (block.blockType) {
+                    case 'alert':
+                        return <AlertBlock.Skeleton key={idx} block={block} />;
+                    case 'banner':
+                        return <BannerBlock.Skeleton key={idx} block={block} />;
+                    case 'collection':
+                        return <CollectionBlock.Skeleton key={idx} block={block} />;
+                    case 'columns':
+                        return (
+                            <ColumnsBlock.Skeleton
+                                key={idx}
+                                block={block}
+                                context={context}
+                                Renderer={BlocksSkeleton}
+                            />
+                        );
+                    case 'html':
+                        return <HtmlBlock.Skeleton key={idx} block={block} />;
+                    case 'media-grid':
+                        return <MediaGridBlock.Skeleton key={idx} block={block} />;
+                    case 'overview':
+                        return <OverviewBlock.Skeleton key={idx} block={block} />;
+                    case 'rich-text':
+                        return <RichTextBlock.Skeleton key={idx} block={block} />;
+                    case 'vendors':
+                        return <VendorsBlock.Skeleton key={idx} block={block} />;
+                    default:
+                        return null;
+                }
+            })}
+        </>
+    );
+};
+BlocksSkeleton.displayName = 'Nordcom.Blocks.Skeleton';
+Blocks.Skeleton = BlocksSkeleton;

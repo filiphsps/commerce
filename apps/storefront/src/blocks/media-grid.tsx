@@ -149,3 +149,54 @@ export const MediaGridBlock = ({
 };
 
 MediaGridBlock.displayName = 'Nordcom.Blocks.MediaGrid';
+
+/**
+ * Loading placeholder for the media-grid block. Renders the same grid
+ * tracks (column count + responsive collapse) and one tile per editor-
+ * configured item — the items array shape is already on the block, so
+ * the skeleton can exactly match the loaded layout.
+ *
+ * Tile aspect ratio mirrors the live block (4:3 for images, square chip
+ * for icons) so images popping in don't shift the page.
+ */
+const MediaGridBlockSkeleton = ({ block }: { block: MediaGridBlockNode }): JSX.Element | null => {
+    if (!block.items?.length) return null;
+    const isIcon = block.itemType === 'icon';
+    return (
+        <section
+            data-block-type="media-grid"
+            data-item-type={block.itemType}
+            data-skeleton-variant="media-grid"
+            className={cn(
+                'grid w-full gap-2 empty:hidden md:gap-3',
+                'grid-cols-1',
+                'sm:grid-cols-2',
+                block.columns === 1 && 'md:grid-cols-1',
+                block.columns === 2 && 'md:grid-cols-2',
+                block.columns === 3 && 'md:grid-cols-3',
+                block.columns === 4 && 'md:grid-cols-4',
+                block.columns === 5 && 'md:grid-cols-5',
+                block.columns === 6 && 'md:grid-cols-6',
+            )}
+        >
+            {block.items.map((item, index) =>
+                isIcon ? (
+                    <div
+                        key={`icon-${index}`}
+                        className="flex items-center justify-center gap-4 rounded-lg border-2 border-transparent border-solid bg-gray-50 p-4"
+                    >
+                        <div className="h-8 w-8 rounded-sm md:h-6 md:w-6" data-skeleton />
+                        {item.caption ? <div className="h-4 w-24 rounded-sm" data-skeleton /> : null}
+                    </div>
+                ) : (
+                    <div key={`tile-${index}`} className="flex flex-col gap-1">
+                        <div className="aspect-4/3 w-full overflow-clip rounded-lg shadow" data-skeleton />
+                        {item.caption ? <div className="h-4 w-3/4 rounded-sm" data-skeleton /> : null}
+                    </div>
+                ),
+            )}
+        </section>
+    );
+};
+MediaGridBlockSkeleton.displayName = 'Nordcom.Blocks.MediaGrid.Skeleton';
+MediaGridBlock.Skeleton = MediaGridBlockSkeleton;

@@ -69,3 +69,39 @@ export const BannerBlock = ({ block, context }: { block: BannerBlockNode; contex
 };
 
 BannerBlock.displayName = 'Nordcom.Blocks.Banner';
+
+/**
+ * Loading placeholder for the Banner block. Holds the same hero shape
+ * (full-width rounded section, centered/aligned content stack) and
+ * conditionally renders subheading + CTA placeholders to match what the
+ * editor configured — important for CLS, because a banner above the
+ * fold otherwise shifts the entire viewport when the real heading and
+ * CTA land.
+ */
+const BannerBlockSkeleton = ({ block }: { block: BannerBlockNode }): JSX.Element => {
+    const hasCta = Boolean(block.cta);
+    return (
+        <section
+            data-block-type="banner"
+            data-alignment={block.alignment}
+            data-skeleton-variant="banner"
+            className="relative flex flex-col items-center justify-center gap-4 rounded-lg bg-gray-100 p-8"
+        >
+            <div
+                className={cn(
+                    'flex w-full flex-col gap-3 text-center',
+                    'md:data-[alignment=left]:items-start',
+                    'md:data-[alignment=center]:items-center',
+                    'md:data-[alignment=right]:items-end',
+                )}
+                data-alignment={block.alignment}
+            >
+                <div className="h-8 w-2/3 max-w-md rounded-sm md:h-10" data-skeleton />
+                {block.subheading ? <div className="h-4 w-1/2 max-w-sm rounded-sm" data-skeleton /> : null}
+            </div>
+            {hasCta ? <div className="h-10 w-32 rounded-full md:h-12 md:w-40" data-skeleton /> : null}
+        </section>
+    );
+};
+BannerBlockSkeleton.displayName = 'Nordcom.Blocks.Banner.Skeleton';
+BannerBlock.Skeleton = BannerBlockSkeleton;

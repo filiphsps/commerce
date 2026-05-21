@@ -57,3 +57,32 @@ export const CollectionBlock = ({
 };
 
 CollectionBlock.displayName = 'Nordcom.Blocks.Collection';
+
+/**
+ * Loading placeholder for the Collection block. Preserves the static
+ * title (the title is already on the block — no fetch needed) and
+ * defers the product grid placeholder to the underlying
+ * `CollectionBlock.skeleton`, which already mirrors the live grid's
+ * track count and card size.
+ *
+ * Used by `Blocks.Skeleton` for the pre-load placeholder. The live
+ * `CollectionBlock` also wraps its own grid in a `Suspense` boundary
+ * with the same skeleton, so streaming behavior is the same regardless
+ * of which path renders first.
+ */
+const CollectionBlockSkeleton = ({ block }: { block: CollectionBlockNode }) => {
+    const isHorizontal = block.layout === 'carousel';
+    return (
+        <section
+            data-block-type="collection"
+            data-layout={block.layout}
+            data-skeleton-variant="collection"
+            className={cn('flex w-full flex-col items-start justify-start gap-4 self-start')}
+        >
+            {block.title ? <div className="h-7 w-48 rounded-sm lg:h-8" data-skeleton /> : null}
+            <CollectionBlockComponent.skeleton isHorizontal={isHorizontal} />
+        </section>
+    );
+};
+CollectionBlockSkeleton.displayName = 'Nordcom.Blocks.Collection.Skeleton';
+CollectionBlock.Skeleton = CollectionBlockSkeleton;

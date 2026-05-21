@@ -21,3 +21,25 @@ export const AlertBlock = ({ block }: { block: AlertBlockNode }): JSX.Element =>
 };
 
 AlertBlock.displayName = 'Nordcom.Blocks.Alert';
+
+/**
+ * Loading placeholder for the Alert block. Mirrors the live block's
+ * footprint — same severity tinting, same title+body slot count — so the
+ * page doesn't shift when the real content streams in.
+ *
+ * The skeleton intentionally receives the block node (not just generic
+ * dimensions) so it can size correctly when called from
+ * `Blocks.Skeleton`, where the dispatcher already knows the schema.
+ */
+const AlertBlockSkeleton = ({ block }: { block: AlertBlockNode }): JSX.Element => {
+    return (
+        <AlertComponent severity={block.severity} data-block-type="alert" data-skeleton-variant="alert">
+            <div className="flex w-full flex-col gap-2">
+                <div className="h-4 w-32 rounded-sm" data-skeleton />
+                {block.body ? <div className="h-3 w-full max-w-prose rounded-sm" data-skeleton /> : null}
+            </div>
+        </AlertComponent>
+    );
+};
+AlertBlockSkeleton.displayName = 'Nordcom.Blocks.Alert.Skeleton';
+AlertBlock.Skeleton = AlertBlockSkeleton;

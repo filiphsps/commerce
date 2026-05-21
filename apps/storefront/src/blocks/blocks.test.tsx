@@ -10,7 +10,7 @@ import type { BlockNode } from './types';
 // against malformed/nested CMS documents blowing the render stack.
 
 // Stub anything that boots Next router / Apollo / etc. The dispatcher's
-// behaviour is independent of what the leaf blocks render — only that it
+// behavior is independent of what the leaf blocks render — only that it
 // reaches them.
 vi.mock('@/components/link', () => ({
     default: ({ children, ...rest }: { children: React.ReactNode }) => <a {...rest}>{children}</a>,
@@ -141,6 +141,97 @@ describe('Blocks dispatcher', () => {
         // can land an unknown shape in production.
         const malformed = [{ blockType: 'future-unknown-block' } as unknown] as BlockNode[];
         const { container } = render(<Blocks blocks={malformed} context={ctx} />);
+        expect(container.firstChild).toBeNull();
+    });
+});
+
+describe('Blocks.Skeleton dispatcher', () => {
+    it('renders nothing for null / empty arrays', () => {
+        const { container: a } = render(<Blocks.Skeleton blocks={null} context={ctx} />);
+        const { container: b } = render(<Blocks.Skeleton blocks={[]} context={ctx} />);
+        expect(a.firstChild).toBeNull();
+        expect(b.firstChild).toBeNull();
+    });
+
+    it('emits one skeleton per block, tagged with data-block-type for layout parity', () => {
+        const { container } = render(
+            <Blocks.Skeleton
+                blocks={
+                    [
+                        { blockType: 'alert', severity: 'info', title: 't' },
+                        { blockType: 'banner', heading: 'h', alignment: 'center' },
+                        { blockType: 'rich-text', body: { root: { children: [] } } },
+                    ] as BlockNode[]
+                }
+                context={ctx}
+            />,
+        );
+        expect(container.querySelector('[data-block-type="alert"][data-skeleton-variant="alert"]')).not.toBeNull();
+        expect(container.querySelector('[data-block-type="banner"][data-skeleton-variant="banner"]')).not.toBeNull();
+        expect(
+            container.querySelector('[data-block-type="rich-text"][data-skeleton-variant="rich-text"]'),
+        ).not.toBeNull();
+    });
+
+    it('sizes media-grid skeleton to match the editor-configured item count', () => {
+        const { container } = render(
+            <Blocks.Skeleton
+                blocks={
+                    [
+                        {
+                            blockType: 'media-grid',
+                            itemType: 'image',
+                            columns: 3,
+                            items: [
+                                { image: { id: 'a', url: 'u' }, caption: 'A' },
+                                { image: { id: 'b', url: 'u' }, caption: 'B' },
+                                { image: { id: 'c', url: 'u' }, caption: 'C' },
+                            ],
+                        },
+                    ] as BlockNode[]
+                }
+                context={ctx}
+            />,
+        );
+        const tiles = container.querySelectorAll('[data-block-type="media-grid"] [data-skeleton]');
+        // 3 tile placeholders + 3 caption placeholders = 6.
+        expect(tiles.length).toBe(6);
+    });
+
+    it('recurses through columns — nested column content renders as skeletons, not live blocks', () => {
+        const { container } = render(
+            <Blocks.Skeleton
+                blocks={
+                    [
+                        {
+                            blockType: 'columns',
+                            columns: [
+                                {
+                                    width: 'auto',
+                                    content: [{ blockType: 'alert', severity: 'info', title: 'inner' }] as BlockNode[],
+                                },
+                            ],
+                        },
+                    ] as BlockNode[]
+                }
+                context={ctx}
+            />,
+        );
+        // Outer columns + inner alert both carry the skeleton variant marker.
+        expect(container.querySelector('[data-skeleton-variant="columns"]')).not.toBeNull();
+        expect(container.querySelector('[data-skeleton-variant="alert"]')).not.toBeNull();
+        // Live alert text must NOT leak through — recursion has to route to
+        // skeleton blocks, not the real dispatcher.
+        expect(container.textContent).not.toContain('inner');
+    });
+
+    it("respects the depth cap so a malformed circular document can't blow the stack", () => {
+        const { container } = render(
+            <Blocks.Skeleton
+                blocks={[{ blockType: 'alert', severity: 'info', title: 'hi' }] as BlockNode[]}
+                context={{ ...ctx, depth: 6 }}
+            />,
+        );
         expect(container.firstChild).toBeNull();
     });
 });

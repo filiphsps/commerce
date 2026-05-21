@@ -47,3 +47,26 @@ export const OverviewBlock = ({ block, context }: { block: OverviewBlockNode; co
 };
 
 OverviewBlock.displayName = 'Nordcom.Blocks.Overview';
+
+/**
+ * Loading placeholder for the Overview block. Renders nothing for the
+ * non-`collection` sources (matches the live behavior — they're schema
+ * placeholders), otherwise reuses the same product-grid skeleton as the
+ * Collection block.
+ */
+const OverviewBlockSkeleton = ({ block }: { block: OverviewBlockNode }) => {
+    if (block.source !== 'collection' || !block.collectionHandle) return null;
+    return (
+        <section
+            data-block-type="overview"
+            data-source={block.source}
+            data-skeleton-variant="overview"
+            className="flex w-full flex-col gap-3"
+        >
+            {block.title ? <div className="h-7 w-48 rounded-sm lg:h-8" data-skeleton /> : null}
+            <CollectionBlockComponent.skeleton />
+        </section>
+    );
+};
+OverviewBlockSkeleton.displayName = 'Nordcom.Blocks.Overview.Skeleton';
+OverviewBlock.Skeleton = OverviewBlockSkeleton;

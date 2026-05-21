@@ -35,8 +35,36 @@ export const CMSContent = async ({ shop, locale, handle }: CMSContentProps) => {
     return <Blocks blocks={blocks} context={{ shop, locale }} />;
 };
 
-CMSContent.Skeleton = async ({}: CMSContentProps) => {
-    // TODO: per-block skeletons. The current render layer streams via
-    // Suspense at the page level, so this is a deliberate no-op for now.
-    return null;
+/**
+ * Loading placeholder shown while the page's blocks are being fetched.
+ * The page document hasn't loaded yet at this boundary, so we don't know
+ * the editor-configured block layout — render a small, representative
+ * stack (banner + rich-text + collection grid) sized to a typical page
+ * so the layout doesn't pop when content arrives.
+ *
+ * Once the blocks array is known, the inner data-fetching blocks
+ * (Collection, Overview, Vendors) carry their own `Suspense` boundaries
+ * with shape-aware fallbacks from `Blocks.Skeleton`, so this generic
+ * placeholder only ever shows during the initial Page fetch.
+ */
+const CMSContentSkeleton = (_: CMSContentProps) => {
+    return (
+        <div data-block-type="cms-content" data-skeleton-variant="page" className="flex w-full flex-col gap-6">
+            <div className="h-48 w-full rounded-lg md:h-64" data-skeleton />
+
+            <section className="prose mx-auto flex w-full max-w-prose flex-col gap-2">
+                <div className="h-4 w-full rounded-sm" data-skeleton />
+                <div className="h-4 w-11/12 rounded-sm" data-skeleton />
+                <div className="h-4 w-9/12 rounded-sm" data-skeleton />
+            </section>
+
+            <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 md:gap-3">
+                {Array.from({ length: 6 }).map((_x, idx) => (
+                    <div key={idx} className="aspect-4/3 w-full overflow-clip rounded-lg shadow" data-skeleton />
+                ))}
+            </div>
+        </div>
+    );
 };
+CMSContentSkeleton.displayName = 'Nordcom.CMSContent.Skeleton';
+CMSContent.Skeleton = CMSContentSkeleton;
