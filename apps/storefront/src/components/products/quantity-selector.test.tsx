@@ -107,5 +107,23 @@ describe('components', () => {
                 expect(updateMock).toHaveBeenCalledWith(4);
             });
         });
+
+        it('does not stomp user input while the field is focused', () => {
+            const updateMock = vi.fn();
+            const { rerender } = render(<QuantitySelector i18n={{} as any} update={updateMock} value={1} />);
+
+            const input = screen.getByTestId('quantity-input');
+
+            // .focus() moves document.activeElement in jsdom, which is what the guard checks.
+            // fireEvent.focus only dispatches the event without updating activeElement.
+            input.focus();
+            fireEvent.change(input, { target: { value: '12' } });
+
+            // Parent re-renders with a new prop value while the user is still typing.
+            rerender(<QuantitySelector i18n={{} as any} update={updateMock} value={5} />);
+
+            // The user's in-progress edit must be preserved.
+            expect(input).toHaveValue(12);
+        });
     });
 });

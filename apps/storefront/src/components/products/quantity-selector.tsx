@@ -62,17 +62,19 @@ const QuantitySelector = ({
     const { shop } = useShop();
     const maxQuantity = shop.commerce?.maxQuantity ?? COMMERCE_DEFAULTS.maxQuantity;
 
-    const [quantityValue, setQuantityValue] = useState(quantity.toString() || '1');
+    const [quantityValue, setQuantityValue] = useState(quantity.toString());
+    const inputRef = useRef<HTMLInputElement>(null);
 
     // Sync local quantityValue with the prop whenever the upstream value changes.
+    // While the input is focused the user's in-progress edit is authoritative; the
+    // effect re-syncs once focus leaves (the existing onBlur path finalizes the value).
     useEffect(() => {
+        if (document.activeElement === inputRef.current) return;
         setQuantityValue(quantity.toString());
     }, [quantity]);
 
     const { cartReady, status } = useCart();
     const ready = cartReady && !['updating'].includes(status);
-
-    const inputRef = useRef<HTMLInputElement>(null);
 
     const updateQuantity = useCallback(
         (value: string | number) => {
