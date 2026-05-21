@@ -47,6 +47,32 @@ vi.mock('@/components/cart/cart-note', () => ({
 
 describe('components', () => {
     describe('CartSummary', () => {
+        it('hides sale line while cart is updating', () => {
+            mockCartState = {
+                status: 'updating',
+                cartReady: true,
+                totalQuantity: 1,
+                lines: [
+                    {
+                        id: 'line-1',
+                        quantity: 1,
+                        discountAllocations: [],
+                        cost: {
+                            compareAtAmountPerQuantity: { amount: '20', currencyCode: 'USD' },
+                            totalAmount: { amount: '10', currencyCode: 'USD' },
+                        },
+                    },
+                ],
+                cost: {
+                    totalAmount: { amount: '10', currencyCode: 'USD' },
+                    subtotalAmount: { amount: '10', currencyCode: 'USD' },
+                },
+                discountCodes: [],
+            };
+            render(<CartSummary shop={mockShop()} onCheckout={mockOnCheckout} i18n={{} as any} />);
+            expect(screen.queryByTestId('cart-summary-sale')).toBeNull();
+        });
+
         it('renders the checkout button', () => {
             mockCartState = { cartReady: true, totalQuantity: 0, lines: [], cost: null, discountCodes: [] };
             render(<CartSummary shop={mockShop()} onCheckout={mockOnCheckout} i18n={{} as any} />);

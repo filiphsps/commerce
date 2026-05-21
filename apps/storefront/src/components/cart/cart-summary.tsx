@@ -33,35 +33,39 @@ type CartSummaryProps = {
 };
 const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummaryProps) => {
     const { t } = getTranslations('cart', i18n);
-    const { totalQuantity, lines, cost, discountCodes = [], cartReady } = useCart();
+    const { status, totalQuantity, lines, cost, discountCodes = [], cartReady } = useCart();
     const { currency } = useShop();
 
-    const sale =
-        lines?.reduce(
-            (sum, line) =>
-                (line!.cost!.compareAtAmountPerQuantity &&
-                    sum +
-                        (safeParseFloat(0, line?.cost?.compareAtAmountPerQuantity?.amount) * (line!.quantity || 0) -
-                            safeParseFloat(0, line?.cost?.totalAmount?.amount))) ||
-                sum,
-            0,
-        ) || 0;
-    const totalSale =
-        sale +
-        (lines || [])
-            .map((line) => {
-                if (line!.discountAllocations!.length <= 0) {
-                    return 0;
-                }
+    const isUpdating = status === 'updating';
 
-                return line!.discountAllocations!.reduce(
-                    (sum, line) =>
-                        (line!.discountedAmount!.amount && sum + safeParseFloat(0, line?.discountedAmount?.amount)) ||
-                        sum,
-                    0,
-                );
-            })
-            .reduce((sum, line) => sum + line || sum, 0);
+    const sale = isUpdating
+        ? 0
+        : (lines?.reduce(
+              (sum, line) =>
+                  (line!.cost!.compareAtAmountPerQuantity &&
+                      sum +
+                          (safeParseFloat(0, line?.cost?.compareAtAmountPerQuantity?.amount) * (line!.quantity || 0) -
+                              safeParseFloat(0, line?.cost?.totalAmount?.amount))) ||
+                  sum,
+              0,
+          ) ?? 0);
+    const totalSale = isUpdating
+        ? 0
+        : sale +
+          (lines || [])
+              .map((line) => {
+                  if (line!.discountAllocations!.length <= 0) {
+                      return 0;
+                  }
+
+                  return line!.discountAllocations!.reduce(
+                      (sum, line) =>
+                          (line!.discountedAmount!.amount && sum + safeParseFloat(0, line?.discountedAmount?.amount)) ||
+                          sum,
+                      0,
+                  );
+              })
+              .reduce((sum, line) => sum + line || sum, 0);
 
     // Guard the divide so a fully-discounted cart (totalAmount === 0 — gift
     // card balance covers everything, 100%-off promo, etc.) doesn't render
@@ -119,6 +123,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                             {sale ? (
                                 <div
                                     className={cn(styles.discounted, 'flex items-center justify-between')}
+                                    data-testid="cart-summary-sale"
                                     title={`${salePercentage}% OFF`}
                                 >
                                     <Label className={SUMMARY_LABEL_STYLES}>{t('discount')}</Label>
