@@ -77,6 +77,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
         unsafe_cast(variant?.selectedOptions ?? []),
     );
     const [editing, setEditing] = useState(false);
+    const [swapAnnouncement, setSwapAnnouncement] = useState<string>('');
 
     if (!product || !variant) {
         trace.getActiveSpan()?.addEvent('cart_line.missing_product_or_variant', {
@@ -170,6 +171,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
             return;
         }
         linesUpdate([{ id: line.id!, merchandiseId: entry.variant.id, quantity: line.quantity }]);
+        setSwapAnnouncement(`Switched ${name} to ${value}`);
         setEditing(false);
     };
 
@@ -180,6 +182,12 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                 !ready && 'cursor-not-allowed opacity-50 *:pointer-events-none',
             )}
         >
+            {/* Announce successful variant swaps to assistive tech. The
+               popover itself is a Radix modal dialog, so focus trap and
+               escape handling are already covered. */}
+            <div role="status" aria-live="polite" className="sr-only">
+                {swapAnnouncement}
+            </div>
             <Card className="h-full min-h-32 w-auto overflow-hidden bg-white p-2 shadow">{image}</Card>
 
             <div className="flex w-full flex-col items-start gap-3 md:flex-row">
