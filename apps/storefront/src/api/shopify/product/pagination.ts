@@ -91,7 +91,7 @@ export const ProductsPaginationCountApi = async ({
             };
         }
 
-        const cursor = data.products.edges.at(-1)!.cursor;
+        const cursor = data.products.edges.at(-1)?.cursor ?? '';
         if (data.products.pageInfo.hasNextPage) {
             const res = await countProducts(count, [cursor, ...cursors], cursor);
 

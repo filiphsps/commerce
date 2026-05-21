@@ -73,7 +73,8 @@ export const RedirectsApi = async ({
     }
 
     if (data && urlRedirects) {
-        cursor = data.urlRedirects.edges.at(-1)!.cursor;
+        const lastEdge = data.urlRedirects.edges.at(-1);
+        if (lastEdge) cursor = lastEdge.cursor;
         redirects.push(
             ...urlRedirects.map(({ id, path, target }) => ({
                 id,

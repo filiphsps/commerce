@@ -137,7 +137,7 @@ export const ProductsApi = async ({
 
     return {
         products: data.products.edges,
-        cursor: data.products.edges.at(-1)!.cursor,
+        cursor: data.products.edges.at(-1)?.cursor ?? '',
         pagination: {
             next: data.products.pageInfo.hasNextPage,
             previous: data.products.pageInfo.hasPreviousPage,

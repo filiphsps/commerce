@@ -132,7 +132,7 @@ export const CollectionPaginationCountApi = async ({
             };
         }
 
-        const cursor = data.collection.products.edges.at(-1)!.cursor;
+        const cursor = data.collection.products.edges.at(-1)?.cursor ?? '';
         if (data.collection.products.pageInfo.hasNextPage) {
             const res = await countProducts(count, [cursor, ...cursors], cursor);
 
