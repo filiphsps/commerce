@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { _poolSize, evictAllApolloClients, evictApolloClient, getApolloClient } from './_apollo-pool';
+import { ShopifyApolloApiClient } from './shopify';
 
 const fakeShop = { id: 'shop-1', domain: 'shop-1.com' } as any;
 const fakeLocale = { code: 'en-US' } as any;
@@ -68,5 +69,37 @@ describe('apollo client pool', () => {
         } finally {
             warn.mockRestore();
         }
+    });
+});
+
+describe('ShopifyApolloApiClient — pool integration', () => {
+    it('returns the same Apollo client instance across sequential calls for the same shop+locale', async () => {
+        evictAllApolloClients();
+
+        // A minimal apiConfig stub avoids the Shop.findByDomain → DB path and
+        // the experimental_taintUniqueValue call inside ShopifyApiConfig.
+        const apiConfig = {
+            public: () => ({ uri: 'https://x.myshopify.com/api/2024-01/graphql.json', headers: {} }),
+            private: () => ({ uri: 'https://x.myshopify.com/api/2024-01/graphql.json', headers: {} }),
+        };
+
+        const shop = {
+            id: 'shop-x',
+            domain: 'x.com',
+            commerceProvider: {
+                type: 'shopify',
+                authentication: { token: 't', publicToken: 'p' },
+                domain: 'x.myshopify.com',
+            },
+        } as any;
+        const locale = { code: 'en-US' } as any;
+
+        await ShopifyApolloApiClient({ shop, locale, apiConfig });
+        expect(_poolSize()).toBe(1);
+
+        await ShopifyApolloApiClient({ shop, locale, apiConfig });
+        // Pool size must stay at 1 — the second call must reuse the cached Apollo
+        // client (and therefore the same InMemoryCache) rather than create a new one.
+        expect(_poolSize()).toBe(1);
     });
 });
