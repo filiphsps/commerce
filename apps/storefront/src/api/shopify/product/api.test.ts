@@ -1,7 +1,7 @@
 import { InvalidHandleError, NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
 import { describe, expect, it, vi } from 'vitest';
 
-import { ProductApi, ProductsApi, ProductsPaginationApi } from './product';
+import { ProductApi, ProductsApi, ProductsPaginationApi } from './index';
 
 vi.mock('@apollo/client', () => ({
     gql: vi.fn(),
