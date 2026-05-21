@@ -45,7 +45,7 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
             {...props}
         >
             <section className="flex h-16 w-full flex-col items-center bg-white">
-                <header className="flex h-full w-full max-w-[var(--page-width)] items-center justify-start gap-4 overflow-hidden px-2 md:px-3">
+                <header className="flex h-full w-full max-w-(--page-width) items-center justify-start gap-4 overflow-hidden px-2 md:px-3">
                     <div className="flex h-16 py-1">
                         <Link
                             href={logoHref}
@@ -99,7 +99,7 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
 HeaderComponent.skeleton = () => (
     <section className="sticky top-0 z-50 flex w-full flex-col items-center overscroll-contain shadow-none transition-shadow duration-150 [grid-area:header] group-data-[scrolled=true]/body:shadow-lg md:max-h-[95dvh]">
         <section className="flex h-16 w-full flex-col items-center bg-white">
-            <header className="overflow-x-shadow flex h-full w-full max-w-[var(--page-width)] items-center justify-start gap-4 px-2 md:px-3">
+            <header className="overflow-x-shadow flex h-full w-full max-w-(--page-width) items-center justify-start gap-4 px-2 md:px-3">
                 <Link href={'/'} className="h-full w-32 py-2">
                     <div className="h-full w-full rounded-lg" data-skeleton />
                 </Link>

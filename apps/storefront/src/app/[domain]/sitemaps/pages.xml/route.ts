@@ -29,7 +29,7 @@ export async function GET({}: NextRequest, { params }: { params: DynamicSitemapR
 
     const pagesResult = await PagesApi({ shop, locale });
     const pages: SitemapPage[] = [];
-    if (pagesResult) {
+    if ((pagesResult?.docs?.length || 0) > 0) {
         for (const page of pagesResult.docs) {
             if (!page.slug) continue;
             pages.push({ url: page.slug, lastmod: page.updatedAt ?? null });

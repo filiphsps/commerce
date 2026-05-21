@@ -6,10 +6,14 @@ import type { BlockContext } from './context';
 import { type ResolvedLink, resolveLink } from './resolve-link';
 import type { MediaGridBlockNode, MediaItem } from './types';
 
-const imageMeta = (item: MediaItem): { url?: string; alt: string } => {
-    if (!item.image) return { url: undefined, alt: '' };
-    if (typeof item.image === 'string') return { url: undefined, alt: '' };
-    return { url: item.image.url, alt: item.image.alt ?? '' };
+// Pulls the displayable metadata off a MediaItem. `id` is the Payload media
+// document ID, which we use to derive a stable React `key` (the URL alone
+// can collide when the same asset is referenced twice in one grid; the
+// array index would otherwise reshuffle when the editor reorders items).
+const imageMeta = (item: MediaItem): { id?: string; url?: string; alt: string } => {
+    if (!item.image) return { id: undefined, url: undefined, alt: '' };
+    if (typeof item.image === 'string') return { id: item.image, url: undefined, alt: '' };
+    return { id: item.image.id, url: item.image.url, alt: item.image.alt ?? '' };
 };
 
 // Conditional `Link`-or-`div` wrapper. Done as a helper rather than a
@@ -46,6 +50,7 @@ const ItemWrapper = ({
         </div>
     );
 };
+ItemWrapper.displayName = 'Nordcom.Blocks.MediaGrid.Item';
 
 /**
  * Renders the CMS media-grid block. Combines the old Prismic `ImageGrid`
@@ -83,15 +88,20 @@ export const MediaGridBlock = ({
             )}
         >
             {block.items.map((item, index) => {
-                const { url, alt } = imageMeta(item);
+                const { id, url, alt } = imageMeta(item);
                 if (!url) return null;
 
                 const link = resolveLink(item.link, { locale: context.locale });
+                // Prefer the Payload media ID so reordering items in the
+                // editor doesn't remount every tile. Suffix with the array
+                // index so the same asset reused twice in one grid still
+                // produces unique keys.
+                const key = `${id ?? url}-${index}`;
 
                 if (isIcon) {
                     return (
                         <ItemWrapper
-                            key={`${url}-${index}`}
+                            key={key}
                             link={link}
                             className="group/item flex items-center justify-center gap-4 rounded-lg border-2 border-transparent border-solid bg-gray-50 p-4 transition-colors hover:bg-gray-100"
                         >
@@ -116,12 +126,12 @@ export const MediaGridBlock = ({
 
                 return (
                     <ItemWrapper
-                        key={`${url}-${index}`}
+                        key={key}
                         link={link}
                         title={item.caption || undefined}
                         className="group/item relative flex flex-col gap-1"
                     >
-                        <div className="aspect-[4/3] w-full overflow-clip rounded-lg bg-primary shadow">
+                        <div className="aspect-4/3 w-full overflow-clip rounded-lg bg-primary shadow">
                             <Image
                                 role={alt ? undefined : 'presentation'}
                                 src={url}
@@ -179,22 +189,24 @@ const MediaGridBlockSkeleton = ({ block }: { block: MediaGridBlockNode }): JSX.E
                 block.columns === 6 && 'md:grid-cols-6',
             )}
         >
-            {block.items.map((item, index) =>
-                isIcon ? (
+            {block.items.map((item, index) => {
+                const { id } = imageMeta(item);
+                const key = `${id ?? 'tile'}-${index}`;
+                return isIcon ? (
                     <div
-                        key={`icon-${index}`}
+                        key={key}
                         className="flex items-center justify-center gap-4 rounded-lg border-2 border-transparent border-solid bg-gray-50 p-4"
                     >
                         <div className="h-8 w-8 rounded-sm md:h-6 md:w-6" data-skeleton />
                         {item.caption ? <div className="h-4 w-24 rounded-sm" data-skeleton /> : null}
                     </div>
                 ) : (
-                    <div key={`tile-${index}`} className="flex flex-col gap-1">
+                    <div key={key} className="flex flex-col gap-1">
                         <div className="aspect-4/3 w-full overflow-clip rounded-lg shadow" data-skeleton />
                         {item.caption ? <div className="h-4 w-3/4 rounded-sm" data-skeleton /> : null}
                     </div>
-                ),
-            )}
+                );
+            })}
         </section>
     );
 };

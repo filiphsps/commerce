@@ -24,6 +24,7 @@ const renderNode = (node: LexicalNode, idx: number): ReactNode => {
 export function RichTextBlock({ block }: { block: RichTextBlockNode }) {
     const root = (block.body as LexicalRoot | undefined)?.root;
     const children = (root?.children ?? []).map(renderNode);
+
     if (block.collapsible) {
         return (
             <details open={block.collapsedByDefault !== true}>

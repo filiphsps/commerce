@@ -23,7 +23,7 @@ export type HeaderProviderProps = {
     children?: ReactNode;
     loaderColor?: string;
 };
-export const HeaderProvider = ({ children = null, loaderColor }: HeaderProviderProps) => {
+export const HeaderProvider = ({ children, loaderColor }: HeaderProviderProps) => {
     const pathname = usePathname();
 
     // Deal with scrolling and setting the scrolled attribute.
@@ -67,7 +67,7 @@ export const HeaderProvider = ({ children = null, loaderColor }: HeaderProviderP
     useEffect(() => {
         // https://github.com/TheSGJ/nextjs-toploader/issues/56#issuecomment-1820484781
         // this should also trigger on searchParams changes but listening to it would cause
-        // Next.js to deopt into client-side rendering. :(
+        // Next.js to de-opt into client-side rendering. :(
         NProgress.done();
 
         document.body.removeAttribute('data-menu-open');

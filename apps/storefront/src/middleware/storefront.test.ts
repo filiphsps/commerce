@@ -71,16 +71,39 @@ describe('getHostname', () => {
 
     afterEach(() => {
         vi.clearAllMocks();
+        delete process.env.STOREFRONT_DEV_SHOP;
     });
 
-    it('extracts shop slug from <shop>.storefront.localhost host header', async () => {
+    it('routes <shop>.storefront.localhost host headers to STOREFRONT_DEV_SHOP', async () => {
+        // Dev routing pins .storefront.localhost requests to a single configured
+        // shop (so the dev proxy can serve one tenant regardless of subdomain).
+        // The .storefront.localhost subdomain is intentionally ignored here.
+        process.env.STOREFRONT_DEV_SHOP = 'dev-shop.example.com';
+
         const req = new NextRequest('http://myshop.storefront.localhost/', {
             headers: { host: 'myshop.storefront.localhost', 'accept-language': 'en-US' },
         });
 
         await getHostname(req);
 
-        expect(vi.mocked(Shop.findByDomain)).toHaveBeenCalledWith('myshop', expect.anything());
+        expect(vi.mocked(Shop.findByDomain)).toHaveBeenCalledWith('dev-shop.example.com', expect.anything());
+    });
+
+    it('falls back to a default dev shop for .storefront.localhost when STOREFRONT_DEV_SHOP is unset', async () => {
+        delete process.env.STOREFRONT_DEV_SHOP;
+
+        const req = new NextRequest('http://myshop.storefront.localhost/', {
+            headers: { host: 'myshop.storefront.localhost', 'accept-language': 'en-US' },
+        });
+
+        await getHostname(req);
+
+        // The middleware ignores the subdomain and resolves to the hard-coded
+        // fallback shop — guard against regressing back to slug extraction.
+        const calledWith = vi.mocked(Shop.findByDomain).mock.calls[0]?.[0];
+        expect(calledWith).not.toBe('myshop');
+        expect(typeof calledWith).toBe('string');
+        expect((calledWith as string).length).toBeGreaterThan(0);
     });
 
     it('uses full hostname for production-style hosts', async () => {
@@ -201,7 +224,7 @@ describe('storefront middleware — error rewrites', () => {
 
         const rewriteTarget = res.headers.get('x-middleware-rewrite');
         expect(rewriteTarget).toBeTruthy();
-        // The ?shop= param should carry the (normalised) hostname.
+        // The ?shop= param should carry the (normalized) hostname.
         expect(rewriteTarget).toContain('shop=myshop.com');
     });
 });

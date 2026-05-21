@@ -1,4 +1,3 @@
-import { cacheLife } from 'next/cache';
 import { type NextRequest, NextResponse } from 'next/server';
 
 export type FaviconRouteParams = Promise<{
@@ -6,12 +5,11 @@ export type FaviconRouteParams = Promise<{
 }>;
 
 // TODO: Convert the png favicon to a proper ico instead of redirecting to the png.
-export const GET = async (req: NextRequest, { params: _params }: { params: FaviconRouteParams }) => {
-    'use cache';
-    cacheLife('max');
+export const GET = async (req: NextRequest, { params }: { params: FaviconRouteParams }) => {
+    const { domain } = await params;
+    const search = req.nextUrl.search;
 
-    const newUrl = req.nextUrl.clone();
-    newUrl.pathname = newUrl.pathname.replace('.ico', '.png');
+    const newUrl = new URL(`/${domain}/favicon.png${search}`, req.nextUrl.origin);
 
     return NextResponse.redirect(newUrl, { status: 302 });
 };

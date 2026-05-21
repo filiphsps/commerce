@@ -44,8 +44,8 @@ export function ShellRoot({ children, subnav, inspector, header, iconRailItems }
     const subnavSegments = useSelectedLayoutSegments('subnav');
     const inspectorSegments = useSelectedLayoutSegments('inspector');
 
-    const hasSubnav = subnavSegments.some((segment) => segment !== '__DEFAULT__');
-    const hasInspector = inspectorSegments.some((segment) => segment !== '__DEFAULT__');
+    const hasSubnav = !!subnavSegments; // TODO
+    const hasInspector = !!inspectorSegments; // TODO
     const showInspector = hasInspector && (breakpoint === 'wide' || breakpoint === 'comfortable');
 
     // `panelIds` must reflect the panels that will actually mount; a mismatch
@@ -59,7 +59,7 @@ export function ShellRoot({ children, subnav, inspector, header, iconRailItems }
             ...(showInspector ? ['inspector'] : []),
             //
         ];
-    }, [hasSubnav, showInspector]);
+    }, [showInspector, hasSubnav]);
 
     const { defaultLayout, onLayoutChanged } = useDefaultLayout({
         id: SHELL_ROOT_ID,

@@ -77,7 +77,7 @@ const ProductGallery = ({
                     {...loadingProps}
                 >
                     {image ? (
-                        <div className="z-5 h-fit min-h-32 w-full transform-gpu overflow-hidden md:h-full md:max-h-[30rem]">
+                        <div className="z-5 h-fit min-h-32 w-full transform-gpu overflow-hidden md:h-full md:max-h-120">
                             <Image
                                 role={image.altText ? undefined : 'presentation'}
                                 src={image.url!}
@@ -100,14 +100,14 @@ const ProductGallery = ({
                                     setNext(null);
                                 }}
                                 className={cn(
-                                    'h-fit w-full object-contain object-center opacity-100 transition-opacity duration-500 md:h-full md:max-h-[30rem]',
+                                    'h-fit w-full object-contain object-center opacity-100 transition-opacity duration-500 md:h-full md:max-h-120',
                                     isLoading && 'opacity-0 transition-none',
                                     primaryImageClassName,
                                 )}
                             />
                         </div>
                     ) : (
-                        <div className="h-full min-h-32 w-full md:min-h-[36rem]" />
+                        <div className="h-full min-h-32 w-full md:min-h-144" />
                     )}
 
                     {!isLoading && enableShare ? (
@@ -187,14 +187,14 @@ const ProductGallery = ({
                                         aria-label={`Enlarge image #${index + 1}`}
                                         onClick={() => setImage(image)}
                                         className={cn(
-                                            'flex appearance-none items-center justify-center rounded-lg border-2 border-gray-100 border-solid bg-white p-1 transition-all hover:border-primary md:aspect-[4/3] md:size-32 md:p-4',
+                                            'flex appearance-none items-center justify-center rounded-lg border-2 border-gray-100 border-solid bg-white p-1 transition-all hover:border-primary md:aspect-4/3 md:size-32 md:p-4',
                                             isLoading && 'bg-gray-100',
                                         )}
                                         {...loadingProps}
                                     >
                                         <Image
                                             className={cn(
-                                                'h-14 w-14 object-contain object-center transition-opacity duration-500 md:aspect-[4/3] md:size-full',
+                                                'h-14 w-14 object-contain object-center transition-opacity duration-500 md:aspect-4/3 md:size-full',
                                                 isLoading && 'opacity-0 transition-none',
                                             )}
                                             style={{ transitionDelay: `${(index + 1) * 250}ms` }}

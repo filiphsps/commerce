@@ -22,7 +22,7 @@ export function HeaderNavigation({ items, locale, ...rest }: HeaderNavigationPro
     return (
         <nav
             className={cn(
-                'overflow-x-shadow flex w-full grow items-center justify-start gap-5 overflow-x-auto overflow-y-clip whitespace-nowrap px-2 md:max-w-[var(--page-width)] md:flex-row md:overflow-hidden md:px-3 lg:gap-6',
+                'overflow-x-shadow flex w-full grow items-center justify-start gap-5 overflow-x-auto overflow-y-clip whitespace-nowrap px-2 md:max-w-(--page-width) md:flex-row md:overflow-hidden md:px-3 lg:gap-6',
             )}
             {...rest}
         >

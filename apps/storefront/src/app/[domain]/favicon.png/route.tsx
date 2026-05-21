@@ -11,17 +11,24 @@ import { validateSize } from './validate-size';
 export type FaviconRouteParams = Promise<{
     domain: string;
 }>;
+
 export async function GET(req: NextRequest, { params }: { params: FaviconRouteParams }) {
+    const { domain } = await params;
+    const searchParams = req.nextUrl.searchParams;
+    const widthParam = searchParams.get('width') ?? searchParams.get('w');
+    const heightParam = searchParams.get('height') ?? searchParams.get('h');
+
+    return renderFavicon(domain, widthParam, heightParam);
+}
+
+async function renderFavicon(domain: string, widthParam: string | null, heightParam: string | null) {
     'use cache';
     cacheLife('max');
 
-    const { domain } = await params;
+    let width = safeParseFloat(null, widthParam);
+    let height = safeParseFloat(null, heightParam);
 
-    const searchParams = req.nextUrl.searchParams;
-    let width = safeParseFloat(null, searchParams.get('width') ?? searchParams.get('w'));
-    let height = safeParseFloat(null, searchParams.get('height') ?? searchParams.get('h'));
-
-    const errors = [...(await validateSize({ width, height }))];
+    const errors = [...validateSize({ width, height })];
 
     if (errors.length > 0) {
         return NextResponse.json(

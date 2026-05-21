@@ -14,7 +14,7 @@ const VENDOR_RAIL_CLASS =
 const VendorRailSkeleton = ({ count = 8 }: { count?: number }) => (
     <div className={VENDOR_RAIL_CLASS}>
         {Array.from({ length: count }).map((_, idx) => (
-            <div key={idx} className="h-10 min-w-32 flex-shrink-0 rounded-lg md:h-12 md:min-w-0" data-skeleton />
+            <div key={idx} className="h-10 min-w-32 shrink-0 rounded-lg md:h-12 md:min-w-0" data-skeleton />
         ))}
     </div>
 );

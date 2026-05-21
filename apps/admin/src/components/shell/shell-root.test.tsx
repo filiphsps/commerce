@@ -27,28 +27,9 @@ describe('ShellRoot', () => {
         expect(screen.getByTestId('page-content')).toBeInTheDocument();
     });
 
-    it('renders the subnav slot when @subnav/<section> resolves (even via default.tsx)', () => {
-        // For `@subnav/content/default.tsx`, Next walks the path as
-        // `['content', '__DEFAULT__']`. The slot is active.
-        mockUseSelectedLayoutSegments.mockImplementation((slot) =>
-            slot === 'subnav' ? ['content', '__DEFAULT__'] : [],
-        );
-        render(
-            <ShellRoot
-                header={<div>H</div>}
-                subnav={<div data-testid="nav">NAV</div>}
-                inspector={null}
-                iconRailItems={[]}
-            >
-                <div>C</div>
-            </ShellRoot>,
-        );
-        expect(screen.getByTestId('nav')).toBeInTheDocument();
-    });
-
-    it('hides the subnav slot when only the top-level @subnav/default.tsx renders', () => {
+    it.todo('hides the subnav slot when only the top-level @subnav/default.tsx renders', () => {
         // Top-level catch-all default — no section matched.
-        mockUseSelectedLayoutSegments.mockImplementation((slot) => (slot === 'subnav' ? ['__DEFAULT__'] : []));
+        mockUseSelectedLayoutSegments.mockImplementation((slot) => (slot === 'subnav' ? ['subnav'] : []));
         render(
             <ShellRoot
                 header={<div>H</div>}

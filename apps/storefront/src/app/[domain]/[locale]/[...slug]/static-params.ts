@@ -23,7 +23,7 @@ export async function generateStaticParams({
     const pages = await PagesApi({ shop, locale });
     // Shops with no CMS pages shouldn't fail the build; Cache Components
     // requires at least one entry, so we return a sentinel that 404s.
-    if (!pages) return [{ slug: [NOT_FOUND_HANDLE] }];
+    if (!pages?.docs) return [{ slug: [NOT_FOUND_HANDLE] }];
 
     const slugs = pages.docs
         .map((p) => p.slug)

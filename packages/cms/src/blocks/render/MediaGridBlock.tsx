@@ -9,6 +9,16 @@ const imageAlt = (item: MediaItem): string => {
     if (!item.image) return '';
     return typeof item.image === 'string' ? '' : (item.image.alt ?? '');
 };
+// Stable identity for the `<figure>` `key` — Payload media ID when the
+// item embeds an object, the raw ID when the field is a string ref,
+// falling back to the array index for items with no image at all (the
+// CMS preview still renders an empty figure for those so caption-only
+// entries don't disappear from the editor surface).
+const itemKey = (item: MediaItem, idx: number): string => {
+    if (!item.image) return `i-${idx}`;
+    if (typeof item.image === 'string') return `${item.image}-${idx}`;
+    return `${item.image.id}-${idx}`;
+};
 
 export function MediaGridBlock({ block, context }: { block: MediaGridBlockNode; context: BlockRenderContext }) {
     return (
@@ -29,8 +39,9 @@ export function MediaGridBlock({ block, context }: { block: MediaGridBlockNode; 
                 ) : (
                     inner
                 );
+
                 return (
-                    <figure key={idx}>
+                    <figure key={itemKey(item, idx)}>
                         {wrapped}
                         {item.caption ? <figcaption>{item.caption}</figcaption> : null}
                     </figure>
