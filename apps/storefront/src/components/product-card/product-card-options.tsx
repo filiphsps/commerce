@@ -7,6 +7,7 @@ import { ProductOptionsSelector, type SelectedOptions } from '@/components/produ
 import { firstAvailableVariant } from '@/utils/first-available-variant';
 import { hasProductOptions } from '@/utils/has-product-options';
 import type { Locale } from '@/utils/locale';
+import { unsafe_cast } from '@/utils/unsafe-cast';
 
 export type ProductCardOptionsProps = {
     locale: Locale;
@@ -22,8 +23,9 @@ const ProductCardOptions = ({ data: product, selectedVariant, setSelectedVariant
         mapSelectedProductOptionToObject((seed?.selectedOptions ?? []) as Array<{ name: string; value: string }>),
     );
 
-    // biome-ignore lint/suspicious/noExplicitAny: local Product type is a stricter superset of hydrogen-react's RecursivePartial<Product>
-    const mappedOptions = useMemo(() => (product ? getProductOptions(product as any) : []), [product]);
+    // getProductOptions expects RecursivePartial<Product>; our local Product is
+    // a stricter superset that satisfies the runtime contract.
+    const mappedOptions = useMemo(() => (product ? getProductOptions(unsafe_cast(product)) : []), [product]);
 
     if (!hasProductOptions(product)) {
         return null;
@@ -36,7 +38,9 @@ const ProductCardOptions = ({ data: product, selectedVariant, setSelectedVariant
         const [name, value] = changed;
         const valueEntry = mappedOptions.find((o) => o.name === name)?.optionValues.find((v) => v.name === value);
         if (valueEntry?.variant) {
-            setSelectedVariant(valueEntry.variant as unknown as ProductVariant);
+            // getProductOptions returns hydrogen-react's ProductVariant (RecursivePartial);
+            // our local ProductVariant is the stricter superset the runtime satisfies.
+            setSelectedVariant(unsafe_cast<ProductVariant>(valueEntry.variant));
         }
     };
 
