@@ -1,6 +1,6 @@
 import 'server-only';
 
-import type { LimitFilters, Nullable } from '@nordcom/commerce-db';
+import type { Identifiable, LimitFilters, Nullable } from '@nordcom/commerce-db';
 import { InvalidHandleError, ProviderFetchError, TodoError, UnreachableError } from '@nordcom/commerce-errors';
 import type {
     CollectionEdge,
@@ -74,7 +74,9 @@ export const extractLimitLikeFilters = (
     throw new UnreachableError();
 };
 
-type CollectionOptions = ApiOptions & { handle: string } & (
+type CollectionOptions = ApiOptions &
+    Identifiable &
+    (
         | {
               filters: CollectionFilters;
           }
