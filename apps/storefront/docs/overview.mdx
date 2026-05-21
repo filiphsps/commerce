@@ -18,3 +18,52 @@ For the canonical reference, see the [README on GitHub](https://github.com/filip
 - **Data Fetching** — Shopify + CMS patterns
 - **Webhooks** — cache invalidation
 - **Locales** — i18n
+
+## Conventions
+
+### Errors
+
+All thrown errors route through `@nordcom/commerce-errors`.
+Never `throw new Error(...)` in app or package code — if no existing class
+fits, add a new one (plus its `*ErrorKind` enum value and a
+`getErrorFromCode` case) in `packages/errors/src/index.ts` and throw that.
+Errors carry `statusCode`, `code`, and `help` URLs the platform relies on
+for status pages and observability. The only `throw new Error(...)` calls
+left in the storefront tree are inside test fixtures that deliberately
+simulate non-`@nordcom/commerce-errors` failures.
+
+### Loaders
+
+Every multi-call-site data fetch goes through `src/api/_loaders.ts`,
+which wraps the underlying function in React's `cache()` so concurrent
+callers within a single server render resolve once. Always import `Shop`,
+`Locale`, `Locales`, `Countries`, `Product`, `Collection`, `Blog`,
+`Article`, `Header`, `Footer`, `InfoBar`, `ProductMetadata`,
+`CollectionMetadata`, and `Pages` from `@/api/_loaders` rather than from
+their source modules. See [Data Fetching](./data-fetching.mdx) for the
+full pattern, cache-tag scheme, and notes on adding a new loader.
+
+### Styling
+
+Tailwind-only. There are no `.scss` files in `src/` and no `sass`
+dependency. Component-local styles live in `*.module.css`; shared
+utilities live in `src/app/globals.css` under `@layer utilities`.
+
+## Removed dependencies
+
+The storefront previously pulled in several packages it no longer needs.
+Notable removals from this cleanup:
+
+- `@payloadcms/*` and `payload` — the storefront only needs the shared
+  config from `@nordcom/commerce-cms`, which keeps Payload as a
+  server-only transitive. The admin app remains the only direct Payload
+  consumer.
+- `nprogress` — superseded by `nextjs-toploader`. The toploader still
+  pulls in `nprogress` as a transitive on the client; that's intentional
+  and unchanged.
+- `sass` — removed alongside the migration of `.module.scss` and the
+  Sass-based `app.scss` globals to plain CSS Modules and Tailwind
+  `@theme` / `@layer utilities`.
+
+Additional unused packages were removed in an audit-driven sweep; see
+the `chore/storefront-cleanup` commit history for the full list.
