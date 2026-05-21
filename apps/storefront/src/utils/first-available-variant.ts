@@ -1,6 +1,7 @@
 import { NotFoundError } from '@nordcom/commerce-errors';
 
 import type { Product, ProductVariant } from '@/api/product';
+import { unsafe_cast } from '@/utils/unsafe-cast';
 
 /**
  * Find the first available and most suitable variant for a specific product.
@@ -17,7 +18,10 @@ export const firstAvailableVariant = (product?: Product | null): ProductVariant 
     const variants: ProductVariant[] =
         (product.variants.edges
             ? product.variants.edges.map(({ node: variant }) => variant)
-            : (product.variants as unknown as ProductVariant[])) || [];
+            : // When there are no `.edges`, `product.variants` is already a
+              // flat ProductVariant[] at runtime; the union type doesn't expose
+              // this path, so we assert it explicitly.
+              unsafe_cast<ProductVariant[]>(product.variants)) || [];
 
     if (variants.length <= 0) {
         throw new NotFoundError(`"product.variant"`);
