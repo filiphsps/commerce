@@ -47,10 +47,8 @@ export default async function AccountPage({ params }: { params: AccountDashboard
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const locale = Locale.from(localeData);
 
-    const i18n = await getDictionary({ shop, locale });
+    const [i18n, session] = await Promise.all([getDictionary({ shop, locale }), getAuthSession(shop)]);
     const { t } = getTranslations('common', i18n);
-
-    const session = await getAuthSession(shop);
     const user = session?.user;
 
     return (
