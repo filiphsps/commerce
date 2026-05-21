@@ -4,7 +4,7 @@ import type { Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-a
 import { Mail as MailIcon } from 'lucide-react';
 import Image from 'next/image';
 import type { HTMLProps, ReactNode } from 'react';
-import { Fragment, Suspense, useCallback, useState } from 'react';
+import { Fragment, Suspense, useCallback, useRef, useState } from 'react';
 import { EmailShareButton, FacebookShareButton, TwitterShareButton } from 'react-share';
 
 import type { Product } from '@/api/product';
@@ -42,19 +42,18 @@ const ProductGallery = ({
     const [loading, setLoading] = useState<boolean>(false);
     const [selected, setSelected] = useState<ShopifyImage | null>(null);
     const [next, setNext] = useState<ShopifyImage | null>(null);
+    // Each click bumps `loadToken`; stale `setTimeout`/`onLoad` callbacks from
+    // earlier images compare against this and bail out instead of clobbering
+    // the loading flag for the most recent selection.
+    const loadTokenRef = useRef(0);
 
     const { t } = getTranslations('common', i18n);
 
-    const setImage = useCallback(
-        (image: ShopifyImage) => {
-            // Prevent the user from spamming the buttons.
-            if (loading) return;
-
-            setLoading(true);
-            setNext(image);
-        },
-        [loading],
-    );
+    const setImage = useCallback((image: ShopifyImage) => {
+        loadTokenRef.current += 1;
+        setLoading(true);
+        setNext(image);
+    }, []);
 
     if (!images || images.length <= 0) return null;
 
@@ -90,7 +89,11 @@ const ProductGallery = ({
                                 decoding="async"
                                 onLoadStart={() => setLoading(true)}
                                 onLoad={() => {
-                                    setTimeout(() => setLoading(() => false), 250);
+                                    const token = loadTokenRef.current;
+                                    setTimeout(() => {
+                                        if (loadTokenRef.current !== token) return;
+                                        setLoading(false);
+                                    }, 250);
 
                                     if (!next) {
                                         return;
