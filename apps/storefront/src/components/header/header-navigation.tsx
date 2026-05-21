@@ -6,7 +6,7 @@ import type { HTMLProps } from 'react';
 import Link from '@/components/link';
 import type { Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
-import { HeaderMenuTrigger } from './header-menu';
+import { HEADER_LINK_BUBBLE_STYLES, HEADER_LINK_STYLES, HeaderMenuTrigger } from './header-menu';
 
 type NavItems = NonNullable<Header['items']>;
 type NavItem = NavItems[number];
@@ -50,9 +50,9 @@ function HeaderNavTopItem({ item, locale }: { item: NavItem; locale: Locale }) {
         <Link
             href={href || '/'}
             target={link.openInNewTab ? '_blank' : undefined}
-            className="font-medium text-base leading-none hover:text-primary focus-visible:text-primary"
+            className={cn(HEADER_LINK_STYLES, 'text-base text-inherit')}
         >
-            {link.label}
+            <span className={cn(HEADER_LINK_BUBBLE_STYLES)}>{link.label}</span>
         </Link>
     );
 }

@@ -81,7 +81,20 @@ describe('<HeaderMenuTrigger>', () => {
             fireEvent.click(button);
             const controls = button.getAttribute('aria-controls');
             expect(controls).toBeTruthy();
-            expect(container.querySelector(`#${controls}`)).not.toBeNull();
+            // Panel is portaled to <body>; query at document scope.
+            expect(document.getElementById(controls!)).not.toBeNull();
+        });
+
+        it('renders the panel as a portal under document.body (escapes nav overflow)', () => {
+            const { container } = render(<HeaderMenuTrigger item={itemWithChildren()} locale={{ code: en.code }} />);
+            const button = container.querySelector('button') as HTMLButtonElement;
+            fireEvent.click(button);
+            const panel = document.querySelector('[role="menu"]');
+            expect(panel).not.toBeNull();
+            // Should not live inside the trigger's render container — that
+            // would mean the parent nav's overflow context could clip it.
+            expect(container.contains(panel)).toBe(false);
+            expect(document.body.contains(panel)).toBe(true);
         });
     });
 });

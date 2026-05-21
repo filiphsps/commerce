@@ -2,13 +2,25 @@
 
 import { resolveLink } from '@nordcom/commerce-cms/api';
 import type { Header, Media } from '@nordcom/commerce-cms/types';
+import { ChevronDown as ChevronDownIcon } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { useCallback, useEffect, useId, useRef, useState } from 'react';
-import { useDetectClickOutside } from 'react-detect-click-outside';
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import Link from '@/components/link';
 import { cn } from '@/utils/tailwind';
-import { unsafe_cast } from '@/utils/unsafe-cast';
+
+// Header-link styles ported from the pre-Prismic-removal storefront so
+// nav items, triggers, and panel tiles share the original Nordcom
+// "swedish-candy-store" look.
+export const HEADER_LINK_STYLES =
+    'group/menu-item flex h-full cursor-pointer select-none flex-nowrap items-center justify-center text-nowrap border-0 border-b-2 border-t-2 border-transparent border-solid bg-transparent my-4 font-medium leading-none transition-all md:my-3';
+export const HEADER_LINK_BUBBLE_STYLES =
+    '-mx-2 rounded-lg px-2 py-2 text-inherit group-hover/menu-item:bg-gray-100 group-focus-visible/menu-item:bg-gray-100';
+export const HEADER_LINK_ACTIVE_MENU_STYLES = '-mx-2 bg-gray-100 px-2 font-semibold text-primary';
+const PANEL_TILE_STYLES =
+    'group/item flex h-full grow shrink-0 overflow-hidden rounded-lg border border-gray-300 border-solid bg-white transition-colors duration-75 hover:border-primary hover:text-primary focus-within:border-primary focus-within:text-primary';
+const PANEL_TILE_TITLE_STYLES = 'py-2 font-semibold text-xl leading-none';
 
 type NavItem = NonNullable<Header['items']>[number];
 
@@ -37,10 +49,19 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
     const menuId = useId();
     const [open, setOpen] = useState(false);
     const [hoverCapable, setHoverCapable] = useState(false);
+    const [mounted, setMounted] = useState(false);
+    const [position, setPosition] = useState<{ top: number; left: number; width: number } | null>(null);
     const pathname = usePathname();
-    const containerRef = useDetectClickOutside({ onTriggered: () => setOpen(false), disableTouch: false });
+    const triggerRef = useRef<HTMLDivElement | null>(null);
+    const panelRef = useRef<HTMLDivElement | null>(null);
     const previouslyFocused = useRef<HTMLElement | null>(null);
     const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    // `createPortal` needs a real DOM target — flip `mounted` after the
+    // first client render so SSR markup doesn't try to reach `document`.
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     // Detect hover-capable pointer (desktop mouse / trackpad). Touch devices
     // report `pointer: coarse` and never `hover: hover`, so we fall back to
@@ -82,6 +103,50 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
         };
     }, []);
 
+    // Compute the portaled panel's anchor coordinates from the trigger's
+    // current bounding rect; refresh on scroll/resize while open. We
+    // portal into `document.body` and position with `fixed` so the panel
+    // escapes the nav's overflow context entirely — that is what makes
+    // the mega-menu work at both md+ (hover) and on mobile (click) where
+    // the parent nav has `overflow-x-auto` forcing a clipped y axis.
+    useLayoutEffect(() => {
+        if (!open) return;
+        const update = () => {
+            const el = triggerRef.current;
+            if (!el) return;
+            const rect = el.getBoundingClientRect();
+            setPosition({ top: rect.bottom, left: rect.left, width: rect.width });
+        };
+        update();
+        window.addEventListener('scroll', update, true);
+        window.addEventListener('resize', update);
+        return () => {
+            window.removeEventListener('scroll', update, true);
+            window.removeEventListener('resize', update);
+        };
+    }, [open]);
+
+    // Manual click-outside: the panel is portaled into <body>, so an
+    // ancestor-ref helper (e.g. useDetectClickOutside) cannot see clicks
+    // inside it. Close only when the target is outside BOTH the trigger
+    // and the panel.
+    useEffect(() => {
+        if (!open) return;
+        const handler = (e: MouseEvent | TouchEvent) => {
+            const target = e.target as Node | null;
+            if (!target) return;
+            if (triggerRef.current?.contains(target)) return;
+            if (panelRef.current?.contains(target)) return;
+            setOpen(false);
+        };
+        document.addEventListener('mousedown', handler);
+        document.addEventListener('touchstart', handler);
+        return () => {
+            document.removeEventListener('mousedown', handler);
+            document.removeEventListener('touchstart', handler);
+        };
+    }, [open]);
+
     const cancelClose = useCallback(() => {
         if (closeTimerRef.current) {
             clearTimeout(closeTimerRef.current);
@@ -110,13 +175,35 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
         setOpen((prev) => !prev);
     }, []);
 
+    // Anchor the panel to the trigger's vertical position but span the
+    // full viewport width — the inner card is clamped to `--page-width`
+    // and centered. This mirrors the old swedish-candy-store mega-menu
+    // (single full-width dropdown beneath the nav) and keeps the panel
+    // from ever overflowing the viewport horizontally on mobile.
+    const panel =
+        open && position ? (
+            <div
+                ref={panelRef}
+                id={menuId}
+                role="menu"
+                aria-label={item.link?.label ?? 'navigation'}
+                onMouseEnter={handlePointerEnter}
+                onMouseLeave={handlePointerLeave}
+                style={{ position: 'fixed', top: position.top, left: 0, right: 0, zIndex: 50 }}
+                className="pt-2"
+            >
+                <div className="mx-auto w-full max-w-(--page-width) px-2 md:px-3">
+                    <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-lg md:p-4">
+                        <MegaMenuPanel item={item} locale={locale} />
+                    </div>
+                </div>
+            </div>
+        ) : null;
+
     return (
-        // react-detect-click-outside declares its return as MutableRefObject<null>
-        // rather than MutableRefObject<HTMLElement>; the ref is attached to the
-        // correct element at runtime, so this cast to the narrower div type is safe.
         <div
-            ref={unsafe_cast<React.RefObject<HTMLDivElement>>(containerRef)}
-            className="relative inline-block"
+            ref={triggerRef}
+            className="inline-block"
             onMouseEnter={handlePointerEnter}
             onMouseLeave={handlePointerLeave}
         >
@@ -130,30 +217,24 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
                 onFocus={(e) => {
                     previouslyFocused.current = e.currentTarget;
                 }}
-                className={cn(
-                    'group flex items-center gap-1 font-medium text-base leading-none',
-                    'hover:text-primary focus-visible:text-primary',
-                )}
+                className={cn(HEADER_LINK_STYLES, 'gap-1 text-base text-inherit')}
             >
-                {item.link?.label}
+                <span
+                    className={cn(
+                        HEADER_LINK_BUBBLE_STYLES,
+                        'flex items-center gap-1',
+                        open && HEADER_LINK_ACTIVE_MENU_STYLES,
+                    )}
+                >
+                    {item.link?.label}
+                    <ChevronDownIcon
+                        aria-hidden={true}
+                        className={cn('size-4 stroke-2 transition-transform', open && 'rotate-180')}
+                    />
+                </span>
             </button>
 
-            {open ? (
-                // `pt-2` lives on the absolute-positioned wrapper rather than
-                // as a margin on the panel so the trigger→panel hit area is
-                // continuous — without it the user crosses a dead zone and
-                // the hover-close timer fires mid-traversal.
-                <div className="absolute top-full left-0 z-30 pt-2">
-                    <div
-                        id={menuId}
-                        role="menu"
-                        aria-label={item.link?.label ?? 'navigation'}
-                        className={cn('min-w-[20rem]', 'rounded-lg border border-gray-200 bg-white p-3 shadow-lg')}
-                    >
-                        <MegaMenuPanel item={item} locale={locale} />
-                    </div>
-                </div>
-            ) : null}
+            {mounted && panel ? createPortal(panel, document.body) : null}
         </div>
     );
 }
@@ -167,7 +248,7 @@ function MegaMenuPanel({ item, locale }: { item: NavItem; locale: { code: string
     if (items.length === 0) return null;
 
     return (
-        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="flex flex-col gap-3 md:grid md:auto-rows-max md:grid-cols-2 lg:grid-cols-3 lg:gap-2 xl:grid-cols-4">
             {items.map((child, i) => (
                 <MegaMenuItem key={child.id ?? `mm-1-${i}`} item={child} locale={locale} depth={1} />
             ))}
@@ -196,39 +277,65 @@ function MegaMenuItem({ item, locale, depth }: { item: RecursiveNavItem; locale:
     if (!label && !hasChildren) return null;
 
     const isTopLevel = depth === 1;
+    const hasImage = isTopLevel && image?.url;
+
+    // Image tile: title overlays the image with a gradient shadow + text
+    // stroke (matches the old swedish-candy-store style). Without an image
+    // we just emit the title in plain text.
+    const imageHeader = hasImage ? (
+        <div
+            className={cn(
+                'relative h-full shrink-0 overflow-hidden text-primary-foreground transition-all group-hover/item:brightness-75 group-focus-within/item:brightness-75',
+                !background && 'bg-primary',
+            )}
+            style={background ? { backgroundColor: background } : undefined}
+        >
+            <Image
+                src={image!.url!}
+                alt={image!.alt ?? label ?? ''}
+                fill={false}
+                width={image!.width ?? 320}
+                height={image!.height ?? 240}
+                className="pointer-events-none h-full w-full object-cover object-center shadow transition-transform group-hover/item:scale-110 group-focus-within/item:scale-110"
+                sizes="(max-width: 768px) 90vw, 300px"
+                draggable={false}
+                loading="lazy"
+                decoding="async"
+            />
+            {label ? (
+                <div
+                    className={cn(
+                        'absolute inset-0 flex w-full items-end justify-start bg-gradient-to-b from-transparent to-black/45 p-2 text-white',
+                        PANEL_TILE_TITLE_STYLES,
+                    )}
+                    style={{ WebkitTextStroke: '.15rem rgba(0,0,0,.3)', paintOrder: 'stroke fill' }}
+                >
+                    {label}
+                </div>
+            ) : null}
+        </div>
+    ) : null;
 
     const labelText = label ? (
-        <span
-            className={cn(
-                isTopLevel ? 'font-semibold text-lg leading-tight' : 'font-medium text-gray-800 text-sm leading-tight',
-            )}
-        >
+        <span className={cn(isTopLevel ? PANEL_TILE_TITLE_STYLES : 'font-medium text-gray-800 text-sm leading-tight')}>
             {label}
         </span>
     ) : null;
 
+    // Plain text block (used when there's no image, or rendered alongside
+    // the image for the description).
     const labelBlock = (
-        <div className={cn('flex flex-col gap-1', isTopLevel ? 'p-3' : 'py-1')}>
-            {labelText}
-            {description ? <span className="text-gray-600 text-sm leading-snug">{description}</span> : null}
+        <div
+            className={cn(
+                'flex flex-col items-start justify-start gap-1 text-gray-600 group-hover/item:text-inherit group-focus-within/item:text-inherit',
+                isTopLevel ? 'p-3' : 'py-1',
+                hasImage && 'pt-2 empty:hidden',
+            )}
+        >
+            {!hasImage ? labelText : null}
+            {description ? <span className="text-sm leading-snug">{description}</span> : null}
         </div>
     );
-
-    const richHeader =
-        isTopLevel && image?.url ? (
-            <div className="relative aspect-4/3 w-full overflow-hidden">
-                <Image
-                    src={image.url}
-                    alt={image.alt ?? label ?? ''}
-                    fill={true}
-                    className="object-cover transition-transform group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, 300px"
-                    draggable={false}
-                    loading="lazy"
-                    decoding="async"
-                />
-            </div>
-        ) : null;
 
     const titleEl = href ? (
         <Link
@@ -236,11 +343,13 @@ function MegaMenuItem({ item, locale, depth }: { item: RecursiveNavItem; locale:
             target={link?.openInNewTab ? '_blank' : undefined}
             role="menuitem"
             className={cn(
-                'group block',
+                'block',
+                isTopLevel && 'h-full',
+                hasImage && 'grid grid-cols-1 grid-rows-[10rem_auto] items-stretch',
                 !isTopLevel && 'text-gray-700 transition-colors hover:text-primary focus-visible:text-primary',
             )}
         >
-            {richHeader}
+            {imageHeader}
             {labelBlock}
         </Link>
     ) : (
@@ -248,7 +357,7 @@ function MegaMenuItem({ item, locale, depth }: { item: RecursiveNavItem; locale:
         // editor can use a label-only item as a group header. Children
         // (if any) still recurse below.
         <div role={isTopLevel ? undefined : 'presentation'}>
-            {richHeader}
+            {imageHeader}
             {labelBlock}
         </div>
     );
@@ -270,11 +379,8 @@ function MegaMenuItem({ item, locale, depth }: { item: RecursiveNavItem; locale:
 
     return (
         <div
-            className={cn(
-                isTopLevel &&
-                    'overflow-hidden rounded-lg border border-gray-200 transition-colors focus-within:border-primary hover:border-primary',
-            )}
-            style={background ? { backgroundColor: background } : undefined}
+            className={cn(isTopLevel && PANEL_TILE_STYLES, isTopLevel && 'flex-col')}
+            style={!hasImage && background ? { backgroundColor: background } : undefined}
         >
             {titleEl}
             {childList}
