@@ -1,6 +1,10 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { useCart } from '@shopify/hydrogen-react';
-import type { CartAutomaticDiscountAllocation, CartLine } from '@shopify/hydrogen-react/storefront-api-types';
+import type {
+    CartAutomaticDiscountAllocation,
+    CartDiscountAllocation,
+    CartLine,
+} from '@shopify/hydrogen-react/storefront-api-types';
 import { ChevronRight as ChevronRightIcon, Lock as LockIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Button } from '@/components/actionable/button';
@@ -16,6 +20,26 @@ import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 import { pluralize } from '@/utils/pluralize';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
+
+/** A cart line that has both `cost` and `discountAllocations` present. */
+type SaleLine = CartLine & {
+    cost: NonNullable<CartLine['cost']>;
+    discountAllocations: NonNullable<CartLine['discountAllocations']>;
+};
+
+/** A discount allocation whose `discountedAmount` is present. */
+type AllocationWithAmount = CartDiscountAllocation & {
+    discountedAmount: NonNullable<CartDiscountAllocation['discountedAmount']>;
+};
+
+/** Element type of the `lines` array returned by `useCart()`. */
+type CartLineElement = NonNullable<ReturnType<typeof useCart>['lines']>[number];
+
+const isSaleLine = (line: CartLineElement): line is SaleLine => Boolean(line && line.cost && line.discountAllocations);
+
+const hasDiscountedAmount = (
+    allocation: CartDiscountAllocation | null | undefined,
+): allocation is AllocationWithAmount => Boolean(allocation?.discountedAmount);
 
 const SUMMARY_LABEL_STYLES = 'font-medium text-sm capitalize text-gray-600 leading-none';
 const PRICE_STYLES = 'text-sm font-bold';
@@ -42,33 +66,38 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
     // figures until Shopify confirms the cart is `idle`.
     const isSettled = status === 'idle';
 
+    const usableLines = (lines ?? []).filter(isSaleLine);
+
     const sale = isSettled
-        ? (lines?.reduce(
+        ? usableLines.reduce(
               (sum, line) =>
-                  (line!.cost!.compareAtAmountPerQuantity &&
+                  (line.cost.compareAtAmountPerQuantity &&
                       sum +
-                          (safeParseFloat(0, line?.cost?.compareAtAmountPerQuantity?.amount) * (line!.quantity || 0) -
-                              safeParseFloat(0, line?.cost?.totalAmount?.amount))) ||
+                          (safeParseFloat(0, line.cost.compareAtAmountPerQuantity?.amount) * (line.quantity || 0) -
+                              safeParseFloat(0, line.cost.totalAmount?.amount))) ||
                   sum,
               0,
-          ) ?? 0)
+          )
         : 0;
     const totalSale = isSettled
         ? sale +
-          (lines || [])
+          usableLines
               .map((line) => {
-                  if (line!.discountAllocations!.length <= 0) {
+                  if (line.discountAllocations.length <= 0) {
                       return 0;
                   }
 
-                  return line!.discountAllocations!.reduce(
-                      (sum, line) =>
-                          (line!.discountedAmount!.amount && sum + safeParseFloat(0, line?.discountedAmount?.amount)) ||
-                          sum,
-                      0,
-                  );
+                  return line.discountAllocations
+                      .filter(hasDiscountedAmount)
+                      .reduce(
+                          (sum, allocation) =>
+                              (allocation.discountedAmount.amount &&
+                                  sum + safeParseFloat(0, allocation.discountedAmount.amount)) ||
+                              sum,
+                          0,
+                      );
               })
-              .reduce((sum, line) => sum + line || sum, 0)
+              .reduce((sum, lineTotal) => sum + lineTotal || sum, 0)
         : 0;
 
     // Guard the divide so a fully-discounted cart (totalAmount === 0 — gift
