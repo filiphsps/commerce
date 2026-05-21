@@ -8,6 +8,7 @@ import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { useDetectClickOutside } from 'react-detect-click-outside';
 import Link from '@/components/link';
 import { cn } from '@/utils/tailwind';
+import { unsafe_cast } from '@/utils/unsafe-cast';
 
 type NavItem = NonNullable<Header['items']>[number];
 type Level2Item = NonNullable<NavItem['items']>[number];
@@ -48,7 +49,10 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
     }, []);
 
     return (
-        <div ref={containerRef as unknown as React.RefObject<HTMLDivElement>} className="relative inline-block">
+        // react-detect-click-outside declares its return as MutableRefObject<null>
+        // rather than MutableRefObject<HTMLElement>; the ref is attached to the
+        // correct element at runtime, so this cast to the narrower div type is safe.
+        <div ref={unsafe_cast<React.RefObject<HTMLDivElement>>(containerRef)} className="relative inline-block">
             <button
                 type="button"
                 aria-haspopup="menu"
