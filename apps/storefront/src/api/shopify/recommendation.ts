@@ -2,75 +2,27 @@ import { InvalidIDError, NotFoundError, ProviderFetchError } from '@nordcom/comm
 import { graphql } from '@nordcom/commerce-shopify-graphql/graphql';
 import { parseGid } from '@shopify/hydrogen-react';
 import type { Product } from '@/api/product';
+import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product-fragments';
 import { cache } from '@/cache';
 import type { AbstractApi } from '@/utils/abstract-api';
 import { unsafe_cast } from '@/utils/unsafe-cast';
 
-const PRODUCT_RECOMMENDATIONS_QUERY = graphql(`
+// ProductCard renders `firstAvailableVariant(product)` and (client-side)
+// `getProductOptions(product)`, both of which require options, variants,
+// selectedOrFirstAvailableVariant, and adjacentVariants. Without them the
+// card content silently renders `null`, leaving an empty "You may also
+// like" row. Use the shared ProductMinimal fragment so the recommendation
+// payload matches collection-card payloads.
+const PRODUCT_RECOMMENDATIONS_QUERY = graphql(
+    `
     query productRecommendations($productId: ID!) {
         productRecommendations(productId: $productId, intent: RELATED) {
-            id
-            handle
-            availableForSale
-            encodedVariantExistence
-            encodedVariantAvailability
-            createdAt
-            publishedAt
-            isGiftCard
-            requiresSellingPlan
-            title
-            description
-            vendor
-            productType
-            tags
-            trackingParameters
-            seo {
-                title
-                description
-            }
-            priceRange {
-                maxVariantPrice {
-                    amount
-                    currencyCode
-                }
-                minVariantPrice {
-                    amount
-                    currencyCode
-                }
-            }
-            compareAtPriceRange {
-                maxVariantPrice {
-                    amount
-                    currencyCode
-                }
-                minVariantPrice {
-                    amount
-                    currencyCode
-                }
-            }
-            featuredImage {
-                id
-                altText
-                url(transform: { preferredContentType: WEBP })
-                height
-                width
-                thumbhash
-            }
-            images(first: 5) {
-                edges {
-                    node {
-                        id
-                        altText
-                        url(transform: { preferredContentType: WEBP })
-                        height
-                        width
-                        thumbhash
-                    }
-                }
-            }
+            ...ProductMinimal
         }
     }
-`);
+`,
+    [PRODUCT_FRAGMENT_MINIMAL],
+);
 
 // TODO: Migrate to the new recommendations api.
 export const RecommendationApi = async ({ api, id }: { api: AbstractApi; id: string }): Promise<Product[]> => {
