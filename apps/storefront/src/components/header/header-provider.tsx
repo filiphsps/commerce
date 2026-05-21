@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import NextTopLoader from 'nextjs-toploader';
 import * as NProgress from 'nprogress';
 import type { ReactNode } from 'react';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, Suspense, useContext, useEffect, useState } from 'react';
 
 const SCROLL_THRESHOLD = 35;
 
@@ -19,11 +19,33 @@ export interface HeaderContextValue extends HeaderProviderBase, HeaderContextRet
 
 export const HeaderContext = createContext<HeaderContextValue | null>(null);
 
+const NOOP_HEADER_VALUE: HeaderContextValue = {
+    menu: null,
+    setMenu: () => {},
+    closeMenu: () => {},
+};
+
 export type HeaderProviderProps = {
     children?: ReactNode;
     loaderColor?: string;
 };
+
+// `usePathname` (and `NextTopLoader`'s internal route tracking) are considered
+// uncached data under `cacheComponents`. Without a Suspense boundary they
+// block the route from prerendering — the layout's `HeaderProvider` is also
+// reached as the fallback of upstream Suspense boundaries (e.g. `Trackable`),
+// so its uncached reads must not block the fallback path. Render children
+// with a noop context during prerender; the real provider takes over after
+// hydration.
 export const HeaderProvider = ({ children, loaderColor }: HeaderProviderProps) => {
+    return (
+        <Suspense fallback={<HeaderContext.Provider value={NOOP_HEADER_VALUE}>{children}</HeaderContext.Provider>}>
+            <HeaderProviderInner loaderColor={loaderColor}>{children}</HeaderProviderInner>
+        </Suspense>
+    );
+};
+
+const HeaderProviderInner = ({ children, loaderColor }: HeaderProviderProps) => {
     const pathname = usePathname();
 
     // Deal with scrolling and setting the scrolled attribute.

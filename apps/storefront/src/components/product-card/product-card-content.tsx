@@ -21,13 +21,13 @@ export type ProductCardFooterProps = {
     children?: ReactNode;
 };
 const ProductCardContent = ({ data: product, priority, locale, i18n, children }: ProductCardFooterProps) => {
-    const [selectedVariant, setSelectedVariant] = useState(firstAvailableVariant(product)!);
-    if (!product) {
+    const [selectedVariant, setSelectedVariant] = useState(firstAvailableVariant(product));
+    if (!product || !selectedVariant) {
         return null;
     }
 
     const { price, compareAtPrice } = selectedVariant;
-    const onSale = compareAtPrice ? compareAtPrice.amount !== price.amount : false;
+    const onSale = compareAtPrice && price ? compareAtPrice.amount !== price.amount : false;
 
     return (
         <>
