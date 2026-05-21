@@ -63,11 +63,25 @@ describe('<HeaderMenuTrigger>', () => {
             expect(button.getAttribute('aria-label')).toContain('Categories');
         });
 
-        it('has aria-controls pointing to a menu region id', () => {
+        it('has aria-haspopup="menu"', () => {
             const { container } = render(<HeaderMenuTrigger item={itemWithChildren()} locale={{ code: en.code }} />);
             const button = container.querySelector('button') as HTMLButtonElement;
+            expect(button.getAttribute('aria-haspopup')).toBe('menu');
+        });
+
+        it('aria-controls is absent when closed', () => {
+            const { container } = render(<HeaderMenuTrigger item={itemWithChildren()} locale={{ code: en.code }} />);
+            const button = container.querySelector('button') as HTMLButtonElement;
+            expect(button.getAttribute('aria-controls')).toBeNull();
+        });
+
+        it('has aria-controls pointing to a DOM element that exists when open', () => {
+            const { container } = render(<HeaderMenuTrigger item={itemWithChildren()} locale={{ code: en.code }} />);
+            const button = container.querySelector('button') as HTMLButtonElement;
+            fireEvent.click(button);
             const controls = button.getAttribute('aria-controls');
             expect(controls).toBeTruthy();
+            expect(container.querySelector(`#${controls}`)).not.toBeNull();
         });
     });
 });

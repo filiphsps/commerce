@@ -51,9 +51,9 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
         <div ref={containerRef as unknown as React.RefObject<HTMLDivElement>} className="relative inline-block">
             <button
                 type="button"
-                aria-haspopup="true"
+                aria-haspopup="menu"
                 aria-expanded={open}
-                aria-controls={menuId}
+                aria-controls={open ? menuId : undefined}
                 aria-label={`Menu: ${item.link?.label ?? 'navigation'}`}
                 onClick={handleToggle}
                 className={cn(
