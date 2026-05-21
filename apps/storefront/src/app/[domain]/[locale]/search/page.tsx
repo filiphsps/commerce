@@ -29,9 +29,7 @@ export async function generateMetadata({ params }: { params: SearchPageParams })
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const api = await ShopifyApolloApiClient({ shop, locale });
 
-    const locales = await LocalesApi({ api });
-
-    const i18n = await getDictionary(locale);
+    const [locales, i18n] = await Promise.all([LocalesApi({ api }), getDictionary(locale)]);
     const { t } = getTranslations('common', i18n);
 
     const title = capitalize(t('search'));
@@ -74,10 +72,8 @@ export default async function SearchPage({
 
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
 
-    const i18n = await getDictionary(locale);
+    const [i18n, client] = await Promise.all([getDictionary(locale), ShopifyApolloApiClient({ shop, locale })]);
     const { t } = getTranslations('common', i18n);
-
-    const client = await ShopifyApolloApiClient({ shop, locale });
     const { products, productFilters, totalCount } = query
         ? await SearchApi({ query, client })
         : { products: [], productFilters: [], totalCount: 0 };
