@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import AddToCart from '@/components/products/add-to-cart';
 import { render } from '@/utils/test/react';
 
+// vi.hoisted: defined before the vi.mock factory below.
 const { mockLinesAdd } = vi.hoisted(() => ({ mockLinesAdd: vi.fn() }));
 
 vi.mock('@shopify/hydrogen-react', async () => {
@@ -106,7 +107,9 @@ describe('components', () => {
             });
 
             // Unmount before the timer fires.
-            unmount();
+            act(() => {
+                unmount();
+            });
 
             // Advance past the timer — without cleanup this would attempt to call
             // setAnimating on an already-unmounted component and trigger a warning.
