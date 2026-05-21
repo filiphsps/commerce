@@ -1,5 +1,6 @@
 import 'server-only';
 
+import { BlockRenderer } from '@nordcom/commerce-cms/blocks/render';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
@@ -9,6 +10,7 @@ import { cacheLife } from 'next/cache';
 import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { Suspense } from 'react';
+import { ProductMetadataApi } from '@/api/metadata';
 import type { Product } from '@/api/product';
 import { isProductVegan } from '@/api/product';
 import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
@@ -27,6 +29,7 @@ import type { LocaleDictionary } from '@/utils/locale';
 import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import { checkAndHandleRedirect } from '@/utils/redirect';
 import { cn } from '@/utils/tailwind';
+import { buildBlockLoaders } from '../../../../../cms-loaders';
 import { ProductContent, ProductPricing, ProductSavings } from './product-content';
 import type { ProductPageParams } from './static-params';
 import { BLOCK_STYLES } from './styles';
@@ -85,11 +88,23 @@ export async function generateMetadata({
         search = `?variant=${searchParams.variant}`;
     }
 
-    const title = product.seo.title || `${product.vendor} ${product.title}`;
-    const description = product.seo.description || product.description;
+    const cmsMeta = await ProductMetadataApi({ shop, locale, handle });
+
+    const cmsSeoImageUrl = (() => {
+        const img = cmsMeta?.seo?.image;
+        return img && typeof img === 'object' && 'url' in img ? (img.url ?? undefined) : undefined;
+    })();
+
+    const title = cmsMeta?.seo?.title || product.seo.title || `${product.vendor} ${product.title}`;
+    const description = cmsMeta?.seo?.description || product.seo.description || product.description;
+    const index = cmsMeta?.seo?.noindex !== true;
+    const keywords = cmsMeta?.seo?.keywords ?? undefined;
+
     return {
         title,
         description,
+        keywords,
+        robots: { index },
         alternates: {
             canonical: `https://${shop.domain}/${locale.code}/products/${handle}/${search}`,
             languages: Object.fromEntries(
@@ -102,6 +117,7 @@ export async function generateMetadata({
             description,
             siteName: shop.name,
             locale: locale.code,
+            images: cmsSeoImageUrl ? [{ url: cmsSeoImageUrl }] : undefined,
         },
     };
 }
@@ -162,6 +178,8 @@ export default async function ProductPage({ params }: { params: ProductPageParam
         console.error(productError);
         throw productError;
     }
+
+    const cmsMeta = await ProductMetadataApi({ shop, locale, handle });
 
     const { descriptionHtml: content } = product;
 
@@ -261,6 +279,17 @@ export default async function ProductPage({ params }: { params: ProductPageParam
                 </Suspense>
             </Card>
 
+            {cmsMeta?.descriptionOverride ? (
+                <BlockRenderer
+                    blocks={[{ blockType: 'rich-text', body: cmsMeta.descriptionOverride as unknown }]}
+                    context={{
+                        shop: { id: shop.id, domain: shop.domain },
+                        locale: { code: locale.code },
+                        loaders: buildBlockLoaders(),
+                    }}
+                />
+            ) : null}
+
             <Suspense
                 key={`products.${handle}.details.slices`}
                 fallback={<Card className={cn(BLOCK_STYLES, 'h-32 rounded-lg')} data-skeleton />}
@@ -269,6 +298,17 @@ export default async function ProductPage({ params }: { params: ProductPageParam
                     <CMSContent shop={shop} locale={locale} handle={handle} type={'product_page'} />
                 </section>
             </Suspense>
+
+            {cmsMeta?.blocks && cmsMeta.blocks.length > 0 ? (
+                <BlockRenderer
+                    blocks={cmsMeta.blocks as never}
+                    context={{
+                        shop: { id: shop.id, domain: shop.domain },
+                        locale: { code: locale.code },
+                        loaders: buildBlockLoaders(),
+                    }}
+                />
+            ) : null}
         </>
     );
 }
