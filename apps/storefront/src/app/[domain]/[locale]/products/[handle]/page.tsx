@@ -78,14 +78,12 @@ export async function generateMetadata({
         notFound();
     }
 
-    const locales = await LocalesApi({ api });
+    const [locales, cmsMeta] = await Promise.all([LocalesApi({ api }), ProductMetadataApi({ shop, locale, handle })]);
 
     let search = '';
     if (searchParams.variant && searchParams.variant !== parseGid(initialVariant.id).id) {
         search = `?variant=${searchParams.variant}`;
     }
-
-    const cmsMeta = await ProductMetadataApi({ shop, locale, handle });
 
     const cmsSeoImageUrl = (() => {
         const img = cmsMeta?.seo?.image;
@@ -176,11 +174,12 @@ export default async function ProductPage({ params }: { params: ProductPageParam
         throw productError;
     }
 
-    const cmsMeta = await ProductMetadataApi({ shop, locale, handle });
+    const [cmsMeta, i18n] = await Promise.all([
+        ProductMetadataApi({ shop, locale, handle }),
+        getDictionary({ shop, locale }),
+    ]);
 
     const { descriptionHtml: content } = product;
-
-    const i18n = await getDictionary({ shop, locale });
     const { t } = getTranslations('product', i18n);
 
     const initialVariant = firstAvailableVariant(product);
