@@ -16,7 +16,10 @@ export type GetArticlesArgs = {
     __payload?: Payload;
 };
 
-const emptyResult = { docs: [], totalDocs: 0, hasNextPage: false, hasPrevPage: false, page: 1 };
+// Sentinel for shops whose Tenant doc hasn't been synced yet. See
+// `get-pages.ts` for the full rationale — TL;DR: never drop the tenant
+// predicate, but keep the helper's return type narrow.
+const TENANT_RESOLUTION_FAILED = '__cms_no_tenant_resolved__';
 
 export const getArticles = async ({
     shop,
@@ -29,8 +32,7 @@ export const getArticles = async ({
 }: GetArticlesArgs) => {
     assertShopId(shop);
     const payload = __payload ?? (await getPayloadInstance());
-    const tenantId = await resolveTenantId(payload, shop.id);
-    if (!tenantId) return emptyResult as never as Awaited<ReturnType<Payload['find']>>;
+    const tenantId = (await resolveTenantId(payload, shop.id)) ?? TENANT_RESOLUTION_FAILED;
     // `contains` translates to a MongoDB regex against the `tags` array — that
     // both does a substring match (`news` matches `breaking-news`) AND lets
     // attacker-supplied regex metachars (`.+*?()[]\`) through to the query,

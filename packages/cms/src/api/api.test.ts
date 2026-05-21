@@ -174,12 +174,16 @@ describe('query API', () => {
             __resetTenantIdCache(payload);
         });
 
-        it('returns an empty paginated result when no Tenant exists for the shop', async () => {
+        it('falls back to a tenant sentinel that matches nothing when no Tenant exists — never drops the tenant predicate', async () => {
             const { payload, find } = makePayloadWithoutTenant();
             const list = await getArticles({ shop: shop(), locale: { code: 'en-US' }, __payload: payload });
             expect(list.docs).toEqual([]);
-            expect(find).toHaveBeenCalledTimes(1);
-            expect(find).toHaveBeenCalledWith(expect.objectContaining({ collection: 'tenants' }));
+            // Tenant resolution + articles query, never an unscoped find.
+            expect(find).toHaveBeenCalledTimes(2);
+            const articlesCall = find.mock.calls.find((c) => (c[0] as FindArgs).collection === 'articles');
+            expect((articlesCall?.[0] as FindArgs | undefined)?.where).toEqual({
+                tenant: { equals: '__cms_no_tenant_resolved__' },
+            });
             __resetTenantIdCache(payload);
         });
     });
@@ -212,11 +216,16 @@ describe('query API', () => {
             __resetTenantIdCache(payload);
         });
 
-        it('returns an empty paginated result when no Tenant exists for the shop', async () => {
+        it('falls back to a tenant sentinel that matches nothing when no Tenant exists — never drops the tenant predicate', async () => {
             const { payload, find } = makePayloadWithoutTenant();
             const list = await getPages({ shop: shop(), locale: { code: 'en-US' }, __payload: payload });
             expect(list.docs).toEqual([]);
-            expect(find).toHaveBeenCalledTimes(1);
+            // Tenant resolution + pages query, never an unscoped find.
+            expect(find).toHaveBeenCalledTimes(2);
+            const pagesCall = find.mock.calls.find((c) => (c[0] as FindArgs).collection === 'pages');
+            expect((pagesCall?.[0] as FindArgs | undefined)?.where).toEqual({
+                tenant: { equals: '__cms_no_tenant_resolved__' },
+            });
             __resetTenantIdCache(payload);
         });
     });
