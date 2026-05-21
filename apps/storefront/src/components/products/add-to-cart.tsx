@@ -2,7 +2,7 @@
 
 import { useCart } from '@shopify/hydrogen-react';
 import { usePathname, useRouter } from 'next/navigation';
-import { type HTMLProps, useCallback, useState } from 'react';
+import { type HTMLProps, useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import type { Product, ProductVariant } from '@/api/product';
 import { Button } from '@/components/actionable/button';
@@ -45,7 +45,18 @@ export function AddToCart({
 
     const { postEvent } = useTrackable();
 
-    const [animation, setAnimation] = useState<NodeJS.Timeout | undefined>();
+    const animationTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const [animating, setAnimating] = useState(false);
+
+    useEffect(() => {
+        return () => {
+            if (animationTimerRef.current !== null) {
+                clearTimeout(animationTimerRef.current);
+                animationTimerRef.current = null;
+            }
+        };
+    }, []);
+
     // This is a bit of a hack, but it works.
     const { cartReady, linesAdd, status = 'fetching' } = useCart();
 
@@ -96,24 +107,22 @@ export function AddToCart({
             },
         });
 
-        clearTimeout(animation);
-
-        setAnimation(
-            setTimeout(() => {
-                clearTimeout(animation);
-                setAnimation(() => undefined);
-            }, 3000),
-        );
+        if (animationTimerRef.current !== null) clearTimeout(animationTimerRef.current);
+        setAnimating(true);
+        animationTimerRef.current = setTimeout(() => {
+            setAnimating(false);
+            animationTimerRef.current = null;
+        }, 3000);
 
         if (redirect) {
             router.push('/cart/');
         }
-    }, [linesAdd, selectedVariant, quantity, ready, animation, locale, path, postEvent, product, redirect, router]);
+    }, [linesAdd, selectedVariant, quantity, ready, locale, path, postEvent, product, redirect, router]);
 
     const label = (() => {
         if (children) return t('add-to-cart');
 
-        if (animation) {
+        if (animating) {
             // 1. Have we just successfully added to cart, if so, show a checkmark.
             return t('added-to-cart');
         } else if (!selectedVariant?.availableForSale) {
@@ -139,7 +148,7 @@ export function AddToCart({
             as="button"
             type={(type as 'button' | 'reset' | 'submit' | undefined) || 'button'}
             data-ready={ready || undefined}
-            data-success={animation ? 'true' : undefined}
+            data-success={animating ? 'true' : undefined}
             onClick={add}
             title={tCart('add-n-to-your-cart', quantity)}
             data-nosnippet={true}
