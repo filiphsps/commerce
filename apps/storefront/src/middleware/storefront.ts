@@ -229,7 +229,8 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
 
     // Validations that doesn't apply to api routes.
     // Make sure the url ends with a trailing slash.
-    if (!(newUrl.href.split('?')[0]!.endsWith('/') && newUrl.pathname.endsWith('/'))) {
+    const [hrefWithoutQuery = ''] = newUrl.href.split('?');
+    if (!(hrefWithoutQuery.endsWith('/') && newUrl.pathname.endsWith('/'))) {
         newUrl.href = newUrl.href = `${newUrl.href.split('?')[0]}/${newUrl.search}`;
     }
 
