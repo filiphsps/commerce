@@ -4,6 +4,7 @@ import { flattenConnection } from '@shopify/hydrogen-react';
 import type { Article, ArticleSortKeys } from '@shopify/hydrogen-react/storefront-api-types';
 import type { Blog } from '@/api/blog';
 import type { AbstractApi, ApiReturn } from '@/utils/abstract-api';
+import { unsafe_cast } from '@/utils/unsafe-cast';
 
 const BLOGS_QUERY = graphql(`
     query blogs($first: Int!) {
@@ -123,7 +124,9 @@ export async function BlogsApi({ api }: { api: AbstractApi }): Promise<ApiReturn
         return [undefined, new NotFoundError(`"Blogs" cannot be found`)];
     }
 
-    return [flattenConnection(data.blogs) as unknown as Blog[], undefined];
+    // flattenConnection returns RecursivePartial<Blog>[]; the Storefront API
+    // guarantees all queried fields are present at runtime.
+    return [unsafe_cast<Blog[]>(flattenConnection(data.blogs)), undefined];
 }
 
 export async function BlogApi({
@@ -156,7 +159,9 @@ export async function BlogApi({
 
     return [
         {
-            ...(data.blog as unknown as Blog),
+            // hydrogen-react types `blog` as RecursivePartial<Blog>; the
+            // Storefront API guarantees all queried fields are present.
+            ...unsafe_cast<Blog>(data.blog),
             description: data.blog.description?.value,
         },
         undefined,
@@ -191,7 +196,9 @@ export async function BlogArticleApi({
 
     return [
         {
-            ...(data.blog.articleByHandle as unknown as Article),
+            // hydrogen-react types `articleByHandle` as RecursivePartial<Article>;
+            // the Storefront API guarantees all queried fields are present.
+            ...unsafe_cast<Article>(data.blog.articleByHandle),
             contentHtml: data.blog.articleByHandle.contentHtml.replace(/data-mce-fragment="1"/gi, ''),
         },
         undefined,

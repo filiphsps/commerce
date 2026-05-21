@@ -3,6 +3,7 @@ import { trace } from '@opentelemetry/api';
 
 import type { Product, ProductFilters } from '@/api/product';
 import type { AbstractApi } from '@/utils/abstract-api';
+import { unsafe_cast } from '@/utils/unsafe-cast';
 
 const SEARCH_PRODUCTS_QUERY = graphql(`
     query searchProducts($query: String!, $first: Int, $type: [SearchType!]) {
@@ -105,7 +106,9 @@ export const SearchApi = async ({
         }
 
         return {
-            result: data?.search.edges.map((item) => item.node as unknown as Product) || [],
+            // hydrogen-react types search edge nodes as RecursivePartial<Product>;
+            // the Storefront API guarantees all queried fields are present.
+            result: data?.search.edges.map((item) => unsafe_cast<Product>(item.node)) || [],
             productFilters: data?.search.productFilters || [],
             totalCount: data?.search.totalCount ?? 0,
         };

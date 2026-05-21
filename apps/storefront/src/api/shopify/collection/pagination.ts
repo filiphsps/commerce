@@ -11,6 +11,7 @@ import type {
 import { cache } from '@/cache';
 import type { ApiOptions } from '@/utils/abstract-api';
 import { isValidHandle } from '@/utils/handle';
+import { unsafe_cast } from '@/utils/unsafe-cast';
 import { COLLECTION_PAGINATION_COUNT_QUERY, COLLECTIONS_PAGINATION_QUERY } from './queries';
 
 type GenericCollectionFilters = {
@@ -221,7 +222,9 @@ export const CollectionsPaginationApi = async ({
     }
 
     return {
-        collections: data.collections.edges as unknown as CollectionEdge[],
+        // hydrogen-react types collection edges as RecursivePartial<CollectionEdge>[];
+        // the Storefront API guarantees all queried fields are present at runtime.
+        collections: unsafe_cast<CollectionEdge[]>(data.collections.edges),
         page_info: {
             start_cursor: page_info.startCursor || null,
             end_cursor: page_info.endCursor || null,

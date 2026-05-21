@@ -4,6 +4,7 @@ import { parseGid } from '@shopify/hydrogen-react';
 import type { Product } from '@/api/product';
 import { cache } from '@/cache';
 import type { AbstractApi } from '@/utils/abstract-api';
+import { unsafe_cast } from '@/utils/unsafe-cast';
 
 const PRODUCT_RECOMMENDATIONS_QUERY = graphql(`
     query productRecommendations($productId: ID!) {
@@ -92,5 +93,7 @@ export const RecommendationApi = async ({ api, id }: { api: AbstractApi; id: str
         throw new NotFoundError(`"Recommendations" for "Product" with id "${id}" on shop "${shop.id}"`);
     }
 
-    return data.productRecommendations as unknown as Product[];
+    // hydrogen-react types `productRecommendations` as RecursivePartial<Product>[];
+    // the Storefront API guarantees all queried fields are present at runtime.
+    return unsafe_cast<Product[]>(data.productRecommendations);
 };

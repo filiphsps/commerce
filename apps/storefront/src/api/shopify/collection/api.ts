@@ -6,6 +6,7 @@ import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import { cache } from '@/cache';
 import type { AbstractApi, ApiOptions } from '@/utils/abstract-api';
 import { isValidHandle } from '@/utils/handle';
+import { unsafe_cast } from '@/utils/unsafe-cast';
 import { type CollectionFilters, extractLimitLikeFilters } from './pagination';
 import { COLLECTION_QUERY, COLLECTIONS_QUERY } from './queries';
 
@@ -69,7 +70,9 @@ export const CollectionApi = async (
     }
 
     return {
-        ...(data.collection as unknown as Collection),
+        // hydrogen-react types `collection` as RecursivePartial<Collection>;
+        // the Storefront API guarantees all queried fields are present.
+        ...unsafe_cast<Collection>(data.collection),
         descriptionHtml: data.collection.descriptionHtml ?? '',
     };
 };
