@@ -75,7 +75,11 @@ afterEach(() => {
 });
 
 describe('<GeoRedirect>', () => {
-    it('renders nothing while geo location is loading', () => {
+    it('renders nothing while geo location has no country yet', () => {
+        // The component's skip guard is `!location.country` (not `location.isLoading`),
+        // so the absence of `country` is what suppresses the render. The hook also
+        // returns `isLoading: true` during the same window in production — both
+        // states funnel through the same `!country` branch.
         vi.mocked(useGeoLocation).mockReturnValue({
             isLoading: true,
             country: undefined,
@@ -130,11 +134,13 @@ describe('<GeoRedirect>', () => {
         );
 
         expect(continueAnchor).toBeDefined();
-        // `Link` prefixes the target locale (`sv-SE`) and routes to the
-        // computed pathname; the search params survive intact.
-        expect(continueAnchor?.getAttribute('href')).toContain('/sv-SE/');
-        expect(continueAnchor?.getAttribute('href')).toContain('products');
-        expect(continueAnchor?.getAttribute('href')).toContain('q=red');
+
+        // Parse the href so the assertion catches regressions that smuggle
+        // extra params or duplicate the search portion (e.g. `?q=red&q=red`,
+        // `?q=red&utm=injected`). `Link` prefixes the target locale (`sv-SE`).
+        const url = new URL(continueAnchor!.getAttribute('href')!, 'https://example.test');
+        expect(url.pathname).toMatch(/^\/sv-SE\/products\/?$/);
+        expect(url.search).toBe('?q=red');
     });
 
     it('clicking the close button stores a dismiss timestamp and hides the banner', () => {
@@ -164,6 +170,12 @@ describe('<GeoRedirect>', () => {
         trigger!.focus();
         fireEvent.click(trigger!);
         expect(trigger!.getAttribute('aria-expanded')).toBe('true');
+
+        // Move focus away while the dropdown is open. Without this step the
+        // assertion below would pass even if the focus-restore effect were
+        // removed (focus would simply still be on the trigger from line above).
+        trigger!.blur();
+        expect(document.activeElement).not.toBe(trigger);
 
         fireEvent.click(trigger!);
         expect(trigger!.getAttribute('aria-expanded')).toBe('false');
