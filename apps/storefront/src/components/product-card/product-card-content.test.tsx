@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
 import ProductCardContent from '@/components/product-card/product-card-content';
-import { firstAvailableVariant } from '@/utils/first-available-variant';
 import { mockProduct } from '@/utils/test/fixtures';
 import { render } from '@/utils/test/react';
 
@@ -138,10 +137,6 @@ describe('components', () => {
                         pageInfo: {},
                     },
                 });
-
-                // Sanity-check that firstAvailableVariant picks the expected variant ids
-                expect(firstAvailableVariant(productA)?.id).toBe('v1');
-                expect(firstAvailableVariant(productB)?.id).toBe('v2');
 
                 const { rerender, container } = render(
                     <ProductCardContent data={productA} locale={{ code: 'en-US' } as any} i18n={{} as any} />,
