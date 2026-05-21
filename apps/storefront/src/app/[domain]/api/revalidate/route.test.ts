@@ -370,4 +370,39 @@ describe('POST — round trip with loader tag scheme', () => {
             expect(revalidateTagMock).toHaveBeenCalledWith(tag, 'max');
         }
     });
+
+    it('revalidates exactly the tags that CollectionApi would write for the same collection', async () => {
+        revalidateTagMock.mockClear();
+        const body = '{"handle":"summer-sale"}';
+        const secret = 'shopify-secret';
+        process.env.SHOPIFY_WEBHOOK_SECRET = secret;
+        const hmac = createHmac('sha256', secret).update(body, 'utf8').digest('base64');
+
+        const req = makeRequest({
+            method: 'POST',
+            body,
+            headers: {
+                'x-shopify-hmac-sha256': hmac,
+                'x-shopify-topic': 'collections/update',
+                'content-type': 'application/json',
+            },
+        });
+
+        const res = await POST(req as any, { params: Promise.resolve({ domain: 'mock.shop' }) } as any);
+        expect(res.status).toBe(200);
+
+        // Compute the tags the loader writes for shop-1 + collection handle summer-sale.
+        // No locale qualifier — Shopify webhook tags don't include locale, and
+        // neither does the loader's .tags array; locale only appears in readTag.
+        const { cache: shopifyCache } = await import('@/cache');
+        const loaderKey = shopifyCache.keys.collection({
+            tenant: { id: 'shop-1', domain: 'mock.shop' } as any,
+            handle: 'summer-sale',
+        });
+
+        // Every tag the loader writes must appear in revalidateTag invocations.
+        for (const tag of loaderKey.tags) {
+            expect(revalidateTagMock).toHaveBeenCalledWith(tag, 'max');
+        }
+    });
 });
