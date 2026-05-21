@@ -65,6 +65,7 @@ export const TextChipRenderer = ({
         <button
             type="button"
             aria-label={ariaLabel}
+            disabled={!available}
             aria-disabled={!available || undefined}
             aria-pressed={selected}
             className={className}
