@@ -1,5 +1,6 @@
 import 'server-only';
 
+import { BlockRenderer } from '@nordcom/commerce-cms/blocks/render';
 import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 import md5 from 'crypto-js/md5';
@@ -10,6 +11,8 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import type { Article as LdArticle, WithContext } from 'schema-dts';
+import { populatedMedia } from '@/api/_cms';
+import { ArticleApi } from '@/api/article';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogArticleApi } from '@/api/shopify/blog';
 import { LocalesApi } from '@/api/store';
@@ -22,6 +25,7 @@ import { Label } from '@/components/typography/label';
 import { getDictionary } from '@/utils/dictionary';
 import { isValidHandle, NOT_FOUND_HANDLE } from '@/utils/handle';
 import { getTranslations, Locale } from '@/utils/locale';
+import { buildBlockLoaders } from '../../../../../../cms-loaders';
 import type { ArticlePageParams } from './static-params';
 
 export { type ArticlePageParams, generateStaticParams } from './static-params';
@@ -51,13 +55,31 @@ export async function generateMetadata({ params }: { params: ArticlePageParams }
     }
 
     const locales = await LocalesApi({ api });
+    const cmsArticle = await ArticleApi({ shop, locale, slug: handle });
+    const cmsCover = populatedMedia(cmsArticle?.cover);
+    const cmsSeoImage = populatedMedia((cmsArticle?.seo?.image ?? null) as Parameters<typeof populatedMedia>[0]);
 
-    const title = article.seo?.title || article.title;
-    const description = article.seo?.description || '';
-    const image = article.image;
+    const title = cmsArticle?.seo?.title || cmsArticle?.title || article.seo?.title || article.title;
+    const description = cmsArticle?.seo?.description || cmsArticle?.excerpt || article.seo?.description || '';
+    const index = cmsArticle?.seo?.noindex !== true;
+    const tags: string[] = Array.from(new Set([...(cmsArticle?.tags ?? []), ...(article.tags ?? [])]));
+
+    const overlayImageUrl = cmsSeoImage?.url ?? cmsCover?.url;
+    const overlayImage = overlayImageUrl
+        ? {
+              url: overlayImageUrl,
+              width: cmsSeoImage?.width ?? cmsCover?.width ?? undefined,
+              height: cmsSeoImage?.height ?? cmsCover?.height ?? undefined,
+          }
+        : article.image?.url
+          ? { url: article.image.url, width: article.image.width!, height: article.image.height! }
+          : null;
+
     return {
         title,
         description,
+        keywords: tags.length > 0 ? tags : undefined,
+        robots: { index },
         alternates: {
             canonical: `https://${shop.domain}/${locale.code}/blogs/${blogHandle}/${handle}/`,
             languages: Object.fromEntries(
@@ -71,15 +93,7 @@ export async function generateMetadata({ params }: { params: ArticlePageParams }
             description,
             siteName: shop.name,
             locale: locale.code,
-            images: image?.url
-                ? [
-                      {
-                          url: image.url,
-                          width: image.width!,
-                          height: image.height!,
-                      },
-                  ]
-                : undefined,
+            images: overlayImage ? [overlayImage] : undefined,
         },
     };
 }
@@ -113,11 +127,16 @@ export default async function ArticlePage({ params }: { params: ArticlePageParam
         throw articleError;
     }
 
+    const cmsArticle = await ArticleApi({ shop, locale, slug: handle });
+    const cmsCover = populatedMedia(cmsArticle?.cover);
+
     const i18n = await getDictionary({ shop, locale });
     const { t } = getTranslations('common', i18n);
 
     const { title, image, contentHtml, content, authorV2: author, publishedAt, seo, excerpt, tags } = article;
     const avatar = author ? `https://www.gravatar.com/avatar/${md5(author.email)}.jpg?s=45&d=blank` : null;
+
+    const mergedTags: string[] = Array.from(new Set([...(cmsArticle?.tags ?? []), ...(tags ?? [])]));
 
     const jsonLd: WithContext<LdArticle> = {
         '@context': 'https://schema.org',
@@ -128,7 +147,7 @@ export default async function ArticlePage({ params }: { params: ArticlePageParam
         description: seo?.description || excerpt || '',
         articleSection: article.blog.title,
         image: image?.url ? [image.url] : [],
-        keywords: (tags || []).join(', '),
+        keywords: mergedTags.join(', '),
         dateCreated: publishedAt,
         datePublished: publishedAt,
         author: {
@@ -166,14 +185,14 @@ export default async function ArticlePage({ params }: { params: ArticlePageParam
             <header className="flex flex-col-reverse items-center justify-start gap-2 md:flex-col md:gap-3">
                 <h1 className="font-semibold text-2xl md:text-3xl 2xl:text-center">{title}</h1>
 
-                {image?.url ? (
+                {cmsCover?.url || image?.url ? (
                     <Image
                         className="overflow-hidden rounded-lg shadow 2xl:max-w-[70vw]"
-                        role={image.altText ? undefined : 'presentation'}
-                        src={image.url}
-                        alt={image.altText!}
-                        height={image.height!}
-                        width={image.width!}
+                        role={cmsCover?.alt || image?.altText ? undefined : 'presentation'}
+                        src={cmsCover?.url ?? image?.url ?? ''}
+                        alt={cmsCover?.alt ?? image?.altText ?? title}
+                        height={cmsCover?.height ?? image?.height ?? 900}
+                        width={cmsCover?.width ?? image?.width ?? 1600}
                         decoding="async"
                         loading={'eager'}
                         priority={true}
@@ -193,6 +212,17 @@ export default async function ArticlePage({ params }: { params: ArticlePageParam
                     </div>
 
                     <Content className="prone max-w-none" html={contentHtml} />
+
+                    {cmsArticle?.body ? (
+                        <BlockRenderer
+                            blocks={[{ blockType: 'rich-text', body: cmsArticle.body as unknown }] as never}
+                            context={{
+                                shop: { id: shop.id, domain: shop.domain },
+                                locale: { code: locale.code },
+                                loaders: buildBlockLoaders(),
+                            }}
+                        />
+                    ) : null}
                 </article>
 
                 <aside className="w-full md:h-full">
