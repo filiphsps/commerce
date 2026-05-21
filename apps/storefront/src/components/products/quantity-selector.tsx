@@ -2,7 +2,7 @@
 
 import { useCart } from '@shopify/hydrogen-react';
 import type { ChangeEvent, HTMLProps, KeyboardEventHandler } from 'react';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/actionable/button';
 import { Input } from '@/components/actionable/input';
 import { useShop } from '@/components/shop/provider';
@@ -63,15 +63,11 @@ const QuantitySelector = ({
     const maxQuantity = shop.commerce?.maxQuantity ?? COMMERCE_DEFAULTS.maxQuantity;
 
     const [quantityValue, setQuantityValue] = useState(quantity.toString() || '1');
-    const [lastQuantity, setLastQuantity] = useState(quantity);
 
     // Sync local quantityValue with the prop whenever the upstream value changes.
-    if (quantity !== lastQuantity) {
-        setLastQuantity(quantity);
-        if (quantity.toString() !== quantityValue) {
-            setQuantityValue(quantity.toString());
-        }
-    }
+    useEffect(() => {
+        setQuantityValue(quantity.toString());
+    }, [quantity]);
 
     const { cartReady, status } = useCart();
     const ready = cartReady && !['updating'].includes(status);
@@ -150,10 +146,8 @@ const QuantitySelector = ({
                 !disabled && 'opacity-100 hover:border-primary focus-visible::border-gray-300',
                 className,
             )}
-            suppressHydrationWarning={true}
         >
             <Button
-                suppressHydrationWarning={true}
                 aria-disabled={decreaseDisabled}
                 aria-label={t('decrease')}
                 type="button"
@@ -175,7 +169,6 @@ const QuantitySelector = ({
             </Button>
 
             <Input
-                suppressHydrationWarning={true}
                 aria-disabled={disabled}
                 aria-label={t('quantity')}
                 ref={inputRef}
@@ -201,7 +194,6 @@ const QuantitySelector = ({
             />
 
             <Button
-                suppressHydrationWarning={true}
                 aria-disabled={disabled}
                 aria-label={t('increase')}
                 type="button"

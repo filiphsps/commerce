@@ -2,6 +2,28 @@ import { describe, expect, it, vi } from 'vitest';
 import { QuantitySelector } from '@/components/products/quantity-selector';
 import { fireEvent, render, screen, waitFor } from '@/utils/test/react';
 
+// Approach (b): assert end-state determinism — the initial client render matches the
+// passed value prop exactly, which is what makes SSR/client hydration agreement possible.
+describe('QuantitySelector hydration', () => {
+    it('does not produce hydration warnings with deterministic initial quantity', () => {
+        const errs: unknown[][] = [];
+        const spy = vi.spyOn(console, 'error').mockImplementation((...args: unknown[]) => errs.push(args));
+
+        render(<QuantitySelector value={1} update={vi.fn()} i18n={{} as any} />);
+
+        // The input must reflect the passed value immediately on first render —
+        // no useLayoutEffect or state divergence that would differ from SSR markup.
+        const input = screen.getByTestId('quantity-input');
+        expect(input).toHaveValue(1);
+
+        // Filter to any hydration-mismatch warnings that React emits.
+        const hydrationErrs = errs.filter((args) => String(args[0]).includes('Hydration'));
+        expect(hydrationErrs).toHaveLength(0);
+
+        spy.mockRestore();
+    });
+});
+
 vi.mock('@shopify/hydrogen-react', async (importOriginal) => {
     const actual = await importOriginal<typeof import('@shopify/hydrogen-react')>();
     return {
