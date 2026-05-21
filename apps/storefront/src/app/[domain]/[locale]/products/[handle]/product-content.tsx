@@ -14,6 +14,7 @@ import { firstAvailableVariant } from '@/utils/first-available-variant';
 import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
+import { unsafe_cast } from '@/utils/unsafe-cast';
 
 export type ProductContentProps = {
     product: Product;
@@ -32,7 +33,11 @@ export function ProductContent({ product, i18n }: ProductContentProps) {
     const [quantity, setQuantity] = useState(1);
 
     return (
-        <ProductProvider data={product as unknown as StorefrontProduct} initialVariantId={initialVariantId}>
+        // hydrogen-react's `Product` is `RecursivePartial<Product>`; our local
+        // `Product` type is a stricter superset that satisfies the runtime
+        // contract. The library types are intentionally permissive — this is
+        // the documented escape hatch.
+        <ProductProvider data={unsafe_cast<StorefrontProduct>(product)} initialVariantId={initialVariantId}>
             <QuantityProvider quantity={quantity} setQuantity={setQuantity}>
                 <ProductActionsContainer i18n={i18n} />
             </QuantityProvider>
