@@ -1,7 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import type { Product } from '@/api/product';
 
 import ProductCardFooter from '@/components/product-card/product-card-footer';
@@ -20,8 +20,19 @@ export type ProductCardFooterProps = {
 
     children?: ReactNode;
 };
+
 const ProductCardContent = ({ data: product, priority, locale, i18n, children }: ProductCardFooterProps) => {
-    const [selectedVariant, setSelectedVariant] = useState(firstAvailableVariant(product));
+    const initialVariant = useMemo(() => firstAvailableVariant(product), [product?.id]);
+    const [override, setOverride] = useState<typeof initialVariant>(undefined);
+
+    // Reset any user-selected override when the product changes, so we never
+    // hold a stale variant pointer from the previous product.
+    useEffect(() => {
+        setOverride(undefined);
+    }, [product?.id]);
+
+    const selectedVariant = override ?? initialVariant;
+
     if (!product || !selectedVariant) {
         return null;
     }
@@ -37,7 +48,11 @@ const ProductCardContent = ({ data: product, priority, locale, i18n, children }:
                 </ProductCardHeader>
             </Suspense>
 
-            <div className="flex h-full min-h-24 w-full grow flex-col pt-1" suppressHydrationWarning={true}>
+            <div
+                className="flex h-full min-h-24 w-full grow flex-col pt-1"
+                data-variant-id={selectedVariant.id}
+                suppressHydrationWarning={true}
+            >
                 <div className="flex grow flex-col justify-end">
                     <div className="flex flex-wrap-reverse items-center justify-start gap-1 pt-2">
                         <Pricing
@@ -63,7 +78,7 @@ const ProductCardContent = ({ data: product, priority, locale, i18n, children }:
                         locale={locale}
                         i18n={i18n}
                         selected={selectedVariant}
-                        setSelected={setSelectedVariant}
+                        setSelected={setOverride}
                     />
                 </Suspense>
             </div>

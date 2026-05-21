@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import ProductCardContent from '@/components/product-card/product-card-content';
+import { firstAvailableVariant } from '@/utils/first-available-variant';
 import { mockProduct } from '@/utils/test/fixtures';
 import { render } from '@/utils/test/react';
 
@@ -97,6 +98,60 @@ describe('components', () => {
                 // Both the sale price (5) and compare-at price (10) should appear
                 expect(container.textContent).toMatch(/5/);
                 expect(container.textContent).toMatch(/10/);
+            });
+        });
+
+        describe('ProductCardContent variant sync', () => {
+            it('re-derives selectedVariant when product changes', () => {
+                const productA = makeProduct({
+                    id: 'gid://shopify/Product/1',
+                    variants: {
+                        edges: [
+                            {
+                                node: {
+                                    id: 'v1',
+                                    availableForSale: true,
+                                    selectedOptions: [{ name: 'Title', value: 'Default Title' }],
+                                    price: { amount: '10.00', currencyCode: 'USD' },
+                                    compareAtPrice: null,
+                                },
+                            },
+                        ],
+                        pageInfo: {},
+                    },
+                });
+
+                const productB = makeProduct({
+                    id: 'gid://shopify/Product/2',
+                    variants: {
+                        edges: [
+                            {
+                                node: {
+                                    id: 'v2',
+                                    availableForSale: true,
+                                    selectedOptions: [{ name: 'Title', value: 'Default Title' }],
+                                    price: { amount: '20.00', currencyCode: 'USD' },
+                                    compareAtPrice: null,
+                                },
+                            },
+                        ],
+                        pageInfo: {},
+                    },
+                });
+
+                // Sanity-check that firstAvailableVariant picks the expected variant ids
+                expect(firstAvailableVariant(productA)?.id).toBe('v1');
+                expect(firstAvailableVariant(productB)?.id).toBe('v2');
+
+                const { rerender, container } = render(
+                    <ProductCardContent data={productA} locale={{ code: 'en-US' } as any} i18n={{} as any} />,
+                );
+                const initial = container.querySelector('[data-variant-id]')?.getAttribute('data-variant-id');
+                expect(initial).toBe('v1');
+
+                rerender(<ProductCardContent data={productB} locale={{ code: 'en-US' } as any} i18n={{} as any} />);
+                const after = container.querySelector('[data-variant-id]')?.getAttribute('data-variant-id');
+                expect(after).toBe('v2');
             });
         });
     });
