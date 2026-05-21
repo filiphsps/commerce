@@ -67,6 +67,10 @@ export const useCartUtils = ({
     // — Hydrogen-React sets `cart.error` synchronously and we don't want to
     // spam the toaster on every re-render that follows.
     const lastSeenErrorRef = useRef<unknown>(undefined);
+    // Track the sorted key of the last discount set we submitted so that a
+    // Shopify rejection (which leaves discountCodes empty) does not cause the
+    // effect to re-fire on every subsequent idle render — an infinite API loop.
+    const lastSubmittedDiscountKeyRef = useRef<string | null>(null);
 
     useEffect(() => {
         buyerIdentityUpdateRef.current = buyerIdentityUpdate;
@@ -105,7 +109,14 @@ export const useCartUtils = ({
     // the URL no longer carries the request — leaving the user with a quietly
     // failed apply.
     useEffect(() => {
-        if (status !== 'idle' || !query.has('discount')) return;
+        // When the discount param disappears, clear the submission key so a
+        // future re-entry (e.g. user pastes a new ?discount= link) can submit.
+        if (!query.has('discount')) {
+            lastSubmittedDiscountKeyRef.current = null;
+            return;
+        }
+
+        if (status !== 'idle') return;
 
         const requested = query
             .getAll('discount')
@@ -120,8 +131,15 @@ export const useCartUtils = ({
         const allActive = requested.every((code) => active.includes(code));
 
         if (!allActive) {
+            // Deduplicate to avoid re-submitting the same rejected set on every
+            // idle render — Shopify leaves discountCodes empty on rejection, which
+            // would otherwise cause an infinite API call loop.
+            const requestedKey = [...requested].sort().join(',');
+            if (lastSubmittedDiscountKeyRef.current === requestedKey) return;
+            lastSubmittedDiscountKeyRef.current = requestedKey;
+
             // Fire the update; do NOT touch the URL — let the next render decide.
-            discountCodesUpdateRef.current([...active, ...requested]);
+            discountCodesUpdateRef.current(Array.from(new Set([...active, ...requested])));
             return;
         }
 

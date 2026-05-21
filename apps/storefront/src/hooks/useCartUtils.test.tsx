@@ -131,7 +131,40 @@ describe('hooks', () => {
 
                 renderHook(() => useCartUtils({ locale: USA }));
 
-                await waitFor(() => expect(replace).toHaveBeenCalled());
+                await waitFor(() =>
+                    expect(replace).toHaveBeenCalledWith(
+                        expect.stringMatching(/^(?!.*discount)/),
+                        expect.objectContaining({ scroll: false }),
+                    ),
+                );
+            });
+
+            it('only fires discountCodesUpdate once when Shopify rejects the code (discountCodes stays empty)', async () => {
+                // Shopify rejection scenario: discountCodes remains [] across
+                // multiple renders while status stays idle. The effect must NOT
+                // re-fire discountCodesUpdate on every render cycle.
+                const discountCodesUpdate = vi.fn();
+                (useCart as Mock).mockReturnValue({
+                    error: undefined,
+                    buyerIdentity: { countryCode: 'US' },
+                    buyerIdentityUpdate: vi.fn(),
+                    discountCodes: [],
+                    discountCodesUpdate,
+                    status: 'idle',
+                    cartReady: true,
+                });
+
+                const { rerender } = renderHook(() => useCartUtils({ locale: USA }));
+
+                // Let effects settle after first render.
+                await act(async () => {});
+
+                // Simulate additional renders (e.g. unrelated state changes) that
+                // keep status === 'idle' and discountCodes === [].
+                await act(() => rerender());
+                await act(() => rerender());
+
+                await waitFor(() => expect(discountCodesUpdate).toHaveBeenCalledTimes(1));
             });
         });
     });
