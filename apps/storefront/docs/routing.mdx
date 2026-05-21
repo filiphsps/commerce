@@ -20,3 +20,41 @@ sidebar_position: 2
 
 When adding routes, place them under `src/app/[domain]/[locale]/…` — **not** at the
 root. The `[domain]/api/…` segment is reserved for tenant-scoped API endpoints.
+
+## Product page parallel slots
+
+The PDP at `src/app/[domain]/[locale]/products/[handle]/` is the only route that
+uses parallel route slots. `layout.tsx` is the shell — it resolves the tenant,
+locale, and product once, emits the analytics trigger, breadcrumbs, and JSON-LD,
+then composes four named slots into the page frame:
+
+- **`@gallery`** — `ProductGallery` (images, thumbhash placeholders).
+- **`children` (`page.tsx`)** — purchase block: title, price, variant picker,
+  add-to-cart.
+- **`@description`** — `ProductDescription` (Shopify `descriptionHtml` + CMS
+  overlay).
+- **`@details`** — `ProductDetails` (spec tables, metafields).
+- **`@recommendations`** — `RecommendedProducts` (full-width, below the fold).
+
+Each slot is wrapped in `<Suspense>` with a skeleton fallback so slots can stream
+independently. `generateStaticParams` lives in a sibling module
+(`static-params.ts`) rather than in the layout — keep new PDP-adjacent concerns
+in their own files instead of growing the shell.
+
+## Loading UI coverage
+
+The following routes have a `loading.tsx` neighbor (Next.js renders it as the
+Suspense fallback during navigation):
+
+- `[locale]/loading.tsx` — locale shell
+- `[locale]/search/loading.tsx`
+- `[locale]/cart/loading.tsx`
+- `[locale]/account/loading.tsx`
+- `[locale]/countries/loading.tsx`
+- `[locale]/blogs/[blog]/loading.tsx`
+- `[locale]/products/[handle]/loading.tsx`
+- `[locale]/collections/[handle]/loading.tsx`
+
+When adding a new top-level route under `[locale]/`, add a `loading.tsx`
+alongside it so the navigation transition has a skeleton rather than blank
+chrome.
