@@ -106,6 +106,7 @@ To add a section with sub-nav: create `[domain]/<section>/layout.tsx` if needed,
 -   **Trailing slashes** on internal links (`trailingSlash: true`).
 -   Provider tokens (Shopify keys, etc.) are guarded with `experimental_taintUniqueValue` — preserve that.
 -   **Use `@nordcom/commerce-errors` for every thrown error.** Never `throw new Error(...)`. If no class fits, add one (plus `*ErrorKind` and a `getErrorFromCode` case) in `packages/errors/src/index.ts`. Errors carry `statusCode`, `code`, and `help` URLs the platform relies on.
+-   **No filler comments.** Default to none. Only write one when the *why* is non-obvious — a hidden constraint, a workaround, surprising behavior. Don't restate what the code does, don't describe the current task, don't write multi-line block headers. If removing it wouldn't confuse a future reader, leave it out.
 
 ## Editor hook
 
