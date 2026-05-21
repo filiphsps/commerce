@@ -51,3 +51,25 @@ loaders injected from `src/cms-loaders.ts`.
 Payload generates TS types for the CMS schema; run
 `pnpm --filter @nordcom/commerce-cms generate:types` after any collection-field
 change to refresh `packages/cms/src/types/payload-types.ts`.
+
+### Storefront-side CMS helper layer
+
+Routes never call `@nordcom/commerce-cms/api` directly. Instead they go
+through a thin storefront helper layer under `apps/storefront/src/api/` that
+takes `{ shop, locale, ... }` (matching the `ShopifyApolloApiClient` contract),
+detects `next/headers`' `draftMode()` so editor previews see autosaved drafts,
+and returns `null` for unseeded documents so callers can fall back to minimal
+chrome:
+
+-   `HeaderApi({ shop, locale })` — `header.ts` — tenant `Header` global (logo, nav, mega-menu tiles).
+-   `FooterApi({ shop, locale })` — `footer.ts` — tenant `Footer` global (sections, social, legal, copyright).
+-   `BusinessDataApi({ shop, locale })` — `store.ts` — tenant support/contact fields.
+-   `InfoBarApi({ shop, locale })` — `info-bar.ts` — targeted alias over `BusinessDataApi` for the info-bar surface.
+-   `ProductMetadataApi({ shop, locale, handle })` and `CollectionMetadataApi({ shop, locale, handle })` — `metadata.ts` — CMS overlay (SEO, supplemental blocks, descriptionOverride) on top of a Shopify product/collection.
+-   `ArticleApi({ shop, locale, slug })` — `article.ts` — CMS overlay for a Shopify article slug (SEO, alt cover/excerpt, extra tags, supplemental Lexical body).
+-   `BlogApi({ shop, locale, page?, limit?, tag? })` — `cms-blog.ts` — paginated CMS Article listing for custom blog routes.
+-   `PagesApi({ shop, locale })` — `page.ts` — enumerates CMS pages for sitemap-style consumers.
+
+The dispatcher utilities (`toShopRef`, fixture factories) live in
+`apps/storefront/src/api/_cms.ts`. Tests for each helper sit next to the
+implementation (`*.test.ts`).
