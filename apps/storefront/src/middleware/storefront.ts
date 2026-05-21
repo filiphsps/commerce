@@ -9,7 +9,6 @@ import { getGlobalServiceDomain } from '@/api/shop';
 import { ShopifyApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { commonValidations } from '@/middleware/common-validations';
-import { BuildConfig } from '@/utils/build-config';
 import type { Code } from '@/utils/locale';
 
 function hostnameFromRequest(req: NextRequest): string {
