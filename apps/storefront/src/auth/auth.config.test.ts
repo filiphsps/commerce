@@ -1,8 +1,9 @@
 import { skipCSRFCheck } from '@auth/core';
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { mockShop } from '@/utils/test/fixtures/shop';
+// Dev-mode binding: this module is first loaded with `NODE_ENV !== 'production'`; the prod test below uses `vi.resetModules()` to obtain a separate prod-mode binding without affecting this one.
 import getAuthConfig from './auth.config';
 
 const shopifyAuth = {
@@ -14,10 +15,6 @@ const shopifyAuth = {
 const shop = { domain: 'shop.example.com' } as unknown as OnlineShop;
 
 describe('auth/auth.config', () => {
-    beforeEach(() => {
-        vi.restoreAllMocks();
-    });
-
     it('returns a config with exactly one provider (Shopify)', () => {
         const config = getAuthConfig({ shop, shopifyAuth });
 
@@ -25,8 +22,8 @@ describe('auth/auth.config', () => {
         expect(config.providers).toHaveLength(1);
 
         const provider = config.providers[0] as { id?: string; name?: string };
-        expect(provider?.id).toBe('shopify');
-        expect(provider?.name).toBe('Shopify');
+        expect(provider.id).toBe('shopify');
+        expect(provider.name).toBe('Shopify');
     });
 
     it('does not unconditionally bypass CSRF (uses the @auth/core symbol)', () => {
@@ -89,7 +86,6 @@ describe('auth/auth.config', () => {
             process.env.AUTH_SECRET = 'from-auth-secret';
             expect(getAuthConfig({ shop, shopifyAuth }).secret).toBe('from-nextauth-secret');
 
-            process.env.NEXTAUTH_SECRET = undefined;
             // `delete` is what actually unsets the var so the `??` falls through.
             delete process.env.NEXTAUTH_SECRET;
             process.env.AUTH_SECRET = 'from-auth-secret-only';
