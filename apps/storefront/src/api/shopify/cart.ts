@@ -2,12 +2,11 @@
 // would pull `@/cache` (and therefore `next/cache`) into the client bundle
 // via `providers-registry.tsx`, which webpack rejects at build time.
 import { print } from 'graphql';
-import { PRODUCT_FRAGMENT_MINIMAL_NO_VARIANTS } from '@/api/shopify/product-fragments';
+import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product-fragments';
 
 // CartProvider from hydrogen-react accepts a raw GraphQL string, not a
-// `TypedDocumentNode`. Serialize the typed fragment to text so it can be
-// concatenated into the cart fragment below.
-const PRODUCT_MINIMAL_FRAGMENT_STRING = print(PRODUCT_FRAGMENT_MINIMAL_NO_VARIANTS);
+// `TypedDocumentNode`.
+const PRODUCT_MINIMAL_FRAGMENT_STRING = print(PRODUCT_FRAGMENT_MINIMAL);
 
 export const CartFragment = /* GraphQL */ `
     fragment CartFragment on Cart {
@@ -103,7 +102,7 @@ export const CartFragment = /* GraphQL */ `
                                 ...ImageFragment
                             }
                             product {
-                                ...ProductMinimalNoVariants
+                                ...ProductMinimal
                             }
                             selectedOptions {
                                 name
