@@ -1,4 +1,5 @@
 import { Error as CommerceError } from '@nordcom/commerce-errors';
+import { trace } from '@opentelemetry/api';
 import { parseShopifyWebhook, verifyShopifyHmac } from '@tagtree/shopify';
 import { type NextRequest, NextResponse } from 'next/server';
 import { evictApolloClient } from '@/api/_apollo-pool';
@@ -31,7 +32,10 @@ export async function POST(req: NextRequest, { params }: { params: RevalidateApi
                 { status: 404, headers: noStoreHeaders },
             );
         }
-        console.error('[revalidate] Shop.findByDomain failed:', error);
+        trace.getActiveSpan()?.addEvent('revalidate.shop_lookup_failed', {
+            'error.message': (error as Error)?.message ?? String(error),
+            'shop.domain': domain,
+        });
         return NextResponse.json(
             { status: 503, error: 'shop lookup failed' },
             { status: 503, headers: { ...noStoreHeaders, 'Retry-After': '30' } },
@@ -50,9 +54,14 @@ export async function POST(req: NextRequest, { params }: { params: RevalidateApi
                     { status: 503, headers: noStoreHeaders },
                 );
             }
-            console.warn(
-                '[revalidate] SHOPIFY_WEBHOOK_SECRET is not set — accepting Shopify webhook without HMAC validation. This is permitted in dev only.',
-            );
+            // Dev-only diagnostic: code flow only reaches here when NODE_ENV === 'development'
+            // (the branch above returns 503 in all other environments), so this warn is
+            // intentionally exempt from the no-console policy.
+            if (process.env.NODE_ENV !== 'production') {
+                console.warn(
+                    '[revalidate] SHOPIFY_WEBHOOK_SECRET is not set — accepting Shopify webhook without HMAC validation. This is permitted in dev only.',
+                );
+            }
         } else if (!verifyShopifyHmac(rawBody, headerHmac, secret)) {
             return NextResponse.json({ status: 401, error: 'invalid HMAC' }, { status: 401, headers: noStoreHeaders });
         }

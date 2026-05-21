@@ -1,4 +1,5 @@
 import { graphql } from '@nordcom/commerce-shopify-graphql/graphql';
+import { trace } from '@opentelemetry/api';
 
 import type { Product, ProductFilters } from '@/api/product';
 import type { AbstractApi } from '@/utils/abstract-api';
@@ -97,7 +98,10 @@ export const SearchApi = async ({
         // identical to a legitimate empty result, so users get a broken
         // search experience with nothing in the logs to explain it.
         if (errors && errors.length > 0) {
-            console.error('[shopify] SearchApi errors:', errors);
+            trace.getActiveSpan()?.addEvent('shopify.search_query_errors', {
+                'error.message': String(errors),
+                'search.query': query,
+            });
         }
 
         return {

@@ -1,3 +1,4 @@
+import { trace } from '@opentelemetry/api';
 import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import { cacheLife, cacheTag } from 'next/cache';
 import { notFound } from 'next/navigation';
@@ -56,9 +57,11 @@ export async function GET({}: NextRequest, { params }: ProductsSitemapRouteParam
         }
     }
     if (products.length >= MAX_URLS) {
-        console.warn(
-            `[sitemap/products] capped at MAX_URLS=${MAX_URLS} for shop ${shop.domain} — split into sub-sitemaps when this becomes the norm.`,
-        );
+        trace.getActiveSpan()?.addEvent('sitemap.products_url_cap_reached', {
+            'shop.domain': shop.domain,
+            'sitemap.max_urls': MAX_URLS,
+            'sitemap.product_count': products.length,
+        });
     }
 
     return getServerSideSitemap(

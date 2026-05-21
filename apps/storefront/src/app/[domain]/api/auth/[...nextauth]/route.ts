@@ -1,4 +1,5 @@
 import { Error as CommerceError } from '@nordcom/commerce-errors';
+import { trace } from '@opentelemetry/api';
 import { type NextRequest, NextResponse } from 'next/server';
 import { Shop } from '@/api/_loaders';
 import { getAuth } from '@/auth';
@@ -26,7 +27,10 @@ const resolveShop = async (domain: string) => {
         // Mongo timeouts and other infra failures must surface as 503 so
         // clients know to retry — silently 500-ing breaks the sign-in flow
         // with no obvious signal.
-        console.error('[auth-route] Shop.findByDomain failed:', error);
+        trace.getActiveSpan()?.addEvent('auth.shop_lookup_failed', {
+            'error.message': (error as Error)?.message ?? String(error),
+            'shop.domain': domain,
+        });
         return {
             shop: null,
             error: NextResponse.json(

@@ -2,6 +2,7 @@ import 'server-only';
 
 import type { ApolloClient } from '@apollo/client';
 import type { OnlineShop } from '@nordcom/commerce-db';
+import { trace } from '@opentelemetry/api';
 import type { Locale } from '@/utils/locale';
 
 const POOL_WARN_THRESHOLD = 1000;
@@ -30,7 +31,10 @@ export function getApolloClient({
     const client = factory();
     pool.set(k, client);
     if (pool.size > POOL_WARN_THRESHOLD) {
-        console.warn(`[apollo-pool] size exceeds ${POOL_WARN_THRESHOLD}; potential leak. current=${pool.size}`);
+        trace.getActiveSpan()?.addEvent('apollo_pool.size_threshold_exceeded', {
+            'pool.size': pool.size,
+            'pool.threshold': POOL_WARN_THRESHOLD,
+        });
     }
     return client;
 }

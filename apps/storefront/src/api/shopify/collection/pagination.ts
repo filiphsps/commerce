@@ -2,6 +2,7 @@ import 'server-only';
 
 import type { Identifiable, LimitFilters, Nullable } from '@nordcom/commerce-db';
 import { InvalidHandleError, ProviderFetchError, TodoError, UnreachableError } from '@nordcom/commerce-errors';
+import { trace } from '@opentelemetry/api';
 import type {
     CollectionEdge,
     CollectionSortKeys,
@@ -202,7 +203,10 @@ export const CollectionsPaginationApi = async ({
     // partial result and the missing collections would silently disappear
     // from prod, masked as "empty list".
     if (errors && errors.length > 0) {
-        console.error(`[shopify] CollectionsPaginationApi errors for shop ${shop.id}:`, errors);
+        trace.getActiveSpan()?.addEvent('shopify.collections_pagination_query_errors', {
+            'error.message': String(errors),
+            'shop.id': shop.id,
+        });
         throw new ProviderFetchError(
             `"Collections" query on shop "${shop.id}": ${errors
                 .map((e) => (e instanceof Error ? e.message : undefined))

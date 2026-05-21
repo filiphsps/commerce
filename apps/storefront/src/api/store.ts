@@ -5,6 +5,7 @@ import type { BusinessDatum } from '@nordcom/commerce-cms/types';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { NoLocalesAvailableError, ProviderFetchError } from '@nordcom/commerce-errors';
 import { graphql } from '@nordcom/commerce-shopify-graphql/graphql';
+import { trace } from '@opentelemetry/api';
 import type { Country, PaymentSettings } from '@shopify/hydrogen-react/storefront-api-types';
 import type { AbstractApi } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
@@ -78,7 +79,9 @@ export const CountriesApi = async ({ api }: { api: AbstractApi }): Promise<Count
     const { data: localData, errors } = await api.query(COUNTRIES_QUERY);
 
     if (errors) {
-        console.error(errors);
+        trace.getActiveSpan()?.addEvent('store.countries_query_errors', {
+            'error.message': String(errors),
+        });
         return [];
     }
 
@@ -154,7 +157,9 @@ export const ShopPaymentSettingsApi = async ({
 
     // TODO: Handle errors properly.
     if ((errors || []).length > 0) {
-        console.error(errors);
+        trace.getActiveSpan()?.addEvent('store.payment_settings_query_errors', {
+            'error.message': String(errors),
+        });
         return null;
     }
 

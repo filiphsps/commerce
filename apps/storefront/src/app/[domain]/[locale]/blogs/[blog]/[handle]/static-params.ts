@@ -42,7 +42,6 @@ export async function generateStaticParams({
             return [{ handle: NOT_FOUND_HANDLE }];
         }
 
-        console.error(error);
         throw error;
     }
 }

@@ -3,6 +3,7 @@ import 'server-only';
 import { gql } from '@apollo/client';
 import type { Identifiable } from '@nordcom/commerce-db';
 import { InvalidHandleError, NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
+import { trace } from '@opentelemetry/api';
 import type {
     Maybe,
     ProductConnection,
@@ -64,7 +65,11 @@ export const ProductApi = async ({ api, handle, fragment }: ProductOptions): Pro
             undefined,
         ];
     } catch (error: unknown) {
-        console.error(error);
+        trace.getActiveSpan()?.addEvent('shopify.product_query_failed', {
+            'error.message': (error as Error)?.message ?? String(error),
+            'product.handle': handle,
+            'shop.id': shop.id,
+        });
         return [undefined, error instanceof Error ? error : new Error(String(error))];
     }
 };

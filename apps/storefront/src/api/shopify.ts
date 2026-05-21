@@ -3,6 +3,7 @@ import 'server-only';
 import type { ApolloClient, QueryOptions } from '@apollo/client';
 import { type OnlineShop, Shop } from '@nordcom/commerce-db';
 import { ShopMisconfigurationError, UnknownCommerceProviderError } from '@nordcom/commerce-errors';
+import { trace } from '@opentelemetry/api';
 import { createStorefrontClient } from '@shopify/hydrogen-react';
 import { headers } from 'next/headers';
 import { experimental_taintUniqueValue } from 'react';
@@ -111,10 +112,11 @@ export const ShopifyApolloApiClient = async ({
                 // — bad/expired admin token, mis-configured shop, missing IP — and
                 // the storefront silently downgraded to public-only access in prod
                 // with nothing in the logs but a generic "falling back" line.
-                console.warn(
-                    '[shopify] private headers unavailable, falling back to public Storefront API:',
-                    privateConfigError instanceof Error ? privateConfigError.message : privateConfigError,
-                );
+                trace.getActiveSpan()?.addEvent('shopify.private_headers_unavailable', {
+                    'error.message':
+                        privateConfigError instanceof Error ? privateConfigError.message : String(privateConfigError),
+                    'shop.domain': shop.domain,
+                });
             }
             if (!config) config = configBuilder.public();
             return createApolloClient(config, shop);

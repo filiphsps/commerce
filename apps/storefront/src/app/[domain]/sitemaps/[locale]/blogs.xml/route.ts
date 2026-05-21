@@ -1,4 +1,5 @@
 import { Error } from '@nordcom/commerce-errors';
+import { trace } from '@opentelemetry/api';
 import { cacheLife } from 'next/cache';
 import { notFound } from 'next/navigation';
 import type { NextRequest } from 'next/server';
@@ -34,7 +35,10 @@ export async function GET({}: NextRequest, { params }: BlogsSitemapRouteParams) 
     const [blogs, blogsError] = await BlogsApi({ api });
     if (blogsError) {
         if (!Error.isNotFound(blogsError)) {
-            console.error(blogsError);
+            trace.getActiveSpan()?.addEvent('sitemap.blogs_fetch_failed', {
+                'error.message': (blogsError as Error)?.message ?? String(blogsError),
+                'shop.domain': domain,
+            });
         }
 
         notFound(); // TODO
@@ -45,7 +49,11 @@ export async function GET({}: NextRequest, { params }: BlogsSitemapRouteParams) 
             const [blog, blogError] = await BlogApi({ api, handle: blogHandle });
             if (blogError) {
                 if (!Error.isNotFound(blogError)) {
-                    console.error(blogError);
+                    trace.getActiveSpan()?.addEvent('sitemap.blog_fetch_failed', {
+                        'error.message': (blogError as Error)?.message ?? String(blogError),
+                        'blog.handle': blogHandle,
+                        'shop.domain': domain,
+                    });
                 }
 
                 return [];

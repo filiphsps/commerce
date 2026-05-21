@@ -1,4 +1,5 @@
 import { NotFoundError } from '@nordcom/commerce-errors';
+import { trace } from '@opentelemetry/api';
 import { cacheLife } from 'next/cache';
 import { ImageResponse } from 'next/og';
 import { type NextRequest, NextResponse } from 'next/server';
@@ -35,7 +36,10 @@ export async function GET({}: NextRequest, { params }: { params: AppleIconRouteP
             },
         );
     } catch (error: unknown) {
-        console.error(error);
+        trace.getActiveSpan()?.addEvent('apple_icon.render_failed', {
+            'error.message': (error as Error)?.message ?? String(error),
+            'shop.domain': domain,
+        });
 
         return NextResponse.json(
             {

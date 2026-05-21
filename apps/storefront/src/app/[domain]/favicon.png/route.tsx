@@ -1,4 +1,5 @@
 import { NotFoundError } from '@nordcom/commerce-errors';
+import { trace } from '@opentelemetry/api';
 import { cacheLife } from 'next/cache';
 import { ImageResponse } from 'next/og';
 import { type NextRequest, NextResponse } from 'next/server';
@@ -76,7 +77,10 @@ async function renderFavicon(domain: string, widthParam: string | null, heightPa
             },
         );
     } catch (error: unknown) {
-        console.error(error);
+        trace.getActiveSpan()?.addEvent('favicon.render_failed', {
+            'error.message': (error as Error)?.message ?? String(error),
+            'shop.domain': domain,
+        });
 
         return NextResponse.json(
             {
