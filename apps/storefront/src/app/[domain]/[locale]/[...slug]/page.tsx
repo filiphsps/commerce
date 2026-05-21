@@ -76,47 +76,28 @@ export async function generateMetadata({ params }: { params: CustomPageParams })
     // TODO: Deal with this in a better way.
     const path = handle === 'homepage' ? '/' : `/${handle}/`;
 
-    let title: string = handle;
-    let description: string | undefined;
-    let index = true;
-    let images: NonNullable<Metadata['openGraph']>['images'] = [];
+    const data = page as {
+        title?: string;
+        seo?: {
+            title?: string;
+            description?: string;
+            keywords?: string[] | null;
+            noindex?: boolean;
+            image?: { url?: string } | string | null;
+        };
+    };
 
-    switch (page.provider) {
-        case 'cms': {
-            const data = page.data as {
-                title?: string;
-                seo?: {
-                    title?: string;
-                    description?: string;
-                    keywords?: string[] | null;
-                    noindex?: boolean;
-                    image?: { url?: string } | string | null;
-                };
-            };
-            title = data.seo?.title || data.title || handle;
-            description = data.seo?.description || undefined;
-            index = data.seo?.noindex !== true;
-            const seoImage = data.seo?.image;
-            const imageUrl = seoImage && typeof seoImage === 'object' && 'url' in seoImage ? seoImage.url : undefined;
-            images = imageUrl ? [{ url: imageUrl }] : [];
-            break;
-        }
-        case 'shopify': {
-            const data = page.data;
-            title = data.seo.title || data.title || handle;
-            description = data.seo.description || undefined;
-            // Shopify has no noindex field; default to indexed.
-            // Shopify has no meta_image at the page level; default to empty.
-            break;
-        }
-    }
+    const title = data.seo?.title || data.title || handle;
+    const description = data.seo?.description || undefined;
+    const index = data.seo?.noindex !== true;
+    const seoImage = data.seo?.image;
+    const imageUrl = seoImage && typeof seoImage === 'object' && 'url' in seoImage ? seoImage.url : undefined;
+    const images = imageUrl ? [{ url: imageUrl }] : [];
 
     return {
         title,
         description,
-        keywords: (page.provider === 'cms'
-            ? ((page.data as { seo?: { keywords?: string[] | null } }).seo?.keywords ?? undefined)
-            : undefined) as string[] | undefined,
+        keywords: page.seo?.keywords || [],
         robots: { index },
         alternates: {
             canonical: `https://${shop.domain}/${locale.code}${path}`,
@@ -153,7 +134,7 @@ async function PageBreadcrumbs({ shop, locale, handle }: { shop: OnlineShop; loc
         notFound();
     }
 
-    const title = page.data.title as string | null;
+    const title = page.title as string | null;
 
     if (handle === 'homepage' || !title) {
         return null;

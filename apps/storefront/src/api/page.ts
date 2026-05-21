@@ -2,27 +2,17 @@ import 'server-only';
 
 import { getPage as CmsGetPage, getPages as CmsGetPages } from '@nordcom/commerce-cms/api';
 import type { OnlineShop } from '@nordcom/commerce-db';
-import type { NormalizedShopifyPage } from '@/api/shopify/page';
 import type { Locale } from '@/utils/locale';
 import { toShopRef } from './_cms';
 
 export type CmsPageData = Awaited<ReturnType<typeof CmsGetPage>>;
 
-export type ProvidedPage =
-    | { provider: 'cms'; data: NonNullable<CmsPageData> }
-    | { provider: 'shopify'; data: NormalizedShopifyPage };
-
-export type ProvidedPages =
-    | { provider: 'cms'; items: Array<NonNullable<CmsPageData>> }
-    | { provider: 'shopify'; items: NormalizedShopifyPage[] };
-
-export async function PagesApi({ shop, locale }: { shop: OnlineShop; locale: Locale }): Promise<ProvidedPages | null> {
-    const result = await CmsGetPages({
+export async function PagesApi({ shop, locale }: { shop: OnlineShop; locale: Locale }) {
+    return await CmsGetPages({
         shop: toShopRef(shop),
         locale: { code: locale.code },
         limit: 1000,
     });
-    return { provider: 'cms', items: result.docs as Array<NonNullable<CmsPageData>> };
 }
 
 export async function PageApi({
@@ -35,12 +25,10 @@ export async function PageApi({
     handle: string;
     /** @deprecated Retained for source compatibility; CMS lookups go through getPage by slug. */
     type?: string;
-}): Promise<ProvidedPage | null> {
-    const data = await CmsGetPage({
+}) {
+    return await CmsGetPage({
         shop: toShopRef(shop),
         locale: { code: locale.code },
         slug: handle,
     });
-    if (!data) return null;
-    return { provider: 'cms', data };
 }
