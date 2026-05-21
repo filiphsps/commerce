@@ -24,6 +24,16 @@ export type ShellHeaderProps = {
 };
 
 export function ShellHeader({ shop, user, shopsForSwitcher, commandPaletteItems, mobileNavContent }: ShellHeaderProps) {
+    // Gate the mobile drawer on the real breakpoint instead of `md:hidden`.
+    // SSR + first-client-render both see the default 'comfortable' breakpoint,
+    // so MobileDrawer is absent from the hydrated DOM — only mounted after
+    // useBreakpoint's effect kicks in. This avoids a Radix `useId` hydration
+    // mismatch on the trigger button (server's aria-controls drifted from the
+    // client's because divergent client-only state further down the tree
+    // shifted Radix's useId position).
+    const breakpoint = useBreakpoint();
+    const isCompact = breakpoint === 'mobile' || breakpoint === 'tablet';
+
     return (
         <header
             className={cn(
@@ -31,7 +41,7 @@ export function ShellHeader({ shop, user, shopsForSwitcher, commandPaletteItems,
             )}
         >
             <div className="flex items-center gap-3">
-                <div className="md:hidden">
+                {isCompact ? (
                     <MobileDrawer
                         side="left"
                         title="Navigate"
@@ -47,7 +57,7 @@ export function ShellHeader({ shop, user, shopsForSwitcher, commandPaletteItems,
                     >
                         {mobileNavContent}
                     </MobileDrawer>
-                </div>
+                ) : null}
                 <Link href="/" title="Nordcom Commerce" className="flex shrink-0 items-center">
                     <Image
                         className="h-7 w-auto object-contain object-left"
