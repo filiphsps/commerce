@@ -29,15 +29,21 @@ describe('PDP fetch dedup', () => {
     //
     // The test is kept (skipped) to document the intent and serve as a reminder that
     // any restructuring of PDP data-fetching must preserve the single-call guarantee.
+    //
+    // Note: even if RSC were active here, `cache()` dedup is keyed by the
+    // per-render-request store + argument identity, not by deep equality. The
+    // shared `api` reference below is intentional — five distinct `{}` literals
+    // would miss the cache regardless of environment.
     it.skip('layout + slots together call ProductApi once for the same handle', async () => {
         // Import the loader (not the source) — concurrent React-request calls dedupe.
         const { ProductApi } = await import('@/api/_loaders');
+        const api = {} as any;
         const calls = await Promise.all([
-            ProductApi({ api: {} as any, handle: 'h1' }),
-            ProductApi({ api: {} as any, handle: 'h1' }),
-            ProductApi({ api: {} as any, handle: 'h1' }),
-            ProductApi({ api: {} as any, handle: 'h1' }),
-            ProductApi({ api: {} as any, handle: 'h1' }),
+            ProductApi({ api, handle: 'h1' }),
+            ProductApi({ api, handle: 'h1' }),
+            ProductApi({ api, handle: 'h1' }),
+            ProductApi({ api, handle: 'h1' }),
+            ProductApi({ api, handle: 'h1' }),
         ]);
         expect(calls.length).toBe(5);
         expect(vi.mocked(productMod.ProductApi)).toHaveBeenCalledTimes(1);
