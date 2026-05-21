@@ -52,8 +52,7 @@ export async function generateMetadata({ params }: { params: ArticlePageParams }
         throw articleError;
     }
 
-    const locales = await LocalesApi({ api });
-    const cmsArticle = await ArticleApi({ shop, locale, slug: handle });
+    const [locales, cmsArticle] = await Promise.all([LocalesApi({ api }), ArticleApi({ shop, locale, slug: handle })]);
     const cmsCover = populatedMedia(cmsArticle?.cover);
     const cmsSeoImage = populatedMedia((cmsArticle?.seo?.image ?? null) as Parameters<typeof populatedMedia>[0]);
 
@@ -125,10 +124,11 @@ export default async function ArticlePage({ params }: { params: ArticlePageParam
         throw articleError;
     }
 
-    const cmsArticle = await ArticleApi({ shop, locale, slug: handle });
+    const [cmsArticle, i18n] = await Promise.all([
+        ArticleApi({ shop, locale, slug: handle }),
+        getDictionary({ shop, locale }),
+    ]);
     const cmsCover = populatedMedia(cmsArticle?.cover);
-
-    const i18n = await getDictionary({ shop, locale });
     const { t } = getTranslations('common', i18n);
 
     const { title, image, contentHtml, content, authorV2: author, publishedAt, seo, excerpt, tags } = article;
