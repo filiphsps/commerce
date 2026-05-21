@@ -17,14 +17,28 @@ const a = createCollectionEditorActions(businessDataEditor, editorRuntime);
 // (collectionMetadata) all emit the same shape, keeping cms:gen:check
 // deterministic. Do NOT use backticks in comments inside this template
 // literal — they would collide with the outer string delimiter.
-export async function businessDataSaveDraft(domain: string | null, id: string, formData: FormData): Promise<void> {
-    return a.saveDraft(domain, id, formData);
+export async function businessDataSaveDraft(
+    domain: string | null,
+    id: string,
+    formData: FormData,
+    locale: string,
+): Promise<void> {
+    return a.saveDraft(domain, id, formData, locale);
 }
-export async function businessDataPublish(domain: string | null, id: string, formData: FormData): Promise<void> {
-    return a.publish(domain, id, formData);
+export async function businessDataPublish(
+    domain: string | null,
+    id: string,
+    formData: FormData,
+    locale: string,
+): Promise<void> {
+    return a.publish(domain, id, formData, locale);
 }
-export async function businessDataCreate(domain: string | null, formData: FormData): Promise<{ id: string }> {
-    return a.create(domain, formData);
+export async function businessDataCreate(
+    domain: string | null,
+    formData: FormData,
+    locale: string,
+): Promise<{ id: string }> {
+    return a.create(domain, formData, locale);
 }
 export async function businessDataDelete(domain: string | null, id: string): Promise<void> {
     return a.delete(domain, id);

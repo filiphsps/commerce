@@ -23,5 +23,6 @@ export async function PageApi({ shop, locale, handle }: { shop: OnlineShop; loca
         locale: { code: locale.code },
         slug: handle,
     });
+
     return page ? normalizePayloadDoc(page, locale.code) : null;
 }

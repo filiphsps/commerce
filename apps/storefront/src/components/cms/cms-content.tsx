@@ -30,9 +30,7 @@ export const CMSContent = async ({ shop, locale, handle }: CMSContentProps) => {
         notFound();
     }
 
-    const blocks = ((page as { blocks?: BlockNode[] }).blocks ?? []) as BlockNode[];
-
-    return <Blocks blocks={blocks} context={{ shop, locale }} />;
+    return <Blocks blocks={page.blocks as BlockNode[]} context={{ shop, locale }} />;
 };
 
 /**

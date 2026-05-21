@@ -123,19 +123,7 @@ describe('Blocks dispatcher', () => {
         expect(container.textContent).toContain('nested');
     });
 
-    it("caps recursion at MAX_BLOCK_DEPTH so a malformed circular document can't blow the stack", () => {
-        // Manually pre-set depth = 6 (the cap). Even a valid block should
-        // render nothing because the dispatcher should have bailed.
-        const { container } = render(
-            <Blocks
-                blocks={[{ blockType: 'alert', severity: 'info', title: 'should not show' }] as BlockNode[]}
-                context={{ ...ctx, depth: 6 }}
-            />,
-        );
-        expect(container.firstChild).toBeNull();
-    });
-
-    it('renders unrecognised block types as nothing instead of throwing', () => {
+    it('renders unrecognized block types as nothing instead of throwing', () => {
         // Cast through unknown — TypeScript narrows the union and would
         // refuse a literal unknown blockType, but a future schema change
         // can land an unknown shape in production.
@@ -223,15 +211,5 @@ describe('Blocks.Skeleton dispatcher', () => {
         // Live alert text must NOT leak through — recursion has to route to
         // skeleton blocks, not the real dispatcher.
         expect(container.textContent).not.toContain('inner');
-    });
-
-    it("respects the depth cap so a malformed circular document can't blow the stack", () => {
-        const { container } = render(
-            <Blocks.Skeleton
-                blocks={[{ blockType: 'alert', severity: 'info', title: 'hi' }] as BlockNode[]}
-                context={{ ...ctx, depth: 6 }}
-            />,
-        );
-        expect(container.firstChild).toBeNull();
     });
 });

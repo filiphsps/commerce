@@ -11,9 +11,9 @@ import { revalidateForManifest, tenantWhere } from './revalidate';
 import type { EditorRuntime } from './runtime';
 
 export type EditorActions = {
-    saveDraft: (domain: string | null, id: string, formData: FormData) => Promise<void>;
-    publish: (domain: string | null, id: string, formData: FormData) => Promise<void>;
-    create: (domain: string | null, formData: FormData) => Promise<{ id: string }>;
+    saveDraft: (domain: string | null, id: string, formData: FormData, locale: string) => Promise<void>;
+    publish: (domain: string | null, id: string, formData: FormData, locale: string) => Promise<void>;
+    create: (domain: string | null, formData: FormData, locale: string) => Promise<{ id: string }>;
     delete: (domain: string | null, id: string) => Promise<void>;
     bulkDelete: (domain: string | null, ids: string[]) => Promise<void>;
     bulkPublish: (domain: string | null, ids: string[]) => Promise<void>;
@@ -42,6 +42,7 @@ export const createCollectionEditorActions = <T extends CollectionSlug>(
         id: string,
         formData: FormData,
         status: 'draft' | 'published',
+        locale: string,
     ): Promise<void> => {
         const ctx = await runtime.getCtx(domain);
         if (!(await manifest.access.update(runtime.toAccessCtx(ctx, domain)))) notFound();
@@ -55,10 +56,15 @@ export const createCollectionEditorActions = <T extends CollectionSlug>(
         const allowed = pickByFieldNames(raw, collection.fields);
         const where = tenantWhere(manifest, ctx.tenant, id);
 
+        // Pass `locale` to Payload on every read+write so localized fields
+        // round-trip through the same locale the editor is currently viewing.
+        // Without it, Payload falls back to its configured `defaultLocale`
+        // (en-US) and silently writes German text into the English bucket.
         const { docs } = await ctx.payload.find({
             collection: manifest.collection as never,
             where,
             limit: 1,
+            locale: locale as never,
             user: ctx.user as never,
             overrideAccess: false,
             draft: hasDrafts(collection),
@@ -80,6 +86,7 @@ export const createCollectionEditorActions = <T extends CollectionSlug>(
                 collection: manifest.collection as never,
                 id: (existing as { id: string }).id,
                 data: { ...allowed, ...statusPatch } as never,
+                locale: locale as never,
                 user: ctx.user as never,
                 overrideAccess: false,
                 ...draftFlag,
@@ -92,6 +99,7 @@ export const createCollectionEditorActions = <T extends CollectionSlug>(
             doc = await ctx.payload.create({
                 collection: manifest.collection as never,
                 data: { ...allowed, ...tenantPatch, ...statusPatch } as never,
+                locale: locale as never,
                 user: ctx.user as never,
                 overrideAccess: false,
                 ...draftFlag,
@@ -102,13 +110,13 @@ export const createCollectionEditorActions = <T extends CollectionSlug>(
     };
 
     return {
-        async saveDraft(domain, id, formData) {
-            await upsert(domain, id, formData, 'draft');
+        async saveDraft(domain, id, formData, locale) {
+            await upsert(domain, id, formData, 'draft', locale);
         },
-        async publish(domain, id, formData) {
-            await upsert(domain, id, formData, 'published');
+        async publish(domain, id, formData, locale) {
+            await upsert(domain, id, formData, 'published', locale);
         },
-        async create(domain, formData) {
+        async create(domain, formData, locale) {
             const ctx = await runtime.getCtx(domain);
             const accessCtx = runtime.toAccessCtx(ctx, domain);
             if (!manifest.access.create) notFound();
@@ -133,6 +141,7 @@ export const createCollectionEditorActions = <T extends CollectionSlug>(
             const created = (await ctx.payload.create({
                 collection: manifest.collection as never,
                 data: { ...allowed, ...tenantPatch, ...statusPatch } as never,
+                locale: locale as never,
                 user: ctx.user as never,
                 overrideAccess: false,
                 ...draftFlag,

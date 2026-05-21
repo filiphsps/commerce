@@ -51,21 +51,24 @@ export async function ${fn('saveDraft')}(
     domain: string | null,
     id: string,
     formData: FormData,
+    locale: string,
 ): Promise<void> {
-    return a.saveDraft(domain, id, formData);
+    return a.saveDraft(domain, id, formData, locale);
 }
 export async function ${fn('publish')}(
     domain: string | null,
     id: string,
     formData: FormData,
+    locale: string,
 ): Promise<void> {
-    return a.publish(domain, id, formData);
+    return a.publish(domain, id, formData, locale);
 }
 export async function ${fn('create')}(
     domain: string | null,
     formData: FormData,
+    locale: string,
 ): Promise<{ id: string }> {
-    return a.create(domain, formData);
+    return a.create(domain, formData, locale);
 }
 export async function ${fn('delete')}(
     domain: string | null,

@@ -111,14 +111,17 @@ export async function EditorEditPage<TSlug extends CollectionSlug>({
 
     const shellProps = await runtime.getShellProps(domain, locale);
 
-    // Bind the codegen'd action wrappers to (domain, id).
+    // Bind the codegen'd action wrappers to (domain, id, locale). The locale
+    // closes over the request-time value the editor is currently viewing so
+    // saves write into the correct localized field bucket instead of falling
+    // back to Payload's configured default.
     const boundSaveDraft = async (formData: FormData) => {
         'use server';
-        return generatedActions.saveDraft(domain, id, formData);
+        return generatedActions.saveDraft(domain, id, formData, locale);
     };
     const boundPublish = async (formData: FormData) => {
         'use server';
-        return generatedActions.publish(domain, id, formData);
+        return generatedActions.publish(domain, id, formData, locale);
     };
 
     const existingName = (existing as unknown as { name?: string } | null)?.name;

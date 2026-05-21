@@ -88,7 +88,7 @@ describe('createCollectionEditorActions.saveDraft', () => {
     it('creates a new doc when no existing tenant doc is found, with _status=draft and draft:true', async () => {
         const runtime = buildRuntime();
         const actions = createCollectionEditorActions(baseManifest, runtime);
-        await actions.saveDraft('a.test', 'singleton', fd({ legalName: 'Acme' }));
+        await actions.saveDraft('a.test', 'singleton', fd({ legalName: 'Acme' }), 'en-US');
 
         const ctx = await runtime.getCtx('a.test');
         expect(ctx.payload.find).toHaveBeenCalledWith(
@@ -96,6 +96,7 @@ describe('createCollectionEditorActions.saveDraft', () => {
                 collection: 'businessData',
                 where: { and: [{ tenant: { equals: 'tenant-1' } }, { id: { equals: 'singleton' } }] },
                 draft: true,
+                locale: 'en-US',
             }),
         );
         expect(ctx.payload.create).toHaveBeenCalledWith(
@@ -104,6 +105,7 @@ describe('createCollectionEditorActions.saveDraft', () => {
                 data: { legalName: 'Acme', tenant: 'tenant-1', _status: 'draft' },
                 overrideAccess: false,
                 draft: true,
+                locale: 'en-US',
             }),
         );
         expect(mockRevalidatePath).toHaveBeenCalledWith('/a.test/x/');
@@ -116,7 +118,7 @@ describe('createCollectionEditorActions.saveDraft', () => {
         (runtime.getCtx as ReturnType<typeof vi.fn>).mockResolvedValue(ctx);
 
         const actions = createCollectionEditorActions(baseManifest, runtime);
-        await actions.saveDraft('a.test', 'singleton', fd({ legalName: 'Acme' }));
+        await actions.saveDraft('a.test', 'singleton', fd({ legalName: 'Acme' }), 'en-US');
 
         expect(ctx.payload.update).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -124,14 +126,25 @@ describe('createCollectionEditorActions.saveDraft', () => {
                 id: 'doc-1',
                 data: { legalName: 'Acme', _status: 'draft' },
                 draft: true,
+                locale: 'en-US',
             }),
         );
+    });
+
+    it('forwards the requested locale to payload.find/update/create so localized fields write to the right bucket', async () => {
+        const runtime = buildRuntime();
+        const actions = createCollectionEditorActions(baseManifest, runtime);
+        await actions.saveDraft('a.test', 'singleton', fd({ legalName: 'Acme' }), 'de-DE');
+
+        const ctx = await runtime.getCtx('a.test');
+        expect(ctx.payload.find).toHaveBeenCalledWith(expect.objectContaining({ locale: 'de-DE' }));
+        expect(ctx.payload.create).toHaveBeenCalledWith(expect.objectContaining({ locale: 'de-DE' }));
     });
 
     it('drops undeclared fields from the payload', async () => {
         const runtime = buildRuntime();
         const actions = createCollectionEditorActions(baseManifest, runtime);
-        await actions.saveDraft('a.test', 'singleton', fd({ legalName: 'Acme', injected: 'evil' }));
+        await actions.saveDraft('a.test', 'singleton', fd({ legalName: 'Acme', injected: 'evil' }), 'en-US');
 
         const ctx = await runtime.getCtx('a.test');
         expect(ctx.payload.create).toHaveBeenCalledWith(
@@ -148,7 +161,7 @@ describe('createCollectionEditorActions.saveDraft', () => {
             access: { ...baseManifest.access, update: () => false },
         });
         const actions = createCollectionEditorActions(manifest, runtime);
-        await expect(actions.saveDraft('a.test', 'singleton', fd({}))).rejects.toThrow('NEXT_NOT_FOUND');
+        await expect(actions.saveDraft('a.test', 'singleton', fd({}), 'en-US')).rejects.toThrow('NEXT_NOT_FOUND');
     });
 });
 
@@ -156,12 +169,13 @@ describe('createCollectionEditorActions.publish', () => {
     it('writes with _status=published and revalidates with status=published', async () => {
         const runtime = buildRuntime();
         const actions = createCollectionEditorActions(baseManifest, runtime);
-        await actions.publish('a.test', 'singleton', fd({ legalName: 'Acme' }));
+        await actions.publish('a.test', 'singleton', fd({ legalName: 'Acme' }), 'en-US');
 
         const ctx = await runtime.getCtx('a.test');
         expect(ctx.payload.create).toHaveBeenCalledWith(
             expect.objectContaining({
                 data: { legalName: 'Acme', tenant: 'tenant-1', _status: 'published' },
+                locale: 'en-US',
             }),
         );
     });
@@ -169,7 +183,7 @@ describe('createCollectionEditorActions.publish', () => {
     it('does NOT pass draft:true on publish so Payload runs required-field validation', async () => {
         const runtime = buildRuntime();
         const actions = createCollectionEditorActions(baseManifest, runtime);
-        await actions.publish('a.test', 'singleton', fd({ legalName: 'Acme' }));
+        await actions.publish('a.test', 'singleton', fd({ legalName: 'Acme' }), 'en-US');
 
         const ctx = await runtime.getCtx('a.test');
         const call = (ctx.payload.create as ReturnType<typeof vi.fn>).mock.calls[0]?.[0];
@@ -185,7 +199,7 @@ describe('createCollectionEditorActions.create', () => {
             access: { ...baseManifest.access, create: () => true },
         });
         const actions = createCollectionEditorActions(manifest, runtime);
-        await actions.create('a.test', fd({ legalName: 'Acme' }));
+        await actions.create('a.test', fd({ legalName: 'Acme' }), 'en-US');
 
         const ctx = await runtime.getCtx('a.test');
         expect(ctx.payload.create).toHaveBeenCalledWith(
@@ -193,8 +207,22 @@ describe('createCollectionEditorActions.create', () => {
                 collection: 'businessData',
                 data: { legalName: 'Acme', tenant: 'tenant-1', _status: 'draft' },
                 draft: true,
+                locale: 'en-US',
             }),
         );
+    });
+
+    it('forwards the requested locale to payload.create on a fresh doc', async () => {
+        const runtime = buildRuntime();
+        const manifest = defineCollectionEditor({
+            ...baseManifest,
+            access: { ...baseManifest.access, create: () => true },
+        });
+        const actions = createCollectionEditorActions(manifest, runtime);
+        await actions.create('a.test', fd({ legalName: 'Acme' }), 'de-DE');
+
+        const ctx = await runtime.getCtx('a.test');
+        expect(ctx.payload.create).toHaveBeenCalledWith(expect.objectContaining({ locale: 'de-DE' }));
     });
 });
 
@@ -241,7 +269,7 @@ describe('createCollectionEditorActions on tenant-singleton manifests', () => {
     it('saveDraft uses a tenant-only where clause and patches tenant on create', async () => {
         const runtime = buildRuntime();
         const actions = createCollectionEditorActions(tenantSingletonManifest, runtime);
-        await actions.saveDraft('a.test', '', fd({ legalName: 'Acme' }));
+        await actions.saveDraft('a.test', '', fd({ legalName: 'Acme' }), 'en-US');
 
         const ctx = await runtime.getCtx('a.test');
         expect(ctx.payload.find).toHaveBeenCalledWith(
@@ -260,7 +288,7 @@ describe('createCollectionEditorActions on tenant-singleton manifests', () => {
     it('create includes the tenant patch', async () => {
         const runtime = buildRuntime();
         const actions = createCollectionEditorActions(tenantSingletonManifest, runtime);
-        await actions.create('a.test', fd({ legalName: 'Acme' }));
+        await actions.create('a.test', fd({ legalName: 'Acme' }), 'en-US');
 
         const ctx = await runtime.getCtx('a.test');
         expect(ctx.payload.create).toHaveBeenCalledWith(

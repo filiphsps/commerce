@@ -81,7 +81,8 @@ export async function EditorNewPage<TSlug extends CollectionSlug>({
     const shellProps = await runtime.getShellProps(domain, locale);
 
     const boundCreate = async (formData: FormData) => {
-        await generatedActions.create(domain, formData);
+        'use server';
+        await generatedActions.create(domain, formData, locale);
     };
 
     const hasDrafts =
