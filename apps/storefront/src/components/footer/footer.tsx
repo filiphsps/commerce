@@ -12,6 +12,13 @@ import type { Locale, LocaleDictionary } from '@/utils/locale';
 
 const BLOCK_STYLES = 'grow w-full h-full flex-col auto-rows-auto gap-3 flex empty:hidden md:empty:flex';
 
+// Pin the copyright year at module load. The Footer is rendered inside the
+// `'use cache'`-tagged layout, so re-evaluating `new Date().getFullYear()` on
+// every render would still get baked into the cached output — better to read
+// it once at process start than once per server render, since the cached
+// output is the source of truth either way.
+const COPYRIGHT_YEAR = new Date().getFullYear();
+
 type Section = NonNullable<FooterDoc['sections']>[number];
 type SectionLinks = NonNullable<Section['links']>;
 type SectionLink = SectionLinks[number];
@@ -84,7 +91,7 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
     const sections = footer?.sections ?? [];
     const social = footer?.social ?? [];
     const legal = footer?.legal ?? [];
-    const copyrightLine = footer?.copyrightLine || `© ${new Date().getFullYear()} ${shop.name}`;
+    const copyrightLine = footer?.copyrightLine || `© ${COPYRIGHT_YEAR} ${shop.name}`;
 
     return (
         <footer className="flex h-full max-h-max w-full items-center justify-around self-end overflow-hidden bg-primary p-2 pt-8 text-primary-foreground [grid-area:footer] md:p-3 md:pt-6">
