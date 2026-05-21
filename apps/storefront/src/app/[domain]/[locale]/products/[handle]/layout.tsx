@@ -117,8 +117,8 @@ export default async function ProductPageLayout({
             sku: productToMerchantsCenterId({
                 locale: locale,
                 product: {
-                    productGid: product!.id,
-                    variantGid: variant!.id,
+                    productGid: product.id,
+                    variantGid: variant.id,
                 },
             }),
             mpn: variant.barcode || variant.sku || undefined,
