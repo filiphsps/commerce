@@ -99,34 +99,37 @@ export const useCartUtils = ({
         });
     }, [locale.country, buyerIdentity, cartReady]);
 
-    // Discount codes in url
+    // Discount codes in url. We update the cart immediately, but only clean the
+    // URL once the cart has settled and the new code(s) are actually applied.
+    // This prevents a "ghost discount" UX where Shopify rejects the code and
+    // the URL no longer carries the request — leaving the user with a quietly
+    // failed apply.
     useEffect(() => {
-        if (status !== 'idle' || !query.has('discount')) {
+        if (status !== 'idle' || !query.has('discount')) return;
+
+        const requested = query
+            .getAll('discount')
+            .map((v) => v.toString().toLowerCase())
+            .filter((v) => v.length > 0);
+        if (requested.length === 0) return;
+
+        const active = (discountCodesRef.current ?? [])
+            .map((d) => d?.code?.toLowerCase())
+            .filter((c): c is string => !!c);
+
+        const allActive = requested.every((code) => active.includes(code));
+
+        if (!allActive) {
+            // Fire the update; do NOT touch the URL — let the next render decide.
+            discountCodesUpdateRef.current([...active, ...requested]);
             return;
         }
 
-        const discounts: string[] = query.getAll('discount').map((value) => (value.toString() as string).toLowerCase());
-        if (discounts.length <= 0) {
-            return;
-        }
-
-        // TODO: Check cart errors and validate that the code was actually valid.
-        //discounts.every((discount) => validateDiscountCode(discount))
-
-        const active = [
-            ...(discountCodesRef.current
-                ?.map((discount) => discount?.code?.toLowerCase())
-                .filter((i): i is string => !!i) || []),
-        ];
-        if (discounts.every((discount) => active.includes(discount))) {
-            return;
-        }
-
-        discountCodesUpdateRef.current([...active, ...discounts]);
-        const params = new URLSearchParams(query);
+        // All requested codes are now active. Safe to clean the URL.
+        const params = new URLSearchParams(query.toString());
         params.delete('discount');
         routerRef.current.replace(`${pathname}${params.size > 0 ? '?' : ''}${params.toString()}`, { scroll: false });
-    }, [status, query, pathname]);
+    }, [status, query, pathname, discountCodes]);
 
     // Remove codes that are no longer applicable.
     useEffect(() => {

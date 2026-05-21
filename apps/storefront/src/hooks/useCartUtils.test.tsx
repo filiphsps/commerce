@@ -1,4 +1,5 @@
 import { useCart } from '@shopify/hydrogen-react';
+import * as nav from 'next/navigation';
 import type { Mock } from 'vitest';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useCartUtils } from '@/hooks/useCartUtils';
@@ -8,18 +9,24 @@ import { act, renderHook, waitFor } from '@/utils/test/react';
 const USA = Locale.from('en-US')!;
 const GER = Locale.from('de-DE')!;
 
+// Hoisted so the mock closure and individual tests share the same spy reference.
+const replace = vi.fn();
+
 // Mock `next/navigation`.
 vi.mock('next/navigation', async () => ({
     ...(((await vi.importActual('next/navigation')) as any) || {}),
     usePathname: vi.fn().mockReturnValue(''),
     useRouter: () => ({
-        replace: vi.fn(),
+        replace,
+        push: vi.fn(),
     }),
-    useSearchParams: () => ({
+    useSearchParams: vi.fn(() => ({
         get: () => 'coupon_code',
         getAll: () => ['coupon_code'],
         has: () => true,
-    }),
+        toString: () => 'discount=coupon_code',
+        size: 1,
+    })),
 }));
 
 describe('hooks', () => {
@@ -82,6 +89,49 @@ describe('hooks', () => {
 
             await waitFor(() => {
                 expect(useCart().discountCodesUpdate).toHaveBeenCalledWith(discount);
+            });
+        });
+
+        describe('discount URL cleanup', () => {
+            beforeEach(() => {
+                replace.mockClear();
+                vi.mocked(nav.useSearchParams).mockReturnValue(new URLSearchParams('discount=new10') as any);
+            });
+
+            it('does not replace URL before Shopify confirms the discount code', async () => {
+                // Cart is idle but Shopify has not yet echoed the discount code
+                // back in discountCodes — the URL must not be cleaned yet.
+                (useCart as Mock).mockReturnValue({
+                    error: undefined,
+                    buyerIdentity: { countryCode: 'US' },
+                    buyerIdentityUpdate: vi.fn(),
+                    discountCodes: [],
+                    discountCodesUpdate: vi.fn(),
+                    status: 'idle',
+                    cartReady: true,
+                });
+
+                renderHook(() => useCartUtils({ locale: USA }));
+
+                // Give effects a chance to run, then assert URL was NOT cleaned.
+                await act(async () => {});
+                expect(replace).not.toHaveBeenCalled();
+            });
+
+            it('replaces URL once cart status is idle and code is applied', async () => {
+                (useCart as Mock).mockReturnValue({
+                    error: undefined,
+                    buyerIdentity: { countryCode: 'US' },
+                    buyerIdentityUpdate: vi.fn(),
+                    discountCodes: [{ code: 'NEW10', applicable: true }],
+                    discountCodesUpdate: vi.fn(),
+                    status: 'idle',
+                    cartReady: true,
+                });
+
+                renderHook(() => useCartUtils({ locale: USA }));
+
+                await waitFor(() => expect(replace).toHaveBeenCalled());
             });
         });
     });
