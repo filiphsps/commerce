@@ -4,7 +4,7 @@ import { resolveLink } from '@nordcom/commerce-cms/api';
 import type { Header, Media } from '@nordcom/commerce-cms/types';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { useDetectClickOutside } from 'react-detect-click-outside';
 import Link from '@/components/link';
 import { cn } from '@/utils/tailwind';
@@ -16,6 +16,7 @@ type Level3Item = NonNullable<Level2Item['items']>[number];
 const isPopulatedMedia = (v: string | Media | null | undefined): v is Media => !!v && typeof v !== 'string';
 
 export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { code: string } }) {
+    const menuId = useId();
     const [open, setOpen] = useState(false);
     const pathname = usePathname();
     const containerRef = useDetectClickOutside({ onTriggered: () => setOpen(false), disableTouch: false });
@@ -52,6 +53,8 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
                 type="button"
                 aria-haspopup="true"
                 aria-expanded={open}
+                aria-controls={menuId}
+                aria-label={`Menu: ${item.link?.label ?? 'navigation'}`}
                 onClick={handleToggle}
                 className={cn(
                     'group flex items-center gap-1 font-medium text-base leading-none',
@@ -63,7 +66,9 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
 
             {open ? (
                 <div
+                    id={menuId}
                     role="menu"
+                    aria-label={item.link?.label ?? 'navigation'}
                     className={cn(
                         'absolute top-full left-0 z-30 mt-2 min-w-[20rem]',
                         'rounded-lg border border-gray-200 bg-white p-3 shadow-lg',

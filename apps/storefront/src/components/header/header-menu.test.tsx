@@ -55,4 +55,19 @@ describe('<HeaderMenuTrigger>', () => {
         fireEvent.click(container.querySelector('button') as HTMLButtonElement);
         expect(getByText('Stuff for the head')).toBeTruthy();
     });
+
+    describe('a11y', () => {
+        it('has aria-label containing the item label', () => {
+            const { container } = render(<HeaderMenuTrigger item={itemWithChildren()} locale={{ code: en.code }} />);
+            const button = container.querySelector('button') as HTMLButtonElement;
+            expect(button.getAttribute('aria-label')).toContain('Categories');
+        });
+
+        it('has aria-controls pointing to a menu region id', () => {
+            const { container } = render(<HeaderMenuTrigger item={itemWithChildren()} locale={{ code: en.code }} />);
+            const button = container.querySelector('button') as HTMLButtonElement;
+            const controls = button.getAttribute('aria-controls');
+            expect(controls).toBeTruthy();
+        });
+    });
 });
