@@ -43,7 +43,6 @@ export async function generateMetadata({ params }: { params: CustomPageParams })
             notFound();
         }
 
-        console.error(error);
         unstable_rethrow(error);
         throw error;
     }
@@ -57,7 +56,6 @@ export async function generateMetadata({ params }: { params: CustomPageParams })
             notFound();
         }
 
-        console.error(error);
         unstable_rethrow(error);
         throw error;
     }
@@ -171,7 +169,6 @@ export default async function CustomPage({ params }: { params: CustomPageParams 
             notFound();
         }
 
-        console.error(error);
         unstable_rethrow(error);
         throw error;
     }
@@ -185,7 +182,6 @@ export default async function CustomPage({ params }: { params: CustomPageParams 
             notFound();
         }
 
-        console.error(error);
         unstable_rethrow(error);
         throw error;
     }

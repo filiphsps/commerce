@@ -62,7 +62,6 @@ async function buildMetadata(
             notFound();
         }
 
-        console.error(error);
         throw error;
     }
 
@@ -170,7 +169,6 @@ export default async function CollectionsCollectionPage({
             notFound();
         }
 
-        console.error(error);
         throw error;
     }
 

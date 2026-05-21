@@ -33,7 +33,6 @@ export async function generateMetadata({ params }: { params: CartPageParams }): 
             notFound();
         }
 
-        console.error(error);
         unstable_rethrow(error);
         throw error;
     }
@@ -80,7 +79,6 @@ export default async function CartPage({ params }: { params: CartPageParams }) {
             notFound();
         }
 
-        console.error(error);
         unstable_rethrow(error);
         throw error;
     }

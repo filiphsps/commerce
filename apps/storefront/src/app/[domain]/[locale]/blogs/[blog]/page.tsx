@@ -45,7 +45,6 @@ export async function generateMetadata({ params }: { params: BlogPageParams }): 
             notFound();
         }
 
-        console.error(blogError);
         throw blogError;
     }
 
@@ -94,7 +93,6 @@ export default async function BlogPage({ params }: { params: BlogPageParams }) {
             notFound();
         }
 
-        console.error(blogError);
         throw blogError;
     }
 

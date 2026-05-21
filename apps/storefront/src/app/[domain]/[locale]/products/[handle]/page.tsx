@@ -68,7 +68,6 @@ async function buildMetadata(
             notFound();
         }
 
-        console.error(productError);
         throw productError;
     }
 
@@ -180,7 +179,6 @@ export default async function ProductPage({ params }: { params: ProductPageParam
             notFound();
         }
 
-        console.error(productError);
         throw productError;
     }
 

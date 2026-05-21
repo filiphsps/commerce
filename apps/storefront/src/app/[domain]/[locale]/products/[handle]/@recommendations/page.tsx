@@ -28,7 +28,6 @@ async function Content({ shop, locale, handle }: { shop: OnlineShop; locale: Loc
             notFound();
         }
 
-        console.error(productError);
         throw productError;
     }
 

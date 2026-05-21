@@ -48,7 +48,6 @@ export async function generateMetadata({ params }: { params: ArticlePageParams }
             notFound();
         }
 
-        console.error(articleError);
         throw articleError;
     }
 
@@ -120,7 +119,6 @@ export default async function ArticlePage({ params }: { params: ArticlePageParam
             notFound();
         }
 
-        console.error(articleError);
         throw articleError;
     }
 

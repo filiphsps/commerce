@@ -58,7 +58,6 @@ export default async function ProductPageLayout({
             notFound();
         }
 
-        console.error(productError);
         throw productError;
     }
 
