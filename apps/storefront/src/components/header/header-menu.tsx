@@ -11,8 +11,21 @@ import { cn } from '@/utils/tailwind';
 import { unsafe_cast } from '@/utils/unsafe-cast';
 
 type NavItem = NonNullable<Header['items']>[number];
-type Level2Item = NonNullable<NavItem['items']>[number];
-type Level3Item = NonNullable<Level2Item['items']>[number];
+
+// The CMS schema (`packages/cms/src/fields/nav-item.ts`) defines `items` as
+// a recursive array — every level carries the same shape: `link`, `image`,
+// `description`, `backgroundColor`, `items`. The generated payload types
+// produce a different concrete type per nesting level, so we project them
+// onto a single structural shape that the recursive renderer can walk
+// without knowing the depth statically.
+type RecursiveNavItem = {
+    id?: string | null;
+    link?: NavItem['link'];
+    image?: NavItem['image'];
+    description?: string | null;
+    backgroundColor?: string | null;
+    items?: RecursiveNavItem[] | null;
+};
 
 const isPopulatedMedia = (v: string | Media | null | undefined): v is Media => !!v && typeof v !== 'string';
 
@@ -147,80 +160,124 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
 HeaderMenuTrigger.displayName = 'Nordcom.Header.HeaderMenuTrigger';
 
 function MegaMenuPanel({ item, locale }: { item: NavItem; locale: { code: string } }) {
-    const level2Items = item.items ?? [];
-    if (level2Items.length === 0) return null;
+    // The runtime payload matches `RecursiveNavItem` at every depth even
+    // though the generated CMS types diverge per level — project here once
+    // so the recursive renderer never has to deal with the typed variants.
+    const items = (item.items ?? []) as RecursiveNavItem[];
+    if (items.length === 0) return null;
 
     return (
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {(level2Items as Level2Item[]).map((l2, i) => (
-                <Level2Tile key={l2.id ?? `l2-${i}`} item={l2} locale={locale} />
+            {items.map((child, i) => (
+                <MegaMenuItem key={child.id ?? `mm-1-${i}`} item={child} locale={locale} depth={1} />
             ))}
         </div>
     );
 }
 
-function Level2Tile({ item, locale }: { item: Level2Item; locale: { code: string } }) {
+// Renders any depth of mega-menu item. Depth 1 is the column-style card
+// (optional image header, label, description, `backgroundColor`); depth ≥ 2
+// renders as compact list rows. Items without a `link` are rendered as a
+// non-interactive heading so they can still group their children — that
+// shape is legitimate in the CMS schema and dropping it produced an empty
+// dropdown when the editor used label-only group items.
+function MegaMenuItem({ item, locale, depth }: { item: RecursiveNavItem; locale: { code: string }; depth: number }) {
     const link = item.link;
-    if (!link) return null;
-
-    const href = resolveLink(link as never, { locale: { code: locale.code } });
+    const label = link?.label ?? null;
+    const href = link ? (resolveLink(link as never, { locale: { code: locale.code } }) ?? null) : null;
     const image = isPopulatedMedia(item.image) ? item.image : null;
     const description = item.description?.trim() || null;
     const background = item.backgroundColor || undefined;
-    const children = (item.items ?? []) as Level3Item[];
+    const children = (item.items ?? []) as RecursiveNavItem[];
+    const hasChildren = children.length > 0;
+
+    // Nothing worth rendering — skip the slot rather than emitting an empty
+    // bordered card that looks broken in the dropdown.
+    if (!label && !hasChildren) return null;
+
+    const isTopLevel = depth === 1;
+
+    const labelText = label ? (
+        <span
+            className={cn(
+                isTopLevel ? 'font-semibold text-lg leading-tight' : 'font-medium text-gray-800 text-sm leading-tight',
+            )}
+        >
+            {label}
+        </span>
+    ) : null;
+
+    const labelBlock = (
+        <div className={cn('flex flex-col gap-1', isTopLevel ? 'p-3' : 'py-1')}>
+            {labelText}
+            {description ? <span className="text-gray-600 text-sm leading-snug">{description}</span> : null}
+        </div>
+    );
+
+    const richHeader =
+        isTopLevel && image?.url ? (
+            <div className="relative aspect-4/3 w-full overflow-hidden">
+                <Image
+                    src={image.url}
+                    alt={image.alt ?? label ?? ''}
+                    fill={true}
+                    className="object-cover transition-transform group-hover:scale-105"
+                    sizes="(max-width: 768px) 100vw, 300px"
+                    draggable={false}
+                    loading="lazy"
+                    decoding="async"
+                />
+            </div>
+        ) : null;
+
+    const titleEl = href ? (
+        <Link
+            href={href || '/'}
+            target={link?.openInNewTab ? '_blank' : undefined}
+            role="menuitem"
+            className={cn(
+                'group block',
+                !isTopLevel && 'text-gray-700 transition-colors hover:text-primary focus-visible:text-primary',
+            )}
+        >
+            {richHeader}
+            {labelBlock}
+        </Link>
+    ) : (
+        // No link: render the label as a non-interactive heading so an
+        // editor can use a label-only item as a group header. Children
+        // (if any) still recurse below.
+        <div role={isTopLevel ? undefined : 'presentation'}>
+            {richHeader}
+            {labelBlock}
+        </div>
+    );
+
+    const childList = hasChildren ? (
+        <ul
+            className={cn(
+                isTopLevel ? 'border-gray-200 border-t px-3 py-2' : 'flex flex-col gap-0 pl-3',
+                !isTopLevel && depth > 2 && 'border-gray-100 border-l',
+            )}
+        >
+            {children.map((child, i) => (
+                <li key={child.id ?? `mm-${depth + 1}-${i}`}>
+                    <MegaMenuItem item={child} locale={locale} depth={depth + 1} />
+                </li>
+            ))}
+        </ul>
+    ) : null;
 
     return (
         <div
-            className="overflow-hidden rounded-lg border border-gray-200 transition-colors focus-within:border-primary hover:border-primary"
+            className={cn(
+                isTopLevel &&
+                    'overflow-hidden rounded-lg border border-gray-200 transition-colors focus-within:border-primary hover:border-primary',
+            )}
             style={background ? { backgroundColor: background } : undefined}
         >
-            <Link
-                href={href || '/'}
-                target={link.openInNewTab ? '_blank' : undefined}
-                role="menuitem"
-                className="group block"
-            >
-                {image?.url ? (
-                    <div className="relative aspect-4/3 w-full overflow-hidden">
-                        <Image
-                            src={image.url}
-                            alt={image.alt ?? link.label ?? ''}
-                            fill={true}
-                            className="object-cover transition-transform group-hover:scale-105"
-                            sizes="(max-width: 768px) 100vw, 300px"
-                            draggable={false}
-                            loading="lazy"
-                            decoding="async"
-                        />
-                    </div>
-                ) : null}
-                <div className="flex flex-col gap-1 p-3">
-                    <span className="font-semibold text-lg leading-tight">{link.label}</span>
-                    {description ? <span className="text-gray-600 text-sm leading-snug">{description}</span> : null}
-                </div>
-            </Link>
-
-            {children.length > 0 ? (
-                <ul className="border-gray-200 border-t px-3 py-2">
-                    {children.map((l3, i) => {
-                        const childLink = l3.link;
-                        if (!childLink) return null;
-                        const childHref = resolveLink(childLink as never, { locale: { code: locale.code } });
-                        return (
-                            <li key={l3.id ?? `l3-${i}`}>
-                                <Link
-                                    href={childHref || '/'}
-                                    target={childLink.openInNewTab ? '_blank' : undefined}
-                                    role="menuitem"
-                                    className="block py-1 text-gray-700 text-sm hover:text-primary focus-visible:text-primary"
-                                >
-                                    {childLink.label}
-                                </Link>
-                            </li>
-                        );
-                    })}
-                </ul>
-            ) : null}
+            {titleEl}
+            {childList}
         </div>
     );
 }
