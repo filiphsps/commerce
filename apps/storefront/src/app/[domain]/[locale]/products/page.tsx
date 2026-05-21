@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { cacheLife } from 'next/cache';
 import { RedirectType, redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import { LocalesApi, Shop } from '@/api/_loaders';
@@ -17,17 +18,11 @@ type SearchParams = Promise<{
 }>;
 
 export type ProductsPageParams = Promise<{ domain: string; locale: string }>;
-export async function generateMetadata({
-    params,
-    searchParams: queryParams,
-}: {
-    params: ProductsPageParams;
-    searchParams: SearchParams;
-}): Promise<Metadata> {
-    const searchParams = await queryParams;
-    const pageNumber = searchParams.page ? Number.parseInt(searchParams.page, 10) : 1;
 
-    const { domain, locale: localeData } = await params;
+async function buildMetadata(domain: string, localeData: string, pageNumber: number): Promise<Metadata> {
+    'use cache';
+    cacheLife('days');
+
     const locale = Locale.from(localeData);
 
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
@@ -57,6 +52,18 @@ export async function generateMetadata({
             locale: locale.code,
         },
     };
+}
+
+export async function generateMetadata({
+    params,
+    searchParams: queryParams,
+}: {
+    params: ProductsPageParams;
+    searchParams: SearchParams;
+}): Promise<Metadata> {
+    const [{ domain, locale: localeData }, searchParams] = await Promise.all([params, queryParams]);
+    const pageNumber = searchParams.page ? Number.parseInt(searchParams.page, 10) : 1;
+    return buildMetadata(domain, localeData, pageNumber);
 }
 
 export default async function ProductsPage({
