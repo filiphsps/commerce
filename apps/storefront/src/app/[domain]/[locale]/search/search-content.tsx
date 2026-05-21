@@ -27,6 +27,11 @@ export const SearchBar = ({ defaultValue, onSearch, disabled, className, i18n, .
     const { t } = getTranslations('common', i18n);
     const [value, setValue] = useState<string>(defaultValue ?? '');
 
+    // Search fires only on Enter / blur / button-click — not on every keystroke.
+    // useDeferredValue is therefore not applicable here: there is no search-as-you-type
+    // value to defer. The useTransition that drives URL replacement lives in the parent
+    // SearchContent component. Phase 3 task 10 ("replace ad-hoc debounce with
+    // useDeferredValue") was superseded by the Phase 2 intentional Enter-only design.
     const performSearch = useCallback(() => {
         onSearch(value);
     }, [onSearch, value]);
