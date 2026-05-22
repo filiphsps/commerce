@@ -19,7 +19,7 @@ export const HEADER_LINK_BUBBLE_STYLES =
     '-mx-2 rounded-lg px-2 py-2 text-inherit group-hover/menu-item:bg-gray-100 group-focus-visible/menu-item:bg-gray-100';
 export const HEADER_LINK_ACTIVE_MENU_STYLES = '-mx-2 bg-gray-100 px-2 font-semibold text-primary';
 const PANEL_TILE_STYLES =
-    'group/item relative flex h-full grow shrink-0 overflow-hidden rounded-xl border border-black/[0.06] border-solid bg-white transition-[border-color,box-shadow,transform] duration-200 ease-out hover:border-primary/40 hover:shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] hover:-translate-y-0.5 focus-within:border-primary/40 focus-within:shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)]';
+    'group/item relative flex h-full grow shrink-0 overflow-hidden rounded-xl border border-[var(--header-divider-color)] border-solid bg-white transition-[border-color,box-shadow,transform] duration-200 ease-out hover:border-primary/40 hover:shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] hover:-translate-y-0.5 focus-within:border-primary/40 focus-within:shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)]';
 const PANEL_TILE_TITLE_STYLES = 'py-2 font-semibold text-xl leading-tight tracking-tight';
 
 type NavItem = NonNullable<Header['items']>[number];
@@ -402,7 +402,11 @@ function MegaMenuItem({ item, locale, depth }: { item: RecursiveNavItem; locale:
     );
 
     const childList = hasChildren ? (
-        <ul className={cn(isTopLevel ? 'border-black/[0.06] border-t px-3 py-3' : 'flex flex-col gap-0')}>
+        <ul
+            className={cn(
+                isTopLevel ? 'border-[var(--header-divider-color)] border-t px-3 py-3' : 'flex flex-col gap-0',
+            )}
+        >
             {children.map((child, i) => (
                 <li key={child.id ?? `mm-${depth + 1}-${i}`}>
                     <MegaMenuItem item={child} locale={locale} depth={depth + 1} />

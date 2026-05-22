@@ -87,7 +87,7 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
             </section>
 
             {items.length > 0 ? (
-                <section className="flex h-12 w-full flex-col items-center justify-center gap-0 border-0 border-black/[0.06] border-t border-b border-solid bg-white text-black">
+                <section className="flex h-12 w-full flex-col items-center justify-center gap-0 border-0 border-[var(--header-divider-color)] border-t border-b border-solid bg-white text-black">
                     <HeaderNavigation items={items} locale={locale} />
                 </section>
             ) : null}
