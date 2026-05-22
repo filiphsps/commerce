@@ -132,5 +132,57 @@ describe('<HeaderMenuTrigger>', () => {
             const panel = document.querySelector('[data-header-variant="editorial-columns"]');
             expect(panel).not.toBeNull();
         });
+
+        it('renders one column per top-level child via auto-fit grid', () => {
+            const item = mockNavItem({
+                link: { kind: 'page', label: 'Categories', page: { slug: 'c' } as never, openInNewTab: false },
+                items: [
+                    {
+                        id: 'a',
+                        link: { kind: 'page', label: 'Sour', page: { slug: 's' } as never, openInNewTab: false },
+                        items: [],
+                    },
+                    {
+                        id: 'b',
+                        link: { kind: 'page', label: 'Sweet', page: { slug: 'sw' } as never, openInNewTab: false },
+                        items: [],
+                    },
+                    {
+                        id: 'c',
+                        link: { kind: 'page', label: 'Salty', page: { slug: 'sa' } as never, openInNewTab: false },
+                        items: [],
+                    },
+                ] as never,
+            });
+            const { container } = render(<HeaderMenuTrigger item={item} locale={{ code: en.code }} />);
+            fireEvent.click(container.querySelector('button') as HTMLButtonElement);
+            const cols = document.querySelectorAll('[data-header-editorial-column]');
+            expect(cols.length).toBe(3);
+        });
+
+        it('renders the single-child edge case inside the centered max-width wrapper', () => {
+            const item = mockNavItem({
+                link: { kind: 'page', label: 'One', page: { slug: 'o' } as never, openInNewTab: false },
+                items: [
+                    {
+                        id: 'only',
+                        link: { kind: 'page', label: 'Only', page: { slug: 'only' } as never, openInNewTab: false },
+                        items: [],
+                    },
+                ] as never,
+            });
+            const { container } = render(<HeaderMenuTrigger item={item} locale={{ code: en.code }} />);
+            fireEvent.click(container.querySelector('button') as HTMLButtonElement);
+            const wrapper = document.querySelector('[data-header-editorial-single="true"]');
+            expect(wrapper).not.toBeNull();
+        });
+
+        it('renders eyebrow headings with text-primary class', () => {
+            const { container } = render(<HeaderMenuTrigger item={itemWithChildren()} locale={{ code: en.code }} />);
+            fireEvent.click(container.querySelector('button') as HTMLButtonElement);
+            const eyebrow = document.querySelector('[data-header-editorial-eyebrow]');
+            expect(eyebrow).not.toBeNull();
+            expect(eyebrow!.className).toContain('text-primary');
+        });
     });
 });

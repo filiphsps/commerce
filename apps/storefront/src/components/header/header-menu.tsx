@@ -295,12 +295,119 @@ function MegaMenuPanel({ item, locale }: { item: NavItem; locale: { code: string
 function EditorialColumnsPanel({ item, locale }: { item: NavItem; locale: { code: string } }) {
     const items = (item.items ?? []) as RecursiveNavItem[];
     if (items.length === 0) return null;
+
+    if (items.length === 1) {
+        return (
+            <div data-header-editorial-single="true" className="mx-auto w-full max-w-[clamp(280px,50%,480px)]">
+                <EditorialColumn item={items[0]!} locale={locale} index={0} />
+            </div>
+        );
+    }
+
     return (
-        <div className="flex flex-col gap-3 md:grid md:auto-rows-max md:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4">
+        <div
+            className={cn(
+                'flex flex-col gap-y-header-column-y',
+                'md:grid md:gap-x-header-column-x md:gap-y-header-column-y',
+                'md:grid-cols-[repeat(auto-fit,minmax(clamp(180px,22%,240px),1fr))]',
+            )}
+        >
             {items.map((child, i) => (
-                <MegaMenuItem key={child.id ?? `mm-1-${i}`} item={child} locale={locale} depth={1} />
+                <EditorialColumn key={child.id ?? `mm-1-${i}`} item={child} locale={locale} index={i} />
             ))}
         </div>
+    );
+}
+
+function EditorialColumn({ item, locale, index }: { item: RecursiveNavItem; locale: { code: string }; index: number }) {
+    const link = item.link;
+    const label = link?.label ?? null;
+    const href = link ? (resolveLink(link as never, { locale: { code: locale.code } }) ?? null) : null;
+    const image = isPopulatedMedia(item.image) ? item.image : null;
+    const description = item.description?.trim() || null;
+    const children = (item.items ?? []) as RecursiveNavItem[];
+
+    if (!label && children.length === 0) return null;
+
+    const eyebrowClass =
+        'text-[0.78rem] uppercase tracking-[var(--header-eyebrow-tracking)] font-semibold text-primary leading-none';
+
+    const eyebrow = label ? (
+        href ? (
+            <Link
+                href={href}
+                target={link?.openInNewTab ? '_blank' : undefined}
+                role="menuitem"
+                data-header-editorial-eyebrow="true"
+                className={cn(
+                    eyebrowClass,
+                    'transition-colors duration-[var(--header-motion-fast)] ease-[var(--header-easing)] hover:text-primary-dark focus-visible:text-primary-dark focus-visible:outline-2 focus-visible:outline-primary/40',
+                )}
+            >
+                {label}
+            </Link>
+        ) : (
+            <div data-header-editorial-eyebrow="true" className={eyebrowClass}>
+                {label}
+            </div>
+        )
+    ) : null;
+
+    return (
+        <div
+            data-header-editorial-column
+            className="animate-mega-menu-column flex flex-col gap-1.5 max-md:border-t max-md:border-[var(--header-divider-color)] max-md:pt-header-column-y first:max-md:border-t-0 first:max-md:pt-0"
+            style={{ animationDelay: `calc(var(--header-stagger-step) * ${Math.min(index, 5)})` }}
+        >
+            {image?.url ? (
+                <div className="mb-3 overflow-hidden rounded-[calc(var(--header-panel-radius)*0.66)]">
+                    <Image
+                        src={image.url}
+                        alt={image.alt ?? label ?? ''}
+                        width={image.width ?? 320}
+                        height={image.height ?? 200}
+                        className="aspect-[16/10] w-full object-cover transition-transform duration-[var(--header-motion-slow)] ease-[var(--header-easing-expo)] hover:scale-[1.02]"
+                        sizes="(max-width: 768px) 90vw, 240px"
+                        draggable={false}
+                        loading="lazy"
+                        decoding="async"
+                    />
+                </div>
+            ) : null}
+            {eyebrow}
+            {description ? <p className="text-sm leading-snug text-gray-600">{description}</p> : null}
+            {children.length > 0 ? (
+                <ul className="mt-2 flex flex-col gap-[2px]">
+                    {children.map((child, i) => (
+                        <li key={child.id ?? `ed-sub-${i}`}>
+                            <EditorialSublink item={child} locale={locale} />
+                        </li>
+                    ))}
+                </ul>
+            ) : null}
+        </div>
+    );
+}
+
+function EditorialSublink({ item, locale }: { item: RecursiveNavItem; locale: { code: string } }) {
+    const link = item.link;
+    const label = link?.label ?? null;
+    const href = link ? (resolveLink(link as never, { locale: { code: locale.code } }) ?? null) : null;
+    if (!label) return null;
+
+    const className = cn(
+        'block rounded-header-sublink px-header-sublink-x py-header-sublink-y -mx-header-sublink-x text-[0.92rem] text-gray-800',
+        'transition-colors duration-[var(--header-motion-fast)] ease-[var(--header-easing)]',
+        'hover:bg-[var(--header-sublink-hover-bg)] hover:text-primary',
+        'focus-visible:bg-[var(--header-sublink-hover-bg)] focus-visible:outline-2 focus-visible:outline-primary/40',
+    );
+
+    return href ? (
+        <Link href={href} target={link?.openInNewTab ? '_blank' : undefined} role="menuitem" className={className}>
+            {label}
+        </Link>
+    ) : (
+        <span className={className}>{label}</span>
     );
 }
 
