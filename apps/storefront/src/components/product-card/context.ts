@@ -2,19 +2,11 @@
 
 import { createContext, useContext } from 'react';
 import type { Product, ProductVariant } from '@/api/product';
+import type { ProductCardVariant } from '@/components/product-card/variant';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 
-export type ProductCardVariant = 'vertical-boxed' | 'vertical-bare' | 'horizontal-boxed' | 'horizontal-bare' | 'micro';
-
-export const ALL_VARIANTS: ReadonlyArray<ProductCardVariant> = [
-    'vertical-boxed',
-    'vertical-bare',
-    'horizontal-boxed',
-    'horizontal-bare',
-    'micro',
-] as const;
-
-export const DEFAULT_VARIANT: ProductCardVariant = 'vertical-boxed';
+export type { ProductCardVariant } from '@/components/product-card/variant';
+export { ALL_VARIANTS, DEFAULT_VARIANT, resolveVariant } from '@/components/product-card/variant';
 
 export type ProductCardContextValue = {
     variant: ProductCardVariant;
@@ -38,11 +30,4 @@ export function useProductCardContext(): ProductCardContextValue {
         throw new Error('useProductCardContext must be used within a <ProductCard.Root>');
     }
     return ctx;
-}
-
-export function resolveVariant(input: string | undefined): ProductCardVariant {
-    if (input && (ALL_VARIANTS as ReadonlyArray<string>).includes(input)) {
-        return input as ProductCardVariant;
-    }
-    return DEFAULT_VARIANT;
 }

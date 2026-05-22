@@ -2,6 +2,7 @@ import 'server-only';
 
 import { Gift as GiftIcon, Package as PackageIcon, RefreshCw as SubscriptionIcon } from 'lucide-react';
 import { isProductVegan, type Product } from '@/api/product';
+import { COMMON_BADGE_STYLES } from '@/components/product-card/primitives/badge-styles';
 import { AttributeIcon } from '@/components/products/attribute-icon';
 import { firstAvailableVariant } from '@/utils/first-available-variant';
 import type { LocaleDictionary } from '@/utils/locale';
@@ -13,9 +14,6 @@ export type ProductCardBadgesProps = {
     data: Product;
     i18n: LocaleDictionary;
 };
-
-export const COMMON_BADGE_STYLES =
-    'z-10 flex h-7 items-center justify-center gap-1 rounded-full px-[0.7rem] text-[0.65rem] font-semibold uppercase shadow-sm';
 
 const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
     const selectedVariant = firstAvailableVariant(product);

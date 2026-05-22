@@ -9,10 +9,11 @@ import ProductCardStockUrgency from './primitives/product-card-stock-urgency';
 import ProductCardTitle from './primitives/product-card-title';
 import ProductCardBase from './product-card';
 
-export type { ProductCardVariant } from './context';
-export { ALL_VARIANTS, DEFAULT_VARIANT, resolveVariant, useProductCardContext } from './context';
-export { COMMON_BADGE_STYLES } from './primitives/product-card-badges';
+export { useProductCardContext } from './context';
+export { COMMON_BADGE_STYLES } from './primitives/badge-styles';
 export type { ProductCardProps } from './product-card';
+export type { ProductCardVariant } from './variant';
+export { ALL_VARIANTS, DEFAULT_VARIANT, resolveVariant } from './variant';
 
 const ProductCard = Object.assign(ProductCardBase, {
     Root: ProductCardRoot,
