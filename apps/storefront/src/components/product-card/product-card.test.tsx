@@ -7,7 +7,7 @@ vi.mock('@/utils/dictionary', () => ({
     getDictionary: vi.fn().mockResolvedValue({}),
 }));
 
-vi.mock('@/components/product-card/product-card-badges', () => ({
+vi.mock('@/components/product-card/primitives/product-card-badges', () => ({
     default: () => null,
 }));
 

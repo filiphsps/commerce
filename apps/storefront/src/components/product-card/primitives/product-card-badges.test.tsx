@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import ProductCardBadges from '@/components/product-card/product-card-badges';
+import ProductCardBadges from '@/components/product-card/primitives/product-card-badges';
 import { mockProduct } from '@/utils/test/fixtures';
 import { render } from '@/utils/test/react';
 

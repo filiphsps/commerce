@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { Gift as GiftIcon, Package as PackageIcon, RefreshCw as SubscriptionIcon } from 'lucide-react';
 import { isProductVegan, type Product } from '@/api/product';
 import { AttributeIcon } from '@/components/products/attribute-icon';
@@ -13,7 +15,7 @@ export type ProductCardBadgesProps = {
 };
 
 export const COMMON_BADGE_STYLES =
-    'z-10 flex h-7 items-center justify-center gap-1 rounded-full px-[0.7rem] text-[0.65rem] font-semibold uppercase shadow';
+    'z-10 flex h-7 items-center justify-center gap-1 rounded-full px-[0.7rem] text-[0.65rem] font-semibold uppercase shadow-sm';
 
 const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
     const selectedVariant = firstAvailableVariant(product);
@@ -26,11 +28,11 @@ const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
     const isFreeShipping = product.tags.includes('Free Shipping');
     if (isFreeShipping) {
         return (
-            <div className="pointer-events-none absolute inset-0 flex h-full flex-wrap justify-start">
+            <div className="pointer-events-none absolute inset-x-0 top-0 flex flex-wrap justify-start">
                 <div
                     className={cn(
                         COMMON_BADGE_STYLES,
-                        '-mt-1 h-8 rounded-t-none rounded-l-none bg-primary text-primary-foreground text-xs normal-case leading-none',
+                        'h-8 rounded-t-(--product-card-image-radius) rounded-b-none bg-primary px-3 text-primary-foreground text-xs normal-case leading-none',
                     )}
                 >
                     <PackageIcon className="text-sm leading-none" />
@@ -55,7 +57,7 @@ const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
     return (
         <div
             className={cn(
-                'pointer-events-none absolute inset-1 bottom-auto flex flex-wrap justify-start gap-1 empty:hidden',
+                'pointer-events-none absolute inset-2 bottom-auto flex flex-wrap justify-start gap-1 empty:hidden',
             )}
         >
             {isVegan && (
@@ -79,7 +81,7 @@ const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
                 </div>
             ) : null}
 
-            {discount > 1 ? ( // Handle rounding-errors.
+            {discount > 1 ? (
                 <div className={cn(COMMON_BADGE_STYLES, 'bg-sale-stripes font-bold text-white')} data-nosnippet={true}>
                     {capitalize(t('percentage-off', discount))}
                 </div>

@@ -10,7 +10,7 @@ import { createProductSearchParams, isProductVegan, type Product, type ProductFi
 import { Button } from '@/components/actionable/button';
 import { Filters } from '@/components/actionable/filters';
 import Link from '@/components/link';
-import { COMMON_BADGE_STYLES } from '@/components/product-card/product-card-badges';
+import { COMMON_BADGE_STYLES } from '@/components/product-card/primitives/product-card-badges';
 import { AttributeIcon } from '@/components/products/attribute-icon';
 import { Label } from '@/components/typography/label';
 import { capitalize, getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
