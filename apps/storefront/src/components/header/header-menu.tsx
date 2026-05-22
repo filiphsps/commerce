@@ -353,7 +353,7 @@ function EditorialColumn({ item, locale, index }: { item: RecursiveNavItem; loca
     return (
         <div
             data-header-editorial-column
-            className="animate-mega-menu-column flex flex-col gap-1.5 max-md:border-t max-md:border-[var(--header-divider-color)] max-md:pt-header-column-y first:max-md:border-t-0 first:max-md:pt-0"
+            className="flex animate-mega-menu-column flex-col gap-1.5 max-md:border-[var(--header-divider-color)] max-md:border-t max-md:pt-header-column-y first:max-md:border-t-0 first:max-md:pt-0"
             style={{ animationDelay: `calc(var(--header-stagger-step) * ${Math.min(index, 5)})` }}
         >
             {image?.url ? (
@@ -372,7 +372,7 @@ function EditorialColumn({ item, locale, index }: { item: RecursiveNavItem; loca
                 </div>
             ) : null}
             {eyebrow}
-            {description ? <p className="text-sm leading-snug text-gray-600">{description}</p> : null}
+            {description ? <p className="text-gray-600 text-sm leading-snug">{description}</p> : null}
             {children.length > 0 ? (
                 <ul className="mt-2 flex flex-col gap-[2px]">
                     {children.map((child, i) => (
