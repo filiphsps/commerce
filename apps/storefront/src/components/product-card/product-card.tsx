@@ -24,10 +24,6 @@ const VARIANT_COMPONENTS = {
     micro: Micro,
 } as const;
 
-// TEMP: re-exported until T18 migrates the collection-block consumer.
-export const CARD_STYLES =
-    'group/card relative flex min-h-[18rem] w-full snap-center snap-always flex-col overflow-hidden rounded-(--product-card-radius) border-(length:--product-card-border-width) border-solid border-(color:var(--product-card-border-color)) bg-(--product-card-bg) p-(--product-card-padding)';
-
 export type ProductCardProps = {
     shop: OnlineShop;
     locale: Locale;

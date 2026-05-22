@@ -7,8 +7,8 @@ import { CollectionApi } from '@/api/_loaders';
 import type { Product } from '@/api/product';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import type { CollectionFilters } from '@/api/shopify/collection';
-import Link from '@/components/link';
-import ProductCard, { CARD_STYLES } from '@/components/product-card/product-card';
+import ProductCard, { type ProductCardVariant } from '@/components/product-card';
+import CollectionViewAllTile from '@/components/products/collection-view-all-tile';
 import type { Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 
@@ -27,6 +27,7 @@ export type CollectionBlockBase<ComponentGeneric extends ElementType> = {
     priority?: boolean;
 
     bare?: boolean;
+    cardVariant?: ProductCardVariant;
 };
 
 export type CollectionBlockProps<ComponentGeneric extends ElementType> = CollectionBlockBase<ComponentGeneric> &
@@ -49,15 +50,15 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
     priority,
 
     bare = false,
+    cardVariant = 'vertical-boxed',
     ...props
 }: CollectionBlockProps<ComponentGeneric>) => {
-    const Tag = as ?? 'div';
+    const Tag = (as ?? 'div') as ElementType;
 
     const collection = handle
         ? await CollectionApi({
               api: await ShopifyApolloApiClient({ shop, locale }),
               handle,
-              // TODO: Pagination for the full variation.
               first: limit,
               ...filters,
           })
@@ -69,14 +70,16 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
     }
 
     const productCards = products.map((product, index) => (
-        <Suspense key={product.id} fallback={<ProductCard.skeleton />}>
-            <ProductCard shop={shop} locale={locale} data={product} priority={priority && index < 2} />
+        <Suspense key={product.id} fallback={<ProductCard.skeleton variant={cardVariant} />}>
+            <ProductCard
+                shop={shop}
+                locale={locale}
+                data={product}
+                variant={cardVariant}
+                priority={priority && index < 2}
+            />
         </Suspense>
     ));
-
-    if (products.length <= 0 && !children) {
-        return null;
-    }
 
     if (bare) {
         return <>{productCards}</>;
@@ -96,25 +99,11 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
         >
             {children}
             {productCards}
-
-            {collection && showViewAll ? (
-                <Link
-                    href={`/collections/${collection.handle}/`}
-                    className={cn(
-                        CARD_STYLES,
-                        'flex items-center justify-center border-primary-dark bg-primary p-3 text-primary-foreground transition-all *:text-primary-foreground hover:text-primary-foreground hover:brightness-75 hover:transition-all',
-                    )}
-                    // TODO: i18n.
-                    // TODO: View all {products.length} {Pluralize({ count: products.length, noun: 'product' })}.
-                >
-                    <div className="text-center text-inherit">
-                        View all of the products in <b className="font-bold">{collection.title}</b>.
-                    </div>
-                </Link>
-            ) : null}
+            {collection && showViewAll ? <CollectionViewAllTile collection={collection} /> : null}
         </Tag>
     );
 };
+
 CollectionBlock.displayName = 'Nordcom.Products.CollectionBlock';
 
 CollectionBlock.skeleton = ({
@@ -122,13 +111,15 @@ CollectionBlock.skeleton = ({
     bare = false,
     length = 7,
     className,
+    cardVariant = 'vertical-boxed',
 }: {
     length?: number;
     isHorizontal?: boolean;
     bare?: boolean;
     className?: string;
+    cardVariant?: ProductCardVariant;
 }) => {
-    const cards = Array.from({ length }).map((_, index) => <ProductCard.skeleton key={index} />);
+    const cards = Array.from({ length }).map((_, index) => <ProductCard.skeleton key={index} variant={cardVariant} />);
 
     if (bare) {
         return <>{cards}</>;
@@ -150,5 +141,4 @@ CollectionBlock.skeleton = ({
     );
 };
 
-CollectionBlock.displayName = 'Nordcom.Products.CollectionBlock';
 export default CollectionBlock;
