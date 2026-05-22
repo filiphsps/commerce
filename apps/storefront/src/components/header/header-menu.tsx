@@ -446,8 +446,91 @@ function CompactListItem({ item, locale }: { item: RecursiveNavItem; locale: { c
     );
 }
 
-function FeaturedPromoPanel({ item: _item, locale: _locale }: { item: NavItem; locale: { code: string } }) {
-    return null;
+function FeaturedPromoPanel({ item, locale }: { item: NavItem; locale: { code: string } }) {
+    const items = (item.items ?? []) as RecursiveNavItem[];
+    if (items.length === 0) return null;
+    const [hero, ...rest] = items;
+
+    return (
+        <div className="flex flex-col gap-header-column-y md:grid md:grid-cols-[3fr_2fr] md:gap-x-header-column-x">
+            {hero ? <FeaturedHero item={hero} locale={locale} /> : null}
+            {rest.length > 0 ? (
+                <ul data-header-featured-list className="flex flex-col gap-[2px]">
+                    {rest.map((child, i) => (
+                        <li key={child.id ?? `fp-${i}`}>
+                            <EditorialSublink item={child} locale={locale} />
+                        </li>
+                    ))}
+                </ul>
+            ) : null}
+        </div>
+    );
+}
+
+function FeaturedHero({ item, locale }: { item: RecursiveNavItem; locale: { code: string } }) {
+    const link = item.link;
+    const label = link?.label ?? null;
+    const href = link ? (resolveLink(link as never, { locale: { code: locale.code } }) ?? null) : null;
+    const image = isPopulatedMedia(item.image) ? item.image : null;
+    const description = item.description?.trim() || null;
+    const background = item.backgroundColor || undefined;
+    const eyebrowClass =
+        'text-[0.78rem] uppercase tracking-[var(--header-eyebrow-tracking)] font-semibold text-primary leading-none';
+
+    const visual = image?.url ? (
+        <div className="overflow-hidden rounded-[calc(var(--header-panel-radius)*0.8)]">
+            <Image
+                src={image.url}
+                alt={image.alt ?? label ?? ''}
+                width={image.width ?? 640}
+                height={image.height ?? 480}
+                className="aspect-[4/3] max-h-[280px] w-full object-cover transition-transform duration-[var(--header-motion-slow)] ease-[var(--header-easing-expo)] hover:scale-[1.02]"
+                sizes="(max-width: 768px) 90vw, 480px"
+                draggable={false}
+                loading="lazy"
+                decoding="async"
+            />
+        </div>
+    ) : (
+        <div
+            data-header-featured-hero-fallback="true"
+            className="aspect-[4/3] max-h-[280px] w-full rounded-[calc(var(--header-panel-radius)*0.8)] bg-gray-50"
+            style={background ? { backgroundColor: background } : undefined}
+        />
+    );
+
+    const inner = (
+        <>
+            {visual}
+            {label ? <div className={cn(eyebrowClass, 'mt-3')}>{label}</div> : null}
+            {description ? <p className="mt-1.5 text-gray-600 text-sm leading-snug">{description}</p> : null}
+            {label ? (
+                <span className="mt-3 inline-flex items-center gap-1 font-semibold text-primary text-sm">
+                    {label}
+                    <ChevronDownIcon
+                        aria-hidden={true}
+                        className="size-3.5 -rotate-90 stroke-2 transition-transform duration-[var(--header-motion-base)] ease-[var(--header-easing-expo)] group-hover/featured:translate-x-0.5"
+                    />
+                </span>
+            ) : null}
+        </>
+    );
+
+    return href ? (
+        <Link
+            href={href}
+            target={link?.openInNewTab ? '_blank' : undefined}
+            role="menuitem"
+            data-header-featured-hero="true"
+            className="group/featured block focus-visible:outline-2 focus-visible:outline-primary/40"
+        >
+            {inner}
+        </Link>
+    ) : (
+        <div data-header-featured-hero="true" className="group/featured block">
+            {inner}
+        </div>
+    );
 }
 
 /** Legacy export kept as a no-op for source compat with old import paths. */

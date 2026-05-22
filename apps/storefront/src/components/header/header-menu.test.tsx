@@ -206,5 +206,80 @@ describe('<HeaderMenuTrigger>', () => {
             expect(document.querySelector('[data-header-compact-image]')).toBeNull();
             expect(document.querySelector('[data-header-compact-list]')).not.toBeNull();
         });
+
+        it('Featured Promo renders the first child as the hero with image + CTA', () => {
+            const item = mockNavItem({
+                link: { kind: 'page', label: 'Featured', page: { slug: 'feat' } as never, openInNewTab: false },
+                variant: 'featured-promo' as never,
+                items: [
+                    {
+                        id: 'hero',
+                        link: {
+                            kind: 'page',
+                            label: 'Sour Candy',
+                            page: { slug: 'sour' } as never,
+                            openInNewTab: false,
+                        },
+                        description: 'Sour skulls, watermelon rings.',
+                        image: {
+                            id: 'i',
+                            url: 'https://cdn.test/sour.png',
+                            alt: 'sour',
+                            width: 640,
+                            height: 480,
+                        } as never,
+                        items: [],
+                    },
+                    {
+                        id: 'l1',
+                        link: {
+                            kind: 'page',
+                            label: 'Chocolate',
+                            page: { slug: 'choc' } as never,
+                            openInNewTab: false,
+                        },
+                        items: [],
+                    },
+                    {
+                        id: 'l2',
+                        link: { kind: 'page', label: 'Liquorice', page: { slug: 'liq' } as never, openInNewTab: false },
+                        items: [],
+                    },
+                ] as never,
+            });
+            const { container } = render(<HeaderMenuTrigger item={item} locale={{ code: en.code }} />);
+            fireEvent.click(container.querySelector('button') as HTMLButtonElement);
+            expect(document.querySelector('[data-header-variant="featured-promo"]')).not.toBeNull();
+            const hero = document.querySelector('[data-header-featured-hero]');
+            expect(hero).not.toBeNull();
+            expect(hero!.textContent).toContain('Sour Candy');
+            expect(hero!.textContent).toContain('Sour skulls, watermelon rings.');
+            const heroImg = hero!.querySelector('img');
+            expect(heroImg).not.toBeNull();
+            const list = document.querySelector('[data-header-featured-list]');
+            expect(list).not.toBeNull();
+            expect(list!.textContent).toContain('Chocolate');
+            expect(list!.textContent).toContain('Liquorice');
+        });
+
+        it('Featured Promo falls back to backgroundColor when no image is set', () => {
+            const item = mockNavItem({
+                link: { kind: 'page', label: 'F', page: { slug: 'f' } as never, openInNewTab: false },
+                variant: 'featured-promo' as never,
+                items: [
+                    {
+                        id: 'hero',
+                        link: { kind: 'page', label: 'Hero', page: { slug: 'h' } as never, openInNewTab: false },
+                        backgroundColor: '#ffeebb',
+                        items: [],
+                    },
+                ] as never,
+            });
+            const { container } = render(<HeaderMenuTrigger item={item} locale={{ code: en.code }} />);
+            fireEvent.click(container.querySelector('button') as HTMLButtonElement);
+            const heroFallback = document.querySelector('[data-header-featured-hero-fallback]');
+            expect(heroFallback).not.toBeNull();
+            expect((heroFallback as HTMLElement).style.backgroundColor).toBeTruthy();
+        });
     });
 });
