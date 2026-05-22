@@ -269,13 +269,32 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
 }
 HeaderMenuTrigger.displayName = 'Nordcom.Header.HeaderMenuTrigger';
 
+type Variant = 'editorial-columns' | 'compact-list' | 'featured-promo';
+
+const KNOWN_VARIANTS: ReadonlySet<Variant> = new Set(['editorial-columns', 'compact-list', 'featured-promo']);
+
+const resolveVariant = (raw: unknown): Variant => {
+    if (typeof raw === 'string' && KNOWN_VARIANTS.has(raw as Variant)) return raw as Variant;
+    if (raw != null && process.env.NODE_ENV !== 'production') {
+        console.warn(`[header-menu] unknown variant "${String(raw)}" — falling back to editorial-columns`);
+    }
+    return 'editorial-columns';
+};
+
 function MegaMenuPanel({ item, locale }: { item: NavItem; locale: { code: string } }) {
-    // The runtime payload matches `RecursiveNavItem` at every depth even
-    // though the generated CMS types diverge per level — project here once
-    // so the recursive renderer never has to deal with the typed variants.
+    const variant = resolveVariant((item as { variant?: string }).variant);
+    return (
+        <div data-header-variant={variant}>
+            {variant === 'editorial-columns' && <EditorialColumnsPanel item={item} locale={locale} />}
+            {variant === 'compact-list' && <CompactListPanel item={item} locale={locale} />}
+            {variant === 'featured-promo' && <FeaturedPromoPanel item={item} locale={locale} />}
+        </div>
+    );
+}
+
+function EditorialColumnsPanel({ item, locale }: { item: NavItem; locale: { code: string } }) {
     const items = (item.items ?? []) as RecursiveNavItem[];
     if (items.length === 0) return null;
-
     return (
         <div className="flex flex-col gap-3 md:grid md:auto-rows-max md:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4">
             {items.map((child, i) => (
@@ -283,6 +302,14 @@ function MegaMenuPanel({ item, locale }: { item: NavItem; locale: { code: string
             ))}
         </div>
     );
+}
+
+function CompactListPanel({ item: _item, locale: _locale }: { item: NavItem; locale: { code: string } }) {
+    return null;
+}
+
+function FeaturedPromoPanel({ item: _item, locale: _locale }: { item: NavItem; locale: { code: string } }) {
+    return null;
 }
 
 // Renders any depth of mega-menu item. Depth 1 is the column-style card

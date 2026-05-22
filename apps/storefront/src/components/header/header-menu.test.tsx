@@ -116,4 +116,21 @@ describe('<HeaderMenuTrigger>', () => {
             expect(document.body.contains(panel)).toBe(true);
         });
     });
+
+    describe('variant dispatch', () => {
+        it('renders Editorial Columns by default when no variant is set', () => {
+            const { container } = render(<HeaderMenuTrigger item={itemWithChildren()} locale={{ code: en.code }} />);
+            fireEvent.click(container.querySelector('button') as HTMLButtonElement);
+            const panel = document.querySelector('[data-header-variant="editorial-columns"]');
+            expect(panel).not.toBeNull();
+        });
+
+        it('falls back to Editorial Columns when variant is unknown', () => {
+            const item = itemWithChildren({ variant: 'totally-not-a-real-variant' as never });
+            const { container } = render(<HeaderMenuTrigger item={item} locale={{ code: en.code }} />);
+            fireEvent.click(container.querySelector('button') as HTMLButtonElement);
+            const panel = document.querySelector('[data-header-variant="editorial-columns"]');
+            expect(panel).not.toBeNull();
+        });
+    });
 });
