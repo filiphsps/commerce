@@ -2,7 +2,7 @@
 
 import { resolveLink } from '@nordcom/commerce-cms/api';
 import type { Header, Media } from '@nordcom/commerce-cms/types';
-import { ChevronDown as ChevronDownIcon } from 'lucide-react';
+import { ChevronDown as ChevronDownIcon, ChevronRight as ChevronRightIcon } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
@@ -386,14 +386,28 @@ function EditorialColumn({ item, locale, index }: { item: RecursiveNavItem; loca
     );
 }
 
-function EditorialSublink({ item, locale }: { item: RecursiveNavItem; locale: { code: string } }) {
+function EditorialSublink({
+    item,
+    locale,
+    size = 'default',
+}: {
+    item: RecursiveNavItem;
+    locale: { code: string };
+    size?: 'default' | 'prominent';
+}) {
     const link = item.link;
     const label = link?.label ?? null;
     const href = link ? (resolveLink(link as never, { locale: { code: locale.code } }) ?? null) : null;
     if (!label) return null;
 
+    const sizeClass =
+        size === 'prominent'
+            ? 'text-[0.95rem] py-[calc(var(--header-sublink-pad-y)*1.25)]'
+            : 'text-[0.92rem] py-header-sublink-y';
+
     const className = cn(
-        'block rounded-header-sublink px-header-sublink-x py-header-sublink-y -mx-header-sublink-x text-[0.92rem] text-gray-800',
+        'block rounded-header-sublink px-header-sublink-x -mx-header-sublink-x text-gray-800',
+        sizeClass,
         'transition-colors duration-[var(--header-motion-fast)] ease-[var(--header-easing)]',
         'hover:bg-[var(--header-sublink-hover-bg)] hover:text-primary',
         'focus-visible:bg-[var(--header-sublink-hover-bg)] focus-visible:outline-2 focus-visible:outline-primary/40',
@@ -451,18 +465,28 @@ function FeaturedPromoPanel({ item, locale }: { item: NavItem; locale: { code: s
     if (items.length === 0) return null;
     const [hero, ...rest] = items;
 
+    if (rest.length === 0) {
+        return (
+            <div className="mx-auto w-full max-w-[min(100%,calc(var(--page-width,1536px)*0.5))]">
+                {hero ? <FeaturedHero item={hero} locale={locale} /> : null}
+            </div>
+        );
+    }
+
     return (
         <div className="flex flex-col gap-header-column-y md:grid md:grid-cols-[3fr_2fr] md:gap-x-header-column-x">
             {hero ? <FeaturedHero item={hero} locale={locale} /> : null}
-            {rest.length > 0 ? (
-                <ul data-header-featured-list className="flex flex-col gap-[2px]">
-                    {rest.map((child, i) => (
-                        <li key={child.id ?? `fp-${i}`}>
-                            <EditorialSublink item={child} locale={locale} />
-                        </li>
-                    ))}
-                </ul>
-            ) : null}
+            <ul data-header-featured-list className="flex flex-col gap-[2px]">
+                {rest.map((child, i) => (
+                    <li
+                        key={child.id ?? `fp-${i}`}
+                        className="animate-mega-menu-column"
+                        style={{ animationDelay: `calc(var(--header-stagger-step) * ${Math.min(i, 5)})` }}
+                    >
+                        <EditorialSublink item={child} locale={locale} size="prominent" />
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 }
@@ -503,13 +527,18 @@ function FeaturedHero({ item, locale }: { item: RecursiveNavItem; locale: { code
         <>
             {visual}
             {label ? <div className={cn(eyebrowClass, 'mt-3')}>{label}</div> : null}
+            {label ? (
+                <h3 className="mt-1.5 font-semibold text-[1.5rem] text-gray-900 leading-tight tracking-tight">
+                    {label}
+                </h3>
+            ) : null}
             {description ? <p className="mt-1.5 text-gray-600 text-sm leading-snug">{description}</p> : null}
             {label ? (
                 <span className="mt-3 inline-flex items-center gap-1 font-semibold text-primary text-sm">
                     {label}
-                    <ChevronDownIcon
+                    <ChevronRightIcon
                         aria-hidden={true}
-                        className="size-3.5 -rotate-90 stroke-2 transition-transform duration-[var(--header-motion-base)] ease-[var(--header-easing-expo)] group-hover/featured:translate-x-0.5"
+                        className="size-3.5 stroke-2 transition-transform duration-[var(--header-motion-base)] ease-[var(--header-easing-expo)] group-hover/featured:translate-x-0.5"
                     />
                 </span>
             ) : null}
