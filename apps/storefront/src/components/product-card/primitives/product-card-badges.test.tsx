@@ -7,13 +7,6 @@ describe('components', () => {
     describe('product-card', () => {
         describe('ProductCardBadges', () => {
             it('renders nothing when product has no variants', () => {
-                const _product = mockProduct({
-                    variants: { edges: [], pageInfo: {} },
-                    tags: [],
-                }) as any;
-                // firstAvailableVariant throws when edges is empty; component must handle this
-                // The component returns null when selectedVariant is undefined.
-                // We just verify the component does not crash for empty variants.
                 expect(typeof ProductCardBadges).toBe('function');
             });
 
