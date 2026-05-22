@@ -195,10 +195,11 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
                 <div className="mx-auto w-full max-w-(--page-width) px-2 md:px-3">
                     <div
                         data-header-panel
+                        data-header-accent-rail="true"
                         className={cn(
                             'relative rounded-header-panel border border-[var(--header-divider-color)] bg-white p-header-panel',
                             'shadow-header-panel',
-                            'before:pointer-events-none before:absolute before:top-0 before:left-0 before:right-0',
+                            'before:pointer-events-none before:absolute before:top-0 before:right-0 before:left-0',
                             'before:h-[var(--header-rail-thickness)] before:bg-primary',
                             'before:rounded-tl-header-panel before:rounded-tr-header-panel',
                             'before:content-[""]',
@@ -223,6 +224,7 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
                 aria-expanded={open}
                 aria-controls={open ? menuId : undefined}
                 aria-label={`Menu: ${item.link?.label ?? 'navigation'}`}
+                data-header-active-bar={open ? 'true' : undefined}
                 onClick={handleToggle}
                 onFocus={(e) => {
                     previouslyFocused.current = e.currentTarget;
@@ -232,15 +234,17 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
                 <span
                     className={cn(
                         HEADER_LINK_BUBBLE_STYLES,
-                        'flex items-center gap-1',
+                        'relative flex items-center gap-1',
                         open && HEADER_LINK_ACTIVE_MENU_STYLES,
+                        open &&
+                            'after:pointer-events-none after:absolute after:bottom-0 after:left-2 after:right-2 after:h-[var(--header-rail-thickness)] after:bg-primary after:rounded-[1px] after:content-[""]',
                     )}
                 >
                     {item.link?.label}
                     <ChevronDownIcon
                         aria-hidden={true}
                         className={cn(
-                            'size-4 stroke-2 transition-transform duration-200 ease-out',
+                            'size-3.5 stroke-2 transition-transform duration-[var(--header-motion-base)] ease-[var(--header-easing-expo)]',
                             open && 'rotate-180',
                         )}
                     />
@@ -309,7 +313,7 @@ function MegaMenuItem({ item, locale, depth }: { item: RecursiveNavItem; locale:
                 fill={false}
                 width={image!.width ?? 320}
                 height={image!.height ?? 240}
-                className="pointer-events-none h-full w-full object-cover object-center transition-transform duration-300 ease-out group-hover/item:scale-[1.04] group-focus-within/item:scale-[1.04]"
+                className="pointer-events-none h-full w-full object-cover object-center transition-transform duration-300 ease-out group-focus-within/item:scale-[1.04] group-hover/item:scale-[1.04]"
                 sizes="(max-width: 768px) 90vw, 300px"
                 draggable={false}
                 loading="lazy"
@@ -358,7 +362,7 @@ function MegaMenuItem({ item, locale, depth }: { item: RecursiveNavItem; locale:
         <div
             className={cn(
                 'flex flex-col items-start justify-start gap-1 text-gray-600',
-                isTopLevel ? 'p-3 group-hover/item:text-inherit group-focus-within/item:text-inherit' : 'py-1.5',
+                isTopLevel ? 'p-3 group-focus-within/item:text-inherit group-hover/item:text-inherit' : 'py-1.5',
                 hasImage && 'pt-2 empty:hidden',
             )}
         >
@@ -381,7 +385,7 @@ function MegaMenuItem({ item, locale, depth }: { item: RecursiveNavItem; locale:
                 isTopLevel && 'h-full',
                 hasImage && 'grid grid-cols-1 grid-rows-[10rem_auto] items-stretch md:grid-rows-[11rem_auto]',
                 !isTopLevel &&
-                    'group/sub-link rounded-header-sublink px-header-sublink-x py-header-sublink-y -mx-header-sublink-x transition-colors duration-[var(--header-motion-fast)] ease-[var(--header-easing)] hover:bg-[var(--header-sublink-hover-bg)] focus-visible:bg-[var(--header-sublink-hover-bg)] focus-visible:outline-2 focus-visible:outline-primary/40',
+                    'group/sub-link -mx-header-sublink-x rounded-header-sublink px-header-sublink-x py-header-sublink-y transition-colors duration-[var(--header-motion-fast)] ease-[var(--header-easing)] hover:bg-[var(--header-sublink-hover-bg)] focus-visible:bg-[var(--header-sublink-hover-bg)] focus-visible:outline-2 focus-visible:outline-primary/40',
             )}
         >
             {imageHeader}

@@ -33,35 +33,18 @@ export async function headerPublish(
 ): Promise<void> {
     return a.publish(domain, id, formData, locale);
 }
-export async function headerCreate(
-    domain: string | null,
-    formData: FormData,
-    locale: string,
-): Promise<{ id: string }> {
+export async function headerCreate(domain: string | null, formData: FormData, locale: string): Promise<{ id: string }> {
     return a.create(domain, formData, locale);
 }
-export async function headerDelete(
-    domain: string | null,
-    id: string,
-): Promise<void> {
+export async function headerDelete(domain: string | null, id: string): Promise<void> {
     return a.delete(domain, id);
 }
-export async function headerBulkDelete(
-    domain: string | null,
-    ids: string[],
-): Promise<void> {
+export async function headerBulkDelete(domain: string | null, ids: string[]): Promise<void> {
     return a.bulkDelete(domain, ids);
 }
-export async function headerBulkPublish(
-    domain: string | null,
-    ids: string[],
-): Promise<void> {
+export async function headerBulkPublish(domain: string | null, ids: string[]): Promise<void> {
     return a.bulkPublish(domain, ids);
 }
-export async function headerRestoreVersion(
-    domain: string | null,
-    id: string,
-    versionId: string,
-): Promise<void> {
+export async function headerRestoreVersion(domain: string | null, id: string, versionId: string): Promise<void> {
     return a.restoreVersion(domain, id, versionId);
 }

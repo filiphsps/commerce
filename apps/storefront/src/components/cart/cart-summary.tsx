@@ -35,7 +35,7 @@ type AllocationWithAmount = CartDiscountAllocation & {
 /** Element type of the `lines` array returned by `useCart()`. */
 type CartLineElement = NonNullable<ReturnType<typeof useCart>['lines']>[number];
 
-const isSaleLine = (line: CartLineElement): line is SaleLine => Boolean(line && line.cost && line.discountAllocations);
+const isSaleLine = (line: CartLineElement): line is SaleLine => Boolean(line?.cost && line.discountAllocations);
 
 const hasDiscountedAmount = (
     allocation: CartDiscountAllocation | null | undefined,

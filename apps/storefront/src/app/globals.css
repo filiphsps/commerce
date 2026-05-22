@@ -214,7 +214,7 @@ html:root {
     }
 
     input[type="number"] {
-        -moz-appearance: textfield !important;
+        -moz-appearance: textfield;
         appearance: textfield;
 
         &::-webkit-inner-spin-button {
@@ -240,9 +240,9 @@ html:root {
 
         &.primary.design,
         &.primary {
-            stroke: inherit !important;
-            color: inherit !important;
-            fill: inherit !important;
+            stroke: inherit;
+            color: inherit;
+            fill: inherit;
         }
     }
 
@@ -260,15 +260,15 @@ html:root {
     }
 
     #bloggy--article {
-        max-width: unset !important;
+        max-width: unset;
 
         .bggle_line {
-            width: 100% !important;
+            width: 100%;
         }
 
         @media (max-width: 950px) {
             .bggl-recipe-infos {
-                max-width: 100% !important;
+                max-width: 100%;
             }
         }
     }

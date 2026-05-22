@@ -70,7 +70,7 @@ export default async function globalSetup(): Promise<void> {
 
         connection = conn;
 
-        const ShopModel = conn.models['Shop'] ?? conn.model('Shop', ShopSchema);
+        const ShopModel = conn.models.Shop ?? conn.model('Shop', ShopSchema);
 
         const existing = await ShopModel.findOne({ domain: TEST_DOMAIN }).lean().exec();
         if (existing) {

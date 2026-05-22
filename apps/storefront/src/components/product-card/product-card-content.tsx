@@ -22,14 +22,14 @@ export type ProductCardFooterProps = {
 };
 
 const ProductCardContent = ({ data: product, priority, locale, i18n, children }: ProductCardFooterProps) => {
-    const initialVariant = useMemo(() => firstAvailableVariant(product), [product?.id]);
+    const initialVariant = useMemo(() => firstAvailableVariant(product), [product?.id, product]);
     const [override, setOverride] = useState<typeof initialVariant>(undefined);
 
     // Reset any user-selected override when the product changes, so we never
     // hold a stale variant pointer from the previous product.
     useEffect(() => {
         setOverride(undefined);
-    }, [product?.id]);
+    }, []);
 
     const selectedVariant = override ?? initialVariant;
 

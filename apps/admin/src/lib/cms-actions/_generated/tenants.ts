@@ -40,28 +40,15 @@ export async function tenantsCreate(
 ): Promise<{ id: string }> {
     return a.create(domain, formData, locale);
 }
-export async function tenantsDelete(
-    domain: string | null,
-    id: string,
-): Promise<void> {
+export async function tenantsDelete(domain: string | null, id: string): Promise<void> {
     return a.delete(domain, id);
 }
-export async function tenantsBulkDelete(
-    domain: string | null,
-    ids: string[],
-): Promise<void> {
+export async function tenantsBulkDelete(domain: string | null, ids: string[]): Promise<void> {
     return a.bulkDelete(domain, ids);
 }
-export async function tenantsBulkPublish(
-    domain: string | null,
-    ids: string[],
-): Promise<void> {
+export async function tenantsBulkPublish(domain: string | null, ids: string[]): Promise<void> {
     return a.bulkPublish(domain, ids);
 }
-export async function tenantsRestoreVersion(
-    domain: string | null,
-    id: string,
-    versionId: string,
-): Promise<void> {
+export async function tenantsRestoreVersion(domain: string | null, id: string, versionId: string): Promise<void> {
     return a.restoreVersion(domain, id, versionId);
 }

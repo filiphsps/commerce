@@ -56,6 +56,25 @@ describe('<HeaderMenuTrigger>', () => {
         expect(getByText('Stuff for the head')).toBeTruthy();
     });
 
+    it('renders the accent rail marker on the panel when open', () => {
+        const { container } = render(<HeaderMenuTrigger item={itemWithChildren()} locale={{ code: en.code }} />);
+        const button = container.querySelector('button') as HTMLButtonElement;
+        fireEvent.click(button);
+        // Panel is portaled to <body>.
+        const rail = document.querySelector('[data-header-accent-rail="true"]');
+        expect(rail).not.toBeNull();
+    });
+
+    it('marks the active trigger with data-header-active-bar when open', () => {
+        const { container } = render(<HeaderMenuTrigger item={itemWithChildren()} locale={{ code: en.code }} />);
+        const button = container.querySelector('button') as HTMLButtonElement;
+        // Closed: no marker.
+        expect(button.getAttribute('data-header-active-bar')).toBeNull();
+        fireEvent.click(button);
+        // Open: marker present.
+        expect(button.getAttribute('data-header-active-bar')).toBe('true');
+    });
+
     describe('a11y', () => {
         it('has aria-label containing the item label', () => {
             const { container } = render(<HeaderMenuTrigger item={itemWithChildren()} locale={{ code: en.code }} />);

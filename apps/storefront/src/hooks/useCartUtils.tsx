@@ -150,7 +150,7 @@ export const useCartUtils = ({
         const params = new URLSearchParams(query.toString());
         params.delete('discount');
         routerRef.current.replace(`${pathname}${params.size > 0 ? '?' : ''}${params.toString()}`, { scroll: false });
-    }, [status, query, pathname, discountCodes]);
+    }, [status, query, pathname]);
 
     // Remove codes that are no longer applicable.
     useEffect(() => {
