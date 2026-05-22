@@ -23,4 +23,16 @@ export const productSimple = (): Product =>
                 },
             ],
         },
+        variants: {
+            edges: [
+                {
+                    node: {
+                        id: 'gid://shopify/ProductVariant/1',
+                        availableForSale: true,
+                        selectedOptions: [{ name: 'Title', value: 'Default Title' }],
+                        price: { amount: '10.00', currencyCode: 'USD' },
+                    },
+                },
+            ],
+        },
     }) as unknown as Product;
