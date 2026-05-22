@@ -2,61 +2,84 @@ import 'server-only';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Fragment, Suspense } from 'react';
-
 import type { Product } from '@/api/product';
+import { type ProductCardVariant, resolveVariant } from '@/components/product-card/context';
 import ProductCardBadges from '@/components/product-card/primitives/product-card-badges';
+import ProductCardRoot from '@/components/product-card/primitives/product-card-root';
 import ProductCardTitle from '@/components/product-card/primitives/product-card-title';
-import ProductCardContent from '@/components/product-card/product-card-content';
+import HorizontalBare from '@/components/product-card/variants/horizontal-bare';
+import HorizontalBoxed from '@/components/product-card/variants/horizontal-boxed';
+import Micro from '@/components/product-card/variants/micro';
+import VerticalBare from '@/components/product-card/variants/vertical-bare';
+import VerticalBoxed from '@/components/product-card/variants/vertical-boxed';
 import { getDictionary } from '@/utils/dictionary';
+import { firstAvailableVariant } from '@/utils/first-available-variant';
 import type { Locale } from '@/utils/locale';
-import { cn } from '@/utils/tailwind';
 
+const VARIANT_COMPONENTS = {
+    'vertical-boxed': VerticalBoxed,
+    'vertical-bare': VerticalBare,
+    'horizontal-boxed': HorizontalBoxed,
+    'horizontal-bare': HorizontalBare,
+    micro: Micro,
+} as const;
+
+// TEMP: re-exported until T18 migrates the collection-block consumer.
 export const CARD_STYLES =
-    'group/card relative flex min-h-[20rem] w-full snap-center snap-always flex-col overflow-hidden rounded-xl border-2 border-solid border-gray-200 bg-gray-100 p-1 brightness-100 transition-all hover:drop-shadow focus-visible:border-gray-400 active:brightness-75';
+    'group/card relative flex min-h-[18rem] w-full snap-center snap-always flex-col overflow-hidden rounded-(--product-card-radius) border-(length:--product-card-border-width) border-solid border-(color:var(--product-card-border-color)) bg-(--product-card-bg) p-(--product-card-padding)';
 
 export type ProductCardProps = {
     shop: OnlineShop;
     locale: Locale;
-
-    // TODO: Use satisfied.
     data?: Product;
+    variant?: ProductCardVariant | string;
     priority?: boolean;
     className?: string;
 };
-const ProductCard = async ({ shop, locale, data: product, priority, className, ...props }: ProductCardProps) => {
+
+const ProductCard = async ({ shop, locale, data: product, variant, priority = false, className }: ProductCardProps) => {
     if (!product) {
         return null;
     }
 
     const i18n = await getDictionary({ shop, locale });
+    const resolved = resolveVariant(variant);
+    const VariantComponent = VARIANT_COMPONENTS[resolved];
+    const initialVariant = firstAvailableVariant(product);
 
-    const available = product.availableForSale;
-    const isFreeShipping = available && product.tags.includes('Free Shipping');
+    const title = <ProductCardTitle shop={shop} data={product} />;
+    const badges = <ProductCardBadges data={product} i18n={i18n} />;
 
     return (
-        <div
-            className={cn(
-                CARD_STYLES,
-                'contain-intrinsic-size-[20rem_auto] content-visibility-auto hover:border-gray-300',
-                isFreeShipping && 'border-primary shadow',
-                className,
-            )}
-            {...props}
-        >
-            <ProductCardBadges data={product} i18n={i18n} />
-
-            <Suspense key={`product-card.${product.handle}.content`} fallback={<Fragment />}>
-                <ProductCardContent locale={locale} i18n={i18n} data={product} priority={priority}>
-                    <ProductCardTitle shop={shop} data={product} />
-                </ProductCardContent>
-            </Suspense>
-        </div>
+        <Suspense key={`product-card.${product.handle}`} fallback={<Fragment />}>
+            <ProductCardRoot
+                data={product}
+                variant={resolved}
+                i18n={i18n}
+                locale={locale}
+                initialVariant={initialVariant}
+                priority={priority}
+                className={className}
+            >
+                <VariantComponent title={title} badges={badges} />
+            </ProductCardRoot>
+        </Suspense>
     );
 };
+
 ProductCard.displayName = 'Nordcom.ProductCard';
 
-ProductCard.skeleton = Object.assign(() => <div className={CARD_STYLES} data-skeleton />, {
-    displayName: 'Nordcom.ProductCard.Skeleton',
-});
+ProductCard.skeleton = ({ variant }: { variant?: ProductCardVariant } = {}) => {
+    const resolved = resolveVariant(variant);
+    return (
+        <div
+            data-skeleton
+            data-variant={resolved}
+            className="border-(length:--product-card-border-width) border-(color:var(--product-card-border-color)) relative flex min-h-[18rem] w-full snap-center snap-always overflow-hidden rounded-(--product-card-radius) border-solid bg-(--product-card-bg) p-(--product-card-padding)"
+        />
+    );
+};
+
+(ProductCard.skeleton as unknown as { displayName: string }).displayName = 'Nordcom.ProductCard.Skeleton';
 
 export default ProductCard;
