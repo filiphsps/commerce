@@ -521,3 +521,10 @@ html:root {
         transform: translateY(0);
     }
 }
+
+[data-testid="product-card-root"][data-variant="horizontal-bare"]:not(:last-child) {
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: rgb(0 0 0 / 0.06);
+    border-radius: 0;
+}
