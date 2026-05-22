@@ -3,7 +3,8 @@
 import type { ComponentProps, ElementType, ReactNode } from 'react';
 import { Fragment, Suspense } from 'react';
 import type { Product, ProductVariant } from '@/api/product';
-import ProductCardActions from '@/components/product-card/product-card-actions';
+import { ProductCardContextProvider } from '@/components/product-card/context';
+import ProductCardActions from '@/components/product-card/primitives/product-card-actions';
 import ProductCardOptions from '@/components/product-card/product-card-options';
 import { hasProductOptions } from '@/utils/has-product-options';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
@@ -44,21 +45,35 @@ const ProductCardFooter = ({ data: product, selected, setSelected, i18n, locale 
     }
 
     return (
-        <ProductCardFooterWrapper data={product}>
-            <ProductCardOptions
-                locale={locale}
-                data={product}
-                selectedVariant={selected}
-                // FIXME: Handle setSelectedVariant better so that we can server render.
-                setSelectedVariant={(variant) => setSelected(() => variant)}
-            />
+        <ProductCardContextProvider
+            value={{
+                variant: 'vertical-boxed',
+                data: product,
+                selected,
+                setSelected: (updater) => setSelected(() => updater(selected)),
+                hoveredImage: undefined,
+                setHoveredImage: () => {},
+                i18n,
+                locale,
+                priority: false,
+            }}
+        >
+            <ProductCardFooterWrapper data={product}>
+                <ProductCardOptions
+                    locale={locale}
+                    data={product}
+                    selectedVariant={selected}
+                    // FIXME: Handle setSelectedVariant better so that we can server render.
+                    setSelectedVariant={(variant) => setSelected(() => variant)}
+                />
 
-            {selected ? (
-                <Suspense fallback={<Fragment />}>
-                    <ProductCardActions i18n={i18n} data={product} selectedVariant={selected} />
-                </Suspense>
-            ) : null}
-        </ProductCardFooterWrapper>
+                {selected ? (
+                    <Suspense fallback={<Fragment />}>
+                        <ProductCardActions />
+                    </Suspense>
+                ) : null}
+            </ProductCardFooterWrapper>
+        </ProductCardContextProvider>
     );
 };
 
