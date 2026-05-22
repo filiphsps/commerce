@@ -2,6 +2,9 @@ import type { Field } from 'payload';
 import { imageField } from './image';
 import { linkField } from './link';
 
+export const HEADER_VARIANTS = ['editorial-columns', 'compact-list', 'featured-promo'] as const;
+export type HeaderVariant = (typeof HEADER_VARIANTS)[number];
+
 export type NavItemFieldOptions = {
     depth: number;
 };
@@ -37,12 +40,14 @@ export const topLevelNavItemField = ({ depth }: NavItemFieldOptions): Extract<Fi
         {
             name: 'variant',
             type: 'select',
-            defaultValue: 'editorial-columns',
-            options: [
-                { label: 'Editorial Columns', value: 'editorial-columns' },
-                { label: 'Compact List', value: 'compact-list' },
-                { label: 'Featured Promo', value: 'featured-promo' },
-            ],
+            defaultValue: 'editorial-columns' satisfies HeaderVariant,
+            options: HEADER_VARIANTS.map((value) => ({
+                label: value
+                    .split('-')
+                    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+                    .join(' '),
+                value,
+            })),
         },
         imageField({ name: 'image', localized: true }),
         { name: 'description', type: 'textarea', localized: true },

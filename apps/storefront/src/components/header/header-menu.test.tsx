@@ -254,6 +254,9 @@ describe('<HeaderMenuTrigger>', () => {
             expect(hero).not.toBeNull();
             expect(hero!.textContent).toContain('Sour Candy');
             expect(hero!.textContent).toContain('Sour skulls, watermelon rings.');
+            // Hero shows label twice: as bold title + as CTA echo. NOT three times.
+            const labelOccurrences = hero!.textContent?.split('Sour Candy').length;
+            expect(labelOccurrences, 'label should appear exactly twice (title + CTA)').toBe(3); // split count = 2+1
             const heroImg = hero!.querySelector('img');
             expect(heroImg).not.toBeNull();
             const list = document.querySelector('[data-header-featured-list]');

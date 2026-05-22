@@ -1,6 +1,7 @@
 'use client';
 
 import { resolveLink } from '@nordcom/commerce-cms/api';
+import { HEADER_VARIANTS, type HeaderVariant } from '@nordcom/commerce-cms/fields';
 import type { Header, Media } from '@nordcom/commerce-cms/types';
 import { ChevronDown as ChevronDownIcon, ChevronRight as ChevronRightIcon } from 'lucide-react';
 import Image from 'next/image';
@@ -41,6 +42,9 @@ const isPopulatedMedia = (v: string | Media | null | undefined): v is Media => !
 // Grace period before closing on mouse leave so the user can cross the
 // trigger→panel gap without the panel snapping shut mid-traversal.
 const HOVER_CLOSE_DELAY_MS = 150;
+
+const COLUMN_DIVIDER_CLASSES =
+    "md:[&:not(:last-child)]:after:content-[''] md:[&:not(:last-child)]:after:absolute md:[&:not(:last-child)]:after:top-0 md:[&:not(:last-child)]:after:bottom-0 md:[&:not(:last-child)]:after:-right-[calc(var(--header-column-gap-x)/2)] md:[&:not(:last-child)]:after:w-px md:[&:not(:last-child)]:after:bg-[var(--header-divider-color)]";
 
 export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { code: string } }) {
     const menuId = useId();
@@ -208,6 +212,7 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
                         className={cn(
                             'relative rounded-header-panel border border-[var(--header-divider-color)] bg-white p-header-panel',
                             'shadow-header-panel',
+                            'max-h-[calc(95dvh-var(--header-bar-height)-var(--header-nav-height))] overflow-y-auto',
                             'before:pointer-events-none before:absolute before:top-0 before:right-0 before:left-0',
                             'before:h-[var(--header-rail-thickness)] before:bg-primary',
                             'before:rounded-tl-header-panel before:rounded-tr-header-panel',
@@ -266,20 +271,26 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
 }
 HeaderMenuTrigger.displayName = 'Nordcom.Header.HeaderMenuTrigger';
 
-type Variant = 'editorial-columns' | 'compact-list' | 'featured-promo';
+type Variant = HeaderVariant;
 
-const KNOWN_VARIANTS: ReadonlySet<Variant> = new Set(['editorial-columns', 'compact-list', 'featured-promo']);
+const KNOWN_VARIANTS: ReadonlySet<Variant> = new Set<Variant>(HEADER_VARIANTS);
+
+const warnedUnknownVariants = new Set<string>();
 
 const resolveVariant = (raw: unknown): Variant => {
     if (typeof raw === 'string' && KNOWN_VARIANTS.has(raw as Variant)) return raw as Variant;
     if (raw != null && process.env.NODE_ENV !== 'production') {
-        console.warn(`[header-menu] unknown variant "${String(raw)}" — falling back to editorial-columns`);
+        const key = String(raw);
+        if (!warnedUnknownVariants.has(key)) {
+            warnedUnknownVariants.add(key);
+            console.warn(`[header-menu] unknown variant "${key}" — falling back to editorial-columns`);
+        }
     }
     return 'editorial-columns';
 };
 
 function MegaMenuPanel({ item, locale }: { item: NavItem; locale: { code: string } }) {
-    const variant = resolveVariant((item as { variant?: string }).variant);
+    const variant = resolveVariant(item.variant);
     return (
         <div data-header-variant={variant}>
             {variant === 'editorial-columns' && <EditorialColumnsPanel item={item} locale={locale} />}
@@ -353,7 +364,11 @@ function EditorialColumn({ item, locale, index }: { item: RecursiveNavItem; loca
     return (
         <div
             data-header-editorial-column
-            className="flex animate-mega-menu-column flex-col gap-1.5 max-md:border-[var(--header-divider-color)] max-md:border-t max-md:pt-header-column-y first:max-md:border-t-0 first:max-md:pt-0"
+            className={cn(
+                'animate-mega-menu-column relative flex flex-col gap-1.5',
+                'max-md:border-t max-md:border-[var(--header-divider-color)] max-md:pt-header-column-y first:max-md:border-t-0 first:max-md:pt-0',
+                COLUMN_DIVIDER_CLASSES,
+            )}
             style={{ animationDelay: `calc(var(--header-stagger-step) * ${Math.min(index, 5)})` }}
         >
             {image?.url ? (
@@ -498,8 +513,6 @@ function FeaturedHero({ item, locale }: { item: RecursiveNavItem; locale: { code
     const image = isPopulatedMedia(item.image) ? item.image : null;
     const description = item.description?.trim() || null;
     const background = item.backgroundColor || undefined;
-    const eyebrowClass =
-        'text-[0.78rem] uppercase tracking-[var(--header-eyebrow-tracking)] font-semibold text-primary leading-none';
 
     const visual = image?.url ? (
         <div className="overflow-hidden rounded-[calc(var(--header-panel-radius)*0.8)]">
@@ -526,11 +539,8 @@ function FeaturedHero({ item, locale }: { item: RecursiveNavItem; locale: { code
     const inner = (
         <>
             {visual}
-            {label ? <div className={cn(eyebrowClass, 'mt-3')}>{label}</div> : null}
             {label ? (
-                <h3 className="mt-1.5 font-semibold text-[1.5rem] text-gray-900 leading-tight tracking-tight">
-                    {label}
-                </h3>
+                <h3 className="mt-3 font-semibold text-[1.5rem] text-gray-900 leading-tight tracking-tight">{label}</h3>
             ) : null}
             {description ? <p className="mt-1.5 text-gray-600 text-sm leading-snug">{description}</p> : null}
             {label ? (
