@@ -408,8 +408,42 @@ function EditorialSublink({ item, locale }: { item: RecursiveNavItem; locale: { 
     );
 }
 
-function CompactListPanel({ item: _item, locale: _locale }: { item: NavItem; locale: { code: string } }) {
-    return null;
+function CompactListPanel({ item, locale }: { item: NavItem; locale: { code: string } }) {
+    const items = (item.items ?? []) as RecursiveNavItem[];
+    if (items.length === 0) return null;
+    return (
+        <div data-header-compact-list className="mx-auto max-w-[480px]">
+            <ul className="flex flex-col gap-[2px]">
+                {items.map((child, i) => (
+                    <li key={child.id ?? `cl-${i}`}>
+                        <CompactListItem item={child} locale={locale} />
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+}
+
+function CompactListItem({ item, locale }: { item: RecursiveNavItem; locale: { code: string } }) {
+    const link = item.link;
+    const label = link?.label ?? null;
+    const href = link ? (resolveLink(link as never, { locale: { code: locale.code } }) ?? null) : null;
+    if (!label) return null;
+
+    const className = cn(
+        'block rounded-header-sublink px-3 py-2 -mx-3 text-[0.95rem] text-gray-800',
+        'transition-colors duration-[var(--header-motion-fast)] ease-[var(--header-easing)]',
+        'hover:bg-[var(--header-sublink-hover-bg)] hover:text-primary',
+        'focus-visible:bg-[var(--header-sublink-hover-bg)] focus-visible:outline-2 focus-visible:outline-primary/40',
+    );
+
+    return href ? (
+        <Link href={href} target={link?.openInNewTab ? '_blank' : undefined} role="menuitem" className={className}>
+            {label}
+        </Link>
+    ) : (
+        <span className={className}>{label}</span>
+    );
 }
 
 function FeaturedPromoPanel({ item: _item, locale: _locale }: { item: NavItem; locale: { code: string } }) {

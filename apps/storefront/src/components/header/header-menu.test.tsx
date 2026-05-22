@@ -184,5 +184,27 @@ describe('<HeaderMenuTrigger>', () => {
             expect(eyebrow).not.toBeNull();
             expect(eyebrow!.className).toContain('text-primary');
         });
+
+        it('Compact List renders a single column with no image strip even when image present', () => {
+            const item = mockNavItem({
+                link: { kind: 'page', label: 'Brands', page: { slug: 'brands' } as never, openInNewTab: false },
+                variant: 'compact-list' as never,
+                items: [
+                    {
+                        id: 'b1',
+                        link: { kind: 'page', label: 'Acme', page: { slug: 'acme' } as never, openInNewTab: false },
+                        image: { id: 'i', url: 'https://cdn.test/x.png', alt: 'x', width: 64, height: 64 } as never,
+                        items: [],
+                    },
+                ] as never,
+            });
+            const { container } = render(<HeaderMenuTrigger item={item} locale={{ code: en.code }} />);
+            fireEvent.click(container.querySelector('button') as HTMLButtonElement);
+            const wrapper = document.querySelector('[data-header-variant="compact-list"]');
+            expect(wrapper).not.toBeNull();
+            // No image strip even though the child has an image.
+            expect(document.querySelector('[data-header-compact-image]')).toBeNull();
+            expect(document.querySelector('[data-header-compact-list]')).not.toBeNull();
+        });
     });
 });
