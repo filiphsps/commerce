@@ -5,7 +5,7 @@ import { Fragment, Suspense } from 'react';
 import type { Product, ProductVariant } from '@/api/product';
 import { ProductCardContextProvider } from '@/components/product-card/context';
 import ProductCardActions from '@/components/product-card/primitives/product-card-actions';
-import ProductCardOptions from '@/components/product-card/product-card-options';
+import ProductCardOptions from '@/components/product-card/primitives/product-card-options';
 import { hasProductOptions } from '@/utils/has-product-options';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
@@ -59,13 +59,7 @@ const ProductCardFooter = ({ data: product, selected, setSelected, i18n, locale 
             }}
         >
             <ProductCardFooterWrapper data={product}>
-                <ProductCardOptions
-                    locale={locale}
-                    data={product}
-                    selectedVariant={selected}
-                    // FIXME: Handle setSelectedVariant better so that we can server render.
-                    setSelectedVariant={(variant) => setSelected(() => variant)}
-                />
+                <ProductCardOptions />
 
                 {selected ? (
                     <Suspense fallback={<Fragment />}>
