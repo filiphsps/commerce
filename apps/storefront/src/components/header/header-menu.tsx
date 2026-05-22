@@ -194,9 +194,14 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
             >
                 <div className="mx-auto w-full max-w-(--page-width) px-2 md:px-3">
                     <div
+                        data-header-panel
                         className={cn(
-                            'rounded-2xl border border-black/[0.06] bg-white p-3 md:p-5',
-                            'shadow-[0_24px_60px_-24px_rgba(15,23,42,0.18),0_8px_20px_-8px_rgba(15,23,42,0.08)]',
+                            'relative rounded-header-panel border border-[var(--header-divider-color)] bg-white p-header-panel',
+                            'shadow-header-panel',
+                            'before:pointer-events-none before:absolute before:top-0 before:left-0 before:right-0',
+                            'before:h-[var(--header-rail-thickness)] before:bg-primary',
+                            'before:rounded-tl-header-panel before:rounded-tr-header-panel',
+                            'before:content-[""]',
                         )}
                     >
                         <MegaMenuPanel item={item} locale={locale} />
@@ -376,7 +381,7 @@ function MegaMenuItem({ item, locale, depth }: { item: RecursiveNavItem; locale:
                 isTopLevel && 'h-full',
                 hasImage && 'grid grid-cols-1 grid-rows-[10rem_auto] items-stretch md:grid-rows-[11rem_auto]',
                 !isTopLevel &&
-                    'group/sub-link -mx-2 rounded-md px-2 transition-colors hover:bg-gray-50 focus-visible:bg-gray-50 focus-visible:outline-2 focus-visible:outline-primary/40',
+                    'group/sub-link rounded-header-sublink px-header-sublink-x py-header-sublink-y -mx-header-sublink-x transition-colors duration-[var(--header-motion-fast)] ease-[var(--header-easing)] hover:bg-[var(--header-sublink-hover-bg)] focus-visible:bg-[var(--header-sublink-hover-bg)] focus-visible:outline-2 focus-visible:outline-primary/40',
             )}
         >
             {imageHeader}
