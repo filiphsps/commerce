@@ -27,6 +27,20 @@
         #cb2424 1rem,
         #cb2424 2rem
     );
+
+    --spacing-header-bar: var(--header-bar-height);
+    --spacing-header-nav: var(--header-nav-height);
+    --spacing-header-panel: var(--header-panel-pad);
+    --spacing-header-column-x: var(--header-column-gap-x);
+    --spacing-header-column-y: var(--header-column-gap-y);
+    --spacing-header-sublink-x: var(--header-sublink-pad-x);
+    --spacing-header-sublink-y: var(--header-sublink-pad-y);
+    --spacing-header-trigger: var(--header-trigger-gap);
+
+    --radius-header-panel: var(--header-panel-radius);
+    --radius-header-sublink: var(--header-sublink-radius);
+
+    --shadow-header-panel: var(--header-panel-shadow);
 }
 
 @utility stroke-1 {
@@ -116,6 +130,47 @@ html:root {
     --block-spacer-tiny: calc(var(--block-spacer) / 3);
     --block-spacer-large: calc(var(--block-spacer) * 1.35);
     --block-spacer-huge: calc(var(--block-spacer) * 1.5);
+
+    /* Header tokens (mobile-first defaults, overridden at md+ below). */
+    --header-bar-height: 4rem;
+    --header-nav-height: 3rem;
+
+    --header-panel-pad: var(--block-padding);
+    --header-panel-radius: var(--block-border-radius);
+    --header-panel-shadow: 0 24px 60px -24px rgb(15 23 42 / 0.18), 0 8px 20px -8px rgb(15 23 42 / 0.08);
+    --header-rail-thickness: 2px;
+    --header-divider-color: rgb(0 0 0 / 0.06);
+
+    --header-column-gap-x: 1.25rem;
+    --header-column-gap-y: 1.5rem;
+
+    --header-sublink-pad-x: 0.625rem;
+    --header-sublink-pad-y: 0.625rem;
+    --header-sublink-radius: var(--block-border-radius-small);
+    --header-sublink-hover-bg: rgb(0 0 0 / 0.04);
+
+    --header-trigger-gap: 0.875rem;
+    --header-eyebrow-tracking: 0.08em;
+
+    --header-motion-fast: 120ms;
+    --header-motion-base: 160ms;
+    --header-motion-slow: 220ms;
+    --header-easing: cubic-bezier(0.22, 1, 0.36, 1);
+    --header-easing-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --header-stagger-step: 50ms;
+}
+
+@media (min-width: 48em) {
+    html:root {
+        --header-panel-pad: calc(var(--block-padding-large) * 1.6);
+        --header-panel-radius: var(--block-border-radius-large);
+        --header-column-gap-x: 2.5rem;
+        --header-column-gap-y: 1.25rem;
+        --header-sublink-pad-x: 0.5rem;
+        --header-sublink-pad-y: 0.375rem;
+        --header-trigger-gap: 1.25rem;
+        --header-stagger-step: 40ms;
+    }
 }
 
 @layer base {
@@ -223,7 +278,18 @@ html:root {
     @keyframes mega-menu-in {
         from {
             opacity: 0;
-            transform: translateY(-6px);
+            transform: translateY(-4px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes mega-menu-column-in {
+        from {
+            opacity: 0;
+            transform: translateY(2px);
         }
         to {
             opacity: 1;
@@ -232,11 +298,16 @@ html:root {
     }
 
     .animate-mega-menu-in {
-        animation: mega-menu-in 200ms cubic-bezier(0.22, 1, 0.36, 1) both;
+        animation: mega-menu-in var(--header-motion-base) var(--header-easing) both;
+    }
+
+    .animate-mega-menu-column {
+        animation: mega-menu-column-in var(--header-motion-base) var(--header-easing) both;
     }
 
     @media (prefers-reduced-motion: reduce) {
-        .animate-mega-menu-in {
+        .animate-mega-menu-in,
+        .animate-mega-menu-column {
             animation: none;
         }
     }
