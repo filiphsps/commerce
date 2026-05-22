@@ -40,15 +40,28 @@ export async function featureFlagsCreate(
 ): Promise<{ id: string }> {
     return a.create(domain, formData, locale);
 }
-export async function featureFlagsDelete(domain: string | null, id: string): Promise<void> {
+export async function featureFlagsDelete(
+    domain: string | null,
+    id: string,
+): Promise<void> {
     return a.delete(domain, id);
 }
-export async function featureFlagsBulkDelete(domain: string | null, ids: string[]): Promise<void> {
+export async function featureFlagsBulkDelete(
+    domain: string | null,
+    ids: string[],
+): Promise<void> {
     return a.bulkDelete(domain, ids);
 }
-export async function featureFlagsBulkPublish(domain: string | null, ids: string[]): Promise<void> {
+export async function featureFlagsBulkPublish(
+    domain: string | null,
+    ids: string[],
+): Promise<void> {
     return a.bulkPublish(domain, ids);
 }
-export async function featureFlagsRestoreVersion(domain: string | null, id: string, versionId: string): Promise<void> {
+export async function featureFlagsRestoreVersion(
+    domain: string | null,
+    id: string,
+    versionId: string,
+): Promise<void> {
     return a.restoreVersion(domain, id, versionId);
 }

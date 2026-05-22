@@ -770,6 +770,7 @@ export interface Header {
           label?: string | null;
           openInNewTab?: boolean | null;
         };
+        variant?: ('editorial-columns' | 'compact-list' | 'featured-promo') | null;
         image?: (string | null) | Media;
         description?: string | null;
         backgroundColor?: string | null;
@@ -1578,6 +1579,7 @@ export interface HeaderSelect<T extends boolean = true> {
               label?: T;
               openInNewTab?: T;
             };
+        variant?: T;
         image?: T;
         description?: T;
         backgroundColor?: T;

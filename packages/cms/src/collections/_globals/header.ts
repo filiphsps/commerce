@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload';
 import { adminOnly, publishedOrAuthRead, tenantScopedWrite } from '../../access';
-import { imageField, linkField, navItemField } from '../../fields';
+import { imageField, linkField, topLevelNavItemField } from '../../fields';
 import { buildRevalidateHooks } from '../_hooks/revalidate';
 
 export const header: CollectionConfig = {
@@ -18,7 +18,7 @@ export const header: CollectionConfig = {
     fields: [
         imageField({ name: 'logo' }),
         { name: 'logoLink', type: 'text', defaultValue: '/' },
-        navItemField({ depth: 3 }),
+        topLevelNavItemField({ depth: 3 }),
         {
             name: 'localeSwitcher',
             type: 'group',

@@ -40,13 +40,22 @@ export async function collectionMetadataCreate(
 ): Promise<{ id: string }> {
     return a.create(domain, formData, locale);
 }
-export async function collectionMetadataDelete(domain: string | null, id: string): Promise<void> {
+export async function collectionMetadataDelete(
+    domain: string | null,
+    id: string,
+): Promise<void> {
     return a.delete(domain, id);
 }
-export async function collectionMetadataBulkDelete(domain: string | null, ids: string[]): Promise<void> {
+export async function collectionMetadataBulkDelete(
+    domain: string | null,
+    ids: string[],
+): Promise<void> {
     return a.bulkDelete(domain, ids);
 }
-export async function collectionMetadataBulkPublish(domain: string | null, ids: string[]): Promise<void> {
+export async function collectionMetadataBulkPublish(
+    domain: string | null,
+    ids: string[],
+): Promise<void> {
     return a.bulkPublish(domain, ids);
 }
 export async function collectionMetadataRestoreVersion(

@@ -1,6 +1,6 @@
 import type { Field } from 'payload';
 import { describe, expect, it } from 'vitest';
-import { imageField, linkField, navItemField, seoGroup } from './index';
+import { imageField, linkField, navItemField, seoGroup, topLevelNavItemField } from './index';
 
 describe('reusable field configs', () => {
     it('seoGroup is a localized group with title/description/keywords/noindex', () => {
@@ -243,5 +243,55 @@ describe('reusable field configs', () => {
             const link = cfg.fields.find((f) => 'name' in f && f.name === 'link');
             expect(link).toMatchObject({ type: 'group', localized: true });
         });
+    });
+
+    describe('topLevelNavItemField', () => {
+        it('exposes a `variant` select with three options + defaultValue', () => {
+            const cfg = topLevelNavItemField({ depth: 3 });
+            const variant = cfg.fields.find((f: Field) => 'name' in f && f.name === 'variant') as Extract<
+                (typeof cfg.fields)[number],
+                { type: 'select' }
+            >;
+            expect(variant).toBeDefined();
+            expect(variant.type).toBe('select');
+            expect(variant.defaultValue).toBe('editorial-columns');
+            const values = variant.options.map((o) => (typeof o === 'string' ? o : (o as { value: string }).value));
+            expect(values).toEqual(expect.arrayContaining(['editorial-columns', 'compact-list', 'featured-promo']));
+        });
+
+        it('exposes link, image, description, backgroundColor at the top level', () => {
+            const cfg = topLevelNavItemField({ depth: 3 });
+            const names = cfg.fields.map((f: Field) => ('name' in f ? f.name : ''));
+            expect(names).toEqual(
+                expect.arrayContaining(['link', 'variant', 'image', 'description', 'backgroundColor', 'items']),
+            );
+        });
+
+        it('child items do NOT carry the variant field (recursion uses child-shape)', () => {
+            const cfg = topLevelNavItemField({ depth: 3 });
+            const children = cfg.fields.find((f: Field) => 'name' in f && f.name === 'items') as Extract<
+                (typeof cfg.fields)[number],
+                { type: 'array' }
+            >;
+            const childNames = children.fields.map((f: Field) => ('name' in f ? f.name : ''));
+            expect(childNames).not.toContain('variant');
+            expect(childNames).toEqual(
+                expect.arrayContaining(['link', 'image', 'description', 'backgroundColor', 'items']),
+            );
+        });
+
+        it('depth: 1 produces a top-level with variant but no nested items', () => {
+            const cfg = topLevelNavItemField({ depth: 1 });
+            const names = cfg.fields.map((f: Field) => ('name' in f ? f.name : ''));
+            expect(names).toContain('variant');
+            expect(names).not.toContain('items');
+        });
+    });
+
+    it("navItemField (legacy) still produces today's shape with no variant field", () => {
+        const cfg = navItemField({ depth: 3 });
+        const names = cfg.fields.map((f: Field) => ('name' in f ? f.name : ''));
+        expect(names).not.toContain('variant');
+        expect(names).toEqual(expect.arrayContaining(['link', 'image', 'description', 'backgroundColor', 'items']));
     });
 });
