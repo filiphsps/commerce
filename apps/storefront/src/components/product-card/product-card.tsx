@@ -4,9 +4,9 @@ import type { OnlineShop } from '@nordcom/commerce-db';
 import { Fragment, Suspense } from 'react';
 
 import type { Product } from '@/api/product';
+import ProductCardTitle from '@/components/product-card/primitives/product-card-title';
 import ProductCardBadges from '@/components/product-card/product-card-badges';
 import ProductCardContent from '@/components/product-card/product-card-content';
-import ProductCardTitle from '@/components/product-card/product-card-title';
 import { getDictionary } from '@/utils/dictionary';
 import type { Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';

@@ -11,6 +11,7 @@ export type ProductCardTitleProps = {
     data: Product;
     className?: string;
 };
+
 const ProductCardTitle = ({ shop, data: product, className }: ProductCardTitleProps) => {
     let title = product.title.trim();
     if (
@@ -26,10 +27,10 @@ const ProductCardTitle = ({ shop, data: product, className }: ProductCardTitlePr
         productTypeElement = (
             <span
                 data-nosnippet={true}
-                className="contents font-semibold text-gray-700 text-lg leading-none transition-colors group-hover/header:text-primary"
+                className="contents font-medium text-[color:var(--product-card-vendor-color)] transition-colors group-hover/header:text-[color:var(--accent-primary)]"
             >
                 {' '}
-                &ndash; {product.productType}
+                &mdash; {product.productType}
             </span>
         );
     }
@@ -40,21 +41,27 @@ const ProductCardTitle = ({ shop, data: product, className }: ProductCardTitlePr
         <>
             {showVendor ? (
                 <Label
-                    as={'div'}
+                    as="div"
                     className={cn(
-                        'pt-2 font-medium text-gray-700 text-sm normal-case leading-snug transition-colors duration-75 group-hover/header:text-primary',
+                        'inline-block normal-case leading-snug transition-colors duration-75 group-hover/header:text-[color:var(--accent-primary)]',
+                        '[font-size:var(--product-card-vendor-size)]',
+                        '[font-weight:var(--product-card-vendor-weight)]',
+                        '[letter-spacing:var(--product-card-vendor-tracking)]',
+                        '[color:var(--product-card-vendor-color)]',
                         className,
                     )}
                 >
                     {product.vendor}
                 </Label>
-            ) : (
-                <div className="h-2 w-full" />
-            )}
+            ) : null}
 
             <div
                 className={cn(
-                    'flex grow items-start justify-start gap-0 pr-1 font-bold text-current text-lg leading-tight transition-color duration-75 group-hover/header:text-primary',
+                    'flex items-start justify-start gap-0 pr-1 transition-colors duration-75 group-hover/header:text-[color:var(--accent-primary)]',
+                    '[font-size:var(--product-card-title-size)]',
+                    '[font-weight:var(--product-card-title-weight)]',
+                    '[line-height:var(--product-card-title-line-height)]',
+                    '[color:var(--product-card-title-color)]',
                     className,
                 )}
             >

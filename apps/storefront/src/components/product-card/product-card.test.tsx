@@ -15,7 +15,7 @@ vi.mock('@/components/product-card/product-card-content', () => ({
     default: () => <div data-testid="product-card-content" />,
 }));
 
-vi.mock('@/components/product-card/product-card-title', () => ({
+vi.mock('@/components/product-card/primitives/product-card-title', () => ({
     default: () => <div data-testid="product-card-title" />,
 }));
 
