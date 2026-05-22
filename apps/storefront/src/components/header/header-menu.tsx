@@ -165,31 +165,27 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
         el.scrollIntoView({ block: 'nearest', inline: 'start', behavior: 'smooth' });
     }, []);
 
+    const wasOpenRef = useRef(false);
+    useEffect(() => {
+        if (open && !wasOpenRef.current) scrollTriggerIntoView();
+        wasOpenRef.current = open;
+    }, [open, scrollTriggerIntoView]);
+
     const handlePointerEnter = useCallback(() => {
         if (!hoverCapable) return;
         cancelClose();
-        setOpen((prev) => {
-            if (!prev) scrollTriggerIntoView();
-            return true;
-        });
-    }, [hoverCapable, cancelClose, scrollTriggerIntoView]);
+        setOpen(true);
+    }, [hoverCapable, cancelClose]);
 
     const handlePointerLeave = useCallback(() => {
         if (!hoverCapable) return;
         scheduleClose();
     }, [hoverCapable, scheduleClose]);
 
-    const handleToggle = useCallback(
-        (e: React.MouseEvent<HTMLButtonElement>) => {
-            previouslyFocused.current = e.currentTarget;
-            setOpen((prev) => {
-                const next = !prev;
-                if (next) scrollTriggerIntoView();
-                return next;
-            });
-        },
-        [scrollTriggerIntoView],
-    );
+    const handleToggle = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+        previouslyFocused.current = e.currentTarget;
+        setOpen((prev) => !prev);
+    }, []);
 
     // Anchor the panel to the trigger's vertical position but span the
     // full viewport width — the inner card is clamped to `--page-width`
@@ -253,7 +249,7 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
                         'relative flex items-center gap-1',
                         open && HEADER_LINK_ACTIVE_MENU_STYLES,
                         open &&
-                            'after:pointer-events-none after:absolute after:bottom-0 after:left-2 after:right-2 after:h-[var(--header-rail-thickness)] after:bg-primary after:rounded-[1px] after:content-[""]',
+                            'after:pointer-events-none after:absolute after:right-2 after:bottom-0 after:left-2 after:h-[var(--header-rail-thickness)] after:rounded-[1px] after:bg-primary after:content-[""]',
                     )}
                 >
                     {item.link?.label}

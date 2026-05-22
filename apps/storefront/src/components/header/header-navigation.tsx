@@ -26,7 +26,7 @@ export function HeaderNavigation({ items, locale, ...rest }: HeaderNavigationPro
                 'snap-x snap-proximity scroll-px-2',
                 'max-md:overflow-x-auto max-md:overflow-y-clip',
                 'max-md:[mask-image:linear-gradient(to_right,transparent_0,black_16px,black_calc(100%-16px),transparent_100%)]',
-                'md:overflow-visible md:max-w-(--page-width) md:flex-row md:px-3',
+                'md:max-w-(--page-width) md:flex-row md:overflow-visible md:px-3',
                 'md:[mask-image:none]',
             )}
             {...rest}
