@@ -21,6 +21,29 @@ describe('<HeaderNavigation>', () => {
         expect(ui.container.innerHTML).toBe('');
     });
 
+    it('applies mobile-only mask + scroll-snap classes on the nav element', async () => {
+        const items = [
+            mockNavItem({
+                link: { kind: 'page', label: 'Shop', page: { slug: 'shop' } as never, openInNewTab: false },
+            }),
+        ];
+        const ui = await renderRSC(() => HeaderNavigation({ items, locale: en }));
+        const nav = ui.container.querySelector('nav')!;
+        expect(nav.className).toContain('max-md:[mask-image:');
+        expect(nav.className).toContain('snap-x');
+    });
+
+    it('applies snap-align to each trigger', async () => {
+        const items = [
+            mockNavItem({
+                link: { kind: 'page', label: 'Shop', page: { slug: 'shop' } as never, openInNewTab: false },
+            }),
+        ];
+        const ui = await renderRSC(() => HeaderNavigation({ items, locale: en }));
+        const triggerLink = ui.container.querySelector('a')!;
+        expect(triggerLink.className).toMatch(/snap-(start|align-start)/);
+    });
+
     it('renders a plain link for an item without children', async () => {
         const items = [
             mockNavItem({

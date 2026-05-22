@@ -159,21 +159,37 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
         closeTimerRef.current = setTimeout(() => setOpen(false), HOVER_CLOSE_DELAY_MS);
     }, [cancelClose]);
 
+    const scrollTriggerIntoView = useCallback(() => {
+        const el = triggerRef.current;
+        if (!el) return;
+        el.scrollIntoView({ block: 'nearest', inline: 'start', behavior: 'smooth' });
+    }, []);
+
     const handlePointerEnter = useCallback(() => {
         if (!hoverCapable) return;
         cancelClose();
-        setOpen(true);
-    }, [hoverCapable, cancelClose]);
+        setOpen((prev) => {
+            if (!prev) scrollTriggerIntoView();
+            return true;
+        });
+    }, [hoverCapable, cancelClose, scrollTriggerIntoView]);
 
     const handlePointerLeave = useCallback(() => {
         if (!hoverCapable) return;
         scheduleClose();
     }, [hoverCapable, scheduleClose]);
 
-    const handleToggle = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-        previouslyFocused.current = e.currentTarget;
-        setOpen((prev) => !prev);
-    }, []);
+    const handleToggle = useCallback(
+        (e: React.MouseEvent<HTMLButtonElement>) => {
+            previouslyFocused.current = e.currentTarget;
+            setOpen((prev) => {
+                const next = !prev;
+                if (next) scrollTriggerIntoView();
+                return next;
+            });
+        },
+        [scrollTriggerIntoView],
+    );
 
     // Anchor the panel to the trigger's vertical position but span the
     // full viewport width — the inner card is clamped to `--page-width`
@@ -214,7 +230,7 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
     return (
         <div
             ref={triggerRef}
-            className="inline-block"
+            className="inline-block snap-start"
             onMouseEnter={handlePointerEnter}
             onMouseLeave={handlePointerLeave}
         >

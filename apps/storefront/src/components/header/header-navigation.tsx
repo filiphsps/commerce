@@ -22,7 +22,12 @@ export function HeaderNavigation({ items, locale, ...rest }: HeaderNavigationPro
     return (
         <nav
             className={cn(
-                'flex w-full grow items-center justify-start gap-x-header-trigger whitespace-nowrap px-2 max-md:overflow-x-auto max-md:overflow-y-clip md:max-w-(--page-width) md:flex-row md:px-3',
+                'flex w-full grow items-center justify-start gap-x-header-trigger whitespace-nowrap px-2',
+                'snap-x snap-proximity scroll-px-2',
+                'max-md:overflow-x-auto max-md:overflow-y-clip',
+                'max-md:[mask-image:linear-gradient(to_right,transparent_0,black_16px,black_calc(100%-16px),transparent_100%)]',
+                'md:overflow-visible md:max-w-(--page-width) md:flex-row md:px-3',
+                'md:[mask-image:none]',
             )}
             {...rest}
         >
@@ -50,7 +55,7 @@ function HeaderNavTopItem({ item, locale }: { item: NavItem; locale: Locale }) {
         <Link
             href={href || '/'}
             target={link.openInNewTab ? '_blank' : undefined}
-            className={cn(HEADER_LINK_STYLES, 'text-base text-inherit')}
+            className={cn(HEADER_LINK_STYLES, 'snap-start text-base text-inherit')}
         >
             <span className={cn(HEADER_LINK_BUBBLE_STYLES)}>{link.label}</span>
         </Link>
