@@ -42,10 +42,10 @@
 
     --shadow-header-panel: var(--header-panel-shadow);
 
-    --spacing-product-card: var(--product-card-padding);
+    --spacing-product-card-padding: var(--product-card-padding);
     --spacing-product-card-gap: var(--product-card-gap);
-    --spacing-product-card-image-pad: var(--product-card-image-padding);
-    --spacing-product-card-cta-h: var(--product-card-cta-height);
+    --spacing-product-card-image-padding: var(--product-card-image-padding);
+    --spacing-product-card-cta-height: var(--product-card-cta-height);
 
     --radius-product-card: var(--product-card-radius);
     --radius-product-card-image: var(--product-card-image-radius);
@@ -177,8 +177,9 @@ html:root {
     --header-easing-expo: cubic-bezier(0.16, 1, 0.3, 1);
     --header-stagger-step: 50ms;
 
-    /* Product-card tokens (mobile-first defaults; md+ overrides below). */
-    --product-card-radius: 0.75rem;
+    /* Product-card tokens. Neutral chassis; brand accent only enters via CTA bg + active swatch ring.
+     * Mobile-first defaults; md+ overrides below. Tenant theming overrides per-shop on [data-shop="..."]. */
+    --product-card-radius: var(--block-border-radius);
     --product-card-border-width: 1px;
     --product-card-border-color: rgb(0 0 0 / 0.08);
     --product-card-padding: 0.625rem;
@@ -187,8 +188,11 @@ html:root {
     --product-card-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
     --product-card-shadow-hover: 0 4px 12px rgb(0 0 0 / 0.06);
 
+    /* Note: --product-card-image-bg and --product-card-more-bg use white/alpha-overlay tints
+     * because the storefront has no gray ramp yet. When --color-gray-50 / --color-gray-100 / -700
+     * tokens are introduced, switch these to references for tenant-override flexibility. */
     --product-card-image-bg: var(--color-bright);
-    --product-card-image-radius: 0.5rem;
+    --product-card-image-radius: 0.5rem; /* intentionally tighter than --block-border-radius-small */
     --product-card-image-padding: 0.75rem;
     --product-card-image-aspect-vertical: 4 / 5;
     --product-card-image-aspect-horizontal: 1 / 1;
@@ -213,7 +217,8 @@ html:root {
     --product-card-swatch-size: 1.25rem;
     --product-card-swatch-gap: 0.375rem;
     --product-card-swatch-radius: 999px;
-    --product-card-swatch-ring-active: 2px solid var(--accent-primary);
+    --product-card-swatch-ring-width: 2px;
+    --product-card-swatch-ring-color: var(--accent-primary);
     --product-card-swatch-ring-offset: 1px;
     --product-card-swatch-unavailable-opacity: 0.35;
 
@@ -223,7 +228,7 @@ html:root {
     --product-card-more-weight: 600;
 
     --product-card-cta-height: 2.75rem;
-    --product-card-cta-radius: 0.5rem;
+    --product-card-cta-radius: var(--block-border-radius-small);
     --product-card-cta-bg: var(--accent-primary);
     --product-card-cta-color: var(--accent-primary-text);
     --product-card-cta-bg-hover: color-mix(in srgb, var(--accent-primary) 88%, black);
@@ -231,15 +236,17 @@ html:root {
     --product-card-urgency-color: #b45309;
     --product-card-urgency-size: 0.6875rem;
     --product-card-urgency-weight: 600;
+    /* Numeric token; read in JS via getComputedStyle. */
     --product-card-urgency-threshold: 5;
 
     --product-card-overlay-bg: var(--color-bright);
-    --product-card-overlay-border: 1px solid rgb(0 0 0 / 0.08);
-    --product-card-overlay-radius: 0.75rem;
+    --product-card-overlay-border-width: 1px;
+    --product-card-overlay-border-color: rgb(0 0 0 / 0.08);
+    --product-card-overlay-radius: var(--block-border-radius);
     --product-card-overlay-shadow: 0 12px 32px rgb(0 0 0 / 0.12);
     --product-card-overlay-padding: 0.75rem;
     --product-card-overlay-max-height: min(70vh, 24rem);
-    --product-card-overlay-width-desktop: 16rem;
+    --product-card-overlay-width: 100%;
 
     --product-card-motion-hover-duration: 200ms;
     --product-card-motion-hover-ease: cubic-bezier(0.22, 1, 0.36, 1);
@@ -262,6 +269,7 @@ html:root {
         --product-card-padding: 0.5rem;
         --product-card-swatch-size: 1rem;
         --product-card-cta-height: 2.25rem;
+        --product-card-overlay-width: 16rem;
     }
 }
 
