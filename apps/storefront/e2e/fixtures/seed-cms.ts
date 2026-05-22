@@ -1,4 +1,5 @@
 import { getPayloadInstance } from '@nordcom/commerce-cms/api';
+import { headerItemsWithAllVariants } from './header-variants';
 
 export type SeedCmsOptions = {
     tenantId: string;
@@ -24,31 +25,13 @@ export async function seedCms({ tenantId }: SeedCmsOptions): Promise<void> {
         });
     }
 
-    // Header.
+    // Header — all three mega-menu variants so variant-specific e2e tests can run.
     await payload.create({
         collection: 'header',
         data: {
             tenant: tenantId,
             logoLink: '/',
-            items: [
-                {
-                    link: { kind: 'external', label: 'Docs', url: 'https://docs.example', openInNewTab: false },
-                },
-                {
-                    link: { kind: 'external', label: 'Shop', url: 'https://shop.example', openInNewTab: false },
-                    items: [
-                        {
-                            link: {
-                                kind: 'external',
-                                label: 'Hats',
-                                url: 'https://shop.example/hats',
-                                openInNewTab: false,
-                            },
-                            description: 'Things for the head',
-                        },
-                    ],
-                },
-            ],
+            items: headerItemsWithAllVariants,
             localeSwitcher: { enabled: true },
             cta: { kind: 'external', label: 'Sign up', url: 'https://example/signup', openInNewTab: false },
             _status: 'published',

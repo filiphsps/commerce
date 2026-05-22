@@ -10,28 +10,28 @@ test.describe('Header (CMS)', () => {
 
     test('renders CMS-driven nav links', async ({ page }) => {
         await page.goto('/');
-        await expect(page.getByRole('link', { name: 'Docs' })).toBeVisible();
+        await expect(page.getByRole('button', { name: /Menu: Editorial/i })).toBeVisible();
     });
 
-    test('opens the mega-menu on Shop click', async ({ page }) => {
+    test('opens the mega-menu on Editorial click', async ({ page }) => {
         await page.goto('/');
-        await page.getByRole('button', { name: 'Shop' }).click();
-        await expect(page.getByText('Things for the head')).toBeVisible();
+        await page.getByRole('button', { name: /Menu: Editorial/i }).click();
+        await expect(page.getByText('Pucker-up classics.')).toBeVisible();
     });
 
     test('closes the mega-menu on Escape', async ({ page }) => {
         await page.goto('/');
-        await page.getByRole('button', { name: 'Shop' }).click();
-        await expect(page.getByText('Things for the head')).toBeVisible();
+        await page.getByRole('button', { name: /Menu: Editorial/i }).click();
+        await expect(page.getByText('Pucker-up classics.')).toBeVisible();
         await page.keyboard.press('Escape');
-        await expect(page.getByText('Things for the head')).toBeHidden();
+        await expect(page.getByText('Pucker-up classics.')).toBeHidden();
     });
 
     test('closes the mega-menu on outside click', async ({ page }) => {
         await page.goto('/');
-        await page.getByRole('button', { name: 'Shop' }).click();
-        await expect(page.getByText('Things for the head')).toBeVisible();
+        await page.getByRole('button', { name: /Menu: Editorial/i }).click();
+        await expect(page.getByText('Pucker-up classics.')).toBeVisible();
         await page.locator('footer').click();
-        await expect(page.getByText('Things for the head')).toBeHidden();
+        await expect(page.getByText('Pucker-up classics.')).toBeHidden();
     });
 });
