@@ -1,19 +1,14 @@
 'use client';
 
 import { Search as SearchIcon } from 'lucide-react';
-import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import type { HTMLProps } from 'react';
+import type { HTMLProps, ReactNode } from 'react';
 import { useCallback, useState, useTransition } from 'react';
-//import type { Product, ProductFilters } from '@/api/product';
-import { createProductSearchParams, isProductVegan, type Product, type ProductFilters } from '@/api/product';
+import type { ProductFilters } from '@/api/product';
 import { Button } from '@/components/actionable/button';
 import { Filters } from '@/components/actionable/filters';
-import Link from '@/components/link';
-import { COMMON_BADGE_STYLES } from '@/components/product-card/primitives/product-card-badges';
-import { AttributeIcon } from '@/components/products/attribute-icon';
 import { Label } from '@/components/typography/label';
-import { capitalize, getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
+import { getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 
 type SearchBarProps = {
@@ -85,17 +80,19 @@ export type SearchContentProps = {
     locale: Locale;
     i18n: LocaleDictionary;
     showFilters?: boolean;
-    data: {
-        products?: Product[];
-        productFilters?: ProductFilters;
-        totalCount?: number;
-    };
+    productCards: ReactNode[];
+    skeletonCards: ReactNode[];
+    productFilters?: ProductFilters;
+    totalCount?: number;
 };
 export default function SearchContent({
     i18n,
     locale,
     showFilters = false,
-    data: { products = [], productFilters = [], totalCount },
+    productCards,
+    skeletonCards,
+    productFilters = [],
+    totalCount,
 }: SearchContentProps) {
     const { replace } = useRouter();
     const searchParams = useSearchParams();
@@ -148,104 +145,7 @@ export default function SearchContent({
                 </Label>
             ) : null}
 
-            <section className="grid grid-cols-1 gap-2 empty:hidden md:grid-cols-3 lg:grid-cols-4">
-                {isPending
-                    ? new Array(6).fill(0).map((_, index) => (
-                          <div
-                              key={index}
-                              className="h-28 select-none rounded-lg border-2 border-gray-200 border-solid bg-gray-100"
-                              style={{
-                                  '--animation-delay': `${150 * (index + 1)}ms`,
-                              }}
-                              data-skeleton
-                          />
-                      ))
-                    : null}
-
-                {(!isPending ? products : []).map((product) => {
-                    const {
-                        id,
-                        title,
-                        handle,
-                        images,
-                        featuredImage,
-                        trackingParameters,
-                        productType,
-                        vendor,
-                        availableForSale,
-                    } = product;
-
-                    const image: Product['images']['edges'][number]['node'] | undefined =
-                        featuredImage ?? images.edges.at(0)?.node;
-
-                    const params = createProductSearchParams({ product: { trackingParameters } });
-                    const href = `/products/${handle}/${params ? `?${params}` : ''}`;
-
-                    let productTypeElement = null;
-                    if (productType) {
-                        productTypeElement = (
-                            <span
-                                data-nosnippet={true}
-                                className="contents font-semibold text-gray-700 text-lg leading-none transition-colors group-hover/item:text-primary"
-                            >
-                                {' '}
-                                &ndash; {productType}
-                            </span>
-                        );
-                    }
-
-                    const isVegan = isProductVegan(product);
-
-                    return (
-                        <Link
-                            href={href}
-                            key={id}
-                            className={cn(
-                                'group/item relative flex h-28 select-none gap-2 overflow-hidden rounded-lg border-2 border-gray-200 border-solid bg-gray-100 transition-shadow hover:border-gray-300 hover:text-primary hover:drop-shadow focus-visible:border-gray-400 lg:h-36 lg:gap-4',
-                                !availableForSale && 'opacity-35 brightness-75',
-                            )}
-                        >
-                            <div className="flex aspect-square h-full w-auto shrink-0 grow-0 items-center justify-center overflow-hidden bg-white p-2">
-                                {image ? (
-                                    <Image
-                                        className="aspect-square h-full object-contain object-center transition-transform group-hover/item:scale-110"
-                                        role={image.altText ? undefined : 'presentation'}
-                                        src={image.url!}
-                                        alt={image.altText!}
-                                        title={image.altText!}
-                                        width={image.width || 75}
-                                        height={image.height || 75}
-                                        sizes="(max-width: 920px) 90vw, 500px"
-                                        loading="eager"
-                                        decoding="async"
-                                        draggable={false}
-                                    />
-                                ) : null}
-                            </div>
-
-                            <div className="col-span-6 flex h-full w-full flex-col gap-1 py-2 pr-2 leading-tight *:transition-colors lg:py-4">
-                                <Label className="pt-2 font-medium text-gray-700 text-sm normal-case leading-snug duration-75 group-hover/item:text-primary">
-                                    {vendor}
-                                </Label>
-
-                                <div className="flex grow items-start justify-start gap-0 pr-1 font-bold text-current text-lg leading-tight transition-color duration-75 group-hover/item:text-primary">
-                                    {title}
-                                    {productTypeElement}
-                                </div>
-                            </div>
-
-                            {isVegan && (
-                                <div
-                                    className={cn(COMMON_BADGE_STYLES, 'absolute top-1 left-1 bg-green-600 text-white')}
-                                >
-                                    <AttributeIcon data={'vegan'} className="text-lg" />
-                                    {capitalize(t('vegan'))}
-                                </div>
-                            )}
-                        </Link>
-                    );
-                })}
-            </section>
+            <section className="flex flex-col gap-0 empty:hidden">{isPending ? skeletonCards : productCards}</section>
         </>
     );
 }

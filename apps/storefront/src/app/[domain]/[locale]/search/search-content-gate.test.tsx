@@ -4,6 +4,12 @@ vi.mock('@/utils/flags/definitions', () => ({
     searchFilter: vi.fn(),
 }));
 
+vi.mock('@/components/product-card', () => {
+    const ProductCard = () => <div data-testid="product-card" />;
+    ProductCard.skeleton = () => <div data-testid="product-card-skeleton" />;
+    return { default: ProductCard };
+});
+
 vi.mock('./search-content', () => ({
     default: ({ showFilters }: { showFilters?: boolean }) => (
         <div data-testid="search-content">showFilters={String(showFilters)}</div>
