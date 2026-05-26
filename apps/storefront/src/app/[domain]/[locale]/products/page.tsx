@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
 import { RedirectType, redirect } from 'next/navigation';
-import { Suspense } from 'react';
+import { type ReactNode, Suspense } from 'react';
 import { LocalesApi, Shop } from '@/api/_loaders';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
@@ -15,6 +15,8 @@ import ProductsContent from './products-content';
 
 type SearchParams = Promise<{
     page?: string;
+    vendor?: string;
+    sorting?: string;
 }>;
 
 export type ProductsPageParams = Promise<{ domain: string; locale: string }>;
@@ -68,32 +70,30 @@ export async function generateMetadata({
 
 export default async function ProductsPage({
     params,
-    searchParams: queryParams,
+    searchParams,
 }: {
     params: ProductsPageParams;
     searchParams: SearchParams;
 }) {
-    const { domain, locale: localeData } = await params;
+    return (
+        <ProductsShell params={params}>
+            <ProductsDynamic params={params} searchParams={searchParams} />
+        </ProductsShell>
+    );
+}
+
+async function ProductsShell({ params, children }: { params: ProductsPageParams; children: ReactNode }) {
+    'use cache';
+    cacheLife('max');
+
+    const { locale: localeData } = await params;
     const locale = Locale.from(localeData);
-
-    const productsPageEnabled = await productsPage();
-    if (!productsPageEnabled) {
-        redirect(`/${locale.code}/`, RedirectType.replace);
-    }
-
-    const searchParams = await queryParams;
-
-    if (searchParams.page === '1') {
-        const params = new URLSearchParams(searchParams);
-        redirect(`/${locale.code}/products/${params.size > 0 ? '?' : ''}${params.toString()}`, RedirectType.replace);
-    }
-
     const i18n = await getDictionary(locale);
     const { t } = getTranslations('common', i18n);
 
     return (
         <>
-            <Suspense key={`products.breadcrumbs`} fallback={<BreadcrumbsSkeleton />}>
+            <Suspense key="products.breadcrumbs" fallback={<BreadcrumbsSkeleton />}>
                 <div className="-mb-5 empty:hidden md:-mb-9">
                     <Breadcrumbs locale={locale} title={t('products')} />
                 </div>
@@ -101,9 +101,34 @@ export default async function ProductsPage({
 
             <PageContent>
                 <Heading title={t('products')} titleClassName="capitalize" />
-
-                <ProductsContent domain={domain} locale={locale} searchParams={searchParams} />
+                {children}
             </PageContent>
         </>
     );
+}
+
+async function ProductsDynamic({
+    params,
+    searchParams: queryParams,
+}: {
+    params: ProductsPageParams;
+    searchParams: SearchParams;
+}) {
+    const productsPageEnabled = await productsPage();
+    const [{ domain, locale: localeData }, searchParams] = await Promise.all([params, queryParams]);
+    const locale = Locale.from(localeData);
+
+    if (!productsPageEnabled) {
+        redirect(`/${locale.code}/`, RedirectType.replace);
+    }
+
+    if (searchParams.page === '1') {
+        const urlParams = new URLSearchParams(searchParams);
+        redirect(
+            `/${locale.code}/products/${urlParams.size > 0 ? '?' : ''}${urlParams.toString()}`,
+            RedirectType.replace,
+        );
+    }
+
+    return <ProductsContent domain={domain} locale={locale} searchParams={searchParams} />;
 }
