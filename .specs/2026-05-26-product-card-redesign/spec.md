@@ -147,7 +147,7 @@ const CollectionProductCard = async (props) => (
 - Arrows show on desktop hover and on keyboard focus.
 - Click scrolls one card width via `Element.scrollBy({ left: cardWidth, behavior: 'smooth' })`.
 - Touch users get native scroll (arrows hidden on touch via `@media (hover: none)`).
-- Add `scroll-padding-inline: var(--product-card-rail-pad)` so snapped cards aren't flush with the container edge.
+- Add `scroll-padding-inline: var(--block-padding)` so snapped cards aren't flush with the container edge.
 - Preserve existing `content-visibility-auto` Tailwind utility on `CollectionBlock` (defined in `globals.css:70`). Long horizontal rails benefit significantly from it.
 
 No new `RecommendationsRail` primitive. Consumers don't change.
@@ -188,6 +188,85 @@ The remaining `@container` use in `product-card.module.css` (image padding, titl
 ### Horizontal switch
 
 The previously proposed horizontal-switch-at-wide-cards mechanism is dropped. With 240px max it never fires.
+
+## Notation in this spec
+
+Code snippets are illustrative, not literal. Comments like `// components/layout/card.tsx — extension` or `// product-card.tsx — same file as the orchestrator` are **labels** indicating which file the snippet belongs in — they must NOT appear verbatim in the implementation. Drop them when porting. The CLAUDE.md "Comments must earn their place" rule applies as usual to the actual implementation.
+
+Tailwind class strings in snippets are illustrative of intent; the implementation may rearrange utilities or extract repeated patterns into `cn(...)` helpers as long as the produced CSS matches.
+
+## Existing components & primitives the spec reuses
+
+This spec is mostly composition over invention. Use existing pieces; extend only when the existing API can't carry the new shape.
+
+| Use | For | Notes |
+|---|---|---|
+| `<Card>` from `components/layout/card.tsx` | Boxed chassis | Extend with a `chrome="boxed" \| "frameless"` prop (one-line change). `frameless` drops bg/border/padding. Existing `border` prop stays. |
+| `<Button>` from `components/actionable/button.tsx` | Inline-button CTA + picker confirm | Don't roll a parallel button. Pass `styled={false}` only when sub-button styling diverges (e.g., the float-pill's pill shape — that one IS custom because no existing button matches it). |
+| `<Label>` from `components/typography/label.tsx` | Eyebrow / vendor / picker section labels | Eyebrow typography lives here already. |
+| `@radix-ui/react-popover` | Float picker | Anchored to the CTA pill. NOT the layout `<Popover>` wrapper — that's a centered Dialog, misnamed. Use Radix Popover directly. |
+| `@radix-ui/react-dialog` | Sheet picker | Wrap in a thin `<ProductCardPickerSheet>` that handles mobile bottom-anchor + desktop center-anchor responsive sizing. Don't duplicate the existing `<Popover>` (centered Dialog) wrapper — its centered styling doesn't fit. |
+| `next/dynamic` | Lazy-load picker shells | Sheet imports Radix Dialog; float imports Radix Popover. Both deferred until first activation. |
+| Global `[data-skeleton]` rule from `globals.css:440-476` | Every skeleton piece | No per-card skeleton CSS. |
+| Global `content-visibility-auto` utility (defined in `globals.css:70`) | Long grids and rails | Preserve on `CollectionBlock`. |
+
+### Tokens read from existing global scales — NOT redefined per product card
+
+The product card inherits the site's design language. These are not duplicated as `--product-card-*` aliases.
+
+| Concern | Token used | From |
+|---|---|---|
+| Radius (card outer) | `--block-border-radius` (0.75rem) | `globals.css` global scale |
+| Radius (image, CTA) | `--block-border-radius-small` | global scale |
+| Radius (badge, chip, small) | `--block-border-radius-tiny` (0.325rem) | global scale |
+| Border width (hairline) | `1px` literal (or `--block-border-width-tiny`) | global scale |
+| Padding (card body, rail) | `--block-padding` | global scale |
+| Gap (chassis, between primitives) | `--block-spacer` | global scale |
+| Eyebrow tracking | `--product-card-eyebrow-tracking` (spec-local) | header has `--header-eyebrow-tracking` but it's header-scoped; product card defines its own |
+| Type scale (title, price, eyebrow, chip) | Tailwind defaults — `text-xs` / `text-sm` / `text-base`, `font-medium` / `font-semibold` | no spec-local type tokens |
+| Line-height | Tailwind defaults — `leading-none`, `leading-snug`, `leading-tight` | no spec-local line-height tokens |
+
+### Tokens the product card legitimately owns
+
+Only concerns specific to product-card behavior or palette. Everything else is global.
+
+| Token | Default | Why product-card-specific |
+|---|---|---|
+| `--product-card-min-width` | `200px` | Grid sizing for browse surfaces only |
+| `--product-card-max-width` | `240px` | Grid sizing for browse surfaces only |
+| `--product-card-grid-align` | `start` | Surface composition decision |
+| `--product-card-image-bg` | `#faf7f0` | Tile background under the product photo |
+| `--product-card-image-bg-bare` | `#f3eedc` | Frameless variant tile background |
+| `--product-card-image-fit` | `cover` | Photographic fit policy |
+| `--product-card-image-hover-swap` | `on` | Feature toggle |
+| `--product-card-image-sizes` | `(max-width: 768px) 50vw, 240px` | next/image perf, calibrated to max-width |
+| `--aspect-product-card-vertical` | `4/5` | Photographic aspect |
+| `--aspect-product-card-horizontal` | `4/5` | Photographic aspect |
+| `--product-card-vendor-color` | `#6b6555` | Muted eyebrow on warm bg |
+| `--product-card-title-color` | `#14110b` | Title text color |
+| `--product-card-title-line-clamp` | `2` | Behavioral, not stylistic |
+| `--product-card-price-color` | `#14110b` | Price text color |
+| `--product-card-compare-color` | `#6b6555` | Muted compare price |
+| `--product-card-urgency-color` | `#b54a2a` | Warm-warn for low stock |
+| `--product-card-urgency-threshold` | `5` | When to show the urgency line |
+| `--product-card-swatch-size` | `16px` | Visual swatch diameter |
+| `--product-card-swatch-gap` | `5px` | Inter-swatch spacing |
+| `--product-card-swatch-hit-padding` | `10px` | Hit-area inflation around 16px visual (= 36px hit) |
+| `--product-card-swatch-ring-color` | `#14110b` | Selected-state ring |
+| `--product-card-chip-active-bg` | `#14110b` | Selected chip fill |
+| `--product-card-chip-active-color` | `#ffffff` | Selected chip text |
+| `--product-card-more-bg` | `#f3eedc` | +N chip + inline picker shell bg |
+| `--product-card-cta-bg` | `#14110b` | Inline-button CTA solid bg |
+| `--product-card-cta-color` | `#ffffff` | Inline-button CTA fg |
+| `--product-card-cta-placement` | `float-pill` | Registry-driven enum |
+| `--product-card-cta-pill-position` | `top-right` | Corner enum |
+| `--product-card-cta-pill-label` | empty | Optional pill label override |
+| `--product-card-fast-path-dot` | `#2f7d4a` | Single-buyable indicator |
+| `--product-card-quick-add-presentation` | `auto` | Picker presentation enum |
+| `--product-card-oos-opacity` | `0.7` | Out-of-stock card dim |
+| `--product-card-oos-image-saturate` | `0.85` | OOS image desaturate |
+| `--product-card-search-image-width` | `72px` | Horizontal search-row image width |
+| (all `--product-card-sale-*`) | see Sale section | Sale state |
 
 ## Component architecture
 
@@ -432,7 +511,7 @@ One easing curve, four durations. Every transition wrapped in `motion-safe:` so 
 | Token | Default | Used for |
 |---|---|---|
 | `--product-card-motion-ease` | `cubic-bezier(0.2, 0.8, 0.2, 1)` | Sole easing curve — quick out, slow settle |
-| `--product-card-motion-fast` | `80ms` | Press feedback (scale-down) |
+| `--header-motion-fast` | `80ms` | Press feedback (scale-down) |
 | `--product-card-motion-base` | `160ms` | Hover, focus, swatch scale, chip selection |
 | `--product-card-motion-picker-in` | `220ms` | Picker open (`opacity 0→1 + translateY(4px)→0`) |
 | `--product-card-motion-picker-out` | `180ms` | Picker close (faster than open, feels responsive) |
@@ -447,7 +526,7 @@ One easing curve, four durations. Every transition wrapped in `motion-safe:` so 
 
 ### Chip (inside picker only — never on base card)
 
-- Padding: `8px 12px`. Radius: `var(--product-card-radius-sm)` (4px).
+- Padding: `8px 12px`. Radius: `var(--block-border-radius-tiny)` (4px).
 - Border: 1px `currentColor / 10%`. Selected: filled with `--accent`, inverse text.
 - Unavailable: dimmed (50% opacity) + diagonal strike line drawn via `::after`. `pointer-events: none`.
 - Same hover/press scale as Swatch.
@@ -455,7 +534,7 @@ One easing curve, four durations. Every transition wrapped in `motion-safe:` so 
 ### `+N` chip
 
 - Same dimensions as Chip. Distinct bg `--product-card-more-bg` (warm tile).
-- Font size `var(--product-card-eyebrow-size)`, weight 600, tabular-nums.
+- Font size 12px (Tailwind `text-xs`), weight 600 (`font-semibold`), tabular-nums.
 - Aria-label `Show all {groupName} options`.
 - **Pure JSX render** — no `useEffect`, no DOM mutation. Computed in `More` component from `Math.max(0, group.values.length - 4)`. `if (overflow === 0) return null;` short-circuit.
 
@@ -469,7 +548,7 @@ One easing curve, four durations. Every transition wrapped in `motion-safe:` so 
 
 ### CTA — `inline-button`
 
-- Full-width, 44px height. Padding `0 16px`. Radius `var(--product-card-cta-radius)` (8px).
+- Full-width, 44px height. Padding `0 16px`. Radius `var(--block-border-radius-small)` (8px).
 - Solid: bg `--product-card-cta-bg` (default `#14110b`), fg `--product-card-cta-color` (default `#ffffff`).
 - Ghost: transparent bg, 1px border in CTA bg color.
 - Hover: bg shifts via `color-mix(in srgb, var(--product-card-cta-bg) 92%, white 8%)`.
@@ -552,7 +631,7 @@ Token: `--product-card-sale-badge-style` — closed enum, four values. Each deri
 | `accent` | `var(--accent)` | `var(--accent-foreground)` | `1px solid var(--accent)` |
 | `sales-color` | `var(--product-card-sale-current-color)` | `var(--accent-foreground)` | `1px solid var(--product-card-sale-current-color)` |
 
-Badge typography always inherits from `--product-card-eyebrow-*` tokens (shared with vendor eyebrow). Radius inherits from `--product-card-radius-sm`. No badge-specific typography or radius tokens.
+Badge typography always inherits from `--product-card-eyebrow-*` tokens (shared with vendor eyebrow). Radius inherits from `--block-border-radius-tiny`. No badge-specific typography or radius tokens.
 
 ### Badge & CTA positioning
 
@@ -646,18 +725,18 @@ Project convention: every skeleton piece gets a plain `data-skeleton` attribute.
 ProductCardImage.skeleton = ({ aspect = 'vertical' }) => (
   <div
     data-skeleton
-    className="rounded-(--product-card-image-radius)"
+    className="rounded-(--block-border-radius-small)"
     style={{ aspectRatio: `var(--aspect-product-card-${aspect})` }}
   />
 );
 
 ProductCardTitle.skeleton = () => (
-  <div
-    className="flex flex-col gap-1"
-    style={{ height: `calc(var(--product-card-title-line-height) * var(--product-card-title-line-clamp))` }}
-  >
-    <span data-skeleton className="h-(--product-card-title-line-height) w-4/5" />
-    <span data-skeleton className="h-(--product-card-title-line-height) w-3/5" />
+  // Two stacked bars approximate the live title's two-line clamp.
+  // Heights track text-sm × leading-snug (≈ 20px); using h-5 keeps the skeleton
+  // visually equivalent to a real title block without re-deriving the math.
+  <div className="flex flex-col gap-1">
+    <span data-skeleton className="h-5 w-4/5" />
+    <span data-skeleton className="h-5 w-3/5" />
   </div>
 );
 ```
@@ -722,24 +801,21 @@ Tokens added or modified by this spec. Existing tokens not listed here retain th
 | `--product-card-min-width` | `200px` |
 | `--product-card-max-width` | `240px` |
 | `--product-card-grid-align` | `start` |
-| `--product-card-radius-sm` | `4px` |
-| `--product-card-search-image-width` | `72px` (image width for the horizontal search-row card) |
+| `--product-card-search-image-width` | `72px` |
+
+Radius, padding, gap, border-width come from global `--block-*` scale (see "Tokens read from existing global scales" above).
 
 ### Eyebrow typography (shared by vendor + sale badge)
 
-| Token | Default |
-|---|---|
-| `--product-card-eyebrow-size` | `11px` |
-| `--product-card-eyebrow-weight` | `600` |
-| `--product-card-eyebrow-tracking` | `0.14em` |
-| `--product-card-eyebrow-transform` | `uppercase` |
+Vendor + sale badge share:
+- Font size: Tailwind `text-xs` (12px) — same as `<Label>` defaults
+- Font weight: Tailwind `font-semibold` (600)
+- Letter spacing: `--product-card-eyebrow-tracking` (spec-local, default `0.14em`)
+- Text transform: Tailwind `uppercase`
 
 ### Title / price
 
-| Token | Default |
-|---|---|
-| `--product-card-title-line-height` | `calc(1.35 * var(--product-card-title-size))` |
-| `--product-card-price-line-height` | `var(--product-card-price-size)` |
+**No spec-local typography tokens.** Title uses Tailwind `text-sm font-medium leading-snug line-clamp-2`. Price uses Tailwind `text-sm font-semibold leading-none tabular-nums`.
 
 ### Image
 
@@ -751,13 +827,15 @@ Tokens added or modified by this spec. Existing tokens not listed here retain th
 
 ### Motion
 
-| Token | Default |
-|---|---|
-| `--product-card-motion-ease` | `cubic-bezier(0.2, 0.8, 0.2, 1)` |
-| `--product-card-motion-fast` | `80ms` |
-| `--product-card-motion-base` | `160ms` |
-| `--product-card-motion-picker-in` | `220ms` |
-| `--product-card-motion-picker-out` | `180ms` |
+Spec-local motion tokens (no global motion scale exists yet; project's `--header-motion-*` are header-scoped).
+
+| Token | Default | Used for |
+|---|---|---|
+| `--product-card-motion-ease` | `cubic-bezier(0.2, 0.8, 0.2, 1)` | Sole easing curve — quick out, slow settle |
+| `--product-card-motion-fast` | `80ms` | Press feedback (scale-down) |
+| `--product-card-motion-base` | `160ms` | Hover, focus, swatch scale, chip selection |
+| `--product-card-motion-picker-in` | `220ms` | Picker open |
+| `--product-card-motion-picker-out` | `180ms` | Picker close (faster than open, feels responsive) |
 
 ### CTA
 
@@ -770,9 +848,10 @@ Tokens added or modified by this spec. Existing tokens not listed here retain th
 | `--product-card-cta-pill-reveal` | `always` (alt: `hover` on desktop) |
 | `--product-card-cta-inline-label` | i18n `Add to bag` |
 | `--product-card-cta-inline-style` | `solid` (alt: `ghost`) |
-| `--product-card-cta-radius` | `8px` |
 | `--product-card-fast-path-dot` | `#2f7d4a` |
 | `--product-card-fast-path-single-variant` | `on` |
+
+CTA radius comes from `--block-border-radius-small` (global scale).
 
 ### Picker
 
@@ -782,10 +861,7 @@ Tokens added or modified by this spec. Existing tokens not listed here retain th
 
 ### Rail (CollectionBlock arrows)
 
-| Token | Default |
-|---|---|
-| `--product-card-rail-pad` | `14px` |
-| `--product-card-rail-gap` | `14px` |
+No spec-local rail tokens. Padding uses `--block-padding`; gap uses `--block-spacer`. Arrow dimensions match the global button-size scale.
 
 ### Out-of-stock
 
@@ -836,109 +912,96 @@ These are the rendered-CSS outputs the Tailwind implementation must produce. Dur
 
 #### Card chassis
 
-```css
-.product-card {
-  background: var(--product-card-bg);
-  border: var(--product-card-border-width) solid var(--product-card-border-color);
-  border-radius: var(--product-card-radius);
-  padding: var(--product-card-padding);
-  box-shadow: var(--product-card-shadow);
-  transition: box-shadow var(--product-card-motion-base) var(--product-card-motion-ease);
-  display: flex;
-  flex-direction: column;
-  gap: var(--product-card-gap);
-  position: relative;
-}
-.product-card:hover,
-.product-card:focus-within {
-  box-shadow: var(--product-card-shadow-hover);
-}
-.product-card[data-chrome="frameless"] {
-  background: transparent;
-  border: 0;
-  padding: 0;
-  box-shadow: none;
-}
-.product-card[data-availability="out-of-stock"] {
-  opacity: var(--product-card-oos-opacity);
-}
+Implemented via `<Card>` from `components/layout/card.tsx` with `chrome="boxed" | "frameless"` extension. The boxed variant uses `<Card>`'s existing radius/border/padding; the frameless variant drops bg/border/padding.
+
+```tsx
+<Card chrome="boxed" className="flex flex-col gap-(--block-spacer) relative
+  transition-shadow duration-(--header-motion-base) ease-(--product-card-motion-ease)
+  hover:shadow-product-card-hover focus-within:shadow-product-card-hover
+  data-[oos]:opacity-(--product-card-oos-opacity)
+">
+  {/* ... */}
+</Card>
+```
+
+Card extension (one-line addition):
+
+```tsx
+// components/layout/card.tsx — extension
+export type CardPropsBase<ComponentGeneric extends ElementType> = {
+    as?: ComponentGeneric;
+    className?: string;
+    children?: ReactNode;
+    border?: boolean;
+    chrome?: 'boxed' | 'frameless';  // NEW — defaults to 'boxed'
+};
+// Inside Card: when chrome === 'frameless', skip the bg/border/padding classes.
 ```
 
 #### Image container
 
-```css
-.product-card__media {
-  position: relative;
-  background: var(--product-card-image-bg);
-  border-radius: var(--product-card-image-radius);
-  aspect-ratio: var(--aspect-product-card-vertical);
-  overflow: hidden;
-}
-.product-card__media img {
-  width: 100%;
-  height: 100%;
-  object-fit: var(--product-card-image-fit); /* default cover */
-  display: block;
-}
-.product-card[data-availability="out-of-stock"] .product-card__media img {
-  filter: saturate(var(--product-card-oos-image-saturate));
-}
+```tsx
+<div className="
+  relative overflow-hidden
+  bg-(--product-card-image-bg)
+  rounded-(--block-border-radius-small)
+  aspect-(--aspect-product-card-vertical)
+">
+  <Image fill style={{ objectFit: 'var(--product-card-image-fit)' }} sizes="var(--product-card-image-sizes)" ... />
+</div>
 ```
+
+OOS image desaturation lives on the chassis selector (`data-oos`), not the image itself, so it cascades to any future image element added inside `.media`.
 
 #### Eyebrow (shared by vendor + sale badge)
 
-```css
-.product-card__eyebrow {
-  font-family: ui-sans-serif, system-ui;
-  font-size: var(--product-card-eyebrow-size);
-  font-weight: var(--product-card-eyebrow-weight);
-  letter-spacing: var(--product-card-eyebrow-tracking);
-  text-transform: var(--product-card-eyebrow-transform);
-  line-height: 1;
-}
-.product-card__vendor { color: var(--product-card-vendor-color); }
+Use `<Label>` from `components/typography/label.tsx` with Tailwind type-scale utilities. No spec-local CSS.
+
+```tsx
+<Label className="
+  text-xs font-semibold uppercase
+  tracking-(--header-eyebrow-tracking)
+  text-(--product-card-vendor-color)  /* vendor only; badge uses its style enum */
+  leading-none
+">
+  {vendor}
+</Label>
 ```
 
 #### Title
 
-```css
-.product-card__title {
-  font: var(--product-card-title-weight) var(--product-card-title-size)/1.35 ui-sans-serif;
-  color: var(--product-card-title-color);
-  display: -webkit-box;
-  -webkit-line-clamp: var(--product-card-title-line-clamp);
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
+```tsx
+<h3 className="
+  text-sm font-medium leading-snug
+  text-(--product-card-title-color)
+  line-clamp-(--product-card-title-line-clamp)
+">
+  {title}
+</h3>
 ```
 
 #### Price + compare (with drawn angled strike)
 
-```css
-.product-card__price {
-  font: var(--product-card-price-weight) var(--product-card-price-size)/1 ui-sans-serif;
-  color: var(--product-card-price-color);
-  font-variant-numeric: tabular-nums;
-}
-.product-card__compare {
-  font: 500 12px/1 ui-sans-serif;
-  color: var(--product-card-compare-color);
-  font-variant-numeric: tabular-nums;
-  position: relative;
-  padding: 0 var(--product-card-sale-strike-extend);
-}
-.product-card__compare::after {
-  content: "";
-  position: absolute;
-  inset: 50% calc(var(--product-card-sale-strike-extend) * -1) auto calc(var(--product-card-sale-strike-extend) * -1);
-  height: 1.5px;
-  background: var(--product-card-sale-strike-color, currentColor);
-  transform: translateY(-50%) rotate(var(--product-card-sale-strike-angle));
-}
-.product-card[data-on-sale] .product-card__price {
-  color: var(--product-card-sale-current-color, currentColor);
-}
+```tsx
+<span className="text-sm font-semibold leading-none tabular-nums
+  text-(--product-card-price-color)
+  group-data-[on-sale]/card:text-(--product-card-sale-current-color)
+">
+  ${current}
+</span>
+<span className="
+  text-xs font-medium leading-none tabular-nums
+  text-(--product-card-compare-color)
+  relative px-0.5
+  after:content-[''] after:absolute after:inset-y-1/2 after:-inset-x-0.5
+  after:h-px after:bg-current
+  after:-translate-y-1/2 after:rotate-(--product-card-sale-strike-angle)
+">
+  ${compare}
+</span>
 ```
+
+The angled strike CSS rotation token lives in the Sale section. The `tabular-nums` utility is Tailwind native.
 
 #### Swatch (16px visual, 36px hit, focus + selected + unavailable)
 
@@ -964,7 +1027,7 @@ These are the rendered-CSS outputs the Tailwind implementation must produce. Dur
   .product-card-swatch:hover { transform: scale(1.08); }
   .product-card-swatch:active {
     transform: scale(0.94);
-    transition-duration: var(--product-card-motion-fast);
+    transition-duration: var(--header-motion-fast);
   }
 }
 .product-card-swatch:focus { outline: none; }
@@ -1009,7 +1072,7 @@ These are the rendered-CSS outputs the Tailwind implementation must produce. Dur
 .product-card-chip {
   font: 500 12px/1 ui-sans-serif;
   padding: 8px 12px;
-  border-radius: var(--product-card-radius-sm);
+  border-radius: var(--block-border-radius-tiny);
   border: 1px solid color-mix(in srgb, currentColor 10%, transparent);
   background: var(--product-card-chip-bg);
   color: var(--product-card-chip-color);
@@ -1027,7 +1090,7 @@ These are the rendered-CSS outputs the Tailwind implementation must produce. Dur
   .product-card-chip:hover { transform: scale(1.04); }
   .product-card-chip:active {
     transform: scale(0.96);
-    transition-duration: var(--product-card-motion-fast);
+    transition-duration: var(--header-motion-fast);
   }
 }
 .product-card-chip:focus { outline: none; }
@@ -1062,7 +1125,7 @@ These are the rendered-CSS outputs the Tailwind implementation must produce. Dur
 .product-card-more {
   font: 600 var(--product-card-more-size)/1 ui-sans-serif;
   padding: 8px 10px;
-  border-radius: var(--product-card-radius-sm);
+  border-radius: var(--block-border-radius-tiny);
   border: 0;
   background: var(--product-card-more-bg);
   color: var(--product-card-more-color);
@@ -1083,7 +1146,7 @@ These are the rendered-CSS outputs the Tailwind implementation must produce. Dur
   }
   .product-card-more:active {
     transform: scale(0.97);
-    transition-duration: var(--product-card-motion-fast);
+    transition-duration: var(--header-motion-fast);
   }
 }
 ```
@@ -1141,7 +1204,7 @@ These are the rendered-CSS outputs the Tailwind implementation must produce. Dur
   .product-card-cta-pill:hover { box-shadow: 0 10px 22px -8px rgb(20 17 11 / 0.30); }
   .product-card-cta-pill:active {
     transform: scale(0.96);
-    transition-duration: var(--product-card-motion-fast);
+    transition-duration: var(--header-motion-fast);
   }
 }
 .product-card-cta-pill:focus { outline: none; }
@@ -1163,7 +1226,7 @@ These are the rendered-CSS outputs the Tailwind implementation must produce. Dur
 .product-card-cta-inline {
   height: 44px;
   padding: 0 16px;
-  border-radius: var(--product-card-cta-radius);
+  border-radius: var(--block-border-radius-small);
   border: 0;
   background: var(--product-card-cta-bg);
   color: var(--product-card-cta-color);
@@ -1198,7 +1261,7 @@ These are the rendered-CSS outputs the Tailwind implementation must produce. Dur
   }
   .product-card-cta-inline:active {
     transform: scale(0.99);
-    transition-duration: var(--product-card-motion-fast);
+    transition-duration: var(--header-motion-fast);
   }
 }
 ```
@@ -1210,12 +1273,12 @@ These are the rendered-CSS outputs the Tailwind implementation must produce. Dur
   position: absolute;
   z-index: 2;
   padding: 5px 8px;
-  border-radius: var(--product-card-radius-sm);
+  border-radius: var(--block-border-radius-tiny);
   font-family: ui-sans-serif, system-ui;
-  font-size: var(--product-card-eyebrow-size);
-  font-weight: var(--product-card-eyebrow-weight);
+  font-size: 12px;                                /* Tailwind text-xs */
+  font-weight: 600;                                /* Tailwind font-semibold */
   letter-spacing: var(--product-card-eyebrow-tracking);
-  text-transform: var(--product-card-eyebrow-transform);
+  text-transform: uppercase;
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
@@ -1315,7 +1378,7 @@ These are the rendered-CSS outputs the Tailwind implementation must produce. Dur
   padding: 12px;
   background: var(--product-card-more-bg);
   border: 1px solid var(--product-card-border-color);
-  border-radius: var(--product-card-cta-radius);
+  border-radius: var(--block-border-radius-small);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -1325,9 +1388,9 @@ These are the rendered-CSS outputs the Tailwind implementation must produce. Dur
 .product-card-picker__label {
   font-family: ui-sans-serif, system-ui;
   font-size: 10px;
-  font-weight: var(--product-card-eyebrow-weight);
+  font-weight: 600;                                /* Tailwind font-semibold */
   letter-spacing: var(--product-card-eyebrow-tracking);
-  text-transform: var(--product-card-eyebrow-transform);
+  text-transform: uppercase;
   color: var(--product-card-vendor-color);
   margin: 0 0 6px;
 }
@@ -1335,7 +1398,7 @@ These are the rendered-CSS outputs the Tailwind implementation must produce. Dur
   background: var(--product-card-cta-bg);
   color: var(--product-card-cta-color);
   border: 0;
-  border-radius: var(--product-card-cta-radius);
+  border-radius: var(--block-border-radius-small);
   padding: 12px;
   font: 600 12px/1 ui-sans-serif;
   cursor: pointer;
@@ -1348,9 +1411,9 @@ These are the rendered-CSS outputs the Tailwind implementation must produce. Dur
 No spec-local CSS for skeleton appearance. Use plain `data-skeleton` attribute on each piece — the global `[data-skeleton]` rule at `globals.css:440-476` handles bg color, border radius, shimmer animation, and reduced-motion. Only sizing utilities are added at the call site (matched to live primitive heights).
 
 ```html
-<div data-skeleton class="aspect-(--aspect-product-card-vertical) rounded-(--product-card-image-radius)"></div>
-<span data-skeleton class="h-(--product-card-title-line-height) w-4/5"></span>
-<span data-skeleton class="h-(--product-card-price-line-height) w-14"></span>
+<div data-skeleton class="aspect-(--aspect-product-card-vertical) rounded-(--block-border-radius-small)"></div>
+<span data-skeleton class="h-5 w-4/5"></span>          <!-- title line · h-5 matches text-sm × leading-snug -->
+<span data-skeleton class="h-3.5 w-14"></span>         <!-- price · h-3.5 matches text-sm × leading-none -->
 <span data-skeleton class="size-(--product-card-swatch-size) rounded-full"></span>
 ```
 
@@ -1360,18 +1423,18 @@ No spec-local CSS for skeleton appearance. Use plain `data-skeleton` attribute o
 .collection-block[data-horizontal="true"] {
   position: relative;
   display: flex;
-  gap: var(--product-card-rail-gap);
+  gap: var(--block-spacer);
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  scroll-padding-inline: var(--product-card-rail-pad);
-  padding: 4px var(--product-card-rail-pad) 18px;
+  scroll-padding-inline: var(--block-padding);
+  padding: 4px var(--block-padding) 18px;
   scrollbar-width: none;
   /* edge-fade hint via mask — existing overflow-x-shadow utility achieves this */
   mask-image: linear-gradient(
     to right,
     transparent,
-    black var(--product-card-rail-pad),
-    black calc(100% - var(--product-card-rail-pad)),
+    black var(--block-padding),
+    black calc(100% - var(--block-padding)),
     transparent
   );
 }
@@ -1478,7 +1541,7 @@ Applied from the Next.js / Vercel React / Tailwind layouts best-practice lenses:
 
 ### Phase 2 — Foundation: tokens, registry, primitives provider
 
-1. Add new tokens to `apps/storefront/src/app/globals.css`. Keep existing tokens (rename `--product-card-vendor-size` → `--product-card-eyebrow-size`, update vendor primitive to read the new name).
+1. Add new tokens to `apps/storefront/src/app/globals.css` and **delete** the now-redundant ones (`--product-card-radius`, `--product-card-padding`, `--product-card-gap`, `--product-card-image-radius`, `--product-card-cta-radius`, `--product-card-vendor-size`, `--product-card-title-size`, `--product-card-title-weight`, `--product-card-price-size`, `--product-card-price-weight`, `--product-card-chip-padding-x`, `--product-card-chip-padding-y`, `--product-card-more-size`, `--product-card-more-weight`, `--product-card-more-min-size`, `--product-card-cta-padding-y`, `--product-card-motion-hover-duration`, `--product-card-motion-hover-ease`, `--product-card-motion-image-swap-duration`, `--product-card-motion-overlay-in-duration`, `--product-card-motion-overlay-in-ease`, `--product-card-overlay-*`). The product card reads `--block-border-radius*` / `--block-padding` / `--block-spacer` for spacing, Tailwind type-scale utilities for font sizing, and spec-local `--product-card-motion-*` for animation.
 2. Create `product-card/cta/index.ts` and `product-card/picker/index.ts` registries with their respective `register…` / `get…` functions.
 3. Create `product-card/primitives/product-card-options-provider.tsx` (client provider; replaces today's inline `ProductOptions.Root` wrapping inside the chassis).
 4. Create `product-card/presets.ts` with `SURFACE_PRESETS` constant.
