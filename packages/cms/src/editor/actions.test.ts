@@ -108,7 +108,19 @@ describe('createCollectionEditorActions.saveDraft', () => {
                 locale: 'en-US',
             }),
         );
-        expect(mockRevalidatePath).toHaveBeenCalledWith('/a.test/x/');
+    });
+
+    it('does NOT call revalidatePath on draft saves (autosave must not refresh the editor mid-typing)', async () => {
+        // Tenant-singleton manifests declare their `revalidate` path as the
+        // admin's own edit URL. If saveDraft revalidates that path, Next.js
+        // re-renders the editor and Payload's `<Form>` dispatches
+        // REPLACE_STATE, clobbering every in-flight keystroke. Storefront
+        // caches still invalidate via the collection's `afterChange` hook
+        // (`buildRevalidateHooks` → `revalidateTag`), independent of this.
+        const runtime = buildRuntime();
+        const actions = createCollectionEditorActions(baseManifest, runtime);
+        await actions.saveDraft('a.test', 'singleton', fd({ legalName: 'Acme' }), 'en-US');
+        expect(mockRevalidatePath).not.toHaveBeenCalled();
     });
 
     it('updates the existing doc when one is found, passing draft:true to skip required validation', async () => {
@@ -188,6 +200,13 @@ describe('createCollectionEditorActions.publish', () => {
         const ctx = await runtime.getCtx('a.test');
         const call = (ctx.payload.create as ReturnType<typeof vi.fn>).mock.calls[0]?.[0];
         expect(call?.draft).toBeUndefined();
+    });
+
+    it('calls revalidatePath on publish (an explicit publish refreshes admin list pages)', async () => {
+        const runtime = buildRuntime();
+        const actions = createCollectionEditorActions(baseManifest, runtime);
+        await actions.publish('a.test', 'singleton', fd({ legalName: 'Acme' }), 'en-US');
+        expect(mockRevalidatePath).toHaveBeenCalledWith('/a.test/x/');
     });
 });
 

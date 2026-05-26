@@ -11,16 +11,19 @@ vi.mock('next/link', () => ({
     ),
 }));
 
-vi.mock('@payloadcms/ui', () => ({
-    Form: ({ children }: { children: React.ReactNode }) => <form data-testid="payload-form">{children}</form>,
-    RootProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-    defaultTheme: 'light',
+// `DocumentFormBody` owns the dirty-gate around Payload's `<Form>` —
+// behavior is exercised in `./document-form-body.test.tsx`. Here the only
+// thing the chrome tests care about is that children render, so pass through.
+vi.mock('@/components/cms/document-form-body', () => ({
+    DocumentFormBody: ({ children }: { children: React.ReactNode }) => (
+        <form data-testid="payload-form">{children}</form>
+    ),
 }));
 
 // Mock `@nordcom/commerce-cms/ui` so the test bypasses the package's
 // transitive `@payloadcms/ui/css` -> `react-image-crop/dist/ReactCrop.css`
 // side-effect chain. The compiled cms package is loaded by Node (externalized
-// from `node_modules`), so `vi.mock('@payloadcms/ui', …)` above cannot reach
+// from `node_modules`), so a `vi.mock('@payloadcms/ui', …)` cannot reach
 // EditUpload's CSS import — mocking at this boundary cuts the chain entirely.
 vi.mock('@nordcom/commerce-cms/ui', () => ({
     PayloadFieldShell: ({ children }: { children: React.ReactNode }) => <>{children}</>,

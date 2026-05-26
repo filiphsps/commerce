@@ -106,7 +106,18 @@ export const createCollectionEditorActions = <T extends CollectionSlug>(
             });
         }
 
-        revalidateForManifest({ manifest, domain, doc, status, revalidatePath });
+        // Skip path revalidation on draft autosaves. Tenant-singleton manifests
+        // declare their `revalidate` path as the admin's own edit URL, so a
+        // 2-second autosave loop causes Next.js to revalidate the page the
+        // user is editing — `<Form>`'s `initialState` effect then dispatches
+        // REPLACE_STATE and clobbers every in-flight keystroke. Storefront
+        // caches are already invalidated by the collection's `afterChange`
+        // hook (`buildRevalidateHooks` → `revalidateTag`), so the only thing
+        // we lose by skipping here is admin LIST-page freshness — which the
+        // user sees on next navigation, not while editing.
+        if (status === 'published') {
+            revalidateForManifest({ manifest, domain, doc, status, revalidatePath });
+        }
     };
 
     return {

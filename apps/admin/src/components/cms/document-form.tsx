@@ -1,8 +1,8 @@
 import { PayloadFieldShell, type PayloadFieldShellProps } from '@nordcom/commerce-cms/ui';
-import { Form } from '@payloadcms/ui';
 import type { FormState } from 'payload';
 import type { ReactNode } from 'react';
 
+import { DocumentFormBody } from '@/components/cms/document-form-body';
 import { PageFooter } from '@/components/shell/page-footer';
 import { type Breadcrumb, PageHeader } from '@/components/shell/page-header';
 
@@ -36,7 +36,7 @@ export function DocumentForm({
 
             <div className="flex min-w-0 flex-1 flex-col gap-4 overflow-y-auto px-6 py-4">
                 <PayloadFieldShell {...shellProps}>
-                    <Form action={onSubmit} initialState={initialState} isDocumentForm>
+                    <DocumentFormBody action={onSubmit} initialState={initialState}>
                         <div
                             className={
                                 livePreview
@@ -49,7 +49,7 @@ export function DocumentForm({
                         </div>
 
                         {toolbar ? <PageFooter>{toolbar}</PageFooter> : null}
-                    </Form>
+                    </DocumentFormBody>
                 </PayloadFieldShell>
             </div>
         </div>
