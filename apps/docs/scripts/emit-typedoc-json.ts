@@ -1,7 +1,8 @@
+#!/usr/bin/env tsx
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { Application, TSConfigReader } from 'typedoc';
+import { Application, normalizePath, TSConfigReader } from 'typedoc';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DOCS_APP = path.resolve(__dirname, '..');
@@ -10,7 +11,32 @@ const OUT_ROOT = path.join(DOCS_APP, '.typedoc-out');
 
 const SKIP_DIRS = new Set(['node_modules', 'dist', 'build', '.turbo', '.next', 'coverage', 'docs', 'src', 'api']);
 
-export async function main({ quiet = false } = {}) {
+type Workspace = {
+    slug: string;
+    rootPath: string;
+    parent: string;
+};
+
+type Subpath = {
+    subpath: string;
+    sourceFile: string;
+};
+
+type ExportsValue = string | string[] | { [condition: string]: ExportsValue } | null;
+
+type SerializedDeclaration = {
+    sources?: Array<{ fileName?: string }>;
+    children?: SerializedDeclaration[];
+    kind?: number;
+    name?: string;
+    flags?: unknown;
+    groups?: unknown;
+};
+
+export async function main({ quiet = false }: { quiet?: boolean } = {}): Promise<{
+    totalSubpaths: number;
+    warnings: number;
+}> {
     const workspaces = discoverPackagesWithExports(REPO_ROOT);
     let totalSubpaths = 0;
     let warnings = 0;
@@ -45,7 +71,10 @@ export async function main({ quiet = false } = {}) {
             continue;
         }
 
-        const serialized = app.serializer.projectToObject(project, process.cwd());
+        const serialized = app.serializer.projectToObject(
+            project,
+            normalizePath(process.cwd()),
+        ) as SerializedDeclaration;
         const flattened = flattenModules(serialized);
         const sourceBase = commonSourceBase(entryPoints);
 
@@ -64,8 +93,8 @@ export async function main({ quiet = false } = {}) {
     return { totalSubpaths, warnings };
 }
 
-function discoverPackagesWithExports(repoRoot) {
-    const out = [];
+function discoverPackagesWithExports(repoRoot: string): Workspace[] {
+    const out: Workspace[] = [];
     for (const parent of ['apps', 'packages']) {
         const root = path.join(repoRoot, parent);
         if (!fs.existsSync(root)) continue;
@@ -78,7 +107,7 @@ function discoverPackagesWithExports(repoRoot) {
     return out;
 }
 
-function walk(dir, parent, segments, out) {
+function walk(dir: string, parent: string, segments: string[], out: Workspace[]): void {
     if (fs.existsSync(path.join(dir, 'package.json'))) {
         out.push({ slug: segments.join('/'), rootPath: dir, parent });
         return;
@@ -90,25 +119,25 @@ function walk(dir, parent, segments, out) {
     }
 }
 
-function resolveSubpaths(workspaceRoot) {
+function resolveSubpaths(workspaceRoot: string): Subpath[] {
     const pkgPath = path.join(workspaceRoot, 'package.json');
     if (!fs.existsSync(pkgPath)) return [];
-    const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+    const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8')) as { exports?: ExportsValue };
     if (!pkg.exports) return [];
-    const out = [];
+    const out: Subpath[] = [];
     if (typeof pkg.exports === 'string') {
         const file = resolveTs(workspaceRoot, pkg.exports);
         if (file) out.push({ subpath: '.', sourceFile: file });
         return out;
     }
-    for (const [key, value] of Object.entries(pkg.exports)) {
+    for (const [key, value] of Object.entries(pkg.exports as Record<string, ExportsValue>)) {
         const file = resolveAny(workspaceRoot, value);
         if (file) out.push({ subpath: key, sourceFile: file });
     }
     return out;
 }
 
-function resolveAny(root, value) {
+function resolveAny(root: string, value: ExportsValue): string | undefined {
     if (typeof value === 'string') return resolveTs(root, value);
     if (Array.isArray(value)) {
         for (const v of value) {
@@ -120,7 +149,7 @@ function resolveAny(root, value) {
     if (typeof value === 'object' && value !== null) {
         for (const cond of ['types', 'source', 'import', 'default', 'require']) {
             if (cond in value) {
-                const r = resolveAny(root, value[cond]);
+                const r = resolveAny(root, value[cond] ?? null);
                 if (r) return r;
             }
         }
@@ -128,13 +157,13 @@ function resolveAny(root, value) {
     return undefined;
 }
 
-function resolveTs(root, relPath) {
+function resolveTs(root: string, relPath: string): string | undefined {
     if (!relPath.endsWith('.ts') && !relPath.endsWith('.tsx')) return undefined;
     const abs = path.resolve(root, relPath);
     return fs.existsSync(abs) ? abs : undefined;
 }
 
-function subpathJsonPath(outRoot, workspaceSlug, subpath) {
+function subpathJsonPath(outRoot: string, workspaceSlug: string, subpath: string): string {
     const subFs = subpath === '.' ? 'index' : subpath.replace(/^\.\//, '');
     return path.join(outRoot, workspaceSlug, `${subFs}.json`);
 }
@@ -146,10 +175,10 @@ function subpathJsonPath(outRoot, workspaceSlug, subpath) {
  * uniform list of declarations regardless of single-vs-multi entry-point shape. Drops `groups`
  * because `typedoc-loader.groupSymbols` rebuilds them by kind anyway.
  */
-function flattenModules(serialized) {
-    const out = { ...serialized };
+function flattenModules(serialized: SerializedDeclaration): SerializedDeclaration {
+    const out: SerializedDeclaration = { ...serialized };
     out.children = [];
-    delete out.groups;
+    out.groups = undefined;
     for (const child of serialized.children ?? []) {
         // TypeDoc ReflectionKind.Module === 2.
         if (child.kind === 2 && Array.isArray(child.children)) {
@@ -166,9 +195,9 @@ function flattenModules(serialized) {
  * relative `sources[0].fileName` back to an absolute path so the subpath filter can compare
  * accurately even when the cwd doesn't match TypeDoc's rebase reference.
  */
-function commonSourceBase(absPaths) {
+function commonSourceBase(absPaths: string[]): string {
     if (absPaths.length === 0) return process.cwd();
-    let parts = absPaths[0].split(path.sep);
+    let parts = (absPaths[0] as string).split(path.sep);
     for (const p of absPaths.slice(1)) {
         const other = p.split(path.sep);
         const limit = Math.min(parts.length, other.length);
@@ -176,7 +205,6 @@ function commonSourceBase(absPaths) {
         while (i < limit && parts[i] === other[i]) i++;
         parts = parts.slice(0, i);
     }
-    // Trim trailing filename component if present (entries are files, not directories).
     const candidate = parts.join(path.sep);
     return fs.existsSync(candidate) && fs.statSync(candidate).isDirectory() ? candidate : path.dirname(candidate);
 }
@@ -190,15 +218,19 @@ function commonSourceBase(absPaths) {
  *   subpath like `./cache` (sourceFile `src/cache.ts`) would absorb every symbol in the package
  *   because its dirname is the package's src root.
  */
-function filterToSubpath(project, sourceFile, sourceBase) {
+function filterToSubpath(
+    project: SerializedDeclaration,
+    sourceFile: string,
+    sourceBase: string,
+): SerializedDeclaration {
     const isIndexEntry = path.basename(sourceFile) === 'index.ts' || path.basename(sourceFile) === 'index.tsx';
     const dir = path.dirname(sourceFile);
-    function isInSubpath(d) {
+    function isInSubpath(d: SerializedDeclaration): boolean {
         const src = d?.sources?.[0]?.fileName;
         if (!src) return false;
         const abs = path.isAbsolute(src) ? src : path.resolve(sourceBase, src);
         if (abs === sourceFile) return true;
-        return isIndexEntry && abs.startsWith(dir + path.sep);
+        return isIndexEntry && abs.startsWith(`${dir}${path.sep}`);
     }
     const children = (project.children ?? []).filter(isInSubpath);
     return {
@@ -210,7 +242,7 @@ function filterToSubpath(project, sourceFile, sourceBase) {
     };
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
     main().catch((err) => {
         console.error(err);
         process.exit(1);

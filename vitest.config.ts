@@ -2,9 +2,12 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
 
+const isGitHubActions = process.env.GITHUB_ACTIONS && process.env.GITHUB_ACTIONS === 'true';
+const isCI = process.env.CI && process.env.CI === 'true';
+
 const reporters = ['verbose'];
-const githubReporters = !process.env.GITHUB_ACTIONS ? [] : ['github-actions'];
-const ciReporters = !process.env.CI ? [] : ['junit'];
+const githubReporters = isGitHubActions ? ['github-actions'] : [];
+const ciReporters = isCI ? ['junit'] : [];
 const exclude = [
     '**/.next/**/*.*',
     '**/.turbo/**/*.*',
@@ -26,6 +29,8 @@ const exclude = [
     'vitest.config.ts',
     'vitest.workspace.ts',
 ];
+
+const coverageExclude = [...exclude, '**/scripts/**', 'scripts/**'];
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -55,9 +60,9 @@ export default defineConfig({
         projects: ['{apps,packages}/**/vitest.config.ts'],
 
         coverage: {
-            exclude: exclude,
+            exclude: coverageExclude,
             provider: 'v8',
-            reporter: ['json', 'json-summary', 'text', 'text-summary'],
+            reporter: ['json', 'json-summary', ...(isCI || isGitHubActions ? [] : ['text']), 'text-summary'],
             reportOnFailure: true,
             // Per-glob regression floors. Spec target is 80% storefront / 60% admin lines.
             // Current achieved levels (after Wave 2): storefront ~73% lines, admin ~67% lines.

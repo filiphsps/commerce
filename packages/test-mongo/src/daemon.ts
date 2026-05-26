@@ -13,7 +13,7 @@ export interface DaemonOptions {
 /**
  * Long-running foreground process: spins up mongod via `startMongo`, writes
  * PID + URI files, and waits for SIGTERM/SIGINT. Used by `pnpm dev:mongo`
- * directly and indirectly by `scripts/mongo-daemon.mjs` (which spawns this
+ * directly and indirectly by `scripts/mongo-daemon.ts` (which spawns this
  * detached for `pnpm dev`).
  *
  * `startMongo` already installs orphan-proof signal handlers; the additional

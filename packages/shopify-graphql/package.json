@@ -28,7 +28,7 @@
         "format:format": "biome format --write .",
         "format:check": "biome check --write --unsafe .",
         "generate": "pnpm graphql:gen",
-        "graphql:schema": "node ./scripts/copy-schema.mjs",
+        "graphql:schema": "tsx ./scripts/copy-schema.ts",
         "graphql:gen": "pnpm graphql:schema && gql.tada generate-output",
         "graphql:check": "gql.tada check",
         "test": "vitest run",
@@ -75,6 +75,7 @@
         "glob": "13.0.6",
         "graphql": "16.14.0",
         "rimraf": "6.1.3",
+        "tsx": "4.22.3",
         "typescript": "6.0.3",
         "vite": "8.0.12",
         "vitest": "4.1.6"

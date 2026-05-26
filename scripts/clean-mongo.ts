@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env tsx
 /**
  * Manual recovery script: kill orphan mongod processes spawned by
  * `mongodb-memory-server` and remove their on-disk artifacts.
@@ -10,7 +10,7 @@
  *    under `os.tmpdir()` or `/var/folders/**\/T/` (macOS per-user tmp).
  */
 import { execFileSync } from 'node:child_process';
-import { existsSync, readdirSync, rmSync, statSync, unlinkSync } from 'node:fs';
+import { type Dirent, existsSync, readdirSync, rmSync, statSync, unlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 
@@ -24,15 +24,16 @@ if (!isLinux && !isMac) {
 
 const psFormat = isLinux ? 'pid=,cmd=' : 'pid=,command=';
 
-function listMongoMemPids() {
+function listMongoMemPids(): number[] {
     let out = '';
     try {
         out = execFileSync('ps', ['-A', '-o', psFormat], { encoding: 'utf8' });
     } catch (err) {
-        console.error(`[clean-mongo] failed to run ps: ${err?.message ?? err}`);
+        const message = err instanceof Error ? err.message : String(err);
+        console.error(`[clean-mongo] failed to run ps: ${message}`);
         return [];
     }
-    const pids = [];
+    const pids: number[] = [];
     for (const rawLine of out.split('\n')) {
         const line = rawLine.trim();
         if (!line) continue;
@@ -42,8 +43,6 @@ function listMongoMemPids() {
         const cmd = line.slice(spaceAt + 1);
         const pid = Number.parseInt(pidStr, 10);
         if (!Number.isFinite(pid)) continue;
-        // Only kill mongods that we (mongodb-memory-server) clearly spawned.
-        // Requires BOTH markers so a brew-installed mongod survives.
         if (!cmd.includes('mongod')) continue;
         if (!cmd.includes('--replSet')) continue;
         if (!cmd.includes('mongo-mem-')) continue;
@@ -52,7 +51,7 @@ function listMongoMemPids() {
     return pids;
 }
 
-function killPids(pids) {
+function killPids(pids: readonly number[]): number {
     let killed = 0;
     for (const pid of pids) {
         try {
@@ -60,17 +59,18 @@ function killPids(pids) {
             console.info(`[clean-mongo] killed pid ${pid}`);
             killed += 1;
         } catch (err) {
-            const code = err?.code;
-            if (code === 'ESRCH') continue; // already gone
-            console.warn(`[clean-mongo] could not kill pid ${pid}: ${err?.message ?? err}`);
+            const code = (err as NodeJS.ErrnoException | undefined)?.code;
+            if (code === 'ESRCH') continue;
+            const message = err instanceof Error ? err.message : String(err);
+            console.warn(`[clean-mongo] could not kill pid ${pid}: ${message}`);
         }
     }
     return killed;
 }
 
-function removeSockets() {
+function removeSockets(): number {
     let removed = 0;
-    let entries = [];
+    let entries: Dirent[] = [];
     try {
         entries = readdirSync('/tmp', { withFileTypes: true });
     } catch {
@@ -84,21 +84,20 @@ function removeSockets() {
             unlinkSync(full);
             removed += 1;
         } catch {
-            // ignore — may be owned by another user or already gone
+            // owned by another user or already gone
         }
     }
     return removed;
 }
 
-const allowedRoots = (() => {
-    const roots = new Set();
+const allowedRoots: readonly string[] = (() => {
+    const roots = new Set<string>();
     roots.add(resolve(tmpdir()));
     if (isMac) {
-        // /var/folders/<hash>/<hash>/T per-user tmp roots
         try {
             for (const a of readdirSync('/var/folders')) {
                 const aPath = join('/var/folders', a);
-                let bs;
+                let bs: string[];
                 try {
                     bs = readdirSync(aPath);
                 } catch {
@@ -110,7 +109,7 @@ const allowedRoots = (() => {
                 }
             }
         } catch {
-            // /var/folders not enumerable; ignore
+            // /var/folders not enumerable
         }
     }
     return Array.from(roots);
@@ -118,18 +117,18 @@ const allowedRoots = (() => {
 
 const mongoMemDirName = /^mongo-mem-[A-Za-z0-9]+$/;
 
-function isInsideAllowedRoot(absolute) {
+function isInsideAllowedRoot(absolute: string): boolean {
     for (const root of allowedRoots) {
-        if (absolute === root) return false; // never the root itself
+        if (absolute === root) return false;
         if (absolute.startsWith(`${root}/`)) return true;
     }
     return false;
 }
 
-function removeMongoMemDirs() {
+function removeMongoMemDirs(): number {
     let removed = 0;
     for (const root of allowedRoots) {
-        let entries = [];
+        let entries: Dirent[] = [];
         try {
             entries = readdirSync(root, { withFileTypes: true });
         } catch {
@@ -139,7 +138,6 @@ function removeMongoMemDirs() {
             if (!entry.isDirectory()) continue;
             if (!mongoMemDirName.test(entry.name)) continue;
             const absolute = resolve(root, entry.name);
-            // Defense in depth: refuse to descend outside the allowed roots.
             if (!isInsideAllowedRoot(absolute)) continue;
             try {
                 const st = statSync(absolute);
@@ -151,7 +149,8 @@ function removeMongoMemDirs() {
                 rmSync(absolute, { recursive: true, force: true });
                 removed += 1;
             } catch (err) {
-                console.warn(`[clean-mongo] could not remove ${absolute}: ${err?.message ?? err}`);
+                const message = err instanceof Error ? err.message : String(err);
+                console.warn(`[clean-mongo] could not remove ${absolute}: ${message}`);
             }
         }
     }

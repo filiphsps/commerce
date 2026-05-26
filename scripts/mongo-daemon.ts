@@ -1,6 +1,6 @@
-#!/usr/bin/env node
+#!/usr/bin/env tsx
 /**
- * Detached daemon entry point. `scripts/predev-mongo.mjs` spawns this
+ * Detached daemon entry point. `scripts/predev-mongo.ts` spawns this
  * with { detached: true, stdio: 'ignore' } so it survives `pnpm dev`.
  * Owns the dev mongod pinned to port 27018 and persists at `.mongo-dev/`.
  */

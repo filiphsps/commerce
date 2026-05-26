@@ -1,3 +1,4 @@
+#!/usr/bin/env tsx
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -11,7 +12,7 @@ if (!fs.existsSync(SITEMAP)) {
     process.exit(1);
 }
 const xml = fs.readFileSync(SITEMAP, 'utf8');
-const urls = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+const urls = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1] as string);
 if (urls.length === 0) {
     console.error('[validate-sitemap] sitemap has zero entries');
     process.exit(1);

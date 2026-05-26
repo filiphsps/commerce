@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env tsx
 import { spawn } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
@@ -16,7 +16,7 @@ if (process.env.MONGODB_URI) {
     process.exit(0);
 }
 
-const isAlive = (pid) => {
+const isAlive = (pid: number): boolean => {
     try {
         process.kill(pid, 0);
         return true;
@@ -25,7 +25,7 @@ const isAlive = (pid) => {
     }
 };
 
-const upsertEnv = (uri) => {
+const upsertEnv = (uri: string): void => {
     const line = `MONGODB_URI=${uri}`;
     let body = existsSync(ENV_FILE) ? readFileSync(ENV_FILE, 'utf8') : '';
     if (/^MONGODB_URI=/m.test(body)) {
@@ -37,7 +37,7 @@ const upsertEnv = (uri) => {
     writeFileSync(ENV_FILE, body);
 };
 
-const waitFor = async (predicate, timeoutMs = 60_000) => {
+const waitFor = async (predicate: () => boolean, timeoutMs = 60_000): Promise<void> => {
     const deadline = Date.now() + timeoutMs;
     while (!predicate()) {
         if (Date.now() > deadline) throw new Error('[predev-mongo] timed out waiting for daemon');
@@ -56,8 +56,8 @@ if (existsSync(PID_FILE)) {
     console.info('[predev-mongo] stale PID; restarting daemon');
 }
 
-const daemonScript = resolve(__dirname, 'mongo-daemon.mjs');
-const child = spawn(process.execPath, [daemonScript], {
+const daemonScript = resolve(__dirname, 'mongo-daemon.ts');
+const child = spawn(process.execPath, ['--import', 'tsx', daemonScript], {
     detached: true,
     stdio: 'ignore',
     cwd: ROOT,

@@ -1,16 +1,17 @@
+#!/usr/bin/env tsx
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { main as generatePageMap } from './generate-page-map.mjs';
-import { main as mirrorDocs } from './mirror-workspace-docs.mjs';
+import { main as generatePageMap } from './generate-page-map';
+import { main as mirrorDocs } from './mirror-workspace-docs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, '../../..');
 
 const DEBOUNCE_MS = 250;
 
-let timer;
+let timer: NodeJS.Timeout | undefined;
 let running = false;
 let queued = false;
 
@@ -26,7 +27,7 @@ let queued = false;
  * changes are far more frequent than API-surface changes. Run `pnpm pre:typedoc`
  * (or `pnpm pre`) on demand after API changes.
  */
-function shouldRebuild(filename) {
+function shouldRebuild(filename: string | null): boolean {
     if (!filename) return false;
     if (filename.includes('node_modules')) return false;
     if (filename.includes('.next')) return false;
@@ -34,12 +35,11 @@ function shouldRebuild(filename) {
     if (filename.includes('.typedoc-out')) return false;
     if (filename.includes('(generated)')) return false;
     if (filename.includes('page-map.generated')) return false;
-    // Only re-mirror when a doc file under a workspace's docs/ directory changes.
     if (!filename.includes(`${path.sep}docs${path.sep}`)) return false;
     return filename.endsWith('.md') || filename.endsWith('.mdx');
 }
 
-async function rebuild() {
+async function rebuild(): Promise<void> {
     if (running) {
         queued = true;
         return;
@@ -60,19 +60,20 @@ async function rebuild() {
     }
 }
 
-function schedule() {
-    clearTimeout(timer);
+function schedule(): void {
+    if (timer) clearTimeout(timer);
     timer = setTimeout(rebuild, DEBOUNCE_MS);
 }
 
-function watchTree(dir) {
+function watchTree(dir: string): void {
     if (!fs.existsSync(dir)) return;
     try {
         fs.watch(dir, { recursive: true }, (_event, filename) => {
             if (shouldRebuild(filename)) schedule();
         });
     } catch (err) {
-        console.warn(`[watch] cannot watch ${dir}: ${err.message}`);
+        const message = err instanceof Error ? err.message : String(err);
+        console.warn(`[watch] cannot watch ${dir}: ${message}`);
     }
 }
 

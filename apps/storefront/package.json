@@ -11,7 +11,7 @@
     "scripts": {
         "start": "next start",
         "dev": "NODE_ENV=development next dev --turbo",
-        "build": "node ./scripts/build.mjs",
+        "build": "tsx ./scripts/build.ts",
         "clean": "rimraf -g dist coverage .turbo .next .tsbuildinfo *.log",
         "lint": "biome lint .",
         "format": "concurrently -i pnpm:format:*",
@@ -128,6 +128,7 @@
         "schema-dts": "2.0.0",
         "server-only": "0.0.1",
         "tailwindcss": "4.3.0",
+        "tsx": "4.22.3",
         "typescript": "6.0.3",
         "vitest": "4.1.6"
     }

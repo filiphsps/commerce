@@ -8,7 +8,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // lib/page-map.generated.ts is gitignored — emit it before vitest collects.
 if (!existsSync(path.join(__dirname, 'lib/page-map.generated.ts'))) {
-    execSync('node scripts/generate-page-map.mjs', { cwd: __dirname, stdio: 'inherit' });
+    execSync('tsx scripts/generate-page-map.ts', { cwd: __dirname, stdio: 'inherit' });
 }
 
 export default defineConfig({
@@ -20,6 +20,6 @@ export default defineConfig({
     test: {
         name: '@nordcom/commerce-docs',
         environment: 'happy-dom',
-        include: ['lib/**/*.test.ts', 'components/**/*.test.{ts,tsx}', 'scripts/**/*.test.{mjs,ts}'],
+        include: ['lib/**/*.test.ts', 'components/**/*.test.{ts,tsx}', 'scripts/**/*.test.ts'],
     },
 });

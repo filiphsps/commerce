@@ -33,12 +33,13 @@ export default defineConfig({
         ],
         globals: true,
         coverage: {
-            include: ['src/**/*.{ts,tsx}', 'scripts/**/*.ts'],
+            include: ['src/**/*.{ts,tsx}'],
             exclude: [
                 '__tests__/*.*',
                 '**/__tests__/**/*.*',
                 '**/*.d.*',
                 '**/*.test.*',
+                'scripts/**',
                 'src/**/index.*',
                 '**/generated/**/*.*',
             ],
