@@ -1,16 +1,15 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { useCartActions, useCartLines, useCartStatus } from '@/components/cart/provider';
 import ProductCardActionsClient from '@/components/product-card/primitives/product-card-actions-client';
 import { ProductOptionsContext } from '@/components/product-options/context';
 import type { ProductOptionsContextValue } from '@/components/product-options/types';
 import { render } from '@/utils/test/react';
 
-vi.mock('@shopify/hydrogen-react', async (importOriginal) => {
-    const actual = await importOriginal<typeof import('@shopify/hydrogen-react')>();
-    return {
-        ...actual,
-        useCart: () => ({ lines: [], linesAdd: vi.fn(), linesUpdate: vi.fn() }),
-    };
-});
+vi.mock('@/components/cart/provider', () => ({
+    useCartActions: vi.fn(),
+    useCartStatus: vi.fn(),
+    useCartLines: vi.fn(),
+}));
 
 const i18n = {
     common: { 'add-to-cart': 'Add to cart', decrease: 'Decrease', increase: 'Increase' },
@@ -37,64 +36,84 @@ const wrap = (props: any) =>
         </ProductOptionsContext.Provider>,
     );
 
+const setMocks = ({
+    lines = [],
+    cartReady = true,
+}: {
+    lines?: Array<{ id: string; quantity: number; merchandise: { id: string } }>;
+    cartReady?: boolean;
+} = {}) => {
+    vi.mocked(useCartActions).mockReturnValue({
+        addLine: vi.fn().mockResolvedValue({ ok: true, cart: {} }),
+        updateLine: vi.fn().mockResolvedValue({ ok: true, cart: {} }),
+        removeLine: vi.fn().mockResolvedValue({ ok: true, cart: {} }),
+        applyDiscountCode: vi.fn().mockResolvedValue({ ok: true, cart: {} }),
+        removeDiscountCode: vi.fn().mockResolvedValue({ ok: true, cart: {} }),
+        applyGiftCard: vi.fn().mockResolvedValue({ ok: true, cart: {} }),
+        removeGiftCard: vi.fn().mockResolvedValue({ ok: true, cart: {} }),
+        updateNote: vi.fn().mockResolvedValue({ ok: true, cart: {} }),
+        updateAttributes: vi.fn().mockResolvedValue({ ok: true, cart: {} }),
+    } as any);
+    vi.mocked(useCartStatus).mockReturnValue({ status: 'idle', error: null, cartReady });
+    vi.mocked(useCartLines).mockReturnValue({ lines: lines as any, cartId: cartReady ? 'cart-1' : null });
+};
+
 describe('components', () => {
     describe('product-card', () => {
         describe('primitives', () => {
             describe('ProductCardActionsClient', () => {
+                beforeEach(() => {
+                    setMocks();
+                });
+
                 it('renders the Add-to-cart button by default', () => {
                     const { getByRole } = wrap({
                         product,
                         mode: 'full',
                         i18n,
                         seedVariantId: 'gid://shopify/ProductVariant/1',
-                        initialSeedLineId: null,
-                        initialSeedQuantity: 0,
-                        addAction: vi.fn().mockResolvedValue({ ok: true }),
-                        updateAction: vi.fn(),
                     });
                     expect(getByRole('button', { name: /add to cart/i })).toBeTruthy();
                 });
 
-                it('marks the icon-mode submit button with data-mode="icon"', () => {
+                it('marks the icon-mode button with data-mode="icon"', () => {
                     const { container } = wrap({
                         product,
                         mode: 'icon',
                         i18n,
                         seedVariantId: 'gid://shopify/ProductVariant/1',
-                        initialSeedLineId: null,
-                        initialSeedQuantity: 0,
-                        addAction: vi.fn(),
-                        updateAction: vi.fn(),
                     });
                     expect(container.querySelector('button[data-mode="icon"]')).toBeTruthy();
                 });
 
-                it('renders a quantity stepper when an initial seed line + quantity are provided', () => {
+                it('renders a quantity stepper when a cart line matches the seed variant', () => {
+                    setMocks({
+                        lines: [
+                            {
+                                id: 'line-1',
+                                quantity: 2,
+                                merchandise: { id: 'gid://shopify/ProductVariant/1' },
+                            },
+                        ],
+                    });
                     const { getByRole, container } = wrap({
                         product,
                         mode: 'full',
                         i18n,
                         seedVariantId: 'gid://shopify/ProductVariant/1',
-                        initialSeedLineId: 'line-1',
-                        initialSeedQuantity: 2,
-                        addAction: vi.fn(),
-                        updateAction: vi.fn().mockResolvedValue({ ok: true }),
                     });
                     expect(getByRole('button', { name: /decrease/i })).toBeTruthy();
                     expect(getByRole('button', { name: /increase/i })).toBeTruthy();
                     expect(container.textContent).toContain('2');
                 });
 
-                it('disables the Add-to-cart button when no variant can be resolved', () => {
+                it('disables the Add-to-cart button when cartReady is false', () => {
+                    setMocks({ cartReady: false });
                     const { getByRole } = wrap({
                         product,
                         mode: 'full',
                         i18n,
-                        seedVariantId: '',
-                        initialSeedLineId: null,
-                        initialSeedQuantity: 0,
-                        addAction: vi.fn(),
-                        updateAction: vi.fn(),
+                        seedVariantId: 'gid://shopify/ProductVariant/1',
                     });
                     expect((getByRole('button', { name: /add to cart/i }) as HTMLButtonElement).disabled).toBe(true);
                 });

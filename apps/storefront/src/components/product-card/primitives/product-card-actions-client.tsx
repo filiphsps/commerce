@@ -1,11 +1,10 @@
 'use client';
 
-import { useCart } from '@shopify/hydrogen-react';
 import { Plus as PlusIcon } from 'lucide-react';
-import { useActionState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import type { Product } from '@/api/product';
+import { useCartActions, useCartLines, useCartStatus } from '@/components/cart/provider';
 import { useMaybeProductOptions } from '@/components/product-options/context';
-import type { CartActionResult } from '@/pages/_actions/cart.types';
 import type { LocaleDictionary } from '@/utils/locale';
 import { getTranslations } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
@@ -15,60 +14,20 @@ export type ProductCardActionsClientProps = {
     seedVariantId: string;
     mode: 'full' | 'icon';
     i18n: LocaleDictionary;
-    initialSeedLineId: string | null;
-    initialSeedQuantity: number;
-    addAction: (formData: FormData) => Promise<CartActionResult>;
-    updateAction: (formData: FormData) => Promise<CartActionResult>;
 };
 
-type NarrowedCart = {
-    lines?: ReadonlyArray<{ id?: string; quantity?: number; merchandise?: { id?: string } } | null | undefined>;
-    linesAdd?: (lines: ReadonlyArray<{ merchandiseId: string; quantity: number }>) => void;
-    linesUpdate?: (lines: ReadonlyArray<{ id: string; quantity: number }>) => void;
-};
-
-const ProductCardActionsClient = ({
-    seedVariantId,
-    mode,
-    i18n,
-    initialSeedLineId,
-    initialSeedQuantity,
-    addAction,
-    updateAction,
-}: ProductCardActionsClientProps) => {
+const ProductCardActionsClient = ({ seedVariantId, mode, i18n }: ProductCardActionsClientProps) => {
     const { t } = getTranslations('common', i18n);
     const ctx = useMaybeProductOptions();
     const selectedVariant = ctx?.selectedVariant;
-    const cart = useCart() as unknown as NarrowedCart;
+    const { addLine, updateLine } = useCartActions();
+    const { cartReady } = useCartStatus();
+    const { lines } = useCartLines();
 
     const variantId = selectedVariant?.id ?? seedVariantId;
-    const cartLine = cart.lines?.find((l) => l?.merchandise?.id === variantId);
-    const inCartQuantity = cartLine?.quantity ?? (variantId === seedVariantId ? initialSeedQuantity : 0);
-    const lineId = cartLine?.id ?? (variantId === seedVariantId ? initialSeedLineId : null);
-
-    const [addState, addFormAction, addPending] = useActionState<CartActionResult | null, FormData>(
-        async (_prev, formData) => addAction(formData),
-        null,
-    );
-    const [, updateFormAction, updatePending] = useActionState<CartActionResult | null, FormData>(
-        async (_prev, formData) => updateAction(formData),
-        null,
-    );
-
-    // "Ack and apply": when the server action returns ok we fire the
-    // hydrogen-react client cart mutation. The server action only validates
-    // input and revalidates tags; the canonical client cart still lives in
-    // hydrogen-react's CartProvider. Track the last applied state by identity
-    // so we don't re-fire on unrelated re-renders.
-    const lastAppliedAddRef = useRef<CartActionResult | null>(null);
-    useEffect(() => {
-        if (!addState?.ok) return;
-        if (lastAppliedAddRef.current === addState) return;
-        lastAppliedAddRef.current = addState;
-        if (variantId && cart.linesAdd) {
-            cart.linesAdd([{ merchandiseId: variantId, quantity: 1 }]);
-        }
-    }, [addState, variantId, cart]);
+    const cartLine = variantId ? lines.find((l) => l.merchandise.id === variantId) : undefined;
+    const inCartQuantity = cartLine?.quantity ?? 0;
+    const [pending, setPending] = useState(false);
 
     const baseStyles = cn(
         'overflow-hidden font-semibold transition-colors',
@@ -77,7 +36,7 @@ const ProductCardActionsClient = ({
         '[transition-timing-function:var(--product-card-motion-hover-ease)]',
     );
 
-    if (inCartQuantity > 0 && lineId) {
+    if (inCartQuantity > 0 && cartLine) {
         const stepperStyles = cn(
             baseStyles,
             'flex items-stretch justify-between',
@@ -94,33 +53,39 @@ const ProductCardActionsClient = ({
         const nextIncrement = inCartQuantity + 1;
         return (
             <div data-mode={mode} className={stepperStyles}>
-                <form action={updateFormAction} className="flex">
-                    <input type="hidden" name="lineId" value={lineId} />
-                    <input type="hidden" name="quantity" value={nextDecrement} />
-                    <button
-                        type="submit"
-                        aria-label={t('decrease')}
-                        disabled={updatePending}
-                        className={buttonStyles}
-                        onClick={() => cart.linesUpdate?.([{ id: lineId, quantity: nextDecrement }])}
-                    >
-                        {'−'}
-                    </button>
-                </form>
+                <button
+                    type="button"
+                    aria-label={t('decrease')}
+                    disabled={pending}
+                    className={buttonStyles}
+                    onClick={async () => {
+                        setPending(true);
+                        try {
+                            await updateLine({ lineId: cartLine.id, quantity: nextDecrement });
+                        } finally {
+                            setPending(false);
+                        }
+                    }}
+                >
+                    {'−'}
+                </button>
                 <span className="grid select-none place-items-center px-2 tabular-nums">{inCartQuantity}</span>
-                <form action={updateFormAction} className="flex">
-                    <input type="hidden" name="lineId" value={lineId} />
-                    <input type="hidden" name="quantity" value={nextIncrement} />
-                    <button
-                        type="submit"
-                        aria-label={t('increase')}
-                        disabled={updatePending}
-                        className={buttonStyles}
-                        onClick={() => cart.linesUpdate?.([{ id: lineId, quantity: nextIncrement }])}
-                    >
-                        +
-                    </button>
-                </form>
+                <button
+                    type="button"
+                    aria-label={t('increase')}
+                    disabled={pending}
+                    className={buttonStyles}
+                    onClick={async () => {
+                        setPending(true);
+                        try {
+                            await updateLine({ lineId: cartLine.id, quantity: nextIncrement });
+                        } finally {
+                            setPending(false);
+                        }
+                    }}
+                >
+                    +
+                </button>
             </div>
         );
     }
@@ -144,19 +109,24 @@ const ProductCardActionsClient = ({
     );
 
     return (
-        <form action={addFormAction} className={mode === 'full' ? 'w-full' : undefined}>
-            <input type="hidden" name="variantId" value={variantId ?? ''} />
-            <input type="hidden" name="quantity" value="1" />
-            <button
-                type="submit"
-                disabled={addPending || !variantId}
-                data-mode={mode}
-                aria-label={mode === 'icon' ? t('add-to-cart') : undefined}
-                className={mode === 'full' ? fullStyles : iconStyles}
-            >
-                {mode === 'icon' ? <PlusIcon className="h-4 w-4 stroke-2" /> : t('add-to-cart')}
-            </button>
-        </form>
+        <button
+            type="button"
+            disabled={!cartReady || pending || !variantId}
+            data-mode={mode}
+            aria-label={mode === 'icon' ? t('add-to-cart') : undefined}
+            className={mode === 'full' ? fullStyles : iconStyles}
+            onClick={async () => {
+                if (!variantId) return;
+                setPending(true);
+                try {
+                    await addLine({ variantId, quantity: 1 });
+                } finally {
+                    setPending(false);
+                }
+            }}
+        >
+            {mode === 'icon' ? <PlusIcon className="h-4 w-4 stroke-2" /> : t('add-to-cart')}
+        </button>
     );
 };
 

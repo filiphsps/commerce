@@ -1,7 +1,6 @@
 import 'server-only';
 
 import type { Product, ProductVariant } from '@/api/product';
-import { addToCartAction, updateCartLineQuantityAction } from '@/pages/_actions/cart';
 import type { LocaleDictionary } from '@/utils/locale';
 import ProductCardActionsClient from './product-card-actions-client';
 
@@ -15,18 +14,7 @@ export type ProductCardActionsProps = {
 };
 
 const ProductCardActions = ({ product, seedVariant, mode = 'full', i18n }: ProductCardActionsProps) => {
-    return (
-        <ProductCardActionsClient
-            product={product}
-            seedVariantId={seedVariant.id ?? ''}
-            mode={mode}
-            i18n={i18n}
-            initialSeedLineId={null}
-            initialSeedQuantity={0}
-            addAction={addToCartAction}
-            updateAction={updateCartLineQuantityAction}
-        />
-    );
+    return <ProductCardActionsClient product={product} seedVariantId={seedVariant.id ?? ''} mode={mode} i18n={i18n} />;
 };
 
 ProductCardActions.displayName = 'Nordcom.ProductCard.Actions';
