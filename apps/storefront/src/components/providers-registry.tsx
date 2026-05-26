@@ -3,11 +3,10 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { UnknownCommerceProviderError } from '@nordcom/commerce-errors';
 import { trace } from '@opentelemetry/api';
-import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
+import { ShopifyProvider } from '@shopify/hydrogen-react';
 import { Fragment, type ReactNode, Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Toaster as ToasterProvider } from 'sonner';
-import { CartFragment } from '@/api/shopify/cart';
 import { LiveChatProvider } from '@/components/live-chat-provider';
 import { ShopProvider } from '@/components/shop/provider';
 import { useCartUtils } from '@/hooks/useCartUtils';
@@ -70,42 +69,36 @@ const ProvidersRegistry = ({
         <ErrorBoundary fallbackRender={() => null}>
             <ShopProvider shop={shop} currency={currency} locale={locale}>
                 <CommerceProvider shop={shop} locale={locale}>
-                    <CartProvider
-                        cartFragment={CartFragment}
-                        languageCode={locale.language}
-                        countryCode={locale.country}
-                    >
-                        <ErrorBoundary fallbackRender={() => null}>
-                            <Suspense fallback={<Fragment />}>
-                                <RequiredHooks shop={shop} locale={locale} />
+                    <ErrorBoundary fallbackRender={() => null}>
+                        <Suspense fallback={<Fragment />}>
+                            <RequiredHooks shop={shop} locale={locale} />
+                        </Suspense>
+
+                        {toolbars ? (
+                            <Suspense fallback={children}>
+                                <LiveChatProvider shop={shop} locale={locale}>
+                                    {children}
+                                </LiveChatProvider>
+
+                                <ToasterProvider
+                                    theme="dark"
+                                    position="bottom-left"
+                                    expand={true}
+                                    duration={5000}
+                                    gap={4}
+                                    visibleToasts={2}
+                                    toastOptions={{
+                                        duration: 2500,
+                                        classNames: {
+                                            toast: 'toast-notification',
+                                        },
+                                    }}
+                                />
                             </Suspense>
-
-                            {toolbars ? (
-                                <Suspense fallback={children}>
-                                    <LiveChatProvider shop={shop} locale={locale}>
-                                        {children}
-                                    </LiveChatProvider>
-
-                                    <ToasterProvider
-                                        theme="dark"
-                                        position="bottom-left"
-                                        expand={true}
-                                        duration={5000}
-                                        gap={4}
-                                        visibleToasts={2}
-                                        toastOptions={{
-                                            duration: 2500,
-                                            classNames: {
-                                                toast: 'toast-notification',
-                                            },
-                                        }}
-                                    />
-                                </Suspense>
-                            ) : (
-                                children
-                            )}
-                        </ErrorBoundary>
-                    </CartProvider>
+                        ) : (
+                            children
+                        )}
+                    </ErrorBoundary>
                 </CommerceProvider>
             </ShopProvider>
         </ErrorBoundary>

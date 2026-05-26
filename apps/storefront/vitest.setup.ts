@@ -61,9 +61,6 @@ vi.mock('@shopify/hydrogen-react', async () => ({
         getStorefrontApiUrl: () => '',
         getPublicTokenHeaders: () => ({}),
     }),
-    useCart: vi.fn().mockReturnValue({
-        status: 'idle',
-    }),
     useShop: vi.fn().mockReturnValue({}),
     useShopifyCookies: vi.fn().mockReturnValue({}),
 }));
