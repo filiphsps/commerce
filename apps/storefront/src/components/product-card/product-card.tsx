@@ -35,11 +35,15 @@ const ProductCard = ({
         return null;
     }
 
-    const variant = resolveVariant(layout, chrome);
+    // Bridge the orchestrator's legacy {layout: vertical|horizontal|micro, chrome: boxed|bare}
+    // surface to the new chassis {layout: vertical|horizontal, chrome: boxed|frameless}.
+    // Phase 5 wrappers will pass the new shape directly; this translation goes away then.
+    const rootLayout = layout === 'micro' ? 'vertical' : layout;
+    const rootChrome = chrome === 'bare' ? 'frameless' : 'boxed';
 
     return (
         <Suspense key={`product-card.${product.handle}`} fallback={<Fragment />}>
-            <ProductCardRoot data={product} variant={variant} className={className}>
+            <ProductCardRoot data={product} layout={rootLayout} chrome={rootChrome} className={className}>
                 {children}
             </ProductCardRoot>
         </Suspense>

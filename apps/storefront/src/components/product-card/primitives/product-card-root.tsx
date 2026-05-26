@@ -1,57 +1,44 @@
 import type { ReactNode } from 'react';
 import type { Product } from '@/api/product';
-import * as ProductOptions from '@/components/product-options';
-import { toSelectionRecord } from '@/components/product-options/resolver';
-import { firstAvailableVariant } from '@/utils/first-available-variant';
+import { Card } from '@/components/layout/card';
 import { cn } from '@/utils/tailwind';
-import styles from '../product-card.module.css';
+
+export type ProductCardLayout = 'vertical' | 'horizontal';
+export type ProductCardChrome = 'boxed' | 'frameless';
 
 export type ProductCardRootProps = {
     data: Product;
-    variant: string;
+    layout: ProductCardLayout;
+    chrome: ProductCardChrome;
     className?: string;
     children: ReactNode;
 };
 
-const ProductCardRoot = ({ data, variant, className, children }: ProductCardRootProps) => {
-    const seed = firstAvailableVariant(data) ?? data.variants?.edges?.[0]?.node;
-    const seedSelection = toSelectionRecord(seed);
-
-    const isBare = variant.endsWith('-bare');
-    const isHorizontal = variant.startsWith('horizontal');
-    const isMicro = variant === 'micro';
-
-    const containerStyles = cn(
-        styles.productCardRoot,
-        'group/card relative flex w-full snap-center snap-always overflow-hidden transition-shadow',
-        'duration-(--product-card-motion-hover-duration)',
-        'ease-(--product-card-motion-hover-ease)',
-        !isBare && [
-            'bg-(--product-card-bg)',
-            'border-(length:--product-card-border-width) border-solid border-(color:var(--product-card-border-color))',
-            'rounded-(--product-card-radius)',
-            'shadow-product-card hover:shadow-product-card-hover',
-            'p-(--product-card-padding)',
-        ],
-        !isHorizontal && !isMicro && 'min-h-72 flex-col gap-(--product-card-gap)',
-        isHorizontal && 'flex-row items-stretch gap-3',
-        isMicro && 'flex-row items-center gap-2 p-(--product-card-padding)',
-        !data.availableForSale && 'opacity-50',
-        className,
-    );
+const ProductCardRoot = ({ data, layout, chrome, className, children }: ProductCardRootProps) => {
+    const isOos = data.availableForSale === false;
 
     return (
-        <article
+        <Card
+            as="article"
+            chrome={chrome}
             data-testid="product-card-root"
-            data-variant={variant}
-            data-layout={isMicro ? 'micro' : isHorizontal ? 'horizontal' : 'vertical'}
-            data-chrome={isBare ? 'bare' : 'boxed'}
-            className={containerStyles}
+            data-layout={layout}
+            data-chrome={chrome}
+            {...(isOos ? { 'data-availability': 'out-of-stock' } : {})}
+            className={cn(
+                'group/card relative flex w-full',
+                'min-w-(--product-card-min-width) max-w-(--product-card-max-width)',
+                'gap-(--block-spacer)',
+                'transition-shadow duration-(--product-card-motion-base) ease-(--product-card-motion-ease)',
+                chrome === 'boxed' && 'shadow-product-card hover:shadow-product-card-hover focus-within:shadow-product-card-hover',
+                layout === 'vertical' && 'flex-col min-h-72',
+                layout === 'horizontal' && 'flex-row items-stretch',
+                isOos && 'opacity-(--product-card-oos-opacity)',
+                className,
+            )}
         >
-            <ProductOptions.Root product={data} initialSelection={seedSelection}>
-                {children}
-            </ProductOptions.Root>
-        </article>
+            {children}
+        </Card>
     );
 };
 

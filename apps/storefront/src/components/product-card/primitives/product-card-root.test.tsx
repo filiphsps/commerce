@@ -1,51 +1,47 @@
+import { render } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { productSimple } from '@/components/product-card/__fixtures__';
-import ProductCardRoot from '@/components/product-card/primitives/product-card-root';
-import { render, screen } from '@/utils/test/react';
+import ProductCardRoot from './product-card-root';
 
-describe('components', () => {
-    describe('product-card', () => {
-        describe('primitives', () => {
-            describe('ProductCardRoot', () => {
-                it('renders children inside a tokenized chrome container with data-variant', () => {
-                    const product = productSimple();
-                    render(
-                        <ProductCardRoot data={product} variant="vertical-boxed">
-                            <div data-testid="child">hi</div>
-                        </ProductCardRoot>,
-                    );
-                    const root = screen.getByTestId('product-card-root');
-                    expect(root.getAttribute('data-variant')).toBe('vertical-boxed');
-                    expect(root.tagName).toBe('ARTICLE');
-                    expect(root.getAttribute('data-layout')).toBe('vertical');
-                    expect(root.getAttribute('data-chrome')).toBe('boxed');
-                    expect(screen.getByTestId('child')).toBeInTheDocument();
-                });
+// Loose-shape product fixture; cast at the component boundary so the test body
+// can spread/mutate without TypeScript narrowing it to `never`.
+const product = {
+    handle: 'tee',
+    availableForSale: true,
+    variants: { edges: [{ node: { id: 'v1', availableForSale: true, selectedOptions: [{ name: 'Size', value: 'M' }] } }] },
+};
 
-                it('exposes layout + chrome data attributes for horizontal-bare', () => {
-                    const product = productSimple();
-                    render(
-                        <ProductCardRoot data={product} variant="horizontal-bare">
-                            <div />
-                        </ProductCardRoot>,
-                    );
-                    const root = screen.getByTestId('product-card-root');
-                    expect(root.getAttribute('data-variant')).toBe('horizontal-bare');
-                    expect(root.getAttribute('data-layout')).toBe('horizontal');
-                    expect(root.getAttribute('data-chrome')).toBe('bare');
-                });
+describe('ProductCardRoot', () => {
+    it('renders vertical-boxed chassis by default', () => {
+        const { container } = render(
+            <ProductCardRoot data={product as never} layout="vertical" chrome="boxed">
+                <div data-testid="content" />
+            </ProductCardRoot>,
+        );
+        const article = container.querySelector('article') as HTMLElement;
+        expect(article).toBeTruthy();
+        expect(article.dataset.layout).toBe('vertical');
+        expect(article.dataset.chrome).toBe('boxed');
+        expect(article.dataset.availability).toBeUndefined();
+    });
 
-                it('exposes layout=micro for micro variant', () => {
-                    const product = productSimple();
-                    render(
-                        <ProductCardRoot data={product} variant="micro">
-                            <div />
-                        </ProductCardRoot>,
-                    );
-                    const root = screen.getByTestId('product-card-root');
-                    expect(root.getAttribute('data-layout')).toBe('micro');
-                });
-            });
-        });
+    it('marks data-availability="out-of-stock" when product has no buyable variants', () => {
+        const oos = { ...product, availableForSale: false };
+        const { container } = render(
+            <ProductCardRoot data={oos as never} layout="vertical" chrome="boxed">
+                <div />
+            </ProductCardRoot>,
+        );
+        const article = container.querySelector('article') as HTMLElement;
+        expect(article.dataset.availability).toBe('out-of-stock');
+    });
+
+    it('horizontal layout sets data-layout', () => {
+        const { container } = render(
+            <ProductCardRoot data={product as never} layout="horizontal" chrome="boxed">
+                <div />
+            </ProductCardRoot>,
+        );
+        const article = container.querySelector('article') as HTMLElement;
+        expect(article.dataset.layout).toBe('horizontal');
     });
 });
