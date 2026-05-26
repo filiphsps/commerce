@@ -6,12 +6,12 @@ on:
         branches:
             - master
             - staging
-            - 'dev/*'
-            - 'fix/*'
+            - "dev/*"
+            - "fix/*"
         paths-ignore:
-            - '**.md'
-            - '**.txt'
-            - 'LICENSE'
+            - "**.md"
+            - "**.txt"
+            - "LICENSE"
 
 concurrency:
     group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -25,17 +25,17 @@ env:
     TURBO_REMOTE_CACHE_TIMEOUT: 120
     SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY }}
     SHOPIFY_API_SECRET_KEY: ${{ secrets.SHOPIFY_API_SECRET_KEY }}
-    AUTH_SECRET: 'development-secret'
-    AUTH_TRUST_HOST: 'true'
+    AUTH_SECRET: "development-secret"
+    AUTH_TRUST_HOST: "true"
     EDGE_CONFIG: ${{ secrets.EDGE_CONFIG }}
     ADMIN_DOMAIN: ${{ vars.ADMIN_DOMAIN }}
     SERVICE_DOMAIN: ${{ vars.SERVICE_DOMAIN }}
     LANDING_DOMAIN: ${{ vars.LANDING_DOMAIN }}
     PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
-    STOREFRONT_PREVIEW_SECRET: 'development-secret'
-    VERCEL_AUTOMATION_BYPASS_SECRET: 'development-secret'
-    NEXT_PUBLIC_DOCS_BASE_PATH: /commerce
-    NEXT_PUBLIC_DOCS_CANONICAL_URL: https://filiphsps.github.io/commerce
+    STOREFRONT_PREVIEW_SECRET: "development-secret"
+    VERCEL_AUTOMATION_BYPASS_SECRET: "development-secret"
+    NEXT_PUBLIC_DOCS_BASE_PATH: "/commerce"
+    NEXT_PUBLIC_DOCS_CANONICAL_URL: "https://filiphsps.github.io/commerce"
 
 jobs:
     lint:
@@ -50,7 +50,7 @@ jobs:
               id: bootstrap
               uses: ./.github/common/bootstrap
               with:
-                  turbo-cache: 'false'
+                  turbo-cache: "false"
 
             - name: 📋 Lint
               run: pnpm run lint
@@ -212,7 +212,7 @@ jobs:
               id: bootstrap
               uses: ./.github/common/bootstrap
               with:
-                  turbo-cache: 'false'
+                  turbo-cache: "false"
 
             - name: 📥 Download app builds
               uses: actions/download-artifact@v6
