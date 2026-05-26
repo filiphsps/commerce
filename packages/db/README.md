@@ -30,7 +30,7 @@ emitted `dist/`, not the source.
 import { Shop, User } from '@nordcom/commerce-db';
 
 // Find a tenant by its public hostname (used in the storefront middleware).
-const shop = await Shop.findByDomain('swedish-candy-store.com');
+const shop = await Shop.findByDomain('nordcom-demo-shop.com');
 
 // Lookup a user by id.
 const user = await User.find({ id: someId });

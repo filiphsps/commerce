@@ -9,15 +9,15 @@ describe('syncShopToTenant', () => {
         const payload = { find, create, update } as never;
         await syncShopToTenant(payload, {
             id: 'shop_abc',
-            name: 'Swedish Candy Store',
-            domain: 'swedish-candy-store.com',
+            name: 'Nordcom Demo Shop',
+            domain: 'nordcom-demo-shop.com',
             i18n: { defaultLocale: 'sv', locales: ['sv', 'en-US'] },
         });
         expect(create).toHaveBeenCalledWith({
             collection: 'tenants',
             data: expect.objectContaining({
                 shopId: 'shop_abc',
-                name: 'Swedish Candy Store',
+                name: 'Nordcom Demo Shop',
                 // Slug now mirrors shop.id directly — domain-derived slugs
                 // collided across casing/punctuation variants and the unique
                 // index then rejected the second shop's save silently.
@@ -80,8 +80,8 @@ describe('syncShopToTenant', () => {
         const payload = { find, create, update } as never;
         const shop = {
             id: 'shop_abc',
-            name: 'Swedish Candy Store',
-            domain: 'swedish-candy-store.com',
+            name: 'Nordcom Demo Shop',
+            domain: 'nordcom-demo-shop.com',
             i18n: { defaultLocale: 'en-US', locales: ['en-US'] },
         };
         await syncShopToTenant(payload, shop);

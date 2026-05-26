@@ -107,7 +107,7 @@ describe('utils', () => {
             commerceProvider: {
                 type: 'shopify' as const,
                 id: 'shopid',
-                domain: 'checkout.swedish-candy-store.com',
+                domain: 'checkout.nordcom-demo-shop.com',
                 storefrontId: 'Storefront Id',
                 authentication: {
                     token: null,
@@ -168,7 +168,7 @@ describe('utils', () => {
 
             await Checkout({ shop, locale, cart: cartWithMyshopify, trackable });
             expect(window.location.href).not.toContain('myshopify.com');
-            expect(window.location.href).toContain('checkout.swedish-candy-store.com');
+            expect(window.location.href).toContain('checkout.nordcom-demo-shop.com');
         });
 
         it(`should track the begin_checkout event in Google Analytics`, async () => {

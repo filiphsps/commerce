@@ -13,7 +13,7 @@ import { cn } from '@/utils/tailwind';
 
 // Header-link styles ported from the pre-Prismic-removal storefront so
 // nav items, triggers, and panel tiles share the original Nordcom
-// "swedish-candy-store" look.
+// "nordcom-demo-shop" look.
 export const HEADER_LINK_STYLES =
     'group/menu-item flex h-full cursor-pointer select-none flex-nowrap items-center justify-center text-nowrap border-0 border-b-2 border-t-2 border-transparent border-solid bg-transparent my-4 font-medium leading-none transition-all md:my-3';
 export const HEADER_LINK_BUBBLE_STYLES =
@@ -190,7 +190,7 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
 
     // Anchor the panel to the trigger's vertical position but span the
     // full viewport width — the inner card is clamped to `--page-width`
-    // and centered. This mirrors the old swedish-candy-store mega-menu
+    // and centered. This mirrors the old nordcom-demo-shop mega-menu
     // (single full-width dropdown beneath the nav) and keeps the panel
     // from ever overflowing the viewport horizontally on mobile.
     const panel =

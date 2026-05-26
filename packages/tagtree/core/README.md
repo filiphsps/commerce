@@ -58,7 +58,7 @@ const shopCache = defineCache({
 const cache = createCacheInstance(shopCache, memoryAdapter());
 
 // 3. Wrap a fetch
-const shop: OnlineShop = { id: 'gid://shopify/Shop/1', domain: 'swedish-candy-store.com' };
+const shop: OnlineShop = { id: 'gid://shopify/Shop/1', domain: 'nordcom-demo-shop.com' };
 const locale: Locale = { code: 'en-US' };
 
 const product = await cache.wrap(

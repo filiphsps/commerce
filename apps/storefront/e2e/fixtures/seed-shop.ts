@@ -12,7 +12,7 @@
 
 import mongoose, { Schema } from 'mongoose';
 
-const TEST_DOMAIN = 'swedish-candy-store.com';
+const TEST_DOMAIN = 'nordcom-demo-shop.com';
 
 const ShopSchema = new Schema(
     {
@@ -79,13 +79,13 @@ export default async function globalSetup(): Promise<void> {
         }
 
         await ShopModel.create({
-            name: 'Swedish Candy Store (test)',
+            name: 'Nordcom Demo Shop (test)',
             domain: TEST_DOMAIN,
             alternativeDomains: [],
             i18n: { defaultLocale: 'en-US' },
             design: {
                 header: {
-                    logo: { width: 512, height: 512, src: '/logo.png', alt: 'Swedish Candy Store' },
+                    logo: { width: 512, height: 512, src: '/logo.png', alt: 'Nordcom Demo Shop' },
                 },
                 accents: [],
             },

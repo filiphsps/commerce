@@ -55,7 +55,7 @@ Required environment variables (see [`.env.example`](../../.env.example) at the 
     page from `src/app/[domain]/[locale]/…`.
 4.  On `NotFoundError`, the middleware rewrites to `SERVICE_DOMAIN/status/unknown-shop/`.
     Other commerce errors → `/status/unknown-error/`.
-5.  Unknown hosts in dev/preview fall back to `swedish-candy-store.com` so contributors
+5.  Unknown hosts in dev/preview fall back to `nordcom-demo-shop.com` so contributors
     can boot without seeding their own tenant.
 
 > When adding routes, place them under `src/app/[domain]/[locale]/…` — **not** at the

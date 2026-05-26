@@ -36,7 +36,7 @@ import { getHostname, storefront } from '@/middleware/storefront';
 // ---------------------------------------------------------------------------
 const MOCK_SHOP = {
     id: 'mock-shop-id',
-    domain: 'swedish-candy-store.com',
+    domain: 'nordcom-demo-shop.com',
     commerceProvider: {
         type: 'shopify' as const,
         domain: 'mock.myshopify.com',
@@ -245,12 +245,12 @@ describe('storefront middleware — happy path rewrite', () => {
 
     it('rewrites a resolved request to include the shop domain in the target path', async () => {
         // Request arrives at /en-US/ — the middleware should rewrite to
-        // /<origin>/swedish-candy-store.com/en-US/homepage/ internally.
-        const req = makeRequest('swedish-candy-store.com', '/en-US/');
+        // /<origin>/nordcom-demo-shop.com/en-US/homepage/ internally.
+        const req = makeRequest('nordcom-demo-shop.com', '/en-US/');
         const res = await storefront(req);
 
         const rewriteTarget = res.headers.get('x-middleware-rewrite');
         expect(rewriteTarget).toBeTruthy();
-        expect(rewriteTarget).toContain('swedish-candy-store.com');
+        expect(rewriteTarget).toContain('nordcom-demo-shop.com');
     });
 });

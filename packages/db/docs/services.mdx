@@ -34,7 +34,7 @@ Per-service helpers extend this with domain-specific lookups (e.g.
 ```ts
 import { Shop, User } from '@nordcom/commerce-db';
 
-const shop = await Shop.findByDomain('swedish-candy-store.com');
+const shop = await Shop.findByDomain('nordcom-demo-shop.com');
 const user = await User.find({ id: someId });
 const shops = await Shop.findByCollaborator({ collaboratorId: user.id });
 ```
