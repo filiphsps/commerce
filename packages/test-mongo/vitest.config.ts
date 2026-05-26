@@ -5,6 +5,18 @@ export default defineConfig({
     resolve: {
         alias: [{ find: '@', replacement: path.resolve(__dirname, './src') }],
     },
+    // `server-only` ships a conditional `react-server` export that points at
+    // an empty no-op (`empty.js`); the default export throws on import. The
+    // seed helpers pull in `@nordcom/commerce-db`'s `src/db.ts`
+    // (`import 'server-only'`) for the real `ShopSchema`, so opt into the
+    // `react-server` condition during SSR resolution to mirror what Next.js
+    // / RSC bundles do at build time. Per Vitest 4 docs the node environment
+    // uses `ssr.resolve.conditions`, not `resolve.conditions`.
+    ssr: {
+        resolve: {
+            conditions: ['react-server', 'node', 'import', 'module', 'default'],
+        },
+    },
     test: {
         deps: {
             optimizer: { client: { enabled: true }, ssr: { enabled: true } },
