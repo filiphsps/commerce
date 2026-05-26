@@ -64,12 +64,7 @@ describe('GET /.well-known/vercel/flags', () => {
         const body = (await res.json()) as { definitions?: Record<string, unknown> };
         const keys = Object.keys(body.definitions ?? {});
         expect(keys).toEqual(
-            expect.arrayContaining([
-                'search-filter',
-                'product-page-info-lines',
-                'products-page',
-                'accounts-functionality',
-            ]),
+            expect.arrayContaining(['search-filter', 'product-page-info-lines', 'accounts-functionality']),
         );
         expect(keys).not.toContain('header-search-bar');
     });

@@ -9,7 +9,6 @@ import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skel
 import PageContent from '@/components/page-content';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
-import { productsPage } from '@/utils/flags/definitions';
 import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import ProductsContent from './products-content';
 
@@ -114,13 +113,8 @@ async function ProductsDynamic({
     params: ProductsPageParams;
     searchParams: SearchParams;
 }) {
-    const productsPageEnabled = await productsPage();
     const [{ domain, locale: localeData }, searchParams] = await Promise.all([params, queryParams]);
     const locale = Locale.from(localeData);
-
-    if (!productsPageEnabled) {
-        redirect(`/${locale.code}/`, RedirectType.replace);
-    }
 
     if (searchParams.page === '1') {
         const urlParams = new URLSearchParams(searchParams);
