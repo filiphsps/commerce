@@ -17,6 +17,7 @@ import ProductCardTitle from '@/components/product-card/primitives/product-card-
 import { getDictionary } from '@/utils/dictionary';
 import { firstAvailableVariant } from '@/utils/first-available-variant';
 import type { Locale } from '@/utils/locale';
+import { isVariantOnSale } from '@/utils/sale-percent';
 
 /**
  * Slim view of a Product passed to the client provider. Drops prose
@@ -86,10 +87,21 @@ export default async function ProductCard({
 
     const variantCount = data.variants?.edges?.length ?? 0;
     const isSingleBuyable = variantCount === 1 && seedVariant.availableForSale === true;
+    const onSale = isVariantOnSale(seedVariant);
 
     return (
-        <ProductCardOptionsProvider product={slim as Product} seedVariantId={seedVariant.id} isSingleBuyable={isSingleBuyable}>
-            <ProductCardRoot data={slim as Product} layout={layout} chrome={chrome} className={className}>
+        <ProductCardOptionsProvider
+            product={slim as Product}
+            seedVariantId={seedVariant.id}
+            isSingleBuyable={isSingleBuyable}
+        >
+            <ProductCardRoot
+                data={slim as Product}
+                layout={layout}
+                chrome={chrome}
+                onSale={onSale}
+                className={className}
+            >
                 <div className="relative">
                     <ProductCardImage
                         product={data}
@@ -102,7 +114,7 @@ export default async function ProductCard({
                 </div>
                 <div className="flex flex-col gap-1 pt-1">
                     {shop.showProductVendor && data.vendor ? (
-                        <span className="text-xs font-semibold uppercase leading-none tracking-(--product-card-eyebrow-tracking) text-(--product-card-vendor-color)">
+                        <span className="font-semibold text-(--product-card-vendor-color) text-xs uppercase leading-none tracking-(--product-card-eyebrow-tracking)">
                             {data.vendor}
                         </span>
                     ) : null}
@@ -135,7 +147,7 @@ ProductCard.skeleton = ({
         data-skeleton
         data-layout={layout}
         data-chrome={chrome}
-        className="relative flex min-h-72 w-full snap-center snap-always min-w-(--product-card-min-width) max-w-(--product-card-max-width)"
+        className="relative flex min-h-72 w-full min-w-(--product-card-min-width) max-w-(--product-card-max-width) snap-center snap-always"
     />
 );
 

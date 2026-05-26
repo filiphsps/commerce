@@ -1,5 +1,6 @@
 import type { ProductVariant } from '@/api/product';
 import type { Locale } from '@/utils/locale';
+import { isVariantOnSale } from '@/utils/sale-percent';
 import { cn } from '@/utils/tailwind';
 
 export type ProductCardPriceProps = {
@@ -11,7 +12,7 @@ export type ProductCardPriceProps = {
 const ProductCardPrice = ({ seedVariant, locale, className }: ProductCardPriceProps) => {
     const current = seedVariant.price;
     const compare = seedVariant.compareAtPrice;
-    const onSale = !!compare && Number(compare.amount) > Number(current.amount);
+    const onSale = isVariantOnSale(seedVariant);
 
     const fmt = new Intl.NumberFormat(locale.code, {
         style: 'currency',

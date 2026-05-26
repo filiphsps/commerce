@@ -10,11 +10,12 @@ export type ProductCardRootProps = {
     data: Product;
     layout: ProductCardLayout;
     chrome: ProductCardChrome;
+    onSale?: boolean;
     className?: string;
     children: ReactNode;
 };
 
-const ProductCardRoot = ({ data, layout, chrome, className, children }: ProductCardRootProps) => {
+const ProductCardRoot = ({ data, layout, chrome, onSale, className, children }: ProductCardRootProps) => {
     const isOos = data.availableForSale === false;
 
     return (
@@ -25,6 +26,7 @@ const ProductCardRoot = ({ data, layout, chrome, className, children }: ProductC
             data-layout={layout}
             data-chrome={chrome}
             {...(isOos ? { 'data-availability': 'out-of-stock' } : {})}
+            {...(onSale ? { 'data-on-sale': '' } : {})}
             className={cn(
                 'group/card relative flex w-full',
                 'min-w-(--product-card-min-width) max-w-(--product-card-max-width)',
