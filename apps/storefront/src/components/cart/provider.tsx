@@ -121,9 +121,13 @@ export const NordcomCartProvider = ({ children }: { children: ReactNode }) => {
     const setInitialCart = useCallback((next: Cart | null) => {
         if (seededRef.current) return;
         seededRef.current = true;
-        setCartState(next);
-        setCartReady(true);
-        setStatus('idle');
+        // Defer the seed via a transition so streamed Suspense boundaries
+        // hydrate against the SSR-matching unready state before cartReady flips.
+        startTransition(() => {
+            setCartState(next);
+            setCartReady(true);
+            setStatus('idle');
+        });
     }, []);
 
     const replaceCart = useCallback((next: Cart) => {

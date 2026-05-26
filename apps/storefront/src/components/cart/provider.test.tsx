@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { act, render } from '@/utils/test/react';
@@ -99,6 +100,38 @@ describe('NordcomCartProvider', () => {
         await act(async () => internal!.setInitialCart(fakeCart({ totalQuantity: 99 })));
         const final = values.at(-1);
         expect(final![0]).toBe(3);
+    });
+
+    it('first paint shows cartReady=false even when a sibling effect calls setInitialCart (regression)', async () => {
+        // Hydration safety: consumers must paint at least once with cartReady=false
+        // before observing the seeded cart, or SSR/client diverge.
+        const readyLog: boolean[] = [];
+
+        const Probe = () => {
+            const { cart, cartReady } = useCart();
+            readyLog.push(cartReady && cart != null);
+            return null;
+        };
+
+        const Seeder = () => {
+            const { setInitialCart } = useNordcomCartInternal();
+            useEffect(() => {
+                setInitialCart(fakeCart({ totalQuantity: 2 }));
+            }, [setInitialCart]);
+            return null;
+        };
+
+        await act(async () => {
+            render(
+                <NordcomCartProvider>
+                    <Probe />
+                    <Seeder />
+                </NordcomCartProvider>,
+            );
+        });
+
+        expect(readyLog[0]).toBe(false);
+        expect(readyLog.at(-1)).toBe(true);
     });
 
     it('addLine: server success replaces canonical state', async () => {
