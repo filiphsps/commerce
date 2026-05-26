@@ -1,0 +1,71 @@
+{
+    "$schema": "https://raw.githubusercontent.com/fallow-rs/fallow/main/schema.json",
+    "entry": [
+        "scripts/**/*.ts",
+        "apps/*/next.config.{ts,mjs,js}",
+        "apps/*/next.config.*.{ts,mjs,js}",
+        "apps/*/playwright.config.{ts,mjs,js}",
+        "apps/*/vitest.config.{ts,mjs,js}",
+        "apps/*/vitest.setup.{ts,tsx,js,mjs}",
+        "apps/*/adapter.{ts,mjs,js}",
+        "apps/*/{src/,}instrumentation.{ts,tsx}",
+        "apps/*/{src/,}instrumentation-*.{ts,tsx}",
+        "apps/*/{src/,}middleware.{ts,tsx}",
+        "apps/*/{src/,}app/**/{page,layout,loading,error,not-found,template,default,route,opengraph-image,twitter-image,icon,apple-icon,sitemap,robots,manifest}.{ts,tsx,js,jsx}",
+        "apps/*/e2e/**/*.{ts,tsx,js,mjs}",
+        "packages/*/vitest.config.{ts,mjs,js}",
+        "packages/*/vite.config.{ts,mjs,js}",
+        "packages/*/vitest.setup.{ts,tsx,js,mjs}",
+        "packages/*/tsup.config.{ts,mjs,js}",
+        "packages/*/scripts/**/*.{ts,tsx,js,mjs,cjs}"
+    ],
+    "ignorePatterns": [
+        "**/dist/**",
+        "**/.next/**",
+        "**/.turbo/**",
+        "**/.docusaurus/**",
+        "**/.typedoc-out/**",
+        "**/coverage/**",
+        "**/__generated__/**",
+        "**/generated/**",
+        "**/*.generated.{ts,tsx,js,jsx}",
+        "**/*.gen.{ts,tsx,js,jsx}",
+        "next-env.d.ts",
+        "apps/docs/api/**",
+        "apps/*/docs/api/**",
+        "packages/*/docs/api/**",
+        "packages/tagtree",
+        "apps/*/docs/**",
+        "apps/*/e2e/fixtures/**",
+        "packages/*/docs/**"
+    ],
+    "ignoreDependencies": [
+        "@nordcom/*",
+        "@svgr/plugin-jsx",
+        "babel-plugin-react-compiler",
+        "critters",
+        "serve",
+        "svgson"
+    ],
+    "rules": {
+        "unused-files": "warn",
+        "unused-exports": "off",
+        "unused-types": "warn",
+        "unused-dependencies": "warn",
+        "unused-dev-dependencies": "warn",
+        "unused-class-members": "warn",
+        "unused-enum-members": "warn"
+    },
+    "duplicates": {
+        "minOccurrences": 3
+    },
+    "audit": {
+        "gate": "new-only"
+    },
+    "ignoreExports": [
+        {
+            "file": "*",
+            "exports": ["*"]
+        }
+    ]
+}

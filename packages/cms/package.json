@@ -109,14 +109,12 @@
     "dependencies": {
         "@nordcom/commerce-db": "workspace:*",
         "@nordcom/commerce-errors": "workspace:*",
-        "@panva/hkdf": "1.2.1",
+        "tailwind-merge": "3.6.0",
         "@tagtree/core": "workspace:*",
         "@tagtree/next": "workspace:*",
         "@tagtree/payload": "workspace:*",
         "clsx": "2.1.1",
-        "jose": "5.9.0",
-        "server-only": "0.0.1",
-        "tailwind-merge": "3.6.0"
+        "server-only": "0.0.1"
     },
     "peerDependencies": {
         "@faceless-ui/modal": "3.0.0",
