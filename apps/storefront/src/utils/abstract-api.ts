@@ -149,6 +149,12 @@ export const ApiBuilder: AbstractShopifyApolloApiBuilder<TypedDocumentNode<unkno
                 context: {
                     fetchOptions: {
                         cache: 'no-store',
+                        // Override the Apollo HttpLink default
+                        // `next: { revalidate: 28800 }` — without this, the
+                        // per-request `cache: 'no-store'` and the link-level
+                        // `revalidate` both reach Next.js fetch and trip its
+                        // "only one should be specified" warning.
+                        next: {},
                     },
                 },
                 variables: {

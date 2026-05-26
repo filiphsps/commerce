@@ -27,6 +27,25 @@ const Overlay = ({ groupName }: OverlayProps) => {
 
     if (!group) return null;
 
+    // SSR / first client render: viewport unknown — render a plain trigger
+    // that matches both branches' HTML shape. Mounting Radix's Dialog or
+    // Popover before we know the viewport would hydrate one and tear it
+    // down on the next render, churning Radix's `aria-controls` / `data-state`.
+    if (isDesktop === null) {
+        return (
+            <button
+                type="button"
+                data-option-more
+                aria-haspopup="dialog"
+                aria-label={`Show all ${groupName} options`}
+                className="product-options-more text-(length:--product-card-more-size) text-(color:var(--product-card-more-color)) inline-flex min-h-(--product-card-more-min-size) min-w-(--product-card-more-min-size) cursor-pointer select-none items-center justify-center rounded-full bg-(--product-card-more-bg) px-2 font-(--product-card-more-weight) transition-[background-color,transform] hover:bg-[color-mix(in_srgb,var(--product-card-more-bg)_96%,black_4%)] focus-visible:outline-none motion-safe:active:scale-[0.97] motion-safe:hover:scale-[1.03] focus-visible:[outline:2px_solid_var(--accent)]"
+                style={{ touchAction: 'manipulation', userSelect: 'none' }}
+            >
+                +{Math.max(0, group.values.length - 4)}
+            </button>
+        );
+    }
+
     if (isDesktop) {
         return (
             <Popover.Root open={open} onOpenChange={setOpen}>

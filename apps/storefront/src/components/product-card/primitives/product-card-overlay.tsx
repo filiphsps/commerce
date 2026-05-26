@@ -73,7 +73,7 @@ const ProductCardOverlay = ({ open, onOpenChange, label, anchorRef, children, cl
                     'max-h-(--product-card-overlay-max-height) w-(--product-card-overlay-width)',
                     'border-(length:--product-card-overlay-border-width) border-(color:var(--product-card-overlay-border-color)) border-solid',
                     'rounded-(--product-card-overlay-radius) bg-(--product-card-overlay-bg) p-(--product-card-overlay-padding)',
-                    'shadow-(--product-card-overlay-shadow)',
+                    'shadow-product-card-overlay',
                     'motion-safe:animate-[product-card-overlay-in_var(--product-card-motion-overlay-in-duration)_var(--product-card-motion-overlay-in-ease)]',
                     className,
                 )}
@@ -107,7 +107,7 @@ const ProductCardOverlay = ({ open, onOpenChange, label, anchorRef, children, cl
                 'fixed inset-x-0 bottom-0 z-50 flex flex-col gap-2',
                 'rounded-t-(--product-card-overlay-radius) bg-(--product-card-overlay-bg)',
                 'p-(--product-card-overlay-padding) pb-[max(var(--product-card-overlay-padding),env(safe-area-inset-bottom))]',
-                'shadow-(--product-card-overlay-shadow)',
+                'shadow-product-card-overlay',
                 'max-h-[80vh] overflow-y-auto',
                 'motion-safe:animate-[product-card-sheet-in_220ms_cubic-bezier(0.32,0.72,0,1)]',
                 className,

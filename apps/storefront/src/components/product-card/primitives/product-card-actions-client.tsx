@@ -42,8 +42,8 @@ const ProductCardActionsClient = ({ seedVariantId, mode, i18n }: ProductCardActi
     const baseStyles = cn(
         'overflow-hidden font-semibold transition-colors',
         'rounded-(--product-card-cta-radius)',
-        '[transition-duration:var(--product-card-motion-hover-duration)]',
-        '[transition-timing-function:var(--product-card-motion-hover-ease)]',
+        'duration-(--product-card-motion-hover-duration)',
+        'ease-(--product-card-motion-hover-ease)',
     );
 
     if (inCartQuantity > 0 && cartLine) {

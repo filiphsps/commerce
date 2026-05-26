@@ -19,6 +19,7 @@ async function Content({ shop, locale, handle }: { shop: OnlineShop; locale: Loc
         api,
         handle,
         fragment: /* GraphQL */ `
+            id
             handle
 
             descriptionHtml
