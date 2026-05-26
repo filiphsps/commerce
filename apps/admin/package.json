@@ -19,7 +19,7 @@
         "format:format": "biome format --write .",
         "format:check": "biome check --write --unsafe .",
         "test:e2e": "playwright test",
-        "typecheck": "tsc -noEmit",
+        "typecheck": "next typegen && tsc -noEmit",
         "analyze": "next experimental-analyze"
     },
     "author": {

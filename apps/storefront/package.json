@@ -18,7 +18,7 @@
         "format:lint": "biome lint --write .",
         "format:format": "biome format --write .",
         "format:check": "biome check --write --unsafe .",
-        "typecheck": "tsc -noEmit",
+        "typecheck": "next typegen && tsc -noEmit",
         "test:e2e": "playwright test",
         "analyze": "next experimental-analyze"
     },
