@@ -20,7 +20,7 @@
         "format:check": "biome check --write --unsafe .",
         "typegen": "next typegen",
         "typecheck": "tsc -noEmit",
-        "test:e2e": "NODE_OPTIONS='--import ./e2e/fixtures/register-loaders.mjs' playwright test",
+        "test:e2e": "NODE_OPTIONS='--import @nordcom/commerce-test-mongo/register' playwright test",
         "analyze": "next experimental-analyze"
     },
     "author": {
@@ -56,6 +56,7 @@
         "@nordcom/commerce-errors": "workspace:*",
         "@nordcom/commerce-shopify-graphql": "workspace:*",
         "@nordcom/commerce-shopify-html": "workspace:*",
+        "@nordcom/commerce-test-mongo": "workspace:*",
         "@nordcom/commerce-utils": "workspace:*",
         "@nordcom/nordstar": "0.0.75",
         "@opentelemetry/api": "1.9.1",

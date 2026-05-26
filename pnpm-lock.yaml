@@ -581,6 +581,9 @@ importers:
       '@nordcom/commerce-shopify-html':
         specifier: workspace:*
         version: link:../../packages/shopify-html
+      '@nordcom/commerce-test-mongo':
+        specifier: workspace:*
+        version: link:../../packages/test-mongo
       '@nordcom/commerce-utils':
         specifier: workspace:*
         version: link:../../packages/utils
