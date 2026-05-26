@@ -109,6 +109,7 @@ const CART_FIELDS = graphql(`
                                 value
                             }
                             image {
+                                id
                                 url
                                 altText
                                 width
