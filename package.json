@@ -33,6 +33,7 @@
         "dev:landing": "NODE_ENV=development dotenv -c -- portless run --name landing -- turbo run dev --filter=./apps/landing --env-mode=loose",
         "dev:storefront": "NODE_ENV=development dotenv -c -- portless run --name storefront -- turbo run dev --filter=./apps/storefront --env-mode=loose",
         "dev:docs": "NODE_ENV=development dotenv -c -- portless run --name docs -- turbo run dev --filter=./apps/docs --env-mode=loose",
+        "prebuild": "tsx ./scripts/predev-mongo.ts",
         "build": "dotenv -c -- turbo run build --env-mode=loose",
         "build:admin": "dotenv -c -- turbo run build --filter=./apps/admin --env-mode=loose",
         "build:landing": "dotenv -c -- turbo run build --filter=./apps/landing --env-mode=loose",

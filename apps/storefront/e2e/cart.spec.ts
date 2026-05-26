@@ -79,6 +79,36 @@ test.describe('Cart — server-side + predictive', () => {
         await ctx.close();
     });
 
+    test('cart page hydrates without mismatch when cart cookie has items (regression)', async ({ page }) => {
+        // Seed a cart cookie by adding an item from /products, then navigate to /cart.
+        // The previous bug: CartHydratorClient's `setInitialCart` fired during the streaming
+        // hydration of /cart's Suspense boundaries, flipping `cartReady` true before
+        // CartSidebar/CartLines painted their first frame — mismatching the SSR HTML which
+        // had rendered with the provider's default-unready state. `setInitialCart` now wraps
+        // the seed in `startTransition` so urgent hydration work drains first.
+        await page.goto('/en-US/products/');
+        await page.locator('article[data-layout] button[type="button"]:not([data-option-more])').first().click();
+        // Wait for the optimistic add to acknowledge so the cart cookie is persisted.
+        await expect(page.locator('[data-cart-count]').first()).not.toHaveText('');
+
+        const hydrationErrors: string[] = [];
+        const collect = (text: string) => {
+            if (/hydrat|did not match|server rendered/i.test(text)) {
+                hydrationErrors.push(text);
+            }
+        };
+        page.on('pageerror', (e) => collect(String(e.message)));
+        page.on('console', (msg) => {
+            if (msg.type() === 'error') collect(msg.text());
+        });
+
+        await page.goto('/en-US/cart/');
+        await expect(page.locator('[data-display="cost"], .cart-summary').first()).toBeVisible();
+        await expect(page.locator('[data-cart-line], .cart-line').first()).toBeVisible();
+
+        expect(hydrationErrors).toEqual([]);
+    });
+
     test('userError revert: optimistic add reverts when server rejects', async ({ page }) => {
         await page.goto('/en-US/products/');
         // Stub the Storefront API to return userErrors for cartLinesAdd
