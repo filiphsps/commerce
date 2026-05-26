@@ -13,8 +13,6 @@ on:
             - '**.txt'
             - 'LICENSE'
 
-# Auto-cancel superseded PR runs. Master/staging/dev/fix branches run to
-# completion so deploys + dispatch fan-outs aren't dropped mid-flight.
 concurrency:
     group: ci-${{ github.workflow }}-${{ github.ref }}
     cancel-in-progress: ${{ github.event_name == 'pull_request' }}
@@ -24,7 +22,6 @@ env:
     MONGODB_URI: ${{ secrets.MONGODB_URI }}
     TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
     TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-    # Fail open on remote-cache timeouts instead of stalling builds.
     TURBO_REMOTE_CACHE_TIMEOUT: 120
     SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY }}
     SHOPIFY_API_SECRET_KEY: ${{ secrets.SHOPIFY_API_SECRET_KEY }}
@@ -36,17 +33,9 @@ env:
     PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
     STOREFRONT_PREVIEW_SECRET: 'development-secret'
     VERCEL_AUTOMATION_BYPASS_SECRET: 'development-secret'
+    NEXT_PUBLIC_DOCS_BASE_PATH: /commerce
+    NEXT_PUBLIC_DOCS_CANONICAL_URL: https://filiphsps.github.io/commerce
 
-# Job DAG:
-#
-#   lint ─────────┐
-#   typecheck ────┤
-#   test ─────────┼─> dispatch (master push only)
-#   build ─> e2e ─┘
-#
-# lint/typecheck/test/build run fully in parallel. e2e gates on build so the
-# turbo remote cache is populated by the time the matrix jobs start their app
-# builds. dispatch fans-in everything to trigger the Deploy workflow on master.
 jobs:
     lint:
         name: 📋 Lint
@@ -75,6 +64,9 @@ jobs:
             - name: 🚀 Bootstrap
               uses: ./.github/common/bootstrap
 
+            - name: ✨ Generate
+              run: pnpm run generate
+
             - name: 🔨 Build Packages
               run: pnpm run build:packages
 
@@ -92,17 +84,15 @@ jobs:
             - name: 🚀 Bootstrap
               uses: ./.github/common/bootstrap
 
-            # `pnpm test` invokes vitest directly (not turbo), so we materialize
-            # workspace dist outputs here. Turbo cache hits make this fast.
+            - name: ✨ Generate
+              run: pnpm run generate
+
             - name: 🔨 Build Packages
               run: pnpm run build:packages
 
             - name: 🧪 Test
               run: pnpm run test
 
-            # Each upload step gates on `hashFiles(...)` so we don't push empty
-            # results to codecov when an earlier step failed before vitest could
-            # produce coverage / junit (e.g. install dependencies blew up).
             - name: 🦺 Report Coverage to GitHub
               if: ${{ !cancelled() && hashFiles('coverage/coverage-summary.json') != '' }}
               uses: davelosert/vitest-coverage-report-action@v2.12
@@ -136,10 +126,6 @@ jobs:
             - name: 🚀 Bootstrap
               uses: ./.github/common/bootstrap
 
-            # Next.js writes per-app webpack/swc/server traces into .next/cache.
-            # Restoring these gives incremental builds even on a fresh runner.
-            # Per-sha key with a lockfile-scoped restore-keys fallback so feature
-            # branches inherit the closest available cache.
             - name: 💾 Cache Next.js builds
               uses: actions/cache@v4
               with:
@@ -170,9 +156,6 @@ jobs:
             - name: 🚀 Bootstrap
               uses: ./.github/common/bootstrap
 
-            # Playwright browsers are large (~100MB chromium); cache them keyed
-            # on lockfile (which pins @playwright/test version). System deps
-            # (apt packages) always need installing.
             - name: 💾 Cache Playwright browsers
               id: playwright-cache
               uses: actions/cache@v4
@@ -196,9 +179,6 @@ jobs:
               if: steps.playwright-cache.outputs.cache-hit == 'true'
               run: pnpm --filter @nordcom/commerce-${{ matrix.app }} exec playwright install-deps chromium
 
-            # Turbo remote cache from the upstream `build` job hits here, so the
-            # filtered app build is near-instant. The explicit step keeps the
-            # workflow self-contained if remote cache is unavailable.
             - name: 🔨 Build App
               run: pnpm --filter @nordcom/commerce-${{ matrix.app }} build
 
@@ -237,9 +217,6 @@ jobs:
                   path: apps/${{ matrix.app }}/playwright-report/
                   retention-days: 7
 
-    # Fan-in gate for the Deploy workflow's `workflow_run` trigger. Stays empty
-    # because we only need a "did everything pass on master?" signal; all
-    # quality jobs are listed so Deploy fires only on full green.
     dispatch:
         name: 🗣️ Dispatch
         needs: [lint, typecheck, test, build, e2e]

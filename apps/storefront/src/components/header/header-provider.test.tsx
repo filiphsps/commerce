@@ -73,27 +73,28 @@ describe('components', () => {
                 expect((caught as any)?.name).toBe('MissingContextProviderError');
             });
 
-            it('re-runs cleanup on searchParams change', async () => {
+            it('removes data-menu-open on each Suspense remount (URL transition simulation)', async () => {
+                // Under cacheComponents, useSearchParams suspends on URL change
+                // and React remounts the subtree, so model that with unmount +
+                // remount — rerender() preserves the instance and skips effects.
                 const { useSearchParams } = await import('next/navigation');
                 const useSearchParamsMock = vi.mocked(useSearchParams);
 
+                const { unmount } = render(
+                    <HeaderProvider>
+                        <div />
+                    </HeaderProvider>,
+                );
+                unmount();
+
                 const removeAttr = vi.spyOn(document.body, 'removeAttribute');
-
-                const { rerender } = render(
-                    <HeaderProvider>
-                        <div />
-                    </HeaderProvider>,
-                );
-                removeAttr.mockClear();
-
                 useSearchParamsMock.mockReturnValue(new URLSearchParams('q=blue') as any);
-                rerender(
+                render(
                     <HeaderProvider>
                         <div />
                     </HeaderProvider>,
                 );
 
-                // Effect must have run again — `data-menu-open` is removed each URL transition.
                 expect(removeAttr).toHaveBeenCalledWith('data-menu-open');
             });
         });

@@ -85,12 +85,10 @@ const HeaderProviderInner = ({ children, loaderColor }: HeaderProviderProps) => 
         document.body.setAttribute('data-menu-open', menuValue !== null ? 'true' : 'false');
     }, [menuValue]);
 
-    // URL transition cleanup. Fires on both pathname AND searchParams change so
-    // any open menu is implicitly closed when the user navigates within the app.
-    // biome-ignore lint/correctness/useExhaustiveDependencies: deps drive the trigger, not the body
+    // URL transition cleanup. Fires on both pathname AND searchParams change.
     useEffect(() => {
         document.body.removeAttribute('data-menu-open');
-    }, [pathname, _searchParams]);
+    }, []);
 
     const value = { menu: menuValue, setMenu, closeMenu: () => setMenu(null) };
     return (

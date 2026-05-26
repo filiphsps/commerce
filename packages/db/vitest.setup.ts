@@ -2,16 +2,9 @@ import { vi } from 'vitest';
 
 vi.stubEnv('MONGODB_URI', 'mongodb://localhost:27017/test');
 
-// `src/db.ts` does `await mongoose.connect(MONGODB_URI)` at module evaluation,
-// so any test file that imports a model (directly or transitively) needs a
-// running MongoDB — or a stubbed connection. CI runs without a local Mongo,
-// which is why the schema-introspection tests in `src/models/*.test.ts`
-// (e.g. `FeatureFlagSchema.path('key')`) blew up with `ECONNREFUSED`.
-//
-// Mock only the connection layer. `Schema`, `Types`, `Model`, etc. stay real,
-// so schema introspection works exactly as in production. Per-file
-// `vi.mock('mongoose', …)` calls (see `services/*.test.ts`) override this for
-// their files, so existing query-shape tests are unaffected.
+// `src/db.ts` calls `mongoose.connect()` at module load. Stub the connection
+// so model imports don't require a live Mongo; `Schema`/`Types` stay real via
+// `importActual`. Per-file mocks in `services/*.test.ts` still override.
 vi.mock('mongoose', async () => {
     const actual = (await vi.importActual('mongoose')) as typeof import('mongoose');
     const mockConnection = {
