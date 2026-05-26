@@ -9,7 +9,7 @@
         ".next/cache"
     ],
     "scripts": {
-        "start": "next start -p $PORT --turbo",
+        "start": "next start",
         "dev": "NODE_ENV=development next dev --turbo",
         "build": "next build --turbo",
         "clean": "rimraf -g dist coverage .turbo .next *.tsbuildinfo *.log node_modules",

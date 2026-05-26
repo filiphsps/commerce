@@ -180,7 +180,7 @@ jobs:
               run: pnpm --filter @nordcom/commerce-${{ matrix.app }} exec playwright install-deps chromium
 
             - name: 🔨 Build App
-              run: pnpm --filter @nordcom/commerce-${{ matrix.app }} build
+              run: pnpm run build:${{ matrix.app }}
 
             - name: 🧪 Run Playwright Tests
               run: pnpm --filter @nordcom/commerce-${{ matrix.app }} test:e2e
