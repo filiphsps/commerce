@@ -9,6 +9,7 @@ import { toSelectionRecord } from '@/components/product-options/resolver';
 import { firstAvailableVariant } from '@/utils/first-available-variant';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
+import styles from '../product-card.module.css';
 
 export type ProductCardRootProps = {
     data: Product;
@@ -45,11 +46,10 @@ const ProductCardRoot = ({
     const isMicro = resolved === 'micro';
 
     const containerStyles = cn(
+        styles.productCardRoot,
         'group/card relative flex w-full snap-center snap-always overflow-hidden transition-shadow',
         '[transition-duration:var(--product-card-motion-hover-duration)]',
         '[transition-timing-function:var(--product-card-motion-hover-ease)]',
-        '[container-type:inline-size]',
-        '[container-name:product-card]',
         !isBare && [
             'bg-(--product-card-bg)',
             'border-(length:--product-card-border-width) border-solid border-(color:var(--product-card-border-color))',

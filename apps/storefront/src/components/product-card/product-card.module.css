@@ -1,0 +1,50 @@
+.productCardRoot {
+    container-type: inline-size;
+    container-name: product-card;
+}
+
+/* Default tablet/desktop band: show up to 4 values inline. */
+:global(.product-card-swatch-row) {
+    --inline-limit: 4;
+}
+:global(.product-card-swatch-row > [data-option-value]:nth-child(n + 5)) {
+    display: none;
+}
+
+@container product-card (width < 11rem) {
+    :global(.product-card-swatch-row) {
+        --inline-limit: 2;
+    }
+    :global(.product-card-swatch-row > [data-option-value]:nth-child(n + 3)) {
+        display: none;
+    }
+    :global(.product-card-image) {
+        --product-card-image-padding: 8px;
+    }
+    :global(.product-card-title) {
+        font-size: 13px;
+    }
+}
+
+@container product-card (width >= 11rem) and (width < 14rem) {
+    :global(.product-card-swatch-row) {
+        --inline-limit: 3;
+    }
+    :global(.product-card-swatch-row > [data-option-value]:nth-child(n + 4)) {
+        display: none;
+    }
+}
+
+@container product-card (width >= 14rem) {
+    :global(.product-card-swatch-row) {
+        --inline-limit: 4;
+    }
+    :global(.product-card-swatch-row > [data-option-value]:nth-child(n + 5)) {
+        display: none;
+    }
+}
+
+/* Hide "+N" when there's nothing to overflow. */
+:global(.product-card-swatch-row[data-overflow="0"] [data-option-more]) {
+    display: none;
+}

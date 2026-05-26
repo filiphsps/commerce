@@ -60,7 +60,7 @@ const VariantImageClient = ({
                 <div
                     data-testid="product-card-image-placeholder"
                     className={cn(
-                        'text-(color:var(--product-card-vendor-color)) flex size-full items-center justify-center rounded-(--product-card-image-radius) bg-(--product-card-image-bg) p-(--product-card-image-padding)',
+                        'product-card-image text-(color:var(--product-card-vendor-color)) flex size-full items-center justify-center rounded-(--product-card-image-radius) bg-(--product-card-image-bg) p-(--product-card-image-padding)',
                         aspectClass(aspect),
                     )}
                     aria-hidden="true"
@@ -75,7 +75,7 @@ const VariantImageClient = ({
         <Link href={href} title={title} prefetch={priority} className={cn('group/header contents', className)}>
             <div
                 className={cn(
-                    'relative overflow-hidden rounded-(--product-card-image-radius) bg-(--product-card-image-bg) p-(--product-card-image-padding)',
+                    'product-card-image relative overflow-hidden rounded-(--product-card-image-radius) bg-(--product-card-image-bg) p-(--product-card-image-padding)',
                     aspectClass(aspect),
                 )}
                 style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
