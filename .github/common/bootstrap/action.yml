@@ -1,13 +1,17 @@
 name: '📦 Bootstrap'
-description: 'Install and configure dependencies'
+description: 'Install dependencies and prime caches (pnpm store, node_modules, turbo).'
+
+inputs:
+    turbo-cache:
+        description: 'Restore + save the local turbo cache (.turbo). Set to "false" for jobs that do not invoke turbo.'
+        default: 'true'
 
 runs:
     using: 'composite'
     steps:
         # pnpm must be set up BEFORE setup-node so that `cache: 'pnpm'` below can
         # resolve the pnpm binary, hash pnpm-lock.yaml, and restore the global
-        # pnpm store from cache. Without this ordering setup-node falls back to
-        # a no-op and every job redownloads the entire dependency graph.
+        # pnpm store from cache.
         - name: 🏎️ Setup pnpm
           uses: pnpm/action-setup@v6
           with:
@@ -20,6 +24,37 @@ runs:
               node-version-file: '.nvmrc'
               cache: 'pnpm'
 
+        # node_modules cache covers pnpm's virtual store + workspace symlinks.
+        # Keyed on the lockfile so any dep change forces a fresh install. No
+        # postinstall scripts in this repo, so the cached tree is safe to reuse
+        # across runners (linux-only CI).
+        - name: 💾 Cache node_modules
+          id: cache-node-modules
+          uses: actions/cache@v4
+          with:
+              path: |
+                  node_modules
+                  apps/*/node_modules
+                  packages/*/node_modules
+              key: ${{ runner.os }}-node-modules-${{ hashFiles('pnpm-lock.yaml') }}
+
         - name: 📦 Install dependencies
+          if: steps.cache-node-modules.outputs.cache-hit != 'true'
           run: pnpm install --frozen-lockfile
           shell: bash
+
+        # Local turbo cache. Remote cache (TURBO_TOKEN/TURBO_TEAM) handles
+        # cross-runner hits; this cache adds within-run + cross-run hits on the
+        # same branch without paying the remote round-trip. Per-sha key with a
+        # branch-level restore-keys fallback so feature branches inherit from
+        # master.
+        - name: 💾 Cache turbo
+          if: inputs.turbo-cache == 'true'
+          uses: actions/cache@v4
+          with:
+              path: .turbo
+              key: ${{ runner.os }}-turbo-${{ github.ref_name }}-${{ github.sha }}
+              restore-keys: |
+                  ${{ runner.os }}-turbo-${{ github.ref_name }}-
+                  ${{ runner.os }}-turbo-master-
+                  ${{ runner.os }}-turbo-

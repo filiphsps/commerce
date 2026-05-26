@@ -1,216 +1,251 @@
 name: CI
 
 on:
-  pull_request:
-  push:
-    branches:
-      - master
-      - staging
-      - "dev/*"
-      - "fix/*"
-    paths-ignore:
-      - "**.md"
-      - "**.txt"
-      - "LICENSE"
+    pull_request:
+    push:
+        branches:
+            - master
+            - staging
+            - 'dev/*'
+            - 'fix/*'
+        paths-ignore:
+            - '**.md'
+            - '**.txt'
+            - 'LICENSE'
+
+# Auto-cancel superseded PR runs. Master/staging/dev/fix branches run to
+# completion so deploys + dispatch fan-outs aren't dropped mid-flight.
+concurrency:
+    group: ci-${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
-  CI: true
-  MONGODB_URI: ${{ secrets.MONGODB_URI }}
-  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-  SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY }}
-  SHOPIFY_API_SECRET_KEY: ${{ secrets.SHOPIFY_API_SECRET_KEY }}
-  AUTH_SECRET: "development-secret"
-  EDGE_CONFIG: ${{ secrets.EDGE_CONFIG }}
-  ADMIN_DOMAIN: ${{ vars.ADMIN_DOMAIN }}
-  SERVICE_DOMAIN: ${{ vars.SERVICE_DOMAIN }}
-  LANDING_DOMAIN: ${{ vars.LANDING_DOMAIN }}
-  PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
-  STOREFRONT_PREVIEW_SECRET: "development-secret"
-  VERCEL_AUTOMATION_BYPASS_SECRET: "development-secret"
-  NEXT_PUBLIC_DOCS_BASE_PATH: "/commerce"
-  NEXT_PUBLIC_DOCS_CANONICAL_URL: "https://filiphsps.github.io/commerce"
+    CI: true
+    MONGODB_URI: ${{ secrets.MONGODB_URI }}
+    TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+    TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+    # Fail open on remote-cache timeouts instead of stalling builds.
+    TURBO_REMOTE_CACHE_TIMEOUT: 120
+    SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY }}
+    SHOPIFY_API_SECRET_KEY: ${{ secrets.SHOPIFY_API_SECRET_KEY }}
+    AUTH_SECRET: 'development-secret'
+    EDGE_CONFIG: ${{ secrets.EDGE_CONFIG }}
+    ADMIN_DOMAIN: ${{ vars.ADMIN_DOMAIN }}
+    SERVICE_DOMAIN: ${{ vars.SERVICE_DOMAIN }}
+    LANDING_DOMAIN: ${{ vars.LANDING_DOMAIN }}
+    PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
+    STOREFRONT_PREVIEW_SECRET: 'development-secret'
+    VERCEL_AUTOMATION_BYPASS_SECRET: 'development-secret'
 
+# Job DAG:
+#
+#   lint ─────────┐
+#   typecheck ────┤
+#   test ─────────┼─> dispatch (master push only)
+#   build ─> e2e ─┘
+#
+# lint/typecheck/test/build run fully in parallel. e2e gates on build so the
+# turbo remote cache is populated by the time the matrix jobs start their app
+# builds. dispatch fans-in everything to trigger the Deploy workflow on master.
 jobs:
-  build:
-    name: 🔨 Build
-    needs: [lint, typecheck]
-    timeout-minutes: 25
-    runs-on: ubuntu-latest
-    steps:
-      - name: 🕶️ Checkout repository
-        uses: actions/checkout@v6
+    lint:
+        name: 📋 Lint
+        timeout-minutes: 10
+        runs-on: ubuntu-latest
+        steps:
+            - name: 🕶️ Checkout repository
+              uses: actions/checkout@v6
 
-      - name: 🚀 Bootstrap
-        uses: ./.github/common/bootstrap
+            - name: 🚀 Bootstrap
+              uses: ./.github/common/bootstrap
+              with:
+                  turbo-cache: 'false'
 
-      - name: 🔨 Build All
-        run: pnpm run build
+            - name: 📋 Lint
+              run: pnpm run lint
 
-  test:
-    name: 🧪 Test
-    needs: [lint, typecheck]
-    timeout-minutes: 15
-    runs-on: ubuntu-latest
-    steps:
-      - name: 🕶️ Checkout repository
-        uses: actions/checkout@v6
+    typecheck:
+        name: ✅ Typecheck
+        timeout-minutes: 15
+        runs-on: ubuntu-latest
+        steps:
+            - name: 🕶️ Checkout repository
+              uses: actions/checkout@v6
 
-      - name: 🚀 Bootstrap
-        uses: ./.github/common/bootstrap
+            - name: 🚀 Bootstrap
+              uses: ./.github/common/bootstrap
 
-      - name: 🔨 Build Packages
-        run: pnpm run build:packages
+            - name: 🔨 Build Packages
+              run: pnpm run build:packages
 
-      - name: 🧪 Test
-        run: pnpm run test
+            - name: ✅ Typecheck
+              run: pnpm run typecheck
 
-      # Each upload step gates on `hashFiles(...)` so we don't push empty
-      # results to codecov when an earlier step failed before vitest could
-      # produce coverage / junit (e.g. install dependencies blew up).
-      - name: 🦺 Report Coverage to GitHub
-        if: ${{ !cancelled() && hashFiles('coverage/coverage-summary.json') != '' }}
-        uses: davelosert/vitest-coverage-report-action@v2.12
+    test:
+        name: 🧪 Test
+        timeout-minutes: 15
+        runs-on: ubuntu-latest
+        steps:
+            - name: 🕶️ Checkout repository
+              uses: actions/checkout@v6
 
-      # Single combined vitest run produces one coverage-final.json at repo root
-      # covering all workspace projects. Codecov splits it per-app via the components
-      # defined in codecov.yml (path-based); the `unit` flag tags the upload as
-      # unit-test coverage so we can compare against `e2e` later.
-      - name: 🦺 Codecov Coverage Reports
-        if: ${{ !cancelled() && hashFiles('coverage/coverage-final.json') != '' }}
-        uses: codecov/codecov-action@v6
-        with:
-          files: ./coverage/coverage-final.json
-          flags: unit
+            - name: 🚀 Bootstrap
+              uses: ./.github/common/bootstrap
+
+            # `pnpm test` invokes vitest directly (not turbo), so we materialize
+            # workspace dist outputs here. Turbo cache hits make this fast.
+            - name: 🔨 Build Packages
+              run: pnpm run build:packages
+
+            - name: 🧪 Test
+              run: pnpm run test
+
+            # Each upload step gates on `hashFiles(...)` so we don't push empty
+            # results to codecov when an earlier step failed before vitest could
+            # produce coverage / junit (e.g. install dependencies blew up).
+            - name: 🦺 Report Coverage to GitHub
+              if: ${{ !cancelled() && hashFiles('coverage/coverage-summary.json') != '' }}
+              uses: davelosert/vitest-coverage-report-action@v2.12
+
+            - name: 🦺 Codecov Coverage Reports
+              if: ${{ !cancelled() && hashFiles('coverage/coverage-final.json') != '' }}
+              uses: codecov/codecov-action@v6
+              with:
+                  files: ./coverage/coverage-final.json
+                  flags: unit
+              env:
+                  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+            - name: 🦺 Codecov Test Results
+              if: ${{ !cancelled() && hashFiles('junit.xml') != '' }}
+              uses: codecov/codecov-action@v6
+              with:
+                  token: ${{ secrets.CODECOV_TOKEN }}
+                  files: ./junit.xml
+                  report_type: test_results
+                  flags: unit
+
+    build:
+        name: 🔨 Build
+        timeout-minutes: 25
+        runs-on: ubuntu-latest
+        steps:
+            - name: 🕶️ Checkout repository
+              uses: actions/checkout@v6
+
+            - name: 🚀 Bootstrap
+              uses: ./.github/common/bootstrap
+
+            # Next.js writes per-app webpack/swc/server traces into .next/cache.
+            # Restoring these gives incremental builds even on a fresh runner.
+            # Per-sha key with a lockfile-scoped restore-keys fallback so feature
+            # branches inherit the closest available cache.
+            - name: 💾 Cache Next.js builds
+              uses: actions/cache@v4
+              with:
+                  path: |
+                      apps/*/.next/cache
+                  key: ${{ runner.os }}-nextjs-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+                  restore-keys: |
+                      ${{ runner.os }}-nextjs-${{ hashFiles('pnpm-lock.yaml') }}-
+
+            - name: 🔨 Build All
+              run: pnpm run build
+
+    e2e:
+        name: 🎭 E2E
+        needs: build
+        timeout-minutes: 20
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                app: [storefront, admin]
         env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+            NODE_V8_COVERAGE: ${{ github.workspace }}/coverage/e2e-raw
+        steps:
+            - name: 🕶️ Checkout repository
+              uses: actions/checkout@v6
 
-      # Powers Codecov Test Analytics (failed-test grouping, flakiness
-      # detection, slow-test trends). The legacy `codecov/test-results-action`
-      # is deprecated; `codecov-action` with `report_type: test_results` is
-      # the replacement. Same `unit` flag as the coverage upload so Codecov
-      # ties tests ↔ coverage in the per-flag views.
-      # See https://docs.codecov.com/docs/test-analytics
-      - name: 🦺 Codecov Test Results
-        if: ${{ !cancelled() && hashFiles('junit.xml') != '' }}
-        uses: codecov/codecov-action@v6
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./junit.xml
-          report_type: test_results
-          flags: unit
+            - name: 🚀 Bootstrap
+              uses: ./.github/common/bootstrap
 
-  lint:
-    name: 📋 Lint
-    timeout-minutes: 15
-    runs-on: ubuntu-latest
-    steps:
-      - name: 🕶️ Checkout repository
-        uses: actions/checkout@v6
+            # Playwright browsers are large (~100MB chromium); cache them keyed
+            # on lockfile (which pins @playwright/test version). System deps
+            # (apt packages) always need installing.
+            - name: 💾 Cache Playwright browsers
+              id: playwright-cache
+              uses: actions/cache@v4
+              with:
+                  path: ~/.cache/ms-playwright
+                  key: ${{ runner.os }}-playwright-${{ hashFiles('pnpm-lock.yaml') }}
 
-      - name: 🚀 Bootstrap
-        uses: ./.github/common/bootstrap
+            - name: 💾 Cache Next.js build
+              uses: actions/cache@v4
+              with:
+                  path: apps/${{ matrix.app }}/.next/cache
+                  key: ${{ runner.os }}-nextjs-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+                  restore-keys: |
+                      ${{ runner.os }}-nextjs-${{ hashFiles('pnpm-lock.yaml') }}-
 
-      - name: 🔨 Build Packages
-        run: pnpm run build:packages
+            - name: 🎭 Install Playwright browsers (cache miss)
+              if: steps.playwright-cache.outputs.cache-hit != 'true'
+              run: pnpm --filter @nordcom/commerce-${{ matrix.app }} exec playwright install --with-deps chromium
 
-      - name: 📋 Lint
-        run: pnpm run lint
+            - name: 🎭 Install Playwright system deps (cache hit)
+              if: steps.playwright-cache.outputs.cache-hit == 'true'
+              run: pnpm --filter @nordcom/commerce-${{ matrix.app }} exec playwright install-deps chromium
 
-  typecheck:
-    name: ✅ Typecheck
-    timeout-minutes: 15
-    runs-on: ubuntu-latest
-    steps:
-      - name: 🕶️ Checkout repository
-        uses: actions/checkout@v6
+            # Turbo remote cache from the upstream `build` job hits here, so the
+            # filtered app build is near-instant. The explicit step keeps the
+            # workflow self-contained if remote cache is unavailable.
+            - name: 🔨 Build App
+              run: pnpm --filter @nordcom/commerce-${{ matrix.app }} build
 
-      - name: 🚀 Bootstrap
-        uses: ./.github/common/bootstrap
+            - name: 🧪 Run Playwright Tests
+              run: pnpm --filter @nordcom/commerce-${{ matrix.app }} test:e2e
 
-      - name: 🔨 Build Packages
-        run: pnpm run build:packages
+            - name: 🦺 Convert V8 Coverage to Codecov Format
+              if: ${{ !cancelled() }}
+              run: |
+                  pnpm dlx c8@10 report \
+                      --reporter=json \
+                      --reporter=lcov \
+                      --reports-dir=./coverage/e2e \
+                      --src=apps/${{ matrix.app }} \
+                      --include='apps/${{ matrix.app }}/src/**' \
+                      --exclude='**/*.d.ts' \
+                      --exclude='**/*.config.*' \
+                      --exclude='**/.next/**' \
+                      --exclude='apps/*/e2e/**' \
+                  || echo "c8 report exited non-zero (likely no coverage emitted); continuing"
 
-      - name: ✅ Typecheck
-        run: pnpm run typecheck
+            - name: 🦺 Codecov E2E Coverage
+              if: ${{ !cancelled() && hashFiles('coverage/e2e/coverage-final.json') != '' }}
+              uses: codecov/codecov-action@v6
+              with:
+                  files: ./coverage/e2e/coverage-final.json,./coverage/e2e/lcov.info
+                  flags: e2e,e2e-${{ matrix.app }}
+              env:
+                  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-  e2e:
-    name: 🎭 E2E
-    needs: build
-    timeout-minutes: 20
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        app: [storefront, admin]
-    env:
-      NODE_V8_COVERAGE: ${{ github.workspace }}/coverage/e2e-raw
-    steps:
-      - name: 🕶️ Checkout repository
-        uses: actions/checkout@v6
+            - name: 📦 Upload Report on Failure
+              if: failure()
+              uses: actions/upload-artifact@v7
+              with:
+                  name: playwright-report-${{ matrix.app }}
+                  path: apps/${{ matrix.app }}/playwright-report/
+                  retention-days: 7
 
-      - name: 🚀 Bootstrap
-        uses: ./.github/common/bootstrap
-
-      - name: 🔨 Build Packages
-        run: pnpm run build:packages
-
-      - name: 🔨 Build App
-        run: pnpm --filter @nordcom/commerce-${{ matrix.app }} build
-
-      - name: 🎭 Install Playwright Browsers
-        run: pnpm --filter @nordcom/commerce-${{ matrix.app }} exec playwright install --with-deps chromium
-
-      - name: 🧪 Run Playwright Tests
-        run: pnpm --filter @nordcom/commerce-${{ matrix.app }} test:e2e
-
-      - name: 🦺 Convert V8 Coverage to Codecov Format
-        if: ${{ !cancelled() }}
-        run: |
-          pnpm dlx c8@10 report \
-              --reporter=json \
-              --reporter=lcov \
-              --reports-dir=./coverage/e2e \
-              --src=apps/${{ matrix.app }} \
-              --include='apps/${{ matrix.app }}/src/**' \
-              --exclude='**/*.d.ts' \
-              --exclude='**/*.config.*' \
-              --exclude='**/.next/**' \
-              --exclude='apps/*/e2e/**' \
-          || echo "c8 report exited non-zero (likely no coverage emitted); continuing"
-
-      # Gate on c8 actually having emitted something — if `next start`
-      # didn't write any V8 coverage (process killed before exit, etc.),
-      # `coverage/e2e/coverage-final.json` won't exist and we'd be
-      # uploading nothing.
-      - name: 🦺 Codecov E2E Coverage
-        if: ${{ !cancelled() && hashFiles('coverage/e2e/coverage-final.json') != '' }}
-        uses: codecov/codecov-action@v6
-        with:
-          files: ./coverage/e2e/coverage-final.json,./coverage/e2e/lcov.info
-          flags: e2e,e2e-${{ matrix.app }}
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
-      - name: 📦 Upload Report on Failure
-        if: failure()
-        uses: actions/upload-artifact@v7
-        with:
-          name: playwright-report-${{ matrix.app }}
-          path: apps/${{ matrix.app }}/playwright-report/
-          retention-days: 7
-
-  dispatch:
-    name: 🗣️ Dispatch
-    needs: [build, test]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-    timeout-minutes: 15
-    runs-on: ubuntu-latest
-    steps:
-      - name: 🕶️ Checkout repository
-        uses: actions/checkout@v6
-      # Deliberately empty as this is just used
-      # to trigger other workflows when this one
-      # completes successfully. Otherwise we can't
-      # make sure that every test, lint and typecheck
-      # job has validated and completed successfully.
+    # Fan-in gate for the Deploy workflow's `workflow_run` trigger. Stays empty
+    # because we only need a "did everything pass on master?" signal; all
+    # quality jobs are listed so Deploy fires only on full green.
+    dispatch:
+        name: 🗣️ Dispatch
+        needs: [lint, typecheck, test, build, e2e]
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        timeout-minutes: 5
+        runs-on: ubuntu-latest
+        steps:
+            - name: 🕶️ Checkout repository
+              uses: actions/checkout@v6

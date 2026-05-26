@@ -31,6 +31,7 @@ env:
     CI: true
     TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
     TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+    TURBO_REMOTE_CACHE_TIMEOUT: 120
 
 jobs:
     build:
@@ -44,8 +45,13 @@ jobs:
             - name: 🚀 Bootstrap
               uses: ./.github/common/bootstrap
 
-            - name: 🔨 Build Packages
-              run: pnpm run build:packages
+            - name: 💾 Cache Next.js build
+              uses: actions/cache@v4
+              with:
+                  path: apps/docs/.next/cache
+                  key: ${{ runner.os }}-nextjs-docs-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+                  restore-keys: |
+                      ${{ runner.os }}-nextjs-docs-${{ hashFiles('pnpm-lock.yaml') }}-
 
             - name: 🔨 Build Docs
               run: pnpm --filter @nordcom/commerce-docs build
@@ -81,16 +87,37 @@ jobs:
             - name: 🚀 Bootstrap
               uses: ./.github/common/bootstrap
 
-            - name: 🎭 Install Playwright browsers
+            - name: 💾 Cache Playwright browsers
+              id: playwright-cache
+              uses: actions/cache@v4
+              with:
+                  path: ~/.cache/ms-playwright
+                  key: ${{ runner.os }}-playwright-${{ hashFiles('pnpm-lock.yaml') }}-chromium-webkit
+
+            - name: 💾 Cache Next.js build
+              uses: actions/cache@v4
+              with:
+                  path: apps/docs/.next/cache
+                  key: ${{ runner.os }}-nextjs-docs-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+                  restore-keys: |
+                      ${{ runner.os }}-nextjs-docs-${{ hashFiles('pnpm-lock.yaml') }}-
+
+            - name: 🎭 Install Playwright browsers (cache miss)
+              if: steps.playwright-cache.outputs.cache-hit != 'true'
               run: pnpm --filter @nordcom/commerce-docs exec playwright install --with-deps chromium webkit
+
+            - name: 🎭 Install Playwright system deps (cache hit)
+              if: steps.playwright-cache.outputs.cache-hit == 'true'
+              run: pnpm --filter @nordcom/commerce-docs exec playwright install-deps chromium webkit
 
             # The build job uploads a basePath=/commerce artifact for GitHub
             # Pages, but `serve` cannot host that under a /commerce/ prefix
             # cleanly (cleanUrls interferes with deeply-nested paths). For e2e
             # we rebuild without basePath — cheaper and more reliable than
-            # post-processing the deploy artifact.
-            - name: 🔨 Rebuild Docs for e2e (no basePath)
-              run: pnpm run build:packages && pnpm --filter @nordcom/commerce-docs build
+            # post-processing the deploy artifact. Turbo cache makes most of
+            # this a no-op.
+            - name: 🔨 Build Docs for e2e (no basePath)
+              run: pnpm --filter @nordcom/commerce-docs build
               env:
                   NEXT_PUBLIC_DOCS_CANONICAL_URL: http://localhost:3003
 

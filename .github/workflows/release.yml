@@ -19,6 +19,12 @@ permissions:
     pull-requests: write
     id-token: write
 
+env:
+    CI: true
+    TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+    TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+    TURBO_REMOTE_CACHE_TIMEOUT: 120
+
 jobs:
     release:
         name: 🚀 Release

@@ -11,18 +11,20 @@ env:
     CI: true
     TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
     TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+    TURBO_REMOTE_CACHE_TIMEOUT: 120
     VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
     VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
     VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
     SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY }}
     SHOPIFY_API_SECRET_KEY: ${{ secrets.SHOPIFY_API_SECRET_KEY }}
-    AUTH_SECRET: "development-secret"
+    AUTH_SECRET: 'development-secret'
 
 jobs:
     vercel:
         if: ${{ github.event.workflow_run.conclusion == 'success' }}
         name: 🚚 Deploy to Vercel
         runs-on: ubuntu-latest
+        timeout-minutes: 15
         steps:
             - name: 🕶️ Checkout repository
               uses: actions/checkout@v6
@@ -32,30 +34,23 @@ jobs:
 
             - name: 🚀 Bootstrap
               uses: ./.github/common/bootstrap
+              with:
+                  turbo-cache: 'false'
 
-            - name: 📦 Install Vercel CLI
-              run: |
-                  npx vercel pull --yes --token=${{ secrets.VERCEL_TOKEN }}
+            - name: 📦 Pull Vercel project config
+              run: npx vercel pull --yes --token=${{ secrets.VERCEL_TOKEN }}
 
             #- name: 🚚 Push to Vercel
             #  run: npx vercel deploy --prod --archive=tgz --token=${{ secrets.VERCEL_TOKEN }}
 
     cloudflare:
         needs: [vercel]
+        if: false
         name: 🚚 Notify CloudFlare
         runs-on: ubuntu-latest
+        timeout-minutes: 5
         steps:
-            - name: 🕶️ Checkout repository
-              uses: actions/checkout@v6
-              with:
-                  ref: ${{ github.event.workflow_run.head_branch }}
-                  fetch-depth: 0
-
-            - name: 🚀 Bootstrap
-              uses: ./.github/common/bootstrap
-
             - name: 🔥 Purge CloudFlare cache
-              if: false
               run: |
                   curl -X POST \
                   -H "Content-Type: application/json" \
