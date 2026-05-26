@@ -119,6 +119,28 @@ _Avoid_: dashboard, backoffice, CMS app
 The marketing surface, hosted at the **Service domain**. Owns the `/status/*` routes the **Storefront** falls back to.
 _Avoid_: marketing site, homepage, public site
 
+### Product card
+
+**Product card**:
+A token-driven chassis + primitives composed by **Surface wrappers** on every browse surface (Collection, Recommendation, Search). It is a browse tile, not a buy form — variant selection happens in a **Picker**.
+_Avoid_: product tile, product item, mini PDP
+
+**Surface wrapper**:
+A per-surface composition of the **Product card** (`CollectionProductCard`, `RecommendationProductCard`, `SearchProductCard`). Each spreads its preset from `SURFACE_PRESETS` in `product-card/presets.ts` onto the orchestrator.
+_Avoid_: card variant, product card wrapper
+
+**Picker**:
+The variant-selection UI opened from a **Product card**'s **CTA**. Presents as `float`, `sheet`, or `inline` per the surface + viewport routing rule. Implementations are registered in `product-card/picker/`.
+_Avoid_: variant modal, quick-add modal, options dialog
+
+**Quick add**:
+Informal name for the **Picker** entry point. The CTA placement is itself token-driven (`float-pill` | `inline-button`) and registered in `product-card/cta/`.
+_Avoid_: quick view, add-to-cart button (when on a card)
+
+**Single-buyable variant fast-path**:
+When a product has exactly one variant AND it is available, clicking `+` adds it directly without opening the **Picker**. The CTA renders a fast-path indicator (`data-fast-path`).
+_Avoid_: instant add, one-click add
+
 ## Relationships
 
 - A **Shop** has one primary **Shop domain** and zero or more **Alternative domains**.
