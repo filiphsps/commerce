@@ -8,6 +8,7 @@ node_modules/
 coverage/
 apps/**/coverage/
 junit.xml
+.mongo-dev
 
 # next.js
 .next
