@@ -1,11 +1,11 @@
 import { trace } from '@opentelemetry/api';
-import { useCart } from '@shopify/hydrogen-react';
 import type { CartLine as ShopifyCartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import { Pencil, Tag as TagIcon, X as XIcon } from 'lucide-react';
 import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import type { Product, ProductVariant } from '@/api/product';
 import { Button } from '@/components/actionable/button';
+import { useCartActions, useCartStatus } from '@/components/cart/provider';
 import { Card } from '@/components/layout/card';
 import { Popover } from '@/components/layout/popover';
 import Link from '@/components/link';
@@ -50,11 +50,12 @@ interface CartLineProps {
     data: ShopifyCartLine;
 }
 const CartLine = ({ i18n, data: line }: CartLineProps) => {
-    const { cartReady, status, linesUpdate, linesRemove } = useCart();
+    const { addLine, updateLine, removeLine } = useCartActions();
+    const { cartReady, status } = useCartStatus();
     const { t } = getTranslations('common', i18n);
     const { t: tCart } = getTranslations('cart', i18n);
 
-    const ready = cartReady && status !== 'updating';
+    const ready = cartReady && status !== 'mutating';
 
     const product = isRuntimeProduct(line.merchandise.product) ? line.merchandise.product : undefined;
     const variant = isRuntimeVariant(line.merchandise) ? line.merchandise : undefined;
@@ -149,7 +150,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
     const { quantity } = line;
     const { vendor, title, handle } = product;
 
-    const handleSwap = (next: SelectedOptions) => {
+    const handleSwap = async (next: SelectedOptions) => {
         const changed = Object.entries(next).find(([k, v]) => currentSelectedOptions[k] !== v);
         if (!changed) {
             setEditing(false);
@@ -161,9 +162,10 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
             setEditing(false);
             return;
         }
-        linesUpdate([{ id: line.id!, merchandiseId: entry.variant.id, quantity: line.quantity }]);
-        setSwapAnnouncement(`Switched ${name} to ${value}`);
         setEditing(false);
+        await removeLine(line.id!);
+        await addLine({ variantId: entry.variant.id, quantity: line.quantity });
+        setSwapAnnouncement(`Switched ${name} to ${value}`);
     };
 
     return (
@@ -268,7 +270,9 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                     <div className="absolute inset-auto top-3 right-3">
                         <Label
                             as={Button}
-                            onClick={() => linesRemove([line.id!])}
+                            onClick={async () => {
+                                await removeLine(line.id!);
+                            }}
                             styled={false}
                             className="flex items-center justify-center gap-1 border-0 border-red-500 border-solid text-sm hover:text-red-500 focus-visible:border-b-2 focus-visible:text-red-500 md:text-base"
                             title={t('remove')}
@@ -284,17 +288,12 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                             disabled={!ready}
                             i18n={i18n}
                             value={quantity}
-                            update={(value) => {
+                            update={async (value) => {
                                 if (value === quantity) {
                                     return;
                                 }
 
-                                linesUpdate([
-                                    {
-                                        id: line.id!,
-                                        quantity: value,
-                                    },
-                                ]);
+                                await updateLine({ lineId: line.id!, quantity: value });
                             }}
                             allowDecreaseToZero={true}
                         />

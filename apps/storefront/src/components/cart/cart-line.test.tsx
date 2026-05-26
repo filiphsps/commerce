@@ -1,16 +1,34 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CartLine } from '@/components/cart/cart-line';
+import { useCartActions, useCartStatus } from '@/components/cart/provider';
 import { mockShop } from '@/utils/test/fixtures';
-import { fireEvent, render, screen } from '@/utils/test/react';
+import { fireEvent, render, screen, waitFor } from '@/utils/test/react';
 
-const linesUpdate = vi.fn();
+vi.mock('@/components/cart/provider', () => ({
+    useCartActions: vi.fn(),
+    useCartStatus: vi.fn(),
+}));
 
-vi.mock('@shopify/hydrogen-react', async (importOriginal) => {
-    const actual = await importOriginal<typeof import('@shopify/hydrogen-react')>();
-    return {
-        ...actual,
-        useCart: () => ({ cartReady: true, status: 'idle', linesUpdate, linesRemove: vi.fn() }),
-    };
+const addLine = vi.fn().mockResolvedValue({ ok: true, cart: {} });
+const updateLine = vi.fn().mockResolvedValue({ ok: true, cart: {} });
+const removeLine = vi.fn().mockResolvedValue({ ok: true, cart: {} });
+
+beforeEach(() => {
+    addLine.mockClear();
+    updateLine.mockClear();
+    removeLine.mockClear();
+    vi.mocked(useCartActions).mockReturnValue({
+        addLine,
+        updateLine,
+        removeLine,
+        applyDiscountCode: vi.fn().mockResolvedValue({ ok: true, cart: {} }),
+        removeDiscountCode: vi.fn().mockResolvedValue({ ok: true, cart: {} }),
+        applyGiftCard: vi.fn().mockResolvedValue({ ok: true, cart: {} }),
+        removeGiftCard: vi.fn().mockResolvedValue({ ok: true, cart: {} }),
+        updateNote: vi.fn().mockResolvedValue({ ok: true, cart: {} }),
+        updateAttributes: vi.fn().mockResolvedValue({ ok: true, cart: {} }),
+    } as any);
+    vi.mocked(useCartStatus).mockReturnValue({ cartReady: true, status: 'idle', error: null });
 });
 
 vi.mock('@/components/shop/provider', async (importOriginal) => {
@@ -179,17 +197,19 @@ describe('components', () => {
             expect(screen.getByRole('button', { name: 'Color: Blue' })).toBeInTheDocument();
         });
 
-        it('calls linesUpdate with the new variant id and closes the popover on swap', () => {
+        it('removes the old line and adds the new variant, then closes the popover on swap', async () => {
             render(<CartLine i18n={{} as any} data={buildLine(multiOptionProduct) as any} />);
             fireEvent.click(screen.getByRole('button', { name: /edit options/i }));
             fireEvent.click(screen.getByRole('button', { name: 'Size: L' }));
-            expect(linesUpdate).toHaveBeenCalledWith([
-                expect.objectContaining({
-                    id: 'gid://shopify/CartLine/1',
-                    merchandiseId: 'gid://shopify/ProductVariant/LR',
+            await waitFor(() => {
+                expect(removeLine).toHaveBeenCalledWith('gid://shopify/CartLine/1');
+            });
+            await waitFor(() => {
+                expect(addLine).toHaveBeenCalledWith({
+                    variantId: 'gid://shopify/ProductVariant/LR',
                     quantity: 1,
-                }),
-            ]);
+                });
+            });
             // Popover should be closed — the spacious chip should no longer be in the DOM.
             expect(screen.queryByRole('button', { name: 'Size: L' })).not.toBeInTheDocument();
         });
