@@ -46,7 +46,7 @@ export const nextAuthStrategy: AuthStrategy = {
         // returns false and `canAccessAdmin` rejects the request.
         return {
             user: {
-                ...(userDoc as Record<string, unknown>),
+                ...userDoc,
                 collection: 'users',
                 _strategy: 'nextauth',
             } as never,
