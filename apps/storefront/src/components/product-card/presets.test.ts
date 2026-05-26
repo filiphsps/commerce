@@ -13,7 +13,7 @@ describe('SURFACE_PRESETS', () => {
                 layout: 'vertical',
                 chrome: 'boxed',
                 ctaPlacement: 'float-pill',
-                pickerPresentation: 'auto'
+                pickerPresentation: 'auto',
             });
         }
     });

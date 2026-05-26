@@ -19,9 +19,10 @@ const Swatch = ({ value, onSelect }: OptionValueRendererProps) => {
             <span
                 data-swatch-visual
                 style={{ ['--swatch-color' as any]: value.swatch?.color }}
-                className="block size-(--product-card-swatch-size) rounded-full border border-[color:var(--product-card-border-color)] bg-[var(--swatch-color)] transition-shadow group-data-[available=false]/swatch:opacity-35 group-data-[active=true]/swatch:[box-shadow:0_0_0_1.5px_var(--product-card-bg),_0_0_0_3px_var(--product-card-swatch-ring-color)]"
+                className="block size-(--product-card-swatch-size) rounded-full border border-(--product-card-border-color) bg-(--swatch-color) transition-shadow group-data-[available=false]/swatch:opacity-35 group-data-[active=true]/swatch:[box-shadow:0_0_0_1.5px_var(--product-card-bg),0_0_0_3px_var(--product-card-swatch-ring-color)]"
             >
                 {hasImage ? (
+                    // biome-ignore lint/performance/noImgElement: TODO.
                     <img
                         src={value.swatch!.image!.url}
                         alt=""
