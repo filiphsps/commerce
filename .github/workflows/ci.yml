@@ -244,8 +244,8 @@ jobs:
               if: steps.cache-playwright.outputs.cache-hit == 'true'
               run: pnpm --filter @nordcom/commerce-${{ matrix.app }} exec playwright install-deps chromium
 
-            - name: 🧪 Run Playwright Tests
-              run: pnpm run pretest && pnpm --filter @nordcom/commerce-${{ matrix.app }} test:e2e && pnpm run posttest
+            - name: 🧪 Run E2E Tests
+              run: pnpm test:e2e --filter @nordcom/commerce-${{ matrix.app }}
 
             - name: 🦺 Convert V8 Coverage to Codecov Format
               if: ${{ !cancelled() }}
