@@ -38,12 +38,25 @@ export async function seedShop(uri: string, opts: SeedShopOptions = {}): Promise
         console.info(`[seedShop] inserting Shop ${domain} (${name}) …`);
         await ShopModel.create({
             name,
+            description:
+                'A small Stockholm studio building clothing meant to be kept. Free returns within 30 days; lifetime repair guarantee on every garment.',
             domain,
-            alternativeDomains: [],
+            alternativeDomains: ['nordcom.shop', 'demo.nordcom.commerce'],
             i18n: { defaultLocale: 'en-US' },
+            commerce: { maxQuantity: 25, processingTimeInDays: 3 },
+            showProductVendor: true,
             design: {
-                header: { logo: { width: 512, height: 512, src: '/logo.png', alt: name } },
-                accents: [],
+                header: {
+                    logo: { width: 175, height: 60, src: 'https://placehold.co/175x60.png', alt: name },
+                },
+                // Two accent pairs cover the storefront's `--accent-*` /
+                // `--secondary-*` CSS variables. `color` is the surface,
+                // `foreground` is the text/icon overlay — both must clear
+                // WCAG AA against each other.
+                accents: [
+                    { type: 'primary', color: '#0a0a0a', foreground: '#fafafa' },
+                    { type: 'secondary', color: '#c8a36a', foreground: '#0a0a0a' },
+                ],
             },
             // The production `ShopSchema` declares `icons.favicon.src/alt` as
             // required string paths, so Mongoose's nested-object auto-create
@@ -58,6 +71,8 @@ export async function seedShop(uri: string, opts: SeedShopOptions = {}): Promise
                 storefrontId: 'test-storefront-id',
             },
             collaborators: [],
+            integrations: { judgeme: { publicToken: 'judgeme-public-token' } },
+            thirdParty: { googleTagManager: 'GTM-DEMO123', intercom: 'demo-intercom-app-id' },
             ...opts.overrides,
         });
         console.info(`[seedShop] inserted Shop ${domain}`);

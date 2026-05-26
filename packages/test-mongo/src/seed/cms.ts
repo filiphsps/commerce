@@ -1,15 +1,26 @@
 import { getPayloadInstance } from '@nordcom/commerce-cms/api';
 import { articleFixtures } from './fixtures/articles';
 import { businessDataFixture } from './fixtures/business-data';
+import { collectionMetadataFixtures } from './fixtures/collection-metadata';
+import { featureFlagFixtures } from './fixtures/feature-flags';
 import { footerData } from './fixtures/footer';
 import { headerData } from './fixtures/header';
 import { pageFixtures } from './fixtures/pages';
+import { productMetadataFixtures } from './fixtures/product-metadata';
 
 export interface SeedCmsOptions {
     tenantId: string;
 }
 
-const TENANT_COLLECTIONS = ['header', 'footer', 'businessData', 'pages', 'articles'] as const;
+const TENANT_COLLECTIONS = [
+    'header',
+    'footer',
+    'businessData',
+    'pages',
+    'articles',
+    'productMetadata',
+    'collectionMetadata',
+] as const;
 
 /**
  * Resets and re-creates the canonical CMS docs for the given tenant via the
@@ -40,6 +51,13 @@ export async function seedCms(uri: string, { tenantId }: SeedCmsOptions): Promis
             disableTransaction: true,
         });
     }
+    console.info('[seedCms] resetting feature-flags (global — not tenant-scoped)');
+    await payload.delete({
+        collection: 'feature-flags' as never,
+        where: { key: { exists: true } } as never,
+        overrideAccess: true,
+        disableTransaction: true,
+    });
 
     console.info('[seedCms] creating header (5 top-level items, up to 6 levels deep)');
     await payload.create({
@@ -120,7 +138,71 @@ export async function seedCms(uri: string, { tenantId }: SeedCmsOptions): Promis
         });
     }
 
+    for (const product of productMetadataFixtures) {
+        console.info(
+            `[seedCms] creating productMetadata (shopifyHandle=${product.shopifyHandle}, ${product.blocks.length} blocks)`,
+        );
+        await payload.create({
+            collection: 'productMetadata',
+            data: {
+                tenant: tenantId,
+                shopifyHandle: product.shopifyHandle,
+                descriptionOverride: product.descriptionOverride,
+                blocks: product.blocks,
+                seo: product.seo,
+                _status: 'published',
+            } as never,
+            overrideAccess: true,
+            disableTransaction: true,
+        });
+    }
+
+    for (const collection of collectionMetadataFixtures) {
+        console.info(
+            `[seedCms] creating collectionMetadata (shopifyHandle=${collection.shopifyHandle}, ${collection.blocks.length} blocks)`,
+        );
+        await payload.create({
+            collection: 'collectionMetadata',
+            data: {
+                tenant: tenantId,
+                shopifyHandle: collection.shopifyHandle,
+                descriptionOverride: collection.descriptionOverride,
+                blocks: collection.blocks,
+                seo: collection.seo,
+                _status: 'published',
+            } as never,
+            overrideAccess: true,
+            disableTransaction: true,
+        });
+    }
+
+    for (const flag of featureFlagFixtures) {
+        console.info(`[seedCms] creating feature-flag (key=${flag.key})`);
+        // Payload's `type: 'json'` field is backed by Monaco in the admin and
+        // expects a stringified payload via the local API. Round-tripping
+        // through `JSON.stringify` here is what the admin would submit on
+        // save, and side-steps the validator's `required && !value` quirk
+        // (which would otherwise reject bare `false`).
+        await payload.create({
+            collection: 'feature-flags',
+            data: {
+                key: flag.key,
+                description: flag.description,
+                defaultValue: JSON.stringify(flag.defaultValue),
+                options: flag.options?.map((o) => ({ label: o.label, value: JSON.stringify(o.value) })),
+                targeting: flag.targeting?.map((t) => ({
+                    rule: t.rule,
+                    params: JSON.stringify(t.params),
+                    value: JSON.stringify(t.value),
+                    description: t.description,
+                })),
+            } as never,
+            overrideAccess: true,
+            disableTransaction: true,
+        });
+    }
+
     console.info(
-        `[seedCms] all collections created: 1 header / 1 footer / 1 businessData / ${pageFixtures.length} pages / ${articleFixtures.length} articles`,
+        `[seedCms] all collections created: 1 header / 1 footer / 1 businessData / ${pageFixtures.length} pages / ${articleFixtures.length} articles / ${productMetadataFixtures.length} productMetadata / ${collectionMetadataFixtures.length} collectionMetadata / ${featureFlagFixtures.length} feature-flags`,
     );
 }
