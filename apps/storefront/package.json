@@ -62,6 +62,7 @@
         "@opentelemetry/instrumentation": "0.218.0",
         "@opentelemetry/sdk-logs": "0.218.0",
         "@radix-ui/react-dialog": "1.1.15",
+        "@radix-ui/react-popover": "^1.1.15",
         "@radix-ui/react-visually-hidden": "1.2.4",
         "@shopify/hydrogen-react": "2026.4.2",
         "@tagtree/core": "workspace:*",
