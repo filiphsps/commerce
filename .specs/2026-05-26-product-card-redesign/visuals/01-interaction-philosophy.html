@@ -1,0 +1,203 @@
+<style>
+  :root {
+    --b: #14110b;
+    --m: #6b6555;
+    --hairline: #ece6d4;
+    --tile: #faf7f0;
+  }
+  .pc {
+    background: #fff;
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    padding: 10px;
+    box-shadow: 0 1px 0 rgb(20 17 11 / 2%), 0 1px 2px rgb(20 17 11 / 4%);
+    font-family: ui-sans-serif, system-ui;
+    color: var(--b);
+    width: 240px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .pc__img { background: var(--tile); border-radius: 8px; padding: 12px; aspect-ratio: 4/5; display:flex; align-items:center; justify-content:center; position: relative; }
+  .pc__img img { max-width:100%; max-height:100%; object-fit:contain; }
+  .pc__vendor { font-size: 11px; color: var(--m); font-weight: 600; letter-spacing: .05em; text-transform: uppercase; }
+  .pc__title { font-size: 14px; font-weight: 600; line-height: 1.3; min-height: 2.6em; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .pc__price { font-size: 15px; font-weight: 700; }
+  .pc__cta-full { background: var(--b); color: #fff; border:0; border-radius: 8px; padding: 11px; font: 600 13px/1 ui-sans-serif; cursor: pointer; }
+  .pc__sw-row { display: flex; gap: 6px; align-items: center; }
+  .pc__sw { width: 18px; height: 18px; border-radius: 999px; border: 1px solid #e5dfcd; }
+  .pc__sw[data-selected] { outline: 2px solid #14110b; outline-offset: 2px; }
+  .pc__chip-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pc__chip { font: 500 12px/1 ui-sans-serif; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--hairline); cursor: pointer; }
+  .pc__chip[data-selected] { background: var(--b); color: #fff; border-color: var(--b); }
+  .pc__chip[data-unavailable] { color: #b8b1a1; border-color: #efe9d6; background: #fbf8ee; position: relative; }
+  .pc__chip[data-unavailable]::after { content: ""; position: absolute; left: 8px; right: 8px; top: 50%; height: 1px; background: #b8b1a1; }
+  .pc__more { width: 26px; height: 26px; border-radius: 999px; background: #f3eedc; color: #4a463b; font: 600 11px/1 ui-sans-serif; display:flex; align-items:center; justify-content:center; border:0; cursor:pointer; }
+
+  .pc--browse { position: relative; }
+  .pc--browse .pc__img-cta {
+    position: absolute; left: 12px; right: 12px; bottom: 12px;
+    background: rgb(255 255 255 / 0.92);
+    backdrop-filter: blur(8px);
+    color: var(--b);
+    border-radius: 999px;
+    padding: 9px 12px;
+    font: 600 12px/1 ui-sans-serif;
+    border: 1px solid rgb(20 17 11 / 0.08);
+    opacity: 0;
+    transition: opacity .18s ease;
+    text-align: center;
+    cursor: pointer;
+  }
+  .pc--browse:hover .pc__img-cta { opacity: 1; }
+  /* show on screen for static demo */
+  .pc--browse[data-static] .pc__img-cta { opacity: 1; }
+
+  .grid-demo { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .stage { background: #fbf8ee; padding: 24px; border-radius: 12px; border: 1px solid var(--hairline); }
+  .stage h4 { font: 600 11px/1 ui-sans-serif; letter-spacing: 0.12em; text-transform: uppercase; color: var(--m); margin: 0 0 14px; }
+</style>
+
+<h2>Big scoping decision: should the card act as a buy form, or as a browse tile?</h2>
+<p class="subtitle">Same product, two philosophies. Pick one — the entire redesign branches here.</p>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header">Path A — Mini-PDP (fixed)</div>
+    <div class="mockup-body">
+      <div class="stage">
+        <h4>Same card, all defects fixed</h4>
+        <div class="grid-demo">
+          <div class="pc">
+            <div class="pc__img"><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400" alt=""></div>
+            <div class="pc__vendor">Everlane</div>
+            <div class="pc__title">The Heavyweight Box-Cut Tee</div>
+            <div class="pc__price">$38.00</div>
+            <div class="pc__chip-row">
+              <button class="pc__chip" data-selected>S</button>
+              <button class="pc__chip">M</button>
+              <button class="pc__chip" data-unavailable>L</button>
+              <button class="pc__chip">XL</button>
+            </div>
+            <div class="pc__sw-row">
+              <button class="pc__sw" data-selected style="background:#f5f1e3"></button>
+              <button class="pc__sw" style="background:#14110b"></button>
+              <button class="pc__sw" style="background:#b54a2a"></button>
+              <button class="pc__sw" style="background:#3f5c4e"></button>
+            </div>
+            <button class="pc__cta-full">Add to bag</button>
+          </div>
+          <div class="pc">
+            <div class="pc__img"><img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=400" alt=""></div>
+            <div class="pc__vendor">Everlane</div>
+            <div class="pc__title">Slim-Fit Organic Cotton Jean</div>
+            <div class="pc__price">$88.00</div>
+            <div class="pc__chip-row">
+              <button class="pc__chip">28</button>
+              <button class="pc__chip" data-selected>30</button>
+              <button class="pc__chip">32</button>
+              <button class="pc__more">+3</button>
+            </div>
+            <div class="pc__sw-row">
+              <button class="pc__sw" data-selected style="background:#3a4a6b"></button>
+              <button class="pc__sw" style="background:#1a1a1a"></button>
+              <button class="pc__sw" style="background:#8b6f47"></button>
+            </div>
+            <button class="pc__cta-full">Add to bag</button>
+          </div>
+        </div>
+      </div>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul>
+          <li>Power users can add-to-cart from grid without PDP visit</li>
+          <li>Already where the codebase is — closer fix</li>
+          <li>Variant-aware: respects current size/color URL params</li>
+        </ul></div>
+        <div class="cons"><h4>Cons</h4><ul>
+          <li>Card heights vary as option counts differ — grid rhythm fights you forever</li>
+          <li>Horizontal/search variant has to omit options → two layouts behave differently</li>
+          <li>Higher visual noise; image gets least real estate</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup">
+    <div class="mockup-header">Path B — Browse tile (image-led)</div>
+    <div class="mockup-body">
+      <div class="stage">
+        <h4>Image dominant; color hint only; PDP for purchase</h4>
+        <div class="grid-demo">
+          <div class="pc pc--browse" data-static>
+            <div class="pc__img">
+              <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400" alt="">
+              <button class="pc__img-cta">Quick add ›</button>
+            </div>
+            <div class="pc__vendor">Everlane</div>
+            <div class="pc__title">The Heavyweight Box-Cut Tee</div>
+            <div class="pc__price">$38.00</div>
+            <div class="pc__sw-row">
+              <button class="pc__sw" data-selected style="background:#f5f1e3"></button>
+              <button class="pc__sw" style="background:#14110b"></button>
+              <button class="pc__sw" style="background:#b54a2a"></button>
+              <button class="pc__sw" style="background:#3f5c4e"></button>
+            </div>
+          </div>
+          <div class="pc pc--browse" data-static>
+            <div class="pc__img">
+              <img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=400" alt="">
+              <button class="pc__img-cta">Quick add ›</button>
+            </div>
+            <div class="pc__vendor">Everlane</div>
+            <div class="pc__title">Slim-Fit Organic Cotton Jean</div>
+            <div class="pc__price">$88.00</div>
+            <div class="pc__sw-row">
+              <button class="pc__sw" data-selected style="background:#3a4a6b"></button>
+              <button class="pc__sw" style="background:#1a1a1a"></button>
+              <button class="pc__sw" style="background:#8b6f47"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul>
+          <li>Fixed card height — grid rhythm is perfect, every surface</li>
+          <li>Same content works in vertical, horizontal-search, and cart-drawer</li>
+          <li>Image is the hero — products sell themselves</li>
+          <li>"Quick add" is hover-revealed on image, doesn't compete with title/price</li>
+        </ul></div>
+        <div class="cons"><h4>Cons</h4><ul>
+          <li>Adding requires going to PDP (or accepting the variant's defaults via Quick add)</li>
+          <li>Need to decide Quick-add behavior: PDP, drawer-sheet, or default-variant add</li>
+          <li>Bigger refactor — Actions/Options primitives stop rendering inside the card chassis</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3 style="margin-top:24px">Which philosophy do you want the card to follow?</h3>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Mini-PDP, but execute it properly</h3>
+      <p>Size pills + color swatches + Add-to-bag stay in the card. We fix every defect (no +0 leak, no strikethrough text, consistent option treatment, fixed heights, proper image fit).</p>
+    </div>
+  </div>
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Browse tile, options live on the PDP</h3>
+      <p>Card = image, vendor, title, price, color hint, hover "Quick add". Click goes to PDP for the buy. Same shape works everywhere.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Hybrid: browse default, mini-PDP on long-press / hover-expand</h3>
+      <p>Default is the browse tile. A hover-overlay or long-press reveals size pills + add-to-cart without changing the card's footprint in the grid. Best-of-both, more complexity.</p>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:16px">Note: real bugs I confirmed in DOM (search renders 0 cards, +0 chip text wrong, carousel overflows, image banding) are getting fixed regardless of which path. The choice is about <em>where variant selection lives</em>.</p>

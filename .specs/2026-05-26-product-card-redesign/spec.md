@@ -237,6 +237,8 @@ apps/storefront/src/components/product-options-selector/
 └── (CSS modules deleted; styles ported to Tailwind on the existing TSX files)
 ```
 
+**Type co-location convention:** No standalone `types.ts` file. Types live next to the component or registry that owns them — `ProductCardData` is exported from `product-card.tsx`, `ProductCardCtaProps` from `cta/index.ts`, per-primitive prop types from each primitive's own file. Cross-package consumers import types from the file that exports the corresponding implementation.
+
 **Deleted files:**
 - `apps/storefront/src/components/product-card/product-card.module.css`
 - `apps/storefront/src/components/product-card/primitives/product-card-overlay.tsx` (folded into picker primitives; no separate overlay)
@@ -322,10 +324,10 @@ export const usePickerOpen      = () => useContext(PickerOpenContext);
 
 ### Slim data shape for client
 
-The provider's `product` prop is a slim `ProductCardData` view computed server-side, not the full `Product` (Vercel `server-serialization`):
+The provider's `product` prop is a slim `ProductCardData` view computed server-side, not the full `Product` (Vercel `server-serialization`). The type is co-located with the orchestrator that shapes it — exported from `product-card.tsx` alongside the orchestrator function, not from a separate `types.ts`:
 
 ```ts
-// product-card/types.ts
+// product-card.tsx — same file as the orchestrator
 export type ProductCardData = {
   id: string;
   handle: string;
@@ -818,6 +820,675 @@ Tokens added or modified by this spec. Existing tokens not listed here retain th
 | `--product-card-skeleton-radius` | `var(--product-card-radius-sm)` |
 | `--product-card-skeleton-animation` | `pulse` |
 | `--product-card-skeleton-duration` | `1.6s` |
+
+## Visual reference
+
+Visual demos saved alongside this spec under `.specs/2026-05-26-product-card-redesign/visuals/`. Open in a browser for an interactive walkthrough of every state.
+
+| File | Demonstrates |
+|---|---|
+| `visuals/00-overview.html` | All primitives + states + sale variants + surfaces + sizing + tokens + accessibility — single anchor-linked page |
+| `visuals/01-interaction-philosophy.html` | Mini-PDP vs browse-tile vs hybrid (the scoping decision) |
+| `visuals/02-interaction-model.html` | Three states: closed, float picker open, sheet picker open |
+| `visuals/03-cta-placement.html` | `float-pill` vs `inline-button` CTA mode, each in closed + open states |
+| `visuals/04-picker-mechanics.html` | Inline-grow vs float-over-image vs sheet (mechanic decision) |
+| `visuals/05-primitives.html` | Per-primitive specimens — every state, every variant |
+| `visuals/06-sale-state.html` | Strike-only vs strike-and-badge, four badge styles, positioning + collision, current-color, savings line |
+| `visuals/07-surfaces.html` | Collection grid, search rows, recommendations rail in realistic compositions |
+| `visuals/08-sizing.html` | Cards at narrow / tablet / desktop viewports + sparse-data alignment |
+
+### Canonical CSS — primitives
+
+These are the rendered-CSS outputs the Tailwind implementation must produce. During Phase 3 + 4 implementation, the Tailwind utility class strings should compile to equivalent rules. Tokens are read with Tailwind 4's `bg-(--token)` / `text-(color:var(--token))` / `rounded-(--token)` syntax (confirmed against `tailwindcss@4.3.0`).
+
+#### Card chassis
+
+```css
+.product-card {
+  background: var(--product-card-bg);
+  border: var(--product-card-border-width) solid var(--product-card-border-color);
+  border-radius: var(--product-card-radius);
+  padding: var(--product-card-padding);
+  box-shadow: var(--product-card-shadow);
+  transition: box-shadow var(--product-card-motion-base) var(--product-card-motion-ease);
+  display: flex;
+  flex-direction: column;
+  gap: var(--product-card-gap);
+  position: relative;
+}
+.product-card:hover,
+.product-card:focus-within {
+  box-shadow: var(--product-card-shadow-hover);
+}
+.product-card[data-chrome="frameless"] {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  box-shadow: none;
+}
+.product-card[data-availability="out-of-stock"] {
+  opacity: var(--product-card-oos-opacity);
+}
+```
+
+#### Image container
+
+```css
+.product-card__media {
+  position: relative;
+  background: var(--product-card-image-bg);
+  border-radius: var(--product-card-image-radius);
+  aspect-ratio: var(--aspect-product-card-vertical);
+  overflow: hidden;
+}
+.product-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: var(--product-card-image-fit); /* default cover */
+  display: block;
+}
+.product-card[data-availability="out-of-stock"] .product-card__media img {
+  filter: saturate(var(--product-card-oos-image-saturate));
+}
+```
+
+#### Eyebrow (shared by vendor + sale badge)
+
+```css
+.product-card__eyebrow {
+  font-family: ui-sans-serif, system-ui;
+  font-size: var(--product-card-eyebrow-size);
+  font-weight: var(--product-card-eyebrow-weight);
+  letter-spacing: var(--product-card-eyebrow-tracking);
+  text-transform: var(--product-card-eyebrow-transform);
+  line-height: 1;
+}
+.product-card__vendor { color: var(--product-card-vendor-color); }
+```
+
+#### Title
+
+```css
+.product-card__title {
+  font: var(--product-card-title-weight) var(--product-card-title-size)/1.35 ui-sans-serif;
+  color: var(--product-card-title-color);
+  display: -webkit-box;
+  -webkit-line-clamp: var(--product-card-title-line-clamp);
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+```
+
+#### Price + compare (with drawn angled strike)
+
+```css
+.product-card__price {
+  font: var(--product-card-price-weight) var(--product-card-price-size)/1 ui-sans-serif;
+  color: var(--product-card-price-color);
+  font-variant-numeric: tabular-nums;
+}
+.product-card__compare {
+  font: 500 12px/1 ui-sans-serif;
+  color: var(--product-card-compare-color);
+  font-variant-numeric: tabular-nums;
+  position: relative;
+  padding: 0 var(--product-card-sale-strike-extend);
+}
+.product-card__compare::after {
+  content: "";
+  position: absolute;
+  inset: 50% calc(var(--product-card-sale-strike-extend) * -1) auto calc(var(--product-card-sale-strike-extend) * -1);
+  height: 1.5px;
+  background: var(--product-card-sale-strike-color, currentColor);
+  transform: translateY(-50%) rotate(var(--product-card-sale-strike-angle));
+}
+.product-card[data-on-sale] .product-card__price {
+  color: var(--product-card-sale-current-color, currentColor);
+}
+```
+
+#### Swatch (16px visual, 36px hit, focus + selected + unavailable)
+
+```css
+.product-card-swatch {
+  position: relative;
+  width: calc(var(--product-card-swatch-size) + var(--product-card-swatch-hit-padding) * 2);
+  height: calc(var(--product-card-swatch-size) + var(--product-card-swatch-hit-padding) * 2);
+  margin: calc(var(--product-card-swatch-hit-padding) * -1);
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: transform var(--product-card-motion-base) var(--product-card-motion-ease);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .product-card-swatch:hover { transform: scale(1.08); }
+  .product-card-swatch:active {
+    transform: scale(0.94);
+    transition-duration: var(--product-card-motion-fast);
+  }
+}
+.product-card-swatch:focus { outline: none; }
+.product-card-swatch:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.product-card-swatch__visual {
+  width: var(--product-card-swatch-size);
+  height: var(--product-card-swatch-size);
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, currentColor 10%, transparent);
+  position: relative;
+}
+.product-card-swatch[data-selected] .product-card-swatch__visual {
+  box-shadow:
+    0 0 0 2px var(--product-card-bg),
+    0 0 0 3.5px var(--product-card-swatch-ring-color);
+}
+.product-card-swatch[data-unavailable] {
+  pointer-events: none;
+}
+.product-card-swatch[data-unavailable] .product-card-swatch__visual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top right,
+    transparent calc(50% - 0.5px),
+    currentColor calc(50% - 0.5px),
+    currentColor calc(50% + 0.5px),
+    transparent calc(50% + 0.5px)
+  );
+  opacity: 0.55;
+}
+```
+
+#### Chip (picker-only)
+
+```css
+.product-card-chip {
+  font: 500 12px/1 ui-sans-serif;
+  padding: 8px 12px;
+  border-radius: var(--product-card-radius-sm);
+  border: 1px solid color-mix(in srgb, currentColor 10%, transparent);
+  background: var(--product-card-chip-bg);
+  color: var(--product-card-chip-color);
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform var(--product-card-motion-base) var(--product-card-motion-ease),
+    background var(--product-card-motion-base) var(--product-card-motion-ease);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .product-card-chip:hover { transform: scale(1.04); }
+  .product-card-chip:active {
+    transform: scale(0.96);
+    transition-duration: var(--product-card-motion-fast);
+  }
+}
+.product-card-chip:focus { outline: none; }
+.product-card-chip:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.product-card-chip[data-selected] {
+  background: var(--product-card-chip-active-bg);
+  color: var(--product-card-chip-active-color);
+  border-color: var(--product-card-chip-active-bg);
+}
+.product-card-chip[data-unavailable] {
+  color: color-mix(in srgb, var(--product-card-chip-color) 50%, transparent);
+  pointer-events: none;
+}
+.product-card-chip[data-unavailable]::after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 50%;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.4;
+}
+```
+
+#### +N chip (overflow)
+
+```css
+.product-card-more {
+  font: 600 var(--product-card-more-size)/1 ui-sans-serif;
+  padding: 8px 10px;
+  border-radius: var(--product-card-radius-sm);
+  border: 0;
+  background: var(--product-card-more-bg);
+  color: var(--product-card-more-color);
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+  min-height: 36px;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition:
+    background var(--product-card-motion-base) var(--product-card-motion-ease),
+    transform var(--product-card-motion-base) var(--product-card-motion-ease);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .product-card-more:hover {
+    background: color-mix(in srgb, var(--product-card-more-bg) 96%, black 4%);
+    transform: scale(1.03);
+  }
+  .product-card-more:active {
+    transform: scale(0.97);
+    transition-duration: var(--product-card-motion-fast);
+  }
+}
+```
+
+#### CTA float-pill
+
+```css
+.product-card-cta-pill {
+  position: absolute;
+  height: 36px;
+  min-width: 36px;
+  width: 36px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.95);
+  color: var(--product-card-title-color);
+  border: 1px solid color-mix(in srgb, currentColor 8%, transparent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0;
+  font: 600 12px/1 ui-sans-serif;
+  cursor: pointer;
+  box-shadow: 0 6px 16px -8px rgb(20 17 11 / 0.25);
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  z-index: 3;
+  transition:
+    box-shadow var(--product-card-motion-base) var(--product-card-motion-ease),
+    transform var(--product-card-motion-base) var(--product-card-motion-ease);
+}
+.product-card-cta-pill[data-with-text] {
+  padding: 0 12px 0 10px;
+  width: auto;
+}
+.product-card-cta-pill[data-fast-path]::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 9px;
+  height: 9px;
+  border-radius: 99px;
+  background: var(--product-card-fast-path-dot);
+  border: 2px solid var(--product-card-bg);
+}
+.product-card-cta-pill[disabled] {
+  pointer-events: none;
+  opacity: 0.45;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .product-card-cta-pill:hover { box-shadow: 0 10px 22px -8px rgb(20 17 11 / 0.30); }
+  .product-card-cta-pill:active {
+    transform: scale(0.96);
+    transition-duration: var(--product-card-motion-fast);
+  }
+}
+.product-card-cta-pill:focus { outline: none; }
+.product-card-cta-pill:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Positions */
+.product-card-cta-pill[data-position="top-right"]    { top: 10px;    right: 10px; }
+.product-card-cta-pill[data-position="top-left"]     { top: 10px;    left: 10px; }
+.product-card-cta-pill[data-position="bottom-right"] { bottom: 10px; right: 10px; }
+.product-card-cta-pill[data-position="bottom-left"]  { bottom: 10px; left: 10px; }
+```
+
+#### CTA inline-button
+
+```css
+.product-card-cta-inline {
+  height: 44px;
+  padding: 0 16px;
+  border-radius: var(--product-card-cta-radius);
+  border: 0;
+  background: var(--product-card-cta-bg);
+  color: var(--product-card-cta-color);
+  font: 600 13px/1 ui-sans-serif;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition:
+    background var(--product-card-motion-base) var(--product-card-motion-ease),
+    transform var(--product-card-motion-base) var(--product-card-motion-ease);
+}
+.product-card-cta-inline[data-style="ghost"] {
+  background: transparent;
+  color: var(--product-card-cta-bg);
+  border: 1px solid var(--product-card-cta-bg);
+}
+.product-card-cta-inline[data-style="ghost"]:hover {
+  background: color-mix(in srgb, var(--product-card-cta-bg) 6%, transparent);
+}
+.product-card-cta-inline[disabled] {
+  opacity: 0.45;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .product-card-cta-inline:hover {
+    background: color-mix(in srgb, var(--product-card-cta-bg) 92%, white 8%);
+  }
+  .product-card-cta-inline:active {
+    transform: scale(0.99);
+    transition-duration: var(--product-card-motion-fast);
+  }
+}
+```
+
+#### Sale badges (4 styles)
+
+```css
+.product-card-sale-badge {
+  position: absolute;
+  z-index: 2;
+  padding: 5px 8px;
+  border-radius: var(--product-card-radius-sm);
+  font-family: ui-sans-serif, system-ui;
+  font-size: var(--product-card-eyebrow-size);
+  font-weight: var(--product-card-eyebrow-weight);
+  letter-spacing: var(--product-card-eyebrow-tracking);
+  text-transform: var(--product-card-eyebrow-transform);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.product-card-sale-badge[data-style="default"] {
+  background: var(--product-card-bg);
+  color: var(--product-card-title-color);
+  border: 1px solid var(--product-card-border-color);
+}
+.product-card-sale-badge[data-style="inverse"] {
+  background: var(--product-card-title-color);
+  color: var(--product-card-bg);
+  border: 1px solid var(--product-card-title-color);
+}
+.product-card-sale-badge[data-style="accent"] {
+  background: var(--accent);
+  color: var(--accent-foreground);
+  border: 1px solid var(--accent);
+}
+.product-card-sale-badge[data-style="sales-color"] {
+  background: var(--product-card-sale-current-color);
+  color: var(--accent-foreground);
+  border: 1px solid var(--product-card-sale-current-color);
+}
+
+/* Positions match CTA pill enum */
+.product-card-sale-badge[data-position="top-left"]     { top: 10px;    left: 10px; }
+.product-card-sale-badge[data-position="top-right"]    { top: 10px;    right: 10px; }
+.product-card-sale-badge[data-position="bottom-left"]  { bottom: 10px; left: 10px; }
+.product-card-sale-badge[data-position="bottom-right"] { bottom: 10px; right: 10px; }
+
+/* Collision auto-shift: when both badge and CTA target same corner, badge shifts horizontally */
+.product-card-sale-badge[data-collision-shift] {
+  /* shift = cta-width + 8px gap */
+  --shift: calc(36px + 8px);
+}
+.product-card-sale-badge[data-collision-shift][data-position="top-right"]    { right: calc(10px + var(--shift)); }
+.product-card-sale-badge[data-collision-shift][data-position="top-left"]     { left:  calc(10px + var(--shift)); }
+.product-card-sale-badge[data-collision-shift][data-position="bottom-right"] { right: calc(10px + var(--shift)); }
+.product-card-sale-badge[data-collision-shift][data-position="bottom-left"]  { left:  calc(10px + var(--shift)); }
+```
+
+#### Picker shells
+
+```css
+/* Float — anchored over image, backdrop blur */
+.product-card-picker-float {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  z-index: 5;
+  background: rgb(255 255 255 / 0.97);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgb(20 17 11 / 0.06);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 12px 28px -10px rgb(20 17 11 / 0.22);
+}
+
+/* Sheet — mobile (bottom-anchored with drag handle) */
+.product-card-picker-sheet[data-viewport="mobile"] {
+  width: 100%;
+  padding: 16px 16px 20px;
+  background: #fff;
+  border: 1px solid var(--product-card-border-color);
+  border-radius: 14px 14px 0 0;
+  box-shadow: 0 -12px 32px -8px rgb(20 17 11 / 0.15);
+  position: relative;
+}
+.product-card-picker-sheet[data-viewport="mobile"]::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  width: 32px;
+  height: 3px;
+  background: #ddd;
+  border-radius: 99px;
+  transform: translateX(-50%);
+}
+
+/* Sheet — desktop (centered dialog) */
+.product-card-picker-sheet[data-viewport="desktop"] {
+  width: 280px;
+  padding: 18px;
+  background: #fff;
+  border: 1px solid var(--product-card-border-color);
+  border-radius: 14px;
+  box-shadow: 0 16px 36px -12px rgb(20 17 11 / 0.28);
+}
+
+/* Inline — replaces CTA slot */
+.product-card-picker-inline {
+  padding: 12px;
+  background: var(--product-card-more-bg);
+  border: 1px solid var(--product-card-border-color);
+  border-radius: var(--product-card-cta-radius);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Picker contents */
+.product-card-picker__label {
+  font-family: ui-sans-serif, system-ui;
+  font-size: 10px;
+  font-weight: var(--product-card-eyebrow-weight);
+  letter-spacing: var(--product-card-eyebrow-tracking);
+  text-transform: var(--product-card-eyebrow-transform);
+  color: var(--product-card-vendor-color);
+  margin: 0 0 6px;
+}
+.product-card-picker__cta {
+  background: var(--product-card-cta-bg);
+  color: var(--product-card-cta-color);
+  border: 0;
+  border-radius: var(--product-card-cta-radius);
+  padding: 12px;
+  font: 600 12px/1 ui-sans-serif;
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+}
+```
+
+#### Skeleton
+
+```css
+@keyframes product-card-skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.55; }
+}
+.product-card-skeleton-piece {
+  background: var(--product-card-skeleton-bg);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .product-card-skeleton-piece {
+    animation: product-card-skeleton-pulse var(--product-card-skeleton-duration) ease-in-out infinite;
+  }
+}
+.product-card-skeleton-image {
+  aspect-ratio: var(--aspect-product-card-vertical);
+  border-radius: var(--product-card-image-radius);
+}
+.product-card-skeleton-title {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  height: calc(var(--product-card-title-line-height) * var(--product-card-title-line-clamp));
+}
+.product-card-skeleton-title-line-1 {
+  height: var(--product-card-title-line-height);
+  width: 80%;
+  border-radius: var(--product-card-radius-sm);
+}
+.product-card-skeleton-title-line-2 {
+  height: var(--product-card-title-line-height);
+  width: 60%;
+  border-radius: var(--product-card-radius-sm);
+}
+.product-card-skeleton-price {
+  height: var(--product-card-price-line-height);
+  width: 56px;
+  border-radius: var(--product-card-radius-sm);
+}
+.product-card-skeleton-vendor {
+  height: var(--product-card-eyebrow-size);
+  width: 64px;
+  border-radius: var(--product-card-radius-sm);
+}
+.product-card-skeleton-swatch {
+  width: var(--product-card-swatch-size);
+  height: var(--product-card-swatch-size);
+  border-radius: 999px;
+}
+```
+
+#### Recommendations rail (CollectionBlock enhancement)
+
+```css
+.collection-block[data-horizontal="true"] {
+  position: relative;
+  display: flex;
+  gap: var(--product-card-rail-gap);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--product-card-rail-pad);
+  padding: 4px var(--product-card-rail-pad) 18px;
+  scrollbar-width: none;
+  /* edge-fade hint via mask — existing overflow-x-shadow utility achieves this */
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black var(--product-card-rail-pad),
+    black calc(100% - var(--product-card-rail-pad)),
+    transparent
+  );
+}
+.collection-block[data-horizontal="true"]::-webkit-scrollbar { display: none; }
+.collection-block[data-horizontal="true"] > * {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  width: var(--product-card-max-width);
+}
+
+.collection-block-arrow {
+  position: absolute;
+  top: 38%;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: var(--product-card-bg);
+  border: 1px solid var(--product-card-border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 600 16px/1 ui-sans-serif;
+  cursor: pointer;
+  box-shadow: var(--product-card-shadow-hover);
+  z-index: 4;
+  color: var(--product-card-title-color);
+}
+.collection-block-arrow[data-side="prev"] { left:  -8px; }
+.collection-block-arrow[data-side="next"] { right: -8px; }
+.collection-block-arrow[data-hidden] { display: none; }
+@media (hover: none) {
+  .collection-block-arrow { display: none; } /* touch users get native scroll */
+}
+```
+
+### Color palette — defaults
+
+| Token | Hex | Role |
+|---|---|---|
+| `--product-card-bg` | `#ffffff` | Card surface |
+| `--product-card-border-color` | `#ece6d4` | Hairline border, dividers |
+| `--product-card-title-color` | `#14110b` | Title, eyebrow on inverse, focused chip text |
+| `--product-card-vendor-color` | `#8a8472` | Vendor eyebrow muted |
+| `--product-card-image-bg` | `#faf7f0` | Image tile background (boxed) |
+| `--product-card-image-bg-bare` | `#f3eedc` | Image tile background (frameless) |
+| `--product-card-compare-color` | `#6b6555` | Compare-price muted |
+| `--product-card-urgency-color` | `#b54a2a` | Stock urgency line |
+| `--product-card-more-bg` | `#f3eedc` | +N chip + inline picker shell |
+| `--product-card-cta-bg` | `#14110b` | Inline-button CTA solid bg |
+| `--product-card-cta-color` | `#ffffff` | Inline-button CTA fg |
+| `--product-card-fast-path-dot` | `#2f7d4a` | Single-buyable green dot |
+| `--product-card-sale-current-color` | `#b54a2a` | On-sale current price (when set) |
+| `--product-card-skeleton-bg` | `#ece6d4` | Skeleton fill |
+
+### State coverage matrix
+
+Every primitive × every state. Implementation must cover all cells; tests must verify.
+
+| Primitive | default | hover | active | focus-visible | selected | unavailable | disabled |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| Card chassis | ✓ | ✓ (shadow up) | — | ✓ (focus-within shadow up) | — | — | — |
+| Image | ✓ | ✓ (swap when images[1]) | — | — | — | — | ✓ (OOS saturate 0.85) |
+| Swatch | ✓ | ✓ (scale 1.08) | ✓ (scale 0.94) | ✓ | ✓ (ring) | ✓ (strike) | — |
+| Chip | ✓ | ✓ (scale 1.04) | ✓ (scale 0.96) | ✓ | ✓ (filled) | ✓ (dim + strike) | — |
+| +N chip | ✓ | ✓ (bg-darken + scale 1.03) | ✓ (scale 0.97) | ✓ | — | — | — |
+| CTA float-pill | ✓ | ✓ (shadow grow) | ✓ (scale 0.96) | ✓ | — | — | ✓ (opacity 0.45) |
+| CTA inline-button | ✓ | ✓ (bg-lighten) | ✓ (scale 0.99) | ✓ | — | — | ✓ (opacity 0.45) |
+| Picker shells | open (anim in) | — | — | ✓ (focus trap inside) | — | — | — |
+| Sale badge | ✓ × 4 styles | — | — | — | — | — | — |
 
 ## Performance & implementation guardrails
 

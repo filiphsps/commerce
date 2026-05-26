@@ -1,0 +1,390 @@
+<style>
+  :root {
+    --b: #14110b; --m: #6b6555;
+    --hairline: #ece6d4; --tile: #faf7f0;
+    --accent-sale: #b54a2a;
+  }
+  .stage { background: #fbf8ee; padding: 28px 22px; border-radius: 14px; border: 1px solid var(--hairline); margin-bottom: 22px; }
+  .stage h4 { font: 600 11px/1 ui-sans-serif; letter-spacing: 0.14em; text-transform: uppercase; color: var(--m); margin: 0 0 16px; display:flex; justify-content:space-between; }
+  .stage h4 small { font-weight:400; letter-spacing:0; color:#a8a290; text-transform:none; }
+
+  .pc {
+    background: #fff; border: 1px solid var(--hairline); border-radius: 12px;
+    padding: 12px;
+    font-family: ui-sans-serif, system-ui; color: var(--b);
+    width: 220px;
+    display: flex; flex-direction: column; gap: 8px;
+    box-shadow: 0 1px 2px rgb(20 17 11 / 4%);
+    position: relative;
+  }
+  .pc__media { position: relative; background: var(--tile); border-radius: 8px; aspect-ratio: 4/5; overflow: hidden; }
+  .pc__media img { width: 100%; height: 100%; object-fit: cover; }
+  .vendor { font: 600 10px/1 ui-sans-serif; letter-spacing: 0.14em; text-transform: uppercase; color: #8a8472; }
+  .title { font: 500 13px/1.35 ui-sans-serif; }
+  .pricebox { display:flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+  .price { font: 600 14px/1 ui-sans-serif; font-variant-numeric: tabular-nums; }
+  .compare { font: 500 12px/1 ui-sans-serif; color: var(--m); font-variant-numeric: tabular-nums; position: relative; padding: 0 4px; }
+  .compare::after {
+    content: ""; position: absolute; inset: 50% -2px auto -2px;
+    height: 1.5px; background: currentColor;
+    transform: translateY(-50%) rotate(-8deg);
+  }
+  .savings-line { font: 500 11px/1 ui-sans-serif; color: var(--accent-sale); }
+
+  /* CTA pill positions */
+  .cta-pill {
+    position: absolute;
+    width: 34px; height: 34px; border-radius: 999px;
+    background: rgb(255 255 255 / 0.95);
+    color: var(--b);
+    border: 1px solid rgb(20 17 11 / 0.08);
+    display:flex; align-items:center; justify-content:center;
+    font: 600 18px/1 ui-sans-serif;
+    cursor: pointer;
+    box-shadow: 0 6px 16px -8px rgb(20 17 11 / 0.25);
+    z-index: 3;
+  }
+  .cta-tr { top: 10px; right: 10px; }
+  .cta-tl { top: 10px; left: 10px; }
+  .cta-br { bottom: 10px; right: 10px; }
+  .cta-bl { bottom: 10px; left: 10px; }
+
+  /* Badge — typography from --product-card-eyebrow-*, radius from --product-card-radius-sm.
+     Color/bg/border determined by --product-card-sale-badge-style enum: default | inverse | accent | sales-color */
+  .badge {
+    position: absolute; z-index: 2;
+    font: 600 11px/1 ui-sans-serif; letter-spacing: 0.14em; text-transform: uppercase;
+    padding: 5px 8px; border-radius: 4px;
+    font-variant-numeric: tabular-nums;
+  }
+  /* style: default — matches card bg/text; flips with light/dark mode */
+  .badge--default {
+    background: var(--product-card-bg, #ffffff);
+    color: var(--product-card-title-color, #14110b);
+    border: 1px solid var(--product-card-border-color, #ece6d4);
+  }
+  /* style: inverse — opposite of default */
+  .badge--inverse {
+    background: var(--product-card-title-color, #14110b);
+    color: var(--product-card-bg, #ffffff);
+    border: 1px solid var(--product-card-title-color, #14110b);
+  }
+  /* style: accent — brand accent token */
+  .badge--accent {
+    background: var(--accent, #b54a2a);
+    color: var(--accent-foreground, #ffffff);
+    border: 1px solid var(--accent, #b54a2a);
+  }
+  /* style: sales-color — matches the current-price color when on sale */
+  .badge--sales-color {
+    background: var(--product-card-sale-current-color, #b54a2a);
+    color: var(--accent-foreground, #ffffff);
+    border: 1px solid var(--product-card-sale-current-color, #b54a2a);
+  }
+  .bdg-tl { top: 10px; left: 10px; }
+  .bdg-tr { top: 10px; right: 10px; }
+  .bdg-br { bottom: 10px; right: 10px; }
+  .bdg-bl { bottom: 10px; left: 10px; }
+
+  /* Collision visualization */
+  .collision-warning {
+    position: absolute; inset: 0;
+    border: 2px dashed #b54a2a;
+    border-radius: 8px;
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  .grid-4 { display: grid; grid-template-columns: repeat(4, max-content); gap: 18px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, max-content); gap: 18px; }
+  .lab { font: 500 10px/1.2 ui-sans-serif; letter-spacing: 0.08em; text-transform: uppercase; color: #8a8472; margin-bottom: 6px; }
+
+  .matrix {
+    background: #fff; border-radius: 10px; border: 1px solid var(--hairline); padding: 14px 16px;
+    font: 400 12px/1.6 ui-sans-serif; color: #333;
+  }
+  .matrix table { width: 100%; border-collapse: collapse; }
+  .matrix th, .matrix td { text-align: left; padding: 8px 10px; border-top: 1px solid var(--hairline); vertical-align: top; }
+  .matrix th { font-weight: 600; color: var(--m); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .matrix tr:first-child td, .matrix tr:first-child th { border-top: 0; }
+  .matrix code { background: #fbf8ee; padding: 1px 6px; border-radius: 4px; font-size: 11px; }
+</style>
+
+<h2>Sale state — locked design</h2>
+<p class="subtitle">Two styles: <code>strike-only</code>, <code>strike-and-badge</code>. Badge and CTA pill positions are independent tokens (4 corners each). Savings line is opt-in regardless of style.</p>
+
+<!-- ============================================================
+     Badge enumerated styles
+     ============================================================ -->
+<div class="stage">
+  <h4>Badge style enum · four values · all derive colors from existing tokens<small>typography always from <code>--product-card-eyebrow-*</code> · radius from <code>--product-card-radius-sm</code></small></h4>
+  <div class="grid-4">
+    <div>
+      <div class="lab">default<br><span style="text-transform:none;letter-spacing:0">card bg + title color + hairline · auto-flips light/dark</span></div>
+      <div class="pc">
+        <div class="pc__media">
+          <span class="badge badge--default bdg-tl">−20%</span>
+          <button class="cta-pill cta-tr">+</button>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400">
+        </div>
+        <div class="title">Court Sneaker</div>
+        <div class="pricebox"><span class="price">$78</span><span class="compare">$98</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="lab">inverse<br><span style="text-transform:none;letter-spacing:0">title color bg + card bg text · flips with mode</span></div>
+      <div class="pc">
+        <div class="pc__media">
+          <span class="badge badge--inverse bdg-tl">−20%</span>
+          <button class="cta-pill cta-tr">+</button>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400">
+        </div>
+        <div class="title">Court Sneaker</div>
+        <div class="pricebox"><span class="price">$78</span><span class="compare">$98</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="lab">accent<br><span style="text-transform:none;letter-spacing:0">brand accent token + accent foreground</span></div>
+      <div class="pc">
+        <div class="pc__media">
+          <span class="badge badge--accent bdg-tl">−20%</span>
+          <button class="cta-pill cta-tr">+</button>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400">
+        </div>
+        <div class="title">Court Sneaker</div>
+        <div class="pricebox"><span class="price">$78</span><span class="compare">$98</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="lab">sales-color<br><span style="text-transform:none;letter-spacing:0">same color as sale-current-color · cohesive sale signal</span></div>
+      <div class="pc">
+        <div class="pc__media">
+          <span class="badge badge--sales-color bdg-tl">−20%</span>
+          <button class="cta-pill cta-tr">+</button>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400">
+        </div>
+        <div class="title">Court Sneaker</div>
+        <div class="pricebox"><span class="price price--sale">$78</span><span class="compare">$98</span></div>
+      </div>
+    </div>
+  </div>
+  <p style="font:500 11px/1.5 ui-sans-serif; color: var(--m); margin-top: 12px">
+    Tenant doesn't pick colors directly — they pick a style. The style derives its colors from existing card / accent / sale tokens, so theming the card themes the badge automatically.
+  </p>
+</div>
+
+<!-- ============================================================
+     Badge positioning matrix
+     ============================================================ -->
+<div class="stage">
+  <h4>Badge positioning · four corners · CTA pill at default top-right</h4>
+  <div class="grid-4">
+    <div>
+      <div class="lab">badge: top-left (default)<br>cta: top-right (default)</div>
+      <div class="pc">
+        <div class="pc__media">
+          <span class="badge badge--default bdg-tl">−20%</span>
+          <button class="cta-pill cta-tr">+</button>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400">
+        </div>
+        <div class="title">Court Sneaker</div>
+        <div class="pricebox"><span class="price">$78</span><span class="compare">$98</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="lab">badge: bottom-left<br>cta: top-right</div>
+      <div class="pc">
+        <div class="pc__media">
+          <span class="badge bdg-bl">−20%</span>
+          <button class="cta-pill cta-tr">+</button>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400">
+        </div>
+        <div class="title">Court Sneaker</div>
+        <div class="pricebox"><span class="price">$78</span><span class="compare">$98</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="lab">badge: top-right · collision<br>cta: top-right (default)</div>
+      <div class="pc">
+        <div class="pc__media">
+          <span class="badge bdg-tr" style="right: 52px">−20%</span>
+          <button class="cta-pill cta-tr">+</button>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400">
+        </div>
+        <div class="title">Court Sneaker</div>
+        <div class="pricebox"><span class="price">$78</span><span class="compare">$98</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="lab">badge: top-right<br>cta: bottom-left (tenant choice)</div>
+      <div class="pc">
+        <div class="pc__media">
+          <span class="badge bdg-tr">−20%</span>
+          <button class="cta-pill cta-bl">+</button>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400">
+        </div>
+        <div class="title">Court Sneaker</div>
+        <div class="pricebox"><span class="price">$78</span><span class="compare">$98</span></div>
+      </div>
+    </div>
+  </div>
+  <p style="font:500 11px/1.5 ui-sans-serif; color: var(--m); margin-top: 12px">
+    <strong>Collision rule:</strong> when badge and CTA target the same corner, the badge auto-shifts horizontally by the CTA's width + 8px gap (3rd card above). Tenants who want them in the same corner without shifting can either (a) move the CTA to a different corner (4th card) or (b) opt into a `--product-card-sale-badge-allow-overlap: true` token (not shown — explicit override).
+  </p>
+</div>
+
+  <style>
+    .price--sale { color: var(--accent-sale); }
+    .price--sale-bold { color: #c8341a; font-weight: 700; }
+  </style>
+
+<!-- ============================================================
+     Current-price color · independent token
+     ============================================================ -->
+<div class="stage">
+  <h4>Current price color when on sale · independent token · layers on either style</h4>
+  <div class="grid-4">
+    <div>
+      <div class="lab">no color shift (default)</div>
+      <div class="pc">
+        <div class="pc__media">
+          <span class="badge badge--default bdg-tl">−20%</span>
+          <button class="cta-pill cta-tr">+</button>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400">
+        </div>
+        <div class="title">Court Sneaker</div>
+        <div class="pricebox"><span class="price">$78</span><span class="compare">$98</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="lab">accent color (muted brick)</div>
+      <div class="pc">
+        <div class="pc__media">
+          <span class="badge badge--default bdg-tl">−20%</span>
+          <button class="cta-pill cta-tr">+</button>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400">
+        </div>
+        <div class="title">Court Sneaker</div>
+        <div class="pricebox"><span class="price price--sale">$78</span><span class="compare">$98</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="lab">bold red (mass-market)</div>
+      <div class="pc">
+        <div class="pc__media">
+          <span class="badge badge--default bdg-tl">−20%</span>
+          <button class="cta-pill cta-tr">+</button>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400">
+        </div>
+        <div class="title">Court Sneaker</div>
+        <div class="pricebox"><span class="price price--sale-bold">$78</span><span class="compare">$98</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="lab">strike-only style + accent</div>
+      <div class="pc">
+        <div class="pc__media">
+          <button class="cta-pill cta-tr">+</button>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400">
+        </div>
+        <div class="title">Court Sneaker</div>
+        <div class="pricebox"><span class="price price--sale">$78</span><span class="compare">$98</span></div>
+      </div>
+    </div>
+  </div>
+  <p style="font:500 11px/1.5 ui-sans-serif; color: var(--m); margin-top: 12px">
+    Single token <code>--product-card-sale-current-color</code> · default <em>inherit</em> (no shift) · tenants can pull to accent, bold red, etc. Layers on either <code>strike-only</code> or <code>strike-and-badge</code>.
+  </p>
+</div>
+
+<!-- ============================================================
+     Savings line layered on both styles
+     ============================================================ -->
+<div class="stage">
+  <h4>Savings line · opt-in regardless of sale style</h4>
+  <div class="grid-4">
+    <div>
+      <div class="lab">A · strike-only · no savings</div>
+      <div class="pc">
+        <div class="pc__media">
+          <button class="cta-pill cta-tr">+</button>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400">
+        </div>
+        <div class="title">Court Sneaker</div>
+        <div class="pricebox"><span class="price">$78</span><span class="compare">$98</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="lab">A · strike-only · with savings</div>
+      <div class="pc">
+        <div class="pc__media">
+          <button class="cta-pill cta-tr">+</button>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400">
+        </div>
+        <div class="title">Court Sneaker</div>
+        <div class="pricebox"><span class="price">$78</span><span class="compare">$98</span></div>
+        <div class="savings-line">You save $20</div>
+      </div>
+    </div>
+    <div>
+      <div class="lab">B · strike+badge · no savings</div>
+      <div class="pc">
+        <div class="pc__media">
+          <span class="badge badge--default bdg-tl">−20%</span>
+          <button class="cta-pill cta-tr">+</button>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400">
+        </div>
+        <div class="title">Court Sneaker</div>
+        <div class="pricebox"><span class="price">$78</span><span class="compare">$98</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="lab">B · strike+badge · with savings</div>
+      <div class="pc">
+        <div class="pc__media">
+          <span class="badge badge--default bdg-tl">−20%</span>
+          <button class="cta-pill cta-tr">+</button>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400">
+        </div>
+        <div class="title">Court Sneaker</div>
+        <div class="pricebox"><span class="price">$78</span><span class="compare">$98</span></div>
+        <div class="savings-line">You save $20</div>
+      </div>
+    </div>
+  </div>
+  <p style="font:500 11px/1.5 ui-sans-serif; color: var(--m); margin-top: 12px">
+    Savings line is a separate concern from the style. Either style + savings line gives 4 combinations.
+  </p>
+</div>
+
+<!-- ============================================================
+     Final token surface
+     ============================================================ -->
+<div class="stage" style="background:#fff;border-color:#eee">
+  <h4 style="color:#444">Token surface — sale state + CTA pill position</h4>
+  <div class="matrix">
+    <table>
+      <tr><th>Token</th><th>Default</th><th>Purpose</th></tr>
+      <tr><td><code>--product-card-sale-style</code></td><td><code>strike-only</code></td><td><code>strike-only</code> · <code>strike-and-badge</code> (registry-extensible)</td></tr>
+      <tr><td><code>--product-card-sale-badge-position</code></td><td><code>top-left</code></td><td><code>top-left</code> · <code>top-right</code> · <code>bottom-left</code> · <code>bottom-right</code></td></tr>
+      <tr><td><code>--product-card-sale-badge-style</code></td><td><code>default</code></td><td>Enum: <code>default</code> | <code>inverse</code> | <code>accent</code> | <code>sales-color</code> · derives colors from existing tokens · no per-tenant raw color override</td></tr>
+      <tr><td colspan="3" style="background:#fbf8ee"><strong>Shared (used by badge + vendor + future eyebrow elements):</strong></td></tr>
+      <tr><td><code>--product-card-eyebrow-size</code></td><td><code>11px</code></td><td>Eyebrow type size · was <code>--product-card-vendor-size</code> · vendor now references this</td></tr>
+      <tr><td><code>--product-card-eyebrow-weight</code></td><td><code>600</code></td><td>Eyebrow type weight</td></tr>
+      <tr><td><code>--product-card-eyebrow-tracking</code></td><td><code>0.14em</code></td><td>Eyebrow letter-spacing</td></tr>
+      <tr><td><code>--product-card-eyebrow-transform</code></td><td><code>uppercase</code></td><td>Eyebrow casing</td></tr>
+      <tr><td><code>--product-card-radius-sm</code></td><td><code>4px</code></td><td>Small-element radius (badge, future small chips). Scale: <code>sm 4 / image 8 / cta 8 / card 12</code>.</td></tr>
+      <tr><td><code>--product-card-sale-badge-text</code></td><td><code>−{n}%</code></td><td>Template · <code>{n}</code> = rounded discount percent · or static text like <code>SALE</code></td></tr>
+      <tr><td><code>--product-card-sale-badge-min-discount</code></td><td><code>11</code></td><td>Discount % threshold for badge visibility. Below this, badge is suppressed (strike still draws).</td></tr>
+      <tr><td><code>--product-card-sale-badge-allow-overlap</code></td><td><code>false</code></td><td>Disable auto-shift when badge and CTA collide. Tenant accepts the stacking.</td></tr>
+      <tr><td><code>--product-card-sale-show-savings-line</code></td><td><code>off</code></td><td><code>on</code> · <code>off</code> · displays "You save $X" beneath price row</td></tr>
+      <tr><td><code>--product-card-sale-current-color</code></td><td><em>inherit</em></td><td>Color of current price when on sale. Default = no shift. Tenants can pull to accent, red, etc. Layers on either style.</td></tr>
+      <tr><td><code>--product-card-sale-strike-color</code></td><td><em>inherits compare text</em></td><td>Strike line color. Override to accent for sharper signal.</td></tr>
+      <tr><td><code>--product-card-sale-strike-angle</code></td><td><code>-8deg</code></td><td>Strike rotation. Recommended range -15deg to 15deg.</td></tr>
+      <tr><td><code>--product-card-cta-pill-position</code></td><td><code>top-right</code></td><td><code>top-left</code> · <code>top-right</code> · <code>bottom-left</code> · <code>bottom-right</code></td></tr>
+      <tr><td><strong>collision rule</strong></td><td></td><td>If badge-position === cta-pill-position AND <code>allow-overlap</code> is false, badge shifts horizontally by <code>cta-width + 8px</code></td></tr>
+    </table>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:14px">Confirm or amend; then I write the spec.</p>

@@ -1,0 +1,250 @@
+<style>
+  :root {
+    --b: #14110b; --m: #6b6555;
+    --hairline: #ece6d4; --tile: #faf7f0;
+  }
+  .stage { background: #fbf8ee; padding: 28px 20px; border-radius: 12px; border: 1px solid var(--hairline); }
+  .stage h4 { font: 600 11px/1 ui-sans-serif; letter-spacing: 0.12em; text-transform: uppercase; color: var(--m); margin: 0 0 16px; }
+  .demo { display: flex; gap: 18px; align-items: flex-start; }
+
+  /* Base card shell — neutral defaults */
+  .pc {
+    background: #fff; border: 1px solid var(--hairline); border-radius: 12px;
+    padding: 12px;
+    font-family: ui-sans-serif, system-ui;
+    color: var(--b);
+    width: 240px;
+    display: flex; flex-direction: column; gap: 8px;
+    box-shadow: 0 1px 2px rgb(20 17 11 / 4%);
+    position: relative;
+  }
+  .pc__img { background: var(--tile); border-radius: 8px; padding: 14px; aspect-ratio: 4/5; display:flex; align-items:center; justify-content:center; overflow:hidden; position: relative; }
+  .pc__img img { width: 100%; height: 100%; object-fit: cover; }
+  .pc__vendor { font: 600 10px/1 ui-sans-serif; letter-spacing: 0.14em; text-transform: uppercase; color: #8a8472; }
+  .pc__title { font: 500 14px/1.35 ui-sans-serif; }
+  .pc__price { font: 600 14px/1 ui-sans-serif; }
+  .pc__sw-row { display: flex; gap: 6px; }
+  .pc__sw { width: 14px; height: 14px; border-radius: 999px; border: 1px solid rgb(20 17 11 / 0.12); }
+  .pc__sw[data-sel] { outline: 1.5px solid #14110b; outline-offset: 2px; }
+  .pc__plus-affordance {
+    position: absolute; top: 16px; right: 16px;
+    width: 32px; height: 32px; border-radius: 999px;
+    background: rgb(255 255 255 / 0.92); color: #14110b;
+    border: 1px solid rgb(20 17 11 / 0.08);
+    display:flex; align-items:center; justify-content:center;
+    font: 600 18px/1 ui-sans-serif;
+    cursor: pointer;
+  }
+
+  /* ===== Mechanic 1: Inline-grow ===== */
+  .demo-1 .pc { width: 220px; }
+  .demo-1 .pc__opts {
+    border-top: 1px solid var(--hairline);
+    padding-top: 10px; margin-top: 4px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .chip-row { display: flex; gap: 5px; flex-wrap: wrap; }
+  .chip { font: 500 11px/1 ui-sans-serif; padding: 7px 9px; border-radius: 6px; border: 1px solid var(--hairline); background: #fff; cursor: pointer; }
+  .chip[data-sel] { background: #14110b; color: #fff; border-color: #14110b; }
+  .chip[data-na] { color: #b8b1a1; border-color: #efe9d6; background: #fbf8ee; position: relative; }
+  .chip[data-na]::after { content: ""; position: absolute; left: 6px; right: 6px; top: 50%; height: 1px; background: #d1cab7; }
+  .cta-full { background: #14110b; color: #fff; border: 0; border-radius: 8px; padding: 10px; font: 600 12px/1 ui-sans-serif; cursor: pointer; }
+
+  /* ===== Mechanic 2: Float-over-image ===== */
+  .demo-2 .pc { width: 220px; }
+  .demo-2 .pc__overlay {
+    position: absolute; left: 12px; right: 12px; bottom: 12px;
+    background: rgb(255 255 255 / 0.97);
+    border: 1px solid rgb(20 17 11 / 0.06);
+    border-radius: 10px;
+    padding: 10px; display: flex; flex-direction: column; gap: 8px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 6px 20px -8px rgb(20 17 11 / 0.18);
+  }
+  .demo-2 .pc__overlay--top {
+    /* overlay only covers image area, not the metadata below */
+    top: 12px; bottom: auto; height: calc(70% - 12px);
+    background: rgb(255 255 255 / 0.99);
+  }
+
+  /* ===== Mechanic 3: Inline-replace (chip row swaps in place) ===== */
+  .demo-3 .pc { width: 220px; }
+  .demo-3 .pc__swap {
+    display: flex; flex-direction: column; gap: 8px;
+    border-top: 1px dashed var(--hairline);
+    padding-top: 10px; margin-top: 2px;
+  }
+  .demo-3 .swap-back {
+    font: 500 10px/1 ui-sans-serif; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--m); background: transparent; border: 0; cursor: pointer;
+    align-self: flex-start; padding: 0;
+  }
+
+  /* ===== Mechanic 4: Drawer (mobile-first) ===== */
+  .demo-4 { display: flex; gap: 20px; align-items: flex-start; }
+  .demo-4 .pc { width: 220px; }
+  .demo-4 .sheet {
+    width: 280px; background: #fff; border: 1px solid var(--hairline); border-radius: 14px 14px 0 0;
+    padding: 16px; box-shadow: 0 -12px 32px -8px rgb(20 17 11 / 0.15);
+    display: flex; flex-direction: column; gap: 12px;
+    position: relative;
+  }
+  .sheet::before { content: ""; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 32px; height: 3px; background: #ddd; border-radius: 99px; }
+  .sheet__title { font: 500 14px/1.3 ui-sans-serif; padding-top: 8px; }
+  .sheet__label { font: 600 10px/1 ui-sans-serif; letter-spacing: 0.14em; text-transform: uppercase; color: var(--m); }
+</style>
+
+<h2>How does the mini-PDP appear over the browse card?</h2>
+<p class="subtitle">Hybrid C from the scoping question. Default state: image + title + price + swatches. Trigger: a "+" affordance always visible (top-right of image — works on both hover and touch). Question is: <em>what happens when the user activates it</em>.</p>
+
+<h3>Mechanic 1 — Inline-grow</h3>
+<p class="subtitle">Options appear below the card content. Card grows downward; grid rhythm breaks until dismissed.</p>
+<div class="stage">
+  <h4>2-up grid · left card open, right card closed</h4>
+  <div class="demo demo-1">
+    <div class="pc">
+      <div class="pc__plus-affordance">×</div>
+      <div class="pc__img"><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600"></div>
+      <div class="pc__vendor">Everlane</div>
+      <div class="pc__title">Heavyweight Box-Cut Tee</div>
+      <div class="pc__price">$38</div>
+      <div class="pc__opts">
+        <div class="chip-row">
+          <button class="chip" data-sel>S</button>
+          <button class="chip">M</button>
+          <button class="chip" data-na>L</button>
+          <button class="chip">XL</button>
+        </div>
+        <div class="pc__sw-row">
+          <span class="pc__sw" data-sel style="background:#f5f1e3"></span>
+          <span class="pc__sw" style="background:#14110b"></span>
+          <span class="pc__sw" style="background:#b54a2a"></span>
+          <span class="pc__sw" style="background:#3f5c4e"></span>
+        </div>
+        <button class="cta-full">Add to bag</button>
+      </div>
+    </div>
+    <div class="pc">
+      <div class="pc__plus-affordance">+</div>
+      <div class="pc__img"><img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=600"></div>
+      <div class="pc__vendor">Everlane</div>
+      <div class="pc__title">Slim-Fit Organic Cotton Jean</div>
+      <div class="pc__price">$88</div>
+      <div class="pc__sw-row">
+        <span class="pc__sw" data-sel style="background:#3a4a6b"></span>
+        <span class="pc__sw" style="background:#1a1a1a"></span>
+        <span class="pc__sw" style="background:#8b6f47"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3 style="margin-top:24px">Mechanic 2 — Float-over-image</h3>
+<p class="subtitle">A floating panel anchors over the lower portion of the image. Card height stays fixed. Grid rhythm preserved. The card's title/price stay visible below.</p>
+<div class="stage">
+  <h4>2-up grid · left card open</h4>
+  <div class="demo demo-2">
+    <div class="pc">
+      <div class="pc__plus-affordance">×</div>
+      <div class="pc__img"><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600"></div>
+      <div class="pc__vendor">Everlane</div>
+      <div class="pc__title">Heavyweight Box-Cut Tee</div>
+      <div class="pc__price">$38</div>
+      <div class="pc__sw-row">
+        <span class="pc__sw" data-sel style="background:#f5f1e3"></span>
+        <span class="pc__sw" style="background:#14110b"></span>
+      </div>
+      <div class="pc__overlay pc__overlay--top">
+        <div style="font:600 9px/1 ui-sans-serif;letter-spacing:0.14em;text-transform:uppercase;color:#6b6555">Choose size</div>
+        <div class="chip-row">
+          <button class="chip" data-sel>S</button>
+          <button class="chip">M</button>
+          <button class="chip" data-na>L</button>
+          <button class="chip">XL</button>
+        </div>
+        <button class="cta-full">Add to bag</button>
+      </div>
+    </div>
+    <div class="pc">
+      <div class="pc__plus-affordance">+</div>
+      <div class="pc__img"><img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=600"></div>
+      <div class="pc__vendor">Everlane</div>
+      <div class="pc__title">Slim-Fit Organic Cotton Jean</div>
+      <div class="pc__price">$88</div>
+      <div class="pc__sw-row">
+        <span class="pc__sw" data-sel style="background:#3a4a6b"></span>
+        <span class="pc__sw" style="background:#1a1a1a"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3 style="margin-top:24px">Mechanic 3 — Bottom-sheet / drawer</h3>
+<p class="subtitle">Click "+" opens a sheet (mobile bottom, desktop dialog). Card untouched. Best for products with many options, accessibility, and consistent mobile behavior.</p>
+<div class="stage">
+  <h4>Grid row + opened sheet (rendered to the right for the mock)</h4>
+  <div class="demo demo-4">
+    <div class="pc">
+      <div class="pc__plus-affordance">+</div>
+      <div class="pc__img"><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600"></div>
+      <div class="pc__vendor">Everlane</div>
+      <div class="pc__title">Heavyweight Box-Cut Tee</div>
+      <div class="pc__price">$38</div>
+      <div class="pc__sw-row">
+        <span class="pc__sw" data-sel style="background:#f5f1e3"></span>
+        <span class="pc__sw" style="background:#14110b"></span>
+        <span class="pc__sw" style="background:#b54a2a"></span>
+      </div>
+    </div>
+    <div class="sheet">
+      <div class="sheet__title">Heavyweight Box-Cut Tee — $38</div>
+      <div>
+        <div class="sheet__label" style="margin-bottom:6px">Size</div>
+        <div class="chip-row">
+          <button class="chip" data-sel>S</button>
+          <button class="chip">M</button>
+          <button class="chip" data-na>L</button>
+          <button class="chip">XL</button>
+        </div>
+      </div>
+      <div>
+        <div class="sheet__label" style="margin-bottom:6px">Color</div>
+        <div class="pc__sw-row">
+          <span class="pc__sw" data-sel style="background:#f5f1e3"></span>
+          <span class="pc__sw" style="background:#14110b"></span>
+          <span class="pc__sw" style="background:#b54a2a"></span>
+          <span class="pc__sw" style="background:#3f5c4e"></span>
+        </div>
+      </div>
+      <button class="cta-full">Add to bag</button>
+    </div>
+  </div>
+</div>
+
+<h3 style="margin-top:24px">Pick the overlay mechanic</h3>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Inline-grow</h3>
+      <p>Card expands downward. Most direct. Breaks grid rhythm while one card is open.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Float-over-image</h3>
+      <p>Floating panel anchored at the image. Card footprint never changes; grid stays clean. Works inside the existing card chassis.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Bottom-sheet / drawer</h3>
+      <p>Click "+" opens sheet (mobile bottom, desktop centered dialog). Consistent across surfaces (search row, cart drawer can also use it). Most accessible.</p>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:14px">All three respect token-driven theming. Mechanic doesn't pick an aesthetic.</p>

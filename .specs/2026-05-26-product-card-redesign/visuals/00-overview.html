@@ -1,0 +1,1749 @@
+<style>
+  /* ============================================================
+     TOKEN BASELINE (defaults per spec)
+     ============================================================ */
+  :root {
+    /* Chassis */
+    --product-card-bg: #ffffff;
+    --product-card-border-color: #ece6d4;
+    --product-card-border-width: 1px;
+    --product-card-radius: 12px;
+    --product-card-radius-sm: 4px;
+    --product-card-image-radius: 8px;
+    --product-card-image-bg: #faf7f0;
+    --product-card-image-bg-bare: #f3eedc;
+    --product-card-padding: 12px;
+    --product-card-gap: 8px;
+    --product-card-shadow: 0 1px 2px rgb(20 17 11 / 4%);
+    --product-card-shadow-hover: 0 8px 24px -10px rgb(20 17 11 / 22%);
+    --product-card-min-width: 200px;
+    --product-card-max-width: 240px;
+    --product-card-grid-align: start;
+    --product-card-search-image-width: 72px;
+
+    /* Typography */
+    --product-card-title-color: #14110b;
+    --product-card-title-size: 14px;
+    --product-card-title-line-height: calc(1.35 * var(--product-card-title-size));
+    --product-card-title-weight: 500;
+    --product-card-title-line-clamp: 2;
+    --product-card-price-color: #14110b;
+    --product-card-price-size: 14px;
+    --product-card-price-line-height: var(--product-card-price-size);
+    --product-card-price-weight: 600;
+    --product-card-compare-color: #6b6555;
+    --product-card-urgency-color: #b54a2a;
+
+    /* Eyebrow (shared by vendor + sale badge) */
+    --product-card-eyebrow-size: 11px;
+    --product-card-eyebrow-weight: 600;
+    --product-card-eyebrow-tracking: 0.14em;
+    --product-card-eyebrow-transform: uppercase;
+    --product-card-vendor-color: #8a8472;
+
+    /* Swatch */
+    --product-card-swatch-size: 16px;
+    --product-card-swatch-gap: 5px;
+    --product-card-swatch-hit-padding: 10px;
+    --product-card-swatch-ring-color: #14110b;
+
+    /* Chip */
+    --product-card-chip-bg: #ffffff;
+    --product-card-chip-color: #14110b;
+    --product-card-chip-border: #ece6d4;
+    --product-card-chip-active-bg: #14110b;
+    --product-card-chip-active-color: #ffffff;
+    --product-card-more-bg: #f3eedc;
+    --product-card-more-color: #6b6555;
+    --product-card-more-size: 11px;
+
+    /* CTA */
+    --product-card-cta-bg: #14110b;
+    --product-card-cta-color: #ffffff;
+    --product-card-cta-radius: 8px;
+    --product-card-fast-path-dot: #2f7d4a;
+
+    /* Motion */
+    --product-card-motion-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --product-card-motion-fast: 80ms;
+    --product-card-motion-base: 160ms;
+    --product-card-motion-picker-in: 220ms;
+    --product-card-motion-picker-out: 180ms;
+
+    /* OOS */
+    --product-card-oos-opacity: 0.7;
+    --product-card-oos-image-saturate: 0.85;
+
+    /* Sale */
+    --product-card-sale-strike-angle: -8deg;
+    --product-card-sale-strike-extend: 2px;
+    --product-card-sale-current-color: #b54a2a;
+
+    /* Skeleton */
+    --product-card-skeleton-bg: #ece6d4;
+    --product-card-skeleton-duration: 1.6s;
+
+    /* Accent (global) */
+    --accent: #14110b;
+    --accent-foreground: #ffffff;
+  }
+
+  /* ============================================================
+     LAYOUT
+     ============================================================ */
+  body { background: #fbf8ee; }
+  .section {
+    background: #ffffff;
+    padding: 32px 24px;
+    border-radius: 14px;
+    border: 1px solid var(--product-card-border-color);
+    margin-bottom: 22px;
+  }
+  .section--warm { background: #fbf8ee; }
+  .section-head {
+    font: 600 11px/1 ui-sans-serif;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #6b6555;
+    margin: 0 0 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .section-head small { font-weight:400; letter-spacing:0; color:#a8a290; text-transform:none; }
+  .section-sub { font: 600 10px/1 ui-sans-serif; letter-spacing: 0.14em; text-transform: uppercase; color: #8a8472; margin: 20px 0 10px; }
+  .row { display: flex; gap: 18px; align-items: flex-start; flex-wrap: wrap; }
+  .lab { font: 500 10px/1.2 ui-sans-serif; letter-spacing: 0.08em; text-transform: uppercase; color: #8a8472; margin-bottom: 6px; max-width: 220px; }
+  .note { font: 400 11px/1.5 ui-sans-serif; color: #666; margin-top: 8px; }
+  .anchor-nav {
+    background: #1a1612; color: #f3eedc; padding: 12px 24px; border-radius: 12px;
+    font: 500 11px/1.6 ui-sans-serif;
+    margin-bottom: 22px;
+    position: sticky; top: 12px; z-index: 100;
+  }
+  .anchor-nav h6 { font: 600 11px/1 ui-sans-serif; letter-spacing: 0.14em; text-transform: uppercase; color: #d9b289; margin: 0 0 8px; }
+  .anchor-nav a { color: #f3eedc; text-decoration: none; margin-right: 14px; padding: 2px 0; border-bottom: 1px solid transparent; }
+  .anchor-nav a:hover { border-bottom-color: #d9b289; }
+
+  /* ============================================================
+     SHARED: card chassis
+     ============================================================ */
+  .pc {
+    width: 220px;
+    font-family: ui-sans-serif, system-ui;
+    color: var(--product-card-title-color);
+    display: flex; flex-direction: column;
+    gap: var(--product-card-gap);
+    position: relative;
+  }
+  .pc--boxed {
+    background: var(--product-card-bg);
+    border: var(--product-card-border-width) solid var(--product-card-border-color);
+    border-radius: var(--product-card-radius);
+    padding: var(--product-card-padding);
+    box-shadow: var(--product-card-shadow);
+    transition: box-shadow var(--product-card-motion-base) var(--product-card-motion-ease);
+  }
+  .pc--boxed:hover,
+  .pc--boxed:focus-within { box-shadow: var(--product-card-shadow-hover); }
+  .pc--frameless { background: transparent; }
+  .pc__media {
+    position: relative;
+    background: var(--product-card-image-bg);
+    border-radius: var(--product-card-image-radius);
+    aspect-ratio: 4/5;
+    overflow: hidden;
+  }
+  .pc__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .pc__oos .pc__media img { filter: saturate(var(--product-card-oos-image-saturate)); }
+  .pc__oos { opacity: var(--product-card-oos-opacity); }
+
+  /* ============================================================
+     Typography primitives
+     ============================================================ */
+  .ty-eyebrow {
+    font: var(--product-card-eyebrow-weight) var(--product-card-eyebrow-size)/1 ui-sans-serif;
+    letter-spacing: var(--product-card-eyebrow-tracking);
+    text-transform: var(--product-card-eyebrow-transform);
+    color: var(--product-card-vendor-color);
+  }
+  .ty-title {
+    font: var(--product-card-title-weight) var(--product-card-title-size)/1.35 ui-sans-serif;
+    color: var(--product-card-title-color);
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .ty-price {
+    font: var(--product-card-price-weight) var(--product-card-price-size)/1 ui-sans-serif;
+    color: var(--product-card-price-color);
+    font-variant-numeric: tabular-nums;
+  }
+  .ty-compare {
+    font: 500 12px/1 ui-sans-serif;
+    color: var(--product-card-compare-color);
+    font-variant-numeric: tabular-nums;
+    position: relative;
+    padding: 0 var(--product-card-sale-strike-extend);
+  }
+  .ty-compare::after {
+    content: "";
+    position: absolute;
+    inset: 50% calc(var(--product-card-sale-strike-extend) * -1) auto calc(var(--product-card-sale-strike-extend) * -1);
+    height: 1.5px; background: currentColor;
+    transform: translateY(-50%) rotate(var(--product-card-sale-strike-angle));
+  }
+  .ty-urgency {
+    font: 500 11px/1 ui-sans-serif;
+    color: var(--product-card-urgency-color);
+  }
+  .ty-savings {
+    font: 500 11px/1 ui-sans-serif;
+    color: var(--product-card-sale-current-color);
+  }
+  .pricebox { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+  .price-tinted { color: var(--product-card-sale-current-color); }
+
+  /* ============================================================
+     Swatch
+     ============================================================ */
+  .swatch-row { display: flex; gap: var(--product-card-swatch-gap); align-items: center; }
+  .sw {
+    position: relative;
+    width: calc(var(--product-card-swatch-size) + var(--product-card-swatch-hit-padding) * 2);
+    height: calc(var(--product-card-swatch-size) + var(--product-card-swatch-hit-padding) * 2);
+    margin: calc(var(--product-card-swatch-hit-padding) * -1);
+    background: transparent; border: 0; padding: 0; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    transition: transform var(--product-card-motion-base) var(--product-card-motion-ease);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .sw:hover { transform: scale(1.08); }
+    .sw:active { transform: scale(0.94); transition-duration: var(--product-card-motion-fast); }
+  }
+  .sw:focus { outline: none; }
+  .sw:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+  .sw__visual {
+    width: var(--product-card-swatch-size); height: var(--product-card-swatch-size);
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, currentColor 10%, transparent);
+    position: relative;
+  }
+  .sw[data-selected] .sw__visual {
+    box-shadow: 0 0 0 2px var(--product-card-bg), 0 0 0 3.5px var(--product-card-swatch-ring-color);
+  }
+  .sw[data-unavailable] { pointer-events: none; }
+  .sw[data-unavailable] .sw__visual::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(to top right, transparent calc(50% - 0.5px), currentColor calc(50% - 0.5px), currentColor calc(50% + 0.5px), transparent calc(50% + 0.5px));
+    opacity: 0.55;
+  }
+
+  /* ============================================================
+     Chip
+     ============================================================ */
+  .chip {
+    font: 500 12px/1 ui-sans-serif;
+    padding: 8px 12px;
+    border-radius: var(--product-card-radius-sm);
+    border: 1px solid color-mix(in srgb, currentColor 10%, transparent);
+    background: var(--product-card-chip-bg);
+    color: var(--product-card-chip-color);
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    transition: transform var(--product-card-motion-base) var(--product-card-motion-ease), background var(--product-card-motion-base) var(--product-card-motion-ease);
+    position: relative;
+    overflow: hidden;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .chip:hover { transform: scale(1.04); }
+    .chip:active { transform: scale(0.96); transition-duration: var(--product-card-motion-fast); }
+  }
+  .chip:focus { outline: none; }
+  .chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .chip[data-selected] {
+    background: var(--product-card-chip-active-bg);
+    color: var(--product-card-chip-active-color);
+    border-color: var(--product-card-chip-active-bg);
+  }
+  .chip[data-unavailable] {
+    color: color-mix(in srgb, var(--product-card-chip-color) 50%, transparent);
+    pointer-events: none;
+  }
+  .chip[data-unavailable]::after {
+    content: ""; position: absolute; left: 8px; right: 8px; top: 50%; height: 1px;
+    background: currentColor; opacity: 0.4;
+  }
+
+  /* ============================================================
+     +N chip
+     ============================================================ */
+  .more {
+    font: 600 var(--product-card-more-size)/1 ui-sans-serif;
+    padding: 8px 10px;
+    border-radius: var(--product-card-radius-sm);
+    border: 0;
+    background: var(--product-card-more-bg);
+    color: var(--product-card-more-color);
+    cursor: pointer;
+    font-variant-numeric: tabular-nums;
+    min-height: 36px;
+    transition: background var(--product-card-motion-base) var(--product-card-motion-ease), transform var(--product-card-motion-base) var(--product-card-motion-ease);
+    user-select: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .more:hover { background: color-mix(in srgb, var(--product-card-more-bg) 96%, black 4%); transform: scale(1.03); }
+    .more:active { transform: scale(0.97); transition-duration: var(--product-card-motion-fast); }
+  }
+  .chips-row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+
+  /* ============================================================
+     CTA pill
+     ============================================================ */
+  .cta-pill {
+    position: absolute;
+    height: 36px; min-width: 36px; width: 36px;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.95);
+    color: var(--product-card-title-color);
+    border: 1px solid color-mix(in srgb, currentColor 8%, transparent);
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 0;
+    font: 600 12px/1 ui-sans-serif;
+    cursor: pointer;
+    box-shadow: 0 6px 16px -8px rgb(20 17 11 / 0.25);
+    transition: box-shadow var(--product-card-motion-base) var(--product-card-motion-ease), transform var(--product-card-motion-base) var(--product-card-motion-ease);
+    user-select: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+    z-index: 3;
+  }
+  .cta-pill__icon { font: 600 18px/1 ui-sans-serif; }
+  .cta-pill--with-text { padding: 0 12px 0 10px; width: auto; }
+  .cta-pill--single::after {
+    content: ""; position: absolute; bottom: -1px; right: -1px;
+    width: 9px; height: 9px; border-radius: 99px;
+    background: var(--product-card-fast-path-dot);
+    border: 2px solid var(--product-card-bg);
+  }
+  .cta-pill[disabled] { pointer-events: none; opacity: 0.45; box-shadow: none; cursor: not-allowed; }
+  @media (prefers-reduced-motion: no-preference) {
+    .cta-pill:hover { box-shadow: 0 10px 22px -8px rgb(20 17 11 / 0.30); }
+    .cta-pill:active { transform: scale(0.96); transition-duration: var(--product-card-motion-fast); }
+  }
+  .cta-pill:focus { outline: none; }
+  .cta-pill:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* CTA pill positions */
+  .cta-tr { top: 10px; right: 10px; }
+  .cta-tl { top: 10px; left: 10px; }
+  .cta-br { bottom: 10px; right: 10px; }
+  .cta-bl { bottom: 10px; left: 10px; }
+
+  /* ============================================================
+     CTA inline-button
+     ============================================================ */
+  .cta-inline {
+    height: 44px;
+    padding: 0 16px;
+    border-radius: var(--product-card-cta-radius);
+    border: 0;
+    background: var(--product-card-cta-bg);
+    color: var(--product-card-cta-color);
+    font: 600 13px/1 ui-sans-serif;
+    cursor: pointer;
+    transition: background var(--product-card-motion-base) var(--product-card-motion-ease), transform var(--product-card-motion-base) var(--product-card-motion-ease);
+    display: inline-flex; align-items: center; justify-content: center;
+    user-select: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+    min-width: 180px;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .cta-inline:hover { background: color-mix(in srgb, var(--product-card-cta-bg) 92%, white 8%); }
+    .cta-inline:active { transform: scale(0.99); transition-duration: var(--product-card-motion-fast); }
+  }
+  .cta-inline--ghost {
+    background: transparent;
+    color: var(--product-card-cta-bg);
+    border: 1px solid var(--product-card-cta-bg);
+  }
+  .cta-inline--ghost:hover { background: color-mix(in srgb, var(--product-card-cta-bg) 6%, transparent); }
+  .cta-inline[disabled] { opacity: 0.45; pointer-events: none; cursor: not-allowed; }
+
+  /* ============================================================
+     Sale badges (4 styles)
+     ============================================================ */
+  .badge {
+    position: absolute; z-index: 2;
+    font: var(--product-card-eyebrow-weight) var(--product-card-eyebrow-size)/1 ui-sans-serif;
+    letter-spacing: var(--product-card-eyebrow-tracking);
+    text-transform: var(--product-card-eyebrow-transform);
+    padding: 5px 8px;
+    border-radius: var(--product-card-radius-sm);
+    font-variant-numeric: tabular-nums;
+  }
+  .badge--default {
+    background: var(--product-card-bg);
+    color: var(--product-card-title-color);
+    border: 1px solid var(--product-card-border-color);
+  }
+  .badge--inverse {
+    background: var(--product-card-title-color);
+    color: var(--product-card-bg);
+    border: 1px solid var(--product-card-title-color);
+  }
+  .badge--accent {
+    background: var(--accent);
+    color: var(--accent-foreground);
+    border: 1px solid var(--accent);
+  }
+  .badge--sales-color {
+    background: var(--product-card-sale-current-color);
+    color: var(--accent-foreground);
+    border: 1px solid var(--product-card-sale-current-color);
+  }
+  .badge--soldout {
+    background: var(--product-card-bg);
+    color: var(--product-card-compare-color);
+    border: 1px solid var(--product-card-border-color);
+  }
+  .bdg-tl { top: 10px; left: 10px; }
+  .bdg-tr { top: 10px; right: 10px; }
+  .bdg-br { bottom: 10px; right: 10px; }
+  .bdg-bl { bottom: 10px; left: 10px; }
+
+  /* ============================================================
+     Picker shells
+     ============================================================ */
+  .picker-float {
+    width: 196px; padding: 12px;
+    background: rgb(255 255 255 / 0.97);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgb(20 17 11 / 0.06);
+    border-radius: 10px;
+    box-shadow: 0 12px 28px -10px rgb(20 17 11 / 0.22);
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .picker-sheet-mobile {
+    width: 280px; padding: 16px 16px 20px;
+    background: #fff;
+    border: 1px solid var(--product-card-border-color);
+    border-radius: 14px 14px 0 0;
+    box-shadow: 0 -12px 32px -8px rgb(20 17 11 / 0.15);
+    position: relative;
+  }
+  .picker-sheet-mobile::before {
+    content: "";
+    position: absolute; top: 8px; left: 50%;
+    width: 32px; height: 3px;
+    background: #ddd; border-radius: 99px;
+    transform: translateX(-50%);
+  }
+  .picker-sheet-desktop {
+    width: 280px; padding: 18px;
+    background: #fff;
+    border: 1px solid var(--product-card-border-color);
+    border-radius: 14px;
+    box-shadow: 0 16px 36px -12px rgb(20 17 11 / 0.28);
+  }
+  .picker-inline {
+    width: 196px; padding: 12px;
+    background: var(--product-card-more-bg);
+    border: 1px solid var(--product-card-border-color);
+    border-radius: var(--product-card-cta-radius);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .picker-label {
+    font: var(--product-card-eyebrow-weight) 10px/1 ui-sans-serif;
+    letter-spacing: var(--product-card-eyebrow-tracking);
+    text-transform: var(--product-card-eyebrow-transform);
+    color: var(--product-card-vendor-color);
+    margin: 0 0 6px;
+  }
+  .picker-cta {
+    background: var(--product-card-cta-bg);
+    color: var(--product-card-cta-color);
+    border: 0;
+    border-radius: var(--product-card-cta-radius);
+    padding: 12px;
+    font: 600 12px/1 ui-sans-serif;
+    cursor: pointer;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ============================================================
+     Search row
+     ============================================================ */
+  .pc-row {
+    background: var(--product-card-bg);
+    border: 1px solid var(--product-card-border-color);
+    border-radius: var(--product-card-radius);
+    padding: 12px;
+    display: flex; gap: 14px; align-items: center;
+    font-family: ui-sans-serif, system-ui;
+    color: var(--product-card-title-color);
+    position: relative;
+    box-shadow: var(--product-card-shadow);
+    transition: box-shadow var(--product-card-motion-base) var(--product-card-motion-ease);
+  }
+  .pc-row:hover, .pc-row:focus-within { box-shadow: var(--product-card-shadow-hover); }
+  .pc-row__media {
+    width: var(--product-card-search-image-width);
+    height: 90px;
+    flex-shrink: 0;
+    background: var(--product-card-image-bg);
+    border-radius: var(--product-card-image-radius);
+    overflow: hidden; position: relative;
+  }
+  .pc-row__media img { width: 100%; height: 100%; object-fit: cover; }
+  .pc-row__body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+  .pc-row__right { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; gap: 6px; flex-shrink: 0; height: 90px; }
+  .pc-row__plus {
+    width: 36px; height: 36px; border-radius: 999px;
+    background: var(--product-card-cta-bg); color: var(--product-card-cta-color);
+    display: flex; align-items: center; justify-content: center;
+    font: 600 18px/1 ui-sans-serif; border: 0; cursor: pointer;
+    box-shadow: 0 6px 16px -8px rgb(20 17 11 / 0.25);
+  }
+
+  /* ============================================================
+     Skeleton
+     ============================================================ */
+  @keyframes sk-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+  .sk { animation: sk-pulse var(--product-card-skeleton-duration) ease-in-out infinite; background: var(--product-card-skeleton-bg); }
+  .sk-image {
+    aspect-ratio: 4/5;
+    border-radius: var(--product-card-image-radius);
+  }
+  .sk-title-1 {
+    height: var(--product-card-title-line-height);
+    width: 80%;
+    border-radius: var(--product-card-radius-sm);
+  }
+  .sk-title-2 {
+    height: var(--product-card-title-line-height);
+    width: 60%;
+    border-radius: var(--product-card-radius-sm);
+  }
+  .sk-title { display: flex; flex-direction: column; gap: 4px;
+    height: calc(var(--product-card-title-line-height) * var(--product-card-title-line-clamp));
+  }
+  .sk-price {
+    height: var(--product-card-price-line-height);
+    width: 56px;
+    border-radius: var(--product-card-radius-sm);
+  }
+  .sk-vendor {
+    height: var(--product-card-eyebrow-size);
+    width: 64px;
+    border-radius: var(--product-card-radius-sm);
+  }
+  .sk-swatch-row { display: flex; gap: var(--product-card-swatch-gap); }
+  .sk-swatch { width: var(--product-card-swatch-size); height: var(--product-card-swatch-size); border-radius: 999px; }
+
+  /* ============================================================
+     Grid demos
+     ============================================================ */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(var(--product-card-min-width), var(--product-card-max-width)));
+    gap: 14px;
+    justify-content: var(--product-card-grid-align);
+  }
+  .grid--center { justify-content: center; }
+  .viewport {
+    background: #fbf8ee; padding: 14px;
+    border: 1px dashed #d4cdb8; border-radius: 8px;
+  }
+  .vp-label {
+    font: 500 10px/1.2 ui-sans-serif; letter-spacing: 0.1em; text-transform: uppercase;
+    color: #8a8472; background: #fff; padding: 4px 8px; border-radius: 4px;
+    border: 1px solid var(--product-card-border-color);
+    display: inline-block; margin-bottom: 10px;
+  }
+
+  /* Carousel rail */
+  .rail-wrap { position: relative; }
+  .rail {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 4px 14px 18px;
+    margin: 0 -14px;
+    scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(to right, transparent, black 14px, black calc(100% - 14px), transparent);
+            mask-image: linear-gradient(to right, transparent, black 14px, black calc(100% - 14px), transparent);
+  }
+  .rail::-webkit-scrollbar { display: none; }
+  .rail .pc { flex: 0 0 220px; scroll-snap-align: start; }
+  .rail-arrow {
+    position: absolute; top: 38%;
+    width: 36px; height: 36px; border-radius: 999px;
+    background: var(--product-card-bg);
+    border: 1px solid var(--product-card-border-color);
+    display: flex; align-items: center; justify-content: center;
+    font: 600 16px/1 ui-sans-serif;
+    cursor: pointer;
+    box-shadow: var(--product-card-shadow-hover);
+    z-index: 4;
+    color: var(--product-card-title-color);
+  }
+  .rail-arrow--prev { left: -8px; }
+  .rail-arrow--next { right: -8px; }
+
+  /* ============================================================
+     Token cards
+     ============================================================ */
+  .tok-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+  .tok {
+    background: #fbf8ee;
+    border: 1px solid var(--product-card-border-color);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font: 500 11px/1.5 ui-sans-serif;
+    color: #333;
+  }
+  .tok code { background: #fff; padding: 1px 6px; border-radius: 4px; font-size: 10px; }
+  .tok strong { color: var(--accent); }
+
+  /* ============================================================
+     Motion curve graph
+     ============================================================ */
+  .motion-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+  .mc {
+    background: #fbf8ee;
+    border: 1px solid var(--product-card-border-color);
+    border-radius: 8px;
+    padding: 12px;
+  }
+  .mc-svg { width: 100%; height: 80px; display: block; }
+  .mc-label {
+    font: 600 10px/1 ui-sans-serif; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--product-card-vendor-color); margin: 0 0 6px;
+  }
+  .mc-value { font: 500 11px/1.4 ui-sans-serif; color: #333; }
+
+  /* ============================================================
+     Accessibility callouts
+     ============================================================ */
+  .a11y-box {
+    background: #fbf8ee;
+    border: 1px solid var(--product-card-border-color);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font: 400 12px/1.55 ui-sans-serif; color: #333;
+  }
+  .a11y-box ul { margin: 0; padding-left: 18px; }
+  .a11y-box code { background: #fff; padding: 1px 5px; border-radius: 3px; font-size: 11px; }
+  .a11y-box li { margin-bottom: 4px; }
+
+  .helper-cta {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 999px;
+    background: var(--product-card-bg);
+    color: var(--product-card-title-color);
+    border: 1px solid var(--product-card-border-color);
+    font: 500 11px/1 ui-sans-serif;
+  }
+  .swatches-strip { display: flex; gap: 5px; }
+</style>
+
+<!-- ============================================================
+     ANCHOR NAV
+     ============================================================ -->
+<div class="anchor-nav">
+  <h6>Spec demo — table of contents</h6>
+  <a href="#chassis">Chassis</a>
+  <a href="#typography">Typography</a>
+  <a href="#image">Image</a>
+  <a href="#swatch">Swatch</a>
+  <a href="#chip">Chip</a>
+  <a href="#more">+N chip</a>
+  <a href="#cta">CTA</a>
+  <a href="#picker">Picker shells</a>
+  <a href="#sale">Sale</a>
+  <a href="#badge">Badges</a>
+  <a href="#positioning">Positioning</a>
+  <a href="#oos">OOS</a>
+  <a href="#skeleton">Skeleton</a>
+  <a href="#surfaces">Surfaces</a>
+  <a href="#rail">Rail</a>
+  <a href="#sizing">Sizing</a>
+  <a href="#motion">Motion</a>
+  <a href="#a11y">Accessibility</a>
+  <a href="#tokens">Tokens</a>
+</div>
+
+<!-- ============================================================
+     1. CHASSIS
+     ============================================================ -->
+<section class="section" id="chassis">
+  <div class="section-head">1 · Card chassis <small>boxed (default), frameless, out-of-stock</small></div>
+  <div class="row">
+    <div>
+      <div class="lab">boxed (default)</div>
+      <div class="pc pc--boxed">
+        <div class="pc__media">
+          <button class="cta-pill cta-tr"><span class="cta-pill__icon">+</span></button>
+          <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600">
+        </div>
+        <div class="ty-eyebrow">Everlane</div>
+        <div class="ty-title">Heavyweight Box-Cut Tee</div>
+        <div class="pricebox"><span class="ty-price">$38</span></div>
+        <div class="swatch-row">
+          <button class="sw" data-selected aria-label="Bone"><span class="sw__visual" style="background:#f5f1e3"></span></button>
+          <button class="sw" aria-label="Black"><span class="sw__visual" style="background:#14110b"></span></button>
+          <button class="sw" aria-label="Brick"><span class="sw__visual" style="background:#b54a2a"></span></button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="lab">frameless</div>
+      <div class="pc pc--frameless">
+        <div class="pc__media">
+          <button class="cta-pill cta-tr"><span class="cta-pill__icon">+</span></button>
+          <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600">
+        </div>
+        <div class="ty-eyebrow">Everlane</div>
+        <div class="ty-title">Heavyweight Box-Cut Tee</div>
+        <div class="pricebox"><span class="ty-price">$38</span></div>
+        <div class="swatch-row">
+          <button class="sw" data-selected><span class="sw__visual" style="background:#f5f1e3"></span></button>
+          <button class="sw"><span class="sw__visual" style="background:#14110b"></span></button>
+          <button class="sw"><span class="sw__visual" style="background:#b54a2a"></span></button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="lab">boxed · hover/focus-within state<br>(elevated shadow)</div>
+      <div class="pc pc--boxed" style="box-shadow: var(--product-card-shadow-hover)">
+        <div class="pc__media">
+          <button class="cta-pill cta-tr" style="outline: 2px solid var(--accent); outline-offset: 2px"><span class="cta-pill__icon">+</span></button>
+          <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600">
+        </div>
+        <div class="ty-eyebrow">Everlane</div>
+        <div class="ty-title">Heavyweight Box-Cut Tee</div>
+        <div class="pricebox"><span class="ty-price">$38</span></div>
+        <div class="swatch-row">
+          <button class="sw" data-selected><span class="sw__visual" style="background:#f5f1e3"></span></button>
+          <button class="sw"><span class="sw__visual" style="background:#14110b"></span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="note">Hover and <code>focus-within</code> both trigger the elevated shadow. No transform on hover — lift is shadow-only. Frameless drops bg, border, padding, and shadow entirely; content sits flush with parent context.</p>
+</section>
+
+<!-- ============================================================
+     2. TYPOGRAPHY
+     ============================================================ -->
+<section class="section" id="typography">
+  <div class="section-head">2 · Typography hierarchy <small>vendor + sale badge share eyebrow tokens · compare strike is drawn</small></div>
+  <div class="row" style="align-items: flex-end; gap: 36px">
+    <div>
+      <div class="ty-eyebrow">Everlane</div>
+      <div class="ty-title" style="margin: 4px 0 8px; max-width: 240px">Heavyweight Box-Cut Tee — Bone</div>
+      <div class="pricebox">
+        <span class="ty-price">$38</span>
+        <span class="ty-compare">$48</span>
+      </div>
+      <div class="ty-urgency" style="margin-top:6px">Only 3 left in this size</div>
+    </div>
+    <div style="display:flex; flex-direction: column; gap: 14px">
+      <div>
+        <div class="lab">Compare-price strike anatomy</div>
+        <div style="display: flex; align-items: baseline; gap: 12px; font-size: 24px">
+          <span class="ty-price" style="font-size: 24px">$38</span>
+          <span class="ty-compare" style="font-size: 22px; padding: 0 6px">$48</span>
+        </div>
+      </div>
+      <p class="note" style="max-width: 320px">Strike drawn via <code>::after</code> pseudo-element at <code>rotate(-8deg)</code>, 1.5px thickness, extends 2px past the price. Works with tabular-nums, respects line-height, scales with font-size.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     3. IMAGE
+     ============================================================ -->
+<section class="section" id="image">
+  <div class="section-head">3 · Image <small>object-fit cover (default) · hover swap (when images[1] exists)</small></div>
+  <div class="row">
+    <div>
+      <div class="lab">cover (default)</div>
+      <div class="pc pc--boxed">
+        <div class="pc__media">
+          <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600">
+        </div>
+        <div class="ty-eyebrow">Everlane</div>
+        <div class="ty-title">Heavyweight Box-Cut Tee</div>
+        <div class="pricebox"><span class="ty-price">$38</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="lab">cover · alt vendor (different image aspect)</div>
+      <div class="pc pc--boxed">
+        <div class="pc__media">
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600">
+        </div>
+        <div class="ty-eyebrow">Everlane</div>
+        <div class="ty-title">Court Sneaker</div>
+        <div class="pricebox"><span class="ty-price">$98</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="lab">hover-swap (2nd image revealed)</div>
+      <div class="pc pc--boxed">
+        <div class="pc__media">
+          <img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=600">
+        </div>
+        <div class="ty-eyebrow">Everlane</div>
+        <div class="ty-title">Slim-Fit Jean</div>
+        <div class="pricebox"><span class="ty-price">$88</span></div>
+      </div>
+    </div>
+  </div>
+  <p class="note">Cream banding bug from the old <code>object-fit: contain</code> behavior is gone. <code>cover</code> by default; tenants can opt back to <code>contain</code> via <code>--product-card-image-fit</code>. Hover swap gated by <code>--product-card-image-hover-swap</code>.</p>
+</section>
+
+<!-- ============================================================
+     4. SWATCH
+     ============================================================ -->
+<section class="section" id="swatch">
+  <div class="section-head">4 · Swatch <small>16px visual · 36px hit target · 4 states</small></div>
+  <div class="row">
+    <div>
+      <div class="lab">default</div>
+      <button class="sw"><span class="sw__visual" style="background:#f5f1e3; color:#14110b"></span></button>
+    </div>
+    <div>
+      <div class="lab">selected (ring)</div>
+      <button class="sw" data-selected><span class="sw__visual" style="background:#14110b; color:#14110b"></span></button>
+    </div>
+    <div>
+      <div class="lab">unavailable (strike)</div>
+      <button class="sw" data-unavailable><span class="sw__visual" style="background:#b54a2a; color:#b54a2a"></span></button>
+    </div>
+    <div>
+      <div class="lab">focus-visible</div>
+      <button class="sw" style="outline:2px solid var(--accent); outline-offset:2px; border-radius:6px"><span class="sw__visual" style="background:#3f5c4e; color:#3f5c4e"></span></button>
+    </div>
+    <div>
+      <div class="lab">image swatch (Shopify pattern)</div>
+      <button class="sw"><span class="sw__visual" style="background:#e0d3b7; overflow: hidden">
+        <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=80" style="width:100%;height:100%;object-fit:cover;border-radius:50%">
+      </span></button>
+    </div>
+    <div>
+      <div class="lab">selected · ring on tile bg</div>
+      <div style="background: var(--product-card-image-bg); padding: 10px; border-radius: 6px">
+        <button class="sw" data-selected><span class="sw__visual" style="background:#f5f1e3; color:#14110b"></span></button>
+      </div>
+    </div>
+  </div>
+  <p class="note">Border <code>currentColor / 10%</code> auto-adapts on any background. Selected ring is 2px white + 1.5px currentColor outer — works on any tile/card bg without per-theme recolor. Hit target 36×36 (touch-safe per WCAG 2.5.5).</p>
+</section>
+
+<!-- ============================================================
+     5. CHIP
+     ============================================================ -->
+<section class="section" id="chip">
+  <div class="section-head">5 · Chip <small>picker-only · never on base card</small></div>
+  <div class="row">
+    <div>
+      <div class="lab">default</div>
+      <button class="chip">M</button>
+    </div>
+    <div>
+      <div class="lab">selected</div>
+      <button class="chip" data-selected>L</button>
+    </div>
+    <div>
+      <div class="lab">unavailable</div>
+      <button class="chip" data-unavailable>XL</button>
+    </div>
+    <div>
+      <div class="lab">focus-visible</div>
+      <button class="chip" style="outline:2px solid var(--accent); outline-offset:2px">S</button>
+    </div>
+    <div>
+      <div class="lab">long label</div>
+      <button class="chip">36×32</button>
+    </div>
+    <div>
+      <div class="lab">selected + long</div>
+      <button class="chip" data-selected>10.5 US</button>
+    </div>
+  </div>
+  <p class="note">Padding <code>8px 12px</code>, radius <code>--product-card-radius-sm</code> (4px), border <code>currentColor / 10%</code>. Unavailable strike via pseudo-element, not <code>text-decoration</code>.</p>
+</section>
+
+<!-- ============================================================
+     6. +N CHIP
+     ============================================================ -->
+<section class="section" id="more">
+  <div class="section-head">6 · +N chip · group overflow <small>fixed inline limit of 4 · pure JSX render · no DOM mutation</small></div>
+  <div class="row">
+    <div>
+      <div class="lab">size group · 7 values · +3 hidden</div>
+      <div class="chips-row">
+        <button class="chip" data-selected>S</button>
+        <button class="chip">M</button>
+        <button class="chip" data-unavailable>L</button>
+        <button class="chip">XL</button>
+        <button class="more">+3</button>
+      </div>
+    </div>
+    <div>
+      <div class="lab">color · 4 values · no overflow → no chip</div>
+      <div class="chips-row" style="background:var(--product-card-bg); padding:8px 12px; border-radius:8px; border:1px solid var(--product-card-border-color)">
+        <button class="sw" data-selected><span class="sw__visual" style="background:#f5f1e3"></span></button>
+        <button class="sw"><span class="sw__visual" style="background:#14110b"></span></button>
+        <button class="sw"><span class="sw__visual" style="background:#b54a2a"></span></button>
+        <button class="sw"><span class="sw__visual" style="background:#3f5c4e"></span></button>
+      </div>
+    </div>
+    <div>
+      <div class="lab">color · 6 values · +2 hidden</div>
+      <div class="chips-row" style="background:var(--product-card-bg); padding:8px 12px; border-radius:8px; border:1px solid var(--product-card-border-color)">
+        <button class="sw" data-selected><span class="sw__visual" style="background:#f5f1e3"></span></button>
+        <button class="sw"><span class="sw__visual" style="background:#14110b"></span></button>
+        <button class="sw"><span class="sw__visual" style="background:#b54a2a"></span></button>
+        <button class="sw"><span class="sw__visual" style="background:#3f5c4e"></span></button>
+        <button class="more">+2</button>
+      </div>
+    </div>
+  </div>
+  <p class="note">When overflow is 0, the chip is not rendered at all (<code>if (overflow === 0) return null</code>). Bug-fix from the legacy DOM-mutation race. Background <code>--product-card-more-bg</code>; typography matches eyebrow size + tabular-nums.</p>
+</section>
+
+<!-- ============================================================
+     7. CTA
+     ============================================================ -->
+<section class="section" id="cta">
+  <div class="section-head">7 · CTA · float-pill + inline-button <small>5 + 4 states</small></div>
+
+  <div class="section-sub">float-pill</div>
+  <div class="row">
+    <div>
+      <div class="lab">icon only (default)</div>
+      <div style="position: relative; width: 50px; height: 50px">
+        <button class="cta-pill" style="position:relative; top:0; right:0"><span class="cta-pill__icon">+</span></button>
+      </div>
+    </div>
+    <div>
+      <div class="lab">icon + text</div>
+      <div style="position: relative; height: 50px">
+        <button class="cta-pill cta-pill--with-text" style="position:relative; top:0; right:0"><span class="cta-pill__icon">+</span><span>Quick add</span></button>
+      </div>
+    </div>
+    <div>
+      <div class="lab">single-buyable (green dot)</div>
+      <div style="position: relative; width: 50px; height: 50px">
+        <button class="cta-pill cta-pill--single" style="position:relative; top:0; right:0"><span class="cta-pill__icon">+</span></button>
+      </div>
+    </div>
+    <div>
+      <div class="lab">open (close affordance)</div>
+      <div style="position: relative; width: 50px; height: 50px">
+        <button class="cta-pill" style="position:relative; top:0; right:0"><span class="cta-pill__icon">×</span></button>
+      </div>
+    </div>
+    <div>
+      <div class="lab">disabled (OOS)</div>
+      <div style="position: relative; width: 50px; height: 50px">
+        <button class="cta-pill" disabled style="position:relative; top:0; right:0"><span class="cta-pill__icon">+</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-sub">inline-button</div>
+  <div class="row">
+    <div>
+      <div class="lab">solid (default)</div>
+      <button class="cta-inline">Add to bag</button>
+    </div>
+    <div>
+      <div class="lab">solid · with price</div>
+      <button class="cta-inline">Add to bag · $38</button>
+    </div>
+    <div>
+      <div class="lab">ghost</div>
+      <button class="cta-inline cta-inline--ghost">Add to bag</button>
+    </div>
+    <div>
+      <div class="lab">disabled (sold out)</div>
+      <button class="cta-inline" disabled>Sold out</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     8. PICKER
+     ============================================================ -->
+<section class="section" id="picker">
+  <div class="section-head">8 · Picker shells <small>float · sheet-mobile · sheet-desktop · inline</small></div>
+
+  <div class="section-sub">float (vertical card, desktop)</div>
+  <div class="row">
+    <div class="picker-float">
+      <div>
+        <div class="picker-label">Size</div>
+        <div class="chips-row">
+          <button class="chip" data-selected>S</button>
+          <button class="chip">M</button>
+          <button class="chip" data-unavailable>L</button>
+          <button class="chip">XL</button>
+        </div>
+      </div>
+      <button class="picker-cta">Add to bag · $38</button>
+    </div>
+    <p class="note" style="flex: 1; min-width: 200px; max-width: 300px">Anchored over image with backdrop blur. Color was pre-selected via swatch row on the base card, so picker only shows Size + CTA.</p>
+  </div>
+
+  <div class="section-sub">sheet (mobile · bottom-anchored)</div>
+  <div class="row">
+    <div class="picker-sheet-mobile">
+      <div style="font:500 13px/1.3 ui-sans-serif; padding-top:8px; margin-bottom:12px">
+        Heavyweight Box-Cut Tee — <span style="color:var(--product-card-vendor-color)">$38</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 12px">
+        <div>
+          <div class="picker-label">Size</div>
+          <div class="chips-row">
+            <button class="chip" data-selected>S</button>
+            <button class="chip">M</button>
+            <button class="chip" data-unavailable>L</button>
+            <button class="chip">XL</button>
+          </div>
+        </div>
+        <div>
+          <div class="picker-label">Color · Bone</div>
+          <div class="swatch-row">
+            <button class="sw" data-selected><span class="sw__visual" style="background:#f5f1e3"></span></button>
+            <button class="sw"><span class="sw__visual" style="background:#14110b"></span></button>
+            <button class="sw"><span class="sw__visual" style="background:#b54a2a"></span></button>
+          </div>
+        </div>
+        <button class="picker-cta">Add to bag · $38</button>
+      </div>
+    </div>
+    <p class="note" style="flex: 1; min-width: 200px; max-width: 300px">Bottom sheet with drag handle. Body scroll lock. Sheet shows both Size and Color (no swatch row at the search-row scale to pre-select from).</p>
+  </div>
+
+  <div class="section-sub">sheet (desktop · centered dialog)</div>
+  <div class="row">
+    <div class="picker-sheet-desktop">
+      <div style="font:500 13px/1.3 ui-sans-serif; margin-bottom:12px">
+        Heavyweight Box-Cut Tee — <span style="color:var(--product-card-vendor-color)">$38</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 12px">
+        <div>
+          <div class="picker-label">Size</div>
+          <div class="chips-row">
+            <button class="chip" data-selected>S</button>
+            <button class="chip">M</button>
+            <button class="chip" data-unavailable>L</button>
+          </div>
+        </div>
+        <button class="picker-cta">Add to bag · $38</button>
+      </div>
+    </div>
+    <p class="note" style="flex: 1; min-width: 200px; max-width: 300px">Centered dialog with scrim. Same contents as mobile sheet, different envelope.</p>
+  </div>
+
+  <div class="section-sub">inline (replaces CTA slot when CTA placement = inline-button)</div>
+  <div class="row">
+    <div class="picker-inline">
+      <div>
+        <div class="picker-label">Pick a size</div>
+        <div class="chips-row">
+          <button class="chip" data-selected>S</button>
+          <button class="chip">M</button>
+          <button class="chip" data-unavailable>L</button>
+        </div>
+      </div>
+      <button class="picker-cta">Add to bag · $38</button>
+    </div>
+    <p class="note" style="flex: 1; min-width: 200px; max-width: 300px">In-place expansion. No modal, no scrim. Card height grows; grid loses rhythm momentarily until closed.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     9. SALE
+     ============================================================ -->
+<section class="section" id="sale">
+  <div class="section-head">9 · Sale state · three layerable concerns <small>style + current-price color + savings line</small></div>
+
+  <div class="section-sub">style · strike-only (default)</div>
+  <div class="row">
+    <div class="pc pc--boxed">
+      <div class="pc__media">
+        <button class="cta-pill cta-tr"><span class="cta-pill__icon">+</span></button>
+        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600">
+      </div>
+      <div class="ty-eyebrow">Everlane</div>
+      <div class="ty-title">Court Sneaker</div>
+      <div class="pricebox"><span class="ty-price">$78</span><span class="ty-compare">$98</span></div>
+    </div>
+  </div>
+
+  <div class="section-sub">style · strike-and-badge</div>
+  <div class="row">
+    <div class="pc pc--boxed">
+      <div class="pc__media">
+        <span class="badge badge--default bdg-tl">−20%</span>
+        <button class="cta-pill cta-tr"><span class="cta-pill__icon">+</span></button>
+        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600">
+      </div>
+      <div class="ty-eyebrow">Everlane</div>
+      <div class="ty-title">Court Sneaker</div>
+      <div class="pricebox"><span class="ty-price">$78</span><span class="ty-compare">$98</span></div>
+    </div>
+  </div>
+
+  <div class="section-sub">current-price color layered on either style</div>
+  <div class="row">
+    <div>
+      <div class="lab">default · no color shift</div>
+      <div class="pc pc--boxed">
+        <div class="pc__media">
+          <span class="badge badge--default bdg-tl">−20%</span>
+          <button class="cta-pill cta-tr"><span class="cta-pill__icon">+</span></button>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600">
+        </div>
+        <div class="ty-eyebrow">Everlane</div>
+        <div class="ty-title">Court Sneaker</div>
+        <div class="pricebox"><span class="ty-price">$78</span><span class="ty-compare">$98</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="lab">tenant pulls to accent</div>
+      <div class="pc pc--boxed">
+        <div class="pc__media">
+          <span class="badge badge--default bdg-tl">−20%</span>
+          <button class="cta-pill cta-tr"><span class="cta-pill__icon">+</span></button>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600">
+        </div>
+        <div class="ty-eyebrow">Everlane</div>
+        <div class="ty-title">Court Sneaker</div>
+        <div class="pricebox"><span class="ty-price price-tinted">$78</span><span class="ty-compare">$98</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="lab">tenant + savings line</div>
+      <div class="pc pc--boxed">
+        <div class="pc__media">
+          <span class="badge badge--default bdg-tl">−20%</span>
+          <button class="cta-pill cta-tr"><span class="cta-pill__icon">+</span></button>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600">
+        </div>
+        <div class="ty-eyebrow">Everlane</div>
+        <div class="ty-title">Court Sneaker</div>
+        <div class="pricebox"><span class="ty-price price-tinted">$78</span><span class="ty-compare">$98</span></div>
+        <div class="ty-savings">You save $20</div>
+      </div>
+    </div>
+  </div>
+  <p class="note">Three independent tokens: <code>--product-card-sale-style</code>, <code>--product-card-sale-current-color</code>, <code>--product-card-sale-show-savings-line</code>. Any combination ships.</p>
+</section>
+
+<!-- ============================================================
+     10. BADGES
+     ============================================================ -->
+<section class="section" id="badge">
+  <div class="section-head">10 · Badge style enum <small>4 values · all derive colors from existing tokens</small></div>
+  <div class="row">
+    <div>
+      <div class="lab">default<br><span style="text-transform:none;letter-spacing:0">card bg + title color + hairline</span></div>
+      <div class="pc pc--boxed">
+        <div class="pc__media">
+          <span class="badge badge--default bdg-tl">−20%</span>
+          <button class="cta-pill cta-tr"><span class="cta-pill__icon">+</span></button>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600">
+        </div>
+        <div class="ty-title">Court Sneaker</div>
+        <div class="pricebox"><span class="ty-price">$78</span><span class="ty-compare">$98</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="lab">inverse<br><span style="text-transform:none;letter-spacing:0">title color bg · card bg text</span></div>
+      <div class="pc pc--boxed">
+        <div class="pc__media">
+          <span class="badge badge--inverse bdg-tl">−20%</span>
+          <button class="cta-pill cta-tr"><span class="cta-pill__icon">+</span></button>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600">
+        </div>
+        <div class="ty-title">Court Sneaker</div>
+        <div class="pricebox"><span class="ty-price">$78</span><span class="ty-compare">$98</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="lab">accent<br><span style="text-transform:none;letter-spacing:0">brand accent token</span></div>
+      <div class="pc pc--boxed">
+        <div class="pc__media">
+          <span class="badge badge--accent bdg-tl">−20%</span>
+          <button class="cta-pill cta-tr"><span class="cta-pill__icon">+</span></button>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600">
+        </div>
+        <div class="ty-title">Court Sneaker</div>
+        <div class="pricebox"><span class="ty-price">$78</span><span class="ty-compare">$98</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="lab">sales-color<br><span style="text-transform:none;letter-spacing:0">matches sale-current-color · cohesive</span></div>
+      <div class="pc pc--boxed">
+        <div class="pc__media">
+          <span class="badge badge--sales-color bdg-tl">−20%</span>
+          <button class="cta-pill cta-tr"><span class="cta-pill__icon">+</span></button>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600">
+        </div>
+        <div class="ty-title">Court Sneaker</div>
+        <div class="pricebox"><span class="ty-price price-tinted">$78</span><span class="ty-compare">$98</span></div>
+      </div>
+    </div>
+  </div>
+  <p class="note">Badge typography always inherits eyebrow tokens (shared with vendor). Radius inherits <code>--product-card-radius-sm</code>. Theming the card themes the badge automatically.</p>
+</section>
+
+<!-- ============================================================
+     11. POSITIONING
+     ============================================================ -->
+<section class="section" id="positioning">
+  <div class="section-head">11 · Badge + CTA pill positioning <small>4 corners each · collision-aware</small></div>
+  <div class="row">
+    <div>
+      <div class="lab">defaults<br><span style="text-transform:none;letter-spacing:0">badge top-left · cta top-right</span></div>
+      <div class="pc pc--boxed">
+        <div class="pc__media">
+          <span class="badge badge--default bdg-tl">−20%</span>
+          <button class="cta-pill cta-tr"><span class="cta-pill__icon">+</span></button>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600">
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="lab">badge bottom-left · cta top-right</div>
+      <div class="pc pc--boxed">
+        <div class="pc__media">
+          <span class="badge badge--default bdg-bl">−20%</span>
+          <button class="cta-pill cta-tr"><span class="cta-pill__icon">+</span></button>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600">
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="lab">collision<br><span style="text-transform:none;letter-spacing:0">badge auto-shifts horizontally</span></div>
+      <div class="pc pc--boxed">
+        <div class="pc__media">
+          <span class="badge badge--default" style="top:10px;right:52px">−20%</span>
+          <button class="cta-pill cta-tr"><span class="cta-pill__icon">+</span></button>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600">
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="lab">tenant flip<br><span style="text-transform:none;letter-spacing:0">badge top-right · cta bottom-left</span></div>
+      <div class="pc pc--boxed">
+        <div class="pc__media">
+          <span class="badge badge--default bdg-tr">−20%</span>
+          <button class="cta-pill cta-bl"><span class="cta-pill__icon">+</span></button>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600">
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="note">When <code>--product-card-sale-badge-position === --product-card-cta-pill-position</code> and <code>--product-card-sale-badge-allow-overlap === false</code>, badge auto-shifts by <code>cta-width + 8px</code>.</p>
+</section>
+
+<!-- ============================================================
+     12. OOS
+     ============================================================ -->
+<section class="section" id="oos">
+  <div class="section-head">12 · Out-of-stock state <small>card opacity 0.7 · image saturation 0.85 · CTA disabled</small></div>
+  <div class="row">
+    <div>
+      <div class="lab">fully OOS</div>
+      <div class="pc pc--boxed pc__oos">
+        <div class="pc__media">
+          <span class="badge badge--soldout bdg-tl">Sold out</span>
+          <button class="cta-pill cta-tr" disabled><span class="cta-pill__icon">+</span></button>
+          <img src="https://images.unsplash.com/photo-1605812860427-4024433a70fd?w=600">
+        </div>
+        <div class="ty-eyebrow">Everlane</div>
+        <div class="ty-title">Modern Oxford</div>
+        <div class="pricebox"><span class="ty-price" style="color:var(--product-card-compare-color)">$148</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="lab">OOS + was-on-sale</div>
+      <div class="pc pc--boxed pc__oos">
+        <div class="pc__media">
+          <span class="badge badge--soldout bdg-tl">Sold out</span>
+          <button class="cta-pill cta-tr" disabled><span class="cta-pill__icon">+</span></button>
+          <img src="https://images.unsplash.com/photo-1605812860427-4024433a70fd?w=600">
+        </div>
+        <div class="ty-eyebrow">Everlane</div>
+        <div class="ty-title">Modern Oxford</div>
+        <div class="pricebox"><span class="ty-price" style="color:var(--product-card-compare-color)">$74</span><span class="ty-compare">$148</span></div>
+      </div>
+    </div>
+  </div>
+  <p class="note">Opacity tightened from the legacy <code>0.5</code> (too aggressive — product unbrowsable) to <code>0.7</code>. Image saturate <code>0.85</code> adds visual cue without losing product recognizability. CTA disabled; all swatches/chips pointer-events: none.</p>
+</section>
+
+<!-- ============================================================
+     13. SKELETON
+     ============================================================ -->
+<section class="section" id="skeleton">
+  <div class="section-head">13 · Skeleton · per-primitive · composed by chassis <small>same heights as live · no CLS</small></div>
+  <div class="section-sub">primitive skeletons</div>
+  <div class="row">
+    <div>
+      <div class="lab">image</div>
+      <div class="sk sk-image" style="width: 180px"></div>
+    </div>
+    <div>
+      <div class="lab">title (2-line)</div>
+      <div style="width: 180px">
+        <div class="sk-title">
+          <span class="sk sk-title-1"></span>
+          <span class="sk sk-title-2"></span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="lab">price</div>
+      <div class="sk sk-price"></div>
+    </div>
+    <div>
+      <div class="lab">vendor eyebrow</div>
+      <div class="sk sk-vendor"></div>
+    </div>
+    <div>
+      <div class="lab">swatch row (4)</div>
+      <div class="sk-swatch-row">
+        <span class="sk sk-swatch"></span>
+        <span class="sk sk-swatch"></span>
+        <span class="sk sk-swatch"></span>
+        <span class="sk sk-swatch"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-sub">composed (live next to skeleton, same chassis)</div>
+  <div class="row">
+    <div class="pc pc--boxed">
+      <div class="pc__media">
+        <button class="cta-pill cta-tr"><span class="cta-pill__icon">+</span></button>
+        <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600">
+      </div>
+      <div class="ty-eyebrow">Everlane</div>
+      <div class="ty-title">Heavyweight Box-Cut Tee</div>
+      <div class="pricebox"><span class="ty-price">$38</span></div>
+      <div class="swatch-row">
+        <button class="sw" data-selected><span class="sw__visual" style="background:#f5f1e3"></span></button>
+        <button class="sw"><span class="sw__visual" style="background:#14110b"></span></button>
+        <button class="sw"><span class="sw__visual" style="background:#b54a2a"></span></button>
+      </div>
+    </div>
+    <div class="pc pc--boxed" data-skeleton>
+      <div class="sk sk-image"></div>
+      <div class="sk sk-vendor"></div>
+      <div class="sk-title">
+        <span class="sk sk-title-1"></span>
+        <span class="sk sk-title-2"></span>
+      </div>
+      <div class="sk sk-price"></div>
+      <div class="sk-swatch-row">
+        <span class="sk sk-swatch"></span>
+        <span class="sk sk-swatch"></span>
+        <span class="sk sk-swatch"></span>
+        <span class="sk sk-swatch"></span>
+      </div>
+    </div>
+  </div>
+  <p class="note">Same chassis class. Same primitive heights via <code>--product-card-title-line-height</code> and friends. No layout shift on swap from skeleton → live.</p>
+</section>
+
+<!-- ============================================================
+     14. SURFACES
+     ============================================================ -->
+<section class="section" id="surfaces">
+  <div class="section-head">14 · Per-surface composition <small>3 surfaces (CartDrawer deleted)</small></div>
+
+  <div class="section-sub">Collection grid (vertical · boxed · float-pill · float picker)</div>
+  <div class="viewport">
+    <div class="vp-label">@ 1024px · collection · 4 items</div>
+    <div class="grid">
+      <div class="pc pc--boxed">
+        <div class="pc__media">
+          <button class="cta-pill cta-tr"><span class="cta-pill__icon">+</span></button>
+          <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600">
+        </div>
+        <div class="ty-eyebrow">Everlane</div>
+        <div class="ty-title">Heavyweight Box-Cut Tee</div>
+        <div class="pricebox"><span class="ty-price">$38</span></div>
+        <div class="swatch-row">
+          <button class="sw" data-selected><span class="sw__visual" style="background:#f5f1e3"></span></button>
+          <button class="sw"><span class="sw__visual" style="background:#14110b"></span></button>
+          <button class="sw"><span class="sw__visual" style="background:#b54a2a"></span></button>
+        </div>
+      </div>
+      <div class="pc pc--boxed">
+        <div class="pc__media">
+          <button class="cta-pill cta-pill--single cta-tr"><span class="cta-pill__icon">+</span></button>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600">
+        </div>
+        <div class="ty-eyebrow">Everlane</div>
+        <div class="ty-title">Court Sneaker — Beige (sz 10)</div>
+        <div class="pricebox"><span class="ty-price">$98</span></div>
+      </div>
+      <div class="pc pc--boxed pc__oos">
+        <div class="pc__media">
+          <span class="badge badge--soldout bdg-tl">Sold out</span>
+          <button class="cta-pill cta-tr" disabled><span class="cta-pill__icon">+</span></button>
+          <img src="https://images.unsplash.com/photo-1605812860427-4024433a70fd?w=600">
+        </div>
+        <div class="ty-eyebrow">Everlane</div>
+        <div class="ty-title">Modern Oxford</div>
+        <div class="pricebox"><span class="ty-price" style="color:var(--product-card-compare-color)">$148</span></div>
+      </div>
+      <div class="pc pc--boxed">
+        <div class="pc__media">
+          <span class="badge badge--default bdg-tl">−20%</span>
+          <button class="cta-pill cta-tr"><span class="cta-pill__icon">+</span></button>
+          <img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=600">
+        </div>
+        <div class="ty-eyebrow">Everlane</div>
+        <div class="ty-title">Slim-Fit Organic Cotton Jean</div>
+        <div class="pricebox"><span class="ty-price">$70</span><span class="ty-compare">$88</span></div>
+        <div class="swatch-row">
+          <button class="sw" data-selected><span class="sw__visual" style="background:#3a4a6b"></span></button>
+          <button class="sw"><span class="sw__visual" style="background:#1a1a1a"></span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-sub" style="margin-top: 22px">Search results (horizontal · boxed · sheet picker)</div>
+  <div class="viewport" style="max-width: 640px">
+    <div class="vp-label">search results · 3 items</div>
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <div class="pc-row">
+        <div class="pc-row__media"><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=200"></div>
+        <div class="pc-row__body">
+          <div class="ty-eyebrow">Everlane</div>
+          <div style="font: 500 14px/1.3 ui-sans-serif">Heavyweight Box-Cut Tee</div>
+          <div class="swatches-strip" style="margin-top: 4px">
+            <button class="sw" data-selected><span class="sw__visual" style="background:#f5f1e3"></span></button>
+            <button class="sw"><span class="sw__visual" style="background:#14110b"></span></button>
+            <button class="sw"><span class="sw__visual" style="background:#b54a2a"></span></button>
+          </div>
+        </div>
+        <div class="pc-row__right">
+          <span class="ty-price">$38</span>
+          <button class="pc-row__plus" aria-label="Choose options">+</button>
+        </div>
+      </div>
+      <div class="pc-row">
+        <div class="pc-row__media"><img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=200"></div>
+        <div class="pc-row__body">
+          <div class="ty-eyebrow">Everlane</div>
+          <div style="font: 500 14px/1.3 ui-sans-serif">Slim-Fit Organic Cotton Jean</div>
+          <div class="swatches-strip" style="margin-top: 4px">
+            <button class="sw" data-selected><span class="sw__visual" style="background:#3a4a6b"></span></button>
+            <button class="sw"><span class="sw__visual" style="background:#1a1a1a"></span></button>
+          </div>
+        </div>
+        <div class="pc-row__right">
+          <span class="ty-price">$88</span>
+          <button class="pc-row__plus">+</button>
+        </div>
+      </div>
+      <div class="pc-row">
+        <div class="pc-row__media"><img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=200"></div>
+        <div class="pc-row__body">
+          <div class="ty-eyebrow">Everlane</div>
+          <div style="font: 500 14px/1.3 ui-sans-serif">Court Sneaker</div>
+        </div>
+        <div class="pc-row__right">
+          <span class="ty-price">$98</span>
+          <button class="pc-row__plus" style="background: transparent; color: var(--product-card-title-color); border: 1px solid var(--product-card-border-color); position: relative">+
+            <span style="position:absolute;bottom:-1px;right:-1px;width:9px;height:9px;border-radius:99px;background:var(--product-card-fast-path-dot);border:2px solid var(--product-card-bg)"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     15. RAIL
+     ============================================================ -->
+<section class="section" id="rail">
+  <div class="section-head">15 · Recommendations rail · CollectionBlock arrows <small>IntersectionObserver-driven · arrows hidden when content fits</small></div>
+  <div class="rail-wrap">
+    <button class="rail-arrow rail-arrow--prev" aria-label="Previous">‹</button>
+    <button class="rail-arrow rail-arrow--next" aria-label="Next">›</button>
+    <div class="rail">
+      <div class="pc pc--boxed">
+        <div class="pc__media"><button class="cta-pill cta-tr"><span class="cta-pill__icon">+</span></button><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600"></div>
+        <div class="ty-eyebrow">Everlane</div>
+        <div class="ty-title">Heavyweight Box-Cut Tee</div>
+        <div class="pricebox"><span class="ty-price">$38</span></div>
+        <div class="swatch-row">
+          <button class="sw" data-selected><span class="sw__visual" style="background:#f5f1e3"></span></button>
+          <button class="sw"><span class="sw__visual" style="background:#14110b"></span></button>
+        </div>
+      </div>
+      <div class="pc pc--boxed">
+        <div class="pc__media"><button class="cta-pill cta-tr"><span class="cta-pill__icon">+</span></button><img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=600"></div>
+        <div class="ty-eyebrow">Everlane</div>
+        <div class="ty-title">Slim-Fit Cotton Jean</div>
+        <div class="pricebox"><span class="ty-price">$88</span></div>
+      </div>
+      <div class="pc pc--boxed">
+        <div class="pc__media"><button class="cta-pill cta-tr"><span class="cta-pill__icon">+</span></button><img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600"></div>
+        <div class="ty-eyebrow">Everlane</div>
+        <div class="ty-title">Court Sneaker</div>
+        <div class="pricebox"><span class="ty-price">$98</span></div>
+      </div>
+      <div class="pc pc--boxed">
+        <div class="pc__media"><button class="cta-pill cta-tr"><span class="cta-pill__icon">+</span></button><img src="https://images.unsplash.com/photo-1605812860427-4024433a70fd?w=600"></div>
+        <div class="ty-eyebrow">Everlane</div>
+        <div class="ty-title">Modern Oxford</div>
+        <div class="pricebox"><span class="ty-price">$148</span></div>
+      </div>
+      <div class="pc pc--boxed">
+        <div class="pc__media"><button class="cta-pill cta-tr"><span class="cta-pill__icon">+</span></button><img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600"></div>
+        <div class="ty-eyebrow">Everlane</div>
+        <div class="ty-title">Linen Drawstring Short</div>
+        <div class="pricebox"><span class="ty-price">$58</span></div>
+      </div>
+      <div class="pc pc--boxed">
+        <div class="pc__media"><button class="cta-pill cta-tr"><span class="cta-pill__icon">+</span></button><img src="https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=600"></div>
+        <div class="ty-eyebrow">Everlane</div>
+        <div class="ty-title">Heavyweight Crew Sweat</div>
+        <div class="pricebox"><span class="ty-price">$78</span></div>
+      </div>
+    </div>
+  </div>
+  <p class="note">Native scroll-snap (touch users get native swipe). Arrows visible on desktop hover + keyboard focus. Edge-fade via <code>mask-image</code>. <code>IntersectionObserver</code> on first/last children hides arrows when both are in view.</p>
+</section>
+
+<!-- ============================================================
+     16. SIZING
+     ============================================================ -->
+<section class="section" id="sizing">
+  <div class="section-head">16 · Sizing · minmax(200, 240) <small>density beats size · sparse data leaves empty space</small></div>
+
+  <div class="section-sub">narrow viewport (360px) · 1 col</div>
+  <div class="viewport" style="max-width: 320px">
+    <div class="grid">
+      <div class="pc pc--boxed">
+        <div class="pc__media"><button class="cta-pill cta-tr"><span class="cta-pill__icon">+</span></button><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400"></div>
+        <div class="ty-eyebrow">Everlane</div>
+        <div class="ty-title">Box-Cut Tee</div>
+        <div class="pricebox"><span class="ty-price">$38</span></div>
+        <div class="swatch-row">
+          <button class="sw" data-selected><span class="sw__visual" style="background:#f5f1e3"></span></button>
+          <button class="sw"><span class="sw__visual" style="background:#14110b"></span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-sub" style="margin-top: 18px">tablet (720px) · 3 cols</div>
+  <div class="viewport" style="max-width: 680px">
+    <div class="grid">
+      <div class="pc pc--boxed">
+        <div class="pc__media"><button class="cta-pill cta-tr"><span class="cta-pill__icon">+</span></button><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400"></div>
+        <div class="ty-eyebrow">Everlane</div>
+        <div class="ty-title">Box-Cut Tee</div>
+        <div class="pricebox"><span class="ty-price">$38</span></div>
+      </div>
+      <div class="pc pc--boxed">
+        <div class="pc__media"><button class="cta-pill cta-tr"><span class="cta-pill__icon">+</span></button><img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=400"></div>
+        <div class="ty-eyebrow">Everlane</div>
+        <div class="ty-title">Slim-Fit Jean</div>
+        <div class="pricebox"><span class="ty-price">$88</span></div>
+      </div>
+      <div class="pc pc--boxed">
+        <div class="pc__media"><button class="cta-pill cta-tr"><span class="cta-pill__icon">+</span></button><img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400"></div>
+        <div class="ty-eyebrow">Everlane</div>
+        <div class="ty-title">Court Sneaker</div>
+        <div class="pricebox"><span class="ty-price">$98</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-sub" style="margin-top: 18px">desktop (1280px) · 5+ cols · sparse</div>
+  <div class="viewport">
+    <div class="grid">
+      <div class="pc pc--boxed">
+        <div class="pc__media"><button class="cta-pill cta-tr"><span class="cta-pill__icon">+</span></button><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400"></div>
+        <div class="ty-eyebrow">Everlane</div>
+        <div class="ty-title">Box-Cut Tee</div>
+        <div class="pricebox"><span class="ty-price">$38</span></div>
+      </div>
+      <div class="pc pc--boxed">
+        <div class="pc__media"><button class="cta-pill cta-tr"><span class="cta-pill__icon">+</span></button><img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=400"></div>
+        <div class="ty-eyebrow">Everlane</div>
+        <div class="ty-title">Slim-Fit Jean</div>
+        <div class="pricebox"><span class="ty-price">$88</span></div>
+      </div>
+      <div class="pc pc--boxed">
+        <div class="pc__media"><button class="cta-pill cta-tr"><span class="cta-pill__icon">+</span></button><img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400"></div>
+        <div class="ty-eyebrow">Everlane</div>
+        <div class="ty-title">Court Sneaker</div>
+        <div class="pricebox"><span class="ty-price">$98</span></div>
+      </div>
+    </div>
+  </div>
+  <p class="note">Three cards on a 1280px viewport: cards left-aligned at 240px max, empty space on the right reads as intentional. Token <code>--product-card-grid-align</code> = <code>center</code> centers them if a tenant prefers that voice.</p>
+</section>
+
+<!-- ============================================================
+     17. MOTION
+     ============================================================ -->
+<section class="section" id="motion">
+  <div class="section-head">17 · Motion palette <small>one easing · four durations · respects prefers-reduced-motion</small></div>
+  <div class="motion-grid">
+    <div class="mc">
+      <div class="mc-label">Easing — cubic-bezier(0.2, 0.8, 0.2, 1)</div>
+      <svg class="mc-svg" viewBox="0 0 200 80">
+        <path d="M 0 70 C 40 70, 60 10, 200 10" stroke="var(--accent)" stroke-width="2" fill="none"/>
+        <line x1="0" y1="70" x2="200" y2="70" stroke="#ddd" stroke-width="1"/>
+        <line x1="0" y1="10" x2="200" y2="10" stroke="#ddd" stroke-width="1" stroke-dasharray="2 4"/>
+      </svg>
+      <div class="mc-value">quick out, slow settle</div>
+    </div>
+    <div class="mc">
+      <div class="mc-label">Motion fast — 80ms</div>
+      <div class="mc-value">Press feedback (active scale-down)</div>
+    </div>
+    <div class="mc">
+      <div class="mc-label">Motion base — 160ms</div>
+      <div class="mc-value">Hover, focus, swatch scale, chip selection, shadow transitions</div>
+    </div>
+    <div class="mc">
+      <div class="mc-label">Picker in — 220ms</div>
+      <div class="mc-value">Opacity 0→1 + translateY(4px)→0</div>
+    </div>
+    <div class="mc">
+      <div class="mc-label">Picker out — 180ms</div>
+      <div class="mc-value">Faster than open — feels responsive on close</div>
+    </div>
+    <div class="mc">
+      <div class="mc-label">Reduced motion</div>
+      <div class="mc-value">All transforms drop. Opacity transitions stay (they're functional).</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     18. A11Y
+     ============================================================ -->
+<section class="section" id="a11y">
+  <div class="section-head">18 · Accessibility · chassis-layer rules</div>
+  <div class="a11y-box">
+    <ul>
+      <li><strong>Hit targets</strong>: ≥ 36×36 px (clears WCAG 2.5.5 AAA). Visual swatch 16px; the rest is hit padding.</li>
+      <li><strong>Focus visible</strong>: 2px outline at 2px offset, color <code>--accent</code>. <code>focus:outline-none</code> + <code>focus-visible:outline-…</code> on every interactive primitive.</li>
+      <li><strong>focus-within on card chassis</strong>: shadow lifts when any descendant is keyboard-focused — keyboard users locate the active card across a grid.</li>
+      <li><strong>Selection</strong>: <code>user-select: none</code> on interactive primitives, <code>user-select: text</code> on title/price/vendor blocks.</li>
+      <li><strong>Touch</strong>: <code>-webkit-tap-highlight-color: transparent</code> + <code>touch-action: manipulation</code> (kills 300ms tap delay and zoom).</li>
+      <li><strong>ARIA</strong>: <code>aria-label</code> on every icon-only button. <code>aria-pressed</code> on toggles. <code>aria-expanded</code> + <code>aria-controls</code> on CTA when picker open. <code>aria-haspopup="dialog"</code> when routing to sheet.</li>
+      <li><strong>Title link as canonical focus</strong>: image-overlay PDP link is <code>aria-hidden="true" tabindex="-1"</code> — one focus target per destination.</li>
+      <li><strong>Live regions</strong>: <code>aria-live="polite"</code> for variant swap and cart-add announcements.</li>
+      <li><strong>Picker</strong>: Sheet uses Radix Dialog wrapper (focus trap, scroll lock, ESC/backdrop close, focus restoration). Float uses Radix Popover wrapper (focus trap, ESC/outside-click). Inline is in-page expansion with local focus management.</li>
+      <li><strong>Reduced motion</strong>: all transitions wrapped in <code>motion-safe:</code> Tailwind variant.</li>
+      <li><strong>Forced colors</strong>: borders preserved via <code>forced-colors:</code> variants; focus rings remain visible.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================
+     19. TOKENS
+     ============================================================ -->
+<section class="section" id="tokens">
+  <div class="section-head">19 · Token surface · all defaults exposed for tenant override</div>
+  <div class="tok-grid">
+    <div class="tok"><strong>Chassis</strong><br>
+      <code>--product-card-bg</code> #ffffff<br>
+      <code>--product-card-border-color</code> #ece6d4<br>
+      <code>--product-card-radius</code> 12px<br>
+      <code>--product-card-radius-sm</code> 4px<br>
+      <code>--product-card-image-radius</code> 8px<br>
+      <code>--product-card-padding</code> 12px<br>
+      <code>--product-card-min-width</code> 200px<br>
+      <code>--product-card-max-width</code> 240px<br>
+      <code>--product-card-grid-align</code> start<br>
+    </div>
+    <div class="tok"><strong>Eyebrow (shared vendor + badge)</strong><br>
+      <code>--product-card-eyebrow-size</code> 11px<br>
+      <code>--product-card-eyebrow-weight</code> 600<br>
+      <code>--product-card-eyebrow-tracking</code> 0.14em<br>
+      <code>--product-card-eyebrow-transform</code> uppercase<br>
+      <code>--product-card-vendor-color</code> #8a8472<br>
+    </div>
+    <div class="tok"><strong>Title / Price</strong><br>
+      <code>--product-card-title-size</code> 14px<br>
+      <code>--product-card-title-weight</code> 500<br>
+      <code>--product-card-title-line-clamp</code> 2<br>
+      <code>--product-card-price-size</code> 14px<br>
+      <code>--product-card-price-weight</code> 600<br>
+    </div>
+    <div class="tok"><strong>Image</strong><br>
+      <code>--product-card-image-bg</code> #faf7f0<br>
+      <code>--product-card-image-fit</code> cover<br>
+      <code>--product-card-image-hover-swap</code> on<br>
+    </div>
+    <div class="tok"><strong>CTA</strong><br>
+      <code>--product-card-cta-placement</code> float-pill<br>
+      <code>--product-card-cta-pill-position</code> top-right<br>
+      <code>--product-card-cta-pill-label</code> empty<br>
+      <code>--product-card-cta-radius</code> 8px<br>
+      <code>--product-card-fast-path-dot</code> #2f7d4a<br>
+      <code>--product-card-fast-path-single-variant</code> on<br>
+    </div>
+    <div class="tok"><strong>Picker</strong><br>
+      <code>--product-card-quick-add-presentation</code> auto<br>
+    </div>
+    <div class="tok"><strong>OOS</strong><br>
+      <code>--product-card-oos-opacity</code> 0.7<br>
+      <code>--product-card-oos-image-saturate</code> 0.85<br>
+    </div>
+    <div class="tok"><strong>Sale</strong><br>
+      <code>--product-card-sale-style</code> strike-only<br>
+      <code>--product-card-sale-strike-angle</code> -8deg<br>
+      <code>--product-card-sale-strike-extend</code> 2px<br>
+      <code>--product-card-sale-current-color</code> inherit<br>
+      <code>--product-card-sale-show-savings-line</code> off<br>
+      <code>--product-card-sale-badge-style</code> default<br>
+      <code>--product-card-sale-badge-position</code> top-left<br>
+      <code>--product-card-sale-badge-text</code> −{n}%<br>
+      <code>--product-card-sale-badge-min-discount</code> 11<br>
+      <code>--product-card-sale-badge-allow-overlap</code> false<br>
+    </div>
+    <div class="tok"><strong>Motion</strong><br>
+      <code>--product-card-motion-ease</code> cubic-bezier(0.2, 0.8, 0.2, 1)<br>
+      <code>--product-card-motion-fast</code> 80ms<br>
+      <code>--product-card-motion-base</code> 160ms<br>
+      <code>--product-card-motion-picker-in</code> 220ms<br>
+      <code>--product-card-motion-picker-out</code> 180ms<br>
+    </div>
+    <div class="tok"><strong>Skeleton</strong><br>
+      <code>--product-card-skeleton-bg</code> #ece6d4<br>
+      <code>--product-card-skeleton-radius</code> 4px<br>
+      <code>--product-card-skeleton-animation</code> pulse<br>
+      <code>--product-card-skeleton-duration</code> 1.6s<br>
+    </div>
+  </div>
+</section>
+
+<p class="note" style="text-align: center; font-size: 12px; color: var(--product-card-vendor-color); padding: 12px">
+  Spec at <code>.specs/2026-05-26-product-card-redesign/spec.md</code> · commit <code>5a4804bde</code>
+</p>

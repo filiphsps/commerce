@@ -1,0 +1,643 @@
+<style>
+  :root {
+    --b: #14110b;
+    --m: #6b6555;
+    --hairline: #ece6d4;
+    --tile: #faf7f0;
+    --tile-warm: #f3eedc;
+    --accent: #14110b;
+    --accent-warm: #b54a2a;
+    --fast-path: #2f7d4a;
+    --motion-fast: 80ms;
+    --motion-base: 160ms;
+    --motion-in: 220ms;
+    --motion-out: 180ms;
+    --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .stage { background: #fbf8ee; padding: 28px 24px; border-radius: 14px; border: 1px solid var(--hairline); margin-bottom: 24px; }
+  .stage h4 { font: 600 11px/1 ui-sans-serif; letter-spacing: 0.14em; text-transform: uppercase; color: var(--m); margin: 0 0 16px; }
+  .stage h4 small { font-weight:400; letter-spacing:0; color:#a8a290; text-transform:none; }
+  .stage h5 { font: 600 10px/1 ui-sans-serif; letter-spacing: 0.14em; text-transform: uppercase; color: #8a8472; margin: 12px 0 8px; }
+  .row { display:flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
+  .specimen { display:flex; flex-direction:column; align-items:flex-start; gap: 4px; }
+  .specimen .lab { font: 500 10px/1.2 ui-sans-serif; letter-spacing: 0.08em; text-transform: uppercase; color: #8a8472; }
+  .specimen .note { font: 400 10px/1.4 ui-sans-serif; color: #b8b1a1; max-width: 160px; }
+
+  /* ================================================
+     TYPOGRAPHY
+     ================================================ */
+  .type-vendor { font: 600 10px/1 ui-sans-serif; letter-spacing: 0.14em; text-transform: uppercase; color: #8a8472; }
+  .type-title { font: 500 14px/1.35 ui-sans-serif; color: var(--b); max-width: 220px; }
+  .type-price { font: 600 14px/1 ui-sans-serif; color: var(--b); font-variant-numeric: tabular-nums; }
+  .type-compare { font: 500 12px/1 ui-sans-serif; color: var(--m); font-variant-numeric: tabular-nums; position: relative; }
+  .type-compare::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--m); transform: translateY(-50%); }
+  .type-urgency { font: 500 11px/1 ui-sans-serif; color: var(--accent-warm); }
+
+  /* ================================================
+     SWATCH
+     ================================================ */
+  .sw {
+    position: relative;
+    width: 36px; height: 36px;
+    padding: 10px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: transparent; border: 0; cursor: pointer;
+    transition: transform var(--motion-base) var(--ease);
+  }
+  .sw:hover { transform: scale(1.08); }
+  .sw:active { transform: scale(0.94); transition-duration: var(--motion-fast); }
+  .sw__visual {
+    width: 16px; height: 16px;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, currentColor 10%, transparent);
+    position: relative;
+  }
+  .sw[data-selected] .sw__visual {
+    box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px currentColor;
+  }
+  .sw[data-unavailable] .sw__visual::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(to top right, transparent calc(50% - 0.5px), currentColor calc(50% - 0.5px), currentColor calc(50% + 0.5px), transparent calc(50% + 0.5px));
+    opacity: 0.55;
+  }
+  .sw:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+  .sw__hit { /* hit box dashed */ position: absolute; inset: 0; border: 1px dashed transparent; }
+  .show-hits .sw__hit { border-color: rgba(20 17 11 / 0.18); }
+
+  /* ================================================
+     CHIP
+     ================================================ */
+  .chip {
+    font: 500 12px/1 ui-sans-serif;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid color-mix(in srgb, currentColor 10%, transparent);
+    background: #fff;
+    color: var(--b);
+    cursor: pointer;
+    transition: transform var(--motion-base) var(--ease), background var(--motion-base) var(--ease);
+    position: relative;
+    overflow: hidden;
+  }
+  .chip:hover { transform: scale(1.04); }
+  .chip:active { transform: scale(0.96); transition-duration: var(--motion-fast); }
+  .chip[data-selected] {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .chip[data-unavailable] {
+    color: color-mix(in srgb, var(--b) 50%, transparent);
+    pointer-events: none;
+  }
+  .chip[data-unavailable]::after {
+    content: "";
+    position: absolute; left: 8px; right: 8px; top: 50%; height: 1px;
+    background: currentColor;
+    opacity: 0.4;
+  }
+  .chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* ================================================
+     MORE chip
+     ================================================ */
+  .more {
+    font: 600 11px/1 ui-sans-serif;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 0;
+    background: var(--tile-warm);
+    color: var(--m);
+    cursor: pointer;
+    font-variant-numeric: tabular-nums;
+    min-height: 36px;
+    transition: background var(--motion-base) var(--ease), transform var(--motion-base) var(--ease);
+  }
+  .more:hover { background: color-mix(in srgb, var(--tile-warm) 96%, black 4%); transform: scale(1.03); }
+  .more:active { transform: scale(0.97); transition-duration: var(--motion-fast); }
+
+  /* ================================================
+     CTA float-pill
+     ================================================ */
+  .cta-pill {
+    height: 36px; min-width: 36px;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.95);
+    color: var(--b);
+    border: 1px solid color-mix(in srgb, currentColor 8%, transparent);
+    display:inline-flex; align-items:center; justify-content:center; gap: 6px;
+    padding: 0; width: 36px;
+    font: 600 12px/1 ui-sans-serif;
+    cursor: pointer;
+    box-shadow: 0 6px 16px -8px rgb(20 17 11 / 0.25);
+    transition: box-shadow var(--motion-base) var(--ease), transform var(--motion-base) var(--ease);
+    position: relative;
+  }
+  .cta-pill:hover { box-shadow: 0 10px 22px -8px rgb(20 17 11 / 0.30); }
+  .cta-pill:active { transform: scale(0.96); transition-duration: var(--motion-fast); }
+  .cta-pill--with-text { padding: 0 12px 0 10px; width: auto; }
+  .cta-pill__icon { font: 600 18px/1 ui-sans-serif; }
+  .cta-pill--single::after {
+    content: ""; position: absolute; bottom: -1px; right: -1px;
+    width: 9px; height: 9px; border-radius: 99px; background: var(--fast-path);
+    border: 2px solid #fff;
+  }
+  .cta-pill[disabled] { pointer-events: none; opacity: 0.45; box-shadow: none; }
+
+  /* ================================================
+     CTA inline-button
+     ================================================ */
+  .cta-inline {
+    height: 44px;
+    padding: 0 16px;
+    border-radius: 8px;
+    border: 0;
+    background: var(--accent);
+    color: #fff;
+    font: 600 13px/1 ui-sans-serif;
+    cursor: pointer;
+    transition: background var(--motion-base) var(--ease), transform var(--motion-base) var(--ease);
+    display:inline-flex; align-items:center; justify-content:center;
+    min-width: 180px;
+  }
+  .cta-inline:hover { background: color-mix(in srgb, var(--accent) 92%, white 8%); }
+  .cta-inline:active { transform: scale(0.99); transition-duration: var(--motion-fast); }
+  .cta-inline--ghost {
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+  }
+  .cta-inline--ghost:hover { background: color-mix(in srgb, var(--accent) 6%, transparent); }
+
+  /* ================================================
+     PICKER SHELLS
+     ================================================ */
+  .pickr {
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .pickr .label { font: 600 10px/1 ui-sans-serif; letter-spacing: 0.14em; text-transform: uppercase; color: var(--m); margin: 0 0 4px; }
+  .pickr .chips { display:flex; gap: 6px; flex-wrap: wrap; }
+  .pickr-cta { background: var(--accent); color: #fff; border: 0; border-radius: 8px; padding: 12px; font: 600 12px/1 ui-sans-serif; cursor: pointer; }
+
+  .picker-float {
+    width: 220px; padding: 12px;
+    background: rgb(255 255 255 / 0.97);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgb(20 17 11 / 0.06);
+    border-radius: 10px;
+    box-shadow: 0 12px 28px -10px rgb(20 17 11 / 0.22);
+  }
+  .picker-sheet-mobile {
+    width: 280px; padding: 16px 16px 20px;
+    background: #fff;
+    border: 1px solid var(--hairline);
+    border-radius: 14px 14px 0 0;
+    box-shadow: 0 -12px 32px -8px rgb(20 17 11 / 0.15);
+    position: relative;
+  }
+  .picker-sheet-mobile::before {
+    content: "";
+    position: absolute; top: 8px; left: 50%;
+    width: 32px; height: 3px;
+    background: #ddd;
+    border-radius: 99px;
+    transform: translateX(-50%);
+  }
+  .picker-sheet-desktop {
+    width: 280px; padding: 18px;
+    background: #fff;
+    border: 1px solid var(--hairline);
+    border-radius: 14px;
+    box-shadow: 0 16px 36px -12px rgb(20 17 11 / 0.28);
+  }
+  .picker-inline {
+    width: 220px; padding: 12px;
+    background: var(--tile-warm);
+    border: 1px solid var(--hairline);
+    border-radius: 8px;
+  }
+
+  /* ================================================
+     CARD CHASSIS
+     ================================================ */
+  .chassis {
+    width: 240px;
+    font-family: ui-sans-serif, system-ui;
+    color: var(--b);
+    display: flex; flex-direction: column; gap: 8px;
+    position: relative;
+  }
+  .chassis--boxed {
+    background: #fff;
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 1px 2px rgb(20 17 11 / 4%);
+    transition: box-shadow var(--motion-base) var(--ease);
+  }
+  .chassis--boxed:hover { box-shadow: 0 8px 24px -10px rgb(20 17 11 / 22%); }
+  .chassis--frameless { background: transparent; border: 0; padding: 0; }
+  .chassis__media {
+    position: relative;
+    background: var(--tile);
+    border-radius: 8px;
+    aspect-ratio: 4/5;
+    overflow: hidden;
+  }
+  .chassis__media img { width: 100%; height: 100%; object-fit: cover; }
+  .chassis--oos { opacity: 0.7; }
+  .chassis--oos .chassis__media img { filter: saturate(0.85); }
+
+  /* ================================================
+     BADGE
+     ================================================ */
+  .badge {
+    position: absolute; left: 10px; top: 10px; z-index: 2;
+    font: 700 10px/1 ui-sans-serif; letter-spacing: 0.06em;
+    background: var(--b); color: #fff;
+    padding: 4px 7px; border-radius: 4px;
+  }
+
+  /* ================================================
+     LAYOUT
+     ================================================ */
+  .swatches { display: flex; gap: 4px; align-items: center; }
+  .chips-row { display:flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+
+  /* ================================================
+     MOTION TABLE
+     ================================================ */
+  .motion-table { width: 100%; border-collapse: collapse; font: 400 12px/1.55 ui-sans-serif; }
+  .motion-table th { font: 600 10px/1 ui-sans-serif; letter-spacing: 0.1em; text-transform: uppercase; color: var(--m); padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--hairline); }
+  .motion-table td { padding: 10px 10px; border-bottom: 1px solid var(--hairline); vertical-align: top; }
+  .motion-table code { background: #fbf8ee; padding: 1px 6px; border-radius: 4px; font-size: 11px; }
+
+  /* ================================================
+     A11Y NOTES
+     ================================================ */
+  .a11y-box { background: #fff; border-radius: 10px; border: 1px solid var(--hairline); padding: 14px 16px; }
+  .a11y-box ul { margin: 0; padding-left: 18px; font: 400 12px/1.6 ui-sans-serif; color: #333; }
+</style>
+
+<h2>Primitive design baseline — neutral defaults, token-extensible</h2>
+<p class="subtitle">Every visual choice exposed as a token. These are the OUT-OF-BOX values; tenants override via <code>[data-shop="…"]</code> when the customization system lands.</p>
+
+<!-- ============================================================
+     1. TYPOGRAPHY HIERARCHY
+     ============================================================ -->
+<div class="stage">
+  <h4>Typography hierarchy <small>weights, sizes, tracking, treatment of compare-price strikethrough</small></h4>
+  <div class="grid-3">
+    <div>
+      <div class="type-vendor">Everlane</div>
+      <div class="type-title" style="margin: 4px 0 8px">Heavyweight Box-Cut Tee — Bone</div>
+      <div style="display:flex; gap:8px; align-items: baseline">
+        <span class="type-price">$38</span>
+        <span class="type-compare">$48</span>
+      </div>
+      <div class="type-urgency" style="margin-top:6px">Only 3 left in this size</div>
+    </div>
+    <div>
+      <h5 style="margin-top:0">Rules</h5>
+      <ul style="font:400 12px/1.55 ui-sans-serif; color:#333; padding-left:18px; margin:0">
+        <li>Vendor eyebrow: weight 600, tracking 0.14em, uppercase, 10px</li>
+        <li>Title: weight 500, line-height 1.35, 14px, clamp 2 lines</li>
+        <li>Price: weight 600, <code>tabular-nums</code>, 14px</li>
+        <li>Compare: weight 500, muted, strike drawn as <strong>SVG/pseudo-element</strong> — not <code>text-decoration: line-through</code></li>
+        <li>Urgency: 11px, weight 500, color <code>--product-card-urgency-color</code></li>
+      </ul>
+    </div>
+    <div>
+      <h5 style="margin-top:0">Why pseudo-strike</h5>
+      <p style="font:400 12px/1.55 ui-sans-serif; color:#333; margin:0">
+        <code>text-decoration: line-through</code> draws at the font baseline and looks bad with tabular-nums and proportional currency symbols. A pseudo-element strike sits exactly through the optical center of the numerals and respects line-height.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     2. SWATCH
+     ============================================================ -->
+<div class="stage">
+  <h4>Swatch <small>16px visual · 36px hit · 6 states</small></h4>
+  <div class="row">
+    <div class="specimen">
+      <div class="lab">default</div>
+      <button class="sw"><span class="sw__visual" style="background:#f5f1e3; color:#14110b"></span></button>
+    </div>
+    <div class="specimen">
+      <div class="lab">selected</div>
+      <button class="sw" data-selected><span class="sw__visual" style="background:#14110b; color:#14110b"></span></button>
+    </div>
+    <div class="specimen">
+      <div class="lab">unavailable</div>
+      <button class="sw" data-unavailable><span class="sw__visual" style="background:#b54a2a; color:#b54a2a"></span></button>
+    </div>
+    <div class="specimen">
+      <div class="lab">focus-visible</div>
+      <button class="sw" style="outline:2px solid var(--accent); outline-offset:2px; border-radius:4px"><span class="sw__visual" style="background:#3f5c4e; color:#3f5c4e"></span></button>
+    </div>
+    <div class="specimen">
+      <div class="lab">hit box visible (debug)</div>
+      <div class="show-hits"><button class="sw"><span class="sw__hit"></span><span class="sw__visual" style="background:#1a3e7a; color:#1a3e7a"></span></button></div>
+      <span class="note">36×36 hit clears WCAG 2.5.5</span>
+    </div>
+    <div class="specimen">
+      <div class="lab">selected ring on white</div>
+      <button class="sw" data-selected><span class="sw__visual" style="background:#f5f1e3; color:#14110b"></span></button>
+      <span class="note">2px white inner, currentColor outer — works on any tile bg</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     3. CHIP
+     ============================================================ -->
+<div class="stage">
+  <h4>Chip (size / option pill) <small>used inside picker · never on base card</small></h4>
+  <div class="row">
+    <div class="specimen">
+      <div class="lab">default</div>
+      <button class="chip">M</button>
+    </div>
+    <div class="specimen">
+      <div class="lab">selected</div>
+      <button class="chip" data-selected>L</button>
+    </div>
+    <div class="specimen">
+      <div class="lab">unavailable</div>
+      <button class="chip" data-unavailable>XL</button>
+    </div>
+    <div class="specimen">
+      <div class="lab">focus-visible</div>
+      <button class="chip" style="outline:2px solid var(--accent); outline-offset:2px">S</button>
+    </div>
+    <div class="specimen">
+      <div class="lab">long label</div>
+      <button class="chip">36×32</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     4. MORE chip + Group
+     ============================================================ -->
+<div class="stage">
+  <h4>+N chip · grouped row <small>warm tile bg · same dimensions as Chip · pure JSX render</small></h4>
+  <div class="row">
+    <div class="specimen">
+      <div class="lab">size group · 7 values · only +3 visible</div>
+      <div class="chips-row">
+        <button class="chip" data-selected>S</button>
+        <button class="chip">M</button>
+        <button class="chip" data-unavailable>L</button>
+        <button class="chip">XL</button>
+        <button class="more">+3</button>
+      </div>
+    </div>
+    <div class="specimen">
+      <div class="lab">color group · 4 visible · no overflow → no chip</div>
+      <div class="chips-row" style="background:#fff; padding:8px 12px; border-radius:8px; border:1px solid var(--hairline)">
+        <button class="sw" data-selected><span class="sw__visual" style="background:#f5f1e3"></span></button>
+        <button class="sw"><span class="sw__visual" style="background:#14110b"></span></button>
+        <button class="sw"><span class="sw__visual" style="background:#b54a2a"></span></button>
+        <button class="sw"><span class="sw__visual" style="background:#3f5c4e"></span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     5. CTA FLOAT-PILL
+     ============================================================ -->
+<div class="stage">
+  <h4>CTA · float-pill <small>5 states</small></h4>
+  <div class="row">
+    <div class="specimen">
+      <div class="lab">icon only</div>
+      <button class="cta-pill"><span class="cta-pill__icon">+</span></button>
+    </div>
+    <div class="specimen">
+      <div class="lab">icon + text</div>
+      <button class="cta-pill cta-pill--with-text"><span class="cta-pill__icon">+</span><span>Quick add</span></button>
+    </div>
+    <div class="specimen">
+      <div class="lab">single-buyable (fast-path)</div>
+      <button class="cta-pill cta-pill--single"><span class="cta-pill__icon">+</span></button>
+      <span class="note">9px dot bottom-right · click adds directly, no picker</span>
+    </div>
+    <div class="specimen">
+      <div class="lab">open (active)</div>
+      <button class="cta-pill"><span class="cta-pill__icon">×</span></button>
+    </div>
+    <div class="specimen">
+      <div class="lab">disabled (OOS)</div>
+      <button class="cta-pill" disabled><span class="cta-pill__icon">+</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     6. CTA INLINE-BUTTON
+     ============================================================ -->
+<div class="stage">
+  <h4>CTA · inline-button <small>solid + ghost · 44px height for touch</small></h4>
+  <div class="row">
+    <div class="specimen">
+      <div class="lab">solid · default</div>
+      <button class="cta-inline">Add to bag</button>
+    </div>
+    <div class="specimen">
+      <div class="lab">solid · with price</div>
+      <button class="cta-inline">Add to bag · $38</button>
+    </div>
+    <div class="specimen">
+      <div class="lab">ghost</div>
+      <button class="cta-inline cta-inline--ghost">Add to bag</button>
+    </div>
+    <div class="specimen">
+      <div class="lab">disabled (OOS)</div>
+      <button class="cta-inline" disabled style="opacity:0.45;cursor:not-allowed">Sold out</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     7. PICKER SHELLS
+     ============================================================ -->
+<div class="stage">
+  <h4>Picker shells <small>same contents · different envelope per shape</small></h4>
+
+  <h5>float — anchored over image (vertical card, desktop)</h5>
+  <div class="picker-float">
+    <div class="pickr">
+      <div>
+        <div class="label">Size</div>
+        <div class="chips">
+          <button class="chip" data-selected>S</button>
+          <button class="chip">M</button>
+          <button class="chip" data-unavailable>L</button>
+          <button class="chip">XL</button>
+        </div>
+      </div>
+      <button class="pickr-cta">Add to bag · $38</button>
+    </div>
+  </div>
+
+  <h5>sheet — mobile (bottom-anchored with drag handle)</h5>
+  <div class="picker-sheet-mobile">
+    <div style="font:500 13px/1.3 ui-sans-serif; padding-top:8px; margin-bottom:12px">
+      Heavyweight Box-Cut Tee — <span style="color:var(--m)">$38</span>
+    </div>
+    <div class="pickr">
+      <div>
+        <div class="label">Size</div>
+        <div class="chips">
+          <button class="chip" data-selected>S</button>
+          <button class="chip">M</button>
+          <button class="chip" data-unavailable>L</button>
+          <button class="chip">XL</button>
+        </div>
+      </div>
+      <div>
+        <div class="label">Color · Bone</div>
+        <div class="chips">
+          <button class="sw" data-selected><span class="sw__visual" style="background:#f5f1e3"></span></button>
+          <button class="sw"><span class="sw__visual" style="background:#14110b"></span></button>
+          <button class="sw"><span class="sw__visual" style="background:#b54a2a"></span></button>
+        </div>
+      </div>
+      <button class="pickr-cta">Add to bag · $38</button>
+    </div>
+  </div>
+
+  <h5>sheet — desktop (centered dialog with scrim)</h5>
+  <div class="picker-sheet-desktop">
+    <div style="font:500 13px/1.3 ui-sans-serif; margin-bottom:12px">
+      Heavyweight Box-Cut Tee — <span style="color:var(--m)">$38</span>
+    </div>
+    <div class="pickr">
+      <div>
+        <div class="label">Size</div>
+        <div class="chips">
+          <button class="chip" data-selected>S</button>
+          <button class="chip">M</button>
+          <button class="chip" data-unavailable>L</button>
+        </div>
+      </div>
+      <button class="pickr-cta">Add to bag · $38</button>
+    </div>
+  </div>
+
+  <h5>inline — replaces inline-button CTA slot</h5>
+  <div class="picker-inline">
+    <div class="pickr">
+      <div>
+        <div class="label">Pick a size</div>
+        <div class="chips">
+          <button class="chip" data-selected>S</button>
+          <button class="chip">M</button>
+          <button class="chip" data-unavailable>L</button>
+        </div>
+      </div>
+      <button class="pickr-cta">Add to bag · $38</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     8. CARD CHASSIS
+     ============================================================ -->
+<div class="stage">
+  <h4>Card chassis · boxed vs frameless <small>shadow elevation only, never transform</small></h4>
+  <div class="row" style="background:#fbf8ee">
+    <div class="chassis chassis--boxed">
+      <div class="chassis__media">
+        <button class="cta-pill" style="position:absolute;top:10px;right:10px;z-index:3"><span class="cta-pill__icon">+</span></button>
+        <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600">
+      </div>
+      <div class="type-vendor">Everlane</div>
+      <div class="type-title">Heavyweight Box-Cut Tee</div>
+      <div class="type-price">$38</div>
+      <div class="swatches">
+        <button class="sw" data-selected><span class="sw__visual" style="background:#f5f1e3"></span></button>
+        <button class="sw"><span class="sw__visual" style="background:#14110b"></span></button>
+        <button class="sw"><span class="sw__visual" style="background:#b54a2a"></span></button>
+      </div>
+    </div>
+    <div class="chassis chassis--frameless">
+      <div class="chassis__media">
+        <button class="cta-pill" style="position:absolute;top:10px;right:10px;z-index:3"><span class="cta-pill__icon">+</span></button>
+        <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600">
+      </div>
+      <div class="type-vendor">Everlane</div>
+      <div class="type-title">Heavyweight Box-Cut Tee</div>
+      <div class="type-price">$38</div>
+      <div class="swatches">
+        <button class="sw" data-selected><span class="sw__visual" style="background:#f5f1e3"></span></button>
+        <button class="sw"><span class="sw__visual" style="background:#14110b"></span></button>
+        <button class="sw"><span class="sw__visual" style="background:#b54a2a"></span></button>
+      </div>
+    </div>
+    <div class="chassis chassis--boxed chassis--oos">
+      <div class="chassis__media">
+        <span class="badge" style="background:var(--m)">Sold out</span>
+        <button class="cta-pill" disabled style="position:absolute;top:10px;right:10px;z-index:3"><span class="cta-pill__icon">+</span></button>
+        <img src="https://images.unsplash.com/photo-1605812860427-4024433a70fd?w=600">
+      </div>
+      <div class="type-vendor">Everlane</div>
+      <div class="type-title">Modern Oxford</div>
+      <div class="type-price" style="color:var(--m)">$148</div>
+    </div>
+  </div>
+  <div style="display:flex; flex-direction:column; gap:6px; font:500 11px/1.4 ui-sans-serif; color:var(--m); margin-top:14px">
+    <span>boxed · hover: shadow elevation only · no transform</span>
+    <span>frameless · transparent · contents sit flush · no padding</span>
+    <span>out-of-stock · opacity 0.7 · image desaturated 0.85 · CTA disabled</span>
+  </div>
+</div>
+
+<!-- ============================================================
+     9. MOTION PALETTE
+     ============================================================ -->
+<div class="stage" style="background:#fff;border-color:#eee">
+  <h4 style="color:#444">Motion palette <small>one easing curve, four durations, defined transforms</small></h4>
+  <table class="motion-table">
+    <tr><th>Token</th><th>Value</th><th>Used for</th></tr>
+    <tr><td><code>--product-card-motion-fast</code></td><td>80ms</td><td>Press feedback (scale-down)</td></tr>
+    <tr><td><code>--product-card-motion-base</code></td><td>160ms</td><td>Hover, focus, swatch scale, chip selection</td></tr>
+    <tr><td><code>--product-card-motion-picker-in</code></td><td>220ms</td><td>Picker open (opacity 0→1 + translateY(4px)→0)</td></tr>
+    <tr><td><code>--product-card-motion-picker-out</code></td><td>180ms</td><td>Picker close (faster than open, feels responsive)</td></tr>
+    <tr><td><code>--product-card-motion-ease</code></td><td><code>cubic-bezier(0.2, 0.8, 0.2, 1)</code></td><td>The only easing curve — quick out, slow settle</td></tr>
+  </table>
+  <div style="margin-top:14px; font:400 12px/1.6 ui-sans-serif; color:#333">
+    <strong>Reduce-motion respect</strong>: every transition wrapped in <code>motion-safe:</code> Tailwind variant. <code>prefers-reduced-motion: reduce</code> drops all transforms; opacity transitions stay (functional).
+  </div>
+</div>
+
+<!-- ============================================================
+     10. ACCESSIBILITY
+     ============================================================ -->
+<div class="stage" style="background:#fff;border-color:#eee">
+  <h4 style="color:#444">Accessibility — chassis-layer rules</h4>
+  <div class="a11y-box">
+    <ul>
+      <li><strong>Hit targets:</strong> all interactive elements ≥ 36×36px (clears WCAG 2.5.5 AAA). Visual swatch is 16px; the rest is padding inside a 36px button.</li>
+      <li><strong>Focus visible:</strong> 2px outline at 2px offset, color <code>--accent</code>. Same treatment on every interactive primitive.</li>
+      <li><strong>ARIA labels:</strong> every icon-only control has <code>aria-label</code>. Swatches use the color name; CTA uses "Quick add" or "Add to bag · $X" with the resolved price.</li>
+      <li><strong>Picker focus management:</strong> trap focus inside; ESC and backdrop click close; restore focus to the triggering CTA on close.</li>
+      <li><strong>State announcements:</strong> live region announces variant swap ("Color changed to Brick") and cart additions ("Added to bag · Bone size M"). Today's <code>swapAnnouncement</code> pattern in <code>cart-line.tsx</code> is the model.</li>
+      <li><strong>Contrast:</strong> default tokens clear WCAG AA on the default tile bg. Tenant overrides need their own audit — spec includes a token-validation helper that warns in dev when a token override drops below AA.</li>
+      <li><strong>Reduced motion:</strong> drops transforms; opacity-only fades remain.</li>
+      <li><strong>Keyboard:</strong> tab to swatches, Enter/Space to select; tab to CTA, Enter/Space to open picker; arrow keys inside picker to traverse chips (managed by existing <code>ProductOptions</code> primitives).</li>
+    </ul>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:14px"><strong>If this direction looks right, I write the spec now with all of this baked into the primitive sections.</strong></p>

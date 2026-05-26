@@ -1,0 +1,291 @@
+<style>
+  :root {
+    --b: #14110b; --m: #6b6555;
+    --hairline: #ece6d4; --tile: #faf7f0;
+    --page-width: 1280px;
+  }
+  .stage { background: #fbf8ee; padding: 32px 24px; border-radius: 14px; border: 1px solid var(--hairline); margin-bottom: 28px; }
+  .stage h4 { font: 600 11px/1 ui-sans-serif; letter-spacing: 0.12em; text-transform: uppercase; color: var(--m); margin: 0 0 18px; display:flex; justify-content:space-between; align-items: baseline; }
+  .stage h4 small { font-weight:400; letter-spacing:0; color:#a8a290; text-transform:none; }
+
+  .vw { font: 500 10px/1.2 ui-sans-serif; letter-spacing: 0.1em; text-transform: uppercase; color: #8a8472; background: #fff; padding: 4px 8px; border-radius: 4px; border: 1px solid var(--hairline); display: inline-block; margin-bottom: 10px; }
+
+  .pc {
+    background: #fff; border: 1px solid var(--hairline); border-radius: 12px;
+    padding: 12px;
+    font-family: ui-sans-serif, system-ui; color: var(--b);
+    display: flex; flex-direction: column; gap: 8px;
+    box-shadow: 0 1px 2px rgb(20 17 11 / 4%);
+    position: relative;
+    container-type: inline-size;
+  }
+  .pc__media { position: relative; background: var(--tile); border-radius: 8px; aspect-ratio: 4/5; overflow: hidden; }
+  .pc__media img { width: 100%; height: 100%; object-fit: cover; }
+  .pc__vendor { font: 600 10px/1 ui-sans-serif; letter-spacing: 0.14em; text-transform: uppercase; color: #8a8472; }
+  .pc__title { font: 500 14px/1.35 ui-sans-serif; }
+  .pc__price-row { display:flex; align-items:baseline; gap: 6px; }
+  .pc__price { font: 600 14px/1 ui-sans-serif; }
+  .pc__sw-row { display:flex; gap:6px; align-items: center; }
+  .pc__sw { width: 14px; height: 14px; border-radius: 999px; border: 1px solid rgb(20 17 11 / 0.12); cursor: pointer; }
+  .pc__sw[data-sel] { outline: 1.5px solid #14110b; outline-offset: 2px; }
+  .pc__sw-more { font: 600 10px/1 ui-sans-serif; color: var(--m); margin-left: 2px; }
+  .cta-pill {
+    position: absolute; top: 10px; right: 10px;
+    width: 34px; height: 34px; border-radius: 999px;
+    background: rgb(255 255 255 / 0.95); color: var(--b);
+    border: 1px solid rgb(20 17 11 / 0.08);
+    display:flex; align-items:center; justify-content:center;
+    font: 600 18px/1 ui-sans-serif;
+    cursor: pointer;
+    box-shadow: 0 6px 16px -8px rgb(20 17 11 / 0.25);
+  }
+  @container (max-width: 199px) {
+    .pc { padding: 8px; gap: 6px; }
+    .pc__title { font-size: 12px; }
+    .pc__price { font-size: 12px; }
+    .pc__vendor { font-size: 9px; }
+    .pc__sw { width: 12px; height: 12px; }
+    .cta-pill { width: 28px; height: 28px; top: 6px; right: 6px; font-size: 14px; }
+  }
+
+  /* Viewport frames */
+  .viewport {
+    background: #fff; border: 1px solid #d4cdb8; border-radius: 8px; padding: 12px;
+    overflow: hidden;
+  }
+  .vp-narrow { width: 360px; }
+  .vp-tablet { width: 720px; }
+  .vp-wide   { width: 100%; max-width: 1280px; }
+
+  /* Grids */
+  .grid-default {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 260px));
+    gap: 14px;
+    justify-content: start;
+  }
+  .grid-sparse {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 260px));
+    gap: 14px;
+    justify-content: start;
+  }
+  .grid-center {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 260px));
+    gap: 14px;
+    justify-content: center;
+  }
+
+  .legend { display:flex; flex-wrap:wrap; gap: 14px; font: 500 11px/1.4 ui-sans-serif; color: var(--m); margin-top: 12px; }
+  .legend span::before { content: "●"; color: #2f7d4a; margin-right: 5px; }
+
+  .matrix {
+    background: #fff; border: 1px solid var(--hairline); border-radius: 10px; padding: 14px 16px;
+    font: 400 12px/1.6 ui-sans-serif; color: #333;
+  }
+  .matrix table { width: 100%; border-collapse: collapse; }
+  .matrix th, .matrix td { text-align: left; padding: 8px 10px; border-top: 1px solid var(--hairline); vertical-align: top; }
+  .matrix th { font-weight: 600; color: var(--m); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .matrix tr:first-child td, .matrix tr:first-child th { border-top: 0; }
+  .matrix code { background: #fbf8ee; padding: 1px 6px; border-radius: 4px; }
+
+  .reasoning { background: #fff; border-radius: 10px; border: 1px solid var(--hairline); padding: 14px 16px; }
+  .reasoning h5 { font: 600 11px/1 ui-sans-serif; letter-spacing: 0.1em; text-transform: uppercase; color: var(--m); margin: 0 0 8px; }
+  .reasoning ul { margin: 0; padding-left: 18px; font: 400 12px/1.55 ui-sans-serif; color: #333; }
+</style>
+
+<h2>Bounded card width — v2 (frontend-design pass)</h2>
+<p class="subtitle">Goal: card always feels like a product thumbnail at every viewport. Density beats size at scale.</p>
+
+<!-- =====================================================
+     The principle
+     ===================================================== -->
+<div class="stage" style="background:#fff;border-color:#eee">
+  <h4 style="color:#444">Reframing the problem</h4>
+  <div class="reasoning">
+    <h5>What changed in my thinking</h5>
+    <ul>
+      <li><strong>Previous fix</strong> capped card at <code>320px</code> and added a horizontal switch above <code>360px</code>. That's still too loose — the card can hit <code>320px</code> in sparse grids and the image becomes huge.</li>
+      <li><strong>Reframed:</strong> A card is a thumbnail, not a hero. At wider viewports the user wants <em>more products visible</em>, not <em>bigger products visible</em>. Density beats size.</li>
+      <li><strong>New target:</strong> <code>minmax(200px, 260px)</code> — a tight range. Image stays a sensible size; type stays readable; brand identity is consistent at every viewport.</li>
+      <li><strong>Page container caps the grid.</strong> Site already has <code>--page-width</code> (e.g. <code>1280px</code>); grid lives inside it. Cards never get absurd because the container doesn't.</li>
+      <li><strong>Sparse data = empty space, not stretched cards.</strong> 3 items on a wide viewport sit left-aligned with empty space on the right (or centered, tenant choice). Three balloon-cards is broken; three intentional thumbnails is design.</li>
+      <li><strong>Dropped the horizontal switch.</strong> With <code>260px</code> max it never fires. Code path no one wants.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- =====================================================
+     STATE 1 — Default, with enough items
+     ===================================================== -->
+<div class="stage">
+  <h4>Default — collection grid at three viewports <small>same range minmax(200, 260) · page-container capped</small></h4>
+
+  <div class="vw">@ 360px viewport · narrow phone</div>
+  <div class="viewport vp-narrow">
+    <div class="grid-default">
+      <div class="pc">
+        <div class="pc__media"><button class="cta-pill">+</button><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400"></div>
+        <div class="pc__vendor">Everlane</div>
+        <div class="pc__title">Box-Cut Tee</div>
+        <div class="pc__price-row"><span class="pc__price">$38</span></div>
+        <div class="pc__sw-row"><button class="pc__sw" data-sel style="background:#f5f1e3"></button><button class="pc__sw" style="background:#14110b"></button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="vw" style="margin-top:14px">@ 720px viewport · tablet</div>
+  <div class="viewport vp-tablet">
+    <div class="grid-default">
+      <div class="pc">
+        <div class="pc__media"><button class="cta-pill">+</button><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400"></div>
+        <div class="pc__vendor">Everlane</div>
+        <div class="pc__title">Box-Cut Tee</div>
+        <div class="pc__price-row"><span class="pc__price">$38</span></div>
+        <div class="pc__sw-row"><button class="pc__sw" data-sel style="background:#f5f1e3"></button><button class="pc__sw" style="background:#14110b"></button><button class="pc__sw" style="background:#b54a2a"></button></div>
+      </div>
+      <div class="pc">
+        <div class="pc__media"><button class="cta-pill">+</button><img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=400"></div>
+        <div class="pc__vendor">Everlane</div>
+        <div class="pc__title">Slim-Fit Jean</div>
+        <div class="pc__price-row"><span class="pc__price">$88</span></div>
+      </div>
+      <div class="pc">
+        <div class="pc__media"><button class="cta-pill">+</button><img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400"></div>
+        <div class="pc__vendor">Everlane</div>
+        <div class="pc__title">Court Sneaker</div>
+        <div class="pc__price-row"><span class="pc__price">$98</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="vw" style="margin-top:14px">@ 1280px page container · desktop</div>
+  <div class="viewport vp-wide">
+    <div class="grid-default">
+      <div class="pc">
+        <div class="pc__media"><button class="cta-pill">+</button><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400"></div>
+        <div class="pc__vendor">Everlane</div>
+        <div class="pc__title">Box-Cut Tee</div>
+        <div class="pc__price-row"><span class="pc__price">$38</span></div>
+        <div class="pc__sw-row"><button class="pc__sw" data-sel style="background:#f5f1e3"></button><button class="pc__sw" style="background:#14110b"></button><button class="pc__sw" style="background:#b54a2a"></button></div>
+      </div>
+      <div class="pc">
+        <div class="pc__media"><button class="cta-pill">+</button><img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=400"></div>
+        <div class="pc__vendor">Everlane</div>
+        <div class="pc__title">Slim-Fit Jean</div>
+        <div class="pc__price-row"><span class="pc__price">$88</span></div>
+      </div>
+      <div class="pc">
+        <div class="pc__media"><button class="cta-pill">+</button><img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400"></div>
+        <div class="pc__vendor">Everlane</div>
+        <div class="pc__title">Court Sneaker</div>
+        <div class="pc__price-row"><span class="pc__price">$98</span></div>
+      </div>
+      <div class="pc">
+        <div class="pc__media"><button class="cta-pill">+</button><img src="https://images.unsplash.com/photo-1605812860427-4024433a70fd?w=400"></div>
+        <div class="pc__vendor">Everlane</div>
+        <div class="pc__title">Modern Oxford</div>
+        <div class="pc__price-row"><span class="pc__price">$148</span></div>
+      </div>
+      <div class="pc">
+        <div class="pc__media"><button class="cta-pill">+</button><img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=400"></div>
+        <div class="pc__vendor">Everlane</div>
+        <div class="pc__title">Linen Short</div>
+        <div class="pc__price-row"><span class="pc__price">$58</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span>narrow viewport: 1 column · default cards never feel cramped</span>
+    <span>tablet: 3 columns · cards always 200–260px</span>
+    <span>desktop: 5+ columns · density beats size</span>
+  </div>
+</div>
+
+<!-- =====================================================
+     STATE 2 — Sparse data
+     ===================================================== -->
+<div class="stage">
+  <h4>Sparse data on a wide viewport <small>3 items · 1280px page container · two alignment options</small></h4>
+
+  <div class="vw">justify-content: start (default)</div>
+  <div class="viewport vp-wide">
+    <div class="grid-sparse">
+      <div class="pc">
+        <div class="pc__media"><button class="cta-pill">+</button><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400"></div>
+        <div class="pc__vendor">Everlane</div>
+        <div class="pc__title">Box-Cut Tee</div>
+        <div class="pc__price-row"><span class="pc__price">$38</span></div>
+      </div>
+      <div class="pc">
+        <div class="pc__media"><button class="cta-pill">+</button><img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=400"></div>
+        <div class="pc__vendor">Everlane</div>
+        <div class="pc__title">Slim-Fit Jean</div>
+        <div class="pc__price-row"><span class="pc__price">$88</span></div>
+      </div>
+      <div class="pc">
+        <div class="pc__media"><button class="cta-pill">+</button><img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400"></div>
+        <div class="pc__vendor">Everlane</div>
+        <div class="pc__title">Court Sneaker</div>
+        <div class="pc__price-row"><span class="pc__price">$98</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="vw" style="margin-top:14px">justify-content: center (tenant opt-in)</div>
+  <div class="viewport vp-wide">
+    <div class="grid-center">
+      <div class="pc">
+        <div class="pc__media"><button class="cta-pill">+</button><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400"></div>
+        <div class="pc__vendor">Everlane</div>
+        <div class="pc__title">Box-Cut Tee</div>
+        <div class="pc__price-row"><span class="pc__price">$38</span></div>
+      </div>
+      <div class="pc">
+        <div class="pc__media"><button class="cta-pill">+</button><img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=400"></div>
+        <div class="pc__vendor">Everlane</div>
+        <div class="pc__title">Slim-Fit Jean</div>
+        <div class="pc__price-row"><span class="pc__price">$88</span></div>
+      </div>
+      <div class="pc">
+        <div class="pc__media"><button class="cta-pill">+</button><img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400"></div>
+        <div class="pc__vendor">Everlane</div>
+        <div class="pc__title">Court Sneaker</div>
+        <div class="pc__price-row"><span class="pc__price">$98</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span>cards stay at 260px max — they don't stretch to fill</span>
+    <span>empty space on the right is intentional, not broken</span>
+    <span>tenant token <code>--product-card-grid-align</code> picks start | center</span>
+  </div>
+</div>
+
+<!-- =====================================================
+     Token surface — final
+     ===================================================== -->
+<div class="stage" style="background:#fff;border-color:#eee">
+  <h4 style="color:#444">Tokens — final (sizing section)</h4>
+  <div class="matrix">
+    <table>
+      <tr><th>Token</th><th>Default</th><th>Purpose</th></tr>
+      <tr><td><code>--product-card-min-width</code></td><td><code>200px</code></td><td>Tight lower bound · cards never feel cramped</td></tr>
+      <tr><td><code>--product-card-max-width</code></td><td><code>260px</code></td><td>Tight upper bound · cards never feel ridiculous</td></tr>
+      <tr><td><code>--product-card-density-compact-max</code></td><td><code>199px</code></td><td>Below this width, compact typography & padding</td></tr>
+      <tr><td><code>--product-card-grid-align</code></td><td><code>start</code></td><td><code>start</code> | <code>center</code> · alignment under sparse data</td></tr>
+      <tr><td><code>--product-card-image-fit</code></td><td><code>cover</code></td><td>Image fit mode. Tenants can opt into <code>contain</code>.</td></tr>
+      <tr><td><strong>dropped</strong></td><td></td><td><s><code>--product-card-density-comfortable-min</code></s>, <s><code>--product-card-horizontal-switch-width</code></s></td></tr>
+    </table>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:14px">Look right? Specifically:</p>
+<ul style="font:400 13px/1.5 ui-sans-serif">
+  <li>Tight range <code>200–260px</code> reasonable, or should it be even tighter (e.g. <code>200–240px</code>)?</li>
+  <li>Sparse-data alignment default = <code>start</code> (left-aligned) — agree, or default to <code>center</code>?</li>
+  <li>Two density bands (compact &lt; 200 / default ≥ 200) — sufficient?</li>
+</ul>

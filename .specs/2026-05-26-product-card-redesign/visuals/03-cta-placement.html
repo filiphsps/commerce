@@ -1,0 +1,290 @@
+<style>
+  :root {
+    --b: #14110b; --m: #6b6555;
+    --hairline: #ece6d4; --tile: #faf7f0;
+    --accent-warm: #b54a2a;
+  }
+  .stage { background: #fbf8ee; padding: 32px 24px; border-radius: 14px; border: 1px solid var(--hairline); margin-bottom: 24px; }
+  .stage h4 { font: 600 11px/1 ui-sans-serif; letter-spacing: 0.12em; text-transform: uppercase; color: var(--m); margin: 0 0 18px; display:flex; justify-content:space-between; }
+  .stage h4 small { font-weight:400; letter-spacing:0; color:#a8a290; text-transform:none; }
+  .row { display:flex; gap: 24px; align-items:flex-start; flex-wrap: wrap; }
+
+  .pc {
+    background: #fff; border: 1px solid var(--hairline); border-radius: 12px;
+    padding: 12px;
+    font-family: ui-sans-serif, system-ui; color: var(--b);
+    width: 236px;
+    display: flex; flex-direction: column; gap: 8px;
+    box-shadow: 0 1px 2px rgb(20 17 11 / 4%);
+    position: relative;
+  }
+  .pc__media { position: relative; background: var(--tile); border-radius: 8px; aspect-ratio: 4/5; overflow: hidden; }
+  .pc__media img { width: 100%; height: 100%; object-fit: cover; }
+  .pc__vendor { font: 600 10px/1 ui-sans-serif; letter-spacing: 0.14em; text-transform: uppercase; color: #8a8472; }
+  .pc__title { font: 500 14px/1.35 ui-sans-serif; }
+  .pc__price-row { display:flex; align-items:baseline; gap: 6px; }
+  .pc__price { font: 600 14px/1 ui-sans-serif; }
+  .pc__compare { font: 500 12px/1 ui-sans-serif; color: var(--m); text-decoration: line-through; }
+  .pc__sw-row { display:flex; gap:6px; }
+  .pc__sw { width: 16px; height: 16px; border-radius: 999px; border: 1px solid rgb(20 17 11 / 0.12); }
+  .pc__sw[data-sel] { outline: 1.5px solid #14110b; outline-offset: 2px; }
+
+  /* Float pill CTA */
+  .cta-pill {
+    position: absolute; top: 10px; right: 10px; z-index: 3;
+    height: 36px; min-width: 36px;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.95); color: var(--b);
+    border: 1px solid rgb(20 17 11 / 0.08);
+    display:flex; align-items:center; justify-content:center; gap: 6px;
+    padding: 0 12px;
+    font: 600 12px/1 ui-sans-serif;
+    cursor: pointer;
+    box-shadow: 0 6px 16px -8px rgb(20 17 11 / 0.25);
+  }
+  .cta-pill--icon { padding: 0; width: 36px; }
+  .cta-pill__plus { font: 600 18px/1 ui-sans-serif; }
+
+  /* Inline button CTA */
+  .cta-inline {
+    background: #14110b; color: #fff; border: 0; border-radius: 8px;
+    padding: 12px; font: 600 13px/1 ui-sans-serif;
+    cursor: pointer;
+    margin-top: 4px;
+  }
+  .cta-inline--ghost { background: transparent; color: #14110b; border: 1px solid #14110b; }
+
+  /* Float picker overlay (anchored to image) */
+  .picker-float {
+    position: absolute; left: 12px; right: 12px; bottom: 12px; z-index: 5;
+    background: rgb(255 255 255 / 0.985);
+    border: 1px solid rgb(20 17 11 / 0.06); border-radius: 10px;
+    padding: 12px;
+    display: flex; flex-direction: column; gap: 10px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 12px 28px -10px rgb(20 17 11 / 0.22);
+  }
+  .picker-label { font: 600 10px/1 ui-sans-serif; letter-spacing: 0.14em; text-transform: uppercase; color: var(--m); margin: 0 0 6px; }
+  .chip-row { display: flex; gap: 5px; flex-wrap: wrap; }
+  .chip { font: 500 12px/1 ui-sans-serif; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--hairline); background: #fff; cursor: pointer; color: var(--b); }
+  .chip[data-sel] { background: var(--b); color: #fff; border-color: var(--b); }
+  .chip[data-na] { color: #b8b1a1; border-color: #efe9d6; background: #fbf8ee; position: relative; pointer-events: none; }
+  .chip[data-na]::after { content: ""; position: absolute; left: 6px; right: 6px; top: 50%; height: 1px; background: #d1cab7; }
+  .picker-cta { background: #14110b; color: #fff; border: 0; border-radius: 8px; padding: 10px; font: 600 12px/1 ui-sans-serif; cursor: pointer; }
+
+  /* Inline picker (replaces the bottom CTA in place) */
+  .picker-inline {
+    border: 1px solid var(--hairline);
+    border-radius: 8px;
+    padding: 10px;
+    display: flex; flex-direction: column; gap: 8px;
+    background: #fbf8ee;
+  }
+
+  .legend { display:flex; flex-wrap:wrap; gap: 14px; font: 500 11px/1.4 ui-sans-serif; color: var(--m); margin-top: 10px; }
+  .legend span::before { content: "●"; color: #2f7d4a; margin-right: 5px; }
+
+  .matrix {
+    background: #fff; border: 1px solid var(--hairline); border-radius: 10px; padding: 14px 16px;
+    font: 400 12px/1.6 ui-sans-serif; color: #333;
+  }
+  .matrix h5 { font: 600 11px/1 ui-sans-serif; letter-spacing: 0.1em; text-transform: uppercase; color: var(--m); margin: 0 0 8px; }
+  .matrix table { width: 100%; border-collapse: collapse; }
+  .matrix th, .matrix td { text-align: left; padding: 8px 10px; border-top: 1px solid var(--hairline); vertical-align: top; }
+  .matrix th { font-weight: 600; color: var(--m); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .matrix tr:first-child td, .matrix tr:first-child th { border-top: 0; }
+</style>
+
+<h2>CTA placement is now token-driven</h2>
+<p class="subtitle">Two placements for the entry point. Picker contents identical in both; routing rule unchanged for horizontal & mobile.</p>
+
+<!-- =====================================================
+     A — float-pill
+     ===================================================== -->
+<div class="stage">
+  <h4>--product-card-cta-placement: float-pill <small>closed → open · vertical card · desktop</small></h4>
+  <div class="row">
+
+    <div>
+      <div class="pc">
+        <div class="pc__media">
+          <button class="cta-pill cta-pill--icon" aria-label="Choose options"><span class="cta-pill__plus">+</span></button>
+          <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600">
+        </div>
+        <div class="pc__vendor">Everlane</div>
+        <div class="pc__title">Heavyweight Box-Cut Tee</div>
+        <div class="pc__price-row"><span class="pc__price">$38</span><span class="pc__compare">$48</span></div>
+        <div class="pc__sw-row">
+          <button class="pc__sw" data-sel style="background:#f5f1e3"></button>
+          <button class="pc__sw" style="background:#14110b"></button>
+          <button class="pc__sw" style="background:#b54a2a"></button>
+        </div>
+      </div>
+      <div style="font:500 10px/1.4 ui-sans-serif;letter-spacing:0.12em;text-transform:uppercase;color:#8a8472;text-align:center;margin-top:8px">closed · icon-only</div>
+    </div>
+
+    <div>
+      <div class="pc">
+        <div class="pc__media">
+          <button class="cta-pill" aria-label="Quick add"><span class="cta-pill__plus">+</span><span>Quick add</span></button>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600">
+        </div>
+        <div class="pc__vendor">Everlane</div>
+        <div class="pc__title">Court Sneaker — Beige</div>
+        <div class="pc__price-row"><span class="pc__price">$98</span></div>
+      </div>
+      <div style="font:500 10px/1.4 ui-sans-serif;letter-spacing:0.12em;text-transform:uppercase;color:#8a8472;text-align:center;margin-top:8px">closed · icon + text</div>
+    </div>
+
+    <div>
+      <div class="pc">
+        <div class="pc__media">
+          <button class="cta-pill cta-pill--icon" aria-label="Close picker"><span class="cta-pill__plus">×</span></button>
+          <img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=600">
+          <div class="picker-float">
+            <div>
+              <div class="picker-label">Size</div>
+              <div class="chip-row">
+                <button class="chip">28</button>
+                <button class="chip" data-sel>30</button>
+                <button class="chip">32</button>
+                <button class="chip" data-na>34</button>
+              </div>
+            </div>
+            <button class="picker-cta">Add to bag · $88</button>
+          </div>
+        </div>
+        <div class="pc__vendor">Everlane</div>
+        <div class="pc__title">Slim-Fit Organic Cotton Jean</div>
+        <div class="pc__price-row"><span class="pc__price">$88</span></div>
+        <div class="pc__sw-row">
+          <button class="pc__sw" data-sel style="background:#3a4a6b"></button>
+          <button class="pc__sw" style="background:#1a1a1a"></button>
+          <button class="pc__sw" style="background:#8b6f47"></button>
+        </div>
+      </div>
+      <div style="font:500 10px/1.4 ui-sans-serif;letter-spacing:0.12em;text-transform:uppercase;color:#8a8472;text-align:center;margin-top:8px">open · float picker over image</div>
+    </div>
+  </div>
+  <div class="legend">
+    <span>tenant picks icon-only OR icon+text via <code>--product-card-cta-pill-label</code> (empty = icon-only)</span>
+    <span>opens float picker on vertical+desktop · sheet on horizontal/mobile</span>
+  </div>
+</div>
+
+<!-- =====================================================
+     B — inline-button
+     ===================================================== -->
+<div class="stage">
+  <h4>--product-card-cta-placement: inline-button <small>closed → open · vertical card · desktop</small></h4>
+  <div class="row">
+
+    <div>
+      <div class="pc">
+        <div class="pc__media">
+          <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600">
+        </div>
+        <div class="pc__vendor">Everlane</div>
+        <div class="pc__title">Heavyweight Box-Cut Tee</div>
+        <div class="pc__price-row"><span class="pc__price">$38</span><span class="pc__compare">$48</span></div>
+        <div class="pc__sw-row">
+          <button class="pc__sw" data-sel style="background:#f5f1e3"></button>
+          <button class="pc__sw" style="background:#14110b"></button>
+          <button class="pc__sw" style="background:#b54a2a"></button>
+        </div>
+        <button class="cta-inline">Add to bag</button>
+      </div>
+      <div style="font:500 10px/1.4 ui-sans-serif;letter-spacing:0.12em;text-transform:uppercase;color:#8a8472;text-align:center;margin-top:8px">closed · solid button</div>
+    </div>
+
+    <div>
+      <div class="pc">
+        <div class="pc__media">
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600">
+        </div>
+        <div class="pc__vendor">Everlane</div>
+        <div class="pc__title">Court Sneaker — Beige</div>
+        <div class="pc__price-row"><span class="pc__price">$98</span></div>
+        <button class="cta-inline cta-inline--ghost">Add to bag</button>
+      </div>
+      <div style="font:500 10px/1.4 ui-sans-serif;letter-spacing:0.12em;text-transform:uppercase;color:#8a8472;text-align:center;margin-top:8px">closed · ghost variant<br>(via existing button tokens)</div>
+    </div>
+
+    <div>
+      <div class="pc">
+        <div class="pc__media">
+          <img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=600">
+        </div>
+        <div class="pc__vendor">Everlane</div>
+        <div class="pc__title">Slim-Fit Organic Cotton Jean</div>
+        <div class="pc__price-row"><span class="pc__price">$88</span></div>
+        <div class="picker-inline">
+          <div class="picker-label">Pick a size</div>
+          <div class="chip-row">
+            <button class="chip">28</button>
+            <button class="chip" data-sel>30</button>
+            <button class="chip">32</button>
+            <button class="chip" data-na>34</button>
+          </div>
+          <button class="picker-cta">Add to bag · $88</button>
+        </div>
+      </div>
+      <div style="font:500 10px/1.4 ui-sans-serif;letter-spacing:0.12em;text-transform:uppercase;color:#8a8472;text-align:center;margin-top:8px">open · picker replaces button in-place</div>
+    </div>
+  </div>
+  <div class="legend">
+    <span>picker takes the same slot as the inline CTA — no float, no card growing past the next row</span>
+    <span>horizontal / mobile still routes to sheet (same as float-pill mode)</span>
+    <span>both solid and ghost button variants come for free via existing button tokens</span>
+  </div>
+</div>
+
+<!-- =====================================================
+     Matrix
+     ===================================================== -->
+<div class="stage" style="background:#fff;border-color:#eee">
+  <h4 style="color:#444">CTA placement × surface routing matrix</h4>
+  <div class="matrix">
+    <table>
+      <tr>
+        <th>Token</th>
+        <th>Vertical · desktop</th>
+        <th>Horizontal · any</th>
+        <th>Any · mobile (&lt; md)</th>
+        <th>Cart drawer</th>
+      </tr>
+      <tr>
+        <td><code>float-pill</code></td>
+        <td>Float picker over image</td>
+        <td>Sheet picker</td>
+        <td>Sheet picker</td>
+        <td>No CTA (read-only)</td>
+      </tr>
+      <tr>
+        <td><code>inline-button</code></td>
+        <td>Picker replaces button in-place</td>
+        <td>Sheet picker</td>
+        <td>Sheet picker</td>
+        <td>No CTA (read-only)</td>
+      </tr>
+    </table>
+  </div>
+  <div class="matrix" style="margin-top:14px">
+    <h5>Tokens added by this section</h5>
+    <ul style="margin:0;padding-left:18px">
+      <li><code>--product-card-cta-placement</code>: <code>float-pill</code> | <code>inline-button</code> (default: <code>float-pill</code> for grid-friendliness)</li>
+      <li><code>--product-card-cta-pill-label</code>: string (default: empty → icon-only)</li>
+      <li><code>--product-card-cta-pill-icon</code>: string (default: <code>"+"</code>)</li>
+      <li><code>--product-card-cta-inline-label</code>: string (default: <code>"Add to bag"</code>, i18n-driven)</li>
+      <li><code>--product-card-cta-inline-style</code>: <code>solid</code> | <code>ghost</code> (default: <code>solid</code>)</li>
+      <li><code>--product-card-quick-add-presentation</code>: <code>auto</code> | <code>float</code> | <code>sheet</code> (default: <code>auto</code> = surface routing rule)</li>
+    </ul>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:14px">Does this read right? Specifically:</p>
+<ul style="font:400 13px/1.5 ui-sans-serif">
+  <li>Two placements only (<code>float-pill</code> and <code>inline-button</code>), or do you want more (e.g. icon-only-below, text-only-over-image)?</li>
+  <li>When CTA = <code>inline-button</code>, picker replaces button in-place on desktop — instead of floating over the image. Confirm or want it to also float?</li>
+  <li>The original three Section-1 asks still need a yes/no: swatch-as-hint, no size pills on base card, single-variant fast path.</li>
+</ul>

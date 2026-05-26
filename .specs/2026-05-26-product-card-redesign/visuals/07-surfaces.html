@@ -1,0 +1,424 @@
+<style>
+  :root {
+    --b: #14110b; --m: #6b6555;
+    --hairline: #ece6d4; --tile: #faf7f0; --tile-warm: #f3eedc;
+    --accent-warm: #b54a2a;
+  }
+  .stage { background: #fbf8ee; padding: 32px 24px; border-radius: 14px; border: 1px solid var(--hairline); margin-bottom: 28px; }
+  .stage h4 { font: 600 11px/1 ui-sans-serif; letter-spacing: 0.12em; text-transform: uppercase; color: var(--m); margin: 0 0 16px; display:flex; justify-content:space-between; align-items: baseline; }
+  .stage h4 small { font-weight:400; letter-spacing:0; color:#a8a290; text-transform:none; }
+  .row { display:flex; gap: 14px; align-items:flex-start; }
+  .legend { display:flex; flex-wrap:wrap; gap: 14px; font: 500 11px/1.4 ui-sans-serif; color: var(--m); margin-top: 10px; }
+  .legend span::before { content: "●"; color: #2f7d4a; margin-right: 5px; }
+
+  /* ===== Shared card ===== */
+  .pc {
+    background: #fff; border: 1px solid var(--hairline); border-radius: 12px;
+    padding: 12px;
+    font-family: ui-sans-serif, system-ui; color: var(--b);
+    display: flex; flex-direction: column; gap: 8px;
+    box-shadow: 0 1px 2px rgb(20 17 11 / 4%);
+    position: relative;
+  }
+  .pc__media { position: relative; background: var(--tile); border-radius: 8px; aspect-ratio: 4/5; overflow: hidden; }
+  .pc__media img { width: 100%; height: 100%; object-fit: cover; }
+  .pc__vendor { font: 600 10px/1 ui-sans-serif; letter-spacing: 0.14em; text-transform: uppercase; color: #8a8472; }
+  .pc__title { font: 500 13px/1.35 ui-sans-serif; }
+  .pc__price-row { display:flex; align-items:baseline; gap: 6px; }
+  .pc__price { font: 600 13px/1 ui-sans-serif; }
+  .pc__compare { font: 500 11px/1 ui-sans-serif; color: var(--m); text-decoration: line-through; }
+  .pc__sw-row { display:flex; gap:6px; }
+  .pc__sw { width: 14px; height: 14px; border-radius: 999px; border: 1px solid rgb(20 17 11 / 0.12); cursor: pointer; }
+  .pc__sw[data-sel] { outline: 1.5px solid #14110b; outline-offset: 2px; }
+  .cta-pill {
+    position: absolute; top: 10px; right: 10px; z-index: 3;
+    width: 34px; height: 34px; border-radius: 999px;
+    background: rgb(255 255 255 / 0.95); color: var(--b);
+    border: 1px solid rgb(20 17 11 / 0.08);
+    display:flex; align-items:center; justify-content:center;
+    font: 600 18px/1 ui-sans-serif;
+    cursor: pointer;
+    box-shadow: 0 6px 16px -8px rgb(20 17 11 / 0.25);
+  }
+  .cta-pill--single::after {
+    content: ""; position: absolute; bottom: -1px; right: -1px;
+    width: 9px; height: 9px; border-radius: 99px; background: #2f7d4a; border: 2px solid #fff;
+  }
+  .pc--oos { opacity: 0.7; }
+  .pc--oos .cta-pill { pointer-events: none; opacity: 0.45; }
+
+  /* ===== Collection grid ===== */
+  .grid-col { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .grid-col .pc { width: auto; }
+
+  /* ===== Recommendations rail ===== */
+  .rail-wrap { position: relative; }
+  .rail {
+    display: flex; gap: 14px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 14px;
+    padding: 4px 14px 18px;
+    margin: 0 -14px;
+  }
+  .rail::-webkit-scrollbar { display: none; }
+  .rail .pc { flex: 0 0 220px; scroll-snap-align: start; }
+  .rail-fade-left, .rail-fade-right {
+    position: absolute; top: 0; bottom: 18px;
+    width: 32px; pointer-events: none;
+  }
+  .rail-fade-left { left: 0; background: linear-gradient(to right, #fbf8ee, transparent); }
+  .rail-fade-right { right: 0; background: linear-gradient(to left, #fbf8ee, transparent); }
+  .rail-arrow {
+    position: absolute; top: 38%;
+    width: 36px; height: 36px; border-radius: 999px;
+    background: #fff; border: 1px solid var(--hairline);
+    display:flex; align-items:center; justify-content:center;
+    font: 600 16px/1 ui-sans-serif;
+    cursor: pointer;
+    box-shadow: 0 4px 12px -4px rgb(20 17 11 / 0.18);
+    z-index: 2;
+  }
+  .rail-arrow--prev { left: -8px; }
+  .rail-arrow--next { right: -8px; }
+
+  /* ===== Search row ===== */
+  .search-list { display: flex; flex-direction: column; gap: 10px; max-width: 720px; }
+  .pc-row {
+    background: #fff; border: 1px solid var(--hairline); border-radius: 12px;
+    padding: 12px;
+    display: flex; gap: 14px; align-items: center;
+    font-family: ui-sans-serif, system-ui; color: var(--b);
+    position: relative;
+    box-shadow: 0 1px 2px rgb(20 17 11 / 4%);
+  }
+  .pc-row__media {
+    width: 72px; height: 90px; flex-shrink: 0;
+    background: var(--tile); border-radius: 8px;
+    overflow: hidden; position: relative;
+  }
+  .pc-row__media img { width: 100%; height: 100%; object-fit: cover; }
+  .pc-row__body { flex: 1; min-width: 0; display:flex; flex-direction:column; gap: 4px; }
+  .pc-row__title { font: 500 14px/1.3 ui-sans-serif; }
+  .pc-row__right { display:flex; flex-direction:column; align-items:flex-end; justify-content:space-between; gap: 6px; flex-shrink: 0; height: 90px; }
+  .pc-row__plus {
+    width: 36px; height: 36px; border-radius: 999px;
+    background: var(--b); color: #fff;
+    display:flex; align-items:center; justify-content:center;
+    font: 600 18px/1 ui-sans-serif; border: 0; cursor: pointer;
+  }
+
+  /* ===== Cart drawer ===== */
+  .cart-drawer {
+    width: 360px; background: #fff; border: 1px solid var(--hairline); border-radius: 14px;
+    padding: 18px; box-shadow: 0 14px 32px -10px rgb(20 17 11 / 0.18);
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .cart-drawer__head { display:flex; justify-content:space-between; align-items:center; padding-bottom: 12px; border-bottom: 1px solid var(--hairline); }
+  .cart-drawer__head h5 { margin: 0; font: 600 14px/1 ui-sans-serif; }
+  .cart-drawer__head small { font: 500 11px/1 ui-sans-serif; color: var(--m); }
+  .cart-item {
+    display: flex; gap: 12px; align-items: stretch;
+    padding-bottom: 12px; border-bottom: 1px dashed var(--hairline);
+  }
+  .cart-item__media { width: 60px; height: 75px; border-radius: 6px; background: var(--tile); overflow: hidden; flex-shrink: 0; }
+  .cart-item__media img { width: 100%; height: 100%; object-fit: cover; }
+  .cart-item__body { flex:1; min-width:0; display:flex; flex-direction:column; gap: 4px; }
+  .cart-item__title { font: 500 13px/1.3 ui-sans-serif; }
+  .cart-item__variant { font: 500 11px/1 ui-sans-serif; color: var(--m); }
+  .cart-item__bottom { display:flex; justify-content:space-between; align-items:center; margin-top: auto; }
+  .stepper { display:flex; align-items:center; gap: 0; border: 1px solid var(--hairline); border-radius: 6px; }
+  .stepper button { background: transparent; border: 0; width: 24px; height: 24px; cursor: pointer; font: 500 13px/1 ui-sans-serif; color: var(--b); }
+  .stepper span { font: 500 12px/1 ui-sans-serif; min-width: 18px; text-align: center; }
+  .cart-item__price { font: 600 13px/1 ui-sans-serif; }
+  .cart-item__remove { background: transparent; border: 0; color: var(--m); font: 500 11px/1 ui-sans-serif; cursor: pointer; text-decoration: underline; align-self: flex-end; }
+
+  /* ===== Bugs panel ===== */
+  .bugs { background: #fff; border-radius: 10px; border: 1px solid var(--hairline); padding: 14px 16px; }
+  .bugs h5 { font: 600 11px/1 ui-sans-serif; letter-spacing: 0.1em; text-transform: uppercase; color: var(--m); margin: 0 0 8px; }
+  .bugs table { width: 100%; border-collapse: collapse; font: 400 12px/1.5 ui-sans-serif; }
+  .bugs th, .bugs td { text-align: left; padding: 8px 10px; border-top: 1px solid var(--hairline); vertical-align: top; }
+  .bugs th { font-weight: 600; color: var(--m); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .bugs tr:first-child td, .bugs tr:first-child th { border-top: 0; }
+  .bugs td.bug { color: #b54a2a; }
+  .bugs td.fix { color: #2f7d4a; }
+</style>
+
+<h2>Demo — Section 2 per-surface behavior</h2>
+<p class="subtitle">Five surfaces. Same primitives. Each surface composes them differently per the matrix.</p>
+
+<!-- ============================================================
+     SURFACE 1 — Collection grid
+     ============================================================ -->
+<div class="stage">
+  <h4>Collection grid <small>vertical · boxed · float-pill · float picker</small></h4>
+  <div class="grid-col">
+    <div class="pc">
+      <div class="pc__media">
+        <button class="cta-pill" aria-label="Choose options">+</button>
+        <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600">
+      </div>
+      <div class="pc__vendor">Everlane</div>
+      <div class="pc__title">Heavyweight Box-Cut Tee</div>
+      <div class="pc__price-row"><span class="pc__price">$38</span><span class="pc__compare">$48</span></div>
+      <div class="pc__sw-row">
+        <button class="pc__sw" data-sel style="background:#f5f1e3"></button>
+        <button class="pc__sw" style="background:#14110b"></button>
+        <button class="pc__sw" style="background:#b54a2a"></button>
+      </div>
+    </div>
+    <div class="pc">
+      <div class="pc__media">
+        <button class="cta-pill cta-pill--single" aria-label="Add to bag">+</button>
+        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600">
+      </div>
+      <div class="pc__vendor">Everlane</div>
+      <div class="pc__title">Court Sneaker — Beige (sz 10)</div>
+      <div class="pc__price-row"><span class="pc__price">$98</span></div>
+    </div>
+    <div class="pc pc--oos">
+      <div class="pc__media">
+        <button class="cta-pill" aria-label="Out of stock">+</button>
+        <img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=600">
+      </div>
+      <div class="pc__vendor">Everlane</div>
+      <div class="pc__title">Slim-Fit Jean <span style="color:var(--m);font-weight:500">· Sold out</span></div>
+      <div class="pc__price-row"><span class="pc__price">$88</span></div>
+    </div>
+    <div class="pc">
+      <div class="pc__media">
+        <button class="cta-pill" aria-label="Choose options">+</button>
+        <img src="https://images.unsplash.com/photo-1605812860427-4024433a70fd?w=600">
+      </div>
+      <div class="pc__vendor">Everlane</div>
+      <div class="pc__title">The Modern Oxford</div>
+      <div class="pc__price-row"><span class="pc__price">$148</span></div>
+      <div class="pc__sw-row">
+        <button class="pc__sw" data-sel style="background:#0e0e0e"></button>
+        <button class="pc__sw" style="background:#6b4f33"></button>
+      </div>
+    </div>
+  </div>
+  <div class="legend">
+    <span>uniform card heights regardless of option counts</span>
+    <span>green dot = single-variant fast-path</span>
+    <span>out-of-stock = 70% opacity, CTA disabled</span>
+  </div>
+</div>
+
+<!-- ============================================================
+     SURFACE 2 — Recommendations rail
+     ============================================================ -->
+<div class="stage">
+  <h4>Recommendations rail <small>"You may also like" · scroll-snap + arrows + edge fade</small></h4>
+  <div class="rail-wrap">
+    <button class="rail-arrow rail-arrow--prev" aria-label="Previous">‹</button>
+    <button class="rail-arrow rail-arrow--next" aria-label="Next">›</button>
+    <div class="rail-fade-left"></div>
+    <div class="rail-fade-right"></div>
+    <div class="rail">
+      <div class="pc">
+        <div class="pc__media"><button class="cta-pill">+</button><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600"></div>
+        <div class="pc__vendor">Everlane</div>
+        <div class="pc__title">Heavyweight Box-Cut Tee</div>
+        <div class="pc__price-row"><span class="pc__price">$38</span></div>
+        <div class="pc__sw-row"><button class="pc__sw" data-sel style="background:#f5f1e3"></button><button class="pc__sw" style="background:#14110b"></button></div>
+      </div>
+      <div class="pc">
+        <div class="pc__media"><button class="cta-pill">+</button><img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=600"></div>
+        <div class="pc__vendor">Everlane</div>
+        <div class="pc__title">Slim-Fit Cotton Jean</div>
+        <div class="pc__price-row"><span class="pc__price">$88</span></div>
+        <div class="pc__sw-row"><button class="pc__sw" data-sel style="background:#3a4a6b"></button><button class="pc__sw" style="background:#1a1a1a"></button></div>
+      </div>
+      <div class="pc">
+        <div class="pc__media"><button class="cta-pill">+</button><img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600"></div>
+        <div class="pc__vendor">Everlane</div>
+        <div class="pc__title">Court Sneaker</div>
+        <div class="pc__price-row"><span class="pc__price">$98</span></div>
+      </div>
+      <div class="pc">
+        <div class="pc__media"><button class="cta-pill">+</button><img src="https://images.unsplash.com/photo-1605812860427-4024433a70fd?w=600"></div>
+        <div class="pc__vendor">Everlane</div>
+        <div class="pc__title">The Modern Oxford</div>
+        <div class="pc__price-row"><span class="pc__price">$148</span></div>
+      </div>
+      <div class="pc">
+        <div class="pc__media"><button class="cta-pill">+</button><img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600"></div>
+        <div class="pc__vendor">Everlane</div>
+        <div class="pc__title">Linen Drawstring Short</div>
+        <div class="pc__price-row"><span class="pc__price">$58</span></div>
+      </div>
+      <div class="pc">
+        <div class="pc__media"><button class="cta-pill">+</button><img src="https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=600"></div>
+        <div class="pc__vendor">Everlane</div>
+        <div class="pc__title">Heavyweight Crew Sweat</div>
+        <div class="pc__price-row"><span class="pc__price">$78</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="legend">
+    <span>native scroll-snap (touch users)</span>
+    <span>arrows visible on desktop hover & keyboard focus</span>
+    <span>edge-fade hints at content beyond viewport</span>
+    <span>arrows hide entirely when rail fits without overflow</span>
+  </div>
+</div>
+
+<!-- ============================================================
+     SURFACE 3 — Search row
+     ============================================================ -->
+<div class="stage">
+  <h4>Search results <small>horizontal · boxed (not bare) · "+" routes to sheet</small></h4>
+  <div class="search-list">
+    <div class="pc-row">
+      <div class="pc-row__media"><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=200"></div>
+      <div class="pc-row__body">
+        <div class="pc__vendor">Everlane</div>
+        <div class="pc-row__title">Heavyweight Box-Cut Tee</div>
+        <div class="pc__sw-row" style="margin-top: 4px">
+          <button class="pc__sw" data-sel style="background:#f5f1e3"></button>
+          <button class="pc__sw" style="background:#14110b"></button>
+          <button class="pc__sw" style="background:#b54a2a"></button>
+        </div>
+      </div>
+      <div class="pc-row__right">
+        <span class="pc__price">$38</span>
+        <button class="pc-row__plus" aria-label="Choose options">+</button>
+      </div>
+    </div>
+    <div class="pc-row">
+      <div class="pc-row__media"><img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=200"></div>
+      <div class="pc-row__body">
+        <div class="pc__vendor">Everlane</div>
+        <div class="pc-row__title">Slim-Fit Organic Cotton Jean</div>
+        <div class="pc__sw-row" style="margin-top: 4px">
+          <button class="pc__sw" data-sel style="background:#3a4a6b"></button>
+          <button class="pc__sw" style="background:#1a1a1a"></button>
+        </div>
+      </div>
+      <div class="pc-row__right">
+        <span class="pc__price">$88</span>
+        <button class="pc-row__plus" aria-label="Choose options">+</button>
+      </div>
+    </div>
+    <div class="pc-row">
+      <div class="pc-row__media"><img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=200"></div>
+      <div class="pc-row__body">
+        <div class="pc__vendor">Everlane</div>
+        <div class="pc-row__title">Court Sneaker — Beige</div>
+      </div>
+      <div class="pc-row__right">
+        <span class="pc__price">$98</span>
+        <button class="pc-row__plus pc-row__plus" style="background:transparent;color:var(--b);border:1px solid var(--hairline);position:relative" aria-label="Add to bag">
+          +
+          <span style="content:'';position:absolute;bottom:-1px;right:-1px;width:9px;height:9px;border-radius:99px;background:#2f7d4a;border:2px solid #fff;display:block"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="legend">
+    <span>boxed (rounded card) gives the row a defined edge — vs bare today</span>
+    <span>"+" routes to sheet picker · no float in horizontal layout</span>
+    <span><b style="color:#b54a2a">critical bug to root-cause:</b> today search returns "3 PRODUCTS" but renders 0 cards in DOM</span>
+  </div>
+</div>
+
+<!-- ============================================================
+     SURFACE 4 — Cart drawer
+     ============================================================ -->
+<div class="stage">
+  <h4>Cart drawer <small>horizontal · boxed · no CTA · quantity + remove</small></h4>
+  <div class="cart-drawer">
+    <div class="cart-drawer__head">
+      <h5>Your bag</h5>
+      <small>2 items · $126</small>
+    </div>
+    <div class="cart-item">
+      <div class="cart-item__media"><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=200"></div>
+      <div class="cart-item__body">
+        <div class="cart-item__title">Heavyweight Box-Cut Tee</div>
+        <div class="cart-item__variant">Size M · Bone</div>
+        <div class="cart-item__bottom">
+          <div class="stepper">
+            <button>−</button><span>1</span><button>+</button>
+          </div>
+          <div class="cart-item__price">$38</div>
+        </div>
+      </div>
+      <button class="cart-item__remove" aria-label="Remove">Remove</button>
+    </div>
+    <div class="cart-item">
+      <div class="cart-item__media"><img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=200"></div>
+      <div class="cart-item__body">
+        <div class="cart-item__title">Slim-Fit Organic Cotton Jean</div>
+        <div class="cart-item__variant">Size 30 · Indigo</div>
+        <div class="cart-item__bottom">
+          <div class="stepper">
+            <button>−</button><span>1</span><button>+</button>
+          </div>
+          <div class="cart-item__price">$88</div>
+        </div>
+      </div>
+      <button class="cart-item__remove" aria-label="Remove">Remove</button>
+    </div>
+  </div>
+  <div class="legend">
+    <span>no "+" · no swatches · no urgency line</span>
+    <span><code>CartDrawerProductCard</code> stops importing <code>ProductCardActions</code> + <code>ProductCardOptions</code></span>
+  </div>
+</div>
+
+<!-- ============================================================
+     Cross-cutting bug fixes
+     ============================================================ -->
+<div class="stage" style="background:#fff;border-color:#eee">
+  <h4 style="color:#444">Cross-cutting bugs — fixed at the chassis layer (apply to all surfaces)</h4>
+  <div class="bugs">
+    <table>
+      <tr>
+        <th style="width:30%">Bug</th>
+        <th style="width:35%">Root cause</th>
+        <th style="width:35%">Fix</th>
+      </tr>
+      <tr>
+        <td class="bug">Search renders 0 cards despite "3 PRODUCTS"</td>
+        <td>Hypothesis: <code>firstAvailableVariant</code> returns null OR a server-component error swallowed by Suspense. Needs root-causing.</td>
+        <td class="fix">Add smoke test (<code>cards.length === resultsCount</code>) + investigate render path in spec phase 1.</td>
+      </tr>
+      <tr>
+        <td class="bug">"+0" overflow chip rendering</td>
+        <td>Chip text is computed separately from <code>data-overflow</code> attr; chip element renders regardless. <code>:global([data-overflow="0"])</code> CSS rule never fires.</td>
+        <td class="fix">Conditional render in JSX: don't render chip when overflow is 0. Drop the CSS hide rule entirely.</td>
+      </tr>
+      <tr>
+        <td class="bug">Yellow/cream banding inside image tile</td>
+        <td><code>object-fit: contain</code> + product images with mismatched aspect → wrapper bg shows through.</td>
+        <td class="fix">Default to <code>object-fit: cover</code>. Tenants opt-in to <code>contain</code> via <code>--product-card-image-fit</code> token.</td>
+      </tr>
+      <tr>
+        <td class="bug">Carousel overflows viewport, no scroll affordance</td>
+        <td>No carousel primitive — just a flex/grid container with overflow.</td>
+        <td class="fix">New <code>RecommendationsRail</code>: scroll-snap, edge-fade, arrows on desktop hover.</td>
+      </tr>
+      <tr>
+        <td class="bug">Size pills with text strikethrough</td>
+        <td>Sizes rendered on base card as pills; unavailable shown as text-strikethrough.</td>
+        <td class="fix">Drop sizes from base card. Sizes only in picker. Unavailable = pill with CSS strike line (no text-decoration).</td>
+      </tr>
+      <tr>
+        <td class="bug">Out-of-stock cards drop to 50% opacity</td>
+        <td>Chassis hard-codes <code>opacity-50</code>.</td>
+        <td class="fix">Token <code>--product-card-oos-opacity</code> (default <code>0.7</code>).</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:14px">Confirm or amend, specifically:</p>
+<ul style="font:400 13px/1.5 ui-sans-serif">
+  <li>Search row uses <strong>boxed</strong> chrome (rounded card edge), not bare — agree?</li>
+  <li>Recommendations rail mechanism (scroll-snap + arrows + edge-fade) — agree?</li>
+  <li>Cart drawer card is fully read-only (no "+", no swatches, no urgency) — agree?</li>
+  <li>Micro layout: audit usage and likely delete — agree?</li>
+</ul>
