@@ -2,24 +2,23 @@
 
 import type { Nullable, OnlineShop, ShopifyCommerceProvider } from '@nordcom/commerce-db';
 import { MissingContextProviderError, TodoError } from '@nordcom/commerce-errors';
-import type { CartWithActions, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
+import type { ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 import {
     AnalyticsEventName as AnalyticsShopifyEventName,
     getClientBrowserParameters,
     ShopifySalesChannel,
     sendShopifyAnalytics,
-    useCart,
     useShop as useShopify,
     useShopifyCookies,
 } from '@shopify/hydrogen-react';
 import type { ShopifyContextValue } from '@shopify/hydrogen-react/ShopifyProvider';
-import type { CartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import { track as vercelTrack } from '@vercel/analytics/react';
 import debounce from 'lodash.debounce';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { Fragment, Suspense, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { createContext, useContext } from 'use-context-selector';
+import { type UseCartReturn, useMaybeCart } from '@/components/cart/provider';
 import { useShop } from '@/components/shop/provider';
 import { usePrevious } from '@/hooks/usePrevious';
 import { BuildConfig } from '@/utils/build-config';
@@ -27,6 +26,8 @@ import { isCrawler } from '@/utils/is-crawler';
 import type { CurrencyCode, Locale } from '@/utils/locale';
 import { productToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { safeParseFloat } from '@/utils/pricing';
+
+type TrackableCart = NonNullable<UseCartReturn['cart']>;
 
 /**
  * Analytics events.
@@ -143,7 +144,7 @@ export type AnalyticsEventActionProps = {
     shop: OnlineShop;
     currency: CurrencyCode;
     locale: Locale;
-    cart: CartWithActions;
+    cart: TrackableCart | null;
 };
 
 const shopifyEventHandler = async (
@@ -234,6 +235,13 @@ const shopifyEventHandler = async (
                 break;
             }
             case AnalyticsShopifyEventName.ADD_TO_CART: {
+                if (!cart?.id) {
+                    // The Shopify ADD_TO_CART event requires a cartId — drop
+                    // the event when the cart provider isn't in scope rather
+                    // than send a malformed payload.
+                    break;
+                }
+
                 const data = {
                     eventName: AnalyticsShopifyEventName.ADD_TO_CART,
                     payload: {
@@ -460,7 +468,10 @@ function TrackableInner({ children, dummy = false }: TrackableProps) {
     );
 
     const shopify = useShopify();
-    const cart = useCart();
+    // `useMaybeCart` (vs `useCart`) keeps analytics opt-in — Trackable mounts
+    // in routes that may not have NordcomCartProvider in scope, and a missing
+    // provider should degrade to "no cart context" rather than crash the tree.
+    const cart = useMaybeCart()?.cart ?? null;
 
     const queueRef = useRef<
         {
@@ -527,25 +538,27 @@ function TrackableInner({ children, dummy = false }: TrackableProps) {
             return;
         }
 
+        const totalMoney = cart?.cost?.total ?? cart?.cost?.subtotal ?? null;
+
         queueEventRef.current('page_view', {
             path,
             gtm: {
                 ecommerce: {
-                    currency: cart.cost?.totalAmount?.currencyCode,
-                    value: safeParseFloat(undefined, cart.cost?.totalAmount?.amount),
-                    items: ((cart.lines || []).filter((_) => _) as CartLine[]).map((line) => ({
+                    currency: totalMoney?.currencyCode,
+                    value: safeParseFloat(undefined, totalMoney?.amount),
+                    items: (cart?.lines ?? []).map((line) => ({
                         item_id: productToMerchantsCenterId({
                             locale,
                             product: {
-                                productGid: line.merchandise.product.id!,
-                                variantGid: line.merchandise.id!,
+                                productGid: line.merchandise.productId,
+                                variantGid: line.merchandise.id,
                             },
                         }),
-                        item_name: line.merchandise.product.title,
-                        item_variant: line.merchandise.title,
-                        item_brand: line.merchandise.product.vendor,
-                        currency: line.merchandise.price.currencyCode,
-                        price: safeParseFloat(undefined, line.merchandise.price.amount!),
+                        item_name: line.merchandise.productTitle,
+                        item_variant: line.merchandise.variantTitle,
+                        item_brand: line.merchandise.productVendor ?? undefined,
+                        currency: line.merchandise.unitPrice.currencyCode,
+                        price: safeParseFloat(undefined, line.merchandise.unitPrice.amount),
                         quantity: line.quantity,
                     })),
                 },
