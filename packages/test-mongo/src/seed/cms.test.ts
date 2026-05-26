@@ -30,9 +30,13 @@ describe('seedCms', () => {
 
         const conn = await mongoose.createConnection(handle.uri).asPromise();
         const tenantObjectId = new mongoose.Types.ObjectId(tenantId);
-        const header = await conn.collection('header').find({ tenant: tenantObjectId }).toArray();
-        const footer = await conn.collection('footer').find({ tenant: tenantObjectId }).toArray();
-        const business = await conn.collection('businessData').find({ tenant: tenantObjectId }).toArray();
+        // Payload's `mongooseAdapter` pluralizes collection slugs by default
+        // (`header` → `headers`, `businessData` → `businessdatas`). The test
+        // talks directly to MongoDB so we have to use Mongo's collection
+        // names, not Payload's slugs.
+        const header = await conn.collection('headers').find({ tenant: tenantObjectId }).toArray();
+        const footer = await conn.collection('footers').find({ tenant: tenantObjectId }).toArray();
+        const business = await conn.collection('businessdatas').find({ tenant: tenantObjectId }).toArray();
         const pages = await conn.collection('pages').find({ tenant: tenantObjectId }).toArray();
         const articles = await conn.collection('articles').find({ tenant: tenantObjectId }).toArray();
 
