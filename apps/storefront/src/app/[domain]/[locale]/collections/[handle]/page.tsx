@@ -3,7 +3,7 @@ import { flattenConnection } from '@shopify/hydrogen-react';
 import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
 import { notFound, RedirectType, redirect, unstable_rethrow } from 'next/navigation';
-import { Suspense } from 'react';
+import { type ReactNode, Suspense } from 'react';
 import type { CollectionPage, WithContext } from 'schema-dts';
 import { CollectionApi, CollectionMetadataApi, LocalesApi, Shop } from '@/api/_loaders';
 import { ShopifyApolloApiClient } from '@/api/shopify';
@@ -127,30 +127,29 @@ export async function generateMetadata({
 
 export default async function CollectionsCollectionPage({
     params,
-    searchParams: queryParams,
+    searchParams,
 }: {
     params: CollectionPageParams;
     searchParams: SearchParams;
 }) {
+    return (
+        <CollectionShell params={params}>
+            <CollectionDynamic params={params} searchParams={searchParams} />
+        </CollectionShell>
+    );
+}
+
+async function CollectionShell({ params, children }: { params: CollectionPageParams; children: ReactNode }) {
+    'use cache';
+    cacheLife('max');
+
     const { domain, locale: localeData, handle } = await params;
     if (!isValidHandle(handle)) {
         notFound();
     }
 
-    const searchParams = await queryParams;
-
     const locale = Locale.from(localeData);
-
-    if (searchParams.page === '1') {
-        const params = new URLSearchParams(searchParams);
-        redirect(
-            `/${locale.code}/collections/${handle}/${params.size > 0 ? '?' : ''}${params.toString()}`,
-            RedirectType.replace,
-        );
-    }
-
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-
     const api = await ShopifyApolloApiClient({ shop, locale });
 
     let collection: Awaited<ReturnType<typeof CollectionApi>>,
@@ -173,6 +172,7 @@ export default async function CollectionsCollectionPage({
     }
 
     const cmsMeta = await CollectionMetadataApi({ shop, locale, handle });
+    const i18n = await getDictionary({ shop, locale });
 
     const empty = collection.products.edges.length <= 0;
 
@@ -203,7 +203,6 @@ export default async function CollectionsCollectionPage({
         },
     };
 
-    const i18n = await getDictionary({ shop, locale });
     const pagination = (
         <section className="flex w-full items-center justify-center empty:hidden">
             <Suspense key={`collections.${handle}.pagination`} fallback={<div className="h-8 w-full" data-skeleton />}>
@@ -211,29 +210,6 @@ export default async function CollectionsCollectionPage({
             </Suspense>
         </section>
     );
-
-    const pageNumber = searchParams.page ? parseInt(searchParams.page, 10) : 1;
-
-    const pageContent = !empty ? (
-        <PageContent>
-            {pagination}
-
-            <Suspense
-                key={`collections.${handle}.content.page.${pageNumber}`}
-                fallback={<CollectionBlock.skeleton length={PRODUCTS_PER_PAGE} />}
-            >
-                <CollectionContent
-                    shop={shop}
-                    locale={locale}
-                    searchParams={searchParams}
-                    handle={handle}
-                    pagesInfo={pagesInfo}
-                />
-            </Suspense>
-
-            {pagination}
-        </PageContent>
-    ) : null;
 
     return (
         <>
@@ -256,13 +232,24 @@ export default async function CollectionsCollectionPage({
                 <p className="prose max-w-none">{collection.seo.description}</p>
             ) : null}
 
-            {pageContent}
+            {!empty ? (
+                <PageContent>
+                    {pagination}
 
-            {pageNumber <= 1 ? (
-                <Suspense key={`collections.${handle}.cms`} fallback={<div className="h-32 w-full" data-skeleton />}>
-                    <CMSContent shop={shop} locale={locale} handle={handle} />
-                </Suspense>
+                    <Suspense
+                        key={`collections.${handle}.content`}
+                        fallback={<CollectionBlock.skeleton length={PRODUCTS_PER_PAGE} />}
+                    >
+                        {children}
+                    </Suspense>
+
+                    {pagination}
+                </PageContent>
             ) : null}
+
+            <Suspense key={`collections.${handle}.cms`} fallback={<div className="h-32 w-full" data-skeleton />}>
+                <CMSContent shop={shop} locale={locale} handle={handle} />
+            </Suspense>
 
             {cmsMeta?.blocks && cmsMeta.blocks.length > 0 ? (
                 <Blocks blocks={cmsMeta.blocks as BlockNode[]} context={{ shop, locale }} />
@@ -270,5 +257,47 @@ export default async function CollectionsCollectionPage({
 
             <JsonLd data={jsonLd} />
         </>
+    );
+}
+
+async function CollectionDynamic({
+    params,
+    searchParams: queryParams,
+}: {
+    params: CollectionPageParams;
+    searchParams: SearchParams;
+}) {
+    const [{ domain, locale: localeData, handle }, searchParams] = await Promise.all([params, queryParams]);
+    if (!isValidHandle(handle)) {
+        notFound();
+    }
+
+    const locale = Locale.from(localeData);
+
+    if (searchParams.page === '1') {
+        const urlParams = new URLSearchParams(searchParams);
+        redirect(
+            `/${locale.code}/collections/${handle}/${urlParams.size > 0 ? '?' : ''}${urlParams.toString()}`,
+            RedirectType.replace,
+        );
+    }
+
+    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    const api = await ShopifyApolloApiClient({ shop, locale });
+
+    const pagesInfo = await CollectionPaginationCountApi({
+        api,
+        handle,
+        filters: { first: PRODUCTS_PER_PAGE },
+    });
+
+    return (
+        <CollectionContent
+            shop={shop}
+            locale={locale}
+            searchParams={searchParams}
+            handle={handle}
+            pagesInfo={pagesInfo}
+        />
     );
 }
