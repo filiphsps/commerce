@@ -11,4 +11,10 @@ if echo "$COMMAND" | grep -qE '(^|&&|\|\||;)\s*npm\s'; then
     exit 2
 fi
 
+# Check if the command starts with npx (as a command, not just mentioned in a string)
+if echo "$COMMAND" | grep -qE '(^|&&|\|\||;)\s*npx\s'; then
+    echo "Blocked: use 'pnpm dlx' (or 'pnpm exec' for local binaries), not npx." >&2
+    exit 2
+fi
+
 exit 0
