@@ -71,6 +71,33 @@ describe('app/[domain]/api/revalidate', () => {
             expect(revalidateTagMock).toHaveBeenCalledWith('shopify.shop-1.products', 'max');
         });
 
+        it('busts the products parent so cached search islands invalidate', async () => {
+            revalidateTagMock.mockClear();
+            const body = '{"handle":"my-product"}';
+            const secret = 'shopify-secret';
+            process.env.SHOPIFY_WEBHOOK_SECRET = secret;
+            const hmac = createHmac('sha256', secret).update(body, 'utf8').digest('base64');
+
+            const req = makeRequest({
+                method: 'POST',
+                body,
+                headers: {
+                    'x-shopify-hmac-sha256': hmac,
+                    'x-shopify-topic': 'products/update',
+                    'content-type': 'application/json',
+                },
+            });
+
+            const res = await POST(req as any, { params: Promise.resolve({ domain: 'mock.shop' }) } as any);
+            expect(res.status).toBe(200);
+
+            // The 'products' parent tag invalidates every cached search entry for
+            // this tenant because the search entity declares parents: ['products'].
+            // This guarantees Shopify products/* webhooks bust cached search islands.
+            const tagsBusted = revalidateTagMock.mock.calls.map((c) => c[0]);
+            expect(tagsBusted).toContain('shopify.shop-1.products');
+        });
+
         it('returns 401 on invalid HMAC', async () => {
             revalidateTagMock.mockClear();
             process.env.SHOPIFY_WEBHOOK_SECRET = 'shopify-secret';
