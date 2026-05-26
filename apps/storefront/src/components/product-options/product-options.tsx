@@ -1,11 +1,11 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import type { Product, ProductVariant } from '@/api/product';
 import { ProductOptionsContext, useMaybeProductOptions } from './context';
 import { findVariant, resolveOptions } from './resolver';
-import type { OptionValueRenderer, ProductOptionsContextValue } from './types';
+import type { OptionValueRenderer, ProductOptionsContextValue, Selection } from './types';
 
 export type ProductOptionsRootProps = {
     product: Product;
@@ -32,15 +32,18 @@ const InnerRoot = ({
     children,
 }: ProductOptionsRootProps) => {
     const controlled = controlledSelection !== undefined;
-    const [internal, setInternal] = useState<Record<string, string>>(initialSelection ?? {});
+    const [internal, setInternal] = useState<Selection>(initialSelection ?? {});
     const selection = controlled ? controlledSelection : internal;
 
+    const onChangeRef = useRef(onChange);
+    onChangeRef.current = onChange;
+
     const selectVariant = useCallback(
-        (next: Record<string, string>) => {
+        (next: Selection) => {
             if (!controlled) setInternal(next);
-            onChange?.(next);
+            onChangeRef.current?.(next);
         },
-        [controlled, onChange],
+        [controlled],
     );
 
     const resolved = useMemo(() => resolveOptions(product, selection), [product, selection]);
@@ -68,8 +71,22 @@ const InnerRoot = ({
 
 const Root = (props: ProductOptionsRootProps) => {
     const parent = useMaybeProductOptions();
-    if (parent) return <>{props.children}</>;
-    return <InnerRoot {...props} />;
+    if (parent) {
+        if (process.env.NODE_ENV !== 'production') {
+            const dropped: string[] = [];
+            if (props.onChange) dropped.push('onChange');
+            if (props.renderers) dropped.push('renderers');
+            if (props.initialSelection) dropped.push('initialSelection');
+            if (props.selection) dropped.push('selection');
+            if (dropped.length > 0) {
+                console.warn(
+                    `<ProductOptions.Root> nested inside an existing provider — these props are ignored: ${dropped.join(', ')}. The outer provider's state is in scope.`,
+                );
+            }
+        }
+        return <>{props.children}</>;
+    }
+    return <InnerRoot key={props.product.handle} {...props} />;
 };
 
 Root.displayName = 'Nordcom.ProductOptions.Root';

@@ -76,21 +76,24 @@ describe('ProductOptions.Root (uncontrolled)', () => {
 describe('ProductOptions.Root (controlled)', () => {
     it('uses the selection prop and never holds internal state', () => {
         const onChange = vi.fn();
+        const captures: any[] = [];
         const { rerender } = render(
             <Root product={fakeProduct()} selection={{ Color: 'Red' }} onChange={onChange}>
-                <Probe onRender={() => {}} />
+                <Probe onRender={(v) => captures.push(v.selection)} />
             </Root>,
         );
+        expect(captures[0]).toEqual({ Color: 'Red' });
         fireEvent.click(screen.getByText('pick green'));
         expect(onChange).toHaveBeenCalledWith({ Color: 'Green' });
+        // Critical: internal state must NOT change because controlled mode delegates to parent.
+        expect(captures.at(-1)).toEqual({ Color: 'Red' });
 
-        const captures: any[] = [];
         rerender(
             <Root product={fakeProduct()} selection={{ Color: 'Green' }} onChange={onChange}>
                 <Probe onRender={(v) => captures.push(v.selection)} />
             </Root>,
         );
-        expect(captures[0]).toEqual({ Color: 'Green' });
+        expect(captures.at(-1)).toEqual({ Color: 'Green' });
     });
 });
 
