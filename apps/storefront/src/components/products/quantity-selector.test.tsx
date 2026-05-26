@@ -24,13 +24,9 @@ describe('QuantitySelector hydration', () => {
     });
 });
 
-vi.mock('@shopify/hydrogen-react', async (importOriginal) => {
-    const actual = await importOriginal<typeof import('@shopify/hydrogen-react')>();
-    return {
-        ...actual,
-        useCart: () => ({ cartReady: true, status: 'idle' }),
-    };
-});
+vi.mock('@/components/cart/provider', () => ({
+    useCartStatus: vi.fn().mockReturnValue({ cartReady: true, status: 'idle', error: null }),
+}));
 
 vi.mock('@/components/shop/provider', async (importOriginal) => {
     const actual = await importOriginal<typeof import('@/components/shop/provider')>();

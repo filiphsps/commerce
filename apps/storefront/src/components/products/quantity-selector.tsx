@@ -1,10 +1,10 @@
 'use client';
 
-import { useCart } from '@shopify/hydrogen-react';
 import type { ChangeEvent, HTMLProps, KeyboardEventHandler } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/actionable/button';
 import { Input } from '@/components/actionable/input';
+import { useCartStatus } from '@/components/cart/provider';
 import { useShop } from '@/components/shop/provider';
 import { COMMERCE_DEFAULTS } from '@/utils/build-config';
 import type { LocaleDictionary } from '@/utils/locale';
@@ -73,8 +73,8 @@ const QuantitySelector = ({
         setQuantityValue(quantity.toString());
     }, [quantity]);
 
-    const { cartReady, status } = useCart();
-    const ready = cartReady && !['updating'].includes(status);
+    const { cartReady, status } = useCartStatus();
+    const ready = cartReady && status !== 'mutating';
 
     const updateQuantity = useCallback(
         (value: string | number) => {
