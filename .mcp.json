@@ -1,0 +1,10 @@
+{
+    "mcpServers": {
+        "next-devtools": {
+            "type": "stdio",
+            "command": "pnpx",
+            "args": ["next-devtools-mcp@latest"],
+            "env": {}
+        }
+    }
+}
