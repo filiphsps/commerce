@@ -4,6 +4,8 @@ import type { ReactNode } from 'react';
 import { useMemo, useState } from 'react';
 import type { Product, ProductVariant } from '@/api/product';
 import { ProductCardContextProvider, type ProductCardVariant, resolveVariant } from '@/components/product-card/context';
+import * as ProductOptions from '@/components/product-options';
+import { toSelectionRecord } from '@/components/product-options/resolver';
 import { firstAvailableVariant } from '@/utils/first-available-variant';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
@@ -76,9 +78,11 @@ const ProductCardRoot = ({
                 priority,
             }}
         >
-            <div data-testid="product-card-root" data-variant={resolved} className={containerStyles}>
-                {children}
-            </div>
+            <ProductOptions.Root product={data} initialSelection={toSelectionRecord(seed)}>
+                <div data-testid="product-card-root" data-variant={resolved} className={containerStyles}>
+                    {children}
+                </div>
+            </ProductOptions.Root>
         </ProductCardContextProvider>
     );
 };
