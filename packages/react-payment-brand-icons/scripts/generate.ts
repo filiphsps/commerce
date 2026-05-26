@@ -16,6 +16,7 @@ import { svgToInnerJsx } from './svgr-bridge';
 import { stripChrome } from './transforms/chrome';
 import { stripDimensions } from './transforms/dimensions';
 import { prefixIds } from './transforms/ids';
+import { minifySvg } from './transforms/minify';
 import { stripTitleAndAria } from './transforms/title';
 import type { IconManifestEntry, IconOverrides } from './types';
 import { validateManifest } from './validate';
@@ -60,7 +61,7 @@ async function transformSvg(
     stripDimensions(ast);
     prefixIds(ast, slug);
     const viewBox = ast.attributes.viewBox ?? '0 0 38 24';
-    const cleaned = stringify(ast);
+    const cleaned = minifySvg(stringify(ast));
     const innerJsx = await svgToInnerJsx(cleaned);
     return { viewBox, innerJsx, chromeMatched: chromeResult.matched };
 }

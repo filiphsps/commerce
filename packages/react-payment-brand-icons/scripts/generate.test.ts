@@ -13,7 +13,7 @@ const VISA_SVG = `<svg viewBox="0 0 38 24" xmlns="http://www.w3.org/2000/svg" wi
 <title id="t">Visa</title>
 <path opacity=".07" d="M35 0H3C1.3 0 0 1.3 0 3v18c0 1.7 1.4 3 3 3h32c1.7 0 3-1.3 3-3V3c0-1.7-1.4-3-3-3z"/>
 <path fill="#fff" d="M35 1c1.1 0 2 .9 2 2v18c0 1.1-.9 2-2 2H3c-1.1 0-2-.9-2-2V3c0-1.1.9-2 2-2h32"/>
-<path d="M0 0" fill="#142688"/>
+<path d="M9 9h20v6H9z" fill="#142688"/>
 </svg>`;
 
 beforeEach(async () => {
