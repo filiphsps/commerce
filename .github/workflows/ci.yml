@@ -25,6 +25,9 @@ env:
   ADMIN_DOMAIN: ${{ vars.ADMIN_DOMAIN }}
   SERVICE_DOMAIN: ${{ vars.SERVICE_DOMAIN }}
   LANDING_DOMAIN: ${{ vars.LANDING_DOMAIN }}
+  PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
+  STOREFRONT_PREVIEW_SECRET: "development-secret"
+  VERCEL_AUTOMATION_BYPASS_SECRET: "development-secret"
 
 jobs:
   build:
