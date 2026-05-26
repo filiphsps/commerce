@@ -20,13 +20,13 @@ export default function SearchContentGate({ shop, locale, i18n, showFilters, dat
     const { products = [], productFilters = [], totalCount } = data;
 
     const productCards = products.map((product) => (
-        <Suspense key={product.id} fallback={<ProductCard.skeleton layout="horizontal" chrome="bare" />}>
+        <Suspense key={product.id} fallback={<ProductCard.skeleton layout="horizontal" chrome="frameless" />}>
             <SearchProductCard shop={shop} locale={locale} data={product} />
         </Suspense>
     ));
 
     const skeletonCards = Array.from({ length: 6 }).map((_, index) => (
-        <ProductCard.skeleton key={index} layout="horizontal" chrome="bare" />
+        <ProductCard.skeleton key={index} layout="horizontal" chrome="frameless" />
     ));
 
     return (
@@ -46,7 +46,7 @@ SearchContentGate.Skeleton = function SearchContentGateSkeleton() {
     return (
         <div className="flex flex-col gap-0">
             {Array.from({ length: 6 }).map((_, index) => (
-                <ProductCard.skeleton key={index} layout="horizontal" chrome="bare" />
+                <ProductCard.skeleton key={index} layout="horizontal" chrome="frameless" />
             ))}
         </div>
     );
