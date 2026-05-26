@@ -54,9 +54,13 @@ const config = {
         scrollRestoration: true,
         serverComponentsHmrCache: isDev,
         serverSourceMaps: true,
+        // The router client cache is automatically invalidated by
+        // revalidateTag/revalidatePath (Shopify webhooks hit
+        // /[domain]/api/revalidate). Freshness is owned by tags, so these
+        // values are tuned for perceived navigation speed.
         staleTimes: {
-            dynamic: 30,
-            static: 60 * 15, // TODO: Investigate if 15 min is a good cache time.
+            dynamic: 120,
+            static: 60 * 60,
         },
         taint: true,
         turbopackFileSystemCacheForDev: true,
