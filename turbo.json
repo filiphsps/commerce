@@ -1,5 +1,6 @@
 {
     "$schema": "https://turborepo.dev/schema.json",
+    "envMode": "loose",
     "ui": "stream",
     "globalPassThroughEnv": ["NODE_ENV"],
     "globalDependencies": ["tsconfig.json", "tsconfig.lib.json", "tsconfig.app.json", ".npmrc"],
@@ -147,8 +148,7 @@
         },
         "test:e2e": {
             "cache": false,
-            "dependsOn": ["^build", "build"],
-            "inputs": ["e2e/**", "playwright.config.*", "vitest.setup.*"],
+            "inputs": ["e2e/**", "playwright.config.*"],
             "outputs": ["playwright-report/**", "test-results/**"]
         },
         "clean": {
