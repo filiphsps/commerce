@@ -1,5 +1,3 @@
-import { NotFoundError } from '@nordcom/commerce-errors';
-
 import type { Product, ProductVariant } from '@/api/product';
 import { unsafe_cast } from '@/utils/unsafe-cast';
 
@@ -24,7 +22,10 @@ export const firstAvailableVariant = (product?: Product | null): ProductVariant 
               unsafe_cast<ProductVariant[]>(product.variants)) || [];
 
     if (variants.length <= 0) {
-        throw new NotFoundError(`"product.variant"`);
+        if (process.env.NODE_ENV !== 'production') {
+            console.warn('[firstAvailableVariant] product has no variants', product?.handle);
+        }
+        return undefined;
     }
 
     // 2. Check if the last variant is available.

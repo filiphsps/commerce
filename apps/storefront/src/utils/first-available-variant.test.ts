@@ -9,6 +9,18 @@ describe('utils', () => {
             expect(result).toBeUndefined();
         });
 
+        it(`should return undefined when product has no variants`, () => {
+            const product: Product = {
+                handle: 'no-variants',
+                variants: {
+                    edges: [],
+                },
+            } as any;
+
+            const result = firstAvailableVariant(product);
+            expect(result).toBeUndefined();
+        });
+
         it(`should return the last variant if it is available`, () => {
             const product: Product = {
                 variants: {
