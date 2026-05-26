@@ -9,6 +9,7 @@ LLM defaults that would otherwise be wrong here:
 -   **Biome only** for lint + format. No ESLint, no Prettier.
 -   **`pnpm build:packages` before lint/typecheck/test in a fresh checkout** — apps import workspace packages from built `dist/`, not source.
 -   Top-level scripts run through `dotenv -c -- turbo …`; `.env` / `.env.local` load automatically. Don't prefix env vars manually.
+-   **Use `pnpm <script>` whenever a `package.json` script exists** — `pnpm test`, `pnpm build`, `pnpm lint`, `pnpm typecheck`, `pnpm test:e2e`, etc. Extra args forward through: `pnpm test --project @nordcom/commerce-storefront` runs `dotenv -c -- vitest run --coverage --project @nordcom/commerce-storefront`. Don't hand-roll `pnpm dotenv -c -- vitest run …` or `pnpm turbo run build …`. If a script doesn't forward extra args, fix the script in `package.json`, don't bypass it.
 -   **`pnpm cms:gen`** regenerates CMS action types after touching CMS manifests. CI gate: `pnpm cms:gen:check`.
 -   **Storefront GraphQL is `gql.tada`** — `graphql()` from `@nordcom/commerce-shopify-graphql/graphql`, not Apollo's `gql`.
 -   **Call `mcp__next-devtools__init` (`next-devtools` mcp) first** when starting Next.js work.
