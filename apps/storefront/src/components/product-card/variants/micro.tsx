@@ -46,7 +46,7 @@ const Micro = ({ shop, locale, i18n, product, seedVariant, priority, aspect }: M
             </div>
             <div className="flex shrink-0 items-center gap-2">
                 <ProductCardPrice seedVariant={seedVariant} locale={locale} />
-                <ProductCardActions i18n={i18n} mode="icon" />
+                <ProductCardActions product={product} seedVariant={seedVariant} i18n={i18n} mode="icon" />
             </div>
         </>
     );

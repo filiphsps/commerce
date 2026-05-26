@@ -32,7 +32,7 @@ const VerticalBoxed = ({ shop, locale, i18n, product, seedVariant, priority, asp
             <ProductCardPrice seedVariant={seedVariant} locale={locale} />
             <ProductCardStockUrgency seedVariant={seedVariant} i18n={i18n} />
             <ProductCardOptions product={product} />
-            <ProductCardActions i18n={i18n} mode="full" />
+            <ProductCardActions product={product} seedVariant={seedVariant} i18n={i18n} mode="full" />
         </div>
     </>
 );

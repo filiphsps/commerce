@@ -34,7 +34,7 @@ const HorizontalBare = ({ shop, locale, i18n, product, seedVariant, priority, as
         </div>
         <div className="flex shrink-0 flex-col items-end justify-between gap-2">
             <ProductCardPrice seedVariant={seedVariant} locale={locale} />
-            <ProductCardActions i18n={i18n} mode="icon" />
+            <ProductCardActions product={product} seedVariant={seedVariant} i18n={i18n} mode="icon" />
         </div>
     </>
 );

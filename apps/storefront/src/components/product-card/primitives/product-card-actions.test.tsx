@@ -2,27 +2,23 @@ import { describe, expect, it, vi } from 'vitest';
 import { productSimple } from '@/components/product-card/__fixtures__';
 import ProductCardActions from '@/components/product-card/primitives/product-card-actions';
 import * as ProductOptions from '@/components/product-options';
-import { render, screen } from '@/utils/test/react';
+import { render } from '@/utils/test/react';
 
 vi.mock('@shopify/hydrogen-react', async (importOriginal) => {
     const actual = await importOriginal<typeof import('@shopify/hydrogen-react')>();
     return {
         ...actual,
-        useCart: () => ({ lines: [], linesUpdate: vi.fn(), cartReady: true }),
+        useCart: () => ({ lines: [], linesAdd: vi.fn(), linesUpdate: vi.fn() }),
     };
 });
 
-vi.mock('@/components/products/add-to-cart', () => ({
-    default: ({ className, children }: any) => (
-        <button type="button" data-testid="add-to-cart" className={className}>
-            {children ?? 'Add to cart'}
-        </button>
-    ),
+vi.mock('@/pages/_actions/cart', () => ({
+    addToCartAction: vi.fn(),
+    updateCartLineQuantityAction: vi.fn(),
+    removeCartLineAction: vi.fn(),
 }));
 
-vi.mock('@/components/products/quantity-selector', () => ({
-    QuantitySelector: ({ value }: any) => <div data-testid="quantity-selector">{value}</div>,
-}));
+const i18n = { common: { 'add-to-cart': 'Add to cart' } } as any;
 
 const renderWithOptions = (children: React.ReactNode) => {
     const product = productSimple();
@@ -36,19 +32,34 @@ const renderWithOptions = (children: React.ReactNode) => {
 describe('components', () => {
     describe('product-card', () => {
         describe('primitives', () => {
-            describe('ProductCardActions', () => {
-                it('renders full add-to-cart by default', () => {
-                    renderWithOptions(<ProductCardActions i18n={{} as any} />);
-                    const cta = screen.getByTestId('add-to-cart');
-                    expect(cta).toBeInTheDocument();
-                    expect(cta.className).toMatch(/w-full/);
+            describe('ProductCardActions (server)', () => {
+                it('renders a <form> whose submit button is labeled "Add to cart" by default', () => {
+                    const product = productSimple();
+                    const seed = product.variants!.edges![0]!.node;
+                    const { container, getByRole } = renderWithOptions(
+                        <ProductCardActions product={product} seedVariant={seed} mode="full" i18n={i18n} />,
+                    );
+                    expect(container.querySelector('form')).toBeTruthy();
+                    expect(getByRole('button', { name: /add to cart/i })).toBeTruthy();
                 });
 
-                it('renders icon-mode add-to-cart when mode="icon"', () => {
-                    renderWithOptions(<ProductCardActions i18n={{} as any} mode="icon" />);
-                    const cta = screen.getByTestId('add-to-cart');
-                    expect(cta).toBeInTheDocument();
-                    expect(cta.className).toMatch(/rounded-full/);
+                it('renders an icon-mode submit button when mode="icon"', () => {
+                    const product = productSimple();
+                    const seed = product.variants!.edges![0]!.node;
+                    const { container } = renderWithOptions(
+                        <ProductCardActions product={product} seedVariant={seed} mode="icon" i18n={i18n} />,
+                    );
+                    expect(container.querySelector('button[data-mode="icon"]')).toBeTruthy();
+                });
+
+                it('emits hidden inputs carrying the selected variant id and quantity', () => {
+                    const product = productSimple();
+                    const seed = product.variants!.edges![0]!.node;
+                    const { container } = renderWithOptions(
+                        <ProductCardActions product={product} seedVariant={seed} mode="full" i18n={i18n} />,
+                    );
+                    expect(container.querySelector('input[name="variantId"]')).toBeTruthy();
+                    expect(container.querySelector('input[name="quantity"]')).toBeTruthy();
                 });
             });
         });
