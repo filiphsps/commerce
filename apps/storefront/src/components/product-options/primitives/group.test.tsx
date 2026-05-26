@@ -33,16 +33,15 @@ describe('Group', () => {
         expect(container.querySelectorAll('button').length).toBe(3);
     });
 
-    it('writes an initial data-overflow based on a desktop guess (>=4 = overflow)', () => {
+    it('does not write a data-overflow attribute (More is the sole source of truth)', () => {
         const { container } = wrap(grp(['A', 'B', 'C', 'D', 'E', 'F']));
         const row = container.querySelector('.product-card-swatch-row') as HTMLElement;
-        expect(row.getAttribute('data-overflow')).toBe('2');
+        expect(row.getAttribute('data-overflow')).toBeNull();
     });
 
-    it('writes data-overflow="0" when total <= 4', () => {
-        const { container } = wrap(grp(['A', 'B']));
-        const row = container.querySelector('.product-card-swatch-row') as HTMLElement;
-        expect(row.getAttribute('data-overflow')).toBe('0');
+    it('renders every value in the row even when total > inline limit (overflow is owned by More)', () => {
+        const { container } = wrap(grp(['A', 'B', 'C', 'D', 'E', 'F']));
+        expect(container.querySelectorAll('button').length).toBe(6);
     });
 
     it('returns null when the group does not exist in context', () => {
