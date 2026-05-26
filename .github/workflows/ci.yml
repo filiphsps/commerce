@@ -239,9 +239,13 @@ jobs:
             - name: 🎭 Install Playwright system deps (cache hit)
               if: steps.cache-playwright.outputs.cache-hit == 'true'
               run: pnpm --filter @nordcom/commerce-${{ matrix.app }} exec playwright install-deps chromium
-
+            
+            - name: 🧪 Pretest
+              run: pnpm run pretest
             - name: 🧪 Run Playwright Tests
               run: pnpm --filter @nordcom/commerce-${{ matrix.app }} test:e2e
+            - name: 🧪 Posttest
+              run: pnpm run posttest
 
             - name: 🦺 Convert V8 Coverage to Codecov Format
               if: ${{ !cancelled() }}
