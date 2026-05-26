@@ -5,11 +5,13 @@ import { fileURLToPath } from 'node:url';
 import { optimize } from 'svgo';
 
 /**
- * Re-serialize every SVG in `svgs/` with two-space indentation while
- * leaving the markup semantically unchanged. SVGO runs with an empty
- * plugin pipeline so no nodes are dropped, merged, or rewritten — only
- * `js2svg.pretty` controls the output. Intended as a one-shot tidy for
- * source files that arrived minified.
+ * Re-serialize every SVG in `svgs/` with four-space indentation while
+ * leaving the markup semantically unchanged. SVGO runs with only
+ * `cleanupAttrs` enabled so node structure is preserved but tabs and
+ * stray newlines embedded inside attribute values (e.g. multi-line `d`
+ * path data carried over from third-party exports) collapse to single
+ * spaces. Intended as a one-shot tidy for source files that arrived
+ * minified or wrapped at arbitrary widths.
  *
  * @param filePath - absolute path to the SVG file to prettify in place.
  * @returns size delta plus a flag indicating whether the file was rewritten.
@@ -18,8 +20,8 @@ async function prettifySvg(filePath: string): Promise<{ changed: boolean; bytesB
     const raw = await readFile(filePath, 'utf8');
     const before = raw.replace(/\r\n?/g, '\n');
     const { data: optimized } = optimize(before, {
-        plugins: [],
-        js2svg: { pretty: true, indent: 2 },
+        plugins: ['cleanupAttrs'],
+        js2svg: { pretty: true, indent: 4 },
     });
     const after = optimized.replace(/\r\n?/g, '\n');
     if (after === before) {
