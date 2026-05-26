@@ -1,4 +1,5 @@
 import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
+import { act } from '@testing-library/react';
 import { setCookie } from 'cookies-next';
 import { usePathname, useSearchParams } from 'next/navigation';
 import useGeoLocation from 'react-ipgeolocation';
@@ -8,6 +9,12 @@ import { isCrawler } from '@/utils/is-crawler';
 import { Locale } from '@/utils/locale';
 import { mockShop } from '@/utils/test/fixtures/shop';
 import { fireEvent, render, waitFor } from '@/utils/test/react';
+
+const flushEffects = async () => {
+    await act(async () => {
+        await Promise.resolve();
+    });
+};
 
 // `vitest.setup.ts` mocks `@/utils/build-config` to expose only `BuildConfig`.
 // `<LocaleFlag>` (rendered via the picker trigger) also reads
@@ -111,8 +118,9 @@ describe('<GeoRedirect>', () => {
         expect(container.firstChild).toBeNull();
     });
 
-    it('renders the banner when geo country differs from the current locale', () => {
+    it('renders the banner when geo country differs from the current locale', async () => {
         const { container } = render(<GeoRedirect countries={countries} locale={usLocale} shop={shop} i18n={i18n} />);
+        await flushEffects();
 
         // A banner with at least one button (the trigger or Continue) is mounted.
         const buttons = container.querySelectorAll('button');
@@ -123,8 +131,9 @@ describe('<GeoRedirect>', () => {
         expect(container.textContent).toContain('Sweden');
     });
 
-    it('"Continue" link href preserves the search params', () => {
+    it('"Continue" link href preserves the search params', async () => {
         const { container } = render(<GeoRedirect countries={countries} locale={usLocale} shop={shop} i18n={i18n} />);
+        await flushEffects();
 
         // The Continue Button is rendered `as={Link}`; the only anchor with a
         // `?q=red` query string is that one. The country-picker dropdown anchor
@@ -143,11 +152,12 @@ describe('<GeoRedirect>', () => {
         expect(url.search).toBe('?q=red');
     });
 
-    it('clicking the close button stores a dismiss timestamp and hides the banner', () => {
+    it('clicking the close button stores a dismiss timestamp and hides the banner', async () => {
         const now = 1_700_000_000_000;
         const dateSpy = vi.spyOn(Date, 'now').mockReturnValue(now);
 
         const { container } = render(<GeoRedirect countries={countries} locale={usLocale} shop={shop} i18n={i18n} />);
+        await flushEffects();
 
         const closeButton = container.querySelector<HTMLButtonElement>('button[title="Close"]');
         expect(closeButton).not.toBeNull();
@@ -163,6 +173,7 @@ describe('<GeoRedirect>', () => {
 
     it('restores focus to the trigger button when the dropdown is opened and then closed', async () => {
         const { container } = render(<GeoRedirect countries={countries} locale={usLocale} shop={shop} i18n={i18n} />);
+        await flushEffects();
 
         const trigger = container.querySelector<HTMLButtonElement>('button[aria-expanded]');
         expect(trigger).not.toBeNull();
@@ -187,8 +198,9 @@ describe('<GeoRedirect>', () => {
         });
     });
 
-    it('does not set cookies on render — only when the Continue button is clicked', () => {
+    it('does not set cookies on render — only when the Continue button is clicked', async () => {
         const { container } = render(<GeoRedirect countries={countries} locale={usLocale} shop={shop} i18n={i18n} />);
+        await flushEffects();
 
         expect(setCookie).not.toHaveBeenCalled();
 

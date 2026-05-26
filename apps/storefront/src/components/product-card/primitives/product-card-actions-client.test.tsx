@@ -9,6 +9,7 @@ vi.mock('@/components/cart/provider', () => ({
     useCartActions: vi.fn(),
     useCartStatus: vi.fn(),
     useCartLines: vi.fn(),
+    useMaybeCart: vi.fn().mockReturnValue(null),
 }));
 
 const i18n = {

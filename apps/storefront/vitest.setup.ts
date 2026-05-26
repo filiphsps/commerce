@@ -80,11 +80,61 @@ vi.mock('next/cache', async () => {
 });
 
 vi.mock('next/image', () => ({
-    default: vi.fn().mockImplementation(({ src, alt, ...props }: any) => {
-        const React = require('react');
-        return React.createElement('img', { src, alt, ...props });
+    // next/image accepts framework-only props (`priority`, `unoptimized`,
+    // `loader`, `placeholder`, `blurDataURL`, `fill`, `sizes`, `quality`) that
+    // are not valid DOM attributes — strip them before forwarding to <img>.
+    default: vi
+        .fn()
+        .mockImplementation(
+            ({
+                src,
+                alt,
+                priority,
+                unoptimized,
+                loader,
+                placeholder,
+                blurDataURL,
+                fill,
+                sizes,
+                quality,
+                ...props
+            }: any) => {
+                const React = require('react');
+                return React.createElement('img', { src, alt, ...props });
+            },
+        ),
+}));
+
+// next-auth@5-beta's lib/env.js does `import "next/server"` without the
+// `.js` extension, which Node's strict ESM resolver rejects under Vitest.
+// The bare `next-auth` import in `@/auth` and the React entry both pull
+// that file in, so stub both surfaces. Individual suites override per-file.
+vi.mock('next-auth', () => ({
+    default: vi.fn().mockReturnValue({
+        auth: vi.fn().mockResolvedValue(null),
+        handlers: { GET: vi.fn(), POST: vi.fn() },
+        signIn: vi.fn(),
+        signOut: vi.fn(),
     }),
 }));
+
+vi.mock('next-auth/react', async () => {
+    const { createContext } = (await vi.importActual('react')) as typeof import('react');
+    return {
+        SessionContext: createContext(undefined),
+        SessionProvider: ({ children }: any) => children,
+        useSession: vi.fn().mockReturnValue({
+            data: null,
+            status: 'unauthenticated',
+            update: vi.fn(),
+        }),
+        signIn: vi.fn(),
+        signOut: vi.fn(),
+        getSession: vi.fn().mockResolvedValue(null),
+        getCsrfToken: vi.fn().mockResolvedValue(''),
+        getProviders: vi.fn().mockResolvedValue({}),
+    };
+});
 
 window.location = {
     ...((window.location as any) || {}),

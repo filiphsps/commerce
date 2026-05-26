@@ -7,6 +7,7 @@ import { render } from '@/utils/test/react';
 vi.mock('@/components/cart/provider', () => ({
     useCartActions: vi.fn(),
     useCartStatus: vi.fn(),
+    useMaybeCart: vi.fn().mockReturnValue(null),
 }));
 
 const mockAddLine = vi.fn().mockResolvedValue({ ok: true, cart: {} });

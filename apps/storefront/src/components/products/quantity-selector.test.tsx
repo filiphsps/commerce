@@ -26,6 +26,7 @@ describe('QuantitySelector hydration', () => {
 
 vi.mock('@/components/cart/provider', () => ({
     useCartStatus: vi.fn().mockReturnValue({ cartReady: true, status: 'idle', error: null }),
+    useMaybeCart: vi.fn().mockReturnValue(null),
 }));
 
 vi.mock('@/components/shop/provider', async (importOriginal) => {

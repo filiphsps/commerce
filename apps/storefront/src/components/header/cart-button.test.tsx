@@ -5,6 +5,7 @@ import { render, screen } from '@/utils/test/react';
 
 vi.mock('@/components/cart/provider', () => ({
     useCartCount: vi.fn(),
+    useMaybeCart: vi.fn().mockReturnValue(null),
 }));
 
 describe('components', () => {

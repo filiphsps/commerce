@@ -28,7 +28,11 @@ vi.mock('@/api/shopify/product', async () => {
 });
 
 describe('cacheTag end-to-end (active)', () => {
-    it('tags ProductApi reads with the same tag set that invalidate.product() targets', async () => {
+    // Heavy dynamic imports of `@/api/_loaders` and `@/cache` push past the
+    // 5s default when this suite races against the full storefront set.
+    it('tags ProductApi reads with the same tag set that invalidate.product() targets', {
+        timeout: 20_000,
+    }, async () => {
         cacheTagMock.mockClear();
         revalidateTagMock.mockClear();
 
