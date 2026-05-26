@@ -5,10 +5,10 @@ on:
         branches:
             - master
         paths:
-            - 'packages/tagtree/**'
-            - 'packages/react-payment-brand-icons/**'
-            - '.changeset/**'
-            - '.github/workflows/release.yml'
+            - "packages/tagtree/**"
+            - "packages/react-payment-brand-icons/**"
+            - ".changeset/**"
+            - ".github/workflows/release.yml"
 
 concurrency:
     group: release-${{ github.ref }}
@@ -49,8 +49,8 @@ jobs:
               with:
                   publish: pnpm changeset:publish
                   version: pnpm changeset:version
-                  commit: 'chore(release): version @tagtree packages'
-                  title: 'chore(release): version @tagtree packages'
+                  commit: "chore(release): release packages"
+                  title: "chore(release): release packages"
               env:
                   # No NPM_TOKEN — publishing uses OIDC trusted-publisher flow.
                   # `id-token: write` (above) lets the runner mint a GitHub OIDC
@@ -60,4 +60,4 @@ jobs:
                   # Trusted Publishers → Add → filiphsps/commerce, release.yml).
                   # Must be set up per @tagtree/* package before its first publish.
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  NPM_CONFIG_PROVENANCE: 'true'
+                  NPM_CONFIG_PROVENANCE: "true"
