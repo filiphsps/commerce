@@ -2,14 +2,7 @@
     "$schema": "https://turborepo.dev/schema.json",
     "ui": "stream",
     "globalPassThroughEnv": ["NODE_ENV"],
-    "globalDependencies": [
-        "tsconfig.json",
-        "tsconfig.lib.json",
-        "tsconfig.app.json",
-        "pnpm-lock.yaml",
-        "pnpm-workspace.yaml",
-        ".npmrc"
-    ],
+    "globalDependencies": ["tsconfig.json", "tsconfig.lib.json", "tsconfig.app.json", ".npmrc"],
     "tasks": {
         "build": {
             "cache": true,
