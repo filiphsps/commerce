@@ -21,10 +21,11 @@ import {
     removeDiscountCodeAction,
     removeGiftCardAction,
     updateAttributesAction,
+    updateBuyerIdentityAction,
     updateCartLineQuantityAction,
     updateNoteAction,
 } from '@/app/[domain]/[locale]/_actions/cart';
-
+import BuyerIdentitySync from './buyer-identity-sync';
 import { applyOptimistic, type CartMutation } from './optimistic-reducer';
 
 export type CartStatus = 'idle' | 'loading' | 'mutating' | 'error';
@@ -62,6 +63,7 @@ type CartActionsValue = {
     removeGiftCard: (id: string) => Promise<CartActionResult>;
     updateNote: (note: string) => Promise<CartActionResult>;
     updateAttributes: (attrs: Array<{ key: string; value: string }>) => Promise<CartActionResult>;
+    updateBuyerIdentity: () => void;
 };
 
 type InternalApi = {
@@ -317,6 +319,12 @@ export const NordcomCartProvider = ({ children }: { children: ReactNode }) => {
                         return updateAttributesAction(fd);
                     },
                 }),
+            updateBuyerIdentity: () => {
+                void runMutation({
+                    mutation: { kind: 'update-attributes', attributes: [] },
+                    action: () => updateBuyerIdentityAction(new FormData()),
+                });
+            },
         }),
         [runMutation],
     );
@@ -333,7 +341,10 @@ export const NordcomCartProvider = ({ children }: { children: ReactNode }) => {
                     <CartLinesContext.Provider value={linesValue}>
                         <CartCostContext.Provider value={costValue}>
                             <CartMetaContext.Provider value={metaValue}>
-                                <CartStatusContext.Provider value={statusValue}>{children}</CartStatusContext.Provider>
+                                <CartStatusContext.Provider value={statusValue}>
+                                    <BuyerIdentitySync />
+                                    {children}
+                                </CartStatusContext.Provider>
                             </CartMetaContext.Provider>
                         </CartCostContext.Provider>
                     </CartLinesContext.Provider>
