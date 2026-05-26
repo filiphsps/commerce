@@ -3,6 +3,7 @@ import type { OnlineShop } from '@nordcom/commerce-db';
 
 import type { Product, ProductFilters } from '@/api/product';
 import ProductCard from '@/components/product-card';
+import SearchProductCard from '@/components/products/search-product-card';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import SearchContent from './search-content';
 
@@ -18,7 +19,7 @@ export default function SearchContentGate({ shop, locale, i18n, showFilters, dat
     const { products = [], productFilters = [], totalCount } = data;
 
     const productCards = products.map((product) => (
-        <ProductCard key={product.id} shop={shop} locale={locale} data={product} variant="horizontal-bare" />
+        <SearchProductCard key={product.id} shop={shop} locale={locale} data={product} />
     ));
 
     const skeletonCards = Array.from({ length: 6 }).map((_, index) => (

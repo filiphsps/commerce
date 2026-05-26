@@ -1,16 +1,29 @@
 import 'server-only';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
-import type { ComponentPropsWithoutRef, ElementType, ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, ComponentType, ElementType, ReactNode } from 'react';
 import { Suspense } from 'react';
 import { CollectionApi } from '@/api/_loaders';
 import type { Product } from '@/api/product';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import type { CollectionFilters } from '@/api/shopify/collection';
-import ProductCard, { type ProductCardVariant } from '@/components/product-card';
+import ProductCard from '@/components/product-card';
+import CollectionProductCard from '@/components/products/collection-product-card';
 import CollectionViewAllTile from '@/components/products/collection-view-all-tile';
 import type { Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
+
+type CardComponent = ComponentType<{
+    shop: OnlineShop;
+    locale: Locale;
+    data: Product;
+    priority?: boolean;
+    className?: string;
+}>;
+
+type CardSkeletonComponent = ComponentType<{ className?: string }>;
+
+const DefaultCardSkeleton: CardSkeletonComponent = () => <ProductCard.skeleton variant="vertical-boxed" />;
 
 export type CollectionBlockBase<ComponentGeneric extends ElementType> = {
     as?: ComponentGeneric;
@@ -27,7 +40,8 @@ export type CollectionBlockBase<ComponentGeneric extends ElementType> = {
     priority?: boolean;
 
     bare?: boolean;
-    cardVariant?: ProductCardVariant;
+    card?: CardComponent;
+    cardSkeleton?: CardSkeletonComponent;
 };
 
 export type CollectionBlockProps<ComponentGeneric extends ElementType> = CollectionBlockBase<ComponentGeneric> &
@@ -50,10 +64,13 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
     priority,
 
     bare = false,
-    cardVariant = 'vertical-boxed',
+    card,
+    cardSkeleton,
     ...props
 }: CollectionBlockProps<ComponentGeneric>) => {
     const Tag = (as ?? 'div') as ElementType;
+    const Card = card ?? CollectionProductCard;
+    const CardSkeleton = cardSkeleton ?? DefaultCardSkeleton;
 
     const collection = handle
         ? await CollectionApi({
@@ -70,14 +87,8 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
     }
 
     const productCards = products.map((product, index) => (
-        <Suspense key={product.id} fallback={<ProductCard.skeleton variant={cardVariant} />}>
-            <ProductCard
-                shop={shop}
-                locale={locale}
-                data={product}
-                variant={cardVariant}
-                priority={priority && index < 2}
-            />
+        <Suspense key={product.id} fallback={<CardSkeleton />}>
+            <Card shop={shop} locale={locale} data={product} priority={priority && index < 2} />
         </Suspense>
     ));
 
@@ -111,15 +122,16 @@ CollectionBlock.skeleton = ({
     bare = false,
     length = 7,
     className,
-    cardVariant = 'vertical-boxed',
+    cardSkeleton,
 }: {
     length?: number;
     isHorizontal?: boolean;
     bare?: boolean;
     className?: string;
-    cardVariant?: ProductCardVariant;
+    cardSkeleton?: CardSkeletonComponent;
 }) => {
-    const cards = Array.from({ length }).map((_, index) => <ProductCard.skeleton key={index} variant={cardVariant} />);
+    const CardSkeleton = cardSkeleton ?? DefaultCardSkeleton;
+    const cards = Array.from({ length }).map((_, index) => <CardSkeleton key={index} />);
 
     if (bare) {
         return <>{cards}</>;

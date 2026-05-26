@@ -7,6 +7,7 @@ import type { Product } from '@/api/product';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { RecommendationApi } from '@/api/shopify/recommendation';
 import ProductCard from '@/components/product-card/product-card';
+import RecommendationProductCard from '@/components/products/recommendation-product-card';
 import type { Locale } from '@/utils/locale';
 import CollectionBlock from './collection-block';
 
@@ -36,7 +37,7 @@ async function Component({ shop, locale, product, className }: Readonly<Recommen
         <CollectionBlock shop={shop} locale={locale} className={className} isHorizontal={true}>
             {recommended.map((product) => (
                 <Suspense key={product.id} fallback={<ProductCard.skeleton />}>
-                    <ProductCard shop={shop} locale={locale} data={product} priority={false} />
+                    <RecommendationProductCard shop={shop} locale={locale} data={product} priority={false} />
                 </Suspense>
             ))}
         </CollectionBlock>

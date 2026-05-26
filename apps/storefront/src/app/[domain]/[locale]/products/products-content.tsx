@@ -6,7 +6,7 @@ import { ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductsPaginationApi, ProductsPaginationCountApi } from '@/api/shopify/product';
 import { Filters } from '@/components/actionable/filters';
 import { Pagination } from '@/components/actionable/pagination';
-import ProductCard from '@/components/product-card/product-card';
+import CollectionProductCard from '@/components/products/collection-product-card';
 import { getDictionary } from '@/utils/dictionary';
 import type { Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
@@ -61,7 +61,7 @@ export default async function ProductsContent({ domain, locale, searchParams = {
                 )}
             >
                 {products.map(({ node: product }) => (
-                    <ProductCard key={product.id} shop={shop} locale={locale} data={product} />
+                    <CollectionProductCard key={product.id} shop={shop} locale={locale} data={product} />
                 ))}
             </section>
 
