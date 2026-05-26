@@ -8,8 +8,8 @@
     "module": "./dist/index.ts",
     "exports": {
         ".": [
-            "./src/index.ts",
-            "./dist/index.js"
+            "./dist/index.js",
+            "./src/index.ts"
         ],
         "./loader": [
             "./src/server-only-loader.mjs"
