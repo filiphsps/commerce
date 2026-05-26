@@ -12,5 +12,5 @@ export function resolveCartProvider(shop: OnlineShop): CartProviderAdapter {
     }
 }
 
-export * from './errors';
+export { CartNotFoundError, CartProviderError, CartUserError } from '@nordcom/commerce-errors';
 export type * from './types';

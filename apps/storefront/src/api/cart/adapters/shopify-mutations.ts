@@ -49,14 +49,6 @@ const CART_FIELDS = graphql(`
                 amount
                 currencyCode
             }
-            totalTaxAmount {
-                amount
-                currencyCode
-            }
-            totalDutyAmount {
-                amount
-                currencyCode
-            }
         }
         lines(first: 100) {
             edges {

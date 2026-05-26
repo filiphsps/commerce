@@ -78,6 +78,9 @@ export enum ApiErrorKind {
     API_INVALID_HANDLE = 'API_INVALID_HANDLE',
     API_INVALID_ID = 'API_INVALID_ID',
     API_INVALID_CART = 'API_INVALID_CART',
+    API_CART_NOT_FOUND = 'API_CART_NOT_FOUND',
+    API_CART_USER_ERROR = 'API_CART_USER_ERROR',
+    API_CART_PROVIDER_ERROR = 'API_CART_PROVIDER_ERROR',
     API_TOO_MANY_REQUESTS = 'API_TOO_MANY_REQUESTS',
     API_METHOD_NOT_ALLOWED = 'API_IMAGE_NO_FRACTIONAL',
     API_IMAGE_NO_FRACTIONAL = 'API_ICON_WIDTH_NO_FRACTIONAL',
@@ -223,6 +226,57 @@ export class InvalidCartError extends ApiError {
     details = 'Invalid cart';
     description = 'The cart is invalid';
     code = ApiErrorKind.API_INVALID_CART;
+}
+export class CartNotFoundError extends ApiError {
+    statusCode = 404;
+    name = 'CartNotFoundError';
+    details = 'Cart not found';
+    description = 'The requested cart could not be found';
+    code = ApiErrorKind.API_CART_NOT_FOUND;
+
+    constructor(cartId?: string, cause?: string, statusCode?: number) {
+        super(cause, statusCode);
+
+        if (cartId) {
+            this.description = `Cart "${cartId}" not found.`;
+        }
+    }
+}
+export class CartUserError extends ApiError {
+    statusCode = 400;
+    name = 'CartUserError';
+    details = 'Cart user error';
+    description = 'The cart provider rejected the request with user-facing errors';
+    code = ApiErrorKind.API_CART_USER_ERROR;
+
+    public readonly userErrors: Array<{ field?: string; message: string }>;
+
+    constructor(userErrors: Array<{ field?: string; message: string }> = [], cause?: string, statusCode?: number) {
+        super(cause, statusCode);
+
+        this.userErrors = userErrors;
+        if (userErrors[0]?.message) {
+            this.description = userErrors[0].message;
+        }
+    }
+}
+export class CartProviderError extends ApiError {
+    statusCode = 502;
+    name = 'CartProviderError';
+    details = 'Cart provider error';
+    description = 'The cart provider returned an error';
+    code = ApiErrorKind.API_CART_PROVIDER_ERROR;
+
+    public readonly providerCause?: unknown;
+
+    constructor(message?: string, providerCause?: unknown, cause?: string, statusCode?: number) {
+        super(cause, statusCode);
+
+        if (message) {
+            this.description = message;
+        }
+        this.providerCause = providerCause;
+    }
 }
 
 export class TooManyRequestsError extends ApiError {
@@ -783,6 +837,12 @@ export const getErrorFromCode = (
             return InvalidIDError as unknown as typeof ApiError;
         case ApiErrorKind.API_INVALID_CART:
             return InvalidCartError;
+        case ApiErrorKind.API_CART_NOT_FOUND:
+            return CartNotFoundError as unknown as typeof ApiError;
+        case ApiErrorKind.API_CART_USER_ERROR:
+            return CartUserError as unknown as typeof ApiError;
+        case ApiErrorKind.API_CART_PROVIDER_ERROR:
+            return CartProviderError as unknown as typeof ApiError;
         case ApiErrorKind.API_TOO_MANY_REQUESTS:
             return TooManyRequestsError;
         case ApiErrorKind.API_METHOD_NOT_ALLOWED:
