@@ -178,68 +178,94 @@ html:root {
     /* Soft warm accent surface; used by chip hover, overlay row hover etc. */
     --accent-soft: #f3eedc;
 
-    /* Product-card tokens — soft-boxed premium chassis (spec: 2026-05-26-product-card-fix-design.md §Tokens).
-     * Neutral warm palette; brand accent only enters via CTA bg + active swatch ring.
-     * Mobile-first defaults; md+ overrides below. Tenant theming overrides per-shop on [data-shop="..."]. */
+    /* Product card tokens.
+     * Phase 2 of .specs/2026-05-26-product-card-redesign/ — additive only.
+     * Tokens marked LEGACY are referenced by pre-Phase-3 primitives that get
+     * rewritten or deleted in Phase 3; they will be removed then.
+     * Phase 3+ will read --block-border-radius* / --block-padding / --block-spacer
+     * for spacing and Tailwind type-scale utilities for typography. */
+
+    /* Chassis */
     --product-card-bg: #ffffff;
-    --product-card-border-color: #ece6d4; /* warm hairline */
+    --product-card-border-color: #ece6d4;
     --product-card-border-width: 1px;
-    --product-card-radius: 12px;
-    --product-card-padding: 10px;
-    --product-card-gap: 8px;
+    --product-card-radius: 12px;                 /* LEGACY */
+    --product-card-padding: 10px;                /* LEGACY */
+    --product-card-gap: 8px;                     /* LEGACY */
     --product-card-shadow: 0 1px 0 rgb(20 17 11 / 2%), 0 1px 2px rgb(20 17 11 / 4%);
     --product-card-shadow-hover: 0 1px 0 rgb(20 17 11 / 2%), 0 10px 24px -12px rgb(20 17 11 / 22%);
+    --product-card-min-width: 200px;
+    --product-card-max-width: 240px;
+    --product-card-grid-align: start;
+    --product-card-search-image-width: 72px;
 
-    --product-card-image-bg: #faf7f0; /* used inside the boxed white card */
-    --product-card-image-bg-bare: #f3eedc; /* used by bare so the tile stays visible on warm pages */
-    --product-card-image-radius: 8px;
-    --product-card-image-padding: 12px;
-
+    /* Image */
+    --product-card-image-bg: #faf7f0;
+    --product-card-image-bg-bare: #f3eedc;
+    --product-card-image-radius: 8px;            /* LEGACY */
+    --product-card-image-padding: 12px;          /* LEGACY */
+    --product-card-image-fit: cover;
+    --product-card-image-hover-swap: on;
+    --product-card-image-sizes: (max-width: 768px) 50vw, 240px;
     --aspect-product-card-vertical: 4 / 5;
-    --aspect-product-card-horizontal: 4 / 5; /* matches typical apparel; clothes products no longer waste space */
-    --aspect-product-card-horizontal-square: 1 / 1; /* opt-in for square-product surfaces (cart-drawer accessories) */
-    --aspect-product-card-micro: 1 / 1;
+    --aspect-product-card-horizontal: 4 / 5;
+    --aspect-product-card-horizontal-square: 1 / 1; /* LEGACY (only horizontal layout in Phase 3+) */
+    --aspect-product-card-micro: 1 / 1;          /* LEGACY (micro layout deleted in Phase 3) */
 
-    --product-card-vendor-color: #6b6555; /* tightened from #8b8475 — clears WCAG AA at 11px on white */
-    --product-card-vendor-size: 11px;
+    /* Typography */
+    --product-card-vendor-color: #6b6555;
+    --product-card-vendor-size: 11px;            /* LEGACY */
     --product-card-title-color: #14110b;
-    --product-card-title-size: 14px;
-    --product-card-title-weight: 600;
+    --product-card-title-size: 14px;             /* LEGACY */
+    --product-card-title-weight: 600;            /* LEGACY */
     --product-card-title-line-clamp: 2;
-
     --product-card-price-color: #14110b;
-    --product-card-price-size: 15px;
-    --product-card-price-weight: 700;
-    --product-card-compare-color: #6b6555; /* same a11y tightening */
+    --product-card-price-size: 15px;             /* LEGACY */
+    --product-card-price-weight: 700;            /* LEGACY */
+    --product-card-compare-color: #6b6555;
+    --product-card-urgency-color: #b54a2a;
+    --product-card-urgency-threshold: 5;
+    --product-card-eyebrow-tracking: 0.14em;
 
-    --product-card-swatch-size: 18px;
+    /* Swatch */
+    --product-card-swatch-size: 18px;            /* LEGACY value; Phase 3 chassis reads 16px */
     --product-card-swatch-gap: 5px;
     --product-card-swatch-ring-color: #14110b;
-    --product-card-swatch-hit-padding: 6px; /* 18px visual + 2×6px padding = 30px hit target ≥ WCAG 2.5.5 */
+    --product-card-swatch-hit-padding: 6px;      /* LEGACY value; Phase 3 chassis reads 10px */
 
+    /* Chip + More */
     --product-card-chip-bg: #ffffff;
     --product-card-chip-color: #14110b;
     --product-card-chip-border: #ece6d4;
     --product-card-chip-active-bg: #14110b;
     --product-card-chip-active-color: #ffffff;
-    --product-card-chip-padding-y: 6px;
-    --product-card-chip-padding-x: 10px;
-
+    --product-card-chip-padding-y: 6px;          /* LEGACY */
+    --product-card-chip-padding-x: 10px;         /* LEGACY */
     --product-card-more-bg: #f3eedc;
     --product-card-more-color: #4a463b;
-    --product-card-more-size: 11px;
-    --product-card-more-weight: 600;
-    --product-card-more-min-size: 24px;
+    --product-card-more-size: 11px;              /* LEGACY */
+    --product-card-more-weight: 600;             /* LEGACY */
+    --product-card-more-min-size: 24px;          /* LEGACY */
 
+    /* CTA */
     --product-card-cta-bg: #14110b;
     --product-card-cta-color: #ffffff;
-    --product-card-cta-radius: 8px;
-    --product-card-cta-padding-y: 11px;
+    --product-card-cta-radius: 8px;              /* LEGACY */
+    --product-card-cta-padding-y: 11px;          /* LEGACY */
+    --product-card-cta-height: 36px;             /* LEGACY (used by product-card-actions-client) */
+    --product-card-cta-placement: float-pill;
+    --product-card-cta-pill-position: top-right;
+    --product-card-cta-pill-label: "";
+    --product-card-cta-pill-icon: "+";
+    --product-card-cta-pill-reveal: always;
+    --product-card-cta-inline-style: solid;
+    --product-card-fast-path-dot: #2f7d4a;
+    --product-card-fast-path-single-variant: on;
 
-    --product-card-urgency-color: #b54a2a;
-    /* Numeric token; read in JS via getComputedStyle. */
-    --product-card-urgency-threshold: 5;
+    /* Picker */
+    --product-card-quick-add-presentation: auto;
 
+    /* Overlay (LEGACY — product-card-overlay primitive deleted in Phase 3) */
     --product-card-overlay-bg: #ffffff;
     --product-card-overlay-radius: 12px;
     --product-card-overlay-border-color: #ece6d4;
@@ -248,11 +274,35 @@ html:root {
     --product-card-overlay-max-height: 320px;
     --product-card-overlay-padding: 14px;
 
+    /* Out-of-stock */
+    --product-card-oos-opacity: 0.7;
+    --product-card-oos-image-saturate: 0.85;
+
+    /* Motion */
+    --product-card-motion-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --product-card-motion-fast: 80ms;
+    --product-card-motion-base: 160ms;
+    --product-card-motion-picker-in: 220ms;
+    --product-card-motion-picker-out: 180ms;
+    /* LEGACY motion tokens — pre-Phase-3 primitives read these names. */
     --product-card-motion-hover-duration: 200ms;
     --product-card-motion-hover-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
     --product-card-motion-image-swap-duration: 400ms;
     --product-card-motion-overlay-in-duration: 180ms;
     --product-card-motion-overlay-in-ease: cubic-bezier(0.32, 0.72, 0, 1);
+
+    /* Sale */
+    --product-card-sale-style: strike-only;
+    --product-card-sale-strike-color: currentColor;
+    --product-card-sale-strike-angle: -8deg;
+    --product-card-sale-strike-extend: 2px;
+    --product-card-sale-current-color: #b54a2a;
+    --product-card-sale-show-savings-line: off;
+    --product-card-sale-badge-style: default;
+    --product-card-sale-badge-position: top-left;
+    --product-card-sale-badge-text: "−{n}%";
+    --product-card-sale-badge-min-discount: 11;
+    --product-card-sale-badge-allow-overlap: false;
 }
 
 @media (min-width: 48em) {
