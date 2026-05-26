@@ -85,6 +85,10 @@ _Avoid_: section, content block, widget
 A Shopify-aware data fetcher injected at the **Storefront** boundary so the **CMS** package can stay Shopify-free.
 _Avoid_: data loader, content loader
 
+**Homepage slug**:
+The reserved CMS **Pages** slug `homepage`. The **Storefront** middleware rewrites a bare `/<locale>/` to `/<locale>/homepage/` before routing, so the index page must be persisted under this exact slug — `home`, `index`, or any other variant resolves to a 404.
+_Avoid_: home, index, root, landing
+
 ### Errors
 
 **Commerce error**:
@@ -127,6 +131,7 @@ _Avoid_: marketing site, homepage, public site
 - A **Shop** has one **CMS tenant**; **CMS** reads and writes are always filtered by it.
 - A **Shop** has zero or more **Collaborators**; the **CMS** mirrors them so admin-app and CMS access predicates resolve the same list.
 - A Shopify-projecting **Block** requires its **Block loader** at the **Storefront** boundary.
+- A **Shop**'s index route renders the **Homepage slug** CMS page; the bare path is rewritten by middleware before the route tree is consulted.
 - The **Storefront** is the only multi-tenant app; **Admin** and **Landing** are single-tenant.
 - The **Landing** app owns the **Service domain**'s `/status/*` routes.
 
