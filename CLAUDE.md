@@ -48,3 +48,17 @@ Group artifacts per topic under `.specs/<YYYY-MM-DD-kebab-slug>/{spec,plan,tasks
 ## Changesets
 
 Touching any package **not** in `.changeset/config.json`'s `ignore` list requires a changeset (`pnpm changeset`). Pick the level per semver: `patch` for bugfix/internal-only, `minor` for additive API, `major` for breaking change. One changeset per logical change. Summary follows the same WHY-only rule as commit bodies.
+
+## Agent skills
+
+### Issue tracker
+
+GitHub Issues at `filiphsps/commerce`, driven by the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Canonical five — `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context — `CONTEXT.md` at the repo root (optional glossary), with historical decisions in `.specs/<YYYY-MM-DD-kebab-slug>/`. No ADRs. See `docs/agents/domain.md`.
