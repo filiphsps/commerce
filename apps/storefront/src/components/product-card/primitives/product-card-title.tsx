@@ -11,7 +11,7 @@ export type ProductCardTitleProps = {
 };
 
 const ProductCardTitle = ({ shop, data, className }: ProductCardTitleProps) => {
-    const showVendor = (shop as { showProductVendor?: boolean }).showProductVendor === true;
+    const showVendor = shop.showProductVendor === true;
     return <VariantTitle product={data} showVendor={showVendor} className={className ?? 'product-card-title'} />;
 };
 

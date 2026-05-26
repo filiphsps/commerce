@@ -64,6 +64,8 @@ export interface ShopBase extends BaseDocument {
         processingTimeInDays?: number;
     };
 
+    showProductVendor?: boolean;
+
     design: {
         header: {
             logo: {
@@ -170,6 +172,12 @@ export const ShopSchema = new Schema<ShopBase>(
             },
             required: false,
             default: {},
+        },
+
+        showProductVendor: {
+            type: Schema.Types.Boolean,
+            required: false,
+            default: false,
         },
 
         design: {
