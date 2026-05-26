@@ -29,7 +29,10 @@ export interface PageFixture {
 
 export const pageFixtures: PageFixture[] = [
     {
-        slug: 'home',
+        // `homepage` is the canonical slug the storefront middleware rewrites
+        // `/<locale>/` to. Anything else (e.g. `home`) renders as 404 because
+        // there's nothing in the routing tree mapping the bare index to it.
+        slug: 'homepage',
         title: 'Nordcom Demo Shop',
         seo: {
             title: 'Nordcom Demo Shop — Considered staples for every season',
