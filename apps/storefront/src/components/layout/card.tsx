@@ -20,11 +20,13 @@ export const Card = <ComponentGeneric extends ElementType = 'div'>({
     children,
 
     border = false,
+    ...rest
 }: CardProps<ComponentGeneric>) => {
     const Tag = as ?? 'div';
 
     return (
         <Tag
+            {...rest}
             className={cn(
                 'rounded-lg border border-gray-200 border-solid p-3',
                 !border && 'bg-gray-100',

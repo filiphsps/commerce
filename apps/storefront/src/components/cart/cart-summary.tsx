@@ -94,6 +94,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
 
     return (
         <div
+            data-display="cost"
             className={cn(
                 styles.container,
                 'sticky top-32 flex flex-col gap-4',

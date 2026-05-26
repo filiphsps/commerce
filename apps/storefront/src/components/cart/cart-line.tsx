@@ -170,6 +170,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
 
     return (
         <Card
+            data-cart-line={line.id}
             className={cn(
                 'relative flex gap-3 shadow',
                 !ready && 'cursor-not-allowed opacity-50 *:pointer-events-none',
@@ -181,6 +182,9 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
             <div role="status" aria-live="polite" className="sr-only">
                 {swapAnnouncement}
             </div>
+            <span data-line-quantity={quantity} className="sr-only" aria-live="polite">
+                {quantity}
+            </span>
             <Card className="h-full min-h-32 w-auto overflow-hidden bg-white p-2 shadow">{image}</Card>
 
             <div className="flex w-full flex-col items-start gap-3 md:flex-row">

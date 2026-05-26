@@ -31,6 +31,7 @@ const CartButton = ({ locale, i18n }: CartButtonProps) => {
         >
             <div
                 className={cn('text-left font-extrabold text-base transition-colors', !totalQuantity && 'w-0')}
+                data-cart-count={totalQuantity || 0}
                 suppressHydrationWarning={true}
             >
                 {totalQuantity || null}
