@@ -1,4 +1,48 @@
 'use client';
-const Swatch = () => null;
+
+import type { OptionValueRendererProps } from '../types';
+
+const Swatch = ({ value, onSelect }: OptionValueRendererProps) => {
+    const hasImage = !!value.swatch?.image?.url && !value.swatch?.color;
+    return (
+        <button
+            type="button"
+            onClick={onSelect}
+            aria-label={value.name}
+            aria-pressed={value.selected}
+            data-available={value.available ? 'true' : 'false'}
+            data-active={value.selected ? 'true' : 'false'}
+            disabled={false}
+            className="product-options-swatch group/swatch relative inline-flex shrink-0 cursor-pointer items-center justify-center p-(--product-card-swatch-hit-padding) transition-transform focus-visible:outline-none focus-visible:outline-offset-2 active:scale-95 data-[available=false]:cursor-not-allowed motion-safe:hover:scale-110 focus-visible:[outline:2px_solid_var(--accent)]"
+            style={{ touchAction: 'manipulation' }}
+        >
+            <span
+                data-swatch-visual
+                style={{ ['--swatch-color' as any]: value.swatch?.color }}
+                className="block size-(--product-card-swatch-size) rounded-full border border-[color:var(--product-card-border-color)] bg-[var(--swatch-color)] transition-shadow group-data-[available=false]/swatch:opacity-35 group-data-[active=true]/swatch:[box-shadow:0_0_0_1.5px_var(--product-card-bg),_0_0_0_3px_var(--product-card-swatch-ring-color)]"
+            >
+                {hasImage ? (
+                    <img
+                        src={value.swatch!.image!.url}
+                        alt=""
+                        className="size-full rounded-full object-cover"
+                        draggable={false}
+                    />
+                ) : null}
+                {!value.available ? (
+                    <svg
+                        aria-hidden="true"
+                        viewBox="0 0 100 100"
+                        preserveAspectRatio="none"
+                        className="pointer-events-none absolute inset-0 size-full"
+                    >
+                        <line x1="0" y1="100" x2="100" y2="0" stroke="currentColor" strokeWidth="2" opacity="0.5" />
+                    </svg>
+                ) : null}
+            </span>
+        </button>
+    );
+};
+
 Swatch.displayName = 'Nordcom.ProductOptions.Swatch';
 export default Swatch;
