@@ -230,7 +230,11 @@ jobs:
               uses: actions/cache/restore@v5
               with:
                   path: ~/.cache/ms-playwright
-                  key: ${{ runner.os }}-playwright-${{ hashFiles('pnpm-lock.yaml') }}
+                  key: ${{ runner.os }}-playwright-${{ github.head_ref || github.ref_name }}-${{ hashFiles('pnpm-lock.yaml') }}
+                  restore-keys: |
+                      ${{ runner.os }}-playwright-${{ github.head_ref || github.ref_name }}-
+                      ${{ runner.os }}-playwright-master-
+                      ${{ runner.os }}-playwright-
 
             - name: 🎭 Install Playwright browsers (cache miss)
               if: steps.cache-playwright.outputs.cache-hit != 'true'
@@ -284,7 +288,7 @@ jobs:
               uses: actions/cache/save@v5
               with:
                   path: ~/.cache/ms-playwright
-                  key: ${{ runner.os }}-playwright-${{ hashFiles('pnpm-lock.yaml') }}
+                  key: ${{ runner.os }}-playwright-${{ github.head_ref || github.ref_name }}-${{ hashFiles('pnpm-lock.yaml') }}
 
             - name: 💾 Save bootstrap caches
               if: always()

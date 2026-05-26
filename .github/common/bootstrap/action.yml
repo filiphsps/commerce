@@ -40,7 +40,11 @@ runs:
                   node_modules
                   apps/*/node_modules
                   packages/*/node_modules
-              key: ${{ runner.os }}-node-modules-${{ hashFiles('pnpm-lock.yaml') }}
+              key: ${{ runner.os }}-node-modules-${{ github.head_ref || github.ref_name }}-${{ hashFiles('pnpm-lock.yaml') }}
+              restore-keys: |
+                  ${{ runner.os }}-node-modules-${{ github.head_ref || github.ref_name }}-
+                  ${{ runner.os }}-node-modules-master-
+                  ${{ runner.os }}-node-modules-
 
         - name: 📦 Install dependencies
           if: steps.cache-node-modules.outputs.cache-hit != 'true'
@@ -64,4 +68,8 @@ runs:
           uses: actions/cache/restore@v5
           with:
               path: /home/runner/.cache/mongodb-binaries
-              key: ${{ runner.os }}-mongoms-${{ env.MONGOMS_VERSION }}
+              key: ${{ runner.os }}-mongoms-${{ github.head_ref || github.ref_name }}-${{ env.MONGOMS_VERSION }}
+              restore-keys: |
+                  ${{ runner.os }}-mongoms-${{ github.head_ref || github.ref_name }}-
+                  ${{ runner.os }}-mongoms-master-
+                  ${{ runner.os }}-mongoms-
