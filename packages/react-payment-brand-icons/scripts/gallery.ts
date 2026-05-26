@@ -160,12 +160,30 @@ ${cards}
 }
 
 /**
- * Render the docs MDX page. Each entry produces a card that references the
- * source SVG via a relative path (`../svgs/<filename>`) instead of inlining
- * the markup, so the file stays small and the canonical SVG remains a single
- * source of truth. The output is plain MDX without any Nextra-specific
- * components so the file renders standalone if Nextra's MDX runtime ever
- * changes.
+ * Encode an SVG document as a `data:` URI safe for use inside an HTML
+ * attribute value. `encodeURIComponent` escapes every byte that would either
+ * break URI parsing or escape out of a double-quoted attribute (including
+ * `<`, `>`, `&`, `"`, `#`, `%`), so the result drops straight into
+ * `<img src="...">` without further escaping.
+ *
+ * @param svg - the raw SVG markup.
+ * @returns a `data:image/svg+xml` URI.
+ */
+function svgToDataUri(svg: string): string {
+    return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+}
+
+/**
+ * Render the docs MDX page. Each icon is embedded as an `<img>` whose `src`
+ * is the SVG inlined as a `data:` URI.
+ *
+ * The workspace `docs/icons.mdx` is mirrored into `apps/docs/app/docs/(generated)/…`
+ * by `apps/docs/scripts/mirror-workspace-docs.ts`, which only copies `.md(x)`
+ * files — adjacent SVGs don't follow, so a relative `../svgs/<filename>` href
+ * 404s at the mirrored URL. Inlining as a `data:` URI keeps a single source
+ * of truth (the SVG is read from `svgs/` at generation time), keeps the
+ * markup as plain `<img>` so MDX doesn't try to parse SVG attributes like
+ * `xmlns:xlink` as JSX, and renders without any Nextra-specific components.
  *
  * @param entries - the icons to document.
  * @returns the MDX source.
@@ -178,8 +196,9 @@ function renderMdx(entries: GalleryEntry[]): string {
                 ? `    <div className="payment-icon-aliases">aliases: ${aliasParts}</div>`
                 : '';
             const usage = `&lt;${e.componentName} /&gt;`;
+            const src = svgToDataUri(e.svgInline);
             return `<div className="payment-icon-card">
-  <div className="payment-icon-glyph"><img src="../svgs/${e.filename}" alt="${escapeHtml(e.title)}" width="38" height="24" /></div>
+  <div className="payment-icon-glyph"><img src="${src}" alt="${escapeHtml(e.title)}" width="38" height="24" /></div>
   <div className="payment-icon-meta">
     <strong>${e.title}</strong>
     <code>${e.slug}</code>
