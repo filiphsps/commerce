@@ -33,7 +33,7 @@
         "build:apps": "dotenv -c -- turbo run build --filter=./apps/** --env-mode=loose",
         "build:packages": "turbo run build --filter=./packages/** --env-mode=loose",
         "generate": "dotenv -c -- turbo run generate --env-mode=loose",
-        "clean": "turbo run clean",
+        "clean": "turbo run clean --concurrency=1",
         "lint": "biome lint .",
         "format": "concurrently -i pnpm:format:*",
         "format:lint": "biome lint --write .",
