@@ -3,9 +3,7 @@ import 'server-only';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Fragment, Suspense } from 'react';
 import type { Product } from '@/api/product';
-import ProductCardBadges from '@/components/product-card/primitives/product-card-badges';
 import ProductCardRoot from '@/components/product-card/primitives/product-card-root';
-import ProductCardTitle from '@/components/product-card/primitives/product-card-title';
 import { type ProductCardVariant, resolveVariant } from '@/components/product-card/variant';
 import HorizontalBare from '@/components/product-card/variants/horizontal-bare';
 import HorizontalBoxed from '@/components/product-card/variants/horizontal-boxed';
@@ -24,6 +22,12 @@ const VARIANT_COMPONENTS = {
     micro: Micro,
 } as const;
 
+const resolveAspect = (variant: ProductCardVariant): 'vertical' | 'horizontal' | 'micro' => {
+    if (variant === 'micro') return 'micro';
+    if (variant.startsWith('horizontal')) return 'horizontal';
+    return 'vertical';
+};
+
 export type ProductCardProps = {
     shop: OnlineShop;
     locale: Locale;
@@ -41,10 +45,13 @@ const ProductCard = async ({ shop, locale, data: product, variant, priority = fa
     const i18n = await getDictionary({ shop, locale });
     const resolved = resolveVariant(variant);
     const VariantComponent = VARIANT_COMPONENTS[resolved];
-    const initialVariant = firstAvailableVariant(product);
+    const seedVariant = firstAvailableVariant(product) ?? product.variants?.edges?.[0]?.node;
 
-    const title = <ProductCardTitle shop={shop} data={product} />;
-    const badges = <ProductCardBadges data={product} i18n={i18n} />;
+    if (!seedVariant) {
+        return null;
+    }
+
+    const aspect = resolveAspect(resolved);
 
     return (
         <Suspense key={`product-card.${product.handle}`} fallback={<Fragment />}>
@@ -53,11 +60,19 @@ const ProductCard = async ({ shop, locale, data: product, variant, priority = fa
                 variant={resolved}
                 i18n={i18n}
                 locale={locale}
-                initialVariant={initialVariant}
+                initialVariant={seedVariant}
                 priority={priority}
                 className={className}
             >
-                <VariantComponent title={title} badges={badges} />
+                <VariantComponent
+                    shop={shop}
+                    locale={locale}
+                    i18n={i18n}
+                    product={product}
+                    seedVariant={seedVariant}
+                    priority={priority}
+                    aspect={aspect}
+                />
             </ProductCardRoot>
         </Suspense>
     );
