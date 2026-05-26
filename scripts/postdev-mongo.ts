@@ -1,5 +1,5 @@
 #!/usr/bin/env tsx
-import { existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -35,12 +35,13 @@ if (after === before) {
     process.exit(0);
 }
 
-if (after.trim() === '') {
-    rmSync(envFile, { force: true });
-    console.info(`[postdev-mongo] removed MONGODB_URI from ${envFile}; file was empty afterwards — deleted`);
-} else {
-    writeFileSync(envFile, after);
-    console.info(`[postdev-mongo] removed MONGODB_URI from ${envFile}`);
-}
+// Always preserve the file. Previously we deleted it when `after.trim() === ''`,
+// which silently nuked any env file whose only meaningful entry happened to be
+// `MONGODB_URI` — destructive and surprising. Atomic write (tmp + rename) so a
+// crash mid-write can't truncate the file.
+const tmp = `${envFile}.postdev-mongo.tmp`;
+writeFileSync(tmp, after);
+renameSync(tmp, envFile);
+console.info(`[postdev-mongo] removed MONGODB_URI from ${envFile}`);
 
 rmSync(ENV_MARKER_FILE, { force: true });

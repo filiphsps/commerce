@@ -1,6 +1,15 @@
 #!/usr/bin/env tsx
 import { spawn } from 'node:child_process';
-import { createReadStream, existsSync, mkdirSync, openSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import {
+    createReadStream,
+    existsSync,
+    mkdirSync,
+    openSync,
+    readFileSync,
+    renameSync,
+    statSync,
+    writeFileSync,
+} from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -28,17 +37,43 @@ const isAlive = (pid: number): boolean => {
     }
 };
 
+/**
+ * Idempotently inserts or replaces the `MONGODB_URI=` line in `.env.local`,
+ * preserving every other line byte-for-byte.
+ *
+ * Defensive details:
+ * - `replace` uses a function callback so a URI containing `$` literals (or
+ *   `$&`, `$'`, `` $` ``, `$<n>`) is treated literally instead of being
+ *   interpreted as a regex replacement pattern.
+ * - The write is atomic (tmp file + rename) so a crash/SIGKILL mid-write
+ *   can't truncate `.env.local` into an empty or partial file.
+ * - Refuses to write back an empty body when the original was non-empty,
+ *   as a belt-and-braces guard against any future logic bug that would
+ *   otherwise wipe a populated env file.
+ *
+ * @param uri - Mongo connection string to persist as `MONGODB_URI`.
+ * @returns `added` is `true` when no prior line existed and one was appended.
+ * @throws When the on-disk env file is non-empty but the computed new body is empty.
+ */
 const upsertEnv = (uri: string): { added: boolean } => {
     const line = `MONGODB_URI=${uri}`;
-    let body = existsSync(ENV_FILE) ? readFileSync(ENV_FILE, 'utf8') : '';
-    const hadLine = /^MONGODB_URI=/m.test(body);
+    const original = existsSync(ENV_FILE) ? readFileSync(ENV_FILE, 'utf8') : '';
+    const hadLine = /^MONGODB_URI=/m.test(original);
+    let body = original;
     if (hadLine) {
-        body = body.replace(/^MONGODB_URI=.*$/m, line);
+        body = body.replace(/^MONGODB_URI=.*$/m, () => line);
     } else {
         if (body && !body.endsWith('\n')) body += '\n';
         body += `${line}\n`;
     }
-    writeFileSync(ENV_FILE, body);
+    if (original.length > 0 && body.length === 0) {
+        throw new Error(
+            `[predev-mongo] refusing to overwrite ${ENV_FILE} with empty body (original was ${original.length} bytes)`,
+        );
+    }
+    const tmp = `${ENV_FILE}.predev-mongo.tmp`;
+    writeFileSync(tmp, body);
+    renameSync(tmp, ENV_FILE);
     return { added: !hadLine };
 };
 
@@ -128,12 +163,14 @@ if (haveLiveDaemon) {
 }
 
 const { added: addedEnvLine } = upsertEnv(uri);
-if (addedEnvLine) {
-    writeFileSync(ENV_MARKER_FILE, `${ENV_FILE}\n`);
-    console.info(`[predev-mongo] added MONGODB_URI to ${ENV_FILE} (marker: ${ENV_MARKER_FILE})`);
-} else {
-    console.info(`[predev-mongo] updated existing MONGODB_URI in ${ENV_FILE} — not tracking for cleanup`);
-}
+// Always write the marker. Tracking only the "added" case meant a stale URI
+// from a prior crashed `pnpm dev` (where postdev never ran) would survive
+// across runs because the second predev sees `hadLine=true`, skips marker
+// write, and postdev then has nothing to clean up.
+writeFileSync(ENV_MARKER_FILE, `${ENV_FILE}\n`);
+console.info(
+    `[predev-mongo] ${addedEnvLine ? 'added' : 'updated'} MONGODB_URI in ${ENV_FILE} (marker: ${ENV_MARKER_FILE})`,
+);
 
 if (!existsSync(SEEDED_FILE)) {
     console.info(
