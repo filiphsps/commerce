@@ -22,11 +22,11 @@ const ProductCardPrice = ({ seedVariant, locale, className }: ProductCardPricePr
     return (
         <div
             {...(onSale ? { 'data-on-sale': '' } : {})}
-            className={cn('flex items-baseline gap-1.5 flex-wrap', className)}
+            className={cn('flex flex-wrap items-baseline gap-1.5', className)}
         >
             <span
                 className={cn(
-                    'text-sm font-semibold leading-none tabular-nums',
+                    'font-semibold text-sm tabular-nums leading-none',
                     'text-(--product-card-price-color)',
                     onSale && 'group-data-[on-sale]/card:text-(--product-card-sale-current-color)',
                 )}
@@ -34,9 +34,7 @@ const ProductCardPrice = ({ seedVariant, locale, className }: ProductCardPricePr
                 {fmt.format(Number(current.amount))}
             </span>
             {onSale && compare ? (
-                <span
-                    className="relative px-0.5 text-xs font-medium leading-none tabular-nums text-(--product-card-compare-color) after:content-[''] after:absolute after:inset-x-[calc(-1*var(--product-card-sale-strike-extend))] after:top-1/2 after:h-px after:bg-(--product-card-sale-strike-color,currentColor) after:-translate-y-1/2 after:[transform:translateY(-50%)_rotate(var(--product-card-sale-strike-angle))]"
-                >
+                <span className="relative px-0.5 font-medium text-(--product-card-compare-color) text-xs tabular-nums leading-none after:absolute after:inset-x-[calc(-1*var(--product-card-sale-strike-extend))] after:top-1/2 after:h-px after:-translate-y-1/2 after:bg-(--product-card-sale-strike-color,currentColor) after:content-[''] after:[transform:translateY(-50%)_rotate(var(--product-card-sale-strike-angle))]">
                     {fmt.format(Number(compare.amount))}
                 </span>
             ) : null}
