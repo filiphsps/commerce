@@ -1,45 +1,52 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { productSimple } from '@/components/product-card/__fixtures__';
-import ProductCard from '@/components/product-card/product-card';
+import ProductCard, { toProductCardData } from '@/components/product-card/product-card';
 import { mockShop } from '@/utils/test/fixtures';
-
-vi.mock('@/components/product-card/primitives/product-card-root', () => ({
-    default: ({ children, variant }: any) => (
-        <div data-testid="root" data-variant={variant}>
-            {children}
-        </div>
-    ),
-}));
 
 describe('components', () => {
     describe('product-card', () => {
-        describe('ProductCard', () => {
-            it('returns null when no product is provided', () => {
+        describe('toProductCardData', () => {
+            it('shapes a slim view from the full Product', () => {
+                const product = productSimple();
+                const slim = toProductCardData(product);
+                expect(slim.id).toBe(product.id);
+                expect(slim.handle).toBe(product.handle);
+                expect(slim.title).toBe(product.title);
+                expect(slim.vendor).toBe(product.vendor);
+                // Slim view intentionally drops prose / SEO / extra gallery.
+                // Check the canonical fields the orchestrator forwards downstream.
+                expect('variants' in slim).toBe(true);
+                expect('options' in slim).toBe(true);
+                expect('featuredImage' in slim).toBe(true);
+            });
+        });
+
+        describe('ProductCard orchestrator', () => {
+            it('returns null when no variant is buyable', async () => {
                 const shop = mockShop();
-                const result = ProductCard({ shop, locale: { code: 'en-US' } as any, children: null });
+                const data = { ...productSimple(), variants: { edges: [] } } as never;
+                const result = await ProductCard({
+                    shop,
+                    locale: { code: 'en-US' } as never,
+                    data,
+                    layout: 'vertical',
+                    chrome: 'boxed',
+                    ctaPlacement: 'float-pill',
+                    pickerPresentation: 'auto',
+                });
                 expect(result).toBeNull();
             });
 
-            it('returns a tree rooted at ProductCardRoot when product is provided', () => {
+            it('renders a tree rooted at the chassis when a buyable variant exists', async () => {
                 const shop = mockShop();
-                const result = ProductCard({
+                const result = await ProductCard({
                     shop,
-                    locale: { code: 'en-US' } as any,
+                    locale: { code: 'en-US' } as never,
                     data: productSimple(),
-                    layout: 'horizontal',
-                    chrome: 'bare',
-                    children: <div data-testid="child" />,
-                });
-                expect(result).not.toBeNull();
-            });
-
-            it('defaults to vertical layout and boxed chrome', () => {
-                const shop = mockShop();
-                const result: any = ProductCard({
-                    shop,
-                    locale: { code: 'en-US' } as any,
-                    data: productSimple(),
-                    children: <div data-testid="child" />,
+                    layout: 'vertical',
+                    chrome: 'boxed',
+                    ctaPlacement: 'float-pill',
+                    pickerPresentation: 'auto',
                 });
                 expect(result).not.toBeNull();
             });
