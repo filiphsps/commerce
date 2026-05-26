@@ -119,6 +119,9 @@ importers:
       '@nordcom/commerce-marketing-common':
         specifier: workspace:*
         version: link:../../packages/marketing-common
+      '@nordcom/commerce-test-mongo':
+        specifier: workspace:*
+        version: link:../../packages/test-mongo
       '@nordcom/commerce-utils':
         specifier: workspace:*
         version: link:../../packages/utils

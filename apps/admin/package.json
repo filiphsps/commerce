@@ -18,7 +18,7 @@
         "format:lint": "biome lint --write .",
         "format:format": "biome format --write .",
         "format:check": "biome check --write --unsafe .",
-        "test:e2e": "playwright test",
+        "test:e2e": "NODE_OPTIONS='--import @nordcom/commerce-test-mongo/register' playwright test",
         "typegen": "next typegen",
         "typecheck": "tsc -noEmit",
         "analyze": "next experimental-analyze"
@@ -55,6 +55,7 @@
         "@nordcom/commerce-db": "workspace:*",
         "@nordcom/commerce-errors": "workspace:*",
         "@nordcom/commerce-marketing-common": "workspace:*",
+        "@nordcom/commerce-test-mongo": "workspace:*",
         "@nordcom/commerce-utils": "workspace:*",
         "@nordcom/nordstar": "0.0.75",
         "@opentelemetry/api-logs": "0.218.0",

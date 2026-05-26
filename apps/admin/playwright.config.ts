@@ -7,7 +7,8 @@ import { STORAGE_STATE_PATH } from './e2e/fixtures/storage-state';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-    globalSetup: resolve(__dirname, './e2e/fixtures/seed.ts'),
+    globalSetup: resolve(__dirname, './e2e/global-setup.ts'),
+    globalTeardown: resolve(__dirname, './e2e/global-setup.ts'),
     testDir: './e2e',
     fullyParallel: true,
     forbidOnly: !!process.env.CI,
