@@ -283,6 +283,32 @@ jobs:
               with:
                   node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
 
+    cleanup-artifacts:
+        name: 🧹 Cleanup
+        needs: e2e
+        if: always() && needs.e2e.result != 'skipped'
+        timeout-minutes: 5
+        runs-on: ubuntu-latest
+        permissions:
+            actions: write
+        steps:
+            - name: 🧹 Delete `app-builds` artifact
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  REPO: ${{ github.repository }}
+                  RUN_ID: ${{ github.run_id }}
+              run: |
+                  set -euo pipefail
+                  ids=$(gh api "repos/$REPO/actions/runs/$RUN_ID/artifacts" --jq '.artifacts[] | select(.name == "app-builds") | .id')
+                  if [ -z "$ids" ]; then
+                      echo "No app-builds artifact found; nothing to delete."
+                      exit 0
+                  fi
+                  for id in $ids; do
+                      echo "Deleting artifact $id"
+                      gh api -X DELETE "repos/$REPO/actions/artifacts/$id"
+                  done
+
     dispatch:
         name: 🗣️ Dispatch
         needs: [lint, typecheck, test, build, e2e]
