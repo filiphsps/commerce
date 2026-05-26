@@ -39,6 +39,7 @@ export default mergeConfig(
                 formats: ['es'],
             },
             rolldownOptions: {
+                checks: { pluginTimings: false },
                 external: ['@nordcom/commerce-errors', 'server-only'],
                 input,
                 output: {

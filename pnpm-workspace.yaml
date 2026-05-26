@@ -1,24 +1,24 @@
 packages:
-  - "packages/**"
-  - "apps/**"
-  - "!**/tests/fixtures/**"
+    - "packages/**"
+    - "apps/**"
+    - "!**/tests/fixtures/**"
 
 allowBuilds:
-  "@parcel/watcher": true
-  "@swc/core": true
-  "@scarf/scarf": true
-  esbuild: true
-  sharp: true
-  unrs-resolver: true
-  core-js: false
-  core-js-pure: false
-  mongodb-memory-server: true
+    "@parcel/watcher": true
+    "@swc/core": true
+    "@scarf/scarf": true
+    esbuild: true
+    sharp: true
+    unrs-resolver: true
+    core-js: true
+    core-js-pure: true
+    mongodb-memory-server: true
 
 # Nextra 4.6.1 + nextra-theme-docs 4.6.1 are incompatible with zod >=4.4.0
 # due to stricter property iteration in `z.strictObject`. Pin to the last
 # known-good version until Nextra ships a release with shuding/nextra#4990.
 # Tracking: https://github.com/shuding/nextra/issues/4989
 overrides:
-  zod@^4: "4.3.6"
-  "@types/react": "$@types/react"
-  "@types/react-dom": "$@types/react-dom"
+    zod@^4: "4.3.6"
+    "@types/react": "$@types/react"
+    "@types/react-dom": "$@types/react-dom"
