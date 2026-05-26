@@ -543,7 +543,7 @@
     .field-type.text input,
     .field-type.textarea textarea,
     .field-type.number input,
-    .field-type.select .react-select {
+    .field-type.select .rs__control {
         @apply overflow-hidden rounded-md;
     }
 }
