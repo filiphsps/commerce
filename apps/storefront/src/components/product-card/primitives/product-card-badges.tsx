@@ -2,7 +2,7 @@ import 'server-only';
 
 import { Gift as GiftIcon, Package as PackageIcon, RefreshCw as SubscriptionIcon } from 'lucide-react';
 import { isProductVegan, type Product } from '@/api/product';
-import { COMMON_BADGE_STYLES } from '@/components/product-card/primitives/badge-styles';
+import { COMMON_BADGE_STYLES } from '@/components/product-display/primitives/badge-styles';
 import { AttributeIcon } from '@/components/products/attribute-icon';
 import { firstAvailableVariant } from '@/utils/first-available-variant';
 import type { LocaleDictionary } from '@/utils/locale';
