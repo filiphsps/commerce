@@ -237,6 +237,150 @@ describe('buildCmsFormState', () => {
 
             expect(warn).not.toHaveBeenCalled();
         });
+
+        it('strips _status form state and suppresses its warning (Payload Field:false sentinel)', async () => {
+            mockBuildFormState.mockResolvedValue({
+                state: {
+                    title: { customComponents: { Field: 'Mock' }, value: 'Hi' },
+                    _status: { customComponents: { Field: 'Mock' }, value: 'draft' },
+                },
+            });
+            const fields = [
+                { name: 'title', type: 'text' },
+                { name: '_status', type: 'select', admin: { components: { Field: false } } },
+            ];
+            mockGetFieldByPath.mockImplementation(({ path }: { path: string }) => {
+                const match = fields.find((f) => f.name === path);
+                return match ? { field: match } : null;
+            });
+
+            const result = await buildCmsFormState({
+                collectionSlug: 'pages',
+                data: {},
+                docPermissions: {} as never,
+                docPreferences: { fields: {} },
+                req: { payload: { collections: { pages: { config: { flattenedFields: fields } } } } } as never,
+                schemaPath: 'pages',
+            });
+
+            expect(Object.keys(result.state).sort()).toEqual(['title']);
+            const messages = warn.mock.calls.map((args: unknown[]) => String(args[0]));
+            expect(messages).toEqual([expect.stringContaining('path=title type=text slot=Field')]);
+        });
+
+        it('strips the multi-tenant tenant form state and suppresses its warning', async () => {
+            mockBuildFormState.mockResolvedValue({
+                state: {
+                    title: { customComponents: { Field: 'Mock' }, value: 'Hi' },
+                    tenant: { customComponents: { Field: 'Mock' }, value: 'tenant-id' },
+                },
+            });
+            const fields = [
+                { name: 'title', type: 'text' },
+                {
+                    name: 'tenant',
+                    type: 'relationship',
+                    admin: {
+                        position: 'sidebar',
+                        components: { Field: { path: '@payloadcms/plugin-multi-tenant/client#TenantField' } },
+                    },
+                },
+            ];
+            mockGetFieldByPath.mockImplementation(({ path }: { path: string }) => {
+                const match = fields.find((f) => f.name === path);
+                return match ? { field: match } : null;
+            });
+
+            const result = await buildCmsFormState({
+                collectionSlug: 'pages',
+                data: {},
+                docPermissions: {} as never,
+                docPreferences: { fields: {} },
+                req: { payload: { collections: { pages: { config: { flattenedFields: fields } } } } } as never,
+                schemaPath: 'pages',
+            });
+
+            expect(Object.keys(result.state).sort()).toEqual(['title']);
+            const messages = warn.mock.calls.map((args: unknown[]) => String(args[0]));
+            expect(messages).toEqual([expect.stringContaining('path=title type=text slot=Field')]);
+        });
+
+        it('strips both _status and the multi-tenant tenant together (realistic header collection)', async () => {
+            // Mirrors `packages/cms/src/collections/_globals/header.ts` after
+            // the multi-tenant plugin and versions.drafts have augmented it.
+            mockBuildFormState.mockResolvedValue({
+                state: {
+                    logo: { customComponents: { Field: 'Mock' }, value: 'logo-id' },
+                    nav: { value: [] },
+                    _status: { customComponents: { Field: 'Mock' }, value: 'draft' },
+                    tenant: { customComponents: { Field: 'Mock' }, value: 'tenant-id' },
+                },
+            });
+            const fields = [
+                { name: 'logo', type: 'upload' },
+                { name: 'nav', type: 'array' },
+                { name: '_status', type: 'select', admin: { components: { Field: false } } },
+                {
+                    name: 'tenant',
+                    type: 'relationship',
+                    admin: {
+                        position: 'sidebar',
+                        components: { Field: { path: '@payloadcms/plugin-multi-tenant/client#TenantField' } },
+                    },
+                },
+            ];
+            mockGetFieldByPath.mockImplementation(({ path }: { path: string }) => {
+                const match = fields.find((f) => f.name === path);
+                return match ? { field: match } : null;
+            });
+
+            const result = await buildCmsFormState({
+                collectionSlug: 'header',
+                data: {},
+                docPermissions: {} as never,
+                docPreferences: { fields: {} },
+                req: { payload: { collections: { header: { config: { flattenedFields: fields } } } } } as never,
+                schemaPath: 'header',
+            });
+
+            expect(Object.keys(result.state).sort()).toEqual(['logo', 'nav']);
+            const messages = warn.mock.calls.map((args: unknown[]) => String(args[0]));
+            // Only the upload field's mock warning survives — the hidden
+            // pair contributes neither a state entry nor a warning.
+            expect(messages).toEqual([expect.stringContaining('path=logo type=upload slot=Field')]);
+        });
+
+        it('leaves a non-hidden custom-Field component in place (it still warns and stays in state)', async () => {
+            mockBuildFormState.mockResolvedValue({
+                state: {
+                    body: { customComponents: { Field: 'Mock' }, value: '' },
+                },
+            });
+            const fields = [
+                {
+                    name: 'body',
+                    type: 'richText',
+                    admin: { components: { Field: { path: '@/components/cms/rich-text-field' } } },
+                },
+            ];
+            mockGetFieldByPath.mockImplementation(({ path }: { path: string }) => {
+                const match = fields.find((f) => f.name === path);
+                return match ? { field: match } : null;
+            });
+
+            const result = await buildCmsFormState({
+                collectionSlug: 'pages',
+                data: {},
+                docPermissions: {} as never,
+                docPreferences: { fields: {} },
+                req: { payload: { collections: { pages: { config: { flattenedFields: fields } } } } } as never,
+                schemaPath: 'pages',
+            });
+
+            expect(Object.keys(result.state)).toEqual(['body']);
+            const messages = warn.mock.calls.map((args: unknown[]) => String(args[0]));
+            expect(messages).toEqual([expect.stringContaining('path=body type=richText slot=Field')]);
+        });
     });
 });
 

@@ -1,6 +1,7 @@
 export { adminOnly, editorOrAdmin, tenantMember } from './access';
 export { createCollectionEditorActions, type EditorActions } from './actions';
 export { parseFormPayload, pickByFieldNames } from './form-payload';
+export { isHiddenEditorField } from './hidden-fields';
 export {
     type CollectionEditorManifest,
     defineCollectionEditor,

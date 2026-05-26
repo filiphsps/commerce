@@ -1,5 +1,6 @@
 import 'server-only';
 
+import { isHiddenEditorField } from '@nordcom/commerce-cms/editor';
 import { buildFormState } from '@payloadcms/ui/utilities/buildFormState';
 import type { BuildFormStateArgs, FlattenedField, FormState, PayloadRequest } from 'payload';
 import { getFieldByPath } from 'payload';
@@ -40,10 +41,51 @@ export async function buildCmsFormState(args: BuildCmsFormStateArgs) {
     } as BuildFormStateArgs);
 
     if ('collectionSlug' in args && typeof args.collectionSlug === 'string') {
+        stripHiddenFieldState(args.collectionSlug, args.req, result.state);
         logUnsupportedMocks(args.collectionSlug, args.req, result.state);
     }
 
     return result;
+}
+
+/**
+ * Resolve the server-side flattened field list Payload attached to the
+ * authed request. Returns `undefined` when the collection isn't registered
+ * — `logUnsupportedMocks` already tolerates that path by falling back to
+ * `type=unknown` in its warning string, and `stripHiddenFieldState` no-ops.
+ *
+ * @param collectionSlug - Slug of the collection whose form state was built.
+ * @param req - Authed Payload request carrying the sanitized config tree.
+ * @returns The flattened field list, or `undefined` when unavailable.
+ */
+function getFlattenedFields(collectionSlug: string, req: PayloadRequest): FlattenedField[] | undefined {
+    const collections = req?.payload?.collections as
+        | Record<string, { config?: { flattenedFields?: FlattenedField[] } }>
+        | undefined;
+    return collections?.[collectionSlug]?.config?.flattenedFields;
+}
+
+/**
+ * Delete every form-state entry whose schema field `isHiddenEditorField`
+ * flags. Runs before `logUnsupportedMocks` so warnings for hidden fields
+ * never fire, and runs against the same paths `<EditorFields>` filters on
+ * the client so the state shape stays consistent across both layers.
+ *
+ * @param collectionSlug - Slug of the collection whose form state was built.
+ * @param req - Authed Payload request — used to resolve the field config.
+ * @param state - The form state returned by `buildFormState`; mutated in place.
+ */
+function stripHiddenFieldState(collectionSlug: string, req: PayloadRequest, state: FormState): void {
+    const flattenedFields = getFlattenedFields(collectionSlug, req);
+    if (!flattenedFields) return;
+
+    for (const path of Object.keys(state)) {
+        const schemaPath = stripRowIndices(path);
+        const field = getFieldByPath({ fields: flattenedFields, path: schemaPath })?.field;
+        if (isHiddenEditorField(field)) {
+            delete state[path];
+        }
+    }
 }
 
 /**
@@ -145,10 +187,7 @@ const loggedMocks = new Set<string>();
  * @param state - The form state returned by `buildFormState`.
  */
 function logUnsupportedMocks(collectionSlug: string, req: PayloadRequest, state: FormState): void {
-    const collections = req?.payload?.collections as
-        | Record<string, { config?: { flattenedFields?: FlattenedField[] } }>
-        | undefined;
-    const flattenedFields = collections?.[collectionSlug]?.config?.flattenedFields;
+    const flattenedFields = getFlattenedFields(collectionSlug, req);
 
     for (const { path, slot } of scanFormStateForMocks(state)) {
         const key = `${collectionSlug}::${path}::${slot}`;
