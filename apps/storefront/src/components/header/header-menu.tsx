@@ -365,8 +365,8 @@ function EditorialColumn({ item, locale, index }: { item: RecursiveNavItem; loca
         <div
             data-header-editorial-column
             className={cn(
-                'animate-mega-menu-column relative flex flex-col gap-1.5',
-                'max-md:border-t max-md:border-[var(--header-divider-color)] max-md:pt-header-column-y first:max-md:border-t-0 first:max-md:pt-0',
+                'relative flex animate-mega-menu-column flex-col gap-1.5',
+                'max-md:border-[var(--header-divider-color)] max-md:border-t max-md:pt-header-column-y first:max-md:border-t-0 first:max-md:pt-0',
                 COLUMN_DIVIDER_CLASSES,
             )}
             style={{ animationDelay: `calc(var(--header-stagger-step) * ${Math.min(index, 5)})` }}

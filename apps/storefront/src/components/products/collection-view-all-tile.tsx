@@ -16,7 +16,7 @@ const CollectionViewAllTile = ({ collection, className }: CollectionViewAllTileP
             'group/card relative flex w-full snap-center snap-always items-center justify-center overflow-hidden transition-all',
             'min-h-[18rem]',
             'rounded-(--product-card-radius)',
-            'border-(length:--product-card-border-width) border-solid border-(color:var(--product-card-border-color))',
+            'border-(length:--product-card-border-width) border-(color:var(--product-card-border-color)) border-solid',
             'bg-primary p-(--product-card-padding) text-primary-foreground',
             'hover:brightness-95',
             className,
