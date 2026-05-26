@@ -1,0 +1,38 @@
+name: '💾 Bootstrap Save'
+description: 'Save the caches that bootstrap restored. Invoke with `if: always()` so caches persist even when the job fails.'
+
+inputs:
+    node-modules-cache-hit:
+        description: 'Pass `steps.<bootstrap-id>.outputs.node-modules-cache-hit`.'
+        required: true
+    node-modules-cache-key:
+        description: 'Pass `steps.<bootstrap-id>.outputs.node-modules-cache-key`.'
+        required: true
+    turbo-cache-hit:
+        description: 'Pass `steps.<bootstrap-id>.outputs.turbo-cache-hit`. Leave blank if bootstrap was invoked with `turbo-cache: false`.'
+        required: false
+        default: ''
+    turbo-cache-key:
+        description: 'Pass `steps.<bootstrap-id>.outputs.turbo-cache-key`. Leave blank if bootstrap was invoked with `turbo-cache: false`.'
+        required: false
+        default: ''
+
+runs:
+    using: 'composite'
+    steps:
+        - name: 💾 Save node_modules
+          if: inputs.node-modules-cache-hit != 'true'
+          uses: actions/cache/save@v4
+          with:
+              path: |
+                  node_modules
+                  apps/*/node_modules
+                  packages/*/node_modules
+              key: ${{ inputs.node-modules-cache-key }}
+
+        - name: 💾 Save turbo cache
+          if: inputs.turbo-cache-key != '' && inputs.turbo-cache-hit != 'true' && hashFiles('.turbo/**') != ''
+          uses: actions/cache/save@v4
+          with:
+              path: .turbo
+              key: ${{ inputs.turbo-cache-key }}

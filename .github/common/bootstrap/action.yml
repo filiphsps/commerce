@@ -1,10 +1,24 @@
 name: '📦 Bootstrap'
-description: 'Install dependencies and prime caches.'
+description: 'Install dependencies and prime caches (restore-only — pair with bootstrap-save).'
 
 inputs:
     turbo-cache:
-        description: 'Restore + save the local turbo cache (.turbo).'
+        description: 'Restore the local turbo cache (.turbo).'
         default: 'true'
+
+outputs:
+    node-modules-cache-hit:
+        description: 'Whether node_modules cache was a hit on restore.'
+        value: ${{ steps.cache-node-modules.outputs.cache-hit }}
+    node-modules-cache-key:
+        description: 'Primary cache key for node_modules.'
+        value: ${{ runner.os }}-node-modules-${{ hashFiles('pnpm-lock.yaml') }}
+    turbo-cache-hit:
+        description: 'Whether turbo cache was a hit on restore. Empty when turbo-cache=false.'
+        value: ${{ steps.cache-turbo.outputs.cache-hit }}
+    turbo-cache-key:
+        description: 'Primary cache key for turbo. Empty when turbo-cache=false.'
+        value: ${{ inputs.turbo-cache == 'true' && format('{0}-turbo-{1}-{2}', runner.os, github.ref_name, github.sha) || '' }}
 
 runs:
     using: 'composite'
@@ -21,9 +35,9 @@ runs:
               node-version-file: '.nvmrc'
               cache: 'pnpm'
 
-        - name: 💾 Cache node_modules
+        - name: 💾 Restore node_modules
           id: cache-node-modules
-          uses: actions/cache@v4
+          uses: actions/cache/restore@v4
           with:
               path: |
                   node_modules
@@ -36,9 +50,10 @@ runs:
           run: pnpm install --frozen-lockfile
           shell: bash
 
-        - name: 💾 Cache turbo
+        - name: 💾 Restore turbo cache
+          id: cache-turbo
           if: inputs.turbo-cache == 'true'
-          uses: actions/cache@v4
+          uses: actions/cache/restore@v4
           with:
               path: .turbo
               key: ${{ runner.os }}-turbo-${{ github.ref_name }}-${{ github.sha }}
