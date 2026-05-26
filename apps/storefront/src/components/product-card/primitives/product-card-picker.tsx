@@ -1,7 +1,7 @@
 'use client';
 
-import { getProductCardPicker } from '@/components/product-card/picker';
 import type { Product } from '@/api/product';
+import { getProductCardPicker } from '@/components/product-card/picker';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { usePickerOpen, useVariantSelection } from './product-card-options-provider';
 

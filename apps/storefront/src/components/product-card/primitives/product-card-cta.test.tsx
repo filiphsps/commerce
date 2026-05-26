@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { render } from '@/utils/test/react';
-import { ProductCardOptionsProvider } from './product-card-options-provider';
 import ProductCardCta from './product-card-cta';
+import { ProductCardOptionsProvider } from './product-card-options-provider';
 
 const product = {
     handle: 'tee',

@@ -111,7 +111,9 @@ test.describe('Product card v2', () => {
             test.skip(true, 'No matching search results in the test storefront');
         }
         await expect(row).toBeVisible();
-        await expect(row.locator('[data-display="price"]').or(row.locator(':scope div').filter({ hasText: /\$\d/ }))).toBeVisible();
+        await expect(
+            row.locator('[data-display="price"]').or(row.locator(':scope div').filter({ hasText: /\$\d/ })),
+        ).toBeVisible();
         await expect(row.getByRole('button', { name: /choose options|add to bag/i }).first()).toBeVisible();
     });
 
