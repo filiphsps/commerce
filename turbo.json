@@ -3,18 +3,32 @@
     "ui": "stream",
     "globalPassThroughEnv": ["NODE_ENV"],
     "globalDependencies": [
-        "package.json",
-        "**/package.json",
-        "**/tsconfig.json",
+        "tsconfig.json",
+        "tsconfig.lib.json",
+        "tsconfig.app.json",
         "pnpm-lock.yaml",
         "pnpm-workspace.yaml",
-        "!CHANGELOG.md",
-        "!*.md"
+        ".npmrc"
     ],
     "tasks": {
         "build": {
             "cache": true,
             "dependsOn": ["^generate", "^build"],
+            "inputs": [
+                "$TURBO_DEFAULT$",
+                "!**/*.md",
+                "!**/*.test.{ts,tsx,js,jsx,mjs,cjs}",
+                "!**/*.spec.{ts,tsx,js,jsx,mjs,cjs}",
+                "!**/__tests__/**",
+                "!**/e2e/**",
+                "!**/playwright.config.*",
+                "!**/playwright-report/**",
+                "!**/test-results/**",
+                "!**/vitest.config.*",
+                "!**/vitest.setup.*",
+                "!**/tsconfig.test.json",
+                "!**/coverage/**"
+            ],
             "outputs": [
                 ".next/**",
                 "!.next/cache/**",
@@ -31,12 +45,37 @@
             "cache": true,
             "persistent": false,
             "dependsOn": ["^generate"],
+            "inputs": [
+                "$TURBO_DEFAULT$",
+                "!**/*.md",
+                "!**/*.test.{ts,tsx,js,jsx,mjs,cjs}",
+                "!**/*.spec.{ts,tsx,js,jsx,mjs,cjs}",
+                "!**/__tests__/**",
+                "!**/e2e/**",
+                "!**/public/**",
+                "!**/playwright.config.*",
+                "!**/vitest.config.*",
+                "!**/vitest.setup.*",
+                "!**/tsconfig.test.json"
+            ],
             "outputs": ["src/generated/**", "src/graphql-env.d.ts", "storefront.schema.json"],
             "outputLogs": "new-only"
         },
         "build:packages": {
             "cache": true,
             "dependsOn": ["^generate", "^build:packages"],
+            "inputs": [
+                "$TURBO_DEFAULT$",
+                "!**/*.md",
+                "!**/*.test.{ts,tsx,js,jsx,mjs,cjs}",
+                "!**/*.spec.{ts,tsx,js,jsx,mjs,cjs}",
+                "!**/__tests__/**",
+                "!**/e2e/**",
+                "!**/playwright.config.*",
+                "!**/vitest.config.*",
+                "!**/vitest.setup.*",
+                "!**/tsconfig.test.json"
+            ],
             "outputs": ["dist/**"],
             "outputLogs": "new-only"
         },
@@ -50,16 +89,37 @@
             "persistent": true
         },
         "lint": {
+            "inputs": ["$TURBO_DEFAULT$", "!**/*.md"],
             "outputs": [],
             "outputLogs": "new-only"
         },
         "typegen": {
             "cache": true,
+            "inputs": [
+                "$TURBO_DEFAULT$",
+                "!**/*.md",
+                "!**/e2e/**",
+                "!**/public/**",
+                "!**/playwright.config.*",
+                "!**/playwright-report/**",
+                "!**/test-results/**",
+                "!**/coverage/**"
+            ],
             "outputs": ["next-env.d.ts", ".next/types/**", ".next/dev/types/**", "lib/page-map.generated.ts"],
             "outputLogs": "new-only"
         },
         "typecheck": {
             "dependsOn": ["typegen"],
+            "inputs": [
+                "$TURBO_DEFAULT$",
+                "!**/*.md",
+                "!**/e2e/**",
+                "!**/public/**",
+                "!**/playwright.config.*",
+                "!**/playwright-report/**",
+                "!**/test-results/**",
+                "!**/coverage/**"
+            ],
             "outputLogs": "new-only"
         },
         "format": {
@@ -76,6 +136,15 @@
         },
         "test": {
             "dependsOn": ["^build:packages"],
+            "inputs": [
+                "$TURBO_DEFAULT$",
+                "!**/*.md",
+                "!**/e2e/**",
+                "!**/public/**",
+                "!**/playwright.config.*",
+                "!**/playwright-report/**",
+                "!**/test-results/**"
+            ],
             "outputs": ["coverage/**"],
             "outputLogs": "new-only"
         },
@@ -86,6 +155,7 @@
         "test:e2e": {
             "cache": false,
             "dependsOn": ["^build", "build"],
+            "inputs": ["e2e/**", "playwright.config.*", "vitest.setup.*"],
             "outputs": ["playwright-report/**", "test-results/**"]
         },
         "clean": {
