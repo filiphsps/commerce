@@ -1,0 +1,9 @@
+{
+    "$schema": "https://turborepo.dev/schema.json",
+    "extends": ["//"],
+    "tasks": {
+        "generate": {
+            "outputs": [".typedoc-out/**", "app/docs/\\(generated\\)/**", "lib/page-map.generated.ts"]
+        }
+    }
+}
