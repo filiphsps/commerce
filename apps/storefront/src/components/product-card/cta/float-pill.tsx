@@ -2,7 +2,6 @@
 
 import { Plus, X } from 'lucide-react';
 import { cn } from '@/utils/tailwind';
-import { registerProductCardCta } from './registry';
 import type { ProductCardCtaProps } from './types';
 
 const FloatPill = ({ isSingleBuyable, isOpen, onActivate, onAdd }: ProductCardCtaProps) => {
@@ -54,7 +53,5 @@ const FloatPill = ({ isSingleBuyable, isOpen, onActivate, onAdd }: ProductCardCt
 };
 
 FloatPill.displayName = 'Nordcom.ProductCard.Cta.FloatPill';
-
-registerProductCardCta('float-pill', FloatPill);
 
 export default FloatPill;

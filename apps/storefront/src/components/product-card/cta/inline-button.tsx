@@ -1,6 +1,5 @@
 'use client';
 
-import { registerProductCardCta } from './registry';
 import type { ProductCardCtaProps } from './types';
 
 /**
@@ -27,5 +26,4 @@ const InlineButton = ({ isSingleBuyable, onActivate, onAdd }: ProductCardCtaProp
 
 InlineButton.displayName = 'Nordcom.ProductCard.Cta.InlineButton';
 
-registerProductCardCta('inline-button', InlineButton);
 export default InlineButton;

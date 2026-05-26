@@ -7,7 +7,6 @@ import { useMemo } from 'react';
 import * as ProductOptions from '@/components/product-options';
 import { toSelectionRecord } from '@/components/product-options/resolver';
 import { firstAvailableVariant } from '@/utils/first-available-variant';
-import { registerProductCardPicker } from './registry';
 import type { ProductCardPickerProps } from './types';
 
 const SheetPicker = ({ product, open, onOpenChange }: ProductCardPickerProps) => {
@@ -64,5 +63,5 @@ const SheetPicker = ({ product, open, onOpenChange }: ProductCardPickerProps) =>
 };
 
 SheetPicker.displayName = 'Nordcom.ProductCard.Picker.Sheet';
-registerProductCardPicker('sheet', SheetPicker);
+
 export default SheetPicker;
