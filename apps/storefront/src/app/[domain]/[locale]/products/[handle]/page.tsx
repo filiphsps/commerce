@@ -16,6 +16,9 @@ import { Blocks } from '@/blocks/blocks';
 import type { BlockNode } from '@/blocks/types';
 import { CMSContent } from '@/components/cms/cms-content';
 import { Card } from '@/components/layout/card';
+import { VariantPrice, VariantStockUrgency } from '@/components/product-display';
+import * as ProductOptions from '@/components/product-options';
+import { toSelectionRecord } from '@/components/product-options/resolver';
 import { AttributeIcon } from '@/components/products/attribute-icon';
 import { InfoLines } from '@/components/products/info-lines';
 import { ProductCategory } from '@/components/products/product-category';
@@ -27,7 +30,7 @@ import type { LocaleDictionary } from '@/utils/locale';
 import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import { checkAndHandleRedirect } from '@/utils/redirect';
 import { cn } from '@/utils/tailwind';
-import { ProductContent, ProductPricing, ProductSavings } from './product-content';
+import { ProductContent, ProductSavings } from './product-content';
 import type { ProductPageParams } from './static-params';
 import { BLOCK_STYLES } from './styles';
 
@@ -219,6 +222,8 @@ export default async function ProductPage({ params }: { params: ProductPageParam
         TitleTag = 'div';
     }
 
+    const seedSelection = toSelectionRecord(initialVariant);
+
     return (
         <>
             <Suspense
@@ -228,54 +233,68 @@ export default async function ProductPage({ params }: { params: ProductPageParam
                 <ProductSavings product={product} i18n={i18n} />
             </Suspense>
 
-            <Card className={BLOCK_STYLES}>
-                <div className="flex h-auto w-full flex-col justify-start gap-3">
+            <ProductOptions.Root product={product} initialSelection={seedSelection}>
+                <Card className={BLOCK_STYLES}>
+                    <div className="flex h-auto w-full flex-col justify-start gap-3">
+                        <Suspense
+                            key={`products.${handle}.details.badges`}
+                            fallback={<div className="h-4 w-full" data-skeleton />}
+                        >
+                            <Badges product={product} i18n={i18n} />
+                        </Suspense>
+
+                        <header className="flex flex-col gap-3">
+                            <div className="flex grow flex-col gap-0">
+                                <div className="flex w-full grow flex-wrap whitespace-pre-wrap font-extrabold text-3xl leading-tight">
+                                    <TitleTag className="text-inherit">
+                                        {title}
+                                        <Suspense>{productTypeElement}</Suspense>
+                                    </TitleTag>
+                                </div>
+
+                                <Suspense fallback={<div className="h-4 w-36" data-skeleton />}>
+                                    <ProductVendor
+                                        shop={shop}
+                                        locale={locale}
+                                        product={product}
+                                        className="font-semibold text-gray-600 normal-case leading-tight transition-colors md:text-lg"
+                                        title={t('browse-all-products-by-brand', product.vendor)}
+                                        prefix={<span className="font-normal">{t('by')} </span>}
+                                    />
+                                </Suspense>
+                            </div>
+
+                            {product.availableForSale ? (
+                                <Suspense
+                                    key={`products.${handle}.details.pricing`}
+                                    fallback={<div className="h-4 w-24" data-skeleton />}
+                                >
+                                    <div className="flex flex-wrap items-center justify-start gap-x-3 gap-y-1 empty:hidden">
+                                        <VariantPrice
+                                            seedVariant={initialVariant}
+                                            locale={locale.code}
+                                            className="pdp-price-callout font-bold text-2xl md:text-3xl"
+                                        />
+                                        <VariantStockUrgency
+                                            seedVariant={initialVariant}
+                                            threshold={5}
+                                            i18n={i18n}
+                                            className="pdp-stock-urgency"
+                                        />
+                                    </div>
+                                </Suspense>
+                            ) : null}
+                        </header>
+                    </div>
+
                     <Suspense
-                        key={`products.${handle}.details.badges`}
+                        key={`products.${handle}.details.content`}
                         fallback={<div className="h-4 w-full" data-skeleton />}
                     >
-                        <Badges product={product} i18n={i18n} />
+                        <ProductContent product={product} i18n={i18n} />
                     </Suspense>
-
-                    <header className="flex flex-col gap-3">
-                        <div className="flex grow flex-col gap-0">
-                            <div className="flex w-full grow flex-wrap whitespace-pre-wrap font-extrabold text-3xl leading-tight">
-                                <TitleTag className="text-inherit">
-                                    {title}
-                                    <Suspense>{productTypeElement}</Suspense>
-                                </TitleTag>
-                            </div>
-
-                            <Suspense fallback={<div className="h-4 w-36" data-skeleton />}>
-                                <ProductVendor
-                                    shop={shop}
-                                    locale={locale}
-                                    product={product}
-                                    className="font-semibold text-gray-600 normal-case leading-tight transition-colors md:text-lg"
-                                    title={t('browse-all-products-by-brand', product.vendor)}
-                                    prefix={<span className="font-normal">{t('by')} </span>}
-                                />
-                            </Suspense>
-                        </div>
-
-                        <Suspense
-                            key={`products.${handle}.details.pricing`}
-                            fallback={<div className="h-4 w-24" data-skeleton />}
-                        >
-                            <div className="flex items-center justify-start gap-2 empty:hidden">
-                                <ProductPricing product={product} />
-                            </div>
-                        </Suspense>
-                    </header>
-                </div>
-
-                <Suspense
-                    key={`products.${handle}.details.content`}
-                    fallback={<div className="h-4 w-full" data-skeleton />}
-                >
-                    <ProductContent product={product} i18n={i18n} />
-                </Suspense>
-            </Card>
+                </Card>
+            </ProductOptions.Root>
 
             <Card className={BLOCK_STYLES}>
                 <Suspense key={`products.${handle}.details.info-lines`} fallback={<InfoLines.skeleton />}>

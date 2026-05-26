@@ -9,7 +9,6 @@ import type { Product } from '@/api/product';
 import { Price } from '@/components/products/price';
 import { ProductActionsContainer } from '@/components/products/product-actions-container';
 import { QuantityProvider } from '@/components/products/quantity-provider';
-import type { PricingProps } from '@/components/typography/pricing';
 import { firstAvailableVariant } from '@/utils/first-available-variant';
 import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 import { safeParseFloat } from '@/utils/pricing';
@@ -42,51 +41,6 @@ export function ProductContent({ product, i18n }: ProductContentProps) {
                 <ProductActionsContainer i18n={i18n} />
             </QuantityProvider>
         </ProductProvider>
-    );
-}
-
-export type ProductPricingProps = {
-    product: Product;
-} & PricingProps;
-export function ProductPricing({ product }: ProductPricingProps) {
-    const searchParams = useSearchParams();
-    const variant = useMemo(
-        () =>
-            searchParams.has('variant')
-                ? product.variants.edges.find(({ node: { id } }) => id.includes(searchParams.get('variant')!))?.node
-                : firstAvailableVariant(product),
-        [product, searchParams],
-    );
-
-    if (!variant || !product.availableForSale) {
-        return null;
-    }
-
-    const price = variant.price as ProductVariant['price'] | undefined;
-    const compareAtPrice = variant.compareAtPrice;
-    const unitPrice = variant.unitPrice;
-    const unitPriceMeasurement = variant.unitPriceMeasurement;
-
-    return (
-        <>
-            {price ? (
-                <Price
-                    data={price}
-                    className={cn('font-bold text-2xl md:text-3xl', compareAtPrice && 'font-black text-red-500')}
-                />
-            ) : null}
-            {compareAtPrice ? (
-                <Price data={compareAtPrice} className="font-medium text-gray-500 text-xl line-through md:text-2xl" />
-            ) : null}
-            {unitPrice && unitPriceMeasurement ? (
-                <div className="flex w-full items-center gap-1 font-medium text-gray-500 text-xs">
-                    <Price data={unitPrice} />
-                    <span>
-                        {`/ ${unitPriceMeasurement.referenceValue} ${unitPriceMeasurement.referenceUnit?.toLowerCase() ?? ''}`}
-                    </span>
-                </div>
-            ) : null}
-        </>
     );
 }
 
