@@ -3,7 +3,6 @@
     "version": 2,
     "public": false,
     "framework": "nextjs",
-    "ignoreCommand": "echo \"$VERCEL_GIT_COMMIT_REF\" | grep -qE '^renovate/' || npx -y turbo-ignore @nordcom/commerce-landing",
     "github": {
         "enabled": true,
         "autoJobCancelation": true

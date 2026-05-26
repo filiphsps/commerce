@@ -4,7 +4,6 @@
     "public": false,
     "trailingSlash": true,
     "framework": "nextjs",
-    "ignoreCommand": "echo \"$VERCEL_GIT_COMMIT_REF\" | grep -qE '^renovate/' || npx -y turbo-ignore @nordcom/commerce-storefront",
     "github": {
         "enabled": true,
         "autoJobCancelation": true
