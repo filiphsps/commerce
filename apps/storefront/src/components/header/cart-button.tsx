@@ -1,8 +1,8 @@
 'use client';
 
-import { useCart } from '@shopify/hydrogen-react';
 import { ShoppingBag as ShoppingBagIcon } from 'lucide-react';
 import { Button } from '@/components/actionable/button';
+import { useCartCount } from '@/components/cart/provider';
 import Link from '@/components/link';
 import { capitalize, getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
@@ -13,7 +13,7 @@ export type CartButtonProps = {
 };
 const CartButton = ({ locale, i18n }: CartButtonProps) => {
     const { t } = getTranslations('cart', i18n);
-    const { totalQuantity } = useCart();
+    const totalQuantity = useCartCount();
 
     return (
         <Button
