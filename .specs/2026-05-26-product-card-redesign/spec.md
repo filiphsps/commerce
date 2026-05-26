@@ -640,10 +640,13 @@ Values: `top-left | top-right | bottom-left | bottom-right`.
 
 Each primitive exports its own `.skeleton` static. The chassis and surface wrappers compose primitive skeletons. Heights stay in sync because skeleton CSS uses the same tokens the live primitive uses.
 
+Project convention: every skeleton piece gets a plain `data-skeleton` attribute. The global rule at `globals.css:440-476` provides bg color, border radius, shimmer animation, and reduced-motion handling. No per-component skeleton tokens — same pattern as `product-description.tsx`, `footer.tsx`, `info-lines.tsx`.
+
 ```tsx
 ProductCardImage.skeleton = ({ aspect = 'vertical' }) => (
   <div
-    className="bg-(--product-card-skeleton-bg) rounded-(--product-card-image-radius) motion-safe:animate-pulse"
+    data-skeleton
+    className="rounded-(--product-card-image-radius)"
     style={{ aspectRatio: `var(--aspect-product-card-${aspect})` }}
   />
 );
@@ -653,13 +656,13 @@ ProductCardTitle.skeleton = () => (
     className="flex flex-col gap-1"
     style={{ height: `calc(var(--product-card-title-line-height) * var(--product-card-title-line-clamp))` }}
   >
-    <span className="h-(--product-card-title-line-height) w-4/5 bg-(--product-card-skeleton-bg) rounded-(--product-card-radius-sm) motion-safe:animate-pulse" />
-    <span className="h-(--product-card-title-line-height) w-3/5 bg-(--product-card-skeleton-bg) rounded-(--product-card-radius-sm) motion-safe:animate-pulse" />
+    <span data-skeleton className="h-(--product-card-title-line-height) w-4/5" />
+    <span data-skeleton className="h-(--product-card-title-line-height) w-3/5" />
   </div>
 );
 ```
 
-Pattern repeats for `ProductCardPrice.skeleton`, `ProductCardSwatches.skeleton`, `ProductCardVendor.skeleton`, `ProductCardCta.skeleton`.
+Pattern repeats for `ProductCardPrice.skeleton`, `ProductCardSwatches.skeleton`, `ProductCardVendor.skeleton`, `ProductCardCta.skeleton` — each gets `data-skeleton` on the element and sizing tokens via Tailwind utility classes. No color/animation tokens needed; the global rule covers them.
 
 The chassis composes:
 
@@ -699,12 +702,7 @@ SearchProductCard.skeleton = () => (
 
 ### Skeleton tokens
 
-| Token | Default | Purpose |
-|---|---|---|
-| `--product-card-skeleton-bg` | `#ece6d4` | Placeholder fill (matches hairline color) |
-| `--product-card-skeleton-radius` | `var(--product-card-radius-sm)` | Inner shape radius |
-| `--product-card-skeleton-animation` | `pulse` | `pulse` \| `shimmer` \| `none` |
-| `--product-card-skeleton-duration` | `1.6s` | Animation cycle |
+**None.** Skeleton appearance is owned by the global `[data-skeleton]` rule in `globals.css:440-476`. The rule provides bg color, border radius, shimmer animation, and the existing reduced-motion behavior is already inherited from the keyframe. If a future spec wants per-shop skeleton overrides, the global rule can read from `--skeleton-*` tokens at that point — out of scope here.
 
 ### Guarantees
 
@@ -814,12 +812,7 @@ Tokens added or modified by this spec. Existing tokens not listed here retain th
 
 ### Skeleton
 
-| Token | Default |
-|---|---|
-| `--product-card-skeleton-bg` | `#ece6d4` |
-| `--product-card-skeleton-radius` | `var(--product-card-radius-sm)` |
-| `--product-card-skeleton-animation` | `pulse` |
-| `--product-card-skeleton-duration` | `1.6s` |
+No spec-local tokens. Uses the global `[data-skeleton]` rule (`globals.css:440-476`). Skeleton pieces are plain elements with `data-skeleton` + sizing utility classes.
 
 ## Visual reference
 
@@ -1352,54 +1345,13 @@ These are the rendered-CSS outputs the Tailwind implementation must produce. Dur
 
 #### Skeleton
 
-```css
-@keyframes product-card-skeleton-pulse {
-  0%, 100% { opacity: 1; }
-  50%      { opacity: 0.55; }
-}
-.product-card-skeleton-piece {
-  background: var(--product-card-skeleton-bg);
-}
-@media (prefers-reduced-motion: no-preference) {
-  .product-card-skeleton-piece {
-    animation: product-card-skeleton-pulse var(--product-card-skeleton-duration) ease-in-out infinite;
-  }
-}
-.product-card-skeleton-image {
-  aspect-ratio: var(--aspect-product-card-vertical);
-  border-radius: var(--product-card-image-radius);
-}
-.product-card-skeleton-title {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  height: calc(var(--product-card-title-line-height) * var(--product-card-title-line-clamp));
-}
-.product-card-skeleton-title-line-1 {
-  height: var(--product-card-title-line-height);
-  width: 80%;
-  border-radius: var(--product-card-radius-sm);
-}
-.product-card-skeleton-title-line-2 {
-  height: var(--product-card-title-line-height);
-  width: 60%;
-  border-radius: var(--product-card-radius-sm);
-}
-.product-card-skeleton-price {
-  height: var(--product-card-price-line-height);
-  width: 56px;
-  border-radius: var(--product-card-radius-sm);
-}
-.product-card-skeleton-vendor {
-  height: var(--product-card-eyebrow-size);
-  width: 64px;
-  border-radius: var(--product-card-radius-sm);
-}
-.product-card-skeleton-swatch {
-  width: var(--product-card-swatch-size);
-  height: var(--product-card-swatch-size);
-  border-radius: 999px;
-}
+No spec-local CSS for skeleton appearance. Use plain `data-skeleton` attribute on each piece — the global `[data-skeleton]` rule at `globals.css:440-476` handles bg color, border radius, shimmer animation, and reduced-motion. Only sizing utilities are added at the call site (matched to live primitive heights).
+
+```html
+<div data-skeleton class="aspect-(--aspect-product-card-vertical) rounded-(--product-card-image-radius)"></div>
+<span data-skeleton class="h-(--product-card-title-line-height) w-4/5"></span>
+<span data-skeleton class="h-(--product-card-price-line-height) w-14"></span>
+<span data-skeleton class="size-(--product-card-swatch-size) rounded-full"></span>
 ```
 
 #### Recommendations rail (CollectionBlock enhancement)
@@ -1472,7 +1424,6 @@ These are the rendered-CSS outputs the Tailwind implementation must produce. Dur
 | `--product-card-cta-color` | `#ffffff` | Inline-button CTA fg |
 | `--product-card-fast-path-dot` | `#2f7d4a` | Single-buyable green dot |
 | `--product-card-sale-current-color` | `#b54a2a` | On-sale current price (when set) |
-| `--product-card-skeleton-bg` | `#ece6d4` | Skeleton fill |
 
 ### State coverage matrix
 
