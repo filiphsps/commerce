@@ -3,7 +3,6 @@
 import type { ComponentType, HTMLProps } from 'react';
 import { useCallback, useMemo } from 'react';
 import type { ProductVariant } from '@/api/product';
-import styles from '@/components/product-options-selector/product-options-selector.module.css';
 import { defaultRenderers } from '@/components/product-options-selector/renderers';
 import type {
     OptionValueSwatch,
@@ -73,7 +72,7 @@ export const ProductOptionsSelector = ({
     }
 
     return (
-        <div {...rest} className={cn(styles.root, className)}>
+        <div {...rest} className={cn('flex flex-col gap-(--block-spacer-small)', className)}>
             {realOptions.map((option) => {
                 const values =
                     typeof maxValuesPerOption === 'number'
@@ -81,10 +80,10 @@ export const ProductOptionsSelector = ({
                         : option.optionValues;
 
                 return (
-                    <div key={option.name} className={styles.optionGroup}>
+                    <div key={option.name} className="flex flex-col gap-(--block-spacer-small)">
                         {density === 'spacious' ? <Label className="h-fit text-gray-600">{option.name}</Label> : null}
 
-                        <div className={styles.values}>
+                        <div className="flex flex-wrap gap-(--block-spacer-small)">
                             {values.map((v: SelectorOptionValue) => {
                                 const Renderer =
                                     renderers?.[option.name] ?? renderers?.default ?? defaultRenderers.default!;

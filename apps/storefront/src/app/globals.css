@@ -538,17 +538,6 @@ html:root {
     }
 }
 
-@keyframes product-card-overlay-in {
-    from {
-        opacity: 0;
-        transform: translateY(-4px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
 @keyframes product-card-overlay-fade-in {
     from {
         opacity: 0;
@@ -567,9 +556,11 @@ html:root {
     }
 }
 
-[data-testid="product-card-root"][data-variant="horizontal-bare"]:not(:last-child) {
-    border-bottom-width: 1px;
-    border-bottom-style: solid;
-    border-bottom-color: rgb(0 0 0 / 0.06);
-    border-radius: 0;
+@keyframes chip-stamp {
+    from {
+        transform: scale(0.98);
+    }
+    to {
+        transform: scale(1);
+    }
 }

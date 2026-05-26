@@ -93,8 +93,8 @@ describe('components', () => {
                 render(
                     <ProductOptionsSelector options={options} selectedOptions={{ Size: 'M' }} onChange={() => {}} />,
                 );
-                expect(screen.getByRole('button', { name: 'Size: M' }).className).toMatch(/selected/);
-                expect(screen.getByRole('button', { name: 'Size: S' }).className).not.toMatch(/selected/);
+                expect(screen.getByRole('button', { name: 'Size: M' }).getAttribute('data-selected')).toBe('true');
+                expect(screen.getByRole('button', { name: 'Size: S' }).getAttribute('data-selected')).toBeNull();
             });
 
             it('marks values disabled via the mapped available flag', () => {
@@ -108,8 +108,8 @@ describe('components', () => {
                     },
                 ]);
                 render(<ProductOptionsSelector options={options} selectedOptions={{}} onChange={() => {}} />);
-                expect(screen.getByRole('button', { name: 'Size: M' }).className).toMatch(/disabled/);
-                expect(screen.getByRole('button', { name: 'Size: S' }).className).not.toMatch(/disabled/);
+                expect(screen.getByRole('button', { name: 'Size: M' }).getAttribute('data-disabled')).toBe('true');
+                expect(screen.getByRole('button', { name: 'Size: S' }).getAttribute('data-disabled')).toBeNull();
             });
 
             it('composes href from productHandle + variantUriQuery when both supplied', () => {

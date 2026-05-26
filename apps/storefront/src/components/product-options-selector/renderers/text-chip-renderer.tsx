@@ -1,9 +1,8 @@
 'use client';
 
 import type { MouseEvent } from 'react';
-import styles from '@/components/product-options-selector/renderers/chip.module.css';
 import type { ProductOptionValueRendererProps } from '@/components/product-options-selector/renderers/types';
-import { cn } from '@/utils/tailwind';
+import { chipClassName } from './chip-class';
 
 export const TextChipRenderer = ({
     name,
@@ -16,12 +15,7 @@ export const TextChipRenderer = ({
     density,
 }: ProductOptionValueRendererProps) => {
     const ariaLabel = `${name}: ${value}`;
-    const className = cn(
-        styles.chip,
-        density === 'compact' ? styles.compact : styles.spacious,
-        selected && styles.selected,
-        !available && styles.disabled,
-    );
+    const className = chipClassName({ selected, available, density });
 
     const handleClick = (event: MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
         if (!available) {
@@ -52,6 +46,9 @@ export const TextChipRenderer = ({
                 aria-label={ariaLabel}
                 aria-disabled={!available || undefined}
                 aria-current={selected ? 'true' : undefined}
+                data-density={density}
+                data-selected={selected || undefined}
+                data-disabled={!available || undefined}
                 className={className}
                 onClick={handleClick}
             >
@@ -68,6 +65,9 @@ export const TextChipRenderer = ({
             disabled={!available}
             aria-disabled={!available || undefined}
             aria-pressed={selected}
+            data-density={density}
+            data-selected={selected || undefined}
+            data-disabled={!available || undefined}
             className={className}
             onClick={handleClick}
         >
