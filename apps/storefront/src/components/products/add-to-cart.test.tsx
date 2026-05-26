@@ -1,27 +1,15 @@
 import { act } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { useCartActions, useCartStatus } from '@/components/cart/provider';
 import AddToCart from '@/components/products/add-to-cart';
 import { render } from '@/utils/test/react';
 
-// vi.hoisted: defined before the vi.mock factory below.
-const { mockLinesAdd } = vi.hoisted(() => ({ mockLinesAdd: vi.fn() }));
+vi.mock('@/components/cart/provider', () => ({
+    useCartActions: vi.fn(),
+    useCartStatus: vi.fn(),
+}));
 
-vi.mock('@shopify/hydrogen-react', async () => {
-    return {
-        useProduct: vi.fn().mockReturnValue({
-            selectedVariant: {
-                availableForSale: true,
-            },
-        }),
-        useCart: vi.fn().mockReturnValue({
-            status: 'idle',
-            cartReady: true,
-            linesAdd: mockLinesAdd,
-        }),
-        useShop: vi.fn().mockReturnValue({}),
-        useShopifyCookies: vi.fn().mockReturnValue({}),
-    };
-});
+const mockAddLine = vi.fn().mockResolvedValue({ ok: true, cart: {} });
 
 const baseProps = {
     i18n: {},
@@ -45,6 +33,23 @@ const baseProps = {
 } as any;
 
 describe('components', () => {
+    beforeEach(() => {
+        mockAddLine.mockClear();
+        mockAddLine.mockResolvedValue({ ok: true, cart: {} });
+        vi.mocked(useCartActions).mockReturnValue({
+            addLine: mockAddLine,
+            updateLine: vi.fn().mockResolvedValue({ ok: true, cart: {} }),
+            removeLine: vi.fn().mockResolvedValue({ ok: true, cart: {} }),
+            applyDiscountCode: vi.fn().mockResolvedValue({ ok: true, cart: {} }),
+            removeDiscountCode: vi.fn().mockResolvedValue({ ok: true, cart: {} }),
+            applyGiftCard: vi.fn().mockResolvedValue({ ok: true, cart: {} }),
+            removeGiftCard: vi.fn().mockResolvedValue({ ok: true, cart: {} }),
+            updateNote: vi.fn().mockResolvedValue({ ok: true, cart: {} }),
+            updateAttributes: vi.fn().mockResolvedValue({ ok: true, cart: {} }),
+        } as any);
+        vi.mocked(useCartStatus).mockReturnValue({ status: 'idle', error: null, cartReady: true });
+    });
+
     describe('AddToCart', () => {
         it('should render with normal quantity', () => {
             const props = {
@@ -90,19 +95,32 @@ describe('components', () => {
 
             expect(() => wrapper.unmount()).not.toThrow();
         });
+
+        it('calls addLine with variantId and quantity when clicked', async () => {
+            const { getByRole } = render(<AddToCart {...baseProps} />);
+
+            await act(async () => {
+                getByRole('button').click();
+            });
+
+            expect(mockAddLine).toHaveBeenCalledWith({
+                variantId: 'gid://shopify/ProductVariant/1',
+                quantity: 1,
+            });
+        });
     });
 
     describe('AddToCart cleanup', () => {
         beforeEach(() => vi.useFakeTimers());
         afterEach(() => vi.useRealTimers());
 
-        it('does not warn when unmounted before 3s animation finishes', () => {
+        it('does not warn when unmounted before 3s animation finishes', async () => {
             const consoleErr = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
             const { unmount, getByRole } = render(<AddToCart {...baseProps} />);
 
             // Click add-to-cart to start the 3 s animation timer.
-            act(() => {
+            await act(async () => {
                 getByRole('button').click();
             });
 

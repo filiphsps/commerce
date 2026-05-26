@@ -1,11 +1,11 @@
 'use client';
 
-import { useCart } from '@shopify/hydrogen-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { type HTMLProps, useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import type { Product, ProductVariant } from '@/api/product';
 import { Button } from '@/components/actionable/button';
+import { useCartActions, useCartStatus } from '@/components/cart/provider';
 import { useShop } from '@/components/shop/provider';
 import type { LocaleDictionary } from '@/utils/locale';
 import { getTranslations } from '@/utils/locale';
@@ -57,24 +57,27 @@ export function AddToCart({
         };
     }, []);
 
-    // This is a bit of a hack, but it works.
-    const { cartReady, linesAdd, status = 'fetching' } = useCart();
+    const { addLine } = useCartActions();
+    const { cartReady, status } = useCartStatus();
 
-    const ready = selectedVariant?.availableForSale && cartReady && !['updating'].includes(status);
+    const ready = selectedVariant?.availableForSale && cartReady && status !== 'mutating';
 
-    const add = useCallback(() => {
+    const add = useCallback(async () => {
         if (!ready || !product) {
             // TODO: i18n.
             toast.warning(`The cart is still loading, please try again in a few seconds!`);
             return;
         }
 
-        linesAdd([
-            {
-                merchandiseId: selectedVariant.id!,
-                quantity,
-            },
-        ]);
+        const result = await addLine({
+            variantId: selectedVariant.id!,
+            quantity,
+        });
+
+        if (!result.ok) {
+            toast.error(result.message);
+            return;
+        }
 
         postEvent('add_to_cart', {
             path,
@@ -117,7 +120,7 @@ export function AddToCart({
         if (redirect) {
             router.push('/cart/');
         }
-    }, [linesAdd, selectedVariant, quantity, ready, locale, path, postEvent, product, redirect, router]);
+    }, [addLine, selectedVariant, quantity, ready, locale, path, postEvent, product, redirect, router]);
 
     const label = (() => {
         if (children) return t('add-to-cart');
