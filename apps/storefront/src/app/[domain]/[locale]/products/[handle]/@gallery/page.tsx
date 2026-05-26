@@ -61,7 +61,7 @@ async function Content({ shop, locale, handle }: { shop: OnlineShop; locale: Loc
             pageUrl={`https://${shop.domain}/${locale.code}/products/${handle}/`}
             enableShare={false}
             padding={false}
-            className="w-full snap-start snap-always overflow-hidden *:inset-y-0 *:shrink *:md:relative"
+            className="w-full snap-start snap-always overflow-hidden"
             primaryImageClassName="aspect-4/3 md:aspect-auto"
         />
     );
