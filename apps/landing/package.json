@@ -18,7 +18,8 @@
         "format:lint": "biome lint --write .",
         "format:format": "biome format --write .",
         "format:check": "biome check --write --unsafe .",
-        "typecheck": "next typegen && tsc -noEmit",
+        "typegen": "next typegen",
+        "typecheck": "tsc -noEmit",
         "analyze": "next experimental-analyze"
     },
     "author": {

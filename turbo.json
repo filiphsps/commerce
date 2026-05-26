@@ -53,7 +53,13 @@
             "outputs": [],
             "outputLogs": "new-only"
         },
+        "typegen": {
+            "cache": true,
+            "outputs": ["next-env.d.ts", ".next/types/**", ".next/dev/types/**", "lib/page-map.generated.ts"],
+            "outputLogs": "new-only"
+        },
         "typecheck": {
+            "dependsOn": ["typegen"],
             "outputLogs": "new-only"
         },
         "format": {
