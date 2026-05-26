@@ -24,6 +24,7 @@ env:
   EDGE_CONFIG: ${{ secrets.EDGE_CONFIG }}
   ADMIN_DOMAIN: ${{ vars.ADMIN_DOMAIN }}
   SERVICE_DOMAIN: ${{ vars.SERVICE_DOMAIN }}
+  LANDING_DOMAIN: ${{ vars.LANDING_DOMAIN }}
 
 jobs:
   build:
