@@ -13,14 +13,12 @@ export interface StartedMongo {
 }
 
 export async function startMongo(opts: StartMongoOptions = {}): Promise<StartedMongo> {
+    const hasInstanceOverride = opts.dbPath !== undefined || opts.port !== undefined;
+
     const replSet = await MongoMemoryReplSet.create({
         replSet: { count: 1, storageEngine: 'wiredTiger' },
         binary: { version: process.env.MONGOMS_VERSION ?? '8.0.4' },
-        instanceOpts: opts.dbPath
-            ? [{ dbPath: opts.dbPath, port: opts.port, storageEngine: 'wiredTiger' }]
-            : opts.port
-              ? [{ port: opts.port }]
-              : undefined,
+        instanceOpts: hasInstanceOverride ? [{ dbPath: opts.dbPath, port: opts.port }] : undefined,
     });
 
     const uri = replSet.getUri();
