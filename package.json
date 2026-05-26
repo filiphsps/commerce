@@ -13,6 +13,7 @@
         "packages/*"
     ],
     "scripts": {
+        "postinstall": "pnpm run generate && pnpm run build:packages",
         "analyze": "dotenv -c -- turbo run analyze --env-mode=loose",
         "predev": "portless proxy status >/dev/null 2>&1 || portless proxy start --https --wildcard",
         "predev:admin": "pnpm predev",
