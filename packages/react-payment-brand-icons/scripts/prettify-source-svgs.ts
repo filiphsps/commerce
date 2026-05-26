@@ -15,11 +15,13 @@ import { optimize } from 'svgo';
  * @returns size delta plus a flag indicating whether the file was rewritten.
  */
 async function prettifySvg(filePath: string): Promise<{ changed: boolean; bytesBefore: number; bytesAfter: number }> {
-    const before = await readFile(filePath, 'utf8');
-    const { data: after } = optimize(before, {
+    const raw = await readFile(filePath, 'utf8');
+    const before = raw.replace(/\r\n?/g, '\n');
+    const { data: optimized } = optimize(before, {
         plugins: [],
         js2svg: { pretty: true, indent: 2 },
     });
+    const after = optimized.replace(/\r\n?/g, '\n');
     if (after === before) {
         return { changed: false, bytesBefore: before.length, bytesAfter: after.length };
     }
@@ -40,12 +42,11 @@ async function main(): Promise<void> {
         .map((f) => join(svgsDir, f))
         .sort();
 
-    let changed = 0;
+    let _changed = 0;
     for (const filePath of files) {
         const r = await prettifySvg(filePath);
-        if (r.changed) changed++;
+        if (r.changed) _changed++;
     }
-    console.log(`prettified ${changed}/${files.length} svg files in ${svgsDir}`);
 }
 
 main().catch((err: unknown) => {

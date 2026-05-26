@@ -123,7 +123,6 @@ These icons did not match the standard card-chrome pattern; `chrome="card"` is a
 - `knet`
 - `krediidipank`
 - `krungsri`
-- `krungthaibank`
 - `kuwaitfinancehouse`
 - `laser`
 - `latitude_creditline_au`
