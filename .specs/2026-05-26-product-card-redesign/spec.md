@@ -147,6 +147,8 @@ const CollectionProductCard = async (props) => (
 - Arrows show on desktop hover and on keyboard focus.
 - Click scrolls one card width via `Element.scrollBy({ left: cardWidth, behavior: 'smooth' })`.
 - Touch users get native scroll (arrows hidden on touch via `@media (hover: none)`).
+- Add `scroll-padding-inline: var(--product-card-rail-pad)` so snapped cards aren't flush with the container edge.
+- Preserve existing `content-visibility-auto` Tailwind utility on `CollectionBlock` (defined in `globals.css:70`). Long horizontal rails benefit significantly from it.
 
 No new `RecommendationsRail` primitive. Consumers don't change.
 
@@ -193,7 +195,7 @@ The previously proposed horizontal-switch-at-wide-cards mechanism is dropped. Wi
 
 ```
 apps/storefront/src/components/product-card/
-├── index.tsx                              [server] · public re-exports
+├── index.tsx                              [server] · single named re-export of <ProductCard>; primitives imported directly per Vercel bundle-barrel-imports
 ├── product-card.tsx                       [server async] · orchestrator
 ├── product-card.test.tsx
 ├── presets.ts                             [server] · SURFACE_PRESETS constant
@@ -287,6 +289,86 @@ export default async function ProductCard({ data, shop, locale, layout, chrome, 
 - `ProductCardOptionsProvider` is the only top-level client component. It owns `selectedVariant` and `isPickerOpen` state. Renders nothing visible.
 - Server components are passed as `children` to the client provider — legal in RSC; the provider mounts already-rendered server output.
 - `ProductCardImage` is client because it re-renders on swatch click. Initial SSR uses the seed variant (matches what the server would have rendered); React handles the post-hydration swap. `next/image` works in both contexts. `priority` continues to drive LCP.
+
+### Provider context split (re-render perf)
+
+The provider in the spec earlier described as a single `ProductCardOptionsProvider` is split into **two** client contexts to prevent picker open/close toggles from re-rendering every variant consumer (Vercel React `rerender-split-combined-hooks`):
+
+```tsx
+// product-card/primitives/product-card-options-provider.tsx
+'use client';
+
+// Slowly-changing: selection state. Re-renders Image, Swatches, picker-internal chips.
+const VariantSelectionContext = createContext<VariantSelectionValue | null>(null);
+
+// Frequently-toggled: picker open/close. Re-renders ONLY the CTA + picker shell.
+const PickerOpenContext = createContext<PickerOpenValue | null>(null);
+
+export function ProductCardOptionsProvider({ children, ... }) {
+  // Two providers; consumers subscribe only to what they need.
+  return (
+    <VariantSelectionContext.Provider value={selectionValue}>
+      <PickerOpenContext.Provider value={pickerValue}>
+        {children}
+      </PickerOpenContext.Provider>
+    </VariantSelectionContext.Provider>
+  );
+}
+
+// Selectors that hook into one or the other:
+export const useVariantSelection = () => useContext(VariantSelectionContext);
+export const usePickerOpen      = () => useContext(PickerOpenContext);
+```
+
+### Slim data shape for client
+
+The provider's `product` prop is a slim `ProductCardData` view computed server-side, not the full `Product` (Vercel `server-serialization`):
+
+```ts
+// product-card/types.ts
+export type ProductCardData = {
+  id: string;
+  handle: string;
+  title: string;
+  vendor: string;
+  availableForSale: boolean;
+  variants: Array<{
+    id: string;
+    availableForSale: boolean;
+    selectedOptions: Array<{ name: string; value: string }>;
+    price: { amount: string; currencyCode: string };
+    compareAtPrice?: { amount: string; currencyCode: string };
+    image?: { url: string; altText: string | null; width: number; height: number };
+  }>;
+  options: Array<{ name: string; values: string[]; swatchByValue?: Record<string, { color?: string; image?: { url: string } }> }>;
+  featuredImage?: { url: string; altText: string | null; width: number; height: number };
+  // No prose description, no SEO blocks, no full image gallery, no Shopify-internal fields.
+};
+```
+
+The orchestrator (server) shapes `data: Product` → `ProductCardData` once before passing to the provider. Saves serialization bytes per card × N cards per page.
+
+### Picker dynamic imports (bundle deferral)
+
+Picker shells bring their own dependencies (`sheet` → Radix Dialog, `float` → Radix Popover). They are NOT on the first paint critical path — they only render when the user activates the CTA. Use `next/dynamic` (Vercel `bundle-dynamic-imports`):
+
+```tsx
+// product-card/picker/index.ts
+'use client';
+import dynamic from 'next/dynamic';
+
+// Defer picker dependencies until first activation. SSR disabled — pickers are interactive only.
+const FloatPicker  = dynamic(() => import('./float'),  { ssr: false });
+const SheetPicker  = dynamic(() => import('./sheet'),  { ssr: false });
+const InlinePicker = dynamic(() => import('./inline'), { ssr: false });
+
+const registry = new Map<string, ProductCardPickerComponent>();
+registry.set('float',  FloatPicker);
+registry.set('sheet',  SheetPicker);
+registry.set('inline', InlinePicker);
+```
+
+Same `next/dynamic` pattern not needed for CTA strategies — they DO render on first paint. CTA registry stays static-imported.
 
 ### Registry pattern
 
@@ -463,8 +545,8 @@ Token: `--product-card-sale-badge-style` — closed enum, four values. Each deri
 
 | Style | bg | color | border |
 |---|---|---|---|
-| `default` | `var(--product-card-bg)` | `var(--product-card-title-color)` | `1px solid var(--product-card-border-color)` |
-| `inverse` | `var(--product-card-title-color)` | `var(--product-card-bg)` | `1px solid var(--product-card-title-color)` |
+| `default` | `var(--product-card-bg)` | `var(--product-card-title-color)` | `1px solid var(--product-card-border-color)` — inherits whatever the tenant sets for the card |
+| `inverse` | `var(--product-card-title-color)` | `var(--product-card-bg)` | `1px solid var(--product-card-title-color)` — inverse of `default` |
 | `accent` | `var(--accent)` | `var(--accent-foreground)` | `1px solid var(--accent)` |
 | `sales-color` | `var(--product-card-sale-current-color)` | `var(--accent-foreground)` | `1px solid var(--product-card-sale-current-color)` |
 
@@ -663,8 +745,9 @@ Tokens added or modified by this spec. Existing tokens not listed here retain th
 
 | Token | Default |
 |---|---|
-| `--product-card-image-fit` | `cover` |
+| `--product-card-image-fit` | `cover` (changed from existing `contain` — behavioral change) |
 | `--product-card-image-hover-swap` | `on` |
+| `--product-card-image-sizes` | `(max-width: 768px) 50vw, 240px` (calibrated for new max-width) |
 
 ### Motion
 
@@ -696,6 +779,13 @@ Tokens added or modified by this spec. Existing tokens not listed here retain th
 | Token | Default |
 |---|---|
 | `--product-card-quick-add-presentation` | `auto` |
+
+### Rail (CollectionBlock arrows)
+
+| Token | Default |
+|---|---|
+| `--product-card-rail-pad` | `14px` |
+| `--product-card-rail-gap` | `14px` |
 
 ### Out-of-stock
 
@@ -729,6 +819,22 @@ Tokens added or modified by this spec. Existing tokens not listed here retain th
 | `--product-card-skeleton-animation` | `pulse` |
 | `--product-card-skeleton-duration` | `1.6s` |
 
+## Performance & implementation guardrails
+
+Applied from the Next.js / Vercel React / Tailwind layouts best-practice lenses:
+
+- **Slim `ProductCardData` shape** at the client boundary (Vercel `server-serialization`). Saves bytes per card × N cards per page in the RSC payload.
+- **Picker shells loaded via `next/dynamic` with `ssr: false`** (Vercel `bundle-dynamic-imports`). Defers Radix Dialog / Popover bundle weight until the user activates the CTA.
+- **Two-context provider split** (Vercel `rerender-split-combined-hooks`). Toggling picker open/close doesn't re-render variant consumers; picking a variant doesn't re-render the picker's open state.
+- **`content-visibility-auto`** preserved on `CollectionBlock`. Existing custom utility in `globals.css:70`. Cuts off-screen card paint cost in long grids.
+- **`scroll-padding-inline` on rails** for the snap behavior (Tailwind advanced layouts pattern).
+- **Tailwind 4 native syntax** for token-driven utilities — `bg-(--product-card-bg)`, `aspect-(--aspect-product-card-vertical)`, etc. Confirmed against `tailwindcss@4.3.0` in `apps/storefront/package.json`.
+- **No barrel `index.tsx`** for primitives (Vercel `bundle-barrel-imports`). Single named re-export of `<ProductCard>` from the package; primitives imported directly from their paths.
+- **`React.cache()` for `getDictionary`** if not already wrapped (Vercel `server-cache-react`). Verify and add during Phase 2.
+- **`next/image` `sizes` token** `--product-card-image-sizes` calibrated for the new 200–240px bounds. Replaces hardcoded `(max-width: 768px) 50vw, 280px`.
+- **`focus-visible` (not `focus`)** for keyboard-only rings. Browser-native, no polyfill needed in modern Next.js.
+- **No dark-mode tokens shipped in this spec.** The site does not have dark-mode support yet. Defaults are light-mode values. Tokens are *shaped* so a future dark-mode initiative can override them cleanly via `@media (prefers-color-scheme: dark)` or `[data-theme="dark"]`, but the spec does not ship any auto-flipping behavior or dark palette. Sale-badge styles `default`/`inverse` inherit whatever the tenant's `--product-card-bg` / `--product-card-title-color` are at runtime; that flip is structural, not automatic.
+
 ## Bug fixes — root causes
 
 | Bug | Root cause | Fix |
@@ -758,7 +864,7 @@ Tokens added or modified by this spec. Existing tokens not listed here retain th
 ### Phase 3 — Primitives rewrite (server-first)
 
 1. Rewrite `product-card-root.tsx`: drop `chrome="bare"` enum value (replace usages with `frameless`); drop `layout="micro"` (delete enum value and all CSS classes that referenced it); reads `layout`, `chrome`, `ctaPlacement`, `pickerPresentation` props.
-2. Convert `product-card-image.tsx` to client; reads selectedVariant from provider; renders `next/image` with current variant's image.
+2. **`product-card-image.tsx` is already a thin server wrapper that delegates to `VariantImageClient`** (`apps/storefront/src/components/product-display/primitives/variant-image-client.tsx`). The client implementation already reads `useMaybeProductOptions()` for variant-bound image swap. Changes needed: default `object-fit: contain` → `cover` (token-driven); replace hardcoded `sizes="(max-width: 768px) 50vw, 280px"` with `var(--product-card-image-sizes)` calibrated to the new 200–240px bounds; rename the wrapper to `ProductCardImage` and drop the `aspect="micro"` value.
 3. Server-only primitives (Badges, Vendor, Title, Price, StockUrgency): unchanged signature, lighter implementations (no `'use client'`; no context reads).
 4. New `product-card-swatches.tsx` (client): renders existing `ProductOptions.Swatch` primitives; click swaps image + pre-selects color.
 5. New `product-card-cta.tsx` (client): reads `ctaPlacement` from provider, looks up component from registry, renders it. Handles single-buyable fast-path: calls `onAdd` directly if `isSingleBuyable`; else `onActivate` to open picker.
