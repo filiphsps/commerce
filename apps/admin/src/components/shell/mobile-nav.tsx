@@ -16,7 +16,7 @@ export function MobileNav({ items, subnav }: MobileNavProps) {
                     key={item.href}
                     href={item.href}
                     className={cn(
-                        'flex w-full items-center gap-2 rounded-md border-2 border-transparent px-3 py-2 font-bold uppercase tracking-wide hover:bg-muted',
+                        'flex w-full select-none items-center gap-2 rounded-md border-2 border-transparent px-3 py-2 font-bold uppercase tracking-wide hover:bg-muted',
                     )}
                 >
                     {item.icon}

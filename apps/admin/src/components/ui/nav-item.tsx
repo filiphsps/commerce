@@ -48,7 +48,7 @@ export function NavItem({ href, children, className, disabled, iconOnly, 'aria-l
             href={href}
             aria-label={ariaLabel}
             className={cn(
-                'flex w-full items-center gap-2 rounded-md border-2 border-transparent px-3 py-2 font-bold text-foreground transition-colors',
+                'flex w-full select-none items-center gap-2 rounded-md border-2 border-transparent px-3 py-2 font-bold text-foreground transition-colors',
                 active && 'cursor-default border-border bg-muted uppercase tracking-wide',
                 !active && 'cursor-pointer hover:bg-muted',
                 iconOnly && 'justify-center px-2',
