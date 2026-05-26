@@ -47,7 +47,7 @@ async function buildMetadata(
 
     const locale = Locale.from(localeData);
 
-    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    const shop = await Shop.findByDomain(domain);
     const api = await ShopifyApolloApiClient({ shop, locale });
 
     let collection: Awaited<ReturnType<typeof CollectionApi>>;
@@ -149,7 +149,7 @@ async function CollectionShell({ params, children }: { params: CollectionPagePar
     }
 
     const locale = Locale.from(localeData);
-    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    const shop = await Shop.findByDomain(domain);
     const api = await ShopifyApolloApiClient({ shop, locale });
 
     let collection: Awaited<ReturnType<typeof CollectionApi>>,
@@ -282,7 +282,7 @@ async function CollectionDynamic({
         );
     }
 
-    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    const shop = await Shop.findByDomain(domain);
     const api = await ShopifyApolloApiClient({ shop, locale });
 
     const pagesInfo = await CollectionPaginationCountApi({

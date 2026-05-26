@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: AccountDashboardPar
         notFound();
     }
 
-    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    const shop = await Shop.findByDomain(domain);
     const locale = Locale.from(localeData);
 
     const i18n = await getDictionary({ shop, locale });
@@ -55,7 +55,7 @@ async function AccountShell({ params, children }: { params: AccountDashboardPara
     }
 
     const locale = Locale.from(localeData);
-    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    const shop = await Shop.findByDomain(domain);
     const i18n = await getDictionary({ shop, locale });
     const { t } = getTranslations('common', i18n);
 

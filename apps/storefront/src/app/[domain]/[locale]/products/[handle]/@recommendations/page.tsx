@@ -44,7 +44,7 @@ export default async function ProductModalRecommendations({ params }: Readonly<{
     }
 
     const locale = Locale.from(localeData);
-    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    const shop = await Shop.findByDomain(domain);
 
     const i18n = await getDictionary({ shop, locale });
     const { t } = getTranslations('product', i18n);

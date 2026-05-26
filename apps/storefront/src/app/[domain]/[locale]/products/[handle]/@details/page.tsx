@@ -51,7 +51,7 @@ export default async function ProductModalDescription({ params }: Readonly<{ par
     }
 
     const locale = Locale.from(localeData);
-    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    const shop = await Shop.findByDomain(domain);
 
     return (
         <Suspense key={`products.${handle}.details.details`} fallback={<ProductDescription.skeleton />}>

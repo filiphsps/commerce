@@ -34,7 +34,7 @@ export const LocaleFlag = ({
         <>
             <Image
                 {...props}
-                className={cn('block aspect-[3/2] h-2', className)}
+                className={cn('block aspect-[3/2] h-2 w-auto', className)}
                 title={info?.country || alt}
                 alt={alt! || info?.country || 'Locale flag'}
                 aria-label={alt || info?.country}

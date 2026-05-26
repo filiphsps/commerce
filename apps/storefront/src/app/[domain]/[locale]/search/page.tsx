@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: { params: SearchPageParams })
 
     const locale = Locale.from(localeData);
 
-    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    const shop = await Shop.findByDomain(domain);
     const api = await ShopifyApolloApiClient({ shop, locale });
 
     const [locales, i18n] = await Promise.all([LocalesApi({ api }), getDictionary(locale)]);
@@ -104,7 +104,7 @@ async function SearchResults({ params, searchParams }: { params: SearchPageParam
     }
 
     const locale = Locale.from(localeData);
-    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    const shop = await Shop.findByDomain(domain);
     const i18n = await getDictionary(locale);
 
     const query = q?.toString() ?? '';

@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: { params: CountriesPageParams
 
     const locale = Locale.from(localeData);
 
-    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    const shop = await Shop.findByDomain(domain);
     const api = await ShopifyApolloApiClient({ shop, locale });
 
     const [locales, i18n] = await Promise.all([LocalesApi({ api }), getDictionary(locale)]);
@@ -61,7 +61,7 @@ export default async function CountriesPage({ params }: { params: CountriesPageP
 
     const locale = Locale.from(localeData);
 
-    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    const shop = await Shop.findByDomain(domain);
 
     const api = await ShopifyApolloApiClient({ shop, locale });
 
@@ -94,7 +94,7 @@ export default async function CountriesPage({ params }: { params: CountriesPageP
                     // page hits a 404/redirect loop. Re-fetch instead of
                     // closing over a render-time list so a deploy that adds a
                     // new locale takes effect without a page-cache bust.
-                    const actionShop = await Shop.findByDomain(domain, { sensitiveData: true });
+                    const actionShop = await Shop.findByDomain(domain);
                     const actionApi = await ShopifyApolloApiClient({ shop: actionShop, locale });
                     const supported = (await LocalesApi({ api: actionApi })).map((l) => l.code);
                     if (!supported.includes(code)) {

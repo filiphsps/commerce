@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: { params: ArticlePageParams }
         notFound();
     }
 
-    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    const shop = await Shop.findByDomain(domain);
     const locale = Locale.from(localeData);
 
     const api = await ShopifyApolloApiClient({ shop, locale });
@@ -108,7 +108,7 @@ export default async function ArticlePage({ params }: { params: ArticlePageParam
         notFound();
     }
 
-    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    const shop = await Shop.findByDomain(domain);
     const locale = Locale.from(localeData);
 
     const api = await ShopifyApolloApiClient({ shop, locale });

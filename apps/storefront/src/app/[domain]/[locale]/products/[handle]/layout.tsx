@@ -46,7 +46,7 @@ export default async function ProductPageLayout({
     }
 
     const locale = Locale.from(localeData);
-    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    const shop = await Shop.findByDomain(domain);
     const api = await ShopifyApolloApiClient({ shop, locale });
 
     const [product, productError] = await ProductApi({

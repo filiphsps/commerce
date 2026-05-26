@@ -91,12 +91,9 @@ async function CachedShell({
     'use cache';
     cacheLife('max');
 
-    let shop: OnlineShop, publicShop: OnlineShop;
+    let shop: OnlineShop;
     try {
-        [shop, publicShop] = await Promise.all([
-            Shop.findByDomain(domain, { sensitiveData: true }),
-            Shop.findByDomain(domain),
-        ]);
+        shop = await Shop.findByDomain(domain);
     } catch (error: unknown) {
         if (Error.isNotFound(error) || error instanceof UnknownShopDomainError) {
             notFound();
@@ -133,17 +130,17 @@ async function CachedShell({
     ]);
 
     return (
-        <ProvidersRegistry shop={publicShop} locale={locale} domain={domain}>
+        <ProvidersRegistry shop={shop} locale={locale} domain={domain}>
             <Suspense fallback={<Fragment />}>
-                <CssVariablesProvider domain={domain} shop={publicShop} />
+                <CssVariablesProvider domain={domain} shop={shop} />
             </Suspense>
 
-            <AnalyticsProvider shop={publicShop} hostname={domain}>
+            <AnalyticsProvider shop={shop} hostname={domain}>
                 <HeaderProvider loaderColor={branding?.primary.color}>
                     <Fragment key="layout.modal">{modal}</Fragment>
 
                     <Suspense key="layout.geo-redirect" fallback={<Fragment />}>
-                        <GeoRedirect shop={publicShop} countries={countries} locale={locale} i18n={i18n} />
+                        <GeoRedirect shop={shop} countries={countries} locale={locale} i18n={i18n} />
                     </Suspense>
 
                     <Suspense key="layout.shop-layout" fallback={<ShopLayout.skeleton />}>

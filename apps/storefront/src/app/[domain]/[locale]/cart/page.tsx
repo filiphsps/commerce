@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: { params: CartPageParams }): 
 
     let shop: OnlineShop;
     try {
-        shop = await Shop.findByDomain(domain, { sensitiveData: true });
+        shop = await Shop.findByDomain(domain);
     } catch (error: unknown) {
         if (Error.isNotFound(error) || error instanceof UnknownShopDomainError) {
             notFound();
@@ -73,7 +73,7 @@ export default async function CartPage({ params }: { params: CartPageParams }) {
 
     let shop: OnlineShop;
     try {
-        shop = await Shop.findByDomain(domain, { sensitiveData: true });
+        shop = await Shop.findByDomain(domain);
     } catch (error: unknown) {
         if (Error.isNotFound(error) || error instanceof UnknownShopDomainError) {
             notFound();

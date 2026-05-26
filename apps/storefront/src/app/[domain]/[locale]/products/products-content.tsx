@@ -23,7 +23,7 @@ export type ProductsContentContentProps = {
     searchParams?: SearchParams;
 };
 export default async function ProductsContent({ domain, locale, searchParams = {} }: ProductsContentContentProps) {
-    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    const shop = await Shop.findByDomain(domain);
     const api = await ShopifyApolloApiClient({ shop, locale });
 
     const page = searchParams.page ? Number.parseInt(searchParams.page, 10) : 1;

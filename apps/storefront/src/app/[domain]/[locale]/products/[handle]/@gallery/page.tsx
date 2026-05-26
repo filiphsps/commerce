@@ -77,7 +77,7 @@ export default async function ProductModalGallery({ params }: Readonly<{ params:
     }
 
     const locale = Locale.from(localeData);
-    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    const shop = await Shop.findByDomain(domain);
 
     return (
         <Suspense
