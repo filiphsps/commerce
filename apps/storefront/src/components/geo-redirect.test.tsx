@@ -98,7 +98,7 @@ describe('<GeoRedirect>', () => {
         expect(container.firstChild).toBeNull();
     });
 
-    it('renders nothing when geo country matches the current locale', () => {
+    it('renders nothing when geo country matches the current locale', async () => {
         vi.mocked(useGeoLocation).mockReturnValue({
             isLoading: false,
             country: 'US',
@@ -106,14 +106,16 @@ describe('<GeoRedirect>', () => {
         } as never);
 
         const { container } = render(<GeoRedirect countries={countries} locale={usLocale} shop={shop} i18n={i18n} />);
+        await flushEffects();
 
         expect(container.firstChild).toBeNull();
     });
 
-    it('renders nothing for crawlers even when geo would otherwise trigger', () => {
+    it('renders nothing for crawlers even when geo would otherwise trigger', async () => {
         vi.mocked(isCrawler).mockReturnValue(true);
 
         const { container } = render(<GeoRedirect countries={countries} locale={usLocale} shop={shop} i18n={i18n} />);
+        await flushEffects();
 
         expect(container.firstChild).toBeNull();
     });
