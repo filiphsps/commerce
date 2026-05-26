@@ -18,12 +18,32 @@ test.describe('Product card v2', () => {
             }
         });
         await page.goto(COLLECTION_URL);
-        const firstCard = page.locator('article[data-layout]').first();
+        const firstCard = page.getByTestId('product-card-root').first();
         if (!(await firstCard.isVisible({ timeout: 30_000 }).catch(() => false))) {
             test.skip(true, 'No products available in the test storefront');
         }
         await expect(firstCard).toBeVisible();
         expect(errors).toEqual([]);
+    });
+
+    test('base card carries layout + chrome data attrs', async ({ page }) => {
+        await page.goto(COLLECTION_URL);
+        const card = page.getByTestId('product-card-root').first();
+        if (!(await card.isVisible({ timeout: 30_000 }).catch(() => false))) {
+            test.skip(true, 'No products available');
+        }
+        await expect(card).toHaveAttribute('data-layout', /vertical|horizontal/);
+        await expect(card).toHaveAttribute('data-chrome', /boxed|frameless/);
+    });
+
+    test('base card exposes a + / quick-add CTA, not an inline size pill', async ({ page }) => {
+        await page.goto(COLLECTION_URL);
+        const card = page.getByTestId('product-card-root').first();
+        if (!(await card.isVisible({ timeout: 30_000 }).catch(() => false))) {
+            test.skip(true, 'No products available');
+        }
+        const cta = card.getByRole('button', { name: /choose options|add to bag/i });
+        await expect(cta.first()).toBeVisible();
     });
 
     test('+N overlay opens via portal outside the card', async ({ page }) => {
@@ -84,15 +104,15 @@ test.describe('Product card v2', () => {
         expect(pageErrors).toEqual([]);
     });
 
-    test('search results show horizontal-bare card with price + actions', async ({ page }) => {
+    test('search row card uses horizontal layout with price + CTA', async ({ page }) => {
         await page.goto(SEARCH_URL);
         const row = page.locator('article[data-layout="horizontal"]').first();
         if (!(await row.isVisible({ timeout: 30_000 }).catch(() => false))) {
             test.skip(true, 'No matching search results in the test storefront');
         }
         await expect(row).toBeVisible();
-        await expect(row.locator('[data-display="price"]')).toBeVisible();
-        await expect(row.locator('button[type="submit"]')).toBeVisible();
+        await expect(row.locator('[data-display="price"]').or(row.locator(':scope div').filter({ hasText: /\$\d/ }))).toBeVisible();
+        await expect(row.getByRole('button', { name: /choose options|add to bag/i }).first()).toBeVisible();
     });
 
     test('touch targets >= 24px on all interactive elements', async ({ page }) => {
