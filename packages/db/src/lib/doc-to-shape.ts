@@ -3,11 +3,38 @@ import type { FeatureFlagBase, OnlineShop, ReviewBase } from '../models';
 type Doc = Record<string, unknown>;
 
 /**
+ * Embedded subdocs (Mongoose's default) carry their own `_id` ObjectId. Those
+ * ObjectIds are non-serializable across the RSC ↔ Client Component boundary in
+ * Next.js, so callers that hand a lean shop to a client provider need every
+ * nested `_id`/`__v` dropped — not just the top-level one.
+ */
+const isPlainObject = (value: unknown): value is Record<string, unknown> => {
+    if (value === null || typeof value !== 'object') return false;
+    const proto = Object.getPrototypeOf(value);
+    return proto === Object.prototype || proto === null;
+};
+
+const stripInternalsDeep = (value: unknown): unknown => {
+    if (Array.isArray(value)) return value.map(stripInternalsDeep);
+    if (!isPlainObject(value)) return value;
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(value)) {
+        if (k === '_id' || k === '__v') continue;
+        out[k] = stripInternalsDeep(v);
+    }
+    return out;
+};
+
+/**
  * Strip Mongo internals (`_id`, `__v`) and project `_id` to a string `id`
  * field, matching the public Document shape (`DocumentExtras { id: string }`)
  * that consumers expect. Callers (e.g. `apps/admin/src/lib/payload-ctx.ts`)
  * read `doc.id` directly — Mongoose `.lean()` returns docs with `_id` only,
  * so without this projection `doc.id` would be `undefined`.
+ *
+ * Recurses into nested plain objects and arrays so embedded subdoc `_id`s
+ * (e.g. `shop.commerce._id`) are stripped too — Mongoose creates one per
+ * subdoc by default and they break RSC → Client serialization.
  *
  * If the doc already has an `id` field (rare — Payload sometimes mirrors
  * `_id` into a string `id` on read), the existing value wins so we don't
@@ -17,8 +44,8 @@ export const stripInternals = <T extends Doc>(doc: T): Omit<T, '_id' | '__v'> & 
     if (!doc) return doc;
 
     const { _id, __v: __v_, ...rest } = doc as { _id?: unknown; __v?: unknown } & T;
-    const out = { ...rest } as Omit<T, '_id' | '__v'> & { id?: string };
-    const existingId = (rest as { id?: unknown }).id;
+    const out = stripInternalsDeep(rest) as Omit<T, '_id' | '__v'> & { id?: string };
+    const existingId = (out as { id?: unknown }).id;
     if (typeof existingId === 'undefined' && _id != null) {
         out.id = typeof _id === 'string' ? _id : String(_id);
     }
