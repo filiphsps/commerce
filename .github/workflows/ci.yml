@@ -19,7 +19,8 @@ concurrency:
 
 env:
     CI: true
-    MONGODB_URI: ${{ secrets.MONGODB_URI }}
+    MONGOMS_VERSION: 8.0.4
+    MONGOMS_DOWNLOAD_DIR: /home/runner/.cache/mongodb-binaries
     TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
     TURBO_TEAM: ${{ vars.TURBO_TEAM }}
     TURBO_REMOTE_CACHE_TIMEOUT: 120
@@ -60,6 +61,7 @@ jobs:
               uses: ./.github/common/bootstrap-save
               with:
                   node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
+                  mongo-binary-cache-hit: ${{ steps.bootstrap.outputs.mongo-binary-cache-hit }}
 
     typecheck:
         name: ✅ Typecheck
@@ -88,6 +90,7 @@ jobs:
               with:
                   node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
                   turbo-cache-hit: ${{ steps.bootstrap.outputs.turbo-cache-hit }}
+                  mongo-binary-cache-hit: ${{ steps.bootstrap.outputs.mongo-binary-cache-hit }}
 
     test:
         name: 🧪 Test
@@ -138,6 +141,7 @@ jobs:
               with:
                   node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
                   turbo-cache-hit: ${{ steps.bootstrap.outputs.turbo-cache-hit }}
+                  mongo-binary-cache-hit: ${{ steps.bootstrap.outputs.mongo-binary-cache-hit }}
 
     build:
         name: 🔨 Build
@@ -192,6 +196,7 @@ jobs:
               with:
                   node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
                   turbo-cache-hit: ${{ steps.bootstrap.outputs.turbo-cache-hit }}
+                  mongo-binary-cache-hit: ${{ steps.bootstrap.outputs.mongo-binary-cache-hit }}
 
     e2e:
         name: 🎭 E2E
@@ -282,6 +287,7 @@ jobs:
               uses: ./.github/common/bootstrap-save
               with:
                   node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
+                  mongo-binary-cache-hit: ${{ steps.bootstrap.outputs.mongo-binary-cache-hit }}
 
     cleanup-artifacts:
         name: 🧹 Cleanup

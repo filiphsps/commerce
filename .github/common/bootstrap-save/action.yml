@@ -9,6 +9,10 @@ inputs:
         description: 'Pass `steps.<bootstrap-id>.outputs.turbo-cache-hit`. Leave blank if bootstrap was invoked with `turbo-cache: false`.'
         required: false
         default: ''
+    mongo-binary-cache-hit:
+        description: 'Pass `steps.<bootstrap-id>.outputs.mongo-binary-cache-hit`.'
+        required: false
+        default: ''
 
 runs:
     using: 'composite'
@@ -29,3 +33,10 @@ runs:
           with:
               path: .turbo
               key: ${{ runner.os }}-turbo-${{ github.ref_name }}-${{ github.sha }}
+
+        - name: 💾 Save mongodb-memory-server binary
+          if: inputs.mongo-binary-cache-hit == 'false' && hashFiles('/home/runner/.cache/mongodb-binaries/**/*') != ''
+          uses: actions/cache/save@v4
+          with:
+              path: /home/runner/.cache/mongodb-binaries
+              key: ${{ runner.os }}-mongoms-${{ env.MONGOMS_VERSION }}

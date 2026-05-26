@@ -13,6 +13,9 @@ outputs:
     turbo-cache-hit:
         description: 'Whether turbo cache was a hit on restore. Empty when turbo-cache=false.'
         value: ${{ steps.cache-turbo.outputs.cache-hit }}
+    mongo-binary-cache-hit:
+        description: 'Whether the mongodb-memory-server binary cache was a hit on restore.'
+        value: ${{ steps.cache-mongo-binary.outputs.cache-hit }}
 
 runs:
     using: 'composite'
@@ -55,3 +58,10 @@ runs:
                   ${{ runner.os }}-turbo-${{ github.ref_name }}-
                   ${{ runner.os }}-turbo-master-
                   ${{ runner.os }}-turbo-
+
+        - name: 💾 Restore mongodb-memory-server binary
+          id: cache-mongo-binary
+          uses: actions/cache/restore@v4
+          with:
+              path: /home/runner/.cache/mongodb-binaries
+              key: ${{ runner.os }}-mongoms-${{ env.MONGOMS_VERSION }}
