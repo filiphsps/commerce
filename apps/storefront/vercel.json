@@ -4,6 +4,7 @@
     "public": false,
     "trailingSlash": true,
     "framework": "nextjs",
+    "ignoreCommand": "npx -y turbo-ignore @nordcom/commerce-storefront",
     "github": {
         "enabled": true,
         "autoJobCancelation": true

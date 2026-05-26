@@ -3,7 +3,7 @@
     "version": 2,
     "public": false,
     "framework": "nextjs",
-    "ignoreCommand": "npx -y turbo-ignore @nordcom/commerce-landing",
+    "ignoreCommand": "npx -y turbo-ignore @nordcom/commerce-admin",
     "github": {
         "enabled": true,
         "autoJobCancelation": true
