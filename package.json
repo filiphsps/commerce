@@ -15,7 +15,9 @@
     "scripts": {
         "postinstall": "pnpm run generate && pnpm run build:packages",
         "analyze": "dotenv -c -- turbo run analyze --env-mode=loose",
-        "predev": "portless proxy status >/dev/null 2>&1 || portless proxy start --https --wildcard",
+        "predev": "tsx ./scripts/predev-mongo.ts && (portless proxy status >/dev/null 2>&1 || portless proxy start --https --wildcard)",
+        "dev:mongo": "tsx ./scripts/mongo-daemon.ts",
+        "dev:reset": "pnpm --filter @nordcom/commerce-test-mongo exec test-mongo reset",
         "predev:admin": "pnpm predev",
         "predev:landing": "pnpm predev",
         "predev:storefront": "pnpm predev",
