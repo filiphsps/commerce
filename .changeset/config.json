@@ -17,7 +17,8 @@
         "@nordcom/commerce-marketing-common",
         "@nordcom/commerce-shopify-graphql",
         "@nordcom/commerce-shopify-html",
-        "@nordcom/commerce-storefront"
+        "@nordcom/commerce-storefront",
+        "@nordcom/commerce-utils"
     ],
     "privatePackages": {
         "version": true,
