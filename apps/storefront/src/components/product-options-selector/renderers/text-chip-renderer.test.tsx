@@ -41,16 +41,16 @@ describe('components', () => {
             expect(onSelect).toHaveBeenCalledTimes(1);
         });
 
-        it('applies the selected class when selected', () => {
+        it('marks the chip selected via data-selected when selected', () => {
             render(<TextChipRenderer {...baseProps} selected={true} />);
-            expect(screen.getByRole('button', { name: 'Size: M' }).className).toMatch(/selected/);
+            expect(screen.getByRole('button', { name: 'Size: M' }).getAttribute('data-selected')).toBe('true');
         });
 
-        it('applies the disabled class and aria-disabled when not available', () => {
+        it('marks the chip disabled via data-disabled + aria-disabled when not available', () => {
             const onSelect = vi.fn();
             render(<TextChipRenderer {...baseProps} available={false} onSelect={onSelect} />);
             const el = screen.getByRole('button', { name: 'Size: M' });
-            expect(el.className).toMatch(/disabled/);
+            expect(el.getAttribute('data-disabled')).toBe('true');
             expect(el.getAttribute('aria-disabled')).toBe('true');
             fireEvent.click(el);
             expect(onSelect).not.toHaveBeenCalled();
@@ -66,9 +66,9 @@ describe('components', () => {
             expect(screen.getByLabelText('Size: M')).toBeInTheDocument();
         });
 
-        it('applies the compact class when density is compact', () => {
+        it('marks density via data-density when density is compact', () => {
             render(<TextChipRenderer {...baseProps} density="compact" />);
-            expect(screen.getByRole('button', { name: 'Size: M' }).className).toMatch(/compact/);
+            expect(screen.getByRole('button', { name: 'Size: M' }).getAttribute('data-density')).toBe('compact');
         });
     });
 });

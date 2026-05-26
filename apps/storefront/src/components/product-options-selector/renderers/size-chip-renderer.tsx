@@ -1,11 +1,10 @@
 'use client';
 
 import type { MouseEvent } from 'react';
-import styles from '@/components/product-options-selector/renderers/chip.module.css';
 import type { ProductOptionValueRendererProps } from '@/components/product-options-selector/renderers/types';
 import { useShop } from '@/components/shop/provider';
 import { formatWeight, localizeWeight } from '@/utils/locale';
-import { cn } from '@/utils/tailwind';
+import { chipClassName } from './chip-class';
 
 export const SizeChipRenderer = ({
     name,
@@ -26,12 +25,7 @@ export const SizeChipRenderer = ({
         ? formatWeight(localizeWeight(locale, { weight: variant.weight!, unit: variant.weightUnit! }))
         : null;
 
-    const className = cn(
-        styles.chip,
-        density === 'compact' ? styles.compact : styles.spacious,
-        selected && styles.selected,
-        !available && styles.disabled,
-    );
+    const className = chipClassName({ selected, available, density });
 
     const handleClick = (event: MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
         if (!available) {
@@ -44,7 +38,7 @@ export const SizeChipRenderer = ({
     const body = (
         <>
             <span>{value}</span>
-            {weightLabel ? <span className={styles.weightLine}>{weightLabel}</span> : null}
+            {weightLabel ? <span className="mt-0.5 font-medium text-[0.7em] opacity-75">{weightLabel}</span> : null}
         </>
     );
 
@@ -55,6 +49,9 @@ export const SizeChipRenderer = ({
                 aria-label={ariaLabel}
                 aria-disabled={!available || undefined}
                 aria-current={selected ? 'true' : undefined}
+                data-density={density}
+                data-selected={selected || undefined}
+                data-disabled={!available || undefined}
                 className={className}
                 onClick={handleClick}
             >
@@ -69,6 +66,9 @@ export const SizeChipRenderer = ({
             aria-label={ariaLabel}
             aria-disabled={!available || undefined}
             aria-pressed={selected}
+            data-density={density}
+            data-selected={selected || undefined}
+            data-disabled={!available || undefined}
             className={className}
             onClick={handleClick}
         >
