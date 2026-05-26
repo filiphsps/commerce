@@ -76,23 +76,6 @@ function escapeHtml(s: string): string {
 }
 
 /**
- * Rewrite XML-namespaced attributes inside an SVG so the markup parses as
- * JSX inside MDX. Strips the now-redundant `xmlns:xlink` declaration and
- * any `xml:space` attribute (irrelevant to inline display), then renames
- * `xlink:href` (still used by the few icons that wrap a raster `<image>`)
- * to React's camelCase `xlinkHref`.
- *
- * @param svg - raw SVG markup.
- * @returns markup safe to drop into an MDX file.
- */
-function sanitizeSvgForJsx(svg: string): string {
-    return svg
-        .replace(/\s*xmlns:xlink="[^"]*"/g, '')
-        .replace(/\s*xml:space="[^"]*"/g, '')
-        .replace(/xlink:href=/g, 'xlinkHref=');
-}
-
-/**
  * Render the dev-server HTML page: sticky filter input on top, responsive
  * grid of icon cards below, all styles inline so the script is self-contained.
  *
@@ -177,8 +160,10 @@ ${cards}
 }
 
 /**
- * Render the docs MDX page. Each entry produces a card with the inline SVG
- * plus a metadata block. The output is plain MDX without any Nextra-specific
+ * Render the docs MDX page. Each entry produces a card that references the
+ * source SVG via a relative path (`../svgs/<filename>`) instead of inlining
+ * the markup, so the file stays small and the canonical SVG remains a single
+ * source of truth. The output is plain MDX without any Nextra-specific
  * components so the file renders standalone if Nextra's MDX runtime ever
  * changes.
  *
@@ -194,7 +179,7 @@ function renderMdx(entries: GalleryEntry[]): string {
                 : '';
             const usage = `&lt;${e.componentName} /&gt;`;
             return `<div className="payment-icon-card">
-  <div className="payment-icon-glyph">${sanitizeSvgForJsx(e.svgInline).trim()}</div>
+  <div className="payment-icon-glyph"><img src="../svgs/${e.filename}" alt="${escapeHtml(e.title)}" width="38" height="24" /></div>
   <div className="payment-icon-meta">
     <strong>${e.title}</strong>
     <code>${e.slug}</code>
