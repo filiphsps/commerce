@@ -1,5 +1,5 @@
 import { trace } from '@opentelemetry/api';
-import { getProductOptions, mapSelectedProductOptionToObject, useCart } from '@shopify/hydrogen-react';
+import { useCart } from '@shopify/hydrogen-react';
 import type { CartLine as ShopifyCartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import { Pencil, Tag as TagIcon, X as XIcon } from 'lucide-react';
 import Image from 'next/image';
@@ -9,6 +9,7 @@ import { Button } from '@/components/actionable/button';
 import { Card } from '@/components/layout/card';
 import { Popover } from '@/components/layout/popover';
 import Link from '@/components/link';
+import { resolvedToLegacyOptions, resolveOptions, toSelectionRecord } from '@/components/product-options/resolver';
 import { ProductOptionsSelector, type SelectedOptions } from '@/components/product-options-selector';
 import { Price } from '@/components/products/price';
 import { QuantitySelector } from '@/components/products/quantity-selector';
@@ -17,7 +18,6 @@ import { hasProductOptions } from '@/utils/has-product-options';
 import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
-import { unsafe_cast } from '@/utils/unsafe-cast';
 
 /**
  * Narrows an unknown value to the app's local `Product` type by checking for
@@ -61,20 +61,11 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
 
     const showSelector = hasProductOptions(product ?? null);
 
-    // Our local `Product` is a stricter superset of hydrogen-react's
-    // `RecursivePartial<Product>` (it omits `__typename` via `OmitTypeName`).
-    // The library's type accepts the permissive partial, not our stricter shape,
-    // so a structural mismatch forces the cast. `unsafe_cast` is the documented
-    // escape hatch for this known upstream limitation.
-    const mappedOptions = useMemo(() => (product ? getProductOptions(unsafe_cast(product)) : []), [product]);
+    const currentSelectedOptions: SelectedOptions = useMemo(() => toSelectionRecord(variant), [variant]);
 
-    // hydrogen-react types `selectedOptions` as `RecursivePartial<SelectedOption>[]`
-    // (i.e., `{ name?: string; value?: string }[]`) on the cart merchandise
-    // object, but the Shopify Storefront API guarantees both fields are non-null
-    // strings at runtime. `mapSelectedProductOptionToObject` requires the
-    // required-field shape. `unsafe_cast` documents this known type gap.
-    const currentSelectedOptions: SelectedOptions = mapSelectedProductOptionToObject(
-        unsafe_cast(variant?.selectedOptions ?? []),
+    const mappedOptions = useMemo(
+        () => (product ? resolvedToLegacyOptions(resolveOptions(product, currentSelectedOptions)) : []),
+        [product, currentSelectedOptions],
     );
     const [editing, setEditing] = useState(false);
     const [swapAnnouncement, setSwapAnnouncement] = useState<string>('');

@@ -112,6 +112,7 @@ const multiOptionProduct = {
     adjacentVariants: [vMB, vLR, vLB],
     variants: {
         nodes: [vMR, vMB, vLR, vLB],
+        edges: [{ node: vMR }, { node: vMB }, { node: vLR }, { node: vLB }],
     },
 };
 
@@ -140,6 +141,7 @@ const variantlessProduct = {
     adjacentVariants: [],
     variants: {
         nodes: [vSingle],
+        edges: [{ node: vSingle }],
     },
 };
 

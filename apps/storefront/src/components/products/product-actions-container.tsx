@@ -1,9 +1,10 @@
 'use client';
 
-import { getProductOptions, useProduct, useSelectedOptionInUrlParam } from '@shopify/hydrogen-react';
+import { useProduct, useSelectedOptionInUrlParam } from '@shopify/hydrogen-react';
 import type { HTMLProps } from 'react';
 import { Suspense, useMemo } from 'react';
 import type { Product, ProductVariant } from '@/api/product';
+import { resolvedToLegacyOptions, resolveOptions } from '@/components/product-options/resolver';
 import { ProductOptionsSelector, SizeChipRenderer } from '@/components/product-options-selector';
 import AddToCart from '@/components/products/add-to-cart';
 import { ProductQuantityBreaks } from '@/components/products/product-quantity-breaks';
@@ -35,19 +36,6 @@ export const ProductActionsContainer = ({ className, i18n, ...props }: ProductAc
             .map(([name, value]) => ({ name, value })),
     );
 
-    // `getProductOptions` expects `RecursivePartial<ShopifyProduct>` — the
-    // local `Product` type extends Shopify's `Product` but loosens
-    // `metafields[]` to allow `null` entries (Shopify's `Maybe<T>`). The
-    // recursive-partial conversion only accepts `undefined`, not `null`, so
-    // the types don't structurally line up despite being compatible at
-    // runtime. `getProductOptions` reads `options` + `variants` only — it
-    // doesn't inspect `metafields` — so the cast through the call's own
-    // parameter type is safe and pinpoint.
-    const mappedOptions = useMemo(
-        () => (product ? getProductOptions(product as Parameters<typeof getProductOptions>[0]) : []),
-        [product],
-    );
-
     const resolvedSelectedOptions = useMemo(
         () =>
             Object.fromEntries(
@@ -56,6 +44,11 @@ export const ProductActionsContainer = ({ className, i18n, ...props }: ProductAc
                 ),
             ),
         [selectedOptions],
+    );
+
+    const mappedOptions = useMemo(
+        () => (product ? resolvedToLegacyOptions(resolveOptions(product, resolvedSelectedOptions)) : []),
+        [product, resolvedSelectedOptions],
     );
 
     if (!product || !selectedVariant) {
