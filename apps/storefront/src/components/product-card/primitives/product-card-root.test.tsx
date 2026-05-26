@@ -7,7 +7,9 @@ import ProductCardRoot from './product-card-root';
 const product = {
     handle: 'tee',
     availableForSale: true,
-    variants: { edges: [{ node: { id: 'v1', availableForSale: true, selectedOptions: [{ name: 'Size', value: 'M' }] } }] },
+    variants: {
+        edges: [{ node: { id: 'v1', availableForSale: true, selectedOptions: [{ name: 'Size', value: 'M' }] } }],
+    },
 };
 
 describe('ProductCardRoot', () => {

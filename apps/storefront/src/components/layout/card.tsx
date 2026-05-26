@@ -37,7 +37,7 @@ export const Card = <ComponentGeneric extends ElementType = 'div'>({
                     !border && 'bg-gray-100',
                     border && 'border-2 border-gray-100 border-solid',
                 ],
-                chrome === 'frameless' && 'bg-transparent border-0 p-0',
+                chrome === 'frameless' && 'border-0 bg-transparent p-0',
                 className,
             )}
         >

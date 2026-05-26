@@ -45,7 +45,7 @@ const ProductCardSaleBadge = ({
             {...(collisionShift ? { 'data-collision-shift': '' } : {})}
             className={cn(
                 'absolute z-2 px-2 py-1.5',
-                'text-[11px] font-semibold uppercase leading-none tabular-nums',
+                'font-semibold text-[11px] uppercase tabular-nums leading-none',
                 'tracking-(--product-card-eyebrow-tracking)',
                 'rounded-(--block-border-radius-tiny)',
                 STYLE_CLASSES[style],

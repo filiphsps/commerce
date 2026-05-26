@@ -30,8 +30,9 @@ const ProductCardRoot = ({ data, layout, chrome, className, children }: ProductC
                 'min-w-(--product-card-min-width) max-w-(--product-card-max-width)',
                 'gap-(--block-spacer)',
                 'transition-shadow duration-(--product-card-motion-base) ease-(--product-card-motion-ease)',
-                chrome === 'boxed' && 'shadow-product-card hover:shadow-product-card-hover focus-within:shadow-product-card-hover',
-                layout === 'vertical' && 'flex-col min-h-72',
+                chrome === 'boxed' &&
+                    'shadow-product-card focus-within:shadow-product-card-hover hover:shadow-product-card-hover',
+                layout === 'vertical' && 'min-h-72 flex-col',
                 layout === 'horizontal' && 'flex-row items-stretch',
                 isOos && 'opacity-(--product-card-oos-opacity)',
                 className,
