@@ -9,7 +9,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "./.claude/hooks/block-npm.sh"
+            "command": ".claude/hooks/block-npm.sh"
           }
         ]
       },
