@@ -1,13 +1,12 @@
 import { cleanup } from '@testing-library/react';
 import { afterEach, vi } from 'vitest';
 
-// Tests default to a LOCAL MongoDB (mongodb://localhost:27017) to avoid hammering
-// shared Atlas clusters with concurrent Payload bootstraps (which hit IX lock
-// timeouts on free tiers). Set MONGODB_URI_TEST to override — e.g. when running
-// tests against a managed test cluster in CI.
-const localTestUri = 'mongodb://localhost:27017/test';
-const testUri = process.env.MONGODB_URI_TEST ?? localTestUri;
-vi.stubEnv('MONGODB_URI', testUri);
+// Tests run against a local MongoDB (mongodb://localhost:27017) to avoid
+// hammering shared Atlas clusters with concurrent Payload bootstraps (which hit
+// IX lock timeouts on free tiers). CI mocks the connection layer in
+// @nordcom/commerce-db (see packages/db/vitest.setup.ts) so no live Mongo is
+// required.
+vi.stubEnv('MONGODB_URI', 'mongodb://localhost:27017/test');
 vi.stubEnv('PAYLOAD_SECRET', process.env.PAYLOAD_SECRET ?? 'test-payload-secret');
 
 vi.mock('server-only', () => ({}));

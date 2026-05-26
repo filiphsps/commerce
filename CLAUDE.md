@@ -48,8 +48,8 @@ pnpm typecheck        # turbo run typecheck
 pnpm lint             # biome lint .
 pnpm format:check     # biome check --write --unsafe . (includes Tailwind sort)
 
-# Tests — Vitest needs MONGODB_URI; @nordcom/commerce-db connects at module load.
-# Set MONGODB_URI_TEST for a separate DB (defaults to mongodb://localhost:27017/test).
+# Tests — @nordcom/commerce-db's `mongoose.connect()` is mocked in the package's
+# vitest setup, so MONGODB_URI need not point at a real cluster for unit tests.
 pnpm test                                                            # all projects + coverage
 pnpm test:watch
 pnpm dotenv -c -- vitest run path/to/file.test.ts                    # single file

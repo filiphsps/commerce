@@ -354,47 +354,20 @@ Local API.
 
 ## Running tests
 
-Integration tests boot Payload against MongoDB. They require a writable Mongo
-and write to suite-suffixed databases (`test_<suite>_<timestamp>`).
-
-### Local MongoDB (default)
-
-By default, tests connect to `mongodb://localhost:27017/test`. The simplest
-setup:
-
-```bash
-docker run -d --name mongo-test -p 27017:27017 mongo:7
-# …or use any other local Mongo install
-```
-
-Then:
-
 ```bash
 pnpm dotenv -c -- vitest run --project @nordcom/commerce-cms
 ```
 
-### Remote MongoDB (override)
-
-To run tests against a managed Mongo (e.g. Atlas), set `MONGODB_URI_TEST` in
-your shell or `.env.local`:
-
-```bash
-MONGODB_URI_TEST="mongodb+srv://…/test" pnpm dotenv -c -- vitest run --project @nordcom/commerce-cms
-```
-
-Atlas free tiers often hit `LockTimeout` errors during Payload bootstrap
-because each boot touches many collections under load. Prefer local Mongo when
-iterating; reserve remote for CI / final verification on a sized cluster.
+Unit tests mock `mongoose.connect()` in `@nordcom/commerce-db`'s vitest setup
+and stub `MONGODB_URI` to `mongodb://localhost:27017/test`, so no live Mongo is
+required. The `MONGODB_URI` from `.env.local` is intentionally shadowed so dev
+data is never touched.
 
 ### Environment variables consumed in tests
 
-| Variable           | Default                                | Purpose                                              |
-| ------------------ | -------------------------------------- | ---------------------------------------------------- |
-| `MONGODB_URI_TEST` | `mongodb://localhost:27017/test`       | Test database connection.                            |
-| `PAYLOAD_SECRET`   | `test-payload-secret`                  | Payload encryption secret.                           |
-
-The `MONGODB_URI` from `.env.local` is intentionally shadowed by the test setup
-so dev data is never touched.
+| Variable         | Default               | Purpose                    |
+| ---------------- | --------------------- | -------------------------- |
+| `PAYLOAD_SECRET` | `test-payload-secret` | Payload encryption secret. |
 
 ## Deployment notes
 
