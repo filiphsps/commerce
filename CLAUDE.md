@@ -13,6 +13,7 @@ LLM defaults that would otherwise be wrong here:
 -   **`pnpm cms:gen`** regenerates CMS action types after touching CMS manifests. CI gate: `pnpm cms:gen:check`.
 -   **Storefront GraphQL is `gql.tada`** — `graphql()` from `@nordcom/commerce-shopify-graphql/graphql`, not Apollo's `gql`.
 -   **Call `mcp__next-devtools__init` (`next-devtools` mcp) first** when starting Next.js work.
+-   **E2E + `pnpm dev` use an in-process MongoDB** spawned by `@nordcom/commerce-test-mongo`. Set `MONGODB_URI` in your shell to override; otherwise `pnpm dev` boots a persistent local mongod under `.mongo-dev/`. `pnpm dev:reset` tears it down.
 
 ## Spec, plan & task paths
 
