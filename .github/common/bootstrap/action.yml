@@ -10,15 +10,9 @@ outputs:
     node-modules-cache-hit:
         description: 'Whether node_modules cache was a hit on restore.'
         value: ${{ steps.cache-node-modules.outputs.cache-hit }}
-    node-modules-cache-key:
-        description: 'Primary cache key for node_modules.'
-        value: ${{ runner.os }}-node-modules-${{ hashFiles('pnpm-lock.yaml') }}
     turbo-cache-hit:
         description: 'Whether turbo cache was a hit on restore. Empty when turbo-cache=false.'
         value: ${{ steps.cache-turbo.outputs.cache-hit }}
-    turbo-cache-key:
-        description: 'Primary cache key for turbo. Empty when turbo-cache=false.'
-        value: ${{ inputs.turbo-cache == 'true' && format('{0}-turbo-{1}-{2}', runner.os, github.ref_name, github.sha) || '' }}
 
 runs:
     using: 'composite'

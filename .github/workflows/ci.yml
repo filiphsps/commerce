@@ -26,6 +26,7 @@ env:
     SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY }}
     SHOPIFY_API_SECRET_KEY: ${{ secrets.SHOPIFY_API_SECRET_KEY }}
     AUTH_SECRET: 'development-secret'
+    AUTH_TRUST_HOST: 'true'
     EDGE_CONFIG: ${{ secrets.EDGE_CONFIG }}
     ADMIN_DOMAIN: ${{ vars.ADMIN_DOMAIN }}
     SERVICE_DOMAIN: ${{ vars.SERVICE_DOMAIN }}
@@ -59,7 +60,6 @@ jobs:
               uses: ./.github/common/bootstrap-save
               with:
                   node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
-                  node-modules-cache-key: ${{ steps.bootstrap.outputs.node-modules-cache-key }}
 
     typecheck:
         name: ✅ Typecheck
@@ -87,9 +87,7 @@ jobs:
               uses: ./.github/common/bootstrap-save
               with:
                   node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
-                  node-modules-cache-key: ${{ steps.bootstrap.outputs.node-modules-cache-key }}
                   turbo-cache-hit: ${{ steps.bootstrap.outputs.turbo-cache-hit }}
-                  turbo-cache-key: ${{ steps.bootstrap.outputs.turbo-cache-key }}
 
     test:
         name: 🧪 Test
@@ -139,9 +137,7 @@ jobs:
               uses: ./.github/common/bootstrap-save
               with:
                   node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
-                  node-modules-cache-key: ${{ steps.bootstrap.outputs.node-modules-cache-key }}
                   turbo-cache-hit: ${{ steps.bootstrap.outputs.turbo-cache-hit }}
-                  turbo-cache-key: ${{ steps.bootstrap.outputs.turbo-cache-key }}
 
     build:
         name: 🔨 Build
@@ -195,9 +191,7 @@ jobs:
               uses: ./.github/common/bootstrap-save
               with:
                   node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
-                  node-modules-cache-key: ${{ steps.bootstrap.outputs.node-modules-cache-key }}
                   turbo-cache-hit: ${{ steps.bootstrap.outputs.turbo-cache-hit }}
-                  turbo-cache-key: ${{ steps.bootstrap.outputs.turbo-cache-key }}
 
     e2e:
         name: 🎭 E2E
@@ -288,7 +282,6 @@ jobs:
               uses: ./.github/common/bootstrap-save
               with:
                   node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
-                  node-modules-cache-key: ${{ steps.bootstrap.outputs.node-modules-cache-key }}
 
     dispatch:
         name: 🗣️ Dispatch

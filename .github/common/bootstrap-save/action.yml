@@ -1,19 +1,12 @@
 name: '💾 Bootstrap Save'
-description: 'Save the caches that bootstrap restored. Invoke with `if: always()` so caches persist even when the job fails.'
+description: 'Save the caches that bootstrap restored. Invoke with `if: always()` so caches persist even when the job fails. Keys must match the ones in `bootstrap`.'
 
 inputs:
     node-modules-cache-hit:
         description: 'Pass `steps.<bootstrap-id>.outputs.node-modules-cache-hit`.'
         required: true
-    node-modules-cache-key:
-        description: 'Pass `steps.<bootstrap-id>.outputs.node-modules-cache-key`.'
-        required: true
     turbo-cache-hit:
         description: 'Pass `steps.<bootstrap-id>.outputs.turbo-cache-hit`. Leave blank if bootstrap was invoked with `turbo-cache: false`.'
-        required: false
-        default: ''
-    turbo-cache-key:
-        description: 'Pass `steps.<bootstrap-id>.outputs.turbo-cache-key`. Leave blank if bootstrap was invoked with `turbo-cache: false`.'
         required: false
         default: ''
 
@@ -28,11 +21,11 @@ runs:
                   node_modules
                   apps/*/node_modules
                   packages/*/node_modules
-              key: ${{ inputs.node-modules-cache-key }}
+              key: ${{ runner.os }}-node-modules-${{ hashFiles('pnpm-lock.yaml') }}
 
         - name: 💾 Save turbo cache
-          if: inputs.turbo-cache-key != '' && inputs.turbo-cache-hit != 'true' && hashFiles('.turbo/**') != ''
+          if: inputs.turbo-cache-hit == 'false' && hashFiles('.turbo/**') != ''
           uses: actions/cache/save@v4
           with:
               path: .turbo
-              key: ${{ inputs.turbo-cache-key }}
+              key: ${{ runner.os }}-turbo-${{ github.ref_name }}-${{ github.sha }}
