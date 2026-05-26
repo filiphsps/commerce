@@ -53,10 +53,15 @@ export async function seedCms(uri: string, { shopId }: SeedCmsOptions): Promise<
     const payload = await getPayloadInstance();
     console.info(`[seedCms] Payload ready in ${Date.now() - payloadStartedAt}ms`);
 
-    console.info(`[seedCms] upserting CMS tenant for shopId=${shopId}`);
+    // Keyed by slug (the unique constraint on `tenants.slug`) so a previous
+    // run's tenant doc is reused even if the Shop._id was regenerated since
+    // — without this we'd hit "slug must be unique" on every re-seed. The
+    // `shopId` field is patched onto the existing doc so `resolveTenantId`
+    // still finds the right tenant for the freshly-seeded Shop.
+    console.info(`[seedCms] upserting CMS tenant slug=${DEMO_TENANT_SLUG} → shopId=${shopId}`);
     const existingTenant = await payload.find({
         collection: 'tenants',
-        where: { shopId: { equals: shopId } },
+        where: { slug: { equals: DEMO_TENANT_SLUG } },
         limit: 1,
         depth: 0,
         overrideAccess: true,
@@ -64,7 +69,14 @@ export async function seedCms(uri: string, { shopId }: SeedCmsOptions): Promise<
     let tenantId: string;
     if (existingTenant.docs[0]?.id) {
         tenantId = String(existingTenant.docs[0].id);
-        console.info(`[seedCms] tenant already exists (id=${tenantId}) — reusing`);
+        await payload.update({
+            collection: 'tenants',
+            id: tenantId,
+            data: { name: DEMO_TENANT_NAME, defaultLocale: 'en-US', locales: ['en-US'], shopId } as never,
+            overrideAccess: true,
+            disableTransaction: true,
+        });
+        console.info(`[seedCms] reused tenant (id=${tenantId}); patched shopId=${shopId}`);
     } else {
         const created = await payload.create({
             collection: 'tenants',
