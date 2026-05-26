@@ -28,6 +28,8 @@ env:
   PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
   STOREFRONT_PREVIEW_SECRET: "development-secret"
   VERCEL_AUTOMATION_BYPASS_SECRET: "development-secret"
+  NEXT_PUBLIC_DOCS_BASE_PATH: "/commerce"
+  NEXT_PUBLIC_DOCS_CANONICAL_URL: "https://filiphsps.github.io/commerce"
 
 jobs:
   build:
