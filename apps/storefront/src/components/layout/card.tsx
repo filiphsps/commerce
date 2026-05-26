@@ -1,12 +1,15 @@
 import type { ComponentPropsWithoutRef, ElementType, ReactNode } from 'react';
 import { cn } from '@/utils/tailwind';
 
+export type CardChrome = 'boxed' | 'frameless';
+
 export type CardPropsBase<ComponentGeneric extends ElementType> = {
     as?: ComponentGeneric;
     className?: string;
     children?: ReactNode;
 
     border?: boolean;
+    chrome?: CardChrome;
 };
 
 export type CardProps<ComponentGeneric extends ElementType> = CardPropsBase<ComponentGeneric> &
@@ -20,6 +23,7 @@ export const Card = <ComponentGeneric extends ElementType = 'div'>({
     children,
 
     border = false,
+    chrome = 'boxed',
     ...rest
 }: CardProps<ComponentGeneric>) => {
     const Tag = as ?? 'div';
@@ -28,9 +32,12 @@ export const Card = <ComponentGeneric extends ElementType = 'div'>({
         <Tag
             {...rest}
             className={cn(
-                'rounded-lg border border-gray-200 border-solid p-3',
-                !border && 'bg-gray-100',
-                border && 'border-2 border-gray-100 border-solid',
+                chrome === 'boxed' && [
+                    'rounded-lg border border-gray-200 border-solid p-3',
+                    !border && 'bg-gray-100',
+                    border && 'border-2 border-gray-100 border-solid',
+                ],
+                chrome === 'frameless' && 'bg-transparent border-0 p-0',
                 className,
             )}
         >
