@@ -23,7 +23,7 @@ type CardComponent = ComponentType<{
 
 type CardSkeletonComponent = ComponentType<{ className?: string }>;
 
-const DefaultCardSkeleton: CardSkeletonComponent = () => <ProductCard.skeleton variant="vertical-boxed" />;
+const DefaultCardSkeleton: CardSkeletonComponent = () => <ProductCard.skeleton layout="vertical" chrome="boxed" />;
 
 export type CollectionBlockBase<ComponentGeneric extends ElementType> = {
     as?: ComponentGeneric;

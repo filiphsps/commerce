@@ -1,6 +1,7 @@
 import 'server-only';
 import type { OnlineShop } from '@nordcom/commerce-db';
 
+import { Suspense } from 'react';
 import type { Product, ProductFilters } from '@/api/product';
 import ProductCard from '@/components/product-card';
 import SearchProductCard from '@/components/products/search-product-card';
@@ -19,11 +20,13 @@ export default function SearchContentGate({ shop, locale, i18n, showFilters, dat
     const { products = [], productFilters = [], totalCount } = data;
 
     const productCards = products.map((product) => (
-        <SearchProductCard key={product.id} shop={shop} locale={locale} data={product} />
+        <Suspense key={product.id} fallback={<ProductCard.skeleton layout="horizontal" chrome="bare" />}>
+            <SearchProductCard shop={shop} locale={locale} data={product} />
+        </Suspense>
     ));
 
     const skeletonCards = Array.from({ length: 6 }).map((_, index) => (
-        <ProductCard.skeleton key={index} variant="horizontal-bare" />
+        <ProductCard.skeleton key={index} layout="horizontal" chrome="bare" />
     ));
 
     return (
@@ -43,7 +46,7 @@ SearchContentGate.Skeleton = function SearchContentGateSkeleton() {
     return (
         <div className="flex flex-col gap-0">
             {Array.from({ length: 6 }).map((_, index) => (
-                <ProductCard.skeleton key={index} variant="horizontal-bare" />
+                <ProductCard.skeleton key={index} layout="horizontal" chrome="bare" />
             ))}
         </div>
     );

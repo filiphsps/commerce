@@ -1,70 +1,46 @@
 import 'server-only';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
+import type { ReactNode } from 'react';
 import { Fragment, Suspense } from 'react';
 import type { Product } from '@/api/product';
 import ProductCardRoot from '@/components/product-card/primitives/product-card-root';
-import { type ProductCardVariant, resolveVariant } from '@/components/product-card/variant';
-import HorizontalBare from '@/components/product-card/variants/horizontal-bare';
-import HorizontalBoxed from '@/components/product-card/variants/horizontal-boxed';
-import Micro from '@/components/product-card/variants/micro';
-import VerticalBare from '@/components/product-card/variants/vertical-bare';
-import VerticalBoxed from '@/components/product-card/variants/vertical-boxed';
-import { getDictionary } from '@/utils/dictionary';
-import { firstAvailableVariant } from '@/utils/first-available-variant';
 import type { Locale } from '@/utils/locale';
 
-const VARIANT_COMPONENTS = {
-    'vertical-boxed': VerticalBoxed,
-    'vertical-bare': VerticalBare,
-    'horizontal-boxed': HorizontalBoxed,
-    'horizontal-bare': HorizontalBare,
-    micro: Micro,
-} as const;
+export type ProductCardLayout = 'vertical' | 'horizontal' | 'micro';
+export type ProductCardChrome = 'boxed' | 'bare';
 
-const resolveAspect = (variant: ProductCardVariant): 'vertical' | 'horizontal' | 'micro' => {
-    if (variant === 'micro') return 'micro';
-    if (variant.startsWith('horizontal')) return 'horizontal';
-    return 'vertical';
-};
+const resolveVariant = (layout: ProductCardLayout, chrome: ProductCardChrome): string =>
+    layout === 'micro' ? 'micro' : `${layout}-${chrome}`;
 
 export type ProductCardProps = {
     shop: OnlineShop;
     locale: Locale;
     data?: Product;
-    variant?: ProductCardVariant | string;
+    layout?: ProductCardLayout;
+    chrome?: ProductCardChrome;
     priority?: boolean;
     className?: string;
+    children: ReactNode;
 };
 
-const ProductCard = async ({ shop, locale, data: product, variant, priority = false, className }: ProductCardProps) => {
-    if (!product) {
+const ProductCard = ({
+    data: product,
+    layout = 'vertical',
+    chrome = 'boxed',
+    className,
+    children,
+}: ProductCardProps) => {
+    if (!product?.variants?.edges?.[0]?.node) {
         return null;
     }
 
-    const i18n = await getDictionary({ shop, locale });
-    const resolved = resolveVariant(variant);
-    const VariantComponent = VARIANT_COMPONENTS[resolved];
-    const seedVariant = firstAvailableVariant(product) ?? product.variants?.edges?.[0]?.node;
-
-    if (!seedVariant) {
-        return null;
-    }
-
-    const aspect = resolveAspect(resolved);
+    const variant = resolveVariant(layout, chrome);
 
     return (
         <Suspense key={`product-card.${product.handle}`} fallback={<Fragment />}>
-            <ProductCardRoot data={product} variant={resolved} className={className}>
-                <VariantComponent
-                    shop={shop}
-                    locale={locale}
-                    i18n={i18n}
-                    product={product}
-                    seedVariant={seedVariant}
-                    priority={priority}
-                    aspect={aspect}
-                />
+            <ProductCardRoot data={product} variant={variant} className={className}>
+                {children}
             </ProductCardRoot>
         </Suspense>
     );
@@ -72,12 +48,20 @@ const ProductCard = async ({ shop, locale, data: product, variant, priority = fa
 
 ProductCard.displayName = 'Nordcom.ProductCard';
 
-ProductCard.skeleton = ({ variant }: { variant?: ProductCardVariant } = {}) => {
-    const resolved = resolveVariant(variant);
+ProductCard.skeleton = ({
+    layout = 'vertical' as ProductCardLayout,
+    chrome = 'boxed' as ProductCardChrome,
+}: {
+    layout?: ProductCardLayout;
+    chrome?: ProductCardChrome;
+} = {}) => {
+    const variant = resolveVariant(layout, chrome);
     return (
         <div
             data-skeleton
-            data-variant={resolved}
+            data-variant={variant}
+            data-layout={layout}
+            data-chrome={chrome}
             className="border-(length:--product-card-border-width) border-(color:var(--product-card-border-color)) relative flex min-h-[18rem] w-full snap-center snap-always overflow-hidden rounded-(--product-card-radius) border-solid bg-(--product-card-bg) p-(--product-card-padding)"
         />
     );
