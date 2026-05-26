@@ -10,6 +10,8 @@ import { Fragment, Suspense } from 'react';
 import { CountriesApi, LocaleApi, LocalesApi, Shop } from '@/api/_loaders';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { AnalyticsProvider } from '@/components/analytics-provider';
+import CartHydrator from '@/components/cart/cart-hydrator';
+import { NordcomCartProvider } from '@/components/cart/provider';
 import { GeoRedirect } from '@/components/geo-redirect';
 import { HeaderProvider } from '@/components/header/header-provider';
 import { JsonLd } from '@/components/json-ld';
@@ -116,23 +118,28 @@ export default async function RootLayout({
                     locale={locale}
                     domain={domain}
                 >
-                    <AnalyticsProvider shop={publicShop} hostname={domain}>
-                        <HeaderProvider loaderColor={branding?.primary.color}>
-                            <Fragment key="layout.modal">{modal}</Fragment>
+                    <NordcomCartProvider>
+                        <Suspense fallback={null}>
+                            <CartHydrator />
+                        </Suspense>
+                        <AnalyticsProvider shop={publicShop} hostname={domain}>
+                            <HeaderProvider loaderColor={branding?.primary.color}>
+                                <Fragment key="layout.modal">{modal}</Fragment>
 
-                            <Suspense key="layout.geo-redirect" fallback={<Fragment />}>
-                                <GeoRedirect shop={publicShop} countries={countries} locale={locale} i18n={i18n} />
-                            </Suspense>
+                                <Suspense key="layout.geo-redirect" fallback={<Fragment />}>
+                                    <GeoRedirect shop={publicShop} countries={countries} locale={locale} i18n={i18n} />
+                                </Suspense>
 
-                            <Suspense key="layout.shop-layout" fallback={<ShopLayout.skeleton />}>
-                                <ShopLayout shop={shop} locale={locale} i18n={i18n}>
-                                    <PageContent as="article" primary={true}>
-                                        {children}
-                                    </PageContent>
-                                </ShopLayout>
-                            </Suspense>
-                        </HeaderProvider>
-                    </AnalyticsProvider>
+                                <Suspense key="layout.shop-layout" fallback={<ShopLayout.skeleton />}>
+                                    <ShopLayout shop={shop} locale={locale} i18n={i18n}>
+                                        <PageContent as="article" primary={true}>
+                                            {children}
+                                        </PageContent>
+                                    </ShopLayout>
+                                </Suspense>
+                            </HeaderProvider>
+                        </AnalyticsProvider>
+                    </NordcomCartProvider>
                 </ProvidersRegistry>
 
                 {/* Metadata */}
