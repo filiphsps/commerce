@@ -5,7 +5,6 @@ import { useMemo } from 'react';
 import * as ProductOptions from '@/components/product-options';
 import { toSelectionRecord } from '@/components/product-options/resolver';
 import { firstAvailableVariant } from '@/utils/first-available-variant';
-import { registerProductCardPicker } from './registry';
 import type { ProductCardPickerProps } from './types';
 
 const FloatPicker = ({ product, open, onOpenChange }: ProductCardPickerProps) => {
@@ -46,7 +45,5 @@ const FloatPicker = ({ product, open, onOpenChange }: ProductCardPickerProps) =>
 };
 
 FloatPicker.displayName = 'Nordcom.ProductCard.Picker.Float';
-
-registerProductCardPicker('float', FloatPicker);
 
 export default FloatPicker;

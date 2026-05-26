@@ -4,7 +4,6 @@ import { useMemo } from 'react';
 import * as ProductOptions from '@/components/product-options';
 import { toSelectionRecord } from '@/components/product-options/resolver';
 import { firstAvailableVariant } from '@/utils/first-available-variant';
-import { registerProductCardPicker } from './registry';
 import type { ProductCardPickerProps } from './types';
 
 const InlinePicker = ({ product, open }: ProductCardPickerProps) => {
@@ -43,5 +42,5 @@ const InlinePicker = ({ product, open }: ProductCardPickerProps) => {
 };
 
 InlinePicker.displayName = 'Nordcom.ProductCard.Picker.Inline';
-registerProductCardPicker('inline', InlinePicker);
+
 export default InlinePicker;

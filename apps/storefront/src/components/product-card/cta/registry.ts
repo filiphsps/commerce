@@ -1,8 +1,13 @@
 'use client';
 
+import FloatPill from './float-pill';
+import InlineButton from './inline-button';
 import type { ProductCardCtaComponent } from './types';
 
-const registry = new Map<string, ProductCardCtaComponent>();
+const registry = new Map<string, ProductCardCtaComponent>([
+    ['float-pill', FloatPill],
+    ['inline-button', InlineButton],
+]);
 
 export function registerProductCardCta(name: string, component: ProductCardCtaComponent) {
     registry.set(name, component);

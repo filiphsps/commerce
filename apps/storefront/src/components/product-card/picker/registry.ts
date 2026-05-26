@@ -1,8 +1,17 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import type { ProductCardPickerComponent } from './types';
 
-const registry = new Map<string, ProductCardPickerComponent>();
+const FloatPicker = dynamic(() => import('./float'), { ssr: false });
+const SheetPicker = dynamic(() => import('./sheet'), { ssr: false });
+const InlinePicker = dynamic(() => import('./inline'), { ssr: false });
+
+const registry = new Map<string, ProductCardPickerComponent>([
+    ['float', FloatPicker],
+    ['sheet', SheetPicker],
+    ['inline', InlinePicker],
+]);
 
 export function registerProductCardPicker(name: string, component: ProductCardPickerComponent) {
     registry.set(name, component);
