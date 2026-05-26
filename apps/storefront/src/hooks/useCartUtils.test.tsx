@@ -1,13 +1,11 @@
-import { useCart } from '@shopify/hydrogen-react';
 import * as nav from 'next/navigation';
-import type { Mock } from 'vitest';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { useCartActions, useCartMeta, useCartStatus } from '@/components/cart/provider';
 import { useCartUtils } from '@/hooks/useCartUtils';
 import { Locale } from '@/utils/locale';
 import { act, renderHook, waitFor } from '@/utils/test/react';
 
 const USA = Locale.from('en-US')!;
-const GER = Locale.from('de-DE')!;
 
 // Hoisted so the mock closure and individual tests share the same spy reference.
 const replace = vi.fn();
@@ -29,66 +27,59 @@ vi.mock('next/navigation', async () => ({
     })),
 }));
 
+vi.mock('@/components/cart/provider', async (importOriginal) => {
+    const actual = (await importOriginal()) as Record<string, unknown>;
+    return {
+        ...actual,
+        useCartActions: vi.fn(),
+        useCartMeta: vi.fn(),
+        useCartStatus: vi.fn(),
+        useMaybeCart: vi.fn().mockReturnValue(null),
+    };
+});
+
+const noopAction = vi.fn().mockResolvedValue({ ok: true, cart: {} });
+const buildActions = (overrides: Partial<{ applyDiscountCode: ReturnType<typeof vi.fn> }> = {}) =>
+    ({
+        addLine: noopAction,
+        updateLine: noopAction,
+        removeLine: noopAction,
+        applyDiscountCode: overrides.applyDiscountCode ?? noopAction,
+        removeDiscountCode: noopAction,
+        applyGiftCard: noopAction,
+        removeGiftCard: noopAction,
+        updateNote: noopAction,
+        updateAttributes: noopAction,
+    }) as any;
+
 describe('hooks', () => {
     describe('useCartUtils', () => {
         beforeEach(() => {
-            (useCart as Mock).mockReturnValue({
-                error: undefined,
-
-                buyerIdentity: {
-                    countryCode: 'US',
-                },
-                buyerIdentityUpdate: vi.fn().mockImplementation(({ countryCode }) => {
-                    useCart().buyerIdentity!.countryCode = countryCode;
-                }),
-
+            vi.mocked(useCartActions).mockReturnValue(buildActions());
+            vi.mocked(useCartMeta).mockReturnValue({
                 discountCodes: [],
-                discountCodesUpdate: vi.fn().mockImplementation((discountCodes) => {
-                    useCart().discountCodes = discountCodes;
-                }),
-
-                status: 'idle',
-                cartReady: true,
-                cartCreate: vi.fn().mockImplementation(() => {
-                    useCart().status = 'idle';
-                }),
+                giftCards: [],
+                buyerIdentity: null,
+                note: null,
+                attributes: [],
+                checkoutUrl: null,
             });
+            vi.mocked(useCartStatus).mockReturnValue({ status: 'idle', cartReady: true, error: null });
         });
 
         afterEach(() => {
             vi.restoreAllMocks();
         });
 
-        it('should update buyer identity when locale changes', async () => {
-            const { rerender } = renderHook((locale: Locale = USA) => useCartUtils({ locale }));
-            await waitFor(() => expect(useCart().buyerIdentity?.countryCode).toBe(USA.country));
-
-            await act(() => rerender(GER));
-            await waitFor(() => {
-                expect(useCart().buyerIdentityUpdate).toHaveBeenCalledWith({ countryCode: GER.country });
-            });
-
-            await act(() => rerender(USA));
-            await waitFor(() => {
-                expect(useCart().buyerIdentityUpdate).toHaveBeenCalledWith({ countryCode: USA.country });
-            });
-
-            await waitFor(() => expect(useCart().cartCreate).not.toHaveBeenCalled());
-        });
-
-        it('should not create a cart if one already exists', async () => {
-            renderHook((locale: Locale = USA) => useCartUtils({ locale }));
-            await waitFor(() => expect(useCart().cartCreate).not.toHaveBeenCalled());
-        });
-
-        it('should add discount code to cart when present in URL', async () => {
-            const discount = ['coupon_code'];
+        it('applies a discount code present in the URL', async () => {
+            const applyDiscountCode = vi.fn().mockResolvedValue({ ok: true, cart: {} });
+            vi.mocked(useCartActions).mockReturnValue(buildActions({ applyDiscountCode }));
 
             const { rerender } = renderHook((locale: Locale = USA) => useCartUtils({ locale }));
             await act(() => rerender(USA));
 
             await waitFor(() => {
-                expect(useCart().discountCodesUpdate).toHaveBeenCalledWith(discount);
+                expect(applyDiscountCode).toHaveBeenCalledWith('coupon_code');
             });
         });
 
@@ -99,35 +90,34 @@ describe('hooks', () => {
             });
 
             it('does not replace URL before Shopify confirms the discount code', async () => {
-                // Cart is idle but Shopify has not yet echoed the discount code
-                // back in discountCodes — the URL must not be cleaned yet.
-                (useCart as Mock).mockReturnValue({
-                    error: undefined,
-                    buyerIdentity: { countryCode: 'US' },
-                    buyerIdentityUpdate: vi.fn(),
+                vi.mocked(useCartActions).mockReturnValue(buildActions());
+                vi.mocked(useCartMeta).mockReturnValue({
                     discountCodes: [],
-                    discountCodesUpdate: vi.fn(),
-                    status: 'idle',
-                    cartReady: true,
+                    giftCards: [],
+                    buyerIdentity: null,
+                    note: null,
+                    attributes: [],
+                    checkoutUrl: null,
                 });
+                vi.mocked(useCartStatus).mockReturnValue({ status: 'idle', cartReady: true, error: null });
 
                 renderHook(() => useCartUtils({ locale: USA }));
 
-                // Give effects a chance to run, then assert URL was NOT cleaned.
                 await act(async () => {});
                 expect(replace).not.toHaveBeenCalled();
             });
 
             it('replaces URL once cart status is idle and code is applied', async () => {
-                (useCart as Mock).mockReturnValue({
-                    error: undefined,
-                    buyerIdentity: { countryCode: 'US' },
-                    buyerIdentityUpdate: vi.fn(),
+                vi.mocked(useCartActions).mockReturnValue(buildActions());
+                vi.mocked(useCartMeta).mockReturnValue({
                     discountCodes: [{ code: 'NEW10', applicable: true }],
-                    discountCodesUpdate: vi.fn(),
-                    status: 'idle',
-                    cartReady: true,
+                    giftCards: [],
+                    buyerIdentity: null,
+                    note: null,
+                    attributes: [],
+                    checkoutUrl: null,
                 });
+                vi.mocked(useCartStatus).mockReturnValue({ status: 'idle', cartReady: true, error: null });
 
                 renderHook(() => useCartUtils({ locale: USA }));
 
@@ -139,24 +129,23 @@ describe('hooks', () => {
                 );
             });
 
-            it('only fires discountCodesUpdate once when Shopify rejects the code (discountCodes stays empty)', async () => {
-                // Shopify rejection scenario: discountCodes remains [] across
-                // multiple renders while status stays idle. The effect must NOT
-                // re-fire discountCodesUpdate on every render cycle.
-                const discountCodesUpdate = vi.fn();
-                (useCart as Mock).mockReturnValue({
-                    error: undefined,
-                    buyerIdentity: { countryCode: 'US' },
-                    buyerIdentityUpdate: vi.fn(),
+            it('only fires applyDiscountCode once when Shopify rejects the code (discountCodes stays empty)', async () => {
+                const applyDiscountCode = vi
+                    .fn()
+                    .mockResolvedValue({ ok: false, reason: 'invalid-code', message: 'nope' });
+                vi.mocked(useCartActions).mockReturnValue(buildActions({ applyDiscountCode }));
+                vi.mocked(useCartMeta).mockReturnValue({
                     discountCodes: [],
-                    discountCodesUpdate,
-                    status: 'idle',
-                    cartReady: true,
+                    giftCards: [],
+                    buyerIdentity: null,
+                    note: null,
+                    attributes: [],
+                    checkoutUrl: null,
                 });
+                vi.mocked(useCartStatus).mockReturnValue({ status: 'idle', cartReady: true, error: null });
 
                 const { rerender } = renderHook(() => useCartUtils({ locale: USA }));
 
-                // Let effects settle after first render.
                 await act(async () => {});
 
                 // Simulate additional renders (e.g. unrelated state changes) that
@@ -164,7 +153,7 @@ describe('hooks', () => {
                 await act(() => rerender());
                 await act(() => rerender());
 
-                await waitFor(() => expect(discountCodesUpdate).toHaveBeenCalledTimes(1));
+                await waitFor(() => expect(applyDiscountCode).toHaveBeenCalledTimes(1));
             });
         });
     });

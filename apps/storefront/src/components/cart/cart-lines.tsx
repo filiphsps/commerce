@@ -1,11 +1,16 @@
 'use client';
 
-import { useCart } from '@shopify/hydrogen-react';
 import type { CartLine as ShopifyCartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import { Suspense } from 'react';
 import { Button } from '@/components/actionable/button';
 import { ExportCartButton } from '@/components/actionable/export-cart-button';
 import { CartLine } from '@/components/cart/cart-line';
+import {
+    useCartActions,
+    useCartCount,
+    useCartLines as useCartLinesSlice,
+    useCartStatus,
+} from '@/components/cart/provider';
 import { Label } from '@/components/typography/label';
 import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 
@@ -15,9 +20,12 @@ type CartContentProps = {
 const CartLines = ({ i18n }: CartContentProps) => {
     const { t: tCart } = getTranslations('cart', i18n);
 
-    const { cartReady, lines, linesRemove, totalQuantity } = useCart();
+    const { cartReady } = useCartStatus();
+    const { lines } = useCartLinesSlice();
+    const totalQuantity = useCartCount();
+    const { removeLine } = useCartActions();
 
-    if (!cartReady || typeof lines === 'undefined') {
+    if (!cartReady) {
         return <CartLines.skeleton />;
     }
 
@@ -32,7 +40,11 @@ const CartLines = ({ i18n }: CartContentProps) => {
                     as={Label}
                     className="inline-flex cursor-pointer font-bold text-sm hover:text-red-500"
                     styled={false}
-                    onClick={() => linesRemove(lines.map((line) => line?.id).filter((_) => _) as string[])}
+                    onClick={() => {
+                        for (const line of lines) {
+                            if (line?.id) void removeLine(line.id);
+                        }
+                    }}
                 >
                     {tCart('clear-cart')}
                 </Button>
@@ -48,7 +60,7 @@ const CartLines = ({ i18n }: CartContentProps) => {
 
                     return (
                         <Suspense fallback={<CartLine.skeleton />} key={item.id}>
-                            <CartLine i18n={i18n} data={item as ShopifyCartLine} />
+                            <CartLine i18n={i18n} data={item as unknown as ShopifyCartLine} />
                         </Suspense>
                     );
                 })}

@@ -1,45 +1,29 @@
+'use client';
+
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { useCart } from '@shopify/hydrogen-react';
-import type {
-    CartAutomaticDiscountAllocation,
-    CartDiscountAllocation,
-    CartLine,
-} from '@shopify/hydrogen-react/storefront-api-types';
 import { ChevronRight as ChevronRightIcon, Lock as LockIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
+import type { CartLine } from '@/api/cart/types';
 import { Button } from '@/components/actionable/button';
 import { CartCoupons } from '@/components/cart/cart-coupons';
 import { CartNote } from '@/components/cart/cart-note';
 import styles from '@/components/cart/cart-summary.module.css';
+import {
+    useCartCost,
+    useCartCount,
+    useCartLines as useCartLinesSlice,
+    useCartMeta,
+    useCartStatus,
+} from '@/components/cart/provider';
 import Link from '@/components/link';
 import { Price } from '@/components/products/price';
 import { useShop } from '@/components/shop/provider';
 import { Label } from '@/components/typography/label';
 import { BuildConfig } from '@/utils/build-config';
-import { getTranslations, type LocaleDictionary } from '@/utils/locale';
+import { type CurrencyCode, getTranslations, type LocaleDictionary } from '@/utils/locale';
 import { pluralize } from '@/utils/pluralize';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
-
-/** A cart line that has both `cost` and `discountAllocations` present. */
-type SaleLine = CartLine & {
-    cost: NonNullable<CartLine['cost']>;
-    discountAllocations: NonNullable<CartLine['discountAllocations']>;
-};
-
-/** A discount allocation whose `discountedAmount` is present. */
-type AllocationWithAmount = CartDiscountAllocation & {
-    discountedAmount: NonNullable<CartDiscountAllocation['discountedAmount']>;
-};
-
-/** Element type of the `lines` array returned by `useCart()`. */
-type CartLineElement = NonNullable<ReturnType<typeof useCart>['lines']>[number];
-
-const isSaleLine = (line: CartLineElement): line is SaleLine => Boolean(line?.cost && line.discountAllocations);
-
-const hasDiscountedAmount = (
-    allocation: CartDiscountAllocation | null | undefined,
-): allocation is AllocationWithAmount => Boolean(allocation?.discountedAmount);
 
 const SUMMARY_LABEL_STYLES = 'font-medium text-sm capitalize text-gray-600 leading-none';
 const PRICE_STYLES = 'text-sm font-bold';
@@ -57,59 +41,56 @@ type CartSummaryProps = {
 };
 const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummaryProps) => {
     const { t } = getTranslations('cart', i18n);
-    const { status, totalQuantity, lines, cost, discountCodes = [], cartReady } = useCart();
+    const { status, cartReady } = useCartStatus();
+    const totalQuantity = useCartCount();
+    const { lines } = useCartLinesSlice();
+    const cost = useCartCost();
+    const { discountCodes } = useCartMeta();
     const { currency } = useShop();
 
     // Only trust line-level and cost data when the cart has fully settled.
-    // The `fetching`, `creating`, and `updating` states can all produce
-    // transiently stale or missing line data, so zero out derived savings
-    // figures until Shopify confirms the cart is `idle`.
+    // The `mutating` state can produce transiently stale or missing line data,
+    // so zero out derived savings figures until the provider returns to idle.
     const isSettled = status === 'idle';
 
-    const usableLines = (lines ?? []).filter(isSaleLine);
-
     const sale = isSettled
-        ? usableLines.reduce(
-              (sum, line) =>
-                  (line.cost.compareAtAmountPerQuantity &&
-                      sum +
-                          (safeParseFloat(0, line.cost.compareAtAmountPerQuantity?.amount) * (line.quantity || 0) -
-                              safeParseFloat(0, line.cost.totalAmount?.amount))) ||
-                  sum,
-              0,
-          )
+        ? lines.reduce((sum, line) => {
+              const compareAt = line.merchandise.compareAtUnitPrice;
+              if (!compareAt) return sum;
+              const compareAtTotal = safeParseFloat(0, compareAt.amount) * (line.quantity || 0);
+              const lineTotal = safeParseFloat(0, line.cost.total?.amount);
+              return sum + Math.max(0, compareAtTotal - lineTotal);
+          }, 0)
         : 0;
+
     const totalSale = isSettled
         ? sale +
-          usableLines
-              .map((line) => {
-                  if (line.discountAllocations.length <= 0) {
-                      return 0;
-                  }
-
-                  return line.discountAllocations
-                      .filter(hasDiscountedAmount)
-                      .reduce(
-                          (sum, allocation) =>
-                              (allocation.discountedAmount.amount &&
-                                  sum + safeParseFloat(0, allocation.discountedAmount.amount)) ||
-                              sum,
-                          0,
-                      );
-              })
-              .reduce((sum, lineTotal) => sum + lineTotal || sum, 0)
+          lines.reduce((sum, line) => {
+              if (!line.discountAllocations || line.discountAllocations.length <= 0) {
+                  return sum;
+              }
+              return (
+                  sum +
+                  line.discountAllocations.reduce(
+                      (lineSum, allocation) => lineSum + safeParseFloat(0, allocation.discountedAmount?.amount),
+                      0,
+                  )
+              );
+          }, 0)
         : 0;
 
-    // Guard the divide so a fully-discounted cart (totalAmount === 0 — gift
+    // Guard the divide so a fully-discounted cart (total === 0 — gift
     // card balance covers everything, 100%-off promo, etc.) doesn't render
     // `Infinity% OFF` in the discount-row tooltip.
-    const totalForPercent = safeParseFloat(0, cost?.totalAmount?.amount);
+    const totalForPercent = safeParseFloat(0, cost.total?.amount);
     const salePercentage = totalForPercent > 0 ? Math.round(((100 * sale) / totalForPercent) * 100) / 100 : 0;
     const promos = isSettled
-        ? safeParseFloat(0, cost?.subtotalAmount?.amount) - safeParseFloat(0, cost?.totalAmount?.amount) || 0
+        ? safeParseFloat(0, cost.subtotal?.amount) - safeParseFloat(0, cost.total?.amount) || 0
         : 0;
 
-    const noItems = !lines || lines.length <= 0 || !totalQuantity || totalQuantity <= 0;
+    const noItems = lines.length <= 0 || !totalQuantity || totalQuantity <= 0;
+
+    const currencyCode = (cost.total?.currencyCode ?? cost.subtotal?.currencyCode ?? currency) as CurrencyCode;
 
     return (
         <div
@@ -137,15 +118,15 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
 
                     <div className="flex items-center justify-between">
                         <Label className={SUMMARY_LABEL_STYLES}>{t('subtotal')}</Label>
-                        {cost?.subtotalAmount && !noItems ? (
+                        {cost.subtotal && !noItems ? (
                             <Price
                                 className={PRICE_STYLES}
                                 data={{
-                                    currencyCode: cost.subtotalAmount.currencyCode,
+                                    currencyCode: cost.subtotal.currencyCode as CurrencyCode,
                                     amount:
                                         (totalSale &&
-                                            (safeParseFloat(0, cost.subtotalAmount.amount) + totalSale).toString()) ||
-                                        cost.subtotalAmount.amount,
+                                            (safeParseFloat(0, cost.subtotal.amount) + totalSale).toString()) ||
+                                        cost.subtotal.amount,
                                 }}
                             />
                         ) : (
@@ -166,7 +147,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                                         <Price
                                             className={cn(PRICE_STYLES, PRICE_DISCOUNT_STYLES)}
                                             data={{
-                                                currencyCode: cost?.totalAmount?.currencyCode,
+                                                currencyCode,
                                                 amount: sale.toString(),
                                             }}
                                         />
@@ -174,19 +155,15 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                                 </div>
                             ) : null}
 
-                            {lines && lines.flatMap((line) => line?.discountAllocations).length > 0 ? (
+                            {lines.flatMap((line) => line.discountAllocations ?? []).length > 0 ? (
                                 <div className="flex flex-col gap-1 pt-4">
                                     <Label className="text-gray-700 text-xs leading-none">
                                         {t('automatic-discounts')}
                                     </Label>
 
                                     <div className="flex flex-col gap-2">
-                                        {lines.map((line) => {
-                                            if (!line) {
-                                                return null;
-                                            }
-
-                                            return line.discountAllocations?.map((discount) => {
+                                        {lines.map((line) =>
+                                            (line.discountAllocations ?? []).map((discount) => {
                                                 if (!discount?.discountedAmount) {
                                                     return null;
                                                 }
@@ -196,9 +173,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                                                     discount.discountedAmount.amount,
                                                 );
                                                 const title =
-                                                    (discount as { title?: string }).title ||
-                                                    (discount as { code?: string }).code ||
-                                                    t('automatic-discounts');
+                                                    discount.title || discount.code || t('automatic-discounts');
 
                                                 if (discountAmount <= 0) {
                                                     return null;
@@ -216,14 +191,14 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                                                         <Price
                                                             className={cn(PRICE_STYLES, PRICE_DISCOUNT_STYLES)}
                                                             data={{
-                                                                currencyCode: cost?.totalAmount?.currencyCode,
+                                                                currencyCode: currencyCode,
                                                                 amount: discount.discountedAmount.amount,
                                                             }}
                                                         />
                                                     </div>
                                                 );
-                                            });
-                                        })}
+                                            }),
+                                        )}
                                     </div>
                                 </div>
                             ) : null}
@@ -237,7 +212,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                                 <Price
                                     className={cn(PRICE_STYLES, PRICE_DISCOUNT_STYLES)}
                                     data={{
-                                        currencyCode: cost?.totalAmount?.currencyCode,
+                                        currencyCode,
                                         amount: promos.toString(),
                                     }}
                                 />
@@ -247,16 +222,10 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
 
                     <div className={cn(styles.totals, 'flex items-center justify-between pt-1')}>
                         <Label className="font-bold text-xl capitalize">{t('estimated-total')}</Label>
-                        {cost && !noItems ? (
+                        {(cost.total || cost.subtotal) && !noItems ? (
                             <Price
                                 className={PRICE_STYLES}
-                                data={
-                                    cost.checkoutChargeAmount ||
-                                    cost.totalAmount || {
-                                        currencyCode: currency,
-                                        amount: '0',
-                                    }
-                                }
+                                data={(cost.total ?? cost.subtotal ?? { currencyCode: currency, amount: '0' }) as never}
                             />
                         ) : (
                             <div className={PRICE_STYLES}>...</div>
@@ -271,65 +240,61 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
 
             {BuildConfig.environment === 'development' ? (
                 <section className={cn(styles.section, 'gap-2 empty:hidden')}>
-                    {lines
-                        ?.filter(Boolean)
-                        .map((line) => line as CartLine)
-                        .map(({ id, merchandise: { product, ...variant }, discountAllocations }) => {
-                            const discountLineElements = discountAllocations
-                                .map((discount, index) => {
-                                    const { discountedAmount } = discount;
-                                    const amount = safeParseFloat(0, discountedAmount.amount);
+                    {(lines as CartLine[]).map((line) => {
+                        const discountLineElements = (line.discountAllocations ?? [])
+                            .map((discount, index) => {
+                                const { discountedAmount, title } = discount;
+                                const amount = safeParseFloat(0, discountedAmount?.amount);
 
-                                    if (amount <= 0) {
-                                        return null;
-                                    }
+                                if (amount <= 0) {
+                                    return null;
+                                }
 
-                                    if (Object.hasOwn(discount, 'title')) {
-                                        const { title } = discount as CartAutomaticDiscountAllocation;
-                                        return (
-                                            <div key={index} className="flex items-center justify-between">
-                                                <Label>{title}</Label>
-                                                <Price data={discountedAmount} className="font-bold text-sm" />
-                                            </div>
-                                        );
-                                    }
-
+                                if (title) {
                                     return (
                                         <div key={index} className="flex items-center justify-between">
-                                            <Label>discount</Label>
-                                            <Price data={discountedAmount} className="font-bold text-sm" />
+                                            <Label>{title}</Label>
+                                            <Price data={discountedAmount as never} className="font-bold text-sm" />
                                         </div>
                                     );
-                                })
-                                .filter(Boolean);
+                                }
 
-                            if (!discountLineElements.length) {
-                                return null;
-                            }
+                                return (
+                                    <div key={index} className="flex items-center justify-between">
+                                        <Label>discount</Label>
+                                        <Price data={discountedAmount as never} className="font-bold text-sm" />
+                                    </div>
+                                );
+                            })
+                            .filter(Boolean);
 
-                            const { vendor, title, productType } = product;
+                        if (!discountLineElements.length) {
+                            return null;
+                        }
 
-                            return (
-                                <div key={id} className="flex flex-col">
-                                    <Label className="flex gap-1 normal-case">
-                                        <span>
-                                            {vendor} {title}
-                                        </span>
-                                        &ndash;
-                                        <span className="font-bold">
-                                            {[
-                                                ...(productType ? [productType] : []),
-                                                ...variant.selectedOptions.map(
-                                                    ({ name, value }) => `${name}: ${value}`,
-                                                ),
-                                            ].join(', ')}
-                                        </span>
-                                    </Label>
+                        const { productVendor, productTitle, productType, variantTitle, selectedOptions } =
+                            line.merchandise;
 
-                                    <div className="flex flex-col">{discountLineElements}</div>
-                                </div>
-                            );
-                        })}
+                        return (
+                            <div key={line.id} className="flex flex-col">
+                                <Label className="flex gap-1 normal-case">
+                                    <span>
+                                        {productVendor} {productTitle}
+                                    </span>
+                                    &ndash;
+                                    <span className="font-bold">
+                                        {[
+                                            ...(productType ? [productType] : []),
+                                            ...(variantTitle ? [variantTitle] : []),
+                                            ...selectedOptions.map(({ name, value }) => `${name}: ${value}`),
+                                        ].join(', ')}
+                                    </span>
+                                </Label>
+
+                                <div className="flex flex-col">{discountLineElements}</div>
+                            </div>
+                        );
+                    })}
                 </section>
             ) : null}
 
@@ -368,7 +333,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                 </section>
             ) : null}
 
-            {lines && lines.length > 0 ? (
+            {lines.length > 0 ? (
                 <section className={cn(styles.section, 'gap-2')}>
                     <header className={styles.header}>
                         <Label>{t('label-cart-note')}</Label>

@@ -1,12 +1,12 @@
 'use client';
 
-import { parseGid, useCart } from '@shopify/hydrogen-react';
-import type { CartLine } from '@shopify/hydrogen-react/storefront-api-types';
+import { parseGid } from '@shopify/hydrogen-react';
 import { download, generateCsv, mkConfig } from 'export-to-csv';
 import { Download as DownloadIcon } from 'lucide-react';
 import { useState } from 'react';
 
 import { Button } from '@/components/actionable/button';
+import { useCartCount, useCartLines } from '@/components/cart/provider';
 import { useShop } from '@/components/shop/provider';
 import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 
@@ -17,9 +17,10 @@ export function ExportCartButton({ i18n }: ExportCartButtonProps) {
     const [busy, setBusy] = useState(false);
     const { shop } = useShop();
     const { t } = getTranslations('common', i18n);
-    const { lines, totalQuantity, id: cartId } = useCart();
+    const { lines, cartId } = useCartLines();
+    const totalQuantity = useCartCount();
 
-    if (!lines || lines.length <= 0 || !totalQuantity || totalQuantity <= 0) {
+    if (!lines || lines.length <= 0 || !totalQuantity || totalQuantity <= 0 || !cartId) {
         return null;
     }
 
@@ -30,23 +31,16 @@ export function ExportCartButton({ i18n }: ExportCartButtonProps) {
             className="inline-flex items-center justify-stretch gap-1 font-bold text-sm uppercase leading-snug transition-colors hover:text-primary disabled:pointer-events-none disabled:brightness-50"
             onClick={async () => {
                 setBusy(true);
-                const data = (lines.filter(Boolean) as CartLine[]).map(
+                const data = lines.map(
                     ({
-                        merchandise: {
-                            id,
-                            barcode,
-                            sku,
-                            title: variantTitle,
-                            product: { title, vendor, handle },
-                        },
+                        merchandise: { id, sku, variantTitle, productTitle, productVendor, productHandle },
                         quantity,
                     }) => ({
-                        'GTIN/EAN': barcode ? `#${barcode}` : null,
-                        ...(sku && sku !== barcode ? { SKU: sku } : {}),
-                        Vendor: vendor,
-                        Product: title,
+                        ...(sku ? { SKU: sku } : {}),
+                        Vendor: productVendor,
+                        Product: productTitle,
                         Variant: variantTitle,
-                        URL: `https://${shop.domain}/products/${handle}/?variant=${parseGid(id).id}`,
+                        URL: `https://${shop.domain}/products/${productHandle}/?variant=${parseGid(id).id}`,
                         Quantity: quantity,
                     }),
                 );

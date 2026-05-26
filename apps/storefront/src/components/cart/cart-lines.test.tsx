@@ -1,28 +1,39 @@
 import { describe, expect, it, vi } from 'vitest';
 import { CartLines } from '@/components/cart/cart-lines';
+import { useCartActions, useCartCount, useCartLines, useCartStatus } from '@/components/cart/provider';
 import { render, screen } from '@/utils/test/react';
 
-const mockLinesRemove = vi.fn();
-
-let mockCartState: {
-    cartReady: boolean;
-    lines: any[] | undefined;
-    linesRemove: typeof mockLinesRemove;
-    totalQuantity: number | undefined;
-} = {
-    cartReady: true,
-    lines: [],
-    linesRemove: mockLinesRemove,
-    totalQuantity: 0,
-};
-
-vi.mock('@shopify/hydrogen-react', async (importOriginal) => {
-    const actual = await importOriginal<typeof import('@shopify/hydrogen-react')>();
+vi.mock('@/components/cart/provider', async (importOriginal) => {
+    const actual = (await importOriginal()) as Record<string, unknown>;
     return {
         ...actual,
-        useCart: () => mockCartState,
+        useCartActions: vi.fn(),
+        useCartCount: vi.fn(),
+        useCartLines: vi.fn(),
+        useCartStatus: vi.fn(),
+        useMaybeCart: vi.fn().mockReturnValue(null),
     };
 });
+
+const removeLine = vi.fn().mockResolvedValue({ ok: true, cart: {} });
+const noopAction = vi.fn().mockResolvedValue({ ok: true, cart: {} });
+
+const setState = ({ cartReady, lines, totalQuantity }: { cartReady: boolean; lines: any[]; totalQuantity: number }) => {
+    vi.mocked(useCartActions).mockReturnValue({
+        addLine: noopAction,
+        updateLine: noopAction,
+        removeLine,
+        applyDiscountCode: noopAction,
+        removeDiscountCode: noopAction,
+        applyGiftCard: noopAction,
+        removeGiftCard: noopAction,
+        updateNote: noopAction,
+        updateAttributes: noopAction,
+    } as any);
+    vi.mocked(useCartLines).mockReturnValue({ lines, cartId: lines.length > 0 ? 'cart-id' : null });
+    vi.mocked(useCartCount).mockReturnValue(totalQuantity);
+    vi.mocked(useCartStatus).mockReturnValue({ status: 'idle', cartReady, error: null });
+};
 
 vi.mock('@/components/cart/cart-line', () => ({
     CartLine: Object.assign(
@@ -40,19 +51,19 @@ vi.mock('@/components/actionable/export-cart-button', () => ({
 describe('components', () => {
     describe('CartLines', () => {
         it('renders skeleton when cart is not ready', () => {
-            mockCartState = { cartReady: false, lines: undefined, linesRemove: mockLinesRemove, totalQuantity: 0 };
+            setState({ cartReady: false, lines: [], totalQuantity: 0 });
             const { container } = render(<CartLines i18n={{} as any} />);
             expect(container.querySelector('[data-skeleton]')).toBeTruthy();
         });
 
         it('renders empty state message when cart has no items', () => {
-            mockCartState = { cartReady: true, lines: [], linesRemove: mockLinesRemove, totalQuantity: 0 };
+            setState({ cartReady: true, lines: [], totalQuantity: 0 });
             render(<CartLines i18n={{} as any} />);
             expect(screen.getByText('There are no items in your cart.')).toBeTruthy();
         });
 
         it('renders cart lines when items exist', () => {
-            mockCartState = {
+            setState({
                 cartReady: true,
                 lines: [
                     {
@@ -62,9 +73,8 @@ describe('components', () => {
                         },
                     },
                 ],
-                linesRemove: mockLinesRemove,
                 totalQuantity: 1,
-            };
+            });
             render(<CartLines i18n={{} as any} />);
             expect(screen.getByText('Demo Product')).toBeTruthy();
         });

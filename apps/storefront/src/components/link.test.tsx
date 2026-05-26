@@ -5,9 +5,6 @@ import { render } from '@/utils/test/react';
 
 vi.mock('@shopify/hydrogen-react', async () => {
     return {
-        useCart: vi.fn().mockReturnValue({
-            status: 'idle',
-        }),
         useShop: vi.fn().mockReturnValue({
             domain: 'staging.storefront.localhost',
         }),

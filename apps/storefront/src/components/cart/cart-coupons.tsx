@@ -1,15 +1,16 @@
 'use client';
 
-import { useCart } from '@shopify/hydrogen-react';
-import type { CartDiscountCode } from '@shopify/hydrogen-react/storefront-api-types';
 import { Tag as TagIcon, X as XIcon } from 'lucide-react';
 
 import { Button } from '@/components/actionable/button';
+import { useCartActions, useCartMeta, useCartStatus } from '@/components/cart/provider';
 import { Label } from '@/components/typography/label';
 import { cn } from '@/utils/tailwind';
 
 const CartCoupons = ({}) => {
-    const { discountCodes = [], discountCodesUpdate, cartReady } = useCart();
+    const { discountCodes } = useCartMeta();
+    const { cartReady } = useCartStatus();
+    const { removeDiscountCode } = useCartActions();
 
     if (!cartReady || discountCodes.length <= 0) {
         return null;
@@ -20,7 +21,7 @@ const CartCoupons = ({}) => {
             <Label>Active discounts</Label>
 
             <div className={cn('flex flex-wrap gap-2')}>
-                {(discountCodes as CartDiscountCode[]).map(({ code }) => (
+                {discountCodes.map(({ code }) => (
                     <div
                         key={code}
                         className="flex items-center justify-center gap-2 overflow-hidden rounded-xl bg-white px-3 py-2"
@@ -35,12 +36,7 @@ const CartCoupons = ({}) => {
                             type="button"
                             title={`Remove promo code "${code}"`}
                             onClick={() => {
-                                const codes = discountCodes
-                                    .map((discount) => discount?.code)
-                                    .filter(Boolean) as string[];
-
-                                // Return the discount codes except for the one we're removing.
-                                discountCodesUpdate(codes.filter((i) => i !== code));
+                                void removeDiscountCode(code);
                             }}
                         >
                             <XIcon

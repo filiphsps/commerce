@@ -1,12 +1,13 @@
 'use client';
 
-import { useCart, useProduct } from '@shopify/hydrogen-react';
+import { useProduct } from '@shopify/hydrogen-react';
 import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
 import type { HTMLProps } from 'react';
 import type { ProductVariant } from '@/api/product';
 import { transformQuantityBreaks } from '@/api/product';
 
 import { Button } from '@/components/actionable/button';
+import { useCartStatus } from '@/components/cart/provider';
 import { COMMON_BADGE_STYLES } from '@/components/product-display/primitives/badge-styles';
 import { Price } from '@/components/products/price';
 import { useQuantity } from '@/components/products/quantity-provider';
@@ -103,7 +104,7 @@ export function ProductQuantityBreaks({
     const { selectedVariant } = useProduct() as ReturnType<typeof useProduct> & {
         selectedVariant: ProductVariant | undefined;
     };
-    const { cartReady, status } = useCart();
+    const { cartReady, status } = useCartStatus();
 
     if (!selectedVariant) {
         return null;
@@ -114,7 +115,7 @@ export function ProductQuantityBreaks({
         return null;
     }
 
-    const ready = !disabled && selectedVariant.availableForSale && cartReady && !['updating'].includes(status);
+    const ready = !disabled && selectedVariant.availableForSale && cartReady && status !== 'mutating';
     return (
         <section
             className={cn('flex flex-col gap-2 empty:hidden', !ready && 'pointer-events-none opacity-50', className)}
