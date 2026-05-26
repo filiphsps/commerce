@@ -1,7 +1,8 @@
 import 'server-only';
 
 import { buildFormState } from '@payloadcms/ui/utilities/buildFormState';
-import type { BuildFormStateArgs } from 'payload';
+import type { BuildFormStateArgs, FlattenedField, FormState, PayloadRequest } from 'payload';
+import { getFieldByPath } from 'payload';
 
 /**
  * Wrapper around `buildFormState` for the co-located CMS routes.
@@ -32,13 +33,146 @@ import type { BuildFormStateArgs } from 'payload';
 export type BuildCmsFormStateArgs = Omit<BuildFormStateArgs, 'mockRSCs' | 'renderAllFields'>;
 
 export async function buildCmsFormState(args: BuildCmsFormStateArgs) {
-    // The spread loses the `BuildFormStateArgs` discriminated union (the
-    // collectionSlug/globalSlug/widgetSlug split) — narrow explicitly so we
-    // call into Payload's typed entry point without weakening the wrapper's
-    // own input type.
-    return buildFormState({
+    const result = await buildFormState({
         ...args,
         renderAllFields: false,
         mockRSCs: true,
     } as BuildFormStateArgs);
+
+    if ('collectionSlug' in args && typeof args.collectionSlug === 'string') {
+        logUnsupportedMocks(args.collectionSlug, args.req, result.state);
+    }
+
+    return result;
+}
+
+/**
+ * Component slots Payload replaces with the literal string `'Mock'` when
+ * `mockRSCs: true` and a field declares a server-side renderer. Mirrors
+ * `defaultUIFieldComponentKeys` in `@payloadcms/ui` plus the trailing
+ * `AfterInput`/`BeforeInput`/etc. slots, and the `RowLabel` row hook
+ * arrays/blocks attach to their `rows[].customComponents`.
+ */
+const MOCK_PLACEHOLDER = 'Mock';
+
+export type MockedFieldSlot = {
+    /** Schema path with row indices stripped, e.g. `hero.title` (not `hero.0.title`). */
+    path: string;
+    /** Component slot that rendered the placeholder. `RowLabel` for array/blocks row headers. */
+    slot: string;
+};
+
+/**
+ * Walk a `FormState` and collect every `customComponents` entry Payload
+ * replaced with the placeholder string `'Mock'`. Sorted for stable assertions.
+ *
+ * @param state - The form state returned by `buildFormState`.
+ * @returns A list of `{ path, slot }` entries — empty when nothing was mocked.
+ */
+export function scanFormStateForMocks(state: FormState): MockedFieldSlot[] {
+    const found: MockedFieldSlot[] = [];
+
+    for (const [path, fieldState] of Object.entries(state)) {
+        if (!fieldState) continue;
+        const schemaPath = stripRowIndices(path);
+
+        const components = fieldState.customComponents;
+        if (components) {
+            for (const [slot, value] of Object.entries(components)) {
+                if (value === MOCK_PLACEHOLDER) {
+                    found.push({ path: schemaPath, slot });
+                }
+            }
+        }
+
+        if (Array.isArray(fieldState.rows)) {
+            for (const row of fieldState.rows) {
+                if (row?.customComponents?.RowLabel === MOCK_PLACEHOLDER) {
+                    found.push({ path: schemaPath, slot: 'RowLabel' });
+                    break;
+                }
+            }
+        }
+    }
+
+    return dedupeMocks(found);
+}
+
+/**
+ * Form-state paths embed row positions (`hero.0.title`); the collection
+ * config and `getFieldByPath` work on schema paths (`hero.title`). Drop
+ * any all-digit segment to bridge the two.
+ *
+ * @param path - Form-state path, possibly containing row indices.
+ * @returns Schema path with row indices removed.
+ */
+function stripRowIndices(path: string): string {
+    return path
+        .split('.')
+        .filter((segment) => !/^\d+$/.test(segment))
+        .join('.');
+}
+
+function dedupeMocks(entries: MockedFieldSlot[]): MockedFieldSlot[] {
+    const seen = new Set<string>();
+    const out: MockedFieldSlot[] = [];
+    for (const entry of entries) {
+        const key = `${entry.path}::${entry.slot}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        out.push(entry);
+    }
+    return out.sort((a, b) => a.path.localeCompare(b.path) || a.slot.localeCompare(b.slot));
+}
+
+/**
+ * Process-scoped dedupe so each `(collectionSlug, path, slot)` triple
+ * logs exactly once per server lifetime. `buildFormState` runs on every
+ * field interaction; without this we'd reprint the same warnings on
+ * every keystroke.
+ */
+const loggedMocks = new Set<string>();
+
+/**
+ * Emit a `console.warn` for every (collection, field, slot) triple Payload
+ * rendered as the placeholder string `'Mock'` because `mockRSCs: true` is
+ * pinned in this wrapper. Lets us track which field types still need a
+ * client-side renderer (or a custom Field component registered via the
+ * Payload importMap) without crashing the editor at runtime.
+ *
+ * @param collectionSlug - Slug of the collection whose form state was built.
+ * @param req - Authed Payload request — used to resolve the field config so we can include its `type` in the log.
+ * @param state - The form state returned by `buildFormState`.
+ */
+function logUnsupportedMocks(collectionSlug: string, req: PayloadRequest, state: FormState): void {
+    const collections = req?.payload?.collections as
+        | Record<string, { config?: { flattenedFields?: FlattenedField[] } }>
+        | undefined;
+    const flattenedFields = collections?.[collectionSlug]?.config?.flattenedFields;
+
+    for (const { path, slot } of scanFormStateForMocks(state)) {
+        const key = `${collectionSlug}::${path}::${slot}`;
+        if (loggedMocks.has(key)) continue;
+        loggedMocks.add(key);
+
+        const fieldType = flattenedFields
+            ? (getFieldByPath({ fields: flattenedFields, path })?.field.type ?? 'unknown')
+            : 'unknown';
+
+        console.warn(
+            `[cms/editor] field component rendered as '${MOCK_PLACEHOLDER}' placeholder — ` +
+                `collection=${collectionSlug} path=${path} type=${fieldType} slot=${slot}. ` +
+                `Add a client-side renderer or register the RSC implementation in Payload's importMap.`,
+        );
+    }
+}
+
+/**
+ * Test-only: clears the process-scoped dedupe set. Production code must
+ * never call this — re-emitting per-process noise is the point of the set.
+ *
+ * @internal
+ */
+export function __resetLoggedMocksForTests(): void {
+    loggedMocks.clear();
 }
