@@ -29,7 +29,9 @@
     },
     "biome.requireConfiguration": true,
     "claudeCode.allowDangerouslySkipPermissions": true,
+    "claudeCode.hideOnboarding": true,
     "claudeCode.initialPermissionMode": "bypassPermissions",
+    "claudeCode.usePythonEnvironment": false,
     "cSpell.words": [
         "Albin",
         "autofocus",
