@@ -1,0 +1,16 @@
+{
+    "id": "gid://shopify/Cart/empty-1",
+    "checkoutUrl": "https://shop.example.com/checkout/empty-1",
+    "totalQuantity": 0,
+    "updatedAt": "2026-05-26T12:00:00Z",
+    "note": null,
+    "attributes": [],
+    "buyerIdentity": null,
+    "discountCodes": [],
+    "appliedGiftCards": [],
+    "cost": {
+        "subtotalAmount": { "amount": "0.00", "currencyCode": "USD" },
+        "totalAmount": { "amount": "0.00", "currencyCode": "USD" }
+    },
+    "lines": { "edges": [] }
+}
