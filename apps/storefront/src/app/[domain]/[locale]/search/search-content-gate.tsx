@@ -3,7 +3,6 @@ import type { OnlineShop } from '@nordcom/commerce-db';
 
 import type { Product, ProductFilters } from '@/api/product';
 import ProductCard from '@/components/product-card';
-import { searchFilter } from '@/utils/flags/definitions';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import SearchContent from './search-content';
 
@@ -11,11 +10,11 @@ export type SearchContentGateProps = {
     shop: OnlineShop;
     locale: Locale;
     i18n: LocaleDictionary;
+    showFilters: boolean;
     data: { products?: Product[]; productFilters?: ProductFilters; totalCount?: number };
 };
 
-export default async function SearchContentGate({ shop, locale, i18n, data }: SearchContentGateProps) {
-    const showFilters = await searchFilter();
+export default function SearchContentGate({ shop, locale, i18n, showFilters, data }: SearchContentGateProps) {
     const { products = [], productFilters = [], totalCount } = data;
 
     const productCards = products.map((product) => (
@@ -38,3 +37,13 @@ export default async function SearchContentGate({ shop, locale, i18n, data }: Se
         />
     );
 }
+
+SearchContentGate.Skeleton = function SearchContentGateSkeleton() {
+    return (
+        <div className="flex flex-col gap-0">
+            {Array.from({ length: 6 }).map((_, index) => (
+                <ProductCard.skeleton key={index} variant="horizontal-bare" />
+            ))}
+        </div>
+    );
+};
