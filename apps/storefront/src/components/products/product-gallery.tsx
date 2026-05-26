@@ -80,8 +80,8 @@ const ProductGallery = ({
                             <Image
                                 role={image.altText ? undefined : 'presentation'}
                                 src={image.url!}
-                                alt={image.altText!}
-                                title={image.altText!}
+                                alt={image.altText ?? ''}
+                                title={image.altText ?? undefined}
                                 width={image.width ?? 500}
                                 height={image.height ?? 500}
                                 sizes="(max-width: 920px) 75vw, 500px"

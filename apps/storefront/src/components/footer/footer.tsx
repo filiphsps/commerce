@@ -100,7 +100,7 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
                     <div className={BLOCK_STYLES}>
                         {logo.src ? (
                             <Image
-                                className="h-16 object-contain object-left brightness-100 grayscale invert"
+                                className="h-16 w-auto object-contain object-left brightness-100 grayscale invert"
                                 title={shop.name}
                                 src={logo.src}
                                 alt={`${shop.name}'s Logo`}
