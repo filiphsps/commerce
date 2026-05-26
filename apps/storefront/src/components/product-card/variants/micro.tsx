@@ -20,7 +20,7 @@ export type MicroProps = {
     aspect: 'vertical' | 'horizontal' | 'micro';
 };
 
-const Micro = ({ shop, locale, product, seedVariant, priority, aspect }: MicroProps) => {
+const Micro = ({ shop, locale, i18n, product, seedVariant, priority, aspect }: MicroProps) => {
     const realOptions = filterRealOptions(product.options ?? []);
     const totalVariants = realOptions.reduce((acc, o) => acc * o.values.length, 1);
 
@@ -46,7 +46,7 @@ const Micro = ({ shop, locale, product, seedVariant, priority, aspect }: MicroPr
             </div>
             <div className="flex shrink-0 items-center gap-2">
                 <ProductCardPrice seedVariant={seedVariant} locale={locale} />
-                <ProductCardActions mode="icon" />
+                <ProductCardActions i18n={i18n} mode="icon" />
             </div>
         </>
     );

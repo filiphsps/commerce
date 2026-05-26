@@ -4,20 +4,24 @@ import { useCart } from '@shopify/hydrogen-react';
 import type { CartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import { Plus as PlusIcon } from 'lucide-react';
 import { useCallback } from 'react';
-import { useProductCardContext } from '@/components/product-card/context';
+import { useMaybeProductOptions } from '@/components/product-options/context';
 import AddToCart from '@/components/products/add-to-cart';
 import { QuantitySelector } from '@/components/products/quantity-selector';
+import type { LocaleDictionary } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 
 export type ProductCardActionsMode = 'full' | 'icon';
 
 export type ProductCardActionsProps = {
+    i18n: LocaleDictionary;
     mode?: ProductCardActionsMode;
     className?: string;
 };
 
-const ProductCardActions = ({ mode = 'full', className }: ProductCardActionsProps) => {
-    const { data: product, selected, i18n } = useProductCardContext();
+const ProductCardActions = ({ i18n, mode = 'full', className }: ProductCardActionsProps) => {
+    const ctx = useMaybeProductOptions();
+    const product = ctx?.product;
+    const selected = ctx?.selectedVariant;
     const { lines, linesUpdate, cartReady } = useCart();
 
     const line = (lines as CartLine[] | undefined)?.find(({ merchandise: { id } }) => id === selected?.id) ?? null;
@@ -34,7 +38,7 @@ const ProductCardActions = ({ mode = 'full', className }: ProductCardActionsProp
         [linesUpdate, lines, line],
     );
 
-    if (cartReady === undefined || !selected) {
+    if (cartReady === undefined || !product || !selected) {
         return null;
     }
 

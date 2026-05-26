@@ -55,15 +55,7 @@ const ProductCard = async ({ shop, locale, data: product, variant, priority = fa
 
     return (
         <Suspense key={`product-card.${product.handle}`} fallback={<Fragment />}>
-            <ProductCardRoot
-                data={product}
-                variant={resolved}
-                i18n={i18n}
-                locale={locale}
-                initialVariant={seedVariant}
-                priority={priority}
-                className={className}
-            >
+            <ProductCardRoot data={product} variant={resolved} className={className}>
                 <VariantComponent
                     shop={shop}
                     locale={locale}

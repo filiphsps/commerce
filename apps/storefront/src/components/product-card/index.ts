@@ -10,7 +10,6 @@ import ProductCardTitle from './primitives/product-card-title';
 import ProductCardBase from './product-card';
 
 export { COMMON_BADGE_STYLES } from '@/components/product-display/primitives/badge-styles';
-export { useProductCardContext } from './context';
 export type { ProductCardProps } from './product-card';
 export type { ProductCardVariant } from './variant';
 export { ALL_VARIANTS, DEFAULT_VARIANT, resolveVariant } from './variant';

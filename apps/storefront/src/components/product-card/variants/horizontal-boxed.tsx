@@ -34,7 +34,7 @@ const HorizontalBoxed = ({ shop, locale, i18n, product, seedVariant, priority, a
         </div>
         <div className="flex shrink-0 flex-col items-end justify-between gap-2 py-1">
             <ProductCardPrice seedVariant={seedVariant} locale={locale} />
-            <ProductCardActions mode="icon" />
+            <ProductCardActions i18n={i18n} mode="icon" />
         </div>
     </>
 );

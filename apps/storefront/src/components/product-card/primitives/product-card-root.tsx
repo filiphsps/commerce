@@ -1,49 +1,25 @@
-'use client';
-
 import type { ReactNode } from 'react';
-import { useMemo, useState } from 'react';
-import type { Product, ProductVariant } from '@/api/product';
-import { ProductCardContextProvider, type ProductCardVariant, resolveVariant } from '@/components/product-card/context';
+import type { Product } from '@/api/product';
 import * as ProductOptions from '@/components/product-options';
 import { toSelectionRecord } from '@/components/product-options/resolver';
 import { firstAvailableVariant } from '@/utils/first-available-variant';
-import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 import styles from '../product-card.module.css';
 
 export type ProductCardRootProps = {
     data: Product;
-    variant: ProductCardVariant | string;
-    i18n: LocaleDictionary;
-    locale: Locale;
-    initialVariant: ProductVariant | undefined;
-    priority: boolean;
+    variant: string;
     className?: string;
     children: ReactNode;
 };
 
-const ProductCardRoot = ({
-    data,
-    variant,
-    i18n,
-    locale,
-    initialVariant,
-    priority,
-    className,
-    children,
-}: ProductCardRootProps) => {
-    const resolved = resolveVariant(variant);
-    const seed = useMemo(() => initialVariant ?? firstAvailableVariant(data), [initialVariant, data]);
-    const [selected, setSelectedState] = useState<ProductVariant | undefined>(seed);
-    const [hoveredImage, setHoveredImage] = useState<ProductVariant['image'] | undefined>(undefined);
+const ProductCardRoot = ({ data, variant, className, children }: ProductCardRootProps) => {
+    const seed = firstAvailableVariant(data) ?? data.variants?.edges?.[0]?.node;
+    const seedSelection = toSelectionRecord(seed);
 
-    const setSelected = (updater: (prev: ProductVariant | undefined) => ProductVariant) => {
-        setSelectedState((prev) => updater(prev));
-    };
-
-    const isBare = resolved.endsWith('-bare');
-    const isHorizontal = resolved.startsWith('horizontal');
-    const isMicro = resolved === 'micro';
+    const isBare = variant.endsWith('-bare');
+    const isHorizontal = variant.startsWith('horizontal');
+    const isMicro = variant === 'micro';
 
     const containerStyles = cn(
         styles.productCardRoot,
@@ -65,25 +41,17 @@ const ProductCardRoot = ({
     );
 
     return (
-        <ProductCardContextProvider
-            value={{
-                variant: resolved,
-                data,
-                selected,
-                setSelected,
-                hoveredImage,
-                setHoveredImage,
-                i18n,
-                locale,
-                priority,
-            }}
+        <article
+            data-testid="product-card-root"
+            data-variant={variant}
+            data-layout={isMicro ? 'micro' : isHorizontal ? 'horizontal' : 'vertical'}
+            data-chrome={isBare ? 'bare' : 'boxed'}
+            className={containerStyles}
         >
-            <ProductOptions.Root product={data} initialSelection={toSelectionRecord(seed)}>
-                <div data-testid="product-card-root" data-variant={resolved} className={containerStyles}>
-                    {children}
-                </div>
+            <ProductOptions.Root product={data} initialSelection={seedSelection}>
+                {children}
             </ProductOptions.Root>
-        </ProductCardContextProvider>
+        </article>
     );
 };
 
