@@ -68,6 +68,7 @@
         "in-stock-and-available": "Tillgängligt i lager",
         "in-stock": "Tillgängligt i lager",
         "n-in-stock-and-available": "{0} tillgängligt i lager",
+        "only-n-left": "Endast {0} kvar",
         "back-order": "Tillgängligt på restorder",
         "new": "Ny",
         "percentage-off": "{0}% OFF",

@@ -68,6 +68,7 @@
         "ingredients": "Ingredienser",
         "n-in-stock-and-available": "{0} i lager og tilgjengelig",
         "n-in-stock": "{0} i lager",
+        "only-n-left": "Bare {0} igjen",
         "back-order": "Tilgjengelig på restordre",
         "new": "Ny",
         "nutritional-content": "Ekstra nyttig innhold",

@@ -89,6 +89,7 @@
         "ingredients": "Ingredients",
         "n-in-stock-and-available": "{0} in stock and available",
         "n-in-stock": "{0} in stock",
+        "only-n-left": "Only {0} left",
         "back-order": "Available on back-order",
         "new": "New",
         "nutritional-content": "Nutritional Content",
