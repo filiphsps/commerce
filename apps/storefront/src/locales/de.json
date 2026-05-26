@@ -27,6 +27,18 @@
         "n-left": "Nur noch {0} verfügbar",
         "back-order": "Auf Bestellung verfügbar"
     },
+    "cart-errors": {
+        "missing-shop": "Shop nicht verfügbar. Bitte aktualisiere die Seite und versuche es erneut.",
+        "missing-variant": "Produktvariante fehlt.",
+        "missing-line": "Warenkorbposition nicht gefunden.",
+        "missing-cart": "Warenkorb abgelaufen. Bitte erneut versuchen.",
+        "invalid-quantity": "Ungültige Anzahl.",
+        "invalid-code": "Ungültiger Code.",
+        "unauthorized": "Bitte melde dich an, um fortzufahren.",
+        "user-error": "Warenkorb konnte nicht aktualisiert werden.",
+        "network-error": "Warenkorb-Dienst nicht erreichbar. Bitte erneut versuchen.",
+        "provider-error": "Fehler im Warenkorb-Dienst. Bitte erneut versuchen."
+    },
     "common": {
         "account": "konto",
         "add-to-cart": "In den Warenkorb",

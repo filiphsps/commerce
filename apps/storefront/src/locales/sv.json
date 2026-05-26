@@ -20,6 +20,18 @@
         "n-left": "Endast {0} kvar",
         "back-order": "Tillgängligt på restorder"
     },
+    "cart-errors": {
+        "missing-shop": "Butiken är inte tillgänglig. Uppdatera sidan och försök igen.",
+        "missing-variant": "Produktvariant saknas.",
+        "missing-line": "Varukorgsrad hittades inte.",
+        "missing-cart": "Varukorgen har gått ut. Försök igen.",
+        "invalid-quantity": "Ogiltigt antal.",
+        "invalid-code": "Ogiltig kod.",
+        "unauthorized": "Logga in för att fortsätta.",
+        "user-error": "Varukorgen kunde inte uppdateras.",
+        "network-error": "Kunde inte nå varukorgstjänsten. Försök igen.",
+        "provider-error": "Fel i varukorgstjänsten. Försök igen."
+    },
     "common": {
         "add-to-cart": "Köp",
         "add": "Lägg till",

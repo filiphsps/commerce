@@ -22,6 +22,18 @@
         "n-left": "Bare {0} igjen",
         "back-order": "Tilgjengelig på restordre"
     },
+    "cart-errors": {
+        "missing-shop": "Butikken er ikke tilgjengelig. Oppdater siden og prøv igjen.",
+        "missing-variant": "Produktvariant mangler.",
+        "missing-line": "Handlekurvlinje ikke funnet.",
+        "missing-cart": "Handlekurven utløpt. Prøv igjen.",
+        "invalid-quantity": "Ugyldig antall.",
+        "invalid-code": "Ugyldig kode.",
+        "unauthorized": "Logg inn for å fortsette.",
+        "user-error": "Kunne ikke oppdatere handlekurven.",
+        "network-error": "Kunne ikke nå handlekurvtjenesten. Prøv igjen.",
+        "provider-error": "Feil i handlekurvtjenesten. Prøv igjen."
+    },
     "common": {
         "account": "konto",
         "add-to-cart": "Kjøpe",

@@ -27,6 +27,18 @@
         "n-left": "Only {0} left",
         "back-order": "Available on back-order"
     },
+    "cart-errors": {
+        "missing-shop": "Shop unavailable. Please refresh and try again.",
+        "missing-variant": "Product variant missing.",
+        "missing-line": "Cart line not found.",
+        "missing-cart": "Cart expired. Try again.",
+        "invalid-quantity": "Invalid quantity.",
+        "invalid-code": "Invalid code.",
+        "unauthorized": "Please log in to continue.",
+        "user-error": "Could not update cart.",
+        "network-error": "Couldn't reach the cart service. Try again.",
+        "provider-error": "Cart provider error. Try again."
+    },
     "common": {
         "account-dashboard": "account dashboard",
         "account": "account",

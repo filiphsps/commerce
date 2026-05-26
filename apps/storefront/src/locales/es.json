@@ -27,6 +27,18 @@
         "n-left": "Solo {0} restantes",
         "back-order": "Disponible en pedido pendiente"
     },
+    "cart-errors": {
+        "missing-shop": "Tienda no disponible. Actualiza la página e inténtalo de nuevo.",
+        "missing-variant": "Falta la variante del producto.",
+        "missing-line": "Línea del carrito no encontrada.",
+        "missing-cart": "El carrito ha caducado. Inténtalo de nuevo.",
+        "invalid-quantity": "Cantidad inválida.",
+        "invalid-code": "Código inválido.",
+        "unauthorized": "Inicia sesión para continuar.",
+        "user-error": "No se pudo actualizar el carrito.",
+        "network-error": "No se pudo conectar con el servicio del carrito. Inténtalo de nuevo.",
+        "provider-error": "Error en el servicio del carrito. Inténtalo de nuevo."
+    },
     "common": {
         "account": "cuenta",
         "add-to-cart": "Agregar al Carrito",

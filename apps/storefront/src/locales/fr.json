@@ -22,6 +22,18 @@
         "n-left": "Plus que {0} en stock",
         "back-order": "Disponible en précommande"
     },
+    "cart-errors": {
+        "missing-shop": "Boutique indisponible. Veuillez actualiser et réessayer.",
+        "missing-variant": "Variante de produit manquante.",
+        "missing-line": "Ligne du panier introuvable.",
+        "missing-cart": "Panier expiré. Veuillez réessayer.",
+        "invalid-quantity": "Quantité invalide.",
+        "invalid-code": "Code invalide.",
+        "unauthorized": "Veuillez vous connecter pour continuer.",
+        "user-error": "Impossible de mettre à jour le panier.",
+        "network-error": "Impossible de joindre le service de panier. Veuillez réessayer.",
+        "provider-error": "Erreur du service de panier. Veuillez réessayer."
+    },
     "common": {
         "account": "compte",
         "add-to-cart": "Ajouter au panier",
