@@ -19,7 +19,7 @@ runs:
     steps:
         - name: 💾 Save node_modules
           if: inputs.node-modules-cache-hit != 'true'
-          uses: actions/cache/save@v4
+          uses: actions/cache/save@v5
           with:
               path: |
                   node_modules
@@ -29,14 +29,14 @@ runs:
 
         - name: 💾 Save turbo cache
           if: inputs.turbo-cache-hit == 'false' && hashFiles('.turbo/**') != ''
-          uses: actions/cache/save@v4
+          uses: actions/cache/save@v5
           with:
               path: .turbo
               key: ${{ runner.os }}-turbo-${{ github.ref_name }}-${{ github.sha }}
 
         - name: 💾 Save mongodb-memory-server binary
           if: inputs.mongo-binary-cache-hit == 'false' && hashFiles('/home/runner/.cache/mongodb-binaries/**/*') != ''
-          uses: actions/cache/save@v4
+          uses: actions/cache/save@v5
           with:
               path: /home/runner/.cache/mongodb-binaries
               key: ${{ runner.os }}-mongoms-${{ env.MONGOMS_VERSION }}

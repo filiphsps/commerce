@@ -34,7 +34,7 @@ runs:
 
         - name: 💾 Restore node_modules
           id: cache-node-modules
-          uses: actions/cache/restore@v4
+          uses: actions/cache/restore@v5
           with:
               path: |
                   node_modules
@@ -50,7 +50,7 @@ runs:
         - name: 💾 Restore turbo cache
           id: cache-turbo
           if: inputs.turbo-cache == 'true'
-          uses: actions/cache/restore@v4
+          uses: actions/cache/restore@v5
           with:
               path: .turbo
               key: ${{ runner.os }}-turbo-${{ github.ref_name }}-${{ github.sha }}
@@ -61,7 +61,7 @@ runs:
 
         - name: 💾 Restore mongodb-memory-server binary
           id: cache-mongo-binary
-          uses: actions/cache/restore@v4
+          uses: actions/cache/restore@v5
           with:
               path: /home/runner/.cache/mongodb-binaries
               key: ${{ runner.os }}-mongoms-${{ env.MONGOMS_VERSION }}

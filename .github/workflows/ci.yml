@@ -157,7 +157,7 @@ jobs:
 
             - name: 💾 Restore Next.js build cache
               id: cache-nextjs
-              uses: actions/cache/restore@v4
+              uses: actions/cache/restore@v5
               with:
                   path: |
                       apps/*/.next/cache
@@ -184,7 +184,7 @@ jobs:
 
             - name: 💾 Save Next.js build cache
               if: always() && steps.cache-nextjs.outputs.cache-hit != 'true'
-              uses: actions/cache/save@v4
+              uses: actions/cache/save@v5
               with:
                   path: |
                       apps/*/.next/cache
@@ -227,7 +227,7 @@ jobs:
 
             - name: 💾 Restore Playwright browsers
               id: cache-playwright
-              uses: actions/cache/restore@v4
+              uses: actions/cache/restore@v5
               with:
                   path: ~/.cache/ms-playwright
                   key: ${{ runner.os }}-playwright-${{ hashFiles('pnpm-lock.yaml') }}
@@ -281,7 +281,7 @@ jobs:
 
             - name: 💾 Save Playwright browsers
               if: always() && steps.cache-playwright.outputs.cache-hit != 'true'
-              uses: actions/cache/save@v4
+              uses: actions/cache/save@v5
               with:
                   path: ~/.cache/ms-playwright
                   key: ${{ runner.os }}-playwright-${{ hashFiles('pnpm-lock.yaml') }}
