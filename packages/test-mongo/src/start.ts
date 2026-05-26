@@ -67,15 +67,15 @@ function installShutdownHandlers(): void {
         }
     };
 
-    const onSignal = (_signal: NodeJS.Signals, signum: number): void => {
+    const onSignal = (signum: number): void => {
         void asyncStopAll().finally(() => {
             process.exit(128 + signum);
         });
     };
 
-    process.once('SIGINT', () => onSignal('SIGINT', 2));
-    process.once('SIGTERM', () => onSignal('SIGTERM', 15));
-    process.once('SIGHUP', () => onSignal('SIGHUP', 1));
+    process.once('SIGINT', () => onSignal(2));
+    process.once('SIGTERM', () => onSignal(15));
+    process.once('SIGHUP', () => onSignal(1));
 
     process.on('beforeExit', () => {
         if (activeReplSets.size === 0) return;
