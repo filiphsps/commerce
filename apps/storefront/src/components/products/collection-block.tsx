@@ -8,6 +8,7 @@ import type { Product } from '@/api/product';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import type { CollectionFilters } from '@/api/shopify/collection';
 import ProductCard from '@/components/product-card';
+import CollectionBlockArrows from '@/components/products/collection-block-arrows';
 import CollectionProductCard from '@/components/products/collection-product-card';
 import CollectionViewAllTile from '@/components/products/collection-view-all-tile';
 import type { Locale } from '@/utils/locale';
@@ -96,22 +97,28 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
         return <>{productCards}</>;
     }
 
+    const railId = handle ? `rail-${handle}` : 'rail';
+
     return (
-        <Tag
-            {...props}
-            className={cn(
-                'contain-intrinsic-size-[auto_100%] grid w-full snap-x snap-mandatory gap-2 content-visibility-auto',
-                !isHorizontal &&
-                    'grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] md:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] xl:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))]',
-                isHorizontal &&
-                    'overflow-x-shadow -my-2 auto-cols-[minmax(13rem,1fr)] grid-flow-col grid-cols-[repeat(auto-fit,minmax(13rem,1fr))] grid-rows-1 overscroll-x-auto py-2',
-                className,
-            )}
-        >
-            {children}
-            {productCards}
-            {collection && showViewAll ? <CollectionViewAllTile collection={collection} /> : null}
-        </Tag>
+        <div className="relative">
+            {isHorizontal ? <CollectionBlockArrows railSelector={`[data-rail='${railId}']`} /> : null}
+            <Tag
+                {...props}
+                data-rail={isHorizontal ? railId : undefined}
+                className={cn(
+                    'contain-intrinsic-size-[auto_100%] grid w-full snap-x snap-mandatory gap-2 content-visibility-auto',
+                    !isHorizontal &&
+                        'grid-cols-[repeat(auto-fill,minmax(var(--product-card-min-width),var(--product-card-max-width)))] justify-(--product-card-grid-align)',
+                    isHorizontal &&
+                        'overflow-x-shadow -my-2 auto-cols-[var(--product-card-max-width)] grid-flow-col grid-cols-[var(--product-card-max-width)] grid-rows-1 overscroll-x-auto py-2 scroll-px-(--block-padding)',
+                    className,
+                )}
+            >
+                {children}
+                {productCards}
+                {collection && showViewAll ? <CollectionViewAllTile collection={collection} /> : null}
+            </Tag>
+        </div>
     );
 };
 
@@ -142,9 +149,9 @@ CollectionBlock.skeleton = ({
             className={cn(
                 'grid w-full gap-2',
                 !isHorizontal &&
-                    'grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] md:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] xl:grid-cols-[repeat(auto-fill,minmax(12rem,1fr))]',
+                    'grid-cols-[repeat(auto-fill,minmax(var(--product-card-min-width),var(--product-card-max-width)))] justify-(--product-card-grid-align)',
                 isHorizontal &&
-                    '-mr-8 auto-cols-[minmax(12rem,1fr)] grid-flow-col grid-cols-[repeat(auto-fit,minmax(12rem,1fr))] grid-rows-1 overflow-x-clip overscroll-none',
+                    '-mr-8 auto-cols-[var(--product-card-max-width)] grid-flow-col grid-cols-[var(--product-card-max-width)] grid-rows-1 overflow-x-clip overscroll-none',
                 className,
             )}
         >
