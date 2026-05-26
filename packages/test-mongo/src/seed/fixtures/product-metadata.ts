@@ -1,13 +1,16 @@
 /**
  * Product-metadata fixtures for the seeded demo tenant. CMS overlay on top
- * of Shopify product handles — exercises the rich `descriptionOverride`
- * field plus the full block stack so storefront PDP overrides render with
- * varied content. Handles point at real mock.shop products so PDP fetches
- * actually resolve.
+ * of Shopify product handles — every product mock.shop returns from
+ * `{ products(first: 100) }` (29 in total) gets a matching CMS entry so
+ * the storefront PDP override path renders for any product the user
+ * clicks into.
  *
- * Coverage spans hoodies (colourways), outerwear, sneakers (leather +
- * canvas + runners + high-top), accessories (beanie, sunnies), and the
- * sweatpants / shorts staples — ten products in total.
+ * Headliner products (`puffer-jacket`, the Soft Cotton Hoodie colourways,
+ * the sneaker range) get richer block stacks with collapsible care
+ * instructions, callout alerts, and overview / media-grid blocks. Basics
+ * and second-string SKUs share a thinner template — descriptionOverride
+ * plus the shared `careBlock` / `lifetimeAlert` helpers — so the seed
+ * stays maintainable as the catalog grows.
  */
 
 import { heading, lexicalDoc, list, paragraph } from './lexical';
@@ -48,7 +51,29 @@ const lifetimeAlert = {
     dismissible: false,
 };
 
+const seo = (title: string, description: string, keywords?: string[]): Record<string, unknown> => ({
+    title: `${title} — Nordcom Demo Shop`,
+    description,
+    ...(keywords ? { keywords } : {}),
+});
+
+const simpleProduct = (
+    handle: string,
+    displayTitle: string,
+    summary: string,
+    description: string,
+    seoDescription: string,
+    keywords?: string[],
+    extraBlocks: Array<Record<string, unknown>> = [],
+): ProductMetadataFixture => ({
+    shopifyHandle: handle,
+    descriptionOverride: lexicalDoc([heading(displayTitle, 'h2'), paragraph(summary), paragraph(description)]),
+    blocks: [careBlock, ...extraBlocks],
+    seo: seo(displayTitle, seoDescription, keywords),
+});
+
 export const productMetadataFixtures: ProductMetadataFixture[] = [
+    // ─── Headliners ─────────────────────────────────────────────────────────
     {
         shopifyHandle: 'puffer-jacket',
         descriptionOverride: lexicalDoc([
@@ -77,20 +102,13 @@ export const productMetadataFixtures: ProductMetadataFixture[] = [
                     { caption: 'On location, Lofoten' },
                 ],
             },
-            {
-                blockType: 'overview',
-                source: 'collection',
-                collectionHandle: 'women',
-                title: 'Pairs with',
-                limit: 4,
-            },
+            { blockType: 'overview', source: 'collection', collectionHandle: 'women', title: 'Pairs with', limit: 4 },
         ],
-        seo: {
-            title: 'Puffer Jacket — Nordcom Demo Shop',
-            description:
-                '600-fill recycled goose down in a bluesign-certified ripstop shell. Made in Portugal, repaired for life.',
-            keywords: ['recycled down', 'puffer', 'outerwear'],
-        },
+        seo: seo(
+            'Puffer Jacket',
+            '600-fill recycled goose down in a bluesign-certified ripstop shell. Made in Portugal, repaired for life.',
+            ['recycled down', 'puffer', 'outerwear'],
+        ),
     },
     {
         shopifyHandle: 'light-puffer',
@@ -110,12 +128,23 @@ export const productMetadataFixtures: ProductMetadataFixture[] = [
                 dismissible: false,
             },
         ],
-        seo: {
-            title: 'Light Puffer — Nordcom Demo Shop',
-            description: '450-fill recycled down. Packs into its own pocket. Mid-season insulator.',
-            keywords: ['light puffer', 'travel', 'outerwear'],
-        },
+        seo: seo('Light Puffer', '450-fill recycled down. Packs into its own pocket. Mid-season insulator.', [
+            'light puffer',
+            'travel',
+            'outerwear',
+        ]),
     },
+    simpleProduct(
+        'puffer',
+        'The Puffer',
+        'Heritage block-colour puffer — 550-fill recycled down, matte ripstop shell, oversized cuff.',
+        'Cut on the same last as the puffer-jacket but with a quilted exterior and a single chest pocket. Wears looser through the body.',
+        '550-fill recycled down puffer with a matte ripstop shell. Heritage block-colour palette.',
+        ['puffer', 'outerwear'],
+        [lifetimeAlert],
+    ),
+
+    // ─── Soft Cotton Hoodie colourways ──────────────────────────────────────
     {
         shopifyHandle: 'soft-cotton-hoodie-in-jam',
         descriptionOverride: lexicalDoc([
@@ -167,38 +196,101 @@ export const productMetadataFixtures: ProductMetadataFixture[] = [
                 limit: 6,
             },
         ],
-        seo: {
-            title: 'Soft Cotton Hoodie in Jam — Nordcom Demo Shop',
-            description: '380 g/m² loopback Egyptian cotton, garment-dyed in Porto. Softens with every wash.',
-            keywords: ['hoodie', 'cotton', 'tops'],
-        },
+        seo: seo(
+            'Soft Cotton Hoodie in Jam',
+            '380 g/m² loopback Egyptian cotton, garment-dyed in Porto. Softens with every wash.',
+            ['hoodie', 'cotton', 'tops'],
+        ),
     },
-    {
-        shopifyHandle: 'soft-cotton-hoodie-in-ocean',
-        descriptionOverride: lexicalDoc([
-            heading('The Soft Cotton Hoodie — Ocean', 'h2'),
-            paragraph('Deep navy-blue garment dye. Same heavyweight loopback Egyptian cotton; same cut.'),
-        ]),
-        blocks: [careBlock],
-        seo: {
-            title: 'Soft Cotton Hoodie in Ocean — Nordcom Demo Shop',
-            description: 'Deep navy garment-dyed loopback hoodie. 380 g/m² Egyptian cotton, cut in Porto.',
-        },
-    },
-    {
-        shopifyHandle: 'men-t-shirt',
-        descriptionOverride: lexicalDoc([
-            heading("Men's T-shirt", 'h2'),
-            paragraph(
-                'A 200 g/m² long-staple cotton T-shirt with a slightly heavier feel than the supermarket benchmark. Set-in sleeves, ribbed neck, side-vent.',
-            ),
-        ]),
-        blocks: [careBlock],
-        seo: {
-            title: "Men's T-shirt — Nordcom Demo Shop",
-            description: '200 g/m² long-staple cotton T-shirt. Cut in Porto, garment-washed, drops in five sizes.',
-        },
-    },
+    simpleProduct(
+        'soft-cotton-hoodie-in-clay',
+        'The Soft Cotton Hoodie — Clay',
+        'Warm earth-tone garment dye. Same heavyweight loopback Egyptian cotton; same cut.',
+        'A muted reddish-brown that reads dustier in daylight than online photography suggests. Pairs with everything you already own.',
+        'Earth-tone garment-dyed loopback hoodie. 380 g/m² Egyptian cotton, cut in Porto.',
+    ),
+    simpleProduct(
+        'soft-cotton-hoodie-in-ocean',
+        'The Soft Cotton Hoodie — Ocean',
+        'Deep navy-blue garment dye. Same heavyweight loopback Egyptian cotton; same cut.',
+        'Ocean is the most "wardrobe-safe" colourway — pairs with denim, grey trousers, or the matching sweatpants.',
+        'Deep navy garment-dyed loopback hoodie. 380 g/m² Egyptian cotton, cut in Porto.',
+    ),
+    simpleProduct(
+        'soft-cotton-hoodie-in-violet',
+        'The Soft Cotton Hoodie — Violet',
+        'Saturated cool-violet garment dye. Limited production run.',
+        'A new SS26 colour. Two-week dye-batch reservation; expect slight tonal variance between units.',
+        'Limited-edition violet garment-dyed loopback hoodie. 380 g/m² Egyptian cotton.',
+    ),
+    simpleProduct(
+        'soft-cotton-hoodie-in-green',
+        'The Soft Cotton Hoodie — Green',
+        'A deep forest green that leans muted under indoor light.',
+        'Pairs with the gray-runners and the canvas-sneakers; reads almost charcoal under tungsten.',
+        'Forest-green garment-dyed loopback hoodie. 380 g/m² Egyptian cotton, made in Porto.',
+    ),
+
+    // ─── Cotton basics ──────────────────────────────────────────────────────
+    simpleProduct(
+        'hoodie',
+        'The Hoodie',
+        'Our reference hoodie — same 380 g/m² loopback as the colourway range, in a single core grey marl.',
+        'If you only own one hoodie, this is it. Standard fit, drawstring hood, double-stitched seams.',
+        '380 g/m² loopback hoodie in core grey marl. The reference fit.',
+        ['hoodie'],
+    ),
+    simpleProduct(
+        'hoodie-old',
+        'The Hoodie (heritage cut)',
+        'The original hoodie we launched with in 2018, retained for collectors. Thinner shoulder pad, longer body.',
+        'A heritage cut we have kept in production for the customers who learned the brand on it. 320 g/m² loopback, slightly cropped sleeve.',
+        '320 g/m² heritage-cut hoodie. Retained from our 2018 launch range.',
+    ),
+    simpleProduct(
+        'men-t-shirt',
+        "Men's T-shirt",
+        '200 g/m² long-staple cotton. Set-in sleeves, ribbed neck, side-vent.',
+        'A slightly heavier feel than the supermarket benchmark. Cut to skim, not cling.',
+        '200 g/m² long-staple cotton T-shirt. Cut in Porto, drops in five sizes.',
+    ),
+    simpleProduct(
+        'women-t-shirt',
+        "Women's T-shirt",
+        '200 g/m² long-staple cotton. Trim ribbed neck, gently fitted through the waist.',
+        "Same loopback as the men's cut but with a slightly higher armhole and a shorter sleeve.",
+        '200 g/m² fitted T-shirt for women. Long-staple cotton, cut in Porto.',
+    ),
+    simpleProduct(
+        'men-crewneck',
+        "Men's Crewneck",
+        '340 g/m² brushed-back loopback. Crewneck silhouette, ribbed cuff and hem.',
+        "The hoodie's quieter cousin. Same fabric, less drama.",
+        '340 g/m² brushed loopback crewneck. Ribbed cuff, set-in sleeve.',
+    ),
+    simpleProduct(
+        'women-crewneck',
+        "Women's Crewneck",
+        '340 g/m² brushed-back loopback. Slightly cropped body, dropped shoulder.',
+        'Crops just above the waistband of a high-rise trouser; sleeve reaches mid-thumb.',
+        '340 g/m² brushed loopback crewneck for women. Cropped body, dropped shoulder.',
+    ),
+    simpleProduct(
+        'half-zip',
+        'Half-Zip',
+        '320 g/m² brushed knit pull-over with a YKK two-way zip from neck to chest.',
+        'A workhorse layering piece. Wear under outerwear or solo on a transitional day.',
+        '320 g/m² brushed half-zip with a YKK two-way zip. Cut in Porto.',
+    ),
+    simpleProduct(
+        'workout-shirt',
+        'Workout Shirt',
+        '160 g/m² long-staple performance jersey. Quick-drying, low-friction underarm panel.',
+        'Built for the gym, not for branding. No logo, no shine, no synthetic mesh.',
+        '160 g/m² performance jersey workout shirt. No logo, no shine.',
+    ),
+
+    // ─── Bottoms ────────────────────────────────────────────────────────────
     {
         shopifyHandle: 'sweatpants',
         descriptionOverride: lexicalDoc([
@@ -217,11 +309,24 @@ export const productMetadataFixtures: ProductMetadataFixture[] = [
             },
             careBlock,
         ],
-        seo: {
-            title: 'Sweatpants — Nordcom Demo Shop',
-            description: 'Loopback cotton sweatpants with a drawstring waist. Cut and sewn in Porto.',
-        },
+        seo: seo('Sweatpants', 'Loopback cotton sweatpants with a drawstring waist. Cut and sewn in Porto.'),
     },
+    simpleProduct(
+        'shorts',
+        'Shorts',
+        '180 g/m² French-terry shorts. Above-the-knee, drawstring waist, single rear pocket.',
+        'Cut on the same waistband block as the sweatpants — straight swap into the summer wardrobe.',
+        'French-terry above-knee shorts. Drawstring waist, cut in Porto.',
+    ),
+    simpleProduct(
+        'leggings',
+        'Leggings',
+        '4-way stretch performance fabric. High-rise, full-length, no front seam.',
+        'Squat-tested for opacity; the seamless front sits flat under a fitted top.',
+        'High-rise 4-way stretch leggings. Full-length, seamless front.',
+    ),
+
+    // ─── Shoes ──────────────────────────────────────────────────────────────
     {
         shopifyHandle: 'canvas-sneakers',
         descriptionOverride: lexicalDoc([
@@ -244,11 +349,10 @@ export const productMetadataFixtures: ProductMetadataFixture[] = [
                 ]),
             },
         ],
-        seo: {
-            title: 'Canvas Sneakers — Nordcom Demo Shop',
-            description:
-                'Cup-soled canvas sneakers on a wide last. Italian canvas, vulcanised rubber, made to be resoled.',
-        },
+        seo: seo(
+            'Canvas Sneakers',
+            'Cup-soled canvas sneakers on a wide last. Italian canvas, vulcanised rubber, made to be resoled.',
+        ),
     },
     {
         shopifyHandle: 'white-leather-sneakers',
@@ -272,12 +376,47 @@ export const productMetadataFixtures: ProductMetadataFixture[] = [
                 ],
             },
         ],
-        seo: {
-            title: 'White Leather Sneakers — Nordcom Demo Shop',
-            description:
-                'Italian cup-soled white leather sneaker. Full-grain upper, leather lined, free resoles for life.',
-        },
+        seo: seo(
+            'White Leather Sneakers',
+            'Italian cup-soled white leather sneaker. Full-grain upper, leather lined, free resoles for life.',
+        ),
     },
+    simpleProduct(
+        'gray-leather-sneakers',
+        'Gray Leather Sneakers',
+        'Italian cup-soled leather sneaker in a soft grey full-grain. Same last + sole construction as the white leather pair.',
+        'Slightly more colour-fast under daily wear than the white pair — recommended for travel.',
+        'Italian cup-soled grey leather sneakers. Full-grain upper, leather lining, vulcanised sole.',
+        ['sneakers', 'leather'],
+        [lifetimeAlert],
+    ),
+    simpleProduct(
+        'gray-runners',
+        'Gray Runners',
+        'A lighter every-day runner. Knit-mesh upper, EVA midsole, rubber waffle outsole.',
+        'Built around city pavement, not a track — cushioned but supportive, with a heel-toe drop suited to walking days.',
+        'Knit-mesh runners with an EVA midsole. Built for city pavement.',
+        ['runners', 'sneakers'],
+    ),
+    simpleProduct(
+        'high-top-sneakers',
+        'High-Top Sneakers',
+        'Italian high-top cup-soled sneaker. Full-grain leather upper, leather lining, padded ankle collar.',
+        'Same wide last as the cup-soled range; size as you would the canvas pair.',
+        'Italian high-top cup-soled leather sneakers. Wide-last, padded ankle collar.',
+        ['high-top', 'sneakers', 'leather'],
+        [lifetimeAlert],
+    ),
+    simpleProduct(
+        'slides',
+        'Slides',
+        'A heritage cork-footbed slide on a recycled-rubber outsole. Leather upper with a single buckled strap.',
+        'The summer slide we have been wearing in the studio since 2019. Mould perfectly to the foot after a week of wear.',
+        'Cork-footbed leather slides with a single buckled strap.',
+        ['slides', 'shoes'],
+    ),
+
+    // ─── Accessories ────────────────────────────────────────────────────────
     {
         shopifyHandle: 'beanie',
         descriptionOverride: lexicalDoc([
@@ -287,10 +426,7 @@ export const productMetadataFixtures: ProductMetadataFixture[] = [
             ),
         ]),
         blocks: [careBlock],
-        seo: {
-            title: 'Beanie — Nordcom Demo Shop',
-            description: 'Two-ply merino wool beanie. Hand-finished, no synthetic blend, made in Värmland.',
-        },
+        seo: seo('Beanie', 'Two-ply merino wool beanie. Hand-finished, no synthetic blend, made in Värmland.'),
     },
     {
         shopifyHandle: 'black-sunnies',
@@ -309,9 +445,22 @@ export const productMetadataFixtures: ProductMetadataFixture[] = [
                 dismissible: false,
             },
         ],
-        seo: {
-            title: 'Black Sunnies — Nordcom Demo Shop',
-            description: 'Italian bio-acetate frames, UV400 CR-39 lenses. Prescription-ready up to ±6.00.',
-        },
+        seo: seo('Black Sunnies', 'Italian bio-acetate frames, UV400 CR-39 lenses. Prescription-ready up to ±6.00.'),
     },
+    simpleProduct(
+        'clear-sunnies',
+        'Clear Sunnies',
+        'Italian bio-acetate frames in a clear-crystal finish. CR-39 lenses with hard-coat and oleophobic finish. UV400.',
+        'Same shape + last as the black pair; the clear variant lets the lens tint read more strongly indoors.',
+        'Italian clear-crystal acetate frames. UV400, prescription-ready.',
+        ['sunglasses', 'accessories'],
+    ),
+    simpleProduct(
+        'frontpack',
+        'Frontpack',
+        '5 L sling-bag in 16 oz waxed cotton canvas with a leather-trim strap. YKK zips, magnetic side-stash.',
+        'Sized to take a paperback, a 13" laptop, or a Light Puffer. Worn front or back.',
+        '5 L sling-bag in 16 oz waxed cotton canvas. Sized for a 13-inch laptop.',
+        ['bag', 'accessories'],
+    ),
 ];
