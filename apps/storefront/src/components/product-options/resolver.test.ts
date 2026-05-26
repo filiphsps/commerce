@@ -83,6 +83,44 @@ describe('resolveOptions', () => {
         expect(size.values.find((v) => v.name === 'L')!.available).toBe(false);
     });
 
+    it('derives availability cross-axis for the other option when one is selected', () => {
+        // With Size=S selected, the Color option should reflect availability
+        // for variants where Size=S is preserved:
+        //   Red+S → v1 available → Red: available
+        //   Green+S → v3 available → Green: available
+        //   Blue+S → no variant → Blue: unavailable
+        const resolved = resolveOptions(fakeProduct(), { Size: 'S' });
+        const color = resolved.find((o) => o.name === 'Color')!;
+        expect(color.values.find((v) => v.name === 'Red')!.available).toBe(true);
+        expect(color.values.find((v) => v.name === 'Green')!.available).toBe(true);
+        expect(color.values.find((v) => v.name === 'Blue')!.available).toBe(false);
+    });
+
+    it('returns swatch as undefined when raw swatch has neither color nor image', () => {
+        const product = fakeProduct({
+            options: [
+                {
+                    name: 'Material',
+                    values: ['Cotton'],
+                    optionValues: [{ name: 'Cotton', swatch: {} }],
+                },
+            ],
+            variants: {
+                edges: [
+                    {
+                        node: {
+                            id: 'vm1',
+                            availableForSale: true,
+                            selectedOptions: [{ name: 'Material', value: 'Cotton' }],
+                        },
+                    },
+                ],
+            },
+        });
+        const resolved = resolveOptions(product, {});
+        expect(resolved[0]!.values[0]!.swatch).toBeUndefined();
+    });
+
     it('normalizes swatch.color through directly', () => {
         const resolved = resolveOptions(fakeProduct(), {});
         const color = resolved.find((o) => o.name === 'Color')!;

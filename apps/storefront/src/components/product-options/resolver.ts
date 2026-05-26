@@ -3,18 +3,18 @@ import type { ResolvedOption, ResolvedOptionValue, ResolvedSwatch } from './type
 
 function normalizeSwatch(raw: any): ResolvedSwatch | undefined {
     if (!raw) return undefined;
-    const previewUrl = raw.image?.previewImage?.url ?? raw.image?.url;
-    return {
-        color: raw.color ?? undefined,
-        image: previewUrl
-            ? {
-                  url: previewUrl,
-                  altText: raw.image?.previewImage?.altText ?? raw.image?.altText ?? null,
-                  width: raw.image?.previewImage?.width ?? raw.image?.width,
-                  height: raw.image?.previewImage?.height ?? raw.image?.height,
-              }
-            : undefined,
-    };
+    const previewUrl = raw.image?.previewImage?.url ?? raw.image?.image?.url ?? raw.image?.url;
+    const color = raw.color ?? undefined;
+    const image = previewUrl
+        ? {
+              url: previewUrl,
+              altText: raw.image?.previewImage?.altText ?? raw.image?.image?.altText ?? raw.image?.altText ?? null,
+              width: raw.image?.previewImage?.width ?? raw.image?.image?.width ?? raw.image?.width,
+              height: raw.image?.previewImage?.height ?? raw.image?.image?.height ?? raw.image?.height,
+          }
+        : undefined;
+    if (!color && !image) return undefined;
+    return { color, image };
 }
 
 function* iterValues(option: any): Generator<{ name: string; swatch?: any }> {
