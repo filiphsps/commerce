@@ -12,7 +12,99 @@ export interface StartedMongo {
     stop: () => Promise<void>;
 }
 
+// Module-level registry of every MongoMemoryReplSet this process owns.
+// We need this so the signal/exit handlers below can reach every running
+// replSet even when the test that owns it has been killed mid-flight
+// (vitest worker death, Ctrl-C, uncaught rejection, etc).
+const activeReplSets = new Set<MongoMemoryReplSet>();
+const replSetCleanupFlags = new WeakMap<MongoMemoryReplSet, boolean>();
+
+// Vitest workers occasionally die without running afterAll — leaving orphan
+// mongod processes and gigabyte-sized `mongo-mem-*` temp dirs behind, which
+// is what freezes the user's machine. Node only guarantees signal + exit
+// hooks fire when the runtime is shutting down, so we route every plausible
+// shutdown path through a best-effort async stop, with a synchronous SIGKILL
+// fallback for the hard-exit case where async work is no longer possible.
+let handlersInstalled = false;
+
+function installShutdownHandlers(): void {
+    if (handlersInstalled) return;
+    handlersInstalled = true;
+
+    const asyncStopAll = async (): Promise<void> => {
+        const targets = Array.from(activeReplSets);
+        await Promise.allSettled(
+            targets.map(async (replSet) => {
+                try {
+                    await replSet.stop({ doCleanup: replSetCleanupFlags.get(replSet) ?? true });
+                } finally {
+                    activeReplSets.delete(replSet);
+                }
+            }),
+        );
+    };
+
+    const syncKillAll = (): void => {
+        for (const replSet of activeReplSets) {
+            for (const server of replSet.servers) {
+                const pid = server.instanceInfo?.instance.mongodProcess?.pid;
+                if (typeof pid === 'number') {
+                    try {
+                        process.kill(pid, 'SIGKILL');
+                    } catch {
+                        // Process already gone, nothing to do.
+                    }
+                }
+                const killerPid = server.instanceInfo?.instance.killerProcess?.pid;
+                if (typeof killerPid === 'number') {
+                    try {
+                        process.kill(killerPid, 'SIGKILL');
+                    } catch {
+                        // Process already gone, nothing to do.
+                    }
+                }
+            }
+        }
+    };
+
+    const onSignal = (_signal: NodeJS.Signals, signum: number): void => {
+        void asyncStopAll().finally(() => {
+            process.exit(128 + signum);
+        });
+    };
+
+    process.once('SIGINT', () => onSignal('SIGINT', 2));
+    process.once('SIGTERM', () => onSignal('SIGTERM', 15));
+    process.once('SIGHUP', () => onSignal('SIGHUP', 1));
+
+    process.on('beforeExit', () => {
+        if (activeReplSets.size === 0) return;
+        void asyncStopAll();
+    });
+
+    process.on('exit', () => {
+        if (activeReplSets.size === 0) return;
+        syncKillAll();
+    });
+
+    process.on('uncaughtException', (err) => {
+        process.stderr.write(`[test-mongo] uncaughtException — stopping replSets: ${err?.stack ?? err}\n`);
+        void asyncStopAll().finally(() => {
+            process.exit(1);
+        });
+    });
+
+    process.on('unhandledRejection', (reason) => {
+        process.stderr.write(`[test-mongo] unhandledRejection — stopping replSets: ${String(reason)}\n`);
+        void asyncStopAll().finally(() => {
+            process.exit(1);
+        });
+    });
+}
+
 export async function startMongo(opts: StartMongoOptions = {}): Promise<StartedMongo> {
+    installShutdownHandlers();
+
     const hasInstanceOverride = opts.dbPath !== undefined || opts.port !== undefined;
 
     // Payload wraps every write in a multi-doc transaction. MongoDB's default
@@ -32,13 +124,24 @@ export async function startMongo(opts: StartMongoOptions = {}): Promise<StartedM
             : [{ args: sharedArgs }],
     });
 
+    const doCleanup = !opts.dbPath;
+    activeReplSets.add(replSet);
+    replSetCleanupFlags.set(replSet, doCleanup);
+
     const uri = replSet.getUri();
 
+    let stopped = false;
     return {
         uri,
         stop: async () => {
-            // doCleanup: false preserves the dbPath on disk for the next run.
-            await replSet.stop({ doCleanup: !opts.dbPath });
+            if (stopped) return;
+            stopped = true;
+            try {
+                // doCleanup: false preserves the dbPath on disk for the next run.
+                await replSet.stop({ doCleanup });
+            } finally {
+                activeReplSets.delete(replSet);
+            }
         },
     };
 }

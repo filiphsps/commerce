@@ -35,6 +35,7 @@
         "build:packages": "turbo run build --filter=./packages/** --env-mode=loose",
         "generate": "dotenv -c -- turbo run generate --env-mode=loose",
         "clean": "turbo run clean --concurrency=1",
+        "clean:mongo": "node ./scripts/clean-mongo.mjs",
         "lint": "biome lint .",
         "format": "concurrently -i pnpm:format:*",
         "format:lint": "biome lint --write .",
