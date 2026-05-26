@@ -3,6 +3,10 @@
  * of Shopify product handles — exercises the rich `descriptionOverride`
  * field plus the full block stack so storefront PDP overrides render with
  * varied content.
+ *
+ * Handles point at the live mock.shop catalogue so storefront product reads
+ * actually resolve through the CommerceProvider — `puffer-jacket`,
+ * `soft-cotton-hoodie-in-jam`, etc. all exist on https://mock.shop/api.
  */
 
 import { heading, lexicalDoc, list, paragraph } from './lexical';
@@ -23,14 +27,11 @@ export interface ProductMetadataFixture {
 
 export const productMetadataFixtures: ProductMetadataFixture[] = [
     {
-        shopifyHandle: 'recycled-down-puffer',
+        shopifyHandle: 'puffer-jacket',
         descriptionOverride: lexicalDoc([
-            heading('The Recycled-down Puffer', 'h2'),
+            heading('The Puffer Jacket', 'h2'),
             paragraph(
-                'Our flagship insulator: 600-fill recycled goose down, reclaimed from post-consumer bedding and re-sterilised by Allied Feather + Down in Vernon, California.',
-            ),
-            paragraph(
-                'The shell is a polyamide ripstop dyed with bluesign®-certified pigments. Cut for layering — sized to take a chunky knit underneath without binding at the shoulder.',
+                'Our flagship insulator: 600-fill recycled goose down in a bluesign®-certified ripstop shell. Cut for layering — sized to take a chunky knit underneath without binding at the shoulder.',
             ),
             heading('Specs', 'h3'),
             list([
@@ -73,21 +74,21 @@ export const productMetadataFixtures: ProductMetadataFixture[] = [
             },
         ],
         seo: {
-            title: 'Recycled-down Puffer — Nordcom Demo Shop',
+            title: 'Puffer Jacket — Nordcom Demo Shop',
             description:
                 '600-fill recycled goose down in a bluesign-certified ripstop shell. Made in Portugal, repaired for life.',
             keywords: ['recycled down', 'puffer', 'outerwear'],
         },
     },
     {
-        shopifyHandle: 'wool-overcoat',
+        shopifyHandle: 'soft-cotton-hoodie-in-jam',
         descriptionOverride: lexicalDoc([
-            heading('The Wool Overcoat', 'h2'),
+            heading('The Soft Cotton Hoodie', 'h2'),
             paragraph(
-                'A heavyweight (520 g/m²) double-faced wool from Klässbols, Värmland. Built around an unstructured shoulder so it wears more like a knit than a tailored coat.',
+                'A 380 g/m² loopback cotton hoodie cut and sewn in Porto. The "jam" colourway is a deep berry tone garment-dyed for a lived-in feel from day one.',
             ),
             paragraph(
-                'Buttons are pressed horn from the Czech Republic. Lining is a cupro / wool blend that breathes — most overcoats trap heat; this one does not.',
+                'Long-staple Egyptian cotton means it gets softer with every wash without losing structure. Set-in sleeves, kangaroo pocket, ribbed cuffs and hem.',
             ),
         ]),
         blocks: [
@@ -102,7 +103,7 @@ export const productMetadataFixtures: ProductMetadataFixture[] = [
                                 body: lexicalDoc([
                                     heading('Fabric', 'h3'),
                                     paragraph(
-                                        '520 g/m² double-faced virgin wool from Klässbols, Värmland. Worsted twist, brushed finish.',
+                                        '380 g/m² loopback. 100% long-staple Egyptian cotton, garment-dyed. Pre-shrunk in finishing.',
                                     ),
                                 ]),
                             },
@@ -116,7 +117,7 @@ export const productMetadataFixtures: ProductMetadataFixture[] = [
                                 body: lexicalDoc([
                                     heading('Fit', 'h3'),
                                     paragraph(
-                                        'True-to-size with room for a fisherman knit. Drop shoulder, mid-thigh length. If between sizes, we recommend sizing down.',
+                                        'Regular through the chest, slightly cropped through the body. If between sizes, we recommend sizing up for a relaxed silhouette.',
                                     ),
                                 ]),
                             },
@@ -127,16 +128,15 @@ export const productMetadataFixtures: ProductMetadataFixture[] = [
             {
                 blockType: 'overview',
                 source: 'collection',
-                collectionHandle: 'tailoring',
-                title: 'Pairs with',
+                collectionHandle: 'tops',
+                title: 'Other tops',
                 limit: 4,
             },
         ],
         seo: {
-            title: 'Wool Overcoat — Nordcom Demo Shop',
-            description:
-                'Heavyweight double-faced Värmland wool. Unstructured shoulder, horn buttons, breathing lining.',
-            keywords: ['wool', 'overcoat', 'tailoring'],
+            title: 'Soft Cotton Hoodie in Jam — Nordcom Demo Shop',
+            description: '380 g/m² loopback Egyptian cotton, garment-dyed in Porto. Softens with every wash.',
+            keywords: ['hoodie', 'cotton', 'tops'],
         },
     },
 ];

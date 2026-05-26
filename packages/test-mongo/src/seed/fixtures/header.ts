@@ -4,14 +4,17 @@
  *
  *   - all three top-level variants (`editorial-columns`, `compact-list`,
  *     `featured-promo`)
- *   - five levels of nested `items` arrays — matches the schema cap of
- *     `topLevelNavItemField({ depth: 5 })`
- *   - per-item `description`, `backgroundColor`, and `image` fields so
- *     editorial-style mega-panels have real content to display
+ *   - six levels of nested `items` arrays — matches the schema cap of
+ *     `topLevelNavItemField({ depth: 6 })`
+ *   - per-item `description` so editorial-style mega-panels have copy to
+ *     display
  *
- * Keep the labels representative of a real fashion-commerce IA (women →
- * outerwear → jackets → down → specific styles) rather than `Sub 1 / Sub 2`
- * placeholders; E2E snapshots and a11y selectors lean on natural text.
+ * Links target real mock.shop collections (`men`, `women`, `featured`,
+ * `tops`, `bottoms`, `shoes`, `accessories`) and products (`puffer-jacket`,
+ * `soft-cotton-hoodie-in-jam`, `slides`, …) so every node in the menu
+ * actually resolves through the storefront route tree instead of 404'ing.
+ * Page slugs (`/about/`, `/sustainability/`, `/contact/`) match the
+ * pages fixture for the same reason.
  */
 
 const externalLink = (label: string, url: string): Record<string, unknown> => ({
@@ -45,117 +48,104 @@ const branch = (label: string, url: string, items: NavItem[], description?: stri
 
 const womenswear: NavItem = branch(
     'Womenswear',
-    '/women/',
+    '/collections/women/',
     [
         branch(
-            'Outerwear',
-            '/women/outerwear/',
+            'Tops',
+            '/collections/tops/',
             [
-                branch('Jackets', '/women/outerwear/jackets/', [
-                    branch('Down jackets', '/women/outerwear/jackets/down/', [
-                        leaf('Recycled-down puffer', '/women/outerwear/jackets/down/recycled-puffer/'),
-                        leaf('Lightweight micro-puffer', '/women/outerwear/jackets/down/micro-puffer/'),
-                        leaf('Expedition parka', '/women/outerwear/jackets/down/expedition-parka/'),
+                branch('Hoodies', '/collections/tops/', [
+                    branch('Soft Cotton Hoodies', '/products/soft-cotton-hoodie-in-jam/', [
+                        leaf('Soft Cotton Hoodie in Jam', '/products/soft-cotton-hoodie-in-jam/'),
+                        leaf('Soft Cotton Hoodie in Clay', '/products/soft-cotton-hoodie-in-clay/'),
+                        leaf('Soft Cotton Hoodie in Ocean', '/products/soft-cotton-hoodie-in-ocean/'),
+                        leaf('Soft Cotton Hoodie in Violet', '/products/soft-cotton-hoodie-in-violet/'),
+                        leaf('Soft Cotton Hoodie in Green', '/products/soft-cotton-hoodie-in-green/'),
                     ]),
-                    branch('Wool jackets', '/women/outerwear/jackets/wool/', [
-                        leaf('Tailored blazer', '/women/outerwear/jackets/wool/tailored-blazer/'),
-                        leaf('Boucle bouclé', '/women/outerwear/jackets/wool/boucle/'),
-                    ]),
-                    leaf('Leather jackets', '/women/outerwear/jackets/leather/'),
-                    leaf('Denim jackets', '/women/outerwear/jackets/denim/'),
+                    leaf('Half-zip', '/products/half-zip/'),
+                    leaf('Crewneck', '/products/women-crewneck/'),
+                    leaf('Workout shirt', '/products/workout-shirt/'),
                 ]),
-                branch('Coats', '/women/outerwear/coats/', [
-                    leaf('Trench coats', '/women/outerwear/coats/trench/'),
-                    leaf('Pea coats', '/women/outerwear/coats/pea/'),
-                    leaf('Overcoats', '/women/outerwear/coats/overcoats/'),
-                ]),
-                leaf('Vests & gilets', '/women/outerwear/vests/'),
+                leaf("Women's T-shirt", '/products/women-t-shirt/'),
             ],
-            'Built to last from the first rainfall to the deepest freeze.',
+            'Loopback cotton, garment-dyed in Porto. Five colourways.',
         ),
-        branch('Knitwear', '/women/knitwear/', [
-            leaf('Sweaters', '/women/knitwear/sweaters/'),
-            leaf('Cardigans', '/women/knitwear/cardigans/'),
-            leaf('Turtlenecks', '/women/knitwear/turtlenecks/'),
-            leaf('Vests', '/women/knitwear/vests/'),
+        branch('Bottoms', '/collections/bottoms/', [
+            leaf('Sweatpants', '/products/sweatpants/'),
+            leaf('Leggings', '/products/leggings/'),
+            leaf('Shorts', '/products/shorts/'),
         ]),
-        branch('Tops', '/women/tops/', [
-            leaf('Shirts', '/women/tops/shirts/'),
-            leaf('Blouses', '/women/tops/blouses/'),
-            leaf('T-shirts', '/women/tops/tshirts/'),
-            leaf('Tank tops', '/women/tops/tanks/'),
-        ]),
-        branch('Bottoms', '/women/bottoms/', [
-            leaf('Trousers', '/women/bottoms/trousers/'),
-            leaf('Jeans', '/women/bottoms/jeans/'),
-            leaf('Skirts', '/women/bottoms/skirts/'),
-            leaf('Shorts', '/women/bottoms/shorts/'),
+        branch('Outerwear', '/collections/women/', [
+            leaf('Puffer jacket', '/products/puffer-jacket/'),
+            leaf('Light puffer', '/products/light-puffer/'),
+            leaf('Puffer', '/products/puffer/'),
         ]),
     ],
     'Considered staples and statement pieces, made to be worn together.',
 );
 
-const menswear: NavItem = branch('Menswear', '/men/', [
-    branch('Outerwear', '/men/outerwear/', [
-        branch('Jackets', '/men/outerwear/jackets/', [
-            leaf('Field jackets', '/men/outerwear/jackets/field/'),
-            leaf('Down jackets', '/men/outerwear/jackets/down/'),
-            leaf('Bomber jackets', '/men/outerwear/jackets/bomber/'),
-        ]),
-        leaf('Coats', '/men/outerwear/coats/'),
+const menswear: NavItem = branch('Menswear', '/collections/men/', [
+    branch('Tops', '/collections/tops/', [
+        leaf("Men's T-shirt", '/products/men-t-shirt/'),
+        leaf('Crewneck', '/products/men-crewneck/'),
+        leaf('Hoodie', '/products/hoodie/'),
     ]),
-    leaf('Suits & tailoring', '/men/tailoring/'),
-    leaf('Knitwear', '/men/knitwear/'),
-    leaf('Shirts', '/men/shirts/'),
-    leaf('Trousers', '/men/trousers/'),
+    branch('Bottoms', '/collections/bottoms/', [
+        leaf('Sweatpants', '/products/sweatpants/'),
+        leaf('Shorts', '/products/shorts/'),
+    ]),
+    leaf('Outerwear', '/collections/men/'),
 ]);
 
-const collections: NavItem = branch(
-    'Collections',
-    '/collections/',
+const shoes: NavItem = branch(
+    'Shoes',
+    '/collections/shoes/',
     [
-        leaf('Spring/Summer 2026', '/collections/ss26/'),
-        leaf('Fall/Winter 2025', '/collections/fw25/'),
-        leaf('Capsule: Nordic Light', '/collections/nordic-light/'),
-        leaf('Archive sale', '/collections/archive/'),
+        leaf('Canvas sneakers', '/products/canvas-sneakers/'),
+        leaf('White leather sneakers', '/products/white-leather-sneakers/'),
+        leaf('Gray leather sneakers', '/products/gray-leather-sneakers/'),
+        leaf('Gray runners', '/products/gray-runners/'),
+        leaf('High-top sneakers', '/products/high-top-sneakers/'),
+        leaf('Slides', '/products/slides/'),
     ],
-    'Seasonal stories curated by our design team.',
+    'Canvas, leather, and lifters for the lifters.',
 );
+
+const accessories: NavItem = branch('Accessories', '/collections/accessories/', [
+    leaf('Beanie', '/products/beanie/'),
+    leaf('Black sunnies', '/products/black-sunnies/'),
+    leaf('Clear sunnies', '/products/clear-sunnies/'),
+    leaf('Frontpack', '/products/frontpack/'),
+]);
 
 export const headerData: { items: TopLevelNavItem[] } = {
     items: [
         {
-            link: externalLink('Shop', '/shop/'),
+            link: externalLink('Shop', '/collections/featured/'),
             variant: 'editorial-columns',
-            description: 'Womenswear, menswear, and seasonal collections.',
+            description: 'Women, men, shoes, and accessories.',
             backgroundColor: '#0a0a0a',
-            items: [womenswear, menswear, collections],
+            items: [womenswear, menswear, shoes, accessories],
         },
         {
-            link: externalLink('Journal', '/journal/'),
+            link: externalLink('Featured', '/collections/featured/'),
             variant: 'featured-promo',
-            description: 'Long-form writing, lookbooks, and behind the seams.',
+            description: 'A rotating capsule curated from current production.',
             items: [
-                branch('Latest articles', '/journal/latest/', [
-                    leaf('Behind the FW25 lookbook', '/journal/articles/behind-the-fw25-lookbook/'),
-                    leaf('Sustainable wool sourcing', '/journal/articles/sustainable-wool-sourcing/'),
-                    leaf('How to layer for winter', '/journal/articles/winter-layering-guide/'),
-                ]),
-                leaf('Style guides', '/journal/style/'),
-                leaf('Lookbooks', '/journal/lookbooks/'),
-                leaf('Interviews', '/journal/interviews/'),
+                leaf('All featured', '/collections/featured/'),
+                leaf('Unisex', '/collections/unisex/'),
+                leaf('Puffer jacket', '/products/puffer-jacket/'),
+                leaf('Soft Cotton Hoodie in Jam', '/products/soft-cotton-hoodie-in-jam/'),
             ],
         },
         {
-            link: externalLink('Stores', '/stores/'),
+            link: externalLink('Journal', '/journal/'),
             variant: 'compact-list',
-            description: 'Flagships, pop-ups, and stockists worldwide.',
+            description: 'Long-form writing, lookbooks, and behind the seams.',
             items: [
-                leaf('Stockholm flagship', '/stores/stockholm/'),
-                leaf('Copenhagen', '/stores/copenhagen/'),
-                leaf('Oslo', '/stores/oslo/'),
-                leaf('Berlin pop-up', '/stores/berlin/'),
-                leaf('All stockists', '/stores/stockists/'),
+                leaf('Behind the FW25 lookbook', '/lookbook-fw25/'),
+                leaf('Sustainable wool sourcing', '/sustainability/'),
+                leaf('Layering guide', '/sustainability/'),
             ],
         },
         {
@@ -164,19 +154,16 @@ export const headerData: { items: TopLevelNavItem[] } = {
             items: [
                 leaf('Our story', '/about/'),
                 leaf('Sustainability', '/sustainability/'),
-                leaf('Press', '/press/'),
-                leaf('Careers', '/careers/'),
+                leaf('Contact', '/contact/'),
             ],
         },
         {
-            link: externalLink('Help', '/help/'),
+            link: externalLink('Help', '/contact/'),
             variant: 'compact-list',
             items: [
                 leaf('Contact', '/contact/'),
-                leaf('Shipping & delivery', '/help/shipping/'),
-                leaf('Returns', '/help/returns/'),
-                leaf('Size guide', '/help/size-guide/'),
-                leaf('FAQ', '/help/faq/'),
+                leaf('About us', '/about/'),
+                leaf('Sustainability', '/sustainability/'),
             ],
         },
     ],

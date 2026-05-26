@@ -2,6 +2,9 @@
  * Collection-metadata fixtures for the seeded demo tenant. CMS overlay
  * on top of Shopify collection handles — adds editorial copy +
  * supporting block stack the storefront PLP shows above the product grid.
+ *
+ * Handles point at the live mock.shop catalogue (`featured`, `men`, etc.)
+ * so collection blocks actually resolve.
  */
 
 import { heading, lexicalDoc, paragraph } from './lexical';
@@ -15,19 +18,19 @@ export interface CollectionMetadataFixture {
 
 export const collectionMetadataFixtures: CollectionMetadataFixture[] = [
     {
-        shopifyHandle: 'fw25',
+        shopifyHandle: 'featured',
         descriptionOverride: lexicalDoc([
-            heading('Fall/Winter 2025', 'h1'),
+            heading('Featured', 'h1'),
             paragraph(
-                'Light at the edge of darkness. A 24-piece collection of heavyweight wool, recycled down, and waxed canvas — built around a single brief: survive a Lofoten winter and still look right at Sunday brunch in Stockholm.',
+                'The pieces our team is wearing right now — hand-picked across the catalogue, refreshed every Monday morning.',
             ),
         ]),
         blocks: [
             {
                 blockType: 'banner',
-                heading: 'Shot in the Lofoten archipelago',
-                subheading: 'Read the lookbook story for the full set of looks and credits.',
-                cta: { kind: 'external', label: 'Read the lookbook', url: '/lookbook-fw25/', openInNewTab: false },
+                heading: 'This week in the studio',
+                subheading: 'A rotating capsule the design team curates from current production.',
+                cta: { kind: 'external', label: 'Read the journal', url: '/journal/', openInNewTab: false },
                 alignment: 'left',
             },
             {
@@ -35,41 +38,63 @@ export const collectionMetadataFixtures: CollectionMetadataFixture[] = [
                 itemType: 'icon',
                 columns: 4,
                 items: [
-                    { caption: 'Recycled down' },
-                    { caption: 'Värmland wool' },
+                    { caption: 'Recycled materials' },
                     { caption: 'Made in Portugal' },
+                    { caption: 'Free 30-day returns' },
                     { caption: 'Repaired for life' },
                 ],
             },
         ],
         seo: {
-            title: 'Fall/Winter 2025 — Nordcom Demo Shop',
-            description:
-                '24 pieces in heavyweight wool, recycled down, and waxed canvas. Built for the long Nordic dark.',
-            keywords: ['fw25', 'fall winter', 'outerwear'],
+            title: 'Featured — Nordcom Demo Shop',
+            description: 'Hand-picked pieces from the studio, refreshed every Monday morning.',
+            keywords: ['featured', 'curated', 'editorial'],
         },
     },
     {
-        shopifyHandle: 'tailoring',
+        shopifyHandle: 'men',
         descriptionOverride: lexicalDoc([
-            heading('Tailoring', 'h2'),
+            heading('Menswear', 'h2'),
             paragraph(
-                'Soft-shoulder, four-season weights, half-canvassed where it matters and full-canvassed where it counts. Cut in Porto.',
+                'Soft-shoulder shirting, mid-weight knits, and the kind of trousers you reach for first. Cut in Porto, finished by hand.',
             ),
         ]),
         blocks: [
             {
                 blockType: 'overview',
                 source: 'collection',
-                collectionHandle: 'tailoring',
-                title: 'Browse the cut',
+                collectionHandle: 'men',
+                title: 'Browse the range',
                 limit: 12,
             },
         ],
         seo: {
-            title: 'Tailoring — Nordcom Demo Shop',
-            description: 'Soft-shoulder suiting in four-season weights. Half- or full-canvassed, cut in Porto.',
-            keywords: ['tailoring', 'suit', 'menswear'],
+            title: 'Menswear — Nordcom Demo Shop',
+            description: 'Soft-shoulder shirting, mid-weight knits, and considered trousers. Cut in Porto.',
+            keywords: ['menswear', 'tailoring'],
+        },
+    },
+    {
+        shopifyHandle: 'women',
+        descriptionOverride: lexicalDoc([
+            heading('Womenswear', 'h2'),
+            paragraph(
+                'Considered staples and statement pieces, made to be worn together. Outerwear, knits, and dresses cut in mid-weight wool and organic cotton.',
+            ),
+        ]),
+        blocks: [
+            {
+                blockType: 'overview',
+                source: 'collection',
+                collectionHandle: 'women',
+                title: 'Browse the range',
+                limit: 12,
+            },
+        ],
+        seo: {
+            title: 'Womenswear — Nordcom Demo Shop',
+            description: 'Considered staples and statement pieces. Mid-weight wool, organic cotton, made to last.',
+            keywords: ['womenswear'],
         },
     },
 ];

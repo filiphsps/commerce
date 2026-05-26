@@ -49,8 +49,8 @@ export const pageFixtures: PageFixture[] = [
             },
             {
                 blockType: 'collection',
-                handle: 'fw25-bestsellers',
-                title: 'FW25 bestsellers',
+                handle: 'featured',
+                title: 'Featured this week',
                 layout: 'grid',
                 limit: 8,
             },
@@ -60,16 +60,16 @@ export const pageFixtures: PageFixture[] = [
                 columns: 3,
                 items: [
                     {
-                        caption: 'Outerwear',
-                        link: externalLink('Shop outerwear', '/women/outerwear/'),
+                        caption: 'Womenswear',
+                        link: externalLink('Shop womenswear', '/collections/women/'),
                     },
                     {
-                        caption: 'Knitwear',
-                        link: externalLink('Shop knitwear', '/women/knitwear/'),
+                        caption: 'Menswear',
+                        link: externalLink('Shop menswear', '/collections/men/'),
                     },
                     {
-                        caption: 'Tailoring',
-                        link: externalLink('Shop tailoring', '/men/tailoring/'),
+                        caption: 'Shoes',
+                        link: externalLink('Shop shoes', '/collections/shoes/'),
                     },
                 ],
             },
@@ -278,7 +278,7 @@ export const pageFixtures: PageFixture[] = [
             },
             {
                 blockType: 'collection',
-                handle: 'fw25',
+                handle: 'featured',
                 title: 'Shop the collection',
                 layout: 'grid',
                 limit: 24,
