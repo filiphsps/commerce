@@ -42,9 +42,6 @@ export default async function RootLayout({
     modal,
     params,
 }: Readonly<{ children: ReactNode; modal: ReactNode; params: LayoutParams }>) {
-    'use cache';
-    cacheLife('max');
-
     const { domain, locale: localeData } = await params;
     if (!domain || domain === NOT_FOUND_HANDLE) {
         notFound();
@@ -61,6 +58,38 @@ export default async function RootLayout({
         unstable_rethrow(error);
         throw error;
     }
+
+    return (
+        <html lang={locale.code} className={cn(primaryFont.className, primaryFont.variable, 'overscroll-x-none')}>
+            <head />
+            <body className="group/body overflow-x-hidden overscroll-x-none">
+                <NordcomCartProvider>
+                    <Suspense fallback={null}>
+                        <CartHydrator />
+                    </Suspense>
+
+                    <CachedShell domain={domain} locale={locale} modal={modal}>
+                        {children}
+                    </CachedShell>
+                </NordcomCartProvider>
+            </body>
+        </html>
+    );
+}
+
+async function CachedShell({
+    children,
+    modal,
+    domain,
+    locale,
+}: {
+    children: ReactNode;
+    modal: ReactNode;
+    domain: string;
+    locale: Locale;
+}) {
+    'use cache';
+    cacheLife('max');
 
     let shop: OnlineShop, publicShop: OnlineShop;
     try {
@@ -96,7 +125,7 @@ export default async function RootLayout({
         notFound();
     }
 
-    const [localization, countries, branding, i18n] = await Promise.all([
+    const [, countries, branding, i18n] = await Promise.all([
         LocaleApi({ api }),
         CountriesApi({ api }),
         getBrandingColors({ domain, shop }),
@@ -104,63 +133,46 @@ export default async function RootLayout({
     ]);
 
     return (
-        <html lang={locale.code} className={cn(primaryFont.className, primaryFont.variable, 'overscroll-x-none')}>
-            <head>
-                <Suspense fallback={<Fragment />}>
-                    <CssVariablesProvider domain={domain} />
-                </Suspense>
-            </head>
+        <ProvidersRegistry shop={publicShop} locale={locale} domain={domain}>
+            <Suspense fallback={<Fragment />}>
+                <CssVariablesProvider domain={domain} shop={publicShop} />
+            </Suspense>
 
-            <body className="group/body overflow-x-hidden overscroll-x-none">
-                <ProvidersRegistry
-                    shop={publicShop}
-                    currency={localization?.country.currency.isoCode}
-                    locale={locale}
-                    domain={domain}
-                >
-                    <NordcomCartProvider>
-                        <Suspense fallback={null}>
-                            <CartHydrator />
-                        </Suspense>
-                        <AnalyticsProvider shop={publicShop} hostname={domain}>
-                            <HeaderProvider loaderColor={branding?.primary.color}>
-                                <Fragment key="layout.modal">{modal}</Fragment>
+            <AnalyticsProvider shop={publicShop} hostname={domain}>
+                <HeaderProvider loaderColor={branding?.primary.color}>
+                    <Fragment key="layout.modal">{modal}</Fragment>
 
-                                <Suspense key="layout.geo-redirect" fallback={<Fragment />}>
-                                    <GeoRedirect shop={publicShop} countries={countries} locale={locale} i18n={i18n} />
-                                </Suspense>
+                    <Suspense key="layout.geo-redirect" fallback={<Fragment />}>
+                        <GeoRedirect shop={publicShop} countries={countries} locale={locale} i18n={i18n} />
+                    </Suspense>
 
-                                <Suspense key="layout.shop-layout" fallback={<ShopLayout.skeleton />}>
-                                    <ShopLayout shop={shop} locale={locale} i18n={i18n}>
-                                        <PageContent as="article" primary={true}>
-                                            {children}
-                                        </PageContent>
-                                    </ShopLayout>
-                                </Suspense>
-                            </HeaderProvider>
-                        </AnalyticsProvider>
-                    </NordcomCartProvider>
-                </ProvidersRegistry>
+                    <Suspense key="layout.shop-layout" fallback={<ShopLayout.skeleton />}>
+                        <ShopLayout shop={shop} locale={locale} i18n={i18n}>
+                            <PageContent as="article" primary={true}>
+                                {children}
+                            </PageContent>
+                        </ShopLayout>
+                    </Suspense>
 
-                {/* Metadata */}
-                <JsonLd
-                    data={{
-                        '@context': 'http://schema.org',
-                        '@type': 'WebSite',
-                        url: `https://${shop.domain}/${locale.code}/`,
-                        name: shop.name,
-                        potentialAction: {
-                            '@type': 'SearchAction',
-                            target: {
-                                '@type': 'EntryPoint',
-                                urlTemplate: `https://${domain}/search/?q={query}`,
+                    <JsonLd
+                        data={{
+                            '@context': 'http://schema.org',
+                            '@type': 'WebSite',
+                            url: `https://${shop.domain}/${locale.code}/`,
+                            name: shop.name,
+                            potentialAction: {
+                                '@type': 'SearchAction',
+                                target: {
+                                    '@type': 'EntryPoint',
+                                    urlTemplate: `https://${domain}/search/?q={query}`,
+                                },
+                                query: 'required',
+                                'query-input': 'required name=query',
                             },
-                            query: 'required',
-                            'query-input': 'required name=query',
-                        },
-                    }}
-                />
-            </body>
-        </html>
+                        }}
+                    />
+                </HeaderProvider>
+            </AnalyticsProvider>
+        </ProvidersRegistry>
     );
 }
