@@ -13,35 +13,48 @@ export type FaviconRouteParams = Promise<{
     domain: string;
 }>;
 
+// `'use cache'` cannot wrap a Route Handler body, and the cache layer rejects
+// class instances (Response/ImageResponse) and tainted strings (private
+// tokens transitively pulled in by `Shop.findByDomain` when other request
+// paths call `experimental_taintUniqueValue`). Cache the bare icon URL only.
+async function getFaviconSrc(domain: string): Promise<string | null> {
+    'use cache';
+    cacheLife('max');
+
+    try {
+        const shop = await Shop.findByDomain(domain);
+        return shop.icons?.favicon?.src ?? null;
+    } catch {
+        return null;
+    }
+}
+
 export async function GET(req: NextRequest, { params }: { params: FaviconRouteParams }) {
     const { domain } = await params;
     const searchParams = req.nextUrl.searchParams;
     const widthParam = searchParams.get('width') ?? searchParams.get('w');
     const heightParam = searchParams.get('height') ?? searchParams.get('h');
 
-    return renderFavicon(domain, widthParam, heightParam);
-}
-
-async function renderFavicon(domain: string, widthParam: string | null, heightParam: string | null) {
-    'use cache';
-    cacheLife('max');
-
     let width = safeParseFloat(null, widthParam);
     let height = safeParseFloat(null, heightParam);
 
-    const errors = [...validateSize({ width, height })];
-
-    if (errors.length > 0) {
+    const validationErrors = [...validateSize({ width, height })];
+    if (validationErrors.length > 0) {
+        const first = validationErrors[0];
         return NextResponse.json(
             {
-                status: errors[0].statusCode,
+                status: first.statusCode,
                 tenant: domain,
                 data: null,
-                errors,
+                errors: validationErrors.map((e) => ({
+                    statusCode: e.statusCode,
+                    name: e.name,
+                    code: e.code,
+                    details: e.details,
+                    description: e.description,
+                })),
             },
-            {
-                status: errors[0].statusCode,
-            },
+            { status: first.statusCode },
         );
     }
 
@@ -53,12 +66,8 @@ async function renderFavicon(domain: string, widthParam: string | null, heightPa
     }
 
     try {
-        let src!: string;
-
-        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-        if (shop.icons?.favicon?.src) {
-            src = shop.icons.favicon.src;
-        } else {
+        const src = await getFaviconSrc(domain);
+        if (!src) {
             throw new NotFoundError('favicon.png');
         }
 
@@ -83,8 +92,6 @@ async function renderFavicon(domain: string, widthParam: string | null, heightPa
             'shop.domain': domain,
         });
 
-        // `'use cache'` serializes the return value, so the body cannot
-        // contain Error class instances — convert to a plain object.
         return NextResponse.json(
             {
                 status: 500,
@@ -92,9 +99,7 @@ async function renderFavicon(domain: string, widthParam: string | null, heightPa
                 data: null,
                 errors: [{ message }],
             },
-            {
-                status: 500,
-            },
+            { status: 500 },
         );
     }
 }

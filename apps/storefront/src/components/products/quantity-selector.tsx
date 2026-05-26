@@ -74,7 +74,15 @@ const QuantitySelector = ({
     }, [quantity]);
 
     const { cartReady, status } = useCartStatus();
-    const ready = cartReady && status !== 'mutating';
+    // Cart context can already be `ready` on the client when a streamed
+    // Suspense boundary is hydrated, but the server rendered with the
+    // provider's default unready state. Gate reactive context reads behind
+    // a post-mount flag so the first client render matches server output.
+    const [hydrated, setHydrated] = useState(false);
+    useEffect(() => {
+        setHydrated(true);
+    }, []);
+    const ready = hydrated && cartReady && status !== 'mutating';
 
     const updateQuantity = useCallback(
         (value: string | number) => {

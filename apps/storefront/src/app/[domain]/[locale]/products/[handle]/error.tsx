@@ -5,7 +5,14 @@ import { Button } from '@/components/actionable/button';
 
 export default function ProductPageError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
     useEffect(() => {
-        console.error('[storefront/products/error]', error);
+        // Pull plain fields out — the `error` object can carry frames / cause
+        // chains that reference tainted values (e.g. Shopify private tokens
+        // surfaced via `experimental_taintUniqueValue`), which would re-trip
+        // the taint guard inside `console.error`'s stringify step.
+        console.error('[storefront/products/error]', {
+            message: error.message,
+            digest: error.digest,
+        });
     }, [error]);
 
     return (

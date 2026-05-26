@@ -1,7 +1,7 @@
 'use client';
 
 import { Plus as PlusIcon } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Product } from '@/api/product';
 import { useCartActions, useCartLines, useCartStatus } from '@/components/cart/provider';
 import { useMaybeProductOptions } from '@/components/product-options/context';
@@ -28,6 +28,16 @@ const ProductCardActionsClient = ({ seedVariantId, mode, i18n }: ProductCardActi
     const cartLine = variantId ? lines.find((l) => l.merchandise.id === variantId) : undefined;
     const inCartQuantity = cartLine?.quantity ?? 0;
     const [pending, setPending] = useState(false);
+
+    // Cart context can already be `ready` on the client when a streamed
+    // Suspense boundary is hydrated, but the server rendered with the
+    // provider's default unready state. Gate reactive context reads behind
+    // a post-mount flag so the first client render matches server output.
+    const [hydrated, setHydrated] = useState(false);
+    useEffect(() => {
+        setHydrated(true);
+    }, []);
+    const effectiveCartReady = hydrated && cartReady;
 
     const baseStyles = cn(
         'overflow-hidden font-semibold transition-colors',
@@ -56,7 +66,7 @@ const ProductCardActionsClient = ({ seedVariantId, mode, i18n }: ProductCardActi
                 <button
                     type="button"
                     aria-label={t('decrease')}
-                    disabled={pending}
+                    disabled={!hydrated || pending}
                     className={buttonStyles}
                     onClick={async () => {
                         setPending(true);
@@ -73,7 +83,7 @@ const ProductCardActionsClient = ({ seedVariantId, mode, i18n }: ProductCardActi
                 <button
                     type="button"
                     aria-label={t('increase')}
-                    disabled={pending}
+                    disabled={!hydrated || pending}
                     className={buttonStyles}
                     onClick={async () => {
                         setPending(true);
@@ -111,7 +121,7 @@ const ProductCardActionsClient = ({ seedVariantId, mode, i18n }: ProductCardActi
     return (
         <button
             type="button"
-            disabled={!cartReady || pending || !variantId}
+            disabled={!effectiveCartReady || pending || !variantId}
             data-mode={mode}
             aria-label={mode === 'icon' ? t('add-to-cart') : undefined}
             className={mode === 'full' ? fullStyles : iconStyles}

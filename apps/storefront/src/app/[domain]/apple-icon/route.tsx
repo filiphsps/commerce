@@ -4,25 +4,35 @@ import { cacheLife } from 'next/cache';
 import { ImageResponse } from 'next/og';
 import { type NextRequest, NextResponse } from 'next/server';
 import { Shop } from '@/api/_loaders';
+
 export type AppleIconRouteParams = Promise<{
     domain: string;
 }>;
-export async function GET({}: NextRequest, { params }: { params: AppleIconRouteParams }) {
+
+// `'use cache'` cannot wrap a Route Handler body, and the cache layer rejects
+// class instances (Response/ImageResponse) and tainted strings (private
+// tokens transitively pulled in by `Shop.findByDomain` when other request
+// paths call `experimental_taintUniqueValue`). Cache the bare icon URL only.
+async function getAppleIconSrc(domain: string): Promise<string | null> {
     'use cache';
     cacheLife('max');
 
-    const { domain } = await params;
+    try {
+        const shop = await Shop.findByDomain(domain);
+        return shop.icons?.favicon?.src ?? null;
+    } catch {
+        return null;
+    }
+}
 
+export async function GET({}: NextRequest, { params }: { params: AppleIconRouteParams }) {
+    const { domain } = await params;
     const width = 512;
     const height = 512;
 
     try {
-        let src!: string;
-
-        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-        if (shop.icons?.favicon?.src) {
-            src = shop.icons.favicon.src;
-        } else {
+        const src = await getAppleIconSrc(domain);
+        if (!src) {
             throw new NotFoundError('apple-icon.png');
         }
 
@@ -36,8 +46,9 @@ export async function GET({}: NextRequest, { params }: { params: AppleIconRouteP
             },
         );
     } catch (error: unknown) {
+        const message = (error as Error)?.message ?? String(error);
         trace.getActiveSpan()?.addEvent('apple_icon.render_failed', {
-            'error.message': (error as Error)?.message ?? String(error),
+            'error.message': message,
             'shop.domain': domain,
         });
 
@@ -46,11 +57,9 @@ export async function GET({}: NextRequest, { params }: { params: AppleIconRouteP
                 status: 500,
                 tenant: domain,
                 data: null,
-                errors: [error],
+                errors: [{ message }],
             },
-            {
-                status: 500,
-            },
+            { status: 500 },
         );
     }
 }
