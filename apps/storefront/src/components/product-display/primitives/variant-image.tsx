@@ -6,7 +6,7 @@ export type VariantImageProps = {
     product: Product;
     seedVariant: ProductVariant;
     priority?: boolean;
-    aspect?: 'vertical' | 'horizontal' | 'micro' | 'square';
+    aspect?: 'vertical' | 'horizontal' | 'square';
     className?: string;
 };
 

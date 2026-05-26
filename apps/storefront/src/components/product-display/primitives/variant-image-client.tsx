@@ -17,7 +17,7 @@ export type SeedImage = {
 export type VariantImageClientProps = {
     initialImage: SeedImage | null;
     swapImage: SeedImage | null;
-    aspect: 'vertical' | 'horizontal' | 'micro' | 'square';
+    aspect: 'vertical' | 'horizontal' | 'square';
     href: string;
     title: string;
     priority: boolean;
@@ -25,8 +25,7 @@ export type VariantImageClientProps = {
 };
 
 const aspectClass = (aspect: VariantImageClientProps['aspect']) => {
-    if (aspect === 'micro') return 'aspect-(--aspect-product-card-micro)';
-    if (aspect === 'horizontal' || aspect === 'square') return 'aspect-(--aspect-product-card-horizontal-square)';
+    if (aspect === 'horizontal' || aspect === 'square') return 'aspect-(--aspect-product-card-horizontal)';
     return 'aspect-(--aspect-product-card-vertical)';
 };
 
@@ -95,13 +94,12 @@ const VariantImageClient = ({
             >
                 <Image
                     className={cn(
-                        'h-full w-full object-contain object-center transition-transform [transition-duration:var(--product-card-motion-hover-duration)] [transition-timing-function:var(--product-card-motion-hover-ease)] motion-safe:group-hover/header:scale-[1.04]',
+                        'h-full w-full object-cover object-center transition-transform [transition-duration:var(--product-card-motion-base)] [transition-timing-function:var(--product-card-motion-ease)] motion-safe:group-hover/header:scale-[1.04]',
                     )}
                     src={primary.url}
                     alt={primary.altText ?? title}
-                    height={primary.height}
-                    width={primary.width}
-                    sizes="(max-width: 768px) 50vw, 280px"
+                    aspectRatio={`${primary.width}/${primary.height}`}
+                    sizes="(max-width: 768px) 50vw, 240px"
                     decoding="async"
                     draggable={false}
                     loading={priority ? 'eager' : 'lazy'}
@@ -110,13 +108,12 @@ const VariantImageClient = ({
                     <Image
                         data-testid="product-card-image-swap"
                         className={cn(
-                            'absolute inset-0 h-full w-full object-contain object-center p-(--product-card-image-padding) opacity-0 transition-opacity [transition-duration:var(--product-card-motion-image-swap-duration)] [transition-timing-function:var(--product-card-motion-hover-ease)] motion-safe:group-hover/header:opacity-100 motion-reduce:hidden',
+                            'absolute inset-0 h-full w-full object-cover object-center p-(--product-card-image-padding) opacity-0 transition-opacity [transition-duration:var(--product-card-motion-base)] [transition-timing-function:var(--product-card-motion-ease)] motion-safe:group-hover/header:opacity-100 motion-reduce:hidden',
                         )}
                         src={swapImage.url}
                         alt={swapImage.altText ?? `${title} (alternate)`}
-                        height={swapImage.height}
-                        width={swapImage.width}
-                        sizes="(max-width: 768px) 50vw, 280px"
+                        aspectRatio={`${swapImage.width}/${swapImage.height}`}
+                        sizes="(max-width: 768px) 50vw, 240px"
                         decoding="async"
                         draggable={false}
                         loading="lazy"
