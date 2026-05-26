@@ -1,6 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
+import { useProductCardContext } from '@/components/product-card/context';
 import ProductCardActions from '@/components/product-card/primitives/product-card-actions';
 import ProductCardImage from '@/components/product-card/primitives/product-card-image';
 import ProductCardOptions from '@/components/product-card/primitives/product-card-options';
@@ -12,21 +13,24 @@ export type VerticalBareProps = {
     badges: ReactNode;
 };
 
-const VerticalBare = ({ title, badges }: VerticalBareProps) => (
-    <>
-        <div className="relative">
-            <ProductCardImage />
-            {badges}
-        </div>
-        <div className="flex grow flex-col gap-1 pt-2">
-            {title}
-            <ProductCardPrice />
-            <ProductCardStockUrgency />
-            <ProductCardOptions />
-            <ProductCardActions mode="full" />
-        </div>
-    </>
-);
+const VerticalBare = ({ title, badges }: VerticalBareProps) => {
+    const { data: product } = useProductCardContext();
+    return (
+        <>
+            <div className="relative">
+                <ProductCardImage />
+                {badges}
+            </div>
+            <div className="flex grow flex-col gap-1 pt-2">
+                {title}
+                <ProductCardPrice />
+                <ProductCardStockUrgency />
+                <ProductCardOptions product={product} />
+                <ProductCardActions mode="full" />
+            </div>
+        </>
+    );
+};
 
 VerticalBare.displayName = 'Nordcom.ProductCard.Variant.VerticalBare';
 export default VerticalBare;

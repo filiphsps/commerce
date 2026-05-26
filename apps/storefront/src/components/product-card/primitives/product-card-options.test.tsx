@@ -1,59 +1,53 @@
-import { fireEvent } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
-import { productMultiOption } from '@/components/product-card/__fixtures__';
-import { ProductCardContextProvider } from '@/components/product-card/context';
-import ProductCardOptions from '@/components/product-card/primitives/product-card-options';
-import { render, screen } from '@/utils/test/react';
+import { describe, expect, it } from 'vitest';
+import * as ProductOptions from '@/components/product-options';
+import { render } from '@/utils/test/react';
+import ProductCardOptions from './product-card-options';
 
-const ctx = (overrides: any = {}) => {
-    const product = productMultiOption();
-    return {
-        variant: 'vertical-boxed' as const,
-        data: product,
-        selected: undefined,
-        setSelected: vi.fn(),
-        hoveredImage: undefined,
-        setHoveredImage: vi.fn(),
-        i18n: {} as any,
-        locale: { code: 'en-US' } as any,
-        priority: false,
-        ...overrides,
-    };
-};
+const product = {
+    options: [{ name: 'Color', values: ['Red'], optionValues: [{ name: 'Red', swatch: { color: '#f00' } }] }],
+    variants: {
+        edges: [
+            {
+                node: {
+                    id: 'v',
+                    availableForSale: true,
+                    selectedOptions: [{ name: 'Color', value: 'Red' }],
+                },
+            },
+        ],
+    },
+} as any;
 
-describe('components', () => {
-    describe('product-card', () => {
-        describe('primitives', () => {
-            describe('ProductCardOptions', () => {
-                it('renders nothing for micro variant', () => {
-                    const { container } = render(
-                        <ProductCardContextProvider value={ctx({ variant: 'micro' as const })}>
-                            <ProductCardOptions />
-                        </ProductCardContextProvider>,
-                    );
-                    expect(container).toBeEmptyDOMElement();
-                });
+describe('ProductCard.Options', () => {
+    it('renders one row per real option with a Swatch inside', () => {
+        const { container } = render(
+            <ProductOptions.Root product={product} initialSelection={{ Color: 'Red' }}>
+                <ProductCardOptions product={product} />
+            </ProductOptions.Root>,
+        );
+        expect(container.querySelector('.product-options-swatch')).toBeTruthy();
+    });
 
-                it('renders a +N pill when total > inlineLimit', () => {
-                    render(
-                        <ProductCardContextProvider value={ctx()}>
-                            <ProductCardOptions />
-                        </ProductCardContextProvider>,
-                    );
-                    // multi-option fixture has 8 Color values; vertical-boxed desktop inline = 4 → +5
-                    expect(screen.getByRole('button', { name: /show all color/i })).toHaveTextContent('+5');
-                });
-
-                it('opens the overlay when +N is clicked', () => {
-                    render(
-                        <ProductCardContextProvider value={ctx()}>
-                            <ProductCardOptions />
-                        </ProductCardContextProvider>,
-                    );
-                    fireEvent.click(screen.getByRole('button', { name: /show all color/i }));
-                    expect(screen.getByRole('dialog', { name: /color/i })).toBeInTheDocument();
-                });
-            });
-        });
+    it('returns null when product has no real options (only Default Title)', () => {
+        const titleOnlyProduct = {
+            options: [{ name: 'Title', values: ['Default Title'], optionValues: [{ name: 'Default Title' }] }],
+            variants: {
+                edges: [
+                    {
+                        node: {
+                            id: 'v',
+                            availableForSale: true,
+                            selectedOptions: [{ name: 'Title', value: 'Default Title' }],
+                        },
+                    },
+                ],
+            },
+        } as any;
+        const { container } = render(
+            <ProductOptions.Root product={titleOnlyProduct} initialSelection={{}}>
+                <ProductCardOptions product={titleOnlyProduct} />
+            </ProductOptions.Root>,
+        );
+        expect(container.firstChild).toBeNull();
     });
 });
