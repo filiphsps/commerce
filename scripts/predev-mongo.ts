@@ -1,5 +1,5 @@
 #!/usr/bin/env tsx
-import { spawn } from 'node:child_process';
+import { execFileSync, spawn } from 'node:child_process';
 import {
     createReadStream,
     existsSync,
@@ -20,6 +20,7 @@ const PID_FILE = resolve(STATE_DIR, '.pid');
 const URI_FILE = resolve(STATE_DIR, '.uri');
 const SEEDED_FILE = resolve(STATE_DIR, '.seeded');
 const ENV_MARKER_FILE = resolve(STATE_DIR, '.env-managed');
+const DEV_PID_FILE = resolve(STATE_DIR, '.dev.pid');
 const LOG_FILE = resolve(STATE_DIR, 'daemon.log');
 const ENV_FILE = resolve(ROOT, '.env.local');
 
@@ -35,6 +36,57 @@ const isAlive = (pid: number): boolean => {
     } catch {
         return false;
     }
+};
+
+/**
+ * Walks up the process tree from this script's parent until it finds the
+ * pnpm/npm/yarn/bun invocation that started us, so `pnpm dev:reset` can
+ * SIGTERM the whole dev session (pnpm → sh → portless → next workers).
+ *
+ * Falls back to `process.ppid` if no ancestor matches, which on macOS/Linux
+ * is the `sh -c` running our npm-script chain — killing that still cascades
+ * to portless and friends in practice.
+ *
+ * @returns The PID to record as the "owning" dev-session process.
+ */
+const findDevSessionPid = (): number => {
+    // pnpm 11 launches scripts as `node /path/to/pnpm.mjs run dev`, so the
+    // executable basename (ps's `comm` column) is "node" — useless. Inspect
+    // the first two argv tokens (argv[0] = node-or-pnpm; argv[1] = the
+    // .mjs/.cjs shim when launched via node) and match by basename. We
+    // deliberately stop at index 1 so an unrelated parent whose argv
+    // happens to contain "pnpm" in a quoted string can't false-match.
+    const isManager = (command: string): boolean => {
+        const tokens = command.split(/\s+/, 4).slice(0, 2);
+        for (const token of tokens) {
+            const basename = token.split(/[\\/]/).pop() ?? '';
+            const stripped = basename.replace(/\.(mjs|cjs|js)$/, '');
+            if (/^(?:pnpm|npm|yarn|bun)$/.test(stripped)) return true;
+        }
+        return false;
+    };
+    const psField = (field: 'ppid' | 'command', pid: number): string | undefined => {
+        try {
+            return execFileSync('ps', ['-o', `${field}=`, '-p', String(pid)], {
+                stdio: ['ignore', 'pipe', 'ignore'],
+            })
+                .toString()
+                .trim();
+        } catch {
+            return undefined;
+        }
+    };
+
+    let current = process.ppid;
+    for (let i = 0; i < 16; i++) {
+        if (!current || current <= 1) break;
+        const command = psField('command', current);
+        if (command && isManager(command)) return current;
+        const next = Number(psField('ppid', current));
+        if (!Number.isFinite(next) || next <= 0) break;
+        current = next;
+    }
+    return process.ppid;
 };
 
 /**
@@ -120,6 +172,15 @@ const tailLog = (file: string): (() => void) => {
 };
 
 mkdirSync(STATE_DIR, { recursive: true });
+
+// Record the owning `pnpm dev` invocation so `pnpm dev:reset` (run from
+// another terminal) can SIGTERM the whole session. Best-effort: if we can't
+// figure out the right ancestor, fall back to our immediate parent shell.
+const devSessionPid = findDevSessionPid();
+if (devSessionPid > 1) {
+    writeFileSync(DEV_PID_FILE, String(devSessionPid));
+    console.info(`[predev-mongo] recorded dev session pid ${devSessionPid} → ${DEV_PID_FILE}`);
+}
 
 const haveLiveDaemon = existsSync(PID_FILE) && isAlive(Number(readFileSync(PID_FILE, 'utf8'))) && existsSync(URI_FILE);
 
