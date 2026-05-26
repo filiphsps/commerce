@@ -57,6 +57,7 @@ describe('api', () => {
                                 },
                             },
                         }),
+                        mutate: vi.fn() as unknown as AbstractApi['mutate'],
                         locale: () => Locale.default,
                         shop: () => ({}) as OnlineShop,
                     };
@@ -155,6 +156,7 @@ describe('api', () => {
                                 },
                             },
                         }),
+                        mutate: vi.fn() as unknown as AbstractApi['mutate'],
                         locale: () => Locale.default,
                         shop: () => ({}) as OnlineShop,
                     };
@@ -241,6 +243,7 @@ describe('api', () => {
                     });
                     const api: AbstractApi = {
                         query: queryMock,
+                        mutate: vi.fn() as unknown as AbstractApi['mutate'],
                         locale: () => Locale.default,
                         shop: () => ({}) as OnlineShop,
                     };
@@ -283,6 +286,7 @@ describe('api', () => {
                     });
                     const api: AbstractApi = {
                         query: queryMock,
+                        mutate: vi.fn() as unknown as AbstractApi['mutate'],
                         locale: () => Locale.default,
                         shop: () => ({}) as OnlineShop,
                     };
@@ -325,6 +329,7 @@ describe('api', () => {
                     });
                     const api: AbstractApi = {
                         query: queryMock,
+                        mutate: vi.fn() as unknown as AbstractApi['mutate'],
                         locale: () => Locale.default,
                         shop: () => ({}) as OnlineShop,
                     };
@@ -375,6 +380,7 @@ describe('api', () => {
                                 },
                             },
                         }),
+                        mutate: vi.fn() as unknown as AbstractApi['mutate'],
                         locale: () => Locale.default,
                         shop: () => ({}) as OnlineShop,
                     };
@@ -459,6 +465,7 @@ describe('api', () => {
                                 },
                             },
                         }),
+                        mutate: vi.fn() as unknown as AbstractApi['mutate'],
                         locale: () => Locale.default,
                         shop: () => ({}) as OnlineShop,
                     };

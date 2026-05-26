@@ -39,6 +39,7 @@ vi.mock('@/api/shopify', () => ({
 
 const makeApi = (queryMock: ReturnType<typeof vi.fn>): AbstractApi => ({
     query: queryMock as unknown as AbstractApi['query'],
+    mutate: vi.fn() as unknown as AbstractApi['mutate'],
     locale: () => Locale.default,
     shop: () => ({ id: 'mock-shop-id' }) as OnlineShop,
 });

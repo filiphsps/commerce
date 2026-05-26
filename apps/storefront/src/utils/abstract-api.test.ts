@@ -17,6 +17,15 @@ vi.mock('@apollo/client', async () => ({
                 },
                 errors: undefined,
             }),
+            mutate: vi.fn().mockResolvedValue({
+                data: {
+                    cartCreate: {
+                        cart: { id: 'gid://shopify/Cart/new' },
+                        userErrors: [],
+                    },
+                },
+                errors: undefined,
+            }),
         };
     }),
 }));
@@ -35,7 +44,7 @@ describe('utils', () => {
         } as Locale;
 
         const api = ApiBuilder({
-            shop: {} as any,
+            shop: { id: 'shop-123', domain: 'demo.myshopify.com' } as any,
             api: client,
             locale,
         });
@@ -59,6 +68,34 @@ describe('utils', () => {
             expect(errors).toBeUndefined();
             expect(data?.product.id).toBe('123');
             expect(data?.product.title).toBe('Fake Product');
+        });
+
+        it('mutate forwards mutation + variables to the apollo client and returns data', async () => {
+            const mutation = `
+                mutation CartCreate($input: CartInput!) {
+                    cartCreate(input: $input) {
+                        cart { id }
+                        userErrors { field message }
+                    }
+                }
+            `;
+
+            const { data, errors } = await api.mutate<{
+                cartCreate: { cart: { id: string }; userErrors: unknown[] };
+            }>(mutation as any, { input: { lines: [] } });
+
+            expect(errors).toBeUndefined();
+            expect(data?.cartCreate.cart.id).toBe('gid://shopify/Cart/new');
+            expect((client as any).mutate).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    mutation,
+                    variables: expect.objectContaining({
+                        language: 'EN',
+                        country: 'US',
+                        input: { lines: [] },
+                    }),
+                }),
+            );
         });
     });
 });

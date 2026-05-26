@@ -41,6 +41,31 @@ export type AbstractApi<Q = TypedDocumentNode<unknown, unknown>> = {
             },
         ): Promise<{ data: T | null; errors: readonly unknown[] | undefined }>;
     };
+    /**
+     * Run a Storefront mutation. Mirrors {@link query}'s typed/untyped
+     * overloads. Mutations are always uncached (`fetchPolicy: 'no-cache'`);
+     * `tags` is accepted for API symmetry but is a no-op — cache
+     * invalidation for mutations belongs in server actions via
+     * `revalidateTag()`.
+     */
+    mutate: {
+        <TResult, TVariables extends QueryVariables = QueryVariables>(
+            mutation: TypedDocumentNode<TResult, TVariables>,
+            variables?: TVariables,
+            options?: {
+                fetchPolicy?: RequestCache;
+                tags?: string[];
+            },
+        ): Promise<{ data: TResult | null; errors: readonly unknown[] | undefined }>;
+        <T>(
+            mutation: Q,
+            variables?: QueryVariables,
+            options?: {
+                fetchPolicy?: RequestCache;
+                tags?: string[];
+            },
+        ): Promise<{ data: T | null; errors: readonly unknown[] | undefined }>;
+    };
 };
 export type AbstractApiBuilder<K, Q> = ({
     api,
@@ -109,6 +134,38 @@ export const ApiBuilder: AbstractShopifyApolloApiBuilder<TypedDocumentNode<unkno
         // callers (and the AbstractApi contract) unchanged.
         const errors = CombinedGraphQLErrors.is(error) ? error.errors : undefined;
         return { data: (data as T | undefined) || null, errors, error };
+    },
+    mutate: async <T>(
+        mutation: TypedDocumentNode<unknown, unknown>,
+        variables: Record<string, string | number | boolean | object | Array<string | number | object> | null> = {},
+        _options: { fetchPolicy?: RequestCache; tags?: string[] } = {},
+    ): Promise<{ data: T | null; errors: readonly unknown[] | undefined }> => {
+        // `fetchPolicy`/`tags` accepted for API symmetry with `query()` but
+        // ignored — Apollo doesn't cache mutations, and any cached-read
+        // invalidation belongs in server actions via `revalidateTag()`.
+        try {
+            const { data, error } = await api.mutate({
+                mutation,
+                context: {
+                    fetchOptions: {
+                        cache: 'no-store',
+                    },
+                },
+                variables: {
+                    language: locale.language,
+                    country: locale.country,
+                    ...variables,
+                },
+            });
+
+            const errors = CombinedGraphQLErrors.is(error) ? error.errors : undefined;
+            return { data: (data as T | undefined) ?? null, errors };
+        } catch (error) {
+            if (CombinedGraphQLErrors.is(error)) {
+                return { data: null, errors: error.errors };
+            }
+            throw error;
+        }
     },
 });
 

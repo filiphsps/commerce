@@ -39,6 +39,7 @@ const mockApi = (
     shop: Partial<OnlineShop> = { id: 'mock-shop-id' },
 ): AbstractApi => ({
     query: queryMock as unknown as AbstractApi['query'],
+    mutate: vi.fn() as unknown as AbstractApi['mutate'],
     locale: () => Locale.default,
     shop: () => shop as OnlineShop,
 });
