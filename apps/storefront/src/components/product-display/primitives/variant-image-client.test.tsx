@@ -47,4 +47,11 @@ describe('VariantImageClient', () => {
         const { getByTestId } = wrap({});
         expect(getByTestId('product-card-image-swap')).toBeTruthy();
     });
+
+    it('uses object-cover and the token-driven sizes attribute', () => {
+        const { container } = wrap({});
+        const img = container.querySelector('img');
+        expect(img?.className).toMatch(/object-cover/);
+        expect(img?.getAttribute('sizes')).toMatch(/240px/);
+    });
 });
