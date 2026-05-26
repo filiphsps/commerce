@@ -108,9 +108,9 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
                 className={cn(
                     'contain-intrinsic-size-[auto_100%] grid w-full snap-x snap-mandatory gap-2 content-visibility-auto',
                     !isHorizontal &&
-                        'grid-cols-[repeat(auto-fill,minmax(var(--product-card-min-width),var(--product-card-max-width)))] justify-(--product-card-grid-align)',
+                        'justify-(--product-card-grid-align) grid-cols-[repeat(auto-fill,minmax(var(--product-card-min-width),var(--product-card-max-width)))]',
                     isHorizontal &&
-                        'overflow-x-shadow -my-2 auto-cols-[var(--product-card-max-width)] grid-flow-col grid-cols-[var(--product-card-max-width)] grid-rows-1 overscroll-x-auto py-2 scroll-px-(--block-padding)',
+                        'overflow-x-shadow -my-2 scroll-px-(--block-padding) auto-cols-[var(--product-card-max-width)] grid-flow-col grid-cols-[var(--product-card-max-width)] grid-rows-1 overscroll-x-auto py-2',
                     className,
                 )}
             >
@@ -149,7 +149,7 @@ CollectionBlock.skeleton = ({
             className={cn(
                 'grid w-full gap-2',
                 !isHorizontal &&
-                    'grid-cols-[repeat(auto-fill,minmax(var(--product-card-min-width),var(--product-card-max-width)))] justify-(--product-card-grid-align)',
+                    'justify-(--product-card-grid-align) grid-cols-[repeat(auto-fill,minmax(var(--product-card-min-width),var(--product-card-max-width)))]',
                 isHorizontal &&
                     '-mr-8 auto-cols-[var(--product-card-max-width)] grid-flow-col grid-cols-[var(--product-card-max-width)] grid-rows-1 overflow-x-clip overscroll-none',
                 className,
