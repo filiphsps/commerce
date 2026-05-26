@@ -20,7 +20,7 @@
         "format:check": "biome check --write --unsafe .",
         "typegen": "next typegen",
         "typecheck": "tsc -noEmit",
-        "test:e2e": "playwright test",
+        "test:e2e": "NODE_OPTIONS='--import ./e2e/fixtures/register-loaders.mjs' playwright test",
         "analyze": "next experimental-analyze"
     },
     "author": {
