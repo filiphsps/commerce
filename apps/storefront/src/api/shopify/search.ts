@@ -7,12 +7,14 @@ import { cacheLife, cacheTag } from 'next/cache';
 import { Shop } from '@/api/_loaders';
 import type { Product, ProductFilters } from '@/api/product';
 import { ShopifyApolloApiClient } from '@/api/shopify';
+import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product-fragments';
 import { cache } from '@/cache';
 import type { AbstractApi } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
 import { unsafe_cast } from '@/utils/unsafe-cast';
 
-const SEARCH_PRODUCTS_QUERY = graphql(`
+export const SEARCH_PRODUCTS_QUERY = graphql(
+    `
     query searchProducts($query: String!, $first: Int, $type: [SearchType!]) {
         search(query: $query, first: $first, types: $type) {
             totalCount
@@ -34,48 +36,15 @@ const SEARCH_PRODUCTS_QUERY = graphql(`
             edges {
                 node {
                     ... on Product {
-                        id
-                        handle
-                        title
-                        vendor
-                        productType
-                        availableForSale
-                        trackingParameters
-                        featuredImage {
-                            id
-                            url(transform: { preferredContentType: WEBP })
-                            altText
-                            width
-                            height
-                        }
-                        images(first: 1) {
-                            edges {
-                                node {
-                                    id
-                                    url(transform: { preferredContentType: WEBP })
-                                    altText
-                                    width
-                                    height
-                                }
-                            }
-                        }
-                        tags
-                        priceRange {
-                            minVariantPrice {
-                                amount
-                                currencyCode
-                            }
-                            maxVariantPrice {
-                                amount
-                                currencyCode
-                            }
-                        }
+                        ...ProductMinimal
                     }
                 }
             }
         }
     }
-`);
+`,
+    [PRODUCT_FRAGMENT_MINIMAL],
+);
 
 export const SearchApi = async ({
     client,
