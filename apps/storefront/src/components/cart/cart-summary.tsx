@@ -7,7 +7,6 @@ import type { CartLine } from '@/api/cart/types';
 import { Button } from '@/components/actionable/button';
 import { CartCoupons } from '@/components/cart/cart-coupons';
 import { CartNote } from '@/components/cart/cart-note';
-import styles from '@/components/cart/cart-summary.module.css';
 import {
     useCartCost,
     useCartCount,
@@ -28,6 +27,10 @@ import { cn } from '@/utils/tailwind';
 const SUMMARY_LABEL_STYLES = 'font-medium text-sm capitalize text-gray-600 leading-none';
 const PRICE_STYLES = 'text-sm font-bold';
 const PRICE_DISCOUNT_STYLES = 'bg-green-200 text-green-950 rounded-lg px-1 -mx-1 font-extrabold';
+
+const SECTION_STYLES =
+    'flex flex-col p-[var(--block-padding-large)] rounded-[var(--block-border-radius)] bg-[var(--color-block)] text-[color:var(--color-dark)] transition-all duration-150 ease-in-out';
+const HEADER_STYLES = 'grid grid-cols-[1fr_auto] gap-[var(--block-spacer)]';
 
 // TODO: Configurable free shipping.
 
@@ -95,23 +98,19 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
     return (
         <div
             data-display="cost"
-            className={cn(
-                styles.container,
-                'sticky top-32 flex flex-col gap-4',
-                !cartReady && 'pointer-events-none brightness-50',
-            )}
+            className={cn('sticky top-32 flex flex-col gap-4', !cartReady && 'pointer-events-none brightness-50')}
         >
             {children}
 
-            <section className={cn(styles.section, 'gap-1')}>
-                <header className={styles.header}>
+            <section className={cn(SECTION_STYLES, 'gap-1')}>
+                <header className={HEADER_STYLES}>
                     <Label>{t('order-summary')}</Label>
                     <Label className="text-xs">
                         {totalQuantity} {pluralize({ count: totalQuantity || 0, noun: 'item' })}
                     </Label>
                 </header>
 
-                <div className={cn(styles.lines, 'gap-1')}>
+                <div className="flex flex-col gap-1">
                     <div className="flex items-center justify-between">
                         <Label className={SUMMARY_LABEL_STYLES}>{t('shipping')}</Label>
                         <div className={PRICE_STYLES}>{'TBD*'}</div>
@@ -139,7 +138,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                         <>
                             {sale ? (
                                 <div
-                                    className={cn(styles.discounted, 'flex items-center justify-between')}
+                                    className="flex items-center justify-between"
                                     data-testid="cart-summary-sale"
                                     title={`${salePercentage}% OFF`}
                                 >
@@ -182,10 +181,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
 
                                                 return (
                                                     <div
-                                                        className={cn(
-                                                            styles.discounted,
-                                                            'flex items-center justify-between',
-                                                        )}
+                                                        className="flex items-center justify-between"
                                                         key={`${line.id}-${discount.discountedAmount.amount}`}
                                                     >
                                                         <Label className={SUMMARY_LABEL_STYLES}>{title}</Label>
@@ -207,7 +203,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                     ) : null}
 
                     {promos && !noItems ? (
-                        <div className={cn(styles.discounted, 'flex items-center justify-between')}>
+                        <div className="flex items-center justify-between">
                             <Label className={SUMMARY_LABEL_STYLES}>{t('promo-codes')}</Label>
                             {cartReady ? (
                                 <Price
@@ -221,7 +217,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                         </div>
                     ) : null}
 
-                    <div className={cn(styles.totals, 'flex items-center justify-between pt-1')}>
+                    <div className="mt-[var(--block-padding-small)] flex items-center justify-between pt-1 [border-top:calc(var(--block-border-width)/1.5)_dotted_var(--color-gray)]">
                         <Label className="font-bold text-xl capitalize">{t('estimated-total')}</Label>
                         {(cost.total || cost.subtotal) && !noItems ? (
                             <Price
@@ -240,7 +236,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
             </section>
 
             {BuildConfig.environment === 'development' ? (
-                <section className={cn(styles.section, 'gap-2 empty:hidden')}>
+                <section className={cn(SECTION_STYLES, 'gap-2 empty:hidden')}>
                     {(lines as CartLine[]).map((line) => {
                         const discountLineElements = (line.discountAllocations ?? [])
                             .map((discount, index) => {
@@ -299,18 +295,18 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
                 </section>
             ) : null}
 
-            <section className={cn(styles.section, styles['section-actions'], 'gap-2')}>
+            <section className="flex flex-col gap-2">
                 <Button
                     className="h-10 py-0 md:h-14 md:text-base lg:text-lg"
                     disabled={!cartReady || noItems}
                     onClick={onCheckout}
                 >
                     <span>{t('continue-to-checkout')}</span>
-                    <ChevronRightIcon className={styles.icon} />
+                    <ChevronRightIcon />
                 </Button>
             </section>
 
-            <section className={cn(styles.section, styles['section-security'], 'gap-2')}>
+            <section className={cn(SECTION_STYLES, 'mt-[var(--block-spacer-huge)] gap-2 text-center')}>
                 {paymentMethods || null}
 
                 <div className={'text-sm leading-snug'}>
@@ -329,14 +325,14 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
             </section>
 
             {cartReady && discountCodes.length > 0 ? (
-                <section className={cn(styles.section, 'gap-2')}>
+                <section className={cn(SECTION_STYLES, 'gap-2')}>
                     <CartCoupons />
                 </section>
             ) : null}
 
             {lines.length > 0 ? (
-                <section className={cn(styles.section, 'gap-2')}>
-                    <header className={styles.header}>
+                <section className={cn(SECTION_STYLES, 'gap-2')}>
+                    <header className={HEADER_STYLES}>
                         <Label>{t('label-cart-note')}</Label>
                     </header>
 
