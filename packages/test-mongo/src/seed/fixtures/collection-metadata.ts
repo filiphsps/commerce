@@ -3,11 +3,11 @@
  * on top of Shopify collection handles — adds editorial copy +
  * supporting block stack the storefront PLP shows above the product grid.
  *
- * Handles point at the live mock.shop catalogue (`featured`, `men`, etc.)
- * so collection blocks actually resolve.
+ * Covers every collection mock.shop exposes: `men`, `women`, `unisex`,
+ * `tops`, `bottoms`, `accessories`, `featured`, `shoes`.
  */
 
-import { heading, lexicalDoc, paragraph } from './lexical';
+import { heading, lexicalDoc, list, paragraph } from './lexical';
 
 export interface CollectionMetadataFixture {
     shopifyHandle: string;
@@ -15,6 +15,13 @@ export interface CollectionMetadataFixture {
     blocks: Array<Record<string, unknown>>;
     seo: Record<string, unknown>;
 }
+
+const externalLink = (label: string, url: string): Record<string, unknown> => ({
+    kind: 'external',
+    label,
+    url,
+    openInNewTab: false,
+});
 
 export const collectionMetadataFixtures: CollectionMetadataFixture[] = [
     {
@@ -30,7 +37,7 @@ export const collectionMetadataFixtures: CollectionMetadataFixture[] = [
                 blockType: 'banner',
                 heading: 'This week in the studio',
                 subheading: 'A rotating capsule the design team curates from current production.',
-                cta: { kind: 'external', label: 'Read the journal', url: '/journal/', openInNewTab: false },
+                cta: externalLink('Read the journal', '/journal/'),
                 alignment: 'left',
             },
             {
@@ -67,6 +74,13 @@ export const collectionMetadataFixtures: CollectionMetadataFixture[] = [
                 title: 'Browse the range',
                 limit: 12,
             },
+            {
+                blockType: 'alert',
+                severity: 'info',
+                title: 'Free 30-day returns',
+                body: 'Try anything at home. Send it back at no cost if it is not right.',
+                dismissible: false,
+            },
         ],
         seo: {
             title: 'Menswear — Nordcom Demo Shop',
@@ -95,6 +109,120 @@ export const collectionMetadataFixtures: CollectionMetadataFixture[] = [
             title: 'Womenswear — Nordcom Demo Shop',
             description: 'Considered staples and statement pieces. Mid-weight wool, organic cotton, made to last.',
             keywords: ['womenswear'],
+        },
+    },
+    {
+        shopifyHandle: 'unisex',
+        descriptionOverride: lexicalDoc([
+            heading('Unisex', 'h2'),
+            paragraph('Pieces built without a gender brief — relaxed through the shoulder, cut to fit anyone.'),
+        ]),
+        blocks: [
+            {
+                blockType: 'overview',
+                source: 'collection',
+                collectionHandle: 'unisex',
+                title: 'Shop unisex',
+                limit: 12,
+            },
+        ],
+        seo: {
+            title: 'Unisex — Nordcom Demo Shop',
+            description: 'Relaxed-through-the-shoulder pieces, cut without a gender brief.',
+            keywords: ['unisex'],
+        },
+    },
+    {
+        shopifyHandle: 'tops',
+        descriptionOverride: lexicalDoc([
+            heading('Tops', 'h2'),
+            paragraph(
+                'Hoodies, crewnecks, T-shirts, and the half-zip. All loopback Egyptian cotton, garment-dyed in Porto.',
+            ),
+        ]),
+        blocks: [
+            { blockType: 'collection', handle: 'tops', title: 'Shop the range', layout: 'grid', limit: 24 },
+            {
+                blockType: 'rich-text',
+                body: lexicalDoc([
+                    heading('Fabric', 'h3'),
+                    paragraph(
+                        '380 g/m² loopback cotton. 100% long-staple Egyptian fibre, garment-dyed, pre-shrunk in finishing.',
+                    ),
+                ]),
+            },
+        ],
+        seo: {
+            title: 'Tops — Nordcom Demo Shop',
+            description: 'Loopback Egyptian cotton in five colours. Garment-dyed, pre-shrunk, made to last.',
+            keywords: ['tops', 'hoodies', 'tshirts'],
+        },
+    },
+    {
+        shopifyHandle: 'bottoms',
+        descriptionOverride: lexicalDoc([
+            heading('Bottoms', 'h2'),
+            paragraph('Sweatpants, leggings, shorts. Drawstring or elastic, never both.'),
+        ]),
+        blocks: [
+            { blockType: 'collection', handle: 'bottoms', title: 'Shop the range', layout: 'grid', limit: 24 },
+            {
+                blockType: 'rich-text',
+                collapsible: true,
+                collapsedByDefault: true,
+                collapseLabel: 'Fit & care',
+                body: lexicalDoc([
+                    list([
+                        'Regular through the thigh, tapered below the knee.',
+                        'Pre-shrunk loopback or 4-way stretch.',
+                        'Cold machine wash, hang to dry.',
+                    ]),
+                ]),
+            },
+        ],
+        seo: {
+            title: 'Bottoms — Nordcom Demo Shop',
+            description: 'Sweatpants, leggings, shorts. Drawstring or elastic, never both.',
+            keywords: ['bottoms', 'sweatpants', 'shorts'],
+        },
+    },
+    {
+        shopifyHandle: 'shoes',
+        descriptionOverride: lexicalDoc([
+            heading('Shoes', 'h2'),
+            paragraph(
+                'Canvas, leather, and rubber. Cup-soled sneakers built to be resoled — bring them back, we will send them on to our cobbler in Porto.',
+            ),
+        ]),
+        blocks: [
+            { blockType: 'collection', handle: 'shoes', title: 'Shop the range', layout: 'carousel', limit: 12 },
+            {
+                blockType: 'alert',
+                severity: 'success',
+                title: 'Free resoles for life',
+                body: 'Bring (or post) any pair from the cup-soled range back to us and we will resole them in Porto. Lifetime guarantee.',
+                dismissible: true,
+            },
+        ],
+        seo: {
+            title: 'Shoes — Nordcom Demo Shop',
+            description: 'Canvas, leather, and rubber. Cup-soled, resole-friendly, made to last.',
+            keywords: ['shoes', 'sneakers'],
+        },
+    },
+    {
+        shopifyHandle: 'accessories',
+        descriptionOverride: lexicalDoc([
+            heading('Accessories', 'h2'),
+            paragraph('The small stuff — beanie, sunnies, frontpack. Detail-rich finishes; same materials policy.'),
+        ]),
+        blocks: [
+            { blockType: 'collection', handle: 'accessories', title: 'Shop accessories', layout: 'grid', limit: 12 },
+        ],
+        seo: {
+            title: 'Accessories — Nordcom Demo Shop',
+            description: 'Beanie, sunnies, frontpack — same considered materials, smaller silhouettes.',
+            keywords: ['accessories'],
         },
     },
 ];

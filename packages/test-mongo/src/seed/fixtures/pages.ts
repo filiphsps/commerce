@@ -1,14 +1,25 @@
 /**
- * Page fixtures for the seeded demo tenant. Five pages, each exercising a
+ * Page fixtures for the seeded demo tenant. Ten pages, each exercising a
  * different combination of blocks so storefront renderers and visual tests
  * have material to chew on:
  *
- *   /              — home, the full smörgåsbord (banner → collection →
- *                    media-grid → columns → overview → alert)
- *   /about/        — long-form story, mixed rich-text + media
+ *   /homepage/      — the full smörgåsbord: banner → collection → media-grid →
+ *                     columns(richText + alert) → overview → alert
+ *   /about/         — long-form story, mixed rich-text + media
  *   /sustainability/ — collapsible richText FAQ, vendors block
  *   /lookbook-fw25/  — media-heavy editorial (banner + media-grid + collection)
- *   /contact/      — alerts + columns + business details
+ *   /contact/        — alerts + columns + business details
+ *   /shipping/       — collapsible FAQ + alerts + table-style rich-text
+ *   /returns/        — alerts spanning every severity
+ *   /size-guide/     — rich-text with measurement tables + media-grid (icons)
+ *   /press/          — banner + 6-column media-grid + vendors
+ *   /careers/        — 4-column layout + rich-text + alerts
+ *
+ * Blocks covered: alert (all 4 severities), banner (all 3 alignments),
+ * collection (grid + carousel layouts), columns (1–4 column splits across
+ * all widths), html (admin-only), media-grid (image + icon, 1–6 columns),
+ * overview (all 3 sources), rich-text (plain + collapsible variants),
+ * vendors.
  */
 
 import { heading, lexicalDoc, list, paragraph } from './lexical';
@@ -29,9 +40,6 @@ export interface PageFixture {
 
 export const pageFixtures: PageFixture[] = [
     {
-        // `homepage` is the canonical slug the storefront middleware rewrites
-        // `/<locale>/` to. Anything else (e.g. `home`) renders as 404 because
-        // there's nothing in the routing tree mapping the bare index to it.
         slug: 'homepage',
         title: 'Nordcom Demo Shop',
         seo: {
@@ -44,7 +52,7 @@ export const pageFixtures: PageFixture[] = [
                 blockType: 'banner',
                 heading: 'Fall/Winter 2025',
                 subheading: 'Made for the long Nordic dark — recycled down, organic wool, traceable leather.',
-                cta: externalLink('Shop the collection', '/collections/fw25/'),
+                cta: externalLink('Shop the collection', '/collections/featured/'),
                 alignment: 'left',
             },
             {
@@ -59,18 +67,9 @@ export const pageFixtures: PageFixture[] = [
                 itemType: 'image',
                 columns: 3,
                 items: [
-                    {
-                        caption: 'Womenswear',
-                        link: externalLink('Shop womenswear', '/collections/women/'),
-                    },
-                    {
-                        caption: 'Menswear',
-                        link: externalLink('Shop menswear', '/collections/men/'),
-                    },
-                    {
-                        caption: 'Shoes',
-                        link: externalLink('Shop shoes', '/collections/shoes/'),
-                    },
+                    { caption: 'Womenswear', link: externalLink('Shop womenswear', '/collections/women/') },
+                    { caption: 'Menswear', link: externalLink('Shop menswear', '/collections/men/') },
+                    { caption: 'Shoes', link: externalLink('Shop shoes', '/collections/shoes/') },
                 ],
             },
             {
@@ -104,12 +103,7 @@ export const pageFixtures: PageFixture[] = [
                     },
                 ],
             },
-            {
-                blockType: 'overview',
-                source: 'featured',
-                title: 'Editor’s picks',
-                limit: 6,
-            },
+            { blockType: 'overview', source: 'featured', title: 'Editor’s picks', limit: 6 },
             {
                 blockType: 'alert',
                 severity: 'success',
@@ -280,7 +274,7 @@ export const pageFixtures: PageFixture[] = [
                 blockType: 'collection',
                 handle: 'featured',
                 title: 'Shop the collection',
-                layout: 'grid',
+                layout: 'carousel',
                 limit: 24,
             },
         ],
@@ -345,6 +339,321 @@ export const pageFixtures: PageFixture[] = [
                         ],
                     },
                 ],
+            },
+        ],
+    },
+    {
+        slug: 'shipping',
+        title: 'Shipping & delivery',
+        seo: {
+            title: 'Shipping — Nordcom Demo Shop',
+            description: 'Lead times, carriers, customs, and how to track an order.',
+        },
+        blocks: [
+            {
+                blockType: 'banner',
+                heading: 'Shipping & delivery',
+                subheading: 'Carbon-neutral by default. 30-day window to change your mind.',
+                alignment: 'right',
+            },
+            {
+                blockType: 'alert',
+                severity: 'info',
+                title: 'Free shipping over €120',
+                body: 'Domestic Sweden orders ship free over €60.',
+                dismissible: false,
+            },
+            {
+                blockType: 'rich-text',
+                body: lexicalDoc([
+                    heading('Lead times', 'h2'),
+                    list([
+                        'Sweden: 1–2 working days (PostNord MyPack Collect).',
+                        'Nordic countries: 2–4 working days (PostNord).',
+                        'EU: 3–6 working days (DHL Express, GLS).',
+                        'UK, US, Canada: 4–7 working days (DHL Express).',
+                        'Rest of world: 6–10 working days (DHL Express). Duties pre-paid where supported.',
+                    ]),
+                ]),
+            },
+            {
+                blockType: 'rich-text',
+                collapsible: true,
+                collapsedByDefault: true,
+                collapseLabel: 'Customs, duties & VAT',
+                body: lexicalDoc([
+                    paragraph(
+                        'For EU destinations we ship DDP — VAT collected at checkout, no further charges on delivery. For UK + Switzerland orders we collect VAT at checkout but the carrier may still levy a handling fee. For US + rest of world we ship DAP — duties + taxes are the recipient’s responsibility unless explicitly noted.',
+                    ),
+                ]),
+            },
+            {
+                blockType: 'rich-text',
+                collapsible: true,
+                collapsedByDefault: true,
+                collapseLabel: 'Tracking an order',
+                body: lexicalDoc([
+                    paragraph(
+                        'You will receive a tracking email when the parcel leaves our warehouse. If 48 hours have passed since the order confirmation and you have not received tracking, drop us a line.',
+                    ),
+                ]),
+            },
+            {
+                blockType: 'alert',
+                severity: 'warning',
+                title: 'Carrier delays during peak weeks',
+                body: 'Black Friday → Christmas Eve and Lunar New Year typically add 1–3 working days. We will email you proactively if your order is impacted.',
+                dismissible: false,
+            },
+        ],
+    },
+    {
+        slug: 'returns',
+        title: 'Returns & exchanges',
+        seo: {
+            title: 'Returns — Nordcom Demo Shop',
+            description: 'How returns work — windows, condition, and refund timing.',
+        },
+        blocks: [
+            {
+                blockType: 'alert',
+                severity: 'success',
+                title: 'Free returns within 30 days',
+                body: 'Pre-paid label included in every box, both directions.',
+                dismissible: false,
+            },
+            {
+                blockType: 'rich-text',
+                body: lexicalDoc([
+                    heading('How returns work', 'h2'),
+                    list(
+                        [
+                            'Drop the parcel at any PostNord access point with the included return label.',
+                            'Once we receive it, allow 3 working days for inspection.',
+                            'Refunds go back to your original payment method within 5–10 working days, depending on the issuer.',
+                        ],
+                        'number',
+                    ),
+                ]),
+            },
+            {
+                blockType: 'alert',
+                severity: 'warning',
+                title: 'Items returned outside the window',
+                body: 'Anything sent back after day 30 will be refused at our warehouse and returned to you at your cost. No exceptions, sorry.',
+                dismissible: false,
+            },
+            {
+                blockType: 'alert',
+                severity: 'error',
+                title: 'Items returned worn or laundered',
+                body: 'Garments returned with visible wear, missing tags, or pet hair will not be refunded. We resell every returned piece into the archive sale; we cannot do that with damaged stock.',
+                dismissible: false,
+            },
+            {
+                blockType: 'rich-text',
+                body: lexicalDoc([
+                    heading('Exchanges', 'h3'),
+                    paragraph(
+                        'Returning for a different size of the same product is treated as an exchange — your card is not re-charged unless the new size is at a different price.',
+                    ),
+                ]),
+            },
+        ],
+    },
+    {
+        slug: 'size-guide',
+        title: 'Size guide',
+        seo: {
+            title: 'Size guide — Nordcom Demo Shop',
+            description: 'Body measurements + garment measurements for every category.',
+        },
+        blocks: [
+            {
+                blockType: 'banner',
+                heading: 'Size guide',
+                subheading: 'Measure once, order once. Free returns either way.',
+                alignment: 'left',
+            },
+            {
+                blockType: 'media-grid',
+                itemType: 'icon',
+                columns: 4,
+                items: [{ caption: 'Tops' }, { caption: 'Bottoms' }, { caption: 'Outerwear' }, { caption: 'Shoes' }],
+            },
+            {
+                blockType: 'rich-text',
+                body: lexicalDoc([
+                    heading('How to measure', 'h2'),
+                    list(
+                        [
+                            'Chest — measure around the fullest part, under the arms, with arms relaxed at sides.',
+                            'Waist — measure around the narrowest part, just above the hip bones.',
+                            'Hip — measure around the fullest part, with feet together.',
+                            'Inseam — measure from crotch seam to the desired hem length.',
+                        ],
+                        'number',
+                    ),
+                ]),
+            },
+            {
+                blockType: 'rich-text',
+                collapsible: true,
+                collapsedByDefault: false,
+                collapseLabel: 'Tops (chest, cm)',
+                body: lexicalDoc([paragraph('XS — 86 / S — 91 / M — 97 / L — 104 / XL — 112 / XXL — 121')]),
+            },
+            {
+                blockType: 'rich-text',
+                collapsible: true,
+                collapsedByDefault: true,
+                collapseLabel: 'Bottoms (waist, cm)',
+                body: lexicalDoc([paragraph('28 — 71 / 30 — 76 / 32 — 81 / 34 — 86 / 36 — 91 / 38 — 96 / 40 — 102')]),
+            },
+            {
+                blockType: 'rich-text',
+                collapsible: true,
+                collapsedByDefault: true,
+                collapseLabel: 'Shoes (EU / UK / US — length, cm)',
+                body: lexicalDoc([
+                    paragraph('36 / 3 / 5 — 22.8'),
+                    paragraph('38 / 5 / 7 — 24.0'),
+                    paragraph('40 / 6.5 / 8.5 — 25.5'),
+                    paragraph('42 / 8 / 10 — 26.8'),
+                    paragraph('44 / 9.5 / 11.5 — 28.0'),
+                ]),
+            },
+        ],
+    },
+    {
+        slug: 'press',
+        title: 'Press',
+        seo: {
+            title: 'Press — Nordcom Demo Shop',
+            description: 'Press releases, downloads, and where we have been written about.',
+        },
+        blocks: [
+            {
+                blockType: 'banner',
+                heading: 'Press',
+                subheading: 'Briefs, downloads, and contact for editorial.',
+                alignment: 'center',
+            },
+            {
+                blockType: 'media-grid',
+                itemType: 'icon',
+                columns: 6,
+                items: [
+                    { caption: 'Monocle' },
+                    { caption: 'Acquired' },
+                    { caption: 'Hypebeast' },
+                    { caption: 'Highsnobiety' },
+                    { caption: 'Wallpaper*' },
+                    { caption: 'It’s Nice That' },
+                ],
+            },
+            { blockType: 'vendors', title: 'Manufacturing partners', maxVendors: 8 },
+            {
+                blockType: 'rich-text',
+                body: lexicalDoc([
+                    heading('Editorial contact', 'h3'),
+                    paragraph('press@nordcom-demo-shop.example.com'),
+                    paragraph(
+                        'Brand book, hi-res photography, and the latest line sheet are available on request. We try to respond within two working days.',
+                    ),
+                ]),
+            },
+        ],
+    },
+    {
+        slug: 'careers',
+        title: 'Careers',
+        seo: {
+            title: 'Careers — Nordcom Demo Shop',
+            description: 'Open roles, how we hire, and what it is like to work here.',
+        },
+        blocks: [
+            {
+                blockType: 'banner',
+                heading: 'Build with us',
+                subheading: 'Small team, considered briefs, lifetime employee discount.',
+                alignment: 'left',
+            },
+            {
+                blockType: 'columns',
+                columns: [
+                    {
+                        width: 'auto',
+                        content: [
+                            {
+                                blockType: 'rich-text',
+                                body: lexicalDoc([
+                                    heading('Design', 'h3'),
+                                    paragraph('Garment designer (full-time, Stockholm)'),
+                                ]),
+                            },
+                        ],
+                    },
+                    {
+                        width: 'auto',
+                        content: [
+                            {
+                                blockType: 'rich-text',
+                                body: lexicalDoc([
+                                    heading('Production', 'h3'),
+                                    paragraph('Production planner (full-time, Porto)'),
+                                ]),
+                            },
+                        ],
+                    },
+                    {
+                        width: 'auto',
+                        content: [
+                            {
+                                blockType: 'rich-text',
+                                body: lexicalDoc([
+                                    heading('Engineering', 'h3'),
+                                    paragraph('Senior storefront engineer (full-time, remote EU)'),
+                                ]),
+                            },
+                        ],
+                    },
+                    {
+                        width: 'auto',
+                        content: [
+                            {
+                                blockType: 'rich-text',
+                                body: lexicalDoc([
+                                    heading('Retail', 'h3'),
+                                    paragraph('Sales associate (part-time, Stockholm flagship)'),
+                                ]),
+                            },
+                        ],
+                    },
+                ],
+            },
+            {
+                blockType: 'rich-text',
+                body: lexicalDoc([
+                    heading('How we hire', 'h2'),
+                    list(
+                        [
+                            'Application — a short cover letter and a portfolio link.',
+                            'First call — 30 minutes with the hiring manager.',
+                            'Practical — a paid take-home (or a craft critique for design roles).',
+                            'Onsite — half a day with the team in Stockholm or Porto. Travel covered.',
+                            'Offer — usually within a week of the onsite.',
+                        ],
+                        'number',
+                    ),
+                ]),
+            },
+            {
+                blockType: 'alert',
+                severity: 'info',
+                title: 'We read every application',
+                body: 'No keyword filters, no automated rejections. Expect a reply within ten working days even if it is a "no for now".',
+                dismissible: false,
             },
         ],
     },

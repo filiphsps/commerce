@@ -1,15 +1,13 @@
 /**
- * Feature-flag fixtures for the seeded demo tenant. Three flags exercising
+ * Feature-flag fixtures for the seeded demo tenant. Ten flags exercising
  * every CMS field on the collection — defaultValue + options + targeting
  * rules — so admin tooling and runtime evaluators both have realistic
  * material to render against.
  *
- * The CMS field `value` is `type: 'json' + required: true`. Payload's
- * required validator on JSON treats any falsy value as missing (`!false ===
- * true`), and the sanitizer is invoked on raw values — through the local
- * API, the cleanest way to pass `false` / strings / plain objects is to
- * hand-stringify them. We expose the rich data to TypeScript via
- * `featureFlagFixtures` and stringify at the seed boundary in `seedCms`.
+ * Flags are wrapped in `{ … }` shapes (not bare booleans/strings) because
+ * Payload's `type: 'json' + required: true` validator treats falsy
+ * primitives as missing and rejects the create via the local API.
+ * `seedCms` `JSON.stringify`s each value at the boundary.
  */
 
 export interface FeatureFlagFixture {
@@ -64,12 +62,104 @@ export const featureFlagFixtures: FeatureFlagFixture[] = [
     },
     {
         key: 'storefront.product.recommendations',
-        description: 'Recommendation engine to power the PDP "you might also like" rail.',
+        description: 'Recommendation engine powering the PDP "you might also like" rail.',
         defaultValue: { engine: 'shopify-related', limit: 8 },
         options: [
             { label: 'Shopify "related"', value: { engine: 'shopify-related', limit: 8 } },
             { label: 'Algolia recommend', value: { engine: 'algolia', limit: 12 } },
             { label: 'Disabled', value: { engine: 'off' } },
+        ],
+    },
+    {
+        key: 'storefront.search.autocomplete',
+        description: 'Inline autocomplete suggestions in the header search.',
+        defaultValue: { enabled: true, provider: 'shopify-predictive' },
+        options: [
+            { label: 'Shopify predictive', value: { enabled: true, provider: 'shopify-predictive' } },
+            { label: 'Algolia autocomplete', value: { enabled: true, provider: 'algolia' } },
+            { label: 'Off', value: { enabled: false } },
+        ],
+    },
+    {
+        key: 'storefront.plp.infinite-scroll',
+        description: 'Auto-load more products as the user scrolls instead of paginating.',
+        defaultValue: { mode: 'load-more-button' },
+        options: [
+            { label: 'Paginated', value: { mode: 'paginated' } },
+            { label: 'Load-more button', value: { mode: 'load-more-button' } },
+            { label: 'Infinite scroll', value: { mode: 'infinite-scroll' } },
+        ],
+    },
+    {
+        key: 'storefront.pdp.bundle-builder',
+        description: 'Show the "complete the look" bundle builder on PDP.',
+        defaultValue: { enabled: false },
+        options: [
+            { label: 'Enabled', value: { enabled: true } },
+            { label: 'Disabled', value: { enabled: false } },
+        ],
+        targeting: [
+            {
+                rule: 'collection-handle-in',
+                params: { handles: ['featured', 'tops'] },
+                value: { enabled: true },
+                description: 'Pilot on Featured + Tops before rolling out wider.',
+            },
+        ],
+    },
+    {
+        key: 'storefront.analytics.consent-mode',
+        description: 'Google Consent Mode v2 routing for analytics tags.',
+        defaultValue: { mode: 'granted-storage', region: 'eu' },
+        options: [
+            { label: 'Granted (storage)', value: { mode: 'granted-storage', region: 'eu' } },
+            { label: 'Granted (denied storage)', value: { mode: 'granted-no-storage', region: 'eu' } },
+            { label: 'Denied', value: { mode: 'denied', region: 'eu' } },
+        ],
+    },
+    {
+        key: 'storefront.cart.shipping-progress-bar',
+        description: 'Show a "X more to free shipping" progress bar in the cart drawer.',
+        defaultValue: { enabled: true, threshold: 12000, currency: 'EUR' },
+        options: [
+            { label: 'Enabled (EUR 120)', value: { enabled: true, threshold: 12000, currency: 'EUR' } },
+            { label: 'Enabled (USD 100)', value: { enabled: true, threshold: 10000, currency: 'USD' } },
+            { label: 'Disabled', value: { enabled: false } },
+        ],
+    },
+    {
+        key: 'storefront.checkout.upsells',
+        description: 'Post-cart upsell carousel before payment step.',
+        defaultValue: { enabled: false },
+        options: [
+            { label: 'Enabled', value: { enabled: true, limit: 4 } },
+            { label: 'Disabled', value: { enabled: false } },
+        ],
+        targeting: [
+            {
+                rule: 'cart-total-above',
+                params: { thresholdCents: 8000, currency: 'EUR' },
+                value: { enabled: true, limit: 4 },
+                description: 'Only show upsells when the cart already clears €80.',
+            },
+        ],
+    },
+    {
+        key: 'storefront.experimental.scroll-restoration-v2',
+        description: 'New scroll-restoration implementation (RSC-friendly).',
+        defaultValue: { enabled: false },
+        options: [
+            { label: 'Off (default behaviour)', value: { enabled: false } },
+            { label: 'On for staff only', value: { enabled: true, staffOnly: true } },
+            { label: 'On for everyone', value: { enabled: true } },
+        ],
+        targeting: [
+            {
+                rule: 'cookie-flag',
+                params: { name: 'nordcom-staff', expected: '1' },
+                value: { enabled: true },
+                description: 'Self-serve opt-in via the staff cookie.',
+            },
         ],
     },
 ];
