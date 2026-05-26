@@ -9,7 +9,7 @@ import { pageFixtures } from './fixtures/pages';
 import { productMetadataFixtures } from './fixtures/product-metadata';
 
 export interface SeedCmsOptions {
-    tenantId: string;
+    shopId: string;
 }
 
 const TENANT_COLLECTIONS = [
@@ -22,8 +22,11 @@ const TENANT_COLLECTIONS = [
     'collectionMetadata',
 ] as const;
 
+const DEMO_TENANT_SLUG = 'nordcom-demo-shop';
+const DEMO_TENANT_NAME = 'Nordcom Demo Shop';
+
 /**
- * Resets and re-creates the canonical CMS docs for the given tenant via the
+ * Resets and re-creates the canonical CMS docs for the given Shop via the
  * real Payload local API. The fixtures live under `./fixtures/` so the data
  * stays browsable in source and the orchestrator below stays a thin loop.
  *
@@ -32,15 +35,52 @@ const TENANT_COLLECTIONS = [
  * belt-and-braces for the production runtime where the seed runs against an
  * already-known URI; Vitest beforeAll blocks set it explicitly.
  *
+ * The Payload multi-tenant plugin keys tenant-scoped docs by the Payload
+ * `tenants` document `_id`, NOT the source Shop `_id`. In production the
+ * `shop-sync/post-save-hook` does that translation; the seed creates the
+ * Shop directly via Mongoose (bypassing Payload), so we have to create the
+ * Tenant doc here and use its `_id` for every tenant-scoped insert. Without
+ * this step `resolveTenantId(shop.id)` returns `null` and every storefront
+ * CMS read hits the 404 path.
+ *
  * @param uri - MongoDB connection string Payload should bind to.
- * @param opts - Tenant id whose docs will be wiped + re-created.
+ * @param opts - Source Shop `_id` to bind the Tenant doc back to.
  */
-export async function seedCms(uri: string, { tenantId }: SeedCmsOptions): Promise<void> {
+export async function seedCms(uri: string, { shopId }: SeedCmsOptions): Promise<void> {
     if (!process.env.MONGODB_URI) process.env.MONGODB_URI = uri;
     console.info('[seedCms] booting Payload local API (cold-start can be slow) …');
     const payloadStartedAt = Date.now();
     const payload = await getPayloadInstance();
     console.info(`[seedCms] Payload ready in ${Date.now() - payloadStartedAt}ms`);
+
+    console.info(`[seedCms] upserting CMS tenant for shopId=${shopId}`);
+    const existingTenant = await payload.find({
+        collection: 'tenants',
+        where: { shopId: { equals: shopId } },
+        limit: 1,
+        depth: 0,
+        overrideAccess: true,
+    });
+    let tenantId: string;
+    if (existingTenant.docs[0]?.id) {
+        tenantId = String(existingTenant.docs[0].id);
+        console.info(`[seedCms] tenant already exists (id=${tenantId}) — reusing`);
+    } else {
+        const created = await payload.create({
+            collection: 'tenants',
+            data: {
+                name: DEMO_TENANT_NAME,
+                slug: DEMO_TENANT_SLUG,
+                defaultLocale: 'en-US',
+                locales: ['en-US'],
+                shopId,
+            } as never,
+            overrideAccess: true,
+            disableTransaction: true,
+        });
+        tenantId = String(created.id);
+        console.info(`[seedCms] created tenant (id=${tenantId})`);
+    }
 
     for (const collection of TENANT_COLLECTIONS) {
         console.info(`[seedCms] resetting ${collection} for tenant ${tenantId}`);
