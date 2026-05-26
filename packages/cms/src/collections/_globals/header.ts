@@ -18,7 +18,7 @@ export const header: CollectionConfig = {
     fields: [
         imageField({ name: 'logo' }),
         { name: 'logoLink', type: 'text', defaultValue: '/' },
-        topLevelNavItemField({ depth: 3 }),
+        topLevelNavItemField({ depth: 6 }),
         {
             name: 'localeSwitcher',
             type: 'group',

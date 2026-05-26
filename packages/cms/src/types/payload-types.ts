@@ -804,6 +804,42 @@ export interface Header {
                     image?: (string | null) | Media;
                     description?: string | null;
                     backgroundColor?: string | null;
+                    items?:
+                      | {
+                          link?: {
+                            kind?: ('page' | 'article' | 'product' | 'collection' | 'external' | 'anchor') | null;
+                            page?: (string | null) | Page;
+                            article?: (string | null) | Article;
+                            product?: (string | null) | ProductMetadatum;
+                            collectionRef?: (string | null) | CollectionMetadatum;
+                            url?: string | null;
+                            label?: string | null;
+                            openInNewTab?: boolean | null;
+                          };
+                          image?: (string | null) | Media;
+                          description?: string | null;
+                          backgroundColor?: string | null;
+                          items?:
+                            | {
+                                link?: {
+                                  kind?: ('page' | 'article' | 'product' | 'collection' | 'external' | 'anchor') | null;
+                                  page?: (string | null) | Page;
+                                  article?: (string | null) | Article;
+                                  product?: (string | null) | ProductMetadatum;
+                                  collectionRef?: (string | null) | CollectionMetadatum;
+                                  url?: string | null;
+                                  label?: string | null;
+                                  openInNewTab?: boolean | null;
+                                };
+                                image?: (string | null) | Media;
+                                description?: string | null;
+                                backgroundColor?: string | null;
+                                id?: string | null;
+                              }[]
+                            | null;
+                          id?: string | null;
+                        }[]
+                      | null;
                     id?: string | null;
                   }[]
                 | null;
@@ -1619,6 +1655,46 @@ export interface HeaderSelect<T extends boolean = true> {
                     image?: T;
                     description?: T;
                     backgroundColor?: T;
+                    items?:
+                      | T
+                      | {
+                          link?:
+                            | T
+                            | {
+                                kind?: T;
+                                page?: T;
+                                article?: T;
+                                product?: T;
+                                collectionRef?: T;
+                                url?: T;
+                                label?: T;
+                                openInNewTab?: T;
+                              };
+                          image?: T;
+                          description?: T;
+                          backgroundColor?: T;
+                          items?:
+                            | T
+                            | {
+                                link?:
+                                  | T
+                                  | {
+                                      kind?: T;
+                                      page?: T;
+                                      article?: T;
+                                      product?: T;
+                                      collectionRef?: T;
+                                      url?: T;
+                                      label?: T;
+                                      openInNewTab?: T;
+                                    };
+                                image?: T;
+                                description?: T;
+                                backgroundColor?: T;
+                                id?: T;
+                              };
+                          id?: T;
+                        };
                     id?: T;
                   };
               id?: T;
