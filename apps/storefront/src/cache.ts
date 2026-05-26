@@ -22,6 +22,7 @@ const shopifyCacheSchema = defineCache({
         collection: { params: { handle: str }, parents: ['collections'] },
         collections: {},
         page: { params: { handle: str } },
+        search: { params: { query: str }, parents: ['products'] },
     },
 });
 
