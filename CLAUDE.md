@@ -36,6 +36,7 @@ Group artifacts per topic under `.specs/<YYYY-MM-DD-kebab-slug>/{spec,plan,tasks
 -   **Comments must earn their place.** Document the WHY — hidden constraints, workarounds, surprising behavior. If the code already says it, no comment. No section headers, no task notes, no restatements.
 -   **JSDoc on every non-component function.** Required for all exported and internal functions except React components. Block must include purpose plus `@param`, `@returns`, and `@throws` where applicable. Same no-fluff rule applies inside the block — describe intent and contract, not implementation.
 -   **Root cause before symptom.** Don't revert versions, return empty arrays, or disable features as a first-guess fix — especially for Next.js cache/PPR, build-tool errors, OIDC, or Shopify GraphQL field mismatches.
+-   **No unused variables, parameters, imports, or destructured props.** Delete them — don't suppress with a leading underscore (`const _params = …`, `function f(_unused)`), `void` casts, or `// biome-ignore`. If a destructure exists only to drop a key, remove the destructure entirely. The only exception is destructured rest patterns where the named keys are genuinely discarded to build the rest object (`const { skip, ...rest } = props`).
 -   **American English** — `color`, `behavior`, `organization`, `canceled`, `analyze`.
 
 ## Git commits
