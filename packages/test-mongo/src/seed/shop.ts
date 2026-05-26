@@ -19,6 +19,7 @@ export async function seedShop(uri: string, opts: SeedShopOptions = {}): Promise
     // mocked, so this assignment is a no-op for unit tests.
     if (!process.env.MONGODB_URI) process.env.MONGODB_URI = uri;
 
+    console.info(`[seedShop] connecting to mongo for tenant domain=${domain} …`);
     const conn = await createConnection(uri, { bufferCommands: false }).asPromise();
     try {
         // The production `ShopSchema` is typed as `Schema<ShopBase>`. `ShopBase`
@@ -29,8 +30,12 @@ export async function seedShop(uri: string, opts: SeedShopOptions = {}): Promise
         // broadening the production types just for a test fixture.
         const ShopModel = conn.model('Shop', ShopSchema as unknown as Schema);
         const existing = await ShopModel.findOne({ domain }).lean().exec();
-        if (existing) return;
+        if (existing) {
+            console.info(`[seedShop] tenant ${domain} already present (id=${existing._id}) — skipping insert`);
+            return;
+        }
 
+        console.info(`[seedShop] inserting Shop ${domain} (${name}) …`);
         await ShopModel.create({
             name,
             domain,
@@ -55,6 +60,7 @@ export async function seedShop(uri: string, opts: SeedShopOptions = {}): Promise
             collaborators: [],
             ...opts.overrides,
         });
+        console.info(`[seedShop] inserted Shop ${domain}`);
     } finally {
         await conn.close();
     }

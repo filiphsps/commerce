@@ -1,14 +1,17 @@
 #!/usr/bin/env tsx
 /**
- * Detached daemon entry point. `scripts/predev-mongo.ts` spawns this
- * with { detached: true, stdio: 'ignore' } so it survives `pnpm dev`.
- * Owns the dev mongod pinned to port 27018 and persists at `.mongo-dev/`.
+ * Detached daemon entry point. `scripts/predev-mongo.ts` spawns this with
+ * `detached: true` and redirects stdout/stderr to `.mongo-dev/daemon.log`
+ * so failures surface there instead of being lost. Owns the dev mongod
+ * pinned to port 27018 and persists at `.mongo-dev/`.
+ *
+ * Imports `runDaemon` from `@nordcom/commerce-test-mongo/daemon` rather
+ * than the package barrel — the barrel re-exports the seed helpers, whose
+ * import chain evaluates `@nordcom/commerce-db` and throws when
+ * `MONGODB_URI` is unset (which is the case here, since mongod hasn't been
+ * started yet).
  */
-import { register } from 'node:module';
-
-register('@nordcom/commerce-test-mongo/loader', import.meta.url);
-
-const { runDaemon } = await import('@nordcom/commerce-test-mongo');
+import { runDaemon } from '@nordcom/commerce-test-mongo/daemon';
 
 await runDaemon({
     dbPath: new URL('../.mongo-dev', import.meta.url).pathname,

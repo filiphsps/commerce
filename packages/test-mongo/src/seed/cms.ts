@@ -17,9 +17,13 @@ export interface SeedCmsOptions {
  */
 export async function seedCms(uri: string, { tenantId }: SeedCmsOptions): Promise<void> {
     if (!process.env.MONGODB_URI) process.env.MONGODB_URI = uri;
+    console.info('[seedCms] booting Payload local API (cold-start can be slow) …');
+    const payloadStartedAt = Date.now();
     const payload = await getPayloadInstance();
+    console.info(`[seedCms] Payload ready in ${Date.now() - payloadStartedAt}ms`);
 
     for (const collection of ['header', 'footer', 'businessData', 'pages', 'articles'] as const) {
+        console.info(`[seedCms] resetting ${collection} for tenant ${tenantId}`);
         await payload.delete({
             collection: collection as never,
             where: { tenant: { equals: tenantId } } as never,
@@ -32,6 +36,7 @@ export async function seedCms(uri: string, { tenantId }: SeedCmsOptions): Promis
     // every render path. `kind: 'external'` matches the `linkField` options in
     // `packages/cms/src/fields/link.ts`; the variant strings come from
     // `HEADER_VARIANTS` in `packages/cms/src/fields/nav-item.ts`.
+    console.info('[seedCms] creating header');
     await payload.create({
         collection: 'header',
         data: {
@@ -68,6 +73,7 @@ export async function seedCms(uri: string, { tenantId }: SeedCmsOptions): Promis
     // Footer — `sections[].title` and `social[].platform`/`url` are required
     // per `packages/cms/src/collections/_globals/footer.ts`. The seed keeps
     // the structure minimal but non-empty so renderers exercise both.
+    console.info('[seedCms] creating footer');
     await payload.create({
         collection: 'footer',
         data: {
@@ -104,6 +110,7 @@ export async function seedCms(uri: string, { tenantId }: SeedCmsOptions): Promis
         disableTransaction: true,
     });
 
+    console.info('[seedCms] creating businessData');
     await payload.create({
         collection: 'businessData',
         data: {
@@ -117,6 +124,7 @@ export async function seedCms(uri: string, { tenantId }: SeedCmsOptions): Promis
     });
 
     // `title` and `slug` are required per `packages/cms/src/collections/pages.ts`.
+    console.info('[seedCms] creating page (slug=about)');
     await payload.create({
         collection: 'pages',
         data: {
@@ -131,6 +139,7 @@ export async function seedCms(uri: string, { tenantId }: SeedCmsOptions): Promis
 
     // `title`, `slug`, and `author` are required per
     // `packages/cms/src/collections/articles.ts`.
+    console.info('[seedCms] creating article (slug=hello-world)');
     await payload.create({
         collection: 'articles',
         data: {
@@ -143,4 +152,5 @@ export async function seedCms(uri: string, { tenantId }: SeedCmsOptions): Promis
         overrideAccess: true,
         disableTransaction: true,
     });
+    console.info('[seedCms] all collections created');
 }

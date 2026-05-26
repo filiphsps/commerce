@@ -116,13 +116,17 @@ export async function startMongo(opts: StartMongoOptions = {}): Promise<StartedM
     // clusters get. We do it via `args` on every node so the setting is
     // active before any client connects.
     const sharedArgs = ['--setParameter', 'maxTransactionLockRequestTimeoutMillis=5000'];
+    const binaryVersion = process.env.MONGOMS_VERSION ?? '8.0.4';
+    console.info(`[test-mongo] booting MongoMemoryReplSet (mongod ${binaryVersion}, WiredTiger, count=1)`);
+    const replSetStartedAt = Date.now();
     const replSet = await MongoMemoryReplSet.create({
         replSet: { count: 1, storageEngine: 'wiredTiger' },
-        binary: { version: process.env.MONGOMS_VERSION ?? '8.0.4' },
+        binary: { version: binaryVersion },
         instanceOpts: hasInstanceOverride
             ? [{ dbPath: opts.dbPath, port: opts.port, args: sharedArgs }]
             : [{ args: sharedArgs }],
     });
+    console.info(`[test-mongo] MongoMemoryReplSet ready in ${Date.now() - replSetStartedAt}ms`);
 
     const doCleanup = !opts.dbPath;
     activeReplSets.add(replSet);

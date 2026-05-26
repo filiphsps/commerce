@@ -11,11 +11,25 @@
             "./dist/index.js",
             "./src/index.ts"
         ],
+        "./daemon": [
+            "./dist/daemon.js",
+            "./src/daemon.ts"
+        ],
+        "./start": [
+            "./dist/start.js",
+            "./src/start.ts"
+        ],
         "./loader": [
             "./src/server-only-loader.mjs"
         ],
         "./register": [
             "./src/register-loaders.mjs"
+        ],
+        "./seed-loader": [
+            "./src/seed-loader.mjs"
+        ],
+        "./register-seed-loaders": [
+            "./src/register-seed-loaders.mjs"
         ]
     },
     "bin": {

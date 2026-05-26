@@ -9,8 +9,12 @@ import { seedShop } from './shop';
  * Article. Idempotent — safe to call repeatedly against the same URI.
  */
 export async function seedCanonical(uri: string): Promise<void> {
+    console.info('[seedCanonical] seeding Shop …');
+    const shopStartedAt = Date.now();
     await seedShop(uri);
+    console.info(`[seedCanonical] Shop seed complete in ${Date.now() - shopStartedAt}ms`);
 
+    console.info('[seedCanonical] resolving tenantId from seeded Shop …');
     const conn = await mongoose.createConnection(uri, { bufferCommands: false }).asPromise();
     let tenantId: string;
     try {
@@ -20,6 +24,9 @@ export async function seedCanonical(uri: string): Promise<void> {
     } finally {
         await conn.close();
     }
+    console.info(`[seedCanonical] tenantId=${tenantId}; seeding CMS docs …`);
 
+    const cmsStartedAt = Date.now();
     await seedCms(uri, { tenantId });
+    console.info(`[seedCanonical] CMS seed complete in ${Date.now() - cmsStartedAt}ms`);
 }

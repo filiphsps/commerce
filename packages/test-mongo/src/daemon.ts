@@ -21,15 +21,21 @@ export interface DaemonOptions {
  * `predev-mongo` run sees a clean state.
  */
 export async function runDaemon({ dbPath, port, pidFile, uriFile }: DaemonOptions): Promise<void> {
+    console.info(`[test-mongo-daemon] starting (pid ${process.pid}) — dbPath=${dbPath} port=${port}`);
     mkdirSync(dbPath, { recursive: true });
     mkdirSync(dirname(pidFile), { recursive: true });
 
+    const startedAt = Date.now();
+    console.info('[test-mongo-daemon] calling startMongo() — this may download the mongod binary on first run');
     const { uri } = await startMongo({ dbPath, port });
+    console.info(`[test-mongo-daemon] startMongo() resolved in ${Date.now() - startedAt}ms — uri=${uri}`);
 
     writeFileSync(pidFile, String(process.pid));
     writeFileSync(uriFile, uri);
+    console.info(`[test-mongo-daemon] wrote ${pidFile} and ${uriFile}`);
 
     const cleanupMarkers = () => {
+        console.info('[test-mongo-daemon] received shutdown signal — removing pid/uri markers');
         try {
             rmSync(pidFile, { force: true });
         } catch {
@@ -46,6 +52,6 @@ export async function runDaemon({ dbPath, port, pidFile, uriFile }: DaemonOption
     process.once('SIGINT', cleanupMarkers);
     process.once('beforeExit', cleanupMarkers);
 
-    console.info(`[test-mongo] mongod ready at ${uri} (pid ${process.pid})`);
+    console.info(`[test-mongo-daemon] mongod ready at ${uri} (pid ${process.pid}); idling until SIGTERM/SIGINT`);
     await new Promise(() => {});
 }
