@@ -33,14 +33,14 @@ const VariantPriceClient = ({
         <span className={className} data-display="price">
             <span
                 data-display-price
-                className="text-(length:--product-card-price-size) font-(weight:--product-card-price-weight) text-(color:var(--product-card-price-color)) tabular-nums"
+                className="text-(length:--product-card-price-size) font-(weight:--product-card-price-weight) text-(color:var(--product-card-price-color)) select-text tabular-nums"
             >
                 {price}
             </span>
             {compare ? (
                 <span
                     data-display-compare
-                    className="text-(length:--product-card-vendor-size) text-(color:var(--product-card-compare-color)) ml-2 tabular-nums line-through"
+                    className="text-(length:--product-card-vendor-size) text-(color:var(--product-card-compare-color)) ml-2 select-text tabular-nums line-through"
                 >
                     {compare}
                 </span>
@@ -48,7 +48,7 @@ const VariantPriceClient = ({
             {pct ? (
                 <span
                     data-display-pct
-                    className="text-(length:--product-card-vendor-size) text-(color:var(--product-card-urgency-color)) ml-2 inline-block rounded bg-[color-mix(in_srgb,var(--product-card-urgency-color)_10%,transparent)] px-1.5 py-0.5 font-bold"
+                    className="text-(length:--product-card-vendor-size) text-(color:var(--product-card-urgency-color)) ml-2 inline-block select-text rounded bg-[color-mix(in_srgb,var(--product-card-urgency-color)_10%,transparent)] px-1.5 py-0.5 font-bold"
                 >
                     {pct}%
                 </span>

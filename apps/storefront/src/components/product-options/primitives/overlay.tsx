@@ -38,7 +38,8 @@ const Overlay = ({ groupName }: OverlayProps) => {
                         aria-haspopup="dialog"
                         aria-expanded={open}
                         aria-label={`Show all ${groupName} options`}
-                        className="product-options-more text-(length:--product-card-more-size) text-(color:var(--product-card-more-color)) inline-flex min-h-(--product-card-more-min-size) min-w-(--product-card-more-min-size) cursor-pointer items-center justify-center rounded-full bg-(--product-card-more-bg) px-2 font-(--product-card-more-weight) transition-transform focus-visible:outline-none motion-safe:active:scale-95 focus-visible:[outline:2px_solid_var(--accent)]"
+                        className="product-options-more text-(length:--product-card-more-size) text-(color:var(--product-card-more-color)) inline-flex min-h-(--product-card-more-min-size) min-w-(--product-card-more-min-size) cursor-pointer select-none items-center justify-center rounded-full bg-(--product-card-more-bg) px-2 font-(--product-card-more-weight) transition-[background-color,transform] hover:bg-[color-mix(in_srgb,var(--product-card-more-bg)_96%,black_4%)] focus-visible:outline-none motion-safe:active:scale-[0.97] motion-safe:hover:scale-[1.03] focus-visible:[outline:2px_solid_var(--accent)]"
+                        style={{ touchAction: 'manipulation', userSelect: 'none' }}
                     >
                         +{Math.max(0, group.values.length - 4)}
                     </button>
@@ -65,7 +66,8 @@ const Overlay = ({ groupName }: OverlayProps) => {
                                     key={v.name}
                                     type="button"
                                     onClick={() => onSelectAndClose(v.name)}
-                                    className="border-(color:var(--product-card-chip-border)) hover:border-(color:var(--accent)) flex items-center gap-2 rounded-md border bg-(--product-card-chip-bg) p-2 text-left text-sm transition-colors focus-visible:outline-none disabled:opacity-40 focus-visible:[outline:2px_solid_var(--accent)]"
+                                    className="border-(color:var(--product-card-chip-border)) hover:border-(color:var(--accent)) flex cursor-pointer select-none items-center gap-2 rounded-md border bg-(--product-card-overlay-row-bg,white) p-2 text-left text-sm transition-[background-color,border-color,transform] hover:bg-(--accent-soft) focus-visible:outline-none disabled:opacity-40 motion-safe:active:scale-[0.99] focus-visible:[outline:2px_solid_var(--accent)]"
+                                    style={{ touchAction: 'manipulation', userSelect: 'none' }}
                                 >
                                     {v.swatch?.color ? (
                                         <span
@@ -93,7 +95,8 @@ const Overlay = ({ groupName }: OverlayProps) => {
                     data-option-more
                     aria-haspopup="dialog"
                     aria-label={`Show all ${groupName} options`}
-                    className="product-options-more text-(length:--product-card-more-size) text-(color:var(--product-card-more-color)) inline-flex min-h-(--product-card-more-min-size) min-w-(--product-card-more-min-size) cursor-pointer items-center justify-center rounded-full bg-(--product-card-more-bg) px-2 font-(--product-card-more-weight) transition-transform focus-visible:outline-none motion-safe:active:scale-95 focus-visible:[outline:2px_solid_var(--accent)]"
+                    className="product-options-more text-(length:--product-card-more-size) text-(color:var(--product-card-more-color)) inline-flex min-h-(--product-card-more-min-size) min-w-(--product-card-more-min-size) cursor-pointer select-none items-center justify-center rounded-full bg-(--product-card-more-bg) px-2 font-(--product-card-more-weight) transition-[background-color,transform] hover:bg-[color-mix(in_srgb,var(--product-card-more-bg)_96%,black_4%)] focus-visible:outline-none motion-safe:active:scale-[0.97] motion-safe:hover:scale-[1.03] focus-visible:[outline:2px_solid_var(--accent)]"
+                    style={{ touchAction: 'manipulation', userSelect: 'none' }}
                 >
                     +{Math.max(0, group.values.length - 4)}
                 </button>
@@ -120,7 +123,8 @@ const Overlay = ({ groupName }: OverlayProps) => {
                                 key={v.name}
                                 type="button"
                                 onClick={() => onSelectAndClose(v.name)}
-                                className="border-(color:var(--product-card-chip-border)) hover:border-(color:var(--accent)) flex items-center gap-2 rounded-md border bg-(--product-card-chip-bg) p-3 text-left text-sm transition-colors focus-visible:outline-none focus-visible:[outline:2px_solid_var(--accent)]"
+                                className="border-(color:var(--product-card-chip-border)) hover:border-(color:var(--accent)) flex cursor-pointer select-none items-center gap-2 rounded-md border bg-(--product-card-overlay-row-bg,white) p-3 text-left text-sm transition-[background-color,border-color,transform] hover:bg-(--accent-soft) focus-visible:outline-none motion-safe:active:scale-[0.99] focus-visible:[outline:2px_solid_var(--accent)]"
+                                style={{ touchAction: 'manipulation', userSelect: 'none' }}
                             >
                                 {v.swatch?.color ? (
                                     <span

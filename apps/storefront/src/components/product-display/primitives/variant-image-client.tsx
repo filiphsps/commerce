@@ -56,14 +56,21 @@ const VariantImageClient = ({
 
     if (!primary) {
         return (
-            <Link href={href} title={title} prefetch={priority} className={cn('group/header contents', className)}>
+            <Link
+                href={href}
+                title={title}
+                prefetch={priority}
+                className={cn('group/header contents focus:outline-none focus-visible:outline-none', className)}
+                style={{ WebkitTapHighlightColor: 'transparent' }}
+            >
                 <div
                     data-testid="product-card-image-placeholder"
                     className={cn(
-                        'product-card-image text-(color:var(--product-card-vendor-color)) flex size-full items-center justify-center rounded-(--product-card-image-radius) bg-(--product-card-image-bg) p-(--product-card-image-padding)',
+                        'product-card-image text-(color:var(--product-card-vendor-color)) flex size-full select-none items-center justify-center rounded-(--product-card-image-radius) bg-(--product-card-image-bg) p-(--product-card-image-padding) group-focus-visible/header:outline-offset-2 group-focus-visible/header:[outline:2px_solid_var(--accent)]',
                         aspectClass(aspect),
                     )}
                     aria-hidden="true"
+                    style={{ touchAction: 'manipulation', userSelect: 'none' }}
                 >
                     <ImageIcon className="h-1/3 w-1/3 stroke-current" />
                 </div>
@@ -72,13 +79,19 @@ const VariantImageClient = ({
     }
 
     return (
-        <Link href={href} title={title} prefetch={priority} className={cn('group/header contents', className)}>
+        <Link
+            href={href}
+            title={title}
+            prefetch={priority}
+            className={cn('group/header contents focus:outline-none focus-visible:outline-none', className)}
+            style={{ WebkitTapHighlightColor: 'transparent' }}
+        >
             <div
                 className={cn(
-                    'product-card-image relative overflow-hidden rounded-(--product-card-image-radius) bg-(--product-card-image-bg) p-(--product-card-image-padding)',
+                    'product-card-image relative select-none overflow-hidden rounded-(--product-card-image-radius) bg-(--product-card-image-bg) p-(--product-card-image-padding) group-focus-visible/header:outline-offset-2 group-focus-visible/header:[outline:2px_solid_var(--accent)]',
                     aspectClass(aspect),
                 )}
-                style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
+                style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent', userSelect: 'none' }}
             >
                 <Image
                     className={cn(

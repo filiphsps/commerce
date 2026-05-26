@@ -19,20 +19,20 @@ const VariantTitle = ({ product, showVendor = false, omitProductType = false, cl
     return (
         <div className={className} data-display="title">
             {showVendor && vendor ? (
-                <div className="text-(length:--product-card-vendor-size) text-(color:var(--product-card-vendor-color)) uppercase tracking-wide">
+                <div className="text-(length:--product-card-vendor-size) text-(color:var(--product-card-vendor-color)) select-text uppercase tracking-wide">
                     {vendor}
                 </div>
             ) : null}
             <Link
                 href={href}
                 title={title}
-                className="product-card-title text-(length:--product-card-title-size) text-(color:var(--product-card-title-color)) block font-(--product-card-title-weight) leading-tight"
+                className="product-card-title text-(length:--product-card-title-size) text-(color:var(--product-card-title-color)) block cursor-text select-text font-(--product-card-title-weight) leading-tight focus-visible:outline-none focus-visible:outline-offset-2 focus-visible:[outline:2px_solid_var(--accent)]"
                 style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
             >
                 {title}
             </Link>
             {!omitProductType && productType ? (
-                <div className="text-(length:--product-card-vendor-size) text-(color:var(--product-card-vendor-color))">
+                <div className="text-(length:--product-card-vendor-size) text-(color:var(--product-card-vendor-color)) select-text">
                     {productType}
                 </div>
             ) : null}

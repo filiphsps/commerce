@@ -48,7 +48,7 @@ const ProductCardOverlay = ({ open, onOpenChange, label, anchorRef, children, cl
             const anchor = anchorRef?.current;
             if (!surface) return;
             if (surface.contains(e.target as Node)) return;
-            if (anchor && anchor.contains(e.target as Node)) return;
+            if (anchor?.contains(e.target as Node)) return;
             onOpenChange(false);
         };
         document.addEventListener('keydown', onKey);
@@ -70,8 +70,8 @@ const ProductCardOverlay = ({ open, onOpenChange, label, anchorRef, children, cl
                 aria-labelledby={titleId}
                 className={cn(
                     'absolute top-full right-0 z-50 mt-1 flex flex-col gap-2 overflow-y-auto',
-                    'w-(--product-card-overlay-width) max-h-(--product-card-overlay-max-height)',
-                    'border-(length:--product-card-overlay-border-width) border-solid border-(color:var(--product-card-overlay-border-color))',
+                    'max-h-(--product-card-overlay-max-height) w-(--product-card-overlay-width)',
+                    'border-(length:--product-card-overlay-border-width) border-(color:var(--product-card-overlay-border-color)) border-solid',
                     'rounded-(--product-card-overlay-radius) bg-(--product-card-overlay-bg) p-(--product-card-overlay-padding)',
                     'shadow-(--product-card-overlay-shadow)',
                     'motion-safe:animate-[product-card-overlay-in_var(--product-card-motion-overlay-in-duration)_var(--product-card-motion-overlay-in-ease)]',
@@ -79,7 +79,7 @@ const ProductCardOverlay = ({ open, onOpenChange, label, anchorRef, children, cl
                 )}
             >
                 <header className="flex items-center justify-between">
-                    <h3 id={titleId} className="text-sm font-semibold">
+                    <h3 id={titleId} className="font-semibold text-sm">
                         {label}
                     </h3>
                     <button
@@ -115,7 +115,7 @@ const ProductCardOverlay = ({ open, onOpenChange, label, anchorRef, children, cl
         >
             <div aria-hidden="true" className="mx-auto h-1 w-10 rounded-full bg-black/15" />
             <header className="flex items-center justify-between">
-                <h3 id={titleId} className="text-base font-semibold">
+                <h3 id={titleId} className="font-semibold text-base">
                     {label}
                 </h3>
                 <button

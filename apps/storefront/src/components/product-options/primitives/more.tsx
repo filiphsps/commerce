@@ -22,8 +22,9 @@ const More = ({ groupName, onClick, className }: MoreProps) => {
             aria-label={`Show all ${groupName} options`}
             className={
                 className ??
-                'product-options-more text-(length:--product-card-more-size) text-(color:var(--product-card-more-color)) inline-flex min-h-(--product-card-more-min-size) min-w-(--product-card-more-min-size) cursor-pointer items-center justify-center rounded-full bg-(--product-card-more-bg) px-2 font-(--product-card-more-weight) transition-transform focus-visible:outline-none motion-safe:active:scale-95 focus-visible:[outline:2px_solid_var(--accent)]'
+                'product-options-more text-(length:--product-card-more-size) text-(color:var(--product-card-more-color)) inline-flex min-h-(--product-card-more-min-size) min-w-(--product-card-more-min-size) cursor-pointer select-none items-center justify-center rounded-full bg-(--product-card-more-bg) px-2 font-(--product-card-more-weight) transition-[background-color,transform] hover:bg-[color-mix(in_srgb,var(--product-card-more-bg)_96%,black_4%)] focus-visible:outline-none motion-safe:active:scale-[0.97] motion-safe:hover:scale-[1.03] focus-visible:[outline:2px_solid_var(--accent)]'
             }
+            style={{ touchAction: 'manipulation', userSelect: 'none' }}
         >
             +{overflow}
         </button>

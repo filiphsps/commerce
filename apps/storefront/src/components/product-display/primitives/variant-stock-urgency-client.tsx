@@ -26,7 +26,7 @@ const VariantStockUrgencyClient = ({ initialMessage, threshold, i18n, className 
         <span
             className={
                 className ??
-                'text-(length:--product-card-vendor-size) text-(color:var(--product-card-urgency-color)) inline-flex items-center gap-1 font-semibold'
+                'text-(length:--product-card-vendor-size) text-(color:var(--product-card-urgency-color)) inline-flex select-text items-center gap-1 font-semibold'
             }
             data-display="stock-urgency"
         >
