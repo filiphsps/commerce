@@ -11,18 +11,51 @@ import { LocalesApi } from '@/api/store';
 import { commonValidations } from '@/middleware/common-validations';
 import type { Code } from '@/utils/locale';
 
-function hostnameFromRequest(req: NextRequest): string {
+let cachedDevShopDomain: Promise<string> | undefined;
+
+/**
+ * Resolves the shop domain that `*.storefront.localhost` should rewrite to
+ * during local dev. Honours `STOREFRONT_DEV_SHOP` when set; otherwise picks
+ * the first Shop present in MongoDB — which, after `pnpm predev`, is the
+ * canonical seed (`nordcom-demo-shop.com`). The result is cached for the
+ * process lifetime so we don't re-query Mongo on every request.
+ *
+ * @returns The resolved dev shop domain, falling back to a hard-coded
+ *          beta tenant if neither env nor Mongo provides one.
+ */
+async function resolveDevShopDomain(): Promise<string> {
+    if (process.env.STOREFRONT_DEV_SHOP) return process.env.STOREFRONT_DEV_SHOP;
+    if (cachedDevShopDomain) return cachedDevShopDomain;
+    cachedDevShopDomain = (async () => {
+        try {
+            const shops = await Shop.findAll();
+            const seeded = shops[0]?.domain;
+            if (seeded) {
+                trace.getActiveSpan()?.addEvent('middleware.dev_shop_resolved_from_seed', { domain: seeded });
+                return seeded;
+            }
+        } catch (err) {
+            trace.getActiveSpan()?.addEvent('middleware.dev_shop_lookup_failed', {
+                'error.message': (err as { message?: string }).message ?? String(err),
+            });
+        }
+        return 'beta.pouched.de';
+    })();
+    return cachedDevShopDomain;
+}
+
+async function hostnameFromRequest(req: NextRequest): Promise<string> {
     const host = req.headers.get('x-forwarded-host') || req.headers.get('host') || req.nextUrl.host;
 
     if (host.endsWith('storefront.localhost')) {
-        return process.env.STOREFRONT_DEV_SHOP || 'beta.pouched.de';
+        return resolveDevShopDomain();
     }
 
     return shopFromHost(host);
 }
 
 export const getHostname = async (req: NextRequest): Promise<string> => {
-    const hostname = hostnameFromRequest(req);
+    const hostname = await hostnameFromRequest(req);
     const domain = (await Shop.findByDomain(hostname, { sensitiveData: true })).domain;
 
     if (!domain) {
@@ -42,7 +75,7 @@ async function setCookies(res: NextResponse, cookies: string[][] = []): Promise<
 }
 
 async function handleCommerceError(req: NextRequest, error: Error) {
-    const hostname = hostnameFromRequest(req);
+    const hostname = await hostnameFromRequest(req);
 
     // `getGlobalServiceDomain()` throws when `SERVICE_DOMAIN` is unset. The
     // previous code let that throw bubble through the error handler — so a
@@ -127,7 +160,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
                 newUrl.hostname = serviceDomain;
                 newUrl.protocol = 'https';
                 newUrl.port = '443';
-                newUrl.searchParams.set('shop', hostnameFromRequest(req));
+                newUrl.searchParams.set('shop', await hostnameFromRequest(req));
                 return NextResponse.rewrite(newUrl);
             }
         } catch (envError) {

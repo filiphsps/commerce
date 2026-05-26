@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 vi.mock('@nordcom/commerce-db', () => ({
     Shop: {
         findByDomain: vi.fn(),
+        findAll: vi.fn().mockResolvedValue([]),
     },
 }));
 
@@ -67,6 +68,7 @@ function makeRequest(host: string, path = '/'): NextRequest {
 describe('getHostname', () => {
     beforeEach(() => {
         vi.mocked(Shop.findByDomain).mockResolvedValue(MOCK_SHOP as any);
+        vi.mocked(Shop.findAll).mockResolvedValue([]);
     });
 
     afterEach(() => {
@@ -89,8 +91,9 @@ describe('getHostname', () => {
         expect(vi.mocked(Shop.findByDomain)).toHaveBeenCalledWith('dev-shop.example.com', expect.anything());
     });
 
-    it('falls back to a default dev shop for .storefront.localhost when STOREFRONT_DEV_SHOP is unset', async () => {
+    it('falls back to the first seeded shop for .storefront.localhost when STOREFRONT_DEV_SHOP is unset', async () => {
         delete process.env.STOREFRONT_DEV_SHOP;
+        vi.mocked(Shop.findAll).mockResolvedValue([{ domain: 'seeded-shop.example.com' } as any]);
 
         const req = new NextRequest('http://myshop.storefront.localhost/', {
             headers: { host: 'myshop.storefront.localhost', 'accept-language': 'en-US' },
@@ -98,12 +101,11 @@ describe('getHostname', () => {
 
         await getHostname(req);
 
-        // The middleware ignores the subdomain and resolves to the hard-coded
-        // fallback shop — guard against regressing back to slug extraction.
+        // The middleware ignores the subdomain and resolves to the first shop
+        // present in MongoDB — i.e. whatever predev-mongo seeded. Guard against
+        // regressing back to slug extraction or the previous hard-coded fallback.
         const calledWith = vi.mocked(Shop.findByDomain).mock.calls[0]?.[0];
-        expect(calledWith).not.toBe('myshop');
-        expect(typeof calledWith).toBe('string');
-        expect((calledWith as string).length).toBeGreaterThan(0);
+        expect(calledWith).toBe('seeded-shop.example.com');
     });
 
     it('uses full hostname for production-style hosts', async () => {

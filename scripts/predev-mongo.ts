@@ -12,7 +12,7 @@ const URI_FILE = resolve(STATE_DIR, '.uri');
 const SEEDED_FILE = resolve(STATE_DIR, '.seeded');
 const ENV_MARKER_FILE = resolve(STATE_DIR, '.env-managed');
 const LOG_FILE = resolve(STATE_DIR, 'daemon.log');
-const ENV_FILE = resolve(ROOT, '.env.development.local');
+const ENV_FILE = resolve(ROOT, '.env.local');
 
 if (process.env.MONGODB_URI) {
     console.info(`[predev-mongo] MONGODB_URI already set in env — skipping daemon (${process.env.MONGODB_URI})`);
