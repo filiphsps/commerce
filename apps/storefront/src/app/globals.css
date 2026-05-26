@@ -115,6 +115,8 @@
     --accent-primary: #073b4c;
     /* Gets replaced by the brand secondary color in the layout. */
     --accent-secondary: #118ab2;
+    /* Alias used by product-card primitives for focus rings; tracks brand primary. */
+    --accent: var(--accent-primary);
 }
 
 html:root {
