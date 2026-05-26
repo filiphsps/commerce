@@ -109,11 +109,72 @@ describe('auth/auth.config', () => {
         expect(config.debug).toBe(false);
     });
 
-    it('does not declare any callbacks (no session/jwt callback configured)', () => {
-        // Locks in the current behavior: if a callback is ever added, this
-        // test should be updated alongside the new behavior assertions.
+    it('persists Shopify access_token onto the JWT (jwt callback)', async () => {
         const config = getAuthConfig({ shop, shopifyAuth });
-        expect((config as { callbacks?: unknown }).callbacks).toBeUndefined();
+        const jwt = config.callbacks?.jwt;
+        expect(typeof jwt).toBe('function');
+
+        const baseParams = {
+            user: undefined,
+            profile: undefined,
+            trigger: undefined,
+            isNewUser: undefined,
+            session: undefined,
+        } as unknown as Parameters<NonNullable<typeof jwt>>[0];
+
+        const populated = await jwt!({
+            ...baseParams,
+            token: {},
+            account: {
+                provider: 'shopify',
+                providerAccountId: 'acct-1',
+                type: 'oidc',
+                access_token: 'shopify-access-token-123',
+            },
+        } as Parameters<NonNullable<typeof jwt>>[0]);
+        expect(populated).toMatchObject({ shopifyAccessToken: 'shopify-access-token-123' });
+
+        const otherProvider = await jwt!({
+            ...baseParams,
+            token: { shopifyAccessToken: 'untouched' },
+            account: {
+                provider: 'google',
+                providerAccountId: 'acct-2',
+                type: 'oauth',
+                access_token: 'google-access-token',
+            },
+        } as Parameters<NonNullable<typeof jwt>>[0]);
+        expect(otherProvider).toMatchObject({ shopifyAccessToken: 'untouched' });
+
+        const noAccount = await jwt!({
+            ...baseParams,
+            token: { shopifyAccessToken: 'kept' },
+            account: null,
+        } as Parameters<NonNullable<typeof jwt>>[0]);
+        expect(noAccount).toMatchObject({ shopifyAccessToken: 'kept' });
+    });
+
+    it('exposes the Shopify access token on session.user (session callback)', async () => {
+        const config = getAuthConfig({ shop, shopifyAuth });
+        const sessionCb = config.callbacks?.session;
+        expect(typeof sessionCb).toBe('function');
+
+        const baseSession = {
+            user: { name: 'Customer', email: 'c@example.com', image: null },
+            expires: new Date(Date.now() + 60_000).toISOString(),
+        };
+
+        const withToken = await sessionCb!({
+            session: { ...baseSession, user: { ...baseSession.user } },
+            token: { shopifyAccessToken: 'shopify-access-token-123' },
+        } as unknown as Parameters<NonNullable<typeof sessionCb>>[0]);
+        expect(withToken.user).toMatchObject({ shopifyAccessToken: 'shopify-access-token-123' });
+
+        const withoutToken = await sessionCb!({
+            session: { ...baseSession, user: { ...baseSession.user } },
+            token: {},
+        } as unknown as Parameters<NonNullable<typeof sessionCb>>[0]);
+        expect(withoutToken.user?.shopifyAccessToken).toBeUndefined();
     });
 
     it('works with the full mockShop fixture (smoke test)', () => {

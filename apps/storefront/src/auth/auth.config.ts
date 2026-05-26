@@ -40,6 +40,25 @@ const config = ({
         // misconfiguration.
         secret: process.env.NEXTAUTH_SECRET ?? process.env.AUTH_SECRET,
         debug: false,
+        callbacks: {
+            // Persist Shopify's access token on the JWT so it can be forwarded
+            // to the storefront cart's `updateBuyerIdentity` mutation, which
+            // accepts a customer access token to associate the cart with the
+            // signed-in customer.
+            async jwt({ token, account }) {
+                if (account?.provider === 'shopify' && typeof account.access_token === 'string') {
+                    token.shopifyAccessToken = account.access_token;
+                }
+                return token;
+            },
+            async session({ session, token }) {
+                if (session.user) {
+                    session.user.shopifyAccessToken =
+                        typeof token.shopifyAccessToken === 'string' ? token.shopifyAccessToken : undefined;
+                }
+                return session;
+            },
+        },
     } satisfies NextAuthConfig;
 };
 
