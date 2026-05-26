@@ -29,7 +29,7 @@
         "build": "pnpm generate && tsc && vite build",
         "clean": "rimraf -g dist coverage .turbo src/generated *.tsbuildinfo *.log node_modules",
         "dev": "tsx scripts/gallery.ts",
-        "docs:gen": "tsx scripts/gallery.ts --docs '../../apps/docs/app/docs/(generated)/react-payment-brand-icons/icons/page.mdx'",
+        "docs:gen": "tsx scripts/gallery.ts --docs docs/icons.mdx",
         "format:check": "biome check --write --unsafe .",
         "format:format": "biome format --write .",
         "format:lint": "biome lint --write .",

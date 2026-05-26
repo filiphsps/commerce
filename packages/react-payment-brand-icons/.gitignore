@@ -7,3 +7,4 @@ node_modules/
 
 # Codegen output — regenerated on every build
 src/generated/
+docs/icons.mdx
