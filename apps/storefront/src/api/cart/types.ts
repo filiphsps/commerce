@@ -12,8 +12,11 @@ export type BuyerIdentity = {
 
 export type CartLineMerchandise = {
     id: string;
+    productId: string;
     productHandle: string;
     productTitle: string;
+    productVendor: string | null;
+    productType: string | null;
     variantTitle: string;
     image: { url: string; altText: string | null; width: number; height: number } | null;
     selectedOptions: Array<{ name: string; value: string }>;

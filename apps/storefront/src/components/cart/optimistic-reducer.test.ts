@@ -13,8 +13,11 @@ const makeCart = (overrides: Partial<Cart> = {}): Cart => ({
             quantity: 1,
             merchandise: {
                 id: 'variant-1',
+                productId: 'gid://shopify/Product/1',
                 productHandle: 'p',
                 productTitle: 'P',
+                productVendor: 'V Co',
+                productType: 'Type',
                 variantTitle: 'V',
                 image: null,
                 selectedOptions: [],

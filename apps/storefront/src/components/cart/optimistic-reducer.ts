@@ -23,8 +23,11 @@ function synthesizePlaceholderLine(m: Extract<CartMutation, { kind: 'add-line' }
         quantity: m.quantity,
         merchandise: {
             id: m.variantId,
+            productId: '',
             productHandle: '',
             productTitle: '',
+            productVendor: null,
+            productType: null,
             variantTitle: '',
             image: null,
             selectedOptions: [],

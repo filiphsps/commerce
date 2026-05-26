@@ -16,8 +16,11 @@ const ZERO_MONEY = (currencyCode: string): Money => ({ amount: '0', currencyCode
 function normalizeMerchandise(merch: any, currencyCode: string): CartLineMerchandise {
     return {
         id: merch.id,
+        productId: merch.product?.id ?? '',
         productHandle: merch.product?.handle ?? '',
         productTitle: merch.product?.title ?? '',
+        productVendor: merch.product?.vendor ?? null,
+        productType: merch.product?.productType ?? null,
         variantTitle: merch.title ?? '',
         image: merch.image
             ? {

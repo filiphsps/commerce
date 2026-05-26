@@ -59,7 +59,13 @@
                             "width": 800,
                             "height": 1000
                         },
-                        "product": { "handle": "soft-cotton-hoodie", "title": "Soft Cotton Hoodie" }
+                        "product": {
+                            "id": "gid://shopify/Product/1",
+                            "handle": "soft-cotton-hoodie",
+                            "title": "Soft Cotton Hoodie",
+                            "vendor": "Cozy Co",
+                            "productType": "Apparel"
+                        }
                     }
                 }
             },
@@ -85,7 +91,13 @@
                         "compareAtPrice": null,
                         "selectedOptions": [],
                         "image": null,
-                        "product": { "handle": "mystery-box", "title": "Mystery Box" }
+                        "product": {
+                            "id": "gid://shopify/Product/2",
+                            "handle": "mystery-box",
+                            "title": "Mystery Box",
+                            "vendor": null,
+                            "productType": null
+                        }
                     }
                 }
             }

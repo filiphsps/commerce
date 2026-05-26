@@ -1,13 +1,19 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { InvalidCartError, UnknownCommerceProviderError } from '@nordcom/commerce-errors';
 import { trace } from '@opentelemetry/api';
-import type { CartWithActions } from '@shopify/hydrogen-react';
-import type { CartLine } from '@shopify/hydrogen-react/storefront-api-types';
+import type { CartLine, Money } from '@/api/cart/types';
 
 import type { Locale } from '@/utils/locale';
 import { productToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { safeParseFloat } from '@/utils/pricing';
 import type { TrackableContextValue } from '@/utils/trackable';
+
+type CheckoutCart = {
+    totalQuantity: number;
+    lines: CartLine[];
+    cost: { subtotal: Money | null; total: Money | null };
+    checkoutUrl: string | null;
+};
 
 // Const hacky workaround for ga4 cross-domain
 // taken from StackOverflow
@@ -63,7 +69,7 @@ export const Checkout = async ({
 }: {
     shop: OnlineShop;
     locale: Locale;
-    cart: CartWithActions;
+    cart: CheckoutCart | null;
     trackable: TrackableContextValue;
 }) => {
     if (shop.commerceProvider.type !== 'shopify') {
@@ -99,38 +105,39 @@ export const Checkout = async ({
     }
 
     // Drop lines whose variant has been deleted upstream — Shopify will strip
-    // them at checkout but our analytics event would crash on the
-    // non-null assertions below.
-    const safeLines = (cart.lines.filter(Boolean) as CartLine[]).filter((line) => line.merchandise?.product);
+    // them at checkout but our analytics event would crash on missing product
+    // metadata below.
+    const safeLines = cart.lines.filter((line) => line.merchandise?.productId);
+
+    const totalMoney = cart.cost.total ?? cart.cost.subtotal;
 
     try {
         trackable.postEvent('begin_checkout', {
             gtm: {
                 ecommerce: {
-                    currency: cart.cost?.totalAmount?.currencyCode,
-                    value: safeParseFloat(undefined, cart.cost?.totalAmount?.amount),
+                    currency: totalMoney?.currencyCode,
+                    value: safeParseFloat(undefined, totalMoney?.amount),
                     items: safeLines.flatMap((line) => {
                         const merchandise = line.merchandise;
-                        const product = merchandise?.product;
-                        if (!merchandise || !product) return [];
+                        if (!merchandise.productId) return [];
                         return [
                             {
                                 item_id: productToMerchantsCenterId({
                                     locale: locale,
                                     product: {
-                                        productGid: product.id,
+                                        productGid: merchandise.productId,
                                         variantGid: merchandise.id,
                                     },
                                 }),
-                                item_name: product.title,
-                                item_variant: merchandise.title,
-                                item_brand: product.vendor,
-                                item_category: product.productType || undefined,
-                                sku: merchandise.sku || undefined,
-                                product_id: product.id,
+                                item_name: merchandise.productTitle,
+                                item_variant: merchandise.variantTitle,
+                                item_brand: merchandise.productVendor ?? undefined,
+                                item_category: merchandise.productType ?? undefined,
+                                sku: merchandise.sku ?? undefined,
+                                product_id: merchandise.productId,
                                 variant_id: merchandise.id,
-                                currency: merchandise.price.currencyCode ?? '',
-                                price: safeParseFloat(undefined, merchandise.price.amount),
+                                currency: merchandise.unitPrice.currencyCode,
+                                price: safeParseFloat(undefined, merchandise.unitPrice.amount),
                                 quantity: line.quantity,
                             },
                         ];

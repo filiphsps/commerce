@@ -1,6 +1,6 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
-import type { CartWithActions } from '@shopify/hydrogen-react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { Cart } from '@/api/cart/types';
 import { Checkout } from '@/utils/checkout';
 import { Locale } from '@/utils/locale';
 
@@ -29,50 +29,79 @@ describe('utils', () => {
             window.location.href = '';
         });
 
-        const cart: CartWithActions = {
+        const cart: Cart = {
+            id: 'gid://shopify/Cart/1',
+            providerType: 'shopify',
             totalQuantity: 2,
             checkoutUrl: 'https://example.com/cart/checkout',
             lines: [
                 {
-                    merchandise: {
-                        product: {
-                            id: 'product-1',
-                            title: 'Product 1',
-                            vendor: 'Vendor 1',
-                        },
-                        id: 'variant-1',
-                        title: 'Variant 1',
-                        price: {
-                            amount: '10.00',
-                            currencyCode: 'USD',
-                        },
-                    },
+                    id: 'line-1',
                     quantity: 1,
+                    merchandise: {
+                        id: 'variant-1',
+                        productId: 'product-1',
+                        productHandle: 'product-1',
+                        productTitle: 'Product 1',
+                        productVendor: 'Vendor 1',
+                        productType: null,
+                        variantTitle: 'Variant 1',
+                        image: null,
+                        selectedOptions: [],
+                        unitPrice: { amount: '10.00', currencyCode: 'USD' },
+                        compareAtUnitPrice: null,
+                        availableForSale: true,
+                        quantityAvailable: null,
+                        sku: null,
+                    },
+                    cost: {
+                        subtotal: { amount: '10.00', currencyCode: 'USD' },
+                        total: { amount: '10.00', currencyCode: 'USD' },
+                    },
+                    attributes: [],
+                    discountAllocations: [],
                 },
                 {
-                    merchandise: {
-                        product: {
-                            id: 'product-2',
-                            title: 'Product 2',
-                            vendor: 'Vendor 2',
-                        },
-                        id: 'variant-2',
-                        title: 'Variant 2',
-                        price: {
-                            amount: '20.00',
-                            currencyCode: 'USD',
-                        },
-                    },
+                    id: 'line-2',
                     quantity: 1,
+                    merchandise: {
+                        id: 'variant-2',
+                        productId: 'product-2',
+                        productHandle: 'product-2',
+                        productTitle: 'Product 2',
+                        productVendor: 'Vendor 2',
+                        productType: null,
+                        variantTitle: 'Variant 2',
+                        image: null,
+                        selectedOptions: [],
+                        unitPrice: { amount: '20.00', currencyCode: 'USD' },
+                        compareAtUnitPrice: null,
+                        availableForSale: true,
+                        quantityAvailable: null,
+                        sku: null,
+                    },
+                    cost: {
+                        subtotal: { amount: '20.00', currencyCode: 'USD' },
+                        total: { amount: '20.00', currencyCode: 'USD' },
+                    },
+                    attributes: [],
+                    discountAllocations: [],
                 },
             ],
             cost: {
-                totalAmount: {
-                    amount: '30.00',
-                    currencyCode: 'USD',
-                },
+                subtotal: { amount: '30.00', currencyCode: 'USD' },
+                total: { amount: '30.00', currencyCode: 'USD' },
+                tax: null,
+                shipping: null,
             },
-        } as any;
+            costStale: false,
+            discountCodes: [],
+            giftCards: [],
+            buyerIdentity: null,
+            note: null,
+            attributes: [],
+            updatedAt: '2026-05-26T00:00:00Z',
+        };
 
         const shop: OnlineShop = {
             commerceProvider: {
@@ -95,56 +124,26 @@ describe('utils', () => {
         const locale = Locale.from('en-US')!;
 
         it(`should throw an error when cart is empty`, async () => {
-            const emptyCart: CartWithActions = {
+            const emptyCart: Cart = {
+                ...cart,
                 totalQuantity: 0,
-                checkoutUrl: 'https://example.com/cart/checkout',
                 lines: [],
-                cost: {
-                    totalAmount: {
-                        amount: '0.00',
-                        currencyCode: 'USD',
-                    },
-                },
-            } as any;
+            };
 
             await expect(Checkout({ shop, locale, cart: emptyCart, trackable })).rejects.toThrow();
         });
 
         it(`should throw an error when cart is missing checkoutUrl`, async () => {
-            const cartWithoutCheckoutUrl: CartWithActions = {
-                totalQuantity: 2,
-                checkoutUrl: '',
-                lines: [
-                    {
-                        merchandise: {
-                            product: {
-                                id: 'product-1',
-                                title: 'Product 1',
-                                vendor: 'Vendor 1',
-                            },
-                            id: 'variant-1',
-                            title: 'Variant 1',
-                            price: {
-                                amount: '10.00',
-                                currencyCode: 'USD',
-                            },
-                        },
-                        quantity: 1,
-                    },
-                ],
-                cost: {
-                    totalAmount: {
-                        amount: '10.00',
-                        currencyCode: 'USD',
-                    },
-                },
-            } as any;
+            const cartWithoutCheckoutUrl: Cart = {
+                ...cart,
+                checkoutUrl: null,
+            };
 
             await expect(Checkout({ shop, locale, cart: cartWithoutCheckoutUrl, trackable })).rejects.toThrow();
         });
 
-        it(`should throw when cart is undefined`, async () => {
-            await expect(Checkout({ shop, locale, cart: undefined as any, trackable })).rejects.toThrow();
+        it(`should throw when cart is null`, async () => {
+            await expect(Checkout({ shop, locale, cart: null, trackable })).rejects.toThrow();
         });
 
         it(`should throw when commerce provider is not shopify`, async () => {
@@ -162,10 +161,10 @@ describe('utils', () => {
         });
 
         it(`replaces the myshopify domain in the checkout URL with the shop's commerce domain`, async () => {
-            const cartWithMyshopify: typeof cart = {
+            const cartWithMyshopify: Cart = {
                 ...cart,
                 checkoutUrl: 'https://my-store.myshopify.com/checkouts/1/abc123',
-            } as any;
+            };
 
             await Checkout({ shop, locale, cart: cartWithMyshopify, trackable });
             expect(window.location.href).not.toContain('myshopify.com');

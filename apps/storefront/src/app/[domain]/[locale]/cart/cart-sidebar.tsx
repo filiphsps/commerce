@@ -1,11 +1,10 @@
 'use client';
 
 import { trace } from '@opentelemetry/api';
-import { useCart } from '@shopify/hydrogen-react';
-import type { CartLine, ComponentizableCartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import type { HTMLProps, ReactNode } from 'react';
 import { toast } from 'sonner';
 import { CartSummary } from '@/components/cart/cart-summary';
+import { useCart } from '@/components/cart/provider';
 import { useShop } from '@/components/shop/provider';
 import { Checkout } from '@/utils/checkout';
 
@@ -21,9 +20,9 @@ export type CartSidebarProps = {
 export const CartSidebar = ({ i18n, locale, className, children, paymentMethods, ...props }: CartSidebarProps) => {
     const { shop } = useShop();
 
-    const cart = useCart();
-    const { status = 'fetching', cost, error: cartError } = cart;
-    const lines = (cart.lines || []).filter(Boolean) as Array<CartLine | ComponentizableCartLine>;
+    const { cart, cartReady, error: cartError } = useCart();
+    const lines = cart?.lines ?? [];
+    const total = cart?.cost.total ?? null;
 
     const { queueEvent, postEvent } = useTrackable();
 
@@ -33,13 +32,13 @@ export const CartSidebar = ({ i18n, locale, className, children, paymentMethods,
                 shop={shop}
                 onCheckout={async () => {
                     // TODO: i18n.
-                    if (status !== 'idle') {
+                    if (!cartReady) {
                         toast.error('The cart is still loading, please try again in a few seconds');
                         return;
                     }
 
-                    // Don't bounce the user to Shopify checkout if Hydrogen-React
-                    // is sitting on a `cart.error` from the last mutation —
+                    // Don't bounce the user to Shopify checkout if we're
+                    // sitting on a `cart.error` from the last mutation —
                     // checkoutUrl reflects the last *successful* server-side
                     // cart, which can mean the wrong quantity or a sold-out
                     // line that's about to be stripped at checkout.
@@ -48,7 +47,7 @@ export const CartSidebar = ({ i18n, locale, className, children, paymentMethods,
                         return;
                     }
 
-                    if (!cost?.totalAmount || lines.length <= 0) {
+                    if (!total || lines.length <= 0) {
                         return;
                     }
 

@@ -115,8 +115,11 @@ const CART_FIELDS = graphql(`
                                 height
                             }
                             product {
+                                id
                                 handle
                                 title
+                                vendor
+                                productType
                             }
                         }
                     }
