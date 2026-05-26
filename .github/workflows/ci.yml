@@ -62,6 +62,7 @@ jobs:
               with:
                   node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
                   mongo-binary-cache-hit: ${{ steps.bootstrap.outputs.mongo-binary-cache-hit }}
+                  save-node-modules: 'true'
 
     typecheck:
         name: ✅ Typecheck
@@ -142,6 +143,7 @@ jobs:
                   node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
                   turbo-cache-hit: ${{ steps.bootstrap.outputs.turbo-cache-hit }}
                   mongo-binary-cache-hit: ${{ steps.bootstrap.outputs.mongo-binary-cache-hit }}
+                  save-mongo-binary: 'true'
 
     build:
         name: 🔨 Build
@@ -197,6 +199,7 @@ jobs:
                   node-modules-cache-hit: ${{ steps.bootstrap.outputs.node-modules-cache-hit }}
                   turbo-cache-hit: ${{ steps.bootstrap.outputs.turbo-cache-hit }}
                   mongo-binary-cache-hit: ${{ steps.bootstrap.outputs.mongo-binary-cache-hit }}
+                  save-turbo: 'true'
 
     e2e:
         name: 🎭 E2E
@@ -280,7 +283,7 @@ jobs:
                   retention-days: 7
 
             - name: 💾 Save Playwright browsers
-              if: always() && steps.cache-playwright.outputs.cache-hit != 'true'
+              if: always() && matrix.app == 'storefront' && steps.cache-playwright.outputs.cache-hit != 'true'
               uses: actions/cache/save@v5
               with:
                   path: ~/.cache/ms-playwright
