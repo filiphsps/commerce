@@ -14,6 +14,7 @@ interface InternalCart {
     buyerIdentity: Record<string, unknown> | null;
     note: string | null;
     attributes: Array<{ key: string; value: string }>;
+    updatedAt: string;
 }
 
 /**
@@ -25,7 +26,28 @@ interface InternalCart {
  * @returns Empty internal cart bucket.
  */
 function emptyCart(id: string): InternalCart {
-    return { id, lines: [], discountCodes: [], giftCardIds: [], buyerIdentity: null, note: null, attributes: [] };
+    return {
+        id,
+        lines: [],
+        discountCodes: [],
+        giftCardIds: [],
+        buyerIdentity: null,
+        note: null,
+        attributes: [],
+        updatedAt: new Date().toISOString(),
+    };
+}
+
+/**
+ * Stamps the cart with a fresh `updatedAt` timestamp; called by every mutation
+ * branch so read-after-write returns the same snapshot the writer produced.
+ * Read-only queries (`getCart`) deliberately reuse the stored timestamp so
+ * `createCart` + `getCart` round-trips match exactly.
+ *
+ * @param c - Internal cart bucket; mutated in place.
+ */
+function touch(c: InternalCart): void {
+    c.updatedAt = new Date().toISOString();
 }
 
 /**
@@ -90,7 +112,7 @@ function toShopifyCart(c: InternalCart): unknown {
         buyerIdentity: c.buyerIdentity,
         note: c.note,
         attributes: c.attributes,
-        updatedAt: new Date().toISOString(),
+        updatedAt: c.updatedAt,
     };
 }
 
@@ -189,6 +211,7 @@ export function mockShopifyTransport(opts: MockShopifyTransportOpts = {}): Shopi
                         }
                         if (input?.buyerIdentity) c.buyerIdentity = input.buyerIdentity;
                         if (input?.attributes) c.attributes = input.attributes;
+                        touch(c);
                         carts.set(id, c);
                         return { cartCreate: { cart: toShopifyCart(c), userErrors: [] } };
                     }
@@ -201,6 +224,7 @@ export function mockShopifyTransport(opts: MockShopifyTransportOpts = {}): Shopi
                                 quantity: l.quantity,
                             });
                         }
+                        touch(c);
                         return { cartLinesAdd: { cart: toShopifyCart(c), userErrors: [] } };
                     }
                     case 'cartLinesUpdate': {
@@ -212,43 +236,51 @@ export function mockShopifyTransport(opts: MockShopifyTransportOpts = {}): Shopi
                                 return u ? { ...l, quantity: u.quantity } : l;
                             })
                             .filter((l) => l.quantity > 0);
+                        touch(c);
                         return { cartLinesUpdate: { cart: toShopifyCart(c), userErrors: [] } };
                     }
                     case 'cartLinesRemove': {
                         const c = getCart(vars.cartId as string);
                         const ids = vars.lineIds as string[];
                         c.lines = c.lines.filter((l) => !ids.includes(l.id));
+                        touch(c);
                         return { cartLinesRemove: { cart: toShopifyCart(c), userErrors: [] } };
                     }
                     case 'cartDiscountCodesUpdate': {
                         const c = getCart(vars.cartId as string);
                         c.discountCodes = vars.discountCodes as string[];
+                        touch(c);
                         return { cartDiscountCodesUpdate: { cart: toShopifyCart(c), userErrors: [] } };
                     }
                     case 'cartGiftCardCodesUpdate': {
                         const c = getCart(vars.cartId as string);
                         c.giftCardIds.push(...(vars.giftCardCodes as string[]));
+                        touch(c);
                         return { cartGiftCardCodesUpdate: { cart: toShopifyCart(c), userErrors: [] } };
                     }
                     case 'cartGiftCardCodesRemove': {
                         const c = getCart(vars.cartId as string);
                         const ids = vars.appliedGiftCardIds as string[];
                         c.giftCardIds = c.giftCardIds.filter((id) => !ids.includes(id));
+                        touch(c);
                         return { cartGiftCardCodesRemove: { cart: toShopifyCart(c), userErrors: [] } };
                     }
                     case 'cartBuyerIdentityUpdate': {
                         const c = getCart(vars.cartId as string);
                         c.buyerIdentity = vars.buyerIdentity as Record<string, unknown>;
+                        touch(c);
                         return { cartBuyerIdentityUpdate: { cart: toShopifyCart(c), userErrors: [] } };
                     }
                     case 'cartNoteUpdate': {
                         const c = getCart(vars.cartId as string);
                         c.note = vars.note as string;
+                        touch(c);
                         return { cartNoteUpdate: { cart: toShopifyCart(c), userErrors: [] } };
                     }
                     case 'cartAttributesUpdate': {
                         const c = getCart(vars.cartId as string);
                         c.attributes = vars.attributes as Array<{ key: string; value: string }>;
+                        touch(c);
                         return { cartAttributesUpdate: { cart: toShopifyCart(c), userErrors: [] } };
                     }
                     default:
