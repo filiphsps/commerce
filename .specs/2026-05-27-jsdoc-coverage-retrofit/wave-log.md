@@ -44,35 +44,45 @@ Calibration findings:
 
 ## Wave 3 — Dependent packages (shopify-html, marketing-common, test-mongo, cart/shopify, cart/react)
 
+Status: completed
+Started: 2026-05-27
+Completed: 2026-05-27
+PRs:
+- `packages/shopify-html`: #1964 merged + #1968 followup merged (missing @example on Tier-1 type).
+- `packages/marketing-common`: #1963 merged (LGTM clean).
+- `packages/test-mongo`: #1966 merged (LGTM clean).
+- `packages/cart/shopify`: #1965 merged + #1970 followup merged (missing @example on pre-existing Tier-1 fn).
+- `packages/cart/react`: #1967 merged + #1969 followup merged (2 missing @example + capability-mixin example typing + American English).
+Calibration findings:
+- **Pre-existing Tier-1 blocks in modified files lack @example most of the time.** Formalized into spec § Edge case rules: "Modified-file rule: bring all Tier-1 symbols up to spec."
+- **Capability-mixin @example blocks need narrowed types.** Spec's "@example references real symbols" rule extends to "@example would actually typecheck against the real definitions". Bare `useCartActions<CartCapabilities>()` fails the test because conditional types resolve to the empty branch.
+- **British English creeps in.** "synchronises" caught on cart-react. CLAUDE.md mandates American English; agents should check for `-ise/-ised` endings in added prose.
+
+## Wave 4 — Large packages (cart/next, cms)
+
+Status: completed
+Started: 2026-05-27
+Completed: 2026-05-27
+PRs:
+- `packages/cart/next`: #1990 merged + #1992 followup merged (4 pre-existing Tier-1 fns lacked @example).
+- `packages/cms`: #1991 merged (7 reviewer blockers amended into the same branch via force-push before merge — all Tier-1 in touched files needed full content). 163 new JSDoc blocks across 92 files.
+Calibration findings:
+- **Modified-file rule pays off at scale.** cms's 7 blockers were all instances of the new rule: when a file is modified, every Tier-1 symbol must satisfy spec. Will be the dominant fix category in remaining waves.
+- **Inline `//` comment → JSDoc replacement** is now explicitly permitted in the spec (came up in cms review).
+- **Spec calibration formalized in commit 3f1535799** — modified-file rule + inline-comment rule.
+
+## Wave 5 — Apps (admin, storefront)
+
 Status: in_progress
 Started: 2026-05-27
 Completed: —
 PRs:
-- `packages/shopify-html`: pending generator dispatch
-- `packages/marketing-common`: pending generator dispatch
-- `packages/test-mongo`: pending generator dispatch
-- `packages/cart/shopify`: pending generator dispatch
-- `packages/cart/react`: pending generator dispatch
-Calibration findings: —
-
-## Wave 4 — Large packages (cart/next, cms)
-
-Status: pending
-Started: —
-Completed: —
-PRs:
-- `packages/cart/next`: —
-- `packages/cms`: —
-Calibration findings: —
-
-## Wave 5 — Apps (admin, storefront)
-
-Status: pending
-Started: —
-Completed: —
-PRs:
-- `apps/admin`: —
-- `apps/storefront`: —
+- `apps/admin`: pending generator dispatch
+- `apps/storefront` (split into 4 sub-PRs by top-level src/ dir):
+  - `apps/storefront/src/components/**` (131 files): pending
+  - `apps/storefront/src/utils/**` (50 files): pending
+  - `apps/storefront/src/api/**` (33 files): pending
+  - `apps/storefront/src/{app,auth,blocks,cart,hooks,middleware,models}/** + root` (~52 files): pending
 Calibration findings: —
 
 ## Wave 6 — Final (landing)
