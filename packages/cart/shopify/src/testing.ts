@@ -173,6 +173,26 @@ function pickMutationOp(vars: Record<string, unknown>): string {
  *   of mutating — used to force adapter error-handling paths.
  * @returns Stateful transport whose `Map` is scoped per call, so concurrent
  *   tests don't share state.
+ * @example
+ * ```ts
+ * import { consoleLogger } from '@nordcom/cart-core';
+ * import { createShopifyCartAdapter } from '@nordcom/cart-shopify';
+ * import { mockShopifyTransport } from '@nordcom/cart-shopify/testing';
+ *
+ * const transport = mockShopifyTransport();
+ * const adapter = createShopifyCartAdapter({ transport });
+ *
+ * const ctx = {
+ *     shop: {},
+ *     locale: { language: 'en', country: 'US', currency: 'USD' },
+ *     logger: consoleLogger,
+ * };
+ *
+ * const cart = await adapter.createCart(ctx, {
+ *     lines: [{ variantId: 'gid://shopify/ProductVariant/1', quantity: 2 }],
+ * });
+ * // cart.totalQuantity === 2
+ * ```
  */
 export function mockShopifyTransport(opts: MockShopifyTransportOpts = {}): ShopifyTransport {
     const carts = new Map<string, InternalCart>();
