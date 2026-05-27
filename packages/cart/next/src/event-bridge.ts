@@ -1,10 +1,36 @@
 import type { CartEvent, CartKernel } from '@nordcom/cart-core';
 import { after } from 'next/server';
 
+/**
+ * Per-event handler map passed to {@link nextEventBridge}. Each key is a
+ * {@link CartEvent} discriminant; TypeScript infers the narrowed event payload
+ * for that variant so handlers receive the concrete fields — `cart`, `line`,
+ * `mutation` — without casting. Omit keys for events you don't need to handle.
+ *
+ * @example
+ * ```ts
+ * const handlers: NextEventBridgeHandlers = {
+ *     'cart.line.added': async (event) => {
+ *         await analytics.track('AddToCart', { lineId: event.line.id });
+ *     },
+ * };
+ * ```
+ */
 export type NextEventBridgeHandlers = Partial<{
     [E in CartEvent['type']]: (event: Extract<CartEvent, { type: E }>) => Promise<void> | void;
 }>;
 
+/**
+ * Return type of {@link nextEventBridge}. Exposes a single `onKernel` method
+ * that wires the configured event handlers to a kernel's event bus — call it
+ * once per request lifecycle after constructing the kernel.
+ *
+ * @example
+ * ```ts
+ * const bridge = nextEventBridge({ handlers });
+ * bridge.onKernel(kernel);
+ * ```
+ */
 export interface NextEventBridge {
     /**
      * Subscribes the bridge's configured handlers to a cart kernel's event

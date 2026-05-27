@@ -15,6 +15,19 @@ import { CartUserError } from '@nordcom/cart-core';
 
 import type { CartIdStorage } from './storage';
 
+/**
+ * Pluggable identity bridge for `update-buyer-identity` mutations in
+ * {@link createTypedCartActions}. Wire this to your auth session source so the
+ * cart layer can attach the active buyer without depending on a specific auth
+ * library.
+ *
+ * @example
+ * ```ts
+ * const authBridge: AuthBridge = {
+ *     resolve: async () => ({ email: 'buyer@example.com' }),
+ * };
+ * ```
+ */
 export interface AuthBridge {
     /**
      * Resolves the buyer identity to merge onto `update-buyer-identity`
@@ -27,6 +40,22 @@ export interface AuthBridge {
     resolve(): Promise<BuyerIdentity | null>;
 }
 
+/**
+ * Construction options for {@link createTypedCartActions}. Wires together the
+ * kernel, storage, and request-context factory that the typed action surface
+ * needs; optional `authBridge` and `messageLocalizer` let hosts attach identity
+ * resolution and i18n without coupling the cart layer to a specific auth or
+ * translation library.
+ *
+ * @example
+ * ```ts
+ * const opts: CreateTypedCartActionsOpts<{}, MyShop> = {
+ *     kernel,
+ *     storage: httpOnlyCookieStorage(),
+ *     resolveContext: async ({ idempotencyKey } = {}) => ({ shop, locale, idempotencyKey }),
+ * };
+ * ```
+ */
 export interface CreateTypedCartActionsOpts<TExt extends CartExt, TShop> {
     kernel: CartKernel<TExt, TShop>;
     storage: CartIdStorage;
@@ -35,6 +64,22 @@ export interface CreateTypedCartActionsOpts<TExt extends CartExt, TShop> {
     messageLocalizer?: (reason: CartActionFailureReason, userErrorMessage?: string) => Promise<string>;
 }
 
+/**
+ * Strongly-typed server-action surface built by {@link createTypedCartActions}.
+ * Each method accepts a serializable plain-object args bag (no `FormData`) so
+ * client components can invoke actions through `startTransition` or the
+ * predictive queue without re-parsing form state on the server.
+ *
+ * @example
+ * ```ts
+ * const actions = createTypedCartActions(opts);
+ * const result = await actions.addLine({
+ *     variantId: 'gid://shopify/ProductVariant/123',
+ *     quantity: 1,
+ *     idempotencyKey: crypto.randomUUID(),
+ * });
+ * ```
+ */
 export interface TypedCartActions<TExt extends CartExt = {}> {
     addLine(
         args: NewCartLine & { snapshot?: ProductSnapshot; idempotencyKey: string },

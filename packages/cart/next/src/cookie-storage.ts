@@ -6,6 +6,16 @@ const MAX_COOKIE_VALUE_LENGTH = 512;
 const DEFAULT_MAX_AGE_SECONDS = 60 * 60 * 24 * 180;
 const DEFAULT_COOKIE_NAME = 'nordcom-cart';
 
+/**
+ * Options bag for {@link httpOnlyCookieStorage}. Every field is optional —
+ * the factory applies defaults tuned for a Shopify-style sticky-cart: 180-day
+ * `maxAge`, `sameSite=lax`, `secure` in production, path `/`.
+ *
+ * @example
+ * ```ts
+ * const storage = httpOnlyCookieStorage({ name: 'my-shop-cart', maxAge: 86400 });
+ * ```
+ */
 export interface HttpOnlyCookieStorageOpts {
     name?: string;
     secure?: boolean;
