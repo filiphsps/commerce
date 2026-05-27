@@ -5,6 +5,12 @@ import { source } from '@/lib/source';
 import { getMDXComponents } from '@/mdx-components';
 
 /**
+ * Reject any slug Fumadocs didn't pre-render — Next 16 with `output: 'export'`
+ * needs the catch-all to be a closed set; unknown URLs serve 404.
+ */
+export const dynamicParams = false;
+
+/**
  * Catch-all docs page handler. Fumadocs source resolves slug → MDX module
  * and returns null when there's no match.
  *
