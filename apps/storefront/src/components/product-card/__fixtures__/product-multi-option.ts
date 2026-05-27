@@ -14,6 +14,14 @@ const COLORS = [
 
 const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
+/**
+ * Creates a single variant node for the multi-option product fixture.
+ *
+ * @param color - Color option value.
+ * @param size - Size option value.
+ * @param index - Variant index used to generate a unique Shopify GID.
+ * @returns A minimal variant object with selected options and a fixed price.
+ */
 const makeVariant = (color: string, size: string, index: number) => ({
     id: `gid://shopify/ProductVariant/${index}`,
     title: `${color} / ${size}`,
@@ -32,6 +40,7 @@ const firstVariant = makeVariant(COLORS[0]!, SIZES[0]!, 0);
 // Pattern is the v1 trie: per Color index 0..7 → range of Size indices 0-5.
 const ENCODED = `v1_${COLORS.map((_, c) => `${c}:0-${SIZES.length - 1}`).join(',')}`;
 
+/** Returns a mock `Product` with eight colors and six sizes, producing a full cartesian variant matrix. */
 export const productMultiOption = (): Product =>
     mockProduct({
         id: 'gid://shopify/Product/3',

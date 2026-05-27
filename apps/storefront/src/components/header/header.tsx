@@ -18,6 +18,14 @@ export type HeaderProps = {
     i18n: LocaleDictionary;
 } & Omit<HTMLProps<HTMLDivElement>, 'className'>;
 
+/**
+ * Async server component rendering the sticky site header with logo, search, account, cart, and navigation.
+ *
+ * @param props.domain - Shop domain used to resolve the shop record and CMS header config.
+ * @param props.locale - Active locale forwarded to navigation and sub-components.
+ * @param props.i18n - Locale dictionary for translated labels.
+ * @returns The sticky header section element.
+ */
 const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) => {
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     const header = await HeaderApi({ shop, locale });

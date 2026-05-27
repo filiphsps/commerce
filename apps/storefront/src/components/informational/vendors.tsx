@@ -15,6 +15,14 @@ export type VendorsProps = {
 
     className?: string | undefined;
 };
+/**
+ * Async server component fetching all vendors from Shopify and rendering them as collection links.
+ *
+ * @param props.shop - Shop record used to build the Shopify API client.
+ * @param props.locale - Active locale forwarded to the API client.
+ * @param props.className - Additional CSS class names applied to each vendor link.
+ * @returns An array of vendor link elements, or `null` when there are no vendors.
+ */
 const Vendors = async ({ shop, locale, className, ...props }: VendorsProps) => {
     const api = await ShopifyApolloApiClient({ shop, locale });
 

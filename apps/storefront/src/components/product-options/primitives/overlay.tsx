@@ -11,6 +11,12 @@ export type OverlayProps = {
     groupName: string;
 };
 
+/**
+ * Full-value overlay for an option group, rendering as a popover on desktop and a bottom sheet on mobile.
+ *
+ * @param props.groupName - Option group name whose values are displayed in the overlay.
+ * @returns A Radix Popover or Dialog element depending on viewport, or `null` when the group is not found.
+ */
 const Overlay = ({ groupName }: OverlayProps) => {
     const isDesktop = useIsDesktop();
     const [open, setOpen] = useState(false);

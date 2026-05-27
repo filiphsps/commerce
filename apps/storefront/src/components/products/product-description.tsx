@@ -13,6 +13,14 @@ export type ProductDescriptionProps = {
     product: Product;
 } & Omit<ComponentPropsWithoutRef<'div'>, 'ref' | 'children' | 'prefix'>;
 
+/**
+ * Async server component rendering the product's HTML description and its original name.
+ *
+ * @param props.locale - Locale forwarded to the original-name sub-component.
+ * @param props.product - Product providing `handle` and `descriptionHtml`.
+ * @param props.className - Additional CSS class names applied to the card wrapper.
+ * @returns The description card element.
+ */
 async function Component({ locale, product, className, ...props }: ProductDescriptionProps) {
     const { handle, descriptionHtml } = product;
 
@@ -33,6 +41,12 @@ async function Component({ locale, product, className, ...props }: ProductDescri
 }
 
 export type ProductDescriptionSkeletonProps = {} & Omit<ComponentPropsWithoutRef<'div'>, 'ref' | 'children' | 'prefix'>;
+/**
+ * Skeleton placeholder for `ProductDescription` while server data loads.
+ *
+ * @param props.className - Additional CSS class names applied to the card wrapper.
+ * @returns The skeleton card element.
+ */
 function Skeleton({ className, ...props }: ProductDescriptionSkeletonProps) {
     return (
         <Card {...props} className={cn('flex flex-col gap-3', className)}>

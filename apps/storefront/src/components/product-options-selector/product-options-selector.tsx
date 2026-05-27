@@ -46,6 +46,18 @@ export type ProductOptionsSelectorProps = {
 type SelectorOption = ProductOptionsSelectorProps['options'][number];
 type SelectorOptionValue = SelectorOption['optionValues'][number];
 
+/**
+ * Renders the full set of product option groups, delegating value rendering to pluggable renderer components.
+ *
+ * @param props.options - Array of product option groups with their available values.
+ * @param props.selectedOptions - Map of option name to currently selected value.
+ * @param props.onChange - Callback invoked with the updated selection map on any value change.
+ * @param props.renderers - Optional per-option-name renderer overrides; falls back to `defaultRenderers.default`.
+ * @param props.productHandle - Product handle used to build variant deep-link hrefs when provided.
+ * @param props.density - Visual density mode forwarded to each value renderer.
+ * @param props.maxValuesPerOption - Optional cap on displayed values per option group.
+ * @returns The option group container, or `null` when no real options exist.
+ */
 export const ProductOptionsSelector = ({
     options,
     selectedOptions,

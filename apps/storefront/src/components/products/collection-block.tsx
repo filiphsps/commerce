@@ -50,6 +50,24 @@ export type CollectionBlockProps<ComponentGeneric extends ElementType> = Collect
         ? Omit<ComponentPropsWithoutRef<ComponentGeneric>, keyof CollectionBlockBase<ComponentGeneric>>
         : ComponentPropsWithoutRef<ComponentGeneric>);
 
+/**
+ * Async server component that fetches a collection and renders its products as a responsive card grid or horizontal rail.
+ *
+ * @param props.as - Wrapper element type; defaults to `'div'`.
+ * @param props.shop - Shop record forwarded to the Shopify API client.
+ * @param props.locale - Locale forwarded to the API client and each product card.
+ * @param props.handle - Collection handle to fetch; when omitted only `children` are rendered.
+ * @param props.limit - Maximum number of products to fetch.
+ * @param props.filters - Additional collection query filters.
+ * @param props.isHorizontal - When `true`, lays out as a horizontally scrollable rail.
+ * @param props.showViewAll - When `true`, appends a view-all tile at the end of the grid.
+ * @param props.priority - Passed to the first two product cards for eager image loading.
+ * @param props.bare - When `true`, renders cards without a wrapper element.
+ * @param props.card - Custom card component; defaults to `CollectionProductCard`.
+ * @param props.cardSkeleton - Custom skeleton component; defaults to a vertical boxed `ProductCard.skeleton`.
+ * @param props.children - Additional content prepended inside the grid.
+ * @returns The product grid element, or `null` when there are no products and no children.
+ */
 const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
     as,
     children = null,
@@ -124,6 +142,16 @@ const CollectionBlock = async <ComponentGeneric extends ElementType = 'div'>({
 
 CollectionBlock.displayName = 'Nordcom.Products.CollectionBlock';
 
+/**
+ * Grid skeleton for a collection block, rendering `length` card skeleton placeholders.
+ *
+ * @param props.length - Number of skeleton cards to render; defaults to 7.
+ * @param props.isHorizontal - Applies horizontal rail layout classes when `true`.
+ * @param props.bare - When `true`, renders only the skeleton cards without a wrapper.
+ * @param props.className - Additional CSS class names for the wrapper element.
+ * @param props.cardSkeleton - Custom skeleton card component; defaults to `DefaultCardSkeleton`.
+ * @returns The skeleton grid element.
+ */
 CollectionBlock.skeleton = ({
     isHorizontal = false,
     bare = false,

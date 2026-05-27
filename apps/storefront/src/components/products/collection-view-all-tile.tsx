@@ -9,6 +9,13 @@ export type CollectionViewAllTileProps = {
     className?: string;
 };
 
+/**
+ * Card-sized tile linking to the full collection page, displayed after the product grid.
+ *
+ * @param props.collection - Collection providing handle and title for the link.
+ * @param props.className - Additional CSS class names.
+ * @returns The link tile element.
+ */
 const CollectionViewAllTile = ({ collection, className }: CollectionViewAllTileProps) => (
     <Link
         href={`/collections/${collection.handle}/`}

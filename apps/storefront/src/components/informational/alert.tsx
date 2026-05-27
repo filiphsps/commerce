@@ -15,6 +15,15 @@ export type AlertProps = {
     children: React.ReactNode;
     icon?: false | React.ReactNode;
 } & HTMLProps<HTMLDivElement>;
+/**
+ * Themed alert box with an automatic severity icon and optional custom icon override.
+ *
+ * @param props.severity - Controls background color and the default icon.
+ * @param props.children - Alert body content.
+ * @param props.icon - Override icon element; pass `false` to suppress the default icon entirely.
+ * @param props.className - Additional CSS class names.
+ * @returns The styled alert element.
+ */
 export const Alert = ({ children, severity, icon, className, ...props }: AlertProps) => {
     let iconElement: React.ReactNode | null = null;
     if (typeof icon === 'undefined' || (typeof icon === 'boolean' && icon !== false)) {

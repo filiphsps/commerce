@@ -2,6 +2,13 @@
 
 import type { OptionValueRendererProps } from '../types';
 
+/**
+ * Color or image swatch button for a single option value, with a struck-through diagonal line when unavailable.
+ *
+ * @param props.value - Option value data including swatch, selected, and available fields.
+ * @param props.onSelect - Callback invoked when the swatch is clicked.
+ * @returns The swatch button element.
+ */
 const Swatch = ({ value, onSelect }: OptionValueRendererProps) => {
     const hasImage = !!value.swatch?.image?.url && !value.swatch?.color;
     return (

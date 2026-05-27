@@ -46,6 +46,13 @@ const HOVER_CLOSE_DELAY_MS = 150;
 const COLUMN_DIVIDER_CLASSES =
     "md:[&:not(:last-child)]:after:content-[''] md:[&:not(:last-child)]:after:absolute md:[&:not(:last-child)]:after:top-0 md:[&:not(:last-child)]:after:bottom-0 md:[&:not(:last-child)]:after:-right-[calc(var(--header-column-gap-x)/2)] md:[&:not(:last-child)]:after:w-px md:[&:not(:last-child)]:after:bg-[var(--header-divider-color)]";
 
+/**
+ * Accessible trigger button that opens a portaled mega-menu panel for a nav item.
+ *
+ * @param props.item - CMS nav item providing label, link, and nested children.
+ * @param props.locale - Active locale forwarded to link resolvers inside the panel.
+ * @returns The trigger button and portaled mega-menu panel.
+ */
 export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { code: string } }) {
     const menuId = useId();
     const [open, setOpen] = useState(false);
@@ -277,6 +284,12 @@ const KNOWN_VARIANTS: ReadonlySet<Variant> = new Set<Variant>(HEADER_VARIANTS);
 
 const warnedUnknownVariants = new Set<string>();
 
+/**
+ * Maps an unknown variant value to a valid `HeaderVariant`, warning once in development for unknowns.
+ *
+ * @param raw - Raw variant value from the CMS.
+ * @returns The validated variant name, falling back to `'editorial-columns'`.
+ */
 const resolveVariant = (raw: unknown): Variant => {
     if (typeof raw === 'string' && KNOWN_VARIANTS.has(raw as Variant)) return raw as Variant;
     if (raw != null && process.env.NODE_ENV !== 'production') {
@@ -289,6 +302,13 @@ const resolveVariant = (raw: unknown): Variant => {
     return 'editorial-columns';
 };
 
+/**
+ * Dispatches to the correct mega-menu layout based on the nav item's `variant` field.
+ *
+ * @param props.item - CMS nav item with a `variant` field and nested `items`.
+ * @param props.locale - Active locale forwarded to link resolvers.
+ * @returns The variant-specific panel element.
+ */
 function MegaMenuPanel({ item, locale }: { item: NavItem; locale: { code: string } }) {
     const variant = resolveVariant(item.variant);
     return (
@@ -300,6 +320,13 @@ function MegaMenuPanel({ item, locale }: { item: NavItem; locale: { code: string
     );
 }
 
+/**
+ * Multi-column editorial panel for the `editorial-columns` nav variant.
+ *
+ * @param props.item - CMS nav item whose `items` become individual columns.
+ * @param props.locale - Active locale forwarded to link resolvers.
+ * @returns The column grid, or `null` when there are no items.
+ */
 function EditorialColumnsPanel({ item, locale }: { item: NavItem; locale: { code: string } }) {
     const items = (item.items ?? []) as RecursiveNavItem[];
     if (items.length === 0) return null;
@@ -327,6 +354,14 @@ function EditorialColumnsPanel({ item, locale }: { item: NavItem; locale: { code
     );
 }
 
+/**
+ * Single editorial column with an optional image, eyebrow link, description, and sub-links.
+ *
+ * @param props.item - Nav item providing link, image, description, and child items.
+ * @param props.locale - Active locale forwarded to link resolvers.
+ * @param props.index - Column index used to stagger the entrance animation delay.
+ * @returns The column element, or `null` when there is no label and no children.
+ */
 function EditorialColumn({ item, locale, index }: { item: RecursiveNavItem; locale: { code: string }; index: number }) {
     const link = item.link;
     const label = link?.label ?? null;
@@ -401,6 +436,14 @@ function EditorialColumn({ item, locale, index }: { item: RecursiveNavItem; loca
     );
 }
 
+/**
+ * Leaf sub-link inside an editorial column; renders as an anchor or plain span when the URL cannot be resolved.
+ *
+ * @param props.item - Nav item providing the link data.
+ * @param props.locale - Active locale forwarded to the link resolver.
+ * @param props.size - Visual size variant controlling padding and font size.
+ * @returns The styled link element, or `null` when no label is present.
+ */
 function EditorialSublink({
     item,
     locale,
@@ -437,6 +480,13 @@ function EditorialSublink({
     );
 }
 
+/**
+ * Single-column compact link list for the `compact-list` nav variant.
+ *
+ * @param props.item - CMS nav item whose `items` become list entries.
+ * @param props.locale - Active locale forwarded to link resolvers.
+ * @returns The list element, or `null` when there are no items.
+ */
 function CompactListPanel({ item, locale }: { item: NavItem; locale: { code: string } }) {
     const items = (item.items ?? []) as RecursiveNavItem[];
     if (items.length === 0) return null;
@@ -453,6 +503,13 @@ function CompactListPanel({ item, locale }: { item: NavItem; locale: { code: str
     );
 }
 
+/**
+ * Single row in a `CompactListPanel`; renders as an anchor or span when the URL cannot be resolved.
+ *
+ * @param props.item - Nav item providing the link data.
+ * @param props.locale - Active locale forwarded to the link resolver.
+ * @returns The styled link element, or `null` when no label is present.
+ */
 function CompactListItem({ item, locale }: { item: RecursiveNavItem; locale: { code: string } }) {
     const link = item.link;
     const label = link?.label ?? null;
@@ -475,6 +532,13 @@ function CompactListItem({ item, locale }: { item: RecursiveNavItem; locale: { c
     );
 }
 
+/**
+ * Featured-promo panel showing a hero image block and a secondary link list side by side.
+ *
+ * @param props.item - CMS nav item whose first child becomes the hero and the rest become list items.
+ * @param props.locale - Active locale forwarded to link resolvers.
+ * @returns The promo layout, or `null` when there are no items.
+ */
 function FeaturedPromoPanel({ item, locale }: { item: NavItem; locale: { code: string } }) {
     const items = (item.items ?? []) as RecursiveNavItem[];
     if (items.length === 0) return null;
@@ -506,6 +570,13 @@ function FeaturedPromoPanel({ item, locale }: { item: NavItem; locale: { code: s
     );
 }
 
+/**
+ * Hero image or color swatch with title, description, and CTA inside a featured-promo panel.
+ *
+ * @param props.item - Nav item providing image, label, description, background color, and link.
+ * @param props.locale - Active locale forwarded to the link resolver.
+ * @returns The hero block, optionally wrapped in an anchor.
+ */
 function FeaturedHero({ item, locale }: { item: RecursiveNavItem; locale: { code: string } }) {
     const link = item.link;
     const label = link?.label ?? null;

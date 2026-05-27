@@ -18,9 +18,17 @@ import { cn } from '@/utils/tailwind';
 
 const DISMISSED_KEY = 'geo-redirect-banner-dismissed';
 
+/** No-op unsubscribe factory required by `useSyncExternalStore` for snapshot-only stores. */
 const subscribeToNothing = () => () => {};
+/** Returns the browser's primary language code in lowercase. */
 const getNavigatorLanguage = () => (navigator.language.split('-').at(0) || 'en').toLowerCase();
+/** Returns the current `navigator.userAgent` string. */
 const getUserAgent = () => navigator.userAgent;
+/**
+ * Reads and validates the geo-redirect banner dismissal timestamp from localStorage.
+ *
+ * @returns The stored dismissal timestamp, or `null` when absent, invalid, or older than 24 hours.
+ */
 const readStoredDismissed = (): number | null => {
     if (typeof localStorage === 'undefined') {
         return null;
@@ -52,6 +60,15 @@ export type GeoRedirectProps = {
     shop: OnlineShop;
     i18n: LocaleDictionary;
 };
+/**
+ * Sticky banner that prompts the visitor to switch to the locale matching their IP geolocation.
+ *
+ * @param props.countries - Available countries used to match the detected IP country.
+ * @param props.locale - Current active locale.
+ * @param props.shop - Shop record used to fetch the target locale dictionary.
+ * @param props.i18n - Fallback locale dictionary until the target locale dictionary loads.
+ * @returns The redirect banner, or `null` when dismissed, already matching, or a crawler.
+ */
 export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoRedirectProps) {
     const [closed, setClosed] = useState(false);
     const [i18n, setI18n] = useState<LocaleDictionary | undefined>();

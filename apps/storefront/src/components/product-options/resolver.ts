@@ -27,6 +27,12 @@ type RawOption = {
     values?: string[];
 };
 
+/**
+ * Normalizes a raw Shopify swatch shape into the internal `ResolvedSwatch` format.
+ *
+ * @param raw - Raw swatch data from Shopify with optional color and nested image references.
+ * @returns A normalized swatch object, or `undefined` when neither a color nor an image URL is present.
+ */
 function normalizeSwatch(raw: RawSwatch | undefined): ResolvedSwatch | undefined {
     if (!raw) return undefined;
     const previewUrl = raw.image?.previewImage?.url ?? raw.image?.image?.url ?? raw.image?.url;
@@ -43,6 +49,12 @@ function normalizeSwatch(raw: RawSwatch | undefined): ResolvedSwatch | undefined
     return { color, image };
 }
 
+/**
+ * Yields each option value from either the `optionValues` or legacy `values` array.
+ *
+ * @param option - Raw product option containing either `optionValues` (new) or `values` (legacy) entries.
+ * @returns A generator of `{ name, swatch? }` entries.
+ */
 function* iterValues(option: RawOption): Generator<{ name: string; swatch?: RawSwatch }> {
     if (Array.isArray(option.optionValues) && option.optionValues.length > 0) {
         for (const ov of option.optionValues) yield { name: ov.name, swatch: ov.swatch };
@@ -53,6 +65,13 @@ function* iterValues(option: RawOption): Generator<{ name: string; swatch?: RawS
     }
 }
 
+/**
+ * Returns the first product variant whose selected options exactly match the given selection map.
+ *
+ * @param product - Product providing the variant list.
+ * @param selection - Map of option name to value representing the current selection.
+ * @returns The matching variant, or `undefined` when no variant matches the full selection.
+ */
 export function findVariant(product: Product, selection: Record<string, string>): ProductVariant | undefined {
     const edges = product.variants?.edges ?? [];
     return edges
@@ -64,6 +83,15 @@ export function findVariant(product: Product, selection: Record<string, string>)
         );
 }
 
+/**
+ * Determines whether a given option value is available for sale given the current selection.
+ *
+ * @param product - Product providing the full variant list.
+ * @param optionName - Name of the option being evaluated.
+ * @param valueName - Specific option value to check for availability.
+ * @param selection - Current selection map used to filter compatible variants.
+ * @returns `true` when at least one variant with this option value and matching selection is available for sale.
+ */
 function deriveAvailability(
     product: Product,
     optionName: string,
@@ -81,6 +109,13 @@ function deriveAvailability(
     });
 }
 
+/**
+ * Resolves all meaningful product options into a display-ready structure with selected and availability state.
+ *
+ * @param product - Product whose options and variants are resolved.
+ * @param selection - Current selection map used to compute per-value selected and available flags.
+ * @returns Array of resolved option groups, excluding the default `'title'` option.
+ */
 export function resolveOptions(product: Product, selection: Record<string, string>): ResolvedOption[] {
     const options = (product.options ?? []) as unknown as RawOption[];
     return options
@@ -97,6 +132,12 @@ export function resolveOptions(product: Product, selection: Record<string, strin
         }));
 }
 
+/**
+ * Converts a variant's selected options array into a flat option-name-to-value map.
+ *
+ * @param variant - Variant whose `selectedOptions` are flattened into a record.
+ * @returns A record mapping option names to their selected values, or an empty object when `variant` is undefined.
+ */
 export function toSelectionRecord(variant: ProductVariant | undefined): Record<string, string> {
     if (!variant) return {};
     return Object.fromEntries((variant.selectedOptions ?? []).map((so) => [so.name, so.value]));

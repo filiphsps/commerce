@@ -18,6 +18,15 @@ export type RecommendedProductsProps = {
     product?: Product;
     className?: string;
 };
+/**
+ * Async server component that fetches Shopify product recommendations and renders them as a horizontal collection rail.
+ *
+ * @param props.shop - Shop record used to instantiate the Shopify API client.
+ * @param props.locale - Locale used for the API client.
+ * @param props.product - Source product whose recommendations are fetched; renders nothing when absent.
+ * @param props.className - Additional CSS class names forwarded to the collection block.
+ * @returns The horizontal collection block, or `null` when there is no product or the API call fails.
+ */
 async function Component({ shop, locale, product, className }: Readonly<RecommendedProductsProps>) {
     if (!product?.id) {
         return null;
@@ -44,6 +53,12 @@ async function Component({ shop, locale, product, className }: Readonly<Recommen
     );
 }
 
+/**
+ * Skeleton placeholder for `RecommendedProducts` while the async recommendation data loads.
+ *
+ * @param props.className - Additional CSS class names forwarded to the collection block skeleton.
+ * @returns The horizontal collection block skeleton element.
+ */
 function Skeleton({ className }: { className?: string }) {
     return <CollectionBlock.skeleton isHorizontal={true} className={className} />;
 }

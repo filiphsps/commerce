@@ -16,6 +16,12 @@ export type ProductOptionsRootProps = {
     children?: ReactNode;
 };
 
+/**
+ * Lowercases all keys of a renderer map so lookups are case-insensitive.
+ *
+ * @param input - Optional renderer map with arbitrary-case keys.
+ * @returns A new map with all keys lowercased, or an empty object when `input` is undefined.
+ */
 function normalizeRenderers(
     input: Record<string, OptionValueRenderer> | undefined,
 ): Record<string, OptionValueRenderer> {
@@ -23,6 +29,17 @@ function normalizeRenderers(
     return Object.fromEntries(Object.entries(input).map(([k, v]) => [k.toLowerCase(), v]));
 }
 
+/**
+ * Mounts the `ProductOptionsContext` provider with internally managed or controlled selection state.
+ *
+ * @param props.product - Product whose options and variants are resolved.
+ * @param props.initialSelection - Uncontrolled initial selection map.
+ * @param props.selection - Controlled selection map; when provided, the component is fully controlled.
+ * @param props.onChange - Callback invoked on every selection change.
+ * @param props.renderers - Custom per-option-name renderer overrides.
+ * @param props.children - Context consumers.
+ * @returns The context provider wrapping `children`.
+ */
 const InnerRoot = ({
     product,
     initialSelection,
@@ -69,6 +86,13 @@ const InnerRoot = ({
     return <ProductOptionsContext.Provider value={value}>{children}</ProductOptionsContext.Provider>;
 };
 
+/**
+ * Public root component for product options; passes through to the nearest parent provider when nested.
+ *
+ * @param props.product - Product whose options are managed by this root.
+ * @param props.children - Option group and value primitives that consume the context.
+ * @returns The `InnerRoot` provider, or a transparent fragment when a parent provider already exists.
+ */
 const Root = (props: ProductOptionsRootProps) => {
     const parent = useMaybeProductOptions();
     if (parent) {

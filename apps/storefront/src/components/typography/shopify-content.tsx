@@ -14,6 +14,15 @@ const DEFAULT_COMPONENTS: ToReactNodesOptions['components'] = {
     a: Link as ElementType,
 };
 
+/**
+ * Renders sanitized Shopify HTML as a React node tree.
+ *
+ * @param props.html - Raw HTML string from the Shopify storefront API.
+ * @param props.as - Wrapper element type; defaults to `div`.
+ * @param props.className - Additional class names applied to the wrapper.
+ * @param props.components - Override map for HTML element renderers passed to `toReactNodes`.
+ * @returns The rendered prose container, or `null` when `html` is empty.
+ */
 export const ShopifyContent = <ComponentGeneric extends ElementType = 'div'>({
     as,
     className,

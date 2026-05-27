@@ -16,6 +16,14 @@ export type AcceptedPaymentMethodsProps = {
     shop: OnlineShop;
 } & HTMLProps<HTMLDivElement>;
 
+/**
+ * Async server component displaying accepted payment method and digital wallet icons for the shop.
+ *
+ * @param props.shop - Shop record used to build the Shopify API client.
+ * @param props.locale - Active locale forwarded to the API client.
+ * @param props.className - Additional CSS class names.
+ * @returns A row of payment brand icons, or `null` when none are configured.
+ */
 export const AcceptedPaymentMethods = async ({ shop, locale, className, ...props }: AcceptedPaymentMethodsProps) => {
     const api = await ShopifyApiClient({ shop, locale });
     const paymentSettings = await ShopPaymentSettingsApi({ api });

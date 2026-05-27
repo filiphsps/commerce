@@ -9,6 +9,14 @@ export type VariantPriceProps = {
     className?: string;
 };
 
+/**
+ * Server-side shell that pre-formats price data and passes it to `VariantPriceClient`.
+ *
+ * @param props.seedVariant - Product variant providing price and compare-at price.
+ * @param props.locale - Locale code forwarded to the client for formatting.
+ * @param props.className - Additional CSS class names.
+ * @returns The `VariantPriceClient` element.
+ */
 const VariantPrice = ({ seedVariant, locale, className }: VariantPriceProps) => {
     const initialPrice = formatPrice(seedVariant.price, locale);
     const initialCompare = seedVariant.compareAtPrice ? formatPrice(seedVariant.compareAtPrice, locale) : null;

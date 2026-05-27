@@ -4,6 +4,12 @@ export type JsonLdProps = {
     data: Object;
 };
 
+/**
+ * Renders a JSON-LD `<script>` tag from a plain object.
+ *
+ * @param props.data - Structured data object serialized to JSON for injection into the page.
+ * @returns The inline script element, or `null` when `data` is falsy or fails serialization.
+ */
 export function JsonLd({ data }: JsonLdProps) {
     if (!data) {
         return null;

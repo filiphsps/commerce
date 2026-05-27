@@ -12,6 +12,14 @@ import { getTranslations } from '@/utils/locale';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 
+/**
+ * Sanitizes a raw input string into a valid non-negative integer string clamped to `maxQuantity`.
+ *
+ * @param value - Raw string from the quantity input element.
+ * @param prev - Previous valid string used as fallback when `value` contains invalid characters.
+ * @param maxQuantity - Upper bound for the sanitized quantity value.
+ * @returns A sanitized non-negative integer string, or an empty string when `value` is blank.
+ */
 export const QuantityInputFilter = (
     value?: string,
     prev?: string,
@@ -47,6 +55,18 @@ export type QuantitySelectorProps = {
     inputClassName?: string;
 } & HTMLProps<HTMLDivElement>;
 
+/**
+ * Stepper control for entering a purchase quantity, with decrease/increase buttons and a validated text input.
+ *
+ * @param props.i18n - Locale dictionary for button and input accessible labels.
+ * @param props.value - Controlled quantity value; defaults to 0.
+ * @param props.update - Callback invoked with the validated new quantity on change.
+ * @param props.disabled - When `true`, disables all interactive elements regardless of cart state.
+ * @param props.allowDecreaseToZero - When `true`, permits decreasing the quantity to 0.
+ * @param props.buttonClassName - Additional CSS class names applied to the decrease and increase buttons.
+ * @param props.inputClassName - Additional CSS class names applied to the number input.
+ * @returns The quantity stepper element.
+ */
 const QuantitySelector = ({
     className,
     i18n,

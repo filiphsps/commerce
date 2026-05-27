@@ -7,6 +7,14 @@ import { toSelectionRecord } from '@/components/product-options/resolver';
 import { firstAvailableVariant } from '@/utils/first-available-variant';
 import type { ProductCardPickerProps } from './types';
 
+/**
+ * Floating popover picker that anchors to the CTA pill and shows a compact size selector.
+ *
+ * @param props.product - Product whose variants and options populate the picker.
+ * @param props.open - Whether the popover is currently open.
+ * @param props.onOpenChange - Callback invoked when the open state should change.
+ * @returns The Radix Popover element.
+ */
 const FloatPicker = ({ product, open, onOpenChange }: ProductCardPickerProps) => {
     const seed = firstAvailableVariant(product) ?? product.variants?.edges?.[0]?.node;
     const initialSelection = useMemo(() => (seed ? toSelectionRecord(seed) : {}), [seed]);

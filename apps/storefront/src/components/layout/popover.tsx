@@ -15,6 +15,16 @@ export type PopoverProps = {
     children: ReactNode;
 };
 
+/**
+ * Centered dialog popover with a title, optional description, close button, and controllable open state.
+ *
+ * @param props.open - Whether the popover is currently visible.
+ * @param props.onOpenChange - Callback fired when the open state should change.
+ * @param props.title - Header label rendered inside a `Dialog.Title`.
+ * @param props.description - Optional visually hidden description for assistive technology.
+ * @param props.children - Popover body content.
+ * @returns The Radix `Dialog.Root` popover element.
+ */
 export function Popover({ open, onOpenChange, title, description, children }: PopoverProps) {
     return (
         <Dialog.Root open={open} onOpenChange={onOpenChange} modal={true}>

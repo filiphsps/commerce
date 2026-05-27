@@ -20,6 +20,16 @@ export type OverviewProps = {
     accent?: Color;
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 
+/**
+ * Two-column image + content layout used for collection and page overviews.
+ *
+ * @param props.body - Rich content rendered inside the content card.
+ * @param props.image - Optional image metadata; without it only the content card is shown.
+ * @param props.imageStyle - `'normal'` uses `object-contain`, `'cover'` uses `object-cover`.
+ * @param props.layout - Side the image appears on (`'left'` | `'right'`), or `'center'` for stacked.
+ * @param props.accent - CSS color applied as `--accent-primary` on the image container.
+ * @returns The overview section, or `null` when `body` is absent.
+ */
 export const Overview = ({
     body,
     image,

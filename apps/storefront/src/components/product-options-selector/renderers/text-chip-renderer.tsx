@@ -4,6 +4,19 @@ import type { MouseEvent } from 'react';
 import type { ProductOptionValueRendererProps } from '@/components/product-options-selector/renderers/types';
 import { chipClassName } from './chip-class';
 
+/**
+ * Default chip renderer for text-type options, with optional swatch color or image preview.
+ *
+ * @param props.name - Option group name used for accessible aria labels.
+ * @param props.value - Option value label displayed in the chip.
+ * @param props.selected - Whether this chip is the currently selected value.
+ * @param props.available - When `false`, the chip is disabled and click navigation is suppressed.
+ * @param props.onSelect - Callback invoked when the chip is selected.
+ * @param props.swatch - Optional color or image swatch shown as a leading circle.
+ * @param props.href - Optional deep-link href; renders an anchor instead of a button when provided.
+ * @param props.density - Visual density forwarded to `chipClassName`.
+ * @returns An anchor or button chip element.
+ */
 export const TextChipRenderer = ({
     name,
     value,

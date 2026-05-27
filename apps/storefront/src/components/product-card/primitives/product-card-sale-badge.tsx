@@ -27,6 +27,16 @@ export type ProductCardSaleBadgeProps = {
     collisionShift?: boolean;
 };
 
+/**
+ * Absolute-positioned badge showing the discount percentage; hidden when the discount is below 11%.
+ *
+ * @param props.discountPercent - Integer discount percentage; values below 11 render nothing.
+ * @param props.style - Visual color scheme for the badge.
+ * @param props.position - Corner anchor position within the card image area.
+ * @param props.className - Additional CSS class names.
+ * @param props.collisionShift - When `true`, offsets the badge to avoid overlapping the corner CTA.
+ * @returns The sale badge element, or `null` when the discount is too small to display.
+ */
 const ProductCardSaleBadge = ({
     discountPercent,
     style,

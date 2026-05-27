@@ -28,6 +28,7 @@ type Social = NonNullable<FooterDoc['social']>[number];
 // `lucide-react` v1+ ships no brand glyphs, so inline SVGs keep the footer
 // self-contained without pulling in another icon package.
 type SocialIconProps = { className?: string };
+/** Instagram brand icon as an inline SVG. */
 const InstagramIcon = ({ className }: SocialIconProps) => (
     <svg
         viewBox="0 0 24 24"
@@ -44,26 +45,31 @@ const InstagramIcon = ({ className }: SocialIconProps) => (
         <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
     </svg>
 );
+/** Facebook brand icon as an inline SVG. */
 const FacebookIcon = ({ className }: SocialIconProps) => (
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden={true} className={className}>
         <path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.51 1.49-3.9 3.78-3.9 1.1 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0 0 22 12z" />
     </svg>
 );
+/** YouTube brand icon as an inline SVG. */
 const YoutubeIcon = ({ className }: SocialIconProps) => (
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden={true} className={className}>
         <path d="M23.5 6.2a3 3 0 0 0-2.1-2.12C19.6 3.5 12 3.5 12 3.5s-7.6 0-9.4.58A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.12C4.4 20.5 12 20.5 12 20.5s7.6 0 9.4-.58a3 3 0 0 0 2.1-2.12A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8zM9.75 15.5v-7l6.5 3.5-6.5 3.5z" />
     </svg>
 );
+/** LinkedIn brand icon as an inline SVG. */
 const LinkedinIcon = ({ className }: SocialIconProps) => (
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden={true} className={className}>
         <path d="M19 0H5a5 5 0 0 0-5 5v14a5 5 0 0 0 5 5h14a5 5 0 0 0 5-5V5a5 5 0 0 0-5-5zM8 19H5V8h3v11zM6.5 6.7A1.74 1.74 0 1 1 8.24 5 1.74 1.74 0 0 1 6.5 6.7zM20 19h-3v-5.6c0-3.36-4-3.1-4 0V19h-3V8h3v1.76c1.4-2.6 7-2.8 7 2.48V19z" />
     </svg>
 );
+/** X (formerly Twitter) brand icon as an inline SVG. */
 const TwitterXIcon = ({ className }: SocialIconProps) => (
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden={true} className={className}>
         <path d="M18.244 2H21.5l-7.43 8.49L23 22h-6.91l-4.71-6.18L5.94 22H2.68l7.92-9.05L1.7 2h7.05l4.26 5.66L18.24 2zm-1.21 18h1.86L7.04 4H5.04l11.99 16z" />
     </svg>
 );
+/** TikTok brand icon as an inline SVG. */
 const TiktokIcon = ({ className }: SocialIconProps) => (
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden={true} className={className}>
         <path d="M21 8.78a8.83 8.83 0 0 1-5.18-1.66v7.45a6.43 6.43 0 1 1-5.55-6.37v3.06a3.39 3.39 0 1 0 2.49 3.27V2h3.06a5.76 5.76 0 0 0 5.18 5.16V8.78z" />
@@ -85,6 +91,15 @@ export type FooterProps = {
     i18n: LocaleDictionary;
 };
 
+/**
+ * Async site footer fetching CMS data and rendering logo, navigation sections,
+ * social links, legal links, copyright, and payment/locale content.
+ *
+ * @param props.shop - Shop record providing logo and name.
+ * @param props.locale - Active locale forwarded to link resolvers.
+ * @param props.i18n - Locale dictionary forwarded to `FooterContent`.
+ * @returns The full-width footer element.
+ */
 const Footer = async ({ shop, locale, i18n }: FooterProps) => {
     const footer = await FooterApi({ shop, locale });
     const { logo } = shop.design.header;
@@ -157,6 +172,13 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
     );
 };
 
+/**
+ * Renders a single CMS-defined footer navigation section with its title and links.
+ *
+ * @param props.section - CMS footer section data containing title and link array.
+ * @param props.locale - Active locale forwarded to `resolveLink`.
+ * @returns The section block, or `null` when it has no links.
+ */
 function FooterSection({ section, locale }: { section: Section; locale: Locale }) {
     const links: SectionLinks = section.links ?? [];
     if (links.length === 0) return null;
@@ -172,6 +194,13 @@ function FooterSection({ section, locale }: { section: Section; locale: Locale }
     );
 }
 
+/**
+ * Renders a single navigational link inside a `FooterSection`.
+ *
+ * @param props.item - CMS section link entry.
+ * @param props.locale - Active locale for URL resolution.
+ * @returns The anchor element, or `null` when the link cannot be resolved.
+ */
 function FooterLinkAnchor({ item, locale }: { item: SectionLink; locale: Locale }) {
     if (!item.link) return null;
     const href = resolveLink(item.link as never, { locale: { code: locale.code } });
@@ -187,6 +216,13 @@ function FooterLinkAnchor({ item, locale }: { item: SectionLink; locale: Locale 
     );
 }
 
+/**
+ * Renders a muted legal page link in the footer's bottom legal strip.
+ *
+ * @param props.item - CMS legal link entry.
+ * @param props.locale - Active locale for URL resolution.
+ * @returns The anchor element, or `null` when the link cannot be resolved.
+ */
 function FooterLegalLink({ item, locale }: { item: LegalLink; locale: Locale }) {
     if (!item.link) return null;
     const href = resolveLink(item.link as never, { locale: { code: locale.code } });

@@ -10,6 +10,13 @@ export type VariantImageProps = {
     className?: string;
 };
 
+/**
+ * Resolves the primary image for a product card from the variant image, featured image, or first gallery image.
+ *
+ * @param product - Product providing featured and gallery images as fallbacks.
+ * @param seedVariant - Variant whose image takes precedence when available.
+ * @returns The resolved seed image, or `null` when no image source is found.
+ */
 const pickSeedImage = (product: Product, seedVariant: ProductVariant): SeedImage | null => {
     const v = seedVariant.image;
     if (v?.url) {
@@ -41,6 +48,13 @@ const pickSeedImage = (product: Product, seedVariant: ProductVariant): SeedImage
     return null;
 };
 
+/**
+ * Returns the second product gallery image to use as a hover swap, or `null` when unavailable.
+ *
+ * @param product - Product providing the gallery image list.
+ * @param primary - Already-resolved primary image used to skip duplicates.
+ * @returns The swap image, or `null` when there is no distinct second gallery image.
+ */
 const pickSwapImage = (product: Product, primary: SeedImage | null): SeedImage | null => {
     const second = product.images?.edges?.[1]?.node;
     if (!second?.url || !primary) return null;
@@ -53,6 +67,16 @@ const pickSwapImage = (product: Product, primary: SeedImage | null): SeedImage |
     };
 };
 
+/**
+ * Server-side shell that resolves the primary and swap images then passes them to `VariantImageClient`.
+ *
+ * @param props.product - Product providing image gallery and vendor/title for link text.
+ * @param props.seedVariant - Initial variant whose image is used as the primary image source.
+ * @param props.priority - When `true`, loads the primary image eagerly.
+ * @param props.aspect - Aspect ratio applied to the image container.
+ * @param props.className - Additional CSS class names forwarded to the client component.
+ * @returns The `VariantImageClient` element.
+ */
 const VariantImage = ({
     product,
     seedVariant,

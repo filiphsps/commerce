@@ -8,6 +8,14 @@ export type TitleProps<T extends As> = {
     children?: ReactNode;
     bold?: boolean;
 } & ComponentProps<T>;
+/**
+ * Large page title with optional primary color and link hover styles.
+ *
+ * @param props.as - Heading element; defaults to `h1`. Pass `null` to render a plain Fragment.
+ * @param props.bold - When `true`, applies `font-bold text-primary` styles.
+ * @param props.children - Title text or nodes; returns `null` when absent.
+ * @returns The heading element, a Fragment, or `null`.
+ */
 export const Title = <T extends As>({ as: Tag = 'h1' as T, bold, className, key, ...props }: TitleProps<T>) => {
     if (!props.children) return null;
     if (Tag === null) {
@@ -35,6 +43,14 @@ export type SubTitleProps = {
     as?: ElementType | null;
     bold?: boolean;
 } & Omit<HTMLProps<HTMLDivElement>, 'as'>;
+/**
+ * Muted secondary subtitle rendered below a `Title`.
+ *
+ * @param props.as - Element type; defaults to `div`. Pass `null` to render a plain Fragment.
+ * @param props.bold - Applies `font-extrabold` when `true`.
+ * @param props.children - Subtitle text or nodes.
+ * @returns The subtitle element or a Fragment.
+ */
 export const SubTitle = ({ as, bold, className, key, ...props }: SubTitleProps) => {
     if (as === null) {
         return <Fragment key={key}>{props.children}</Fragment>;
@@ -84,6 +100,20 @@ type HeadingProps = {
     | SubPropFields
 );
 
+/**
+ * Composes `Title` and `SubTitle` into a stacked heading block.
+ *
+ * When only one of `title`/`subtitle` is provided the matching primitive is returned
+ * directly. When both are present they are wrapped in a flex column div (or a custom
+ * `wrapper` component), with order controlled by `reverse`.
+ *
+ * @param props.bold - Forwarded to both `Title` and `SubTitle`.
+ * @param props.title - Content for `Title`; omit to render only `SubTitle`.
+ * @param props.subtitle - Content for `SubTitle`; omit to render only `Title`.
+ * @param props.reverse - When `true`, renders `SubTitle` above `Title`.
+ * @param props.wrapper - Optional wrapper component that receives the heading set as children.
+ * @returns The composed heading, or `null` when neither title nor subtitle is provided.
+ */
 const Heading = ({ bold, ...props }: HeadingProps) => {
     let titleElement: ReactNode | null = null;
     if ('title' in props) {

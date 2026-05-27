@@ -7,6 +7,11 @@ import { Button } from '@/components/actionable/button';
 import { Label } from '@/components/typography/label';
 import { cn } from '@/utils/tailwind';
 
+/**
+ * Displays active discount codes on the cart and provides a button to remove each one.
+ *
+ * @returns The coupon list section, or `null` when the cart is not ready or has no active discounts.
+ */
 const CartCoupons = ({}) => {
     const { discountCodes } = useCartMeta();
     const { cartReady } = useCartStatus();

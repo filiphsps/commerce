@@ -6,6 +6,12 @@ import type { AppCartCaps } from '@/cart/caps';
 import { MultilineInput } from '@/components/actionable/input';
 import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 
+/**
+ * Controlled textarea that persists a note on the Shopify cart on blur.
+ *
+ * @param props.i18n - Locale dictionary for the placeholder text.
+ * @returns The cart note textarea.
+ */
 const CartNote = ({ i18n }: { i18n: LocaleDictionary }) => {
     const { t } = getTranslations('cart', i18n);
     const { note } = useCartMeta();

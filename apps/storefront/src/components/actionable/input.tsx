@@ -5,6 +5,14 @@ export type InputProps<T extends ElementType = 'input'> = {
     as?: T;
     ref?: RefObject<HTMLInputElement | null>;
 } & ComponentProps<T>;
+/**
+ * Polymorphic single-line input with consistent focus and disabled styles.
+ *
+ * @param props.as - Element or component to render; defaults to `input`.
+ * @param props.ref - Forwarded ref for the underlying `HTMLInputElement`.
+ * @param props.className - Additional class names.
+ * @returns The rendered input element.
+ */
 const Input = <T extends ElementType = 'input'>({
     as: Tag = 'input' as T,
     ref,
@@ -31,6 +39,14 @@ export type MultilineInputProps<T extends ElementType> = {
 
     children: ReactNode;
 } & ComponentProps<T>;
+/**
+ * Multiline text input (textarea by default) with consistent styling.
+ *
+ * @param props.as - Element or component to render; defaults to `textarea`.
+ * @param props.children - Content rendered inside the element.
+ * @param props.className - Additional class names.
+ * @returns The rendered textarea element.
+ */
 const MultilineInput = <T extends ElementType>({
     as: Tag = 'textarea' as T,
     children,

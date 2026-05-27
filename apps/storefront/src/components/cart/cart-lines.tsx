@@ -12,6 +12,12 @@ import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 type CartContentProps = {
     i18n: LocaleDictionary;
 };
+/**
+ * Renders all lines in the current cart with clear-cart and CSV export controls.
+ *
+ * @param props.i18n - Locale dictionary for translated labels.
+ * @returns The cart line list, a skeleton while loading, or an empty-state label.
+ */
 const CartLines = ({ i18n }: CartContentProps) => {
     const { t: tCart } = getTranslations('cart', i18n);
 

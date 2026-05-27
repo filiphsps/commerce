@@ -18,6 +18,16 @@ export type AnalyticsProviderProps = {
     children: ReactNode;
     enableThirdParty?: boolean;
 };
+/**
+ * Wraps children with Vercel Analytics, Speed Insights, and optional third-party
+ * scripts (Google Tag Manager) deferred by 6.5 s to avoid blocking the critical path.
+ *
+ * @param props.shop - Shop record used to resolve third-party integration IDs.
+ * @param props.hostname - Request hostname; preview environments and crawlers suppress third-party scripts.
+ * @param props.children - Component subtree to wrap.
+ * @param props.enableThirdParty - Opt out of third-party scripts entirely when `false`.
+ * @returns The wrapped subtree inside an error boundary.
+ */
 export const AnalyticsProvider = ({ shop, hostname, children, enableThirdParty = true }: AnalyticsProviderProps) => {
     const vercelAnalyticsMode = BuildConfig.environment !== 'test' ? BuildConfig.environment : 'auto';
 

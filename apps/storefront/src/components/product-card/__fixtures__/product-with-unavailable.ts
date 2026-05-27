@@ -1,6 +1,7 @@
 import type { Product } from '@/api/product';
 import { mockProduct } from '@/utils/test/fixtures';
 
+/** Returns a mock `Product` with three color variants where one variant is unavailable. */
 export const productWithUnavailable = (): Product =>
     mockProduct({
         id: 'gid://shopify/Product/5',

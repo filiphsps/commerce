@@ -19,6 +19,12 @@ export type ProductActionsContainerProps = {
     i18n: LocaleDictionary;
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 
+/**
+ * Client component composing the quantity selector, option pickers, quantity breaks, and add-to-cart button.
+ *
+ * @param props.i18n - Locale dictionary forwarded to child action components.
+ * @returns The product actions container, or `null` when product or selected variant is unavailable.
+ */
 export const ProductActionsContainer = ({ className, i18n, ...props }: ProductActionsContainerProps) => {
     const { t } = getTranslations('common', i18n);
     const { quantity, setQuantity } = useQuantity();

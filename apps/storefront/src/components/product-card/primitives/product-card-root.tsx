@@ -15,6 +15,17 @@ export type ProductCardRootProps = {
     children: ReactNode;
 };
 
+/**
+ * Root `<article>` wrapper for the product card, applying layout, chrome, and availability data attributes.
+ *
+ * @param props.data - Product record used to derive out-of-stock state.
+ * @param props.layout - Card orientation; controls flex direction and minimum height.
+ * @param props.chrome - Visual frame style; `'boxed'` adds a shadow border.
+ * @param props.onSale - When `true`, sets a `data-on-sale` attribute for sale-specific styling.
+ * @param props.className - Additional CSS class names.
+ * @param props.children - Card content slots.
+ * @returns The `Card` article element.
+ */
 const ProductCardRoot = ({ data, layout, chrome, onSale, className, children }: ProductCardRootProps) => {
     const isOos = data.availableForSale === false;
 

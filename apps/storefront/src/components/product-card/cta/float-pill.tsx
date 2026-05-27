@@ -4,6 +4,15 @@ import { Plus, X } from 'lucide-react';
 import { cn } from '@/utils/tailwind';
 import type { ProductCardCtaProps } from './types';
 
+/**
+ * Floating pill CTA button rendered in the product card image corner.
+ *
+ * @param props.isSingleBuyable - When `true`, tapping adds the item directly without opening the picker.
+ * @param props.isOpen - Whether the variant picker is currently open.
+ * @param props.onActivate - Callback to toggle the picker open state.
+ * @param props.onAdd - Callback invoked when the fast-path add-to-bag action is triggered.
+ * @returns The circular pill button element.
+ */
 const FloatPill = ({ isSingleBuyable, isOpen, onActivate, onAdd }: ProductCardCtaProps) => {
     const handleClick = () => {
         if (isOpen) {

@@ -1,6 +1,7 @@
 import type { Product } from '@/api/product';
 import { mockProduct } from '@/utils/test/fixtures';
 
+/** Returns a mock `Product` with a single variant, image, and no special attributes. */
 export const productSimple = (): Product =>
     mockProduct({
         id: 'gid://shopify/Product/1',

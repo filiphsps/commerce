@@ -14,6 +14,15 @@ export type FooterContentProps = {
     shop: OnlineShop;
 };
 
+/**
+ * Async footer sub-section that fetches and renders accepted payment methods
+ * and the current locale flag link.
+ *
+ * @param props.locale - Active locale used to display the correct country flag.
+ * @param props.i18n - Locale dictionary for translated aria labels.
+ * @param props.shop - Shop record forwarded to `AcceptedPaymentMethods`.
+ * @returns The two-column footer content section.
+ */
 const FooterContent = async ({ locale, i18n, shop }: FooterContentProps) => {
     const { t } = getTranslations('common', i18n);
 

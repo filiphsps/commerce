@@ -16,6 +16,13 @@ export type LinkProps = {
     href: Url | string;
 } & Omit<ComponentProps<typeof BaseLink>, 'locale'>;
 
+/**
+ * Returns `true` when `href` should be treated as an internal link.
+ *
+ * @param href - The URL string to check.
+ * @param shop - Optional shop record used to detect self-referencing external URLs.
+ * @returns `true` when the URL is relative or targets the current shop's domain.
+ */
 const isInternal = (href: string, shop?: OnlineShop): boolean => {
     if (href === '') {
         return true;
@@ -38,6 +45,14 @@ const isInternal = (href: string, shop?: OnlineShop): boolean => {
     return false;
 };
 
+/**
+ * Locale-aware wrapper around Next.js `Link` that injects the active locale into internal paths.
+ *
+ * @param props.locale - Explicit locale; falls back to shop context and `Locale.default`.
+ * @param props.href - Destination URL; supports strings and `Url` objects.
+ * @param props.prefetch - Forwarded to the underlying `BaseLink`; defaults to `false`.
+ * @returns The rendered `BaseLink` element, or `null` when `href` is not a string.
+ */
 export default function Link({ locale, href, prefetch, ...props }: LinkProps) {
     const shop = useShop();
 

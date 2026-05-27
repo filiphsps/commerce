@@ -12,6 +12,16 @@ export type VariantPriceClientProps = {
     className?: string;
 };
 
+/**
+ * Client component displaying the price, compare-at price, and sale percentage for the selected variant.
+ *
+ * @param props.initialPrice - Pre-formatted price string rendered before hydration.
+ * @param props.initialCompare - Pre-formatted compare-at price, or `null` when not on sale.
+ * @param props.initialPct - Pre-computed sale percentage, or `null` when not on sale.
+ * @param props.locale - Locale code for number and currency formatting.
+ * @param props.className - Additional CSS class names.
+ * @returns The price display element.
+ */
 const VariantPriceClient = ({
     initialPrice,
     initialCompare,

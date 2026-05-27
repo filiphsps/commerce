@@ -49,6 +49,14 @@ interface CartLineProps {
     i18n: LocaleDictionary;
     data: ShopifyCartLine;
 }
+/**
+ * Renders a single cart line with image, title, variant selector popover,
+ * quantity stepper, and line-total pricing.
+ *
+ * @param props.i18n - Locale dictionary for translated labels.
+ * @param props.data - Shopify cart line data from the cart provider.
+ * @returns The cart line card, or `null` when the product or variant cannot be resolved.
+ */
 const CartLine = ({ i18n, data: line }: CartLineProps) => {
     const { addLine, updateLine, removeLine } = useCartActions();
     const { cartReady, status } = useCartStatus();
@@ -82,6 +90,13 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
     // `compare` at 0 — guard the divide so we don't render an `Infinity% off`
     // strikethrough. Also clamp to [0,100] so a negative auto-discount
     // allocation (current > compare) doesn't produce a confusing negative.
+    /**
+     * Computes a discount percentage clamped to [0, 100].
+     *
+     * @param compareStr - Original (compare-at) price amount string.
+     * @param currentStr - Actual line total amount string.
+     * @returns Integer discount percentage, or `0` when the math is not finite.
+     */
     const computeDiscount = (compareStr: string | undefined, currentStr: string | undefined): number => {
         const compare = safeParseFloat(0, compareStr);
         const current = safeParseFloat(0, currentStr);

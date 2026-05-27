@@ -11,6 +11,14 @@ export type ValueProps = {
     density?: 'compact' | 'spacious';
 };
 
+/**
+ * Dispatches to the appropriate renderer for a single option value based on the group name and value type.
+ *
+ * @param props.group - Resolved option group providing name and renderer lookup key.
+ * @param props.value - Resolved option value passed to the selected renderer.
+ * @param props.density - Visual density forwarded to the renderer.
+ * @returns The renderer element for this option value.
+ */
 const Value = ({ group, value, density = 'compact' }: ValueProps) => {
     const { selection, selectVariant, renderers } = useProductOptions();
     const onSelect = useCallback(() => {

@@ -6,6 +6,19 @@ import { useShop } from '@/components/shop/provider';
 import { formatWeight, localizeWeight } from '@/utils/locale';
 import { chipClassName } from './chip-class';
 
+/**
+ * Chip renderer for size-type options, optionally showing a weight sub-label in spacious density.
+ *
+ * @param props.name - Option group name used for accessible aria labels.
+ * @param props.value - Option value label displayed in the chip.
+ * @param props.selected - Whether this chip is the currently selected value.
+ * @param props.available - When `false`, the chip is visually disabled and clicks are suppressed.
+ * @param props.onSelect - Callback invoked when the chip is selected.
+ * @param props.href - Optional deep-link href; renders an anchor instead of a button when provided.
+ * @param props.density - Visual density; `'spacious'` shows the weight sub-label.
+ * @param props.variant - Variant providing weight metadata for the sub-label.
+ * @returns An anchor or button chip element.
+ */
 export const SizeChipRenderer = ({
     name,
     value,

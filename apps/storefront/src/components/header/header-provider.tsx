@@ -36,6 +36,13 @@ export type HeaderProviderProps = {
 // so its uncached reads must not block the fallback path. Render children
 // with a noop context during prerender; the real provider takes over after
 // hydration.
+/**
+ * Top-level provider wrapping the header context in a Suspense boundary to prevent prerender blocking.
+ *
+ * @param props.children - Subtree that consumes `HeaderContext`.
+ * @param props.loaderColor - Primary color forwarded to the `NextTopLoader` progress bar.
+ * @returns The Suspense-wrapped header context provider.
+ */
 export const HeaderProvider = ({ children, loaderColor }: HeaderProviderProps) => {
     return (
         <Suspense fallback={<HeaderContext.Provider value={NOOP_HEADER_VALUE}>{children}</HeaderContext.Provider>}>
@@ -44,6 +51,13 @@ export const HeaderProvider = ({ children, loaderColor }: HeaderProviderProps) =
     );
 };
 
+/**
+ * Inner provider that tracks scroll position, resets menu state on route change, and mounts the route-progress loader.
+ *
+ * @param props.children - Subtree that consumes `HeaderContext`.
+ * @param props.loaderColor - Primary color forwarded to `NextTopLoader`.
+ * @returns The context provider element with children and top-loader.
+ */
 const HeaderProviderInner = ({ children, loaderColor }: HeaderProviderProps) => {
     const pathname = usePathname();
     const _searchParams = useSearchParams();
@@ -100,6 +114,12 @@ const HeaderProviderInner = ({ children, loaderColor }: HeaderProviderProps) => 
     );
 };
 
+/**
+ * Returns the current header menu context value.
+ *
+ * @throws {MissingContextProviderError} When called outside a `HeaderProvider`.
+ * @returns The `HeaderContextValue` from the nearest provider.
+ */
 export const useHeaderMenu = (): HeaderContextValue => {
     const context = useContext(HeaderContext);
     if (!context) {
