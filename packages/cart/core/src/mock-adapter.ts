@@ -93,6 +93,20 @@ function recomputeTotalQuantity(cart: Cart): Cart {
     };
 }
 
+/**
+ * Options for {@link createMockCartAdapter}. All fields are optional; omitting
+ * them yields an everything-enabled adapter with zero latency and no injected
+ * failures.
+ *
+ * @example
+ * ```ts
+ * const opts: CreateMockCartAdapterOpts = {
+ *   capabilities: { giftCards: false },
+ *   latency: 50,
+ * };
+ * const adapter = createMockCartAdapter(opts);
+ * ```
+ */
 export interface CreateMockCartAdapterOpts {
     capabilities?: Partial<CartCapabilities>;
     seedCarts?: Cart[];
@@ -118,6 +132,13 @@ export interface CreateMockCartAdapterOpts {
  * @param opts.customMutations - Named custom-mutation handlers wired onto
  *   `adapter.customMutations`.
  * @returns A {@link CartAdapter} with an extra `__inspect()` escape hatch.
+ * @example
+ * ```ts
+ * const adapter = createMockCartAdapter({ latency: 0 });
+ * const kernel = createCart({ adapter });
+ * const cart = await kernel.create(ctx);
+ * expect(adapter.__inspect().carts).toHaveLength(1);
+ * ```
  */
 export function createMockCartAdapter(
     opts: CreateMockCartAdapterOpts = {},

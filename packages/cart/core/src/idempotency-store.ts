@@ -1,5 +1,18 @@
 import type { Cart } from './types';
 
+/**
+ * Backing store contract for the {@link idempotency} middleware. Implementations
+ * persist successful mutation results keyed by idempotency token so that
+ * duplicate requests within the TTL window replay the cached cart without
+ * re-invoking the adapter.
+ *
+ * @example
+ * ```ts
+ * const store: IdempotencyStore = memoryIdempotencyStore();
+ * await store.set('idem-key', cart, 30_000);
+ * const hit = await store.get('idem-key');
+ * ```
+ */
 export interface IdempotencyStore {
     get(key: string): Promise<{ result: Cart; recordedAt: number } | null>;
     set(key: string, result: Cart, ttlMs: number): Promise<void>;
@@ -11,6 +24,13 @@ export interface IdempotencyStore {
  * lazily expire on read; there is no background sweep.
  *
  * @returns An ephemeral store with no cross-process coordination.
+ * @example
+ * ```ts
+ * const kernel = createCart({
+ *   adapter,
+ *   middleware: [idempotency({ store: memoryIdempotencyStore(), windowMs: 30_000 })],
+ * });
+ * ```
  */
 export function memoryIdempotencyStore(): IdempotencyStore {
     const map = new Map<string, { result: Cart; recordedAt: number; expiresAt: number }>();

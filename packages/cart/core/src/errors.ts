@@ -3,11 +3,24 @@
  * `error.name` rather than `instanceof` because cart-core errors can cross
  * package boundaries (SSR → client, worker → main) where the constructor
  * identity isn't preserved.
+ *
+ * @example
+ * ```ts
+ * try {
+ *   await kernel.mutate(ctx, mutation);
+ * } catch (err) {
+ *   if ((err as CartError).name === 'CartError') console.error(err.message);
+ * }
+ * ```
  */
 export class CartError extends Error {
     /**
      * @param message - Human-readable description suitable for logs.
      * @param cause - Optional underlying error chained for diagnostics.
+     * @example
+     * ```ts
+     * throw new CartError('unexpected provider response', originalError);
+     * ```
      */
     constructor(
         message: string,
@@ -21,10 +34,20 @@ export class CartError extends Error {
 /**
  * Thrown by adapters when a cart id is resolvable in the request but no cart
  * exists upstream — distinct from a transport failure.
+ *
+ * @example
+ * ```ts
+ * const cart = carts.get(cartId);
+ * if (!cart) throw new CartNotFoundError(cartId);
+ * ```
  */
 export class CartNotFoundError extends CartError {
     /**
      * @param cartId - The missing cart identifier, included in the message.
+     * @example
+     * ```ts
+     * throw new CartNotFoundError('cart_abc123');
+     * ```
      */
     constructor(public readonly cartId: string) {
         super(`Cart not found: ${cartId}`);
@@ -35,11 +58,24 @@ export class CartNotFoundError extends CartError {
 /**
  * Thrown for transport / upstream-API failures (network, 5xx, malformed
  * payloads). Retry middleware treats this as retryable.
+ *
+ * @example
+ * ```ts
+ * try {
+ *   response = await fetch(endpoint);
+ * } catch (err) {
+ *   throw new CartProviderError('network request failed', err);
+ * }
+ * ```
  */
 export class CartProviderError extends CartError {
     /**
      * @param message - Cause summary for logs.
      * @param cause - Underlying error preserved for diagnostics.
+     * @example
+     * ```ts
+     * throw new CartProviderError('upstream returned 503', fetchError);
+     * ```
      */
     constructor(message: string, cause?: unknown) {
         super(message, cause);
@@ -47,17 +83,41 @@ export class CartProviderError extends CartError {
     }
 }
 
+/**
+ * A single field-scoped validation error returned by the upstream provider.
+ * Consumers display these to users; `field` is `undefined` when the error is
+ * not attributable to a specific input field.
+ *
+ * @example
+ * ```ts
+ * const entries: CartUserErrorEntry[] = [
+ *   { field: 'discountCode', message: 'Code has expired' },
+ * ];
+ * throw new CartUserError(entries);
+ * ```
+ */
 export type CartUserErrorEntry = { field?: string; message: string };
 
 /**
  * Thrown when the upstream provider rejects a mutation due to caller-supplied
  * input (e.g. invalid discount code, quantity exceeds stock). Retry middleware
  * does NOT retry these.
+ *
+ * @example
+ * ```ts
+ * if (response.userErrors.length > 0) {
+ *   throw new CartUserError(response.userErrors);
+ * }
+ * ```
  */
 export class CartUserError extends CartError {
     /**
      * @param userErrors - Field-scoped messages from the provider; surfaced
      *   back to the UI for display.
+     * @example
+     * ```ts
+     * throw new CartUserError([{ field: 'discountCode', message: 'Code has expired' }]);
+     * ```
      */
     constructor(public readonly userErrors: CartUserErrorEntry[]) {
         super(userErrors.map((e) => e.message).join('; '));
@@ -68,11 +128,20 @@ export class CartUserError extends CartError {
 /**
  * Thrown by the kernel when a mutation requires a capability the active
  * adapter doesn't advertise (e.g. gift cards on a provider without them).
+ *
+ * @example
+ * ```ts
+ * if (!caps.giftCards) throw new CartCapabilityUnsupportedError('giftCards');
+ * ```
  */
 export class CartCapabilityUnsupportedError extends CartError {
     /**
      * @param capability - Capability name as declared on
      *   {@link CartCapabilities}, surfaced for diagnostics + UI.
+     * @example
+     * ```ts
+     * throw new CartCapabilityUnsupportedError('multipleDiscountCodes');
+     * ```
      */
     constructor(public readonly capability: string) {
         super(`Capability not supported: ${capability}`);

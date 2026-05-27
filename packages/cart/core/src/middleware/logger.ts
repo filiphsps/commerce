@@ -7,6 +7,13 @@ import type { CartMiddleware } from '../compose';
  * rethrowing.
  *
  * @returns A {@link CartMiddleware} that observes — never alters — the chain.
+ * @example
+ * ```ts
+ * const kernel = createCart({
+ *   adapter,
+ *   middleware: [logger()],
+ * });
+ * ```
  */
 export function logger(): CartMiddleware {
     return (next) => async (mutation, ctx) => {

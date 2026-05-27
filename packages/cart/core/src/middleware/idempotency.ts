@@ -10,6 +10,13 @@ import type { IdempotencyStore } from '../idempotency-store';
  * @param opts.store - Backing {@link IdempotencyStore} (memory, Redis, etc).
  * @param opts.windowMs - TTL applied when caching a successful result.
  * @returns A {@link CartMiddleware} that short-circuits duplicates.
+ * @example
+ * ```ts
+ * const kernel = createCart({
+ *   adapter,
+ *   middleware: [idempotency({ store: memoryIdempotencyStore(), windowMs: 30_000 })],
+ * });
+ * ```
  */
 export function idempotency(opts: { store: IdempotencyStore; windowMs: number }): CartMiddleware {
     return (next) => async (mutation, ctx) => {

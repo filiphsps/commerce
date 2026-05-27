@@ -2,6 +2,19 @@ import { describe, expect, it } from 'vitest';
 import type { CartAdapter } from './adapter';
 import type { AdapterCtx } from './types';
 
+/**
+ * Options accepted by {@link runCartAdapterContract}. Passed once per
+ * adapter under test; the suite name and factory are the only inputs the
+ * contract runner needs from the host test file.
+ *
+ * @example
+ * ```ts
+ * runCartAdapterContract({
+ *   name: 'mock',
+ *   factory: () => createMockCartAdapter(),
+ * });
+ * ```
+ */
 export interface RunCartAdapterContractOpts {
     name: string;
     factory: () => CartAdapter | Promise<CartAdapter>;
@@ -21,6 +34,17 @@ export interface RunCartAdapterContractOpts {
  *
  * @param opts.name - Human label appended to the `describe` block.
  * @param opts.factory - Builds a fresh adapter for each test; may be async.
+ * @example
+ * ```ts
+ * // In my-adapter.test.ts:
+ * import { runCartAdapterContract } from '@nordcom/cart-core/contract-tests';
+ * import { createMockCartAdapter } from '@nordcom/cart-core/mock-adapter';
+ *
+ * runCartAdapterContract({
+ *   name: 'mock',
+ *   factory: () => createMockCartAdapter(),
+ * });
+ * ```
  */
 export function runCartAdapterContract(opts: RunCartAdapterContractOpts): void {
     describe(`cart adapter contract: ${opts.name}`, () => {
