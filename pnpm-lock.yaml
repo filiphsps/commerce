@@ -690,8 +690,8 @@ importers:
         specifier: 5.3.0
         version: 5.3.0(react@19.2.6)
       resolve-accept-language:
-        specifier: 3.2.1
-        version: 3.2.1
+        specifier: 3.2.2
+        version: 3.2.2
       sharp:
         specifier: 0.34.5
         version: 0.34.5
@@ -7821,8 +7821,8 @@ packages:
     resolution: {integrity: sha512-QT7FVMXfWOYFbeRBF6nu+I6tr2Tf3u0q8RIEjNob/heKY/nh7drD/k7eeMFmSQgnTtCzLDcCu/XEnpW2wk4xCQ==}
     engines: {node: '>=9.3.0 || >=8.10.0 <9.0.0'}
 
-  resolve-accept-language@3.2.1:
-    resolution: {integrity: sha512-En80VSeDCy21t5+7wjJKiSBKNJwDRlj12Mo6cjZzuLvF3Pr/NQT4QzYrCCkdTfon8mt418ismwLPdQbfG8+pcw==}
+  resolve-accept-language@3.2.2:
+    resolution: {integrity: sha512-U+JcZDtlnqeYmdE+fgE5QXWl4fZuLAbcci3nDgXuXA8cxlvShIrV7KvU5/HgUd3mPCYqBh0C7Y1vEfC3VIqVJA==}
     engines: {node: '>=4.0.0'}
 
   resolve-dir@1.0.1:
@@ -16116,7 +16116,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  resolve-accept-language@3.2.1: {}
+  resolve-accept-language@3.2.2: {}
 
   resolve-dir@1.0.1:
     dependencies:
