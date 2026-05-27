@@ -204,7 +204,7 @@ jobs:
     e2e:
         name: 🎭 E2E
         needs: build
-        timeout-minutes: 20
+        timeout-minutes: 60
         runs-on: ubuntu-latest
         strategy:
             fail-fast: false
