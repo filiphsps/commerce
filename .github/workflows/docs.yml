@@ -46,7 +46,7 @@ jobs:
               uses: ./.github/common/bootstrap
 
             - name: 💾 Cache Next.js build
-              uses: actions/cache@v4
+              uses: actions/cache@v5
               with:
                   path: apps/docs/.next/cache
                   key: ${{ runner.os }}-nextjs-docs-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
@@ -91,13 +91,13 @@ jobs:
 
             - name: 💾 Cache Playwright browsers
               id: playwright-cache
-              uses: actions/cache@v4
+              uses: actions/cache@v5
               with:
                   path: ~/.cache/ms-playwright
                   key: ${{ runner.os }}-playwright-${{ hashFiles('pnpm-lock.yaml') }}-chromium-webkit
 
             - name: 💾 Cache Next.js build
-              uses: actions/cache@v4
+              uses: actions/cache@v5
               with:
                   path: apps/docs/.next/cache
                   key: ${{ runner.os }}-nextjs-docs-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
