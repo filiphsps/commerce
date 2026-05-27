@@ -1,0 +1,16 @@
+---
+title: Caching
+description: Tenant-scoped, locale-qualified cache namespaces that ensure shop isolation and precise revalidation.
+---
+
+# Caching
+
+The cache is organized into two top-level **cache namespaces**: `shopify` for storefront reads (Shopify Storefront/Admin API responses) and `cms` for Payload reads (content layer responses). Namespaces are isolated — invalidating a CMS entry never touches Shopify-sourced data and vice versa. This separation means a Shopify webhook can revalidate product data without evicting cached page content, and a CMS publish can update authored blocks without touching prices or inventory.
+
+## Tenant-scoped and locale-qualified
+
+Within each namespace, every cached entity's tags include a shop key — this is the **tenant-scoped cache** invariant. Revalidating one tenant's data cannot touch another tenant's cache entries, even if both tenants request the same logical resource. Below tenant scope, entities are further keyed by locale. Locale is a qualifier *under* tenant, never above it: `cms.<tenantId>.<collection>.<key>` fully qualifies an entity, and `cms.<tenantId>` is the coarsest revalidation target for a single tenant.
+
+## Where the cache helpers live
+
+The cache tag construction utilities and revalidation helpers are in `@nordcom/commerce-cms/cache`. The `cms/cache` Reference entry documents the full tag schema and the exported helpers for constructing and revalidating tags. Shopify-namespace cache management is internal to the Shopify API client and documented under `@nordcom/commerce-shopify-graphql` in Packages.

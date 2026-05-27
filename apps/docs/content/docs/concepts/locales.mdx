@@ -1,0 +1,16 @@
+---
+title: Locales
+description: How the platform resolves and threads locale context through every request and data-fetching call.
+---
+
+# Locales
+
+A **Locale** is an `xx-XX` language/region tag carried in the URL path segment and passed into every data-fetching helper. It is dynamic at request time — it is not encoded in the route tree, and the App Router sees it only after middleware has resolved it. Locale is always a qualifier *under* tenant: `/[domain]/[locale]/…`. No locale segment means middleware runs the locale fallback chain before rewriting.
+
+## The fallback chain
+
+Middleware consults locale sources in order and terminates at the first match: (1) the `xx-XX` segment already present in the request path, (2) the `Accept-Language` header matched against the shop's available locales, (3) the shop's **Default locale** — the single locale persisted on the `Shop` record. There is no platform-wide default below the shop's default; the chain always terminates at the tenant level. Locale availability is derived from the commerce provider at request time and is never persisted on the shop.
+
+## Threading locale through data fetching
+
+Every call that crosses a package boundary must carry the resolved locale explicitly. The `@nordcom/commerce-cms/api` helpers accept `{ shop, locale }` and apply locale-qualified lookups internally, falling back to the shop default when no locale-specific content exists. The same contract applies to Shopify API clients constructed via `ShopifyApolloApiClient({ shop, locale })`. For full details on the data-fetching helpers see `@nordcom/commerce-cms` in Packages and the `cms/api` Reference entry.

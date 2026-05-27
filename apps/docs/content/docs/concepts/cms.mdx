@@ -1,0 +1,16 @@
+---
+title: CMS
+description: Payload 3.x content layer powering per-tenant structured content, blocks, and editor access.
+---
+
+# CMS
+
+The **CMS** is the Payload 3.x content layer packaged as `@nordcom/commerce-cms`. It is multi-tenant by construction: every collection is filtered by a **CMS tenant** key — a lightweight row in the Payload `tenants` collection that is synced unidirectionally from the Mongoose `Shop`. One shop, one CMS tenant; the sync is automatic when a new shop record is created. Content is read by the **Storefront** and edited via the **Admin** app at `/cms`.
+
+## Blocks and block loaders
+
+Structured content is modeled as **Blocks** — discriminated-union content units defined in `@nordcom/commerce-cms/blocks`. Some block types project Shopify data (e.g. a Featured Product block needs live pricing). To keep the CMS package free of Shopify dependencies, those blocks declare their data needs as a contract and the **Storefront** supplies a **Block loader** at the rendering boundary. The block loader is a Shopify-aware data fetcher injected once at the app layer; the CMS never imports from `@shopify/*` directly.
+
+## Reference and packages
+
+The full API surface for reading CMS content is documented in the `cms/api` Reference entry and the `cms/collections` entry for collection schemas. Block definitions live under `cms/blocks`. For the editor-side configuration and manifest authoring, see `cms/editor` in the `@nordcom/commerce-cms` Packages entry.

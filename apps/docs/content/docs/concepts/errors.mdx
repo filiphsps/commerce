@@ -1,0 +1,16 @@
+---
+title: Errors
+description: A structured error hierarchy where every throw carries a code, HTTP status, and kind.
+---
+
+# Errors
+
+Every error on the platform is a **Commerce error** — an instance of a class from `@nordcom/commerce-errors`, never `new Error(...)`. Each class carries three pieces of machine-readable context: an `*ErrorKind` enum member identifying the category of failure, an HTTP `statusCode` for gateway and API consumers, and a string `code` that maps to a human-readable explanation via `getErrorFromCode`. The `code` also powers the stable help URL pattern `/docs/errors/<code>/` used by the Errors tab of this site.
+
+## Adding an error class
+
+When no existing class fits the failure you're modeling, add a new one in the errors package: export the class, add a matching `*ErrorKind` member, and add a `getErrorFromCode` case. The CI gate `pnpm cms:gen:check` does not cover the errors package, but the typecheck gate will catch missing `getErrorFromCode` cases if the switch is exhaustive. See `@nordcom/commerce-errors` in Packages for the full class inventory and usage guide.
+
+## The Errors tab
+
+Every error code has a dedicated page in the Errors tab of this docs site, surfacing possible causes, a "how it's thrown" code sample, and the throw-site list generated at build time. The catalog is auto-generated from the `@nordcom/commerce-errors` package — see the `errors/overview` Reference entry for the full code listing.
