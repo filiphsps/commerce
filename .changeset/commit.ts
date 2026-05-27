@@ -16,10 +16,6 @@ interface ReleasePlan {
     releases: Release[];
 }
 
-interface CommitOptions {
-    skipCI?: boolean | 'add' | 'version';
-}
-
 const TERMINAL_PUNCTUATION = /[.!?]$/;
 
 /**
@@ -77,10 +73,9 @@ const formatSummary = (summary: string | undefined): { subject: string; body: st
  * summary as a conventional commit body.
  *
  * @param changeset - The newly authored changeset record.
- * @param options - Commit options from `.changeset/config.json`.
  * @returns Conventional commit message conforming to the project's `CLAUDE.md` rules.
  */
-const getAddMessage = async (changeset: NewChangeset, options?: CommitOptions): Promise<string> => {
+const getAddMessage = async (changeset: NewChangeset): Promise<string> => {
     const { subject, body } = formatSummary(changeset.summary);
     const head = `docs(changeset): ${subject}`;
     return body ? `${head}\n\n${body}` : head;
@@ -92,10 +87,9 @@ const getAddMessage = async (changeset: NewChangeset, options?: CommitOptions): 
  * published packages and their new versions in the body.
  *
  * @param releasePlan - Release plan computed by changesets.
- * @param options - Commit options from `.changeset/config.json`.
  * @returns Conventional commit message describing the release.
  */
-const getVersionMessage = async (releasePlan: ReleasePlan, options?: CommitOptions): Promise<string> => {
+const getVersionMessage = async (releasePlan: ReleasePlan): Promise<string> => {
     const publishable = releasePlan.releases.filter((release) => release.type !== 'none');
     const releaseLines = publishable.map((release) => `  ${release.name}@${release.newVersion}`).join('\n');
     const header = 'chore(release): version packages.';

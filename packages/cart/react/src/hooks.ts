@@ -175,6 +175,15 @@ export function useCart() {
  */
 export function useMaybeCart() {
     const actions = useContext(CartActionsContext);
+    const count = useCartCount();
+    const lines = useCartLines();
+    const cost = useCartCost();
+    const meta = useCartMeta();
+    const status = useCartStatus();
     if (!actions) return null;
-    return useCart();
+    return {
+        cart: lines.cartId ? { id: lines.cartId, totalQuantity: count, lines: lines.lines, cost, ...meta } : null,
+        ...status,
+        ...(actions as CartActions<CartCapabilities>),
+    };
 }

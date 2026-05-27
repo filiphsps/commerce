@@ -5,6 +5,10 @@ import { CartCapabilitiesContext, CartLinesContext, CartPendingContext, CartStat
 
 export function CartDevtools() {
     if (process.env.NODE_ENV === 'production') return null;
+    return <CartDevtoolsPanel />;
+}
+
+function CartDevtoolsPanel() {
     const [open, setOpen] = useState(false);
     const lines = useContext(CartLinesContext);
     const pending = useContext(CartPendingContext);
