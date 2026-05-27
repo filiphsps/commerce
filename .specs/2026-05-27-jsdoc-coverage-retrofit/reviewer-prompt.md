@@ -15,10 +15,10 @@ Fetch the PR diff and identify blockers from the five categories below. Report f
 ## Blocker categories (per spec § Execution model § Stage 2)
 
 1. **Restatement.** Any JSDoc purpose line that just paraphrases the function/component name or types. The purpose must describe intent or behavior the signature does not.
-2. **Missing `@throws`.** For every modified file, run `rg -n 'throw new \w+Error' <file>` inside the file. Every distinct error class thrown must appear in the corresponding symbol's `@throws` tags. Missing tags are blockers. Spurious tags (no actual throw) are also blockers.
+2. **Missing `@throws`.** For every modified file, run `rg -n 'throw new \w+Error' <file>` inside the file (the `\w+Error` suffix matches this repo's `@nordcom/commerce-errors` naming convention where every error class name ends in `Error`). Every distinct error class thrown must appear in the corresponding symbol's `@throws` tags. Missing tags are blockers. Spurious tags (no actual throw) are also blockers.
 3. **Tier mis-classification.** Re-derive the Tier-1 set by reading `<PACKAGE_PATH>/src/index.ts` (or `index.tsx`) and `<PACKAGE_PATH>/package.json#exports`. Any Tier-1 symbol documented at Tier 2 (no `@example`, no full `@returns`) is a blocker. Any Tier-2 symbol burdened with unnecessary `@example` is a soft blocker — flag but don't block on first iteration.
 4. **Param description that just repeats name or type.** `@param productId - The product ID.` is a blocker. `@param productId - Shopify GID for the parent product.` is fine.
-5. **Non-JSDoc code change.** Run `git diff --merge-base master -- '*.ts' '*.tsx'` and grep for any non-comment, non-whitespace change inside `<PACKAGE_PATH>/src/`. Any logic change is a blocker.
+5. **Non-JSDoc code change.** From the per-file diffs collected in Mechanic step 1, scan every added or removed line inside `<PACKAGE_PATH>/src/` and confirm it is either (a) inside a JSDoc block (between `/**` and `*/`), (b) a `*`-prefixed continuation line of a JSDoc block, (c) pure whitespace, or (d) a Biome-induced trailing-comma or quote-style change. Any other diff line is a logic change and a blocker.
 
 ## Mechanic
 
@@ -43,7 +43,7 @@ If blockers exist, output one Markdown section:
 
 ## Soft findings (<N>)
 
-(non-blocking, generator may address opportunistically)
+(non-blocking. Only populate with the Tier-2 + `@example` sub-case from Blocker #3. Omit the entire section if there are none — don't write "## Soft findings (0)".)
 …
 ```
 

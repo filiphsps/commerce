@@ -199,7 +199,7 @@ Each subagent runs in its own git worktree (per `superpowers:using-git-worktrees
 
 ### Stage 2 — Reviewer subagent (per PR)
 
-Spawned with `code-reviewer` subagent type after the generator opens the PR.
+Spawned with `general-purpose` subagent type (handed the reviewer-prompt.md template) after the generator opens the PR.
 
 Reviewer flags as blockers:
 - JSDoc blocks that restate the code or types instead of describing intent.

@@ -6,7 +6,7 @@
 
 **Architecture:** This plan is an orchestration plan, not a code-writing plan. The orchestrator (Claude) builds two prompt templates once (Phase 0), then dispatches per-package generator subagents in waves. Each generator runs in its own git worktree, opens one PR per package. A code-reviewer subagent reviews each PR before merge. Waves are sequential; packages within a wave run in parallel.
 
-**Tech Stack:** pnpm + turbo monorepo, Biome (lint/format), Changesets, git worktrees, `Agent` tool subagents (`general-purpose` for generators, `code-reviewer` for reviewers), `gh` CLI for PRs.
+**Tech Stack:** pnpm + turbo monorepo, Biome (lint/format), Changesets, git worktrees, `Agent` tool subagents (`general-purpose` type for both generators and reviewers; the reviewer role is conveyed entirely through the reviewer-prompt.md template), `gh` CLI for PRs.
 
 **Spec:** [`.specs/2026-05-27-jsdoc-coverage-retrofit/spec.md`](./spec.md) — single source of truth for tier rules, templates, anti-patterns, and per-package recipe.
 
@@ -339,7 +339,7 @@ If either agent reported a precondition failure (typecheck/lint dirty on baselin
 ```json
 {
   "description": "JSDoc reviewer for errors PR",
-  "subagent_type": "code-reviewer",
+  "subagent_type": "general-purpose",
   "prompt": "<contents of .specs/2026-05-27-jsdoc-coverage-retrofit/reviewer-prompt.md, with <PR_URL>=<url from Task 7>, <PACKAGE_PATH>=packages/errors, <PACKAGE_SLUG>=errors>"
 }
 ```
@@ -475,7 +475,7 @@ Record each in working memory.
 
 ### Task 13: Dispatch reviewers for all four PRs
 
-- [ ] **Step 1: Spawn four `code-reviewer` agents in a single message**
+- [ ] **Step 1: Spawn four `general-purpose` reviewer agents in a single message (each populated with reviewer-prompt.md)**
 
 Same pattern as Task 8 Step 1, four invocations in one message.
 
@@ -534,7 +534,7 @@ Same pattern as Task 12 with five `Agent` invocations:
 
 ### Task 17: Dispatch five reviewers in parallel
 
-- [ ] **Step 1: Spawn five `code-reviewer` agents in a single message**
+- [ ] **Step 1: Spawn five `general-purpose` reviewer agents in a single message (each populated with reviewer-prompt.md)**
 
 For each PR captured in Task 16:
 
@@ -593,7 +593,7 @@ git worktree add -b docs/jsdoc-cms worktrees/jsdoc-cms master
 
 ### Task 21: Dispatch two reviewers
 
-- [ ] **Step 1: Spawn two `code-reviewer` agents in a single message**
+- [ ] **Step 1: Spawn two `general-purpose` reviewer agents in a single message (each populated with reviewer-prompt.md)**
 
 | Sub-PR             | `<PACKAGE_PATH>`     | `<PACKAGE_SLUG>` |
 |--------------------|----------------------|------------------|
@@ -651,7 +651,7 @@ Note: apps are typically in `.changeset/config.json#ignore`. The generator will 
 
 ### Task 24: Review and loop for `apps/admin`
 
-- [ ] **Step 1: Spawn `code-reviewer` agent**
+- [ ] **Step 1: Spawn `general-purpose` reviewer agent (populated with reviewer-prompt.md)**
 
 Parameters: `<PR_URL>` from Task 23 Step 4, `<PACKAGE_PATH>` = `apps/admin`, `<PACKAGE_SLUG>` = `admin`.
 
@@ -705,7 +705,7 @@ Per sub-PR:
 
 ### Task 26: Review and loop for each storefront sub-PR
 
-- [ ] **Step 1: Spawn one `code-reviewer` per sub-PR (sequential, not parallel)**
+- [ ] **Step 1: Spawn one `general-purpose` reviewer (populated with reviewer-prompt.md) per sub-PR (sequential, not parallel)**
 
 Sequential so that if blockers reveal a systemic issue, the next sub-PR's generator can be re-dispatched with that knowledge baked into its prompt.
 
@@ -762,7 +762,7 @@ Parameters: `<PACKAGE_PATH>=apps/landing`, `<PACKAGE_SLUG>=landing`, `<COMMIT_SC
 - [ ] **Step 3: Dispatch reviewer**
 
 ```
-Spawn one code-reviewer agent with reviewer-prompt.md populated:
+Spawn one general-purpose reviewer agent (with reviewer-prompt.md content as the prompt):
   <PR_URL>        = <captured in Step 2>
   <PACKAGE_PATH>  = apps/landing
   <PACKAGE_SLUG>  = landing
