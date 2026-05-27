@@ -14,6 +14,15 @@ export type ButtonProps<ComponentGeneric extends ElementType> = ButtonPropsBase<
         ? Omit<ComponentPropsWithoutRef<ComponentGeneric>, keyof ButtonPropsBase<ComponentGeneric>>
         : ComponentPropsWithoutRef<ComponentGeneric>);
 
+/**
+ * Polymorphic button with optional primary styling.
+ *
+ * @param props.as - Element or component to render; defaults to `button`.
+ * @param props.styled - When `true` (default), applies full primary button styles.
+ * @param props.disabled - Prevents interaction and dims the element when `true`.
+ * @param props.className - Additional class names.
+ * @returns The rendered button element.
+ */
 export const Button = <ComponentGeneric extends ElementType = 'button'>({
     as,
     styled = true,

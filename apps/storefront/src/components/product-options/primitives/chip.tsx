@@ -2,6 +2,13 @@
 
 import type { OptionValueRendererProps } from '../types';
 
+/**
+ * Text chip button for a single option value, reflecting selected and available states.
+ *
+ * @param props.value - Option value data including name, selected, and available flags.
+ * @param props.onSelect - Callback invoked when the chip is clicked.
+ * @returns The chip button element.
+ */
 const Chip = ({ value, onSelect }: OptionValueRendererProps) => (
     <button
         type="button"

@@ -14,6 +14,16 @@ export type SearchProductCardProps = {
     className?: string;
 };
 
+/**
+ * Renders a product card preconfigured with the `search` surface preset.
+ *
+ * @param props.shop - Shop record forwarded to the product card.
+ * @param props.locale - Locale forwarded to the product card.
+ * @param props.data - Product to display.
+ * @param props.priority - When `true`, loads the card image eagerly.
+ * @param props.className - Additional CSS class names.
+ * @returns The `ProductCard` element.
+ */
 const SearchProductCard = async (props: SearchProductCardProps) => (
     <ProductCard {...SURFACE_PRESETS.search} {...props} />
 );

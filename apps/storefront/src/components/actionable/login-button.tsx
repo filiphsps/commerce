@@ -9,6 +9,12 @@ import { capitalize, getTranslations } from '@/utils/locale';
 export type LoginButtonProps = {
     i18n: LocaleDictionary;
 };
+/**
+ * Icon button that initiates Shopify OAuth login via NextAuth.
+ *
+ * @param props.i18n - Locale dictionary for the accessible button title.
+ * @returns The login button element.
+ */
 export function LoginButton({ i18n }: LoginButtonProps) {
     const { t } = getTranslations('common', i18n);
 

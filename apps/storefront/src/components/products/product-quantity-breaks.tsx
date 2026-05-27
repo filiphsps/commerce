@@ -22,6 +22,16 @@ export type ProductQuantityBreaksItemProps = {
     discount?: number;
     className?: string;
 } & Omit<HTMLProps<HTMLButtonElement>, 'type' | 'children' | 'as'>;
+/**
+ * Selectable quantity-break tier button showing the minimum quantity, optional discount badge, and computed price.
+ *
+ * @param props.i18n - Locale dictionary for the savings badge label.
+ * @param props.minQuantity - Minimum quantity that activates this tier; also set as the cart quantity on click.
+ * @param props.maxQuantity - Maximum quantity for this tier; used to determine whether the tier is active.
+ * @param props.discount - Percentage discount applied to the unit price for this tier.
+ * @param props.className - Additional CSS class names.
+ * @returns The tier button element, or `null` when no variant price is available.
+ */
 export function ProductQuantityBreaksItem({
     i18n,
     minQuantity = 1,
@@ -94,6 +104,13 @@ export type ProductQuantityBreaksProps = {
     i18n: LocaleDictionary;
     disabled?: boolean;
 } & Omit<HTMLProps<HTMLDivElement>, 'type' | 'children' | 'as'>;
+/**
+ * Renders all quantity-break tiers for the currently selected variant.
+ *
+ * @param props.i18n - Locale dictionary forwarded to each tier item.
+ * @param props.disabled - When `true`, disables all tier buttons regardless of cart state.
+ * @returns The tier list section, or `null` when no variant or no breaks are defined.
+ */
 export function ProductQuantityBreaks({
     i18n,
     disabled = false,

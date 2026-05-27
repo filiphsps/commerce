@@ -6,6 +6,14 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import Link from '@/components/link';
 import { cn } from '@/utils/tailwind';
 
+/**
+ * Renders the interactive value list for a single Shopify collection filter.
+ *
+ * @param props.id - Filter identifier used as the URL query key.
+ * @param props.type - Shopify filter type (`LIST`, `BOOLEAN`, `PRICE_RANGE`, etc.).
+ * @param props.values - Available filter values to render.
+ * @returns The filter value controls, or `null` when `values` is empty or the type is unsupported.
+ */
 export function FilterValues({ id: filterId, type, values }: Pick<Filter, 'type' | 'values' | 'id'>) {
     const pathname = usePathname();
     const baseUrl = `${pathname}`;

@@ -6,6 +6,13 @@ import { toSelectionRecord } from '@/components/product-options/resolver';
 import { firstAvailableVariant } from '@/utils/first-available-variant';
 import type { ProductCardPickerProps } from './types';
 
+/**
+ * Inline expando picker that renders all product option groups directly inside the card layout.
+ *
+ * @param props.product - Product whose options and variants are displayed.
+ * @param props.open - When `false`, renders nothing.
+ * @returns The option group container, or `null` when closed.
+ */
 const InlinePicker = ({ product, open }: ProductCardPickerProps) => {
     const seed = firstAvailableVariant(product) ?? product.variants?.edges?.[0]?.node;
     const initialSelection = useMemo(() => toSelectionRecord(seed), [seed]);

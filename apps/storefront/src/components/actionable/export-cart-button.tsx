@@ -12,6 +12,12 @@ import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 type ExportCartButtonProps = {
     i18n: LocaleDictionary;
 };
+/**
+ * Button that exports the current cart lines to a CSV file.
+ *
+ * @param props.i18n - Locale dictionary for translated button label.
+ * @returns The export button, or `null` when the cart is empty.
+ */
 export function ExportCartButton({ i18n }: ExportCartButtonProps) {
     const [busy, setBusy] = useState(false);
     const { shop } = useShop();

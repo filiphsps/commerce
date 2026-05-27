@@ -16,6 +16,14 @@ export type VariantBadgesProps = {
     className?: string;
 };
 
+/**
+ * Server component rendering overlay badges for attributes such as vegan, sale, subscription, gift card, and free shipping.
+ *
+ * @param props.product - Product data used to determine which badges to display.
+ * @param props.i18n - Locale dictionary for translated badge labels.
+ * @param props.className - Additional CSS class names.
+ * @returns The badge overlay element, or `null` when no applicable variant exists.
+ */
 const VariantBadges = ({ product, i18n, className }: VariantBadgesProps) => {
     const selectedVariant = firstAvailableVariant(product);
     const { t } = getTranslations('product', i18n);

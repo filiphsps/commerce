@@ -1,6 +1,7 @@
 import type { Product } from '@/api/product';
 import { mockProduct } from '@/utils/test/fixtures';
 
+/** Returns a mock `Product` with a single low-stock variant to trigger urgency messaging. */
 export const productWithStockUrgency = (): Product =>
     mockProduct({
         id: 'gid://shopify/Product/4',

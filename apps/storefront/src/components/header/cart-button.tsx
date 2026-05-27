@@ -11,6 +11,13 @@ export type CartButtonProps = {
     locale: Locale;
     i18n: LocaleDictionary;
 };
+/**
+ * Header cart button showing item count and linking to the cart page.
+ *
+ * @param props.locale - Active locale forwarded to the cart link.
+ * @param props.i18n - Locale dictionary for the cart link title.
+ * @returns The cart link button with optional item count badge.
+ */
 const CartButton = ({ locale, i18n }: CartButtonProps) => {
     const { t } = getTranslations('cart', i18n);
     const totalQuantity = useCartCount();

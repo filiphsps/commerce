@@ -11,6 +11,13 @@ export type LiveChatProviderProps = {
     locale: Locale;
     children: ReactNode;
 };
+/**
+ * Client provider that mounts the Intercom live-chat widget in production when configured.
+ *
+ * @param props.shop - Shop record providing the Intercom app ID and primary accent color.
+ * @param props.children - Subtree rendered both with and without the live-chat widget.
+ * @returns The children, optionally wrapped with the Intercom provider and inline init script.
+ */
 export const LiveChatProvider = ({
     shop: {
         thirdParty: { intercom } = {},

@@ -17,6 +17,15 @@ export type ShopLayoutProps = {
     children: ReactNode;
 } & Omit<HTMLProps<HTMLDivElement>, 'data' | 'className'>;
 
+/**
+ * Async server component composing the full-page grid layout with info-bar, header, content, and footer.
+ *
+ * @param props.shop - Shop record forwarded to all child layout components.
+ * @param props.locale - Active locale forwarded to all child layout components.
+ * @param props.i18n - Locale dictionary forwarded to all child layout components.
+ * @param props.children - Main page content rendered in the content grid area.
+ * @returns The main grid container element.
+ */
 const ShopLayout = async ({ shop, locale, i18n, children }: ShopLayoutProps) => {
     return (
         <main className="grid min-h-screen grid-cols-[100%] grid-rows-[auto_auto_1fr_auto] [grid-template-areas:'info-bar''header''content''footer']">

@@ -6,6 +6,14 @@ export type AvatarProps = {
     src?: string | null;
     name?: string | null;
 } & Omit<HTMLProps<HTMLDivElement>, 'name' | 'children' | 'src'>;
+/**
+ * Circular avatar showing a profile image when available, otherwise initials derived from `name`.
+ *
+ * @param props.src - URL of the profile image; initials are shown when absent.
+ * @param props.name - Display name used for the `title` attribute and initials fallback.
+ * @param props.className - Additional CSS class names.
+ * @returns The avatar element, or `null` when both `src` and `name` are absent.
+ */
 export async function Avatar({ src, name, title, className, ...props }: AvatarProps) {
     if (!src && !name) {
         return null;

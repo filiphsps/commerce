@@ -9,6 +9,14 @@ export type CurrentLocaleFlagProps = {
     locale: Locale;
     alt?: string;
 } & Omit<ComponentProps<typeof Image>, 'src' | 'aria-label' | 'alt'>;
+/**
+ * Flag image for the currently active locale.
+ *
+ * @param props.locale - Active locale whose `country` code determines the flag SVG.
+ * @param props.alt - Alt text; defaults to the country code.
+ * @param props.className - Additional CSS class names.
+ * @returns The flag image element.
+ */
 export const CurrentLocaleFlag = ({
     locale,
     className,

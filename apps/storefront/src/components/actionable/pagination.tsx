@@ -23,6 +23,15 @@ export type PaginationProps = ComponentProps<'nav'> & {
     knownLastPage?: number;
     morePagesAfterKnownLastPage?: boolean;
 };
+/**
+ * URL-driven pagination nav that builds page links from the current search params.
+ *
+ * @param props.i18n - Locale dictionary for previous/next labels.
+ * @param props.knownFirstPage - First page number; defaults to `1`.
+ * @param props.knownLastPage - Last known page number; defaults to `1`.
+ * @param props.morePagesAfterKnownLastPage - Shows an ellipsis indicator when further pages may exist.
+ * @returns The pagination nav, or `null` when there is only one page.
+ */
 export function Pagination({
     i18n,
     knownFirstPage = 1,

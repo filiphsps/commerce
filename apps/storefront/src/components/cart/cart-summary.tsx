@@ -42,6 +42,17 @@ type CartSummaryProps = {
     children?: ReactNode;
     paymentMethods?: ReactNode;
 };
+/**
+ * Sticky order-summary sidebar with subtotal, discount rows, a checkout button,
+ * payment-method logos, and the cart note field.
+ *
+ * @param props.shop - Shop record (currently unused; reserved for free-shipping config).
+ * @param props.onCheckout - Callback invoked when the checkout button is clicked.
+ * @param props.i18n - Locale dictionary for translated labels.
+ * @param props.children - Optional slot rendered above the order summary section.
+ * @param props.paymentMethods - Optional payment method icons rendered in the trust footer.
+ * @returns The cart summary panel.
+ */
 const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummaryProps) => {
     const { t } = getTranslations('cart', i18n);
     const { status, cartReady } = useCartStatus();

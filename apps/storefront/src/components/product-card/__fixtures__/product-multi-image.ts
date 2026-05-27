@@ -1,6 +1,7 @@
 import type { Product } from '@/api/product';
 import { mockProduct } from '@/utils/test/fixtures';
 
+/** Returns a mock `Product` with two distinct product images. */
 export const productMultiImage = (): Product =>
     mockProduct({
         id: 'gid://shopify/Product/2',

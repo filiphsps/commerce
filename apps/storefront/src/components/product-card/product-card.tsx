@@ -136,6 +136,13 @@ export default async function ProductCard({
 
 ProductCard.displayName = 'Nordcom.ProductCard';
 
+/**
+ * Lightweight skeleton placeholder matching the card's minimum dimensions while data loads.
+ *
+ * @param props.layout - Card orientation used to set matching CSS data attributes.
+ * @param props.chrome - Visual frame style set as a data attribute for styling hooks.
+ * @returns An empty positioned div with skeleton data attributes.
+ */
 ProductCard.skeleton = ({
     layout = 'vertical' as ProductCardLayout,
     chrome = 'boxed' as ProductCardChrome,

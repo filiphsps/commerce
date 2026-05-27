@@ -1,6 +1,7 @@
 import type { Product } from '@/api/product';
 import { mockProduct } from '@/utils/test/fixtures';
 
+/** Returns a mock `Product` configured as a gift card. */
 export const productGiftCard = (): Product =>
     mockProduct({
         id: 'gid://shopify/Product/7',

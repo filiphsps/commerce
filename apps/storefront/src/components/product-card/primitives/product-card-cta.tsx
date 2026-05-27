@@ -7,6 +7,12 @@ export type ProductCardCtaProps = {
     placement: string;
 };
 
+/**
+ * Client component that reads variant-selection context and renders the registered CTA for the given placement.
+ *
+ * @param props.placement - Registry key identifying which CTA component to render.
+ * @returns The resolved CTA element, or `null` when context is unavailable.
+ */
 const ProductCardCta = ({ placement }: ProductCardCtaProps) => {
     const sel = useVariantSelection();
     const picker = usePickerOpen();

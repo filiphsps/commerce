@@ -17,6 +17,16 @@ export type ProductCategoryProps = {
     className?: string;
 };
 
+/**
+ * Async server component rendering the product's type as a linked collection, falling back to plain text.
+ *
+ * @param props.shop - Shop record used to instantiate the Shopify API client.
+ * @param props.locale - Locale used for the API client.
+ * @param props.product - Product providing the `productType` to render.
+ * @param props.prefix - Optional node rendered before the category text.
+ * @param props.className - CSS class names applied to the collection link.
+ * @returns The category link element, or plain text when the collection cannot be fetched, or `null` when `productType` is absent.
+ */
 export async function ProductCategory({
     shop,
     locale,

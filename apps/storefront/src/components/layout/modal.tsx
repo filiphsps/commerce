@@ -10,6 +10,15 @@ import { Label } from '@/components/typography/label';
 import type { LocaleDictionary } from '@/utils/locale';
 import { capitalize, getTranslations } from '@/utils/locale';
 
+/**
+ * Full-screen dialog modal that closes when the user navigates back.
+ *
+ * @param props.i18n - Locale dictionary for the close button label.
+ * @param props.title - Dialog title displayed in the header strip.
+ * @param props.description - Visually hidden description for assistive technology.
+ * @param props.children - Modal body content; returns `null` when absent.
+ * @returns The Radix `Dialog.Root` modal, or `null` when there are no children.
+ */
 export function Modal({
     i18n,
     title,

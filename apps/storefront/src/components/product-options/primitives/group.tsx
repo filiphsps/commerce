@@ -8,6 +8,13 @@ export type GroupProps = {
     density?: 'compact' | 'spacious';
 };
 
+/**
+ * Renders all values for a named option group from the product-options context.
+ *
+ * @param props.name - Option group name used to look up the group from the resolved options.
+ * @param props.density - Visual density forwarded to each `Value` renderer.
+ * @returns The swatch row element, or `null` when the named group is not found.
+ */
 const Group = ({ name, density = 'compact' }: GroupProps) => {
     const { resolved } = useProductOptions();
     const group = resolved.find((g) => g.name === name);

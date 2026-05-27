@@ -24,11 +24,29 @@ export type VariantImageClientProps = {
     className?: string;
 };
 
+/**
+ * Returns the Tailwind aspect-ratio class for a given card image aspect.
+ *
+ * @param aspect - The desired aspect ratio variant.
+ * @returns The corresponding Tailwind CSS class name.
+ */
 const aspectClass = (aspect: VariantImageClientProps['aspect']) => {
     if (aspect === 'horizontal' || aspect === 'square') return 'aspect-(--aspect-product-card-horizontal)';
     return 'aspect-(--aspect-product-card-vertical)';
 };
 
+/**
+ * Client component rendering the product card image, swapping to the selected or hovered variant image.
+ *
+ * @param props.initialImage - Server-rendered seed image shown before hydration.
+ * @param props.swapImage - Secondary image revealed on hover.
+ * @param props.aspect - Aspect ratio class applied to the image container.
+ * @param props.href - Link destination wrapping the image.
+ * @param props.title - Accessible title for the link and fallback alt text.
+ * @param props.priority - When `true`, loads the primary image eagerly.
+ * @param props.className - Additional CSS class names applied to the link wrapper.
+ * @returns The image link element, or a placeholder icon when no image is available.
+ */
 const VariantImageClient = ({
     initialImage,
     swapImage,

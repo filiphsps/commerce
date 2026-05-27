@@ -8,6 +8,14 @@ export type MoreProps = {
     className?: string;
 };
 
+/**
+ * Overflow button showing a count of hidden option values beyond the first four.
+ *
+ * @param props.groupName - Option group name used to count overflow values from context.
+ * @param props.onClick - Callback invoked when the overflow button is clicked.
+ * @param props.className - CSS class names applied to the button; uses a default pill style when omitted.
+ * @returns The overflow count button, or `null` when the group is not found or has no overflow.
+ */
 const More = ({ groupName, onClick, className }: MoreProps) => {
     const { resolved } = useProductOptions();
     const group = resolved.find((g) => g.name === groupName);

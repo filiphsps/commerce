@@ -26,6 +26,15 @@ export type ProductCardOptionsProviderProps = {
     children: ReactNode;
 };
 
+/**
+ * Provides variant-selection and picker-open state to the product card subtree via context.
+ *
+ * @param props.product - Product whose variants are selectable.
+ * @param props.seedVariantId - Initial selected variant ID before any user interaction.
+ * @param props.isSingleBuyable - Whether the product has only one purchasable variant.
+ * @param props.children - Card subtree that consumes the selection and picker contexts.
+ * @returns The nested context providers wrapping `children`.
+ */
 export function ProductCardOptionsProvider({
     product,
     seedVariantId,
@@ -51,5 +60,7 @@ export function ProductCardOptionsProvider({
     );
 }
 
+/** Returns the variant-selection context value, or `null` when used outside a `ProductCardOptionsProvider`. */
 export const useVariantSelection = () => useContext(VariantSelectionContext);
+/** Returns the picker-open context value, or `null` when used outside a `ProductCardOptionsProvider`. */
 export const usePickerOpen = () => useContext(PickerOpenContext);

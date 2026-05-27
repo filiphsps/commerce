@@ -16,6 +16,14 @@ type BreadcrumbsProps = {
     title?: string;
     className?: string;
 };
+/**
+ * Client component rendering a breadcrumb trail from the current pathname with injected JSON-LD markup.
+ *
+ * @param props.locale - Active locale used to build fully-qualified schema.org URLs.
+ * @param props.title - Overrides the label for the last breadcrumb entry.
+ * @param props.className - Additional CSS class names.
+ * @returns The breadcrumb strip with embedded JSON-LD, or `null` at the root path.
+ */
 const Breadcrumbs = ({ locale, title, className }: BreadcrumbsProps) => {
     const { shop } = useShop();
     const route = usePathname();

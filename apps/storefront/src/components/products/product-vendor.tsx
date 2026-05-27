@@ -17,6 +17,16 @@ export type ProductVendorProps = {
     prefix?: ReactNode;
 } & Omit<ComponentPropsWithoutRef<'a'>, 'ref' | 'children' | 'prefix' | 'href'>;
 
+/**
+ * Async server component rendering the product vendor as a linked collection, falling back to plain text.
+ *
+ * @param props.shop - Shop record used to instantiate the Shopify API client.
+ * @param props.locale - Locale used for the API client.
+ * @param props.product - Product providing the vendor name.
+ * @param props.prefix - Optional node rendered before the vendor name.
+ * @param props.className - CSS class names applied to the link or wrapper element.
+ * @returns The vendor link, plain-text div, or `null` when `vendor` is absent.
+ */
 export async function ProductVendor({
     shop,
     locale,

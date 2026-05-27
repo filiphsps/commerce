@@ -10,6 +10,13 @@ export type FiltersProps = {
     filters: Filter[];
     disabled?: boolean;
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
+/**
+ * Renders a list of Shopify collection filters as labeled card groups.
+ *
+ * @param props.filters - Array of Shopify `Filter` objects to display.
+ * @param props.disabled - When `true`, dims and disables all filter interactions.
+ * @returns The filters section, or `null` when `filters` is empty.
+ */
 export function Filters({ filters, disabled = false, className, ...props }: FiltersProps) {
     if (filters.length <= 0) {
         return null;

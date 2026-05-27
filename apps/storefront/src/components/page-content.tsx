@@ -6,6 +6,15 @@ export type PageContentProps = {
     primary?: boolean;
     children?: ReactNode;
 } & HTMLProps<HTMLDivElement>;
+/**
+ * Polymorphic constrained-width content column used as the main page wrapper.
+ *
+ * @param props.as - Element or component to render; defaults to `div`.
+ * @param props.primary - When `true`, applies min-height, grid-area, and full-page padding.
+ * @param props.className - Additional CSS class names.
+ * @param props.children - Page content; returns `null` when absent.
+ * @returns The rendered content element, or `null` when there are no children.
+ */
 const PageContent = ({ as: Tag = 'div', primary, className, ...props }: PageContentProps) => {
     if (!props.children) {
         return null;

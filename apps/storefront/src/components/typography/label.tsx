@@ -14,6 +14,14 @@ export type LabelProps<ComponentGeneric extends ElementType> = LabelPropsBase<Co
         ? Omit<ComponentPropsWithoutRef<ComponentGeneric>, keyof LabelPropsBase<ComponentGeneric>>
         : ComponentPropsWithoutRef<ComponentGeneric>);
 
+/**
+ * Small all-caps bold label for headings, field labels, and UI metadata.
+ *
+ * @param props.children - Label text or nodes; returns `null` when absent.
+ * @param props.as - Rendered element type; defaults to `p`.
+ * @param props.className - Additional class names.
+ * @returns The label element, or `null` when `children` is falsy.
+ */
 export const Label = <ComponentGeneric extends ElementType = 'p'>({
     children,
     as,

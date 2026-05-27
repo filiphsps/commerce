@@ -26,6 +26,17 @@ export type AddToCartProps = {
     };
 } & Omit<HTMLProps<HTMLButtonElement>, 'data'>;
 
+/**
+ * Add-to-cart button that fires a cart line mutation and emits a tracking event on success.
+ *
+ * @param props.i18n - Locale dictionary for button labels and toast messages.
+ * @param props.redirect - When `true`, navigates to `/cart/` after a successful add.
+ * @param props.disabled - Overrides the ready-state check to force a disabled state.
+ * @param props.quantity - Number of units to add; values below 1 disable the button.
+ * @param props.data - Object containing the product and selected variant to add.
+ * @param props.children - Optional label override; defaults to the i18n add-to-cart string.
+ * @returns The `Button` element wired to the cart add action.
+ */
 export function AddToCart({
     i18n,
     redirect = false,

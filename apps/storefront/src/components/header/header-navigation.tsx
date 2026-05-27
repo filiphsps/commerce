@@ -16,6 +16,13 @@ export type HeaderNavigationProps = {
     locale: Locale;
 } & Omit<HTMLProps<HTMLDivElement>, 'className' | 'children'>;
 
+/**
+ * Horizontally scrollable server-rendered top navigation bar.
+ *
+ * @param props.items - CMS nav items rendered as top-level links or menu triggers.
+ * @param props.locale - Active locale forwarded to `HeaderMenuTrigger` and link resolvers.
+ * @returns The `<nav>` element, or `null` when `items` is empty.
+ */
 export function HeaderNavigation({ items, locale, ...rest }: HeaderNavigationProps) {
     if (!items?.length) return null;
 
@@ -40,6 +47,13 @@ export function HeaderNavigation({ items, locale, ...rest }: HeaderNavigationPro
 
 HeaderNavigation.displayName = 'Nordcom.Header.HeaderNavigation';
 
+/**
+ * Single top-level nav entry that renders as a `HeaderMenuTrigger` when it has children, or a plain link otherwise.
+ *
+ * @param props.item - CMS nav item providing link, children, and metadata.
+ * @param props.locale - Active locale forwarded to link resolvers.
+ * @returns The trigger or anchor element, or `null` when the item has no link.
+ */
 function HeaderNavTopItem({ item, locale }: { item: NavItem; locale: Locale }) {
     const link = item.link;
     if (!link) return null;

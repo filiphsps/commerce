@@ -13,6 +13,16 @@ export type LocaleFlagProps = {
     nameClassName?: string;
     suffix?: ReactNode;
 } & Omit<ComponentProps<typeof Image>, 'src' | 'aria-label' | 'alt'>;
+/**
+ * Flag image with an optional country name label for a given locale.
+ *
+ * @param props.locale - Locale providing the country code used to look up the flag and name.
+ * @param props.withName - When `true`, renders the full country name next to the flag.
+ * @param props.nameClassName - CSS class names applied to the country name text.
+ * @param props.alt - Alt text; defaults to the country code.
+ * @param props.suffix - Node appended after the country name when `withName` is `true`.
+ * @returns The flag image, optionally followed by the country name and suffix.
+ */
 export const LocaleFlag = ({
     locale,
     withName = false,
@@ -63,6 +73,12 @@ export const LocaleFlag = ({
 export type LocaleCountryNameProps = {
     locale: Locale;
 };
+/**
+ * Returns the full country name for a locale's ISO country code.
+ *
+ * @param props.locale - Locale whose `country` code is looked up.
+ * @returns The full country name string, or `null` when the code is unrecognized.
+ */
 export function LocaleCountryName({ locale }: LocaleCountryNameProps) {
     let info: ReturnType<typeof countryLookup> | null = null;
     try {

@@ -9,6 +9,14 @@ export type ProductCardPriceProps = {
     className?: string;
 };
 
+/**
+ * Displays the formatted current price and, when on sale, a struck-through compare-at price.
+ *
+ * @param props.seedVariant - Variant providing the current price and optional compare-at price.
+ * @param props.locale - Locale used for `Intl.NumberFormat` currency formatting.
+ * @param props.className - Additional CSS class names.
+ * @returns The price display element.
+ */
 const ProductCardPrice = ({ seedVariant, locale, className }: ProductCardPriceProps) => {
     const current = seedVariant.price;
     const compare = seedVariant.compareAtPrice;

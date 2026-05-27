@@ -16,6 +16,13 @@ export type StockStatusProps = {
     product?: Product;
     i18n: LocaleDictionary;
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
+/**
+ * Displays an in-stock count badge or a back-order notice depending on variant availability.
+ *
+ * @param props.product - Product providing availability and inventory data.
+ * @param props.i18n - Locale dictionary for stock status labels.
+ * @returns The stock status section, or `null` when the product is absent or has no positive inventory.
+ */
 const StockStatus = ({ product, i18n, className, ...props }: StockStatusProps) => {
     const { t } = getTranslations('product', i18n);
     if (!product) {
@@ -67,6 +74,14 @@ export type GetOrderByEstimateProps = {
     processingTimeInDays: number;
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 
+/**
+ * Displays a dispatch-within estimate based on the shop's configured processing time.
+ *
+ * @param props.product - Product used to gate rendering; returns `null` when absent.
+ * @param props.i18n - Locale dictionary for the dispatch label.
+ * @param props.processingTimeInDays - Number of business days within which the order is dispatched.
+ * @returns The estimate section, or `null` when no product is provided.
+ */
 export const GetOrderByEstimate = ({
     product,
     i18n,
@@ -95,6 +110,15 @@ export type InfoLinesProps = {
     locale: Locale;
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 
+/**
+ * Async server component composing `StockStatus` and `GetOrderByEstimate` behind a feature flag.
+ *
+ * @param props.shop - Shop record used to evaluate the `productInfoLines` feature flag and read processing time.
+ * @param props.product - Product to display info lines for; returns `null` when absent.
+ * @param props.i18n - Locale dictionary forwarded to sub-components.
+ * @param props.locale - Locale forwarded to `GetOrderByEstimate`.
+ * @returns The info-lines container, or `null` when the product is absent or the flag is disabled.
+ */
 const InfoLines = async ({ shop, product, i18n, locale, className, ...props }: InfoLinesProps) => {
     // Inside cached subtree → .evaluate(shop). Trade-offs in defineFlag JSDoc.
     const productInfoLinesEnabled = productInfoLines.evaluate(shop);
@@ -122,6 +146,11 @@ const InfoLines = async ({ shop, product, i18n, locale, className, ...props }: I
 };
 InfoLines.displayName = 'Nordcom.Products.InfoLines';
 
+/**
+ * Placeholder skeleton for `InfoLines` while asynchronous data loads.
+ *
+ * @returns Two skeleton bar elements matching the typical info-lines layout.
+ */
 function infoLinesSkeleton() {
     return (
         <div className="flex w-full select-none flex-col items-start gap-4 empty:hidden">

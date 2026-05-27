@@ -13,12 +13,28 @@ import { useCartUtils } from '@/hooks/useCartUtils';
 import { BuildConfig } from '@/utils/build-config';
 import type { CurrencyCode, Locale } from '@/utils/locale';
 
+/**
+ * Mounts required cart utilities hooks inside a Suspense boundary without rendering visible content.
+ *
+ * @param props.locale - Locale forwarded to cart utilities.
+ * @param props.children - Optional children passed through unchanged.
+ * @returns The `children` node, or `null` when none are provided.
+ */
 const RequiredHooks = ({ locale, children = null }: { shop: OnlineShop; locale: Locale; children?: ReactNode }) => {
     void useCartUtils({ locale });
 
     return children;
 };
 
+/**
+ * Wraps children with the commerce provider that matches the shop's configured commerce provider type.
+ *
+ * @param props.shop - Shop record supplying the commerce provider configuration.
+ * @param props.locale - Locale used to configure country and language on the provider.
+ * @param props.children - Subtree that consumes commerce context.
+ * @returns The Shopify provider wrapping `children`, or a passthrough fragment when the domain is missing.
+ * @throws {UnknownCommerceProviderError} When the shop's commerce provider type is not supported.
+ */
 const CommerceProvider = ({ shop, locale, children }: { shop: OnlineShop; locale: Locale; children: ReactNode }) => {
     switch (shop.commerceProvider.type) {
         case 'shopify': {
@@ -51,6 +67,16 @@ const CommerceProvider = ({ shop, locale, children }: { shop: OnlineShop; locale
     }
 };
 
+/**
+ * Root client provider tree composing shop, commerce, cart utilities, live chat, and toast providers.
+ *
+ * @param props.shop - Shop record forwarded to every nested provider.
+ * @param props.currency - ISO currency code; defaults to `'USD'`.
+ * @param props.locale - Locale forwarded to every nested provider.
+ * @param props.children - Application subtree rendered inside the full provider stack.
+ * @param props.toolbars - When `true` (default), mounts the live-chat provider and toast notifications.
+ * @returns The composed provider tree wrapping `children`.
+ */
 const ProvidersRegistry = ({
     shop,
     currency = 'USD',

@@ -18,6 +18,14 @@ export interface QuantityContextValue extends QuantityProviderBase, QuantityCont
 
 export const QuantityContext = createContext<QuantityContextValue | null>(null);
 
+/**
+ * Provides quantity state to the product-page subtree via context.
+ *
+ * @param props.quantity - Current quantity value.
+ * @param props.setQuantity - Setter forwarded to consumers via context.
+ * @param props.children - Subtree that consumes the quantity context.
+ * @returns The context provider wrapping `children`.
+ */
 export function QuantityProvider({ children, quantity, setQuantity }: ShopProviderProps) {
     const value = useMemo(() => ({ quantity, setQuantity }), [quantity, setQuantity]);
 
@@ -25,6 +33,12 @@ export function QuantityProvider({ children, quantity, setQuantity }: ShopProvid
 }
 QuantityProvider.displayName = 'Nordcom.QuantityProvider';
 
+/**
+ * Returns the quantity context value from the nearest `QuantityProvider`.
+ *
+ * @returns The current `QuantityContextValue`.
+ * @throws {MissingContextProviderError} When called outside a `QuantityProvider`.
+ */
 export const useQuantity = (): QuantityContextValue => {
     const context = useContext(QuantityContext);
     if (!context) {

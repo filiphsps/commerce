@@ -26,6 +26,20 @@ export type ProductGalleryProps = {
     product: Product;
     primaryImageClassName?: string;
 } & HTMLProps<HTMLDivElement>;
+/**
+ * Interactive image gallery with thumbnail strip and social share buttons.
+ *
+ * @param props.initialImageId - ID of the image to show on initial render; defaults to the first image.
+ * @param props.images - Array of Shopify images to display; returns `null` when empty.
+ * @param props.actions - Additional action nodes rendered alongside the share buttons.
+ * @param props.enableShare - When `true`, renders email and social share buttons.
+ * @param props.padding - When `true`, applies spacious inner padding to the primary image container.
+ * @param props.pageUrl - Canonical URL forwarded to the share buttons.
+ * @param props.i18n - Locale dictionary for share button labels.
+ * @param props.product - Product providing the SEO title used by share buttons.
+ * @param props.primaryImageClassName - Additional CSS class names applied to the primary image element.
+ * @returns The gallery section, or `null` when no images are provided.
+ */
 const ProductGallery = ({
     initialImageId,
     images,

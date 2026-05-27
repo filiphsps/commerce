@@ -10,6 +10,14 @@ export type ProductCardBadgesProps = {
     className?: string;
 };
 
+/**
+ * Thin server wrapper that renders `VariantBadges` with product-card prop naming.
+ *
+ * @param props.data - Product used to determine which badges to show.
+ * @param props.i18n - Locale dictionary for badge label translations.
+ * @param props.className - Additional CSS class names forwarded to `VariantBadges`.
+ * @returns The badge overlay element.
+ */
 const ProductCardBadges = ({ data, i18n, className }: ProductCardBadgesProps) => (
     <VariantBadges product={data} i18n={i18n} className={className} />
 );

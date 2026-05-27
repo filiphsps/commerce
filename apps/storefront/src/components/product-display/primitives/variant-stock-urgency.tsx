@@ -10,6 +10,15 @@ export type VariantStockUrgencyProps = {
     className?: string;
 };
 
+/**
+ * Server-side shell that pre-computes the initial urgency message and passes it to `VariantStockUrgencyClient`.
+ *
+ * @param props.seedVariant - Variant providing the initial available quantity.
+ * @param props.threshold - Maximum quantity that triggers the urgency message; defaults to 5.
+ * @param props.i18n - Locale dictionary for the urgency message translation.
+ * @param props.className - Additional CSS class names.
+ * @returns The `VariantStockUrgencyClient` element.
+ */
 const VariantStockUrgency = ({ seedVariant, threshold = 5, i18n, className }: VariantStockUrgencyProps) => {
     const qty = seedVariant.quantityAvailable;
     let initialMessage: string | null = null;

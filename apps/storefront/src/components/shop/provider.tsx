@@ -29,6 +29,14 @@ export interface ShopContextValue extends ShopProviderBase, ShopContextReturns {
 
 export const ShopContext = createContext<ShopContextValue | null>(null);
 
+/**
+ * Makes shop, currency, and locale available to the client-side component tree.
+ *
+ * @param props.shop - The resolved `OnlineShop` record for the current tenant.
+ * @param props.currency - Active currency code; defaults to `'USD'`.
+ * @param props.locale - Active locale; defaults to `Locale.default`.
+ * @param props.children - Component subtree that will consume `ShopContext`.
+ */
 export function ShopProvider({ children, shop, currency = 'USD', locale = Locale.default }: ShopProviderProps) {
     const value = useMemo(() => ({ shop, currency, locale }), [shop, currency, locale]);
 
@@ -36,6 +44,12 @@ export function ShopProvider({ children, shop, currency = 'USD', locale = Locale
 }
 ShopProvider.displayName = 'Nordcom.ShopProvider';
 
+/**
+ * Returns the current `ShopContext` value.
+ *
+ * @returns The shop context containing shop, currency, and locale.
+ * @throws {MissingContextProviderError} When called outside of a `ShopProvider`.
+ */
 export const useShop = (): ShopContextValue => {
     const context = useContext(ShopContext);
     if (!context) {

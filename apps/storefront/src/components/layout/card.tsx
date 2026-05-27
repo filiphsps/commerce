@@ -17,6 +17,16 @@ export type CardProps<ComponentGeneric extends ElementType> = CardPropsBase<Comp
         ? Omit<ComponentPropsWithoutRef<ComponentGeneric>, keyof CardPropsBase<ComponentGeneric>>
         : ComponentPropsWithoutRef<ComponentGeneric>);
 
+/**
+ * Polymorphic layout card with `boxed` or `frameless` chrome styles.
+ *
+ * @param props.as - Element or component to render; defaults to `div`.
+ * @param props.chrome - Visual chrome variant: `'boxed'` applies border and background, `'frameless'` removes them.
+ * @param props.border - When `true`, uses a two-pixel border instead of the default background fill.
+ * @param props.className - Additional CSS class names.
+ * @param props.children - Card body content.
+ * @returns The rendered card element.
+ */
 export const Card = <ComponentGeneric extends ElementType = 'div'>({
     as,
     className,

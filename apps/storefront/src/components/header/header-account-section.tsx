@@ -16,6 +16,14 @@ export type HeaderAccountSectionProps = {
     locale: Locale;
     i18n: LocaleDictionary;
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
+/**
+ * Async server component rendering the account area in the header.
+ *
+ * @param props.shop - Shop record used to evaluate the accounts feature flag.
+ * @param props.i18n - Locale dictionary for label translations.
+ * @param props.className - Additional CSS class names.
+ * @returns Login button when unauthenticated, avatar link when authenticated, or `null` when accounts are disabled.
+ */
 export async function HeaderAccountSection({ shop, i18n, className, ...props }: HeaderAccountSectionProps) {
     // Inside cached subtree → .evaluate(shop). Trade-offs in defineFlag JSDoc.
     const enabled = accountsEnabled.evaluate(shop);

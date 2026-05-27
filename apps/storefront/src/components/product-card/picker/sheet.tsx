@@ -9,6 +9,14 @@ import { toSelectionRecord } from '@/components/product-options/resolver';
 import { firstAvailableVariant } from '@/utils/first-available-variant';
 import type { ProductCardPickerProps } from './types';
 
+/**
+ * Sheet/modal picker that slides up from the bottom on mobile and centers on desktop.
+ *
+ * @param props.product - Product whose options and variants populate the dialog.
+ * @param props.open - Whether the dialog is currently open.
+ * @param props.onOpenChange - Callback invoked when the open state should change.
+ * @returns The Radix Dialog element.
+ */
 const SheetPicker = ({ product, open, onOpenChange }: ProductCardPickerProps) => {
     const seed = firstAvailableVariant(product) ?? product.variants?.edges?.[0]?.node;
     const initialSelection = useMemo(() => toSelectionRecord(seed), [seed]);

@@ -20,6 +20,14 @@ export type InfoBarProps = {
     i18n: LocaleDictionary;
 } & Omit<HTMLProps<HTMLDivElement>, 'className'>;
 
+/**
+ * Async server component rendering a thin info bar with locale flag, email, and phone contact links.
+ *
+ * @param props.shop - Shop record used to fetch business contact info from the CMS.
+ * @param props.locale - Active locale forwarded to `LocaleFlag` and the API.
+ * @param props.i18n - Locale dictionary for translated labels.
+ * @returns The info-bar section, or `null` when no contact info is configured.
+ */
 export async function InfoBar({ shop, locale, i18n, ...props }: InfoBarProps) {
     const business = await InfoBarApi({ shop, locale });
     const email = business?.supportEmail?.trim() || null;
