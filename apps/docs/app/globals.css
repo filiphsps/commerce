@@ -263,6 +263,16 @@ a[data-symbol-tab="docs"] {
     letter-spacing: -0.015em;
 }
 
+/* Fumadocs wraps heading text in `<a data-card>` for the anchor link — strip
+ * the default `<a>` underline so headings read as headings, not links. */
+.prose h1 a[data-card],
+.prose h2 a[data-card],
+.prose h3 a[data-card],
+.prose h4 a[data-card] {
+    text-decoration: none !important;
+    color: inherit !important;
+}
+
 /* Error + reference pages — h2s become uppercase, mono-tracked section heads.
  * The hero (errors) or signature codeblock (reference) carries editorial
  * weight; sections under it read as labels. */
