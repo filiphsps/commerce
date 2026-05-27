@@ -3,11 +3,11 @@
     "description": "Stable error-code catalogue.",
     "root": true,
     "pages": [
-        "--api",
+        "---API_*---",
         "api-method-not-allowed",
         "api-unknown-error",
         "api-unknown-locale",
-        "--general",
+        "---General---",
         "not-found",
         "unreachable",
         "generic-todo"

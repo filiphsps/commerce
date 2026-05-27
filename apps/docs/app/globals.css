@@ -159,11 +159,25 @@ a[data-symbol-tab="docs"] {
 
 /* Sidebar group labels — uppercase mono per the visuals. */
 #nd-sidebar [data-fd-folder-trigger],
-#nd-sidebar .text-fd-muted-foreground {
+#nd-sidebar .text-fd-muted-foreground,
+#nd-sidebar [data-radix-scroll-area-viewport] > div > p {
     font-family: var(--font-mono);
     font-size: 0.62rem;
     text-transform: uppercase;
     letter-spacing: 0.18em;
+    color: var(--color-fg-mute);
+}
+
+/* Sidebar separator divider — a thin border-bottom row above each group
+ * label (Fumadocs renders `---Label---` as a `<p>` row). */
+#nd-sidebar [data-radix-scroll-area-viewport] > div > p {
+    margin: 1.1rem 0.5rem 0.45rem !important;
+    padding: 0 0 0.3rem !important;
+    border-bottom: 1px solid var(--color-border);
+}
+
+#nd-sidebar [data-radix-scroll-area-viewport] > div > p:first-of-type {
+    margin-top: 0 !important;
 }
 
 /* Sidebar current page indicator — brand magenta inset shadow + soft gradient. */
