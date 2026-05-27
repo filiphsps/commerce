@@ -6,6 +6,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { classifySymbol } from './lib/symbol-classify';
 import { renderSubpathOverviewMdx, type OverviewRow } from './lib/render-subpath-mdx';
 import { renderSymbolMdx } from './lib/render-symbol-mdx';
+import { renderGalleryMdx } from './lib/render-gallery-mdx';
 import type { TypeDocProject } from './lib/typedoc-types';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -54,23 +55,50 @@ export async function main({ quiet = false }: { quiet?: boolean } = {}): Promise
                     symbol.signatures?.[0]?.comment?.summary?.find((n) => n.kind === 'text')?.text ??
                     '';
                 overviewRows.push({ name: symbol.name, kind, fate, summary });
+            }
 
-                if (fate === 'own-page') {
-                    const mdx = renderSymbolMdx({
-                        workspaceSlug,
-                        subpath: subpathRel === 'index' ? 'index' : subpathRel,
-                        symbol,
-                        kind,
-                    });
-                    const outFile = path.join(
-                        REFERENCE_OUT,
-                        workspaceSlug,
-                        subpathRel === 'index' ? '' : subpathRel,
-                        `${kebab(symbol.name)}.mdx`,
-                    );
-                    fs.mkdirSync(path.dirname(outFile), { recursive: true });
-                    fs.writeFileSync(outFile, mdx);
-                    symbolsCount++;
+            const componentCount = overviewRows.filter((r) => r.kind === 'component').length;
+            const pkgJson = readPkgConfig(workspaceSlug);
+            const useGallery = componentCount >= 10 || pkgJson?.docsConfig?.iconGallery === true;
+
+            if (useGallery) {
+                const galleryMdx = renderGalleryMdx({
+                    workspaceSlug,
+                    subpath: subpathRel === 'index' ? 'index' : subpathRel,
+                    rows: overviewRows,
+                });
+                const galleryFile = path.join(
+                    REFERENCE_OUT,
+                    workspaceSlug,
+                    subpathRel === 'index' ? '' : subpathRel,
+                    'index.mdx',
+                );
+                fs.mkdirSync(path.dirname(galleryFile), { recursive: true });
+                fs.writeFileSync(galleryFile, galleryMdx);
+                subpathsCount++;
+                continue;
+            }
+
+            for (const row of overviewRows) {
+                if (row.fate === 'own-page') {
+                    const symbol = (project.children ?? []).find((s) => s.name === row.name);
+                    if (symbol) {
+                        const mdx = renderSymbolMdx({
+                            workspaceSlug,
+                            subpath: subpathRel === 'index' ? 'index' : subpathRel,
+                            symbol,
+                            kind: row.kind,
+                        });
+                        const outFile = path.join(
+                            REFERENCE_OUT,
+                            workspaceSlug,
+                            subpathRel === 'index' ? '' : subpathRel,
+                            `${kebab(symbol.name)}.mdx`,
+                        );
+                        fs.mkdirSync(path.dirname(outFile), { recursive: true });
+                        fs.writeFileSync(outFile, mdx);
+                        symbolsCount++;
+                    }
                 }
             }
 
@@ -95,6 +123,24 @@ export async function main({ quiet = false }: { quiet?: boolean } = {}): Promise
         console.info(`[emit-reference-mdx] ${subpathsCount} subpaths, ${symbolsCount} symbols, ${skippedCount} skipped`);
     }
     return { subpaths: subpathsCount, symbols: symbolsCount, skipped: skippedCount };
+}
+
+/**
+ * Read a workspace's `package.json` looking for a `docsConfig` field.
+ * Searches both `apps/<slug>` and `packages/<slug>` directories.
+ *
+ * @param slug - Workspace slug (e.g. `'react-payment-brand-icons'`).
+ * @returns Parsed package.json object, or `null` when not found.
+ */
+function readPkgConfig(slug: string): { docsConfig?: { iconGallery?: boolean } } | null {
+    const candidates = [
+        path.join(REPO_ROOT, 'apps', slug, 'package.json'),
+        path.join(REPO_ROOT, 'packages', slug, 'package.json'),
+    ];
+    for (const c of candidates) {
+        if (fs.existsSync(c)) return JSON.parse(fs.readFileSync(c, 'utf8'));
+    }
+    return null;
 }
 
 /**
