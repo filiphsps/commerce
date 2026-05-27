@@ -1,6 +1,6 @@
 import { Shop } from '@nordcom/commerce-db';
 import { Error, NoLocaleResolvableError, NotFoundError, UnknownError } from '@nordcom/commerce-errors';
-import { isLocalhost, shopFromHost } from '@nordcom/commerce-utils';
+import { isDevHost, shopFromHost } from '@nordcom/commerce-utils';
 import { trace } from '@opentelemetry/api';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
@@ -47,10 +47,12 @@ async function resolveDevShopDomain(): Promise<string> {
 async function hostnameFromRequest(req: NextRequest): Promise<string> {
     const host = req.headers.get('x-forwarded-host') || req.headers.get('host') || req.nextUrl.host;
 
-    // Bare `localhost[:port]` (the e2e webServer in CI, plus any developer
-    // hitting `next start` directly) has no shop segment to parse, so fall
-    // back to the same dev-shop resolution as `*.storefront.localhost`.
-    if (host.endsWith('storefront.localhost') || isLocalhost(host)) {
+    // Any dev TLD (`localhost`, `.localhost`, `.test`) — bare port-suffixed or
+    // subdomain form — has no real shop segment to parse, so fall back to the
+    // dev-shop resolution. `isDevHost` normalizes the port suffix so the
+    // Playwright non-CI baseURL `storefront.localhost:1337` matches; the prior
+    // `host.endsWith('storefront.localhost')` check missed it.
+    if (isDevHost(host)) {
         return resolveDevShopDomain();
     }
 
