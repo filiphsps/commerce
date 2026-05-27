@@ -1,10 +1,10 @@
+import { useCartActions, useCartMeta, useCartStatus } from '@nordcom/cart-react';
 import type { Error } from '@nordcom/commerce-errors';
 import { trace } from '@opentelemetry/api';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 import { toast } from 'sonner';
-
-import { useCartActions, useCartMeta, useCartStatus } from '@/components/cart/provider';
+import type { AppCartCaps } from '@/cart/caps';
 import type { Locale } from '@/utils/locale';
 
 /**
@@ -33,7 +33,7 @@ export const useCartUtils = (_options: {
     const pathname = usePathname();
     const query = useSearchParams();
 
-    const { applyDiscountCode } = useCartActions();
+    const { applyDiscountCode } = useCartActions<AppCartCaps>();
     const { status, cartReady, error: cartError } = useCartStatus();
     const { discountCodes } = useCartMeta();
 

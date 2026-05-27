@@ -11,9 +11,9 @@ vi.mock('@shopify/hydrogen-react', async () => {
 });
 
 // Analytics is opt-in: Trackable must mount in routes that don't have
-// NordcomCartProvider in scope. `useMaybeCart()` returns null in that case —
+// a CartProvider in scope. `useMaybeCart()` returns null in that case —
 // mirror that here so the suite exercises the null path.
-vi.mock('@/components/cart/provider', () => ({
+vi.mock('@nordcom/cart-react', () => ({
     useMaybeCart: vi.fn().mockReturnValue(null),
 }));
 

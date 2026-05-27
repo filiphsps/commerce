@@ -1,5 +1,6 @@
 'use client';
 
+import { useMaybeCart } from '@nordcom/cart-react';
 import type { Nullable, OnlineShop, ShopifyCommerceProvider } from '@nordcom/commerce-db';
 import { MissingContextProviderError, TodoError } from '@nordcom/commerce-errors';
 import type { ShopifyPageViewPayload } from '@shopify/hydrogen-react';
@@ -18,7 +19,6 @@ import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { Fragment, Suspense, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { createContext, useContext } from 'use-context-selector';
-import { type UseCartReturn, useMaybeCart } from '@/components/cart/provider';
 import { useShop } from '@/components/shop/provider';
 import { usePrevious } from '@/hooks/usePrevious';
 import { BuildConfig } from '@/utils/build-config';
@@ -27,6 +27,7 @@ import type { CurrencyCode, Locale } from '@/utils/locale';
 import { productToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { safeParseFloat } from '@/utils/pricing';
 
+type UseCartReturn = NonNullable<ReturnType<typeof useMaybeCart>>;
 type TrackableCart = NonNullable<UseCartReturn['cart']>;
 
 /**

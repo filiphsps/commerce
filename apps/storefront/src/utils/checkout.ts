@@ -1,7 +1,7 @@
+import type { CartLine, Money } from '@nordcom/cart-core';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { InvalidCartError, UnknownCommerceProviderError } from '@nordcom/commerce-errors';
 import { trace } from '@opentelemetry/api';
-import type { CartLine, Money } from '@/api/cart/types';
 
 import type { Locale } from '@/utils/locale';
 import { productToMerchantsCenterId } from '@/utils/merchants-center-id';
@@ -10,7 +10,7 @@ import type { TrackableContextValue } from '@/utils/trackable';
 
 type CheckoutCart = {
     totalQuantity: number;
-    lines: CartLine[];
+    lines: ReadonlyArray<CartLine<unknown>>;
     cost: { subtotal: Money | null; total: Money | null };
     checkoutUrl: string | null;
 };

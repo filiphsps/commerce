@@ -1,13 +1,12 @@
 'use client';
 
+import { useCartStatus } from '@nordcom/cart-react';
 import { useProduct } from '@shopify/hydrogen-react';
 import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
 import type { HTMLProps } from 'react';
 import type { ProductVariant } from '@/api/product';
 import { transformQuantityBreaks } from '@/api/product';
-
 import { Button } from '@/components/actionable/button';
-import { useCartStatus } from '@/components/cart/provider';
 import { COMMON_BADGE_STYLES } from '@/components/product-display/primitives/badge-styles';
 import { Price } from '@/components/products/price';
 import { useQuantity } from '@/components/products/quantity-provider';

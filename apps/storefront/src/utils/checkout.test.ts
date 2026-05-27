@@ -1,6 +1,6 @@
+import type { Cart } from '@nordcom/cart-core';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { Cart } from '@/api/cart/types';
 import { Checkout } from '@/utils/checkout';
 import { Locale } from '@/utils/locale';
 
@@ -60,6 +60,7 @@ describe('utils', () => {
                     },
                     attributes: [],
                     discountAllocations: [],
+                    custom: undefined,
                 },
                 {
                     id: 'line-2',
@@ -86,6 +87,7 @@ describe('utils', () => {
                     },
                     attributes: [],
                     discountAllocations: [],
+                    custom: undefined,
                 },
             ],
             cost: {
@@ -101,6 +103,7 @@ describe('utils', () => {
             note: null,
             attributes: [],
             updatedAt: '2026-05-26T00:00:00Z',
+            custom: undefined,
         };
 
         const shop: OnlineShop = {

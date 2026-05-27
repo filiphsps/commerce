@@ -2,6 +2,7 @@
 
 import { useCartActions, useCartMeta, useCartStatus } from '@nordcom/cart-react';
 import { Tag as TagIcon, X as XIcon } from 'lucide-react';
+import type { AppCartCaps } from '@/cart/caps';
 import { Button } from '@/components/actionable/button';
 import { Label } from '@/components/typography/label';
 import { cn } from '@/utils/tailwind';
@@ -9,7 +10,7 @@ import { cn } from '@/utils/tailwind';
 const CartCoupons = ({}) => {
     const { discountCodes } = useCartMeta();
     const { cartReady } = useCartStatus();
-    const { removeDiscountCode } = useCartActions();
+    const { removeDiscountCode } = useCartActions<AppCartCaps>();
 
     if (!cartReady || discountCodes.length <= 0) {
         return null;

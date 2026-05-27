@@ -1,12 +1,11 @@
 'use client';
 
+import { useCartCount, useCartLines } from '@nordcom/cart-react';
 import { parseGid } from '@shopify/hydrogen-react';
 import { download, generateCsv, mkConfig } from 'export-to-csv';
 import { Download as DownloadIcon } from 'lucide-react';
 import { useState } from 'react';
-
 import { Button } from '@/components/actionable/button';
-import { useCartCount, useCartLines } from '@/components/cart/provider';
 import { useShop } from '@/components/shop/provider';
 import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 

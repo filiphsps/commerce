@@ -2,6 +2,7 @@
 
 import { useCartActions, useCartMeta, useCartStatus } from '@nordcom/cart-react';
 import { type ChangeEvent, useState } from 'react';
+import type { AppCartCaps } from '@/cart/caps';
 import { MultilineInput } from '@/components/actionable/input';
 import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 
@@ -9,7 +10,7 @@ const CartNote = ({ i18n }: { i18n: LocaleDictionary }) => {
     const { t } = getTranslations('cart', i18n);
     const { note } = useCartMeta();
     const { cartReady } = useCartStatus();
-    const { updateNote } = useCartActions();
+    const { updateNote } = useCartActions<AppCartCaps>();
     const [text, setText] = useState(note ?? '');
     const [lastNote, setLastNote] = useState(note);
 
