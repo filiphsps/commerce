@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>06 · Sidebar states — Commerce Docs</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300..900;1,300..900&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #000; --bg-1: hsl(0 0% 4%); --bg-2: hsl(0 0% 9%); --bg-3: hsl(0 0% 13%);
+    --fg: #fff; --fg-mute: hsl(0 0% 51%); --fg-dim: hsl(0 0% 36%);
+    --border: hsl(0 0% 18%); --border-strong: hsl(0 0% 28%);
+    --brand: #ed1e79; --brand-glow: rgb(237 30 121 / 0.45); --brand-soft: rgb(237 30 121 / 0.10); --brand-hover: hsl(330 86% 60%);
+    --pkg: hsl(95 80% 55%); --ref: hsl(190 95% 55%); --err: hsl(28 95% 58%);
+    --bw: 0.2rem; --bw-s: 0.138rem; --bw-l: 0.29rem;
+    --radius-sm: 4px; --radius: 0.45rem;
+    --font-display: 'Montserrat', system-ui, sans-serif;
+    --font-body: 'Montserrat', system-ui, sans-serif;
+    --font-mono: 'Geist Mono', ui-monospace, monospace;
+    --duration: 150ms;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-weight: 500; min-height: 100vh; padding: 3rem; }
+
+  .page-h1 { font-family: var(--font-display); font-weight: 900; font-size: 2.4rem; letter-spacing: -0.03em; margin-bottom: 0.4rem; }
+  .page-h1 .acc { color: var(--brand); }
+  .page-sub { color: var(--fg-mute); font-size: 0.95rem; max-width: 60ch; margin-bottom: 3rem; line-height: 1.55; }
+
+  .section-h { font-family: var(--font-display); font-weight: 800; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.22em; color: var(--fg-mute); margin: 3rem 0 1rem 0; padding-bottom: 0.4rem; border-bottom: var(--bw-s) solid var(--border); }
+
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+
+  .sb-card { border: var(--bw) solid var(--border); border-radius: var(--radius); overflow: hidden; background: var(--bg); }
+  .sb-card .sb-label { padding: 0.6rem 0.85rem; border-bottom: var(--bw-s) solid var(--border); background: var(--bg-1); font-family: var(--font-mono); font-size: 0.62rem; color: var(--fg-mute); text-transform: uppercase; letter-spacing: 0.14em; display: flex; justify-content: space-between; align-items: center; }
+  .sb-card .sb-label .lbl-tag { font-family: var(--font-display); font-weight: 700; font-size: 0.55rem; padding: 0.18rem 0.45rem; border-radius: 3px; letter-spacing: 0.14em; }
+  .sb-card .sb-body { padding: 1rem 0.85rem; min-height: 480px; }
+
+  /* Sidebar-internal search field */
+  .sb-search { display: flex; align-items: center; justify-content: space-between; gap: 0.4rem; padding: 0.4rem 0.6rem; border: var(--bw-s) solid var(--border); border-radius: var(--radius-sm); margin-bottom: 0.95rem; font-family: var(--font-mono); font-size: 0.65rem; color: var(--fg-mute); cursor: pointer; transition: border-color var(--duration); }
+  .sb-search:hover { border-color: var(--border-strong); }
+  .sb-search .kbd-s { font-family: var(--font-mono); font-size: 0.55rem; border: 1px solid var(--border-strong); border-radius: 3px; padding: 0 4px; color: var(--fg); background: var(--bg-2); }
+
+  /* Tab chip */
+  .tab-chip { display: inline-block; font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: 0.55rem; letter-spacing: 0.16em; padding: 0.2rem 0.5rem; border: var(--bw-s) solid; border-radius: 4px; margin-bottom: 0.9rem; }
+  .tab-chip.docs { color: var(--brand); border-color: var(--brand); }
+  .tab-chip.pkg { color: var(--pkg); border-color: var(--pkg); }
+  .tab-chip.ref { color: var(--ref); border-color: var(--ref); }
+  .tab-chip.err { color: var(--err); border-color: var(--err); }
+
+  /* Group label with collapse chevron */
+  .grp { font-family: var(--font-mono); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--fg-mute); margin: 0.95rem 0 0.35rem 0; padding: 0.18rem 0 0.25rem 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: color var(--duration); user-select: none; }
+  .grp:first-of-type { margin-top: 0; }
+  .grp:hover { color: var(--fg); }
+  .grp .chev { font-size: 0.65rem; color: var(--fg-dim); transition: transform var(--duration); }
+  .grp.collapsed .chev { transform: rotate(-90deg); }
+  .grp .count { font-size: 0.55rem; color: var(--fg-dim); margin-left: auto; margin-right: 0.5rem; font-weight: 400; }
+
+  .it { font-family: var(--font-display); font-weight: 700; color: var(--fg); padding: 0.2rem 0 0.2rem 0.55rem; font-size: 0.78rem; cursor: pointer; transition: color var(--duration), border-color var(--duration), background var(--duration); border-left: var(--bw-s) solid transparent; margin-left: 0.35rem; display: flex; align-items: center; justify-content: space-between; }
+  .it:hover { color: var(--brand-hover); border-left-color: var(--border-strong); }
+  .it .badge { font-family: var(--font-mono); font-size: 0.55rem; color: var(--fg-mute); font-weight: 400; margin-left: 0.4rem; }
+
+  .sub { font-family: var(--font-mono); font-size: 0.7rem; color: var(--fg-mute); padding: 0.16rem 0 0.16rem 0.7rem; border-left: var(--bw-s) solid transparent; margin-left: 0.35rem; cursor: pointer; transition: color var(--duration), border-color var(--duration), background var(--duration); display: flex; align-items: center; justify-content: space-between; }
+  .sub:hover { color: var(--fg); border-left-color: var(--border-strong); }
+  .sub.ext::after { content: "↗"; color: var(--fg-mute); font-size: 0.65rem; margin-left: 0.5rem; }
+  .sub.ext:hover::after { color: var(--brand); }
+
+  .sym { font-family: var(--font-mono); font-size: 0.68rem; color: var(--fg-mute); padding: 0.13rem 0 0.13rem 1.25rem; margin-left: 0.35rem; border-left: var(--bw-s) solid transparent; cursor: pointer; transition: color var(--duration), border-color var(--duration); display: flex; align-items: center; justify-content: space-between; }
+  .sym:hover { color: var(--fg); }
+
+  /* States */
+  .state-cur { color: var(--brand) !important; border-left-color: var(--brand) !important; background: linear-gradient(to right, var(--brand-soft), transparent 60%); box-shadow: inset 2px 0 0 var(--brand); }
+  .state-cur.it { font-weight: 700; }
+  .state-hover { color: var(--fg) !important; border-left-color: var(--border-strong) !important; background: var(--bg-1); }
+  .state-focus { outline: var(--bw-s) solid var(--brand); outline-offset: 1px; border-radius: 2px; color: var(--fg) !important; }
+  .state-disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* Annotation labels next to specific items */
+  .anno { position: relative; }
+  .anno-arrow { position: absolute; right: -180px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; gap: 0.4rem; width: 170px; }
+  .anno-arrow .line { flex: 1; height: 1px; background: var(--brand); }
+  .anno-arrow .tag { font-family: var(--font-mono); font-size: 0.6rem; color: var(--brand); text-transform: uppercase; letter-spacing: 0.14em; white-space: nowrap; }
+
+  .sym .kindmark { font-size: 0.5rem; padding: 1px 4px; border-radius: 2px; font-weight: 500; opacity: 0.7; }
+  .sym .kindmark.fn { color: var(--ref); }
+  .sym .kindmark.cls { color: var(--pkg); }
+
+  .ver-pill { font-size: 0.5rem; color: var(--pkg); padding: 1px 4px; border: 1px solid hsl(95 80% 55% / 0.35); border-radius: 3px; font-weight: 500; }
+  .new-pill { font-size: 0.5rem; color: var(--brand); padding: 1px 4px; border: 1px solid var(--brand); border-radius: 3px; font-weight: 600; background: var(--brand-soft); letter-spacing: 0.06em; }
+
+  /* Mobile sidebar shown as overlay */
+  .mobile-frame { width: 360px; margin: 0 auto; border: var(--bw) solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .mobile-frame .mobile-bar { padding: 0.7rem 1rem; display: flex; justify-content: space-between; align-items: center; border-bottom: var(--bw-s) solid var(--border); font-family: var(--font-display); font-weight: 800; }
+  .mobile-frame .mobile-bar .menu-btn { font-family: var(--font-mono); font-size: 0.7rem; padding: 0.3rem 0.5rem; border: var(--bw-s) solid var(--brand); color: var(--brand); border-radius: 4px; }
+  .mobile-frame .mobile-overlay { background: var(--bg); padding: 1rem 0.85rem; min-height: 400px; }
+
+  .notes { font-family: var(--font-mono); font-size: 0.7rem; color: var(--fg-mute); line-height: 1.6; margin-top: 1rem; padding-left: 1rem; border-left: var(--bw-s) solid var(--border); }
+  .notes strong { color: var(--fg); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<h1 class="page-h1">06 · <span class="acc">Sidebar states</span></h1>
+<p class="page-sub">All four tab sidebars, side-by-side. Same structural rules (group dividers, brand current, hover left rail, external-link suffix arrow). Last row shows interactive states: hover, focus, collapsed group, disabled, plus mobile overlay variant.</p>
+
+<h2 class="section-h">The four tab sidebars · at rest</h2>
+<div class="grid-4">
+
+  <!-- DOCS tab sidebar -->
+  <div class="sb-card">
+    <div class="sb-label">
+      <span>Docs tab</span>
+      <span class="lbl-tag" style="color: var(--brand); border: 1px solid var(--brand);">DEFAULT</span>
+    </div>
+    <div class="sb-body">
+      <span class="tab-chip docs">Docs</span>
+      <div class="sb-search"><span>Search docs</span><span class="kbd-s">⌘K</span></div>
+
+      <div class="grp"><span>Get started <span class="count">3</span></span><span class="chev">▾</span></div>
+      <div class="it">Introduction</div>
+      <div class="it">Quickstart</div>
+      <div class="it">Architecture</div>
+
+      <div class="grp"><span>Concepts <span class="count">5</span></span><span class="chev">▾</span></div>
+      <div class="it state-cur">Multi-tenancy</div>
+      <div class="it">Locales</div>
+      <div class="it">Caching</div>
+      <div class="it">CMS &amp; content</div>
+      <div class="it">Errors</div>
+
+      <div class="grp"><span>Apps <span class="count">3</span></span><span class="chev">▾</span></div>
+      <div class="it">Storefront</div>
+      <div class="it">Admin</div>
+      <div class="it">Landing</div>
+
+      <div class="grp"><span>Operations <span class="count">4</span></span><span class="chev">▾</span></div>
+      <div class="it">Deployment</div>
+      <div class="it">Contributing</div>
+      <div class="it">Conventions</div>
+      <div class="it">TypeScript project structure</div>
+    </div>
+  </div>
+
+  <!-- PACKAGES tab sidebar -->
+  <div class="sb-card">
+    <div class="sb-label">
+      <span>Packages tab</span>
+      <span class="lbl-tag" style="color: var(--pkg); border: 1px solid var(--pkg);">LIME CHIP</span>
+    </div>
+    <div class="sb-body">
+      <span class="tab-chip pkg">Packages</span>
+      <div class="sb-search"><span>Search packages</span><span class="kbd-s">⌘K</span></div>
+
+      <div class="grp"><span>Applications <span class="count">3</span></span><span class="chev">▾</span></div>
+      <div class="sub ext">storefront</div>
+      <div class="sub ext">admin</div>
+      <div class="sub ext">landing</div>
+
+      <div class="grp"><span>Core <span class="count">4</span></span><span class="chev">▾</span></div>
+      <div class="it">cms <span class="badge">v0.1.0</span></div>
+      <div class="sub">Overview</div>
+      <div class="sub state-cur">API</div>
+      <div class="sub">Blocks</div>
+      <div class="sub">Editor</div>
+      <div class="sub">Changelog</div>
+      <div class="it">db <span class="badge">v0.4.2</span></div>
+      <div class="it">errors <span class="badge">v0.8.1</span></div>
+      <div class="it">marketing-common</div>
+
+      <div class="grp"><span>Shopify <span class="count">2</span></span><span class="chev">▾</span></div>
+      <div class="it">shopify-graphql</div>
+      <div class="it">shopify-html</div>
+
+      <div class="grp"><span>TagTree <span class="count">4</span></span><span class="chev">▾</span></div>
+      <div class="it">tagtree/core</div>
+      <div class="it">tagtree/next</div>
+      <div class="it">tagtree/payload</div>
+      <div class="it">tagtree/shopify</div>
+
+      <div class="grp"><span>UI <span class="count">1</span></span><span class="chev">▾</span></div>
+      <div class="it">react-payment-brand-icons</div>
+    </div>
+  </div>
+
+  <!-- REFERENCE tab sidebar -->
+  <div class="sb-card">
+    <div class="sb-label">
+      <span>Reference tab</span>
+      <span class="lbl-tag" style="color: var(--ref); border: 1px solid var(--ref);">CYAN CHIP</span>
+    </div>
+    <div class="sb-body">
+      <span class="tab-chip ref">Reference</span>
+      <div class="sb-search"><span>Search symbols</span><span class="kbd-s">⌘K</span></div>
+
+      <div class="grp"><span>cms <span class="count">14/27</span></span><span class="chev">▾</span></div>
+      <div class="it">cms <span class="badge">v0.1.0</span></div>
+      <div class="sub">/api</div>
+      <div class="sym"><span>getPage</span><span class="kindmark fn">fn</span></div>
+      <div class="sym state-cur"><span>getArticle</span><span class="kindmark fn">fn</span></div>
+      <div class="sym"><span>listArticles</span><span class="kindmark fn">fn</span></div>
+      <div class="sym"><span>resolveLink</span><span class="kindmark fn">fn</span></div>
+      <div class="sub">/cache</div>
+      <div class="sub">/blocks</div>
+      <div class="sub">/blocks/render</div>
+      <div class="sub">/config</div>
+      <div class="sub">/collections</div>
+
+      <div class="grp"><span>db <span class="count">8</span></span><span class="chev">▾</span></div>
+      <div class="it">db <span class="badge">v0.4.2</span></div>
+      <div class="sub">/index</div>
+
+      <div class="grp"><span>errors <span class="count">3</span></span><span class="chev">▾</span></div>
+      <div class="it">errors <span class="badge">v0.8.1</span></div>
+      <div class="sub">/index</div>
+      <div class="sym"><span>NotFoundError</span><span class="kindmark cls">cls</span></div>
+      <div class="sym"><span>UnknownLocaleError</span><span class="kindmark cls">cls</span></div>
+    </div>
+  </div>
+
+  <!-- ERRORS tab sidebar -->
+  <div class="sb-card">
+    <div class="sb-label">
+      <span>Errors tab</span>
+      <span class="lbl-tag" style="color: var(--err); border: 1px solid var(--err);">AMBER CHIP</span>
+    </div>
+    <div class="sb-body">
+      <span class="tab-chip err">Errors</span>
+      <div class="sb-search"><span>Search error codes</span><span class="kbd-s">⌘K</span></div>
+
+      <div class="grp"><span>API_* <span class="count">11</span></span><span class="chev">▾</span></div>
+      <div class="sub">API_UNKNOWN_ERROR</div>
+      <div class="sub state-cur">API_UNKNOWN_LOCALE</div>
+      <div class="sub">API_UNKNOWN_SHOP_DOMAIN</div>
+      <div class="sub">API_UNKNOWN_COMMERCE_PROVIDER</div>
+      <div class="sub">API_INVALID_SHOP</div>
+      <div class="sub">API_INVALID_SHOP_DOMAIN</div>
+      <div class="sub">API_INVALID_HANDLE</div>
+      <div class="sub">API_INVALID_ID</div>
+      <div class="sub">API_INVALID_CART</div>
+      <div class="sub">API_METHOD_NOT_ALLOWED</div>
+      <div class="sub">API_TOO_MANY_REQUESTS</div>
+
+      <div class="grp"><span>INVALID_* <span class="count">3</span></span><span class="chev">▾</span></div>
+      <div class="sub">INVALID_HANDLE</div>
+      <div class="sub">INVALID_ID</div>
+      <div class="sub">INVALID_CART</div>
+
+      <div class="grp"><span>General <span class="count">3</span></span><span class="chev">▾</span></div>
+      <div class="sub">NOT_FOUND</div>
+      <div class="sub">UNREACHABLE</div>
+      <div class="sub">GENERIC_TODO</div>
+    </div>
+  </div>
+
+</div>
+
+<h2 class="section-h">States · hover · focus · collapsed · disabled</h2>
+<div class="grid-2">
+
+  <!-- States demo 1 -->
+  <div class="sb-card">
+    <div class="sb-label">
+      <span>Reference tab · hover &amp; focus</span>
+      <span class="lbl-tag" style="color: var(--fg-mute); border: 1px solid var(--border);">INTERACTIVE</span>
+    </div>
+    <div class="sb-body">
+      <span class="tab-chip ref">Reference</span>
+      <div class="sb-search"><span>Search symbols</span><span class="kbd-s">⌘K</span></div>
+
+      <div class="grp"><span>cms <span class="count">14/27</span></span><span class="chev">▾</span></div>
+      <div class="it">cms <span class="badge">v0.1.0</span></div>
+      <div class="sub">/api</div>
+      <div class="sym"><span>getPage</span><span class="kindmark fn">fn</span></div>
+      <div class="sym state-cur"><span>getArticle</span><span class="kindmark fn">fn</span></div>
+      <div class="sym state-hover"><span>listArticles</span><span class="kindmark fn">fn</span></div>
+      <div class="sym state-focus"><span>resolveLink</span><span class="kindmark fn">fn</span></div>
+      <div class="sub">/cache</div>
+      <div class="sub state-hover">/blocks</div>
+      <div class="sub">/blocks/render</div>
+      <div class="sub">/config</div>
+
+      <div class="notes">
+        <strong>:hover</strong> — fg + border-strong left rail + bg-1 fill<br>
+        <strong>:focus-visible</strong> — magenta outline (2.2px) + 1px offset · keyboard nav<br>
+        <strong>.cur</strong> — brand magenta + inset 2px shadow + soft-gradient bg
+      </div>
+    </div>
+  </div>
+
+  <!-- States demo 2 - collapsed -->
+  <div class="sb-card">
+    <div class="sb-label">
+      <span>Packages tab · collapsed groups</span>
+      <span class="lbl-tag" style="color: var(--fg-mute); border: 1px solid var(--border);">DENSITY</span>
+    </div>
+    <div class="sb-body">
+      <span class="tab-chip pkg">Packages</span>
+      <div class="sb-search"><span>Search packages</span><span class="kbd-s">⌘K</span></div>
+
+      <div class="grp"><span>Applications <span class="count">3</span></span><span class="chev">▾</span></div>
+      <div class="sub ext">storefront</div>
+      <div class="sub ext">admin</div>
+      <div class="sub ext">landing</div>
+
+      <div class="grp"><span>Core <span class="count">4</span></span><span class="chev">▾</span></div>
+      <div class="it">cms <span class="badge">v0.1.0</span> <span class="new-pill" style="margin-left: 0.3rem;">NEW</span></div>
+      <div class="sub state-cur">API</div>
+
+      <div class="grp collapsed"><span>Shopify <span class="count">2</span></span><span class="chev">▾</span></div>
+      <div class="grp collapsed"><span>TagTree <span class="count">4</span></span><span class="chev">▾</span></div>
+      <div class="grp collapsed"><span>UI <span class="count">1</span></span><span class="chev">▾</span></div>
+
+      <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: var(--bw-s) solid var(--border);">
+        <div class="grp"><span>Disabled item demo</span></div>
+        <div class="it state-disabled">tagtree/payload <span class="badge">unreleased</span></div>
+      </div>
+
+      <div class="notes" style="margin-top: 1.5rem;">
+        <strong>collapsed group</strong> — chevron rotated -90°, children hidden, group label stays clickable<br>
+        <strong>new pill</strong> — magenta, on packages released within 30 days<br>
+        <strong>disabled</strong> — opacity 0.4, cursor not-allowed (unreleased / private)
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<h2 class="section-h">Mobile · overlay variant</h2>
+<div class="mobile-frame">
+  <div class="mobile-bar">
+    <span style="font-size: 0.95rem;">Reference</span>
+    <span class="menu-btn">☰ Menu</span>
+  </div>
+  <div class="mobile-overlay">
+    <span class="tab-chip ref">Reference</span>
+    <div class="sb-search"><span>Search symbols</span><span class="kbd-s">⌘K</span></div>
+
+    <div class="grp"><span>cms <span class="count">14/27</span></span><span class="chev">▾</span></div>
+    <div class="sub">/api</div>
+    <div class="sym"><span>getPage</span><span class="kindmark fn">fn</span></div>
+    <div class="sym state-cur"><span>getArticle</span><span class="kindmark fn">fn</span></div>
+    <div class="sym"><span>listArticles</span><span class="kindmark fn">fn</span></div>
+
+    <div class="grp"><span>errors <span class="count">3</span></span><span class="chev">▾</span></div>
+    <div class="it">errors <span class="badge">v0.8.1</span></div>
+  </div>
+</div>
+
+<div class="notes" style="max-width: 60ch; margin: 1.5rem auto 0 auto;">
+  <strong>Mobile</strong> — sidebar becomes a slide-in overlay triggered by the hamburger button in the topbar (which replaces the search bar on narrow viewports). Tab pills move to the top of the overlay. <strong>Cmd-K still works</strong> globally to open search-as-modal.
+</div>
+
+</body>
+</html>

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>03 · Page · Packages narrative — Commerce Docs</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300..900;1,300..900&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #000; --bg-1: hsl(0 0% 4%); --bg-2: hsl(0 0% 9%); --bg-3: hsl(0 0% 13%);
+    --fg: #fff; --fg-mute: hsl(0 0% 51%); --fg-dim: hsl(0 0% 36%);
+    --border: hsl(0 0% 18%); --border-strong: hsl(0 0% 28%);
+    --brand: #ed1e79; --brand-glow: rgb(237 30 121 / 0.45); --brand-soft: rgb(237 30 121 / 0.10); --brand-hover: hsl(330 86% 60%);
+    --pkg: hsl(95 80% 55%); --ref: hsl(190 95% 55%); --err: hsl(28 95% 58%); --info: hsl(220 80% 65%);
+    --bw: 0.2rem; --bw-s: 0.138rem; --bw-l: 0.29rem;
+    --radius-sm: 4px; --radius: 0.45rem; --radius-lg: 12px;
+    --font-display: 'Montserrat', system-ui, sans-serif;
+    --font-body: 'Montserrat', system-ui, sans-serif;
+    --font-mono: 'Geist Mono', ui-monospace, monospace;
+    --duration: 150ms; --ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-weight: 500; min-height: 100vh; }
+  ::selection { background: var(--brand); color: var(--bg); }
+  *:focus-visible { outline: var(--bw-s) solid var(--brand); outline-offset: 3px; border-radius: 3px; }
+
+  .topbar { display: grid; grid-template-columns: 260px 1fr 280px; align-items: center; padding: 0.85rem 1.5rem; border-bottom: var(--bw) solid var(--border); gap: 1.5rem; position: sticky; top: 0; background: rgb(0 0 0 / 0.85); backdrop-filter: blur(12px); z-index: 10; }
+  .wordmark { height: 26px; width: auto; }
+  .tabs { display: flex; gap: 0; border: var(--bw) solid var(--border); border-radius: var(--radius); padding: 0.18rem; width: fit-content; justify-self: center; }
+  .tab { font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: 0.65rem; letter-spacing: 0.1em; padding: 0.45rem 0.95rem; border-radius: calc(var(--radius) - 0.18rem); color: var(--fg-mute); border: 0; background: transparent; cursor: pointer; transition: color var(--duration), background var(--duration); }
+  .tab:hover { color: var(--fg); }
+  .tab.active { background: var(--brand); color: var(--bg); box-shadow: 0 0 14px var(--brand-glow); }
+  .search { border: var(--bw) solid var(--border); border-radius: var(--radius); padding: 0.45rem 0.8rem; font-family: var(--font-mono); font-size: 0.72rem; color: var(--fg-mute); display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; cursor: pointer; transition: border-color var(--duration), color var(--duration); }
+  .search:hover { border-color: var(--border-strong); color: var(--fg); }
+  .kbd { font-family: var(--font-mono); font-size: 0.6rem; border: 1px solid var(--border-strong); border-radius: 3px; padding: 1px 5px; color: var(--fg); background: var(--bg-2); }
+
+  .shell { display: grid; grid-template-columns: 280px 1fr 240px; min-height: calc(100vh - 56px); }
+  .side { border-right: var(--bw) solid var(--border); padding: 1.1rem 1rem; font-size: 0.8rem; overflow-y: auto; position: sticky; top: 56px; height: calc(100vh - 56px); }
+  .toc { border-left: var(--bw) solid var(--border); padding: 1.1rem 1rem; font-size: 0.78rem; overflow-y: auto; position: sticky; top: 56px; height: calc(100vh - 56px); }
+
+  .tab-chip { display: inline-block; font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: 0.58rem; letter-spacing: 0.16em; padding: 0.25rem 0.55rem; border: var(--bw-s) solid var(--pkg); color: var(--pkg); border-radius: 4px; margin-bottom: 1.1rem; }
+  .grp { font-family: var(--font-mono); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--fg-mute); margin: 1.1rem 0 0.45rem 0; padding-bottom: 0.3rem; border-bottom: 1px solid var(--border); }
+  .grp:first-of-type { margin-top: 0; }
+  .it { font-family: var(--font-display); font-weight: 700; color: var(--fg); padding: 0.25rem 0; font-size: 0.82rem; cursor: pointer; transition: color var(--duration); }
+  .it:hover { color: var(--brand-hover); }
+  .it .badge { font-family: var(--font-mono); font-size: 0.58rem; color: var(--fg-mute); font-weight: 400; margin-left: 0.4rem; }
+  .sub { font-family: var(--font-mono); font-size: 0.74rem; color: var(--fg-mute); padding: 0.2rem 0 0.2rem 0.85rem; border-left: var(--bw-s) solid transparent; margin-left: 0.45rem; cursor: pointer; transition: color var(--duration), border-color var(--duration); display: flex; align-items: center; justify-content: space-between; }
+  .sub:hover { color: var(--fg); border-left-color: var(--border-strong); }
+  .sub.cur { color: var(--brand); border-left-color: var(--brand); background: linear-gradient(to right, var(--brand-soft), transparent 60%); box-shadow: inset 2px 0 0 var(--brand); }
+  .sub.ext::after { content: " ↗"; color: var(--fg-mute); font-size: 0.65rem; margin-left: 0.35rem; }
+  .sub.ext:hover::after { color: var(--brand); }
+
+  .content { padding: 2.5rem 3rem 4rem 3rem; max-width: 940px; }
+
+  .crumb { font-family: var(--font-mono); font-size: 0.7rem; color: var(--fg-mute); display: flex; align-items: center; gap: 0.3rem; flex-wrap: wrap; margin-bottom: 0.85rem; }
+  .crumb a { color: var(--fg-mute); text-decoration: none; transition: color var(--duration); padding: 1px 4px; margin: 0 -4px; border-radius: 2px; }
+  .crumb a:hover { color: var(--brand); }
+  .crumb .sep { color: var(--border-strong); }
+  .crumb .leaf { color: var(--fg); padding: 1px 4px; }
+
+  /* Reference banner — strong link out to /docs/reference/cms/api/ */
+  .ref-banner { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 1.5rem; padding: 0.85rem 1.2rem; border: var(--bw) solid var(--border); border-radius: var(--radius); background: var(--bg-1); margin-bottom: 2rem; transition: border-color var(--duration); text-decoration: none; cursor: pointer; }
+  .ref-banner:hover { border-color: var(--ref); }
+  .ref-banner .label { font-family: var(--font-display); font-weight: 800; text-transform: uppercase; font-size: 0.6rem; letter-spacing: 0.22em; color: var(--ref); }
+  .ref-banner .body { font-family: var(--font-mono); font-size: 0.85rem; color: var(--fg); }
+  .ref-banner .body .path { color: var(--ref); }
+  .ref-banner .meta { font-family: var(--font-mono); font-size: 0.7rem; color: var(--fg-mute); }
+  .ref-banner .arrow { color: var(--ref); font-size: 1rem; transition: transform var(--duration); }
+  .ref-banner:hover .arrow { transform: translateX(3px); }
+
+  h1.pkg-h1 { font-family: var(--font-display); font-weight: 900; font-size: 3.2rem; letter-spacing: -0.04em; line-height: 1; margin: 0 0 0.55rem 0; }
+  h1.pkg-h1 .acc { color: var(--brand); }
+  .meta-line { font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--fg-mute); margin-bottom: 2.5rem; display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; }
+  .meta-line .dot { color: var(--pkg); }
+  .meta-line .sep { color: var(--border-strong); }
+  .meta-line .ver { color: var(--pkg); padding: 0.15rem 0.45rem; background: hsl(95 80% 55% / 0.1); border: 1px solid hsl(95 80% 55% / 0.4); border-radius: 3px; font-size: 0.65rem; }
+
+  /* Prose */
+  .prose { font-family: var(--font-body); font-weight: 500; font-size: 1.02rem; line-height: 1.7; color: var(--fg); max-width: 64ch; }
+  .prose p { margin-bottom: 1.2rem; }
+  .prose p:last-child { margin-bottom: 0; }
+  .prose code { font-family: var(--font-mono); background: var(--bg-2); padding: 0 0.3rem; border-radius: 3px; font-size: 0.85em; color: var(--fg); }
+  .prose ul { margin: 0 0 1.2rem 0; padding-left: 1.3rem; }
+  .prose ul li { margin-bottom: 0.4rem; line-height: 1.6; }
+  .prose ul li::marker { color: var(--brand); }
+  .prose strong { font-weight: 700; color: var(--fg); }
+
+  .pill { display: inline-block; font-family: var(--font-mono); font-size: 0.82em; padding: 0.05rem 0.4rem; border-radius: 99px; border: var(--bw-s) solid; line-height: 1.45; text-decoration: none; background: var(--bg-2); font-weight: 500; transition: all var(--duration); cursor: pointer; }
+  .pill.ref-link { border-color: var(--ref); color: var(--ref); background: hsl(190 95% 55% / 0.1); }
+  .pill.ref-link:hover { background: hsl(190 95% 55% / 0.22); }
+  .pill.err-link { border-color: var(--err); color: var(--err); background: hsl(28 95% 58% / 0.1); }
+  .pill.pkg-link { border-color: var(--pkg); color: var(--pkg); background: hsl(95 80% 55% / 0.1); }
+  .pill.docs-link { border-color: var(--brand); color: var(--brand); background: var(--brand-soft); }
+  .pill.docs-link:hover { background: rgb(237 30 121 / 0.22); }
+  .pill.plain { border-color: var(--border-strong); color: var(--fg); }
+
+  /* Section heads with lime accent left rail */
+  h2.section-h2 { font-family: var(--font-display); font-weight: 800; font-size: 1.7rem; letter-spacing: -0.02em; line-height: 1.15; margin: 3rem 0 1rem 0; padding-left: 0.85rem; border-left: var(--bw-l) solid var(--pkg); position: relative; }
+  h2.section-h2 .anchor { color: var(--fg-dim); font-family: var(--font-mono); font-size: 0.85rem; font-weight: 400; opacity: 0; transition: opacity var(--duration); margin-left: 0.5rem; text-decoration: none; }
+  h2.section-h2:hover .anchor { opacity: 1; }
+  h2.section-h2 .anchor:hover { color: var(--brand); }
+
+  h3.section-h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; letter-spacing: -0.015em; line-height: 1.3; margin: 1.8rem 0 0.6rem 0; color: var(--fg); }
+  h3.section-h3 code { font-family: var(--font-mono); background: var(--bg-2); padding: 0 0.3rem; border-radius: 3px; font-size: 0.85em; color: var(--brand); }
+
+  /* Codeblock */
+  .codeblock { font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.7; background: var(--bg-2); border: var(--bw) solid var(--border); border-radius: var(--radius); margin: 1.2rem 0; overflow: hidden; }
+  .codeblock .titlebar { display: flex; justify-content: space-between; align-items: center; padding: 0.45rem 0.85rem; border-bottom: var(--bw-s) solid var(--border); background: var(--bg-1); }
+  .codeblock .titlebar .file { font-family: var(--font-mono); font-size: 0.65rem; color: var(--fg-mute); letter-spacing: 0.04em; }
+  .codeblock .copy { font-family: var(--font-display); font-weight: 700; font-size: 0.55rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-mute); padding: 0.22rem 0.5rem; border: var(--bw-s) solid var(--border); border-radius: 3px; background: var(--bg); cursor: pointer; transition: all var(--duration); }
+  .codeblock .copy:hover { color: var(--brand); border-color: var(--brand); }
+  .codeblock pre { padding: 0.95rem 1.1rem; overflow-x: auto; }
+  .codeblock pre::-webkit-scrollbar { height: 6px; }
+  .codeblock pre::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+  .codeblock .kw { color: hsl(290 100% 75%); }
+  .codeblock .fn { color: var(--ref); font-weight: 600; }
+  .codeblock .type { color: var(--pkg); }
+  .codeblock .str { color: var(--err); }
+  .codeblock .prm { color: var(--fg); }
+  .codeblock .cmt { color: var(--fg-mute); font-style: italic; }
+
+  /* Inline AutoTypeTable */
+  .autotypes { border: var(--bw) solid var(--border); border-radius: var(--radius); overflow: hidden; margin: 1.2rem 0; }
+  .autotypes-header { padding: 0.55rem 1rem; background: var(--bg-1); border-bottom: var(--bw-s) solid var(--border); font-family: var(--font-mono); font-size: 0.65rem; color: var(--fg-mute); text-transform: uppercase; letter-spacing: 0.14em; display: flex; justify-content: space-between; }
+  .autotypes-header .type-name { color: var(--pkg); font-weight: 600; }
+  .autotype-row { display: grid; grid-template-columns: 1.1fr 1.3fr 2.4fr; gap: 1rem; padding: 0.55rem 1rem; border-bottom: 1px solid var(--border); align-items: baseline; transition: background var(--duration); }
+  .autotype-row:last-child { border-bottom: 0; }
+  .autotype-row:hover { background: var(--bg-1); }
+  .autotype-row .pname { font-family: var(--font-mono); font-weight: 600; font-size: 0.84rem; color: var(--fg); }
+  .autotype-row .pname .opt { color: var(--fg-mute); font-weight: 400; }
+  .autotype-row .ptype { font-family: var(--font-mono); font-size: 0.76rem; color: var(--pkg); }
+  .autotype-row .pdesc { font-family: var(--font-body); font-weight: 500; font-size: 0.82rem; color: var(--fg-mute); line-height: 1.55; }
+
+  /* Callout */
+  .callout { display: grid; grid-template-columns: auto 1fr; gap: 0.85rem; padding: 0.9rem 1.1rem; border: var(--bw-s) solid; border-left: var(--bw-l) solid; border-radius: var(--radius); margin: 1.4rem 0; font-family: var(--font-body); font-size: 0.92rem; line-height: 1.6; }
+  .callout.tip { border-color: var(--pkg); background: hsl(95 80% 55% / 0.06); color: var(--fg); }
+  .callout.tip .label { color: var(--pkg); }
+  .callout .label { font-family: var(--font-display); font-weight: 800; text-transform: uppercase; font-size: 0.6rem; letter-spacing: 0.18em; align-self: flex-start; padding-top: 0.18rem; }
+  .callout code { font-family: var(--font-mono); background: var(--bg-2); padding: 0 0.3rem; border-radius: 3px; font-size: 0.85em; color: var(--fg); }
+
+  /* Footer */
+  .pkg-footer { margin-top: 3rem; padding-top: 1.5rem; border-top: var(--bw-s) solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  .pkg-footer .left { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+  .pkg-footer .right { display: flex; gap: 0.5rem; }
+  .pkg-footer .meta-row { font-family: var(--font-mono); font-size: 0.72rem; color: var(--fg-mute); display: flex; gap: 1rem; align-items: center; }
+  .action { font-family: var(--font-mono); font-size: 0.7rem; color: var(--fg); text-decoration: none; padding: 0.4rem 0.7rem; border: var(--bw-s) solid var(--border); border-radius: 4px; transition: all var(--duration); display: inline-flex; align-items: center; gap: 0.35rem; }
+  .action:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-soft); }
+
+  .footer-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-top: 2rem; padding-top: 1.5rem; border-top: var(--bw-s) solid var(--border); }
+  .nav-card { display: flex; flex-direction: column; gap: 0.3rem; padding: 0.85rem 1rem; border: var(--bw) solid var(--border); border-radius: var(--radius); text-decoration: none; transition: all var(--duration); }
+  .nav-card:hover { border-color: var(--brand); background: var(--brand-soft); }
+  .nav-card .dir { font-family: var(--font-mono); font-size: 0.6rem; color: var(--fg-dim); text-transform: uppercase; letter-spacing: 0.16em; }
+  .nav-card .title { font-family: var(--font-display); font-weight: 700; font-size: 0.92rem; color: var(--fg); }
+  .nav-card:hover .title { color: var(--brand); }
+  .nav-card.next { text-align: right; }
+
+  /* TOC */
+  .toc-label { font-family: var(--font-mono); font-size: 0.6rem; color: var(--fg-mute); text-transform: uppercase; letter-spacing: 0.18em; margin-bottom: 0.75rem; padding-bottom: 0.3rem; border-bottom: 1px solid var(--border); }
+  .toc-item { font-family: var(--font-body); font-weight: 500; font-size: 0.78rem; padding: 0.25rem 0 0.25rem 0.7rem; color: var(--fg-mute); border-left: var(--bw-s) solid transparent; cursor: pointer; transition: color var(--duration), border-color var(--duration); }
+  .toc-item:hover { color: var(--fg); border-left-color: var(--border-strong); }
+  .toc-item.cur { color: var(--brand); border-left-color: var(--brand); font-weight: 600; }
+  .toc-item.depth-2 { padding-left: 1.4rem; font-size: 0.74rem; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <svg class="wordmark" viewBox="0 0 122.6429 37.33">
+    <path fill="#ed1e79" d="M 6.865 2.648 L 25.169 2.648 C 28.961 2.648 32.035 5.721 32.035 9.513 L 32.035 34.682 L 6.865 34.682 C 3.074 34.682 0 31.609 0 27.817 L 0 9.513 C 0 5.721 3.074 2.648 6.865 2.648 Z"/>
+    <g transform="matrix(0.858 0 0 0.858 5.68 8.25)" fill="none" stroke="#fefefe" stroke-width="1.748" stroke-linecap="round" stroke-linejoin="bevel">
+      <path d="M5.615 8.592C5.693 8.107 6.111 7.75 6.603 7.75H17.397C17.889 7.75 18.307 8.107 18.385 8.592L20.065 19.092C20.162 19.7 19.693 20.25 19.077 20.25H4.923C4.307 20.25 3.838 19.7 3.935 19.092Z"/>
+      <path d="M8.75 12.25V6C8.75 4.21 10.21 2.75 12 2.75C13.79 2.75 15.25 4.21 15.25 6V12.25"/>
+    </g>
+    <text x="38" y="22" font-family="Montserrat, sans-serif" font-weight="900" font-size="13" fill="#fff" letter-spacing="-0.4">NORDCOMMERCE</text>
+  </svg>
+  <div class="tabs">
+    <button class="tab">Docs</button>
+    <button class="tab active">Packages</button>
+    <button class="tab">Reference</button>
+    <button class="tab">Errors</button>
+  </div>
+  <div class="search" tabindex="0"><span>Search the docs</span><span><span class="kbd">⌘</span> <span class="kbd">K</span></span></div>
+</div>
+
+<div class="shell">
+
+  <nav class="side">
+    <span class="tab-chip">Packages</span>
+
+    <div class="grp">Applications</div>
+    <div class="sub ext">storefront</div>
+    <div class="sub ext">admin</div>
+    <div class="sub ext">landing</div>
+
+    <div class="grp">Core</div>
+    <div class="it">cms <span class="badge">v0.1.0</span></div>
+    <div class="sub">Overview</div>
+    <div class="sub cur">API</div>
+    <div class="sub">Blocks</div>
+    <div class="sub">Collections</div>
+    <div class="sub">Editor</div>
+    <div class="sub" style="display: flex; align-items: center; justify-content: space-between;">Changelog <span style="font-size: 0.55rem; color: var(--pkg); padding: 1px 4px; border: 1px solid hsl(95 80% 55% / 0.35); border-radius: 3px;">v0.1.0</span></div>
+
+    <div class="it" style="margin-top: 0.7rem;">db <span class="badge">v0.4.2</span></div>
+    <div class="it">errors <span class="badge">v0.8.1</span></div>
+    <div class="it">marketing-common</div>
+
+    <div class="grp">Shopify</div>
+    <div class="it">shopify-graphql</div>
+    <div class="it">shopify-html</div>
+
+    <div class="grp">TagTree</div>
+    <div class="it">tagtree/core</div>
+    <div class="it">tagtree/next</div>
+    <div class="it">tagtree/payload</div>
+    <div class="it">tagtree/shopify</div>
+
+    <div class="grp">UI</div>
+    <div class="it">react-payment-brand-icons</div>
+  </nav>
+
+  <main class="content">
+
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a href="#">packages</a>
+      <span class="sep">/</span>
+      <a href="#">cms</a>
+      <span class="sep">/</span>
+      <span class="leaf">api</span>
+    </nav>
+
+    <a class="ref-banner" href="#">
+      <div>
+        <div class="label">Reference catalog</div>
+        <div class="body"><span class="path">reference / cms / api</span> · 9 exports · 4 functions, 5 types</div>
+      </div>
+      <div class="meta">v0.1.0</div>
+      <div class="arrow">→</div>
+    </a>
+
+    <h1 class="pkg-h1">Query <span class="acc">API</span></h1>
+    <div class="meta-line">
+      <span class="dot">●</span>
+      <span>@nordcom/commerce-cms</span>
+      <span class="sep">·</span>
+      <span class="ver">v0.1.0</span>
+      <span class="sep">·</span>
+      <span>./api subpath</span>
+    </div>
+
+    <div class="prose">
+      <p>
+        The package's <code>./api</code> subpath exposes a small, typed read API on top of Payload's Local API. Every reader is <code>'server-only'</code>, takes <code>{ shop, locale, draft? }</code>, and returns the first matching doc (or <a class="pill plain">null</a>).
+      </p>
+
+      <h2 class="section-h2" id="shape">Shape of a reader<a class="anchor" href="#shape">#</a></h2>
+      <p>
+        All single-doc readers — <a class="pill ref-link">getPage</a>, <a class="pill ref-link">getArticle</a>, <a class="pill ref-link">getHeader</a> — follow the same template: tenant-scope on <code>shop.id</code>, apply the locale, fall back to the shop's default locale, depth 2, limit 1.
+      </p>
+
+      <div class="autotypes">
+        <div class="autotypes-header">
+          <span><span class="type-name">GetPageArgs</span> · inline from fumadocs-typescript</span>
+          <span>from cms/api</span>
+        </div>
+        <div class="autotype-row">
+          <div class="pname">shop</div>
+          <div class="ptype">ShopRef</div>
+          <div class="pdesc">Tenant reference; must include <code>id</code>.</div>
+        </div>
+        <div class="autotype-row">
+          <div class="pname">locale</div>
+          <div class="ptype">LocaleRef</div>
+          <div class="pdesc">Request locale; falls back to the shop's default.</div>
+        </div>
+        <div class="autotype-row">
+          <div class="pname">slug</div>
+          <div class="ptype">string</div>
+          <div class="pdesc">URL slug of the entity (path segment).</div>
+        </div>
+        <div class="autotype-row">
+          <div class="pname">draft <span class="opt">?</span></div>
+          <div class="ptype">boolean</div>
+          <div class="pdesc">When <code>true</code>, includes unpublished drafts; editor-only.</div>
+        </div>
+      </div>
+
+      <p>
+        Throws <a class="pill err-link">NotFoundError</a> when the slug is structurally invalid; returns <a class="pill plain">null</a> when the slug doesn't resolve. See <a class="pill docs-link">Concepts › Multi-tenancy</a> for the tenant-scoping invariant.
+      </p>
+
+      <h3 class="section-h3"><code>getPayloadInstance()</code></h3>
+      <p>
+        Returns the singleton <code>Payload</code> instance for this process. Booted lazily on first call with <code>includeAdmin: false</code>, so the storefront pays no admin-UI cost. Every subsequent call resolves to the same instance — no second Mongo connection.
+      </p>
+
+      <div class="codeblock">
+        <div class="titlebar">
+          <span class="file">apps/storefront/app/[domain]/[locale]/page.tsx</span>
+          <button class="copy">Copy</button>
+        </div>
+<pre><span class="kw">import</span> { <span class="fn">getPayloadInstance</span> } <span class="kw">from</span> <span class="str">'@nordcom/commerce-cms/api'</span>;
+
+<span class="kw">const</span> payload = <span class="kw">await</span> <span class="fn">getPayloadInstance</span>();</pre>
+      </div>
+
+      <div class="callout tip">
+        <span class="label">Tip</span>
+        <div>
+          For tenant-root reads that aren't entity-specific (e.g. sitemap indexes), use <code>cmsTenantRootTags(shop)</code> from <a class="pill ref-link">cms/cache</a> to get the matching fanout tags.
+        </div>
+      </div>
+
+      <h2 class="section-h2" id="cache">Cache invalidation<a class="anchor" href="#cache">#</a></h2>
+      <p>
+        CMS-side <code>afterChange</code> hooks call <code>revalidateTag</code> with three tags per mutation:
+      </p>
+
+      <div class="codeblock">
+        <div class="titlebar">
+          <span class="file">cache tags · per mutation</span>
+        </div>
+<pre>cms.&lt;tenantId&gt;.&lt;collection&gt;.&lt;key&gt;   <span class="cmt"># e.g. cms.shop-1.pages.home</span>
+cms.&lt;tenantId&gt;.&lt;collection&gt;         <span class="cmt"># e.g. cms.shop-1.pages</span>
+cms.&lt;tenantId&gt;                      <span class="cmt"># broad sweep for the whole tenant</span></pre>
+      </div>
+
+      <p>
+        <code>&lt;key&gt;</code> is the slug for <code>pages</code> / <code>articles</code>, the <code>shopifyHandle</code> for product / collection metadata, or the doc id for globals. Storefront read paths attach all three tags so a single edit invalidates exactly what changed without sweeping the whole site.
+      </p>
+    </div>
+
+    <div class="pkg-footer">
+      <div class="left">
+        <div class="meta-row">
+          <span>Last edited 2 weeks ago by Filiph Sandström</span>
+          <span>·</span>
+          <span>v0.1.0</span>
+        </div>
+      </div>
+      <div class="right">
+        <a class="action" href="#">Edit on GitHub ↗</a>
+        <a class="action" href="#">Report issue ↗</a>
+      </div>
+    </div>
+
+    <nav class="footer-nav" aria-label="Pagination">
+      <a class="nav-card" href="#">
+        <span class="dir">← Previous · cms</span>
+        <span class="title">Overview</span>
+      </a>
+      <a class="nav-card next" href="#">
+        <span class="dir">Next · cms →</span>
+        <span class="title">Blocks</span>
+      </a>
+    </nav>
+
+  </main>
+
+  <aside class="toc">
+    <div class="toc-label">On this page</div>
+    <div class="toc-item">Introduction</div>
+    <div class="toc-item cur">Shape of a reader</div>
+    <div class="toc-item depth-2">getPayloadInstance()</div>
+    <div class="toc-item depth-2">resolveLink()</div>
+    <div class="toc-item">Cache invalidation</div>
+    <div class="toc-item">Test seams</div>
+    <div class="toc-label" style="margin-top: 1.5rem;">Related</div>
+    <div class="toc-item">↗ Reference · cms / api</div>
+    <div class="toc-item">↗ Concepts · Multi-tenancy</div>
+  </aside>
+
+</div>
+
+</body>
+</html>

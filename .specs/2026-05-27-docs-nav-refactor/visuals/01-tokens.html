@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>01 · Tokens — Commerce Docs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300..900;1,300..900&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #000;
+    --bg-1: hsl(0 0% 4%);
+    --bg-2: hsl(0 0% 9%);
+    --bg-3: hsl(0 0% 13%);
+    --fg: #fff;
+    --fg-mute: hsl(0 0% 51%);
+    --fg-dim: hsl(0 0% 36%);
+    --border: hsl(0 0% 18%);
+    --border-strong: hsl(0 0% 28%);
+    --brand: #ed1e79;
+    --brand-rgb: 237 30 121;
+    --brand-glow: rgb(237 30 121 / 0.45);
+    --brand-soft: rgb(237 30 121 / 0.10);
+    --brand-hover: hsl(330 86% 60%);
+    --pkg: hsl(95 80% 55%);
+    --ref: hsl(190 95% 55%);
+    --err: hsl(28 95% 58%);
+    --info: hsl(220 80% 65%);
+
+    --bw: 0.2rem;
+    --bw-s: 0.138rem;
+    --bw-l: 0.29rem;
+    --radius-sm: 4px;
+    --radius: 0.45rem;
+    --radius-lg: 12px;
+
+    --font-display: 'Montserrat', system-ui, sans-serif;
+    --font-body: 'Montserrat', system-ui, sans-serif;
+    --font-mono: 'Geist Mono', ui-monospace, monospace;
+
+    --duration-fast: 100ms;
+    --duration: 150ms;
+    --duration-slow: 250ms;
+    --ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-weight: 500; }
+  ::selection { background: var(--brand); color: var(--bg); }
+  *:focus-visible { outline: var(--bw-s) solid var(--brand); outline-offset: 3px; border-radius: 3px; }
+
+  body { padding: 3rem 3.5rem; max-width: 1200px; margin: 0 auto; }
+  h1 { font-family: var(--font-display); font-weight: 900; font-size: 3rem; letter-spacing: -0.04em; line-height: 1; margin-bottom: 0.6rem; }
+  h1 .accent { color: var(--brand); }
+  .sub { color: var(--fg-mute); font-size: 0.95rem; margin-bottom: 3rem; max-width: 60ch; line-height: 1.5; }
+
+  h2.section {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--fg-mute);
+    margin: 3rem 0 1rem 0;
+    padding-bottom: 0.4rem;
+    border-bottom: var(--bw-s) solid var(--border);
+  }
+
+  /* Colors */
+  .color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+  .swatch {
+    border: var(--bw) solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--bg-1);
+  }
+  .swatch-color { height: 90px; position: relative; }
+  .swatch-color::after {
+    content: attr(data-on);
+    position: absolute;
+    bottom: 8px;
+    left: 10px;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: rgb(255 255 255 / 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .swatch-meta {
+    padding: 0.75rem 0.85rem 0.85rem 0.85rem;
+    border-top: var(--bw-s) solid var(--border);
+  }
+  .swatch-name { font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; }
+  .swatch-vals { font-family: var(--font-mono); font-size: 0.66rem; color: var(--fg-mute); margin-top: 0.3rem; line-height: 1.5; }
+  .swatch-vals span { display: block; }
+  .ratio { display: inline-block; padding: 1px 5px; border-radius: 3px; font-size: 0.6rem; margin-left: 0.3rem; }
+  .ratio.aa { background: hsl(140 60% 50% / 0.18); color: hsl(140 60% 70%); border: 1px solid hsl(140 60% 50% / 0.4); }
+  .ratio.fail { background: hsl(0 60% 50% / 0.18); color: hsl(0 60% 70%); border: 1px solid hsl(0 60% 50% / 0.4); }
+
+  /* Typography */
+  .type-row {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 2rem;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--border);
+    align-items: baseline;
+  }
+  .type-row .label { font-family: var(--font-mono); font-size: 0.7rem; color: var(--fg-mute); text-transform: uppercase; letter-spacing: 0.14em; line-height: 1.6; }
+  .type-row .label .name { color: var(--fg); }
+  .type-row .label .meta { display: block; margin-top: 0.3rem; color: var(--fg-dim); font-size: 0.62rem; }
+  .type-row .sample { color: var(--fg); }
+  .t-h1 { font-family: var(--font-display); font-weight: 900; font-size: 3rem; letter-spacing: -0.04em; line-height: 1; }
+  .t-h2 { font-family: var(--font-display); font-weight: 800; font-size: 2rem; letter-spacing: -0.03em; line-height: 1.1; }
+  .t-h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.4rem; letter-spacing: -0.02em; line-height: 1.2; }
+  .t-eyebrow { font-family: var(--font-display); font-weight: 800; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.22em; color: var(--fg-mute); }
+  .t-body { font-family: var(--font-body); font-weight: 500; font-size: 0.95rem; line-height: 1.6; max-width: 60ch; }
+  .t-small { font-family: var(--font-body); font-weight: 500; font-size: 0.82rem; line-height: 1.55; color: var(--fg-mute); }
+  .t-mono { font-family: var(--font-mono); font-weight: 400; font-size: 0.85rem; line-height: 1.55; }
+  .t-mono-small { font-family: var(--font-mono); font-weight: 500; font-size: 0.7rem; color: var(--fg-mute); letter-spacing: 0.04em; }
+  .t-kbd { font-family: var(--font-mono); font-size: 0.62rem; border: 1px solid var(--border-strong); border-radius: 3px; padding: 2px 6px; background: var(--bg-2); color: var(--fg); display: inline-block; }
+
+  /* Spacing */
+  .space-row { display: grid; grid-template-columns: 240px 1fr; gap: 2rem; padding: 0.8rem 0; align-items: center; border-bottom: 1px solid var(--border); }
+  .space-row .label { font-family: var(--font-mono); font-size: 0.7rem; color: var(--fg-mute); }
+  .space-row .label .name { color: var(--fg); }
+  .space-bar { background: var(--brand-soft); border-left: var(--bw-s) solid var(--brand); height: 16px; }
+
+  /* Borders */
+  .border-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+  .border-card { padding: 1.5rem; background: var(--bg-1); }
+  .border-card.bw-s { border: var(--bw-s) solid var(--fg); }
+  .border-card.bw { border: var(--bw) solid var(--fg); }
+  .border-card.bw-l { border: var(--bw-l) solid var(--fg); }
+  .border-card .label { font-family: var(--font-mono); font-size: 0.7rem; color: var(--fg-mute); }
+  .border-card .label .name { color: var(--fg); display: block; font-weight: 600; margin-bottom: 0.3rem; }
+
+  /* Radius */
+  .radius-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+  .radius-card { height: 90px; background: var(--brand-soft); border: var(--bw) solid var(--brand); display: flex; align-items: end; justify-content: flex-start; padding: 0.7rem 0.85rem; }
+  .radius-card.r-sm { border-radius: var(--radius-sm); }
+  .radius-card.r { border-radius: var(--radius); }
+  .radius-card.r-lg { border-radius: var(--radius-lg); }
+  .radius-card .label { font-family: var(--font-mono); font-size: 0.66rem; color: var(--fg); }
+
+  /* Motion */
+  .motion-row { display: grid; grid-template-columns: 240px 1fr; gap: 2rem; padding: 1rem 0; border-bottom: 1px solid var(--border); }
+  .motion-bar { height: 20px; background: var(--bg-1); border: var(--bw-s) solid var(--border); border-radius: var(--radius-sm); position: relative; overflow: hidden; }
+  .motion-bar::before {
+    content: '';
+    position: absolute;
+    top: 2px; bottom: 2px; left: 2px;
+    width: 30%;
+    background: var(--brand);
+    border-radius: 2px;
+    animation-name: slide;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-timing-function: var(--ease);
+  }
+  .motion-row[data-d="fast"] .motion-bar::before { animation-duration: var(--duration-fast); }
+  .motion-row[data-d="default"] .motion-bar::before { animation-duration: var(--duration); }
+  .motion-row[data-d="slow"] .motion-bar::before { animation-duration: var(--duration-slow); }
+  @keyframes slide { from { left: 2px; } to { left: calc(70% - 2px); } }
+
+  /* Footnote */
+  .footnote { font-family: var(--font-mono); font-size: 0.65rem; color: var(--fg-dim); margin-top: 4rem; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<h1>01 · <span class="accent">Tokens</span></h1>
+<p class="sub">Single source of truth for color, type, spacing, borders, radii, and motion. Maps 1:1 onto Fumadocs' CSS variables (<code style="font-family: var(--font-mono);">--fd-*</code>) at integration time. Anything not in here is a deviation and needs justification in review.</p>
+
+<h2 class="section">Color · brand &amp; canvas</h2>
+<div class="color-grid">
+  <div class="swatch">
+    <div class="swatch-color" data-on="primary" style="background: #ed1e79;"></div>
+    <div class="swatch-meta">
+      <div class="swatch-name">brand</div>
+      <div class="swatch-vals">
+        <span>#ed1e79 · hsl(330 86% 53%)</span>
+        <span>on bg <span class="ratio aa">5.6:1 AA</span></span>
+        <span>nav · current · selection · link hover</span>
+      </div>
+    </div>
+  </div>
+  <div class="swatch">
+    <div class="swatch-color" data-on="primary" style="background: hsl(330 86% 60%);"></div>
+    <div class="swatch-meta">
+      <div class="swatch-name">brand-hover</div>
+      <div class="swatch-vals">
+        <span>hsl(330 86% 60%)</span>
+        <span>tab :hover · button :hover</span>
+      </div>
+    </div>
+  </div>
+  <div class="swatch">
+    <div class="swatch-color" data-on="primary" style="background: #000; border-bottom: var(--bw-s) solid var(--border);"></div>
+    <div class="swatch-meta">
+      <div class="swatch-name">bg</div>
+      <div class="swatch-vals">
+        <span>#000000 · hsl(0 0% 0%)</span>
+        <span>page canvas — pure black, not navy</span>
+      </div>
+    </div>
+  </div>
+  <div class="swatch">
+    <div class="swatch-color" style="background: hsl(0 0% 4%);"></div>
+    <div class="swatch-meta">
+      <div class="swatch-name">bg-1</div>
+      <div class="swatch-vals"><span>hsl(0 0% 4%)</span><span>nested cards</span></div>
+    </div>
+  </div>
+  <div class="swatch">
+    <div class="swatch-color" style="background: hsl(0 0% 9%);"></div>
+    <div class="swatch-meta">
+      <div class="swatch-name">bg-2</div>
+      <div class="swatch-vals"><span>hsl(0 0% 9%)</span><span>codeblocks · pills · kbd</span></div>
+    </div>
+  </div>
+  <div class="swatch">
+    <div class="swatch-color" style="background: hsl(0 0% 13%);"></div>
+    <div class="swatch-meta">
+      <div class="swatch-name">bg-3</div>
+      <div class="swatch-vals"><span>hsl(0 0% 13%)</span><span>elevated callouts</span></div>
+    </div>
+  </div>
+</div>
+
+<h2 class="section">Color · foreground &amp; borders</h2>
+<div class="color-grid">
+  <div class="swatch">
+    <div class="swatch-color" style="background: #fff;"></div>
+    <div class="swatch-meta">
+      <div class="swatch-name">fg</div>
+      <div class="swatch-vals"><span>#ffffff</span><span>headings · primary text · code chars</span></div>
+    </div>
+  </div>
+  <div class="swatch">
+    <div class="swatch-color" style="background: hsl(0 0% 51%);"></div>
+    <div class="swatch-meta">
+      <div class="swatch-name">fg-mute</div>
+      <div class="swatch-vals"><span>hsl(0 0% 51%) · #828282</span><span>on bg <span class="ratio aa">5.2:1 AA</span></span><span>secondary text · breadcrumb · eyebrow</span></div>
+    </div>
+  </div>
+  <div class="swatch">
+    <div class="swatch-color" style="background: hsl(0 0% 36%);"></div>
+    <div class="swatch-meta">
+      <div class="swatch-name">fg-dim</div>
+      <div class="swatch-vals"><span>hsl(0 0% 36%) · #5c5c5c</span><span>on bg <span class="ratio fail">3.1:1 ⚠ AA-large only</span></span><span>tertiary · disabled · footnote</span></div>
+    </div>
+  </div>
+  <div class="swatch">
+    <div class="swatch-color" style="background: hsl(0 0% 18%);"></div>
+    <div class="swatch-meta">
+      <div class="swatch-name">border</div>
+      <div class="swatch-vals"><span>hsl(0 0% 18%)</span><span>structural rules · card edges</span></div>
+    </div>
+  </div>
+  <div class="swatch">
+    <div class="swatch-color" style="background: hsl(0 0% 28%);"></div>
+    <div class="swatch-meta">
+      <div class="swatch-name">border-strong</div>
+      <div class="swatch-vals"><span>hsl(0 0% 28%)</span><span>kbd · input focus :focus-visible</span></div>
+    </div>
+  </div>
+</div>
+
+<h2 class="section">Color · semantic neons (token-only, never primary nav)</h2>
+<div class="color-grid">
+  <div class="swatch">
+    <div class="swatch-color" data-on="black" style="background: hsl(95 80% 55%);"></div>
+    <div class="swatch-meta">
+      <div class="swatch-name">lime</div>
+      <div class="swatch-vals"><span>hsl(95 80% 55%)</span><span>on bg <span class="ratio aa">8.7:1 AA</span></span><span>type tokens · Packages tab-chip</span></div>
+    </div>
+  </div>
+  <div class="swatch">
+    <div class="swatch-color" data-on="black" style="background: hsl(190 95% 55%);"></div>
+    <div class="swatch-meta">
+      <div class="swatch-name">cyan</div>
+      <div class="swatch-vals"><span>hsl(190 95% 55%)</span><span>on bg <span class="ratio aa">8.4:1 AA</span></span><span>function names · Reference tab-chip</span></div>
+    </div>
+  </div>
+  <div class="swatch">
+    <div class="swatch-color" data-on="black" style="background: hsl(28 95% 58%);"></div>
+    <div class="swatch-meta">
+      <div class="swatch-name">amber</div>
+      <div class="swatch-vals"><span>hsl(28 95% 58%)</span><span>on bg <span class="ratio aa">7.2:1 AA</span></span><span>strings · @deprecated · errors · Errors tab-chip</span></div>
+    </div>
+  </div>
+  <div class="swatch">
+    <div class="swatch-color" data-on="black" style="background: hsl(220 80% 65%);"></div>
+    <div class="swatch-meta">
+      <div class="swatch-name">info</div>
+      <div class="swatch-vals"><span>hsl(220 80% 65%)</span><span>info callouts · @note · neutral hints</span></div>
+    </div>
+  </div>
+</div>
+
+<h2 class="section">Typography · Montserrat + Geist Mono</h2>
+<div class="type-row">
+  <div class="label"><span class="name">display / h1</span><span class="meta">Montserrat 900 · 3rem · -0.04em · line 1</span></div>
+  <div class="sample t-h1">get<span style="color: var(--brand);">Article</span></div>
+</div>
+<div class="type-row">
+  <div class="label"><span class="name">display / h2</span><span class="meta">Montserrat 800 · 2rem · -0.03em · line 1.1</span></div>
+  <div class="sample t-h2">Cache invalidation</div>
+</div>
+<div class="type-row">
+  <div class="label"><span class="name">display / h3</span><span class="meta">Montserrat 700 · 1.4rem · -0.02em · line 1.2</span></div>
+  <div class="sample t-h3">Shape of a reader</div>
+</div>
+<div class="type-row">
+  <div class="label"><span class="name">eyebrow</span><span class="meta">Montserrat 800 · 0.72rem · 0.22em · uppercase · fg-mute</span></div>
+  <div class="sample t-eyebrow">Possible causes</div>
+</div>
+<div class="type-row">
+  <div class="label"><span class="name">body</span><span class="meta">Montserrat 500 · 0.95rem · line 1.6 · max 60ch</span></div>
+  <div class="sample t-body">Fetch one article by slug for a tenant. Tenant-scoped on <code style="font-family: var(--font-mono); background: var(--bg-2); padding: 0 0.25rem; border-radius: 3px;">shop.id</code>, depth 2, limit 1. Returns the matching doc or null.</div>
+</div>
+<div class="type-row">
+  <div class="label"><span class="name">small</span><span class="meta">Montserrat 500 · 0.82rem · line 1.55 · fg-mute</span></div>
+  <div class="sample t-small">Last edited 2 weeks ago · v0.1.0 · Edit this page on GitHub</div>
+</div>
+<div class="type-row">
+  <div class="label"><span class="name">mono</span><span class="meta">Geist Mono 400/500 · 0.85rem · line 1.55</span></div>
+  <div class="sample t-mono">const a = await getArticle({ shop, locale, slug: 'announcing-v2' });</div>
+</div>
+<div class="type-row">
+  <div class="label"><span class="name">mono · small</span><span class="meta">Geist Mono 500 · 0.7rem · 0.04em · fg-mute</span></div>
+  <div class="sample t-mono-small">reference / cms / api / get-article</div>
+</div>
+<div class="type-row">
+  <div class="label"><span class="name">kbd</span><span class="meta">Geist Mono · 0.62rem · border bg-2 padded 2/6</span></div>
+  <div class="sample"><span class="t-kbd">⌘</span> <span class="t-kbd">K</span> · <span class="t-kbd">/</span> · <span class="t-kbd">esc</span></div>
+</div>
+
+<h2 class="section">Spacing scale · 4px baseline</h2>
+<div class="space-row"><div class="label"><span class="name">space-1</span> · 0.25rem · 4px</div><div class="space-bar" style="width: 4px;"></div></div>
+<div class="space-row"><div class="label"><span class="name">space-2</span> · 0.5rem · 8px</div><div class="space-bar" style="width: 8px;"></div></div>
+<div class="space-row"><div class="label"><span class="name">space-3</span> · 0.75rem · 12px</div><div class="space-bar" style="width: 12px;"></div></div>
+<div class="space-row"><div class="label"><span class="name">space-4</span> · 1rem · 16px</div><div class="space-bar" style="width: 16px;"></div></div>
+<div class="space-row"><div class="label"><span class="name">space-5</span> · 1.5rem · 24px</div><div class="space-bar" style="width: 24px;"></div></div>
+<div class="space-row"><div class="label"><span class="name">space-6</span> · 2rem · 32px</div><div class="space-bar" style="width: 32px;"></div></div>
+<div class="space-row"><div class="label"><span class="name">space-7</span> · 3rem · 48px</div><div class="space-bar" style="width: 48px;"></div></div>
+<div class="space-row"><div class="label"><span class="name">space-8</span> · 4rem · 64px</div><div class="space-bar" style="width: 64px;"></div></div>
+
+<h2 class="section">Borders</h2>
+<div class="border-grid">
+  <div class="border-card bw-s">
+    <div class="label"><span class="name">bw-s · 0.138rem · 2.2px</span>thin rules · table dividers · pill borders</div>
+  </div>
+  <div class="border-card bw">
+    <div class="label"><span class="name">bw · 0.2rem · 3.2px</span>default · cards · sidebar rail · tabs frame</div>
+  </div>
+  <div class="border-card bw-l">
+    <div class="label"><span class="name">bw-l · 0.29rem · 4.6px</span>emphasis · section-head left rail · h1 underline</div>
+  </div>
+</div>
+
+<h2 class="section">Radii</h2>
+<div class="radius-grid">
+  <div class="radius-card r-sm"><div class="label">radius-sm · 4px</div></div>
+  <div class="radius-card r"><div class="label">radius · 7.2px (0.45rem) · default</div></div>
+  <div class="radius-card r-lg"><div class="label">radius-lg · 12px · page-level cards</div></div>
+</div>
+
+<h2 class="section">Motion · duration &amp; easing</h2>
+<div class="motion-row" data-d="fast">
+  <div class="label" style="font-family: var(--font-mono); font-size: 0.7rem;"><span style="color: var(--fg);">duration-fast</span> · 100ms · ease (0.2, 0.6, 0.2, 1)<br><span style="color: var(--fg-dim); font-size: 0.62rem;">hover color flips · tooltip arrive</span></div>
+  <div class="motion-bar"></div>
+</div>
+<div class="motion-row" data-d="default">
+  <div class="label" style="font-family: var(--font-mono); font-size: 0.7rem;"><span style="color: var(--fg);">duration</span> · 150ms · ease<br><span style="color: var(--fg-dim); font-size: 0.62rem;">default · borders · backgrounds · text color</span></div>
+  <div class="motion-bar"></div>
+</div>
+<div class="motion-row" data-d="slow">
+  <div class="label" style="font-family: var(--font-mono); font-size: 0.7rem;"><span style="color: var(--fg);">duration-slow</span> · 250ms · ease<br><span style="color: var(--fg-dim); font-size: 0.62rem;">tab pill slide · sidebar group reveal</span></div>
+  <div class="motion-bar"></div>
+</div>
+
+<p class="footnote">
+  WCAG contrast ratios calculated against <code>#000</code>. <code>fg-dim</code> only meets AA at 18px+ bold. Magenta on black at 5.6:1 is comfortable for body text and headings; for inline links inside body prose, increase weight to 600+ to compensate for thin-stroke contrast loss.
+</p>
+
+</body>
+</html>

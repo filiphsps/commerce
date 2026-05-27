@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>05 · Page · Docs concept — Commerce Docs</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300..900;1,300..900&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #000; --bg-1: hsl(0 0% 4%); --bg-2: hsl(0 0% 9%); --bg-3: hsl(0 0% 13%);
+    --fg: #fff; --fg-mute: hsl(0 0% 51%); --fg-dim: hsl(0 0% 36%);
+    --border: hsl(0 0% 18%); --border-strong: hsl(0 0% 28%);
+    --brand: #ed1e79; --brand-glow: rgb(237 30 121 / 0.45); --brand-soft: rgb(237 30 121 / 0.10); --brand-hover: hsl(330 86% 60%);
+    --pkg: hsl(95 80% 55%); --ref: hsl(190 95% 55%); --err: hsl(28 95% 58%); --info: hsl(220 80% 65%);
+    --bw: 0.2rem; --bw-s: 0.138rem; --bw-l: 0.29rem;
+    --radius-sm: 4px; --radius: 0.45rem; --radius-lg: 12px;
+    --font-display: 'Montserrat', system-ui, sans-serif;
+    --font-body: 'Montserrat', system-ui, sans-serif;
+    --font-mono: 'Geist Mono', ui-monospace, monospace;
+    --duration: 150ms; --ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-weight: 500; min-height: 100vh; }
+  ::selection { background: var(--brand); color: var(--bg); }
+  *:focus-visible { outline: var(--bw-s) solid var(--brand); outline-offset: 3px; border-radius: 3px; }
+
+  .topbar { display: grid; grid-template-columns: 260px 1fr 280px; align-items: center; padding: 0.85rem 1.5rem; border-bottom: var(--bw) solid var(--border); gap: 1.5rem; position: sticky; top: 0; background: rgb(0 0 0 / 0.85); backdrop-filter: blur(12px); z-index: 10; }
+  .wordmark { height: 26px; width: auto; }
+  .tabs { display: flex; gap: 0; border: var(--bw) solid var(--border); border-radius: var(--radius); padding: 0.18rem; width: fit-content; justify-self: center; }
+  .tab { font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: 0.65rem; letter-spacing: 0.1em; padding: 0.45rem 0.95rem; border-radius: calc(var(--radius) - 0.18rem); color: var(--fg-mute); border: 0; background: transparent; cursor: pointer; transition: color var(--duration), background var(--duration); }
+  .tab:hover { color: var(--fg); }
+  .tab.active { background: var(--brand); color: var(--bg); box-shadow: 0 0 14px var(--brand-glow); }
+  .search { border: var(--bw) solid var(--border); border-radius: var(--radius); padding: 0.45rem 0.8rem; font-family: var(--font-mono); font-size: 0.72rem; color: var(--fg-mute); display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; cursor: pointer; }
+  .kbd { font-family: var(--font-mono); font-size: 0.6rem; border: 1px solid var(--border-strong); border-radius: 3px; padding: 1px 5px; color: var(--fg); background: var(--bg-2); }
+
+  .shell { display: grid; grid-template-columns: 280px 1fr 240px; min-height: calc(100vh - 56px); }
+  .side { border-right: var(--bw) solid var(--border); padding: 1.1rem 1rem; font-size: 0.8rem; overflow-y: auto; position: sticky; top: 56px; height: calc(100vh - 56px); }
+  .toc { border-left: var(--bw) solid var(--border); padding: 1.1rem 1rem; font-size: 0.78rem; overflow-y: auto; position: sticky; top: 56px; height: calc(100vh - 56px); }
+
+  .tab-chip { display: inline-block; font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: 0.58rem; letter-spacing: 0.16em; padding: 0.25rem 0.55rem; border: var(--bw-s) solid var(--brand); color: var(--brand); border-radius: 4px; margin-bottom: 1.1rem; }
+  .grp { font-family: var(--font-mono); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--fg-mute); margin: 1.1rem 0 0.45rem 0; padding-bottom: 0.3rem; border-bottom: 1px solid var(--border); }
+  .grp:first-of-type { margin-top: 0; }
+  .it { font-family: var(--font-display); font-weight: 600; color: var(--fg); padding: 0.25rem 0 0.25rem 0.55rem; font-size: 0.82rem; cursor: pointer; transition: color var(--duration); border-left: var(--bw-s) solid transparent; margin-left: 0.45rem; }
+  .it:hover { color: var(--brand-hover); border-left-color: var(--border-strong); }
+  .it.cur { color: var(--brand); border-left-color: var(--brand); background: linear-gradient(to right, var(--brand-soft), transparent 60%); box-shadow: inset 2px 0 0 var(--brand); font-weight: 700; }
+
+  .content { padding: 2.5rem 3rem 4rem 3rem; max-width: 920px; }
+
+  .crumb { font-family: var(--font-mono); font-size: 0.7rem; color: var(--fg-mute); display: flex; align-items: center; gap: 0.3rem; margin-bottom: 0.85rem; }
+  .crumb a { color: var(--fg-mute); text-decoration: none; transition: color var(--duration); padding: 1px 4px; margin: 0 -4px; border-radius: 2px; }
+  .crumb a:hover { color: var(--brand); }
+  .crumb .sep { color: var(--border-strong); }
+  .crumb .leaf { color: var(--fg); padding: 1px 4px; }
+
+  h1.docs-h1 { font-family: var(--font-display); font-weight: 900; font-size: 3.4rem; letter-spacing: -0.04em; line-height: 1.02; margin: 0 0 0.85rem 0; }
+  h1.docs-h1 .acc { color: var(--brand); }
+  .lede { font-family: var(--font-body); font-weight: 500; font-size: 1.18rem; line-height: 1.55; color: var(--fg-mute); margin-bottom: 2.5rem; max-width: 60ch; }
+  .lede strong { color: var(--fg); font-weight: 700; }
+
+  .prose { font-family: var(--font-body); font-weight: 500; font-size: 1.02rem; line-height: 1.7; color: var(--fg); max-width: 64ch; }
+  .prose p { margin-bottom: 1.2rem; }
+  .prose code { font-family: var(--font-mono); background: var(--bg-2); padding: 0 0.3rem; border-radius: 3px; font-size: 0.85em; color: var(--fg); }
+  .prose ul { margin: 0 0 1.2rem 0; padding-left: 1.3rem; }
+  .prose ul li { margin-bottom: 0.5rem; line-height: 1.6; }
+  .prose ul li::marker { color: var(--brand); }
+  .prose strong { font-weight: 700; color: var(--fg); }
+
+  .pill { display: inline-block; font-family: var(--font-mono); font-size: 0.82em; padding: 0.05rem 0.4rem; border-radius: 99px; border: var(--bw-s) solid; line-height: 1.45; text-decoration: none; background: var(--bg-2); font-weight: 500; transition: all var(--duration); cursor: pointer; }
+  .pill.ref-link { border-color: var(--ref); color: var(--ref); background: hsl(190 95% 55% / 0.1); }
+  .pill.err-link { border-color: var(--err); color: var(--err); background: hsl(28 95% 58% / 0.1); }
+  .pill.pkg-link { border-color: var(--pkg); color: var(--pkg); background: hsl(95 80% 55% / 0.1); }
+  .pill.docs-link { border-color: var(--brand); color: var(--brand); background: var(--brand-soft); }
+
+  h2.docs-h2 { font-family: var(--font-display); font-weight: 800; font-size: 2rem; letter-spacing: -0.025em; line-height: 1.15; margin: 3.5rem 0 1rem 0; padding-left: 0.85rem; border-left: var(--bw-l) solid var(--brand); }
+  h3.docs-h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; letter-spacing: -0.015em; line-height: 1.3; margin: 2rem 0 0.7rem 0; color: var(--fg); }
+
+  /* Architecture diagram */
+  .arch-diagram { border: var(--bw) solid var(--border); border-radius: var(--radius); padding: 2rem 1.5rem; margin: 1.5rem 0; background: radial-gradient(ellipse at center top, var(--bg-1), var(--bg)); }
+  .arch-diagram-title { font-family: var(--font-mono); font-size: 0.65rem; color: var(--fg-mute); text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 1.5rem; }
+  .arch-flow { display: flex; flex-direction: column; gap: 0.6rem; font-family: var(--font-mono); font-size: 0.78rem; }
+  .arch-step { display: grid; grid-template-columns: 28px 1fr 200px; gap: 1rem; padding: 0.6rem 0.85rem; border: var(--bw-s) solid var(--border); border-radius: var(--radius-sm); background: var(--bg); align-items: center; transition: border-color var(--duration); }
+  .arch-step:hover { border-color: var(--brand); }
+  .arch-step .num { font-family: var(--font-mono); font-size: 0.7rem; color: var(--brand); font-weight: 600; }
+  .arch-step .name { color: var(--fg); font-weight: 500; }
+  .arch-step .name code { color: var(--ref); }
+  .arch-step .desc { color: var(--fg-mute); font-size: 0.7rem; line-height: 1.4; font-family: var(--font-body); font-weight: 500; }
+  .arch-arrow { font-family: var(--font-mono); color: var(--fg-dim); text-align: center; margin: -0.2rem 0; font-size: 0.85rem; }
+
+  /* Callouts */
+  .callout { display: grid; grid-template-columns: auto 1fr; gap: 0.85rem; padding: 0.9rem 1.1rem; border: var(--bw-s) solid; border-left: var(--bw-l) solid; border-radius: var(--radius); margin: 1.4rem 0; font-family: var(--font-body); font-size: 0.92rem; line-height: 1.6; }
+  .callout.info { border-color: var(--info); background: hsl(220 80% 65% / 0.06); color: var(--fg); }
+  .callout.info .label { color: var(--info); }
+  .callout.tip { border-color: var(--pkg); background: hsl(95 80% 55% / 0.06); }
+  .callout.tip .label { color: var(--pkg); }
+  .callout.warn { border-color: var(--err); background: hsl(28 95% 58% / 0.06); }
+  .callout.warn .label { color: var(--err); }
+  .callout .label { font-family: var(--font-display); font-weight: 800; text-transform: uppercase; font-size: 0.6rem; letter-spacing: 0.18em; align-self: flex-start; padding-top: 0.18rem; white-space: nowrap; }
+  .callout code { font-family: var(--font-mono); background: var(--bg-2); padding: 0 0.3rem; border-radius: 3px; font-size: 0.85em; color: var(--fg); }
+
+  /* Codeblock */
+  .codeblock { font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.7; background: var(--bg-2); border: var(--bw) solid var(--border); border-radius: var(--radius); margin: 1.2rem 0; overflow: hidden; }
+  .codeblock .titlebar { display: flex; justify-content: space-between; align-items: center; padding: 0.45rem 0.85rem; border-bottom: var(--bw-s) solid var(--border); background: var(--bg-1); }
+  .codeblock .titlebar .file { font-family: var(--font-mono); font-size: 0.65rem; color: var(--fg-mute); }
+  .codeblock .copy { font-family: var(--font-display); font-weight: 700; font-size: 0.55rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-mute); padding: 0.22rem 0.5rem; border: var(--bw-s) solid var(--border); border-radius: 3px; background: var(--bg); cursor: pointer; transition: all var(--duration); }
+  .codeblock .copy:hover { color: var(--brand); border-color: var(--brand); }
+  .codeblock pre { padding: 0.95rem 1.1rem; overflow-x: auto; }
+  .codeblock .kw { color: hsl(290 100% 75%); }
+  .codeblock .fn { color: var(--ref); font-weight: 600; }
+  .codeblock .type { color: var(--pkg); }
+  .codeblock .str { color: var(--err); }
+  .codeblock .cmt { color: var(--fg-mute); font-style: italic; }
+
+  /* Related */
+  .related-section { margin-top: 4rem; padding-top: 1.5rem; border-top: var(--bw-s) solid var(--border); }
+  .related-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.85rem; margin-top: 1rem; }
+  .related-card { padding: 1rem 1.1rem; border: var(--bw) solid var(--border); border-radius: var(--radius); text-decoration: none; transition: all var(--duration); background: var(--bg-1); cursor: pointer; }
+  .related-card:hover { border-color: var(--brand); background: var(--brand-soft); }
+  .related-card .eyebrow { font-family: var(--font-mono); font-size: 0.6rem; color: var(--fg-mute); text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 0.35rem; }
+  .related-card .title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; color: var(--fg); }
+  .related-card .desc { font-family: var(--font-body); font-weight: 500; font-size: 0.82rem; color: var(--fg-mute); margin-top: 0.3rem; line-height: 1.5; }
+
+  /* Footer nav */
+  .docs-footer-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-top: 2rem; padding-top: 1.5rem; border-top: var(--bw-s) solid var(--border); }
+  .nav-card { display: flex; flex-direction: column; gap: 0.3rem; padding: 1rem 1.1rem; border: var(--bw) solid var(--border); border-radius: var(--radius); text-decoration: none; transition: all var(--duration); }
+  .nav-card:hover { border-color: var(--brand); background: var(--brand-soft); }
+  .nav-card .dir { font-family: var(--font-mono); font-size: 0.6rem; color: var(--fg-dim); text-transform: uppercase; letter-spacing: 0.16em; }
+  .nav-card .title { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; color: var(--fg); }
+  .nav-card:hover .title { color: var(--brand); }
+  .nav-card.next { text-align: right; }
+
+  .toc-label { font-family: var(--font-mono); font-size: 0.6rem; color: var(--fg-mute); text-transform: uppercase; letter-spacing: 0.18em; margin-bottom: 0.75rem; padding-bottom: 0.3rem; border-bottom: 1px solid var(--border); }
+  .toc-item { font-family: var(--font-body); font-weight: 500; font-size: 0.78rem; padding: 0.25rem 0 0.25rem 0.7rem; color: var(--fg-mute); border-left: var(--bw-s) solid transparent; cursor: pointer; transition: color var(--duration); }
+  .toc-item:hover { color: var(--fg); border-left-color: var(--border-strong); }
+  .toc-item.cur { color: var(--brand); border-left-color: var(--brand); font-weight: 600; }
+  .toc-item.depth-2 { padding-left: 1.4rem; font-size: 0.74rem; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <svg class="wordmark" viewBox="0 0 122.6429 37.33">
+    <path fill="#ed1e79" d="M 6.865 2.648 L 25.169 2.648 C 28.961 2.648 32.035 5.721 32.035 9.513 L 32.035 34.682 L 6.865 34.682 C 3.074 34.682 0 31.609 0 27.817 L 0 9.513 C 0 5.721 3.074 2.648 6.865 2.648 Z"/>
+    <g transform="matrix(0.858 0 0 0.858 5.68 8.25)" fill="none" stroke="#fefefe" stroke-width="1.748" stroke-linecap="round" stroke-linejoin="bevel">
+      <path d="M5.615 8.592C5.693 8.107 6.111 7.75 6.603 7.75H17.397C17.889 7.75 18.307 8.107 18.385 8.592L20.065 19.092C20.162 19.7 19.693 20.25 19.077 20.25H4.923C4.307 20.25 3.838 19.7 3.935 19.092Z"/>
+      <path d="M8.75 12.25V6C8.75 4.21 10.21 2.75 12 2.75C13.79 2.75 15.25 4.21 15.25 6V12.25"/>
+    </g>
+    <text x="38" y="22" font-family="Montserrat, sans-serif" font-weight="900" font-size="13" fill="#fff" letter-spacing="-0.4">NORDCOMMERCE</text>
+  </svg>
+  <div class="tabs">
+    <button class="tab active">Docs</button>
+    <button class="tab">Packages</button>
+    <button class="tab">Reference</button>
+    <button class="tab">Errors</button>
+  </div>
+  <div class="search"><span>Search the docs</span><span><span class="kbd">⌘</span> <span class="kbd">K</span></span></div>
+</div>
+
+<div class="shell">
+
+  <nav class="side">
+    <span class="tab-chip">Docs</span>
+
+    <div class="grp">Get started</div>
+    <div class="it">Introduction</div>
+    <div class="it">Quickstart</div>
+    <div class="it">Architecture</div>
+
+    <div class="grp">Concepts</div>
+    <div class="it cur">Multi-tenancy</div>
+    <div class="it">Locales</div>
+    <div class="it">Caching</div>
+    <div class="it">CMS &amp; content</div>
+    <div class="it">Errors</div>
+
+    <div class="grp">Apps</div>
+    <div class="it">Storefront</div>
+    <div class="it">Admin</div>
+    <div class="it">Landing</div>
+
+    <div class="grp">Operations</div>
+    <div class="it">Deployment</div>
+    <div class="it">Contributing</div>
+    <div class="it">Conventions</div>
+    <div class="it">TypeScript project structure</div>
+  </nav>
+
+  <main class="content">
+
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a href="#">docs</a>
+      <span class="sep">/</span>
+      <a href="#">concepts</a>
+      <span class="sep">/</span>
+      <span class="leaf">multi-tenancy</span>
+    </nav>
+
+    <h1 class="docs-h1">Multi-<span class="acc">tenancy</span></h1>
+    <p class="lede">
+      One deploy serves many shops. Tenant resolution happens at the edge by hostname, then every downstream call carries explicit <strong>{ shop, locale }</strong>. The App Router never sees an un-tenanted request.
+    </p>
+
+    <div class="prose">
+
+      <p>
+        Nordcom Commerce is multi-tenant by hostname. There is no per-shop deployment — adding a new shop is a row in the <code>shops</code> MongoDB collection, no redeploy. The middleware reads the request's hostname, resolves the shop, and rewrites the URL into <code>/[domain]/[locale]/…</code> before the App Router takes over.
+      </p>
+
+      <h2 class="docs-h2" id="resolution">The resolution chain</h2>
+
+      <div class="arch-diagram">
+        <div class="arch-diagram-title">Request lifecycle · hostname → tenant-scoped route</div>
+        <div class="arch-flow">
+          <div class="arch-step">
+            <span class="num">1</span>
+            <span class="name">Inbound request hits the edge with raw <code>Host:</code> header</span>
+            <span class="desc">Could be primary, alternative, or dev-alias</span>
+          </div>
+          <div class="arch-arrow">↓</div>
+          <div class="arch-step">
+            <span class="num">2</span>
+            <span class="name">Middleware looks up Hostname → Shop in MongoDB</span>
+            <span class="desc">via <a class="pill ref-link">resolveShopFromHostname</a></span>
+          </div>
+          <div class="arch-arrow">↓</div>
+          <div class="arch-step">
+            <span class="num">3</span>
+            <span class="name">Locale resolved via fallback chain</span>
+            <span class="desc">request → shop default → platform default</span>
+          </div>
+          <div class="arch-arrow">↓</div>
+          <div class="arch-step">
+            <span class="num">4</span>
+            <span class="name">URL rewrites to <code>/[domain]/[locale]/…</code></span>
+            <span class="desc">App Router sees the tenanted path</span>
+          </div>
+          <div class="arch-arrow">↓</div>
+          <div class="arch-step">
+            <span class="num">5</span>
+            <span class="name">Every data call carries <code>{ shop, locale }</code> explicitly</span>
+            <span class="desc">no implicit tenant context, ever</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout info">
+        <span class="label">Concept</span>
+        <div>
+          Tenant context is never implicit. There's no <code>getCurrentShop()</code> singleton, no request-scoped global, no <code>AsyncLocalStorage</code> tenant slot. Every Shopify call constructs a fresh <code>ShopifyApolloApiClient({ shop, locale })</code>; every CMS reader takes <code>{ shop, locale }</code> in its arguments object. <strong>New data-fetching helpers must follow this contract</strong>.
+        </div>
+      </div>
+
+      <h2 class="docs-h2" id="data-fetching">Data fetching contract</h2>
+
+      <p>
+        Every reader in <a class="pill pkg-link">@nordcom/commerce-cms/api</a> follows the same shape: tenant-scope on <code>shop.id</code>, apply locale, fall back to shop default, return <code>null</code> when the entity doesn't resolve. Throws <a class="pill err-link">NotFoundError</a> when the slug is structurally invalid.
+      </p>
+
+      <div class="codeblock">
+        <div class="titlebar">
+          <span class="file">apps/storefront/app/[domain]/[locale]/blog/[slug]/page.tsx</span>
+          <button class="copy">Copy</button>
+        </div>
+<pre><span class="kw">import</span> { <span class="fn">getArticle</span> } <span class="kw">from</span> <span class="str">'@nordcom/commerce-cms/api'</span>;
+
+<span class="kw">export default async function</span> <span class="fn">ArticlePage</span>({ params }: {
+  params: <span class="kw">Promise</span>&lt;{ shop: <span class="type">ShopDomain</span>; locale: <span class="type">LocaleCode</span>; slug: <span class="prm">string</span> }&gt;;
+}) {
+  <span class="kw">const</span> { shop, locale, slug } = <span class="kw">await</span> params;  <span class="cmt">// async params in Next 16</span>
+  <span class="kw">const</span> article = <span class="kw">await</span> <span class="fn">getArticle</span>({ shop, locale, slug });
+
+  <span class="kw">if</span> (!article) <span class="fn">notFound</span>();
+  <span class="kw">return</span> &lt;<span class="type">ArticleView</span> article={article} /&gt;;
+}</pre>
+      </div>
+
+      <div class="callout warn">
+        <span class="label">Watch out</span>
+        <div>
+          <strong>Never derive the shop from a singleton or environment variable.</strong> The deployment serves many shops simultaneously; a wrongly-cached tenant context would leak data across shops. If you find yourself reaching for a global, stop and pass <code>{ shop, locale }</code> through instead.
+        </div>
+      </div>
+
+      <h2 class="docs-h2" id="cache-invariant">The tenant-scoped cache invariant</h2>
+
+      <p>
+        Every cached entity's tags include a shop key. Revalidating one tenant cannot touch another's data. Inside a tenant-scoped cache, entities are further keyed by locale — locale is a qualifier under tenant, not above it.
+      </p>
+
+      <div class="codeblock">
+        <div class="titlebar">
+          <span class="file">cache key hierarchy</span>
+        </div>
+<pre>cms.&lt;tenantId&gt;.&lt;collection&gt;.&lt;key&gt;   <span class="cmt"># individual entity</span>
+cms.&lt;tenantId&gt;.&lt;collection&gt;         <span class="cmt"># collection sweep</span>
+cms.&lt;tenantId&gt;                      <span class="cmt"># whole-tenant sweep</span></pre>
+      </div>
+
+      <div class="callout tip">
+        <span class="label">Tip</span>
+        <div>
+          For helpers that build cache tags, use <a class="pill ref-link">cmsTenantRootTags(shop)</a> from <code>@nordcom/commerce-cms/cache</code>. Never hand-format these strings — the invariant is enforced by the helper.
+        </div>
+      </div>
+
+    </div>
+
+    <section class="related-section">
+      <div class="toc-label" style="font-size: 0.7rem;">Continue exploring</div>
+      <div class="related-grid">
+        <a class="related-card" href="#">
+          <div class="eyebrow">Concept · next up</div>
+          <div class="title">Locales</div>
+          <div class="desc">The fallback chain, how locales attach to a shop, and what happens when one is missing.</div>
+        </a>
+        <a class="related-card" href="#">
+          <div class="eyebrow">Concept</div>
+          <div class="title">Caching</div>
+          <div class="desc">TagTree, cache namespaces, and how a single edit invalidates exactly what changed.</div>
+        </a>
+        <a class="related-card" href="#">
+          <div class="eyebrow">Reference</div>
+          <div class="title">@nordcom/commerce-cms / api</div>
+          <div class="desc">Every reader — getPage, getArticle, listArticles, resolveLink, getPayloadInstance.</div>
+        </a>
+        <a class="related-card" href="#">
+          <div class="eyebrow">Errors</div>
+          <div class="title">API_UNKNOWN_SHOP_DOMAIN</div>
+          <div class="desc">When tenant resolution fails because the hostname doesn't match any shop record.</div>
+        </a>
+      </div>
+    </section>
+
+    <nav class="docs-footer-nav" aria-label="Pagination">
+      <a class="nav-card" href="#">
+        <span class="dir">← Concepts</span>
+        <span class="title">Architecture</span>
+      </a>
+      <a class="nav-card next" href="#">
+        <span class="dir">Concepts →</span>
+        <span class="title">Locales</span>
+      </a>
+    </nav>
+
+  </main>
+
+  <aside class="toc">
+    <div class="toc-label">On this page</div>
+    <div class="toc-item">Overview</div>
+    <div class="toc-item cur">The resolution chain</div>
+    <div class="toc-item">Data fetching contract</div>
+    <div class="toc-item">The tenant-scoped cache invariant</div>
+    <div class="toc-label" style="margin-top: 1.5rem;">Related</div>
+    <div class="toc-item">↗ Concept · Locales</div>
+    <div class="toc-item">↗ Concept · Caching</div>
+    <div class="toc-item">↗ Reference · cms / api</div>
+  </aside>
+
+</div>
+
+</body>
+</html>

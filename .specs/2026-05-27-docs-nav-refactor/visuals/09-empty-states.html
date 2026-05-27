@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>09 · Empty states — Commerce Docs</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300..900;1,300..900&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #000; --bg-1: hsl(0 0% 4%); --bg-2: hsl(0 0% 9%); --bg-3: hsl(0 0% 13%);
+    --fg: #fff; --fg-mute: hsl(0 0% 51%); --fg-dim: hsl(0 0% 36%);
+    --border: hsl(0 0% 18%); --border-strong: hsl(0 0% 28%);
+    --brand: #ed1e79; --brand-glow: rgb(237 30 121 / 0.45); --brand-soft: rgb(237 30 121 / 0.10);
+    --pkg: hsl(95 80% 55%); --ref: hsl(190 95% 55%); --err: hsl(28 95% 58%); --info: hsl(220 80% 65%);
+    --bw: 0.2rem; --bw-s: 0.138rem; --bw-l: 0.29rem; --radius-sm: 4px; --radius: 0.45rem;
+    --font-display: 'Montserrat', system-ui, sans-serif;
+    --font-body: 'Montserrat', system-ui, sans-serif;
+    --font-mono: 'Geist Mono', ui-monospace, monospace;
+    --duration: 150ms;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-weight: 500; padding: 3rem; min-height: 100vh; }
+  ::selection { background: var(--brand); color: var(--bg); }
+  *:focus-visible { outline: var(--bw-s) solid var(--brand); outline-offset: 3px; border-radius: 3px; }
+
+  .page-h1 { font-family: var(--font-display); font-weight: 900; font-size: 2.4rem; letter-spacing: -0.03em; margin-bottom: 0.4rem; }
+  .page-h1 .acc { color: var(--brand); }
+  .page-sub { color: var(--fg-mute); font-size: 0.95rem; max-width: 60ch; margin-bottom: 3rem; line-height: 1.55; }
+  .section-h { font-family: var(--font-display); font-weight: 800; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.22em; color: var(--fg-mute); margin: 2.5rem 0 0.85rem 0; padding-bottom: 0.4rem; border-bottom: var(--bw-s) solid var(--border); }
+  .annotate { font-family: var(--font-mono); font-size: 0.68rem; color: var(--fg-mute); line-height: 1.55; margin: 0.4rem 0 1.5rem 0; max-width: 70ch; padding-left: 0.85rem; border-left: var(--bw-s) solid var(--border); }
+  .annotate strong { color: var(--fg); font-weight: 700; }
+
+  /* Generic empty card */
+  .empty-card { border: var(--bw) solid var(--border); border-radius: var(--radius); padding: 3rem 2.5rem; background: radial-gradient(ellipse at center top, var(--bg-1) 30%, var(--bg)); max-width: 920px; margin-bottom: 0.5rem; display: grid; gap: 1.2rem; place-items: start; }
+  .empty-card.center { text-align: center; place-items: center; }
+  .empty-icon { width: 56px; height: 56px; border-radius: 50%; border: var(--bw) solid var(--fg-dim); display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 1.5rem; color: var(--fg-dim); }
+  .empty-icon.brand { border-color: var(--brand); color: var(--brand); box-shadow: 0 0 24px var(--brand-glow); }
+  .empty-icon.err { border-color: var(--err); color: var(--err); }
+
+  .empty-eyebrow { font-family: var(--font-mono); font-size: 0.62rem; color: var(--fg-mute); text-transform: uppercase; letter-spacing: 0.18em; }
+  .empty-title { font-family: var(--font-display); font-weight: 800; font-size: 1.7rem; letter-spacing: -0.025em; line-height: 1.15; color: var(--fg); }
+  .empty-title .acc { color: var(--brand); }
+  .empty-body { font-family: var(--font-body); font-weight: 500; font-size: 0.95rem; line-height: 1.6; color: var(--fg-mute); max-width: 55ch; }
+  .empty-body strong { color: var(--fg); font-weight: 700; }
+  .empty-body code { font-family: var(--font-mono); background: var(--bg-2); padding: 0 0.3rem; border-radius: 3px; font-size: 0.85em; color: var(--fg); }
+  .empty-body a { color: var(--brand); text-decoration: none; border-bottom: var(--bw-s) solid var(--brand); padding-bottom: 1px; transition: color var(--duration); }
+  .empty-body a:hover { color: var(--brand-hover); }
+
+  .empty-cta { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .btn { font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.14em; padding: 0.6rem 1.1rem; border-radius: var(--radius-sm); cursor: pointer; text-decoration: none; transition: all var(--duration); display: inline-flex; align-items: center; gap: 0.4rem; border: var(--bw-s) solid; }
+  .btn.primary { background: var(--brand); color: var(--bg); border-color: var(--brand); }
+  .btn.primary:hover { background: hsl(330 86% 60%); border-color: hsl(330 86% 60%); }
+  .btn.secondary { background: transparent; color: var(--fg); border-color: var(--border-strong); }
+  .btn.secondary:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-soft); }
+
+  /* Suggestions list (404 + search-no-results) */
+  .suggest-list { display: flex; flex-direction: column; gap: 0.5rem; width: 100%; max-width: 480px; }
+  .suggest-row { display: flex; justify-content: space-between; align-items: center; padding: 0.7rem 1rem; border: var(--bw-s) solid var(--border); border-radius: var(--radius-sm); background: var(--bg-1); text-decoration: none; cursor: pointer; transition: all var(--duration); }
+  .suggest-row:hover { border-color: var(--brand); background: var(--brand-soft); }
+  .suggest-row .left { display: flex; flex-direction: column; gap: 0.2rem; text-align: left; }
+  .suggest-row .title { font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; color: var(--fg); }
+  .suggest-row:hover .title { color: var(--brand); }
+  .suggest-row .desc { font-family: var(--font-body); font-weight: 500; font-size: 0.78rem; color: var(--fg-mute); line-height: 1.4; }
+  .suggest-row .tab-chip-mini { font-family: var(--font-mono); font-size: 0.55rem; padding: 0.15rem 0.4rem; border: 1px solid; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.14em; }
+  .suggest-row .tab-chip-mini.ref { color: var(--ref); border-color: var(--ref); }
+  .suggest-row .tab-chip-mini.docs { color: var(--brand); border-color: var(--brand); }
+  .suggest-row .tab-chip-mini.err { color: var(--err); border-color: var(--err); }
+  .suggest-row .tab-chip-mini.pkg { color: var(--pkg); border-color: var(--pkg); }
+</style>
+</head>
+<body>
+
+<h1 class="page-h1">09 · <span class="acc">Empty states</span></h1>
+<p class="page-sub">When the data isn't there yet. Each empty state names what's missing, explains why honestly, and gives the reader one concrete next move — usually "contribute" for contributors or "go to ___" for readers.</p>
+
+<h2 class="section-h">Symbol page · no JSDoc found</h2>
+<div class="empty-card">
+  <div class="empty-eyebrow">Reference · cms / blocks · BlockRendererProps</div>
+  <div class="empty-icon brand">{ }</div>
+  <div class="empty-title">No <span class="acc">JSDoc</span> for this symbol yet</div>
+  <div class="empty-body">
+    The TypeScript signature is available but the symbol has no <code>@param</code>, <code>@returns</code>, or summary comment. Per <a href="#">CLAUDE.md</a> all exported and internal functions must have JSDoc — this one is overdue.
+  </div>
+  <div class="empty-cta">
+    <a class="btn primary" href="#">Edit on GitHub →</a>
+    <a class="btn secondary" href="#">View source</a>
+  </div>
+</div>
+<div class="annotate">
+  <strong>No JSDoc</strong> · brand-colored hollow circle icon, encouraging tone, the GitHub edit-link is the primary CTA. The signature is still rendered below (not shown here) — just no narrative or block tags.
+</div>
+
+<h2 class="section-h">Package · no CHANGELOG yet</h2>
+<div class="empty-card">
+  <div class="empty-eyebrow">Packages · @nordcom/cart-next · Changelog</div>
+  <div class="empty-icon">v0</div>
+  <div class="empty-title">No releases yet</div>
+  <div class="empty-body">
+    This package is unreleased. Once the first <code>changeset</code> ships, this page will mirror <code>packages/cart-next/CHANGELOG.md</code> automatically. For now, follow the package's commit history.
+  </div>
+  <div class="empty-cta">
+    <a class="btn secondary" href="#">View commit log ↗</a>
+    <a class="btn secondary" href="#">How changesets work</a>
+  </div>
+</div>
+<div class="annotate">
+  <strong>No CHANGELOG</strong> · gray "v0" icon (neutral, not alarming). Page exists because the package has docs; the changelog leaf is shown because we generate it for every Core/Shopify/TagTree/UI package per the spec.
+</div>
+
+<h2 class="section-h">Subpath overview · empty symbols</h2>
+<div class="empty-card">
+  <div class="empty-eyebrow">Reference · cms / preview</div>
+  <div class="empty-icon">∅</div>
+  <div class="empty-title">No public exports in <code style="font-family: var(--font-mono); font-size: 1.4rem; color: var(--brand);">./preview</code></div>
+  <div class="empty-body">
+    Every export in this subpath is marked <code>@internal</code> and excluded from the Reference. If you got here from an external link, the symbol you're looking for may have been demoted to internal — try the <a href="#">prior version</a>.
+  </div>
+  <div class="empty-cta">
+    <a class="btn secondary" href="#">Packages › cms › Preview</a>
+  </div>
+</div>
+<div class="annotate">
+  <strong>Empty subpath</strong> · happens when every export in a subpath is hidden. We still emit the overview page so the URL is reachable. Suggests the most likely cause (internal demotion) and offers escape routes.
+</div>
+
+<h2 class="section-h">404 · with smart suggestions</h2>
+<div class="empty-card center">
+  <div class="empty-eyebrow">404 · this page doesn't exist</div>
+  <div class="empty-icon err">!</div>
+  <div class="empty-title"><code style="font-family: var(--font-mono); font-size: 1.4rem; color: var(--err);">/docs/refernce/cms/api/get-articel/</code></div>
+  <div class="empty-body">
+    No page at this URL. The path looks like a Reference page — here are the closest matches by edit distance:
+  </div>
+
+  <div class="suggest-list">
+    <a class="suggest-row" href="#">
+      <div class="left">
+        <span class="title">getArticle</span>
+        <span class="desc">cms / api · Fetch one article by slug for a tenant</span>
+      </div>
+      <span class="tab-chip-mini ref">Reference</span>
+    </a>
+    <a class="suggest-row" href="#">
+      <div class="left">
+        <span class="title">listArticles</span>
+        <span class="desc">cms / api · List published articles for a shop</span>
+      </div>
+      <span class="tab-chip-mini ref">Reference</span>
+    </a>
+    <a class="suggest-row" href="#">
+      <div class="left">
+        <span class="title">API</span>
+        <span class="desc">packages › cms · Narrative for the read API</span>
+      </div>
+      <span class="tab-chip-mini pkg">Packages</span>
+    </a>
+  </div>
+
+  <div class="empty-cta" style="margin-top: 1rem;">
+    <a class="btn primary" href="#">Back to introduction</a>
+    <a class="btn secondary" href="#">Search the docs ⌘K</a>
+  </div>
+</div>
+<div class="annotate">
+  <strong>404</strong> · queries Orama with the URL path as a fuzzy match and surfaces the top 3 results across tabs. Each result shows which tab it belongs to via the mini chip. If the path looks like an error code (uppercase + underscores), redirect logic also checks the Errors tab redirect map first.
+</div>
+
+<h2 class="section-h">Search · no results</h2>
+<div class="empty-card">
+  <div class="empty-eyebrow">⌘K · search</div>
+  <div class="empty-title">No matches for "<code style="font-family: var(--font-mono); font-size: 1.4rem; color: var(--brand);">graphql cache invalidation</code>"</div>
+  <div class="empty-body">
+    Try one of:
+  </div>
+  <ul style="font-family: var(--font-body); font-size: 0.92rem; line-height: 1.7; color: var(--fg); padding-left: 1.3rem; margin: 0; list-style: square;">
+    <li>Drop a word — <code style="font-family: var(--font-mono); background: var(--bg-2); padding: 0 0.3rem; border-radius: 3px;">cache invalidation</code> or <code style="font-family: var(--font-mono); background: var(--bg-2); padding: 0 0.3rem; border-radius: 3px;">graphql</code></li>
+    <li>Search a symbol directly — <code style="font-family: var(--font-mono); background: var(--bg-2); padding: 0 0.3rem; border-radius: 3px;">cmsTenantRootTags</code></li>
+    <li>Browse <a href="#" style="color: var(--brand); border-bottom: 1.5px solid var(--brand); text-decoration: none; padding-bottom: 1px;">Concepts › Caching</a></li>
+  </ul>
+</div>
+<div class="annotate">
+  <strong>Search no-results</strong> · suggests query-shrinking (drop a word), symbol-direct lookup (most common winning pattern), and a topical entry point. Avoids the cold "no results" message.
+</div>
+
+<h2 class="section-h">Broken {@link} · dev-only warning inline</h2>
+<div style="font-family: var(--font-body); font-size: 0.95rem; line-height: 1.65; max-width: 60ch; padding: 1.2rem; background: var(--bg-1); border-radius: var(--radius); border: var(--bw-s) solid var(--border); position: relative;">
+  When you call <code style="font-family: var(--font-mono); background: var(--bg-2); padding: 0 0.3rem; border-radius: 3px;">getArticle</code> from a server component, you'll get back <span style="font-family: var(--font-mono); padding: 0 0.3rem; border: var(--bw-s) dashed var(--err); border-radius: 4px; color: var(--err); cursor: help; background: hsl(28 95% 58% / 0.08);" title="{@link FooBarMissingType} — symbol not found">FooBarMissingType ⚠</span> (a <code style="font-family: var(--font-mono); background: var(--bg-2); padding: 0 0.3rem; border-radius: 3px;">Promise</code>) that resolves to the article or null.
+</div>
+<div class="annotate">
+  <strong>Broken link</strong> · in dev, unresolved <code>{@link X}</code> renders as the raw text with an amber dashed border + warning emoji. CI (<code>docs:gen:check</code>) makes the same condition a build failure. Production builds either skip the link entirely or substitute plain text.
+</div>
+
+</body>
+</html>

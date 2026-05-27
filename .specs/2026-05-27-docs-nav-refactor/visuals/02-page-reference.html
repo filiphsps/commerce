@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>02 · Page · Reference symbol — Commerce Docs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300..900;1,300..900&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #000;
+    --bg-1: hsl(0 0% 4%);
+    --bg-2: hsl(0 0% 9%);
+    --bg-3: hsl(0 0% 13%);
+    --fg: #fff;
+    --fg-mute: hsl(0 0% 51%);
+    --fg-dim: hsl(0 0% 36%);
+    --border: hsl(0 0% 18%);
+    --border-strong: hsl(0 0% 28%);
+    --brand: #ed1e79;
+    --brand-glow: rgb(237 30 121 / 0.45);
+    --brand-soft: rgb(237 30 121 / 0.10);
+    --brand-hover: hsl(330 86% 60%);
+    --pkg: hsl(95 80% 55%);
+    --ref: hsl(190 95% 55%);
+    --err: hsl(28 95% 58%);
+    --info: hsl(220 80% 65%);
+    --bw: 0.2rem;
+    --bw-s: 0.138rem;
+    --bw-l: 0.29rem;
+    --radius-sm: 4px;
+    --radius: 0.45rem;
+    --radius-lg: 12px;
+    --font-display: 'Montserrat', system-ui, sans-serif;
+    --font-body: 'Montserrat', system-ui, sans-serif;
+    --font-mono: 'Geist Mono', ui-monospace, monospace;
+    --duration: 150ms;
+    --ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-weight: 500; min-height: 100vh; }
+  ::selection { background: var(--brand); color: var(--bg); }
+  *:focus-visible { outline: var(--bw-s) solid var(--brand); outline-offset: 3px; border-radius: 3px; }
+
+  /* Topbar */
+  .topbar { display: grid; grid-template-columns: 260px 1fr 280px; align-items: center; padding: 0.85rem 1.5rem; border-bottom: var(--bw) solid var(--border); gap: 1.5rem; position: sticky; top: 0; background: rgb(0 0 0 / 0.85); backdrop-filter: blur(12px); z-index: 10; }
+  .wordmark { height: 26px; width: auto; }
+  .tabs { display: flex; gap: 0; border: var(--bw) solid var(--border); border-radius: var(--radius); padding: 0.18rem; width: fit-content; justify-self: center; transition: border-color var(--duration) var(--ease); }
+  .tabs:hover { border-color: var(--border-strong); }
+  .tab { font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: 0.65rem; letter-spacing: 0.1em; padding: 0.45rem 0.95rem; border-radius: calc(var(--radius) - 0.18rem); color: var(--fg-mute); border: 0; background: transparent; cursor: pointer; transition: color var(--duration) var(--ease), background var(--duration) var(--ease); }
+  .tab:hover { color: var(--fg); }
+  .tab.active { background: var(--brand); color: var(--bg); box-shadow: 0 0 14px var(--brand-glow); }
+  .tab.active:hover { background: var(--brand-hover); }
+
+  .search { border: var(--bw) solid var(--border); border-radius: var(--radius); padding: 0.45rem 0.8rem; font-family: var(--font-mono); font-size: 0.72rem; color: var(--fg-mute); display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; cursor: pointer; transition: border-color var(--duration) var(--ease), color var(--duration) var(--ease); }
+  .search:hover { border-color: var(--border-strong); color: var(--fg); }
+  .kbd { font-family: var(--font-mono); font-size: 0.6rem; border: 1px solid var(--border-strong); border-radius: 3px; padding: 1px 5px; color: var(--fg); background: var(--bg-2); }
+
+  /* Shell */
+  .shell { display: grid; grid-template-columns: 280px 1fr 240px; min-height: calc(100vh - 56px); }
+  .side { border-right: var(--bw) solid var(--border); padding: 1.1rem 1rem; font-size: 0.8rem; overflow-y: auto; position: sticky; top: 56px; height: calc(100vh - 56px); }
+  .toc { border-left: var(--bw) solid var(--border); padding: 1.1rem 1rem; font-size: 0.78rem; overflow-y: auto; position: sticky; top: 56px; height: calc(100vh - 56px); }
+
+  .tab-chip { display: inline-block; font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: 0.58rem; letter-spacing: 0.16em; padding: 0.25rem 0.55rem; border: var(--bw-s) solid var(--ref); color: var(--ref); border-radius: 4px; margin-bottom: 1.1rem; }
+
+  .grp { font-family: var(--font-mono); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--fg-mute); margin: 1.1rem 0 0.45rem 0; padding-bottom: 0.3rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .grp:first-of-type { margin-top: 0; }
+  .grp .count { font-size: 0.55rem; color: var(--fg-dim); }
+  .it { font-family: var(--font-display); font-weight: 700; color: var(--fg); padding: 0.25rem 0; font-size: 0.82rem; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: color var(--duration) var(--ease); }
+  .it:hover { color: var(--brand-hover); }
+  .it .badge { font-family: var(--font-mono); font-size: 0.58rem; color: var(--fg-mute); font-weight: 400; }
+  .sub { font-family: var(--font-mono); font-size: 0.74rem; color: var(--fg-mute); padding: 0.2rem 0 0.2rem 0.85rem; border-left: var(--bw-s) solid transparent; margin-left: 0.45rem; cursor: pointer; transition: color var(--duration) var(--ease), border-color var(--duration) var(--ease); }
+  .sub:hover { color: var(--fg); border-left-color: var(--border-strong); }
+  .sym { font-family: var(--font-mono); font-size: 0.72rem; color: var(--fg-mute); padding: 0.16rem 0 0.16rem 1.5rem; margin-left: 0.45rem; border-left: var(--bw-s) solid transparent; cursor: pointer; transition: color var(--duration) var(--ease), border-color var(--duration) var(--ease); display: flex; align-items: center; justify-content: space-between; }
+  .sym:hover { color: var(--fg); }
+  .sym.cur { color: var(--brand); border-left-color: var(--brand); background: linear-gradient(to right, var(--brand-soft), transparent 60%); box-shadow: inset 2px 0 0 var(--brand); padding-left: 1.5rem; }
+  .sym .kindmark { font-size: 0.55rem; padding: 1px 4px; border-radius: 2px; font-weight: 500; opacity: 0.7; }
+  .sym .kindmark.fn { color: var(--ref); }
+  .sym .kindmark.cls { color: var(--pkg); }
+
+  /* Content */
+  .content { padding: 2.5rem 3rem 4rem 3rem; max-width: 940px; }
+
+  .crumb-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.7rem; }
+  .crumb { font-family: var(--font-mono); font-size: 0.7rem; color: var(--fg-mute); display: flex; align-items: center; gap: 0.3rem; flex-wrap: wrap; }
+  .crumb a { color: var(--fg-mute); text-decoration: none; transition: color var(--duration) var(--ease); padding: 1px 4px; margin: 0 -4px; border-radius: 2px; }
+  .crumb a:hover { color: var(--brand); }
+  .crumb .sep { color: var(--border-strong); }
+  .crumb .leaf { color: var(--fg); padding: 1px 4px; }
+  .crumb-actions { display: flex; gap: 0.4rem; }
+  .crumb-action { font-family: var(--font-mono); font-size: 0.62rem; color: var(--fg-mute); padding: 0.25rem 0.55rem; border: var(--bw-s) solid var(--border); border-radius: 4px; cursor: pointer; text-decoration: none; transition: all var(--duration) var(--ease); }
+  .crumb-action:hover { color: var(--fg); border-color: var(--border-strong); }
+
+  .deprecated-banner { display: flex; align-items: flex-start; gap: 1rem; padding: 0.85rem 1.1rem; border: var(--bw) solid var(--err); border-radius: var(--radius); background: hsl(28 95% 58% / 0.08); box-shadow: 0 0 28px hsl(28 95% 58% / 0.12); margin-bottom: 1.75rem; }
+  .deprecated-banner .label { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.18em; background: var(--err); color: var(--bg); padding: 0.22rem 0.55rem; border-radius: 4px; font-weight: 700; flex-shrink: 0; white-space: nowrap; }
+  .deprecated-banner .body { font-family: var(--font-display); font-weight: 600; font-size: 0.88rem; color: var(--fg); line-height: 1.5; }
+  .deprecated-banner .body code { font-family: var(--font-mono); background: var(--bg-2); padding: 0 0.3rem; border-radius: 3px; color: var(--err); font-weight: 500; }
+  .deprecated-banner .body strong { color: var(--err); font-weight: 700; }
+
+  h1.symbol-h1 { font-family: var(--font-display); font-weight: 900; font-size: 3.2rem; letter-spacing: -0.04em; line-height: 1; margin: 0; }
+  h1.symbol-h1 .acc { color: var(--brand); }
+  .kind-line { font-family: var(--font-mono); font-size: 0.7rem; color: var(--fg-mute); margin-top: 0.6rem; text-transform: uppercase; letter-spacing: 0.16em; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+  .kind-line .dot { color: var(--ref); }
+  .kind-line .sep { color: var(--border-strong); }
+  .kind-line .tag { padding: 0.18rem 0.4rem; border: 1px solid var(--border-strong); border-radius: 3px; font-size: 0.6rem; }
+  .kind-line .tag.throws { color: var(--err); border-color: hsl(28 95% 58% / 0.4); }
+  .kind-line .tag.async { color: var(--ref); border-color: hsl(190 95% 55% / 0.4); }
+
+  .summary { font-family: var(--font-body); font-weight: 500; font-size: 1.05rem; line-height: 1.65; color: var(--fg); margin: 1.6rem 0 2rem 0; max-width: 64ch; }
+  .summary code { font-family: var(--font-mono); background: var(--bg-2); padding: 0 0.3rem; border-radius: 3px; font-size: 0.86em; }
+
+  .pill { display: inline-block; font-family: var(--font-mono); font-size: 0.8rem; padding: 0.05rem 0.4rem; border-radius: 99px; border: var(--bw-s) solid; line-height: 1.45; text-decoration: none; background: var(--bg-2); font-weight: 500; transition: all var(--duration) var(--ease); cursor: pointer; }
+  .pill.ref-link { border-color: var(--ref); color: var(--ref); background: hsl(190 95% 55% / 0.1); }
+  .pill.ref-link:hover { background: hsl(190 95% 55% / 0.2); }
+  .pill.err-link { border-color: var(--err); color: var(--err); background: hsl(28 95% 58% / 0.1); }
+  .pill.err-link:hover { background: hsl(28 95% 58% / 0.2); }
+  .pill.pkg-link { border-color: var(--pkg); color: var(--pkg); background: hsl(95 80% 55% / 0.1); }
+  .pill.pkg-link:hover { background: hsl(95 80% 55% / 0.2); }
+  .pill.docs-link { border-color: var(--brand); color: var(--brand); background: var(--brand-soft); }
+  .pill.docs-link:hover { background: rgb(237 30 121 / 0.2); }
+  .pill.plain { border-color: var(--border-strong); color: var(--fg); }
+
+  .section-head { font-family: var(--font-display); font-weight: 800; font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.22em; color: var(--fg-mute); margin: 2.5rem 0 0.85rem 0; padding-bottom: 0.45rem; border-bottom: var(--bw-s) solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .section-head .anchor { font-family: var(--font-mono); font-size: 0.65rem; color: var(--fg-dim); opacity: 0; transition: opacity var(--duration) var(--ease); text-decoration: none; }
+  .section-head:hover .anchor { opacity: 1; }
+  .section-head .anchor:hover { color: var(--brand); }
+
+  .codeblock { font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.7; background: var(--bg-2); border: var(--bw) solid var(--border); border-radius: var(--radius); margin-bottom: 1rem; position: relative; overflow: hidden; }
+  .codeblock .titlebar { display: flex; justify-content: space-between; align-items: center; padding: 0.45rem 0.85rem; border-bottom: var(--bw-s) solid var(--border); background: var(--bg-1); }
+  .codeblock .titlebar .file { font-family: var(--font-mono); font-size: 0.65rem; color: var(--fg-mute); letter-spacing: 0.04em; }
+  .codeblock .titlebar .actions { display: flex; gap: 0.3rem; }
+  .codeblock .copy { font-family: var(--font-display); font-weight: 700; font-size: 0.55rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-mute); padding: 0.22rem 0.5rem; border: var(--bw-s) solid var(--border); border-radius: 3px; background: var(--bg); cursor: pointer; transition: all var(--duration) var(--ease); }
+  .codeblock .copy:hover { color: var(--brand); border-color: var(--brand); }
+  .codeblock pre { padding: 0.95rem 1.1rem; overflow-x: auto; }
+  .codeblock pre::-webkit-scrollbar { height: 6px; }
+  .codeblock pre::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+  .codeblock .kw { color: hsl(290 100% 75%); }
+  .codeblock .fn { color: var(--ref); font-weight: 600; }
+  .codeblock .type { color: var(--pkg); }
+  .codeblock .str { color: var(--err); }
+  .codeblock .prm { color: var(--fg); }
+  .codeblock .cmt { color: var(--fg-mute); font-style: italic; }
+
+  /* Params table */
+  .params { border: var(--bw) solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 1rem; }
+  .params-head { display: grid; grid-template-columns: 1.1fr 1.3fr 2.4fr; gap: 1rem; padding: 0.55rem 1rem; background: var(--bg-1); border-bottom: var(--bw-s) solid var(--border); font-family: var(--font-mono); font-size: 0.6rem; color: var(--fg-mute); text-transform: uppercase; letter-spacing: 0.16em; }
+  .param-row { display: grid; grid-template-columns: 1.1fr 1.3fr 2.4fr; gap: 1rem; padding: 0.7rem 1rem; border-bottom: 1px solid var(--border); align-items: baseline; transition: background var(--duration) var(--ease); }
+  .param-row:last-child { border-bottom: 0; }
+  .param-row:hover { background: var(--bg-1); }
+  .param-row .pname { font-family: var(--font-mono); font-weight: 600; font-size: 0.85rem; color: var(--fg); }
+  .param-row .pname .opt { color: var(--fg-mute); font-weight: 400; }
+  .param-row .ptype { font-family: var(--font-mono); font-size: 0.78rem; color: var(--pkg); }
+  .param-row .pdesc { font-family: var(--font-body); font-weight: 500; font-size: 0.85rem; color: var(--fg-mute); line-height: 1.55; }
+  .param-row .pdesc code { font-family: var(--font-mono); background: var(--bg-2); padding: 0 0.25rem; border-radius: 3px; color: var(--fg); font-size: 0.8em; }
+
+  /* Throws */
+  .throws-block { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; }
+  .throws-row { display: flex; gap: 0.8rem; padding: 0.55rem 0.85rem; border-left: var(--bw-l) solid var(--err); background: hsl(28 95% 58% / 0.04); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; align-items: baseline; }
+  .throws-row .cls { font-family: var(--font-mono); font-size: 0.84rem; color: var(--err); font-weight: 600; text-decoration: none; flex-shrink: 0; }
+  .throws-row .when { font-family: var(--font-body); font-weight: 500; font-size: 0.85rem; color: var(--fg-mute); line-height: 1.55; }
+  .throws-row .when code { font-family: var(--font-mono); background: var(--bg-2); padding: 0 0.25rem; border-radius: 3px; color: var(--fg); font-size: 0.85em; }
+
+  /* See also */
+  .see-also { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+  /* Footer */
+  .symbol-footer { margin-top: 3rem; padding-top: 1.25rem; border-top: var(--bw-s) solid var(--border); display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: stretch; }
+  .footer-block { display: flex; flex-direction: column; gap: 0.4rem; }
+  .footer-label { font-family: var(--font-mono); font-size: 0.6rem; color: var(--fg-dim); text-transform: uppercase; letter-spacing: 0.16em; }
+  .footer-source { font-family: var(--font-mono); font-size: 0.78rem; color: var(--fg); text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.6rem; border: var(--bw-s) solid var(--border); border-radius: 4px; width: fit-content; transition: all var(--duration) var(--ease); background: var(--bg-1); }
+  .footer-source:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-soft); }
+  .footer-source .lineno { color: var(--fg-mute); }
+  .footer-meta { font-family: var(--font-mono); font-size: 0.72rem; color: var(--fg-mute); display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+  .footer-meta .ver { padding: 0.15rem 0.4rem; border: 1px solid hsl(95 80% 55% / 0.4); color: var(--pkg); border-radius: 3px; font-size: 0.66rem; background: hsl(95 80% 55% / 0.08); }
+  .footer-nav { display: flex; gap: 0.5rem; margin-top: 2rem; padding-top: 1.5rem; border-top: var(--bw-s) solid var(--border); }
+  .nav-card { flex: 1; display: flex; flex-direction: column; gap: 0.3rem; padding: 0.85rem 1rem; border: var(--bw) solid var(--border); border-radius: var(--radius); text-decoration: none; transition: all var(--duration) var(--ease); cursor: pointer; }
+  .nav-card:hover { border-color: var(--brand); background: var(--brand-soft); }
+  .nav-card .dir { font-family: var(--font-mono); font-size: 0.6rem; color: var(--fg-dim); text-transform: uppercase; letter-spacing: 0.16em; }
+  .nav-card .title { font-family: var(--font-display); font-weight: 700; font-size: 0.9rem; color: var(--fg); }
+  .nav-card:hover .title { color: var(--brand); }
+  .nav-card.next { text-align: right; }
+
+  /* TOC */
+  .toc-label { font-family: var(--font-mono); font-size: 0.6rem; color: var(--fg-mute); text-transform: uppercase; letter-spacing: 0.18em; margin-bottom: 0.75rem; padding-bottom: 0.3rem; border-bottom: 1px solid var(--border); }
+  .toc-item { font-family: var(--font-body); font-weight: 500; font-size: 0.78rem; padding: 0.25rem 0 0.25rem 0.7rem; color: var(--fg-mute); border-left: var(--bw-s) solid transparent; cursor: pointer; transition: color var(--duration) var(--ease), border-color var(--duration) var(--ease); }
+  .toc-item:hover { color: var(--fg); border-left-color: var(--border-strong); }
+  .toc-item.cur { color: var(--brand); border-left-color: var(--brand); font-weight: 600; }
+  .toc-item.depth-2 { padding-left: 1.4rem; font-size: 0.74rem; }
+</style>
+</head>
+<body>
+
+<!-- Topbar -->
+<div class="topbar">
+  <svg class="wordmark" viewBox="0 0 122.6429 37.33">
+    <path fill="#ed1e79" d="M 6.865 2.648 L 25.169 2.648 C 28.961 2.648 32.035 5.721 32.035 9.513 L 32.035 34.682 L 6.865 34.682 C 3.074 34.682 0 31.609 0 27.817 L 0 9.513 C 0 5.721 3.074 2.648 6.865 2.648 Z"/>
+    <g transform="matrix(0.858 0 0 0.858 5.68 8.25)" fill="none" stroke="#fefefe" stroke-width="1.748" stroke-linecap="round" stroke-linejoin="bevel">
+      <path d="M5.615 8.592C5.693 8.107 6.111 7.75 6.603 7.75H17.397C17.889 7.75 18.307 8.107 18.385 8.592L20.065 19.092C20.162 19.7 19.693 20.25 19.077 20.25H4.923C4.307 20.25 3.838 19.7 3.935 19.092Z"/>
+      <path d="M8.75 12.25V6C8.75 4.21 10.21 2.75 12 2.75C13.79 2.75 15.25 4.21 15.25 6V12.25"/>
+    </g>
+    <text x="38" y="22" font-family="Montserrat, sans-serif" font-weight="900" font-size="13" fill="#fff" letter-spacing="-0.4">NORDCOMMERCE</text>
+  </svg>
+  <div class="tabs">
+    <button class="tab" tabindex="0">Docs</button>
+    <button class="tab" tabindex="0">Packages</button>
+    <button class="tab active" tabindex="0">Reference</button>
+    <button class="tab" tabindex="0">Errors</button>
+  </div>
+  <div class="search" tabindex="0">
+    <span>Search the docs</span>
+    <span><span class="kbd">⌘</span> <span class="kbd">K</span></span>
+  </div>
+</div>
+
+<div class="shell">
+
+  <!-- Sidebar -->
+  <nav class="side">
+    <span class="tab-chip">Reference</span>
+
+    <div class="grp">commerce-cms <span class="count">14 / 27</span></div>
+    <div class="it">cms <span class="badge">v0.1.0</span></div>
+    <div class="sub">/api</div>
+    <div class="sym"><span>getPage</span><span class="kindmark fn">fn</span></div>
+    <div class="sym cur"><span>getArticle</span><span class="kindmark fn">fn</span></div>
+    <div class="sym"><span>listArticles</span><span class="kindmark fn">fn</span></div>
+    <div class="sym"><span>resolveLink</span><span class="kindmark fn">fn</span></div>
+    <div class="sym"><span>getPayloadInstance</span><span class="kindmark fn">fn</span></div>
+    <div class="sub">/cache</div>
+    <div class="sub">/blocks</div>
+    <div class="sub">/blocks/render</div>
+    <div class="sub">/config</div>
+    <div class="sub">/collections</div>
+
+    <div class="grp">commerce-db <span class="count">8</span></div>
+    <div class="it">db <span class="badge">v0.4.2</span></div>
+    <div class="sub">/index</div>
+
+    <div class="grp">commerce-errors <span class="count">3</span></div>
+    <div class="it">errors <span class="badge">v0.8.1</span></div>
+    <div class="sub">/index</div>
+  </nav>
+
+  <!-- Content -->
+  <main class="content">
+
+    <div class="crumb-row">
+      <nav class="crumb" aria-label="Breadcrumb">
+        <a href="#">reference</a>
+        <span class="sep">/</span>
+        <a href="#">cms</a>
+        <span class="sep">/</span>
+        <a href="#">api</a>
+        <span class="sep">/</span>
+        <span class="leaf">get-article</span>
+      </nav>
+      <div class="crumb-actions">
+        <a class="crumb-action" href="#">Edit JSDoc ↗</a>
+        <a class="crumb-action" href="#">View source ↗</a>
+      </div>
+    </div>
+
+    <div class="deprecated-banner" role="alert">
+      <span class="label">Deprecated</span>
+      <div class="body">
+        Use <code>getPage()</code> with <code>collection: 'articles'</code> instead. <strong>Removed in 1.0</strong>.
+        See <a class="pill docs-link">Packages › cms › Migration</a> for the codemod.
+      </div>
+    </div>
+
+    <h1 class="symbol-h1">get<span class="acc">Article</span></h1>
+    <div class="kind-line">
+      <span class="dot">●</span>
+      <span>cms · /api</span>
+      <span class="sep">·</span>
+      <span class="tag async">async function</span>
+      <span class="tag throws">throws NotFoundError</span>
+      <span class="sep">·</span>
+      <span>returns nullable</span>
+    </div>
+
+    <div class="summary">
+      Fetch one article by slug for a tenant. Tenant-scoped on <code>shop.id</code>, depth 2, limit 1. Returns <a class="pill ref-link">Article</a> when published, or <a class="pill plain">null</a> when the slug doesn't resolve. Throws <a class="pill err-link">NotFoundError</a> on a structurally invalid slug. See <a class="pill docs-link">Packages › cms › API</a> for the wider read-API narrative.
+    </div>
+
+    <h2 class="section-head" id="signature"><span>Signature</span><a class="anchor" href="#signature">#</a></h2>
+    <div class="codeblock">
+      <div class="titlebar">
+        <span class="file">packages/cms/src/api/get-article.ts</span>
+        <div class="actions">
+          <button class="copy">Copy</button>
+        </div>
+      </div>
+<pre><span class="kw">export async function</span> <span class="fn">getArticle</span>(opts: <span class="type">GetArticleArgs</span>): <span class="kw">Promise</span>&lt;<span class="type">Article</span> | <span class="kw">null</span>&gt;;
+
+<span class="kw">export type</span> <span class="type">GetArticleArgs</span> = {
+  shop: <span class="type">ShopRef</span>;
+  locale: <span class="type">LocaleRef</span>;
+  slug: <span class="prm">string</span>;
+  draft?: <span class="prm">boolean</span>;
+};</pre>
+    </div>
+
+    <h2 class="section-head" id="parameters"><span>Parameters</span><a class="anchor" href="#parameters">#</a></h2>
+    <div class="params">
+      <div class="params-head"><span>Name</span><span>Type</span><span>Description</span></div>
+      <div class="param-row">
+        <div class="pname">opts.shop</div>
+        <div class="ptype">ShopRef</div>
+        <div class="pdesc">Tenant reference — must include <code>id</code>. Asserted at call time via <code>assertShopId</code>.</div>
+      </div>
+      <div class="param-row">
+        <div class="pname">opts.locale</div>
+        <div class="ptype">LocaleRef</div>
+        <div class="pdesc">Request locale. Falls back to the shop's <code>i18n.defaultLocale</code> when the article isn't translated in the request locale.</div>
+      </div>
+      <div class="param-row">
+        <div class="pname">opts.slug</div>
+        <div class="ptype">string</div>
+        <div class="pdesc">URL slug of the article (the path segment, not the title).</div>
+      </div>
+      <div class="param-row">
+        <div class="pname">opts.draft <span class="opt">?</span></div>
+        <div class="ptype">boolean</div>
+        <div class="pdesc">When true, returns unpublished drafts. Editor-only.</div>
+      </div>
+    </div>
+
+    <h2 class="section-head" id="returns"><span>Returns</span><a class="anchor" href="#returns">#</a></h2>
+    <div class="params">
+      <div class="param-row">
+        <div class="pname">Article | null</div>
+        <div class="ptype">union</div>
+        <div class="pdesc">The matching article, or <code>null</code> when no published article exists for that slug in the requested locale.</div>
+      </div>
+    </div>
+
+    <h2 class="section-head" id="throws"><span>Throws</span><a class="anchor" href="#throws">#</a></h2>
+    <div class="throws-block">
+      <div class="throws-row">
+        <a class="cls" href="#">NotFoundError</a>
+        <span class="when">when the slug is structurally invalid — empty, contains slashes, or fails <code>InvalidHandleError</code>'s pattern check upstream.</span>
+      </div>
+    </div>
+
+    <h2 class="section-head" id="example"><span>Example</span><a class="anchor" href="#example">#</a></h2>
+    <div class="codeblock">
+      <div class="titlebar">
+        <span class="file">apps/storefront/app/[domain]/[locale]/news/[slug]/page.tsx</span>
+        <div class="actions"><button class="copy">Copy</button></div>
+      </div>
+<pre><span class="kw">import</span> { <span class="fn">getArticle</span> } <span class="kw">from</span> <span class="str">'@nordcom/commerce-cms/api'</span>;
+<span class="kw">import</span> { <span class="fn">notFound</span> } <span class="kw">from</span> <span class="str">'next/navigation'</span>;
+
+<span class="kw">export default async function</span> <span class="fn">ArticlePage</span>({ params }: { params: <span class="kw">Promise</span>&lt;{ shop: <span class="type">ShopDomain</span>; locale: <span class="type">LocaleCode</span>; slug: <span class="prm">string</span> }&gt; }) {
+  <span class="kw">const</span> { shop, locale, slug } = <span class="kw">await</span> params;
+  <span class="kw">const</span> article = <span class="kw">await</span> <span class="fn">getArticle</span>({ shop, locale, slug });
+
+  <span class="kw">if</span> (!article) <span class="kw">return</span> <span class="fn">notFound</span>();
+  <span class="kw">return</span> &lt;<span class="type">ArticleView</span> article={article} /&gt;;
+}</pre>
+    </div>
+
+    <h2 class="section-head" id="see-also"><span>See also</span><a class="anchor" href="#see-also">#</a></h2>
+    <div class="see-also">
+      <a class="pill ref-link">getPage</a>
+      <a class="pill ref-link">listArticles</a>
+      <a class="pill pkg-link">ShopRef</a>
+      <a class="pill pkg-link">LocaleRef</a>
+      <a class="pill docs-link">Concepts › Multi-tenancy</a>
+      <a class="pill err-link">NotFoundError</a>
+    </div>
+
+    <!-- Symbol footer: strengthened to two clear actionable blocks -->
+    <div class="symbol-footer">
+      <div class="footer-block">
+        <span class="footer-label">Source</span>
+        <a class="footer-source" href="#">
+          packages/cms/src/api/get-article.ts<span class="lineno">:14</span>
+          <span style="margin-left: 0.3rem;">↗</span>
+        </a>
+        <div class="footer-meta">
+          <span>Edit the JSDoc directly</span>
+        </div>
+      </div>
+      <div class="footer-block" style="align-items: flex-end;">
+        <span class="footer-label">Metadata</span>
+        <div class="footer-meta">
+          <span class="ver">cms@0.1.0</span>
+          <span>Last edited 2 weeks ago</span>
+        </div>
+        <div class="footer-meta">
+          <a class="footer-source" href="#" style="font-size: 0.7rem; padding: 0.3rem 0.5rem;">Open in GitHub ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Prev/next nav -->
+    <nav class="footer-nav" aria-label="Pagination">
+      <a class="nav-card" href="#">
+        <span class="dir">← Previous · cms / api</span>
+        <span class="title">getPage</span>
+      </a>
+      <a class="nav-card next" href="#">
+        <span class="dir">Next · cms / api →</span>
+        <span class="title">listArticles</span>
+      </a>
+    </nav>
+
+  </main>
+
+  <!-- TOC -->
+  <aside class="toc">
+    <div class="toc-label">On this page</div>
+    <div class="toc-item">Summary</div>
+    <div class="toc-item cur">Signature</div>
+    <div class="toc-item">Parameters</div>
+    <div class="toc-item depth-2">opts.shop</div>
+    <div class="toc-item depth-2">opts.locale</div>
+    <div class="toc-item depth-2">opts.slug</div>
+    <div class="toc-item depth-2">opts.draft</div>
+    <div class="toc-item">Returns</div>
+    <div class="toc-item">Throws</div>
+    <div class="toc-item">Example</div>
+    <div class="toc-item">See also</div>
+  </aside>
+
+</div>
+
+</body>
+</html>

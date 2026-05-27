@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>08 · Banners &amp; callouts — Commerce Docs</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300..900;1,300..900&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #000; --bg-1: hsl(0 0% 4%); --bg-2: hsl(0 0% 9%); --bg-3: hsl(0 0% 13%);
+    --fg: #fff; --fg-mute: hsl(0 0% 51%); --fg-dim: hsl(0 0% 36%);
+    --border: hsl(0 0% 18%); --border-strong: hsl(0 0% 28%);
+    --brand: #ed1e79; --brand-soft: rgb(237 30 121 / 0.10);
+    --pkg: hsl(95 80% 55%); --ref: hsl(190 95% 55%); --err: hsl(28 95% 58%); --info: hsl(220 80% 65%);
+    --bw: 0.2rem; --bw-s: 0.138rem; --bw-l: 0.29rem; --radius-sm: 4px; --radius: 0.45rem;
+    --font-display: 'Montserrat', system-ui, sans-serif;
+    --font-body: 'Montserrat', system-ui, sans-serif;
+    --font-mono: 'Geist Mono', ui-monospace, monospace;
+    --duration: 150ms;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-weight: 500; padding: 3rem; min-height: 100vh; }
+  ::selection { background: var(--brand); color: var(--bg); }
+
+  .page-h1 { font-family: var(--font-display); font-weight: 900; font-size: 2.4rem; letter-spacing: -0.03em; margin-bottom: 0.4rem; }
+  .page-h1 .acc { color: var(--brand); }
+  .page-sub { color: var(--fg-mute); font-size: 0.95rem; max-width: 60ch; margin-bottom: 3rem; line-height: 1.55; }
+  .section-h { font-family: var(--font-display); font-weight: 800; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.22em; color: var(--fg-mute); margin: 2.5rem 0 0.85rem 0; padding-bottom: 0.4rem; border-bottom: var(--bw-s) solid var(--border); }
+  .annotate { font-family: var(--font-mono); font-size: 0.68rem; color: var(--fg-mute); line-height: 1.55; margin: 0.4rem 0 1.5rem 0; max-width: 70ch; padding-left: 0.85rem; border-left: var(--bw-s) solid var(--border); }
+  .annotate strong { color: var(--fg); font-weight: 700; }
+
+  /* JSDoc tag banners — sit at top of symbol pages */
+  .jsdoc-banner { display: flex; align-items: flex-start; gap: 1rem; padding: 0.85rem 1.1rem; border: var(--bw) solid; border-radius: var(--radius); margin-bottom: 1.4rem; max-width: 920px; }
+  .jsdoc-banner .label { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.18em; color: var(--bg); padding: 0.22rem 0.55rem; border-radius: 4px; font-weight: 700; flex-shrink: 0; white-space: nowrap; }
+  .jsdoc-banner .body { font-family: var(--font-display); font-weight: 600; font-size: 0.92rem; color: var(--fg); line-height: 1.5; }
+  .jsdoc-banner .body code { font-family: var(--font-mono); background: var(--bg-2); padding: 0 0.3rem; border-radius: 3px; color: var(--fg); font-weight: 500; font-size: 0.85em; }
+  .jsdoc-banner .body strong { font-weight: 700; }
+
+  .jsdoc-banner.deprecated { border-color: var(--err); background: hsl(28 95% 58% / 0.08); box-shadow: 0 0 28px hsl(28 95% 58% / 0.12); }
+  .jsdoc-banner.deprecated .label { background: var(--err); }
+  .jsdoc-banner.deprecated .body strong { color: var(--err); }
+
+  .jsdoc-banner.beta { border-color: var(--ref); background: hsl(190 95% 55% / 0.06); box-shadow: 0 0 24px hsl(190 95% 55% / 0.08); }
+  .jsdoc-banner.beta .label { background: var(--ref); }
+  .jsdoc-banner.beta .body strong { color: var(--ref); }
+
+  .jsdoc-banner.experimental { border-color: var(--ref); border-style: dashed; background: hsl(190 95% 55% / 0.04); }
+  .jsdoc-banner.experimental .label { background: var(--ref); }
+
+  .jsdoc-banner.internal { border-color: var(--fg-dim); background: var(--bg-1); opacity: 0.8; }
+  .jsdoc-banner.internal .label { background: var(--fg-dim); color: var(--fg); }
+  .jsdoc-banner.internal .body { color: var(--fg-mute); }
+
+  /* MDX callouts — inside prose */
+  .callout { display: grid; grid-template-columns: auto 1fr; gap: 0.85rem; padding: 0.9rem 1.1rem; border: var(--bw-s) solid; border-left: var(--bw-l) solid; border-radius: var(--radius); margin: 1.2rem 0; font-family: var(--font-body); font-size: 0.92rem; line-height: 1.6; max-width: 920px; }
+  .callout .label { font-family: var(--font-display); font-weight: 800; text-transform: uppercase; font-size: 0.6rem; letter-spacing: 0.18em; align-self: flex-start; padding-top: 0.18rem; white-space: nowrap; }
+  .callout code { font-family: var(--font-mono); background: var(--bg-2); padding: 0 0.3rem; border-radius: 3px; font-size: 0.85em; color: var(--fg); }
+
+  .callout.info { border-color: var(--info); background: hsl(220 80% 65% / 0.05); }
+  .callout.info .label { color: var(--info); }
+  .callout.tip { border-color: var(--pkg); background: hsl(95 80% 55% / 0.05); }
+  .callout.tip .label { color: var(--pkg); }
+  .callout.warn { border-color: var(--err); background: hsl(28 95% 58% / 0.05); }
+  .callout.warn .label { color: var(--err); }
+  .callout.danger { border-color: hsl(0 80% 60%); background: hsl(0 80% 60% / 0.05); box-shadow: 0 0 24px hsl(0 80% 60% / 0.1); }
+  .callout.danger .label { color: hsl(0 80% 65%); }
+  .callout.example { border-color: var(--ref); background: hsl(190 95% 55% / 0.04); }
+  .callout.example .label { color: var(--ref); }
+  .callout.note { border-color: var(--border-strong); background: var(--bg-1); }
+  .callout.note .label { color: var(--fg-mute); }
+
+  /* Inline pills (in-page) */
+  .inline-pill {
+    display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.6rem;
+    text-transform: uppercase; letter-spacing: 0.16em; padding: 0.18rem 0.45rem;
+    border: var(--bw-s) solid; border-radius: 4px; vertical-align: middle; margin-left: 0.35rem;
+  }
+  .inline-pill.deprecated { color: var(--err); border-color: var(--err); background: hsl(28 95% 58% / 0.1); }
+  .inline-pill.beta { color: var(--ref); border-color: var(--ref); background: hsl(190 95% 55% / 0.1); }
+  .inline-pill.experimental { color: var(--ref); border-color: var(--ref); border-style: dashed; }
+  .inline-pill.internal { color: var(--fg-mute); border-color: var(--fg-dim); }
+  .inline-pill.new { color: var(--brand); border-color: var(--brand); background: var(--brand-soft); }
+
+  /* Inline-on-h1 demo */
+  .h1-demo { font-family: var(--font-display); font-weight: 900; font-size: 2.2rem; letter-spacing: -0.035em; line-height: 1; margin-bottom: 0.8rem; }
+  .h1-demo .acc { color: var(--brand); }
+
+  /* Banner-list dividers */
+  .banner-grid { display: flex; flex-direction: column; gap: 0; }
+</style>
+</head>
+<body>
+
+<h1 class="page-h1">08 · <span class="acc">Banners</span> &amp; callouts</h1>
+<p class="page-sub">Two families: <strong>JSDoc banners</strong> at the top of generated symbol pages, and <strong>MDX callouts</strong> inside hand-authored prose. Each tag/kind owns one color from the semantic palette — no overlap, no improvisation.</p>
+
+<h2 class="section-h">JSDoc tag banners · at top of symbol pages</h2>
+
+<h1 class="h1-demo">get<span class="acc">Article</span><span class="inline-pill deprecated">Deprecated</span></h1>
+<div class="jsdoc-banner deprecated">
+  <span class="label">Deprecated</span>
+  <div class="body">
+    Use <code>getPage()</code> with <code>collection: 'articles'</code> instead. <strong>Removed in 1.0</strong>. Codemod: <code>npx @nordcom/commerce-codemod articles-to-pages</code>.
+  </div>
+</div>
+<div class="annotate">
+  <strong>@deprecated</strong> · amber border with amber glow. Inline pill also appears next to the symbol's h1 title and in the sidebar (small "dep" mark). Removed-in version is required if specified in the JSDoc.
+</div>
+
+<h1 class="h1-demo">create<span class="acc">CartSession</span><span class="inline-pill beta">Beta</span></h1>
+<div class="jsdoc-banner beta">
+  <span class="label">Beta</span>
+  <div class="body">
+    Public API but the shape may still change without a major version bump. <strong>Pin a patch version</strong> if you depend on this in production.
+  </div>
+</div>
+<div class="annotate">
+  <strong>@beta</strong> · cyan border with soft cyan glow. Signals "use it, just don't be surprised if it changes". Distinct from experimental — beta is shipped, experimental is opt-in.
+</div>
+
+<h1 class="h1-demo">use<span class="acc">DraftPreview</span><span class="inline-pill experimental">Experimental</span></h1>
+<div class="jsdoc-banner experimental">
+  <span class="label">Experimental</span>
+  <div class="body">
+    Behind the <code>NEXT_PUBLIC_DRAFT_PREVIEW</code> flag. Not enabled by default. <strong>API and behavior subject to change</strong>; do not depend on this in production.
+  </div>
+</div>
+<div class="annotate">
+  <strong>@experimental</strong> · cyan dashed border. Stronger warning than beta — usually requires opt-in flags. Visible in dev only by default; production builds skip these pages unless a flag overrides.
+</div>
+
+<div class="jsdoc-banner internal">
+  <span class="label">Internal</span>
+  <div class="body">
+    This symbol is marked <code>@internal</code> and excluded from the Reference tab. It's surfaced here only when browsing source directly. <strong>Don't import outside the package.</strong>
+  </div>
+</div>
+<div class="annotate">
+  <strong>@internal</strong> · gray, low contrast. Page is normally hidden — only generated when <code>?include=internal</code> is set in build args. Sidebar omits it entirely. Search indexes only the title.
+</div>
+
+<h2 class="section-h">MDX callouts · inside prose</h2>
+
+<div class="callout info">
+  <span class="label">Concept</span>
+  <div>
+    Tenant context is never implicit in this codebase. Every Shopify call constructs a fresh <code>ShopifyApolloApiClient({ shop, locale })</code>. New data-fetching helpers must take <code>{ shop, locale }</code> in their arguments object.
+  </div>
+</div>
+
+<div class="callout tip">
+  <span class="label">Tip</span>
+  <div>
+    For tenant-root reads that aren't entity-specific (e.g. sitemap indexes), use <code>cmsTenantRootTags(shop)</code> from <code>@nordcom/commerce-cms/cache</code> to get the matching fan-out tags. Don't hand-format tag strings.
+  </div>
+</div>
+
+<div class="callout warn">
+  <span class="label">Watch out</span>
+  <div>
+    Never derive the shop from <code>process.env</code> or a singleton. The deployment serves many shops simultaneously; a wrongly-cached tenant context leaks data across shops.
+  </div>
+</div>
+
+<div class="callout danger">
+  <span class="label">Danger</span>
+  <div>
+    <code>dropTenantCache()</code> sweeps every cached entity for the tenant — pages, articles, blocks, header, footer, business data, product metadata. <strong>Use only in tests</strong> or after a tenant-wide schema migration.
+  </div>
+</div>
+
+<div class="callout example">
+  <span class="label">Example</span>
+  <div>
+    See the storefront's <code>app/[domain]/[locale]/blog/[slug]/page.tsx</code> for the canonical pattern — await params, fetch article, return notFound() when null.
+  </div>
+</div>
+
+<div class="callout note">
+  <span class="label">Note</span>
+  <div>
+    The reserved <code>Pages</code> slug <code>homepage</code> is hard-coded — middleware rewrites <code>/&lt;locale&gt;/</code> to <code>/&lt;locale&gt;/homepage/</code> before routing. <code>home</code> or <code>index</code> won't work.
+  </div>
+</div>
+
+<div class="annotate">
+  <strong>MDX callouts</strong> · five flavors, mapped to <code>&lt;Callout type="info|tip|warn|danger|example|note"&gt;</code>. Each owns one semantic color from the palette. Left rail is thick (4.6px) for emphasis; outer border is thin (2.2px) to lighten the overall weight.
+</div>
+
+<h2 class="section-h">Inline pills · next to h1 / inline in prose</h2>
+<div style="font-family: var(--font-body); font-size: 0.95rem; line-height: 1.65; max-width: 60ch; padding: 1rem; background: var(--bg-1); border-radius: var(--radius); border: var(--bw-s) solid var(--border);">
+  The new <code style="font-family: var(--font-mono); background: var(--bg-2); padding: 0 0.3rem; border-radius: 3px;">createCartSession</code><span class="inline-pill new">New</span> helper bootstraps a guest cart with the right tenant + locale wired up. The legacy <code style="font-family: var(--font-mono); background: var(--bg-2); padding: 0 0.3rem; border-radius: 3px;">initCart</code><span class="inline-pill deprecated">Deprecated</span> path still works but emits a console warning. For draft-mode previews use <code style="font-family: var(--font-mono); background: var(--bg-2); padding: 0 0.3rem; border-radius: 3px;">useDraftPreview</code><span class="inline-pill experimental">Experimental</span> — opt-in via the env flag described above.
+</div>
+<div class="annotate">
+  <strong>Inline pills</strong> can hang next to any inline-code identifier — pulled from the same JSDoc tag data that drives the page-level banner. Keeps deprecation visible mid-prose, not just at page top.
+</div>
+
+</body>
+</html>

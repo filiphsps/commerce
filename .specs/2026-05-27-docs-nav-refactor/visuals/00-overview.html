@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>00 · Overview — Commerce Docs design system</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300..900;1,300..900&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #000; --bg-1: hsl(0 0% 4%); --bg-2: hsl(0 0% 9%); --bg-3: hsl(0 0% 13%);
+    --fg: #fff; --fg-mute: hsl(0 0% 51%); --fg-dim: hsl(0 0% 36%);
+    --border: hsl(0 0% 18%); --border-strong: hsl(0 0% 28%);
+    --brand: #ed1e79; --brand-glow: rgb(237 30 121 / 0.45); --brand-soft: rgb(237 30 121 / 0.10); --brand-hover: hsl(330 86% 60%);
+    --pkg: hsl(95 80% 55%); --ref: hsl(190 95% 55%); --err: hsl(28 95% 58%); --info: hsl(220 80% 65%);
+    --bw: 0.2rem; --bw-s: 0.138rem; --bw-l: 0.29rem;
+    --radius-sm: 4px; --radius: 0.45rem; --radius-lg: 12px;
+    --font-display: 'Montserrat', system-ui, sans-serif;
+    --font-body: 'Montserrat', system-ui, sans-serif;
+    --font-mono: 'Geist Mono', ui-monospace, monospace;
+    --duration: 150ms;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-weight: 500; min-height: 100vh; }
+  ::selection { background: var(--brand); color: var(--bg); }
+  *:focus-visible { outline: var(--bw-s) solid var(--brand); outline-offset: 3px; border-radius: 3px; }
+
+  /* Hero */
+  .hero { padding: 5rem 3.5rem 3rem 3.5rem; max-width: 1400px; margin: 0 auto; position: relative; overflow: hidden; }
+  .hero::before { content: ""; position: absolute; top: -50%; right: -10%; width: 60%; height: 200%; background: radial-gradient(ellipse, var(--brand-soft), transparent 60%); pointer-events: none; }
+  .hero .eyebrow { font-family: var(--font-mono); font-size: 0.7rem; color: var(--fg-mute); text-transform: uppercase; letter-spacing: 0.22em; margin-bottom: 1.2rem; position: relative; }
+  .hero .eyebrow .acc { color: var(--brand); }
+  .hero h1 { font-family: var(--font-display); font-weight: 900; font-size: 5rem; letter-spacing: -0.045em; line-height: 0.95; margin-bottom: 1.2rem; position: relative; max-width: 14ch; }
+  .hero h1 .acc { color: var(--brand); }
+  .hero .lede { font-family: var(--font-body); font-weight: 500; font-size: 1.2rem; line-height: 1.55; color: var(--fg-mute); max-width: 60ch; position: relative; }
+  .hero .lede strong { color: var(--fg); font-weight: 700; }
+
+  /* Token strip */
+  .token-strip { padding: 1.5rem 3.5rem; border-top: var(--bw) solid var(--border); border-bottom: var(--bw) solid var(--border); display: flex; gap: 2rem; align-items: center; flex-wrap: wrap; font-family: var(--font-mono); font-size: 0.7rem; color: var(--fg-mute); background: var(--bg-1); max-width: 1400px; margin: 0 auto; }
+  .token-strip .group { display: flex; align-items: center; gap: 0.6rem; }
+  .token-strip .label { color: var(--fg-dim); text-transform: uppercase; letter-spacing: 0.16em; font-size: 0.6rem; }
+  .token-strip .chip { width: 14px; height: 14px; border-radius: 3px; border: 1px solid rgb(255 255 255 / 0.12); }
+  .token-strip .val { color: var(--fg); }
+  .token-strip .stack { display: flex; align-items: center; gap: 0.35rem; font-family: var(--font-mono); }
+
+  /* Grid */
+  .grid-wrap { padding: 4rem 3.5rem; max-width: 1400px; margin: 0 auto; }
+  .grid-title { font-family: var(--font-display); font-weight: 800; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.22em; color: var(--fg-mute); margin-bottom: 0.4rem; }
+  .grid-sub { font-family: var(--font-body); font-weight: 500; font-size: 0.95rem; color: var(--fg-mute); margin-bottom: 2rem; max-width: 60ch; line-height: 1.5; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+  @media (max-width: 1000px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+
+  .card { border: var(--bw) solid var(--border); border-radius: var(--radius-lg); overflow: hidden; background: var(--bg); text-decoration: none; transition: all var(--duration); cursor: pointer; display: flex; flex-direction: column; position: relative; }
+  .card:hover { border-color: var(--brand); transform: translateY(-2px); box-shadow: 0 12px 32px rgb(237 30 121 / 0.18); }
+  .card .head { padding: 1rem 1.2rem 0.85rem 1.2rem; display: flex; justify-content: space-between; align-items: baseline; gap: 0.7rem; border-bottom: var(--bw-s) solid var(--border); }
+  .card .head .number { font-family: var(--font-mono); font-size: 0.65rem; color: var(--brand); font-weight: 600; letter-spacing: 0.04em; }
+  .card .head .title { font-family: var(--font-display); font-weight: 800; font-size: 1.15rem; letter-spacing: -0.02em; color: var(--fg); flex: 1; }
+  .card:hover .head .title { color: var(--brand); }
+  .card .head .tag { font-family: var(--font-mono); font-size: 0.55rem; padding: 0.18rem 0.45rem; border: 1px solid; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.14em; flex-shrink: 0; }
+  .card .head .tag.fdn { color: var(--fg-mute); border-color: var(--border-strong); }
+  .card .head .tag.pg { color: var(--brand); border-color: var(--brand); background: var(--brand-soft); }
+  .card .head .tag.state { color: var(--ref); border-color: var(--ref); }
+  .card .head .tag.detail { color: var(--pkg); border-color: var(--pkg); }
+  .card .head .tag.empty { color: var(--err); border-color: var(--err); }
+
+  .card .thumb { height: 200px; padding: 0.85rem; background: var(--bg-1); overflow: hidden; position: relative; border-bottom: var(--bw-s) solid var(--border); }
+  .card .body { padding: 0.9rem 1.2rem 1.1rem 1.2rem; }
+  .card .body .desc { font-family: var(--font-body); font-weight: 500; font-size: 0.83rem; color: var(--fg-mute); line-height: 1.5; }
+  .card .body .file { font-family: var(--font-mono); font-size: 0.62rem; color: var(--fg-dim); margin-top: 0.55rem; letter-spacing: 0.04em; }
+
+  /* Mini topbar in thumbnail */
+  .mini-bar { display: flex; align-items: center; justify-content: space-between; padding: 0.4rem 0.55rem; border: var(--bw-s) solid var(--border); border-radius: var(--radius-sm); background: var(--bg); margin-bottom: 0.55rem; }
+  .mini-bar .mini-logo { display: flex; align-items: center; gap: 0.3rem; }
+  .mini-bar .mini-mark { width: 12px; height: 12px; background: var(--brand); border-radius: 3px; }
+  .mini-bar .mini-word { font-family: var(--font-display); font-weight: 900; font-size: 0.55rem; color: var(--fg); letter-spacing: -0.02em; }
+  .mini-bar .mini-tabs { display: flex; gap: 1px; }
+  .mini-bar .mini-tab { font-family: var(--font-display); font-weight: 700; font-size: 0.45rem; padding: 0.15rem 0.3rem; border-radius: 2px; color: var(--fg-mute); text-transform: uppercase; letter-spacing: 0.1em; }
+  .mini-bar .mini-tab.active { background: var(--brand); color: var(--bg); }
+
+  /* Mini shell */
+  .mini-shell { display: grid; grid-template-columns: 50px 1fr; gap: 4px; height: calc(100% - 30px); }
+  .mini-side { background: var(--bg); border-radius: var(--radius-sm); padding: 0.4rem 0.3rem; }
+  .mini-content { background: var(--bg); border-radius: var(--radius-sm); padding: 0.5rem 0.55rem; overflow: hidden; }
+  .mini-side .mg { height: 1px; background: var(--border); margin: 0.3rem 0; }
+  .mini-side .mi { height: 4px; background: var(--fg-mute); border-radius: 1px; margin: 0.2rem 0; opacity: 0.4; }
+  .mini-side .mi.cur { background: var(--brand); opacity: 1; }
+  .mini-side .mi.w50 { width: 50%; }
+  .mini-side .mi.w70 { width: 70%; }
+  .mini-side .mi.w90 { width: 90%; }
+  .mini-content .mtitle { background: var(--fg); height: 8px; border-radius: 1px; margin-bottom: 0.4rem; width: 60%; }
+  .mini-content .mtitle.brand-acc::after { content: ""; display: inline-block; width: 22px; height: 8px; background: var(--brand); margin-left: 2px; border-radius: 1px; vertical-align: top; }
+  .mini-content .mline { height: 3px; background: var(--fg-mute); opacity: 0.3; border-radius: 1px; margin: 0.18rem 0; }
+  .mini-content .mline.w90 { width: 90%; }
+  .mini-content .mline.w70 { width: 70%; }
+  .mini-content .mline.w50 { width: 50%; }
+  .mini-content .mcode { background: var(--bg-2); border: 1px solid var(--border); border-radius: 2px; padding: 0.3rem; margin: 0.35rem 0; height: 26px; }
+
+  /* Special thumbnails */
+  .thumb.tokens { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; padding: 0.85rem; height: 200px; }
+  .thumb.tokens .sw { display: flex; flex-direction: column; align-items: stretch; gap: 4px; }
+  .thumb.tokens .sw .color { flex: 1; border-radius: 3px; }
+  .thumb.tokens .sw .name { font-family: var(--font-mono); font-size: 0.5rem; color: var(--fg-mute); text-align: center; }
+
+  .thumb.banner { display: flex; flex-direction: column; gap: 0.4rem; padding: 0.85rem; }
+  .thumb.banner .b { height: 28px; border-radius: 3px; display: flex; align-items: center; padding: 0 0.45rem; font-family: var(--font-mono); font-size: 0.55rem; gap: 0.4rem; }
+  .thumb.banner .b.dep { border: var(--bw-s) solid var(--err); background: hsl(28 95% 58% / 0.08); color: var(--err); }
+  .thumb.banner .b.beta { border: var(--bw-s) solid var(--ref); background: hsl(190 95% 55% / 0.05); color: var(--ref); }
+  .thumb.banner .b.info { border: var(--bw-s) solid var(--info); background: hsl(220 80% 65% / 0.05); color: var(--info); }
+  .thumb.banner .b.tip { border: var(--bw-s) solid var(--pkg); background: hsl(95 80% 55% / 0.05); color: var(--pkg); }
+  .thumb.banner .b strong { font-weight: 700; }
+
+  .thumb.empty { display: flex; flex-direction: column; gap: 0.4rem; padding: 1.2rem 0.85rem; align-items: center; justify-content: center; text-align: center; }
+  .thumb.empty .icon { width: 32px; height: 32px; border: var(--bw-s) solid var(--fg-dim); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 0.7rem; color: var(--fg-dim); margin-bottom: 0.3rem; }
+  .thumb.empty .title { font-family: var(--font-display); font-weight: 700; font-size: 0.62rem; color: var(--fg); }
+  .thumb.empty .desc { font-family: var(--font-body); font-weight: 500; font-size: 0.55rem; color: var(--fg-mute); line-height: 1.4; max-width: 80%; }
+
+  .thumb.code { display: flex; flex-direction: column; gap: 0.45rem; padding: 0.85rem; font-family: var(--font-mono); font-size: 0.55rem; }
+  .thumb.code .cb { background: var(--bg-2); border: var(--bw-s) solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
+  .thumb.code .cb .tb { padding: 3px 6px; border-bottom: 1px solid var(--border); background: var(--bg-1); color: var(--fg-mute); display: flex; justify-content: space-between; }
+  .thumb.code .cb .body { padding: 4px 6px; color: var(--fg); }
+  .thumb.code .cb .body .l { color: var(--fg-mute); margin-right: 4px; }
+
+  .thumb.sidebar { display: flex; gap: 4px; padding: 0.55rem 0.5rem; height: 100%; }
+  .thumb.sidebar .col { flex: 1; background: var(--bg); border: var(--bw-s) solid var(--border); border-radius: 3px; padding: 0.3rem; }
+  .thumb.sidebar .col .chip { display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.4rem; padding: 1px 4px; border: 1px solid; border-radius: 2px; margin-bottom: 0.25rem; letter-spacing: 0.1em; text-transform: uppercase; }
+  .thumb.sidebar .col .chip.docs { color: var(--brand); border-color: var(--brand); }
+  .thumb.sidebar .col .chip.pkg { color: var(--pkg); border-color: var(--pkg); }
+  .thumb.sidebar .col .chip.ref { color: var(--ref); border-color: var(--ref); }
+  .thumb.sidebar .col .chip.err { color: var(--err); border-color: var(--err); }
+  .thumb.sidebar .col .gr { height: 0.5px; background: var(--border); margin: 0.2rem 0; }
+  .thumb.sidebar .col .i { height: 2.5px; background: var(--fg-mute); border-radius: 0.5px; margin: 0.15rem 0; opacity: 0.4; }
+  .thumb.sidebar .col .i.cur { background: var(--brand); opacity: 1; }
+
+  /* Footer */
+  .foot { padding: 4rem 3.5rem; max-width: 1400px; margin: 0 auto; border-top: var(--bw) solid var(--border); }
+  .foot-text { font-family: var(--font-mono); font-size: 0.72rem; color: var(--fg-mute); line-height: 1.7; max-width: 70ch; }
+  .foot-text strong { color: var(--fg); font-weight: 700; }
+  .foot-text code { background: var(--bg-2); padding: 0 0.3rem; border-radius: 3px; color: var(--fg); font-size: 0.85em; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="eyebrow">.specs / 2026-05-27 / <span class="acc">docs-nav-refactor</span> / visuals</div>
+  <h1>The <span class="acc">visual</span> system</h1>
+  <p class="lede">
+    Ten polished files documenting every surface of the rebuilt Commerce docs site. <strong>Nordstar-native</strong>: pure black, brand magenta, 3px borders, Montserrat + Geist Mono. Per-tab neons are token-only — the brand carries every primary navigation signal.
+  </p>
+</header>
+
+<div class="token-strip">
+  <div class="group">
+    <span class="label">Brand</span>
+    <span class="chip" style="background: #ed1e79;"></span>
+    <span class="val">#ed1e79</span>
+  </div>
+  <div class="group">
+    <span class="label">Canvas</span>
+    <span class="chip" style="background: #000; border-color: #444;"></span>
+    <span class="val">#000</span>
+  </div>
+  <div class="group">
+    <span class="label">Neons</span>
+    <span class="chip" style="background: hsl(95 80% 55%);"></span>
+    <span class="chip" style="background: hsl(190 95% 55%);"></span>
+    <span class="chip" style="background: hsl(28 95% 58%);"></span>
+  </div>
+  <div class="group">
+    <span class="label">Type</span>
+    <span class="stack"><span class="val" style="font-weight: 900;">Aa</span> <span>Montserrat</span> · <span>Geist Mono</span></span>
+  </div>
+  <div class="group">
+    <span class="label">Borders</span>
+    <span class="val">3.2px · 7px radius</span>
+  </div>
+</div>
+
+<section class="grid-wrap">
+  <div class="grid-title">Files in this folder</div>
+  <p class="grid-sub">Open each in a browser to inspect. All standalone — no shared dependencies beyond Google Fonts.</p>
+
+  <div class="grid">
+
+    <a class="card" href="./01-tokens.html">
+      <div class="head">
+        <div class="head" style="padding: 0; border: 0;"><span class="number">01</span></div>
+        <span class="title">Tokens</span>
+        <span class="tag fdn">Foundation</span>
+      </div>
+      <div class="thumb tokens">
+        <div class="sw"><div class="color" style="background: #ed1e79;"></div><span class="name">brand</span></div>
+        <div class="sw"><div class="color" style="background: #fff;"></div><span class="name">fg</span></div>
+        <div class="sw"><div class="color" style="background: hsl(95 80% 55%);"></div><span class="name">lime</span></div>
+        <div class="sw"><div class="color" style="background: hsl(190 95% 55%);"></div><span class="name">cyan</span></div>
+        <div class="sw"><div class="color" style="background: hsl(28 95% 58%);"></div><span class="name">amber</span></div>
+      </div>
+      <div class="body">
+        <div class="desc">All color swatches with WCAG ratios, the Montserrat type scale, 8-step spacing, three border weights, three radii, and motion durations with live easing demos.</div>
+        <div class="file">01-tokens.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="./02-page-reference.html">
+      <div class="head">
+        <span class="number">02</span>
+        <span class="title">Reference symbol</span>
+        <span class="tag pg">Page</span>
+      </div>
+      <div class="thumb">
+        <div class="mini-bar">
+          <div class="mini-logo"><div class="mini-mark"></div><div class="mini-word">NORDCOM</div></div>
+          <div class="mini-tabs">
+            <div class="mini-tab">Docs</div>
+            <div class="mini-tab">Pkg</div>
+            <div class="mini-tab active">Ref</div>
+            <div class="mini-tab">Err</div>
+          </div>
+        </div>
+        <div class="mini-shell">
+          <div class="mini-side">
+            <div class="mi w90"></div><div class="mi w70"></div>
+            <div class="mg"></div>
+            <div class="mi w90"></div><div class="mi cur w70"></div><div class="mi w90"></div><div class="mi w50"></div>
+          </div>
+          <div class="mini-content">
+            <div class="mtitle brand-acc"></div>
+            <div class="mcode"></div>
+            <div class="mline w90"></div><div class="mline w70"></div><div class="mline w50"></div>
+          </div>
+        </div>
+      </div>
+      <div class="body">
+        <div class="desc">Full symbol page: @deprecated banner, h1 with brand accent, kind-line tags, signature codeblock with title bar, params table, throws block, example, see-also, source footer, prev/next.</div>
+        <div class="file">02-page-reference.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="./03-page-packages.html">
+      <div class="head">
+        <span class="number">03</span>
+        <span class="title">Packages narrative</span>
+        <span class="tag pg">Page</span>
+      </div>
+      <div class="thumb">
+        <div class="mini-bar">
+          <div class="mini-logo"><div class="mini-mark"></div><div class="mini-word">NORDCOM</div></div>
+          <div class="mini-tabs">
+            <div class="mini-tab">Docs</div>
+            <div class="mini-tab active">Pkg</div>
+            <div class="mini-tab">Ref</div>
+            <div class="mini-tab">Err</div>
+          </div>
+        </div>
+        <div class="mini-shell">
+          <div class="mini-side">
+            <div class="mi w70"></div><div class="mi w90"></div>
+            <div class="mg"></div>
+            <div class="mi w90"></div><div class="mi cur w70"></div><div class="mi w50"></div>
+          </div>
+          <div class="mini-content">
+            <div style="background: var(--ref); height: 5px; border-radius: 1px; margin-bottom: 0.4rem; width: 90%; opacity: 0.6;"></div>
+            <div class="mtitle brand-acc"></div>
+            <div class="mline w90"></div><div class="mline w70"></div>
+            <div class="mcode"></div>
+            <div class="mline w90"></div>
+          </div>
+        </div>
+      </div>
+      <div class="body">
+        <div class="desc">Per-workspace narrative: reference link banner at top, h1 with package version chip, prose with auto-link pills, inline AutoTypeTable from fumadocs-typescript, tip callout, footer with edit-on-github.</div>
+        <div class="file">03-page-packages.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="./04-page-errors.html">
+      <div class="head">
+        <span class="number">04</span>
+        <span class="title">Errors detail</span>
+        <span class="tag pg">Page</span>
+      </div>
+      <div class="thumb">
+        <div class="mini-bar">
+          <div class="mini-logo"><div class="mini-mark"></div><div class="mini-word">NORDCOM</div></div>
+          <div class="mini-tabs">
+            <div class="mini-tab">Docs</div>
+            <div class="mini-tab">Pkg</div>
+            <div class="mini-tab">Ref</div>
+            <div class="mini-tab active">Err</div>
+          </div>
+        </div>
+        <div class="mini-shell">
+          <div class="mini-side">
+            <div class="mi w90"></div><div class="mi cur w70"></div><div class="mi w90"></div><div class="mi w50"></div>
+            <div class="mg"></div>
+            <div class="mi w70"></div><div class="mi w90"></div>
+          </div>
+          <div class="mini-content">
+            <div style="background: hsl(28 95% 58% / 0.15); border: 1px solid var(--err); border-radius: 3px; height: 38px; padding: 0.3rem; margin-bottom: 0.4rem; display: flex; flex-direction: column; gap: 3px;">
+              <div style="height: 6px; background: var(--err); border-radius: 1px; width: 60%;"></div>
+              <div style="height: 3px; background: var(--fg-mute); opacity: 0.6; border-radius: 1px; width: 80%;"></div>
+            </div>
+            <div class="mline w70"></div><div class="mline w90"></div>
+          </div>
+        </div>
+      </div>
+      <div class="body">
+        <div class="desc">Error code page: amber-glow hero with code + class + HTTP badges, possible causes with amber rails, how-it's-thrown codeblock, thrown-from list (source locations), related errors grid, stable help URL footer.</div>
+        <div class="file">04-page-errors.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="./05-page-docs.html">
+      <div class="head">
+        <span class="number">05</span>
+        <span class="title">Docs concept</span>
+        <span class="tag pg">Page</span>
+      </div>
+      <div class="thumb">
+        <div class="mini-bar">
+          <div class="mini-logo"><div class="mini-mark"></div><div class="mini-word">NORDCOM</div></div>
+          <div class="mini-tabs">
+            <div class="mini-tab active">Docs</div>
+            <div class="mini-tab">Pkg</div>
+            <div class="mini-tab">Ref</div>
+            <div class="mini-tab">Err</div>
+          </div>
+        </div>
+        <div class="mini-shell">
+          <div class="mini-side">
+            <div class="mi w90"></div><div class="mi w70"></div>
+            <div class="mg"></div>
+            <div class="mi cur w90"></div><div class="mi w70"></div><div class="mi w50"></div>
+          </div>
+          <div class="mini-content">
+            <div class="mtitle" style="height: 12px;"></div>
+            <div class="mline w90"></div><div class="mline w70"></div><div class="mline w50"></div>
+            <div style="background: hsl(220 80% 65% / 0.1); border-left: 3px solid var(--info); height: 20px; border-radius: 0 2px 2px 0; margin: 0.35rem 0;"></div>
+            <div class="mline w90"></div>
+          </div>
+        </div>
+      </div>
+      <div class="body">
+        <div class="desc">Long-form concept page (Multi-tenancy): editorial-weight h1 + lede, architecture-diagram inline (5-step flow), prose with code samples, three callout flavors (info / tip / warn), continue-exploring grid.</div>
+        <div class="file">05-page-docs.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="./06-sidebar-states.html">
+      <div class="head">
+        <span class="number">06</span>
+        <span class="title">Sidebar states</span>
+        <span class="tag state">States</span>
+      </div>
+      <div class="thumb sidebar">
+        <div class="col"><span class="chip docs">DOC</span><div class="gr"></div><div class="i"></div><div class="i cur"></div><div class="i"></div><div class="i"></div></div>
+        <div class="col"><span class="chip pkg">PKG</span><div class="gr"></div><div class="i"></div><div class="i cur"></div><div class="i"></div><div class="i"></div></div>
+        <div class="col"><span class="chip ref">REF</span><div class="gr"></div><div class="i"></div><div class="i cur"></div><div class="i"></div><div class="i"></div></div>
+        <div class="col"><span class="chip err">ERR</span><div class="gr"></div><div class="i"></div><div class="i cur"></div><div class="i"></div><div class="i"></div></div>
+      </div>
+      <div class="body">
+        <div class="desc">All four tab sidebars side-by-side at rest, plus a row showing hover / focus-visible / collapsed-group / disabled states. Closes with the mobile-overlay variant for narrow viewports.</div>
+        <div class="file">06-sidebar-states.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="./07-codeblock.html">
+      <div class="head">
+        <span class="number">07</span>
+        <span class="title">Codeblock</span>
+        <span class="tag detail">Detail</span>
+      </div>
+      <div class="thumb code">
+        <div class="cb">
+          <div class="tb"><span>get-article.ts</span><span>copy</span></div>
+          <div class="body"><span style="color: hsl(290 100% 75%);">const</span> a = <span style="color: var(--ref);">getArticle</span>();</div>
+        </div>
+        <div class="cb">
+          <div class="tb"><span>diff</span><span>copy</span></div>
+          <div class="body"><span style="color: hsl(0 60% 70%);">- payload.find()</span><br><span style="color: hsl(140 60% 60%);">+ opts.__payload</span></div>
+        </div>
+        <div class="cb">
+          <div class="tb"><span>multi-tab</span><span>ts · sh</span></div>
+          <div class="body"><span class="l">1</span><span style="color: hsl(290 100% 75%);">await</span> <span style="color: var(--ref);">getArticle</span>(...)</div>
+        </div>
+      </div>
+      <div class="body">
+        <div class="desc">Plain, with-title, with-line-numbers, diff (add/del), multi-language tabs, inline-result, twoslash hover preview, inline code with auto-link variants, horizontal-scroll demo with styled scrollbars.</div>
+        <div class="file">07-codeblock.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="./08-banners.html">
+      <div class="head">
+        <span class="number">08</span>
+        <span class="title">Banners &amp; callouts</span>
+        <span class="tag detail">Detail</span>
+      </div>
+      <div class="thumb banner">
+        <div class="b dep"><strong>DEP</strong> @deprecated · removed in 1.0</div>
+        <div class="b beta"><strong>BETA</strong> @beta · API may change</div>
+        <div class="b info"><strong>INFO</strong> Concept callout in prose</div>
+        <div class="b tip"><strong>TIP</strong> Idiomatic pattern</div>
+      </div>
+      <div class="body">
+        <div class="desc">Two families: JSDoc-tag banners (deprecated / beta / experimental / internal) at the top of generated symbol pages, and MDX callouts (info / tip / warn / danger / example / note) inside prose. Plus inline pills.</div>
+        <div class="file">08-banners.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="./09-empty-states.html">
+      <div class="head">
+        <span class="number">09</span>
+        <span class="title">Empty states</span>
+        <span class="tag empty">Edge</span>
+      </div>
+      <div class="thumb empty">
+        <div class="icon">∅</div>
+        <div class="title">No JSDoc · no CHANGELOG · 404</div>
+        <div class="desc">Honest empty states with one concrete next move per case.</div>
+      </div>
+      <div class="body">
+        <div class="desc">No-JSDoc symbol page (encouraging contribution), package-without-CHANGELOG, empty subpath, 404 with smart fuzzy suggestions across tabs, search-no-results with rescue actions, broken {@link} dev-mode warning.</div>
+        <div class="file">09-empty-states.html</div>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<section class="foot">
+  <div class="foot-text">
+    <strong>Implementation notes</strong> · Visuals are unbundled HTML for design review — final renders happen inside Fumadocs. Token names map directly onto Fumadocs CSS variables (<code>--fd-background</code>, <code>--fd-primary</code>, <code>--fd-muted-foreground</code>, etc.) — see spec §4 for the full mapping. The wordmark SVG is copied verbatim from <code>apps/admin/public/logo.svg</code>; no separate variant lives in the docs app.
+    <br><br>
+    <strong>Browse order</strong> · Start with <code>01-tokens.html</code> to internalize the palette + type. Then walk through the four page templates (<code>02</code> → <code>05</code>) to see the system in use. <code>06</code>–<code>09</code> drill into details that recur across pages.
+  </div>
+</section>
+
+</body>
+</html>

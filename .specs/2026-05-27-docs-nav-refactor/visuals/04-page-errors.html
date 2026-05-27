@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>04 · Page · Errors detail — Commerce Docs</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300..900;1,300..900&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #000; --bg-1: hsl(0 0% 4%); --bg-2: hsl(0 0% 9%); --bg-3: hsl(0 0% 13%);
+    --fg: #fff; --fg-mute: hsl(0 0% 51%); --fg-dim: hsl(0 0% 36%);
+    --border: hsl(0 0% 18%); --border-strong: hsl(0 0% 28%);
+    --brand: #ed1e79; --brand-glow: rgb(237 30 121 / 0.45); --brand-soft: rgb(237 30 121 / 0.10); --brand-hover: hsl(330 86% 60%);
+    --pkg: hsl(95 80% 55%); --ref: hsl(190 95% 55%); --err: hsl(28 95% 58%); --info: hsl(220 80% 65%);
+    --bw: 0.2rem; --bw-s: 0.138rem; --bw-l: 0.29rem;
+    --radius-sm: 4px; --radius: 0.45rem; --radius-lg: 12px;
+    --font-display: 'Montserrat', system-ui, sans-serif;
+    --font-body: 'Montserrat', system-ui, sans-serif;
+    --font-mono: 'Geist Mono', ui-monospace, monospace;
+    --duration: 150ms; --ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-weight: 500; min-height: 100vh; }
+  ::selection { background: var(--brand); color: var(--bg); }
+  *:focus-visible { outline: var(--bw-s) solid var(--brand); outline-offset: 3px; border-radius: 3px; }
+
+  .topbar { display: grid; grid-template-columns: 260px 1fr 280px; align-items: center; padding: 0.85rem 1.5rem; border-bottom: var(--bw) solid var(--border); gap: 1.5rem; position: sticky; top: 0; background: rgb(0 0 0 / 0.85); backdrop-filter: blur(12px); z-index: 10; }
+  .wordmark { height: 26px; width: auto; }
+  .tabs { display: flex; gap: 0; border: var(--bw) solid var(--border); border-radius: var(--radius); padding: 0.18rem; width: fit-content; justify-self: center; }
+  .tab { font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: 0.65rem; letter-spacing: 0.1em; padding: 0.45rem 0.95rem; border-radius: calc(var(--radius) - 0.18rem); color: var(--fg-mute); border: 0; background: transparent; cursor: pointer; transition: color var(--duration), background var(--duration); }
+  .tab:hover { color: var(--fg); }
+  .tab.active { background: var(--brand); color: var(--bg); box-shadow: 0 0 14px var(--brand-glow); }
+  .search { border: var(--bw) solid var(--border); border-radius: var(--radius); padding: 0.45rem 0.8rem; font-family: var(--font-mono); font-size: 0.72rem; color: var(--fg-mute); display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; cursor: pointer; }
+  .kbd { font-family: var(--font-mono); font-size: 0.6rem; border: 1px solid var(--border-strong); border-radius: 3px; padding: 1px 5px; color: var(--fg); background: var(--bg-2); }
+
+  .shell { display: grid; grid-template-columns: 280px 1fr; min-height: calc(100vh - 56px); }
+  .side { border-right: var(--bw) solid var(--border); padding: 1.1rem 1rem; font-size: 0.8rem; overflow-y: auto; position: sticky; top: 56px; height: calc(100vh - 56px); }
+
+  .tab-chip { display: inline-block; font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: 0.58rem; letter-spacing: 0.16em; padding: 0.25rem 0.55rem; border: var(--bw-s) solid var(--err); color: var(--err); border-radius: 4px; margin-bottom: 1.1rem; }
+
+  .grp { font-family: var(--font-mono); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--fg-mute); margin: 1.1rem 0 0.45rem 0; padding-bottom: 0.3rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .grp:first-of-type { margin-top: 0; }
+  .grp .count { font-size: 0.55rem; color: var(--fg-dim); }
+  .sub { font-family: var(--font-mono); font-size: 0.72rem; color: var(--fg-mute); padding: 0.2rem 0 0.2rem 0.55rem; border-left: var(--bw-s) solid transparent; margin-left: 0.45rem; cursor: pointer; transition: color var(--duration), border-color var(--duration); }
+  .sub:hover { color: var(--fg); border-left-color: var(--border-strong); }
+  .sub.cur { color: var(--brand); border-left-color: var(--brand); background: linear-gradient(to right, var(--brand-soft), transparent 60%); box-shadow: inset 2px 0 0 var(--brand); }
+
+  .content { padding: 2.5rem 3rem 4rem 3rem; max-width: 920px; }
+
+  .crumb { font-family: var(--font-mono); font-size: 0.7rem; color: var(--fg-mute); display: flex; align-items: center; gap: 0.3rem; margin-bottom: 0.85rem; }
+  .crumb a { color: var(--fg-mute); text-decoration: none; transition: color var(--duration); padding: 1px 4px; margin: 0 -4px; border-radius: 2px; }
+  .crumb a:hover { color: var(--brand); }
+  .crumb .sep { color: var(--border-strong); }
+  .crumb .leaf { color: var(--err); padding: 1px 4px; }
+
+  /* Error hero */
+  .err-hero { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 2rem; padding: 1.75rem 1.85rem; background: linear-gradient(135deg, hsl(28 95% 58% / 0.13), hsl(28 95% 58% / 0.02) 60%, transparent); border: var(--bw) solid var(--err); border-radius: var(--radius); box-shadow: 0 0 50px hsl(28 95% 58% / 0.12), inset 0 0 0 1px hsl(28 95% 58% / 0.1); margin-bottom: 2rem; position: relative; overflow: hidden; }
+  .err-hero::before { content: ""; position: absolute; top: -50%; right: -10%; width: 50%; height: 200%; background: radial-gradient(ellipse, hsl(28 95% 58% / 0.15), transparent 60%); pointer-events: none; }
+  .err-hero h1 { font-family: var(--font-mono); font-weight: 700; font-size: 2.1rem; letter-spacing: 0.005em; color: var(--err); margin: 0; line-height: 1; word-break: break-all; }
+  .err-hero .desc { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; color: var(--fg); margin-top: 0.85rem; line-height: 1.45; max-width: 50ch; }
+  .err-hero .badges { display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-end; position: relative; z-index: 1; }
+  .err-hero .badge { font-family: var(--font-display); font-weight: 700; font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; padding: 0.3rem 0.55rem; border: var(--bw-s) solid; border-radius: 4px; cursor: pointer; text-decoration: none; transition: all var(--duration); white-space: nowrap; }
+  .err-hero .badge.cls { color: var(--ref); border-color: var(--ref); background: hsl(190 95% 55% / 0.1); }
+  .err-hero .badge.cls:hover { background: hsl(190 95% 55% / 0.22); }
+  .err-hero .badge.http { color: var(--err); border-color: var(--err); background: hsl(28 95% 58% / 0.1); }
+  .err-hero .badge.kind { color: var(--fg); border-color: var(--border-strong); background: var(--bg-2); }
+
+  .section-head { font-family: var(--font-display); font-weight: 800; font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.22em; color: var(--fg-mute); margin: 2.2rem 0 0.85rem 0; padding-bottom: 0.4rem; border-bottom: var(--bw-s) solid var(--border); }
+
+  /* Causes — amber left rail */
+  .causes { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+  .causes li { font-family: var(--font-body); font-weight: 500; font-size: 0.95rem; color: var(--fg); line-height: 1.55; padding: 0.65rem 0.85rem 0.65rem 1.1rem; border-left: var(--bw-l) solid var(--err); background: linear-gradient(to right, hsl(28 95% 58% / 0.06), transparent 60%); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+  .causes code { font-family: var(--font-mono); background: var(--bg-2); padding: 0 0.3rem; border-radius: 3px; color: var(--fg); font-size: 0.85em; }
+
+  /* Codeblock */
+  .codeblock { font-family: var(--font-mono); font-size: 0.83rem; line-height: 1.7; background: var(--bg-2); border: var(--bw) solid var(--border); border-radius: var(--radius); margin: 0 0 1.2rem 0; overflow: hidden; }
+  .codeblock .titlebar { display: flex; justify-content: space-between; align-items: center; padding: 0.45rem 0.85rem; border-bottom: var(--bw-s) solid var(--border); background: var(--bg-1); }
+  .codeblock .titlebar .file { font-family: var(--font-mono); font-size: 0.65rem; color: var(--fg-mute); }
+  .codeblock .copy { font-family: var(--font-display); font-weight: 700; font-size: 0.55rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-mute); padding: 0.22rem 0.5rem; border: var(--bw-s) solid var(--border); border-radius: 3px; background: var(--bg); cursor: pointer; transition: all var(--duration); }
+  .codeblock .copy:hover { color: var(--brand); border-color: var(--brand); }
+  .codeblock pre { padding: 0.95rem 1.1rem; overflow-x: auto; }
+  .codeblock .kw { color: hsl(290 100% 75%); }
+  .codeblock .fn { color: var(--ref); font-weight: 600; }
+  .codeblock .type { color: var(--pkg); }
+  .codeblock .str { color: var(--err); }
+  .codeblock .cmt { color: var(--fg-mute); font-style: italic; }
+
+  /* Throw points table */
+  .throw-points { display: flex; flex-direction: column; gap: 0.3rem; }
+  .throw-point { display: grid; grid-template-columns: 1fr auto; gap: 1rem; padding: 0.6rem 0.85rem; border: var(--bw-s) solid var(--border); border-radius: var(--radius-sm); align-items: center; background: var(--bg-1); transition: border-color var(--duration); }
+  .throw-point:hover { border-color: var(--border-strong); }
+  .throw-point .path { font-family: var(--font-mono); font-size: 0.78rem; color: var(--fg); }
+  .throw-point .path .lineno { color: var(--fg-mute); }
+  .throw-point .context { font-family: var(--font-body); font-size: 0.78rem; color: var(--fg-mute); margin-top: 0.2rem; line-height: 1.45; }
+  .throw-point .link { font-family: var(--font-mono); font-size: 0.66rem; color: var(--fg-mute); text-decoration: none; padding: 0.3rem 0.55rem; border: var(--bw-s) solid var(--border); border-radius: 3px; transition: all var(--duration); white-space: nowrap; }
+  .throw-point .link:hover { color: var(--brand); border-color: var(--brand); }
+
+  /* Related */
+  .related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.6rem; }
+  .related-card { padding: 0.7rem 0.85rem; border: var(--bw-s) solid var(--border); border-radius: var(--radius); text-decoration: none; transition: all var(--duration); background: var(--bg-1); cursor: pointer; }
+  .related-card:hover { border-color: var(--err); background: hsl(28 95% 58% / 0.05); }
+  .related-card .code { font-family: var(--font-mono); font-size: 0.78rem; font-weight: 600; color: var(--err); }
+  .related-card .desc { font-family: var(--font-body); font-weight: 500; font-size: 0.75rem; color: var(--fg-mute); margin-top: 0.25rem; line-height: 1.45; }
+
+  /* Footer */
+  .err-footer { margin-top: 3rem; padding-top: 1.5rem; border-top: var(--bw-s) solid var(--border); display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; font-family: var(--font-mono); font-size: 0.72rem; color: var(--fg-mute); align-items: center; }
+  .err-footer .help-url { font-family: var(--font-mono); font-size: 0.72rem; color: var(--fg); padding: 0.4rem 0.55rem; background: var(--bg-2); border: var(--bw-s) solid var(--border); border-radius: 4px; cursor: pointer; transition: all var(--duration); text-decoration: none; }
+  .err-footer .help-url:hover { border-color: var(--brand); color: var(--brand); }
+  .action { font-family: var(--font-mono); font-size: 0.7rem; color: var(--fg); text-decoration: none; padding: 0.4rem 0.7rem; border: var(--bw-s) solid var(--border); border-radius: 4px; transition: all var(--duration); display: inline-flex; align-items: center; gap: 0.35rem; }
+  .action:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-soft); }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <svg class="wordmark" viewBox="0 0 122.6429 37.33">
+    <path fill="#ed1e79" d="M 6.865 2.648 L 25.169 2.648 C 28.961 2.648 32.035 5.721 32.035 9.513 L 32.035 34.682 L 6.865 34.682 C 3.074 34.682 0 31.609 0 27.817 L 0 9.513 C 0 5.721 3.074 2.648 6.865 2.648 Z"/>
+    <g transform="matrix(0.858 0 0 0.858 5.68 8.25)" fill="none" stroke="#fefefe" stroke-width="1.748" stroke-linecap="round" stroke-linejoin="bevel">
+      <path d="M5.615 8.592C5.693 8.107 6.111 7.75 6.603 7.75H17.397C17.889 7.75 18.307 8.107 18.385 8.592L20.065 19.092C20.162 19.7 19.693 20.25 19.077 20.25H4.923C4.307 20.25 3.838 19.7 3.935 19.092Z"/>
+      <path d="M8.75 12.25V6C8.75 4.21 10.21 2.75 12 2.75C13.79 2.75 15.25 4.21 15.25 6V12.25"/>
+    </g>
+    <text x="38" y="22" font-family="Montserrat, sans-serif" font-weight="900" font-size="13" fill="#fff" letter-spacing="-0.4">NORDCOMMERCE</text>
+  </svg>
+  <div class="tabs">
+    <button class="tab">Docs</button>
+    <button class="tab">Packages</button>
+    <button class="tab">Reference</button>
+    <button class="tab active">Errors</button>
+  </div>
+  <div class="search"><span>Search the docs</span><span><span class="kbd">⌘</span> <span class="kbd">K</span></span></div>
+</div>
+
+<div class="shell">
+
+  <nav class="side">
+    <span class="tab-chip">Errors</span>
+
+    <div class="grp">API_* <span class="count">11</span></div>
+    <div class="sub">API_UNKNOWN_ERROR</div>
+    <div class="sub cur">API_UNKNOWN_LOCALE</div>
+    <div class="sub">API_UNKNOWN_SHOP_DOMAIN</div>
+    <div class="sub">API_UNKNOWN_COMMERCE_PROVIDER</div>
+    <div class="sub">API_INVALID_SHOP</div>
+    <div class="sub">API_INVALID_SHOP_DOMAIN</div>
+    <div class="sub">API_INVALID_HANDLE</div>
+    <div class="sub">API_INVALID_ID</div>
+    <div class="sub">API_INVALID_CART</div>
+    <div class="sub">API_METHOD_NOT_ALLOWED</div>
+    <div class="sub">API_TOO_MANY_REQUESTS</div>
+
+    <div class="grp">INVALID_* <span class="count">3</span></div>
+    <div class="sub">INVALID_HANDLE</div>
+    <div class="sub">INVALID_ID</div>
+    <div class="sub">INVALID_CART</div>
+
+    <div class="grp">General <span class="count">3</span></div>
+    <div class="sub">NOT_FOUND</div>
+    <div class="sub">UNREACHABLE</div>
+    <div class="sub">GENERIC_TODO</div>
+  </nav>
+
+  <main class="content">
+
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a href="#">errors</a>
+      <span class="sep">/</span>
+      <a href="#">api</a>
+      <span class="sep">/</span>
+      <span class="leaf">api-unknown-locale</span>
+    </nav>
+
+    <div class="err-hero">
+      <div>
+        <h1>API_UNKNOWN_LOCALE</h1>
+        <div class="desc">An unknown or invalid locale was provided to the API.</div>
+      </div>
+      <div class="badges">
+        <a class="badge cls" href="#">UnknownLocaleError ↗</a>
+        <span class="badge http">HTTP 400</span>
+        <span class="badge kind">ApiErrorKind</span>
+      </div>
+    </div>
+
+    <h2 class="section-head">Possible causes</h2>
+    <ul class="causes">
+      <li>Invalid user input — a locale code that doesn't match the <code>xx-XX</code> BCP-47 pattern.</li>
+      <li>Misconfigured commerce provider — the requested locale isn't in the shop's <code>i18n.locales</code> set.</li>
+      <li>A previously-supported locale was removed from the shop record and a cached URL still references it.</li>
+    </ul>
+
+    <h2 class="section-head">How it's thrown</h2>
+    <div class="codeblock">
+      <div class="titlebar">
+        <span class="file">@nordcom/commerce-errors</span>
+        <button class="copy">Copy</button>
+      </div>
+<pre><span class="kw">import</span> { <span class="fn">UnknownLocaleError</span> } <span class="kw">from</span> <span class="str">'@nordcom/commerce-errors'</span>;
+
+<span class="kw">try</span> {
+  <span class="type">Locale</span>.<span class="fn">from</span>(<span class="str">'hello-world'</span>);
+} <span class="kw">catch</span> {
+  <span class="kw">throw new</span> <span class="fn">UnknownLocaleError</span>();
+}</pre>
+    </div>
+
+    <h2 class="section-head">Thrown from</h2>
+    <div class="throw-points">
+      <div class="throw-point">
+        <div>
+          <div class="path">packages/shopify-graphql/src/utils/locale.ts<span class="lineno">:42</span></div>
+          <div class="context">when constructing a <code style="font-family: var(--font-mono); background: var(--bg-2); padding: 0 0.25rem; border-radius: 3px;">Locale</code> from a request path that doesn't parse as BCP-47.</div>
+        </div>
+        <a class="link" href="#">View ↗</a>
+      </div>
+      <div class="throw-point">
+        <div>
+          <div class="path">apps/storefront/src/middleware.ts<span class="lineno">:118</span></div>
+          <div class="context">in the locale fallback chain, when the resolved locale isn't in the shop's allowed set.</div>
+        </div>
+        <a class="link" href="#">View ↗</a>
+      </div>
+      <div class="throw-point">
+        <div>
+          <div class="path">packages/cms/src/api/get-page.ts<span class="lineno">:67</span></div>
+          <div class="context">via Payload's locale-aware reader when the locale code is malformed before the DB query.</div>
+        </div>
+        <a class="link" href="#">View ↗</a>
+      </div>
+    </div>
+
+    <h2 class="section-head">Related errors</h2>
+    <div class="related-grid">
+      <a class="related-card" href="#">
+        <div class="code">API_UNKNOWN_SHOP_DOMAIN</div>
+        <div class="desc">The hostname couldn't be resolved to a known shop.</div>
+      </a>
+      <a class="related-card" href="#">
+        <div class="code">API_INVALID_HANDLE</div>
+        <div class="desc">The handle is malformed before lookup.</div>
+      </a>
+      <a class="related-card" href="#">
+        <div class="code">NOT_FOUND</div>
+        <div class="desc">Generic 404 for any missing resource.</div>
+      </a>
+    </div>
+
+    <div class="err-footer">
+      <div style="display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap;">
+        <span>Stable help URL:</span>
+        <a class="help-url" href="#">https://docs.nordcom.io/docs/errors/api-unknown-locale/</a>
+      </div>
+      <a class="action" href="#">Edit on GitHub ↗</a>
+    </div>
+
+  </main>
+
+</div>
+
+</body>
+</html>

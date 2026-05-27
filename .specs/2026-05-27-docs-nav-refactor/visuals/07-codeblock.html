@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>07 · Codeblock variants — Commerce Docs</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300..900;1,300..900&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #000; --bg-1: hsl(0 0% 4%); --bg-2: hsl(0 0% 9%); --bg-3: hsl(0 0% 13%);
+    --fg: #fff; --fg-mute: hsl(0 0% 51%); --fg-dim: hsl(0 0% 36%);
+    --border: hsl(0 0% 18%); --border-strong: hsl(0 0% 28%);
+    --brand: #ed1e79; --brand-soft: rgb(237 30 121 / 0.10);
+    --pkg: hsl(95 80% 55%); --ref: hsl(190 95% 55%); --err: hsl(28 95% 58%);
+    --bw: 0.2rem; --bw-s: 0.138rem; --radius-sm: 4px; --radius: 0.45rem;
+    --font-display: 'Montserrat', system-ui, sans-serif;
+    --font-body: 'Montserrat', system-ui, sans-serif;
+    --font-mono: 'Geist Mono', ui-monospace, monospace;
+    --duration: 150ms;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-weight: 500; padding: 3rem; min-height: 100vh; }
+  ::selection { background: var(--brand); color: var(--bg); }
+  *:focus-visible { outline: var(--bw-s) solid var(--brand); outline-offset: 2px; border-radius: 2px; }
+
+  .page-h1 { font-family: var(--font-display); font-weight: 900; font-size: 2.4rem; letter-spacing: -0.03em; margin-bottom: 0.4rem; }
+  .page-h1 .acc { color: var(--brand); }
+  .page-sub { color: var(--fg-mute); font-size: 0.95rem; max-width: 60ch; margin-bottom: 3rem; line-height: 1.55; }
+  .section-h { font-family: var(--font-display); font-weight: 800; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.22em; color: var(--fg-mute); margin: 2.5rem 0 0.85rem 0; padding-bottom: 0.4rem; border-bottom: var(--bw-s) solid var(--border); }
+  .annotate { font-family: var(--font-mono); font-size: 0.7rem; color: var(--fg-mute); line-height: 1.55; margin: 0.6rem 0 1.5rem 0; max-width: 70ch; padding-left: 0.85rem; border-left: var(--bw-s) solid var(--border); }
+  .annotate strong { color: var(--fg); font-weight: 700; }
+
+  .codeblock { font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.7; background: var(--bg-2); border: var(--bw) solid var(--border); border-radius: var(--radius); margin-bottom: 1rem; overflow: hidden; max-width: 920px; }
+  .codeblock .titlebar { display: flex; justify-content: space-between; align-items: center; padding: 0.45rem 0.85rem; border-bottom: var(--bw-s) solid var(--border); background: var(--bg-1); }
+  .codeblock .titlebar .file { font-family: var(--font-mono); font-size: 0.65rem; color: var(--fg-mute); letter-spacing: 0.04em; }
+  .codeblock .titlebar .lang { font-family: var(--font-mono); font-size: 0.6rem; color: var(--fg-dim); text-transform: uppercase; letter-spacing: 0.14em; }
+  .codeblock .actions { display: flex; gap: 0.3rem; }
+  .codeblock .copy, .codeblock .action-btn {
+    font-family: var(--font-display); font-weight: 700; font-size: 0.55rem; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--fg-mute); padding: 0.22rem 0.5rem; border: var(--bw-s) solid var(--border); border-radius: 3px; background: var(--bg);
+    cursor: pointer; transition: all var(--duration);
+  }
+  .codeblock .copy:hover, .codeblock .action-btn:hover { color: var(--brand); border-color: var(--brand); }
+  .codeblock .copy.copied { color: var(--pkg); border-color: var(--pkg); }
+  .codeblock pre { padding: 0.95rem 1.1rem; overflow-x: auto; white-space: pre; }
+  .codeblock pre::-webkit-scrollbar { height: 8px; width: 8px; }
+  .codeblock pre::-webkit-scrollbar-track { background: var(--bg-1); }
+  .codeblock pre::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+  .codeblock pre::-webkit-scrollbar-thumb:hover { background: var(--fg-dim); }
+  .codeblock .kw { color: hsl(290 100% 75%); }
+  .codeblock .fn { color: var(--ref); font-weight: 600; }
+  .codeblock .type { color: var(--pkg); }
+  .codeblock .str { color: var(--err); }
+  .codeblock .num { color: var(--err); }
+  .codeblock .prm { color: var(--fg); }
+  .codeblock .cmt { color: var(--fg-mute); font-style: italic; }
+  .codeblock .punc { color: var(--fg-mute); }
+
+  /* Line numbers */
+  .codeblock.lined pre { padding: 0; }
+  .codeblock.lined .code-lines { display: grid; grid-template-columns: 3.2rem 1fr; }
+  .codeblock.lined .lineno-col { background: var(--bg-1); border-right: var(--bw-s) solid var(--border); padding: 0.95rem 0.6rem 0.95rem 0; text-align: right; font-family: var(--font-mono); font-size: 0.78rem; color: var(--fg-dim); line-height: 1.7; user-select: none; }
+  .codeblock.lined .line-code { padding: 0.95rem 1.1rem; overflow-x: auto; line-height: 1.7; }
+
+  /* Diff highlighting */
+  .codeblock .diff-line { display: block; margin: 0 -1.1rem; padding: 0 1.1rem; }
+  .codeblock .diff-line.add { background: hsl(140 60% 50% / 0.1); border-left: var(--bw-s) solid hsl(140 60% 50%); padding-left: calc(1.1rem - var(--bw-s)); }
+  .codeblock .diff-line.add::before { content: "+ "; color: hsl(140 60% 60%); margin-left: -0.8rem; margin-right: 0.2rem; }
+  .codeblock .diff-line.del { background: hsl(0 60% 50% / 0.1); border-left: var(--bw-s) solid hsl(0 60% 60%); padding-left: calc(1.1rem - var(--bw-s)); opacity: 0.7; }
+  .codeblock .diff-line.del::before { content: "− "; color: hsl(0 60% 70%); margin-left: -0.8rem; margin-right: 0.2rem; }
+
+  /* Multi-language tabs */
+  .codeblock.tabbed .tabbar { display: flex; padding: 0 0.4rem; border-bottom: var(--bw-s) solid var(--border); background: var(--bg-1); }
+  .codeblock.tabbed .ctab { font-family: var(--font-mono); font-size: 0.7rem; padding: 0.5rem 0.85rem; color: var(--fg-mute); cursor: pointer; border: 0; background: transparent; border-bottom: var(--bw-s) solid transparent; margin-bottom: -1px; transition: all var(--duration); }
+  .codeblock.tabbed .ctab:hover { color: var(--fg); }
+  .codeblock.tabbed .ctab.active { color: var(--brand); border-bottom-color: var(--brand); }
+
+  /* Twoslash inline hover preview */
+  .twoslash-hover { display: inline-block; background: var(--bg-3); border: var(--bw-s) solid var(--brand); border-radius: var(--radius-sm); padding: 0.55rem 0.7rem; margin-top: 0.3rem; font-family: var(--font-mono); font-size: 0.78rem; color: var(--fg); position: relative; box-shadow: 0 4px 16px rgb(0 0 0 / 0.5); }
+  .twoslash-hover::before { content: ""; position: absolute; top: -7px; left: 12px; width: 12px; height: 12px; background: var(--bg-3); border-top: var(--bw-s) solid var(--brand); border-left: var(--bw-s) solid var(--brand); transform: rotate(45deg); }
+
+  /* Inline code variants */
+  .inline-row { display: flex; align-items: center; gap: 1rem; padding: 0.5rem 0; font-size: 0.92rem; color: var(--fg); font-family: var(--font-body); }
+  .inline-row .label { font-family: var(--font-mono); font-size: 0.62rem; color: var(--fg-mute); text-transform: uppercase; letter-spacing: 0.14em; min-width: 100px; }
+  code.inline {
+    font-family: var(--font-mono); background: var(--bg-2); padding: 0 0.3rem; border-radius: 3px;
+    color: var(--fg); font-size: 0.85em; line-height: 1.45;
+    border: var(--bw-s) solid transparent;
+  }
+  code.inline.ref-pill { color: var(--ref); border-radius: 99px; padding: 0 0.4rem; border-color: var(--ref); background: hsl(190 95% 55% / 0.1); cursor: pointer; transition: background var(--duration); }
+  code.inline.ref-pill:hover { background: hsl(190 95% 55% / 0.22); }
+  code.inline.err-pill { color: var(--err); border-radius: 99px; padding: 0 0.4rem; border-color: var(--err); background: hsl(28 95% 58% / 0.1); cursor: pointer; }
+  code.inline.pkg-pill { color: var(--pkg); border-radius: 99px; padding: 0 0.4rem; border-color: var(--pkg); background: hsl(95 80% 55% / 0.1); cursor: pointer; }
+  code.inline.no-link { color: var(--fg); }
+
+  /* Result block */
+  .result-block { font-family: var(--font-mono); font-size: 0.78rem; background: var(--bg); border: var(--bw-s) dashed var(--border-strong); border-radius: 0 0 var(--radius) var(--radius); border-top: 0; padding: 0.85rem 1.1rem; color: var(--fg-mute); line-height: 1.6; max-width: 920px; margin-top: -1rem; margin-bottom: 1rem; }
+  .result-block .label { font-family: var(--font-display); font-weight: 700; font-size: 0.55rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-dim); display: block; margin-bottom: 0.3rem; }
+  .result-block .out { color: var(--fg); }
+</style>
+</head>
+<body>
+
+<h1 class="page-h1">07 · <span class="acc">Codeblock</span> variants</h1>
+<p class="page-sub">All the shapes a code block can take in Commerce docs. One token family — Shiki applies via Fumadocs' code highlighter, syntax colors map to lime/cyan/amber/violet (kw) per the semantic palette. Copy button always visible, scrollbar styled, line numbers opt-in.</p>
+
+<h2 class="section-h">Plain · with file title &amp; copy</h2>
+<div class="codeblock">
+  <div class="titlebar">
+    <span class="file">packages/cms/src/api/get-article.ts</span>
+    <div class="actions">
+      <button class="copy">Copy</button>
+    </div>
+  </div>
+<pre><span class="kw">export async function</span> <span class="fn">getArticle</span>(opts: <span class="type">GetArticleArgs</span>): <span class="kw">Promise</span>&lt;<span class="type">Article</span> | <span class="kw">null</span>&gt; {
+  <span class="fn">assertShopId</span>(opts.shop);
+  <span class="kw">const</span> payload = <span class="kw">await</span> <span class="fn">getPayloadInstance</span>();
+  <span class="kw">return</span> payload.<span class="fn">find</span>({ collection: <span class="str">'articles'</span>, ... });
+}</pre>
+</div>
+<div class="annotate">
+  <strong>Title bar</strong> shows full file path (workspace-relative). <strong>Copy button</strong> always visible, top-right, replaces "Copy" with "Copied ✓" in lime on click for 1.5s. Single-tab default.
+</div>
+
+<h2 class="section-h">With line numbers</h2>
+<div class="codeblock lined">
+  <div class="titlebar">
+    <span class="file">apps/storefront/middleware.ts</span>
+    <div class="actions"><button class="copy">Copy</button></div>
+  </div>
+  <div class="code-lines">
+    <div class="lineno-col">
+      <div>14</div>
+      <div>15</div>
+      <div>16</div>
+      <div>17</div>
+      <div>18</div>
+      <div>19</div>
+      <div>20</div>
+      <div>21</div>
+    </div>
+<pre class="line-code"><span class="kw">export async function</span> <span class="fn">middleware</span>(req: <span class="type">NextRequest</span>) {
+  <span class="kw">const</span> hostname = req.headers.<span class="fn">get</span>(<span class="str">'host'</span>) ?? <span class="str">''</span>;
+  <span class="kw">const</span> shop = <span class="kw">await</span> <span class="fn">resolveShopFromHostname</span>(hostname);
+  <span class="kw">if</span> (!shop) <span class="kw">throw new</span> <span class="fn">UnknownShopDomainError</span>(hostname);
+
+  <span class="kw">const</span> locale = <span class="fn">resolveLocale</span>(req, shop);
+  <span class="kw">return</span> <span class="type">NextResponse</span>.<span class="fn">rewrite</span>(<span class="kw">new</span> <span class="type">URL</span>(<span class="str">`/${shop.domain}/${locale}${req.nextUrl.pathname}`</span>, req.url));
+}</pre>
+  </div>
+</div>
+<div class="annotate">
+  <strong>Line numbers</strong> opt-in via <code style="font-family: var(--font-mono);">{N..M}</code> meta on the fence (Shiki transformer). Right-aligned, bg-1 column, dim color, non-selectable on copy. Starts at the source-file line number, not 1.
+</div>
+
+<h2 class="section-h">Diff</h2>
+<div class="codeblock">
+  <div class="titlebar">
+    <span class="file">packages/cms/src/api/get-article.ts</span>
+    <div class="actions"><button class="copy">Copy</button></div>
+  </div>
+<pre><span class="kw">export async function</span> <span class="fn">getArticle</span>(opts: <span class="type">GetArticleArgs</span>) {
+<span class="diff-line del"><span class="kw">  const</span> payload = <span class="kw">await</span> <span class="fn">getPayloadInstance</span>();</span>
+<span class="diff-line add"><span class="kw">  const</span> payload = opts.__payload ?? <span class="kw">await</span> <span class="fn">getPayloadInstance</span>();</span>
+  <span class="kw">return</span> payload.<span class="fn">find</span>({
+<span class="diff-line del">    where: { slug: { equals: opts.slug } },</span>
+<span class="diff-line add">    where: { <span class="kw">and</span>: [{ tenant: { equals: opts.shop.id } }, { slug: { equals: opts.slug } }] },</span>
+    locale: opts.locale.code,
+  });
+}</pre>
+</div>
+<div class="annotate">
+  <strong>Diff fences</strong> via <code style="font-family: var(--font-mono);">[!code ++]</code> / <code style="font-family: var(--font-mono);">[!code --]</code> Shiki transformers. Green = add, red = del. Add lines full opacity; del lines 0.7 opacity to weight reader's eye toward the new state.
+</div>
+
+<h2 class="section-h">Multi-language tabs · same content, two surfaces</h2>
+<div class="codeblock tabbed">
+  <div class="tabbar">
+    <button class="ctab active">TypeScript</button>
+    <button class="ctab">Bash</button>
+    <button class="ctab">curl</button>
+  </div>
+<pre><span class="kw">import</span> { <span class="fn">getArticle</span> } <span class="kw">from</span> <span class="str">'@nordcom/commerce-cms/api'</span>;
+
+<span class="kw">const</span> article = <span class="kw">await</span> <span class="fn">getArticle</span>({
+  shop, locale,
+  slug: <span class="str">'announcing-v2'</span>,
+});</pre>
+</div>
+<div class="annotate">
+  <strong>Tabs</strong> for "the same outcome in different stacks" — e.g. <code>pnpm install</code> vs <code>npm install</code>; TypeScript SDK call vs curl request. Tab pill follows brand-magenta convention.
+</div>
+
+<h2 class="section-h">Inline result · output below the call</h2>
+<div class="codeblock">
+  <div class="titlebar">
+    <span class="file">at the REPL</span>
+    <div class="actions"><button class="copy">Copy</button></div>
+  </div>
+<pre><span class="fn">resolveLink</span>({ kind: <span class="str">'page'</span>, page: { slug: <span class="str">'about'</span> } }, { locale });</pre>
+</div>
+<div class="result-block">
+  <span class="label">Returns</span>
+  <span class="out">→ <code style="color: var(--ref);">'/en-US/about/'</code></span>
+</div>
+
+<div class="codeblock">
+  <div class="titlebar">
+    <span class="file">at the REPL</span>
+    <div class="actions"><button class="copy">Copy</button></div>
+  </div>
+<pre><span class="fn">resolveLink</span>({ kind: <span class="str">'product'</span>, product: { shopifyHandle: <span class="str">'hat'</span> } }, { locale });</pre>
+</div>
+<div class="result-block">
+  <span class="label">Returns</span>
+  <span class="out">→ <code style="color: var(--ref);">'/en-US/products/hat/'</code></span>
+</div>
+<div class="annotate">
+  <strong>Result block</strong> uses a dashed border, hangs off the bottom of the codeblock (no top border). Lighter weight than the input. For mini-REPL-style "input → output" pairs in tutorials.
+</div>
+
+<h2 class="section-h">Twoslash · type-on-hover preview</h2>
+<div class="codeblock">
+  <div class="titlebar">
+    <span class="file">type inference example</span>
+    <div class="actions"><button class="copy">Copy</button></div>
+  </div>
+<pre><span class="kw">const</span> article = <span class="kw">await</span> <span class="fn">getArticle</span>({ shop, locale, slug: <span class="str">'announcing-v2'</span> });
+<span class="cmt">//    ^?</span></pre>
+</div>
+<div class="twoslash-hover">
+  <span class="cmt" style="font-style: normal;">type:</span> <span class="type">Article</span> <span class="punc">|</span> <span class="kw">null</span>
+</div>
+<div class="annotate">
+  <strong>Twoslash</strong> via Fumadocs' optional Shiki transformer. Inline <code style="font-family: var(--font-mono);">// ^?</code> renders the TS type below the column, framed in a brand-magenta tooltip with an arrow pointer. Requires <code style="font-family: var(--font-mono);">serverExternalPackages: ['typescript', 'twoslash']</code> in next.config.
+</div>
+
+<h2 class="section-h">Inline code variants</h2>
+<div class="inline-row"><span class="label">plain</span><span>You can configure caching via the <code class="inline">cmsTenantRootTags</code> helper exported from cache.</span></div>
+<div class="inline-row"><span class="label">no-link</span><span>The TypeScript type <code class="inline no-link">Promise&lt;T&gt;</code> is left as plain code — auto-linker skips it.</span></div>
+<div class="inline-row"><span class="label">auto-link → ref</span><span>Call <code class="inline ref-pill">getArticle</code> when you need a single article by slug.</span></div>
+<div class="inline-row"><span class="label">auto-link → err</span><span>Catches <code class="inline err-pill">NotFoundError</code> at the route boundary and returns a <code class="inline">404</code> response.</span></div>
+<div class="inline-row"><span class="label">auto-link → pkg</span><span>The shape <code class="inline pkg-pill">ShopRef</code> is imported from <code class="inline">@nordcom/commerce-db</code>.</span></div>
+<div class="annotate">
+  <strong>Inline code</strong> defaults to plain (bg-2 chip). <strong>Auto-link</strong> resolves matching identifiers via the symbol-index and renders them as pills with the target-tab color. <strong>no-link</strong> applied via <code>&lt;code class="no-link"&gt;</code> or by using a fenced code block instead of single backticks.
+</div>
+
+<h2 class="section-h">Horizontal scroll · long lines</h2>
+<div class="codeblock">
+  <div class="titlebar">
+    <span class="file">tag fan-out example · scroll →</span>
+    <div class="actions"><button class="copy">Copy</button></div>
+  </div>
+<pre><span class="kw">const</span> tags = [<span class="str">`cms.${shop.id}.pages.${slug}`</span>, <span class="str">`cms.${shop.id}.pages`</span>, <span class="str">`cms.${shop.id}`</span>, <span class="str">`cms.${shop.id}.locale.${locale.code}.pages.${slug}`</span>, <span class="str">`cms.${shop.id}.locale.${locale.code}`</span>];</pre>
+</div>
+<div class="annotate">
+  <strong>Scrollbars</strong> styled — 8px tall, bg-1 track, border-strong thumb, fg-dim on hover. Visible always (not auto-hidden on macOS) so readers know scrolling is possible.
+</div>
+
+</body>
+</html>
