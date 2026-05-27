@@ -4,7 +4,6 @@ import { notFound } from 'next/navigation';
 import { source } from '@/lib/source';
 import { getMDXComponents } from '@/mdx-components';
 
-
 /**
  * Catch-all docs page handler. Fumadocs source resolves slug → MDX module
  * and returns null when there's no match.
