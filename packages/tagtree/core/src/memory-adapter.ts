@@ -7,10 +7,32 @@ interface Entry {
     expiresAt?: number;
 }
 
+/**
+ * Configuration for the in-process memory adapter; controls the LRU eviction ceiling so memory
+ * use stays bounded in long-running processes.
+ *
+ * @example
+ * ```ts
+ * const adapter = memoryAdapter({ maxEntries: 500 });
+ * ```
+ */
 export interface MemoryAdapterOptions {
+    /** Maximum number of entries held before the oldest entries are evicted. Defaults to `1000`. */
     maxEntries?: number;
 }
 
+/**
+ * Creates a synchronous, in-process `CacheAdapter` backed by a `Map` with LRU eviction,
+ * per-tag invalidation tracking, and optional TTL expiry; suitable for unit tests and
+ * single-process environments where a shared cache store is not available.
+ *
+ * @param opts - Optional configuration; `maxEntries` caps the LRU store size.
+ * @returns A `CacheAdapter` instance backed by in-process storage.
+ * @example
+ * ```ts
+ * const cache = createCacheInstance(productSchema, memoryAdapter({ maxEntries: 200 }));
+ * ```
+ */
 export function memoryAdapter(opts: MemoryAdapterOptions = {}): CacheAdapter {
     const maxEntries = opts.maxEntries ?? 1000;
     const store = new Map<string, Entry>();

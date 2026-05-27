@@ -8,14 +8,52 @@ const ctx: AdapterCtx = {
     logger: consoleLogger,
 };
 
+/**
+ * Configuration passed to `runAdapterContract`; declares how to create and tear down the adapter
+ * under test and which optional protocol features the adapter supports.
+ *
+ * @example
+ * ```ts
+ * runAdapterContract({
+ *     name: 'memory',
+ *     create: () => memoryAdapter(),
+ *     supportsTtl: true,
+ *     supportsStalenessGuard: true,
+ * });
+ * ```
+ */
 export interface ContractTestOptions {
+    /** Label used in the Vitest `describe` block to identify the adapter under test. */
     name: string;
+    /** Factory that returns a fresh adapter instance for each individual test case. */
     create: () => Promise<CacheAdapter> | CacheAdapter;
+    /** Optional cleanup hook called after each test to release adapter resources such as connections. */
     teardown?: (a: CacheAdapter) => Promise<void> | void;
+    /** Set to `true` if the adapter enforces TTL-based expiry; enables the TTL test suite. */
     supportsTtl?: boolean;
+    /** Set to `true` if the adapter honors `WriteOpts.writeIfNewerThan`; enables the staleness-guard suite. */
     supportsStalenessGuard?: boolean;
 }
 
+/**
+ * Registers a Vitest `describe` block that verifies an adapter implementation satisfies the
+ * `CacheAdapter` contract; call this inside each adapter package's own test suite to catch
+ * behavioral regressions without duplicating test logic.
+ *
+ * @param opts - Test configuration; controls which adapter to test and which optional cases to run.
+ * @example
+ * ```ts
+ * import { runAdapterContract } from '@tagtree/core/contract-tests';
+ * import { memoryAdapter } from '@tagtree/core';
+ *
+ * runAdapterContract({
+ *     name: 'memory',
+ *     create: () => memoryAdapter(),
+ *     supportsTtl: true,
+ *     supportsStalenessGuard: true,
+ * });
+ * ```
+ */
 export function runAdapterContract(opts: ContractTestOptions): void {
     describe(`adapter contract: ${opts.name}`, () => {
         const setup = async () => {

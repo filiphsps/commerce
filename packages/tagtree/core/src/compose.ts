@@ -1,5 +1,21 @@
 import type { AdapterCtx, CacheAdapter } from './adapter';
 
+/**
+ * Chains multiple `CacheAdapter` implementations into one, reading from adapters in priority order
+ * until a hit is found and fanning writes and invalidations out to all of them. Adapter errors are
+ * caught, logged, and swallowed rather than propagated so a failing secondary never blocks a read.
+ *
+ * @param adapters - Ordered adapters; read attempts proceed left to right, stopping at the first hit.
+ * @returns A composite `CacheAdapter` that delegates every operation to all supplied backends.
+ * @example
+ * ```ts
+ * const adapter = compose(
+ *     memoryAdapter({ maxEntries: 200 }),
+ *     redisAdapter({ url: process.env.REDIS_URL }),
+ * );
+ * const cache = createCacheInstance(mySchema, adapter);
+ * ```
+ */
 export function compose(...adapters: CacheAdapter[]): CacheAdapter {
     const settle = async <R>(p: Promise<R>, label: string, ctx: AdapterCtx): Promise<R | undefined> => {
         try {

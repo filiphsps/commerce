@@ -1,12 +1,46 @@
 import { joinSegments } from './encode';
 import type { CacheSchemaShape, EntitiesMap } from './schema';
 
+/**
+ * Arguments to `computeFanout` describing which entity to expand and the optional tenant and
+ * param values that narrow the resulting tag set.
+ *
+ * @example
+ * ```ts
+ * const tags = computeFanout(mySchema.schema, {
+ *     entity: 'product',
+ *     tenant: shop,
+ *     params: { id: '123' },
+ * });
+ * ```
+ */
 export interface FanoutInput<T = unknown> {
+    /** Name of the entity declared in the schema to expand into invalidation tags. */
     entity: string;
+    /** Tenant value whose key is prepended to all tags when the schema defines a `TenantConfig`. */
     tenant?: T;
+    /** Per-entity parameter values that produce a leaf tag when all declared params are present. */
     params?: Record<string, string | number>;
 }
 
+/**
+ * Expands a single entity reference into its full set of invalidation tags, from the most-specific
+ * leaf tag down to the namespace root, following the hierarchy declared in the schema.
+ *
+ * @param schema - Resolved cache schema shape containing entity, tenant, and namespace configuration.
+ * @param input - Entity reference with optional tenant and params that narrow the expansion.
+ * @returns Ordered array of cache tags from leaf to namespace root, suitable for passing to an adapter's `invalidate` call.
+ * @throws {Error} When `input.entity` is not declared in `schema.entities`.
+ * @example
+ * ```ts
+ * const tags = computeFanout(productSchema.schema, {
+ *     entity: 'product',
+ *     tenant: shop,
+ *     params: { id: '123' },
+ * });
+ * // ['commerce.acme.product.123', 'commerce.acme.product', 'commerce.acme', 'commerce']
+ * ```
+ */
 export function computeFanout<NS extends string, T, Q, E extends EntitiesMap>(
     schema: CacheSchemaShape<NS, T, Q, E>,
     input: FanoutInput<T>,
