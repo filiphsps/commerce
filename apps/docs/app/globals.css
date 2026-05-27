@@ -235,6 +235,36 @@ a[data-symbol-tab="docs"] {
     box-shadow: 0 0 14px hsl(330 86% 53% / 0.45) !important;
 }
 
+/* Search trigger button — visuals/02 wants a 3px border, mono caption,
+ * 7px radius, with the kbd badges using bg-bg-2. Override the Fumadocs
+ * default `rounded-xl` + thin border + secondary surface. */
+#nd-subnav button[data-search-full] {
+    border: 0.138rem solid var(--color-border) !important;
+    border-radius: var(--radius, 0.45rem) !important;
+    background: transparent !important;
+    font-family: var(--font-mono) !important;
+    font-size: 0.72rem !important;
+    color: var(--color-fg-mute) !important;
+    padding: 0.45rem 0.8rem !important;
+    transition:
+        border-color 150ms,
+        color 150ms !important;
+}
+
+#nd-subnav button[data-search-full]:hover {
+    border-color: var(--color-border-strong) !important;
+    color: var(--color-fg) !important;
+    background: transparent !important;
+}
+
+#nd-subnav button[data-search-full] kbd {
+    background: var(--color-bg-2) !important;
+    border: 1px solid var(--color-border-strong) !important;
+    color: var(--color-fg) !important;
+    font-family: var(--font-mono) !important;
+    font-size: 0.6rem !important;
+}
+
 /* Sidebar group labels — uppercase mono per the visuals. */
 #nd-sidebar [data-fd-folder-trigger],
 #nd-sidebar .text-fd-muted-foreground,
