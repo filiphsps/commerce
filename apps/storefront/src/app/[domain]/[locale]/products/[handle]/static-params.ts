@@ -19,7 +19,7 @@ export type ProductPageParams = Promise<{ domain: string; locale: string; handle
  *
  * @param params - The already-resolved `domain` and `locale` from the parent segment.
  * @returns An array of `{ handle }` objects for pre-rendered products.
- * @throws When a non-404 Shopify error is encountered during product enumeration.
+ * @throws {unknown} When a non-404 Shopify error is encountered during product enumeration.
  */
 export async function generateStaticParams({
     params,

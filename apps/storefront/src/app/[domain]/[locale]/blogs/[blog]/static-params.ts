@@ -17,7 +17,7 @@ export type BlogPageParams = Promise<{ domain: string; locale: string; blog: str
  *
  * @param params - The already-resolved `domain` and `locale` from the parent segment.
  * @returns An array of `{ blog }` objects, one per blog in the shop.
- * @throws When a non-404 Shopify error is encountered during blog enumeration.
+ * @throws {unknown} When a non-404 Shopify error is encountered during blog enumeration.
  */
 export async function generateStaticParams({
     params,
