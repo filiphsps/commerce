@@ -1,8 +1,8 @@
 'use client';
 
+import { useCartCount } from '@nordcom/cart-react';
 import { ShoppingBag as ShoppingBagIcon } from 'lucide-react';
 import { Button } from '@/components/actionable/button';
-import { useCartCount } from '@/components/cart/provider';
 import Link from '@/components/link';
 import { capitalize, getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
