@@ -59,7 +59,7 @@
         "@opentelemetry/sdk-logs": "0.218.0",
         "@vercel/otel": "2.1.2",
         "clsx": "2.1.1",
-        "geist": "1.7.0",
+        "geist": "1.7.1",
         "glob": "13.0.6",
         "gravatar.js": "2.0.0",
         "gray-matter": "4.0.3",
