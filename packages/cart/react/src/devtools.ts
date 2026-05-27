@@ -1,1 +1,1 @@
-export {};
+export { CartDevtools } from './devtools-panel';
