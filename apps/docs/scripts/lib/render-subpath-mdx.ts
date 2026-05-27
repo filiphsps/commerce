@@ -70,7 +70,10 @@ function renderGroup(kind: SymbolKindLabel, rows: OverviewRow[]): string {
     const tableHeader = '| Name | Description |\n|---|---|';
     const tableRows = rows.map((r) => {
         const nameCell = r.fate === 'own-page' ? `[\`${r.name}\`](./${kebab(r.name)})` : `\`${r.name}\``;
-        return `| ${nameCell} | ${r.summary || '—'} |`;
+        // Collapse newlines and escape pipes so multi-line JSDoc summaries don't
+        // break the GFM table (each | splits a cell, each \n adds a row).
+        const desc = (r.summary || '—').replace(/\r?\n/g, ' ').replace(/\|/g, '\\|').trim();
+        return `| ${nameCell} | ${desc} |`;
     });
     return [heading, '', tableHeader, ...tableRows, ''].join('\n');
 }

@@ -435,6 +435,15 @@ a[data-symbol-tab="docs"]:hover {
     color: var(--color-brand);
 }
 
+/* Disabled sidebar items — unreleased or private packages that should render
+ * but not be interactive. Fumadocs sets aria-disabled on non-navigable items. */
+#nd-sidebar a[aria-disabled='true'],
+#nd-sidebar button[aria-disabled='true'] {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
 /* Code blocks — Fumadocs uses figure.shiki with a title row + pre body. The
  * `not-prose` class blocks .prose selectors, so target the figure directly.
  *
@@ -857,6 +866,13 @@ figure.shiki [role="tab"][data-state="active"] {
     background: var(--color-bg-1);
 }
 
+/* Tailwind Typography adds ` before/after inline code — strip in table cells
+ * since param names and type annotations don't need backtick decoration. */
+.prose table code::before,
+.prose table code::after {
+    content: none;
+}
+
 /* First column of any table = param name in mono */
 .prose tbody td:first-child {
     font-family: var(--font-mono);
@@ -865,12 +881,22 @@ figure.shiki [role="tab"][data-state="active"] {
     white-space: nowrap;
 }
 
-/* Second column of any table = type in lime */
-.prose tbody td:nth-child(2) {
+/* Middle column (type) in 3-col param tables = pkg-color mono, no-wrap.
+ * In 2-col Name|Description tables td:nth-child(2) is also :last-child, so
+ * the :not(:last-child) guard keeps this rule off description columns. */
+.prose tbody td:nth-child(2):not(:last-child) {
     font-family: var(--font-mono);
     font-size: 0.78rem;
     color: var(--color-pkg);
     white-space: nowrap;
+}
+
+/* Description / last column — prose text that wraps, muted color. */
+.prose tbody td:last-child:not(:first-child) {
+    font-family: var(--font-sans);
+    font-size: 0.82rem;
+    color: var(--color-fg-mute);
+    white-space: normal;
 }
 
 /* List markers — brand magenta bullet/number per visuals/05 prose lists */
