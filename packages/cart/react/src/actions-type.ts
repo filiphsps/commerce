@@ -27,7 +27,7 @@ export type BaseCartActions<TExt extends CartExt = {}> = {
  * @typeParam TExt - Cart extension shape; widens the {@link CartActionResult} each method returns.
  * @example
  * ```ts
- * const actions = useCartActions<CartCapabilities>();
+ * const actions = useCartActions<{ giftCards: true } & CartCapabilities>();
  * await actions.applyGiftCard('GIFTCARD123');
  * ```
  */
@@ -44,7 +44,7 @@ export type GiftCardActions<TExt extends CartExt = {}> = {
  * @typeParam TExt - Cart extension shape; widens the {@link CartActionResult} each method returns.
  * @example
  * ```ts
- * const actions = useCartActions<CartCapabilities>();
+ * const actions = useCartActions<{ multipleDiscountCodes: true } & CartCapabilities>();
  * await actions.applyDiscountCode('SAVE10');
  * ```
  */
@@ -61,7 +61,7 @@ export type DiscountActions<TExt extends CartExt = {}> = {
  * @typeParam TExt - Cart extension shape; widens the {@link CartActionResult} each method returns.
  * @example
  * ```ts
- * const actions = useCartActions<CartCapabilities>();
+ * const actions = useCartActions<{ notes: true } & CartCapabilities>();
  * await actions.updateNote('Please gift wrap this order.');
  * ```
  */
@@ -77,7 +77,7 @@ export type NoteActions<TExt extends CartExt = {}> = {
  * @typeParam TExt - Cart extension shape; widens the {@link CartActionResult} each method returns.
  * @example
  * ```ts
- * const actions = useCartActions<CartCapabilities>();
+ * const actions = useCartActions<{ cartAttributes: true } & CartCapabilities>();
  * await actions.updateAttributes([{ key: 'source', value: 'homepage' }]);
  * ```
  */
@@ -94,7 +94,7 @@ export type CartAttributeActions<TExt extends CartExt = {}> = {
  * @typeParam TExt - Cart extension shape; widens the {@link CartActionResult} each method returns.
  * @example
  * ```ts
- * const actions = useCartActions<CartCapabilities>();
+ * const actions = useCartActions<{ buyerIdentity: true } & CartCapabilities>();
  * await actions.updateBuyerIdentity();
  * ```
  */

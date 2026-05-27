@@ -9,6 +9,17 @@ type ActionKind = CartMutation['kind'];
  * Props for {@link CartForm}. Each field maps to a hidden `<input>` the cart
  * server action reads from `FormData`; only `action`, `formAction`, and
  * `children` are required for every mutation kind.
+ *
+ * @example
+ * ```tsx
+ * const props: CartFormProps = {
+ *     action: 'add-line',
+ *     variantId: 'gid://shopify/ProductVariant/123',
+ *     quantity: 1,
+ *     formAction: addToCartAction,
+ *     children: <button type="submit">Add to cart</button>,
+ * };
+ * ```
  */
 export interface CartFormProps {
     action: ActionKind;
