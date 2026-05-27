@@ -688,6 +688,7 @@ figure.shiki [role="tab"][data-state="active"] {
 }
 
 /* "On this page" label — matches .toc-label in visuals/02 */
+#nd-toc h3,
 #nd-toc > div:first-child,
 #nd-toc [data-toc-title] {
     font-family: var(--font-mono);
