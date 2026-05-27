@@ -75,3 +75,4 @@ packages/**/docs/api
 
 # Local worktrees (created by superpowers/using-git-worktrees).
 .worktrees/
+worktrees/
