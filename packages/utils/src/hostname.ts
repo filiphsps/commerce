@@ -36,7 +36,10 @@ export type AppName = string & { readonly [AppNameBrand]: true };
 /** Top-level domains treated as local development. */
 export const DEV_TLDS = ['localhost', 'test'] as const;
 /**
- * Union of TLD strings that identify a local development host.
+ * The concrete type of `ParsedHost.tld` when `isDev` is `true`. Reach for it
+ * when annotating a parameter or variable that must hold only a dev-environment
+ * TLD value — for example, a helper that constructs dev URLs or a type guard
+ * that narrows an unknown `string` to a known dev TLD.
  *
  * @example
  * ```ts
