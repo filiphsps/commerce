@@ -399,6 +399,21 @@ a[data-symbol-tab="docs"] {
     margin: 3rem 0 1rem 0;
 }
 
+/* Breadcrumb — Fumadocs renders `<div class="flex gap-1.5 text-sm
+ * text-fd-muted-foreground">` above the page title. Repaint it to the
+ * visuals/04 treatment: mono caption, slash separators, brand-magenta
+ * on the leaf segment. */
+#nd-page > div:has(> span.text-fd-primary):first-child {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-fg-mute);
+    margin-bottom: 0.85rem;
+}
+
+#nd-page > div:has(> span.text-fd-primary):first-child > span.text-fd-primary {
+    color: var(--color-brand);
+}
+
 /* Right-side TOC — small mono label + brand-magenta current marker. */
 #nd-toc {
     border-left: 0.2rem solid var(--color-border);

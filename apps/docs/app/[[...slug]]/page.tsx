@@ -26,7 +26,7 @@ export default async function Page(props: { params: Promise<{ slug?: string[] }>
     const isLeafPage = (params.slug?.length ?? 0) > 1;
     const showHero = !(tab === 'errors' && isLeafPage) && !(tab === 'reference' && isLeafPage);
     return (
-        <DocsPage toc={page.data.toc}>
+        <DocsPage toc={page.data.toc} breadcrumb={{ enabled: true, includeRoot: true }}>
             {showHero ? (
                 <>
                     <DocsTitle className="font-extrabold text-[2.6rem] leading-[1.05] tracking-[-0.035em]">
