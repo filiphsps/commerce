@@ -453,8 +453,8 @@ a[data-symbol-tab="docs"]:hover {
 
 /* Disabled sidebar items — unreleased or private packages that should render
  * but not be interactive. Fumadocs sets aria-disabled on non-navigable items. */
-#nd-sidebar a[aria-disabled='true'],
-#nd-sidebar button[aria-disabled='true'] {
+#nd-sidebar a[aria-disabled="true"],
+#nd-sidebar button[aria-disabled="true"] {
     opacity: 0.4;
     cursor: not-allowed;
     pointer-events: none;
@@ -969,4 +969,22 @@ figure.shiki [role="tab"][data-state="active"] {
 }
 .prose a:not([data-card]):hover {
     color: var(--color-brand-hover);
+}
+
+/* Layout matches visuals/05's `.shell { grid-template-columns: 280px 1fr 240px }`:
+ * sidebar pinned to the left edge, TOC pinned to the right edge, main column
+ * fluid. Lift fumadocs's 97 rem layout cap so the grid spans the viewport. */
+#nd-notebook-layout {
+    --fd-layout-width: 100vw;
+}
+
+/* Content reading width per visuals/05 `.content { max-width: 920px }`. The
+ * grid main column expands to whatever's between sidebar and TOC; the
+ * article inside is capped so prose stays readable. Article left-aligns by
+ * default (no `mx-auto`), matching the mockup's left-anchored content. */
+#nd-page {
+    max-width: 920px;
+}
+#nd-page > * {
+    max-width: none;
 }

@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { SymbolKindLabel } from './symbol-classify';
-import type { TypeDocCommentNode, TypeDocSymbol } from './typedoc-types';
+import type { TypeDocComment, TypeDocCommentNode, TypeDocSymbol, TypeDocType } from './typedoc-types';
 
 const GITHUB_BASE = 'https://github.com/filiphsps/commerce/blob/master';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -59,10 +59,12 @@ export type SymbolRenderArgs = {
 };
 
 /**
- * Emit an MDX page for a single function / class / React component symbol.
- * Sections: deprecated/beta/experimental banner, h1, kind-line, summary,
- * signature codeblock, parameters table, returns, throws, example, see-also,
- * source footer. Matches the layout in visuals/02-page-reference.html.
+ * Emit an MDX page for a single exported symbol — function, class, component,
+ * interface, type alias, or enum. Sections vary by kind: functions render
+ * signature + params + returns + throws; interfaces render a properties
+ * table; type aliases render a one-line type expression; enums render a
+ * members table. Banners, h1, kind-line, summary, example, see-also, and
+ * source footer are shared across all kinds. Matches visuals/02 layout.
  *
  * @param args - Workspace, subpath, symbol, and resolved kind label.
  * @returns The full MDX file body (frontmatter included).
@@ -70,9 +72,7 @@ export type SymbolRenderArgs = {
 export function renderSymbolMdx(args: SymbolRenderArgs): string {
     const { symbol, kind, workspaceSlug, subpath } = args;
     const rawNodes = symbol.comment?.summary ?? symbol.signatures?.[0]?.comment?.summary;
-    // Body summary escapes curly braces so MDX does not interpret them as JSX.
     const summary = renderCommentInlineMd(rawNodes);
-    // Description uses raw text (no MDX escaping) so YAML stays valid.
     const descriptionText = plainSummary(rawCommentText(rawNodes));
     const blockTags = symbol.comment?.blockTags ?? symbol.signatures?.[0]?.comment?.blockTags ?? [];
     const modifierTags = symbol.comment?.modifierTags ?? symbol.signatures?.[0]?.comment?.modifierTags ?? [];
@@ -86,21 +86,15 @@ export function renderSymbolMdx(args: SymbolRenderArgs): string {
     ].join('\n');
 
     const banner = renderTagBanner(modifierTags, blockTags);
-    const sigBlock = renderSignature(symbol);
-    const params = renderParams(symbol, blockTags);
-    const returns = renderReturns(blockTags);
-    const throws = renderThrows(blockTags);
     const example = renderExample(blockTags);
     const seeAlso = renderSeeAlso(blockTags);
     const source = renderSource(symbol, workspaceSlug);
 
-    // When the symbol has no JSDoc, emit the branded empty-state card in place
-    // of the narrative summary. The signature is still rendered below.
     const src = symbol.sources?.[0];
     const srcUrl = src?.url ?? (src ? `${GITHUB_BASE}/${src.fileName}#L${src.line}` : '');
     const emptyJSDoc = !summary && srcUrl ? `<EmptyJSDoc href="${srcUrl}" />` : '';
 
-    return [
+    const header = [
         frontmatter,
         banner,
         `<SymbolTitle name="${symbol.name}" />`,
@@ -108,18 +102,145 @@ export function renderSymbolMdx(args: SymbolRenderArgs): string {
         '',
         emptyJSDoc || summary,
         '',
-        '## Signature',
-        '',
-        renderSignatureWithTitle(workspaceSlug, sigBlock),
-        params,
-        returns,
-        throws,
-        example,
-        seeAlso,
-        source,
-    ]
-        .filter(Boolean)
-        .join('\n');
+    ];
+
+    const body =
+        kind === 'interface' || kind === 'type' || kind === 'enum'
+            ? renderShapeSections(symbol, kind, workspaceSlug)
+            : [
+                  '## Signature',
+                  '',
+                  renderSignatureWithTitle(workspaceSlug, renderSignature(symbol)),
+                  renderParams(symbol, blockTags),
+                  renderReturns(blockTags),
+                  renderThrows(blockTags),
+              ];
+
+    return [...header, ...body, example, seeAlso, source].filter(Boolean).join('\n');
+}
+
+/**
+ * Render the body sections for a type/interface/enum symbol. Interfaces and
+ * type-aliases (when the resolved type is an object reflection) get a
+ * Properties table with clickable type names. Enums get a Members table.
+ * Plain type aliases (unions, intersections, etc.) get a one-line Definition
+ * codeblock followed by the raw inline type for clickability.
+ *
+ * @param symbol - The symbol to render.
+ * @param kind - Resolved kind label.
+ * @param workspaceSlug - Workspace folder slug used in the codeblock title.
+ * @returns Array of body-section strings to be `.filter(Boolean).join('\n')`d.
+ */
+function renderShapeSections(symbol: TypeDocSymbol, kind: SymbolKindLabel, workspaceSlug: string): string[] {
+    if (kind === 'enum') {
+        return ['## Members', '', renderEnumMembersTable(symbol)];
+    }
+
+    const props = collectProperties(symbol);
+    const sections: string[] = [];
+
+    if (props.length > 0) {
+        sections.push('## Properties', '', renderPropertiesTable(props));
+    } else {
+        const sig = renderTypeAliasDefinition(symbol, workspaceSlug);
+        if (sig) sections.push('## Definition', '', sig);
+    }
+    return sections;
+}
+
+/**
+ * Collect the directly-declared properties of an interface or object-typed
+ * type alias. For interfaces, properties live on `symbol.children`. For
+ * type aliases whose `type` is a reflection with a declaration that has
+ * children, those children are the properties. Returns an empty array for
+ * any other shape (union, intersection, intrinsic, etc.).
+ *
+ * @param symbol - The symbol to inspect.
+ * @returns Array of property descriptors, possibly empty.
+ */
+function collectProperties(
+    symbol: TypeDocSymbol,
+): Array<{ name: string; type?: TypeDocType; comment?: TypeDocComment; flags?: TypeDocSymbol['flags'] }> {
+    if (symbol.children?.length) return symbol.children;
+    const t = symbol.type;
+    if (t?.type === 'reflection' && t.declaration?.children?.length) return t.declaration.children;
+    return [];
+}
+
+/**
+ * Render a properties table for an interface or object-shaped type alias.
+ * Each row carries the property name (optional `?` suffix when applicable),
+ * its TypeDoc-resolved type expression, and a JSDoc summary.
+ *
+ * @param props - The collected property descriptors.
+ * @returns A Markdown table string with trailing newline.
+ */
+function renderPropertiesTable(
+    props: {
+        name: string;
+        type?: TypeDocType;
+        comment?: { summary?: TypeDocCommentNode[] };
+        flags?: { isOptional?: boolean };
+    }[],
+): string {
+    const rows = props.map((p) => {
+        const optMark = p.flags?.isOptional ? '?' : '';
+        const desc = plainText(p.comment?.summary ?? []);
+        return `| \`${p.name}${optMark}\` | ${typeToInlineMd(p.type)} | ${desc} |`;
+    });
+    return ['| Name | Type | Description |', '|---|---|---|', ...rows, ''].join('\n');
+}
+
+/**
+ * Render the canonical `type Name = …` codeblock for a type alias whose
+ * resolved type cannot be expressed as a properties table (unions,
+ * intersections, intrinsics, references, conditionals, etc.). The codeblock
+ * is followed by a clickable inline rendering of the type, so component
+ * names within composite types resolve to their reference pages.
+ *
+ * @param symbol - Type-alias symbol.
+ * @param workspaceSlug - Workspace folder slug for the codeblock title.
+ * @returns The Definition section body, or empty string when no type info.
+ */
+function renderTypeAliasDefinition(symbol: TypeDocSymbol, workspaceSlug: string): string {
+    if (!symbol.type) return '';
+    const pkgName = `@nordcom/commerce-${workspaceSlug}`;
+    const code = `type ${symbol.name} = ${typeToString(symbol.type)};`;
+    const inline = escapeMdxAngles(typeToInlineMdRaw(symbol.type));
+    return ['```ts title="' + pkgName + '"', code, '```', '', inline, ''].join('\n');
+}
+
+/**
+ * Escape characters that would make MDX try to parse JSX or JS expressions
+ * out of a type expression rendered as flowing text. `<…>` looks like a
+ * tag; `{…}` looks like an embedded expression. Both must be escaped before
+ * emitting an inline type expression into an MDX paragraph.
+ *
+ * @param s - Raw inline-MD type expression.
+ * @returns Same string with MDX-special characters escaped.
+ */
+function escapeMdxAngles(s: string): string {
+    return s.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\{/g, '\\{').replace(/\}/g, '\\}');
+}
+
+/**
+ * Render an enum's members as a Markdown table. Each member contributes a
+ * row with its name and literal value (quoted when string, raw when numeric).
+ * Enums without literal values show an em-dash placeholder.
+ *
+ * @param symbol - Enum symbol with `children` of kind=Member.
+ * @returns Markdown table string with trailing newline.
+ */
+function renderEnumMembersTable(symbol: TypeDocSymbol): string {
+    const members = symbol.children ?? [];
+    if (members.length === 0) return '';
+    const rows = members.map((m) => {
+        const t = m.type;
+        const val = t?.type === 'literal' ? (typeof t.value === 'string' ? `\`'${t.value}'\`` : `\`${t.value}\``) : '—';
+        const desc = plainText(m.comment?.summary ?? []);
+        return `| \`${m.name}\` | ${val} | ${desc} |`;
+    });
+    return ['| Member | Value | Description |', '|---|---|---|', ...rows, ''].join('\n');
 }
 
 /**
@@ -209,9 +330,10 @@ function renderSignature(symbol: TypeDocSymbol): string {
 }
 
 /**
- * Produce a simplified TypeScript signature text for a single signature reflection.
- * Type shapes are simplified to their `name` field — this is intentional since the
- * full type structure is available via TypeDoc links on the generated page.
+ * Produce a TypeScript signature text for a single signature reflection. Type
+ * shapes go through `typeToString` so unions, intersections, generics,
+ * anonymous object types and callables render in their real TS form instead
+ * of collapsing to `unknown`.
  *
  * @param name - Symbol name (function name).
  * @param sig - Single signature reflection.
@@ -219,11 +341,172 @@ function renderSignature(symbol: TypeDocSymbol): string {
  */
 function symbolToSignatureText(
     name: string,
-    sig: { parameters?: { name: string; type?: { name?: string } }[]; type?: { name?: string } },
+    sig: { parameters?: { name: string; type?: TypeDocType }[]; type?: TypeDocType },
 ): string {
-    const params = (sig.parameters ?? []).map((p) => `${p.name}: ${p.type?.name ?? 'unknown'}`).join(', ');
-    const ret = sig.type?.name ?? 'unknown';
+    const params = (sig.parameters ?? []).map((p) => `${p.name}: ${typeToString(p.type)}`).join(', ');
+    const ret = typeToString(sig.type);
     return `function ${name}(${params}): ${ret};`;
+}
+
+/**
+ * Render a TypeDoc serialised type to its TypeScript source form. Covers the
+ * type kinds the docs generator actually encounters: intrinsic, reference
+ * (with generic arguments), array, union, intersection, literal, reflection
+ * (anonymous object + callable), tuple, typeOperator, indexedAccess, query,
+ * predicate, conditional, mapped, and templateLiteral. Unknown discriminator
+ * values fall through to `type.name` or the discriminator string itself so
+ * the output is never silently `unknown`.
+ *
+ * @param type - The TypeDoc type node, or `undefined`.
+ * @returns A TypeScript source representation of the type.
+ */
+function typeToString(type: TypeDocType | undefined): string {
+    if (!type) return 'unknown';
+    switch (type.type) {
+        case 'intrinsic':
+            return type.name ?? 'unknown';
+        case 'literal':
+            if (type.value === null) return 'null';
+            return typeof type.value === 'string' ? `'${type.value}'` : String(type.value);
+        case 'reference': {
+            const args = type.typeArguments?.length ? `<${type.typeArguments.map(typeToString).join(', ')}>` : '';
+            return `${type.name ?? 'unknown'}${args}`;
+        }
+        case 'array':
+            return `${typeToString(type.elementType)}[]`;
+        case 'union':
+            return (type.types ?? []).map(typeToString).join(' | ');
+        case 'intersection':
+            return (type.types ?? []).map(typeToString).join(' & ');
+        case 'reflection': {
+            const decl = type.declaration;
+            const sig = decl?.signatures?.[0];
+            if (sig) {
+                const params = (sig.parameters ?? []).map((p) => `${p.name}: ${typeToString(p.type)}`).join(', ');
+                return `(${params}) => ${typeToString(sig.type)}`;
+            }
+            if (decl?.children?.length) {
+                const props = decl.children.map((c) => `${c.name}: ${typeToString(c.type)}`).join('; ');
+                return `{ ${props} }`;
+            }
+            return '{}';
+        }
+        case 'tuple':
+            return `[${(type.elements ?? []).map(typeToString).join(', ')}]`;
+        case 'typeOperator':
+            return `${type.operator ?? ''} ${typeToString(type.target as TypeDocType)}`.trim();
+        case 'indexedAccess':
+            return `${typeToString(type.objectType)}[${typeToString(type.indexType)}]`;
+        case 'query':
+            return `typeof ${typeToString(type.queryType)}`;
+        case 'predicate':
+            return `${type.name ?? ''} is ${typeToString(type.targetType)}`;
+        case 'conditional':
+            return `${typeToString(type.checkType)} extends ${typeToString(type.extendsType)} ? ${typeToString(type.trueType)} : ${typeToString(type.falseType)}`;
+        case 'templateLiteral': {
+            const head = type.head ?? '';
+            const tail = (type.tail ?? []).map((t) => `\${${typeToString(t.type)}}${t.text}`).join('');
+            return `\`${head}${tail}\``;
+        }
+        case 'mapped':
+            return '{ [K in …]: … }';
+        default:
+            return type.name ?? type.type;
+    }
+}
+
+/**
+ * Render a TypeDoc type as inline Markdown. Each reference-type name is
+ * wrapped in single backticks so `remarkLinkSymbols` can rewrite it into
+ * a link to the type's reference page at MDX-compile time. Intrinsics,
+ * literals and operators emit plain text. Markdown table cells use this
+ * helper for the Type column so composite types like `Promise<A | B>` get
+ * a clickable `A` and `B` without losing the surrounding TypeScript syntax.
+ *
+ * @param type - TypeDoc type node, or `undefined`.
+ * @returns Inline Markdown string safe for table cells (pipes escaped).
+ */
+function typeToInlineMd(type: TypeDocType | undefined): string {
+    return escapeTableCell(typeToInlineMdRaw(type));
+}
+
+/**
+ * Build the inline-Markdown form of a type without escaping pipes. Used
+ * recursively, then `escapeTableCell` wraps the top-level call to make the
+ * result safe for a GFM table cell.
+ *
+ * @param type - TypeDoc type node, or `undefined`.
+ * @returns Inline Markdown string, pipes unescaped.
+ */
+function typeToInlineMdRaw(type: TypeDocType | undefined): string {
+    if (!type) return '`unknown`';
+    switch (type.type) {
+        case 'intrinsic':
+            return `\`${type.name ?? 'unknown'}\``;
+        case 'literal':
+            if (type.value === null) return '`null`';
+            return typeof type.value === 'string' ? `\`'${type.value}'\`` : `\`${type.value}\``;
+        case 'reference': {
+            const args = type.typeArguments?.length ? `<${type.typeArguments.map(typeToInlineMdRaw).join(', ')}>` : '';
+            return `\`${type.name ?? 'unknown'}\`${args}`;
+        }
+        case 'array':
+            return `${typeToInlineMdRaw(type.elementType)}[]`;
+        case 'union':
+            return (type.types ?? []).map(typeToInlineMdRaw).join(' | ');
+        case 'intersection':
+            return (type.types ?? []).map(typeToInlineMdRaw).join(' & ');
+        case 'reflection': {
+            const decl = type.declaration;
+            const sig = decl?.signatures?.[0];
+            if (sig) {
+                const params = (sig.parameters ?? []).map((p) => `${p.name}: ${typeToInlineMdRaw(p.type)}`).join(', ');
+                return `(${params}) => ${typeToInlineMdRaw(sig.type)}`;
+            }
+            if (decl?.children?.length) {
+                const props = decl.children.map((c) => `${c.name}: ${typeToInlineMdRaw(c.type)}`).join('; ');
+                return `{ ${props} }`;
+            }
+            return '`{}`';
+        }
+        case 'tuple':
+            return `[${(type.elements ?? []).map(typeToInlineMdRaw).join(', ')}]`;
+        case 'typeOperator':
+            return `${type.operator ?? ''} ${typeToInlineMdRaw(type.target as TypeDocType)}`.trim();
+        case 'indexedAccess':
+            return `${typeToInlineMdRaw(type.objectType)}[${typeToInlineMdRaw(type.indexType)}]`;
+        case 'query':
+            return `typeof ${typeToInlineMdRaw(type.queryType)}`;
+        case 'predicate':
+            return `${type.name ?? ''} is ${typeToInlineMdRaw(type.targetType)}`;
+        case 'conditional':
+            return `${typeToInlineMdRaw(type.checkType)} extends ${typeToInlineMdRaw(type.extendsType)} ? ${typeToInlineMdRaw(type.trueType)} : ${typeToInlineMdRaw(type.falseType)}`;
+        case 'templateLiteral':
+            return '`` `…` ``';
+        case 'mapped':
+            return '`{ [K in …]: … }`';
+        default:
+            return type.name ? `\`${type.name}\`` : `\`${type.type}\``;
+    }
+}
+
+/**
+ * Escape characters that break a GFM table cell when rendered as MDX.
+ * `|` would split the cell; bare `<` followed by a letter starts a JSX tag
+ * (MDX swallows `<Article>` thinking it's a component); `{` opens a JS
+ * expression (MDX tries to parse `{ slug: string }` as an object literal).
+ * Replace with HTML entities / backslash escapes so the cell renders as text.
+ *
+ * @param s - Raw markdown string.
+ * @returns Same string with table-breaking chars escaped.
+ */
+function escapeTableCell(s: string): string {
+    return s
+        .replace(/\|/g, '\\|')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\{/g, '\\{')
+        .replace(/\}/g, '\\}');
 }
 
 /**
@@ -239,7 +522,7 @@ function renderParams(symbol: TypeDocSymbol, blockTags: { tag: string; content: 
     if (params.length === 0) return '';
     const rows = params.map((p) => {
         const desc = blockTags.find((t) => t.tag === '@param' && t.content[0]?.text?.startsWith(p.name))?.content ?? [];
-        return `| \`${p.name}\` | \`${p.type?.name ?? '—'}\` | ${plainText(desc)} |`;
+        return `| \`${p.name}\` | ${typeToInlineMd(p.type)} | ${plainText(desc)} |`;
     });
     return ['## Parameters', '', '| Name | Type | Description |', '|---|---|---|', ...rows, ''].join('\n');
 }

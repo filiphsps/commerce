@@ -19,7 +19,7 @@ const nextConfig = {
         '*.localhost',
         '*.local',
         '*.test',
-        'worktree-feat-docs-nav-refactor.docs.localhost'
+        'worktree-feat-docs-nav-refactor.docs.localhost',
     ],
     trailingSlash: true,
     reactStrictMode: true,

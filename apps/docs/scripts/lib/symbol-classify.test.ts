@@ -30,14 +30,14 @@ describe('classifySymbol', () => {
         expect(result).toEqual({ fate: 'own-page', kind: 'class' });
     });
 
-    it('keeps interfaces inline', () => {
+    it('puts interfaces on their own page so child type names resolve to a real URL', () => {
         const result = classifySymbol({ id: 1, name: 'ShopRef', kind: KIND_INTERFACE });
-        expect(result).toEqual({ fate: 'inline', kind: 'interface' });
+        expect(result).toEqual({ fate: 'own-page', kind: 'interface' });
     });
 
-    it('keeps type aliases inline', () => {
+    it('puts type aliases on their own page so child type names resolve to a real URL', () => {
         const result = classifySymbol({ id: 1, name: 'LocaleCode', kind: KIND_TYPE_ALIAS });
-        expect(result).toEqual({ fate: 'inline', kind: 'type' });
+        expect(result).toEqual({ fate: 'own-page', kind: 'type' });
     });
 
     it('keeps variables inline', () => {

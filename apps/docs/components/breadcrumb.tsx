@@ -63,7 +63,10 @@ export function Breadcrumb() {
     const leafColor = leafColorClass(tab);
 
     const displaySegments = isDocTab
-        ? [{ label: 'docs', href: null }, ...segments.map((s, i) => ({ label: slugToLabel(s), href: `/${segments.slice(0, i + 1).join('/')}/` }))]
+        ? [
+              { label: 'docs', href: null },
+              ...segments.map((s, i) => ({ label: slugToLabel(s), href: `/${segments.slice(0, i + 1).join('/')}/` })),
+          ]
         : segments.map((s, i) => ({ label: slugToLabel(s), href: `/${segments.slice(0, i + 1).join('/')}/` }));
 
     return (

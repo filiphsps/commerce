@@ -3,11 +3,12 @@ export type TypeDocSymbol = {
     id: number;
     name: string;
     kind: number;
-    flags?: { isInternal?: boolean };
+    flags?: { isInternal?: boolean; isOptional?: boolean; isReadonly?: boolean };
     signatures?: TypeDocSignature[];
     comment?: TypeDocComment;
     sources?: { fileName: string; line: number; url?: string }[];
     type?: TypeDocType;
+    children?: TypeDocSymbol[];
 };
 
 export type TypeDocSignature = {
@@ -19,11 +20,38 @@ export type TypeDocSignature = {
     type?: TypeDocType;
 };
 
+/**
+ * TypeDoc's serialised type shape. The `type` discriminator selects which
+ * other fields are populated — TypeDoc covers ~15 type kinds (intrinsic,
+ * reference, union, intersection, array, literal, reflection, tuple,
+ * templateLiteral, query, predicate, typeOperator, indexedAccess,
+ * conditional, mapped). We model them as optional so `typeToString` can
+ * render any node without runtime type narrowing per branch.
+ */
 export type TypeDocType = {
     type: string;
     name?: string;
-    target?: number;
+    target?: number | { qualifiedName?: string };
     typeArguments?: TypeDocType[];
+    types?: TypeDocType[];
+    elementType?: TypeDocType;
+    elements?: TypeDocType[];
+    value?: string | number | boolean | null;
+    declaration?: {
+        children?: { name: string; type?: TypeDocType }[];
+        signatures?: TypeDocSignature[];
+    };
+    queryType?: TypeDocType;
+    targetType?: TypeDocType;
+    operator?: string;
+    objectType?: TypeDocType;
+    indexType?: TypeDocType;
+    checkType?: TypeDocType;
+    extendsType?: TypeDocType;
+    trueType?: TypeDocType;
+    falseType?: TypeDocType;
+    head?: string;
+    tail?: { type: TypeDocType; text: string }[];
 };
 
 export type TypeDocComment = {

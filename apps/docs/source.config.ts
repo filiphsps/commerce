@@ -1,12 +1,15 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { defineConfig, defineDocs } from 'fumadocs-mdx/config';
 import type { SymbolIndex } from './lib/jsdoc-link-resolver';
 import { remarkLinkSymbols } from './lib/remark-link-symbols';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const indexPath = path.resolve(__dirname, 'lib/symbol-index.generated.json');
+// fumadocs-mdx compiles this file into apps/docs/.source/source.config.mjs, so
+// `__dirname` would point at `.source/` and `path.resolve(__dirname, …)` would
+// miss the real index file by one directory. Anchor on `process.cwd()` — every
+// `pnpm` script in this app runs with cwd = `apps/docs/`, so this hits the
+// correct path in both the source TS and the compiled MJS.
+const indexPath = path.resolve(process.cwd(), 'lib/symbol-index.generated.json');
 
 /** Load the symbol index if it exists; empty object on first run before `pnpm gen`. */
 const symbolIndex: SymbolIndex = fs.existsSync(indexPath)

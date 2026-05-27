@@ -40,7 +40,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <RootProvider search={{ options: { type: 'static' } }}>
                     <DocsLayout
                         tree={source.pageTree}
-                        githubUrl="https://github.com/filiphsps/commerce"
                         tabMode="navbar"
                         nav={{ title: <Logo height={32} />, mode: 'top', transparentMode: 'top' }}
                         sidebar={{ banner: TabChip }}

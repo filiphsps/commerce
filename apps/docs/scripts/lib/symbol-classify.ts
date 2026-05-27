@@ -30,16 +30,16 @@ export function classifySymbol(symbol: TypeDocSymbol): { fate: SymbolFate; kind:
         return { fate: 'own-page', kind: 'class' };
     }
     if (symbol.kind === KIND_INTERFACE) {
-        return { fate: 'inline', kind: 'interface' };
+        return { fate: 'own-page', kind: 'interface' };
     }
     if (symbol.kind === KIND_TYPE_ALIAS) {
-        return { fate: 'inline', kind: 'type' };
+        return { fate: 'own-page', kind: 'type' };
+    }
+    if (symbol.kind === KIND_ENUM) {
+        return { fate: 'own-page', kind: 'enum' };
     }
     if (symbol.kind === KIND_VARIABLE) {
         return { fate: 'inline', kind: 'variable' };
-    }
-    if (symbol.kind === KIND_ENUM) {
-        return { fate: 'inline', kind: 'enum' };
     }
     return { fate: 'inline', kind: 'other' };
 }

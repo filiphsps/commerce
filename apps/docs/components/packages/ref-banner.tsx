@@ -98,9 +98,7 @@ export function RefBanner({ refPath, version }: RefBannerProps) {
                     )}
                 </div>
             </div>
-            {version && (
-                <div className="font-mono text-[0.7rem] text-fg-mute">{version}</div>
-            )}
+            {version && <div className="font-mono text-[0.7rem] text-fg-mute">{version}</div>}
             <div className="font-mono text-ref transition-transform duration-150 group-hover:translate-x-[3px]">→</div>
         </Link>
     );

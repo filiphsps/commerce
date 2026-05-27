@@ -34,9 +34,9 @@ export function EmptySubpath({ pkg, subpath }: EmptySubpathProps) {
             <p className="max-w-[55ch] text-[0.95rem] font-medium leading-[1.6] text-fg-mute">
                 Every export in this subpath is marked{' '}
                 <code className="rounded-[3px] bg-bg-2 px-[0.3em] font-mono text-[0.85em] text-fg">@internal</code> and
-                excluded from the Reference. If you got here from an external link, the symbol you&apos;re looking for may
-                have been demoted to internal — try the{' '}
-                <strong className="font-bold text-fg">prior version</strong>.
+                excluded from the Reference. If you got here from an external link, the symbol you&apos;re looking for
+                may have been demoted to internal — try the <strong className="font-bold text-fg">prior version</strong>
+                .
             </p>
 
             <div className="flex flex-wrap gap-2.5">
