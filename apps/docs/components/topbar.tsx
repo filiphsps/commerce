@@ -59,7 +59,7 @@ export function Topbar(props: ComponentProps<'header'>) {
             id="nd-subnav"
             data-transparent={isNavTransparent && !open}
             {...props}
-            className={`sticky top-(--fd-docs-row-1) z-30 grid h-18 grid-cols-[auto_1fr_auto] items-center gap-4 border-border border-b-[0.2rem] bg-fd-background/85 px-4 backdrop-blur transition-colors [grid-area:header] layout:[--fd-header-height:--spacing(14)] md:px-6 ${props.className ?? ''}`}
+            className={`sticky top-(--fd-docs-row-1) z-30 grid h-14 grid-cols-[auto_1fr_auto] items-center gap-4 border-border border-b-[0.2rem] bg-fd-background/85 px-4 backdrop-blur transition-colors [grid-area:header] layout:[--fd-header-height:--spacing(14)] md:px-6 ${props.className ?? ''}`}
         >
             <div className="flex items-center gap-2">
                 {slots.navTitle ? <slots.navTitle className="inline-flex items-center gap-2.5 font-semibold" /> : null}
