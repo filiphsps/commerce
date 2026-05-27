@@ -30,6 +30,13 @@ const VOID_ELEMENTS = new Set([
 
 /**
  * Options accepted by {@link toReactNodes} that let callers substitute custom React components for specific HTML tags during conversion.
+ *
+ * @example
+ * ```tsx
+ * toReactNodes(html, {
+ *     components: { a: LinkComponent, img: ResponsiveImage },
+ * });
+ * ```
  */
 export type ToReactNodesOptions = {
     /** Override which component to render for a given tag. */
