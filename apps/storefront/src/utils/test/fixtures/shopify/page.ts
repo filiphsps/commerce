@@ -1,3 +1,9 @@
+/**
+ * Builds a minimal Shopify page fixture for use in tests.
+ *
+ * @param overrides - Properties merged onto the base page fixture.
+ * @returns A plain object shaped like a Shopify Page GraphQL response node.
+ */
 export function mockPage(overrides: Record<string, unknown> = {}) {
     return {
         id: 'gid://shopify/Page/1',

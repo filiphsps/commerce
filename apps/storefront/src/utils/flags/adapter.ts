@@ -37,6 +37,12 @@ interface PopulatedFlag {
     targeting: Array<{ rule: string; params: Record<string, unknown>; value: unknown }>;
 }
 
+/**
+ * Narrows an unknown DB entry to a flag document shape with `key` and `targeting` fields.
+ *
+ * @param flag - The raw value from a `featureFlags` relation entry.
+ * @returns `true` when `flag` has both `key` and `targeting` properties; rejects null, primitives, and partially-shaped objects.
+ */
 function isPopulated(flag: unknown): flag is PopulatedFlag {
     return typeof flag === 'object' && flag !== null && 'key' in flag && 'targeting' in flag;
 }
@@ -45,6 +51,11 @@ type ShopWithFlags = FlagEntities['shop'] & {
     featureFlags?: Array<{ flag: unknown }>;
 };
 
+/**
+ * Builds the Vercel Flags SDK adapter that evaluates feature flag values against MongoDB-backed targeting rules.
+ *
+ * @returns An `Adapter<T, FlagEntities>` wired to the Nordcom identify function and targeting rule evaluator.
+ */
 export function nordcomFlagAdapter<T>(): Adapter<T, FlagEntities> {
     return {
         identify,

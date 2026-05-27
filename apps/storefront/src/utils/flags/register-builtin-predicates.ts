@@ -3,6 +3,11 @@ import 'server-only';
 import { hashToBucket } from './hash';
 import { registerPredicate } from './predicates';
 
+/**
+ * Registers the platform's built-in targeting predicates (`shop`, `authenticated`, `group`, `percentage`, `always`) into the global predicate registry.
+ *
+ * @throws {DuplicatePredicateRegistrationError} When called more than once; the caller in `flags/index.ts` swallows this error on re-imports.
+ */
 export function registerBuiltinPredicates(): void {
     registerPredicate<{ shopIds: string[] }>('shop', (entities, params) => params.shopIds.includes(entities.shop.id), {
         requiresUser: false,

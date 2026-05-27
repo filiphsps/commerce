@@ -1,3 +1,9 @@
+/**
+ * Builds a minimal Shopify product fixture for use in tests.
+ *
+ * @param overrides - Properties merged onto the base product fixture.
+ * @returns A plain object shaped like a Shopify Product GraphQL response node.
+ */
 export function mockProduct(overrides: Record<string, unknown> = {}) {
     return {
         id: 'gid://shopify/Product/1',

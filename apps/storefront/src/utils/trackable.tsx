@@ -437,6 +437,13 @@ export type TrackableProps = {
     children: ReactNode;
     dummy?: boolean;
 };
+/**
+ * Inner analytics provider that wires up Shopify cookies, queues analytics events, and dispatches page-view events on navigation changes.
+ *
+ * @param props.children - The subtree to wrap with the analytics context.
+ * @param props.dummy - When `true`, suppresses all event dispatch regardless of internal-traffic detection.
+ * @returns The `TrackableContext.Provider` wrapping `children`.
+ */
 function TrackableInner({ children, dummy = false }: TrackableProps) {
     const path = usePathname();
     const prevPath = usePrevious(path);
@@ -617,6 +624,13 @@ function TrackableInner({ children, dummy = false }: TrackableProps) {
 // boundary they block the route from prerendering. Render the children with a
 // noop tracking context during prerender; the real provider takes over after
 // hydration without disturbing any descendant `useTrackable` callers.
+/**
+ * Public analytics boundary that renders children with a noop tracking context during prerender and activates the real provider after hydration.
+ *
+ * @param props.children - The subtree to wrap with analytics tracking.
+ * @param props.dummy - When `true`, suppresses all event dispatch; forwarded to `TrackableInner`.
+ * @returns A `Suspense`-wrapped provider tree.
+ */
 export function Trackable({ children, dummy = false }: TrackableProps) {
     return (
         <Suspense
@@ -633,6 +647,7 @@ Trackable.displayName = 'Nordcom.Trackable';
  * Must be a descendant of {@link Trackable}.
  *
  * @returns The trackable context.
+ * @throws {MissingContextProviderError} When called outside of a `Trackable` provider tree.
  */
 export function useTrackable(): TrackableContextValue {
     const context = useContext(TrackableContext);
@@ -643,6 +658,13 @@ export function useTrackable(): TrackableContextValue {
     return context;
 }
 
+/**
+ * Headless component that queues a single analytics event once on mount, using the current pathname as the event path.
+ *
+ * @param props.event - The analytics event type to dispatch.
+ * @param props.data - Additional event data merged with the current pathname.
+ * @returns An empty `Fragment`; this component has no visual output.
+ */
 export function AnalyticsEventTrigger({ event, data }: { event: AnalyticsEventType; data: AnalyticsEventData }) {
     const path = usePathname();
     const { queueEvent } = useTrackable();

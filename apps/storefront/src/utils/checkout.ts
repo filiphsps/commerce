@@ -15,8 +15,12 @@ type CheckoutCart = {
     checkoutUrl: string | null;
 };
 
-// Const hacky workaround for ga4 cross-domain
-// taken from StackOverflow
+/**
+ * Reads the GA4 cross-domain linker `_gl` parameter by submitting a hidden form against the checkout origin.
+ *
+ * @param checkoutOrigin - The full HTTPS URL of the checkout domain used as the form's `action`.
+ * @returns The `_gl` linker string when GA4 has decorated the form, or `null` when the parameter is absent.
+ */
 export const getCrossDomainLinkerParameter = (checkoutOrigin: string) => {
     // create form element, give it an action, make it hidden and prevent the submit event
     const formNode = document.createElement('form');
@@ -61,6 +65,16 @@ export const getCrossDomainLinkerParameter = (checkoutOrigin: string) => {
     }
 };
 
+/**
+ * Fires a `begin_checkout` analytics event and redirects the browser to the Shopify checkout URL, swapping in the configured commerce domain.
+ *
+ * @param options.shop - The current tenant's shop record; must have a Shopify commerce provider.
+ * @param options.locale - The active locale, used to build GA4 item IDs via `productToMerchantsCenterId`.
+ * @param options.cart - The cart to check out; must be non-null, non-empty, and carry a valid HTTPS `checkoutUrl`.
+ * @param options.trackable - Analytics context used to post the `begin_checkout` event before navigation.
+ * @throws {UnknownCommerceProviderError} When the shop's commerce provider is not Shopify.
+ * @throws {InvalidCartError} When the cart is null, empty, or missing a valid HTTPS `checkoutUrl`.
+ */
 export const Checkout = async ({
     shop,
     locale,
