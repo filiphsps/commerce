@@ -55,7 +55,7 @@ export default defineConfig({
         command: process.env.CI ? 'pnpm start --port 1337' : 'pnpm dev --port 1337',
         url: 'http://localhost:1337',
         reuseExistingServer: true,
-        timeout: 120_000,
+        timeout: 240_000,
         stdout: 'pipe',
         stderr: 'pipe',
     },

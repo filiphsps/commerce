@@ -30,10 +30,10 @@ export default defineConfig({
         },*/
     ],
     webServer: {
-        command: process.env.CI ? 'pnpm start --port 3002' : 'pnpm dev --port 3002',
+        command: 'pnpm exec serve out -l 3002',
         url: 'http://localhost:3002',
         reuseExistingServer: true,
-        timeout: 120_000,
+        timeout: 240_000,
         stdout: 'pipe',
         stderr: 'pipe',
     },
