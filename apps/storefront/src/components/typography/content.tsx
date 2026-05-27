@@ -16,14 +16,11 @@ export type ContentProps<ComponentGeneric extends ElementType> = ContentPropsBas
 /**
  * Prose wrapper that applies Tailwind typography styles.
  *
- * Accepts either a pre-rendered `html` string (via `dangerouslySetInnerHTML`) or
- * React `children`. Returns `null` when both are absent and no `as` override is given.
- *
  * @param props.as - Container element type; defaults to `div`.
  * @param props.html - Raw HTML string rendered as inner HTML.
  * @param props.children - React children used when `html` is not provided.
  * @param props.className - Additional class names for the container.
- * @returns The styled prose container, or `null` when no content is present.
+ * @returns The styled prose container, or `null` when neither `html` nor `children` is provided and `as` is not overridden.
  */
 export const Content = <ComponentGeneric extends ElementType = 'div'>({
     as,

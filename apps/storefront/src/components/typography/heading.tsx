@@ -103,16 +103,12 @@ type HeadingProps = {
 /**
  * Composes `Title` and `SubTitle` into a stacked heading block.
  *
- * When only one of `title`/`subtitle` is provided the matching primitive is returned
- * directly. When both are present they are wrapped in a flex column div (or a custom
- * `wrapper` component), with order controlled by `reverse`.
- *
  * @param props.bold - Forwarded to both `Title` and `SubTitle`.
  * @param props.title - Content for `Title`; omit to render only `SubTitle`.
  * @param props.subtitle - Content for `SubTitle`; omit to render only `Title`.
  * @param props.reverse - When `true`, renders `SubTitle` above `Title`.
  * @param props.wrapper - Optional wrapper component that receives the heading set as children.
- * @returns The composed heading, or `null` when neither title nor subtitle is provided.
+ * @returns The matching primitive when only one of `title`/`subtitle` is provided; a flex column div (or `wrapper`) wrapping both when both are present; `null` when neither is given.
  */
 const Heading = ({ bold, ...props }: HeadingProps) => {
     let titleElement: ReactNode | null = null;

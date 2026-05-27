@@ -17,7 +17,7 @@ export type LinkProps = {
 } & Omit<ComponentProps<typeof BaseLink>, 'locale'>;
 
 /**
- * Returns `true` when `href` should be treated as an internal link.
+ * Classifies `href` as internal by checking for a leading slash (relative path) or an exact protocol-plus-domain match against the current shop's domain.
  *
  * @param href - The URL string to check.
  * @param shop - Optional shop record used to detect self-referencing external URLs.
