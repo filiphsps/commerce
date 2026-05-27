@@ -3,7 +3,9 @@ title: TypeScript Project Structure
 description: How the five root tsconfigs are structured and how every concrete config extends them.
 ---
 
-The repo has five tsconfig files at the root: one absolute base plus four purpose-named bases that extend it. Every concrete tsconfig under `apps/*` or `packages/*` extends exactly one of those four; test configs use a specific array-extends pattern, documented below.
+The repo has five tsconfig files at the root: one absolute base plus four purpose-named bases
+that extend it. Every concrete tsconfig under `apps/*` or `packages/*` extends exactly one of
+those four; test configs use a specific array-extends pattern, documented below.
 
 ## The five root files
 
@@ -22,7 +24,14 @@ Every concrete tsconfig either:
 1. `extends` exactly one of the four bases, OR
 2. (Test configs only) `extends` an array of `[host project's main config, "../../tsconfig.test.json"]`.
 
-No other `extends` chain is sanctioned. `apps/docs` is the documented exception — it extends `@docusaurus/tsconfig` because Docusaurus owns that contract.
+No other `extends` chain is sanctioned.
+
+<Callout type="note">
+    `apps/docs` is the one documented exception. It extends `../../tsconfig.app.json` like
+    every other Next.js app in the monorepo — the Docusaurus-era exception no longer applies.
+    `apps/docs/tsconfig.typedoc.json` is a separate TypeDoc input config used only by the
+    docs generation scripts; it is not part of the normal TypeScript build graph.
+</Callout>
 
 ## Cookbook
 
@@ -97,7 +106,8 @@ Use one extra `../`. The `@tagtree/*` packages live under `packages/tagtree/*`:
 }
 ```
 
-The order matters: host config first (for `paths`/conventions), test base second so its `types`/`jsx`/`noEmit` win on conflict.
+The order matters: host config first (for `paths`/conventions), test base second so its
+`types`/`jsx`/`noEmit` win on conflict.
 
 ### Adding a `vite.config.ts` or `vitest.config.ts`
 
@@ -124,19 +134,37 @@ The order matters: host config first (for `paths`/conventions), test base second
 
 The app base relaxes a few checks that the absolute base enables:
 
-- `noUnusedLocals: false` and `noUnusedParameters: false` — framework callback signatures (NextAuth, Payload, Next route handlers) commonly have unused args. Libraries keep these checks on.
-- `noUncheckedIndexedAccess: false` — older app code uses indexed access without undefined-checks. The flag is on for libraries; apps were never strict here, so this preserves prior behavior. Cleaning the apps up to enable this universally is tracked as a separate effort.
-
-## The Docusaurus exception
-
-`apps/docs/tsconfig.json` extends `@docusaurus/tsconfig`. Docusaurus pins TS settings that conflict with the repo's strict defaults (e.g. JSX/lib expectations), so it sits outside the four-base pattern. `apps/docs/tsconfig.typedoc.json` is a TypeDoc input config and is also exempt.
-
-If you touch `apps/docs/tsconfig.json`, **do not** make it extend `tsconfig.app.json` — the upstream `@docusaurus/tsconfig` may drift, and the override pattern is intentionally tool-specific.
+- `noUnusedLocals: false` and `noUnusedParameters: false` — framework callback signatures
+  (NextAuth, Payload, Next route handlers) commonly have unused args. Libraries keep these
+  checks on.
+- `noUncheckedIndexedAccess: false` — older app code uses indexed access without
+  undefined-checks. The flag is on for libraries; apps were never strict here.
 
 ## Anti-patterns (refuse in review)
 
-- `"references": [{ "path": "../../tsconfig.json" }]` without `composite` on both ends. Project references graph is Phase 2; do not paste this pattern.
-- `"typeRoots": ["./dist/index.d.ts"]`. `typeRoots` takes directories, not files. Pointing at your own dist is circular.
-- Apps re-declaring base strict options (`strict`, `target`, `module`, etc.) inline. Extend the base instead.
-- Extending another concrete config (e.g. a package's `tsconfig.json` extending another package's). The only sanctioned multi-extend is the array form in test configs.
+- `"references": [{ "path": "../../tsconfig.json" }]` without `composite` on both ends.
+  Project references graph is Phase 2; do not paste this pattern.
+- `"typeRoots": ["./dist/index.d.ts"]`. `typeRoots` takes directories, not files.
+  Pointing at your own dist is circular.
+- Apps re-declaring base strict options (`strict`, `target`, `module`, etc.) inline.
+  Extend the base instead.
+- Extending another concrete config (e.g. a package's `tsconfig.json` extending another
+  package's). The only sanctioned multi-extend is the array form in test configs.
 - Adding JSX or DOM `lib` in the lib base. Packages opt in individually.
+
+<ContinueExploring items={[
+    {
+        eyebrow: 'Operations',
+        title: 'Conventions',
+        description: 'Biome formatting, import style, React conventions, and console rules.',
+        href: '/operations/conventions/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Operations',
+        title: 'Contributing',
+        description: 'Prerequisites, quality gates, and changeset workflow.',
+        href: '/operations/contributing/',
+        tab: 'docs',
+    },
+]} />

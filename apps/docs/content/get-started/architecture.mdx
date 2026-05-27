@@ -4,34 +4,106 @@ description: How a single Next.js deployment serves many tenants resolved by hos
 ---
 
 Nordcom Commerce is a single Next.js deployment that serves many tenants. Tenants are
-resolved by hostname in middleware before any page renders.
+resolved by hostname in middleware before any page renders. No per-tenant build, no
+per-tenant deploy — one binary, many storefronts.
+
+## Request flow
 
 ```mermaid
 flowchart LR
     A[Request] --> B[Middleware]
     B --> C[Shop.findByDomain]
     C --> D[App Router]
-    D --> E[Shopify]
+    D --> E[Shopify / CMS]
 ```
 
-## Request flow
+The middleware at `apps/storefront/src/proxy.ts` is the entry point for every request:
 
-1. The Next.js middleware (`apps/storefront/src/proxy.ts`) is the entry.
-2. It dispatches to `admin()` or `storefront()` based on the first path segment.
-3. `storefront()` reads `req.headers.host`, normalizes it (strips ports, `.localhost`,
+1. Paths starting with `/admin` dispatch to `admin()` in `src/middleware/admin.ts`;
+   everything else goes to `storefront()`.
+2. `storefront()` reads `req.headers.host`, normalizes it (strips ports, `.localhost`,
    Vercel preview suffixes), and calls `Shop.findByDomain(hostname)` against MongoDB.
-4. On a hit, the resolved domain is injected into the URL, so the App Router serves
-   the page from `apps/storefront/src/app/[domain]/[locale]/…`.
-5. On `NotFoundError`, the middleware rewrites to `SERVICE_DOMAIN/status/unknown-shop/`.
+3. On a hit, the resolved domain is injected into the URL so the App Router serves the
+   page from `src/app/[domain]/[locale]/…`.
+4. On `NotFoundError`, the middleware rewrites to `SERVICE_DOMAIN/status/unknown-shop/`.
+   Other commerce errors rewrite to `/status/unknown-error/`.
+5. Locale is resolved after the shop — see [Locales](/concepts/locales/) for the
+   full fallback chain.
+
+<Callout type="info">
+    The App Router never sees an un-tenanted request. Every route lives under
+    `[domain]/[locale]/…` — there are no root-level routes that need to figure out which
+    shop they are serving.
+</Callout>
 
 ## Data layer
 
-All Mongo access goes through `@nordcom/commerce-db`. See the **db** section for details.
+All MongoDB access goes through `@nordcom/commerce-db`. The package is the only workspace
+allowed to touch MongoDB directly; every other consumer imports the high-level service
+classes (`ShopService`, `UserService`, `ReviewService`, `FeatureFlagService`) from there.
 
-## Commerce + content
+`@nordcom/commerce-db` is marked `server-only`. Importing it from a client component or
+without `MONGODB_URI` in the environment will throw.
 
-Shopify Storefront/Admin APIs sit behind `AbstractApi`. See the **Storefront** section for details.
+## Commerce layer
 
-## Errors
+Shopify Storefront and Admin APIs sit behind `AbstractApi` in
+`apps/storefront/src/utils/abstract-api.ts`. Build one via
+`ShopifyApolloApiClient({ shop, locale })` — never call Apollo directly from a route.
 
-A shared, code-tagged error hierarchy. See the **errors** section for details.
+The `@inContext(country, language)` directive is injected automatically by the Apollo
+`DocumentTransform` from `@nordcom/commerce-shopify-graphql`. Source operations must not
+pre-declare these arguments — the transform owns them.
+
+## Content layer
+
+Structured content (pages, articles, navigation, product/collection metadata overlays) is
+served by `@nordcom/commerce-cms` — a Payload 3.x package embedded into `apps/admin`.
+The storefront consumes content through Payload's Local API. See [CMS](/concepts/cms/)
+for the block model and block loader pattern.
+
+## Error layer
+
+A shared, code-tagged error hierarchy lives in `@nordcom/commerce-errors`. Every thrown
+error in the platform is an instance of one of these classes — never `new Error(...)`.
+Each class carries a stable `code`, an HTTP `statusCode`, and a help URL. See
+[Errors](/concepts/errors/) for the full class inventory and how to add new errors.
+
+## Cache layer
+
+Tag-based cache invalidation is handled by the `@tagtree` package family. Tag schemas are
+declared as typed TypeScript objects; builders and invalidators are derived from them.
+Every entity loader in the storefront tags its cached payload; Shopify webhooks and CMS
+`afterChange` hooks call `revalidateTag` to flush exactly the affected entries. See
+[Caching](/concepts/caching/) for the tag schema and namespace details.
+
+<ContinueExploring items={[
+    {
+        eyebrow: 'Concepts · next up',
+        title: 'Multi-tenancy',
+        description: 'Resolution chain, the tenant-context contract, and cache isolation.',
+        href: '/concepts/multi-tenancy/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Concepts',
+        title: 'Caching',
+        description: 'TagTree namespaces, invalidation flow, and per-route cache lifetimes.',
+        href: '/concepts/caching/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Concepts',
+        title: 'CMS',
+        description: 'Payload blocks, block loaders, and the multi-tenant content layer.',
+        href: '/concepts/cms/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Concepts',
+        title: 'Errors',
+        description: 'The error hierarchy, HTTP status mapping, and the stable help-URL pattern.',
+        href: '/concepts/errors/',
+        tab: 'docs',
+    },
+]} />

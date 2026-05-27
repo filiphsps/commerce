@@ -3,12 +3,95 @@ title: Locales
 description: How the platform resolves and threads locale context through every request and data-fetching call.
 ---
 
-A **Locale** is an `xx-XX` language/region tag carried in the URL path segment and passed into every data-fetching helper. It is dynamic at request time — it is not encoded in the route tree, and the App Router sees it only after middleware has resolved it. Locale is always a qualifier *under* tenant: `/[domain]/[locale]/…`. No locale segment means middleware runs the locale fallback chain before rewriting.
+A **locale** is an `xx-XX` language/region tag carried in the URL path segment and passed into
+every data-fetching helper. It is dynamic at request time — it is not encoded in the route tree,
+and the App Router sees it only after middleware has resolved it. Locale is always a qualifier
+_under_ tenant: `/[domain]/[locale]/…`. No locale segment means middleware runs the fallback
+chain before rewriting.
 
 ## The fallback chain
 
-Middleware consults locale sources in order and terminates at the first match: (1) the `xx-XX` segment already present in the request path, (2) the `Accept-Language` header matched against the shop's available locales, (3) the shop's **Default locale** — the single locale persisted on the `Shop` record. There is no platform-wide default below the shop's default; the chain always terminates at the tenant level. Locale availability is derived from the commerce provider at request time and is never persisted on the shop.
+Middleware consults locale sources in order and terminates at the first match:
+
+1. The `xx-XX` segment already present in the request path.
+2. The `Accept-Language` header matched against the shop's available locales.
+3. The shop's **default locale** — the single locale persisted on the `Shop` record.
+
+There is no platform-wide default below the shop's default; the chain always terminates at
+the tenant level. Locale availability is derived from the commerce provider at request time
+and is never persisted on the shop document itself.
+
+<Callout type="note">
+    Two shops served from the same deployment can have completely different locale sets.
+    One may offer `en-GB`, `fr-FR`, and `de-DE`; another only `en-US`. Middleware handles
+    this correctly because it reads locale availability from the resolved shop, not from a
+    global list.
+</Callout>
 
 ## Threading locale through data fetching
 
-Every call that crosses a package boundary must carry the resolved locale explicitly. The `@nordcom/commerce-cms/api` helpers accept `{ shop, locale }` and apply locale-qualified lookups internally, falling back to the shop default when no locale-specific content exists. The same contract applies to Shopify API clients constructed via `ShopifyApolloApiClient({ shop, locale })`. For full details on the data-fetching helpers see `@nordcom/commerce-cms` in Packages and the `cms/api` Reference entry.
+Every call that crosses a package boundary must carry the resolved locale explicitly. The
+`@nordcom/commerce-cms/api` helpers accept `{ shop, locale }` and apply locale-qualified
+lookups internally, falling back to the shop default when no locale-specific content exists.
+
+```ts title="apps/storefront/src/api/footer.ts"
+import { getFooter } from '@nordcom/commerce-cms/api';
+
+export async function FooterApi({ shop, locale }: { shop: OnlineShop; locale: Locale }) {
+    return getFooter({ shop, locale });
+}
+```
+
+The same contract applies to Shopify API clients. `ShopifyApolloApiClient({ shop, locale })`
+injects `@inContext(country: $country, language: $language)` into every query automatically via
+the Apollo `DocumentTransform` in `@nordcom/commerce-shopify-graphql`. Source operations must
+**not** pre-declare `@inContext`, `$country`, or `$language` — the transform owns them and will
+throw `DuplicateContextDirectiveError` / `DuplicateContextVariableError` if they are already
+present.
+
+<Callout type="warn">
+    Passing the wrong locale into `getArticle` or `getPage` returns content in the wrong
+    language rather than throwing. Always resolve the locale from `params` or middleware
+    context — never hardcode `'en-US'` as a fallback in route code.
+</Callout>
+
+## Adding a locale to a shop
+
+Locale availability is derived at runtime from the Shopify `availableCountries` response — the
+shop record does not store a list of locales. To add a locale to a storefront, configure the
+corresponding market and language in the Shopify admin. Middleware picks it up automatically on
+the next request.
+
+The shop's `defaultLocale` field is the only locale stored on the `Shop` document. Update it
+via the Admin app at `/cms` or directly in the `shops` MongoDB collection.
+
+<ContinueExploring items={[
+    {
+        eyebrow: 'Concept · related',
+        title: 'Multi-tenancy',
+        description: 'How tenants are resolved by hostname and how locale sits under tenant scope.',
+        href: '/concepts/multi-tenancy/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Concept',
+        title: 'CMS',
+        description: 'How Payload serves locale-qualified content and falls back gracefully.',
+        href: '/concepts/cms/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Apps',
+        title: 'Storefront — Locales',
+        description: 'Routing details, locale detection middleware, and the per-route locale segment.',
+        href: '/docs/storefront/locales/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Errors',
+        title: 'API_UNKNOWN_LOCALE',
+        description: 'Thrown when a locale code does not match any available locale for the shop.',
+        href: '/errors/api-unknown-locale/',
+        tab: 'errors',
+    },
+]} />

@@ -1,14 +1,114 @@
 ---
 title: Errors
-description: A structured error hierarchy where every throw carries a code, HTTP status, and kind.
+description: A structured error hierarchy where every throw carries a stable code, HTTP status, and kind enum.
 ---
 
-Every error on the platform is a **Commerce error** — an instance of a class from `@nordcom/commerce-errors`, never `new Error(...)`. Each class carries three pieces of machine-readable context: an `*ErrorKind` enum member identifying the category of failure, an HTTP `statusCode` for gateway and API consumers, and a string `code` that maps to a human-readable explanation via `getErrorFromCode`. The `code` also powers the stable help URL pattern `/docs/errors/<code>/` used by the Errors tab of this site.
+Every error on the platform is a **Commerce error** — an instance of a class from
+`@nordcom/commerce-errors`, never `new Error(...)`. Each class carries three pieces of
+machine-readable context: an `*ErrorKind` enum member identifying the failure category,
+an HTTP `statusCode` for gateway and API consumers, and a string `code` that maps to
+a human-readable explanation via `getErrorFromCode`.
+
+The `code` also powers the stable help URL at `/docs/errors/<code>/` — visible in every
+error's `help` property and surfaced in the Errors tab of this site.
+
+<Callout type="info">
+    Never throw `new Error(...)` in platform code. If no existing class fits the failure
+    you are modeling, add a new one to `@nordcom/commerce-errors` — the typecheck gate
+    will catch a missing `getErrorFromCode` case if the switch is exhaustive.
+</Callout>
+
+## Throwing a commerce error
+
+```ts title="packages/db/src/services/shop.ts"
+import { NotFoundError, InvalidShopError } from '@nordcom/commerce-errors';
+
+export class ShopService {
+    static async findByDomain(domain: string): Promise<OnlineShop> {
+        if (!domain) throw new InvalidShopError();
+
+        const shop = await ShopModel.findOne({ domain }).lean();
+        if (!shop) throw new NotFoundError();
+
+        return shop;
+    }
+}
+```
+
+HTTP route handlers and middleware can turn any thrown commerce error into the right HTTP
+response with a single lookup:
+
+```ts
+catch (err) {
+    const status = err instanceof CommerceError ? err.statusCode : 500;
+    return NextResponse.json({ code: err.code }, { status });
+}
+```
 
 ## Adding an error class
 
-When no existing class fits the failure you're modeling, add a new one in the errors package: export the class, add a matching `*ErrorKind` member, and add a `getErrorFromCode` case. The CI gate `pnpm cms:gen:check` does not cover the errors package, but the typecheck gate will catch missing `getErrorFromCode` cases if the switch is exhaustive. See `@nordcom/commerce-errors` in Packages for the full class inventory and usage guide.
+When no existing class fits the failure you are modeling:
+
+1. Export the new class from `packages/errors/src/index.ts`, extending the appropriate base.
+2. Add a matching `*ErrorKind` enum member.
+3. Add a `getErrorFromCode` case — the switch must remain exhaustive or the typecheck gate
+   will fail.
+
+```ts title="packages/errors/src/index.ts"
+export class PaymentDeclinedError extends ApiError {
+    readonly kind = ApiErrorKind.PaymentDeclined;
+    readonly statusCode = 402;
+    readonly code = 'API_PAYMENT_DECLINED';
+}
+```
+
+<Callout type="note">
+    The CI gate does not auto-check the errors package (unlike `pnpm cms:gen:check`), but
+    the `typecheck` turbo task covers it. The exhaustive switch in `getErrorFromCode` will
+    catch any missing case at compile time.
+</Callout>
 
 ## The Errors tab
 
-Every error code has a dedicated page in the Errors tab of this docs site, surfacing possible causes, a "how it's thrown" code sample, and the throw-site list generated at build time. The catalog is auto-generated from the `@nordcom/commerce-errors` package — see the `errors/overview` Reference entry for the full code listing.
+Every error code has a dedicated page in the Errors tab of this site. Each page surfaces:
+
+- **Possible causes** — the most common reasons the error is thrown.
+- **Code sample** — a "how it's thrown" example from the source.
+- **Throw-site list** — every location in the codebase that throws this error, generated
+  at build time.
+- **HTTP status** and **kind** badge — the machine-readable metadata carried on the class.
+
+The catalog is auto-generated from the `@nordcom/commerce-errors` package at build time.
+
+<RefBanner refPath="errors/api" />
+
+<ContinueExploring items={[
+    {
+        eyebrow: 'Reference',
+        title: '@nordcom/commerce-errors / api',
+        description: 'Full class inventory, kind enums, getAllErrorCodes, and getErrorFromCode.',
+        href: '/reference/errors/api/',
+        tab: 'reference',
+    },
+    {
+        eyebrow: 'Errors catalog',
+        title: 'Browse all error codes',
+        description: 'Per-code pages with causes, examples, and throw-site listings.',
+        href: '/errors/',
+        tab: 'errors',
+    },
+    {
+        eyebrow: 'Concept',
+        title: 'Multi-tenancy',
+        description: 'UnknownShopDomainError and NotFoundError in tenant resolution context.',
+        href: '/concepts/multi-tenancy/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Operations',
+        title: 'Conventions',
+        description: 'The throw-via-commerce-errors coding convention and what the lint gate enforces.',
+        href: '/operations/conventions/',
+        tab: 'docs',
+    },
+]} />

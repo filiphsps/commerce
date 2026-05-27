@@ -3,12 +3,102 @@ title: CMS
 description: Payload 3.x content layer powering per-tenant structured content, blocks, and editor access.
 ---
 
-The **CMS** is the Payload 3.x content layer packaged as `@nordcom/commerce-cms`. It is multi-tenant by construction: every collection is filtered by a **CMS tenant** key — a lightweight row in the Payload `tenants` collection that is synced unidirectionally from the Mongoose `Shop`. One shop, one CMS tenant; the sync is automatic when a new shop record is created. Content is read by the **Storefront** and edited via the **Admin** app at `/cms`.
+The **CMS** is the Payload 3.x content layer packaged as `@nordcom/commerce-cms`. It is
+multi-tenant by construction: every collection is filtered by a **CMS tenant** key — a
+lightweight row in the Payload `tenants` collection that is synced unidirectionally from
+the Mongoose `Shop`. One shop, one CMS tenant. The sync is automatic when a new shop record
+is created — no manual setup.
+
+Content is read by the **Storefront** and edited via the **Admin** app at `/cms`.
+
+<Callout type="info">
+    `@nordcom/commerce-cms/api` and `@nordcom/commerce-cms/cache` are marked `server-only`
+    and call into Payload's Local API directly. Do not import them from client components —
+    the build will fail with a server-only boundary error.
+</Callout>
 
 ## Blocks and block loaders
 
-Structured content is modeled as **Blocks** — discriminated-union content units defined in `@nordcom/commerce-cms/blocks`. Some block types project Shopify data (e.g. a Featured Product block needs live pricing). To keep the CMS package free of Shopify dependencies, those blocks declare their data needs as a contract and the **Storefront** supplies a **Block loader** at the rendering boundary. The block loader is a Shopify-aware data fetcher injected once at the app layer; the CMS never imports from `@shopify/*` directly.
+Structured content is modeled as **blocks** — discriminated-union content units defined in
+`@nordcom/commerce-cms/blocks`. A page's `body` field is a Lexical rich-text field plus an
+array of typed block slots. Blocks are generic; the CMS package has no Shopify dependency.
 
-## Reference and packages
+Some block types need live Shopify data at render time (a Featured Product block needs
+current pricing; a Collection block needs inventory-aware product listings). To keep
+the CMS package free of Shopify dependencies, those blocks declare a **data contract**,
+and the **Storefront** supplies a **block loader** at the rendering boundary.
 
-The full API surface for reading CMS content is documented in the `cms/api` Reference entry and the `cms/collections` entry for collection schemas. Block definitions live under `cms/blocks`. For the editor-side configuration and manifest authoring, see `cms/editor` in the `@nordcom/commerce-cms` Packages entry.
+```ts title="apps/storefront/src/cms-loaders.ts"
+import type { BlockLoaders } from '@nordcom/commerce-cms/blocks/render';
+import { getProductByHandle } from '@/api/_loaders';
+
+export const cmsLoaders = {
+    product: async ({ shop, locale, handle }) => getProductByHandle({ shop, locale, handle }),
+    collection: async ({ shop, locale, handle }) => getCollection({ shop, locale, handle }),
+} satisfies BlockLoaders;
+```
+
+The `BlockRenderer` in the storefront receives this loader map and dispatches to the
+correct loader when it encounters a block type that declares a Shopify data need. The
+CMS package never imports from `@shopify/*` directly.
+
+<Callout type="tip">
+    When adding a new block type that needs live data, define the data contract in
+    `@nordcom/commerce-cms/blocks` and implement the loader in `apps/storefront/src/cms-loaders.ts`.
+    The TypeScript types enforce that the loader map is complete — a missing loader is a
+    compile error.
+</Callout>
+
+## Collections and access predicates
+
+Every Payload collection in the CMS carries a `tenant` relation. The `@payloadcms/plugin-multi-tenant`
+plugin enforces it — a query without a tenant filter never returns documents from another
+tenant. Access predicates layer on top of this:
+
+- **Admins** (platform-level) see all tenants, all drafts.
+- **Editors** (per-tenant role) see only their shop's documents and only published content
+  unless they're previewing.
+- **Public reads** (storefront Local API calls) see only published documents for the
+  resolved tenant.
+
+See `@nordcom/commerce-cms/collections` in Reference for the access helper exports.
+
+<RefBanner refPath="cms/api" />
+
+## Cache integration
+
+Every collection's `afterChange` and `afterDelete` hooks fan out `revalidateTag` calls
+using the `@tagtree/payload` adapter. A single CMS save flushes exactly the per-tenant,
+per-collection, per-handle tags the storefront read — nothing more, nothing less. See
+[Caching](/concepts/caching/) for the full tag schema.
+
+<ContinueExploring items={[
+    {
+        eyebrow: 'Concept · related',
+        title: 'Caching',
+        description: 'How CMS afterChange hooks fan out tag-based invalidation.',
+        href: '/concepts/caching/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Concept',
+        title: 'Multi-tenancy',
+        description: 'The tenant key that gates every collection query.',
+        href: '/concepts/multi-tenancy/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Reference',
+        title: '@nordcom/commerce-cms / api',
+        description: 'getPage, getArticle, getHeader, getFooter, and all other CMS readers.',
+        href: '/reference/cms/api/',
+        tab: 'reference',
+    },
+    {
+        eyebrow: 'Reference',
+        title: '@nordcom/commerce-cms / blocks',
+        description: 'Block type definitions, BlockRenderer, and the data contract interface.',
+        href: '/reference/cms/blocks/',
+        tab: 'reference',
+    },
+]} />

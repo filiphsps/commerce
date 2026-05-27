@@ -3,8 +3,86 @@ title: Packages
 description: Per-workspace narrative docs for every package and app in the monorepo.
 ---
 
-The Packages tab hosts authored narrative docs for every workspace. Each workspace
-contributes a short overview plus a changelog mirror; the generated API reference
-for the same workspace lives in the **Reference** tab.
+The Packages tab hosts authored narrative docs for every workspace package. Each entry
+explains purpose, API shape, and when to reach for it. The generated per-symbol API
+reference for the same workspace lives in the **Reference** tab.
 
-Pick a category in the sidebar — applications, core, shopify, tagtree, or ui.
+## Core packages
+
+| Package | Description |
+| --- | --- |
+| `@nordcom/commerce-cms` | Payload 3.x CMS, embedded in `apps/admin`. Server-only. Accessed from the storefront via the Local API. |
+| `@nordcom/commerce-db` | MongoDB access layer. The only workspace allowed to touch MongoDB directly. Exposes `ShopService`, `UserService`, `ReviewService`, `FeatureFlagService`. |
+| `@nordcom/commerce-errors` | Typed, code-tagged error hierarchy shared by every package and app. Every `throw` in the platform uses a class from here. |
+| `@nordcom/commerce-marketing-common` | Shared utilities for marketing logic across storefront and landing app. |
+
+## Shopify packages
+
+| Package | Description |
+| --- | --- |
+| `@nordcom/commerce-shopify-graphql` | `gql.tada` setup, Apollo client factory (`ShopifyApolloApiClient`), and the `@inContext` document transform. |
+| `@nordcom/commerce-shopify-html` | HTML/template rendering utilities for Shopify content (metafields, rich text). |
+
+## TagTree packages
+
+The `@tagtree/*` family provides typed, namespace-safe cache tags for Next.js tag-based
+cache invalidation. Each package covers one integration point.
+
+| Package | Description |
+| --- | --- |
+| `@tagtree/core` | Base tag schema, `safeCacheTag`, and the tag-builder primitives. All other `@tagtree/*` packages build on this. |
+| `@tagtree/next` | Next.js-specific tag helpers — `unstable_cache` wrappers and page-level tag utilities. |
+| `@tagtree/payload` | Tag schema for Payload CMS collections. Used in `afterChange` hooks to flush exactly the affected content entries. |
+| `@tagtree/shopify` | Tag schema for Shopify entities (products, collections, orders). Used in Shopify webhook handlers. |
+
+<RefBanner refPath="tagtree/core/api" />
+
+## UI packages
+
+| Package | Description |
+| --- | --- |
+| `react-payment-brand-icons` | SVG icon set for payment brand logos. Zero-dep React components. |
+
+## Cart packages
+
+The `@nordcom/cart-*` family handles shopping cart state and Shopify cart mutations.
+
+| Package | Description |
+| --- | --- |
+| `@nordcom/cart-core` | Framework-agnostic cart state model and mutation helpers. |
+
+<Callout type="info">
+    `@nordcom/commerce-test-mongo` and `@nordcom/commerce-utils` are internal dev/test
+    utilities. They are not documented here — they have no stable public API.
+</Callout>
+
+<ContinueExploring items={[
+    {
+        eyebrow: 'Reference',
+        title: 'API Reference',
+        description: 'Generated per-symbol pages for every exported function, class, and type.',
+        href: '/reference/',
+        tab: 'reference',
+    },
+    {
+        eyebrow: 'Concepts',
+        title: 'Caching',
+        description: 'How the TagTree packages are used for tag-based cache invalidation.',
+        href: '/concepts/caching/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Concepts',
+        title: 'CMS',
+        description: 'How the CMS package integrates with the storefront via Local API.',
+        href: '/concepts/cms/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Concepts',
+        title: 'Errors',
+        description: 'The error hierarchy and how to add new error classes.',
+        href: '/concepts/errors/',
+        tab: 'docs',
+    },
+]} />

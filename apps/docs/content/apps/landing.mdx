@@ -1,0 +1,63 @@
+---
+title: Landing
+description: The public-facing marketing site — homepage, changelog, news, and docs redirect.
+---
+
+`apps/landing` is the public marketing site. It serves the product homepage, changelog,
+news section, and acts as the entry point that links to the documentation site. It is a
+standalone Next.js app with no tenant resolution — it serves one domain.
+
+## Route structure
+
+| Route | Purpose |
+| --- | --- |
+| `/` | Product homepage |
+| `/changelog/` | Monorepo changelog feed (mirrors changesets) |
+| `/news/` | News and announcements |
+| `/docs/` | Redirects to the documentation site |
+| `(status)/` | Status pages (unknown-shop, unknown-error) |
+
+<Callout type="note">
+    The `(status)/` route group handles error redirects from the storefront middleware.
+    When `Shop.findByDomain` fails with `NotFoundError`, the storefront rewrites to
+    `SERVICE_DOMAIN/status/unknown-shop/` — which lands here on the landing app.
+</Callout>
+
+## Content
+
+The landing app uses [Markdoc](https://markdoc.dev/) for content-heavy pages (changelog,
+news articles). Markdoc schemas live in `src/markdoc/`. There is no Payload integration
+in this app — it does not need a CMS.
+
+## Key environment variables
+
+The landing app has minimal env requirements. Set `LANDING_DOMAIN` if you need to override
+the canonical hostname (optional — defaults to the `SERVICE_DOMAIN` from `.env`).
+
+| Variable | Purpose |
+| --- | --- |
+| `LANDING_DOMAIN` | Override canonical domain (optional) |
+
+<ContinueExploring items={[
+    {
+        eyebrow: 'Apps',
+        title: 'Storefront',
+        description: 'The multi-tenant storefront app — shop resolution and product pages.',
+        href: '/apps/storefront/',
+        tab: 'packages',
+    },
+    {
+        eyebrow: 'Operations',
+        title: 'Deployment',
+        description: 'Per-app env vars, ports, and how to deploy each app independently.',
+        href: '/operations/deployment/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Get started',
+        title: 'Quickstart',
+        description: 'Boot all apps in a local environment from scratch.',
+        href: '/get-started/quickstart/',
+        tab: 'docs',
+    },
+]} />

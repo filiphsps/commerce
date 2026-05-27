@@ -1,6 +1,61 @@
 ---
 title: Commerce Docs
-description: Multi-tenant Next.js storefront platform fronting Shopify.
+description: Multi-tenant Next.js storefront platform fronting Shopify — one deploy, many shops.
 ---
 
-Site under reconstruction — content arrives in subsequent phases.
+## What is Nordcom Commerce?
+
+Nordcom Commerce is a multi-tenant headless e-commerce platform. A single Next.js deployment
+resolves each inbound request to a tenant by hostname, rewrites the URL to the tenanted App
+Router tree, and serves catalog, cart, account, and CMS pages backed by Shopify and an
+embedded Payload CMS. Adding a new shop is a row in MongoDB — no redeploy.
+
+<Callout type="info">
+    The platform is organized into four sections: **Docs** (concepts and operations),
+    **Packages** (narrative per-workspace guides), **Reference** (auto-generated TypeDoc
+    API), and **Errors** (per-code help pages).
+</Callout>
+
+## Where to start
+
+**New here?** Begin with the [Quickstart](/get-started/quickstart/) to get a local
+environment running, then read [Architecture](/get-started/architecture/) to understand
+how tenants are resolved and how data flows from the edge to the database.
+
+**Looking for a package API?** Jump directly to [Reference](/reference/) for the
+auto-generated TypeDoc catalog, or to [Packages](/packages/) for narrative guides and
+changelogs.
+
+**Debugging a thrown error?** Every commerce error code has a dedicated page in
+[Errors](/errors/) with causes, code examples, and throw-site listings.
+
+<ContinueExploring items={[
+    {
+        eyebrow: 'Get started',
+        title: 'Quickstart',
+        description: 'Boot the storefront locally in under five minutes.',
+        href: '/get-started/quickstart/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Get started',
+        title: 'Architecture',
+        description: 'How one deploy serves many tenants resolved by hostname.',
+        href: '/get-started/architecture/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Concepts',
+        title: 'Multi-tenancy',
+        description: 'Tenant resolution, URL rewriting, and the data-fetching contract.',
+        href: '/concepts/multi-tenancy/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Concepts',
+        title: 'Caching',
+        description: 'Tenant-scoped, locale-qualified cache namespaces and tag-based invalidation.',
+        href: '/concepts/caching/',
+        tab: 'docs',
+    },
+]} />

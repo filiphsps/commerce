@@ -4,17 +4,17 @@ description: Get the storefront running locally in under five minutes.
 ---
 
 Nordcom Commerce is a multi-tenant headless e-commerce platform. A single Next.js
-deployment serves arbitrarily many shops resolved by hostname.
+deployment serves an arbitrary number of shops resolved by hostname.
 
 ## Prerequisites
 
-- Node.js (see `.nvmrc` for version)
+- Node.js (version pinned in `.nvmrc`)
 - pnpm
 - A running MongoDB instance
 
-<Callout type="info">
-    Run `pnpm dev:storefront` if you only need the storefront — it boots faster than
-    `pnpm dev`.
+<Callout type="tip">
+    Run `pnpm dev:storefront` if you only need the storefront — it boots a single app
+    and skips the admin and landing builds. Use `pnpm dev` to start all three in parallel.
 </Callout>
 
 ## Install
@@ -22,16 +22,82 @@ deployment serves arbitrarily many shops resolved by hostname.
 ```bash
 pnpm install
 cp .env.example .env       # set MONGODB_URI, AUTH_SECRET, SERVICE_DOMAIN at minimum
-pnpm build:packages        # apps depend on each package's dist/
-pnpm dev                   # all three apps in parallel
+pnpm build:packages        # apps import from each package's dist/, not source
+pnpm dev                   # all apps in parallel
 ```
 
-| App        | URL                              |
-| ---------- | -------------------------------- |
-| Storefront | https://storefront.localhost     |
-| Admin      | https://admin.localhost          |
-| Landing    | https://landing.localhost        |
-| Docs       | https://docs.localhost           |
+| App | URL |
+| --- | --- |
+| Storefront | https://storefront.localhost |
+| Admin | https://admin.localhost |
+| Landing | https://landing.localhost |
+| Docs | https://docs.localhost |
 
-See [Architecture](../architecture/) for the multi-tenancy primer, and the
-per-app guides under **Apps** for routing, data fetching, and CMS integration.
+<Callout type="note">
+    `pnpm dev` boots a persistent local MongoDB under `.mongo-dev/` via
+    `@nordcom/commerce-test-mongo`. Set `MONGODB_URI` in your shell to use an
+    external instance instead. Run `pnpm dev:reset` to tear down the local instance.
+</Callout>
+
+## Seed a tenant
+
+The storefront resolves every request by hostname. Without a matching `Shop` record in
+MongoDB, every request redirects to `/status/unknown-shop/`. In development, unknown
+hosts fall back to `nordcom-demo-shop.com` automatically so you can boot without seeding.
+
+To add a real tenant, insert a row into the `shops` collection:
+
+```ts
+await db.collection('shops').insertOne({
+    domain: 'myshop.com',
+    name: 'My Shop',
+    commerceProvider: { type: 'shopify', domain: 'myshop.myshopify.com', token: '...' },
+    contentProvider: { type: 'shopify' },
+    defaultLocale: 'en-US',
+});
+```
+
+No redeploy required. Middleware picks up the new row on the next request.
+
+## Quality gates
+
+Before pushing, run:
+
+```bash
+pnpm lint        # Biome lint
+pnpm typecheck   # TypeScript across all packages and apps
+pnpm test        # Vitest unit tests (requires MONGODB_URI)
+```
+
+CI runs the same gates on every PR.
+
+<ContinueExploring items={[
+    {
+        eyebrow: 'Get started · next up',
+        title: 'Architecture',
+        description: 'How one deploy serves many tenants resolved by hostname.',
+        href: '/get-started/architecture/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Concepts',
+        title: 'Multi-tenancy',
+        description: 'Tenant resolution, URL rewriting, and the data-fetching contract.',
+        href: '/concepts/multi-tenancy/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Operations',
+        title: 'Contributing',
+        description: 'Prerequisites, changeset workflow, and commit conventions.',
+        href: '/operations/contributing/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Operations',
+        title: 'Deployment',
+        description: 'Per-app env vars, ports, and the docs CI workflow.',
+        href: '/operations/deployment/',
+        tab: 'docs',
+    },
+]} />

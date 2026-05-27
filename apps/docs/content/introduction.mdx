@@ -3,4 +3,75 @@ title: Introduction
 description: Multi-tenant headless e-commerce platform fronting Shopify — one deploy serves many shops.
 ---
 
-Multi-tenant headless e-commerce platform. Start with [Getting Started](./get-started/quickstart/).
+Nordcom Commerce is a multi-tenant headless e-commerce platform. A single Next.js deployment
+serves an arbitrary number of shops. Each shop is identified by hostname — no subpaths,
+no per-tenant builds. One deploy, many storefronts.
+
+## Platform pillars
+
+**Multi-tenancy by hostname.** Middleware intercepts every request, resolves the `Host:`
+header to a `Shop` record in MongoDB, and rewrites the URL to the tenanted App Router
+tree before any page code runs. New tenants are added as database rows, never as code.
+
+**Shopify as the commerce layer.** Product catalog, inventory, cart, checkout, and customer
+accounts run through the Shopify Storefront and Admin APIs. The `@nordcom/commerce-shopify-graphql`
+package wraps `gql.tada` and injects the `@inContext` directive automatically — route handlers
+never touch Apollo directly.
+
+**Payload CMS as the content layer.** Structured page content, navigation, articles, and
+per-product metadata live in Payload 3.x (`@nordcom/commerce-cms`). The CMS is embedded into
+the Admin app at `/cms` and consumed by the Storefront through Payload's Local API. Block-level
+Shopify data is injected at the storefront render boundary — the CMS package has no Shopify
+dependency.
+
+**Tag-based cache invalidation.** The `@tagtree` family of packages declares cache tag schemas
+as typed TypeScript objects. Shopify webhooks, Payload `afterChange` hooks, and manual calls all
+target the same tag vocabulary — no hand-rolled string concatenation, no stale entries after a
+mutation.
+
+## How the docs are organized
+
+| Section | Contents |
+| --- | --- |
+| **Docs** | Platform concepts, getting started, app narratives, and operations guides |
+| **Packages** | Narrative per-workspace docs: purpose, API surface, and changelogs |
+| **Reference** | Auto-generated TypeDoc API reference for every exported symbol |
+| **Errors** | Per-error-code pages with causes, examples, and throw-site listings |
+
+<Callout type="note">
+    The Reference tab is generated at build time from JSDoc and TypeScript types across the
+    monorepo. Concepts and Packages tabs are hand-written. Both link to each other using
+    typed cross-reference pills — click any `symbol` in a code block or prose to jump to its
+    Reference page.
+</Callout>
+
+<ContinueExploring items={[
+    {
+        eyebrow: 'Get started',
+        title: 'Quickstart',
+        description: 'Get a local environment running in under five minutes.',
+        href: '/get-started/quickstart/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Concepts',
+        title: 'Multi-tenancy',
+        description: 'How one deploy serves many shops resolved by hostname.',
+        href: '/concepts/multi-tenancy/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Concepts',
+        title: 'Caching',
+        description: 'Tenant-scoped tag-based invalidation with @tagtree.',
+        href: '/concepts/caching/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Packages',
+        title: 'Package index',
+        description: 'Narrative guides and changelogs for every workspace package.',
+        href: '/packages/',
+        tab: 'packages',
+    },
+]} />

@@ -1,29 +1,114 @@
 ---
 title: Contributing
-description: Prerequisites, quality gates, and house style for contributors.
+description: Prerequisites, quality gates, changeset workflow, and house style for contributors.
 ---
 
 ## Prerequisites
 
-- Node.js, pnpm, MongoDB.
-- `pnpm install` and `pnpm build:packages` must succeed in a fresh checkout — apps
-  depend on each package's `dist/`.
+- Node.js (version pinned in `.nvmrc`)
+- pnpm
+- A running MongoDB instance (or let `pnpm dev` boot one under `.mongo-dev/`)
+
+After cloning:
+
+```bash
+pnpm install
+pnpm build:packages   # apps depend on each package's dist/, not source
+```
+
+`pnpm build:packages` must succeed before you run lint, typecheck, or tests in a fresh
+checkout — it compiles every workspace package into `dist/` so the apps can import them.
 
 ## Quality gates
 
 Before opening a PR, the following must pass locally:
 
 ```bash
-pnpm lint           # biome lint .
-pnpm typecheck      # turbo run typecheck
-pnpm test           # vitest, requires MONGODB_URI
+pnpm lint        # Biome lint (includes unsafe fixes like Tailwind class sorting)
+pnpm typecheck   # turbo run typecheck across all packages and apps
+pnpm test        # Vitest, requires MONGODB_URI (or pnpm dev running)
 ```
 
-CI runs the same set in parallel on every PR.
+CI runs the same set in parallel on every PR. A PR with failing checks will not be merged.
 
-## House style
+<Callout type="note">
+    `pnpm test` runs Vitest with `--coverage`. Some tests spin up an in-process MongoDB
+    via `@nordcom/commerce-test-mongo`. Set `MONGODB_URI` in your environment to point at
+    an external instance instead — useful if you want faster test startup.
+</Callout>
 
-- Biome formatting: 4-space indent, single quotes, semicolons, trailing commas, `lineWidth: 120`.
-- `import type` is enforced (`useImportType` error).
-- `console.log` fails lint; use `console.warn` / `console.error` / `console.info` / `console.debug`.
-- See [Conventions](../conventions/) for the full list.
+## Changesets
+
+Touching any package not in `.changeset/config.json`'s `ignore` list requires a changeset:
+
+```bash
+pnpm changeset   # interactive — choose packages and bump level
+```
+
+Pick the semver level per the nature of the change:
+
+| Level | When |
+| --- | --- |
+| `patch` | Bug fix or internal-only change with no API surface change |
+| `minor` | Additive change — new export, new optional option |
+| `major` | Breaking change — removed export, changed signature |
+
+One changeset per logical change. The changeset summary follows the same WHY-only rule as
+commit bodies — explain motivation and context, not what the diff already shows.
+
+## Commit conventions
+
+All commits follow **Conventional Commits with scope**:
+
+```
+<type>(<scope>): <subject>.
+```
+
+Types: `feat`, `fix`, `chore`, `refactor`, `docs`, `test`, `perf`, `ci`, `build`.
+Subject is imperative, lowercase, with a trailing period. Example:
+
+```
+fix(cms): resolve locale fallback when shop default is unset.
+```
+
+The commit body explains **why** — motivation, hidden constraints, trade-offs, breaking
+changes. Skip the body entirely if the subject and diff are self-explanatory.
+
+<Callout type="warn">
+    Never merge — always rebase. No merge commits on any branch. If a PR cannot
+    fast-forward, rebase the branch onto the target before merging. When iterating
+    on the most recent commit (review feedback, typo), prefer `git commit --amend`
+    over stacking fixup commits.
+</Callout>
+
+## Pull request process
+
+1. Branch from `master`, name it `feat/<kebab-slug>` or `fix/<kebab-slug>`.
+2. Run quality gates locally before pushing.
+3. Open a PR — the CI runs lint, typecheck, and tests automatically.
+4. Add a changeset if you touched any non-ignored package.
+5. Request a review once CI is green.
+
+<ContinueExploring items={[
+    {
+        eyebrow: 'Operations',
+        title: 'Conventions',
+        description: 'Biome formatting, TypeScript strictness, React and import rules.',
+        href: '/operations/conventions/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Operations',
+        title: 'Deployment',
+        description: 'Per-app env vars, ports, and the docs CI pipeline.',
+        href: '/operations/deployment/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Get started',
+        title: 'Quickstart',
+        description: 'Boot a local environment from scratch.',
+        href: '/get-started/quickstart/',
+        tab: 'docs',
+    },
+]} />

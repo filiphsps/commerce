@@ -1,29 +1,50 @@
 ---
 title: Multi-tenancy
-description: One deploy serves many shops. Tenant resolution happens at the edge by hostname.
+description: One deploy serves many shops. Tenant resolution happens at the edge by hostname, then every downstream call carries explicit { shop, locale }. The App Router never sees an un-tenanted request.
 ---
 
-Nordcom Commerce is multi-tenant by hostname. Adding a new shop is a row in the `shops` MongoDB collection — no redeploy. Middleware resolves the request's hostname into a shop, rewrites the URL to `/[domain]/[locale]/…`, and the App Router never sees an un-tenanted request.
+Nordcom Commerce is multi-tenant by hostname. There is no per-shop deployment — adding a new
+shop is a row in the `shops` MongoDB collection, no redeploy. Middleware reads the request's
+hostname, resolves the shop, and rewrites the URL into `/[domain]/[locale]/…` before the App
+Router takes over.
 
 ## The resolution chain
 
-1. Inbound request hits the edge with a raw `Host:` header.
-2. Middleware looks up Hostname → Shop in MongoDB via `resolveShopFromHostname`.
-3. Locale resolves through the fallback chain: request → shop default → platform default.
-4. URL rewrites to `/[domain]/[locale]/…` — the App Router sees the tenanted path.
-5. Every data call carries `{ shop, locale }` explicitly. No implicit tenant context, ever.
+The middleware at `apps/storefront/src/proxy.ts` is the single entry point for every request.
+
+1. Inbound request arrives with a raw `Host:` header (primary domain, alias, or dev shorthand).
+2. Middleware calls `Shop.findByDomain(hostname)` against MongoDB after normalizing the host
+   (strips ports, `.localhost`, Vercel preview suffixes).
+3. Locale resolves via the fallback chain: path segment → `Accept-Language` matched against
+   the shop's available locales → shop's default locale.
+4. URL rewrites to `/[domain]/[locale]/…` — the App Router receives the tenanted path.
+5. Every data call downstream carries `{ shop, locale }` explicitly.
+
+On a `NotFoundError` from step 2, the middleware rewrites to
+`SERVICE_DOMAIN/status/unknown-shop/`. Unknown hosts in dev fall back to
+`nordcom-demo-shop.com` so contributors can boot without seeding their own tenant.
+
+<Callout type="info">
+    Tenant context is never implicit. There is no `getCurrentShop()` singleton, no
+    request-scoped global, no `AsyncLocalStorage` tenant slot. Every Shopify call
+    constructs a fresh `ShopifyApolloApiClient({ shop, locale })`; every CMS reader
+    takes `{ shop, locale }` in its argument object. **New data-fetching helpers must
+    follow this contract.**
+</Callout>
 
 ## Data fetching contract
 
-Every reader in `@nordcom/commerce-cms/api` follows the same shape: tenant-scope on `shop.id`, apply locale, fall back to shop default, return `null` when the entity doesn't resolve. Throws `NotFoundError` when the slug is structurally invalid.
+Every reader in `@nordcom/commerce-cms/api` follows the same shape: tenant-scope on
+`shop.id`, apply locale, fall back to shop default, return `null` when the entity does
+not resolve. Throws `NotFoundError` when a slug is structurally invalid.
 
-```ts
+```ts title="apps/storefront/app/[domain]/[locale]/blog/[slug]/page.tsx"
 import { getArticle } from '@nordcom/commerce-cms/api';
 
 export default async function ArticlePage({ params }: {
     params: Promise<{ shop: ShopDomain; locale: LocaleCode; slug: string }>;
 }) {
-    const { shop, locale, slug } = await params;
+    const { shop, locale, slug } = await params; // params is a Promise in Next.js 16
     const article = await getArticle({ shop, locale, slug });
 
     if (!article) notFound();
@@ -31,12 +52,67 @@ export default async function ArticlePage({ params }: {
 }
 ```
 
+The same contract applies to Shopify API clients:
+`ShopifyApolloApiClient({ shop, locale })` constructs an Apollo client scoped to that
+tenant and locale. See [Data Fetching](/docs/storefront/data-fetching/) for per-tenant
+Apollo pool behavior and the React `cache()` dedup layer.
+
+<Callout type="warn">
+    Never derive the shop from a singleton or environment variable. The deployment serves
+    many shops simultaneously — a wrongly-cached tenant context would leak data across
+    shops. If you find yourself reaching for a global, stop and pass `{ shop, locale }`
+    through the call stack instead.
+</Callout>
+
 ## The tenant-scoped cache invariant
 
-Every cached entity's tags include a shop key. Revalidating one tenant cannot touch another's data. Inside a tenant-scoped cache, entities are further keyed by locale — locale is a qualifier under tenant, not above it.
+Every cached entity's tags include a shop key. Revalidating one tenant cannot touch
+another tenant's entries. Inside a tenant-scoped cache, entities are further keyed by
+locale — locale is a qualifier _under_ tenant, never above it.
 
 ```
-cms.<tenantId>.<collection>.<key>
-cms.<tenantId>.<collection>
-cms.<tenantId>
+cms.<tenantId>.<collection>.<key>   // individual entity
+cms.<tenantId>.<collection>         // collection sweep
+cms.<tenantId>                      // whole-tenant sweep
 ```
+
+For helpers that construct these tags, use the utilities in `@nordcom/commerce-cms/cache`.
+Never hand-format these strings — the invariant is enforced by the helper, and a typo
+silently breaks invalidation. See [Caching](/concepts/caching/) for the full tag schema.
+
+<Callout type="tip">
+    Run `revalidateTag('shopify.<shop.id>', 'max')` to flush all Shopify-sourced data for a
+    single tenant. The coarsest CMS sweep is `revalidateTag('cms.<tenantId>')`. Both leave
+    all other tenants' cache entries untouched.
+</Callout>
+
+<ContinueExploring items={[
+    {
+        eyebrow: 'Concept · next up',
+        title: 'Locales',
+        description: 'The fallback chain, how locales attach to a shop, and locale threading through data fetching.',
+        href: '/concepts/locales/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Concept',
+        title: 'Caching',
+        description: 'TagTree, cache namespaces, and how a single mutation invalidates exactly what changed.',
+        href: '/concepts/caching/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Reference',
+        title: '@nordcom/commerce-cms / api',
+        description: 'Every CMS reader — getPage, getArticle, listArticles, getHeader, getFooter, and more.',
+        href: '/reference/cms/api/',
+        tab: 'reference',
+    },
+    {
+        eyebrow: 'Errors',
+        title: 'API_UNKNOWN_SHOP_DOMAIN',
+        description: 'When tenant resolution fails because the hostname does not match any shop record.',
+        href: '/errors/api-unknown-shop-domain/',
+        tab: 'errors',
+    },
+]} />

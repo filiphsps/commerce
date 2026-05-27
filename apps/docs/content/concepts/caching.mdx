@@ -3,12 +3,120 @@ title: Caching
 description: Tenant-scoped, locale-qualified cache namespaces that ensure shop isolation and precise revalidation.
 ---
 
-The cache is organized into two top-level **cache namespaces**: `shopify` for storefront reads (Shopify Storefront/Admin API responses) and `cms` for Payload reads (content layer responses). Namespaces are isolated — invalidating a CMS entry never touches Shopify-sourced data and vice versa. This separation means a Shopify webhook can revalidate product data without evicting cached page content, and a CMS publish can update authored blocks without touching prices or inventory.
+The cache is organized into two top-level namespaces: `shopify` for storefront reads (Shopify
+Storefront/Admin API responses) and `cms` for Payload reads (content layer responses). Namespaces
+are isolated — invalidating a CMS entry never touches Shopify-sourced data and vice versa.
+
+A Shopify webhook can revalidate product data without evicting cached page content. A CMS
+publish can update authored blocks without touching prices or inventory. This separation is
+structural, not a convention — the tag schemas are declared in code, and the invalidation
+helpers and tag builders talk to the same schema object.
 
 ## Tenant-scoped and locale-qualified
 
-Within each namespace, every cached entity's tags include a shop key — this is the **tenant-scoped cache** invariant. Revalidating one tenant's data cannot touch another tenant's cache entries, even if both tenants request the same logical resource. Below tenant scope, entities are further keyed by locale. Locale is a qualifier *under* tenant, never above it: `cms.<tenantId>.<collection>.<key>` fully qualifies an entity, and `cms.<tenantId>` is the coarsest revalidation target for a single tenant.
+Within each namespace, every cached entity's tags include a shop key — this is the
+**tenant-scoped cache invariant**. Revalidating one tenant's data cannot touch another
+tenant's entries, even if both request the same logical resource.
+
+Below tenant scope, entities are further keyed by locale. Locale is a qualifier _under_ tenant,
+never above it:
+
+```
+cms.<tenantId>.<collection>.<key>   // individual document
+cms.<tenantId>.<collection>         // collection-level sweep
+cms.<tenantId>                      // whole-tenant CMS sweep
+
+shopify.<shopId>                    // whole-tenant Shopify sweep
+shopify.<shopId>.<domain>           // domain-qualified tenant root
+shopify.<shopId>.<domain>.product.<handle>
+shopify.<shopId>.<domain>.collection.<handle>
+```
+
+<Callout type="info">
+    The `cms.<tenantId>` tag is the coarsest revalidation target for a single tenant's content.
+    Use `revalidateTag('cms.<tenantId>')` to flush all CMS-sourced data for one shop without
+    touching any other tenant or any Shopify-sourced data.
+</Callout>
+
+## The @tagtree packages
+
+Tag schemas are declared using `@tagtree/core`. The schema is a typed TypeScript object;
+tag builders and invalidators are derived from it. There are no hand-rolled tag strings
+anywhere in the codebase — every tag write and every `revalidateTag` call goes through a
+builder generated from the same schema.
+
+<RefBanner refPath="tagtree/core/api" />
+
+The `@tagtree` family covers three integration points:
+
+| Package | Purpose |
+| --- | --- |
+| `@tagtree/core` | Schema definition, builders, adapter interface |
+| `@tagtree/next` | Next.js storage adapter (`revalidateTag` / `cacheTag`) |
+| `@tagtree/shopify` | Shopify webhook → tag mapper (`parseShopifyWebhook`) |
+| `@tagtree/payload` | Payload `afterChange`/`afterDelete` hook factory |
 
 ## Where the cache helpers live
 
-The cache tag construction utilities and revalidation helpers are in `@nordcom/commerce-cms/cache`. The `cms/cache` Reference entry documents the full tag schema and the exported helpers for constructing and revalidating tags. Shopify-namespace cache management is internal to the Shopify API client and documented under `@nordcom/commerce-shopify-graphql` in Packages.
+**CMS namespace.** Tag construction utilities and revalidation helpers for the CMS namespace
+live in `@nordcom/commerce-cms/cache`. The exports cover tag schema access, per-tenant root
+tags, and per-collection/per-document tag arrays. Use these helpers whenever you need to
+construct or revalidate a CMS cache entry — never hand-format `cms.*` strings.
+
+<RefBanner refPath="cms/cache" />
+
+**Shopify namespace.** Shopify-namespace cache management is internal to the storefront's
+`src/cache.ts` (built on the `@tagtree/next` adapter). The schema is the source of truth —
+the `/api/revalidate` webhook handler, the entity loaders in `_loaders.ts`, and any future
+storefront additions all import from it.
+
+## Invalidation flow
+
+When Shopify state mutates, Shopify sends a webhook to `/[domain]/api/revalidate`. The
+handler verifies `X-Shopify-Hmac-SHA256`, calls `parseShopifyWebhook` (from `@tagtree/shopify`)
+to map the webhook topic to the affected cache tags, and calls `revalidateTag` for each tag.
+It also evicts the per-tenant Apollo client pool entry so the `InMemoryCache` does not diverge
+from Next.js's data cache.
+
+CMS invalidation does not use webhooks. Payload collection `afterChange` and `afterDelete`
+hooks (wired up by `payloadHooks` from `@tagtree/payload`) call `revalidateTag` directly —
+a single content edit flushes exactly the per-tenant, per-collection, per-handle tags the
+storefront read.
+
+<Callout type="tip">
+    `cacheTag` only operates inside a `'use cache'` boundary. Entity loaders use a
+    `safeCacheTag` wrapper that silently no-ops outside a `'use cache'` scope — this keeps
+    `generateStaticParams` and other build-time callers from crashing. Never call `cacheTag`
+    directly from route code; use `safeCacheTag` instead.
+</Callout>
+
+<ContinueExploring items={[
+    {
+        eyebrow: 'Concept · related',
+        title: 'Multi-tenancy',
+        description: 'The tenant isolation invariant that makes per-tenant cache tags mandatory.',
+        href: '/concepts/multi-tenancy/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Apps',
+        title: 'Storefront — Data Fetching',
+        description: 'Cache tags per route type, the Apollo pool, and notes for adding new entity loaders.',
+        href: '/docs/storefront/data-fetching/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Reference',
+        title: '@tagtree/core',
+        description: 'Schema definition API — defineCache, createCacheInstance, CacheAdapter.',
+        href: '/reference/tagtree/core/api/',
+        tab: 'reference',
+    },
+    {
+        eyebrow: 'Reference',
+        title: '@tagtree/shopify',
+        description: 'parseShopifyWebhook and verifyShopifyHmac for webhook-driven invalidation.',
+        href: '/reference/tagtree/shopify/api/',
+        tab: 'reference',
+    },
+]} />

@@ -1,0 +1,95 @@
+---
+title: Storefront
+description: The multi-tenant Next.js storefront — one deployment, many shops.
+---
+
+`apps/storefront` is the customer-facing app. It handles every shopper request: product
+pages, collection pages, cart, checkout redirect, account management, and search.
+A single deployment serves all tenants — the shop is resolved by hostname in middleware
+before any page renders.
+
+## Entry point
+
+`src/proxy.ts` is the Next.js middleware for every request:
+
+1. Reads `req.headers.host`, strips ports, `.localhost`, and Vercel preview suffixes.
+2. Calls `Shop.findByDomain(hostname)` from `@nordcom/commerce-db`.
+3. On a match, injects the resolved domain and locale into the URL so the App Router
+   serves from `src/app/[domain]/[locale]/…`.
+4. On `NotFoundError`, rewrites to `SERVICE_DOMAIN/status/unknown-shop/`.
+5. Reads or mints a stable visitor UUID for analytics (`nordcom-visitor-id` cookie).
+
+<Callout type="info">
+    The App Router never sees an un-tenanted request. Every route lives under
+    `[domain]/[locale]/…` — there are no root-level routes that need to know which
+    shop they are serving.
+</Callout>
+
+## Route structure
+
+| Route | Purpose |
+| --- | --- |
+| `[domain]/[locale]/` | Shop homepage |
+| `[domain]/[locale]/products/[handle]/` | Product detail page |
+| `[domain]/[locale]/collections/[handle]/` | Collection listing |
+| `[domain]/[locale]/blogs/[blog]/[handle]/` | Blog article |
+| `[domain]/[locale]/cart/` | Cart page |
+| `[domain]/[locale]/account/` | Customer account |
+| `[domain]/[locale]/search/` | Search results |
+| `[domain]/[locale]/[...slug]/` | CMS-driven page (Payload blocks) |
+
+## Data fetching
+
+All Shopify calls go through `ShopifyApolloApiClient({ shop, locale })`. The client is
+built in `src/utils/abstract-api.ts` and automatically injects the `@inContext` directive
+for the tenant's country/language. Never call Apollo directly from a route.
+
+MongoDB access (shop record, feature flags, reviews) goes through `@nordcom/commerce-db`.
+It is `server-only` — never import it from a Client Component.
+
+## Caching
+
+Every entity loader tags its cached payload using `@tagtree/shopify` or `@tagtree/next`.
+Shopify webhooks (`src/app/[domain]/api/webhooks/shopify/`) call `revalidateTag` to flush
+exactly the affected entries. CMS `afterChange` hooks do the same via `@tagtree/payload`.
+See [Caching](/concepts/caching/) for the tag schema and invalidation flow.
+
+## Key environment variables
+
+| Variable | Purpose |
+| --- | --- |
+| `MONGODB_URI` | MongoDB connection string |
+| `NEXTAUTH_SECRET` | Session token signing secret |
+| `SERVICE_DOMAIN` | Root domain for error help URLs and unknown-shop redirect |
+| `FLAGS_SECRET` | Vercel Flags v4 — discovery endpoint auth |
+
+<ContinueExploring items={[
+    {
+        eyebrow: 'Get started',
+        title: 'Architecture',
+        description: 'Request flow, middleware, and how the data/commerce/content layers connect.',
+        href: '/get-started/architecture/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Concepts',
+        title: 'Multi-tenancy',
+        description: 'How hostname resolves to a shop and what the tenant context contract means.',
+        href: '/concepts/multi-tenancy/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Concepts',
+        title: 'Caching',
+        description: 'TagTree namespaces, invalidation flow, and per-route cache lifetimes.',
+        href: '/concepts/caching/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Apps',
+        title: 'Admin',
+        description: 'The Payload CMS admin app — tenant management, content editing.',
+        href: '/apps/admin/',
+        tab: 'packages',
+    },
+]} />

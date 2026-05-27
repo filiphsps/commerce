@@ -3,8 +3,56 @@ title: Reference
 description: Auto-generated API reference for every exported symbol across all packages.
 ---
 
-The Reference tab hosts per-symbol pages generated from TypeDoc and JSDoc comments
-across the monorepo. Each page covers a function, class, interface, or type alias
-with its signature, parameters, return type, thrown errors, and JSDoc description.
+The Reference tab hosts per-symbol pages generated from TypeDoc comments across the
+monorepo. Each page covers a single function, class, interface, or type alias — with
+its full signature, parameters, return type, thrown errors, and JSDoc description.
 
-Pick a package in the sidebar to browse its exported symbols.
+<Callout type="info">
+    Reference pages are generated at build time from TypeScript source and JSDoc comments.
+    To update a reference page, edit the JSDoc on the corresponding source symbol and
+    rebuild — do not hand-edit files in `apps/docs/app/docs/(generated)/`.
+</Callout>
+
+## How prose links to reference symbols
+
+Narrative docs (Docs tab) link to reference symbols using the `RefBanner` component and
+inline `<InlinePill>` links. A `RefBanner` fetches live symbol counts for a given package
+path and renders a card linking into the reference tree:
+
+```mdx
+<RefBanner refPath="cms/api" />
+```
+
+The `refPath` follows the pattern `<package-slug>/<subpath>` — for example `tagtree/core/api`
+links to the `@tagtree/core` API namespace. If no symbols exist for the path, the banner
+renders nothing.
+
+## Browsing the reference
+
+Select a package in the sidebar to see its exported symbols grouped by kind (functions,
+classes, interfaces, type aliases, variables). Each entry links to a dedicated page with
+the full TypeDoc output.
+
+<ContinueExploring items={[
+    {
+        eyebrow: 'Packages',
+        title: 'Packages',
+        description: 'Narrative overviews for every workspace package, with purpose and usage guidance.',
+        href: '/packages/',
+        tab: 'packages',
+    },
+    {
+        eyebrow: 'Concepts',
+        title: 'Errors',
+        description: 'The typed error hierarchy — class inventory and how to add new error classes.',
+        href: '/concepts/errors/',
+        tab: 'docs',
+    },
+    {
+        eyebrow: 'Concepts',
+        title: 'Caching',
+        description: 'TagTree namespaces, invalidation flow, and per-route cache lifetimes.',
+        href: '/concepts/caching/',
+        tab: 'docs',
+    },
+]} />
