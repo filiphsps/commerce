@@ -14,7 +14,7 @@
         "pre:page-map": "tsx scripts/generate-page-map.ts",
         "build": "pnpm pre && next build --turbo && pnpm postbuild",
         "postbuild": "pagefind --site out --output-path \"out${NEXT_PUBLIC_DOCS_BASE_PATH:-}/_pagefind\"",
-        "start": "next start -p $PORT",
+        "start": "next start",
         "lint": "biome lint .",
         "format": "concurrently -i pnpm:format:*",
         "format:lint": "biome lint --write .",
