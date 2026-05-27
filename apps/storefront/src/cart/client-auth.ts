@@ -2,7 +2,8 @@
 
 import type { BuyerIdentity } from '@nordcom/cart-core';
 import type { ClientAuthBridge } from '@nordcom/cart-react';
-import { useSession } from 'next-auth/react';
+import { SessionContext, type useSession } from 'next-auth/react';
+import { useContext } from 'react';
 
 type SessionData = ReturnType<typeof useSession>['data'];
 
@@ -31,10 +32,18 @@ function mapSessionToIdentity(session: SessionData): BuyerIdentity | null {
 
 export const clientAuthBridge: ClientAuthBridge = {
     useBuyerIdentity() {
-        const session = useSession();
+        // The storefront only mounts `<SessionProvider />` inside the
+        // `/account` subtree, so `useSession()` would throw on every other
+        // route. Probe the raw context first and short-circuit when no
+        // provider is present, matching the pre-extraction behavior of
+        // `<BuyerIdentitySync />` which guarded against the same condition.
+        const sessionCtx = useContext(SessionContext);
+        if (sessionCtx === undefined) {
+            return { identity: null, updatedAt: 0 };
+        }
         return {
-            identity: mapSessionToIdentity(session.data),
-            updatedAt: (session as never as { lastUpdate?: number }).lastUpdate ?? 0,
+            identity: mapSessionToIdentity(sessionCtx.data),
+            updatedAt: (sessionCtx as never as { lastUpdate?: number }).lastUpdate ?? 0,
         };
     },
 };
