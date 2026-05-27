@@ -43,27 +43,47 @@ function packageOutPath(slug: string): string {
  * Copy each package's `CHANGELOG.md` into the Fumadocs content tree as
  * `<category>/<slug>/changelog.mdx` with a generated frontmatter block
  * prepended. App workspaces are excluded — their git history is the changelog.
- * Packages without a `CHANGELOG.md` are silently skipped.
+ * Packages without a `CHANGELOG.md` receive a stub page using `<EmptyChangelog>`
+ * so the URL always resolves rather than 404ing.
  *
  * @param options.quiet - Suppress console output when `true`.
  * @returns Count of changelog pages written.
  */
 export function main({ quiet = false }: { quiet?: boolean } = {}): { linked: number } {
+    const GITHUB_REPO = 'https://github.com/filiphsps/commerce';
     let linked = 0;
     for (const pkg of discoverPackages()) {
         if (pkg.type !== 'package') continue;
         const src = path.join(pkg.root, 'CHANGELOG.md');
-        if (!fs.existsSync(src)) continue;
-
+        const pkgName = pkg.slug.replace('/', '-');
+        const fullPkg = `@nordcom/commerce-${pkgName}`;
         const dest = path.join(packageOutPath(pkg.slug), 'changelog.mdx');
         fs.mkdirSync(path.dirname(dest), { recursive: true });
+
+        if (!fs.existsSync(src)) {
+            // Emit a stub page with the branded empty-state card so the URL
+            // resolves. The card explains why there are no releases and links
+            // to the package's commit history on GitHub.
+            const commitLogUrl = `${GITHUB_REPO}/commits/master/packages/${pkg.slug}`;
+            const stub = [
+                '---',
+                `title: Changelog`,
+                `description: ""`,
+                '---',
+                '',
+                `<EmptyChangelog pkg="${fullPkg}" commitLogUrl="${commitLogUrl}" />`,
+                '',
+            ].join('\n');
+            fs.writeFileSync(dest, stub);
+            linked++;
+            continue;
+        }
 
         const raw = fs.readFileSync(src, 'utf8');
         // Strip HTML comments (e.g. `<!-- cspell:ignore ... -->`) which are not
         // valid MDX syntax — MDX requires `{/* */}` for inline comments.
         const body = raw.replace(/<!--[\s\S]*?-->/g, '');
-        const pkgName = pkg.slug.replace('/', '-');
-        const frontmatter = `---\ntitle: Changelog\ndescription: Release history for @nordcom/commerce-${pkgName}.\n---\n\n`;
+        const frontmatter = `---\ntitle: Changelog\ndescription: Release history for ${fullPkg}.\n---\n\n`;
         fs.writeFileSync(dest, frontmatter + body);
         linked++;
     }

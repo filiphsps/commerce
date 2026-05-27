@@ -94,13 +94,19 @@ export function renderSymbolMdx(args: SymbolRenderArgs): string {
     const seeAlso = renderSeeAlso(blockTags);
     const source = renderSource(symbol, workspaceSlug);
 
+    // When the symbol has no JSDoc, emit the branded empty-state card in place
+    // of the narrative summary. The signature is still rendered below.
+    const src = symbol.sources?.[0];
+    const srcUrl = src?.url ?? (src ? `${GITHUB_BASE}/${src.fileName}#L${src.line}` : '');
+    const emptyJSDoc = !summary && srcUrl ? `<EmptyJSDoc href="${srcUrl}" />` : '';
+
     return [
         frontmatter,
         banner,
         `<SymbolTitle name="${symbol.name}" />`,
         renderKindLine(kind, workspaceSlug, subpath, symbol, blockTags),
         '',
-        summary,
+        emptyJSDoc || summary,
         '',
         '## Signature',
         '',

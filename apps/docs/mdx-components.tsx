@@ -13,6 +13,8 @@ import { ErrorHero } from './components/errors/error-hero';
 import { RelatedErrors } from './components/errors/related-errors';
 import { StableHelpUrl } from './components/errors/stable-help-url';
 import { ThrownFromCard, ThrownFromList } from './components/errors/thrown-from-list';
+import { EmptyChangelog } from './components/packages/empty-changelog';
+import { EmptyJSDoc } from './components/reference/empty-jsdoc';
 import { IconCard, IconGallery } from './components/reference/icon-gallery';
 import { KindLine } from './components/reference/kind-line';
 import { ReferenceBackLink } from './components/reference/reference-back-link';
@@ -43,6 +45,8 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
         SymbolTitle,
         ThrowsBlock,
         ThrowsRow,
+        EmptyJSDoc,
+        EmptyChangelog,
         DeprecatedBanner,
         BetaBanner,
         ExperimentalBanner,
