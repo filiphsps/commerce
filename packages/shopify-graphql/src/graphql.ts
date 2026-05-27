@@ -1,3 +1,9 @@
+import type {
+    FragmentOf as GqlFragmentOf,
+    ResultOf as GqlResultOf,
+    TadaDocumentNode as GqlTadaDocumentNode,
+    VariablesOf as GqlVariablesOf,
+} from 'gql.tada';
 import { initGraphQLTada } from 'gql.tada';
 
 import type { introspection } from './graphql-env.d.ts';
@@ -45,5 +51,112 @@ export const graphql = initGraphQLTada<{
     };
 }>();
 
-export type { FragmentOf, ResultOf, TadaDocumentNode, VariablesOf } from 'gql.tada';
+/**
+ * Typed shape returned by an Apollo execution of a `graphql()` document.
+ *
+ * Reach for it to type the resolved `data` of a query or mutation in storefront
+ * code, rather than manually spelling out the response shape.
+ *
+ * @template TDoc The `graphql()`-produced document type to extract the result from.
+ *
+ * @example
+ * ```ts
+ * import { graphql, ResultOf } from '@nordcom/commerce-shopify-graphql';
+ *
+ * const PRODUCT_QUERY = graphql(`
+ *   query product($handle: String!) {
+ *     product(handle: $handle) { id title }
+ *   }
+ * `);
+ *
+ * type ProductResult = ResultOf<typeof PRODUCT_QUERY>;
+ * // { product: { id: string; title: string } | null }
+ * ```
+ */
+export type ResultOf<TDoc> = GqlResultOf<TDoc>;
+
+/**
+ * Typed variables shape required to execute a given `graphql()` document.
+ *
+ * Use it to type the variables object passed to Apollo's `useQuery` or
+ * `client.query` so argument mismatches are caught at compile time.
+ *
+ * @template TDoc The `graphql()`-produced document type to extract variables from.
+ *
+ * @example
+ * ```ts
+ * import { graphql, VariablesOf } from '@nordcom/commerce-shopify-graphql';
+ *
+ * const PRODUCT_QUERY = graphql(`
+ *   query product($handle: String!) {
+ *     product(handle: $handle) { id title }
+ *   }
+ * `);
+ *
+ * type ProductVars = VariablesOf<typeof PRODUCT_QUERY>;
+ * // { handle: string }
+ * ```
+ */
+export type VariablesOf<TDoc> = GqlVariablesOf<TDoc>;
+
+/**
+ * Masked shape of a fragment as it appears before being unwrapped by `readFragment`.
+ *
+ * Use it to type the data parameter of a component that receives a masked fragment
+ * spread, enforcing that callers pass the opaque reference rather than the unwrapped
+ * result. Call `readFragment` inside the component to access the actual fields.
+ *
+ * @template TFragment The fragment document produced by `graphql()`. Must be a fragment
+ *   document (created with a `fragment ... on ...` body) rather than a query or mutation.
+ *
+ * @example
+ * ```ts
+ * import { graphql, FragmentOf, readFragment } from '@nordcom/commerce-shopify-graphql';
+ *
+ * const PRODUCT_FRAGMENT = graphql(`
+ *   fragment ProductFields on Product { id title }
+ * `);
+ *
+ * type Product = FragmentOf<typeof PRODUCT_FRAGMENT>;
+ *
+ * function render(data: Product) {
+ *   const product = readFragment(PRODUCT_FRAGMENT, data);
+ * }
+ * ```
+ */
+// Structural equivalent of gql.tada's non-exported `FragmentDefDecorationLike` — needed to
+// express a fragment-document constraint on FragmentOf without importing a private symbol.
+type FragmentDecorationLike = { fragment: unknown; on: unknown; masked: unknown };
+
+export type FragmentOf<TFragment extends GqlTadaDocumentNode<unknown, unknown, FragmentDecorationLike>> =
+    TFragment extends GqlTadaDocumentNode<unknown, unknown, FragmentDecorationLike> ? GqlFragmentOf<TFragment> : never;
+
+/**
+ * Document node type that carries both result and variables type parameters end-to-end.
+ *
+ * Use it to type function parameters that accept any `graphql()`-produced document,
+ * preserving full type inference for both the result and variables at the call site.
+ *
+ * @template TResult The GraphQL result shape.
+ * @template TVariables The GraphQL variables shape.
+ * @template TDecoration Internal decoration attached by gql.tada; defaults to `void`.
+ *
+ * @example
+ * ```ts
+ * import { TadaDocumentNode } from '@nordcom/commerce-shopify-graphql';
+ *
+ * function execute<TResult, TVariables>(
+ *   doc: TadaDocumentNode<TResult, TVariables>,
+ *   vars: TVariables
+ * ): Promise<TResult> {
+ *   return client.query(doc, vars).then(({ data }) => data);
+ * }
+ * ```
+ */
+export type TadaDocumentNode<
+    TResult = Record<string, unknown>,
+    TVariables = Record<string, unknown>,
+    TDecoration = void,
+> = GqlTadaDocumentNode<TResult, TVariables, TDecoration>;
+
 export { maskFragments, readFragment } from 'gql.tada';
