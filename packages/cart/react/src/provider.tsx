@@ -27,6 +27,7 @@ import {
 import { project } from './projection';
 import { initialQueueState, queueReducer } from './queue';
 import type { AppCartConfig, CartPredictor, ClientAuthBridge, KernelSnapshot, LinePredictor } from './types';
+import { clientCartBus } from './use-events';
 
 /**
  * Generate a unique idempotency key per mutation submission. Uses
@@ -83,9 +84,17 @@ export function CartProvider<Cfg extends AppCartConfig>(props: CartProviderProps
         if (typeof window === 'undefined' || !('BroadcastChannel' in window)) return;
         const channel = new BroadcastChannel(`nordcom-cart:${shopId}`);
         channel.onmessage = (event) => {
-            const data = event.data as { type?: string; cart?: Cart };
+            const data = event.data as { type?: string; cart?: Cart; mutation?: CartMutation };
             if (data?.type === 'cart-updated' && data.cart) {
                 dispatch({ type: 'externalUpdate', cart: data.cart });
+                if (data.mutation) {
+                    clientCartBus.emit({
+                        type: 'cart.updated',
+                        cart: data.cart,
+                        mutation: data.mutation,
+                        source: 'broadcast',
+                    });
+                }
             }
         };
         broadcastRef.current = channel;
@@ -105,19 +114,41 @@ export function CartProvider<Cfg extends AppCartConfig>(props: CartProviderProps
                 const result = (await submitMutation(envelope)) as CartActionResult;
                 if (result.ok) {
                     dispatch({ type: 'confirm', id, cart: result.cart });
-                    broadcastRef.current?.postMessage({ type: 'cart-updated', cart: result.cart });
+                    broadcastRef.current?.postMessage({
+                        type: 'cart-updated',
+                        cart: result.cart,
+                        mutation,
+                    });
                     setStatusError(null);
+                    clientCartBus.emit({
+                        type: 'cart.updated',
+                        cart: result.cart,
+                        mutation,
+                        source: 'self',
+                    });
                 } else {
                     const message = formatUserError(result);
                     dispatch({ type: 'fail', id, message });
                     setStatusError(message);
                     if (result.cart) dispatch({ type: 'externalUpdate', cart: result.cart });
+                    clientCartBus.emit({
+                        type: 'cart.mutation.failed',
+                        mutation,
+                        error: new Error(message),
+                        source: 'self',
+                    });
                 }
                 return result;
             } catch (error) {
                 const message = (error as Error)?.message ?? 'Cart action failed.';
                 dispatch({ type: 'fail', id, message });
                 setStatusError(message);
+                clientCartBus.emit({
+                    type: 'cart.mutation.failed',
+                    mutation,
+                    error: error instanceof Error ? error : new Error(message),
+                    source: 'self',
+                });
                 return { ok: false, reason: 'network-error', message };
             }
         },
