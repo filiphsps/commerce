@@ -1,7 +1,12 @@
 lib/page-map.generated.ts
 content/reference/
 content/errors/
+content/docs/apps/*/
 content/packages/applications/
+content/packages/core/
+content/packages/shopify/
+content/packages/tagtree/
+content/packages/ui/
 lib/source-meta.generated.ts
 lib/symbol-index.generated.json
 .docs-gen-report.json
