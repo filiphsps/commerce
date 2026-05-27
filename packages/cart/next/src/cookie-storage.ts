@@ -45,6 +45,14 @@ export interface HttpOnlyCookieStorageOpts {
  * @param opts.path - Cookie path. Defaults to `/`.
  * @returns A {@link CartIdStorage} implementation suitable for cart-next's
  *   reader, ensurer, and typed-action factories.
+ * @example
+ * ```ts
+ * const actions = createTypedCartActions({
+ *     kernel,
+ *     storage: httpOnlyCookieStorage({ name: 'my-shop-cart' }),
+ *     resolveContext: async ({ idempotencyKey } = {}) => ({ shop, locale, idempotencyKey }),
+ * });
+ * ```
  */
 export function httpOnlyCookieStorage(opts: HttpOnlyCookieStorageOpts = {}): CartIdStorage {
     const name = opts.name ?? DEFAULT_COOKIE_NAME;

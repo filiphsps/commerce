@@ -58,6 +58,20 @@ export interface NextEventBridge {
  *   handler are ignored — the bridge does not subscribe at all, keeping
  *   the `after()` queue empty.
  * @returns A {@link NextEventBridge} ready to bind to a kernel.
+ * @example
+ * ```ts
+ * const bridge = nextEventBridge({
+ *     handlers: {
+ *         'cart.line.added': async (event) => {
+ *             await analytics.track('AddToCart', { lineId: event.line.id });
+ *         },
+ *         'cart.updated': (event) => {
+ *             cache.invalidate(`cart:${event.cart.id}`);
+ *         },
+ *     },
+ * });
+ * bridge.onKernel(kernel);
+ * ```
  */
 export function nextEventBridge(opts?: { handlers?: NextEventBridgeHandlers }): NextEventBridge {
     const handlers: NextEventBridgeHandlers = opts?.handlers ?? {};

@@ -244,6 +244,19 @@ async function run<TExt extends CartExt, TShop>(
  *   failure reasons + provider messages for the current locale.
  * @returns A {@link TypedCartActions} surface ready to bind as `"use server"`
  *   re-exports.
+ * @example
+ * ```ts
+ * const actions = createTypedCartActions({
+ *     kernel,
+ *     storage: httpOnlyCookieStorage(),
+ *     resolveContext: async ({ idempotencyKey } = {}) => ({ shop, locale, idempotencyKey }),
+ * });
+ * const result = await actions.addLine({
+ *     variantId: 'gid://shopify/ProductVariant/123',
+ *     quantity: 1,
+ *     idempotencyKey: crypto.randomUUID(),
+ * });
+ * ```
  */
 export function createTypedCartActions<TExt extends CartExt = {}, TShop = unknown>(
     opts: CreateTypedCartActionsOpts<TExt, TShop>,
