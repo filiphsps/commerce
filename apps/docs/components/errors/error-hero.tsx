@@ -21,13 +21,13 @@ type ErrorHeroProps = {
  */
 export function ErrorHero({ code, description, errorClass, kind, classHref }: ErrorHeroProps) {
     return (
-        <div className="not-prose relative mb-8 grid grid-cols-1 items-end gap-6 overflow-hidden rounded-[0.45rem] border-[0.2rem] border-err bg-[linear-gradient(135deg,hsl(28_95%_58%_/_0.13),hsl(28_95%_58%_/_0.02)_60%,transparent)] px-5 py-6 shadow-[0_0_50px_hsl(28_95%_58%_/_0.12),inset_0_0_0_1px_hsl(28_95%_58%_/_0.1)] sm:grid-cols-[1fr_auto] sm:gap-8 sm:px-7 sm:py-7">
+        <div className="not-prose relative mb-8 grid grid-cols-1 items-end gap-6 overflow-hidden rounded-[0.45rem] border-[0.2rem] border-err bg-[linear-gradient(135deg,hsl(28_95%_58%_/_0.13),hsl(28_95%_58%_/_0.02)_60%,transparent)] px-5 py-6 shadow-[0_0_50px_hsl(28_95%_58%_/_0.12),inset_0_0_0_1px_hsl(28_95%_58%_/_0.1)] md:px-7 md:py-7 lg:grid-cols-[1fr_auto] lg:gap-8">
             <div
                 aria-hidden
                 className="pointer-events-none absolute top-[-50%] right-[-10%] h-[200%] w-1/2 bg-[radial-gradient(ellipse,hsl(28_95%_58%_/_0.15),transparent_60%)]"
             />
             <div className="relative z-[1] min-w-0">
-                <h1 className="m-0 break-words font-mono font-bold text-[clamp(1.25rem,5vw,2.1rem)] text-err leading-tight tracking-[0.005em]">
+                <h1 className="m-0 font-mono font-bold text-[clamp(1.05rem,4.2vw,2.1rem)] text-err leading-tight tracking-[0.005em] wrap-anywhere">
                     {code}
                 </h1>
                 <p className="mt-3.5 max-w-[50ch] font-semibold text-[clamp(0.95rem,2.5vw,1.05rem)] text-fg leading-snug">
