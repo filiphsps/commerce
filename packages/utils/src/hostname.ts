@@ -35,6 +35,16 @@ export type AppName = string & { readonly [AppNameBrand]: true };
 
 /** Top-level domains treated as local development. */
 export const DEV_TLDS = ['localhost', 'test'] as const;
+/**
+ * Union of TLD strings that identify a local development host.
+ *
+ * @example
+ * ```ts
+ * function isDevTld(tld: string): tld is DevTld {
+ *     return DEV_TLDS.includes(tld as DevTld);
+ * }
+ * ```
+ */
 export type DevTld = (typeof DEV_TLDS)[number];
 
 const DEV_TLD_SET: ReadonlySet<string> = new Set(DEV_TLDS);
