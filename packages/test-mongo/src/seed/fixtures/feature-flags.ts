@@ -149,7 +149,7 @@ export const featureFlagFixtures: FeatureFlagFixture[] = [
         description: 'New scroll-restoration implementation (RSC-friendly).',
         defaultValue: { enabled: false },
         options: [
-            { label: 'Off (default behaviour)', value: { enabled: false } },
+            { label: 'Off (default behavior)', value: { enabled: false } },
             { label: 'On for staff only', value: { enabled: true, staffOnly: true } },
             { label: 'On for everyone', value: { enabled: true } },
         ],

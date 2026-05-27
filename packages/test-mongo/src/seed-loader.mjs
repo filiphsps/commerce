@@ -14,7 +14,7 @@
  *
  * Keep this loader narrow — it must only short-circuit specifiers that are
  * load-bearing for in-process seeding. Anything broader risks masking real
- * Next runtime behaviour when the Playwright webServer inherits NODE_OPTIONS.
+ * Next runtime behavior when the Playwright webServer inherits NODE_OPTIONS.
  */
 
 const STUBS = {
