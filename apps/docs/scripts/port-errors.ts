@@ -150,6 +150,7 @@ function convertOne(code: string, src: string, related: string[]): string {
         heroProps.push(`errorClass="${lookup.className}"`);
         heroProps.push(`kind="${lookup.kind}"`);
         heroProps.push(`classHref="/reference/errors/${kebabClass(lookup.className)}/"`);
+        if (lookup.statusCode !== undefined) heroProps.push(`httpStatus={${lookup.statusCode}}`);
     }
     const hero = `<ErrorHero ${heroProps.join(' ')} />`;
 
@@ -309,7 +310,7 @@ function loadThrowSites(): ThrowSite[] {
     return throwSitesCache;
 }
 
-type SymbolLookup = { className: string; kind: string };
+type SymbolLookup = { className: string; kind: string; statusCode?: number };
 
 /** Lazily populated cache from parsing the errors package switch. */
 let codeToSymbolCache: Map<string, SymbolLookup> | null = null;
@@ -317,11 +318,12 @@ let codeToSymbolCache: Map<string, SymbolLookup> | null = null;
 /**
  * Parse `packages/errors/src/index.ts`'s `getErrorFromCode` switch statement
  * to build a map from SCREAMING_SNAKE error code (enum member name) to its
- * class name and the kind enum it belongs to.
+ * class name, kind enum, and resolved HTTP status (walking the `extends`
+ * chain when the class itself doesn't declare a `statusCode = NNN`).
  *
  * @throws {Error} When the errors package source file is not found; the
  *   throw-site feature depends on this mapping.
- * @returns Map from code string to `{ className, kind }`.
+ * @returns Map from code string to `{ className, kind, statusCode? }`.
  */
 function buildCodeToSymbolMap(): Map<string, SymbolLookup> {
     if (!fs.existsSync(ERRORS_PKG_SRC)) {
@@ -330,12 +332,40 @@ function buildCodeToSymbolMap(): Map<string, SymbolLookup> {
         );
     }
     const src = fs.readFileSync(ERRORS_PKG_SRC, 'utf8');
+
+    // Build classname → { parent, statusCode? } from `export class X extends Y { ... statusCode = NNN; ... }`.
+    const classes = new Map<string, { parent: string; statusCode?: number }>();
+    for (const m of src.matchAll(/export class (\w+)\s+extends\s+([\w<>\s,]+?)\s*\{([\s\S]*?)\n\}/g)) {
+        const name = m[1] as string;
+        const parent = ((m[2] as string).split(/[<\s,]/)[0] ?? '') as string;
+        const body = m[3] as string;
+        const statusMatch = body.match(/statusCode\s*=\s*(\d+)/);
+        classes.set(name, {
+            parent,
+            statusCode: statusMatch ? Number(statusMatch[1]) : undefined,
+        });
+    }
+
+    // Resolve statusCode by walking the extends chain.
+    const resolveStatus = (className: string): number | undefined => {
+        let current: string | undefined = className;
+        const seen = new Set<string>();
+        while (current && !seen.has(current)) {
+            seen.add(current);
+            const entry = classes.get(current);
+            if (!entry) return undefined;
+            if (entry.statusCode !== undefined) return entry.statusCode;
+            current = entry.parent;
+        }
+        return undefined;
+    };
+
     const map = new Map<string, SymbolLookup>();
     for (const m of src.matchAll(/case (\w+ErrorKind)\.(\w+):[\s\S]*?return (\w+)/g)) {
         const kind = m[1] as string;
         const memberName = m[2] as string;
         const className = (m[3] as string).split(/\s/)[0] as string;
-        map.set(memberName, { className, kind });
+        map.set(memberName, { className, kind, statusCode: resolveStatus(className) });
     }
     return map;
 }

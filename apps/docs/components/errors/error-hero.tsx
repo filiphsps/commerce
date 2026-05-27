@@ -9,6 +9,8 @@ type ErrorHeroProps = {
     kind?: string;
     /** Reference-tab URL for the class badge. */
     classHref?: string;
+    /** HTTP status code; rendered as an amber "HTTP NNN" pill when set. */
+    httpStatus?: number;
 };
 
 /**
@@ -19,7 +21,7 @@ type ErrorHeroProps = {
  * @param props - Code, description, optional class name, kind, and link.
  * @returns A grid-layout hero block.
  */
-export function ErrorHero({ code, description, errorClass, kind, classHref }: ErrorHeroProps) {
+export function ErrorHero({ code, description, errorClass, kind, classHref, httpStatus }: ErrorHeroProps) {
     return (
         <div className="not-prose relative mb-8 grid grid-cols-1 items-end gap-6 overflow-hidden rounded-[0.45rem] border-[0.2rem] border-err bg-[linear-gradient(135deg,hsl(28_95%_58%_/_0.13),hsl(28_95%_58%_/_0.02)_60%,transparent)] px-5 py-6 shadow-[0_0_50px_hsl(28_95%_58%_/_0.12),inset_0_0_0_1px_hsl(28_95%_58%_/_0.1)] md:px-7 md:py-7 lg:grid-cols-[1fr_auto] lg:gap-8">
             <div
@@ -48,6 +50,11 @@ export function ErrorHero({ code, description, errorClass, kind, classHref }: Er
                             {errorClass}
                         </span>
                     )
+                ) : null}
+                {httpStatus ? (
+                    <span className="whitespace-nowrap rounded-[4px] border-[0.138rem] border-err bg-err/10 px-2 py-1 font-bold font-mono text-[0.62rem] text-err uppercase tracking-[0.16em]">
+                        HTTP {httpStatus}
+                    </span>
                 ) : null}
                 {kind ? (
                     <span className="whitespace-nowrap rounded-[4px] border-[0.138rem] border-border-strong bg-bg-2 px-2 py-1 font-bold font-mono text-[0.62rem] text-fg uppercase tracking-[0.16em]">
