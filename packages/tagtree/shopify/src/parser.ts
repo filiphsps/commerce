@@ -45,11 +45,7 @@ export interface ShopifyParseInput<NS extends string, T, Q, E extends EntitiesMa
 /**
  * Translates a Shopify webhook event into the set of tagtree cache tags that must be invalidated.
  *
- * Looks up the webhook `topic` against a built-in map of Shopify product, collection, and page events,
- * extracts the entity handle from the body, and delegates to `computeFanout` from `@tagtree/core`.
- * Only emits tags for entities declared in the provided schema — it never invents tags that don't exist on the read side.
- *
- * @param input - Webhook event context: the tagtree cache schema, opaque tenant identifier, Shopify topic string, and parsed webhook body.
+ * @param input - Assembled webhook payload pairing the app's tagtree schema with the incoming event; typically built immediately after HMAC verification (`verifyShopifyHmac`).
  * @returns Array of cache tag strings to invalidate; empty when the topic is not mapped or the entity is absent from the schema.
  * @example
  * ```ts
