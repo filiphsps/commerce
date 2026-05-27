@@ -6,10 +6,13 @@ content/errors/**
 !content/errors/index.mdx
 content/apps/*/
 content/packages/applications/
+content/packages/cart/
 content/packages/core/
 content/packages/shopify/
 content/packages/tagtree/
+content/packages/test-mongo/
 content/packages/ui/
+content/packages/utils/
 lib/source-meta.generated.ts
 lib/symbol-index.generated.json
 .docs-gen-report.json

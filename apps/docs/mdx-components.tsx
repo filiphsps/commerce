@@ -14,6 +14,7 @@ import { RelatedErrors } from './components/errors/related-errors';
 import { StableHelpUrl } from './components/errors/stable-help-url';
 import { ThrownFromCard, ThrownFromList } from './components/errors/thrown-from-list';
 import { EmptyChangelog } from './components/packages/empty-changelog';
+import { RefBanner } from './components/packages/ref-banner';
 import { EmptyJSDoc } from './components/reference/empty-jsdoc';
 import { IconCard, IconGallery } from './components/reference/icon-gallery';
 import { KindLine } from './components/reference/kind-line';
@@ -47,6 +48,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
         ThrowsRow,
         EmptyJSDoc,
         EmptyChangelog,
+        RefBanner,
         DeprecatedBanner,
         BetaBanner,
         ExperimentalBanner,

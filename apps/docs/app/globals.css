@@ -351,6 +351,20 @@ a[data-symbol-tab="docs"]:hover {
     box-shadow: inset 0.138rem 0 0 var(--color-brand);
 }
 
+/* Applications cross-links (href="/apps/…/") are internal links that point
+ * outside the packages tree. Append a ↗ glyph via ::after to match the
+ * .sub.ext treatment in visuals/03-page-packages.html. */
+#nd-sidebar a[href^="/apps/"]::after {
+    content: " ↗";
+    font-size: 0.65rem;
+    color: var(--color-fg-mute);
+    margin-left: 0.25rem;
+}
+
+#nd-sidebar a[href^="/apps/"]:hover::after {
+    color: var(--color-brand);
+}
+
 /* Code blocks — Fumadocs uses figure.shiki with a title row + pre body. The
  * `not-prose` class blocks .prose selectors, so target the figure directly.
  *
