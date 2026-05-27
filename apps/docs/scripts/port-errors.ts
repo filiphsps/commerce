@@ -31,8 +31,9 @@ export function main({ quiet = false }: { quiet?: boolean } = {}): { converted: 
     // Only touch files whose content actually changed so the dev MDX watcher
     // doesn't fire on no-op runs.
     const touched = new Set<string>();
-    // _overrides.json is checked into the repo — preserve it through prune.
+    // _overrides.json and index.mdx are checked into the repo — preserve them through prune.
     touched.add(path.join(ERRORS_OUT, '_overrides.json'));
+    touched.add(path.join(ERRORS_OUT, 'index.mdx'));
 
     for (const entry of fs.readdirSync(ERRORS_SRC)) {
         if (!entry.endsWith('.mdx')) continue;
@@ -234,6 +235,8 @@ function emitErrorsMeta(codes: string[], touched: Set<string>): void {
     }
 
     const pages: string[] = [];
+    // Tab root index page first — keeps the sidebar tree rooted at this folder.
+    if (fs.existsSync(path.join(ERRORS_OUT, 'index.mdx'))) pages.push('index');
     for (const [prefix, list] of Object.entries(groups).sort()) {
         if (list.length === 0) continue;
         // Fumadocs separator syntax: `---Label---` renders a sidebar group header.

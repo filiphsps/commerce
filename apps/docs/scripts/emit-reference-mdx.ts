@@ -34,6 +34,8 @@ export async function main({ quiet = false }: { quiet?: boolean } = {}): Promise
     // change, so blanket rewrites cause continuous [MDX] regenerated spam.
     // Track everything we touch this run; prune untouched files at the end.
     const touched = new Set<string>();
+    // index.mdx at the Reference root is checked into the repo — preserve it through prune.
+    touched.add(path.join(REFERENCE_OUT, 'index.mdx'));
     writeIfChanged(
         path.join(REFERENCE_OUT, 'meta.json'),
         `${JSON.stringify({ title: 'Reference', description: 'Generated symbol catalogue from TypeDoc + JSDoc.', root: true }, null, 4)}\n`,

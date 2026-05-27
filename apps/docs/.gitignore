@@ -1,7 +1,9 @@
 lib/page-map.generated.ts
-content/reference/
-content/errors/
+content/reference/**
+!content/reference/index.mdx
+content/errors/**
 !content/errors/_overrides.json
+!content/errors/index.mdx
 content/apps/*/
 content/packages/applications/
 content/packages/core/

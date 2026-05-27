@@ -3,6 +3,7 @@
     "description": "Stable error-code catalogue.",
     "root": true,
     "pages": [
+        "index",
         "---API_*---",
         "api-method-not-allowed",
         "api-unknown-error",
