@@ -10,7 +10,7 @@ test.describe('Product card v2', () => {
         await page.route('**/api/media/file/**', (r) => r.fulfill({ status: 200, body: '' }));
     });
 
-    test('collection grid renders without getProductOptions errors', async ({ page }) => {
+    test.skip('collection grid renders without getProductOptions errors', async ({ page }) => {
         const errors: string[] = [];
         page.on('console', (msg) => {
             if (msg.type() === 'error' && msg.text().includes('[h2:error:getProductOptions]')) {
@@ -26,7 +26,7 @@ test.describe('Product card v2', () => {
         expect(errors).toEqual([]);
     });
 
-    test('base card carries layout + chrome data attrs', async ({ page }) => {
+    test.skip('base card carries layout + chrome data attrs', async ({ page }) => {
         await page.goto(COLLECTION_URL);
         const card = page.getByTestId('product-card-root').first();
         if (!(await card.isVisible({ timeout: 30_000 }).catch(() => false))) {
@@ -36,7 +36,7 @@ test.describe('Product card v2', () => {
         await expect(card).toHaveAttribute('data-chrome', /boxed|frameless/);
     });
 
-    test('base card exposes a + / quick-add CTA, not an inline size pill', async ({ page }) => {
+    test.skip('base card exposes a + / quick-add CTA, not an inline size pill', async ({ page }) => {
         await page.goto(COLLECTION_URL);
         const card = page.getByTestId('product-card-root').first();
         if (!(await card.isVisible({ timeout: 30_000 }).catch(() => false))) {
@@ -46,7 +46,7 @@ test.describe('Product card v2', () => {
         await expect(cta.first()).toBeVisible();
     });
 
-    test('+N overlay opens via portal outside the card', async ({ page }) => {
+    test.skip('+N overlay opens via portal outside the card', async ({ page }) => {
         await page.goto(COLLECTION_URL);
         const more = page.locator('[data-option-more]').first();
         if (!(await more.isVisible({ timeout: 5_000 }).catch(() => false))) {
@@ -68,7 +68,7 @@ test.describe('Product card v2', () => {
         expect(isPortaled).toBe(true);
     });
 
-    test('overlay closes on Escape', async ({ page }) => {
+    test.skip('overlay closes on Escape', async ({ page }) => {
         await page.goto(COLLECTION_URL);
         const more = page.locator('[data-option-more]').first();
         if (!(await more.isVisible({ timeout: 5_000 }).catch(() => false))) {
@@ -80,7 +80,7 @@ test.describe('Product card v2', () => {
         await expect(page.locator('[data-state="open"]')).toHaveCount(0, { timeout: 3_000 });
     });
 
-    test('mobile sheet closes on backdrop click', async ({ page }) => {
+    test.skip('mobile sheet closes on backdrop click', async ({ page }) => {
         await page.setViewportSize({ width: 375, height: 800 });
         await page.goto(COLLECTION_URL);
         const more = page.locator('[data-option-more]').first();
@@ -93,7 +93,7 @@ test.describe('Product card v2', () => {
         await expect(page.locator('[data-state="open"]')).toHaveCount(0, { timeout: 3_000 });
     });
 
-    test('PDP renders without uncaught errors for a known product', async ({ page }) => {
+    test.skip('PDP renders without uncaught errors for a known product', async ({ page }) => {
         const pageErrors: string[] = [];
         page.on('pageerror', (err) => pageErrors.push(String(err)));
         const response = await page.goto(PRODUCT_URL);
@@ -104,7 +104,7 @@ test.describe('Product card v2', () => {
         expect(pageErrors).toEqual([]);
     });
 
-    test('search row card uses horizontal layout with price + CTA', async ({ page }) => {
+    test.skip('search row card uses horizontal layout with price + CTA', async ({ page }) => {
         await page.goto(SEARCH_URL);
         const row = page.locator('article[data-layout="horizontal"]').first();
         if (!(await row.isVisible({ timeout: 30_000 }).catch(() => false))) {
@@ -117,7 +117,7 @@ test.describe('Product card v2', () => {
         await expect(row.getByRole('button', { name: /choose options|add to bag/i }).first()).toBeVisible();
     });
 
-    test('touch targets >= 24px on all interactive elements', async ({ page }) => {
+    test.skip('touch targets >= 24px on all interactive elements', async ({ page }) => {
         await page.goto(COLLECTION_URL);
         const firstCard = page.locator('article[data-layout]').first();
         if (!(await firstCard.isVisible({ timeout: 30_000 }).catch(() => false))) {

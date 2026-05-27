@@ -1,29 +1,40 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const PORT = 3003;
-// Allow CI to override the baseURL when the build under test lives at a
-// non-root path (e.g. when validating a basePath-prefixed build).
-const BASE_URL = process.env.BASE_URL ?? (process.env.CI ? `http://localhost:${PORT}` : 'https://docs.localhost');
+process.env.STOREFRONT_DEV_SHOP ??= 'nordcom-demo-shop.com';
+process.env.E2E_SHOP_DOMAIN ??= 'nordcom-demo-shop.com';
 
 export default defineConfig({
     testDir: './e2e',
     fullyParallel: true,
     forbidOnly: !!process.env.CI,
-    retries: process.env.CI ? 2 : 0,
-    reporter: 'list',
+    retries: 0,
+    reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'list',
+    // 60s absorbs turbopack first-compile (local `next dev --turbo`) plus
+    // the auth-redirect chain that `/settings`, `/dashboard`, etc. trigger.
+    timeout: 60_000,
     use: {
-        baseURL: BASE_URL,
+        baseURL: 'http://localhost:3002',
         ignoreHTTPSErrors: true,
         trace: 'on-first-retry',
+        screenshot: 'only-on-failure',
+        video: 'retain-on-failure',
     },
     projects: [
-        { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-        { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+        {
+            name: 'chromium',
+            use: { ...devices['Desktop Chrome'] },
+        },
+        /*{
+            name: 'webkit',
+            use: { ...devices['Desktop Safari'] },
+        },*/
     ],
     webServer: {
-        command: `pnpm exec serve out -l ${PORT}`,
-        port: PORT,
-        reuseExistingServer: !process.env.CI,
+        command: process.env.CI ? 'pnpm start --port 3002' : 'pnpm dev --port 3002',
+        url: 'http://localhost:3002',
+        reuseExistingServer: true,
         timeout: 120_000,
+        stdout: 'pipe',
+        stderr: 'pipe',
     },
 });

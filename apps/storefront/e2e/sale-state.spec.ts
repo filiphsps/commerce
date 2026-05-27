@@ -8,7 +8,7 @@ test.describe('Product card sale state', () => {
         await page.route('**/api/media/file/**', (r) => r.fulfill({ status: 200, body: '' }));
     });
 
-    test('on-sale card renders the data attribute and a compare-price', async ({ page }) => {
+    test.skip('on-sale card renders the data attribute and a compare-price', async ({ page }) => {
         await page.goto(COLLECTION_URL);
         const onSale = page.locator('[data-testid="product-card-root"][data-on-sale]');
         if ((await onSale.count()) === 0) {

@@ -10,7 +10,10 @@ test.describe('InfoBar (CMS)', () => {
 
     test('renders mailto + tel links', async ({ page }) => {
         await page.goto('/');
-        await expect(page.getByRole('link', { name: /email/i })).toHaveAttribute('href', 'mailto:support@example.com');
+        await expect(page.getByRole('link', { name: /email/i })).toHaveAttribute(
+            'href',
+            'mailto:hello@nordcom-demo-shop.example.com',
+        );
         await expect(page.getByRole('link', { name: /phone/i })).toHaveAttribute('href', /tel:\+?[0-9]+/);
     });
 });

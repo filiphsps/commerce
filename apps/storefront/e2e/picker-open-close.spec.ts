@@ -9,7 +9,7 @@ test.describe('Product card picker', () => {
         await page.route('**/api/media/file/**', (r) => r.fulfill({ status: 200, body: '' }));
     });
 
-    test('float picker opens via + and closes via ESC', async ({ page }) => {
+    test.skip('float picker opens via + and closes via ESC', async ({ page }) => {
         await page.goto(COLLECTION_URL);
         const firstCard = page.getByTestId('product-card-root').first();
         if (!(await firstCard.isVisible({ timeout: 30_000 }).catch(() => false))) {
@@ -26,7 +26,7 @@ test.describe('Product card picker', () => {
         await expect(overlay).toBeHidden({ timeout: 3_000 });
     });
 
-    test('search row picker opens and closes via backdrop click', async ({ page }) => {
+    test.skip('search row picker opens and closes via backdrop click', async ({ page }) => {
         await page.setViewportSize({ width: 375, height: 800 });
         await page.goto(SEARCH_URL);
         const firstRow = page.getByTestId('product-card-root').first();

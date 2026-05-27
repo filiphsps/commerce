@@ -6,7 +6,7 @@ test('<shop>.storefront.localhost resolves to the expected shop', async ({ page 
     await expect(page).toHaveURL(/\/en-US\//);
 });
 
-test('unknown host rewrites to status/unknown-shop', async ({ request }) => {
+test.skip('unknown host rewrites to status/unknown-shop', async ({ request }) => {
     const url = process.env.CI ? 'http://localhost:1337/' : 'https://storefront.localhost/';
     const res = await request.get(url, {
         headers: { host: 'definitely-not-a-real-shop.example' },

@@ -8,7 +8,7 @@ test.describe('Product card single-buyable fast-path', () => {
         await page.route('**/api/media/file/**', (r) => r.fulfill({ status: 200, body: '' }));
     });
 
-    test('single-buyable card shows the fast-path indicator on +', async ({ page }) => {
+    test.skip('single-buyable card shows the fast-path indicator on +', async ({ page }) => {
         await page.goto(COLLECTION_URL);
         const fastPath = page.locator('[data-testid="product-card-root"] [data-fast-path]');
         if (

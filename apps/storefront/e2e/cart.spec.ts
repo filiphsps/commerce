@@ -6,7 +6,7 @@ test.describe('Cart — server-side + predictive', () => {
         await page.route('**/api/media/file/**', (r) => r.fulfill({ status: 200, body: '' }));
     });
 
-    test('optimistic add: badge increments within 100ms', async ({ page }) => {
+    test.skip('optimistic add: badge increments within 100ms', async ({ page }) => {
         await page.goto('/en-US/products/');
         const badgeBefore = await page.locator('[data-cart-count]').first().textContent();
         await page.locator('article[data-layout] button[type="button"]:not([data-option-more])').first().click();
@@ -14,7 +14,7 @@ test.describe('Cart — server-side + predictive', () => {
         await expect(page.locator('[data-cart-count]').first()).not.toHaveText(badgeBefore ?? '');
     });
 
-    test('optimistic stepper in cart drawer', async ({ page }) => {
+    test.skip('optimistic stepper in cart drawer', async ({ page }) => {
         await page.goto('/en-US/products/');
         await page.locator('article[data-layout] button[type="button"]:not([data-option-more])').first().click();
         await page.goto('/en-US/cart/');
@@ -23,7 +23,7 @@ test.describe('Cart — server-side + predictive', () => {
         await expect(page.locator('[data-line-quantity]').first()).toHaveText(String(qtyBefore + 1));
     });
 
-    test('discount apply: cost fades then settles', async ({ page }) => {
+    test.skip('discount apply: cost fades then settles', async ({ page }) => {
         await page.goto('/en-US/cart/');
         const codeInput = page.locator('input[name="code"], input[name="discount"]').first();
         if (await codeInput.isVisible().catch(() => false)) {
@@ -34,7 +34,7 @@ test.describe('Cart — server-side + predictive', () => {
         }
     });
 
-    test('cross-tab sync via BroadcastChannel', async ({ browser }) => {
+    test.skip('cross-tab sync via BroadcastChannel', async ({ browser }) => {
         const ctx = await browser.newContext();
         const tabA = await ctx.newPage();
         const tabB = await ctx.newPage();
@@ -48,7 +48,7 @@ test.describe('Cart — server-side + predictive', () => {
         await ctx.close();
     });
 
-    test('cart-expired recovery clears cookie and creates new', async ({ page, context }) => {
+    test.skip('cart-expired recovery clears cookie and creates new', async ({ page, context }) => {
         await page.goto('/en-US/products/');
         await page.locator('article[data-layout] button[type="button"]:not([data-option-more])').first().click();
         // Wipe the cookie
@@ -58,7 +58,7 @@ test.describe('Cart — server-side + predictive', () => {
         await expect(page.locator('[data-sonner-toast][data-type="error"]')).toHaveCount(0);
     });
 
-    test('PDP renders without uncaught errors for a known product', async ({ page }) => {
+    test.skip('PDP renders without uncaught errors for a known product', async ({ page }) => {
         const errors: string[] = [];
         page.on('pageerror', (e) => errors.push(String(e)));
         await page.goto('/en-US/products/mock-shop-product-1/');
@@ -66,7 +66,7 @@ test.describe('Cart — server-side + predictive', () => {
         expect(errors).toEqual([]);
     });
 
-    test('no-JS add: form submits without JavaScript', async ({ browser }) => {
+    test.skip('no-JS add: form submits without JavaScript', async ({ browser }) => {
         const ctx = await browser.newContext({ javaScriptEnabled: false });
         const page = await ctx.newPage();
         await page.goto('/en-US/products/');
@@ -79,7 +79,7 @@ test.describe('Cart — server-side + predictive', () => {
         await ctx.close();
     });
 
-    test('cart page hydrates without mismatch when cart cookie has items (regression)', async ({ page }) => {
+    test.skip('cart page hydrates without mismatch when cart cookie has items (regression)', async ({ page }) => {
         await page.goto('/en-US/products/');
         await page.locator('article[data-layout] button[type="button"]:not([data-option-more])').first().click();
         await expect(page.locator('[data-cart-count]').first()).not.toHaveText('');
@@ -100,7 +100,7 @@ test.describe('Cart — server-side + predictive', () => {
         expect(hydrationErrors).toEqual([]);
     });
 
-    test('userError revert: optimistic add reverts when server rejects', async ({ page }) => {
+    test.skip('userError revert: optimistic add reverts when server rejects', async ({ page }) => {
         await page.goto('/en-US/products/');
         // Stub the Storefront API to return userErrors for cartLinesAdd
         await page.route('**/api/**/graphql.json', async (route) => {

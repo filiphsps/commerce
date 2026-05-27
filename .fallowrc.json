@@ -27,6 +27,8 @@
         "**/.typedoc-out/**",
         "**/coverage/**",
         "**/__generated__/**",
+        "**/.worktrees/**",
+        "**/worktrees/**",
         "**/generated/**",
         "**/*.generated.{ts,tsx,js,jsx}",
         "**/*.gen.{ts,tsx,js,jsx}",
