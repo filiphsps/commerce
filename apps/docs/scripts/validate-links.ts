@@ -13,6 +13,16 @@ if (!fs.existsSync(OUT_ROOT)) {
     process.exit(1);
 }
 
+/**
+ * URL prefixes owned by the docs site. Only links whose href starts with one
+ * of these values are validated — any other absolute path belongs to a
+ * different app and should not be checked against the docs `out/` tree.
+ *
+ * The plain `/docs/` entry covers concept pages, get-started, and operations.
+ * The three longer prefixes cover packages, API reference, and error codes.
+ */
+const KNOWN_PREFIXES = ['/docs/packages/', '/docs/reference/', '/docs/errors/', '/docs/'];
+
 type BrokenLink = {
     from: string;
     href: string;
@@ -22,6 +32,12 @@ type BrokenLink = {
 const broken: BrokenLink[] = [];
 const seen = new Set<string>();
 
+/**
+ * Recursively yield every `.html` file path under a directory.
+ *
+ * @param dir - Absolute directory to traverse.
+ * @returns Generator of absolute file paths.
+ */
 function* walkHtml(dir: string): Generator<string> {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
         const full = path.join(dir, entry.name);
@@ -30,6 +46,15 @@ function* walkHtml(dir: string): Generator<string> {
     }
 }
 
+/**
+ * Resolve an href from a source HTML file to the expected on-disk path under
+ * `OUT_ROOT`. Returns `null` for any href that should not be validated
+ * (external, fragment-only, mailto:, or belonging to a different app).
+ *
+ * @param href - Raw href attribute value from an anchor element.
+ * @param fromFile - Absolute path of the HTML file containing the anchor.
+ * @returns Absolute path to the expected target file, or null.
+ */
 function resolveHref(href: string, fromFile: string): string | null {
     if (href.startsWith('http://') || href.startsWith('https://')) return null;
     if (href.startsWith('#') || href.startsWith('mailto:')) return null;
@@ -39,6 +64,8 @@ function resolveHref(href: string, fromFile: string): string | null {
         target = target.slice(BASE_PATH.length);
     }
     if (target.startsWith('/')) {
+        // Only validate links that belong to the docs site.
+        if (!KNOWN_PREFIXES.some((p) => target.startsWith(p))) return null;
         target = path.join(OUT_ROOT, target);
     } else {
         target = path.resolve(path.dirname(fromFile), target);
@@ -58,15 +85,15 @@ for (const file of walkHtml(OUT_ROOT)) {
     for (const m of matches) {
         const href = m[1];
         if (!href) continue;
-        const target = resolveHref(href, file);
-        if (!target) continue;
-        if (seen.has(target)) continue;
-        seen.add(target);
-        if (!fs.existsSync(target)) {
+        const resolved = resolveHref(href, file);
+        if (!resolved) continue;
+        if (seen.has(resolved)) continue;
+        seen.add(resolved);
+        if (!fs.existsSync(resolved)) {
             broken.push({
                 from: path.relative(OUT_ROOT, file),
                 href,
-                target: path.relative(OUT_ROOT, target),
+                target: path.relative(OUT_ROOT, resolved),
             });
         }
     }

@@ -18,8 +18,8 @@ After invalidating Next.js's data cache, the route handler also calls
 drop the matching per-tenant Apollo `InMemoryCache` entries. Both branches
 of the handler (broad sweep and entity-tagged) perform this step — without
 it, the in-memory Apollo cache would diverge from Next.js's data cache.
-See [Per-tenant Apollo client cache](./data-fetching.mdx#per-tenant-apollo-client-cache)
-and [Cache tags](./data-fetching.mdx#cache-tags) for the tag scheme.
+See [Per-tenant Apollo client cache](./data-fetching#per-tenant-apollo-client-cache)
+and [Cache tags](./data-fetching#cache-tags) for the tag scheme.
 
 CMS invalidation runs from the Payload collection `afterChange` hooks in
 `@nordcom/commerce-cms`, which call `revalidateTag` directly — no webhook needed.
