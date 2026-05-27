@@ -4,13 +4,44 @@ import { Schema } from 'mongoose';
 import type { BaseDocument } from '../db';
 import { db } from '../db';
 
+/**
+ * JSON-serializable value accepted as a feature flag `defaultValue`, targeting rule output, or
+ * option value. All flag storage uses this union to stay compatible with Mongo's `Mixed` type.
+ *
+ * @example
+ * ```ts
+ * import type { JsonValue } from '@nordcom/commerce-db';
+ * const defaultValue: JsonValue = false;
+ * ```
+ */
 export type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
 
+/**
+ * One selectable option in a feature flag's `options` list. Pairs a human-readable label with a
+ * JSON-safe value to support enum-style flags in the admin UI.
+ *
+ * @example
+ * ```ts
+ * import type { FeatureFlagOption } from '@nordcom/commerce-db';
+ * const opt: FeatureFlagOption = { label: 'Blue', value: 'blue' };
+ * ```
+ */
 export interface FeatureFlagOption {
     label: string;
     value: JsonValue;
 }
 
+/**
+ * One rule in a feature flag's targeting configuration. `rule` names the evaluator registered in
+ * the platform, `params` supplies its inputs, and `value` is the override returned when the rule
+ * matches the requesting context.
+ *
+ * @example
+ * ```ts
+ * import type { TargetingRule } from '@nordcom/commerce-db';
+ * const rule: TargetingRule = { rule: 'shopDomain', params: { domain: 'acme.com' }, value: true };
+ * ```
+ */
 export interface TargetingRule {
     rule: string;
     params: Record<string, JsonValue>;
@@ -51,6 +82,19 @@ FeatureFlagSchema.index({ key: 1 }, { unique: true });
 
 type InferredFeatureFlag = InferSchemaType<typeof FeatureFlagSchema>;
 
+/**
+ * Resolved document shape for a feature flag record. Combines `BaseDocument` (id, timestamps) with
+ * the schema fields, replacing inferred sub-document types with the explicit `TargetingRule` and
+ * `FeatureFlagOption` shapes. Use this type when reading flag documents from `FeatureFlagService`.
+ *
+ * @example
+ * ```ts
+ * import type { FeatureFlagBase } from '@nordcom/commerce-db';
+ * function isEnabled(flag: FeatureFlagBase): boolean {
+ *     return flag.defaultValue === true;
+ * }
+ * ```
+ */
 export type FeatureFlagBase = BaseDocument &
     Omit<InferredFeatureFlag, 'targeting' | 'options'> & {
         targeting: TargetingRule[];

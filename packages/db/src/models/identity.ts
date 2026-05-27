@@ -32,6 +32,18 @@ export const IdentitySchema = new Schema(
     },
 );
 
+/**
+ * Document shape for an OAuth provider link attached to a user. Stores the provider name, the
+ * provider-scoped identity ID, optional token fields, and the token expiry date.
+ *
+ * @example
+ * ```ts
+ * import type { IdentityBase } from '@nordcom/commerce-db';
+ * function isExpired(identity: IdentityBase): boolean {
+ *     return identity.expiresAt != null && identity.expiresAt < new Date();
+ * }
+ * ```
+ */
 export type IdentityBase = BaseDocument & InferSchemaType<typeof IdentitySchema>;
 // `identity` alone is not unique across providers — GitHub user `42` and a
 // future Google user `42` would collide on the single-field index. Lookups

@@ -31,16 +31,42 @@ interface BaseFilterableQuery<I> {
     projection?: ProjectionType<I> | undefined;
 }
 
+/**
+ * Generic Mongoose-backed CRUD base for all document services in this package. Subclasses
+ * specialize it with a concrete model type and may override individual methods to add
+ * domain-specific validation, projection, or shape conversion.
+ */
 export class Service<DocType extends BaseDocument, M extends typeof Model<DocType>> {
     private readonly modelName: string;
+    /**
+     * Returns the Mongoose model instance, looked up by name from the active connection to pick
+     * up hot-reloaded or re-registered models in development.
+     *
+     * @returns The Mongoose model for `DocType`.
+     */
     get model(): M {
         return db.models[this.modelName] as M;
     }
 
+    /**
+     * Stores the model name rather than the model instance so that hot-reloads during development
+     * do not leave this service holding a stale model reference.
+     *
+     * @param model - The Mongoose model constructor this service operates on; only its
+     *   `modelName` is retained.
+     */
     public constructor(model: M) {
         this.modelName = model.modelName;
     }
 
+    /**
+     * Persists a new document. `BaseDocument` fields (id, timestamps) are excluded from the input
+     * type because Mongoose generates them automatically on insert.
+     *
+     * @param input - Document fields excluding those managed by the base schema (`id`, `createdAt`,
+     *   `updatedAt`).
+     * @returns The persisted document including the generated `id` and timestamps.
+     */
     public async create(input: Omit<DocType, keyof BaseDocument>): Promise<DocType> {
         // `Model.create()` already persists the document; the previous code
         // chained `.then((doc) => doc.save())` which re-saved a clean doc and
@@ -74,6 +100,18 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
         return () => req as Q;
     }
 
+    /**
+     * Executes a Mongoose query with optional pagination and field projection. Passing `id` or
+     * `count: 1` activates the single-document overload; any other combination returns an array.
+     *
+     * @param args.id - When set, queries by `_id` and returns one document.
+     * @param args.count - Limits the number of returned documents; `1` activates the
+     *   single-document overload.
+     * @param args.filter - Mongoose query filter applied before the limit.
+     * @param args.projection - Fields to include or exclude from returned documents.
+     * @returns A single `DocType` when `id` or `count: 1`; otherwise `DocType[]`.
+     * @throws {NotFoundError} When `id` or `count: 1` is set and no matching document exists.
+     */
     public async find(args: MergeTypes<[BaseQuery, BaseFilterableQuery<DocType>, ReturnsOneQuery]>): Promise<DocType>;
     public async find(args: MergeTypes<[BaseQuery, BaseFilterableQuery<DocType>]>): Promise<DocType[]>;
     public async find(args: MergeTypes<[BaseQuery, BaseFilterableQuery<DocType>]>): Promise<DocType | DocType[]> {
@@ -116,6 +154,14 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
         return res as DocType[];
     }
 
+    /**
+     * Finds a document by its MongoDB `_id`, returning `null` when absent rather than throwing.
+     *
+     * @param id - MongoDB `_id` string.
+     * @param projection - Fields to include or exclude from the returned document.
+     * @param options - Mongoose query options (e.g. `lean`, `session`).
+     * @returns The matching document, or `null` when no document with that `_id` exists.
+     */
     public async findById(
         id: string,
         projection?: ProjectionType<DocType> | null,
@@ -131,6 +177,14 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
         return res ?? null;
     }
 
+    /**
+     * Atomically finds and updates one document matching the filter.
+     *
+     * @param filter - Mongoose query filter that selects the target document.
+     * @param update - Update expression applied to the matched document.
+     * @param options - Mongoose update options; defaults to `{ lean: true }`.
+     * @returns The updated document, or `null` when no document matched the filter.
+     */
     public async findOneAndUpdate(
         filter: QueryFilter<DocType>,
         update?: UpdateQuery<DocType>,

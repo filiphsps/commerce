@@ -52,6 +52,19 @@ export const UserSchema = new Schema(
 
 type InferredUser = InferSchemaType<typeof UserSchema>;
 
+/**
+ * Document shape for a platform user. Carries an embedded list of OAuth identities and satisfies
+ * the NextAuth adapter contract — specifically the optional `avatar` and nullable `emailVerified`
+ * fields that the adapter reads after `User.create` and `User.find`.
+ *
+ * @example
+ * ```ts
+ * import type { UserBase } from '@nordcom/commerce-db';
+ * function displayName(user: UserBase): string {
+ *     return user.name;
+ * }
+ * ```
+ */
 // `avatar` and `emailVerified` use `default: null` in the schema; the public
 // API exposes them as optional/nullable to match the NextAuth adapter contract.
 export type UserBase = BaseDocument &
