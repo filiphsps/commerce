@@ -3,6 +3,22 @@ import 'server-only';
 import type { AdapterCtx, CacheAdapter, WriteOpts } from '@tagtree/core';
 import { revalidateTag, unstable_cache } from 'next/cache';
 
+/**
+ * Creates a {@link CacheAdapter} that binds tagtree's cache lifecycle to the
+ * Next.js data cache, so consumers call `wrap` and `invalidate` without managing
+ * `unstable_cache` or `revalidateTag` directly.
+ *
+ * @returns A `CacheAdapter` whose `wrap` delegates to `unstable_cache` and whose
+ *   `invalidate` calls `revalidateTag` per tag in `'max'` mode.
+ * @example
+ * ```ts
+ * import { createCacheInstance, defineCache } from '@tagtree/core';
+ * import { nextAdapter } from '@tagtree/next';
+ *
+ * const shopifySchema = defineCache({ namespace: 'shopify', entities: {} });
+ * const cache = createCacheInstance(shopifySchema, nextAdapter());
+ * ```
+ */
 export function nextAdapter(): CacheAdapter {
     return {
         async read() {
