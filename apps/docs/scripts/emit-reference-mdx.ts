@@ -100,6 +100,7 @@ export async function main({ quiet = false }: { quiet?: boolean } = {}): Promise
                 continue;
             }
 
+            const ownPageSiblings = overviewRows.filter((r) => r.fate === 'own-page').map((r) => r.name);
             for (const row of overviewRows) {
                 if (row.fate === 'own-page') {
                     const symbol = (project.children ?? []).find((s) => s.name === row.name);
@@ -109,6 +110,7 @@ export async function main({ quiet = false }: { quiet?: boolean } = {}): Promise
                             subpath: subpathRel === 'index' ? 'index' : subpathRel,
                             symbol,
                             kind: row.kind,
+                            siblings: ownPageSiblings,
                         });
                         const outFile = path.join(
                             REFERENCE_OUT,

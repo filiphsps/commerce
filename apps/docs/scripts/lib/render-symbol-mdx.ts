@@ -56,6 +56,8 @@ export type SymbolRenderArgs = {
     subpath: string;
     symbol: TypeDocSymbol;
     kind: SymbolKindLabel;
+    /** Names of other own-page symbols in the same subpath; used for the Related section. */
+    siblings?: string[];
 };
 
 /**
@@ -70,7 +72,7 @@ export type SymbolRenderArgs = {
  * @returns The full MDX file body (frontmatter included).
  */
 export function renderSymbolMdx(args: SymbolRenderArgs): string {
-    const { symbol, kind, workspaceSlug, subpath } = args;
+    const { symbol, kind, workspaceSlug, subpath, siblings = [] } = args;
     const rawNodes = symbol.comment?.summary ?? symbol.signatures?.[0]?.comment?.summary;
     const summary = renderCommentInlineMd(rawNodes);
     const descriptionText = plainSummary(rawCommentText(rawNodes));
@@ -88,6 +90,7 @@ export function renderSymbolMdx(args: SymbolRenderArgs): string {
     const banner = renderTagBanner(modifierTags, blockTags);
     const example = renderExample(blockTags);
     const seeAlso = renderSeeAlso(blockTags);
+    const related = renderRelated(symbol.name, siblings);
     const source = renderSource(symbol, workspaceSlug);
 
     const src = symbol.sources?.[0];
@@ -116,7 +119,25 @@ export function renderSymbolMdx(args: SymbolRenderArgs): string {
                   renderThrows(blockTags),
               ];
 
-    return [...header, ...body, example, seeAlso, source].filter(Boolean).join('\n');
+    return [...header, ...body, example, seeAlso, related, source].filter(Boolean).join('\n');
+}
+
+/**
+ * Render a `## Related` section as inline-code chips of sibling symbols.
+ * `remarkLinkSymbols` upgrades each token into an anchor whose `data-symbol-tab`
+ * paints the reference-neon pill. Drops the current symbol from the list and
+ * limits to a tidy 8 chips so the section stays scannable. Returns empty when
+ * the subpath has no other own-page siblings.
+ *
+ * @param current - The current symbol's name (excluded from the chip set).
+ * @param siblings - All own-page symbol names in the same subpath.
+ * @returns Markdown section string, or empty string when nothing to link.
+ */
+function renderRelated(current: string, siblings: string[]): string {
+    const others = siblings.filter((s) => s !== current).slice(0, 8);
+    if (others.length === 0) return '';
+    const chips = others.map((s) => `\`${s}\``).join(' ');
+    return ['## Related', '', chips, ''].join('\n');
 }
 
 /**
@@ -574,7 +595,11 @@ function renderExample(blockTags: { tag: string; content: TypeDocCommentNode[] }
 }
 
 /**
- * Render a `## See also` section from all `@see` block tags as a bullet list.
+ * Render a `## See also` section as an inline chip flow. Each `@see` entry
+ * becomes a space-separated inline-code span — `remarkLinkSymbols` then
+ * upgrades resolvable identifiers to anchors that the global pill CSS
+ * paints in tab colors, matching visuals/02 `.see-also { .pill }` layout.
+ * Unresolvable @see content keeps its inline-code styling without an anchor.
  *
  * @param blockTags - Block tags to scan for `@see`.
  * @returns Markdown section string, or empty string when no `@see` tags.
@@ -582,8 +607,15 @@ function renderExample(blockTags: { tag: string; content: TypeDocCommentNode[] }
 function renderSeeAlso(blockTags: { tag: string; content: TypeDocCommentNode[] }[]): string {
     const sees = blockTags.filter((t) => t.tag === '@see');
     if (sees.length === 0) return '';
-    const items = sees.map((s) => `- ${renderCommentInlineMd(s.content)}`);
-    return ['## See also', '', ...items, ''].join('\n');
+    const chips = sees.map((s) => {
+        const raw = renderCommentInlineMd(s.content).trim();
+        // Strip leading list-marker hyphen left over from JSDoc, and any
+        // already-present backticks (we wrap the whole token uniformly).
+        const cleaned = raw.replace(/^-?\s*/, '').replace(/^`(.+)`$/, '$1');
+        const token = cleaned.match(/^[A-Za-z][A-Za-z0-9_]{1,}$/) ? cleaned : cleaned;
+        return `\`${token}\``;
+    });
+    return ['## See also', '', chips.join(' '), ''].join('\n');
 }
 
 /**

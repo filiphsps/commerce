@@ -14,9 +14,12 @@ export function renderGalleryMdx(args: GalleryArgs): string {
     const { workspaceSlug, subpath, rows } = args;
     const components = rows.filter((r) => r.kind === 'component');
 
+    // Gallery roots get the bare workspace name; nested subpaths keep their
+    // full path so a UI suite with multiple subpaths stays distinguishable.
+    const titlePath = subpath === 'index' ? workspaceSlug : `${workspaceSlug}/${subpath}`;
     const frontmatter = [
         '---',
-        `title: ${workspaceSlug}/${subpath}`,
+        `title: ${titlePath}`,
         `description: Component gallery for ${workspaceSlug}.`,
         '---',
         '',

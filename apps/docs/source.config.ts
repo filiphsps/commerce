@@ -1,7 +1,5 @@
-import fs from 'node:fs';
 import path from 'node:path';
 import { defineConfig, defineDocs } from 'fumadocs-mdx/config';
-import type { SymbolIndex } from './lib/jsdoc-link-resolver';
 import { remarkLinkSymbols } from './lib/remark-link-symbols';
 
 // fumadocs-mdx compiles this file into apps/docs/.source/source.config.mjs, so
@@ -10,11 +8,6 @@ import { remarkLinkSymbols } from './lib/remark-link-symbols';
 // `pnpm` script in this app runs with cwd = `apps/docs/`, so this hits the
 // correct path in both the source TS and the compiled MJS.
 const indexPath = path.resolve(process.cwd(), 'lib/symbol-index.generated.json');
-
-/** Load the symbol index if it exists; empty object on first run before `pnpm gen`. */
-const symbolIndex: SymbolIndex = fs.existsSync(indexPath)
-    ? (JSON.parse(fs.readFileSync(indexPath, 'utf8')) as SymbolIndex)
-    : {};
 
 /**
  * Single Fumadocs collection rooted at `content/`. Per the spec's IA, the docs
@@ -27,7 +20,10 @@ export const docs = defineDocs({ dir: 'content' });
 
 export default defineConfig({
     mdxOptions: {
-        remarkPlugins: [[remarkLinkSymbols, { index: symbolIndex, context: { tab: 'docs' } }]],
+        // Pass the index PATH (not a snapshot) so `remarkLinkSymbols` re-reads
+        // the file when its mtime changes — this lets `pnpm gen` in a running
+        // dev session update symbol-link URLs without a server restart.
+        remarkPlugins: [[remarkLinkSymbols, { indexPath, context: { tab: 'docs' } }]],
         remarkCodeTabOptions: { parseMdx: true },
         rehypeCodeOptions: {
             themes: {

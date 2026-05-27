@@ -202,6 +202,41 @@ a[data-symbol-tab="docs"]:hover {
     background: hsl(330 86% 53% / 0.22);
 }
 
+/* In table cells the pill chrome competes with the column rhythm — every row
+ * grows by 6 px of border + padding when a type happens to be linkable. Strip
+ * the border, bg and padding inside tables so resolved tokens render as plain
+ * tab-colored mono identifiers; the underlying `<code>` keeps the monospace
+ * font and slight bg tint already applied to inline code globally. */
+table a[data-symbol-tab] {
+    display: inline;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    border-radius: 0;
+}
+table a[data-symbol-tab]:hover {
+    background: transparent;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* Fumadocs docks the mobile sidebar drawer on the right (`inset-e-0`) and
+ * slides it from `translateX(100%)`. The hamburger lives at the LEFT of the
+ * topbar per visuals/05, so the drawer should mirror that orientation —
+ * dock on the left and slide in from `-100%`. Override the inset, border,
+ * and the slide animation's offset. Scoped to the mobile breakpoint
+ * (drawer is hidden above `md`). */
+aside.fixed[data-state="open"],
+aside.fixed[data-state="closed"] {
+    inset-inline-end: auto;
+    inset-inline-start: 0;
+    border-inline-end-width: 0.138rem;
+    border-inline-start-width: 0;
+}
+:root {
+    --fd-sidebar-drawer-offset: -100%;
+}
+
 /* Broken {@link} dev-only warning — matches visuals/09-empty-states.html.
  * When the remark plugin emits `data-broken-link` (dev builds only), the
  * span renders as an amber dashed pill so authors spot unresolved symbols at
@@ -324,14 +359,19 @@ a[data-symbol-tab="docs"]:hover {
  *   • Reference/Apps a → .sub (mono, fg-mute, full fg on hover)
  * ───────────────────────────────────────────────────────────────────────── */
 
-/* Base for ALL sidebar links — will be overridden per depth below. */
+/* Base for ALL sidebar links — will be overridden per depth below.
+ * No border-radius and zero right padding match visuals/06 `.it`: items run
+ * to the right edge, indicator rail/background paints flat against the
+ * column wall. Active state's `box-shadow` (defined further down) is
+ * unobscured by border-radius. */
 #nd-sidebar a {
     font-family: var(--font-sans);
     font-size: 0.78rem;
     font-weight: 700;
     color: var(--color-fg);
-    border-radius: 0.25rem;
-    padding: 0.22rem 0.5rem;
+    border-radius: 0;
+    padding: 0.22rem 0 0.22rem 0.55rem;
+    margin-left: 0.35rem;
     border-left: 0.138rem solid transparent;
     transition:
         color 150ms,
@@ -339,9 +379,12 @@ a[data-symbol-tab="docs"]:hover {
         background 150ms;
 }
 
-/* Reference tab leaf items and packages depth-2 leaves → .sub:
- * mono, fg-mute, hover to full fg. */
-#nd-sidebar a[href^="/reference/"],
+/* Depth-1 / depth-2 leaf links anywhere in the tab tree → .sub /.sym:
+ * mono, fg-mute. Fumadocs marks depth via inline `padding-inline-start: calc(N *
+ * var(--spacing))` where N grows with depth. Selectors match N=5 (.sub) and
+ * N=8 (.sym) so depth-0 workspace links keep the `.it` display-font default
+ * from the base `#nd-sidebar a` rule. */
+#nd-sidebar a[style*="calc(5 "],
 #nd-sidebar a[style*="calc(8 "] {
     font-family: var(--font-mono);
     font-size: 0.72rem;
@@ -371,7 +414,8 @@ a[data-symbol-tab="docs"]:hover {
 }
 
 /* depth-1 folder buttons (packages: Cms, Db, etc.) → .it:
- * display font, full fg, bold. Reset separator styles from depth-0 .grp. */
+ * display font, full fg, bold. Reset separator styles from depth-0 .grp.
+ * No border-radius / right padding so the row paints flat to the column. */
 #nd-sidebar button[data-state][style*="calc(5 "] {
     font-family: var(--font-sans);
     font-size: 0.78rem;
@@ -381,8 +425,9 @@ a[data-symbol-tab="docs"]:hover {
     color: var(--color-fg);
     border-bottom: none;
     margin-top: 0;
-    padding-bottom: 0.22rem;
-    border-radius: 0.25rem;
+    padding: 0.22rem 0 0.22rem 0.55rem;
+    margin-left: 0.35rem;
+    border-radius: 0;
     width: auto;
 }
 
@@ -397,22 +442,23 @@ a[data-symbol-tab="docs"]:hover {
     color: var(--color-fg-mute);
     border-bottom: none;
     margin-top: 0;
-    padding-bottom: 0.22rem;
-    border-radius: 0.25rem;
+    padding: 0.16rem 0 0.16rem 0.7rem;
+    margin-left: 0.35rem;
+    border-radius: 0;
     width: auto;
 }
 
-/* Hover: .it items (a + depth-1 buttons) go to brand-hover magenta.
- * .sub items (reference/deep-packages a) and .grp go to full fg. */
+/* Hover for all sidebar items per visuals/06 `.it:hover` / `.sub:hover`:
+ * full fg, border-strong rail, subtle bg-1 fill (no brand tint). */
 #nd-sidebar a:hover:not([data-active="true"]),
 #nd-sidebar button[data-state][style*="calc(5 "]:hover {
-    color: var(--color-brand-hover);
+    color: var(--color-fg);
     border-left-color: var(--color-border-strong);
-    background: hsl(330 86% 53% / 0.06);
+    background: var(--color-bg-1);
 }
 
-/* .sub hover: full fg, border-strong (reference links + depth-2 links/buttons) */
-#nd-sidebar a[href^="/reference/"]:hover:not([data-active="true"]),
+/* .sub/.sym hover (depth-1 + depth-2 leaves): full fg, border-strong */
+#nd-sidebar a[style*="calc(5 "]:hover:not([data-active="true"]),
 #nd-sidebar a[style*="calc(8 "]:hover:not([data-active="true"]),
 #nd-sidebar button[data-state][style*="calc(8 "]:hover {
     color: var(--color-fg);
@@ -836,12 +882,22 @@ figure.shiki [role="tab"][data-state="active"] {
     border-left-color: var(--color-border-strong);
 }
 
-/* Active heading — brand magenta left rail + bolder weight */
+/* Active heading — brand magenta left rail + bolder weight.
+ * Fumadocs marks EVERY in-viewport section as `data-active=true`. The
+ * mockup highlights only the topmost-visible section, so the sibling rule
+ * below reverts every active anchor that has another active anchor before
+ * it back to the muted style — leaves only the first active highlighted. */
 #nd-toc a[data-active="true"],
 #nd-toc a.text-fd-primary {
     color: var(--color-brand);
     border-left-color: var(--color-brand);
     font-weight: 600;
+}
+
+#nd-toc a[data-active="true"] ~ a[data-active="true"] {
+    color: var(--color-fg-mute);
+    border-left-color: transparent;
+    font-weight: 500;
 }
 
 /* Depth-2 headings (h3) — slightly smaller and indented per visuals/02 */

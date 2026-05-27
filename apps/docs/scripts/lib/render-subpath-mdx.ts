@@ -23,22 +23,28 @@ export type SubpathOverviewArgs = {
  */
 export function renderSubpathOverviewMdx(args: SubpathOverviewArgs): string {
     const { workspaceSlug, subpath, rows } = args;
+    // `subpath === 'index'` is the workspace's root entry point — display just
+    // the workspace name (no redundant `/ index` segment). Authored subpaths
+    // (`api`, `core/contract-tests`) keep their full path in the H1 but use a
+    // sidebar-friendly short title (last segment only) since the page tree
+    // groups the entry under its parent folder visually.
+    const displayPath = subpath === 'index' ? workspaceSlug : `${workspaceSlug} / ${subpath}`;
+    const descPath = subpath === 'index' ? 'root' : `${subpath} subpath`;
+    const titleShort = subpath === 'index' ? workspaceSlug : (subpath.split('/').pop() ?? subpath);
 
     const frontmatter = [
         '---',
-        `title: ${workspaceSlug}/${subpath}`,
-        `description: API reference for the ${subpath} subpath of @nordcom/commerce-${workspaceSlug}.`,
+        `title: ${titleShort}`,
+        `description: API reference for the ${descPath} of @nordcom/commerce-${workspaceSlug}.`,
         '---',
         '',
     ].join('\n');
 
     const banner = `<ReferenceBackLink slug="${workspaceSlug}" subpath="${subpath}" />`;
 
-    // All exports hidden (every symbol @internal) — render the empty-state card
-    // instead of an empty table. Matches visuals/09-empty-states.html.
     if (rows.length === 0) {
         const emptyCard = `<EmptySubpath pkg="${workspaceSlug}" subpath="${subpath}" />`;
-        return [frontmatter, banner, '', `# ${workspaceSlug} / ${subpath}`, '', emptyCard, ''].join('\n');
+        return [frontmatter, banner, '', `# ${displayPath}`, '', emptyCard, ''].join('\n');
     }
 
     const groups = groupByKind(rows);
@@ -46,7 +52,7 @@ export function renderSubpathOverviewMdx(args: SubpathOverviewArgs): string {
         .filter((k) => groups.has(k))
         .map((kind) => renderGroup(kind, groups.get(kind) ?? []));
 
-    return [frontmatter, banner, '', `# ${workspaceSlug} / ${subpath}`, '', ...sections].join('\n');
+    return [frontmatter, banner, '', `# ${displayPath}`, '', ...sections].join('\n');
 }
 
 /**

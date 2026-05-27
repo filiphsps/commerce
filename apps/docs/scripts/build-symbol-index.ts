@@ -50,7 +50,10 @@ export function main({ quiet = false }: { quiet?: boolean } = {}): { entries: nu
         }
         const rel = path.relative(TYPEDOC_OUT, w).replace(/\.json$/, '');
         const [pkg, ...rest] = rel.split('/');
-        const subpath = rest.join('/') || 'index';
+        const rawSubpath = rest.join('/') || 'index';
+        // Mirror emit-reference-mdx: collapse `next/index` → `next` so the
+        // resolved URLs match the actual on-disk MDX paths.
+        const subpath = rawSubpath === 'index' ? 'index' : rawSubpath.replace(/\/index$/, '');
         for (const child of project.children ?? []) {
             const entry: IndexEntry = {
                 url: `/reference/${pkg}/${subpath === 'index' ? '' : `${subpath}/`}${kebab(child.name)}/`,
