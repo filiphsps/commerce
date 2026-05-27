@@ -603,13 +603,11 @@ figure.shiki [role="tab"][data-state="active"] {
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.22em;
+    line-height: 1;
     color: var(--color-fg-mute);
     margin: 2.5rem 0 0.85rem 0;
-    padding-left: 0;
     padding-bottom: 0.45rem;
-    border-left: none;
     border-bottom: var(--bw-s, 0.138rem) solid var(--color-border);
-    line-height: inherit;
 }
 
 /* Packages narrative — h2 gets the lime left-rail editorial treatment. */
