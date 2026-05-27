@@ -8,6 +8,7 @@ import './globals.css';
 import { primaryFont } from '@/lib/fonts';
 import { source } from '@/lib/source';
 import { docsEnv } from '@/lib/env';
+import { Logo } from '@/components/logo';
 
 export const metadata: Metadata = {
     title: { default: 'Nordcom Commerce', template: '%s — Nordcom Commerce' },
@@ -35,7 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <html lang="en" dir="ltr" suppressHydrationWarning className={`${primaryFont.variable} ${GeistMono.variable}`}>
             <body>
                 <RootProvider>
-                    <DocsLayout tree={source.pageTree} githubUrl="https://github.com/filiphsps/commerce">
+                    <DocsLayout tree={source.pageTree} githubUrl="https://github.com/filiphsps/commerce" nav={{ title: <Logo /> }}>
                         {children}
                     </DocsLayout>
                 </RootProvider>
