@@ -152,17 +152,55 @@
  * neon. Kept in CSS because the markup is emitted by the remark transformer,
  * not by a React component we can put Tailwind classes on. */
 
+/* Auto-linked symbol pills. Visual 02 shows `.pill.ref-link` / `.pill.err-link`
+ * / `.pill.pkg-link` / `.pill.docs-link` as bordered chips with bg-bg-2 and a
+ * tab-colored border + text. Apply the same treatment to remark-link-symbols's
+ * `data-symbol-tab` anchors so inline references stand out as proper pills. */
+a[data-symbol-tab] {
+    display: inline-block;
+    padding: 0 0.4rem;
+    border: 0.138rem solid;
+    border-radius: 99px;
+    line-height: 1.45;
+    font-family: var(--font-mono);
+    font-size: 0.82em;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 150ms ease;
+}
+
 a[data-symbol-tab="reference"] {
     color: var(--color-ref);
+    border-color: var(--color-ref);
+    background: hsl(190 95% 55% / 0.1);
 }
 a[data-symbol-tab="packages"] {
     color: var(--color-pkg);
+    border-color: var(--color-pkg);
+    background: hsl(95 80% 55% / 0.1);
 }
 a[data-symbol-tab="errors"] {
     color: var(--color-err);
+    border-color: var(--color-err);
+    background: hsl(28 95% 58% / 0.1);
 }
 a[data-symbol-tab="docs"] {
     color: var(--color-brand);
+    border-color: var(--color-brand);
+    background: hsl(330 86% 53% / 0.1);
+}
+
+a[data-symbol-tab="reference"]:hover {
+    background: hsl(190 95% 55% / 0.22);
+}
+a[data-symbol-tab="packages"]:hover {
+    background: hsl(95 80% 55% / 0.22);
+}
+a[data-symbol-tab="errors"]:hover {
+    background: hsl(28 95% 58% / 0.22);
+}
+a[data-symbol-tab="docs"]:hover {
+    background: hsl(330 86% 53% / 0.22);
 }
 
 /* ─── Fumadocs chrome overrides ────────────────────────────────────────────── */
@@ -465,14 +503,14 @@ a[data-symbol-tab="docs"] {
  * text-fd-muted-foreground">` above the page title. Repaint it to the
  * visuals/04 treatment: mono caption, slash separators, brand-magenta
  * on the leaf segment. */
-#nd-page > div:has(> span.text-fd-primary):first-child {
+#nd-page > div:has(> .text-fd-primary):first-child {
     font-family: var(--font-mono);
     font-size: 0.72rem;
     color: var(--color-fg-mute);
     margin-bottom: 0.85rem;
 }
 
-#nd-page > div:has(> span.text-fd-primary):first-child > span.text-fd-primary {
+#nd-page > div:has(> .text-fd-primary):first-child > .text-fd-primary {
     color: var(--color-brand);
 }
 
