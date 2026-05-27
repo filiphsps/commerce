@@ -2,5 +2,6 @@
     "title": "Docs",
     "description": "Platform concepts, getting started, app narratives, and operations.",
     "root": true,
-    "defaultOpen": true
+    "defaultOpen": true,
+    "pages": ["introduction", "get-started", "concepts", "apps", "operations"]
 }
