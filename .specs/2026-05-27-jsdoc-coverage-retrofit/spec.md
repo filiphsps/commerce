@@ -231,7 +231,10 @@ Bottom-of-dep-graph first; packages within a wave run as concurrent subagents in
 | 1    | `packages/errors`                    |     5 |       0% |
 | 1    | `packages/utils`                     |     6 |      16% |
 | 2    | `packages/db`                        |    21 |      19% |
-| 2    | `packages/tagtree`                   |    31 |       3% |
+| 2    | `packages/tagtree/core`              |    15 |       0% |
+| 2    | `packages/tagtree/next`              |     5 |       0% |
+| 2    | `packages/tagtree/payload`           |     5 |      20% |
+| 2    | `packages/tagtree/shopify`           |     6 |       0% |
 | 2    | `packages/shopify-graphql`           |     7 |      14% |
 | 2    | `packages/cart/core`                 |    19 |      73% |
 | 3    | `packages/shopify-html`              |     7 |      28% |
@@ -247,7 +250,7 @@ Bottom-of-dep-graph first; packages within a wave run as concurrent subagents in
 | —    | `apps/docs`                          |    33 |      51% (excluded) |
 | —    | `packages/react-payment-brand-icons` | 492   |       0% (excluded) |
 
-**In-scope total: 661 files across 16 packages/apps** (after excluding 142 Next.js framework files from the three apps: admin -75, storefront -54, landing -13).
+**In-scope total: 661 files across 19 packages/apps** (`packages/tagtree` and `packages/cart` are sub-monorepos; each sub-package gets its own PR. After excluding 142 Next.js framework files from the three apps: admin -75, storefront -54, landing -13.)
 
 ### Split rule for `apps/storefront`
 

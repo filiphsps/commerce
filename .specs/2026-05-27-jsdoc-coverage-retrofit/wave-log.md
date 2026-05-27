@@ -23,16 +23,19 @@ Calibration findings:
   - `packages/utils`: https://github.com/filiphsps/commerce/pull/1951 — addresses the 1 blocker. Reviewer LGTM.
   - Both await human merge before Wave 2 starts.
 
-## Wave 2 — Independent foundations (db, tagtree, shopify-graphql, cart/core)
+## Wave 2 — Independent foundations (db, tagtree subs, shopify-graphql, cart/core)
 
-Status: pending
-Started: —
+Status: in_progress
+Started: 2026-05-27
 Completed: —
 PRs:
-- `packages/db`: —
-- `packages/tagtree`: —
-- `packages/shopify-graphql`: —
-- `packages/cart/core`: —
+- `packages/db`: pending generator dispatch
+- `packages/tagtree/core`: pending generator dispatch
+- `packages/tagtree/next`: pending generator dispatch
+- `packages/tagtree/payload`: pending generator dispatch
+- `packages/tagtree/shopify`: pending generator dispatch
+- `packages/shopify-graphql`: pending generator dispatch
+- `packages/cart/core`: pending generator dispatch
 Calibration findings: —
 
 ## Wave 3 — Dependent packages (shopify-html, marketing-common, test-mongo, cart/shopify, cart/react)
