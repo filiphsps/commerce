@@ -1,0 +1,7 @@
+{
+    "applications": { "title": "Applications", "order": 0 },
+    "core":         { "title": "Core",          "order": 1, "packages": ["cms", "db", "errors", "marketing-common"] },
+    "shopify":      { "title": "Shopify",        "order": 2, "packages": ["shopify-graphql", "shopify-html"] },
+    "tagtree":      { "title": "TagTree",        "order": 3, "packages": ["tagtree/core", "tagtree/next", "tagtree/payload", "tagtree/shopify"] },
+    "ui":           { "title": "UI",             "order": 4, "packages": ["react-payment-brand-icons"] }
+}

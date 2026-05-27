@@ -1,5 +1,6 @@
 {
     "title": "Packages",
     "description": "Per-workspace narrative for every app and package in the monorepo.",
-    "root": true
+    "root": true,
+    "pages": ["applications", "core", "shopify", "tagtree", "ui"]
 }
