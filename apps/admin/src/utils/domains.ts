@@ -15,7 +15,7 @@ const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
 /**
  * Reads an env var by name and returns it, or logs an error in production and returns the fallback.
  *
- * @param envName - The environment variable name to read.
+ * @param envName - Which domain-host env var to look up; must be one of `'ADMIN_DOMAIN'` or `'LANDING_DOMAIN'`.
  * @param fallback - The default value returned when the env var is absent or empty.
  * @returns The resolved hostname string.
  */

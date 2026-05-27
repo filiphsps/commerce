@@ -50,6 +50,10 @@ export type CollectionTableProps<TRow extends { id: string | number }> = {
  * `fn:<index>` for function-form accessors. Function accessors can't be
  * compared by identity across renders, but the column array is positional, so
  * the index is a sufficient discriminator.
+ *
+ * @param col - Column definition to generate a key for.
+ * @param index - Positional index in the columns array; used as the discriminator for function-form accessors.
+ * @returns The string accessor value, or `` `fn:${index}` `` for function-form accessors.
  */
 function columnKey<TRow>(col: Column<TRow>, index: number): string {
     return typeof col.accessor === 'function' ? `fn:${index}` : col.accessor;
