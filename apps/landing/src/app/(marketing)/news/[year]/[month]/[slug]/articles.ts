@@ -21,6 +21,11 @@ const SLUG_RE = /^[a-z0-9](?:[a-z0-9-]{0,254}[a-z0-9])?$/;
 const isValidArticleParams = ({ year, month, slug }: { year: string; month: string; slug: string }): boolean =>
     YEAR_RE.test(year) && MONTH_RE.test(month) && SLUG_RE.test(slug);
 
+/**
+ * Returns the URL segment params for every Markdown article discovered on disk.
+ *
+ * @returns Array of `{ year, month, slug }` objects suitable for `generateStaticParams`.
+ */
 export async function getArticlePaths() {
     return POST_PATHS.map((postPath) => {
         const slug = path.basename(postPath, path.extname(postPath));
@@ -35,6 +40,17 @@ export async function getArticlePaths() {
     });
 }
 
+/**
+ * Reads and parses a single Markdown article identified by its URL segments.
+ *
+ * Validates param shape and that the resolved file path stays inside the articles directory
+ * before any filesystem access, preventing path-traversal via percent-encoded sequences.
+ *
+ * @param year - Four-digit year string from the URL segment.
+ * @param month - One- or two-digit month string from the URL segment.
+ * @param slug - Lowercase alphanumeric slug from the URL segment.
+ * @returns Parsed Markdoc content tree and front-matter metadata, or `null` when params are invalid or the file is absent.
+ */
 export async function getArticleContent({ year, month, slug }: { year: string; month: string; slug: string }) {
     if (!isValidArticleParams({ year, month, slug })) return null;
     const filePath = path.resolve(POSTS_DIR, year, month, `${slug}.md`);
@@ -65,6 +81,11 @@ export async function getArticleContent({ year, month, slug }: { year: string; m
     };
 }
 
+/**
+ * Loads all articles and returns them sorted newest-first by publication date.
+ *
+ * @returns Array of article records, each containing URL segment params and front-matter metadata, sorted descending by date.
+ */
 export async function getArticles() {
     const paths = await getArticlePaths();
     const articles = (

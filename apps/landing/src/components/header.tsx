@@ -7,6 +7,11 @@ import { getAdminHostname } from '@/utils/domains';
 import { cn } from '@/utils/tailwind';
 
 export type HeaderProps = {} & Omit<HTMLProps<HTMLDivElement>, 'children' | 'color'>;
+/**
+ * Renders the site navigation header with the Nordcom Commerce logo, nav links, and an Admin portal CTA.
+ *
+ * @param props.className - Additional CSS classes merged onto the header root element.
+ */
 export default async function Header({ className, ...props }: HeaderProps) {
     return (
         <NordstarHeader {...props} className={cn('[grid-area:header]', className)}>

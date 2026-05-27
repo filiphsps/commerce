@@ -4,6 +4,16 @@ import { NextResponse } from 'next/server';
 
 export const ADMIN_HOSTNAME = process.env.ADMIN_DOMAIN ?? 'admin.localhost';
 
+/**
+ * Rewrites an `/admin/*` request to the admin application hostname.
+ *
+ * Strips the leading `/admin` path segment, forwards the originating shop hostname
+ * via `?shop` and the `x-nordcom-shop` header, and injects the Vercel protection-bypass
+ * secret when configured.
+ *
+ * @param req - Incoming Next.js middleware request.
+ * @returns A rewrite response targeting the admin hostname.
+ */
 export const admin = async (req: NextRequest): Promise<NextResponse> => {
     const url = req.nextUrl.clone();
     const newUrl = url.clone();

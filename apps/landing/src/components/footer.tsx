@@ -6,6 +6,11 @@ import { cn } from '@/utils/tailwind';
 const CURRENT_YEAR = new Date().getFullYear();
 
 export type FooterProps = {} & Omit<HTMLProps<HTMLDivElement>, 'children'>;
+/**
+ * Renders the site footer with legal links, copyright notice, and the deployed git commit hash when available.
+ *
+ * @param props.className - Additional CSS classes merged onto the `<footer>` element.
+ */
 export default function Footer({ className, ...props }: FooterProps) {
     return (
         <footer

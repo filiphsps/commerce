@@ -4,6 +4,13 @@ export type ContentProps<T extends ElementType = 'article'> = {
     children?: ReactNode;
     as?: T;
 } & Omit<ComponentProps<T>, 'as'>;
+/**
+ * Renders Markdoc prose content with consistent typography and brand-color styles applied.
+ *
+ * @param props.children - Rendered content nodes.
+ * @param props.as - HTML element or component to render as; defaults to `article`.
+ * @param props.className - Additional CSS classes merged onto the root element.
+ */
 export const Content = <T extends ElementType = 'article'>({ children, as, className, ...props }: ContentProps<T>) => {
     const AsComponent: ElementType = as || 'article';
 

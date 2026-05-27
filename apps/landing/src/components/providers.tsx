@@ -13,10 +13,14 @@ import { Toaster } from 'sonner';
 
 const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID;
 
-// https://github.com/TheSGJ/nextjs-toploader/issues/56#issuecomment-1820484781
-// Isolated in its own component (and Suspense-wrapped below) so the dynamic
-// usePathname() read doesn't force <Providers> itself to opt out of prerender
-// under Next 16's cacheComponents:true.
+/**
+ * Signals NProgress completion on every client-side route change.
+ *
+ * Isolated so that the `usePathname()` subscription does not force the parent
+ * `<Providers>` tree to opt out of prerender under Next 16's `cacheComponents: true`.
+ *
+ * @see https://github.com/TheSGJ/nextjs-toploader/issues/56#issuecomment-1820484781
+ */
 function CompleteProgressOnRouteChange() {
     const pathname = usePathname();
     useEffect(() => {
@@ -29,6 +33,11 @@ function CompleteProgressOnRouteChange() {
 export type ProvidersProps = {
     children: ReactNode;
 };
+/**
+ * Wraps the application with the Nordstar theme provider, top-loader, toast notifications, and Google Tag Manager.
+ *
+ * @param props.children - The application subtree to wrap.
+ */
 export function Providers({ children }: ProvidersProps) {
     return (
         <NordstarProvider theme={Theme} className="block">
