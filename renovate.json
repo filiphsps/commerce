@@ -6,9 +6,8 @@
     "lockFileMaintenance": {
         "enabled": false
     },
-    "enabledManagers": ["pnpm", "github-actions"],
+    "enabledManagers": ["npm", "nvm", "github-actions"],
     "ignoreScripts": true,
     "prConcurrentLimit": 10,
-    "prHourlyLimit": 4,
-    "postUpdateOptions": []
+    "prHourlyLimit": 4
 }
