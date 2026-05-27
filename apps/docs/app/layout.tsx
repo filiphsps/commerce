@@ -1,13 +1,13 @@
 import { Analytics } from '@vercel/analytics/next';
+import { GeistMono } from 'geist/font/mono';
 import type { Metadata } from 'next';
-import { Head } from 'nextra/components';
-import { getPageMap } from 'nextra/page-map';
-import { Footer, Layout, Navbar } from 'nextra-theme-docs';
-import { CmdkPalette } from '@/components/cmdk-palette';
-import { docsEnv } from '@/lib/env';
-
-import 'nextra-theme-docs/style.css';
+import { RootProvider } from 'fumadocs-ui/provider/next';
+import { DocsLayout } from 'fumadocs-ui/layouts/docs';
+import 'fumadocs-ui/style.css';
 import './globals.css';
+import { primaryFont } from '@/lib/fonts';
+import { source } from '@/lib/source';
+import { docsEnv } from '@/lib/env';
 
 export const metadata: Metadata = {
     title: { default: 'Nordcom Commerce', template: '%s — Nordcom Commerce' },
@@ -30,24 +30,15 @@ export const metadata: Metadata = {
     },
 };
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-    const navbar = <Navbar logo={<strong>Commerce</strong>} projectLink="https://github.com/filiphsps/commerce" />;
-    const footer = <Footer>© {new Date().getFullYear()} Nordcom Commerce</Footer>;
-
+export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
-        <html lang="en" dir="ltr" suppressHydrationWarning>
-            <Head />
+        <html lang="en" dir="ltr" suppressHydrationWarning className={`${primaryFont.variable} ${GeistMono.variable}`}>
             <body>
-                <Layout
-                    navbar={navbar}
-                    pageMap={await getPageMap()}
-                    docsRepositoryBase="https://github.com/filiphsps/commerce/tree/master/apps/docs"
-                    footer={footer}
-                    sidebar={{ defaultMenuCollapseLevel: 1, autoCollapse: false }}
-                >
-                    {children}
-                </Layout>
-                <CmdkPalette />
+                <RootProvider>
+                    <DocsLayout tree={source.pageTree} githubUrl="https://github.com/filiphsps/commerce">
+                        {children}
+                    </DocsLayout>
+                </RootProvider>
                 <Analytics />
             </body>
         </html>
