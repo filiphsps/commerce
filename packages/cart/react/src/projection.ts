@@ -80,7 +80,7 @@ function applyMutation(
             for (const p of linePredictors) {
                 const r = p(mutation, ctx);
                 if (r) {
-                    predictedLine = r;
+                    predictedLine = r as Partial<CartLine>;
                     break;
                 }
             }
