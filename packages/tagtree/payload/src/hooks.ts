@@ -9,13 +9,34 @@ type Doc = {
     _status?: 'draft' | 'published';
 };
 
+/**
+ * Extracts the tenant ID from a document, normalizing both the scalar string form and the object form Payload uses when relationship fields are expanded.
+ *
+ * @param doc - Document delivered by a Payload collection hook.
+ * @returns The tenant's ID string, or `undefined` when the document has no tenant field.
+ */
 const tenantId = (doc: Doc): string | undefined => {
     if (!doc.tenant) return undefined;
     return typeof doc.tenant === 'string' ? doc.tenant : doc.tenant.id;
 };
 
+/**
+ * Derives the cache-invalidation key for a document, preferring a stable content-addressable slug over a Shopify handle and falling back to the numeric or string ID.
+ *
+ * @param doc - Document delivered by a Payload collection hook.
+ * @returns The slug, Shopify handle, or stringified ID — in that priority order.
+ */
 const docKey = (doc: Doc): string => doc.slug ?? doc.shopifyHandle ?? String(doc.id);
 
+/**
+ * Configuration bag for `payloadHooks`, specifying which entity in the tagtree cache schema to target for invalidation and how draft-status transitions are gated.
+ *
+ * @example
+ * ```ts
+ * const opts: PayloadHooksOptions = { entity: 'products', gatePublishedDrafts: true };
+ * const hooks = payloadHooks(cache, opts);
+ * ```
+ */
 export interface PayloadHooksOptions {
     entity: string;
     /**
@@ -31,6 +52,21 @@ export interface PayloadHooksOptions {
     gatePublishedDrafts?: boolean;
 }
 
+/**
+ * Creates Payload CMS `afterChange` and `afterDelete` collection hooks that invalidate the tagtree cache whenever a document is saved or removed.
+ *
+ * @param cache - Typed tagtree `CacheInstance` holding the entity schema and invalidation logic.
+ * @param opts - Controls which entity to invalidate and whether draft-status gating is applied.
+ * @returns A `CollectionConfig['hooks']` object with `afterChange` and `afterDelete` handlers ready to merge into a collection config.
+ * @throws {Error} When `opts.entity` does not name a key declared in the cache schema.
+ * @example
+ * ```ts
+ * const productCollection: CollectionConfig = {
+ *     slug: 'products',
+ *     hooks: payloadHooks(cache, { entity: 'products', gatePublishedDrafts: true }),
+ * };
+ * ```
+ */
 export function payloadHooks<NS extends string, T extends string | { id: string }, Q, E extends EntitiesMap>(
     cache: CacheInstance<NS, T, Q, E>,
     opts: PayloadHooksOptions,
