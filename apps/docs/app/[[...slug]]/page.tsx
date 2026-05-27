@@ -34,7 +34,7 @@ export default async function Page(props: { params: Promise<{ slug?: string[] }>
         >
             {showHero ? (
                 <>
-                    <DocsTitle className="font-black text-[clamp(2rem,5vw,3.4rem)] leading-[1.02] tracking-[-0.04em]">
+                    <DocsTitle className="break-all font-black text-[clamp(2rem,5vw,3.4rem)] leading-none tracking-tight md:break-normal">
                         {page.data.title}
                     </DocsTitle>
                     {page.data.description ? (

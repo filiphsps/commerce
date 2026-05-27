@@ -18,7 +18,7 @@ export function SymbolTitle({ name }: SymbolTitleProps) {
     const head = splitIdx > 0 ? name.slice(0, splitIdx) : name;
     const tail = splitIdx > 0 ? name.slice(splitIdx) : '';
     return (
-        <h1 className="not-prose mb-2 font-black text-[2.6rem] text-fg leading-[1] tracking-[-0.04em] sm:text-[3.2rem]">
+        <h1 className="not-prose mb-2 break-all font-black text-[2.6rem] text-fg leading-none tracking-tight sm:text-[3.2rem] md:break-normal">
             {head}
             {tail ? <span className="text-brand">{tail}</span> : null}
         </h1>
