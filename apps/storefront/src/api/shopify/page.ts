@@ -65,6 +65,12 @@ const PAGES_QUERY = graphql(
 
 type PageFields = ResultOf<typeof PAGE_FIELDS_FRAGMENT>;
 
+/**
+ * Transforms a Shopify page fragment into the normalized `NormalizedShopifyPage` shape.
+ *
+ * @param page - Raw page fragment read from `PAGE_FIELDS_FRAGMENT`.
+ * @returns Normalized page with nullable SEO fields and a guaranteed `onlineStoreUrl`.
+ */
 function normalize(page: PageFields): NormalizedShopifyPage {
     return {
         id: page.id,
@@ -82,6 +88,14 @@ function normalize(page: PageFields): NormalizedShopifyPage {
     };
 }
 
+/**
+ * Fetches a single Shopify page by handle.
+ *
+ * @param options - Options object.
+ * @param options.api - Storefront API client.
+ * @param options.handle - Page handle to fetch.
+ * @returns A result tuple — `[NormalizedShopifyPage, undefined]` on success or `[undefined, error]` on failure.
+ */
 export async function ShopifyPageApi({
     api,
     handle,
@@ -107,6 +121,15 @@ export async function ShopifyPageApi({
     return [normalize(readFragment(PAGE_FIELDS_FRAGMENT, data.page)), undefined];
 }
 
+/**
+ * Recursively fetches all Shopify pages, paginating until exhausted.
+ *
+ * @param options - Options object.
+ * @param options.api - Storefront API client.
+ * @param options.cursor - Pagination cursor for the next page; omitted on the first call.
+ * @param options.pages - Accumulated results from previous pages; omitted on the first call.
+ * @returns A result tuple — `[NormalizedShopifyPage[], undefined]` on success or `[undefined, error]` on failure.
+ */
 export async function ShopifyPagesApi({
     api,
     cursor,

@@ -14,6 +14,16 @@ import { ApiBuilder } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
 import { unsafe_cast } from '@/utils/unsafe-cast';
 
+/**
+ * Builds the Shopify Storefront API endpoint and header factory for a tenant.
+ *
+ * @param options - Config options.
+ * @param options.shop - Tenant record; only `domain` is read here.
+ * @param options.buyerIp - Optional buyer IP forwarded to the private-access endpoint for analytics.
+ * @returns An object with `public()` and `private()` factory methods each returning an `ApiConfig`.
+ * @throws {UnknownCommerceProviderError} When the shop's commerce provider is not Shopify.
+ * @throws {ShopMisconfigurationError} When required authentication fields are missing from the provider record.
+ */
 export const ShopifyApiConfig = async ({
     shop: { domain },
     buyerIp,
@@ -77,6 +87,18 @@ type ShopifyApiOptions = {
     buyerIp?: string;
 };
 
+/**
+ * Returns the Apollo-backed Shopify API client for a tenant + locale, pooled for request lifetime.
+ *
+ * @param options - Client options.
+ * @param options.shop - Tenant record.
+ * @param options.locale - Request locale; defaults to `Locale.default`.
+ * @param options.apiConfig - Pre-resolved API config; fetched from Shopify when omitted.
+ * @param options.buyerIp - Forwarded to the private storefront endpoint.
+ * @returns An `AbstractApi`-compatible builder wrapping the pooled Apollo client.
+ * @throws {UnknownCommerceProviderError} When the shop is not a Shopify tenant.
+ * @throws {ShopMisconfigurationError} When Shopify authentication credentials are incomplete.
+ */
 export const ShopifyApolloApiClient = async ({
     shop,
     locale = Locale.default,
@@ -113,6 +135,15 @@ export const ShopifyApolloApiClient = async ({
 
 /**
  * Shopify API client using the fetch API instead of Apollo.
+ *
+ * @param options - Client options.
+ * @param options.shop - Tenant record.
+ * @param options.locale - Request locale; defaults to `Locale.default`.
+ * @param options.apiConfig - Pre-resolved API config; fetched from Shopify when omitted.
+ * @param options.buyerIp - Forwarded to the private storefront endpoint.
+ * @returns An `AbstractApi`-compatible builder wrapping the fetch-based client.
+ * @throws {UnknownCommerceProviderError} When the shop is not a Shopify tenant.
+ * @throws {ShopMisconfigurationError} When Shopify authentication credentials are incomplete.
  */
 export const ShopifyApiClient = async ({ shop, locale = Locale.default, apiConfig, buyerIp }: ShopifyApiOptions) => {
     // TODO: Support public headers too.

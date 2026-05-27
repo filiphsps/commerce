@@ -13,8 +13,24 @@ const POOL_WARN_THRESHOLD = 1000;
 // revalidate handler.
 const pool = new Map<string, ApolloClient>();
 
+/**
+ * Builds the pool lookup key for a shop + locale pair.
+ *
+ * @param shopId - Unique shop identifier from the `OnlineShop` record.
+ * @param localeCode - BCP-47 locale code, e.g. `"en-US"`.
+ * @returns Composite key string `"<shopId>::<localeCode>"`.
+ */
 const key = (shopId: string, localeCode: string) => `${shopId}::${localeCode}`;
 
+/**
+ * Returns the pooled Apollo client for the given shop + locale, creating one via `factory` on first call.
+ *
+ * @param options - Pool lookup options.
+ * @param options.shop - Shop identity used as part of the pool key.
+ * @param options.locale - Locale used as part of the pool key.
+ * @param options.factory - Called once to create the client when no cached entry exists.
+ * @returns The existing or newly created Apollo client.
+ */
 export function getApolloClient({
     shop,
     locale,
@@ -39,14 +55,28 @@ export function getApolloClient({
     return client;
 }
 
+/**
+ * Removes all Apollo clients for a shop from the pool — called from the webhook revalidate handler.
+ *
+ * @param options - Eviction options.
+ * @param options.shopId - Identifier of the shop whose entries should be removed.
+ */
 export function evictApolloClient({ shopId }: { shopId: string }): void {
     for (const k of pool.keys()) {
         if (k.startsWith(`${shopId}::`)) pool.delete(k);
     }
 }
 
+/**
+ * Clears every entry in the Apollo client pool.
+ */
 export function evictAllApolloClients(): void {
     pool.clear();
 }
 
+/**
+ * Returns the current number of entries in the Apollo client pool.
+ *
+ * @returns Count of active pool entries.
+ */
 export const _poolSize = () => pool.size;

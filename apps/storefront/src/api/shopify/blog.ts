@@ -113,6 +113,13 @@ const BLOG_ARTICLE_QUERY = graphql(`
     }
 `);
 
+/**
+ * Fetches the list of all blogs from the Shopify Storefront API.
+ *
+ * @param options - Options object.
+ * @param options.api - Storefront API client.
+ * @returns A result tuple — `[Blog[], undefined]` on success or `[undefined, error]` on failure.
+ */
 export async function BlogsApi({ api }: { api: AbstractApi }): Promise<ApiReturn<Blog[]>> {
     const { data, errors } = await api.query(BLOGS_QUERY, { first: 250 });
 
@@ -129,6 +136,17 @@ export async function BlogsApi({ api }: { api: AbstractApi }): Promise<ApiReturn
     return [unsafe_cast<Blog[]>(flattenConnection(data.blogs)), undefined];
 }
 
+/**
+ * Fetches a single blog and its articles from the Shopify Storefront API.
+ *
+ * @param options - Options object.
+ * @param options.api - Storefront API client.
+ * @param options.handle - Blog handle to fetch; defaults to `"news"`.
+ * @param options.limit - Max articles to include; defaults to `30`.
+ * @param options.sorting - Article sort key; defaults to `"PUBLISHED_AT"`.
+ * @param options.reverseSorting - Whether to reverse the sort order; defaults to `true`.
+ * @returns A result tuple — `[Blog, undefined]` on success or `[undefined, error]` on failure.
+ */
 export async function BlogApi({
     api,
     handle = 'news',
@@ -168,6 +186,15 @@ export async function BlogApi({
     ];
 }
 
+/**
+ * Fetches a single blog article from the Shopify Storefront API.
+ *
+ * @param options - Options object.
+ * @param options.api - Storefront API client.
+ * @param options.blogHandle - Blog handle containing the article; defaults to `"news"`.
+ * @param options.handle - Article handle to fetch.
+ * @returns A result tuple — `[Article, undefined]` on success or `[undefined, error]` on failure.
+ */
 export async function BlogArticleApi({
     api,
     blogHandle = 'news',

@@ -14,6 +14,11 @@ export type HeaderApiArgs = { shop: OnlineShop; locale: Locale };
  * mode via `next/headers` so editor previews see autosaved drafts; production
  * renders see published only. Returns `null` when the doc has not been seeded —
  * callers render their minimal fallback chrome in that case.
+ *
+ * @param options - Fetch options.
+ * @param options.shop - Tenant record.
+ * @param options.locale - Request locale for Payload field resolution.
+ * @returns The normalized header document, or `null` when unseeded.
  */
 export async function HeaderApi({ shop, locale }: HeaderApiArgs): Promise<Header | null> {
     const header = await getHeader({

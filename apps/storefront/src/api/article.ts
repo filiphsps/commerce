@@ -17,6 +17,12 @@ export type ArticleApiArgs = { shop: OnlineShop; locale: Locale; slug: string };
  * excerpt/cover, additional tags, and a Lexical body that renders below the
  * Shopify body. Returns `null` when no CMS Article exists for the slug — the
  * Shopify path then renders unchanged.
+ *
+ * @param options - Fetch options.
+ * @param options.shop - Tenant record.
+ * @param options.locale - Request locale for Payload field resolution.
+ * @param options.slug - Article slug to look up.
+ * @returns The normalized CMS article document, or `null` when none exists for the slug.
  */
 export async function ArticleApi({ shop, locale, slug }: ArticleApiArgs): Promise<Article | null> {
     const article = await getArticle({

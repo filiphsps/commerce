@@ -50,6 +50,15 @@ export type ProductsOptions = ApiOptions & {
     filters: ProductsFilters;
 };
 
+/**
+ * Counts all products matching the filters across pages and returns per-page cursor positions.
+ *
+ * @param options - Options object.
+ * @param options.api - Storefront API client.
+ * @param options.filters - Pagination and sorting constraints.
+ * @returns Object with total `pages`, total `products`, and `cursors` for cursor-based navigation.
+ * @throws {ProviderFetchError} When the Shopify query returns errors.
+ */
 export const ProductsPaginationCountApi = async ({
     api,
     ...props
@@ -120,7 +129,7 @@ export const ProductsPaginationCountApi = async ({
  *
  * @param options - The options.
  * @param options.api - The AbstractApi to use.
- * @param options.filters - The AbstractApi to use.
+ * @param options.filters - Pagination, sorting, and filtering constraints.
  * @param [options.filters.limit=35] - The limit of products to fetch.
  * @param [options.filters.sorting='BEST_SELLING'] - The sorting to use.
  * @param [options.filters.available_for_sale=true] - Whether to include available for sale products, set to `undefined` to disable.
@@ -129,6 +138,8 @@ export const ProductsPaginationCountApi = async ({
  * @param [options.filters.before] - The cursor to use for pagination.
  * @param [options.filters.after] - The cursor to use for pagination.
  * @returns The products.
+ * @throws {ProviderFetchError} When the Shopify query returns errors.
+ * @throws {ApiError} When the Storefront API response is missing page info.
  */
 export const ProductsPaginationApi = async ({
     api,

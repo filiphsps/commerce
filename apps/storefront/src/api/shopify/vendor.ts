@@ -54,8 +54,11 @@ type VendorsOptions = { api: AbstractApi };
 /**
  * Get all vendors from Shopify.
  *
- * @param api - The client to use for the query.
+ * @param options - Options object.
+ * @param options.api - Storefront API client.
  * @returns The list of vendors.
+ * @throws {ProviderFetchError} When the Shopify query returns errors.
+ * @throws {NotFoundError} When no products (and therefore no vendors) are found.
  */
 export const VendorsApi = async ({ api }: VendorsOptions): Promise<VendorModel[]> => {
     const shop = api.shop();

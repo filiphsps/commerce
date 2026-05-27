@@ -10,6 +10,13 @@ export type ApiConfig = {
     headers: Record<string, string>;
 };
 
+/**
+ * Creates a new Apollo Client instance configured for the Shopify Storefront API.
+ *
+ * @param config - HTTP endpoint and auth headers for the Storefront API.
+ * @param shop - Tenant record used to set the Next.js revalidation cache tags.
+ * @returns A configured `ApolloClient` instance with caching and error policies set.
+ */
 export const createApolloClient = ({ uri, headers }: ApiConfig, shop: OnlineShop) => {
     return new ApolloClient({
         clientAwareness: {

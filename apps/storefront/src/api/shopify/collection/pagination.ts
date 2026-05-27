@@ -29,6 +29,14 @@ type CollectionsFilters = {
 } & GenericCollectionFilters &
     LimitFilters;
 
+/**
+ * Converts the union-typed `LimitFilters` shape into the `first`/`last` object Shopify GraphQL expects.
+ *
+ * @param filters - Pagination filter; may carry `limit`, `first`, or `last`.
+ * @param defaultLimit - Fallback item count when no limit is specified; defaults to `30`.
+ * @returns An object with `first`, `last`, or both, matching Shopify's cursor-pagination args.
+ * @throws {TodoError} When both `limit` and `first`/`last` are provided simultaneously.
+ */
 // TODO: This should be generic.
 export const extractLimitLikeFilters = (
     filters: LimitFilters,
@@ -85,6 +93,16 @@ type CollectionOptions = ApiOptions &
         | /** @deprecated */ CollectionFilters
     );
 
+/**
+ * Counts all products in a collection across pages and returns per-page cursor positions.
+ *
+ * @param options - Options object.
+ * @param options.api - Storefront API client.
+ * @param options.handle - Collection handle to paginate.
+ * @returns Object with total `pages`, total `products`, and `cursors` array for cursor-based navigation.
+ * @throws {InvalidHandleError} When `handle` fails the validity check.
+ * @throws {ProviderFetchError} When the Shopify query returns errors.
+ */
 export const CollectionPaginationCountApi = async ({
     api,
     handle,
@@ -166,7 +184,13 @@ type CollectionsOptions = ApiOptions &
     );
 
 /**
- * Fetches collections from the Shopify API.
+ * Fetches a paginated slice of collections from the Shopify Storefront API.
+ *
+ * @param options - Options object.
+ * @param options.api - Storefront API client.
+ * @param options.filters - Sorting and cursor constraints for the page request.
+ * @returns Object with `collections` edges and `page_info` cursor metadata.
+ * @throws {ProviderFetchError} When the Shopify query returns errors or page info is absent.
  */
 export const CollectionsPaginationApi = async ({
     api,
