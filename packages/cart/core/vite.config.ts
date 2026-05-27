@@ -25,13 +25,11 @@ export default mergeConfig(
             },
         },
         plugins: process.env.CI
-            ? [
-                  codecovVitePlugin({
-                      enableBundleAnalysis: !!process.env.CODECOV_TOKEN,
-                      bundleName: name,
-                      uploadToken: process.env.CODECOV_TOKEN,
-                  }),
-              ]
+            ? codecovVitePlugin({
+                  enableBundleAnalysis: !!process.env.CODECOV_TOKEN,
+                  bundleName: name,
+                  uploadToken: process.env.CODECOV_TOKEN,
+              })
             : [],
     }),
 );
