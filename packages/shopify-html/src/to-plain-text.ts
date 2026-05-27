@@ -18,6 +18,13 @@ const BLOCK_TAGS = new Set([
     'blockquote',
 ]);
 
+/**
+ * Recursively accumulates text from a parsed HTML node, flushing to `lines` at block-level element boundaries.
+ *
+ * @param node - The parsed HTML node to visit.
+ * @param lines - Collector for completed line strings; a new entry is pushed each time a block boundary is crossed.
+ * @param current - Mutable string accumulator holding text not yet flushed to `lines`.
+ */
 function walk(node: Node, lines: string[], current: { value: string }): void {
     if (node.nodeType === NodeType.TEXT_NODE) {
         current.value += node.text;
@@ -47,6 +54,17 @@ function walk(node: Node, lines: string[], current: { value: string }): void {
     }
 }
 
+/**
+ * Converts a Shopify-origin HTML string to plain text, inserting newlines at block-element boundaries to preserve paragraph structure.
+ *
+ * @param html - Raw Shopify HTML string to convert; accepts null or undefined.
+ * @returns Newline-separated plain-text content, or an empty string when the input is blank or un-parseable.
+ * @example
+ * ```ts
+ * const text = toPlainText('<p>Hello <strong>world</strong></p><p>Another paragraph.</p>');
+ * // "Hello world\nAnother paragraph."
+ * ```
+ */
 export function toPlainText(html: string | null | undefined): string {
     const root = normalize(html);
     if (!root) return '';

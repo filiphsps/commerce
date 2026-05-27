@@ -28,11 +28,20 @@ const VOID_ELEMENTS = new Set([
     'wbr',
 ]);
 
+/**
+ * Options accepted by {@link toReactNodes} that let callers substitute custom React components for specific HTML tags during conversion.
+ */
 export type ToReactNodesOptions = {
     /** Override which component to render for a given tag. */
     components?: Partial<Record<keyof JSX.IntrinsicElements, ElementType>>;
 };
 
+/**
+ * Translates raw HTML attribute names to their React DOM equivalents, handling cases like `class` → `className` and `for` → `htmlFor`.
+ *
+ * @param raw - HTML attribute map as returned by the parser.
+ * @returns Attribute object with React-compatible property names substituted where applicable.
+ */
 function convertAttributes(raw: Record<string, string>): Record<string, string> {
     const out: Record<string, string> = {};
     for (const [name, value] of Object.entries(raw)) {
@@ -42,6 +51,14 @@ function convertAttributes(raw: Record<string, string>): Record<string, string> 
     return out;
 }
 
+/**
+ * Converts a single parsed HTML node to a React element, a text string, or null; recurses into child nodes for element nodes.
+ *
+ * @param node - Parsed HTML node to convert.
+ * @param key - React reconciliation key to assign to the created element.
+ * @param opts - Conversion options forwarded from the root call, including any tag-level component overrides.
+ * @returns A React element for element nodes, the raw text string for text nodes, or null for unrecognized or empty nodes.
+ */
 function nodeToReact(node: Node, key: string, opts: ToReactNodesOptions): ReactNode {
     if (node.nodeType === NodeType.TEXT_NODE) {
         return node.text;
@@ -68,6 +85,20 @@ function nodeToReact(node: Node, key: string, opts: ToReactNodesOptions): ReactN
     return createElement(Component, props, ...children);
 }
 
+/**
+ * Parses a Shopify-origin HTML string and returns a React node tree suitable for direct rendering, normalizing HTML attributes and optionally replacing tags with custom React components.
+ *
+ * @param html - Raw Shopify HTML string to convert; accepts null or undefined.
+ * @param opts - Conversion options; supply `components` to replace specific HTML tags with custom React components.
+ * @returns A React node wrapping the parsed content, or null when the input is blank or yields no renderable output.
+ * @example
+ * ```tsx
+ * const nodes = toReactNodes(product.descriptionHtml, {
+ *     components: { a: LinkComponent },
+ * });
+ * return <div>{nodes}</div>;
+ * ```
+ */
 export function toReactNodes(html: string | null | undefined, opts: ToReactNodesOptions = {}): ReactNode {
     const root = normalize(html);
     if (!root) return null;
