@@ -11,11 +11,34 @@ type EntityInvalidators<E extends EntitiesMap, T> = {
     [K in keyof E]: (arg: EntityInvalidatorArg<T, E[K]>) => Promise<void>;
 };
 
+/**
+ * Typed invalidation surface generated from a `CacheSchemaShape`; exposes a method per declared
+ * entity plus `tenant` and `all` shortcuts, so callers get autocompletion and type-checked params
+ * instead of constructing raw tag arrays by hand.
+ *
+ * @example
+ * ```ts
+ * // Invalidate a single product by ID for a specific tenant.
+ * await cache.invalidate.product({ tenant: shop, id: '123' });
+ * // Invalidate all entries for a tenant.
+ * await cache.invalidate.tenant(shop);
+ * // Purge the entire namespace.
+ * await cache.invalidate.all();
+ * ```
+ */
 export type InvalidateNamespace<T = unknown, E extends EntitiesMap = EntitiesMap> = EntityInvalidators<E, T> & {
     tenant(tenant: T): Promise<void>;
     all(): Promise<void>;
 };
 
+/**
+ * Constructs the `InvalidateNamespace` object for a schema, wiring each entity name to a
+ * fanout-then-fire handler and providing `tenant` and `all` shortcut methods.
+ *
+ * @param schema - The resolved schema shape that defines entities, tenant configuration, and namespace.
+ * @param fire - Callback that receives the computed tag array and performs the actual adapter invalidation.
+ * @returns A fully-typed `InvalidateNamespace` bound to the schema's entity names and tenant type.
+ */
 export function buildInvalidateNamespace<NS extends string, T, Q, E extends EntitiesMap>(
     schema: CacheSchemaShape<NS, T, Q, E>,
     fire: (tags: string[]) => Promise<void>,
