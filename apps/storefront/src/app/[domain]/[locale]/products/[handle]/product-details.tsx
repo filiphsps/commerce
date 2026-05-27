@@ -17,11 +17,22 @@ const LABEL_STYLES = 'leading-none text-base';
 const CONTENT_STYLES =
     'flex items-center justify-center rounded-lg bg-gray-100 p-1 px-2 text-sm font-semibold leading-tight hyphens-auto h-min gap-1';
 
+/** Props for the `ProductIngredients` server component. */
 export type ProductIngredientsProps = {
     locale: Locale;
     data: Product;
     className?: string;
 };
+/**
+ * Server component rendering the product ingredients card when the product
+ * has an `ingredients` Shopify metafield. Returns `null` when the metafield is
+ * absent or cannot be parsed.
+ *
+ * @param locale - The active locale, used to fetch the i18n dictionary.
+ * @param data - The product data containing the `ingredients` metafield.
+ * @param className - Optional extra class names applied to the card element.
+ * @returns The ingredients card, or `null` when no ingredients data is available.
+ */
 export async function ProductIngredients({ locale, data: product, className = '' }: ProductIngredientsProps) {
     const i18n = await getDictionary(locale);
     const { t } = getTranslations('product', i18n);
@@ -44,10 +55,19 @@ export async function ProductIngredients({ locale, data: product, className = ''
     );
 }
 
+/** Props for the `ProductOriginalName` server component. */
 export type ProductOriginalNameProps = {
     locale: Locale;
     data: Product;
 };
+/**
+ * Server component rendering the product's original/trade name from the
+ * `originalName` Shopify metafield in italics. Returns `null` when the
+ * metafield is absent or cannot be parsed.
+ *
+ * @param data - The product data containing the `originalName` metafield.
+ * @returns The original name paragraph element, or `null` when unavailable.
+ */
 export async function ProductOriginalName({ data: product }: ProductOriginalNameProps) {
     //const i18n = await getDictionary(locale);
     //const { t } = getTranslations('product', i18n);
@@ -65,10 +85,20 @@ export async function ProductOriginalName({ data: product }: ProductOriginalName
     return <p className="font-medium text-base italic">&ldquo;{parsedName}&rdquo;</p>;
 }
 
+/** Props for the `ProductDetails` server component. */
 export type ProductDetailsProps = {
     locale: Locale;
     data: Product;
 };
+/**
+ * Server component rendering confectionary-specific product details: flavor
+ * attributes and per-variant SKU/barcode cards, plus the ingredients section
+ * via `ProductIngredients`. Returns `null` for non-confectionary products.
+ *
+ * @param locale - The active locale, forwarded to `ProductIngredients` for dictionary lookup.
+ * @param data - The product data; must satisfy `isProductConfectionary` to render.
+ * @returns The details section, or `null` for non-confectionary products.
+ */
 export async function ProductDetails({ locale, data: product }: ProductDetailsProps) {
     const i18n = await getDictionary(locale);
     const { t } = getTranslations('product', i18n);

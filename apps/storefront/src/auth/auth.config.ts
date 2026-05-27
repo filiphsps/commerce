@@ -5,6 +5,15 @@ import ShopifyProvider from '@/auth/shopify-provider';
 
 const IS_PROD = process.env.NODE_ENV === 'production';
 
+/**
+ * Builds the NextAuth configuration for a given shop and Shopify OAuth
+ * credentials, scoping session cookies to the shop's apex domain in
+ * production.
+ *
+ * @param shop - The tenant shop record used for domain scoping.
+ * @param shopifyAuth - The Shopify Customer Accounts API credentials.
+ * @returns A NextAuth-compatible config object.
+ */
 const config = ({
     shop,
     shopifyAuth,

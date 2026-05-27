@@ -9,6 +9,15 @@ import { Locale } from '@/utils/locale';
 
 export type ArticlePageParams = Promise<{ domain: string; locale: string; blog: string; handle: string }>;
 
+/**
+ * Generates the `handle` segments for all articles in a given blog under a
+ * domain/locale pair at build time. Returns a sentinel entry for missing or
+ * invalid blogs so Cache Components always has at least one path.
+ *
+ * @param params - The already-resolved `domain`, `locale`, and `blog` handle from the parent segments.
+ * @returns An array of `{ handle }` objects, one per article in the blog.
+ * @throws When a non-404 Shopify error is encountered during article enumeration.
+ */
 export async function generateStaticParams({
     params,
 }: {

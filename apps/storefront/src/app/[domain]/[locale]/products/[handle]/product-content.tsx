@@ -15,10 +15,21 @@ import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 import { unsafe_cast } from '@/utils/unsafe-cast';
 
+/** Props for the `ProductContent` client component. */
 export type ProductContentProps = {
     product: Product;
     i18n: LocaleDictionary;
 };
+/**
+ * Client component that wires the Hydrogen `ProductProvider` and
+ * `QuantityProvider` around the product actions UI. Reads the `variant`
+ * search param to pre-select a specific variant; falls back to the first
+ * available variant when absent.
+ *
+ * @param product - The product data including variants and availability.
+ * @param i18n - The locale dictionary for translated labels in the actions UI.
+ * @returns The product actions section with variant selection and add-to-cart.
+ */
 export function ProductContent({ product, i18n }: ProductContentProps) {
     const searchParams = useSearchParams();
     const initialVariantId = useMemo(
@@ -44,11 +55,22 @@ export function ProductContent({ product, i18n }: ProductContentProps) {
     );
 }
 
+/** Props for the `ProductSavings` client component. */
 export type ProductSavingsProps = {
     product: Product;
     i18n: LocaleDictionary;
     className?: string;
 };
+/**
+ * Client component that displays a sale savings badge for the currently
+ * selected variant. Returns `null` when the product is unavailable, the
+ * variant has no compare-at price, or the computed savings are negative.
+ *
+ * @param i18n - The locale dictionary for translated savings copy.
+ * @param product - The product data used to locate the active variant and pricing.
+ * @param className - Optional extra class names applied to the badge element.
+ * @returns The savings badge, or `null` when there are no savings to display.
+ */
 export function ProductSavings({ i18n, product, className }: ProductSavingsProps) {
     const searchParams = useSearchParams();
     const variant = useMemo(

@@ -25,12 +25,26 @@ const WIDTH_TO_FRACTION: Record<ColumnsBlockNode['columns'][number]['width'], st
     full: '1fr',
 };
 
+/**
+ * Props for `ColumnsBlock` and `ColumnsBlockSkeleton`. The `Renderer` is
+ * injected rather than imported to keep the block tree acyclic — the
+ * dispatcher (`blocks.tsx`) owns the recursion guard and dispatches back here.
+ */
 export type ColumnsBlockProps = {
     block: ColumnsBlockNode;
     context: BlockContext;
     Renderer: (props: { blocks: BlockNode[]; context: BlockContext }) => ReactNode;
 };
 
+/**
+ * Renders the CMS Columns block, laying out child blocks in a responsive
+ * CSS grid where each column's track size is driven by its `width` enum.
+ *
+ * @param block - The CMS columns block node with column definitions and nested content.
+ * @param context - Render context; depth is incremented before being forwarded to nested blocks.
+ * @param Renderer - Injected block dispatcher used for recursion into nested block arrays.
+ * @returns The rendered columns section element.
+ */
 export const ColumnsBlock = ({ block, context, Renderer }: ColumnsBlockProps) => {
     const nestedContext: BlockContext = { ...context, depth: (context.depth ?? 0) + 1 };
 
@@ -72,6 +86,11 @@ ColumnsBlock.displayName = 'Nordcom.Blocks.Columns';
  *
  * Like the live block, the dispatcher is injected via `Renderer` so the
  * import graph stays acyclic between `columns.tsx` and `blocks.tsx`.
+ *
+ * @param block - The CMS columns block node; used to mirror grid structure and column count.
+ * @param context - Render context; depth is incremented before being forwarded to nested skeleton blocks.
+ * @param Renderer - Injected block dispatcher for recursing into nested skeleton block arrays.
+ * @returns The skeleton columns section element.
  */
 const ColumnsBlockSkeleton = ({ block, context, Renderer }: ColumnsBlockProps) => {
     const nestedContext: BlockContext = { ...context, depth: (context.depth ?? 0) + 1 };

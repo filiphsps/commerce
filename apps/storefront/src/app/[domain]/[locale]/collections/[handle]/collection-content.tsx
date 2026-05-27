@@ -13,6 +13,18 @@ type SearchParams = {
     page?: string;
 };
 
+/**
+ * Server component rendering a paginated product grid for a collection.
+ * Validates the page number against the known page count and calls
+ * `notFound()` for out-of-range or non-numeric page params.
+ *
+ * @param shop - The tenant shop, forwarded to `CollectionBlock` for API calls.
+ * @param locale - The active locale forwarded to `CollectionBlock`.
+ * @param handle - The Shopify collection handle to render.
+ * @param searchParams - Optional query params; `page` controls the current page.
+ * @param pagesInfo - Pre-fetched cursor array and total page count from the parent.
+ * @returns The paginated collection product grid wrapped in `Suspense`.
+ */
 export async function CollectionContent({
     shop,
     locale,

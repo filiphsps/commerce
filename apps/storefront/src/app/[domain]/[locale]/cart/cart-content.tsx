@@ -10,6 +10,7 @@ import { cn } from '@/utils/tailwind';
 import styles from './cart-content.module.css';
 import { CartSidebar } from './cart-sidebar';
 
+/** Props for the `CartContent` server component. */
 export type CartContentProps = {
     shop: OnlineShop;
     locale: Locale;
@@ -18,6 +19,17 @@ export type CartContentProps = {
     paymentMethods?: ReactNode;
 };
 
+/**
+ * Server component that composes the cart page layout: a cart lines list on
+ * the left and an order summary sidebar on the right. Both sections use
+ * `Suspense` so the page can stream without blocking on cart data.
+ *
+ * @param locale - The active locale, forwarded to `CartSidebar` for pricing display.
+ * @param i18n - The locale dictionary for translated labels.
+ * @param header - A slot for the cart page heading rendered above the line items.
+ * @param paymentMethods - Optional slot for accepted payment method badges in the sidebar.
+ * @returns The cart page content layout.
+ */
 export default async function CartContent({ locale, i18n, header, paymentMethods = null }: CartContentProps) {
     return (
         <PageContent className={styles.container}>

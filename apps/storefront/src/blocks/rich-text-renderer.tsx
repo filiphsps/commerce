@@ -99,6 +99,15 @@ type LexicalNode =
 
 export type LexicalRoot = { root?: { children?: LexicalNode[] } } | null | undefined;
 
+/**
+ * Converts a Lexical text node to a React node with inline format marks
+ * (bold, italic, underline, strikethrough, code, sub/superscript) applied
+ * inside-out to match Lexical's apply order.
+ *
+ * @param node - The Lexical text node to render.
+ * @param idx - The React list key index within the parent's children array.
+ * @returns A `Fragment` wrapping the text with any format marks applied.
+ */
 const renderText = (node: LexicalTextNode, idx: number): ReactNode => {
     const format = node.format ?? 0;
     let element: ReactNode = node.text;
@@ -115,9 +124,28 @@ const renderText = (node: LexicalTextNode, idx: number): ReactNode => {
     return <Fragment key={idx}>{element}</Fragment>;
 };
 
+/**
+ * Maps a Lexical children array to React nodes by delegating each child to
+ * `renderNode`. Returns an empty array when `children` is absent.
+ *
+ * @param children - The Lexical child nodes to render, or `undefined`.
+ * @param locale - The active locale forwarded to nested link resolution.
+ * @returns An array of React nodes, one per child.
+ */
 const renderChildren = (children: LexicalNode[] | undefined, locale: Locale): ReactNode =>
     (children ?? []).map((child, idx) => renderNode(child, idx, locale));
 
+/**
+ * Dispatches a single Lexical node to its corresponding React element.
+ * Unknown node types fall back to a `Fragment` wrapping their children so
+ * content is never silently dropped when new node types ship ahead of this
+ * renderer.
+ *
+ * @param node - The Lexical node to render.
+ * @param idx - The React list key index within the parent's children array.
+ * @param locale - The active locale used for link href resolution.
+ * @returns The React node for the given Lexical node.
+ */
 const renderNode = (node: LexicalNode, idx: number, locale: Locale): ReactNode => {
     const type = (node as { type?: string }).type;
 
@@ -202,6 +230,10 @@ export type RichTextProps = {
  * Locale-map unwrapping happens upstream in
  * `apps/storefront/src/api/_normalize-payload.ts` — the renderer trusts
  * its input.
+ *
+ * @param data - The Lexical document root to render.
+ * @param locale - The active locale forwarded to link resolution within the document.
+ * @returns The rendered React node tree, or `null` for an empty document.
  */
 export const RichText = ({ data, locale }: RichTextProps): ReactNode => {
     const children = data?.root?.children;
@@ -212,6 +244,9 @@ export const RichText = ({ data, locale }: RichTextProps): ReactNode => {
 /**
  * Quick predicate so block components can skip wrapping empty rich-text
  * regions in containers (e.g. the Banner subheading area).
+ *
+ * @param data - The Lexical document root to check.
+ * @returns `true` when the document has no content or only an empty initial paragraph.
  */
 export const isRichTextEmpty = (data: LexicalRoot): boolean => {
     const children = data?.root?.children;

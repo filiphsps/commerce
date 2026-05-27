@@ -10,6 +10,15 @@ import { Locale } from '@/utils/locale';
 
 export type BlogPageParams = Promise<{ domain: string; locale: string; blog: string }>;
 
+/**
+ * Generates the `blog` handle segments for all blogs in a shop under a given
+ * domain/locale pair at build time. Returns a sentinel entry when the shop
+ * has no blogs so Cache Components always has at least one path.
+ *
+ * @param params - The already-resolved `domain` and `locale` from the parent segment.
+ * @returns An array of `{ blog }` objects, one per blog in the shop.
+ * @throws When a non-404 Shopify error is encountered during blog enumeration.
+ */
 export async function generateStaticParams({
     params,
 }: {
