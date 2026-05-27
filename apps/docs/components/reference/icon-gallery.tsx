@@ -13,50 +13,30 @@ type IconCardProps = {
 
 /**
  * Grid wrapper for icon-catalogue pages (e.g. `react-payment-brand-icons`).
- * Lays out `IconCard` children in a responsive multi-column grid.
+ * Lays out `IconCard` children in a responsive multi-column grid via the
+ * `.icon-gallery` CSS class in globals.css.
  *
  * @param props - React children (expected to be `IconCard` elements).
  * @returns A grid container element.
  */
 export function IconGallery({ children }: IconGalleryProps) {
-    return (
-        <div
-            style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(10rem, 1fr))',
-                gap: '0.75rem',
-                margin: '1.5rem 0',
-            }}
-        >
-            {children}
-        </div>
-    );
+    return <div className="icon-gallery">{children}</div>;
 }
 
 /**
  * Single card in an `IconGallery`. Renders the component name and an optional
- * one-line summary.
+ * one-line summary. Styled via `.icon-card` in globals.css.
  *
  * @param props - Component name and optional summary text.
  * @returns A card element showing name and summary.
  */
 export function IconCard({ name, summary }: IconCardProps) {
     return (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '0.25rem',
-                padding: '0.75rem',
-                borderRadius: '0.5rem',
-                border: '1px solid var(--color-fd-border, #e5e7eb)',
-                fontSize: '0.8125rem',
-            }}
-        >
+        <article className="icon-card">
             <code style={{ fontWeight: 600 }}>{name}</code>
             {summary && (
-                <span style={{ color: 'var(--color-fd-muted-foreground, #6b7280)', lineHeight: 1.4 }}>{summary}</span>
+                <span style={{ color: 'var(--color-fg-mute)', lineHeight: 1.4 }}>{summary}</span>
             )}
-        </div>
+        </article>
     );
 }

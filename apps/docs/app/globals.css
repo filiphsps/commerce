@@ -77,3 +77,325 @@
         border-radius: 3px;
     }
 }
+
+/* ─── JSDoc banners ────────────────────────────────────────────────────────── */
+
+.jsdoc-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 0.85rem 1.1rem;
+    border: var(--bw) solid;
+    border-radius: var(--radius);
+    margin-bottom: 1.4rem;
+    max-width: 920px;
+}
+
+.jsdoc-banner .label {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    color: var(--color-bg);
+    padding: 0.22rem 0.55rem;
+    border-radius: 4px;
+    font-weight: 700;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.jsdoc-banner .body {
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--color-fg);
+    line-height: 1.5;
+}
+
+.jsdoc-banner .body code {
+    font-family: var(--font-mono);
+    background: var(--color-bg-2);
+    padding: 0 0.3rem;
+    border-radius: 3px;
+    color: var(--color-fg);
+    font-weight: 500;
+    font-size: 0.85em;
+}
+
+.jsdoc-banner .body strong {
+    font-weight: 700;
+}
+
+.jsdoc-banner.deprecated {
+    border-color: var(--color-err);
+    background: hsl(28 95% 58% / 0.08);
+    box-shadow: 0 0 28px hsl(28 95% 58% / 0.12);
+}
+
+.jsdoc-banner.deprecated .label {
+    background: var(--color-err);
+}
+
+.jsdoc-banner.deprecated .body strong {
+    color: var(--color-err);
+}
+
+.jsdoc-banner.beta {
+    border-color: var(--color-ref);
+    background: hsl(190 95% 55% / 0.06);
+    box-shadow: 0 0 24px hsl(190 95% 55% / 0.08);
+}
+
+.jsdoc-banner.beta .label {
+    background: var(--color-ref);
+}
+
+.jsdoc-banner.beta .body strong {
+    color: var(--color-ref);
+}
+
+.jsdoc-banner.experimental {
+    border-color: var(--color-ref);
+    border-style: dashed;
+    background: hsl(190 95% 55% / 0.04);
+}
+
+.jsdoc-banner.experimental .label {
+    background: var(--color-ref);
+}
+
+.jsdoc-banner.internal {
+    border-color: var(--color-fg-dim);
+    background: var(--color-bg-1);
+    opacity: 0.8;
+}
+
+.jsdoc-banner.internal .label {
+    background: var(--color-fg-dim);
+    color: var(--color-fg);
+}
+
+.jsdoc-banner.internal .body {
+    color: var(--color-fg-mute);
+}
+
+/* ─── Inline pills ─────────────────────────────────────────────────────────── */
+
+.inline-pill {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    padding: 0.18rem 0.45rem;
+    border: var(--bw-s) solid;
+    border-radius: 4px;
+    vertical-align: middle;
+    margin-left: 0.35rem;
+}
+
+.inline-pill.deprecated {
+    color: var(--color-err);
+    border-color: var(--color-err);
+    background: hsl(28 95% 58% / 0.1);
+}
+
+.inline-pill.beta {
+    color: var(--color-ref);
+    border-color: var(--color-ref);
+    background: hsl(190 95% 55% / 0.1);
+}
+
+.inline-pill.experimental {
+    color: var(--color-ref);
+    border-color: var(--color-ref);
+    border-style: dashed;
+}
+
+.inline-pill.internal {
+    color: var(--color-fg-mute);
+    border-color: var(--color-fg-dim);
+}
+
+.inline-pill.new {
+    color: var(--color-brand);
+    border-color: var(--color-brand);
+    background: hsl(330 86% 57% / 0.12);
+}
+
+/* ─── MDX callouts ─────────────────────────────────────────────────────────── */
+
+.callout {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.85rem;
+    padding: 0.9rem 1.1rem;
+    border: var(--bw-s) solid;
+    border-left: var(--bw-l) solid;
+    border-radius: var(--radius);
+    margin: 1.2rem 0;
+    font-size: 0.92rem;
+    line-height: 1.6;
+    max-width: 920px;
+}
+
+.callout .label {
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    align-self: flex-start;
+    padding-top: 0.18rem;
+    white-space: nowrap;
+}
+
+.callout code {
+    font-family: var(--font-mono);
+    background: var(--color-bg-2);
+    padding: 0 0.3rem;
+    border-radius: 3px;
+    font-size: 0.85em;
+    color: var(--color-fg);
+}
+
+.callout.info {
+    border-color: var(--color-info);
+    background: hsl(220 80% 65% / 0.05);
+}
+
+.callout.info .label {
+    color: var(--color-info);
+}
+
+.callout.tip {
+    border-color: var(--color-pkg);
+    background: hsl(95 80% 55% / 0.05);
+}
+
+.callout.tip .label {
+    color: var(--color-pkg);
+}
+
+.callout.warn {
+    border-color: var(--color-err);
+    background: hsl(28 95% 58% / 0.05);
+}
+
+.callout.warn .label {
+    color: var(--color-err);
+}
+
+.callout.danger {
+    border-color: hsl(0 80% 60%);
+    background: hsl(0 80% 60% / 0.05);
+    box-shadow: 0 0 24px hsl(0 80% 60% / 0.1);
+}
+
+.callout.danger .label {
+    color: hsl(0 80% 65%);
+}
+
+.callout.example {
+    border-color: var(--color-ref);
+    background: hsl(190 95% 55% / 0.04);
+}
+
+.callout.example .label {
+    color: var(--color-ref);
+}
+
+.callout.note {
+    border-color: var(--color-border-strong);
+    background: var(--color-bg-1);
+}
+
+.callout.note .label {
+    color: var(--color-fg-mute);
+}
+
+/* ─── Reference page chrome ────────────────────────────────────────────────── */
+
+.kind-line {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    font-size: 0.8125rem;
+    color: var(--color-fg-mute);
+    margin: 0 0 1.5rem;
+}
+
+.kind-line .dot {
+    color: var(--color-brand);
+    font-size: 0.5rem;
+}
+
+.kind-line .sep {
+    color: var(--color-fg-dim);
+}
+
+.kind-line .tag {
+    font-family: var(--font-mono);
+    background: var(--color-bg-2);
+    border-radius: 0.25rem;
+    padding: 0.125rem 0.5rem;
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+.kind-line .tag.throws {
+    color: var(--color-err);
+}
+
+.ref-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: var(--radius);
+    background: var(--color-bg-1);
+    border: var(--bw-s) solid var(--color-border);
+    font-size: 0.875rem;
+    text-decoration: none;
+    color: var(--color-fg);
+    transition: border-color var(--duration) var(--ease);
+}
+
+.ref-banner:hover {
+    border-color: var(--color-border-strong);
+}
+
+.ref-banner .label {
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 700;
+    color: var(--color-fg-mute);
+    margin-bottom: 0.2rem;
+}
+
+.ref-banner .body {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+}
+
+.ref-banner .arrow {
+    color: var(--color-fg-dim);
+    font-size: 1.1rem;
+}
+
+.icon-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+}
+
+.icon-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.75rem;
+    border-radius: var(--radius);
+    border: var(--bw-s) solid var(--color-border);
+    font-size: 0.8125rem;
+}
