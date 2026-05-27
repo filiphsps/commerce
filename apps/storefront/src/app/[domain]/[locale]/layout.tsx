@@ -1,12 +1,5 @@
 import '../../globals.css';
 
-import {
-    CartProvider,
-    cachePredictor,
-    quantitySumPredictor,
-    snapshotPredictor,
-    subtotalPredictor,
-} from '@nordcom/cart-react';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
 import type { Viewport } from 'next';
@@ -16,7 +9,9 @@ import type { ReactNode } from 'react';
 import { Fragment, Suspense } from 'react';
 import { CountriesApi, LocaleApi, LocalesApi, Shop } from '@/api/_loaders';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { clientAuthBridge } from '@/cart/client-auth';
+import { dispatch as dispatchCartMutation } from '@/app/[domain]/[locale]/_actions/cart';
+import type { AppCartCaps } from '@/cart/caps';
+import { CartClientShell } from '@/cart/cart-client-shell';
 import { resolveContext } from '@/cart/context';
 import { cartKernel, readCart } from '@/cart/kernel';
 import { AnalyticsProvider } from '@/components/analytics-provider';
@@ -87,23 +82,18 @@ async function CartIsland({ children }: { children: ReactNode }) {
     const ctx = await resolveContext();
     const initial = await readCart(ctx);
     return (
-        <CartProvider
+        <CartClientShell
             kernelSnapshot={{
                 type: cartKernel.type,
-                capabilities: cartKernel.capabilities,
+                capabilities: cartKernel.capabilities as AppCartCaps,
                 customMutationNames: cartKernel.capabilities.customMutations,
             }}
-            submitMutation={async (envelope) => (await import('./_actions/cart')).dispatch(envelope)}
+            submitMutation={dispatchCartMutation}
             initialCart={initial}
             shopId={ctx.shop.id}
-            predictors={{
-                line: [snapshotPredictor(), cachePredictor({ get: () => null })],
-                cart: [quantitySumPredictor(), subtotalPredictor()],
-            }}
-            clientAuthBridge={clientAuthBridge}
         >
             {children}
-        </CartProvider>
+        </CartClientShell>
     );
 }
 
