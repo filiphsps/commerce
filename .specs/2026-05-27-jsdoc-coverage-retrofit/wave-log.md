@@ -25,30 +25,34 @@ Calibration findings:
 
 ## Wave 2 — Independent foundations (db, tagtree subs, shopify-graphql, cart/core)
 
+Status: completed
+Started: 2026-05-27
+Completed: 2026-05-27
+PRs:
+- `packages/db`: #1957 merged. 34 T1, 10 T2, 13 files.
+- `packages/tagtree/core`: #1958 merged. 34 T1, 2 T2, 11 files.
+- `packages/tagtree/next`: #1956 merged (LGTM clean). 1 T1, 0 T2, 1 file.
+- `packages/tagtree/payload`: #1954 merged (LGTM clean). 2 T1, 2 T2, 1 file.
+- `packages/tagtree/shopify`: #1955 merged + follow-up #1959 merged (2 blockers fixed: restatement + @param). 3 T1, 0 T2.
+- `packages/shopify-graphql`: #1953 merged + follow-up #1961 merged + 2nd follow-up #1962 merged (3 blockers across two cycles: missing types + JSDoc binding to wrong symbol). 5 T1 net.
+- `packages/cart/core`: #1960 merged (reviewer killed mid-flight; no blockers surfaced). 38 T1, 3 T2, 15 files.
+Calibration findings:
+- **Generator may need 2 attempts.** Multiple agents hit stream timeouts (cart-core retry, shopify-graphql-fix retry). Re-dispatch from a clean worktree works.
+- **Re-exported types from third-party libraries are still Tier 1.** Spec § "In scope (the what)" item 5 has no third-party carve-out. Generators should not skip them.
+- **JSDoc placement matters for binding.** TS binds JSDoc to the immediately-following declaration. When an internal helper sits between the doc block and the intended public symbol, the doc lands on the wrong target. Generator should `Edit` the block adjacent to its symbol with no intervening declarations.
+- **gh `--force-with-lease` fails when the remote branch was deleted between fetch and push.** Agents using `--force` after such a delete should verify the remote branch doesn't exist before pushing (to avoid accidentally re-creating a merged branch under a stale name). Workaround: rename the local branch before pushing the follow-up fix.
+
+## Wave 3 — Dependent packages (shopify-html, marketing-common, test-mongo, cart/shopify, cart/react)
+
 Status: in_progress
 Started: 2026-05-27
 Completed: —
 PRs:
-- `packages/db`: pending generator dispatch
-- `packages/tagtree/core`: pending generator dispatch
-- `packages/tagtree/next`: pending generator dispatch
-- `packages/tagtree/payload`: pending generator dispatch
-- `packages/tagtree/shopify`: pending generator dispatch
-- `packages/shopify-graphql`: pending generator dispatch
-- `packages/cart/core`: pending generator dispatch
-Calibration findings: —
-
-## Wave 3 — Dependent packages (shopify-html, marketing-common, test-mongo, cart/shopify, cart/react)
-
-Status: pending
-Started: —
-Completed: —
-PRs:
-- `packages/shopify-html`: —
-- `packages/marketing-common`: —
-- `packages/test-mongo`: —
-- `packages/cart/shopify`: —
-- `packages/cart/react`: —
+- `packages/shopify-html`: pending generator dispatch
+- `packages/marketing-common`: pending generator dispatch
+- `packages/test-mongo`: pending generator dispatch
+- `packages/cart/shopify`: pending generator dispatch
+- `packages/cart/react`: pending generator dispatch
 Calibration findings: —
 
 ## Wave 4 — Large packages (cart/next, cms)
