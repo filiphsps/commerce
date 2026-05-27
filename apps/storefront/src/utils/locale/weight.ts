@@ -94,7 +94,7 @@ export function localizeWeight(locale: Locale, weight: Weight, {}: LocalizeWeigh
  * Serializes a `Weight` to a compact human-readable string (e.g., `"500g"` or `"1.5kg"`), trimming trailing decimal zeros.
  *
  * @param props - The weight to format.
- * @param props.weight - The numeric weight value.
+ * @param props.weight - Numeric magnitude formatted to at most two decimal places with trailing zeros trimmed before the unit symbol is appended.
  * @param props.unit - The Shopify `WeightUnit` that determines the appended symbol.
  * @returns A string combining the trimmed numeric value and its unit symbol.
  */
