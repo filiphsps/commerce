@@ -1,6 +1,7 @@
 packages:
     - "packages/*"
     - "packages/tagtree/*"
+    - "packages/cart/*"
     - "apps/*"
     - "!**/tests/fixtures/**"
 
