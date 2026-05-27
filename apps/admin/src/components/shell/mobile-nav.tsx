@@ -8,6 +8,12 @@ export type MobileNavProps = {
     subnav: ReactNode;
 };
 
+/**
+ * Stacked navigation list for the mobile drawer; renders icon rail items as text links with an optional subnav section.
+ *
+ * @param props.items - Navigation entries mirroring the desktop icon rail.
+ * @param props.subnav - Optional secondary navigation rendered below a divider.
+ */
 export function MobileNav({ items, subnav }: MobileNavProps) {
     return (
         <nav className="flex flex-col gap-1">

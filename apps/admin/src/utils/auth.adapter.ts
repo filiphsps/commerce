@@ -15,6 +15,15 @@ const adapterCatch = (op: string, error: unknown): null => {
     throw error;
 };
 
+/**
+ * Constructs an Auth.js adapter backed by the commerce-db User, Session, and Identity models.
+ *
+ * Returns null (not throws) for "not found" DB results to signal Auth.js to create a new resource;
+ * re-throws all other errors so infrastructure failures surface at the error page rather than
+ * silently triggering a duplicate-resource path.
+ *
+ * @returns An Adapter object conforming to the Auth.js adapter interface.
+ */
 export function AuthAdapter(): Adapter {
     return {
         async getUser(id) {

@@ -20,6 +20,11 @@ export type CommandPaletteProps = {
     items: CommandPaletteItem[];
 };
 
+/**
+ * Radix Dialog-based command palette that opens on ⌘K / Ctrl+K and supports grouped navigation items.
+ *
+ * @param props.items - Flat list of navigable items; grouped by the item's group field in the rendered list.
+ */
 export function CommandPalette({ items }: CommandPaletteProps) {
     const router = useRouter();
     const [open, setOpen] = useState(false);

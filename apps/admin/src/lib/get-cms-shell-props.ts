@@ -14,6 +14,15 @@ import { getAuthedPayloadCtx } from './payload-ctx';
 const ACCEPTED_THEMES = ['dark', 'light'] as const;
 type ShellTheme = (typeof ACCEPTED_THEMES)[number];
 
+/**
+ * Resolves the Payload editor theme from config, cookie, and Sec-CH-Prefers-Color-Scheme header (in priority order).
+ *
+ * @param options.configTheme - Theme locked in payload.config.admin.theme, if any.
+ * @param options.cookiePrefix - Cookie name prefix used to derive the theme cookie key.
+ * @param options.cookies - Parsed cookie map from the current request.
+ * @param options.headers - Request headers for the Sec-CH-Prefers-Color-Scheme hint.
+ * @returns The resolved ShellTheme ('dark' or 'light').
+ */
 const resolveTheme = ({
     configTheme,
     cookiePrefix,
@@ -52,6 +61,10 @@ const resolveTheme = ({
  * access against it. Omitting `domain` returns a cross-tenant prop bag —
  * appropriate only for admin-only routes that legitimately operate outside
  * a single tenant.
+ *
+ * @param domain - Tenant domain for tenant-scoped routes; omit for cross-tenant admin routes.
+ * @param locale - Locale string forwarded to PayloadFieldShell for locale-aware fields.
+ * @returns The complete prop bag for PayloadFieldShell, excluding the children prop.
  */
 export const getCmsShellProps = cache(
     async (domain?: string, locale?: string): Promise<Omit<PayloadFieldShellProps, 'children'>> => {

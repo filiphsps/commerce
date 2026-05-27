@@ -6,7 +6,12 @@ import { useEffect, useState, useTransition } from 'react';
 /** How often (ms) to re-render the toolbar so the relative timestamp stays fresh. */
 const RELATIVE_TIME_TICK_MS = 30_000;
 
-/** Returns a human-readable relative-time string such as "2 minutes ago". */
+/**
+ * Converts a date to a human-readable relative-time string such as "2 minutes ago".
+ *
+ * @param date - The reference point; accepts a Date object or an ISO-format string.
+ * @returns A human-readable relative-time string.
+ */
 export function formatRelativeTime(date: Date | string): string {
     const ms = Date.now() - new Date(date).getTime();
     const seconds = Math.round(ms / 1000);
@@ -48,6 +53,11 @@ export type DraftPublishToolbarProps = {
  * Renders two buttons — "Save Draft" and "Publish" — each guarded by its own
  * `useTransition` so they disable independently during their pending state.
  * Mirrors the `runAction` pattern from `<BulkActions>` for error handling.
+ *
+ * @param props.saveDraftAction - Server action that saves the form as a draft.
+ * @param props.publishAction - Server action that publishes the form.
+ * @param props.lastSavedAt - Timestamp of the last save; undefined if never saved.
+ * @param props.isSaving - When true, shows a "Saving…" indicator next to the timestamp.
  */
 export function DraftPublishToolbar({
     saveDraftAction,

@@ -18,6 +18,17 @@ export type NavItemProps = {
     iconOnly?: boolean;
 };
 
+/**
+ * Navigation link that highlights as active when the current pathname starts with its href.
+ * Renders as a non-interactive aria-disabled span when disabled.
+ *
+ * @param props.href - Destination route.
+ * @param props.children - Link content; typically an icon and label.
+ * @param props.className - Additional class names merged onto the element.
+ * @param props.disabled - When true, renders a non-interactive aria-disabled span.
+ * @param props.iconOnly - When true, collapses horizontal padding for icon-only rendering.
+ * @param props['aria-label'] - Accessible label, useful for icon-only items without visible text.
+ */
 export function NavItem({ href, children, className, disabled, iconOnly, 'aria-label': ariaLabel }: NavItemProps) {
     const pathname = usePathname();
 

@@ -16,6 +16,12 @@ export function DropdownMenu(props: ComponentProps<typeof Primitive.Root>) {
 export const DropdownMenuTrigger = Primitive.Trigger;
 export const DropdownMenuGroup = Primitive.Group;
 
+/**
+ * Portal-rendered dropdown content panel with animated open/close transitions.
+ *
+ * @param props.className - Additional class names merged onto the content element.
+ * @param props.sideOffset - Pixel gap between the trigger and the content panel; defaults to 4.
+ */
 export const DropdownMenuContent = forwardRef<
     ComponentRef<typeof Primitive.Content>,
     ComponentPropsWithoutRef<typeof Primitive.Content>
@@ -35,6 +41,12 @@ export const DropdownMenuContent = forwardRef<
 ));
 DropdownMenuContent.displayName = Primitive.Content.displayName;
 
+/**
+ * A single actionable row inside a DropdownMenuContent.
+ *
+ * @param props.className - Additional class names merged onto the item element.
+ * @param props.inset - When true adds left padding to align with inset-offset items.
+ */
 export const DropdownMenuItem = forwardRef<
     ComponentRef<typeof Primitive.Item>,
     ComponentPropsWithoutRef<typeof Primitive.Item> & { inset?: boolean }
@@ -51,6 +63,12 @@ export const DropdownMenuItem = forwardRef<
 ));
 DropdownMenuItem.displayName = Primitive.Item.displayName;
 
+/**
+ * Non-interactive label row used as a section heading inside a DropdownMenuContent.
+ *
+ * @param props.className - Additional class names merged onto the label element.
+ * @param props.inset - When true adds left padding to align with inset-offset items.
+ */
 export const DropdownMenuLabel = forwardRef<
     ComponentRef<typeof Primitive.Label>,
     ComponentPropsWithoutRef<typeof Primitive.Label> & { inset?: boolean }
@@ -67,6 +85,11 @@ export const DropdownMenuLabel = forwardRef<
 ));
 DropdownMenuLabel.displayName = Primitive.Label.displayName;
 
+/**
+ * Horizontal rule separating groups of items inside a DropdownMenuContent.
+ *
+ * @param props.className - Additional class names merged onto the separator element.
+ */
 export const DropdownMenuSeparator = forwardRef<
     ComponentRef<typeof Primitive.Separator>,
     ComponentPropsWithoutRef<typeof Primitive.Separator>

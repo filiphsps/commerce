@@ -11,6 +11,12 @@ export type RowCheckboxProps = {
     rowLabel?: string;
 };
 
+/**
+ * Checkbox cell for bulk-selection tables; reads and writes to the nearest BulkSelectionContext.
+ *
+ * @param props.rowId - Unique string identifier of the row, used as the selection key.
+ * @param props.rowLabel - Human-readable label for the checkbox aria-label.
+ */
 export function RowCheckbox({ rowId, rowLabel }: RowCheckboxProps) {
     const { selectedIds, toggle } = useBulkSelection();
 

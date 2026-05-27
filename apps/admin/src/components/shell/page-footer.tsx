@@ -9,6 +9,13 @@ export type PageFooterProps = {
     className?: string;
 };
 
+/**
+ * Page-level footer bar, optionally sticky at the bottom of the ContentScrollRegion.
+ *
+ * @param props.children - Footer content, typically save/publish action buttons.
+ * @param props.sticky - When true (default) the footer sticks to the bottom of the scroll container.
+ * @param props.className - Additional class names merged onto the footer element.
+ */
 export function PageFooter({ children, sticky = true, className }: PageFooterProps) {
     return (
         <div

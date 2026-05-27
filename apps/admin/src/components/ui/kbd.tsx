@@ -2,6 +2,11 @@ import { forwardRef, type HTMLAttributes } from 'react';
 
 import { cn } from '@/utils/tailwind';
 
+/**
+ * Styled keyboard key indicator rendered as a &lt;kbd&gt; element.
+ *
+ * @param props.className - Additional class names merged onto the kbd element.
+ */
 export const Kbd = forwardRef<HTMLElement, HTMLAttributes<HTMLElement>>(({ className, ...props }, ref) => (
     <kbd
         ref={ref}

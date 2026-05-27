@@ -17,6 +17,16 @@ import { cn } from '@/utils/tailwind';
 export type LoginButtonProps = {
     provider?: AuthProvider['name'];
 } & Omit<HTMLProps<HTMLButtonElement>, 'type' | 'onClick'>;
+/**
+ * Login button that initiates a NextAuth sign-in flow for the given provider.
+ *
+ * Reads the `error` search param set by NextAuth on redirect and surfaces it as a toast,
+ * then removes the param from the URL so it doesn't persist on re-render.
+ *
+ * @param props.provider - Auth provider to sign in with; currently only 'github' is supported.
+ * @param props.className - Additional class names merged onto the button.
+ * @throws {TodoError} For any provider not yet implemented.
+ */
 export default function LoginButton({ provider = 'github', className, ...props }: LoginButtonProps) {
     const [loading, setLoading] = useState<boolean>(false);
 

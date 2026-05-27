@@ -2,6 +2,12 @@ import type { ReactNode } from 'react';
 
 import { ScrollArea } from '@/components/ui/scroll-area';
 
+/**
+ * Scrollable aside container for the subnav parallel-route slot in the admin shell.
+ * Renders nothing when children is falsy.
+ *
+ * @param props.children - Subnav content rendered inside the scrollable region.
+ */
 export function SubNavSlot({ children }: { children: ReactNode }) {
     if (!children) return null;
 

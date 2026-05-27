@@ -20,6 +20,12 @@ export type IconRailProps = {
     expanded: boolean;
 };
 
+/**
+ * Vertical navigation rail that renders labeled nav items or icon-only items with tooltips.
+ *
+ * @param props.items - Navigation entries; each has an href, label, icon, and optional disabled state.
+ * @param props.expanded - When true, labels are rendered alongside icons; when false, only icons with hover tooltips.
+ */
 export function IconRail({ items, expanded }: IconRailProps) {
     return (
         <TooltipProvider delayDuration={200}>

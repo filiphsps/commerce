@@ -18,6 +18,12 @@ export type AccountMenuUser = { name?: string; email?: string; image?: string; r
 
 export type AccountMenuProps = { user: AccountMenuUser };
 
+/**
+ * Derives two-letter initials from a user's name or email for the avatar fallback.
+ *
+ * @param user - The account user; name is preferred over email, falls back to '?'.
+ * @returns Up to two uppercase initials joined as a string.
+ */
 function initialsOf(user: AccountMenuUser): string {
     const source = user.name ?? user.email ?? '?';
     return source
@@ -27,6 +33,11 @@ function initialsOf(user: AccountMenuUser): string {
         .join('');
 }
 
+/**
+ * Dropdown account menu in the shell header; shows the user's avatar and a sign-out link.
+ *
+ * @param props.user - Authenticated user whose name, email, and image are displayed.
+ */
 export function AccountMenu({ user }: AccountMenuProps) {
     return (
         <DropdownMenu>

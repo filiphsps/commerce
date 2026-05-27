@@ -35,6 +35,18 @@ const SEPARATOR_CLASSNAME =
 
 export const SHELL_ROOT_ID = 'shell-root';
 
+/**
+ * Resizable panel layout for the admin shell, adapting between mobile (single-column) and desktop (multi-panel) views.
+ *
+ * Manages panel widths via react-resizable-panels, detects parallel-route slot activity to show/hide
+ * the subnav and inspector panels, and observes the rail width to toggle icon-only vs labeled mode.
+ *
+ * @param props.children - Main page content rendered in the center panel.
+ * @param props.subnav - Server-resolved @subnav parallel-route slot.
+ * @param props.inspector - Server-resolved @inspector parallel-route slot.
+ * @param props.header - Pre-rendered header server component.
+ * @param props.iconRailItems - Navigation items passed through to the IconRail.
+ */
 export function ShellRoot({ children, subnav, inspector, header, iconRailItems }: ShellRootProps) {
     const breakpoint = useBreakpoint();
 

@@ -23,6 +23,13 @@ import { getAuthedPayloadCtx } from '@/lib/payload-ctx';
  * existing admin-only access predicate at the action boundary.
  *
  * Admin-only at both the route level and the action level.
+ *
+ * @param domain - Tenant domain used to resolve the Payload tenant for the media collection write.
+ * @param formData - Form data containing the 'file' (File), 'alt' (required), and optional 'caption' fields.
+ * @returns Object containing the id of the newly created media document.
+ * @throws {MissingUploadFileError} When the 'file' field is absent or not a File instance.
+ * @throws {EmptyUploadFileError} When the uploaded file has a size of zero.
+ * @throws {MissingRequiredFieldError} When the 'alt' field is absent.
  */
 export async function createMediaAction(domain: string, formData: FormData): Promise<{ id: string }> {
     const { payload, user, tenant } = await getAuthedPayloadCtx(domain);

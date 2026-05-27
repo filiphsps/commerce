@@ -21,6 +21,12 @@ export type ShopSwitcherProps = {
     shops: ShopSwitcherShop[];
 };
 
+/**
+ * Dropdown that lets operators switch between their accessible shops, navigating to the shop's root route on select.
+ *
+ * @param props.current - The currently active shop.
+ * @param props.shops - All shops available in the switcher.
+ */
 export function ShopSwitcher({ current, shops }: ShopSwitcherProps) {
     return (
         <DropdownMenu>

@@ -51,6 +51,10 @@ export type LivePreviewIframeProps = {
  * We use `iframe.src = iframe.src` instead, which forces a reload without
  * crossing the same-origin policy. This is a well-known workaround documented
  * in MDN's cross-origin iframe section.
+ *
+ * @param props.previewUrl - Fully-assembled preview URL, built server-side to keep the secret out of the RSC boundary.
+ * @param props.domain - Tenant domain used to scope the localStorage open/closed key per shop.
+ * @param props.defaultOpen - When true the panel is initially open; defaults to false.
  */
 export function LivePreviewIframe({ previewUrl, domain, defaultOpen = false }: LivePreviewIframeProps) {
     const storageKey = domain ? `${STORAGE_KEY_PREFIX}.${domain}.open` : `${STORAGE_KEY_PREFIX}.open`;

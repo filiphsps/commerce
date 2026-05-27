@@ -14,6 +14,15 @@ export type PageHeaderProps = {
     className?: string;
 };
 
+/**
+ * Page-level header with an h1 title, optional breadcrumb trail, action slot, and metadata slot.
+ *
+ * @param props.title - The h1 heading text.
+ * @param props.breadcrumbs - Optional breadcrumb array; each entry may include an href for navigation.
+ * @param props.actions - Optional slot for page-level action buttons aligned to the right.
+ * @param props.meta - Optional slot for metadata badges or labels rendered below the title row.
+ * @param props.className - Additional class names merged onto the header element.
+ */
 export function PageHeader({ title, breadcrumbs, actions, meta, className }: PageHeaderProps) {
     return (
         <header data-page-header className={cn('flex flex-col gap-2 border-none bg-background p-3', className)}>

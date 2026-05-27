@@ -12,6 +12,12 @@ type BulkSelectionContextValue = {
 
 const BulkSelectionContext = createContext<BulkSelectionContextValue | null>(null);
 
+/**
+ * Returns the nearest BulkSelectionContext; throws when no provider is in the tree.
+ *
+ * @returns The context value containing selectedIds, toggle, and clearAll.
+ * @throws {MissingContextProviderError} When called outside a BulkSelectionProvider.
+ */
 export function useBulkSelection(): BulkSelectionContextValue {
     const ctx = useContext(BulkSelectionContext);
     if (!ctx) {
@@ -24,6 +30,11 @@ export type BulkSelectionProviderProps = {
     children: ReactNode;
 };
 
+/**
+ * Provides row-checkbox selection state to all descendant BulkActions and RowCheckbox components.
+ *
+ * @param props.children - Content tree that needs access to the selection context.
+ */
 export function BulkSelectionProvider({ children }: BulkSelectionProviderProps) {
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 

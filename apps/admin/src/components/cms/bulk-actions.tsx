@@ -10,6 +10,12 @@ export type BulkActionsProps = {
     publishAction?: (ids: string[]) => Promise<void>;
 };
 
+/**
+ * Toolbar that surfaces bulk delete and publish buttons bound to the current BulkSelectionContext.
+ *
+ * @param props.deleteAction - Optional server action invoked with the array of selected ids.
+ * @param props.publishAction - Optional server action invoked with the array of selected ids.
+ */
 export function BulkActions({ deleteAction, publishAction }: BulkActionsProps) {
     const { selectedIds, clearAll } = useBulkSelection();
     const [isPending, startTransition] = useTransition();

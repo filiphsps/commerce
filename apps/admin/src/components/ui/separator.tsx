@@ -5,6 +5,13 @@ import { type ComponentPropsWithoutRef, type ComponentRef, forwardRef } from 're
 
 import { cn } from '@/utils/tailwind';
 
+/**
+ * Radix separator with sensible defaults (horizontal, decorative).
+ *
+ * @param props.className - Additional class names merged onto the separator element.
+ * @param props.orientation - 'horizontal' (default, h-px w-full) or 'vertical' (h-full w-px).
+ * @param props.decorative - When true (default) the separator is hidden from the accessibility tree.
+ */
 export const Separator = forwardRef<
     ComponentRef<typeof Primitive.Root>,
     ComponentPropsWithoutRef<typeof Primitive.Root>
