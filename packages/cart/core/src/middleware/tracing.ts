@@ -10,6 +10,13 @@ import type { ITracer } from '../types';
  * @param opts - Optional explicit tracer. If omitted, `ctx.tracer` is used;
  *   if both are absent the middleware degrades to a pass-through.
  * @returns A {@link CartMiddleware} that pipes mutations through a span.
+ * @example
+ * ```ts
+ * const kernel = createCart({
+ *   adapter,
+ *   middleware: [tracing({ tracer: openTelemetryTracer })],
+ * });
+ * ```
  */
 export function tracing(opts: { tracer?: ITracer }): CartMiddleware {
     return (next) => async (mutation, ctx) => {

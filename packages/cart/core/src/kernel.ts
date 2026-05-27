@@ -5,6 +5,18 @@ import { type CartEvent, type CartEventHandler, type CartEventType, createEventB
 import type { AdapterCtx, BuyerIdentity, Cart, CartExt, CartMutation, ILogger, NewCartLine } from './types';
 import { consoleLogger } from './types';
 
+/**
+ * Host-facing surface returned by {@link createCart}. Exposes typed read,
+ * create, and mutate operations that run through the middleware chain and
+ * broadcast lifecycle events without exposing the underlying adapter directly.
+ *
+ * @example
+ * ```ts
+ * const kernel: CartKernel = createCart({ adapter });
+ * const cart = await kernel.create(ctx);
+ * await kernel.mutate(ctx, { kind: 'add-line', variantId: 'v_1', quantity: 1 });
+ * ```
+ */
 export interface CartKernel<TExt extends CartExt = {}, TShop = unknown> {
     readonly type: string;
     readonly capabilities: CartCapabilities;
@@ -17,6 +29,20 @@ export interface CartKernel<TExt extends CartExt = {}, TShop = unknown> {
     on<E extends CartEventType>(type: E, handler: CartEventHandler<E>): () => void;
 }
 
+/**
+ * Configuration bag passed to {@link createCart}. Declares the adapter,
+ * optional middleware pipeline, and an optional logger override for the
+ * internal event bus.
+ *
+ * @example
+ * ```ts
+ * const opts: CreateCartOpts = {
+ *   adapter: myAdapter,
+ *   middleware: [logger(), retry({ attempts: 3, backoffMs: 200 })],
+ * };
+ * const kernel = createCart(opts);
+ * ```
+ */
 export interface CreateCartOpts<TExt extends CartExt = {}, _TShop = unknown> {
     adapter: CartAdapter<TExt>;
     middleware?: CartMiddleware[];
@@ -40,6 +66,15 @@ export interface CreateCartOpts<TExt extends CartExt = {}, _TShop = unknown> {
  * @param opts.logger - Logger threaded into the event bus for handler-error
  *   surfacing. Defaults to {@link consoleLogger}.
  * @returns A {@link CartKernel} ready to read / create / mutate.
+ * @example
+ * ```ts
+ * const kernel = createCart({
+ *   adapter: createMockCartAdapter(),
+ *   middleware: [logger(), retry({ attempts: 3, backoffMs: 100 })],
+ * });
+ * const cart = await kernel.create(ctx);
+ * await kernel.mutate(ctx, { kind: 'add-line', variantId: 'v_1', quantity: 2 });
+ * ```
  */
 export function createCart<TExt extends CartExt = {}, TShop = unknown>(
     opts: CreateCartOpts<TExt, TShop>,

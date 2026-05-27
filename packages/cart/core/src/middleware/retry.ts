@@ -12,6 +12,13 @@ import type { CartMiddleware } from '../compose';
  * @param opts.backoffMs - Multiplier for linear backoff between attempts; set
  *   to `0` to disable sleeps (useful in tests).
  * @returns A {@link CartMiddleware} that retries retryable failures.
+ * @example
+ * ```ts
+ * const kernel = createCart({
+ *   adapter,
+ *   middleware: [retry({ attempts: 3, backoffMs: 200 })],
+ * });
+ * ```
  */
 export function retry(opts: { attempts: number; backoffMs: number }): CartMiddleware {
     return (next) => async (mutation, ctx) => {
