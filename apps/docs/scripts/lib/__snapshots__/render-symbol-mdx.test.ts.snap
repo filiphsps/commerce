@@ -6,10 +6,11 @@ title: getArticle
 description: "Fetch one article by slug for a tenant."
 ---
 
-<KindLine kind="function" path="cms/api" throws />
+<SymbolTitle name="getArticle" />
+<KindLine kind="function" path="cms/api" isAsync throws="NotFoundError" returnsNullable />
 Fetch one article by slug for a tenant.
 ## Signature
-\`\`\`ts
+\`\`\`ts title="@nordcom/commerce-cms"
 function getArticle(opts: GetArticleArgs): Promise<Article | null>;
 \`\`\`
 ## Parameters
@@ -24,7 +25,9 @@ the article or null
 
 ## Throws
 
-- NotFoundError on invalid slug
+<ThrowsBlock>
+  <ThrowsRow cls="NotFoundError">on invalid slug</ThrowsRow>
+</ThrowsBlock>
 
 ## Example
 
@@ -33,7 +36,5 @@ const a = await getArticle();
 \`\`\`
 
 
----
-
-[View source · packages/cms/src/api/get-article.ts:14](https://github.com/filiphsps/commerce/blob/master/packages/cms/src/api/get-article.ts#L14)"
+<SourceFooter file="packages/cms/src/api/get-article.ts" line={14} href="https://github.com/filiphsps/commerce/blob/master/packages/cms/src/api/get-article.ts#L14" pkg="@nordcom/commerce-cms" version="0.1.0" />"
 `;
