@@ -3,6 +3,19 @@ import { dirname } from 'node:path';
 
 import { startMongo } from './start';
 
+/**
+ * Configuration for the persistent `pnpm dev:mongo` daemon process managed by {@link runDaemon}.
+ *
+ * @example
+ * ```ts
+ * await runDaemon({
+ *     dbPath: resolve('.mongo-dev'),
+ *     port: 27018,
+ *     pidFile: resolve('.mongo-dev', '.pid'),
+ *     uriFile: resolve('.mongo-dev', '.uri'),
+ * });
+ * ```
+ */
 export interface DaemonOptions {
     dbPath: string;
     port: number;

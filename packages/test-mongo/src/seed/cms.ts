@@ -8,6 +8,15 @@ import { headerData } from './fixtures/header';
 import { pageFixtures } from './fixtures/pages';
 import { productMetadataFixtures } from './fixtures/product-metadata';
 
+/**
+ * Options for {@link seedCms}. Carries the Mongo `_id` of the Shop that the
+ * newly created Payload Tenant doc will be bound to.
+ *
+ * @example
+ * ```ts
+ * await seedCms(uri, { shopId: String(shop._id) });
+ * ```
+ */
 export interface SeedCmsOptions {
     shopId: string;
 }
