@@ -1,272 +1,208 @@
-import { CartUserError } from '@nordcom/commerce-errors';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('next/cache', () => ({ revalidateTag: vi.fn() }));
-vi.mock('@/utils/request-context', () => ({
-    getRequestContext: vi.fn(),
+vi.mock('@/cart/kernel', () => ({
+    typed: {
+        addLine: vi.fn(),
+        updateLine: vi.fn(),
+        removeLine: vi.fn(),
+        applyDiscountCode: vi.fn(),
+        removeDiscountCode: vi.fn(),
+        applyGiftCard: vi.fn(),
+        removeGiftCard: vi.fn(),
+        updateNote: vi.fn(),
+        updateAttributes: vi.fn(),
+        updateBuyerIdentity: vi.fn(),
+        dispatch: vi.fn(),
+    },
+    forms: {
+        addLineAction: vi.fn(),
+        updateLineAction: vi.fn(),
+        removeLineAction: vi.fn(),
+        applyDiscountCodeAction: vi.fn(),
+        removeDiscountCodeAction: vi.fn(),
+        applyGiftCardAction: vi.fn(),
+        removeGiftCardAction: vi.fn(),
+        updateNoteAction: vi.fn(),
+        updateAttributesAction: vi.fn(),
+        updateBuyerIdentityAction: vi.fn(),
+    },
 }));
-vi.mock('@/utils/cart-server', () => ({
-    ensureCart: vi.fn(),
-    readCart: vi.fn(),
-}));
-vi.mock('@/utils/dictionary', () => ({
-    getDictionary: vi.fn().mockResolvedValue({
-        'cart-errors': {
-            'missing-shop': 'shop gone',
-            'missing-variant': 'no variant',
-            'missing-line': 'no line',
-            'missing-cart': 'expired',
-            'invalid-quantity': 'bad qty',
-            'invalid-code': 'bad code',
-            unauthorized: 'log in',
-            'user-error': 'cart error',
-            'network-error': 'network down',
-            'provider-error': 'provider down',
-        },
-    }),
-}));
-vi.mock('@/api/cart', () => ({
-    resolveCartProvider: vi.fn(),
-}));
-vi.mock('@/auth', () => ({ getAuthSession: vi.fn() }));
 
-import { revalidateTag } from 'next/cache';
-import { resolveCartProvider } from '@/api/cart';
-import { getAuthSession } from '@/auth';
-import { ensureCart } from '@/utils/cart-server';
-import { getRequestContext } from '@/utils/request-context';
+import { forms, typed } from '@/cart/kernel';
 import {
-    addToCartAction,
+    addLine,
+    addLineAction,
+    applyDiscountCode,
     applyDiscountCodeAction,
+    applyGiftCard,
     applyGiftCardAction,
-    removeCartLineAction,
-    removeDiscountCodeAction,
-    removeGiftCardAction,
+    dispatch,
+    removeDiscountCode,
+    removeGiftCard,
+    removeLine,
+    removeLineAction,
+    updateAttributes,
     updateAttributesAction,
+    updateBuyerIdentity,
     updateBuyerIdentityAction,
-    updateCartLineQuantityAction,
+    updateLine,
+    updateLineAction,
+    updateNote,
     updateNoteAction,
 } from './cart';
 
-const ctx = {
-    shop: { id: 'shop-1', commerceProvider: { type: 'shopify' } },
-    locale: { code: 'en-US', country: 'US' },
-} as any;
-const seededCart = { id: 'gid://shopify/Cart/abc', totalQuantity: 1, lines: [], discountCodes: [] } as any;
-const updatedCart = { id: 'gid://shopify/Cart/abc', totalQuantity: 2, lines: [] } as any;
+beforeEach(() => vi.clearAllMocks());
 
-const mkAdapter = (overrides: any = {}) => ({
-    type: 'shopify',
-    addLines: vi.fn().mockResolvedValue(updatedCart),
-    updateLines: vi.fn().mockResolvedValue(updatedCart),
-    removeLines: vi.fn().mockResolvedValue(updatedCart),
-    applyDiscountCodes: vi.fn().mockResolvedValue(updatedCart),
-    applyGiftCardCodes: vi.fn().mockResolvedValue(updatedCart),
-    removeGiftCardCodes: vi.fn().mockResolvedValue(updatedCart),
-    updateBuyerIdentity: vi.fn().mockResolvedValue(updatedCart),
-    updateNote: vi.fn().mockResolvedValue(updatedCart),
-    updateAttributes: vi.fn().mockResolvedValue(updatedCart),
-    ...overrides,
-});
-
-beforeEach(() => {
-    vi.mocked(getRequestContext).mockResolvedValue(ctx);
-    vi.mocked(ensureCart).mockResolvedValue(seededCart);
-    vi.mocked(revalidateTag).mockReset();
-    vi.mocked(getAuthSession).mockReset();
-});
-
-describe('addToCartAction', () => {
-    it('returns ok + cart on success and revalidates tag', async () => {
-        const adapter = mkAdapter();
-        vi.mocked(resolveCartProvider).mockReturnValue(adapter);
-        const fd = new FormData();
-        fd.set('variantId', 'gid://shopify/ProductVariant/1');
-        fd.set('quantity', '1');
-        const r = await addToCartAction(fd);
-        expect(r.ok).toBe(true);
-        if (r.ok) expect(r.cart).toBe(updatedCart);
-        expect(adapter.addLines).toHaveBeenCalled();
-        expect(revalidateTag).toHaveBeenCalledWith('cart:gid://shopify/Cart/abc', 'max');
-    });
-
-    it('returns missing-variant with localized message when variantId absent', async () => {
-        const r = await addToCartAction(new FormData());
-        expect(r.ok).toBe(false);
-        if (!r.ok) {
-            expect(r.reason).toBe('missing-variant');
-            expect(r.message).toBe('no variant');
-        }
-    });
-
-    it('maps Shopify userError to user-error result and surfaces userError message', async () => {
-        const adapter = mkAdapter({
-            addLines: vi.fn().mockRejectedValue(new CartUserError([{ field: 'lines', message: 'Sold out' }])),
+describe('_actions/cart.ts', () => {
+    describe('typed re-exports', () => {
+        it('addLine forwards args to typed.addLine', async () => {
+            vi.mocked(typed.addLine).mockResolvedValueOnce({ ok: true, cart: {} as never });
+            await addLine({ variantId: 'v', quantity: 1, idempotencyKey: 'k' });
+            expect(typed.addLine).toHaveBeenCalledWith({ variantId: 'v', quantity: 1, idempotencyKey: 'k' });
         });
-        vi.mocked(resolveCartProvider).mockReturnValue(adapter);
-        const fd = new FormData();
-        fd.set('variantId', 'gid://shopify/ProductVariant/1');
-        fd.set('quantity', '1');
-        const r = await addToCartAction(fd);
-        expect(r.ok).toBe(false);
-        if (!r.ok) {
-            expect(r.reason).toBe('user-error');
-            expect(r.userErrors?.[0]?.message).toBe('Sold out');
-            expect(r.message).toBe('Sold out');
-        }
-    });
-});
 
-describe('updateCartLineQuantityAction', () => {
-    it('returns missing-line without lineId', async () => {
-        const r = await updateCartLineQuantityAction(new FormData());
-        expect(r.ok).toBe(false);
-        if (!r.ok) expect(r.reason).toBe('missing-line');
-    });
+        it('updateLine forwards args to typed.updateLine', async () => {
+            vi.mocked(typed.updateLine).mockResolvedValueOnce({ ok: true, cart: {} as never });
+            await updateLine({ lineId: 'l', quantity: 2, idempotencyKey: 'k' });
+            expect(typed.updateLine).toHaveBeenCalledWith({ lineId: 'l', quantity: 2, idempotencyKey: 'k' });
+        });
 
-    it('routes quantity=0 to removeLines', async () => {
-        const adapter = mkAdapter();
-        vi.mocked(resolveCartProvider).mockReturnValue(adapter);
-        const fd = new FormData();
-        fd.set('lineId', 'line-1');
-        fd.set('quantity', '0');
-        fd.set('cartId', 'gid://shopify/Cart/abc');
-        await updateCartLineQuantityAction(fd);
-        expect(adapter.removeLines).toHaveBeenCalled();
-        expect(adapter.updateLines).not.toHaveBeenCalled();
-    });
+        it('removeLine forwards args to typed.removeLine', async () => {
+            vi.mocked(typed.removeLine).mockResolvedValueOnce({ ok: true, cart: {} as never });
+            await removeLine({ lineId: 'l', idempotencyKey: 'k' });
+            expect(typed.removeLine).toHaveBeenCalledWith({ lineId: 'l', idempotencyKey: 'k' });
+        });
 
-    it('calls updateLines for non-zero quantity', async () => {
-        const adapter = mkAdapter();
-        vi.mocked(resolveCartProvider).mockReturnValue(adapter);
-        const fd = new FormData();
-        fd.set('lineId', 'line-1');
-        fd.set('quantity', '3');
-        fd.set('cartId', 'gid://shopify/Cart/abc');
-        await updateCartLineQuantityAction(fd);
-        expect(adapter.updateLines).toHaveBeenCalledWith(
-            expect.objectContaining({ lines: [{ id: 'line-1', quantity: 3 }] }),
-        );
-    });
-});
+        it('applyDiscountCode forwards args to typed.applyDiscountCode', async () => {
+            vi.mocked(typed.applyDiscountCode).mockResolvedValueOnce({ ok: true, cart: {} as never });
+            await applyDiscountCode({ code: 'SUMMER10', idempotencyKey: 'k' });
+            expect(typed.applyDiscountCode).toHaveBeenCalledWith({ code: 'SUMMER10', idempotencyKey: 'k' });
+        });
 
-describe('removeCartLineAction', () => {
-    it('returns ok and revalidates', async () => {
-        const adapter = mkAdapter();
-        vi.mocked(resolveCartProvider).mockReturnValue(adapter);
-        const fd = new FormData();
-        fd.set('lineId', 'line-1');
-        fd.set('cartId', 'gid://shopify/Cart/abc');
-        const r = await removeCartLineAction(fd);
-        expect(r.ok).toBe(true);
-    });
-});
+        it('removeDiscountCode forwards args to typed.removeDiscountCode', async () => {
+            vi.mocked(typed.removeDiscountCode).mockResolvedValueOnce({ ok: true, cart: {} as never });
+            await removeDiscountCode({ code: 'SUMMER10', idempotencyKey: 'k' });
+            expect(typed.removeDiscountCode).toHaveBeenCalledWith({ code: 'SUMMER10', idempotencyKey: 'k' });
+        });
 
-describe('applyDiscountCodeAction / removeDiscountCodeAction', () => {
-    it('apply rejects empty code', async () => {
-        const r = await applyDiscountCodeAction(new FormData());
-        expect(r.ok).toBe(false);
-        if (!r.ok) expect(r.reason).toBe('invalid-code');
-    });
+        it('applyGiftCard forwards args to typed.applyGiftCard', async () => {
+            vi.mocked(typed.applyGiftCard).mockResolvedValueOnce({ ok: true, cart: {} as never });
+            await applyGiftCard({ code: 'GIFT-100', idempotencyKey: 'k' });
+            expect(typed.applyGiftCard).toHaveBeenCalledWith({ code: 'GIFT-100', idempotencyKey: 'k' });
+        });
 
-    it('apply forwards code to adapter', async () => {
-        const adapter = mkAdapter();
-        vi.mocked(resolveCartProvider).mockReturnValue(adapter);
-        const fd = new FormData();
-        fd.set('code', 'SUMMER10');
-        const r = await applyDiscountCodeAction(fd);
-        expect(r.ok).toBe(true);
-        expect(adapter.applyDiscountCodes).toHaveBeenCalledWith(expect.objectContaining({ codes: ['SUMMER10'] }));
-    });
+        it('removeGiftCard forwards args to typed.removeGiftCard', async () => {
+            vi.mocked(typed.removeGiftCard).mockResolvedValueOnce({ ok: true, cart: {} as never });
+            await removeGiftCard({ id: 'gc-1', idempotencyKey: 'k' });
+            expect(typed.removeGiftCard).toHaveBeenCalledWith({ id: 'gc-1', idempotencyKey: 'k' });
+        });
 
-    it('remove sends an empty array to clear codes', async () => {
-        const adapter = mkAdapter();
-        vi.mocked(resolveCartProvider).mockReturnValue(adapter);
-        const r = await removeDiscountCodeAction(new FormData());
-        expect(r.ok).toBe(true);
-        expect(adapter.applyDiscountCodes).toHaveBeenCalledWith(expect.objectContaining({ codes: [] }));
-    });
-});
+        it('updateNote forwards args to typed.updateNote', async () => {
+            vi.mocked(typed.updateNote).mockResolvedValueOnce({ ok: true, cart: {} as never });
+            await updateNote({ note: 'Gift wrap please', idempotencyKey: 'k' });
+            expect(typed.updateNote).toHaveBeenCalledWith({ note: 'Gift wrap please', idempotencyKey: 'k' });
+        });
 
-describe('applyGiftCardAction / removeGiftCardAction', () => {
-    it('apply rejects empty code', async () => {
-        const r = await applyGiftCardAction(new FormData());
-        expect(r.ok).toBe(false);
-        if (!r.ok) expect(r.reason).toBe('invalid-code');
+        it('updateAttributes forwards args to typed.updateAttributes', async () => {
+            vi.mocked(typed.updateAttributes).mockResolvedValueOnce({ ok: true, cart: {} as never });
+            await updateAttributes({ attributes: [{ key: 'k', value: 'v' }], idempotencyKey: 'k' });
+            expect(typed.updateAttributes).toHaveBeenCalledWith({
+                attributes: [{ key: 'k', value: 'v' }],
+                idempotencyKey: 'k',
+            });
+        });
+
+        it('updateBuyerIdentity forwards args to typed.updateBuyerIdentity', async () => {
+            vi.mocked(typed.updateBuyerIdentity).mockResolvedValueOnce({ ok: true, cart: {} as never });
+            await updateBuyerIdentity({ idempotencyKey: 'k' });
+            expect(typed.updateBuyerIdentity).toHaveBeenCalledWith({ idempotencyKey: 'k' });
+        });
+
+        it('dispatch forwards envelope to typed.dispatch', async () => {
+            vi.mocked(typed.dispatch).mockResolvedValueOnce({ ok: true, cart: {} as never });
+            const envelope = { mutation: { kind: 'remove-line' as const, lineId: 'l' }, idempotencyKey: 'k' };
+            await dispatch(envelope);
+            expect(typed.dispatch).toHaveBeenCalledWith(envelope);
+        });
+
+        it('propagates failure results from typed actions', async () => {
+            vi.mocked(typed.addLine).mockResolvedValueOnce({
+                ok: false,
+                reason: 'user-error',
+                message: 'Sold out',
+                userErrors: [{ field: 'lines', message: 'Sold out' }],
+            });
+            const result = await addLine({ variantId: 'v', quantity: 1, idempotencyKey: 'k' });
+            expect(result.ok).toBe(false);
+            if (!result.ok) {
+                expect(result.reason).toBe('user-error');
+                expect(result.userErrors?.[0]?.message).toBe('Sold out');
+            }
+        });
     });
 
-    it('apply forwards code to adapter', async () => {
-        const adapter = mkAdapter();
-        vi.mocked(resolveCartProvider).mockReturnValue(adapter);
-        const fd = new FormData();
-        fd.set('code', 'GIFT-100');
-        const r = await applyGiftCardAction(fd);
-        expect(r.ok).toBe(true);
-        expect(adapter.applyGiftCardCodes).toHaveBeenCalledWith(expect.objectContaining({ codes: ['GIFT-100'] }));
-    });
+    describe('FormData re-exports', () => {
+        it('addLineAction forwards FormData to forms.addLineAction', async () => {
+            const fd = new FormData();
+            fd.set('variantId', 'v');
+            vi.mocked(forms.addLineAction).mockResolvedValueOnce({ ok: true, cart: {} as never });
+            await addLineAction(fd);
+            expect(forms.addLineAction).toHaveBeenCalledWith(fd);
+        });
 
-    it('remove rejects empty id', async () => {
-        const r = await removeGiftCardAction(new FormData());
-        expect(r.ok).toBe(false);
-        if (!r.ok) expect(r.reason).toBe('invalid-code');
-    });
+        it('updateLineAction forwards FormData to forms.updateLineAction', async () => {
+            const fd = new FormData();
+            fd.set('lineId', 'l');
+            vi.mocked(forms.updateLineAction).mockResolvedValueOnce({ ok: true, cart: {} as never });
+            await updateLineAction(fd);
+            expect(forms.updateLineAction).toHaveBeenCalledWith(fd);
+        });
 
-    it('remove forwards id to adapter', async () => {
-        const adapter = mkAdapter();
-        vi.mocked(resolveCartProvider).mockReturnValue(adapter);
-        const fd = new FormData();
-        fd.set('id', 'gid://shopify/AppliedGiftCard/1');
-        const r = await removeGiftCardAction(fd);
-        expect(r.ok).toBe(true);
-        expect(adapter.removeGiftCardCodes).toHaveBeenCalledWith(
-            expect.objectContaining({ ids: ['gid://shopify/AppliedGiftCard/1'] }),
-        );
-    });
-});
+        it('removeLineAction forwards FormData to forms.removeLineAction', async () => {
+            const fd = new FormData();
+            fd.set('lineId', 'l');
+            vi.mocked(forms.removeLineAction).mockResolvedValueOnce({ ok: true, cart: {} as never });
+            await removeLineAction(fd);
+            expect(forms.removeLineAction).toHaveBeenCalledWith(fd);
+        });
 
-describe('updateBuyerIdentityAction', () => {
-    it('returns unauthorized without a session', async () => {
-        vi.mocked(getAuthSession).mockResolvedValue(null as any);
-        const r = await updateBuyerIdentityAction(new FormData());
-        expect(r.ok).toBe(false);
-        if (!r.ok) expect(r.reason).toBe('unauthorized');
-    });
+        it('applyDiscountCodeAction forwards FormData to forms.applyDiscountCodeAction', async () => {
+            const fd = new FormData();
+            fd.set('code', 'SUMMER10');
+            vi.mocked(forms.applyDiscountCodeAction).mockResolvedValueOnce({ ok: true, cart: {} as never });
+            await applyDiscountCodeAction(fd);
+            expect(forms.applyDiscountCodeAction).toHaveBeenCalledWith(fd);
+        });
 
-    it('uses session identity not FormData', async () => {
-        vi.mocked(getAuthSession).mockResolvedValue({
-            user: { email: 'u@x.com', shopifyAccessToken: 'tok' },
-        } as any);
-        const adapter = mkAdapter();
-        vi.mocked(resolveCartProvider).mockReturnValue(adapter);
-        const fd = new FormData();
-        fd.set('email', 'evil@attacker.com');
-        await updateBuyerIdentityAction(fd);
-        expect(adapter.updateBuyerIdentity).toHaveBeenCalledWith(
-            expect.objectContaining({
-                buyerIdentity: expect.objectContaining({ email: 'u@x.com', customerAccessToken: 'tok' }),
-            }),
-        );
-    });
-});
+        it('applyGiftCardAction forwards FormData to forms.applyGiftCardAction', async () => {
+            const fd = new FormData();
+            fd.set('code', 'GIFT-100');
+            vi.mocked(forms.applyGiftCardAction).mockResolvedValueOnce({ ok: true, cart: {} as never });
+            await applyGiftCardAction(fd);
+            expect(forms.applyGiftCardAction).toHaveBeenCalledWith(fd);
+        });
 
-describe('updateNoteAction / updateAttributesAction', () => {
-    it('note action forwards plain string', async () => {
-        const adapter = mkAdapter();
-        vi.mocked(resolveCartProvider).mockReturnValue(adapter);
-        const fd = new FormData();
-        fd.set('note', 'Gift wrap please');
-        await updateNoteAction(fd);
-        expect(adapter.updateNote).toHaveBeenCalledWith(expect.objectContaining({ note: 'Gift wrap please' }));
-    });
+        it('updateNoteAction forwards FormData to forms.updateNoteAction', async () => {
+            const fd = new FormData();
+            fd.set('note', 'note');
+            vi.mocked(forms.updateNoteAction).mockResolvedValueOnce({ ok: true, cart: {} as never });
+            await updateNoteAction(fd);
+            expect(forms.updateNoteAction).toHaveBeenCalledWith(fd);
+        });
 
-    it('attributes action parses JSON-encoded attributes', async () => {
-        const adapter = mkAdapter();
-        vi.mocked(resolveCartProvider).mockReturnValue(adapter);
-        const fd = new FormData();
-        fd.set('attributes', JSON.stringify([{ key: 'source', value: 'campaign-42' }]));
-        await updateAttributesAction(fd);
-        expect(adapter.updateAttributes).toHaveBeenCalledWith(
-            expect.objectContaining({ attributes: [{ key: 'source', value: 'campaign-42' }] }),
-        );
+        it('updateAttributesAction forwards FormData to forms.updateAttributesAction', async () => {
+            const fd = new FormData();
+            fd.set('attributes', JSON.stringify([{ key: 'k', value: 'v' }]));
+            vi.mocked(forms.updateAttributesAction).mockResolvedValueOnce({ ok: true, cart: {} as never });
+            await updateAttributesAction(fd);
+            expect(forms.updateAttributesAction).toHaveBeenCalledWith(fd);
+        });
+
+        it('updateBuyerIdentityAction forwards FormData to forms.updateBuyerIdentityAction', async () => {
+            const fd = new FormData();
+            vi.mocked(forms.updateBuyerIdentityAction).mockResolvedValueOnce({ ok: true, cart: {} as never });
+            await updateBuyerIdentityAction(fd);
+            expect(forms.updateBuyerIdentityAction).toHaveBeenCalledWith(fd);
+        });
     });
 });
