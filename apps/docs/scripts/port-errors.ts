@@ -94,25 +94,20 @@ function pruneUntouched(root: string, touched: Set<string>): number {
 }
 
 /**
- * Convert a single Markdoc error page to plain MDX with YAML frontmatter.
- * Strips {% card %} wrappers, promotes H4 section labels to H2, derives the
- * page description from the Documentation section, and appends a "Thrown from"
- * list by scanning the monorepo for `throw new <ClassName>(` occurrences.
+ * Convert a single Markdoc error page to MDX with the Nordstar chrome:
+ * frontmatter, `<ErrorHero>` with code + description + class + kind badges,
+ * `<Causes>` list, "How it's thrown" code block from the original, and a
+ * `<ThrownFromList>` populated by scanning the monorepo for matching throw
+ * sites. Closes with `<StableHelpUrl>` and an edit-on-github link.
  *
  * @param code - SCREAMING_SNAKE_CASE error code (e.g. API_UNKNOWN_LOCALE).
  * @param src - Raw Markdoc source string.
- * @returns Plain MDX string with frontmatter.
+ * @returns MDX file body including frontmatter.
  */
 function convertOne(code: string, src: string): string {
-    // Strip Markdoc tag wrappers: lines like "{% card %}" / "{% /card %}"
-    const stripped = src.replace(/^\s*{%\s*\/?card[^%]*%}\s*$/gm, '').trim();
-
-    // Normalize H4 → H2 (the original used H4 inside cards for section labels)
-    const normalized = stripped.replace(/^####\s+/gm, '## ');
-
-    // Derive description heuristically from the first non-empty line after the Documentation section.
-    const docMatch = normalized.match(/##\s+Documentation\s*\n+([^\n]+)/);
-    const description = docMatch?.[1]?.trim() ?? `Error ${code}.`;
+    const sections = parseSections(src);
+    const description = sections.documentation || `Error ${code}.`;
+    const lookup = resolveClassFromCode(code);
 
     const frontmatter = [
         '---',
@@ -122,28 +117,94 @@ function convertOne(code: string, src: string): string {
         '',
     ].join('\n');
 
-    const className = resolveClassFromCode(code);
-    const sites = className ? loadThrowSites().filter((s) => s.errorClass === className) : [];
-    const throwsSection = sites.length
-        ? `\n## Thrown from\n\n${sites
-              .map((s) => `- \`${escapeMdxInlineCode(s.file)}:${s.line}\` — \`${escapeMdxInlineCode(s.context)}\``)
-              .join('\n')}\n`
+    const heroProps: string[] = [`code="${code}"`, `description=${jsxAttr(description)}`];
+    if (lookup) {
+        heroProps.push(`errorClass="${lookup.className}"`);
+        heroProps.push(`kind="${lookup.kind}"`);
+        heroProps.push(`classHref="/reference/errors/${kebabClass(lookup.className)}/"`);
+    }
+    const hero = `<ErrorHero ${heroProps.join(' ')} />`;
+
+    // MDX requires a blank line between a JSX tag and inline markdown so the
+    // bullets inside <Causes> are still parsed as a list.
+    const causesBlock = sections.causes
+        ? ['## Possible causes', '', '<Causes>', '', sections.causes, '', '</Causes>'].join('\n')
         : '';
 
-    return `${frontmatter}${normalized}${throwsSection}\n`;
+    const codeBlock = sections.code ? ["## How it's thrown", '', sections.code].join('\n') : '';
+
+    const sites = lookup ? loadThrowSites().filter((s) => s.errorClass === lookup.className) : [];
+    const thrownFrom = sites.length
+        ? [
+              '## Thrown from',
+              '',
+              '<ThrownFromList>',
+              ...sites.map((s) => {
+                  const href = `https://github.com/filiphsps/commerce/blob/master/${s.file}#L${s.line}`;
+                  return `  <ThrownFromCard path=${jsxAttr(s.file)} line={${s.line}} context=${jsxAttr(s.context)} href="${href}" />`;
+              }),
+              '</ThrownFromList>',
+          ].join('\n')
+        : '';
+
+    const slug = kebab(code);
+    const helpUrl = `https://docs.nordcom.io/errors/${slug}/`;
+    const editUrl = `https://github.com/filiphsps/commerce/edit/master/apps/landing/docs/errors/${code}.mdx`;
+    const footer = `<StableHelpUrl href="${helpUrl}" editUrl="${editUrl}" />`;
+
+    return [frontmatter, hero, '', causesBlock, '', codeBlock, '', thrownFrom, '', footer, ''].join('\n');
+}
+
+type ErrorSections = {
+    causes: string;
+    documentation: string;
+    code: string;
+};
+
+/**
+ * Split a Markdoc error page into the three canonical sections (Causes,
+ * Documentation, Code). Strips card wrappers and the `####` heading prefix.
+ *
+ * @param src - Raw Markdoc source.
+ * @returns The three section bodies, each trimmed (empty string when absent).
+ */
+function parseSections(src: string): ErrorSections {
+    const stripped = src.replace(/^\s*{%\s*\/?card[^%]*%}\s*$/gm, '').trim();
+    const out: ErrorSections = { causes: '', documentation: '', code: '' };
+    // Match `#### <Label>` followed by content up to the next `#### ` or EOF.
+    for (const m of stripped.matchAll(/####\s+(\w+(?:\s+\w+)*)\s*\n+([\s\S]*?)(?=\n####\s+|$)/g)) {
+        const label = (m[1] as string).toLowerCase();
+        const body = (m[2] as string).trim();
+        if (label.startsWith('possible cause')) out.causes = body;
+        else if (label.startsWith('documentation')) out.documentation = body.split('\n')[0]?.trim() ?? '';
+        else if (label.startsWith('code')) out.code = body;
+    }
+    return out;
 }
 
 /**
- * Escape characters inside an inline-code span that MDX would otherwise
- * interpret as JSX. `{` and `}` open and close expression placeholders, so
- * a source line containing `${variable}` would compile as a JSX expression
- * and throw `ReferenceError: variable is not defined` at render time.
+ * Render a string value as a JSX attribute. Uses single quotes when the value
+ * contains a double quote, otherwise wraps in double quotes. Escapes braces
+ * so MDX does not interpret them as JSX expressions.
  *
- * @param s - Raw source-line text to embed inside backticks.
- * @returns The same text with `{` and `}` HTML-escaped.
+ * @param value - The raw attribute value.
+ * @returns A JSX-attribute literal including the surrounding quotes.
  */
-function escapeMdxInlineCode(s: string): string {
-    return s.replace(/\{/g, '&#123;').replace(/\}/g, '&#125;');
+function jsxAttr(value: string): string {
+    const escaped = value.replace(/\{/g, '&#123;').replace(/\}/g, '&#125;');
+    if (escaped.includes('"')) return `'${escaped.replace(/'/g, "\\'")}'`;
+    return `"${escaped}"`;
+}
+
+/**
+ * Convert a PascalCase class name to its kebab-case URL slug.
+ * Mirrors the kebab logic used by `emit-reference-mdx`.
+ *
+ * @param name - PascalCase class name (e.g. `UnknownLocaleError`).
+ * @returns Kebab-case slug (`unknown-locale-error`).
+ */
+function kebabClass(name: string): string {
+    return name.replace(/[A-Z]/g, (m, i) => (i === 0 ? m.toLowerCase() : `-${m.toLowerCase()}`));
 }
 
 /**
@@ -214,48 +275,48 @@ function loadThrowSites(): ThrowSite[] {
     return throwSitesCache;
 }
 
+type SymbolLookup = { className: string; kind: string };
+
 /** Lazily populated cache from parsing the errors package switch. */
-let codeToClassCache: Map<string, string> | null = null;
+let codeToSymbolCache: Map<string, SymbolLookup> | null = null;
 
 /**
  * Parse `packages/errors/src/index.ts`'s `getErrorFromCode` switch statement
- * to build a map from SCREAMING_SNAKE error code (enum member name) to the
- * corresponding class name. Result is cached after the first call.
+ * to build a map from SCREAMING_SNAKE error code (enum member name) to its
+ * class name and the kind enum it belongs to.
  *
  * @throws {Error} When the errors package source file is not found; the
  *   throw-site feature depends on this mapping.
- * @returns Map from code string to class name.
+ * @returns Map from code string to `{ className, kind }`.
  */
-function buildCodeToClassMap(): Map<string, string> {
+function buildCodeToSymbolMap(): Map<string, SymbolLookup> {
     if (!fs.existsSync(ERRORS_PKG_SRC)) {
         throw new Error(
             `[port-errors] Cannot find ${ERRORS_PKG_SRC}. The throw-site feature requires the errors package source.`,
         );
     }
     const src = fs.readFileSync(ERRORS_PKG_SRC, 'utf8');
-    const map = new Map<string, string>();
-    // Match consecutive lines: `case XxxErrorKind.MEMBER_NAME:` then `return ClassName`.
-    for (const m of src.matchAll(/case \w+ErrorKind\.(\w+):[\s\S]*?return (\w+)/g)) {
-        const memberName = m[1] as string;
-        // Capture only the leading identifier — strip any ` as unknown ...` casts.
-        const className = (m[2] as string).split(/\s/)[0] as string;
-        map.set(memberName, className);
+    const map = new Map<string, SymbolLookup>();
+    for (const m of src.matchAll(/case (\w+ErrorKind)\.(\w+):[\s\S]*?return (\w+)/g)) {
+        const kind = m[1] as string;
+        const memberName = m[2] as string;
+        const className = (m[3] as string).split(/\s/)[0] as string;
+        map.set(memberName, { className, kind });
     }
     return map;
 }
 
 /**
- * Resolve the error class name for a given SCREAMING_SNAKE_CASE code string by
- * looking up the code→class map parsed from the errors package source.
+ * Resolve the symbol lookup for a given SCREAMING_SNAKE_CASE code string.
  *
  * @param code - SCREAMING_SNAKE_CASE error code (file-based, matches enum member name).
- * @returns Resolved class name, or undefined when the code is unknown.
+ * @returns Resolved `{ className, kind }`, or undefined when the code is unknown.
  */
-function resolveClassFromCode(code: string): string | undefined {
-    if (codeToClassCache === null) {
-        codeToClassCache = buildCodeToClassMap();
+function resolveClassFromCode(code: string): SymbolLookup | undefined {
+    if (codeToSymbolCache === null) {
+        codeToSymbolCache = buildCodeToSymbolMap();
     }
-    return codeToClassCache.get(code);
+    return codeToSymbolCache.get(code);
 }
 
 /**

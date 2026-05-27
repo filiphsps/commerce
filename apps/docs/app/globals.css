@@ -200,6 +200,20 @@ a[data-symbol-tab='docs'] { color: var(--color-brand); }
     letter-spacing: -0.015em;
 }
 
+/* Error pages — h2s become uppercase, mono-tracked section heads. The hero
+ * carries the editorial weight; sections under it should read as labels. */
+.errors-page h2 {
+    font-family: var(--font-sans);
+    font-size: 0.76rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--color-fg-mute);
+    margin: 2.2rem 0 0.85rem 0;
+    padding-bottom: 0.4rem;
+    border-bottom: var(--bw-s, 0.138rem) solid var(--color-border);
+}
+
 /* Tables (params lists) — bordered, mono pname column */
 .prose table {
     border: 0.138rem solid var(--color-border);

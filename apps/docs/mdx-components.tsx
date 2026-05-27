@@ -4,12 +4,19 @@ import type { MDXComponents } from 'mdx/types';
 import { KindLine } from './components/reference/kind-line';
 import { ReferenceBackLink } from './components/reference/reference-back-link';
 import { IconCard, IconGallery } from './components/reference/icon-gallery';
+import { SourceFooter } from './components/reference/source-footer';
 import { DeprecatedBanner } from './components/banners/deprecated-banner';
 import { BetaBanner } from './components/banners/beta-banner';
 import { ExperimentalBanner } from './components/banners/experimental-banner';
 import { InternalBanner } from './components/banners/internal-banner';
 import { InlinePill } from './components/banners/inline-pill';
 import { Callout } from './components/callout';
+import { ContinueExploring } from './components/continue-exploring';
+import { ErrorHero } from './components/errors/error-hero';
+import { Causes } from './components/errors/causes';
+import { ThrownFromCard, ThrownFromList } from './components/errors/thrown-from-list';
+import { RelatedErrors } from './components/errors/related-errors';
+import { StableHelpUrl } from './components/errors/stable-help-url';
 
 /**
  * Bridges fumadocs-ui's default MDX renderers plus our custom MDX components
@@ -29,12 +36,20 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
         ReferenceBackLink,
         IconCard,
         IconGallery,
+        SourceFooter,
         DeprecatedBanner,
         BetaBanner,
         ExperimentalBanner,
         InternalBanner,
         InlinePill,
         Callout,
+        ContinueExploring,
+        ErrorHero,
+        Causes,
+        ThrownFromCard,
+        ThrownFromList,
+        RelatedErrors,
+        StableHelpUrl,
         ...components,
     } satisfies MDXComponents;
 }

@@ -9,6 +9,7 @@ import { primaryFont } from '@/lib/fonts';
 import { source } from '@/lib/source';
 import { docsEnv } from '@/lib/env';
 import { Logo } from '@/components/logo';
+import { TabChip } from '@/components/tab-chip';
 
 export const metadata: Metadata = {
     title: { default: 'Nordcom Commerce', template: '%s — Nordcom Commerce' },
@@ -41,6 +42,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                         githubUrl="https://github.com/filiphsps/commerce"
                         tabMode="top"
                         nav={{ title: <Logo />, transparentMode: 'top' }}
+                        sidebar={{ banner: <TabChip /> }}
                     >
                         {children}
                     </DocsLayout>

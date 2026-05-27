@@ -55,7 +55,7 @@ export function renderSymbolMdx(args: SymbolRenderArgs): string {
         '',
         '## Signature',
         '',
-        sigBlock,
+        renderSignatureWithTitle(workspaceSlug, sigBlock),
         params,
         returns,
         throws,
@@ -65,6 +65,20 @@ export function renderSymbolMdx(args: SymbolRenderArgs): string {
     ]
         .filter(Boolean)
         .join('\n');
+}
+
+/**
+ * Wrap signature codeblocks with a `title="<package>"` meta so the renderer
+ * shows the package path in the codeblock's title bar.
+ *
+ * @param workspaceSlug - Workspace folder slug under `apps/` or `packages/`.
+ * @param sigBlock - The signature codeblock string from `renderSignature`.
+ * @returns The same blocks with the title attribute injected.
+ */
+function renderSignatureWithTitle(workspaceSlug: string, sigBlock: string): string {
+    if (!sigBlock) return '';
+    const pkgName = `@nordcom/commerce-${workspaceSlug}`;
+    return sigBlock.replace(/^```ts\b/gm, `\`\`\`ts title="${pkgName}"`);
 }
 
 /**
@@ -199,17 +213,18 @@ function renderSeeAlso(blockTags: { tag: string; content: TypeDocCommentNode[] }
 }
 
 /**
- * Render a source footer link to the originating file on GitHub.
- * Falls back to `GITHUB_BASE/<fileName>#L<line>` when no `url` is present.
+ * Render a `<SourceFooter>` component for the symbol's originating file on
+ * GitHub. Falls back to `GITHUB_BASE/<fileName>#L<line>` when no `url` is
+ * present on the source reflection.
  *
  * @param symbol - TypeDoc symbol whose first source entry is used.
- * @returns Markdown horizontal rule + source link, or empty string when no source.
+ * @returns MDX component string, or empty string when no source.
  */
 function renderSource(symbol: TypeDocSymbol): string {
     const src = symbol.sources?.[0];
     if (!src) return '';
     const url = src.url ?? `${GITHUB_BASE}/${src.fileName}#L${src.line}`;
-    return `\n---\n\n[View source · ${src.fileName}:${src.line}](${url})`;
+    return `\n<SourceFooter file="${src.fileName}" line={${src.line}} href="${url}" />`;
 }
 
 /**

@@ -17,11 +17,23 @@ export default async function Page(props: { params: Promise<{ slug?: string[] }>
     if (!page) notFound();
 
     const MDX = page.data.body;
+    const tab = params.slug?.[0];
+    const showHero = tab !== 'errors';
     return (
         <DocsPage toc={page.data.toc}>
-            <DocsTitle>{page.data.title}</DocsTitle>
-            {page.data.description ? <DocsDescription>{page.data.description}</DocsDescription> : null}
-            <DocsBody>
+            {showHero ? (
+                <>
+                    <DocsTitle className="font-extrabold text-[2.6rem] leading-[1.05] tracking-[-0.035em]">
+                        {page.data.title}
+                    </DocsTitle>
+                    {page.data.description ? (
+                        <DocsDescription className="mb-10 max-w-[60ch] font-medium text-[1.15rem] text-fg-mute leading-relaxed">
+                            {page.data.description}
+                        </DocsDescription>
+                    ) : null}
+                </>
+            ) : null}
+            <DocsBody className={tab === 'errors' ? 'errors-page' : undefined}>
                 <MDX components={getMDXComponents()} />
             </DocsBody>
         </DocsPage>
