@@ -6,12 +6,12 @@ Append one section per wave as it completes. Use this as the orchestrator's runn
 
 ## Wave 1 — Foundations (errors + utils)
 
-Status: pending
-Started: —
+Status: in_progress
+Started: 2026-05-27 (session)
 Completed: —
 PRs:
-- `packages/errors`: —
-- `packages/utils`: —
+- `packages/errors`: pending generator dispatch
+- `packages/utils`: pending generator dispatch
 Calibration findings: —
 
 ## Wave 2 — Independent foundations (db, tagtree, shopify-graphql, cart/core)

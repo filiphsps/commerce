@@ -14,10 +14,11 @@ You are the JSDoc generator subagent for `<PACKAGE_PATH>`. Read the spec at `.sp
 
 Inside the worktree:
 
-1. Confirm clean working tree: `git status --porcelain` → must be empty.
-2. Confirm on the right branch: `git rev-parse --abbrev-ref HEAD` → must equal `docs/jsdoc-<PACKAGE_SLUG>`.
-3. Baseline typecheck: `pnpm --filter <PACKAGE_NPM_NAME> typecheck`. Must pass.
-4. Baseline lint: `pnpm --filter <PACKAGE_NPM_NAME> lint`. Must pass.
+1. Install deps: `pnpm install --prefer-offline --frozen-lockfile`. A fresh worktree has no `node_modules`; install reuses the central store, so it's usually quick.
+2. Confirm clean working tree: `git status --porcelain` → must be empty (ignore `node_modules/` lines if any leak through).
+3. Confirm on the right branch: `git rev-parse --abbrev-ref HEAD` → must equal `docs/jsdoc-<PACKAGE_SLUG>`.
+4. Baseline typecheck: `pnpm --filter <PACKAGE_NPM_NAME> typecheck`. Must pass.
+5. Baseline lint: `pnpm --filter <PACKAGE_NPM_NAME> lint`. Must pass.
 
 If any precondition fails, abort immediately and report the failure. Do not edit anything. Fixing pre-existing issues is out of scope for this campaign.
 
