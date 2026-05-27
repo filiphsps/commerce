@@ -20,6 +20,18 @@ export type DocumentFormProps = {
     livePreview?: ReactNode;
 };
 
+/**
+ * Full-page document editor layout combining a PageHeader, Payload field shell, and optional live-preview pane.
+ *
+ * @param props.title - Page heading displayed in PageHeader.
+ * @param props.breadcrumbs - Optional breadcrumb trail rendered above the title.
+ * @param props.shellProps - Props forwarded to PayloadFieldShell (Payload context providers).
+ * @param props.children - Field components rendered inside the form body.
+ * @param props.onSubmit - Server action called on explicit form submit.
+ * @param props.initialState - Payload FormState used to seed the form.
+ * @param props.toolbar - Optional toolbar slot rendered in the sticky PageFooter.
+ * @param props.livePreview - When provided the form body switches to a two-column grid layout.
+ */
 export function DocumentForm({
     title,
     breadcrumbs,

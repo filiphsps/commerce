@@ -28,12 +28,16 @@ export type UploadFormProps = {
  * Invokes a server action that authenticates via NextAuth and dispatches into
  * `payload.create` with the file payload. On success it redirects to the new
  * doc's edit page (or back to the grid on failure).
+ *
+ * @param props.domain - The current shop domain used to construct the post-upload redirect URL.
+ * @param props.createAction - Pre-bound server action `(formData: FormData) => Promise<{ id: string }>`.
  */
 export function UploadForm({ domain, createAction }: UploadFormProps) {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
     const [error, setError] = useState<string | null>(null);
 
+    /** Submits the form via the bound server action and redirects to the new media document on success. @param e - The form submit event. */
     function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setError(null);

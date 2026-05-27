@@ -13,6 +13,14 @@ import { Toaster } from 'sonner';
 export type ProvidersProps = {
     children: ReactNode;
 };
+/**
+ * Root client provider tree for the admin shell.
+ *
+ * Mounts NordstarProvider, NextTopLoader, Toaster, the global faceless-ui ModalProvider
+ * (required for Payload document drawers to find a ModalContext), and Google Tag Manager.
+ *
+ * @param props.children - Application tree wrapped by all providers.
+ */
 export function Providers({ children }: ProvidersProps) {
     // https://github.com/TheSGJ/nextjs-toploader/issues/56#issuecomment-1820484781
     // this should also trigger on searchParams changes but listening to it would cause

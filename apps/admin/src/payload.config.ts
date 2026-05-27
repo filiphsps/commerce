@@ -27,6 +27,15 @@ if (!MONGODB_URI) throw new MissingEnvironmentVariableError('MONGODB_URI');
 
 const storefrontBaseUrl = process.env.STOREFRONT_BASE_URL ?? 'https://storefront.localhost';
 
+/**
+ * Constructs the storefront live-preview URL for the given tenant, collection, and document.
+ *
+ * @param tenantId - The Payload tenant id used to scope the storefront preview route.
+ * @param collection - The Payload collection slug (`pages`, `articles`, `productMetadata`, `collectionMetadata`).
+ * @param data - The document data; `slug` or `shopifyHandle` is used as the path handle.
+ * @param locale - The locale prefix for the preview URL path.
+ * @returns A fully-qualified storefront preview URL with `preview=1` and the preview secret.
+ */
 export const buildLivePreviewUrl = ({
     tenantId,
     collection,

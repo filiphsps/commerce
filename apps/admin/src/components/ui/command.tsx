@@ -6,6 +6,11 @@ import { type ComponentPropsWithoutRef, type ComponentRef, forwardRef } from 're
 
 import { cn } from '@/utils/tailwind';
 
+/**
+ * cmdk command menu root container; wraps CommandPrimitive with themed styles.
+ *
+ * @param props.className - Additional class names merged onto the primitive root.
+ */
 export const Command = forwardRef<
     ComponentRef<typeof CommandPrimitive>,
     ComponentPropsWithoutRef<typeof CommandPrimitive>
@@ -22,6 +27,11 @@ export const Command = forwardRef<
 ));
 Command.displayName = CommandPrimitive.displayName;
 
+/**
+ * Search input bar with a leading magnifier icon, rendered at the top of the Command menu.
+ *
+ * @param props.className - Additional class names merged onto the input element.
+ */
 export const CommandInput = forwardRef<
     ComponentRef<typeof CommandPrimitive.Input>,
     ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
@@ -41,6 +51,11 @@ export const CommandInput = forwardRef<
 ));
 CommandInput.displayName = CommandPrimitive.Input.displayName;
 
+/**
+ * Scrollable viewport for CommandGroup and CommandEmpty items within a Command menu.
+ *
+ * @param props.className - Additional class names merged onto the list element.
+ */
 export const CommandList = forwardRef<
     ComponentRef<typeof CommandPrimitive.List>,
     ComponentPropsWithoutRef<typeof CommandPrimitive.List>
@@ -54,6 +69,11 @@ export const CommandList = forwardRef<
 ));
 CommandList.displayName = CommandPrimitive.List.displayName;
 
+/**
+ * Fallback rendered inside CommandList when no items match the current search query.
+ *
+ * @param props.className - Additional class names merged onto the empty state element.
+ */
 export const CommandEmpty = forwardRef<
     ComponentRef<typeof CommandPrimitive.Empty>,
     ComponentPropsWithoutRef<typeof CommandPrimitive.Empty>
@@ -67,6 +87,11 @@ export const CommandEmpty = forwardRef<
 ));
 CommandEmpty.displayName = CommandPrimitive.Empty.displayName;
 
+/**
+ * Labeled group of CommandItem entries within a CommandList.
+ *
+ * @param props.className - Additional class names merged onto the group element.
+ */
 export const CommandGroup = forwardRef<
     ComponentRef<typeof CommandPrimitive.Group>,
     ComponentPropsWithoutRef<typeof CommandPrimitive.Group>
@@ -83,6 +108,11 @@ export const CommandGroup = forwardRef<
 ));
 CommandGroup.displayName = CommandPrimitive.Group.displayName;
 
+/**
+ * Selectable command entry that triggers an action on selection via onSelect.
+ *
+ * @param props.className - Additional class names merged onto the item element.
+ */
 export const CommandItem = forwardRef<
     ComponentRef<typeof CommandPrimitive.Item>,
     ComponentPropsWithoutRef<typeof CommandPrimitive.Item>

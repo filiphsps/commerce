@@ -12,6 +12,15 @@ export type EmptyStateProps = {
     className?: string;
 };
 
+/**
+ * Centered empty state with an optional description and action link, used on collection list pages with no rows.
+ *
+ * @param props.label - Primary heading text displayed in the empty state.
+ * @param props.description - Secondary explanation shown below the label.
+ * @param props.actionLabel - Button label for the call-to-action link.
+ * @param props.actionHref - Route for the call-to-action; rendered only when both label and href are present.
+ * @param props.className - Additional class names merged onto the container.
+ */
 export function EmptyState({ label, description, actionLabel, actionHref, className }: EmptyStateProps) {
     return (
         <div

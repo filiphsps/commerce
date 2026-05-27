@@ -32,6 +32,10 @@ export type CreateMetadataForHandleFormProps = {
  *
  * Shared between the product-metadata and collection-metadata list pages so
  * both display a consistent "open by handle" affordance.
+ *
+ * @param props.domain - Tenant domain used to build the navigation URL.
+ * @param props.basePath - Content sub-path for the metadata collection, e.g. 'product-metadata'.
+ * @param props.placeholder - Placeholder text for the handle input; defaults to 'Shopify handle…'.
  */
 export function CreateMetadataForHandleForm({ domain, basePath, placeholder }: CreateMetadataForHandleFormProps) {
     const router = useRouter();

@@ -23,6 +23,18 @@ export type ShellHeaderProps = {
     mobileNavContent: ReactNode;
 };
 
+/**
+ * Top application bar for the admin shell containing the logo, shop switcher, search trigger, and account menu.
+ *
+ * On compact breakpoints the desktop sidebar is replaced by a MobileDrawer triggered from this header.
+ * The breakpoint gate is client-side to avoid a Radix useId hydration mismatch on the trigger button.
+ *
+ * @param props.shop - The currently active shop for the shop switcher.
+ * @param props.user - Authenticated user for the account menu.
+ * @param props.shopsForSwitcher - All shops available for switching.
+ * @param props.commandPaletteItems - Items rendered in the CommandPalette opened by the search trigger.
+ * @param props.mobileNavContent - Pre-rendered server component tree rendered inside the MobileDrawer.
+ */
 export function ShellHeader({ shop, user, shopsForSwitcher, commandPaletteItems, mobileNavContent }: ShellHeaderProps) {
     // Gate the mobile drawer on the real breakpoint instead of `md:hidden`.
     // SSR + first-client-render both see the default 'comfortable' breakpoint,

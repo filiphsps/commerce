@@ -59,6 +59,16 @@ export type AuthedPayloadCtx = {
     } | null;
 };
 
+/**
+ * Authenticates the current NextAuth session and resolves the corresponding Payload user and tenant context.
+ *
+ * Redirects to /auth/login/ when no valid session or Payload user exists.
+ * Calls notFound() when the domain resolves to an unknown shop or tenant,
+ * or when an editor accesses a tenant they are not a member of.
+ *
+ * @param domain - Tenant domain for the request; omit on admin-only cross-tenant routes.
+ * @returns A bundle of the Payload instance, session, user, and resolved tenant (null when domain is omitted).
+ */
 export async function getAuthedPayloadCtx(domain?: string): Promise<AuthedPayloadCtx> {
     const session = await auth();
     if (!session?.user?.email) {

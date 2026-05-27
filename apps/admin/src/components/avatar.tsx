@@ -4,6 +4,11 @@ import * as AvatarPrimitive from '@radix-ui/react-avatar';
 import * as React from 'react';
 import { cn } from '@/utils/tailwind';
 
+/**
+ * Circular avatar container sized at 36 px (size-9). Wraps Radix's Avatar root.
+ *
+ * @param props.className - Additional class names merged onto the root element.
+ */
 const Avatar = React.forwardRef<
     React.ElementRef<typeof AvatarPrimitive.Root>,
     React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root>
@@ -16,6 +21,11 @@ const Avatar = React.forwardRef<
 ));
 Avatar.displayName = AvatarPrimitive.Root.displayName;
 
+/**
+ * Renders the avatar image; falls back to AvatarFallback when the image fails to load.
+ *
+ * @param props.className - Additional class names merged onto the image element.
+ */
 const AvatarImage = React.forwardRef<
     React.ElementRef<typeof AvatarPrimitive.Image>,
     React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Image>
@@ -24,6 +34,11 @@ const AvatarImage = React.forwardRef<
 ));
 AvatarImage.displayName = AvatarPrimitive.Image.displayName;
 
+/**
+ * Fallback content displayed when the avatar image is absent or fails to load.
+ *
+ * @param props.className - Additional class names merged onto the fallback element.
+ */
 const AvatarFallback = React.forwardRef<
     React.ElementRef<typeof AvatarPrimitive.Fallback>,
     React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Fallback>

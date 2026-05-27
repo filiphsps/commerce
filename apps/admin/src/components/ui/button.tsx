@@ -36,6 +36,11 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
  * child (e.g. an `<a>`) and the forwarded ref points to that element rather
  * than an HTMLButtonElement. The `ref as never` cast intentionally widens the
  * ref to permit this — callers using `asChild` must type their own ref.
+ *
+ * @param props.className - Additional class names applied to the button or Slot element.
+ * @param props.variant - Visual variant; defaults to 'primary'.
+ * @param props.size - Size variant; defaults to 'md'.
+ * @param props.asChild - When true the child element acts as the button (Radix Slot pattern).
  */
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ({ className, variant, size, asChild, ...props }, ref) => {

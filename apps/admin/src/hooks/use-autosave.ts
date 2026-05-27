@@ -50,6 +50,12 @@ export type UseAutosaveResult = {
  * intentionally avoided — it is expensive for large Payload FormState objects.
  *
  * On unmount the pending timer is cancelled and NO save fires.
+ *
+ * @param options.state - Current form state; a new reference identity triggers the debounce.
+ * @param options.saveAction - Server action invoked with the current state after the debounce window.
+ * @param options.delay - Debounce window in milliseconds; defaults to 2000.
+ * @param options.disabled - When true, pending timers are cancelled and autosave is suppressed.
+ * @returns Object with isSaving, lastSavedAt, flush, and error fields.
  */
 export function useAutosave<T>({
     state,

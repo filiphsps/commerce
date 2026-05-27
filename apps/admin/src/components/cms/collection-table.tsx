@@ -55,10 +55,32 @@ function columnKey<TRow>(col: Column<TRow>, index: number): string {
     return typeof col.accessor === 'function' ? `fn:${index}` : col.accessor;
 }
 
+/**
+ * Resolves a column's cell value for the given row using either the string accessor or the function accessor.
+ *
+ * @param col - Column definition whose accessor drives the lookup.
+ * @param row - The row being rendered.
+ * @returns The resolved cell value (may be null for function-form accessors).
+ */
 function resolveCellValue<TRow>(col: Column<TRow>, row: TRow): unknown {
     return typeof col.accessor === 'function' ? col.accessor(row) : row[col.accessor];
 }
 
+/**
+ * Data table for CMS collection list pages with optional row checkboxes for bulk operations.
+ *
+ * Renders columns, a trailing "Edit" link per row, and wraps the tree in BulkSelectionProvider
+ * automatically when selectable is true.
+ *
+ * @param props.rows - Array of data objects to display; each must have an id field.
+ * @param props.columns - Column definitions controlling header labels and cell rendering.
+ * @param props.getRowHref - Returns the edit route for a given row.
+ * @param props.getRowLabel - Human-readable label per row for screen readers.
+ * @param props.bulkActions - BulkActions slot; rendered only when selectable is true and rows exist.
+ * @param props.selectable - When true, renders row checkboxes and wraps in BulkSelectionProvider.
+ * @param props.emptyMessage - Message displayed when the rows array is empty.
+ * @param props.ariaLabel - aria-label on the underlying table element.
+ */
 export function CollectionTable<TRow extends { id: string | number }>({
     rows,
     columns,

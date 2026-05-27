@@ -9,6 +9,12 @@ export const TooltipProvider = Primitive.Provider;
 export const Tooltip = Primitive.Root;
 export const TooltipTrigger = Primitive.Trigger;
 
+/**
+ * Portal-rendered tooltip content with animated delayed-open/close transitions.
+ *
+ * @param props.className - Additional class names merged onto the content element.
+ * @param props.sideOffset - Pixel gap between the trigger and the tooltip; defaults to 4.
+ */
 export const TooltipContent = forwardRef<
     ComponentRef<typeof Primitive.Content>,
     ComponentPropsWithoutRef<typeof Primitive.Content>

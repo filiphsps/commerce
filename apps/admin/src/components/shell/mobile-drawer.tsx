@@ -14,6 +14,15 @@ export type MobileDrawerProps = {
     children: ReactNode;
 };
 
+/**
+ * Full-height slide-in drawer for mobile breakpoints, implemented with Radix Dialog.
+ * Closes automatically on route change.
+ *
+ * @param props.side - Which edge the drawer slides in from ('left' or 'right').
+ * @param props.trigger - Element rendered as the Dialog trigger (e.g. a hamburger button).
+ * @param props.title - Accessible title for the dialog; rendered visually-hidden. Defaults to 'Menu'.
+ * @param props.children - Drawer body content.
+ */
 export function MobileDrawer({ side, trigger, title = 'Menu', children }: MobileDrawerProps) {
     const pathname = usePathname();
     const [open, setOpen] = useState(false);

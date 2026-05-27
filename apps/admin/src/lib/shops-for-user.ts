@@ -4,7 +4,12 @@ import { Shop } from '@nordcom/commerce-db';
 
 export type ShopSwitcherEntry = { name: string; domain: string };
 
-/** Returns the shops the given user has access to. For operators (role=admin), returns all shops. */
+/**
+ * Returns the shops the given user has access to. For operators (role=admin), returns all shops.
+ *
+ * @param _userId - Currently unused; scoping by user.tenants is planned but not yet implemented.
+ * @returns Array of shop name and domain entries for the shop switcher.
+ */
 export async function getShopsForUser(_userId: string): Promise<ShopSwitcherEntry[]> {
     // TODO(shell-rework): scope by user.tenants in a follow-up. For now expose all shops.
     // TypeScript's overload picker resolves the empty-args form to the single-result

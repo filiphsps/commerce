@@ -33,6 +33,13 @@ import { getFieldByPath } from 'payload';
  */
 export type BuildCmsFormStateArgs = Omit<BuildFormStateArgs, 'mockRSCs' | 'renderAllFields'>;
 
+/**
+ * Calls Payload's buildFormState with renderAllFields: false and mockRSCs: true pinned,
+ * then strips hidden editor fields and logs any mocked RSC slots.
+ *
+ * @param args - buildFormState arguments minus the pinned mockRSCs and renderAllFields flags.
+ * @returns The buildFormState result with hidden fields removed from the state map.
+ */
 export async function buildCmsFormState(args: BuildCmsFormStateArgs) {
     const result = await buildFormState({
         ...args,
@@ -155,6 +162,12 @@ function stripRowIndices(path: string): string {
         .join('.');
 }
 
+/**
+ * Deduplicates a list of MockedFieldSlot entries by path+slot and returns them sorted.
+ *
+ * @param entries - Raw mocked slot entries, potentially containing duplicates.
+ * @returns A deduplicated copy of the entries, sorted by path then slot.
+ */
 function dedupeMocks(entries: MockedFieldSlot[]): MockedFieldSlot[] {
     const seen = new Set<string>();
     const out: MockedFieldSlot[] = [];

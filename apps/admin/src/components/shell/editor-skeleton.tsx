@@ -1,6 +1,9 @@
 import { PageHeader } from '@/components/shell/page-header';
 import { Skeleton } from '@/components/shell/skeleton';
 
+/**
+ * Full-page loading skeleton for document editor routes while the real content is streaming.
+ */
 export function EditorSkeleton() {
     return (
         <div className="flex h-full min-w-0 flex-col">

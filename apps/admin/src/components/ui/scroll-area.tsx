@@ -4,6 +4,12 @@ import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area';
 import * as React from 'react';
 import { cn } from '@/utils/tailwind';
 
+/**
+ * Radix scroll area root with a custom scrollbar thumb; hides native browser scrollbars.
+ *
+ * @param props.className - Additional class names merged onto the root element.
+ * @param props.children - Content to be made scrollable.
+ */
 const ScrollArea = React.forwardRef<
     React.ElementRef<typeof ScrollAreaPrimitive.Root>,
     React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root>
@@ -18,6 +24,12 @@ const ScrollArea = React.forwardRef<
 ));
 ScrollArea.displayName = ScrollAreaPrimitive.Root.displayName;
 
+/**
+ * Custom scrollbar track and thumb rendered inside a ScrollArea.
+ *
+ * @param props.className - Additional class names merged onto the scrollbar element.
+ * @param props.orientation - Scroll axis; defaults to 'vertical'.
+ */
 const ScrollBar = React.forwardRef<
     React.ElementRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>,
     React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>

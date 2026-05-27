@@ -1,6 +1,11 @@
 import { PageHeader } from '@/components/shell/page-header';
 import { Skeleton } from '@/components/shell/skeleton';
 
+/**
+ * Full-page loading skeleton for collection list routes while rows are streaming.
+ *
+ * @param props.title - Page title passed to PageHeader; defaults to 'Loading…'.
+ */
 export function ListSkeleton({ title = 'Loading…' }: { title?: string }) {
     return (
         <div className="flex h-full min-w-0 flex-col">

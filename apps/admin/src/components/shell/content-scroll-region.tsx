@@ -12,6 +12,9 @@ export type ContentScrollRegionProps = {
  * sticky-top / sticky-bottom CSS for any <PageHeader data-page-header /> or
  * <PageFooter data-page-footer /> rendered as a direct child. Pages render
  * their headers/footers inline; this wrapper makes them stick.
+ *
+ * @param props.children - Page content rendered inside the scroll container.
+ * @param props.className - Additional class names merged onto the scroll root.
  */
 export function ContentScrollRegion({ children, className }: ContentScrollRegionProps) {
     return (

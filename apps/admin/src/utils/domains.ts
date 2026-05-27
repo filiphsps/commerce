@@ -12,6 +12,13 @@
 const isProductionRuntime = process.env.NODE_ENV === 'production' && process.env.VERCEL_ENV !== 'preview';
 const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
 
+/**
+ * Reads an env var by name and returns it, or logs an error in production and returns the fallback.
+ *
+ * @param envName - The environment variable name to read.
+ * @param fallback - The default value returned when the env var is absent or empty.
+ * @returns The resolved hostname string.
+ */
 const requireOrFallback = (envName: 'ADMIN_DOMAIN' | 'LANDING_DOMAIN', fallback: string): string => {
     const value = process.env[envName];
     if (value && value.length > 0) return value;
@@ -27,10 +34,10 @@ const ADMIN_HOSTNAME = requireOrFallback('ADMIN_DOMAIN', 'admin.localhost');
 const LANDING_HOSTNAME = requireOrFallback('LANDING_DOMAIN', 'landing.localhost');
 
 // Portless serves HTTPS for .localhost URLs in dev, so the protocol is always https.
-// biome-ignore lint/correctness/noUnusedFunctionParameters: Preserve argument name.
-const protocolFor = (hostname: string) => 'https' as const;
+/** Returns the protocol string for the resolved admin URL; always `"https"` since portless serves HTTPS for all environments. @returns The literal string `"https"`. */
+const protocolFor = () => 'https' as const;
 
 export const ADMIN_DOMAIN = ADMIN_HOSTNAME;
 export const LANDING_DOMAIN = LANDING_HOSTNAME;
-export const ADMIN_URL = `${protocolFor(ADMIN_HOSTNAME)}://${ADMIN_HOSTNAME}`;
-export const LANDING_URL = `${protocolFor(LANDING_HOSTNAME)}://${LANDING_HOSTNAME}`;
+export const ADMIN_URL = `${protocolFor()}://${ADMIN_HOSTNAME}`;
+export const LANDING_URL = `${protocolFor()}://${LANDING_HOSTNAME}`;

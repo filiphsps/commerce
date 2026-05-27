@@ -27,6 +27,9 @@ const handlerPromise: Promise<ServerFunctionClient> = (async () => {
  * the wrapper has to be a top-level `'use server'` export, which is why this
  * file exists in the app rather than the shared cms package. The actual
  * dispatch implementation lives in `@nordcom/commerce-cms/server-functions`.
+ *
+ * @param args - Dispatch arguments (action name and payload) forwarded to Payload's server-function registry.
+ * @returns The result of the matched server function handler.
  */
 export async function cmsServerFunction(args: Parameters<ServerFunctionClient>[0]) {
     const handler = await handlerPromise;
