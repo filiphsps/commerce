@@ -872,3 +872,52 @@ figure.shiki [role="tab"][data-state="active"] {
     color: var(--color-pkg);
     white-space: nowrap;
 }
+
+/* List markers — brand magenta bullet/number per visuals/05 prose lists */
+.prose ul li::marker {
+    color: var(--color-brand);
+}
+.prose ol li::marker {
+    color: var(--color-brand);
+    font-weight: 600;
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+}
+
+/* Inline code — monospace + bg-2 tint. The prose plugin's --tw-prose-code
+ * handles color; we just reinforce the weight and bg. */
+.prose :not(pre) > code {
+    font-weight: 500;
+}
+
+/* Horizontal rules — thin border-strong divider, no default prose margin excess */
+.prose hr {
+    border-color: var(--color-border);
+    border-top-width: 0.138rem;
+    margin: 2.5rem 0;
+}
+
+/* Blockquote — left brand rail, muted text, matches callout visual weight */
+.prose blockquote {
+    border-left-color: var(--color-brand);
+    border-left-width: 0.29rem;
+    padding-left: 1rem;
+    color: var(--color-fg-mute);
+    font-style: normal;
+    font-weight: 500;
+}
+
+/* Strong / em within prose */
+.prose strong {
+    font-weight: 700;
+    color: var(--color-fg);
+}
+
+/* Anchor links in prose body */
+.prose a:not([data-card]) {
+    color: var(--color-brand);
+    text-underline-offset: 3px;
+}
+.prose a:not([data-card]):hover {
+    color: var(--color-brand-hover);
+}
