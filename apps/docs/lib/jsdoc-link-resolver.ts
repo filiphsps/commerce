@@ -13,7 +13,7 @@ export type SymbolIndex = Record<string, IndexEntry[]>;
 
 export type IndexEntry = {
     url: string;
-    kind: 'function' | 'class' | 'component' | 'type' | 'interface' | 'variable' | 'enum' | 'page' | 'error';
+    kind: 'function' | 'class' | 'component' | 'type' | 'interface' | 'variable' | 'enum' | 'page' | 'error' | 'other';
     tab: 'docs' | 'packages' | 'reference' | 'errors';
     pkg?: string;
     subpath?: string;
@@ -140,6 +140,6 @@ function scoreCandidate(c: IndexEntry, token: string, ctx: ResolveContext): numb
  */
 function resolveExplicit(index: SymbolIndex, token: string): Resolution | null {
     const direct = index[token];
-    if (direct && direct[0]) return { ...direct[0], ambiguous: false };
+    if (direct?.[0]) return { ...direct[0], ambiguous: false };
     return null;
 }

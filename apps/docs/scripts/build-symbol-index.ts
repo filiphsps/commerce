@@ -53,7 +53,9 @@ export function main({ quiet = false }: { quiet?: boolean } = {}): { entries: nu
                 pkg,
                 subpath,
             };
-            (index[child.name] ??= []).push(entry);
+            const bucket = index[child.name] ?? [];
+            index[child.name] = bucket;
+            bucket.push(entry);
         }
     }
 

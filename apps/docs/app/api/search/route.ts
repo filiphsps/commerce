@@ -1,4 +1,5 @@
 import { createFromSource } from 'fumadocs-core/search/server';
+import type { AdvancedIndex } from 'fumadocs-core/search/server';
 import { source } from '@/lib/source';
 
 /**
@@ -14,21 +15,28 @@ export const revalidate = false;
 export const dynamic = 'force-static';
 
 export const { staticGET: GET } = createFromSource(source, {
-    buildIndex: (page) => {
+    buildIndex: (page): AdvancedIndex => {
         const isReference = page.url.includes('/reference/');
+        if (isReference) {
+            return {
+                id: page.url,
+                title: page.data.title ?? '',
+                description: page.data.description,
+                url: page.url,
+                structuredData: {
+                    headings: [],
+                    contents: page.data.description
+                        ? [{ heading: undefined, content: page.data.description }]
+                        : [],
+                },
+            };
+        }
         return {
             id: page.url,
             title: page.data.title ?? '',
             description: page.data.description,
             url: page.url,
-            structuredData: isReference
-                ? {
-                      headings: [],
-                      contents: page.data.description
-                          ? [{ content: page.data.description }]
-                          : [],
-                  }
-                : page.data.structuredData,
+            structuredData: page.data.structuredData,
         };
     },
 });

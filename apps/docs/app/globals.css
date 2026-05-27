@@ -78,6 +78,17 @@
     }
 }
 
+/* ─── Inline code inside MDX prose blocks ───────────────────────────────────── */
+
+.callout code {
+    font-family: var(--font-mono);
+    background: var(--color-bg-2);
+    padding: 0 0.3rem;
+    border-radius: 3px;
+    font-size: 0.85em;
+    color: var(--color-fg);
+}
+
 /* ─── JSDoc banners ────────────────────────────────────────────────────────── */
 
 .jsdoc-banner {
@@ -246,15 +257,6 @@
     align-self: flex-start;
     padding-top: 0.18rem;
     white-space: nowrap;
-}
-
-.callout code {
-    font-family: var(--font-mono);
-    background: var(--color-bg-2);
-    padding: 0 0.3rem;
-    border-radius: 3px;
-    font-size: 0.85em;
-    color: var(--color-fg);
 }
 
 .callout.info {

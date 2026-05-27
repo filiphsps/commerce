@@ -1,7 +1,17 @@
-import type { Plugin } from 'unified';
-import type { Root, InlineCode } from 'mdast';
-import type { MdxJsxTextElement, MdxJsxAttribute } from 'mdast-util-mdx-jsx';
 import { isLinkableToken, resolveLink, type SymbolIndex, type ResolveContext } from './jsdoc-link-resolver';
+
+// Minimal inline types for the subset of MDAST + unified we need. The full
+// @types/mdast and @types/unified packages are transitive deps only — importing
+// them by name would fail tsc. These stubs cover precisely what we use.
+type InlineCodeNode = { type: 'inlineCode'; value: string };
+type MdxJsxAttr = { type: 'mdxJsxAttribute'; name: string; value: string };
+type MdxJsxTextNode = {
+    type: 'mdxJsxTextElement';
+    name: string;
+    attributes: MdxJsxAttr[];
+    children: unknown[];
+};
+type AnyNode = { type: string; children?: AnyNode[]; value?: string };
 
 /**
  * Remark plugin that rewrites inline-code spans into `<Link>` MDX nodes when
@@ -12,25 +22,28 @@ import { isLinkableToken, resolveLink, type SymbolIndex, type ResolveContext } f
  * a no-op to avoid blocking cold starts.
  *
  * @param options - The symbol index and page context.
- * @returns A unified transformer that mutates the MDAST in place.
+ * @returns A unified transformer function that mutates the MDAST in place.
  */
-export function remarkLinkSymbols(options: { index: SymbolIndex; context: ResolveContext }): Plugin<[], Root> {
+export function remarkLinkSymbols(options: {
+    index: SymbolIndex;
+    context: ResolveContext;
+}): () => (tree: unknown) => void {
     return () => (tree) => {
         if (Object.keys(options.index).length === 0) return;
-        visitInlineCode(tree, (node, idx, parent) => {
+        visitInlineCode(tree as AnyNode, (node, idx, parent) => {
             if (!isLinkableToken(node.value)) return;
             const res = resolveLink(options.index, node.value, options.context);
             if (!res) return;
-            const href: MdxJsxAttribute = { type: 'mdxJsxAttribute', name: 'href', value: res.url };
-            const tab: MdxJsxAttribute = { type: 'mdxJsxAttribute', name: 'data-symbol-tab', value: res.tab };
-            const replacement: MdxJsxTextElement = {
+            const href: MdxJsxAttr = { type: 'mdxJsxAttribute', name: 'href', value: res.url };
+            const tab: MdxJsxAttr = { type: 'mdxJsxAttribute', name: 'data-symbol-tab', value: res.tab };
+            const replacement: MdxJsxTextNode = {
                 type: 'mdxJsxTextElement',
                 name: 'Link',
                 attributes: [href, tab],
                 children: [{ type: 'inlineCode', value: node.value }],
             };
-            if (parent && typeof idx === 'number') {
-                parent.children[idx] = replacement as unknown as typeof parent.children[number];
+            if (parent?.children && typeof idx === 'number') {
+                parent.children[idx] = replacement as unknown as AnyNode;
             }
         });
     };
@@ -44,18 +57,16 @@ export function remarkLinkSymbols(options: { index: SymbolIndex; context: Resolv
  * @param cb - Callback invoked for each inlineCode node found.
  */
 function visitInlineCode(
-    node: unknown,
-    cb: (n: InlineCode, idx: number, parent: { children: unknown[] }) => void,
+    node: AnyNode,
+    cb: (n: InlineCodeNode, idx: number, parent: AnyNode) => void,
 ): void {
-    if (!node || typeof node !== 'object') return;
-    const n = node as { type?: string; children?: unknown[] };
-    if (Array.isArray(n.children)) {
-        for (let i = 0; i < n.children.length; i++) {
-            const child = n.children[i] as { type?: string };
-            if (child?.type === 'inlineCode') {
-                cb(child as InlineCode, i, n as { children: unknown[] });
-            }
-            visitInlineCode(child, cb);
+    if (!node?.children) return;
+    for (let i = 0; i < node.children.length; i++) {
+        const child = node.children[i];
+        if (!child) continue;
+        if (child.type === 'inlineCode' && typeof child.value === 'string') {
+            cb(child as InlineCodeNode, i, node);
         }
+        visitInlineCode(child, cb);
     }
 }
