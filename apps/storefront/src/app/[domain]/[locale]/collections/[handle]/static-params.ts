@@ -15,7 +15,7 @@ export type CollectionPageParams = Promise<{ domain: string; locale: string; han
  *
  * @param params - The already-resolved `domain` and `locale` from the parent segment.
  * @returns An array of `{ handle }` objects, one per collection.
- * @throws When a non-404 Shopify error is encountered during collection enumeration.
+ * @throws {unknown} When a non-404 Shopify error is encountered during collection enumeration.
  */
 export async function generateStaticParams({
     params,

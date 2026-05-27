@@ -182,6 +182,7 @@ const LOCALE_SLASH_TEST = /\/([a-zA-Z]{2}-[a-zA-Z]{2})\//g;
  *
  * @param req - The incoming Next.js edge request.
  * @returns A redirect, rewrite, or error response depending on tenant and locale resolution.
+ * @throws {NoLocaleResolvableError} When no supported locale can be resolved for the request URL.
  */
 export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     let newUrl = req.nextUrl.clone();
