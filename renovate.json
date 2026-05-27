@@ -5,5 +5,10 @@
     "commitMessageSuffix": "[skip vercel]",
     "lockFileMaintenance": {
         "enabled": false
-    }
+    },
+    "enabledManagers": ["pnpm", "github-actions"],
+    "ignoreScripts": true,
+    "prConcurrentLimit": 10,
+    "prHourlyLimit": 4,
+    "postUpdateOptions": []
 }
