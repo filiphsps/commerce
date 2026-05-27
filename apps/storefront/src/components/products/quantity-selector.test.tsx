@@ -24,7 +24,7 @@ describe('QuantitySelector hydration', () => {
     });
 });
 
-vi.mock('@/components/cart/provider', () => ({
+vi.mock('@nordcom/cart-react', () => ({
     useCartStatus: vi.fn().mockReturnValue({ cartReady: true, status: 'idle', error: null }),
     useMaybeCart: vi.fn().mockReturnValue(null),
 }));
