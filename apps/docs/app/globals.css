@@ -462,6 +462,30 @@ a[data-symbol-tab="docs"] {
     color: var(--color-brand);
 }
 
+/* Prev/Next pager cards at the bottom of every doc page. Fumadocs renders
+ * them with a 1px `border` + `rounded-lg` — re-skin to the visuals/02
+ * `.nav-card` treatment with 3px border, 7px radius, brand-magenta hover. */
+#nd-page > div.\@container.grid.grid-cols-2 > a {
+    border: 0.138rem solid var(--color-border) !important;
+    border-radius: var(--radius, 0.45rem) !important;
+    background: transparent !important;
+    padding: 0.85rem 1rem !important;
+    transition:
+        border-color 150ms,
+        background 150ms,
+        color 150ms !important;
+}
+
+#nd-page > div.\@container.grid.grid-cols-2 > a:hover {
+    border-color: var(--color-brand) !important;
+    background: hsl(330 86% 53% / 0.05) !important;
+    color: var(--color-fg) !important;
+}
+
+#nd-page > div.\@container.grid.grid-cols-2 > a:hover > div:nth-child(2) {
+    color: var(--color-brand) !important;
+}
+
 /* Right-side TOC — small mono label + brand-magenta current marker. */
 #nd-toc {
     border-left: 0.2rem solid var(--color-border);
