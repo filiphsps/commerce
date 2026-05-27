@@ -19,6 +19,22 @@ const TOPIC_MAP: Record<string, TopicMapping> = {
     'pages/create': { entity: 'page', paramKey: 'handle', paramName: 'handle' },
 };
 
+/**
+ * Input bundle for {@link parseShopifyWebhook} that couples a tagtree `CacheSchema` to a single Shopify webhook event.
+ * Annotate the assembled payload with this type before calling `parseShopifyWebhook` to ensure the schema's namespace,
+ * tenant type, and entities map are carried through the generic chain.
+ *
+ * @example
+ * ```ts
+ * const input: ShopifyParseInput<typeof ns, string, string, typeof entities> = {
+ *     schema,
+ *     tenant: shop.domain,
+ *     topic: webhookTopic,
+ *     body: JSON.parse(rawBody) as Record<string, unknown>,
+ * };
+ * const tags = parseShopifyWebhook(input);
+ * ```
+ */
 export interface ShopifyParseInput<NS extends string, T, Q, E extends EntitiesMap> {
     schema: CacheSchema<NS, T, Q, E>;
     tenant: T;
@@ -26,6 +42,26 @@ export interface ShopifyParseInput<NS extends string, T, Q, E extends EntitiesMa
     body: Record<string, unknown>;
 }
 
+/**
+ * Translates a Shopify webhook event into the set of tagtree cache tags that must be invalidated.
+ *
+ * Looks up the webhook `topic` against a built-in map of Shopify product, collection, and page events,
+ * extracts the entity handle from the body, and delegates to `computeFanout` from `@tagtree/core`.
+ * Only emits tags for entities declared in the provided schema — it never invents tags that don't exist on the read side.
+ *
+ * @param input - Webhook event context: the tagtree cache schema, opaque tenant identifier, Shopify topic string, and parsed webhook body.
+ * @returns Array of cache tag strings to invalidate; empty when the topic is not mapped or the entity is absent from the schema.
+ * @example
+ * ```ts
+ * const tags = parseShopifyWebhook({
+ *     schema,
+ *     tenant: shop.domain,
+ *     topic: 'products/update',
+ *     body: JSON.parse(rawBody) as Record<string, unknown>,
+ * });
+ * for (const tag of tags) revalidateTag(tag);
+ * ```
+ */
 export function parseShopifyWebhook<NS extends string, T, Q, E extends EntitiesMap>(
     input: ShopifyParseInput<NS, T, Q, E>,
 ): string[] {
