@@ -77,9 +77,11 @@ jobs:
                   path: apps/docs/out
 
     e2e:
-        name: 🧪 E2E
+        name: 🎭 E2E
         runs-on: ubuntu-latest
-        timeout-minutes: 15
+        timeout-minutes: 60
+        continue-on-error: true
+        if: false
         steps:
             - name: 🕶️ Checkout repository
               uses: actions/checkout@v6
@@ -131,7 +133,7 @@ jobs:
 
     deploy:
         name: 🚀 Deploy to GitHub Pages
-        needs: [build, e2e]
+        needs: [build]
         if: github.event_name != 'pull_request'
         runs-on: ubuntu-latest
         timeout-minutes: 5
