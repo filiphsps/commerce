@@ -26,23 +26,32 @@ export function main({ quiet = false }: { quiet?: boolean } = {}): { converted: 
         return { converted: 0 };
     }
     fs.mkdirSync(ERRORS_OUT, { recursive: true });
-    let converted = 0;
-    const codes: string[] = [];
-    // Only touch files whose content actually changed so the dev MDX watcher
-    // doesn't fire on no-op runs.
     const touched = new Set<string>();
     // _overrides.json and index.mdx are checked into the repo — preserve them through prune.
     touched.add(path.join(ERRORS_OUT, '_overrides.json'));
     touched.add(path.join(ERRORS_OUT, 'index.mdx'));
 
-    for (const entry of fs.readdirSync(ERRORS_SRC)) {
-        if (!entry.endsWith('.mdx')) continue;
-        const code = entry.replace(/\.mdx$/, '');
-        const src = fs.readFileSync(path.join(ERRORS_SRC, entry), 'utf8');
-        const mdx = convertOne(code, src);
+    // First pass: collect every code so the per-page render can list its group
+    // siblings as related errors.
+    const entries: { code: string; src: string }[] = [];
+    for (const file of fs.readdirSync(ERRORS_SRC)) {
+        if (!file.endsWith('.mdx')) continue;
+        const code = file.replace(/\.mdx$/, '');
+        const src = fs.readFileSync(path.join(ERRORS_SRC, file), 'utf8');
+        entries.push({ code, src });
+    }
+    const codes = entries.map((e) => e.code);
+    const groups = buildGroups(codes);
+    const codeToGroup = new Map<string, string>();
+    for (const [group, list] of Object.entries(groups)) for (const c of list) codeToGroup.set(c, group);
+
+    let converted = 0;
+    for (const { code, src } of entries) {
+        const group = codeToGroup.get(code) ?? 'general';
+        const related = (groups[group] ?? []).filter((c) => c !== code).slice(0, 6);
+        const mdx = convertOne(code, src, related);
         const dest = path.join(ERRORS_OUT, `${kebab(code)}.mdx`);
         writeIfChanged(dest, mdx, touched);
-        codes.push(code);
         converted++;
     }
 
@@ -51,6 +60,30 @@ export function main({ quiet = false }: { quiet?: boolean } = {}): { converted: 
     const pruned = pruneUntouched(ERRORS_OUT, touched);
     if (!quiet) console.info(`[port-errors] converted ${converted} pages, ${pruned} pruned`);
     return { converted };
+}
+
+/**
+ * Group every code by its SCREAMING_SNAKE prefix, honoring the hand-curated
+ * override map in `_overrides.json`. Shared by both the meta.json emitter and
+ * the per-page related-codes renderer.
+ *
+ * @param codes - Flat list of error codes.
+ * @returns Map from group key to ordered list of codes.
+ */
+function buildGroups(codes: string[]): Record<string, string[]> {
+    const overridesPath = path.join(ERRORS_OUT, '_overrides.json');
+    const overrides = fs.existsSync(overridesPath)
+        ? (JSON.parse(fs.readFileSync(overridesPath, 'utf8')) as Record<string, string[]>)
+        : {};
+    const overrideSet = new Set(Object.values(overrides).flat());
+    const groups: Record<string, string[]> = { general: overrides.general ?? [] };
+    for (const code of codes) {
+        if (overrideSet.has(code)) continue;
+        const prefix = code.split('_')[0] as string;
+        groups[prefix] ??= [];
+        groups[prefix].push(code);
+    }
+    return groups;
 }
 
 /**
@@ -105,7 +138,7 @@ function pruneUntouched(root: string, touched: Set<string>): number {
  * @param src - Raw Markdoc source string.
  * @returns MDX file body including frontmatter.
  */
-function convertOne(code: string, src: string): string {
+function convertOne(code: string, src: string, related: string[]): string {
     const sections = parseSections(src);
     const description = sections.documentation || `Error ${code}.`;
     const lookup = resolveClassFromCode(code);
@@ -145,12 +178,24 @@ function convertOne(code: string, src: string): string {
           ].join('\n')
         : '';
 
+    const relatedBlock = related.length
+        ? [
+              '## Related errors',
+              '',
+              `<RelatedErrors items={${JSON.stringify(
+                  related.map((c) => ({ code: c, href: `/errors/${kebab(c)}/` })),
+              )}} />`,
+          ].join('\n')
+        : '';
+
     const slug = kebab(code);
     const helpUrl = `https://docs.nordcom.io/errors/${slug}/`;
     const editUrl = `https://github.com/filiphsps/commerce/edit/master/apps/landing/docs/errors/${code}.mdx`;
     const footer = `<StableHelpUrl href="${helpUrl}" editUrl="${editUrl}" />`;
 
-    return [frontmatter, hero, '', causesBlock, '', codeBlock, '', thrownFrom, '', footer, ''].join('\n');
+    return [frontmatter, hero, '', causesBlock, '', codeBlock, '', thrownFrom, '', relatedBlock, '', footer, ''].join(
+        '\n',
+    );
 }
 
 type ErrorSections = {
@@ -219,21 +264,7 @@ function kebabClass(name: string): string {
  * @param codes - All converted SCREAMING_SNAKE_CASE error codes.
  */
 function emitErrorsMeta(codes: string[], touched: Set<string>): void {
-    const overridesPath = path.join(ERRORS_OUT, '_overrides.json');
-    const overrides = fs.existsSync(overridesPath)
-        ? (JSON.parse(fs.readFileSync(overridesPath, 'utf8')) as Record<string, string[]>)
-        : {};
-    const overrideSet = new Set(Object.values(overrides).flat());
-
-    const groups: Record<string, string[]> = { general: overrides.general ?? [] };
-
-    for (const code of codes) {
-        if (overrideSet.has(code)) continue;
-        const prefix = code.split('_')[0] as string;
-        groups[prefix] ??= [];
-        groups[prefix].push(code);
-    }
-
+    const groups = buildGroups(codes);
     const pages: string[] = [];
     // Tab root index page first — keeps the sidebar tree rooted at this folder.
     if (fs.existsSync(path.join(ERRORS_OUT, 'index.mdx'))) pages.push('index');
