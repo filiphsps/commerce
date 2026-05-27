@@ -1,19 +1,19 @@
 'use client';
 
-import type { OnlineShop } from '@nordcom/commerce-db';
-import { ChevronRight as ChevronRightIcon, Lock as LockIcon } from 'lucide-react';
-import type { ReactNode } from 'react';
-import type { CartLine } from '@/api/cart/types';
-import { Button } from '@/components/actionable/button';
-import { CartCoupons } from '@/components/cart/cart-coupons';
-import { CartNote } from '@/components/cart/cart-note';
+import type { CartLine } from '@nordcom/cart-core';
 import {
     useCartCost,
     useCartCount,
     useCartLines as useCartLinesSlice,
     useCartMeta,
     useCartStatus,
-} from '@/components/cart/provider';
+} from '@nordcom/cart-react';
+import type { OnlineShop } from '@nordcom/commerce-db';
+import { ChevronRight as ChevronRightIcon, Lock as LockIcon } from 'lucide-react';
+import type { ReactNode } from 'react';
+import { Button } from '@/components/actionable/button';
+import { CartCoupons } from '@/components/cart/cart-coupons';
+import { CartNote } from '@/components/cart/cart-note';
 import Link from '@/components/link';
 import { Price } from '@/components/products/price';
 import { useShop } from '@/components/shop/provider';

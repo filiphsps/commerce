@@ -1,8 +1,8 @@
 'use client';
 
+import { useCartActions, useCartMeta, useCartStatus } from '@nordcom/cart-react';
 import { type ChangeEvent, useState } from 'react';
 import { MultilineInput } from '@/components/actionable/input';
-import { useCartActions, useCartMeta, useCartStatus } from '@/components/cart/provider';
 import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 
 const CartNote = ({ i18n }: { i18n: LocaleDictionary }) => {

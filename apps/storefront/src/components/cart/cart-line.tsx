@@ -1,3 +1,4 @@
+import { useCartActions, useCartStatus } from '@nordcom/cart-react';
 import { trace } from '@opentelemetry/api';
 import type { CartLine as ShopifyCartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import { Pencil, Tag as TagIcon, X as XIcon } from 'lucide-react';
@@ -5,7 +6,6 @@ import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import type { Product, ProductVariant } from '@/api/product';
 import { Button } from '@/components/actionable/button';
-import { useCartActions, useCartStatus } from '@/components/cart/provider';
 import { Card } from '@/components/layout/card';
 import { Popover } from '@/components/layout/popover';
 import Link from '@/components/link';

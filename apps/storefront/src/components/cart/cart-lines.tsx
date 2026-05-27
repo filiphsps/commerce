@@ -1,16 +1,11 @@
 'use client';
 
+import { useCartActions, useCartCount, useCartLines as useCartLinesSlice, useCartStatus } from '@nordcom/cart-react';
 import type { CartLine as ShopifyCartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import { Suspense } from 'react';
 import { Button } from '@/components/actionable/button';
 import { ExportCartButton } from '@/components/actionable/export-cart-button';
 import { CartLine } from '@/components/cart/cart-line';
-import {
-    useCartActions,
-    useCartCount,
-    useCartLines as useCartLinesSlice,
-    useCartStatus,
-} from '@/components/cart/provider';
 import { Label } from '@/components/typography/label';
 import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 

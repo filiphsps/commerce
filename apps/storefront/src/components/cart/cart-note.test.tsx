@@ -1,9 +1,9 @@
+import { useCartActions, useCartMeta, useCartStatus } from '@nordcom/cart-react';
 import { describe, expect, it, vi } from 'vitest';
 import { CartNote } from '@/components/cart/cart-note';
-import { useCartActions, useCartMeta, useCartStatus } from '@/components/cart/provider';
 import { fireEvent, render, screen } from '@/utils/test/react';
 
-vi.mock('@/components/cart/provider', async (importOriginal) => {
+vi.mock('@nordcom/cart-react', async (importOriginal) => {
     const actual = (await importOriginal()) as Record<string, unknown>;
     return {
         ...actual,
