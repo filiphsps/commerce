@@ -1,7 +1,55 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { SymbolKindLabel } from './symbol-classify';
 import type { TypeDocCommentNode, TypeDocSymbol } from './typedoc-types';
 
 const GITHUB_BASE = 'https://github.com/filiphsps/commerce/blob/master';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const REPO_ROOT = path.resolve(__dirname, '../../../..');
+
+/** In-process cache: workspace slug → package.json version, or `''` when unknown. */
+const versionCache = new Map<string, string>();
+
+/**
+ * Look up a workspace's `package.json` version. The TypeDoc workspace slug is
+ * the top-level folder (e.g. `cart`) but for sub-workspaces (`cart/react`,
+ * `cart/core`) the version lives in the sub-folder's package.json — derive
+ * the real package directory from the symbol's source `fileName` when
+ * present, falling back to the bare slug.
+ *
+ * @param slug - Top-level workspace slug (`'cart'`, `'cms'`).
+ * @param fileName - Source file path relative to the workspace (e.g. `'react/src/hooks.ts'`).
+ * @returns The package.json version, or `''` when unresolvable.
+ */
+function workspaceVersion(slug: string, fileName?: string): string {
+    const cacheKey = `${slug}::${fileName ?? ''}`;
+    const cached = versionCache.get(cacheKey);
+    if (cached !== undefined) return cached;
+
+    // Build candidate package roots: prefer the nested sub-workspace
+    // (e.g. `cart/react`) before falling back to the bare slug.
+    const candidates: string[] = [];
+    if (fileName) {
+        const firstSeg = fileName.split('/')[0];
+        if (firstSeg) candidates.push(`${slug}/${firstSeg}`);
+    }
+    candidates.push(slug);
+
+    for (const candidate of candidates) {
+        for (const parent of ['packages', 'apps']) {
+            const pkgFile = path.join(REPO_ROOT, parent, candidate, 'package.json');
+            if (fs.existsSync(pkgFile)) {
+                const { version } = JSON.parse(fs.readFileSync(pkgFile, 'utf8')) as { version?: string };
+                const v = version ?? '';
+                versionCache.set(cacheKey, v);
+                return v;
+            }
+        }
+    }
+    versionCache.set(cacheKey, '');
+    return '';
+}
 
 export type SymbolRenderArgs = {
     workspaceSlug: string;
@@ -263,7 +311,9 @@ function renderSource(symbol: TypeDocSymbol, workspaceSlug: string): string {
     if (!src) return '';
     const url = src.url ?? `${GITHUB_BASE}/${src.fileName}#L${src.line}`;
     const pkg = `@nordcom/commerce-${workspaceSlug}`;
-    return `\n<SourceFooter file="${src.fileName}" line={${src.line}} href="${url}" pkg="${pkg}" />`;
+    const version = workspaceVersion(workspaceSlug, src.fileName);
+    const versionAttr = version ? ` version="${version}"` : '';
+    return `\n<SourceFooter file="${src.fileName}" line={${src.line}} href="${url}" pkg="${pkg}"${versionAttr} />`;
 }
 
 /**
