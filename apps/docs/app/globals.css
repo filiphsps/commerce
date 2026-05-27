@@ -506,6 +506,13 @@ a[data-symbol-tab="docs"]:hover {
     border-color: var(--color-brand);
 }
 
+/* Copied feedback — Fumadocs sets data-checked on the button for ~1 s after
+ * copying. Show pkg (lime/green) to signal success per visuals/07. */
+#nd-page figure.shiki button[data-checked] {
+    color: var(--color-pkg);
+    border-color: var(--color-pkg);
+}
+
 .prose pre::-webkit-scrollbar,
 #nd-page figure.shiki pre::-webkit-scrollbar {
     height: 8px;
