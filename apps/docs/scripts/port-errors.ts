@@ -271,7 +271,9 @@ function emitErrorsMeta(codes: string[], touched: Set<string>): void {
     for (const [prefix, list] of Object.entries(groups).sort()) {
         if (list.length === 0) continue;
         // Fumadocs separator syntax: `---Label---` renders a sidebar group header.
-        const label = prefix === 'general' ? 'General' : `${prefix.toUpperCase()}_*`;
+        // Append the count so the sidebar shows e.g. `API_* · 11`.
+        const base = prefix === 'general' ? 'General' : `${prefix.toUpperCase()}_*`;
+        const label = `${base} · ${list.length}`;
         pages.push(`---${label}---`, ...list.map((c) => c.toLowerCase().replace(/_/g, '-')));
     }
 

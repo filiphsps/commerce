@@ -4,11 +4,11 @@
     "root": true,
     "pages": [
         "index",
-        "---API_*---",
+        "---API_* · 3---",
         "api-method-not-allowed",
         "api-unknown-error",
         "api-unknown-locale",
-        "---General---",
+        "---General · 3---",
         "not-found",
         "unreachable",
         "generic-todo"
