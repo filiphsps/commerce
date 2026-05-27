@@ -50,7 +50,9 @@
         "shiki": "4.1.0"
     },
     "devDependencies": {
+        "@pagefind/default-ui": "1.5.2",
         "@playwright/test": "1.60.0",
+        "pagefind": "1.5.2",
         "@tailwindcss/postcss": "4.3.0",
         "@tailwindcss/typography": "0.5.19",
         "@testing-library/react": "16.3.2",
