@@ -36,7 +36,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <html lang="en" dir="ltr" suppressHydrationWarning className={`${primaryFont.variable} ${GeistMono.variable}`}>
             <body>
                 <RootProvider>
-                    <DocsLayout tree={source.pageTree} githubUrl="https://github.com/filiphsps/commerce" nav={{ title: <Logo /> }}>
+                    <DocsLayout
+                        tree={source.pageTree}
+                        githubUrl="https://github.com/filiphsps/commerce"
+                        tabMode="top"
+                        nav={{ title: <Logo />, transparentMode: 'top' }}
+                    >
                         {children}
                     </DocsLayout>
                 </RootProvider>

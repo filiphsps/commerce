@@ -69,11 +69,187 @@
 }
 
 /* ─── Symbol-tab pills for auto-linked inline-code ─────────────────────────── */
-/* The Phase G remark plugin tags resolved links with `data-symbol-tab` so
- * inline-code references render in the target tab's neon. Keeping this in
- * CSS since the markup is emitted by a remark transformer, not a component. */
+/* The remark plugin (lib/remark-link-symbols.ts) tags resolved links with
+ * `data-symbol-tab` so inline-code references render in the target tab's
+ * neon. Kept in CSS because the markup is emitted by the remark transformer,
+ * not by a React component we can put Tailwind classes on. */
 
 a[data-symbol-tab='reference'] { color: var(--color-ref); }
 a[data-symbol-tab='packages'] { color: var(--color-pkg); }
 a[data-symbol-tab='errors'] { color: var(--color-err); }
 a[data-symbol-tab='docs'] { color: var(--color-brand); }
+
+/* ─── Fumadocs chrome overrides ────────────────────────────────────────────── */
+/* Targets Fumadocs's internal class structure to apply the Nordstar
+ * weight (3px borders, neon active states, mono group labels). Kept here
+ * rather than on components because Fumadocs owns the layout markup. */
+
+#nd-nav {
+    border-bottom: 0.2rem solid var(--color-border);
+}
+
+#nd-sidebar {
+    border-right: 0.2rem solid var(--color-border);
+}
+
+/* Top tab pills — brand-magenta glow on active. */
+#nd-nav [role='tablist'] a {
+    border-radius: var(--radius, 0.45rem);
+    transition: color 150ms, background 150ms, box-shadow 150ms;
+}
+
+#nd-nav [role='tablist'] a[data-active='true'],
+#nd-nav [role='tablist'] a[aria-current='page'] {
+    background: var(--color-brand);
+    color: var(--color-bg);
+    box-shadow: 0 0 14px hsl(330 86% 53% / 0.45);
+}
+
+#nd-nav [role='tablist'] a:not([data-active='true']):not([aria-current='page']):hover {
+    color: var(--color-fg);
+    background: var(--color-bg-2);
+}
+
+/* Sidebar group labels — uppercase mono per the visuals. */
+#nd-sidebar [data-fd-folder-trigger],
+#nd-sidebar .text-fd-muted-foreground {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+}
+
+/* Sidebar current page indicator — brand magenta inset shadow + soft gradient. */
+#nd-sidebar a[data-active='true'] {
+    background: linear-gradient(to right, hsl(330 86% 53% / 0.10), transparent 60%);
+    box-shadow: inset 0.138rem 0 0 var(--color-brand);
+    color: var(--color-brand);
+}
+
+#nd-sidebar a:hover:not([data-active='true']) {
+    color: var(--color-fg);
+    background: var(--color-bg-1);
+}
+
+/* Code blocks — title bar treatment for fenced blocks with a filename meta. */
+.prose figure[data-rehype-pretty-code-figure],
+.prose [data-code-block-wrapper] {
+    border: 0.2rem solid var(--color-border);
+    border-radius: var(--radius, 0.45rem);
+    overflow: hidden;
+    margin: 1.2rem 0;
+    background: var(--color-bg-2);
+}
+
+.prose figure[data-rehype-pretty-code-figure] figcaption,
+.prose [data-code-block-wrapper] [data-code-block-title] {
+    background: var(--color-bg-1);
+    border-bottom: 0.138rem solid var(--color-border);
+    padding: 0.45rem 0.85rem;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--color-fg-mute);
+    letter-spacing: 0.04em;
+}
+
+.prose pre {
+    background: var(--color-bg-2) !important;
+    border-radius: 0 !important;
+}
+
+.prose pre::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+}
+
+.prose pre::-webkit-scrollbar-track {
+    background: var(--color-bg-1);
+}
+
+.prose pre::-webkit-scrollbar-thumb {
+    background: var(--color-border-strong);
+    border-radius: 3px;
+}
+
+/* Inline code in prose */
+.prose :not(pre) > code {
+    font-family: var(--font-mono);
+    background: var(--color-bg-2);
+    padding: 0 0.3rem;
+    border-radius: 3px;
+    font-size: 0.85em;
+    color: var(--color-fg);
+    border: none;
+}
+
+/* Headings — restore weight and tracking from the visuals */
+.prose h1 {
+    font-weight: 900;
+    letter-spacing: -0.035em;
+    line-height: 1.05;
+}
+
+.prose h2 {
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-top: 2.5rem;
+}
+
+.prose h3 {
+    font-weight: 700;
+    letter-spacing: -0.015em;
+}
+
+/* Tables (params lists) — bordered, mono pname column */
+.prose table {
+    border: 0.138rem solid var(--color-border);
+    border-radius: var(--radius, 0.45rem);
+    overflow: hidden;
+    font-size: 0.875rem;
+}
+
+.prose thead {
+    background: var(--color-bg-1);
+    border-bottom: 0.138rem solid var(--color-border);
+}
+
+.prose th {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--color-fg-mute);
+    text-align: left;
+    padding: 0.45rem 1rem;
+    font-weight: 700;
+}
+
+.prose td {
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: top;
+}
+
+.prose tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.prose tbody tr:hover {
+    background: var(--color-bg-1);
+}
+
+/* First column of any table = param name in mono */
+.prose tbody td:first-child {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--color-fg);
+    white-space: nowrap;
+}
+
+/* Second column of any table = type in lime */
+.prose tbody td:nth-child(2) {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--color-pkg);
+    white-space: nowrap;
+}
