@@ -62,7 +62,7 @@ const BRAND_QUERY = graphql(`
 /**
  * Fetches the Shopify brand assets (logo, colors, cover image, slogan) for the active tenant.
  *
- * @param options - Options object.
+ * @param options - Storefront API client wrapper for the query.
  * @param options.api - Storefront API client.
  * @returns The brand object from the Shopify Storefront API.
  * @throws {ProviderFetchError} When the Storefront API returns errors.

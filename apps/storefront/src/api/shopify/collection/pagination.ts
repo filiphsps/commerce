@@ -36,6 +36,7 @@ type CollectionsFilters = {
  * @param defaultLimit - Fallback item count when no limit is specified; defaults to `30`.
  * @returns An object with `first`, `last`, or both, matching Shopify's cursor-pagination args.
  * @throws {TodoError} When both `limit` and `first`/`last` are provided simultaneously.
+ * @throws {UnreachableError} When the switch exhausts all cases without returning — indicates a caller passed a `LimitFilters` shape not covered by the current branches.
  */
 // TODO: This should be generic.
 export const extractLimitLikeFilters = (
@@ -96,7 +97,7 @@ type CollectionOptions = ApiOptions &
 /**
  * Counts all products in a collection across pages and returns per-page cursor positions.
  *
- * @param options - Options object.
+ * @param options - Storefront API client, collection handle, and pagination/sorting filters.
  * @param options.api - Storefront API client.
  * @param options.handle - Collection handle to paginate.
  * @returns Object with total `pages`, total `products`, and `cursors` array for cursor-based navigation.
@@ -186,7 +187,7 @@ type CollectionsOptions = ApiOptions &
 /**
  * Fetches a paginated slice of collections from the Shopify Storefront API.
  *
- * @param options - Options object.
+ * @param options - Storefront API client and pagination/sorting filters for the collections slice.
  * @param options.api - Storefront API client.
  * @param options.filters - Sorting and cursor constraints for the page request.
  * @returns Object with `collections` edges and `page_info` cursor metadata.

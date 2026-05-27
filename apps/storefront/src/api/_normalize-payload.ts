@@ -37,7 +37,7 @@ const LOCALE_SET = new Set<string>(cmsDefaultLocales);
 /**
  * Guards against arrays, `null`, and class instances, accepting only plain JS objects.
  *
- * @param v - Value to test.
+ * @param v - Value to discriminate; rejects `null`, arrays, and class instances that a bare `typeof v === 'object'` check would accept.
  * @returns `true` only when `v` is a non-null, non-array object literal.
  */
 const isPlainObject = (v: unknown): v is Record<string, unknown> =>

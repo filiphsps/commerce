@@ -49,7 +49,7 @@ export const SEARCH_PRODUCTS_QUERY = graphql(
 /**
  * Searches Shopify products by query string and returns matching products, filters, and total count.
  *
- * @param options - Options object.
+ * @param options - Storefront API client and search parameters; drives the query string and result limit.
  * @param options.client - Storefront API client.
  * @param options.query - Search query string; returns an empty result when blank.
  * @param [options.limit] - Maximum number of results to return; defaults to 75.
@@ -106,7 +106,7 @@ export const SearchApi = async ({
 /**
  * Cached variant of `SearchApi` — resolves shop and locale from their identifiers and delegates to `SearchApi`.
  *
- * @param options - Options object.
+ * @param options - Shop and locale identifiers used to resolve the API client, plus the search query string and cache-key discriminators.
  * @param options.shopId - Shop ID for cache tagging.
  * @param options.shopDomain - Shop domain used to resolve the shop record.
  * @param options.localeCode - Locale code used to resolve the locale.

@@ -116,7 +116,7 @@ const BLOG_ARTICLE_QUERY = graphql(`
 /**
  * Fetches the list of all blogs from the Shopify Storefront API.
  *
- * @param options - Options object.
+ * @param options - Storefront API client wrapper for the query.
  * @param options.api - Storefront API client.
  * @returns A result tuple — `[Blog[], undefined]` on success or `[undefined, error]` on failure.
  */
@@ -139,7 +139,7 @@ export async function BlogsApi({ api }: { api: AbstractApi }): Promise<ApiReturn
 /**
  * Fetches a single blog and its articles from the Shopify Storefront API.
  *
- * @param options - Options object.
+ * @param options - Storefront API client and article-listing parameters; controls the blog handle, article count, sort key, and sort direction.
  * @param options.api - Storefront API client.
  * @param options.handle - Blog handle to fetch; defaults to `"news"`.
  * @param options.limit - Max articles to include; defaults to `30`.
@@ -189,7 +189,7 @@ export async function BlogApi({
 /**
  * Fetches a single blog article from the Shopify Storefront API.
  *
- * @param options - Options object.
+ * @param options - Storefront API client and article identifiers; selects the parent blog and article by handle.
  * @param options.api - Storefront API client.
  * @param options.blogHandle - Blog handle containing the article; defaults to `"news"`.
  * @param options.handle - Article handle to fetch.
