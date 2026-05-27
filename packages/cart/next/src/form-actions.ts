@@ -116,6 +116,17 @@ export interface FormCartActions {
  *
  * @param opts.typed - Typed action surface to dispatch through.
  * @returns A {@link FormCartActions} surface ready for `<form action>` bindings.
+ * @example
+ * ```tsx
+ * const formActions = createFormCartActions({ typed });
+ *
+ * // Wire into a Server Component form — works with or without client JS:
+ * <form action={formActions.addLineAction}>
+ *     <input name="variantId" value="gid://shopify/ProductVariant/123" />
+ *     <input name="quantity" value="1" />
+ *     <button type="submit">Add to cart</button>
+ * </form>
+ * ```
  */
 export function createFormCartActions(opts: { typed: TypedCartActions }): FormCartActions {
     const { typed } = opts;
