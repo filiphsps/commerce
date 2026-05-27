@@ -2,6 +2,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { codecovVitePlugin } from '@codecov/vite-plugin';
+import react from '@vitejs/plugin-react';
 import { defineConfig, mergeConfig } from 'vite';
 
 import base from '../../vite.config';
@@ -22,15 +23,20 @@ export default mergeConfig(
                 output: {
                     name,
                 },
-                external: ['react', 'react-dom', '@nordcom/cart-core'],
+                external: ['react', 'react-dom', 'react/jsx-runtime', '@nordcom/cart-core'],
             },
         },
-        plugins: process.env.CI
-            ? codecovVitePlugin({
-                  enableBundleAnalysis: !!process.env.CODECOV_TOKEN,
-                  bundleName: name,
-                  uploadToken: process.env.CODECOV_TOKEN,
-              })
-            : [],
+        plugins: [
+            react(),
+            ...(process.env.CI
+                ? [
+                      codecovVitePlugin({
+                          enableBundleAnalysis: !!process.env.CODECOV_TOKEN,
+                          bundleName: name,
+                          uploadToken: process.env.CODECOV_TOKEN,
+                      }),
+                  ]
+                : []),
+        ],
     }),
 );

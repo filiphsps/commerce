@@ -1,1 +1,1 @@
-// intentionally empty — placeholder for future setup hooks
+import '@testing-library/jest-dom/vitest';
