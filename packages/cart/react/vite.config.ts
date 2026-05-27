@@ -29,13 +29,11 @@ export default mergeConfig(
         plugins: [
             react(),
             ...(process.env.CI
-                ? [
-                      codecovVitePlugin({
-                          enableBundleAnalysis: !!process.env.CODECOV_TOKEN,
-                          bundleName: name,
-                          uploadToken: process.env.CODECOV_TOKEN,
-                      }),
-                  ]
+                ? codecovVitePlugin({
+                      enableBundleAnalysis: !!process.env.CODECOV_TOKEN,
+                      bundleName: name,
+                      uploadToken: process.env.CODECOV_TOKEN,
+                  })
                 : []),
         ],
     }),
