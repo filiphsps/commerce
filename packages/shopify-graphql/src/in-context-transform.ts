@@ -31,6 +31,15 @@ const IN_CONTEXT_DIRECTIVE: DirectiveNode = {
     ],
 };
 
+/**
+ * Injects `@inContext(country: $country, language: $language)` and the matching
+ * variable definitions into a single GraphQL operation node.
+ *
+ * @param op - The operation definition to augment with Shopify locale context.
+ * @returns A new operation node with `$country` and `$language` variable definitions and the `@inContext` directive added.
+ * @throws {DuplicateContextDirectiveError} When the operation already carries an `@inContext` directive.
+ * @throws {DuplicateContextVariableError} When the operation already declares a `country` or `language` variable.
+ */
 function transformOperation(op: OperationDefinitionNode): OperationDefinitionNode {
     const opName = op.name?.value ?? `<anonymous ${op.operation}>`;
 
@@ -52,6 +61,26 @@ function transformOperation(op: OperationDefinitionNode): OperationDefinitionNod
     };
 }
 
+/**
+ * Apollo `DocumentTransform` that automatically injects Shopify's `@inContext` locale directive
+ * onto every operation before the document reaches the Storefront API.
+ *
+ * Wire this into the Apollo Client constructor once — every query and mutation will automatically
+ * carry country and language context without per-call boilerplate.
+ *
+ * @throws {DuplicateContextDirectiveError} When an operation in the document already declares `@inContext`.
+ * @throws {DuplicateContextVariableError} When an operation already defines `country` or `language` variables.
+ * @example
+ * ```ts
+ * import { inContextTransform } from '@nordcom/commerce-shopify-graphql';
+ *
+ * const client = new ApolloClient({
+ *     link,
+ *     cache,
+ *     documentTransform: inContextTransform,
+ * });
+ * ```
+ */
 export const inContextTransform = new DocumentTransform((document) => ({
     ...document,
     definitions: document.definitions.map((def) =>
