@@ -1,9 +1,9 @@
+import { useCartCount } from '@nordcom/cart-react';
 import { describe, expect, it, vi } from 'vitest';
-import { useCartCount } from '@/components/cart/provider';
 import { CartButton } from '@/components/header/cart-button';
 import { render, screen } from '@/utils/test/react';
 
-vi.mock('@/components/cart/provider', () => ({
+vi.mock('@nordcom/cart-react', () => ({
     useCartCount: vi.fn(),
     useMaybeCart: vi.fn().mockReturnValue(null),
 }));
