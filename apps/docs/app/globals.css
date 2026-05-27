@@ -328,6 +328,24 @@ a[data-symbol-tab="docs"] {
     padding: 0.95rem 1.1rem !important;
 }
 
+/* Copy button in the codeblock title row — visuals/02 wants a small
+ * bordered button with brand-magenta hover. Fumadocs ships an icon-only
+ * button with no border by default; restyle in place. */
+#nd-page figure.shiki > div:first-child button {
+    border: 0.138rem solid var(--color-border) !important;
+    border-radius: 3px !important;
+    color: var(--color-fg-mute) !important;
+    padding: 0.22rem 0.4rem !important;
+    transition:
+        color 150ms,
+        border-color 150ms !important;
+}
+
+#nd-page figure.shiki > div:first-child button:hover {
+    color: var(--color-brand) !important;
+    border-color: var(--color-brand) !important;
+}
+
 .prose pre::-webkit-scrollbar {
     height: 6px;
     width: 6px;
