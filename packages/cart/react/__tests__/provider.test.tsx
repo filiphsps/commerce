@@ -1,8 +1,8 @@
 import type { Cart, CartCapabilities, SubmitMutation } from '@nordcom/cart-core';
 import { act, render, renderHook } from '@testing-library/react';
-import type { JSX, ReactNode } from 'react';
+import { type JSX, type ReactNode, useRef } from 'react';
 import { describe, expect, it, vi } from 'vitest';
-import { useCartActions, useCartCount, useCartLines } from '../src/hooks';
+import { useCartActions, useCartCount, useCartMeta } from '../src/hooks';
 import { quantitySumPredictor } from '../src/predictors/cart';
 import { snapshotPredictor } from '../src/predictors/line';
 import { CartProvider } from '../src/provider';
@@ -100,29 +100,83 @@ describe('CartProvider', () => {
         expect(result.current.count).toBe(2);
     });
 
-    it('count and lines slices do not couple — no extra re-renders without mutations', () => {
-        const submit: SubmitMutation = vi.fn(async () => ({ ok: true, cart }));
-        let countRenders = 0;
-        let linesRenders = 0;
-        function Counter() {
-            countRenders++;
-            useCartCount();
+    it('non-line, non-count mutation does NOT re-render count or actions subscribers', async () => {
+        const submit: SubmitMutation = vi.fn(async () => ({
+            ok: true,
+            cart: { ...cart, note: 'Gift wrap please' },
+        }));
+        const renders: Record<string, number> = { count: 0, meta: 0, actions: 0 };
+        let capturedActions: ReturnType<typeof useCartActions> | null = null;
+        function Probe({ tag, hook }: { tag: 'count' | 'meta' | 'actions'; hook: () => unknown }) {
+            const count = useRef(0);
+            count.current++;
+            hook();
+            renders[tag] = count.current;
             return null;
         }
-        function Liner() {
-            linesRenders++;
-            useCartLines();
+        function CaptureActions() {
+            capturedActions = useCartActions();
             return null;
         }
         render(
             <CartProvider kernelSnapshot={kernelSnapshot} submitMutation={submit} initialCart={cart} shopId="s">
-                <Counter />
-                <Liner />
+                <CaptureActions />
+                <Probe tag="count" hook={useCartCount} />
+                <Probe tag="meta" hook={useCartMeta} />
+                <Probe tag="actions" hook={useCartActions} />
             </CartProvider>,
         );
-        const startC = countRenders;
-        const startL = linesRenders;
-        expect(countRenders - startC).toBeGreaterThanOrEqual(0);
-        expect(linesRenders - startL).toBeGreaterThanOrEqual(0);
+        await act(async () => {});
+
+        const before = { ...renders };
+        await act(async () => {
+            await (
+                capturedActions as ReturnType<typeof useCartActions> & {
+                    updateNote: (n: string) => Promise<unknown>;
+                }
+            ).updateNote('Gift wrap please');
+        });
+
+        expect(renders.meta).toBeGreaterThan(before.meta);
+        expect(renders.count).toBe(before.count);
+        expect(renders.actions).toBe(before.actions);
+    });
+
+    it('useCartActions return value is referentially stable across cart updates', async () => {
+        const submit: SubmitMutation = vi.fn(async () => ({
+            ok: true,
+            cart: { ...cart, note: `note-${Math.random()}` },
+        }));
+        const refs: Array<ReturnType<typeof useCartActions>> = [];
+        let capturedActions: ReturnType<typeof useCartActions> | null = null;
+        function Watch() {
+            const actions = useCartActions();
+            refs.push(actions);
+            capturedActions = actions;
+            return null;
+        }
+        render(
+            <CartProvider kernelSnapshot={kernelSnapshot} submitMutation={submit} initialCart={cart} shopId="s2">
+                <Watch />
+            </CartProvider>,
+        );
+        await act(async () => {});
+        await act(async () => {
+            await (
+                capturedActions as ReturnType<typeof useCartActions> & {
+                    updateNote: (n: string) => Promise<unknown>;
+                }
+            ).updateNote('a');
+        });
+        await act(async () => {
+            await (
+                capturedActions as ReturnType<typeof useCartActions> & {
+                    updateNote: (n: string) => Promise<unknown>;
+                }
+            ).updateNote('b');
+        });
+
+        const unique = new Set(refs);
+        expect(unique.size).toBeLessThanOrEqual(2);
     });
 });
