@@ -1,1 +1,8 @@
 lib/page-map.generated.ts
+content/reference/
+content/errors/
+content/packages/applications/
+lib/source-meta.generated.ts
+lib/symbol-index.generated.json
+.docs-gen-report.json
+.typedoc-out/
