@@ -470,7 +470,7 @@ function TrackableInner({ children, dummy = false }: TrackableProps) {
 
     const shopify = useShopify();
     // `useMaybeCart` (vs `useCart`) keeps analytics opt-in — Trackable mounts
-    // in routes that may not have NordcomCartProvider in scope, and a missing
+    // in routes that may not have a CartProvider in scope, and a missing
     // provider should degrade to "no cart context" rather than crash the tree.
     const cart = useMaybeCart()?.cart ?? null;
 
