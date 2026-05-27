@@ -52,7 +52,16 @@ export async function main({ quiet = false }: { quiet?: boolean } = {}): Promise
     for (const workspaceSlug of workspaceDirs) {
         const workspaceDir = path.join(TYPEDOC_OUT, workspaceSlug);
         for (const entry of walkJsonFiles(workspaceDir)) {
-            const subpathRel = path.relative(workspaceDir, entry).replace(/\.json$/, '');
+            const rawSubpath = path.relative(workspaceDir, entry).replace(/\.json$/, '');
+            // `cart/next/index.json` exposes itself as `next/index` — strip the
+            // redundant `/index` suffix and `cart/` prefix so URLs, filenames,
+            // breadcrumbs and titles read `next` instead of `cart / next / index`.
+            // Bare `index` (a package's root entry) keeps its sentinel value
+            // so the existing branch logic below collapses it to the root dir.
+            const subpathRel = (() => {
+                const initial = rawSubpath === 'index' ? 'index' : rawSubpath.replace(/\/index$/, '');
+                return initial.startsWith(`${workspaceSlug}/`) ? initial.slice(workspaceSlug.length + 1) : initial;
+            })();
             const project = JSON.parse(fs.readFileSync(entry, 'utf8')) as TypeDocProject;
             const overviewRows: OverviewRow[] = [];
 
