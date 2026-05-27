@@ -19,6 +19,7 @@
             "@/hooks/*": ["./src/hooks/*"],
             "@/api/*": ["./src/api/*"],
             "@/blocks/*": ["./src/blocks/*"],
+            "@/cart/*": ["./src/cart/*"],
             "@/auth": ["./src/auth/auth.ts"],
             "@/auth/*": ["./src/auth/*"],
             "@/cache": ["./src/cache.ts"],
