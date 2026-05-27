@@ -169,7 +169,7 @@ async function run<TExt extends CartExt, TShop>(
     const ctx = await opts.resolveContext({ idempotencyKey });
     try {
         const cartId = await ensureCartId(opts, ctx);
-        const cart = await opts.kernel.mutate(ctx, { ...mutation, cartId } as unknown as CartMutation);
+        const cart = await opts.kernel.mutate({ ...ctx, cartId }, mutation);
         return { ok: true, cart };
     } catch (error) {
         return mapError(opts, error);

@@ -49,7 +49,7 @@ export function createCart<TExt extends CartExt = {}, TShop = unknown>(
 
     const dispatch = async (mutation: CartMutation, ctx: AdapterCtx<TShop>): Promise<Cart<TExt>> => {
         const caps = opts.adapter.capabilities;
-        const cartId = (mutation as { cartId?: string }).cartId ?? '';
+        const cartId = ctx.cartId ?? '';
         switch (mutation.kind) {
             case 'add-line':
                 return opts.adapter.addLines(ctx, {
