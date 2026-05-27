@@ -49,7 +49,7 @@ export function renderSymbolMdx(args: SymbolRenderArgs): string {
     return [
         frontmatter,
         banner,
-        renderKindLine(kind, workspaceSlug, subpath, blockTags),
+        renderKindLine(kind, workspaceSlug, subpath, symbol, blockTags),
         '',
         summary,
         '',
@@ -101,17 +101,42 @@ function renderTagBanner(modifierTags: string[], blockTags: { tag: string; conte
 
 /**
  * Render the `<KindLine>` MDX component that shows the symbol's kind, package
- * path, and optional `throws` badge.
+ * path, and optional async / throws-classname / returns-nullable tags. The
+ * latter three are derived from the first signature's return type and the
+ * `@throws` block tag content.
  *
  * @param kind - Normalised kind label.
  * @param slug - Workspace slug.
  * @param subpath - Subpath export key.
- * @param blockTags - Block tags used to detect `@throws`.
+ * @param symbol - TypeDoc symbol providing the return type for async/null detection.
+ * @param blockTags - Block tags used to detect `@throws` and its class name.
  * @returns MDX component string.
  */
-function renderKindLine(kind: SymbolKindLabel, slug: string, subpath: string, blockTags: { tag: string }[]): string {
-    const throwsTag = blockTags.some((t) => t.tag === '@throws') ? ' · throws' : '';
-    return `<KindLine kind="${kind}" path="${slug}/${subpath}"${throwsTag ? ' throws' : ''} />`;
+function renderKindLine(
+    kind: SymbolKindLabel,
+    slug: string,
+    subpath: string,
+    symbol: TypeDocSymbol,
+    blockTags: { tag: string; content: TypeDocCommentNode[] }[],
+): string {
+    const sig = symbol.signatures?.[0];
+    const returnTypeName = sig?.type?.name ?? '';
+    const isAsync = returnTypeName === 'Promise' || returnTypeName.startsWith('Promise<');
+    const returnsNullable = /\bnull\b|\bundefined\b/.test(returnTypeName);
+
+    const firstThrows = blockTags.find((t) => t.tag === '@throws');
+    let throwsClass = '';
+    if (firstThrows) {
+        const text = firstThrows.content.map((n) => ('text' in n ? n.text : '')).join('');
+        const m = text.match(/^[\s`{]*(\w+)/);
+        throwsClass = m?.[1] ?? '';
+    }
+
+    const props = [`kind="${kind}"`, `path="${slug}/${subpath}"`];
+    if (isAsync) props.push('isAsync');
+    if (throwsClass) props.push(`throws="${throwsClass}"`);
+    if (returnsNullable) props.push('returnsNullable');
+    return `<KindLine ${props.join(' ')} />`;
 }
 
 /**
