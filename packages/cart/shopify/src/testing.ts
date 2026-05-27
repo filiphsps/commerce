@@ -116,6 +116,18 @@ function toShopifyCart(c: InternalCart): unknown {
     };
 }
 
+/**
+ * Options for {@link mockShopifyTransport}. `failOn` lets test authors inject
+ * transport-level failures on specific Shopify mutation operations so the
+ * adapter's error-handling paths can be exercised without a live endpoint.
+ *
+ * @example
+ * ```ts
+ * const transport = mockShopifyTransport({
+ *     failOn: (op) => op === 'cartLinesAdd' ? new Error('network error') : null,
+ * });
+ * ```
+ */
 export interface MockShopifyTransportOpts {
     failOn?: (op: string, vars: Record<string, unknown>) => Error | null;
 }
