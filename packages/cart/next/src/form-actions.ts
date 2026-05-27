@@ -72,6 +72,23 @@ function key(): string {
     return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
 
+/**
+ * Set of `FormData`-driven server actions returned by {@link createFormCartActions}.
+ * Each method parses and validates a `FormData` payload before delegating to the
+ * typed action surface, enabling native `<form action={…}>` wiring that works
+ * without JavaScript while sharing the same server-side validation path as
+ * progressively enhanced calls.
+ *
+ * @example
+ * ```tsx
+ * const formActions = createFormCartActions({ typed });
+ * // In a Server Component:
+ * <form action={formActions.addLineAction}>
+ *   <input name="variantId" value="gid://shopify/ProductVariant/123" />
+ *   <button type="submit">Add to cart</button>
+ * </form>
+ * ```
+ */
 export interface FormCartActions {
     addLineAction(formData: FormData): Promise<CartActionResult>;
     updateLineAction(formData: FormData): Promise<CartActionResult>;
