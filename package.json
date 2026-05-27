@@ -52,8 +52,6 @@
         "posttest": "tsx ./scripts/postdev-mongo.ts",
         "test": "dotenv -c -- vitest run --coverage",
         "test:watch": "dotenv -c -- vitest watch",
-        "pretest:e2e": "tsx ./scripts/predev-mongo.ts",
-        "posttest:e2e": "tsx ./scripts/postdev-mongo.ts",
         "test:e2e": "dotenv -c -- turbo run test:e2e --env-mode=loose",
         "fallow": "fallow",
         "fallow:audit": "fallow audit",
