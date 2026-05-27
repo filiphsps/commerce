@@ -22,7 +22,7 @@ const DISMISSED_KEY = 'geo-redirect-banner-dismissed';
 const subscribeToNothing = () => () => {};
 /** Returns the browser's primary language code in lowercase. */
 const getNavigatorLanguage = () => (navigator.language.split('-').at(0) || 'en').toLowerCase();
-/** Returns the current `navigator.userAgent` string. */
+/** Snapshot selector that exposes `navigator.userAgent` to `useSyncExternalStore` for crawler detection. */
 const getUserAgent = () => navigator.userAgent;
 /**
  * Reads and validates the geo-redirect banner dismissal timestamp from localStorage.
