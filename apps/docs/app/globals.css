@@ -305,6 +305,15 @@ a[data-symbol-tab="docs"] {
     background: var(--color-bg-1);
 }
 
+/* Tighten sidebar nav item padding to match visuals/06 (`.sub`, `.sym`,
+ * `.it`) — Fumadocs default `p-2` (0.5rem) is more spacious than the
+ * mockup. */
+#nd-sidebar [data-radix-scroll-area-viewport] > div > a {
+    padding-top: 0.32rem !important;
+    padding-bottom: 0.32rem !important;
+    font-size: 0.78rem !important;
+}
+
 /* Code blocks — Fumadocs uses figure.shiki with a title row + pre body. The
  * `not-prose` class blocks .prose selectors, so target the figure directly. */
 #nd-page figure.shiki {
