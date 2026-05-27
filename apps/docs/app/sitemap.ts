@@ -7,16 +7,16 @@ import { source } from '@/lib/source';
 export const dynamic = 'force-static';
 
 /**
- * Generates the XML sitemap from the Fumadocs source. Covers every page in
- * the four content tabs so search engines see the full URL set.
+ * Static sitemap built from every Fumadocs source page. Honours the runtime
+ * `NEXT_PUBLIC_DOCS_BASE_PATH` and `NEXT_PUBLIC_DOCS_CANONICAL_URL` so
+ * deployments at any sub-path produce correct absolute URLs. Covers all four
+ * content tabs: docs, packages, reference, and errors.
  *
  * @returns Array of URL entries for Next.js sitemap generation.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
-    const { canonicalUrl } = docsEnv;
-    const pages = source.generateParams();
-    return pages.map(({ slug }) => ({
-        url: `${canonicalUrl}/${(slug ?? []).join('/')}/`,
+    return source.getPages().map((page) => ({
+        url: `${docsEnv.canonicalUrl}${page.url}`,
         lastModified: new Date(),
     }));
 }
