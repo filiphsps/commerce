@@ -13,7 +13,14 @@ const nextConfig = {
     basePath: basePath || undefined,
     assetPrefix: basePath || undefined,
     images: { unoptimized: true },
-    allowedDevOrigins: ['docs.localhost', 'localhost', 'worktree-feat-docs-nav-refactor.docs.localhost'],
+    allowedDevOrigins: [
+        'docs.localhost',
+        'localhost',
+        '*.localhost',
+        '*.local',
+        '*.test',
+        'worktree-feat-docs-nav-refactor.docs.localhost'
+    ],
     trailingSlash: true,
     reactStrictMode: true,
     serverExternalPackages: ['typescript', 'twoslash'],
