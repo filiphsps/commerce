@@ -4,10 +4,11 @@
     "gitIgnoredAuthors": ["github-actions[bot]@users.noreply.github.com", "opensource@nordcom.io"],
     "commitMessageSuffix": "[skip vercel]",
     "lockFileMaintenance": {
-        "enabled": false
+        "enabled": true
     },
     "enabledManagers": ["npm", "nvm", "github-actions"],
     "ignoreScripts": true,
     "prConcurrentLimit": 10,
-    "prHourlyLimit": 4
+    "prHourlyLimit": 4,
+    "postUpdateOptions": []
 }
