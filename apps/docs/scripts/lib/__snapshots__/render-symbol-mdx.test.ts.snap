@@ -1,0 +1,39 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`renderSymbolMdx > renders a function with summary, params, returns, throws, example 1`] = `
+"---
+title: getArticle
+description: Fetch one article by slug for a tenant.
+---
+
+<KindLine kind="function" path="cms/api" throws />
+Fetch one article by slug for a tenant.
+## Signature
+\`\`\`ts
+function getArticle(opts: GetArticleArgs): Promise<Article | null>;
+\`\`\`
+## Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| \`opts\` | \`GetArticleArgs\` | opts the args |
+
+## Returns
+
+the article or null
+
+## Throws
+
+- NotFoundError on invalid slug
+
+## Example
+
+\`\`\`ts
+const a = await getArticle();
+\`\`\`
+
+
+---
+
+[View source · packages/cms/src/api/get-article.ts:14](https://github.com/filiphsps/commerce/blob/master/packages/cms/src/api/get-article.ts#L14)"
+`;
