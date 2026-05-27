@@ -18,7 +18,10 @@ Calibration findings:
 - **Tier-1 type aliases restated the type expression.** Folded into spec § Edge case rules: alias purpose must add caller-facing meaning.
 - **One `@example` referenced a non-existent error kind (`CartErrorKind.CART_FULL`).** Folded into spec § Edge case rules: examples must reference real symbols.
 - **Generator count discrepancies.** Reported 53 Tier-1 vs reviewer counted 55 — bookkeeping gap (likely class methods counted inconsistently), not missing docs. No spec change; future generators should count methods as separate symbols.
-- **Open issue:** the 10 reviewer blockers were not addressed in the merged work. Consider a follow-up cleanup PR for the errors package once Wave 2 ships.
+- **Follow-up PRs opened and reviewed clean:**
+  - `packages/errors`: https://github.com/filiphsps/commerce/pull/1952 — addresses all 9 blockers. Reviewer LGTM.
+  - `packages/utils`: https://github.com/filiphsps/commerce/pull/1951 — addresses the 1 blocker. Reviewer LGTM.
+  - Both await human merge before Wave 2 starts.
 
 ## Wave 2 — Independent foundations (db, tagtree, shopify-graphql, cart/core)
 
