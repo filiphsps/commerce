@@ -49,6 +49,7 @@ export function renderSymbolMdx(args: SymbolRenderArgs): string {
     return [
         frontmatter,
         banner,
+        `<SymbolTitle name="${symbol.name}" />`,
         renderKindLine(kind, workspaceSlug, subpath, symbol, blockTags),
         '',
         summary,

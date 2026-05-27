@@ -17,6 +17,7 @@ import { IconCard, IconGallery } from './components/reference/icon-gallery';
 import { KindLine } from './components/reference/kind-line';
 import { ReferenceBackLink } from './components/reference/reference-back-link';
 import { SourceFooter } from './components/reference/source-footer';
+import { SymbolTitle } from './components/reference/symbol-title';
 import { ThrowsBlock, ThrowsRow } from './components/reference/throws';
 
 /**
@@ -38,6 +39,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
         IconCard,
         IconGallery,
         SourceFooter,
+        SymbolTitle,
         ThrowsBlock,
         ThrowsRow,
         DeprecatedBanner,
