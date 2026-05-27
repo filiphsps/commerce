@@ -20,7 +20,11 @@ const STATIC_REDIRECTS: Redirect[] = [
     { source: '/contributing/', destination: '/operations/contributing/', permanent: true },
     { source: '/deployment/', destination: '/operations/deployment/', permanent: true },
     { source: '/conventions/', destination: '/operations/conventions/', permanent: true },
-    { source: '/typescript-project-structure/', destination: '/operations/typescript-project-structure/', permanent: true },
+    {
+        source: '/typescript-project-structure/',
+        destination: '/operations/typescript-project-structure/',
+        permanent: true,
+    },
 ];
 
 /**

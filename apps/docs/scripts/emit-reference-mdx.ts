@@ -2,11 +2,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-
-import { classifySymbol } from './lib/symbol-classify';
-import { renderSubpathOverviewMdx, type OverviewRow } from './lib/render-subpath-mdx';
-import { renderSymbolMdx } from './lib/render-symbol-mdx';
 import { renderGalleryMdx } from './lib/render-gallery-mdx';
+import { type OverviewRow, renderSubpathOverviewMdx } from './lib/render-subpath-mdx';
+import { renderSymbolMdx } from './lib/render-symbol-mdx';
+import { classifySymbol } from './lib/symbol-classify';
 import type { TypeDocProject } from './lib/typedoc-types';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -45,7 +44,9 @@ export async function main({ quiet = false }: { quiet?: boolean } = {}): Promise
     let symbolsCount = 0;
     let skippedCount = 0;
 
-    const workspaceDirs = fs.readdirSync(TYPEDOC_OUT).filter((d) => fs.statSync(path.join(TYPEDOC_OUT, d)).isDirectory());
+    const workspaceDirs = fs
+        .readdirSync(TYPEDOC_OUT)
+        .filter((d) => fs.statSync(path.join(TYPEDOC_OUT, d)).isDirectory());
     for (const workspaceSlug of workspaceDirs) {
         const workspaceDir = path.join(TYPEDOC_OUT, workspaceSlug);
         for (const entry of walkJsonFiles(workspaceDir)) {

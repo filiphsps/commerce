@@ -69,9 +69,7 @@ function renderGroup(kind: SymbolKindLabel, rows: OverviewRow[]): string {
     const heading = `## ${pluralize(kind)}`;
     const tableHeader = '| Name | Description |\n|---|---|';
     const tableRows = rows.map((r) => {
-        const nameCell = r.fate === 'own-page'
-            ? `[\`${r.name}\`](./${kebab(r.name)})`
-            : `\`${r.name}\``;
+        const nameCell = r.fate === 'own-page' ? `[\`${r.name}\`](./${kebab(r.name)})` : `\`${r.name}\``;
         return `| ${nameCell} | ${r.summary || '—'} |`;
     });
     return [heading, '', tableHeader, ...tableRows, ''].join('\n');
@@ -84,7 +82,18 @@ function renderGroup(kind: SymbolKindLabel, rows: OverviewRow[]): string {
  * @returns Human-readable plural heading string.
  */
 function pluralize(kind: SymbolKindLabel): string {
-    return ({ function: 'Functions', class: 'Classes', component: 'Components', interface: 'Interfaces', type: 'Types', variable: 'Variables', enum: 'Enums', other: 'Other' } as const)[kind];
+    return (
+        {
+            function: 'Functions',
+            class: 'Classes',
+            component: 'Components',
+            interface: 'Interfaces',
+            type: 'Types',
+            variable: 'Variables',
+            enum: 'Enums',
+            other: 'Other',
+        } as const
+    )[kind];
 }
 
 /**

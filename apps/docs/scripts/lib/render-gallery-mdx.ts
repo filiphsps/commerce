@@ -22,9 +22,20 @@ export function renderGalleryMdx(args: GalleryArgs): string {
         '',
     ].join('\n');
 
-    const grid = ['<IconGallery>', ...components.map((c) => `  <IconCard name="${c.name}" summary="${escapeAttr(c.summary)}" />`), '</IconGallery>'].join('\n');
+    const grid = [
+        '<IconGallery>',
+        ...components.map((c) => `  <IconCard name="${c.name}" summary="${escapeAttr(c.summary)}" />`),
+        '</IconGallery>',
+    ].join('\n');
 
-    return [frontmatter, `# ${workspaceSlug} · gallery`, '', `${components.length} components in this package.`, '', grid].join('\n');
+    return [
+        frontmatter,
+        `# ${workspaceSlug} · gallery`,
+        '',
+        `${components.length} components in this package.`,
+        '',
+        grid,
+    ].join('\n');
 }
 
 /**

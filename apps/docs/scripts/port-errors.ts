@@ -109,13 +109,7 @@ function convertOne(code: string, src: string): string {
     const description = sections.documentation || `Error ${code}.`;
     const lookup = resolveClassFromCode(code);
 
-    const frontmatter = [
-        '---',
-        `title: ${code}`,
-        `description: ${escapeYaml(description)}`,
-        '---',
-        '',
-    ].join('\n');
+    const frontmatter = ['---', `title: ${code}`, `description: ${escapeYaml(description)}`, '---', ''].join('\n');
 
     const heroProps: string[] = [`code="${code}"`, `description=${jsxAttr(description)}`];
     if (lookup) {

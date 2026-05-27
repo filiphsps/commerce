@@ -1,5 +1,5 @@
-import { createFromSource } from 'fumadocs-core/search/server';
 import type { AdvancedIndex } from 'fumadocs-core/search/server';
+import { createFromSource } from 'fumadocs-core/search/server';
 import { source } from '@/lib/source';
 
 /**
@@ -25,9 +25,7 @@ export const { staticGET: GET } = createFromSource(source, {
                 url: page.url,
                 structuredData: {
                     headings: [],
-                    contents: page.data.description
-                        ? [{ heading: undefined, content: page.data.description }]
-                        : [],
+                    contents: page.data.description ? [{ heading: undefined, content: page.data.description }] : [],
                 },
             };
         }

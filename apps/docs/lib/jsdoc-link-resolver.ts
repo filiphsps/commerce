@@ -71,11 +71,7 @@ const BLOCKLIST = new Set([
 export function isLinkableToken(token: string): boolean {
     if (token.length < 3) return false;
     if (BLOCKLIST.has(token)) return false;
-    return (
-        /^[a-z][A-Za-z0-9]*$/.test(token) ||
-        /^[A-Z][A-Za-z0-9]*$/.test(token) ||
-        /^[A-Z][A-Z0-9_]*$/.test(token)
-    );
+    return /^[a-z][A-Za-z0-9]*$/.test(token) || /^[A-Z][A-Za-z0-9]*$/.test(token) || /^[A-Z][A-Z0-9_]*$/.test(token);
 }
 
 /**

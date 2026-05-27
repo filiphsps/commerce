@@ -44,7 +44,7 @@ export function renderSymbolMdx(args: SymbolRenderArgs): string {
     const throws = renderThrows(blockTags);
     const example = renderExample(blockTags);
     const seeAlso = renderSeeAlso(blockTags);
-    const source = renderSource(symbol);
+    const source = renderSource(symbol, workspaceSlug);
 
     return [
         frontmatter,
@@ -137,7 +137,10 @@ function renderSignature(symbol: TypeDocSymbol): string {
  * @param sig - Single signature reflection.
  * @returns One-line TypeScript function signature string.
  */
-function symbolToSignatureText(name: string, sig: { parameters?: { name: string; type?: { name?: string } }[]; type?: { name?: string } }): string {
+function symbolToSignatureText(
+    name: string,
+    sig: { parameters?: { name: string; type?: { name?: string } }[]; type?: { name?: string } },
+): string {
     const params = (sig.parameters ?? []).map((p) => `${p.name}: ${p.type?.name ?? 'unknown'}`).join(', ');
     const ret = sig.type?.name ?? 'unknown';
     return `function ${name}(${params}): ${ret};`;
@@ -226,13 +229,15 @@ function renderSeeAlso(blockTags: { tag: string; content: TypeDocCommentNode[] }
  * present on the source reflection.
  *
  * @param symbol - TypeDoc symbol whose first source entry is used.
+ * @param workspaceSlug - Workspace folder slug under `apps/` or `packages/`.
  * @returns MDX component string, or empty string when no source.
  */
-function renderSource(symbol: TypeDocSymbol): string {
+function renderSource(symbol: TypeDocSymbol, workspaceSlug: string): string {
     const src = symbol.sources?.[0];
     if (!src) return '';
     const url = src.url ?? `${GITHUB_BASE}/${src.fileName}#L${src.line}`;
-    return `\n<SourceFooter file="${src.fileName}" line={${src.line}} href="${url}" />`;
+    const pkg = `@nordcom/commerce-${workspaceSlug}`;
+    return `\n<SourceFooter file="${src.fileName}" line={${src.line}} href="${url}" pkg="${pkg}" />`;
 }
 
 /**
@@ -279,7 +284,11 @@ function renderCommentInlineMd(nodes: TypeDocCommentNode[] | undefined): string 
  * @returns Plain-text string, at most 160 characters.
  */
 function plainSummary(md: string): string {
-    return md.replace(/[`*_>#-]/g, '').replace(/\s+/g, ' ').trim().slice(0, 160);
+    return md
+        .replace(/[`*_>#-]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, 160);
 }
 
 /**
@@ -290,9 +299,7 @@ function plainSummary(md: string): string {
  * @returns Plain text string.
  */
 function plainText(nodes: TypeDocCommentNode[]): string {
-    return nodes
-        .map((n) => (n.kind === 'text' ? n.text : n.kind === 'code' ? `\`${n.text}\`` : ''))
-        .join('');
+    return nodes.map((n) => (n.kind === 'text' ? n.text : n.kind === 'code' ? `\`${n.text}\`` : '')).join('');
 }
 
 /**
@@ -304,5 +311,8 @@ function plainText(nodes: TypeDocCommentNode[]): string {
  * @returns Escaped string safe for `description: "..."`.
  */
 function escapeYaml(s: string): string {
-    return s.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/[\r\n]+/g, ' ');
+    return s
+        .replace(/\\/g, '\\\\')
+        .replace(/"/g, '\\"')
+        .replace(/[\r\n]+/g, ' ');
 }

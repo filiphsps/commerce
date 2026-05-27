@@ -2,8 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig, defineDocs } from 'fumadocs-mdx/config';
-import { remarkLinkSymbols } from './lib/remark-link-symbols';
 import type { SymbolIndex } from './lib/jsdoc-link-resolver';
+import { remarkLinkSymbols } from './lib/remark-link-symbols';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const indexPath = path.resolve(__dirname, 'lib/symbol-index.generated.json');

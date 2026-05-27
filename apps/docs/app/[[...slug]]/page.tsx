@@ -1,8 +1,8 @@
-import { notFound } from 'next/navigation';
 import { DocsBody, DocsDescription, DocsPage, DocsTitle } from 'fumadocs-ui/page';
 import type { Metadata } from 'next';
-import { getMDXComponents } from '@/mdx-components';
+import { notFound } from 'next/navigation';
 import { source } from '@/lib/source';
+import { getMDXComponents } from '@/mdx-components';
 
 /**
  * Catch-all docs page handler. Fumadocs source resolves slug → MDX module
@@ -44,10 +44,16 @@ export default async function Page(props: { params: Promise<{ slug?: string[] }>
 
 /**
  * Statically pre-render every page from the Fumadocs source. Required for
- * `output: 'export'` builds.
+ * `output: 'export'` builds. The Fumadocs source emits the index page with
+ * `slug: []`; Next 16's optional catch-all (`[[...slug]]`) expects
+ * `slug: undefined` for the root in `generateStaticParams`.
+ *
+ * @returns The list of `{ slug }` params Next will pre-render.
  */
-export function generateStaticParams() {
-    return source.generateParams();
+export function generateStaticParams(): { slug: string[] | undefined }[] {
+    return source.generateParams().map((p) => ({
+        slug: p.slug.length === 0 ? undefined : p.slug,
+    }));
 }
 
 /**

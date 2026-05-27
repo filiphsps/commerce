@@ -1,15 +1,15 @@
 import { Analytics } from '@vercel/analytics/next';
+import { DocsLayout } from 'fumadocs-ui/layouts/notebook';
+import { RootProvider } from 'fumadocs-ui/provider/next';
 import { GeistMono } from 'geist/font/mono';
 import type { Metadata } from 'next';
-import { RootProvider } from 'fumadocs-ui/provider/next';
-import { DocsLayout } from 'fumadocs-ui/layouts/notebook';
 import 'fumadocs-ui/style.css';
 import './globals.css';
-import { primaryFont } from '@/lib/fonts';
-import { source } from '@/lib/source';
-import { docsEnv } from '@/lib/env';
 import { Logo } from '@/components/logo';
 import { TabChip } from '@/components/tab-chip';
+import { docsEnv } from '@/lib/env';
+import { primaryFont } from '@/lib/fonts';
+import { source } from '@/lib/source';
 
 export const metadata: Metadata = {
     title: { default: 'Nordcom Commerce', template: '%s — Nordcom Commerce' },
@@ -42,7 +42,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                         githubUrl="https://github.com/filiphsps/commerce"
                         tabMode="navbar"
                         nav={{ title: <Logo />, mode: 'top', transparentMode: 'top' }}
-                        sidebar={{ banner: <TabChip /> }}
+                        sidebar={{ banner: TabChip }}
                         tabs={[
                             { title: 'Docs', url: '/' },
                             { title: 'Packages', url: '/packages' },

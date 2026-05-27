@@ -4,16 +4,7 @@ import path from 'node:path';
 export type ThrowSite = { errorClass: string; file: string; line: number; context: string };
 
 /** Directories that are never scanned when walking the source tree. */
-const SKIP_DIRS = new Set([
-    'node_modules',
-    'dist',
-    'build',
-    '.turbo',
-    '.next',
-    'coverage',
-    'docs',
-    'public',
-]);
+const SKIP_DIRS = new Set(['node_modules', 'dist', 'build', '.turbo', '.next', 'coverage', 'docs', 'public']);
 
 /**
  * Scan packages and apps source trees for `throw new SomeError(…)` occurrences,

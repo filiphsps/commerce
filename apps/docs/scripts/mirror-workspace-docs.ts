@@ -148,9 +148,7 @@ function* walkDocs(dir: string): Generator<string> {
  */
 function mirrorWorkspace(ws: Workspace): number {
     let linked = 0;
-    const out = ws.type === 'app'
-        ? path.join(DOCS_APPS_OUT, ws.slug)
-        : packageOutPath(ws.slug);
+    const out = ws.type === 'app' ? path.join(DOCS_APPS_OUT, ws.slug) : packageOutPath(ws.slug);
 
     for (const src of walkDocs(ws.docsPath)) {
         const relFromDocs = path.relative(ws.docsPath, src);

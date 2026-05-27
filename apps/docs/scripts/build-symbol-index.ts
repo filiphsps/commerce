@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import type { SymbolIndex, IndexEntry } from '../lib/jsdoc-link-resolver';
+import type { IndexEntry, SymbolIndex } from '../lib/jsdoc-link-resolver';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DOCS_APP = path.resolve(__dirname, '..');

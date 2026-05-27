@@ -1,13 +1,12 @@
 #!/usr/bin/env tsx
 import { pathToFileURL } from 'node:url';
-
+import { main as buildSourceMeta } from './build-source-meta';
+import { main as buildSymbolIndex } from './build-symbol-index';
+import { main as emitReference } from './emit-reference-mdx';
 import { main as emitTypedoc } from './emit-typedoc-json';
 import { main as mirrorDocs } from './mirror-workspace-docs';
 import { main as portErrors } from './port-errors';
 import { main as symlinkChangelogs } from './symlink-changelogs';
-import { main as buildSourceMeta } from './build-source-meta';
-import { main as buildSymbolIndex } from './build-symbol-index';
-import { main as emitReference } from './emit-reference-mdx';
 
 /**
  * Orchestrate every docs content generation step in the right order. Independent
@@ -35,10 +34,7 @@ export async function main({ quiet = false }: { quiet?: boolean } = {}): Promise
         portErrors({ quiet }),
     ]);
 
-    await Promise.all([
-        buildSourceMeta({ quiet }),
-        buildSymbolIndex({ quiet }),
-    ]);
+    await Promise.all([buildSourceMeta({ quiet }), buildSymbolIndex({ quiet })]);
 
     await emitReference({ quiet });
 

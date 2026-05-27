@@ -12,22 +12,27 @@ describe('renderSymbolMdx', () => {
                 id: 1,
                 name: 'getArticle',
                 kind: KIND_FUNCTION,
-                signatures: [{
-                    id: 2,
-                    name: 'getArticle',
-                    kind: KIND_FUNCTION,
-                    parameters: [{ id: 3, name: 'opts', type: { type: 'reference', name: 'GetArticleArgs' } }],
-                    type: { type: 'reference', name: 'Promise<Article | null>' },
-                    comment: {
-                        summary: [{ kind: 'text', text: 'Fetch one article by slug for a tenant.' }],
-                        blockTags: [
-                            { tag: '@param', content: [{ kind: 'text', text: 'opts the args' }] },
-                            { tag: '@returns', content: [{ kind: 'text', text: 'the article or null' }] },
-                            { tag: '@throws', content: [{ kind: 'text', text: 'NotFoundError on invalid slug' }] },
-                            { tag: '@example', content: [{ kind: 'text', text: '```ts\nconst a = await getArticle();\n```' }] },
-                        ],
+                signatures: [
+                    {
+                        id: 2,
+                        name: 'getArticle',
+                        kind: KIND_FUNCTION,
+                        parameters: [{ id: 3, name: 'opts', type: { type: 'reference', name: 'GetArticleArgs' } }],
+                        type: { type: 'reference', name: 'Promise<Article | null>' },
+                        comment: {
+                            summary: [{ kind: 'text', text: 'Fetch one article by slug for a tenant.' }],
+                            blockTags: [
+                                { tag: '@param', content: [{ kind: 'text', text: 'opts the args' }] },
+                                { tag: '@returns', content: [{ kind: 'text', text: 'the article or null' }] },
+                                { tag: '@throws', content: [{ kind: 'text', text: 'NotFoundError on invalid slug' }] },
+                                {
+                                    tag: '@example',
+                                    content: [{ kind: 'text', text: '```ts\nconst a = await getArticle();\n```' }],
+                                },
+                            ],
+                        },
                     },
-                }],
+                ],
                 sources: [{ fileName: 'packages/cms/src/api/get-article.ts', line: 14 }],
             },
         });
@@ -43,14 +48,18 @@ describe('renderSymbolMdx', () => {
                 id: 1,
                 name: 'oldThing',
                 kind: KIND_FUNCTION,
-                signatures: [{
-                    id: 2,
-                    name: 'oldThing',
-                    kind: KIND_FUNCTION,
-                    comment: {
-                        blockTags: [{ tag: '@deprecated', content: [{ kind: 'text', text: 'Use newThing instead.' }] }],
+                signatures: [
+                    {
+                        id: 2,
+                        name: 'oldThing',
+                        kind: KIND_FUNCTION,
+                        comment: {
+                            blockTags: [
+                                { tag: '@deprecated', content: [{ kind: 'text', text: 'Use newThing instead.' }] },
+                            ],
+                        },
                     },
-                }],
+                ],
             },
         });
         expect(mdx).toContain('<DeprecatedBanner>Use newThing instead.</DeprecatedBanner>');

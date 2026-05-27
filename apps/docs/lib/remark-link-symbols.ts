@@ -1,4 +1,4 @@
-import { isLinkableToken, resolveLink, type SymbolIndex, type ResolveContext } from './jsdoc-link-resolver';
+import { isLinkableToken, type ResolveContext, resolveLink, type SymbolIndex } from './jsdoc-link-resolver';
 
 // Minimal inline types for the subset of MDAST we need. The full @types/mdast
 // is a transitive dep only — importing it by name would fail tsc.
@@ -24,10 +24,7 @@ type AnyNode = { type: string; children?: AnyNode[]; value?: string };
  * @param options - The symbol index and page context.
  * @returns A unified transformer function that mutates the MDAST in place.
  */
-export function remarkLinkSymbols(options: {
-    index: SymbolIndex;
-    context: ResolveContext;
-}): (tree: unknown) => void {
+export function remarkLinkSymbols(options: { index: SymbolIndex; context: ResolveContext }): (tree: unknown) => void {
     return (tree) => {
         if (Object.keys(options.index).length === 0) return;
         visitInlineCode(tree as AnyNode, (node, idx, parent) => {
@@ -55,10 +52,7 @@ export function remarkLinkSymbols(options: {
  * @param node - Root or any MDAST node to traverse.
  * @param cb - Callback invoked for each inlineCode node found.
  */
-function visitInlineCode(
-    node: AnyNode,
-    cb: (n: InlineCodeNode, idx: number, parent: AnyNode) => void,
-): void {
+function visitInlineCode(node: AnyNode, cb: (n: InlineCodeNode, idx: number, parent: AnyNode) => void): void {
     if (!node?.children) return;
     for (let i = 0; i < node.children.length; i++) {
         const child = node.children[i];

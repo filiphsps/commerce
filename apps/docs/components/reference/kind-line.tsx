@@ -25,9 +25,7 @@ export function KindLine({ kind, path, throws }: KindLineProps) {
             {throws ? (
                 <>
                     <span className="text-fg-dim">·</span>
-                    <span className="rounded bg-bg-2 px-2 py-0.5 font-mono font-semibold text-err text-xs">
-                        throws
-                    </span>
+                    <span className="rounded bg-bg-2 px-2 py-0.5 font-mono font-semibold text-err text-xs">throws</span>
                 </>
             ) : null}
         </div>

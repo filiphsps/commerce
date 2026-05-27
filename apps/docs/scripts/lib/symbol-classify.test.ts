@@ -4,7 +4,12 @@ import { KIND_CLASS, KIND_FUNCTION, KIND_INTERFACE, KIND_TYPE_ALIAS, KIND_VARIAB
 
 describe('classifySymbol', () => {
     it('puts a plain function on its own page', () => {
-        const result = classifySymbol({ id: 1, name: 'getArticle', kind: KIND_FUNCTION, signatures: [{ id: 2, name: 'getArticle', kind: KIND_FUNCTION }] });
+        const result = classifySymbol({
+            id: 1,
+            name: 'getArticle',
+            kind: KIND_FUNCTION,
+            signatures: [{ id: 2, name: 'getArticle', kind: KIND_FUNCTION }],
+        });
         expect(result).toEqual({ fate: 'own-page', kind: 'function' });
     });
 
@@ -13,7 +18,9 @@ describe('classifySymbol', () => {
             id: 1,
             name: 'Card',
             kind: KIND_FUNCTION,
-            signatures: [{ id: 2, name: 'Card', kind: KIND_FUNCTION, type: { type: 'reference', name: 'JSX.Element' } }],
+            signatures: [
+                { id: 2, name: 'Card', kind: KIND_FUNCTION, type: { type: 'reference', name: 'JSX.Element' } },
+            ],
         });
         expect(result).toEqual({ fate: 'own-page', kind: 'component' });
     });
@@ -39,7 +46,12 @@ describe('classifySymbol', () => {
     });
 
     it('excludes @internal symbols', () => {
-        const result = classifySymbol({ id: 1, name: 'internalHelper', kind: KIND_FUNCTION, comment: { modifierTags: ['@internal'] } });
+        const result = classifySymbol({
+            id: 1,
+            name: 'internalHelper',
+            kind: KIND_FUNCTION,
+            comment: { modifierTags: ['@internal'] },
+        });
         expect(result).toEqual({ fate: 'excluded', kind: 'other' });
     });
 });
