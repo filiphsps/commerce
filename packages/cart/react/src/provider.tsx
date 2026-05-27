@@ -53,6 +53,10 @@ function formatUserError(result: Extract<CartActionResult, { ok: false }>): stri
     return result.message || result.userErrors?.[0]?.message || 'Cart action failed.';
 }
 
+/**
+ * Props for {@link CartProvider}. Wires the kernel snapshot, mutation handler,
+ * and optional optimistic predictors into the React context tree.
+ */
 export interface CartProviderProps<Cfg extends AppCartConfig> {
     kernelSnapshot: KernelSnapshot<Cfg['caps']>;
     submitMutation: SubmitMutation<Cfg['ext']>;
@@ -63,6 +67,38 @@ export interface CartProviderProps<Cfg extends AppCartConfig> {
     children: ReactNode;
 }
 
+/**
+ * Root context provider for the Nordcom cart. Manages the optimistic mutation
+ * queue, projects the cart for all slice hooks, synchronises state with
+ * cross-tab broadcasts, and optionally keeps buyer identity in sync via a
+ * client auth bridge.
+ *
+ * @param props.kernelSnapshot - Adapter capabilities and custom mutation names
+ *   from the server-side kernel; drives the shape of the action surface.
+ * @param props.submitMutation - Server action (or API call) that persists a
+ *   mutation and returns the updated cart.
+ * @param props.initialCart - Cart fetched at render time; seeded into the
+ *   queue on the first commit.
+ * @param props.shopId - Tenant shop id; scopes the BroadcastChannel used for
+ *   cross-tab cart sync.
+ * @param props.predictors - Optional optimistic predictor chains applied before
+ *   the server confirms the mutation.
+ * @param props.clientAuthBridge - Optional React hook bridge that surfaces
+ *   `BuyerIdentity`; triggers `update-buyer-identity` when identity changes.
+ * @param props.children - React subtree that receives cart context.
+ * @returns A stack of React context providers wrapping `children`.
+ * @example
+ * ```tsx
+ * <CartProvider
+ *   kernelSnapshot={kernelSnapshot}
+ *   submitMutation={submitCartMutation}
+ *   initialCart={initialCart}
+ *   shopId={shop.id}
+ * >
+ *   {children}
+ * </CartProvider>
+ * ```
+ */
 export function CartProvider<Cfg extends AppCartConfig>(props: CartProviderProps<Cfg>) {
     const { kernelSnapshot, submitMutation, initialCart, shopId, predictors, clientAuthBridge, children } = props;
     const [state, dispatch] = useReducer(queueReducer, undefined, () => initialQueueState());
@@ -286,6 +322,17 @@ function buyerIdentityKey(b: BuyerIdentity | null): string {
     return JSON.stringify({ e: b.email, p: b.phone, c: b.countryCode, pr: b.provider });
 }
 
+/**
+ * Subscribes to buyer identity changes reported by the auth bridge and
+ * dispatches `update-buyer-identity` mutations whenever the identity key
+ * changes. Renders nothing — used purely for its side-effect.
+ *
+ * @param props.bridge - Client auth bridge whose `useBuyerIdentity` hook is
+ *   called on each render to detect identity changes.
+ * @param props.dispatchMutation - Stable dispatch function from the enclosing
+ *   {@link CartProvider}.
+ * @returns `null`.
+ */
 function BuyerIdentitySync({
     bridge,
     dispatchMutation,
