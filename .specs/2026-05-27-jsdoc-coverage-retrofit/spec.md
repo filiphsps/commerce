@@ -1,6 +1,6 @@
 # JSDoc Coverage Retrofit
 
-**Status:** Draft
+**Status:** Done — 2026-05-27
 **Created:** 2026-05-27
 **Owner:** Filiph Sandström
 

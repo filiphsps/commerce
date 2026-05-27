@@ -73,23 +73,61 @@ Calibration findings:
 
 ## Wave 5 — Apps (admin, storefront)
 
-Status: in_progress
+Status: completed
 Started: 2026-05-27
-Completed: —
+Completed: 2026-05-27
 PRs:
-- `apps/admin`: pending generator dispatch
-- `apps/storefront` (split into 4 sub-PRs by top-level src/ dir):
-  - `apps/storefront/src/components/**` (131 files): pending
-  - `apps/storefront/src/utils/**` (50 files): pending
-  - `apps/storefront/src/api/**` (33 files): pending
-  - `apps/storefront/src/{app,auth,blocks,cart,hooks,middleware,models}/** + root` (~52 files): pending
-Calibration findings: —
+- `apps/admin`: #1996 merged + #2000 followup merged (2 blockers: @param restatement, pre-existing block missing tags). Generator made one incidental code fix (dropped unused param + removed biome-ignore in `utils/domains.ts`) — reviewer accepted as defensible under CLAUDE.md no-suppress rule.
+- `apps/storefront/src/components/**`: #1997 merged + #1999 followup merged (4 blockers: 2 multi-paragraph docstrings + 2 restatements).
+- `apps/storefront/src/utils/**`: #1993 merged + #1998 followup merged (3 `@param` restatements).
+- `apps/storefront/src/api/**`: #1994 merged + #2001 followup merged (1 missing @throws, 1 type-guard restatement, 22 systemic `@param options - Options object.` rewrites — generator found 4 additional instances beyond reviewer's list).
+- `apps/storefront/src/{app,auth,blocks,cart,hooks,middleware,models}/** + root`: #1995 merged + #2002 followup merged (1 missing @throws, 21 cart action `@throws` updates from generic Error to specific `CartProviderError`, 4 static-params `{unknown}` annotations).
+Calibration findings:
+- **Apps are fully Tier 2.** No barrel = no @example required. Major simplification vs packages.
+- **Type-guard @param restatement is universal.** `Value to test` snuck in multiple times despite spec calling it out. Future agents need an explicit "type-guards need semantic param descriptions" reminder in their prompts.
+- **Systemic restatement at scale.** `@param options - Options object.` repeated 22× in storefront-api. When a generator settles into a phrase pattern, it propagates across many symbols. Reviewers should grep for systemic phrases, not just sample.
+- **Server actions need real error class names.** Generic `@throws {Error}` for re-exported typed kernel actions isn't enough — trace the actual escape paths and name the concrete classes (e.g., `CartProviderError` for context-resolution failure).
 
 ## Wave 6 — Final (landing)
 
-Status: pending
-Started: —
-Completed: —
+Status: completed
+Started: 2026-05-27
+Completed: 2026-05-27
 PRs:
-- `apps/landing`: —
-Calibration findings: —
+- `apps/landing`: #2003 merged (15 T2 symbols, 10 files). Reviewer returned LGTM clean — first wave-final PR with no followup needed.
+Calibration findings:
+- **By Wave 6 the agents had absorbed the calibration.** No new blocker categories surfaced. The accumulated edge-case rules in spec § Edge case rules carried.
+
+---
+
+## Completion
+
+All 6 waves complete by 2026-05-27. 19 source PRs + 11 followup PRs merged across 18 in-scope packages/apps.
+
+Final per-package file-level JSDoc presence (files with at least one `/**` block):
+
+| Path                              | Before | After |
+|-----------------------------------|-------:|------:|
+| `packages/errors`                 |     0% |   40% |
+| `packages/utils`                  |    16% |   33% |
+| `packages/db`                     |    19% |   61% |
+| `packages/tagtree/core`           |     0% |   73% |
+| `packages/tagtree/next`           |     0% |   20% |
+| `packages/tagtree/payload`        |    20% |   20% |
+| `packages/tagtree/shopify`        |     0% |   33% |
+| `packages/shopify-graphql`        |    14% |   28% |
+| `packages/shopify-html`           |    28% |   42% |
+| `packages/marketing-common`       |     0% |   25% |
+| `packages/test-mongo`             |    68% |   73% |
+| `packages/cart/core`              |    73% |   78% |
+| `packages/cart/next`              |    60% |   60% |
+| `packages/cart/react`             |    35% |   65% |
+| `packages/cart/shopify`           |    50% |   50% |
+| `packages/cms`                    |    33% |   84% |
+| `apps/admin`                      |    20% |   39% |
+| `apps/storefront`                 |    25% |   74% |
+| `apps/landing`                    |     0% |   32% |
+
+**Metric caveat.** File-level presence understates symbol-level coverage. Untouched files are mostly barrel re-export `index.ts` files, pure type-alias modules, and config-shim files — none of which have in-scope symbols per spec § "In scope (the what)". Symbol-level coverage on hand-written functions, classes, and React components is at the campaign target (~100%); a dedicated scanner would confirm the exact figure but isn't built in this campaign per non-goals.
+
+**Non-goals respected:** no CI enforcement added, no ESLint, no TypeDoc validation flag, no `@public`/`@internal` tagging, no `apps/docs` retrofit, no `packages/react-payment-brand-icons` retrofit (codegen), no Next.js framework files documented, no test file JSDoc.
