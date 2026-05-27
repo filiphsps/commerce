@@ -97,14 +97,27 @@ a[data-symbol-tab='docs'] { color: var(--color-brand); }
     border-right: 0.2rem solid var(--color-border);
 }
 
-/* Top tab strip (notebook tabMode='navbar') — restyle the underlined tabs
- * Fumadocs renders into pill-style buttons that match the mockup. */
+/* Suppress the mobile sidebar tab dropdown — the four-tab navbar covers the
+ * same job at every viewport, so the dropdown is redundant. */
+#nd-sidebar > div:first-child > button[aria-haspopup='dialog'] {
+    display: none !important;
+}
+
+/* Top tab strip (notebook tabMode='navbar') — wrap the underlined tabs
+ * Fumadocs draws by default into a centered, bordered, rounded container
+ * with brand-magenta pills for the active tab. */
 #nd-subnav [data-header-tabs] {
     height: auto !important;
-    padding: 0.45rem 1.5rem 0.7rem !important;
-    border-bottom: 0.2rem solid var(--color-border) !important;
-    gap: 0.25rem !important;
+    padding: 0.18rem !important;
+    margin: 0.55rem auto !important;
+    border: 0.138rem solid var(--color-border) !important;
+    border-bottom-width: 0.138rem !important;
+    border-radius: var(--radius, 0.45rem) !important;
+    gap: 0.15rem !important;
     align-items: center !important;
+    width: fit-content !important;
+    justify-content: center !important;
+    overflow: visible !important;
 }
 
 #nd-subnav [data-header-tabs] a {
@@ -154,30 +167,32 @@ a[data-symbol-tab='docs'] { color: var(--color-brand); }
     background: var(--color-bg-1);
 }
 
-/* Code blocks — title bar treatment for fenced blocks with a filename meta. */
-.prose figure[data-rehype-pretty-code-figure],
-.prose [data-code-block-wrapper] {
-    border: 0.2rem solid var(--color-border);
-    border-radius: var(--radius, 0.45rem);
-    overflow: hidden;
-    margin: 1.2rem 0;
-    background: var(--color-bg-2);
+/* Code blocks — Fumadocs uses figure.shiki with a title row + pre body. The
+ * `not-prose` class blocks .prose selectors, so target the figure directly. */
+#nd-page figure.shiki {
+    background: var(--color-bg-2) !important;
+    border: 0.2rem solid var(--color-border) !important;
+    border-radius: var(--radius, 0.45rem) !important;
+    box-shadow: none !important;
+    margin: 1.2rem 0 !important;
+    overflow: hidden !important;
 }
 
-.prose figure[data-rehype-pretty-code-figure] figcaption,
-.prose [data-code-block-wrapper] [data-code-block-title] {
-    background: var(--color-bg-1);
-    border-bottom: 0.138rem solid var(--color-border);
-    padding: 0.45rem 0.85rem;
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    color: var(--color-fg-mute);
-    letter-spacing: 0.04em;
+#nd-page figure.shiki > div:first-child {
+    background: var(--color-bg-1) !important;
+    border-bottom: 0.138rem solid var(--color-border) !important;
+    padding: 0.45rem 0.85rem !important;
+    height: auto !important;
+    font-family: var(--font-mono) !important;
+    font-size: 0.65rem !important;
+    color: var(--color-fg-mute) !important;
+    letter-spacing: 0.04em !important;
 }
 
-.prose pre {
+#nd-page figure.shiki pre {
     background: var(--color-bg-2) !important;
     border-radius: 0 !important;
+    padding: 0.95rem 1.1rem !important;
 }
 
 .prose pre::-webkit-scrollbar {

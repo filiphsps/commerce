@@ -32,7 +32,7 @@ export function TabChip() {
     if (!variant) return null;
     return (
         <span
-            className={`mb-4 inline-block whitespace-nowrap rounded-[4px] border-[0.138rem] px-2.5 py-1 font-bold text-[0.58rem] uppercase tracking-[0.16em] ${variant.color}`}
+            className={`mb-3 inline-block w-fit whitespace-nowrap rounded-[4px] border-[0.138rem] px-3 py-1.5 font-extrabold text-[0.7rem] uppercase tracking-[0.18em] ${variant.color}`}
         >
             {variant.label}
         </span>

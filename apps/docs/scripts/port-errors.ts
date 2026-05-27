@@ -131,7 +131,10 @@ function convertOne(code: string, src: string): string {
         ? ['## Possible causes', '', '<Causes>', '', sections.causes, '', '</Causes>'].join('\n')
         : '';
 
-    const codeBlock = sections.code ? ["## How it's thrown", '', sections.code].join('\n') : '';
+    // Tag the code fence with the package title so the Fumadocs figcaption
+    // renders the package path in the codeblock title bar.
+    const codeWithTitle = sections.code.replace(/^```(\w*)\b/m, '```$1 title="@nordcom/commerce-errors"');
+    const codeBlock = codeWithTitle ? ["## How it's thrown", '', codeWithTitle].join('\n') : '';
 
     const sites = lookup ? loadThrowSites().filter((s) => s.errorClass === lookup.className) : [];
     const thrownFrom = sites.length
