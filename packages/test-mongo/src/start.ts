@@ -1,5 +1,18 @@
 import { MongoMemoryReplSet } from 'mongodb-memory-server';
 
+/**
+ * Options for {@link startMongo}. Both fields are optional; omitting them
+ * starts an ephemeral in-memory replica-set that is torn down on `stop()`.
+ *
+ * @example
+ * ```ts
+ * // Ephemeral — for unit tests:
+ * const mongo = await startMongo();
+ *
+ * // Persistent — for pnpm dev:
+ * const mongo = await startMongo({ dbPath: '.mongo-dev', port: 27018 });
+ * ```
+ */
 export interface StartMongoOptions {
     /** When set, mongod persists to this directory and survives `.stop()`. */
     dbPath?: string;
@@ -7,6 +20,18 @@ export interface StartMongoOptions {
     port?: number;
 }
 
+/**
+ * Handle returned by {@link startMongo}. Carries the replica-set connection
+ * URI and a `stop()` method that cleanly shuts down the instance, optionally
+ * removing the on-disk data directory.
+ *
+ * @example
+ * ```ts
+ * const { uri, stop } = await startMongo();
+ * // pass uri to mongoose.connect or MongoClient
+ * await stop();
+ * ```
+ */
 export interface StartedMongo {
     uri: string;
     stop: () => Promise<void>;
@@ -27,6 +52,12 @@ const replSetCleanupFlags = new WeakMap<MongoMemoryReplSet, boolean>();
 // fallback for the hard-exit case where async work is no longer possible.
 let handlersInstalled = false;
 
+/**
+ * Registers signal and exit handlers so every `MongoMemoryReplSet` tracked in
+ * `activeReplSets` is stopped when the current process exits — preventing
+ * orphan mongod processes and leftover temp directories when vitest workers
+ * crash or uncaught exceptions bypass `afterAll` hooks.
+ */
 function installShutdownHandlers(): void {
     if (handlersInstalled) return;
     handlersInstalled = true;
@@ -102,6 +133,25 @@ function installShutdownHandlers(): void {
     });
 }
 
+/**
+ * Starts a single-node `MongoMemoryReplSet` backed by WiredTiger and returns
+ * its connection URI plus a `stop()` handle. Pass `dbPath` and `port` to make
+ * the instance persistent across restarts; omit them for an ephemeral test replica-set.
+ *
+ * @param opts - Optional path and port overrides. When `dbPath` is set, the
+ *   data directory is preserved on `stop()` so the next start reuses it.
+ * @returns A `StartedMongo` with the replica-set URI and a graceful stop handle.
+ * @example
+ * ```ts
+ * const { uri, stop } = await startMongo();
+ * try {
+ *     await mongoose.connect(uri);
+ *     // run tests
+ * } finally {
+ *     await stop();
+ * }
+ * ```
+ */
 export async function startMongo(opts: StartMongoOptions = {}): Promise<StartedMongo> {
     installShutdownHandlers();
 

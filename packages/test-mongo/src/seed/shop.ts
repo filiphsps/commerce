@@ -1,6 +1,16 @@
 import { ShopSchema } from '@nordcom/commerce-db/models/shop';
 import { createConnection, type Schema } from 'mongoose';
 
+/**
+ * Customization knobs for {@link seedShop}. All fields are optional —
+ * defaults produce the canonical `nordcom-demo-shop.com` fixture.
+ *
+ * @example
+ * ```ts
+ * // Pin a different domain for a staging environment:
+ * await seedShop(uri, { domain: 'staging.example.com' });
+ * ```
+ */
 export interface SeedShopOptions {
     domain?: string;
     name?: string;
@@ -9,6 +19,21 @@ export interface SeedShopOptions {
 
 const DEFAULT_DOMAIN = 'nordcom-demo-shop.com';
 
+/**
+ * Creates the canonical demo Shop document via a direct Mongoose connection,
+ * bypassing Payload. Idempotent — skips insert when a document with the same
+ * domain already exists.
+ *
+ * @param uri - MongoDB connection string; also written to `MONGODB_URI` if the
+ *   env var is absent, so downstream Payload bootstraps bind to the same instance.
+ * @param opts - Optional overrides for domain, display name, and raw schema fields.
+ * @returns Resolves once the Shop document is present in the database.
+ * @example
+ * ```ts
+ * const { uri } = await startMongo();
+ * await seedShop(uri);
+ * ```
+ */
 export async function seedShop(uri: string, opts: SeedShopOptions = {}): Promise<void> {
     const domain = opts.domain ?? DEFAULT_DOMAIN;
     const name = opts.name ?? 'Nordcom Demo Shop';
