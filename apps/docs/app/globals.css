@@ -204,6 +204,11 @@ a[data-symbol-tab="docs"] {
     width: fit-content !important;
     justify-content: center !important;
     overflow: visible !important;
+    transition: border-color 150ms ease !important;
+}
+
+#nd-subnav [data-header-tabs]:hover {
+    border-color: var(--color-border-strong) !important;
 }
 
 #nd-subnav [data-header-tabs] a {
