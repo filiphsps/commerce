@@ -1,5 +1,22 @@
 import { BuiltinError } from './error';
 
+/**
+ * Base class for all structured commerce errors, providing a typed error code, HTTP status code, human-readable details, and a documentation help URL.
+ *
+ * Subclasses set `name`, `code`, `details`, and `description` as class fields.
+ *
+ * @param message - Optional message forwarded to the native `Error` constructor.
+ * @example
+ * ```ts
+ * class CartFullError extends Error<CartErrorKind> {
+ *     name = 'CartFullError';
+ *     code = CartErrorKind.CART_FULL;
+ *     details = 'Cart is full';
+ *     description = 'The cart has reached its maximum line count';
+ * }
+ * throw new CartFullError();
+ * ```
+ */
 export class Error<T = unknown> extends BuiltinError {
     public readonly name: string = 'Error';
     public readonly details!: string;
@@ -30,6 +47,12 @@ export class Error<T = unknown> extends BuiltinError {
         Object.setPrototypeOf(this, Error.prototype);
     }
 
+    /**
+     * Checks whether another error has the same error code as this instance.
+     *
+     * @param error - The value to compare against.
+     * @returns `true` when `error` is an `Error` instance with an identical `code`.
+     */
     public is(error: Error | unknown): boolean {
         if (!(error instanceof Error)) {
             return false;
@@ -38,10 +61,22 @@ export class Error<T = unknown> extends BuiltinError {
         return this.code === error.code;
     }
 
+    /**
+     * Type guard that narrows an unknown value to this package's `Error` type.
+     *
+     * @param error - The value to test.
+     * @returns `true` when `error` is an instance of this package's `Error`.
+     */
     public static override isError(error: unknown): error is Error {
         return error instanceof Error;
     }
 
+    /**
+     * Heuristic check for any "not found" variant, covering `NotFoundError`, `InvalidHandleError`, `InvalidIDError`, `UnknownLocaleError`, any error with HTTP 404, and certain message patterns.
+     *
+     * @param error - The value to test.
+     * @returns `true` when the error represents a not-found condition.
+     */
     public static isNotFound(error: Error | unknown): boolean {
         if (typeof error === 'undefined' || error === null || typeof error !== 'object') {
             return false;
@@ -68,6 +103,15 @@ export class Error<T = unknown> extends BuiltinError {
     }
 }
 
+/**
+ * Error codes for all API-layer errors raised during shop resolution, commerce-provider calls, cart operations, and request handling.
+ *
+ * @example
+ * ```ts
+ * import { ApiErrorKind } from '@nordcom/commerce-errors';
+ * if (error.code === ApiErrorKind.API_UNKNOWN_SHOP_DOMAIN) { return notFound(); }
+ * ```
+ */
 export enum ApiErrorKind {
     API_UNKNOWN_ERROR = 'API_UNKNOWN_ERROR',
     API_UNKNOWN_SHOP_DOMAIN = 'API_UNKNOWN_SHOP_DOMAIN',
@@ -101,6 +145,16 @@ export enum ApiErrorKind {
     API_MISSING_REQUIRED_FIELD = 'API_MISSING_REQUIRED_FIELD',
 }
 
+/**
+ * Base class for all API-layer errors, defaulting to HTTP 500 and the `API_UNKNOWN_ERROR` code family.
+ *
+ * @param cause - Optional upstream message to store as the error cause string.
+ * @param statusCode - Override the default HTTP status code.
+ * @example
+ * ```ts
+ * throw new ApiError('upstream fetch failed', 503);
+ * ```
+ */
 export class ApiError extends Error<ApiErrorKind> {
     statusCode = 500;
     name = 'ApiError';
@@ -120,12 +174,31 @@ export class ApiError extends Error<ApiErrorKind> {
     }
 }
 
+/**
+ * Signals an unexpected or unclassified API error with no further context.
+ *
+ * @example
+ * ```ts
+ * throw new UnknownError();
+ * ```
+ */
 export class UnknownError extends ApiError {
     name = 'UnknownError';
     details = 'Unknown Error';
     description = 'An unknown error occurred';
     code = ApiErrorKind.API_UNKNOWN_ERROR;
 }
+/**
+ * Signals that no shop record could be matched to the given hostname, returning HTTP 404 by default.
+ *
+ * @param domain - The hostname that failed shop resolution; embedded in the description when provided.
+ * @param cause - Optional upstream message to store as the error cause.
+ * @param statusCode - Override the default 404 HTTP status code.
+ * @example
+ * ```ts
+ * throw new UnknownShopDomainError('shop.example.com');
+ * ```
+ */
 export class UnknownShopDomainError extends UnknownError {
     statusCode = 404;
     name = 'UnknownShopDomainError';
@@ -143,12 +216,31 @@ export class UnknownShopDomainError extends UnknownError {
         }
     }
 }
+/**
+ * Signals that no commerce provider is registered for the requested provider type.
+ *
+ * @example
+ * ```ts
+ * throw new UnknownCommerceProviderError();
+ * ```
+ */
 export class UnknownCommerceProviderError extends UnknownError {
     name = 'UnknownCommerceProviderError';
     details = 'Unknown commerce provider';
     description = 'Could not find a commerce provider with the given type';
     code = ApiErrorKind.API_UNKNOWN_COMMERCE_PROVIDER;
 }
+/**
+ * Signals that the locale code supplied by the request is not supported or cannot be parsed, returning HTTP 404 by default.
+ *
+ * @param code - The locale code that failed validation; embedded in the description when provided.
+ * @param cause - Optional upstream message to store as the error cause.
+ * @param statusCode - Override the default 404 HTTP status code.
+ * @example
+ * ```ts
+ * throw new UnknownLocaleError('zz-ZZ');
+ * ```
+ */
 export class UnknownLocaleError extends UnknownError {
     statusCode = 404;
     name = 'UnknownLocaleError';
@@ -166,6 +258,14 @@ export class UnknownLocaleError extends UnknownError {
     }
 }
 
+/**
+ * Signals that the resolved shop record is structurally invalid, returning HTTP 400.
+ *
+ * @example
+ * ```ts
+ * throw new InvalidShopError();
+ * ```
+ */
 export class InvalidShopError extends ApiError {
     statusCode = 400;
     name = 'InvalidShopError';
@@ -173,6 +273,17 @@ export class InvalidShopError extends ApiError {
     description = 'The current shop is invalid';
     code = ApiErrorKind.API_INVALID_SHOP;
 }
+/**
+ * Signals that the supplied shop domain string is malformed or otherwise invalid, returning HTTP 400.
+ *
+ * @param domain - The domain string that failed validation; embedded in the description when provided.
+ * @param cause - Optional upstream message to store as the error cause.
+ * @param statusCode - Override the default 400 HTTP status code.
+ * @example
+ * ```ts
+ * throw new InvalidShopDomainError('not_a_domain');
+ * ```
+ */
 export class InvalidShopDomainError extends ApiError {
     statusCode = 400;
     name = 'InvalidShopDomainError';
@@ -190,6 +301,17 @@ export class InvalidShopDomainError extends ApiError {
         }
     }
 }
+/**
+ * Signals that a Shopify resource handle is missing, malformed, or resolves to no resource, returning HTTP 404.
+ *
+ * @param handle - The handle that failed resolution; embedded in the description when provided.
+ * @param cause - Optional upstream message to store as the error cause.
+ * @param statusCode - Override the default 404 HTTP status code.
+ * @example
+ * ```ts
+ * throw new InvalidHandleError('unknown-product-handle');
+ * ```
+ */
 export class InvalidHandleError extends ApiError {
     statusCode = 404;
     name = 'InvalidHandleError';
@@ -205,6 +327,17 @@ export class InvalidHandleError extends ApiError {
         }
     }
 }
+/**
+ * Signals that an entity ID is missing, malformed, or resolves to no entity, returning HTTP 404.
+ *
+ * @param id - The ID value that failed resolution; converted to string and embedded in the description when provided.
+ * @param cause - Optional upstream message to store as the error cause.
+ * @param statusCode - Override the default 404 HTTP status code.
+ * @example
+ * ```ts
+ * throw new InvalidIDError('gid://shopify/Product/99999');
+ * ```
+ */
 export class InvalidIDError extends ApiError {
     statusCode = 404;
     name = 'InvalidIDError';
@@ -220,6 +353,14 @@ export class InvalidIDError extends ApiError {
         }
     }
 }
+/**
+ * Signals that the cart token or structure is invalid, returning HTTP 404.
+ *
+ * @example
+ * ```ts
+ * throw new InvalidCartError();
+ * ```
+ */
 export class InvalidCartError extends ApiError {
     statusCode = 404;
     name = 'InvalidCartError';
@@ -227,6 +368,17 @@ export class InvalidCartError extends ApiError {
     description = 'The cart is invalid';
     code = ApiErrorKind.API_INVALID_CART;
 }
+/**
+ * Signals that the requested cart could not be located by its identifier, returning HTTP 404.
+ *
+ * @param cartId - The cart token that failed lookup; embedded in the description when provided.
+ * @param cause - Optional upstream message to store as the error cause.
+ * @param statusCode - Override the default 404 HTTP status code.
+ * @example
+ * ```ts
+ * throw new CartNotFoundError('abc123-cart-token');
+ * ```
+ */
 export class CartNotFoundError extends ApiError {
     statusCode = 404;
     name = 'CartNotFoundError';
@@ -242,6 +394,17 @@ export class CartNotFoundError extends ApiError {
         }
     }
 }
+/**
+ * Signals that the cart provider rejected the mutation with one or more user-facing validation errors, returning HTTP 400.
+ *
+ * @param userErrors - Array of field-level or global errors returned by the cart provider.
+ * @param cause - Optional upstream message to store as the error cause.
+ * @param statusCode - Override the default 400 HTTP status code.
+ * @example
+ * ```ts
+ * throw new CartUserError([{ field: 'quantity', message: 'Must be at least 1' }]);
+ * ```
+ */
 export class CartUserError extends ApiError {
     statusCode = 400;
     name = 'CartUserError';
@@ -260,6 +423,18 @@ export class CartUserError extends ApiError {
         }
     }
 }
+/**
+ * Signals that the upstream cart provider returned an unexpected error, returning HTTP 502.
+ *
+ * @param message - Human-readable description of the provider failure; overrides the default description when provided.
+ * @param providerCause - Raw response or object from the provider, stored for debugging.
+ * @param cause - Optional upstream message to store as the error cause.
+ * @param statusCode - Override the default 502 HTTP status code.
+ * @example
+ * ```ts
+ * throw new CartProviderError('Shopify returned 503', shopifyResponse);
+ * ```
+ */
 export class CartProviderError extends ApiError {
     statusCode = 502;
     name = 'CartProviderError';
@@ -279,6 +454,14 @@ export class CartProviderError extends ApiError {
     }
 }
 
+/**
+ * Signals that the client has exceeded the rate limit, returning HTTP 429.
+ *
+ * @example
+ * ```ts
+ * throw new TooManyRequestsError();
+ * ```
+ */
 export class TooManyRequestsError extends ApiError {
     statusCode = 429;
     name = 'TooManyRequestsError';
@@ -287,6 +470,14 @@ export class TooManyRequestsError extends ApiError {
     code = ApiErrorKind.API_TOO_MANY_REQUESTS;
 }
 
+/**
+ * Signals that the HTTP method used is not supported by the endpoint, returning HTTP 405.
+ *
+ * @example
+ * ```ts
+ * throw new MethodNotAllowedError();
+ * ```
+ */
 export class MethodNotAllowedError extends ApiError {
     statusCode = 405;
     name = 'MethodNotAllowedError';
@@ -295,6 +486,14 @@ export class MethodNotAllowedError extends ApiError {
     code = ApiErrorKind.API_METHOD_NOT_ALLOWED;
 }
 
+/**
+ * Signals that a fractional (non-integer) `width` or `height` was supplied to an image transform endpoint, returning HTTP 400.
+ *
+ * @example
+ * ```ts
+ * throw new ImageNoFractionalError();
+ * ```
+ */
 export class ImageNoFractionalError extends ApiError {
     statusCode = 400;
     name = 'ImageNoFractionalError';
@@ -302,6 +501,14 @@ export class ImageNoFractionalError extends ApiError {
     description = '`width`/`height` must be an integer';
     code = ApiErrorKind.API_IMAGE_NO_FRACTIONAL;
 }
+/**
+ * Signals that `width` or `height` falls outside the allowed range of 1–1024, returning HTTP 400.
+ *
+ * @example
+ * ```ts
+ * throw new ImageOutOfBoundsError();
+ * ```
+ */
 export class ImageOutOfBoundsError extends ApiError {
     statusCode = 400;
     name = 'ImageOutOfBoundsError';
@@ -310,6 +517,14 @@ export class ImageOutOfBoundsError extends ApiError {
     code = ApiErrorKind.API_IMAGE_OUT_OF_BOUNDS;
 }
 
+/**
+ * Signals that the shop has no locales configured, making it impossible to serve any request, returning HTTP 500.
+ *
+ * @example
+ * ```ts
+ * throw new NoLocalesAvailableError();
+ * ```
+ */
 export class NoLocalesAvailableError extends ApiError {
     statusCode = 500;
     name = 'NoLocalesAvailableError';
@@ -318,6 +533,14 @@ export class NoLocalesAvailableError extends ApiError {
     code = ApiErrorKind.API_NO_LOCALES_AVAILABLE;
 }
 
+/**
+ * Signals that the Shopify Customer Account API credentials or configuration are invalid or missing, returning HTTP 500.
+ *
+ * @example
+ * ```ts
+ * throw new InvalidShopifyCustomerAccountsApiConfiguration();
+ * ```
+ */
 export class InvalidShopifyCustomerAccountsApiConfiguration extends ApiError {
     statusCode = 500;
     name = 'InvalidShopifyCustomerAccountsApiConfiguration';
@@ -326,6 +549,18 @@ export class InvalidShopifyCustomerAccountsApiConfiguration extends ApiError {
     code = ApiErrorKind.API_INVALID_SHOPIFY_CUSTOMER_ACCOUNT_API_CONFIGURATION;
 }
 
+/**
+ * Signals that a required environment variable is absent at runtime, returning HTTP 500.
+ *
+ * @param variableName - The name of the missing variable; embedded in the description when provided.
+ * @param hint - Optional guidance on how to set the variable; appended to the description when provided.
+ * @param cause - Optional upstream message to store as the error cause.
+ * @param statusCode - Override the default 500 HTTP status code.
+ * @example
+ * ```ts
+ * throw new MissingEnvironmentVariableError('SHOPIFY_API_KEY', 'Set it in .env.local.');
+ * ```
+ */
 export class MissingEnvironmentVariableError extends ApiError {
     statusCode = 500;
     name = 'MissingEnvironmentVariableError';
@@ -354,6 +589,15 @@ export class MissingEnvironmentVariableError extends ApiError {
     }
 }
 
+/**
+ * Signals that a fetch from an external data provider failed, returning HTTP 500.
+ *
+ * @param sourceErrors - Raw error payload from the provider; passed through {@link ProviderFetchError.stringifyInput} and stored as `cause`.
+ * @example
+ * ```ts
+ * throw new ProviderFetchError(response.errors);
+ * ```
+ */
 export class ProviderFetchError extends ApiError {
     statusCode = 500;
     name = 'ProviderFetchError';
@@ -361,6 +605,12 @@ export class ProviderFetchError extends ApiError {
     description = 'Failed to fetch from source';
     code = ApiErrorKind.API_PROVIDER_FETCH_FAILED;
 
+    /**
+     * Converts an arbitrary provider error payload into a human-readable string, or `null` when the input carries no textual content.
+     *
+     * @param input - The raw error value from the provider; may be a string, number, boolean, array, object with `message`/`status`, or `null`/`undefined`.
+     * @returns A string description of the error, or `null` when no meaningful text can be extracted.
+     */
     static stringifyInput(input: unknown): string | null {
         if (typeof input === 'undefined' || input === null) {
             return null;
@@ -439,6 +689,17 @@ export class ProviderFetchError extends ApiError {
     }
 }
 
+/**
+ * Signals that a Shopify GraphQL operation already declares an `@inContext` directive, which conflicts with the `inContextTransform`'s sole ownership of context injection, returning HTTP 500.
+ *
+ * @param operationName - The GraphQL operation name that contains the duplicate directive; embedded in the description when provided.
+ * @param cause - Optional upstream message to store as the error cause.
+ * @param statusCode - Override the default 500 HTTP status code.
+ * @example
+ * ```ts
+ * throw new DuplicateContextDirectiveError('GetProduct');
+ * ```
+ */
 export class DuplicateContextDirectiveError extends ApiError {
     statusCode = 500;
     name = 'DuplicateContextDirectiveError';
@@ -456,6 +717,18 @@ export class DuplicateContextDirectiveError extends ApiError {
     }
 }
 
+/**
+ * Signals that a Shopify GraphQL operation pre-declares a reserved context variable (`$country` or `$language`) that is owned by the `inContextTransform`, returning HTTP 500.
+ *
+ * @param operationName - The GraphQL operation name that pre-declares the reserved variable.
+ * @param variableName - The specific reserved variable name (`'country'` or `'language'`).
+ * @param cause - Optional upstream message to store as the error cause.
+ * @param statusCode - Override the default 500 HTTP status code.
+ * @example
+ * ```ts
+ * throw new DuplicateContextVariableError('GetProduct', 'country');
+ * ```
+ */
 export class DuplicateContextVariableError extends ApiError {
     statusCode = 500;
     name = 'DuplicateContextVariableError';
@@ -483,6 +756,17 @@ export class DuplicateContextVariableError extends ApiError {
     }
 }
 
+/**
+ * Signals that no shop record could be found for the given internal shop ID, returning HTTP 404.
+ *
+ * @param id - The shop ID that failed resolution; embedded in the description when provided.
+ * @param cause - Optional upstream message to store as the error cause.
+ * @param statusCode - Override the default 404 HTTP status code.
+ * @example
+ * ```ts
+ * throw new UnknownShopIdError('shop_01JXXXXX');
+ * ```
+ */
 export class UnknownShopIdError extends UnknownError {
     statusCode = 404;
     name = 'UnknownShopIdError';
@@ -498,6 +782,18 @@ export class UnknownShopIdError extends UnknownError {
     }
 }
 
+/**
+ * Signals that a shop record is present but missing required configuration fields, returning HTTP 500.
+ *
+ * @param domain - The shop domain for which configuration is invalid; embedded in the description when provided.
+ * @param missingFields - Names of the configuration fields that are absent or empty.
+ * @param cause - Optional upstream message to store as the error cause.
+ * @param statusCode - Override the default 500 HTTP status code.
+ * @example
+ * ```ts
+ * throw new ShopMisconfigurationError('shop.example.com', ['apiKey', 'storeDomain']);
+ * ```
+ */
 export class ShopMisconfigurationError extends ApiError {
     statusCode = 500;
     name = 'ShopMisconfigurationError';
@@ -516,6 +812,15 @@ export class ShopMisconfigurationError extends ApiError {
     }
 }
 
+/**
+ * Signals that an incoming form payload could not be parsed or fails structural validation, returning HTTP 400.
+ *
+ * @param cause - Optional parse error or unexpected value; converted to a string and stored as the cause.
+ * @example
+ * ```ts
+ * throw new MalformedFormPayloadError(parseError);
+ * ```
+ */
 export class MalformedFormPayloadError extends ApiError {
     statusCode = 400;
     name = 'MalformedFormPayloadError';
@@ -531,6 +836,17 @@ export class MalformedFormPayloadError extends ApiError {
     }
 }
 
+/**
+ * Signals that no collection is registered under the given slug in the CMS manifest, returning HTTP 500.
+ *
+ * @param slug - The unrecognized collection slug; embedded in the description when provided.
+ * @param cause - Optional upstream message to store as the error cause.
+ * @param statusCode - Override the default 500 HTTP status code.
+ * @example
+ * ```ts
+ * throw new UnknownCollectionSlugError('blog-posts');
+ * ```
+ */
 export class UnknownCollectionSlugError extends ApiError {
     statusCode = 500;
     name = 'UnknownCollectionSlugError';
@@ -546,6 +862,17 @@ export class UnknownCollectionSlugError extends ApiError {
     }
 }
 
+/**
+ * Signals that no locale could be resolved for the request and the shop has no default locale configured, returning HTTP 500.
+ *
+ * @param url - The request URL that failed locale resolution; embedded in the description when provided.
+ * @param cause - Optional upstream message to store as the error cause.
+ * @param statusCode - Override the default 500 HTTP status code.
+ * @example
+ * ```ts
+ * throw new NoLocaleResolvableError(request.url);
+ * ```
+ */
 export class NoLocaleResolvableError extends ApiError {
     statusCode = 500;
     name = 'NoLocaleResolvableError';
@@ -561,6 +888,14 @@ export class NoLocaleResolvableError extends ApiError {
     }
 }
 
+/**
+ * Signals that an upload request contains no attached file, returning HTTP 400.
+ *
+ * @example
+ * ```ts
+ * throw new MissingUploadFileError();
+ * ```
+ */
 export class MissingUploadFileError extends ApiError {
     statusCode = 400;
     name = 'MissingUploadFileError';
@@ -569,6 +904,14 @@ export class MissingUploadFileError extends ApiError {
     code = ApiErrorKind.API_MISSING_UPLOAD_FILE;
 }
 
+/**
+ * Signals that the uploaded file exists but is empty (zero bytes), returning HTTP 400.
+ *
+ * @example
+ * ```ts
+ * throw new EmptyUploadFileError();
+ * ```
+ */
 export class EmptyUploadFileError extends ApiError {
     statusCode = 400;
     name = 'EmptyUploadFileError';
@@ -577,6 +920,17 @@ export class EmptyUploadFileError extends ApiError {
     code = ApiErrorKind.API_EMPTY_UPLOAD_FILE;
 }
 
+/**
+ * Signals that a required field is absent in the incoming payload, returning HTTP 400.
+ *
+ * @param fieldName - The name of the absent field; embedded in the description when provided.
+ * @param cause - Optional upstream message to store as the error cause.
+ * @param statusCode - Override the default 400 HTTP status code.
+ * @example
+ * ```ts
+ * throw new MissingRequiredFieldError('email');
+ * ```
+ */
 export class MissingRequiredFieldError extends ApiError {
     statusCode = 400;
     name = 'MissingRequiredFieldError';
@@ -592,6 +946,15 @@ export class MissingRequiredFieldError extends ApiError {
     }
 }
 
+/**
+ * Error codes for non-API, application-layer errors covering unclassified failures, type violations, context misuse, and CMS configuration issues.
+ *
+ * @example
+ * ```ts
+ * import { GenericErrorKind } from '@nordcom/commerce-errors';
+ * if (error.code === GenericErrorKind.NOT_FOUND) { return notFound(); }
+ * ```
+ */
 export enum GenericErrorKind {
     GENERIC_UNKNOWN_ERROR = 'GENERIC_UNKNOWN_ERROR',
     GENERIC_TODO = 'GENERIC_TODO',
@@ -610,6 +973,15 @@ export enum GenericErrorKind {
     GENERIC_MISSING_TYPEDOC_OUTPUT = 'GENERIC_MISSING_TYPEDOC_OUTPUT',
 }
 
+/**
+ * Base class for application-layer errors not specific to the API surface, defaulting to HTTP 500.
+ *
+ * @param cause - Optional message describing the upstream cause; stored as the error cause string.
+ * @example
+ * ```ts
+ * throw new GenericError('unexpected state in initialization');
+ * ```
+ */
 export class GenericError extends Error<GenericErrorKind> {
     statusCode = 500;
     name = 'GenericError';
@@ -625,6 +997,14 @@ export class GenericError extends Error<GenericErrorKind> {
         }
     }
 }
+/**
+ * Placeholder error for code paths that are not yet implemented, returning HTTP 404.
+ *
+ * @example
+ * ```ts
+ * throw new TodoError();
+ * ```
+ */
 export class TodoError extends GenericError {
     statusCode = 404; // TODO: This ain't really correct.
     name = 'TodoError';
@@ -632,6 +1012,15 @@ export class TodoError extends GenericError {
     description = 'This feature is not implemented yet';
     code = GenericErrorKind.GENERIC_TODO;
 }
+/**
+ * Signals that a requested resource could not be located, returning HTTP 404.
+ *
+ * @param requestedResource - Optional identifier of the missing resource; embedded in the cause string when provided.
+ * @example
+ * ```ts
+ * throw new NotFoundError('product:some-handle');
+ * ```
+ */
 export class NotFoundError extends GenericError {
     statusCode = 404;
     name = 'NotFoundError';
@@ -647,18 +1036,44 @@ export class NotFoundError extends GenericError {
         }
     }
 }
+/**
+ * Signals that a supposedly unreachable code path was executed, indicating a logic error or exhaustiveness gap.
+ *
+ * @example
+ * ```ts
+ * throw new UnreachableError();
+ * ```
+ */
 export class UnreachableError extends GenericError {
     name = 'UnreachableError';
     details = 'Unreachable code-path taken';
     description = 'Supposedly unreachable code-path taken';
     code = GenericErrorKind.UNREACHABLE;
 }
+/**
+ * Signals that a value of an unexpected type was passed to a function or operation.
+ *
+ * @example
+ * ```ts
+ * throw new TypeError();
+ * ```
+ */
 export class TypeError extends GenericError {
     name = 'TypeError';
     details = 'Invalid type';
     description = 'Invalid type was passed to function';
     code = GenericErrorKind.INVALID_TYPE;
 }
+/**
+ * Signals that a React hook or context consumer was used outside its required provider, producing a descriptive message.
+ *
+ * @param functionName - The name of the hook or function that requires the provider.
+ * @param contextName - The name of the React context component that must wrap the call site.
+ * @example
+ * ```ts
+ * throw new MissingContextProviderError('useCart', 'CartProvider');
+ * ```
+ */
 export class MissingContextProviderError extends GenericError {
     name = 'MissingContextProviderError';
     details = 'Missing context provider';
@@ -670,12 +1085,28 @@ export class MissingContextProviderError extends GenericError {
         this.description = `\`${functionName}()\` must be used within a \`<${contextName}/>\` provider.`;
     }
 }
+/**
+ * Signals that a database operation was attempted on an instance without an active connection.
+ *
+ * @example
+ * ```ts
+ * throw new NotConnectedToDatabase();
+ * ```
+ */
 export class NotConnectedToDatabase extends GenericError {
     name = 'NotConnectedToDatabase';
     details = 'Not connected to the database';
     description = 'The instance provided does not have an active database connection.';
     code = GenericErrorKind.NOT_CONNECTED_TO_DATABASE;
 }
+/**
+ * Signals that an authenticated session is missing a user ID, indicating a misconfigured auth adapter or JWT/session callback.
+ *
+ * @example
+ * ```ts
+ * throw new MissingSessionUserIdError();
+ * ```
+ */
 export class MissingSessionUserIdError extends GenericError {
     statusCode = 500;
     name = 'MissingSessionUserIdError';
@@ -684,6 +1115,15 @@ export class MissingSessionUserIdError extends GenericError {
     code = GenericErrorKind.MISSING_SESSION_USER_ID;
 }
 
+/**
+ * Signals that a tenant-scoped collection was queried without a tenant context being present.
+ *
+ * @param collection - The collection slug that requires a tenant scope; embedded in the description when provided.
+ * @example
+ * ```ts
+ * throw new MissingTenantForScopedCollectionError('products');
+ * ```
+ */
 export class MissingTenantForScopedCollectionError extends GenericError {
     name = 'MissingTenantForScopedCollectionError';
     details = 'Missing tenant for scoped collection';
@@ -701,6 +1141,14 @@ export class MissingTenantForScopedCollectionError extends GenericError {
     }
 }
 
+/**
+ * Signals that a tenant-scoped query received an empty shop ID, preventing the predicate from being applied correctly.
+ *
+ * @example
+ * ```ts
+ * throw new EmptyTenantScopeError();
+ * ```
+ */
 export class EmptyTenantScopeError extends GenericError {
     name = 'EmptyTenantScopeError';
     details = 'Empty tenant scope';
@@ -708,6 +1156,15 @@ export class EmptyTenantScopeError extends GenericError {
     code = GenericErrorKind.GENERIC_EMPTY_TENANT_SCOPE;
 }
 
+/**
+ * Signals that the CMS editor manifest for a collection does not include a list view configuration.
+ *
+ * @param collection - The collection slug whose manifest is missing a list config; embedded in the description when provided.
+ * @example
+ * ```ts
+ * throw new MissingListConfigError('pages');
+ * ```
+ */
 export class MissingListConfigError extends GenericError {
     name = 'MissingListConfigError';
     details = 'Missing list config';
@@ -722,6 +1179,15 @@ export class MissingListConfigError extends GenericError {
     }
 }
 
+/**
+ * Signals that a tenant predicate with the same name was registered more than once.
+ *
+ * @param predicateName - The predicate name that was registered twice; embedded in the description when provided.
+ * @example
+ * ```ts
+ * throw new DuplicatePredicateRegistrationError('shopDomain');
+ * ```
+ */
 export class DuplicatePredicateRegistrationError extends GenericError {
     name = 'DuplicatePredicateRegistrationError';
     details = 'Duplicate predicate registration';
@@ -736,6 +1202,14 @@ export class DuplicatePredicateRegistrationError extends GenericError {
     }
 }
 
+/**
+ * Signals that code requiring an active request scope was called outside of one.
+ *
+ * @example
+ * ```ts
+ * throw new MissingRequestContextError();
+ * ```
+ */
 export class MissingRequestContextError extends GenericError {
     name = 'MissingRequestContextError';
     details = 'Missing request context';
@@ -743,6 +1217,15 @@ export class MissingRequestContextError extends GenericError {
     code = GenericErrorKind.GENERIC_MISSING_REQUEST_CONTEXT;
 }
 
+/**
+ * Signals that a workspace slug is registered more than once, violating the global-uniqueness constraint across all apps and packages.
+ *
+ * @param slug - The duplicate slug; embedded in the description when provided.
+ * @example
+ * ```ts
+ * throw new DuplicateWorkspaceSlugError('admin');
+ * ```
+ */
 export class DuplicateWorkspaceSlugError extends GenericError {
     name = 'DuplicateWorkspaceSlugError';
     details = 'Duplicate workspace slug';
@@ -758,6 +1241,17 @@ export class DuplicateWorkspaceSlugError extends GenericError {
     }
 }
 
+/**
+ * Signals that no TypeDoc JSON output was found for the requested subpath, typically because the build has not been run.
+ *
+ * @param subpathKey - The package subpath key whose TypeDoc output is missing; embedded in the description when provided.
+ * @param rootDir - The root directory that was searched; appended to the description when provided.
+ * @param buildCommand - The command that should be run to generate the output; appended to the description when provided.
+ * @example
+ * ```ts
+ * throw new MissingTypeDocOutputError('@nordcom/commerce-errors', './dist', 'pnpm build');
+ * ```
+ */
 export class MissingTypeDocOutputError extends GenericError {
     name = 'MissingTypeDocOutputError';
     details = 'Missing TypeDoc output';
@@ -778,10 +1272,31 @@ export class MissingTypeDocOutputError extends GenericError {
     }
 }
 
+/**
+ * Returns all error code string values from both {@link GenericErrorKind} and {@link ApiErrorKind} enums in a single flat array.
+ *
+ * @returns An array of every `GenericErrorKind` and `ApiErrorKind` string value.
+ * @example
+ * ```ts
+ * const codes = getAllErrorCodes();
+ * // ['GENERIC_UNKNOWN_ERROR', 'GENERIC_TODO', ..., 'API_UNKNOWN_ERROR', ...]
+ * ```
+ */
 export const getAllErrorCodes = () => {
     return [...Object.values(GenericErrorKind), ...Object.values(ApiErrorKind)];
 };
 
+/**
+ * Maps a `GenericErrorKind` or `ApiErrorKind` code to its corresponding error class, enabling reconstruction of typed errors from serialized codes.
+ *
+ * @param code - The error code value to look up.
+ * @returns The error class constructor for the code, or `null` when the code is not recognized.
+ * @example
+ * ```ts
+ * const ErrorClass = getErrorFromCode(ApiErrorKind.API_UNKNOWN_SHOP_DOMAIN);
+ * if (ErrorClass) throw new ErrorClass();
+ * ```
+ */
 export const getErrorFromCode = (
     code: GenericErrorKind | ApiErrorKind,
 ): typeof GenericError | typeof ApiError | null => {
