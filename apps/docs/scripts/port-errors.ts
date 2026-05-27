@@ -28,6 +28,11 @@ export function main({ quiet = false }: { quiet?: boolean } = {}): { converted: 
     fs.mkdirSync(ERRORS_OUT, { recursive: true });
     let converted = 0;
     const codes: string[] = [];
+    // Only touch files whose content actually changed so the dev MDX watcher
+    // doesn't fire on no-op runs.
+    const touched = new Set<string>();
+    // _overrides.json is checked into the repo — preserve it through prune.
+    touched.add(path.join(ERRORS_OUT, '_overrides.json'));
 
     for (const entry of fs.readdirSync(ERRORS_SRC)) {
         if (!entry.endsWith('.mdx')) continue;
@@ -35,15 +40,57 @@ export function main({ quiet = false }: { quiet?: boolean } = {}): { converted: 
         const src = fs.readFileSync(path.join(ERRORS_SRC, entry), 'utf8');
         const mdx = convertOne(code, src);
         const dest = path.join(ERRORS_OUT, `${kebab(code)}.mdx`);
-        fs.writeFileSync(dest, mdx);
+        writeIfChanged(dest, mdx, touched);
         codes.push(code);
         converted++;
     }
 
-    emitErrorsMeta(codes);
+    emitErrorsMeta(codes, touched);
 
-    if (!quiet) console.info(`[port-errors] converted ${converted} pages`);
+    const pruned = pruneUntouched(ERRORS_OUT, touched);
+    if (!quiet) console.info(`[port-errors] converted ${converted} pages, ${pruned} pruned`);
     return { converted };
+}
+
+/**
+ * Write `content` to `file` only when it differs from the existing file on
+ * disk. Always records the path in `touched` so the prune step keeps it.
+ *
+ * @param file - Absolute destination path.
+ * @param content - Bytes to write.
+ * @param touched - Set of paths considered live this run.
+ */
+function writeIfChanged(file: string, content: string, touched: Set<string>): void {
+    touched.add(file);
+    if (fs.existsSync(file)) {
+        const existing = fs.readFileSync(file, 'utf8');
+        if (existing === content) return;
+    }
+    fs.writeFileSync(file, content);
+}
+
+/**
+ * Remove files under `root` not touched this run. Lets the next gen pass
+ * cleanly drop error codes that have been renamed or deleted upstream.
+ *
+ * @param root - Output directory to scan.
+ * @param touched - Files written or preserved during this run.
+ * @returns Count of files deleted.
+ */
+function pruneUntouched(root: string, touched: Set<string>): number {
+    let pruned = 0;
+    function visit(dir: string): void {
+        for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+            const full = path.join(dir, entry.name);
+            if (entry.isDirectory()) visit(full);
+            else if (entry.isFile() && !touched.has(full)) {
+                fs.unlinkSync(full);
+                pruned++;
+            }
+        }
+    }
+    if (fs.existsSync(root)) visit(root);
+    return pruned;
 }
 
 /**
@@ -99,7 +146,7 @@ function convertOne(code: string, src: string): string {
  *
  * @param codes - All converted SCREAMING_SNAKE_CASE error codes.
  */
-function emitErrorsMeta(codes: string[]): void {
+function emitErrorsMeta(codes: string[], touched: Set<string>): void {
     const overridesPath = path.join(ERRORS_OUT, '_overrides.json');
     const overrides = fs.existsSync(overridesPath)
         ? (JSON.parse(fs.readFileSync(overridesPath, 'utf8')) as Record<string, string[]>)
@@ -122,7 +169,7 @@ function emitErrorsMeta(codes: string[]): void {
         pages.push(groupSlug, ...list.map((c) => c.toLowerCase().replace(/_/g, '-')));
     }
 
-    fs.writeFileSync(
+    writeIfChanged(
         path.join(ERRORS_OUT, 'meta.json'),
         JSON.stringify(
             {
@@ -134,6 +181,7 @@ function emitErrorsMeta(codes: string[]): void {
             null,
             4,
         ),
+        touched,
     );
 }
 

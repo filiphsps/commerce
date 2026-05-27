@@ -28,11 +28,17 @@ export async function main({ quiet = false }: { quiet?: boolean } = {}): Promise
     symbols: number;
     skipped: number;
 }> {
-    if (fs.existsSync(REFERENCE_OUT)) fs.rmSync(REFERENCE_OUT, { recursive: true, force: true });
     fs.mkdirSync(REFERENCE_OUT, { recursive: true });
-    fs.writeFileSync(
+
+    // Idempotent writes: only touch files whose content actually changed. The
+    // dev server's MDX watcher re-emits its .source/ artifacts on every mtime
+    // change, so blanket rewrites cause continuous [MDX] regenerated spam.
+    // Track everything we touch this run; prune untouched files at the end.
+    const touched = new Set<string>();
+    writeIfChanged(
         path.join(REFERENCE_OUT, 'meta.json'),
         `${JSON.stringify({ title: 'Reference', description: 'Generated symbol catalogue from TypeDoc + JSDoc.', root: true }, null, 4)}\n`,
+        touched,
     );
 
     let subpathsCount = 0;
@@ -77,7 +83,7 @@ export async function main({ quiet = false }: { quiet?: boolean } = {}): Promise
                     'index.mdx',
                 );
                 fs.mkdirSync(path.dirname(galleryFile), { recursive: true });
-                fs.writeFileSync(galleryFile, galleryMdx);
+                writeIfChanged(galleryFile, galleryMdx, touched);
                 subpathsCount++;
                 continue;
             }
@@ -99,7 +105,7 @@ export async function main({ quiet = false }: { quiet?: boolean } = {}): Promise
                             `${kebab(symbol.name)}.mdx`,
                         );
                         fs.mkdirSync(path.dirname(outFile), { recursive: true });
-                        fs.writeFileSync(outFile, mdx);
+                        writeIfChanged(outFile, mdx, touched);
                         symbolsCount++;
                     }
                 }
@@ -117,15 +123,64 @@ export async function main({ quiet = false }: { quiet?: boolean } = {}): Promise
                 'index.mdx',
             );
             fs.mkdirSync(path.dirname(overviewFile), { recursive: true });
-            fs.writeFileSync(overviewFile, overviewMdx);
+            writeIfChanged(overviewFile, overviewMdx, touched);
             subpathsCount++;
         }
     }
 
+    const pruned = pruneUntouched(REFERENCE_OUT, touched);
+
     if (!quiet) {
-        console.info(`[emit-reference-mdx] ${subpathsCount} subpaths, ${symbolsCount} symbols, ${skippedCount} skipped`);
+        console.info(
+            `[emit-reference-mdx] ${subpathsCount} subpaths, ${symbolsCount} symbols, ${skippedCount} skipped, ${pruned} pruned`,
+        );
     }
     return { subpaths: subpathsCount, symbols: symbolsCount, skipped: skippedCount };
+}
+
+/**
+ * Write `content` to `file` only when it differs from what's already there.
+ * Keeps mtime stable across no-op runs, which means the dev MDX watcher
+ * doesn't see a change event and skips regeneration. Always records the
+ * file in `touched` so the prune step below can leave it alone.
+ *
+ * @param file - Absolute destination path.
+ * @param content - Bytes to write.
+ * @param touched - Set of paths considered "still valid" this run.
+ */
+function writeIfChanged(file: string, content: string, touched: Set<string>): void {
+    touched.add(file);
+    if (fs.existsSync(file)) {
+        const existing = fs.readFileSync(file, 'utf8');
+        if (existing === content) return;
+    }
+    fs.writeFileSync(file, content);
+}
+
+/**
+ * Remove every file under `root` that wasn't written this run. Used to clean
+ * up symbols that have been renamed or deleted in the source. Empty
+ * directories left behind by file removal are not pruned — leaving an empty
+ * dir is cheaper than crawling the tree twice and Fumadocs ignores it.
+ *
+ * @param root - Output directory to scan.
+ * @param touched - Files written/refreshed during this run.
+ * @returns Number of files deleted.
+ */
+function pruneUntouched(root: string, touched: Set<string>): number {
+    let pruned = 0;
+    function visit(dir: string): void {
+        for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+            const full = path.join(dir, entry.name);
+            if (entry.isDirectory()) visit(full);
+            else if (entry.isFile() && !touched.has(full)) {
+                fs.unlinkSync(full);
+                pruned++;
+            }
+        }
+    }
+    if (fs.existsSync(root)) visit(root);
+    return pruned;
 }
 
 /**
