@@ -99,6 +99,10 @@ export type ResultOf<TDoc> = GqlResultOf<TDoc>;
  */
 export type VariablesOf<TDoc> = GqlVariablesOf<TDoc>;
 
+// Structural equivalent of gql.tada's non-exported `FragmentDefDecorationLike` — needed to
+// express a fragment-document constraint on FragmentOf without importing a private symbol.
+type FragmentDecorationLike = { fragment: unknown; on: unknown; masked: unknown };
+
 /**
  * Masked shape of a fragment as it appears before being unwrapped by `readFragment`.
  *
@@ -124,10 +128,6 @@ export type VariablesOf<TDoc> = GqlVariablesOf<TDoc>;
  * }
  * ```
  */
-// Structural equivalent of gql.tada's non-exported `FragmentDefDecorationLike` — needed to
-// express a fragment-document constraint on FragmentOf without importing a private symbol.
-type FragmentDecorationLike = { fragment: unknown; on: unknown; masked: unknown };
-
 export type FragmentOf<TFragment extends GqlTadaDocumentNode<unknown, unknown, FragmentDecorationLike>> =
     TFragment extends GqlTadaDocumentNode<unknown, unknown, FragmentDecorationLike> ? GqlFragmentOf<TFragment> : never;
 
