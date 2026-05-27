@@ -44,7 +44,7 @@
         "nextra-theme-docs": "4.6.1",
         "react": "19.2.6",
         "react-dom": "19.2.6",
-        "shiki": "3.16.0"
+        "shiki": "3.23.0"
     },
     "devDependencies": {
         "@playwright/test": "1.60.0",
