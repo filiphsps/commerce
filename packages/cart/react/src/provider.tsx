@@ -56,6 +56,17 @@ function formatUserError(result: Extract<CartActionResult, { ok: false }>): stri
 /**
  * Props for {@link CartProvider}. Wires the kernel snapshot, mutation handler,
  * and optional optimistic predictors into the React context tree.
+ *
+ * @example
+ * ```tsx
+ * const props: CartProviderProps<AppConfig> = {
+ *     kernelSnapshot,
+ *     submitMutation: submitCartMutation,
+ *     initialCart,
+ *     shopId: shop.id,
+ *     children: <App />,
+ * };
+ * ```
  */
 export interface CartProviderProps<Cfg extends AppCartConfig> {
     kernelSnapshot: KernelSnapshot<Cfg['caps']>;
@@ -69,7 +80,7 @@ export interface CartProviderProps<Cfg extends AppCartConfig> {
 
 /**
  * Root context provider for the Nordcom cart. Manages the optimistic mutation
- * queue, projects the cart for all slice hooks, synchronises state with
+ * queue, projects the cart for all slice hooks, synchronizes state with
  * cross-tab broadcasts, and optionally keeps buyer identity in sync via a
  * client auth bridge.
  *
