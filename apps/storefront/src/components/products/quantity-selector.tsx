@@ -1,10 +1,10 @@
 'use client';
 
+import { useCartStatus } from '@nordcom/cart-react';
 import type { ChangeEvent, HTMLProps, KeyboardEventHandler } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/actionable/button';
 import { Input } from '@/components/actionable/input';
-import { useCartStatus } from '@/components/cart/provider';
 import { useShop } from '@/components/shop/provider';
 import { COMMERCE_DEFAULTS } from '@/utils/build-config';
 import type { LocaleDictionary } from '@/utils/locale';

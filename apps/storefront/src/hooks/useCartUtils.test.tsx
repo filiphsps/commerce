@@ -1,6 +1,6 @@
+import { useCartActions, useCartMeta, useCartStatus } from '@nordcom/cart-react';
 import * as nav from 'next/navigation';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { useCartActions, useCartMeta, useCartStatus } from '@/components/cart/provider';
 import { useCartUtils } from '@/hooks/useCartUtils';
 import { Locale } from '@/utils/locale';
 import { act, renderHook, waitFor } from '@/utils/test/react';
@@ -27,7 +27,7 @@ vi.mock('next/navigation', async () => ({
     })),
 }));
 
-vi.mock('@/components/cart/provider', async (importOriginal) => {
+vi.mock('@nordcom/cart-react', async (importOriginal) => {
     const actual = (await importOriginal()) as Record<string, unknown>;
     return {
         ...actual,
