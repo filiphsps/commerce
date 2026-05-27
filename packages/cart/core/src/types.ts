@@ -142,6 +142,12 @@ export interface ITracer {
 export type AdapterCtx<TShop = unknown> = {
     shop: TShop;
     locale: LocaleTuple;
+    /**
+     * The cart that a mutation operates against. Required on mutations; absent
+     * on reads (which pass `cartId` through their `args` instead). The kernel
+     * reads this on dispatch to thread cartId into adapter calls.
+     */
+    cartId?: string;
     idempotencyKey?: string;
     signal?: AbortSignal;
     logger: ILogger;
