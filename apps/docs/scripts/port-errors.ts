@@ -2,12 +2,14 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { collectThrowSites, type ThrowSite } from './lib/throw-site-collector';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DOCS_APP = path.resolve(__dirname, '..');
 const REPO_ROOT = path.resolve(DOCS_APP, '../..');
 const ERRORS_SRC = path.join(REPO_ROOT, 'apps/landing/docs/errors');
 const ERRORS_OUT = path.join(DOCS_APP, 'content/errors');
+const ERRORS_PKG_SRC = path.join(REPO_ROOT, 'packages/errors/src/index.ts');
 
 /**
  * Convert each Markdoc {% card %}-wrapped error page from apps/landing/docs/errors/
@@ -46,8 +48,9 @@ export function main({ quiet = false }: { quiet?: boolean } = {}): { converted: 
 
 /**
  * Convert a single Markdoc error page to plain MDX with YAML frontmatter.
- * Strips {% card %} wrappers, promotes H4 section labels to H2, and derives
- * the page description from the Documentation section.
+ * Strips {% card %} wrappers, promotes H4 section labels to H2, derives the
+ * page description from the Documentation section, and appends a "Thrown from"
+ * list by scanning the monorepo for `throw new <ClassName>(` occurrences.
  *
  * @param code - SCREAMING_SNAKE_CASE error code (e.g. API_UNKNOWN_LOCALE).
  * @param src - Raw Markdoc source string.
@@ -72,7 +75,15 @@ function convertOne(code: string, src: string): string {
         '',
     ].join('\n');
 
-    return frontmatter + normalized + '\n';
+    const className = resolveClassFromCode(code);
+    const sites = className ? loadThrowSites().filter((s) => s.errorClass === className) : [];
+    const throwsSection = sites.length
+        ? '\n## Thrown from\n\n' +
+          sites.map((s) => `- \`${s.file}:${s.line}\` — \`${s.context}\``).join('\n') +
+          '\n'
+        : '';
+
+    return `${frontmatter}${normalized}${throwsSection}\n`;
 }
 
 /**
@@ -95,7 +106,7 @@ function emitErrorsMeta(codes: string[]): void {
         : {};
     const overrideSet = new Set(Object.values(overrides).flat());
 
-    const groups: Record<string, string[]> = { general: overrides['general'] ?? [] };
+    const groups: Record<string, string[]> = { general: overrides.general ?? [] };
 
     for (const code of codes) {
         if (overrideSet.has(code)) continue;
@@ -124,6 +135,66 @@ function emitErrorsMeta(codes: string[]): void {
             4,
         ),
     );
+}
+
+/** Lazily populated cache from `collectThrowSites`. */
+let throwSitesCache: ThrowSite[] | null = null;
+
+/**
+ * Return (and cache) the flat list of throw sites collected from packages and
+ * apps source trees. Calls `collectThrowSites` at most once per process run.
+ *
+ * @returns Cached flat list of throw sites.
+ */
+function loadThrowSites(): ThrowSite[] {
+    if (throwSitesCache === null) {
+        throwSitesCache = collectThrowSites(REPO_ROOT);
+    }
+    return throwSitesCache;
+}
+
+/** Lazily populated cache from parsing the errors package switch. */
+let codeToClassCache: Map<string, string> | null = null;
+
+/**
+ * Parse `packages/errors/src/index.ts`'s `getErrorFromCode` switch statement
+ * to build a map from SCREAMING_SNAKE error code (enum member name) to the
+ * corresponding class name. Result is cached after the first call.
+ *
+ * @throws {Error} When the errors package source file is not found; the
+ *   throw-site feature depends on this mapping.
+ * @returns Map from code string to class name.
+ */
+function buildCodeToClassMap(): Map<string, string> {
+    if (!fs.existsSync(ERRORS_PKG_SRC)) {
+        throw new Error(
+            `[port-errors] Cannot find ${ERRORS_PKG_SRC}. The throw-site feature requires the errors package source.`,
+        );
+    }
+    const src = fs.readFileSync(ERRORS_PKG_SRC, 'utf8');
+    const map = new Map<string, string>();
+    // Match consecutive lines: `case XxxErrorKind.MEMBER_NAME:` then `return ClassName`.
+    for (const m of src.matchAll(/case \w+ErrorKind\.(\w+):[\s\S]*?return (\w+)/g)) {
+        const memberName = m[1] as string;
+        // Capture only the leading identifier — strip any ` as unknown ...` casts.
+        const className = (m[2] as string).split(/\s/)[0] as string;
+        map.set(memberName, className);
+    }
+    return map;
+}
+
+/**
+ * Resolve the error class name for a given SCREAMING_SNAKE_CASE code string by
+ * looking up the code→class map parsed from the errors package source.
+ *
+ * @param code - SCREAMING_SNAKE_CASE error code (file-based, matches enum member name).
+ * @returns Resolved class name, or undefined when the code is unknown.
+ */
+function resolveClassFromCode(code: string): string | undefined {
+    if (codeToClassCache === null) {
+        codeToClassCache = buildCodeToClassMap();
+    }
+    return codeToClassCache.get(code);
 }
 
 /**

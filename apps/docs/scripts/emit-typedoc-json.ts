@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { Application, normalizePath, TSConfigReader } from 'typedoc';
+import { collectThrowSites } from './lib/throw-site-collector';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DOCS_APP = path.resolve(__dirname, '..');
@@ -86,6 +87,9 @@ export async function main({ quiet = false }: { quiet?: boolean } = {}): Promise
             totalSubpaths++;
         }
     }
+
+    const sites = collectThrowSites(REPO_ROOT);
+    fs.writeFileSync(path.join(OUT_ROOT, 'throw-sites.json'), JSON.stringify(sites, null, 2));
 
     if (!quiet) {
         console.info(`[emit-typedoc-json] emitted ${totalSubpaths} subpath JSON files; warnings: ${warnings}`);
