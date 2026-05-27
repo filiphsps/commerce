@@ -4471,7 +4471,8 @@ git commit -m "feat(cart-next): add httpOnlyCookieStorage (180-day default maxAg
 
 ```ts
 import { describe, expect, it, vi } from 'vitest';
-import { createMockCartAdapter, createCart } from '@nordcom/cart-core';
+import { createCart } from '@nordcom/cart-core';
+import { createMockCartAdapter } from '@nordcom/cart-core/mock-adapter';
 import { createCartReader, createCartEnsurer } from '../src/reader';
 import type { CartIdStorage } from '../src/storage';
 
@@ -4609,7 +4610,8 @@ git commit -m "feat(cart-next): add createCartReader (react.cache dedup) + creat
 
 ```ts
 import { describe, expect, it } from 'vitest';
-import { createCart, createMockCartAdapter } from '@nordcom/cart-core';
+import { createCart } from '@nordcom/cart-core';
+import { createMockCartAdapter } from '@nordcom/cart-core/mock-adapter';
 import { createTypedCartActions } from '../src/typed-actions';
 import type { CartIdStorage } from '../src/storage';
 

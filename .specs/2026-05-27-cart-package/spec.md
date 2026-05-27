@@ -407,6 +407,8 @@ export function createMockCartAdapter(opts?: {
 
 Used by host tests, contract-test self-tests, and Playwright fixtures.
 
+**Subpath-only export.** `createMockCartAdapter` is exposed exclusively at `@nordcom/cart-core/mock-adapter` — never re-exported from the main `@nordcom/cart-core` entry. This keeps the mock's in-memory state out of consumers' production bundles, even if they import other things from cart-core. Hosts importing the mock must use the subpath specifier.
+
 ## `@nordcom/cart-react`
 
 ### Provider
