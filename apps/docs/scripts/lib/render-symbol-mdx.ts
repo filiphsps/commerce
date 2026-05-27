@@ -1,5 +1,5 @@
 import type { SymbolKindLabel } from './symbol-classify';
-import type { TypeDocComment, TypeDocCommentNode, TypeDocSymbol } from './typedoc-types';
+import type { TypeDocCommentNode, TypeDocSymbol } from './typedoc-types';
 
 const GITHUB_BASE = 'https://github.com/filiphsps/commerce/blob/master';
 
@@ -21,14 +21,18 @@ export type SymbolRenderArgs = {
  */
 export function renderSymbolMdx(args: SymbolRenderArgs): string {
     const { symbol, kind, workspaceSlug, subpath } = args;
-    const summary = renderCommentInlineMd(symbol.comment?.summary ?? symbol.signatures?.[0]?.comment?.summary);
+    const rawNodes = symbol.comment?.summary ?? symbol.signatures?.[0]?.comment?.summary;
+    // Body summary escapes curly braces so MDX does not interpret them as JSX.
+    const summary = renderCommentInlineMd(rawNodes);
+    // Description uses raw text (no MDX escaping) so YAML stays valid.
+    const descriptionText = plainSummary(rawCommentText(rawNodes));
     const blockTags = symbol.comment?.blockTags ?? symbol.signatures?.[0]?.comment?.blockTags ?? [];
     const modifierTags = symbol.comment?.modifierTags ?? symbol.signatures?.[0]?.comment?.modifierTags ?? [];
 
     const frontmatter = [
         '---',
         `title: ${symbol.name}`,
-        `description: ${escapeYaml(plainSummary(summary))}`,
+        `description: "${escapeYaml(descriptionText)}"`,
         `---`,
         '',
     ].join('\n');
@@ -36,7 +40,7 @@ export function renderSymbolMdx(args: SymbolRenderArgs): string {
     const banner = renderTagBanner(modifierTags, blockTags);
     const sigBlock = renderSignature(symbol);
     const params = renderParams(symbol, blockTags);
-    const returns = renderReturns(symbol, blockTags);
+    const returns = renderReturns(blockTags);
     const throws = renderThrows(blockTags);
     const example = renderExample(blockTags);
     const seeAlso = renderSeeAlso(blockTags);
@@ -106,7 +110,7 @@ function renderKindLine(kind: SymbolKindLabel, slug: string, subpath: string, bl
 function renderSignature(symbol: TypeDocSymbol): string {
     const sigs = symbol.signatures ?? [];
     if (sigs.length === 0) return '';
-    const blocks = sigs.map((s) => '```ts\n' + symbolToSignatureText(symbol.name, s) + '\n```');
+    const blocks = sigs.map((s) => `\`\`\`ts\n${symbolToSignatureText(symbol.name, s)}\n\`\`\``);
     return blocks.join('\n\n');
 }
 
@@ -146,11 +150,10 @@ function renderParams(symbol: TypeDocSymbol, blockTags: { tag: string; content: 
 /**
  * Render a `## Returns` section from a `@returns` block tag when present.
  *
- * @param symbol - TypeDoc symbol (unused; kept for future return-type expansion).
  * @param blockTags - Block tags to scan for `@returns`.
  * @returns Markdown section string, or empty string when no `@returns` tag.
  */
-function renderReturns(symbol: TypeDocSymbol, blockTags: { tag: string; content: TypeDocCommentNode[] }[]): string {
+function renderReturns(blockTags: { tag: string; content: TypeDocCommentNode[] }[]): string {
     const ret = blockTags.find((t) => t.tag === '@returns');
     if (!ret) return '';
     return ['## Returns', '', renderCommentInlineMd(ret.content), ''].join('\n');
@@ -210,20 +213,36 @@ function renderSource(symbol: TypeDocSymbol): string {
 }
 
 /**
- * Convert an array of TypeDoc comment nodes to an inline Markdown string.
- * `text` nodes pass through verbatim; `code` nodes pass through verbatim;
- * `inlineTag` nodes with `@link` emit a `{@link}` placeholder for the resolver.
+ * Extract raw text from TypeDoc comment nodes without any MDX or Markdown
+ * escaping. Used for YAML frontmatter fields where the output must be a
+ * plain string — not MDX body content.
  *
  * @param nodes - Array of comment nodes, or `undefined`.
- * @returns Rendered inline Markdown string.
+ * @returns Concatenated raw text.
+ */
+function rawCommentText(nodes: TypeDocCommentNode[] | undefined): string {
+    if (!nodes) return '';
+    return nodes.map((n) => (n.kind === 'text' || n.kind === 'code' ? n.text : '')).join('');
+}
+
+/**
+ * Convert an array of TypeDoc comment nodes to an inline Markdown string
+ * safe for use in an MDX document body. `text` nodes have bare curly braces
+ * escaped so MDX does not interpret them as JSX expressions. `code` nodes
+ * pass through verbatim (wrapped in backticks, already safe). `inlineTag`
+ * nodes with `@link` are rendered as inline code to avoid unresolvable link
+ * targets.
+ *
+ * @param nodes - Array of comment nodes, or `undefined`.
+ * @returns Rendered inline Markdown string safe for MDX.
  */
 function renderCommentInlineMd(nodes: TypeDocCommentNode[] | undefined): string {
     if (!nodes) return '';
     return nodes
         .map((n) => {
-            if (n.kind === 'text') return n.text;
+            if (n.kind === 'text') return n.text.replace(/\{/g, '\\{').replace(/\}/g, '\\}');
             if (n.kind === 'code') return n.text;
-            if (n.kind === 'inlineTag' && n.tag === '@link') return `{@link ${n.target ?? n.text}}`;
+            if (n.kind === 'inlineTag' && n.tag === '@link') return `\`${n.target ?? n.text}\``;
             return '';
         })
         .join('');
@@ -254,11 +273,13 @@ function plainText(nodes: TypeDocCommentNode[]): string {
 }
 
 /**
- * Escape double-quotes for safe embedding inside a YAML double-quoted scalar.
+ * Escape a string for safe embedding inside a YAML double-quoted scalar.
+ * Escapes backslashes first, then double-quotes, then strips newlines so the
+ * value stays on one line and never trips the YAML block-scalar parser.
  *
  * @param s - Input string.
- * @returns Escaped string.
+ * @returns Escaped string safe for `description: "..."`.
  */
 function escapeYaml(s: string): string {
-    return s.replace(/"/g, '\\"');
+    return s.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/[\r\n]+/g, ' ');
 }

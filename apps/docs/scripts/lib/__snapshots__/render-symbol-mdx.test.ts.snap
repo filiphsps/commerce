@@ -3,7 +3,7 @@
 exports[`renderSymbolMdx > renders a function with summary, params, returns, throws, example 1`] = `
 "---
 title: getArticle
-description: Fetch one article by slug for a tenant.
+description: "Fetch one article by slug for a tenant."
 ---
 
 <KindLine kind="function" path="cms/api" throws />

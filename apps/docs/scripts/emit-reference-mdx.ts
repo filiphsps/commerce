@@ -32,7 +32,7 @@ export async function main({ quiet = false }: { quiet?: boolean } = {}): Promise
     fs.mkdirSync(REFERENCE_OUT, { recursive: true });
     fs.writeFileSync(
         path.join(REFERENCE_OUT, 'meta.json'),
-        JSON.stringify({ title: 'Reference', description: 'Generated symbol catalogue from TypeDoc + JSDoc.', root: true }, null, 4) + '\n',
+        `${JSON.stringify({ title: 'Reference', description: 'Generated symbol catalogue from TypeDoc + JSDoc.', root: true }, null, 4)}\n`,
     );
 
     let subpathsCount = 0;
@@ -44,7 +44,6 @@ export async function main({ quiet = false }: { quiet?: boolean } = {}): Promise
         const workspaceDir = path.join(TYPEDOC_OUT, workspaceSlug);
         for (const entry of walkJsonFiles(workspaceDir)) {
             const subpathRel = path.relative(workspaceDir, entry).replace(/\.json$/, '');
-            const subpath = subpathRel === 'index' ? '.' : subpathRel;
             const project = JSON.parse(fs.readFileSync(entry, 'utf8')) as TypeDocProject;
             const overviewRows: OverviewRow[] = [];
 

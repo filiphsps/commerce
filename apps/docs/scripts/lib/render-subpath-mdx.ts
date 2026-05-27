@@ -36,7 +36,7 @@ export function renderSubpathOverviewMdx(args: SubpathOverviewArgs): string {
     const banner = `<ReferenceBackLink slug="${workspaceSlug}" subpath="${subpath}" />`;
     const sections = (['function', 'class', 'component', 'interface', 'type', 'variable', 'enum', 'other'] as const)
         .filter((k) => groups.has(k))
-        .map((kind) => renderGroup(kind, groups.get(kind) ?? [], workspaceSlug, subpath));
+        .map((kind) => renderGroup(kind, groups.get(kind) ?? []));
 
     return [frontmatter, banner, '', `# ${workspaceSlug} / ${subpath}`, '', ...sections].join('\n');
 }
@@ -63,11 +63,9 @@ function groupByKind(rows: OverviewRow[]): Map<SymbolKindLabel, OverviewRow[]> {
  *
  * @param kind - Kind label used for the section heading.
  * @param rows - Rows belonging to this kind.
- * @param slug - Workspace slug (unused — reserved for future cross-link logic).
- * @param subpath - Subpath key (unused — reserved for future cross-link logic).
  * @returns Markdown section string with trailing newline.
  */
-function renderGroup(kind: SymbolKindLabel, rows: OverviewRow[], slug: string, subpath: string): string {
+function renderGroup(kind: SymbolKindLabel, rows: OverviewRow[]): string {
     const heading = `## ${pluralize(kind)}`;
     const tableHeader = '| Name | Description |\n|---|---|';
     const tableRows = rows.map((r) => {
