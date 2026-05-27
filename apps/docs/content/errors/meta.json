@@ -1,5 +1,15 @@
 {
     "title": "Errors",
-    "description": "Stable error-code catalogue. Each page is reachable at /docs/errors/<code>/.",
-    "root": true
+    "description": "Stable error-code catalogue.",
+    "root": true,
+    "pages": [
+        "--api",
+        "api-method-not-allowed",
+        "api-unknown-error",
+        "api-unknown-locale",
+        "--general",
+        "not-found",
+        "unreachable",
+        "generic-todo"
+    ]
 }
