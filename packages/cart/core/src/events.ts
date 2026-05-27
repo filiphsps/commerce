@@ -39,9 +39,9 @@ export function createEventBus(opts: { logger: ILogger }): CartEventBus {
                 set = new Set();
                 handlers.set(type, set);
             }
-            set.add(handler as CartEventHandler<CartEventType>);
+            set.add(handler as unknown as CartEventHandler<CartEventType>);
             return () => {
-                set?.delete(handler as CartEventHandler<CartEventType>);
+                set?.delete(handler as unknown as CartEventHandler<CartEventType>);
             };
         },
         emit(event) {
