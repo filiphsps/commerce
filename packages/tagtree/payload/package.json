@@ -54,12 +54,12 @@
         "@tagtree/core": "workspace:*"
     },
     "peerDependencies": {
-        "payload": "3.0.0"
+        "payload": "3.85.0"
     },
     "devDependencies": {
         "@codecov/vite-plugin": "2.0.1",
         "concurrently": "9.2.1",
-        "payload": "3.84.1",
+        "payload": "3.85.0",
         "rimraf": "6.1.3",
         "typescript": "6.0.3",
         "vite": "8.0.14",
