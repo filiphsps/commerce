@@ -45,6 +45,8 @@ Group artifacts per topic under `.specs/<YYYY-MM-DD-kebab-slug>/{spec,plan,tasks
 
 -   **Conventional Commits with scope** — `<type>(<scope>): <subject>.`. Types: `feat`, `fix`, `chore`, `refactor`, `docs`, `test`, `perf`, `ci`, `build`. Imperative subject, lowercase, trailing period.
 -   **Body explains the WHY**, not the WHAT — motivation, hidden context, trade-offs, breaking-change notes. Skip the body entirely if subject + diff are self-explanatory. Per item: omit anything the diff already makes obvious.
+-   **Never merge — always rebase.** No merge commits on any branch. Integrate via `git rebase` (or `git pull --rebase`). If a PR can't fast-forward, rebase the branch onto the target before merging.
+-   **Prefer amend over fixup commits.** When iterating on the most recent commit (review feedback, typo, missed file), `git commit --amend` rather than stacking a `fixup!` / follow-up commit. Only create a new commit when the change is logically distinct or the prior commit is already pushed and shared.
 
 ## Changesets
 
