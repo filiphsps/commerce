@@ -5,6 +5,7 @@ import { KindLine } from './components/reference/kind-line';
 import { ReferenceBackLink } from './components/reference/reference-back-link';
 import { IconCard, IconGallery } from './components/reference/icon-gallery';
 import { SourceFooter } from './components/reference/source-footer';
+import { ThrowsBlock, ThrowsRow } from './components/reference/throws';
 import { DeprecatedBanner } from './components/banners/deprecated-banner';
 import { BetaBanner } from './components/banners/beta-banner';
 import { ExperimentalBanner } from './components/banners/experimental-banner';
@@ -37,6 +38,8 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
         IconCard,
         IconGallery,
         SourceFooter,
+        ThrowsBlock,
+        ThrowsRow,
         DeprecatedBanner,
         BetaBanner,
         ExperimentalBanner,

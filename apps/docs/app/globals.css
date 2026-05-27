@@ -84,30 +84,53 @@ a[data-symbol-tab='docs'] { color: var(--color-brand); }
  * weight (3px borders, neon active states, mono group labels). Kept here
  * rather than on components because Fumadocs owns the layout markup. */
 
-#nd-nav {
+#nd-subnav {
     border-bottom: 0.2rem solid var(--color-border);
+    background: rgb(0 0 0 / 0.85) !important;
+}
+
+#nd-subnav [data-header-body] {
+    border-bottom: 0 !important;
 }
 
 #nd-sidebar {
     border-right: 0.2rem solid var(--color-border);
 }
 
-/* Top tab pills — brand-magenta glow on active. */
-#nd-nav [role='tablist'] a {
-    border-radius: var(--radius, 0.45rem);
-    transition: color 150ms, background 150ms, box-shadow 150ms;
+/* Top tab strip (notebook tabMode='navbar') — restyle the underlined tabs
+ * Fumadocs renders into pill-style buttons that match the mockup. */
+#nd-subnav [data-header-tabs] {
+    height: auto !important;
+    padding: 0.45rem 1.5rem 0.7rem !important;
+    border-bottom: 0.2rem solid var(--color-border) !important;
+    gap: 0.25rem !important;
+    align-items: center !important;
 }
 
-#nd-nav [role='tablist'] a[data-active='true'],
-#nd-nav [role='tablist'] a[aria-current='page'] {
-    background: var(--color-brand);
-    color: var(--color-bg);
-    box-shadow: 0 0 14px hsl(330 86% 53% / 0.45);
+#nd-subnav [data-header-tabs] a {
+    padding: 0.45rem 0.95rem !important;
+    border: 0 !important;
+    border-radius: var(--radius, 0.45rem) !important;
+    font-family: var(--font-sans) !important;
+    font-weight: 700 !important;
+    font-size: 0.7rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    color: var(--color-fg-mute) !important;
+    background: transparent !important;
+    transition: color 150ms, background 150ms, box-shadow 150ms !important;
 }
 
-#nd-nav [role='tablist'] a:not([data-active='true']):not([aria-current='page']):hover {
-    color: var(--color-fg);
-    background: var(--color-bg-2);
+#nd-subnav [data-header-tabs] a:hover {
+    color: var(--color-fg) !important;
+    background: var(--color-bg-2) !important;
+}
+
+#nd-subnav [data-header-tabs] a.text-fd-primary,
+#nd-subnav [data-header-tabs] a[data-active='true'] {
+    background: var(--color-brand) !important;
+    color: var(--color-bg) !important;
+    box-shadow: 0 0 14px hsl(330 86% 53% / 0.45) !important;
 }
 
 /* Sidebar group labels — uppercase mono per the visuals. */
@@ -200,18 +223,67 @@ a[data-symbol-tab='docs'] { color: var(--color-brand); }
     letter-spacing: -0.015em;
 }
 
-/* Error pages — h2s become uppercase, mono-tracked section heads. The hero
- * carries the editorial weight; sections under it should read as labels. */
-.errors-page h2 {
+/* Error + reference pages — h2s become uppercase, mono-tracked section heads.
+ * The hero (errors) or signature codeblock (reference) carries editorial
+ * weight; sections under it read as labels. */
+.errors-page h2,
+.reference-page h2 {
     font-family: var(--font-sans);
     font-size: 0.76rem;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.22em;
     color: var(--color-fg-mute);
-    margin: 2.2rem 0 0.85rem 0;
-    padding-bottom: 0.4rem;
+    margin: 2.5rem 0 0.85rem 0;
+    padding-bottom: 0.45rem;
     border-bottom: var(--bw-s, 0.138rem) solid var(--color-border);
+}
+
+/* Packages narrative — h2 gets the lime left-rail editorial treatment. */
+.packages-page h2 {
+    padding-left: 0.85rem;
+    border-left: 0.29rem solid var(--color-pkg);
+    font-weight: 800;
+    font-size: 1.7rem;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin: 3rem 0 1rem 0;
+}
+
+/* Right-side TOC — small mono label + brand-magenta current marker. */
+#nd-toc {
+    border-left: 0.2rem solid var(--color-border);
+}
+
+#nd-toc [data-toc-title] {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--color-fg-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 0.75rem;
+}
+
+#nd-toc a {
+    border-left: 0.138rem solid transparent;
+    padding-left: 0.7rem;
+    font-size: 0.78rem;
+    color: var(--color-fg-mute);
+    transition: color 150ms, border-color 150ms;
+}
+
+#nd-toc a:hover {
+    color: var(--color-fg);
+    border-left-color: var(--color-border-strong);
+}
+
+#nd-toc a[data-active='true'],
+#nd-toc a.text-fd-primary {
+    color: var(--color-brand);
+    border-left-color: var(--color-brand);
+    font-weight: 600;
 }
 
 /* Tables (params lists) — bordered, mono pname column */

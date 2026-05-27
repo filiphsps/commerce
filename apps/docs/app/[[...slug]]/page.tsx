@@ -17,7 +17,9 @@ export default async function Page(props: { params: Promise<{ slug?: string[] }>
     if (!page) notFound();
 
     const MDX = page.data.body;
-    const tab = params.slug?.[0];
+    const firstSeg = params.slug?.[0];
+    const tab: 'docs' | 'packages' | 'reference' | 'errors' =
+        firstSeg === 'packages' || firstSeg === 'reference' || firstSeg === 'errors' ? firstSeg : 'docs';
     const showHero = tab !== 'errors';
     return (
         <DocsPage toc={page.data.toc}>
@@ -33,7 +35,7 @@ export default async function Page(props: { params: Promise<{ slug?: string[] }>
                     ) : null}
                 </>
             ) : null}
-            <DocsBody className={tab === 'errors' ? 'errors-page' : undefined}>
+            <DocsBody className={`${tab}-page`}>
                 <MDX components={getMDXComponents()} />
             </DocsBody>
         </DocsPage>

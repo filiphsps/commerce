@@ -2,7 +2,7 @@ import { Analytics } from '@vercel/analytics/next';
 import { GeistMono } from 'geist/font/mono';
 import type { Metadata } from 'next';
 import { RootProvider } from 'fumadocs-ui/provider/next';
-import { DocsLayout } from 'fumadocs-ui/layouts/docs';
+import { DocsLayout } from 'fumadocs-ui/layouts/notebook';
 import 'fumadocs-ui/style.css';
 import './globals.css';
 import { primaryFont } from '@/lib/fonts';
@@ -40,9 +40,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     <DocsLayout
                         tree={source.pageTree}
                         githubUrl="https://github.com/filiphsps/commerce"
-                        tabMode="top"
-                        nav={{ title: <Logo />, transparentMode: 'top' }}
+                        tabMode="navbar"
+                        nav={{ title: <Logo />, mode: 'top', transparentMode: 'top' }}
                         sidebar={{ banner: <TabChip /> }}
+                        tabs={[
+                            { title: 'Docs', url: '/' },
+                            { title: 'Packages', url: '/packages' },
+                            { title: 'Reference', url: '/reference' },
+                            { title: 'Errors', url: '/errors' },
+                        ]}
                     >
                         {children}
                     </DocsLayout>

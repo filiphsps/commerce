@@ -174,16 +174,24 @@ function renderReturns(blockTags: { tag: string; content: TypeDocCommentNode[] }
 }
 
 /**
- * Render a `## Throws` section listing all `@throws` block tags as a bullet list.
+ * Render a `## Throws` section as `<ThrowsBlock>` with one `<ThrowsRow>` per
+ * `@throws` tag. The first identifier in the tag body becomes the class name;
+ * the rest of the tag body renders as the "when" description.
  *
  * @param blockTags - Block tags to scan for `@throws`.
- * @returns Markdown section string, or empty string when no `@throws` tags.
+ * @returns MDX section string, or empty string when no `@throws` tags.
  */
 function renderThrows(blockTags: { tag: string; content: TypeDocCommentNode[] }[]): string {
     const throws = blockTags.filter((t) => t.tag === '@throws');
     if (throws.length === 0) return '';
-    const rows = throws.map((t) => `- ${renderCommentInlineMd(t.content)}`);
-    return ['## Throws', '', ...rows, ''].join('\n');
+    const rows = throws.map((t) => {
+        const md = renderCommentInlineMd(t.content);
+        const match = md.match(/^\s*\{?@link\s+(\w+)\}?\s*-?\s*(.*)$/) ?? md.match(/^\s*`?(\w+)`?\s*[-—]?\s*(.*)$/);
+        const cls = match?.[1] ?? 'Error';
+        const when = (match?.[2] ?? md).trim();
+        return `  <ThrowsRow cls="${cls}">${when}</ThrowsRow>`;
+    });
+    return ['## Throws', '', '<ThrowsBlock>', ...rows, '</ThrowsBlock>', ''].join('\n');
 }
 
 /**
