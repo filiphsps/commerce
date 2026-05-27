@@ -1,6 +1,11 @@
 import 'server-only';
 import { defineFlag } from '../define';
 
+/**
+ * Flag controlling whether the search filter panel is visible to shoppers.
+ *
+ * @returns `true` when the filter UI should render.
+ */
 export const searchFilter = defineFlag<boolean>({
     key: 'search-filter',
     description: 'Controls if the search filter is visible',

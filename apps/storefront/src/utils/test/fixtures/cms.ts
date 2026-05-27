@@ -11,6 +11,12 @@ import type {
 
 const isoEpoch = new Date(0).toISOString();
 
+/**
+ * Builds a minimal CMS `Media` fixture for use in tests.
+ *
+ * @param overrides - Partial properties merged onto the base fixture.
+ * @returns A mock `Media` object with sensible defaults.
+ */
 export const mockMedia = (overrides?: Partial<Media>): Media =>
     ({
         id: 'media-mock-1',
@@ -26,6 +32,12 @@ export const mockMedia = (overrides?: Partial<Media>): Media =>
 
 type NavItem = NonNullable<Header['items']>[number];
 
+/**
+ * Builds a minimal CMS Header nav item fixture for use in tests.
+ *
+ * @param overrides - Partial properties merged onto the base nav item fixture.
+ * @returns A mock `NavItem` with a default page link.
+ */
 export const mockNavItem = (overrides?: Partial<NavItem>): NavItem =>
     ({
         id: 'nav-1',
@@ -37,6 +49,12 @@ export const mockNavItem = (overrides?: Partial<NavItem>): NavItem =>
         ...overrides,
     }) as NavItem;
 
+/**
+ * Builds a minimal CMS `Header` fixture for use in tests.
+ *
+ * @param overrides - Partial properties merged onto the base header fixture.
+ * @returns A mock `Header` in `published` status with an empty navigation list.
+ */
 export const mockHeader = (overrides?: Partial<Header>): Header =>
     ({
         id: 'header-mock',
@@ -52,6 +70,12 @@ export const mockHeader = (overrides?: Partial<Header>): Header =>
         ...overrides,
     }) as Header;
 
+/**
+ * Builds a minimal CMS `Footer` fixture for use in tests.
+ *
+ * @param overrides - Partial properties merged onto the base footer fixture.
+ * @returns A mock `Footer` in `published` status with empty sections and social links.
+ */
 export const mockFooter = (overrides?: Partial<Footer>): Footer =>
     ({
         id: 'footer-mock',
@@ -66,6 +90,12 @@ export const mockFooter = (overrides?: Partial<Footer>): Footer =>
         ...overrides,
     }) as Footer;
 
+/**
+ * Builds a minimal CMS `BusinessDatum` fixture for use in tests.
+ *
+ * @param overrides - Partial properties merged onto the base business data fixture.
+ * @returns A mock `BusinessDatum` in `published` status with null contact fields.
+ */
 export const mockBusinessData = (overrides?: Partial<BusinessDatum>): BusinessDatum =>
     ({
         id: 'business-mock',
@@ -81,6 +111,12 @@ export const mockBusinessData = (overrides?: Partial<BusinessDatum>): BusinessDa
         ...overrides,
     }) as BusinessDatum;
 
+/**
+ * Builds a minimal CMS `Page` fixture for use in tests.
+ *
+ * @param overrides - Partial properties merged onto the base page fixture.
+ * @returns A mock `Page` in `published` status with an empty block list.
+ */
 export const mockPage = (overrides?: Partial<Page>): Page =>
     ({
         id: 'page-mock',
@@ -95,6 +131,12 @@ export const mockPage = (overrides?: Partial<Page>): Page =>
         ...overrides,
     }) as Page;
 
+/**
+ * Builds a minimal CMS `Article` fixture for use in tests.
+ *
+ * @param overrides - Partial properties merged onto the base article fixture.
+ * @returns A mock `Article` in `published` status with an empty body and tag list.
+ */
 export const mockArticle = (overrides?: Partial<Article>): Article =>
     ({
         id: 'article-mock',
@@ -114,6 +156,12 @@ export const mockArticle = (overrides?: Partial<Article>): Article =>
         ...overrides,
     }) as Article;
 
+/**
+ * Builds a minimal CMS `ProductMetadatum` fixture for use in tests.
+ *
+ * @param overrides - Partial properties merged onto the base product metadata fixture.
+ * @returns A mock `ProductMetadatum` in `published` status with an empty block list.
+ */
 export const mockProductMetadata = (overrides?: Partial<ProductMetadatum>): ProductMetadatum =>
     ({
         id: 'product-meta-mock',
@@ -128,6 +176,12 @@ export const mockProductMetadata = (overrides?: Partial<ProductMetadatum>): Prod
         ...overrides,
     }) as ProductMetadatum;
 
+/**
+ * Builds a minimal CMS `CollectionMetadatum` fixture for use in tests.
+ *
+ * @param overrides - Partial properties merged onto the base collection metadata fixture.
+ * @returns A mock `CollectionMetadatum` in `published` status with an empty block list.
+ */
 export const mockCollectionMetadata = (overrides?: Partial<CollectionMetadatum>): CollectionMetadatum =>
     ({
         id: 'collection-meta-mock',

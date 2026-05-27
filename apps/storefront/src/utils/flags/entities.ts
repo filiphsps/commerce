@@ -17,6 +17,12 @@ export interface FlagEntities {
     visitorId: string;
 }
 
+/**
+ * Extracts a normalized `FlagUser` from a NextAuth session for use in flag targeting predicates.
+ *
+ * @param session - The NextAuth session, or `null` when the shopper is unauthenticated.
+ * @returns A `FlagUser` when the session carries a user with a non-empty `id`, otherwise `null`.
+ */
 export async function mapSessionToUser(session: Session | null): Promise<FlagUser | null> {
     if (!session?.user) return null;
     const u = session.user as Session['user'] & { id?: string; groups?: string[]; customerTags?: string[] };

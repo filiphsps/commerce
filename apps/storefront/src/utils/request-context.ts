@@ -7,6 +7,11 @@ import { Locale } from '@/utils/locale';
 
 export type RequestContext = { shop: OnlineShop; locale: ReturnType<typeof Locale.from> };
 
+/**
+ * Resolves the active shop and locale for the current request from `x-shop-domain` and `x-locale` middleware headers.
+ *
+ * @returns The request context containing `shop` and `locale` when the headers are present and the shop is found, or `null` for unauthenticated or test requests.
+ */
 export const getRequestContext = cache(async (): Promise<RequestContext | null> => {
     try {
         const h = await headers();

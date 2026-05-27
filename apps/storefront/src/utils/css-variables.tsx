@@ -10,7 +10,13 @@ import { Locale } from '@/utils/locale';
 
 extend([a11yPlugin]);
 
-// TODO: Generalize this
+/**
+ * Resolves the primary and secondary branding accent colors for a shop, falling back to the Shopify Brand API when the shop record has no saved accents.
+ *
+ * @param options.domain - The shop's hostname, used to look up the shop when `shop` is omitted.
+ * @param options.shop - Pre-fetched shop record; if provided, skips the DB lookup.
+ * @returns The primary and secondary accent color objects, or `null` when neither shop accents nor Brand API data are available.
+ */
 export const getBrandingColors = async ({ domain, shop }: { domain: string; shop?: OnlineShop }) => {
     try {
         if (!shop) {
@@ -89,6 +95,13 @@ export const getBrandingColors = async ({ domain, shop }: { domain: string; shop
     }
 };
 
+/**
+ * Renders a `<style>` block injecting tenant-specific color CSS custom properties based on the shop's branding accents.
+ *
+ * @param props.domain - The shop's hostname.
+ * @param props.shop - Optional pre-fetched shop record; omit to trigger an automatic DB lookup by domain.
+ * @returns A `<style>` element with resolved color variables, or `null` when branding colors cannot be resolved.
+ */
 const CssVariablesProvider = async ({ domain, shop }: { domain: string; shop?: OnlineShop }) => {
     const branding = await getBrandingColors({ domain, shop });
     if (!branding) {

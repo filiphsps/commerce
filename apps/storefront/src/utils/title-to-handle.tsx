@@ -1,3 +1,9 @@
+/**
+ * Converts a display title into a URL-safe handle by lowercasing, replacing spaces and punctuation with hyphens, and stripping diacritics and special characters.
+ *
+ * @param title - The display title to convert.
+ * @returns A URL-safe handle string.
+ */
 export const TitleToHandle = (title: string) => {
     return (title || '')
         .toLowerCase()

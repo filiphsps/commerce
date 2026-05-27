@@ -1,3 +1,9 @@
+/**
+ * Builds a minimal Shopify navigation menu fixture for use in tests.
+ *
+ * @param overrides - Properties merged onto the base menu fixture.
+ * @returns A plain object shaped like a Shopify Menu GraphQL response node.
+ */
 export function mockNavigation(overrides: Record<string, unknown> = {}) {
     return {
         id: 'gid://shopify/Menu/1',
