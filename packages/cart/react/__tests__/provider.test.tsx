@@ -55,7 +55,7 @@ function wrapper(submit: SubmitMutation): (props: { children: ReactNode }) => JS
 
 describe('CartProvider', () => {
     it('seeds initial cart and exposes count=0', () => {
-        const submit: SubmitMutation = vi.fn(async () => ({ ok: true, cart }));
+        const submit: SubmitMutation = vi.fn(async () => ({ ok: true as const, cart }));
         const { result } = renderHook(() => useCartCount(), { wrapper: wrapper(submit) });
         expect(result.current).toBe(0);
     });
@@ -79,7 +79,7 @@ describe('CartProvider', () => {
             ],
             totalQuantity: 2,
         };
-        const submit: SubmitMutation = vi.fn(async () => ({ ok: true, cart: confirmed }));
+        const submit: SubmitMutation = vi.fn(async () => ({ ok: true as const, cart: confirmed }));
         const { result } = renderHook(() => ({ count: useCartCount(), actions: useCartActions() }), {
             wrapper: wrapper(submit),
         });
@@ -102,10 +102,10 @@ describe('CartProvider', () => {
 
     it('non-line, non-count mutation does NOT re-render count or actions subscribers', async () => {
         const submit: SubmitMutation = vi.fn(async () => ({
-            ok: true,
+            ok: true as const,
             cart: { ...cart, note: 'Gift wrap please' },
         }));
-        const renders: Record<string, number> = { count: 0, meta: 0, actions: 0 };
+        const renders: { count: number; meta: number; actions: number } = { count: 0, meta: 0, actions: 0 };
         let capturedActions: ReturnType<typeof useCartActions> | null = null;
         function Probe({ tag, hook }: { tag: 'count' | 'meta' | 'actions'; hook: () => unknown }) {
             const count = useRef(0);
@@ -144,7 +144,7 @@ describe('CartProvider', () => {
 
     it('useCartActions return value is referentially stable across cart updates', async () => {
         const submit: SubmitMutation = vi.fn(async () => ({
-            ok: true,
+            ok: true as const,
             cart: { ...cart, note: `note-${Math.random()}` },
         }));
         const refs: Array<ReturnType<typeof useCartActions>> = [];

@@ -20,6 +20,8 @@ export default defineConfig({
         fileParallelism: true,
 
         typecheck: {
+            enabled: true,
+            include: ['**/*.test-d.ts', '**/*.test-d.tsx'],
             tsconfig: './tsconfig.test.json',
         },
 
