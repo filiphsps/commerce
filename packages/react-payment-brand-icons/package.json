@@ -85,7 +85,7 @@
         "@codecov/vite-plugin": "2.0.1",
         "@svgr/core": "8.1.0",
         "@svgr/plugin-jsx": "8.1.0",
-        "vitest": "4.1.6",
+        "vitest": "4.1.7",
         "@testing-library/react": "16.0.0",
         "@types/react-dom": "19.2.3",
         "@types/react": "19.2.14",
