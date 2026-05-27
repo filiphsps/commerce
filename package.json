@@ -8,10 +8,6 @@
         ".next/cache",
         "apps/**/.next/cache"
     ],
-    "workspaces": [
-        "apps/*",
-        "packages/*"
-    ],
     "scripts": {
         "postinstall": "pnpm run generate && pnpm run build:packages",
         "analyze": "dotenv -c -- turbo run analyze --env-mode=loose",
