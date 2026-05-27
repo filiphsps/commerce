@@ -57,7 +57,7 @@ jobs:
               run: pnpm --filter @nordcom/commerce-docs build
               env:
                   NEXT_PUBLIC_DOCS_BASE_PATH: /commerce
-                  NEXT_PUBLIC_DOCS_CANONICAL_URL: https://filiphsps.github.io/commerce
+                  NEXT_PUBLIC_DOCS_CANONICAL_URL: https://filiphsps.github.io
 
             - name: 📦 Upload built site
               uses: actions/upload-artifact@v7
