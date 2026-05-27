@@ -3,11 +3,33 @@
 import { useContext, useState } from 'react';
 import { CartCapabilitiesContext, CartLinesContext, CartPendingContext, CartStatusContext } from './contexts';
 
+/**
+ * Development-only overlay that renders a toggleable JSON dump of cart
+ * provider state. Returns `null` in production builds so bundlers can
+ * tree-shake the panel completely.
+ *
+ * @returns A fixed-position devtools panel in development; `null` in production.
+ * @example
+ * ```tsx
+ * // Mount alongside <CartProvider> during local development.
+ * <CartProvider {...cartProps}>
+ *   {children}
+ *   <CartDevtools />
+ * </CartProvider>
+ * ```
+ */
 export function CartDevtools() {
     if (process.env.NODE_ENV === 'production') return null;
     return <CartDevtoolsPanel />;
 }
 
+/**
+ * Renders the toggleable cart state inspector. Only instantiated in
+ * development — {@link CartDevtools} gates creation on `NODE_ENV`.
+ *
+ * @returns A fixed-position overlay with a toggle button and a JSON dump of
+ *   cart lines, pending mutations, status, and capabilities.
+ */
 function CartDevtoolsPanel() {
     const [open, setOpen] = useState(false);
     const lines = useContext(CartLinesContext);
