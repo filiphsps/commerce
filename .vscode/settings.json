@@ -92,6 +92,7 @@
         "nprogress",
         "nums",
         "nvmrc",
+        "opengraph",
         "overscroll",
         "pagetype",
         "payloadcms",
@@ -140,6 +141,7 @@
         "webp",
         "Woohoo",
         "wordmark",
+        "worktrees",
         "xlink"
     ],
     "editor.codeActionsOnSave": {
