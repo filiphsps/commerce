@@ -30,15 +30,23 @@ If any precondition fails, abort immediately and report the failure. Do not edit
    - For each in-scope symbol (per spec § "In scope (the what)"), classify tier using the Tier-1 rule (re-exported from barrel or `exports` map → Tier 1; else → Tier 2).
    - Insert the JSDoc block above the symbol using `Edit` (never `Write`). Match the spec's template for the symbol's tier and shape (function / React component / server action / class / etc.).
    - If the symbol already has a JSDoc block, leave it alone — cleanup of existing blocks is out of scope.
+   - Maintain running counts of Tier-1 symbols documented, Tier-2 symbols documented, and files touched. Use them to fill the `<N>` placeholders in Step 8's PR body.
 4. After all files edited:
    - Run `pnpm --filter <PACKAGE_NPM_NAME> typecheck`. Must pass. If it fails, the cause is your edits — fix or revert before continuing.
    - Run `pnpm --filter <PACKAGE_NPM_NAME> lint --write` to absorb Biome formatting drift.
    - Run `git diff --stat` and visually confirm: only `*.ts` / `*.tsx` files under `<PACKAGE_PATH>/src/`, no code changes other than JSDoc insertions and whitespace. If you see any non-JSDoc line change, abort and surface the diff.
-5. Generate a changeset only if `<PACKAGE_NPM_NAME>` is NOT in `.changeset/config.json#ignore`:
-   - Run `pnpm changeset` interactively-equivalent: write `.changeset/<random-slug>.md` directly with frontmatter `'<PACKAGE_NPM_NAME>': patch` and body `Backfill JSDoc on public/internal symbols.`
+5. Generate a changeset only if `<PACKAGE_NPM_NAME>` is NOT matched by any glob pattern in `.changeset/config.json#ignore` (patterns use minimatch semantics — `@nordcom/*` matches `@nordcom/commerce-errors`, the leading `!@nordcom/cart-*` re-includes cart packages):
+   - Write `.changeset/<random-slug>.md` directly (the interactive `pnpm changeset` flow doesn't work in a subagent context). File contents:
+     ```
+     ---
+     '<PACKAGE_NPM_NAME>': patch
+     ---
+
+     Backfill JSDoc on public/internal symbols.
+     ```
 6. Stage and commit:
    ```bash
-   git add <PACKAGE_PATH>/ .changeset/
+   git add <PACKAGE_PATH>/src/ .changeset/
    git commit -m "docs(<COMMIT_SCOPE>): backfill jsdoc on functions and components."
    ```
 7. Push: `git push -u origin docs/jsdoc-<PACKAGE_SLUG>`
