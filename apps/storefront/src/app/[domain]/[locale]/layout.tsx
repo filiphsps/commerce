@@ -1,5 +1,12 @@
 import '../../globals.css';
 
+import {
+    CartProvider,
+    cachePredictor,
+    quantitySumPredictor,
+    snapshotPredictor,
+    subtotalPredictor,
+} from '@nordcom/cart-react';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
 import type { Viewport } from 'next';
@@ -9,9 +16,10 @@ import type { ReactNode } from 'react';
 import { Fragment, Suspense } from 'react';
 import { CountriesApi, LocaleApi, LocalesApi, Shop } from '@/api/_loaders';
 import { ShopifyApolloApiClient } from '@/api/shopify';
+import { clientAuthBridge } from '@/cart/client-auth';
+import { resolveContext } from '@/cart/context';
+import { cartKernel, readCart } from '@/cart/kernel';
 import { AnalyticsProvider } from '@/components/analytics-provider';
-import CartHydrator from '@/components/cart/cart-hydrator';
-import { NordcomCartProvider } from '@/components/cart/provider';
 import { GeoRedirect } from '@/components/geo-redirect';
 import { HeaderProvider } from '@/components/header/header-provider';
 import { JsonLd } from '@/components/json-ld';
@@ -63,17 +71,39 @@ export default async function RootLayout({
         <html lang={locale.code} className={cn(primaryFont.className, primaryFont.variable, 'overscroll-x-none')}>
             <head />
             <body className="group/body overflow-x-hidden overscroll-x-none">
-                <NordcomCartProvider>
-                    <Suspense fallback={null}>
-                        <CartHydrator />
-                    </Suspense>
-
-                    <CachedShell domain={domain} locale={locale} modal={modal}>
-                        {children}
-                    </CachedShell>
-                </NordcomCartProvider>
+                <Suspense fallback={null}>
+                    <CartIsland>
+                        <CachedShell domain={domain} locale={locale} modal={modal}>
+                            {children}
+                        </CachedShell>
+                    </CartIsland>
+                </Suspense>
             </body>
         </html>
+    );
+}
+
+async function CartIsland({ children }: { children: ReactNode }) {
+    const ctx = await resolveContext();
+    const initial = await readCart(ctx);
+    return (
+        <CartProvider
+            kernelSnapshot={{
+                type: cartKernel.type,
+                capabilities: cartKernel.capabilities,
+                customMutationNames: cartKernel.capabilities.customMutations,
+            }}
+            submitMutation={async (envelope) => (await import('./_actions/cart')).dispatch(envelope)}
+            initialCart={initial}
+            shopId={ctx.shop.id}
+            predictors={{
+                line: [snapshotPredictor(), cachePredictor({ get: () => null })],
+                cart: [quantitySumPredictor(), subtotalPredictor()],
+            }}
+            clientAuthBridge={clientAuthBridge}
+        >
+            {children}
+        </CartProvider>
     );
 }
 
