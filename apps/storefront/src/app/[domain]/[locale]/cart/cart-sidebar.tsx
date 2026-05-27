@@ -1,10 +1,10 @@
 'use client';
 
+import { useCart } from '@nordcom/cart-react';
 import { trace } from '@opentelemetry/api';
 import type { HTMLProps, ReactNode } from 'react';
 import { toast } from 'sonner';
 import { CartSummary } from '@/components/cart/cart-summary';
-import { useCart } from '@/components/cart/provider';
 import { useShop } from '@/components/shop/provider';
 import { Checkout } from '@/utils/checkout';
 
