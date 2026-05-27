@@ -26,5 +26,11 @@ export default defineConfig({
     mdxOptions: {
         remarkPlugins: [[remarkLinkSymbols, { index: symbolIndex, context: { tab: 'docs' } }]],
         remarkCodeTabOptions: { parseMdx: true },
+        rehypeCodeOptions: {
+            themes: {
+                light: 'github-light',
+                dark: 'github-dark-default',
+            },
+        },
     },
 });
