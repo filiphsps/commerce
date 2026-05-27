@@ -5,25 +5,17 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DOCS_APP = path.resolve(__dirname, '..');
-const REPO_ROOT = path.resolve(DOCS_APP, '../..');
 
+/**
+ * CI gate for docs content generation. Runs the full pipeline and reports any
+ * failure. Phase H1 of the refactor plan extends this with a check that every
+ * `{@link X}` reference in authored MDX resolves through the symbol index —
+ * for now the gate is simply "does `pnpm gen` succeed".
+ */
 function run(cmd: string): void {
     console.info(`> ${cmd}`);
     execSync(cmd, { stdio: 'inherit', cwd: DOCS_APP });
 }
 
-run('pnpm pre');
-
-// Verify that lib/page-map.generated.ts is not in a dirty state relative to HEAD.
-// (It IS tracked, unlike the .typedoc-out and (generated)/ dirs.)
-const diff = execSync('git status --porcelain apps/docs/lib/page-map.generated.ts', {
-    cwd: REPO_ROOT,
-    encoding: 'utf8',
-});
-if (diff.trim()) {
-    console.error('[docs:gen:check] lib/page-map.generated.ts has drift from tracked state:');
-    console.error(diff);
-    console.error('Run `pnpm --filter @nordcom/commerce-docs pre:page-map` and commit.');
-    process.exit(1);
-}
-console.info('[docs:gen:check] no drift');
+run('pnpm gen');
+console.info('[gen:check] OK');

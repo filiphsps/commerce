@@ -24,8 +24,8 @@ let queued = false;
  * mirror's sweep-and-relink handle it.
  *
  * TypeDoc is deliberately NOT auto-rebuilt: a full pass takes ~20s and source-code
- * changes are far more frequent than API-surface changes. Run `pnpm pre:typedoc`
- * (or `pnpm pre`) on demand after API changes.
+ * changes are far more frequent than API-surface changes. Run `pnpm gen` on
+ * demand after API changes.
  */
 function shouldRebuild(filename: string | null): boolean {
     if (!filename) return false;
@@ -33,8 +33,9 @@ function shouldRebuild(filename: string | null): boolean {
     if (filename.includes('.next')) return false;
     if (filename.includes('.turbo')) return false;
     if (filename.includes('.typedoc-out')) return false;
-    if (filename.includes('(generated)')) return false;
-    if (filename.includes('content/reference')) return false;
+    // Our own docs app is the destination of every gen step. Listening to it
+    // creates a write-loop: gen emits .mdx → watcher fires → gen emits again.
+    if (filename.includes(`${path.sep}apps${path.sep}docs${path.sep}`)) return false;
     if (!filename.includes(`${path.sep}docs${path.sep}`)) return false;
     return filename.endsWith('.md') || filename.endsWith('.mdx');
 }
@@ -77,6 +78,6 @@ function watchTree(dir: string): void {
     }
 }
 
-console.info('[watch] watching workspace docs/ for .md(x) changes (run `pnpm pre:typedoc` after API changes)');
+console.info('[watch] watching workspace docs/ for .md(x) changes (run `pnpm gen` after API changes)');
 watchTree(path.join(REPO_ROOT, 'apps'));
 watchTree(path.join(REPO_ROOT, 'packages'));

@@ -945,10 +945,10 @@ Goal: walk `.typedoc-out/*.json` and emit per-subpath overview pages + per-symbo
 
 **Files:** existing `apps/docs/scripts/emit-typedoc-json.ts` unchanged.
 
-- [ ] **Step 1: Run pre:typedoc**
+- [ ] **Step 1: Run gen:typedoc**
 
 ```bash
-pnpm --filter @nordcom/commerce-docs pre:typedoc
+pnpm --filter @nordcom/commerce-docs gen:typedoc
 ```
 
 Expected: `.typedoc-out/` populated with JSON for every workspace × subpath.
@@ -1087,24 +1087,24 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
 }
 ```
 
-- [ ] **Step 5: Add `pre:reference` script**
+- [ ] **Step 5: Add `gen:reference` script**
 
 In `apps/docs/package.json`, add a script:
 ```json
-"pre:reference": "tsx scripts/emit-reference-mdx.ts"
+"gen:reference": "tsx scripts/emit-reference-mdx.ts"
 ```
 
 And wire it into `pre`:
 ```json
-"pre": "pnpm pre:typedoc && pnpm pre:mirror && pnpm pre:reference && pnpm pre:errors && pnpm pre:changelogs && pnpm pre:source-meta"
+"gen": "pnpm gen:typedoc && pnpm gen:mirror && pnpm gen:reference && pnpm gen:errors && pnpm gen:changelogs && pnpm gen:source-meta"
 ```
 
-(Other steps' scripts are added in later phases. Leave them missing for now — `pnpm pre` will fail until they exist. We'll fix in Phase G.)
+(Other steps' scripts are added in later phases. Leave them missing for now — `pnpm gen` will fail until they exist. We'll fix in Phase G.)
 
 - [ ] **Step 6: Sanity-run the emitter**
 
 ```bash
-pnpm --filter @nordcom/commerce-docs pre:reference
+pnpm --filter @nordcom/commerce-docs gen:reference
 ```
 
 Expected: prints `0 subpaths, 0 symbols, 0 skipped`. `content/reference/` exists but empty.
@@ -1713,8 +1713,8 @@ function kebab(name: string): string {
 - [ ] **Step 2: Run end-to-end**
 
 ```bash
-pnpm --filter @nordcom/commerce-docs pre:typedoc
-pnpm --filter @nordcom/commerce-docs pre:reference
+pnpm --filter @nordcom/commerce-docs gen:typedoc
+pnpm --filter @nordcom/commerce-docs gen:reference
 ```
 
 Expected: prints non-zero counts. `apps/docs/content/reference/` has a folder per workspace, each with an `index.mdx` and per-function/class `.mdx` files.
@@ -1829,7 +1829,7 @@ function escapeAttr(s: string): string {
 - [ ] **Step 4: Run and inspect**
 
 ```bash
-pnpm --filter @nordcom/commerce-docs pre:reference
+pnpm --filter @nordcom/commerce-docs gen:reference
 ls apps/docs/content/reference/react-payment-brand-icons/
 ```
 
@@ -1919,7 +1919,7 @@ git rm -r apps/docs/components/api
 
 - [ ] **Step 3: Remove `pre:page-map` from `package.json`**
 
-In `apps/docs/package.json`, drop the `pre:page-map` script. The `pre:reference` step from Task D2 already covers page emission.
+In `apps/docs/package.json`, drop the `pre:page-map` script. The `gen:reference` step from Task D2 already covers page emission.
 
 - [ ] **Step 4: Verify typecheck + build**
 
@@ -2021,7 +2021,7 @@ const WORKSPACE_EXCLUDES: Record<string, readonly string[]> = {};
 - [ ] **Step 6: Run and inspect**
 
 ```bash
-pnpm --filter @nordcom/commerce-docs pre:mirror
+pnpm --filter @nordcom/commerce-docs gen:mirror
 ls apps/docs/content/packages/
 ls apps/docs/content/docs/apps/
 ```
@@ -2067,7 +2067,7 @@ Wire `emitApplicationsMeta(workspaces)` at the end of `main()`.
 - [ ] **Step 2: Verify**
 
 ```bash
-pnpm --filter @nordcom/commerce-docs pre:mirror
+pnpm --filter @nordcom/commerce-docs gen:mirror
 cat apps/docs/content/packages/applications/meta.json
 ```
 
@@ -2206,18 +2206,18 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
 }
 ```
 
-> Note: we copy the CHANGELOG content with a frontmatter prepend rather than literal symlinks. Symlinks make Next/Fumadocs build edge cases harder; a copy is fine since `pre:changelogs` runs on every build.
+> Note: we copy the CHANGELOG content with a frontmatter prepend rather than literal symlinks. Symlinks make Next/Fumadocs build edge cases harder; a copy is fine since `gen:changelogs` runs on every build.
 
-- [ ] **Step 2: Wire `pre:changelogs` into `package.json`**
+- [ ] **Step 2: Wire `gen:changelogs` into `package.json`**
 
 ```json
-"pre:changelogs": "tsx scripts/symlink-changelogs.ts"
+"gen:changelogs": "tsx scripts/symlink-changelogs.ts"
 ```
 
 - [ ] **Step 3: Run and inspect**
 
 ```bash
-pnpm --filter @nordcom/commerce-docs pre:changelogs
+pnpm --filter @nordcom/commerce-docs gen:changelogs
 ls apps/docs/content/packages/cms/changelog.mdx
 ```
 
@@ -2356,16 +2356,16 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
 }
 ```
 
-- [ ] **Step 2: Add `pre:errors` to package.json**
+- [ ] **Step 2: Add `gen:errors` to package.json**
 
 ```json
-"pre:errors": "tsx scripts/port-errors.ts"
+"gen:errors": "tsx scripts/port-errors.ts"
 ```
 
 - [ ] **Step 3: Run and spot-check**
 
 ```bash
-pnpm --filter @nordcom/commerce-docs pre:errors
+pnpm --filter @nordcom/commerce-docs gen:errors
 ls apps/docs/content/errors/
 cat apps/docs/content/errors/api-unknown-locale.mdx
 ```
@@ -2453,7 +2453,7 @@ Call it at the end of `main()` with the list of converted codes.
 - [ ] **Step 3: Run and check the sidebar**
 
 ```bash
-pnpm --filter @nordcom/commerce-docs pre:errors
+pnpm --filter @nordcom/commerce-docs gen:errors
 pnpm --filter @nordcom/commerce-docs dev
 ```
 
@@ -3140,10 +3140,10 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
 }
 ```
 
-- [ ] **Step 2: Wire `pre:source-meta` in `package.json`**
+- [ ] **Step 2: Wire `gen:source-meta` in `package.json`**
 
 ```json
-"pre:source-meta": "tsx scripts/build-symbol-index.ts && tsx scripts/build-source-meta.ts"
+"gen:source-meta": "tsx scripts/build-symbol-index.ts && tsx scripts/build-source-meta.ts"
 ```
 
 - [ ] **Step 3: Run end-to-end**
@@ -3257,7 +3257,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
 - [ ] **Step 2: Run and confirm**
 
 ```bash
-pnpm --filter @nordcom/commerce-docs pre:source-meta
+pnpm --filter @nordcom/commerce-docs gen:source-meta
 cat apps/docs/lib/source-meta.generated.ts | head -10
 ```
 
@@ -3387,11 +3387,11 @@ Open the static build (`pnpm exec serve apps/docs/out`). Confirm:
 
 ---
 
-# Phase H · `docs:gen:check`, validate-links, skip e2e
+# Phase H · `gen:check`, validate-links, skip e2e
 
 Goal: tighten the CI gates so unresolved links fail the build, update the link validator for the new URL shape, skip the e2e suite.
 
-## Task H1 — `docs:gen:check` strict mode
+## Task H1 — `gen:check` strict mode
 
 **Files:**
 - Modify: `apps/docs/scripts/docs-gen-check.ts`
@@ -3419,17 +3419,17 @@ for (const mdxFile of walkDir(path.join(DOCS_APP, 'content'))) {
 }
 
 if (unresolved.length > 0) {
-    console.error('[docs:gen:check] unresolved {@link} references:');
+    console.error('[gen:check] unresolved {@link} references:');
     for (const u of unresolved) console.error('  ' + u);
     process.exit(1);
 }
-console.info('[docs:gen:check] OK');
+console.info('[gen:check] OK');
 ```
 
 - [ ] **Step 2: Run**
 
 ```bash
-pnpm --filter @nordcom/commerce-docs docs:gen:check
+pnpm --filter @nordcom/commerce-docs gen:check
 ```
 
 Expected: exits 0. If non-zero, fix each unresolved link (most likely candidates: rename, or add explicit prefix).
@@ -3438,7 +3438,7 @@ Expected: exits 0. If non-zero, fix each unresolved link (most likely candidates
 
 ```bash
 git add apps/docs/scripts/docs-gen-check.ts
-git commit -m "feat(docs): fail docs:gen:check on unresolved {@link} references."
+git commit -m "feat(docs): fail gen:check on unresolved {@link} references."
 ```
 
 ## Task H2 — Update `validate-links.ts`
@@ -3461,7 +3461,7 @@ Inside the crawl loop, treat any link starting with one of these as internal.
 
 ```bash
 pnpm --filter @nordcom/commerce-docs build
-pnpm --filter @nordcom/commerce-docs test:docs:links
+pnpm --filter @nordcom/commerce-docs test:links
 ```
 
 Expected: passes; if it flags any 404s, fix the source by adding a redirect to `STATIC_REDIRECTS` in `build-source-meta.ts`.
@@ -3513,8 +3513,8 @@ pnpm --filter @nordcom/commerce-docs build
 pnpm --filter @nordcom/commerce-docs lint
 pnpm --filter @nordcom/commerce-docs typecheck
 pnpm --filter @nordcom/commerce-docs test
-pnpm --filter @nordcom/commerce-docs docs:gen:check
-pnpm --filter @nordcom/commerce-docs test:docs:links
+pnpm --filter @nordcom/commerce-docs gen:check
+pnpm --filter @nordcom/commerce-docs test:links
 ```
 
 Expected: all green.
@@ -3673,8 +3673,8 @@ pnpm --filter @nordcom/commerce-docs build
 pnpm --filter @nordcom/commerce-docs lint
 pnpm --filter @nordcom/commerce-docs typecheck
 pnpm --filter @nordcom/commerce-docs test
-pnpm --filter @nordcom/commerce-docs docs:gen:check
-pnpm --filter @nordcom/commerce-docs test:docs:links
+pnpm --filter @nordcom/commerce-docs gen:check
+pnpm --filter @nordcom/commerce-docs test:links
 ```
 
 Expected: all green.

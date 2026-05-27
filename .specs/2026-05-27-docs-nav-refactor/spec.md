@@ -90,13 +90,13 @@ General      NOT_FOUND, UNREACHABLE, GENERIC_TODO     (override map)
 `apps/docs/package.json scripts.pre` runs the following ordered steps. Steps 1, 2, 6 already exist (retargeted); 3, 4, 5 are new.
 
 ```
-pnpm pre:
-  1. pre:typedoc        → .typedoc-out/<slug>/<subpath>.json     (existing — keep)
-  2. pre:mirror         → content/packages/<slug>/*.mdx          (retarget; mirror script writes to content/packages/)
-  3. pre:reference      → content/reference/<slug>/<subpath>/{index,<symbol>}.mdx  (new)
-  4. pre:errors         → content/errors/*.mdx (Markdoc → MDX)   (new, one-time + watcher)
-  5. pre:changelogs     → content/packages/<slug>/changelog.mdx (symlink to package CHANGELOG.md)
-  6. pre:source-meta    → lib/source-meta.generated.ts (typed config: redirects + category overrides)
+pnpm gen:
+  1. gen:typedoc        → .typedoc-out/<slug>/<subpath>.json     (existing — keep)
+  2. gen:mirror         → content/packages/<slug>/*.mdx          (retarget; mirror script writes to content/packages/)
+  3. gen:reference      → content/reference/<slug>/<subpath>/{index,<symbol>}.mdx  (new)
+  4. gen:errors         → content/errors/*.mdx (Markdoc → MDX)   (new, one-time + watcher)
+  5. gen:changelogs     → content/packages/<slug>/changelog.mdx (symlink to package CHANGELOG.md)
+  6. gen:source-meta    → lib/source-meta.generated.ts (typed config: redirects + category overrides)
                         + lib/symbol-index.generated.json (data: token → URL map for the link resolver)
 ```
 
@@ -169,7 +169,7 @@ Authored MDX uses `{@link X}` (explicit) plus inline-code auto-link (implicit) �
 
 **Build-time failure modes:**
 
-- `docs:gen:check` (CI gate) fails on: unresolved explicit `{@link}`, or explicit `{@link}` with multiple equally-weighted matches.
+- `gen:check` (CI gate) fails on: unresolved explicit `{@link}`, or explicit `{@link}` with multiple equally-weighted matches.
 - Soft warning on auto-link picking from multiple candidates; logged to `apps/docs/.docs-gen-report.json` (gitignored). A `pnpm docs:gen:report` script renders it as a table for review.
 
 **Escape hatch:** to leave bare code text without an auto-link, wrap in a fenced code block (` ```ts getArticle ``` `) or use `<code class="no-link">` MDX. Documented; rare in practice.
@@ -189,7 +189,7 @@ The Markdoc `{% card %}` containers in the current `apps/landing/docs/errors/*.m
 
 ### Per-package CHANGELOG
 
-For each workspace where `type === 'package'` AND `<root>/CHANGELOG.md` exists, `pre:changelogs` symlinks the CHANGELOG into `content/packages/<slug>/changelog.mdx` with a small front-matter prepend (`{ title: "Changelog", description: "Release history for <slug>" }`). Packages without a CHANGELOG silently skip. Apps are excluded by rule — their commit history is the changelog.
+For each workspace where `type === 'package'` AND `<root>/CHANGELOG.md` exists, `gen:changelogs` symlinks the CHANGELOG into `content/packages/<slug>/changelog.mdx` with a small front-matter prepend (`{ title: "Changelog", description: "Release history for <slug>" }`). Packages without a CHANGELOG silently skip. Apps are excluded by rule — their commit history is the changelog.
 
 ## Visual system
 
@@ -278,7 +278,7 @@ Single PR, replace-in-place. No parallel routes, no feature flag.
 
 ### Redirects
 
-`next.config.mjs` `redirects()` emitted from `pre:source-meta`. Coverage:
+`next.config.mjs` `redirects()` emitted from `gen:source-meta`. Coverage:
 
 - `/docs/getting-started/`                 → `/docs/get-started/quickstart/`
 - `/docs/architecture/`                    → `/docs/get-started/architecture/`
