@@ -34,6 +34,12 @@ import { cmsDefaultLocales } from '@nordcom/commerce-cms/config';
 // configured locale list is fixed for the process lifetime.
 const LOCALE_SET = new Set<string>(cmsDefaultLocales);
 
+/**
+ * Guards against arrays, `null`, and class instances, accepting only plain JS objects.
+ *
+ * @param v - Value to test.
+ * @returns `true` only when `v` is a non-null, non-array object literal.
+ */
 const isPlainObject = (v: unknown): v is Record<string, unknown> =>
     typeof v === 'object' && v !== null && !Array.isArray(v);
 
@@ -43,6 +49,9 @@ const isPlainObject = (v: unknown): v is Record<string, unknown> =>
  * notably `{ id: '<ObjectId>' }` for an unpopulated relation, where 'id'
  * happens to be the ISO 639-1 code for Indonesian and would otherwise
  * false-positive.
+ *
+ * @param v - Plain object to inspect.
+ * @returns `true` when every key in `v` is a configured Payload locale.
  */
 const looksLikeLocaleMap = (v: Record<string, unknown>): boolean => {
     const keys = Object.keys(v);
@@ -53,6 +62,13 @@ const looksLikeLocaleMap = (v: Record<string, unknown>): boolean => {
     return true;
 };
 
+/**
+ * Selects the best matching value from a locale map, falling back through language code then any non-null value.
+ *
+ * @param map - A record keyed by locale codes.
+ * @param preferred - BCP-47 locale code to resolve first.
+ * @returns The value for `preferred`, its language subtag, or any non-null fallback; `null` when all values are absent.
+ */
 const pickLocaleValue = (map: Record<string, unknown>, preferred: string): unknown => {
     if (preferred in map) return map[preferred];
     // BCP-47 `lang-REGION` → ISO 639-1 `lang`. `en-US` doesn't resolve →
@@ -74,13 +90,24 @@ const pickLocaleValue = (map: Record<string, unknown>, preferred: string): unkno
 // is masking the bug.
 let unwrapCount = 0;
 
-/** Test helper: read how many locale maps the last `normalize*` call unwrapped. */
+/**
+ * Test helper: read how many locale maps the last `normalize*` call unwrapped.
+ *
+ * @returns The cumulative unwrap count since the last `__resetLocaleUnwrapCount` call.
+ */
 export const __getLocaleUnwrapCount = (): number => unwrapCount;
 /** Test helper: reset the unwrap counter. */
 export const __resetLocaleUnwrapCount = (): void => {
     unwrapCount = 0;
 };
 
+/**
+ * Recursively walks a Payload document value, unwrapping locale maps at each level.
+ *
+ * @param value - Document fragment to walk.
+ * @param locale - BCP-47 locale code to extract when a locale map is encountered.
+ * @returns The walked value with all locale maps replaced by the selected locale's value.
+ */
 const walk = (value: unknown, locale: string): unknown => {
     if (value == null) return value;
     if (typeof value !== 'object') return value;
@@ -114,5 +141,9 @@ const walk = (value: unknown, locale: string): unknown => {
  * Normalize a Payload document or document fragment by resolving any
  * locale-map shapes to the requested locale. Type-preserving: `T` flows
  * through unchanged on the type level.
+ *
+ * @param value - Document or fragment to normalize.
+ * @param locale - BCP-47 locale code used to pick values from locale maps.
+ * @returns The normalized document with the same shape as the input.
  */
 export const normalizePayloadDoc = <T>(value: T, locale: string): T => walk(value, locale) as T;

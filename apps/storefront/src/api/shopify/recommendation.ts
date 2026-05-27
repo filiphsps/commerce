@@ -24,6 +24,17 @@ const PRODUCT_RECOMMENDATIONS_QUERY = graphql(
     [PRODUCT_FRAGMENT_MINIMAL],
 );
 
+/**
+ * Fetches related product recommendations from Shopify for a given product GID.
+ *
+ * @param options - Options object.
+ * @param options.api - Storefront API client.
+ * @param options.id - Shopify product GID (e.g. `"gid://shopify/Product/123"`).
+ * @returns Array of recommended products.
+ * @throws {InvalidIDError} When `id` cannot be parsed as a valid GID.
+ * @throws {ProviderFetchError} When the Shopify query returns errors.
+ * @throws {NotFoundError} When no recommendations are returned.
+ */
 // TODO: Migrate to the new recommendations api.
 export const RecommendationApi = async ({ api, id }: { api: AbstractApi; id: string }): Promise<Product[]> => {
     const gid = parseGid(id);

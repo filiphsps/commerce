@@ -46,8 +46,10 @@ const URL_REDIRECTS_SEARCH_QUERY = graphql(`
  * @param options - The options.
  * @param options.api - The client to use for the query.
  * @param [options.cursor] - The cursor to use for the query.
- * @param [options.redirects]
+ * @param [options.redirects] - Accumulated redirects from previous pages; omitted on the first call.
  * @returns The list of redirects.
+ * @throws {ProviderFetchError} When the Shopify query returns errors.
+ * @throws {NotFoundError} When no redirects exist for the shop.
  */
 export const RedirectsApi = async ({
     api,
@@ -97,7 +99,9 @@ export const RedirectsApi = async ({
  * @param options - The options.
  * @param options.api - The client to use for the query.
  * @param options.path - The path to get the redirect for.
- * @returns The redirect target.
+ * @returns The redirect target, or `null` if none found.
+ * @throws {ProviderFetchError} When the Shopify query returns errors.
+ * @throws {NotFoundError} When no redirects exist for the shop.
  */
 export const RedirectApi = async ({ api, path }: { api: AbstractApi; path: string }): Promise<string | null> => {
     path = path.toLowerCase();

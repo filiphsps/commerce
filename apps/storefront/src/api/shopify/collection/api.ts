@@ -29,6 +29,9 @@ type CollectionOptions = ApiOptions &
  * @param options.handle - The handle of the collection to fetch.
  * @param [options.filters] - The filters to apply to the collection.
  * @returns The collection.
+ * @throws {InvalidHandleError} When `handle` fails the validity check.
+ * @throws {ProviderFetchError} When the Shopify query returns errors.
+ * @throws {NotFoundError} When no collection matches the handle.
  */
 export const CollectionApi = async (
     { api, handle, ...props }: CollectionOptions,
@@ -77,6 +80,15 @@ export const CollectionApi = async (
     };
 };
 
+/**
+ * Fetches a lightweight list of all collections with product presence indicators.
+ *
+ * @param options - Options object.
+ * @param options.api - Storefront API client.
+ * @returns Array of collection stubs with `id`, `handle`, and `hasProducts`.
+ * @throws {ProviderFetchError} When the Shopify query returns errors.
+ * @throws {NotFoundError} When the collections field is absent from the response.
+ */
 export const CollectionsApi = async ({
     api,
 }: {

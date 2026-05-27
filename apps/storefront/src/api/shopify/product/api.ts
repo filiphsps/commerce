@@ -22,6 +22,15 @@ type ProductOptions = ApiOptions &
         fragment?: string;
     };
 
+/**
+ * Fetches a single product from the Shopify Storefront API by handle.
+ *
+ * @param options - Options object.
+ * @param options.api - Storefront API client.
+ * @param options.handle - Product handle to fetch.
+ * @param options.fragment - Optional GraphQL fragment string to override the default product fields.
+ * @returns A result tuple — `[Product, undefined]` on success or `[undefined, error]` on failure.
+ */
 export const ProductApi = async ({ api, handle, fragment }: ProductOptions): Promise<ApiReturn<Product>> => {
     if (!handle) {
         return [undefined, new InvalidHandleError(handle)];
@@ -74,6 +83,18 @@ export const ProductApi = async ({ api, handle, fragment }: ProductOptions): Pro
     }
 };
 
+/**
+ * Fetches a paginated list of products from the Shopify Storefront API.
+ *
+ * @param options - Options object.
+ * @param options.api - Storefront API client.
+ * @param options.limit - Max products per page; defaults to `250`.
+ * @param options.sorting - Product sort key; defaults to `"BEST_SELLING"`.
+ * @param options.cursor - Pagination cursor for the next page.
+ * @returns Object with `products` edges, next `cursor`, and `pagination` flags.
+ * @throws {ProviderFetchError} When the Shopify query returns errors.
+ * @throws {NotFoundError} When no products are returned.
+ */
 export const ProductsApi = async ({
     api,
     limit = 250,

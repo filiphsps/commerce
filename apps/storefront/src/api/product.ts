@@ -61,6 +61,13 @@ export type Product = {
 
 export type ProductFilters = SearchResultItemConnection['productFilters'];
 
+/**
+ * Serializes a product's Shopify tracking parameters into a URL query string.
+ *
+ * @param options - Options object.
+ * @param options.product - Product with optional `trackingParameters` field.
+ * @returns A URL-encoded query string, or an empty string when no tracking parameters are present.
+ */
 export const createProductSearchParams = ({
     product: { trackingParameters },
 }: {
@@ -73,6 +80,12 @@ export const createProductSearchParams = ({
     return new URLSearchParams(trackingParameters).toString();
 };
 
+/**
+ * Returns whether a product is tagged vegan and belongs to a category where the claim is meaningful.
+ *
+ * @param product - Product to evaluate.
+ * @returns `true` only for food/clothing/accessories/sports products carrying the `"vegan"` tag.
+ */
 export const isProductVegan = (product: Product): boolean => {
     if (product.tags.length <= 0) {
         return false;
@@ -86,6 +99,12 @@ export const isProductVegan = (product: Product): boolean => {
     return product.tags.map((tag) => tag.toLowerCase().trim()).includes('vegan');
 };
 
+/**
+ * Returns whether a product's type maps to the confectionary category.
+ *
+ * @param product - Product to evaluate.
+ * @returns `true` when `productType` matches a known confectionary keyword such as `"cake"`, `"candy"`, etc.
+ */
 export const isProductConfectionary = (product: Product): boolean => {
     if (!product.productType) {
         return false;
@@ -124,6 +143,12 @@ export type ProductType =
     | 'clothing'
     | 'sports'
     | 'other';
+/**
+ * Resolves a product to one of the canonical platform category tokens.
+ *
+ * @param product - Product to classify.
+ * @returns The matching `ProductType`, or `null` when no category can be determined.
+ */
 export const productType = (product: Product): ProductType | null => {
     if (isProductConfectionary(product)) {
         return 'confectionary';
@@ -134,6 +159,12 @@ export const productType = (product: Product): ProductType | null => {
 
 export type ProductSorting = ProductSortKeys;
 
+/**
+ * Parses the quantity-break metafield into a flat list of price-break tier objects.
+ *
+ * @param quantityBreaks - Raw `quantityBreaks` metafield value from a product variant.
+ * @returns Array of `{ minimumQuantity, value }` tiers, or `null` when absent or unparseable.
+ */
 export function transformQuantityBreaks(quantityBreaks: ProductVariant['quantityBreaks']) {
     if (!quantityBreaks) {
         return null;
