@@ -48,16 +48,13 @@ export default async function Page(props: { params: Promise<{ slug?: string[] }>
 
 /**
  * Statically pre-render every page from the Fumadocs source. Required for
- * `output: 'export'` builds. The Fumadocs source emits the index page with
- * `slug: []`; Next 16's optional catch-all (`[[...slug]]`) expects
- * `slug: undefined` for the root in `generateStaticParams`.
+ * `output: 'export'` builds. The Fumadocs source already emits the root
+ * entry with `slug: []`; pass that through verbatim.
  *
  * @returns The list of `{ slug }` params Next will pre-render.
  */
-export function generateStaticParams(): { slug: string[] | undefined }[] {
-    return source.generateParams().map((p) => ({
-        slug: p.slug.length === 0 ? undefined : p.slug,
-    }));
+export function generateStaticParams(): { slug: string[] }[] {
+    return source.generateParams();
 }
 
 /**
