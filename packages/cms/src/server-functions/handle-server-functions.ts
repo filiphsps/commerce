@@ -3,6 +3,13 @@ import 'server-only';
 import { handleServerFunctions } from '@payloadcms/next/layouts';
 import type { ImportMap, SanitizedConfig, ServerFunctionClient } from 'payload';
 
+/**
+ * Arguments for {@link createCmsServerFunctionHandler}. Provides the Payload
+ * config and import map needed to dispatch server-function requests.
+ *
+ * @example
+ * createCmsServerFunctionHandler({ configPromise: config, importMap });
+ */
 export type CreateCmsServerFunctionHandlerArgs = {
     /**
      * The Payload config (or a promise that resolves to one).
@@ -32,6 +39,18 @@ export type CreateCmsServerFunctionHandlerArgs = {
  * `'use server'` export must stay in the app — server actions cannot be built
  * by factories at module load, so each app declares a thin wrapper that
  * imports its own `payload.config` and forwards to this handler.
+ *
+ * @param args - {@link CreateCmsServerFunctionHandlerArgs} with the Payload config and generated import map.
+ * @returns A `ServerFunctionClient` ready to pass to `<ServerFunctionsProvider serverFunction={…} />`.
+ * @example
+ * ```ts
+ * // apps/admin/src/server-function.ts
+ * 'use server';
+ * import { createCmsServerFunctionHandler } from '@nordcom/commerce-cms/server-functions';
+ * import config from '@payload-config';
+ * import { importMap } from './importMap';
+ * export const serverFunction = createCmsServerFunctionHandler({ configPromise: config, importMap });
+ * ```
  */
 export function createCmsServerFunctionHandler({
     configPromise,

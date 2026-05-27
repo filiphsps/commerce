@@ -12,6 +12,12 @@ import { productMetadata } from '../collections/product-metadata';
 import { tenants } from '../collections/tenants';
 import { users } from '../collections/users';
 
+/**
+ * Options for {@link buildTestConfig}.
+ *
+ * @example
+ * buildTestConfig({ suite: 'pages', locales: ['en-US', 'sv-SE'], defaultLocale: 'en-US' });
+ */
 export type BuildTestConfigOptions = {
     suite: string;
     locales?: string[];
@@ -21,6 +27,14 @@ export type BuildTestConfigOptions = {
 /**
  * Build a Payload config for tests. Includes the full set of CMS collections so
  * link/relationship fields resolve cleanly. Uses a suite-suffixed local DB.
+ *
+ * @param options - {@link BuildTestConfigOptions} specifying the test suite name and optional locale settings.
+ * @returns A fully initialized Payload `SanitizedConfig` ready to pass to `getPayload`.
+ * @example
+ * ```ts
+ * const config = await buildTestConfig({ suite: 'pages', locales: ['en-US', 'sv-SE'], defaultLocale: 'en-US' });
+ * const payload = await getPayload({ config });
+ * ```
  */
 export const buildTestConfig = async ({
     suite,

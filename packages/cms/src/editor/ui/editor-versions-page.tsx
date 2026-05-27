@@ -15,6 +15,12 @@ import { docUrlSegment } from '../url';
 import { localeLabel } from './locale-label';
 import { LocaleSwitcher } from './locale-switcher';
 
+/**
+ * Props for {@link EditorVersionsPage}.
+ *
+ * @example
+ * <EditorVersionsPage manifest={pagesEditor} runtime={runtime} params={{ domain, id }} searchParams={searchParams} generatedActions={pagesActions} />
+ */
 export type EditorVersionsPageProps<TSlug extends CollectionSlug = CollectionSlug> = {
     manifest: CollectionEditorManifest<TSlug>;
     runtime: EditorRuntime;
@@ -23,6 +29,15 @@ export type EditorVersionsPageProps<TSlug extends CollectionSlug = CollectionSlu
     generatedActions: EditorActions;
 };
 
+/**
+ * Server Component that renders the version history list for a single
+ * document. Fetches up to 50 past versions sorted by `updatedAt` descending
+ * and renders each with a restore button wired to the generated
+ * `restoreVersion` action.
+ *
+ * @param props - {@link EditorVersionsPageProps} carrying manifest, runtime, params, and generated actions.
+ * @returns The rendered version list with a back-link and locale switcher.
+ */
 export async function EditorVersionsPage<TSlug extends CollectionSlug>({
     manifest,
     runtime,

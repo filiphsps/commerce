@@ -9,6 +9,10 @@ import type { ReactNode } from 'react';
  * null when the route operates cross-tenant. Predicates that need to verify
  * tenant membership should compare against this — `user.tenants` carries
  * the same id shape (tenant document ids), not domain strings.
+ *
+ * @example
+ * const canAccess: EditorAccess = ({ user, tenantId }) =>
+ *   user?.role === 'admin' || (tenantId !== null && (user?.tenants.includes(tenantId) ?? false));
  */
 export type EditorAccessCtx = {
     user: {
@@ -25,9 +29,21 @@ export type EditorAccessCtx = {
 /**
  * Route-level gate. Runs alongside Payload's collection-level access predicates
  * (defense in depth). Return false to `notFound()` from the route.
+ *
+ * @example
+ * const listAccess: EditorAccess = ({ user }) => user?.role === 'admin';
  */
 export type EditorAccess = (ctx: EditorAccessCtx) => boolean | Promise<boolean>;
 
+/**
+ * Column descriptor for the editor list-view table. Maps a doc field (or a
+ * computed accessor) to a header label, with an optional cell renderer for
+ * custom formatting.
+ *
+ * @example
+ * const col: EditorListColumn = { label: 'Title', accessor: 'title' };
+ * const computed: EditorListColumn = { label: 'Status', accessor: (doc) => doc.status ?? '-' };
+ */
 export type EditorListColumn<TDoc = Record<string, unknown>> = {
     /** Header label. */
     label: string;
@@ -44,6 +60,10 @@ export type EditorListColumn<TDoc = Record<string, unknown>> = {
  * slug) is the source of truth for fields, hooks, collection-level access,
  * drafts/versions/locales. The manifest adds route shape, route-level gates,
  * list shape, live-preview URL, and revalidation paths on top.
+ *
+ * @example
+ * // Build manifests with {@link defineCollectionEditor}:
+ * const manifest: CollectionEditorManifest = defineCollectionEditor({ collection: 'pages', ... });
  */
 export type CollectionEditorManifest<TSlug extends CollectionSlug = CollectionSlug> = {
     /** Payload collection slug. */

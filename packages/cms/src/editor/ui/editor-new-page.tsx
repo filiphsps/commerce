@@ -15,6 +15,12 @@ import type { EditorRuntime } from '../runtime';
 import { EditorFields } from './editor-fields';
 import { EditorFormToolbar } from './editor-form-toolbar';
 
+/**
+ * Props for {@link EditorNewPage}.
+ *
+ * @example
+ * <EditorNewPage manifest={pagesEditor} runtime={runtime} params={{ domain: 'example.com' }} searchParams={searchParams} generatedActions={pagesActions} />
+ */
 export type EditorNewPageProps<TSlug extends CollectionSlug = CollectionSlug> = {
     manifest: CollectionEditorManifest<TSlug>;
     runtime: EditorRuntime;
@@ -23,6 +29,15 @@ export type EditorNewPageProps<TSlug extends CollectionSlug = CollectionSlug> = 
     generatedActions: EditorActions;
 };
 
+/**
+ * Server Component that renders the new-document creation form. Enforces
+ * create access, resolves the locale, builds an empty Payload `FormState`,
+ * and assembles the `<DocumentForm>` shell with a bound create action.
+ *
+ * @param props - {@link EditorNewPageProps} carrying manifest, runtime, params, and generated actions.
+ * @returns The rendered new-document form wrapped in the runtime's `DocumentForm` shell.
+ * @throws {UnknownCollectionSlugError} When the manifest's collection is not registered in Payload's config.
+ */
 export async function EditorNewPage<TSlug extends CollectionSlug>({
     manifest,
     runtime,

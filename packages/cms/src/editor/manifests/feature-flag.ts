@@ -2,6 +2,7 @@ import type { Route } from 'next';
 import { adminOnly } from '../access';
 import { defineCollectionEditor } from '../manifest';
 
+/** Editor manifest for the `feature-flags` collection. Platform-wide (shared); admin-only write access. */
 export const featureFlagsEditor = defineCollectionEditor({
     collection: 'feature-flags',
     routes: {

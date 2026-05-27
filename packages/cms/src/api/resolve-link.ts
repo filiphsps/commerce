@@ -1,5 +1,13 @@
 export type LocaleRef = { code: string };
 
+/**
+ * Discriminated union representing every link kind produced by the CMS
+ * `linkField`. The `kind` discriminant matches the select options defined
+ * in `src/fields/link.ts`.
+ *
+ * @example
+ *   const link: LinkValue = { kind: 'page', page: { slug: 'about' } };
+ */
 export type LinkValue =
     | { kind: 'external'; url: string }
     | { kind: 'anchor'; url: string }
@@ -14,6 +22,20 @@ const slugOf = (v: { slug: string } | string | undefined): string | undefined =>
 const handleOf = (v: { shopifyHandle: string } | string | undefined): string | undefined =>
     typeof v === 'string' ? undefined : v?.shopifyHandle;
 
+/**
+ * Convert a CMS {@link LinkValue} to a locale-aware URL string. Handles all
+ * six link kinds: `external`, `anchor`, `page`, `article`, `product`, and
+ * `collection`. Relations that haven't been populated (stored as a raw id
+ * string) resolve to an empty string rather than throwing.
+ *
+ * @param link - The typed link value from the CMS `linkField`.
+ * @param locale - Active locale; prepended to internal path segments.
+ * @returns Absolute-path URL string, or `''` when the relation is unpopulated.
+ *
+ * @example
+ *   resolveLink({ kind: 'page', page: { slug: 'about' } }, { locale: { code: 'en-US' } })
+ *   // '/en-US/about/'
+ */
 export const resolveLink = (link: LinkValue, { locale }: { locale: LocaleRef }): string => {
     switch (link.kind) {
         case 'external':

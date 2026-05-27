@@ -1,6 +1,14 @@
 import { payloadHooks } from '@tagtree/payload';
 import type { CollectionConfig } from 'payload';
 
+/**
+ * Options for {@link buildRevalidateHooks}. The `collection` name maps
+ * directly to the entity name in the `@tagtree/core` schema defined in
+ * {@link cmsCache}.
+ *
+ * @example
+ * const hooks = buildRevalidateHooks({ collection: 'pages' });
+ */
 export type RevalidateHookOptions = { collection: string };
 
 /**
@@ -18,6 +26,13 @@ export type RevalidateHookOptions = { collection: string };
  */
 export const buildRevalidateHooks = ({ collection }: RevalidateHookOptions): NonNullable<CollectionConfig['hooks']> => {
     let hooksPromise: Promise<NonNullable<CollectionConfig['hooks']>> | undefined;
+    /**
+     * Lazily resolves the `@tagtree/payload` hook set for this collection,
+     * caching the promise so the dynamic `import('../../cache')` fires at most
+     * once per `buildRevalidateHooks` invocation.
+     *
+     * @returns Promise resolving to the Payload hook callbacks for this collection.
+     */
     const getHooks = (): Promise<NonNullable<CollectionConfig['hooks']>> => {
         hooksPromise ??= import('../../cache').then(({ cmsCache }) => payloadHooks(cmsCache, { entity: collection }));
         return hooksPromise;

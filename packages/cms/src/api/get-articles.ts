@@ -6,6 +6,12 @@ import type { LocaleRef, ShopRef } from './get-page';
 import { getPayloadInstance } from './get-payload-instance';
 import { resolveTenantId } from './resolve-tenant-id';
 
+/**
+ * Arguments accepted by {@link getArticles}.
+ *
+ * @example
+ *   const args: GetArticlesArgs = { shop, locale, limit: 6, tag: 'news' };
+ */
 export type GetArticlesArgs = {
     shop: ShopRef;
     locale: LocaleRef;
@@ -21,6 +27,19 @@ export type GetArticlesArgs = {
 // predicate, but keep the helper's return type narrow.
 const TENANT_RESOLUTION_FAILED = '__cms_no_tenant_resolved__';
 
+/**
+ * Fetch a paginated list of articles for the given shop and locale. Optionally
+ * filter by an exact tag value. The tenant predicate is always applied, so an
+ * unsynced tenant returns an empty result set rather than leaking other tenants'
+ * articles.
+ *
+ * @param args - Shop, locale, optional `limit`/`page`/`tag`/`draft`, and an
+ *   optional `__payload` instance for testing.
+ * @returns The Payload find result (docs + pagination meta).
+ *
+ * @example
+ *   const { docs } = await getArticles({ shop, locale, tag: 'featured' });
+ */
 export const getArticles = async ({
     shop,
     locale,

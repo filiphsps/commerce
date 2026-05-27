@@ -6,8 +6,24 @@ import type { LocaleRef, ShopRef } from './get-page';
 import { getPayloadInstance } from './get-payload-instance';
 import { resolveTenantId } from './resolve-tenant-id';
 
+/**
+ * Arguments accepted by {@link getBusinessData}.
+ *
+ * @example
+ *   const args: GetBusinessDataArgs = { shop, locale };
+ */
 export type GetBusinessDataArgs = { shop: ShopRef; locale: LocaleRef; draft?: boolean; __payload?: Payload };
 
+/**
+ * Fetch the `businessData` singleton for the given shop and locale. Returns
+ * `null` when the tenant is unsynced or the shop id is missing.
+ *
+ * @param args - Shop, locale, optional `draft` flag, and optional `__payload`.
+ * @returns The business data document at depth 1, or `null` when not found.
+ *
+ * @example
+ *   const biz = await getBusinessData({ shop, locale });
+ */
 export const getBusinessData = async ({ shop, locale, draft = false, __payload }: GetBusinessDataArgs) => {
     assertShopId(shop);
     const payload = __payload ?? (await getPayloadInstance());

@@ -3,6 +3,11 @@ import { adminOnly, publishedOrAuthRead, tenantScopedWrite } from '../../access'
 import { linkField } from '../../fields';
 import { buildRevalidateHooks } from '../_hooks/revalidate';
 
+/**
+ * Payload collection config for the `footer` singleton. Stores navigation
+ * sections, social links, legal links, and a copyright line. One document per
+ * tenant, managed by the multi-tenant plugin.
+ */
 export const footer: CollectionConfig = {
     slug: 'footer',
     versions: { drafts: { autosave: { interval: 2000 } } },

@@ -2,6 +2,7 @@ import type { Route } from 'next';
 import { adminOnly, editorOrAdmin, tenantMember } from '../access';
 import { defineCollectionEditor } from '../manifest';
 
+/** Editor manifest for the `footer` global. Tenant-singleton; one footer per tenant with draft support. */
 export const footerEditor = defineCollectionEditor({
     collection: 'footer',
     routes: {

@@ -2,6 +2,7 @@ import type { Route } from 'next';
 import { adminOnly, editorOrAdmin, tenantMember } from '../access';
 import { defineCollectionEditor } from '../manifest';
 
+/** Editor manifest for the `reviews` collection. Tenant-scoped; editors can read and create but not delete. */
 export const reviewsEditor = defineCollectionEditor({
     collection: 'reviews',
     routes: {

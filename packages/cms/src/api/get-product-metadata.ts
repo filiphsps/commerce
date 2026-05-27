@@ -6,6 +6,12 @@ import type { LocaleRef, ShopRef } from './get-page';
 import { getPayloadInstance } from './get-payload-instance';
 import { resolveTenantId } from './resolve-tenant-id';
 
+/**
+ * Arguments accepted by {@link getProductMetadata}.
+ *
+ * @example
+ *   const args: GetProductMetadataArgs = { shop, locale, shopifyHandle: 'my-product' };
+ */
 export type GetProductMetadataArgs = {
     shop: ShopRef;
     locale: LocaleRef;
@@ -14,6 +20,17 @@ export type GetProductMetadataArgs = {
     __payload?: Payload;
 };
 
+/**
+ * Fetch the CMS metadata record for a Shopify product identified by its handle.
+ * Returns `null` when the tenant is unsynced, the handle does not match, or
+ * the shop id is missing.
+ *
+ * @param args - Shop, locale, Shopify product handle, optional flags.
+ * @returns The product-metadata document at depth 2, or `null`.
+ *
+ * @example
+ *   const meta = await getProductMetadata({ shop, locale, shopifyHandle: 'my-product' });
+ */
 export const getProductMetadata = async ({
     shop,
     locale,

@@ -2,6 +2,11 @@ import type { CollectionConfig } from 'payload';
 import { adminOnly, publishedOrAuthRead, tenantScopedWrite } from '../../access';
 import { buildRevalidateHooks } from '../_hooks/revalidate';
 
+/**
+ * Payload collection config for the `businessData` singleton. Stores legal
+ * name, contact details, address, and social profiles for a tenant. One
+ * document per tenant, managed by the multi-tenant plugin.
+ */
 export const businessData: CollectionConfig = {
     slug: 'businessData',
     versions: { drafts: { autosave: { interval: 2000 } } },

@@ -1,5 +1,12 @@
 import type { Payload } from 'payload';
 
+/**
+ * Minimal shop shape the sync hook reads from a Mongoose `post('save', doc)`
+ * callback. Carries only the fields that map to the `tenants` collection row.
+ *
+ * @example
+ * syncShopToTenant(payload, { id: 'abc', name: 'My Shop', domain: 'shop.example.com', i18n: { defaultLocale: 'en-US' } });
+ */
 export type ShopForSync = {
     id: string;
     name: string;
@@ -20,6 +27,18 @@ export type ShopForSync = {
 // the index, and the post-save hook caught it silently — leaving the second
 // shop without a mirrored tenant. shop.id is the only attribute guaranteed
 // unique by the source-of-truth Mongoose schema, so use it directly.
+/**
+ * Upserts the Payload `tenants` row that mirrors `shop`. Uses `shop.id` as
+ * the slug and lookup key because domain-based slugs collide across casing
+ * variants and custom vs. Shopify domains.
+ *
+ * Runs without a Payload user context (`overrideAccess: true`) because it is
+ * invoked from a Mongoose post-save hook outside any HTTP request.
+ *
+ * @param payload - Initialized Payload instance.
+ * @param shop - Shop data read from the Mongoose save callback.
+ * @returns Resolves when the tenant upsert is complete.
+ */
 export const syncShopToTenant = async (payload: Payload, shop: ShopForSync): Promise<void> => {
     // Runs from a Mongoose post-save hook outside any HTTP request, so there is
     // no `req.user` for Payload access predicates to inspect. Without
@@ -76,10 +95,26 @@ const attachedSchemas = new WeakSet<object>();
  */
 export type PayloadResolver = Payload | (() => Promise<Payload>);
 
+/**
+ * Resolves a {@link PayloadResolver} to a `Payload` instance by awaiting the
+ * factory when it is a function, or returning it directly otherwise.
+ *
+ * @param resolver - A Payload instance or an async factory returning one.
+ * @returns The resolved Payload instance.
+ */
 const resolvePayload = async (resolver: PayloadResolver): Promise<Payload> =>
     typeof resolver === 'function' ? await resolver() : resolver;
 
-/** Attaches the sync to the Shop Mongoose model. Idempotent. */
+/**
+ * Attaches a `post('save', ...)` listener to the Shop Mongoose model that
+ * mirrors every saved shop to the Payload `tenants` collection. Idempotent —
+ * repeated calls with the same schema object are a no-op via a `WeakSet`
+ * guard, preventing duplicate sync fires on Next.js hot reload.
+ *
+ * @param shopModel - A Mongoose Model or Schema-like object that exposes a `post` method.
+ * @param payload - Payload instance or async factory; resolved lazily on first sync.
+ * @throws {TypeError} When `shopModel` has neither `.schema.post` nor `.post`.
+ */
 export const attachShopSync = (shopModel: ShopModelLike, payload: PayloadResolver): void => {
     const hook = async (doc: ShopForSync) => {
         try {

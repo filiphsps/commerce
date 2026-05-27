@@ -8,6 +8,15 @@ const SAFE_SCHEME = /^(?:https?|mailto|tel):/i;
 // Pre-`kind` data sometimes stored bare paths or hash fragments. Those are
 // fine — only block embedded scripts.
 const SAFE_RELATIVE = /^(?:\/|#|\?)/;
+/**
+ * Check whether a URL string is safe to place in an `<a href>`. Allows
+ * `https?`, `mailto`, and `tel` schemes, plus relative paths and hash/query
+ * fragments. Rejects `javascript:`, `data:`, and any other embedded-script
+ * schemes.
+ *
+ * @param raw - The raw URL string to validate.
+ * @returns `true` when the URL uses a safe scheme or is a relative reference.
+ */
 const isSafeExternalUrl = (raw: string): boolean => {
     const trimmed = raw.trim();
     if (!trimmed) return false;

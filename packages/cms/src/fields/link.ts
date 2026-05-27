@@ -1,11 +1,28 @@
 import type { NamedGroupField } from './seo';
 
+/**
+ * Configuration options for {@link linkField}.
+ *
+ * @example
+ * linkField({ name: 'cta', label: 'CTA link', localized: true });
+ */
 export type LinkFieldOptions = {
     name: string;
     label?: string;
     localized?: boolean;
 };
 
+/**
+ * Builds a Payload group field capturing a typed link: internal page, article,
+ * product, collection, external URL, or anchor. A `kind` select drives
+ * conditional visibility so only the relevant sub-field is shown in the editor.
+ *
+ * @param options - {@link LinkFieldOptions} controlling the field name, label, and localization.
+ * @returns A named Payload group field config.
+ *
+ * @example
+ * linkField({ name: 'primaryCta', localized: true });
+ */
 export const linkField = ({ name, label, localized = true }: LinkFieldOptions): NamedGroupField => ({
     name,
     type: 'group',

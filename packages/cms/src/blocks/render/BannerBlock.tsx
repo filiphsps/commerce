@@ -1,11 +1,15 @@
 import { resolveLinkRef } from './resolve-link-ref';
 import type { BannerBlockNode, BlockRenderContext } from './types';
 
-// Wrap the CSS `url(...)` value in single quotes and escape the characters
-// that could break out of the quoted string: backslash, single quote, and
-// any line break (CSS strings can't span lines, so an unescaped newline
-// terminates the value early). React escapes the attribute as a whole, but
-// the *contents* of `url()` are CSS, not HTML — escaping is our job here.
+/**
+ * Wrap a URL in a CSS `url('...')` literal, escaping backslashes, single
+ * quotes, and line breaks that would break out of the CSS string. React
+ * escapes the HTML attribute as a whole but the `url()` contents are CSS,
+ * so this escaping is required here rather than at the DOM boundary.
+ *
+ * @param raw - The raw URL string from the media upload.
+ * @returns A CSS-safe `url('...')` expression.
+ */
 const cssUrl = (raw: string): string => {
     const safe = raw
         .replace(/\\/g, '\\\\')
@@ -14,6 +18,15 @@ const cssUrl = (raw: string): string => {
     return `url('${safe}')`;
 };
 
+/**
+ * Renders a {@link BannerBlockNode} as a full-width `<section>` with an
+ * optional background image, heading, subheading, and CTA link. The CTA is
+ * resolved through {@link resolveLinkRef} so all link kinds render correctly.
+ *
+ * @param block - The banner block node from the CMS.
+ * @param context - Block render context supplying the active locale.
+ * @returns A React section element.
+ */
 export function BannerBlock({ block, context }: { block: BannerBlockNode; context: BlockRenderContext }) {
     const bgUrl = typeof block.background === 'string' ? undefined : block.background?.url;
     // The CTA is a `linkField` group — it can point at a page, article,

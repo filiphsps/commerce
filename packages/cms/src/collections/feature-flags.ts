@@ -1,5 +1,10 @@
 import type { CollectionConfig } from 'payload';
 
+/**
+ * Payload collection config for `feature-flags`. Stores platform-wide feature
+ * toggles with default values, allowed options, and per-rule targeting overrides.
+ * Readable by any authenticated user; create/update/delete are admin-only.
+ */
 export const featureFlags: CollectionConfig = {
     slug: 'feature-flags',
     admin: { useAsTitle: 'key', defaultColumns: ['key', 'description', 'updatedAt'] },

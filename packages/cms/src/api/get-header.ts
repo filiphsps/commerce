@@ -6,8 +6,24 @@ import type { LocaleRef, ShopRef } from './get-page';
 import { getPayloadInstance } from './get-payload-instance';
 import { resolveTenantId } from './resolve-tenant-id';
 
+/**
+ * Arguments accepted by {@link getHeader}.
+ *
+ * @example
+ *   const args: GetHeaderArgs = { shop, locale };
+ */
 export type GetHeaderArgs = { shop: ShopRef; locale: LocaleRef; draft?: boolean; __payload?: Payload };
 
+/**
+ * Fetch the `header` singleton for the given shop and locale. Returns `null`
+ * when the tenant is unsynced or the shop id is missing.
+ *
+ * @param args - Shop, locale, optional `draft` flag, and optional `__payload`.
+ * @returns The header document at depth 2, or `null` when not found.
+ *
+ * @example
+ *   const header = await getHeader({ shop, locale });
+ */
 export const getHeader = async ({ shop, locale, draft = false, __payload }: GetHeaderArgs) => {
     assertShopId(shop);
     const payload = __payload ?? (await getPayloadInstance());

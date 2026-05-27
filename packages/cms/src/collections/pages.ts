@@ -4,6 +4,11 @@ import { allBlocks } from '../blocks';
 import { seoGroup } from '../fields';
 import { buildRevalidateHooks } from './_hooks/revalidate';
 
+/**
+ * Payload collection config for `pages`. Tenant-scoped CMS pages with
+ * draft/autosave/version support, a block-based body, and an SEO group. The
+ * `(tenant, slug)` compound index enforces per-tenant slug uniqueness.
+ */
 export const pages: CollectionConfig = {
     slug: 'pages',
     versions: { drafts: { autosave: { interval: 2000 } } },

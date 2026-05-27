@@ -5,6 +5,12 @@ import { allBlocks } from '../blocks';
 import { seoGroup } from '../fields';
 import { buildRevalidateHooks } from './_hooks/revalidate';
 
+/**
+ * Payload collection config for `collectionMetadata`. Stores CMS enrichment
+ * (description override, blocks, SEO) keyed to a Shopify collection handle.
+ * The `(tenant, shopifyHandle)` compound index enforces per-tenant handle
+ * uniqueness.
+ */
 export const collectionMetadata: CollectionConfig = {
     slug: 'collectionMetadata',
     versions: { drafts: { autosave: { interval: 2000 } } },

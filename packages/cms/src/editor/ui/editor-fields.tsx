@@ -3,6 +3,12 @@
 import { RenderFields, useConfig } from '@payloadcms/ui';
 import { isHiddenEditorField } from '../hidden-fields';
 
+/**
+ * Props for {@link EditorFields}.
+ *
+ * @example
+ * <EditorFields collection="pages" />
+ */
 export type EditorFieldsProps = {
     /** Payload collection slug. Must match the manifest's collection. */
     collection: string;

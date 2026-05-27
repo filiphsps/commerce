@@ -4,6 +4,14 @@ import { useAllFormFields, useForm, useFormModified } from '@payloadcms/ui';
 import { type ComponentType, type ReactNode, useEffect, useRef, useState } from 'react';
 import type { EditorToolbarShellProps } from '../runtime';
 
+/**
+ * Props for {@link EditorFormToolbar}. Carries the shell `Toolbar` component,
+ * bound server actions, optional autosave config, and an optional locale
+ * switcher slot rendered on the left of the toolbar bar.
+ *
+ * @example
+ * <EditorFormToolbar Toolbar={runtime.Toolbar} saveDraftAction={saveDraft} publishAction={publish} autosave={{ interval: 2000 }} />
+ */
 export type EditorFormToolbarProps = {
     /** Shell component the admin app supplies (renders Save Draft / Publish buttons). */
     Toolbar: ComponentType<EditorToolbarShellProps>;

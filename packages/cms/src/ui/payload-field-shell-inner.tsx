@@ -12,8 +12,38 @@ import type {
 } from 'payload';
 import type { ReactNode } from 'react';
 
+/**
+ * Theme variant for the embedded Payload shell. Passed directly to Payload's
+ * `<RootProvider theme>` and should match the `data-theme` attribute on the
+ * `<html>` element so component and layout token ramps agree.
+ *
+ * @example
+ * <PayloadFieldShell theme="dark" {...rest} />
+ */
 export type PayloadFieldShellTheme = 'dark' | 'light';
 
+/**
+ * Props for {@link PayloadFieldShell} and its client-side inner component.
+ * Bundles the minimal Payload context needed when embedding field components
+ * outside the canonical `@payloadcms/next` admin shell. Every property is
+ * RSC-serializable so the shell can be rendered server-side and streamed.
+ *
+ * @example
+ * <PayloadFieldShell
+ *   config={clientConfig}
+ *   serverFunction={handleServerFunction}
+ *   dateFNSKey={req.i18n.dateFNSKey}
+ *   fallbackLang={config.i18n.fallbackLanguage}
+ *   languageCode="en"
+ *   languageOptions={languageOptions}
+ *   permissions={permissions}
+ *   theme="dark"
+ *   translations={req.i18n.translations}
+ *   user={req.user}
+ * >
+ *   {children}
+ * </PayloadFieldShell>
+ */
 export type PayloadFieldShellProps = {
     /**
      * The Payload `ClientConfig` for the current request — produced by

@@ -1,6 +1,11 @@
 import type { CollectionConfig } from 'payload';
 import { adminOnly, tenantScopedRead, tenantScopedWrite } from '../access';
 
+/**
+ * Payload collection config for `media`. Upload collection scoped to tenants
+ * with four image-size variants (thumbnail, card, feature, hero) and a focal
+ * point selector. Accepts images, mp4 video, and PDF.
+ */
 export const media: CollectionConfig = {
     slug: 'media',
     // `media` participates in `tenantScopedCollections` so the multi-tenant

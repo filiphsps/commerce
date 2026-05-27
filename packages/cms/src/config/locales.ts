@@ -22,13 +22,32 @@
 // deployments. When unset (the default) every editor sees the full superset,
 // filtered by their tenant.
 
-// Permissive locale-string validator: alphanumeric plus `-`/`_`. Lets tenants
-// configure regional variants and obscure region codes without us auditing
-// every BCP-47 quirk. Rejects only obviously malformed values (whitespace,
-// path-traversal characters, leading digits, etc.).
 const VALID_LOCALE_PATTERN = /^[A-Za-z][A-Za-z0-9_-]{0,34}$/;
+
+/**
+ * Guards that an unknown value is a plausible locale code.
+ * Accepts alphanumeric codes plus `-`/`_` separators (e.g. `en`, `sv-SE`).
+ * The full BCP-47 spec is not enforced — only obviously malformed values
+ * (whitespace, path-traversal characters, leading digits) are rejected, so
+ * obscure region codes pass without requiring an exhaustive allow-list.
+ *
+ * @param s - Value to test.
+ * @returns `true` when `s` is a string matching the permissive locale pattern.
+ *
+ * @example
+ * isValidLocale('en-US'); // true
+ * isValidLocale('  en'); // false
+ */
 export const isValidLocale = (s: unknown): s is string => typeof s === 'string' && VALID_LOCALE_PATTERN.test(s);
 
+/**
+ * Splits a comma-separated locale env var string into a trimmed, non-empty
+ * array of locale codes.
+ *
+ * @param raw - Raw env var value (e.g. `"en-US,de-DE, sv-SE"`).
+ * @returns Array of non-empty trimmed tokens, or `null` when the input is
+ *   absent or produces no tokens after splitting.
+ */
 const parseLocaleEnv = (raw: string | undefined): string[] | null => {
     if (!raw) return null;
     const parts = raw
@@ -140,6 +159,20 @@ export const BCP47_REGION_TAGGED_LOCALES: readonly string[] = [
 // region-tagged codes and Payload won't resolve a locale that isn't here.
 const FALLBACK_LOCALES: string[] = [...ISO_639_1_LOCALES, ...BCP47_REGION_TAGGED_LOCALES];
 
+/**
+ * Returns the list of locale codes Payload should register at boot.
+ * Reads `NORDCOM_CMS_LOCALES` from `env` (comma-separated); falls back to the
+ * full {@link ISO_639_1_LOCALES} + {@link BCP47_REGION_TAGGED_LOCALES}
+ * superset when the variable is absent or produces no valid entries. Emits a
+ * console warning when the variable is set but all tokens fail validation.
+ *
+ * @param env - Environment variable map; defaults to `process.env`.
+ * @returns Non-empty array of locale code strings.
+ *
+ * @example
+ * resolveCmsLocales({ NORDCOM_CMS_LOCALES: 'en-US,sv-SE' }); // ['en-US', 'sv-SE']
+ * resolveCmsLocales({}); // full ISO 639-1 + BCP-47 superset
+ */
 export const resolveCmsLocales = (env: Record<string, string | undefined> = process.env): string[] => {
     const fromEnv = parseLocaleEnv(env.NORDCOM_CMS_LOCALES)?.filter(isValidLocale);
     if (fromEnv && fromEnv.length > 0) return fromEnv;
@@ -153,15 +186,34 @@ export const resolveCmsLocales = (env: Record<string, string | undefined> = proc
     return FALLBACK_LOCALES;
 };
 
+/**
+ * Returns the default locale code Payload should use when no tenant-specific
+ * locale is resolved. Reads `NORDCOM_CMS_DEFAULT_LOCALE` from `env` and
+ * validates it with {@link isValidLocale}; falls back to `'en-US'`.
+ *
+ * @param env - Environment variable map; defaults to `process.env`.
+ * @returns A valid locale code string.
+ *
+ * @example
+ * resolveCmsDefaultLocale({ NORDCOM_CMS_DEFAULT_LOCALE: 'sv-SE' }); // 'sv-SE'
+ * resolveCmsDefaultLocale({}); // 'en-US'
+ */
 export const resolveCmsDefaultLocale = (env: Record<string, string | undefined> = process.env): string => {
     const candidate = env.NORDCOM_CMS_DEFAULT_LOCALE;
     if (candidate && isValidLocale(candidate)) return candidate;
     return 'en-US';
 };
 
-// Computed at module load for the live process so callers can import them
-// directly without re-reading env on every reference. Tests should call
-// `resolveCmsLocales()` / `resolveCmsDefaultLocale()` directly with a
-// custom env to exercise both branches.
+/**
+ * Process-level locale superset computed once from `process.env` at module
+ * load. Import directly for zero-cost access in non-test code; in tests call
+ * {@link resolveCmsLocales} with a custom `env` map to exercise both branches.
+ */
 export const cmsDefaultLocales: string[] = resolveCmsLocales();
+
+/**
+ * Process-level default locale computed once from `process.env` at module
+ * load. Import directly for zero-cost access in non-test code; in tests call
+ * {@link resolveCmsDefaultLocale} with a custom `env` map.
+ */
 export const cmsDefaultLocale: string = resolveCmsDefaultLocale();

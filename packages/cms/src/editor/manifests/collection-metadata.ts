@@ -2,6 +2,7 @@ import type { Route } from 'next';
 import { adminOnly, editorOrAdmin, tenantMember } from '../access';
 import { defineCollectionEditor } from '../manifest';
 
+/** Editor manifest for the `collectionMetadata` collection. Tenant-scoped; keyed by Shopify collection handle. */
 export const collectionMetadataEditor = defineCollectionEditor({
     collection: 'collectionMetadata',
     routes: {

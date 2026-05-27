@@ -4,6 +4,7 @@ import type { Route } from 'next';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { cn } from '../../utils/tailwind';
 
+/** A locale code + display label pair used as a select option in the locale switcher. */
 export type LocaleOption = {
     /** BCP-47 locale code, e.g. "en-US". */
     code: string;
@@ -11,6 +12,7 @@ export type LocaleOption = {
     label: string;
 };
 
+/** Props shared by {@link LocaleSwitcher} and {@link BareLocaleSwitcher}. */
 export type LocaleSwitcherProps = {
     /** Available locale options to switch between. */
     locales: LocaleOption[];
@@ -21,7 +23,11 @@ export type LocaleSwitcherProps = {
 };
 
 /**
- * Local switcher
+ * Locale switcher with a label. Wraps {@link BareLocaleSwitcher} inside a
+ * labeled container to match the height of adjacent toolbar items.
+ *
+ * @param props - {@link LocaleSwitcherProps} with available locales and current locale.
+ * @returns The labeled locale switcher element.
  */
 export function LocaleSwitcher({ locales, currentLocale, className }: LocaleSwitcherProps) {
     return (

@@ -10,6 +10,12 @@ import type { ReactNode } from 'react';
 import type { CollectionEditorManifest } from '../manifest';
 import type { EditorRuntime } from '../runtime';
 
+/**
+ * Props for {@link EditorListPage}.
+ *
+ * @example
+ * <EditorListPage manifest={pagesEditor} runtime={runtime} params={{ domain }} searchParams={searchParams} />
+ */
 export type EditorListPageProps<TSlug extends CollectionSlug = CollectionSlug> = {
     manifest: CollectionEditorManifest<TSlug>;
     runtime: EditorRuntime;
@@ -19,6 +25,15 @@ export type EditorListPageProps<TSlug extends CollectionSlug = CollectionSlug> =
     bulkActions?: ReactNode;
 };
 
+/**
+ * Server Component that renders the collection list view. Resolves the locale
+ * (redirecting when absent), enforces list access, fetches a paginated doc
+ * list, and renders the runtime's `Table` (or `EmptyState` when zero docs).
+ *
+ * @param props - {@link EditorListPageProps} carrying manifest, runtime, params, and search params.
+ * @returns The rendered list page with a page header, optional new-doc link, and table.
+ * @throws {MissingListConfigError} When the manifest has no `list` config.
+ */
 export async function EditorListPage<TSlug extends CollectionSlug>({
     manifest,
     runtime,

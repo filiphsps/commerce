@@ -1,12 +1,31 @@
 import type { AuthStrategy, CollectionConfig } from 'payload';
 import { isAdmin } from '../access';
 
+/**
+ * Options for {@link buildUsers}.
+ *
+ * @example
+ *   const opts: BuildUsersOptions = { authStrategies: [oidcStrategy], disablePasswordLogin: true };
+ */
 export type BuildUsersOptions = {
     authStrategies?: AuthStrategy[];
     /** When true, disables the email+password login UI in favour of the strategies. */
     disablePasswordLogin?: boolean;
 };
 
+/**
+ * Build the Payload `users` collection config. Isolates the auth strategy and
+ * password-login toggle so different apps can share the same field schema while
+ * configuring authentication differently. The collection routes its MongoDB
+ * storage to `payload-users` to avoid colliding with the NextAuth `users`
+ * collection registered by `@nordcom/commerce-db`.
+ *
+ * @param opts - Optional auth strategies and password-login flag.
+ * @returns A Payload CollectionConfig for the `users` collection.
+ *
+ * @example
+ *   const usersCollection = buildUsers({ disablePasswordLogin: true });
+ */
 export const buildUsers = ({
     authStrategies = [],
     disablePasswordLogin = false,

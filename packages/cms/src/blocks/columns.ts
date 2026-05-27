@@ -2,6 +2,13 @@ import type { Block } from 'payload';
 
 const COLUMNS_BLOCK_SLUG = 'columns';
 
+/**
+ * Build a columns block whose nested `content` field accepts any block from
+ * `siblings` except the columns block itself (prevents infinite nesting).
+ *
+ * @param siblings - All sibling block definitions in the parent `blocks` field.
+ * @returns A Payload block definition for a 1–4 column layout.
+ */
 const buildColumnsBlock = (siblings: Block[]): Block => ({
     slug: COLUMNS_BLOCK_SLUG,
     interfaceName: 'ColumnsBlock',
@@ -34,5 +41,10 @@ const buildColumnsBlock = (siblings: Block[]): Block => ({
     ],
 });
 
+/**
+ * Default columns block with an empty sibling list. Used in the `allBlocks`
+ * registry; the `content` array accepts every other block once the registry
+ * is assembled via `buildColumnsBlock(allBlocks)`.
+ */
 export const columnsBlock: Block = buildColumnsBlock([]);
 export { buildColumnsBlock, COLUMNS_BLOCK_SLUG };
