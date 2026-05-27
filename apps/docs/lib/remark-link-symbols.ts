@@ -1,25 +1,25 @@
 import { isLinkableToken, resolveLink, type SymbolIndex, type ResolveContext } from './jsdoc-link-resolver';
 
-// Minimal inline types for the subset of MDAST + unified we need. The full
-// @types/mdast and @types/unified packages are transitive deps only — importing
-// them by name would fail tsc. These stubs cover precisely what we use.
+// Minimal inline types for the subset of MDAST we need. The full @types/mdast
+// is a transitive dep only — importing it by name would fail tsc.
 type InlineCodeNode = { type: 'inlineCode'; value: string };
-type MdxJsxAttr = { type: 'mdxJsxAttribute'; name: string; value: string };
-type MdxJsxTextNode = {
-    type: 'mdxJsxTextElement';
-    name: string;
-    attributes: MdxJsxAttr[];
-    children: unknown[];
+type LinkNode = {
+    type: 'link';
+    url: string;
+    title: null;
+    data?: { hProperties?: Record<string, string> };
+    children: { type: 'inlineCode'; value: string }[];
 };
 type AnyNode = { type: string; children?: AnyNode[]; value?: string };
 
 /**
- * Remark plugin that rewrites inline-code spans into `<Link>` MDX nodes when
- * the token resolves through the symbol index. Also handles `{@link X}` text
- * inside summary paragraphs. Runs at MDX compile time.
+ * Remark plugin that rewrites inline-code spans into plain `link` mdast nodes
+ * when the token resolves through the symbol index. The resolved tab is
+ * threaded onto the rendered `<a>` via `data.hProperties.data-symbol-tab` so
+ * CSS can pill-style links by target tab.
  *
- * When the symbol index is empty (first run before `pnpm gen`), the plugin is
- * a no-op to avoid blocking cold starts.
+ * Standard `link` nodes (not `mdxJsxTextElement`) so fumadocs-core's
+ * remark-structure plugin handles them like any markdown link.
  *
  * @param options - The symbol index and page context.
  * @returns A unified transformer function that mutates the MDAST in place.
@@ -34,12 +34,11 @@ export function remarkLinkSymbols(options: {
             if (!isLinkableToken(node.value)) return;
             const res = resolveLink(options.index, node.value, options.context);
             if (!res) return;
-            const href: MdxJsxAttr = { type: 'mdxJsxAttribute', name: 'href', value: res.url };
-            const tab: MdxJsxAttr = { type: 'mdxJsxAttribute', name: 'data-symbol-tab', value: res.tab };
-            const replacement: MdxJsxTextNode = {
-                type: 'mdxJsxTextElement',
-                name: 'Link',
-                attributes: [href, tab],
+            const replacement: LinkNode = {
+                type: 'link',
+                url: res.url,
+                title: null,
+                data: { hProperties: { 'data-symbol-tab': res.tab } },
                 children: [{ type: 'inlineCode', value: node.value }],
             };
             if (parent?.children && typeof idx === 'number') {
