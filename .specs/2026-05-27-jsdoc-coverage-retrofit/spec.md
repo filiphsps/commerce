@@ -89,6 +89,10 @@ Two tiers per CLAUDE.md, applied via a deterministic structural rule.
 - Server actions (`'use server'` exports living outside framework files): Tier 2 always, but `@throws` mandatory since they cross the trust boundary.
 - React hooks (`useFoo`): same tier as their surrounding context.
 - Type-only exports: documented when Tier 1; when Tier 2, only documented if non-trivial.
+- **Public methods on Tier-1 classes inherit Tier 1.** Each `public` or `protected` method (instance or static) on a class re-exported from the barrel needs its own `@example` block alongside `@param`/`@returns`/`@throws`. The class's own block doesn't substitute for the methods.
+- **Type guards (`isX`, `is(...)`, `assertX`) need semantic `@param` descriptions.** "The value to test" is restatement. Describe the *distinction* the guard enforces — what it accepts that a naïve type check wouldn't, what it rejects that the broader type would let through, or what subtype it narrows to.
+- **Tier-1 type aliases' purpose lines must add meaning beyond the type expression.** "Union of TLD strings" restates `(typeof DEV_TLDS)[number]`. Say *when* / *why* a caller reaches for the type — what consumer it parameterizes, what shape it constrains in a public API.
+- **`@example` snippets must reference real symbols.** Made-up error kinds or class names that don't exist in the codebase are blockers — examples are documentation and code, not narrative.
 
 ## Templates (quality bar)
 

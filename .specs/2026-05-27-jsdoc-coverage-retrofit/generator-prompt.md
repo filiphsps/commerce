@@ -50,8 +50,14 @@ If any precondition fails, abort immediately and report the failure. Do not edit
    git add <PACKAGE_PATH>/src/ .changeset/
    git commit -m "docs(<COMMIT_SCOPE>): backfill jsdoc on functions and components."
    ```
-7. Push: `git push -u origin docs/jsdoc-<PACKAGE_SLUG>`
-8. Open PR with `gh pr create`:
+7. Rebase onto latest master (mandatory — never push without rebasing first):
+   ```bash
+   git fetch origin
+   git rebase origin/master
+   ```
+   If the rebase produces conflicts: almost always JSDoc-vs-JSDoc on overlapping commits — resolve by keeping both, run `pnpm --filter <PACKAGE_NPM_NAME> typecheck` to confirm. If conflicts are non-trivial, abort and surface.
+8. Push: `git push -u origin docs/jsdoc-<PACKAGE_SLUG>` (use `--force-with-lease` on re-pushes after rebase).
+9. Open PR with `gh pr create`:
    - Title: `docs(<COMMIT_SCOPE>): backfill jsdoc on functions and components`
    - Body template:
      ```markdown
@@ -66,9 +72,10 @@ If any precondition fails, abort immediately and report the failure. Do not edit
      ## Verification
      - [x] `pnpm --filter <PACKAGE_NPM_NAME> typecheck` passes
      - [x] `pnpm --filter <PACKAGE_NPM_NAME> lint` passes
+     - [x] Rebased onto latest `origin/master`
      - [x] Diff is JSDoc-only (no logic changes)
      ```
-9. Report PR URL back to the orchestrator.
+10. Report PR URL back to the orchestrator.
 
 ## Failure handling
 

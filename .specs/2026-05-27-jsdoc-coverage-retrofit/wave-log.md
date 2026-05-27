@@ -6,13 +6,19 @@ Append one section per wave as it completes. Use this as the orchestrator's runn
 
 ## Wave 1 — Foundations (errors + utils)
 
-Status: in_progress
-Started: 2026-05-27 (session)
-Completed: —
+Status: completed (merged by human ahead of review-loop closure)
+Started: 2026-05-27
+Completed: 2026-05-27
 PRs:
-- `packages/errors`: pending generator dispatch
-- `packages/utils`: pending generator dispatch
-Calibration findings: —
+- `packages/errors`: https://github.com/filiphsps/commerce/pull/1950 — merged as commit `4144e0f77`. Generator counts: 53 Tier-1, 1 Tier-2, 2 files. Reviewer flagged 9 blockers AFTER merge (see Calibration findings).
+- `packages/utils`: https://github.com/filiphsps/commerce/pull/1949 — merged as commit `3a168fbe2`. Generator counts: 3 Tier-1, 0 Tier-2, 2 files. Reviewer flagged 1 blocker AFTER merge.
+Calibration findings:
+- **Public methods on Tier-1 classes were under-documented.** Errors PR landed without `@example` on `Error.is()`, `Error.isError()`, `Error.isNotFound()`, `ProviderFetchError.stringifyInput()`. Folded into spec § Edge case rules: methods inherit Tier 1.
+- **Type-guard `@param` descriptions defaulted to "the value to test".** Folded into spec § Edge case rules: guards need semantic descriptions.
+- **Tier-1 type aliases restated the type expression.** Folded into spec § Edge case rules: alias purpose must add caller-facing meaning.
+- **One `@example` referenced a non-existent error kind (`CartErrorKind.CART_FULL`).** Folded into spec § Edge case rules: examples must reference real symbols.
+- **Generator count discrepancies.** Reported 53 Tier-1 vs reviewer counted 55 — bookkeeping gap (likely class methods counted inconsistently), not missing docs. No spec change; future generators should count methods as separate symbols.
+- **Open issue:** the 10 reviewer blockers were not addressed in the merged work. Consider a follow-up cleanup PR for the errors package once Wave 2 ships.
 
 ## Wave 2 — Independent foundations (db, tagtree, shopify-graphql, cart/core)
 
