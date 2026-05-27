@@ -1,9 +1,8 @@
 'use client';
 
+import { useCartActions, useCartMeta, useCartStatus } from '@nordcom/cart-react';
 import { Tag as TagIcon, X as XIcon } from 'lucide-react';
-
 import { Button } from '@/components/actionable/button';
-import { useCartActions, useCartMeta, useCartStatus } from '@/components/cart/provider';
 import { Label } from '@/components/typography/label';
 import { cn } from '@/utils/tailwind';
 

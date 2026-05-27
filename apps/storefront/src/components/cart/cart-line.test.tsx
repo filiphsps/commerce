@@ -1,10 +1,10 @@
+import { useCartActions, useCartStatus } from '@nordcom/cart-react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CartLine } from '@/components/cart/cart-line';
-import { useCartActions, useCartStatus } from '@/components/cart/provider';
 import { mockShop } from '@/utils/test/fixtures';
 import { fireEvent, render, screen, waitFor } from '@/utils/test/react';
 
-vi.mock('@/components/cart/provider', () => ({
+vi.mock('@nordcom/cart-react', () => ({
     useCartActions: vi.fn(),
     useCartStatus: vi.fn(),
     useMaybeCart: vi.fn().mockReturnValue(null),

@@ -1,12 +1,12 @@
+import { useCartCost, useCartCount, useCartLines, useCartMeta, useCartStatus } from '@nordcom/cart-react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CartSummary } from '@/components/cart/cart-summary';
-import { useCartCost, useCartCount, useCartLines, useCartMeta, useCartStatus } from '@/components/cart/provider';
 import { mockShop } from '@/utils/test/fixtures';
 import { render, screen } from '@/utils/test/react';
 
 const mockOnCheckout = vi.fn();
 
-vi.mock('@/components/cart/provider', async (importOriginal) => {
+vi.mock('@nordcom/cart-react', async (importOriginal) => {
     const actual = (await importOriginal()) as Record<string, unknown>;
     return {
         ...actual,
