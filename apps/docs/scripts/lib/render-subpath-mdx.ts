@@ -23,7 +23,6 @@ export type SubpathOverviewArgs = {
  */
 export function renderSubpathOverviewMdx(args: SubpathOverviewArgs): string {
     const { workspaceSlug, subpath, rows } = args;
-    const groups = groupByKind(rows);
 
     const frontmatter = [
         '---',
@@ -34,6 +33,15 @@ export function renderSubpathOverviewMdx(args: SubpathOverviewArgs): string {
     ].join('\n');
 
     const banner = `<ReferenceBackLink slug="${workspaceSlug}" subpath="${subpath}" />`;
+
+    // All exports hidden (every symbol @internal) — render the empty-state card
+    // instead of an empty table. Matches visuals/09-empty-states.html.
+    if (rows.length === 0) {
+        const emptyCard = `<EmptySubpath pkg="${workspaceSlug}" subpath="${subpath}" />`;
+        return [frontmatter, banner, '', `# ${workspaceSlug} / ${subpath}`, '', emptyCard, ''].join('\n');
+    }
+
+    const groups = groupByKind(rows);
     const sections = (['function', 'class', 'component', 'interface', 'type', 'variable', 'enum', 'other'] as const)
         .filter((k) => groups.has(k))
         .map((kind) => renderGroup(kind, groups.get(kind) ?? []));
