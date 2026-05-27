@@ -1,11 +1,12 @@
 'use client';
 
+import type { ProductSnapshot } from '@nordcom/cart-core';
+import { useCartActions, useCartStatus } from '@nordcom/cart-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { type HTMLProps, useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import type { Product, ProductVariant } from '@/api/product';
 import { Button } from '@/components/actionable/button';
-import { useCartActions, useCartStatus } from '@/components/cart/provider';
 import { useShop } from '@/components/shop/provider';
 import type { LocaleDictionary } from '@/utils/locale';
 import { getTranslations } from '@/utils/locale';
@@ -69,9 +70,36 @@ export function AddToCart({
             return;
         }
 
+        const variantId = selectedVariant.id!;
+        const variantImage = selectedVariant.image
+            ? {
+                  url: selectedVariant.image.url ?? '',
+                  altText: selectedVariant.image.altText ?? null,
+                  width: selectedVariant.image.width ?? 0,
+                  height: selectedVariant.image.height ?? 0,
+              }
+            : null;
+        const snapshot: ProductSnapshot = {
+            variantId,
+            productHandle: product.handle ?? '',
+            productTitle: product.title ?? '',
+            variantTitle: selectedVariant.title ?? '',
+            image: variantImage,
+            unitPrice: {
+                amount: selectedVariant.price.amount ?? '0',
+                currencyCode: selectedVariant.price.currencyCode ?? 'USD',
+            },
+            compareAtUnitPrice: selectedVariant.compareAtPrice
+                ? {
+                      amount: selectedVariant.compareAtPrice.amount ?? '0',
+                      currencyCode: selectedVariant.compareAtPrice.currencyCode ?? 'USD',
+                  }
+                : null,
+        };
         const result = await addLine({
-            variantId: selectedVariant.id!,
+            variantId,
             quantity,
+            snapshot,
         });
 
         if (!result.ok) {

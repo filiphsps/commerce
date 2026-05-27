@@ -1,10 +1,10 @@
+import { useCartActions, useCartStatus } from '@nordcom/cart-react';
 import { act } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { useCartActions, useCartStatus } from '@/components/cart/provider';
 import AddToCart from '@/components/products/add-to-cart';
 import { render } from '@/utils/test/react';
 
-vi.mock('@/components/cart/provider', () => ({
+vi.mock('@nordcom/cart-react', () => ({
     useCartActions: vi.fn(),
     useCartStatus: vi.fn(),
     useMaybeCart: vi.fn().mockReturnValue(null),
@@ -97,17 +97,26 @@ describe('components', () => {
             expect(() => wrapper.unmount()).not.toThrow();
         });
 
-        it('calls addLine with variantId and quantity when clicked', async () => {
+        it('calls addLine with variantId, quantity, and ProductSnapshot when clicked', async () => {
             const { getByRole } = render(<AddToCart {...baseProps} />);
 
             await act(async () => {
                 getByRole('button').click();
             });
 
-            expect(mockAddLine).toHaveBeenCalledWith({
-                variantId: 'gid://shopify/ProductVariant/1',
-                quantity: 1,
-            });
+            expect(mockAddLine).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    variantId: 'gid://shopify/ProductVariant/1',
+                    quantity: 1,
+                    snapshot: expect.objectContaining({
+                        variantId: 'gid://shopify/ProductVariant/1',
+                        productHandle: 'demo-product',
+                        productTitle: 'Demo Product',
+                        variantTitle: 'Default',
+                        unitPrice: { amount: '10.00', currencyCode: 'USD' },
+                    }),
+                }),
+            );
         });
     });
 
