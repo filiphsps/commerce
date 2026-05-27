@@ -1,15 +1,79 @@
 @import "tailwindcss";
+@import "@nordcom/nordstar";
 
-:root {
-    --primary: #ed1e79;
-    --primary-fg: #ffffff;
+@plugin "@tailwindcss/typography";
+
+@source "../../../node_modules/@nordcom";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+    --font-sans: var(--font-primary, var(--font-fallback)), sans-serif;
+    --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+
+    --color-bg: #000000;
+    --color-bg-1: hsl(0 0% 4%);
+    --color-bg-2: hsl(0 0% 9%);
+    --color-bg-3: hsl(0 0% 13%);
+
+    --color-fg: #ffffff;
+    --color-fg-mute: hsl(0 0% 51%);
+    --color-fg-dim: hsl(0 0% 36%);
+
+    --color-border: hsl(0 0% 18%);
+    --color-border-strong: hsl(0 0% 28%);
+
+    --color-brand: #ed1e79;
+    --color-brand-hover: hsl(330 86% 60%);
+
+    --color-pkg: hsl(95 80% 55%);
+    --color-ref: hsl(190 95% 55%);
+    --color-err: hsl(28 95% 58%);
+    --color-info: hsl(220 80% 65%);
+
+    /* Fumadocs maps */
+    --color-fd-background: var(--color-bg);
+    --color-fd-foreground: var(--color-fg);
+    --color-fd-muted: var(--color-bg-2);
+    --color-fd-muted-foreground: var(--color-fg-mute);
+    --color-fd-border: var(--color-border);
+    --color-fd-primary: var(--color-brand);
+    --color-fd-primary-foreground: var(--color-fg);
+    --color-fd-accent: var(--color-brand);
+    --color-fd-accent-foreground: var(--color-fg);
+    --color-fd-ring: var(--color-brand);
+    --color-fd-card: var(--color-bg-1);
 }
 
-[data-theme="dark"] {
-    --primary: #f366a4;
-}
+@layer base {
+    :root {
+        --font-fallback: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
-body {
-    font-family: "Inter", system-ui, -apple-system, sans-serif;
-    margin: 0;
+        --bw: 0.2rem;
+        --bw-s: 0.138rem;
+        --bw-l: 0.29rem;
+        --radius: 0.45rem;
+
+        --duration-fast: 100ms;
+        --duration: 150ms;
+        --duration-slow: 250ms;
+        --ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+    }
+
+    html {
+        font-family: var(--font-sans);
+        background: var(--color-bg);
+        color: var(--color-fg);
+    }
+
+    ::selection {
+        background: var(--color-brand);
+        color: var(--color-bg);
+    }
+
+    *:focus-visible {
+        outline: var(--bw-s) solid var(--color-brand);
+        outline-offset: 3px;
+        border-radius: 3px;
+    }
 }

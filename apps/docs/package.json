@@ -32,6 +32,7 @@
     },
     "dependencies": {
         "@nordcom/commerce-cms": "workspace:*",
+        "@nordcom/nordstar": "0.0.75",
         "@nordcom/commerce-db": "workspace:*",
         "@nordcom/commerce-errors": "workspace:*",
         "@nordcom/commerce-marketing-common": "workspace:*",
@@ -51,6 +52,7 @@
     "devDependencies": {
         "@playwright/test": "1.60.0",
         "@tailwindcss/postcss": "4.3.0",
+        "@tailwindcss/typography": "0.5.19",
         "@testing-library/react": "16.3.2",
         "@types/mdx": "2.0.13",
         "@types/node": "24.12.4",
