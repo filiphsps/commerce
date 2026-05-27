@@ -18,10 +18,18 @@ if (!fs.existsSync(OUT_ROOT)) {
  * of these values are validated — any other absolute path belongs to a
  * different app and should not be checked against the docs `out/` tree.
  *
- * The plain `/docs/` entry covers concept pages, get-started, and operations.
- * The three longer prefixes cover packages, API reference, and error codes.
+ * The four tabs split into: Docs (default-root concept/operations pages),
+ * Packages, Reference, Errors. Apps live as full content under `/apps/`.
  */
-const KNOWN_PREFIXES = ['/docs/packages/', '/docs/reference/', '/docs/errors/', '/docs/'];
+const KNOWN_PREFIXES = [
+    '/packages/',
+    '/reference/',
+    '/errors/',
+    '/apps/',
+    '/concepts/',
+    '/get-started/',
+    '/operations/',
+];
 
 type BrokenLink = {
     from: string;

@@ -32,7 +32,7 @@ describe('resolveLink', () => {
     const index: SymbolIndex = {
         getArticle: [
             {
-                url: '/docs/reference/cms/api/get-article/',
+                url: '/reference/cms/api/get-article/',
                 kind: 'function',
                 tab: 'reference',
                 pkg: 'cms',
@@ -41,7 +41,7 @@ describe('resolveLink', () => {
         ],
         NotFoundError: [
             {
-                url: '/docs/reference/errors/index/not-found-error/',
+                url: '/reference/errors/index/not-found-error/',
                 kind: 'class',
                 tab: 'reference',
                 pkg: 'errors',
@@ -50,7 +50,7 @@ describe('resolveLink', () => {
         ],
         API_UNKNOWN_LOCALE: [
             {
-                url: '/docs/errors/api-unknown-locale/',
+                url: '/errors/api-unknown-locale/',
                 kind: 'error',
                 tab: 'errors',
             },
@@ -59,7 +59,7 @@ describe('resolveLink', () => {
 
     it('resolves a unique token to its URL', () => {
         const r = resolveLink(index, 'getArticle', { tab: 'packages', pkg: 'cms', subpath: 'api' });
-        expect(r?.url).toBe('/docs/reference/cms/api/get-article/');
+        expect(r?.url).toBe('/reference/cms/api/get-article/');
         expect(r?.ambiguous).toBe(false);
     });
 

@@ -125,12 +125,25 @@ function convertOne(code: string, src: string): string {
     const className = resolveClassFromCode(code);
     const sites = className ? loadThrowSites().filter((s) => s.errorClass === className) : [];
     const throwsSection = sites.length
-        ? '\n## Thrown from\n\n' +
-          sites.map((s) => `- \`${s.file}:${s.line}\` — \`${s.context}\``).join('\n') +
-          '\n'
+        ? `\n## Thrown from\n\n${sites
+              .map((s) => `- \`${escapeMdxInlineCode(s.file)}:${s.line}\` — \`${escapeMdxInlineCode(s.context)}\``)
+              .join('\n')}\n`
         : '';
 
     return `${frontmatter}${normalized}${throwsSection}\n`;
+}
+
+/**
+ * Escape characters inside an inline-code span that MDX would otherwise
+ * interpret as JSX. `{` and `}` open and close expression placeholders, so
+ * a source line containing `${variable}` would compile as a JSX expression
+ * and throw `ReferenceError: variable is not defined` at render time.
+ *
+ * @param s - Raw source-line text to embed inside backticks.
+ * @returns The same text with `{` and `}` HTML-escaped.
+ */
+function escapeMdxInlineCode(s: string): string {
+    return s.replace(/\{/g, '&#123;').replace(/\}/g, '&#125;');
 }
 
 /**

@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { docsEnv } from '@/lib/env';
 
 type ReferenceBackLinkProps = {
     /** Workspace slug used to build the Packages-tab URL (e.g. "cms"). */
@@ -22,7 +21,7 @@ type ReferenceBackLinkProps = {
  */
 export function ReferenceBackLink({ slug, subpath }: ReferenceBackLinkProps) {
     return (
-        <Link href={`${docsEnv.basePath}/docs/packages/${slug}/`} className="ref-banner" role="link">
+        <Link href={`/packages/${slug}/`} className="ref-banner" role="link">
             <div>
                 <div className="label">Packages narrative</div>
                 <div className="body">

@@ -14,14 +14,13 @@ const symbolIndex: SymbolIndex = fs.existsSync(indexPath)
     : {};
 
 /**
- * Fumadocs-MDX collection definitions. Each call carves out a directory under
- * `content/` and exposes it via the loader in `lib/source.ts`. Keep the four
- * collections in sync with the root folders documented in spec §IA.
+ * Single Fumadocs collection rooted at `content/`. Per the spec's IA, the docs
+ * site has four sidebar tabs (Docs / Packages / Reference / Errors) configured
+ * as Fumadocs "root folders" (`meta.json { root: true }`). The Docs tab is the
+ * unprefixed default so its pages live directly under `content/`; the other
+ * three tabs each have a subfolder.
  */
-export const docs = defineDocs({ dir: 'content/docs' });
-export const packages = defineDocs({ dir: 'content/packages' });
-export const reference = defineDocs({ dir: 'content/reference' });
-export const errors = defineDocs({ dir: 'content/errors' });
+export const docs = defineDocs({ dir: 'content' });
 
 export default defineConfig({
     mdxOptions: {

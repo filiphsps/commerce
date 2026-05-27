@@ -9,7 +9,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DOCS_APP = path.resolve(__dirname, '..');
 const REPO_ROOT = path.resolve(DOCS_APP, '../..');
 const PACKAGES_OUT = path.join(DOCS_APP, 'content/packages');
-const DOCS_APPS_OUT = path.join(DOCS_APP, 'content/docs/apps');
+const DOCS_APPS_OUT = path.join(DOCS_APP, 'content/apps');
 /** Legacy App Router generated dir — cleared each run so stale pages don't break builds. */
 const LEGACY_GENERATED = path.join(DOCS_APP, 'app/docs/(generated)');
 
@@ -139,7 +139,7 @@ function* walkDocs(dir: string): Generator<string> {
  * Mirror all MDX/MD files from a workspace's `docs/` directory to the
  * appropriate content output directory.
  *
- * - Apps  → `content/docs/apps/<slug>/`
+ * - Apps  → `content/apps/<slug>/`
  * - Packages → `content/packages/<category>/<slug>/` (or `content/packages/<slug>/`
  *   for workspaces without a category override, e.g. `tagtree/*`).
  *
@@ -164,7 +164,7 @@ function mirrorWorkspace(ws: Workspace): number {
 }
 
 /**
- * Write `content/docs/apps/meta.json` listing the mirrored app workspaces so
+ * Write `content/apps/meta.json` listing the mirrored app workspaces so
  * Fumadocs registers them in the Docs tab sidebar.
  *
  * @param workspaces - Full workspace list (apps + packages).
@@ -187,7 +187,7 @@ function emitApplicationsMeta(workspaces: Workspace[]): void {
     const meta = {
         title: 'Applications',
         description: 'Apps in this monorepo (cross-linked to their Docs-tab pages).',
-        pages: appSlugs.map((s) => `[${capitalize(s)}](/docs/apps/${s}/)`),
+        pages: appSlugs.map((s) => `[${capitalize(s)}](/apps/${s}/)`),
     };
     const file = path.join(PACKAGES_OUT, 'applications', 'meta.json');
     fs.mkdirSync(path.dirname(file), { recursive: true });

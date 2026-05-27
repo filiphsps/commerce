@@ -20,12 +20,18 @@ const KIND_MAP: Record<number, IndexEntry['kind']> = {
     8: 'enum',
 };
 
+/** Subfolders of `content/` that aren't Docs-tab concept pages — they're their own tabs. */
+const NON_DOCS_DIRS = new Set(['packages', 'reference', 'errors', 'apps']);
+
 /**
  * Build the global symbol index. Combines:
  * - Reference symbols from TypeDoc JSON output under `.typedoc-out/`
  * - Authored Packages MDX page slugs from `content/packages/`
- * - Docs concept slugs from `content/docs/`
+ * - Docs concept slugs from `content/` (excluding tab subfolders)
  * - Error codes from `content/errors/`
+ *
+ * URLs are produced WITHOUT a leading `/docs/` prefix. The runtime
+ * `NEXT_PUBLIC_DOCS_BASE_PATH` is applied by Next at routing time.
  *
  * @param options - Optional quiet flag to suppress console output.
  * @returns Count of indexed entries across all sources.
@@ -47,7 +53,7 @@ export function main({ quiet = false }: { quiet?: boolean } = {}): { entries: nu
         const subpath = rest.join('/') || 'index';
         for (const child of project.children ?? []) {
             const entry: IndexEntry = {
-                url: `/docs/reference/${pkg}/${subpath === 'index' ? '' : `${subpath}/`}${kebab(child.name)}/`,
+                url: `/reference/${pkg}/${subpath === 'index' ? '' : `${subpath}/`}${kebab(child.name)}/`,
                 kind: KIND_MAP[child.kind] ?? 'other',
                 tab: 'reference',
                 pkg,
@@ -65,19 +71,21 @@ export function main({ quiet = false }: { quiet?: boolean } = {}): { entries: nu
         const rel = path.relative(path.join(CONTENT, 'packages'), f).replace(/\.mdx$/, '');
         const slug = rel.replace(/\//g, '.');
         index[slug] = (index[slug] ?? []).concat({
-            url: `/docs/packages/${rel}/`,
+            url: `/packages/${rel}/`,
             kind: 'page',
             tab: 'packages',
         });
     }
 
-    // 3. Docs concept pages
-    for (const f of walkDir(path.join(CONTENT, 'docs'))) {
+    // 3. Docs concept pages — content/ minus the tab subfolders.
+    for (const f of walkDir(CONTENT)) {
         if (!f.endsWith('.mdx')) continue;
-        const rel = path.relative(path.join(CONTENT, 'docs'), f).replace(/\.mdx$/, '');
+        const rel = path.relative(CONTENT, f).replace(/\.mdx$/, '');
+        const topSegment = rel.split('/')[0];
+        if (topSegment && NON_DOCS_DIRS.has(topSegment)) continue;
         const slug = rel.replace(/\//g, '.');
         index[slug] = (index[slug] ?? []).concat({
-            url: `/docs/${rel}/`,
+            url: `/${rel}/`,
             kind: 'page',
             tab: 'docs',
         });
@@ -88,7 +96,7 @@ export function main({ quiet = false }: { quiet?: boolean } = {}): { entries: nu
         if (!f.endsWith('.mdx')) continue;
         const code = path.basename(f, '.mdx').toUpperCase().replace(/-/g, '_');
         index[code] = (index[code] ?? []).concat({
-            url: `/docs/errors/${path.basename(f, '.mdx')}/`,
+            url: `/errors/${path.basename(f, '.mdx')}/`,
             kind: 'error',
             tab: 'errors',
         });

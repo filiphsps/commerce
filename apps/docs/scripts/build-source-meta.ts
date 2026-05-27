@@ -10,13 +10,17 @@ const OUT_FILE = path.join(DOCS_APP, 'lib/source-meta.generated.ts');
 
 type Redirect = { source: string; destination: string; permanent: true };
 
+// Sources and destinations are path-only. Next.js strips the runtime
+// `basePath` before matching and re-applies it on the destination, so the
+// same redirect table works for the empty-basePath dev case and the
+// `/docs`-basePath production microfrontend case.
 const STATIC_REDIRECTS: Redirect[] = [
-    { source: '/docs/getting-started/', destination: '/docs/get-started/quickstart/', permanent: true },
-    { source: '/docs/architecture/', destination: '/docs/get-started/architecture/', permanent: true },
-    { source: '/docs/contributing/', destination: '/docs/operations/contributing/', permanent: true },
-    { source: '/docs/deployment/', destination: '/docs/operations/deployment/', permanent: true },
-    { source: '/docs/conventions/', destination: '/docs/operations/conventions/', permanent: true },
-    { source: '/docs/typescript-project-structure/', destination: '/docs/operations/typescript-project-structure/', permanent: true },
+    { source: '/getting-started/', destination: '/get-started/quickstart/', permanent: true },
+    { source: '/architecture/', destination: '/get-started/architecture/', permanent: true },
+    { source: '/contributing/', destination: '/operations/contributing/', permanent: true },
+    { source: '/deployment/', destination: '/operations/deployment/', permanent: true },
+    { source: '/conventions/', destination: '/operations/conventions/', permanent: true },
+    { source: '/typescript-project-structure/', destination: '/operations/typescript-project-structure/', permanent: true },
 ];
 
 /**
@@ -31,12 +35,12 @@ const STATIC_REDIRECTS: Redirect[] = [
 export function main({ quiet = false }: { quiet?: boolean } = {}): { redirects: number } {
     const all: Redirect[] = [...STATIC_REDIRECTS];
 
-    // Per-workspace catch-all: /docs/(generated)/<slug>/<rest>? → /docs/packages/<slug>/<rest>?
+    // Per-workspace catch-all: /(generated)/<slug>/<rest>? → /packages/<slug>/<rest>?
     const workspaceSlugs = discoverWorkspaceSlugs();
     for (const slug of workspaceSlugs) {
         all.push({
-            source: `/docs/(generated)/${slug}/:rest*`,
-            destination: `/docs/packages/${slug}/:rest*`,
+            source: `/(generated)/${slug}/:rest*`,
+            destination: `/packages/${slug}/:rest*`,
             permanent: true,
         });
     }
