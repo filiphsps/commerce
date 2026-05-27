@@ -30,6 +30,10 @@ export async function main({ quiet = false }: { quiet?: boolean } = {}): Promise
 }> {
     if (fs.existsSync(REFERENCE_OUT)) fs.rmSync(REFERENCE_OUT, { recursive: true, force: true });
     fs.mkdirSync(REFERENCE_OUT, { recursive: true });
+    fs.writeFileSync(
+        path.join(REFERENCE_OUT, 'meta.json'),
+        JSON.stringify({ title: 'Reference', description: 'Generated symbol catalogue from TypeDoc + JSDoc.', root: true }, null, 4) + '\n',
+    );
 
     let subpathsCount = 0;
     let symbolsCount = 0;

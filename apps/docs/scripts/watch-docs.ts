@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { main as generatePageMap } from './generate-page-map';
+import { main as emitReference } from './emit-reference-mdx';
 import { main as mirrorDocs } from './mirror-workspace-docs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -34,7 +34,7 @@ function shouldRebuild(filename: string | null): boolean {
     if (filename.includes('.turbo')) return false;
     if (filename.includes('.typedoc-out')) return false;
     if (filename.includes('(generated)')) return false;
-    if (filename.includes('page-map.generated')) return false;
+    if (filename.includes('content/reference')) return false;
     if (!filename.includes(`${path.sep}docs${path.sep}`)) return false;
     return filename.endsWith('.md') || filename.endsWith('.mdx');
 }
@@ -48,8 +48,8 @@ async function rebuild(): Promise<void> {
     const start = Date.now();
     try {
         mirrorDocs({ quiet: true });
-        generatePageMap({ quiet: true });
-        console.info(`[watch] rebuilt mirror → page-map (${Date.now() - start}ms)`);
+        await emitReference({ quiet: true });
+        console.info(`[watch] rebuilt mirror → reference (${Date.now() - start}ms)`);
     } catch (err) {
         console.error('[watch] rebuild failed:', err);
     }
