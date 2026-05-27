@@ -42,7 +42,7 @@ export function TabChip(props: TabChipBannerProps) {
     return (
         <div {...props} className={`flex flex-col gap-3 p-4 pb-2 ${props.className ?? ''}`}>
             <span
-                className={`inline-block w-fit whitespace-nowrap rounded-[4px] border-[0.138rem] px-3 py-1.5 font-extrabold text-[0.7rem] uppercase tracking-[0.18em] ${variant.color}`}
+                className={`inline-block w-fit whitespace-nowrap rounded-[4px] border-[0.138rem] px-2 py-1 font-bold text-[0.58rem] uppercase tracking-[0.16em] ${variant.color}`}
             >
                 {variant.label}
             </span>
