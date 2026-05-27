@@ -83,7 +83,7 @@ export const CollectionApi = async (
 /**
  * Fetches a lightweight list of all collections with product presence indicators.
  *
- * @param options - Options object.
+ * @param options - Storefront API client wrapper for the query.
  * @param options.api - Storefront API client.
  * @returns Array of collection stubs with `id`, `handle`, and `hasProducts`.
  * @throws {ProviderFetchError} When the Shopify query returns errors.

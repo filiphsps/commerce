@@ -78,7 +78,7 @@ const DEFAULT_LOCALE = {
 /**
  * Fetches available countries and their languages from the Shopify Storefront API.
  *
- * @param options - Options object.
+ * @param options - Storefront API client wrapper for the query.
  * @param options.api - Storefront API client.
  * @returns Array of available countries; falls back to a US default when the API returns nothing.
  */
@@ -104,7 +104,7 @@ export const CountriesApi = async ({ api }: { api: AbstractApi }): Promise<Count
 /**
  * Derives all supported locales for the shop from the available countries.
  *
- * @param options - Options object.
+ * @param options - Storefront API client wrapper for the query.
  * @param options.api - Storefront API client.
  * @returns Array of supported locales.
  * @throws {NoLocalesAvailableError} When no locales can be derived from the available countries.
@@ -132,7 +132,7 @@ export const LocalesApi = async ({ api }: { api: AbstractApi }): Promise<Locale[
 /**
  * Fetches the current localization context (country and language) from the Shopify Storefront API.
  *
- * @param options - Options object.
+ * @param options - Storefront API client wrapper for the query.
  * @param options.api - Storefront API client.
  * @returns Localization object, or `null` when the shop does not use Shopify as its commerce provider.
  * @throws {ProviderFetchError} When the Shopify query returns errors.
@@ -165,7 +165,7 @@ export const LocaleApi = async ({ api }: { api: AbstractApi }) => {
 /**
  * Fetches payment settings for the shop from the Shopify Storefront API.
  *
- * @param options - Options object.
+ * @param options - Storefront API client wrapper for the query.
  * @param options.api - Storefront API client.
  * @returns Payment settings subset, or `null` when the shop does not use Shopify or the query returns no data.
  */
@@ -207,7 +207,7 @@ export type BusinessDataApiArgs = { shop: OnlineShop; locale: Locale };
  * `null` when the doc has not been seeded — InfoBar / Footer call sites
  * collapse to no-render in that case.
  *
- * @param options - Options object.
+ * @param options - Tenant shop record and locale used to scope the Payload CMS fetch.
  * @param options.shop - Shop record identifying the tenant.
  * @param options.locale - Locale used for payload normalization.
  * @returns Normalized business data, or `null` when the doc has not been seeded.

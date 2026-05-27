@@ -53,7 +53,7 @@ export type ProductsOptions = ApiOptions & {
 /**
  * Counts all products matching the filters across pages and returns per-page cursor positions.
  *
- * @param options - Options object.
+ * @param options - Storefront API client and pagination/sorting constraints for the count traversal.
  * @param options.api - Storefront API client.
  * @param options.filters - Pagination and sorting constraints.
  * @returns Object with total `pages`, total `products`, and `cursors` for cursor-based navigation.

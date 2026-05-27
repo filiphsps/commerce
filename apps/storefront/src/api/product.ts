@@ -64,7 +64,7 @@ export type ProductFilters = SearchResultItemConnection['productFilters'];
 /**
  * Serializes a product's Shopify tracking parameters into a URL query string.
  *
- * @param options - Options object.
+ * @param options - Wraps a partial product to extract the tracking parameters field.
  * @param options.product - Product with optional `trackingParameters` field.
  * @returns A URL-encoded query string, or an empty string when no tracking parameters are present.
  */

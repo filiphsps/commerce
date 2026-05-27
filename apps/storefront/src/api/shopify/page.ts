@@ -91,7 +91,7 @@ function normalize(page: PageFields): NormalizedShopifyPage {
 /**
  * Fetches a single Shopify page by handle.
  *
- * @param options - Options object.
+ * @param options - Storefront API client and the page handle to fetch.
  * @param options.api - Storefront API client.
  * @param options.handle - Page handle to fetch.
  * @returns A result tuple — `[NormalizedShopifyPage, undefined]` on success or `[undefined, error]` on failure.
@@ -124,7 +124,7 @@ export async function ShopifyPageApi({
 /**
  * Recursively fetches all Shopify pages, paginating until exhausted.
  *
- * @param options - Options object.
+ * @param options - Storefront API client and accumulated pagination state from previous recursive calls.
  * @param options.api - Storefront API client.
  * @param options.cursor - Pagination cursor for the next page; omitted on the first call.
  * @param options.pages - Accumulated results from previous pages; omitted on the first call.

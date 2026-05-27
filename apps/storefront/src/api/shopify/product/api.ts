@@ -25,7 +25,7 @@ type ProductOptions = ApiOptions &
 /**
  * Fetches a single product from the Shopify Storefront API by handle.
  *
- * @param options - Options object.
+ * @param options - Storefront API client, product handle, and optional GraphQL fragment override.
  * @param options.api - Storefront API client.
  * @param options.handle - Product handle to fetch.
  * @param options.fragment - Optional GraphQL fragment string to override the default product fields.
@@ -86,7 +86,7 @@ export const ProductApi = async ({ api, handle, fragment }: ProductOptions): Pro
 /**
  * Fetches a paginated list of products from the Shopify Storefront API.
  *
- * @param options - Options object.
+ * @param options - Storefront API client and pagination parameters; controls page size, sort key, and cursor position.
  * @param options.api - Storefront API client.
  * @param options.limit - Max products per page; defaults to `250`.
  * @param options.sorting - Product sort key; defaults to `"BEST_SELLING"`.

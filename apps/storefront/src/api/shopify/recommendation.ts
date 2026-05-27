@@ -27,7 +27,7 @@ const PRODUCT_RECOMMENDATIONS_QUERY = graphql(
 /**
  * Fetches related product recommendations from Shopify for a given product GID.
  *
- * @param options - Options object.
+ * @param options - Storefront API client and the product GID to fetch recommendations for.
  * @param options.api - Storefront API client.
  * @param options.id - Shopify product GID (e.g. `"gid://shopify/Product/123"`).
  * @returns Array of recommended products.

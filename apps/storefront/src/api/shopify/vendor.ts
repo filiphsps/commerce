@@ -54,7 +54,7 @@ type VendorsOptions = { api: AbstractApi };
 /**
  * Get all vendors from Shopify.
  *
- * @param options - Options object.
+ * @param options - Storefront API client wrapper for the query.
  * @param options.api - Storefront API client.
  * @returns The list of vendors.
  * @throws {ProviderFetchError} When the Shopify query returns errors.
