@@ -3,8 +3,6 @@ title: Caching
 description: Tenant-scoped, locale-qualified cache namespaces that ensure shop isolation and precise revalidation.
 ---
 
-# Caching
-
 The cache is organized into two top-level **cache namespaces**: `shopify` for storefront reads (Shopify Storefront/Admin API responses) and `cms` for Payload reads (content layer responses). Namespaces are isolated — invalidating a CMS entry never touches Shopify-sourced data and vice versa. This separation means a Shopify webhook can revalidate product data without evicting cached page content, and a CMS publish can update authored blocks without touching prices or inventory.
 
 ## Tenant-scoped and locale-qualified

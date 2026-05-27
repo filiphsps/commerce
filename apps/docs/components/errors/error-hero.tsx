@@ -29,7 +29,7 @@ export function ErrorHero({ code, description, errorClass, kind, classHref, http
                 className="pointer-events-none absolute top-[-50%] right-[-10%] h-[200%] w-1/2 bg-[radial-gradient(ellipse,hsl(28_95%_58%_/_0.15),transparent_60%)]"
             />
             <div className="relative z-[1] min-w-0">
-                <h1 className="m-0 font-mono font-bold text-[clamp(1.05rem,4.2vw,2.1rem)] text-err leading-tight tracking-[0.005em] wrap-anywhere">
+                <h1 className="wrap-anywhere m-0 font-bold font-mono text-[clamp(1.05rem,4.2vw,2.1rem)] text-err leading-tight tracking-[0.005em]">
                     {code}
                 </h1>
                 <p className="mt-3.5 max-w-[50ch] font-semibold text-[clamp(0.95rem,2.5vw,1.05rem)] text-fg leading-snug">

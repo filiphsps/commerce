@@ -3,8 +3,6 @@ title: Data Fetching
 sidebar_position: 3
 ---
 
-# Data fetching pattern
-
 All Shopify queries go through `AbstractApi` (`src/utils/abstract-api.ts`). Build one
 via `ShopifyApolloApiClient({ shop, locale })` (or the public variant). **Never call
 Apollo directly from a route.**

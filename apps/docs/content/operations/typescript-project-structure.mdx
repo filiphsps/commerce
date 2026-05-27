@@ -3,8 +3,6 @@ title: TypeScript Project Structure
 description: How the five root tsconfigs are structured and how every concrete config extends them.
 ---
 
-# TypeScript Project Structure
-
 The repo has five tsconfig files at the root: one absolute base plus four purpose-named bases that extend it. Every concrete tsconfig under `apps/*` or `packages/*` extends exactly one of those four; test configs use a specific array-extends pattern, documented below.
 
 ## The five root files

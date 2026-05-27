@@ -3,8 +3,6 @@ title: Locales
 description: How the platform resolves and threads locale context through every request and data-fetching call.
 ---
 
-# Locales
-
 A **Locale** is an `xx-XX` language/region tag carried in the URL path segment and passed into every data-fetching helper. It is dynamic at request time — it is not encoded in the route tree, and the App Router sees it only after middleware has resolved it. Locale is always a qualifier *under* tenant: `/[domain]/[locale]/…`. No locale segment means middleware runs the locale fallback chain before rewriting.
 
 ## The fallback chain

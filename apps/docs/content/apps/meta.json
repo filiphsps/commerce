@@ -1,8 +1,4 @@
 {
     "title": "Apps",
-    "pages": [
-        "admin",
-        "landing",
-        "storefront"
-    ]
+    "pages": ["admin", "landing", "storefront"]
 }

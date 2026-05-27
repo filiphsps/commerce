@@ -19,6 +19,7 @@ import { ReferenceBackLink } from './components/reference/reference-back-link';
 import { SourceFooter } from './components/reference/source-footer';
 import { SymbolTitle } from './components/reference/symbol-title';
 import { ThrowsBlock, ThrowsRow } from './components/reference/throws';
+import { ResultBlock } from './components/result-block';
 
 /**
  * Bridges fumadocs-ui's default MDX renderers plus our custom MDX components
@@ -49,6 +50,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
         InlinePill,
         Callout,
         ContinueExploring,
+        ResultBlock,
         ErrorHero,
         Causes,
         ThrownFromCard,

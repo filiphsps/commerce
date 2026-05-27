@@ -42,7 +42,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                         tree={source.pageTree}
                         githubUrl="https://github.com/filiphsps/commerce"
                         tabMode="navbar"
-                        nav={{ title: <Logo />, mode: 'top', transparentMode: 'top' }}
+                        nav={{ title: <Logo height={32} />, mode: 'top', transparentMode: 'top' }}
                         sidebar={{ banner: TabChip }}
                         slots={{ header: Topbar }}
                         tabs={[

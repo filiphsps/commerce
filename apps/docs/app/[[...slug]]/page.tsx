@@ -1,6 +1,7 @@
 import { DocsBody, DocsDescription, DocsPage, DocsTitle } from 'fumadocs-ui/page';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { Breadcrumb } from '@/components/breadcrumb';
 import { source } from '@/lib/source';
 import { getMDXComponents } from '@/mdx-components';
 
@@ -26,14 +27,18 @@ export default async function Page(props: { params: Promise<{ slug?: string[] }>
     const isLeafPage = (params.slug?.length ?? 0) > 1;
     const showHero = !(tab === 'errors' && isLeafPage) && !(tab === 'reference' && isLeafPage);
     return (
-        <DocsPage toc={page.data.toc} breadcrumb={{ enabled: true, includeRoot: true }}>
+        <DocsPage
+            toc={page.data.toc}
+            breadcrumb={{ enabled: true, includeRoot: true }}
+            slots={{ breadcrumb: Breadcrumb }}
+        >
             {showHero ? (
                 <>
-                    <DocsTitle className="font-extrabold text-[2.6rem] leading-[1.05] tracking-[-0.035em]">
+                    <DocsTitle className="font-black text-[clamp(2rem,5vw,3.4rem)] leading-[1.02] tracking-[-0.04em]">
                         {page.data.title}
                     </DocsTitle>
                     {page.data.description ? (
-                        <DocsDescription className="mb-10 max-w-[60ch] font-medium text-[1.15rem] text-fg-mute leading-relaxed">
+                        <DocsDescription className="mt-4 mb-10 max-w-[60ch] font-medium text-[1.18rem] text-fg-mute leading-[1.55]">
                             {page.data.description}
                         </DocsDescription>
                     ) : null}

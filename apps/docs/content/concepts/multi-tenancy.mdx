@@ -3,8 +3,6 @@ title: Multi-tenancy
 description: One deploy serves many shops. Tenant resolution happens at the edge by hostname.
 ---
 
-# Multi-tenancy
-
 Nordcom Commerce is multi-tenant by hostname. Adding a new shop is a row in the `shops` MongoDB collection — no redeploy. Middleware resolves the request's hostname into a shop, rewrites the URL to `/[domain]/[locale]/…`, and the App Router never sees an un-tenanted request.
 
 ## The resolution chain

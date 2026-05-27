@@ -20,7 +20,7 @@ export function collectThrowSites(repoRoot: string): ThrowSite[] {
     for (const parent of ['packages', 'apps']) {
         const root = path.join(repoRoot, parent);
         if (!fs.existsSync(root)) continue;
-        walk(root, out);
+        walk(root, repoRoot, out);
     }
     return out;
 }
@@ -30,36 +30,38 @@ export function collectThrowSites(repoRoot: string): ThrowSite[] {
  * throw statements. Skips well-known non-source directories.
  *
  * @param dir - Directory to walk.
+ * @param repoRoot - Monorepo root for computing repo-relative paths.
  * @param out - Accumulator for collected throw sites.
  */
-function walk(dir: string, out: ThrowSite[]): void {
+function walk(dir: string, repoRoot: string, out: ThrowSite[]): void {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
         if (entry.name.startsWith('.') || SKIP_DIRS.has(entry.name)) continue;
         const full = path.join(dir, entry.name);
         if (entry.isDirectory()) {
-            walk(full, out);
+            walk(full, repoRoot, out);
         } else if (entry.isFile() && /\.(ts|tsx)$/.test(entry.name)) {
-            scanFile(full, out);
+            scanFile(full, repoRoot, out);
         }
     }
 }
 
 /**
  * Scan a single TypeScript file for `throw new <SomeError>(…)` patterns,
- * recording each occurrence with the error class name, file path relative to
- * the monorepo root's parent, line number (1-based), and trimmed source context.
+ * recording each occurrence with the error class name, repo-relative file
+ * path, line number (1-based), and trimmed source context.
  *
  * @param file - Absolute path to the TypeScript source file.
+ * @param repoRoot - Monorepo root used to make `file` relative.
  * @param out - Accumulator for collected throw sites.
  */
-function scanFile(file: string, out: ThrowSite[]): void {
+function scanFile(file: string, repoRoot: string, out: ThrowSite[]): void {
     const lines = fs.readFileSync(file, 'utf8').split('\n');
     for (let i = 0; i < lines.length; i++) {
         const m = lines[i]?.match(/throw\s+new\s+(\w*Error)\s*\(/);
         if (!m) continue;
         out.push({
             errorClass: m[1] as string,
-            file: path.relative(path.dirname(path.dirname(path.dirname(file))), file),
+            file: path.relative(repoRoot, file),
             line: i + 1,
             context: lines[i]?.trim() ?? '',
         });

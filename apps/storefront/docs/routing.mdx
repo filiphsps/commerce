@@ -3,8 +3,6 @@ title: Routing
 sidebar_position: 2
 ---
 
-# Multi-tenant routing
-
 `apps/storefront/src/proxy.ts` is the Next.js middleware entry. The flow is:
 
 1. Dispatch — paths starting with `/admin` go to `admin()` (see `src/middleware/admin.ts`),

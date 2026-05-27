@@ -3,8 +3,6 @@ title: Errors
 description: A structured error hierarchy where every throw carries a code, HTTP status, and kind.
 ---
 
-# Errors
-
 Every error on the platform is a **Commerce error** — an instance of a class from `@nordcom/commerce-errors`, never `new Error(...)`. Each class carries three pieces of machine-readable context: an `*ErrorKind` enum member identifying the category of failure, an HTTP `statusCode` for gateway and API consumers, and a string `code` that maps to a human-readable explanation via `getErrorFromCode`. The `code` also powers the stable help URL pattern `/docs/errors/<code>/` used by the Errors tab of this site.
 
 ## Adding an error class

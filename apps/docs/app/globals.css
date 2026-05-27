@@ -34,7 +34,6 @@
     --color-ref: var(--nordstar-ref);
     --color-err: var(--nordstar-err);
     --color-info: var(--nordstar-info);
-
 }
 
 /* Theme tokens declared OUTSIDE `@layer base` so they beat Fumadocs's own
@@ -46,85 +45,85 @@
 
     /* Light-mode Nordstar palette. Brand magenta + per-tab neons are
      * deepened so they hold contrast against the white surfaces. */
-        --nordstar-bg: #ffffff;
-        --nordstar-bg-1: hsl(0 0% 97%);
-        --nordstar-bg-2: hsl(0 0% 93%);
-        --nordstar-bg-3: hsl(0 0% 87%);
+    --nordstar-bg: #ffffff;
+    --nordstar-bg-1: hsl(0 0% 97%);
+    --nordstar-bg-2: hsl(0 0% 93%);
+    --nordstar-bg-3: hsl(0 0% 87%);
 
-        --nordstar-fg: hsl(0 0% 8%);
-        --nordstar-fg-mute: hsl(0 0% 38%);
-        --nordstar-fg-dim: hsl(0 0% 55%);
+    --nordstar-fg: hsl(0 0% 8%);
+    --nordstar-fg-mute: hsl(0 0% 38%);
+    --nordstar-fg-dim: hsl(0 0% 55%);
 
-        --nordstar-border: hsl(0 0% 84%);
-        --nordstar-border-strong: hsl(0 0% 70%);
+    --nordstar-border: hsl(0 0% 84%);
+    --nordstar-border-strong: hsl(0 0% 70%);
 
-        --nordstar-brand: #ed1e79;
-        --nordstar-brand-hover: hsl(330 86% 45%);
+    --nordstar-brand: #ed1e79;
+    --nordstar-brand-hover: hsl(330 86% 45%);
 
-        --nordstar-pkg: hsl(95 70% 30%);
-        --nordstar-ref: hsl(190 95% 32%);
-        --nordstar-err: hsl(28 95% 38%);
-        --nordstar-info: hsl(220 80% 40%);
+    --nordstar-pkg: hsl(95 70% 30%);
+    --nordstar-ref: hsl(190 95% 32%);
+    --nordstar-err: hsl(28 95% 38%);
+    --nordstar-info: hsl(220 80% 40%);
 
-        /* The translucent topbar background. Light-mode default. */
-        --nordstar-topbar-bg: rgb(255 255 255 / 0.85);
+    /* The translucent topbar background. Light-mode default. */
+    --nordstar-topbar-bg: rgb(255 255 255 / 0.85);
 
-        /* Fumadocs theme overrides — pinned to root because Fumadocs's own
+    /* Fumadocs theme overrides — pinned to root because Fumadocs's own
          * `:root { --color-fd-* }` declarations would otherwise win the
          * cascade against `@theme inline` defaults. */
-        --color-fd-background: var(--color-bg);
-        --color-fd-foreground: var(--color-fg);
-        --color-fd-muted: var(--color-bg-2);
-        --color-fd-muted-foreground: var(--color-fg-mute);
-        --color-fd-border: var(--color-border);
-        --color-fd-primary: var(--color-brand);
-        --color-fd-primary-foreground: #ffffff;
-        --color-fd-accent: var(--color-brand);
-        --color-fd-accent-foreground: var(--color-fg);
-        --color-fd-ring: var(--color-brand);
-        --color-fd-card: var(--color-bg-1);
-        --color-fd-secondary: var(--color-bg-1);
-        --color-fd-secondary-foreground: var(--color-fg);
+    --color-fd-background: var(--color-bg);
+    --color-fd-foreground: var(--color-fg);
+    --color-fd-muted: var(--color-bg-2);
+    --color-fd-muted-foreground: var(--color-fg-mute);
+    --color-fd-border: var(--color-border);
+    --color-fd-primary: var(--color-brand);
+    --color-fd-primary-foreground: #ffffff;
+    --color-fd-accent: var(--color-brand);
+    --color-fd-accent-foreground: var(--color-fg);
+    --color-fd-ring: var(--color-brand);
+    --color-fd-card: var(--color-bg-1);
+    --color-fd-secondary: var(--color-bg-1);
+    --color-fd-secondary-foreground: var(--color-fg);
 }
 
 .dark {
-        --nordstar-bg: #000000;
-        --nordstar-bg-1: hsl(0 0% 4%);
-        --nordstar-bg-2: hsl(0 0% 9%);
-        --nordstar-bg-3: hsl(0 0% 13%);
+    --nordstar-bg: #000000;
+    --nordstar-bg-1: hsl(0 0% 4%);
+    --nordstar-bg-2: hsl(0 0% 9%);
+    --nordstar-bg-3: hsl(0 0% 13%);
 
-        --nordstar-fg: #ffffff;
-        --nordstar-fg-mute: hsl(0 0% 51%);
-        --nordstar-fg-dim: hsl(0 0% 36%);
+    --nordstar-fg: #ffffff;
+    --nordstar-fg-mute: hsl(0 0% 51%);
+    --nordstar-fg-dim: hsl(0 0% 36%);
 
-        --nordstar-border: hsl(0 0% 18%);
-        --nordstar-border-strong: hsl(0 0% 28%);
+    --nordstar-border: hsl(0 0% 18%);
+    --nordstar-border-strong: hsl(0 0% 28%);
 
-        --nordstar-brand: #ed1e79;
-        --nordstar-brand-hover: hsl(330 86% 60%);
+    --nordstar-brand: #ed1e79;
+    --nordstar-brand-hover: hsl(330 86% 60%);
 
-        --nordstar-pkg: hsl(95 80% 55%);
-        --nordstar-ref: hsl(190 95% 55%);
-        --nordstar-err: hsl(28 95% 58%);
-        --nordstar-info: hsl(220 80% 65%);
+    --nordstar-pkg: hsl(95 80% 55%);
+    --nordstar-ref: hsl(190 95% 55%);
+    --nordstar-err: hsl(28 95% 58%);
+    --nordstar-info: hsl(220 80% 65%);
 
-        --nordstar-topbar-bg: rgb(0 0 0 / 0.85);
+    --nordstar-topbar-bg: rgb(0 0 0 / 0.85);
 
-        /* Dark-mode Fumadocs overrides. Match :root's pattern so light/dark
+    /* Dark-mode Fumadocs overrides. Match :root's pattern so light/dark
          * stay symmetric. */
-        --color-fd-background: var(--color-bg);
-        --color-fd-foreground: var(--color-fg);
-        --color-fd-muted: var(--color-bg-2);
-        --color-fd-muted-foreground: var(--color-fg-mute);
-        --color-fd-border: var(--color-border);
-        --color-fd-primary: var(--color-brand);
-        --color-fd-primary-foreground: #ffffff;
-        --color-fd-accent: var(--color-brand);
-        --color-fd-accent-foreground: var(--color-fg);
-        --color-fd-ring: var(--color-brand);
-        --color-fd-card: var(--color-bg-1);
-        --color-fd-secondary: var(--color-bg-1);
-        --color-fd-secondary-foreground: var(--color-fg);
+    --color-fd-background: var(--color-bg);
+    --color-fd-foreground: var(--color-fg);
+    --color-fd-muted: var(--color-bg-2);
+    --color-fd-muted-foreground: var(--color-fg-mute);
+    --color-fd-border: var(--color-border);
+    --color-fd-primary: var(--color-brand);
+    --color-fd-primary-foreground: #ffffff;
+    --color-fd-accent: var(--color-brand);
+    --color-fd-accent-foreground: var(--color-fg);
+    --color-fd-ring: var(--color-brand);
+    --color-fd-card: var(--color-bg-1);
+    --color-fd-secondary: var(--color-bg-1);
+    --color-fd-secondary-foreground: var(--color-fg);
 }
 
 @layer base {
@@ -210,11 +209,11 @@ a[data-symbol-tab="docs"]:hover {
 
 #nd-subnav {
     border-bottom: 0.2rem solid var(--color-border);
-    background: var(--nordstar-topbar-bg) !important;
+    background: var(--nordstar-topbar-bg);
 }
 
 #nd-subnav [data-header-body] {
-    border-bottom: 0 !important;
+    border-bottom: 0;
 }
 
 #nd-sidebar {
@@ -224,192 +223,292 @@ a[data-symbol-tab="docs"]:hover {
 /* Suppress the mobile sidebar tab dropdown — the four-tab navbar covers the
  * same job at every viewport, so the dropdown is redundant. */
 #nd-sidebar > div:first-child > button[aria-haspopup="dialog"] {
-    display: none !important;
+    display: none;
 }
 
-/* Top tab strip (notebook tabMode='navbar') — wrap the underlined tabs
- * Fumadocs draws by default into a centered, bordered, rounded container
- * with brand-magenta pills for the active tab. */
-#nd-subnav [data-header-tabs] {
-    height: auto !important;
-    padding: 0.18rem !important;
-    margin: 0.55rem auto !important;
-    border: 0.138rem solid var(--color-border) !important;
-    border-bottom-width: 0.138rem !important;
-    border-radius: var(--radius, 0.45rem) !important;
-    gap: 0.15rem !important;
-    align-items: center !important;
-    width: fit-content !important;
-    justify-content: center !important;
-    overflow: visible !important;
-    transition: border-color 150ms ease !important;
+/* Hide the duplicate root-folder anchor at the top of every sidebar.
+ * Fumadocs emits an `<a>` for the root folder (e.g. "Reference") right above
+ * its child items; the TabChip banner already names the active tab, so the
+ * duplicate is noise. Target by href so we don't accidentally hide leaf
+ * `index` links inside subfolders. */
+#nd-sidebar a[href="/reference/"]:first-child,
+#nd-sidebar a[href="/packages/"]:first-child,
+#nd-sidebar a[href="/errors/"]:first-child,
+#nd-sidebar a[href="/"]:first-child {
+    display: none;
 }
 
-#nd-subnav [data-header-tabs]:hover {
-    border-color: var(--color-border-strong) !important;
-}
-
-#nd-subnav [data-header-tabs] a {
-    padding: 0.45rem 0.95rem !important;
-    border: 0 !important;
-    border-radius: var(--radius, 0.45rem) !important;
-    font-family: var(--font-sans) !important;
-    font-weight: 700 !important;
-    font-size: 0.7rem !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.1em !important;
-    color: var(--color-fg-mute) !important;
-    background: transparent !important;
-    transition:
-        color 150ms,
-        background 150ms,
-        box-shadow 150ms !important;
-}
-
-#nd-subnav [data-header-tabs] a:hover {
-    color: var(--color-fg) !important;
-    background: var(--color-bg-2) !important;
-}
-
-#nd-subnav [data-header-tabs] a.text-fd-primary,
-#nd-subnav [data-header-tabs] a[data-active="true"] {
-    background: var(--color-brand) !important;
-    color: #ffffff !important;
-    box-shadow: 0 0 14px hsl(330 86% 53% / 0.45) !important;
-}
-
-/* Search trigger button — visuals/02 wants a 3px border, mono caption,
- * 7px radius, with the kbd badges using bg-bg-2. Override the Fumadocs
- * default `rounded-xl` + thin border + secondary surface. */
+/* Search trigger button — Fumadocs's `FullSearchTrigger` ships its own
+ * internal classes (rounded-xl, bg-fd-secondary) that beat utility classes
+ * passed via the slot's `className` prop. Force the visual 02 treatment
+ * here so the trigger reads as a bordered mono caption matching the
+ * mockup. */
 #nd-subnav button[data-search-full] {
-    border: 0.138rem solid var(--color-border) !important;
-    border-radius: var(--radius, 0.45rem) !important;
-    background: transparent !important;
-    font-family: var(--font-mono) !important;
-    font-size: 0.72rem !important;
-    color: var(--color-fg-mute) !important;
-    padding: 0.45rem 0.8rem !important;
+    border: 0.138rem solid var(--color-border);
+    border-radius: 0.45rem;
+    background: transparent;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-fg-mute);
+    padding: 0.45rem 0.8rem;
     transition:
         border-color 150ms,
-        color 150ms !important;
+        color 150ms;
 }
 
 #nd-subnav button[data-search-full]:hover {
-    border-color: var(--color-border-strong) !important;
-    color: var(--color-fg) !important;
-    background: transparent !important;
+    border-color: var(--color-border-strong);
+    color: var(--color-fg);
+    background: transparent;
 }
 
 #nd-subnav button[data-search-full] kbd {
-    background: var(--color-bg-2) !important;
-    border: 1px solid var(--color-border-strong) !important;
-    color: var(--color-fg) !important;
-    font-family: var(--font-mono) !important;
-    font-size: 0.6rem !important;
+    background: var(--color-bg-2);
+    border: 1px solid var(--color-border-strong);
+    color: var(--color-fg);
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
 }
 
-/* Sidebar group labels — uppercase mono per the visuals. */
-#nd-sidebar [data-fd-folder-trigger],
-#nd-sidebar .text-fd-muted-foreground,
-#nd-sidebar [data-radix-scroll-area-viewport] > div > p {
+/* ─── Left sidebar ──────────────────────────────────────────────────────────── */
+
+/* Group separator labels — Fumadocs renders `---Label---` separators as <p>
+ * inside the scroll viewport. Mono, uppercase, 0.6rem per visuals/06 `.grp`. */
+#nd-sidebar p {
     font-family: var(--font-mono);
-    font-size: 0.62rem;
+    font-size: 0.6rem;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.18em;
     color: var(--color-fg-mute);
-}
-
-/* Sidebar separator divider — a thin border-bottom row above each group
- * label (Fumadocs renders `---Label---` as a `<p>` row). */
-#nd-sidebar [data-radix-scroll-area-viewport] > div > p {
-    margin: 1.1rem 0.5rem 0.45rem !important;
-    padding: 0 0 0.3rem !important;
+    margin: 1.1rem 0 0.45rem 0;
+    padding: 0 0 0.3rem;
     border-bottom: 1px solid var(--color-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-#nd-sidebar [data-radix-scroll-area-viewport] > div > p:first-of-type {
-    margin-top: 0 !important;
+#nd-sidebar p:first-of-type {
+    margin-top: 0;
 }
 
-/* Sidebar current page indicator — brand magenta inset shadow + soft gradient. */
-#nd-sidebar a[data-active="true"] {
-    background: linear-gradient(to right, hsl(330 86% 53% / 0.1), transparent 60%);
-    box-shadow: inset 0.138rem 0 0 var(--color-brand);
-    color: var(--color-brand);
+/* Page items (<a>) — visuals/06 `.it`: Montserrat display, full fg (white in
+ * dark mode), bold 700, thin left rail. Inactive items are NOT muted; the
+ * brand-magenta active state creates the hierarchy contrast. */
+#nd-sidebar a {
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--color-fg);
+    border-radius: 0.25rem;
+    padding: 0.22rem 0.5rem;
+    border-left: 0.138rem solid transparent;
+    transition:
+        color 150ms,
+        border-color 150ms,
+        background 150ms;
 }
 
+/* Folder-trigger buttons — visuals/06 `.grp`: mono small caps, fg-mute.
+ * These are the collapsible group headers (e.g., "Get started", "Concepts"). */
+#nd-sidebar button[data-state] {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--color-fg-mute);
+    border-radius: 0.25rem;
+    padding: 0.22rem 0.5rem;
+    border-left: 0.138rem solid transparent;
+    transition:
+        color 150ms,
+        border-color 150ms,
+        background 150ms;
+}
+
+/* Hover: item links go to brand-hover magenta; folder triggers go to full fg */
 #nd-sidebar a:hover:not([data-active="true"]) {
+    color: var(--color-brand-hover);
+    border-left-color: var(--color-border-strong);
+    background: hsl(330 86% 53% / 0.06);
+}
+
+#nd-sidebar button[data-state]:hover {
     color: var(--color-fg);
     background: var(--color-bg-1);
 }
 
-/* Tighten sidebar nav item padding to match visuals/06 (`.sub`, `.sym`,
- * `.it`) — Fumadocs default `p-2` (0.5rem) is more spacious than the
- * mockup. */
-#nd-sidebar [data-radix-scroll-area-viewport] > div > a {
-    padding-top: 0.32rem !important;
-    padding-bottom: 0.32rem !important;
-    font-size: 0.78rem !important;
+/* Active page — brand magenta left rail + soft gradient. The inset
+ * box-shadow adds a heavier 2px indicator that overrides the thin
+ * Fumadocs ::before pseudo-element at depth ≥ 1. */
+#nd-sidebar a[data-active="true"] {
+    color: var(--color-brand);
+    font-weight: 700;
+    background: linear-gradient(to right, hsl(330 86% 53% / 0.12), transparent 60%);
+    border-left-color: var(--color-brand);
+    box-shadow: inset 0.138rem 0 0 var(--color-brand);
 }
 
 /* Code blocks — Fumadocs uses figure.shiki with a title row + pre body. The
  * `not-prose` class blocks .prose selectors, so target the figure directly. */
 #nd-page figure.shiki {
-    background: var(--color-bg-2) !important;
-    border: 0.2rem solid var(--color-border) !important;
-    border-radius: var(--radius, 0.45rem) !important;
-    box-shadow: none !important;
-    margin: 1.2rem 0 !important;
-    overflow: hidden !important;
+    background: var(--color-bg-2);
+    border: 0.2rem solid var(--color-border);
+    border-radius: var(--radius, 0.45rem);
+    box-shadow: none;
+    margin: 1.2rem 0;
+    overflow: hidden;
 }
 
 #nd-page figure.shiki > div:first-child {
-    background: var(--color-bg-1) !important;
-    border-bottom: 0.138rem solid var(--color-border) !important;
-    padding: 0.45rem 0.85rem !important;
-    height: auto !important;
-    font-family: var(--font-mono) !important;
-    font-size: 0.65rem !important;
-    color: var(--color-fg-mute) !important;
-    letter-spacing: 0.04em !important;
+    background: var(--color-bg-1);
+    border-bottom: 0.138rem solid var(--color-border);
+    padding: 0.45rem 0.85rem;
+    height: auto;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--color-fg-mute);
+    letter-spacing: 0.04em;
 }
 
 #nd-page figure.shiki pre {
-    background: var(--color-bg-2) !important;
-    border-radius: 0 !important;
-    padding: 0.95rem 1.1rem !important;
+    background: var(--color-bg-2);
+    border-radius: 0;
+    padding: 0.95rem 1.1rem;
 }
 
 /* Copy button in the codeblock title row — visuals/02 wants a small
  * bordered button with brand-magenta hover. Fumadocs ships an icon-only
  * button with no border by default; restyle in place. */
 #nd-page figure.shiki > div:first-child button {
-    border: 0.138rem solid var(--color-border) !important;
-    border-radius: 3px !important;
-    color: var(--color-fg-mute) !important;
-    padding: 0.22rem 0.4rem !important;
+    border: 0.138rem solid var(--color-border);
+    border-radius: 3px;
+    color: var(--color-fg-mute);
+    padding: 0.22rem 0.4rem;
     transition:
         color 150ms,
-        border-color 150ms !important;
+        border-color 150ms;
 }
 
 #nd-page figure.shiki > div:first-child button:hover {
-    color: var(--color-brand) !important;
-    border-color: var(--color-brand) !important;
+    color: var(--color-brand);
+    border-color: var(--color-brand);
 }
 
-.prose pre::-webkit-scrollbar {
-    height: 6px;
-    width: 6px;
+.prose pre::-webkit-scrollbar,
+#nd-page figure.shiki pre::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
 }
 
-.prose pre::-webkit-scrollbar-track {
+.prose pre::-webkit-scrollbar-track,
+#nd-page figure.shiki pre::-webkit-scrollbar-track {
     background: var(--color-bg-1);
 }
 
-.prose pre::-webkit-scrollbar-thumb {
+.prose pre::-webkit-scrollbar-thumb,
+#nd-page figure.shiki pre::-webkit-scrollbar-thumb {
     background: var(--color-border-strong);
     border-radius: 3px;
+}
+
+.prose pre::-webkit-scrollbar-thumb:hover,
+#nd-page figure.shiki pre::-webkit-scrollbar-thumb:hover {
+    background: var(--color-fg-dim);
+}
+
+/* Diff codeblocks — Shiki's `transformerNotationDiff` annotates lines added
+ * via `[!code ++]` / removed via `[!code --]` markers with `.diff.add` /
+ * `.diff.remove`. Paint them per visuals/07 (green left rail + bg for add,
+ * red rail + faded bg for remove). */
+#nd-page figure.shiki pre .line.diff {
+    display: inline-block;
+    width: 100%;
+    margin: 0 -1.1rem;
+    padding: 0 1.1rem;
+}
+
+#nd-page figure.shiki pre .line.diff.add {
+    background: hsl(140 60% 50% / 0.1);
+    border-left: 0.138rem solid hsl(140 60% 50%);
+    padding-left: calc(1.1rem - 0.138rem);
+}
+
+#nd-page figure.shiki pre .line.diff.add::before {
+    content: "+ ";
+    color: hsl(140 60% 60%);
+    margin-right: 0.2rem;
+}
+
+#nd-page figure.shiki pre .line.diff.remove {
+    background: hsl(0 60% 50% / 0.1);
+    border-left: 0.138rem solid hsl(0 60% 60%);
+    padding-left: calc(1.1rem - 0.138rem);
+    opacity: 0.7;
+}
+
+#nd-page figure.shiki pre .line.diff.remove::before {
+    content: "− ";
+    color: hsl(0 60% 70%);
+    margin-right: 0.2rem;
+}
+
+/* Highlight + focus transformers (also default-on in Fumadocs) — paint as a
+ * soft brand-magenta wash so highlighted lines pull the eye without
+ * overpowering the code. */
+#nd-page figure.shiki pre .line.highlighted {
+    background: hsl(330 86% 53% / 0.08);
+    border-left: 0.138rem solid var(--color-brand);
+    margin: 0 -1.1rem;
+    padding-left: calc(1.1rem - 0.138rem);
+    padding-right: 1.1rem;
+}
+
+#nd-page figure.shiki.has-focused pre .line:not(.focused) {
+    opacity: 0.4;
+    filter: blur(0.5px);
+    transition:
+        opacity 150ms,
+        filter 150ms;
+}
+
+#nd-page figure.shiki.has-focused:hover pre .line:not(.focused) {
+    opacity: 1;
+    filter: none;
+}
+
+/* Tab pills inside a CodeBlock (multi-language tabs) — match the topbar tabs
+ * with brand-magenta active. Fumadocs Tabs root has data-orientation. */
+figure.shiki [role="tablist"] {
+    display: flex;
+    gap: 0.15rem;
+    padding: 0.18rem;
+    background: var(--color-bg-1);
+    border-bottom: 0.138rem solid var(--color-border);
+}
+
+figure.shiki [role="tab"] {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--color-fg-mute);
+    padding: 0.45rem 0.85rem;
+    border-radius: 4px;
+    transition:
+        color 150ms,
+        background 150ms;
+}
+
+figure.shiki [role="tab"]:hover {
+    color: var(--color-fg);
+}
+
+figure.shiki [role="tab"][data-state="active"] {
+    color: var(--color-brand);
+    background: var(--color-bg-2);
+    border-bottom: 0.138rem solid var(--color-brand);
+    margin-bottom: -0.138rem;
 }
 
 /* Inline code in prose */
@@ -444,22 +543,44 @@ a[data-symbol-tab="docs"]:hover {
     --tw-prose-td-borders: var(--color-border);
 }
 
-/* Headings — restore weight and tracking from the visuals */
+/* Headings — restore weight, tracking, and size from the visuals */
 .prose h1 {
     font-weight: 900;
     letter-spacing: -0.035em;
     line-height: 1.05;
 }
 
+/* H2: 2rem base — editorial weight/size for all tabs */
 .prose h2 {
+    font-size: 2rem;
     font-weight: 800;
-    letter-spacing: -0.02em;
-    margin-top: 2.5rem;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    margin-top: 3.5rem;
+    margin-bottom: 1rem;
+}
+
+/* H2 brand accent stripe — docs/packages narrative pages only, per visual 05.
+ * Errors and reference pages use bottom-border label style instead. */
+.docs-page h2,
+.packages-page h2 {
+    padding-left: 0.85rem;
+    border-left: 0.29rem solid var(--color-brand);
 }
 
 .prose h3 {
+    font-size: 1.25rem;
     font-weight: 700;
     letter-spacing: -0.015em;
+    line-height: 1.3;
+    margin-top: 2rem;
+    margin-bottom: 0.7rem;
+}
+
+/* Prose body — Montserrat 500 weight, 1.7 leading per visual 05 */
+.prose p {
+    font-weight: 500;
+    line-height: 1.7;
 }
 
 /* Fumadocs wraps heading text in `<a data-card>` for the anchor link — strip
@@ -468,8 +589,8 @@ a[data-symbol-tab="docs"]:hover {
 .prose h2 a[data-card],
 .prose h3 a[data-card],
 .prose h4 a[data-card] {
-    text-decoration: none !important;
-    color: inherit !important;
+    text-decoration: none;
+    color: inherit;
 }
 
 /* Error + reference pages — h2s become uppercase, mono-tracked section heads.
@@ -484,8 +605,11 @@ a[data-symbol-tab="docs"]:hover {
     letter-spacing: 0.22em;
     color: var(--color-fg-mute);
     margin: 2.5rem 0 0.85rem 0;
+    padding-left: 0;
     padding-bottom: 0.45rem;
+    border-left: none;
     border-bottom: var(--bw-s, 0.138rem) solid var(--color-border);
+    line-height: inherit;
 }
 
 /* Packages narrative — h2 gets the lime left-rail editorial treatment. */
@@ -518,31 +642,39 @@ a[data-symbol-tab="docs"]:hover {
  * them with a 1px `border` + `rounded-lg` — re-skin to the visuals/02
  * `.nav-card` treatment with 3px border, 7px radius, brand-magenta hover. */
 #nd-page > div.\@container.grid.grid-cols-2 > a {
-    border: 0.138rem solid var(--color-border) !important;
-    border-radius: var(--radius, 0.45rem) !important;
-    background: transparent !important;
-    padding: 0.85rem 1rem !important;
+    border: 0.138rem solid var(--color-border);
+    border-radius: var(--radius, 0.45rem);
+    background: transparent;
+    padding: 0.85rem 1rem;
     transition:
         border-color 150ms,
         background 150ms,
-        color 150ms !important;
+        color 150ms;
 }
 
 #nd-page > div.\@container.grid.grid-cols-2 > a:hover {
-    border-color: var(--color-brand) !important;
-    background: hsl(330 86% 53% / 0.05) !important;
-    color: var(--color-fg) !important;
+    border-color: var(--color-brand);
+    background: hsl(330 86% 53% / 0.05);
+    color: var(--color-fg);
 }
 
 #nd-page > div.\@container.grid.grid-cols-2 > a:hover > div:nth-child(2) {
-    color: var(--color-brand) !important;
+    color: var(--color-brand);
 }
 
-/* Right-side TOC — small mono label + brand-magenta current marker. */
+/* ─── Right TOC — "On this page" ────────────────────────────────────────────── */
+
+/* The TOC sticky offset uses --fd-docs-row-3 which only includes banner +
+ * header + toc-popover. Our Topbar sets --fd-header-height via layout:, so
+ * row-3 = header-height + 0 = 56px. The xl:layout:[--fd-toc-width:268px] class
+ * also needs to be present on the TOC element (Fumadocs sets it). */
+
 #nd-toc {
     border-left: 0.2rem solid var(--color-border);
 }
 
+/* "On this page" label — matches .toc-label in visuals/02 */
+#nd-toc > div:first-child,
 #nd-toc [data-toc-title] {
     font-family: var(--font-mono);
     font-size: 0.6rem;
@@ -554,11 +686,15 @@ a[data-symbol-tab="docs"]:hover {
     margin-bottom: 0.75rem;
 }
 
+/* TOC items — match .toc-item in visuals/02: body font 0.78rem, left-rail */
 #nd-toc a {
-    border-left: 0.138rem solid transparent;
-    padding-left: 0.7rem;
+    font-family: var(--font-sans);
     font-size: 0.78rem;
+    font-weight: 500;
     color: var(--color-fg-mute);
+    border-left: 0.138rem solid transparent;
+    padding: 0.25rem 0 0.25rem 0.7rem;
+    display: block;
     transition:
         color 150ms,
         border-color 150ms;
@@ -569,11 +705,19 @@ a[data-symbol-tab="docs"]:hover {
     border-left-color: var(--color-border-strong);
 }
 
+/* Active heading — brand magenta left rail + bolder weight */
 #nd-toc a[data-active="true"],
 #nd-toc a.text-fd-primary {
     color: var(--color-brand);
     border-left-color: var(--color-brand);
     font-weight: 600;
+}
+
+/* Depth-2 headings (h3) — slightly smaller and indented per visuals/02 */
+#nd-toc a[data-depth="3"],
+#nd-toc a.ps-6 {
+    padding-left: 1.4rem;
+    font-size: 0.74rem;
 }
 
 /* Tables (params lists) — bordered, mono pname column */
