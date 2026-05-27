@@ -10,6 +10,17 @@ import { Locale } from '@/utils/locale';
 
 export type ProductPageParams = Promise<{ domain: string; locale: string; handle: string }>;
 
+/**
+ * Generates the `handle` segments for products in a shop under a given
+ * domain/locale pair at build time. Fetches a limited product set to keep
+ * build-time rendering tractable; the rest are served via ISR. Returns a
+ * sentinel entry when the catalog is empty so Cache Components always has
+ * at least one path.
+ *
+ * @param params - The already-resolved `domain` and `locale` from the parent segment.
+ * @returns An array of `{ handle }` objects for pre-rendered products.
+ * @throws When a non-404 Shopify error is encountered during product enumeration.
+ */
 export async function generateStaticParams({
     params,
 }: {

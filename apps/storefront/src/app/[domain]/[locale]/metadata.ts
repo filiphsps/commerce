@@ -11,6 +11,15 @@ import { Locale } from '@/utils/locale';
 import { unsafe_cast } from '@/utils/unsafe-cast';
 import type { LayoutParams } from './layout';
 
+/**
+ * Generates the base `Metadata` for the tenant layout — title template,
+ * icons, robots directives, and OpenGraph site name — cached at the `max`
+ * lifetime so it doesn't re-run on every request. Calls `notFound()` for
+ * unknown domains or locales so Next.js renders the nearest not-found UI.
+ *
+ * @param params - The layout route params containing `domain` and `locale`.
+ * @returns The `Metadata` object for the tenant layout.
+ */
 export async function generateMetadata({ params }: { params: LayoutParams }): Promise<Metadata> {
     'use cache';
     cacheLife('max');

@@ -44,6 +44,15 @@ async function resolveDevShopDomain(): Promise<string> {
     return cachedDevShopDomain;
 }
 
+/**
+ * Extracts the effective shop hostname from an incoming request. On dev hosts
+ * (`localhost`, `.test`, etc.) falls back to the dev-shop resolution so
+ * any subdomain form (including `storefront.localhost:1337`) resolves
+ * correctly without requiring a real Shopify shop.
+ *
+ * @param req - The incoming Next.js edge request.
+ * @returns The resolved shop hostname for tenant lookup.
+ */
 async function hostnameFromRequest(req: NextRequest): Promise<string> {
     const host = req.headers.get('x-forwarded-host') || req.headers.get('host') || req.nextUrl.host;
 
@@ -59,6 +68,14 @@ async function hostnameFromRequest(req: NextRequest): Promise<string> {
     return shopFromHost(host);
 }
 
+/**
+ * Resolves the canonical shop domain from a request, verifying it exists in
+ * the MongoDB `shops` collection before returning it.
+ *
+ * @param req - The incoming Next.js edge request.
+ * @returns The verified shop domain string.
+ * @throws {NotFoundError} When no shop with the resolved hostname exists in the database.
+ */
 export const getHostname = async (req: NextRequest): Promise<string> => {
     const hostname = await hostnameFromRequest(req);
     const domain = (await Shop.findByDomain(hostname, { sensitiveData: true })).domain;
@@ -70,6 +87,14 @@ export const getHostname = async (req: NextRequest): Promise<string> => {
     return domain;
 };
 
+/**
+ * Applies a batch of key/value pairs as cookies on an existing response.
+ * Returns the response unchanged when the list is empty.
+ *
+ * @param res - The Next.js response to mutate.
+ * @param cookies - An array of `[key, value]` pairs to set on the response.
+ * @returns The same response with the cookies applied.
+ */
 async function setCookies(res: NextResponse, cookies: string[][] = []): Promise<NextResponse> {
     if (cookies.length <= 0) {
         return res;
@@ -79,6 +104,16 @@ async function setCookies(res: NextResponse, cookies: string[][] = []): Promise<
     return res;
 }
 
+/**
+ * Builds an error-page rewrite response for a commerce error. Rewrites to
+ * the global service domain's status pages so tenants see a branded error
+ * instead of a raw Next.js error overlay. Degrades to a 503 response when
+ * the `SERVICE_DOMAIN` env var is not set.
+ *
+ * @param req - The incoming Next.js edge request, used to derive the shop hostname.
+ * @param error - The commerce error to respond to; `NotFoundError` maps to `/status/unknown-shop/`.
+ * @returns A `NextResponse.rewrite` to the appropriate error page, or a 503 response on misconfiguration.
+ */
 async function handleCommerceError(req: NextRequest, error: Error) {
     const hostname = await hostnameFromRequest(req);
 
@@ -138,6 +173,16 @@ const FILE_TEST = /\.[a-zA-Z]{2,6}$/i;
 const LOCALE_TEST = /\/([a-zA-Z]{2}-[a-zA-Z]{2})/;
 const LOCALE_SLASH_TEST = /\/([a-zA-Z]{2}-[a-zA-Z]{2})\//g;
 
+/**
+ * Tenant-aware storefront middleware. Resolves the request hostname to a
+ * shop, injects the locale into the URL path (reading the `localization`
+ * cookie or the `Accept-Language` header when absent), normalizes URL
+ * casing and trailing slashes, then rewrites the request to the tenanted
+ * App Router path `/[domain]/[locale]/…`.
+ *
+ * @param req - The incoming Next.js edge request.
+ * @returns A redirect, rewrite, or error response depending on tenant and locale resolution.
+ */
 export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     let newUrl = req.nextUrl.clone();
     const cookies: string[][] = [];

@@ -14,6 +14,12 @@ const GET_CUSTOMER_FOR_SESSION = /* GraphQL */ `
 `;
 
 type UntypedValue = unknown;
+
+/**
+ * OIDC ID-token claims returned by the Shopify Customer Accounts API after a
+ * successful OAuth authorization. Extended with an index signature to satisfy
+ * Auth.js's `Profile` constraint.
+ */
 export interface ShopifyProfile extends Record<string, UntypedValue> {
     iss: string;
     sub: string;
@@ -28,6 +34,10 @@ export interface ShopifyProfile extends Record<string, UntypedValue> {
     email_verified: boolean;
 }
 
+/**
+ * Shopify-specific fields required to bootstrap the Customer Accounts OIDC
+ * provider; extends or overrides the standard `OIDCConfig` shape.
+ */
 export interface ShopifyOwnConfig {
     shopId: string;
     clientId: string;
@@ -39,10 +49,19 @@ export interface ShopifyOwnConfig {
     nextAuthCallbackUrl?: string;
 }
 
+/**
+ * Fully resolved Shopify OIDC provider configuration, merging Shopify's own
+ * fields with the standard `OIDCConfig` shape (excluding the fields that
+ * Shopify overrides with its own types).
+ */
 export interface ShopifyConfig<P extends ShopifyProfile>
     extends ShopifyOwnConfig,
         Omit<OIDCConfig<P>, 'clientId' | 'clientSecret' | 'issuer'> {}
 
+/**
+ * Caller-supplied configuration for `ShopifyProvider`. Only Shopify's own
+ * fields are required; all standard OIDC fields are optional overrides.
+ */
 export type ShopifyUserConfig<P extends ShopifyProfile> = ShopifyOwnConfig &
     Partial<Omit<OIDCUserConfig<P>, 'options' | 'type'>>;
 
@@ -69,6 +88,16 @@ export interface ShopifyJWTAuthorizationConformedPayload extends ShopifyJWTAutho
     aud: string;
 }
 
+/**
+ * Builds a fully-configured Auth.js OIDC provider for Shopify's Customer
+ * Accounts API. Handles endpoint construction, JWT conformance (Shopify's
+ * id_token omits `aud` and uses a non-standard `iss`), and customer profile
+ * fetching via the Customer GraphQL API.
+ *
+ * @param options - Shopify OAuth credentials and optional OIDC overrides.
+ * @param shop - The tenant shop record, used to derive the callback URL.
+ * @returns The resolved `ShopifyConfig` ready to be passed to `NextAuth`.
+ */
 function ShopifyProvider<P extends ShopifyProfile = ShopifyProfile>(
     options: ShopifyUserConfig<P>,
     shop: OnlineShop,

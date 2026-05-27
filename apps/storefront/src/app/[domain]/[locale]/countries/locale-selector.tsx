@@ -15,6 +15,16 @@ type LocaleSelectorProps = {
     countries: Country[];
     locale: Locale;
 };
+/**
+ * Client component that renders a grid of locale links for the countries page.
+ * Clicking a locale link updates a hidden input and programmatically submits
+ * the parent form so the locale change can be handled server-side without a
+ * full page reload.
+ *
+ * @param countries - The list of Shopify countries with available languages.
+ * @param locale - The currently active locale, used to highlight the active entry.
+ * @returns The locale selector grid element.
+ */
 export default function LocaleSelector({ countries = [], locale }: LocaleSelectorProps) {
     const { shop } = useShop();
     const localeRef = useRef<HTMLInputElement>(null);

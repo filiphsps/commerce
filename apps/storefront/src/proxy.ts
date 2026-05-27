@@ -23,12 +23,28 @@ export const config = {
 const VISITOR_COOKIE = 'nordcom-visitor-id';
 const VISITOR_HEADER = 'x-nordcom-visitor-id';
 
+/**
+ * Reads or mints a stable visitor ID for analytics without depending on auth.
+ * If no cookie exists, generates a new UUID and signals that it must be set on
+ * the response.
+ *
+ * @param req - The incoming Next.js edge request.
+ * @returns The visitor ID and whether it already existed in the request cookies.
+ */
 function ensureVisitorId(req: NextRequest): { id: string; existed: boolean } {
     const existing = req.cookies.get(VISITOR_COOKIE)?.value;
     if (existing) return { id: existing, existed: true };
     return { id: randomUUID(), existed: false };
 }
 
+/**
+ * Routes an incoming request to the appropriate sub-middleware based on the
+ * first URL path segment, bypassing tenant resolution for admin and Vercel
+ * well-known paths.
+ *
+ * @param req - The incoming Next.js edge request.
+ * @returns The response produced by the matched sub-middleware.
+ */
 async function dispatch(req: NextRequest): Promise<NextResponse> {
     const url = req.nextUrl.clone();
     const pathname = url.pathname;
@@ -45,6 +61,13 @@ async function dispatch(req: NextRequest): Promise<NextResponse> {
     return storefront(req);
 }
 
+/**
+ * Next.js middleware entry point. Ensures every request carries a stable
+ * visitor ID cookie, then delegates routing to dispatch.
+ *
+ * @param req - The incoming Next.js edge request.
+ * @returns The final response with the visitor cookie set when newly minted.
+ */
 export default async function proxy(req: NextRequest): Promise<NextResponse> {
     const { id: visitorId, existed } = ensureVisitorId(req);
     if (!existed) {

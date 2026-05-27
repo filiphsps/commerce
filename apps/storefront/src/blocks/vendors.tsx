@@ -11,6 +11,14 @@ import type { VendorsBlockNode } from './types';
 const VENDOR_RAIL_CLASS =
     'overflow-x-shadow -my-2 -ml-2 flex w-screen min-w-screen flex-nowrap gap-2 overflow-x-auto p-2 md:mx-0 md:my-0 md:grid md:w-full md:grid-cols-[repeat(auto-fit,minmax(min(8rem,100%),1fr))] md:overflow-x-hidden md:px-0 md:py-0';
 
+/**
+ * Renders a row of chip-sized skeleton placeholders for the vendor rail,
+ * matching the same horizontal-scroll-on-mobile / auto-fit grid layout used
+ * by the live block to prevent layout shift when content loads.
+ *
+ * @param count - Number of skeleton chips to render; defaults to 8.
+ * @returns The skeleton rail element.
+ */
 const VendorRailSkeleton = ({ count = 8 }: { count?: number }) => (
     <div className={VENDOR_RAIL_CLASS}>
         {Array.from({ length: count }).map((_, idx) => (
@@ -32,6 +40,10 @@ const VendorRailSkeleton = ({ count = 8 }: { count?: number }) => (
  * The inner `Vendors` fetcher is wrapped in `Suspense` so the title +
  * surrounding blocks paint immediately and the vendor pills stream in
  * with the skeleton acting as a placeholder.
+ *
+ * @param block - The CMS vendors block node with optional title and max vendor count.
+ * @param context - Render context carrying shop and locale for the underlying Vendors fetch.
+ * @returns The rendered vendors section element.
  */
 export const VendorsBlock = ({ block, context }: { block: VendorsBlockNode; context: BlockContext }) => {
     return (
@@ -56,6 +68,9 @@ VendorsBlock.displayName = 'Nordcom.Blocks.Vendors';
  * Loading placeholder for the Vendors block. Title slot mirrors the
  * editor-set value; the rail uses the same scroll layout with chip-sized
  * skeletons so the row height is stable when the real data arrives.
+ *
+ * @param block - The CMS vendors block node; used to mirror the title slot and skeleton chip count.
+ * @returns The skeleton vendors section element.
  */
 const VendorsBlockSkeleton = ({ block }: { block: VendorsBlockNode }) => {
     return (

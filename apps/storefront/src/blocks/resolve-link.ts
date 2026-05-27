@@ -24,6 +24,15 @@ const SAFE_SCHEME = /^(?:https?|mailto|tel):/i;
 // Pre-`kind` data sometimes stored bare paths or hash fragments. Those are
 // fine — only block embedded scripts.
 const SAFE_RELATIVE = /^(?:\/|#|\?)/;
+/**
+ * Returns `true` when `raw` is a URL that the browser can navigate to safely:
+ * an absolute URL with an `http`, `https`, `mailto`, or `tel` scheme, or a
+ * relative path/fragment/query string. Blocks `javascript:`, `data:`, and
+ * any other scheme that could execute code on click.
+ *
+ * @param raw - The raw URL string to validate.
+ * @returns Whether the URL is safe to use as an anchor `href`.
+ */
 const isSafeExternalUrl = (raw: string): boolean => {
     const trimmed = raw.trim();
     if (!trimmed) return false;
@@ -31,8 +40,25 @@ const isSafeExternalUrl = (raw: string): boolean => {
     return SAFE_SCHEME.test(trimmed);
 };
 
+/**
+ * Extracts the `slug` from a Payload relation field that may be a bare ID
+ * string (not populated) or an object, returning `undefined` in both the
+ * string and null/undefined cases.
+ *
+ * @param v - The Payload relation value to extract from.
+ * @returns The slug string, or `undefined` when the relation is not populated.
+ */
 const slugOf = (v: { slug?: string } | string | null | undefined): string | undefined =>
     typeof v === 'string' || !v ? undefined : v.slug;
+
+/**
+ * Extracts the `shopifyHandle` from a Payload relation field that may be a
+ * bare ID string (not populated) or an object, returning `undefined` in both
+ * the string and null/undefined cases.
+ *
+ * @param v - The Payload relation value to extract from.
+ * @returns The Shopify handle string, or `undefined` when the relation is not populated.
+ */
 const handleOf = (v: { shopifyHandle?: string } | string | null | undefined): string | undefined =>
     typeof v === 'string' || !v ? undefined : v.shopifyHandle;
 
@@ -45,6 +71,10 @@ export type ResolvedLink = { href: string; openInNewTab: boolean };
  *
  * Locale is required for internal links because the storefront routes are
  * locale-scoped — `/[locale]/<slug>/` and `/[locale]/products/<handle>/`.
+ *
+ * @param link - The Payload LinkRef to resolve, or `null`/`undefined` for no link.
+ * @param locale - The active locale, used to prefix internal route paths.
+ * @returns The resolved href and `openInNewTab` flag, or `null` when the link is invalid.
  */
 export const resolveLink = (link: LinkRef | null | undefined, { locale }: { locale: Locale }): ResolvedLink | null => {
     if (!link) return null;

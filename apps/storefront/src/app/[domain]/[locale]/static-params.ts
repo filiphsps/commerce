@@ -8,6 +8,15 @@ import type { LayoutParams } from './layout';
 
 export type StaticParam = Awaited<LayoutParams>;
 
+/**
+ * Generates the top-level `[domain]/[locale]` path segments for all shops at
+ * build time. Demo shops are skipped; failures per-shop are swallowed and
+ * logged so one bad tenant doesn't abort the entire build. Returns a sentinel
+ * entry when no valid shops are found so Cache Components has at least one
+ * path to render.
+ *
+ * @returns An array of `{ domain, locale }` params for each live shop.
+ */
 export async function generateStaticParams(): Promise<StaticParam[]> {
     try {
         const shops = await Shop.findAll();

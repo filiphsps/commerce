@@ -12,11 +12,24 @@ import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 import { useTrackable } from '@/utils/trackable';
 
+/** Props for the `CartSidebar` client component. */
 export type CartSidebarProps = {
     locale: Locale;
     i18n: LocaleDictionary;
     paymentMethods?: ReactNode;
 } & HTMLProps<HTMLDivElement>;
+/**
+ * Client component rendering the cart order summary sidebar with a checkout
+ * button. Guards checkout by refusing to proceed when the cart is still
+ * loading or when the last mutation left an unresolved error.
+ *
+ * @param i18n - The locale dictionary for translated labels.
+ * @param locale - The active locale forwarded to the checkout utility.
+ * @param className - Additional class name applied to the outer `aside` element.
+ * @param children - Optional content rendered inside the cart summary.
+ * @param paymentMethods - Optional payment method badges rendered below the checkout button.
+ * @returns The cart summary aside element.
+ */
 export const CartSidebar = ({ i18n, locale, className, children, paymentMethods, ...props }: CartSidebarProps) => {
     const { shop } = useShop();
 

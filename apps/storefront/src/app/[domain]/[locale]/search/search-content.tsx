@@ -18,6 +18,19 @@ type SearchBarProps = {
     onSearch: (q: string) => void;
     disabled?: boolean;
 } & HTMLProps<HTMLDivElement>;
+/**
+ * Client search input with an inline submit button. Fires the `onSearch`
+ * callback on Enter, blur (when non-empty), or button click — intentionally
+ * not on every keystroke to avoid triggering transitions while the user is
+ * still typing.
+ *
+ * @param defaultValue - The initial search query prepopulated in the input.
+ * @param onSearch - Callback invoked with the trimmed query string when search fires.
+ * @param disabled - When `true`, the submit button is disabled (e.g. during a pending transition).
+ * @param className - Additional class names for the wrapper element.
+ * @param i18n - The locale dictionary for translated aria labels.
+ * @returns The search input + button element.
+ */
 export const SearchBar = ({ defaultValue, onSearch, disabled, className, i18n, ...props }: SearchBarProps) => {
     const { t } = getTranslations('common', i18n);
     const [value, setValue] = useState<string>(defaultValue ?? '');
@@ -76,6 +89,7 @@ export const SearchBar = ({ defaultValue, onSearch, disabled, className, i18n, .
     );
 };
 
+/** Props for the `SearchContent` client component. */
 export type SearchContentProps = {
     locale: Locale;
     i18n: LocaleDictionary;
@@ -85,6 +99,21 @@ export type SearchContentProps = {
     productFilters?: ProductFilters;
     totalCount?: number;
 };
+/**
+ * Client component that composes the search page: a `SearchBar`, optional
+ * filter controls, a result count label, and the product card list. Drives
+ * URL replacement via a `useTransition` so the list updates without a full
+ * navigation, showing skeleton cards while the transition is pending.
+ *
+ * @param i18n - The locale dictionary for translated UI copy.
+ * @param locale - The active locale forwarded to the `SearchBar`.
+ * @param showFilters - Whether to render the `Filters` component above the results.
+ * @param productCards - Pre-rendered product card nodes from the server.
+ * @param skeletonCards - Placeholder card nodes shown during pending transitions.
+ * @param productFilters - Shopify product filter facets to expose in the UI.
+ * @param totalCount - Total matching product count for the result count label.
+ * @returns The search page content element.
+ */
 export default function SearchContent({
     i18n,
     locale,

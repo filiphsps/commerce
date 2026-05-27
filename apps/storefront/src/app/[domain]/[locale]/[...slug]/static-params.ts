@@ -6,6 +6,14 @@ import { Locale } from '@/utils/locale';
 
 export type CustomPageParams = Promise<{ domain: string; locale: string; slug: string[] }>;
 
+/**
+ * Generates the `slug` segments for all published CMS custom pages under a
+ * given domain/locale pair at build time. Returns a sentinel entry when the
+ * shop has no pages so Cache Components always has at least one path.
+ *
+ * @param params - The already-resolved `domain` and `locale` from the parent segment.
+ * @returns An array of `{ slug }` arrays, one per published CMS page.
+ */
 export async function generateStaticParams({
     params,
 }: {

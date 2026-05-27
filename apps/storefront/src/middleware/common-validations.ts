@@ -2,6 +2,15 @@ import type { NextURL } from 'next/dist/server/web/next-url';
 
 export const DOUBLE_SLASHES = /\/\//g;
 
+/**
+ * Applies a suite of normalizations to a URL string or object: strips
+ * `x-default/` prefixes, collapses double hyphens, deduplicates slashes,
+ * ensures a trailing slash on non-file paths, and normalizes locale casing to
+ * `en-US` form. Accepts a string or URL-like object and returns the same type.
+ *
+ * @param url - The URL string or URL object to normalize.
+ * @returns The same type as the input with all normalizations applied.
+ */
 export const commonValidations = <T extends string | NextURL | URL>(url: T): T => {
     let path: string = '';
     if (typeof url === 'string') {

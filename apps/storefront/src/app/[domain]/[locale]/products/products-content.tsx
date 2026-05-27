@@ -17,11 +17,22 @@ type SearchParams = {
     sorting?: string;
 };
 
+/** Props for the `ProductsContent` server component. */
 export type ProductsContentContentProps = {
     domain: string;
     locale: Locale;
     searchParams?: SearchParams;
 };
+/**
+ * Server component that fetches and renders a paginated, filterable product
+ * grid for the all-products page. Calls `notFound()` when the requested page
+ * number is out of range.
+ *
+ * @param domain - The tenant shop domain used to resolve the shop record.
+ * @param locale - The active locale forwarded to Shopify API calls and product cards.
+ * @param searchParams - Optional query params; `page`, `vendor`, and `sorting` control the listing.
+ * @returns The product grid with pagination controls above and below.
+ */
 export default async function ProductsContent({ domain, locale, searchParams = {} }: ProductsContentContentProps) {
     const shop = await Shop.findByDomain(domain);
     const api = await ShopifyApolloApiClient({ shop, locale });

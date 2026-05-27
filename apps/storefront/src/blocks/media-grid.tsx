@@ -6,21 +6,33 @@ import type { BlockContext } from './context';
 import { type ResolvedLink, resolveLink } from './resolve-link';
 import type { MediaGridBlockNode, MediaItem } from './types';
 
-// Pulls the displayable metadata off a MediaItem. `id` is the Payload media
-// document ID, which we use to derive a stable React `key` (the URL alone
-// can collide when the same asset is referenced twice in one grid; the
-// array index would otherwise reshuffle when the editor reorders items).
+/**
+ * Extracts the displayable metadata from a `MediaItem`. The Payload media
+ * document ID (`id`) is returned so callers can build stable React keys —
+ * using the URL alone collides when the same asset appears twice in a grid.
+ *
+ * @param item - The CMS media item to extract metadata from.
+ * @returns The media document ID, resolved URL, and alt text.
+ */
 const imageMeta = (item: MediaItem): { id?: string; url?: string; alt: string } => {
     if (!item.image) return { id: undefined, url: undefined, alt: '' };
     if (typeof item.image === 'string') return { id: item.image, url: undefined, alt: '' };
     return { id: item.image.id, url: item.image.url, alt: item.image.alt ?? '' };
 };
 
-// Conditional `Link`-or-`div` wrapper. Done as a helper rather than a
-// `WrapperTag = link ? Link : 'div'` union because TypeScript can't narrow
-// the prop union (Link requires `href`; div forbids it) when the component
-// type itself is a union — splitting at the call site is the simplest
-// type-safe shape.
+/**
+ * Wraps media grid children in a `Link` when a resolved link is present,
+ * falling back to a plain `div`. The component-type union approach isn't
+ * used here because TypeScript can't narrow the prop union when the component
+ * type itself is a union — splitting at the call site is the simplest
+ * type-safe shape.
+ *
+ * @param link - The resolved link target, or `null` for an unlinked item.
+ * @param title - Optional title attribute forwarded to the wrapper element.
+ * @param className - Class string applied to the wrapper element.
+ * @param children - The media content to wrap.
+ * @returns A `Link` element when linked, otherwise a `div`.
+ */
 const ItemWrapper = ({
     link,
     title,
@@ -59,6 +71,10 @@ ItemWrapper.displayName = 'Nordcom.Blocks.MediaGrid.Item';
  *
  * Column count is editor-supplied (1–6); we cap the responsive grid at
  * the schema's max, mobile collapses to a single column for legibility.
+ *
+ * @param block - The CMS media-grid block node with items, column count, and item type.
+ * @param context - Render context carrying locale used for link resolution.
+ * @returns The rendered media-grid section, or `null` when the block has no items.
  */
 export const MediaGridBlock = ({
     block,
@@ -168,6 +184,9 @@ MediaGridBlock.displayName = 'Nordcom.Blocks.MediaGrid';
  *
  * Tile aspect ratio mirrors the live block (4:3 for images, square chip
  * for icons) so images popping in don't shift the page.
+ *
+ * @param block - The CMS media-grid block node; used to mirror grid structure and item count.
+ * @returns The skeleton media-grid section, or `null` when the block has no items.
  */
 const MediaGridBlockSkeleton = ({ block }: { block: MediaGridBlockNode }): JSX.Element | null => {
     if (!block.items?.length) return null;
