@@ -1,6 +1,9 @@
 import defaultMdxComponents from 'fumadocs-ui/mdx';
 import * as TabsComponents from 'fumadocs-ui/components/tabs';
 import type { MDXComponents } from 'mdx/types';
+import { KindLine } from './components/reference/kind-line';
+import { ReferenceBackLink } from './components/reference/reference-back-link';
+import { IconCard, IconGallery } from './components/reference/icon-gallery';
 
 /**
  * Bridges fumadocs-ui's default MDX renderers plus our custom MDX components
@@ -14,6 +17,10 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     return {
         ...defaultMdxComponents,
         ...TabsComponents,
+        KindLine,
+        ReferenceBackLink,
+        IconCard,
+        IconGallery,
         ...components,
     } satisfies MDXComponents;
 }
