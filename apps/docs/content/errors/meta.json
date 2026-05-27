@@ -1,0 +1,5 @@
+{
+    "title": "Errors",
+    "description": "Stable error-code catalogue. Each page is reachable at /docs/errors/<code>/.",
+    "root": true
+}
