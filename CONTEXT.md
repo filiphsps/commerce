@@ -141,6 +141,71 @@ _Avoid_: quick view, add-to-cart button (when on a card)
 When a product has exactly one variant AND it is available, clicking `+` adds it directly without opening the **Picker**. The CTA renders a fast-path indicator (`data-fast-path`).
 _Avoid_: instant add, one-click add
 
+### Cart package
+
+**Locale Tuple**:
+The minimal `{ language, country, currency }` triple that the cart packages and Shopify `@inContext` directive consume. Storefront's richer **Locale** maps to a tuple at the package boundary.
+_Avoid_: cart locale, mini locale
+
+**Cart Kernel**:
+The host-instantiated object that wires a **Cart Adapter**, middleware, predictors, and event bus together. Exposes `{ read, mutate, create, on, capabilities }` on the server. One Kernel per host process.
+_Avoid_: cart engine, cart client
+
+**Cart Adapter**:
+A **Commerce provider**-specific implementation of `CartAdapter` (e.g. `@nordcom/cart-shopify`). Owns network calls via an injected **Transport**, declares its **Capabilities**, normalizes raw provider data to the canonical Cart shape, and may expose **Custom mutations**.
+_Avoid_: cart driver, cart backend
+
+**Capabilities**:
+The feature flags a **Cart Adapter** publishes (`giftCards`, `multipleDiscountCodes`, `buyerIdentity`, `notes`, `cartAttributes`, `lineAttributes`, `customMutations: string[]`). Drive type narrowing of `useCartActions()` and UI visibility (hide gift-card form when `giftCards: false`).
+_Avoid_: features, supports
+
+**Transport**:
+A host-supplied function bag (e.g. `ShopifyTransport`) that performs the actual provider HTTP/GraphQL call for a **Cart Adapter**. Threads `AdapterCtx` per call so the host resolves the right tenant client. Lives in the host, not the package.
+_Avoid_: cart client, cart fetcher
+
+**Cart-ID Storage**:
+Server-side interface for persisting the cart-id between requests. `@nordcom/cart-next` ships `httpOnlyCookieStorage()`. Zero-arg — impls rely on framework-contextual storage (`next/headers`, AsyncLocalStorage).
+_Avoid_: cart store, cart session, cart persistence
+
+**Auth Bridge**:
+Host-supplied glue between the cart packages and the host's auth system. Two halves: server `AuthBridge.resolve()` returning **Buyer Identity** from session, and client `ClientAuthBridge.useBuyerIdentity()` subscribing to session changes. Keeps `next-auth` (and any auth lib) out of the cart packages.
+_Avoid_: session adapter, identity provider
+
+**Cart Mutation**:
+A typed object describing an intent to change the cart (`{ kind: 'add-line', variantId, quantity, snapshot? }`). Flows from React provider → server action → **Cart Kernel** → **Cart Adapter**. Built-in kinds plus adapter-declared **Custom mutations**.
+_Avoid_: cart action (overloaded with "server action"), cart command
+
+**Custom mutation**:
+A **Cart Mutation** declared by a **Cart Adapter** beyond the built-ins (e.g. `subscribeFrequency`). Adapters export typed builders; React dispatches via `useCartDispatch()`. Names listed in `capabilities.customMutations`.
+
+**Mutation Queue**:
+The client-side ordered list of pending **Cart Mutations** awaiting server confirmation. Strictly serialized — one in flight at a time. Failures cascade-cancel any queued mutation that referenced the failed mutation's output.
+_Avoid_: optimistic queue, pending list
+
+**Line Predictor**:
+Client-side function `(mutation, ctx) => Partial<CartLine> | null` that fills the synthesized cart-line shape for a predicted `add-line`. First-non-null wins. Built-ins: `snapshotPredictor`, `cachePredictor`.
+_Avoid_: optimistic resolver, line filler
+
+**Cart Predictor**:
+Client-side function `(projection, mutation, ctx) => Cart` that transforms the projected cart after each mutation. All run in registration order. Built-ins: `quantitySumPredictor`, `subtotalPredictor`.
+_Avoid_: cart reducer (reserved for the React-internal reducer)
+
+**Product Snapshot**:
+Caller-provided product info (`variantId, productHandle, productTitle, variantTitle, image, unitPrice, compareAtUnitPrice`) passed at the cart-mutation call site so the predictive UI renders a real-looking line immediately. Complete-or-absent — no partial snapshots.
+_Avoid_: product hint, variant blob
+
+**Buyer Identity**:
+The cart-attached identity of who's checking out: `{ email?, phone?, countryCode?, provider?: { type, data } }`. `provider.data` is an opaque per-adapter session-token bag (Shopify stores `{ customerAccessToken }` there; other adapters use whatever their integration needs). Distinct from a **Collaborator** or a NextAuth user; a cart has a **Buyer Identity** even for guests.
+_Avoid_: cart customer, cart user
+
+**Cart Event Bus**:
+Two separate buses — a server bus on the **Cart Kernel** (analytics, webhook fanout, `nextEventBridge`) and a client bus on the React provider (`useCartEvents`, devtools, cross-tab handler). Delivery is async fire-and-forget; handler errors are logged, never bubbled.
+_Avoid_: cart observer, cart hooks (reserved for React hooks)
+
+**Idempotency Key**:
+A per-mutation-call UUID minted by the React layer. Middleware dedupes retries within a 30-second window. NOT a debounce mechanism — each user click mints a fresh key.
+_Avoid_: mutation id, request token
+
 ## Relationships
 
 - A **Shop** has one primary **Shop domain** and zero or more **Alternative domains**.
@@ -156,6 +221,12 @@ _Avoid_: instant add, one-click add
 - A **Shop**'s index route renders the **Homepage slug** CMS page; the bare path is rewritten by middleware before the route tree is consulted.
 - The **Storefront** is the only multi-tenant app; **Admin** and **Landing** are single-tenant.
 - The **Landing** app owns the **Service domain**'s `/status/*` routes.
+- A **Cart Kernel** wires exactly one **Cart Adapter**; the Adapter's **Capabilities** type-narrow `useCartActions()` on the host via generic threading.
+- A **Cart Adapter** never imports the host's **Shopify API client** directly — it receives a **Transport** the host constructs.
+- A **Cart Mutation** flows React provider → server action → **Cart Kernel** → **Cart Adapter**, returning a `Cart` that replaces the React provider's `confirmed` state.
+- **Line Predictors** run first-non-null-wins per mutation; **Cart Predictors** all run in order on the resulting projection.
+- The **Storefront** instantiates the **Cart Kernel**; **Admin** and **Landing** do not.
+- The **Cart Kernel** has no concept of tax inclusivity — it stores prices as opaque `Money` and lets the **Cart Adapter** + UI assign meaning.
 
 ## Example dialogue
 
@@ -197,3 +268,6 @@ _Avoid_: instant add, one-click add
 - **"platform default locale"** is not a real concept. CLAUDE.md's `request locale → shop default → platform default` may suggest a system-wide policy exists; it doesn't. The chain terminates at the tenant's **Default locale**. The literal `'en-US'` in `middleware/storefront.ts` (`shop.i18n?.defaultLocale ?? 'en-US'`) is a code-level last-resort safety net for malformed shop records, not policy.
 - **`Locale` (class) vs Locale (tag)** — the glossary term **Locale** is the `xx-XX` tag string, the unit that flows through URLs and APIs. In storefront code, `Locale` is also a TypeScript class wrapping the tag with helpers (`Locale.default`, `Locale.current`, `Locale.from(...)`). Treat the tag as the noun and the class as a utility. Prose that says "the locale" usually means the tag; code that reads "the Locale" usually means the class instance.
 - **Payload `shops` collection vs Mongoose `Shop` vs Payload `tenants`** — three Shop-related entities, not three sources of truth. The Mongoose **Shop** (`@nordcom/commerce-db`) is the authoritative write path; `Shop.findByDomain` reads it directly without going through Payload. The Payload `tenants` collection is the synced, lightweight **CMS tenant**. The Payload `shops` collection is an editor-facing view of the same Mongo collection, with Payload-layer hooks for secret stripping and role-gated writes. The Payload `shops` collection has **no `afterChange` sync** back to Mongoose, and the `shopBridge` referenced in its source-comment doesn't exist in the codebase — treat it as a partial scaffold for an unrealized bridge.
+- **"the cart" pre- vs post-package-migration** — pre-migration, the cart lives in `apps/storefront/src/{api,components,utils,app/[domain]/[locale]/_actions}/cart*` and references to "cart code" mean those paths. Post-migration the canonical surface is `@nordcom/cart-{core,react,next,shopify}` and those storefront paths are deleted except for UI primitives (`cart-line.tsx`, `cart-summary.tsx`, etc.) that consume the package hooks. The new packages are the source of truth.
+- **"predictor"** — bare word is ambiguous; the cart packages ship two flavors with different semantics. **Line Predictor** synthesizes a cart line, first-non-null wins. **Cart Predictor** transforms the projected cart, all run in order. Always qualify in prose and identifiers.
+- **"cart action"** — overloaded between a **Cart Mutation** (the intent object) and a Next.js server action (the `'use server'` function exported from the host). The package's typed factories return server actions; the React side dispatches **Cart Mutations** to them. Prefer "**Cart Mutation**" for the intent and reserve "action" / "server action" for the Next.js primitive.
