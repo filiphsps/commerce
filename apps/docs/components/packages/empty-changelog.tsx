@@ -22,7 +22,7 @@ export function EmptyChangelog({ pkg, commitLogUrl }: EmptyChangelogProps) {
                 Packages · {pkg} · Changelog
             </p>
 
-            <div className="flex h-14 w-14 items-center justify-center rounded-full border-[0.2rem] border-border-strong font-mono text-xl text-fg-dim">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full border-[0.2rem] border-fg-dim font-mono text-xl text-fg-dim">
                 v0
             </div>
 

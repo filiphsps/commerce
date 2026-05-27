@@ -20,7 +20,7 @@ export function EmptyJSDoc({ href }: EmptyJSDocProps) {
 
             <div
                 className="flex h-14 w-14 items-center justify-center rounded-full border-[0.2rem] border-brand font-mono text-2xl text-brand"
-                style={{ boxShadow: '0 0 24px hsl(330 86% 53% / 0.35)' }}
+                style={{ boxShadow: '0 0 24px hsl(330 86% 53% / 0.45)' }}
             >
                 {'{ }'}
             </div>
