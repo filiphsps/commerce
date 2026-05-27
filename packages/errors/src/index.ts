@@ -8,13 +8,13 @@ import { BuiltinError } from './error';
  * @param message - Optional message forwarded to the native `Error` constructor.
  * @example
  * ```ts
- * class CartFullError extends Error<CartErrorKind> {
- *     name = 'CartFullError';
- *     code = CartErrorKind.CART_FULL;
- *     details = 'Cart is full';
- *     description = 'The cart has reached its maximum line count';
+ * class ProductNotFoundError extends Error<GenericErrorKind> {
+ *     name = 'ProductNotFoundError';
+ *     code = GenericErrorKind.NOT_FOUND;
+ *     details = 'Product not found';
+ *     description = 'No product exists for the given handle';
  * }
- * throw new CartFullError();
+ * throw new ProductNotFoundError();
  * ```
  */
 export class Error<T = unknown> extends BuiltinError {
@@ -50,8 +50,15 @@ export class Error<T = unknown> extends BuiltinError {
     /**
      * Checks whether another error has the same error code as this instance.
      *
-     * @param error - The value to compare against.
+     * @param error - Any value; compared against this instance's `.code` by equality, not object identity. Non-`Error` values always return `false`.
      * @returns `true` when `error` is an `Error` instance with an identical `code`.
+     * @example
+     * ```ts
+     * const a = new NotFoundError();
+     * const b = new NotFoundError();
+     * a.is(b); // true — same code
+     * a.is(new UnknownError()); // false — different code
+     * ```
      */
     public is(error: Error | unknown): boolean {
         if (!(error instanceof Error)) {
@@ -64,8 +71,16 @@ export class Error<T = unknown> extends BuiltinError {
     /**
      * Type guard that narrows an unknown value to this package's `Error` type.
      *
-     * @param error - The value to test.
+     * @param error - Any caught or unknown value; distinguishes this package's `Error<T>` subtype from the native global `Error`, which `instanceof globalThis.Error` would conflate.
      * @returns `true` when `error` is an instance of this package's `Error`.
+     * @example
+     * ```ts
+     * try { await fetchData(); } catch (e) {
+     *     if (Error.isError(e)) {
+     *         console.error(e.code); // narrowed to Error<unknown>
+     *     }
+     * }
+     * ```
      */
     public static override isError(error: unknown): error is Error {
         return error instanceof Error;
@@ -74,8 +89,15 @@ export class Error<T = unknown> extends BuiltinError {
     /**
      * Heuristic check for any "not found" variant, covering `NotFoundError`, `InvalidHandleError`, `InvalidIDError`, `UnknownLocaleError`, any error with HTTP 404, and certain message patterns.
      *
-     * @param error - The value to test.
+     * @param error - Any value; matches `NotFoundError`, `InvalidHandleError`, `InvalidIDError`, `UnknownLocaleError`, and any object with `statusCode === 404`. Rejects primitives and objects that carry no recognizable not-found signal.
      * @returns `true` when the error represents a not-found condition.
+     * @example
+     * ```ts
+     * try { await fetchProduct(handle); } catch (e) {
+     *     if (Error.isNotFound(e)) { return notFound(); }
+     *     throw e;
+     * }
+     * ```
      */
     public static isNotFound(error: Error | unknown): boolean {
         if (typeof error === 'undefined' || error === null || typeof error !== 'object') {
@@ -610,6 +632,11 @@ export class ProviderFetchError extends ApiError {
      *
      * @param input - The raw error value from the provider; may be a string, number, boolean, array, object with `message`/`status`, or `null`/`undefined`.
      * @returns A string description of the error, or `null` when no meaningful text can be extracted.
+     * @example
+     * ```ts
+     * const msg = ProviderFetchError.stringifyInput(response.errors);
+     * if (msg) console.error(msg);
+     * ```
      */
     static stringifyInput(input: unknown): string | null {
         if (typeof input === 'undefined' || input === null) {
@@ -1289,7 +1316,7 @@ export const getAllErrorCodes = () => {
 /**
  * Maps a `GenericErrorKind` or `ApiErrorKind` code to its corresponding error class, enabling reconstruction of typed errors from serialized codes.
  *
- * @param code - The error code value to look up.
+ * @param code - A member of `GenericErrorKind` or `ApiErrorKind`; accepts the string enum values directly since both enums are string-valued.
  * @returns The error class constructor for the code, or `null` when the code is not recognized.
  * @example
  * ```ts
