@@ -86,7 +86,7 @@ export function remarkLinkSymbols(options: {
                 type: 'link',
                 url: res.url,
                 title: null,
-                data: { hProperties: { 'data-symbol-tab': res.tab } },
+                data: { hProperties: { 'data-symbol-tab': res.tab, 'data-symbol-kind': res.kind } },
                 children: [{ type: 'inlineCode', value: node.value }],
             };
             if (parent?.children && typeof idx === 'number') {

@@ -1,5 +1,6 @@
 import path from 'node:path';
 import { defineConfig, defineDocs } from 'fumadocs-mdx/config';
+import { rehypeLinkSymbolsInCode } from './lib/rehype-link-symbols-in-code';
 import { remarkLinkSymbols } from './lib/remark-link-symbols';
 
 // fumadocs-mdx compiles this file into apps/docs/.source/source.config.mjs, so
@@ -24,6 +25,11 @@ export default defineConfig({
         // the file when its mtime changes — this lets `pnpm gen` in a running
         // dev session update symbol-link URLs without a server restart.
         remarkPlugins: [[remarkLinkSymbols, { indexPath, context: { tab: 'docs' } }]],
+        // After Shiki tokenises code blocks into hast, rewrite identifier
+        // tokens that resolve through the symbol index into clickable anchors
+        // so signatures, examples, definitions and any other rendered code
+        // get the same per-kind colour pills as inline prose tokens.
+        rehypePlugins: [[rehypeLinkSymbolsInCode, { indexPath, context: { tab: 'docs' } }]],
         remarkCodeTabOptions: { parseMdx: true },
         rehypeCodeOptions: {
             themes: {

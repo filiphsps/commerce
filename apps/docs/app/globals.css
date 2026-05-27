@@ -168,36 +168,57 @@ a[data-symbol-tab] {
     transition: background 150ms ease;
 }
 
-a[data-symbol-tab="reference"] {
+/* Color by symbol KIND, not tab — visuals/02 splits the reference tab into
+ * cyan pills (functions / classes / components) and lime pills (types,
+ * interfaces, variables, enums). Error classes get amber pills. Docs / package
+ * narrative links get magenta. Tab is still set on the anchor as a fallback
+ * for tokens whose kind isn't in the index. */
+a[data-symbol-kind="function"],
+a[data-symbol-kind="class"],
+a[data-symbol-kind="component"],
+a[data-symbol-tab="reference"]:not([data-symbol-kind]) {
     color: var(--color-ref);
     border-color: var(--color-ref);
     background: hsl(190 95% 55% / 0.1);
 }
-a[data-symbol-tab="packages"] {
+a[data-symbol-kind="type"],
+a[data-symbol-kind="interface"],
+a[data-symbol-kind="variable"],
+a[data-symbol-kind="enum"] {
     color: var(--color-pkg);
     border-color: var(--color-pkg);
     background: hsl(95 80% 55% / 0.1);
 }
-a[data-symbol-tab="errors"] {
+a[data-symbol-tab="errors"],
+a[data-symbol-kind="error"] {
     color: var(--color-err);
     border-color: var(--color-err);
     background: hsl(28 95% 58% / 0.1);
 }
+a[data-symbol-tab="packages"]:not([data-symbol-kind]),
 a[data-symbol-tab="docs"] {
     color: var(--color-brand);
     border-color: var(--color-brand);
     background: hsl(330 86% 53% / 0.1);
 }
 
-a[data-symbol-tab="reference"]:hover {
+a[data-symbol-kind="function"]:hover,
+a[data-symbol-kind="class"]:hover,
+a[data-symbol-kind="component"]:hover,
+a[data-symbol-tab="reference"]:not([data-symbol-kind]):hover {
     background: hsl(190 95% 55% / 0.22);
 }
-a[data-symbol-tab="packages"]:hover {
+a[data-symbol-kind="type"]:hover,
+a[data-symbol-kind="interface"]:hover,
+a[data-symbol-kind="variable"]:hover,
+a[data-symbol-kind="enum"]:hover {
     background: hsl(95 80% 55% / 0.22);
 }
-a[data-symbol-tab="errors"]:hover {
+a[data-symbol-tab="errors"]:hover,
+a[data-symbol-kind="error"]:hover {
     background: hsl(28 95% 58% / 0.22);
 }
+a[data-symbol-tab="packages"]:not([data-symbol-kind]):hover,
 a[data-symbol-tab="docs"]:hover {
     background: hsl(330 86% 53% / 0.22);
 }
@@ -218,6 +239,25 @@ table a[data-symbol-tab]:hover {
     background: transparent;
     text-decoration: underline;
     text-underline-offset: 3px;
+}
+
+/* Code-block links emitted by `rehype-link-symbols-in-code`. The pill chrome
+ * (border, padding, bg) breaks Shiki's monospace token rhythm and shifts
+ * surrounding tokens left/right with every line. Strip the chrome so the
+ * wrapped span retains its Shiki colour; on hover, paint a subtle
+ * underline so the link affordance stays clear. */
+a[data-symbol-code-link] {
+    text-decoration: none;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+    cursor: pointer;
+    border-bottom: 1px dashed currentColor;
+}
+a[data-symbol-code-link]:hover {
+    border-bottom-style: solid;
+    background: hsl(0 0% 100% / 0.04);
 }
 
 /* Fumadocs docks the mobile sidebar drawer on the right (`inset-e-0`) and
