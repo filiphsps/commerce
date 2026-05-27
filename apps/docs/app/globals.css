@@ -293,9 +293,22 @@ a[data-symbol-tab="docs"]:hover {
     margin-top: 0;
 }
 
-/* Page items (<a>) — visuals/06 `.it`: Montserrat display, full fg (white in
- * dark mode), bold 700, thin left rail. Inactive items are NOT muted; the
- * brand-magenta active state creates the hierarchy contrast. */
+/* ── Sidebar item levels ────────────────────────────────────────────────────
+ * Fumadocs injects inline padding-inline-start via calc(N * var(--spacing))
+ * to encode nesting depth. Three levels matter across the four tabs:
+ *
+ *   calc(2 *…) — depth-0: tab roots (docs/reference/packages/errors groups)
+ *   calc(5 *…) — depth-1: sub-groups or direct leaf pages (Cms, Db, /ref sub-pages)
+ *   calc(8 *…) — depth-2: leaf pages nested two levels deep (api, blocks…)
+ *
+ * Mapping to visuals/06 classes:
+ *   • depth-0 button  → .grp  (mono, small caps, fg-mute)
+ *   • depth-1 button  → .it   (display, bold, full fg, brand-hover on hover)
+ *   • depth-0/1 a     → .it   (display, bold, full fg, brand-hover on hover)
+ *   • Reference/Apps a → .sub (mono, fg-mute, full fg on hover)
+ * ───────────────────────────────────────────────────────────────────────── */
+
+/* Base for ALL sidebar links — will be overridden per depth below. */
 #nd-sidebar a {
     font-family: var(--font-sans);
     font-size: 0.78rem;
@@ -310,8 +323,17 @@ a[data-symbol-tab="docs"]:hover {
         background 150ms;
 }
 
-/* Folder-trigger buttons — visuals/06 `.grp`: mono small caps, fg-mute.
- * These are the collapsible group headers (e.g., "Get started", "Concepts"). */
+/* Reference tab leaf items and packages depth-2 leaves → .sub:
+ * mono, fg-mute, hover to full fg. */
+#nd-sidebar a[href^="/reference/"],
+#nd-sidebar a[style*="calc(8 "] {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--color-fg-mute);
+}
+
+/* Folder-trigger buttons — depth-0: .grp (mono, small caps, fg-mute). */
 #nd-sidebar button[data-state] {
     font-family: var(--font-mono);
     font-size: 0.6rem;
@@ -328,14 +350,36 @@ a[data-symbol-tab="docs"]:hover {
         background 150ms;
 }
 
-/* Hover: item links go to brand-hover magenta; folder triggers go to full fg */
-#nd-sidebar a:hover:not([data-active="true"]) {
+/* depth-1 folder buttons (packages: Cms, Db, etc.) → .it:
+ * display font, full fg, bold. */
+#nd-sidebar button[data-state][style*="calc(5 "] {
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--color-fg);
+}
+
+/* Hover: .it items (a + depth-1 buttons) go to brand-hover magenta.
+ * .sub items (reference/deep-packages a) and .grp go to full fg. */
+#nd-sidebar a:hover:not([data-active="true"]),
+#nd-sidebar button[data-state][style*="calc(5 "]:hover {
     color: var(--color-brand-hover);
     border-left-color: var(--color-border-strong);
     background: hsl(330 86% 53% / 0.06);
 }
 
-#nd-sidebar button[data-state]:hover {
+/* .sub hover: full fg, border-strong */
+#nd-sidebar a[href^="/reference/"]:hover:not([data-active="true"]),
+#nd-sidebar a[style*="calc(8 "]:hover:not([data-active="true"]) {
+    color: var(--color-fg);
+    border-left-color: var(--color-border-strong);
+    background: var(--color-bg-1);
+}
+
+/* .grp hover: full fg */
+#nd-sidebar button[data-state]:hover:not([style*="calc(5 "]) {
     color: var(--color-fg);
     background: var(--color-bg-1);
 }
