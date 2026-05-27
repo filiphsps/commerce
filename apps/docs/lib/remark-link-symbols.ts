@@ -27,8 +27,8 @@ type AnyNode = { type: string; children?: AnyNode[]; value?: string };
 export function remarkLinkSymbols(options: {
     index: SymbolIndex;
     context: ResolveContext;
-}): () => (tree: unknown) => void {
-    return () => (tree) => {
+}): (tree: unknown) => void {
+    return (tree) => {
         if (Object.keys(options.index).length === 0) return;
         visitInlineCode(tree as AnyNode, (node, idx, parent) => {
             if (!isLinkableToken(node.value)) return;
