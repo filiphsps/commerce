@@ -1,5 +1,11 @@
 import type { Payload } from 'payload';
 
+/**
+ * Input for {@link seedTenant}.
+ *
+ * @example
+ * seedTenant({ payload, name: 'Test Shop', slug: 'test-shop' });
+ */
 export type SeedTenantInput = {
     payload: Payload;
     name: string;
@@ -8,6 +14,24 @@ export type SeedTenantInput = {
     locales?: string[];
 };
 
+/**
+ * Creates a tenant document in the test Payload instance. Used by integration
+ * tests that need at least one tenant before exercising tenant-scoped
+ * collections.
+ *
+ * @param input - {@link SeedTenantInput} with the Payload instance and tenant fields.
+ * @returns The new tenant's `id` as a string.
+ * @example
+ * ```ts
+ * const { id } = await seedTenant({
+ *   payload,
+ *   name: 'Acme Store',
+ *   slug: 'acme-store',
+ *   defaultLocale: 'en-US',
+ *   locales: ['en-US', 'sv-SE'],
+ * });
+ * ```
+ */
 export async function seedTenant({
     payload,
     name,

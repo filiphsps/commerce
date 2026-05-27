@@ -1,6 +1,16 @@
 import type { ReactNode } from 'react';
 import type { BlockRenderContext, ColumnsBlockNode } from './types';
 
+/**
+ * Renders a {@link ColumnsBlockNode} as a flex/grid column layout. Accepts an
+ * injected `Renderer` so `BlockRenderer` can pass itself in and achieve
+ * recursive rendering without a circular import.
+ *
+ * @param block - The columns block node with its column array.
+ * @param context - Block render context; nesting depth is incremented per call.
+ * @param Renderer - The parent block renderer used for nested block arrays.
+ * @returns A React div containing one child div per column.
+ */
 export function ColumnsBlock({
     block,
     context,

@@ -2,6 +2,7 @@ import type { Route } from 'next';
 import { adminOnly, editorOrAdmin, tenantMember } from '../access';
 import { defineCollectionEditor } from '../manifest';
 
+/** Editor manifest for the `pages` collection. Tenant-scoped; supports drafts and live preview. */
 export const pagesEditor = defineCollectionEditor({
     collection: 'pages',
     routes: {

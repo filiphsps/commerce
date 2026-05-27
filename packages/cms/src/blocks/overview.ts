@@ -1,5 +1,13 @@
 import type { Block } from 'payload';
 
+/**
+ * Payload block definition for a Shopify product overview section. Supports
+ * three data sources — a specific collection handle, latest products, or
+ * featured products — with a configurable item limit.
+ *
+ * @example
+ *   blocks: [overviewBlock]
+ */
 export const overviewBlock: Block = {
     slug: 'overview',
     interfaceName: 'OverviewBlock',

@@ -6,6 +6,12 @@ import type { LocaleRef, ShopRef } from './get-page';
 import { getPayloadInstance } from './get-payload-instance';
 import { resolveTenantId } from './resolve-tenant-id';
 
+/**
+ * Arguments accepted by {@link getCollectionMetadata}.
+ *
+ * @example
+ *   const args: GetCollectionMetadataArgs = { shop, locale, shopifyHandle: 'sale' };
+ */
 export type GetCollectionMetadataArgs = {
     shop: ShopRef;
     locale: LocaleRef;
@@ -14,6 +20,17 @@ export type GetCollectionMetadataArgs = {
     __payload?: Payload;
 };
 
+/**
+ * Fetch the CMS metadata record for a Shopify collection identified by its
+ * handle. Returns `null` when the tenant is unsynced, the handle does not
+ * match any record, or the shop id is missing.
+ *
+ * @param args - Shop, locale, Shopify collection handle, optional flags.
+ * @returns The collection-metadata document at depth 2, or `null`.
+ *
+ * @example
+ *   const meta = await getCollectionMetadata({ shop, locale, shopifyHandle: 'sale' });
+ */
 export const getCollectionMetadata = async ({
     shop,
     locale,

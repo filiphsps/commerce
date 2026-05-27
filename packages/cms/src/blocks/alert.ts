@@ -1,5 +1,13 @@
 import type { Block } from 'payload';
 
+/**
+ * Payload block definition for inline alert banners. Supports four severity
+ * levels (info, success, warning, error), an optional body, and an optional
+ * dismiss toggle.
+ *
+ * @example
+ *   blocks: [alertBlock]
+ */
 export const alertBlock: Block = {
     slug: 'alert',
     interfaceName: 'AlertBlock',

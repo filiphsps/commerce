@@ -17,6 +17,14 @@ import { EditorFormToolbar } from './editor-form-toolbar';
 import { localeLabel } from './locale-label';
 import { LocaleSwitcher } from './locale-switcher';
 
+/**
+ * Props for {@link EditorEditPage}. Carries the manifest, runtime, resolved
+ * route params, the codegen'd server-action wrappers, and an optional
+ * live-preview slot.
+ *
+ * @example
+ * <EditorEditPage manifest={pagesEditor} runtime={runtime} params={params} searchParams={searchParams} generatedActions={pagesActions} />
+ */
 export type EditorEditPageProps<TSlug extends CollectionSlug = CollectionSlug> = {
     manifest: CollectionEditorManifest<TSlug>;
     runtime: EditorRuntime;
@@ -33,6 +41,25 @@ export type EditorEditPageProps<TSlug extends CollectionSlug = CollectionSlug> =
     livePreview?: ReactNode;
 };
 
+/**
+ * Server Component that renders the edit form for a single document.
+ * Resolves the locale (redirecting when absent), fetches the doc, builds
+ * Payload's `FormState`, and assembles the `<DocumentForm>` shell with bound
+ * save-draft / publish actions and an optional live-preview iframe.
+ *
+ * @param props - {@link EditorEditPageProps} carrying manifest, runtime, params, and generated actions.
+ * @returns The rendered edit page wrapped in the runtime's `DocumentForm` shell.
+ * @example
+ * ```tsx
+ * <EditorEditPage
+ *   manifest={pagesEditor}
+ *   runtime={runtime}
+ *   params={{ domain, id }}
+ *   searchParams={searchParams}
+ *   generatedActions={pagesActions}
+ * />
+ * ```
+ */
 export async function EditorEditPage<TSlug extends CollectionSlug>({
     manifest,
     runtime,

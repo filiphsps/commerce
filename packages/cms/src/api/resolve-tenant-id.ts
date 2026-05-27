@@ -2,6 +2,12 @@ import 'server-only';
 
 import type { Payload } from 'payload';
 
+// `Tenant._id` is stable for a given `Shop._id` once the post-save hook has
+// run (the upsert keys on `shopId`). Cache per Payload instance to avoid an
+// extra Mongo round-trip on every CMS query. WeakMap so test harnesses that
+// spin up fresh Payload mocks get a fresh cache and never see stale entries.
+const tenantIdCache = new WeakMap<Payload, Map<string, string>>();
+
 /**
  * Translates `Shop._id` (from `@nordcom/commerce-db`) to the Payload-generated
  * Tenant document `_id` used by `@payloadcms/plugin-multi-tenant`.
@@ -12,19 +18,20 @@ import type { Payload } from 'payload';
  * tenants collection carries a `shopId` field that points back to the Shop
  * (see `shop-sync/post-save-hook.ts`), so this helper bridges between them.
  *
- * Without this translation the storefront filters with
- * `where: { tenant: { equals: shop.id } }` and never matches anything.
+ * Without this translation, storefront filters using
+ * `where: { tenant: { equals: shop.id } }` never match anything.
  *
- * Returns `null` when no tenant exists for the given shop — callers should
- * treat this as "no content" rather than broadening the predicate.
+ * @param payload - Active Payload instance; used as the WeakMap key so each
+ *   test harness gets its own isolated cache.
+ * @param shopId - The `Shop._id` from `@nordcom/commerce-db`.
+ * @returns The matching Tenant document `_id`, or `null` when no tenant exists
+ *   for the given shop. Callers should treat `null` as "no content."
+ *
+ * @example
+ * const tenantId = await resolveTenantId(payload, shop.id);
+ * if (!tenantId) return [];
+ * const { docs } = await payload.find({ collection: 'pages', where: { tenant: { equals: tenantId } } });
  */
-
-// `Tenant._id` is stable for a given `Shop._id` once the post-save hook has
-// run (the upsert keys on `shopId`). Cache per Payload instance to avoid an
-// extra Mongo round-trip on every CMS query. WeakMap so test harnesses that
-// spin up fresh Payload mocks get a fresh cache and never see stale entries.
-const tenantIdCache = new WeakMap<Payload, Map<string, string>>();
-
 export const resolveTenantId = async (payload: Payload, shopId: string): Promise<string | null> => {
     if (!shopId) return null;
 
@@ -51,7 +58,12 @@ export const resolveTenantId = async (payload: Payload, shopId: string): Promise
     return tenantId;
 };
 
-/** Test-only: wipe the per-Payload cache. */
+/**
+ * Wipe the per-Payload tenant-id cache. Test-only — call between test cases
+ * that share a Payload instance to prevent cross-test cache hits.
+ *
+ * @param payload - The Payload instance whose cache entry to remove.
+ */
 export const __resetTenantIdCache = (payload: Payload): void => {
     tenantIdCache.delete(payload);
 };

@@ -4,6 +4,12 @@ import { adminOnly, tenantScopedRead, tenantScopedWrite } from '../access';
 import { imageField, seoGroup } from '../fields';
 import { buildRevalidateHooks } from './_hooks/revalidate';
 
+/**
+ * Payload collection config for `articles`. Tenant-scoped blog posts with
+ * draft/autosave/version support, Lexical rich-text body, tags, and an SEO
+ * group. The `(tenant, slug)` compound index enforces per-tenant slug
+ * uniqueness.
+ */
 export const articles: CollectionConfig = {
     slug: 'articles',
     versions: { drafts: { autosave: { interval: 2000 } } },

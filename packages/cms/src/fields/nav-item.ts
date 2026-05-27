@@ -2,16 +2,42 @@ import type { Field } from 'payload';
 import { imageField } from './image';
 import { linkField } from './link';
 
+/**
+ * All supported mega-menu layout variants. Drives the `variant` select on
+ * top-level nav items built by {@link topLevelNavItemField}.
+ *
+ * @example
+ * HEADER_VARIANTS.includes('editorial-columns'); // true
+ */
 export const HEADER_VARIANTS = ['editorial-columns', 'compact-list', 'featured-promo'] as const;
+
+/**
+ * Union of supported mega-menu layout variant identifiers derived from
+ * {@link HEADER_VARIANTS}.
+ *
+ * @example
+ * const v: HeaderVariant = 'editorial-columns';
+ */
 export type HeaderVariant = (typeof HEADER_VARIANTS)[number];
 
+/**
+ * Options controlling the nesting depth of nav-item fields.
+ *
+ * @example
+ * navItemField({ depth: 2 }); // two levels of nested items
+ */
 export type NavItemFieldOptions = {
     depth: number;
 };
 
-// Recursive child-shape builder used by both the legacy `navItemField`
-// export (back-compat for non-header callers like the footer) and by
-// `topLevelNavItemField`'s nested `items` array.
+/**
+ * Builds the recursive `items` array field for nav-item nesting. Used by
+ * {@link navItemField} and as the child-level builder inside
+ * {@link topLevelNavItemField}. Recurses until `remaining` reaches 1.
+ *
+ * @param remaining - Levels of nesting still to produce.
+ * @returns A Payload `array` field config with link, image, description, and optional child `items`.
+ */
 const buildChildItems = (remaining: number): Extract<Field, { type: 'array' }> => ({
     name: 'items',
     type: 'array',
@@ -24,14 +50,30 @@ const buildChildItems = (remaining: number): Extract<Field, { type: 'array' }> =
     ],
 });
 
-// Legacy export: same shape this file has always produced. Used by any
-// menu collection (footer, etc) that does NOT need a top-level variant
-// picker. The header switches to `topLevelNavItemField` below.
+/**
+ * Builds a flat nav-item `items` array field for non-header menus (footer,
+ * etc.) that do not need a top-level variant picker.
+ *
+ * @param options - {@link NavItemFieldOptions} controlling nesting depth.
+ * @returns A Payload `array` field config produced by {@link buildChildItems}.
+ *
+ * @example
+ * navItemField({ depth: 2 });
+ */
 export const navItemField = ({ depth }: NavItemFieldOptions) => buildChildItems(depth);
 
-// Top-level menu items (header root): adds a `variant` select so the
-// CMS editor can choose which mega-menu layout to render. Children
-// recurse via the unchanged child-shape builder above.
+/**
+ * Builds the top-level nav-item `items` array for header menus. Adds a
+ * `variant` select (sourced from {@link HEADER_VARIANTS}) so editors can
+ * choose the mega-menu layout per item. Child items recurse via
+ * {@link buildChildItems}.
+ *
+ * @param options - {@link NavItemFieldOptions} controlling nesting depth.
+ * @returns A Payload `array` field config with a variant select at the root level.
+ *
+ * @example
+ * topLevelNavItemField({ depth: 2 });
+ */
 export const topLevelNavItemField = ({ depth }: NavItemFieldOptions): Extract<Field, { type: 'array' }> => ({
     name: 'items',
     type: 'array',

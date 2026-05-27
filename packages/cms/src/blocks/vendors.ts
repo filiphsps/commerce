@@ -1,5 +1,12 @@
 import type { Block } from 'payload';
 
+/**
+ * Payload block definition for a vendor-logo showcase section. Displays up to
+ * `maxVendors` unique vendor entries sourced from Shopify products.
+ *
+ * @example
+ *   blocks: [vendorsBlock]
+ */
 export const vendorsBlock: Block = {
     slug: 'vendors',
     interfaceName: 'VendorsBlock',

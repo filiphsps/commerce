@@ -2,6 +2,7 @@ import type { Route } from 'next';
 import { adminOnly } from '../access';
 import { defineCollectionEditor } from '../manifest';
 
+/** Editor manifest for the `users` collection. Admin-only; cross-tenant (shared) read access. */
 export const usersEditor = defineCollectionEditor({
     collection: 'users',
     routes: {

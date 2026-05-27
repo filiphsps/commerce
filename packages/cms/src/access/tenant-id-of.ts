@@ -16,6 +16,13 @@ export const tenantIdOf = (entry: unknown): string | null => {
     return null;
 };
 
+/**
+ * Collect all tenant ids from the user's `tenants` array. Handles both
+ * populated (full doc) and unpopulated (raw id string) relation shapes.
+ *
+ * @param user - Authenticated Payload user, or `null`/`undefined` when no session exists.
+ * @returns Flat array of tenant id strings; empty when the user has no tenants.
+ */
 export const extractTenantIds = (user: { tenants?: unknown } | null | undefined): string[] => {
     if (!user || !Array.isArray(user.tenants)) return [];
     return user.tenants.map(tenantIdOf).filter((id): id is string => Boolean(id));

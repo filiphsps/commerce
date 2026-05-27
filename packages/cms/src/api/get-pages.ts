@@ -6,6 +6,12 @@ import type { LocaleRef, ShopRef } from './get-page';
 import { getPayloadInstance } from './get-payload-instance';
 import { resolveTenantId } from './resolve-tenant-id';
 
+/**
+ * Arguments accepted by {@link getPages}.
+ *
+ * @example
+ *   const args: GetPagesArgs = { shop, locale, limit: 50 };
+ */
 export type GetPagesArgs = {
     shop: ShopRef;
     locale: LocaleRef;
@@ -22,6 +28,17 @@ export type GetPagesArgs = {
 // access `.docs[i].slug` without TS widening the doc union.
 const TENANT_RESOLUTION_FAILED = '__cms_no_tenant_resolved__';
 
+/**
+ * Fetch a paginated list of pages for the given shop and locale. Primarily used
+ * for sitemap generation; returned documents are at depth 0 to avoid loading
+ * block relations that are not needed for slug enumeration.
+ *
+ * @param args - Shop, locale, optional `limit`/`page`/`draft`, optional `__payload`.
+ * @returns The Payload find result (docs + pagination meta).
+ *
+ * @example
+ *   const { docs } = await getPages({ shop, locale });
+ */
 export const getPages = async ({ shop, locale, limit = 100, page = 1, draft = false, __payload }: GetPagesArgs) => {
     assertShopId(shop);
     const payload = __payload ?? (await getPayloadInstance());

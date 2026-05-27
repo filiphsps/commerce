@@ -8,6 +8,18 @@ import type { Field } from 'payload';
  * Returns `{}` when the key is missing (autosave fires before any field
  * mounts can produce one — treating that as a no-op write is correct).
  * Throws on malformed JSON so we don't silently overwrite a real doc with `{}`.
+ *
+ * @param formData - The `FormData` submitted by a Payload form action; must contain a `_payload` key when a field has mounted.
+ * @returns Parsed field values as a plain object, or `{}` when `_payload` is absent.
+ * @throws {MalformedFormPayloadError} When `_payload` is present but not valid JSON.
+ * @example
+ * ```ts
+ * export async function saveAction(formData: FormData) {
+ *   'use server';
+ *   const values = parseFormPayload(formData);
+ *   await payload.update({ collection: 'pages', id, data: values });
+ * }
+ * ```
  */
 export const parseFormPayload = (formData: FormData): Record<string, unknown> => {
     const raw = formData.get('_payload');
@@ -19,6 +31,14 @@ export const parseFormPayload = (formData: FormData): Record<string, unknown> =>
     }
 };
 
+/**
+ * Extracts the `name` property from a Payload field descriptor.
+ * Returns `null` for anonymous field types (e.g. `row`, `collapsible`) that
+ * carry no name key.
+ *
+ * @param f - Payload field config.
+ * @returns The field's name string, or `null` when absent.
+ */
 const fieldName = (f: Field): string | null => {
     const name = (f as { name?: string }).name;
     return typeof name === 'string' ? name : null;
@@ -28,6 +48,16 @@ const fieldName = (f: Field): string | null => {
  * Drop any top-level key not declared as a named field on the collection.
  * Nested scrubbing (inside groups, arrays, blocks) is the Payload validator's
  * job — this only catches `{ tenant: 'forge' }`-style attacks from clients.
+ *
+ * @param values - Parsed form payload from {@link parseFormPayload}; may contain attacker-injected keys like `tenant`.
+ * @param fields - The collection's top-level Payload field descriptors used to build the allowed-key set.
+ * @returns A new object containing only the keys that correspond to named fields in `fields`.
+ * @example
+ * ```ts
+ * const values = parseFormPayload(formData);
+ * const safe = pickByFieldNames(values, manifest.fields);
+ * await payload.update({ collection: 'pages', id, data: safe });
+ * ```
  */
 export const pickByFieldNames = (
     values: Record<string, unknown>,

@@ -1,5 +1,14 @@
 import type { BlockRenderContext, CollectionBlockNode } from './types';
 
+/**
+ * Async Server Component that loads a Shopify collection via the block render
+ * context loaders and renders a simple product list. Returns `null` when the
+ * collection cannot be resolved.
+ *
+ * @param block - The collection block node with handle, layout, and limit.
+ * @param context - Block render context supplying the shop, locale, and loaders.
+ * @returns A React section element with the product list, or `null`.
+ */
 export async function CollectionBlock({ block, context }: { block: CollectionBlockNode; context: BlockRenderContext }) {
     const collection = await context.loaders.loadCollection({
         shop: context.shop,

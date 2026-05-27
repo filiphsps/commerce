@@ -2,6 +2,7 @@ import type { Route } from 'next';
 import { adminOnly, editorOrAdmin, tenantMember } from '../access';
 import { defineCollectionEditor } from '../manifest';
 
+/** Editor manifest for the `header` global. Tenant-singleton; one header per tenant with draft support. */
 export const headerEditor = defineCollectionEditor({
     collection: 'header',
     routes: {

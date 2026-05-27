@@ -6,8 +6,26 @@ import type { GetPageArgs, LocaleRef, ShopRef } from './get-page';
 import { getPayloadInstance } from './get-payload-instance';
 import { resolveTenantId } from './resolve-tenant-id';
 
+/**
+ * Arguments accepted by {@link getArticle}.
+ *
+ * @example
+ *   const args: GetArticleArgs = { shop, locale, slug: 'my-article' };
+ */
 export type GetArticleArgs = Omit<GetPageArgs, 'slug'> & { slug: string };
 
+/**
+ * Fetch a single article by slug for the given shop and locale. Returns `null`
+ * when the slug does not exist, the tenant has not been synced yet, or the
+ * shop id is invalid.
+ *
+ * @param args - Shop, locale, slug, optional `draft` flag, and an optional
+ *   `__payload` instance for testing without booting a second singleton.
+ * @returns The article document at depth 2, or `null` when not found.
+ *
+ * @example
+ *   const article = await getArticle({ shop, locale, slug: 'hello-world' });
+ */
 export const getArticle = async ({
     shop,
     locale,

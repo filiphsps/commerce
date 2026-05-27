@@ -1,6 +1,14 @@
 import type { Block } from 'payload';
 import { imageField, linkField } from '../fields';
 
+/**
+ * Payload block definition for a configurable grid of media items. Each item
+ * has an image, an optional caption, and an optional link. Column count and
+ * item type (image vs. icon) are configurable per block instance.
+ *
+ * @example
+ *   blocks: [mediaGridBlock]
+ */
 export const mediaGridBlock: Block = {
     slug: 'media-grid',
     interfaceName: 'MediaGridBlock',

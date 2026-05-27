@@ -62,6 +62,7 @@ function renderPreview(doc: Partial<Media>): ReactNode {
     );
 }
 
+/** Editor manifest for the `media` upload collection. Tenant-scoped; includes an image preview cell in the list view. */
 export const mediaEditor = defineCollectionEditor({
     collection: 'media',
     routes: {

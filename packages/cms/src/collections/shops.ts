@@ -1,6 +1,12 @@
 import type { CollectionConfig } from 'payload';
 import { rejectSecretWritesFromNonAdmins, stripSecretsOnRead } from './shops/secrets';
 
+/**
+ * Payload collection config for `shops`. Mirrors the MongoDB `Shop` document
+ * managed by `@nordcom/commerce-db`. Stores editable surface fields (name,
+ * domain, design) plus read-only commerce-provider secrets guarded by
+ * `rejectSecretWritesFromNonAdmins` and `stripSecretsOnRead` hooks.
+ */
 export const shops: CollectionConfig = {
     slug: 'shops',
     admin: { useAsTitle: 'name', defaultColumns: ['name', 'domain', 'updatedAt'] },

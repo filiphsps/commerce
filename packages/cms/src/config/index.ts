@@ -7,6 +7,14 @@ import { buildConfig } from 'payload';
 import { allCollections, buildUsers } from '../collections';
 import { buildMultiTenantPlugin, storagePluginFromEnv } from '../plugins';
 
+/**
+ * Arguments passed to the `livePreview.url` callback so it can build the
+ * storefront URL Payload loads in the admin live-preview iframe.
+ *
+ * @example
+ * const url = (args: BuildLivePreviewUrlArgs) =>
+ *     `https://${args.tenantId}.example.com/${args.locale}/${args.data.slug}/`;
+ */
 export type BuildLivePreviewUrlArgs = {
     tenantId: string;
     collection: string;
@@ -14,6 +22,19 @@ export type BuildLivePreviewUrlArgs = {
     locale: string;
 };
 
+/**
+ * Full option bag for {@link buildPayloadConfig}. Required fields cover the
+ * Mongo connection and JWT secret; everything else has a working default or is
+ * safe to omit for non-admin deployments (e.g. the storefront passes
+ * `includeAdmin: false`).
+ *
+ * @example
+ * const config = await buildPayloadConfig({
+ *     secret: process.env.PAYLOAD_SECRET!,
+ *     mongoUrl: process.env.MONGODB_URI!,
+ *     serverUrl: 'https://admin.example.com',
+ * });
+ */
 export type BuildPayloadConfigOptions = {
     secret: string;
     mongoUrl: string;
@@ -82,6 +103,24 @@ export {
     resolveCmsLocales,
 } from './locales';
 
+/**
+ * Assembles and returns a Payload CMS `SanitizedConfig` from the provided
+ * options. Wires all collections, the multi-tenant plugin, optional S3
+ * storage, localization, and the admin UI together so consumers get a
+ * ready-to-pass config without coupling to Payload internals.
+ *
+ * @param options - Full configuration options; see {@link BuildPayloadConfigOptions}.
+ * @returns A promise resolving to a `SanitizedConfig` ready for `payload.init`.
+ *
+ * @example
+ * // apps/admin/payload.config.ts
+ * export default buildPayloadConfig({
+ *     secret: process.env.PAYLOAD_SECRET!,
+ *     mongoUrl: process.env.MONGODB_URI!,
+ *     serverUrl: process.env.NEXT_PUBLIC_APP_URL,
+ *     importMapBaseDir: path.resolve(__dirname),
+ * });
+ */
 export const buildPayloadConfig = async ({
     secret,
     mongoUrl,
