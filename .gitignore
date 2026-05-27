@@ -40,6 +40,7 @@ apps/docs/.typedoc-out/
 apps/docs/app/docs/(generated)/
 apps/docs/public/_pagefind/
 apps/docs/.docusaurus/
+apps/docs/.source/
 
 # debug
 npm-debug.log*
