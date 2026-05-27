@@ -1,8 +1,19 @@
-import { useMDXComponents as getThemeComponents } from 'nextra-theme-docs';
-import { ApiReference } from '@/components/api/api-reference';
+import defaultMdxComponents from 'fumadocs-ui/mdx';
+import * as TabsComponents from 'fumadocs-ui/components/tabs';
+import type { MDXComponents } from 'mdx/types';
 
-const themeComponents = getThemeComponents();
-
-export function useMDXComponents(components?: Record<string, unknown>) {
-    return { ...themeComponents, ApiReference, ...components };
+/**
+ * Bridges fumadocs-ui's default MDX renderers plus our custom MDX components
+ * into both authored MDX and generator-emitted MDX. New components (callouts,
+ * banners, pills, RedirectStub) get added here as they're built.
+ *
+ * @param components - Per-file overrides (rarely used).
+ * @returns The full MDX component map fumadocs hands to its renderers.
+ */
+export function getMDXComponents(components?: MDXComponents): MDXComponents {
+    return {
+        ...defaultMdxComponents,
+        ...TabsComponents,
+        ...components,
+    } satisfies MDXComponents;
 }

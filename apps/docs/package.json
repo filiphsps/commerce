@@ -52,6 +52,7 @@
         "@playwright/test": "1.60.0",
         "@tailwindcss/postcss": "4.3.0",
         "@testing-library/react": "16.3.2",
+        "@types/mdx": "2.0.13",
         "@types/node": "24.12.4",
         "@types/react": "19.2.14",
         "@types/react-dom": "19.2.3",
