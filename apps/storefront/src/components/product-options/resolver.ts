@@ -2,7 +2,32 @@ import type { Product, ProductVariant } from '@/api/product';
 import type { ProductOptionsSelectorProps } from '@/components/product-options-selector';
 import type { ResolvedOption, ResolvedOptionValue, ResolvedSwatch } from './types';
 
-function normalizeSwatch(raw: any): ResolvedSwatch | undefined {
+type RawImage = {
+    url?: string;
+    altText?: string | null;
+    width?: number;
+    height?: number;
+};
+
+type RawSwatch = {
+    color?: string;
+    image?:
+        | (RawImage & {
+              previewImage?: RawImage;
+              image?: RawImage;
+          })
+        | null;
+} | null;
+
+type RawOptionValue = { name: string; swatch?: RawSwatch };
+
+type RawOption = {
+    name: string;
+    optionValues?: RawOptionValue[];
+    values?: string[];
+};
+
+function normalizeSwatch(raw: RawSwatch | undefined): ResolvedSwatch | undefined {
     if (!raw) return undefined;
     const previewUrl = raw.image?.previewImage?.url ?? raw.image?.image?.url ?? raw.image?.url;
     const color = raw.color ?? undefined;
@@ -18,7 +43,7 @@ function normalizeSwatch(raw: any): ResolvedSwatch | undefined {
     return { color, image };
 }
 
-function* iterValues(option: any): Generator<{ name: string; swatch?: any }> {
+function* iterValues(option: RawOption): Generator<{ name: string; swatch?: RawSwatch }> {
     if (Array.isArray(option.optionValues) && option.optionValues.length > 0) {
         for (const ov of option.optionValues) yield { name: ov.name, swatch: ov.swatch };
         return;
@@ -57,9 +82,10 @@ function deriveAvailability(
 }
 
 export function resolveOptions(product: Product, selection: Record<string, string>): ResolvedOption[] {
-    return (product.options ?? [])
-        .filter((o: any) => o.name && o.name.toLowerCase() !== 'title')
-        .map((option: any) => ({
+    const options = (product.options ?? []) as unknown as RawOption[];
+    return options
+        .filter((o) => o.name && o.name.toLowerCase() !== 'title')
+        .map((option) => ({
             name: option.name,
             values: Array.from(iterValues(option)).map<ResolvedOptionValue>((v) => ({
                 name: v.name,

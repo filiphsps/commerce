@@ -18,7 +18,7 @@ const Swatch = ({ value, onSelect }: OptionValueRendererProps) => {
         >
             <span
                 data-swatch-visual
-                style={{ ['--swatch-color' as any]: value.swatch?.color }}
+                style={{ '--swatch-color': value.swatch?.color } as React.CSSProperties}
                 className="block size-(--product-card-swatch-size) rounded-full border border-(--product-card-border-color) bg-(--swatch-color) transition-shadow group-data-[available=false]/swatch:opacity-35 group-data-[active=true]/swatch:[box-shadow:0_0_0_1.5px_var(--product-card-bg),0_0_0_3px_var(--product-card-swatch-ring-color)]"
             >
                 {hasImage ? (

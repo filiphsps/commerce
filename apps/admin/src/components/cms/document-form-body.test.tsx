@@ -30,18 +30,30 @@ describe('DocumentFormBody', () => {
 
     it('commits the mount-time initialState to Payload `<Form>`', () => {
         const initial = state('A');
-        render(<DocumentFormBody action={vi.fn()} initialState={initial} children={null} />);
+        render(
+            <DocumentFormBody action={vi.fn()} initialState={initial}>
+                {null}
+            </DocumentFormBody>,
+        );
         expect(capturedInitialStates[0]).toBe(initial);
     });
 
     it('forwards a new server initialState to `<Form>` when the form is clean', () => {
         const first = state('A');
         const second = state('B');
-        const { rerender } = render(<DocumentFormBody action={vi.fn()} initialState={first} children={null} />);
+        const { rerender } = render(
+            <DocumentFormBody action={vi.fn()} initialState={first}>
+                {null}
+            </DocumentFormBody>,
+        );
         expect(capturedInitialStates.at(-1)).toBe(first);
 
         modifiedRef.current = false;
-        rerender(<DocumentFormBody action={vi.fn()} initialState={second} children={null} />);
+        rerender(
+            <DocumentFormBody action={vi.fn()} initialState={second}>
+                {null}
+            </DocumentFormBody>,
+        );
         // After the gate's effect fires, the committed slot advances and
         // <Form> re-renders with the new initialState. The last capture
         // reflects that commit.
@@ -51,12 +63,20 @@ describe('DocumentFormBody', () => {
     it('keeps the committed initialState when the form is modified (dirty edits survive a refresh)', () => {
         const first = state('A');
         const second = state('B');
-        const { rerender } = render(<DocumentFormBody action={vi.fn()} initialState={first} children={null} />);
+        const { rerender } = render(
+            <DocumentFormBody action={vi.fn()} initialState={first}>
+                {null}
+            </DocumentFormBody>,
+        );
 
         // Simulate the user typing — the form context's `modified` flag flips
         // before the parent re-renders with new server data.
         modifiedRef.current = true;
-        rerender(<DocumentFormBody action={vi.fn()} initialState={second} children={null} />);
+        rerender(
+            <DocumentFormBody action={vi.fn()} initialState={second}>
+                {null}
+            </DocumentFormBody>,
+        );
 
         // The gate must NOT advance the committed slot while modified. Every
         // captured initialState — across both renders — equals `first`.
@@ -66,15 +86,27 @@ describe('DocumentFormBody', () => {
     it('catches up to the latest server state once the form transitions back to clean', () => {
         const first = state('A');
         const second = state('B');
-        const { rerender } = render(<DocumentFormBody action={vi.fn()} initialState={first} children={null} />);
+        const { rerender } = render(
+            <DocumentFormBody action={vi.fn()} initialState={first}>
+                {null}
+            </DocumentFormBody>,
+        );
 
         modifiedRef.current = true;
-        rerender(<DocumentFormBody action={vi.fn()} initialState={second} children={null} />);
+        rerender(
+            <DocumentFormBody action={vi.fn()} initialState={second}>
+                {null}
+            </DocumentFormBody>,
+        );
         // Still locked to `first` because modified=true.
         expect(capturedInitialStates.at(-1)).toBe(first);
 
         modifiedRef.current = false;
-        rerender(<DocumentFormBody action={vi.fn()} initialState={second} children={null} />);
+        rerender(
+            <DocumentFormBody action={vi.fn()} initialState={second}>
+                {null}
+            </DocumentFormBody>,
+        );
         // Now the gate releases — the next captured initialState is `second`.
         expect(capturedInitialStates.at(-1)).toBe(second);
     });

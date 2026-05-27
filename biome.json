@@ -19,6 +19,7 @@
             "!**/*.d.ts",
             "!**/*.scss",
             "!**/.claude",
+            "!**/.specs",
             "!**/public/robots.txt*",
             "!**/public/sitemap*.xml*",
             "!**/storybook-static",
