@@ -26,6 +26,19 @@ export const SessionSchema = new Schema(
     },
 );
 
+/**
+ * Document shape for an authenticated session. Pairs a bearer token with an expiry date and a
+ * reference to the owning user. The `user` field is always the populated `UserBase` shape; the
+ * underlying ObjectId reference is hidden by this type.
+ *
+ * @example
+ * ```ts
+ * import type { SessionBase } from '@nordcom/commerce-db';
+ * function isActive(session: SessionBase): boolean {
+ *     return session.expiresAt > new Date();
+ * }
+ * ```
+ */
 // `user` is stored as ObjectId on disk; consumers expect the populated `UserBase`.
 export type SessionBase = BaseDocument & Omit<InferSchemaType<typeof SessionSchema>, 'user'> & { user: UserBase };
 

@@ -14,6 +14,14 @@ const isPlainObject = (value: unknown): value is Record<string, unknown> => {
     return proto === Object.prototype || proto === null;
 };
 
+/**
+ * Recursively strips `_id` and `__v` from nested plain objects and arrays so embedded sub-documents
+ * do not carry non-serializable Mongoose `ObjectId` values.
+ *
+ * @param value - Arbitrary document value; arrays and plain objects are traversed recursively,
+ *   primitives and class instances are returned as-is.
+ * @returns The input with all nested `_id` and `__v` keys removed.
+ */
 const stripInternalsDeep = (value: unknown): unknown => {
     if (Array.isArray(value)) return value.map(stripInternalsDeep);
     if (!isPlainObject(value)) return value;
@@ -85,6 +93,20 @@ export const docToOnlineShop = (doc: Doc): OnlineShop => {
     return stripped as unknown as OnlineShop;
 };
 
+/**
+ * Projects a Mongoose lean review document onto the public `ReviewBase` shape by stripping
+ * Mongo internals (`_id`, `__v`).
+ *
+ * @param doc - Raw lean document from `ReviewModel.find().lean()`.
+ * @returns The review document as `ReviewBase`.
+ */
 export const docToReview = (doc: Doc): ReviewBase => stripInternals(doc) as unknown as ReviewBase;
 
+/**
+ * Projects a Mongoose lean feature-flag document onto the public `FeatureFlagBase` shape by
+ * stripping Mongo internals (`_id`, `__v`).
+ *
+ * @param doc - Raw lean document from `FeatureFlagModel.find().lean()`.
+ * @returns The feature flag document as `FeatureFlagBase`.
+ */
 export const docToFeatureFlag = (doc: Doc): FeatureFlagBase => stripInternals(doc) as unknown as FeatureFlagBase;
