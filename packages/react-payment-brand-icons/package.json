@@ -76,7 +76,7 @@
     "bugs": {
         "url": "https://github.com/filiphsps/commerce/issues"
     },
-    "homepage": "https://github.com/filiphsps/commerce/tree/master/packages/react-payment-brand-icons#readme",
+    "homepage": "https://filiphsps.github.io/commerce/docs/react-payment-brand-icons/icons/",
     "peerDependencies": {
         "react": ">=18",
         "react-dom": ">=18"

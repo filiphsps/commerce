@@ -53,7 +53,7 @@
     "bugs": {
         "url": "https://github.com/filiphsps/commerce/issues"
     },
-    "homepage": "https://github.com/filiphsps/commerce/tree/master/packages/tagtree/core#readme",
+    "homepage": "https://filiphsps.github.io/commerce/docs/tagtree/core/overview/",
     "dependencies": {},
     "devDependencies": {
         "@codecov/vite-plugin": "2.0.1",

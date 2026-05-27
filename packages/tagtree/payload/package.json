@@ -49,7 +49,7 @@
     "bugs": {
         "url": "https://github.com/filiphsps/commerce/issues"
     },
-    "homepage": "https://github.com/filiphsps/commerce/tree/master/packages/tagtree/payload#readme",
+    "homepage": "https://filiphsps.github.io/commerce/docs/tagtree/payload/overview/",
     "dependencies": {
         "@tagtree/core": "workspace:*"
     },
