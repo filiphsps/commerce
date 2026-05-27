@@ -7,6 +7,7 @@ import 'fumadocs-ui/style.css';
 import './globals.css';
 import { Logo } from '@/components/logo';
 import { TabChip } from '@/components/tab-chip';
+import { Topbar } from '@/components/topbar';
 import { docsEnv } from '@/lib/env';
 import { primaryFont } from '@/lib/fonts';
 import { source } from '@/lib/source';
@@ -36,13 +37,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     return (
         <html lang="en" dir="ltr" suppressHydrationWarning className={`${primaryFont.variable} ${GeistMono.variable}`}>
             <body>
-                <RootProvider>
+                <RootProvider search={{ options: { type: 'static' } }}>
                     <DocsLayout
                         tree={source.pageTree}
                         githubUrl="https://github.com/filiphsps/commerce"
                         tabMode="navbar"
                         nav={{ title: <Logo />, mode: 'top', transparentMode: 'top' }}
                         sidebar={{ banner: TabChip }}
+                        slots={{ header: Topbar }}
                         tabs={[
                             { title: 'Docs', url: '/' },
                             { title: 'Packages', url: '/packages' },
