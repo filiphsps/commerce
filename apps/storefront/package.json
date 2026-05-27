@@ -20,7 +20,7 @@
         "format:check": "biome check --write --unsafe .",
         "typegen": "next typegen",
         "typecheck": "tsc -noEmit",
-        "test:e2e": "NODE_OPTIONS='--import @nordcom/commerce-test-mongo/register' playwright test",
+        "test:e2e": "NODE_OPTIONS='--import @nordcom/commerce-test-mongo/register-seed-loaders' playwright test",
         "analyze": "next experimental-analyze"
     },
     "author": {

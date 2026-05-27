@@ -1,6 +1,6 @@
 import { Shop } from '@nordcom/commerce-db';
 import { Error, NoLocaleResolvableError, NotFoundError, UnknownError } from '@nordcom/commerce-errors';
-import { shopFromHost } from '@nordcom/commerce-utils';
+import { isLocalhost, shopFromHost } from '@nordcom/commerce-utils';
 import { trace } from '@opentelemetry/api';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
@@ -47,7 +47,10 @@ async function resolveDevShopDomain(): Promise<string> {
 async function hostnameFromRequest(req: NextRequest): Promise<string> {
     const host = req.headers.get('x-forwarded-host') || req.headers.get('host') || req.nextUrl.host;
 
-    if (host.endsWith('storefront.localhost')) {
+    // Bare `localhost[:port]` (the e2e webServer in CI, plus any developer
+    // hitting `next start` directly) has no shop segment to parse, so fall
+    // back to the same dev-shop resolution as `*.storefront.localhost`.
+    if (host.endsWith('storefront.localhost') || isLocalhost(host)) {
         return resolveDevShopDomain();
     }
 

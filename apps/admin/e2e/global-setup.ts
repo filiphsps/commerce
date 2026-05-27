@@ -1,9 +1,16 @@
 import { writeFile } from 'node:fs/promises';
-import { type StartedMongo, seedCanonical, startMongo } from '@nordcom/commerce-test-mongo';
+import { register } from 'node:module';
+
+import { seedCanonical } from '@nordcom/commerce-test-mongo';
 import mongoose, { type Model, Schema } from 'mongoose';
 import { encode } from 'next-auth/jwt';
 
 import { STORAGE_STATE_PATH } from './fixtures/storage-state';
+
+// Seed-time only: stub `next/cache` for Payload's afterChange hooks. Can't
+// widen the `--import` loader to do this because webServer inherits
+// NODE_OPTIONS and stubbing `next/cache` would break real Next runtime caching.
+register('@nordcom/commerce-test-mongo/seed-loader', import.meta.url);
 
 const TEST_EMAIL = 'e2e-test@example.com';
 
@@ -50,31 +57,32 @@ const PayloadUserSchema = new Schema<PayloadUserDoc>(
     { id: true, timestamps: true },
 );
 
-let handle: StartedMongo | null = null;
-
 /**
- * Playwright globalSetup: boots an in-process MongoDB, seeds the canonical
- * demo tenant plus an admin Payload user, and writes a Next-Auth-v5 session
- * cookie so the admin shell loads pre-authenticated. Mirrors the previous
- * `e2e/fixtures/seed.ts` flow but sources the URI from `startMongo` instead
- * of an externally-provisioned MongoDB.
+ * Playwright globalSetup: re-seeds the canonical demo tenant against the
+ * daemon mongo (booted by root `pretest:e2e` and exposed via MONGODB_URI),
+ * adds the test user as a Shop collaborator, and writes a Next-Auth-v5
+ * session cookie so the admin shell loads pre-authenticated.
+ *
+ * Uses the existing MONGODB_URI rather than starting its own mongo so that
+ * the webServer (which Playwright starts BEFORE globalSetup, reading the
+ * URI from `.env.local`) and the seed write to the same instance.
  *
  * @returns Resolves once seeding + storage state write complete.
- * @throws If `NEXTAUTH_SECRET` / `AUTH_SECRET` is unset (required to mint the
- *         session JWT) or the user seed transaction fails.
+ * @throws If `MONGODB_URI` or `NEXTAUTH_SECRET` / `AUTH_SECRET` is unset.
  */
 export default async function globalSetup(): Promise<void> {
-    const started = await startMongo();
-    process.env.MONGODB_URI = started.uri;
+    const uri = process.env.MONGODB_URI;
+    if (!uri) {
+        throw new Error('[admin global-setup] MONGODB_URI must be set — run via `pnpm test:e2e`');
+    }
     process.env.PAYLOAD_SECRET = process.env.PAYLOAD_SECRET ?? 'development-secret';
-    handle = started;
-    await seedCanonical(started.uri);
+    await seedCanonical(uri);
 
     const secret = process.env.NEXTAUTH_SECRET ?? process.env.AUTH_SECRET;
     if (!secret) throw new Error('[admin global-setup] NEXTAUTH_SECRET / AUTH_SECRET is required');
 
     const conn = await mongoose
-        .createConnection(started.uri, {
+        .createConnection(uri, {
             autoCreate: true,
             autoIndex: true,
             bufferCommands: false,
@@ -99,6 +107,16 @@ export default async function globalSetup(): Promise<void> {
             userId = created._id.toString();
         }
 
+        // `/${domain}/...` routes call `getShopsForUser` which queries
+        // `shops.collaborators.user`. Without this entry the shell bounces
+        // every request to the "Choose a Shop" picker.
+        await conn
+            .collection('shops')
+            .updateOne(
+                { domain: 'nordcom-demo-shop.com' },
+                { $set: { collaborators: [{ user: new mongoose.Types.ObjectId(userId), permissions: ['admin'] }] } },
+            );
+
         // Matching Payload user so getAuthedPayloadCtx can resolve the
         // NextAuth session to a Payload principal — without this every
         // content route redirects to /auth/login/.
@@ -106,26 +124,33 @@ export default async function globalSetup(): Promise<void> {
             conn.models['payload-users'] ??
             conn.model<PayloadUserDoc>('payload-users', PayloadUserSchema, 'payload-users');
 
-        const existingPayload = await PayloadUserModel.findOne({ email: TEST_EMAIL })
-            .lean<{ _id: mongoose.Types.ObjectId }>()
-            .exec();
-        if (!existingPayload) {
-            await PayloadUserModel.create({
-                email: TEST_EMAIL,
-                role: 'admin',
-                tenants: [],
-                loginAttempts: 0,
-                sessions: [],
-            });
-        }
+        // seedCanonical inserts a Payload Tenant doc with the slug below;
+        // the test user needs that tenant in its `tenants` array for
+        // collection-edit pages to grant write access.
+        const tenantDoc = await conn.collection('tenants').findOne({ slug: 'nordcom-demo-shop' });
+        if (!tenantDoc) throw new Error('[admin global-setup] expected the seeded payload tenant');
+        const tenantLink = {
+            tenant: tenantDoc._id as mongoose.Types.ObjectId,
+            id: String(tenantDoc._id),
+        };
+
+        await PayloadUserModel.updateOne(
+            { email: TEST_EMAIL },
+            {
+                $set: { role: 'admin', tenants: [tenantLink] },
+                $setOnInsert: { email: TEST_EMAIL, loginAttempts: 0, sessions: [] },
+            },
+            { upsert: true },
+        );
     } finally {
         await conn.close();
     }
 
-    // Auth.js v5: with NEXTAUTH_URL unset the cookie name has no `__Secure-`
-    // prefix and the cookie is not flagged secure. The salt must equal the
-    // cookie name. See apps/admin/src/utils/auth.config.ts.
-    const isSecure = !!process.env.NEXTAUTH_URL;
+    // Mirror auth.config.ts's `IS_PROD` switch: CI's webServer is `next start`
+    // (NODE_ENV=production → `__Secure-` cookie); local uses `next dev`
+    // (NODE_ENV=development → plain cookie). The salt must equal the cookie
+    // name. See apps/admin/src/utils/auth.config.ts.
+    const isSecure = !!process.env.CI;
     const cookieName = isSecure ? '__Secure-authjs.session-token' : 'authjs.session-token';
 
     const token = await encode({
@@ -143,7 +168,7 @@ export default async function globalSetup(): Promise<void> {
             {
                 name: cookieName,
                 value: token,
-                domain: process.env.CI ? 'localhost' : 'admin.localhost',
+                domain: 'localhost',
                 path: '/',
                 httpOnly: true,
                 secure: isSecure,
@@ -154,15 +179,13 @@ export default async function globalSetup(): Promise<void> {
         origins: [],
     };
     await writeFile(STORAGE_STATE_PATH, JSON.stringify(storageState, null, 2));
-    console.info(`[admin global-setup] MONGODB_URI=${started.uri}; wrote storage state to ${STORAGE_STATE_PATH}`);
+    console.info(`[admin global-setup] MONGODB_URI=${uri}; wrote storage state to ${STORAGE_STATE_PATH}`);
 }
 
 /**
- * Playwright globalTeardown: stops the in-process MongoDB started by
- * `globalSetup`. Safe to call when `startMongo` was never reached.
+ * Playwright globalTeardown: no-op. The mongo daemon is owned by the root
+ * `posttest:e2e` lifecycle hook (postdev-mongo.ts), not by this file.
  *
- * @returns Resolves once mongod has shut down.
+ * @returns Immediately.
  */
-export async function globalTeardown(): Promise<void> {
-    await handle?.stop();
-}
+export async function globalTeardown(): Promise<void> {}
