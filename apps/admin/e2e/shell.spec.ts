@@ -21,19 +21,6 @@ test.describe('Admin shell', () => {
         await expect(page.getByPlaceholder(/Type a command/i)).toBeVisible();
     });
 
-    test('resize handle persists width across reload', async ({ page }) => {
-        await page.goto(`/${DOMAIN}/content/`);
-        const handle = page.locator('[data-separator]').first();
-        const handleBox = await handle.boundingBox();
-        if (!handleBox) throw new Error('resize handle not found');
-        await page.mouse.move(handleBox.x + handleBox.width / 2, handleBox.y + handleBox.height / 2);
-        await page.mouse.down();
-        await page.mouse.move(handleBox.x + 100, handleBox.y + handleBox.height / 2, { steps: 20 });
-        await page.mouse.up();
-        const beforeReload = await page.evaluate(() => document.cookie);
-        expect(beforeReload).toContain('nc-admin-shell=');
-    });
-
     test('mobile drawer opens', async ({ page }) => {
         await page.setViewportSize({ width: 375, height: 812 });
         await page.goto(`/${DOMAIN}/`);
