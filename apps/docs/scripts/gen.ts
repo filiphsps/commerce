@@ -3,6 +3,7 @@ import { pathToFileURL } from 'node:url';
 
 import { main as emitTypedoc } from './emit-typedoc-json';
 import { main as mirrorDocs } from './mirror-workspace-docs';
+import { main as portErrors } from './port-errors';
 import { main as symlinkChangelogs } from './symlink-changelogs';
 import { main as emitReference } from './emit-reference-mdx';
 
@@ -12,9 +13,8 @@ import { main as emitReference } from './emit-reference-mdx';
  * by `pnpm gen` and indirectly by the `predev` / `prebuild` lifecycle hooks.
  *
  * Stages:
- *   1. Sources (parallel): typedoc JSON, workspace MDX mirror, package changelogs.
- *      Later phases add port-errors + build-source-meta + build-symbol-index here
- *      once those scripts exist.
+ *   1. Sources (parallel): typedoc JSON, workspace MDX mirror, package changelogs,
+ *      and errors tab MDX port.
  *   2. Reference (depends on stage 1): per-symbol MDX emission. The symbol-index
  *      step gets sequenced before this once Phase G lands it.
  *
@@ -28,6 +28,7 @@ export async function main({ quiet = false }: { quiet?: boolean } = {}): Promise
         emitTypedoc({ quiet }),
         mirrorDocs({ quiet }),
         symlinkChangelogs({ quiet }),
+        portErrors({ quiet }),
     ]);
 
     await emitReference({ quiet });

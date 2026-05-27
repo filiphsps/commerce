@@ -1,6 +1,7 @@
 lib/page-map.generated.ts
 content/reference/
 content/errors/
+!content/errors/_overrides.json
 content/docs/apps/*/
 content/packages/applications/
 content/packages/core/
