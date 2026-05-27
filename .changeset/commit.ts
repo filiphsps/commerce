@@ -72,31 +72,6 @@ const formatSummary = (summary: string | undefined): { subject: string; body: st
 };
 
 /**
- * Resolves whether `[skip ci]` should be appended for the given command,
- * honoring both the boolean shorthand and the per-command opt-in.
- *
- * @param options - Commit options from `.changeset/config.json`.
- * @param command - Which changeset command is requesting the message.
- * @returns `true` when CI should be skipped for this command.
- */
-const shouldSkipCI = (options: CommitOptions | undefined, command: 'add' | 'version'): boolean => {
-    if (!options) {
-        return false;
-    }
-    return options.skipCI === true || options.skipCI === command;
-};
-
-/**
- * Appends the `[skip ci]` trailer when requested, leaving the message intact
- * otherwise.
- *
- * @param message - Commit message body before any CI hint.
- * @param skip - Whether to append the trailer.
- * @returns Final commit message string ready for `git commit -m`.
- */
-const appendSkipCI = (message: string, skip: boolean): string => (skip ? `${message}\n\n[skip ci]\n` : message);
-
-/**
  * Generates the commit message used when `changeset add` writes a new changeset
  * file. Produces `docs(changeset): <subject>.` plus the remainder of the
  * summary as a conventional commit body.
@@ -108,8 +83,7 @@ const appendSkipCI = (message: string, skip: boolean): string => (skip ? `${mess
 const getAddMessage = async (changeset: NewChangeset, options?: CommitOptions): Promise<string> => {
     const { subject, body } = formatSummary(changeset.summary);
     const head = `docs(changeset): ${subject}`;
-    const message = body ? `${head}\n\n${body}` : head;
-    return appendSkipCI(message, shouldSkipCI(options, 'add'));
+    return body ? `${head}\n\n${body}` : head;
 };
 
 /**
@@ -126,8 +100,7 @@ const getVersionMessage = async (releasePlan: ReleasePlan, options?: CommitOptio
     const releaseLines = publishable.map((release) => `  ${release.name}@${release.newVersion}`).join('\n');
     const header = 'chore(release): version packages.';
     const body = releaseLines ? `Releases:\n${releaseLines}` : '';
-    const message = body ? `${header}\n\n${body}` : header;
-    return appendSkipCI(message, shouldSkipCI(options, 'version'));
+    return body ? `${header}\n\n${body}` : header;
 };
 
 export default {
