@@ -40,7 +40,7 @@ export function EmptyJSDoc({ href }: EmptyJSDocProps) {
             <div className="flex flex-wrap gap-2.5">
                 <a
                     href={href}
-                    className="inline-flex items-center gap-1.5 rounded-[0.3rem] border-[0.138rem] border-brand bg-brand px-4 py-2.5 font-display text-[0.7rem] font-bold uppercase tracking-[0.14em] text-black no-underline transition-all hover:border-brand hover:bg-brand/90"
+                    className="inline-flex items-center gap-1.5 rounded-[0.3rem] border-[0.138rem] border-brand bg-brand px-4 py-2.5 font-display text-[0.7rem] font-bold uppercase tracking-[0.14em] text-black! no-underline transition-all hover:border-brand hover:bg-brand/90"
                 >
                     Edit on GitHub →
                 </a>
