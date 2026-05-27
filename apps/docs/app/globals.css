@@ -202,6 +202,22 @@ a[data-symbol-tab="docs"]:hover {
     background: hsl(330 86% 53% / 0.22);
 }
 
+/* Broken {@link} dev-only warning — matches visuals/09-empty-states.html.
+ * When the remark plugin emits `data-broken-link` (dev builds only), the
+ * span renders as an amber dashed pill so authors spot unresolved symbols at
+ * a glance. CI (docs:gen:check) fails if any broken links are emitted. */
+[data-broken-link] {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    padding: 0 0.3em;
+    border: 0.138rem dashed var(--color-err);
+    border-radius: 4px;
+    color: var(--color-err);
+    background: hsl(28 95% 58% / 0.08);
+    cursor: help;
+    white-space: nowrap;
+}
+
 /* ─── Fumadocs chrome overrides ────────────────────────────────────────────── */
 /* Targets Fumadocs's internal class structure to apply the Nordstar
  * weight (3px borders, neon active states, mono group labels). Kept here
