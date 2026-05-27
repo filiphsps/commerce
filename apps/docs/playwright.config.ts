@@ -33,12 +33,6 @@ export default defineConfig({
             use: { ...devices['Desktop Safari'] },
         },*/
     ],
-    webServer: {
-        command: 'pnpm exec serve out -l 3002',
-        url: 'http://localhost:3002',
-        reuseExistingServer: true,
-        timeout: 240_000,
-        stdout: 'pipe',
-        stderr: 'pipe',
-    },
+    // webServer omitted: all specs are pending rewrite (testIgnore above).
+    // Add `command: 'pnpm exec serve out -l 3002'` back once tests are re-enabled.
 });
