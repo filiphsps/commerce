@@ -126,7 +126,14 @@ describe('Shop loader', () => {
         const result = await Shop.findByDomain('shop-1.com');
 
         expect(result).toEqual({ id: 'shop-1', domain: 'shop-1.com' });
-        expect(findByDomainMock).toHaveBeenCalledWith('shop-1.com');
+        // Options are normalized into explicit primitives so the cache() key is
+        // stable across calls (see _shop-loader); the underlying lookup receives
+        // the defaulted option object.
+        expect(findByDomainMock).toHaveBeenCalledWith('shop-1.com', {
+            sensitiveData: false,
+            convert: true,
+            populate: [],
+        });
     });
 
     it('exposes findAll passthrough', async () => {

@@ -3,6 +3,7 @@ import 'server-only';
 import type { AdapterCtx } from '@nordcom/cart-core';
 import type { ShopifyTransport } from '@nordcom/cart-shopify';
 import type { OnlineShop } from '@nordcom/commerce-db';
+import { UnknownLocaleError } from '@nordcom/commerce-errors';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { Locale } from '@/utils/locale';
 
@@ -16,7 +17,7 @@ const clientCache = new Map<string, ShopifyApiClient>();
  *
  * @param ctx - The cart adapter context carrying the tenant + locale.
  * @returns A configured Shopify Apollo API client.
- * @throws Error when `ctx.locale` does not parse to a valid Storefront locale.
+ * @throws {UnknownLocaleError} When `ctx.locale` does not parse to a valid Storefront locale.
  */
 async function client(ctx: AdapterCtx): Promise<ShopifyApiClient> {
     const shop = ctx.shop as OnlineShop;
@@ -25,21 +26,28 @@ async function client(ctx: AdapterCtx): Promise<ShopifyApiClient> {
     const cached = clientCache.get(key);
     if (cached) return cached;
     const locale = Locale.from(localeCode);
-    if (!locale) throw new Error(`Invalid locale: ${localeCode}`);
+    if (!locale) throw new UnknownLocaleError(localeCode);
     const api = await ShopifyApolloApiClient({ shop, locale });
     clientCache.set(key, api);
     return api;
 }
 
 type RawClient = {
-    query: (q: unknown, v: Record<string, unknown>) => Promise<{ data: unknown }>;
+    query: (
+        q: unknown,
+        v: Record<string, unknown>,
+        options?: { fetchPolicy?: RequestCache },
+    ) => Promise<{ data: unknown }>;
     mutate: (m: unknown, v: Record<string, unknown>) => Promise<{ data: unknown }>;
 };
 
 export const shopifyTransport: ShopifyTransport = {
     async query(doc, vars, ctx) {
         const c = (await client(ctx)) as unknown as RawClient;
-        return c.query(doc, vars) as never;
+        // The only cart query is `getCart` — per-buyer state that must never be
+        // served from the Data Cache. Opt out explicitly: the abstract API now
+        // defaults to a cached policy, so cart reads have to ask for `no-store`.
+        return c.query(doc, vars, { fetchPolicy: 'no-store' }) as never;
     },
     async mutate(doc, vars, ctx) {
         const c = (await client(ctx)) as unknown as RawClient;

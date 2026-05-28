@@ -11,7 +11,12 @@ const POOL_WARN_THRESHOLD = 1000;
 // InMemoryCache lives inside each entry and survives across requests —
 // invalidation goes through evictApolloClient() called from the webhook
 // revalidate handler.
-const pool = new Map<string, ApolloClient>();
+//
+// Entries hold the *promise* the factory returns (not the resolved client) so
+// the cost the factory pays on a miss — the `Shop.findByDomain` DB round-trip
+// plus Hydrogen client construction — happens exactly once even when several
+// requests race to populate the same key.
+const pool = new Map<string, ApolloClient | Promise<ApolloClient>>();
 
 /**
  * Builds the pool lookup key for a shop + locale pair.
@@ -25,11 +30,17 @@ const key = (shopId: string, localeCode: string) => `${shopId}::${localeCode}`;
 /**
  * Returns the pooled Apollo client for the given shop + locale, creating one via `factory` on first call.
  *
+ * On a pool hit the cached entry is returned without ever invoking `factory`,
+ * so any per-call cost the factory carries (config resolution, the
+ * `Shop.findByDomain` DB round-trip, Hydrogen client construction) is skipped
+ * entirely. The factory may be async; its promise is cached so concurrent
+ * misses for the same key share one creation.
+ *
  * @param options - Pool lookup options.
  * @param options.shop - Shop identity used as part of the pool key.
  * @param options.locale - Locale used as part of the pool key.
- * @param options.factory - Called once to create the client when no cached entry exists.
- * @returns The existing or newly created Apollo client.
+ * @param options.factory - Called once to create the client when no cached entry exists; sync or async.
+ * @returns The existing or newly created Apollo client (a promise when the factory is async).
  */
 export function getApolloClient({
     shop,
@@ -38,8 +49,8 @@ export function getApolloClient({
 }: {
     shop: Pick<OnlineShop, 'id' | 'domain'>;
     locale: Pick<Locale, 'code'>;
-    factory: () => ApolloClient;
-}): ApolloClient {
+    factory: () => ApolloClient | Promise<ApolloClient>;
+}): ApolloClient | Promise<ApolloClient> {
     const k = key(shop.id, locale.code);
     const existing = pool.get(k);
     if (existing) return existing;
@@ -50,6 +61,14 @@ export function getApolloClient({
         trace.getActiveSpan()?.addEvent('apollo_pool.size_threshold_exceeded', {
             'pool.size': pool.size,
             'pool.threshold': POOL_WARN_THRESHOLD,
+        });
+    }
+    // A rejected factory promise (e.g. ShopMisconfigurationError) must not stick
+    // in the pool, or every later request for this key would replay the failure
+    // instead of retrying once the shop is fixed.
+    if (client instanceof Promise) {
+        client.catch(() => {
+            if (pool.get(k) === client) pool.delete(k);
         });
     }
     return client;

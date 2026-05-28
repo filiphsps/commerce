@@ -1,51 +1,100 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
-vi.mock('@nordcom/commerce-db', () => ({
-    Shop: { findByDomain: vi.fn(), findAll: vi.fn() },
-}));
-
-// Mock the source module that `_loaders.ts` wraps.
-import * as productMod from '@/api/shopify/product';
-
-vi.mock('@/api/shopify/product', async () => {
-    const actual = await vi.importActual<typeof productMod>('@/api/shopify/product');
+// Faithful stand-in for React's RSC `cache()`: memoizes by Object.is per
+// argument (a tree of Maps) — exactly the keying that defeats fresh
+// object-literal args and rewards stable PRIMITIVE keys. Outside the
+// react-server condition the real `cache()` is a transparent passthrough, so
+// the dedup guarantee can only be asserted against a stand-in like this.
+vi.mock('react', async (importActual) => {
+    const actual = (await importActual()) as typeof import('react');
     return {
         ...actual,
-        ProductApi: vi.fn().mockResolvedValue([{ id: 'p1' }, null]),
+        cache: <A extends unknown[], R>(fn: (...args: A) => R) => {
+            const root = new Map<unknown, Map<unknown, unknown>>();
+            const RESULT = Symbol('result');
+            return (...args: A): R => {
+                let node: Map<unknown, unknown> = root;
+                for (const arg of args) {
+                    let next = node.get(arg) as Map<unknown, unknown> | undefined;
+                    if (!next) {
+                        next = new Map();
+                        node.set(arg, next);
+                    }
+                    node = next;
+                }
+                if (node.has(RESULT)) return node.get(RESULT) as R;
+                const value = fn(...args);
+                node.set(RESULT, value);
+                return value;
+            };
+        },
     };
 });
 
+const ProductApiMock = vi.fn();
+const ShopifyApolloApiClientMock = vi.fn();
+const findByDomainMock = vi.fn();
+
+vi.mock('@/api/_loaders', () => ({
+    ProductApi: ProductApiMock,
+    Shop: { findByDomain: findByDomainMock },
+}));
+
+vi.mock('@/api/shopify', () => ({
+    ShopifyApolloApiClient: ShopifyApolloApiClientMock,
+}));
+
+vi.mock('@/utils/locale', () => ({
+    Locale: { from: (code: string) => ({ code, language: 'en', country: 'US' }) },
+}));
+
 describe('PDP fetch dedup', () => {
-    // react/cache() only deduplicates inside a React Server Components render pass.
-    // Outside RSC (the standard React bundle used by Node/Vitest), cache() is a
-    // transparent no-op that calls through on every invocation — so this assertion
-    // cannot be proved in unit-test isolation.
-    //
-    // In production (Next.js App Router RSC), the react-server condition activates
-    // the real per-request cache store, and five concurrent calls to the same cached
-    // loader ARE deduplicated to a single upstream fetch.
-    //
-    // The test is kept (skipped) to document the intent and serve as a reminder that
-    // any restructuring of PDP data-fetching must preserve the single-call guarantee.
-    //
-    // Note: even if RSC were active here, `cache()` dedup is keyed by the
-    // per-render-request store + argument identity, not by deep equality. The
-    // shared `api` reference below is intentional — five distinct `{}` literals
-    // would miss the cache regardless of environment.
-    it.skip('layout + slots together call ProductApi once for the same handle', async () => {
-        // Import the loader (not the source) — concurrent React-request calls dedupe.
-        const { ProductApi } = await import('@/api/_loaders');
-        const api = {} as any;
-        const calls = await Promise.all([
-            ProductApi({ api, handle: 'h1' }),
-            ProductApi({ api, handle: 'h1' }),
-            ProductApi({ api, handle: 'h1' }),
-            ProductApi({ api, handle: 'h1' }),
-            ProductApi({ api, handle: 'h1' }),
+    beforeEach(() => {
+        // Re-evaluate page-data so the cache()-wrapped loader gets a fresh memo
+        // tree per test; clear the upstream spies so call counts are isolated.
+        vi.resetModules();
+        ProductApiMock.mockReset().mockResolvedValue([{ id: 'p1', handle: 'h1' }, null]);
+        ShopifyApolloApiClientMock.mockReset().mockResolvedValue({ shop: () => ({}), locale: () => ({}) });
+        findByDomainMock.mockReset().mockResolvedValue({ id: 's1', domain: 'shop.example.com' });
+    });
+
+    it('metadata + render share a single product fetch for the same (domain, locale, handle)', async () => {
+        const { getPageProduct } = await import('./page-data');
+
+        // Two concurrent calls — one standing in for generateMetadata, one for
+        // the page render — with identical primitive keys.
+        const [a, b] = await Promise.all([
+            getPageProduct('shop.example.com', 'en-US', 'h1'),
+            getPageProduct('shop.example.com', 'en-US', 'h1'),
         ]);
-        expect(calls.length).toBe(5);
-        expect(vi.mocked(productMod.ProductApi)).toHaveBeenCalledTimes(1);
+
+        expect(a).toEqual([{ id: 'p1', handle: 'h1' }, null]);
+        expect(b).toEqual(a);
+        // The whole resolve chain (tenant lookup → Apollo client → product query)
+        // must run exactly once despite two callers.
+        expect(findByDomainMock).toHaveBeenCalledTimes(1);
+        expect(ShopifyApolloApiClientMock).toHaveBeenCalledTimes(1);
+        expect(ProductApiMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('routes the product query through the shared Apollo transport, never the fetch client', async () => {
+        const { getPageProduct } = await import('./page-data');
+        await getPageProduct('shop.example.com', 'en-US', 'h1');
+
+        const apolloClient = await ShopifyApolloApiClientMock.mock.results[0]?.value;
+        // ProductApi must receive the Apollo client built here — the same pooled
+        // transport the page render uses — so both reads hit one InMemoryCache.
+        expect(ProductApiMock).toHaveBeenCalledWith({ api: apolloClient, handle: 'h1' });
+    });
+
+    it('refetches for a different handle (distinct cache key)', async () => {
+        const { getPageProduct } = await import('./page-data');
+
+        await getPageProduct('shop.example.com', 'en-US', 'h1');
+        await getPageProduct('shop.example.com', 'en-US', 'h2');
+
+        expect(ProductApiMock).toHaveBeenCalledTimes(2);
     });
 });

@@ -1,12 +1,17 @@
 import 'server-only';
 
 import type { ApolloClient, QueryOptions } from '@apollo/client';
-import { type OnlineShop, Shop } from '@nordcom/commerce-db';
+import type { OnlineShop } from '@nordcom/commerce-db';
 import { ShopMisconfigurationError, UnknownCommerceProviderError } from '@nordcom/commerce-errors';
 import { trace } from '@opentelemetry/api';
 import { createStorefrontClient } from '@shopify/hydrogen-react';
 import { experimental_taintUniqueValue } from 'react';
 import { getApolloClient } from '@/api/_apollo-pool';
+// The React-cached Shop loader (leaf module): `findByDomain` normalizes the
+// options arg to primitive keys so the per-render `cache()` dedup actually hits,
+// collapsing repeated tenant lookups — this hot path runs for every Storefront
+// client — to a single Mongo round-trip per render pass.
+import { Shop } from '@/api/_shop-loader';
 import type { ApiConfig } from '@/api/client';
 import { createApolloClient } from '@/api/client';
 import { tenantRootTags } from '@/cache';
@@ -105,12 +110,17 @@ export const ShopifyApolloApiClient = async ({
     apiConfig,
     buyerIp,
 }: ShopifyApiOptions) => {
-    const configBuilder = apiConfig || (await ShopifyApiConfig({ shop, buyerIp }));
-
-    const api = getApolloClient({
+    const api = await getApolloClient({
         shop,
         locale,
-        factory: () => {
+        // Resolve config INSIDE the factory so it runs only on a pool miss. The
+        // previous code awaited ShopifyApiConfig (a `Shop.findByDomain` DB
+        // round-trip + Hydrogen client construction) before the pool lookup, so
+        // a pool hit still paid that cost on every request — pooling saved the
+        // InMemoryCache but not the per-call work.
+        factory: async () => {
+            const configBuilder = apiConfig || (await ShopifyApiConfig({ shop, buyerIp }));
+
             let config: ApiConfig | null = null;
             try {
                 config = configBuilder.private();
