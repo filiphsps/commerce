@@ -71,7 +71,7 @@
         "@apollo/client": "4.1.9",
         "@codecov/vite-plugin": "2.0.1",
         "@shopify/hydrogen-react": "2026.4.2",
-        "concurrently": "9.2.1",
+        "concurrently": "10.0.0",
         "glob": "13.0.6",
         "graphql": "16.14.0",
         "rimraf": "6.1.3",
