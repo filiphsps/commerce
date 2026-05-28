@@ -1,0 +1,18 @@
+{
+  "tailwindcss": {
+    "command": "tailwind-lsp-adapter",
+    "args": [],
+    "extensionToLanguage": {
+      ".css": "css",
+      ".scss": "scss",
+      ".less": "less",
+      ".html": "html",
+      ".js": "javascript",
+      ".jsx": "javascriptreact",
+      ".ts": "typescript",
+      ".tsx": "typescriptreact",
+      ".vue": "vue",
+      ".svelte": "svelte"
+    }
+  }
+}

@@ -1,11 +1,10 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "includeCoAuthoredBy": false,
-  "enableAllProjectMcpServers": true,
-  "showThinkingSummaries": true,
   "env": {
     "CLAUDE_CODE_EXTRA_BODY": "{\"thinking\":{\"type\":\"adaptive\",\"display\":\"summarized\"}}"
   },
+  "includeCoAuthoredBy": false,
+  "enableAllProjectMcpServers": true,
   "hooks": {
     "PreToolUse": [
       {
@@ -74,9 +73,10 @@
   "enabledPlugins": {
     "typescript-lsp@claude-plugins-official": true,
     "superpowers@superpowers-marketplace": true,
-    "mongodb@claude-plugins-official": true,
+    "mongodb@claude-plugins-official": false,
     "playwright@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": true
+    "frontend-design@claude-plugins-official": true,
+    "tailwind-lsp-adapter@commerce-plugins": true
   },
   "extraKnownMarketplaces": {
     "superpowers-marketplace": {
@@ -84,7 +84,14 @@
         "source": "github",
         "repo": "obra/superpowers-marketplace"
       }
+    },
+    "commerce-plugins": {
+      "source": {
+        "source": "directory",
+        "path": ".claude/plugins/tailwind-lsp"
+      }
     }
   },
+  "showThinkingSummaries": true,
   "useAutoModeDuringPlan": true
 }
