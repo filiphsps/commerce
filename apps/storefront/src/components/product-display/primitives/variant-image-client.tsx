@@ -83,7 +83,7 @@ const VariantImageClient = ({
                 <div
                     data-testid="product-card-image-placeholder"
                     className={cn(
-                        'product-card-image text-(color:var(--product-card-vendor-color)) flex size-full select-none items-center justify-center rounded-(--product-card-image-radius) bg-(--product-card-image-bg) p-(--product-card-image-padding) group-focus-visible/header:outline-offset-2 group-focus-visible/header:[outline:2px_solid_var(--accent)]',
+                        'product-card-image text-(color:var(--product-card-vendor-color)) flex size-full select-none items-center justify-center rounded-(--product-card-image-radius) p-(--product-card-image-padding) group-focus-visible/header:outline-offset-2 group-focus-visible/header:[outline:2px_solid_var(--accent)]',
                         aspectClass(aspect),
                     )}
                     aria-hidden="true"
@@ -105,7 +105,7 @@ const VariantImageClient = ({
         >
             <div
                 className={cn(
-                    'product-card-image relative select-none overflow-hidden rounded-(--product-card-image-radius) bg-(--product-card-image-bg) p-(--product-card-image-padding) group-focus-visible/header:outline-offset-2 group-focus-visible/header:[outline:2px_solid_var(--accent)]',
+                    'product-card-image relative select-none overflow-hidden rounded-(--product-card-image-radius) p-(--product-card-image-padding) group-focus-visible/header:outline-offset-2 group-focus-visible/header:[outline:2px_solid_var(--accent)]',
                     aspectClass(aspect),
                 )}
                 style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent', userSelect: 'none' }}

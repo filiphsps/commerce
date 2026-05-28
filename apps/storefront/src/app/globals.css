@@ -200,8 +200,6 @@ html:root {
     --product-card-search-image-width: 72px;
 
     /* Image */
-    --product-card-image-bg: #faf7f0;
-    --product-card-image-bg-bare: #f3eedc;
     --product-card-image-radius: 8px; /* LEGACY */
     --product-card-image-padding: 12px; /* LEGACY */
     --product-card-image-fit: cover;
