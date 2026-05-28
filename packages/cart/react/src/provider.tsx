@@ -11,7 +11,7 @@ import type {
     ProductSnapshot,
     SubmitMutation,
 } from '@nordcom/cart-core';
-import { type ReactNode, useCallback, useEffect, useMemo, useReducer, useRef, useTransition } from 'react';
+import { type ReactNode, useCallback, useEffect, useMemo, useReducer, useRef, useState, useTransition } from 'react';
 import type { CartActions } from './actions-type';
 import {
     CartActionsContext,
@@ -113,7 +113,7 @@ export interface CartProviderProps<Cfg extends AppCartConfig> {
 export function CartProvider<Cfg extends AppCartConfig>(props: CartProviderProps<Cfg>) {
     const { kernelSnapshot, submitMutation, initialCart, shopId, predictors, clientAuthBridge, children } = props;
     const [state, dispatch] = useReducer(queueReducer, undefined, () => initialQueueState());
-    const seededRef = useRef(false);
+    const [seeded, setSeeded] = useState(false);
     const [, startTransition] = useTransition();
     const [statusError, setStatusError] = useReducer(
         (_: string | null, next: string | null) => next,
@@ -122,10 +122,10 @@ export function CartProvider<Cfg extends AppCartConfig>(props: CartProviderProps
     const broadcastRef = useRef<BroadcastChannel | null>(null);
 
     useEffect(() => {
-        if (seededRef.current) return;
-        seededRef.current = true;
+        if (seeded) return;
+        setSeeded(true);
         startTransition(() => dispatch({ type: 'setInitial', cart: initialCart as Cart | null }));
-    }, [initialCart]);
+    }, [initialCart, seeded]);
 
     useEffect(() => {
         if (typeof window === 'undefined' || !('BroadcastChannel' in window)) return;
@@ -250,9 +250,9 @@ export function CartProvider<Cfg extends AppCartConfig>(props: CartProviderProps
         () => ({
             status: state.pending.some((p) => p.status === 'in-flight') ? ('mutating' as const) : ('idle' as const),
             error: statusError,
-            cartReady: seededRef.current,
+            cartReady: seeded,
         }),
-        [state.pending, statusError],
+        [state.pending, statusError, seeded],
     );
     const pendingValue = state.pending;
 

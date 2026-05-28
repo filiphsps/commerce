@@ -2,7 +2,7 @@ import type { Cart, CartCapabilities, SubmitMutation } from '@nordcom/cart-core'
 import { act, render, renderHook } from '@testing-library/react';
 import { type JSX, type ReactNode, useRef } from 'react';
 import { describe, expect, it, vi } from 'vitest';
-import { useCartActions, useCartCount, useCartMeta } from '../src/hooks';
+import { useCartActions, useCartCount, useCartMeta, useCartStatus } from '../src/hooks';
 import { quantitySumPredictor } from '../src/predictors/cart';
 import { snapshotPredictor } from '../src/predictors/line';
 import { CartProvider } from '../src/provider';
@@ -54,6 +54,26 @@ function wrapper(submit: SubmitMutation): (props: { children: ReactNode }) => JS
 }
 
 describe('CartProvider', () => {
+    it('cartReady becomes true after mount (no mutations required)', async () => {
+        const submit: SubmitMutation = vi.fn(async () => ({ ok: true as const, cart }));
+        const { result } = renderHook(() => useCartStatus(), { wrapper: wrapper(submit) });
+        await act(async () => {});
+        expect(result.current.cartReady).toBe(true);
+    });
+
+    it('cartReady is true even when initialCart is null', async () => {
+        const submit: SubmitMutation = vi.fn(async () => ({ ok: true as const, cart }));
+        const { result } = renderHook(() => useCartStatus(), {
+            wrapper: ({ children }) => (
+                <CartProvider kernelSnapshot={kernelSnapshot} submitMutation={submit} initialCart={null} shopId="s">
+                    {children}
+                </CartProvider>
+            ),
+        });
+        await act(async () => {});
+        expect(result.current.cartReady).toBe(true);
+    });
+
     it('seeds initial cart and exposes count=0', () => {
         const submit: SubmitMutation = vi.fn(async () => ({ ok: true as const, cart }));
         const { result } = renderHook(() => useCartCount(), { wrapper: wrapper(submit) });
