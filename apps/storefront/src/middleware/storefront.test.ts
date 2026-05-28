@@ -30,7 +30,15 @@ vi.mock('@/middleware/common-validations', async (importActual) => importActual(
 // Import after vi.mock declarations so the mocked modules are resolved first.
 import { Shop } from '@nordcom/commerce-db';
 import { getGlobalServiceDomain } from '@/api/shop';
+import { clearShopCache } from '@/middleware/shop-cache';
 import { getHostname, storefront } from '@/middleware/storefront';
+
+// The middleware memoizes hostname resolution in a process-level cache. Reset it
+// before every test so cases that reuse a hostname still exercise the (mocked)
+// lookup instead of serving a sibling test's cached result.
+beforeEach(() => {
+    clearShopCache();
+});
 
 // ---------------------------------------------------------------------------
 // Shared shop fixture returned by Shop.findByDomain in the "happy path".
