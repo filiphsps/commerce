@@ -14,6 +14,7 @@ import ProductCardRoot, {
 } from '@/components/product-card/primitives/product-card-root';
 import ProductCardStockUrgency from '@/components/product-card/primitives/product-card-stock-urgency';
 import ProductCardTitle from '@/components/product-card/primitives/product-card-title';
+import { ProductCardBoundary } from '@/components/product-card/product-card-boundary';
 import { getDictionary } from '@/utils/dictionary';
 import { firstAvailableVariant } from '@/utils/first-available-variant';
 import type { Locale } from '@/utils/locale';
@@ -67,6 +68,14 @@ export type ProductCardProps = {
  * the chassis. Server primitives (Badges, Title, Price, StockUrgency)
  * render as children of the client provider via the children-pass
  * pattern — no RSC boundary crossings needed.
+ *
+ * The two cart-dependent primitives (CTA, Picker) call `useCartActions()`,
+ * which throws while the cart context is transiently absent. Each is wrapped
+ * in its own {@link ProductCardBoundary} with a `null` fallback so such a
+ * throw drops only the add affordance — the card's imagery, title, and price
+ * (rendered outside the boundary) always survive, and no neighbouring card is
+ * affected. The fallback is `null` rather than a duplicate static card so the
+ * Flight payload carries each card's chassis exactly once.
  */
 export default async function ProductCard({
     data,
@@ -110,7 +119,9 @@ export default async function ProductCard({
                         aspect={layout === 'horizontal' ? 'horizontal' : 'vertical'}
                     />
                     <ProductCardBadges data={data} i18n={i18n} />
-                    <ProductCardCta placement={ctaPlacement} />
+                    <ProductCardBoundary fallback={null}>
+                        <ProductCardCta placement={ctaPlacement} />
+                    </ProductCardBoundary>
                 </div>
                 <div className="flex flex-col gap-1 pt-1">
                     {shop.showProductVendor && data.vendor ? (
@@ -122,13 +133,15 @@ export default async function ProductCard({
                     <ProductCardPrice seedVariant={seedVariant} locale={locale} />
                     <ProductCardStockUrgency seedVariant={seedVariant} i18n={i18n} />
                 </div>
-                <ProductCardPicker
-                    locale={locale}
-                    i18n={i18n}
-                    presentation={pickerPresentation}
-                    ctaPlacement={ctaPlacement}
-                    layout={layout}
-                />
+                <ProductCardBoundary fallback={null}>
+                    <ProductCardPicker
+                        locale={locale}
+                        i18n={i18n}
+                        presentation={pickerPresentation}
+                        ctaPlacement={ctaPlacement}
+                        layout={layout}
+                    />
+                </ProductCardBoundary>
             </ProductCardRoot>
         </ProductCardOptionsProvider>
     );
