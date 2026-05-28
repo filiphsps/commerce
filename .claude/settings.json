@@ -77,6 +77,7 @@
     "playwright@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
     "typescript-lsp@commerce-plugins": true,
+    "double-shot-latte@superpowers-marketplace": true,
     "tailwind-lsp-adapter@commerce-plugins": true
   },
   "extraKnownMarketplaces": {
