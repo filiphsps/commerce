@@ -1,86 +1,45 @@
+'use client';
+
+import type { CartLine as CoreCartLine } from '@nordcom/cart-core';
 import { useCartActions, useCartStatus } from '@nordcom/cart-react';
 import { trace } from '@opentelemetry/api';
-import type { CartLine as ShopifyCartLine } from '@shopify/hydrogen-react/storefront-api-types';
-import { Pencil, Tag as TagIcon, X as XIcon } from 'lucide-react';
+import { Tag as TagIcon, X as XIcon } from 'lucide-react';
 import Image from 'next/image';
-import { useMemo, useState } from 'react';
-import type { Product, ProductVariant } from '@/api/product';
 import { Button } from '@/components/actionable/button';
 import { Card } from '@/components/layout/card';
-import { Popover } from '@/components/layout/popover';
 import Link from '@/components/link';
-import { resolvedToLegacyOptions, resolveOptions, toSelectionRecord } from '@/components/product-options/resolver';
-import { ProductOptionsSelector, type SelectedOptions } from '@/components/product-options-selector';
 import { Price } from '@/components/products/price';
 import { QuantitySelector } from '@/components/products/quantity-selector';
 import { Label } from '@/components/typography/label';
-import { hasProductOptions } from '@/utils/has-product-options';
 import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 
-/**
- * Narrows an unknown value to the app's local `Product` type by checking for
- * the minimum discriminant fields that are always present on a real Shopify
- * product at runtime (`id` and `handle`).
- *
- * hydrogen-react types the cart merchandise product as
- * `RecursivePartial<ShopifyProduct>`, making every field optional. This guard
- * asserts that the runtime object satisfies our stricter local `Product` shape
- * without resorting to `as unknown as`.
- */
-function isRuntimeProduct(p: unknown): p is Product {
-    return !!p && typeof p === 'object' && 'id' in p && 'handle' in p;
-}
-
-/**
- * Narrows an unknown value to the app's local `ProductVariant` type by
- * checking for the minimum discriminant fields always present at runtime
- * (`id` and `price`).
- *
- * Same rationale as `isRuntimeProduct` — bridging hydrogen-react's
- * `RecursivePartial<ProductVariant>` to our stricter local type.
- */
-function isRuntimeVariant(v: unknown): v is ProductVariant {
-    return !!v && typeof v === 'object' && 'id' in v && 'price' in v;
-}
-
 interface CartLineProps {
     i18n: LocaleDictionary;
-    data: ShopifyCartLine;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    data: CoreCartLine<any>;
 }
+
 /**
- * Renders a single cart line with image, title, variant selector popover,
+ * Renders a single cart line with image, title, read-only variant options,
  * quantity stepper, and line-total pricing.
  *
  * @param props.i18n - Locale dictionary for translated labels.
- * @param props.data - Shopify cart line data from the cart provider.
- * @returns The cart line card, or `null` when the product or variant cannot be resolved.
+ * @param props.data - Cart-core normalized cart line from the cart provider.
+ * @returns The cart line card, or `null` when essential merchandise data is absent.
  */
 const CartLine = ({ i18n, data: line }: CartLineProps) => {
-    const { addLine, updateLine, removeLine } = useCartActions();
+    const { updateLine, removeLine } = useCartActions();
     const { cartReady, status } = useCartStatus();
     const { t } = getTranslations('common', i18n);
     const { t: tCart } = getTranslations('cart', i18n);
 
     const ready = cartReady && status !== 'mutating';
+    const merch = line.merchandise;
 
-    const product = isRuntimeProduct(line.merchandise.product) ? line.merchandise.product : undefined;
-    const variant = isRuntimeVariant(line.merchandise) ? line.merchandise : undefined;
-
-    const showSelector = hasProductOptions(product ?? null);
-
-    const currentSelectedOptions: SelectedOptions = useMemo(() => toSelectionRecord(variant), [variant]);
-
-    const mappedOptions = useMemo(
-        () => (product ? resolvedToLegacyOptions(resolveOptions(product, currentSelectedOptions)) : []),
-        [product, currentSelectedOptions],
-    );
-    const [editing, setEditing] = useState(false);
-    const [swapAnnouncement, setSwapAnnouncement] = useState<string>('');
-
-    if (!product || !variant) {
-        trace.getActiveSpan()?.addEvent('cart_line.missing_product_or_variant', {
+    if (!merch.productHandle || !merch.id) {
+        trace.getActiveSpan()?.addEvent('cart_line.missing_merchandise', {
             'cart.line_id': line.id,
         });
         return null;
@@ -105,16 +64,17 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
         if (!Number.isFinite(pct)) return 0;
         return Math.max(0, Math.min(100, pct));
     };
+
     const discount = computeDiscount(
-        variant.compareAtPrice?.amount ?? variant.price.amount,
-        line.cost.totalAmount.amount,
+        merch.compareAtUnitPrice?.amount ?? merch.unitPrice.amount,
+        line.cost.total.amount,
     );
 
-    const image = variant.image ? (
+    const image = merch.image ? (
         <Image
             className="h-full w-full object-contain object-center"
-            src={variant.image.url}
-            alt={variant.image.altText || variant.title}
+            src={merch.image.url}
+            alt={merch.image.altText || merch.variantTitle}
             width={85}
             height={85}
             sizes="(max-width: 920px) 65px, 175px"
@@ -125,8 +85,6 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
         />
     ) : null;
 
-    const unitPrice = variant.unitPrice;
-    const unitPriceMeasurement = variant.unitPriceMeasurement;
     const pricing = (
         <>
             {discount > 0.1 ? (
@@ -134,54 +92,32 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                     className="font-medium text-base text-gray-500 leading-tight line-through"
                     data={{
                         amount: (
-                            safeParseFloat(0, variant.compareAtPrice?.amount, variant.price.amount) * line.quantity
+                            safeParseFloat(0, merch.compareAtUnitPrice?.amount, merch.unitPrice.amount) * line.quantity
                         ).toString(),
-                        currencyCode: variant.price.currencyCode,
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        currencyCode: merch.unitPrice.currencyCode as any,
                     }}
                 />
             ) : null}
-
             <Price
                 className={cn(
                     'font-bold text-xl leading-tight',
                     discount > 0.1 && 'font-extrabold text-red-500 text-xl',
                 )}
-                data={line.cost.totalAmount}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                data={line.cost.total as any}
             />
-
-            {unitPrice && unitPriceMeasurement ? (
-                <div className="flex items-center gap-1 font-medium text-gray-500 text-xs leading-tight">
-                    <Price data={unitPrice} />
-                    <span>
-                        {`/ ${unitPriceMeasurement.referenceValue} ${unitPriceMeasurement.referenceUnit?.toLowerCase() ?? ''}`}
-                    </span>
-                </div>
-            ) : null}
         </>
     );
 
-    const discounts = line.discountAllocations;
+    const realOptions = (merch.selectedOptions ?? []).filter(
+        ({ name, value }) => !(name === 'Title' && value === 'Default Title'),
+    );
 
     const { quantity } = line;
-    const { vendor, title, handle } = product;
-
-    const handleSwap = async (next: SelectedOptions) => {
-        const changed = Object.entries(next).find(([k, v]) => currentSelectedOptions[k] !== v);
-        if (!changed) {
-            setEditing(false);
-            return;
-        }
-        const [name, value] = changed;
-        const entry = mappedOptions.find((o) => o.name === name)?.optionValues.find((v) => v.name === value);
-        if (!entry?.variant?.id) {
-            setEditing(false);
-            return;
-        }
-        setEditing(false);
-        await removeLine(line.id!);
-        await addLine({ variantId: entry.variant.id, quantity: line.quantity });
-        setSwapAnnouncement(`Switched ${name} to ${value}`);
-    };
+    const vendor = merch.productVendor ?? '';
+    const title = merch.productTitle;
+    const handle = merch.productHandle;
 
     return (
         <Card
@@ -191,12 +127,6 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                 !ready && 'cursor-not-allowed opacity-50 *:pointer-events-none',
             )}
         >
-            {/* Announce successful variant swaps to assistive tech. The
-               popover itself is a Radix modal dialog, so focus trap and
-               escape handling are already covered. */}
-            <div role="status" aria-live="polite" className="sr-only">
-                {swapAnnouncement}
-            </div>
             <span data-line-quantity={quantity} className="sr-only" aria-live="polite">
                 {quantity}
             </span>
@@ -213,57 +143,31 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                             <span>{vendor}</span> {title}
                         </Link>
 
-                        {showSelector ? (
-                            <button
-                                type="button"
-                                onClick={() => setEditing(true)}
-                                aria-label="Edit options"
-                                className="inline-flex flex-wrap items-center gap-1 text-gray-600 text-sm hover:text-primary"
-                            >
-                                {variant.selectedOptions
-                                    .filter(({ name, value }) => !(name === 'Title' && value === 'Default Title'))
-                                    .map(({ name, value }) => (
-                                        <span
-                                            key={name}
-                                            className="inline-flex items-center rounded-md border border-gray-200 border-solid bg-gray-50 px-2 py-0.5 font-medium text-xs"
-                                        >
-                                            {name}·{value}
-                                        </span>
-                                    ))}
-                                <Pencil size={12} aria-hidden={true} className="opacity-70" />
-                            </button>
-                        ) : null}
-                        {showSelector ? (
-                            <Popover
-                                open={editing}
-                                onOpenChange={setEditing}
-                                title={`Edit options · ${vendor} ${title}`}
-                            >
-                                <ProductOptionsSelector
-                                    options={mappedOptions}
-                                    selectedOptions={currentSelectedOptions}
-                                    onChange={handleSwap}
-                                    density="spacious"
-                                />
-                            </Popover>
+                        {realOptions.length > 0 ? (
+                            <div className="mt-1 inline-flex flex-wrap items-center gap-1">
+                                {realOptions.map(({ name, value }) => (
+                                    <span
+                                        key={name}
+                                        className="inline-flex items-center rounded-md border border-gray-200 border-solid bg-gray-50 px-2 py-0.5 font-medium text-xs"
+                                    >
+                                        {name}·{value}
+                                    </span>
+                                ))}
+                            </div>
                         ) : null}
 
                         <div className="flex items-center justify-start gap-1 gap-x-3 md:flex-col md:items-start md:pt-1">
-                            {variant.currentlyNotInStock ? (
+                            {typeof merch.quantityAvailable === 'number' &&
+                            merch.quantityAvailable > 0 &&
+                            merch.quantityAvailable <= 5 ? (
                                 <Label className="font-medium text-amber-600 text-xs leading-none">
-                                    {tCart('back-order')}
-                                </Label>
-                            ) : typeof variant.quantityAvailable === 'number' &&
-                              variant.quantityAvailable > 0 &&
-                              variant.quantityAvailable <= 5 ? (
-                                <Label className="font-medium text-amber-600 text-xs leading-none">
-                                    {tCart('n-left', variant.quantityAvailable.toString())}
+                                    {tCart('n-left', merch.quantityAvailable.toString())}
                                 </Label>
                             ) : null}
 
-                            {discounts.length > 0 ? (
+                            {line.discountAllocations.length > 0 ? (
                                 <div className="flex w-full flex-wrap items-start justify-start gap-2">
-                                    {discounts.map((discount, index) => (
+                                    {line.discountAllocations.map((discount, index) => (
                                         <div
                                             key={`${line.id}-discount-${index}`}
                                             className="flex items-center justify-center gap-1 font-medium text-gray-600 text-xs leading-none"
@@ -311,7 +215,6 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                                 if (value === quantity) {
                                     return;
                                 }
-
                                 await updateLine({ lineId: line.id!, quantity: value });
                             }}
                             allowDecreaseToZero={true}

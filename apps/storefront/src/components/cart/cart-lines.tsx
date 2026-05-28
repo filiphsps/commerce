@@ -1,7 +1,6 @@
 'use client';
 
 import { useCartActions, useCartCount, useCartLines as useCartLinesSlice, useCartStatus } from '@nordcom/cart-react';
-import type { CartLine as ShopifyCartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import { Suspense } from 'react';
 import { Button } from '@/components/actionable/button';
 import { ExportCartButton } from '@/components/actionable/export-cart-button';
@@ -61,7 +60,7 @@ const CartLines = ({ i18n }: CartContentProps) => {
 
                     return (
                         <Suspense fallback={<CartLine.skeleton />} key={item.id}>
-                            <CartLine i18n={i18n} data={item as unknown as ShopifyCartLine} />
+                            <CartLine i18n={i18n} data={item} />
                         </Suspense>
                     );
                 })}
