@@ -13,7 +13,7 @@ import type {
 import { extractLimitLikeFilters } from '@/api/shopify/collection';
 import { cache } from '@/cache';
 import type { AbstractApi, ApiOptions } from '@/utils/abstract-api';
-import { PRODUCT_FRAGMENT } from './queries';
+import { PRODUCT_CARD_FRAGMENT } from './queries';
 
 const PRODUCTS_PAGINATION_COUNT_QUERY = graphql(`
     query productsPaginationCount(
@@ -182,7 +182,7 @@ export const ProductsPaginationApi = async ({
     const { data, errors } = await api.query<{ products: ProductConnection }>(
         gql`
                     fragment ProductFragment on Product {
-                        ${PRODUCT_FRAGMENT}
+                        ${PRODUCT_CARD_FRAGMENT}
                     }
 
                     query products($limit: Int!, $sorting: ProductSortKeys, $query: String, $before: String, $after: String) {
