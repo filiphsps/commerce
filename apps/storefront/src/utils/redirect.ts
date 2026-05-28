@@ -1,8 +1,8 @@
 import 'server-only';
 
-import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 import { notFound, RedirectType, redirect } from 'next/navigation';
+import { Shop } from '@/api/_shop-loader';
 import { ShopifyApiClient } from '@/api/shopify';
 import { RedirectApi } from '@/api/shopify/redirects';
 
