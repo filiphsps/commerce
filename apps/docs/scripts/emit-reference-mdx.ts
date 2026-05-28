@@ -57,6 +57,10 @@ export async function main({ quiet = false }: { quiet?: boolean } = {}): Promise
         .filter((d) => fs.statSync(path.join(TYPEDOC_OUT, d)).isDirectory());
     for (const workspaceSlug of workspaceDirs) {
         const workspaceDir = path.join(TYPEDOC_OUT, workspaceSlug);
+        let wsSubpaths = 0;
+        let wsSymbols = 0;
+        let wsSkipped = 0;
+
         for (const entry of walkJsonFiles(workspaceDir)) {
             const rawSubpath = path.relative(workspaceDir, entry).replace(/\.json$/, '');
             // `cart/next/index.json` exposes itself as `next/index` — strip the
@@ -75,6 +79,7 @@ export async function main({ quiet = false }: { quiet?: boolean } = {}): Promise
                 const { fate, kind } = classifySymbol(symbol);
                 if (fate === 'excluded') {
                     skippedCount++;
+                    wsSkipped++;
                     continue;
                 }
                 const summary =
@@ -103,6 +108,7 @@ export async function main({ quiet = false }: { quiet?: boolean } = {}): Promise
                 fs.mkdirSync(path.dirname(galleryFile), { recursive: true });
                 writeIfChanged(galleryFile, galleryMdx, touched);
                 subpathsCount++;
+                wsSubpaths++;
                 continue;
             }
 
@@ -128,6 +134,7 @@ export async function main({ quiet = false }: { quiet?: boolean } = {}): Promise
                         fs.mkdirSync(path.dirname(outFile), { recursive: true });
                         writeIfChanged(outFile, mdx, touched);
                         symbolsCount++;
+                        wsSymbols++;
                     }
                 }
             }
@@ -146,6 +153,14 @@ export async function main({ quiet = false }: { quiet?: boolean } = {}): Promise
             fs.mkdirSync(path.dirname(overviewFile), { recursive: true });
             writeIfChanged(overviewFile, overviewMdx, touched);
             subpathsCount++;
+            wsSubpaths++;
+        }
+
+        if (!quiet && (wsSubpaths > 0 || wsSymbols > 0)) {
+            const skippedNote = wsSkipped > 0 ? `, ${wsSkipped} skipped` : '';
+            console.info(
+                `[reference] ${workspaceSlug}: ${wsSubpaths} subpath${wsSubpaths === 1 ? '' : 's'}, ${wsSymbols} symbol${wsSymbols === 1 ? '' : 's'}${skippedNote}`,
+            );
         }
     }
 

@@ -268,14 +268,18 @@ export function main({ quiet = false }: { quiet?: boolean } = {}): { mirrored: n
     sweep(workspaces);
     let total = 0;
     for (const ws of workspaces) {
-        total += mirrorWorkspace(ws);
+        const count = mirrorWorkspace(ws);
+        if (!quiet && count > 0) {
+            console.info(`[mirror] ${ws.slug} (${ws.type}): ${count} page${count === 1 ? '' : 's'}`);
+        }
+        total += count;
     }
     emitAppsMeta(workspaces);
     emitApplicationsMeta(workspaces);
     emitCategoryMeta(workspaces);
     emitPackagesMeta(workspaces);
     if (!quiet) {
-        console.info(`[mirror-workspace-docs] mirrored ${total} pages across ${workspaces.length} workspace(s)`);
+        console.info(`[mirror-workspace-docs] ${total} pages across ${workspaces.length} workspace(s)`);
     }
     return { mirrored: total, workspaces: workspaces.length };
 }
