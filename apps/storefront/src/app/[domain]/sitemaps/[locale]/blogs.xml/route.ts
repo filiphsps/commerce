@@ -1,6 +1,6 @@
 import { Error } from '@nordcom/commerce-errors';
 import { trace } from '@opentelemetry/api';
-import { cacheLife } from 'next/cache';
+import { cacheLife, cacheTag } from 'next/cache';
 import { notFound } from 'next/navigation';
 import type { NextRequest } from 'next/server';
 import type { ISitemapField } from 'next-sitemap';
@@ -8,6 +8,7 @@ import { getServerSideSitemap } from 'next-sitemap';
 import { BlogApi, Shop } from '@/api/_loaders';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogsApi } from '@/api/shopify/blog';
+import { tenantRootTags } from '@/cache';
 import { Locale } from '@/utils/locale';
 import type { DynamicSitemapRouteParams } from '../../../sitemap.xml/route';
 
@@ -18,6 +19,20 @@ export type BlogsSitemapRouteParams = {
         }
     >;
 };
+/**
+ * Build the per-locale blog/article sitemap for a tenant.
+ *
+ * Cached at `max` like its sibling sitemaps; the Shopify blog/article reads
+ * inherit the HttpLink revalidate floor since the GraphQL default is no longer
+ * `no-store`. The Shopify cache schema has no blog entity, so the entry is
+ * tagged with the tenant-root tags — the only available webhook-invalidation
+ * handle, busted by the broad `shopify.<id>` sweep on a blog/shop change.
+ * Without a tag the `max` entry would never refresh.
+ *
+ * @param params - Route params resolving the tenant `domain` and `locale`.
+ * @returns A `next-sitemap` XML response listing blog and article URLs.
+ * @throws Triggers `notFound()` when the locale is missing or blogs can't be fetched.
+ */
 export async function GET({}: NextRequest, { params }: BlogsSitemapRouteParams) {
     'use cache';
     cacheLife('max');
@@ -30,6 +45,7 @@ export async function GET({}: NextRequest, { params }: BlogsSitemapRouteParams) 
     const locale = Locale.from(localeData);
 
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+    cacheTag(...tenantRootTags(shop));
     const api = await ShopifyApolloApiClient({ shop, locale });
 
     const [blogs, blogsError] = await BlogsApi({ api });
