@@ -23,6 +23,7 @@ build/
 apps/**/public/**/sitemap*.xml*
 apps/**/public/**/robots.txt*
 *ts.timestamp-*
+apps/docs/content/*/meta.json
 
 # misc
 .DS_Store
