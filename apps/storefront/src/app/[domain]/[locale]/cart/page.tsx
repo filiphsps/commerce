@@ -1,11 +1,12 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
 import type { Metadata } from 'next';
-import { cacheLife } from 'next/cache';
+import { cacheLife, cacheTag } from 'next/cache';
 import { notFound, unstable_rethrow } from 'next/navigation';
 import { Fragment, Suspense } from 'react';
 import { LocalesApi, Shop } from '@/api/_loaders';
 import { ShopifyApolloApiClient } from '@/api/shopify';
+import { tenantRootTags } from '@/cache';
 import { AcceptedPaymentMethods } from '@/components/informational/accepted-payment-methods';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
@@ -25,6 +26,10 @@ export type CartPageParams = Promise<{ domain: string; locale: string }>;
  * per-locale dictionary is intentionally fetched outside this boundary so cart
  * copy is never frozen at `max` alongside the shop record.
  *
+ * Tagged with the tenant-root tags so a shop-record admin edit (theme, locales,
+ * credentials) evicts the `max`-lived entry via `revalidateTag`; without a tag
+ * the record would stay frozen for the `max` lifetime.
+ *
  * @param domain - The tenant hostname to resolve.
  * @returns The matching shop record.
  * @throws Triggers `notFound()` when no shop matches the domain.
@@ -34,7 +39,9 @@ async function getCartShop(domain: string): Promise<OnlineShop> {
     cacheLife('max');
 
     try {
-        return await Shop.findByDomain(domain);
+        const shop = await Shop.findByDomain(domain);
+        cacheTag(...tenantRootTags(shop));
+        return shop;
     } catch (error: unknown) {
         if (Error.isNotFound(error) || error instanceof UnknownShopDomainError) {
             notFound();
@@ -55,6 +62,7 @@ export async function generateMetadata({ params }: { params: CartPageParams }): 
     }
 
     const shop = await getCartShop(domain);
+    cacheTag(...tenantRootTags(shop));
 
     const locale = Locale.from(localeData);
     const api = await ShopifyApolloApiClient({ shop, locale });
