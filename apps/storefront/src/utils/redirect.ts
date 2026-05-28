@@ -40,5 +40,13 @@ export async function checkAndHandleRedirect({
         return;
     }
 
+    // Guard against self-loops: RedirectsApi lowercases both path and target, so
+    // a Shopify redirect from /products/Foo → /products/foo becomes path === target
+    // after normalization. Without this check, redirect() would loop indefinitely.
+    const normalize = (p: string) => p.toLowerCase().replace(/\/+$/, '');
+    if (normalize(target) === normalize(path)) {
+        notFound();
+    }
+
     redirect(target, RedirectType.replace);
 }
