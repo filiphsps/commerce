@@ -20,8 +20,15 @@
       "strict": false,
       "lspServers": {
         "tailwindcss": {
-          "command": "tailwind-lsp-adapter",
-          "args": [],
+          "command": "pnpm",
+          "args": [
+            "dlx",
+            "--package",
+            "tailwind-lsp-adapter@1.1.5",
+            "--package",
+            "@tailwindcss/language-server@0.14.29",
+            "tailwind-lsp-adapter"
+          ],
           "extensionToLanguage": {
             ".css": "css",
             ".scss": "scss",
@@ -50,8 +57,10 @@
       "strict": false,
       "lspServers": {
         "typescript": {
-          "command": "typescript-language-server",
+          "command": "pnpm",
           "args": [
+            "dlx",
+            "typescript-language-server@4.4.1",
             "--stdio"
           ],
           "extensionToLanguage": {

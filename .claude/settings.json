@@ -76,8 +76,8 @@
     "mongodb@claude-plugins-official": false,
     "playwright@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
-    "tailwind-lsp-adapter@commerce-plugins": true,
-    "typescript-lsp@commerce-plugins": true
+    "typescript-lsp@commerce-plugins": true,
+    "tailwind-lsp-adapter@commerce-plugins": true
   },
   "extraKnownMarketplaces": {
     "superpowers-marketplace": {
