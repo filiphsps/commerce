@@ -1,7 +1,9 @@
 {
   "typescript": {
-    "command": "typescript-language-server",
+    "command": "pnpm",
     "args": [
+      "dlx",
+      "typescript-language-server@4.4.1",
       "--stdio"
     ],
     "extensionToLanguage": {

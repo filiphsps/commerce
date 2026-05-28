@@ -12,19 +12,19 @@ plugin is explicitly disabled in project settings to avoid double-loading the
 `typescript` server. No per-user setup needed — Claude Code auto-installs it from
 the in-repo marketplace on session start.
 
-## Prerequisites (one-time, per machine)
+## Prerequisites
 
-The plugin only declares LSP config; the server binary (plus the `typescript`
-package it drives) must be on `PATH`, installed globally via pnpm:
+None to install. The server is launched with `pnpm dlx` at a pinned version
+(`typescript-language-server@4.4.1`), so the only requirement is `pnpm` on
+`PATH` — which this repo already needs. `pnpm dlx` fetches the binary into the
+pnpm cache on first use and reuses it afterward; `typescript-language-server`
+drives the workspace's own `typescript` (resolved from `node_modules`), so type
+intelligence matches the repo.
+
+To avoid a slow first LSP spawn, optionally pre-warm the cache once:
 
 ```bash
-pnpm add -g typescript-language-server typescript
-```
-
-Confirm the pnpm global bin dir is on `PATH` (run `pnpm setup` once if not):
-
-```bash
-which typescript-language-server   # must resolve
+pnpm dlx typescript-language-server@4.4.1 --version
 ```
 
 Supported extensions: `.ts`, `.tsx`, `.js`, `.jsx`, `.mts`, `.cts`, `.mjs`,

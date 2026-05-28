@@ -8,24 +8,28 @@ This plugin is **registered for everyone working in this repo** via
 `enabledPlugins`). No per-user `--setup` is needed — Claude Code auto-installs it
 from the in-repo marketplace on session start.
 
-## Prerequisites (one-time, per machine)
+## Prerequisites
 
-The plugin only declares LSP config; the two server binaries must be on `PATH`,
-installed globally via pnpm:
+None to install. The server is launched with `pnpm dlx` at pinned versions, so
+the only requirement is `pnpm` on `PATH` — which this repo already needs. A
+single `pnpm dlx` invocation pulls both packages into the pnpm cache and runs
+them together:
 
-```bash
-pnpm add -g tailwind-lsp-adapter tailwindcss-language-server
+```
+pnpm dlx --package tailwind-lsp-adapter@1.1.5 \
+         --package @tailwindcss/language-server@0.14.29 \
+         tailwind-lsp-adapter
 ```
 
-Confirm the pnpm global bin dir is on `PATH` (run `pnpm setup` once if not):
+`tailwind-lsp-adapter` wraps `@tailwindcss/language-server` (spawned from the same
+dlx environment) to fit Claude Code's LSP transport. `pnpm dlx` caches both on
+first use and reuses them afterward.
+
+To avoid a slow first LSP spawn, optionally pre-warm the cache once:
 
 ```bash
-which tailwind-lsp-adapter tailwindcss-language-server   # both must resolve
+pnpm dlx --package tailwind-lsp-adapter@1.1.5 --package @tailwindcss/language-server@0.14.29 tailwind-lsp-adapter --help >/dev/null 2>&1 || true
 ```
-
-`tailwind-lsp-adapter` wraps `tailwindcss-language-server` to fit Claude Code's
-LSP transport. Without them on `PATH`, the `tailwindcss` server fails to spawn
-(TypeScript/JS intelligence via `typescript-lsp` is unaffected).
 
 ## Verify
 
