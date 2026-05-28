@@ -19,6 +19,8 @@
         "shipping": "Frakt",
         "subtotal": "Delsum",
         "view-cart": "Se handlekurven din",
+        "continue-shopping": "Fortsett å handle",
+        "empty": "Det er ingen varer i handlekurven.",
         "n-left": "Bare {0} igjen",
         "back-order": "Tilgjengelig på restordre"
     },

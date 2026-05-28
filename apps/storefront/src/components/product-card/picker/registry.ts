@@ -1,5 +1,6 @@
 'use client';
 
+import { UnreachableError } from '@nordcom/commerce-errors';
 import dynamic from 'next/dynamic';
 import type { ProductCardPickerComponent } from './types';
 
@@ -33,6 +34,8 @@ export function getProductCardPicker(name: string): ProductCardPickerComponent {
     const found = registry.get(name);
     if (found) return found;
     const fallback = registry.get('float');
-    if (!fallback) throw new Error('product-card picker registry has no float fallback registered');
+    // The `float` picker is seeded at module load and the public API only ever
+    // adds entries, so a missing fallback means the seed map was tampered with.
+    if (!fallback) throw new UnreachableError('product-card picker registry has no "float" fallback registered');
     return fallback;
 }

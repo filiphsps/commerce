@@ -4,6 +4,7 @@ import { useCartActions, useCartCount, useCartLines as useCartLinesSlice, useCar
 import { Suspense } from 'react';
 import { Button } from '@/components/actionable/button';
 import { ExportCartButton } from '@/components/actionable/export-cart-button';
+import { CartEmpty } from '@/components/cart/cart-empty';
 import { CartLine } from '@/components/cart/cart-line';
 import { Label } from '@/components/typography/label';
 import { getTranslations, type LocaleDictionary } from '@/utils/locale';
@@ -15,7 +16,7 @@ type CartContentProps = {
  * Renders all lines in the current cart with clear-cart and CSV export controls.
  *
  * @param props.i18n - Locale dictionary for translated labels.
- * @returns The cart line list, a skeleton while loading, or an empty-state label.
+ * @returns The cart line list, a skeleton while loading, or the empty-cart state.
  */
 const CartLines = ({ i18n }: CartContentProps) => {
     const { t: tCart } = getTranslations('cart', i18n);
@@ -30,7 +31,7 @@ const CartLines = ({ i18n }: CartContentProps) => {
     }
 
     if (lines.length <= 0 || !totalQuantity || totalQuantity <= 0) {
-        return <Label>There are no items in your cart.</Label>;
+        return <CartEmpty i18n={i18n} />;
     }
 
     return (

@@ -21,6 +21,8 @@
         "shipping": "Shipping",
         "subtotal": "Subtotal",
         "view-cart": "View your shopping cart",
+        "continue-shopping": "Continue shopping",
+        "empty": "There are no items in your cart.",
         "remove-n-from-cart": "Remove {0} from the cart",
         "clear-cart": "Clear cart",
         "n-items": "{0} item(s)",

@@ -19,6 +19,8 @@
         "shipping": "Livraison",
         "subtotal": "Sous-total",
         "view-cart": "Voir votre panier",
+        "continue-shopping": "Continuer vos achats",
+        "empty": "Votre panier est vide.",
         "n-left": "Plus que {0} en stock",
         "back-order": "Disponible en précommande"
     },

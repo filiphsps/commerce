@@ -21,6 +21,8 @@
         "shipping": "Envío",
         "subtotal": "Subtotal",
         "view-cart": "Ver tu carrito de compras",
+        "continue-shopping": "Seguir comprando",
+        "empty": "No hay artículos en tu carrito.",
         "remove-n-from-cart": "Eliminar {0} del carrito",
         "clear-cart": "Vaciar carrito",
         "n-items": "{0} artículo(s)",

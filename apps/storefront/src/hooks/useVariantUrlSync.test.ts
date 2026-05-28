@@ -76,10 +76,11 @@ describe('useVariantUrlSync', () => {
 
     it('does NOT call router.replace when only searchParams changes (same options key)', async () => {
         // On iOS Safari, router.replace fires a synchronous popstate event before React
-        // re-renders. If searchParams is in the effect deps, this causes the effect to
-        // re-run with new searchParams reference → same key → prevKeyRef guard stops it.
-        // After removing searchParams from deps entirely, this test proves the effect
-        // never fires from a searchParams-only change.
+        // re-renders, which swaps the useSearchParams() reference. searchParams stays in
+        // the effect deps (it is read in the body to preserve unrelated query params), so
+        // the effect re-runs — but the options-derived key is unchanged, so the prevKeyRef
+        // guard short-circuits before any router.replace. This test proves a
+        // searchParams-only change never triggers a second replace.
         const { useVariantUrlSync } = await import('./useVariantUrlSync');
 
         // Start with Color=Red options, trigger a real option change

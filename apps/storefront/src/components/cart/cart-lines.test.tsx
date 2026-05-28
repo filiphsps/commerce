@@ -56,10 +56,14 @@ describe('components', () => {
             expect(container.querySelector('[data-skeleton]')).toBeTruthy();
         });
 
-        it('renders empty state message when cart has no items', () => {
+        it('renders the empty state with a continue-shopping link when cart has no items', () => {
             setState({ cartReady: true, lines: [], totalQuantity: 0 });
-            render(<CartLines i18n={{} as any} />);
+            const i18n = {
+                cart: { empty: 'There are no items in your cart.', 'continue-shopping': 'Continue shopping' },
+            };
+            render(<CartLines i18n={i18n as any} />);
             expect(screen.getByText('There are no items in your cart.')).toBeTruthy();
+            expect(screen.getByText('Continue shopping')).toBeTruthy();
         });
 
         it('renders cart lines when items exist', () => {
