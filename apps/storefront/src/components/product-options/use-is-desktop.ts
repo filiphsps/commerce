@@ -22,8 +22,22 @@ export function useIsDesktop(): boolean | null {
         const mql = window.matchMedia(DESKTOP_MEDIA_QUERY);
         setMatches(mql.matches);
         const handler = (e: MediaQueryListEvent) => setMatches(e.matches);
-        mql.addEventListener('change', handler);
-        return () => mql.removeEventListener('change', handler);
+        // iOS <= 13 / Safari < 14 expose only the deprecated `addListener`;
+        // `addEventListener` is undefined there, so calling it unconditionally
+        // throws inside the effect and bubbles to the page-level error boundary
+        // (blank body) — and this hook now runs on every product card.
+        if (typeof mql.addEventListener === 'function') {
+            mql.addEventListener('change', handler);
+        } else if (typeof mql.addListener === 'function') {
+            mql.addListener(handler);
+        }
+        return () => {
+            if (typeof mql.removeEventListener === 'function') {
+                mql.removeEventListener('change', handler);
+            } else if (typeof mql.removeListener === 'function') {
+                mql.removeListener(handler);
+            }
+        };
     }, []);
     return matches;
 }

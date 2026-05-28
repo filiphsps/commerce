@@ -53,7 +53,7 @@ const FloatPicker = ({ product, open, onOpenChange, onAdd }: ProductCardPickerPr
                     side="bottom"
                     align="end"
                     sideOffset={6}
-                    className="z-50 flex w-[var(--radix-popover-trigger-width,196px)] min-w-48 flex-col gap-2.5 rounded-(--block-border-radius-small) border border-black/[0.06] bg-white/97 p-3 shadow-[0_12px_28px_-10px_rgb(20_17_11/0.22)] backdrop-blur-md"
+                    className="product-card-float-surface z-50 flex w-[var(--radix-popover-trigger-width,196px)] min-w-48 flex-col gap-2.5 rounded-(--block-border-radius-small) border border-black/[0.06] p-3 shadow-[0_12px_28px_-10px_rgb(20_17_11/0.22)]"
                 >
                     <ProductOptions.Root product={product} initialSelection={initialSelection}>
                         <div>

@@ -537,6 +537,21 @@ html:root {
             animation-timeline: scroll(self inline);
         }
     }
+
+    /* FloatPicker surface. `backdrop-filter` crashes the GPU compositor on
+     * pre-15.4 WebKit, and iPadOS 14/15 still renders the FloatPicker at the
+     * >= 768px breakpoint (phones are sheet-routed). So the blur stays behind a
+     * feature query with an opaque white fallback for unsupported engines. */
+    .product-card-float-surface {
+        background-color: #fff;
+    }
+
+    @supports (backdrop-filter: blur(1px)) {
+        .product-card-float-surface {
+            background-color: rgb(255 255 255 / 0.97);
+            backdrop-filter: blur(12px);
+        }
+    }
 }
 
 @keyframes product-card-overlay-fade-in {
