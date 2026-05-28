@@ -3,8 +3,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { isValidHandle, NOT_FOUND_HANDLE } from '@/utils/handle';
 
-const { mockProductsApi, mockShopifyApiClient, mockFindByDomain } = vi.hoisted(() => ({
-    mockProductsApi: vi.fn(),
+const { mockProductHandlesApi, mockShopifyApiClient, mockFindByDomain } = vi.hoisted(() => ({
+    mockProductHandlesApi: vi.fn(),
     mockShopifyApiClient: vi.fn(),
     mockFindByDomain: vi.fn(),
 }));
@@ -24,7 +24,7 @@ vi.mock('@/api/shopify', () => ({
 }));
 
 vi.mock('@/api/shopify/product', () => ({
-    ProductsApi: mockProductsApi,
+    ProductHandlesApi: mockProductHandlesApi,
 }));
 
 import { generateStaticParams } from './static-params';
@@ -33,7 +33,7 @@ describe('app/[domain]/[locale]/products/[handle] > generateStaticParams', () =>
     const params = { domain: 'shop.example.com', locale: 'en-US' };
 
     beforeEach(() => {
-        mockProductsApi.mockReset();
+        mockProductHandlesApi.mockReset();
         mockShopifyApiClient.mockReset();
         mockFindByDomain.mockReset();
 
@@ -42,9 +42,7 @@ describe('app/[domain]/[locale]/products/[handle] > generateStaticParams', () =>
     });
 
     it('returns the handle of every product', async () => {
-        mockProductsApi.mockResolvedValue({
-            products: [{ node: { handle: 'product-a' } }, { node: { handle: 'product-b' } }],
-        });
+        mockProductHandlesApi.mockResolvedValue(['product-a', 'product-b']);
 
         const result = await generateStaticParams({ params });
 
@@ -52,7 +50,7 @@ describe('app/[domain]/[locale]/products/[handle] > generateStaticParams', () =>
     });
 
     it('returns the not-found sentinel when the catalog is empty (Cache Components requires >=1 entry)', async () => {
-        mockProductsApi.mockRejectedValue(new NotFoundError('products'));
+        mockProductHandlesApi.mockRejectedValue(new NotFoundError('products'));
 
         const result = await generateStaticParams({ params });
 
@@ -62,7 +60,7 @@ describe('app/[domain]/[locale]/products/[handle] > generateStaticParams', () =>
 
     it('rethrows non-NotFound errors so real failures are still surfaced', async () => {
         const fetchError = new ProviderFetchError([{ message: 'boom' }]);
-        mockProductsApi.mockRejectedValue(fetchError);
+        mockProductHandlesApi.mockRejectedValue(fetchError);
 
         await expect(generateStaticParams({ params })).rejects.toBe(fetchError);
     });
