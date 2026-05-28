@@ -18,6 +18,12 @@ allowBuilds:
 
 minimumReleaseAge: 0
 
+# @payloadcms/ui@3.85.0 imports @floating-ui/react without declaring it as a
+# dependency. Hoist it to the root node_modules so Turbopack can resolve it
+# when bundling payloadcms chunks from the .pnpm virtual store.
+publicHoistPattern:
+    - "@floating-ui/react"
+
 # Nextra 4.6.1 + nextra-theme-docs 4.6.1 are incompatible with zod >=4.4.0
 # due to stricter property iteration in `z.strictObject`. Pin to the last
 # known-good version until Nextra ships a release with shuding/nextra#4990.
