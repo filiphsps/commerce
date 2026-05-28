@@ -16,8 +16,8 @@ export const SURFACE_PRESETS = {
     collection: {
         layout: 'vertical',
         chrome: 'boxed',
-        ctaPlacement: 'float-pill',
-        pickerPresentation: 'auto',
+        ctaPlacement: 'inline-button',
+        pickerPresentation: 'inline',
     },
     recommendation: {
         layout: 'vertical',
