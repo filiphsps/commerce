@@ -99,7 +99,7 @@
         "@types/react-dom": "19.2.3",
         "@vitejs/plugin-react": "6.0.2",
         "@vitest/coverage-v8": "4.1.7",
-        "concurrently": "9.2.1",
+        "concurrently": "10.0.0",
         "dotenv-cli": "11.0.0",
         "esbuild": "0.28.0",
         "fallow": "2.84.0",
