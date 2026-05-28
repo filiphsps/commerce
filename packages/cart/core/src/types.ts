@@ -194,6 +194,7 @@ export type CartMutation =
     | { kind: 'add-line'; variantId: string; quantity: number; attributes?: KV[]; snapshot?: ProductSnapshot }
     | { kind: 'update-line'; lineId: string; quantity: number }
     | { kind: 'remove-line'; lineId: string }
+    | { kind: 'clear' }
     | { kind: 'apply-discount'; code: string }
     | { kind: 'remove-discount'; code: string }
     | { kind: 'apply-gift-card'; code: string }

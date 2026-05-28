@@ -2,8 +2,12 @@ import type { CartActionResult, CartCapabilities, CartExt, KV, NewCartLine, Prod
 
 /**
  * Minimum mutation surface every cart adapter must implement: add, update, and
- * remove cart lines. Serves as the base constraint for {@link CartActions} and can
- * be used directly when only the three core mutations are needed.
+ * remove cart lines, plus `clear` to empty every line in one bulk mutation.
+ * Serves as the base constraint for {@link CartActions} and can be used directly
+ * when only the core mutations are needed.
+ *
+ * `clear` resolves to a single bulk removal regardless of line count, so callers
+ * never have to fan out one `removeLine` per line to empty the cart.
  *
  * @typeParam TExt - Cart extension shape; widens the {@link CartActionResult} each method returns.
  * @example
@@ -17,6 +21,7 @@ export type BaseCartActions<TExt extends CartExt = {}> = {
     addLine(input: NewCartLine & { snapshot?: ProductSnapshot }): Promise<CartActionResult<TExt>>;
     updateLine(input: { lineId: string; quantity: number }): Promise<CartActionResult<TExt>>;
     removeLine(lineId: string): Promise<CartActionResult<TExt>>;
+    clear(): Promise<CartActionResult<TExt>>;
 };
 
 /**

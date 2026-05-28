@@ -1,7 +1,7 @@
 import { useCartActions, useCartCount, useCartLines, useCartStatus } from '@nordcom/cart-react';
 import { describe, expect, it, vi } from 'vitest';
 import { CartLines } from '@/components/cart/cart-lines';
-import { render, screen } from '@/utils/test/react';
+import { fireEvent, render, screen } from '@/utils/test/react';
 
 vi.mock('@nordcom/cart-react', async (importOriginal) => {
     const actual = (await importOriginal()) as Record<string, unknown>;
@@ -16,6 +16,7 @@ vi.mock('@nordcom/cart-react', async (importOriginal) => {
 });
 
 const removeLine = vi.fn().mockResolvedValue({ ok: true, cart: {} });
+const clear = vi.fn().mockResolvedValue({ ok: true, cart: {} });
 const noopAction = vi.fn().mockResolvedValue({ ok: true, cart: {} });
 
 const setState = ({ cartReady, lines, totalQuantity }: { cartReady: boolean; lines: any[]; totalQuantity: number }) => {
@@ -23,6 +24,7 @@ const setState = ({ cartReady, lines, totalQuantity }: { cartReady: boolean; lin
         addLine: noopAction,
         updateLine: noopAction,
         removeLine,
+        clear,
         applyDiscountCode: noopAction,
         removeDiscountCode: noopAction,
         applyGiftCard: noopAction,
@@ -81,6 +83,28 @@ describe('components', () => {
             });
             render(<CartLines i18n={{} as any} />);
             expect(screen.getByText('Demo Product')).toBeTruthy();
+        });
+
+        it('clears the whole cart with a single bulk clear() call, not one removeLine per line', () => {
+            clear.mockClear();
+            removeLine.mockClear();
+            setState({
+                cartReady: true,
+                lines: [
+                    { id: 'line-1', merchandise: { product: { id: 'p1', title: 'Product 1', vendor: 'V' } } },
+                    { id: 'line-2', merchandise: { product: { id: 'p2', title: 'Product 2', vendor: 'V' } } },
+                    { id: 'line-3', merchandise: { product: { id: 'p3', title: 'Product 3', vendor: 'V' } } },
+                ],
+                totalQuantity: 3,
+            });
+            const i18n = { cart: { 'clear-cart': 'Clear cart' } };
+            render(<CartLines i18n={i18n as any} />);
+
+            fireEvent.click(screen.getByText('Clear cart'));
+
+            expect(clear).toHaveBeenCalledTimes(1);
+            expect(clear).toHaveBeenCalledWith();
+            expect(removeLine).not.toHaveBeenCalled();
         });
     });
 });

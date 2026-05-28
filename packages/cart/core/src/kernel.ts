@@ -1,6 +1,6 @@
 import type { CartAdapter, CartCapabilities } from './adapter';
 import { type CartMiddleware, compose, type MutationFn } from './compose';
-import { CartCapabilityUnsupportedError } from './errors';
+import { CartCapabilityUnsupportedError, CartNotFoundError } from './errors';
 import { type CartEvent, type CartEventHandler, type CartEventType, createEventBus } from './events';
 import type { AdapterCtx, BuyerIdentity, Cart, CartExt, CartMutation, ILogger, NewCartLine } from './types';
 import { consoleLogger } from './types';
@@ -104,6 +104,23 @@ export function createCart<TExt extends CartExt = {}, TShop = unknown>(
                 });
             case 'remove-line':
                 return opts.adapter.removeLines(ctx, { cartId, lineIds: [mutation.lineId] });
+            case 'clear': {
+                // No provider exposes a single "empty the cart" primitive — Shopify and
+                // friends remove lines by id. Read the cart to enumerate its current line
+                // ids, then issue ONE bulk removeLines so clearing costs a single round
+                // trip instead of one mutation per line.
+                const existing = await opts.adapter.getCart(ctx, { cartId });
+                if (!existing) {
+                    throw new CartNotFoundError(cartId);
+                }
+                if (existing.lines.length === 0) {
+                    return existing;
+                }
+                return opts.adapter.removeLines(ctx, {
+                    cartId,
+                    lineIds: existing.lines.map((line) => line.id),
+                });
+            }
             case 'apply-discount':
             case 'remove-discount': {
                 if (!opts.adapter.applyDiscountCodes) {
