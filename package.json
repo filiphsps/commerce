@@ -102,7 +102,7 @@
         "concurrently": "9.2.1",
         "dotenv-cli": "11.0.0",
         "esbuild": "0.28.0",
-        "fallow": "2.83.0",
+        "fallow": "2.84.0",
         "glob": "13.0.6",
         "jsdom": "29.1.1",
         "mongoose": "9.6.3",
