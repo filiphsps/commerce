@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 type ExploreItem = {
     /** Optional eyebrow label rendered above the title, e.g. "Concept · next up". */
     eyebrow?: string;
@@ -39,7 +41,7 @@ export function ContinueExploring({ items }: { items: ExploreItem[] }) {
                 {items.map((item) => {
                     const tab = item.tab ?? 'docs';
                     return (
-                        <a
+                        <Link
                             key={item.href}
                             href={item.href}
                             className={`block min-w-0 rounded-[0.45rem] border-[0.138rem] border-border bg-bg-1 px-[1.1rem] py-4 no-underline transition-colors duration-150 ${TAB_HOVER[tab]}`}
@@ -57,7 +59,7 @@ export function ContinueExploring({ items }: { items: ExploreItem[] }) {
                                     {item.description}
                                 </div>
                             ) : null}
-                        </a>
+                        </Link>
                     );
                 })}
             </div>

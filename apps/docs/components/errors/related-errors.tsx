@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 type RelatedError = {
     /** SCREAMING_SNAKE_CASE error code. */
     code: string;
@@ -19,7 +21,7 @@ export function RelatedErrors({ items }: { items: RelatedError[] }) {
     return (
         <div className="not-prose grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-2.5">
             {items.map((item) => (
-                <a
+                <Link
                     key={item.code}
                     href={item.href}
                     className="block rounded-[0.45rem] border-[0.138rem] border-border bg-bg-1 px-3.5 py-3 no-underline transition-colors duration-150 hover:border-err hover:bg-err/5"
@@ -30,7 +32,7 @@ export function RelatedErrors({ items }: { items: RelatedError[] }) {
                             {item.description}
                         </div>
                     ) : null}
-                </a>
+                </Link>
             ))}
         </div>
     );

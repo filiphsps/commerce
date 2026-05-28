@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 type EmptySubpathProps = {
     /** Package workspace slug, e.g. `"cms"`. */
     pkg: string;
@@ -40,12 +42,12 @@ export function EmptySubpath({ pkg, subpath }: EmptySubpathProps) {
             </p>
 
             <div className="flex flex-wrap gap-2.5">
-                <a
+                <Link
                     href={pkgHref}
                     className="inline-flex items-center gap-1.5 rounded-[0.3rem] border-[0.138rem] border-border-strong px-4 py-2.5 font-display text-[0.7rem] font-bold uppercase tracking-[0.14em] text-fg no-underline transition-all hover:border-brand hover:bg-brand/10 hover:text-brand"
                 >
                     Packages › {pkg}
-                </a>
+                </Link>
             </div>
         </div>
     );

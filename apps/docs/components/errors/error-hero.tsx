@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 type ErrorHeroProps = {
     /** SCREAMING_SNAKE_CASE error code, rendered as the page h1. */
     code: string;
@@ -39,12 +41,12 @@ export function ErrorHero({ code, description, errorClass, kind, classHref, http
             <div className="relative z-[1] flex flex-col items-end gap-2">
                 {errorClass ? (
                     classHref ? (
-                        <a
+                        <Link
                             className="whitespace-nowrap rounded-[4px] border-[0.138rem] border-ref bg-ref/10 px-2 py-1 font-bold font-mono text-[0.62rem] text-ref uppercase tracking-[0.16em] no-underline transition-colors duration-150 hover:bg-ref/20"
                             href={classHref}
                         >
                             {errorClass} ↗
-                        </a>
+                        </Link>
                     ) : (
                         <span className="whitespace-nowrap rounded-[4px] border-[0.138rem] border-ref bg-ref/10 px-2 py-1 font-bold font-mono text-[0.62rem] text-ref uppercase tracking-[0.16em]">
                             {errorClass}

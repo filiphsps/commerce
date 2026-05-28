@@ -37,7 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     return (
         <html lang="en" dir="ltr" suppressHydrationWarning className={`${primaryFont.variable} ${GeistMono.variable}`}>
             <body>
-                <RootProvider search={{ options: { type: 'static' } }}>
+                <RootProvider search={{ options: { type: 'static', api: `${docsEnv.basePath}/api/search` } }}>
                     <DocsLayout
                         tree={source.pageTree}
                         tabMode="navbar"

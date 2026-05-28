@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import type { ReactNode } from 'react';
 
 type ThrowsRowProps = {
@@ -32,12 +33,12 @@ export function ThrowsRow({ cls, href, children }: ThrowsRowProps) {
     return (
         <div className="flex items-baseline gap-3 rounded-r-[4px] border-err border-l-[0.29rem] bg-err/5 px-3.5 py-2.5">
             {href ? (
-                <a
+                <Link
                     href={href}
                     className="flex-shrink-0 font-mono font-semibold text-[0.84rem] text-err no-underline hover:underline"
                 >
                     {cls}
-                </a>
+                </Link>
             ) : (
                 <span className="flex-shrink-0 font-mono font-semibold text-[0.84rem] text-err">{cls}</span>
             )}
