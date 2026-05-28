@@ -4,12 +4,20 @@ const STRIP_TAGS = new Set(['meta', 'script', 'style']);
 
 /**
  * Parse a Shopify HTML string and apply default normalization:
- * - strip <meta>, <script>, <style> elements
- * - drop data-* attributes
- * - collapse non-breaking spaces (raw U+00A0 and &nbsp; entity) to regular spaces
+ * - strip `<meta>`, `<script>`, and `<style>` elements
+ * - drop all `data-*` attributes
+ * - collapse non-breaking spaces (raw U+00A0 and `&nbsp;` entity) to regular spaces
  * - trim outer whitespace
  *
- * Returns the parsed root, or null for empty/invalid input.
+ * @param html - Raw Shopify HTML string to parse and clean; accepts `null` or `undefined`.
+ * @returns The parsed root element with normalization applied, or `null` for empty or invalid input.
+ * @example
+ * ```ts
+ * import { normalize } from '@nordcom/commerce-shopify-html/normalize';
+ *
+ * const root = normalize('<p data-source="shopify">Hello&nbsp;world</p>');
+ * // root?.innerHTML → '<p>Hello world</p>'
+ * ```
  */
 export function normalize(html: string | null | undefined): HTMLElement | null {
     if (typeof html !== 'string') return null;
