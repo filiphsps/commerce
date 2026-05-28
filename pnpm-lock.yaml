@@ -63,8 +63,8 @@ importers:
         specifier: 29.1.1
         version: 29.1.1
       mongoose:
-        specifier: 9.6.2
-        version: 9.6.2
+        specifier: 9.6.3
+        version: 9.6.3
       portless:
         specifier: 0.13.1
         version: 0.13.1
@@ -1055,8 +1055,8 @@ importers:
         specifier: workspace:*
         version: link:../errors
       mongoose:
-        specifier: 9.6.2
-        version: 9.6.2
+        specifier: 9.6.3
+        version: 9.6.3
     devDependencies:
       '@codecov/vite-plugin':
         specifier: 2.0.1
@@ -1416,8 +1416,8 @@ importers:
         specifier: 11.1.0
         version: 11.1.0
       mongoose:
-        specifier: 9.6.2
-        version: 9.6.2
+        specifier: 9.6.3
+        version: 9.6.3
       payload:
         specifier: 3.85.0
         version: 3.85.0(graphql@16.14.0)(typescript@6.0.3)
@@ -6312,8 +6312,8 @@ packages:
     resolution: {integrity: sha512-c0bzt7ElI1CwWiyFSgg9bfhlFcblAoPwr+gmDcLCryClyKaeixWhP9KDGnr13kRPE8KPAuUN3ZZ3jSDxSPvoTg==}
     engines: {node: '>=16.20.1'}
 
-  mongoose@9.6.2:
-    resolution: {integrity: sha512-7m8HntjkoRnwEmuPC0kdlwcZXJOQf4twumFj+PNzg/anqqZE2Er7hQslqyzy07mP3JcFjoTSgH5765PyqOXsxw==}
+  mongoose@9.6.3:
+    resolution: {integrity: sha512-vI6dTTlQnfMCyyQ5TrvhG0bCRs4dq5e1uFNPtOOWsOhn0fSg8AoIHjfyyCYr8aybyvPs845dRHGxsC3w/fHcBA==}
     engines: {node: '>=20.19.0'}
 
   motion-dom@12.40.0:
@@ -13137,7 +13137,7 @@ snapshots:
       - socks
       - supports-color
 
-  mongoose@9.6.2:
+  mongoose@9.6.3:
     dependencies:
       kareem: 3.3.0
       mongodb: 7.2.0
