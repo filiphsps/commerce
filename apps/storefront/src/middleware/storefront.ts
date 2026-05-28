@@ -9,6 +9,8 @@ import { getGlobalServiceDomain } from '@/api/shop';
 import { ShopifyApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { commonValidations } from '@/middleware/common-validations';
+import type { ShopResolution } from '@/middleware/shop-cache';
+import { resolveShop, resolveShopLocales } from '@/middleware/shop-cache';
 import type { Code } from '@/utils/locale';
 
 let cachedDevShopDomain: Promise<string> | undefined;
@@ -69,8 +71,48 @@ async function hostnameFromRequest(req: NextRequest): Promise<string> {
 }
 
 /**
+ * Resolves (and process-caches) the existence + default-locale summary for a
+ * hostname. The lookup masks credentials (`sensitiveData: false`) because this
+ * validation path only reads `domain` and `i18n.defaultLocale`; the credential
+ * doc is fetched separately, only when a cookie-less request must build a
+ * Shopify client (see {@link resolveLocaleCodes}). An unknown host rejects so it
+ * is only briefly negatively cached, keeping newly added tenants resolvable.
+ *
+ * @param hostname - The resolved request hostname to look up.
+ * @returns The cached or freshly loaded shop summary.
+ * @throws {NotFoundError} When no shop claims the hostname.
+ */
+function resolveShopSummary(hostname: string): Promise<ShopResolution> {
+    return resolveShop(hostname, async () => {
+        const shop = await Shop.findByDomain(hostname, { sensitiveData: false });
+        if (!shop.domain) {
+            throw new NotFoundError(`"Shop" with the handle "${hostname}" cannot be found`);
+        }
+        return { domain: shop.domain, defaultLocale: shop.i18n?.defaultLocale ?? 'en-US' };
+    });
+}
+
+/**
+ * Resolves (and process-caches) the supported locale codes for a hostname. The
+ * loader needs the credential doc to build a Shopify client for the locale
+ * round-trip, so a cache hit lets cookie-less requests for a known shop skip
+ * both the credential lookup and the round-trip entirely.
+ *
+ * @param hostname - The resolved request hostname whose locales are needed.
+ * @returns The cached or freshly loaded list of locale codes.
+ */
+function resolveLocaleCodes(hostname: string): Promise<string[]> {
+    return resolveShopLocales(hostname, async () => {
+        const shop = await Shop.findByDomain(hostname, { sensitiveData: true });
+        const api = await ShopifyApiClient({ shop });
+        return (await LocalesApi({ api })).map((locale) => locale.code);
+    });
+}
+
+/**
  * Resolves the canonical shop domain from a request, verifying it exists in
- * the MongoDB `shops` collection before returning it.
+ * the MongoDB `shops` collection before returning it. Backed by a process-level
+ * cache so the validation lookup does not hit Mongo on every matched request.
  *
  * @param req - The incoming Next.js edge request.
  * @returns The verified shop domain string.
@@ -78,12 +120,7 @@ async function hostnameFromRequest(req: NextRequest): Promise<string> {
  */
 export const getHostname = async (req: NextRequest): Promise<string> => {
     const hostname = await hostnameFromRequest(req);
-    const domain = (await Shop.findByDomain(hostname, { sensitiveData: true })).domain;
-
-    if (!domain) {
-        throw new NotFoundError(`"Shop" with the handle "${hostname}" cannot be found`);
-    }
-
+    const { domain } = await resolveShopSummary(hostname);
     return domain;
 };
 
@@ -255,12 +292,16 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         let locale = req.cookies.get('localization')?.value || req.cookies.get('NEXT_LOCALE')?.value;
 
         if (!locale) {
-            const shop = await Shop.findByDomain(hostname, { sensitiveData: true });
-            const api = await ShopifyApiClient({ shop });
-            const locales = (await LocalesApi({ api })).map((locale) => locale.code);
+            // `resolveShopSummary` is already populated by `getHostname` above,
+            // so the default-locale read is a cache hit; only the locale list may
+            // require the Shopify round-trip (and only on a cold cache).
+            const [{ defaultLocale: defaultLocaleCode }, locales] = await Promise.all([
+                resolveShopSummary(hostname),
+                resolveLocaleCodes(hostname),
+            ]);
 
             const acceptLanguageHeader = req.headers.get('accept-language');
-            const defaultLocale = (shop.i18n?.defaultLocale ?? 'en-US') as Code;
+            const defaultLocale = defaultLocaleCode as Code;
             // `resolveAcceptLanguage` throws if `defaultLocale` is missing from
             // the locales array. The shop's configured default isn't always
             // present in Shopify's `availableCountries × availableLanguages`
