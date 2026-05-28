@@ -5,6 +5,7 @@ import { useCartActions } from '@nordcom/cart-react';
 import { useCallback } from 'react';
 import type { Product } from '@/api/product';
 import { getProductCardPicker } from '@/components/product-card/picker';
+import { useIsDesktop } from '@/components/product-options/use-is-desktop';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { usePickerOpen, useVariantSelection } from './product-card-options-provider';
 
@@ -93,11 +94,14 @@ const ProductCardPicker = ({ locale, i18n, presentation, ctaPlacement, layout }:
         [sel, addLine, picker],
     );
 
-    if (!sel || !picker) return null;
+    // null until the first client-side effect runs — matches SSR output and avoids
+    // calling window.matchMedia synchronously (which throws in WKWebView in-app browsers).
+    const isDesktop = useIsDesktop();
 
-    // SSR-safe: assume non-mobile, hydrate corrects on client. md breakpoint = 768px.
-    const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches;
-    const shape = resolvePresentation(presentation, layout, ctaPlacement, isMobile);
+    if (!sel || !picker) return null;
+    if (isDesktop === null) return null;
+
+    const shape = resolvePresentation(presentation, layout, ctaPlacement, !isDesktop);
 
     const Picker = getProductCardPicker(shape);
     return (
