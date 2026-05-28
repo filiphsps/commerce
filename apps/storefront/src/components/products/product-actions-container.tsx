@@ -1,6 +1,6 @@
 'use client';
 
-import { useProduct, useSelectedOptionInUrlParam } from '@shopify/hydrogen-react';
+import { useProduct } from '@shopify/hydrogen-react';
 import type { HTMLProps } from 'react';
 import { Suspense, useMemo } from 'react';
 import type { Product, ProductVariant } from '@/api/product';
@@ -11,6 +11,7 @@ import { ProductQuantityBreaks } from '@/components/products/product-quantity-br
 import { useQuantity } from '@/components/products/quantity-provider';
 import { QuantitySelector } from '@/components/products/quantity-selector';
 import { Label } from '@/components/typography/label';
+import { useVariantUrlSync } from '@/hooks/useVariantUrlSync';
 import type { LocaleDictionary } from '@/utils/locale';
 import { getTranslations } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
@@ -36,7 +37,7 @@ export const ProductActionsContainer = ({ className, i18n, ...props }: ProductAc
         selectedVariant: ProductVariant | undefined;
     };
 
-    useSelectedOptionInUrlParam(
+    useVariantUrlSync(
         Object.entries(selectedOptions ?? {})
             .filter((entry): entry is [string, string] => entry[1] !== undefined)
             .map(([name, value]) => ({ name, value })),
