@@ -87,6 +87,24 @@ describe('createTypedCartActions', () => {
         expect(result.ok).toBe(true);
     });
 
+    it('returns ok:false provider-error when resolveContext throws — does not let the error escape uncaught', async () => {
+        const adapter = createMockCartAdapter();
+        const kernel = createCart({ adapter });
+        const storage = makeStorage();
+        const actions = createTypedCartActions({
+            kernel,
+            storage,
+            resolveContext: async () => {
+                throw Object.assign(new Error('CartProviderError'), { name: 'CartProviderError' });
+            },
+        });
+        const result = await actions.addLine({ variantId: 'v', quantity: 1, idempotencyKey: 'k-ctx-fail' });
+        expect(result.ok).toBe(false);
+        if (!result.ok) {
+            expect(result.reason).toBe('provider-error');
+        }
+    });
+
     it('threads idempotencyKey into the resolved AdapterCtx', async () => {
         const adapter = createMockCartAdapter();
         const kernel = createCart({ adapter });

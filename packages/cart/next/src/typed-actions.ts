@@ -211,8 +211,8 @@ async function run<TExt extends CartExt, TShop>(
     mutation: CartMutation,
     idempotencyKey: string,
 ): Promise<CartActionResult<TExt>> {
-    const ctx = await opts.resolveContext({ idempotencyKey });
     try {
+        const ctx = await opts.resolveContext({ idempotencyKey });
         const cartId = await ensureCartId(opts, ctx);
         const cart = await opts.kernel.mutate({ ...ctx, cartId }, mutation);
         return { ok: true, cart };
