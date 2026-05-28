@@ -11,6 +11,9 @@ import { ProductActionsContainer } from '@/components/products/product-actions-c
 import { QuantityProvider } from '@/components/products/quantity-provider';
 import { firstAvailableVariant } from '@/utils/first-available-variant';
 import { getTranslations, type LocaleDictionary } from '@/utils/locale';
+import { safeParseFloat } from '@/utils/pricing';
+import { cn } from '@/utils/tailwind';
+import { unsafe_cast } from '@/utils/unsafe-cast';
 
 /**
  * Determines the initial variant ID from URL search params.
@@ -23,7 +26,8 @@ import { getTranslations, type LocaleDictionary } from '@/utils/locale';
  */
 export function resolveInitialVariantId(product: Product, searchParams: URLSearchParams): string | undefined {
     if (searchParams.has('variant')) {
-        return `gid://shopify/ProductVariant/${searchParams.get('variant')}`;
+        const raw = searchParams.get('variant')!;
+        return raw.startsWith('gid://') ? raw : `gid://shopify/ProductVariant/${raw}`;
     }
 
     // Try to match by option params — e.g. ?Color=Red&Size=M
@@ -45,10 +49,6 @@ export function resolveInitialVariantId(product: Product, searchParams: URLSearc
 
     return firstAvailableVariant(product)?.id;
 }
-
-import { safeParseFloat } from '@/utils/pricing';
-import { cn } from '@/utils/tailwind';
-import { unsafe_cast } from '@/utils/unsafe-cast';
 
 /** Props for the `ProductContent` client component. */
 export type ProductContentProps = {

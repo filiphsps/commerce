@@ -39,8 +39,15 @@ const product = {
 } as any;
 
 describe('resolveInitialVariantId', () => {
-    it('reads ?variant param when present', () => {
+    it('reads ?variant param when present (numeric ID)', () => {
         const params = new URLSearchParams('variant=1');
+        expect(resolveInitialVariantId(product, params)).toBe('gid://shopify/ProductVariant/1');
+    });
+
+    it('does not double-encode when ?variant param already contains full GID', () => {
+        // Link generators sometimes embed the full GID. Without the fix, the result is:
+        // gid://shopify/ProductVariant/gid://shopify/ProductVariant/1 — no match → wrong variant.
+        const params = new URLSearchParams('variant=gid://shopify/ProductVariant/1');
         expect(resolveInitialVariantId(product, params)).toBe('gid://shopify/ProductVariant/1');
     });
 
