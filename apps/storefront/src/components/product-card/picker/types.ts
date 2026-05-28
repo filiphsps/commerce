@@ -10,6 +10,7 @@ export type ProductCardPickerProps = {
     i18n: LocaleDictionary;
     open: boolean;
     onOpenChange: (open: boolean) => void;
+    onAdd: (variantId: string) => void;
 };
 
 export type ProductCardPickerComponent = ComponentType<ProductCardPickerProps>;

@@ -30,6 +30,7 @@ describe('InlinePicker', () => {
                 i18n={{} as never}
                 open={false}
                 onOpenChange={vi.fn()}
+                onAdd={vi.fn()}
             />,
         );
         expect(container.querySelector('[role="group"]')).toBeNull();
@@ -43,10 +44,28 @@ describe('InlinePicker', () => {
                 i18n={{} as never}
                 open={true}
                 onOpenChange={vi.fn()}
+                onAdd={vi.fn()}
             />,
         );
         const group = container.querySelector('[role="group"]') as HTMLElement;
         expect(group).toBeTruthy();
         expect(group.getAttribute('aria-label')).toBe('Product options');
+    });
+
+    it('calls onAdd with the selected variant id when Add to bag is clicked', () => {
+        const onAdd = vi.fn();
+        const { container } = render(
+            <InlinePicker
+                product={product as never}
+                locale={{ code: 'en-US' } as never}
+                i18n={{} as never}
+                open={true}
+                onOpenChange={vi.fn()}
+                onAdd={onAdd}
+            />,
+        );
+        const btn = Array.from(container.querySelectorAll('button')).find((b) => b.textContent?.match(/add to bag/i));
+        btn?.click();
+        expect(onAdd).toHaveBeenCalledWith('v1');
     });
 });

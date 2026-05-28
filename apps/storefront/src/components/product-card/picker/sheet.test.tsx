@@ -31,6 +31,7 @@ describe('SheetPicker', () => {
                 i18n={{} as never}
                 open={true}
                 onOpenChange={vi.fn()}
+                onAdd={vi.fn()}
             />,
         );
         // Radix Dialog portals Content as a sibling of the test container, so
@@ -48,6 +49,7 @@ describe('SheetPicker', () => {
                 i18n={{} as never}
                 open={false}
                 onOpenChange={vi.fn()}
+                onAdd={vi.fn()}
             />,
         );
         const dialog = document.querySelector('[role="dialog"]');
