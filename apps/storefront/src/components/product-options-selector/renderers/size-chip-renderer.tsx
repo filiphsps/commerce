@@ -64,6 +64,7 @@ export const SizeChipRenderer = ({
                 data-selected={selected || undefined}
                 data-disabled={!available || undefined}
                 className={className}
+                style={{ touchAction: 'manipulation' }}
                 onClick={handleClick}
             >
                 {body}
@@ -81,6 +82,7 @@ export const SizeChipRenderer = ({
             data-selected={selected || undefined}
             data-disabled={!available || undefined}
             className={className}
+            style={{ touchAction: 'manipulation' }}
             onClick={handleClick}
         >
             {body}

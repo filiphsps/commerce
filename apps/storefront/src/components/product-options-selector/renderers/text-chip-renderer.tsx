@@ -64,6 +64,7 @@ export const TextChipRenderer = ({
                 data-selected={selected || undefined}
                 data-disabled={!available || undefined}
                 className={className}
+                style={{ touchAction: 'manipulation' }}
                 onClick={handleClick}
             >
                 {swatchEl}
@@ -83,6 +84,7 @@ export const TextChipRenderer = ({
             data-selected={selected || undefined}
             data-disabled={!available || undefined}
             className={className}
+            style={{ touchAction: 'manipulation' }}
             onClick={handleClick}
         >
             {swatchEl}
