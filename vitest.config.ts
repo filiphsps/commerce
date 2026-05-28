@@ -34,6 +34,17 @@ const coverageExclude = [...exclude, '**/scripts/**', 'scripts/**'];
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+// vitest's v8 coverage provider writes raw per-suite shards into `<reportsDirectory>/.tmp`
+// and removes that directory on finish with an UNGUARDED `rm` (no `force`). Two
+// `vitest run --coverage` processes that share one `reportsDirectory` therefore race: when
+// the first finishes it deletes the shared `.tmp`, and the second throws "Something removed
+// the coverage directory" AFTER an otherwise-green suite, flipping the run to exit 1. CI
+// runs a single isolated `pnpm test` whose coverage upload/report steps read fixed paths
+// under `coverage/`, so it keeps the canonical directory; everywhere else (local runs, the
+// parallel agent harness) we namespace per process id so concurrent runs each get their own
+// `.tmp` and cannot clobber one another.
+const reportsDirectory = isCI ? 'coverage' : `coverage/.runs/${process.pid}`;
+
 export default defineConfig({
     root: resolve(__dirname),
     envDir: resolve(__dirname),
@@ -62,6 +73,7 @@ export default defineConfig({
         coverage: {
             exclude: coverageExclude,
             provider: 'v8',
+            reportsDirectory,
             reporter: ['json', 'json-summary', ...(isCI || isGitHubActions ? [] : ['text']), 'text-summary'],
             reportOnFailure: true,
             // Per-glob regression floors. Spec target is 80% storefront / 60% admin lines.
