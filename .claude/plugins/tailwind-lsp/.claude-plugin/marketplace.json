@@ -1,0 +1,41 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "commerce-plugins",
+  "description": "Repo-local Claude Code plugins for the commerce monorepo.",
+  "owner": {
+    "name": "Nordcom Commerce",
+    "email": "dev@nordcom.io"
+  },
+  "plugins": [
+    {
+      "name": "tailwind-lsp-adapter",
+      "description": "Tailwind CSS LSP for Claude Code - completions, hover info, and diagnostics for Tailwind classes.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Nordcom Commerce",
+        "email": "dev@nordcom.io"
+      },
+      "source": "./tailwind-lsp-adapter",
+      "category": "development",
+      "strict": false,
+      "lspServers": {
+        "tailwindcss": {
+          "command": "tailwind-lsp-adapter",
+          "args": [],
+          "extensionToLanguage": {
+            ".css": "css",
+            ".scss": "scss",
+            ".less": "less",
+            ".html": "html",
+            ".js": "javascript",
+            ".jsx": "javascriptreact",
+            ".ts": "typescript",
+            ".tsx": "typescriptreact",
+            ".vue": "vue",
+            ".svelte": "svelte"
+          }
+        }
+      }
+    }
+  ]
+}

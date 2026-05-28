@@ -1,0 +1,9 @@
+{
+  "name": "tailwind-lsp-adapter",
+  "version": "1.0.0",
+  "description": "Tailwind CSS LSP for Claude Code - completions, hover info, and diagnostics for Tailwind classes.",
+  "author": {
+    "name": "Nordcom Commerce",
+    "email": "dev@nordcom.io"
+  }
+}
