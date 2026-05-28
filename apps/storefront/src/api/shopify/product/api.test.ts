@@ -1,7 +1,7 @@
 import { InvalidHandleError, NotFoundError, ProviderFetchError } from '@nordcom/commerce-errors';
 import { describe, expect, it, vi } from 'vitest';
 
-import { ProductApi, ProductsApi, ProductsPaginationApi } from './index';
+import { ProductApi, ProductHandlesApi, ProductsApi, ProductsPaginationApi } from './index';
 
 vi.mock('@apollo/client', () => ({
     gql: vi.fn(),
@@ -115,6 +115,57 @@ describe('api', () => {
                     );
 
                     await expect(ProductsApi({ api: api as any })).rejects.toMatchObject({
+                        name: ProviderFetchError.name,
+                    });
+                });
+            });
+
+            describe('ProductHandlesApi', () => {
+                const makeApi = (queryMock: ReturnType<typeof vi.fn>) => ({
+                    shop: vi.fn(() => ({ id: 'mock-shop-id' })),
+                    query: queryMock,
+                    locale: vi.fn(() => ({ code: 'en-US' })),
+                });
+
+                it('returns only handles, preserving the best-selling order from the API', async () => {
+                    const query = vi.fn().mockResolvedValue({
+                        data: {
+                            products: {
+                                edges: [
+                                    { node: { handle: 'top-seller' } },
+                                    { node: { handle: 'runner-up' } },
+                                    { node: { handle: 'third-place' } },
+                                ],
+                            },
+                        },
+                        errors: [],
+                    });
+                    const api = makeApi(query);
+
+                    const handles = await ProductHandlesApi({ api: api as any, limit: 10 });
+
+                    // Order is delegated to Shopify's BEST_SELLING sort; the helper must
+                    // not reshuffle it, and it must request that sort explicitly.
+                    expect(handles).toEqual(['top-seller', 'runner-up', 'third-place']);
+                    expect(query).toHaveBeenCalledWith(
+                        expect.anything(),
+                        { first: 10, sorting: 'BEST_SELLING' },
+                        expect.objectContaining({ tags: expect.arrayContaining(['products']) }),
+                    );
+                });
+
+                it('throws NotFoundError when the shop has no products', async () => {
+                    const api = makeApi(vi.fn().mockResolvedValue({ data: { products: { edges: [] } }, errors: [] }));
+
+                    await expect(ProductHandlesApi({ api: api as any })).rejects.toMatchObject({
+                        name: NotFoundError.name,
+                    });
+                });
+
+                it('throws ProviderFetchError when errors are present', async () => {
+                    const api = makeApi(vi.fn().mockResolvedValue({ data: null, errors: [{ message: 'boom' }] }));
+
+                    await expect(ProductHandlesApi({ api: api as any })).rejects.toMatchObject({
                         name: ProviderFetchError.name,
                     });
                 });
