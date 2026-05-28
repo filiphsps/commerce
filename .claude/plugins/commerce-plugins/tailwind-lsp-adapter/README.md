@@ -31,8 +31,17 @@ To avoid a slow first LSP spawn, optionally pre-warm the cache once:
 pnpm dlx --package tailwind-lsp-adapter@1.1.5 --package @tailwindcss/language-server@0.14.29 tailwind-lsp-adapter --help >/dev/null 2>&1 || true
 ```
 
+## Scope
+
+This server owns only CSS-family extensions: `.css`, `.scss`, `.less`, `.html`,
+`.vue`, `.svelte`. It deliberately does **not** claim `.js/.jsx/.ts/.tsx` —
+Claude Code routes each extension to a single server (first registered wins,
+operation-blind), so claiming those would shadow `typescript-lsp` and break
+`goToDefinition`/`findReferences` on components. typescript owns the JS/TS family
+alone; tailwind owns CSS.
+
 ## Verify
 
 After `/reload-plugins` (or a restart), the reload summary should report the
 `tailwindcss` LSP server loaded. Then the `LSP` tool's `hover` / `documentSymbol`
-operations work on `.tsx` / `.css` files.
+operations work on `.css` / `.scss` files.

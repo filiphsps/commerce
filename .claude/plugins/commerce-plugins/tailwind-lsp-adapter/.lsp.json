@@ -14,10 +14,6 @@
       ".scss": "scss",
       ".less": "less",
       ".html": "html",
-      ".js": "javascript",
-      ".jsx": "javascriptreact",
-      ".ts": "typescript",
-      ".tsx": "typescriptreact",
       ".vue": "vue",
       ".svelte": "svelte"
     }
