@@ -7,6 +7,7 @@ import { useMemo } from 'react';
 import * as ProductOptions from '@/components/product-options';
 import { useMaybeProductOptions } from '@/components/product-options/context';
 import { toSelectionRecord } from '@/components/product-options/resolver';
+import { useVisualViewportInset } from '@/hooks/useVisualViewportInset';
 import { firstAvailableVariant } from '@/utils/first-available-variant';
 import type { ProductCardPickerProps } from './types';
 
@@ -47,12 +48,23 @@ const SheetPicker = ({ product, open, onOpenChange, onAdd }: ProductCardPickerPr
     const seed = firstAvailableVariant(product) ?? product.variants?.edges?.[0]?.node;
     const initialSelection = useMemo(() => toSelectionRecord(seed), [seed]);
 
+    // The sheet is `bottom: 0` fixed; iOS Safari leaves it pinned behind the
+    // keyboard (it ignores `interactiveWidget: 'resizes-content'`), so grow the
+    // bottom padding by the occluded region to float the CTA above the keyboard.
+    // `env(safe-area-inset-bottom)` is preserved in both branches.
+    const keyboardInset = useVisualViewportInset();
+
     return (
         <Dialog.Root open={open} onOpenChange={onOpenChange}>
             <Dialog.Portal>
                 <Dialog.Overlay className="fixed inset-0 z-20 bg-black/30 data-[state=closed]:animate-out data-[state=open]:animate-in" />
                 <Dialog.Content
                     aria-describedby={undefined}
+                    style={
+                        keyboardInset && keyboardInset > 0
+                            ? { paddingBottom: `max(1rem, env(safe-area-inset-bottom), ${keyboardInset}px)` }
+                            : undefined
+                    }
                     className="fixed inset-x-0 bottom-0 z-30 flex w-full max-w-md flex-col gap-3 rounded-t-2xl border border-(--product-card-border-color) bg-white p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-2xl data-[state=closed]:animate-out data-[state=open]:animate-in md:inset-x-auto md:top-1/2 md:bottom-auto md:left-1/2 md:max-w-sm md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-2xl md:p-[18px]"
                 >
                     <span
