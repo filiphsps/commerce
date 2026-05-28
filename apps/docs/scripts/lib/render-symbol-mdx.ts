@@ -1,6 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import type { ResolveContext, SymbolIndex } from '../../lib/jsdoc-link-resolver';
+import { resolveLink } from '../../lib/jsdoc-link-resolver';
+import type { PropRow, TypeToken } from '../../lib/props-table-types';
 import type { SymbolKindLabel } from './symbol-classify';
 import type { TypeDocComment, TypeDocCommentNode, TypeDocSymbol, TypeDocType } from './typedoc-types';
 
@@ -56,6 +59,8 @@ export type SymbolRenderArgs = {
     subpath: string;
     symbol: TypeDocSymbol;
     kind: SymbolKindLabel;
+    /** Pre-built symbol index; when present, type references in PropsTable are linked. */
+    symbolIndex?: SymbolIndex;
     /** Names of other own-page symbols in the same subpath; used for the Related section. */
     siblings?: string[];
 };
@@ -72,7 +77,7 @@ export type SymbolRenderArgs = {
  * @returns The full MDX file body (frontmatter included).
  */
 export function renderSymbolMdx(args: SymbolRenderArgs): string {
-    const { symbol, kind, workspaceSlug, subpath, siblings = [] } = args;
+    const { symbol, kind, workspaceSlug, subpath, siblings = [], symbolIndex = {} } = args;
     const rawNodes = symbol.comment?.summary ?? symbol.signatures?.[0]?.comment?.summary;
     const summary = renderCommentInlineMd(rawNodes);
     const descriptionText = plainSummary(rawCommentText(rawNodes));
@@ -107,9 +112,11 @@ export function renderSymbolMdx(args: SymbolRenderArgs): string {
         '',
     ];
 
+    const ctx: ResolveContext = { tab: 'reference', pkg: workspaceSlug, subpath };
+
     const body =
         kind === 'interface' || kind === 'type' || kind === 'enum'
-            ? renderShapeSections(symbol, kind, workspaceSlug)
+            ? renderShapeSections(symbol, kind, workspaceSlug, symbolIndex, ctx)
             : [
                   '## Signature',
                   '',
@@ -152,7 +159,13 @@ function renderRelated(current: string, siblings: string[]): string {
  * @param workspaceSlug - Workspace folder slug used in the codeblock title.
  * @returns Array of body-section strings to be `.filter(Boolean).join('\n')`d.
  */
-function renderShapeSections(symbol: TypeDocSymbol, kind: SymbolKindLabel, workspaceSlug: string): string[] {
+function renderShapeSections(
+    symbol: TypeDocSymbol,
+    kind: SymbolKindLabel,
+    workspaceSlug: string,
+    index: SymbolIndex,
+    ctx: ResolveContext,
+): string[] {
     if (kind === 'enum') {
         return ['## Members', '', renderEnumMembersTable(symbol)];
     }
@@ -161,7 +174,7 @@ function renderShapeSections(symbol: TypeDocSymbol, kind: SymbolKindLabel, works
     const sections: string[] = [];
 
     if (props.length > 0) {
-        sections.push('## Properties', '', renderPropertiesTable(props));
+        sections.push('## Properties', '', renderPropertiesTable(props, index, ctx));
     } else {
         const sig = renderTypeAliasDefinition(symbol, workspaceSlug);
         if (sig) sections.push('## Definition', '', sig);
@@ -189,12 +202,127 @@ function collectProperties(
 }
 
 /**
- * Render a properties table for an interface or object-shaped type alias.
- * Each row carries the property name (optional `?` suffix when applicable),
- * its TypeDoc-resolved type expression, and a JSDoc summary.
+ * Walk a TypeDoc type node into an array of `TypeToken`s. References are
+ * resolved against the symbol index at gen time so the component can render
+ * links without a remark plugin.
+ *
+ * @param type - The TypeDoc type node, or `undefined`.
+ * @param index - Pre-built symbol index for reference resolution.
+ * @param ctx - Resolution context (tab, pkg, subpath).
+ * @returns Flat array of typed tokens representing the type expression.
+ */
+export function typeToTokens(type: TypeDocType | undefined, index: SymbolIndex, ctx: ResolveContext): TypeToken[] {
+    if (!type) return [{ t: 'kw', text: 'unknown' }];
+    const kw = (text: string): TypeToken => ({ t: 'kw', text });
+    const op = (text: string): TypeToken => ({ t: 'op', text });
+    const lit = (text: string): TypeToken => ({ t: 'lit', text });
+
+    switch (type.type) {
+        case 'intrinsic':
+            return [kw(type.name ?? 'unknown')];
+        case 'literal': {
+            if (type.value === null) return [lit('null')];
+            if (typeof type.value === 'string') return [lit(`'${type.value}'`)];
+            return [lit(String(type.value))];
+        }
+        case 'reference': {
+            const name = type.name ?? 'unknown';
+            const resolution = resolveLink(index, name, ctx);
+            const base: TypeToken = resolution ? { t: 'ref', text: name, href: resolution.url } : kw(name);
+            const args = type.typeArguments;
+            if (!args || args.length === 0) return [base];
+            const tokens: TypeToken[] = [base, op('<')];
+            for (let i = 0; i < args.length; i++) {
+                if (i > 0) tokens.push(op(', '));
+                const arg = args[i];
+                if (arg) tokens.push(...typeToTokens(arg, index, ctx));
+            }
+            tokens.push(op('>'));
+            return tokens;
+        }
+        case 'array': {
+            const inner = typeToTokens(type.elementType, index, ctx);
+            // Wrap union/intersection element types in parens so `(A | B)[]` is unambiguous.
+            const needsParens = type.elementType?.type === 'union' || type.elementType?.type === 'intersection';
+            if (needsParens) return [op('('), ...inner, op(')[]')];
+            return [...inner, op('[]')];
+        }
+        case 'union': {
+            const members = type.types ?? [];
+            const tokens: TypeToken[] = [];
+            for (let i = 0; i < members.length; i++) {
+                if (i > 0) tokens.push(op(' | '));
+                const m = members[i];
+                if (m) tokens.push(...typeToTokens(m, index, ctx));
+            }
+            return tokens;
+        }
+        case 'intersection': {
+            const members = type.types ?? [];
+            const tokens: TypeToken[] = [];
+            for (let i = 0; i < members.length; i++) {
+                if (i > 0) tokens.push(op(' & '));
+                const m = members[i];
+                if (m) tokens.push(...typeToTokens(m, index, ctx));
+            }
+            return tokens;
+        }
+        case 'reflection': {
+            const decl = type.declaration;
+            const sig = decl?.signatures?.[0];
+            if (sig) {
+                const params = sig.parameters ?? [];
+                const tokens: TypeToken[] = [op('(')];
+                for (let i = 0; i < params.length; i++) {
+                    if (i > 0) tokens.push(op(', '));
+                    const p = params[i];
+                    if (p) {
+                        tokens.push(kw(p.name), op(': '), ...typeToTokens(p.type, index, ctx));
+                    }
+                }
+                tokens.push(op(') => '), ...typeToTokens(sig.type, index, ctx));
+                return tokens;
+            }
+            if (decl?.children?.length) {
+                const children = decl.children;
+                const tokens: TypeToken[] = [op('{ ')];
+                for (let i = 0; i < children.length; i++) {
+                    if (i > 0) tokens.push(op('; '));
+                    const c = children[i];
+                    if (c) {
+                        tokens.push(kw(c.name), op(': '), ...typeToTokens(c.type, index, ctx));
+                    }
+                }
+                tokens.push(op(' }'));
+                return tokens;
+            }
+            return [op('{}')];
+        }
+        case 'tuple': {
+            const elements = type.elements ?? [];
+            const tokens: TypeToken[] = [op('[')];
+            for (let i = 0; i < elements.length; i++) {
+                if (i > 0) tokens.push(op(', '));
+                const el = elements[i];
+                if (el) tokens.push(...typeToTokens(el, index, ctx));
+            }
+            tokens.push(op(']'));
+            return tokens;
+        }
+        default:
+            return [kw(typeToString(type))];
+    }
+}
+
+/**
+ * Render a `<PropsTable>` MDX component call for an interface or object-shaped
+ * type alias. Each row carries the property name, optional flag, type tokens
+ * (with pre-resolved reference links), and a JSDoc summary.
  *
  * @param props - The collected property descriptors.
- * @returns A Markdown table string with trailing newline.
+ * @param index - Symbol index for resolving type references to doc URLs.
+ * @param ctx - Resolution context for the current symbol.
+ * @returns MDX JSX expression string with trailing newline.
  */
 function renderPropertiesTable(
     props: {
@@ -203,13 +331,16 @@ function renderPropertiesTable(
         comment?: { summary?: TypeDocCommentNode[] };
         flags?: { isOptional?: boolean };
     }[],
+    index: SymbolIndex,
+    ctx: ResolveContext,
 ): string {
-    const rows = props.map((p) => {
-        const optMark = p.flags?.isOptional ? '?' : '';
-        const desc = plainText(p.comment?.summary ?? []);
-        return `| \`${p.name}${optMark}\` | ${typeToInlineMd(p.type)} | ${desc} |`;
-    });
-    return ['| Name | Type | Description |', '|---|---|---|', ...rows, ''].join('\n');
+    const rows: PropRow[] = props.map((p) => ({
+        name: p.name,
+        opt: p.flags?.isOptional ?? false,
+        tokens: typeToTokens(p.type, index, ctx),
+        desc: plainText(p.comment?.summary ?? []),
+    }));
+    return `<PropsTable rows={${JSON.stringify(rows)}} />\n`;
 }
 
 /**

@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import type { SymbolIndex } from '../lib/jsdoc-link-resolver';
 import { renderGalleryMdx } from './lib/render-gallery-mdx';
 import { type OverviewRow, renderSubpathOverviewMdx } from './lib/render-subpath-mdx';
 import { renderSymbolMdx } from './lib/render-symbol-mdx';
@@ -28,6 +29,11 @@ export async function main({ quiet = false }: { quiet?: boolean } = {}): Promise
     skipped: number;
 }> {
     fs.mkdirSync(REFERENCE_OUT, { recursive: true });
+
+    const symbolIndexPath = path.join(DOCS_APP, 'lib/symbol-index.generated.json');
+    const symbolIndex: SymbolIndex = fs.existsSync(symbolIndexPath)
+        ? (JSON.parse(fs.readFileSync(symbolIndexPath, 'utf8')) as SymbolIndex)
+        : {};
 
     // Idempotent writes: only touch files whose content actually changed. The
     // dev server's MDX watcher re-emits its .source/ artifacts on every mtime
@@ -111,6 +117,7 @@ export async function main({ quiet = false }: { quiet?: boolean } = {}): Promise
                             symbol,
                             kind: row.kind,
                             siblings: ownPageSiblings,
+                            symbolIndex,
                         });
                         const outFile = path.join(
                             REFERENCE_OUT,

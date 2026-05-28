@@ -19,6 +19,7 @@ import { EmptyJSDoc } from './components/reference/empty-jsdoc';
 import { EmptySubpath } from './components/reference/empty-subpath';
 import { IconCard, IconGallery } from './components/reference/icon-gallery';
 import { KindLine } from './components/reference/kind-line';
+import { PropsTable } from './components/reference/props-table';
 import { ReferenceBackLink } from './components/reference/reference-back-link';
 import { SourceFooter } from './components/reference/source-footer';
 import { SymbolTitle } from './components/reference/symbol-title';
@@ -39,6 +40,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     return {
         ...defaultMdxComponents,
         ...TabsComponents,
+        PropsTable,
         KindLine,
         ReferenceBackLink,
         IconCard,
