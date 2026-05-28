@@ -28,7 +28,7 @@ export type CartSidebarProps = {
  * @param className - Additional class name applied to the outer `aside` element.
  * @param children - Optional content rendered inside the cart summary.
  * @param paymentMethods - Optional payment method badges rendered below the checkout button.
- * @returns The cart summary aside element.
+ * @returns The cart summary aside element, or `null` once the cart has settled empty.
  */
 export const CartSidebar = ({ i18n, locale, className, children, paymentMethods, ...props }: CartSidebarProps) => {
     const { shop } = useShop();
@@ -38,6 +38,14 @@ export const CartSidebar = ({ i18n, locale, className, children, paymentMethods,
     const total = cart?.cost.total ?? null;
 
     const { queueEvent, postEvent } = useTrackable();
+
+    // Once the cart has settled empty, drop the summary entirely so the
+    // empty-state placeholder in `CartLines` isn't paired with a dead-end
+    // disabled-checkout panel. While the cart is still loading we keep it
+    // mounted so its own loading treatment shows.
+    if (cartReady && lines.length <= 0) {
+        return null;
+    }
 
     return (
         <aside {...props} className={cn(className, 'block')}>

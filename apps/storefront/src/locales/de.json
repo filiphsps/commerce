@@ -21,6 +21,8 @@
         "shipping": "Versand",
         "subtotal": "Zwischensumme",
         "view-cart": "Warenkorb anzeigen",
+        "continue-shopping": "Weiter einkaufen",
+        "empty": "Ihr Warenkorb ist leer.",
         "remove-n-from-cart": "{0} aus dem Warenkorb entfernen",
         "clear-cart": "Warenkorb leeren",
         "n-items": "{0} Artikel",

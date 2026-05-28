@@ -17,6 +17,8 @@
         "shipping": "Frakt",
         "subtotal": "Subtotal",
         "view-cart": "Visa varukorgen",
+        "continue-shopping": "Fortsätt handla",
+        "empty": "Det finns inga varor i din varukorg.",
         "n-left": "Endast {0} kvar",
         "back-order": "Tillgängligt på restorder"
     },

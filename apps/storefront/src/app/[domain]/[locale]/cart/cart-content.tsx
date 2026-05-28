@@ -1,7 +1,5 @@
 import 'server-only';
 
-import type { OnlineShop } from '@nordcom/commerce-db';
-
 import { type ReactNode, Suspense } from 'react';
 import { CartLines } from '@/components/cart/cart-lines';
 import PageContent from '@/components/page-content';
@@ -12,7 +10,6 @@ import { CartSidebar } from './cart-sidebar';
 
 /** Props for the `CartContent` server component. */
 export type CartContentProps = {
-    shop: OnlineShop;
     locale: Locale;
     i18n: LocaleDictionary;
     header: ReactNode;

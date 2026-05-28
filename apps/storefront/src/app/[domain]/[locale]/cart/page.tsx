@@ -16,6 +16,35 @@ import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import CartContent from './cart-content';
 
 export type CartPageParams = Promise<{ domain: string; locale: string }>;
+
+/**
+ * Resolves the shop record for a cart-route domain, cached in isolation.
+ *
+ * The shop record is keyed only by domain and changes rarely, so it is the one
+ * genuinely static fragment of the cart route worth persisting at `max`. The
+ * per-locale dictionary is intentionally fetched outside this boundary so cart
+ * copy is never frozen at `max` alongside the shop record.
+ *
+ * @param domain - The tenant hostname to resolve.
+ * @returns The matching shop record.
+ * @throws Triggers `notFound()` when no shop matches the domain.
+ */
+async function getCartShop(domain: string): Promise<OnlineShop> {
+    'use cache';
+    cacheLife('max');
+
+    try {
+        return await Shop.findByDomain(domain);
+    } catch (error: unknown) {
+        if (Error.isNotFound(error) || error instanceof UnknownShopDomainError) {
+            notFound();
+        }
+
+        unstable_rethrow(error);
+        throw error;
+    }
+}
+
 export async function generateMetadata({ params }: { params: CartPageParams }): Promise<Metadata> {
     'use cache';
     cacheLife('max');
@@ -25,17 +54,7 @@ export async function generateMetadata({ params }: { params: CartPageParams }): 
         notFound();
     }
 
-    let shop: OnlineShop;
-    try {
-        shop = await Shop.findByDomain(domain);
-    } catch (error: unknown) {
-        if (Error.isNotFound(error) || error instanceof UnknownShopDomainError) {
-            notFound();
-        }
-
-        unstable_rethrow(error);
-        throw error;
-    }
+    const shop = await getCartShop(domain);
 
     const locale = Locale.from(localeData);
     const api = await ShopifyApolloApiClient({ shop, locale });
@@ -61,28 +80,17 @@ export async function generateMetadata({ params }: { params: CartPageParams }): 
 }
 
 export default async function CartPage({ params }: { params: CartPageParams }) {
-    'use cache';
-    cacheLife('max');
-
     const { domain, locale: localeData } = await params;
     if (!domain || domain === NOT_FOUND_HANDLE) {
         notFound();
     }
 
     const locale = Locale.from(localeData);
+    const shop = await getCartShop(domain);
 
-    let shop: OnlineShop;
-    try {
-        shop = await Shop.findByDomain(domain);
-    } catch (error: unknown) {
-        if (Error.isNotFound(error) || error instanceof UnknownShopDomainError) {
-            notFound();
-        }
-
-        unstable_rethrow(error);
-        throw error;
-    }
-
+    // Fetched outside any `'use cache'` boundary so updated cart copy is picked
+    // up on the next request instead of being frozen for the lifetime of a
+    // `max`-cached page entry.
     const i18n = await getDictionary(locale);
     const { t } = getTranslations('common', i18n);
 
@@ -96,7 +104,6 @@ export default async function CartPage({ params }: { params: CartPageParams }) {
 
             <Suspense>
                 <CartContent
-                    shop={shop}
                     locale={locale}
                     header={<Heading title={capitalize(t('cart'))} />}
                     i18n={i18n}
