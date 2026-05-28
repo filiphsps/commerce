@@ -1,0 +1,57 @@
+---
+title: Overview
+sidebar_position: 1
+---
+
+Framework-agnostic cart kernel with a typed mutation pipeline, optimistic state model,
+and an adapter contract that isolates Shopify (or any other provider) behind a clean
+boundary.
+
+## Architecture
+
+`@nordcom/cart-core` owns everything that is not framework- or provider-specific:
+
+- **`CartKernel`** — the central orchestrator. Accepts a `CartAdapter` at creation time
+  and exposes `create`, `get`, and `mutate`. Every mutation runs through the middleware
+  chain before the adapter touches the network.
+- **`CartAdapter`** — the pluggable provider boundary. Shopify ships as
+  `@nordcom/cart-shopify`. Implement the interface to target any provider.
+- **Middleware** — composable wrappers applied to every `mutate` call:
+  `analyticsMiddleware`, `idempotencyMiddleware`, `loggerMiddleware`,
+  `retryMiddleware`, `tracingMiddleware`.
+- **`CartEventBus`** — fire-and-forget in-process pub/sub. Emits `cart.created`,
+  `cart.updated`, `cart.line.added`, etc. for UI and analytics consumers.
+- **`money`** — pure arithmetic helpers for `Money` / `MoneyCents` that stay in integer
+  cents to avoid floating-point rounding.
+
+## Mutation pipeline
+
+Every call to `kernel.mutate(ctx, mutation)` flows:
+
+```
+kernel.mutate
+  → idempotency check (skip duplicate if key seen)
+  → analytics middleware (track start/end)
+  → retry middleware (back off on CartProviderError)
+  → tracing middleware
+  → adapter.{addLines|updateLines|…}
+  → event bus emit
+```
+
+## Capabilities
+
+The adapter declares its capabilities at creation time via `CartCapabilities`.
+The kernel gates mutations behind capability checks and throws
+`CartCapabilityUnsupportedError` for unsupported features, so UI can
+branch on capabilities before letting users trigger an unsupported action.
+
+## Sister packages
+
+- [`@nordcom/cart-shopify`](/docs/cart/shopify/overview/) — Shopify Storefront API adapter
+- [`@nordcom/cart-next`](/docs/cart/next/overview/) — Next.js server actions + cookie storage
+- [`@nordcom/cart-react`](/docs/cart/react/overview/) — React provider and hooks
+
+## In this section
+
+- **Overview** — this page
+- **API** — auto-generated TypeDoc reference for the public surface

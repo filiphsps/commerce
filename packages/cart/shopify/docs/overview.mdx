@@ -1,0 +1,71 @@
+---
+title: Overview
+sidebar_position: 1
+---
+
+Shopify Storefront API adapter for the cart system. Implements the `CartAdapter`
+contract from `@nordcom/cart-core` and handles all GraphQL mutations against the
+Storefront API, including transport, error classification, and response normalization.
+
+## Architecture
+
+`@nordcom/cart-shopify` owns everything specific to Shopify:
+
+- **`createShopifyCartAdapter`** — factory that returns a fully wired `CartAdapter`.
+  Accepts a `ShopifyTransport` and delegates each kernel mutation type
+  (`addLines`, `updateLines`, `removeLines`, `applyDiscount`, etc.) to the matching
+  Storefront API GraphQL mutation.
+- **`ShopifyTransport`** — minimal HTTP interface (`query<T>(document, variables): Promise<T>`)
+  that the adapter calls for every GraphQL request. Hosts supply the implementation
+  (Apollo, `fetch`, or any GraphQL client) so the cart layer never depends on a
+  specific client.
+- **`CartCapabilities`** — the Shopify adapter declares all capabilities as enabled:
+  `giftCards`, `multipleDiscountCodes`, `buyerIdentity`, `notes`, `cartAttributes`,
+  `lineAttributes`, plus the `updateBuyerCountry` custom mutation.
+- **Error classification** — `wrapTransportError` converts raw network or GraphQL
+  errors into typed cart errors (`CartUserError`, `CartNotFoundError`,
+  `CartProviderError`) before they reach the kernel. Matching is by `error.name`
+  rather than `instanceof` to survive SSR → client prototype boundaries.
+- **`normalize`** — maps raw Storefront API cart payloads onto the canonical
+  `Cart` type used everywhere in the monorepo.
+
+## Capabilities
+
+```ts
+const DEFAULT_CAPABILITIES: CartCapabilities = {
+    giftCards: true,
+    multipleDiscountCodes: true,
+    buyerIdentity: true,
+    notes: true,
+    cartAttributes: true,
+    lineAttributes: true,
+    customMutations: ['updateBuyerCountry'],
+};
+```
+
+The kernel reads these at creation time and gates mutations accordingly. UI can
+call `useCartCapabilities()` to branch before surfacing unsupported actions.
+
+## Usage
+
+```ts
+import { createShopifyCartAdapter } from '@nordcom/cart-shopify';
+import { CartKernel } from '@nordcom/cart-core';
+
+const adapter = createShopifyCartAdapter({
+    transport: myShopifyGraphqlClient,
+});
+
+const kernel = new CartKernel({ adapter });
+```
+
+## Sister packages
+
+- [`@nordcom/cart-core`](/docs/cart/core/overview/) — kernel, adapter contract, middleware
+- [`@nordcom/cart-next`](/docs/cart/next/overview/) — Next.js server actions + cookie storage
+- [`@nordcom/cart-react`](/docs/cart/react/overview/) — React provider and hooks
+
+## In this section
+
+- **Overview** — this page
+- **API** — auto-generated TypeDoc reference for the public surface

@@ -1,0 +1,53 @@
+---
+title: Overview
+sidebar_position: 1
+---
+
+Shared utilities for hostname tokenization, build environment resolution, and other
+cross-cutting helpers used throughout the monorepo.
+
+## Architecture
+
+`@nordcom/commerce-utils` is a zero-dependency helper library:
+
+- **Hostname utilities** (`hostname.ts`) — parse and tokenize `Host` header values
+  into typed parts for the multi-tenant middleware. Branded string types
+  (`Hostname`, `ShopHandle`, `AppName`) prevent parts from being silently
+  interchanged at the type level while staying plain strings at runtime.
+- **`resolveBuildEnv`** — reads the `NODE_ENV` / `VERCEL_ENV` / `CF_PAGES`
+  environment variables and returns a normalized `BuildEnv` value
+  (`'development' | 'preview' | 'production'`) so downstream code has a
+  single source of truth for build-time branching.
+
+## Hostname model
+
+Multi-tenancy is hostname-driven: dev hosts follow `<shop>.<app>.<tld>` (e.g.
+`acme.storefront.localhost`); prod hosts are bare shop domains (`acme.myshopify.com`
+or a custom domain). `parseHost` tokenizes either form into a `ParsedHost` record:
+
+```ts
+import { parseHost } from '@nordcom/commerce-utils/hostname';
+
+const parsed = parseHost('acme.storefront.localhost:3000');
+// parsed.shop   → 'acme' (ShopHandle)
+// parsed.app    → 'storefront' (AppName)
+// parsed.tld    → 'localhost'
+// parsed.isDev  → true
+```
+
+`toShopHandle` and `toHostname` are cast helpers that apply the brand without
+runtime overhead — use them at trust boundaries (middleware, test factories) where
+you know the string is already normalized.
+
+## Build environment
+
+```ts
+import { resolveBuildEnv } from '@nordcom/commerce-utils/env';
+
+const env = resolveBuildEnv(); // 'development' | 'preview' | 'production'
+```
+
+## In this section
+
+- **Overview** — this page
+- **API** — auto-generated TypeDoc reference for the public surface

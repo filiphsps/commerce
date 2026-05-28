@@ -1,0 +1,81 @@
+---
+title: Overview
+sidebar_position: 1
+---
+
+React integration layer for the cart system — a context provider that manages the
+optimistic mutation queue, slice contexts for granular re-render control, and hooks
+that expose the cart surface to client components.
+
+## Architecture
+
+`@nordcom/cart-react` owns the client-side state model:
+
+- **`CartProvider`** — the root provider. Accepts a `KernelSnapshot` (initial cart
+  state from the server) and a `dispatch` function (a Next.js server action or any
+  `(mutation) => Promise<CartActionResult>` callable). Holds the optimistic queue
+  in a `useReducer` and fans state out across all slice contexts.
+- **Slice contexts** — `CartCountContext`, `CartLinesContext`, `CartCostContext`,
+  `CartMetaContext`, `CartStatusContext`, `CartPendingContext`. Each context carries
+  exactly one slice, so components that only care about the count do not re-render
+  on cost changes.
+- **Hooks** — `useCartCount`, `useCartLines`, `useCartCost`, `useCartMeta`,
+  `useCartStatus`, `useCartPending`, `useCartActions`, `useCartDispatch`. Thin
+  wrappers around `useContext` with narrow return types matching their slice.
+- **`CartPredictor` / `LinePredictor`** — optional callback pair that the host
+  supplies to project optimistic cost and line state before the server round-trip
+  returns. Keeps totals non-stale during rapid mutations.
+- **`ClientAuthBridge`** — client-side counterpart to `AuthBridge`; resolves buyer
+  identity to merge on `update-buyer-identity` mutations dispatched from the client.
+
+## Optimistic queue
+
+Every call to `dispatch(mutation)` follows this path:
+
+```
+dispatch(mutation)
+  → idempotency key generated (crypto.randomUUID)
+  → optimistic prediction applied via CartPredictor
+  → PendingMutation appended to queue → UI re-renders immediately
+  → server action called in background (useTransition)
+  → confirmed result merges into projection → pending entry removed
+```
+
+The `stale` flag on `CartCostValue` is `true` while at least one predicted mutation
+has not been confirmed, letting UI indicate that totals are estimates.
+
+## Usage
+
+```tsx
+import { CartProvider } from '@nordcom/cart-react';
+
+export default function Layout({ snapshot, dispatch, children }) {
+    return (
+        <CartProvider snapshot={snapshot} dispatch={dispatch}>
+            {children}
+        </CartProvider>
+    );
+}
+```
+
+```tsx
+import { useCartCount, useCartActions } from '@nordcom/cart-react';
+
+function AddToCartButton({ variantId }) {
+    const count = useCartCount();
+    const { addLines } = useCartActions();
+
+    return <button onClick={() => addLines([{ merchandiseId: variantId, quantity: 1 }])}>{count}</button>;
+}
+```
+
+## Sister packages
+
+- [`@nordcom/cart-core`](/docs/cart/core/overview/) — kernel, adapter contract, middleware
+- [`@nordcom/cart-shopify`](/docs/cart/shopify/overview/) — Shopify Storefront API adapter
+- [`@nordcom/cart-next`](/docs/cart/next/overview/) — Next.js server actions + cookie storage
+
+## In this section
+
+- **Overview** — this page
+- **API** — auto-generated TypeDoc reference for the public surface

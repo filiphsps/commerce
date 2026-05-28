@@ -1,0 +1,64 @@
+---
+title: Overview
+sidebar_position: 1
+---
+
+Next.js integration layer for the cart system — server actions, HTTP-only cookie storage,
+and typed action creators that wire the `CartKernel` into React Server Components and
+form-based submissions.
+
+## Architecture
+
+`@nordcom/cart-next` owns everything specific to the Next.js App Router runtime:
+
+- **`httpOnlyCookieStorage`** — `CartIdStorage` implementation backed by the Next.js
+  `cookies()` API. Stores the Shopify cart token in an HTTP-only cookie so the ID
+  is never exposed to client-side JavaScript.
+- **`createTypedCartActions`** — wraps a `CartKernel` in a typed action surface: each
+  method (`addLines`, `updateLines`, `removeLines`, `applyDiscount`, …) is a Next.js
+  server action with an inferred return type. Also handles `update-buyer-identity`
+  via the optional `AuthBridge`.
+- **`createFormCartActions`** — lighter `<form>` variant for environments where
+  the full typed surface is not needed. Methods accept `FormData` directly and call
+  `kernel.mutate` with the decoded payload.
+- **`AuthBridge`** — minimal interface (`resolve(): Promise<BuyerIdentity | null>`)
+  that hosts implement to attach the active buyer to every mutation without coupling
+  the cart layer to a specific auth library (NextAuth, custom JWT, Shopify tokens).
+
+## Server action flow
+
+```
+<form action={actions.addLines}>
+  → server action validates FormData
+  → resolveContext() builds AdapterCtx (shop, locale, idempotencyKey)
+  → authBridge?.resolve() merges buyer identity
+  → kernel.mutate(ctx, mutation)
+  → revalidatePath / response returned to client
+```
+
+## Cookie storage
+
+`httpOnlyCookieStorage` reads and writes via Next.js `cookies()`:
+
+```ts
+import { httpOnlyCookieStorage } from '@nordcom/cart-next';
+
+const storage = httpOnlyCookieStorage({
+    cookieName: 'cart_id',   // optional, defaults to 'cart'
+    maxAge: 60 * 60 * 24 * 30,
+});
+```
+
+The storage object is passed to `createTypedCartActions` so the kernel can look up
+and persist the cart ID across requests without reading `document.cookie`.
+
+## Sister packages
+
+- [`@nordcom/cart-core`](/docs/cart/core/overview/) — kernel, adapter contract, middleware
+- [`@nordcom/cart-shopify`](/docs/cart/shopify/overview/) — Shopify Storefront API adapter
+- [`@nordcom/cart-react`](/docs/cart/react/overview/) — React provider and hooks
+
+## In this section
+
+- **Overview** — this page
+- **API** — auto-generated TypeDoc reference for the public surface
