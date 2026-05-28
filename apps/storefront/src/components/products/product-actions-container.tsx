@@ -2,8 +2,9 @@
 
 import { useProduct } from '@shopify/hydrogen-react';
 import type { HTMLProps } from 'react';
-import { Suspense, useMemo } from 'react';
+import { Suspense, useEffect, useMemo } from 'react';
 import type { Product, ProductVariant } from '@/api/product';
+import { useMaybeProductOptions } from '@/components/product-options/context';
 import { resolvedToLegacyOptions, resolveOptions } from '@/components/product-options/resolver';
 import { ProductOptionsSelector, SizeChipRenderer } from '@/components/product-options-selector';
 import AddToCart from '@/components/products/add-to-cart';
@@ -39,11 +40,14 @@ export const ProductActionsContainer = ({ className, i18n, ...props }: ProductAc
         selectedVariant: ProductVariant | undefined;
     };
 
-    useVariantUrlSync(
-        Object.entries(selectedOptions ?? {})
-            .filter((entry): entry is [string, string] => entry[1] !== undefined)
-            .map(([name, value]) => ({ name, value })),
+    const urlSyncOptions = useMemo(
+        () =>
+            Object.entries(selectedOptions ?? {})
+                .filter((entry): entry is [string, string] => entry[1] !== undefined)
+                .map(([name, value]) => ({ name, value })),
+        [selectedOptions],
     );
+    useVariantUrlSync(urlSyncOptions);
 
     const resolvedSelectedOptions = useMemo(
         () =>
@@ -59,6 +63,13 @@ export const ProductActionsContainer = ({ className, i18n, ...props }: ProductAc
         () => (product ? resolvedToLegacyOptions(resolveOptions(product, resolvedSelectedOptions)) : []),
         [product, resolvedSelectedOptions],
     );
+
+    // Keep ProductOptionsContext (read by VariantPriceClient, VariantStockUrgencyClient) in sync
+    // with Hydrogen's selected options so price and stock urgency update when the variant changes.
+    const productOptionsCtx = useMaybeProductOptions();
+    useEffect(() => {
+        productOptionsCtx?.selectVariant(resolvedSelectedOptions);
+    }, [productOptionsCtx?.selectVariant, resolvedSelectedOptions]);
 
     if (!product || !selectedVariant) {
         return null;
