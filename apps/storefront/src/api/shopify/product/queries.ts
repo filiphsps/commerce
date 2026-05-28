@@ -298,3 +298,108 @@ export const PRODUCT_FRAGMENT = /* GraphQL */ `
         type
     }
 `;
+
+// Lean projection for product *card* surfaces. The gql.tada side has a related
+// lean fragment (`PRODUCT_FRAGMENT_MINIMAL` in ../product-fragments.ts) that
+// backs the collection/search/recommendation cards; that one is a SUPERSET of
+// this twin (it still carries selected/adjacent-variant projections + price
+// ranges its resolver-based card never reads — leaning it out is a follow-up).
+// This Apollo-string twin exists because `ProductsPaginationApi` (the /products
+// grid + the products sitemap) builds its query with Apollo `gql` string
+// interpolation, which cannot embed a gql.tada document. It drops everything the
+// card never reads — prose (description/seo), price ranges (the card prices off
+// the seed variant), the full image gallery, adjacent/selected-variant
+// projections, per-variant metafields (quantityBreaks), and all product
+// metafields.
+//
+// `variants(first: 250)` matches the PDP fragment's cap: the card picker
+// resolves an option combo by scanning the full variant list, so a card must be
+// able to resolve any combo the PDP can — capping below 250 would re-introduce
+// the partial-blanking it fixes. The node is slim (no metafields/gallery), so
+// the cost stays low and most products have few variants. `updatedAt` is
+// retained solely because the products sitemap, which shares
+// `ProductsPaginationApi`, reads it for `lastmod`.
+export const PRODUCT_CARD_FRAGMENT = /* GraphQL */ `
+    id
+    handle
+    updatedAt
+    availableForSale
+    isGiftCard
+    requiresSellingPlan
+    title
+    vendor
+    productType
+    tags
+    trackingParameters
+    options(first: 3) {
+        id
+        name
+        values
+        optionValues {
+            id
+            name
+            swatch {
+                color
+                image {
+                    previewImage {
+                        url(transform: { preferredContentType: WEBP })
+                        altText
+                        width
+                        height
+                    }
+                }
+            }
+        }
+    }
+    variants(first: 250) {
+        edges {
+            node {
+                id
+                title
+                sku
+                price {
+                    amount
+                    currencyCode
+                }
+                compareAtPrice {
+                    amount
+                    currencyCode
+                }
+                availableForSale
+                quantityAvailable
+                image {
+                    id
+                    altText
+                    url(transform: { preferredContentType: WEBP })
+                    height
+                    width
+                    thumbhash
+                }
+                selectedOptions {
+                    name
+                    value
+                }
+            }
+        }
+    }
+    featuredImage {
+        id
+        altText
+        url(transform: { preferredContentType: WEBP })
+        height
+        width
+        thumbhash
+    }
+    images(first: 2) {
+        edges {
+            node {
+                id
+                altText
+                url(transform: { preferredContentType: WEBP })
+                height
+                width
+                thumbhash
+            }
+        }
+    }
+`;

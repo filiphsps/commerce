@@ -109,12 +109,21 @@ export const PRODUCT_FRAGMENT_MINIMAL = graphql(
                 value
             }
         }
-        variants(first: 3) {
+        # The card pickers (inline/float/sheet) resolve a chosen option combo by
+        # scanning this variant list — resolver.findVariant matches a full
+        # selection and deriveAvailability cross-filters it. Every purchasable
+        # variant must therefore be present: \`first: 3\` truncated the set and
+        # left Add-to-bag disabled (and extra option values struck through) for
+        # any combo past the third variant. Matched to the PDP fragment's
+        # \`first: 250\` so a card never fails to resolve a combo the PDP can; the
+        # cost stays low because this variant node is slim (no per-variant
+        # metafields, no gallery) and most products have few variants.
+        variants(first: 250) {
             edges {
                 node {
                     id
                     title
-                    barcode
+                    sku
                     price {
                         amount
                         currencyCode
@@ -124,11 +133,7 @@ export const PRODUCT_FRAGMENT_MINIMAL = graphql(
                         currencyCode
                     }
                     availableForSale
-                    currentlyNotInStock
                     quantityAvailable
-                    requiresShipping
-                    weight
-                    weightUnit
                     image {
                         id
                         altText
