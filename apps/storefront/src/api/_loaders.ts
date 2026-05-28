@@ -1,6 +1,5 @@
 import 'server-only';
 
-import { Shop as RawShop } from '@nordcom/commerce-db';
 import { cacheTag } from 'next/cache';
 import { cache } from 'react';
 
@@ -31,10 +30,11 @@ const safeCacheTag = (...tags: string[]) => {
     }
 };
 
-export const Shop = {
-    findByDomain: cache(RawShop.findByDomain.bind(RawShop)),
-    findAll: cache(RawShop.findAll.bind(RawShop)),
-};
+// The render-cached, primitive-keyed tenant loader lives in its own leaf module
+// so foundational callers (api/shopify.ts) can reuse the exact same `cache()`
+// instance — and therefore the same per-render dedup — without importing the
+// rest of this module's entity/CMS graph.
+export { Shop } from './_shop-loader';
 
 /**
  * React-cached variant of `CountriesApi`; safe to call multiple times per render without redundant fetches.

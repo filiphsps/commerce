@@ -6,6 +6,15 @@ import type { Locale } from '@/utils/locale';
 
 export type OmitTypeName<T> = Omit<T, '__typename'>;
 
+/**
+ * Default Data Cache lifetime, in seconds, for cacheable Storefront reads (8h).
+ * Mirrors the HttpLink-level `fetchOptions.next.revalidate` in `api/client.ts`:
+ * because Apollo shallow-merges the per-query `context.fetchOptions` over the
+ * link config, any `next` set per query REPLACES the link's wholesale, so the
+ * floor has to be re-supplied here too or it silently disappears.
+ */
+const STOREFRONT_REVALIDATE_SECONDS = 28_800;
+
 export type ApiOptions = { api: AbstractApi };
 
 type QueryVariables = Record<string, string | number | boolean | object | Array<string | number | object> | null>;
@@ -111,16 +120,37 @@ export const ApiBuilder: AbstractShopifyApolloApiBuilder<TypedDocumentNode<unkno
         const baseTags = [`shopify`, `shopify.${shop.id}`, `shopify.${shop.id}.${encodeSegment(shop.domain)}`];
         const allTags = [...baseTags, ...tags];
 
+        // Default to a CACHED policy. The previous `cache: fetchPolicy ?? 'no-store'`
+        // forced `cache: 'no-store'` on every query that didn't opt out, which
+        // overrides the HttpLink revalidate floor (api/client.ts) and made every
+        // Storefront read uncached at the fetch layer — route handlers (sitemaps,
+        // robots, icons) and any non-`'use cache'` path hit Shopify on every request.
+        //
+        // Correctness is preserved by tag-based webhook invalidation
+        // (revalidateTag / evictApolloClient): cached reads carry `allTags`, so a
+        // product/collection/page webhook still evicts them on demand.
+        //
+        // Omitting `cache` lets `next.revalidate` + `next.tags` govern. Genuinely
+        // dynamic reads (cart, customer, checkout) pass `fetchPolicy: 'no-store'`
+        // explicitly; Next.js forbids pairing `cache: 'no-store'` with
+        // `next.revalidate`, so the revalidate floor is dropped on that path.
+        const dynamic = fetchPolicy === 'no-store';
         const { data, error } = await api.query({
             query,
-            //fetchPolicy,
+            // Dynamic (per-buyer) reads must bypass Apollo's `InMemoryCache` too,
+            // not only Next's Data Cache. The Apollo client is pooled across
+            // requests (api/_apollo-pool.ts) and defaults to `cache-first`
+            // (api/client.ts), so a `getCart(cartId)` could otherwise be served
+            // from a stale normalized entry with no network round-trip — the
+            // `cache: 'no-store'` below only governs the Next layer. `no-cache`
+            // fetches fresh and never reads or writes the normalized cache.
+            ...(dynamic ? { fetchPolicy: 'no-cache' as const } : {}),
             context: {
                 fetchOptions: {
-                    cache: fetchPolicy ?? 'no-store',
-                    next: {
-                        revalidate: revalidate ?? undefined,
-                        tags: allTags,
-                    },
+                    ...(fetchPolicy ? { cache: fetchPolicy } : {}),
+                    next: dynamic
+                        ? { tags: allTags }
+                        : { revalidate: revalidate ?? STOREFRONT_REVALIDATE_SECONDS, tags: allTags },
                 },
             },
             variables: {

@@ -8,10 +8,10 @@ import { cacheLife } from 'next/cache';
 import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { Suspense } from 'react';
-import { LocalesApi, ProductApi, ProductMetadataApi, Shop } from '@/api/_loaders';
+import { LocalesApi, ProductMetadataApi, Shop } from '@/api/_loaders';
 import type { Product } from '@/api/product';
 import { isProductVegan } from '@/api/product';
-import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
+import { ShopifyApolloApiClient } from '@/api/shopify';
 import { Blocks } from '@/blocks/blocks';
 import type { BlockNode } from '@/blocks/types';
 import { CMSContent } from '@/components/cms/cms-content';
@@ -30,6 +30,7 @@ import type { LocaleDictionary } from '@/utils/locale';
 import { capitalize, getTranslations, Locale } from '@/utils/locale';
 import { checkAndHandleRedirect } from '@/utils/redirect';
 import { cn } from '@/utils/tailwind';
+import { getPageProduct } from './page-data';
 import { ProductContent, ProductSavings } from './product-content';
 import type { ProductPageParams } from './static-params';
 import { BLOCK_STYLES } from './styles';
@@ -62,9 +63,12 @@ async function buildMetadata(
         notFound();
     }
 
-    const api = await ShopifyApiClient({ shop, locale });
+    // Apollo transport (not the fetch-based ShopifyApiClient) so the product
+    // read shares the pooled InMemoryCache with the page render below — see
+    // getPageProduct. The client is still needed here for LocalesApi.
+    const api = await ShopifyApolloApiClient({ shop, locale });
 
-    const [product, productError] = await ProductApi({ api, handle });
+    const [product, productError] = await getPageProduct(domain, localeData, handle);
     if (productError) {
         if (Error.isNotFound(productError)) {
             await checkAndHandleRedirect({ domain, locale: Locale.from(localeData), path: `/products/${handle}` });
@@ -173,9 +177,7 @@ export default async function ProductPage({ params }: { params: ProductPageParam
         notFound();
     }
 
-    const api = await ShopifyApolloApiClient({ shop, locale });
-
-    const [product, productError] = await ProductApi({ api, handle });
+    const [product, productError] = await getPageProduct(domain, localeData, handle);
     if (productError) {
         if (Error.isNotFound(productError)) {
             await checkAndHandleRedirect({ domain, locale: Locale.from(localeData), path: `/products/${handle}` });

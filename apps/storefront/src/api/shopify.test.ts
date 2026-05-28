@@ -8,6 +8,10 @@ import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
 vi.mock('@nordcom/commerce-db', () => ({
     Shop: {
         findByDomain: vi.fn(),
+        // `shopify.ts` now routes tenant lookups through the React-cached
+        // `_shop-loader`, whose module init binds `findAll` — stub it so import
+        // doesn't throw.
+        findAll: vi.fn(),
     },
 }));
 
@@ -63,11 +67,33 @@ describe('api/shopify', () => {
             // cached instance — the factory (and thus createApolloClient) must
             // only have been invoked once.
             expect(spy).toHaveBeenCalledTimes(2);
-            const first = spy.mock.results[0]?.value;
-            const second = spy.mock.results[1]?.value;
+            const first = await spy.mock.results[0]?.value;
+            const second = await spy.mock.results[1]?.value;
             expect(first).toBe(second);
 
             spy.mockRestore();
+        });
+
+        it('does not hit the DB (Shop.findByDomain) on a pool hit', async () => {
+            vi.mocked(Shop.findByDomain).mockClear();
+            vi.mocked(Shop.findByDomain).mockResolvedValue({
+                commerceProvider: {
+                    type: 'shopify',
+                    domain: 'shop-hit.myshopify.com',
+                    authentication: { publicToken: 'p', token: 't' },
+                },
+            } as unknown as OnlineShop);
+
+            const shop = { id: 'shop-hit', domain: 'shop-hit.com' } as OnlineShop;
+            const locale = { code: 'en-US' } as any;
+
+            // First call misses the pool → factory runs → ShopifyApiConfig does
+            // its single Shop.findByDomain round-trip.
+            await ShopifyApolloApiClient({ shop, locale });
+            // Second call hits the pool → factory must NOT run → no DB round-trip.
+            await ShopifyApolloApiClient({ shop, locale });
+
+            expect(Shop.findByDomain).toHaveBeenCalledTimes(1);
         });
     });
 
