@@ -82,31 +82,54 @@ type PropRow = {
 type PropsTableProps = { rows: PropRow[] };
 ```
 
-**Layout** — `<div>` grid (not `<table>`), three columns:
+**Row ordering**: sort required (`opt: false`) before optional (`opt: true`) so the most
+important props surface at the top. Within each group, preserve original declaration order.
+
+**Layout** — `<div>` grid (not `<table>`), responsive:
+- **`sm+`** — three columns: `grid-cols-[minmax(8rem,max-content)_minmax(0,1fr)_minmax(0,2fr)]`
+- **`< sm`** — two rows per entry: row 1 spans name + type (`grid-cols-[max-content_1fr]`),
+  row 2 is the description spanning full width. Achieved by wrapping each entry in a
+  `<div>` that internally switches layout at `sm:`.
+
+**Header row**: rendered above the data rows (always visible, not affected by threshold).
+Three cells matching the column grid: `PROP`, `TYPE`, `DESCRIPTION` in
+`font-mono text-[0.6rem] uppercase tracking-[0.16em] text-fg-dim`. Separated from data
+rows by `border-b border-border-strong pb-2 mb-0`.
+
+**Data rows**: `border-b border-border py-2.5 gap-x-4 hover:bg-bg-1 transition-colors duration-100`.
+Last data row (`border-b` omitted or `border-transparent`) so the bottom of the table
+doesn't double-border with the expand strip.
+
+**Threshold**: 5 rows shown by default. Expand/collapse affordance shown only when
+`rows.length > 5`.
+
+The collapsed state has a gradient fade overlay over the last visible row to signal
+truncation — an absolutely-positioned div `pointer-events-none` with
+`bg-gradient-to-b from-transparent to-bg` covering the bottom ~40px of the rows wrapper.
+The expand strip sits below this.
+
+Expand strip (full-width, not a floating button):
 ```
-[name col: 8–14ch] [type col: 1fr] [desc col: 2fr]
+border-t border-border bg-bg-1 px-0 py-2 text-center
+font-mono text-[0.7rem] text-fg-mute hover:text-fg hover:bg-bg-2
+transition-colors cursor-pointer select-none
 ```
-`grid-cols-[minmax(8rem,max-content)_minmax(0,1fr)_minmax(0,2fr)]`
+- Collapsed: `Show {rows.length - 5} more ↓`
+- Expanded: `Collapse ↑`
 
-Each row: `border-b border-border py-2.5 gap-x-4`.
+**Token rendering** — all tokens rendered inline in the type cell as a `flex flex-wrap gap-x-0.5 items-baseline` container so long union types wrap gracefully:
+- `ref` → `<Link href={token.href}>` with `font-mono text-[0.84rem] text-brand hover:underline`
+- `kw`  → `<span>` with `font-mono text-[0.84rem] text-fg`
+- `lit` → `<code>` with `rounded-[3px] bg-bg-2 px-[0.3em] font-mono text-[0.8rem] text-fg`
+  (styled like inline code elsewhere in the docs — no unique color, just the code-span treatment)
+- `op`  → `<span>` with `font-mono text-[0.84rem] text-fg-mute`
 
-**Threshold**: 5 rows shown by default. Button shown only when `rows.length > 5`.
-- Collapsed label: `Show {rows.length - 5} more →`
-- Expanded label: `Collapse ↑`
-- Button style: matches existing pattern — small mono, bordered, bottom-aligned under
-  the table.
+**Name cell**: `font-mono font-semibold text-[0.84rem] text-fg`. Optional suffix
+`<span className="text-fg-dim">?</span>` (dim, not muted, so it visually recedes further).
+Add `min-w-0 overflow-hidden` to prevent overflow in narrow columns.
 
-**Token rendering**:
-- `ref` → `<Link href={token.href} className="font-mono text-[0.84rem] text-brand hover:underline">`
-- `kw`  → `<span className="font-mono text-[0.84rem] text-fg">`
-- `lit` → `<span className="font-mono text-[0.84rem] text-ref">` (amber-ish literal color)
-- `op`  → `<span className="font-mono text-[0.84rem] text-fg-mute">`
-
-**Name cell**: `font-mono font-semibold text-[0.84rem] text-fg`. Optional suffix `?` in
-`text-fg-mute`.
-
-**Description cell**: `text-[0.85rem] text-fg-mute leading-snug`. Render as plain text
-(no MDX processing needed — already plain from `plainText()`).
+**Description cell**: `text-[0.85rem] text-fg-mute leading-snug`. Render as plain text.
+Add `min-w-0` to prevent overflow.
 
 **Empty state**: when `rows.length === 0`, render nothing (caller guards before emitting
 `<PropsTable>`).
@@ -158,7 +181,10 @@ Classes:
 ```
 
 Add `max-w-full min-w-0 overflow-hidden` to the source link `<a>` so it cannot overflow
-its grid column.
+its grid column. Add `title={file}` to the `<a>` so the full path is always accessible
+on hover regardless of truncation level.
+
+Both grid column `<div>`s get `min-w-0` so grid items cannot blow out their tracks.
 
 ---
 
