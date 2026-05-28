@@ -109,7 +109,7 @@
         "portless": "0.13.1",
         "react": "19.2.6",
         "tsx": "4.22.3",
-        "turbo": "2.9.15",
+        "turbo": "2.9.16",
         "typescript": "6.0.3",
         "unplugin-dts": "1.0.1",
         "vite": "8.0.14",
