@@ -1,6 +1,7 @@
 import 'server-only';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
+import { connection } from 'next/server';
 import type { HTMLProps } from 'react';
 import { PaymentIcon } from 'react-payment-brand-icons';
 import { ShopifyApiClient } from '@/api/shopify';
@@ -25,6 +26,14 @@ export type AcceptedPaymentMethodsProps = {
  * @returns A row of payment brand icons, or `null` when none are configured.
  */
 export const AcceptedPaymentMethods = async ({ shop, locale, className, ...props }: AcceptedPaymentMethodsProps) => {
+    // The tenant lookup powering this client reads private storefront tokens
+    // (taint-guarded, so not `'use cache'`-able) and bottoms out in a mongoose
+    // `.exec()` that touches `new Date()` deep in the driver. Under Cache
+    // Components that time read aborts the prerender unless request data is read
+    // first, so defer to request time. Both call sites render us inside a
+    // `<Suspense>`, satisfying the partial-prerender fallback requirement.
+    await connection();
+
     const api = await ShopifyApiClient({ shop, locale });
     const paymentSettings = await ShopPaymentSettingsApi({ api });
     if (!paymentSettings) {
