@@ -11,6 +11,41 @@ import { ProductActionsContainer } from '@/components/products/product-actions-c
 import { QuantityProvider } from '@/components/products/quantity-provider';
 import { firstAvailableVariant } from '@/utils/first-available-variant';
 import { getTranslations, type LocaleDictionary } from '@/utils/locale';
+
+/**
+ * Determines the initial variant ID from URL search params.
+ * Prefers `?variant=<id>` param; falls back to matching by option name/value
+ * params (e.g. `?Color=Red&Size=M`); then falls back to firstAvailableVariant.
+ *
+ * @param product - Product whose variants are searched for a match.
+ * @param searchParams - Current URL search params.
+ * @returns The Shopify variant GID to pre-select, or `undefined`.
+ */
+export function resolveInitialVariantId(product: Product, searchParams: URLSearchParams): string | undefined {
+    if (searchParams.has('variant')) {
+        return `gid://shopify/ProductVariant/${searchParams.get('variant')}`;
+    }
+
+    // Try to match by option params — e.g. ?Color=Red&Size=M
+    const optionNames = product.options?.map((o: { name: string }) => o.name) ?? [];
+    const optionEntries = optionNames
+        .map((name: string) => ({ name, value: searchParams.get(name) }))
+        .filter((o): o is { name: string; value: string } => o.value !== null);
+
+    if (optionEntries.length > 0) {
+        const matched = product.variants.edges.find(({ node }) =>
+            optionEntries.every(({ name, value }) =>
+                node.selectedOptions?.some(
+                    (so: { name: string; value: string }) => so.name === name && so.value === value,
+                ),
+            ),
+        )?.node;
+        if (matched) return matched.id;
+    }
+
+    return firstAvailableVariant(product)?.id;
+}
+
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 import { unsafe_cast } from '@/utils/unsafe-cast';
@@ -32,13 +67,7 @@ export type ProductContentProps = {
  */
 export function ProductContent({ product, i18n }: ProductContentProps) {
     const searchParams = useSearchParams();
-    const initialVariantId = useMemo(
-        () =>
-            searchParams.has('variant')
-                ? `gid://shopify/ProductVariant/${searchParams.get('variant')}`
-                : firstAvailableVariant(product)?.id,
-        [product, searchParams],
-    );
+    const initialVariantId = useMemo(() => resolveInitialVariantId(product, searchParams), [product, searchParams]);
 
     const [quantity, setQuantity] = useState(1);
 

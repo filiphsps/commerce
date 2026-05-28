@@ -31,10 +31,11 @@ export const TextChipRenderer = ({
     const className = chipClassName({ selected, available, density });
 
     const handleClick = (event: MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
-        if (!available) {
-            event.preventDefault();
-            return;
-        }
+        // Always prevent default: for unavailable chips suppress the click; for available
+        // chips prevent the hard browser navigation so useVariantUrlSync handles the URL
+        // update via router.replace (no full page reload).
+        event.preventDefault();
+        if (!available) return;
         onSelect();
     };
 

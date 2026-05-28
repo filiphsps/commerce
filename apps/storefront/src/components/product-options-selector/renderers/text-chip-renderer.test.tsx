@@ -41,6 +41,17 @@ describe('components', () => {
             expect(onSelect).toHaveBeenCalledTimes(1);
         });
 
+        it('calls onSelect and suppresses default navigation when href chip is clicked for available option', () => {
+            const onSelect = vi.fn();
+            render(<TextChipRenderer {...baseProps} href="/en-US/products/abc/?Size=M" onSelect={onSelect} />);
+            const el = screen.getByRole('link', { name: 'Size: M' });
+            const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+            el.dispatchEvent(event);
+            expect(onSelect).toHaveBeenCalledTimes(1);
+            // Default navigation must be suppressed so Next.js router handles it (no hard reload).
+            expect(event.defaultPrevented).toBe(true);
+        });
+
         it('marks the chip selected via data-selected when selected', () => {
             render(<TextChipRenderer {...baseProps} selected={true} />);
             expect(screen.getByRole('button', { name: 'Size: M' }).getAttribute('data-selected')).toBe('true');

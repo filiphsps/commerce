@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { findVariant, resolveOptions, toSelectionRecord } from './resolver';
+import { findVariant, resolvedToLegacyOptions, resolveOptions, toSelectionRecord } from './resolver';
 
 const fakeProduct = (overrides = {}) =>
     ({
@@ -203,5 +203,43 @@ describe('toSelectionRecord', () => {
                 ],
             } as any),
         ).toEqual({ Color: 'Red', Size: 'M' });
+    });
+});
+
+describe('resolvedToLegacyOptions — variantUriQuery', () => {
+    it('produces alphabetically sorted query params when Shopify returns options in non-alpha order', () => {
+        // Shopify sometimes returns selectedOptions as [Size, Color] (declaration order).
+        // Without sorting, variantUriQuery = "Size=M&Color=Red". The middleware sorts
+        // params and 301-redirects to "Color=Red&Size=M", creating a reload loop.
+        const productSizeFirst = {
+            handle: 'tee',
+            options: [
+                { name: 'Size', values: ['M'], optionValues: [{ name: 'M' }] },
+                { name: 'Color', values: ['Red'], optionValues: [{ name: 'Red' }] },
+            ],
+            variants: {
+                edges: [
+                    {
+                        node: {
+                            id: 'v1',
+                            availableForSale: true,
+                            // Size comes first — non-alphabetical order
+                            selectedOptions: [
+                                { name: 'Size', value: 'M' },
+                                { name: 'Color', value: 'Red' },
+                            ],
+                            price: { amount: '10.00', currencyCode: 'USD' },
+                        },
+                    },
+                ],
+            },
+        };
+        const resolved = resolveOptions(productSizeFirst as any, { Size: 'M', Color: 'Red' });
+        const legacy = resolvedToLegacyOptions(resolved);
+        const sizeOpt = legacy.find((o) => o.name === 'Size');
+        const mValue = sizeOpt?.optionValues.find((v) => v.name === 'M');
+        expect(mValue?.variantUriQuery).toBeDefined();
+        // Must be sorted: Color before Size (alphabetical)
+        expect(mValue!.variantUriQuery).toBe('Color=Red&Size=M');
     });
 });

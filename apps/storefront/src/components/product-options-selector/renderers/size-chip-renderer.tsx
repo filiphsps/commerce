@@ -41,10 +41,8 @@ export const SizeChipRenderer = ({
     const className = chipClassName({ selected, available, density });
 
     const handleClick = (event: MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
-        if (!available) {
-            event.preventDefault();
-            return;
-        }
+        event.preventDefault();
+        if (!available) return;
         onSelect();
     };
 

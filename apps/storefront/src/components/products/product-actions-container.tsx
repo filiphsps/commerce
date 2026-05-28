@@ -10,6 +10,7 @@ import AddToCart from '@/components/products/add-to-cart';
 import { ProductQuantityBreaks } from '@/components/products/product-quantity-breaks';
 import { useQuantity } from '@/components/products/quantity-provider';
 import { QuantitySelector } from '@/components/products/quantity-selector';
+import { useShop } from '@/components/shop/provider';
 import { Label } from '@/components/typography/label';
 import { useVariantUrlSync } from '@/hooks/useVariantUrlSync';
 import type { LocaleDictionary } from '@/utils/locale';
@@ -28,6 +29,7 @@ export type ProductActionsContainerProps = {
  */
 export const ProductActionsContainer = ({ className, i18n, ...props }: ProductActionsContainerProps) => {
     const { t } = getTranslations('common', i18n);
+    const { locale } = useShop();
     const { quantity, setQuantity } = useQuantity();
 
     const { product, selectedVariant, selectedOptions, setSelectedOptions } = useProduct() as ReturnType<
@@ -91,6 +93,7 @@ export const ProductActionsContainer = ({ className, i18n, ...props }: ProductAc
                         onChange={setSelectedOptions}
                         renderers={{ Size: SizeChipRenderer }}
                         productHandle={product.handle}
+                        locale={locale}
                     />
                 </Suspense>
             </div>

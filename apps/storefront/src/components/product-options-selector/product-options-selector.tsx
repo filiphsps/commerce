@@ -11,6 +11,7 @@ import type {
 } from '@/components/product-options-selector/renderers/types';
 import { Label } from '@/components/typography/label';
 import { filterRealOptions } from '@/utils/has-product-options';
+import type { Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 
 export type SelectedOptions = Record<string, string>;
@@ -39,6 +40,8 @@ export type ProductOptionsSelectorProps = {
 
     renderers?: Partial<Record<string, ComponentType<ProductOptionValueRendererProps>>>;
     productHandle?: string;
+    /** When supplied, hrefs are prefixed with `/{locale.code}/` so the middleware does not 301-redirect to add the locale segment. */
+    locale?: Locale;
     density?: RenderDensity;
     maxValuesPerOption?: number;
 } & Omit<HTMLProps<HTMLDivElement>, 'onChange' | 'children'>;
@@ -64,6 +67,7 @@ export const ProductOptionsSelector = ({
     onChange,
     renderers,
     productHandle,
+    locale,
     density = 'spacious',
     maxValuesPerOption,
     className,
@@ -102,7 +106,7 @@ export const ProductOptionsSelector = ({
 
                                 const href =
                                     productHandle && v.variantUriQuery
-                                        ? `/products/${productHandle}/?${v.variantUriQuery}`
+                                        ? `${locale ? `/${locale.code}` : ''}/products/${productHandle}/?${v.variantUriQuery}`
                                         : undefined;
 
                                 return (

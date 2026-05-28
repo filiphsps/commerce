@@ -156,12 +156,16 @@ export function resolvedToLegacyOptions(resolved: ResolvedOption[]): LegacyOptio
             const selectedOptions = v.variant?.selectedOptions ?? [];
             const variantUriQuery =
                 selectedOptions.length > 0
-                    ? new URLSearchParams(
-                          selectedOptions.reduce<Record<string, string>>((acc, so) => {
-                              acc[so.name] = so.value;
-                              return acc;
-                          }, {}),
-                      ).toString()
+                    ? (() => {
+                          const p = new URLSearchParams(
+                              selectedOptions.reduce<Record<string, string>>((acc, so) => {
+                                  acc[so.name] = so.value;
+                                  return acc;
+                              }, {}),
+                          );
+                          p.sort();
+                          return p.toString();
+                      })()
                     : undefined;
 
             return {
