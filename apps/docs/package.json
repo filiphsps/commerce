@@ -12,6 +12,7 @@
         "dev:watch": "tsx scripts/watch-docs.ts",
         "prebuild": "pnpm gen",
         "build": "next build --turbo",
+        "generate": "pnpm gen",
         "gen": "tsx scripts/gen.ts",
         "gen:check": "tsx scripts/docs-gen-check.ts",
         "clean": "rimraf -g dist coverage .turbo .next out .typedoc-out content/reference content/errors content/packages/applications *.tsbuildinfo *.log node_modules",

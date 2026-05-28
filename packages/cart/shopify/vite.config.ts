@@ -22,11 +22,7 @@ export default mergeConfig(
                 output: {
                     name,
                 },
-                external: [
-                    '@nordcom/cart-core',
-                    '@nordcom/commerce-shopify-graphql',
-                    '@nordcom/commerce-shopify-graphql/graphql',
-                ],
+                external: ['@nordcom/cart-core'],
             },
         },
         plugins: process.env.CI

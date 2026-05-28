@@ -50,6 +50,7 @@
     "dependencies": {
         "@auth/core": "0.41.2",
         "@faceless-ui/modal": "3.0.0",
+        "@floating-ui/react": "0.27.19",
         "@next/third-parties": "16.2.6",
         "@nordcom/commerce-cms": "workspace:*",
         "@nordcom/commerce-db": "workspace:*",

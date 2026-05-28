@@ -61,9 +61,6 @@
     "dependencies": {
         "@nordcom/cart-core": "workspace:*"
     },
-    "peerDependencies": {
-        "@nordcom/commerce-shopify-graphql": "workspace:*"
-    },
     "devDependencies": {
         "@codecov/vite-plugin": "2.0.1",
         "@nordcom/commerce-shopify-graphql": "workspace:*",

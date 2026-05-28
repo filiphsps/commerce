@@ -29,7 +29,7 @@ const WORKSPACE_EXCLUDES: Record<string, readonly string[]> = {
 /**
  * Maps a top-level package slug to its Packages-tab category subfolder.
  * Slugs not listed here are routed directly to `content/packages/<slug>/`
- * (tagtree/* workspaces nest naturally via their `tagtree/` prefix).
+ * (e.g. `cart/core` → `content/packages/cart/core/`).
  */
 const PACKAGE_CATEGORY: Readonly<Record<string, string>> = {
     cms: 'core',
@@ -40,6 +40,36 @@ const PACKAGE_CATEGORY: Readonly<Record<string, string>> = {
     'shopify-html': 'shopify',
     'react-payment-brand-icons': 'ui',
 };
+
+/** Display title for each category directory. Falls back to `capitalize(category)`. */
+const CATEGORY_TITLES: Readonly<Record<string, string>> = {
+    cart: 'Cart',
+    core: 'Core',
+    shopify: 'Shopify',
+    tagtree: 'TagTree',
+    ui: 'UI',
+};
+
+/**
+ * Derives the full set of category directory names from discovered workspaces.
+ * Categories come from two sources:
+ * - The first path segment of multi-segment slugs (e.g. `cart/core` → `cart`).
+ * - Values in `PACKAGE_CATEGORY` for flat-slug packages routed to a subdirectory.
+ *
+ * @param workspaces - Discovered workspace list.
+ * @returns Sorted, deduplicated array of category directory names.
+ */
+function deriveCategories(workspaces: Workspace[]): string[] {
+    const cats = new Set<string>();
+    for (const ws of workspaces) {
+        if (ws.type !== 'package') continue;
+        if (ws.slug.includes('/')) cats.add(ws.slug.split('/')[0]!);
+    }
+    for (const cat of Object.values(PACKAGE_CATEGORY)) {
+        cats.add(cat);
+    }
+    return [...cats].sort();
+}
 
 function matchGlob(pattern: string, str: string): boolean {
     // Simple `**` glob: only prefix matching is needed (`errors/**` matches
@@ -82,10 +112,12 @@ function packageOutPath(slug: string): string {
 
 /**
  * Clear generated output directories so stale pages do not survive between
- * mirror runs. Preserves hand-written files at `content/packages/` root
- * (meta.json, _categories.json) by targeting only category subdirs.
+ * mirror runs. Targets only category subdirs so `content/packages/_categories.json`
+ * (unused hand-written reference file) is preserved.
+ *
+ * @param workspaces - Discovered workspace list used to derive category dirs.
  */
-function sweep(): void {
+function sweep(workspaces: Workspace[]): void {
     // Clear the legacy App Router generated dir so old nextra-era pages don't
     // appear in the build. This dir is no longer written by this script.
     if (fs.existsSync(LEGACY_GENERATED)) {
@@ -97,11 +129,7 @@ function sweep(): void {
     }
     fs.mkdirSync(DOCS_APPS_OUT, { recursive: true });
 
-    // Clear generated category subdirs so stale package pages don't survive.
-    const generatedCategories = new Set(Object.values(PACKAGE_CATEGORY));
-    // Also clear the tagtree group, which nests naturally from slug paths.
-    generatedCategories.add('tagtree');
-    for (const cat of generatedCategories) {
+    for (const cat of deriveCategories(workspaces)) {
         const dir = path.join(PACKAGES_OUT, cat);
         if (fs.existsSync(dir)) {
             fs.rmSync(dir, { recursive: true, force: true });
@@ -194,23 +222,35 @@ function emitApplicationsMeta(workspaces: Workspace[]): void {
 
 /**
  * Write per-category `meta.json` files so Fumadocs renders each group as a
- * named, collapsible section in the Packages tab sidebar.
- *
- * Category directories (core/, shopify/, tagtree/, ui/) are cleared by
+ * named section in the Packages tab sidebar. Category dirs are cleared by
  * `sweep()` on every run, so these files must be re-emitted after mirroring.
+ *
+ * @param workspaces - Discovered workspace list used to derive categories.
  */
-function emitCategoryMeta(): void {
-    const categories: ReadonlyArray<{ dir: string; title: string }> = [
-        { dir: 'core', title: 'Core' },
-        { dir: 'shopify', title: 'Shopify' },
-        { dir: 'tagtree', title: 'TagTree' },
-        { dir: 'ui', title: 'UI' },
-    ];
-    for (const { dir, title } of categories) {
-        const folder = path.join(PACKAGES_OUT, dir);
+function emitCategoryMeta(workspaces: Workspace[]): void {
+    for (const cat of deriveCategories(workspaces)) {
+        const title = CATEGORY_TITLES[cat] ?? capitalize(cat);
+        const folder = path.join(PACKAGES_OUT, cat);
         fs.mkdirSync(folder, { recursive: true });
         fs.writeFileSync(path.join(folder, 'meta.json'), JSON.stringify({ title }, null, 4));
     }
+}
+
+/**
+ * Write `content/packages/meta.json` listing all discovered categories so the
+ * Packages tab sidebar stays in sync with the monorepo without manual edits.
+ *
+ * @param workspaces - Discovered workspace list used to derive categories.
+ */
+function emitPackagesMeta(workspaces: Workspace[]): void {
+    const pages = ['index', 'applications', ...deriveCategories(workspaces)];
+    const meta = {
+        title: 'Packages',
+        description: 'Per-workspace narrative for every app and package in the monorepo.',
+        root: true,
+        pages,
+    };
+    fs.writeFileSync(path.join(PACKAGES_OUT, 'meta.json'), JSON.stringify(meta, null, 4));
 }
 
 /**
@@ -224,15 +264,16 @@ function capitalize(s: string): string {
 }
 
 export function main({ quiet = false }: { quiet?: boolean } = {}): { mirrored: number; workspaces: number } {
-    sweep();
     const workspaces = discoverWorkspaces(REPO_ROOT);
+    sweep(workspaces);
     let total = 0;
     for (const ws of workspaces) {
         total += mirrorWorkspace(ws);
     }
     emitAppsMeta(workspaces);
     emitApplicationsMeta(workspaces);
-    emitCategoryMeta();
+    emitCategoryMeta(workspaces);
+    emitPackagesMeta(workspaces);
     if (!quiet) {
         console.info(`[mirror-workspace-docs] mirrored ${total} pages across ${workspaces.length} workspace(s)`);
     }
