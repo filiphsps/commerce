@@ -29,6 +29,6 @@ publicHoistPattern:
 # known-good version until Nextra ships a release with shuding/nextra#4990.
 # Tracking: https://github.com/shuding/nextra/issues/4989
 overrides:
-    zod@^4: "4.3.6"
+    zod@^4: "4.4.3"
     "@types/react": "$@types/react"
     "@types/react-dom": "$@types/react-dom"
