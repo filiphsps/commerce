@@ -1,28 +1,43 @@
 import { NotFoundError } from '@nordcom/commerce-errors';
 import { trace } from '@opentelemetry/api';
-import { cacheLife } from 'next/cache';
+import { cacheLife, cacheTag } from 'next/cache';
 import { ImageResponse } from 'next/og';
 import { type NextRequest, NextResponse } from 'next/server';
 import { Shop } from '@/api/_loaders';
+import { tenantRootTags } from '@/cache';
 
 export type AppleIconRouteParams = Promise<{
     domain: string;
 }>;
 
-// `'use cache'` cannot wrap a Route Handler body, and the cache layer rejects
-// class instances (Response/ImageResponse) and tainted strings (private
-// tokens transitively pulled in by `Shop.findByDomain` when other request
-// paths call `experimental_taintUniqueValue`). Cache the bare icon URL only.
+/**
+ * Resolve a tenant's apple-icon source URL from its shop record, cached.
+ *
+ * `'use cache'` cannot wrap a Route Handler body, and the cache layer rejects
+ * class instances (Response/ImageResponse) and tainted strings (private tokens
+ * transitively pulled in by `Shop.findByDomain` when other request paths call
+ * `experimental_taintUniqueValue`). So the cached unit is the bare icon URL —
+ * never the shop object. The entry carries the tenant-root tags so a
+ * shop-record edit (icon/domain change) busts the `cacheLife('max')` entry via
+ * the broad `shopify.<id>` sweep; without a tag it would stick indefinitely.
+ *
+ * A resolution failure is allowed to propagate rather than caching `null`: under
+ * `'use cache'` a thrown error is never stored, so a transient lookup blip — or a
+ * not-yet-resolvable hostname for a newly-added tenant — is retried next request
+ * instead of being frozen blank at `max`. Only a successful, tagged resolution is
+ * cached.
+ *
+ * @param domain - Hostname used to resolve the shop and its icon.
+ * @returns The icon source URL, or `null` when the shop has no icon configured.
+ * @throws When the shop cannot be resolved for the domain (intentionally uncached).
+ */
 async function getAppleIconSrc(domain: string): Promise<string | null> {
     'use cache';
     cacheLife('max');
 
-    try {
-        const shop = await Shop.findByDomain(domain);
-        return shop.icons?.favicon?.src ?? null;
-    } catch {
-        return null;
-    }
+    const shop = await Shop.findByDomain(domain);
+    cacheTag(...tenantRootTags(shop));
+    return shop.icons?.favicon?.src ?? null;
 }
 
 export async function GET({}: NextRequest, { params }: { params: AppleIconRouteParams }) {
