@@ -1,8 +1,9 @@
 import 'server-only';
-import { type OnlineShop, Shop } from '@nordcom/commerce-db';
+import type { OnlineShop } from '@nordcom/commerce-db';
 import { trace } from '@opentelemetry/api';
 import { headers } from 'next/headers';
 import { cache } from 'react';
+import { Shop } from '@/api/_shop-loader';
 import { Locale } from '@/utils/locale';
 
 export type RequestContext = { shop: OnlineShop; locale: ReturnType<typeof Locale.from> };

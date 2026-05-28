@@ -1,9 +1,10 @@
-import { type OnlineShop, Shop } from '@nordcom/commerce-db';
+import type { OnlineShop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 import { trace } from '@opentelemetry/api';
 import { colord, extend } from 'colord';
 import a11yPlugin from 'colord/plugins/a11y';
 import { notFound } from 'next/navigation';
+import { Shop } from '@/api/_shop-loader';
 import { ShopifyApiClient } from '@/api/shopify';
 import { BrandApi } from '@/api/shopify/brand';
 import { Locale } from '@/utils/locale';
