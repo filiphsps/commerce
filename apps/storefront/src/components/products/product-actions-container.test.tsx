@@ -109,9 +109,30 @@ describe('ProductActionsContainer', () => {
     it('syncs ProductOptionsContext.selectVariant with Hydrogen selectedOptions on render', async () => {
         render(<ProductActionsContainer i18n={{} as any} />);
         await act(async () => {});
-        // After the sync effect fires, selectVariant must have been called with the
-        // resolved selected options so VariantPriceClient and VariantStockUrgencyClient
-        // display the correct variant data.
         expect(selectVariant).toHaveBeenCalledWith({ Color: 'Red' });
+    });
+
+    it('does not call selectVariant again when selectedOptions reference changes but values are identical', async () => {
+        // Hydrogen fires a useEffect on mount that calls setSelectedOptions with a new
+        // object carrying identical values (the "spurious re-render"). Without the fix,
+        // this would fire selectVariant again, causing all ProductOptionsContext consumers
+        // to re-render unnecessarily on every mount.
+        const { rerender } = render(<ProductActionsContainer i18n={{} as any} />);
+        await act(async () => {});
+        selectVariant.mockClear();
+
+        // New object reference, same values — simulates Hydrogen's spurious re-render
+        vi.mocked(useProduct).mockReturnValue({
+            product,
+            selectedVariant,
+            selectedOptions: { Color: 'Red' },
+            setSelectedOptions: vi.fn(),
+        } as any);
+
+        await act(async () => {
+            rerender(<ProductActionsContainer i18n={{} as any} />);
+        });
+
+        expect(selectVariant).not.toHaveBeenCalled();
     });
 });

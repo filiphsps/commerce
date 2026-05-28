@@ -64,12 +64,25 @@ export const ProductActionsContainer = ({ className, i18n, ...props }: ProductAc
         [product, resolvedSelectedOptions],
     );
 
-    // Keep ProductOptionsContext (read by VariantPriceClient, VariantStockUrgencyClient) in sync
-    // with Hydrogen's selected options so price and stock urgency update when the variant changes.
+    // Keep ProductOptionsContext (VariantPriceClient, VariantStockUrgencyClient) in sync with
+    // Hydrogen's selected options. Use a stable string key as the dep so the effect only fires
+    // when selection values actually change — not on every new-object-same-values re-render from
+    // Hydrogen's internal useEffect on mount. Do NOT use productOptionsCtx as a dep: selectVariant
+    // is stable (useCallback([controlled])), but the context VALUE object rebuilds after every
+    // selectVariant call, which would create an infinite loop.
     const productOptionsCtx = useMaybeProductOptions();
+    const optionsKey = useMemo(
+        () =>
+            Object.entries(resolvedSelectedOptions)
+                .sort(([a], [b]) => a.localeCompare(b))
+                .map(([k, v]) => `${k}=${v}`)
+                .join('&'),
+        [resolvedSelectedOptions],
+    );
     useEffect(() => {
         productOptionsCtx?.selectVariant(resolvedSelectedOptions);
-    }, [productOptionsCtx?.selectVariant, resolvedSelectedOptions]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [optionsKey]);
 
     if (!product || !selectedVariant) {
         return null;
