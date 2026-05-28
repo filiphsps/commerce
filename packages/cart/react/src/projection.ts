@@ -110,6 +110,8 @@ function applyMutation(
                 lines: cart.lines.filter((l) => l.id !== mutation.lineId),
                 costStale: true,
             };
+        case 'clear':
+            return { ...cart, lines: [], costStale: true };
         case 'apply-discount':
         case 'remove-discount':
         case 'apply-gift-card':

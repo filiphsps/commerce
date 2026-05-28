@@ -24,7 +24,7 @@ const CartLines = ({ i18n }: CartContentProps) => {
     const { cartReady } = useCartStatus();
     const { lines } = useCartLinesSlice();
     const totalQuantity = useCartCount();
-    const { removeLine } = useCartActions();
+    const { clear } = useCartActions();
 
     if (!cartReady) {
         return <CartLines.skeleton />;
@@ -41,11 +41,7 @@ const CartLines = ({ i18n }: CartContentProps) => {
                     as={Label}
                     className="inline-flex cursor-pointer font-bold text-sm hover:text-red-500"
                     styled={false}
-                    onClick={() => {
-                        for (const line of lines) {
-                            if (line?.id) void removeLine(line.id);
-                        }
-                    }}
+                    onClick={() => void clear()}
                 >
                     {tCart('clear-cart')}
                 </Button>

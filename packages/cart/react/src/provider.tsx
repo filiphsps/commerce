@@ -271,6 +271,7 @@ export function CartProvider<Cfg extends AppCartConfig>(props: CartProviderProps
             updateLine: (input: { lineId: string; quantity: number }) =>
                 runMutation({ kind: 'update-line', lineId: input.lineId, quantity: input.quantity }),
             removeLine: (lineId: string) => runMutation({ kind: 'remove-line', lineId }),
+            clear: () => runMutation({ kind: 'clear' }),
         };
         const caps = kernelSnapshot.capabilities;
         if (caps.giftCards) {
