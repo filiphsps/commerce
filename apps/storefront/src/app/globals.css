@@ -632,11 +632,16 @@ html:root {
         }
     }
 
+    /* Fill, hairline, and shimmer band resolve through the P3-3 surface/border tokens so a tenant
+     * theme tints loading states; this also unifies the markup skeleton with the React-component
+     * skeletons that already use `bg-(--surface-1)`. The legacy translucent-black overlays had no
+     * opaque token equivalent, so the unbranded fill moves from a mid-gray to the off-white
+     * `--surface-1` — a deliberate consistency shift, not byte-identical. */
     [data-skeleton] {
         position: relative;
         overflow: hidden;
 
-        background-color: rgba(0, 0, 0, 0.2);
+        background-color: var(--surface-1);
 
         border-radius: 0.25rem;
 
@@ -645,7 +650,7 @@ html:root {
             content: "";
             position: absolute;
             inset: 0;
-            border: 1px solid rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-default);
             margin: -1px;
 
             border-radius: inherit;
@@ -657,12 +662,7 @@ html:root {
             position: absolute;
             inset: 0;
             transform: translateX(-100%);
-            background-image: linear-gradient(
-                to right,
-                rgba(0, 0, 0, 0) 0%,
-                rgba(0, 0, 0, 0.2) 25%,
-                rgba(0, 0, 0, 0) 50%
-            );
+            background-image: linear-gradient(to right, transparent 0%, var(--surface-3) 25%, transparent 50%);
 
             border-radius: inherit;
         }
