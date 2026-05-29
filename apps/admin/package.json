@@ -19,6 +19,7 @@
         "format:format": "biome format --write .",
         "format:check": "biome check --write --unsafe .",
         "test:e2e": "NODE_OPTIONS='--import @nordcom/commerce-test-mongo/register' playwright test",
+        "generate": "pnpm --filter @nordcom/commerce-cms cms:gen",
         "typegen": "next typegen",
         "typecheck": "tsc -noEmit",
         "analyze": "next experimental-analyze"
