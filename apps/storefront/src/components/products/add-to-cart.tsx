@@ -3,7 +3,7 @@
 import type { ProductSnapshot } from '@nordcom/cart-core';
 import { useCartActions, useCartStatus } from '@nordcom/cart-react';
 import { usePathname, useRouter } from 'next/navigation';
-import { type HTMLProps, useCallback, useEffect, useRef, useState } from 'react';
+import { type ComponentPropsWithoutRef, useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import type { Product, ProductVariant } from '@/api/product';
 import { Button } from '@/components/actionable/button';
@@ -24,7 +24,7 @@ export type AddToCartProps = {
         product?: Product;
         selectedVariant?: ProductVariant;
     };
-} & Omit<HTMLProps<HTMLButtonElement>, 'data'>;
+} & Omit<ComponentPropsWithoutRef<'button'>, 'data'>;
 
 /**
  * Add-to-cart button that fires a cart line mutation and emits a tracking event on success.

@@ -62,16 +62,17 @@ export const BannerBlock = ({ block, context }: { block: BannerBlockNode; contex
                 )}
                 data-alignment={block.alignment}
             >
-                <h1 className="font-bold text-2xl leading-tight md:text-4xl">{block.heading}</h1>
+                <h1 className="font-bold text-h1">{block.heading}</h1>
                 {block.subheading ? <p className="text-base md:text-lg">{block.subheading}</p> : null}
             </div>
 
             {cta ? (
                 <Button
                     as={Link}
+                    variant="secondary"
                     href={cta.href}
                     target={cta.openInNewTab ? '_blank' : undefined}
-                    className="flex items-center gap-2 rounded-full bg-white px-4 py-2 text-black transition-colors hover:bg-black hover:text-white md:px-6 md:py-3 md:text-lg"
+                    className="rounded-full md:px-6 md:py-3 md:text-lg"
                 >
                     {block.cta?.label ?? 'Learn more'}
                 </Button>

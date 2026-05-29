@@ -174,7 +174,7 @@ export default async function BlogPage({ params }: { params: BlogPageParams }) {
                                                 quality={80}
                                             />
                                         ) : (
-                                            <div className="aspect-16/7 rounded-lg bg-gray-100 transition-color group-hover/header:brightness-75 group-focus-visible/header:brightness-75" />
+                                            <div className="aspect-16/7 rounded-lg bg-gray-100 transition-[filter] group-hover/header:brightness-75 group-focus-visible/header:brightness-75" />
                                         )}
 
                                         <div className="block font-semibold text-xl transition-colors group-hover/header:text-primary group-focus-visible/header:text-primary">

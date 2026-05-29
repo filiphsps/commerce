@@ -33,7 +33,7 @@ describe('InlinePicker', () => {
                 onAdd={vi.fn()}
             />,
         );
-        expect(container.querySelector('[role="group"]')).toBeNull();
+        expect(container.querySelector('fieldset')).toBeNull();
     });
 
     it('expands in place when open', () => {
@@ -47,7 +47,7 @@ describe('InlinePicker', () => {
                 onAdd={vi.fn()}
             />,
         );
-        const group = container.querySelector('[role="group"]') as HTMLElement;
+        const group = container.querySelector('fieldset') as HTMLElement;
         expect(group).toBeTruthy();
         expect(group.getAttribute('aria-label')).toBe('Product options');
     });

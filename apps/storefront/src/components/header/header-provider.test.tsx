@@ -17,8 +17,12 @@ function TestConsumer() {
     return (
         <div>
             <span data-testid="menu-state">{menu ?? 'null'}</span>
-            <button onClick={() => setMenu('main-menu')}>Open</button>
-            <button onClick={closeMenu}>Close</button>
+            <button type="button" onClick={() => setMenu('main-menu')}>
+                Open
+            </button>
+            <button type="button" onClick={closeMenu}>
+                Close
+            </button>
         </div>
     );
 }

@@ -47,7 +47,7 @@ vi.mock('@/components/cart/cart-line', () => ({
 }));
 
 vi.mock('@/components/actionable/export-cart-button', () => ({
-    ExportCartButton: () => <button>Export</button>,
+    ExportCartButton: () => <button type="button">Export</button>,
 }));
 
 describe('components', () => {

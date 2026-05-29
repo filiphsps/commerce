@@ -46,10 +46,9 @@ const InlinePicker = ({ product, open, onAdd }: ProductCardPickerProps) => {
     if (!open) return null;
 
     return (
-        <div
-            role="group"
+        <fieldset
             aria-label="Product options"
-            className="flex w-full flex-col gap-2 rounded-(--block-border-radius-small) border border-(--product-card-border-color) bg-(--product-card-more-bg) p-3"
+            className="flex w-full min-w-0 flex-col gap-2 rounded-(--block-border-radius-small) border border-(--product-card-border-color) bg-(--product-card-more-bg) p-3"
         >
             <ProductOptions.Root product={product} initialSelection={initialSelection}>
                 {(product.options ?? []).map((opt) => (
@@ -65,7 +64,7 @@ const InlinePicker = ({ product, open, onAdd }: ProductCardPickerProps) => {
                 ))}
                 <AddToBagButton onAdd={onAdd} />
             </ProductOptions.Root>
-        </div>
+        </fieldset>
     );
 };
 

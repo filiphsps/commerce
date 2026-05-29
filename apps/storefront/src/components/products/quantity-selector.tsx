@@ -173,7 +173,7 @@ const QuantitySelector = ({
             {...props}
             className={cn(
                 'flex h-12 min-h-fit w-full overflow-hidden rounded-lg border-2 border-white border-solid bg-white p-0 leading-none opacity-50 drop-shadow transition-colors *:appearance-none *:text-center *:text-lg *:leading-none *:transition-colors',
-                !disabled && 'opacity-100 hover:border-primary focus-visible::border-gray-300',
+                !disabled && 'opacity-100 focus-within:border-gray-300 hover:border-primary',
                 className,
             )}
         >
@@ -182,7 +182,7 @@ const QuantitySelector = ({
                 aria-label={t('decrease')}
                 type="button"
                 className={cn(
-                    'aspect-[3/4] h-full select-none appearance-none rounded-none bg-transparent p-2 font-bold text-current',
+                    'aspect-3/4 h-full select-none appearance-none rounded-none bg-transparent p-2 font-bold text-current',
                     !disabled &&
                         'cursor-pointer hover:bg-primary hover:text-primary-foreground focus-visible:bg-primary focus-visible:text-primary-foreground active:bg-primary active:text-primary-foreground',
                     buttonClassName,

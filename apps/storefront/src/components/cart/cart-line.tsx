@@ -191,17 +191,18 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
 
                 <section className="flex h-full w-full flex-col items-end justify-end">
                     <div className="absolute inset-auto top-3 right-3">
-                        <Label
-                            as={Button}
+                        <Button
+                            type="button"
+                            variant="destructive"
+                            size="sm"
+                            aria-label={t('remove')}
+                            title={t('remove')}
                             onClick={async () => {
                                 await removeLine(line.id!);
                             }}
-                            styled={false}
-                            className="flex items-center justify-center gap-1 border-0 border-red-500 border-solid text-sm hover:text-red-500 focus-visible:border-b-2 focus-visible:text-red-500 md:text-base"
-                            title={t('remove')}
                         >
                             <XIcon className="stroke-2 text-xl" />
-                        </Label>
+                        </Button>
                     </div>
 
                     <div className="h-12 w-full max-w-none md:w-full md:max-w-56">

@@ -6,7 +6,6 @@ import { Button } from '@/components/actionable/button';
 import { ExportCartButton } from '@/components/actionable/export-cart-button';
 import { CartEmpty } from '@/components/cart/cart-empty';
 import { CartLine } from '@/components/cart/cart-line';
-import { Label } from '@/components/typography/label';
 import { getTranslations, type LocaleDictionary } from '@/utils/locale';
 
 type CartContentProps = {
@@ -38,9 +37,10 @@ const CartLines = ({ i18n }: CartContentProps) => {
         <div className="flex w-full flex-col gap-2">
             <div className="flex w-full items-center justify-between border-0 border-gray-200 border-b border-solid pb-1 text-gray-600 md:border-0 md:px-1 md:pb-0">
                 <Button
-                    as={Label}
-                    className="inline-flex cursor-pointer font-bold text-sm hover:text-red-500"
-                    styled={false}
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    className="font-bold"
                     onClick={() => void clear()}
                 >
                     {tCart('clear-cart')}
