@@ -1,5 +1,6 @@
 import { Error } from '@nordcom/commerce-errors';
 import { flattenConnection } from '@shopify/hydrogen-react';
+import { PackageOpen as EmptyCollectionIcon } from 'lucide-react';
 import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
 import { notFound, RedirectType, redirect, unstable_rethrow } from 'next/navigation';
@@ -10,11 +11,14 @@ import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CollectionPaginationCountApi } from '@/api/shopify/collection';
 import { Blocks } from '@/blocks/blocks';
 import type { BlockNode } from '@/blocks/types';
+import { Button } from '@/components/actionable/button';
 import { Pagination } from '@/components/actionable/pagination';
 import { CMSContent } from '@/components/cms/cms-content';
+import { EmptyState } from '@/components/empty-state';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import { JsonLd } from '@/components/json-ld';
+import Link from '@/components/link';
 import PageContent from '@/components/page-content';
 import CollectionBlock from '@/components/products/collection-block';
 import Heading from '@/components/typography/heading';
@@ -139,6 +143,17 @@ export default async function CollectionsCollectionPage({
     );
 }
 
+/**
+ * Cached collection frame: breadcrumbs, title, description, the paginated grid
+ * (passed as `children`), and trailing CMS blocks. When the collection holds no
+ * products it renders the shared {@link EmptyState} with a browse-all action
+ * instead of a bare heading, so an empty collection is never a dead end.
+ *
+ * @param props.params - Route params resolving the tenant, locale, and collection handle.
+ * @param props.children - The dynamically-rendered, paginated product grid.
+ * @returns The collection page frame, including the empty state when there are no products.
+ * @throws Re-throws non-not-found Shopify errors; triggers `notFound()` for invalid handles and not-found collections.
+ */
 async function CollectionShell({ params, children }: { params: CollectionPageParams; children: ReactNode }) {
     'use cache';
     cacheLife('max');
@@ -173,6 +188,7 @@ async function CollectionShell({ params, children }: { params: CollectionPagePar
 
     const cmsMeta = await CollectionMetadataApi({ shop, locale, handle });
     const i18n = await getDictionary({ shop, locale });
+    const { t } = getTranslations('common', i18n);
 
     const empty = collection.products.edges.length <= 0;
 
@@ -245,7 +261,20 @@ async function CollectionShell({ params, children }: { params: CollectionPagePar
 
                     {pagination}
                 </PageContent>
-            ) : null}
+            ) : (
+                <PageContent>
+                    <EmptyState
+                        icon={<EmptyCollectionIcon aria-hidden="true" />}
+                        title={t('empty-collection-title')}
+                        description={t('empty-collection-description')}
+                        action={
+                            <Button as={Link} href="/">
+                                {t('browse-all-products')}
+                            </Button>
+                        }
+                    />
+                </PageContent>
+            )}
 
             <Suspense key={`collections.${handle}.cms`} fallback={<div className="h-32 w-full" data-skeleton />}>
                 <CMSContent shop={shop} locale={locale} handle={handle} />

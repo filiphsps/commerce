@@ -21,6 +21,7 @@
         "view-cart": "Se handlekurven din",
         "continue-shopping": "Fortsett å handle",
         "empty": "Det er ingen varer i handlekurven.",
+        "empty-title": "Handlekurven din er tom",
         "n-left": "Bare {0} igjen",
         "back-order": "Tilgjengelig på restordre"
     },
@@ -37,6 +38,18 @@
         "provider-error": "Feil i handlekurvtjenesten. Prøv igjen."
     },
     "common": {
+        "back-to-home": "Tilbake til forsiden",
+        "browse-all-products": "Se alle produkter",
+        "empty-collection-title": "Ingen produkter ennå",
+        "empty-collection-description": "Denne kolleksjonen har ingen produkter akkurat nå. Kom tilbake snart.",
+        "error-title": "Noe gikk galt",
+        "error-description": "En uventet feil oppstod hos {0}. Prøv igjen, eller kontakt kundeservice hvis problemet vedvarer.",
+        "no-results-title": "Ingen resultater funnet",
+        "no-results-for-query": "Vi fant ingenting som samsvarer med «{0}».",
+        "not-found-title": "Siden ble ikke funnet",
+        "not-found-description": "Beklager, vi fant ikke siden du lette etter. Den kan ha blitt flyttet eller finnes ikke lenger.",
+        "this-shop": "denne butikken",
+        "try-again": "Prøv igjen",
         "account": "konto",
         "add-to-cart": "Kjøpe",
         "add": "Legg til",

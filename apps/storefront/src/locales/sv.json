@@ -19,6 +19,7 @@
         "view-cart": "Visa varukorgen",
         "continue-shopping": "Fortsätt handla",
         "empty": "Det finns inga varor i din varukorg.",
+        "empty-title": "Din varukorg är tom",
         "n-left": "Endast {0} kvar",
         "back-order": "Tillgängligt på restorder"
     },
@@ -35,6 +36,18 @@
         "provider-error": "Fel i varukorgstjänsten. Försök igen."
     },
     "common": {
+        "back-to-home": "Tillbaka till startsidan",
+        "browse-all-products": "Se alla produkter",
+        "empty-collection-title": "Inga produkter ännu",
+        "empty-collection-description": "Den här kollektionen har inga produkter just nu. Kom tillbaka snart.",
+        "error-title": "Något gick fel",
+        "error-description": "Ett oväntat fel uppstod hos {0}. Försök igen, eller kontakta vår support om problemet kvarstår.",
+        "no-results-title": "Inga resultat hittades",
+        "no-results-for-query": "Vi kunde inte hitta något som matchar ”{0}”.",
+        "not-found-title": "Sidan kunde inte hittas",
+        "not-found-description": "Tyvärr kunde vi inte hitta sidan du letade efter. Den kan ha flyttats eller finns inte längre.",
+        "this-shop": "den här butiken",
+        "try-again": "Försök igen",
         "add-to-cart": "Köp",
         "add": "Lägg till",
         "account": "konto",

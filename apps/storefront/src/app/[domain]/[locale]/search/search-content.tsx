@@ -1,12 +1,14 @@
 'use client';
 
-import { Search as SearchIcon } from 'lucide-react';
+import { SearchX as NoResultsIcon, Search as SearchIcon } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import type { HTMLProps, ReactNode } from 'react';
 import { useCallback, useEffect, useRef, useState, useTransition } from 'react';
 import type { ProductFilters } from '@/api/product';
 import { Button } from '@/components/actionable/button';
 import { Filters } from '@/components/actionable/filters';
+import { EmptyState } from '@/components/empty-state';
+import Link from '@/components/link';
 import { Label } from '@/components/typography/label';
 import { getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
@@ -138,6 +140,12 @@ export default function SearchContent({
 
     const { t } = getTranslations('common', i18n);
 
+    // A committed query with no rendered cards means a genuine zero-result search,
+    // distinct from the initial unsearched state — only the former gets a branded
+    // empty state. `empty:hidden` would otherwise collapse the list to nothing.
+    const activeQuery = searchParams.get('q')?.trim() ?? '';
+    const showEmptyState = !isPending && activeQuery.length > 0 && productCards.length <= 0;
+
     return (
         <>
             <SearchBar
@@ -182,7 +190,22 @@ export default function SearchContent({
                 </Label>
             ) : null}
 
-            <section className="flex flex-col gap-0 empty:hidden">{isPending ? skeletonCards : productCards}</section>
+            {showEmptyState ? (
+                <EmptyState
+                    icon={<NoResultsIcon aria-hidden="true" />}
+                    title={t('no-results-title')}
+                    description={t('no-results-for-query', activeQuery)}
+                    action={
+                        <Button as={Link} href="/">
+                            {t('browse-all-products')}
+                        </Button>
+                    }
+                />
+            ) : (
+                <section className="flex flex-col gap-0 empty:hidden">
+                    {isPending ? skeletonCards : productCards}
+                </section>
+            )}
         </>
     );
 }
