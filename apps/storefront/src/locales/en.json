@@ -23,6 +23,7 @@
         "view-cart": "View your shopping cart",
         "continue-shopping": "Continue shopping",
         "empty": "There are no items in your cart.",
+        "empty-title": "Your cart is empty",
         "remove-n-from-cart": "Remove {0} from the cart",
         "clear-cart": "Clear cart",
         "n-items": "{0} item(s)",
@@ -42,6 +43,18 @@
         "provider-error": "Cart provider error. Try again."
     },
     "common": {
+        "back-to-home": "Back to home",
+        "browse-all-products": "Browse all products",
+        "empty-collection-title": "No products yet",
+        "empty-collection-description": "This collection doesn't have any products right now. Check back soon.",
+        "error-title": "Something went wrong",
+        "error-description": "An unexpected error occurred at {0}. Please try again, or contact our support if the problem persists.",
+        "no-results-title": "No results found",
+        "no-results-for-query": "We couldn't find anything matching \"{0}\".",
+        "not-found-title": "Page not found",
+        "not-found-description": "Sorry, we couldn't find the page you were looking for. It may have been moved or no longer exists.",
+        "this-shop": "this shop",
+        "try-again": "Try again",
         "account-dashboard": "account dashboard",
         "account": "account",
         "add-to-cart": "Add to Cart",
@@ -86,7 +99,11 @@
         "share-via-email": "Share via Email",
         "share": "Share",
         "size": "Size",
-        "wishlist": "Wishlist"
+        "view-image": "View image {0}",
+        "wishlist": "Wishlist",
+        "zoom-image": "Zoom image",
+        "zoom-in": "Zoom in",
+        "zoom-out": "Zoom out"
     },
     "product": {
         "add-to-wishlist": "Add to Wishlist",

@@ -4,16 +4,17 @@ import type { Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-a
 import { Mail as MailIcon } from 'lucide-react';
 import Image from 'next/image';
 import type { HTMLProps, ReactNode } from 'react';
-import { Fragment, Suspense, useCallback, useRef, useState } from 'react';
+import { Fragment, Suspense, useCallback, useState } from 'react';
 import { EmailShareButton, FacebookShareButton, TwitterShareButton } from 'react-share';
 
 import type { Product } from '@/api/product';
+import { ProductGalleryLightbox } from '@/components/products/product-gallery-lightbox';
 import type { LocaleDictionary } from '@/utils/locale';
 import { getTranslations } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 
 const SHARE_BUTTON_STYLES =
-    'z-10 flex h-8 w-8 appearance-none items-center justify-center rounded-full border-2 border-solid border-gray-300 bg-white fill-primary stroke-primary object-cover object-center transition-colors hover:border-primary hover:text-primary md:h-9 md:w-9';
+    'focus-ring z-10 flex h-8 w-8 appearance-none items-center justify-center rounded-full border-2 border-(--border-strong) border-solid bg-(--surface-2) text-(color:var(--text)) transition-colors hover:border-(color:var(--accent)) hover:text-(color:var(--accent)) md:h-9 md:w-9';
 
 export type ProductGalleryProps = {
     initialImageId?: string | null;
@@ -27,15 +28,22 @@ export type ProductGalleryProps = {
     primaryImageClassName?: string;
 } & HTMLProps<HTMLDivElement>;
 /**
- * Interactive image gallery with thumbnail strip and social share buttons.
+ * Interactive image gallery with a thumbnail strip, a click-to-zoom lightbox, and social share buttons.
  *
- * @param props.initialImageId - ID of the image to show on initial render; defaults to the first image.
+ * Visuals are driven by the P3 semantic tokens (`--surface-*`/`--text*`/`--border-*`) and the shared
+ * `focus-ring` utility, so a theme-less shop renders sensibly and a tenant theme recolors the set.
+ * The primary image cross-fades on selection via a `motion-safe` CSS opacity transition keyed off its
+ * load state — no JS timer — so reduced-motion users get an instant swap. Selecting a thumbnail
+ * promotes it to the primary slot; activating the primary image opens a full-screen lightbox. Imagery
+ * is unoptimized (P2-1 is off), so no blur placeholder is wired despite `thumbhash` being fetched.
+ *
+ * @param props.initialImageId - ID of the image to show first; falls back to the first image when absent or unmatched.
  * @param props.images - Array of Shopify images to display; returns `null` when empty.
  * @param props.actions - Additional action nodes rendered alongside the share buttons.
  * @param props.enableShare - When `true`, renders email and social share buttons.
- * @param props.padding - When `true`, applies spacious inner padding to the primary image container.
+ * @param props.padding - When `true`, applies roomier inner padding to the primary image container.
  * @param props.pageUrl - Canonical URL forwarded to the share buttons.
- * @param props.i18n - Locale dictionary for share button labels.
+ * @param props.i18n - Locale dictionary for the share, thumbnail, and lightbox control labels.
  * @param props.product - Product providing the SEO title used by share buttons.
  * @param props.primaryImageClassName - Additional CSS class names applied to the primary image element.
  * @returns The gallery section, or `null` when no images are provided.
@@ -53,29 +61,31 @@ const ProductGallery = ({
     primaryImageClassName,
     ...props
 }: ProductGalleryProps) => {
-    const [loading, setLoading] = useState<boolean>(false);
     const [selected, setSelected] = useState<ShopifyImage | null>(null);
-    const [next, setNext] = useState<ShopifyImage | null>(null);
-    // Each click bumps `loadToken`; stale `setTimeout`/`onLoad` callbacks from
-    // earlier images compare against this and bail out instead of clobbering
-    // the loading flag for the most recent selection.
-    const loadTokenRef = useRef(0);
+    const [loaded, setLoaded] = useState<boolean>(true);
+    const [lightboxOpen, setLightboxOpen] = useState<boolean>(false);
 
     const { t } = getTranslations('common', i18n);
 
+    /**
+     * Promotes `image` to the primary slot and marks it not-yet-loaded so its CSS fade-in replays.
+     *
+     * @param image - The image to display as the primary image.
+     */
     const setImage = useCallback((image: ShopifyImage) => {
-        loadTokenRef.current += 1;
-        setLoading(true);
-        setNext(image);
+        setSelected(image);
+        setLoaded(false);
     }, []);
 
     if (!images || images.length <= 0) return null;
 
-    const initialImage = (initialImageId ? images.find(({ id }) => id === initialImageId) : images[0]) ?? null;
-    const image = next || selected || initialImage;
-    const isLoading = loading || !image;
-    const loadingProps = { ...(isLoading ? { 'data-skeleton': true } : {}) };
+    const [firstImage] = images;
+    if (!firstImage) return null;
 
+    const initialImage = (initialImageId ? images.find(({ id }) => id === initialImageId) : undefined) ?? firstImage;
+    const image = selected ?? initialImage;
+
+    const loadingProps = !loaded ? { 'data-skeleton': true } : {};
     const title = enableShare ? product.seo.title || `${product.vendor} ${product.title}` : undefined;
 
     return (
@@ -83,51 +93,39 @@ const ProductGallery = ({
             <div className="flex w-full gap-2 overflow-clip md:sticky md:top-36 md:flex-col lg:gap-3">
                 <div
                     className={cn(
-                        'relative flex h-1/4 w-full grow items-center justify-center overflow-hidden rounded-lg border border-gray-200 border-solid bg-white p-2 md:h-full md:p-3',
-                        isLoading && 'bg-gray-100',
-                        padding && 'p-8 py-12 md:p-16',
+                        'relative flex h-1/4 w-full grow items-center justify-center overflow-hidden rounded-lg border border-(--border-default) border-solid bg-(--surface-2) p-2 md:h-full md:p-3',
+                        padding && 'p-4 py-6 md:p-8',
                     )}
                     {...loadingProps}
                 >
-                    {image ? (
-                        <div className="z-5 h-fit min-h-32 w-full transform-gpu overflow-hidden md:h-full md:max-h-120">
-                            <Image
-                                role={image.altText ? undefined : 'presentation'}
-                                src={image.url!}
-                                alt={image.altText ?? ''}
-                                title={image.altText ?? undefined}
-                                width={image.width ?? 500}
-                                height={image.height ?? 500}
-                                sizes="(max-width: 920px) 75vw, 500px"
-                                loading="eager"
-                                decoding="async"
-                                onLoadStart={() => setLoading(true)}
-                                onLoad={() => {
-                                    const token = loadTokenRef.current;
-                                    setTimeout(() => {
-                                        if (loadTokenRef.current !== token) return;
-                                        setLoading(false);
-                                    }, 250);
+                    <button
+                        type="button"
+                        aria-label={t('zoom-image')}
+                        onClick={() => setLightboxOpen(true)}
+                        className="focus-ring z-5 flex h-fit min-h-32 w-full transform-gpu cursor-zoom-in appearance-none items-center justify-center overflow-hidden md:h-full md:max-h-144"
+                    >
+                        <Image
+                            key={image.url}
+                            role={image.altText ? undefined : 'presentation'}
+                            src={image.url}
+                            alt={image.altText ?? ''}
+                            title={image.altText ?? undefined}
+                            width={image.width ?? 500}
+                            height={image.height ?? 500}
+                            sizes="(max-width: 920px) 75vw, 500px"
+                            loading="eager"
+                            decoding="async"
+                            onLoad={() => setLoaded(true)}
+                            className={cn(
+                                'h-fit w-full object-contain object-center md:h-full md:max-h-144',
+                                loaded ? 'opacity-100' : 'opacity-0',
+                                'motion-safe:transition-opacity motion-safe:duration-500',
+                                primaryImageClassName,
+                            )}
+                        />
+                    </button>
 
-                                    if (!next) {
-                                        return;
-                                    }
-
-                                    setSelected(() => next);
-                                    setNext(null);
-                                }}
-                                className={cn(
-                                    'h-fit w-full object-contain object-center opacity-100 transition-opacity duration-500 md:h-full md:max-h-120',
-                                    isLoading && 'opacity-0 transition-none',
-                                    primaryImageClassName,
-                                )}
-                            />
-                        </div>
-                    ) : (
-                        <div className="h-full min-h-32 w-full md:min-h-144" />
-                    )}
-
-                    {!isLoading && enableShare ? (
+                    {loaded && enableShare ? (
                         <div
                             className={cn(
                                 'absolute inset-x-2 top-2 flex flex-row-reverse items-start justify-between gap-2',
@@ -184,7 +182,7 @@ const ProductGallery = ({
                             </Suspense>
 
                             {image.altText ? (
-                                <div className="rounded-lg bg-gray-100 p-1 px-2 font-semibold text-gray-500 text-sm opacity-80">
+                                <div className="text-(color:var(--text-muted)) rounded-lg bg-(--surface-1) p-1 px-2 font-semibold text-sm opacity-80">
                                     {image.altText}
                                 </div>
                             ) : null}
@@ -192,34 +190,27 @@ const ProductGallery = ({
                     ) : null}
                 </div>
 
-                {image && images.length > 1 ? (
+                {images.length > 1 ? (
                     <aside className="flex grid-cols-4 grid-rows-[1fr] flex-col gap-2 overflow-hidden md:grid md:h-40">
                         {images
                             .filter(({ id }) => image.id !== id)
-                            .map((image, index) => {
+                            .map((thumbnail, index) => {
                                 return (
                                     <button
                                         type="button"
-                                        key={image.id}
-                                        aria-label={`Enlarge image #${index + 1}`}
-                                        onClick={() => setImage(image)}
-                                        className={cn(
-                                            'flex appearance-none items-center justify-center rounded-lg border-2 border-gray-100 border-solid bg-white p-1 transition-all hover:border-primary md:aspect-4/3 md:size-32 md:p-4',
-                                            isLoading && 'bg-gray-100',
-                                        )}
-                                        {...loadingProps}
+                                        key={thumbnail.id ?? thumbnail.url}
+                                        aria-label={t('view-image', index + 1)}
+                                        onClick={() => setImage(thumbnail)}
+                                        className="focus-ring hover:border-(color:var(--accent)) flex appearance-none items-center justify-center rounded-lg border-(--border-default) border-2 border-solid bg-(--surface-2) p-1 motion-safe:transition-colors md:aspect-4/3 md:size-32 md:p-4"
                                     >
                                         <Image
-                                            className={cn(
-                                                'h-14 w-14 object-contain object-center transition-opacity duration-500 md:aspect-4/3 md:size-full',
-                                                isLoading && 'opacity-0 transition-none',
-                                            )}
-                                            style={{ transitionDelay: `${(index + 1) * 250}ms` }}
-                                            src={image.url!}
-                                            alt={image.altText || `#${index + 1}`}
-                                            title={image.altText!}
-                                            width={image.width ?? 175}
-                                            height={image.height ?? 175}
+                                            className="h-14 w-14 object-contain object-center md:aspect-4/3 md:size-full"
+                                            role={thumbnail.altText ? undefined : 'presentation'}
+                                            src={thumbnail.url}
+                                            alt={thumbnail.altText ?? ''}
+                                            title={thumbnail.altText ?? undefined}
+                                            width={thumbnail.width ?? 175}
+                                            height={thumbnail.height ?? 175}
                                             sizes="(max-width: 920px) 75px, 175px"
                                             loading="eager"
                                             decoding="async"
@@ -231,6 +222,13 @@ const ProductGallery = ({
                     </aside>
                 ) : null}
             </div>
+
+            <ProductGalleryLightbox
+                image={image}
+                open={lightboxOpen}
+                onClose={() => setLightboxOpen(false)}
+                i18n={i18n}
+            />
         </section>
     );
 };

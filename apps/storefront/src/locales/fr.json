@@ -21,6 +21,7 @@
         "view-cart": "Voir votre panier",
         "continue-shopping": "Continuer vos achats",
         "empty": "Votre panier est vide.",
+        "empty-title": "Votre panier est vide",
         "n-left": "Plus que {0} en stock",
         "back-order": "Disponible en précommande"
     },
@@ -37,6 +38,18 @@
         "provider-error": "Erreur du service de panier. Veuillez réessayer."
     },
     "common": {
+        "back-to-home": "Retour à l'accueil",
+        "browse-all-products": "Voir tous les produits",
+        "empty-collection-title": "Aucun produit pour le moment",
+        "empty-collection-description": "Cette collection ne contient aucun produit pour le moment. Revenez bientôt.",
+        "error-title": "Une erreur s'est produite",
+        "error-description": "Une erreur inattendue s'est produite sur {0}. Veuillez réessayer ou contacter notre support si le problème persiste.",
+        "no-results-title": "Aucun résultat trouvé",
+        "no-results-for-query": "Nous n'avons rien trouvé correspondant à « {0} ».",
+        "not-found-title": "Page introuvable",
+        "not-found-description": "Désolé, nous n'avons pas pu trouver la page que vous recherchiez. Elle a peut-être été déplacée ou n'existe plus.",
+        "this-shop": "cette boutique",
+        "try-again": "Réessayer",
         "account": "compte",
         "add-to-cart": "Ajouter au panier",
         "add": "Ajouter",
