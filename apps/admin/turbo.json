@@ -1,0 +1,12 @@
+{
+    "$schema": "https://turborepo.dev/schema.json",
+    "extends": ["//"],
+    "tasks": {
+        "generate": {
+            "outputs": ["src/lib/cms-actions/_generated/**"]
+        },
+        "build": {
+            "dependsOn": ["^generate", "^build", "generate"]
+        }
+    }
+}
