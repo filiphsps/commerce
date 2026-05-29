@@ -37,7 +37,14 @@ vi.mock('@/utils/build-config', () => ({
 
 vi.mock('@nordcom/commerce-db', async () => {
     const { mockShop } = await import('./src/utils/test/fixtures/shop');
+    // The theme module is pure (no Mongoose/db side effects), so pull in its real
+    // `resolveTheme` / `THEME_DEFAULTS` / `FONT_FAMILIES` exports rather than stubbing them — the
+    // CSS-variable serializer and font loader depend on the genuine default-resolution behavior.
+    const theme = await vi.importActual<typeof import('@nordcom/commerce-db/lib/theme')>(
+        '@nordcom/commerce-db/lib/theme',
+    );
     return {
+        ...theme,
         Shop: {
             findByDomain: vi.fn().mockResolvedValue(mockShop()),
         },

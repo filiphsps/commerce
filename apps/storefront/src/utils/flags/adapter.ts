@@ -59,7 +59,8 @@ type ShopWithFlags = FlagEntities['shop'] & {
 export function nordcomFlagAdapter<T>(): Adapter<T, FlagEntities> {
     return {
         identify,
-        origin: (key) => `/admin/feature-flags/${key}`,
+        // Namespaced keys (e.g. `section:hero`) contain a `:` — encode so the toolbar deep-link stays valid.
+        origin: (key) => `/admin/feature-flags/${encodeURIComponent(key)}`,
         async decide({ key, entities, defaultValue }) {
             const overrides = await getFlagOverrides();
             if (overrides && Object.hasOwn(overrides, key)) return overrides[key] as T;
