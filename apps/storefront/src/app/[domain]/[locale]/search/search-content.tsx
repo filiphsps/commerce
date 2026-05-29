@@ -55,7 +55,7 @@ export const SearchBar = ({ defaultValue, onSearch, disabled, className, i18n, .
     }, [onSearch, value]);
 
     return (
-        <div className={cn('flex h-16 overflow-clip rounded-lg bg-white', className)} {...props}>
+        <div className={cn('flex h-16 overflow-clip rounded-lg bg-(--surface-0)', className)} {...props}>
             <input
                 ref={inputRef}
                 name="query"

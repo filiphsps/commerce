@@ -3,7 +3,7 @@ import PageContent from '@/components/page-content';
 export default function SearchLoading() {
     return (
         <PageContent>
-            <div className="flex h-16 overflow-clip rounded-lg bg-white">
+            <div className="flex h-16 overflow-clip rounded-lg bg-(--surface-0)">
                 <div
                     className="grow rounded-l-lg border-2 border-(--border-strong) border-r-0 border-solid px-4 py-2"
                     data-skeleton

@@ -40,14 +40,11 @@ const BANNED_UTILITIES: ReadonlyArray<{ readonly name: string; readonly pattern:
 
 // Reasons a file may retain a banned utility. Each maps to a genuine gap, not an unmigrated oversight
 // — the ratchet only shrinks: when a gap closes, its entry must be removed (the stale-entry test
-// enforces that).
-const WHITE_SURFACE =
-    'bg-white panel/card: no platform white-surface token exists (surfaces are off-white #f3f3f3 / #f5f5f5), so swapping one in would shift the un-themed render. Re-token when a white-surface token lands.';
+// enforces that). The WHITE_SURFACE / WARNING_GAP / SUCCESS_PILL_GAP gaps are now closed by the
+// `--surface-0` / `--state-warning` / `--surface-success`+`--text-success-strong` tokens, so their
+// reasons (and every file that carried only them) have dropped off below.
 const WHITE_ON_BRAND =
     'text-white is the legible foreground on a saturated colored/branded badge or button (--state-success / sale-stripes / brand). No on-color foreground token exists; the white-on-success / white-on-danger assertions below guard its contrast.';
-const WARNING_GAP = 'text-amber-* warning: no --state-warning semantic token exists yet (work-map unresolved gap).';
-const SUCCESS_PILL_GAP =
-    'bg-green-* light success/discount pill: no semantic surface token pair yet (work-map unresolved gap: green-950 on green-200).';
 const CMS_BLOCK =
     'CMS block outside the P5 component/route migration scope; its bg-gray-* / border-gray-* migrate with the block batch.';
 const DOC_COMMENT = 'Match is a doc-comment reference to the legacy bg-gray-100 class, not a live utility.';
@@ -59,34 +56,14 @@ const DOC_COMMENT = 'Match is a doc-comment reference to the legacy bg-gray-100 
  */
 const ALLOWLIST: ReadonlyMap<string, string> = new Map([
     ['app/[domain]/[locale]/loading.tsx', DOC_COMMENT],
-    ['app/[domain]/[locale]/products/[handle]/@gallery/page.tsx', WHITE_SURFACE],
     ['app/[domain]/[locale]/products/[handle]/page.tsx', WHITE_ON_BRAND],
     ['app/[domain]/[locale]/products/[handle]/product-content.tsx', WHITE_ON_BRAND],
-    ['app/[domain]/[locale]/search/loading.tsx', WHITE_SURFACE],
-    ['app/[domain]/[locale]/search/search-content.tsx', WHITE_SURFACE],
     ['blocks/banner.tsx', `${CMS_BLOCK} ${WHITE_ON_BRAND}`],
     ['blocks/media-grid.tsx', CMS_BLOCK],
     ['blocks/rich-text.tsx', CMS_BLOCK],
     ['components/actionable/button.tsx', WHITE_ON_BRAND],
-    ['components/actionable/input.tsx', WHITE_SURFACE],
-    ['components/cart/cart-coupons.tsx', WHITE_SURFACE],
-    ['components/cart/cart-line.tsx', `${WHITE_SURFACE} ${WARNING_GAP}`],
-    ['components/cart/cart-summary.tsx', SUCCESS_PILL_GAP],
-    ['components/footer/footer.tsx', WHITE_SURFACE],
-    ['components/geo-redirect.tsx', WHITE_SURFACE],
-    ['components/header/header-menu.tsx', WHITE_SURFACE],
-    ['components/header/header.tsx', WHITE_SURFACE],
-    ['components/informational/alert.tsx', SUCCESS_PILL_GAP],
-    ['components/layout/modal.tsx', WHITE_SURFACE],
-    ['components/layout/popover.tsx', WHITE_SURFACE],
-    ['components/product-card/cta/float-pill.tsx', WHITE_SURFACE],
-    ['components/product-card/picker/sheet.tsx', WHITE_SURFACE],
     ['components/product-display/primitives/variant-badges.tsx', WHITE_ON_BRAND],
-    ['components/products/collection-block-arrows.tsx', WHITE_SURFACE],
-    ['components/products/info-lines.tsx', WARNING_GAP],
-    ['components/products/product-actions-container.tsx', WHITE_SURFACE],
-    ['components/products/product-quantity-breaks.tsx', `${WHITE_SURFACE} ${WHITE_ON_BRAND}`],
-    ['components/products/quantity-selector.tsx', WHITE_SURFACE],
+    ['components/products/product-quantity-breaks.tsx', WHITE_ON_BRAND],
 ]);
 
 /**
@@ -213,12 +190,20 @@ const TOKENS = {
     stateDanger: '#a53d3a', // --state-danger → --color-danger
     stateSuccess: '#3b9e2e', // --state-success → --color-block-success
     stateSuccessDark: '#2a7221', // --color-block-success-dark (the darken remedy for normal-weight text)
+    stateWarning: '#b54a2a', // --state-warning → --product-card-urgency-color
+    surfaceSuccess: '#e1faea', // --surface-success → --color-green-light
+    textSuccessStrong: '#093f09', // --text-success-strong → --color-green-dark
     vendor: '#6b6555', // --product-card-vendor-color
 } as const;
 
 // The Tailwind gray-400 (#9ca3af) that `text-muted` replaces for disabled/placeholder text; kept here
 // only as the historical baseline the migration improves on.
 const REPLACED_GRAY_400 = '#9ca3af';
+
+// The Tailwind amber-600 (#d97706) that `--state-warning` replaces for low-stock / back-order text;
+// kept here only as the historical baseline the migration improves on (amber-600 fails normal AA on
+// white at ~3.2:1).
+const REPLACED_AMBER_600 = '#d97706';
 
 const AA_NORMAL = 4.5;
 const AA_LARGE = 3.0;
@@ -235,6 +220,9 @@ describe('text-on-surface contrast (P5-9, WCAG AA)', () => {
             ['--color-danger', TOKENS.stateDanger],
             ['--color-block-success', TOKENS.stateSuccess],
             ['--color-block-success-dark', TOKENS.stateSuccessDark],
+            ['--product-card-urgency-color', TOKENS.stateWarning],
+            ['--color-green-light', TOKENS.surfaceSuccess],
+            ['--color-green-dark', TOKENS.textSuccessStrong],
             ['--product-card-vendor-color', TOKENS.vendor],
         ];
         for (const [name, value] of sources) {
@@ -255,6 +243,14 @@ describe('text-on-surface contrast (P5-9, WCAG AA)', () => {
         { label: '--state-sale on --surface-1', fg: TOKENS.stateSale, bg: TOKENS.surface1 },
         // alert / error foreground → white on --state-danger.
         { label: 'white on --state-danger', fg: TOKENS.white, bg: TOKENS.stateDanger },
+        // low-stock / back-order warning → --state-warning on white (replaces text-amber-600).
+        { label: '--state-warning on white', fg: TOKENS.stateWarning, bg: TOKENS.white },
+        // soft-success discount pill → --text-success-strong on --surface-success (replaces green-950/green-200).
+        {
+            label: '--text-success-strong on --surface-success',
+            fg: TOKENS.textSuccessStrong,
+            bg: TOKENS.surfaceSuccess,
+        },
         // body text baseline.
         { label: '--text on --surface-1', fg: TOKENS.text, bg: TOKENS.surface1 },
     ])('passes normal AA: $label', ({ fg, bg }) => {
@@ -280,5 +276,15 @@ describe('text-on-surface contrast (P5-9, WCAG AA)', () => {
             contrastRatio(REPLACED_GRAY_400, TOKENS.white),
         );
         expect(contrastRatio(REPLACED_GRAY_400, TOKENS.white)).toBeLessThan(AA_NORMAL);
+    });
+
+    it('improves low-stock warning legibility by replacing amber-600 with the darker --state-warning', () => {
+        // --state-warning is the warm urgency value (#b54a2a): strictly darker (higher contrast on
+        // white) than the amber-600 it replaced, which itself fails normal AA.
+        expect(relativeLuminance(TOKENS.stateWarning)).toBeLessThan(relativeLuminance(REPLACED_AMBER_600));
+        expect(contrastRatio(TOKENS.stateWarning, TOKENS.white)).toBeGreaterThan(
+            contrastRatio(REPLACED_AMBER_600, TOKENS.white),
+        );
+        expect(contrastRatio(REPLACED_AMBER_600, TOKENS.white)).toBeLessThan(AA_NORMAL);
     });
 });

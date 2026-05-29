@@ -2,6 +2,7 @@
 
 import { useCartCount } from '@nordcom/cart-react';
 import { ShoppingBag as ShoppingBagIcon } from 'lucide-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/actionable/button';
 import Link from '@/components/link';
 import { capitalize, getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
@@ -22,6 +23,20 @@ const CartButton = ({ locale, i18n }: CartButtonProps) => {
     const { t } = getTranslations('cart', i18n);
     const totalQuantity = useCartCount();
 
+    // Stamp the count badge whenever the quantity increases (add-to-cart). `previousQuantity`
+    // starts `null` so the first settled render only records the baseline — the badge must not
+    // stamp on initial hydration, only on a real increment driven by user action.
+    const previousQuantity = useRef<number | null>(null);
+    const [bump, setBump] = useState(false);
+    useEffect(() => {
+        const previous = previousQuantity.current;
+        previousQuantity.current = totalQuantity;
+        if (previous !== null && totalQuantity > previous) {
+            setBump(true);
+        }
+    }, [totalQuantity]);
+    const clearBump = useCallback(() => setBump(false), []);
+
     return (
         <Button
             as={Link}
@@ -37,8 +52,14 @@ const CartButton = ({ locale, i18n }: CartButtonProps) => {
             title={capitalize(t('view-cart'))}
         >
             <div
-                className={cn('text-left font-extrabold text-base transition-colors', !totalQuantity && 'w-0')}
+                className={cn(
+                    'text-left font-extrabold text-base transition-colors',
+                    !totalQuantity && 'w-0',
+                    bump &&
+                        'motion-safe:animate-[chip-stamp_var(--product-card-motion-fast)_var(--product-card-motion-ease)]',
+                )}
                 data-cart-count={totalQuantity || 0}
+                onAnimationEnd={clearBump}
                 suppressHydrationWarning={true}
             >
                 {totalQuantity || null}

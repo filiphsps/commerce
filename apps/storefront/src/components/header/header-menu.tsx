@@ -217,7 +217,7 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
                         data-header-panel
                         data-header-accent-rail="true"
                         className={cn(
-                            'relative rounded-header-panel border border-[var(--header-divider-color)] bg-white p-header-panel',
+                            'relative rounded-header-panel border border-[var(--header-divider-color)] bg-(--surface-0) p-header-panel',
                             'shadow-header-panel',
                             'max-h-[calc(95dvh-var(--header-bar-height)-var(--header-nav-height))] overflow-y-auto',
                             'before:pointer-events-none before:absolute before:top-0 before:right-0 before:left-0',

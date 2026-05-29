@@ -58,7 +58,7 @@ const MultilineInput = <T extends ElementType>({
             draggable={false}
             {...props}
             className={cn(
-                'w-full resize-none appearance-none rounded-md border-primary bg-white p-2 text-xs focus:outline-none focus:ring-0',
+                'w-full resize-none appearance-none rounded-md border-primary bg-(--surface-0) p-2 text-xs focus:outline-none focus:ring-0',
                 className,
             )}
         >

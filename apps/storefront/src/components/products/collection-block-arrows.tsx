@@ -11,7 +11,7 @@ export type CollectionBlockArrowsProps = {
 
 const ARROW_CLASSES = cn(
     'absolute top-[38%] z-4 inline-flex size-9 cursor-pointer items-center justify-center',
-    'rounded-full border border-(--product-card-border-color) bg-white shadow-product-card-hover',
+    'rounded-full border border-(--product-card-border-color) bg-(--surface-0) shadow-product-card-hover',
     'font-semibold text-base text-(--product-card-title-color)',
     'focus-visible:outline-2 focus-visible:outline-(--accent) focus-visible:outline-offset-2',
     'motion-reduce:transition-none',

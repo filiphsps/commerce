@@ -390,6 +390,9 @@ html:root {
  * defaults, so redeclaring them here is a no-op for every `text-*` utility until a shop overrides the
  * scale. */
 :root {
+    /* Pure-white panel/card surface. Aliases `--color-bright` (#ffffff), so migrating `bg-white`
+     * to `bg-(--surface-0)` renders identically on a theme-less shop while becoming overridable. */
+    --surface-0: var(--color-bright);
     --surface-1: var(--color-block);
     --surface-2: var(--color-block-light);
     --surface-3: var(--color-block-dark);
@@ -406,6 +409,17 @@ html:root {
     --state-danger: var(--color-danger);
     --state-success: var(--color-block-success);
     --state-info: var(--color-block-info);
+
+    /* Low-stock / back-order warning text. Defaults to the warm product-card urgency value
+     * (#b54a2a): a near-neutral swap for the legacy `text-amber-600` that is darker, so it clears
+     * normal AA on white where amber-600 (~3.2:1) did not. */
+    --state-warning: var(--product-card-urgency-color, #b54a2a);
+
+    /* Soft-success discount pill — very-dark green text on a very-light green surface, reusing the
+     * existing `--color-green-*` sources. Replaces the legacy `bg-green-200` / `text-green-950`
+     * pairing; the high contrast clears WCAG AA (pinned in design-tokens.gate.test.ts). */
+    --surface-success: var(--color-green-light, #e1faea);
+    --text-success-strong: var(--color-green-dark, #093f09);
 
     --focus-ring: var(--accent);
 
