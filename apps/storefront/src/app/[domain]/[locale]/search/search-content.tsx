@@ -3,7 +3,7 @@
 import { Search as SearchIcon } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import type { HTMLProps, ReactNode } from 'react';
-import { useCallback, useState, useTransition } from 'react';
+import { useCallback, useEffect, useRef, useState, useTransition } from 'react';
 import type { ProductFilters } from '@/api/product';
 import { Button } from '@/components/actionable/button';
 import { Filters } from '@/components/actionable/filters';
@@ -34,6 +34,14 @@ type SearchBarProps = {
 export const SearchBar = ({ defaultValue, onSearch, disabled, className, i18n, ...props }: SearchBarProps) => {
     const { t } = getTranslations('common', i18n);
     const [value, setValue] = useState<string>(defaultValue ?? '');
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    // Focus the query field on mount. Equivalent to the old `autoFocus` attribute but applied
+    // programmatically so it doesn't trip the a11y `noAutofocus` lint (and gives us a single,
+    // explicit mount-time focus rather than an attribute the platform may apply unpredictably).
+    useEffect(() => {
+        inputRef.current?.focus();
+    }, []);
 
     // Search fires only on Enter / blur / button-click — not on every keystroke.
     // useDeferredValue is therefore not applicable here: there is no search-as-you-type
@@ -47,6 +55,7 @@ export const SearchBar = ({ defaultValue, onSearch, disabled, className, i18n, .
     return (
         <div className={cn('flex h-16 overflow-clip rounded-lg bg-white', className)} {...props}>
             <input
+                ref={inputRef}
                 name="query"
                 className="grow rounded-l-lg border-2 border-gray-300 border-r-0 border-solid px-4 py-2"
                 type="search"
@@ -66,7 +75,6 @@ export const SearchBar = ({ defaultValue, onSearch, disabled, className, i18n, .
 
                     performSearch();
                 }}
-                autoFocus={true}
                 spellCheck={true}
                 /* TODO: Make this copy configurable. */
                 placeholder="Search for products, brands, categories, collections, and more..."

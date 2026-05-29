@@ -3,7 +3,7 @@
 import { useCartStatus } from '@nordcom/cart-react';
 import { useProduct } from '@shopify/hydrogen-react';
 import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
-import type { HTMLProps } from 'react';
+import type { ComponentPropsWithoutRef, HTMLProps } from 'react';
 import type { ProductVariant } from '@/api/product';
 import { transformQuantityBreaks } from '@/api/product';
 import { Button } from '@/components/actionable/button';
@@ -21,7 +21,7 @@ export type ProductQuantityBreaksItemProps = {
     maxQuantity?: number;
     discount?: number;
     className?: string;
-} & Omit<HTMLProps<HTMLButtonElement>, 'type' | 'children' | 'as'>;
+} & Omit<ComponentPropsWithoutRef<'button'>, 'type' | 'children' | 'as'>;
 /**
  * Selectable quantity-break tier button showing the minimum quantity, optional discount badge, and computed price.
  *

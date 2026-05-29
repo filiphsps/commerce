@@ -233,12 +233,7 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
         ) : null;
 
     return (
-        <div
-            ref={triggerRef}
-            className="inline-block snap-start"
-            onMouseEnter={handlePointerEnter}
-            onMouseLeave={handlePointerLeave}
-        >
+        <div ref={triggerRef} className="inline-block snap-start">
             <button
                 type="button"
                 aria-haspopup="menu"
@@ -246,6 +241,8 @@ export function HeaderMenuTrigger({ item, locale }: { item: NavItem; locale: { c
                 aria-controls={open ? menuId : undefined}
                 aria-label={`Menu: ${item.link?.label ?? 'navigation'}`}
                 data-header-active-bar={open ? 'true' : undefined}
+                onMouseEnter={handlePointerEnter}
+                onMouseLeave={handlePointerLeave}
                 onClick={handleToggle}
                 onFocus={(e) => {
                     previouslyFocused.current = e.currentTarget;

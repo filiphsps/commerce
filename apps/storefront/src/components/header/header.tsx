@@ -57,7 +57,7 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
                         <Link
                             href={logoHref}
                             style={{ aspectRatio: `${(logo.width / logo.height).toFixed(2)} / 1` }}
-                            className="-ml-2 block h-full rounded-lg px-2 py-2 hover:bg-gray-100 focus-visible::bg-gray-100"
+                            className="focus-ring -ml-2 block h-full rounded-lg px-2 py-2 hover:bg-gray-100 focus-visible:bg-gray-100"
                         >
                             {logo.src ? (
                                 <Image
@@ -79,7 +79,8 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
                     <div className="flex h-full grow items-center justify-end gap-6" data-nosnippet={true}>
                         <Link
                             href="/search/"
-                            className="transition-colors hover:text-primary focus-visible:text-primary"
+                            className="focus-ring rounded-lg transition-colors hover:text-primary focus-visible:text-primary"
+                            aria-label={t('search')}
                             title={t('search')}
                         >
                             <SearchIcon className="stroke-1 text-xl lg:text-2xl" />

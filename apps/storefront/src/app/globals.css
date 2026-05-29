@@ -57,6 +57,37 @@
     --shadow-product-card-overlay: var(--product-card-overlay-shadow);
 }
 
+/* Semantic display/heading type scale (P5-6 of .specs/2026-05-28-storefront-theming/).
+ *
+ * Generates `text-display` / `text-h1` … `text-h3` / `text-body` utilities for the large end of the
+ * scale that Tailwind's defaults (`text-xs` … `text-xl`) don't cover, so ad-hoc `text-2xl md:text-4xl`
+ * pairs collapse to one semantic, fluid step. `clamp()` ramps each step from a mobile floor to a
+ * desktop ceiling, so headings scale without per-breakpoint overrides.
+ *
+ * Sizing only — line-height and letter-spacing are bundled, but font-weight and font-family are
+ * deliberately left to the consumer (`font-*`) and the tenant heading slot (`font-heading` utility /
+ * the base `h1`–`h6` rule, both reading `--font-heading`), keeping these steps tenant-themeable. The
+ * serializer-overridable body scale (`--text-xs` … `--text-xl`) is unaffected. */
+@theme {
+    --text-display: clamp(2.5rem, 1.8rem + 3.5vw, 4rem);
+    --text-display--line-height: 1.04;
+    --text-display--letter-spacing: -0.02em;
+
+    --text-h1: clamp(1.875rem, 1.4rem + 2.4vw, 2.75rem);
+    --text-h1--line-height: 1.1;
+    --text-h1--letter-spacing: -0.015em;
+
+    --text-h2: clamp(1.5rem, 1.2rem + 1.5vw, 2.125rem);
+    --text-h2--line-height: 1.15;
+    --text-h2--letter-spacing: -0.01em;
+
+    --text-h3: clamp(1.25rem, 1.1rem + 0.75vw, 1.5rem);
+    --text-h3--line-height: 1.25;
+
+    --text-body: 1rem;
+    --text-body--line-height: 1.6;
+}
+
 @utility stroke-1 {
     stroke-width: 0.15rem;
 }
@@ -73,6 +104,23 @@
 
 @utility contain-intrinsic-size-* {
     contain-intrinsic-size: --value([*]);
+}
+
+/* Single source of truth for the keyboard focus ring. Resolves `--focus-ring` (the P3-3 semantic
+ * token, tracking the tenant accent) so every interactive control shares one tenant-themeable
+ * outline instead of ad-hoc per-component focus styles. */
+@utility focus-ring {
+    &:focus-visible {
+        outline: 2px solid var(--focus-ring);
+        outline-offset: 2px;
+    }
+}
+
+/* Applies the tenant heading font (P3-5 `--font-heading`) to non-heading elements that carry the
+ * display/`text-h*` scale. Falls back to the body sans when no heading family is serialized, so a
+ * theme-less shop is unchanged. */
+@utility font-heading {
+    font-family: var(--font-heading, var(--font-sans));
 }
 
 /* Plain CSS custom properties consumed by hand-written CSS throughout the storefront. */
@@ -602,10 +650,17 @@ html:root {
                 rgba(0, 0, 0, 0.2) 25%,
                 rgba(0, 0, 0, 0) 50%
             );
-            animation: shimmer 5s infinite;
-            animation-delay: var(--animation-delay, 0ms);
 
             border-radius: inherit;
+        }
+    }
+
+    /* The shimmer sweep is a flourish: gate it behind `prefers-reduced-motion: no-preference` so
+     * reduced-motion users get a static skeleton tint instead of a looping animation. */
+    @media (prefers-reduced-motion: no-preference) {
+        [data-skeleton]::after {
+            animation: shimmer 5s infinite;
+            animation-delay: var(--animation-delay, 0ms);
         }
     }
 
@@ -669,4 +724,29 @@ html:root {
     to {
         transform: scale(1);
     }
+}
+
+/* Tie @tailwindcss/typography to the tenant semantic tokens so prose content (CMS articles, blog
+ * bodies) inherits the brand text/heading/link colors instead of the plugin's gray defaults. Links
+ * track the tenant accent (`--color-primary`); body/headings/quotes track the semantic `--text` /
+ * `--text-muted` / `--border-*` layer. Left unlayered so it wins over the plugin's `.prose` defaults
+ * (registered in the `utilities` layer) regardless of source order. Heading *fonts* are already
+ * wired by the base `h1`–`h6` rule, which applies inside prose too. */
+.prose {
+    --tw-prose-body: var(--text);
+    --tw-prose-headings: var(--text);
+    --tw-prose-lead: var(--text-muted);
+    --tw-prose-links: var(--color-primary);
+    --tw-prose-bold: var(--text);
+    --tw-prose-counters: var(--text-muted);
+    --tw-prose-bullets: var(--border-strong);
+    --tw-prose-hr: var(--border-default);
+    --tw-prose-quotes: var(--text);
+    --tw-prose-quote-borders: var(--border-default);
+    --tw-prose-captions: var(--text-muted);
+    --tw-prose-code: var(--text);
+    --tw-prose-pre-code: var(--surface-1);
+    --tw-prose-pre-bg: var(--text);
+    --tw-prose-th-borders: var(--border-strong);
+    --tw-prose-td-borders: var(--border-default);
 }

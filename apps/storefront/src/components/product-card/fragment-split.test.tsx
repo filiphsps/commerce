@@ -166,7 +166,7 @@ describe('card variant resolution after the split', () => {
             />,
         );
 
-        expect(container.querySelector('[role="group"]')).toBeTruthy();
+        expect(container.querySelector('fieldset')).toBeTruthy();
         const addButton = Array.from(container.querySelectorAll('button')).find((button) =>
             /add to bag/i.test(button.textContent ?? ''),
         );

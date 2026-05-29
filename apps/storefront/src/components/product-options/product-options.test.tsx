@@ -33,7 +33,11 @@ const fakeProduct = () =>
 function Probe({ onRender }: { onRender: (v: ReturnType<typeof useProductOptions>) => void }) {
     const v = useProductOptions();
     onRender(v);
-    return <button onClick={() => v.selectVariant({ Color: 'Green' })}>pick green</button>;
+    return (
+        <button type="button" onClick={() => v.selectVariant({ Color: 'Green' })}>
+            pick green
+        </button>
+    );
 }
 
 describe('ProductOptions.Root (uncontrolled)', () => {
