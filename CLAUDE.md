@@ -15,6 +15,17 @@ LLM defaults that would otherwise be wrong here:
 -   **Call `mcp__next-devtools__init` (`next-devtools` mcp) first** when starting Next.js work.
 -   **E2E + `pnpm dev` use an in-process MongoDB** spawned by `@nordcom/commerce-test-mongo`. Set `MONGODB_URI` in your shell to override; otherwise `pnpm dev` boots a persistent local mongod under `.mongo-dev/`. `pnpm dev:reset` tears it down.
 
+## Code intelligence
+
+Once you have a symbol's location, prefer LSP over `Grep`/`Read` for navigation — faster, precise, no whole-file reads. LSP ops are position-based (`filePath` + `line` + `character`), so seed the position with `Grep` first:
+
+-   **`Grep` to find a symbol by name**, then point LSP at the hit. The LSP tool has **no `query` param**, so `workspaceSymbol` always sends an empty query and returns nothing — don't use it ([claude-code#30948](https://github.com/anthropics/claude-code/issues/30948)).
+-   **`findReferences`** for every usage across the repo.
+-   **`goToDefinition` / `goToImplementation`** to jump to source.
+-   **`hover`** for type info without opening the file.
+-   **`documentSymbol`** to list a file's symbols (works; it's file-scoped).
+-   **Check LSP diagnostics after writing or editing code** and fix errors before moving on.
+
 ## Spec, plan & task paths
 
 Applies to every spec-driven workflow — superpowers (`writing-plans`, `executing-plans`, `brainstorming`), `claude-mem:make-plan`/`do`, and any other tool that emits specs, plans, or task lists.
