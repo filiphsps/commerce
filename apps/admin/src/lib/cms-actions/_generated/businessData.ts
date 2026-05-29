@@ -40,15 +40,28 @@ export async function businessDataCreate(
 ): Promise<{ id: string }> {
     return a.create(domain, formData, locale);
 }
-export async function businessDataDelete(domain: string | null, id: string): Promise<void> {
+export async function businessDataDelete(
+    domain: string | null,
+    id: string,
+): Promise<void> {
     return a.delete(domain, id);
 }
-export async function businessDataBulkDelete(domain: string | null, ids: string[]): Promise<void> {
+export async function businessDataBulkDelete(
+    domain: string | null,
+    ids: string[],
+): Promise<void> {
     return a.bulkDelete(domain, ids);
 }
-export async function businessDataBulkPublish(domain: string | null, ids: string[]): Promise<void> {
+export async function businessDataBulkPublish(
+    domain: string | null,
+    ids: string[],
+): Promise<void> {
     return a.bulkPublish(domain, ids);
 }
-export async function businessDataRestoreVersion(domain: string | null, id: string, versionId: string): Promise<void> {
+export async function businessDataRestoreVersion(
+    domain: string | null,
+    id: string,
+    versionId: string,
+): Promise<void> {
     return a.restoreVersion(domain, id, versionId);
 }

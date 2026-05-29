@@ -40,15 +40,28 @@ export async function reviewsCreate(
 ): Promise<{ id: string }> {
     return a.create(domain, formData, locale);
 }
-export async function reviewsDelete(domain: string | null, id: string): Promise<void> {
+export async function reviewsDelete(
+    domain: string | null,
+    id: string,
+): Promise<void> {
     return a.delete(domain, id);
 }
-export async function reviewsBulkDelete(domain: string | null, ids: string[]): Promise<void> {
+export async function reviewsBulkDelete(
+    domain: string | null,
+    ids: string[],
+): Promise<void> {
     return a.bulkDelete(domain, ids);
 }
-export async function reviewsBulkPublish(domain: string | null, ids: string[]): Promise<void> {
+export async function reviewsBulkPublish(
+    domain: string | null,
+    ids: string[],
+): Promise<void> {
     return a.bulkPublish(domain, ids);
 }
-export async function reviewsRestoreVersion(domain: string | null, id: string, versionId: string): Promise<void> {
+export async function reviewsRestoreVersion(
+    domain: string | null,
+    id: string,
+    versionId: string,
+): Promise<void> {
     return a.restoreVersion(domain, id, versionId);
 }
