@@ -33,18 +33,35 @@ export async function footerPublish(
 ): Promise<void> {
     return a.publish(domain, id, formData, locale);
 }
-export async function footerCreate(domain: string | null, formData: FormData, locale: string): Promise<{ id: string }> {
+export async function footerCreate(
+    domain: string | null,
+    formData: FormData,
+    locale: string,
+): Promise<{ id: string }> {
     return a.create(domain, formData, locale);
 }
-export async function footerDelete(domain: string | null, id: string): Promise<void> {
+export async function footerDelete(
+    domain: string | null,
+    id: string,
+): Promise<void> {
     return a.delete(domain, id);
 }
-export async function footerBulkDelete(domain: string | null, ids: string[]): Promise<void> {
+export async function footerBulkDelete(
+    domain: string | null,
+    ids: string[],
+): Promise<void> {
     return a.bulkDelete(domain, ids);
 }
-export async function footerBulkPublish(domain: string | null, ids: string[]): Promise<void> {
+export async function footerBulkPublish(
+    domain: string | null,
+    ids: string[],
+): Promise<void> {
     return a.bulkPublish(domain, ids);
 }
-export async function footerRestoreVersion(domain: string | null, id: string, versionId: string): Promise<void> {
+export async function footerRestoreVersion(
+    domain: string | null,
+    id: string,
+    versionId: string,
+): Promise<void> {
     return a.restoreVersion(domain, id, versionId);
 }
