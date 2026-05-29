@@ -59,6 +59,17 @@
         ]
       }
     ],
+    "SessionStart": [
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf '## Project CLAUDE.md re-injected after compaction (these instructions override default behavior):\\n\\n'; cat \"$CLAUDE_PROJECT_DIR/CLAUDE.md\""
+          }
+        ]
+      }
+    ],
     "SessionEnd": [
       {
         "hooks": [
