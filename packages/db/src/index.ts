@@ -1,4 +1,6 @@
 export * from './db';
+export * from './lib/feature-flag';
+export * from './lib/theme';
 export * from './models';
 export * from './services';
 

@@ -3,6 +3,10 @@ import { Schema } from 'mongoose';
 
 import type { BaseDocument } from '../db';
 import { db } from '../db';
+// Pure section-flag primitives live in the Mongoose-free leaf module so the CMS collection config
+// (a plain-Node `payload generate:types` context) can import them without pulling in `db.ts`'s
+// `server-only`; the package barrel re-exports them, so `@nordcom/commerce-db` consumers are unchanged.
+import type { FeatureFlagKind } from '../lib/feature-flag';
 
 /**
  * JSON-serializable value accepted as a feature flag `defaultValue`, targeting rule output, or
@@ -70,6 +74,9 @@ const FeatureFlagOptionSchema = new Schema(
 export const FeatureFlagSchema = new Schema(
     {
         key: { type: Schema.Types.String, required: true },
+        // Optional discriminator (`behavior` | `section`); left without a `default` so existing rows
+        // and new behavior flags persist `undefined` rather than a migrated value.
+        kind: { type: Schema.Types.String, enum: ['behavior', 'section'] satisfies FeatureFlagKind[], required: false },
         description: { type: Schema.Types.String, required: false },
         defaultValue: { type: Schema.Types.Mixed, required: true },
         options: { type: [FeatureFlagOptionSchema], required: false, default: undefined },
@@ -96,9 +103,10 @@ type InferredFeatureFlag = InferSchemaType<typeof FeatureFlagSchema>;
  * ```
  */
 export type FeatureFlagBase = BaseDocument &
-    Omit<InferredFeatureFlag, 'targeting' | 'options'> & {
+    Omit<InferredFeatureFlag, 'targeting' | 'options' | 'kind'> & {
         targeting: TargetingRule[];
         options?: FeatureFlagOption[];
+        kind?: FeatureFlagKind;
     };
 
 export const FeatureFlagModel = (db.models.FeatureFlag || db.model('FeatureFlag', FeatureFlagSchema)) as ReturnType<
