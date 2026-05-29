@@ -191,7 +191,6 @@
 }
 
 html:root {
-    --accent-primary-text: var(--color-accent-primary-text, var(--color-bright));
     --accent-secondary-text: var(--color-accent-secondary-text, var(--color-dark));
 
     --page-width: 1536px;
