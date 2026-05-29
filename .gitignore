@@ -36,6 +36,11 @@ docs/superpowers/
 next-env.d.ts
 avt_outputs/
 
+# CMS editor server-action wrappers — codegen output of `pnpm cms:gen`
+# (reads packages/cms editor manifests). Regenerated at build time; never edit
+# or commit by hand.
+apps/admin/src/lib/cms-actions/_generated/
+
 # apps/docs generated artifacts
 apps/docs/.typedoc-out/
 apps/docs/app/docs/(generated)/
