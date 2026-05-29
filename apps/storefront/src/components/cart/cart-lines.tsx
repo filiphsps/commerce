@@ -34,8 +34,8 @@ const CartLines = ({ i18n }: CartContentProps) => {
     }
 
     return (
-        <div className="flex w-full flex-col gap-2">
-            <div className="flex w-full items-center justify-between border-0 border-gray-200 border-b border-solid pb-1 text-gray-600 md:border-0 md:px-1 md:pb-0">
+        <div className="flex w-full flex-col gap-[var(--block-spacer)]">
+            <div className="flex w-full items-center justify-between border-0 border-(--border-default) border-b border-solid pb-1 text-(color:var(--text-muted)) md:border-0 md:px-1 md:pb-0">
                 <Button
                     type="button"
                     variant="destructive"
@@ -49,7 +49,7 @@ const CartLines = ({ i18n }: CartContentProps) => {
                 <ExportCartButton i18n={i18n} />
             </div>
 
-            <section className="flex h-full w-full flex-col gap-3 empty:hidden md:gap-3">
+            <section className="flex h-full w-full flex-col gap-[var(--block-spacer-large)] empty:hidden md:gap-[var(--block-spacer-large)]">
                 {lines.map((item) => {
                     if (!item) {
                         return null;
@@ -69,9 +69,9 @@ const CartLines = ({ i18n }: CartContentProps) => {
 CartLines.skeleton = () => {
     return (
         <section className="flex w-full flex-col gap-1">
-            <div className={'h-24 w-full rounded-lg bg-gray-200 p-4'} data-skeleton />
-            <div className={'h-24 w-full rounded-lg bg-gray-200 p-4'} data-skeleton />
-            <div className={'h-24 w-full rounded-lg bg-gray-200 p-4'} data-skeleton />
+            <div className={'h-24 w-full rounded-lg bg-(--surface-1) p-4'} data-skeleton />
+            <div className={'h-24 w-full rounded-lg bg-(--surface-1) p-4'} data-skeleton />
+            <div className={'h-24 w-full rounded-lg bg-(--surface-1) p-4'} data-skeleton />
         </section>
     );
 };

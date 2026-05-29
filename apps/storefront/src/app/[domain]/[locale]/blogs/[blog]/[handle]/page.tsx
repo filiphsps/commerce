@@ -201,7 +201,7 @@ export default async function ArticlePage({ params }: { params: ArticlePageParam
                 <aside className="w-full empty:hidden md:h-full empty:md:flex"></aside>
 
                 <article className="prone md:max-w-180">
-                    <div className="flex items-center gap-2 pb-6 text-gray-500 *:font-semibold *:text-sm *:leading-tight md:pb-0">
+                    <div className="flex items-center gap-2 pb-6 text-(--text-muted) *:font-semibold *:text-sm *:leading-tight md:pb-0">
                         <Label className="text-inherit">{publishedAtString}</Label>
                         {' • '}
                         <Label className="text-inherit">{t('n-min-read', readingTime)}</Label>
@@ -224,14 +224,14 @@ export default async function ArticlePage({ params }: { params: ArticlePageParam
                             <div className="flex flex-col items-start justify-center gap-1">
                                 <Label
                                     as="div"
-                                    className="font-normal text-base text-gray-600 normal-case leading-none"
+                                    className="font-normal text-(--text-muted) text-base normal-case leading-none"
                                 >
                                     {author.name}
                                 </Label>
                                 {author.bio ? (
                                     <Label
                                         as="div"
-                                        className="font-semibold text-gray-500 text-sm normal-case leading-none"
+                                        className="font-semibold text-(--text-muted) text-sm normal-case leading-none"
                                     >
                                         {author.bio.startsWith('@') ? (
                                             <Link

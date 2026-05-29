@@ -59,7 +59,7 @@ export const SearchBar = ({ defaultValue, onSearch, disabled, className, i18n, .
             <input
                 ref={inputRef}
                 name="query"
-                className="grow rounded-l-lg border-2 border-gray-300 border-r-0 border-solid px-4 py-2"
+                className="grow rounded-l-lg border-(--border-strong) border-2 border-r-0 border-solid px-4 py-2"
                 type="search"
                 value={value}
                 onChange={({ target: { value } }) => setValue(value)}
@@ -185,7 +185,7 @@ export default function SearchContent({
             {showFilters ? <Filters disabled={isPending} filters={productFilters} /> : null}
 
             {typeof totalCount === 'number' && totalCount > 0 ? (
-                <Label className="font-medium text-gray-600 text-sm">
+                <Label className="font-medium text-(--text-muted) text-sm">
                     {totalCount === 1 ? `1 ${t('product')}` : `${totalCount} ${t('products')}`}
                 </Label>
             ) : null}

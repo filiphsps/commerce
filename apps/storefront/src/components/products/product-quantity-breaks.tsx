@@ -63,11 +63,11 @@ export function ProductQuantityBreaksItem({
     const pricing = (
         <>
             <Price
-                className={cn('font-bold text-lg leading-none', discount && 'text-red-500')}
+                className={cn('font-bold text-lg leading-none', discount && 'text-(--state-sale)')}
                 data={discountedPrice}
             />
             {discount ? (
-                <Price className="font-semibold text-gray-400 text-sm leading-none line-through" data={price} />
+                <Price className="font-semibold text-(--text-muted) text-sm leading-none line-through" data={price} />
             ) : null}
         </>
     );
@@ -78,7 +78,7 @@ export function ProductQuantityBreaksItem({
             {...props}
             type="button"
             className={cn(
-                'flex h-16 items-center justify-between gap-2 rounded-xl border-2 border-white border-solid bg-white px-3 py-3 text-lg leading-none shadow transition-colors focus-within:border-gray-400 hover:border-gray-400',
+                'flex h-16 items-center justify-between gap-2 rounded-xl border-2 border-white border-solid bg-white px-3 py-3 text-lg leading-none shadow transition-colors focus-within:border-(--border-strong) hover:border-(--border-strong)',
                 active && 'border-primary text-primary',
                 className,
             )}
@@ -134,7 +134,11 @@ export function ProductQuantityBreaks({
     const ready = !disabled && selectedVariant.availableForSale && cartReady && status !== 'mutating';
     return (
         <section
-            className={cn('flex flex-col gap-2 empty:hidden', !ready && 'pointer-events-none opacity-50', className)}
+            className={cn(
+                'flex flex-col gap-[var(--block-spacer)] empty:hidden',
+                !ready && 'pointer-events-none opacity-50',
+                className,
+            )}
             {...props}
             suppressHydrationWarning={true}
         >

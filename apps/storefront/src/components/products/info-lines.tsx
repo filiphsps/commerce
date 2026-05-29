@@ -54,7 +54,7 @@ const StockStatus = ({ product, i18n, className, ...props }: StockStatusProps) =
 
     return (
         <section
-            className={cn('flex items-center justify-start gap-1 *:text-green-600 *:leading-none', className)}
+            className={cn('flex items-center justify-start gap-1 *:text-(--state-success) *:leading-none', className)}
             title={t('in-stock-and-available')}
             {...props}
         >
@@ -154,8 +154,8 @@ InfoLines.displayName = 'Nordcom.Products.InfoLines';
 function infoLinesSkeleton() {
     return (
         <div className="flex w-full select-none flex-col items-start gap-4 empty:hidden">
-            <div className="h-4 w-32 rounded-sm bg-gray-200" data-skeleton />
-            <div className="h-4 w-48 rounded-sm bg-gray-200" data-skeleton />
+            <div className="h-4 w-32 rounded-sm bg-(--surface-1)" data-skeleton />
+            <div className="h-4 w-48 rounded-sm bg-(--surface-1)" data-skeleton />
         </div>
     );
 }

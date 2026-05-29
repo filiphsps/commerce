@@ -51,11 +51,11 @@ export const Alert = ({ children, severity, icon, className, ...props }: AlertPr
     return (
         <div
             className={cn(
-                'flex items-start justify-start gap-3 rounded-lg p-4 text-base',
+                'flex items-start justify-start gap-[var(--block-spacer-large)] rounded-lg p-[var(--block-padding-large)] text-base',
                 severity === 'success' && 'bg-green-200',
-                severity === 'info' && 'bg-gray-100',
+                severity === 'info' && 'bg-(--surface-1)',
                 severity === 'warning' && 'bg-yellow-200',
-                severity === 'error' && 'bg-red-600',
+                severity === 'error' && 'bg-(--state-danger)',
                 severity === 'callout' && 'bg-primary text-primary-foreground',
                 className,
             )}

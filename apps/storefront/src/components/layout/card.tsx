@@ -43,9 +43,9 @@ export const Card = <ComponentGeneric extends ElementType = 'div'>({
             {...rest}
             className={cn(
                 chrome === 'boxed' && [
-                    'rounded-lg border border-gray-200 border-solid p-3',
-                    !border && 'bg-gray-100',
-                    border && 'border-2 border-gray-100 border-solid',
+                    'rounded-lg border border-(--border-default) border-solid p-3',
+                    !border && 'bg-(--surface-1)',
+                    border && 'border-2 border-(--border-default) border-solid',
                 ],
                 chrome === 'frameless' && 'border-0 bg-transparent p-0',
                 className,

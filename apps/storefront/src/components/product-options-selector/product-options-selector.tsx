@@ -97,7 +97,9 @@ export const ProductOptionsSelector = ({
 
                 return (
                     <div key={option.name} className="flex flex-col gap-(--block-spacer-small)">
-                        {density === 'spacious' ? <Label className="h-fit text-gray-600">{option.name}</Label> : null}
+                        {density === 'spacious' ? (
+                            <Label className="text-(color:var(--text-muted)) h-fit">{option.name}</Label>
+                        ) : null}
 
                         <div className="flex flex-wrap gap-(--block-spacer-small)">
                             {values.map((v: SelectorOptionValue) => {

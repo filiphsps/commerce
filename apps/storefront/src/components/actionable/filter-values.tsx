@@ -47,14 +47,14 @@ export function FilterValues({ id: filterId, type, values }: Pick<Filter, 'type'
                                 shallow={true}
                                 prefetch={false}
                                 className={cn(
-                                    'flex appearance-none flex-nowrap items-center justify-between gap-1 whitespace-nowrap rounded-xl border-2 border-gray-300 border-solid px-2 py-1 font-semibold text-gray-500 text-sm leading-none transition-colors hover:border-black hover:text-black',
+                                    'text-(color:var(--text-muted)) flex appearance-none flex-nowrap items-center justify-between gap-1 whitespace-nowrap rounded-xl border-(--border-strong) border-2 border-solid px-2 py-1 font-semibold text-sm leading-none transition-colors hover:border-black hover:text-black',
                                     active && 'border-primary text-primary',
                                 )}
                             >
                                 {swatch?.color ? (
                                     <span
                                         aria-hidden={true}
-                                        className="inline-block h-3 w-3 rounded-full border border-gray-200 border-solid"
+                                        className="inline-block h-3 w-3 rounded-full border border-(--border-default) border-solid"
                                         style={{ backgroundColor: swatch.color }}
                                     />
                                 ) : null}

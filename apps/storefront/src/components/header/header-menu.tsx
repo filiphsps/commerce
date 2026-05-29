@@ -17,8 +17,8 @@ import { cn } from '@/utils/tailwind';
 export const HEADER_LINK_STYLES =
     'group/menu-item flex h-full cursor-pointer select-none flex-nowrap items-center justify-center text-nowrap border-0 border-b-2 border-t-2 border-transparent border-solid bg-transparent my-4 font-medium leading-none transition-all md:my-3';
 export const HEADER_LINK_BUBBLE_STYLES =
-    '-mx-2 rounded-lg px-2 py-2 text-inherit group-hover/menu-item:bg-gray-100 group-focus-visible/menu-item:bg-gray-100';
-export const HEADER_LINK_ACTIVE_MENU_STYLES = '-mx-2 bg-gray-100 px-2 font-semibold text-primary';
+    '-mx-2 rounded-lg px-2 py-2 text-inherit group-hover/menu-item:bg-(--surface-1) group-focus-visible/menu-item:bg-(--surface-1)';
+export const HEADER_LINK_ACTIVE_MENU_STYLES = '-mx-2 bg-(--surface-1) px-2 font-semibold text-primary';
 
 type NavItem = NonNullable<Header['items']>[number];
 
@@ -419,7 +419,7 @@ function EditorialColumn({ item, locale, index }: { item: RecursiveNavItem; loca
                 </div>
             ) : null}
             {eyebrow}
-            {description ? <p className="text-gray-600 text-sm leading-snug">{description}</p> : null}
+            {description ? <p className="text-(--text-muted) text-sm leading-snug">{description}</p> : null}
             {children.length > 0 ? (
                 <ul className="mt-2 flex flex-col gap-[2px]">
                     {children.map((child, i) => (
@@ -461,7 +461,7 @@ function EditorialSublink({
             : 'text-[0.92rem] py-header-sublink-y';
 
     const className = cn(
-        'block rounded-header-sublink px-header-sublink-x -mx-header-sublink-x text-gray-800',
+        'block rounded-header-sublink px-header-sublink-x -mx-header-sublink-x text-(--text)',
         sizeClass,
         'transition-colors duration-[var(--header-motion-fast)] ease-[var(--header-easing)]',
         'hover:bg-[var(--header-sublink-hover-bg)] hover:text-primary',
@@ -514,7 +514,7 @@ function CompactListItem({ item, locale }: { item: RecursiveNavItem; locale: { c
     if (!label) return null;
 
     const className = cn(
-        'block rounded-header-sublink px-3 py-2 -mx-3 text-[0.95rem] text-gray-800',
+        'block rounded-header-sublink px-3 py-2 -mx-3 text-[0.95rem] text-(--text)',
         'transition-colors duration-[var(--header-motion-fast)] ease-[var(--header-easing)]',
         'hover:bg-[var(--header-sublink-hover-bg)] hover:text-primary',
         'focus-visible:bg-[var(--header-sublink-hover-bg)] focus-visible:outline-2 focus-visible:outline-primary/40',
@@ -599,7 +599,7 @@ function FeaturedHero({ item, locale }: { item: RecursiveNavItem; locale: { code
     ) : (
         <div
             data-header-featured-hero-fallback="true"
-            className="aspect-[4/3] max-h-[280px] w-full rounded-[calc(var(--header-panel-radius)*0.8)] bg-gray-50"
+            className="aspect-[4/3] max-h-[280px] w-full rounded-[calc(var(--header-panel-radius)*0.8)] bg-(--surface-2)"
             style={background ? { backgroundColor: background } : undefined}
         />
     );
@@ -608,9 +608,9 @@ function FeaturedHero({ item, locale }: { item: RecursiveNavItem; locale: { code
         <>
             {visual}
             {label ? (
-                <h3 className="mt-3 font-semibold text-[1.5rem] text-gray-900 leading-tight tracking-tight">{label}</h3>
+                <h3 className="mt-3 font-semibold text-[1.5rem] text-(--text) leading-tight tracking-tight">{label}</h3>
             ) : null}
-            {description ? <p className="mt-1.5 text-gray-600 text-sm leading-snug">{description}</p> : null}
+            {description ? <p className="mt-1.5 text-(--text-muted) text-sm leading-snug">{description}</p> : null}
             {label ? (
                 <span className="mt-3 inline-flex items-center gap-1 font-semibold text-primary text-sm">
                     {label}

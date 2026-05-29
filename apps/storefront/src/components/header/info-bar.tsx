@@ -40,7 +40,7 @@ export async function InfoBar({ shop, locale, i18n, ...props }: InfoBarProps) {
 
     return (
         <section
-            className="flex h-8 w-full flex-col items-center justify-center bg-gray-100 text-black [grid-area:info-bar]"
+            className="flex h-8 w-full flex-col items-center justify-center bg-(--surface-1) text-black [grid-area:info-bar]"
             data-nosnippet={true}
             {...props}
         >

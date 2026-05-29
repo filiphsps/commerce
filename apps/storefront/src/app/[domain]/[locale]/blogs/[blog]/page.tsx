@@ -120,10 +120,10 @@ export default async function BlogPage({ params }: { params: BlogPageParams }) {
                             />
                         ) : null
                     }
-                    subtitleClassName="text-gray-500"
+                    subtitleClassName="text-(--text-muted)"
                 />
 
-                <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 md:gap-4 lg:grid-cols-4">
+                <section className="grid grid-cols-1 gap-[var(--block-spacer-large)] sm:grid-cols-2 md:grid-cols-3 md:gap-[var(--block-spacer-huge)] lg:grid-cols-4">
                     {articles.map(
                         ({
                             id,
@@ -152,7 +152,7 @@ export default async function BlogPage({ params }: { params: BlogPageParams }) {
                             return (
                                 <Card
                                     key={id}
-                                    className="flex h-full w-full flex-col items-stretch justify-between gap-1 p-2 md:gap-3"
+                                    className="flex h-full w-full flex-col items-stretch justify-between gap-1 p-[var(--block-padding)] md:gap-3"
                                     border={true}
                                 >
                                     <Link
@@ -161,7 +161,7 @@ export default async function BlogPage({ params }: { params: BlogPageParams }) {
                                     >
                                         {image?.url ? (
                                             <Image
-                                                className="aspect-16/7 rounded-lg bg-gray-100 object-cover object-center shadow transition-all group-hover/header:brightness-75 group-focus-visible/header:brightness-75"
+                                                className="aspect-16/7 rounded-lg bg-(--surface-1) object-cover object-center shadow transition-all group-hover/header:brightness-75 group-focus-visible/header:brightness-75"
                                                 role={image.altText ? undefined : 'presentation'}
                                                 src={image.url}
                                                 alt={image.altText!}
@@ -174,7 +174,7 @@ export default async function BlogPage({ params }: { params: BlogPageParams }) {
                                                 quality={80}
                                             />
                                         ) : (
-                                            <div className="aspect-16/7 rounded-lg bg-gray-100 transition-[filter] group-hover/header:brightness-75 group-focus-visible/header:brightness-75" />
+                                            <div className="aspect-16/7 rounded-lg bg-(--surface-1) transition-[filter] group-hover/header:brightness-75 group-focus-visible/header:brightness-75" />
                                         )}
 
                                         <div className="block font-semibold text-xl transition-colors group-hover/header:text-primary group-focus-visible/header:text-primary">
@@ -201,7 +201,7 @@ export default async function BlogPage({ params }: { params: BlogPageParams }) {
 
                                                     <Label
                                                         as="div"
-                                                        className="font-semibold text-gray-500 text-sm normal-case leading-none"
+                                                        className="font-semibold text-(--text-muted) text-sm normal-case leading-none"
                                                     >
                                                         {author.name}
                                                     </Label>
@@ -210,7 +210,7 @@ export default async function BlogPage({ params }: { params: BlogPageParams }) {
 
                                             <Label
                                                 as="div"
-                                                className="font-semibold text-gray-500 text-sm normal-case leading-none"
+                                                className="font-semibold text-(--text-muted) text-sm normal-case leading-none"
                                             >
                                                 {publishedAtString}
                                             </Label>

@@ -87,7 +87,7 @@ export const Overview = ({
     return (
         <section
             className={cn(
-                'flex flex-col overflow-hidden rounded-lg bg-gray-100 empty:hidden lg:grid',
+                'flex flex-col overflow-hidden rounded-lg bg-(--surface-1) empty:hidden lg:grid',
                 layout === 'left' && 'lg:grid-cols-10',
                 layout === 'right' && 'lg:grid-cols-10',
                 layout === 'center' && 'flex flex-col lg:flex',

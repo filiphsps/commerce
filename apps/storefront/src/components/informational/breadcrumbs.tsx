@@ -35,7 +35,7 @@ const Breadcrumbs = ({ locale, title, className }: BreadcrumbsProps) => {
 
     const itemStyles = 'inline-flex justify-center items-center';
     const linkStyles = 'text-sm capitalize hover:text-primary leading-none';
-    const iconStyles = 'text-gray-400 text-lg font-normal';
+    const iconStyles = 'text-(--text-muted) text-lg font-normal';
 
     const hrefs = path.map((_) => `/${path.slice(0, -1).join('/')}`);
 
@@ -62,7 +62,7 @@ const Breadcrumbs = ({ locale, title, className }: BreadcrumbsProps) => {
 
             <section
                 className={cn(
-                    '-mx-2 flex w-screen list-none flex-nowrap items-center justify-start gap-1 overflow-hidden overflow-x-auto overscroll-x-contain whitespace-nowrap rounded-lg px-2 font-medium text-gray-700 leading-none md:mx-0 md:w-full md:max-w-full md:px-0',
+                    '-mx-2 flex w-screen list-none flex-nowrap items-center justify-start gap-1 overflow-hidden overflow-x-auto overscroll-x-contain whitespace-nowrap rounded-lg px-2 font-medium text-(--text-muted) leading-none md:mx-0 md:w-full md:max-w-full md:px-0',
                     className,
                 )}
                 itemScope
@@ -88,7 +88,10 @@ const Breadcrumbs = ({ locale, title, className }: BreadcrumbsProps) => {
                             itemType="https://schema.org/ListItem"
                         >
                             <Link
-                                className={cn(linkStyles, index === path.length - 1 && 'font-semibold text-gray-700')}
+                                className={cn(
+                                    linkStyles,
+                                    index === path.length - 1 && 'font-semibold text-(--text-muted)',
+                                )}
                                 href={hrefs[index]!}
                                 itemType="https://schema.org/Thing"
                                 itemProp="item"

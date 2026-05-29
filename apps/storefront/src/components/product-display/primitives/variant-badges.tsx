@@ -69,7 +69,7 @@ const VariantBadges = ({ product, i18n, className }: VariantBadgesProps) => {
             )}
         >
             {isVegan && (
-                <div className={cn(COMMON_BADGE_STYLES, 'bg-green-600 stroke-white text-white')}>
+                <div className={cn(COMMON_BADGE_STYLES, 'bg-(--state-success) stroke-white text-white')}>
                     <AttributeIcon data={'vegan'} className="h-4" />
                     {capitalize(t('vegan'))}
                 </div>

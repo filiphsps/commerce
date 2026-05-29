@@ -45,7 +45,7 @@ const CartCoupons = ({}) => {
                             }}
                         >
                             <XIcon
-                                className="h-4 text-lg transition-colors hover:fill-red-500 hover:stroke-red-500"
+                                className="h-4 text-lg transition-colors hover:fill-(--state-danger) hover:stroke-(--state-danger)"
                                 style={{ strokeWidth: 2.5 }}
                             />
                         </Button>

@@ -116,7 +116,12 @@ export function Pagination({
                     {capitalize(t('previous'))}
                 </Link>
             ) : (
-                <div className={cn(ACTION_STYLES, 'cursor-not-allowed text-gray-400 hover:text-gray-400')}>
+                <div
+                    className={cn(
+                        ACTION_STYLES,
+                        'text-(color:var(--text-muted)) hover:text-(color:var(--text-muted)) cursor-not-allowed',
+                    )}
+                >
                     <ChevronLeftIcon className="stroke-2 text-inherit" />
                     {capitalize(t('previous'))}
                 </div>
@@ -138,7 +143,12 @@ export function Pagination({
                     <ChevronRightIcon className="stroke-2 text-inherit" />
                 </Link>
             ) : (
-                <div className={cn(ACTION_STYLES, 'cursor-not-allowed text-gray-400 hover:text-gray-400')}>
+                <div
+                    className={cn(
+                        ACTION_STYLES,
+                        'text-(color:var(--text-muted)) hover:text-(color:var(--text-muted)) cursor-not-allowed',
+                    )}
+                >
                     {capitalize(t('next'))}
                     <ChevronRightIcon className="stroke-2 text-inherit" />
                 </div>
