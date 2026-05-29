@@ -44,7 +44,13 @@ export class Error<T = unknown> extends BuiltinError {
             enumerable: true,
             configurable: false,
         });
-        Object.setPrototypeOf(this, Error.prototype);
+        // Restore the prototype after the transpiled `extends` flattens it.
+        // Use `new.target.prototype`, NOT `Error.prototype`: the latter reset every
+        // instance to this base class, silently breaking `instanceof` for every
+        // subclass (e.g. `err instanceof NotFoundError`). `new.target` is the
+        // originally-invoked class, so each instance keeps its real prototype while
+        // the chain still includes this base (so `instanceof Error` stays true).
+        Object.setPrototypeOf(this, new.target.prototype);
     }
 
     /**
