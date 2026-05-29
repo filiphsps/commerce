@@ -1,14 +1,14 @@
 'use client';
 
-import { UnreachableError } from '@nordcom/commerce-errors';
 import dynamic from 'next/dynamic';
-import type { ProductCardPickerComponent } from './types';
+import { createVariantRegistry } from '../variant-registry';
+import type { ProductCardPickerComponent, ProductCardPickerProps } from './types';
 
 const FloatPicker = dynamic(() => import('./float'), { ssr: false });
 const SheetPicker = dynamic(() => import('./sheet'), { ssr: false });
 const InlinePicker = dynamic(() => import('./inline'), { ssr: false });
 
-const registry = new Map<string, ProductCardPickerComponent>([
+const registry = createVariantRegistry<ProductCardPickerProps>('product-card picker', 'float', [
     ['float', FloatPicker],
     ['sheet', SheetPicker],
     ['inline', InlinePicker],
@@ -20,22 +20,16 @@ const registry = new Map<string, ProductCardPickerComponent>([
  * @param name - Unique key used to look up the component via `getProductCardPicker`.
  * @param component - The picker component to register.
  */
-export function registerProductCardPicker(name: string, component: ProductCardPickerComponent) {
-    registry.set(name, component);
+export function registerProductCardPicker(name: string, component: ProductCardPickerComponent): void {
+    registry.register(name, component);
 }
 
 /**
- * Retrieves the registered picker component for the given name, falling back to `float`.
+ * Retrieves the registered picker component for the given name, falling back to the built-in `float` picker.
  *
  * @param name - Registry key of the desired picker component.
  * @returns The matching component, or the `float` fallback when no match is found.
  */
 export function getProductCardPicker(name: string): ProductCardPickerComponent {
-    const found = registry.get(name);
-    if (found) return found;
-    const fallback = registry.get('float');
-    // The `float` picker is seeded at module load and the public API only ever
-    // adds entries, so a missing fallback means the seed map was tampered with.
-    if (!fallback) throw new UnreachableError('product-card picker registry has no "float" fallback registered');
-    return fallback;
+    return registry.resolve(name);
 }
