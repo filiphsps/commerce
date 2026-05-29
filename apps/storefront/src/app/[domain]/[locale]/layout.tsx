@@ -1,6 +1,7 @@
 import '../../globals.css';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
+import { resolveTheme, THEME_DEFAULTS } from '@nordcom/commerce-db';
 import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
 import type { Viewport } from 'next';
 import { cacheLife } from 'next/cache';
@@ -23,7 +24,7 @@ import PageContent from '@/components/page-content';
 import ProvidersRegistry from '@/components/providers-registry';
 import { getDictionary } from '@/i18n/dictionary';
 import { CssVariablesProvider, getBrandingColors } from '@/utils/css-variables';
-import { primaryFont } from '@/utils/fonts';
+import { resolveFontClassName } from '@/utils/fonts';
 import { NOT_FOUND_HANDLE } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
@@ -62,8 +63,21 @@ export default async function RootLayout({
         throw error;
     }
 
+    // Resolve the tenant's body/heading fonts for the `<html>` class. The lookup routes through the
+    // render-cached `Shop.findByDomain`, so it collapses into the same round-trip `CachedShell` makes
+    // on a cache miss. A theme-less shop resolves to the platform-default font, leaving the class
+    // byte-identical to the pre-theming markup; unknown/unconfigured domains fall back to the default
+    // and let `CachedShell` remain the single authority that emits `notFound()`.
+    let typography = THEME_DEFAULTS.typography;
+    try {
+        typography = resolveTheme(await Shop.findByDomain(domain)).typography;
+    } catch {
+        // Intentionally swallow: render the shell with the default font; `CachedShell` handles the
+        // not-found / misconfigured-tenant paths.
+    }
+
     return (
-        <html lang={locale.code} className={cn(primaryFont.className, primaryFont.variable, 'overscroll-x-none')}>
+        <html lang={locale.code} className={cn(resolveFontClassName(typography), 'overscroll-x-none')}>
             <head />
             <body className="group/body overflow-x-hidden overscroll-x-none">
                 <Suspense fallback={null}>

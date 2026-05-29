@@ -111,12 +111,35 @@
     --color-block-info-dark: #1c5d99;
     --color-block-info-text: var(--color-dark);
 
-    /* Gets replaced by the brand primary color in the layout. */
-    --accent-primary: #073b4c;
-    /* Gets replaced by the brand secondary color in the layout. */
-    --accent-secondary: #118ab2;
+    /* `--color-accent-*` is the single source of truth: the serializer (`CssVariablesProvider`)
+     * emits it per-shop when branding resolves, and these aliases inherit it. The platform-default
+     * literal lives only in the `var()` fallback, so a theme-less shop (no `--color-accent-*`
+     * emitted) resolves to the same accents as before. */
+    --accent-primary: var(--color-accent-primary, #073b4c);
+    --accent-secondary: var(--color-accent-secondary, #118ab2);
     /* Alias used by product-card primitives for focus rings; tracks brand primary. */
     --accent: var(--accent-primary);
+}
+
+/* Block geometry and the header-panel elevation. These mirror `THEME_DEFAULTS.radii` /
+ * `THEME_DEFAULTS.spacing` / `THEME_DEFAULTS.elevation.panel` and are consumed via
+ * `--block-border-radius*`, `--block-padding`, `--block-spacer`, and `--header-panel-shadow`
+ * throughout the storefront. They live in `:root` (specificity 0,1,0) rather than `html:root`
+ * (0,1,1) so the per-shop `CssVariablesProvider` `:root` — emitted later in source order — wins;
+ * the `@media (min-width: 48em) html:root` step still beats both on specificity, so any responsive
+ * override survives. The derived `--block-padding-*` / `--block-spacer-*` variants stay in
+ * `html:root` and resolve `var(--block-padding)` / `var(--block-spacer)` at use, so they inherit a
+ * per-shop override transparently. */
+:root {
+    --block-border-radius-large: 1rem;
+    --block-border-radius: 0.75rem;
+    --block-border-radius-small: calc(var(--block-border-radius) * 0.75);
+    --block-border-radius-tiny: 0.325rem;
+
+    --block-padding: 0.6rem;
+    --block-spacer: 0.55rem;
+
+    --header-panel-shadow: 0 24px 60px -24px rgb(15 23 42 / 0.18), 0 8px 20px -8px rgb(15 23 42 / 0.08);
 }
 
 html:root {
@@ -125,23 +148,17 @@ html:root {
 
     --page-width: 1536px;
 
-    --block-border-radius-large: 1rem;
-    --block-border-radius: 0.75rem;
-    --block-border-radius-small: calc(var(--block-border-radius) * 0.75);
-    --block-border-radius-tiny: 0.325rem;
     --block-border-width: 0.1625rem;
     --block-border-width-large: 0.425rem;
     --block-border-width-huge: 0.255rem;
     --block-border-width-small: 0.135rem;
     --block-border-width-tiny: 0.1rem;
 
-    --block-padding: 0.6rem;
     --block-padding-small: calc(var(--block-padding) / 2);
     --block-padding-tiny: calc(var(--block-padding) / 3);
     --block-padding-large: calc(var(--block-padding) * 1.5);
     --block-padding-huge: calc(var(--block-padding) * 1.5);
 
-    --block-spacer: 0.55rem;
     --block-spacer-small: calc(var(--block-spacer) / 2);
     --block-spacer-tiny: calc(var(--block-spacer) / 3);
     --block-spacer-large: calc(var(--block-spacer) * 1.35);
@@ -153,7 +170,6 @@ html:root {
 
     --header-panel-pad: var(--block-padding);
     --header-panel-radius: var(--block-border-radius);
-    --header-panel-shadow: 0 24px 60px -24px rgb(15 23 42 / 0.18), 0 8px 20px -8px rgb(15 23 42 / 0.08);
     --header-rail-thickness: 2px;
     --header-divider-color: rgb(0 0 0 / 0.06);
 
@@ -177,14 +193,20 @@ html:root {
 
     /* Soft warm accent surface; used by chip hover, overlay row hover etc. */
     --accent-soft: #f3eedc;
+}
 
-    /* Product card tokens.
-     * Phase 2 of .specs/2026-05-26-product-card-redesign/ — additive only.
-     * Tokens marked LEGACY are referenced by pre-Phase-3 primitives that get
-     * rewritten or deleted in Phase 3; they will be removed then.
-     * Phase 3+ will read --block-border-radius* / --block-padding / --block-spacer
-     * for spacing and Tailwind type-scale utilities for typography. */
-
+/* Product card knob base values.
+ * Phase 2 of .specs/2026-05-26-product-card-redesign/ — additive only.
+ * Tokens marked LEGACY are referenced by pre-Phase-3 primitives that get
+ * rewritten or deleted in Phase 3; they will be removed then.
+ * Phase 3+ will read --block-border-radius* / --block-padding / --block-spacer
+ * for spacing and Tailwind type-scale utilities for typography.
+ *
+ * These live in `:root` (specificity 0,1,0), NOT `html:root` (0,1,1), so the
+ * per-shop `CssVariablesProvider` `:root` overrides win by source order. The
+ * `@media (min-width: 48em)` `html:root` step further down still beats both on
+ * specificity, so the responsive breakpoint survives over any per-shop knob. */
+:root {
     /* Chassis */
     --product-card-bg: #ffffff;
     --product-card-border-color: #ece6d4;
@@ -303,6 +325,61 @@ html:root {
     --product-card-sale-badge-allow-overlap: false;
 }
 
+/* Semantic token layer (P3-3 of .specs/2026-05-28-storefront-theming/).
+ *
+ * A thin alias layer over the platform color/shadow tokens above, giving consumers stable semantic
+ * names (surface / text / border / state / elevation) decoupled from the legacy `--color-*` and
+ * `--product-card-*` spelling. Every alias resolves — by `var()` reference, not specificity — to the
+ * same value a theme-less shop renders today, so adding this layer is inert until P5 migrates
+ * consumers onto these names. The legacy tokens it references must stay defined (pre-Phase-5
+ * primitives like variant-title.tsx still read `--product-card-title-*`); their removal is P5-8.
+ *
+ * Lives in `:root` (specificity 0,1,0), matching the product-card base block above, so the per-shop
+ * `CssVariablesProvider` `:root` — emitted later in source order — still wins for any token a future
+ * phase teaches the serializer to override.
+ *
+ * `--text-xs`…`--text-xl` reuse Tailwind's own theme-variable names and are pinned to the Tailwind v4
+ * defaults, so redeclaring them here is a no-op for every `text-*` utility until a shop overrides the
+ * scale. */
+:root {
+    --surface-1: var(--color-block);
+    --surface-2: var(--color-block-light);
+    --surface-3: var(--color-block-dark);
+
+    --text: var(--color-foreground, var(--color-dark));
+    --text-muted: var(--color-dark-secondary);
+
+    /* No top-level platform token carries the warm card border (#ece6d4); keep the literal until a
+     * future phase promotes it to a `--color-*` source. */
+    --border-default: #ece6d4;
+    --border-strong: var(--color-block-dark);
+
+    --state-sale: var(--color-sale);
+    --state-danger: var(--color-danger);
+    --state-success: var(--color-block-success);
+    --state-info: var(--color-block-info);
+
+    --focus-ring: var(--accent);
+
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.25rem;
+
+    /* `--font-weight-*` reuse Tailwind v4's own theme-variable names (consumed by the `font-normal` …
+     * `font-bold` utilities), pinned to the Tailwind defaults, so redeclaring them here is a no-op
+     * until a shop overrides `typography.fontWeights` via the serializer. */
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    --elevation-1: var(--product-card-shadow);
+    --elevation-2: var(--product-card-shadow-hover);
+    --elevation-3: var(--header-panel-shadow);
+}
+
 @media (min-width: 48em) {
     html:root {
         --header-panel-pad: calc(var(--block-padding-large) * 1.6);
@@ -334,6 +411,19 @@ html:root {
 
         color: var(--color-foreground, var(--color-dark));
         background: var(--color-background, var(--color-bright));
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        /* Use the tenant's heading font (theme.typography.headingFamily, serialized to
+           `--font-heading`) when it differs from the body family; otherwise fall back to the body
+           sans, so a theme-less shop is byte-identical (the variable is unset and resolves to
+           `--font-sans`). */
+        font-family: var(--font-heading, var(--font-sans));
     }
 
     body {
