@@ -85,6 +85,14 @@ _Avoid_: section, content block, widget
 A Shopify-aware data fetcher injected at the **Storefront** boundary so the **CMS** package can stay Shopify-free.
 _Avoid_: data loader, content loader
 
+**Shop extension manifest**:
+An optional, declarative per-**Shop** config (`ShopExtensionManifest`, `@nordcom/commerce-cms/extensions`) that UNIFIES — never forks — the five existing per-shop composition surfaces: theme tokens (`resolveTheme`), chrome slot order (`resolveChromeLayout`), section visibility, available **Block** types (`BLOCK_TYPES` / `isBlockType`), and product-card variant selections. CMS-safe — the type and its pure `resolveExtensions` composer import only the db theme leaf, the errors package, and Payload schemas; never React, Shopify, the **Storefront**, or a **Provider token** — so the **Block loader** firewall holds. An absent or empty manifest composes byte-identically to today's render.
+_Avoid_: theme config, shop settings, plugin manifest
+
+**Extension code sandbox** (deferred):
+The future, separate security project that would load and execute untrusted third-party extension code or remote assets at runtime, layered atop the **Block loader** firewall. NOT built today: the **Shop extension manifest** is data-only, and component registration happens via statically-imported, in-repo `register*` entrypoints on the **Storefront** side (`registerProductCardPicker` / `registerProductCardCta`, surfaced by `registerExtensionComponents`). **Block** and chrome dispatch are compile-time-exhaustive records with no runtime register API.
+_Avoid_: plugin runtime, dynamic loader, hot-loaded extension
+
 **Homepage slug**:
 The reserved CMS **Pages** slug `homepage`. The **Storefront** middleware rewrites a bare `/<locale>/` to `/<locale>/homepage/` before routing, so the index page must be persisted under this exact slug — `home`, `index`, or any other variant resolves to a 404.
 _Avoid_: home, index, root, landing
