@@ -41,7 +41,7 @@ const ProductCardRoot = ({ data, layout, chrome, onSale, className, children }: 
             className={cn(
                 'group/card relative flex w-full',
                 'min-w-(--product-card-min-width) max-w-(--product-card-max-width)',
-                'gap-(--block-spacer)',
+                'gap-(--product-card-gap)',
                 'transition-shadow duration-(--product-card-motion-base) ease-(--product-card-motion-ease)',
                 chrome === 'boxed' &&
                     'shadow-product-card focus-within:shadow-product-card-hover hover:shadow-product-card-hover',
