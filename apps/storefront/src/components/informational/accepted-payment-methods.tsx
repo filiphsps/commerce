@@ -26,14 +26,6 @@ export type AcceptedPaymentMethodsProps = {
  * @returns A row of payment brand icons, or `null` when none are configured.
  */
 export const AcceptedPaymentMethods = async ({ shop, locale, className, ...props }: AcceptedPaymentMethodsProps) => {
-    // The tenant lookup powering this client reads private storefront tokens
-    // (taint-guarded, so not `'use cache'`-able) and bottoms out in a mongoose
-    // `.exec()` that touches `new Date()` deep in the driver. Under Cache
-    // Components that time read aborts the prerender unless request data is read
-    // first, so defer to request time. Both call sites render us inside a
-    // `<Suspense>`, satisfying the partial-prerender fallback requirement.
-    await connection();
-
     const api = await ShopifyApiClient({ shop, locale });
     const paymentSettings = await ShopPaymentSettingsApi({ api });
     if (!paymentSettings) {
@@ -77,4 +69,22 @@ export const AcceptedPaymentMethods = async ({ shop, locale, className, ...props
             ))}
         </div>
     );
+};
+
+/**
+ * Request-time wrapper around {@link AcceptedPaymentMethods} for dynamic routes (e.g. the cart page)
+ * whose PPR prerender would otherwise abort with `next-prerender-current-time`: the payment-settings
+ * fetch bottoms out in a mongoose `.exec()` that reads `new Date()` deep in the driver, which is
+ * illegal during the prerender pass before any request data is read. `connection()` defers it past
+ * the prerender so it streams in at request time.
+ *
+ * Do NOT use this inside a `'use cache'` scope (e.g. the cached footer chrome) — `connection()` is
+ * forbidden there. Render {@link AcceptedPaymentMethods} directly in cached scopes; it is cache-safe.
+ *
+ * @param props - Forwarded verbatim to {@link AcceptedPaymentMethods}.
+ * @returns The deferred payment-methods row, resolved at request time.
+ */
+export const DeferredAcceptedPaymentMethods = async (props: AcceptedPaymentMethodsProps) => {
+    await connection();
+    return <AcceptedPaymentMethods {...props} />;
 };
