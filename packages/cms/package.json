@@ -36,6 +36,10 @@
             "./src/layout/index.ts",
             "./dist/layout/index.js"
         ],
+        "./extensions": [
+            "./src/extensions/index.ts",
+            "./dist/extensions/index.js"
+        ],
         "./fields": [
             "./src/fields/index.ts",
             "./dist/fields/index.js"
