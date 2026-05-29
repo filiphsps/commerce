@@ -69,13 +69,13 @@ const SheetPicker = ({ product, open, onOpenChange, onAdd }: ProductCardPickerPr
                 >
                     <span
                         aria-hidden
-                        className="mx-auto -mt-1 mb-2 block h-[3px] w-8 rounded-full bg-gray-300 md:hidden"
+                        className="mx-auto -mt-1 mb-2 block h-[3px] w-8 rounded-full bg-(--surface-3) md:hidden"
                     />
                     <header className="flex items-center justify-between gap-3">
                         <Dialog.Title className="font-medium text-sm leading-snug">{product.title}</Dialog.Title>
                         <Dialog.Close
                             aria-label="Close"
-                            className="inline-flex size-6 items-center justify-center text-gray-600 hover:text-black focus-visible:outline-(--accent) focus-visible:outline-2 focus-visible:outline-offset-2"
+                            className="text-(color:var(--text-muted)) inline-flex size-6 items-center justify-center hover:text-black focus-visible:outline-(--accent) focus-visible:outline-2 focus-visible:outline-offset-2"
                         >
                             <X aria-hidden className="size-full stroke-2" />
                         </Dialog.Close>

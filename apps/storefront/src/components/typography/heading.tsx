@@ -64,7 +64,7 @@ export const SubTitle = ({ as, bold, className, key, ...props }: SubTitleProps) 
             key={key}
             {...props}
             className={cn(
-                'text-gray-500 text-lg md:text-xl',
+                'text-(--text-muted) text-lg md:text-xl',
                 props.href && 'cursor-pointer hover:text-primary focus-visible:text-primary',
                 bold && 'font-extrabold',
                 props.href && bold && 'hover:underline focus-visible:underline',

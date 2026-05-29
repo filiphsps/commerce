@@ -24,7 +24,7 @@ export async function Avatar({ src, name, title, className, ...props }: AvatarPr
             {...props}
             title={title || name || undefined}
             className={cn(
-                'flex size-8 items-center justify-center overflow-hidden rounded-full bg-gray-200 font-bold text-gray-600 shadow',
+                'flex size-8 items-center justify-center overflow-hidden rounded-full bg-(--surface-1) font-bold text-(--text-muted) shadow',
                 className,
             )}
         >

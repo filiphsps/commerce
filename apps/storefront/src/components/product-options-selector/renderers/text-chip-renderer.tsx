@@ -45,7 +45,7 @@ export const TextChipRenderer = ({
         swatchPreview || swatchColor ? (
             <span
                 aria-hidden={true}
-                className="inline-block h-3 w-3 shrink-0 rounded-full border border-gray-200 border-solid bg-center bg-cover"
+                className="inline-block h-3 w-3 shrink-0 rounded-full border border-(--border-default) border-solid bg-center bg-cover"
                 style={{
                     backgroundColor: swatchColor ?? undefined,
                     backgroundImage: swatchPreview ? `url(${swatchPreview})` : undefined,

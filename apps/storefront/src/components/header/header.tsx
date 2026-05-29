@@ -57,7 +57,7 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
                         <Link
                             href={logoHref}
                             style={{ aspectRatio: `${(logo.width / logo.height).toFixed(2)} / 1` }}
-                            className="focus-ring -ml-2 block h-full rounded-lg px-2 py-2 hover:bg-gray-100 focus-visible:bg-gray-100"
+                            className="focus-ring -ml-2 block h-full rounded-lg px-2 py-2 hover:bg-(--surface-1) focus-visible:bg-(--surface-1)"
                         >
                             {logo.src ? (
                                 <Image

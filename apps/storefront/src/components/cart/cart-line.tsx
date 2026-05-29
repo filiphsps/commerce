@@ -89,7 +89,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
         <>
             {discount > 0.1 ? (
                 <Price
-                    className="font-medium text-base text-gray-500 leading-tight line-through"
+                    className="font-medium text-base text-(color:var(--text-muted)) leading-tight line-through"
                     data={{
                         amount: (
                             safeParseFloat(0, merch.compareAtUnitPrice?.amount, merch.unitPrice.amount) * line.quantity
@@ -102,7 +102,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
             <Price
                 className={cn(
                     'font-bold text-xl leading-tight',
-                    discount > 0.1 && 'font-extrabold text-red-500 text-xl',
+                    discount > 0.1 && 'font-extrabold text-(color:var(--state-sale)) text-xl',
                 )}
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 data={line.cost.total as any}
@@ -123,7 +123,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
         <Card
             data-cart-line={line.id}
             className={cn(
-                'relative flex gap-3 shadow',
+                'relative flex gap-[var(--block-spacer-large)] shadow',
                 !ready && 'cursor-not-allowed opacity-50 *:pointer-events-none',
             )}
         >
@@ -132,7 +132,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
             </span>
             <Card className="h-full min-h-32 w-auto overflow-hidden bg-white p-2 shadow">{image}</Card>
 
-            <div className="flex w-full flex-col items-start gap-3 md:flex-row">
+            <div className="flex w-full flex-col items-start gap-[var(--block-spacer-large)] md:flex-row">
                 <header className="flex h-full w-full flex-col items-start justify-between gap-1 md:py-2">
                     <div>
                         <Link
@@ -148,7 +148,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                                 {realOptions.map(({ name, value }) => (
                                     <span
                                         key={name}
-                                        className="inline-flex items-center rounded-md border border-gray-200 border-solid bg-gray-50 px-2 py-0.5 font-medium text-xs"
+                                        className="inline-flex items-center rounded-md border border-(--border-default) border-solid bg-(--surface-2) px-2 py-0.5 font-medium text-xs"
                                     >
                                         {name}·{value}
                                     </span>
@@ -170,7 +170,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                                     {line.discountAllocations.map((discount, index) => (
                                         <div
                                             key={`${line.id}-discount-${index}`}
-                                            className="flex items-center justify-center gap-1 font-medium text-gray-600 text-xs leading-none"
+                                            className="flex items-center justify-center gap-1 font-medium text-(color:var(--text-muted)) text-xs leading-none"
                                         >
                                             <TagIcon className="stroke-1 text-inherit" />
                                             <Label>
@@ -229,7 +229,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
 
 CartLine.skeleton = () => (
     <section
-        className="flex w-full flex-nowrap gap-2 border-0 border-gray-100 border-b-2 border-solid pb-2"
+        className="flex w-full flex-nowrap gap-2 border-0 border-(--border-default) border-b-2 border-solid pb-2"
         data-skeleton
     ></section>
 );

@@ -142,7 +142,7 @@ async function Badges({ product, i18n }: { product: Product; i18n: LocaleDiction
         badges.push(
             <div
                 key={'badge-attribute-vegan'}
-                className="flex items-center justify-center gap-1 rounded-2xl bg-green-600 stroke-white p-[0.4rem] px-3 font-semibold text-white text-xs uppercase leading-none"
+                className="flex items-center justify-center gap-1 rounded-2xl bg-(--state-success) stroke-white p-[0.4rem] px-3 font-semibold text-white text-xs uppercase leading-none"
                 title={t('this-product-is-vegan')}
                 data-nosnippet={true}
             >
@@ -212,7 +212,7 @@ export default async function ProductPage({ params }: { params: ProductPageParam
     let productTypeElement = null;
     if (product.productType) {
         productTypeElement = (
-            <span data-nosnippet={true} className="contents text-gray-700 leading-none">
+            <span data-nosnippet={true} className="contents text-(--text-muted) leading-none">
                 {' '}
                 &ndash; <ProductCategory shop={shop} locale={locale} product={product} />
             </span>
@@ -237,7 +237,7 @@ export default async function ProductPage({ params }: { params: ProductPageParam
 
             <ProductOptions.Root product={product} initialSelection={seedSelection}>
                 <Card className={BLOCK_STYLES}>
-                    <div className="flex h-auto w-full flex-col justify-start gap-3">
+                    <div className="flex h-auto w-full flex-col justify-start gap-[var(--block-spacer-large)]">
                         <Suspense
                             key={`products.${handle}.details.badges`}
                             fallback={<div className="h-4 w-full" data-skeleton />}
@@ -245,7 +245,7 @@ export default async function ProductPage({ params }: { params: ProductPageParam
                             <Badges product={product} i18n={i18n} />
                         </Suspense>
 
-                        <header className="flex flex-col gap-3">
+                        <header className="flex flex-col gap-[var(--block-spacer-large)]">
                             <div className="flex grow flex-col gap-0">
                                 <div className="flex w-full grow flex-wrap whitespace-pre-wrap font-extrabold text-3xl leading-tight">
                                     <TitleTag className="text-inherit">
@@ -259,7 +259,7 @@ export default async function ProductPage({ params }: { params: ProductPageParam
                                         shop={shop}
                                         locale={locale}
                                         product={product}
-                                        className="font-semibold text-gray-600 normal-case leading-tight transition-colors md:text-lg"
+                                        className="font-semibold text-(--text-muted) normal-case leading-tight transition-colors md:text-lg"
                                         title={t('browse-all-products-by-brand', product.vendor)}
                                         prefix={<span className="font-normal">{t('by')} </span>}
                                     />

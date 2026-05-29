@@ -24,7 +24,7 @@ import { pluralize } from '@/utils/pluralize';
 import { safeParseFloat } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 
-const SUMMARY_LABEL_STYLES = 'font-medium text-sm capitalize text-gray-600 leading-none';
+const SUMMARY_LABEL_STYLES = 'font-medium text-sm capitalize text-(color:var(--text-muted)) leading-none';
 const PRICE_STYLES = 'text-sm font-bold';
 const PRICE_DISCOUNT_STYLES = 'bg-green-200 text-green-950 rounded-lg px-1 -mx-1 font-extrabold';
 
@@ -168,7 +168,7 @@ const CartSummary = ({ onCheckout, i18n, children, paymentMethods }: CartSummary
 
                             {lines.flatMap((line) => line.discountAllocations ?? []).length > 0 ? (
                                 <div className="flex flex-col gap-1 pt-4">
-                                    <Label className="text-gray-700 text-xs leading-none">
+                                    <Label className="text-(color:var(--text-muted)) text-xs leading-none">
                                         {t('automatic-discounts')}
                                     </Label>
 

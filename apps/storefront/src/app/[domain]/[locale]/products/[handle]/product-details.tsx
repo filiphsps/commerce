@@ -15,7 +15,7 @@ import { cn } from '@/utils/tailwind';
 const COMMON_STYLES = 'md:gap-2 flex grow flex-col items-stretch justify-start gap-1 empty:hidden';
 const LABEL_STYLES = 'leading-none text-base';
 const CONTENT_STYLES =
-    'flex items-center justify-center rounded-lg bg-gray-100 p-1 px-2 text-sm font-semibold leading-tight hyphens-auto h-min gap-1';
+    'flex items-center justify-center rounded-lg bg-(--surface-1) p-1 px-2 text-sm font-semibold leading-tight hyphens-auto h-min gap-1';
 
 /** Props for the `ProductIngredients` server component. */
 export type ProductIngredientsProps = {

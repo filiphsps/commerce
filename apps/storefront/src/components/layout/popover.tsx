@@ -35,7 +35,7 @@ export function Popover({ open, onOpenChange, title, description, children }: Po
                    description. When a description IS supplied, Radix auto-links it from the
                    <Dialog.Description> child below. */}
                 <Dialog.Content asChild={true} {...(description ? {} : { 'aria-describedby': undefined })}>
-                    <div className="fixed top-1/2 left-1/2 z-30 flex max-h-[80vh] w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 flex-col gap-3 overflow-y-auto rounded-lg border border-gray-200 border-solid bg-white p-4 shadow-lg">
+                    <div className="fixed top-1/2 left-1/2 z-30 flex max-h-[80vh] w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 flex-col gap-3 overflow-y-auto rounded-lg border border-(--border-default) border-solid bg-white p-4 shadow-lg">
                         <header className="flex items-center justify-between gap-2">
                             <Dialog.Title asChild={true}>
                                 <Label className="font-bold text-base leading-none">{title}</Label>
@@ -44,7 +44,7 @@ export function Popover({ open, onOpenChange, title, description, children }: Po
                                 <Button
                                     aria-label="Close"
                                     title="Close"
-                                    className="flex size-6 items-center justify-center text-gray-600 transition-colors hover:text-black"
+                                    className="flex size-6 items-center justify-center text-(color:var(--text-muted)) transition-colors hover:text-black"
                                     styled={false}
                                 >
                                     <XIcon className="size-full stroke-2 text-inherit" />
