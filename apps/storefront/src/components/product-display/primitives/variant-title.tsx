@@ -36,7 +36,7 @@ const VariantTitle = ({ product, showVendor = false, omitProductType = false, cl
             <Link
                 href={href}
                 title={title}
-                className="product-card-title focus-ring text-(color:var(--product-card-title-color)) block cursor-text select-text font-(--product-card-title-weight) text-sm leading-tight"
+                className="product-card-title focus-ring text-(color:var(--product-card-title-color)) text-(length:--product-card-title-size) block cursor-text select-text font-(--product-card-title-weight) leading-tight"
                 style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
             >
                 {title}
