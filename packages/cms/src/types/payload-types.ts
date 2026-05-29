@@ -279,6 +279,204 @@ export interface Shop {
         }[]
       | null;
   };
+  theme?: {
+    colors?: {
+      background?: string | null;
+      foreground?: string | null;
+      accents?:
+        | {
+            type: 'primary' | 'secondary';
+            color: string;
+            foreground: string;
+            id?: string | null;
+          }[]
+        | null;
+      accentPrimaryLight?: string | null;
+      accentPrimaryDark?: string | null;
+      accentSecondaryLight?: string | null;
+      accentSecondaryDark?: string | null;
+      surface?: {
+        base?: string | null;
+        raised?: string | null;
+        sunken?: string | null;
+      };
+      text?: {
+        default?: string | null;
+        muted?: string | null;
+      };
+      border?: {
+        default?: string | null;
+        strong?: string | null;
+      };
+      state?: {
+        sale?: string | null;
+        danger?: string | null;
+        success?: string | null;
+        info?: string | null;
+      };
+      focusRing?: string | null;
+    };
+    typography?: {
+      fontFamily?:
+        | (
+            | 'public-sans'
+            | 'inter'
+            | 'roboto'
+            | 'open-sans'
+            | 'lato'
+            | 'montserrat'
+            | 'poppins'
+            | 'nunito'
+            | 'work-sans'
+            | 'source-serif-4'
+            | 'lora'
+            | 'playfair-display'
+            | 'merriweather'
+          )
+        | null;
+      headingFamily?:
+        | (
+            | 'public-sans'
+            | 'inter'
+            | 'roboto'
+            | 'open-sans'
+            | 'lato'
+            | 'montserrat'
+            | 'poppins'
+            | 'nunito'
+            | 'work-sans'
+            | 'source-serif-4'
+            | 'lora'
+            | 'playfair-display'
+            | 'merriweather'
+          )
+        | null;
+      fontWeights?: {
+        normal?: number | null;
+        medium?: number | null;
+        semibold?: number | null;
+        bold?: number | null;
+      };
+      scale?: {
+        xs?: string | null;
+        sm?: string | null;
+        base?: string | null;
+        lg?: string | null;
+        xl?: string | null;
+      };
+    };
+    radii?: {
+      block?: string | null;
+      blockLarge?: string | null;
+      blockSmall?: string | null;
+      blockTiny?: string | null;
+    };
+    spacing?: {
+      blockPadding?: string | null;
+      blockSpacer?: string | null;
+    };
+    elevation?: {
+      card?: string | null;
+      cardHover?: string | null;
+      panel?: string | null;
+    };
+    productCard?: {
+      bg?: string | null;
+      borderColor?: string | null;
+      borderWidth?: string | null;
+      radius?: string | null;
+      padding?: string | null;
+      gap?: string | null;
+      shadow?: string | null;
+      shadowHover?: string | null;
+      minWidth?: string | null;
+      maxWidth?: string | null;
+      gridAlign?: string | null;
+      searchImageWidth?: string | null;
+      imageRadius?: string | null;
+      imagePadding?: string | null;
+      imageFit?: string | null;
+      imageHoverSwap?: string | null;
+      imageSizes?: string | null;
+      aspectVertical?: string | null;
+      aspectHorizontal?: string | null;
+      aspectHorizontalSquare?: string | null;
+      aspectMicro?: string | null;
+      vendorColor?: string | null;
+      vendorSize?: string | null;
+      titleColor?: string | null;
+      titleSize?: string | null;
+      titleWeight?: number | null;
+      titleLineClamp?: number | null;
+      priceColor?: string | null;
+      priceSize?: string | null;
+      priceWeight?: number | null;
+      compareColor?: string | null;
+      urgencyColor?: string | null;
+      urgencyThreshold?: number | null;
+      eyebrowTracking?: string | null;
+      swatchSize?: string | null;
+      swatchGap?: string | null;
+      swatchRingColor?: string | null;
+      swatchHitPadding?: string | null;
+      chipBg?: string | null;
+      chipColor?: string | null;
+      chipBorder?: string | null;
+      chipActiveBg?: string | null;
+      chipActiveColor?: string | null;
+      chipPaddingY?: string | null;
+      chipPaddingX?: string | null;
+      moreBg?: string | null;
+      moreColor?: string | null;
+      moreSize?: string | null;
+      moreWeight?: number | null;
+      moreMinSize?: string | null;
+      ctaBg?: string | null;
+      ctaColor?: string | null;
+      ctaRadius?: string | null;
+      ctaPaddingY?: string | null;
+      ctaHeight?: string | null;
+      ctaPlacement?: string | null;
+      ctaPillPosition?: string | null;
+      ctaPillLabel?: string | null;
+      ctaPillIcon?: string | null;
+      ctaPillReveal?: string | null;
+      ctaInlineStyle?: string | null;
+      fastPathDot?: string | null;
+      fastPathSingleVariant?: string | null;
+      quickAddPresentation?: string | null;
+      overlayBg?: string | null;
+      overlayRadius?: string | null;
+      overlayBorderColor?: string | null;
+      overlayShadow?: string | null;
+      overlayWidth?: string | null;
+      overlayMaxHeight?: string | null;
+      overlayPadding?: string | null;
+      oosOpacity?: number | null;
+      oosImageSaturate?: number | null;
+      motionEase?: string | null;
+      motionFast?: string | null;
+      motionBase?: string | null;
+      motionPickerIn?: string | null;
+      motionPickerOut?: string | null;
+      motionHoverDuration?: string | null;
+      motionHoverEase?: string | null;
+      motionImageSwapDuration?: string | null;
+      motionOverlayInDuration?: string | null;
+      motionOverlayInEase?: string | null;
+      saleStyle?: string | null;
+      saleStrikeColor?: string | null;
+      saleStrikeAngle?: string | null;
+      saleStrikeExtend?: string | null;
+      saleCurrentColor?: string | null;
+      saleShowSavingsLine?: string | null;
+      saleBadgeStyle?: string | null;
+      saleBadgePosition?: string | null;
+      saleBadgeText?: string | null;
+      saleBadgeMinDiscount?: number | null;
+      saleBadgeAllowOverlap?: boolean | null;
+    };
+  };
   commerce?: {
     maxQuantity?: number | null;
     processingTimeInDays?: number | null;
@@ -344,6 +542,7 @@ export interface Shop {
 export interface FeatureFlag {
   id: string;
   key: string;
+  kind?: ('behavior' | 'section') | null;
   description?: string | null;
   defaultValue:
     | {
@@ -1234,6 +1433,198 @@ export interface ShopsSelect<T extends boolean = true> {
               id?: T;
             };
       };
+  theme?:
+    | T
+    | {
+        colors?:
+          | T
+          | {
+              background?: T;
+              foreground?: T;
+              accents?:
+                | T
+                | {
+                    type?: T;
+                    color?: T;
+                    foreground?: T;
+                    id?: T;
+                  };
+              accentPrimaryLight?: T;
+              accentPrimaryDark?: T;
+              accentSecondaryLight?: T;
+              accentSecondaryDark?: T;
+              surface?:
+                | T
+                | {
+                    base?: T;
+                    raised?: T;
+                    sunken?: T;
+                  };
+              text?:
+                | T
+                | {
+                    default?: T;
+                    muted?: T;
+                  };
+              border?:
+                | T
+                | {
+                    default?: T;
+                    strong?: T;
+                  };
+              state?:
+                | T
+                | {
+                    sale?: T;
+                    danger?: T;
+                    success?: T;
+                    info?: T;
+                  };
+              focusRing?: T;
+            };
+        typography?:
+          | T
+          | {
+              fontFamily?: T;
+              headingFamily?: T;
+              fontWeights?:
+                | T
+                | {
+                    normal?: T;
+                    medium?: T;
+                    semibold?: T;
+                    bold?: T;
+                  };
+              scale?:
+                | T
+                | {
+                    xs?: T;
+                    sm?: T;
+                    base?: T;
+                    lg?: T;
+                    xl?: T;
+                  };
+            };
+        radii?:
+          | T
+          | {
+              block?: T;
+              blockLarge?: T;
+              blockSmall?: T;
+              blockTiny?: T;
+            };
+        spacing?:
+          | T
+          | {
+              blockPadding?: T;
+              blockSpacer?: T;
+            };
+        elevation?:
+          | T
+          | {
+              card?: T;
+              cardHover?: T;
+              panel?: T;
+            };
+        productCard?:
+          | T
+          | {
+              bg?: T;
+              borderColor?: T;
+              borderWidth?: T;
+              radius?: T;
+              padding?: T;
+              gap?: T;
+              shadow?: T;
+              shadowHover?: T;
+              minWidth?: T;
+              maxWidth?: T;
+              gridAlign?: T;
+              searchImageWidth?: T;
+              imageRadius?: T;
+              imagePadding?: T;
+              imageFit?: T;
+              imageHoverSwap?: T;
+              imageSizes?: T;
+              aspectVertical?: T;
+              aspectHorizontal?: T;
+              aspectHorizontalSquare?: T;
+              aspectMicro?: T;
+              vendorColor?: T;
+              vendorSize?: T;
+              titleColor?: T;
+              titleSize?: T;
+              titleWeight?: T;
+              titleLineClamp?: T;
+              priceColor?: T;
+              priceSize?: T;
+              priceWeight?: T;
+              compareColor?: T;
+              urgencyColor?: T;
+              urgencyThreshold?: T;
+              eyebrowTracking?: T;
+              swatchSize?: T;
+              swatchGap?: T;
+              swatchRingColor?: T;
+              swatchHitPadding?: T;
+              chipBg?: T;
+              chipColor?: T;
+              chipBorder?: T;
+              chipActiveBg?: T;
+              chipActiveColor?: T;
+              chipPaddingY?: T;
+              chipPaddingX?: T;
+              moreBg?: T;
+              moreColor?: T;
+              moreSize?: T;
+              moreWeight?: T;
+              moreMinSize?: T;
+              ctaBg?: T;
+              ctaColor?: T;
+              ctaRadius?: T;
+              ctaPaddingY?: T;
+              ctaHeight?: T;
+              ctaPlacement?: T;
+              ctaPillPosition?: T;
+              ctaPillLabel?: T;
+              ctaPillIcon?: T;
+              ctaPillReveal?: T;
+              ctaInlineStyle?: T;
+              fastPathDot?: T;
+              fastPathSingleVariant?: T;
+              quickAddPresentation?: T;
+              overlayBg?: T;
+              overlayRadius?: T;
+              overlayBorderColor?: T;
+              overlayShadow?: T;
+              overlayWidth?: T;
+              overlayMaxHeight?: T;
+              overlayPadding?: T;
+              oosOpacity?: T;
+              oosImageSaturate?: T;
+              motionEase?: T;
+              motionFast?: T;
+              motionBase?: T;
+              motionPickerIn?: T;
+              motionPickerOut?: T;
+              motionHoverDuration?: T;
+              motionHoverEase?: T;
+              motionImageSwapDuration?: T;
+              motionOverlayInDuration?: T;
+              motionOverlayInEase?: T;
+              saleStyle?: T;
+              saleStrikeColor?: T;
+              saleStrikeAngle?: T;
+              saleStrikeExtend?: T;
+              saleCurrentColor?: T;
+              saleShowSavingsLine?: T;
+              saleBadgeStyle?: T;
+              saleBadgePosition?: T;
+              saleBadgeText?: T;
+              saleBadgeMinDiscount?: T;
+              saleBadgeAllowOverlap?: T;
+            };
+      };
   commerce?:
     | T
     | {
@@ -1306,6 +1697,7 @@ export interface ShopsSelect<T extends boolean = true> {
  */
 export interface FeatureFlagsSelect<T extends boolean = true> {
   key?: T;
+  kind?: T;
   description?: T;
   defaultValue?: T;
   options?:

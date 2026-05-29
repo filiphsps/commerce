@@ -3,6 +3,7 @@ import { Schema } from 'mongoose';
 
 import type { BaseDocument, DocumentExtras } from '../db';
 import { db } from '../db';
+import type { AccentToken, ShopThemeTokens } from '../lib/theme';
 import type { FeatureFlagBase } from './feature-flag';
 import type { UserBase } from './user';
 
@@ -160,12 +161,17 @@ export interface ShopBase extends BaseDocument {
                 alt: string;
             };
         };
-        accents: {
-            type: 'primary' | 'secondary';
-            color: string;
-            foreground: string;
-        }[];
+        accents: AccentToken[];
     };
+
+    /**
+     * Optional per-tenant theme token overrides. Absent on every existing shop; absence resolves to
+     * the platform defaults via `resolveTheme`, so an unset `theme` renders byte-identically to
+     * today and needs no migration. A sibling of `design` (never a tightening of it) so the required
+     * logo + accents surface is untouched.
+     */
+    theme?: ShopThemeTokens;
+
     icons?: {
         favicon?: {
             width: number;
@@ -323,6 +329,196 @@ export const ShopSchema = new Schema<ShopBase>(
                 required: true,
                 default: [],
             },
+        },
+
+        // Optional per-tenant theme overrides. Every leaf is optional with NO default and the group
+        // itself is `required: false` with no default, so a shop that never sets a theme serializes
+        // nothing here and resolves to the platform defaults via `resolveTheme` — byte-identical to
+        // today, no migration. Field types mirror `ResolvedShopTheme` (String/Number/Boolean) so
+        // Mongoose casts authored values; the camelCase keys map 1:1 to the storefront CSS vars.
+        theme: {
+            type: {
+                colors: {
+                    background: Schema.Types.String,
+                    foreground: Schema.Types.String,
+                    accents: {
+                        type: [
+                            {
+                                type: {
+                                    type: Schema.Types.String,
+                                    enum: ['primary', 'secondary'],
+                                    required: true,
+                                },
+                                color: { type: Schema.Types.String, required: true },
+                                foreground: { type: Schema.Types.String, required: true },
+                            },
+                        ],
+                        required: false,
+                    },
+                    accentPrimaryLight: Schema.Types.String,
+                    accentPrimaryDark: Schema.Types.String,
+                    accentSecondaryLight: Schema.Types.String,
+                    accentSecondaryDark: Schema.Types.String,
+                    surface: {
+                        base: Schema.Types.String,
+                        raised: Schema.Types.String,
+                        sunken: Schema.Types.String,
+                    },
+                    text: {
+                        default: Schema.Types.String,
+                        muted: Schema.Types.String,
+                    },
+                    border: {
+                        default: Schema.Types.String,
+                        strong: Schema.Types.String,
+                    },
+                    state: {
+                        sale: Schema.Types.String,
+                        danger: Schema.Types.String,
+                        success: Schema.Types.String,
+                        info: Schema.Types.String,
+                    },
+                    focusRing: Schema.Types.String,
+                },
+                typography: {
+                    fontFamily: Schema.Types.String,
+                    headingFamily: Schema.Types.String,
+                    fontWeights: {
+                        normal: Schema.Types.Number,
+                        medium: Schema.Types.Number,
+                        semibold: Schema.Types.Number,
+                        bold: Schema.Types.Number,
+                    },
+                    scale: {
+                        xs: Schema.Types.String,
+                        sm: Schema.Types.String,
+                        base: Schema.Types.String,
+                        lg: Schema.Types.String,
+                        xl: Schema.Types.String,
+                    },
+                },
+                radii: {
+                    block: Schema.Types.String,
+                    blockLarge: Schema.Types.String,
+                    blockSmall: Schema.Types.String,
+                    blockTiny: Schema.Types.String,
+                },
+                spacing: {
+                    blockPadding: Schema.Types.String,
+                    blockSpacer: Schema.Types.String,
+                },
+                elevation: {
+                    card: Schema.Types.String,
+                    cardHover: Schema.Types.String,
+                    panel: Schema.Types.String,
+                },
+                productCard: {
+                    bg: Schema.Types.String,
+                    borderColor: Schema.Types.String,
+                    borderWidth: Schema.Types.String,
+                    radius: Schema.Types.String,
+                    padding: Schema.Types.String,
+                    gap: Schema.Types.String,
+                    shadow: Schema.Types.String,
+                    shadowHover: Schema.Types.String,
+                    minWidth: Schema.Types.String,
+                    maxWidth: Schema.Types.String,
+                    gridAlign: Schema.Types.String,
+                    searchImageWidth: Schema.Types.String,
+
+                    imageRadius: Schema.Types.String,
+                    imagePadding: Schema.Types.String,
+                    imageFit: Schema.Types.String,
+                    imageHoverSwap: Schema.Types.String,
+                    imageSizes: Schema.Types.String,
+                    aspectVertical: Schema.Types.String,
+                    aspectHorizontal: Schema.Types.String,
+                    aspectHorizontalSquare: Schema.Types.String,
+                    aspectMicro: Schema.Types.String,
+
+                    vendorColor: Schema.Types.String,
+                    vendorSize: Schema.Types.String,
+                    titleColor: Schema.Types.String,
+                    titleSize: Schema.Types.String,
+                    titleWeight: Schema.Types.Number,
+                    titleLineClamp: Schema.Types.Number,
+                    priceColor: Schema.Types.String,
+                    priceSize: Schema.Types.String,
+                    priceWeight: Schema.Types.Number,
+                    compareColor: Schema.Types.String,
+                    urgencyColor: Schema.Types.String,
+                    urgencyThreshold: Schema.Types.Number,
+                    eyebrowTracking: Schema.Types.String,
+
+                    swatchSize: Schema.Types.String,
+                    swatchGap: Schema.Types.String,
+                    swatchRingColor: Schema.Types.String,
+                    swatchHitPadding: Schema.Types.String,
+
+                    chipBg: Schema.Types.String,
+                    chipColor: Schema.Types.String,
+                    chipBorder: Schema.Types.String,
+                    chipActiveBg: Schema.Types.String,
+                    chipActiveColor: Schema.Types.String,
+                    chipPaddingY: Schema.Types.String,
+                    chipPaddingX: Schema.Types.String,
+                    moreBg: Schema.Types.String,
+                    moreColor: Schema.Types.String,
+                    moreSize: Schema.Types.String,
+                    moreWeight: Schema.Types.Number,
+                    moreMinSize: Schema.Types.String,
+
+                    ctaBg: Schema.Types.String,
+                    ctaColor: Schema.Types.String,
+                    ctaRadius: Schema.Types.String,
+                    ctaPaddingY: Schema.Types.String,
+                    ctaHeight: Schema.Types.String,
+                    ctaPlacement: Schema.Types.String,
+                    ctaPillPosition: Schema.Types.String,
+                    ctaPillLabel: Schema.Types.String,
+                    ctaPillIcon: Schema.Types.String,
+                    ctaPillReveal: Schema.Types.String,
+                    ctaInlineStyle: Schema.Types.String,
+                    fastPathDot: Schema.Types.String,
+                    fastPathSingleVariant: Schema.Types.String,
+                    quickAddPresentation: Schema.Types.String,
+
+                    overlayBg: Schema.Types.String,
+                    overlayRadius: Schema.Types.String,
+                    overlayBorderColor: Schema.Types.String,
+                    overlayShadow: Schema.Types.String,
+                    overlayWidth: Schema.Types.String,
+                    overlayMaxHeight: Schema.Types.String,
+                    overlayPadding: Schema.Types.String,
+
+                    oosOpacity: Schema.Types.Number,
+                    oosImageSaturate: Schema.Types.Number,
+
+                    motionEase: Schema.Types.String,
+                    motionFast: Schema.Types.String,
+                    motionBase: Schema.Types.String,
+                    motionPickerIn: Schema.Types.String,
+                    motionPickerOut: Schema.Types.String,
+                    motionHoverDuration: Schema.Types.String,
+                    motionHoverEase: Schema.Types.String,
+                    motionImageSwapDuration: Schema.Types.String,
+                    motionOverlayInDuration: Schema.Types.String,
+                    motionOverlayInEase: Schema.Types.String,
+
+                    saleStyle: Schema.Types.String,
+                    saleStrikeColor: Schema.Types.String,
+                    saleStrikeAngle: Schema.Types.String,
+                    saleStrikeExtend: Schema.Types.String,
+                    saleCurrentColor: Schema.Types.String,
+                    saleShowSavingsLine: Schema.Types.String,
+                    saleBadgeStyle: Schema.Types.String,
+                    saleBadgePosition: Schema.Types.String,
+                    saleBadgeText: Schema.Types.String,
+                    saleBadgeMinDiscount: Schema.Types.Number,
+                    saleBadgeAllowOverlap: Schema.Types.Boolean,
+                },
+            },
+            required: false,
         },
 
         icons: {
