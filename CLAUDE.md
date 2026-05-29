@@ -17,13 +17,14 @@ LLM defaults that would otherwise be wrong here:
 
 ## Code intelligence
 
-Once you have a symbol's location, prefer LSP over `Grep`/`Read` for navigation — faster, precise, no whole-file reads. LSP ops are position-based (`filePath` + `line` + `character`), so seed the position with `Grep` first:
+Prefer LSP over `Grep`/`Read` for navigation — faster, precise, no whole-file reads.
 
--   **`Grep` to find a symbol by name**, then point LSP at the hit. The LSP tool has **no `query` param**, so `workspaceSymbol` always sends an empty query and returns nothing — don't use it ([claude-code#30948](https://github.com/anthropics/claude-code/issues/30948)).
--   **`findReferences`** for every usage across the repo.
--   **`goToDefinition` / `goToImplementation`** to jump to source.
--   **`hover`** for type info without opening the file.
--   **`documentSymbol`** to list a file's symbols (works; it's file-scoped).
+-   **Find a symbol by name → `lsp-symbols` MCP** (`find_symbol`, `find_references`). The built-in LSP tool has **no `query` param**, so its `workspaceSymbol` always returns nothing ([claude-code#30948](https://github.com/anthropics/claude-code/issues/30948)). The `lsp-symbols` server fills that gap; opt-in per machine — see `.claude/mcp/README.md`. If it isn't connected, fall back to `Grep` for the name, then point position-based LSP ops at the hit.
+-   The remaining built-in LSP ops are position-based (`filePath` + `line` + `character`):
+    -   **`findReferences`** for every usage across the repo.
+    -   **`goToDefinition` / `goToImplementation`** to jump to source.
+    -   **`hover`** for type info without opening the file.
+    -   **`documentSymbol`** to list a file's symbols (works; it's file-scoped).
 -   **Check LSP diagnostics after writing or editing code** and fix errors before moving on.
 
 ## Spec, plan & task paths
