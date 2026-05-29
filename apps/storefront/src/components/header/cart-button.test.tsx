@@ -32,6 +32,33 @@ describe('components', () => {
                 // The quantity number should appear in the DOM
                 expect(document.body.textContent).toContain('3');
             });
+
+            it('stamps the count badge when the quantity increases', () => {
+                vi.mocked(useCartCount).mockReturnValue(1);
+                const { container, rerender } = render(
+                    <CartButton locale={{ code: 'en-US' } as any} i18n={{} as any} />,
+                );
+
+                // First settled render only records the baseline — no stamp.
+                expect(container.querySelector('[data-cart-count]')?.className).not.toMatch(/animate-\[chip-stamp/);
+
+                vi.mocked(useCartCount).mockReturnValue(3);
+                rerender(<CartButton locale={{ code: 'en-US' } as any} i18n={{} as any} />);
+
+                expect(container.querySelector('[data-cart-count]')?.className).toMatch(/animate-\[chip-stamp/);
+            });
+
+            it('does not stamp the badge when the quantity decreases', () => {
+                vi.mocked(useCartCount).mockReturnValue(3);
+                const { container, rerender } = render(
+                    <CartButton locale={{ code: 'en-US' } as any} i18n={{} as any} />,
+                );
+
+                vi.mocked(useCartCount).mockReturnValue(1);
+                rerender(<CartButton locale={{ code: 'en-US' } as any} i18n={{} as any} />);
+
+                expect(container.querySelector('[data-cart-count]')?.className).not.toMatch(/animate-\[chip-stamp/);
+            });
         });
     });
 });

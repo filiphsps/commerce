@@ -105,6 +105,16 @@ describe('components', () => {
             });
         });
 
+        it('applies a motion-safe tactile scale to the enabled stepper buttons', () => {
+            render(<QuantitySelector i18n={{} as any} update={() => {}} value={3} />);
+
+            const decrease = screen.getByTestId('quantity-decrease');
+            const increase = screen.getByTestId('quantity-increase');
+
+            expect(decrease.className).toMatch(/motion-safe:active:scale-\[0\.97\]/);
+            expect(increase.className).toMatch(/motion-safe:active:scale-\[0\.97\]/);
+        });
+
         it('does not stomp user input while the field is focused', () => {
             const updateMock = vi.fn();
             const { rerender } = render(<QuantitySelector i18n={{} as any} update={updateMock} value={1} />);

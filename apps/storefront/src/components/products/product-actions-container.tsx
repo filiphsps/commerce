@@ -106,7 +106,7 @@ export const ProductActionsContainer = ({ className, i18n, ...props }: ProductAc
                         value={quantity}
                         i18n={i18n}
                         style={{ gridArea: 'quantity' }}
-                        buttonClassName="disabled:opacity-0 bg-white"
+                        buttonClassName="disabled:opacity-0 bg-(--surface-0)"
                     />
                 </div>
 

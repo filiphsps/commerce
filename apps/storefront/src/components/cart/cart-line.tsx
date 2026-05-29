@@ -130,7 +130,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
             <span data-line-quantity={quantity} className="sr-only" aria-live="polite">
                 {quantity}
             </span>
-            <Card className="h-full min-h-32 w-auto overflow-hidden bg-white p-2 shadow">{image}</Card>
+            <Card className="h-full min-h-32 w-auto overflow-hidden bg-(--surface-0) p-2 shadow">{image}</Card>
 
             <div className="flex w-full flex-col items-start gap-[var(--block-spacer-large)] md:flex-row">
                 <header className="flex h-full w-full flex-col items-start justify-between gap-1 md:py-2">
@@ -160,7 +160,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                             {typeof merch.quantityAvailable === 'number' &&
                             merch.quantityAvailable > 0 &&
                             merch.quantityAvailable <= 5 ? (
-                                <Label className="font-medium text-amber-600 text-xs leading-none">
+                                <Label className="font-medium text-(--state-warning) text-xs leading-none">
                                     {tCart('n-left', merch.quantityAvailable.toString())}
                                 </Label>
                             ) : null}

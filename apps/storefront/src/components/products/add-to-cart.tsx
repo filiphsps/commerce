@@ -185,7 +185,10 @@ export function AddToCart({
         <Button
             aria-disabled={disabled || undefined}
             {...props}
-            className={cn(className)}
+            className={cn(
+                'data-[success=true]:motion-safe:animate-[chip-stamp_var(--product-card-motion-base)_var(--product-card-motion-ease)]',
+                className,
+            )}
             disabled={disabled || undefined}
             as="button"
             type={(type as 'button' | 'reset' | 'submit' | undefined) || 'button'}

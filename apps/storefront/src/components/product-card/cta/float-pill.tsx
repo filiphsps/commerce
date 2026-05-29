@@ -40,7 +40,7 @@ const FloatPill = ({ isSingleBuyable, isOpen, onActivate, onAdd }: ProductCardCt
                 'top-(--product-card-cta-pill-top,10px) right-(--product-card-cta-pill-right,10px)',
                 'inline-flex items-center justify-center gap-1.5',
                 'size-9 rounded-full p-0',
-                'bg-white/95 text-(--product-card-title-color)',
+                'bg-(--surface-0)/95 text-(--product-card-title-color)',
                 'border border-[color-mix(in_srgb,currentColor_8%,transparent)]',
                 'shadow-[0_6px_16px_-8px_rgb(20_17_11/0.25)]',
                 'select-none [-webkit-tap-highlight-color:transparent] [touch-action:manipulation]',

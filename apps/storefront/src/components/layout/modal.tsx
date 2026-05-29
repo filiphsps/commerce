@@ -57,7 +57,7 @@ export function Modal({
                         </VisuallyHidden.Root>
 
                         <div className="m-2 flex h-full min-h-dvh w-[calc(100%-1rem)] max-w-lg snap-y snap-mandatory scroll-py-2 flex-col items-stretch justify-stretch gap-2 overflow-x-hidden scroll-smooth bg-transparent md:w-full md:max-w-full md:snap-none md:gap-3">
-                            <div className="pointer-events-auto z-10 mt-[16.5vh] flex snap-end snap-always items-center justify-between gap-3 rounded-lg border border-(--border-default) border-solid bg-white p-2 px-3 leading-none drop-shadow md:mx-auto md:mt-4 md:-mb-6 md:w-full md:max-w-[calc(var(--page-width)/1.1)] md:border-none md:px-4 md:pt-3 md:pb-0 md:drop-shadow-none lg:mt-4">
+                            <div className="pointer-events-auto z-10 mt-[16.5vh] flex snap-end snap-always items-center justify-between gap-3 rounded-lg border border-(--border-default) border-solid bg-(--surface-0) p-2 px-3 leading-none drop-shadow md:mx-auto md:mt-4 md:-mb-6 md:w-full md:max-w-[calc(var(--page-width)/1.1)] md:border-none md:px-4 md:pt-3 md:pb-0 md:drop-shadow-none lg:mt-4">
                                 <Dialog.Title asChild={true}>
                                     <Label className="line-clamp-1 font-bold text-current leading-none">{title}</Label>
                                 </Dialog.Title>

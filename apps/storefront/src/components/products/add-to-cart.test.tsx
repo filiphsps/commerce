@@ -97,6 +97,20 @@ describe('components', () => {
             expect(() => wrapper.unmount()).not.toThrow();
         });
 
+        it('wires a motion-safe success cue and the success state to the button after a successful add', async () => {
+            const { getByRole } = render(<AddToCart {...baseProps} />);
+
+            const button = getByRole('button');
+            // The success cue is a static, token-driven animation gated by `data-success` + motion-safe.
+            expect(button.className).toMatch(/data-\[success=true\]:motion-safe:animate-\[chip-stamp/);
+
+            await act(async () => {
+                button.click();
+            });
+
+            expect(button.getAttribute('data-success')).toBe('true');
+        });
+
         it('calls addLine with variantId, quantity, and ProductSnapshot when clicked', async () => {
             const { getByRole } = render(<AddToCart {...baseProps} />);
 

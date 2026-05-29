@@ -38,7 +38,10 @@ const StockStatus = ({ product, i18n, className, ...props }: StockStatusProps) =
     if (isBackOrder) {
         return (
             <section
-                className={cn('flex items-center justify-start gap-1 *:text-amber-600 *:leading-none', className)}
+                className={cn(
+                    'flex items-center justify-start gap-1 *:text-(--state-warning) *:leading-none',
+                    className,
+                )}
                 title={t('back-order')}
                 {...props}
             >

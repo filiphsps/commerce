@@ -39,6 +39,13 @@ vi.mock('@/components/header/cart-button', () => ({
     CartButton: () => <div data-testid="cart-button" />,
 }));
 
+// Pin the viewport to the baseline (no-JS / mobile) branch so the header's search affordance is the
+// icon-only `/search/` link regardless of the happy-dom default width. The desktop inline-search
+// enhancement is exercised in header-search.test.tsx.
+vi.mock('@/components/product-options/use-is-desktop', () => ({
+    useIsDesktop: () => false,
+}));
+
 describe('<Header>', () => {
     it('falls back to minimal chrome when HeaderApi returns null', async () => {
         vi.mocked(Shop.findByDomain).mockResolvedValue(mockShop());

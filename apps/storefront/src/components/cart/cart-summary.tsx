@@ -26,7 +26,8 @@ import { cn } from '@/utils/tailwind';
 
 const SUMMARY_LABEL_STYLES = 'font-medium text-sm capitalize text-(color:var(--text-muted)) leading-none';
 const PRICE_STYLES = 'text-sm font-bold';
-const PRICE_DISCOUNT_STYLES = 'bg-green-200 text-green-950 rounded-lg px-1 -mx-1 font-extrabold';
+const PRICE_DISCOUNT_STYLES =
+    'bg-(--surface-success) text-(--text-success-strong) rounded-lg px-1 -mx-1 font-extrabold';
 
 const SECTION_STYLES =
     'flex flex-col p-[var(--block-padding-large)] rounded-[var(--block-border-radius)] bg-[var(--color-block)] text-[color:var(--color-dark)] transition-all duration-150 ease-in-out';

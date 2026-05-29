@@ -29,7 +29,7 @@ const CartCoupons = ({}) => {
                 {discountCodes.map(({ code }) => (
                     <div
                         key={code}
-                        className="flex items-center justify-center gap-2 overflow-hidden rounded-xl bg-white px-3 py-2"
+                        className="flex items-center justify-center gap-2 overflow-hidden rounded-xl bg-(--surface-0) px-3 py-2"
                     >
                         <TagIcon className="" />
 

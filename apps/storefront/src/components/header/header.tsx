@@ -1,14 +1,14 @@
 import 'server-only';
 
-import { Search as SearchIcon } from 'lucide-react';
 import Image from 'next/image';
 import { type HTMLProps, Suspense } from 'react';
 import { populatedMedia } from '@/api/_cms';
 import { HeaderApi, Shop } from '@/api/_loaders';
 import { CartButton } from '@/components/header/cart-button';
 import { HeaderNavigation } from '@/components/header/header-navigation';
+import { HeaderSearch } from '@/components/header/header-search';
 import Link from '@/components/link';
-import { getTranslations, type Locale, type LocaleDictionary } from '@/utils/locale';
+import type { Locale, LocaleDictionary } from '@/utils/locale';
 
 import { HeaderAccountSection } from './header-account-section';
 
@@ -44,14 +44,12 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
     const logoHref = header?.logoLink || '/';
     const items = header?.items ?? [];
 
-    const { t } = getTranslations('common', i18n);
-
     return (
         <section
             className="sticky top-0 z-20 flex w-full flex-col items-center overscroll-contain shadow-none transition-shadow duration-150 [grid-area:header] group-data-[menu-open=true]/body:shadow-lg group-data-[scrolled=true]/body:shadow-lg md:max-h-[95dvh]"
             {...props}
         >
-            <section className="flex h-16 w-full flex-col items-center bg-white">
+            <section className="flex h-16 w-full flex-col items-center bg-(--surface-0)">
                 <header className="flex h-full w-full max-w-(--page-width) items-center justify-start gap-4 overflow-hidden px-2 md:px-3">
                     <div className="flex h-16 py-1">
                         <Link
@@ -77,14 +75,7 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
                     </div>
 
                     <div className="flex h-full grow items-center justify-end gap-6" data-nosnippet={true}>
-                        <Link
-                            href="/search/"
-                            className="focus-ring rounded-lg transition-colors hover:text-primary focus-visible:text-primary"
-                            aria-label={t('search')}
-                            title={t('search')}
-                        >
-                            <SearchIcon className="stroke-1 text-xl lg:text-2xl" />
-                        </Link>
+                        <HeaderSearch locale={locale} i18n={i18n} />
 
                         <Suspense fallback={<HeaderAccountSection.skeleton />}>
                             <HeaderAccountSection shop={shop} locale={locale} i18n={i18n} />
@@ -96,7 +87,7 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
             </section>
 
             {items.length > 0 ? (
-                <section className="flex h-12 w-full flex-col items-center justify-center gap-0 border-0 border-[var(--header-divider-color)] border-t border-b border-solid bg-white text-black">
+                <section className="flex h-12 w-full flex-col items-center justify-center gap-0 border-0 border-[var(--header-divider-color)] border-t border-b border-solid bg-(--surface-0) text-black">
                     <HeaderNavigation items={items} locale={locale} />
                 </section>
             ) : null}
@@ -106,7 +97,7 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
 
 HeaderComponent.skeleton = () => (
     <section className="sticky top-0 z-50 flex w-full flex-col items-center overscroll-contain shadow-none transition-shadow duration-150 [grid-area:header] group-data-[scrolled=true]/body:shadow-lg md:max-h-[95dvh]">
-        <section className="flex h-16 w-full flex-col items-center bg-white">
+        <section className="flex h-16 w-full flex-col items-center bg-(--surface-0)">
             <header className="overflow-x-shadow flex h-full w-full max-w-(--page-width) items-center justify-start gap-4 px-2 md:px-3">
                 <Link href={'/'} className="h-full w-32 py-2">
                     <div className="h-full w-full rounded-lg" data-skeleton />

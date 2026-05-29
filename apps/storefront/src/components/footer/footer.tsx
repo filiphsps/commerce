@@ -145,7 +145,7 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
                                     href={s.url}
                                     target="_blank"
                                     aria-label={s.platform}
-                                    className="rounded-full p-1 transition-colors hover:bg-white/10 focus-visible:bg-white/10"
+                                    className="rounded-full p-1 transition-colors hover:bg-(--surface-0)/10 focus-visible:bg-(--surface-0)/10"
                                 >
                                     <Icon className="h-5 w-5" />
                                 </Link>

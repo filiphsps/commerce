@@ -149,7 +149,7 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
     }
 
     return (
-        <div className="sticky inset-x-0 bottom-0 z-50 w-full border-0 border-(--border-strong) border-b-2 border-solid bg-(--surface-1) px-2 py-3 text-black transition-all md:px-2">
+        <div className="sticky inset-x-0 bottom-0 z-50 w-full border-(--border-strong) border-0 border-b-2 border-solid bg-(--surface-1) px-2 py-3 text-black transition-all md:px-2">
             <div className="relative mx-auto flex w-full flex-col items-start justify-between gap-3 py-2 pt-4 md:grid md:max-w-(--page-width) md:grid-cols-[1fr_auto] md:items-center md:gap-4 md:px-3 md:pr-12">
                 <div className="flex w-full select-none flex-wrap items-center gap-x-2 gap-y-0 pr-11 font-normal text-sm leading-tight md:pr-0 md:text-base lg:gap-x-3">
                     <div data-nosnippet={true}>
@@ -165,7 +165,7 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
                 <div className="flex w-full grow gap-3 md:w-96">
                     <div
                         className={cn(
-                            'relative flex h-10 w-full cursor-pointer select-none flex-col gap-0 rounded-lg border-2 border-white border-solid bg-white shadow focus-within:border-primary',
+                            'relative flex h-10 w-full cursor-pointer select-none flex-col gap-0 rounded-lg border-(--surface-0) border-2 border-solid bg-(--surface-0) shadow focus-within:border-primary',
                             dropdownActive && 'rounded-b-none border-primary border-b-0',
                             !dropdownActive && 'hover:border-(--border-strong)',
                         )}
@@ -200,7 +200,7 @@ export function GeoRedirect({ countries, locale, shop, i18n: defaultI18n }: GeoR
                         <Link
                             href="/countries/"
                             className={cn(
-                                'absolute inset-x-0 top-9 -left-[2px] flex h-10 w-[calc(100%+4px)] cursor-pointer select-none gap-3 rounded-b-lg bg-white p-2 text-base text-(--text-muted) *:select-none focus-within:bg-(--surface-1) focus-within:text-black hover:bg-(--surface-1) hover:text-black',
+                                'absolute inset-x-0 top-9 -left-[2px] flex h-10 w-[calc(100%+4px)] cursor-pointer select-none gap-3 rounded-b-lg bg-(--surface-0) p-2 text-(--text-muted) text-base *:select-none focus-within:bg-(--surface-1) focus-within:text-black hover:bg-(--surface-1) hover:text-black',
                                 dropdownActive && 'border-2 border-primary border-t-0 border-solid shadow-xl',
                                 !dropdownActive && 'hidden',
                             )}
