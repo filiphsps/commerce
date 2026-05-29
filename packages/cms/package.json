@@ -32,6 +32,10 @@
             "./src/blocks/render/index.ts",
             "./dist/blocks/render/index.js"
         ],
+        "./layout": [
+            "./src/layout/index.ts",
+            "./dist/layout/index.js"
+        ],
         "./fields": [
             "./src/fields/index.ts",
             "./dist/fields/index.js"
