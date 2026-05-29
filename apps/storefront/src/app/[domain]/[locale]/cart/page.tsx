@@ -7,7 +7,7 @@ import { Fragment, Suspense } from 'react';
 import { LocalesApi, Shop } from '@/api/_loaders';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { tenantRootTags } from '@/cache';
-import { AcceptedPaymentMethods } from '@/components/informational/accepted-payment-methods';
+import { DeferredAcceptedPaymentMethods } from '@/components/informational/accepted-payment-methods';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { BreadcrumbsSkeleton } from '@/components/informational/breadcrumbs.skeleton';
 import Heading from '@/components/typography/heading';
@@ -117,7 +117,7 @@ export default async function CartPage({ params }: { params: CartPageParams }) {
                     i18n={i18n}
                     paymentMethods={
                         <Suspense fallback={<Fragment />}>
-                            <AcceptedPaymentMethods shop={shop} locale={locale} />
+                            <DeferredAcceptedPaymentMethods shop={shop} locale={locale} />
                         </Suspense>
                     }
                 />
