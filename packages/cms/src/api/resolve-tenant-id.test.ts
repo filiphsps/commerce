@@ -51,11 +51,35 @@ describe('resolveTenantId', () => {
         __resetTenantIdCache(payload);
     });
 
+    it('queries the tenants collection with the exact read-contract args on a cache miss', async () => {
+        const { payload, find } = makePayload([{ id: 'tenant-1' }]);
+        await resolveTenantId(payload, 'shop-1');
+        // Pin the full argument shape — UNIFY-04/06 must not alter how the
+        // Shop._id → Tenant._id bridge reads from the tenants collection.
+        expect(find).toHaveBeenCalledWith({
+            collection: 'tenants',
+            where: { shopId: { equals: 'shop-1' } },
+            limit: 1,
+            depth: 0,
+            overrideAccess: true,
+        });
+        __resetTenantIdCache(payload);
+    });
+
     it('caches positive lookups per Payload instance — second call hits the cache', async () => {
         const { payload, find } = makePayload([{ id: 'tenant-1' }]);
         await resolveTenantId(payload, 'shop-1');
         await resolveTenantId(payload, 'shop-1');
         expect(find).toHaveBeenCalledTimes(1);
+        __resetTenantIdCache(payload);
+    });
+
+    it('returns the cached value (not just a skipped query) on a cache hit', async () => {
+        const { payload } = makePayload([{ id: 'tenant-1' }]);
+        const first = await resolveTenantId(payload, 'shop-1');
+        const second = await resolveTenantId(payload, 'shop-1');
+        expect(first).toBe('tenant-1');
+        expect(second).toBe(first);
         __resetTenantIdCache(payload);
     });
 

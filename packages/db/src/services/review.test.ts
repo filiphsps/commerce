@@ -93,6 +93,38 @@ describe('ReviewService.findByShop (Mongoose-backed)', () => {
     });
 });
 
+// Phase-0 regression gate for the Mongo→Convex migration (UNIFY-06 moves
+// reviews onto `shopId`). These pin the CURRENT return SHAPE produced by
+// `docToReview` so a later re-keying cannot silently change what callsites
+// receive: Mongo internals (`_id`, `__v`) are stripped, `_id` is projected
+// onto a string `id`, and embedded subdoc `_id`s are stripped recursively.
+describe('ReviewService return-shape contract (characterization)', () => {
+    it('projects a lean `_id` onto a string `id` and drops `_id`/`__v`', async () => {
+        mockQuery.exec.mockResolvedValueOnce([{ _id: 'mongo-id-1', __v: 3, rating: 4, body: 'ok' }]);
+        const [review] = await Review.findByShop('shop-1');
+        expect(review).toEqual({ id: 'mongo-id-1', rating: 4, body: 'ok' });
+        expect(review).not.toHaveProperty('_id');
+        expect(review).not.toHaveProperty('__v');
+    });
+
+    it('keeps an existing string `id` rather than re-deriving it from `_id`', async () => {
+        mockQuery.exec.mockResolvedValueOnce([{ _id: 'mongo-id-1', id: 'public-id-1', rating: 5 }]);
+        const [review] = await Review.findByShop('shop-1');
+        expect(review?.id).toBe('public-id-1');
+    });
+
+    it('strips `_id`/`__v` from embedded subdocuments recursively', async () => {
+        mockQuery.exec.mockResolvedValueOnce([
+            {
+                _id: 'rev-1',
+                shop: { _id: 'shop-oid', __v: 0, name: 'Acme', commerce: { _id: 'c-oid', id: 'gid://x' } },
+            },
+        ]);
+        const [review] = await Review.findByShop('shop-1');
+        expect(review).toEqual({ id: 'rev-1', shop: { name: 'Acme', commerce: { id: 'gid://x' } } });
+    });
+});
+
 describe('ReviewService.findAll (Mongoose-backed)', () => {
     it('queries ReviewModel.find with no filter when tenant is not provided', async () => {
         mockQuery.exec.mockResolvedValueOnce([mockReview]);
