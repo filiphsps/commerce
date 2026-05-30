@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload';
 import { adminOnly, tenantScopedRead, tenantScopedWrite } from '../access';
 import { allBlocks } from '../blocks';
+import { toFieldConfigs } from '../field-config-bridge';
 import { seoGroup } from '../fields';
 import { buildRevalidateHooks } from './_hooks/revalidate';
 
@@ -19,12 +20,12 @@ export const pages: CollectionConfig = {
         update: tenantScopedWrite,
         delete: adminOnly,
     },
-    fields: [
+    fields: toFieldConfigs(
         { name: 'title', type: 'text', required: true, localized: true },
         { name: 'slug', type: 'text', required: true, index: true },
         { name: 'blocks', type: 'blocks', blocks: allBlocks },
         seoGroup(),
-    ],
+    ),
     indexes: [{ fields: ['tenant', 'slug'], unique: true }],
     hooks: buildRevalidateHooks({ collection: 'pages' }),
 };

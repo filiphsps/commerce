@@ -1,4 +1,5 @@
 import type { Block } from 'payload';
+import { toFieldConfigs } from '../field-config-bridge';
 import { imageField, linkField } from '../fields';
 
 /**
@@ -28,11 +29,11 @@ export const mediaGridBlock: Block = {
             name: 'items',
             type: 'array',
             minRows: 1,
-            fields: [
+            fields: toFieldConfigs(
                 imageField({ name: 'image' }),
                 { name: 'caption', type: 'text', localized: true },
                 linkField({ name: 'link' }),
-            ],
+            ),
         },
     ],
 };

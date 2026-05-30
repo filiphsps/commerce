@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload';
 import { adminOnly, publishedOrAuthRead, tenantScopedWrite } from '../../access';
+import { toFieldConfigs } from '../../field-config-bridge';
 import { imageField, linkField, topLevelNavItemField } from '../../fields';
 import { buildRevalidateHooks } from '../_hooks/revalidate';
 
@@ -21,7 +22,7 @@ export const header: CollectionConfig = {
         update: tenantScopedWrite,
         delete: adminOnly,
     },
-    fields: [
+    fields: toFieldConfigs(
         imageField({ name: 'logo' }),
         { name: 'logoLink', type: 'text', defaultValue: '/' },
         topLevelNavItemField({ depth: 6 }),
@@ -34,7 +35,7 @@ export const header: CollectionConfig = {
             ],
         },
         linkField({ name: 'cta' }),
-    ],
+    ),
     // No explicit `tenant` index: @payloadcms/plugin-multi-tenant adds a unique
     // tenant index automatically when `isGlobal: true` is set on the collection.
     hooks: buildRevalidateHooks({ collection: 'header' }),

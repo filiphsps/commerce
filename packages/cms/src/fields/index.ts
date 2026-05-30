@@ -1,5 +1,5 @@
 export { type ImageFieldOptions, imageField } from './image';
-export { type LinkFieldOptions, linkField } from './link';
+export { LINK_KINDS, type LinkFieldOptions, type LinkKind, type LinkRef, linkField } from './link';
 export {
     HEADER_VARIANTS,
     type HeaderVariant,
@@ -7,4 +7,4 @@ export {
     navItemField,
     topLevelNavItemField,
 } from './nav-item';
-export { seoGroup } from './seo';
+export { type NamedGroupField, seoGroup } from './seo';

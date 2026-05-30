@@ -1,4 +1,5 @@
 import type { Block } from 'payload';
+import { toFieldConfigs } from '../field-config-bridge';
 import { imageField, linkField } from '../fields';
 
 /**
@@ -11,7 +12,7 @@ import { imageField, linkField } from '../fields';
 export const bannerBlock: Block = {
     slug: 'banner',
     interfaceName: 'BannerBlock',
-    fields: [
+    fields: toFieldConfigs(
         { name: 'heading', type: 'text', localized: true, required: true },
         { name: 'subheading', type: 'text', localized: true },
         imageField({ name: 'background', localized: true }),
@@ -26,5 +27,5 @@ export const bannerBlock: Block = {
                 { label: 'Right', value: 'right' },
             ],
         },
-    ],
+    ),
 };

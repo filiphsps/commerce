@@ -1,6 +1,7 @@
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import type { CollectionConfig } from 'payload';
 import { adminOnly, tenantScopedRead, tenantScopedWrite } from '../access';
+import { toFieldConfigs } from '../field-config-bridge';
 import { imageField, seoGroup } from '../fields';
 import { buildRevalidateHooks } from './_hooks/revalidate';
 
@@ -20,7 +21,7 @@ export const articles: CollectionConfig = {
         update: tenantScopedWrite,
         delete: adminOnly,
     },
-    fields: [
+    fields: toFieldConfigs(
         { name: 'title', type: 'text', required: true, localized: true },
         { name: 'slug', type: 'text', required: true, index: true },
         { name: 'author', type: 'text', required: true },
@@ -30,7 +31,7 @@ export const articles: CollectionConfig = {
         { name: 'body', type: 'richText', localized: true, editor: lexicalEditor({}) },
         { name: 'tags', type: 'text', hasMany: true },
         seoGroup(),
-    ],
+    ),
     indexes: [{ fields: ['tenant', 'slug'], unique: true }],
     hooks: buildRevalidateHooks({ collection: 'articles' }),
 };

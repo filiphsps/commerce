@@ -1,4 +1,5 @@
-import type { Field } from 'payload';
+import type { UploadFieldDescriptor } from '../descriptors';
+import { uploadField } from '../descriptors';
 
 /**
  * Configuration options for {@link imageField}.
@@ -14,10 +15,10 @@ export type ImageFieldOptions = {
 };
 
 /**
- * Builds a Payload `upload` field that points at the `media` collection.
+ * Builds an upload field descriptor that points at the `media` collection.
  *
  * @param options - {@link ImageFieldOptions} controlling the field name, label, and validation.
- * @returns A typed Payload upload field config.
+ * @returns An upload field descriptor pinned to the `media` collection.
  *
  * @example
  * imageField({ name: 'thumbnail', required: true });
@@ -27,11 +28,11 @@ export const imageField = ({
     label,
     required = false,
     localized = false,
-}: ImageFieldOptions): Extract<Field, { type: 'upload' }> => ({
-    name,
-    type: 'upload',
-    relationTo: 'media',
-    label,
-    required,
-    localized,
-});
+}: ImageFieldOptions): UploadFieldDescriptor<'media'> =>
+    uploadField({
+        name,
+        relationTo: 'media',
+        label,
+        required,
+        localized,
+    });

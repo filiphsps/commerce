@@ -1,4 +1,5 @@
-import type { Field } from 'payload';
+import type { ArrayFieldDescriptor, FieldDescriptor } from '../descriptors';
+import { arrayField, localized, selectField, textareaField, textField } from '../descriptors';
 import { imageField } from './image';
 import { linkField } from './link';
 
@@ -36,31 +37,31 @@ export type NavItemFieldOptions = {
  * {@link topLevelNavItemField}. Recurses until `remaining` reaches 1.
  *
  * @param remaining - Levels of nesting still to produce.
- * @returns A Payload `array` field config with link, image, description, and optional child `items`.
+ * @returns An array field descriptor with link, image, description, and an optional child `items` array.
  */
-const buildChildItems = (remaining: number): Extract<Field, { type: 'array' }> => ({
-    name: 'items',
-    type: 'array',
-    fields: [
-        linkField({ name: 'link', localized: true }),
-        imageField({ name: 'image', localized: true }),
-        { name: 'description', type: 'textarea', localized: true },
-        { name: 'backgroundColor', type: 'text' },
-        ...(remaining > 1 ? [buildChildItems(remaining - 1) as Field] : []),
-    ],
-});
+const buildChildItems = (remaining: number): ArrayFieldDescriptor =>
+    arrayField({
+        name: 'items',
+        fields: [
+            linkField({ name: 'link', localized: true }),
+            imageField({ name: 'image', localized: true }),
+            localized(textareaField({ name: 'description' })),
+            textField({ name: 'backgroundColor' }),
+            ...(remaining > 1 ? [buildChildItems(remaining - 1) satisfies FieldDescriptor] : []),
+        ],
+    });
 
 /**
  * Builds a flat nav-item `items` array field for non-header menus (footer,
  * etc.) that do not need a top-level variant picker.
  *
  * @param options - {@link NavItemFieldOptions} controlling nesting depth.
- * @returns A Payload `array` field config produced by {@link buildChildItems}.
+ * @returns An array field descriptor produced by {@link buildChildItems}.
  *
  * @example
  * navItemField({ depth: 2 });
  */
-export const navItemField = ({ depth }: NavItemFieldOptions) => buildChildItems(depth);
+export const navItemField = ({ depth }: NavItemFieldOptions): ArrayFieldDescriptor => buildChildItems(depth);
 
 /**
  * Builds the top-level nav-item `items` array for header menus. Adds a
@@ -69,31 +70,30 @@ export const navItemField = ({ depth }: NavItemFieldOptions) => buildChildItems(
  * {@link buildChildItems}.
  *
  * @param options - {@link NavItemFieldOptions} controlling nesting depth.
- * @returns A Payload `array` field config with a variant select at the root level.
+ * @returns An array field descriptor with a variant select at the root level.
  *
  * @example
  * topLevelNavItemField({ depth: 2 });
  */
-export const topLevelNavItemField = ({ depth }: NavItemFieldOptions): Extract<Field, { type: 'array' }> => ({
-    name: 'items',
-    type: 'array',
-    fields: [
-        linkField({ name: 'link', localized: true }),
-        {
-            name: 'variant',
-            type: 'select',
-            defaultValue: 'editorial-columns' satisfies HeaderVariant,
-            options: HEADER_VARIANTS.map((value) => ({
-                label: value
-                    .split('-')
-                    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-                    .join(' '),
-                value,
-            })),
-        },
-        imageField({ name: 'image', localized: true }),
-        { name: 'description', type: 'textarea', localized: true },
-        { name: 'backgroundColor', type: 'text' },
-        ...(depth > 1 ? [buildChildItems(depth - 1) as Field] : []),
-    ],
-});
+export const topLevelNavItemField = ({ depth }: NavItemFieldOptions): ArrayFieldDescriptor =>
+    arrayField({
+        name: 'items',
+        fields: [
+            linkField({ name: 'link', localized: true }),
+            selectField({
+                name: 'variant',
+                defaultValue: 'editorial-columns' satisfies HeaderVariant,
+                options: HEADER_VARIANTS.map((value) => ({
+                    label: value
+                        .split('-')
+                        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+                        .join(' '),
+                    value,
+                })),
+            }),
+            imageField({ name: 'image', localized: true }),
+            localized(textareaField({ name: 'description' })),
+            textField({ name: 'backgroundColor' }),
+            ...(depth > 1 ? [buildChildItems(depth - 1) satisfies FieldDescriptor] : []),
+        ],
+    });

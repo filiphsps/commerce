@@ -1,6 +1,16 @@
-import type { Field } from 'payload';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, expectTypeOf, it } from 'vitest';
+import type { ArrayFieldDescriptor, FieldDescriptor } from '../descriptors';
 import { imageField, linkField, navItemField, seoGroup, topLevelNavItemField } from './index';
+import { LINK_KINDS, type LinkKind, type LinkRef } from './link';
+
+/**
+ * Resolves the name of a descriptor, or `''` for the unnamed (presentational)
+ * collapsible container. Keeps the assertions below terse.
+ *
+ * @param field - Any field descriptor.
+ * @returns The descriptor `name`, or an empty string when it has none.
+ */
+const nameOf = (field: FieldDescriptor): string => ('name' in field ? field.name : '');
 
 describe('reusable field configs', () => {
     it('seoGroup is a localized group with title/description/keywords/noindex', () => {
@@ -8,7 +18,7 @@ describe('reusable field configs', () => {
         expect(cfg.type).toBe('group');
         expect(cfg.name).toBe('seo');
         expect(cfg.localized).toBe(true);
-        const names = cfg.fields.map((f: Field) => ('name' in f ? f.name : ''));
+        const names = cfg.fields.map(nameOf);
         expect(names).toEqual(expect.arrayContaining(['title', 'description', 'keywords', 'image', 'noindex']));
     });
 
@@ -16,7 +26,7 @@ describe('reusable field configs', () => {
         const cfg = linkField({ name: 'link' });
         expect(cfg.type).toBe('group');
         expect(cfg.name).toBe('link');
-        const kindField = cfg.fields.find((f: Field) => 'name' in f && f.name === 'kind');
+        const kindField = cfg.fields.find((f) => 'name' in f && f.name === 'kind');
         expect(kindField).toBeDefined();
     });
 
@@ -35,55 +45,41 @@ describe('reusable field configs', () => {
     describe('navItemField extended fields', () => {
         it('exposes image, description, backgroundColor at depth 1', () => {
             const cfg = navItemField({ depth: 3 });
-            const names = cfg.fields.map((f: Field) => ('name' in f ? f.name : ''));
+            const names = cfg.fields.map(nameOf);
             expect(names).toEqual(expect.arrayContaining(['link', 'image', 'description', 'backgroundColor', 'items']));
         });
 
         it('exposes image, description, backgroundColor recursively at depth 2', () => {
             const cfg = navItemField({ depth: 3 });
-            const nested = cfg.fields.find((f: Field) => 'name' in f && f.name === 'items') as Extract<
-                (typeof cfg.fields)[number],
-                { type: 'array' }
-            >;
-            const names = nested.fields.map((f: Field) => ('name' in f ? f.name : ''));
+            const nested = cfg.fields.find((f) => 'name' in f && f.name === 'items') as ArrayFieldDescriptor;
+            const names = nested.fields.map(nameOf);
             expect(names).toEqual(expect.arrayContaining(['link', 'image', 'description', 'backgroundColor', 'items']));
         });
 
         it('exposes image, description, backgroundColor at depth 3 (leaf level)', () => {
             const cfg = navItemField({ depth: 3 });
-            const level2 = cfg.fields.find((f: Field) => 'name' in f && f.name === 'items') as Extract<
-                (typeof cfg.fields)[number],
-                { type: 'array' }
-            >;
-            const level3 = level2.fields.find((f: Field) => 'name' in f && f.name === 'items') as Extract<
-                (typeof level2.fields)[number],
-                { type: 'array' }
-            >;
-            const names = level3.fields.map((f: Field) => ('name' in f ? f.name : ''));
+            const level2 = cfg.fields.find((f) => 'name' in f && f.name === 'items') as ArrayFieldDescriptor;
+            const level3 = level2.fields.find((f) => 'name' in f && f.name === 'items') as ArrayFieldDescriptor;
+            const names = level3.fields.map(nameOf);
             expect(names).toEqual(expect.arrayContaining(['link', 'image', 'description', 'backgroundColor']));
             expect(names).not.toContain('items');
         });
 
         it('depth: 1 has no nested items field (recursion termination)', () => {
             const cfg = navItemField({ depth: 1 });
-            const names = cfg.fields.map((f: Field) => ('name' in f ? f.name : ''));
+            const names = cfg.fields.map(nameOf);
             expect(names).not.toContain('items');
         });
 
         it('description is localized at every level', () => {
             const cfg = navItemField({ depth: 3 });
-            const findDescription = (
-                arr: Extract<typeof cfg, { type: 'array' }>,
-            ): Extract<(typeof arr.fields)[number], { type: 'textarea' }> =>
-                arr.fields.find((f: Field) => 'name' in f && f.name === 'description') as never;
+            const findDescription = (arr: ArrayFieldDescriptor): FieldDescriptor =>
+                arr.fields.find((f) => 'name' in f && f.name === 'description') as FieldDescriptor;
             const d1 = findDescription(cfg);
-            expect(d1.localized).toBe(true);
-            const l2 = cfg.fields.find((f: Field) => 'name' in f && f.name === 'items') as Extract<
-                (typeof cfg.fields)[number],
-                { type: 'array' }
-            >;
+            expect('localized' in d1 && d1.localized).toBe(true);
+            const l2 = cfg.fields.find((f) => 'name' in f && f.name === 'items') as ArrayFieldDescriptor;
             const d2 = findDescription(l2);
-            expect(d2.localized).toBe(true);
+            expect('localized' in d2 && d2.localized).toBe(true);
         });
     });
 
@@ -97,11 +93,8 @@ describe('reusable field configs', () => {
 
         it('noindex defaults to false', () => {
             const cfg = seoGroup();
-            const noindex = cfg.fields.find((f) => 'name' in f && f.name === 'noindex') as Extract<
-                (typeof cfg.fields)[number],
-                { type: 'checkbox' }
-            >;
-            expect(noindex.defaultValue).toBe(false);
+            const noindex = cfg.fields.find((f) => 'name' in f && f.name === 'noindex');
+            expect(noindex).toMatchObject({ type: 'checkbox', defaultValue: false });
         });
 
         it('image points at the media collection', () => {
@@ -147,11 +140,8 @@ describe('reusable field configs', () => {
 
         it('declares all 6 link kinds', () => {
             const cfg = linkField({ name: 'link' });
-            const kind = cfg.fields.find((f) => 'name' in f && f.name === 'kind') as Extract<
-                (typeof cfg.fields)[number],
-                { type: 'select' }
-            >;
-            const values = kind.options.map((o) => (typeof o === 'string' ? o : (o as { value: string }).value));
+            const kind = cfg.fields.find((f) => 'name' in f && f.name === 'kind');
+            const values = kind && 'options' in kind ? kind.options.map((o) => o.value) : [];
             expect(values).toEqual(
                 expect.arrayContaining(['page', 'article', 'product', 'collection', 'external', 'anchor']),
             );
@@ -162,7 +152,7 @@ describe('reusable field configs', () => {
             const targetsByName: Record<string, string> = {};
             for (const f of cfg.fields) {
                 if ('name' in f && f.type === 'relationship') {
-                    targetsByName[f.name as string] = f.relationTo as string;
+                    targetsByName[f.name] = f.relationTo;
                 }
             }
             expect(targetsByName).toMatchObject({
@@ -179,7 +169,7 @@ describe('reusable field configs', () => {
         it('url field is gated on kind being external or anchor', () => {
             const cfg = linkField({ name: 'link' });
             const url = cfg.fields.find((f) => 'name' in f && f.name === 'url');
-            const cond = (url as { admin?: { condition?: (d: unknown, sib: unknown) => boolean } }).admin?.condition;
+            const cond = url?.admin?.condition;
             expect(cond?.({}, { kind: 'external' })).toBe(true);
             expect(cond?.({}, { kind: 'anchor' })).toBe(true);
             expect(cond?.({}, { kind: 'page' })).toBe(false);
@@ -187,11 +177,35 @@ describe('reusable field configs', () => {
 
         it('openInNewTab defaults to false', () => {
             const cfg = linkField({ name: 'link' });
-            const open = cfg.fields.find((f) => 'name' in f && f.name === 'openInNewTab') as Extract<
-                (typeof cfg.fields)[number],
-                { type: 'checkbox' }
-            >;
-            expect(open.defaultValue).toBe(false);
+            const open = cfg.fields.find((f) => 'name' in f && f.name === 'openInNewTab');
+            expect(open).toMatchObject({ type: 'checkbox', defaultValue: false });
+        });
+    });
+
+    describe('linkField LinkRef union', () => {
+        it('LINK_KINDS enumerates every supported destination kind', () => {
+            expect([...LINK_KINDS]).toEqual(['page', 'article', 'product', 'collection', 'external', 'anchor']);
+        });
+
+        it('LinkKind matches the LINK_KINDS tuple at the type level', () => {
+            expectTypeOf<LinkKind>().toEqualTypeOf<(typeof LINK_KINDS)[number]>();
+        });
+
+        it('LinkRef discriminates on kind — internal vs external/anchor variants', () => {
+            const page: LinkRef = { kind: 'page', page: 'home' };
+            const external: LinkRef = { kind: 'external', url: 'https://example.com' };
+            const anchor: LinkRef = { kind: 'anchor', url: '#section' };
+            const collection: LinkRef = { kind: 'collection', collectionRef: 'sale' };
+            expect([page.kind, external.kind, anchor.kind, collection.kind]).toEqual([
+                'page',
+                'external',
+                'anchor',
+                'collection',
+            ]);
+        });
+
+        it('LinkRef.kind is exactly the LinkKind union', () => {
+            expectTypeOf<LinkRef['kind']>().toEqualTypeOf<LinkKind>();
         });
     });
 
@@ -218,18 +232,24 @@ describe('reusable field configs', () => {
     describe('navItemField', () => {
         it('nests recursively up to the configured depth', () => {
             const cfg = navItemField({ depth: 3 });
-            const lvl1 = cfg.fields.find((f) => 'name' in f && f.name === 'items') as Extract<
-                (typeof cfg.fields)[number],
-                { type: 'array' }
-            >;
+            const lvl1 = cfg.fields.find((f) => 'name' in f && f.name === 'items') as ArrayFieldDescriptor;
             expect(lvl1).toBeDefined();
-            const lvl2 = lvl1?.fields.find((f) => 'name' in f && f.name === 'items') as Extract<
-                (typeof lvl1.fields)[number],
-                { type: 'array' }
-            >;
+            const lvl2 = lvl1.fields.find((f) => 'name' in f && f.name === 'items') as ArrayFieldDescriptor;
             expect(lvl2).toBeDefined();
-            const lvl3 = lvl2?.fields.find((f) => 'name' in f && f.name === 'items');
+            const lvl3 = lvl2.fields.find((f) => 'name' in f && f.name === 'items');
             expect(lvl3).toBeUndefined();
+        });
+
+        it('nests exactly to depth 6 and terminates (no 7th level)', () => {
+            const cfg = navItemField({ depth: 6 });
+            let current: ArrayFieldDescriptor | undefined = cfg;
+            let levels = 0;
+            while (current) {
+                levels += 1;
+                const next: FieldDescriptor | undefined = current.fields.find((f) => 'name' in f && f.name === 'items');
+                current = next && next.type === 'array' ? next : undefined;
+            }
+            expect(levels).toBe(6);
         });
 
         it('depth: 1 has no nested items', () => {
@@ -248,20 +268,17 @@ describe('reusable field configs', () => {
     describe('topLevelNavItemField', () => {
         it('exposes a `variant` select with three options + defaultValue', () => {
             const cfg = topLevelNavItemField({ depth: 3 });
-            const variant = cfg.fields.find((f: Field) => 'name' in f && f.name === 'variant') as Extract<
-                (typeof cfg.fields)[number],
-                { type: 'select' }
-            >;
+            const variant = cfg.fields.find((f) => 'name' in f && f.name === 'variant');
             expect(variant).toBeDefined();
-            expect(variant.type).toBe('select');
-            expect(variant.defaultValue).toBe('editorial-columns');
-            const values = variant.options.map((o) => (typeof o === 'string' ? o : (o as { value: string }).value));
+            expect(variant?.type).toBe('select');
+            const values = variant && 'options' in variant ? variant.options.map((o) => o.value) : [];
+            expect(variant && 'defaultValue' in variant ? variant.defaultValue : undefined).toBe('editorial-columns');
             expect(values).toEqual(expect.arrayContaining(['editorial-columns', 'compact-list', 'featured-promo']));
         });
 
         it('exposes link, image, description, backgroundColor at the top level', () => {
             const cfg = topLevelNavItemField({ depth: 3 });
-            const names = cfg.fields.map((f: Field) => ('name' in f ? f.name : ''));
+            const names = cfg.fields.map(nameOf);
             expect(names).toEqual(
                 expect.arrayContaining(['link', 'variant', 'image', 'description', 'backgroundColor', 'items']),
             );
@@ -269,11 +286,8 @@ describe('reusable field configs', () => {
 
         it('child items do NOT carry the variant field (recursion uses child-shape)', () => {
             const cfg = topLevelNavItemField({ depth: 3 });
-            const children = cfg.fields.find((f: Field) => 'name' in f && f.name === 'items') as Extract<
-                (typeof cfg.fields)[number],
-                { type: 'array' }
-            >;
-            const childNames = children.fields.map((f: Field) => ('name' in f ? f.name : ''));
+            const children = cfg.fields.find((f) => 'name' in f && f.name === 'items') as ArrayFieldDescriptor;
+            const childNames = children.fields.map(nameOf);
             expect(childNames).not.toContain('variant');
             expect(childNames).toEqual(
                 expect.arrayContaining(['link', 'image', 'description', 'backgroundColor', 'items']),
@@ -282,7 +296,7 @@ describe('reusable field configs', () => {
 
         it('depth: 1 produces a top-level with variant but no nested items', () => {
             const cfg = topLevelNavItemField({ depth: 1 });
-            const names = cfg.fields.map((f: Field) => ('name' in f ? f.name : ''));
+            const names = cfg.fields.map(nameOf);
             expect(names).toContain('variant');
             expect(names).not.toContain('items');
         });
@@ -290,7 +304,7 @@ describe('reusable field configs', () => {
 
     it("navItemField (legacy) still produces today's shape with no variant field", () => {
         const cfg = navItemField({ depth: 3 });
-        const names = cfg.fields.map((f: Field) => ('name' in f ? f.name : ''));
+        const names = cfg.fields.map(nameOf);
         expect(names).not.toContain('variant');
         expect(names).toEqual(expect.arrayContaining(['link', 'image', 'description', 'backgroundColor', 'items']));
     });

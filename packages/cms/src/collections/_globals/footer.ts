@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload';
 import { adminOnly, publishedOrAuthRead, tenantScopedWrite } from '../../access';
+import { toFieldConfigs } from '../../field-config-bridge';
 import { linkField } from '../../fields';
 import { buildRevalidateHooks } from '../_hooks/revalidate';
 
@@ -25,7 +26,7 @@ export const footer: CollectionConfig = {
             type: 'array',
             fields: [
                 { name: 'title', type: 'text', localized: true, required: true },
-                { name: 'links', type: 'array', fields: [linkField({ name: 'link' })] },
+                { name: 'links', type: 'array', fields: toFieldConfigs(linkField({ name: 'link' })) },
             ],
         },
         {
@@ -48,7 +49,7 @@ export const footer: CollectionConfig = {
                 { name: 'url', type: 'text', required: true },
             ],
         },
-        { name: 'legal', type: 'array', fields: [linkField({ name: 'link' })] },
+        { name: 'legal', type: 'array', fields: toFieldConfigs(linkField({ name: 'link' })) },
         { name: 'copyrightLine', type: 'text', localized: true },
     ],
     // No explicit `tenant` index: the multi-tenant plugin owns it for globals.
