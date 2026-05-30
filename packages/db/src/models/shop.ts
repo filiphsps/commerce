@@ -658,6 +658,11 @@ export const ShopSchema = new Schema<ShopBase>(
     },
 );
 
+// `findByDomain` resolves a tenant via `$or: [{ domain }, { alternativeDomains: domain }]` on
+// every request. `domain` is covered by its `unique` index, but the array branch was unindexed,
+// so the `$or` degraded to a full `shops` collection scan that worsens with tenant count.
+ShopSchema.index({ alternativeDomains: 1 });
+
 export const ShopModel = (db.models.Shop || db.model('Shop', ShopSchema)) as ReturnType<
     typeof db.model<typeof ShopSchema>
 >;

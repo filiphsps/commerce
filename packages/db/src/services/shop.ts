@@ -23,6 +23,12 @@ export type FindOptions = {
     sensitiveData?: boolean;
     /** Mongoose population paths to apply (e.g. `featureFlags.flag`). */
     populate?: string[];
+    /**
+     * Mongoose field projection (e.g. `{ domain: 1, 'i18n.defaultLocale': 1 }`) so callers that
+     * only read a couple of fields avoid pulling the entire tenant document over the wire. Pair
+     * with `convert: false`; conversion/masking expects a full document.
+     */
+    projection?: Record<string, 0 | 1>;
 };
 
 /**
@@ -115,11 +121,14 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
     public async findByDomain(domain: string, options?: FindOptions): Promise<OnlineShop | ShopBase>;
     public async findByDomain(
         domain: string,
-        { sensitiveData = false, convert = true, populate = [] }: FindOptions = {},
+        { sensitiveData = false, convert = true, populate = [], projection }: FindOptions = {},
     ): Promise<OnlineShop | ShopBase> {
-        let query = ShopModel.findOne({
-            $or: [{ domain }, { alternativeDomains: domain }],
-        });
+        let query = ShopModel.findOne(
+            {
+                $or: [{ domain }, { alternativeDomains: domain }],
+            },
+            projection,
+        );
         for (const path of populate) query = query.populate(path);
         const doc = await query.lean<ShopBase>().exec();
 
