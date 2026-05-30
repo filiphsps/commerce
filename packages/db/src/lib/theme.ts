@@ -1,4 +1,7 @@
 import { TypeError } from '@nordcom/commerce-errors';
+import { colord } from 'colord';
+
+import { isQuotedProductCardKey, productCardCustomProperty } from './theme-catalog';
 
 /**
  * Allowlist of selectable font families, keyed by a stable slug with a human-readable label. This is
@@ -573,4 +576,271 @@ export const resolveTheme = (shop: ThemeResolutionInput): ResolvedShopTheme => {
     }
 
     return resolved;
+};
+
+/**
+ * Resolved primary/secondary brand accents fed to {@link serializeThemeToCssVars}. `null` means the
+ * shop has no branding, in which case the accent fan-out and the chrome literals are skipped (page
+ * chrome falls back to its diff-from-default path instead).
+ */
+export type ThemeBranding = { primary: AccentToken; secondary: AccentToken };
+
+/**
+ * One emitted CSS declaration as a `[customProperty, value]` pair. Pairs whose property is the empty
+ * string are layout-only sentinels (a blank separator line or the legacy-alias comment) that the SSR
+ * `<style>` renderer reproduces verbatim for byte-stability; the live-preview consumer skips them
+ * (only `--`-prefixed properties are applied via `setProperty`).
+ */
+export type ThemeCssVar = [cssVar: string, value: string];
+
+// Characters that could terminate a `:root` declaration, the rule, or the `<style>` element and let
+// a tenant-authored token inject arbitrary CSS/markup. A value carrying any of them is rejected.
+const UNSAFE_CSS_VALUE = /[;{}<>@]/;
+
+/**
+ * Guards a serialized token value against style-element-breakout injection. Theme tokens — brand
+ * accents and the ~90 free-text product-card knobs — are authored by tenant admins, so a value
+ * carrying a declaration, rule, comment, or element terminator could escape its declaration and
+ * inject arbitrary CSS or markup. Such a value is rejected so the caller skips the declaration and
+ * falls back to the platform default instead of emitting attacker-controlled content.
+ *
+ * @param value - The resolved token value (string, number, or boolean).
+ * @param quoted - Whether the value is emitted inside CSS quotes; quoted values additionally reject
+ *   the quote and backslash so they cannot terminate or escape the CSS string.
+ * @returns The safe value to interpolate, or `null` when the value must be skipped.
+ */
+const sanitizeCssValue = (value: string | number | boolean, quoted: boolean): string | null => {
+    if (typeof value !== 'string') {
+        return String(value);
+    }
+
+    if (UNSAFE_CSS_VALUE.test(value) || value.includes('*' + '/')) {
+        return null;
+    }
+
+    if (quoted && (value.includes('"') || value.includes('\\'))) {
+        return null;
+    }
+
+    return value;
+};
+
+/**
+ * Appends a `[cssVar, value]` pair for every entry whose resolved value differs from its platform
+ * default. A theme-less shop resolves every entry to its default, so nothing is appended and the
+ * static globals.css base renders unchanged. Values that fail {@link sanitizeCssValue} are skipped.
+ *
+ * @param pairs - The accumulating declaration buffer, mutated in place.
+ * @param entries - `[cssVar, resolvedValue, defaultValue]` tuples for one or more token groups.
+ * @returns Nothing; `pairs` is mutated in place.
+ */
+const appendOverriddenTokens = (
+    pairs: ThemeCssVar[],
+    entries: ReadonlyArray<readonly [cssVar: string, value: string | number, defaultValue: string | number]>,
+): void => {
+    for (const [cssVar, value, defaultValue] of entries) {
+        if (value === defaultValue) {
+            continue;
+        }
+
+        const safe = sanitizeCssValue(value, false);
+        if (safe === null) {
+            continue;
+        }
+
+        pairs.push([cssVar, safe]);
+    }
+};
+
+/**
+ * Appends a sanitized `[cssVar, value]` pair for every entry unconditionally. Used for groups emitted
+ * whenever branding resolves (page chrome and the accent quartets), where omitting the default would
+ * change the no-`<style>` fallback rather than preserve it. A value failing {@link sanitizeCssValue}
+ * is skipped, falling back to the globals.css default.
+ *
+ * @param pairs - The accumulating declaration buffer, mutated in place.
+ * @param entries - `[cssVar, value]` tuples to emit.
+ * @returns Nothing; `pairs` is mutated in place.
+ */
+const appendTokens = (
+    pairs: ThemeCssVar[],
+    entries: ReadonlyArray<readonly [cssVar: string, value: string | number]>,
+): void => {
+    for (const [cssVar, value] of entries) {
+        const safe = sanitizeCssValue(value, false);
+        if (safe !== null) {
+            pairs.push([cssVar, safe]);
+        }
+    }
+};
+
+/**
+ * Appends a `[cssVar, value]` pair for every product-card knob whose resolved value differs from the
+ * platform default, mapping each knob to its custom property via {@link productCardCustomProperty} and
+ * wrapping quoted knobs in CSS quotes. Values that fail {@link sanitizeCssValue} are skipped.
+ *
+ * @param pairs - The accumulating declaration buffer, mutated in place.
+ * @param resolved - The shop's resolved product-card token map.
+ * @returns Nothing; `pairs` is mutated in place.
+ */
+const appendProductCardTokens = (pairs: ThemeCssVar[], resolved: ResolvedProductCardTokens): void => {
+    for (const key of Object.keys(THEME_DEFAULTS.productCard) as (keyof ResolvedProductCardTokens)[]) {
+        const value = resolved[key];
+        if (value === THEME_DEFAULTS.productCard[key]) {
+            continue;
+        }
+
+        const quoted = isQuotedProductCardKey(key);
+        const safe = sanitizeCssValue(value, quoted);
+        if (safe === null) {
+            continue;
+        }
+
+        pairs.push([productCardCustomProperty(key), quoted ? `"${safe}"` : safe]);
+    }
+};
+
+/**
+ * Serializes a shop's resolved theme into the ordered list of CSS custom-property declarations the
+ * storefront emits, so SSR and the admin live-preview compute the **same** output byte-for-byte. The
+ * function is pure and isomorphic (no `server-only`, no I/O); callers resolve the shop and its
+ * branding first.
+ *
+ * Most groups emit diff-from-default — only when the resolved value differs from {@link THEME_DEFAULTS}
+ * — so a theme-less shop returns `[]` and the globals.css base renders unchanged. Page chrome
+ * (`--color-background` / `--color-foreground`) has no globals.css base, so it is emitted at its
+ * resolved value whenever branding resolves (matching the historical branding-`<style>` behavior) and
+ * diff-from-default otherwise. When branding resolves, the four accent shades are emitted — either the
+ * theme-pinned override or the runtime `colord` derivation of the base accent — followed by the legacy
+ * `--accent-*` aliases. Every value passes {@link sanitizeCssValue}; a rejected value is skipped so the
+ * platform default applies.
+ *
+ * @param theme - The resolved theme token map (from {@link resolveTheme}).
+ * @param branding - The resolved primary/secondary accents, or `null` when the shop has no branding.
+ * @returns Ordered `[cssVar, value]` pairs (including blank/comment sentinels for SSR formatting), or
+ *   an empty array when no tenant override differs from the defaults.
+ */
+export const serializeThemeToCssVars = (theme: ResolvedShopTheme, branding: ThemeBranding | null): ThemeCssVar[] => {
+    const pairs: ThemeCssVar[] = [];
+
+    const { colors, radii, spacing, elevation, typography } = theme;
+    const d = THEME_DEFAULTS;
+
+    // Page chrome has no globals.css base, so it cannot go through diff-from-default without changing
+    // the no-branding fallback: a branded shop emits the resolved literals, an unbranded shop emits
+    // them only when explicitly overridden (body otherwise falls back to `--color-bright`/`--color-dark`).
+    if (branding) {
+        appendTokens(pairs, [
+            ['--color-background', colors.background],
+            ['--color-foreground', colors.foreground],
+        ]);
+    } else {
+        appendOverriddenTokens(pairs, [
+            ['--color-background', colors.background, d.colors.background],
+            ['--color-foreground', colors.foreground, d.colors.foreground],
+        ]);
+    }
+
+    appendOverriddenTokens(pairs, [
+        // Surface ramp → `--color-block*` (semantic `--surface-*` alias these).
+        ['--color-block', colors.surface.base, d.colors.surface.base],
+        ['--color-block-light', colors.surface.raised, d.colors.surface.raised],
+        ['--color-block-dark', colors.surface.sunken, d.colors.surface.sunken],
+
+        // Body text ramp → `--color-dark*` (semantic `--text` / `--text-muted` alias these).
+        ['--color-dark', colors.text.default, d.colors.text.default],
+        ['--color-dark-secondary', colors.text.muted, d.colors.text.muted],
+
+        // Border ramp → semantic `--border-*` (no legacy consumer; live once P5 migrates).
+        ['--border-default', colors.border.default, d.colors.border.default],
+        ['--border-strong', colors.border.strong, d.colors.border.strong],
+
+        // State ramp → `--color-sale` / `--color-danger` / `--color-block-success` /
+        // `--color-block-info` (semantic `--state-*` alias these; live once P5 migrates).
+        ['--color-sale', colors.state.sale, d.colors.state.sale],
+        ['--color-danger', colors.state.danger, d.colors.state.danger],
+        ['--color-block-success', colors.state.success, d.colors.state.success],
+        ['--color-block-info', colors.state.info, d.colors.state.info],
+
+        // Focus ring → semantic `--focus-ring` (no consumer until P5; components use `--accent`).
+        ['--focus-ring', colors.focusRing, d.colors.focusRing],
+
+        // Block radii / spacing → consumed live throughout the storefront.
+        ['--block-border-radius', radii.block, d.radii.block],
+        ['--block-border-radius-large', radii.blockLarge, d.radii.blockLarge],
+        ['--block-border-radius-small', radii.blockSmall, d.radii.blockSmall],
+        ['--block-border-radius-tiny', radii.blockTiny, d.radii.blockTiny],
+        ['--block-padding', spacing.blockPadding, d.spacing.blockPadding],
+        ['--block-spacer', spacing.blockSpacer, d.spacing.blockSpacer],
+
+        // Type scale / weights → Tailwind v4 theme vars consumed by `text-*` / `font-*` utilities.
+        ['--text-xs', typography.scale.xs, d.typography.scale.xs],
+        ['--text-sm', typography.scale.sm, d.typography.scale.sm],
+        ['--text-base', typography.scale.base, d.typography.scale.base],
+        ['--text-lg', typography.scale.lg, d.typography.scale.lg],
+        ['--text-xl', typography.scale.xl, d.typography.scale.xl],
+        ['--font-weight-normal', typography.fontWeights.normal, d.typography.fontWeights.normal],
+        ['--font-weight-medium', typography.fontWeights.medium, d.typography.fontWeights.medium],
+        ['--font-weight-semibold', typography.fontWeights.semibold, d.typography.fontWeights.semibold],
+        ['--font-weight-bold', typography.fontWeights.bold, d.typography.fontWeights.bold],
+
+        // Elevation → `--product-card-shadow*` / `--header-panel-shadow`. The card shadows overlap
+        // the product-card knobs, emitted last so they win on the rare both-set collision.
+        ['--product-card-shadow', elevation.card, d.elevation.card],
+        ['--product-card-shadow-hover', elevation.cardHover, d.elevation.cardHover],
+        ['--header-panel-shadow', elevation.panel, d.elevation.panel],
+    ]);
+
+    if (branding) {
+        if (pairs.length > 0) {
+            pairs.push(['', '']);
+        }
+
+        // The four shades default to a runtime `colord` derivation of the base accent, but a shop
+        // may pin any of them via theme tokens.
+        const primaryLight =
+            colors.accentPrimaryLight ?? colord(branding.primary.color).lighten(0.115).saturate(0.15).toHex();
+        const primaryDark = colors.accentPrimaryDark ?? colord(branding.primary.color).darken(0.05).toHex();
+        const secondaryLight =
+            colors.accentSecondaryLight ?? colord(branding.secondary.color).lighten(0.195).saturate(0.15).toHex();
+        const secondaryDark = colors.accentSecondaryDark ?? colord(branding.secondary.color).darken(0.15).toHex();
+
+        // Accents reach the markup from admin-authored `design.accents` or the Shopify Brand API, so
+        // each value is sanitized; a malformed accent is skipped (the globals.css default applies).
+        appendTokens(pairs, [
+            ['--color-accent-primary', branding.primary.color],
+            ['--color-accent-primary-text', branding.primary.foreground],
+            ['--color-accent-primary-light', primaryLight],
+            ['--color-accent-primary-dark', primaryDark],
+        ]);
+        pairs.push(['', '']);
+        appendTokens(pairs, [
+            ['--color-accent-secondary', branding.secondary.color],
+            ['--color-accent-secondary-text', branding.secondary.foreground],
+            ['--color-accent-secondary-light', secondaryLight],
+            ['--color-accent-secondary-dark', secondaryDark],
+        ]);
+
+        pairs.push(
+            ['', ''],
+            ['', '/* Legacy accent aliases, kept until consumers migrate to --color-accent-*. */'],
+            ['--accent-primary', 'var(--color-accent-primary)'],
+            ['--accent-primary-light', 'var(--color-accent-primary-light)'],
+            ['--accent-primary-dark', 'var(--color-accent-primary-dark)'],
+            ['--accent-secondary', 'var(--color-accent-secondary)'],
+            ['--accent-secondary-light', 'var(--color-accent-secondary-light)'],
+            ['--accent-secondary-dark', 'var(--color-accent-secondary-dark)'],
+        );
+    }
+
+    const productCard: ThemeCssVar[] = [];
+    appendProductCardTokens(productCard, theme.productCard);
+    if (productCard.length > 0) {
+        if (pairs.length > 0) {
+            pairs.push(['', '']);
+        }
+        pairs.push(...productCard);
+    }
+
+    return pairs;
 };

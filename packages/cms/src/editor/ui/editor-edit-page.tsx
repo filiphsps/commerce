@@ -39,6 +39,18 @@ export type EditorEditPageProps<TSlug extends CollectionSlug = CollectionSlug> =
     /** Optional live-preview slot. Manifest's `livePreview` builder runs upstream
      *  (in the route file) so this component takes the rendered element. */
     livePreview?: ReactNode;
+    /**
+     * Optional replacement for the default field surface. When omitted the page
+     * renders `<EditorFields collection=… omitPaths={omitPaths} />`; routes that
+     * own a bespoke editor (e.g. the theme editor) pass their own element here.
+     */
+    fieldSurface?: ReactNode;
+    /**
+     * Forwarded to the default `<EditorFields>` when no `fieldSurface` is given:
+     * named top-level fields to drop from the rendered tree only (their
+     * `FormState` entries stay intact for save). Ignored when `fieldSurface` is set.
+     */
+    omitPaths?: string[];
 };
 
 /**
@@ -67,6 +79,8 @@ export async function EditorEditPage<TSlug extends CollectionSlug>({
     searchParams,
     generatedActions,
     livePreview,
+    fieldSurface,
+    omitPaths,
 }: EditorEditPageProps<TSlug>): Promise<ReactNode> {
     const { domain, id } = params;
     const ctx = await runtime.getCtx(domain);
@@ -184,7 +198,7 @@ export async function EditorEditPage<TSlug extends CollectionSlug>({
             }
             livePreview={livePreview}
         >
-            <EditorFields collection={String(manifest.collection)} />
+            {fieldSurface ?? <EditorFields collection={String(manifest.collection)} omitPaths={omitPaths} />}
         </runtime.DocumentForm>
     );
 }

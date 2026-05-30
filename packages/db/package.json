@@ -61,6 +61,7 @@
     ],
     "dependencies": {
         "@nordcom/commerce-errors": "workspace:*",
+        "colord": "2.9.3",
         "mongoose": "9.6.3"
     },
     "peerDependencies": {},
