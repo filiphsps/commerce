@@ -214,6 +214,84 @@ describe('utils', () => {
             });
         });
 
+        // Phase-0 snapshot guard: locks the exact `<style>` text the provider emits today so the
+        // serializer extraction (Phase 2) can be proven byte-identical. If this snapshot diffs after
+        // the extraction, the serializer is wrong — fix the serializer, never update the snapshot.
+        it('emits a byte-stable <style> for a branded, theme-less shop (defaults snapshot)', async () => {
+            const { container, unmount } = render(
+                await CssVariablesProvider({
+                    domain: 'example.com',
+                    shop: {
+                        design: {
+                            accents: [
+                                { type: 'primary', color: '#00ff00', foreground: '#000000' },
+                                { type: 'secondary', color: '#0000ff', foreground: '#ffffff' },
+                            ],
+                        },
+                    } as any,
+                }),
+            );
+
+            await waitFor(() => {
+                expect(container.querySelector('style')?.textContent).toMatchSnapshot();
+                expect(unmount).not.toThrow();
+            });
+        });
+
+        it('emits a byte-stable <style> across structured groups, productCard knobs, quoted knobs, accents and font override', async () => {
+            const { container, unmount } = render(
+                await CssVariablesProvider({
+                    domain: 'example.com',
+                    shop: {
+                        design: {
+                            accents: [
+                                { type: 'primary', color: '#00ff00', foreground: '#000000' },
+                                { type: 'secondary', color: '#0000ff', foreground: '#ffffff' },
+                            ],
+                        },
+                        theme: {
+                            colors: {
+                                background: '#0b0b0b',
+                                foreground: '#fafafa',
+                                surface: { base: '#111111', raised: '#222222', sunken: '#333333' },
+                                text: { default: '#444444', muted: '#555556' },
+                                border: { default: '#666666', strong: '#777777' },
+                                state: { sale: '#880000', danger: '#990000', success: '#00aa00', info: '#0000bb' },
+                                focusRing: '#abcabc',
+                                // Pin one derived shade; leave the rest to runtime colord derivation.
+                                accentPrimaryLight: '#abcdef',
+                            },
+                            radii: { block: '20px', blockLarge: '24px', blockSmall: '16px', blockTiny: '4px' },
+                            spacing: { blockPadding: '1rem', blockSpacer: '0.9rem' },
+                            elevation: { card: '0 0 1px black', cardHover: '0 0 2px black', panel: '0 0 3px black' },
+                            typography: {
+                                // headingFamily differs from the body family (differ case).
+                                headingFamily: 'lora',
+                                scale: { sm: '0.9rem' },
+                                fontWeights: { bold: 800 },
+                            },
+                            productCard: {
+                                ctaBg: '#123456',
+                                aspectVertical: '3 / 4',
+                                imageSizes: '(max-width: 600px) 100vw, 300px',
+                                ctaPillLabel: 'Add',
+                                ctaPillIcon: '★',
+                                saleBadgeText: 'SALE',
+                                saleBadgeAllowOverlap: true,
+                                titleLineClamp: 3,
+                                oosOpacity: 0.5,
+                            },
+                        },
+                    } as any,
+                }),
+            );
+
+            await waitFor(() => {
+                expect(container.querySelector('style')?.textContent).toMatchSnapshot();
+                expect(unmount).not.toThrow();
+            });
+        });
+
         it('lets theme.colors.accents override design.accents when feeding the branding accents', async () => {
             const { container, unmount } = render(
                 await CssVariablesProvider({

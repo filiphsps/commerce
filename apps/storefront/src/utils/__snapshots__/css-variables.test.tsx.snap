@@ -1,0 +1,88 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`utils > CssVariablesProvider > emits a byte-stable <style> across structured groups, productCard knobs, quoted knobs, accents and font override 1`] = `
+"
+        :root {
+            --color-background: #0b0b0b;
+            --color-foreground: #fafafa;
+            --color-block: #111111;
+            --color-block-light: #222222;
+            --color-block-dark: #333333;
+            --color-dark: #444444;
+            --color-dark-secondary: #555556;
+            --border-default: #666666;
+            --border-strong: #777777;
+            --color-sale: #880000;
+            --color-danger: #990000;
+            --color-block-success: #00aa00;
+            --color-block-info: #0000bb;
+            --focus-ring: #abcabc;
+            --block-border-radius: 20px;
+            --block-border-radius-large: 24px;
+            --block-border-radius-small: 16px;
+            --block-border-radius-tiny: 4px;
+            --block-padding: 1rem;
+            --block-spacer: 0.9rem;
+            --text-sm: 0.9rem;
+            --font-weight-bold: 800;
+            --product-card-shadow: 0 0 1px black;
+            --product-card-shadow-hover: 0 0 2px black;
+            --header-panel-shadow: 0 0 3px black;
+
+            --color-accent-primary: #00ff00;
+            --color-accent-primary-text: #000000;
+            --color-accent-primary-light: #abcdef;
+            --color-accent-primary-dark: #00e600;
+
+            --color-accent-secondary: #0000ff;
+            --color-accent-secondary-text: #ffffff;
+            --color-accent-secondary-light: #6363ff;
+            --color-accent-secondary-dark: #0000b3;
+
+            /* Legacy accent aliases, kept until consumers migrate to --color-accent-*. */
+            --accent-primary: var(--color-accent-primary);
+            --accent-primary-light: var(--color-accent-primary-light);
+            --accent-primary-dark: var(--color-accent-primary-dark);
+            --accent-secondary: var(--color-accent-secondary);
+            --accent-secondary-light: var(--color-accent-secondary-light);
+            --accent-secondary-dark: var(--color-accent-secondary-dark);
+
+            --product-card-image-sizes: "(max-width: 600px) 100vw, 300px";
+            --aspect-product-card-vertical: 3 / 4;
+            --product-card-title-line-clamp: 3;
+            --product-card-cta-bg: #123456;
+            --product-card-cta-pill-label: "Add";
+            --product-card-cta-pill-icon: "★";
+            --product-card-oos-opacity: 0.5;
+            --product-card-sale-badge-text: "SALE";
+            --product-card-sale-badge-allow-overlap: true;
+        }
+    "
+`;
+
+exports[`utils > CssVariablesProvider > emits a byte-stable <style> for a branded, theme-less shop (defaults snapshot) 1`] = `
+"
+        :root {
+            --color-background: #fefefe;
+            --color-foreground: #101418;
+
+            --color-accent-primary: #00ff00;
+            --color-accent-primary-text: #000000;
+            --color-accent-primary-light: #3bff3b;
+            --color-accent-primary-dark: #00e600;
+
+            --color-accent-secondary: #0000ff;
+            --color-accent-secondary-text: #ffffff;
+            --color-accent-secondary-light: #6363ff;
+            --color-accent-secondary-dark: #0000b3;
+
+            /* Legacy accent aliases, kept until consumers migrate to --color-accent-*. */
+            --accent-primary: var(--color-accent-primary);
+            --accent-primary-light: var(--color-accent-primary-light);
+            --accent-primary-dark: var(--color-accent-primary-dark);
+            --accent-secondary: var(--color-accent-secondary);
+            --accent-secondary-light: var(--color-accent-secondary-light);
+            --accent-secondary-dark: var(--color-accent-secondary-dark);
+        }
+    "
+`;

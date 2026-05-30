@@ -27,6 +27,7 @@ export default async function ShopSettingsPage({ params, searchParams }: Props) 
             runtime={editorRuntime}
             params={{ domain, id: domain }}
             searchParams={sp}
+            omitPaths={['theme']}
             generatedActions={{
                 saveDraft: actions.shopsSaveDraft,
                 publish: actions.shopsPublish,

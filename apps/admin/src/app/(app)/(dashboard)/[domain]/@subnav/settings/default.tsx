@@ -24,6 +24,7 @@ export default async function SettingsSubNav({ params }: Props) {
                     <NavItem href={`${base}/users/` as Route}>Users</NavItem>
                     <NavItem href={`${base}/media/` as Route}>Media</NavItem>
                     <NavItem href={`${base}/shop/` as Route}>Shop</NavItem>
+                    <NavItem href={`${base}/theme/` as Route}>Theme</NavItem>
                 </>
             ) : null}
         </div>

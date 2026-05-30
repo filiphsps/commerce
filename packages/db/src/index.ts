@@ -1,6 +1,7 @@
 export * from './db';
 export * from './lib/feature-flag';
 export * from './lib/theme';
+export * from './lib/theme-catalog';
 export * from './models';
 export * from './services';
 
