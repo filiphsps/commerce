@@ -82,4 +82,31 @@ describe('docToOnlineShop', () => {
         expect(auth).not.toHaveProperty('token');
         expect(auth).toMatchObject({ publicToken: 'pt' });
     });
+
+    // The public `OnlineShop` shape must contain neither of the two masked
+    // secrets: `commerceProvider.authentication.token` and the nested
+    // `…authentication.customers.clientSecret`. Assert their ABSENCE without
+    // ever reading the secret value back out, so the test can never leak it.
+    it('masks both the auth token and the nested customers.clientSecret', () => {
+        const result = docToOnlineShop({
+            _id: 'top',
+            domain: 'acme.test',
+            commerceProvider: {
+                type: 'shopify',
+                authentication: {
+                    token: 'TOP_SECRET_TOKEN',
+                    publicToken: 'pt',
+                    customers: { clientId: 'public-client-id', clientSecret: 'TOP_SECRET_CLIENT_SECRET' },
+                },
+            },
+        }) as Record<string, unknown>;
+
+        const auth = (result.commerceProvider as { authentication: Record<string, unknown> }).authentication;
+        expect(auth).not.toHaveProperty('token');
+        expect(auth).toMatchObject({ publicToken: 'pt' });
+
+        const customers = auth.customers as Record<string, unknown>;
+        expect(customers).not.toHaveProperty('clientSecret');
+        expect(customers).toMatchObject({ clientId: 'public-client-id' });
+    });
 });
