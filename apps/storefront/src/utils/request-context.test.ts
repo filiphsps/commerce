@@ -10,6 +10,17 @@ vi.mock('@nordcom/commerce-db', () => ({
     },
 }));
 
+// The shop lookup is wrapped in a `'use cache'` helper; stub the cache primitives so the helper
+// runs as a plain async function under vitest.
+vi.mock('next/cache', () => ({
+    cacheLife: vi.fn(),
+    cacheTag: vi.fn(),
+}));
+
+vi.mock('@/cache', () => ({
+    tenantRootTags: vi.fn(() => []),
+}));
+
 const { headers } = await import('next/headers');
 const { Shop } = await import('@nordcom/commerce-db');
 const { getRequestContext } = await import('@/utils/request-context');

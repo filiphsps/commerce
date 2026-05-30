@@ -84,7 +84,14 @@ async function hostnameFromRequest(req: NextRequest): Promise<string> {
  */
 function resolveShopSummary(hostname: string): Promise<ShopResolution> {
     return resolveShop(hostname, async () => {
-        const shop = await Shop.findByDomain(hostname, { sensitiveData: false });
+        // This path only reads `domain` + `i18n.defaultLocale`; project to those two fields so the
+        // existence check never pulls the full tenant document. `convert: false` keeps the raw lean
+        // doc since the masking pipeline expects every field to be present.
+        const shop = await Shop.findByDomain(hostname, {
+            sensitiveData: false,
+            convert: false,
+            projection: { domain: 1, 'i18n.defaultLocale': 1 },
+        });
         if (!shop.domain) {
             throw new NotFoundError(`"Shop" with the handle "${hostname}" cannot be found`);
         }
