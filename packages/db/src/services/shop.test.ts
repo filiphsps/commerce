@@ -84,9 +84,26 @@ describe('Shop.findByDomain (Mongoose-backed)', () => {
     it('queries ShopModel.findOne with an $or on domain + alternativeDomains', async () => {
         mockQuery.exec.mockResolvedValueOnce(mockShop);
         await Shop.findByDomain('acme.test');
-        expect(ShopModel.findOne).toHaveBeenCalledWith({
-            $or: [{ domain: 'acme.test' }, { alternativeDomains: 'acme.test' }],
+        expect(ShopModel.findOne).toHaveBeenCalledWith(
+            {
+                $or: [{ domain: 'acme.test' }, { alternativeDomains: 'acme.test' }],
+            },
+            undefined,
+        );
+    });
+
+    it('forwards a field projection to ShopModel.findOne', async () => {
+        mockQuery.exec.mockResolvedValueOnce(mockShop);
+        await Shop.findByDomain('acme.test', {
+            convert: false,
+            projection: { domain: 1, 'i18n.defaultLocale': 1 },
         });
+        expect(ShopModel.findOne).toHaveBeenCalledWith(
+            {
+                $or: [{ domain: 'acme.test' }, { alternativeDomains: 'acme.test' }],
+            },
+            { domain: 1, 'i18n.defaultLocale': 1 },
+        );
     });
 
     it('strips the auth token by default (sensitiveData: false)', async () => {
