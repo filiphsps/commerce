@@ -4,13 +4,14 @@ import type { OnlineShop } from '@nordcom/commerce-db';
 import { resolveTheme, THEME_DEFAULTS } from '@nordcom/commerce-db';
 import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
 import type { Viewport } from 'next';
-import { cacheLife } from 'next/cache';
+import { cacheLife, cacheTag } from 'next/cache';
 import { notFound, unstable_rethrow } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { Fragment, Suspense } from 'react';
 import { CountriesApi, LocaleApi, LocalesApi, Shop } from '@/api/_loaders';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { dispatch as dispatchCartMutation } from '@/app/[domain]/[locale]/_actions/cart';
+import { tenantRootTags } from '@/cache';
 import type { AppCartCaps } from '@/cart/caps';
 import { CartClientShell } from '@/cart/cart-client-shell';
 import { resolveContext } from '@/cart/context';
@@ -41,6 +42,34 @@ export const viewport: Viewport = {
     width: 'device-width',
 };
 
+/**
+ * Resolves a tenant's typography tokens for the `<html>` font class, cached at `max`.
+ *
+ * The root layout runs before any request-data read, so calling `Shop.findByDomain`
+ * directly trips the prerender current-time guard — mongoose's `.exec()` reads
+ * `new Date()` deep in the driver, which Cache Components forbids before request data.
+ * Wrapping the lookup in `'use cache'` makes that clock read part of cache creation
+ * (allowed), and the cached typography is tagged with the tenant-root tags so an admin
+ * theme/font edit evicts it. A theme-less or unknown domain falls back to the platform
+ * default, keeping the class byte-identical and letting `CachedShell` stay the sole
+ * `notFound()` authority.
+ *
+ * @param domain - The tenant hostname to resolve.
+ * @returns The resolved typography tokens, or the platform default on any failure.
+ */
+async function resolveTenantTypography(domain: string): Promise<ReturnType<typeof resolveTheme>['typography']> {
+    'use cache';
+    cacheLife('max');
+
+    try {
+        const shop = await Shop.findByDomain(domain);
+        cacheTag(...tenantRootTags(shop));
+        return resolveTheme(shop).typography;
+    } catch {
+        return THEME_DEFAULTS.typography;
+    }
+}
+
 export default async function RootLayout({
     children,
     modal,
@@ -63,18 +92,11 @@ export default async function RootLayout({
         throw error;
     }
 
-    // Resolve the tenant's body/heading fonts for the `<html>` class. The lookup routes through the
-    // render-cached `Shop.findByDomain`, so it collapses into the same round-trip `CachedShell` makes
-    // on a cache miss. A theme-less shop resolves to the platform-default font, leaving the class
-    // byte-identical to the pre-theming markup; unknown/unconfigured domains fall back to the default
-    // and let `CachedShell` remain the single authority that emits `notFound()`.
-    let typography = THEME_DEFAULTS.typography;
-    try {
-        typography = resolveTheme(await Shop.findByDomain(domain)).typography;
-    } catch {
-        // Intentionally swallow: render the shell with the default font; `CachedShell` handles the
-        // not-found / misconfigured-tenant paths.
-    }
+    // Resolve the tenant's body/heading fonts for the `<html>` class via the cached helper, which
+    // keeps the mongoose clock read out of the prerender current-time guard. A theme-less shop
+    // resolves to the platform-default font, leaving the class byte-identical to the pre-theming
+    // markup; `CachedShell` remains the single authority that emits `notFound()`.
+    const typography = await resolveTenantTypography(domain);
 
     return (
         <html lang={locale.code} className={cn(resolveFontClassName(typography), 'overscroll-x-none')}>
