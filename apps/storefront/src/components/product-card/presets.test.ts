@@ -7,15 +7,22 @@ describe('SURFACE_PRESETS', () => {
         expect(Object.keys(SURFACE_PRESETS).sort()).toEqual(['collection', 'recommendation', 'search']);
     });
 
-    it('collection + recommendation use vertical/boxed/float-pill/auto', () => {
-        for (const k of ['collection', 'recommendation'] as const) {
-            expect(SURFACE_PRESETS[k]).toEqual({
-                layout: 'vertical',
-                chrome: 'boxed',
-                ctaPlacement: 'float-pill',
-                pickerPresentation: 'auto',
-            });
-        }
+    it('collection uses vertical/boxed/inline-button/inline', () => {
+        expect(SURFACE_PRESETS.collection).toEqual({
+            layout: 'vertical',
+            chrome: 'boxed',
+            ctaPlacement: 'inline-button',
+            pickerPresentation: 'inline',
+        });
+    });
+
+    it('recommendation uses vertical/boxed/float-pill/auto', () => {
+        expect(SURFACE_PRESETS.recommendation).toEqual({
+            layout: 'vertical',
+            chrome: 'boxed',
+            ctaPlacement: 'float-pill',
+            pickerPresentation: 'auto',
+        });
     });
 
     it('search uses horizontal/boxed', () => {
