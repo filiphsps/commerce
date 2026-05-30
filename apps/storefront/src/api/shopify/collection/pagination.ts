@@ -120,12 +120,18 @@ export const CollectionPaginationCountApi = async ({
     const filters = 'filters' in props ? props.filters : /** @deprecated */ (props as CollectionFilters);
     const filtersTag = JSON.stringify(filters, null, 0);
 
-    const countProducts = async (count: number = 0, cursors: string[] = [], after: string | null = null) => {
+    // Walk the collection at Shopify's max page size rather than the grid's display size. Relay
+    // edge cursors are position-stable across page sizes for a given sort key, so harvesting every
+    // cursor from a wide walk lets us reconstruct the narrow per-page boundaries while issuing
+    // ~12x fewer serial round-trips (a 400-product collection drops from ~19 calls to 2).
+    const TRAVERSAL_PAGE_SIZE = 250;
+
+    const collectCursors = async (allCursors: string[] = [], after: string | null = null): Promise<string[]> => {
         const { data, errors } = await api.query(
             COLLECTION_PAGINATION_COUNT_QUERY,
             {
                 handle,
-                ...extractLimitLikeFilters(filters),
+                first: TRAVERSAL_PAGE_SIZE,
                 ...(({ sorting = 'COLLECTION_DEFAULT' }) => ({
                     sorting,
                     after,
@@ -145,33 +151,39 @@ export const CollectionPaginationCountApi = async ({
 
         if (errors && errors.length > 0) {
             throw new ProviderFetchError(errors);
-        } else if (!data?.collection?.products.edges || data.collection.products.edges.length <= 0) {
-            return {
-                count,
-                cursors,
-            };
         }
 
-        const cursor = data.collection.products.edges.at(-1)?.cursor ?? '';
-        if (data.collection.products.pageInfo.hasNextPage) {
-            const res = await countProducts(count, [cursor, ...cursors], cursor);
-
-            count += res.count;
-            cursors = res.cursors;
+        const products = data?.collection?.products;
+        const edges = products?.edges;
+        if (!edges || edges.length <= 0) {
+            return allCursors;
         }
 
-        return {
-            count: count + data.collection.products.edges.length,
-            cursors,
-        };
+        for (const edge of edges) allCursors.push(edge.cursor ?? '');
+
+        if (products.pageInfo.hasNextPage) {
+            return collectCursors(allCursors, edges.at(-1)?.cursor ?? '');
+        }
+
+        return allCursors;
     };
-    const { count: products, cursors } = await countProducts(0);
+
+    const flatCursors = await collectCursors();
+    const products = flatCursors.length;
 
     const perPage = ((extractLimitLikeFilters(filters) as { first?: number })?.first || 30) as number;
     const pages = Math.ceil(products / perPage);
+
+    // The grid asks for `after: cursors[page - 2]`, so page N starts after product (N-1)*perPage.
+    // Slice those boundary cursors out of the flat walk — one per page after the first.
+    const cursors: string[] = [];
+    for (let page = 2; page <= pages; page++) {
+        cursors.push(flatCursors[(page - 1) * perPage - 1] ?? '');
+    }
+
     return {
         pages,
-        cursors: cursors.reverse(),
+        cursors,
         products,
     };
 };
