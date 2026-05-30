@@ -1,11 +1,10 @@
 'use client';
 
 import type { Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
-import { Mail as MailIcon } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import type { HTMLProps, ReactNode } from 'react';
-import { Fragment, Suspense, useCallback, useState } from 'react';
-import { EmailShareButton, FacebookShareButton, TwitterShareButton } from 'react-share';
+import { useCallback, useState } from 'react';
 
 import type { Product } from '@/api/product';
 import { ProductGalleryLightbox } from '@/components/products/product-gallery-lightbox';
@@ -13,8 +12,12 @@ import type { LocaleDictionary } from '@/utils/locale';
 import { getTranslations } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 
-const SHARE_BUTTON_STYLES =
-    'focus-ring z-10 flex h-8 w-8 appearance-none items-center justify-center rounded-full border-2 border-(--border-strong) border-solid bg-(--surface-2) text-(color:var(--text)) transition-colors hover:border-(color:var(--accent)) hover:text-(color:var(--accent)) md:h-9 md:w-9';
+// `react-share` is heavy and only renders when sharing is enabled, so keep it out of the gallery's
+// initial client chunk and load it on demand.
+const ProductGalleryShare = dynamic(
+    () => import('@/components/products/product-gallery-share').then((m) => m.ProductGalleryShare),
+    { ssr: false },
+);
 
 export type ProductGalleryProps = {
     initialImageId?: string | null;
@@ -113,7 +116,7 @@ const ProductGallery = ({
                             width={image.width ?? 500}
                             height={image.height ?? 500}
                             sizes="(max-width: 920px) 75vw, 500px"
-                            loading="eager"
+                            priority
                             decoding="async"
                             onLoad={() => setLoaded(true)}
                             className={cn(
@@ -132,54 +135,7 @@ const ProductGallery = ({
                                 'hidden md:flex',
                             )}
                         >
-                            <Suspense fallback={<Fragment />}>
-                                <div className="flex flex-col gap-2 empty:hidden md:gap-1">
-                                    <EmailShareButton
-                                        key="email"
-                                        url={pageUrl}
-                                        className={SHARE_BUTTON_STYLES}
-                                        resetButtonStyle={false}
-                                        title={title}
-                                        htmlTitle={t('share-via-email')}
-                                    >
-                                        <MailIcon className="stroke-2" />
-                                    </EmailShareButton>
-                                    <FacebookShareButton
-                                        key="facebook"
-                                        url={pageUrl}
-                                        className={SHARE_BUTTON_STYLES}
-                                        resetButtonStyle={false}
-                                        title={title}
-                                        htmlTitle={t('share-on-facebook')}
-                                    >
-                                        <Image
-                                            className="stroke-2"
-                                            src="/assets/icons/social/facebook-outline.svg"
-                                            alt="Facebook"
-                                            width={20}
-                                            height={20}
-                                        />
-                                    </FacebookShareButton>
-                                    <TwitterShareButton
-                                        key="twitter"
-                                        url={pageUrl}
-                                        className={SHARE_BUTTON_STYLES}
-                                        resetButtonStyle={false}
-                                        title={title}
-                                        htmlTitle={t('share-on-x')}
-                                    >
-                                        <Image
-                                            className="stroke-2"
-                                            src="/assets/icons/social/twitter-outline.svg"
-                                            alt="X (Twitter)"
-                                            width={20}
-                                            height={20}
-                                        />
-                                    </TwitterShareButton>
-
-                                    {actions}
-                                </div>
-                            </Suspense>
+                            <ProductGalleryShare pageUrl={pageUrl} title={title} i18n={i18n} actions={actions} />
 
                             {image.altText ? (
                                 <div className="text-(color:var(--text-muted)) rounded-lg bg-(--surface-1) p-1 px-2 font-semibold text-sm opacity-80">

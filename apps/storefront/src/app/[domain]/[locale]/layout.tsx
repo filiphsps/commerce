@@ -100,7 +100,12 @@ export default async function RootLayout({
 
     return (
         <html lang={locale.code} className={cn(resolveFontClassName(typography), 'overscroll-x-none')}>
-            <head />
+            <head>
+                {/* Storefront media is served straight from Shopify's image CDN; opening the TLS
+                    connection early shaves the handshake off the first product/hero image fetch. */}
+                <link rel="preconnect" href="https://cdn.shopify.com" crossOrigin="anonymous" />
+                <link rel="dns-prefetch" href="https://cdn.shopify.com" />
+            </head>
             <body className="group/body overflow-x-hidden overscroll-x-none">
                 <Suspense fallback={null}>
                     <CartIsland>
