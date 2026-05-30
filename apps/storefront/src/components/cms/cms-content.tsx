@@ -1,5 +1,4 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { connection } from 'next/server';
 import { PageApi } from '@/api/page';
 import { Blocks } from '@/blocks/blocks';
 import type { BlockNode } from '@/blocks/types';
@@ -29,13 +28,6 @@ export type CMSContentProps = {
  * editor surface, not for production styling.
  */
 export const CMSContent = async ({ shop, locale, handle }: CMSContentProps) => {
-    // Block rendering bottoms out in a Shopify client whose tenant lookup reads
-    // taint-guarded tokens (so it can't be `'use cache'`) and a mongoose
-    // `.exec()` that touches `new Date()` deep in the driver — illegal under
-    // Cache Components before any request data is read. Defer to request time;
-    // every call site renders this inside a `<Suspense>` with a skeleton fallback.
-    await connection();
-
     const page = await PageApi({ shop, locale, handle });
     if (!page) {
         return null;
