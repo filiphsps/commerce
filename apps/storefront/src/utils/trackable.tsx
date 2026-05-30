@@ -4,17 +4,13 @@ import { useMaybeCart } from '@nordcom/cart-react';
 import type { Nullable, OnlineShop, ShopifyCommerceProvider } from '@nordcom/commerce-db';
 import { MissingContextProviderError, TodoError } from '@nordcom/commerce-errors';
 import type { ShopifyPageViewPayload } from '@shopify/hydrogen-react';
-import {
-    AnalyticsEventName as AnalyticsShopifyEventName,
-    getClientBrowserParameters,
-    ShopifySalesChannel,
-    sendShopifyAnalytics,
-    useShop as useShopify,
-    useShopifyCookies,
-} from '@shopify/hydrogen-react';
+// Only the lightweight context hooks are imported statically. The analytics send path
+// (`sendShopifyAnalytics` + `getClientBrowserParameters` and friends) is the heavy part of
+// `@shopify/hydrogen-react`, so it is pulled in via a dynamic `import()` inside the event handler
+// to land in a lazy chunk instead of the initial bundle every page ships.
+import { useShop as useShopify, useShopifyCookies } from '@shopify/hydrogen-react';
 import type { ShopifyContextValue } from '@shopify/hydrogen-react/ShopifyProvider';
 import { track as vercelTrack } from '@vercel/analytics/react';
-import debounce from 'lodash.debounce';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { Fragment, Suspense, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
@@ -160,6 +156,14 @@ const shopifyEventHandler = async (
     } else if (shop.commerceProvider.type !== 'shopify') {
         throw new TodoError('shopifyEventHandler() called for non-Shopify shop.');
     }
+
+    // Lazy-load the analytics surface so it lands in a separate chunk rather than the page bundle.
+    const {
+        AnalyticsEventName: AnalyticsShopifyEventName,
+        getClientBrowserParameters,
+        ShopifySalesChannel,
+        sendShopifyAnalytics,
+    } = await import('@shopify/hydrogen-react');
 
     const commerce = shop.commerceProvider;
     const pageType = pathToShopifyPageType((data.path || '').replace(`/${locale.code}/`, '/'));
@@ -408,6 +412,24 @@ export const NOOP_TRACKABLE_VALUE: TrackableContextValue = {
     queueEvent: () => {},
     postEvent: async () => undefined,
 };
+
+/**
+ * Trailing-edge debounce — coalesces calls within `wait` ms into a single deferred invocation.
+ *
+ * Replaces `lodash.debounce` (the analytics provider's only use of it) with a few lines so the
+ * dependency stays out of the client bundle.
+ *
+ * @param fn - The function to debounce.
+ * @param wait - The quiet period in milliseconds before `fn` runs with the latest arguments.
+ * @returns A debounced wrapper around `fn`.
+ */
+function debounce<Args extends unknown[]>(fn: (...args: Args) => unknown, wait: number) {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    return (...args: Args): void => {
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(() => fn(...args), wait);
+    };
+}
 
 // Subscribe to `storage` events so a Vercel-toolbar flip in another tab
 // propagates without a reload. The previous no-op `subscribe` meant
