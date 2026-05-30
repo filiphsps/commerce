@@ -1,7 +1,6 @@
 'use client';
 
 import { useCart } from '@nordcom/cart-react';
-import { trace } from '@opentelemetry/api';
 import type { HTMLProps, ReactNode } from 'react';
 import { toast } from 'sonner';
 import { CartSummary } from '@/components/cart/cart-summary';
@@ -80,9 +79,6 @@ export const CartSidebar = ({ i18n, locale, className, children, paymentMethods,
                             trackable: { queueEvent, postEvent },
                         });
                     } catch (error: unknown) {
-                        trace.getActiveSpan()?.addEvent('cart.checkout_failed', {
-                            'error.message': (error as Error)?.message ?? String(error),
-                        });
                         toast.error(error instanceof Error ? error.message : String(error));
                     }
                 }}

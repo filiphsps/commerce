@@ -2,7 +2,6 @@
 
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { UnknownCommerceProviderError } from '@nordcom/commerce-errors';
-import { trace } from '@opentelemetry/api';
 import { ShopifyProvider } from '@shopify/hydrogen-react';
 import { Fragment, type ReactNode, Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -42,9 +41,6 @@ const CommerceProvider = ({ shop, locale, children }: { shop: OnlineShop; locale
                 // TODO: Surface this as a tenant-config validation error during shop lookup.
                 //       For now, render without the Shopify cart provider — content pages still work,
                 //       cart/checkout features will be unavailable.
-                trace.getActiveSpan()?.addEvent('providers_registry.missing_commerce_domain', {
-                    'shop.domain': shop.domain,
-                });
                 return <>{children}</>;
             }
 

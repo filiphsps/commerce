@@ -3,7 +3,6 @@
 import type { Url } from 'node:url';
 
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { trace } from '@opentelemetry/api';
 import BaseLink from 'next/link';
 import type { ComponentProps } from 'react';
 import { useShop } from '@/components/shop/provider';
@@ -58,9 +57,6 @@ export default function Link({ locale, href, prefetch, ...props }: LinkProps) {
 
     if (typeof href !== 'string') {
         // TODO: Deal with `URL` as `href`.
-        trace.getActiveSpan()?.addEvent('link.invalid_href_type', {
-            'link.href_type': typeof href,
-        });
         return null;
     }
 
@@ -68,10 +64,7 @@ export default function Link({ locale, href, prefetch, ...props }: LinkProps) {
     let resolvedLocale: Locale;
     try {
         resolvedLocale = locale ?? shop.locale ?? Locale.current ?? Locale.default;
-    } catch (error: unknown) {
-        trace.getActiveSpan()?.addEvent('link.locale_resolution_failed', {
-            'error.message': (error as Error)?.message ?? String(error),
-        });
+    } catch {
         resolvedLocale = Locale.default;
     }
 

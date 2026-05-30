@@ -2,7 +2,6 @@
 
 import type { CartLine as CoreCartLine } from '@nordcom/cart-core';
 import { useCartActions, useCartStatus } from '@nordcom/cart-react';
-import { trace } from '@opentelemetry/api';
 import { Tag as TagIcon, X as XIcon } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '@/components/actionable/button';
@@ -39,9 +38,6 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
     const merch = line.merchandise;
 
     if (!merch.productHandle || !merch.id) {
-        trace.getActiveSpan()?.addEvent('cart_line.missing_merchandise', {
-            'cart.line_id': line.id,
-        });
         return null;
     }
 

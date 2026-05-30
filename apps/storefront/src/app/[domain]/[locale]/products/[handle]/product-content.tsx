@@ -1,6 +1,5 @@
 'use client';
 
-import { trace } from '@opentelemetry/api';
 import { ProductProvider } from '@shopify/hydrogen-react';
 import type { ProductVariant, Product as StorefrontProduct } from '@shopify/hydrogen-react/storefront-api-types';
 import { useSearchParams } from 'next/navigation';
@@ -126,10 +125,6 @@ export function ProductSavings({ i18n, product, className }: ProductSavingsProps
 
     const savings = compareAtAmount - totalAmount;
     if (savings < 0) {
-        trace.getActiveSpan()?.addEvent('product.negative_savings', {
-            'product.id': product.id,
-            'product.savings': savings,
-        });
         return null;
     }
 
