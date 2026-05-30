@@ -1,0 +1,3530 @@
+[
+  {
+    "id": "UNIFY-01",
+    "title": "tenantsSlug repoint feasibility spike (GATE)",
+    "track": "UNIFY",
+    "size": "M",
+    "summary": "Throwaway gating spike: prove plugin-multi-tenant can repoint tenantsSlug from tenants to the unified shops collection with the tenant key = shop row id; determine whether Mongoose shops and Payload shops already share one Mongo collection/_id (would make resolveTenantId identity). Record go/no-go + chosen collapse mechanism; only the findings doc lands.",
+    "files": [
+      "packages/cms/src/plugins/multi-tenant.ts",
+      "packages/cms/src/collections/shops.ts",
+      "packages/cms/src/collections/tenants.ts",
+      "packages/cms/src/config/index.ts",
+      "packages/db/src/models/shop.ts",
+      ".specs/2026-05-30-convex-migration/phase0-tenantslug-spike.md"
+    ],
+    "depends_on": [],
+    "acceptance": [
+      "written go/no-go + chosen mechanism in phase0-tenantslug-spike.md",
+      "documented whether Mongoose+Payload shops resolve to the same Mongo collection + identical _id",
+      "throwaway proof: a pages read filtered where:{tenant:{equals:<shopRowId>}} returns the seeded doc with tenantsSlug:'shops'",
+      "getTenantFromCookie resolves the shop-row-id key",
+      "spike branch unmerged; only findings doc on the track branch"
+    ],
+    "parallel_safe": false,
+    "worktree": true,
+    "skills": [
+      "payload",
+      "multi-tenant",
+      "mongoose",
+      "spike"
+    ],
+    "wave": 1
+  },
+  {
+    "id": "UNIFY-02",
+    "title": "Freeze CMS read contract with characterization tests",
+    "track": "UNIFY",
+    "size": "M",
+    "summary": "Lock current read-path behavior: extend resolve-tenant-id.test.ts (null-on-missing + WeakMap + where:{shopId:{equals}} shape); pin the where:{tenant:{equals}} shape emitted by all 9 getters incl the __cms_no_tenant_resolved__ sentinel; freeze Review.findByShop/findAll shapes. Regression gate for UNIFY-04/06.",
+    "files": [
+      "packages/cms/src/api/resolve-tenant-id.test.ts",
+      "packages/cms/src/api/api.test.ts",
+      "packages/db/src/services/review.test.ts"
+    ],
+    "depends_on": [],
+    "acceptance": [
+      "cms test project green pinning each getter tenant-filter shape + sentinel branch",
+      "db test project green pinning Review shapes",
+      "null-on-missing asserted for >= get-page + get-header",
+      "additive-only, no source under api/ or services/ modified"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "tests",
+      "payload",
+      "characterization"
+    ],
+    "wave": 1
+  },
+  {
+    "id": "UNIFY-03",
+    "title": "Unify tenant collection: repoint tenantsSlug to shops, delete tenants",
+    "track": "UNIFY",
+    "size": "M",
+    "summary": "Set tenantsSlug:'shops'; configure the Payload shops collection as the multi-tenant tenant collection (shop==tenant, keyed on shop row id). Delete tenants.ts + test, remove from collections/index.ts; keep secret-guard hooks. Do not touch resolveTenantId call sites (UNIFY-04).",
+    "files": [
+      "packages/cms/src/plugins/multi-tenant.ts",
+      "packages/cms/src/collections/tenants.ts",
+      "packages/cms/src/collections/index.ts",
+      "packages/cms/src/collections/shops.ts",
+      "packages/cms/src/config/index.ts"
+    ],
+    "depends_on": [
+      "UNIFY-01"
+    ],
+    "acceptance": [
+      "grep collection:'tenants'/slug:'tenants' clean except UNIFY-04/05 remnants",
+      "tenantsSlug is 'shops'; tenants.ts + test deleted",
+      "pnpm build:packages + cms tests green; admin config still constructs",
+      "injected tenant field resolves to the shop row id on a seeded fixture"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "payload",
+      "multi-tenant"
+    ],
+    "wave": 2
+  },
+  {
+    "id": "UNIFY-04",
+    "title": "Collapse resolveTenantId to identity + update where:{tenant:{equals}} call sites",
+    "track": "UNIFY",
+    "size": "M",
+    "summary": "Rewrite resolve-tenant-id.ts to return the shop id (identity) or delete+inline, preserving null-on-empty + the public export. Update the 9 getters + remaining consumers so the tenant value is the canonical shop id, keeping the sentinel path; drop the WeakMap if dead. UNIFY-02 tests stay green.",
+    "files": [
+      "packages/cms/src/api/resolve-tenant-id.ts",
+      "packages/cms/src/api/resolve-tenant-id.test.ts",
+      "packages/cms/src/api/get-page.ts",
+      "packages/cms/src/api/get-pages.ts",
+      "packages/cms/src/api/get-header.ts",
+      "packages/cms/src/editor/revalidate.ts",
+      "packages/cms/src/editor/ui/editor-list-page.tsx",
+      "apps/admin/src/app/(app)/(dashboard)/[domain]/content/page.tsx"
+    ],
+    "depends_on": [
+      "UNIFY-01",
+      "UNIFY-02",
+      "UNIFY-03"
+    ],
+    "acceptance": [
+      "resolveTenantId returns shop id for existing, null for missing (UNIFY-02 contract preserved)",
+      "cms tests + typecheck green across cms + admin",
+      "9 getters return seeded content filtering by canonical shop id",
+      "grep Tenant._id/extra Mongo round-trip in resolve-tenant-id.ts empty"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "payload",
+      "multi-tenant",
+      "tests"
+    ],
+    "wave": 3
+  },
+  {
+    "id": "UNIFY-05",
+    "title": "Delete attachShopSync write-path sync and shop-sync package surface",
+    "track": "UNIFY",
+    "size": "S",
+    "summary": "Delete shop-sync/{post-save-hook,index,post-save-hook.test}.ts; remove attachShopSync import + call site at payload.config.ts:7/95; drop the now-unused Shop import if dead; remove the @nordcom/commerce-cms/shop-sync export. Confirm admin boots.",
+    "files": [
+      "apps/admin/src/payload.config.ts",
+      "packages/cms/src/shop-sync/post-save-hook.ts",
+      "packages/cms/src/shop-sync/index.ts",
+      "packages/cms/src/shop-sync/post-save-hook.test.ts",
+      "packages/cms/package.json"
+    ],
+    "depends_on": [
+      "UNIFY-03"
+    ],
+    "acceptance": [
+      "grep attachShopSync|syncShopToTenant|shop-sync (excl .specs) empty",
+      "shop-sync/ deleted, no dangling export",
+      "pnpm build:packages + typecheck green (no unused Shop import)",
+      "cms tests green"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "payload-removal",
+      "mongoose"
+    ],
+    "wave": 3
+  },
+  {
+    "id": "UNIFY-06",
+    "title": "Reviews -> shopId relationship on the Mongoose side",
+    "track": "UNIFY",
+    "size": "M",
+    "summary": "Replace the embedded ShopSchema snapshot in models/review.ts with a shop id ref; update ReviewBase; fix findByShop against the id field; resolve the dead findAll({tenant}) filter with a comment; adjust docToReview. Keep signatures identical. UNIFY-02 review tests are the regression gate.",
+    "files": [
+      "packages/db/src/models/review.ts",
+      "packages/db/src/services/review.ts",
+      "packages/db/src/services/review.test.ts",
+      "packages/db/src/lib/doc-to-shape.ts"
+    ],
+    "depends_on": [
+      "UNIFY-02"
+    ],
+    "acceptance": [
+      "ReviewSchema stores shop as id ref; grep ShopSchema in review.ts empty",
+      "findByShop matches by id, signature preserved",
+      "dead tenant filter resolved with a comment",
+      "db tests + pnpm build:packages green; no Review export signature change"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "mongoose",
+      "data-modeling",
+      "tests"
+    ],
+    "wave": 2
+  },
+  {
+    "id": "UNIFY-07",
+    "title": "Reviews -> shop relationship aligned on the Payload side",
+    "track": "UNIFY",
+    "size": "S",
+    "summary": "Ensure the Payload reviews collection shop relationship resolves to the canonical shops tenant collection; drop the as-never cast if unneeded; keep tenant-scoped access predicates; verify the injected tenant field + the explicit shop relation are consistent.",
+    "files": [
+      "packages/cms/src/collections/reviews.ts"
+    ],
+    "depends_on": [
+      "UNIFY-03"
+    ],
+    "acceptance": [
+      "reviews.shop references canonical 'shops'; relation resolves a seeded review's shop",
+      "access predicates unchanged + passing",
+      "pnpm build:packages + cms tests green",
+      "no Tenant-vs-Shop split remains for reviews"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "payload",
+      "data-modeling"
+    ],
+    "wave": 3
+  },
+  {
+    "id": "UNIFY-11",
+    "title": "De-embed collaborators -> join + rewrite findByCollaborator + migrate arrays",
+    "track": "UNIFY",
+    "size": "M",
+    "summary": "ADDED (critic missing #7; plan Phase 0 step 4). Move the embedded collaborators array to a join shape and rewrite Shop.findByCollaborator to the new return shape, preserving the public signature. Migration of existing arrays folded into UNIFY-08. The canonical join shape CONVEXCORE-04 mirrors.",
+    "files": [
+      "packages/db/src/models/shop.ts",
+      "packages/db/src/services/shop.ts",
+      "packages/db/src/services/shop.test.ts",
+      "packages/db/src/lib/doc-to-shape.ts"
+    ],
+    "depends_on": [
+      "UNIFY-02",
+      "UNIFY-03"
+    ],
+    "acceptance": [
+      "collaborators stored as a join (not embedded array), shape documented",
+      "findByCollaborator(userId) preserves signature/return type + resolves seeded collaborators",
+      "db tests + pnpm build:packages green; no importer compile change"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "mongoose",
+      "data-modeling",
+      "tests"
+    ],
+    "wave": 3
+  },
+  {
+    "id": "UNIFY-08",
+    "title": "Migration-1 backfill script (idempotent, re-runnable) on Mongo",
+    "track": "UNIFY",
+    "size": "M",
+    "summary": "Idempotent in-place backfill: rewrite embedded-ShopSchema reviews to shopId; reconcile tenant linkage to the unified shop-row-id identity; convert embedded collaborator arrays to the join shape. --dry-run reports counts; second run no-op. Transform core pure for Phase 7 reuse.",
+    "files": [
+      "scripts/migrate-1-unify-shop-tenant.ts",
+      "scripts/migrate-1-reviews-shopid.ts",
+      "scripts/migrate-1-collaborators-join.ts"
+    ],
+    "depends_on": [
+      "UNIFY-03",
+      "UNIFY-06",
+      "UNIFY-07",
+      "UNIFY-11"
+    ],
+    "acceptance": [
+      "dry-run prints exact counts (reviews, tenant links, collaborator arrays), writes nothing",
+      "first run converts all; post-run zero embedded-shop reviews + zero embedded collaborator arrays",
+      "second run 0 changes (idempotent)",
+      "every tenant-scoped doc resolves to a valid canonical shop id; transform core pure/exported"
+    ],
+    "parallel_safe": false,
+    "worktree": false,
+    "skills": [
+      "data-migration",
+      "mongoose"
+    ],
+    "wave": 4
+  },
+  {
+    "id": "UNIFY-09",
+    "title": "Update Mongo seed + e2e global-setup to the unified tenant=shop identity",
+    "track": "UNIFY",
+    "size": "M",
+    "summary": "Fix trap #26: the shopId<->tenantId mapping in test-mongo seed/{cms,canonical}.ts + both e2e global-setups. Stop creating a separate tenants row; make tenant identity = the seeded shop row id so storefront CMS reads return non-null. Keep emitting E2E_TENANT_ID (= shop id) + admin NextAuth cookie logic.",
+    "files": [
+      "packages/test-mongo/src/seed/cms.ts",
+      "packages/test-mongo/src/seed/canonical.ts",
+      "apps/storefront/e2e/global-setup.ts",
+      "apps/admin/e2e/global-setup.ts"
+    ],
+    "depends_on": [
+      "UNIFY-03",
+      "UNIFY-06",
+      "UNIFY-07"
+    ],
+    "acceptance": [
+      "seed no longer creates a tenants doc; CMS docs seeded against the shop row id",
+      "E2E_TENANT_ID exported = seeded shop id",
+      "storefront e2e CMS read returns non-null; grep collection:'tenants' in test-mongo/e2e empty",
+      "admin NextAuth cookie minting unchanged"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "tests",
+      "e2e",
+      "data-migration"
+    ],
+    "wave": 4
+  },
+  {
+    "id": "UNIFY-10",
+    "title": "Migration-1 verification, parity gate and ship sign-off",
+    "track": "UNIFY",
+    "size": "S",
+    "summary": "Phase 0 exit gate: assert attachShopSync gone, single shop==tenant record, resolveTenantId identity, reviews via shopId, collaborators join, featureFlags reads work; parity assertion that pre/post storefront CMS reads return identical shapes (null-on-missing preserved). build+typecheck+test + e2e seed green. No changeset.",
+    "files": [
+      "packages/cms/src/api",
+      "packages/db/src/services",
+      ".specs/2026-05-30-convex-migration/phase0-verification.md"
+    ],
+    "depends_on": [
+      "UNIFY-04",
+      "UNIFY-05",
+      "UNIFY-08",
+      "UNIFY-09",
+      "UNIFY-11"
+    ],
+    "acceptance": [
+      "build:packages + typecheck + test all green",
+      "grep attachShopSync|syncShopToTenant (excl .specs) empty; tenants collection absent",
+      "parity shapes recorded in phase0-verification.md",
+      "reviews/featureFlags/collaborators read over canonical tables; no-changeset confirmed"
+    ],
+    "parallel_safe": false,
+    "worktree": false,
+    "skills": [
+      "tests",
+      "ci",
+      "verification"
+    ],
+    "wave": 5
+  },
+  {
+    "id": "CONVEXCORE-01",
+    "title": "Bootstrap @nordcom/commerce-convex package + deps + codegen + env plumbing",
+    "track": "CONVEXCORE",
+    "size": "M",
+    "summary": "New packages/convex workspace package (single Convex function root). Deps convex + convex-helpers + convex-test; convex.json, tsconfig, exports re-exporting _generated/{api,server}; wire convex codegen into the build. Add CONVEX_URL/CONVEX_DEPLOY_KEY/NEXT_PUBLIC_CONVEX_URL to the 3 .env.example. No changeset.",
+    "files": [
+      "packages/convex/package.json",
+      "packages/convex/convex.json",
+      "packages/convex/tsconfig.json",
+      "packages/convex/convex/.gitkeep",
+      "pnpm-workspace.yaml",
+      ".env.example",
+      "apps/storefront/.env.example",
+      "apps/admin/.env.example"
+    ],
+    "depends_on": [],
+    "acceptance": [
+      "pnpm install resolves; pnpm why -r convex finds convex+convex-helpers",
+      "convex codegen emits _generated/{api,server,dataModel}.d.ts",
+      "pnpm build:packages builds the package; a scratch import typechecks",
+      "CONVEX_URL/NEXT_PUBLIC_CONVEX_URL in all 3 env files; frozen install passes; no changeset"
+    ],
+    "parallel_safe": false,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "monorepo",
+      "env"
+    ],
+    "wave": 1
+  },
+  {
+    "id": "CONVEXCORE-02",
+    "title": "Self-host Convex backend for CI + config-gated convex deploy + export snapshot cron",
+    "track": "CONVEXCORE",
+    "size": "M",
+    "summary": "Wire the self-hosted backend as CI/exit target. convex:deploy/convex:dev scripts + root delegates; gate convex deploy to config/function edits in CI; pre-build/cache the local-backend binary as a CI artifact in the shared bootstrap action; add the scheduled convex export snapshot cron.",
+    "files": [
+      "packages/convex/package.json",
+      "package.json",
+      ".github/workflows/ci.yml",
+      ".github/common/bootstrap/action.yml",
+      "packages/convex/convex/crons.ts"
+    ],
+    "depends_on": [
+      "CONVEXCORE-01"
+    ],
+    "acceptance": [
+      "pnpm convex:deploy pushes schema+functions to the self-hosted/local backend",
+      "CI restores the cached binary (cache-hit logged), boots without download",
+      "deploy step skipped when no packages/convex/** change, runs when there is",
+      "export cron registered + visible"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "ci",
+      "self-host"
+    ],
+    "wave": 2
+  },
+  {
+    "id": "CONVEXCORE-03",
+    "title": "Schema scaffold: composition convention + shared validators + tenant-index naming",
+    "track": "CONVEXCORE",
+    "size": "M",
+    "summary": "schema.ts as a defineSchema spreading per-group table maps from tables/* modules (so table-group tasks add isolated files, never edit schema.ts directly). Reserve a cmsTables slot. Build the theme-tokens validator (mirrors lib/theme.ts + theme-catalog.ts exactly) + the JsonValue/TargetingRule validator (mirrors lib/feature-flag.ts). Document the by_shop_<field> index convention.",
+    "files": [
+      "packages/convex/convex/schema.ts",
+      "packages/convex/convex/tables/index.ts",
+      "packages/convex/convex/lib/validators.ts"
+    ],
+    "depends_on": [
+      "CONVEXCORE-01"
+    ],
+    "acceptance": [
+      "convex codegen + typecheck green with placeholder schema",
+      "theme validator round-trips a full ResolvedShopTheme fixture (unknown key rejected)",
+      "JsonValue validator accepts the FeatureFlag Mixed shapes",
+      "schema.ts spreads named table-group maps + has a documented cmsTables extension point"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "validators"
+    ],
+    "wave": 2
+  },
+  {
+    "id": "CONVEXCORE-04",
+    "title": "Shop-family tables: collapsed shop+tenant, shopCredentials, shopDomains, side-tables, featureFlags",
+    "track": "CONVEXCORE",
+    "size": "M",
+    "summary": "tables/shops.ts: shops = shop AND tenant (tenant id = row _id) + legacyId; shopCredentials (1:1, by_shop) holding token + clientSecret in a SEPARATE table; shopDomains (by_domain) one row per domain->shopId; shopCollaborators (by_user, by_shop) mirroring the UNIFY-11 join shape; shopFeatureFlags (by_shop) + global featureFlags (by_key). Tenant-prefixed compound indexes. Mirror the POST-Phase-0 unified shape.",
+    "files": [
+      "packages/convex/convex/tables/shops.ts",
+      "packages/convex/convex/schema.ts"
+    ],
+    "depends_on": [
+      "CONVEXCORE-03",
+      "UNIFY-03",
+      "UNIFY-11",
+      "SPIKE-01"
+    ],
+    "acceptance": [
+      "codegen + typecheck green with shop-family tables registered",
+      "shopCredentials distinct (by_shop); no token/clientSecret on shops",
+      "shopDomains by_domain; shopCollaborators by_user+by_shop; featureFlags by_key",
+      "shops carries legacyId + by_shop_* compound indexes; a unified ShopBase fixture validates"
+    ],
+    "parallel_safe": false,
+    "worktree": true,
+    "skills": [
+      "convex",
+      "schema",
+      "multi-tenancy"
+    ],
+    "wave": 4
+  },
+  {
+    "id": "CONVEXCORE-05",
+    "title": "Auth + reviews tables: users, sessions, identities, reviews",
+    "track": "CONVEXCORE",
+    "size": "M",
+    "summary": "tables/auth.ts + reviews.ts. Platform-global auth: users(by_email), sessions(by_token,by_user,by_expiry; user:v.id('users')), identities(by_provider_identity, uniqueness in the mutation). reviews(by_shop) storing shopId:v.id('shops') with no embedded snapshot. Keep the Base TS contracts importable.",
+    "files": [
+      "packages/convex/convex/tables/auth.ts",
+      "packages/convex/convex/tables/reviews.ts",
+      "packages/convex/convex/schema.ts"
+    ],
+    "depends_on": [
+      "CONVEXCORE-03",
+      "UNIFY-06",
+      "SFREAD-02"
+    ],
+    "acceptance": [
+      "codegen + typecheck green with users/sessions/identities/reviews registered",
+      "sessions by_token+by_user+by_expiry; identities by_provider_identity; users by_email; reviews by_shop",
+      "reviews stores shopId:v.id('shops') with no embedded snapshot",
+      "auth tables registered outside any tenant-scoped grouping"
+    ],
+    "parallel_safe": false,
+    "worktree": true,
+    "skills": [
+      "convex",
+      "schema",
+      "auth"
+    ],
+    "wave": 3
+  },
+  {
+    "id": "CONVEXCORE-06",
+    "title": "Fail-closed RLS rules: tenantRules(shopId) + wrapDatabaseReader/Writer defaultPolicy:'deny'",
+    "track": "CONVEXCORE",
+    "size": "M",
+    "summary": "lib/rls.ts: wrapDatabaseReader/Writer(ctx, ctx.db, tenantRules(shopId), {defaultPolicy:'deny'}). tenantRules per tenant-scoped table; a no-rule table is denied. Auth tables + global featureFlags not given tenant rules (served by systemQuery). Rules pair with .withIndex('by_shop...') range-bounding.",
+    "files": [
+      "packages/convex/convex/lib/rls.ts"
+    ],
+    "depends_on": [
+      "CONVEXCORE-04",
+      "CONVEXCORE-05"
+    ],
+    "acceptance": [
+      "rls.ts exports tenantRules(shopId) covering all tenant-scoped tables + a wrapped reader/writer factory (deny default)",
+      "convex-test: a tenant-scoped read with no matching shopId returns nothing (range-bounded)",
+      "a no-rule table denies under the wrapped db",
+      "typecheck green"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "convex-helpers",
+      "rls",
+      "multi-tenancy"
+    ],
+    "wave": 5
+  },
+  {
+    "id": "CONVEXCORE-07",
+    "title": "tenantQuery / tenantMutation constructors with server-trusted shopId provenance",
+    "track": "CONVEXCORE",
+    "size": "M",
+    "summary": "lib/tenant.ts: tenantQuery/tenantMutation via customQuery/customMutation composing the wrapped reader/writer. customCtx pins ctx.shopId from server-trusted context only (Convex auth identity for admin via CONVEXCORE-14; server-resolved shopId for storefront), never a spoofable client arg.",
+    "files": [
+      "packages/convex/convex/lib/tenant.ts"
+    ],
+    "depends_on": [
+      "CONVEXCORE-06",
+      "CONVEXCORE-14"
+    ],
+    "acceptance": [
+      "exports tenantQuery + tenantMutation injecting ctx.shopId via customCtx over the wrapped db",
+      "convex-test: tenantQuery cannot read another tenant's rows even if a shopId arg is passed (arg ignored)",
+      "a tenantMutation under tenant A is invisible to a tenantQuery under tenant B",
+      "typecheck green"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "convex-helpers",
+      "multi-tenancy"
+    ],
+    "wave": 6
+  },
+  {
+    "id": "CONVEXCORE-08",
+    "title": "systemQuery / systemMutation escape hatch (no-RLS, server-trusted)",
+    "track": "CONVEXCORE",
+    "size": "S",
+    "summary": "lib/system.ts: systemQuery/systemMutation over the raw db (no tenant RLS) for explicitly-exempt paths (crons, migrations, resolveShop/byDomainWithCredentials, platform-global auth tables, global featureFlags, super-user). Only sanctioned raw-db access; MUST originate server-side. Document each exemption.",
+    "files": [
+      "packages/convex/convex/lib/system.ts"
+    ],
+    "depends_on": [
+      "CONVEXCORE-03"
+    ],
+    "acceptance": [
+      "exports systemQuery + systemMutation bypassing tenant RLS",
+      "convex-test: systemQuery reads users/sessions/featureFlags (tenant rules deny) + writes across tenants",
+      "constructors exported only via the internal surface, not the public app barrel",
+      "typecheck green"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "convex-helpers"
+    ],
+    "wave": 3
+  },
+  {
+    "id": "CONVEXCORE-09",
+    "title": "Public function-constructor barrel: export only tenant*/system*, withhold raw query/mutation",
+    "track": "CONVEXCORE",
+    "size": "S",
+    "summary": "_constructors.ts re-exporting ONLY tenantQuery/tenantMutation/systemQuery/systemMutation. Raw query/mutation/internalQuery/internalMutation NOT re-exported, so the barrel cannot bypass RLS. Update package.json exports so apps + packages/db import from this barrel.",
+    "files": [
+      "packages/convex/convex/_constructors.ts",
+      "packages/convex/package.json"
+    ],
+    "depends_on": [
+      "CONVEXCORE-07",
+      "CONVEXCORE-08"
+    ],
+    "acceptance": [
+      "barrel re-exports exactly the 4 constructors, nothing from raw _generated/server",
+      "typecheck green; importing query via the barrel fails to resolve",
+      "package.json exports maps the barrel as the documented entrypoint"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "packaging"
+    ],
+    "wave": 7
+  },
+  {
+    "id": "CONVEXCORE-10",
+    "title": "CI-blocking barrel/lint gate forbidding raw query/mutation in app modules",
+    "track": "CONVEXCORE",
+    "size": "M",
+    "summary": "Biome noRestrictedImports rule (override exempting only convex/lib/{tenant,system,rls}.ts) forbidding any import of query/mutation/internalQuery/internalMutation from _generated/server in app/db modules. CI-blocking. Wire into pnpm lint; add a deliberately-bad fixture.",
+    "files": [
+      "biome.json",
+      "packages/convex/convex/__fixtures__/raw-query-violation.ts",
+      ".github/workflows/ci.yml"
+    ],
+    "depends_on": [
+      "CONVEXCORE-09"
+    ],
+    "acceptance": [
+      "pnpm lint fails on the raw-query fixture, passes once it imports the barrel",
+      "override exempts only the 3 wrapper files",
+      "CI lint job blocking on this rule"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "lint",
+      "biome",
+      "ci"
+    ],
+    "wave": 8
+  },
+  {
+    "id": "CONVEXCORE-11",
+    "title": "Subscription registry + per-tenant circuit breaker in the wrappers",
+    "track": "CONVEXCORE",
+    "size": "M",
+    "summary": "lib/subscription-registry.ts wired into tenantQuery/tenantMutation: track open subscriptions per tenant, degrade to snapshot+poll past a per-tenant threshold, emit the per-tenant cost/usage metric (net-new). Deterministic + observable.",
+    "files": [
+      "packages/convex/convex/lib/subscription-registry.ts",
+      "packages/convex/convex/lib/tenant.ts"
+    ],
+    "depends_on": [
+      "CONVEXCORE-07"
+    ],
+    "acceptance": [
+      "a test drives the registry past threshold + asserts new subscriptions degrade to snapshot+poll",
+      "the per-tenant metric is emitted + assertable",
+      "breaker resets below threshold; typecheck green"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "observability",
+      "multi-tenancy"
+    ],
+    "wave": 7
+  },
+  {
+    "id": "CONVEXCORE-12",
+    "title": "Phase 2 exit-criteria verification suite (deny-default + escape-hatch + barrel)",
+    "track": "CONVEXCORE",
+    "size": "M",
+    "summary": "convex-test suite proving Phase 2 exit: a no-rule table is denied; a tenant cannot read/write another tenant's rows; systemQuery reads the exempt tables; deny holds when shopId is an ignored client arg. The load-bearing gate the orchestrator gates the track on.",
+    "files": [
+      "packages/convex/convex/__tests__/rls-deny-default.test.ts",
+      "packages/convex/convex/__tests__/system-escape-hatch.test.ts"
+    ],
+    "depends_on": [
+      "CONVEXCORE-06",
+      "CONVEXCORE-07",
+      "CONVEXCORE-08",
+      "CONVEXCORE-09",
+      "CONVEXCORE-10"
+    ],
+    "acceptance": [
+      "convex test project green",
+      "deny-default test fails if a rule is removed (load-bearing)",
+      "cross-tenant read+write asserted blocked; systemQuery exempt-table access asserted allowed"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "tests",
+      "convex-test"
+    ],
+    "wave": 9
+  },
+  {
+    "id": "CONVEXCORE-13",
+    "title": "Expand/contract deploy dry-run + backfill mutation runner",
+    "track": "CONVEXCORE",
+    "size": "M",
+    "summary": "Schema-evolution safety net: add-optional -> backfill -> tighten with a convex deploy dry-run validating existing rows before promotion (rejects a deploy that would invalidate live rows) + a generic paginating idempotent backfill runner (lib/migrations.ts) + a named-backfill script entrypoint.",
+    "files": [
+      "packages/convex/convex/lib/migrations.ts",
+      "packages/convex/scripts/deploy-dry-run.ts",
+      "packages/convex/package.json"
+    ],
+    "depends_on": [
+      "CONVEXCORE-02",
+      "CONVEXCORE-04",
+      "CONVEXCORE-05"
+    ],
+    "acceptance": [
+      "dry-run flags a tightening change that would reject rows + exits non-zero before promotion",
+      "backfill runner paginates + applies idempotently (re-run no-op, asserted)",
+      "pnpm convex:backfill <name> invokes the runner"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "data-migration"
+    ],
+    "wave": 5
+  },
+  {
+    "id": "CONVEXCORE-14",
+    "title": "NextAuth-JWT → Convex auth identity wiring",
+    "track": "CONVEXCORE",
+    "size": "M",
+    "summary": "Convex auth IDENTITY wiring (admin shopId resolver→CONVEXCORE-16). NextAuth-JWT validated in Convex auth.config.ts; setAuth token plumbing on ConvexHttpClient (server) + ConvexReactClient (client) so functions see a server-trusted identity; session-strategy alignment. The trusted identity that tenantQuery/tenantMutation (CONVEXCORE-07) consume.",
+    "files": [
+      "packages/convex/convex/auth.config.ts",
+      "packages/convex/convex/lib/auth.ts",
+      "apps/admin/src/lib/convex-auth.ts",
+      "apps/storefront/src/lib/convex-auth-fetcher.ts"
+    ],
+    "depends_on": [
+      "CONVEXCORE-05",
+      "CONVEXCORE-08"
+    ],
+    "acceptance": [
+      "getUserIdentity() validates a NextAuth-minted JWT (issuer/appId asserted)",
+      "admin identity resolves to a single ctx.shopId via the collaborator->shop lookup (systemQuery), never a client arg",
+      "the storefront setAuth fetcher round-trips a token refresh",
+      "convex-test covers identity->shopId resolution + a rejected forged token"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "auth",
+      "nextauth"
+    ],
+    "wave": 4
+  },
+  {
+    "id": "CONVEXCORE-15",
+    "title": "Production Convex deploy provisioning + Vercel env + deploy/release workflow wiring",
+    "track": "CONVEXCORE",
+    "size": "M",
+    "summary": "ADDED (critic missing #8). Provision the production Convex deployment (self-hosted exit target), set Vercel project env (NEXT_PUBLIC_CONVEX_URL/CONVEX_DEPLOY_KEY), wire convex deploy into deploy.yml/release.yml (shared bootstrap action). Satisfies every 'deployment provisioned with CONVEX_URL' reference for the prod cutover.",
+    "files": [
+      ".github/workflows/deploy.yml",
+      ".github/workflows/release.yml",
+      ".github/common/bootstrap/action.yml",
+      ".specs/2026-05-30-convex-migration/convex-prod-provisioning.md"
+    ],
+    "depends_on": [
+      "CONVEXCORE-02",
+      "CONVEXCORE-12"
+    ],
+    "acceptance": [
+      "prod deployment provisioned + URL/deploy-key recorded",
+      "Vercel env documented + set",
+      "convex deploy runs in deploy/release on config change; a prod deploy dry-run passes; provisioning doc committed"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "ci",
+      "infra"
+    ],
+    "wave": 10
+  },
+  {
+    "id": "CMSDESC-01",
+    "title": "Convex-native field-descriptor type system + field builders",
+    "track": "CMSDESC",
+    "size": "M",
+    "summary": "Field-descriptor DSL replacing Payload's Field type: text/textarea/select/checkbox/number/date/email/json/code/relationship/upload/array/group/blocks/collapsible + localized/required/condition(data,sibling). Port the field builders (seoGroup/imageField/linkField+LinkRef/navItemField depth-6 + HEADER_VARIANTS) to emit descriptors. CMS-safe (no React/Payload imports).",
+    "files": [
+      "packages/cms/src/fields/index.ts",
+      "packages/cms/src/fields/seo.ts",
+      "packages/cms/src/fields/image.ts",
+      "packages/cms/src/fields/link.ts",
+      "packages/cms/src/fields/nav-item.ts",
+      "packages/cms/src/descriptors/"
+    ],
+    "depends_on": [],
+    "acceptance": [
+      "descriptor module compiles with cms typecheck + imports zero payload/@payloadcms symbols (grep clean)",
+      "unit suite per field-kind + depth-6 navItemField recursion + linkField LinkRef union green",
+      "biome passes; field-builder export names/signatures unchanged so downstream imports resolve"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "typescript",
+      "payload-removal",
+      "tests"
+    ],
+    "wave": 1
+  },
+  {
+    "id": "CMSDESC-03",
+    "title": "Re-express 13 collections as descriptors",
+    "track": "CMSDESC",
+    "size": "M",
+    "summary": "SPLIT from old CMSDESC-02. Re-express all 13 collection configs (collections/* incl _globals header/footer/businessData) as CMSDESC-01 descriptors, preserving the 35 localized-field set + tenant-scoped/secret-guard metadata.",
+    "files": [
+      "packages/cms/src/collections/"
+    ],
+    "depends_on": [
+      "CMSDESC-01"
+    ],
+    "acceptance": [
+      "all 13 collections resolve to descriptors",
+      "a snapshot test asserts the 35 localized-field set preserved",
+      "cms typecheck + biome green; no payload import in descriptor outputs"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "convex",
+      "payload-removal",
+      "tests"
+    ],
+    "wave": 2
+  },
+  {
+    "id": "CMSDESC-04",
+    "title": "Re-express 9 blocks as descriptors",
+    "track": "CMSDESC",
+    "size": "M",
+    "summary": "SPLIT from old CMSDESC-02. Re-express the 9 block defs (blocks/*, ordered by registry.ts BLOCK_TYPES) as descriptors, incl the nested columns block whose content embeds every other block.",
+    "files": [
+      "packages/cms/src/blocks/"
+    ],
+    "depends_on": [
+      "CMSDESC-01"
+    ],
+    "acceptance": [
+      "all 9 blocks resolve to descriptors",
+      "a snapshot test asserts BLOCK_TYPES order preserved; adding a block forces a compile error until wired",
+      "cms typecheck + biome green"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "convex",
+      "payload-removal",
+      "tests"
+    ],
+    "wave": 2
+  },
+  {
+    "id": "CMSDESC-02",
+    "title": "Descriptor-driven codegen engine + drift gate (replaces payload-types.ts / cms:gen)",
+    "track": "CMSDESC",
+    "size": "M",
+    "summary": "SPLIT (the read-contract producer). Codegen replacing payload generate:types + payload-types.ts and the per-collection cms:gen: emit (a) the TS content shapes the 11 getters consume + (b) the Convex content-table validators merging into the schema cmsTables slot. Replace generate-types-config.ts + cms:gen/cms:gen:check with descriptor-driven generators + a drift gate. FREEZES the storefront read contract.",
+    "files": [
+      "packages/cms/src/types/payload-types.ts",
+      "packages/cms/src/types/generate-types-config.ts",
+      "packages/cms/scripts/cms-gen.ts",
+      "packages/cms/scripts/cms-gen-check.ts"
+    ],
+    "depends_on": [
+      "CMSDESC-01",
+      "CMSDESC-03",
+      "CMSDESC-04",
+      "CONVEXCORE-03"
+    ],
+    "acceptance": [
+      "replacement codegen runs with no Payload/mongo adapter; re-pointed cms:gen:check passes + fails on intentional descriptor drift",
+      "the 11 getters typecheck unchanged against emitted shapes (read contract frozen)",
+      "emitted validators register into the convex/ cmsTables slot"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "codegen",
+      "payload-removal",
+      "tests"
+    ],
+    "wave": 3
+  },
+  {
+    "id": "CMSFORM-01",
+    "title": "Native form-state core (replaces @payloadcms/ui Form/FormState/useField) + dispatch registry",
+    "track": "CMSFORM",
+    "size": "M",
+    "summary": "Rebuild the client form runtime: FormState keyed by dotted paths, a <Form action> equivalent serializing a _payload blob, useField/useForm/useFormModified, the dispatch reducer (incl REPLACE_STATE) + provider chain. Carry the InitialStateGate keystroke-clobber guard + dirty tracking. Extensible field-renderer dispatch registry (RenderFields replacement). Reuse the existing ui/ shell chrome.",
+    "files": [
+      "packages/cms/src/editor/form/",
+      "packages/cms/src/ui/payload-field-shell.tsx",
+      "packages/cms/src/ui/payload-field-shell-inner.tsx",
+      "apps/admin/src/components/cms/document-form-body.tsx",
+      "apps/admin/src/lib/build-cms-form-state.ts"
+    ],
+    "depends_on": [
+      "CMSDESC-01"
+    ],
+    "acceptance": [
+      "reducer + useField/useForm/useFormModified suite green",
+      "regression test: a fresh server initialState does NOT clobber an in-flight dirty field (fails if the gate is removed)",
+      "no @payloadcms/ui import in the new form-core (grep clean); biome + typecheck pass"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "react",
+      "convex",
+      "payload-removal",
+      "forms",
+      "tests"
+    ],
+    "wave": 2
+  },
+  {
+    "id": "CMSFORM-02",
+    "title": "Leaf field widgets: scalar kinds (text/textarea/select/checkbox/number/date/email/json/code)",
+    "track": "CMSFORM",
+    "size": "M",
+    "summary": "SPLIT (scalar half). The 9 scalar leaf widgets bound to CMSFORM-01 state + registered in the dispatch registry, reusing the admin UI primitives. Each reads/writes via useField(path), surfaces validation/required, respects descriptor condition.",
+    "files": [
+      "packages/cms/src/editor/form/fields/",
+      "apps/admin/src/components/ui/select.tsx",
+      "apps/admin/src/components/ui/switch.tsx"
+    ],
+    "depends_on": [
+      "CMSFORM-01",
+      "CMSDESC-01"
+    ],
+    "acceptance": [
+      "per-widget render+edit unit tests (one per kind) green; checkbox/json/select round-trips through form state",
+      "a condition-hidden widget excluded from render + the _payload blob",
+      "no @payloadcms/ui import; typecheck + biome pass"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "react",
+      "forms",
+      "payload-removal",
+      "tests"
+    ],
+    "wave": 3
+  },
+  {
+    "id": "CMSFORM-06",
+    "title": "Data-bound pickers: relationship + upload",
+    "track": "CMSFORM",
+    "size": "M",
+    "summary": "SPLIT from CMSFORM-02 (the two data-coupled widgets). relationship (doc picker) queries Convex content tables for options; upload (media picker) binds to the CMSMEDIA-01 upload action through its interface (full upload e2e deferred to CMSGATE-02). Both bound to CMSFORM-01 state + the registry, respecting condition/required.",
+    "files": [
+      "packages/cms/src/editor/form/fields/relationship.tsx",
+      "packages/cms/src/editor/form/fields/upload.tsx"
+    ],
+    "depends_on": [
+      "CMSFORM-02",
+      "CONVEXCORE-07"
+    ],
+    "acceptance": [
+      "relationship widget lists options from a Convex content-table query + writes the selected id",
+      "upload widget calls the upload action interface + stores the returned media id",
+      "condition-gating honored; no @payloadcms/ui import; typecheck + biome pass"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "react",
+      "forms",
+      "convex",
+      "tests"
+    ],
+    "wave": 7
+  },
+  {
+    "id": "CMSFORM-03",
+    "title": "Composite field widgets (group/array/collapsible/conditional) + recursive depth-6 nav",
+    "track": "CMSFORM",
+    "size": "M",
+    "summary": "Nesting widgets on CMSFORM-01 + leaf widgets: group, array (add/remove/reorder), collapsible (accordion), conditional-field wrapper. Prove the recursive renderer handles navItemField/topLevelNavItemField depth-6 array-of-arrays incl per-item variant select + localized children. Array row identity stable so dotted paths don't churn the clobber guard.",
+    "files": [
+      "packages/cms/src/editor/form/fields/array.tsx",
+      "packages/cms/src/editor/form/fields/group.tsx",
+      "packages/cms/src/editor/form/fields/collapsible.tsx",
+      "packages/cms/src/editor/form/fields/conditional.tsx",
+      "apps/admin/src/components/ui/accordion.tsx"
+    ],
+    "depends_on": [
+      "CMSFORM-01",
+      "CMSFORM-02"
+    ],
+    "acceptance": [
+      "test renders a depth-6 nav tree, edits the deepest leaf, asserts the value lands at the correct dotted path with no sibling clobber",
+      "array add/remove/reorder preserves row identity + localized buckets",
+      "conditional field mounts/unmounts on a sibling value change; typecheck + biome pass"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "react",
+      "forms",
+      "tests"
+    ],
+    "wave": 4
+  },
+  {
+    "id": "CMSFORM-04",
+    "title": "Blocks field widget (block picker + recursive field render)",
+    "track": "CMSFORM",
+    "size": "M",
+    "summary": "blocks widget: block-type picker driven by BLOCK_TYPES/allBlocks, add/remove/reorder of block instances, recursive render of each block's descriptor fields through the CMSFORM-01 registry (incl the nested columns block). Unknown blockType falls through to a no-op row.",
+    "files": [
+      "packages/cms/src/editor/form/fields/blocks.tsx",
+      "packages/cms/src/blocks/registry.ts"
+    ],
+    "depends_on": [
+      "CMSFORM-01",
+      "CMSFORM-03",
+      "CMSDESC-04"
+    ],
+    "acceptance": [
+      "test adds each of the 9 block types, edits a nested field inside a columns block, round-trips through the _payload blob",
+      "unknown block type renders a no-op row without throwing",
+      "adding a block type forces a compile error until wired; typecheck + biome pass"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "react",
+      "forms",
+      "tests"
+    ],
+    "wave": 5
+  },
+  {
+    "id": "CMSFORM-05",
+    "title": "2s autosave without keystroke clobber + draft-skips-required-validation",
+    "track": "CMSFORM",
+    "size": "M",
+    "summary": "Rebuild the autosave orchestration. A 2s-interval autosave serializes the _payload blob, strips keys not declared on the collection descriptor (pickByFieldNames injection guard), round-trips through a Convex draft mutation. Carry verbatim: draft save skips required validation; autosave never revalidates + the server initialState refresh never clobbers in-flight keystrokes. Validation full on publish, skipped on draft.",
+    "files": [
+      "packages/cms/src/editor/form-payload.ts",
+      "packages/cms/src/editor/form/autosave.ts",
+      "apps/admin/src/components/cms/draft-publish-toolbar.tsx"
+    ],
+    "depends_on": [
+      "CMSFORM-01",
+      "CONVEXCORE-07"
+    ],
+    "acceptance": [
+      "concurrent-typing test: a 2s autosave fires mid-edit + the in-flight field value survives",
+      "draft save with an empty required field succeeds; publish of the same doc fails validation",
+      "pickByFieldNames drops an injected non-field key; autosave path performs zero revalidation calls; typecheck + biome pass"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "react",
+      "convex",
+      "forms",
+      "tests"
+    ],
+    "wave": 7
+  },
+  {
+    "id": "CMSDATA-01",
+    "title": "Drafts/versions/restore data model + mutations",
+    "track": "CMSDATA",
+    "size": "M",
+    "summary": "Convex-native drafts + version-history + restore replacing _status/version tables + payload.restoreVersion. Per collection: published/draft status, a _versions companion table written on each save, a latestVersionId pointer, a version-list query, a restore mutation re-materializing a prior version as draft. One version row per logical save. Draft writes skip required validation server-side. Tables added via the tables/* module convention.",
+    "files": [
+      "packages/convex/convex/cms/versions.ts",
+      "packages/convex/convex/cms/documents.ts",
+      "packages/convex/convex/tables/cms-versions.ts",
+      "packages/cms/src/editor/ui/editor-versions-page.tsx"
+    ],
+    "depends_on": [
+      "CMSDESC-02",
+      "CONVEXCORE-07",
+      "SPIKE-01"
+    ],
+    "acceptance": [
+      "convex-test: save creates exactly one version row + advances latestVersionId; restore re-materializes a prior version as draft",
+      "version-list query returns ordered tenant-scoped history",
+      "draft save persists with required empty, publish enforces; typecheck passes"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "convex",
+      "tests"
+    ],
+    "wave": 7
+  },
+  {
+    "id": "CMSDATA-02",
+    "title": "Localization: per-field localized buckets + fallback chain + per-tenant narrowing",
+    "track": "CMSDATA",
+    "size": "M",
+    "summary": "Rebuild localization: per-field localized buckets keyed by locale for the 35 localized fields, the request->shop->platform fallback chain (default en-US, fallback:true), per-tenant filterAvailableLocales narrowing. Reads reassemble with fallback; writes target only the active locale's bucket. Tenant identity from the Phase-0 unified shops row.",
+    "files": [
+      "packages/convex/convex/cms/localization.ts",
+      "packages/cms/src/config/locales.ts",
+      "packages/cms/src/editor/ui/locale-switcher.tsx",
+      "packages/cms/src/editor/ui/locale-label.ts"
+    ],
+    "depends_on": [
+      "CMSDESC-01",
+      "CONVEXCORE-04",
+      "CONVEXCORE-07"
+    ],
+    "acceptance": [
+      "convex-test: a localized read falls back request->shop->platform when the requested bucket is empty",
+      "writing locale B leaves locale A untouched",
+      "filterAvailableLocales narrows to a tenant's locales; typecheck + biome pass"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "convex",
+      "i18n",
+      "tests"
+    ],
+    "wave": 7
+  },
+  {
+    "id": "CMSDATA-10",
+    "title": "_i18n shred-on-write / reassemble-on-read + 1 MiB doc-cap guardrail",
+    "track": "CMSDATA",
+    "size": "M",
+    "summary": "ADDED (critic missing #4; a platform limit independent of Payload). Shred large localized richtext/blocks into <coll>_i18n side rows keyed (parentId, fieldPath, locale) under 1 MiB, small scalars inline, reassemble via by_parent_field. Reject at schema-gen any collection whose pre-shred mutation arg would exceed Convex's per-call limit. The shred/reassemble contract HARNESS-10 + PIPELINE-02 consume.",
+    "files": [
+      "packages/convex/convex/cms/i18n-shred.ts",
+      "packages/convex/convex/tables/cms-i18n.ts",
+      "packages/cms/src/config/locales.ts"
+    ],
+    "depends_on": [
+      "CMSDATA-02",
+      "CONVEXCORE-03",
+      "CMSDESC-02"
+    ],
+    "acceptance": [
+      "a 1 MiB max-locale richtext doc shreds into _i18n side rows each < 1 MiB + reassembles byte-identical",
+      "a collection whose pre-shred arg would exceed the per-call limit is rejected at schema-gen with a typed error",
+      "no where/sort on a shredded field compiles; typecheck passes"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "convex",
+      "i18n",
+      "limits",
+      "tests"
+    ],
+    "wave": 8
+  },
+  {
+    "id": "CMSDATA-03",
+    "title": "Access enforcement: 13 pure predicates + wire into tenant/admin wrappers",
+    "track": "CMSDATA",
+    "size": "M",
+    "summary": "SPLIT (predicate half). Port the pure predicates in access/* (isAdmin/isTenantMember/publicRead/publishedOrAuthRead/tenantScopedRead/Write/adminOnly/tenant-id-of) and wire them into tenant/admin query+mutation wrappers over the Phase-2 RLS deny-default.",
+    "files": [
+      "packages/convex/convex/cms/access.ts",
+      "packages/cms/src/access/"
+    ],
+    "depends_on": [
+      "CONVEXCORE-07",
+      "CONVEXCORE-08"
+    ],
+    "acceptance": [
+      "the 13 predicates have parity unit tests",
+      "a non-member tenant-scoped read/write is denied",
+      "predicates wired into the tenant/admin wrappers over deny-default; typecheck passes"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "convex",
+      "access-control",
+      "tests"
+    ],
+    "wave": 7
+  },
+  {
+    "id": "CMSDATA-04",
+    "title": "Shops secret reject/strip + sensitiveShopRead + overrideAccess + secret-exposure tests",
+    "track": "CMSDATA",
+    "size": "M",
+    "summary": "SPLIT (secret half; isolated because it is easy to get subtly wrong). Reproduce shops secret handling: reject non-admin writes to commerceProvider.authentication.token + customers.clientSecret, strip them on read, with the server-only sensitiveShopRead trusted opt-out (never browser-settable). Reproduce overrideAccess (enforce-in-editor / bypass-in-sync). Gate with explicit secret-exposure tests.",
+    "files": [
+      "packages/convex/convex/cms/secrets.ts",
+      "packages/cms/src/collections/shops/secrets.ts"
+    ],
+    "depends_on": [
+      "CMSDATA-03",
+      "CONVEXCORE-04"
+    ],
+    "acceptance": [
+      "secret-exposure test: a non-admin read NEVER returns token/clientSecret on the wire; a non-admin write to those paths is rejected/no-ops",
+      "sensitiveShopRead opt-out returns secrets only from a server-trusted context, never a client arg",
+      "cross-tenant read denied; typecheck passes"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "convex",
+      "access-control",
+      "tests"
+    ],
+    "wave": 8
+  },
+  {
+    "id": "CMSDATA-11",
+    "title": "Admin-list bounded pagination + count/totalDocs + BoundedScanExceededError",
+    "track": "CMSDATA",
+    "size": "M",
+    "summary": "ADDED (critic missing #5). For the Convex-native CMS editor lists: a scan-budget guardrail throwing a typed BoundedScanExceededError before 32k-doc/16 MiB, cursor/offset pagination (derive page-N cursor, cap max addressable page with a typed error past it), and @get-convex/aggregate count/totalDocs. Tenant-scoped + page-bounded.",
+    "files": [
+      "packages/convex/convex/cms/list.ts",
+      "packages/convex/convex/lib/scan-budget.ts",
+      "packages/cms/src/editor/ui/editor-list-page.tsx"
+    ],
+    "depends_on": [
+      "CONVEXCORE-04",
+      "CONVEXCORE-05",
+      "CONVEXCORE-07",
+      "CMSDESC-02"
+    ],
+    "acceptance": [
+      "a tenant list past the ceiling throws BoundedScanExceededError (not silent truncation)",
+      "pagination returns a stable page-N cursor + refuses past the cap with a typed error",
+      "count/totalDocs via aggregate match the seeded volume; typecheck passes"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "convex",
+      "limits",
+      "tests"
+    ],
+    "wave": 7
+  },
+  {
+    "id": "CMSDATA-05",
+    "title": "7 editor server actions on Convex (behind the action interface)",
+    "track": "CMSDATA",
+    "size": "M",
+    "summary": "SPLIT from old CMSDATA-04 (the 7 mutations). Rebuild saveDraft/publish/create/delete/bulkDelete/bulkPublish/restoreVersion as Convex-backed actions, access-enforced via CMSDATA-03/04 guards on each (overrideAccess:false). Auth ctx from CONVEXCORE-14.",
+    "files": [
+      "packages/cms/src/editor/actions.ts",
+      "packages/convex/convex/cms/actions.ts"
+    ],
+    "depends_on": [
+      "CMSFORM-05",
+      "CMSDATA-01",
+      "CMSDATA-02",
+      "CMSDATA-03",
+      "CMSDATA-04",
+      "CONVEXCORE-14",
+      "CONVEXCORE-16"
+    ],
+    "acceptance": [
+      "all 7 actions covered by tests (create->draft, autosave->draft, publish, delete, bulkDelete, bulkPublish, restoreVersion) green; access enforced (overrideAccess:false)",
+      "saveDraft fires zero revalidation",
+      "no @payloadcms import in the action modules (grep clean); cms typecheck green"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "convex",
+      "payload-removal",
+      "tests"
+    ],
+    "wave": 9
+  },
+  {
+    "id": "CMSDATA-06",
+    "title": "EditorRuntime DI rewire off @payloadcms/ui buildFormState",
+    "track": "CMSDATA",
+    "size": "M",
+    "summary": "SPLIT from old CMSDATA-04 (the DI swap; the chokepoint). Rewire the EditorRuntime DI (editor/runtime.ts, editor-runtime.tsx, get-cms-shell-props.ts, cms-server-function.ts) off @payloadcms/ui buildFormState/payload.find/create/update/restoreVersion onto the CMSFORM-01 core + the CMSDATA-05 mutations.",
+    "files": [
+      "packages/cms/src/editor/runtime.ts",
+      "apps/admin/src/lib/editor-runtime.tsx",
+      "apps/admin/src/lib/get-cms-shell-props.ts",
+      "apps/admin/src/lib/cms-server-function.ts"
+    ],
+    "depends_on": [
+      "CMSDATA-05",
+      "CMSFORM-01"
+    ],
+    "acceptance": [
+      "EditorRuntime resolves form state from the native core + actions from CMSDATA-05",
+      "no @payloadcms/ui import in the runtime/DI modules (grep clean)",
+      "admin typecheck green; a smoke test renders an editor through the rewired runtime"
+    ],
+    "parallel_safe": false,
+    "worktree": true,
+    "skills": [
+      "convex",
+      "react",
+      "payload-removal",
+      "tests"
+    ],
+    "wave": 10
+  },
+  {
+    "id": "CMSDATA-07",
+    "title": "Editor shell page rebind (list/edit/new/versions + editor-fields)",
+    "track": "CMSDATA",
+    "size": "M",
+    "summary": "SPLIT from old CMSDATA-04 (the shell rebind). Rebind the editor shell pages (editor-{list,edit,new,versions}-page.tsx, editor-fields.tsx) to the native renderer + the CMSDATA-06 runtime + the CMSDATA-11 bounded list.",
+    "files": [
+      "packages/cms/src/editor/ui/editor-list-page.tsx",
+      "packages/cms/src/editor/ui/editor-edit-page.tsx",
+      "packages/cms/src/editor/ui/editor-new-page.tsx",
+      "packages/cms/src/editor/ui/editor-versions-page.tsx",
+      "packages/cms/src/editor/ui/editor-fields.tsx"
+    ],
+    "depends_on": [
+      "CMSDATA-06",
+      "CMSFORM-02",
+      "CMSFORM-03",
+      "CMSFORM-04",
+      "CMSDATA-11"
+    ],
+    "acceptance": [
+      "all 4 shell pages render through the native renderer/runtime; list uses bounded pagination",
+      "no @payloadcms import in the shell-binding modules (grep clean)",
+      "admin boots + renders an editor without Payload; typecheck green"
+    ],
+    "parallel_safe": false,
+    "worktree": true,
+    "skills": [
+      "react",
+      "convex",
+      "payload-removal",
+      "tests"
+    ],
+    "wave": 11
+  },
+  {
+    "id": "CMSDATA-08",
+    "title": "Publish-action -> bridge tag-derivation feed (replaces revalidateForManifest)",
+    "track": "CMSDATA",
+    "size": "M",
+    "summary": "SPLIT from old CMSDATA-04 (publish->bridge feed). Replace revalidateForManifest: a publish action fires a Convex publish mutation deriving tags (BRIDGE-03) + feeding the Phase-4 bridge (BRIDGE-05); autosave/draft never revalidates.",
+    "files": [
+      "packages/cms/src/editor/revalidate.ts",
+      "packages/convex/convex/cms/on-publish-feed.ts"
+    ],
+    "depends_on": [
+      "CMSDATA-05",
+      "BRIDGE-03",
+      "BRIDGE-05"
+    ],
+    "acceptance": [
+      "publish fires the bridge with derived tags; saveDraft fires zero revalidation",
+      "the feed path imports BRIDGE-03 tag derivation, not Shop.findByDomain",
+      "typecheck green"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "react",
+      "tests"
+    ],
+    "wave": 10
+  },
+  {
+    "id": "CMSDATA-09",
+    "title": "Live preview + theme postMessage bridge rebuild",
+    "track": "CMSDATA",
+    "size": "M",
+    "summary": "ADDED (critic missing #3; cms-decision 1.2/2; the active admin-theme-editor spec depends on this). Rebuild live preview: tenant+locale preview URL, draftMode() reads, the origin-verified theme postMessage 'theme-preview-ready' handshake, the admin theme-editor live preview (Lane-2 single-editor STATIC, no Convex subscription). Reads drafts via the rebuilt editor data path.",
+    "files": [
+      "apps/admin/src/components/cms/live-preview.tsx",
+      "packages/cms/src/editor/preview/",
+      "apps/storefront/src/app/[domain]/[locale]/(preview)/"
+    ],
+    "depends_on": [
+      "CMSDATA-07"
+    ],
+    "acceptance": [
+      "a tenant+locale preview URL renders draft content via draftMode()",
+      "the theme postMessage handshake is origin-verified (rejects a foreign origin)",
+      "a theme edit updates the preview without a full reload; the preview path opens no public Convex subscription; typecheck passes"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "react",
+      "next",
+      "convex"
+    ],
+    "wave": 12
+  },
+  {
+    "id": "CMSDATA-12",
+    "title": "Transactional email path audit + Resend rebuild/removal",
+    "track": "CMSDATA",
+    "size": "S",
+    "summary": "ADDED (critic missing #8 sub). @payloadcms/email-resend is dropped with Payload. Audit every mail-sending flow; rebuild any live flow on a direct Resend client or remove deliberately. Documented decision per flow.",
+    "files": [
+      "apps/admin/src/lib/email/",
+      ".specs/2026-05-30-convex-migration/email-audit.md"
+    ],
+    "depends_on": [
+      "CMSDATA-05"
+    ],
+    "acceptance": [
+      "every mail-sending flow enumerated + classified rebuild/remove with a documented decision",
+      "any kept flow sends via a non-Payload Resend client (test or manual verification)",
+      "no @payloadcms/email-resend import remains; typecheck green"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "email"
+    ],
+    "wave": 10
+  },
+  {
+    "id": "CMSMEDIA-01",
+    "title": "Media storage: upload + mime allowlist + S3/R2 client",
+    "track": "CMSMEDIA",
+    "size": "M",
+    "summary": "Media STORAGE layer (derivatives→CMSMEDIA-02, CDN/consumption→CMSMEDIA-03). Convex file-storage upload mutation, mime-type allowlist enforcement, S3/R2 bucket client wiring, original-asset persistence + by_tenant indexing. NOT the derivative sizes or CDN URLs.",
+    "files": [
+      "packages/convex/convex/cms/media.ts",
+      "packages/convex/convex/tables/cms-media.ts",
+      "packages/cms/src/collections/media.ts",
+      "apps/admin/src/lib/cms-actions/media-upload.ts"
+    ],
+    "depends_on": [
+      "CMSDESC-02",
+      "CMSDATA-04",
+      "CONVEXCORE-03"
+    ],
+    "acceptance": [
+      "upload test produces all 4 named sizes + a focal point field, CDN URLs resolve",
+      "a disallowed mime (text/html) rejected; image/mp4/pdf accepted",
+      "emitted Media shape matches the frozen read-contract type; typecheck passes"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "sharp",
+      "s3",
+      "tests"
+    ],
+    "wave": 9
+  },
+  {
+    "id": "CMSRICH-01",
+    "title": "Rich-text storage + editor widget (ProseMirror/Tiptap via prosemirror-sync)",
+    "track": "CMSRICH",
+    "size": "M",
+    "summary": "Replace Lexical authoring with ProseMirror. Integrate the prosemirror-sync Convex component for rich-text storage (ProseMirror/Tiptap JSON); build the Tiptap field widget registered in the CMSFORM-01 registry, bound to form state + the CMSDATA-02 localized buckets. Drives the 4 richText fields + the rich-text block incl its collapsible conditional siblings. Drop @payloadcms/richtext-lexical from the config. prosemirror tables via the tables/* module convention.",
+    "files": [
+      "packages/convex/convex/cms/prosemirror.ts",
+      "packages/convex/convex/tables/cms-prosemirror.ts",
+      "packages/cms/src/editor/form/fields/rich-text.tsx",
+      "packages/cms/src/blocks/rich-text.ts",
+      "packages/cms/src/config/index.ts"
+    ],
+    "depends_on": [
+      "CMSFORM-01",
+      "CMSDATA-02",
+      "CONVEXCORE-03"
+    ],
+    "acceptance": [
+      "widget edits + persists ProseMirror JSON through the localized bucket; collapsible conditional siblings mount on the checkbox",
+      "no @payloadcms/richtext-lexical / lexicalEditor import in CMS source (grep clean)",
+      "typecheck + biome pass"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "convex",
+      "prosemirror",
+      "tiptap",
+      "react",
+      "tests"
+    ],
+    "wave": 8
+  },
+  {
+    "id": "CMSRICH-02",
+    "title": "Storefront ProseMirror renderer rewrite",
+    "track": "CMSRICH",
+    "size": "M",
+    "summary": "Storefront rich-text RENDERER rewrite for ProseMirror JSON (conversion codec→CMSRICH-04). Rewrite apps/storefront/src/blocks/{rich-text-renderer,rich-text,registry,types}.tsx to parse ProseMirror/Tiptap JSON; preserve the storefront Link component + locale-prefixed URLs + no-heavy-dep posture; golden parity test renders to the same DOM the Lexical fixtures produced.",
+    "files": [
+      "apps/storefront/src/blocks/rich-text-renderer.tsx",
+      "apps/storefront/src/blocks/rich-text.tsx",
+      "apps/storefront/src/blocks/registry.tsx",
+      "apps/storefront/src/blocks/types.ts"
+    ],
+    "depends_on": [
+      "CMSRICH-01"
+    ],
+    "acceptance": [
+      "updated rich-text-renderer.test.tsx renders ProseMirror JSON to the same DOM the Lexical fixtures produced (golden parity)",
+      "if a conversion layer is used, a Lexical fixture converts + renders identically",
+      "marks/headings/lists/locale-prefixed links render; typecheck passes"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "react",
+      "prosemirror",
+      "lexical",
+      "tests"
+    ],
+    "wave": 9
+  },
+  {
+    "id": "CMSGATE-01",
+    "title": "[PARITY GATE] Form engine proven end-to-end on header (depth-6 nav)",
+    "track": "CMSGATE",
+    "size": "M",
+    "summary": "Parity gate #1 (hardest collection A). Wire the full Convex-native stack for the header tenant-singleton end-to-end: depth-6 nav render, per-item variant select, localized children, 2s autosave no-clobber, draft/publish/version-restore, per-tenant locale narrowing + fallback, access enforcement - zero @payloadcms imports. HARD GATE: no other collection cuts over until both parity gates pass.",
+    "files": [
+      "packages/cms/src/collections/_globals/",
+      "packages/cms/src/editor/manifests/header.ts"
+    ],
+    "depends_on": [
+      "CMSFORM-03",
+      "CMSDATA-01",
+      "CMSDATA-02",
+      "CMSDATA-03",
+      "CMSDATA-05",
+      "CMSDATA-06",
+      "CMSDATA-07",
+      "CMSDATA-08",
+      "CMSDESC-02",
+      "CMSDATA-11"
+    ],
+    "acceptance": [
+      "e2e: create->edit a depth-6 nav item->2s autosave (no clobber)->publish->restore a prior version, all green",
+      "editing a localized child in locale B leaves locale A intact; a non-member is denied",
+      "the header authoring path imports zero @payloadcms/* (grep clean); admin boots + renders the header editor without Payload"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "convex",
+      "react",
+      "tests"
+    ],
+    "wave": 12
+  },
+  {
+    "id": "CMSGATE-02",
+    "title": "[PARITY GATE] Form engine proven end-to-end on pages (blocks)",
+    "track": "CMSGATE",
+    "size": "M",
+    "summary": "Parity gate #2 (hardest collection B). Wire the full stack for pages end-to-end: blocks widget rendering all 9 blocks (incl nested columns + the rich-text block on ProseMirror), media uploads (4 sizes + focal), localized fields + fallback, 2s autosave no-clobber, draft/publish/version-restore, access enforcement - zero @payloadcms imports. Verifies the upload widget against CMSMEDIA-01 + rich-text against CMSRICH-01/02. HARD GATE alongside CMSGATE-01.",
+    "files": [
+      "packages/cms/src/collections/pages.ts",
+      "packages/cms/src/editor/manifests/pages.ts"
+    ],
+    "depends_on": [
+      "CMSFORM-04",
+      "CMSFORM-06",
+      "CMSRICH-02",
+      "CMSMEDIA-03",
+      "CMSDATA-01",
+      "CMSDATA-05",
+      "CMSDATA-06",
+      "CMSDATA-07",
+      "CMSDATA-08",
+      "CMSDESC-02"
+    ],
+    "acceptance": [
+      "e2e: create a page->add each of the 9 blocks incl a columns-nested rich-text block->upload an image (4 sizes)->autosave->publish->restore, all green",
+      "a draft page with an empty required block field autosaves; publish enforces validation",
+      "the pages authoring path imports zero @payloadcms/*; the emitted Page.blocks shape matches the frozen read contract"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "convex",
+      "react",
+      "sharp",
+      "prosemirror",
+      "tests"
+    ],
+    "wave": 12
+  },
+  {
+    "id": "SFREAD-01",
+    "title": "Freeze the 11 CMS getter read contract (typed boundary + golden tests)",
+    "track": "SFREAD",
+    "size": "M",
+    "summary": "Lock the storefront CMS read contract before any re-point. Snapshot the 11 getters' return types + runtime shapes vs payload-types.ts, depth-2 populate, locale-map normalization, the null-on-missing contract. Golden fixtures + a .d.ts signature snapshot. Committed inventory of the 38 call sites across 33 files (reconciled to cms-decision 1.3 / spec, NOT 33/16; CUTOVER-04/05/06 verify against this count).",
+    "files": [
+      "packages/cms/src/api/index.ts",
+      "packages/cms/src/api/get-page.ts",
+      "packages/cms/src/api/get-header.ts",
+      "packages/cms/src/api/resolve-tenant-id.ts",
+      "apps/storefront/src/api/_cms.ts",
+      "apps/storefront/src/api/_normalize-payload.ts"
+    ],
+    "depends_on": [],
+    "acceptance": [
+      "golden tests assert each of the 11 getters returns the exact shape for the canonical seed AND returns null (never throws) on missing; cms + storefront test projects green",
+      "a type-level snapshot fails if any getter signature/return type changes (typecheck enforces)",
+      "committed inventory lists all 38 call sites across 33 files + grep -c matches"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "tests",
+      "cms",
+      "typescript"
+    ],
+    "wave": 1
+  },
+  {
+    "id": "SFREAD-02",
+    "title": "Freeze the packages/db service-seam contract (6 services) as golden characterization tests",
+    "track": "SFREAD",
+    "size": "M",
+    "summary": "Lock the packages/db export surface (~183 importers). Characterize the 6 services, the Service base contract (NotFoundError-on-empty-single; findAll swallow->[]), the {shop,locale} convention, OnlineShop/ShopBase/ReviewBase types, and docToOnlineShop credential masking. .d.ts barrel snapshot + golden tests for masking + NotFoundError. Characterization only.",
+    "files": [
+      "packages/db/src/index.ts",
+      "packages/db/src/services/service.ts",
+      "packages/db/src/services/shop.ts",
+      "packages/db/src/services/index.ts",
+      "packages/db/src/lib/doc-to-shape.ts"
+    ],
+    "depends_on": [],
+    "acceptance": [
+      "golden tests pin NotFoundError on missing single-doc, findAll->[] on failure, docToOnlineShop masks the two secrets; db test project green",
+      "committed .d.ts barrel snapshot; typecheck fails if any of the 6 service signatures or {shop,locale} convention changes",
+      "every public service method covered by a frozen-signature assertion"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "tests",
+      "convex",
+      "typescript"
+    ],
+    "wave": 1
+  },
+  {
+    "id": "SFREAD-03",
+    "title": "Re-home packages/db base: lazy ConvexHttpClient + Service base preserving NotFoundError contract",
+    "track": "SFREAD",
+    "size": "M",
+    "summary": "Replace the Mongo plumbing under the unchanged seam. Rewrite db.ts mongoose.connect into a lazy server-only ConvexHttpClient(CONVEX_URL); flatten BaseDocument to {id;createdAt;updatedAt} with _id->id + _creationTime->createdAt. Rewrite the Service base to call deployed convex/ functions preserving every signature + the NotFoundError / findAll-swallow contract. Keep server-only. Add the single-mutation-per-write CI/lint gate.",
+    "files": [
+      "packages/db/src/db.ts",
+      "packages/db/src/services/service.ts",
+      "packages/db/src/index.ts"
+    ],
+    "depends_on": [
+      "SFREAD-02",
+      "CONVEXCORE-07",
+      "CONVEXCORE-08",
+      "CONVEXCORE-01",
+      "SPIKE-01"
+    ],
+    "acceptance": [
+      "db.ts no longer imports mongoose (grep clean)",
+      "Service base preserves NotFoundError + findAll-[] (SFREAD-02 golden tests pass unchanged)",
+      "lint/CI gate rejects > 1 ConvexHttpClient.mutation per logical write (negative test fails CI)",
+      "MONGODB_URI= pnpm build:packages succeeds for db with the var blank"
+    ],
+    "parallel_safe": false,
+    "worktree": true,
+    "skills": [
+      "convex",
+      "typescript",
+      "payload-removal"
+    ],
+    "wave": 7
+  },
+  {
+    "id": "SFREAD-05",
+    "title": "Convex-back Shop/Review/FeatureFlag read functions + read internals + masking/taint",
+    "track": "SFREAD",
+    "size": "M",
+    "summary": "SPLIT (read half). Deploy read functions shops.byDomain (shopDomains by_domain; $or -> two indexed lookups merged), shops.byId/byCollaborator/findAll, shops.byDomainWithCredentials (systemQuery hot path), reviews.byShop/findAll (resolve the dead tenant filter), featureFlags.byKey/findAll. Rewrite the read internals to call them, projecting legacyId->shop.id. Move masking to the shopCredentials boundary; re-apply taint after deserialization.",
+    "files": [
+      "packages/db/src/services/shop.ts",
+      "packages/db/src/services/review.ts",
+      "packages/db/src/services/feature-flag.ts",
+      "packages/db/src/lib/doc-to-shape.ts",
+      "packages/convex/convex/db/shops.ts",
+      "packages/convex/convex/db/reviews.ts",
+      "packages/convex/convex/db/feature-flags.ts"
+    ],
+    "depends_on": [
+      "SFREAD-03",
+      "SFREAD-02",
+      "CONVEXCORE-04",
+      "CONVEXCORE-05"
+    ],
+    "acceptance": [
+      "SFREAD-02 golden tests pass unchanged (masking, NotFoundError, shapes byte-identical)",
+      "integration: byDomain resolves a primary domain + an alternativeDomain to the same shop; shop.id == legacyId, Convex _id never surfaced",
+      "secret-exposure: public byDomain payload contains no token/clientSecret + tainted credential read re-taints after deserialization"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "convex",
+      "typescript",
+      "tests"
+    ],
+    "wave": 8
+  },
+  {
+    "id": "SFREAD-14",
+    "title": "Single atomic shop write mutation + shopDomains reconciliation + uniqueness",
+    "track": "SFREAD",
+    "size": "M",
+    "summary": "SPLIT (write half; its own correctness unit). Make every shop write a single atomic Convex mutation (shops + shopCredentials + shopDomains delete-diff + collaborator join tables) - forbidding multiple ConvexHttpClient.mutation per logical write - enforcing shopDomains.domain uniqueness with .unique() wrapped to degrade to a logged first-match, reconciling stale shopDomains rows on domain-set shrink.",
+    "files": [
+      "packages/db/src/services/shop.ts",
+      "packages/convex/convex/db/shop-write.ts"
+    ],
+    "depends_on": [
+      "SFREAD-05",
+      "CONVEXCORE-04",
+      "CONVEXCORE-07"
+    ],
+    "acceptance": [
+      "a shop write performs exactly one Convex mutation (asserted)",
+      "domain-set shrink reconciles shopDomains (delete-diff) within the same mutation",
+      ".unique() degrades to a logged first-match on a duplicate domain instead of throwing site-wide; signature unchanged; tests green"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "convex",
+      "typescript",
+      "tests"
+    ],
+    "wave": 9
+  },
+  {
+    "id": "SFREAD-06",
+    "title": "Convex-back User/Session/Identity services + Auth.js adapter shapes",
+    "track": "SFREAD",
+    "size": "M",
+    "summary": "Re-point the auth trio behind unchanged signatures using systemQuery/systemMutation (platform-global). Rewrite user/session/identity.ts to deployed convex/ functions (user by_email, session by_token CRUD, identity by_provider_identity with uniqueness in the mutation). Rework the Auth.js adapter Mongoose-isms into explicit Convex mutations, preserving not-found->null / infra-error->throw. Keep the Base types verbatim.",
+    "files": [
+      "packages/db/src/services/user.ts",
+      "packages/db/src/services/session.ts",
+      "packages/db/src/services/identity.ts",
+      "apps/admin/src/utils/auth.adapter.ts",
+      "packages/convex/convex/db/users.ts",
+      "packages/convex/convex/db/sessions.ts",
+      "packages/convex/convex/db/identities.ts"
+    ],
+    "depends_on": [
+      "SFREAD-03",
+      "CONVEXCORE-05",
+      "CONVEXCORE-08",
+      "CONVEXCORE-14"
+    ],
+    "acceptance": [
+      "auth.adapter unit tests pass with not-found->null / infra-error->throw preserved, no mongoose import",
+      "integration: identity upsert enforces (provider,identity) uniqueness (concurrent create yields one row)",
+      "session create/read/delete round-trips by_token; Base type snapshots unchanged (typecheck green)"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "convex",
+      "typescript",
+      "tests"
+    ],
+    "wave": 8
+  },
+  {
+    "id": "SFREAD-04",
+    "title": "findByDomain edge path: swap middleware loaders to Convex, keep TTL/LRU, benchmark p50/p99 before flip",
+    "track": "SFREAD",
+    "size": "M",
+    "summary": "Swap resolveShopSummary/resolveLocaleCodes in middleware/storefront.ts from Shop.findByDomain (Mongo) to the Convex-backed Shop service; leave shop-cache.ts (TTL/LRU 60s/2.5s-neg/1000-max, single-flight) untouched. Confirm Node runtime. Wire invalidateShop. Benchmark miss-path p50/p99 vs the Convex region; flip gated on the budget (p50 <= 40ms, p99 <= 150ms; else co-locate/replica).",
+    "files": [
+      "apps/storefront/src/middleware/storefront.ts",
+      "apps/storefront/src/middleware/shop-cache.ts",
+      "apps/storefront/src/middleware/storefront.test.ts"
+    ],
+    "depends_on": [
+      "SFREAD-05",
+      "CONVEXCORE-04"
+    ],
+    "acceptance": [
+      "resolveShopSummary/resolveLocaleCodes resolve via Convex; grep Shop.findByDomain in middleware returns no Mongo-backed call; shop-cache.ts diff empty",
+      "middleware confirmed Node; cache-hit path issues zero network calls",
+      "recorded p50/p99 vs the committed budget (p50<=40ms / p99<=150ms) with a committed artifact, flip gated on it; invalidateShop invoked on domain/locale change; storefront tests green"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "react",
+      "tests",
+      "perf"
+    ],
+    "wave": 9
+  },
+  {
+    "id": "SFREAD-07",
+    "title": "Mount thin ConvexReactClient provider as a PPR-safe leaf + CSP + zero-Convex public-bundle gate",
+    "track": "SFREAD",
+    "size": "M",
+    "summary": "Mount a single 'use client' ConvexReactClient provider in the root layout as a children-only leaf reading no request data (public NEXT_PUBLIC_CONVEX_URL only; never the auth token at provider root) so it does not force the layout dynamic + the PPR static shell stays prerendered. Add Convex WSS + HTTPS to connect-src CSP. Add the PPR snapshot test proving the static shell is byte-unchanged. Lane-2 infrastructure.",
+    "files": [
+      "apps/storefront/src/app/[domain]/[locale]/layout.tsx",
+      "apps/storefront/src/middleware"
+    ],
+    "depends_on": [
+      "SFREAD-10",
+      "CONVEXCORE-01"
+    ],
+    "acceptance": [
+      "provider mounted as a children-only leaf reading no request data; PPR prerender snapshot asserts the static shell unchanged vs baseline",
+      "CSP connect-src includes the Convex WSS + HTTPS origins",
+      "the SFREAD-10 zero-Convex public-bundle assertion stays green"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "react",
+      "next",
+      "convex"
+    ],
+    "wave": 2
+  },
+  {
+    "id": "SFREAD-08",
+    "title": "Lane-2 authenticated island end-to-end (account/orders) with snapshot-then-live + kill switch",
+    "track": "SFREAD",
+    "size": "M",
+    "summary": "First reactive island. In the dynamic PPR hole call preloadQuery(api.orders, args, {headers:{'Convex-Auth':token}}) + pass Preloaded<T> to a 'use client' child calling usePreloadedQuery (snapshot-then-live). Snapshot-when-socket-down is the degraded contract (no infinite spinner). Per-surface kill switch downgrades to the snapshot. Plumb the CONVEXCORE-14 auth fetcher; on auth failure render the read-only snapshot.",
+    "files": [
+      "apps/storefront/src/app/[domain]/[locale]/account",
+      "apps/storefront/src/middleware"
+    ],
+    "depends_on": [
+      "SFREAD-07",
+      "SFREAD-06",
+      "CONVEXCORE-14"
+    ],
+    "acceptance": [
+      "preloadQuery runs only inside the dynamic PPR hole (not in any 'use cache' fn); island hydrates from snapshot then goes live",
+      "socket-down renders the snapshot with no infinite spinner; kill switch downgrades to the snapshot",
+      "auth-failure renders the read-only snapshot (not blank); token refresh round-trips"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "react",
+      "next",
+      "convex",
+      "tests"
+    ],
+    "wave": 9
+  },
+  {
+    "id": "SFREAD-09",
+    "title": "Lane-1/Lane-2 PPR coexistence gate on a public route (PDP) - prerender snapshot test",
+    "track": "SFREAD",
+    "size": "M",
+    "summary": "Prove static cached SEO + a reactive island coexist on a public route. On the PDP keep the static cached SEO body (real crawlable content + cached availability snapshot) + add one Suspense-wrapped interaction/auth-gated island upgrading to live via useQuery only behind interaction, disconnecting on tab-hidden. Hard gate: a per-route PPR prerender snapshot test asserting SEO HTML in the static shell, island as a dynamic Suspense hole, no preloadQuery during prerender.",
+    "files": [
+      "apps/storefront/src/app/[domain]/[locale]/products/[handle]/page.tsx",
+      "apps/storefront/src/app/[domain]/[locale]/products/[handle]/page.test.ts"
+    ],
+    "depends_on": [
+      "SFREAD-07",
+      "SFREAD-10"
+    ],
+    "acceptance": [
+      "the prerender snapshot test asserts SEO HTML in the static shell, island as a dynamic Suspense hole, zero preloadQuery during prerender",
+      "anonymous/crawler render opens no WebSocket; island subscribes only on interaction + disconnects on tab-hidden",
+      "storefront tests green; cacheComponents build succeeds with no poisoning error"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "react",
+      "next",
+      "convex",
+      "tests"
+    ],
+    "wave": 3
+  },
+  {
+    "id": "SFREAD-10",
+    "title": "Surface classifier map: reactive-island vs static-SEO + zero-public-subscription enforcement",
+    "track": "SFREAD",
+    "size": "S",
+    "summary": "Apply the 2.1 decision rule to every storefront surface + record the map in the spec. Classify cart/inventory + single-editor theme preview as STATIC (Shopify system of record; live number advisory). Add the CI assertion that the public bundle ships zero Convex client/WebSocket (folds BRIDGE-11: scripts/assert-no-convex-public-bundle.ts build-output scan, passes trivially until the SFREAD-07 provider mount makes it load-bearing); gate the preview/reactive path behind draftMode()/auth + code-splitting.",
+    "files": [
+      ".specs/2026-05-30-convex-migration/spec.md",
+      "apps/storefront/src/app",
+      "scripts/assert-no-convex-public-bundle.ts",
+      ".github/workflows/ci.yml"
+    ],
+    "depends_on": [],
+    "acceptance": [
+      "committed surface map enumerates each route segment as Lane-1 static-SEO or Lane-2 reactive-island with the 3-clause justification",
+      "the bundle scan script fails on a planted convex/ConvexReactClient/Convex-WSS reference + passes on the current build, wired into CI after the storefront build",
+      "cart/inventory + theme-preview recorded as static / Shopify-system-of-record"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "react",
+      "ci",
+      "next"
+    ],
+    "wave": 1
+  },
+  {
+    "id": "SFREAD-11",
+    "title": "Prerender / use-cache audit for the new Convex reads (cacheComponents clock guards)",
+    "track": "SFREAD",
+    "size": "M",
+    "summary": "Audit every new ConvexHttpClient read in RSC (the re-pointed packages/db reads + the CMS dual-read loader) and wrap each in the correct 'use cache'/connection() boundary so Lane-1 reads use fetchQuery/cached loaders and never preloadQuery. Validate cacheComponents prerender against existing snapshot tests. Resolve at root cause, not by reverting versions/disabling features.",
+    "files": [
+      "apps/storefront/src/api/_loaders.ts",
+      "apps/storefront/src/api/_shop-loader.ts",
+      "apps/storefront/src/app/[domain]/[locale]/layout.tsx"
+    ],
+    "depends_on": [
+      "SFREAD-05",
+      "SFREAD-12"
+    ],
+    "acceptance": [
+      "every new Convex RSC read sits in a correct 'use cache'/connection() boundary; no preloadQuery/no-store read inside any 'use cache' function (asserted)",
+      "existing prerender snapshot tests green; cacheComponents build produces no clock-guard error",
+      "pnpm build --filter @nordcom/commerce-storefront succeeds with PPR enabled"
+    ],
+    "parallel_safe": false,
+    "worktree": false,
+    "skills": [
+      "next",
+      "react",
+      "convex",
+      "tests"
+    ],
+    "wave": 12
+  },
+  {
+    "id": "SFREAD-12",
+    "title": "CMS-content dual-read loader: shadow Convex-native CMS vs Payload-on-Mongo -> divergence ledger -> flip",
+    "track": "SFREAD",
+    "size": "M",
+    "summary": "Give CMS content the shadow->ledger->flip safety, decoupled from admin-write cutover. On the getter path read BOTH the Convex-native CMS reads + the Payload-on-Mongo getters, serve Mongo (authoritative during bake), log per-getter divergence. Normalize rich-text before comparison (Mongo=Lexical, Convex=ProseMirror). Per-getter flip flag; SFREAD-01 is the oracle. Read-shadow only - not a second authoritative write DB.",
+    "files": [
+      "apps/storefront/src/api/_cms.ts",
+      "apps/storefront/src/api/header.ts",
+      "apps/storefront/src/api/page.ts",
+      "apps/storefront/src/api/_normalize-payload.ts"
+    ],
+    "depends_on": [
+      "SFREAD-01",
+      "CMSDESC-02",
+      "CMSDATA-01",
+      "CMSRICH-02",
+      "PIPELINE-02"
+    ],
+    "acceptance": [
+      "dual-read reads both backends, serves Mongo, writes per-getter divergence to a ledger; identical seed yields zero divergence after rich-text normalization",
+      "per-getter flip flag serves Convex while SFREAD-01 golden tests stay byte-identical (null-on-missing preserved)",
+      "a planted CMS divergence is recorded (negative test); runs without admin-write cutover"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "cms",
+      "tests",
+      "next"
+    ],
+    "wave": 11
+  },
+  {
+    "id": "SFREAD-13",
+    "title": "Build-time fan-out cap for generateStaticParams + sitemaps",
+    "track": "SFREAD",
+    "size": "M",
+    "summary": "Bound Convex build-time cost (calls scale with N tenants x M params). Route the static-params generators + sitemap/robots routes through paginated/batched Convex queries or a convex export snapshot read with a hard per-build call cap. Lean on ISR (dynamicParams:true). Keep tenantRootTags intact.",
+    "files": [
+      "apps/storefront/src/app/[domain]/[locale]/products/[handle]/static-params.ts",
+      "apps/storefront/src/app/[domain]/[locale]/[...slug]/static-params.ts",
+      "apps/storefront/src/app/[domain]/sitemap.xml/route.ts",
+      "apps/storefront/src/app/[domain]/sitemaps/pages.xml/route.ts"
+    ],
+    "depends_on": [
+      "SFREAD-05",
+      "PIPELINE-04"
+    ],
+    "acceptance": [
+      "static-params + sitemap generators read via paginated/batched Convex (or export snapshot); a build asserts total Convex calls stay under the documented per-build cap",
+      "dynamicParams verified for long-tail params (first-request ISR, no unbounded build fan-out)",
+      "sitemap/robots route tests green; tenantRootTags unchanged"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "next",
+      "convex",
+      "perf",
+      "tests"
+    ],
+    "wave": 12
+  },
+  {
+    "id": "BRIDGE-01",
+    "title": "Shared publish-event payload contract + dual-accept HMAC verify (Next-side)",
+    "track": "BRIDGE",
+    "size": "S",
+    "summary": "Runtime-agnostic module defining the Convex->Next revalidation payload contract + HMAC verification, distinct from Shopify. Export the payload type {eventId;tenantId;legacyShopId;collection;tags;ts}, a canonical serialization (stable key order), verifyRevalidateHmac(rawBody, signature, {current, previous}) (dual-accept), isStaleTs(ts, windowMs). node:crypto HMAC-sha256 base64. Import-light (no server-only, no Next cache).",
+    "files": [
+      "apps/storefront/src/api/_revalidate-convex.ts",
+      "apps/storefront/src/api/_revalidate-convex.test.ts"
+    ],
+    "depends_on": [],
+    "acceptance": [
+      "storefront test project covers the new file",
+      "verify returns true for current, true for previous, false for wrong secret/tampered body",
+      "isStaleTs rejects old ts + accepts in-window; contract type + canonical-serialize exported + import cleanly in a plain Node/Vitest context"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "typescript",
+      "crypto",
+      "tests"
+    ],
+    "wave": 1
+  },
+  {
+    "id": "BRIDGE-02",
+    "title": "Dedicated /api/revalidate/convex route - verify-HMAC-FIRST, reuse only the cache tail",
+    "track": "BRIDGE",
+    "size": "M",
+    "summary": "Top-level non-tenant-scoped route app/api/revalidate/convex/route.ts (reads tenant from the signed body, not the URL). POST: verifyRevalidateHmac FIRST before any shop/tenant lookup (inverts the Shopify route). Bad sig -> 401 with zero DB/Convex hits. Valid: reuse ONLY the tail - cmsCache.invalidateRaw(tags) (or invalidate.tenant when empty) + evictApolloClient({shopId}). Infra failure -> 503 + Retry-After; unknown -> 400; GET -> 200. Leave Shopify untouched.",
+    "files": [
+      "apps/storefront/src/app/api/revalidate/convex/route.ts",
+      "apps/storefront/src/app/api/revalidate/convex/route.test.ts"
+    ],
+    "depends_on": [
+      "BRIDGE-01"
+    ],
+    "acceptance": [
+      "an invalid HMAC returns 401 AND no shop/tenant lookup mock called (verify-before-lookup proven)",
+      "a valid body invalidates the supplied tags via invalidateRaw + calls evictApolloClient with the body's shopId; empty tags triggers the tenant broad-sweep",
+      "unknown body -> 400; infra failure -> 503 + Retry-After; GET -> 200; existing Shopify route + test remain green"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "react",
+      "next",
+      "tests"
+    ],
+    "wave": 2
+  },
+  {
+    "id": "BRIDGE-03",
+    "title": "Convex publish-event->tags derivation (CMS taxonomy, pure, in-Convex)",
+    "track": "BRIDGE",
+    "size": "M",
+    "summary": "The in-Convex analog of parseShopifyWebhook so tags are computed where the write happened + the bridge never calls Shop.findByDomain. Extract the pure tag descriptor (7 CMS entities + params from cmsCache's defineCache + cmsTenantRootTags) into a server-only-free cache-descriptor.ts both cmsCache + Convex import. convex/revalidate/tags.ts maps {collection,key,tenantId} -> the exact tag set the read side stamped. Unit-test across all 7 + broad-sweep.",
+    "files": [
+      "packages/cms/src/cache-descriptor.ts",
+      "packages/cms/src/cache.ts",
+      "packages/convex/convex/revalidate/tags.ts",
+      "packages/convex/convex/revalidate/tags.test.ts"
+    ],
+    "depends_on": [
+      "CONVEXCORE-01",
+      "CONVEXCORE-03",
+      "SFREAD-01"
+    ],
+    "acceptance": [
+      "for each of the 7 entities derived tags equal the read-side tags against the same computeFanout",
+      "a broad publish yields cmsTenantRootTags(shop)",
+      "derivation imports no server-only module + never references Shop.findByDomain; tests green"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "tagtree",
+      "tests"
+    ],
+    "wave": 3
+  },
+  {
+    "id": "BRIDGE-04",
+    "title": "Convex idempotency layer - eventId dedup, stale-ts reject, per-(tenant,collection) debounce doc",
+    "track": "BRIDGE",
+    "size": "M",
+    "summary": "Idempotency primitives. Tables via the tables/* module convention: revalidationEvents(by_eventId) for dedup + pendingRevalidations(by_tenant_collection) holding the coalesced pending tag set + scheduled-job handle. idempotency.ts: recordEvent(eventId) no-op if seen; isStale(ts,windowMs); coalesce(tenantId,collection,tags) upserting/merging + returning whether a notify is already scheduled. Building block for BRIDGE-05's autosave-quiet guarantee.",
+    "files": [
+      "packages/convex/convex/tables/revalidation.ts",
+      "packages/convex/convex/revalidate/idempotency.ts",
+      "packages/convex/convex/revalidate/idempotency.test.ts"
+    ],
+    "depends_on": [
+      "CONVEXCORE-03",
+      "CONVEXCORE-08"
+    ],
+    "acceptance": [
+      "a duplicate eventId is a verified no-op",
+      "a ts older than the replay window rejected, one inside accepted",
+      "two rapid publishes for the same (tenant,collection) merge into one pending doc + schedule at most one notify; convex-test covers dedup/stale/coalesce"
+    ],
+    "parallel_safe": false,
+    "worktree": true,
+    "skills": [
+      "convex",
+      "tests",
+      "data-migration"
+    ],
+    "wave": 4
+  },
+  {
+    "id": "BRIDGE-05",
+    "title": "Publish-mutation -> scheduler.runAfter(notify) wiring (publish-only, never autosave)",
+    "track": "BRIDGE",
+    "size": "M",
+    "summary": "Wire the Convex-native CMS publish mutation (status->published) to schedule delivery post-commit: ctx.scheduler.runAfter(debounceMs, internal.revalidate.notify, {tenantId,collection,tags,eventId,ts}), tags from BRIDGE-03, dedup/coalesce from BRIDGE-04. Fires ONLY on the published transition - the 2s autosave/draft stream schedules ZERO notify. Scheduling post-commit via runAfter, never inline. Replaces revalidateForManifest.",
+    "files": [
+      "packages/convex/convex/revalidate/onPublish.ts",
+      "packages/convex/convex/revalidate/onPublish.test.ts"
+    ],
+    "depends_on": [
+      "BRIDGE-03",
+      "BRIDGE-04",
+      "CMSDATA-01"
+    ],
+    "acceptance": [
+      "a status->published mutation schedules exactly one internal.revalidate.notify after debounceMs",
+      "an autosave loop / 10+ rapid draft saves schedule ZERO notify (asserted)",
+      "scheduling via scheduler.runAfter post-commit (not inline); convex-test proves publish-schedules-one + draft-schedules-none"
+    ],
+    "parallel_safe": false,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "tests"
+    ],
+    "wave": 8
+  },
+  {
+    "id": "BRIDGE-06",
+    "title": "Convex notify action - tenant-URL resolution, HMAC-sign, POST, throw-on-non-2xx",
+    "track": "BRIDGE",
+    "size": "M",
+    "summary": "convex/revalidate/notify.ts as the internal.revalidate.notify internalAction. Resolve the per-tenant storefront URL from the unified shops primary-domain (custom-vs-platform). Sign the body with the BRIDGE-01 canonical serialization + the CURRENT secret, POST to /api/revalidate/convex. THROW on ANY non-2xx (incl 503) so the retrier re-fires; on 2xx mark acked (clear the pending doc + advance the per-tenant cursor). convex-test + mocked fetch.",
+    "files": [
+      "packages/convex/convex/revalidate/notify.ts",
+      "packages/convex/convex/revalidate/notify.test.ts"
+    ],
+    "depends_on": [
+      "BRIDGE-01",
+      "BRIDGE-03",
+      "BRIDGE-04",
+      "CONVEXCORE-04"
+    ],
+    "acceptance": [
+      "body signed with the current secret using the exact canonical serialization the Next verifier expects (round-trips against BRIDGE-01 verify)",
+      "custom domain used when present else platform",
+      "a non-2xx (incl 503) throws; 2xx marks acked + clears the pending doc; mocked-fetch convex-test covers 2xx-ack / non-2xx-throw / URL selection"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "crypto",
+      "tests"
+    ],
+    "wave": 5
+  },
+  {
+    "id": "BRIDGE-07",
+    "title": "Durable delivery - @convex-dev/action-retrier + dead-letter table + alert",
+    "track": "BRIDGE",
+    "size": "M",
+    "summary": "Install @convex-dev/action-retrier, register it in convex.config.ts, route notify through it with bounded exponential backoff. On retry exhaustion write a revalidationDeadLetters row + emit an alert hook. delivery.ts. Add the DLQ table via the tables/* module convention. Add the dep + lockfile entry.",
+    "files": [
+      "packages/convex/convex/convex.config.ts",
+      "packages/convex/convex/revalidate/delivery.ts",
+      "packages/convex/convex/tables/revalidation.ts",
+      "package.json",
+      "pnpm-lock.yaml"
+    ],
+    "depends_on": [
+      "BRIDGE-06",
+      "CONVEXCORE-01"
+    ],
+    "acceptance": [
+      "notify runs under action-retrier with bounded exponential backoff (config asserted)",
+      "a forced-non-2xx target retries N times then writes exactly one dead-letter row + fires the alert",
+      "@convex-dev/action-retrier in package.json + lockfile, frozen install passes; convex-test proves retry-then-DLQ"
+    ],
+    "parallel_safe": false,
+    "worktree": true,
+    "skills": [
+      "convex",
+      "ci",
+      "tests"
+    ],
+    "wave": 6
+  },
+  {
+    "id": "BRIDGE-08",
+    "title": "Incremental reconciliation cron - replay unacked tags, rate-limited",
+    "track": "BRIDGE",
+    "size": "M",
+    "summary": "Low-frequency reconciliation cron (crons.ts + reconcile.ts) self-healing permanently-lost events. Replays ONLY tags written-but-unacked since each tenant's last successful POST cursor - NOT a global full-revalidate - rate-limited. Clean-cursor tenants skipped. Reuses the notify/delivery path (durable + idempotent via eventId dedup).",
+    "files": [
+      "packages/convex/convex/crons.ts",
+      "packages/convex/convex/revalidate/reconcile.ts",
+      "packages/convex/convex/revalidate/reconcile.test.ts",
+      "packages/convex/convex/tables/revalidation.ts"
+    ],
+    "depends_on": [
+      "BRIDGE-04",
+      "BRIDGE-06",
+      "BRIDGE-07"
+    ],
+    "acceptance": [
+      "cron replays only unacked tags since the per-tenant cursor (asserted it does NOT broad-sweep every tag/tenant)",
+      "a deliberately dropped event self-heals on the next pass; clean-cursor tenants skipped",
+      "replay rate-limited (throttle config asserted); convex-test covers drop->heal + clean-cursor-skip"
+    ],
+    "parallel_safe": false,
+    "worktree": true,
+    "skills": [
+      "convex",
+      "tests",
+      "ci"
+    ],
+    "wave": 7
+  },
+  {
+    "id": "BRIDGE-09",
+    "title": "Secret dual-accept rotation - env wiring on both runtimes + rotation test",
+    "track": "BRIDGE",
+    "size": "S",
+    "summary": "Operationalize the dual-accept rotation window. Wire REVALIDATE_CONVEX_SECRET (current) + REVALIDATE_CONVEX_SECRET_PREVIOUS in the Next env templates + the Convex env (current for signing). Convex signs with current; Next verifies against {current, previous}. Test proving a previous-signed body still 200s during the window + 401s once previous is unset. Distinct from SHOPIFY_WEBHOOK_SECRET.",
+    "files": [
+      ".env.example",
+      "apps/storefront/.env.example",
+      "apps/storefront/src/app/api/revalidate/convex/route.test.ts"
+    ],
+    "depends_on": [
+      "BRIDGE-01",
+      "BRIDGE-02",
+      "BRIDGE-06"
+    ],
+    "acceptance": [
+      "both secrets documented in both Next env templates + the Convex env notes",
+      "a request signed with the previous secret returns 200 while previous is set, 401 when unset",
+      "the Convex signer reads only the current secret; secret name distinct from SHOPIFY_WEBHOOK_SECRET"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "ci",
+      "crypto",
+      "tests"
+    ],
+    "wave": 6
+  },
+  {
+    "id": "BRIDGE-10",
+    "title": "CSP connect-src additions for Convex origins",
+    "track": "BRIDGE",
+    "size": "S",
+    "summary": "Extend apps/storefront/next.config.js headers() to emit a CSP whose connect-src includes the Convex HTTPS + WSS origins (from NEXT_PUBLIC_CONVEX_URL) so the draft/preview reactive islands can open their gated WebSocket. Preserve X-Powered-By. Assert connect-src contains both the https: + wss: Convex origins.",
+    "files": [
+      "apps/storefront/next.config.js",
+      "apps/storefront/src/utils/csp.test.ts"
+    ],
+    "depends_on": [
+      "CONVEXCORE-01"
+    ],
+    "acceptance": [
+      "headers() returns a CSP whose connect-src includes the Convex https: + wss: origins built from NEXT_PUBLIC_CONVEX_URL",
+      "existing X-Powered-By preserved",
+      "a test asserts the connect-src contents"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "next",
+      "ci",
+      "tests"
+    ],
+    "wave": 2
+  },
+  {
+    "id": "BRIDGE-12",
+    "title": "Phase-4 exit-criteria integration gate",
+    "track": "BRIDGE",
+    "size": "M",
+    "summary": "End-to-end integration test mapping 1:1 to Phase 4 exit criteria, exercising the full chain (publish mutation -> debounce/dedup -> notify -> action-retrier -> Next route -> cmsCache invalidation), the failure path, the self-heal path, and the autosave-quiet invariant. The acceptance gate for the track.",
+    "files": [
+      "packages/convex/convex/revalidate/__tests__/bridge.integration.test.ts"
+    ],
+    "depends_on": [
+      "BRIDGE-02",
+      "BRIDGE-05",
+      "BRIDGE-06",
+      "BRIDGE-07",
+      "BRIDGE-08"
+    ],
+    "acceptance": [
+      "a Convex publish invalidates the corresponding Lane-1 cached tags/HTML for the tenant",
+      "a forced non-2xx triggers retry then a dead-letter row; a dropped event self-heals via the reconciliation cron",
+      "an autosave/draft loop triggers no revalidation (zero notify, zero invalidation); all four green in CI"
+    ],
+    "parallel_safe": false,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "tests",
+      "ci"
+    ],
+    "wave": 9
+  },
+  {
+    "id": "HARNESS-01",
+    "title": "Scaffold @nordcom/commerce-test-convex package skeleton",
+    "track": "HARNESS",
+    "size": "S",
+    "summary": "New test-harness package replacing test-mongo. package.json (no mongo/mongoose/MMS/payload deps), tsconfig, vitest.config, and the full exports map up front (., ./start, ./daemon, ./cli, ./unit, ./seed/*) so siblings only add source files. Mirror test-mongo's index re-export surface as typed stubs. Add convex + convex-test.",
+    "files": [
+      "packages/test-convex/package.json",
+      "packages/test-convex/tsconfig.json",
+      "packages/test-convex/vitest.config.ts",
+      "packages/test-convex/src/index.ts"
+    ],
+    "depends_on": [],
+    "acceptance": [
+      "pnpm install resolves the new package linked",
+      "pnpm --filter @nordcom/commerce-test-convex typecheck passes against stubs",
+      "grep mongo|mongoose|payload in package.json empty; exports map declares ./start ./daemon ./cli ./unit ./seed"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "tests",
+      "monorepo"
+    ],
+    "wave": 1
+  },
+  {
+    "id": "HARNESS-02",
+    "title": "Local Convex backend launcher + daemon + CLI (start/stop/reset/seed)",
+    "track": "HARNESS",
+    "size": "M",
+    "summary": "Port test-mongo's start/daemon/cli lifecycle to spawn a real local Convex backend (convex dev --local). Reproduce the orphan-proof shutdown registry (SIGINT/SIGTERM/SIGHUP/beforeExit/exit/uncaught -> async stop + sync SIGKILL fallback). Write a CONVEX_URL marker file so pnpm dev + e2e re-attach. CLI start|stop|reset|seed. Pre-build/cache the local-backend binary as a CI artifact. Boot-to-ready budget <= 8s p95.",
+    "files": [
+      "packages/test-convex/src/start.ts",
+      "packages/test-convex/src/daemon.ts",
+      "packages/test-convex/src/cli.ts"
+    ],
+    "depends_on": [
+      "HARNESS-01",
+      "CONVEXCORE-02"
+    ],
+    "acceptance": [
+      "test-convex start boots a local backend + writes the CONVEX_URL marker",
+      "SIGTERM leaves zero orphan backend processes + removes markers",
+      "test-convex reset stops + wipes the state dir",
+      "boot-to-ready latency recorded <= 8s p95 (within the e2e flake budget)"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "tests",
+      "ci",
+      "process-lifecycle"
+    ],
+    "wave": 3
+  },
+  {
+    "id": "HARNESS-03",
+    "title": "convex-test unit harness helper + wire into db/cms unit configs",
+    "track": "HARNESS",
+    "size": "S",
+    "summary": "Thin convexTest(schema) wrapper (src/unit.ts) for the fast hermetic in-memory unit tier (no backend spawn). Export it + a sample assertion proving a seeded doc round-trips. The convex-test (JS mock) replacement for the per-file vi.mock('mongoose') units. Binds against the deployed schema.",
+    "files": [
+      "packages/test-convex/src/unit.ts",
+      "packages/test-convex/src/unit.test.ts"
+    ],
+    "depends_on": [
+      "HARNESS-01",
+      "CONVEXCORE-07",
+      "CONVEXCORE-08"
+    ],
+    "acceptance": [
+      "convexTest helper instantiates against the real schema with no network/subprocess",
+      "sample unit inserts + reads a doc through tenantQuery/systemQuery + passes",
+      "runs inside pnpm --filter @nordcom/commerce-test-convex test"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "convex-test",
+      "tests"
+    ],
+    "wave": 7
+  },
+  {
+    "id": "HARNESS-04",
+    "title": "Port shop fixture to a Convex seed mutation (shops + credentials + domains)",
+    "track": "HARNESS",
+    "size": "M",
+    "summary": "Re-express seed/shop.ts as a Convex seed mutation inserting the canonical nordcom-demo-shop.com record into the unified shops table, splitting secrets into shopCredentials + alternativeDomains into one shopDomains row per (domain->shopId). Idempotent. Decide explicitly whether to keep/drop the contentProvider field (a strict validator rejects unknown keys). Carry design/accents/icons/integrations verbatim.",
+    "files": [
+      "packages/test-convex/src/seed/shop.ts",
+      "packages/test-convex/src/seed/fixtures/shop.ts"
+    ],
+    "depends_on": [
+      "HARNESS-01",
+      "CONVEXCORE-04"
+    ],
+    "acceptance": [
+      "seed inserts the canonical shop idempotently (second run no-op)",
+      "secrets land only in shopCredentials, never on the public shops row",
+      "alternativeDomains produce one shopDomains row each (by_domain); contentProvider decision documented + the validator accepts the fixture"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "data-migration",
+      "tests"
+    ],
+    "wave": 5
+  },
+  {
+    "id": "HARNESS-05",
+    "title": "Port CMS singleton + feature-flag fixtures to Convex seed mutations (no Payload boot)",
+    "track": "HARNESS",
+    "size": "M",
+    "summary": "SPLIT (non-rich-text fixtures). Re-express seed/cms.ts + the header/footer/business-data + feature-flags fixtures as Convex seed mutations against the Convex-native CMS tables. No Payload boot + no separate tenants doc - each doc written with shopId = canonical shop id. Drop the feature-flags JSON.stringify-for-Monaco quirk.",
+    "files": [
+      "packages/test-convex/src/seed/cms.ts",
+      "packages/test-convex/src/seed/fixtures/header.ts",
+      "packages/test-convex/src/seed/fixtures/footer.ts",
+      "packages/test-convex/src/seed/fixtures/business-data.ts",
+      "packages/test-convex/src/seed/fixtures/feature-flags.ts"
+    ],
+    "depends_on": [
+      "HARNESS-04",
+      "CMSDESC-02"
+    ],
+    "acceptance": [
+      "header/footer/business-data + feature-flags seed under the canonical shop id with no Payload import",
+      "storefront getHeader/getFooter for the seeded shop return non-null shapes",
+      "feature-flags seed without the JSON.stringify wrapper"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "data-migration",
+      "cms",
+      "tests"
+    ],
+    "wave": 6
+  },
+  {
+    "id": "HARNESS-12",
+    "title": "Port CMS rich-text-bearing fixtures (pages/articles/metadata)",
+    "track": "HARNESS",
+    "size": "M",
+    "summary": "SPLIT from HARNESS-05 (rich-text-gated fixtures). Re-express the pages/articles/product-metadata/collection-metadata fixtures (incl the lexical.ts richtext builders) as Convex seed mutations. Rich-text bodies convert to ProseMirror/Tiptap JSON via the CMSRICH-02 converter (or stay Lexical only if a conversion layer is adopted). Each written with shopId = canonical shop id.",
+    "files": [
+      "packages/test-convex/src/seed/fixtures/articles.ts",
+      "packages/test-convex/src/seed/fixtures/pages.ts",
+      "packages/test-convex/src/seed/fixtures/product-metadata.ts",
+      "packages/test-convex/src/seed/fixtures/collection-metadata.ts",
+      "packages/test-convex/src/seed/fixtures/richtext.ts"
+    ],
+    "depends_on": [
+      "HARNESS-04",
+      "CMSDESC-02",
+      "CMSRICH-02"
+    ],
+    "acceptance": [
+      "pages/articles/product-metadata/collection-metadata seed under the canonical shop id with no Payload import",
+      "storefront getPage/getArticle return non-null",
+      "rich-text fixture bodies validate against the new richtext schema"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "data-migration",
+      "cms",
+      "tests"
+    ],
+    "wave": 10
+  },
+  {
+    "id": "HARNESS-06",
+    "title": "Idempotent canonical seed orchestrator",
+    "track": "HARNESS",
+    "size": "S",
+    "summary": "Port seed/canonical.ts: one Convex seed run calling the shop seed then the CMS seeds + returning the canonical shop id. Replace the mongoose createConnection findOne id lookup with a Convex query (shops.byDomain). Safe to call repeatedly (the idempotency point pnpm dev first-run + e2e global setup depend on).",
+    "files": [
+      "packages/test-convex/src/seed/canonical.ts",
+      "packages/test-convex/src/seed/canonical.test.ts"
+    ],
+    "depends_on": [
+      "HARNESS-04",
+      "HARNESS-05",
+      "HARNESS-12"
+    ],
+    "acceptance": [
+      "first call seeds shop + all CMS docs, second call a verified no-op (counts unchanged)",
+      "returns the canonical shop id via a Convex query, not a raw driver",
+      "no mongoose/mongodb import anywhere in the file"
+    ],
+    "parallel_safe": false,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "tests"
+    ],
+    "wave": 11
+  },
+  {
+    "id": "HARNESS-07",
+    "title": "Rewrite storefront e2e global-setup + fixtures + test:e2e script",
+    "track": "HARNESS",
+    "size": "M",
+    "summary": "Rewrite storefront e2e/global-setup.ts to drop the seed-loader register, import mongoose, and the raw createConnection E2E_TENANT_ID lookup; call the Convex canonical seed + resolve E2E_TENANT_ID via a Convex query (still emit it). Drop the test:e2e NODE_OPTIONS --import loader. Rewrite e2e/fixtures/seed-cms.ts (drop MONGODB_URI guard, repoint to Convex) + re-export from seed-shop.ts. HARNESS owns these files; TEARDOWN only deletes the package.",
+    "files": [
+      "apps/storefront/e2e/global-setup.ts",
+      "apps/storefront/e2e/fixtures/seed-cms.ts",
+      "apps/storefront/e2e/fixtures/seed-shop.ts",
+      "apps/storefront/package.json",
+      "apps/storefront/playwright.config.ts"
+    ],
+    "depends_on": [
+      "HARNESS-02",
+      "HARNESS-06",
+      "SFREAD-05"
+    ],
+    "acceptance": [
+      "grep mongoose|commerce-test-mongo|MONGODB_URI in storefront e2e empty",
+      "test:e2e has no NODE_OPTIONS --import loader string",
+      "global-setup emits E2E_TENANT_ID from a Convex query; playwright globalSetup runs against the local Convex backend"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "e2e",
+      "playwright",
+      "convex"
+    ],
+    "wave": 12
+  },
+  {
+    "id": "HARNESS-08",
+    "title": "Rewrite admin e2e global-setup + test:e2e script",
+    "track": "HARNESS",
+    "size": "M",
+    "summary": "Rewrite admin e2e/global-setup.ts: drop the seed-loader register, import mongoose, the inline schemas, and all raw-driver work (User upsert, shops.collaborators $set, tenants lookup, payload-users upsert). Reimplement user + collaborator seeding via Convex mutations against the unified model. KEEP the DB-independent NextAuth-v5 JWT cookie minting + storage-state write verbatim. Drop the test:e2e --import loader string.",
+    "files": [
+      "apps/admin/e2e/global-setup.ts",
+      "apps/admin/package.json"
+    ],
+    "depends_on": [
+      "HARNESS-02",
+      "HARNESS-06",
+      "CONVEXCORE-05",
+      "CONVEXCORE-14"
+    ],
+    "acceptance": [
+      "grep mongoose|commerce-test-mongo|payload-users|MONGODB_URI in admin e2e empty",
+      "test:e2e has no NODE_OPTIONS --import string",
+      "user/collaborator seeded via Convex mutations + storage-state cookie still written; the JWT cookie-name CI/dev switch preserved"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "e2e",
+      "playwright",
+      "convex",
+      "nextauth"
+    ],
+    "wave": 12
+  },
+  {
+    "id": "HARNESS-09",
+    "title": "Rebuild vitest.setup mongoose mocks (db/cms/admin/storefront) + auth.adapter.test",
+    "track": "HARNESS",
+    "size": "M",
+    "summary": "Strip every Mongo artifact from the unit-test setups. db + admin vitest.setup: remove vi.mock('mongoose', importActual...) + stubEnv('MONGODB_URI') (importActual REAL mongoose); replace with convex-test setup. cms vitest.setup: drop the URI stub (+ the now-unnecessary next/cache + server-only stubs). storefront: replace the Mongoose-shaped Shop.findByDomain mock with the Convex-backed shape (keep the real theme importActual). Rewrite auth.adapter.test.ts to drop import mongoose.",
+    "files": [
+      "packages/db/vitest.setup.ts",
+      "packages/cms/vitest.setup.ts",
+      "apps/admin/vitest.setup.ts",
+      "apps/storefront/vitest.setup.ts",
+      "apps/admin/src/utils/auth.adapter.test.ts"
+    ],
+    "depends_on": [
+      "HARNESS-03",
+      "SFREAD-05"
+    ],
+    "acceptance": [
+      "grep vi.mock('mongoose')|importActual.*mongoose|stubEnv('MONGODB_URI' across packages/apps empty",
+      "auth.adapter.test no longer imports mongoose",
+      "MONGODB_URI= pnpm test green for db/cms/admin/storefront; storefront Shop mock returns the Convex-shaped OnlineShop"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "tests",
+      "vitest",
+      "convex",
+      "payload-removal"
+    ],
+    "wave": 9
+  },
+  {
+    "id": "HARNESS-10",
+    "title": "Limit-boundary integration tests against the real local Convex backend",
+    "track": "HARNESS",
+    "size": "M",
+    "summary": "Tests convex-test (JS mock) cannot catch, run against the real local backend: (1) a 1 MiB max-locale rich-text pages fixture with golden shred/reassemble round-trip; (2) a tenant list past the 32k-doc/16 MiB ceiling asserting a typed BoundedScanExceededError not silent truncation; (3) concurrent 2s-autosave OCC at target concurrency; (4) deep-populate of header depth:6. OCC budget = retry rate <= 1% + zero lost writes at 20 concurrent editors/doc. Wire into CI within the flake budget.",
+    "files": [
+      "packages/test-convex/src/limits/doc-size.test.ts",
+      "packages/test-convex/src/limits/scan-ceiling.test.ts",
+      "packages/test-convex/src/limits/autosave-occ.test.ts",
+      "packages/test-convex/src/limits/deep-populate.test.ts"
+    ],
+    "depends_on": [
+      "HARNESS-02",
+      "HARNESS-12",
+      "CMSDATA-10",
+      "CMSDATA-11",
+      "CMSFORM-05"
+    ],
+    "acceptance": [
+      "1 MiB max-locale fixture round-trips byte-identical through shred->reassemble",
+      "tenant list past the ceiling throws BoundedScanExceededError",
+      "concurrent-autosave OCC retry rate <= 1% + zero lost writes at 20 editors/doc recorded; header depth:6 deep-populate reassembles; suite runs in CI within the flake budget"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "tests",
+      "limits",
+      "ci"
+    ],
+    "wave": 11
+  },
+  {
+    "id": "PIPELINE-01",
+    "title": "Idempotent ETL core: mongoexport -> deterministic transform -> convex import",
+    "track": "PIPELINE",
+    "size": "M",
+    "summary": "Re-runnable per-collection pipeline: mongoexport each collection to JSONL -> a PURE deterministic transform that remaps every Mongo ObjectId to a Convex id while preserving the original as legacyId (projected to shop.id), emits a stable by_payloadId key, normalizes shops.alternativeDomains into one shopDomains row per (domain->shopId) -> convex import. Determinism is the contract. Targets the Phase-0 unified shape.",
+    "files": [
+      "scripts/etl/export.ts",
+      "scripts/etl/import.ts",
+      "scripts/etl/transform/index.ts",
+      "scripts/etl/transform/id-remap.ts"
+    ],
+    "depends_on": [
+      "UNIFY-10",
+      "CONVEXCORE-04",
+      "CONVEXCORE-05"
+    ],
+    "acceptance": [
+      "running the pipeline twice produces identical Convex state (idempotent)",
+      "every doc carries legacyId + shop.id resolves to legacyId not the Convex _id",
+      "alternativeDomains produce one shopDomains row per (domain->shopId); the transform is a pure function covered by golden input/output fixtures"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "data-migration",
+      "convex",
+      "etl"
+    ],
+    "wave": 6
+  },
+  {
+    "id": "PIPELINE-02",
+    "title": "ETL rich-text shred + _versions + media migration in the transform",
+    "track": "PIPELINE",
+    "size": "M",
+    "summary": "Extend the transform for large/structured docs: shred all-locales-in-one-doc rich-text (+ large blocks) into _i18n side rows keyed (parentLegacyId, fieldPath, locale) under 1 MiB (per CMSDATA-10), small scalars inline; migrate per-collection _versions rows (incl a per-doc quiesce/catch-up for the 2s-autosave moving target); relocate Payload media docs (S3/R2 keys preserved, storage-hook side effect -> scheduler.runAfter(0)). Rich-text Lexical->ProseMirror in lockstep (CMSRICH-02).",
+    "files": [
+      "scripts/etl/transform/shred-richtext.ts",
+      "scripts/etl/transform/versions.ts",
+      "scripts/etl/transform/media.ts"
+    ],
+    "depends_on": [
+      "PIPELINE-01",
+      "CMSDESC-02",
+      "CMSRICH-04",
+      "CMSMEDIA-01"
+    ],
+    "acceptance": [
+      "every shredded _i18n side row is < 1 MiB + reassembles to the source doc",
+      "_versions rows migrate with latestVersionId pointers intact",
+      "media docs carry their original S3/R2 keys + the storage side effect is a post-commit action; rich-text round-trips through the Lexical->ProseMirror conversion"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "data-migration",
+      "convex",
+      "richtext",
+      "media"
+    ],
+    "wave": 10
+  },
+  {
+    "id": "PIPELINE-03",
+    "title": "Cross-reference id-remap coverage (internal + externally-persisted shopId)",
+    "track": "PIPELINE",
+    "size": "M",
+    "summary": "Guarantee the id remap reaches every shopId/ObjectId reference: sessions.user, collaborators, featureFlags refs, reviews.shopId, PLUS cart records, analytics, externally-persisted shopId in Shopify webhooks/metafields, client cookies, cached/ISR output. The public shop.id string contract (== legacyId) preserved. A reference-integrity verifier failing if any reference dangles post-import.",
+    "files": [
+      "scripts/etl/remap/references.ts",
+      "scripts/etl/remap/external-refs.ts",
+      "scripts/etl/remap/verify-integrity.ts"
+    ],
+    "depends_on": [
+      "PIPELINE-01"
+    ],
+    "acceptance": [
+      "every shopId reference (sessions/collaborators/featureFlags/reviews/carts/analytics) resolves to a live shops row post-import",
+      "public shop.id equals legacyId for all externally-persisted references",
+      "the integrity verifier reports zero dangling references"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "data-migration",
+      "convex",
+      "etl"
+    ],
+    "wave": 7
+  },
+  {
+    "id": "PIPELINE-04",
+    "title": "Reconciliation action: full per-collection checksum parity + divergence ledger",
+    "track": "PIPELINE",
+    "size": "M",
+    "summary": "Reconciliation as a first-class Convex action: a full per-collection canonical checksum (NOT a stratified sample) through the same shred/reassemble transform, AND a second INDEPENDENT reassembly path so a transform bug surfaces as a divergence rather than two identical-wrong hashes. A continuous divergence ledger. The parity gate authorizing cutover; runnable against the imported snapshot (no live dual-write).",
+    "files": [
+      "packages/convex/convex/reconcile.ts",
+      "scripts/etl/reconcile/checksum.ts",
+      "scripts/etl/reconcile/independent-reassembly.ts"
+    ],
+    "depends_on": [
+      "PIPELINE-01",
+      "PIPELINE-02",
+      "PIPELINE-03"
+    ],
+    "acceptance": [
+      "per-collection checksum parity green after a clean import",
+      "an injected transform bug is caught as a divergence (the second reassembly diverges, not identical-wrong)",
+      "the divergence ledger populated + queryable; reconciliation runs as a deployed Convex action"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "data-migration",
+      "reconciliation"
+    ],
+    "wave": 11
+  },
+  {
+    "id": "PIPELINE-05",
+    "title": "Freeze-window write-capture (transactional outbox + idempotent drainer)",
+    "track": "PIPELINE",
+    "size": "M",
+    "summary": "Write-capture closing the export window WITHOUT two authoritative databases: during the maintenance freeze each Mongo write appends an outbox row in the SAME write; an idempotent drainer applies entries to Convex at-least-once via upsert keyed by_payloadId, incl _versions/autosave catch-up. Explicitly a bounded quiesce-window catch-up for the one-shot cutover, NOT a sustained dual-write bake. Documented in the runbook. Drain bound = residual writes drained <= 60s after freeze (outbox lag cursor).",
+    "files": [
+      "scripts/etl/outbox/append.ts",
+      "scripts/etl/outbox/drainer.ts",
+      "scripts/etl/outbox/runbook.md"
+    ],
+    "depends_on": [
+      "PIPELINE-01",
+      "PIPELINE-04"
+    ],
+    "acceptance": [
+      "the drainer is at-least-once AND idempotent (replaying the outbox produces no duplicate Convex rows)",
+      "writes during the freeze land in Convex before the flip with measured drain lag <= 60s",
+      "runbook documents the outbox as freeze-window-only, reconciling with never-two-databases; post-drain reconciliation (PIPELINE-04) green"
+    ],
+    "parallel_safe": false,
+    "worktree": false,
+    "skills": [
+      "data-migration",
+      "convex",
+      "outbox"
+    ],
+    "wave": 12
+  },
+  {
+    "id": "CUTOVER-01",
+    "title": "Cutover dress rehearsal + numeric go/no-go budgets",
+    "track": "CUTOVER",
+    "size": "M",
+    "summary": "The go/no-go gate run BEFORE the freeze, against the imported snapshot (no live dual-write). Run the full ETL + reconciliation to full per-collection checksum parity; measure the findByDomain miss-path p50/p99 vs the Convex region + the per-tenant Convex call volume/cost. Pre-committed budgets: p50 <= 40ms / p99 <= 150ms miss-path; per-tenant <= 50k calls/day alert ceiling; canary soak >= 24h + cohort soak >= 72h with >= 1,000 sampled reads/active-tenant + zero divergence.",
+    "files": [
+      ".specs/2026-05-30-convex-migration/cutover-budgets.md",
+      "scripts/etl/reconcile/checksum.ts",
+      "apps/storefront/src/middleware/storefront.test.ts"
+    ],
+    "depends_on": [
+      "PIPELINE-04",
+      "SFREAD-04",
+      "SFREAD-05",
+      "CONVEXCORE-15"
+    ],
+    "acceptance": [
+      "full per-collection checksum parity green on the imported snapshot",
+      "p50/p99 miss-path recorded vs the committed budget; per-tenant call/cost ceiling recorded vs the committed budget",
+      "soak floor + per-tenant sample threshold documented; a written go/no-go recorded - flip blocked if any budget is missed"
+    ],
+    "parallel_safe": false,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "perf",
+      "data-migration"
+    ],
+    "wave": 12
+  },
+  {
+    "id": "CUTOVER-02",
+    "title": "Reverse-ETL (Convex->Mongo) green OR one-way-gate sign-off + final pre-flip backup",
+    "track": "CUTOVER",
+    "size": "M",
+    "summary": "The rollback net proven BEFORE any irreversible flip: a reverse-ETL (Convex->Mongo) running a SECOND independent reassembly of the Phase-7 transform reaching FULL per-collection checksum parity (NOT a sample restore), OR a signed one-way-gate checklist (full parity + N-day bake + canary soak). Plus a final pre-flip Mongo cold backup -> object storage.",
+    "files": [
+      "packages/convex/convex/reverse-etl.ts",
+      "scripts/etl/reconcile/independent-reassembly.ts",
+      ".specs/2026-05-30-convex-migration/one-way-gate.md"
+    ],
+    "depends_on": [
+      "PIPELINE-04",
+      "CUTOVER-01"
+    ],
+    "acceptance": [
+      "reverse-ETL replays Convex->Mongo to FULL per-collection checksum parity (not a sample) on a restore, OR the one-way-gate checklist is signed (full parity + N-day bake + canary soak)",
+      "a final Mongo cold backup is taken + its restore verified",
+      "the chosen path documented + demonstrably green before CUTOVER-03"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "convex",
+      "data-migration",
+      "tests"
+    ],
+    "wave": 13
+  },
+  {
+    "id": "CUTOVER-03",
+    "title": "One-shot storefront-services authority flip (freeze->export->drain->reconcile->flip->stop)",
+    "track": "CUTOVER",
+    "size": "M",
+    "summary": "The single bounded storefront cutover window for the packages/db services: maintenance freeze -> final mongoexport -> drain residual freeze-window writes via the PIPELINE-05 outbox -> full-collection reconcile -> flip DB_BACKEND_*=convex (reads + writes authority) -> stop Mongo writes. Lowest-risk services (session/identity) first within the window; the canary tenant validated first. Past the flip recovery = the CUTOVER-02 reverse-ETL/one-way gate, never a flag-back.",
+    "files": [
+      "packages/db/src/services/",
+      "scripts/etl/outbox/drainer.ts",
+      ".specs/2026-05-30-convex-migration/storefront-cutover-runbook.md"
+    ],
+    "depends_on": [
+      "CUTOVER-01",
+      "CUTOVER-02",
+      "PIPELINE-05",
+      "SFREAD-05",
+      "SFREAD-06",
+      "SFREAD-14",
+      "SFREAD-04",
+      "SFREAD-11",
+      "SFREAD-13"
+    ],
+    "acceptance": [
+      "during the window Mongo is frozen (zero new authoritative writes), residual writes drained <= 60s, reconcile green, then authority flips atomically per service (session/identity first)",
+      "post-flip Mongo receives zero writes (verified via write-path instrumentation / quiet oplog) + Convex authoritative; at no point are both stores serving authoritative writes",
+      "full per-collection parity recorded at the flip; ledger clean"
+    ],
+    "parallel_safe": false,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "data-migration"
+    ],
+    "wave": 14
+  },
+  {
+    "id": "CUTOVER-04",
+    "title": "CMS header+pages gate-collection coordinated cutover (write + read together)",
+    "track": "CUTOVER",
+    "size": "M",
+    "summary": "SPLIT from old CUTOVER-07 (gate collections first). Cut over header (recursive nav) + pages (blocks) in a coordinated step: ETL their content to Convex, flip admin authoring to the Convex-native CMS, flip storefront reads to Convex for these collections together (SFREAD-12 dual-read proves zero divergence first), so no collection is authored to Convex while still read stale from Mongo. Publish fires the Convex->Next bridge. Gated on both parity gates + the bridge.",
+    "files": [
+      "apps/admin/src/",
+      "packages/cms/src/editor/manifests/header.ts",
+      "packages/cms/src/editor/manifests/pages.ts",
+      "apps/storefront/src/api/header.ts",
+      "apps/storefront/src/api/page.ts"
+    ],
+    "depends_on": [
+      "CMSGATE-01",
+      "CMSGATE-02",
+      "BRIDGE-12",
+      "SFREAD-12",
+      "PIPELINE-02",
+      "CUTOVER-02",
+      "CMSRICH-03"
+    ],
+    "acceptance": [
+      "header + pages author end-to-end on Convex (create/edit/draft/2s-autosave/publish/restore) with no Payload write path for these collections",
+      "storefront reads for header + pages served from Convex with zero divergence vs the SFREAD-12 ledger + null-on-missing preserved",
+      "publish fires the bridge, autosave never revalidates; secret-exposure tests green"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "convex",
+      "react",
+      "payload-removal",
+      "tests"
+    ],
+    "wave": 14
+  },
+  {
+    "id": "CUTOVER-05",
+    "title": "CMS articles + productMetadata + collectionMetadata cohort cutover",
+    "track": "CUTOVER",
+    "size": "M",
+    "summary": "SPLIT from old CUTOVER-07 (cohort 2). Coordinated write+read cutover for the articles + product/collection-metadata cohort (rich-text-bearing), after the gate collections are proven. ETL -> flip admin authoring -> flip storefront reads together, SFREAD-12 divergence-clean first.",
+    "files": [
+      "apps/admin/src/",
+      "packages/cms/src/editor/manifests/articles.ts",
+      "packages/cms/src/editor/manifests/product-metadata.ts",
+      "packages/cms/src/editor/manifests/collection-metadata.ts",
+      "apps/storefront/src/api/article.ts",
+      "apps/storefront/src/api/metadata.ts"
+    ],
+    "depends_on": [
+      "CUTOVER-04"
+    ],
+    "acceptance": [
+      "the 3 collections author end-to-end on Convex with no Payload write path",
+      "storefront reads served from Convex with zero divergence + null-on-missing preserved; rich-text renders via ProseMirror",
+      "publish fires the bridge"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "convex",
+      "react",
+      "payload-removal",
+      "tests"
+    ],
+    "wave": 15
+  },
+  {
+    "id": "CUTOVER-06",
+    "title": "CMS footer/businessData + reviews/feature-flags/media cohort cutover (removes last Payload write path)",
+    "track": "CUTOVER",
+    "size": "M",
+    "summary": "SPLIT from old CUTOVER-07 (final cohort). Coordinated write+read cutover for the remaining collections (footer + businessData singletons, reviews, feature-flags, media). Removes the LAST Payload write path + unblocks Payload application deletion (TEARDOWN-02). Same coordinated pattern + the media pipeline live.",
+    "files": [
+      "apps/admin/src/",
+      "packages/cms/src/editor/manifests/footer.ts",
+      "packages/cms/src/editor/manifests/business-data.ts",
+      "packages/cms/src/editor/manifests/reviews.ts",
+      "packages/cms/src/editor/manifests/feature-flags.ts",
+      "packages/cms/src/editor/manifests/media.ts",
+      "apps/storefront/src/api/footer.ts",
+      "apps/storefront/src/api/info-bar.ts"
+    ],
+    "depends_on": [
+      "CUTOVER-05"
+    ],
+    "acceptance": [
+      "all remaining collections author end-to-end on Convex",
+      "the 38 getters across 33 files serve identical shapes from Convex (matches the SFREAD-01 inventory), null-on-missing preserved; admin no longer boots Payload/mongooseAdapter on any collection",
+      "media uploads produce 4 sizes via the live pipeline; ledger clean"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "convex",
+      "react",
+      "payload-removal",
+      "tests"
+    ],
+    "wave": 16
+  },
+  {
+    "id": "TEARDOWN-00",
+    "title": "Final Mongo cold backup / archive before decommission",
+    "track": "TEARDOWN",
+    "size": "S",
+    "summary": "ADDED (critic missing #6). A final mongodump cold archive of the production Mongo (both backends' data) to object storage, taken AFTER all cutovers complete but BEFORE any process kill / state purge. The last recoverable snapshot once the Convex one-way gate is crossed.",
+    "files": [
+      "scripts/etl/final-mongo-archive.ts",
+      ".specs/2026-05-30-convex-migration/final-backup.md"
+    ],
+    "depends_on": [
+      "CUTOVER-03",
+      "CUTOVER-06"
+    ],
+    "acceptance": [
+      "a full mongodump of both backends is archived to object storage + a restore is verified to a scratch instance",
+      "the archive location + retention recorded",
+      "taken before TEARDOWN-01 kills any process"
+    ],
+    "parallel_safe": false,
+    "worktree": false,
+    "skills": [
+      "data-migration",
+      "ci"
+    ],
+    "wave": 17
+  },
+  {
+    "id": "TEARDOWN-01",
+    "title": "PROCESS/STATE FIRST - kill live Mongo/MCP processes + scrub machine-local state",
+    "track": "TEARDOWN",
+    "size": "S",
+    "summary": "After the final archive, before deleting any script. SIGTERM the live daemon chain (mongo-daemon 10419 -> mongod 10422 on 27018 -> mongo_killer 10423) via pnpm dev:reset or by PID; remove the running mongodb-mcp-server MCP wiring from Claude/IDE settings; rm -rf .mongo-dev/ + ~/.cache/mongodb-binaries; strip the live MONGODB_URI line + commented MONGODB_URI_TEST from .env.local; add CONVEX_URL.",
+    "files": [
+      ".env.local",
+      ".mongo-dev/",
+      "~/.cache/mongodb-binaries",
+      "Claude/IDE MCP settings"
+    ],
+    "depends_on": [
+      "TEARDOWN-00",
+      "CUTOVER-03",
+      "CUTOVER-06"
+    ],
+    "acceptance": [
+      "ps aux | grep -iE 'mongod|mongo-daemon|mongo_killer|mongodb-mcp-server' empty",
+      ".mongo-dev/ absent + ~/.cache/mongodb-binaries absent",
+      "grep MONGODB_URI/MONGODB_URI_TEST in .env.local empty + CONVEX_URL present"
+    ],
+    "parallel_safe": false,
+    "worktree": false,
+    "skills": [
+      "ci",
+      "convex"
+    ],
+    "wave": 18
+  },
+  {
+    "id": "TEARDOWN-02",
+    "title": "Remove the full Payload application surface",
+    "track": "TEARDOWN",
+    "size": "M",
+    "summary": "ADDED (critic missing #1; the linchpin for removing transitive mongoose@8; reuses the freed TEARDOWN-02 id). With admin fully cut off Payload (CUTOVER-06), delete the rest of Payload beyond the adapter: @payloadcms/ui, @payloadcms/next, @payloadcms/richtext-lexical, @payloadcms/plugin-multi-tenant, @payloadcms/storage-s3, @payloadcms/email-resend, payload; payload.config.ts; the /cms route mount; the ~92 remaining payload imports. (db-mongodb in TEARDOWN-05.)",
+    "files": [
+      "apps/admin/src/payload.config.ts",
+      "apps/admin/src/app/(payload)/",
+      "packages/cms/package.json",
+      "apps/admin/package.json",
+      "packages/cms/src/"
+    ],
+    "depends_on": [
+      "CUTOVER-06",
+      "HARNESS-08"
+    ],
+    "acceptance": [
+      "grep @payloadcms/(ui|next|richtext-lexical|plugin-multi-tenant|storage-s3|email-resend)|from 'payload' across apps/packages empty",
+      "payload.config.ts + the /cms mount deleted; admin builds + boots with no Payload import",
+      "pnpm why -r payload reports no packages"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "payload-removal",
+      "convex",
+      "ci"
+    ],
+    "wave": 17
+  },
+  {
+    "id": "TEARDOWN-03",
+    "title": "Delete @nordcom/commerce-test-mongo package + all referrers + allowBuilds",
+    "track": "TEARDOWN",
+    "size": "M",
+    "summary": "Folds removed HARNESS-11. Delete the entire packages/test-mongo package (cli/daemon/start/index, the 4 .mjs loaders, seed/* + fixtures/*, configs, README, tsconfig). Remove all 4 workspace:* referrers (root:96, admin:60, storefront:63, self) - the 2 test:e2e --import strings are already gone (HARNESS-07/08). Drop the pnpm-workspace.yaml allowBuilds: mongodb-memory-server entry. Regenerate the lockfile.",
+    "files": [
+      "packages/test-mongo/",
+      "package.json",
+      "apps/admin/package.json",
+      "apps/storefront/package.json",
+      "pnpm-workspace.yaml",
+      "pnpm-lock.yaml"
+    ],
+    "depends_on": [
+      "HARNESS-07",
+      "HARNESS-08",
+      "HARNESS-09",
+      "HARNESS-10",
+      "CUTOVER-03",
+      "CUTOVER-06"
+    ],
+    "acceptance": [
+      "git ls-files packages/test-mongo empty",
+      "git grep '@nordcom/commerce-test-mongo' (excl lock) empty (4 links + 2 NODE_OPTIONS strings gone)",
+      "mongodb-memory-server absent from pnpm-workspace.yaml + the lockfile after install"
+    ],
+    "parallel_safe": false,
+    "worktree": false,
+    "skills": [
+      "ci",
+      "data-migration"
+    ],
+    "wave": 17
+  },
+  {
+    "id": "TEARDOWN-04",
+    "title": "Remove direct mongoose@9 (packages/db + root hoist-anchor) + regenerate lockfile",
+    "track": "TEARDOWN",
+    "size": "S",
+    "summary": "Remove direct mongoose@9.6.3 from packages/db/package.json:65 + the root devDep hoist-anchor (package.json:108). Safe only after packages/db runs on Convex (no mongoose import) AND the e2e global-setups stopped importing mongoose (HARNESS-07/08). pnpm install; confirm the mongoose@9 tree (mongodb@7.2.0, bson, saslprep) vanishes. (Transitive mongoose@8 remains until TEARDOWN-05.)",
+    "files": [
+      "packages/db/package.json",
+      "package.json",
+      "pnpm-lock.yaml"
+    ],
+    "depends_on": [
+      "SFREAD-03",
+      "SFREAD-05",
+      "SFREAD-06",
+      "HARNESS-07",
+      "HARNESS-08",
+      "HARNESS-09",
+      "TEARDOWN-03"
+    ],
+    "acceptance": [
+      "pnpm why -r mongoose no longer reports the 9.6.3 tree (8.x may persist until TEARDOWN-05)",
+      "lockfile has no mongoose@9.6.3 / mongodb@7.2.0 snapshots",
+      "pnpm install --frozen-lockfile passes"
+    ],
+    "parallel_safe": false,
+    "worktree": false,
+    "skills": [
+      "ci",
+      "data-migration"
+    ],
+    "wave": 18
+  },
+  {
+    "id": "TEARDOWN-05",
+    "title": "Remove Payload Mongo-adapter wiring + @payloadcms/db-mongodb (transitive mongoose@8)",
+    "track": "TEARDOWN",
+    "size": "M",
+    "summary": "With Payload removed (TEARDOWN-02), delete the residual Mongo-adapter rows: @payloadcms/db-mongodb from packages/cms (dep+peer+dev) + admin:66; the db: mongooseAdapter wiring (config/index.ts:221), get-payload-instance.ts:27 ?? '', build-test-config.ts adapter, generate-types-config.ts hardcoded URI, the MONGODB_URI gates in payload.config.ts. Rework/remove the resolve-tenant-id.ts read-path bridge + the ObjectId 'text' idType assumptions. Regenerate the lockfile; confirm transitive mongoose@8.22.1 vanishes.",
+    "files": [
+      "packages/cms/package.json",
+      "apps/admin/package.json",
+      "packages/cms/src/config/index.ts",
+      "packages/cms/src/api/get-payload-instance.ts",
+      "packages/cms/src/api/resolve-tenant-id.ts",
+      "packages/cms/src/test-utils/build-test-config.ts",
+      "packages/cms/src/types/generate-types-config.ts",
+      "apps/admin/src/payload.config.ts",
+      "pnpm-lock.yaml"
+    ],
+    "depends_on": [
+      "TEARDOWN-02",
+      "TEARDOWN-04",
+      "CUTOVER-06"
+    ],
+    "acceptance": [
+      "grep mongooseAdapter|@payloadcms/db-mongodb|mongoUrl|MONGODB_URI in cms/src + admin/src + db/src empty",
+      "pnpm why -r @payloadcms/db-mongodb + pnpm why -r mongoose report no packages (BOTH majors gone)",
+      "pnpm cms:gen:check passes without a Mongo adapter; resolve-tenant-id read-path reworked/removed"
+    ],
+    "parallel_safe": false,
+    "worktree": false,
+    "skills": [
+      "payload-removal",
+      "convex",
+      "ci"
+    ],
+    "wave": 19
+  },
+  {
+    "id": "TEARDOWN-06",
+    "title": "Delete scripts/*-mongo.ts + root lifecycle hooks atomically",
+    "track": "TEARDOWN",
+    "size": "S",
+    "summary": "Delete scripts/{predev-mongo,postdev-mongo,mongo-daemon,clean-mongo,dev-reset}.ts + remove the root mongo lifecycle hooks ATOMICALLY (predev/postdev + the predev:*/postdev:* delegates, prebuild/postbuild, pretest/posttest, dev:mongo, dev:reset, clean:mongo) - KEEPING the portless-proxy half of predev. Wire convex dev for the dev/e2e lifecycle. After TEARDOWN-01 (live daemon dead) + TEARDOWN-04 (serialize root package.json edits).",
+    "files": [
+      "scripts/predev-mongo.ts",
+      "scripts/postdev-mongo.ts",
+      "scripts/mongo-daemon.ts",
+      "scripts/clean-mongo.ts",
+      "scripts/dev-reset.ts",
+      "package.json"
+    ],
+    "depends_on": [
+      "TEARDOWN-01",
+      "TEARDOWN-04"
+    ],
+    "acceptance": [
+      "the 5 scripts deleted; grep predev-mongo|postdev-mongo|mongo-daemon|clean-mongo|dev-reset in package.json/scripts empty",
+      "portless-proxy half of predev retained",
+      "pnpm dev/build/test no longer invoke any Mongo hook + run green"
+    ],
+    "parallel_safe": false,
+    "worktree": false,
+    "skills": [
+      "ci",
+      "convex"
+    ],
+    "wave": 19
+  },
+  {
+    "id": "TEARDOWN-07",
+    "title": "CI cleanup (ci.yml + both composite actions) + env templates",
+    "track": "TEARDOWN",
+    "size": "S",
+    "summary": "Remove MONGOMS_VERSION + MONGOMS_DOWNLOAD_DIR env + ALL mongo-binary-cache-hit/save-mongo-binary wiring from ci.yml AND both shared composite actions (bootstrap + bootstrap-save) - editing only ci.yml leaves deploy/release/docs still restoring the cache. Replace MONGODB_URI with Convex vars in the 3 .env.example; update .gitignore (drop .mongo-dev, add the Convex local-state dir if self-hosting).",
+    "files": [
+      ".github/workflows/ci.yml",
+      ".github/common/bootstrap/action.yml",
+      ".github/common/bootstrap-save/action.yml",
+      ".env.example",
+      "apps/storefront/.env.example",
+      "apps/admin/.env.example",
+      ".gitignore"
+    ],
+    "depends_on": [
+      "TEARDOWN-04",
+      "TEARDOWN-05"
+    ],
+    "acceptance": [
+      "grep MONGOMS|mongodb-binaries|mongo-binary-cache-hit|save-mongo-binary in .github empty",
+      "grep MONGODB_URI/MONGODB_URI_TEST in the env.example files empty + .gitignore has no .mongo-dev",
+      "CI green on a frozen install"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "ci"
+    ],
+    "wave": 20
+  },
+  {
+    "id": "TEARDOWN-08",
+    "title": "Docs & domain knowledge - CLAUDE.md / CONTEXT.md / READMEs / .mdx + regenerate",
+    "track": "TEARDOWN",
+    "size": "S",
+    "summary": "Update hand-written Mongo references: CLAUDE.md (16,38), CONTEXT.md (77,273,278), root README + the 5 package READMEs, the doc .mdx sources (packages/db/docs/*, packages/cms/docs/*, apps/storefront/docs/routing.mdx) for the Convex data layer. Regenerate apps/docs via pnpm gen so the generated tree drops the test-mongo / db-mongoose pages.",
+    "files": [
+      "CLAUDE.md",
+      "CONTEXT.md",
+      "README.md",
+      "apps/admin/README.md",
+      "apps/storefront/README.md",
+      "packages/cms/README.md",
+      "packages/db/README.md",
+      "packages/db/docs/",
+      "packages/cms/docs/",
+      "apps/storefront/docs/routing.mdx"
+    ],
+    "depends_on": [
+      "TEARDOWN-04",
+      "TEARDOWN-05",
+      "TEARDOWN-06"
+    ],
+    "acceptance": [
+      "grep mongo in CLAUDE.md/CONTEXT.md/README.md/*/README.md/*/docs/*.mdx/routing.mdx empty",
+      "pnpm gen regenerates docs with no test-mongo / db-mongoose pages remaining"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "docs"
+    ],
+    "wave": 20
+  },
+  {
+    "id": "TEARDOWN-09",
+    "title": "Final zero-Mongo acceptance gate - 18-command verification + clean rebuild + MONGODB_URI= green",
+    "track": "TEARDOWN",
+    "size": "M",
+    "summary": "Run the zero-Mongo acceptance gate. Purge build artifacts (*.tsbuildinfo delete; rm -rf .turbo packages/*/.turbo apps/*/.turbo packages/*/dist) then pnpm build:packages so dist carries no compiled mongoose. Execute all 18 verification commands; confirm MONGODB_URI= pnpm build:packages && typecheck && test green + pnpm cms:gen:check passes; confirm the full ZERO-MONGO DoD checklist all-green. No changeset.",
+    "files": [
+      "packages/*/dist",
+      ".turbo",
+      "*.tsbuildinfo"
+    ],
+    "depends_on": [
+      "TEARDOWN-00",
+      "TEARDOWN-01",
+      "TEARDOWN-02",
+      "TEARDOWN-03",
+      "TEARDOWN-04",
+      "TEARDOWN-05",
+      "TEARDOWN-06",
+      "TEARDOWN-07",
+      "TEARDOWN-08"
+    ],
+    "acceptance": [
+      "all 18 verification commands pass (git grep mongo/mongoose/MONGODB_URI/MONGOMS/ObjectId empty outside .specs + generated docs; pnpm why finds no mongo family incl both majors + db-mongodb; frozen install passes; dist .js carries zero mongoose)",
+      "MONGODB_URI= pnpm build:packages && typecheck && test green with the var blank; pnpm cms:gen:check passes",
+      "no mongod/mongo-daemon/mongodb-mcp-server process; .mongo-dev/ + ~/.cache/mongodb-binaries absent"
+    ],
+    "parallel_safe": false,
+    "worktree": false,
+    "skills": [
+      "ci",
+      "tests"
+    ],
+    "wave": 21
+  },
+  {
+    "id": "SPIKE-01",
+    "title": "[KILL-GATE] findByDomain edge latency + Convex cost feasibility spike (throwaway)",
+    "track": "SPIKE",
+    "size": "M",
+    "summary": "Throwaway feasibility proof BEFORE the Convex build-out commits, so a fatal latency/cost surprise lands in days not after the CMS quarter. Stand up a minimal Convex deployment (a shops table with a by_domain index seeded to realistic tenant count) and (1) benchmark findByDomain from the Node storefront middleware via ConvexHttpClient, cold-miss and warm (TTL/LRU) p50/p99; (2) project storefront read + build-fan-out cost (generateStaticParams/sitemap N tenants x M params + cache-miss read rate) against metered Convex pricing. KILL-CRITERIA: red p99 or per-tenant call volume over budget => STOP before CONVEXCORE-04/SFREAD-03/CMSDATA-01. Discard the spike code.",
+    "files": [
+      "packages/convex/ (throwaway spike branch)",
+      "apps/storefront/src/middleware/storefront.ts (benchmark harness only, reverted)"
+    ],
+    "depends_on": [
+      "CONVEXCORE-01"
+    ],
+    "acceptance": [
+      "findByDomain cold-miss p99 <= 150ms and warm p50 <= 40ms from Node middleware against a realistic-tenant-count Convex deployment, measured and recorded",
+      "projected Convex call volume <= 50k/tenant/day at current read + build-fan-out shape, with the cost model written up",
+      "explicit GO/NO-GO recorded; on NO-GO the program halts before CONVEXCORE-04 / SFREAD-03 / CMSDATA-01 (the first heavy-Convex-investment tasks)",
+      "spike code discarded, not merged - it is a proof, not an implementation"
+    ],
+    "parallel_safe": true,
+    "worktree": true,
+    "skills": [
+      "convex",
+      "perf",
+      "cost"
+    ],
+    "wave": 2
+  },
+  {
+    "id": "CMSRICH-03",
+    "title": "[FIDELITY GATE] Lexical->ProseMirror full-corpus round-trip fidelity gate",
+    "track": "CMSRICH",
+    "size": "M",
+    "summary": "Prove the Lexical->ProseMirror conversion (CMSRICH-02) + ETL rich-text shred (PIPELINE-02) lose ZERO semantic content across the ENTIRE existing richtext corpus, before any CMS content cuts over. Convert every richtext doc (the 4 richText fields + the rich-text block) across all tenants, render both Lexical-source and ProseMirror-target through the storefront renderers, and diff the rendered DOM. Any non-empty semantic diff is a hard fail. Quarantine + report unconvertible node types; never silently drop. Re-runnable; the green report is a hard predecessor of every CMS content cutover.",
+    "files": [
+      "scripts/richtext-fidelity-check.ts",
+      "apps/storefront/src/blocks/rich-text-renderer.tsx",
+      "packages/cms/src/editor/form/fields/rich-text.tsx"
+    ],
+    "depends_on": [
+      "CMSRICH-02",
+      "PIPELINE-02",
+      "CMSRICH-04"
+    ],
+    "acceptance": [
+      "every richtext doc in the corpus (4 fields + rich-text block, all tenants) round-trips with zero semantic diff in rendered storefront output",
+      "any unconvertible node type is quarantined and reported, not silently dropped",
+      "the fidelity report is re-runnable and green, and is a hard depends_on of CUTOVER-04/05/06"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "content-migration",
+      "tests"
+    ],
+    "wave": 11
+  },
+  {
+    "id": "CMSMEDIA-02",
+    "title": "Media derivatives: sharp 4 named sizes + focal point",
+    "track": "CMSMEDIA",
+    "size": "M",
+    "summary": "Generate the 4 named image sizes + focal-point crop via sharp, on upload (or a scheduled Convex action), keyed off the CMSMEDIA-01 originals. Persist derivative metadata (size variants + focal coords) per asset; regeneration idempotent.",
+    "files": [
+      "packages/convex/convex/cms/media-derivatives.ts",
+      "packages/cms/src/media/sizes.ts"
+    ],
+    "depends_on": [
+      "CMSMEDIA-01"
+    ],
+    "acceptance": [
+      "uploading an asset produces all 4 named sizes + focal crop",
+      "derivative metadata persisted + queryable per asset",
+      "regeneration is idempotent (re-run = no new rows)"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "media",
+      "sharp"
+    ],
+    "wave": 10
+  },
+  {
+    "id": "CMSMEDIA-03",
+    "title": "Media CDN URLs + storefront image consumption",
+    "track": "CMSMEDIA",
+    "size": "M",
+    "summary": "Generate CDN (S3/R2) URLs for originals + the 4 derivatives and migrate storefront image consumption (Next/Image loaders + the media shapes inside the frozen 38-getter contract) to the new URL scheme. Replace Payload media URL shapes with the Convex-native equivalents behind unchanged getter signatures.",
+    "files": [
+      "apps/storefront/src/ (image consumption)",
+      "packages/cms/src/media/urls.ts"
+    ],
+    "depends_on": [
+      "CMSMEDIA-02"
+    ],
+    "acceptance": [
+      "storefront renders images from CDN URLs for originals + all 4 sizes",
+      "getter media shapes match the SFREAD-01 frozen contract (null-on-missing preserved)",
+      "no Payload media URL helper remains (grep clean)"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "react",
+      "media",
+      "convex"
+    ],
+    "wave": 11
+  },
+  {
+    "id": "CMSRICH-04",
+    "title": "Lexical→ProseMirror content conversion codec (lossless)",
+    "track": "CMSRICH",
+    "size": "M",
+    "summary": "Pure, well-tested Lexical-JSON→ProseMirror-JSON converter covering every node/mark type in the corpus: headings, lists, marks, locale-prefixed links, and the rich-text block siblings. Consumed by the ETL (PIPELINE-02) and the fidelity gate (CMSRICH-03). Unconvertible node types RAISE, never drop.",
+    "files": [
+      "packages/cms/src/editor/richtext/lexical-to-prosemirror.ts",
+      "packages/cms/src/editor/richtext/lexical-to-prosemirror.test.ts"
+    ],
+    "depends_on": [
+      "CMSRICH-01"
+    ],
+    "acceptance": [
+      "unit tests cover every node/mark type present in the corpus",
+      "round-trip on fixtures is lossless",
+      "an unknown node type throws (never silently dropped)",
+      "pure (no IO)"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "prosemirror",
+      "lexical",
+      "content-migration",
+      "tests"
+    ],
+    "wave": 9
+  },
+  {
+    "id": "CONVEXCORE-16",
+    "title": "Admin shopId provenance resolver + auth.adapter.test migration",
+    "track": "CONVEXCORE",
+    "size": "M",
+    "summary": "Resolve the active tenant/shopId for admin requests from the trusted session (the payload-tenant-cookie analog) so admin editor actions scope correctly via tenantMutation; migrate apps/admin/src/utils/auth.adapter(.test) off the Mongo Auth.js adapter to the Convex shapes. The admin-side counterpart to CONVEXCORE-14 identity wiring.",
+    "files": [
+      "apps/admin/src/utils/auth.adapter.ts",
+      "apps/admin/src/utils/auth.adapter.test.ts",
+      "packages/convex/convex/auth/admin-shop-resolver.ts"
+    ],
+    "depends_on": [
+      "CONVEXCORE-14",
+      "CONVEXCORE-07"
+    ],
+    "acceptance": [
+      "admin requests resolve a server-trusted shopId (never a client arg)",
+      "admin editor mutations scope to it via tenantMutation",
+      "auth.adapter.test passes against Convex shapes with no mongoose import"
+    ],
+    "parallel_safe": true,
+    "worktree": false,
+    "skills": [
+      "convex",
+      "auth",
+      "tests"
+    ],
+    "wave": 7
+  }
+]
