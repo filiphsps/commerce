@@ -1,0 +1,58 @@
+{
+    "$schema": "https://json.schemastore.org/package.json",
+    "name": "@nordcom/commerce-convex",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "exports": {
+        "./_generated/api": {
+            "types": "./convex/_generated/api.d.ts",
+            "default": "./convex/_generated/api.js"
+        },
+        "./_generated/server": {
+            "types": "./convex/_generated/server.d.ts",
+            "default": "./convex/_generated/server.js"
+        }
+    },
+    "scripts": {
+        "codegen": "convex codegen",
+        "build": "node ./scripts/build.mjs",
+        "clean": "rimraf -g .convex .turbo *.tsbuildinfo *.log node_modules",
+        "lint": "biome lint .",
+        "format:check": "biome check --write --unsafe .",
+        "typecheck": "tsc -noEmit"
+    },
+    "author": {
+        "name": "Filiph Sandström",
+        "email": "filfat@hotmail.se",
+        "url": "https://github.com/filiphsps/"
+    },
+    "contributors": [
+        {
+            "name": "Filiph Sandström",
+            "email": "filfat@hotmail.se",
+            "url": "https://github.com/filiphsps/"
+        }
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/filiphsps/commerce.git"
+    },
+    "keywords": [],
+    "bugs": {
+        "url": "https://github.com/filiphsps/commerce/issues"
+    },
+    "homepage": "https://github.com/filiphsps/commerce/",
+    "files": [
+        "convex"
+    ],
+    "dependencies": {
+        "convex": "1.39.1",
+        "convex-helpers": "0.1.118"
+    },
+    "devDependencies": {
+        "convex-test": "0.0.53",
+        "rimraf": "6.1.3",
+        "typescript": "6.0.3"
+    }
+}

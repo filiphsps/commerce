@@ -28,6 +28,12 @@ apps/docs/content/*/meta.json
 # misc
 .DS_Store
 .swc
+
+# Convex anonymous local-backend state created by `convex dev`/`convex codegen`
+# when no deployment is configured. The generated `_generated/` types ARE
+# committed, but local backend state and per-package .env.local must not be.
+.convex/
+packages/convex/.env.local
 .bak
 docs/superpowers/
 /.worktrees/

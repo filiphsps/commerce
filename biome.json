@@ -25,6 +25,8 @@
             "!**/storybook-static",
             "!docs/superpowers",
             "!packages/cms/src/types/payload-types.ts",
+            "!packages/convex/convex/_generated",
+            "!packages/convex/convex/tsconfig.json",
             "!packages/shopify-graphql/storefront.schema.json"
         ]
     },

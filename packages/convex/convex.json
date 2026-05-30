@@ -1,0 +1,8 @@
+{
+    "$schema": "./node_modules/convex/schemas/convex.schema.json",
+    "functions": "convex/",
+    "codegen": {
+        "staticApi": true,
+        "staticDataModel": true
+    }
+}
