@@ -93,6 +93,42 @@ Therefore:
 
 The prerendered SEO body renders a **cached availability snapshot** (Shopify/cached read) as the real crawlable content. A thin island upgrades to live via `useQuery` **only behind auth or explicit interaction**; the socket disconnects on tab-hidden. Anonymous crawlers/idle visitors never open a socket. **The live number is advisory UI only** — the buy action re-validates against Shopify (system of record) at mutation time, preventing oversell-display correctness bugs.
 
+### 2.6 Surface classifier map (SFREAD-10)
+
+The §2.1 decision rule applied to every storefront App Router segment (`apps/storefront/src/app/**`). A segment is a **Lane-2 reactive island iff all three** clauses hold; failing **any** clause keeps it **Lane-1 static-SEO**. Each row records all three clauses (C1 per-session mutable + staleness visible within a session · C2 not part of the prerendered SEO/crawlable payload · C3 Convex is system of record) and the resulting lane.
+
+**Result: 22 Lane-1 static-SEO App Router segments (+ 1 cross-cutting surface — the theme-preview, which is not an `app/**` route segment), 2 Lane-2 reactive islands.** Server-only route handlers (`api/*`, `robots.txt`, `sitemap*`, icon routes, `flags`) emit **no browser chunk** and are Lane-1 by construction (server-side Convex usage there is permitted; only the client bundle must be Convex-free).
+
+| Route segment | Lane | C1 per-session mutable | C2 not crawlable SEO | C3 Convex SoR | Justification |
+|---|---|---|---|---|---|
+| `[domain]/[locale]` (tenant shell layout: header/footer/businessData) | **1** | no | no | no | Shop-wide CMS chrome, anonymous and identical across sessions; it is the prerendered SEO shell; Convex feeds it via the revalidation bridge, not a subscription. All three fail → static. |
+| `[domain]/[locale]/[...slug]` (CMS pages) | **1** | no | no | no | Anonymous published page content; the canonical crawlable/indexed payload; eventually-consistent via the publish→bridge path. → static. |
+| `[domain]/[locale]/products` (index) | **1** | no | no | no | Anonymous catalog listing; crawlable index; Shopify owns the catalog. → static. |
+| `[domain]/[locale]/products/[handle]` (PDP) | **1** | no | no | no | Anonymous product content; the LCP-critical indexed SEO page; Shopify is SoR for product/price/inventory. → static (live inventory upgrade is an interaction-gated island per §2.5; the page itself is static). |
+| `…/products/[handle]/@description` slot | **1** | no | no | no | Prerendered PDP fragment; crawlable; Shopify-owned copy. → static. |
+| `…/products/[handle]/@details` slot | **1** | no | no | no | Prerendered PDP fragment; crawlable; Shopify-owned. → static. |
+| `…/products/[handle]/@gallery` slot | **1** | no | no | no | LCP imagery, prerendered + crawlable; Shopify media. → static. |
+| `…/products/[handle]/@recommendations` slot | **1** | no | no | no | Cached recommendation set, not per-session; crawlable; Shopify-derived. → static. |
+| `[domain]/[locale]/collections/[handle]` | **1** | no | no | no | Anonymous collection listing; indexed; Shopify-owned. → static. |
+| `[domain]/[locale]/blogs/[blog]` (blog index) | **1** | no | no | no | Anonymous published blog index; crawlable; bridge-refreshed CMS content. → static. |
+| `[domain]/[locale]/blogs/[blog]/[handle]` (article) | **1** | no | no | no | Anonymous published article; the canonical indexed payload; bridge-refreshed. → static. |
+| `[domain]/[locale]/search` | **1** | no | no | no | Query-driven results rendered from the Shopify Storefront API; crawlable shell; Shopify SoR. → static. |
+| `[domain]/[locale]/countries` | **1** | no | no | no | Locale/country switcher built from the shop record's locale set; not per-session; crawlable; bridge-refreshed. → static. |
+| `[domain]/[locale]/cart` | **1** | yes | no | **no** | Cart is the archetypal per-session mutable surface (C1 holds, per §2.1), but **cart/inventory are Shopify system-of-record**, surfaced via the Storefront API — not Convex per-session state; the route renders a crawlable shell and the live line total is **advisory UI** re-validated against Shopify at checkout. Mirroring it into Convex would re-introduce the dual-source-of-truth this migration kills (§6 non-goal). **C3 fails → static**. |
+| `[domain]/[locale]/@modal` (parallel slot) | **1** | no | no | no | Default slot renders `null`; intercept content reuses the static product/collection surfaces. → static. |
+| `[domain]/sitemap.xml` + `sitemaps/**` (`blogs.xml`, `collections.xml`, `products.xml`, `pages.xml`) | **1** | no | no | no | Server-rendered crawler payloads, no browser chunk; Shopify/CMS-derived. → static. |
+| `[domain]/robots.txt` | **1** | no | no | no | Server-rendered crawler directive, no browser chunk. → static. |
+| `[domain]/apple-icon` · `favicon.ico` · `favicon.png` | **1** | no | no | no | Static asset routes, no browser chunk. → static. |
+| `.well-known/vercel/flags` (route) | **1** | no | no | no | Server-side flags discovery endpoint, no browser chunk. → static. |
+| `[domain]/api/revalidate` (route) | **1** | n/a | n/a | n/a | Server-only Shopify-HMAC webhook handler; no browser bundle; server-side store access is permitted. → static (server). |
+| `[domain]/api/cms-preview` (route) | **1** | n/a | n/a | n/a | Server-only `draftMode()` toggle; no browser bundle. → static (server). |
+| `[domain]/api/auth/[...nextauth]` (route) | **1** | n/a | n/a | n/a | Server-only auth handler; no browser bundle; sessions live server-side. → static (server). |
+| Theme-preview surface (storefront rendered inside the admin theme editor) | **1** | **no** | yes | **no** | **Single-editor**: one editor edits a draft at a time, so there is no cross-session staleness on the *storefront* surface requiring a public subscription — the live edit loop is driven by the admin theme-editor island (`apps/admin`, Lane-2) over `draftMode()`, not a storefront-side Convex socket. The saved theme is the system of record and the preview is **advisory**. C1 and C3 fail on the storefront surface → **static**; reactivity stays in admin, outside the storefront public bundle. |
+| `[domain]/[locale]/account` (+ `account/layout`) | **2** | **yes** | **yes** | **yes** | Profile + "just-posted" state is per-session mutable with staleness visible within the session; auth-gated and `noindex`, never crawlable; Convex is SoR for users/sessions/reviews. All three hold → **reactive island** (`preloadQuery`→`usePreloadedQuery` inside a dynamic PPR hole; Shopify-owned order data shown there stays advisory/static). |
+| Reviews "just-posted" confirmation island (interaction/auth-gated component embedded in the static PDP) | **2** | **yes** | **yes** | **yes** | A review the visitor just posted is per-session mutable with in-session staleness; the island is interaction/auth-gated and excluded from the prerendered crawlable body; Convex owns `reviews`. All three hold → **reactive island**; the surrounding PDP and the crawlable aggregate-rating snapshot remain Lane-1 static. |
+
+**Load-bearing contract for SFREAD-07.** The §5 CSP guardrail — enforced by `scripts/assert-no-convex-public-bundle.ts` — scans the storefront client bundle (`apps/storefront/.next/static`) and fails the build on any Convex client/WSS reference. It passes **trivially today** (no provider mounted) and becomes load-bearing once SFREAD-07 mounts the `ConvexReactClient` provider (§2.3). Because the guard treats the whole scanned chunk set as "the public bundle," SFREAD-07 must keep the Lane-2 island Convex code **out of that scanned set for the anonymous/non-draft experience** — i.e. confine the provider + islands to `draftMode()`/auth-gated, code-split chunks, and/or narrow this guard's target to the anonymous-route chunk set when the islands land. The two Lane-2 storefront surfaces above are the **only** segments permitted to carry Convex client code, and only behind that gating.
+
 ---
 
 ## 3. Blocker → Mitigation → Residual (all 12 painpoints)
