@@ -18,6 +18,7 @@ import { CartClientShell } from '@/cart/cart-client-shell';
 import { resolveContext } from '@/cart/context';
 import { cartKernel, readCart } from '@/cart/kernel';
 import { AnalyticsProvider } from '@/components/analytics-provider';
+import { ReactiveIslandProviderGate } from '@/components/convex/reactive-island-provider-gate';
 import { GeoRedirect } from '@/components/geo-redirect';
 import { HeaderProvider } from '@/components/header/header-provider';
 import { JsonLd } from '@/components/json-ld';
@@ -239,7 +240,7 @@ async function CachedShell({
                     <Suspense key="layout.shop-layout" fallback={<ShopLayout.skeleton />}>
                         <ShopLayout shop={shop} locale={locale} i18n={i18n}>
                             <PageContent as="article" primary={true}>
-                                {children}
+                                <ReactiveIslandProviderGate>{children}</ReactiveIslandProviderGate>
                             </PageContent>
                         </ShopLayout>
                     </Suspense>
