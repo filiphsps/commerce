@@ -203,10 +203,13 @@ export type ServiceSeamContractSnapshot = [
     // --- Public return shapes. Freeze the load-bearing members of the three
     // types these services hand to ~183 importers so a re-home cannot silently
     // reshape them: every record carries a string `id`, shop domains stay
-    // `string`, and a review still embeds the full `ShopBase`.
+    // `string`, and a review references its shop by the unified shop row id
+    // (a `string`). UNIFY-06 deliberately re-pinned `ReviewBase['shop']` from
+    // the embedded `ShopBase` snapshot to this id ref — reviews relate to
+    // shops by id, consistent with the shop==tenant collapse.
     Expect<Equal<ShopBase['domain'], string>>,
     Expect<Equal<ShopBase['id'], string>>,
     Expect<Equal<OnlineShop['id'], string>>,
     Expect<Equal<ReviewBase['id'], string>>,
-    Expect<Equal<ReviewBase['shop'], ShopBase>>,
+    Expect<Equal<ReviewBase['shop'], string>>,
 ];

@@ -93,11 +93,12 @@ describe('ReviewService.findByShop (Mongoose-backed)', () => {
     });
 });
 
-// Phase-0 regression gate for the Mongo→Convex migration (UNIFY-06 moves
-// reviews onto `shopId`). These pin the CURRENT return SHAPE produced by
-// `docToReview` so a later re-keying cannot silently change what callsites
-// receive: Mongo internals (`_id`, `__v`) are stripped, `_id` is projected
-// onto a string `id`, and embedded subdoc `_id`s are stripped recursively.
+// Phase-0 regression gate for the Mongo→Convex migration. UNIFY-06 re-pins
+// these to the NEW return shape produced by `docToReview`: Mongo internals
+// (`_id`, `__v`) are stripped, `_id` is projected onto a string `id`, and
+// `shop` is now a plain string id ref (the unified shop row id) rather than an
+// embedded shop snapshot. The recursive `_id`/`__v` strip itself is pinned
+// canonically in `lib/doc-to-shape.test.ts`.
 describe('ReviewService return-shape contract (characterization)', () => {
     it('projects a lean `_id` onto a string `id` and drops `_id`/`__v`', async () => {
         mockQuery.exec.mockResolvedValueOnce([{ _id: 'mongo-id-1', __v: 3, rating: 4, body: 'ok' }]);
@@ -113,15 +114,11 @@ describe('ReviewService return-shape contract (characterization)', () => {
         expect(review?.id).toBe('public-id-1');
     });
 
-    it('strips `_id`/`__v` from embedded subdocuments recursively', async () => {
-        mockQuery.exec.mockResolvedValueOnce([
-            {
-                _id: 'rev-1',
-                shop: { _id: 'shop-oid', __v: 0, name: 'Acme', commerce: { _id: 'c-oid', id: 'gid://x' } },
-            },
-        ]);
-        const [review] = await Review.findByShop('shop-1');
-        expect(review).toEqual({ id: 'rev-1', shop: { name: 'Acme', commerce: { id: 'gid://x' } } });
+    it('carries `shop` through as a string id ref (no embedded shop snapshot)', async () => {
+        mockQuery.exec.mockResolvedValueOnce([{ _id: 'rev-1', shop: 'shop-oid', rating: 4 }]);
+        const [review] = await Review.findByShop('shop-oid');
+        expect(review).toEqual({ id: 'rev-1', shop: 'shop-oid', rating: 4 });
+        expect(typeof review?.shop).toBe('string');
     });
 });
 

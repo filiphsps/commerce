@@ -95,7 +95,9 @@ export const docToOnlineShop = (doc: Doc): OnlineShop => {
 
 /**
  * Projects a Mongoose lean review document onto the public `ReviewBase` shape by stripping
- * Mongo internals (`_id`, `__v`).
+ * Mongo internals (`_id`, `__v`). Post Phase-0 unification `shop` is a plain string id ref, so the
+ * recursive strip has no embedded shop subdoc to descend into — the top-level `_id`→`id` projection
+ * is the only transform that applies.
  *
  * @param doc - Raw lean document from `ReviewModel.find().lean()`.
  * @returns The review document as `ReviewBase`.
