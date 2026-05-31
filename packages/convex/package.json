@@ -20,6 +20,7 @@
         "clean": "rimraf -g .convex .turbo *.tsbuildinfo *.log node_modules",
         "lint": "biome lint .",
         "format:check": "biome check --write --unsafe .",
+        "test": "vitest run",
         "typecheck": "tsc -noEmit"
     },
     "author": {
@@ -53,6 +54,7 @@
     "devDependencies": {
         "convex-test": "0.0.53",
         "rimraf": "6.1.3",
-        "typescript": "6.0.3"
+        "typescript": "6.0.3",
+        "vitest": "4.1.7"
     }
 }
